@@ -17,16 +17,19 @@
 #define QGSAIACCOUNTWIDGET_H
 
 #include "qgis_app.h"
+#include "qgsaiplanclient.h"
 
 #include <QPointer>
 #include <QWidget>
 
 class QgsAiAgentSessionManager;
 class QgsAiModelRouter;
-class QgsAiPlanClient;
 class QgsCollapsibleGroupBox;
 class QLabel;
 class QLineEdit;
+class QListWidget;
+class QListWidgetItem;
+class QProgressBar;
 class QPushButton;
 class QStackedWidget;
 
@@ -61,6 +64,8 @@ class APP_EXPORT QgsAiAccountWidget : public QWidget
     void authStateChanged();
     //! Account card data changed (a sidebar header can mirror it).
     void accountInfoChanged();
+    //! A model enable/disable preference was toggled; the chat dock model menu should rebuild.
+    void modelPreferencesChanged();
 
   private slots:
     void startLogin();
@@ -69,6 +74,10 @@ class APP_EXPORT QgsAiAccountWidget : public QWidget
     void refreshManagedModels();
     void onDesktopTokenReady( const QString &token );
     void onRequestFailed( const QString &message );
+    void onBalanceReady( const QgsAiPlanClient::BalanceInfo &balance );
+    void onModelPreferencesReady( const QList<QgsAiPlanClient::ModelPreferenceInfo> &preferences, bool fromCache );
+    void onModelPreferenceUpdated( const QString &modelId, bool enabled );
+    void onModelListItemChanged( QListWidgetItem *item );
 
   private:
     enum class Mode
@@ -84,6 +93,8 @@ class APP_EXPORT QgsAiAccountWidget : public QWidget
     void setStatus( const QString &text, bool error = false );
     void updateFormState();
     void updateAccountCard();
+    void updateUsageCard();
+    void populateModelList();
     QString currentEndpoint() const;
     bool endpointUsable() const;
     QString friendlyErrorMessage( const QString &message );
@@ -109,6 +120,16 @@ class APP_EXPORT QgsAiAccountWidget : public QWidget
     QPushButton *mLogoutButton = nullptr;
     QPushButton *mRefreshModelsButton = nullptr;
 
+    QLabel *mUsageLabel = nullptr;
+    QProgressBar *mUsageBar = nullptr;
+
+    QListWidget *mModelListWidget = nullptr;
+    bool mUpdatingModelList = false;
+    //! Item awaiting a setModelPreference() response, so a failure can revert its checkbox.
+    //! Cleared whenever the list is repopulated to avoid dangling access.
+    QListWidgetItem *mPendingToggleItem = nullptr;
+    bool mPendingToggleEnabled = false;
+
     QgsCollapsibleGroupBox *mAdvancedGroup = nullptr;
     QLineEdit *mEndpointEdit = nullptr;
     QLineEdit *mAuthCfgEdit = nullptr;
@@ -118,6 +139,8 @@ class APP_EXPORT QgsAiAccountWidget : public QWidget
     bool mBusy = false;
     QString mAccountEmail;
     QString mAccountTier;
+    QgsAiPlanClient::BalanceInfo mBalance;
+    QList<QgsAiPlanClient::ModelPreferenceInfo> mModelPreferences;
 };
 
 #endif // QGSAIACCOUNTWIDGET_H

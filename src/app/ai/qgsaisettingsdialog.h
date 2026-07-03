@@ -18,6 +18,7 @@
 
 #include "qgis_app.h"
 #include "qgsaicodexoauthclient.h"
+#include "qgsairulesskillsstore.h"
 
 #include <QDialog>
 #include <QPointer>
@@ -81,6 +82,30 @@ class APP_EXPORT QgsAiSettingsDialog : public QDialog
     void applySettings();
     void refreshSidebarAccountHeader();
     void refreshTrustWorkspace();
+
+    //! Wraps mSessionManager's file context provider; cheap value type, safe to build on demand.
+    QgsAiRulesSkillsStore rulesSkillsStore() const;
+    bool rulesSkillsWritable() const;
+    void refreshRulesSkillsTrustState();
+
+    void refreshRulesList();
+    void selectRuleInEditor( const QgsAiRuleInfo &rule );
+    void clearRuleEditor();
+    void newRule();
+    void duplicateSelectedRule();
+    void deleteSelectedRule();
+    void saveCurrentRule();
+
+    void refreshSkillsList();
+    void selectSkillInEditor( const QgsAiSkillInfo &skill );
+    void clearSkillEditor();
+    void newSkill();
+    void duplicateSelectedSkill();
+    void deleteSelectedSkill();
+    void saveCurrentSkill();
+
+    //! Pushes every enabled local rule/skill to Strata Cloud (opt-in, one-way local -> cloud).
+    void syncRulesSkillsToCloud();
     void refreshEmbeddingStatusLabel();
     void refreshRemoteEmbeddingModelField();
     void refreshIndexStatusLabel();
@@ -129,6 +154,40 @@ class APP_EXPORT QgsAiSettingsDialog : public QDialog
     QCheckBox *mLoadWorkspaceSkills = nullptr;
     QLineEdit *mRulesPathEdit = nullptr;
     QLineEdit *mSkillsPathEdit = nullptr;
+
+    QLabel *mRulesSkillsTrustBanner = nullptr;
+    QString mRulesRelativeDirForList;
+    QString mSkillsRelativeDirForList;
+
+    QListWidget *mRulesListWidget = nullptr;
+    QWidget *mRuleEditorWidget = nullptr;
+    QLineEdit *mRuleNameEdit = nullptr;
+    QLineEdit *mRuleDescriptionEdit = nullptr;
+    QLineEdit *mRuleGlobsEdit = nullptr;
+    QCheckBox *mRuleAlwaysApply = nullptr;
+    QCheckBox *mRuleEnabled = nullptr;
+    QTextEdit *mRuleBodyEdit = nullptr;
+    QPushButton *mRuleNewButton = nullptr;
+    QPushButton *mRuleDuplicateButton = nullptr;
+    QPushButton *mRuleDeleteButton = nullptr;
+    QPushButton *mRuleSaveButton = nullptr;
+    QString mCurrentRuleSlug;
+    QString mCurrentRulePath;
+
+    QListWidget *mSkillsListWidget = nullptr;
+    QWidget *mSkillEditorWidget = nullptr;
+    QLineEdit *mSkillNameEdit = nullptr;
+    QLineEdit *mSkillDescriptionEdit = nullptr;
+    QCheckBox *mSkillEnabled = nullptr;
+    QTextEdit *mSkillBodyEdit = nullptr;
+    QPushButton *mSkillNewButton = nullptr;
+    QPushButton *mSkillDuplicateButton = nullptr;
+    QPushButton *mSkillDeleteButton = nullptr;
+    QPushButton *mSkillSaveButton = nullptr;
+    QString mCurrentSkillSlug;
+
+    QPushButton *mSyncRulesSkillsCloudButton = nullptr;
+    QLabel *mRulesSkillsCloudStatusLabel = nullptr;
 
     QComboBox *mEmbeddingProvider = nullptr;
     QLineEdit *mRemoteEmbeddingModel = nullptr;

@@ -124,6 +124,8 @@ class TestQgsAiAgentSessionManager : public QObject
     void collectsWorkspaceRulesFiles();
     void collectsGeoAiWorkspaceRulesFiles();
     void collectsLegacyWorkspaceRulesFiles();
+    void collectsAlwaysApplyAndManualRulesFromStructuredFiles();
+    void collectsSkillsAsIndexOnly();
     void readsGeoAiAgentBehaviorSettings();
     void readsLegacyAgentBehaviorSettings();
     void rejectsRulesFolderOutsideWorkspace();
@@ -687,6 +689,113 @@ void TestQgsAiAgentSessionManager::collectsGeoAiWorkspaceRulesFiles()
   const QString rules = manager.collectRulesContent();
   QVERIFY( rules.contains( u"Keep GeoAI folders readable."_s ) );
   QVERIFY( rules.contains( u".geoai/rules/legacy.md"_s ) );
+
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::collectsAlwaysApplyAndManualRulesFromStructuredFiles()
+{
+  QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QVERIFY( QDir( tempDir.path() ).mkpath( u".strata/rules"_s ) );
+
+  QFile alwaysRule( tempDir.filePath( u".strata/rules/always-on.md"_s ) );
+  QVERIFY( alwaysRule.open( QIODevice::WriteOnly | QIODevice::Text ) );
+  alwaysRule.write( QByteArrayLiteral(
+    "---\n"
+    "description: Standing instruction\n"
+    "alwaysApply: true\n"
+    "---\n"
+    "Full body of the always-on rule.\n"
+  ) );
+  alwaysRule.close();
+
+  QFile manualRule( tempDir.filePath( u".strata/rules/manual-only.md"_s ) );
+  QVERIFY( manualRule.open( QIODevice::WriteOnly | QIODevice::Text ) );
+  manualRule.write( QByteArrayLiteral(
+    "---\n"
+    "description: Only fetched when relevant\n"
+    "alwaysApply: false\n"
+    "---\n"
+    "Full body of the manual rule should NOT appear in the prompt.\n"
+  ) );
+  manualRule.close();
+
+  QgsAiWorkspaceTrust::setState( tempDir.path(), QgsAiWorkspaceTrust::State::Trusted );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+
+  QgsAiAgentBehaviorSettings updated = manager.agentBehaviorSettings();
+  updated.rulesText.clear();
+  updated.loadWorkspaceRules = true;
+  manager.setAgentBehaviorSettings( updated );
+
+  const QString rules = manager.collectRulesContent();
+  // Always-apply rule: full body is injected.
+  QVERIFY( rules.contains( u"Full body of the always-on rule."_s ) );
+  QVERIFY( rules.contains( u".strata/rules/always-on.md"_s ) );
+  // Manual rule: only a name/description/path reference is injected, never the body.
+  QVERIFY( !rules.contains( u"should NOT appear"_s ) );
+  QVERIFY( rules.contains( u".strata/rules/manual-only.md"_s ) );
+  QVERIFY( rules.contains( u"Only fetched when relevant"_s ) );
+  QVERIFY( rules.contains( u"read_file"_s ) );
+
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::collectsSkillsAsIndexOnly()
+{
+  QgsSettings settings;
+  settings.remove( u"strata/agent"_s );
+  settings.remove( u"geoai/agent"_s );
+  settings.remove( u"qgis_ai/agent"_s );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QVERIFY( QDir( tempDir.path() ).mkpath( u".strata/skills/pdf-export"_s ) );
+  QFile skillFile( tempDir.filePath( u".strata/skills/pdf-export/SKILL.md"_s ) );
+  QVERIFY( skillFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
+  skillFile.write( QByteArrayLiteral(
+    "---\n"
+    "name: PDF export\n"
+    "description: Use when the user asks for a print layout export\n"
+    "---\n"
+    "Detailed step-by-step body that must stay out of the system prompt.\n"
+  ) );
+  skillFile.close();
+
+  QgsAiWorkspaceTrust::setState( tempDir.path(), QgsAiWorkspaceTrust::State::Trusted );
+
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+
+  QgsAiAgentBehaviorSettings updated = manager.agentBehaviorSettings();
+  updated.skillsText.clear();
+  updated.loadWorkspaceSkills = true;
+  manager.setAgentBehaviorSettings( updated );
+
+  const QString skills = manager.collectSkillsContent();
+  // Only the compact index (name/description/path) is injected...
+  QVERIFY( skills.contains( u"PDF export"_s ) );
+  QVERIFY( skills.contains( u"Use when the user asks for a print layout export"_s ) );
+  QVERIFY( skills.contains( u".strata/skills/pdf-export/SKILL.md"_s ) );
+  QVERIFY( skills.contains( u"read_file"_s ) );
+  // ...never the full SKILL.md body (progressive disclosure).
+  QVERIFY( !skills.contains( u"Detailed step-by-step body"_s ) );
 
   settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );

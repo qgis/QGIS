@@ -334,6 +334,8 @@ if (ENABLE_AI_ASSISTANT)
     ai/qgsaimessagelogbuffer.cpp
     ai/qgsaireviewdialog.cpp
     ai/qgsaireviewpatchengine.cpp
+    ai/qgsairulesskillscloudclient.cpp
+    ai/qgsairulesskillsstore.cpp
     ai/qgsaisecretstore.cpp
     ai/qgsaisettingsdialog.cpp
     ai/qgsaivisualcontextutils.cpp

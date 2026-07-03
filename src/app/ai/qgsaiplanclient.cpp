@@ -28,6 +28,8 @@
 #include <QString>
 #include <QUrl>
 
+#include <algorithm>
+
 #include "moc_qgsaiplanclient.cpp"
 
 using namespace Qt::StringLiterals;
@@ -139,12 +141,23 @@ QString QgsAiPlanClient::ModelInfo::tooltip() const
   return parts.join( '\n' );
 }
 
+int QgsAiPlanClient::BalanceInfo::usedPercent() const
+{
+  if ( isUnlimited() )
+    return 0;
+  const int used = std::max( 0, monthlyCredits - available - held );
+  return std::clamp( static_cast<int>( ( static_cast<qint64>( used ) * 100 ) / monthlyCredits ), 0, 100 );
+}
+
 QgsAiPlanClient::QgsAiPlanClient( QObject *parent )
   : QObject( parent )
 {
   qRegisterMetaType<QgsAiPlanClient::AccountInfo>();
   qRegisterMetaType<QgsAiPlanClient::ModelInfo>();
   qRegisterMetaType<QList<QgsAiPlanClient::ModelInfo>>();
+  qRegisterMetaType<QgsAiPlanClient::BalanceInfo>();
+  qRegisterMetaType<QgsAiPlanClient::ModelPreferenceInfo>();
+  qRegisterMetaType<QList<QgsAiPlanClient::ModelPreferenceInfo>>();
   qRegisterMetaType<QgsAiManagedAgentPreset>();
   qRegisterMetaType<QgsAiManagedAgentPolicy>();
   qRegisterMetaType<QList<QgsAiManagedAgentPreset>>();
@@ -235,6 +248,36 @@ QgsAiPlanClient::AccountInfo QgsAiPlanClient::parseMeJson( const QByteArray &bod
   return account;
 }
 
+QgsAiPlanClient::BalanceInfo QgsAiPlanClient::parseBalanceJson( const QByteArray &body )
+{
+  const QJsonObject root = QJsonDocument::fromJson( body ).object();
+  BalanceInfo balance;
+  balance.available = root.value( u"available"_s ).toInt();
+  balance.held = root.value( u"held"_s ).toInt();
+  balance.tier = root.value( u"tier"_s ).toString();
+  balance.monthlyCredits = root.value( u"monthlyCredits"_s ).toInt();
+  return balance;
+}
+
+QList<QgsAiPlanClient::ModelPreferenceInfo> QgsAiPlanClient::parseModelPreferencesJson( const QByteArray &body )
+{
+  QList<ModelPreferenceInfo> preferences;
+  const QJsonObject root = QJsonDocument::fromJson( body ).object();
+  const QJsonArray items = root.value( u"items"_s ).toArray();
+  preferences.reserve( items.size() );
+  for ( const QJsonValue &value : items )
+  {
+    const QJsonObject item = value.toObject();
+    ModelPreferenceInfo info;
+    info.modelId = item.value( u"modelId"_s ).toString();
+    if ( info.modelId.isEmpty() )
+      continue;
+    info.enabled = item.value( u"enabled"_s ).toBool( true );
+    preferences << info;
+  }
+  return preferences;
+}
+
 QString QgsAiPlanClient::cacheFilePath()
 {
   return QDir( QgsApplication::qgisSettingsDirPath() ).filePath( u"strata_plan_models_cache.json"_s );
@@ -248,6 +291,11 @@ QString QgsAiPlanClient::agentsCacheFilePath()
 QString QgsAiPlanClient::agentPolicyCacheFilePath()
 {
   return QDir( QgsApplication::qgisSettingsDirPath() ).filePath( u"strata_plan_agent_policy_cache.json"_s );
+}
+
+QString QgsAiPlanClient::modelPreferencesCacheFilePath()
+{
+  return QDir( QgsApplication::qgisSettingsDirPath() ).filePath( u"strata_plan_model_preferences_cache.json"_s );
 }
 
 QList<QgsAiPlanClient::ModelInfo> QgsAiPlanClient::cachedModels()
@@ -272,6 +320,25 @@ QgsAiManagedAgentPolicy QgsAiPlanClient::cachedAgentPolicy()
   if ( !file.open( QIODevice::ReadOnly ) )
     return {};
   return parseAgentPolicyJson( file.readAll() );
+}
+
+QList<QgsAiPlanClient::ModelPreferenceInfo> QgsAiPlanClient::cachedModelPreferences()
+{
+  QFile file( modelPreferencesCacheFilePath() );
+  if ( !file.open( QIODevice::ReadOnly ) )
+    return {};
+  return parseModelPreferencesJson( file.readAll() );
+}
+
+bool QgsAiPlanClient::isModelDisabled( const QString &modelId )
+{
+  const QList<ModelPreferenceInfo> preferences = cachedModelPreferences();
+  for ( const ModelPreferenceInfo &preference : preferences )
+  {
+    if ( preference.modelId == modelId )
+      return !preference.enabled;
+  }
+  return false;
 }
 
 void QgsAiPlanClient::writeCachedModels( const QList<ModelInfo> &models )
@@ -327,6 +394,24 @@ void QgsAiPlanClient::writeCachedAgentPolicy( const QgsAiManagedAgentPolicy &pol
   root.insert( u"presets"_s, presets );
 
   QFile file( agentPolicyCacheFilePath() );
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    file.write( QJsonDocument( root ).toJson( QJsonDocument::Compact ) );
+}
+
+void QgsAiPlanClient::writeCachedModelPreferences( const QList<ModelPreferenceInfo> &preferences )
+{
+  QJsonArray items;
+  for ( const ModelPreferenceInfo &info : preferences )
+  {
+    QJsonObject item;
+    item.insert( u"modelId"_s, info.modelId );
+    item.insert( u"enabled"_s, info.enabled );
+    items << item;
+  }
+  QJsonObject root;
+  root.insert( u"items"_s, items );
+
+  QFile file( modelPreferencesCacheFilePath() );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     file.write( QJsonDocument( root ).toJson( QJsonDocument::Compact ) );
 }
@@ -472,6 +557,45 @@ void QgsAiPlanClient::fetchMe( const QString &chatEndpoint, const QString &sessi
       return;
     }
     emit accountReady( parseMeJson( body ) );
+  } );
+}
+
+void QgsAiPlanClient::fetchBalance( const QString &chatEndpoint, const QString &sessionToken )
+{
+  const QString apiBase = apiBaseForChatEndpoint( chatEndpoint );
+  if ( apiBase.isEmpty() || sessionToken.trimmed().isEmpty() )
+  {
+    emit requestFailed( tr( "Plan endpoint or session token is missing." ) );
+    return;
+  }
+
+  QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
+  if ( !networkManager )
+  {
+    emit requestFailed( tr( "Network manager is not available." ) );
+    return;
+  }
+
+  QNetworkRequest request( apiUrl( apiBase, u"/v1/credits/balance"_s ) );
+  request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
+  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  QNetworkReply *reply = networkManager->get( request );
+  if ( !reply )
+  {
+    emit requestFailed( tr( "Unable to start the Plan balance request." ) );
+    return;
+  }
+
+  connect( reply, &QNetworkReply::finished, reply, &QObject::deleteLater );
+  connect( reply, &QNetworkReply::finished, this, [this, reply]() {
+    const int httpStatus = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
+    const QByteArray body = reply->readAll();
+    if ( reply->error() != QNetworkReply::NoError || httpStatus < 200 || httpStatus >= 300 )
+    {
+      emit requestFailed( responseErrorMessage( reply, body ) );
+      return;
+    }
+    emit balanceReady( parseBalanceJson( body ) );
   } );
 }
 
@@ -623,5 +747,116 @@ void QgsAiPlanClient::refreshAuthenticatedJson( const QString &chatEndpoint, con
     else
       applyCachedPolicyFallback( this, cachedAgentPolicy() );
     emit requestFailed( responseErrorMessage( reply, body ) );
+  } );
+}
+
+void QgsAiPlanClient::fetchModelPreferences( const QString &chatEndpoint, const QString &sessionToken )
+{
+  const QString apiBase = apiBaseForChatEndpoint( chatEndpoint );
+  if ( apiBase.isEmpty() || sessionToken.trimmed().isEmpty() )
+  {
+    const QList<ModelPreferenceInfo> cached = cachedModelPreferences();
+    if ( !cached.isEmpty() )
+      emit modelPreferencesReady( cached, true );
+    if ( apiBase.isEmpty() )
+      emit requestFailed( tr( "Plan backend endpoint is not configured." ) );
+    return;
+  }
+
+  QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
+  if ( !networkManager )
+  {
+    const QList<ModelPreferenceInfo> cached = cachedModelPreferences();
+    if ( !cached.isEmpty() )
+      emit modelPreferencesReady( cached, true );
+    emit requestFailed( tr( "Network manager is not available." ) );
+    return;
+  }
+
+  QNetworkRequest request( apiUrl( apiBase, u"/v1/models/preferences"_s ) );
+  request.setRawHeader( "Accept", "application/json" );
+  request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
+  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  QNetworkReply *reply = networkManager->get( request );
+  if ( !reply )
+  {
+    emit requestFailed( tr( "Unable to start the Plan model preferences request." ) );
+    return;
+  }
+
+  connect( reply, &QNetworkReply::finished, reply, &QObject::deleteLater );
+  connect( reply, &QNetworkReply::finished, this, [this, reply]() {
+    const int httpStatus = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
+    const QByteArray body = reply->readAll();
+    if ( reply->error() == QNetworkReply::NoError && httpStatus >= 200 && httpStatus < 300 )
+    {
+      const QList<ModelPreferenceInfo> preferences = parseModelPreferencesJson( body );
+      writeCachedModelPreferences( preferences );
+      emit modelPreferencesReady( preferences, false );
+      return;
+    }
+
+    const QList<ModelPreferenceInfo> cached = cachedModelPreferences();
+    if ( !cached.isEmpty() )
+      emit modelPreferencesReady( cached, true );
+    emit requestFailed( responseErrorMessage( reply, body ) );
+  } );
+}
+
+void QgsAiPlanClient::setModelPreference( const QString &chatEndpoint, const QString &sessionToken, const QString &modelId, bool enabled )
+{
+  const QString apiBase = apiBaseForChatEndpoint( chatEndpoint );
+  if ( apiBase.isEmpty() || sessionToken.trimmed().isEmpty() || modelId.isEmpty() )
+  {
+    emit requestFailed( tr( "Plan endpoint or session token is missing." ) );
+    return;
+  }
+
+  QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
+  if ( !networkManager )
+  {
+    emit requestFailed( tr( "Network manager is not available." ) );
+    return;
+  }
+
+  QJsonObject body;
+  body.insert( u"enabled"_s, enabled );
+
+  QNetworkRequest request( apiUrl( apiBase, u"/v1/models/preferences/%1"_s.arg( modelId ) ) );
+  setJsonHeaders( request );
+  request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
+  QNetworkReply *reply = networkManager->sendCustomRequest( request, "PUT", QJsonDocument( body ).toJson( QJsonDocument::Compact ) );
+  if ( !reply )
+  {
+    emit requestFailed( tr( "Unable to start the Plan model preference update." ) );
+    return;
+  }
+
+  connect( reply, &QNetworkReply::finished, reply, &QObject::deleteLater );
+  connect( reply, &QNetworkReply::finished, this, [this, reply, modelId, enabled]() {
+    const int httpStatus = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
+    const QByteArray responseBody = reply->readAll();
+    if ( reply->error() != QNetworkReply::NoError || httpStatus < 200 || httpStatus >= 300 )
+    {
+      emit requestFailed( responseErrorMessage( reply, responseBody ) );
+      return;
+    }
+
+    QList<ModelPreferenceInfo> cached = cachedModelPreferences();
+    bool found = false;
+    for ( ModelPreferenceInfo &info : cached )
+    {
+      if ( info.modelId == modelId )
+      {
+        info.enabled = enabled;
+        found = true;
+        break;
+      }
+    }
+    if ( !found )
+      cached << ModelPreferenceInfo { modelId, enabled };
+    writeCachedModelPreferences( cached );
+
+    emit modelPreferenceUpdated( modelId, enabled );
   } );
 }

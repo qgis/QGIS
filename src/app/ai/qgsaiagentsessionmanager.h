@@ -141,6 +141,9 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QString workspaceRoot() const;
     void setWorkspaceRoot( const QString &workspaceRoot );
 
+    //! Returns the file context provider backing this session, used by QgsAiRulesSkillsStore.
+    QgsAiFileContextProvider *fileContextProvider() const { return mContextProvider; }
+
     void setToolRegistry( QgsAiToolRegistry *registry );
     QgsAiToolRegistry *toolRegistry() const { return mToolRegistry; }
 
@@ -189,9 +192,17 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     void setManagedAgentPolicy( const QgsAiManagedAgentPolicy &policy );
     QgsAiManagedAgentPolicy managedAgentPolicy() const { return mManagedAgentPolicy; }
 
-    //! Returns the rules text combined from inline settings and workspace files.
+    /**
+     * Returns the rules text combined from inline settings and per-file workspace
+     * rules. Rules with alwaysApply=true are inlined in full; others contribute only
+     * a name/description reference the agent can expand via the read_file tool.
+     */
     QString collectRulesContent() const;
-    //! Returns the skills text combined from inline settings and workspace files.
+    /**
+     * Returns the skills text combined from inline settings and a compact
+     * name/description index of per-file workspace skills (progressive disclosure —
+     * the agent loads a skill's full SKILL.md body on demand via the read_file tool).
+     */
     QString collectSkillsContent() const;
 
     /**
@@ -262,6 +273,10 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     void loadPersistedBehaviorSettings();
     void persistBehaviorSettings() const;
     QString readWorkspaceTextFiles( const QString &relativeDir ) const;
+    //! Renders enabled rules from the per-file store: full body when alwaysApply, a reference line otherwise.
+    QString formatRulesFromStore( const QString &relativeDir ) const;
+    //! Renders a compact name/description index of enabled skills from the per-file store.
+    QString formatSkillsFromStore( const QString &relativeDir ) const;
 
     /**
      * Appends \a message to mHistory, persists it (if a store is configured and

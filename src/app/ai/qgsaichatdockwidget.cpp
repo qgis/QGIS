@@ -172,6 +172,9 @@ namespace
         continue;
       if ( !policy.allowedModels.isEmpty() && !policy.allowedModels.contains( model.id ) )
         continue;
+      // User-level preference from the Account "Models" list — takes effect on top of the tier policy.
+      if ( QgsAiPlanClient::isModelDisabled( model.id ) )
+        continue;
       entries.append( ModelEntry { model.displayLabel(), model.id, QgsAiModelRouter::Provider::Plan, model.tooltip() } );
     }
     return entries;

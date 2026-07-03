@@ -18,19 +18,27 @@
 #include "qgsaiagentsessionmanager.h"
 #include "qgsaimodelrouter.h"
 #include "qgsaiplanclient.h"
+#include "qgsaisettingsutils.h"
 #include "qgscollapsiblegroupbox.h"
 
+#include <QAbstractItemView>
 #include <QButtonGroup>
 #include <QFormLayout>
 #include <QFrame>
+#include <QHash>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QListWidget>
+#include <QListWidgetItem>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QString>
 #include <QStyle>
 #include <QVBoxLayout>
+
+#include <utility>
 
 #include "moc_qgsaiaccountwidget.cpp"
 
@@ -120,6 +128,9 @@ QLabel[aiRole="rowDescription"] { color: palette(dark); }
     setBusy( false );
     emit authStateChanged();
   } );
+  connect( mPlanClient, &QgsAiPlanClient::balanceReady, this, &QgsAiAccountWidget::onBalanceReady );
+  connect( mPlanClient, &QgsAiPlanClient::modelPreferencesReady, this, &QgsAiAccountWidget::onModelPreferencesReady );
+  connect( mPlanClient, &QgsAiPlanClient::modelPreferenceUpdated, this, &QgsAiAccountWidget::onModelPreferenceUpdated );
   connect( mPlanClient, &QgsAiPlanClient::requestFailed, this, &QgsAiAccountWidget::onRequestFailed );
 
   const bool signedIn = isSignedIn();
@@ -127,10 +138,14 @@ QLabel[aiRole="rowDescription"] { color: palette(dark); }
   if ( signedIn )
   {
     updateAccountCard();
+    updateUsageCard();
+    populateModelList();
     if ( endpointUsable() )
     {
       setStatus( tr( "Signed in — loading account…" ) );
       mPlanClient->fetchMe( currentEndpoint(), mModelRouter->planSessionToken() );
+      mPlanClient->fetchBalance( currentEndpoint(), mModelRouter->planSessionToken() );
+      mPlanClient->fetchModelPreferences( currentEndpoint(), mModelRouter->planSessionToken() );
     }
     else
     {
@@ -284,6 +299,40 @@ QWidget *QgsAiAccountWidget::buildLoggedInPane()
   connect( mLogoutButton, &QPushButton::clicked, this, &QgsAiAccountWidget::logout );
   connect( mRefreshModelsButton, &QPushButton::clicked, this, &QgsAiAccountWidget::refreshManagedModels );
 
+  // Usage card: monthly credit quota consumption, Cursor "Plan & Usage" style.
+  QVBoxLayout *usageLayout = new QVBoxLayout();
+  usageLayout->setContentsMargins( 0, 0, 0, 0 );
+  usageLayout->setSpacing( 4 );
+  usageLayout->addWidget( QgsAiSettingsUtils::sectionHeader( tr( "Usage" ), pane ) );
+  mUsageLabel = new QLabel( pane );
+  mUsageLabel->setProperty( "aiRole", u"rowDescription"_s );
+  usageLayout->addWidget( mUsageLabel );
+  mUsageBar = new QProgressBar( pane );
+  mUsageBar->setObjectName( u"aiPlanUsageBar"_s );
+  mUsageBar->setRange( 0, 100 );
+  mUsageBar->setTextVisible( false );
+  mUsageBar->setFixedHeight( 8 );
+  usageLayout->addWidget( mUsageBar );
+  layout->addLayout( usageLayout );
+
+  // Models: the managed catalog with per-account enable/disable, mirrors Cursor's Models page.
+  QVBoxLayout *modelsLayout = new QVBoxLayout();
+  modelsLayout->setContentsMargins( 0, 0, 0, 0 );
+  modelsLayout->setSpacing( 4 );
+  modelsLayout->addWidget( QgsAiSettingsUtils::sectionHeader( tr( "Models" ), pane ) );
+  QLabel *modelsDescription = new QLabel( tr( "Choose which managed models appear in the chat model picker." ), pane );
+  modelsDescription->setProperty( "aiRole", u"rowDescription"_s );
+  modelsDescription->setWordWrap( true );
+  modelsLayout->addWidget( modelsDescription );
+  mModelListWidget = new QListWidget( pane );
+  mModelListWidget->setObjectName( u"aiPlanModelListWidget"_s );
+  mModelListWidget->setSelectionMode( QAbstractItemView::NoSelection );
+  mModelListWidget->setMaximumHeight( 220 );
+  modelsLayout->addWidget( mModelListWidget );
+  layout->addLayout( modelsLayout );
+
+  connect( mModelListWidget, &QListWidget::itemChanged, this, &QgsAiAccountWidget::onModelListItemChanged );
+
   return pane;
 }
 
@@ -383,6 +432,58 @@ void QgsAiAccountWidget::updateAccountCard()
   mAvatarLabel->setText( mAccountEmail.isEmpty() ? u"•"_s : mAccountEmail.left( 1 ).toUpper() );
 }
 
+void QgsAiAccountWidget::updateUsageCard()
+{
+  if ( !mUsageLabel || !mUsageBar )
+    return;
+
+  if ( mBalance.isUnlimited() )
+  {
+    mUsageLabel->setText( tr( "%1 credits available · Unlimited plan" ).arg( mBalance.available ) );
+    mUsageBar->setValue( 0 );
+    return;
+  }
+
+  const int percent = mBalance.usedPercent();
+  mUsageLabel->setText( tr( "%1 / %2 credits · %3% used" )
+                           .arg( mBalance.available )
+                           .arg( mBalance.monthlyCredits )
+                           .arg( percent ) );
+  mUsageBar->setValue( percent );
+}
+
+void QgsAiAccountWidget::populateModelList()
+{
+  if ( !mModelListWidget )
+    return;
+
+  mUpdatingModelList = true;
+  mPendingToggleItem = nullptr;
+  mModelListWidget->clear();
+
+  const QList<QgsAiPlanClient::ModelInfo> catalog = QgsAiPlanClient::cachedModels();
+  QHash<QString, bool> enabledById;
+  for ( const QgsAiPlanClient::ModelPreferenceInfo &preference : std::as_const( mModelPreferences ) )
+    enabledById.insert( preference.modelId, preference.enabled );
+
+  for ( const QgsAiPlanClient::ModelInfo &model : catalog )
+  {
+    auto *item = new QListWidgetItem( model.displayLabel(), mModelListWidget );
+    item->setData( Qt::UserRole, model.id );
+    if ( !model.tooltip().isEmpty() )
+      item->setToolTip( model.tooltip() );
+    item->setCheckState( enabledById.value( model.id, true ) ? Qt::Checked : Qt::Unchecked );
+  }
+
+  if ( catalog.isEmpty() )
+  {
+    auto *placeholder = new QListWidgetItem( tr( "Refresh models to see the managed catalog." ), mModelListWidget );
+    placeholder->setFlags( placeholder->flags() & ~Qt::ItemIsEnabled );
+  }
+
+  mUpdatingModelList = false;
+}
+
 QString QgsAiAccountWidget::currentEndpoint() const
 {
   return mEndpointEdit->text().trimmed();
@@ -451,6 +552,8 @@ void QgsAiAccountWidget::refreshManagedModels()
   {
     mPlanClient->refreshAgents( currentEndpoint(), mModelRouter->planSessionToken() );
     mPlanClient->refreshAgentPolicy( currentEndpoint(), mModelRouter->planSessionToken() );
+    mPlanClient->fetchBalance( currentEndpoint(), mModelRouter->planSessionToken() );
+    mPlanClient->fetchModelPreferences( currentEndpoint(), mModelRouter->planSessionToken() );
   }
 }
 
@@ -469,15 +572,82 @@ void QgsAiAccountWidget::onDesktopTokenReady( const QString &token )
   updateAccountCard();
   setStatus( tr( "Plan Account signed in. Loading account and model catalog..." ) );
   mPlanClient->fetchMe( currentEndpoint(), token );
+  mPlanClient->fetchBalance( currentEndpoint(), token );
   mPlanClient->refreshModels( currentEndpoint() );
   mPlanClient->refreshAgents( currentEndpoint(), token );
   mPlanClient->refreshAgentPolicy( currentEndpoint(), token );
+  mPlanClient->fetchModelPreferences( currentEndpoint(), token );
   emit accountInfoChanged();
   emit authStateChanged();
 }
 
 void QgsAiAccountWidget::onRequestFailed( const QString &message )
 {
+  if ( mPendingToggleItem )
+  {
+    mUpdatingModelList = true;
+    mPendingToggleItem->setCheckState( mPendingToggleEnabled ? Qt::Unchecked : Qt::Checked );
+    mUpdatingModelList = false;
+    mPendingToggleItem = nullptr;
+  }
   setStatus( friendlyErrorMessage( message ), true );
   setBusy( false );
+}
+
+void QgsAiAccountWidget::onBalanceReady( const QgsAiPlanClient::BalanceInfo &balance )
+{
+  mBalance = balance;
+  updateUsageCard();
+}
+
+void QgsAiAccountWidget::onModelPreferencesReady( const QList<QgsAiPlanClient::ModelPreferenceInfo> &preferences, bool fromCache )
+{
+  Q_UNUSED( fromCache )
+  mModelPreferences = preferences;
+  populateModelList();
+}
+
+void QgsAiAccountWidget::onModelPreferenceUpdated( const QString &modelId, bool enabled )
+{
+  if ( mPendingToggleItem && mPendingToggleItem->data( Qt::UserRole ).toString() == modelId )
+    mPendingToggleItem = nullptr;
+
+  bool found = false;
+  for ( QgsAiPlanClient::ModelPreferenceInfo &preference : mModelPreferences )
+  {
+    if ( preference.modelId == modelId )
+    {
+      preference.enabled = enabled;
+      found = true;
+      break;
+    }
+  }
+  if ( !found )
+    mModelPreferences << QgsAiPlanClient::ModelPreferenceInfo { modelId, enabled };
+  emit modelPreferencesChanged();
+}
+
+void QgsAiAccountWidget::onModelListItemChanged( QListWidgetItem *item )
+{
+  if ( mUpdatingModelList || !item )
+    return;
+
+  const QString modelId = item->data( Qt::UserRole ).toString();
+  if ( modelId.isEmpty() )
+    return;
+  const bool enabled = item->checkState() == Qt::Checked;
+
+  if ( !mModelRouter || mModelRouter->planSessionToken().trimmed().isEmpty() || !endpointUsable() )
+  {
+    // Optimistic UI wouldn't be able to persist without a session — revert immediately.
+    mUpdatingModelList = true;
+    item->setCheckState( enabled ? Qt::Unchecked : Qt::Checked );
+    mUpdatingModelList = false;
+    setStatus( tr( "Sign in to change model preferences." ), true );
+    return;
+  }
+
+  mPendingToggleItem = item;
+  mPendingToggleEnabled = enabled;
+  mPlanClient->setModelPreference( currentEndpoint(), mModelRouter->planSessionToken(), modelId, enabled );
 }

@@ -21,6 +21,7 @@
 #include "qgsaiauditlog.h"
 #include "qgsaifilecontextprovider.h"
 #include "qgsaigissuggestionengine.h"
+#include "qgsairulesskillsstore.h"
 #include "qgsaireviewpatchengine.h"
 #include "qgsaitool.h"
 #include "qgsaitoolregistry.h"
@@ -1109,6 +1110,108 @@ QString QgsAiAgentSessionManager::readWorkspaceTextFiles( const QString &relativ
   return sections.join( "\n\n"_L1 );
 }
 
+QString QgsAiAgentSessionManager::formatRulesFromStore( const QString &relativeDir ) const
+{
+  if ( !mContextProvider || relativeDir.trimmed().isEmpty() )
+    return QString();
+
+  const QString root = mContextProvider->workspaceRoot();
+  if ( root.isEmpty() )
+    return QString();
+
+  // Workspace trust gate: rule files from an untrusted (or undecided) workspace are
+  // never injected into the system prompt — a shared/downloaded project must not be
+  // able to smuggle instructions in.
+  if ( !QgsAiWorkspaceTrust::isTrusted( root ) )
+  {
+    QgsMessageLog::logMessage( u"Workspace not trusted: skipping rule files from %1."_s.arg( relativeDir ), u"AI"_s, Qgis::MessageLevel::Info, false );
+    return QString();
+  }
+
+  const QgsAiRulesSkillsStore store( mContextProvider );
+  const QList<QgsAiRuleInfo> rules = store.listRules( relativeDir );
+
+  QStringList alwaysSections;
+  QStringList onDemandLines;
+  for ( const QgsAiRuleInfo &rule : rules )
+  {
+    if ( !rule.enabled )
+      continue;
+    const QString relPath = QDir( root ).relativeFilePath( rule.path );
+    if ( rule.alwaysApply )
+    {
+      const QString body = store.readRuleBody( rule );
+      if ( !body.isEmpty() )
+        alwaysSections << u"# %1\n%2"_s.arg( relPath, body );
+    }
+    else
+    {
+      QString line = u"- %1 (%2)"_s.arg( rule.name, relPath );
+      if ( !rule.description.trimmed().isEmpty() )
+        line += u": %1"_s.arg( rule.description.trimmed() );
+      onDemandLines << line;
+    }
+  }
+
+  QStringList parts;
+  if ( !alwaysSections.isEmpty() )
+    parts << alwaysSections.join( "\n\n"_L1 );
+  if ( !onDemandLines.isEmpty() )
+  {
+    QString block = "Additional rules available on demand (call read_file on the listed path to load the full content when it is relevant to the user's request):\n"_L1;
+    block += onDemandLines.join( '\n' );
+    parts << block;
+  }
+  return parts.join( "\n\n"_L1 );
+}
+
+QString QgsAiAgentSessionManager::formatSkillsFromStore( const QString &relativeDir ) const
+{
+  if ( !mContextProvider || relativeDir.trimmed().isEmpty() )
+    return QString();
+
+  const QString root = mContextProvider->workspaceRoot();
+  if ( root.isEmpty() )
+    return QString();
+
+  if ( !QgsAiWorkspaceTrust::isTrusted( root ) )
+  {
+    QgsMessageLog::logMessage( u"Workspace not trusted: skipping skill files from %1."_s.arg( relativeDir ), u"AI"_s, Qgis::MessageLevel::Info, false );
+    return QString();
+  }
+
+  const QgsAiRulesSkillsStore store( mContextProvider );
+  const QList<QgsAiSkillInfo> skills = store.listSkills( relativeDir );
+  if ( skills.isEmpty() )
+  {
+    // Backward compatibility: skills used to be flat .md/.txt files directly inside
+    // the skills folder, before the Cursor-style <slug>/SKILL.md layout existed.
+    // Fall back to the legacy full-text concatenation so pre-existing workspaces
+    // do not silently lose their skills content.
+    return readWorkspaceTextFiles( relativeDir );
+  }
+
+  // Skills use progressive disclosure: only the compact name/description index is
+  // injected here; the agent fetches the full SKILL.md body on demand via read_file.
+  QStringList lines;
+  for ( const QgsAiSkillInfo &skill : skills )
+  {
+    if ( !skill.enabled )
+      continue;
+    const QString relPath = QDir( root ).relativeFilePath( skill.skillFilePath );
+    QString line = u"- %1 (%2)"_s.arg( skill.name, relPath );
+    if ( !skill.description.trimmed().isEmpty() )
+      line += u": %1"_s.arg( skill.description.trimmed() );
+    lines << line;
+  }
+  if ( lines.isEmpty() )
+    return QString();
+
+  QString block = "Call read_file on the listed path to load the full skill content when it matches the user's request:\n"_L1;
+  block += lines.join( '\n' );
+  return block;
+}
+
 QString QgsAiAgentSessionManager::collectRulesContent() const
 {
   QStringList parts;
@@ -1117,14 +1220,14 @@ QString QgsAiAgentSessionManager::collectRulesContent() const
     parts << inline_;
   if ( mBehaviorSettings.loadWorkspaceRules )
   {
-    const QString workspace = readWorkspaceTextFiles( mBehaviorSettings.rulesPath );
+    const QString workspace = formatRulesFromStore( mBehaviorSettings.rulesPath );
     if ( !workspace.isEmpty() )
       parts << workspace;
     else if ( mBehaviorSettings.rulesPath == defaultRulesPath() )
     {
       for ( const QString &legacyPath : legacyRulesPaths() )
       {
-        const QString legacyWorkspace = readWorkspaceTextFiles( legacyPath );
+        const QString legacyWorkspace = formatRulesFromStore( legacyPath );
         if ( !legacyWorkspace.isEmpty() )
         {
           parts << legacyWorkspace;
@@ -1144,14 +1247,14 @@ QString QgsAiAgentSessionManager::collectSkillsContent() const
     parts << inline_;
   if ( mBehaviorSettings.loadWorkspaceSkills )
   {
-    const QString workspace = readWorkspaceTextFiles( mBehaviorSettings.skillsPath );
+    const QString workspace = formatSkillsFromStore( mBehaviorSettings.skillsPath );
     if ( !workspace.isEmpty() )
       parts << workspace;
     else if ( mBehaviorSettings.skillsPath == defaultSkillsPath() )
     {
       for ( const QString &legacyPath : legacySkillsPaths() )
       {
-        const QString legacyWorkspace = readWorkspaceTextFiles( legacyPath );
+        const QString legacyWorkspace = formatSkillsFromStore( legacyPath );
         if ( !legacyWorkspace.isEmpty() )
         {
           parts << legacyWorkspace;

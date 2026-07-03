@@ -86,6 +86,7 @@ if (ENABLE_AI_ASSISTANT)
   set(TESTS ${TESTS} testqgsaiplanclient.cpp)
   set(TESTS ${TESTS} testqgsaipythonapprovaldialog.cpp)
   set(TESTS ${TESTS} testqgsaisecretstore.cpp)
+  set(TESTS ${TESTS} testqgsairulesskillsstore.cpp)
 endif()
 
 if (HAVE_GEOREFERENCER)
