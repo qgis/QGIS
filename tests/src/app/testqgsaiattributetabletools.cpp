@@ -28,6 +28,8 @@ class TestQgsAiAttributeTableTools : public QObject
     void cleanupTestCase();
     void queryFeaturesFiltersAndPaginates();
     void batchUpdateAttributesUpdatesAndRollsBack();
+    void selectFeaturesUpdatesLayerSelection();
+    void identifyFeaturesAtReturnsMatchingFeature();
 };
 
 void TestQgsAiAttributeTableTools::initTestCase()
@@ -135,6 +137,58 @@ void TestQgsAiAttributeTableTools::batchUpdateAttributesUpdatesAndRollsBack()
   const QJsonArray features = query.output.toObject().value( u"features"_s ).toArray();
   QCOMPARE( features.at( 0 ).toObject().value( u"attributes"_s ).toObject().value( u"name"_s ).toString(), u"two"_s );
   QCOMPARE( features.at( 1 ).toObject().value( u"attributes"_s ).toObject().value( u"name"_s ).toString(), u"three"_s );
+}
+
+void TestQgsAiAttributeTableTools::selectFeaturesUpdatesLayerSelection()
+{
+  QgsProject project;
+  QgsVectorLayer *layer = makePlacesLayer( project );
+  QVERIFY( layer );
+
+  QgsAiSelectFeaturesTool tool( &project );
+  QVERIFY( tool.requiresApproval() );
+  QCOMPARE( tool.riskLevel(), QgsAiToolRiskLevel::Low );
+
+  QJsonObject args;
+  args.insert( u"layer_id"_s, layer->id() );
+  args.insert( u"mode"_s, u"replace"_s );
+  args.insert( u"filter_expression"_s, u"\"value\" >= 2"_s );
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY2( result.success, qPrintable( result.errorMessage ) );
+  QCOMPARE( result.output.toObject().value( u"selected_count"_s ).toInt(), 2 );
+  QCOMPARE( layer->selectedFeatureIds().size(), 2 );
+
+  QJsonObject emptyArgs;
+  emptyArgs.insert( u"layer_id"_s, layer->id() );
+  emptyArgs.insert( u"mode"_s, u"replace"_s );
+  emptyArgs.insert( u"filter_expression"_s, u"\"value\" > 100"_s );
+  const QgsAiToolResult empty = tool.execute( emptyArgs );
+  QVERIFY2( empty.success, qPrintable( empty.errorMessage ) );
+  QCOMPARE( empty.output.toObject().value( u"selected_count"_s ).toInt(), 0 );
+  QCOMPARE( layer->selectedFeatureIds().size(), 0 );
+}
+
+void TestQgsAiAttributeTableTools::identifyFeaturesAtReturnsMatchingFeature()
+{
+  QgsProject project;
+  QgsVectorLayer *layer = makePlacesLayer( project );
+  QVERIFY( layer );
+
+  QgsAiIdentifyFeaturesAtTool tool( &project );
+  QVERIFY( !tool.requiresApproval() );
+
+  QJsonObject args;
+  args.insert( u"layer_id"_s, layer->id() );
+  args.insert( u"x"_s, 2.0 );
+  args.insert( u"y"_s, 2.0 );
+  args.insert( u"crs"_s, u"EPSG:4326"_s );
+  args.insert( u"tolerance"_s, 0.05 );
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY2( result.success, qPrintable( result.errorMessage ) );
+  const QJsonArray features = result.output.toObject().value( u"features"_s ).toArray();
+  QCOMPARE( features.size(), 1 );
+  QCOMPARE( features.at( 0 ).toObject().value( u"attributes"_s ).toObject().value( u"name"_s ).toString(), u"two"_s );
+  QCOMPARE( features.at( 0 ).toObject().value( u"attributes"_s ).toObject().value( u"value"_s ).toInt(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsAiAttributeTableTools )

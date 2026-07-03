@@ -55,4 +55,34 @@ class APP_EXPORT QgsAiBatchUpdateAttributesTool : public QgsAiTool
     QgsProject *mProject = nullptr;
 };
 
+class APP_EXPORT QgsAiSelectFeaturesTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiSelectFeaturesTool( QgsProject *project );
+
+    QString name() const override { return u"select_features"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Low; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
+class APP_EXPORT QgsAiIdentifyFeaturesAtTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiIdentifyFeaturesAtTool( QgsProject *project );
+
+    QString name() const override { return u"identify_features_at"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
 #endif // QGSAIATTRIBUTETABLETOOLS_H
