@@ -1987,3 +1987,366 @@ contesto → piano → azione → verifica → diff → output → workflow → 
 ```
 
 può diventare un prodotto realmente differenziato rispetto a una semplice chat dentro QGIS.
+
+
+---
+
+# 13. Fasi di chiusura gap AI tool (workflow GIS core)
+
+## Contesto
+
+L'analisi comparativa tra `QgsAiToolRegistry` (26 tool registrati in [src/app/qgisapp.cpp](src/app/qgisapp.cpp) righe 1436-1463 al momento dell'analisi) e le funzionalità core di QGIS desktop aveva evidenziato 11 aree ad alta priorità **senza alcun tool AI dedicato**: editing geometrico interattivo, modifica attributi, field calculator, gestione progetto, connessione a fonti dati remote, styling avanzato, layout compositor avanzato, snapping, selezione/identify e navigazione canvas in scrittura.
+
+Le 11 fasi seguenti sono state chiuse con tool `QgsAiTool` dedicati, seguendo lo stesso pattern architetturale dei tool esistenti (`name()`, `description()`, `schema()`, `execute()`, `requiresApproval()`, `riskLevel()`) e lo stesso pattern di test già in uso in `tests/src/app/testqgsaitoolregistry.cpp` (setup `QgsProject` + layer memory, `execute()` con `QJsonObject`, assert su `result.success`/`errorMessage`, verifica `rollback_token`).
+
+**Nota:** queste fasi si inseriscono come completamento trasversale della Fase 1 (Assistant operativo MVP) e della Fase 4 (Agent Mode v2) già presenti nel documento; non sostituiscono la numerazione 0-10 esistente.
+
+**Stato finale (luglio 2026):** completato su branch `codex/ai-gap-tools` con test mirati per `test_app_aieditingtools`, `test_app_aiattributetabletools`, `test_app_aiprojecttools`, `test_app_aitoolregistry` e test aggregato finale verde.
+
+## Fase AI-GAP-1 — Editing geometrico interattivo [FATTO]
+
+**Obiettivo:** permettere all'agente di modificare la geometria di feature esistenti (spostare/aggiungere/eliminare vertici, split/reshape), oggi possibile solo interattivamente via `QgsMapTool` (`QgsAppMapTools::Tool`, [src/app/maptools/qgsappmaptools.h](src/app/maptools/qgsappmaptools.h) righe 32-83) o tramite `run_python` non tipizzato.
+
+**Gap attuale:** nessun tool AI tocca la geometria di una feature già esistente; `add_layer_from_file` e `run_processing_algorithm` creano nuovi layer/output ma non editano in place.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)         | Classe                         | Descrizione                                                                                         | Risk level |
+| ----------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------- | ---------- |
+| `edit_feature_geometry` | `QgsAiEditFeatureGeometryTool` | Sposta/aggiunge/elimina vertici di una feature per `feature_id`; supporta split via linea di taglio | high       |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaieditingtools.h/.cpp`
+- Registrazione in `src/app/qgisapp.cpp` (blocco `mAiToolRegistry->registerTool`, righe ~1436-1463)
+
+**Test di integrazione:**
+
+- Nuovo file `tests/src/app/testqgsaieditingtools.cpp`, target CTest `test_app_aieditingtools` (riga aggiunta in `tests/src/app/CMakeLists.txt` dentro `if (ENABLE_AI_ASSISTANT)`)
+- Setup: `QgsProject` + `QgsVectorLayer` memory con geometria poligonale nota; `execute()` con vertice da spostare; assert su nuova posizione vertice via `QgsFeature::geometry()`, su `result.success`/`rollback_token`, e su ripristino geometria originale dopo rollback
+
+**Acceptance criteria:**
+
+- L'agente sposta/aggiunge/elimina un vertice su una feature esistente con conferma utente.
+- Ogni edit produce un `rollback_token` funzionante.
+- Geometrie invalide risultanti vengono rifiutate con errore esplicito prima del commit.
+
+## Fase AI-GAP-2 — Modifica attributi di feature esistenti [FATTO]
+
+**Obiettivo:** consentire la scrittura di valori attributo su feature già esistenti, non solo la lettura via `describe_layer`.
+
+**Gap attuale:** `describe_layer` (`QgsAiDescribeLayerTool`) legge campioni di attributi ma non scrive; nessun tool aggiorna valori di campo per una feature specifica.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)             | Classe                             | Descrizione                                                    | Risk level |
+| --------------------------- | ---------------------------------- | -------------------------------------------------------------- | ---------- |
+| `update_feature_attributes` | `QgsAiUpdateFeatureAttributesTool` | Aggiorna uno o più valori di campo per `feature_id`/`layer_id` | high       |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaieditingtools.h/.cpp` (stesso raggruppamento di AI-GAP-1)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaieditingtools.cpp`: setup layer memory con campi tipizzati, `execute()` con nuovi valori, assert su `QgsFeature::attribute()` post-update, verifica rifiuto se tipo valore incompatibile con il campo, verifica rollback
+
+**Acceptance criteria:**
+
+- L'agente aggiorna attributi di una feature esistente con conferma utente.
+- Validazione tipo/dominio campo prima della scrittura.
+- Rollback ripristina i valori precedenti.
+
+## Fase AI-GAP-3 — Field calculator [FATTO]
+
+**Obiettivo:** eseguire calcoli su campo (nuovo o esistente) con espressioni QGIS, equivalente AI di `mActionOpenFieldCalc` ([src/app/qgisapp.h](src/app/qgisapp.h) riga 693).
+
+**Gap attuale:** nessun tool dedicato; oggi realizzabile solo con `run_python` (rischio critical, non tipizzato).
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)   | Classe                    | Descrizione                                                                                           | Risk level |
+| ----------------- | ------------------------- | ----------------------------------------------------------------------------------------------------- | ---------- |
+| `calculate_field` | `QgsAiCalculateFieldTool` | Applica un'espressione QGIS (`QgsExpression`) a un campo nuovo o esistente su tutte/subset di feature | high       |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaieditingtools.h/.cpp`
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaieditingtools.cpp`: layer memory con campo numerico, espressione tipo `"area_ha" * 2`, assert sui valori calcolati per ogni feature, test con espressione invalida (assert `result.success == false` con messaggio parser), test creazione nuovo campo se non esistente
+
+**Acceptance criteria:**
+
+- Espressioni QGIS valide vengono applicate correttamente a tutte le feature del subset richiesto.
+- Espressioni invalide restituiscono errore chiaro senza modificare il layer.
+- Rollback disponibile per il batch di modifiche.
+
+## Fase AI-GAP-4 — Attribute table editing/query [FATTO]
+
+**Obiettivo:** permettere selezione/filtro di feature via espressione e modifiche batch, equivalente AI di `attributeTable()` ([src/app/qgisapp.h](src/app/qgisapp.h) riga 693 area).
+
+**Gap attuale:** nessun tool interroga o modifica in batch la tabella attributi; `describe_layer` restituisce solo un campione fisso (max 10 feature).
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)           | Classe                    | Descrizione                                                                    | Risk level |
+| ------------------------- | ------------------------- | ------------------------------------------------------------------------------ | ---------- |
+| `query_features`          | `QgsAiAttributeTableTool` | Seleziona/filtra feature per espressione QGIS, con paginazione                 | low        |
+| `batch_update_attributes` | `QgsAiAttributeTableTool` | Aggiorna un campo per tutte le feature che soddisfano un'espressione di filtro | high       |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaiattributetabletools.h/.cpp`
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Nuovo file `tests/src/app/testqgsaiattributetabletools.cpp`, target `test_app_aiattributetabletools`
+- Test `query_features`: layer memory con feature eterogenee, filtro per espressione, assert su count e id feature restituiti, verifica paginazione
+- Test `batch_update_attributes`: filtro + update, assert numero feature modificate coerente col filtro, verifica rollback
+
+**Acceptance criteria:**
+
+- Query restituisce solo le feature che soddisfano l'espressione, con conteggio corretto.
+- Update batch richiede conferma e riporta il numero di feature modificate.
+- Rollback ripristina tutti i valori originali del batch.
+
+## Fase AI-GAP-5 — Gestione progetto [FATTO]
+
+**Obiettivo:** dare controllo AI su salvataggio progetto, CRS di progetto e proprietà base, oggi solo in lettura tramite `list_project_layers`.
+
+**Gap attuale:** `list_project_layers` espone `project_file` solo in lettura; nessun tool salva il progetto o modifica CRS/proprietà.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)  | Classe                   | Descrizione                                                            | Risk level |
+| ---------------- | ------------------------ | ---------------------------------------------------------------------- | ---------- |
+| `manage_project` | `QgsAiManageProjectTool` | Azioni: `save`, `save_as`, `get_properties`, `set_crs`, `set_property` | high       |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaiprojecttools.h/.cpp`
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Nuovo file `tests/src/app/testqgsaiprojecttools.cpp`, target `test_app_aiprojecttools`
+- Test `save`/`save_as`: `QTemporaryDir` + `QgsProject`, assert su `QFileInfo::exists()` del file `.qgz`/`.qgs` prodotto
+- Test `set_crs`: assert su `QgsProject::crs()` post-esecuzione e coerenza con layer esistenti
+- Test errori: path non scrivibile, CRS non valido
+
+**Acceptance criteria:**
+
+- Salvataggio progetto (anche "save as") funzionante con conferma utente.
+- Cambio CRS progetto riflesso in `QgsProject::crs()` e nei componenti dipendenti (canvas).
+- Nessuna sovrascrittura file senza conferma esplicita.
+
+## Fase AI-GAP-6 — Layer da fonti dati remote [FATTO]
+
+**Obiettivo:** estendere il caricamento layer oltre i file locali, coprendo WMS/WFS/XYZ/PostGIS, come da azioni `addWms`/`addWfs`/`addPostgisLayer` già presenti in `qgisapp.h`.
+
+**Gap attuale:** `add_layer_from_file` (`QgsAiAddLayerFromFileTool`) accetta solo percorsi file locali (vector/raster).
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)          | Classe                         | Descrizione                                                                       | Risk level |
+| ------------------------ | ------------------------------ | --------------------------------------------------------------------------------- | ---------- |
+| `add_layer_from_service` | `QgsAiAddLayerFromServiceTool` | Aggiunge layer da URI di servizio (WMS, WFS, XYZ tile, PostGIS connection string) | medium     |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsailayertools.h/.cpp` (stesso file di `QgsAiAddLayerFromFileTool`)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaitoolregistry.cpp` (stesso file dei test layer esistenti): test con provider `wms`/`xyz` su URI locale/mock (es. tile server statico servito da `QTemporaryDir` + `QgsNetworkAccessManager` test hook, pattern già usato in altri test QGIS di rete); assert su `QgsRasterLayer::isValid()`/`QgsVectorLayer::isValid()` e rollback rimozione layer
+- Test errore: URI malformato o provider non supportato → `result.success == false`
+
+**Acceptance criteria:**
+
+- Layer WMS/WFS/XYZ/PostGIS aggiunti correttamente al progetto con conferma utente.
+- Provider non supportato o URI invalido restituisce errore esplicito senza aggiungere layer.
+- Rollback rimuove il layer aggiunto.
+
+## Fase AI-GAP-7 — Stile/simbologia avanzata [FATTO]
+
+**Obiettivo:** estendere `style_layer` oltre opacità/visibilità/colore single-symbol, coprendo simbologia categorized, graduated, rule-based, stile raster ed etichettatura base.
+
+**Gap attuale:** `style_layer` (`QgsAiStyleLayerTool`, [src/app/ai/tools/qgsailayertools.cpp](src/app/ai/tools/qgsailayertools.cpp) righe 782-883) supporta solo single-symbol vector.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)        | Classe                   | Descrizione                                                                                                       | Risk level |
+| ---------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- | ---------- |
+| `style_layer_advanced` | `QgsAiAdvancedStyleTool` | Imposta renderer categorized/graduated/rule-based, stile raster (singleband/multiband), regole etichettatura base | medium     |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsailayertools.h/.cpp` (estensione del gruppo esistente)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaitoolregistry.cpp`: layer memory con campo categorico, `execute()` con renderer `categorized` su quel campo, assert su `QgsVectorLayer::renderer()->type()` e numero categorie generate; test analogo per `graduated` su campo numerico e per abilitazione etichette; verifica rollback ripristina il renderer/label settings precedenti
+
+**Acceptance criteria:**
+
+- Renderer categorized/graduated applicati correttamente in base al campo indicato, con classi coerenti ai valori distinti/range.
+- Etichettatura base attivabile/disattivabile su un campo.
+- Rollback ripristina lo stile precedente (renderer + labeling).
+
+## Fase AI-GAP-8 — Layout compositor avanzato [FATTO]
+
+**Obiettivo:** estendere `create_print_layout` per modificare layout esistenti aggiungendo legenda, scala, freccia nord e gestendo multi-pagina.
+
+**Gap attuale:** `create_print_layout` (`QgsAiCreatePrintLayoutTool`, [src/app/ai/tools/qgsailayertools.cpp](src/app/ai/tools/qgsailayertools.cpp) righe 894-983) crea solo mappa + titolo opzionale, nessuna modifica su layout già esistente.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)     | Classe                     | Descrizione                                                                                      | Risk level |
+| ------------------- | -------------------------- | ------------------------------------------------------------------------------------------------ | ---------- |
+| `edit_print_layout` | `QgsAiEditPrintLayoutTool` | Aggiunge/rimuove legenda, scala, freccia nord, pagine aggiuntive su un layout esistente per nome | medium     |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsailayertools.h/.cpp`
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaitoolregistry.cpp`: `QgsPrintLayout` creato via `create_print_layout` nel setup, poi `edit_print_layout` per aggiungere legenda/scala/nord; assert su presenza dei relativi `QgsLayoutItem` (`QgsLayoutItemLegend`, `QgsLayoutItemScaleBar`, `QgsLayoutItemPicture`/north arrow) nel layout; test aggiunta pagina e verifica `QgsLayout::pageCollection()->pageCount()`
+
+**Acceptance criteria:**
+
+- Legenda, scala e freccia nord aggiungibili a un layout esistente identificato per nome.
+- Aggiunta pagina funzionante per layout multi-pagina.
+- Rollback rimuove gli elementi aggiunti ripristinando il layout precedente.
+
+## Fase AI-GAP-9 — Snapping settings [FATTO]
+
+**Obiettivo:** permettere all'agente di configurare lo snapping di progetto prima di operazioni di editing geometrico (rilevante soprattutto in combinazione con AI-GAP-1), equivalente AI di `mActionSnappingOptions`.
+
+**Gap attuale:** nessun tool legge o scrive la configurazione snapping (`QgsSnappingConfig`).
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)      | Classe                       | Descrizione                                                                                | Risk level |
+| -------------------- | ---------------------------- | ------------------------------------------------------------------------------------------ | ---------- |
+| `configure_snapping` | `QgsAiConfigureSnappingTool` | Legge/imposta modalità snapping, tolleranza, unità e layer coinvolti (`QgsSnappingConfig`) | low        |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaiprojecttools.h/.cpp` (stesso file di `manage_project`)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaiprojecttools.cpp`: `execute()` con `mode: "vertex"`, `tolerance: 10`; assert su `QgsProject::snappingConfig()` post-esecuzione; test lettura configurazione corrente senza modifiche (azione `get`)
+
+**Acceptance criteria:**
+
+- Configurazione snapping applicata correttamente e leggibile via `QgsProject::snappingConfig()`.
+- Azione di sola lettura non modifica la configurazione esistente.
+- Valori di tolleranza/unità non validi restituiscono errore esplicito.
+
+## Fase AI-GAP-10 — Selezione feature e identify programmatico [FATTO]
+
+**Obiettivo:** permettere all'agente di selezionare feature su un layer (per espressione o per area) e interrogarle puntualmente, equivalente AI di `SelectFeatures`/`Identify` in `QgsAppMapTools::Tool`.
+
+**Gap attuale:** nessun tool imposta la selezione corrente di un layer; `describe_layer` legge solo un campione fisso indipendente dalla selezione.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)        | Classe                    | Descrizione                                                                                                      | Risk level |
+| ---------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------- |
+| `select_features`      | `QgsAiSelectFeaturesTool` | Seleziona feature su un layer per espressione o bounding box, aggiornando `QgsVectorLayer::selectedFeatureIds()` | low        |
+| `identify_features_at` | `QgsAiSelectFeaturesTool` | Restituisce le feature sotto una coordinata/area del canvas, con attributi                                       | low        |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaiattributetabletools.h/.cpp` (stesso file di `query_features`)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaiattributetabletools.cpp`: `select_features` con espressione, assert su `layer->selectedFeatureIds()`; `identify_features_at` con coordinata nota su feature di test, assert su feature restituita e relativi attributi
+
+**Acceptance criteria:**
+
+- Selezione feature riflessa nello stato del layer (`selectedFeatureIds()`) e visibile in UI.
+- Identify per coordinata restituisce le feature corrette con attributi completi.
+- Selezione vuota gestita senza errore (risultato con zero feature).
+
+## Fase AI-GAP-11 — Navigazione canvas programmatica [FATTO]
+
+**Obiettivo:** dare all'agente la controparte in scrittura di `get_active_canvas_extent`, per impostare zoom/pan/estensione del canvas prima di uno screenshot (`capture_map_canvas`) o di un'analisi visiva.
+
+**Gap attuale:** `get_active_canvas_extent` (`QgsAiGetCanvasExtentTool`) è read-only; nessun tool modifica extent/scala/rotazione del canvas.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)     | Classe                     | Descrizione                                                                              | Risk level |
+| ------------------- | -------------------------- | ---------------------------------------------------------------------------------------- | ---------- |
+| `set_canvas_extent` | `QgsAiSetCanvasExtentTool` | Imposta extent (bbox+CRS), scala o zoom-to-layer/zoom-to-selection sul canvas principale | low        |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaireadtools.h/.cpp` (stesso file di `get_active_canvas_extent`)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaitoolregistry.cpp`: `QgsMapCanvas` locale di test, `execute()` con bbox esplicito, assert su `canvas->extent()` post-esecuzione; test `zoom_to_layer` con layer noto, assert su extent coerente col layer; test rollback ripristina extent precedente
+
+**Acceptance criteria:**
+
+- Extent/scala impostati correttamente e verificabili via `QgsMapCanvas::extent()`.
+- `zoom_to_layer`/`zoom_to_selection` funzionanti sui casi base.
+- Rollback ripristina l'extent precedente del canvas.
+
+## Riepilogo
+
+
+| Fase      | Tool (`name()`)                             | Priorità | Stato        |
+| --------- | ------------------------------------------- | -------- | ------------ |
+| AI-GAP-1  | `edit_feature_geometry`                     | Alta     | `[FATTO]` |
+| AI-GAP-2  | `update_feature_attributes`                 | Alta     | `[FATTO]` |
+| AI-GAP-3  | `calculate_field`                           | Alta     | `[FATTO]` |
+| AI-GAP-4  | `query_features`, `batch_update_attributes` | Alta     | `[FATTO]` |
+| AI-GAP-5  | `manage_project`                            | Alta     | `[FATTO]` |
+| AI-GAP-6  | `add_layer_from_service`                    | Alta     | `[FATTO]` |
+| AI-GAP-7  | `style_layer_advanced`                      | Alta     | `[FATTO]` |
+| AI-GAP-8  | `edit_print_layout`                         | Alta     | `[FATTO]` |
+| AI-GAP-9  | `configure_snapping`                        | Alta     | `[FATTO]` |
+| AI-GAP-10 | `select_features`, `identify_features_at`   | Alta     | `[FATTO]` |
+| AI-GAP-11 | `set_canvas_extent`                         | Alta     | `[FATTO]` |
+
+
+Ogni fase è stata implementata con test mirato e commit dedicato; la sezione 13 è chiusa rispetto ai gap AI tool GIS core elencati.
