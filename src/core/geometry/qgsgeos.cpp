@@ -175,6 +175,22 @@ void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence ) const
   GEOSCoordSeq_destroy_r( QgsGeosContext::get(), sequence );
 }
 
+void geos::useCurveConversionIfNeeded( GEOSContextHandle_t context )
+{
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  GEOSCurveToLineParams *curveToLineParams = GEOSCurveToLineParams_create();
+  GEOSLineToCurveParams *lineToCurveParams = GEOSLineToCurveParams_create();
+
+  GEOSContext_setCurveToLineParams_r( context, curveToLineParams );
+  GEOSContext_setLineToCurveParams_r( context, lineToCurveParams );
+
+  GEOSCurveToLineParams_destroy( curveToLineParams );
+  GEOSLineToCurveParams_destroy( lineToCurveParams );
+#else
+  Q_UNUSED( context )
+#endif
+}
+
 
 ///@endcond
 
@@ -208,6 +224,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( Qgis::MakeValidMethod m
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
+  geos::useCurveConversionIfNeeded( context );
 
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10
   if ( method != Qgis::MakeValidMethod::Linework )
@@ -882,7 +899,9 @@ bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg, Qg
     {
       try
       {
-        return GEOSPreparedIntersectsXY_r( QgsGeosContext::get(), mGeosPrepared.get(), point->x(), point->y() ) == 1;
+        GEOSContextHandle_t context = QgsGeosContext::get();
+        geos::useCurveConversionIfNeeded( context );
+        return GEOSPreparedIntersectsXY_r( context, mGeosPrepared.get(), point->x(), point->y() ) == 1;
       }
       catch ( QgsGeosException &e )
       {
@@ -1083,11 +1102,10 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
-// TODO: Remove next #if when GEOSisValid_r has curve support!
-#if !( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  geos::useCurveConversionIfNeeded( context );
+
   if ( !GEOSisValid_r( context, mGeos.get() ) )
     return InvalidBaseGeometry;
-#endif
 
   //make sure splitLine is valid
   if ( ( mGeometry->dimension() == 1 && splitLine.numPoints() < 1 ) || ( mGeometry->dimension() == 2 && splitLine.numPoints() < 2 ) )
@@ -2220,6 +2238,7 @@ bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *er
 
   GEOSContextHandle_t context = QgsGeosContext::get();
   QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+  geos::useCurveConversionIfNeeded( context );
 
   bool result = false;
   try
@@ -2606,6 +2625,7 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
 
   GEOSContextHandle_t context = QgsGeosContext::get();
   QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+  geos::useCurveConversionIfNeeded( context );
 
   try
   {
