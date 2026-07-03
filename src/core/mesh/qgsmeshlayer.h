@@ -322,6 +322,14 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     void setRendererSettings( const QgsMeshRendererSettings &settings, const bool repaint = true );
 
     /**
+     * Invalidates the cache used by the renderer to store the values of the active
+     * scalar and vector dataset groups.
+     *
+     * \since QGIS 4.4
+     */
+    void invalidateRendererCache();
+
+    /**
      * Returns time format settings
      *
      * \since QGIS 3.8
