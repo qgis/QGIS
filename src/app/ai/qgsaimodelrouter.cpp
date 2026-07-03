@@ -2321,9 +2321,9 @@ void QgsAiModelRouter::onReplyFinished()
 
 QString QgsAiModelRouter::defaultPlanEndpoint()
 {
-  // Development default pointing at a local strata-be; swap to the production
-  // URL before release.
-  return u"http://localhost:3001/ai/messages"_s;
+  // Production Cloud Run backend (strata-be, europe-west1). Local dev overrides
+  // via STRATA_PLAN_ENDPOINT or run-strata-dev.sh.
+  return u"https://strata-be-372580174147.europe-west1.run.app/ai/messages"_s;
 }
 
 bool QgsAiModelRouter::isUsablePlanEndpoint( const QString &endpoint )
