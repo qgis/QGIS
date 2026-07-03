@@ -65,6 +65,7 @@ class TestQgsAiPlanClient : public QObject
     void loginMintsDesktopToken();
     void refreshModelsFetchesAndCaches();
     void refreshAgentsAndPolicyUseBearerToken();
+    void setModelPreferenceEncodesModelIdPathSegment();
 };
 
 void TestQgsAiPlanClient::parsesManagedModelCatalog()
@@ -188,6 +189,32 @@ void TestQgsAiPlanClient::refreshAgentsAndPolicyUseBearerToken()
   QCOMPARE( QgsAiPlanClient::cachedAgentPolicy().tier, u"PRO"_s );
   QFile::remove( QgsAiPlanClient::agentsCacheFilePath() );
   QFile::remove( QgsAiPlanClient::agentPolicyCacheFilePath() );
+}
+
+void TestQgsAiPlanClient::setModelPreferenceEncodesModelIdPathSegment()
+{
+  QgsAiTestLoopbackServer server;
+  server.responses << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"modelId\":\"deepseek/deepseek-v4-flash\",\"enabled\":false}" ) );
+  QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
+
+  QgsAiPlanClient client;
+  QSignalSpy updatedSpy( &client, &QgsAiPlanClient::modelPreferenceUpdated );
+  QSignalSpy failedSpy( &client, &QgsAiPlanClient::modelPreferenceUpdateFailed );
+
+  const QString endpoint = u"http://127.0.0.1:%1/ai/messages"_s.arg( server.serverPort() );
+  client.setModelPreference( endpoint, u"strata_dt_123"_s, u"deepseek/deepseek-v4-flash"_s, false );
+  QVERIFY( waitForSignal( &client, SIGNAL( modelPreferenceUpdated( QString, bool ) ) ) );
+
+  QCOMPARE( failedSpy.count(), 0 );
+  QCOMPARE( updatedSpy.count(), 1 );
+  QCOMPARE( updatedSpy.at( 0 ).at( 0 ).toString(), u"deepseek/deepseek-v4-flash"_s );
+  QCOMPARE( updatedSpy.at( 0 ).at( 1 ).toBool(), false );
+  QCOMPARE( server.requestCount, 1 );
+  QVERIFY2( server.rawRequests.first().startsWith( "PUT /v1/models/preferences/deepseek%2Fdeepseek-v4-flash " ), qPrintable( QString::fromUtf8( server.rawRequests.first() ) ) );
+  QVERIFY( server.rawRequests.first().toLower().contains( "authorization: bearer strata_dt_123" ) );
+
+  const QJsonObject body = QJsonDocument::fromJson( server.requestBodies.first() ).object();
+  QCOMPARE( body.value( u"enabled"_s ).toBool(), false );
 }
 
 QGSTEST_MAIN( TestQgsAiPlanClient )

@@ -43,6 +43,11 @@ namespace
     return QUrl( apiBase + path );
   }
 
+  QString encodedPathSegment( const QString &segment )
+  {
+    return QString::fromLatin1( QUrl::toPercentEncoding( segment ) );
+  }
+
   void setJsonHeaders( QNetworkRequest &request )
   {
     request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
@@ -822,7 +827,7 @@ void QgsAiPlanClient::setModelPreference( const QString &chatEndpoint, const QSt
   QJsonObject body;
   body.insert( u"enabled"_s, enabled );
 
-  QNetworkRequest request( apiUrl( apiBase, u"/v1/models/preferences/%1"_s.arg( modelId ) ) );
+  QNetworkRequest request( apiUrl( apiBase, u"/v1/models/preferences/%1"_s.arg( encodedPathSegment( modelId ) ) ) );
   setJsonHeaders( request );
   request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
   QNetworkReply *reply = networkManager->sendCustomRequest( request, "PUT", QJsonDocument( body ).toJson( QJsonDocument::Compact ) );
