@@ -164,17 +164,6 @@ namespace geos
    */
   using coord_sequence_unique_ptr = std::unique_ptr< GEOSCoordSequence, GeosDeleter>;
 
-  /**
-   * Sets CurveToLine and LineToCurve default params to a GEOS \a context.
-   *
-   * This ensures that if a GEOS method does not support curves, it will linearize
-   * any curve geometry input if needed, and will also convert any linear output
-   * to a curved type, if the inputs were converted to curves.
-   *
-   * \param context GEOS context to which the curve conversion params will be set.
-   */
-  void useCurveConversionIfNeeded( GEOSContextHandle_t context );
-
 } //namespace geos
 #endif
 
