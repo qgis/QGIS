@@ -1270,14 +1270,16 @@ bool QgsCircularString::moveVertex( QgsVertexId position, const QgsPoint &newPos
 bool QgsCircularString::deleteVertex( QgsVertexId position )
 {
   int nVertices = this->numPoints();
+
+  if ( position.vertex < 0 || position.vertex > ( nVertices - 1 ) )
+  {
+    return false;
+  }
+
   if ( nVertices < 4 ) //circular string must have at least 3 vertices
   {
     clear();
     return true;
-  }
-  if ( position.vertex < 0 || position.vertex > ( nVertices - 1 ) )
-  {
-    return false;
   }
 
   if ( position.vertex < ( nVertices - 2 ) )

@@ -200,7 +200,7 @@ QVariantMap QgsGeometryCheckHoleAlgorithm::processAlgorithm( const QVariantMap &
     QgsAttributes attrs = f.attributes();
 
     attrs << error->layerId()
-          << error->featureId()
+          << inputLayer->name()
           << error->vidx().part
           << error->vidx().ring
           << error->vidx().vertex

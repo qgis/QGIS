@@ -2490,6 +2490,9 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
 
 QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( const QList<int> &list )
 {
+  if ( !mGdalDataset )
+    return QList<QgsRasterPyramid>();
+
   QList< int > overviewList = list;
   QMutexLocker locker( mpMutex );
 

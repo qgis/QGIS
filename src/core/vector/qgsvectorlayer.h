@@ -394,7 +394,7 @@ typedef QSet<int> QgsAttributeIds;
  *
  * \subsection grass Grass data provider (grass)
  *
- * Provider to display vector data in a GRASS GIS layer.
+ * Provider to display vector data in a GRASS layer.
  *
  * \see QgsVectorLayerUtils()
  */
@@ -1282,7 +1282,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns TRUE in case of success and FALSE otherwise
      */
-    Q_INVOKABLE bool deleteSelectedFeatures( int *deletedCount = nullptr, QgsVectorLayer::DeleteContext *context = nullptr );
+    Q_INVOKABLE bool deleteSelectedFeatures( int *deletedCount SIP_OUT = nullptr, QgsVectorLayer::DeleteContext *context = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features

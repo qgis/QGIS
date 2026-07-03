@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:24.04
 RUN  export DEBIAN_FRONTEND=noninteractive
 ARG DEBIAN_FRONTEND=noninteractive
 

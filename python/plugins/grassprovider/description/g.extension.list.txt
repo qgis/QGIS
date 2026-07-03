@@ -1,5 +1,5 @@
 g.extension
 g.extension.list - List GRASS addons.
 General (g.*)
-QgsProcessingParameterEnum|list|List|Locally installed extensions;Extensions available in the official GRASS GIS Addons repository;Extensions available in the official GRASS GIS Addons repository including module description|False|0|False
+QgsProcessingParameterEnum|list|List|Locally installed extensions;Extensions available in the official GRASS Addons repository;Extensions available in the official GRASS Addons repository including module description|False|0|False
 QgsProcessingParameterFileDestination|html|List of addons|Html files (*.html)|addons_list.html|True
