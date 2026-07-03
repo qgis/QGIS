@@ -349,6 +349,7 @@ if (ENABLE_AI_ASSISTANT)
     ai/tools/qgsaiinstallpackagetool.cpp
     ai/tools/qgsailayertools.cpp
     ai/tools/qgsaimessagelogtool.cpp
+    ai/tools/qgsaiprojecttools.cpp
     ai/tools/qgsaireadtools.cpp
     ai/tools/qgsairunpythontool.cpp
     ai/tools/qgsaitoolregistry.cpp

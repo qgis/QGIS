@@ -116,6 +116,7 @@ using namespace Qt::StringLiterals;
 #include "ai/tools/qgsaiinstallpackagetool.h"
 #include "ai/tools/qgsailayertools.h"
 #include "ai/tools/qgsaimessagelogtool.h"
+#include "ai/tools/qgsaiprojecttools.h"
 #include "ai/tools/qgsaireadtools.h"
 #include "ai/tools/qgsairunpythontool.h"
 #include "ai/tools/qgsaitoolregistry.h"
@@ -1452,6 +1453,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiCalculateFieldTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiQueryFeaturesTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiBatchUpdateAttributesTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiManageProjectTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiStyleLayerTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiCreatePrintLayoutTool>( QgsProject::instance(), mMapCanvas ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiExportMapTool>( mAiFileContextProvider.get(), QgsProject::instance(), mMapCanvas ) );
