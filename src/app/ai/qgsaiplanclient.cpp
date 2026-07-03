@@ -126,15 +126,7 @@ namespace
 
 QString QgsAiPlanClient::ModelInfo::displayLabel() const
 {
-  QString text = label.isEmpty() ? id : label;
-  QStringList details;
-  if ( contextWindow > 0 )
-    details << QObject::tr( "Context window: %1 tokens" ).arg( tokenCountLabel( contextWindow ) );
-  if ( inputCredits > 0 || outputCredits > 0 )
-    details << QObject::tr( "Cost: input %1 / output %2 credits per 1,000 tokens" ).arg( inputCredits ).arg( outputCredits );
-  if ( !details.isEmpty() )
-    text += u" - "_s + details.join( " - "_L1 );
-  return text;
+  return label.isEmpty() ? id : label;
 }
 
 QString QgsAiPlanClient::ModelInfo::tooltip() const

@@ -79,9 +79,10 @@ void TestQgsAiPlanClient::parsesManagedModelCatalog()
   QCOMPARE( models.at( 0 ).outputCredits, 3 );
   QVERIFY( models.at( 0 ).capabilities.contains( u"vision"_s ) );
   QVERIFY( models.at( 0 ).tierAvailability.contains( u"FREE"_s ) );
-  QVERIFY( models.at( 0 ).displayLabel().contains( u"Context window"_s ) );
-  QVERIFY( models.at( 0 ).displayLabel().contains( u"tokens"_s ) );
-  QVERIFY( models.at( 0 ).displayLabel().contains( u"Input 1 / output 3 credits per 1,000 tokens"_s, Qt::CaseInsensitive ) );
+  QCOMPARE( models.at( 0 ).displayLabel(), u"Managed Plan"_s );
+  QVERIFY( !models.at( 0 ).displayLabel().contains( u"Context window"_s ) );
+  QVERIFY( !models.at( 0 ).displayLabel().contains( u"credits per 1,000 tokens"_s ) );
+  QVERIFY( models.at( 0 ).tooltip().contains( u"Context window"_s ) );
   QVERIFY( models.at( 0 ).tooltip().contains( u"per 1,000 input tokens"_s ) );
   QVERIFY( models.at( 0 ).tooltip().contains( u"Capabilities"_s ) );
 
