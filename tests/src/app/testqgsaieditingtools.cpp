@@ -11,11 +11,12 @@
 #include "qgsgeometry.h"
 #include "qgsproject.h"
 #include "qgstest.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QString>
 
 using namespace Qt::StringLiterals;
 

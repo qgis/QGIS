@@ -16,6 +16,7 @@
 
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QString>
 
 using namespace Qt::StringLiterals;
 

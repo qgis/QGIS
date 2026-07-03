@@ -321,7 +321,8 @@ QWidget *QgsAiAccountWidget::buildLoggedInPane()
   modelsLayout->setContentsMargins( 0, 0, 0, 0 );
   modelsLayout->setSpacing( 4 );
   modelsLayout->addWidget( QgsAiSettingsUtils::sectionHeader( tr( "Models" ), pane ) );
-  QLabel *modelsDescription = new QLabel( tr( "Choose which managed models appear in the chat model picker. Each row shows how many tokens the model can read at once and how many credits are charged per 1,000 input tokens and per 1,000 output tokens." ), pane );
+  QLabel *modelsDescription
+    = new QLabel( tr( "Choose which managed models appear in the chat model picker. Each row shows how many tokens the model can read at once and how many credits are charged per 1,000 input tokens and per 1,000 output tokens." ), pane );
   modelsDescription->setProperty( "aiRole", u"rowDescription"_s );
   modelsDescription->setWordWrap( true );
   modelsLayout->addWidget( modelsDescription );

@@ -15,6 +15,8 @@
 
 #include "qgsaiattributetabletools.h"
 
+#include <algorithm>
+
 #include "qgsaitoolschemautil.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
@@ -30,10 +32,10 @@
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 
-#include <algorithm>
 #include <QHash>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QString>
 #include <QUuid>
 #include <QVariant>
 
@@ -160,12 +162,7 @@ namespace
     else if ( value.isObject() )
     {
       const QJsonObject object = value.toObject();
-      rectangle = QgsRectangle(
-        object.value( u"xmin"_s ).toDouble(),
-        object.value( u"ymin"_s ).toDouble(),
-        object.value( u"xmax"_s ).toDouble(),
-        object.value( u"ymax"_s ).toDouble()
-      );
+      rectangle = QgsRectangle( object.value( u"xmin"_s ).toDouble(), object.value( u"ymin"_s ).toDouble(), object.value( u"xmax"_s ).toDouble(), object.value( u"ymax"_s ).toDouble() );
     }
     else
     {
@@ -225,7 +222,7 @@ namespace
     layer->endEditCommand();
 
     if ( startedEditing && !layer->commitChanges() )
-      return QgsAiToolResult::error( u"Could not commit batch update rollback: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+      return QgsAiToolResult::error( u"Could not commit batch update rollback: %1"_s.arg( layer->commitErrors().join( "; "_L1 ) ) );
 
     QJsonObject diff;
     diff.insert( u"summary"_s, u"Restored previous batch attribute values."_s );
@@ -239,7 +236,7 @@ namespace
     output.insert( u"diff"_s, diff );
     return QgsAiToolResult::ok( output );
   }
-}
+} //namespace
 
 // ---------------------------------------------------------------------------
 // query_features
@@ -251,9 +248,7 @@ QgsAiQueryFeaturesTool::QgsAiQueryFeaturesTool( QgsProject *project )
 
 QString QgsAiQueryFeaturesTool::description() const
 {
-  return QStringLiteral(
-    "Queries vector layer features by optional QGIS filter_expression and returns paginated attributes."
-  );
+  return u"Queries vector layer features by optional QGIS filter_expression and returns paginated attributes."_s;
 }
 
 QJsonObject QgsAiQueryFeaturesTool::schema() const
@@ -317,9 +312,7 @@ QgsAiBatchUpdateAttributesTool::QgsAiBatchUpdateAttributesTool( QgsProject *proj
 
 QString QgsAiBatchUpdateAttributesTool::description() const
 {
-  return QStringLiteral(
-    "Updates one field for every feature matching filter_expression and returns a rollback token."
-  );
+  return u"Updates one field for every feature matching filter_expression and returns a rollback token."_s;
 }
 
 QJsonObject QgsAiBatchUpdateAttributesTool::schema() const
@@ -390,7 +383,7 @@ QgsAiToolResult QgsAiBatchUpdateAttributesTool::execute( const QJsonObject &args
   layer->endEditCommand();
 
   if ( startedEditing && !layer->commitChanges() )
-    return QgsAiToolResult::error( u"Could not commit batch update: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+    return QgsAiToolResult::error( u"Could not commit batch update: %1"_s.arg( layer->commitErrors().join( "; "_L1 ) ) );
 
   AttributeTableRollbackEntry rollback;
   rollback.layerId = layer->id();
@@ -425,9 +418,7 @@ QgsAiSelectFeaturesTool::QgsAiSelectFeaturesTool( QgsProject *project )
 
 QString QgsAiSelectFeaturesTool::description() const
 {
-  return QStringLiteral(
-    "Selects vector layer features by QGIS expression and/or bounding box, updating the layer selection state."
-  );
+  return u"Selects vector layer features by QGIS expression and/or bounding box, updating the layer selection state."_s;
 }
 
 QJsonObject QgsAiSelectFeaturesTool::schema() const
@@ -502,9 +493,7 @@ QgsAiIdentifyFeaturesAtTool::QgsAiIdentifyFeaturesAtTool( QgsProject *project )
 
 QString QgsAiIdentifyFeaturesAtTool::description() const
 {
-  return QStringLiteral(
-    "Identifies vector layer features at a coordinate, using an optional source CRS and layer-unit tolerance."
-  );
+  return u"Identifies vector layer features at a coordinate, using an optional source CRS and layer-unit tolerance."_s;
 }
 
 QJsonObject QgsAiIdentifyFeaturesAtTool::schema() const
@@ -566,9 +555,8 @@ QgsAiToolResult QgsAiIdentifyFeaturesAtTool::execute( const QJsonObject &args )
     if ( !feature.hasGeometry() )
       continue;
     const QgsGeometry geometry = feature.geometry();
-    const bool matches = tolerance > 0.0
-                           ? ( geometry.intersects( searchGeometry ) || geometry.distance( pointGeometry ) <= tolerance )
-                           : ( geometry.intersects( pointGeometry ) || geometry.distance( pointGeometry ) <= 1e-9 );
+    const bool matches = tolerance > 0.0 ? ( geometry.intersects( searchGeometry ) || geometry.distance( pointGeometry ) <= tolerance )
+                                         : ( geometry.intersects( pointGeometry ) || geometry.distance( pointGeometry ) <= 1e-9 );
     if ( matches )
       features.push_back( featureJson( feature, layer->fields(), true ) );
   }

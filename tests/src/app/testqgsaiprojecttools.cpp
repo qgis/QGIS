@@ -17,6 +17,7 @@
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QString>
 #include <QTemporaryDir>
 
 using namespace Qt::StringLiterals;

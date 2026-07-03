@@ -48,6 +48,7 @@
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmapsettings.h"
 #include "qgsmasterlayoutinterface.h"
+#include "qgspallabeling.h"
 #include "qgsprintlayout.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
@@ -58,15 +59,14 @@
 #include "qgsproject.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgspallabeling.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
-#include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 #include "qgswkbtypes.h"
 
 #include <QColor>
@@ -82,9 +82,9 @@
 #include <QSize>
 #include <QString>
 #include <QStringList>
-#include <QUuid>
 #include <QUrl>
 #include <QUrlQuery>
+#include <QUuid>
 #include <QVariant>
 
 using namespace Qt::StringLiterals;

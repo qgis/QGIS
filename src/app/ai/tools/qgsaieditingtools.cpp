@@ -16,13 +16,13 @@
 #include "qgsaieditingtools.h"
 
 #include "qgsaitoolschemautil.h"
-#include "qgsfield.h"
-#include "qgsfields.h"
-#include "qgsfeature.h"
-#include "qgsfeaturerequest.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeature.h"
+#include "qgsfeaturerequest.h"
+#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
@@ -31,6 +31,7 @@
 #include <QHash>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QString>
 #include <QUuid>
 #include <QVariant>
 
@@ -204,7 +205,7 @@ namespace
     layer->endEditCommand();
 
     if ( startedEditing && !layer->commitChanges() )
-      return QgsAiToolResult::error( u"Could not commit geometry rollback: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+      return QgsAiToolResult::error( u"Could not commit geometry rollback: %1"_s.arg( layer->commitErrors().join( "; "_L1 ) ) );
 
     QJsonObject diff;
     diff.insert( u"summary"_s, u"Restored previous feature geometry."_s );
@@ -271,7 +272,7 @@ namespace
     layer->endEditCommand();
 
     if ( startedEditing && !layer->commitChanges() )
-      return QgsAiToolResult::error( u"Could not commit attribute rollback: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+      return QgsAiToolResult::error( u"Could not commit attribute rollback: %1"_s.arg( layer->commitErrors().join( "; "_L1 ) ) );
 
     QJsonObject diff;
     diff.insert( u"summary"_s, u"Restored previous feature attributes."_s );
@@ -342,7 +343,7 @@ namespace
     layer->endEditCommand();
 
     if ( startedEditing && !layer->commitChanges() )
-      return QgsAiToolResult::error( u"Could not commit field calculation rollback: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+      return QgsAiToolResult::error( u"Could not commit field calculation rollback: %1"_s.arg( layer->commitErrors().join( "; "_L1 ) ) );
 
     QJsonObject diff;
     diff.insert( u"summary"_s, entry.createdField ? u"Removed field created by field calculation."_s : u"Restored previous field values."_s );
@@ -370,7 +371,7 @@ namespace
       return QMetaType::Type::Bool;
     return QMetaType::Type::Double;
   }
-}
+} //namespace
 
 // ---------------------------------------------------------------------------
 // edit_feature_geometry
@@ -573,7 +574,7 @@ QgsAiToolResult QgsAiEditFeatureGeometryTool::execute( const QJsonObject &args )
 
   layer->endEditCommand();
   if ( startedEditing && !layer->commitChanges() )
-    return QgsAiToolResult::error( u"Could not commit geometry edit: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+    return QgsAiToolResult::error( u"Could not commit geometry edit: %1"_s.arg( layer->commitErrors().join( "; "_L1 ) ) );
 
   EditingRollbackEntry rollback;
   rollback.type = EditingRollbackType::RestoreGeometry;
@@ -674,9 +675,8 @@ QgsAiToolResult QgsAiUpdateFeatureAttributesTool::execute( const QJsonObject &ar
     if ( !fields.at( index ).convertCompatible( value, &conversionError ) )
     {
       return QgsAiToolResult::error(
-        conversionError.isEmpty()
-          ? u"Value for field '%1' is not compatible with field type %2."_s.arg( it.key(), fields.at( index ).typeName() )
-          : u"Value for field '%1' is not compatible: %2"_s.arg( it.key(), conversionError )
+        conversionError.isEmpty() ? u"Value for field '%1' is not compatible with field type %2."_s.arg( it.key(), fields.at( index ).typeName() )
+                                  : u"Value for field '%1' is not compatible: %2"_s.arg( it.key(), conversionError )
       );
     }
 
@@ -699,7 +699,7 @@ QgsAiToolResult QgsAiUpdateFeatureAttributesTool::execute( const QJsonObject &ar
   layer->endEditCommand();
 
   if ( startedEditing && !layer->commitChanges() )
-    return QgsAiToolResult::error( u"Could not commit attribute update: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+    return QgsAiToolResult::error( u"Could not commit attribute update: %1"_s.arg( layer->commitErrors().join( "; "_L1 ) ) );
 
   EditingRollbackEntry rollback;
   rollback.type = EditingRollbackType::RestoreAttributes;
@@ -788,9 +788,7 @@ QgsAiToolResult QgsAiCalculateFieldTool::execute( const QJsonObject &args )
   if ( !createField && existingFieldIndex < 0 )
     return QgsAiToolResult::error( u"No field named '%1' on layer: %2"_s.arg( fieldName, layer->name() ) );
 
-  QgsField targetField = createField
-                           ? QgsField( fieldName, fieldTypeFromName( args.value( u"field_type"_s ).toString( u"double"_s ) ) )
-                           : layer->fields().at( existingFieldIndex );
+  QgsField targetField = createField ? QgsField( fieldName, fieldTypeFromName( args.value( u"field_type"_s ).toString( u"double"_s ) ) ) : layer->fields().at( existingFieldIndex );
 
   QgsExpression expression( expressionText );
   if ( expression.hasParserError() )
@@ -832,9 +830,8 @@ QgsAiToolResult QgsAiCalculateFieldTool::execute( const QJsonObject &args )
     if ( !targetField.convertCompatible( value, &conversionError ) )
     {
       return QgsAiToolResult::error(
-        conversionError.isEmpty()
-          ? u"Expression result is not compatible with field '%1'."_s.arg( fieldName )
-          : u"Expression result is not compatible with field '%1': %2"_s.arg( fieldName, conversionError )
+        conversionError.isEmpty() ? u"Expression result is not compatible with field '%1'."_s.arg( fieldName )
+                                  : u"Expression result is not compatible with field '%1': %2"_s.arg( fieldName, conversionError )
       );
     }
 
@@ -887,7 +884,7 @@ QgsAiToolResult QgsAiCalculateFieldTool::execute( const QJsonObject &args )
   layer->endEditCommand();
 
   if ( startedEditing && !layer->commitChanges() )
-    return QgsAiToolResult::error( u"Could not commit field calculation: %1"_s.arg( layer->commitErrors().join( u"; "_s ) ) );
+    return QgsAiToolResult::error( u"Could not commit field calculation: %1"_s.arg( layer->commitErrors().join( "; "_L1 ) ) );
 
   EditingRollbackEntry rollback;
   rollback.type = EditingRollbackType::RestoreFieldCalculation;

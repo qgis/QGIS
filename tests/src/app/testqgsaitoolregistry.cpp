@@ -37,9 +37,9 @@
 #include "qgssettings.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgstest.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsvectordataprovider.h"
 
 #include <QColor>
 #include <QFileInfo>

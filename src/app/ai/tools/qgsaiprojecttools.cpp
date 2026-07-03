@@ -28,6 +28,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QString>
 #include <QUuid>
 #include <QVariant>
 
@@ -415,7 +416,7 @@ namespace
     output.insert( u"layer_settings"_s, layerSettings );
     return output;
   }
-}
+} //namespace
 
 QgsAiManageProjectTool::QgsAiManageProjectTool( QgsProject *project )
   : mProject( project )
@@ -697,10 +698,7 @@ QgsAiToolResult QgsAiConfigureSnappingTool::execute( const QJsonObject &args )
       if ( !layer )
         return QgsAiToolResult::error( u"Invalid vector layer id for snapping: %1"_s.arg( layerId ) );
 
-      config.setIndividualLayerSettings(
-        layer,
-        QgsSnappingConfig::IndividualLayerSettings( config.enabled(), config.typeFlag(), config.tolerance(), config.units() )
-      );
+      config.setIndividualLayerSettings( layer, QgsSnappingConfig::IndividualLayerSettings( config.enabled(), config.typeFlag(), config.tolerance(), config.units() ) );
     }
   }
 

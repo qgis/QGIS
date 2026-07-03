@@ -133,8 +133,7 @@ namespace
     c.chunkIndex = 0;
     c.text = u"Vector layer '%1' (id=%2, provider=%3)\n"
              u"feature_count=unknown; sampled_feature_limit=0; chunk_limit=1\n"
-             u"feature sampling skipped: %4\n"_s
-               .arg( layer->name(), layer->id(), layer->providerType(), reason );
+             u"feature sampling skipped: %4\n"_s.arg( layer->name(), layer->id(), layer->providerType(), reason );
     chunks.append( c );
     return chunks;
   }

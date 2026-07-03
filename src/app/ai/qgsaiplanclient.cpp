@@ -133,7 +133,7 @@ QString QgsAiPlanClient::ModelInfo::displayLabel() const
   if ( inputCredits > 0 || outputCredits > 0 )
     details << QObject::tr( "Cost: input %1 / output %2 credits per 1,000 tokens" ).arg( inputCredits ).arg( outputCredits );
   if ( !details.isEmpty() )
-    text += u" - "_s + details.join( u" - "_s );
+    text += u" - "_s + details.join( " - "_L1 );
   return text;
 }
 
