@@ -268,6 +268,13 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
     void setWidget( QWidget *widget );
 
     void updateExpandedStateFromNode( QgsSymbolLayerModelNode *node );
+    void eyelidClicked( const QModelIndex &index );
+
+    enum Columns
+    {
+      NameColumn,
+      EyelidColumn
+    };
 
     QgsStyle *mStyle = nullptr;
     QgsSymbol *mSymbol = nullptr;
@@ -405,6 +412,25 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 
     QgsSymbolSelectorWidget *mSelectorWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
+};
+
+
+class EyelidLayerDelegate : public QStyledItemDelegate SIP_SKIP
+{
+    Q_OBJECT
+  public:
+    EyelidLayerDelegate( QTreeView *parent );
+    bool eventFilter( QObject *obj, QEvent *event ) override;
+
+  protected:
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+  private:
+    void setHoveredIndex( const QModelIndex &index );
+
+    QTreeView *mLayersTree;
+
+    QModelIndex mHoveredIndex;
 };
 
 #endif

@@ -115,6 +115,91 @@ void DataDefinedRestorer::restore()
   save();
 }
 
+
+//
+// EyelidLayerDelegate
+//
+
+EyelidLayerDelegate::EyelidLayerDelegate( QTreeView *parent )
+  : QStyledItemDelegate( parent )
+  , mLayersTree( parent )
+{}
+
+bool EyelidLayerDelegate::eventFilter( QObject *obj, QEvent *event )
+{
+  if ( event->type() == QEvent::HoverEnter || event->type() == QEvent::HoverMove )
+  {
+    QHoverEvent *hoverEvent = static_cast<QHoverEvent *>( event );
+    if ( QAbstractItemView *view = qobject_cast<QAbstractItemView *>( obj->parent() ) )
+    {
+      const QModelIndex indexUnderMouse = view->indexAt( hoverEvent->pos() );
+      setHoveredIndex( indexUnderMouse );
+      view->viewport()->update();
+    }
+  }
+  else if ( event->type() == QEvent::HoverLeave )
+  {
+    setHoveredIndex( QModelIndex() );
+    qobject_cast<QWidget *>( obj )->update();
+  }
+  return QStyledItemDelegate::eventFilter( obj, event );
+}
+
+void EyelidLayerDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  QStyledItemDelegate::paint( painter, option, index );
+
+
+  QgsSymbolLayerModel *symbolLayerModel = static_cast<QgsSymbolLayerModel *>( mLayersTree->model() );
+
+  QgsSymbolLayerModelNode *node = symbolLayerModel->index2node( index );
+
+  if ( !node )
+    return;
+
+  if ( !node->isLayer() )
+    return;
+
+
+  QgsSymbolLayer *symbolLayer = node->layer();
+
+  QIcon icon;
+  if ( symbolLayer->dataDefinedProperties().isActive( QgsSymbolLayer::Property::LayerEnabled ) )
+  {
+    // Icon
+    icon = QgsApplication::getThemeIcon( "/mIconDataDefineExpressionOn.svg" );
+  }
+  else if ( symbolLayer->enabled() )
+  {
+    icon = QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" );
+  }
+  else
+  {
+    icon = QgsApplication::getThemeIcon( "/mActionHideAllLayers.svg" );
+  }
+
+
+  if ( index == mHoveredIndex )
+  {
+    QStyleOptionButton buttonOption;
+    buttonOption.initFrom( option.widget );
+    buttonOption.rect = option.rect;
+
+    option.widget->style()->drawControl( QStyle::CE_PushButton, &buttonOption, painter );
+  }
+
+  // const QIcon icon = QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" );
+  const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2, option.rect.top() + ( option.rect.height() - 16 ) / 2, 16, 16 );
+
+  icon.paint( painter, iconRect );
+}
+
+void EyelidLayerDelegate::setHoveredIndex( const QModelIndex &index )
+{
+  mHoveredIndex = index;
+}
+
+
 ///@endcond
 
 //////////
@@ -182,6 +267,21 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   // Set the symbol
   layersTree->setModel( mSymbolLayersModel );
   layersTree->setHeaderHidden( true );
+
+
+  layersTree->header()->setSectionResizeMode( NameColumn, QHeaderView::Stretch );
+
+  layersTree->header()->setMinimumSectionSize( 10 );
+  layersTree->header()->setStretchLastSection( false );
+  layersTree->header()->resizeSection( EyelidColumn, 20 );
+
+  EyelidLayerDelegate *eyeDelegate = new EyelidLayerDelegate( layersTree );
+  layersTree->setItemDelegateForColumn( EyelidColumn, eyeDelegate );
+  layersTree->viewport()->installEventFilter( eyeDelegate );
+
+
+  connect( layersTree, &QTreeView::clicked, this, &QgsSymbolSelectorWidget::eyelidClicked );
+
 
   //get first feature from layer for previews
   if ( mVectorLayer )
@@ -479,6 +579,36 @@ void QgsSymbolSelectorWidget::symbolChanged()
   emitSymbolModified();
   // connect it back once things are set
   connect( layersTree->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
+}
+
+
+void QgsSymbolSelectorWidget::eyelidClicked( const QModelIndex &index )
+{
+  if ( index.column() == EyelidColumn )
+  {
+    QgsSymbolLayerModel *symbolLayerModel = static_cast<QgsSymbolLayerModel *>( layersTree->model() );
+    QgsSymbolLayerModelNode *node = symbolLayerModel->index2node( index );
+
+    if ( !node )
+      return;
+
+    if ( !node->isLayer() )
+      return;
+
+    QgsSymbolLayer *symbolLayer = node->layer();
+    if ( symbolLayer->dataDefinedProperties().isActive( QgsSymbolLayer::Property::LayerEnabled ) )
+    {
+      return;
+    }
+
+    symbolLayer->setEnabled( !symbolLayer->enabled() );
+
+    updatePreview();
+    updateUi();
+    updateLayerPreview();
+    layerChanged();
+    emit symbolModified();
+  }
 }
 
 
