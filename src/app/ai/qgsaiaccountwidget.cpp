@@ -321,7 +321,7 @@ QWidget *QgsAiAccountWidget::buildLoggedInPane()
   modelsLayout->setContentsMargins( 0, 0, 0, 0 );
   modelsLayout->setSpacing( 4 );
   modelsLayout->addWidget( QgsAiSettingsUtils::sectionHeader( tr( "Models" ), pane ) );
-  QLabel *modelsDescription = new QLabel( tr( "Choose which managed models appear in the chat model picker." ), pane );
+  QLabel *modelsDescription = new QLabel( tr( "Choose which managed models appear in the chat model picker. Hover (i) for context window and credit cost details." ), pane );
   modelsDescription->setProperty( "aiRole", u"rowDescription"_s );
   modelsDescription->setWordWrap( true );
   modelsLayout->addWidget( modelsDescription );
@@ -468,10 +468,11 @@ void QgsAiAccountWidget::populateModelList()
 
   for ( const QgsAiPlanClient::ModelInfo &model : catalog )
   {
-    auto *item = new QListWidgetItem( model.displayLabel(), mModelListWidget );
+    const QString tooltip = model.tooltip();
+    auto *item = new QListWidgetItem( tooltip.isEmpty() ? model.displayLabel() : tr( "%1 (i)" ).arg( model.displayLabel() ), mModelListWidget );
     item->setData( Qt::UserRole, model.id );
-    if ( !model.tooltip().isEmpty() )
-      item->setToolTip( model.tooltip() );
+    if ( !tooltip.isEmpty() )
+      item->setToolTip( tooltip );
     item->setCheckState( enabledById.value( model.id, true ) ? Qt::Checked : Qt::Unchecked );
   }
 
@@ -565,7 +566,7 @@ void QgsAiAccountWidget::onDesktopTokenReady( const QString &token )
   if ( mModelRouter )
   {
     // The token was minted against the live Advanced-field endpoint: persist
-    // that endpoint together with the token, so cancelling the dialog cannot
+    // that endpoint together with the token, so canceling the dialog cannot
     // leave a fresh token paired with a stale persisted endpoint.
     QgsAiModelRouter::ProviderSettings planSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan );
     if ( planSettings.endpoint != currentEndpoint() )

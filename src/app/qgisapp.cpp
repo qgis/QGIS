@@ -107,16 +107,20 @@ using namespace Qt::StringLiterals;
 #include "ai/qgsaimessagelogbuffer.h"
 #include "ai/qgsaimodelrouter.h"
 #include "ai/qgsaireviewpatchengine.h"
+#include "ai/tools/qgsaiattributetabletools.h"
 #include "ai/tools/qgsaidownloadfiletool.h"
 #include "ai/tools/qgsaiechotool.h"
+#include "ai/tools/qgsaieditingtools.h"
 #include "ai/tools/qgsaiedittools.h"
 #include "ai/tools/qgsaiindextools.h"
 #include "ai/tools/qgsaiinstallpackagetool.h"
 #include "ai/tools/qgsailayertools.h"
 #include "ai/tools/qgsaimessagelogtool.h"
+#include "ai/tools/qgsaiprojecttools.h"
 #include "ai/tools/qgsaireadtools.h"
 #include "ai/tools/qgsairunpythontool.h"
 #include "ai/tools/qgsaitoolregistry.h"
+#include "ai/tools/qgsaiwebsearchtool.h"
 #endif
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
@@ -1440,13 +1444,26 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiListFilesTool>( mAiFileContextProvider.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiListProjectLayersTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiGetCanvasExtentTool>( mMapCanvas ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiSetCanvasExtentTool>( mMapCanvas, QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiCaptureMapCanvasTool>( mMapCanvas, this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiReadMessageLogTool>( mAiMessageLogBuffer.get() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiAddLayerFromFileTool>( mAiFileContextProvider.get(), QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiAddLayerFromServiceTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiDescribeLayerTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiRunProcessingAlgorithmTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiEditFeatureGeometryTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiUpdateFeatureAttributesTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiCalculateFieldTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiQueryFeaturesTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiBatchUpdateAttributesTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiSelectFeaturesTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiIdentifyFeaturesAtTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiManageProjectTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiConfigureSnappingTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiStyleLayerTool>( QgsProject::instance() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiAdvancedStyleTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiCreatePrintLayoutTool>( QgsProject::instance(), mMapCanvas ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiEditPrintLayoutTool>( QgsProject::instance() ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiExportMapTool>( mAiFileContextProvider.get(), QgsProject::instance(), mMapCanvas ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeEditTool>( mAiReviewPatchEngine.get(), this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiProposeCreateFileTool>( mAiReviewPatchEngine.get(), this ) );
@@ -1455,6 +1472,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mAiToolRegistry->registerTool( std::make_unique<QgsAiRunPythonTool>( this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiInstallPythonPackageTool>( this ) );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiDownloadFileTool>( mAiFileContextProvider.get(), this ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiWebSearchTool>( mAiModelRouter.get() ) );
+  mAiToolRegistry->registerTool( std::make_unique<QgsAiCatalogSearchTool>( mAiModelRouter.get() ) );
   mAiEmbeddingProvider = QgsAiEmbeddingProviderRegistry::createProviderFromSettings( this );
   mAiWorkspaceIndex = std::make_unique<QgsAiWorkspaceIndex>( mAiFileContextProvider.get(), mAiEmbeddingProvider.get(), this );
   mAiToolRegistry->registerTool( std::make_unique<QgsAiIndexStatusTool>( mAiWorkspaceIndex.get() ) );
@@ -2436,6 +2455,16 @@ QgisApp::~QgisApp()
   mMapStylingDock = nullptr;
   delete mCoordsEdit;
   mCoordsEdit = nullptr;
+  if ( mLayerTreeView )
+  {
+    if ( QgsLayerTreeModel *model = mLayerTreeView->layerTreeModel() )
+    {
+      if ( QgsLayerTreeGroup *rootGroup = model->rootGroup() )
+        disconnect( rootGroup, nullptr, this, nullptr );
+    }
+    if ( QItemSelectionModel *selectionModel = mLayerTreeView->selectionModel() )
+      disconnect( selectionModel, nullptr, this, nullptr );
+  }
   delete mLayerTreeView;
   mLayerTreeView = nullptr;
   delete mMessageButton;
@@ -5281,14 +5310,29 @@ void QgisApp::setupLayerTreeViewFromSettings()
 
 void QgisApp::updateNewLayerInsertionPoint()
 {
+  if ( !mLayerTreeView || !mLayerTreeView->layerTreeModel() )
+    return;
+
+  QgsProject *project = QgsProject::instance();
+  if ( !project || !project->layerTreeRegistryBridge() )
+    return;
+
   QgsLayerTreeRegistryBridge::InsertionPoint insertionPoint = layerTreeInsertionPoint();
-  QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( insertionPoint );
+  project->layerTreeRegistryBridge()->setLayerInsertionPoint( insertionPoint );
 }
 
 QgsLayerTreeRegistryBridge::InsertionPoint QgisApp::layerTreeInsertionPoint() const
 {
+  QgsProject *project = QgsProject::instance();
+  QgsLayerTreeGroup *rootGroup = project ? project->layerTreeRoot() : nullptr;
+  if ( !mLayerTreeView || !mLayerTreeView->layerTreeModel() )
+    return QgsLayerTreeRegistryBridge::InsertionPoint( rootGroup, 0 );
+
   // defaults
   QgsLayerTreeGroup *insertGroup = mLayerTreeView->layerTreeModel()->rootGroup();
+  if ( !insertGroup )
+    return QgsLayerTreeRegistryBridge::InsertionPoint( rootGroup, 0 );
+
   QModelIndex current = mLayerTreeView->currentIndex();
 
   int index = 0;

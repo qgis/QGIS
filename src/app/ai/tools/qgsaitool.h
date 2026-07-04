@@ -32,6 +32,13 @@ enum class QgsAiToolRiskLevel
   Critical
 };
 
+enum class QgsAiToolApprovalMode
+{
+  None,
+  Generic,
+  SelfApproved
+};
+
 inline QString QgsAiToolRiskLevelName( QgsAiToolRiskLevel level )
 {
   switch ( level )
@@ -81,6 +88,7 @@ class APP_EXPORT QgsAiTool
     virtual QJsonObject schema() const = 0;
     virtual QgsAiToolResult execute( const QJsonObject &args ) = 0;
     virtual bool requiresApproval() const { return false; }
+    virtual QgsAiToolApprovalMode approvalMode() const { return requiresApproval() ? QgsAiToolApprovalMode::Generic : QgsAiToolApprovalMode::None; }
     virtual QgsAiToolRiskLevel riskLevel() const { return QgsAiToolRiskLevel::Low; }
     virtual bool isAvailable() const { return true; }
     virtual QString availabilityReason() const { return QString(); }

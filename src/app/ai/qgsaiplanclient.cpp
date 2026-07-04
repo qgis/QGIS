@@ -25,6 +25,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QLocale>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QString>
@@ -36,18 +37,23 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
-  constexpr int FETCH_TIMEOUT_MS = 20000;
+  constexpr int PLAN_FETCH_TIMEOUT_MS = 20000;
 
   QUrl apiUrl( const QString &apiBase, const QString &path )
   {
     return QUrl( apiBase + path );
   }
 
+  QString encodedPathSegment( const QString &segment )
+  {
+    return QString::fromLatin1( QUrl::toPercentEncoding( segment ) );
+  }
+
   void setJsonHeaders( QNetworkRequest &request )
   {
     request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
     request.setRawHeader( "Accept", "application/json" );
-    request.setTransferTimeout( FETCH_TIMEOUT_MS );
+    request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   }
 
   QString responseErrorMessage( QNetworkReply *reply, const QByteArray &body )
@@ -111,16 +117,16 @@ namespace
         Qt::QueuedConnection
       );
   }
+
+  QString tokenCountLabel( int tokens )
+  {
+    return QLocale().toString( tokens );
+  }
 } //namespace
 
 QString QgsAiPlanClient::ModelInfo::displayLabel() const
 {
-  QString text = label.isEmpty() ? id : label;
-  if ( contextWindow > 0 )
-    text += u" - %1k ctx"_s.arg( contextWindow / 1000 );
-  if ( inputCredits > 0 || outputCredits > 0 )
-    text += u" - %1/%2 cr"_s.arg( inputCredits ).arg( outputCredits );
-  return text;
+  return label.isEmpty() ? id : label;
 }
 
 QString QgsAiPlanClient::ModelInfo::tooltip() const
@@ -131,9 +137,12 @@ QString QgsAiPlanClient::ModelInfo::tooltip() const
   if ( !provider.isEmpty() )
     parts << QObject::tr( "Provider: %1" ).arg( provider );
   if ( contextWindow > 0 )
-    parts << QObject::tr( "Context window: %1 tokens" ).arg( contextWindow );
+    parts << QObject::tr( "Context window: %1 tokens. This is the maximum amount of text and context the model can consider at once." ).arg( tokenCountLabel( contextWindow ) );
   if ( inputCredits > 0 || outputCredits > 0 )
-    parts << QObject::tr( "Credits: %1 input / %2 output" ).arg( inputCredits ).arg( outputCredits );
+  {
+    parts << QObject::tr( "Credit cost: %1 credits per 1,000 input tokens; %2 credits per 1,000 output tokens." ).arg( inputCredits ).arg( outputCredits );
+    parts << QObject::tr( "Input tokens are prompts and project context sent to the model. Output tokens are the model response." );
+  }
   if ( !capabilities.isEmpty() )
     parts << QObject::tr( "Capabilities: %1" ).arg( capabilities.join( ", "_L1 ) );
   if ( !tierAvailability.isEmpty() )
@@ -223,6 +232,7 @@ QgsAiManagedAgentPolicy QgsAiPlanClient::parseAgentPolicyJson( const QByteArray 
 {
   QgsAiManagedAgentPolicy policy;
   const QJsonObject root = QJsonDocument::fromJson( body ).object();
+  policy.toolCatalogVersion = root.value( u"toolCatalogVersion"_s ).toInt();
   policy.tier = root.value( u"tier"_s ).toString();
   policy.modes = stringArray( root.value( u"modes"_s ) );
   policy.allowedTools = stringArray( root.value( u"allowedTools"_s ) );
@@ -387,6 +397,7 @@ void QgsAiPlanClient::writeCachedAgentPolicy( const QgsAiManagedAgentPolicy &pol
     presets << agentPresetJson( preset );
 
   QJsonObject root;
+  root.insert( u"toolCatalogVersion"_s, policy.toolCatalogVersion );
   root.insert( u"tier"_s, policy.tier );
   root.insert( u"modes"_s, QJsonArray::fromStringList( policy.modes ) );
   root.insert( u"allowedTools"_s, QJsonArray::fromStringList( policy.allowedTools ) );
@@ -539,7 +550,7 @@ void QgsAiPlanClient::fetchMe( const QString &chatEndpoint, const QString &sessi
 
   QNetworkRequest request( apiUrl( apiBase, u"/v1/auth/me"_s ) );
   request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
-  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   QNetworkReply *reply = networkManager->get( request );
   if ( !reply )
   {
@@ -578,7 +589,7 @@ void QgsAiPlanClient::fetchBalance( const QString &chatEndpoint, const QString &
 
   QNetworkRequest request( apiUrl( apiBase, u"/v1/credits/balance"_s ) );
   request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
-  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   QNetworkReply *reply = networkManager->get( request );
   if ( !reply )
   {
@@ -625,7 +636,7 @@ void QgsAiPlanClient::refreshModels( const QString &chatEndpoint )
 
   QNetworkRequest request( apiUrl( apiBase, u"/v1/models"_s ) );
   request.setRawHeader( "Accept", "application/json" );
-  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   QNetworkReply *reply = networkManager->get( request );
   if ( !reply )
   {
@@ -702,7 +713,7 @@ void QgsAiPlanClient::refreshAuthenticatedJson( const QString &chatEndpoint, con
   QNetworkRequest request( apiUrl( apiBase, path ) );
   request.setRawHeader( "Accept", "application/json" );
   request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
-  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   QNetworkReply *reply = networkManager->get( request );
   if ( !reply )
   {
@@ -776,7 +787,7 @@ void QgsAiPlanClient::fetchModelPreferences( const QString &chatEndpoint, const 
   QNetworkRequest request( apiUrl( apiBase, u"/v1/models/preferences"_s ) );
   request.setRawHeader( "Accept", "application/json" );
   request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
-  request.setTransferTimeout( FETCH_TIMEOUT_MS );
+  request.setTransferTimeout( PLAN_FETCH_TIMEOUT_MS );
   QNetworkReply *reply = networkManager->get( request );
   if ( !reply )
   {
@@ -822,7 +833,7 @@ void QgsAiPlanClient::setModelPreference( const QString &chatEndpoint, const QSt
   QJsonObject body;
   body.insert( u"enabled"_s, enabled );
 
-  QNetworkRequest request( apiUrl( apiBase, u"/v1/models/preferences/%1"_s.arg( modelId ) ) );
+  QNetworkRequest request( apiUrl( apiBase, u"/v1/models/preferences/%1"_s.arg( encodedPathSegment( modelId ) ) ) );
   setJsonHeaders( request );
   request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( sessionToken.trimmed() ) ).toUtf8() );
   QNetworkReply *reply = networkManager->sendCustomRequest( request, "PUT", QJsonDocument( body ).toJson( QJsonDocument::Compact ) );

@@ -86,6 +86,57 @@ namespace
     out += "(band statistics skipped during fast layer snapshot)\n"_L1;
     return out;
   }
+
+  QString sourceWithoutLayerOptions( QString source )
+  {
+    const int pipeIndex = source.indexOf( '|' );
+    if ( pipeIndex >= 0 )
+      source.truncate( pipeIndex );
+    return source.trimmed();
+  }
+
+  bool isOfficeSpreadsheetSource( const QString &source )
+  {
+    const QString path = sourceWithoutLayerOptions( source ).toLower();
+    static const QStringList extensions {
+      u".ods"_s,
+      u".fods"_s,
+      u".xls"_s,
+      u".xlsx"_s,
+      u".xlsm"_s,
+      u".xlsb"_s,
+    };
+
+    for ( const QString &extension : extensions )
+    {
+      if ( path.endsWith( extension ) )
+        return true;
+    }
+    return false;
+  }
+
+  bool isOfficeSpreadsheetVectorLayer( QgsVectorLayer *layer )
+  {
+    return layer && layer->providerType().compare( u"ogr"_s, Qt::CaseInsensitive ) == 0 && isOfficeSpreadsheetSource( layer->source() );
+  }
+
+  QList<QgsAiWorkspaceIndex::Chunk> metadataOnlyVectorLayerChunks( QgsVectorLayer *layer, const QString &reason )
+  {
+    QList<QgsAiWorkspaceIndex::Chunk> chunks;
+    if ( !layer )
+      return chunks;
+
+    QgsAiWorkspaceIndex::Chunk c;
+    c.sourceType = QString::fromLatin1( QgsAiWorkspaceIndex::SOURCE_TYPE_LAYER );
+    c.relativePath = layer->name();
+    c.layerId = layer->id();
+    c.chunkIndex = 0;
+    c.text = u"Vector layer '%1' (id=%2, provider=%3)\n"
+             u"feature_count=unknown; sampled_feature_limit=0; chunk_limit=1\n"
+             u"feature sampling skipped: %4\n"_s.arg( layer->name(), layer->id(), layer->providerType(), reason );
+    chunks.append( c );
+    return chunks;
+  }
 } // namespace
 
 QList<QgsAiWorkspaceIndex::Chunk> QgsAiLayerChunker::chunkVector( QgsVectorLayer *layer )
@@ -93,6 +144,11 @@ QList<QgsAiWorkspaceIndex::Chunk> QgsAiLayerChunker::chunkVector( QgsVectorLayer
   QList<QgsAiWorkspaceIndex::Chunk> chunks;
   if ( !layer )
     return chunks;
+
+  if ( isOfficeSpreadsheetVectorLayer( layer ) )
+  {
+    return metadataOnlyVectorLayerChunks( layer, u"Office spreadsheet layers can require GDAL to parse large repeated-cell ranges."_s );
+  }
 
   const QgsFields fields = layer->fields();
   const QString geometryType = QgsWkbTypes::geometryDisplayString( layer->geometryType() );

@@ -50,7 +50,7 @@ namespace
   QByteArray policyBody()
   {
     return QByteArrayLiteral(
-      R"({"tier":"PRO","modes":["ask","plan","ask_before_edits","auto_edit"],"allowedTools":["read_file","web_search","run_python"],"allowedModels":["managed-plan","gpt-4o"],"presets":[{"mode":"reviewer","label":"Reviewer","allowedTools":["read_file","web_search"],"allowedModels":["managed-plan"]},{"mode":"editor","label":"Editor","allowedTools":["read_file","run_python"],"allowedModels":["managed-plan","gpt-4o"]}]})"
+      R"({"toolCatalogVersion":2,"tier":"PRO","modes":["ask","plan","ask_before_edits","auto_edit"],"allowedTools":["read_file","web_search","run_python"],"allowedModels":["managed-plan","gpt-4o"],"presets":[{"mode":"reviewer","label":"Reviewer","allowedTools":["read_file","web_search"],"allowedModels":["managed-plan"]},{"mode":"editor","label":"Editor","allowedTools":["read_file","run_python"],"allowedModels":["managed-plan","gpt-4o"]}]})"
     );
   }
 } //namespace
@@ -65,6 +65,7 @@ class TestQgsAiPlanClient : public QObject
     void loginMintsDesktopToken();
     void refreshModelsFetchesAndCaches();
     void refreshAgentsAndPolicyUseBearerToken();
+    void setModelPreferenceEncodesModelIdPathSegment();
 };
 
 void TestQgsAiPlanClient::parsesManagedModelCatalog()
@@ -78,7 +79,11 @@ void TestQgsAiPlanClient::parsesManagedModelCatalog()
   QCOMPARE( models.at( 0 ).outputCredits, 3 );
   QVERIFY( models.at( 0 ).capabilities.contains( u"vision"_s ) );
   QVERIFY( models.at( 0 ).tierAvailability.contains( u"FREE"_s ) );
-  QVERIFY( models.at( 0 ).displayLabel().contains( u"200k ctx"_s ) );
+  QCOMPARE( models.at( 0 ).displayLabel(), u"Managed Plan"_s );
+  QVERIFY( !models.at( 0 ).displayLabel().contains( u"Context window"_s ) );
+  QVERIFY( !models.at( 0 ).displayLabel().contains( u"credits per 1,000 tokens"_s ) );
+  QVERIFY( models.at( 0 ).tooltip().contains( u"Context window"_s ) );
+  QVERIFY( models.at( 0 ).tooltip().contains( u"per 1,000 input tokens"_s ) );
   QVERIFY( models.at( 0 ).tooltip().contains( u"Capabilities"_s ) );
 
   QCOMPARE( QgsAiPlanClient::apiBaseForChatEndpoint( u"http://127.0.0.1:1234/ai/messages"_s ), u"http://127.0.0.1:1234"_s );
@@ -92,6 +97,7 @@ void TestQgsAiPlanClient::parsesAgentPolicy()
   QVERIFY( agents.first().allowedTools.contains( u"web_search"_s ) );
 
   const QgsAiManagedAgentPolicy policy = QgsAiPlanClient::parseAgentPolicyJson( policyBody() );
+  QCOMPARE( policy.toolCatalogVersion, 2 );
   QCOMPARE( policy.tier, u"PRO"_s );
   QVERIFY( policy.modes.contains( u"ask_before_edits"_s ) );
   QVERIFY( policy.allowedModels.contains( u"gpt-4o"_s ) );
@@ -188,6 +194,32 @@ void TestQgsAiPlanClient::refreshAgentsAndPolicyUseBearerToken()
   QCOMPARE( QgsAiPlanClient::cachedAgentPolicy().tier, u"PRO"_s );
   QFile::remove( QgsAiPlanClient::agentsCacheFilePath() );
   QFile::remove( QgsAiPlanClient::agentPolicyCacheFilePath() );
+}
+
+void TestQgsAiPlanClient::setModelPreferenceEncodesModelIdPathSegment()
+{
+  QgsAiTestLoopbackServer server;
+  server.responses << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"modelId\":\"deepseek/deepseek-v4-flash\",\"enabled\":false}" ) );
+  QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
+
+  QgsAiPlanClient client;
+  QSignalSpy updatedSpy( &client, &QgsAiPlanClient::modelPreferenceUpdated );
+  QSignalSpy failedSpy( &client, &QgsAiPlanClient::modelPreferenceUpdateFailed );
+
+  const QString endpoint = u"http://127.0.0.1:%1/ai/messages"_s.arg( server.serverPort() );
+  client.setModelPreference( endpoint, u"strata_dt_123"_s, u"deepseek/deepseek-v4-flash"_s, false );
+  QVERIFY( waitForSignal( &client, SIGNAL( modelPreferenceUpdated( QString, bool ) ) ) );
+
+  QCOMPARE( failedSpy.count(), 0 );
+  QCOMPARE( updatedSpy.count(), 1 );
+  QCOMPARE( updatedSpy.at( 0 ).at( 0 ).toString(), u"deepseek/deepseek-v4-flash"_s );
+  QCOMPARE( updatedSpy.at( 0 ).at( 1 ).toBool(), false );
+  QCOMPARE( server.requestCount, 1 );
+  QVERIFY2( server.rawRequests.first().startsWith( "PUT /v1/models/preferences/deepseek%2Fdeepseek-v4-flash " ), qPrintable( QString::fromUtf8( server.rawRequests.first() ) ) );
+  QVERIFY( server.rawRequests.first().toLower().contains( "authorization: bearer strata_dt_123" ) );
+
+  const QJsonObject body = QJsonDocument::fromJson( server.requestBodies.first() ).object();
+  QCOMPARE( body.value( u"enabled"_s ).toBool(), false );
 }
 
 QGSTEST_MAIN( TestQgsAiPlanClient )

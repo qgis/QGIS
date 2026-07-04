@@ -42,6 +42,7 @@ class APP_EXPORT QgsAiBasePatchTool : public QgsAiTool
     QgsAiBasePatchTool( QgsAiReviewPatchEngine *engine, QWidget *dialogParent );
 
     bool requiresApproval() const override { return true; }
+    QgsAiToolApprovalMode approvalMode() const override { return QgsAiToolApprovalMode::SelfApproved; }
     QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Medium; }
 
   protected:

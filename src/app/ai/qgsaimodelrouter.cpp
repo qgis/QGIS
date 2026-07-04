@@ -685,7 +685,7 @@ QgsAiModelRouter::ApiWireFormat QgsAiModelRouter::wireFormatForProvider( Provide
       return endpointPath.endsWith( "/responses"_L1 ) ? ApiWireFormat::OpenAiResponses : ApiWireFormat::OpenAiChatCompletions;
     }
     case Provider::Plan:
-      return ApiWireFormat::PlainMessages;
+      return ApiWireFormat::AnthropicMessages;
   }
   return ApiWireFormat::PlainMessages;
 }
@@ -820,7 +820,7 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
       payload.insert( u"tool_choice"_s, u"auto"_s );
     }
   }
-  else if ( provider == Provider::Claude )
+  else if ( wireFormat == ApiWireFormat::AnthropicMessages )
   {
     QJsonArray claudeMessages;
     QString systemPrompt;
@@ -847,7 +847,15 @@ QByteArray QgsAiModelRouter::buildRequestPayload( Provider provider, const QList
     if ( !systemPrompt.isEmpty() )
       payload.insert( u"system"_s, systemPrompt );
     payload.insert( u"messages"_s, claudeMessages );
-    payload.insert( u"max_tokens"_s, 4096 );
+    if ( provider == Provider::Plan )
+    {
+      QgsSettings appSettings;
+      payload.insert( u"max_tokens"_s, std::max( 256, appSettings.value( u"ai/provider/plan/maxTokens"_s, 4096 ).toInt() ) );
+    }
+    else
+    {
+      payload.insert( u"max_tokens"_s, 4096 );
+    }
 
     if ( mToolUseEnabled && mToolRegistry && mToolRegistry->count() > 0 )
     {
@@ -1600,7 +1608,7 @@ bool QgsAiModelRouter::shouldRetry( int httpStatus, QNetworkReply::NetworkError 
 
 QString QgsAiModelRouter::extractTextFromResponse( Provider provider, const QJsonObject &object ) const
 {
-  if ( provider == Provider::Claude )
+  if ( provider == Provider::Claude || provider == Provider::Plan )
   {
     const QJsonArray content = object.value( u"content"_s ).toArray();
     QString text;
@@ -1629,7 +1637,7 @@ QString QgsAiModelRouter::extractTextFromResponse( Provider provider, const QJso
 
 QString QgsAiModelRouter::extractTextFromStreamEvent( Provider provider, const QJsonObject &object ) const
 {
-  if ( provider == Provider::Claude )
+  if ( provider == Provider::Claude || provider == Provider::Plan )
   {
     const QString eventType = object.value( u"type"_s ).toString();
     if ( eventType == "content_block_delta"_L1 )
@@ -1687,7 +1695,7 @@ void QgsAiModelRouter::finalizePendingToolCallArguments( RequestContext &context
 
 void QgsAiModelRouter::extractToolCallsFromResponse( Provider provider, const QJsonObject &object, RequestContext &context ) const
 {
-  if ( provider == Provider::Claude )
+  if ( provider == Provider::Claude || provider == Provider::Plan )
   {
     context.stopReason = object.value( u"stop_reason"_s ).toString();
     const QJsonArray content = object.value( u"content"_s ).toArray();
@@ -1773,7 +1781,7 @@ void QgsAiModelRouter::extractToolCallsFromResponse( Provider provider, const QJ
 
 void QgsAiModelRouter::absorbStreamEvent( Provider provider, const QJsonObject &object, RequestContext &context )
 {
-  if ( provider == Provider::Claude )
+  if ( provider == Provider::Claude || provider == Provider::Plan )
   {
     const QString eventType = object.value( u"type"_s ).toString();
 
@@ -2321,9 +2329,9 @@ void QgsAiModelRouter::onReplyFinished()
 
 QString QgsAiModelRouter::defaultPlanEndpoint()
 {
-  // Development default pointing at a local strata-be; swap to the production
-  // URL before release.
-  return u"http://localhost:3001/ai/messages"_s;
+  // Production Cloud Run backend (strata-be, europe-west1). Local dev overrides
+  // via STRATA_PLAN_ENDPOINT or run-strata-dev.sh.
+  return u"https://strata-be-372580174147.europe-west1.run.app/ai/messages"_s;
 }
 
 bool QgsAiModelRouter::isUsablePlanEndpoint( const QString &endpoint )

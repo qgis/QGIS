@@ -42,6 +42,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonParseError>
+#include <QMessageBox>
 #include <QRegularExpression>
 #include <QSet>
 #include <QString>
@@ -97,10 +98,28 @@ namespace
       u"get_active_canvas_extent"_s,
       u"capture_map_canvas"_s,
       u"describe_layer"_s,
+      u"query_features"_s,
+      u"identify_features_at"_s,
       u"read_message_log"_s,
       u"index_status"_s,
       u"search_workspace"_s,
+      u"web_search"_s,
+      u"catalog_search"_s,
     };
+  }
+
+  bool approveGenericToolCall( const QString &toolName, QgsAiToolRiskLevel riskLevel, const QJsonObject &args )
+  {
+    const QString argsText = QString::fromUtf8( QJsonDocument( args ).toJson( QJsonDocument::Indented ) ).left( 4000 );
+    const QString message = QObject::tr(
+                              "The AI assistant wants to run a tool that can change the project or workspace.\n\n"
+                              "Tool: %1\n"
+                              "Risk: %2\n\n"
+                              "Arguments:\n%3\n\n"
+                              "Allow this tool call?"
+    )
+                              .arg( toolName, QgsAiToolRiskLevelName( riskLevel ), argsText );
+    return QMessageBox::question( nullptr, QObject::tr( "AI: approve tool call" ), message, QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes;
   }
 
   QStringList intersectTools( const QStringList &candidateTools, const QStringList &managedAllowedTools )
@@ -115,6 +134,34 @@ namespace
         filtered << toolName;
     }
     return filtered;
+  }
+
+  bool managedPolicyReferencesUnknownTools( const QgsAiManagedAgentPolicy &policy, const QgsAiToolRegistry *registry )
+  {
+    if ( !registry )
+      return false;
+
+    QSet<QString> knownTools;
+    for ( const QString &toolName : registry->toolNames() )
+      knownTools.insert( toolName );
+
+    const auto containsUnknown = [&knownTools]( const QStringList &tools ) {
+      for ( const QString &toolName : tools )
+      {
+        if ( !knownTools.contains( toolName ) )
+          return true;
+      }
+      return false;
+    };
+
+    if ( containsUnknown( policy.allowedTools ) )
+      return true;
+    for ( const QgsAiManagedAgentPreset &preset : policy.presets )
+    {
+      if ( containsUnknown( preset.allowedTools ) )
+        return true;
+    }
+    return false;
   }
 
   QString extractProposedPlanMarkdown( const QString &text )
@@ -1001,11 +1048,17 @@ QStringList QgsAiAgentSessionManager::allowedToolsForActiveAgent() const
     return QStringList();
 
   QStringList managedAllowed;
-  if ( !mManagedAgentPolicy.isEmpty() )
+  const bool applyManagedPolicy = mRouter
+                                  && mRouter->activeProvider() == QgsAiModelRouter::Provider::Plan
+                                  && mManagedAgentPolicy.toolCatalogVersion >= 2
+                                  && !mManagedAgentPolicy.isEmpty()
+                                  && !managedPolicyReferencesUnknownTools( mManagedAgentPolicy, mToolRegistry );
+  if ( applyManagedPolicy )
   {
     managedAllowed = mActiveAgent == "ask_before_edits"_L1 ? mManagedAgentPolicy.allowedTools : mManagedAgentPolicy.allowedToolsForPreset( QgsAiPresetModeForAgent( mActiveAgent ) );
+    return intersectTools( localAllowed, managedAllowed );
   }
-  return intersectTools( localAllowed, managedAllowed );
+  return localAllowed;
 }
 
 bool QgsAiAgentSessionManager::isToolAllowedForActiveAgent( const QString &toolName ) const
@@ -1440,7 +1493,8 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   prompt += "- Keep proposals small and reviewable. One concept per proposal.\n"_L1;
   prompt += "- Do not invent file paths; resolve them via search_files or list_files.\n"_L1;
   prompt += "- External libraries and remote data are AVAILABLE. Do NOT refuse with phrases like 'I cannot run external libraries in this environment.' You can.\n"_L1;
-  prompt += "  - To fetch remote files (GeoJSON, Shapefile, Overpass/Nominatim/GADM responses): PREFER download_file(url, dest_path). One approval, stays inside the workspace, no extra packages.\n"_L1;
+  prompt += "  - For remote GIS/layer data, prefer catalog_search first, then download_file(url, dest_path), then add_layer_from_file. Cite source_host/final_url/sha256/trust_level when download_file provides them.\n"_L1;
+  prompt += "  - Use web_search for broad discovery only; use catalog_search when the user needs reliable GIS data sources.\n"_L1;
   prompt += u"  - To use a Python library not bundled with QGIS (geopy, osmnx, requests, shapely, pandas, …):\n"_s;
   prompt += "      1) Briefly state the plan in chat.\n"_L1;
   prompt += "      2) Call install_python_package with exact pinned specs (the user approves).\n"_L1;
@@ -1519,7 +1573,9 @@ QString QgsAiAgentSessionManager::formatRetrievedContext( const QList<QgsAiWorks
     }
 
     QString content = c.text;
-    if ( !c.wktBlob.isEmpty() )
+    QgsSettings settings;
+    const bool includeLayerWkt = settings.value( u"strata/privacy/include_layer_wkt_in_model_context"_s, false ).toBool();
+    if ( includeLayerWkt && !c.wktBlob.isEmpty() )
     {
       const QByteArray wkts = qUncompress( c.wktBlob );
       if ( !wkts.isEmpty() )
@@ -1881,11 +1937,26 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
     QgsMessageLog::
       logMessage( u"Tool call: name=%1 id=%2 argsBytes=%3"_s.arg( call.name, call.id ).arg( QJsonDocument( call.args ).toJson( QJsonDocument::Compact ).size() ), u"AI"_s, Qgis::MessageLevel::Info, false );
 
-    const QgsAiToolResult result = mToolRegistry->execute( call.name, call.args );
+    QgsAiToolResult result;
+    const QgsAiTool *calledTool = mToolRegistry->find( call.name );
+    const bool needsGenericApproval = mActiveAgent == "ask_before_edits"_L1 && calledTool && calledTool->approvalMode() == QgsAiToolApprovalMode::Generic;
+    if ( needsGenericApproval && !approveGenericToolCall( call.name, calledTool->riskLevel(), call.args ) )
+    {
+      QJsonObject metadata;
+      metadata.insert( u"agent_mode"_s, mActiveAgent );
+      metadata.insert( u"tool_call_id"_s, call.id );
+      metadata.insert( u"args_keys"_s, call.args.keys().join( ',' ) );
+      QgsAiAuditLog::appendToolEvent( u"rejected_by_user"_s, call.name, QgsAiToolRiskLevelName( calledTool->riskLevel() ), false, metadata );
+      result = QgsAiToolResult::error( u"Tool call was rejected by the user before execution."_s );
+    }
+    else
+    {
+      result = mToolRegistry->execute( call.name, call.args );
+    }
     QVariantMap memory;
     memory.insert( u"tool_name"_s, call.name );
     memory.insert( u"success"_s, result.success );
-    if ( const QgsAiTool *tool = mToolRegistry->find( call.name ) )
+    if ( const QgsAiTool *tool = calledTool )
     {
       memory.insert( u"risk_level"_s, QgsAiToolRiskLevelName( tool->riskLevel() ) );
       memory.insert( u"requires_approval"_s, tool->requiresApproval() );

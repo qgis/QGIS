@@ -77,6 +77,7 @@ class APP_EXPORT QgsAiReindexWorkspaceTool : public QgsAiTool
     QString name() const override { return u"reindex_workspace"_s; }
     QString description() const override;
     QJsonObject schema() const override;
+    bool requiresApproval() const override { return true; }
     QgsAiToolResult execute( const QJsonObject &args ) override;
 
   private:
@@ -97,6 +98,7 @@ class APP_EXPORT QgsAiReindexLayersTool : public QgsAiTool
     QString name() const override { return u"reindex_layers"_s; }
     QString description() const override;
     QJsonObject schema() const override;
+    bool requiresApproval() const override { return true; }
     QgsAiToolResult execute( const QJsonObject &args ) override;
 
   private:

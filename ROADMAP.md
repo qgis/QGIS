@@ -8,28 +8,29 @@
 
 ## Indice
 
-0. [Stato attuale](#0-stato-attuale-giugno-2026)
-1. [Premessa strategica](#1-premessa-strategica)
-2. [North Star del prodotto](#2-north-star-del-prodotto)
-3. [Mappa Cursor → Strata](#3-mappa-cursor--strata)
-4. [Roadmap per fasi](#4-roadmap-per-fasi)
-5. [Fase 0 — Fondamenta prodotto e distribuzione](#fase-0--fondamenta-prodotto-e-distribuzione)
-6. [Fase 1 — Assistant operativo MVP](#fase-1--assistant-operativo-mvp)
-7. [Fase 2 — Strata Context Engine](#fase-2--strata-context-engine)
-8. [Fase 3 — GIS Tab](#fase-3--gis-tab)
-9. [Fase 4 — Agent Mode v2](#fase-4--agent-mode-v2)
-10. [Fase 5 — Workflow Composer e riproducibilità](#fase-5--workflow-composer-e-riproducibilità)
-11. [Fase 6 — Vertical Packs](#fase-6--vertical-packs)
-12. [Fase 7 — Team ed Enterprise](#fase-7--team-ed-enterprise)
-13. [Fase 8 — Strata CLI, GIS Workers e automazioni](#fase-8--strata-cli-gis-workers-e-automazioni)
-14. [Fase 9 — GIS Review](#fase-9--gis-review)
-15. [Fase 10 — Marketplace, SDK e community](#fase-10--marketplace-sdk-e-community)
-16. [Backlog dettagliato](#5-backlog-dettagliato)
-17. [Metriche](#6-metriche)
-18. [Sequenza consigliata](#7-sequenza-consigliata)
-19. [Priorità assolute](#8-priorità-assolute)
-20. [Cosa evitare](#9-cosa-evitare)
-21. [Roadmap compatta](#10-roadmap-compatta)
+1. [Stato attuale](#0-stato-attuale-giugno-2026)
+2. [Premessa strategica](#1-premessa-strategica)
+3. [North Star del prodotto](#2-north-star-del-prodotto)
+4. [Mappa Cursor → Strata](#3-mappa-cursor--strata)
+5. [Roadmap per fasi](#4-roadmap-per-fasi)
+6. [Fase 0 — Fondamenta prodotto e distribuzione](#fase-0--fondamenta-prodotto-e-distribuzione)
+7. [Fase 1 — Assistant operativo MVP](#fase-1--assistant-operativo-mvp)
+8. [Fase 2 — Strata Context Engine](#fase-2--strata-context-engine)
+9. [Fase 3 — GIS Tab](#fase-3--gis-tab)
+10. [Fase 4 — Agent Mode v2](#fase-4--agent-mode-v2)
+11. [Fase 5 — Workflow Composer e riproducibilità](#fase-5--workflow-composer-e-riproducibilità)
+12. [Fase 6 — Vertical Packs](#fase-6--vertical-packs)
+13. [Fase 7 — Team ed Enterprise](#fase-7--team-ed-enterprise)
+14. [Fase 8 — Strata CLI, GIS Workers e automazioni](#fase-8--strata-cli-gis-workers-e-automazioni)
+15. [Fase 9 — GIS Review](#fase-9--gis-review)
+16. [Fase 10 — Marketplace, SDK e community](#fase-10--marketplace-sdk-e-community)
+17. [Backlog dettagliato](#5-backlog-dettagliato)
+18. [Metriche](#6-metriche)
+19. [Sequenza consigliata](#7-sequenza-consigliata)
+20. [Priorità assolute](#8-priorità-assolute)
+21. [Cosa evitare](#9-cosa-evitare)
+22. [Roadmap compatta](#10-roadmap-compatta)
+23. [Fasi di chiusura gap AI tool](#13-fasi-di-chiusura-gap-ai-tool-workflow-gis-core)
 
 ---
 
@@ -37,23 +38,27 @@
 
 ## Legenda
 
-| Marcatore | Significato |
-|---|---|
-| `[FATTO]` | Implementato e utilizzabile in produzione |
+
+| Marcatore    | Significato                                                               |
+| ------------ | ------------------------------------------------------------------------- |
+| `[FATTO]`    | Implementato e utilizzabile in produzione                                 |
 | `[PARZIALE]` | Base presente, ma incompleto rispetto agli acceptance criteria della fase |
-| `[MANCANTE]` | Nessuna implementazione nel codice |
+| `[MANCANTE]` | Nessuna implementazione nel codice                                        |
+
 
 ## Sintesi per fase
 
-| Fase | Completamento | Già presente | Gap principali |
-|---:|---:|---|---|
-| 0 Fondamenta | ~45% | Release multi-piattaforma (`release-strata.yml`), macOS sign+notarize in CI, Windows Azure Artifact Signing in CI, landing page (`docs/`), branding Strata, import completo profili QGIS (`qgsqgisprofileimporter`) | Demo project bundled, auto-update in-app, telemetria opt-in, onboarding AI/provider/privacy/modello, checksum release, dry-run firma Windows |
-| 1 Assistant MVP | ~75% | Dock assistant (`qgsaichatdockwidget`), 5 provider LLM (`qgsaimodelrouter`), 21 tool (`tools/`), Ask/Plan/Agent, `run_python`, safety/trust/audit, review file | Tool GIS nativi (Processing/style/layout/export), risk classification formale, execution log strutturato, modalità Expert |
-| 2 Context Engine | ~60% | RAG locale SQLite (`qgsaiworkspaceindex`), layer chunking, embeddings ONNX, semantic search, privacy consents | Project graph completo, CRS/stili/layout indexing, context packs espliciti, context preview UI |
-| 3 GIS Tab | 0% | — | Intera fase da costruire |
-| 4 Agent v2 | ~40% | Loop multi-step (max 8 iter/turn), Plan→Agent handoff, review/diff/rollback file (`qgsaireviewpatchengine`), session history | JSON planner, step verifier, GIS diff/rollback (layer/stile/layout), agent memory |
-| 5 Workflow Composer | ~5% | Hint nel system prompt per salvare script | `.strataflow`, workflow runner, provenance, report generator |
-| 6–10 | 0% | Rules/skills workspace (`.strata/rules`, `.strata/skills`) | Vertical packs, enterprise, CLI, GIS Review, marketplace |
+
+| Fase                | Completamento | Già presente                                                                                                                                                                                                        | Gap principali                                                                                                                               |
+| ------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 Fondamenta        | ~45%          | Release multi-piattaforma (`release-strata.yml`), macOS sign+notarize in CI, Windows Azure Artifact Signing in CI, landing page (`docs/`), branding Strata, import completo profili QGIS (`qgsqgisprofileimporter`) | Demo project bundled, auto-update in-app, telemetria opt-in, onboarding AI/provider/privacy/modello, checksum release, dry-run firma Windows |
+| 1 Assistant MVP     | ~75%          | Dock assistant (`qgsaichatdockwidget`), 5 provider LLM (`qgsaimodelrouter`), 21 tool (`tools/`), Ask/Plan/Agent, `run_python`, safety/trust/audit, review file                                                      | Tool GIS nativi (Processing/style/layout/export), risk classification formale, execution log strutturato, modalità Expert                    |
+| 2 Context Engine    | ~60%          | RAG locale SQLite (`qgsaiworkspaceindex`), layer chunking, embeddings ONNX, semantic search, privacy consents                                                                                                       | Project graph completo, CRS/stili/layout indexing, context packs espliciti, context preview UI                                               |
+| 3 GIS Tab           | 0%            | —                                                                                                                                                                                                                   | Intera fase da costruire                                                                                                                     |
+| 4 Agent v2          | ~40%          | Loop multi-step (max 8 iter/turn), Plan→Agent handoff, review/diff/rollback file (`qgsaireviewpatchengine`), session history                                                                                        | JSON planner, step verifier, GIS diff/rollback (layer/stile/layout), agent memory                                                            |
+| 5 Workflow Composer | ~5%           | Hint nel system prompt per salvare script                                                                                                                                                                           | `.strataflow`, workflow runner, provenance, report generator                                                                                 |
+| 6–10                | 0%            | Rules/skills workspace (`.strata/rules`, `.strata/skills`)                                                                                                                                                          | Vertical packs, enterprise, CLI, GIS Review, marketplace                                                                                     |
+
 
 ## Architettura AI esistente
 
@@ -67,6 +72,8 @@ flowchart LR
   TR --> RE[QgsAiReviewPatchEngine]
   MR --> P["OpenAI / OpenRouter / Codex / Claude / Plan"]
 ```
+
+
 
 **Directory chiave:** `src/app/ai/` — orchestrazione, provider, tool registry, context engine RAG, review patch.
 
@@ -127,32 +134,36 @@ Strata deve diventare il workspace GIS dove un tecnico può passare da una richi
 
 ## Principi guida
 
-| Principio | Implicazione pratica |
-|---|---|
-| Context-first | L’assistente deve capire progetto, layer, CRS, campi, stili, Processing history, layout e file sorgenti. |
-| Action-first | Ogni risposta deve poter diventare azione: creare layer, eseguire Processing, scrivere PyQGIS, generare report. |
-| Review-first | Nessuna modifica distruttiva senza preview, diff, undo e log. |
-| Local-first | Dati sensibili GIS devono poter rimanere sul device o in infrastruttura cliente. |
-| Reproducible-first | Ogni operazione deve generare script, parametri, provenance e workflow riutilizzabile. |
-| Vertical-first | La crescita deve partire da workflow ad alto valore: PA, ambiente, agricoltura, catasto, urbanistica, utilities. |
+
+| Principio          | Implicazione pratica                                                                                             |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| Context-first      | L’assistente deve capire progetto, layer, CRS, campi, stili, Processing history, layout e file sorgenti.         |
+| Action-first       | Ogni risposta deve poter diventare azione: creare layer, eseguire Processing, scrivere PyQGIS, generare report.  |
+| Review-first       | Nessuna modifica distruttiva senza preview, diff, undo e log.                                                    |
+| Local-first        | Dati sensibili GIS devono poter rimanere sul device o in infrastruttura cliente.                                 |
+| Reproducible-first | Ogni operazione deve generare script, parametri, provenance e workflow riutilizzabile.                           |
+| Vertical-first     | La crescita deve partire da workflow ad alto valore: PA, ambiente, agricoltura, catasto, urbanistica, utilities. |
+
 
 ---
 
 # 3. Mappa Cursor → Strata
 
-| Cursor | Funzione Cursor | Equivalente Strata da costruire |
-|---|---|---|
-| Cursor Chat | Chat con il codebase | Chat con progetto QGIS, layer, CRS, campi, stili, Processing history |
-| Cursor Tab | Predizione prossima azione | **GIS Tab**: suggerimenti contestuali su layer, CRS, errori, campi, layout |
-| Agent Mode | Esecuzione multi-step | **GIS Agent**: pianifica, esegue Processing/PyQGIS, verifica output |
-| Composer | Cambiamenti multi-file | **Workflow Composer**: pipeline multi-layer, multi-step, riusabile |
-| Codebase Indexing | Indicizzazione codice | **Project Indexing**: layer metadata, schema, preview campi, geometrie, CRS, stili |
-| Rules | Convenzioni di progetto/team | **GIS Rules**: CRS standard, naming layer, scale, simboli, export, policy dati |
-| Code Review / Bugbot | Review automatica PR | **GIS Review**: valida geometrie, CRS, campi, output, layout, regressioni |
-| CLI | Agent da terminale | **Strata CLI**: batch GIS, report, QA, export, pipeline in CI |
-| Cloud Agents | Agent in ambienti remoti | **GIS Workers**: agenti su container/QGIS headless/PostGIS |
-| Enterprise | SSO, SCIM, governance | Admin console, audit log, model policy, dati on-prem, ruoli |
-| Marketplace | Skills, MCP, plugin | Marketplace di GIS skills, template verticali, connettori dati |
+
+| Cursor               | Funzione Cursor              | Equivalente Strata da costruire                                                    |
+| -------------------- | ---------------------------- | ---------------------------------------------------------------------------------- |
+| Cursor Chat          | Chat con il codebase         | Chat con progetto QGIS, layer, CRS, campi, stili, Processing history               |
+| Cursor Tab           | Predizione prossima azione   | **GIS Tab**: suggerimenti contestuali su layer, CRS, errori, campi, layout         |
+| Agent Mode           | Esecuzione multi-step        | **GIS Agent**: pianifica, esegue Processing/PyQGIS, verifica output                |
+| Composer             | Cambiamenti multi-file       | **Workflow Composer**: pipeline multi-layer, multi-step, riusabile                 |
+| Codebase Indexing    | Indicizzazione codice        | **Project Indexing**: layer metadata, schema, preview campi, geometrie, CRS, stili |
+| Rules                | Convenzioni di progetto/team | **GIS Rules**: CRS standard, naming layer, scale, simboli, export, policy dati     |
+| Code Review / Bugbot | Review automatica PR         | **GIS Review**: valida geometrie, CRS, campi, output, layout, regressioni          |
+| CLI                  | Agent da terminale           | **Strata CLI**: batch GIS, report, QA, export, pipeline in CI                      |
+| Cloud Agents         | Agent in ambienti remoti     | **GIS Workers**: agenti su container/QGIS headless/PostGIS                         |
+| Enterprise           | SSO, SCIM, governance        | Admin console, audit log, model policy, dati on-prem, ruoli                        |
+| Marketplace          | Skills, MCP, plugin          | Marketplace di GIS skills, template verticali, connettori dati                     |
+
 
 ---
 
@@ -160,17 +171,19 @@ Strata deve diventare il workspace GIS dove un tecnico può passare da una richi
 
 ## Vista sintetica
 
-| Fase | Orizzonte | Obiettivo | Esito atteso | Stato |
-|---:|---:|---|---|---|
-| 0 | 0–4 settimane | Stabilizzare base tecnica e posizionamento | Strata installabile, misurabile, demo ripetibile | `[PARZIALE ~45%]` |
-| 1 | 1–2 mesi | Chat agentica utile in QGIS | L’assistente esegue task GIS base con sicurezza | `[PARZIALE ~75%]` |
-| 2 | 2–4 mesi | Context Engine | Strata capisce realmente il progetto | `[PARZIALE ~60%]` |
-| 3 | 4–6 mesi | GIS Tab | Suggerimenti automatici contestuali | `[MANCANTE 0%]` |
-| 4 | 6–9 mesi | Agent Mode maturo | Workflow multi-step affidabili, con review e rollback | `[PARZIALE ~40%]` |
-| 5 | 9–12 mesi | Workflow Composer + reproducibility | Pipeline riusabili, script, provenance, report | `[MANCANTE ~5%]` |
-| 6 | 12–15 mesi | Vertical packs | Use case vendibili per PA/agri/ambiente/catasto | `[MANCANTE 0%]` |
-| 7 | 15–18 mesi | Team/Enterprise | Governance, on-prem, admin, audit, analytics | `[MANCANTE 0%]` |
-| 8 | 18+ mesi | Ecosistema | Marketplace, SDK, GIS workers, cloud/self-hosted agents | `[MANCANTE 0%]` |
+
+| Fase | Orizzonte     | Obiettivo                                  | Esito atteso                                            | Stato             |
+| ---- | ------------- | ------------------------------------------ | ------------------------------------------------------- | ----------------- |
+| 0    | 0–4 settimane | Stabilizzare base tecnica e posizionamento | Strata installabile, misurabile, demo ripetibile        | `[PARZIALE ~45%]` |
+| 1    | 1–2 mesi      | Chat agentica utile in QGIS                | L’assistente esegue task GIS base con sicurezza         | `[PARZIALE ~75%]` |
+| 2    | 2–4 mesi      | Context Engine                             | Strata capisce realmente il progetto                    | `[PARZIALE ~60%]` |
+| 3    | 4–6 mesi      | GIS Tab                                    | Suggerimenti automatici contestuali                     | `[MANCANTE 0%]`   |
+| 4    | 6–9 mesi      | Agent Mode maturo                          | Workflow multi-step affidabili, con review e rollback   | `[PARZIALE ~40%]` |
+| 5    | 9–12 mesi     | Workflow Composer + reproducibility        | Pipeline riusabili, script, provenance, report          | `[MANCANTE ~5%]`  |
+| 6    | 12–15 mesi    | Vertical packs                             | Use case vendibili per PA/agri/ambiente/catasto         | `[MANCANTE 0%]`   |
+| 7    | 15–18 mesi    | Team/Enterprise                            | Governance, on-prem, admin, audit, analytics            | `[MANCANTE 0%]`   |
+| 8    | 18+ mesi      | Ecosistema                                 | Marketplace, SDK, GIS workers, cloud/self-hosted agents | `[MANCANTE 0%]`   |
+
 
 ---
 
@@ -180,7 +193,7 @@ Strata deve diventare il workspace GIS dove un tecnico può passare da una richi
 
 Rendere Strata provabile senza attrito, stabile abbastanza per early adopter e misurabile.
 
-**Già fatto:** pipeline release su tag `strata-v*` (`.github/workflows/release-strata.yml`), build macOS/Linux/Windows, firma+notarizzazione macOS in CI (`build-macos-qt6.yml`), Windows code signing via Azure Artifact Signing nei workflow release (`windows-qt6.yml`, `windows-release-manual.yml`), landing page (`docs/`), README con setup AI, check versione Strata (`qgsversioninfo.cpp`), import completo ambiente QGIS al primo avvio/manuale con preferenze, profili, plugin Python, auth DB e marker Strata (`qgsqgisprofileimporter`, `qgsqgisprofileimportdialog`).
+**Già fatto:** pipeline release su tag `strata-v`* (`.github/workflows/release-strata.yml`), build macOS/Linux/Windows, firma+notarizzazione macOS in CI (`build-macos-qt6.yml`), Windows code signing via Azure Artifact Signing nei workflow release (`windows-qt6.yml`, `windows-release-manual.yml`), landing page (`docs/`), README con setup AI, check versione Strata (`qgsversioninfo.cpp`), import completo ambiente QGIS al primo avvio/manuale con preferenze, profili, plugin Python, auth DB e marker Strata (`qgsqgisprofileimporter`, `qgsqgisprofileimportdialog`).
 
 **Da completare:** demo project bundled, auto-update in-app, telemetria opt-in, onboarding AI completo per provider/privacy/modello/demo, checksum pubblici, dry-run firma Windows con account Azure configurato, crash reporting Strata-branded.
 
@@ -188,16 +201,18 @@ Questa fase è fondamentale perché un prodotto “alla Cursor” deve essere fa
 
 ## Priorità
 
-| Priorità | Feature | Descrizione | Stato | Implementazione |
-|---|---|---|---|---|
-| P0 | Installer firmati | Firma macOS, Windows code signing, notarizzazione Apple, checksum pubblici | `[PARZIALE]` | macOS CI sign+notarize; Windows Azure Artifact Signing agganciato a CPack/CI; Linux non firmato; checksum assenti; dry-run Azure da fare |
-| P0 | Auto-update | Aggiornamento in-app con canale stable/beta/nightly | `[PARZIALE]` | Check versione + banner welcome (`qgswelcomescreen.cpp`); no install in-app |
-| P0 | Crash reporting opt-in | Log anonimi, errori PyQGIS, errori agent, OS, versione QGIS base | `[PARZIALE]` | Crash handler QGIS upstream (`src/crashhandler/`); no opt-in upload, no campi agent |
-| P0 | Demo project incluso | Progetto QGIS campione con layer, errori CRS, layout, dati tabellari | `[MANCANTE]` | Solo progetti test in `tests_ai/Dati/` (non shipped) |
-| P0 | Telemetria locale/opt-in | Eventi minimi: feature usate, task completati, failure rate | `[MANCANTE]` | — |
-| P1 | First-run onboarding | Import ambiente QGIS, config provider AI, privacy mode, scelta modello, progetto demo | `[PARZIALE]` | Import profili QGIS completo al primo avvio e da Welcome/User Profiles; banner one-shot e settings dialog provider; restano wizard AI/demo |
-| P1 | Documentation minima | “5 task che Strata risolve in 5 minuti” | `[PARZIALE]` | README + landing; manca guida operativa |
-| P1 | Benchmark baseline | Misurare tempo utente vs tempo Strata su workflow ripetibili | `[MANCANTE]` | Solo claim illustrativo in landing |
+
+| Priorità | Feature                  | Descrizione                                                                           | Stato        | Implementazione                                                                                                                            |
+| -------- | ------------------------ | ------------------------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| P0       | Installer firmati        | Firma macOS, Windows code signing, notarizzazione Apple, checksum pubblici            | `[PARZIALE]` | macOS CI sign+notarize; Windows Azure Artifact Signing agganciato a CPack/CI; Linux non firmato; checksum assenti; dry-run Azure da fare   |
+| P0       | Auto-update              | Aggiornamento in-app con canale stable/beta/nightly                                   | `[PARZIALE]` | Check versione + banner welcome (`qgswelcomescreen.cpp`); no install in-app                                                                |
+| P0       | Crash reporting opt-in   | Log anonimi, errori PyQGIS, errori agent, OS, versione QGIS base                      | `[PARZIALE]` | Crash handler QGIS upstream (`src/crashhandler/`); no opt-in upload, no campi agent                                                        |
+| P0       | Demo project incluso     | Progetto QGIS campione con layer, errori CRS, layout, dati tabellari                  | `[MANCANTE]` | Solo progetti test in `tests_ai/Dati/` (non shipped)                                                                                       |
+| P0       | Telemetria locale/opt-in | Eventi minimi: feature usate, task completati, failure rate                           | `[MANCANTE]` | —                                                                                                                                          |
+| P1       | First-run onboarding     | Import ambiente QGIS, config provider AI, privacy mode, scelta modello, progetto demo | `[PARZIALE]` | Import profili QGIS completo al primo avvio e da Welcome/User Profiles; banner one-shot e settings dialog provider; restano wizard AI/demo |
+| P1       | Documentation minima     | “5 task che Strata risolve in 5 minuti”                                               | `[PARZIALE]` | README + landing; manca guida operativa                                                                                                    |
+| P1       | Benchmark baseline       | Misurare tempo utente vs tempo Strata su workflow ripetibili                          | `[MANCANTE]` | Solo claim illustrativo in landing                                                                                                         |
+
 
 ## Deliverable
 
@@ -233,11 +248,11 @@ Portare l’assistente da “chat che risponde” a **assistant che fa cose conc
 
 ## Feature P0
 
-### 1. Tool registry GIS `[FATTO]` — `tools/qgsaitoolregistry.*`
+### 1. Tool registry GIS `[FATTO]` — `tools/qgsaitoolregistry.`*
 
 Creare un registro esplicito di tool chiamabili dall’agente.
 
-**Implementato (21 tool):** `read_file`, `search_files`, `list_files`, `list_project_layers`, `get_active_canvas_extent`, `capture_map_canvas`, `read_message_log`, `add_layer_from_file`, `describe_layer`, `propose_edit/create/delete/multi_edit`, `run_python`, `install_python_package`, `download_file`, `index_status/search_workspace/reindex_*`, `echo`.
+**Implementato (21 tool):** `read_file`, `search_files`, `list_files`, `list_project_layers`, `get_active_canvas_extent`, `capture_map_canvas`, `read_message_log`, `add_layer_from_file`, `describe_layer`, `propose_edit/create/delete/multi_edit`, `run_python`, `install_python_package`, `download_file`, `index_status/search_workspace/reindex_`*, `echo`.
 
 Esempio target (roadmap originale):
 
@@ -274,38 +289,44 @@ returns:
 
 **Tool roadmap ancora `[MANCANTE]`:**
 
-| Tool target | Stato | Nota |
-|---|---|---|
-| `inspect_project()` | `[MANCANTE]` | Parziale via snapshot layer nel system prompt |
-| `inspect_layer()` | `[PARZIALE]` | Esiste `describe_layer` |
-| `inspect_fields()` | `[PARZIALE]` | Incluso in `describe_layer` |
-| `inspect_crs()` | `[MANCANTE]` | — |
-| `run_processing_algorithm()` | `[MANCANTE]` | Oggi via `run_python` |
-| `run_pyqgis()` | `[FATTO]` | Implementato come `run_python` |
-| `create_memory_note()` | `[MANCANTE]` | — |
-| `style_layer()` | `[MANCANTE]` | Oggi via `run_python` |
-| `create_layout()` | `[MANCANTE]` | Oggi via `run_python` |
-| `export_map()` | `[MANCANTE]` | Oggi via `run_python` |
 
-### 2. Modalità Ask / Plan / Agent `[FATTO]` — `qgsaiagentsessionmanager.*`
+| Tool target                  | Stato        | Nota                                          |
+| ---------------------------- | ------------ | --------------------------------------------- |
+| `inspect_project()`          | `[MANCANTE]` | Parziale via snapshot layer nel system prompt |
+| `inspect_layer()`            | `[PARZIALE]` | Esiste `describe_layer`                       |
+| `inspect_fields()`           | `[PARZIALE]` | Incluso in `describe_layer`                   |
+| `inspect_crs()`              | `[MANCANTE]` | —                                             |
+| `run_processing_algorithm()` | `[MANCANTE]` | Oggi via `run_python`                         |
+| `run_pyqgis()`               | `[FATTO]`    | Implementato come `run_python`                |
+| `create_memory_note()`       | `[MANCANTE]` | —                                             |
+| `style_layer()`              | `[MANCANTE]` | Oggi via `run_python`                         |
+| `create_layout()`            | `[MANCANTE]` | Oggi via `run_python`                         |
+| `export_map()`               | `[MANCANTE]` | Oggi via `run_python`                         |
 
-| Modalità | Cosa può fare | Conferma richiesta | Stato |
-|---|---|---|---|
-| Ask | Risponde, spiega, suggerisce | No | `[FATTO]` agent `reviewer`, 10 tool read-only |
-| Plan | Propone piano strutturato | No modifica | `[FATTO]` agent `planner`, blocchi `<proposed_plan>`, Accept/Reject |
-| Agent | Esegue tool e modifica progetto | Sì, per azioni rischiose | `[FATTO]` agent `editor`, tutti i tool |
-| Expert | Permette PyQGIS avanzato | Sempre conferma | `[MANCANTE]` | Non implementata come modalità separata |
+
+### 2. Modalità Ask / Plan / Agent `[FATTO]` — `qgsaiagentsessionmanager.`*
+
+
+| Modalità | Cosa può fare                   | Conferma richiesta       | Stato                                                               |
+| -------- | ------------------------------- | ------------------------ | ------------------------------------------------------------------- |
+| Ask      | Risponde, spiega, suggerisce    | No                       | `[FATTO]` agent `reviewer`, 10 tool read-only                       |
+| Plan     | Propone piano strutturato       | No modifica              | `[FATTO]` agent `planner`, blocchi `<proposed_plan>`, Accept/Reject |
+| Agent    | Esegue tool e modifica progetto | Sì, per azioni rischiose | `[FATTO]` agent `editor`, tutti i tool                              |
+| Expert   | Permette PyQGIS avanzato        | Sempre conferma          | `[MANCANTE]`                                                        |
+
 
 ### 3. Safety layer per PyQGIS `[PARZIALE]` — `qgsaiworkspacetrust.*`, `qgsaipythonapprovaldialog.*`, `qgsaiauditlog.*`
 
 Classificare automaticamente il codice prima dell’esecuzione.
 
-| Rischio | Esempi | Policy | Stato |
-|---|---|---|---|
-| Low | Leggere layer, campi, CRS | Può eseguire | `[PARZIALE]` read-only tools senza approval |
-| Medium | Creare layer temporanei, simbologia | Conferma semplice | `[PARZIALE]` approval dialog, non policy automatica |
-| High | Scrivere file, modificare layer persistenti | Preview + conferma | `[PARZIALE]` `propose_*` + review patch engine |
+
+| Rischio  | Esempi                                         | Policy                  | Stato                                                                         |
+| -------- | ---------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------- |
+| Low      | Leggere layer, campi, CRS                      | Può eseguire            | `[PARZIALE]` read-only tools senza approval                                   |
+| Medium   | Creare layer temporanei, simbologia            | Conferma semplice       | `[PARZIALE]` approval dialog, non policy automatica                           |
+| High     | Scrivere file, modificare layer persistenti    | Preview + conferma      | `[PARZIALE]` `propose_*` + review patch engine                                |
 | Critical | Delete, overwrite, network, shell, pip install | Conferma forte o blocco | `[PARZIALE]` `requiresApproval()` + euristiche advisory (`detectRiskMarkers`) |
+
 
 ### 4. Output strutturato dell’agente `[PARZIALE]` — `qgsaichatdockwidget.*`
 
@@ -333,7 +354,7 @@ Ogni risposta operativa deve avere formato standard:
 
 **Implementato:** Plan mode con Accept/Reject, domande strutturate (`qgis_ai_questions`), review proposals per patch file. **Manca:** template output standardizzato per ogni risposta operativa.
 
-### 5. Execution log `[PARZIALE]` — `qgsaiauditlog.*`, `qgsaimessagelogbuffer.*`
+### 5. Execution log `[PARZIALE]` — `qgsaiauditlog.`*, `qgsaimessagelogbuffer.*`
 
 Ogni run deve produrre un log leggibile:
 
@@ -357,15 +378,17 @@ Ogni run deve produrre un log leggibile:
 
 ## Workflow da supportare entro fine fase
 
-| Workflow | Prompt esempio | Output | Stato | Via attuale |
-|---|---|---|---|---|
-| CRS check | “Controlla se i layer hanno CRS coerente” | Report CRS + fix proposto | `[PARZIALE]` | `describe_layer` + `run_python` |
-| Buffer | “Crea buffer di 100m dalle strade e intersecalo con le particelle” | Layer buffer + intersection | `[PARZIALE]` | `run_python` (Processing via PyQGIS) |
-| Dissolve | “Unisci poligoni per comune” | Layer dissolto | `[PARZIALE]` | `run_python` |
-| Styling | “Colora uso suolo per categoria” | Simbologia categorizzata | `[PARZIALE]` | `run_python` |
-| Layout | “Crea una mappa PDF con scala, legenda e nord” | Layout + PDF | `[PARZIALE]` | `run_python` |
-| QA geometrie | “Trova geometrie invalide e correggile” | Report + layer corretto | `[PARZIALE]` | `run_python` |
-| Export | “Esporta questi layer in GeoPackage” | File `.gpkg` | `[PARZIALE]` | `run_python` |
+
+| Workflow     | Prompt esempio                                                     | Output                      | Stato        | Via attuale                          |
+| ------------ | ------------------------------------------------------------------ | --------------------------- | ------------ | ------------------------------------ |
+| CRS check    | “Controlla se i layer hanno CRS coerente”                          | Report CRS + fix proposto   | `[PARZIALE]` | `describe_layer` + `run_python`      |
+| Buffer       | “Crea buffer di 100m dalle strade e intersecalo con le particelle” | Layer buffer + intersection | `[PARZIALE]` | `run_python` (Processing via PyQGIS) |
+| Dissolve     | “Unisci poligoni per comune”                                       | Layer dissolto              | `[PARZIALE]` | `run_python`                         |
+| Styling      | “Colora uso suolo per categoria”                                   | Simbologia categorizzata    | `[PARZIALE]` | `run_python`                         |
+| Layout       | “Crea una mappa PDF con scala, legenda e nord”                     | Layout + PDF                | `[PARZIALE]` | `run_python`                         |
+| QA geometrie | “Trova geometrie invalide e correggile”                            | Report + layer corretto     | `[PARZIALE]` | `run_python`                         |
+| Export       | “Esporta questi layer in GeoPackage”                               | File `.gpkg`                | `[PARZIALE]` | `run_python`                         |
+
 
 ## Acceptance criteria
 
@@ -474,16 +497,18 @@ Indicizzare:
 
 Policy proposta:
 
-| Tipo dato | Default | Invio cloud |
-|---|---|---|
-| Nome layer | Consentito | Sì, se opt-in |
-| Nomi campi | Consentito | Sì, se opt-in |
-| Valori campione | Bloccato | Solo opt-in esplicito |
-| Geometrie | Bloccato | Mai di default |
-| Coordinate | Bloccato | Solo local model/on-prem |
-| Raster pixel | Bloccato | Solo local/on-prem |
-| Data source path | Mascherato | Hash/path relativo |
-| Metadata sensibili | Bloccato | Redaction |
+
+| Tipo dato          | Default    | Invio cloud              |
+| ------------------ | ---------- | ------------------------ |
+| Nome layer         | Consentito | Sì, se opt-in            |
+| Nomi campi         | Consentito | Sì, se opt-in            |
+| Valori campione    | Bloccato   | Solo opt-in esplicito    |
+| Geometrie          | Bloccato   | Mai di default           |
+| Coordinate         | Bloccato   | Solo local model/on-prem |
+| Raster pixel       | Bloccato   | Solo local/on-prem       |
+| Data source path   | Mascherato | Hash/path relativo       |
+| Metadata sensibili | Bloccato   | Redaction                |
+
 
 ### 5. Context budget manager
 
@@ -526,14 +551,16 @@ includes:
 
 ## Feature P0
 
-| Feature | Descrizione | Stato | Implementazione |
-|---|---|---|---|
-| Project index locale | SQLite/duckdb locale con metadata progetto | `[FATTO]` | `qgsaiworkspaceindex` (SQLite, cosine similarity) |
-| Layer cards | Schede layer leggibili dall’agente | `[PARZIALE]` | `describe_layer` + layer chunks; manca formato YAML scheda |
-| Context selector | Sceglie quali info passare al modello | `[PARZIALE]` | RAG top-K=8 in system prompt; manca UI selector |
-| Sensitive data guard | Blocca coordinate/geometrie/valori senza consenso | `[FATTO]` | Consents layer indexing + vision; `wrapUntrusted` |
-| Refresh automatico | Aggiorna index quando layer/progetto cambia | `[FATTO]` | `qgsaiindexingscheduler`, `qgsailayerindexcoordinator` |
-| Search workspace | “Trova il layer con le particelle catastali” | `[FATTO]` | `search_workspace`, `index_status` tools |
+
+| Feature              | Descrizione                                       | Stato        | Implementazione                                            |
+| -------------------- | ------------------------------------------------- | ------------ | ---------------------------------------------------------- |
+| Project index locale | SQLite/duckdb locale con metadata progetto        | `[FATTO]`    | `qgsaiworkspaceindex` (SQLite, cosine similarity)          |
+| Layer cards          | Schede layer leggibili dall’agente                | `[PARZIALE]` | `describe_layer` + layer chunks; manca formato YAML scheda |
+| Context selector     | Sceglie quali info passare al modello             | `[PARZIALE]` | RAG top-K=8 in system prompt; manca UI selector            |
+| Sensitive data guard | Blocca coordinate/geometrie/valori senza consenso | `[FATTO]`    | Consents layer indexing + vision; `wrapUntrusted`          |
+| Refresh automatico   | Aggiorna index quando layer/progetto cambia       | `[FATTO]`    | `qgsaiindexingscheduler`, `qgsailayerindexcoordinator`     |
+| Search workspace     | “Trova il layer con le particelle catastali”      | `[FATTO]`    | `search_workspace`, `index_status` tools                   |
+
 
 ## Acceptance criteria
 
@@ -566,20 +593,22 @@ Non deve essere invasivo. Deve apparire come suggerimento leggero, accettabile c
 
 ## Trigger iniziali
 
-| Trigger | Suggerimento |
-|---|---|
-| Layer con CRS diverso dal progetto | “Riproietta in CRS progetto” |
-| Layer senza spatial index | “Crea indice spaziale” |
-| Geometrie invalide | “Esegui fix geometries” |
-| Campo categorico selezionato | “Crea simbologia categorizzata” |
-| Campo numerico selezionato | “Crea mappa graduata” |
-| Layer poligonale selezionato | “Calcola area/perimetro” |
-| Due layer compatibili selezionati | “Esegui intersection/clip/join by location” |
-| Layout aperto | “Aggiungi scala, legenda, nord, titolo” |
-| Errore Processing | “Spiega e proponi fix” |
-| Layer grande | “Crea spatial index / semplifica / filtra” |
-| Export ripetuto | “Salva come modello riutilizzabile” |
-| Sequenza buffer → clip → dissolve | “Converti in workflow” |
+
+| Trigger                            | Suggerimento                                |
+| ---------------------------------- | ------------------------------------------- |
+| Layer con CRS diverso dal progetto | “Riproietta in CRS progetto”                |
+| Layer senza spatial index          | “Crea indice spaziale”                      |
+| Geometrie invalide                 | “Esegui fix geometries”                     |
+| Campo categorico selezionato       | “Crea simbologia categorizzata”             |
+| Campo numerico selezionato         | “Crea mappa graduata”                       |
+| Layer poligonale selezionato       | “Calcola area/perimetro”                    |
+| Due layer compatibili selezionati  | “Esegui intersection/clip/join by location” |
+| Layout aperto                      | “Aggiungi scala, legenda, nord, titolo”     |
+| Errore Processing                  | “Spiega e proponi fix”                      |
+| Layer grande                       | “Crea spatial index / semplifica / filtra”  |
+| Export ripetuto                    | “Salva come modello riutilizzabile”         |
+| Sequenza buffer → clip → dissolve  | “Converti in workflow”                      |
+
 
 ## UX proposta
 
@@ -625,23 +654,27 @@ score =
 
 ## Feature P0
 
-| Feature | Descrizione | Stato |
-|---|---|---|
-| Suggestion engine rule-based | Prima versione senza ML complesso | `[MANCANTE]` |
-| Shortcut accetta/ignora | Tab accetta, Esc ignora | `[MANCANTE]` |
-| Explain why | Ogni suggerimento spiega perché appare | `[MANCANTE]` |
-| Safe suggestions only | Prima solo azioni non distruttive | `[MANCANTE]` |
-| Suggestion memory | Non riproporre suggerimenti ignorati troppe volte | `[MANCANTE]` |
+
+| Feature                      | Descrizione                                       | Stato        |
+| ---------------------------- | ------------------------------------------------- | ------------ |
+| Suggestion engine rule-based | Prima versione senza ML complesso                 | `[MANCANTE]` |
+| Shortcut accetta/ignora      | Tab accetta, Esc ignora                           | `[MANCANTE]` |
+| Explain why                  | Ogni suggerimento spiega perché appare            | `[MANCANTE]` |
+| Safe suggestions only        | Prima solo azioni non distruttive                 | `[MANCANTE]` |
+| Suggestion memory            | Non riproporre suggerimenti ignorati troppe volte | `[MANCANTE]` |
+
 
 ## Feature P1
 
-| Feature | Descrizione | Stato |
-|---|---|---|
-| Personalized suggestions | Impara dai workflow accettati | `[MANCANTE]` |
-| Multi-step suggestions | Propone sequenze, non solo azioni singole | `[MANCANTE]` |
-| Layout suggestions | Migliora cartografia e export | `[MANCANTE]` |
-| Processing error fix | Suggerisce fix quando un algoritmo fallisce | `[MANCANTE]` |
+
+| Feature                     | Descrizione                                  | Stato        |
+| --------------------------- | -------------------------------------------- | ------------ |
+| Personalized suggestions    | Impara dai workflow accettati                | `[MANCANTE]` |
+| Multi-step suggestions      | Propone sequenze, non solo azioni singole    | `[MANCANTE]` |
+| Layout suggestions          | Migliora cartografia e export                | `[MANCANTE]` |
+| Processing error fix        | Suggerisce fix quando un algoritmo fallisce  | `[MANCANTE]` |
 | Project hygiene suggestions | Naming, CRS, cartelle output, campi mancanti | `[MANCANTE]` |
+
 
 ## Acceptance criteria
 
@@ -720,16 +753,18 @@ Il planner deve produrre un piano in JSON validabile.
 
 Dopo ogni step, l’agente deve verificare:
 
-| Verifica | Esempio |
-|---|---|
-| Output esiste | Layer creato correttamente |
-| CRS coerente | Output CRS = CRS progetto |
-| Geometrie valide | Nessun errore o errori noti |
+
+| Verifica                 | Esempio                               |
+| ------------------------ | ------------------------------------- |
+| Output esiste            | Layer creato correttamente            |
+| CRS coerente             | Output CRS = CRS progetto             |
+| Geometrie valide         | Nessun errore o errori noti           |
 | Feature count plausibile | Non zero, non esploso in modo anomalo |
-| Campi attesi | Campi originali preservati |
-| Extent plausibile | Output dentro area attesa |
-| Performance | Operazione non eccessivamente lenta |
-| Warnings | Processing warnings raccolti |
+| Campi attesi             | Campi originali preservati            |
+| Extent plausibile        | Output dentro area attesa             |
+| Performance              | Operazione non eccessivamente lenta   |
+| Warnings                 | Processing warnings raccolti          |
+
 
 ## Diff GIS
 
@@ -786,28 +821,32 @@ Serve un equivalente del diff codice.
 
 Ogni run deve avere rollback.
 
-| Tipo modifica | Rollback |
-|---|---|
-| Layer temporaneo creato | Rimuovi layer |
+
+| Tipo modifica             | Rollback                            |
+| ------------------------- | ----------------------------------- |
+| Layer temporaneo creato   | Rimuovi layer                       |
 | Layer persistente scritto | Conserva backup o scrivi nuovo file |
-| Stile cambiato | Ripristina QML precedente |
-| Layout modificato | Snapshot layout XML |
-| Campo aggiunto | Rimuovi campo se sicuro |
-| Feature edit | Undo command QGIS o backup layer |
-| File overwrite | Vietato senza backup |
+| Stile cambiato            | Ripristina QML precedente           |
+| Layout modificato         | Snapshot layout XML                 |
+| Campo aggiunto            | Rimuovi campo se sicuro             |
+| Feature edit              | Undo command QGIS o backup layer    |
+| File overwrite            | Vietato senza backup                |
+
 
 ## Feature P0
 
-| Feature | Descrizione | Stato | Implementazione |
-|---|---|---|---|
-| Planner JSON | Piano strutturato validabile | `[PARZIALE]` | Plan mode con `<proposed_plan>` testo; manca JSON schema |
-| Step-by-step execution | Esecuzione controllata per step | `[PARZIALE]` | Loop tool max 8 iter/turn; non step isolati con pause |
-| Tool risk levels | Low/medium/high/critical | `[PARZIALE]` | `requiresApproval()` + euristiche; manca policy automatica |
-| Verifier per step | Controlli dopo ogni azione | `[MANCANTE]` | — |
-| GIS diff v1 | Diff layer/stile/layout | `[MANCANTE]` | Solo diff file testo (`qgsaireviewpatchengine`) |
-| Rollback v1 | Undo delle modifiche create da Strata | `[PARZIALE]` | `undoLastApply` per file; niente rollback GIS |
-| Human approval | Conferma per azioni medium/high | `[FATTO]` | Approval dialog PyQGIS/pip/download; review patch |
-| Agent run history | Storico run consultabile | `[PARZIALE]` | Chat history SQLite; manca storico run strutturato |
+
+| Feature                | Descrizione                           | Stato        | Implementazione                                            |
+| ---------------------- | ------------------------------------- | ------------ | ---------------------------------------------------------- |
+| Planner JSON           | Piano strutturato validabile          | `[PARZIALE]` | Plan mode con `<proposed_plan>` testo; manca JSON schema   |
+| Step-by-step execution | Esecuzione controllata per step       | `[PARZIALE]` | Loop tool max 8 iter/turn; non step isolati con pause      |
+| Tool risk levels       | Low/medium/high/critical              | `[PARZIALE]` | `requiresApproval()` + euristiche; manca policy automatica |
+| Verifier per step      | Controlli dopo ogni azione            | `[MANCANTE]` | —                                                          |
+| GIS diff v1            | Diff layer/stile/layout               | `[MANCANTE]` | Solo diff file testo (`qgsaireviewpatchengine`)            |
+| Rollback v1            | Undo delle modifiche create da Strata | `[PARZIALE]` | `undoLastApply` per file; niente rollback GIS              |
+| Human approval         | Conferma per azioni medium/high       | `[FATTO]`    | Approval dialog PyQGIS/pip/download; review patch          |
+| Agent run history      | Storico run consultabile              | `[PARZIALE]` | Chat history SQLite; manca storico run strutturato         |
+
 
 ## Acceptance criteria
 
@@ -883,13 +922,15 @@ report:
 
 ### Workflow UI
 
-| Area UI | Funzione |
-|---|---|
-| Left panel | Lista step |
-| Center canvas | Grafo workflow |
-| Right panel | Parametri step |
-| Bottom panel | Log/output/errori |
-| Top actions | Run, dry-run, export, schedule |
+
+| Area UI       | Funzione                       |
+| ------------- | ------------------------------ |
+| Left panel    | Lista step                     |
+| Center canvas | Grafo workflow                 |
+| Right panel   | Parametri step                 |
+| Bottom panel  | Log/output/errori              |
+| Top actions   | Run, dry-run, export, schedule |
+
 
 ### Conversione automatica
 
@@ -957,15 +998,17 @@ Template report:
 
 ## Feature P0
 
-| Feature | Descrizione | Stato |
-|---|---|---|
-| Save run as workflow | Convertire sessione agente in `.strataflow` | `[MANCANTE]` |
-| Workflow runner | Rieseguire workflow su nuovi dati | `[MANCANTE]` |
-| Parameter editor | Modificare distanza buffer, campi, layer input | `[MANCANTE]` |
-| Export PyQGIS | Generare script equivalente | `[MANCANTE]` |
+
+| Feature                 | Descrizione                                    | Stato        |
+| ----------------------- | ---------------------------------------------- | ------------ |
+| Save run as workflow    | Convertire sessione agente in `.strataflow`    | `[MANCANTE]` |
+| Workflow runner         | Rieseguire workflow su nuovi dati              | `[MANCANTE]` |
+| Parameter editor        | Modificare distanza buffer, campi, layer input | `[MANCANTE]` |
+| Export PyQGIS           | Generare script equivalente                    | `[MANCANTE]` |
 | Export Processing model | Se possibile, generare modello QGIS Processing | `[MANCANTE]` |
-| Report generator v1 | Report tecnico con mappa + tabella + log | `[MANCANTE]` |
-| Provenance metadata | Metadati su ogni output | `[MANCANTE]` |
+| Report generator v1     | Report tecnico con mappa + tabella + log       | `[MANCANTE]` |
+| Provenance metadata     | Metadati su ogni output                        | `[MANCANTE]` |
+
 
 ## Acceptance criteria
 
@@ -1006,15 +1049,17 @@ vertical-pack/
 
 ### Workflow
 
-| Workflow | Descrizione |
-|---|---|
-| Controllo CRS progetto | Verifica CRS tra PRG, particelle, vincoli |
-| Buffer vincoli | Buffer su fiumi, strade, aree protette |
-| Overlay particelle-vincoli | Identifica particelle impattate |
-| Report vincoli particella | PDF per particella/comune |
-| Layout delibera | Mappa pronta per documento amministrativo |
-| QA geometrie comunali | Geometrie invalide, buchi, sovrapposizioni |
-| Export open data | GeoPackage/GeoJSON con metadata |
+
+| Workflow                   | Descrizione                                |
+| -------------------------- | ------------------------------------------ |
+| Controllo CRS progetto     | Verifica CRS tra PRG, particelle, vincoli  |
+| Buffer vincoli             | Buffer su fiumi, strade, aree protette     |
+| Overlay particelle-vincoli | Identifica particelle impattate            |
+| Report vincoli particella  | PDF per particella/comune                  |
+| Layout delibera            | Mappa pronta per documento amministrativo  |
+| QA geometrie comunali      | Geometrie invalide, buchi, sovrapposizioni |
+| Export open data           | GeoPackage/GeoJSON con metadata            |
+
 
 ### Regole
 
@@ -1034,15 +1079,17 @@ required_layout_elements:
 
 ### Workflow
 
-| Workflow | Descrizione |
-|---|---|
-| Import particelle aziendali | Normalizza shapefile/GeoPackage |
-| Calcolo superfici | Ettari per coltura/parcella |
-| Buffer corsi d’acqua | Zone rispetto/limitazioni |
-| Overlay suolo/pendenza | Analisi vocazionalità |
-| Report aziendale | Mappe e tabelle per azienda |
-| QA fascicolo | Campi mancanti, geometrie invalide |
-| Export per consulente | Pacchetto dati + PDF |
+
+| Workflow                    | Descrizione                        |
+| --------------------------- | ---------------------------------- |
+| Import particelle aziendali | Normalizza shapefile/GeoPackage    |
+| Calcolo superfici           | Ettari per coltura/parcella        |
+| Buffer corsi d’acqua        | Zone rispetto/limitazioni          |
+| Overlay suolo/pendenza      | Analisi vocazionalità              |
+| Report aziendale            | Mappe e tabelle per azienda        |
+| QA fascicolo                | Campi mancanti, geometrie invalide |
+| Export per consulente       | Pacchetto dati + PDF               |
+
 
 ### Prompt killer
 
@@ -1056,39 +1103,45 @@ sulle geometrie invalide.
 
 ### Workflow
 
-| Workflow | Descrizione |
-|---|---|
-| Analisi copertura suolo | Classificazione e aggregazione aree |
-| Buffer aree protette | Interferenze con vincoli ambientali |
+
+| Workflow                    | Descrizione                           |
+| --------------------------- | ------------------------------------- |
+| Analisi copertura suolo     | Classificazione e aggregazione aree   |
+| Buffer aree protette        | Interferenze con vincoli ambientali   |
 | Report intervento forestale | Mappa, superfici, particelle, vincoli |
-| Change detection semplice | Confronto layer temporali |
-| QA raster/vector | Extent, risoluzione, CRS, NoData |
-| Export relazione tecnica | PDF/Markdown/DOCX |
+| Change detection semplice   | Confronto layer temporali             |
+| QA raster/vector            | Extent, risoluzione, CRS, NoData      |
+| Export relazione tecnica    | PDF/Markdown/DOCX                     |
+
 
 ## Pack 4 — Utilities/infrastrutture
 
 ### Workflow
 
-| Workflow | Descrizione |
-|---|---|
-| Buffer reti | Distanze da condotte/cavi |
-| Intersezione proprietà | Particelle interessate da infrastruttura |
-| Mappa cantiere | Layout tecnico |
-| QA asset | Duplicati, geometrie spezzate, attributi mancanti |
-| Report interferenze | Tabelle + mappa per tratto |
-| Export CAD/GIS | GeoPackage/DXF dove compatibile |
+
+| Workflow               | Descrizione                                       |
+| ---------------------- | ------------------------------------------------- |
+| Buffer reti            | Distanze da condotte/cavi                         |
+| Intersezione proprietà | Particelle interessate da infrastruttura          |
+| Mappa cantiere         | Layout tecnico                                    |
+| QA asset               | Duplicati, geometrie spezzate, attributi mancanti |
+| Report interferenze    | Tabelle + mappa per tratto                        |
+| Export CAD/GIS         | GeoPackage/DXF dove compatibile                   |
+
 
 ## Feature P0
 
-| Feature | Descrizione |
-|---|---|
-| Pack installer | Installare pack verticali |
-| Pack rules | Regole per dominio |
-| Pack workflows | Workflow già pronti |
-| Pack sample data | Progetti demo per vendere/provare |
-| Pack report templates | Report specifici |
-| Pack prompts | Prompt guidati |
-| Pack validation | Verifica requisiti input |
+
+| Feature               | Descrizione                       |
+| --------------------- | --------------------------------- |
+| Pack installer        | Installare pack verticali         |
+| Pack rules            | Regole per dominio                |
+| Pack workflows        | Workflow già pronti               |
+| Pack sample data      | Progetti demo per vendere/provare |
+| Pack report templates | Report specifici                  |
+| Pack prompts          | Prompt guidati                    |
+| Pack validation       | Verifica requisiti input          |
+
 
 ## Acceptance criteria
 
@@ -1125,14 +1178,16 @@ Organization
 
 ### 2. Ruoli
 
-| Ruolo | Permessi |
-|---|---|
-| Viewer | Usa Ask, legge report |
-| Analyst | Esegue workflow approvati |
-| GIS Specialist | Crea workflow, modifica rules |
-| Admin | Gestisce utenti, modelli, policy |
-| Security Officer | Audit, log, data policy |
-| Developer | Crea tool/plugin/pack |
+
+| Ruolo            | Permessi                         |
+| ---------------- | -------------------------------- |
+| Viewer           | Usa Ask, legge report            |
+| Analyst          | Esegue workflow approvati        |
+| GIS Specialist   | Crea workflow, modifica rules    |
+| Admin            | Gestisce utenti, modelli, policy |
+| Security Officer | Audit, log, data policy          |
+| Developer        | Crea tool/plugin/pack            |
+
 
 ### 3. Model policy
 
@@ -1192,14 +1247,16 @@ Formato:
 
 Modalità:
 
-| Modalità | Descrizione |
-|---|---|
-| Local only | Modello locale, nessun server |
-| BYOK | Utente porta API key |
-| Team cloud | Backend Strata gestisce account/policy |
-| Private cloud | Deploy su cloud cliente |
-| On-prem | Deploy completo su infrastruttura cliente |
-| Air-gapped | Nessuna rete esterna, modelli locali |
+
+| Modalità      | Descrizione                               |
+| ------------- | ----------------------------------------- |
+| Local only    | Modello locale, nessun server             |
+| BYOK          | Utente porta API key                      |
+| Team cloud    | Backend Strata gestisce account/policy    |
+| Private cloud | Deploy su cloud cliente                   |
+| On-prem       | Deploy completo su infrastruttura cliente |
+| Air-gapped    | Nessuna rete esterna, modelli locali      |
+
 
 ### 6. Admin console
 
@@ -1220,15 +1277,17 @@ Funzioni:
 
 ## Feature P1
 
-| Feature | Descrizione |
-|---|---|
-| SSO/SAML | Login enterprise |
-| SCIM | Provisioning utenti |
-| License server | Gestione seat |
-| Cost controls | Budget per utente/team |
+
+| Feature               | Descrizione                   |
+| --------------------- | ----------------------------- |
+| SSO/SAML              | Login enterprise              |
+| SCIM                  | Provisioning utenti           |
+| License server        | Gestione seat                 |
+| Cost controls         | Budget per utente/team        |
 | Private model gateway | Routing verso modelli privati |
-| Data residency | Regione/ambiente dati |
-| Compliance export | Report uso AI per audit |
+| Data residency        | Regione/ambiente dati         |
+| Compliance export     | Report uso AI per audit       |
+
 
 ## Acceptance criteria
 
@@ -1278,38 +1337,44 @@ Strata Desktop
 
 ## Use case
 
-| Use case | Descrizione |
-|---|---|
-| QA notturno | Verifica dataset ogni notte |
-| Report mensile | Genera mappe/report automatici |
-| Batch su comuni | Esegue workflow su 100 comuni |
-| Validazione upload | Controlla dati caricati da consulenti |
-| CI geodata | Testa layer e schema prima del merge |
-| Agent remoto | Esegue task lunghi senza bloccare desktop |
+
+| Use case           | Descrizione                               |
+| ------------------ | ----------------------------------------- |
+| QA notturno        | Verifica dataset ogni notte               |
+| Report mensile     | Genera mappe/report automatici            |
+| Batch su comuni    | Esegue workflow su 100 comuni             |
+| Validazione upload | Controlla dati caricati da consulenti     |
+| CI geodata         | Testa layer e schema prima del merge      |
+| Agent remoto       | Esegue task lunghi senza bloccare desktop |
+
 
 ## Feature P0
 
-| Feature | Descrizione |
-|---|---|
-| `strata inspect` | Ispezione progetto/layer |
-| `strata run` | Esecuzione `.strataflow` |
-| `strata qa` | Validazione rules |
-| `strata report` | Generazione report |
-| Docker image | Worker QGIS headless |
-| Artifact output | Salvataggio log, layer, PDF |
-| Dry-run | Preview senza scrittura |
+
+| Feature          | Descrizione                 |
+| ---------------- | --------------------------- |
+| `strata inspect` | Ispezione progetto/layer    |
+| `strata run`     | Esecuzione `.strataflow`    |
+| `strata qa`      | Validazione rules           |
+| `strata report`  | Generazione report          |
+| Docker image     | Worker QGIS headless        |
+| Artifact output  | Salvataggio log, layer, PDF |
+| Dry-run          | Preview senza scrittura     |
+
 
 ## Feature P1
 
-| Feature | Descrizione |
-|---|---|
-| Worker pool | Più worker paralleli |
-| Kubernetes deployment | Deploy enterprise |
-| Scheduled runs | Esecuzioni pianificate |
-| Web dashboard | Monitor run |
-| Remote desktop preview | Vedere output worker |
-| Human approval queue | Approvazioni asincrone |
-| API REST | Integrazione con sistemi esterni |
+
+| Feature                | Descrizione                      |
+| ---------------------- | -------------------------------- |
+| Worker pool            | Più worker paralleli             |
+| Kubernetes deployment  | Deploy enterprise                |
+| Scheduled runs         | Esecuzioni pianificate           |
+| Web dashboard          | Monitor run                      |
+| Remote desktop preview | Vedere output worker             |
+| Human approval queue   | Approvazioni asincrone           |
+| API REST               | Integrazione con sistemi esterni |
+
 
 ## Acceptance criteria
 
@@ -1331,18 +1396,20 @@ Strata Review deve controllare progetto, layer, workflow e output prima della co
 
 ## Categorie review
 
-| Categoria | Check |
-|---|---|
-| CRS | CRS incoerente, trasformazioni sospette |
-| Geometrie | Invalidità, self-intersection, buchi, duplicati |
-| Attributi | Campi mancanti, null, valori fuori dominio |
-| Topologia | Overlap, gap, dangling lines |
-| Stili | Simbologia mancante, legenda errata |
-| Layout | Scala, nord, legenda, font, margini, fonti |
-| Output | File mancanti, formati errati, path rotti |
-| Performance | Layer enormi senza index |
-| Privacy | Dati sensibili in export |
-| Reproducibility | Mancanza log/provenance |
+
+| Categoria       | Check                                           |
+| --------------- | ----------------------------------------------- |
+| CRS             | CRS incoerente, trasformazioni sospette         |
+| Geometrie       | Invalidità, self-intersection, buchi, duplicati |
+| Attributi       | Campi mancanti, null, valori fuori dominio      |
+| Topologia       | Overlap, gap, dangling lines                    |
+| Stili           | Simbologia mancante, legenda errata             |
+| Layout          | Scala, nord, legenda, font, margini, fonti      |
+| Output          | File mancanti, formati errati, path rotti       |
+| Performance     | Layer enormi senza index                        |
+| Privacy         | Dati sensibili in export                        |
+| Reproducibility | Mancanza log/provenance                         |
+
 
 ## Output review
 
@@ -1371,15 +1438,17 @@ Status: Warning
 
 ## Feature P0
 
-| Feature | Descrizione |
-|---|---|
-| Review progetto | Analizza progetto QGIS |
-| Review layer | Analizza layer singolo |
-| Review workflow | Analizza `.strataflow` |
-| Review output | Analizza report/PDF/layer generati |
-| Fix suggestions | Suggerisce correzioni |
-| Rules-based review | Usa `.stratarules` |
-| Report review | Esporta review in PDF/Markdown |
+
+| Feature            | Descrizione                        |
+| ------------------ | ---------------------------------- |
+| Review progetto    | Analizza progetto QGIS             |
+| Review layer       | Analizza layer singolo             |
+| Review workflow    | Analizza `.strataflow`             |
+| Review output      | Analizza report/PDF/layer generati |
+| Fix suggestions    | Suggerisce correzioni              |
+| Rules-based review | Usa `.stratarules`                 |
+| Report review      | Esporta review in PDF/Markdown     |
+
 
 ## Acceptance criteria
 
@@ -1401,16 +1470,18 @@ Strata dovrebbe costruire un marketplace verticale: GIS skills, workflow, report
 
 ## Oggetti marketplace
 
-| Oggetto | Esempio |
-|---|---|
-| Skill | “Come fare overlay catastale” |
-| Workflow | “Buffer vincoli ambientali” |
-| Report template | “Relazione tecnica PA” |
-| Style pack | “Standard cartografia comunale” |
-| Rules pack | “Regole QA GeoPackage” |
-| Data connector | “OpenStreetMap / Copernicus / Catasto locale” |
-| Tool plugin | “Geocoder”, “DEM analysis”, “PostGIS QA” |
-| Agent persona | “Urban planner assistant”, “Agronomist assistant” |
+
+| Oggetto         | Esempio                                           |
+| --------------- | ------------------------------------------------- |
+| Skill           | “Come fare overlay catastale”                     |
+| Workflow        | “Buffer vincoli ambientali”                       |
+| Report template | “Relazione tecnica PA”                            |
+| Style pack      | “Standard cartografia comunale”                   |
+| Rules pack      | “Regole QA GeoPackage”                            |
+| Data connector  | “OpenStreetMap / Copernicus / Catasto locale”     |
+| Tool plugin     | “Geocoder”, “DEM analysis”, “PostGIS QA”          |
+| Agent persona   | “Urban planner assistant”, “Agronomist assistant” |
+
 
 ## SDK
 
@@ -1468,16 +1539,18 @@ rules:
 
 ## Governance marketplace
 
-| Area | Regola |
-|---|---|
-| Security | Tool con risk level e permissions |
-| Review | Approvazione manuale per plugin verificati |
-| Signing | Package firmati |
-| Versioning | Semver obbligatorio |
-| Compatibility | Versione Strata/QGIS supportata |
-| License | Licenza dichiarata |
-| Data policy | Dichiarazione dati trattati |
-| Test project | Ogni workflow deve avere test/demo |
+
+| Area          | Regola                                     |
+| ------------- | ------------------------------------------ |
+| Security      | Tool con risk level e permissions          |
+| Review        | Approvazione manuale per plugin verificati |
+| Signing       | Package firmati                            |
+| Versioning    | Semver obbligatorio                        |
+| Compatibility | Versione Strata/QGIS supportata            |
+| License       | Licenza dichiarata                         |
+| Data policy   | Dichiarazione dati trattati                |
+| Test project  | Ogni workflow deve avere test/demo         |
+
 
 ## Acceptance criteria
 
@@ -1494,100 +1567,112 @@ rules:
 
 ## A. Context Engine
 
-| ID | Feature | Priorità | Fase | Stato |
-|---|---|---:|---:|---|
-| CTX-001 | Project graph locale | P0 | 2 | `[PARZIALE]` snapshot layer + RAG index |
-| CTX-002 | Layer metadata extractor | P0 | 2 | `[FATTO]` `describe_layer`, `qgsailayerchunker` |
-| CTX-003 | CRS analyzer | P0 | 2 | `[PARZIALE]` via `describe_layer`; manca tool dedicato |
-| CTX-004 | Field profiler | P0 | 2 | `[PARZIALE]` sample features in `describe_layer` |
-| CTX-005 | Geometry quality summary | P0 | 2 | `[MANCANTE]` |
-| CTX-006 | Raster metadata summary | P1 | 2 | `[PARZIALE]` chunking raster in `qgsailayerchunker` |
-| CTX-007 | Point cloud metadata summary | P2 | 3 | `[MANCANTE]` |
-| CTX-008 | Style summarizer | P1 | 2 | `[MANCANTE]` |
-| CTX-009 | Layout summarizer | P1 | 2 | `[MANCANTE]` |
-| CTX-010 | Processing history parser | P1 | 2 | `[MANCANTE]` |
-| CTX-011 | Semantic search workspace | P0 | 2 | `[FATTO]` `search_workspace` |
-| CTX-012 | Privacy-aware context packs | P0 | 2 | `[PARZIALE]` consents + `wrapUntrusted`; manca pack espliciti |
-| CTX-013 | Context preview UI | P0 | 2 | `[MANCANTE]` |
-| CTX-014 | Context refresh watcher | P1 | 2 | `[FATTO]` `qgsaiindexingscheduler`, `qgsailayerindexcoordinator` |
-| CTX-015 | Sensitive data redaction | P0 | 2 | `[FATTO]` consents + redaction in audit log |
+
+| ID      | Feature                      | Priorità | Fase | Stato                                                            |
+| ------- | ---------------------------- | -------- | ---- | ---------------------------------------------------------------- |
+| CTX-001 | Project graph locale         | P0       | 2    | `[PARZIALE]` snapshot layer + RAG index                          |
+| CTX-002 | Layer metadata extractor     | P0       | 2    | `[FATTO]` `describe_layer`, `qgsailayerchunker`                  |
+| CTX-003 | CRS analyzer                 | P0       | 2    | `[PARZIALE]` via `describe_layer`; manca tool dedicato           |
+| CTX-004 | Field profiler               | P0       | 2    | `[PARZIALE]` sample features in `describe_layer`                 |
+| CTX-005 | Geometry quality summary     | P0       | 2    | `[MANCANTE]`                                                     |
+| CTX-006 | Raster metadata summary      | P1       | 2    | `[PARZIALE]` chunking raster in `qgsailayerchunker`              |
+| CTX-007 | Point cloud metadata summary | P2       | 3    | `[MANCANTE]`                                                     |
+| CTX-008 | Style summarizer             | P1       | 2    | `[MANCANTE]`                                                     |
+| CTX-009 | Layout summarizer            | P1       | 2    | `[MANCANTE]`                                                     |
+| CTX-010 | Processing history parser    | P1       | 2    | `[MANCANTE]`                                                     |
+| CTX-011 | Semantic search workspace    | P0       | 2    | `[FATTO]` `search_workspace`                                     |
+| CTX-012 | Privacy-aware context packs  | P0       | 2    | `[PARZIALE]` consents + `wrapUntrusted`; manca pack espliciti    |
+| CTX-013 | Context preview UI           | P0       | 2    | `[MANCANTE]`                                                     |
+| CTX-014 | Context refresh watcher      | P1       | 2    | `[FATTO]` `qgsaiindexingscheduler`, `qgsailayerindexcoordinator` |
+| CTX-015 | Sensitive data redaction     | P0       | 2    | `[FATTO]` consents + redaction in audit log                      |
+
 
 ## B. Agent
 
-| ID | Feature | Priorità | Fase | Stato |
-|---|---|---:|---:|---|
-| AGT-001 | Tool registry | P0 | 1 | `[FATTO]` `qgsaitoolregistry` (21 tool) |
-| AGT-002 | Tool permission model | P0 | 1 | `[FATTO]` `allowedToolsForActiveAgent`, `requiresApproval()` |
-| AGT-003 | Ask/Plan/Agent modes | P0 | 1 | `[FATTO]` 3 modalità + 3 agent interni |
-| AGT-004 | JSON planner | P0 | 4 | `[PARZIALE]` Plan mode testo; manca JSON schema |
-| AGT-005 | Step executor | P0 | 4 | `[PARZIALE]` loop tool; manca esecuzione step isolata |
-| AGT-006 | Step verifier | P0 | 4 | `[MANCANTE]` |
-| AGT-007 | Risk classifier | P0 | 1 | `[PARZIALE]` euristiche advisory; manca policy formale |
-| AGT-008 | PyQGIS sandbox checks | P0 | 1 | `[PARZIALE]` approval dialog + workspace trust |
-| AGT-009 | Execution history | P0 | 1 | `[PARZIALE]` audit log + chat history; manca log JSON run |
-| AGT-010 | Agent memory per project | P1 | 4 | `[MANCANTE]` |
-| AGT-011 | Multi-agent roles | P2 | 8 | `[MANCANTE]` |
-| AGT-012 | Background agent | P1 | 8 | `[MANCANTE]` |
-| AGT-013 | Human approval queue | P1 | 8 | `[MANCANTE]` |
+
+| ID      | Feature                  | Priorità | Fase | Stato                                                        |
+| ------- | ------------------------ | -------- | ---- | ------------------------------------------------------------ |
+| AGT-001 | Tool registry            | P0       | 1    | `[FATTO]` `qgsaitoolregistry` (21 tool)                      |
+| AGT-002 | Tool permission model    | P0       | 1    | `[FATTO]` `allowedToolsForActiveAgent`, `requiresApproval()` |
+| AGT-003 | Ask/Plan/Agent modes     | P0       | 1    | `[FATTO]` 3 modalità + 3 agent interni                       |
+| AGT-004 | JSON planner             | P0       | 4    | `[PARZIALE]` Plan mode testo; manca JSON schema              |
+| AGT-005 | Step executor            | P0       | 4    | `[PARZIALE]` loop tool; manca esecuzione step isolata        |
+| AGT-006 | Step verifier            | P0       | 4    | `[MANCANTE]`                                                 |
+| AGT-007 | Risk classifier          | P0       | 1    | `[PARZIALE]` euristiche advisory; manca policy formale       |
+| AGT-008 | PyQGIS sandbox checks    | P0       | 1    | `[PARZIALE]` approval dialog + workspace trust               |
+| AGT-009 | Execution history        | P0       | 1    | `[PARZIALE]` audit log + chat history; manca log JSON run    |
+| AGT-010 | Agent memory per project | P1       | 4    | `[MANCANTE]`                                                 |
+| AGT-011 | Multi-agent roles        | P2       | 8    | `[MANCANTE]`                                                 |
+| AGT-012 | Background agent         | P1       | 8    | `[MANCANTE]`                                                 |
+| AGT-013 | Human approval queue     | P1       | 8    | `[MANCANTE]`                                                 |
+
 
 ## C. GIS Tab
 
-| ID | Feature | Priorità | Fase | Stato |
-|---|---|---:|---:|---|
-| TAB-001 | Rule-based suggestion engine | P0 | 3 | `[MANCANTE]` |
-| TAB-002 | CRS mismatch suggestion | P0 | 3 | `[MANCANTE]` |
-| TAB-003 | Spatial index suggestion | P0 | 3 | `[MANCANTE]` |
-| TAB-004 | Fix geometries suggestion | P0 | 3 | `[MANCANTE]` |
-| TAB-005 | Styling suggestion | P0 | 3 | `[MANCANTE]` |
-| TAB-006 | Layout suggestion | P1 | 3 | `[MANCANTE]` |
-| TAB-007 | Processing error fix | P1 | 3 | `[MANCANTE]` |
-| TAB-008 | Workflow detection | P1 | 5 | `[MANCANTE]` |
-| TAB-009 | Personalized ranking | P2 | 5 | `[MANCANTE]` |
-| TAB-010 | Suggestion analytics | P1 | 3 | `[MANCANTE]` |
+
+| ID      | Feature                      | Priorità | Fase | Stato        |
+| ------- | ---------------------------- | -------- | ---- | ------------ |
+| TAB-001 | Rule-based suggestion engine | P0       | 3    | `[MANCANTE]` |
+| TAB-002 | CRS mismatch suggestion      | P0       | 3    | `[MANCANTE]` |
+| TAB-003 | Spatial index suggestion     | P0       | 3    | `[MANCANTE]` |
+| TAB-004 | Fix geometries suggestion    | P0       | 3    | `[MANCANTE]` |
+| TAB-005 | Styling suggestion           | P0       | 3    | `[MANCANTE]` |
+| TAB-006 | Layout suggestion            | P1       | 3    | `[MANCANTE]` |
+| TAB-007 | Processing error fix         | P1       | 3    | `[MANCANTE]` |
+| TAB-008 | Workflow detection           | P1       | 5    | `[MANCANTE]` |
+| TAB-009 | Personalized ranking         | P2       | 5    | `[MANCANTE]` |
+| TAB-010 | Suggestion analytics         | P1       | 3    | `[MANCANTE]` |
+
 
 ## D. Review e diff
 
-| ID | Feature | Priorità | Fase | Stato |
-|---|---|---:|---:|---|
-| REV-001 | Layer diff | P0 | 4 | `[MANCANTE]` |
-| REV-002 | Style diff | P0 | 4 | `[MANCANTE]` |
-| REV-003 | Layout diff | P1 | 4 | `[MANCANTE]` |
-| REV-004 | File diff/provenance | P0 | 5 | `[PARZIALE]` diff file via `qgsaireviewpatchengine` |
-| REV-005 | GIS review checks | P0 | 9 | `[MANCANTE]` |
-| REV-006 | Rules-based review | P0 | 9 | `[MANCANTE]` |
-| REV-007 | Fix suggestions | P1 | 9 | `[MANCANTE]` |
-| REV-008 | Review report export | P1 | 9 | `[MANCANTE]` |
-| REV-009 | Ignore false positive | P1 | 9 | `[MANCANTE]` |
+
+| ID      | Feature               | Priorità | Fase | Stato                                               |
+| ------- | --------------------- | -------- | ---- | --------------------------------------------------- |
+| REV-001 | Layer diff            | P0       | 4    | `[MANCANTE]`                                        |
+| REV-002 | Style diff            | P0       | 4    | `[MANCANTE]`                                        |
+| REV-003 | Layout diff           | P1       | 4    | `[MANCANTE]`                                        |
+| REV-004 | File diff/provenance  | P0       | 5    | `[PARZIALE]` diff file via `qgsaireviewpatchengine` |
+| REV-005 | GIS review checks     | P0       | 9    | `[MANCANTE]`                                        |
+| REV-006 | Rules-based review    | P0       | 9    | `[MANCANTE]`                                        |
+| REV-007 | Fix suggestions       | P1       | 9    | `[MANCANTE]`                                        |
+| REV-008 | Review report export  | P1       | 9    | `[MANCANTE]`                                        |
+| REV-009 | Ignore false positive | P1       | 9    | `[MANCANTE]`                                        |
+
 
 ## E. Workflow Composer
 
-| ID | Feature | Priorità | Fase | Stato |
-|---|---|---:|---:|---|
-| WFL-001 | `.strataflow` schema | P0 | 5 | `[MANCANTE]` |
-| WFL-002 | Save run as workflow | P0 | 5 | `[MANCANTE]` |
-| WFL-003 | Workflow runner | P0 | 5 | `[MANCANTE]` |
-| WFL-004 | Parameter editor | P0 | 5 | `[MANCANTE]` |
-| WFL-005 | Workflow graph UI | P1 | 5 | `[MANCANTE]` |
-| WFL-006 | Export PyQGIS | P0 | 5 | `[MANCANTE]` |
-| WFL-007 | Export Processing model | P1 | 5 | `[MANCANTE]` |
-| WFL-008 | Workflow templates | P1 | 6 | `[MANCANTE]` |
-| WFL-009 | Workflow versioning | P1 | 7 | `[MANCANTE]` |
-| WFL-010 | Workflow approval | P1 | 7 | `[MANCANTE]` |
+
+| ID      | Feature                 | Priorità | Fase | Stato        |
+| ------- | ----------------------- | -------- | ---- | ------------ |
+| WFL-001 | `.strataflow` schema    | P0       | 5    | `[MANCANTE]` |
+| WFL-002 | Save run as workflow    | P0       | 5    | `[MANCANTE]` |
+| WFL-003 | Workflow runner         | P0       | 5    | `[MANCANTE]` |
+| WFL-004 | Parameter editor        | P0       | 5    | `[MANCANTE]` |
+| WFL-005 | Workflow graph UI       | P1       | 5    | `[MANCANTE]` |
+| WFL-006 | Export PyQGIS           | P0       | 5    | `[MANCANTE]` |
+| WFL-007 | Export Processing model | P1       | 5    | `[MANCANTE]` |
+| WFL-008 | Workflow templates      | P1       | 6    | `[MANCANTE]` |
+| WFL-009 | Workflow versioning     | P1       | 7    | `[MANCANTE]` |
+| WFL-010 | Workflow approval       | P1       | 7    | `[MANCANTE]` |
+
 
 ## F. Enterprise
 
-| ID | Feature | Priorità | Fase | Stato |
-|---|---|---:|---:|---|
-| ENT-001 | Workspace/org model | P0 | 7 | `[MANCANTE]` |
-| ENT-002 | Roles and permissions | P0 | 7 | `[MANCANTE]` |
-| ENT-003 | Model allowlist/blocklist | P0 | 7 | `[MANCANTE]` |
-| ENT-004 | Data policy controls | P0 | 7 | `[PARZIALE]` consents locali AI; manca admin policy |
-| ENT-005 | Audit log | P0 | 7 | `[PARZIALE]` `qgsaiauditlog` locale; manca audit enterprise |
-| ENT-006 | Usage analytics | P1 | 7 | `[MANCANTE]` |
-| ENT-007 | SSO/SAML | P1 | 7 | `[MANCANTE]` |
-| ENT-008 | SCIM | P2 | 7 | `[MANCANTE]` |
-| ENT-009 | On-prem deployment | P0 | 7 | `[MANCANTE]` |
-| ENT-010 | Air-gapped mode | P2 | 8 | `[MANCANTE]` |
+
+| ID      | Feature                   | Priorità | Fase | Stato                                                       |
+| ------- | ------------------------- | -------- | ---- | ----------------------------------------------------------- |
+| ENT-001 | Workspace/org model       | P0       | 7    | `[MANCANTE]`                                                |
+| ENT-002 | Roles and permissions     | P0       | 7    | `[MANCANTE]`                                                |
+| ENT-003 | Model allowlist/blocklist | P0       | 7    | `[MANCANTE]`                                                |
+| ENT-004 | Data policy controls      | P0       | 7    | `[PARZIALE]` consents locali AI; manca admin policy         |
+| ENT-005 | Audit log                 | P0       | 7    | `[PARZIALE]` `qgsaiauditlog` locale; manca audit enterprise |
+| ENT-006 | Usage analytics           | P1       | 7    | `[MANCANTE]`                                                |
+| ENT-007 | SSO/SAML                  | P1       | 7    | `[MANCANTE]`                                                |
+| ENT-008 | SCIM                      | P2       | 7    | `[MANCANTE]`                                                |
+| ENT-009 | On-prem deployment        | P0       | 7    | `[MANCANTE]`                                                |
+| ENT-010 | Air-gapped mode           | P2       | 8    | `[MANCANTE]`                                                |
+
 
 ---
 
@@ -1595,45 +1680,51 @@ rules:
 
 ## Product metrics
 
-| Metrica | Target iniziale |
-|---|---:|
-| Activation rate | > 40% degli installati completano primo task |
-| Time to first value | < 10 minuti |
-| Agent task success rate | > 70% MVP, > 85% fase 4 |
-| GIS Tab acceptance rate | > 20% fase 3, > 35% fase 5 |
-| Workflow rerun success | > 80% |
-| Report generation success | > 85% |
-| Crash-free sessions | > 98% |
-| Weekly active users / installs | > 25% |
-| Prompt-to-output median time | < 5 minuti per workflow demo |
+
+| Metrica                        | Target iniziale                              |
+| ------------------------------ | -------------------------------------------- |
+| Activation rate                | > 40% degli installati completano primo task |
+| Time to first value            | < 10 minuti                                  |
+| Agent task success rate        | > 70% MVP, > 85% fase 4                      |
+| GIS Tab acceptance rate        | > 20% fase 3, > 35% fase 5                   |
+| Workflow rerun success         | > 80%                                        |
+| Report generation success      | > 85%                                        |
+| Crash-free sessions            | > 98%                                        |
+| Weekly active users / installs | > 25%                                        |
+| Prompt-to-output median time   | < 5 minuti per workflow demo                 |
+
 
 ## Business metrics
 
-| Metrica | Target |
-|---|---:|
-| Utenti beta attivi | 100–300 |
-| Team pilota | 5–10 |
-| Conversione beta → paid | 5–10% |
-| Prezzo individuale test | 15–30 €/mese |
-| Prezzo team test | 300–1.000 €/mese |
-| Enterprise pilot | 3–10k €/anno iniziale |
-| Vertical pack paid adoption | > 20% utenti paganti |
+
+| Metrica                     | Target                |
+| --------------------------- | --------------------- |
+| Utenti beta attivi          | 100–300               |
+| Team pilota                 | 5–10                  |
+| Conversione beta → paid     | 5–10%                 |
+| Prezzo individuale test     | 15–30 €/mese          |
+| Prezzo team test            | 300–1.000 €/mese      |
+| Enterprise pilot            | 3–10k €/anno iniziale |
+| Vertical pack paid adoption | > 20% utenti paganti  |
+
 
 ## Quality metrics
 
-| Metrica | Target |
-|---|---:|
-| Azioni distruttive senza conferma | 0 |
-| Invio geometrie cloud senza opt-in | 0 |
-| Workflow con provenance completa | > 95% |
-| Rollback riusciti | > 90% |
-| False positive GIS Review | < 30% iniziale, < 15% maturo |
+
+| Metrica                            | Target                       |
+| ---------------------------------- | ---------------------------- |
+| Azioni distruttive senza conferma  | 0                            |
+| Invio geometrie cloud senza opt-in | 0                            |
+| Workflow con provenance completa   | > 95%                        |
+| Rollback riusciti                  | > 90%                        |
+| False positive GIS Review          | < 30% iniziale, < 15% maturo |
+
 
 ---
 
 # 7. Sequenza consigliata
 
-> **Nota:** la sequenza originale assumeva partenza da zero. A giugno 2026 Fase 1 (~75%) e Fase 2 (~60%) hanno basi solide. Gli sprint sotto partono dai **gap reali** e saltano ciò che è già `[FATTO]`.
+> **Nota:** la sequenza originale assumeva partenza da zero. A giugno 2026 Fase 1 (~~75%) e Fase 2 (~~60%) hanno basi solide. Gli sprint sotto partono dai **gap reali** e saltano ciò che è già `[FATTO]`.
 
 ## Già completato (non ripetere)
 
@@ -1771,18 +1862,20 @@ Obiettivo: monetizzazione verticale e primo pilota enterprise.
 
 Se si dovesse ridurre tutto a 10 feature, ecco lo stato e il focus:
 
-| # | Feature | Stato | Focus |
-|---:|---|---|---|
-| 1 | **Tool registry GIS sicuro** | `[FATTO]` | Estendere con tool GIS nativi (Processing, style, layout, export) |
-| 2 | **Context Engine locale** | `[PARZIALE ~60%]` | Completare project graph, context packs, preview UI |
-| 3 | **Layer cards leggibili dall’agente** | `[PARZIALE]` | Formalizzare formato YAML; oggi via `describe_layer` |
-| 4 | **Plan mode con JSON validabile** | `[PARZIALE]` | Plan mode testo funziona; manca JSON schema |
-| 5 | **Agent execution step-by-step** | `[PARZIALE]` | Loop tool ok; manca verifier e step isolati |
-| 6 | **GIS diff e rollback** | `[MANCANTE]` | Solo diff file; priorità alta |
-| 7 | **GIS Tab rule-based** | `[MANCANTE]` | Priorità alta dopo tool GIS nativi |
-| 8 | **Save run as workflow** | `[MANCANTE]` | Dipende da `.strataflow` schema |
-| 9 | **Report tecnico automatico** | `[MANCANTE]` | — |
-| 10 | **Vertical pack PA/agri** | `[MANCANTE]` | Dopo workflow composer |
+
+| #   | Feature                               | Stato             | Focus                                                             |
+| --- | ------------------------------------- | ----------------- | ----------------------------------------------------------------- |
+| 1   | **Tool registry GIS sicuro**          | `[FATTO]`         | Estendere con tool GIS nativi (Processing, style, layout, export) |
+| 2   | **Context Engine locale**             | `[PARZIALE ~60%]` | Completare project graph, context packs, preview UI               |
+| 3   | **Layer cards leggibili dall’agente** | `[PARZIALE]`      | Formalizzare formato YAML; oggi via `describe_layer`              |
+| 4   | **Plan mode con JSON validabile**     | `[PARZIALE]`      | Plan mode testo funziona; manca JSON schema                       |
+| 5   | **Agent execution step-by-step**      | `[PARZIALE]`      | Loop tool ok; manca verifier e step isolati                       |
+| 6   | **GIS diff e rollback**               | `[MANCANTE]`      | Solo diff file; priorità alta                                     |
+| 7   | **GIS Tab rule-based**                | `[MANCANTE]`      | Priorità alta dopo tool GIS nativi                                |
+| 8   | **Save run as workflow**              | `[MANCANTE]`      | Dipende da `.strataflow` schema                                   |
+| 9   | **Report tecnico automatico**         | `[MANCANTE]`      | —                                                                 |
+| 10  | **Vertical pack PA/agri**             | `[MANCANTE]`      | Dopo workflow composer                                            |
+
 
 **Prossime 3 priorità concrete (ordine di esecuzione):**
 
@@ -1987,3 +2080,365 @@ contesto → piano → azione → verifica → diff → output → workflow → 
 ```
 
 può diventare un prodotto realmente differenziato rispetto a una semplice chat dentro QGIS.
+
+---
+
+# 13. Fasi di chiusura gap AI tool (workflow GIS core)
+
+## Contesto
+
+L'analisi comparativa tra `QgsAiToolRegistry` (26 tool registrati in [src/app/qgisapp.cpp](src/app/qgisapp.cpp) righe 1436-1463 al momento dell'analisi) e le funzionalità core di QGIS desktop aveva evidenziato 11 aree ad alta priorità **senza alcun tool AI dedicato**: editing geometrico interattivo, modifica attributi, field calculator, gestione progetto, connessione a fonti dati remote, styling avanzato, layout compositor avanzato, snapping, selezione/identify e navigazione canvas in scrittura.
+
+Le 11 fasi seguenti sono state chiuse con tool `QgsAiTool` dedicati, seguendo lo stesso pattern architetturale dei tool esistenti (`name()`, `description()`, `schema()`, `execute()`, `requiresApproval()`, `riskLevel()`) e lo stesso pattern di test già in uso in `tests/src/app/testqgsaitoolregistry.cpp` (setup `QgsProject` + layer memory, `execute()` con `QJsonObject`, assert su `result.success`/`errorMessage`, verifica `rollback_token`).
+
+**Nota:** queste fasi si inseriscono come completamento trasversale della Fase 1 (Assistant operativo MVP) e della Fase 4 (Agent Mode v2) già presenti nel documento; non sostituiscono la numerazione 0-10 esistente.
+
+**Stato finale (luglio 2026):** completato su branch `codex/ai-gap-tools` con test mirati per `test_app_aieditingtools`, `test_app_aiattributetabletools`, `test_app_aiprojecttools`, `test_app_aitoolregistry` e test aggregato finale verde.
+
+## Fase AI-GAP-1 — Editing geometrico interattivo [FATTO]
+
+**Obiettivo:** permettere all'agente di modificare la geometria di feature esistenti (spostare/aggiungere/eliminare vertici, split/reshape), oggi possibile solo interattivamente via `QgsMapTool` (`QgsAppMapTools::Tool`, [src/app/maptools/qgsappmaptools.h](src/app/maptools/qgsappmaptools.h) righe 32-83) o tramite `run_python` non tipizzato.
+
+**Gap attuale:** nessun tool AI tocca la geometria di una feature già esistente; `add_layer_from_file` e `run_processing_algorithm` creano nuovi layer/output ma non editano in place.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)         | Classe                         | Descrizione                                                                                         | Risk level |
+| ----------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------- | ---------- |
+| `edit_feature_geometry` | `QgsAiEditFeatureGeometryTool` | Sposta/aggiunge/elimina vertici di una feature per `feature_id`; supporta split via linea di taglio | high       |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaieditingtools.h/.cpp`
+- Registrazione in `src/app/qgisapp.cpp` (blocco `mAiToolRegistry->registerTool`, righe ~1436-1463)
+
+**Test di integrazione:**
+
+- Nuovo file `tests/src/app/testqgsaieditingtools.cpp`, target CTest `test_app_aieditingtools` (riga aggiunta in `tests/src/app/CMakeLists.txt` dentro `if (ENABLE_AI_ASSISTANT)`)
+- Setup: `QgsProject` + `QgsVectorLayer` memory con geometria poligonale nota; `execute()` con vertice da spostare; assert su nuova posizione vertice via `QgsFeature::geometry()`, su `result.success`/`rollback_token`, e su ripristino geometria originale dopo rollback
+
+**Acceptance criteria:**
+
+- L'agente sposta/aggiunge/elimina un vertice su una feature esistente con conferma utente.
+- Ogni edit produce un `rollback_token` funzionante.
+- Geometrie invalide risultanti vengono rifiutate con errore esplicito prima del commit.
+
+## Fase AI-GAP-2 — Modifica attributi di feature esistenti [FATTO]
+
+**Obiettivo:** consentire la scrittura di valori attributo su feature già esistenti, non solo la lettura via `describe_layer`.
+
+**Gap attuale:** `describe_layer` (`QgsAiDescribeLayerTool`) legge campioni di attributi ma non scrive; nessun tool aggiorna valori di campo per una feature specifica.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)             | Classe                             | Descrizione                                                    | Risk level |
+| --------------------------- | ---------------------------------- | -------------------------------------------------------------- | ---------- |
+| `update_feature_attributes` | `QgsAiUpdateFeatureAttributesTool` | Aggiorna uno o più valori di campo per `feature_id`/`layer_id` | high       |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaieditingtools.h/.cpp` (stesso raggruppamento di AI-GAP-1)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaieditingtools.cpp`: setup layer memory con campi tipizzati, `execute()` con nuovi valori, assert su `QgsFeature::attribute()` post-update, verifica rifiuto se tipo valore incompatibile con il campo, verifica rollback
+
+**Acceptance criteria:**
+
+- L'agente aggiorna attributi di una feature esistente con conferma utente.
+- Validazione tipo/dominio campo prima della scrittura.
+- Rollback ripristina i valori precedenti.
+
+## Fase AI-GAP-3 — Field calculator [FATTO]
+
+**Obiettivo:** eseguire calcoli su campo (nuovo o esistente) con espressioni QGIS, equivalente AI di `mActionOpenFieldCalc` ([src/app/qgisapp.h](src/app/qgisapp.h) riga 693).
+
+**Gap attuale:** nessun tool dedicato; oggi realizzabile solo con `run_python` (rischio critical, non tipizzato).
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)   | Classe                    | Descrizione                                                                                           | Risk level |
+| ----------------- | ------------------------- | ----------------------------------------------------------------------------------------------------- | ---------- |
+| `calculate_field` | `QgsAiCalculateFieldTool` | Applica un'espressione QGIS (`QgsExpression`) a un campo nuovo o esistente su tutte/subset di feature | high       |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaieditingtools.h/.cpp`
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaieditingtools.cpp`: layer memory con campo numerico, espressione tipo `"area_ha" * 2`, assert sui valori calcolati per ogni feature, test con espressione invalida (assert `result.success == false` con messaggio parser), test creazione nuovo campo se non esistente
+
+**Acceptance criteria:**
+
+- Espressioni QGIS valide vengono applicate correttamente a tutte le feature del subset richiesto.
+- Espressioni invalide restituiscono errore chiaro senza modificare il layer.
+- Rollback disponibile per il batch di modifiche.
+
+## Fase AI-GAP-4 — Attribute table editing/query [FATTO]
+
+**Obiettivo:** permettere selezione/filtro di feature via espressione e modifiche batch, equivalente AI di `attributeTable()` ([src/app/qgisapp.h](src/app/qgisapp.h) riga 693 area).
+
+**Gap attuale:** nessun tool interroga o modifica in batch la tabella attributi; `describe_layer` restituisce solo un campione fisso (max 10 feature).
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)           | Classe                    | Descrizione                                                                    | Risk level |
+| ------------------------- | ------------------------- | ------------------------------------------------------------------------------ | ---------- |
+| `query_features`          | `QgsAiAttributeTableTool` | Seleziona/filtra feature per espressione QGIS, con paginazione                 | low        |
+| `batch_update_attributes` | `QgsAiAttributeTableTool` | Aggiorna un campo per tutte le feature che soddisfano un'espressione di filtro | high       |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaiattributetabletools.h/.cpp`
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Nuovo file `tests/src/app/testqgsaiattributetabletools.cpp`, target `test_app_aiattributetabletools`
+- Test `query_features`: layer memory con feature eterogenee, filtro per espressione, assert su count e id feature restituiti, verifica paginazione
+- Test `batch_update_attributes`: filtro + update, assert numero feature modificate coerente col filtro, verifica rollback
+
+**Acceptance criteria:**
+
+- Query restituisce solo le feature che soddisfano l'espressione, con conteggio corretto.
+- Update batch richiede conferma e riporta il numero di feature modificate.
+- Rollback ripristina tutti i valori originali del batch.
+
+## Fase AI-GAP-5 — Gestione progetto [FATTO]
+
+**Obiettivo:** dare controllo AI su salvataggio progetto, CRS di progetto e proprietà base, oggi solo in lettura tramite `list_project_layers`.
+
+**Gap attuale:** `list_project_layers` espone `project_file` solo in lettura; nessun tool salva il progetto o modifica CRS/proprietà.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)  | Classe                   | Descrizione                                                            | Risk level |
+| ---------------- | ------------------------ | ---------------------------------------------------------------------- | ---------- |
+| `manage_project` | `QgsAiManageProjectTool` | Azioni: `save`, `save_as`, `get_properties`, `set_crs`, `set_property` | high       |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaiprojecttools.h/.cpp`
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Nuovo file `tests/src/app/testqgsaiprojecttools.cpp`, target `test_app_aiprojecttools`
+- Test `save`/`save_as`: `QTemporaryDir` + `QgsProject`, assert su `QFileInfo::exists()` del file `.qgz`/`.qgs` prodotto
+- Test `set_crs`: assert su `QgsProject::crs()` post-esecuzione e coerenza con layer esistenti
+- Test errori: path non scrivibile, CRS non valido
+
+**Acceptance criteria:**
+
+- Salvataggio progetto (anche "save as") funzionante con conferma utente.
+- Cambio CRS progetto riflesso in `QgsProject::crs()` e nei componenti dipendenti (canvas).
+- Nessuna sovrascrittura file senza conferma esplicita.
+
+## Fase AI-GAP-6 — Layer da fonti dati remote [FATTO]
+
+**Obiettivo:** estendere il caricamento layer oltre i file locali, coprendo WMS/WFS/XYZ/PostGIS, come da azioni `addWms`/`addWfs`/`addPostgisLayer` già presenti in `qgisapp.h`.
+
+**Gap attuale:** `add_layer_from_file` (`QgsAiAddLayerFromFileTool`) accetta solo percorsi file locali (vector/raster).
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)          | Classe                         | Descrizione                                                                       | Risk level |
+| ------------------------ | ------------------------------ | --------------------------------------------------------------------------------- | ---------- |
+| `add_layer_from_service` | `QgsAiAddLayerFromServiceTool` | Aggiunge layer da URI di servizio (WMS, WFS, XYZ tile, PostGIS connection string) | medium     |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsailayertools.h/.cpp` (stesso file di `QgsAiAddLayerFromFileTool`)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaitoolregistry.cpp` (stesso file dei test layer esistenti): test con provider `wms`/`xyz` su URI locale/mock (es. tile server statico servito da `QTemporaryDir` + `QgsNetworkAccessManager` test hook, pattern già usato in altri test QGIS di rete); assert su `QgsRasterLayer::isValid()`/`QgsVectorLayer::isValid()` e rollback rimozione layer
+- Test errore: URI malformato o provider non supportato → `result.success == false`
+
+**Acceptance criteria:**
+
+- Layer WMS/WFS/XYZ/PostGIS aggiunti correttamente al progetto con conferma utente.
+- Provider non supportato o URI invalido restituisce errore esplicito senza aggiungere layer.
+- Rollback rimuove il layer aggiunto.
+
+## Fase AI-GAP-7 — Stile/simbologia avanzata [FATTO]
+
+**Obiettivo:** estendere `style_layer` oltre opacità/visibilità/colore single-symbol, coprendo simbologia categorized, graduated, rule-based, stile raster ed etichettatura base.
+
+**Gap attuale:** `style_layer` (`QgsAiStyleLayerTool`, [src/app/ai/tools/qgsailayertools.cpp](src/app/ai/tools/qgsailayertools.cpp) righe 782-883) supporta solo single-symbol vector.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)        | Classe                   | Descrizione                                                                                                       | Risk level |
+| ---------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- | ---------- |
+| `style_layer_advanced` | `QgsAiAdvancedStyleTool` | Imposta renderer categorized/graduated/rule-based, stile raster (singleband/multiband), regole etichettatura base | medium     |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsailayertools.h/.cpp` (estensione del gruppo esistente)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaitoolregistry.cpp`: layer memory con campo categorico, `execute()` con renderer `categorized` su quel campo, assert su `QgsVectorLayer::renderer()->type()` e numero categorie generate; test analogo per `graduated` su campo numerico e per abilitazione etichette; verifica rollback ripristina il renderer/label settings precedenti
+
+**Acceptance criteria:**
+
+- Renderer categorized/graduated applicati correttamente in base al campo indicato, con classi coerenti ai valori distinti/range.
+- Etichettatura base attivabile/disattivabile su un campo.
+- Rollback ripristina lo stile precedente (renderer + labeling).
+
+## Fase AI-GAP-8 — Layout compositor avanzato [FATTO]
+
+**Obiettivo:** estendere `create_print_layout` per modificare layout esistenti aggiungendo legenda, scala, freccia nord e gestendo multi-pagina.
+
+**Gap attuale:** `create_print_layout` (`QgsAiCreatePrintLayoutTool`, [src/app/ai/tools/qgsailayertools.cpp](src/app/ai/tools/qgsailayertools.cpp) righe 894-983) crea solo mappa + titolo opzionale, nessuna modifica su layout già esistente.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)     | Classe                     | Descrizione                                                                                      | Risk level |
+| ------------------- | -------------------------- | ------------------------------------------------------------------------------------------------ | ---------- |
+| `edit_print_layout` | `QgsAiEditPrintLayoutTool` | Aggiunge/rimuove legenda, scala, freccia nord, pagine aggiuntive su un layout esistente per nome | medium     |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsailayertools.h/.cpp`
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaitoolregistry.cpp`: `QgsPrintLayout` creato via `create_print_layout` nel setup, poi `edit_print_layout` per aggiungere legenda/scala/nord; assert su presenza dei relativi `QgsLayoutItem` (`QgsLayoutItemLegend`, `QgsLayoutItemScaleBar`, `QgsLayoutItemPicture`/north arrow) nel layout; test aggiunta pagina e verifica `QgsLayout::pageCollection()->pageCount()`
+
+**Acceptance criteria:**
+
+- Legenda, scala e freccia nord aggiungibili a un layout esistente identificato per nome.
+- Aggiunta pagina funzionante per layout multi-pagina.
+- Rollback rimuove gli elementi aggiunti ripristinando il layout precedente.
+
+## Fase AI-GAP-9 — Snapping settings [FATTO]
+
+**Obiettivo:** permettere all'agente di configurare lo snapping di progetto prima di operazioni di editing geometrico (rilevante soprattutto in combinazione con AI-GAP-1), equivalente AI di `mActionSnappingOptions`.
+
+**Gap attuale:** nessun tool legge o scrive la configurazione snapping (`QgsSnappingConfig`).
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)      | Classe                       | Descrizione                                                                                | Risk level |
+| -------------------- | ---------------------------- | ------------------------------------------------------------------------------------------ | ---------- |
+| `configure_snapping` | `QgsAiConfigureSnappingTool` | Legge/imposta modalità snapping, tolleranza, unità e layer coinvolti (`QgsSnappingConfig`) | low        |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaiprojecttools.h/.cpp` (stesso file di `manage_project`)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaiprojecttools.cpp`: `execute()` con `mode: "vertex"`, `tolerance: 10`; assert su `QgsProject::snappingConfig()` post-esecuzione; test lettura configurazione corrente senza modifiche (azione `get`)
+
+**Acceptance criteria:**
+
+- Configurazione snapping applicata correttamente e leggibile via `QgsProject::snappingConfig()`.
+- Azione di sola lettura non modifica la configurazione esistente.
+- Valori di tolleranza/unità non validi restituiscono errore esplicito.
+
+## Fase AI-GAP-10 — Selezione feature e identify programmatico [FATTO]
+
+**Obiettivo:** permettere all'agente di selezionare feature su un layer (per espressione o per area) e interrogarle puntualmente, equivalente AI di `SelectFeatures`/`Identify` in `QgsAppMapTools::Tool`.
+
+**Gap attuale:** nessun tool imposta la selezione corrente di un layer; `describe_layer` legge solo un campione fisso indipendente dalla selezione.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)        | Classe                    | Descrizione                                                                                                      | Risk level |
+| ---------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------- |
+| `select_features`      | `QgsAiSelectFeaturesTool` | Seleziona feature su un layer per espressione o bounding box, aggiornando `QgsVectorLayer::selectedFeatureIds()` | low        |
+| `identify_features_at` | `QgsAiSelectFeaturesTool` | Restituisce le feature sotto una coordinata/area del canvas, con attributi                                       | low        |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaiattributetabletools.h/.cpp` (stesso file di `query_features`)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaiattributetabletools.cpp`: `select_features` con espressione, assert su `layer->selectedFeatureIds()`; `identify_features_at` con coordinata nota su feature di test, assert su feature restituita e relativi attributi
+
+**Acceptance criteria:**
+
+- Selezione feature riflessa nello stato del layer (`selectedFeatureIds()`) e visibile in UI.
+- Identify per coordinata restituisce le feature corrette con attributi completi.
+- Selezione vuota gestita senza errore (risultato con zero feature).
+
+## Fase AI-GAP-11 — Navigazione canvas programmatica [FATTO]
+
+**Obiettivo:** dare all'agente la controparte in scrittura di `get_active_canvas_extent`, per impostare zoom/pan/estensione del canvas prima di uno screenshot (`capture_map_canvas`) o di un'analisi visiva.
+
+**Gap attuale:** `get_active_canvas_extent` (`QgsAiGetCanvasExtentTool`) è read-only; nessun tool modifica extent/scala/rotazione del canvas.
+
+**Tool AI da creare:**
+
+
+| Tool (`name()`)     | Classe                     | Descrizione                                                                              | Risk level |
+| ------------------- | -------------------------- | ---------------------------------------------------------------------------------------- | ---------- |
+| `set_canvas_extent` | `QgsAiSetCanvasExtentTool` | Imposta extent (bbox+CRS), scala o zoom-to-layer/zoom-to-selection sul canvas principale | low        |
+
+
+**File coinvolti:**
+
+- Nuova classe in `src/app/ai/tools/qgsaireadtools.h/.cpp` (stesso file di `get_active_canvas_extent`)
+- Registrazione in `src/app/qgisapp.cpp`
+
+**Test di integrazione:**
+
+- Slot in `tests/src/app/testqgsaitoolregistry.cpp`: `QgsMapCanvas` locale di test, `execute()` con bbox esplicito, assert su `canvas->extent()` post-esecuzione; test `zoom_to_layer` con layer noto, assert su extent coerente col layer; test rollback ripristina extent precedente
+
+**Acceptance criteria:**
+
+- Extent/scala impostati correttamente e verificabili via `QgsMapCanvas::extent()`.
+- `zoom_to_layer`/`zoom_to_selection` funzionanti sui casi base.
+- Rollback ripristina l'extent precedente del canvas.
+
+## Riepilogo
+
+
+| Fase      | Tool (`name()`)                             | Priorità | Stato        |
+| --------- | ------------------------------------------- | -------- | ------------ |
+| AI-GAP-1  | `edit_feature_geometry`                     | Alta     | `[FATTO]` |
+| AI-GAP-2  | `update_feature_attributes`                 | Alta     | `[FATTO]` |
+| AI-GAP-3  | `calculate_field`                           | Alta     | `[FATTO]` |
+| AI-GAP-4  | `query_features`, `batch_update_attributes` | Alta     | `[FATTO]` |
+| AI-GAP-5  | `manage_project`                            | Alta     | `[FATTO]` |
+| AI-GAP-6  | `add_layer_from_service`                    | Alta     | `[FATTO]` |
+| AI-GAP-7  | `style_layer_advanced`                      | Alta     | `[FATTO]` |
+| AI-GAP-8  | `edit_print_layout`                         | Alta     | `[FATTO]` |
+| AI-GAP-9  | `configure_snapping`                        | Alta     | `[FATTO]` |
+| AI-GAP-10 | `select_features`, `identify_features_at`   | Alta     | `[FATTO]` |
+| AI-GAP-11 | `set_canvas_extent`                         | Alta     | `[FATTO]` |
+
+
+Ogni fase è stata implementata con test mirato e commit dedicato; la sezione 13 è chiusa rispetto ai gap AI tool GIS core elencati.

@@ -21,17 +21,24 @@
 #include "qgsaifilecontextprovider.h"
 #include "qgsaitoolschemautil.h"
 #include "qgsapplication.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgslayoutexporter.h"
 #include "qgslayoutitemlabel.h"
+#include "qgslayoutitemlegend.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutitemscalebar.h"
 #include "qgslayoutmanager.h"
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutpoint.h"
 #include "qgslayoutsize.h"
 #include "qgsmapcanvas.h"
@@ -41,6 +48,7 @@
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmapsettings.h"
 #include "qgsmasterlayoutinterface.h"
+#include "qgspallabeling.h"
 #include "qgsprintlayout.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
@@ -49,6 +57,8 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingregistry.h"
 #include "qgsproject.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrectangle.h"
@@ -56,6 +66,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 #include "qgswkbtypes.h"
 
 #include <QColor>
@@ -71,6 +82,8 @@
 #include <QSize>
 #include <QString>
 #include <QStringList>
+#include <QUrl>
+#include <QUrlQuery>
 #include <QUuid>
 #include <QVariant>
 
@@ -83,6 +96,7 @@ namespace
     RemoveLayer,
     RestoreLayerStyle,
     RemoveLayout,
+    RestoreLayoutEdit,
     DeleteFile
   };
 
@@ -94,6 +108,8 @@ namespace
       bool hasVisibility = false;
       bool visible = true;
       QString layoutName;
+      QStringList itemUuids;
+      int pageCountBefore = 0;
       QString filePath;
       QString description;
   };
@@ -142,8 +158,7 @@ namespace
     return QString();
   }
 
-  // Resolve a user-supplied path: try workspace first, then accept absolute path
-  // if the file exists on disk. Returns empty QString if unresolvable.
+  // Resolve a user-supplied layer path inside the AI workspace only.
   QString resolvePath( QgsAiFileContextProvider *provider, const QString &path )
   {
     if ( provider )
@@ -152,10 +167,72 @@ namespace
       if ( !resolved.isEmpty() && QFileInfo::exists( resolved ) )
         return resolved;
     }
-    const QFileInfo info( path );
-    if ( info.exists() && info.isFile() )
-      return info.absoluteFilePath();
     return QString();
+  }
+
+  QString serviceLayerProviderKey( const QString &provider )
+  {
+    const QString normalized = provider.toLower().trimmed();
+    if ( normalized == "wms"_L1 || normalized == "xyz"_L1 )
+      return u"wms"_s;
+    if ( normalized == "wfs"_L1 )
+      return u"WFS"_s;
+    if ( normalized == "postgres"_L1 || normalized == "postgis"_L1 )
+      return u"postgres"_s;
+    return QString();
+  }
+
+  QString serviceLayerType( const QString &provider )
+  {
+    const QString normalized = provider.toLower().trimmed();
+    if ( normalized == "wms"_L1 || normalized == "xyz"_L1 )
+      return u"raster"_s;
+    if ( normalized == "wfs"_L1 || normalized == "postgres"_L1 || normalized == "postgis"_L1 )
+      return u"vector"_s;
+    return QString();
+  }
+
+  QString normalizeServiceUri( const QString &provider, const QString &rawUri )
+  {
+    const QString normalizedProvider = provider.toLower().trimmed();
+    QString uri = rawUri.trimmed();
+    if ( normalizedProvider == "xyz"_L1 && !uri.contains( u"type=xyz"_s, Qt::CaseInsensitive ) )
+    {
+      QUrlQuery query;
+      query.addQueryItem( u"type"_s, u"xyz"_s );
+      query.addQueryItem( u"url"_s, uri );
+      query.addQueryItem( u"zmin"_s, u"0"_s );
+      query.addQueryItem( u"zmax"_s, u"19"_s );
+      uri = query.toString( QUrl::FullyEncoded );
+    }
+    return uri;
+  }
+
+  QString applyServiceLayerOptions( const QString &providerKey, const QString &uri, const QJsonObject &options, QString &error )
+  {
+    if ( options.isEmpty() )
+      return uri;
+
+    QgsProviderRegistry *registry = QgsProviderRegistry::instance();
+    if ( !registry )
+    {
+      error = u"QGIS provider registry is not available."_s;
+      return QString();
+    }
+
+    QgsProviderMetadata *metadata = registry->providerMetadata( providerKey );
+    if ( !metadata && providerKey == "WFS"_L1 )
+      metadata = registry->providerMetadata( u"wfs"_s );
+    if ( !metadata )
+    {
+      error = u"Layer options are not supported for provider key: %1"_s.arg( providerKey );
+      return QString();
+    }
+
+    QVariantMap parts = metadata->decodeUri( uri );
+    for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
+      parts.insert( it.key(), it.value().toVariant() );
+    return metadata->encodeUri( parts );
   }
 
   QJsonObject extentJson( const QgsRectangle &extent )
@@ -330,12 +407,66 @@ namespace
     return dynamic_cast<QgsPrintLayout *>( layout );
   }
 
+  QgsLayoutItemMap *firstLayoutMap( QgsPrintLayout *layout )
+  {
+    if ( !layout )
+      return nullptr;
+    QList<QgsLayoutItemMap *> maps;
+    layout->layoutItems<QgsLayoutItemMap>( maps );
+    return maps.empty() ? nullptr : maps.constFirst();
+  }
+
   QSize exportRenderSize( const QSize &requested, const QSize &fallback )
   {
     QSize size = requested.isValid() ? requested : fallback;
     if ( !size.isValid() || size.width() <= 0 || size.height() <= 0 )
       size = QSize( 1280, 720 );
     return QSize( std::clamp( size.width(), 1, 4096 ), std::clamp( size.height(), 1, 4096 ) );
+  }
+
+  QgsSymbol *defaultSymbolWithColor( Qgis::GeometryType geometryType, int index )
+  {
+    std::unique_ptr<QgsSymbol> symbol( QgsSymbol::defaultSymbol( geometryType ) );
+    if ( !symbol )
+      return nullptr;
+    symbol->setColor( QColor::fromHsv( ( index * 67 ) % 360, 180, 220 ) );
+    return symbol.release();
+  }
+
+  bool applyBasicLabels( QgsVectorLayer *layer, const QJsonValue &labelsValue, const QString &fallbackField, QJsonArray &changes, QString &error )
+  {
+    if ( !labelsValue.isObject() && !labelsValue.isBool() )
+      return true;
+
+    bool enabled = labelsValue.isBool() ? labelsValue.toBool() : labelsValue.toObject().value( u"enabled"_s ).toBool( true );
+    if ( !enabled )
+    {
+      layer->setLabelsEnabled( false );
+      changes.append( u"labels"_s );
+      return true;
+    }
+
+    QString labelField = fallbackField;
+    if ( labelsValue.isObject() )
+      labelField = labelsValue.toObject().value( u"field"_s ).toString( fallbackField ).trimmed();
+    if ( labelField.isEmpty() )
+    {
+      error = u"Label field is required when labels are enabled."_s;
+      return false;
+    }
+    if ( layer->fields().lookupField( labelField ) < 0 )
+    {
+      error = u"Label field does not exist: %1"_s.arg( labelField );
+      return false;
+    }
+
+    QgsPalLayerSettings settings = QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( layer );
+    settings.fieldName = labelField;
+    settings.isExpression = false;
+    layer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+    layer->setLabelsEnabled( true );
+    changes.append( u"labels"_s );
+    return true;
   }
 
   QgsAiToolResult rollbackLayerAddition( QgsProject *project, const QString &token )
@@ -426,6 +557,53 @@ namespace
 
     QJsonObject output;
     output.insert( u"status"_s, layout ? u"rolled_back"_s : u"already_removed"_s );
+    output.insert( u"rollback_token"_s, token );
+    output.insert( u"diff"_s, diff );
+    return QgsAiToolResult::ok( output );
+  }
+
+  QgsAiToolResult rollbackLayoutEdit( QgsProject *project, const QString &token )
+  {
+    if ( !rollbackStore().contains( token ) )
+      return QgsAiToolResult::error( u"Unknown or expired rollback token."_s );
+    RollbackEntry entry = rollbackStore().take( token );
+    if ( entry.type != RollbackType::RestoreLayoutEdit )
+      return QgsAiToolResult::error( u"Rollback token does not belong to a layout edit operation."_s );
+    if ( !project || !project->layoutManager() )
+      return QgsAiToolResult::error( u"No layout manager available."_s );
+
+    QgsPrintLayout *layout = printLayoutByName( project, entry.layoutName );
+    if ( !layout )
+      return QgsAiToolResult::error( u"Cannot rollback layout edit: layout no longer exists: %1"_s.arg( entry.layoutName ) );
+
+    int removedItems = 0;
+    for ( const QString &uuid : entry.itemUuids )
+    {
+      if ( QgsLayoutItem *item = layout->itemByUuid( uuid ) )
+      {
+        layout->removeLayoutItem( item );
+        ++removedItems;
+      }
+    }
+
+    int removedPages = 0;
+    if ( layout->pageCollection() )
+    {
+      while ( layout->pageCollection()->pageCount() > entry.pageCountBefore )
+      {
+        layout->pageCollection()->deletePage( layout->pageCollection()->pageCount() - 1 );
+        ++removedPages;
+      }
+    }
+
+    QJsonObject diff;
+    diff.insert( u"summary"_s, u"Removed layout items and pages added by AI tool."_s );
+    diff.insert( u"layout_name"_s, entry.layoutName );
+    diff.insert( u"removed_items"_s, removedItems );
+    diff.insert( u"removed_pages"_s, removedPages );
+
+    QJsonObject output;
+    output.insert( u"status"_s, u"rolled_back"_s );
     output.insert( u"rollback_token"_s, token );
     output.insert( u"diff"_s, diff );
     return QgsAiToolResult::ok( output );
@@ -557,6 +735,120 @@ QgsAiToolResult QgsAiAddLayerFromFileTool::execute( const QJsonObject &args )
 
   QJsonObject diff;
   diff.insert( u"summary"_s, u"Added a map layer to the project."_s );
+  diff.insert( u"before_layer_count"_s, beforeLayerCount );
+  diff.insert( u"after_layer_count"_s, project->mapLayers().size() );
+  diff.insert( u"layer_id"_s, added->id() );
+
+  output.insert( u"layer_id"_s, added->id() );
+  output.insert( u"name"_s, added->name() );
+  output.insert( u"crs"_s, added->crs().authid() );
+  output.insert( u"source"_s, added->publicSource() );
+  output.insert( u"extent"_s, extentJson( added->extent() ) );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, u"remove_added_layer"_s ) );
+  return QgsAiToolResult::ok( output );
+}
+
+// ---------------------------------------------------------------------------
+// add_layer_from_service
+// ---------------------------------------------------------------------------
+
+QgsAiAddLayerFromServiceTool::QgsAiAddLayerFromServiceTool( QgsProject *project )
+  : mProject( project )
+{}
+
+QString QgsAiAddLayerFromServiceTool::description() const
+{
+  return QStringLiteral(
+    "Loads a service-backed layer into the active QGIS project using native providers. "
+    "Supported providers are wms, wfs, xyz and postgres. The tool validates the resulting "
+    "layer, adds it to the project and returns a rollback token that removes the layer."
+  );
+}
+
+QJsonObject QgsAiAddLayerFromServiceTool::schema() const
+{
+  QJsonObject properties;
+  properties.insert( u"provider"_s, prop( u"string"_s, u"One of: wms, wfs, xyz, postgres."_s ) );
+  properties.insert( u"uri"_s, prop( u"string"_s, u"Provider URI. XYZ may be a full QGIS URI or a tile URL template."_s ) );
+  properties.insert( u"name"_s, prop( u"string"_s, u"Optional display name for the new layer."_s ) );
+  properties.insert( u"layer_options"_s, prop( u"object"_s, u"Optional provider-specific URI parts to merge through QgsProviderMetadata."_s ) );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous add_layer_from_service call. If set, removes that added layer."_s ) );
+  return schemaObject( properties );
+}
+
+QgsAiToolResult QgsAiAddLayerFromServiceTool::execute( const QJsonObject &args )
+{
+  QgsProject *project = mProject ? mProject : QgsProject::instance();
+  if ( !project )
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackLayerAddition( project, rollbackToken );
+
+  const QString provider = args.value( u"provider"_s ).toString().toLower().trimmed();
+  if ( provider.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'provider' is required."_s );
+
+  const QString providerKey = serviceLayerProviderKey( provider );
+  const QString layerType = serviceLayerType( provider );
+  if ( providerKey.isEmpty() || layerType.isEmpty() )
+    return QgsAiToolResult::error( u"Unsupported provider '%1'. Use one of: wms, wfs, xyz, postgres."_s.arg( provider ) );
+
+  const QString rawUri = args.value( u"uri"_s ).toString().trimmed();
+  if ( rawUri.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'uri' is required."_s );
+
+  QString uri = normalizeServiceUri( provider, rawUri );
+  if ( args.value( u"layer_options"_s ).isObject() )
+  {
+    QString optionsError;
+    uri = applyServiceLayerOptions( providerKey, uri, args.value( u"layer_options"_s ).toObject(), optionsError );
+    if ( uri.isEmpty() )
+      return QgsAiToolResult::error( optionsError );
+  }
+
+  const QString name = args.value( u"name"_s ).toString().trimmed().isEmpty() ? provider.toUpper() : args.value( u"name"_s ).toString().trimmed();
+  const int beforeLayerCount = project->mapLayers().size();
+
+  QgsMapLayer *added = nullptr;
+  QJsonObject output;
+  output.insert( u"provider"_s, provider );
+  output.insert( u"provider_key"_s, providerKey );
+  output.insert( u"layer_type"_s, layerType );
+
+  if ( layerType == "raster"_L1 )
+  {
+    auto layer = std::make_unique<QgsRasterLayer>( uri, name, providerKey );
+    if ( !layer->isValid() )
+      return QgsAiToolResult::error( u"Service raster layer is invalid for provider '%1': %2"_s.arg( provider, layer->error().summary() ) );
+    output.insert( u"width"_s, layer->width() );
+    output.insert( u"height"_s, layer->height() );
+    output.insert( u"bands"_s, layer->bandCount() );
+    added = layer.release();
+  }
+  else
+  {
+    auto layer = std::make_unique<QgsVectorLayer>( uri, name, providerKey );
+    if ( !layer->isValid() )
+      return QgsAiToolResult::error( u"Service vector layer is invalid for provider '%1': %2"_s.arg( provider, layer->error().summary() ) );
+    output.insert( u"feature_count"_s, static_cast<qint64>( layer->featureCount() ) );
+    output.insert( u"geometry_type"_s, QgsWkbTypes::geometryDisplayString( layer->geometryType() ) );
+    added = layer.release();
+  }
+
+  project->addMapLayer( added );
+
+  RollbackEntry rollback;
+  rollback.type = RollbackType::RemoveLayer;
+  rollback.layerId = added->id();
+  rollback.description = u"Remove layer added from service."_s;
+  const QString token = storeRollback( rollback );
+
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Added a service layer to the project."_s );
   diff.insert( u"before_layer_count"_s, beforeLayerCount );
   diff.insert( u"after_layer_count"_s, project->mapLayers().size() );
   diff.insert( u"layer_id"_s, added->id() );
@@ -883,6 +1175,212 @@ QgsAiToolResult QgsAiStyleLayerTool::execute( const QJsonObject &args )
 }
 
 // ---------------------------------------------------------------------------
+// style_layer_advanced
+// ---------------------------------------------------------------------------
+
+QgsAiAdvancedStyleTool::QgsAiAdvancedStyleTool( QgsProject *project )
+  : mProject( project )
+{}
+
+QString QgsAiAdvancedStyleTool::description() const
+{
+  return QStringLiteral(
+    "Applies advanced native vector styling: categorized and graduated renderers, "
+    "plus basic field labeling. Returns a rollback token that restores the previous "
+    "renderer, labeling and layer visual settings."
+  );
+}
+
+QJsonObject QgsAiAdvancedStyleTool::schema() const
+{
+  QJsonObject properties;
+  properties.insert( u"layer_id"_s, prop( u"string"_s, u"Target vector layer id."_s ) );
+  properties.insert( u"renderer"_s, prop( u"string"_s, u"Renderer type: categorized or graduated."_s ) );
+  properties.insert( u"field"_s, prop( u"string"_s, u"Attribute field used by the renderer."_s ) );
+  properties.insert( u"classes"_s, prop( u"object"_s, u"Optional class count for graduated renderer, or an array of class objects."_s ) );
+  properties.insert( u"labels"_s, prop( u"object"_s, u"Optional labeling config, e.g. {\"enabled\":true,\"field\":\"name\"}."_s ) );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous style_layer_advanced call. If set, restores the previous style."_s ) );
+  return schemaObject( properties );
+}
+
+QgsAiToolResult QgsAiAdvancedStyleTool::execute( const QJsonObject &args )
+{
+  QgsProject *project = mProject ? mProject : QgsProject::instance();
+  if ( !project )
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackLayerStyle( project, rollbackToken );
+
+  const QString layerId = args.value( u"layer_id"_s ).toString().trimmed();
+  if ( layerId.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'layer_id' is required."_s );
+
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( layerId ) );
+  if ( !layer )
+    return QgsAiToolResult::error( u"No vector layer with id: %1"_s.arg( layerId ) );
+
+  const QString renderer = args.value( u"renderer"_s ).toString().toLower().trimmed();
+  const bool hasLabelRequest = args.contains( u"labels"_s );
+  if ( renderer.isEmpty() && !hasLabelRequest )
+    return QgsAiToolResult::error( u"Argument 'renderer' or 'labels' is required."_s );
+  if ( !renderer.isEmpty() && renderer != "categorized"_L1 && renderer != "graduated"_L1 )
+    return QgsAiToolResult::error( u"Unsupported advanced renderer '%1'. Supported renderers: categorized, graduated."_s.arg( renderer ) );
+
+  const QString field = args.value( u"field"_s ).toString().trimmed();
+  int fieldIndex = -1;
+  if ( !renderer.isEmpty() )
+  {
+    if ( field.isEmpty() )
+      return QgsAiToolResult::error( u"Argument 'field' is required when renderer is set."_s );
+    fieldIndex = layer->fields().lookupField( field );
+    if ( fieldIndex < 0 )
+      return QgsAiToolResult::error( u"Renderer field does not exist: %1"_s.arg( field ) );
+  }
+
+  if ( hasLabelRequest )
+  {
+    const QJsonValue labelsValue = args.value( u"labels"_s );
+    if ( labelsValue.isObject() ? labelsValue.toObject().value( u"enabled"_s ).toBool( true ) : labelsValue.toBool( false ) )
+    {
+      const QString labelField = labelsValue.isObject() ? labelsValue.toObject().value( u"field"_s ).toString( field ).trimmed() : field;
+      if ( labelField.isEmpty() )
+        return QgsAiToolResult::error( u"Label field is required when labels are enabled."_s );
+      if ( layer->fields().lookupField( labelField ) < 0 )
+        return QgsAiToolResult::error( u"Label field does not exist: %1"_s.arg( labelField ) );
+    }
+  }
+
+  QgsLayerTreeLayer *treeNode = project->layerTreeRoot() ? project->layerTreeRoot()->findLayer( layerId ) : nullptr;
+  const QJsonObject beforeVisual = layerVisualSummary( layer, treeNode );
+  QgsMapLayerStyle beforeStyle;
+  beforeStyle.readFromLayer( layer );
+  RollbackEntry rollback;
+  rollback.type = RollbackType::RestoreLayerStyle;
+  rollback.layerId = layerId;
+  rollback.styleXml = beforeStyle.xmlData();
+  rollback.hasVisibility = treeNode != nullptr;
+  rollback.visible = treeNode ? treeNode->itemVisibilityChecked() : true;
+  rollback.description = u"Restore layer style before AI advanced styling."_s;
+
+  QJsonArray changes;
+  if ( renderer == "categorized"_L1 )
+  {
+    QgsCategoryList categories;
+    const QJsonValue classesValue = args.value( u"classes"_s );
+    if ( classesValue.isArray() )
+    {
+      const QJsonArray classArray = classesValue.toArray();
+      for ( int i = 0; i < classArray.size(); ++i )
+      {
+        const QJsonObject classObject = classArray.at( i ).toObject();
+        std::unique_ptr<QgsSymbol> symbol( defaultSymbolWithColor( layer->geometryType(), i ) );
+        if ( !symbol )
+          return QgsAiToolResult::error( u"Could not create a default symbol for categorized renderer."_s );
+        const QVariant value = classObject.value( u"value"_s ).toVariant();
+        const QString label = classObject.value( u"label"_s ).toString( value.toString() );
+        const QColor color( classObject.value( u"color"_s ).toString() );
+        if ( color.isValid() )
+          symbol->setColor( color );
+        categories.append( QgsRendererCategory( value, symbol.release(), label ) );
+      }
+    }
+    else
+    {
+      QList<QVariant> values = layer->uniqueValues( fieldIndex, 256 ).values();
+      std::sort( values.begin(), values.end(), []( const QVariant &a, const QVariant &b ) { return a.toString() < b.toString(); } );
+      for ( int i = 0; i < values.size(); ++i )
+      {
+        std::unique_ptr<QgsSymbol> symbol( defaultSymbolWithColor( layer->geometryType(), i ) );
+        if ( !symbol )
+          return QgsAiToolResult::error( u"Could not create a default symbol for categorized renderer."_s );
+        categories.append( QgsRendererCategory( values.at( i ), symbol.release(), values.at( i ).toString() ) );
+      }
+    }
+
+    layer->setRenderer( new QgsCategorizedSymbolRenderer( field, categories ) );
+    changes.append( u"categorized_renderer"_s );
+  }
+  else if ( renderer == "graduated"_L1 )
+  {
+    QgsRangeList ranges;
+    const QJsonValue classesValue = args.value( u"classes"_s );
+    if ( classesValue.isArray() )
+    {
+      const QJsonArray classArray = classesValue.toArray();
+      for ( int i = 0; i < classArray.size(); ++i )
+      {
+        const QJsonObject classObject = classArray.at( i ).toObject();
+        const double lower = classObject.value( u"lower"_s ).toDouble();
+        const double upper = classObject.value( u"upper"_s ).toDouble();
+        if ( upper < lower )
+          return QgsAiToolResult::error( u"Graduated class upper value cannot be less than lower value."_s );
+        std::unique_ptr<QgsSymbol> symbol( defaultSymbolWithColor( layer->geometryType(), i ) );
+        if ( !symbol )
+          return QgsAiToolResult::error( u"Could not create a default symbol for graduated renderer."_s );
+        const QColor color( classObject.value( u"color"_s ).toString() );
+        if ( color.isValid() )
+          symbol->setColor( color );
+        const QString label = classObject.value( u"label"_s ).toString( u"%1 - %2"_s.arg( lower ).arg( upper ) );
+        ranges.append( QgsRendererRange( lower, upper, symbol.release(), label ) );
+      }
+    }
+    else
+    {
+      bool minOk = false;
+      bool maxOk = false;
+      const double min = layer->minimumValue( fieldIndex ).toDouble( &minOk );
+      const double max = layer->maximumValue( fieldIndex ).toDouble( &maxOk );
+      if ( !minOk || !maxOk )
+        return QgsAiToolResult::error( u"Graduated renderer field must contain numeric values: %1"_s.arg( field ) );
+
+      const int classCount = std::clamp( classesValue.isDouble() ? classesValue.toInt( 5 ) : 5, 1, 32 );
+      const double span = max - min;
+      const double step = classCount == 1 || span == 0.0 ? 0.0 : span / classCount;
+      for ( int i = 0; i < classCount; ++i )
+      {
+        const double lower = step == 0.0 ? min : min + ( step * i );
+        const double upper = step == 0.0 || i == classCount - 1 ? max : min + ( step * ( i + 1 ) );
+        std::unique_ptr<QgsSymbol> symbol( defaultSymbolWithColor( layer->geometryType(), i ) );
+        if ( !symbol )
+          return QgsAiToolResult::error( u"Could not create a default symbol for graduated renderer."_s );
+        ranges.append( QgsRendererRange( lower, upper, symbol.release(), u"%1 - %2"_s.arg( lower ).arg( upper ) ) );
+      }
+    }
+
+    layer->setRenderer( new QgsGraduatedSymbolRenderer( field, ranges ) );
+    changes.append( u"graduated_renderer"_s );
+  }
+
+  if ( hasLabelRequest )
+  {
+    QString labelError;
+    if ( !applyBasicLabels( layer, args.value( u"labels"_s ), field, changes, labelError ) )
+      return QgsAiToolResult::error( labelError );
+  }
+
+  layer->triggerRepaint();
+  layer->emitStyleChanged();
+
+  const QString token = storeRollback( rollback );
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Applied advanced layer styling changes."_s );
+  diff.insert( u"changes"_s, changes );
+  diff.insert( u"before"_s, beforeVisual );
+  diff.insert( u"after"_s, layerVisualSummary( layer, treeNode ) );
+
+  QJsonObject output;
+  output.insert( u"layer_id"_s, layer->id() );
+  output.insert( u"name"_s, layer->name() );
+  output.insert( u"visual"_s, layerVisualSummary( layer, treeNode ) );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, u"restore_layer_style"_s ) );
+  return QgsAiToolResult::ok( output );
+}
+
+// ---------------------------------------------------------------------------
 // create_print_layout
 // ---------------------------------------------------------------------------
 
@@ -980,6 +1478,141 @@ QgsAiToolResult QgsAiCreatePrintLayoutTool::execute( const QJsonObject &args )
   output.insert( u"diff"_s, diff );
   output.insert( u"rollback_token"_s, token );
   output.insert( u"rollback"_s, rollbackJson( token, u"remove_created_layout"_s ) );
+  return QgsAiToolResult::ok( output );
+}
+
+// ---------------------------------------------------------------------------
+// edit_print_layout
+// ---------------------------------------------------------------------------
+
+QgsAiEditPrintLayoutTool::QgsAiEditPrintLayoutTool( QgsProject *project )
+  : mProject( project )
+{}
+
+QString QgsAiEditPrintLayoutTool::description() const
+{
+  return QStringLiteral(
+    "Edits an existing QGIS print layout by adding common composer items: legend, "
+    "scale bar, north arrow and an additional page. The tool returns a rollback token "
+    "which removes the newly added items/pages."
+  );
+}
+
+QJsonObject QgsAiEditPrintLayoutTool::schema() const
+{
+  QJsonObject properties;
+  properties.insert( u"layout_name"_s, prop( u"string"_s, u"Existing print layout name."_s ) );
+  properties.insert( u"add_legend"_s, prop( u"boolean"_s, u"Add a legend linked to the first map item."_s ) );
+  properties.insert( u"add_scalebar"_s, prop( u"boolean"_s, u"Add a scale bar linked to the first map item."_s ) );
+  properties.insert( u"add_north_arrow"_s, prop( u"boolean"_s, u"Add a north arrow picture linked to the first map item."_s ) );
+  properties.insert( u"add_page"_s, prop( u"boolean"_s, u"Append a new page to the layout."_s ) );
+  properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous edit_print_layout call. If set, removes added items/pages."_s ) );
+  return schemaObject( properties );
+}
+
+QgsAiToolResult QgsAiEditPrintLayoutTool::execute( const QJsonObject &args )
+{
+  QgsProject *project = mProject ? mProject : QgsProject::instance();
+  if ( !project )
+    return QgsAiToolResult::error( u"No active QgsProject available."_s );
+
+  const QString rollbackToken = args.value( u"rollback_token"_s ).toString().trimmed();
+  if ( !rollbackToken.isEmpty() )
+    return rollbackLayoutEdit( project, rollbackToken );
+
+  const QString layoutName = args.value( u"layout_name"_s ).toString().trimmed();
+  if ( layoutName.isEmpty() )
+    return QgsAiToolResult::error( u"Argument 'layout_name' is required."_s );
+
+  QgsPrintLayout *layout = printLayoutByName( project, layoutName );
+  if ( !layout )
+    return QgsAiToolResult::error( u"No print layout named: %1"_s.arg( layoutName ) );
+  if ( !layout->pageCollection() )
+    return QgsAiToolResult::error( u"Layout has no page collection: %1"_s.arg( layoutName ) );
+
+  const bool addLegend = args.value( u"add_legend"_s ).toBool( false );
+  const bool addScaleBar = args.value( u"add_scalebar"_s ).toBool( false );
+  const bool addNorthArrow = args.value( u"add_north_arrow"_s ).toBool( false );
+  const bool addPage = args.value( u"add_page"_s ).toBool( false );
+  if ( !addLegend && !addScaleBar && !addNorthArrow && !addPage )
+    return QgsAiToolResult::error( u"No layout edit requested."_s );
+
+  QgsLayoutItemMap *map = firstLayoutMap( layout );
+  if ( ( addLegend || addScaleBar || addNorthArrow ) && !map )
+    return QgsAiToolResult::error( u"Layout has no map item to link legend/scale/north arrow: %1"_s.arg( layoutName ) );
+
+  RollbackEntry rollback;
+  rollback.type = RollbackType::RestoreLayoutEdit;
+  rollback.layoutName = layoutName;
+  rollback.pageCountBefore = layout->pageCollection()->pageCount();
+  rollback.description = u"Remove layout items and pages added by AI layout edit."_s;
+
+  QJsonArray changes;
+  if ( addLegend )
+  {
+    QgsLayoutItemLegend *legend = new QgsLayoutItemLegend( layout );
+    legend->setId( u"AI Legend"_s );
+    legend->setLinkedMap( map );
+    legend->attemptMove( QgsLayoutPoint( 145, 18 ) );
+    legend->attemptResize( QgsLayoutSize( 50, 55 ) );
+    layout->addLayoutItem( legend );
+    legend->adjustBoxSize();
+    rollback.itemUuids.append( legend->uuid() );
+    changes.append( u"legend"_s );
+  }
+
+  if ( addScaleBar )
+  {
+    QgsLayoutItemScaleBar *scaleBar = new QgsLayoutItemScaleBar( layout );
+    scaleBar->setId( u"AI Scale Bar"_s );
+    scaleBar->setLinkedMap( map );
+    scaleBar->setStyle( u"Single Box"_s );
+    scaleBar->setUnits( Qgis::DistanceUnit::Meters );
+    scaleBar->setNumberOfSegments( 2 );
+    scaleBar->setNumberOfSegmentsLeft( 0 );
+    scaleBar->attemptMove( QgsLayoutPoint( 15, 270 ) );
+    scaleBar->attemptResize( QgsLayoutSize( 55, 10 ) );
+    layout->addLayoutItem( scaleBar );
+    rollback.itemUuids.append( scaleBar->uuid() );
+    changes.append( u"scalebar"_s );
+  }
+
+  if ( addNorthArrow )
+  {
+    QgsLayoutItemPicture *northArrow = new QgsLayoutItemPicture( layout );
+    northArrow->setId( u"AI North Arrow"_s );
+    northArrow->setPicturePath( u":/images/north_arrows/layout_default_north_arrow.svg"_s, Qgis::PictureFormat::SVG );
+    northArrow->setLinkedMap( map );
+    northArrow->setNorthMode( QgsLayoutItemPicture::GridNorth );
+    northArrow->attemptMove( QgsLayoutPoint( 175, 235 ) );
+    northArrow->attemptResize( QgsLayoutSize( 18, 18 ) );
+    layout->addLayoutItem( northArrow );
+    rollback.itemUuids.append( northArrow->uuid() );
+    changes.append( u"north_arrow"_s );
+  }
+
+  if ( addPage )
+  {
+    layout->pageCollection()->extendByNewPage();
+    changes.append( u"page"_s );
+  }
+
+  const QString token = storeRollback( rollback );
+  QJsonObject diff;
+  diff.insert( u"summary"_s, u"Edited an existing print layout."_s );
+  diff.insert( u"layout_name"_s, layoutName );
+  diff.insert( u"changes"_s, changes );
+  diff.insert( u"before_page_count"_s, rollback.pageCountBefore );
+  diff.insert( u"after_page_count"_s, layout->pageCollection()->pageCount() );
+  diff.insert( u"added_item_count"_s, rollback.itemUuids.size() );
+
+  QJsonObject output;
+  output.insert( u"layout_name"_s, layoutName );
+  output.insert( u"page_count"_s, layout->pageCollection()->pageCount() );
+  output.insert( u"added_item_count"_s, rollback.itemUuids.size() );
+  output.insert( u"diff"_s, diff );
+  output.insert( u"rollback_token"_s, token );
+  output.insert( u"rollback"_s, rollbackJson( token, u"restore_layout_edit"_s ) );
   return QgsAiToolResult::ok( output );
 }
 

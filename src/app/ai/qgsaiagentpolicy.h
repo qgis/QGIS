@@ -35,6 +35,7 @@ struct APP_EXPORT QgsAiManagedAgentPreset
 
 struct APP_EXPORT QgsAiManagedAgentPolicy
 {
+    int toolCatalogVersion = 0;
     QString tier;
     QStringList modes;
     QStringList allowedTools;

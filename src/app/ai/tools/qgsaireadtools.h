@@ -122,6 +122,28 @@ class APP_EXPORT QgsAiGetCanvasExtentTool : public QgsAiTool
 };
 
 /**
+ * set_canvas_extent: changes the main map canvas view by explicit extent, scale,
+ * zoom-to-layer, or zoom-to-selection. Returns a rollback token that restores
+ * the previous extent and destination CRS.
+ */
+class APP_EXPORT QgsAiSetCanvasExtentTool : public QgsAiTool
+{
+  public:
+    QgsAiSetCanvasExtentTool( QgsMapCanvas *canvas, QgsProject *project );
+
+    QString name() const override { return u"set_canvas_extent"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Low; }
+
+  private:
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsProject *mProject = nullptr;
+};
+
+/**
  * capture_map_canvas: renders the current 2D map canvas offscreen to a temporary PNG
  * and returns the image path plus canvas metadata. The image is intended for visual
  * context and may be sent to vision-capable model providers after user consent.

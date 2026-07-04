@@ -16,18 +16,30 @@
 #include "ai/tools/qgsaireadtools.h"
 #include "ai/tools/qgsaitoolregistry.h"
 #include "qgsapplication.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutitemscalebar.h"
 #include "qgslayoutmanager.h"
+#include "qgslayoutpagecollection.h"
 #include "qgsmapcanvas.h"
+#include "qgspallabeling.h"
+#include "qgsprintlayout.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
 #include "qgssettings.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgstest.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QColor>
 #include <QFileInfo>
@@ -116,7 +128,10 @@ class TestQgsAiToolRegistry : public QObject
     void registryAuditsRiskyToolMetadataOnly();
     void captureMapCanvasRequiresConsent();
     void captureMapCanvasCreatesCappedPng();
+    void setCanvasExtentSetsZoomsAndRollsBack();
+    void addLayerFromServiceLoadsXyzAndRollsBack();
     void styleLayerAppliesNativeChanges();
+    void advancedStyleLayerAppliesRenderersLabelsAndRollback();
     void createPrintLayoutAndExportMap();
     void processingToolReportsMissingAlgorithm();
     void clearEmptiesRegistry();
@@ -307,6 +322,108 @@ void TestQgsAiToolRegistry::captureMapCanvasCreatesCappedPng()
   settings.remove( u"geoai/visual_context/image_send_consent"_s );
 }
 
+void TestQgsAiToolRegistry::setCanvasExtentSetsZoomsAndRollsBack()
+{
+  QgsProject project;
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Point?crs=EPSG:4326&field=name:string"_s, u"Places"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature first( layer->fields() );
+  first.setAttribute( u"name"_s, u"Alpha"_s );
+  first.setGeometry( QgsGeometry::fromWkt( u"Point(20 20)"_s ) );
+  QgsFeature second( layer->fields() );
+  second.setAttribute( u"name"_s, u"Beta"_s );
+  second.setGeometry( QgsGeometry::fromWkt( u"Point(30 25)"_s ) );
+  QgsFeatureList features;
+  features << first << second;
+  QVERIFY( layer->dataProvider()->addFeatures( features ) );
+  layer->updateExtents();
+  project.addMapLayer( layer );
+
+  QgsMapCanvas canvas;
+  canvas.resize( 640, 360 );
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.setLayers( QList<QgsMapLayer *>() << layer );
+  const QgsRectangle originalExtent = canvas.extent();
+
+  QgsAiSetCanvasExtentTool tool( &canvas, &project );
+  QVERIFY( tool.requiresApproval() );
+  QCOMPARE( tool.riskLevel(), QgsAiToolRiskLevel::Low );
+
+  QJsonObject extent;
+  extent.insert( u"xmin"_s, 1 );
+  extent.insert( u"ymin"_s, 2 );
+  extent.insert( u"xmax"_s, 5 );
+  extent.insert( u"ymax"_s, 6 );
+  QJsonObject args;
+  args.insert( u"extent"_s, extent );
+  args.insert( u"crs"_s, u"EPSG:4326"_s );
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY2( result.success, qPrintable( result.errorMessage ) );
+  const QJsonObject output = result.output.toObject();
+  const QString rollbackToken = output.value( u"rollback_token"_s ).toString();
+  QVERIFY( !rollbackToken.isEmpty() );
+  QVERIFY( output.contains( u"diff"_s ) );
+  QCOMPARE( canvas.mapSettings().destinationCrs().authid(), u"EPSG:4326"_s );
+  QGSCOMPARENEAR( canvas.extent().center().x(), 3.0, 0.0001 );
+  QGSCOMPARENEAR( canvas.extent().center().y(), 4.0, 0.0001 );
+  QVERIFY( canvas.extent().contains( QgsRectangle( 1, 2, 5, 6 ) ) );
+
+  QJsonObject rollbackArgs;
+  rollbackArgs.insert( u"rollback_token"_s, rollbackToken );
+  const QgsAiToolResult rollback = tool.execute( rollbackArgs );
+  QVERIFY2( rollback.success, qPrintable( rollback.errorMessage ) );
+  QGSCOMPARENEAR( canvas.extent().center().x(), originalExtent.center().x(), 0.0001 );
+  QGSCOMPARENEAR( canvas.extent().center().y(), originalExtent.center().y(), 0.0001 );
+
+  QJsonObject zoomLayerArgs;
+  zoomLayerArgs.insert( u"zoom_to_layer"_s, layer->id() );
+  const QgsAiToolResult zoomLayer = tool.execute( zoomLayerArgs );
+  QVERIFY2( zoomLayer.success, qPrintable( zoomLayer.errorMessage ) );
+  QVERIFY( canvas.extent().contains( layer->extent() ) );
+
+  QVERIFY( !features.isEmpty() );
+  layer->selectByIds( QgsFeatureIds() << features.constFirst().id() );
+  QJsonObject zoomSelectionArgs;
+  zoomSelectionArgs.insert( u"zoom_to_selection"_s, layer->id() );
+  const QgsAiToolResult zoomSelection = tool.execute( zoomSelectionArgs );
+  QVERIFY2( zoomSelection.success, qPrintable( zoomSelection.errorMessage ) );
+  QVERIFY( canvas.extent().contains( QgsRectangle( 20, 20, 20, 20 ) ) );
+}
+
+void TestQgsAiToolRegistry::addLayerFromServiceLoadsXyzAndRollsBack()
+{
+  QgsProject project;
+  QgsAiAddLayerFromServiceTool tool( &project );
+  QVERIFY( tool.requiresApproval() );
+  QCOMPARE( tool.riskLevel(), QgsAiToolRiskLevel::High );
+
+  QJsonObject args;
+  args.insert( u"provider"_s, u"xyz"_s );
+  args.insert( u"uri"_s, u"type=xyz&url=file://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0"_s );
+  args.insert( u"name"_s, u"Local XYZ"_s );
+
+  const QgsAiToolResult result = tool.execute( args );
+  QVERIFY2( result.success, qPrintable( result.errorMessage ) );
+  const QJsonObject output = result.output.toObject();
+  const QString layerId = output.value( u"layer_id"_s ).toString();
+  QVERIFY( !layerId.isEmpty() );
+  QCOMPARE( output.value( u"provider"_s ).toString(), u"xyz"_s );
+  QCOMPARE( output.value( u"provider_key"_s ).toString(), u"wms"_s );
+  QVERIFY( output.contains( u"diff"_s ) );
+  QCOMPARE( project.mapLayers().size(), 1 );
+  QVERIFY( project.mapLayer( layerId ) );
+
+  const QString rollbackToken = output.value( u"rollback_token"_s ).toString();
+  QVERIFY( !rollbackToken.isEmpty() );
+  QJsonObject rollbackArgs;
+  rollbackArgs.insert( u"rollback_token"_s, rollbackToken );
+  const QgsAiToolResult rollback = tool.execute( rollbackArgs );
+  QVERIFY2( rollback.success, qPrintable( rollback.errorMessage ) );
+  QCOMPARE( project.mapLayers().size(), 0 );
+}
+
 void TestQgsAiToolRegistry::styleLayerAppliesNativeChanges()
 {
   QgsProject project;
@@ -346,6 +463,88 @@ void TestQgsAiToolRegistry::styleLayerAppliesNativeChanges()
   QVERIFY( node->itemVisibilityChecked() );
 }
 
+void TestQgsAiToolRegistry::advancedStyleLayerAppliesRenderersLabelsAndRollback()
+{
+  QgsProject project;
+  QgsVectorLayer *categorizedLayer = new QgsVectorLayer( u"Point?crs=EPSG:4326&field=category:string&field=name:string"_s, u"Categories"_s, u"memory"_s );
+  QVERIFY( categorizedLayer->isValid() );
+
+  QgsFeature first( categorizedLayer->fields() );
+  first.setAttribute( u"category"_s, u"A"_s );
+  first.setAttribute( u"name"_s, u"Alpha"_s );
+  QgsFeature second( categorizedLayer->fields() );
+  second.setAttribute( u"category"_s, u"B"_s );
+  second.setAttribute( u"name"_s, u"Beta"_s );
+  QgsFeature third( categorizedLayer->fields() );
+  third.setAttribute( u"category"_s, u"A"_s );
+  third.setAttribute( u"name"_s, u"Again"_s );
+  QVERIFY( categorizedLayer->dataProvider()->addFeatures( QgsFeatureList() << first << second << third ) );
+  project.addMapLayer( categorizedLayer );
+
+  QgsAiAdvancedStyleTool tool( &project );
+  QVERIFY( tool.requiresApproval() );
+  QCOMPARE( tool.riskLevel(), QgsAiToolRiskLevel::Medium );
+
+  QJsonObject labels;
+  labels.insert( u"enabled"_s, true );
+  labels.insert( u"field"_s, u"name"_s );
+
+  QJsonObject categorizedArgs;
+  categorizedArgs.insert( u"layer_id"_s, categorizedLayer->id() );
+  categorizedArgs.insert( u"renderer"_s, u"categorized"_s );
+  categorizedArgs.insert( u"field"_s, u"category"_s );
+  categorizedArgs.insert( u"labels"_s, labels );
+  const QgsAiToolResult categorizedResult = tool.execute( categorizedArgs );
+  QVERIFY2( categorizedResult.success, qPrintable( categorizedResult.errorMessage ) );
+  const QString categorizedRollbackToken = categorizedResult.output.toObject().value( u"rollback_token"_s ).toString();
+  QVERIFY( !categorizedRollbackToken.isEmpty() );
+
+  QgsCategorizedSymbolRenderer *categorizedRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( categorizedLayer->renderer() );
+  QVERIFY( categorizedRenderer );
+  QCOMPARE( categorizedRenderer->categories().size(), 2 );
+  QVERIFY( categorizedLayer->labelsEnabled() );
+  QVERIFY( categorizedLayer->labeling() );
+  QCOMPARE( categorizedLayer->labeling()->settings().fieldName, u"name"_s );
+
+  QJsonObject categorizedRollbackArgs;
+  categorizedRollbackArgs.insert( u"rollback_token"_s, categorizedRollbackToken );
+  const QgsAiToolResult categorizedRollback = tool.execute( categorizedRollbackArgs );
+  QVERIFY2( categorizedRollback.success, qPrintable( categorizedRollback.errorMessage ) );
+  QVERIFY( dynamic_cast<QgsSingleSymbolRenderer *>( categorizedLayer->renderer() ) );
+  QVERIFY( !categorizedLayer->labelsEnabled() );
+
+  QgsVectorLayer *graduatedLayer = new QgsVectorLayer( u"Point?crs=EPSG:4326&field=value:double"_s, u"Values"_s, u"memory"_s );
+  QVERIFY( graduatedLayer->isValid() );
+  QgsFeature low( graduatedLayer->fields() );
+  low.setAttribute( u"value"_s, 1.0 );
+  QgsFeature mid( graduatedLayer->fields() );
+  mid.setAttribute( u"value"_s, 5.0 );
+  QgsFeature high( graduatedLayer->fields() );
+  high.setAttribute( u"value"_s, 9.0 );
+  QVERIFY( graduatedLayer->dataProvider()->addFeatures( QgsFeatureList() << low << mid << high ) );
+  project.addMapLayer( graduatedLayer );
+
+  QJsonObject graduatedArgs;
+  graduatedArgs.insert( u"layer_id"_s, graduatedLayer->id() );
+  graduatedArgs.insert( u"renderer"_s, u"graduated"_s );
+  graduatedArgs.insert( u"field"_s, u"value"_s );
+  graduatedArgs.insert( u"classes"_s, 3 );
+  const QgsAiToolResult graduatedResult = tool.execute( graduatedArgs );
+  QVERIFY2( graduatedResult.success, qPrintable( graduatedResult.errorMessage ) );
+  const QString graduatedRollbackToken = graduatedResult.output.toObject().value( u"rollback_token"_s ).toString();
+  QVERIFY( !graduatedRollbackToken.isEmpty() );
+
+  QgsGraduatedSymbolRenderer *graduatedRenderer = dynamic_cast<QgsGraduatedSymbolRenderer *>( graduatedLayer->renderer() );
+  QVERIFY( graduatedRenderer );
+  QCOMPARE( graduatedRenderer->ranges().size(), 3 );
+
+  QJsonObject graduatedRollbackArgs;
+  graduatedRollbackArgs.insert( u"rollback_token"_s, graduatedRollbackToken );
+  const QgsAiToolResult graduatedRollback = tool.execute( graduatedRollbackArgs );
+  QVERIFY2( graduatedRollback.success, qPrintable( graduatedRollback.errorMessage ) );
+  QVERIFY( dynamic_cast<QgsSingleSymbolRenderer *>( graduatedLayer->renderer() ) );
+}
+
 void TestQgsAiToolRegistry::createPrintLayoutAndExportMap()
 {
   QTemporaryDir tempDir;
@@ -375,6 +574,49 @@ void TestQgsAiToolRegistry::createPrintLayoutAndExportMap()
   QVERIFY( !layoutRollbackToken.isEmpty() );
   QVERIFY( createResult.output.toObject().contains( u"diff"_s ) );
   QVERIFY( project.layoutManager()->layoutByName( u"AI Layout"_s ) );
+
+  QgsPrintLayout *layout = dynamic_cast<QgsPrintLayout *>( project.layoutManager()->layoutByName( u"AI Layout"_s ) );
+  QVERIFY( layout );
+  QCOMPARE( layout->pageCollection()->pageCount(), 1 );
+
+  QgsAiEditPrintLayoutTool editLayoutTool( &project );
+  QVERIFY( editLayoutTool.requiresApproval() );
+  QCOMPARE( editLayoutTool.riskLevel(), QgsAiToolRiskLevel::Medium );
+
+  QJsonObject editLayoutArgs;
+  editLayoutArgs.insert( u"layout_name"_s, u"AI Layout"_s );
+  editLayoutArgs.insert( u"add_legend"_s, true );
+  editLayoutArgs.insert( u"add_scalebar"_s, true );
+  editLayoutArgs.insert( u"add_north_arrow"_s, true );
+  editLayoutArgs.insert( u"add_page"_s, true );
+  const QgsAiToolResult editLayout = editLayoutTool.execute( editLayoutArgs );
+  QVERIFY2( editLayout.success, qPrintable( editLayout.errorMessage ) );
+  const QString editLayoutRollbackToken = editLayout.output.toObject().value( u"rollback_token"_s ).toString();
+  QVERIFY( !editLayoutRollbackToken.isEmpty() );
+  QCOMPARE( layout->pageCollection()->pageCount(), 2 );
+
+  QList<QgsLayoutItemLegend *> legends;
+  layout->layoutItems<QgsLayoutItemLegend>( legends );
+  QCOMPARE( legends.size(), 1 );
+  QList<QgsLayoutItemScaleBar *> scaleBars;
+  layout->layoutItems<QgsLayoutItemScaleBar>( scaleBars );
+  QCOMPARE( scaleBars.size(), 1 );
+  QList<QgsLayoutItemPicture *> pictures;
+  layout->layoutItems<QgsLayoutItemPicture>( pictures );
+  QCOMPARE( pictures.size(), 1 );
+  QCOMPARE( pictures.constFirst()->picturePath(), u":/images/north_arrows/layout_default_north_arrow.svg"_s );
+
+  QJsonObject editLayoutRollbackArgs;
+  editLayoutRollbackArgs.insert( u"rollback_token"_s, editLayoutRollbackToken );
+  const QgsAiToolResult editLayoutRollback = editLayoutTool.execute( editLayoutRollbackArgs );
+  QVERIFY2( editLayoutRollback.success, qPrintable( editLayoutRollback.errorMessage ) );
+  QCOMPARE( layout->pageCollection()->pageCount(), 1 );
+  layout->layoutItems<QgsLayoutItemLegend>( legends );
+  QCOMPARE( legends.size(), 0 );
+  layout->layoutItems<QgsLayoutItemScaleBar>( scaleBars );
+  QCOMPARE( scaleBars.size(), 0 );
+  layout->layoutItems<QgsLayoutItemPicture>( pictures );
+  QCOMPARE( pictures.size(), 0 );
 
   QgsAiExportMapTool exportTool( &contextProvider, &project, &canvas );
   QVERIFY( exportTool.requiresApproval() );

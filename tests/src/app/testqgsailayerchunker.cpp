@@ -32,6 +32,7 @@ class TestQgsAiLayerChunker : public QObject
     void wktBlobIsRecoverable();
     void rasterEmitsSingleMetadataChunk();
     void vectorHeaderSkipsFeatureCountScan();
+    void officeSpreadsheetVectorLayerSkipsFeatureSampling();
     void rasterMetadataSkipsBandStatistics();
 };
 
@@ -122,6 +123,24 @@ void TestQgsAiLayerChunker::vectorHeaderSkipsFeatureCountScan()
   const auto chunks = QgsAiLayerChunker::chunkVector( layer.get() );
   QVERIFY( !chunks.isEmpty() );
   QVERIFY( chunks.first().text.contains( u"feature_count=unknown"_s ) );
+}
+
+void TestQgsAiLayerChunker::officeSpreadsheetVectorLayerSkipsFeatureSampling()
+{
+  const QString odsPath = QStringLiteral( TEST_DATA_DIR ) + u"/spreadsheet.ods|layername=Sheet1"_s;
+  auto layer = std::make_unique<QgsVectorLayer>( odsPath, u"sheet"_s, u"ogr"_s );
+  QVERIFY2( layer->isValid(), odsPath.toUtf8().constData() );
+
+  const auto chunks = QgsAiLayerChunker::chunkVector( layer.get() );
+  QCOMPARE( chunks.size(), 1 );
+  QCOMPARE( chunks.first().sourceType, QString::fromLatin1( QgsAiWorkspaceIndex::SOURCE_TYPE_LAYER ) );
+  QCOMPARE( chunks.first().layerId, layer->id() );
+  QCOMPARE( chunks.first().firstFeatureId, qint64( -1 ) );
+  QCOMPARE( chunks.first().lastFeatureId, qint64( -1 ) );
+  QVERIFY( chunks.first().wktBlob.isEmpty() );
+  QVERIFY( chunks.first().text.contains( u"sampled_feature_limit=0"_s ) );
+  QVERIFY( chunks.first().text.contains( u"Office spreadsheet layers"_s ) );
+  QVERIFY( !chunks.first().text.contains( u"fields="_s ) );
 }
 
 void TestQgsAiLayerChunker::rasterMetadataSkipsBandStatistics()

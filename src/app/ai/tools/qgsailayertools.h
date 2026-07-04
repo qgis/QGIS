@@ -55,6 +55,26 @@ class APP_EXPORT QgsAiAddLayerFromFileTool : public QgsAiTool
 };
 
 /**
+ * add_layer_from_service: loads a remote/service-backed layer (WMS, WFS, XYZ,
+ * or PostGIS) into the current QGIS project.
+ */
+class APP_EXPORT QgsAiAddLayerFromServiceTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiAddLayerFromServiceTool( QgsProject *project );
+
+    QString name() const override { return u"add_layer_from_service"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::High; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
+/**
  * describe_layer: returns the schema and a small attribute sample for a vector
  * layer already loaded in the project. For raster layers, returns dimensions
  * and band count. Use before writing run_python code that filters or aggregates
@@ -117,6 +137,26 @@ class APP_EXPORT QgsAiStyleLayerTool : public QgsAiTool
 };
 
 /**
+ * style_layer_advanced: applies categorized/graduated vector renderers and
+ * basic labeling changes.
+ */
+class APP_EXPORT QgsAiAdvancedStyleTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiAdvancedStyleTool( QgsProject *project );
+
+    QString name() const override { return u"style_layer_advanced"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Medium; }
+
+  private:
+    QgsProject *mProject = nullptr;
+};
+
+/**
  * create_print_layout: creates a simple print layout with a map frame and
  * optional title, using the current canvas extent where available.
  */
@@ -135,6 +175,26 @@ class APP_EXPORT QgsAiCreatePrintLayoutTool : public QgsAiTool
   private:
     QgsProject *mProject = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
+};
+
+/**
+ * edit_print_layout: adds common composer items and pages to an existing print
+ * layout.
+ */
+class APP_EXPORT QgsAiEditPrintLayoutTool : public QgsAiTool
+{
+  public:
+    explicit QgsAiEditPrintLayoutTool( QgsProject *project );
+
+    QString name() const override { return u"edit_print_layout"_s; }
+    QString description() const override;
+    QJsonObject schema() const override;
+    QgsAiToolResult execute( const QJsonObject &args ) override;
+    bool requiresApproval() const override { return true; }
+    QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::Medium; }
+
+  private:
+    QgsProject *mProject = nullptr;
 };
 
 /**

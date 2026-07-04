@@ -27,7 +27,7 @@ class QWidget;
 class QgsAiFileContextProvider;
 
 /**
- * download_file: lets the model fetch a remote file (HTTP/HTTPS) and save it inside
+ * download_file: lets the model fetch a remote HTTPS file and save it inside
  * the workspace. The user MUST approve via a confirmation dialog before the request
  * starts; cancellation returns "user_rejected".
  *
@@ -45,7 +45,7 @@ class QgsAiFileContextProvider;
  *
  * Hard caps:
  *
- * - URL must use http or https.
+ * - Public URLs must use https; localhost http is allowed for development.
  * - Default max_bytes = 100 MiB; caller may pass a smaller value.
  * - Redirect policy = NoLessSafeRedirectPolicy (HTTPS→HTTPS ok, HTTPS→HTTP refused).
  * - Transfer timeout 60s, overall request timeout 600s.
@@ -65,6 +65,7 @@ class APP_EXPORT QgsAiDownloadFileTool : public QgsAiTool
     QJsonObject schema() const override;
     QgsAiToolResult execute( const QJsonObject &args ) override;
     bool requiresApproval() const override { return true; }
+    QgsAiToolApprovalMode approvalMode() const override { return QgsAiToolApprovalMode::SelfApproved; }
     QgsAiToolRiskLevel riskLevel() const override { return QgsAiToolRiskLevel::High; }
     bool isAvailable() const override;
     QString availabilityReason() const override;

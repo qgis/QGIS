@@ -25,6 +25,7 @@ tests/testdata/newsfeed/
 #Specific files
 .clang-format
 ChangeLog
+ROADMAP.md
 doc/NEWS.html
 debian/qgis.desktop
 debian/qgis-plugin-grass.lintian-overrides
