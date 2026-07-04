@@ -139,7 +139,8 @@ jobs:
         if: ${{ env.IS_STRATA_RELEASE == 'true' && env.WINDOWS_CODESIGN_CONFIGURED != 'true' }}
         shell: bash
         run: |
-          echo "::warning::Windows code signing is disabled because Azure signing secrets/variables are not configured. Release assets will be uploaded unsigned."
+          echo "::warning::Windows Authenticode signing is disabled because Azure signing secrets/variables are not configured."
+          echo "::warning::Run the Sign release assets workflow after packaging to attach Sigstore signatures and checksums."
 
       - name: 🌱 Install dependencies and generate project files
         id: cmake-configure

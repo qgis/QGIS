@@ -1,0 +1,129 @@
+name: Sign release assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to sign, for example strata-v1.3.0
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  sign-release-assets:
+    name: Sign release assets
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ inputs.tag }}
+
+    steps:
+      - name: Validate release tag
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          case "${TAG}" in
+            strata-v*) ;;
+            *)
+              echo "::error::Release tag must start with strata-v: ${TAG}"
+              exit 1
+              ;;
+          esac
+
+          gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.9.2
+
+      - name: Download release assets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p release-assets release-signatures
+          gh release download "${TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --dir release-assets \
+            --clobber
+
+          find release-assets -maxdepth 1 -type f -print | sort
+
+      - name: Sign and verify release assets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mapfile -t appimages < <(find release-assets -maxdepth 1 -type f -name '*.AppImage' | sort)
+          mapfile -t dmgs < <(find release-assets -maxdepth 1 -type f -name '*.dmg' | sort)
+          mapfile -t exes < <(find release-assets -maxdepth 1 -type f -name '*.exe' | sort)
+          mapfile -t zips < <(find release-assets -maxdepth 1 -type f -name '*-win64.zip' | sort)
+
+          missing=0
+          if [ "${#appimages[@]}" -eq 0 ]; then
+            echo "::error::Missing Linux AppImage asset"
+            missing=1
+          fi
+          if [ "${#dmgs[@]}" -eq 0 ]; then
+            echo "::error::Missing macOS DMG asset"
+            missing=1
+          fi
+          if [ "${#exes[@]}" -eq 0 ]; then
+            echo "::error::Missing Windows installer EXE asset"
+            missing=1
+          fi
+          if [ "${#zips[@]}" -eq 0 ]; then
+            echo "::error::Missing Windows portable ZIP asset"
+            missing=1
+          fi
+          if [ "${missing}" -ne 0 ]; then
+            exit 1
+          fi
+
+          targets=("${appimages[@]}" "${dmgs[@]}" "${exes[@]}" "${zips[@]}")
+          identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/sign-release-assets.yml@refs/heads/${GITHUB_REF_NAME}"
+
+          for file in "${targets[@]}"; do
+            base="$(basename "${file}")"
+            checksum="release-signatures/${base}.sha256"
+            bundle="release-signatures/${base}.sigstore.json"
+
+            (
+              cd release-assets
+              sha256sum "${base}"
+            ) > "${checksum}"
+
+            cosign sign-blob --yes \
+              --bundle "${bundle}" \
+              "${file}"
+
+            (
+              cd release-assets
+              sha256sum -c "../${checksum}"
+            )
+
+            cosign verify-blob \
+              --bundle "${bundle}" \
+              --certificate-identity "${identity}" \
+              --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+              "${file}"
+          done
+
+          {
+            echo "### Signed release assets"
+            for file in "${targets[@]}"; do
+              echo "- $(basename "${file}")"
+            done
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload signature assets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          gh release upload "${TAG}" release-signatures/* \
+            --repo "${GITHUB_REPOSITORY}" \
+            --clobber
