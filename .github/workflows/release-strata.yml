@@ -55,9 +55,9 @@ jobs:
             |---|---|---|
             | **macOS** (Intel + Apple Silicon) | `*.dmg` | Universal binary, **firmato Apple Developer ID + notarizzato**. Doppio click sul DMG, trascina l'app in Applications, lancia. |
             | **Windows** (x64) | `*-win64.exe`, `*-win64.zip` | Installer NSIS firmato Authenticode; ZIP portable con binari firmati. Verifica il publisher prima di avviare. |
-            | **Linux** (x86_64) | `*.AppImage` | `chmod +x` poi doppio click. |
+            | **Linux** (x86_64) | `*.AppImage`, `*.AppImage.sigstore.json`, `*.AppImage.sha256` | AppImage firmata con Sigstore keyless e checksum SHA256. `chmod +x` poi doppio click. |
 
-            > ⚠️ Il pacchetto **Linux** non è ancora firmato. Su Windows la firma è presente, ma la reputazione SmartScreen può richiedere alcuni download reali prima di stabilizzarsi.
+            > Su Windows la firma è presente, ma la reputazione SmartScreen può richiedere alcuni download reali prima di stabilizzarsi.
 
             ## Configurazione AI
 
