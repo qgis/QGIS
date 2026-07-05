@@ -1,12 +1,12 @@
 [general]
-name=DB Manager
-description=Manage your databases within QGIS
+name=DB Manager (deprecated)
+description=This plugin is deprecated, please install the "DB Manager (community)" plugin instead.
 category=Database
 version=0.1.20
 qgisMinimumVersion=4.0
 
-author=Giuseppe Sucameli
-email=brush.tyler@gmail.com
+author=deprecated
+email=deprecated@deprecated
 
 icon=icons/dbmanager.svg
 
