@@ -410,6 +410,13 @@ class CORE_EXPORT QgsJsonUtils
     static QgsGeometry geometryFromGeoJson( const QString &geometry );
 
     /**
+     * Converts a \a geometry to a GeoJSON compatible variant.
+     *
+     * \since QGIS 4.4
+     */
+    static QVariant geometryToGeoJsonVariant( const QgsGeometry &geometry );
+
+    /**
      * Converts a QVariant \a v to a json object
      * \note Not available in Python bindings
      * \since QGIS 3.8

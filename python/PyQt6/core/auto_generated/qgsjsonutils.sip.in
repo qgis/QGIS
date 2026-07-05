@@ -414,6 +414,13 @@ Returns a null geometry if the geometry could not be parsed.
 .. versionadded:: 3.36
 %End
 
+    static QVariant geometryToGeoJsonVariant( const QgsGeometry &geometry );
+%Docstring
+Converts a ``geometry`` to a GeoJSON compatible variant.
+
+.. versionadded:: 4.4
+%End
+
 
 
 
