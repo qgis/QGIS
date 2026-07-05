@@ -378,7 +378,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
 
     QgsConditionalStyle featureStyle( const QgsFeature &feature ) const;
 
-    QgsVectorLayer *mSourceLayer = nullptr;
+    QPointer< QgsVectorLayer > mSourceLayer;
     QgsExpression mDisplayExpression;
     QString mFilterValue;
     QString mFilterExpression;
