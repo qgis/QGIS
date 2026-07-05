@@ -724,6 +724,11 @@ QgsGeometry QgsJsonUtils::geometryFromGeoJson( const QString &geometry )
   }
 }
 
+QVariant QgsJsonUtils::geometryToGeoJsonVariant( const QgsGeometry &geometry )
+{
+  return jsonToVariant( geometry.asJsonObject() );
+}
+
 json QgsJsonUtils::jsonFromVariant( const QVariant &val )
 {
   if ( QgsVariantUtils::isNull( val ) )
