@@ -61,7 +61,7 @@ class DBManagerPlugin:
 
         def install_community(_):
             self.iface.showPluginManager(
-                tabIndex=0, searchTerm=r"DB Manager \(community\)"
+                tabIndex=0, searchTerm=r"DB Manager \\(community\\)"
             )
 
         if self.iface.messageBar() is not None:
