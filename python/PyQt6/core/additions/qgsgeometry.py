@@ -15,7 +15,7 @@
 ***************************************************************************
 """
 
-import json
+from qgis.core import QgsJsonUtils as _JsonUtils
 
 
 def _geometryNonZero(self):
@@ -23,7 +23,4 @@ def _geometryNonZero(self):
 
 
 def _mapping_geometry(geometry):
-    geo = geometry.asJson()
-    # We have to use loads because exportToGeoJSON() gives us
-    # back a string that looks like a dictionary.
-    return json.loads(geo)
+    return _JsonUtils.geometryToGeoJsonVariant(geometry)
