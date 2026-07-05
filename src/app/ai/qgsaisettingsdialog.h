@@ -141,6 +141,7 @@ class APP_EXPORT QgsAiSettingsDialog : public QDialog
     QLineEdit *mClaudeEndpoint = nullptr;
     QLineEdit *mClaudeModel = nullptr;
     QLineEdit *mClaudeKey = nullptr;
+    QLineEdit *mClaudeSubscriptionToken = nullptr;
     QCheckBox *mClaudeUseOAuth = nullptr;
     QLabel *mClaudeOAuthStatus = nullptr;
 

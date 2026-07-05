@@ -153,9 +153,9 @@ namespace
       { u"OpenRouter Auto"_s, u"openrouter/auto"_s, QgsAiModelRouter::Provider::OpenRouter },
       { u"Codex GPT-5.4"_s, u"gpt-5.4"_s, QgsAiModelRouter::Provider::Codex },
       { u"Codex GPT-5.3 (codex)"_s, u"gpt-5.3-codex"_s, QgsAiModelRouter::Provider::Codex },
-      { u"Claude Sonnet 4"_s, u"claude-sonnet-4-20250514"_s, QgsAiModelRouter::Provider::Claude },
-      { u"Claude Sonnet 3.7"_s, u"claude-3-7-sonnet-20250219"_s, QgsAiModelRouter::Provider::Claude },
-      { u"Claude Opus 4.1"_s, u"claude-opus-4-1-20250805"_s, QgsAiModelRouter::Provider::Claude },
+      { u"Claude Opus 4.8"_s, u"claude-opus-4-8"_s, QgsAiModelRouter::Provider::Claude },
+      { u"Claude Sonnet 5"_s, u"claude-sonnet-5"_s, QgsAiModelRouter::Provider::Claude },
+      { u"Claude Haiku 4.5"_s, u"claude-haiku-4-5"_s, QgsAiModelRouter::Provider::Claude },
       { u"Plan backend"_s, u"managed-plan"_s, QgsAiModelRouter::Provider::Plan },
     };
   }
