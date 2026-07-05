@@ -18,6 +18,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
+from qgis.PyQt.QtWidgets import QApplication, QPushButton
+
+from qgis.PyQt import sip
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -35,6 +38,7 @@ class DBManagerPlugin:
     def __init__(self, iface):
         self.iface = iface
         self.dlg = None
+        self._item = None
 
     def initGui(self):
         self.action = QAction(
@@ -60,6 +64,10 @@ class DBManagerPlugin:
             )
 
         def install_community(_):
+            if self._item and not sip.isdeleted(self._item):
+                self.iface.messageBar().popWidget(self._item)
+                self._item = None
+
             self.iface.showPluginManager(
                 tabIndex=0, searchTerm=r"DB Manager \\(community\\)"
             )
@@ -75,7 +83,7 @@ class DBManagerPlugin:
             install_button = QPushButton("Install Now")
             install_button.clicked.connect(install_community)
             message_widget.layout().addWidget(install_button)
-            self.iface.messageBar().pushWidget(
+            self._item = self.iface.messageBar().pushWidget(
                 message_widget, Qgis.MessageLevel.Warning, 0
             )
 
