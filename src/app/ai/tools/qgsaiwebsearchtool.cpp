@@ -60,7 +60,7 @@ QString QgsAiWebSearchToolBase::availabilityReason() const
   return u"Sign in to Strata Plan to use managed online search tools."_s;
 }
 
-QgsAiToolResult QgsAiWebSearchToolBase::postSearch( const QString &path, const QJsonObject &body ) const
+QgsAiToolResult QgsAiWebSearchToolBase::postSearch( const QString &path, const QJsonObject &body, int timeoutMs ) const
 {
   if ( !isAvailable() )
     return QgsAiToolResult::error( availabilityReason() );
@@ -77,7 +77,7 @@ QgsAiToolResult QgsAiWebSearchToolBase::postSearch( const QString &path, const Q
   request.setHeader( QNetworkRequest::ContentTypeHeader, u"application/json"_s );
   request.setRawHeader( "Accept", "application/json" );
   request.setRawHeader( "Authorization", ( u"Bearer %1"_s.arg( mRouter->planSessionToken().trimmed() ) ).toUtf8() );
-  request.setTransferTimeout( SEARCH_TIMEOUT_MS );
+  request.setTransferTimeout( timeoutMs );
 
   QNetworkReply *reply = networkManager->post( request, QJsonDocument( body ).toJson( QJsonDocument::Compact ) );
   if ( !reply )
@@ -88,7 +88,7 @@ QgsAiToolResult QgsAiWebSearchToolBase::postSearch( const QString &path, const Q
   timer.setSingleShot( true );
   QObject::connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
   QObject::connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
-  timer.start( SEARCH_TIMEOUT_MS );
+  timer.start( timeoutMs );
   loop.exec();
 
   const bool timedOut = !timer.isActive();
