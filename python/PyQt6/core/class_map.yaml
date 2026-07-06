@@ -6441,6 +6441,7 @@ QgsJsonExporter: src/core/qgsjsonutils.h#L44
 QgsJsonUtils.encodeValue: src/core/qgsjsonutils.h#L348
 QgsJsonUtils.exportAttributes: src/core/qgsjsonutils.h#L358
 QgsJsonUtils.geometryFromGeoJson: src/core/qgsjsonutils.h#L410
+QgsJsonUtils.geometryToGeoJsonVariant: src/core/qgsjsonutils.h#L417
 QgsJsonUtils.parseArray: src/core/qgsjsonutils.h#L381
 QgsJsonUtils.parseArray: src/core/qgsjsonutils.h#L391
 QgsJsonUtils.stringToFeatureList: src/core/qgsjsonutils.h#L331
