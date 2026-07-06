@@ -132,13 +132,13 @@ QgsGeosContext::QgsGeosContext()
   // any curve geometry input if needed, and will also convert any linear output
   // to a curved type, if the inputs were converted to curves.
   GEOSCurveToLineParams *curveToLineParams = GEOSCurveToLineParams_create();
-  GEOSLineToCurveParams *lineToCurveParams = GEOSLineToCurveParams_create();
+  //GEOSLineToCurveParams *lineToCurveParams = GEOSLineToCurveParams_create(); // Disable for testing purposes
 
   GEOSContext_setCurveToLineParams_r( mContext, curveToLineParams );
-  GEOSContext_setLineToCurveParams_r( mContext, lineToCurveParams );
+  //GEOSContext_setLineToCurveParams_r( mContext, lineToCurveParams );
 
   GEOSCurveToLineParams_destroy( curveToLineParams );
-  GEOSLineToCurveParams_destroy( lineToCurveParams );
+  //GEOSLineToCurveParams_destroy( lineToCurveParams );
 #endif
 }
 
