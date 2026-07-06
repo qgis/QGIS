@@ -46,14 +46,6 @@ labels for line features (or polygon features which are labeled in a
       UseEntireLine,
     };
 
-    enum class AnchorTextPoint /BaseType=IntEnum/
-    {
-      StartOfText,
-      CenterOfText,
-      EndOfText,
-      FollowPlacement,
-    };
-
     Qgis::LabelLinePlacementFlags placementFlags() const;
 %Docstring
 Returns the line placement flags, which dictate how line labels can be
@@ -367,7 +359,7 @@ are clipped before calculating the line anchor placement.
 .. versionadded:: 3.20
 %End
 
-    AnchorTextPoint anchorTextPoint() const;
+    Qgis::TextAnchorPoint anchorTextPoint() const;
 %Docstring
 Returns the line anchor text point, which dictates which part of the
 label text should be placed at the
@@ -378,7 +370,7 @@ label text should be placed at the
 .. versionadded:: 3.26
 %End
 
-    void setAnchorTextPoint( AnchorTextPoint point );
+    void setAnchorTextPoint( Qgis::TextAnchorPoint point );
 %Docstring
 Sets the line anchor text ``point``, which dictates which part of the
 label text should be placed at the
