@@ -57,7 +57,7 @@ jobs:
         uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-ogc-${{ github.event.pull_request.base.ref || github.ref_name }}
+          key: build-ccache-ogc-${{ github.event.pull_request.base.ref || github.ref_name }}
           restore-keys: |
             build-ccache-ogc-master
 
@@ -75,7 +75,7 @@ jobs:
         id: docker-build
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf  # v7.2.0
         with:
-          tags: qgis/qgis-deps-ogc:${{ github.event.pull_request.base.ref || github.ref_name }}
+          tags: qgis/qgis-deps-ogc:${{ github.event.pull_request.base.ref || github.ref_name }}
           context: .ci/ogc
           file: .ci/ogc/Dockerfile
           cache-from: type=registry,ref=ghcr.io/qgis/qgis-deps-ogc:buildcache

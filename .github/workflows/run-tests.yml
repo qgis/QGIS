@@ -193,7 +193,7 @@ jobs:
                      --env WITH_MSSQL_TEST=${{ matrix.with-mssql-test }} \
                      --env WITH_HANA_TEST=${{ matrix.with-hana-test }} \
                      --env WITH_ORACLE_TEST=${{ matrix.with-oracle-test }} \
-                     --env WITH_QSPATIALITE=${{ matrix.with-qspatialite-test }} \
+                     --env WITH_QSPATIALITE=${{ matrix.with-qspatialite }} \
                      --env WITH_SERVER_LANDINGPAGE_WEBAPP=${{ matrix.with-server-landingpage-webapp }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
@@ -447,6 +447,7 @@ jobs:
           - distro: ubuntu
             distro-version: '26.04'
             qt-version: 6
+            docker-target: binary-only
 
     steps:
       - name: Free Disk Space (Ubuntu)
