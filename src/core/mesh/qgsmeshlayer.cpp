@@ -1014,7 +1014,7 @@ int QgsMeshLayer::closestFace( const QgsPointXY &point, double searchRadius, Qgs
   for ( const int faceIndex : faceIndexes )
   {
     const int nativefaceIndex = mesh->trianglesToNativeFaces().at( faceIndex );
-    if ( nativefaceIndex < 0 && nativefaceIndex >= mesh->faceCentroids().count() )
+    if ( nativefaceIndex < 0 || nativefaceIndex >= mesh->faceCentroids().count() )
       continue;
     const QgsPointXY centroid = mesh->faceCentroids()[nativefaceIndex];
     const double dist = point.distance( centroid );
