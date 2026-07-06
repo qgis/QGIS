@@ -110,7 +110,7 @@ class QSpatiaLiteResult : public QSqlCachedResult
 
   public:
     explicit QSpatiaLiteResult( const QSpatiaLiteDriver *db );
-    ~QSpatiaLiteResult();
+    ~QSpatiaLiteResult() Q_DECL_OVERRIDE;
   protected:
     bool gotoNext( QSqlCachedResult::ValueCache &row, int idx ) Q_DECL_OVERRIDE;
     bool reset( const QString &query ) Q_DECL_OVERRIDE;
