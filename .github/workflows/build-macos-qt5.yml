@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - qt5-qgis-3-44
+      - arrow-adbc-bump
   pull_request:
   release:
     types: ['published']

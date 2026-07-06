@@ -1,0 +1,35 @@
+diff --git a/c/driver/framework/status.h b/c/driver/framework/status.h
+index 69893ae44..32a11df7a 100644
+--- a/c/driver/framework/status.h
++++ b/c/driver/framework/status.h
+@@ -27,7 +27,7 @@
+ #include <vector>
+ 
+ #if defined(ADBC_FRAMEWORK_USE_FMT)
+-#include <fmt/core.h>
++#include <fmt/format.h>
+ #endif
+ 
+ #include <arrow-adbc/adbc.h>
+diff --git a/c/driver/postgresql/error.h b/c/driver/postgresql/error.h
+index bf8a4b2e4..3b012f1a9 100644
+--- a/c/driver/postgresql/error.h
++++ b/c/driver/postgresql/error.h
+@@ -25,7 +25,7 @@
+ #include <arrow-adbc/adbc.h>
+ #include <libpq-fe.h>
+ 
+-#include <fmt/core.h>
++#include <fmt/format.h>
+ 
+ #include "driver/framework/status.h"
+ 
+@@ -73,7 +73,7 @@ AdbcStatusCode SetError(struct AdbcError* error, PGresult* result, const char* f
+ 
+ template <typename... Args>
+ Status MakeStatus(PGresult* result, const char* format_string, Args&&... args) {
+-  auto message = ::fmt::vformat(format_string, ::fmt::make_format_args(args...));
++  auto message = ::fmt::format(format_string, std::forward<Args>(args)...);
+ 
+   AdbcStatusCode code = ADBC_STATUS_IO;
+   char sqlstate_out[5];
