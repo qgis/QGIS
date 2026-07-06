@@ -20,8 +20,6 @@
 #include <QLineEdit>
 #include <QString>
 
-using namespace Qt::StringLiterals;
-
 class TestQgsDoubleValidator : public QObject
 {
     Q_OBJECT
