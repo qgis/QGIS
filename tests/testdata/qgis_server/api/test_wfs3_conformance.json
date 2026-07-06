@@ -2,22 +2,38 @@ Content-Type: application/json
 
 {
   "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/landing-page",
+    "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/oas30",
+    "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/html",
+    "http://www.opengis.net/spec/ogcapi-common-1/1.0/req/json",
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-parameter",
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-references",
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-codelists",
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/advanced-property-roles",
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/references",
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/returnables-and-receivables",
+    "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html",
-    "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"
+    "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
+    "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas",
+    "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-codelists",
+    "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/profile-parameter",
+    "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/feature-references"
   ],
   "links": [
     {
       "href": "http://server.qgis.org/wfs3/conformance.json",
       "rel": "self",
-      "title": "WFS 3.0 conformance classes as JSON",
+      "title": "Conformance classes as JSON",
       "type": "application/json"
     },
     {
       "href": "http://server.qgis.org/wfs3/conformance.html",
       "rel": "alternate",
-      "title": "WFS 3.0 conformance classes as HTML",
+      "title": "Conformance classes as HTML",
       "type": "text/html"
     }
   ],

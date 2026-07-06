@@ -2009,10 +2009,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   }
 
   // It should be safe to delete the layer now if layer was stored, because all the store
-  // had to to was to reset the data source in case the validity changed.
+  // had to do was to reset the data source in case the validity changed.
   if ( !layerWasStored )
   {
-    mapLayer.release();
+    mapLayer.release(); // NOLINT(bugprone-unused-return-value)
   }
 
   return layerIsValid;

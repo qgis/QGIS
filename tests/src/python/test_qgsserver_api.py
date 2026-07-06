@@ -1,4 +1,6 @@
-"""QGIS Unit tests for QgsServer API.
+"""QGIS Unit tests for QgsServer API, includes initial tests for OGC API Features (AKA: OAPIF, WFS3).
+
+See also specific *ogcapi*.py tests for more OAPIF tests.
 
 From build dir, run: ctest -R PyQgsServerApi -V
 
@@ -393,6 +395,8 @@ class RestrictedLayerAccessControl(QgsAccessControlFilter):
 
 class QgsServerAPITest(QgsServerAPITestBase):
     """QGIS API server tests"""
+
+    regenerate_api_reference = False
 
     def setUp(self):
         super().setUp()
@@ -3092,7 +3096,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
             ctx,
             QgsServerOgcApi.Rel.alternate,
             QgsServerOgcApi.ContentType.JSON,
-            QgsServerOgcApi.Profile.NONE,
+            QgsServerOgcApi.Profile.Unset,
             title,
         )
 
