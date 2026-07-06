@@ -1,10 +1,1 @@
 blank_issues_enabled: false
-
-contact_links:
-  - name: QGIS upstream bug
-    url: https://github.com/qgis/QGIS/issues/new/choose
-    about: If the same problem also happens in the original QGIS application, report it to QGIS.
-
-  - name: General question
-    url: https://github.com/francemazzi/strata/discussions
-    about: For general questions, ideas, or open discussions about Strata.
