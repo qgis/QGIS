@@ -86,6 +86,8 @@ winding the other way around the circle).
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
+    virtual bool isEmpty() const /HoldGIL/;
+
     virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
     int indexOf( const QgsPoint &point ) const final;
