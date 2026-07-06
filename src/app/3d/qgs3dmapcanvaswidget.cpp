@@ -45,6 +45,7 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsidentifyresultsdialog.h"
+#include "qgslateralpanelwidget.h"
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapthemecollection.h"
@@ -69,7 +70,9 @@
 #include <QProgressBar>
 #include <QShortcut>
 #include <QString>
+#include <QTabWidget>
 #include <QToolBar>
+#include <QToolBox>
 #include <QWidget>
 
 #include "moc_qgs3dmapcanvaswidget.cpp"
@@ -130,9 +133,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   QAction *toggleOnScreenNavigation = toolBar->addAction( QgsApplication::getThemeIcon( u"mAction3DNavigation.svg"_s ), tr( "Toggle On-Screen Navigation" ) );
   toggleOnScreenNavigation->setObjectName( u"m3DActionToggleOnScreenNavigation"_s );
-  toggleOnScreenNavigation->setCheckable( true );
-  toggleOnScreenNavigation->setChecked( setting.value( u"/3D/navigationWidget/visibility"_s, true, QgsSettings::Gui ).toBool() );
-  QObject::connect( toggleOnScreenNavigation, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleNavigationWidget );
+  // this is no more a toggle but a button to show the widget
+  toggleOnScreenNavigation->setCheckable( false );
+  QObject::connect( toggleOnScreenNavigation, &QAction::triggered, this, [this]() { toggleNavigationWidget( true ); } );
 
   toolBar->addSeparator();
 
@@ -411,6 +414,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     mLabelNavSpeedHideTimeout->stop();
   } );
 
+  // create main vertical layout
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
@@ -422,20 +426,31 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mContainer = QWidget::createWindowContainer( mCanvas );
   mContainer->setMinimumSize( QSize( 200, 200 ) );
   mContainer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+  // create the lateral panel
+  QAction *showHideLateralPanel = new QAction( QgsApplication::getThemeIcon( u"mActionResizeWidest.svg"_s ), tr( "Show/hide right panel" ), this );
+  showHideLateralPanel->setObjectName( u"showHideLateralPanel"_s );
+  mLateralPanel = new QgsLateralPanelWidget( showHideLateralPanel );
+  mLateralPanel->hide();
+
   mNavigationWidget = new Qgs3DNavigationWidget( mCanvas );
   mNavigationWidget->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
   mDebugWidget = new Qgs3DDebugWidget( mCanvas );
 
+  mLateralPanel->addWidget( mNavigationWidget, u"Navigation"_s );
+  mLateralPanel->addWidget( mDebugWidget, u"Debug"_s );
+
+  // create sub horizontal layout
   QHBoxLayout *hLayout = new QHBoxLayout;
   hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->addWidget( mContainer );
-  hLayout->addWidget( mNavigationWidget );
-  hLayout->addWidget( mDebugWidget );
+  hLayout->addWidget( mLateralPanel );
 
   QShortcut *debugPanelShortCut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+d" ) ), this );
   connect( debugPanelShortCut, &QShortcut::activated, this, qOverload<>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
   debugPanelShortCut->setObjectName( u"DebugPanel"_s );
   debugPanelShortCut->setWhatsThis( tr( "Debug panel visibility" ) );
+
   toggleNavigationWidget( setting.value( u"/3D/navigationWidget/visibility"_s, false, QgsSettings::Gui ).toBool() );
 
   layout->addLayout( hLayout );
@@ -461,6 +476,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( dockAction, &QAction::toggled, this, [toolBar]( const bool isSmallSize ) {
     toolBar->setIconSize( QgsGui::iconSize( isSmallSize ? Qgis::UserInterfaceIconType::DockedToolbar : Qgis::UserInterfaceIconType::MainWindowToolbar ) );
   } );
+
+  // add action to show/hide lateral panel
+  toolBar->addSeparator();
+  toolBar->addAction( mLateralPanel->toggleAction() );
 
   updateLayerRelatedActions( QgisApp::instance()->activeLayer() );
   mEditingToolBar->setVisible( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );
@@ -514,6 +533,11 @@ void Qgs3DMapCanvasWidget::addEditingToolBar( Qgs3DEditingToolBar *newToolBar )
     // disable toolbar by default
     newToolBar->deactivate();
   }
+}
+
+QgsLateralPanelWidget *Qgs3DMapCanvasWidget::lateralPanel() const
+{
+  return mLateralPanel;
 }
 
 void Qgs3DMapCanvasWidget::saveAsImage()
@@ -665,7 +689,14 @@ bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
 
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( const bool visibility )
 {
-  mNavigationWidget->setVisible( visibility );
+  if ( visibility )
+  {
+    mLateralPanel->showWidget( u"Navigation"_s );
+  }
+  else
+  {
+    mLateralPanel->hide();
+  }
   QgsSettings setting;
   setting.setValue( u"/3D/navigationWidget/visibility"_s, visibility, QgsSettings::Gui );
 }
@@ -690,7 +721,14 @@ void Qgs3DMapCanvasWidget::toggleFpsCounter( const bool visibility )
 
 void Qgs3DMapCanvasWidget::toggleDebugWidget( const bool visibility ) const
 {
-  mDebugWidget->setVisible( visibility );
+  if ( visibility )
+  {
+    mLateralPanel->showWidget( u"Debug"_s );
+  }
+  else
+  {
+    mLateralPanel->hideWidget( u"Debug"_s );
+  }
 }
 
 // this is used only for keyboard shortcut, you should supply the visibility value
@@ -699,7 +737,7 @@ void Qgs3DMapCanvasWidget::toggleDebugWidget() const
   Qgis::Map3DDebugFlags debugFlags = mCanvas->mapSettings()->debugFlags();
   debugFlags.setFlag( Qgis::Map3DDebugFlag::ShowDebugPanel, !debugFlags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
   mCanvas->mapSettings()->setDebugFlags( debugFlags );
-  mDebugWidget->setVisible( debugFlags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
+  toggleDebugWidget( debugFlags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
 }
 
 void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
