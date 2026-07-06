@@ -2617,7 +2617,6 @@ bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, Qgs
 
   GEOSContextHandle_t context = QgsGeosContext::get();
   QgsScopedGeosContextRegisterFeedback interrupt( feedback );
-
   try
   {
     GEOSGeometry *g1 = nullptr;
@@ -3031,20 +3030,26 @@ geos::unique_ptr QgsGeos::createGeosCompoundCurve( const QgsAbstractGeometry *cu
     return nullptr;
 
   GEOSContextHandle_t context = QgsGeosContext::get();
+  geos::unique_ptr geosCurve;
 
-  const int nCurves = c->nCurves();
-  GEOSGeometry **curves = new GEOSGeometry *[nCurves];
-  for ( int i = 0; i < nCurves; i++ )
+  try
   {
-    // TODO: use QgsCurve->isSimpleCurve()
-    if ( QgsWkbTypes::flatType( c->wkbType() ) != Qgis::WkbType::CircularString && QgsWkbTypes::flatType( c->wkbType() ) != Qgis::WkbType::LineString )
+    const int nCurves = c->nCurves();
+    GEOSGeometry **curves = new GEOSGeometry *[nCurves];
+
+    for ( int i = 0; i < nCurves; i++ )
     {
-      curves[i] = createGeosSimpleCurve( c->curveAt( i ), precision, flags ).release();
+      // TODO: use QgsCurve->isSimpleCurve()
+      if ( QgsWkbTypes::flatType( c->wkbType() ) != Qgis::WkbType::CircularString && QgsWkbTypes::flatType( c->wkbType() ) != Qgis::WkbType::LineString )
+      {
+        curves[i] = createGeosSimpleCurve( c->curveAt( i ), precision, flags ).release();
+      }
+      // TODO: What should we do if we get nested compound curves (which is invalid, btw)?
     }
-    // TODO: What should we do if we get nested compound curves (which is invalid, btw)?
+    geosCurve.reset( GEOSGeom_createCompoundCurve_r( context, curves, nCurves ) );
+    delete[] curves;
   }
-  geos::unique_ptr geosCurve( GEOSGeom_createCompoundCurve_r( context, curves, nCurves ) );
-  delete[] curves;
+  CATCH_GEOS( nullptr )
   return geosCurve;
 }
 
