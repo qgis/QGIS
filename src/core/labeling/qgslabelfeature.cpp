@@ -99,16 +99,16 @@ void QgsLabelFeature::setOverrunSmoothDistance( double overrunSmoothDistance )
   mOverrunSmoothDistance = overrunSmoothDistance;
 }
 
-QgsLabelLineSettings::AnchorTextPoint QgsLabelFeature::lineAnchorTextPoint() const
+Qgis::TextAnchorPoint QgsLabelFeature::lineAnchorTextPoint() const
 {
-  if ( mAnchorTextPoint == QgsLabelLineSettings::AnchorTextPoint::FollowPlacement )
+  if ( mAnchorTextPoint == Qgis::TextAnchorPoint::FollowPlacement )
   {
     if ( mLineAnchorPercent < 0.25 )
-      return QgsLabelLineSettings::AnchorTextPoint::StartOfText;
+      return Qgis::TextAnchorPoint::StartOfText;
     else if ( mLineAnchorPercent > 0.75 )
-      return QgsLabelLineSettings::AnchorTextPoint::EndOfText;
+      return Qgis::TextAnchorPoint::EndOfText;
     else
-      return QgsLabelLineSettings::AnchorTextPoint::CenterOfText;
+      return Qgis::TextAnchorPoint::CenterOfText;
   }
   else
   {
