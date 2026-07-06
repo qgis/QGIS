@@ -258,18 +258,18 @@ void TestQgsDoubleValidator::testRegularExpression()
   // Test that with locales that have '.' as decimal separator and '-' as minus sign the regular expression is correct
   QLocale::setDefault( QLocale( QLocale::Language::English ) );
   QgsDoubleValidator validator( nullptr );
-  QString value = u"1.x23"_s;
+  QString value = QStringLiteral( "1.x23" );
   QCOMPARE( validator.validate( value ), QValidator::Invalid );
-  value = u"1.23"_s;
+  value = QStringLiteral( "1.23" );
   QCOMPARE( validator.validate( value ), QValidator::Acceptable );
   const QRegularExpression re = validator.regularExpression();
   QCOMPARE( re.pattern(), "^\\s*[+\\-]?[\\d]{0,1000}([\\.][\\d]{0,1000})?([eE][+\\-]?[\\d]{0,1000})?\\s*$" );
 
   QLocale::setDefault( QLocale( QLocale::Language::Italian ) );
   validator.setMaxDecimals( 100 );
-  value = u"1,x23"_s;
+  value = QStringLiteral( "1,x23" );
   QCOMPARE( validator.validate( value ), QValidator::Invalid );
-  value = u"1,23"_s;
+  value = QStringLiteral( "1,23" );
   QCOMPARE( validator.validate( value ), QValidator::Acceptable );
   const QRegularExpression re2 = validator.regularExpression();
   QCOMPARE( re2.pattern(), "^\\s*[+\\-]?[\\d]{0,1000}([\\.\\,][\\d]{0,1000})?([eE][+\\-]?[\\d]{0,100})?\\s*$" );
