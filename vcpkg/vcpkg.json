@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "efa37f71edf9c676686040ffc4b7edaf2327e4d0",
+        "baseline": "b2f7537dda5bce38b0f43e6391a308b8a52ca920",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -213,6 +213,7 @@
           ]
         },
         "py-pysal",
+        "py-pysfcgal",
         "py-pytz",
         "py-pyyaml",
         "py-qscintilla",
