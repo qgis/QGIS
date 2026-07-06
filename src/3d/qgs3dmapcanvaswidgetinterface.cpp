@@ -31,3 +31,8 @@ Qgs3DMapCanvas *Qgs3DMapCanvasWidgetInterface::mapCanvas3D()
 {
   return nullptr;
 }
+
+QgsLateralPanelWidget *Qgs3DMapCanvasWidgetInterface::lateralPanel() const
+{
+  return nullptr;
+}

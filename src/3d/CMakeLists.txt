@@ -40,6 +40,7 @@ set(QGIS_3D_SRCS
   qgsglobeutils_p.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
+  qgslateralpanelwidget.cpp
   qgslayoutitem3dmap.cpp
   qgslayerstylewatcher.cpp
   qgsmapoverlayentity.cpp
@@ -207,6 +208,7 @@ set(QGIS_3D_HDRS
   qgsgeotransform.h
   qgsglobechunkedentity.h
   qgsgltf3dutils.h
+  qgslateralpanelwidget.h
   qgslayoutitem3dmap.h
   qgslayerstylewatcher.h
   qgsmapoverlayentity.h
