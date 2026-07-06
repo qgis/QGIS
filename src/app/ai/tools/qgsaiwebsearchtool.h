@@ -34,7 +34,7 @@ class APP_EXPORT QgsAiWebSearchToolBase : public QgsAiTool
     QString availabilityReason() const override;
 
   protected:
-    QgsAiToolResult postSearch( const QString &path, const QJsonObject &body ) const;
+    QgsAiToolResult postSearch( const QString &path, const QJsonObject &body, int timeoutMs = 20000 ) const;
 
     QgsAiModelRouter *mRouter = nullptr;
 };
