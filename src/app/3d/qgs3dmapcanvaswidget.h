@@ -36,6 +36,7 @@ class Qgs3DMapToolPointCloudChangeAttributePaintbrush;
 class QLabel;
 class QProgressBar;
 class QActionGroup;
+class QTabWidget;
 
 class Qgs3DAnimationWidget;
 class Qgs3DMapCanvas;
@@ -105,6 +106,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget, public Qgs3DMapCanvasWid
 
     void addEditingToolBar( Qgs3DEditingToolBar *newToolBar ) override;
     QList<Qgs3DEditingToolBar *> editingToolBars() const override;
+    QgsLateralPanelWidget *lateralPanel() const override;
 
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
@@ -246,6 +248,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget, public Qgs3DMapCanvasWid
     Qgs3DMapClippingToleranceWidgetSettingsAction *mClippingToleranceAction = nullptr;
 
     QMenu *mToolbarMenu = nullptr;
+
+    QgsLateralPanelWidget *mLateralPanel = nullptr;
 
     struct ElevationProfileData
     {

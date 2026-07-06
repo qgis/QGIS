@@ -21,6 +21,7 @@
 
 class Qgs3DEditingToolBar;
 class Qgs3DMapCanvas;
+class QgsLateralPanelWidget;
 
 /**
  * \ingroup qgis_3d
@@ -46,6 +47,9 @@ class _3D_EXPORT Qgs3DMapCanvasWidgetInterface
 
     //! Returns 3D mapCanvas
     virtual Qgs3DMapCanvas *mapCanvas3D() SIP_SKIP;
+
+    //! Returns lateral panel widget
+    virtual QgsLateralPanelWidget *lateralPanel() const SIP_SKIP;
 };
 
 #endif //QGS3DMAPCANVASWIDGETINTERFACE_H
