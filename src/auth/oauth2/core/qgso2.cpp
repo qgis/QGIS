@@ -454,8 +454,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     QMap<QString, QString> parameters;
     parameters.insert( O2_OAUTH2_GRANT_TYPE_CODE, code() );
     parameters.insert( O2_OAUTH2_CLIENT_ID, clientId_ );
-    //No client secret with PKCE
-    if ( grantFlow_ != GrantFlowPkce )
+    if ( !clientSecret_.isEmpty() )
     {
       parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
     }
@@ -551,8 +550,8 @@ void QgsO2::refreshSynchronous()
   refreshRequest.setHeader( QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM );
   QMap<QString, QString> parameters;
   parameters.insert( O2_OAUTH2_CLIENT_ID, clientId_ );
-  // No secret with PKCE
-  if ( grantFlow_ != GrantFlowPkce )
+  // No secret with PKCE, and don't send an empty secret (public clients may have none)
+  if ( grantFlow_ != GrantFlowPkce && !clientSecret_.isEmpty() )
   {
     parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
   }
