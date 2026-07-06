@@ -1,0 +1,64 @@
+name: Idea / Feature request
+description: Suggest an improvement or a new feature for Strata
+title: "[Idea]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to suggest a new feature, workflow, or improvement for Strata.
+
+        Good feature requests usually describe the GIS problem first, not only the technical solution.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Explain the real workflow or pain point.
+      placeholder: "Example: I often need to classify satellite images, but the workflow requires too many manual QGIS steps."
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like Strata to do?
+      placeholder: "Example: I would like to ask the AI assistant to prepare the raster calculation and generate the output layer."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Feature area
+      options:
+        - AI assistant
+        - GIS automation
+        - Data loading
+        - Analysis workflow
+        - User interface
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example workflow or use case
+      description: Add a concrete example if possible.
+      placeholder: |
+        I work with...
+        I usually need to...
+        Today I do it manually by...
+        Strata could help by...
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Current workaround
+      description: How do you solve this today?
+    validations:
+      required: false

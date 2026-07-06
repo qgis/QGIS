@@ -1,0 +1,80 @@
+name: Problem / Bug
+description: Report something that is not working in Strata
+title: "[Problem]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem in Strata.
+
+        Use this form for problems related to Strata.
+        If the same issue also happens in the original QGIS application, please report it to QGIS upstream.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the problem in a simple way.
+      placeholder: "Example: I asked the AI assistant to load a layer, but nothing happened."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+      placeholder: "Example: I expected Strata to load the selected layer and show it on the map."
+    validations:
+      required: false
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: How can we reproduce it?
+      description: Add the steps if you can.
+      placeholder: |
+        1. Open Strata
+        2. Load this type of file/layer
+        3. Ask the AI assistant to...
+        4. The error appears
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where is the problem?
+      options:
+        - AI assistant
+        - Map/layers
+        - Project loading/saving
+        - Installation/startup
+        - QGIS compatibility
+        - I am not sure
+    validations:
+      required: true
+
+  - type: input
+    id: system
+    attributes:
+      label: Operating system
+      placeholder: "Windows / macOS / Linux"
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Strata version or commit
+      placeholder: "Example: v0.1.0 or commit hash"
+    validations:
+      required: false
+
+  - type: textarea
+    id: files
+    attributes:
+      label: Screenshots, logs, or sample data
+      description: Add anything useful to understand the issue.
+    validations:
+      required: false
