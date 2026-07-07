@@ -447,7 +447,6 @@ jobs:
           - distro: ubuntu
             distro-version: '26.04'
             qt-version: 6
-            docker-target: binary-only
 
     steps:
       - name: Free Disk Space (Ubuntu)
