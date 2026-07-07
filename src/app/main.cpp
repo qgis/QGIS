@@ -1447,7 +1447,15 @@ int main( int argc, char *argv[] )
   // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
   QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
 #else
-  QgsApplication::setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
+  if ( QgsApplication::platformName() == "wayland"_L1 )
+  {
+    // wayland requires a desktop file to correct set window icons
+    QgsApplication::setDesktopFileName( "org.qgis.qgis" );
+  }
+  else
+  {
+    QgsApplication::setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
+  }
 #endif
 
 #ifdef Q_OS_MACOS
