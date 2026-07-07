@@ -75,6 +75,7 @@ class TestQgsMapCanvas : public QObject
     void testMagnificationScale();
     void testScaleLockCanvasResize();
     void testZoomByWheel();
+    void testHorizontalWheelScroll();
     void testShiftZoom();
     void testDragDrop();
     void testZoomResolutions();
@@ -397,6 +398,82 @@ void TestQgsMapCanvas::testZoomByWheel()
   mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.1 );
+}
+
+void TestQgsMapCanvas::testHorizontalWheelScroll()
+{
+  mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+
+  int emitted = 0;
+  QPoint lastAngleDelta;
+  bool lastInverted = false;
+  QObject context;
+  connect( mCanvas, &QgsMapCanvas::horizontalWheelScrolled, &context, [&]( QWheelEvent *event ) {
+    emitted++;
+    lastAngleDelta = event->angleDelta();
+    lastInverted = event->inverted();
+  } );
+
+  // A horizontal wheel notch forwards the event unchanged and does not zoom.
+  QgsRectangle before = mCanvas->extent();
+  auto e = std::make_unique<QWheelEvent>( QPointF(), QPointF(), QPoint(), QPoint( QWheelEvent::DefaultDeltasPerStep, 0 ), Qt::NoButton, Qt::NoModifier, Qt::ScrollBegin, false );
+  mCanvas->wheelEvent( e.get() );
+  QCOMPARE( emitted, 1 );
+  QCOMPARE( lastAngleDelta.x(), QWheelEvent::DefaultDeltasPerStep );
+  QGSCOMPARENEAR( mCanvas->extent().width(), before.width(), 0.0001 );
+  QGSCOMPARENEAR( mCanvas->extent().height(), before.height(), 0.0001 );
+
+  // A mostly-vertical diagonal gesture is locked to the vertical axis: it zooms
+  // and forwards nothing.
+  emitted = 0;
+  before = mCanvas->extent();
+  e = std::make_unique<QWheelEvent>( QPointF(), QPointF(), QPoint(), QPoint( QWheelEvent::DefaultDeltasPerStep / 4, QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::ScrollBegin, false );
+  mCanvas->wheelEvent( e.get() );
+  QCOMPARE( emitted, 0 );
+  QVERIFY( std::fabs( mCanvas->extent().width() - before.width() ) > 0.0001 );
+
+  // A mostly-horizontal diagonal gesture is locked to the horizontal axis: it
+  // forwards the event and does not zoom.
+  emitted = 0;
+  before = mCanvas->extent();
+  e = std::make_unique<QWheelEvent>( QPointF(), QPointF(), QPoint(), QPoint( QWheelEvent::DefaultDeltasPerStep, QWheelEvent::DefaultDeltasPerStep / 4 ), Qt::NoButton, Qt::NoModifier, Qt::ScrollBegin, false );
+  mCanvas->wheelEvent( e.get() );
+  QCOMPARE( emitted, 1 );
+  QCOMPARE( lastAngleDelta.x(), QWheelEvent::DefaultDeltasPerStep );
+  QGSCOMPARENEAR( mCanvas->extent().width(), before.width(), 0.0001 );
+
+  // The event is forwarded verbatim, including a small high-resolution sub-notch
+  // delta and the natural-scroll inverted() flag, leaving accumulation and
+  // direction handling to the consumer.
+  emitted = 0;
+  e = std::make_unique<QWheelEvent>( QPointF(), QPointF(), QPoint(), QPoint( QWheelEvent::DefaultDeltasPerStep / 10, 0 ), Qt::NoButton, Qt::NoModifier, Qt::ScrollBegin, true );
+  mCanvas->wheelEvent( e.get() );
+  QCOMPARE( emitted, 1 );
+  QCOMPARE( lastAngleDelta.x(), QWheelEvent::DefaultDeltasPerStep / 10 );
+  QVERIFY( lastInverted );
+
+  // Start scrolling horizontally, then switch to vertical scroll
+  emitted = 0;
+  e = std::make_unique<QWheelEvent>( QPointF(), QPointF(), QPoint(), QPoint( QWheelEvent::DefaultDeltasPerStep, QWheelEvent::DefaultDeltasPerStep - 1 ), Qt::NoButton, Qt::NoModifier, Qt::ScrollBegin, false );
+  mCanvas->wheelEvent( e.get() );
+  QCOMPARE( emitted, 1 ); // locked horizontal, event forwarded
+  before = mCanvas->extent();
+  e = std::make_unique<QWheelEvent>( QPointF(), QPointF(), QPoint(), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::ScrollUpdate, false );
+  mCanvas->wheelEvent( e.get() );
+  QCOMPARE( emitted, 1 );                                                      // broke out to vertical: nothing forwarded
+  QVERIFY( std::fabs( mCanvas->extent().width() - before.width() ) > 0.0001 ); // it zoomed
+
+  // Check hysteresis when moving slightly off axis
+  emitted = 0;
+  e = std::make_unique<QWheelEvent>( QPointF(), QPointF(), QPoint(), QPoint( QWheelEvent::DefaultDeltasPerStep, 0 ), Qt::NoButton, Qt::NoModifier, Qt::ScrollBegin, false );
+  mCanvas->wheelEvent( e.get() );
+  QCOMPARE( emitted, 1 ); // locked horizontal
+  before = mCanvas->extent();
+  e = std::make_unique<
+    QWheelEvent>( QPointF(), QPointF(), QPoint(), QPoint( QWheelEvent::DefaultDeltasPerStep, QWheelEvent::DefaultDeltasPerStep + QWheelEvent::DefaultDeltasPerStep / 5 ), Qt::NoButton, Qt::NoModifier, Qt::ScrollUpdate, false );
+  mCanvas->wheelEvent( e.get() );
+  QCOMPARE( emitted, 2 );                                              // still horizontal: event forwarded, not enough to break out
+  QGSCOMPARENEAR( mCanvas->extent().width(), before.width(), 0.0001 ); // did not zoom
 }
 
 void TestQgsMapCanvas::testShiftZoom()
