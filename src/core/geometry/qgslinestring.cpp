@@ -1397,7 +1397,7 @@ QgsCompoundCurve *QgsLineString::toCurveType() const
   return compoundCurve;
 }
 
-void QgsLineString::extend( double startDistance, double endDistance )
+void QgsLineString::extend( double startDistance, double endDistance, double startDeflection, double endDeflection )
 {
   if ( mX.size() < 2 || mY.size() < 2 )
     return;
@@ -1405,22 +1405,90 @@ void QgsLineString::extend( double startDistance, double endDistance )
   const bool extendStart = startDistance > 0;
   const bool extendEnd = endDistance > 0;
 
+  constexpr double DEG_TO_RAD = M_PI / 180.0;
+
   // start of line
   if ( extendStart )
   {
-    const double currentLen = std::sqrt( std::pow( mX.at( 0 ) - mX.at( 1 ), 2 ) + std::pow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
-    const double newLen = currentLen + startDistance;
-    mX[0] = mX.at( 1 ) + ( mX.at( 0 ) - mX.at( 1 ) ) / currentLen * newLen;
-    mY[0] = mY.at( 1 ) + ( mY.at( 0 ) - mY.at( 1 ) ) / currentLen * newLen;
+    double dx = mX.at( 0 ) - mX.at( 1 );
+    double dy = mY.at( 0 ) - mY.at( 1 );
+    const double currentLen = std::sqrt( std::pow( dx, 2 ) + std::pow( dy, 2 ) );
+    if ( currentLen > 0 )
+    {
+      if ( !qgsDoubleNear( startDeflection, 0 ) )
+      {
+        // if deflecting, rotate start point by degrees clockwise
+        const double startRad = startDeflection * DEG_TO_RAD;
+        const double cosStart = std::cos( startRad );
+        const double sinStart = std::sin( startRad );
+        const double rotatedDx = dx * cosStart + dy * sinStart;
+        const double rotatedDy = -dx * sinStart + dy * cosStart;
+
+        const double newX = mX.at( 0 ) + ( rotatedDx / currentLen ) * startDistance;
+        const double newY = mY.at( 0 ) + ( rotatedDy / currentLen ) * startDistance;
+
+        mX.insert( mX.begin(), newX );
+        mY.insert( mY.begin(), newY );
+        // copy z/m from first vertex if required
+        if ( !mZ.empty() )
+        {
+          mZ.insert( mZ.begin(), mZ.at( 0 ) );
+        }
+        if ( !mM.empty() )
+        {
+          mM.insert( mM.begin(), mM.at( 0 ) );
+        }
+      }
+      else
+      {
+        const double newLen = currentLen + startDistance;
+        mX[0] = mX.at( 1 ) + dx / currentLen * newLen;
+        mY[0] = mY.at( 1 ) + dy / currentLen * newLen;
+      }
+    }
   }
   // end of line
   if ( extendEnd )
   {
-    const int last = mX.size() - 1;
-    const double currentLen = std::sqrt( std::pow( mX.at( last ) - mX.at( last - 1 ), 2 ) + std::pow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
-    const double newLen = currentLen + endDistance;
-    mX[last] = mX.at( last - 1 ) + ( mX.at( last ) - mX.at( last - 1 ) ) / currentLen * newLen;
-    mY[last] = mY.at( last - 1 ) + ( mY.at( last ) - mY.at( last - 1 ) ) / currentLen * newLen;
+    const qsizetype last = mX.size() - 1;
+    double dx = mX.at( last ) - mX.at( last - 1 );
+    double dy = mY.at( last ) - mY.at( last - 1 );
+    const double currentLen = std::sqrt( std::pow( dx, 2 ) + std::pow( dy, 2 ) );
+
+    if ( currentLen > 0 )
+    {
+      if ( !qgsDoubleNear( endDeflection, 0 ) )
+      {
+        // if deflecting, rotate end point by degrees clockwise
+        const double endRad = endDeflection * DEG_TO_RAD;
+        const double cosEnd = std::cos( endRad );
+        const double sinEnd = std::sin( endRad );
+        const double rotatedDx = dx * cosEnd + dy * sinEnd;
+        const double rotatedDy = -dx * sinEnd + dy * cosEnd;
+
+        const double newX = mX.at( last ) + ( rotatedDx / currentLen ) * endDistance;
+        const double newY = mY.at( last ) + ( rotatedDy / currentLen ) * endDistance;
+
+        mX.push_back( newX );
+        mY.push_back( newY );
+
+        // copy z/m from last vertex if required
+        if ( !mZ.empty() )
+        {
+          mZ.push_back( mZ.at( last ) );
+        }
+        if ( !mM.empty() )
+        {
+          mM.push_back( mM.at( last ) );
+        }
+      }
+      else
+      {
+        const double newLen = currentLen + endDistance;
+        mX[last] = mX.at( last - 1 ) + dx / currentLen * newLen;
+        mY[last] = mY.at( last - 1 ) + dy / currentLen * newLen;
+      }
+    }
   }
 
   if ( extendStart || extendEnd )
