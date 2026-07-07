@@ -488,7 +488,14 @@ void TestQgsGeometry::isValid()
   curve.addCurve( line.clone() );
   QVERIFY( curve.isValid( error ) );
   curve.addCurve( circ.clone() );
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  // The curve at this point is no longer valid, as the circle's start coords differ from the line's end coors.
+  // (From GEOS: Sections of CompoundCurve are not contiguous: curve 0 ends at 1 1 ; curve 1 begins at 0 0)
+  QVERIFY( !curve.isValid( error ) );
+  QCOMPARE( error, u"QGIS geometry cannot be converted to a GEOS geometry"_s );
+#else
   QVERIFY( curve.isValid( error ) );
+#endif
   QgsLineString invalidLine;
   invalidLine.addVertex( QgsPoint( 0, 0 ) );
   curve.addCurve( invalidLine.clone() );

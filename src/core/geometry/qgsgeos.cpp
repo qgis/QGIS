@@ -2082,10 +2082,13 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
 #endif
 
       case Qgis::WkbType::Polygon:
-      case Qgis::WkbType::CurvePolygon:
 #if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
+      case Qgis::WkbType::CurvePolygon:
+#endif
         return createGeosPolygon( geom, precision, flags );
-#else // GEOS >= 3.15
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+      case Qgis::WkbType::CurvePolygon:
         return createGeosCurvePolygon( geom, precision, flags );
 #endif
 
