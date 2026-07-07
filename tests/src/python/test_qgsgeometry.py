@@ -11113,6 +11113,13 @@ class TestQgsGeometry(QgisTestCase):
             f"Extend multiline: bbox Expected:\n{expbb.toString()}\nGot:\n{bb.toString()}\n",
         )
 
+        # with deflection angle
+        line = QgsGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(10, 0)]))
+        res = line.extendLine(5.0, 10.0, -10.0, 45.0)
+        self.assertEqual(
+            res.asWkt(5), "LineString (-4.92404 -0.86824, 0 0, 10 0, 17.07107 -7.07107)"
+        )
+
     def testRemoveRings(self):
         empty = QgsGeometry()
         self.assertFalse(empty.removeInteriorRings())

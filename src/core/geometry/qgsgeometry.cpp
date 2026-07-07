@@ -2852,7 +2852,7 @@ QgsGeometry QgsGeometry::variableWidthBufferByM( int segments ) const
   return engine.variableWidthBufferByM( segments );
 }
 
-QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) const
+QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance, double startDeflection, double endDeflection ) const
 {
   if ( !d->geometry || type() != Qgis::GeometryType::Line )
   {
@@ -2866,7 +2866,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
     results.reserve( parts.count() );
     for ( const QgsGeometry &part : parts )
     {
-      QgsGeometry result = part.extendLine( startDistance, endDistance );
+      QgsGeometry result = part.extendLine( startDistance, endDistance, startDeflection, endDeflection );
       if ( !result.isNull() )
         results << result;
     }
@@ -2887,7 +2887,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
       return QgsGeometry();
 
     std::unique_ptr< QgsLineString > newLine( line->clone() );
-    newLine->extend( startDistance, endDistance );
+    newLine->extend( startDistance, endDistance, startDeflection, endDeflection );
     return QgsGeometry( std::move( newLine ) );
   }
 }
