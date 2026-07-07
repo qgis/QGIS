@@ -2379,7 +2379,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         for ( auto it = attrFilters.constBegin(); it != attrFilters.constEnd(); it++ )
         {
           // Handle star
-          static const QRegularExpression re2( R"raw([^\\]\*)raw" );
+          const thread_local QRegularExpression re2( R"raw([^\\]\*)raw" );
           if ( re2.match( it.value() ).hasMatch() )
           {
             QString val { it.value() };
