@@ -1743,8 +1743,11 @@ class CORE_EXPORT QgsGeometry
      * Extends a (multi)line geometry by extrapolating out the start or end of the line
      * by a specified distance. Lines are extended using the bearing of the first or last
      * segment in the line.
+     *
+     * Since QGIS 4.4, the \a startDeflection and \a endDeflection arguments can be used to deflect the
+     * start and end extensions by the specified angles (specified in degrees clockwise).
      */
-    QgsGeometry extendLine( double startDistance, double endDistance ) const;
+    QgsGeometry extendLine( double startDistance, double endDistance, double startDeflection = 0, double endDeflection = 0 ) const;
 
     /**
      * Returns a simplified version of this geometry using a specified \a tolerance value.
