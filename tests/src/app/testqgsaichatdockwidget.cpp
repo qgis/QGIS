@@ -47,8 +47,8 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QRegularExpression>
-#include <QSettings>
 #include <QScopeGuard>
+#include <QSettings>
 #include <QString>
 #include <QTemporaryDir>
 #include <QTextEdit>
