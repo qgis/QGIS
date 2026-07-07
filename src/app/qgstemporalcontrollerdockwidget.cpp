@@ -59,8 +59,23 @@ void QgsTemporalControllerDockWidget::setMapCanvas( QgsMapCanvas *canvas )
 
   disconnect( mHorizontalScrollConnection );
   mHorizontalScrollConnection = connect( canvas, &QgsMapCanvas::horizontalWheelScrolled, this, [this]( QWheelEvent *event ) {
-    QgsTemporalNavigationObject *controller = mControllerWidget->temporalController();
-    controller->setCurrentFrameNumber( controller->currentFrameNumber() - event->angleDelta().x() / 120 );
+    // Trackpads may send several "short" scroll events compared to mouse wheels that send one "large" scroll event,
+    // so we need to collect enough scroll "steps" before changing frames.
+    constexpr int WHEEL_RESET_TIMEOUT_MS = 200;
+    if ( event->phase() == Qt::ScrollBegin || !mScrollGestureTimer.isValid() || mScrollGestureTimer.elapsed() > WHEEL_RESET_TIMEOUT_MS )
+    {
+      mAccumulatedScrollSteps = 0;
+    }
+    mScrollGestureTimer.restart();
+
+    mAccumulatedScrollSteps += event->angleDelta().x() / 120.0;
+    const int frameSteps = static_cast<int>( mAccumulatedScrollSteps );
+    if ( frameSteps != 0 )
+    {
+      mAccumulatedScrollSteps -= frameSteps;
+      QgsTemporalNavigationObject *controller = mControllerWidget->temporalController();
+      controller->setCurrentFrameNumber( controller->currentFrameNumber() - frameSteps );
+    }
   } );
 }
 

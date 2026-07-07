@@ -21,6 +21,8 @@
 #include "qgis_app.h"
 #include "qgsdockwidget.h"
 
+#include <QElapsedTimer>
+
 class QgsTemporalControllerWidget;
 class QgsTemporalController;
 class QgsMapCanvas;
@@ -55,9 +57,13 @@ class APP_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget
 
   private:
     QgsTemporalControllerWidget *mControllerWidget = nullptr;
-    
+
     //! Connection to the current canvas' horizontal scroll signal, so repeated setMapCanvas() calls don't stack handlers
     QMetaObject::Connection mHorizontalScrollConnection;
+    //! Accumulated horizontal scroll, in wheel steps, so fine-grained scrolling advances a frame per whole step
+    double mAccumulatedScrollSteps = 0;
+    //! Time since the last horizontal scroll, used to drop stale accumulation when a new gesture starts
+    QElapsedTimer mScrollGestureTimer;
 };
 
 #endif // QGSTEMPORALCONTROLLERDOCKWIDGET_H
