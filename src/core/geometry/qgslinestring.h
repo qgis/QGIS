@@ -346,8 +346,11 @@ class CORE_EXPORT QgsLineString : public QgsSimpleCurve
      * Extends the line geometry by extrapolating out the start or end of the line
      * by a specified distance. Lines are extended using the bearing of the first or last
      * segment in the line.
+     *
+     * Since QGIS 4.4, the \a startDeflection and \a endDeflection arguments can be used to deflect the
+     * start and end extensions by the specified angles (specified in degrees clockwise).
      */
-    void extend( double startDistance, double endDistance );
+    void extend( double startDistance, double endDistance, double startDeflection = 0, double endDeflection = 0 );
 
 #ifndef SIP_RUN
 
