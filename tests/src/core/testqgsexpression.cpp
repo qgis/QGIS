@@ -1539,6 +1539,10 @@ class TestQgsExpression : public QObject
       QTest::newRow( "extend null" ) << "extend(NULL, 1, 2)" << false << QVariant();
       QTest::newRow( "extend point" ) << "extend(geom_from_wkt('POINT(1 2)'),1,2)" << false << QVariant();
       QTest::newRow( "extend line" ) << "geom_to_wkt(extend(geom_from_wkt('LineString(0 0, 1 0, 1 1)'),1,2))" << false << QVariant( "LineString (-1 0, 1 0, 1 3)" );
+      QTest::newRow( "extend line with deflection" )
+        << "geom_to_wkt(extend(geom_from_wkt('LineString(0 0, 1 0, 1 1)'),1,2, 45, -45), 3)"
+        << false
+        << QVariant( "LineString (-0.707 0.707, 0 0, 1 0, 1 1, -0.414 2.414)" );
       QTest::newRow( "start_point point" ) << "geom_to_wkt(start_point(geom_from_wkt('POINT(2 0)')))" << false << QVariant( "Point (2 0)" );
       QTest::newRow( "start_point multipoint" ) << "geom_to_wkt(start_point(geom_from_wkt('MULTIPOINT((3 3), (1 1), (2 2))')))" << false << QVariant( "Point (3 3)" );
       QTest::newRow( "start_point line" ) << "geom_to_wkt(start_point(geom_from_wkt('LINESTRING(4 1, 1 1, 2 2)')))" << false << QVariant( "Point (4 1)" );

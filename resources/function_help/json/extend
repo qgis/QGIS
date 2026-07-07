@@ -12,6 +12,16 @@
   }, {
     "arg": "end_distance",
     "description": "distance to extend the end of the line."
+  }, {
+    "arg": "start_deflection",
+    "description": "angle in degrees clockwise to deflect the extension from the start of the line",
+    "optional": true,
+    "default": "0"
+  }, {
+    "arg": "end_deflection",
+    "description": "angle in degrees clockwise to deflect the extension from the end of the line",
+    "optional": true,
+    "default": "0"
   }],
   "examples": [{
     "expression": "geom_to_wkt(extend(geom_from_wkt('LineString(0 0, 1 0, 1 1)'),1,2))",

@@ -5627,10 +5627,13 @@ static QVariant fcnSingleSidedBuffer( const QVariantList &values, const QgsExpre
 static QVariant fcnExtend( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  double distStart = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
-  double distEnd = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  const double distStart = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double distEnd = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
 
-  QgsGeometry geom = fGeom.extendLine( distStart, distEnd );
+  const double deflectionStart = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  const double deflectionEnd = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+
+  QgsGeometry geom = fGeom.extendLine( distStart, distEnd, deflectionStart, deflectionEnd );
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
@@ -10192,7 +10195,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
          )
       << new QgsStaticExpressionFunction(
            u"extend"_s,
-           QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"start_distance"_s ) << QgsExpressionFunction::Parameter( u"end_distance"_s ),
+           QgsExpressionFunction::ParameterList()
+             << QgsExpressionFunction::Parameter( u"geometry"_s )
+             << QgsExpressionFunction::Parameter( u"start_distance"_s )
+             << QgsExpressionFunction::Parameter( u"end_distance"_s )
+             << QgsExpressionFunction::Parameter( u"start_deflection"_s, true, 0 )
+             << QgsExpressionFunction::Parameter( u"end_deflection"_s, true, 0 ),
            fcnExtend,
            u"GeometryGroup"_s
          )
