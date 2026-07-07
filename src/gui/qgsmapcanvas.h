@@ -1224,6 +1224,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     //! Emit key release event
     void keyReleased( QKeyEvent *e );
 
+    //! Emitted when scrolling horizontally over the canvas
+    void horizontalWheelScrolled( QWheelEvent *event ) SIP_SKIP;
+
     /**
      * Emit map tool changed with the old tool
      */

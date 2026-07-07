@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QUrl>
+#include <QWheelEvent>
 
 #include "moc_qgstemporalcontrollerdockwidget.cpp"
 
@@ -53,24 +54,14 @@ QgsTemporalController *QgsTemporalControllerDockWidget::temporalController()
 
 void QgsTemporalControllerDockWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
-  if ( canvas && canvas->viewport() )
-    canvas->viewport()->installEventFilter( this );
-}
+  if ( !canvas )
+    return;
 
-bool QgsTemporalControllerDockWidget::eventFilter( QObject *object, QEvent *event )
-{
-  if ( event->type() == QEvent::Wheel )
-  {
-    QWheelEvent *wheelEvent = qgis::down_cast<QWheelEvent *>( event );
-    // handle horizontal wheel events by scrubbing timeline
-    if ( wheelEvent->angleDelta().x() != 0 )
-    {
-      const int step = -wheelEvent->angleDelta().x() / 120.0;
-      mControllerWidget->temporalController()->setCurrentFrameNumber( mControllerWidget->temporalController()->currentFrameNumber() + step );
-      return true;
-    }
-  }
-  return QgsDockWidget::eventFilter( object, event );
+  disconnect( mHorizontalScrollConnection );
+  mHorizontalScrollConnection = connect( canvas, &QgsMapCanvas::horizontalWheelScrolled, this, [this]( QWheelEvent *event ) {
+    QgsTemporalNavigationObject *controller = mControllerWidget->temporalController();
+    controller->setCurrentFrameNumber( controller->currentFrameNumber() - event->angleDelta().x() / 120 );
+  } );
 }
 
 void QgsTemporalControllerDockWidget::exportAnimation()

@@ -2749,6 +2749,14 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
       return;
   }
 
+  // Forward horizontal scroll events (e.g. for temporal navigation)
+  if ( e->angleDelta().x() != 0 )
+  {
+    emit horizontalWheelScrolled( e );
+    e->accept();
+    return;
+  }
+
   if ( e->angleDelta().y() == 0 )
   {
     e->accept();

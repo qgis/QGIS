@@ -49,15 +49,15 @@ class APP_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget
 
     void setMapCanvas( QgsMapCanvas *canvas );
 
-  protected:
-    bool eventFilter( QObject *object, QEvent *event ) override;
-
   private slots:
 
     void exportAnimation();
 
   private:
     QgsTemporalControllerWidget *mControllerWidget = nullptr;
+    
+    //! Connection to the current canvas' horizontal scroll signal, so repeated setMapCanvas() calls don't stack handlers
+    QMetaObject::Connection mHorizontalScrollConnection;
 };
 
 #endif // QGSTEMPORALCONTROLLERDOCKWIDGET_H
