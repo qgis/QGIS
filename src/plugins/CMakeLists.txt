@@ -25,4 +25,13 @@ if (CUSTOM_PLUGINS)
 endif()
 
 
+# cleanup previously built libraries that do not match the current build version
+file(GLOB OLD_PLUGIN_LIBS "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/*.so.*")
+foreach(LIB_FILE ${OLD_PLUGIN_LIBS})
+  if(NOT LIB_FILE MATCHES ".*${COMPLETE_VERSION}$")
+      message(STATUS "Removing obsolete plugin library: ${LIB_FILE}")
+      file(REMOVE ${LIB_FILE})
+  endif()
+endforeach()
+
 # headers installed in qgis_core target
