@@ -190,7 +190,7 @@ void QgsTextRenderer::drawDocument(
 }
 
 void QgsTextRenderer::drawTextOnLine(
-  const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &_format, double offsetAlongLine, double offsetFromLine, Qgis::CurvedTextFlags flags
+  const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &_format, double offsetAlongLine, double offsetFromLine, Qgis::CurvedTextFlags flags, Qgis::TextAnchorPoint textAnchor
 )
 {
   QgsTextFormat lFormat = _format;
@@ -203,11 +203,18 @@ void QgsTextRenderer::drawTextOnLine(
   // todo handle newlines??
   const QgsTextDocument document = QgsTextDocument::fromTextAndFormat( { text }, lFormat );
 
-  drawDocumentOnLine( line, lFormat, document, context, offsetAlongLine, offsetFromLine, flags );
+  drawDocumentOnLine( line, lFormat, document, context, offsetAlongLine, offsetFromLine, flags, textAnchor );
 }
 
 void QgsTextRenderer::drawDocumentOnLine(
-  const QPolygonF &line, const QgsTextFormat &format, const QgsTextDocument &document, QgsRenderContext &context, double offsetAlongLine, double offsetFromLine, Qgis::CurvedTextFlags flags
+  const QPolygonF &line,
+  const QgsTextFormat &format,
+  const QgsTextDocument &document,
+  QgsRenderContext &context,
+  double offsetAlongLine,
+  double offsetFromLine,
+  Qgis::CurvedTextFlags flags,
+  Qgis::TextAnchorPoint textAnchor
 )
 {
   QPolygonF labelBaselineCurve = line;
@@ -347,7 +354,7 @@ void QgsTextRenderer::drawDocumentOnLine(
   metrics.setGraphemeFormats( graphemeFormats );
 
   std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > placement
-    = QgsTextRendererUtils::generateCurvedTextPlacement( metrics, labelBaselineCurve, offsetAlongLine, QgsTextRendererUtils::RespectPainterOrientation, -1, -1, flags );
+    = QgsTextRendererUtils::generateCurvedTextPlacement( metrics, labelBaselineCurve, offsetAlongLine, QgsTextRendererUtils::RespectPainterOrientation, -1, -1, flags, textAnchor );
 
   if ( placement->graphemePlacement.empty() )
     return;
