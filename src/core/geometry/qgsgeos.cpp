@@ -313,7 +313,20 @@ void QgsGeos::prepareGeometry()
   }
   if ( mGeos )
   {
-    mGeosPrepared.reset( GEOSPrepare_r( QgsGeosContext::get(), mGeos.get() ) );
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    if ( mGeometry->hasCurvedSegments() )
+    {
+      // Segmentize the input until GEOSPrepare_r accepts curves
+      std::unique_ptr< QgsAbstractGeometry > segmentized( mGeometry->segmentize() );
+      mGeosPrepared.reset( GEOSPrepare_r( QgsGeosContext::get(), asGeos( segmentized.release() ).release() ) );
+    }
+    else
+    {
+#endif
+      mGeosPrepared.reset( GEOSPrepare_r( QgsGeosContext::get(), mGeos.get() ) );
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    }
+#endif
   }
 }
 
