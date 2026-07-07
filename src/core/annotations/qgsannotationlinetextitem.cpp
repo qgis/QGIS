@@ -83,7 +83,7 @@ void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback *
 
   const double offsetFromLine = context.convertToPainterUnits( mOffsetFromLineDistance, mOffsetFromLineUnit, mOffsetFromLineScale );
 
-  QgsTextRenderer::drawTextOnLine( pts, displayText, context, mTextFormat, 0, offsetFromLine, Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::ExtendLineToFitText );
+  QgsTextRenderer::drawTextOnLine( pts, displayText, context, mTextFormat, 0, offsetFromLine, Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::ExtendLineToFitText, mTextAnchor );
 }
 
 bool QgsAnnotationLineTextItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -94,6 +94,11 @@ bool QgsAnnotationLineTextItem::writeXml( QDomElement &element, QDomDocument &do
   element.setAttribute( u"offsetFromLine"_s, qgsDoubleToString( mOffsetFromLineDistance ) );
   element.setAttribute( u"offsetFromLineUnit"_s, QgsUnitTypes::encodeUnit( mOffsetFromLineUnit ) );
   element.setAttribute( u"offsetFromLineScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetFromLineScale ) );
+
+  if ( mTextAnchor != Qgis::TextAnchorPoint::StartOfText )
+  {
+    element.setAttribute( u"textAnchor"_s, qgsEnumValueToKey( mTextAnchor ) );
+  }
 
   QDomElement textFormatElem = document.createElement( u"lineTextFormat"_s );
   textFormatElem.appendChild( mTextFormat.writeXml( document, context ) );
@@ -241,6 +246,8 @@ bool QgsAnnotationLineTextItem::readXml( const QDomElement &element, const QgsRe
 
   mOffsetFromLineScale = QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"offsetFromLineScale"_s ) );
 
+  mTextAnchor = qgsEnumKeyToValue( element.attribute( u"textAnchor"_s ), Qgis::TextAnchorPoint::StartOfText );
+
   readCommonProperties( element, context );
 
   return true;
@@ -274,6 +281,7 @@ QgsAnnotationLineTextItem *QgsAnnotationLineTextItem::clone() const
   item->setOffsetFromLine( mOffsetFromLineDistance );
   item->setOffsetFromLineUnit( mOffsetFromLineUnit );
   item->setOffsetFromLineMapUnitScale( mOffsetFromLineScale );
+  item->setTextAnchor( mTextAnchor );
   item->copyCommonProperties( this );
   return item.release();
 }
@@ -291,4 +299,14 @@ QgsTextFormat QgsAnnotationLineTextItem::format() const
 void QgsAnnotationLineTextItem::setFormat( const QgsTextFormat &format )
 {
   mTextFormat = format;
+}
+
+Qgis::TextAnchorPoint QgsAnnotationLineTextItem::textAnchor() const
+{
+  return mTextAnchor;
+}
+
+void QgsAnnotationLineTextItem::setTextAnchor( Qgis::TextAnchorPoint anchor )
+{
+  mTextAnchor = anchor;
 }
