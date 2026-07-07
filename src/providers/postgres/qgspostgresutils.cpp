@@ -310,7 +310,7 @@ QString QgsPostgresUtils::andWhereClauses( const QString &c1, const QString &c2 
 
 void QgsPostgresUtils::replaceInvalidXmlChars( QString &xml )
 {
-  static const QRegularExpression replaceRe { QStringLiteral( "([\\x00-\\x08\\x0B-\\x1F\\x7F])" ) };
+  const thread_local QRegularExpression replaceRe { QStringLiteral( "([\\x00-\\x08\\x0B-\\x1F\\x7F])" ) };
   QRegularExpressionMatchIterator it { replaceRe.globalMatch( xml ) };
   while ( it.hasNext() )
   {
@@ -322,7 +322,7 @@ void QgsPostgresUtils::replaceInvalidXmlChars( QString &xml )
 
 void QgsPostgresUtils::restoreInvalidXmlChars( QString &xml )
 {
-  static const QRegularExpression replaceRe { QStringLiteral( R"raw(UTF-8\[(\d+)\])raw" ) };
+  const thread_local QRegularExpression replaceRe { QStringLiteral( R"raw(UTF-8\[(\d+)\])raw" ) };
   QRegularExpressionMatchIterator it { replaceRe.globalMatch( xml ) };
   while ( it.hasNext() )
   {
