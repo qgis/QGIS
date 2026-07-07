@@ -68,7 +68,12 @@ void QgsTemporalControllerDockWidget::setMapCanvas( QgsMapCanvas *canvas )
     }
     mScrollGestureTimer.restart();
 
-    mAccumulatedScrollSteps += event->angleDelta().x() / 120.0;
+    int deltaX = event->angleDelta().x();
+    // Make horizontal scrolling actually feel natural with "natural scrolling" turned on in macOS
+    if ( event->inverted() )
+      deltaX = -deltaX;
+
+    mAccumulatedScrollSteps += deltaX / 120.0;
     const int frameSteps = static_cast<int>( mAccumulatedScrollSteps );
     if ( frameSteps != 0 )
     {
