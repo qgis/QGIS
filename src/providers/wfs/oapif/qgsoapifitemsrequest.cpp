@@ -89,6 +89,8 @@ static void removeUselessSpacesFromJSONBuffer( QByteArray &buffer )
       {
         ptr[j++] = ch;
         ++i;
+        ptr[j++] = '"';
+        continue;
       }
     }
     else
