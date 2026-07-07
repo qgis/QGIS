@@ -569,11 +569,20 @@ void QgsAiAccountWidget::onDesktopTokenReady( const QString &token )
     // that endpoint together with the token, so canceling the dialog cannot
     // leave a fresh token paired with a stale persisted endpoint.
     QgsAiModelRouter::ProviderSettings planSettings = mModelRouter->providerSettings( QgsAiModelRouter::Provider::Plan );
+    bool settingsChanged = false;
     if ( planSettings.endpoint != currentEndpoint() )
     {
       planSettings.endpoint = currentEndpoint();
-      mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::Plan, planSettings );
+      settingsChanged = true;
     }
+    if ( planSettings.model.isEmpty() )
+    {
+      planSettings.model = u"managed-plan"_s;
+      settingsChanged = true;
+    }
+    if ( settingsChanged )
+      mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::Plan, planSettings );
+    mModelRouter->setActiveProvider( QgsAiModelRouter::Provider::Plan );
   }
   QString error;
   if ( !mModelRouter || !mModelRouter->setPlanSessionToken( token, &error ) )

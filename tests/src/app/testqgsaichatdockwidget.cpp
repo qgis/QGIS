@@ -14,7 +14,9 @@
 #include "ai/qgsaichatpromptedit.h"
 #include "ai/qgsaifilecontextprovider.h"
 #include "ai/qgsaimodelrouter.h"
+#include "ai/qgsaiplanclient.h"
 #include "ai/qgsaireviewpatchengine.h"
+#include "ai/qgsaisecretstore.h"
 #include "ai/qgsaiworkspacetrust.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsproject.h"
@@ -23,6 +25,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QAbstractScrollArea>
+#include <QAction>
 #include <QApplication>
 #include <QCheckBox>
 #include <QComboBox>
@@ -30,6 +33,7 @@
 #include <QCryptographicHash>
 #include <QDialog>
 #include <QDir>
+#include <QFile>
 #include <QImage>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -39,10 +43,12 @@
 #include <QMenu>
 #include <QMetaObject>
 #include <QMimeData>
+#include <QPair>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QScopeGuard>
 #include <QString>
 #include <QTemporaryDir>
 #include <QTextEdit>
@@ -83,6 +89,85 @@ namespace
       parts << label->text();
     return parts.join( '\n' );
   }
+
+  QStringList modelMenuTexts( const QMenu *menu )
+  {
+    QStringList texts;
+    if ( !menu )
+      return texts;
+
+    for ( const QAction *action : menu->actions() )
+    {
+      if ( !action || action->isSeparator() )
+        continue;
+      texts << QString( action->text() ).remove( '&' );
+    }
+    return texts;
+  }
+
+  QStringList selectableModelMenuTexts( const QMenu *menu )
+  {
+    QStringList texts;
+    if ( !menu )
+      return texts;
+
+    for ( const QAction *action : menu->actions() )
+    {
+      if ( action && action->isEnabled() && action->isCheckable() )
+        texts << QString( action->text() ).remove( '&' );
+    }
+    return texts;
+  }
+
+  void clearPlanModelPickerState()
+  {
+    QgsSettings settings;
+    const QStringList groups = {
+      u"ai/provider/openai"_s,
+      u"ai/provider/claude"_s,
+      u"ai/provider/openrouter"_s,
+      u"ai/provider/codex"_s,
+      u"ai/provider/plan"_s,
+    };
+    for ( const QString &group : groups )
+      settings.remove( group );
+    settings.remove( u"ai/activeProvider"_s );
+    settings.remove( u"ai/security/secretsMigrated_v1"_s );
+
+    QgsAiSecretStore::removeSecret( u"ai/provider/openai/apiKey"_s );
+    QgsAiSecretStore::removeSecret( u"ai/provider/claude/apiKey"_s );
+    QgsAiSecretStore::removeSecret( u"ai/provider/openrouter/apiKey"_s );
+    QgsAiSecretStore::removeSecret( u"ai/provider/plan/token"_s );
+
+    QFile::remove( QgsAiPlanClient::cacheFilePath() );
+    QFile::remove( QgsAiPlanClient::agentPolicyCacheFilePath() );
+    QFile::remove( QgsAiPlanClient::modelPreferencesCacheFilePath() );
+  }
+
+  [[nodiscard]] auto isolatePlanModelPickerState()
+  {
+    const QList<QByteArray> envNames = {
+      "OPENAI_API_KEY",
+      "CLAUDE_API_KEY",
+      "ANTHROPIC_API_KEY",
+      "OPENROUTER_API_KEY",
+      "STRATA_PLAN_TOKEN",
+    };
+    QList<QPair<QByteArray, QByteArray>> savedEnv;
+    for ( const QByteArray &name : envNames )
+    {
+      if ( qEnvironmentVariableIsSet( name.constData() ) )
+        savedEnv.append( { name, qgetenv( name.constData() ) } );
+      qunsetenv( name.constData() );
+    }
+
+    clearPlanModelPickerState();
+    return qScopeGuard( [savedEnv]() {
+      clearPlanModelPickerState();
+      for ( const QPair<QByteArray, QByteArray> &entry : savedEnv )
+        qputenv( entry.first.constData(), entry.second );
+    } );
+  }
 } // namespace
 
 class TestQgsAiChatDockWidget : public QObject
@@ -91,6 +176,7 @@ class TestQgsAiChatDockWidget : public QObject
 
   private slots:
     void hasRuntimeWidgets();
+    void planLoginModelPickerShowsOnlyManagedModels();
     void gisCardShowsSuggestionAndSendsReview();
     void gisMentionAttachesHealthBlock();
     void usesPaletteBasedCursorStyling();
@@ -127,6 +213,107 @@ void TestQgsAiChatDockWidget::hasRuntimeWidgets()
   QVERIFY( cancelButton );
   QVERIFY( !cancelButton->isEnabled() );
   QVERIFY( runtimeLabel->text().contains( u"idle"_s, Qt::CaseInsensitive ) );
+}
+
+void TestQgsAiChatDockWidget::planLoginModelPickerShowsOnlyManagedModels()
+{
+  const auto guard = isolatePlanModelPickerState();
+
+  QList<QgsAiPlanClient::ModelInfo> models;
+  QgsAiPlanClient::ModelInfo managed;
+  managed.id = u"managed-plan"_s;
+  managed.label = u"Strata Managed"_s;
+  managed.provider = u"strata"_s;
+  managed.capabilities = { u"chat"_s, u"tools"_s };
+  models << managed;
+
+  QgsAiPlanClient::ModelInfo gpt4oMini;
+  gpt4oMini.id = u"openai/gpt-4o-mini"_s;
+  gpt4oMini.label = u"GPT-4o mini"_s;
+  gpt4oMini.provider = u"strata"_s;
+  gpt4oMini.capabilities = { u"chat"_s };
+  models << gpt4oMini;
+
+  QgsAiPlanClient::ModelInfo disabled;
+  disabled.id = u"deepseek/deepseek-v4-flash"_s;
+  disabled.label = u"DeepSeek V4 Flash"_s;
+  disabled.provider = u"strata"_s;
+  disabled.capabilities = { u"chat"_s };
+  models << disabled;
+
+  QgsAiPlanClient::ModelInfo embeddingOnly;
+  embeddingOnly.id = u"text-embedding-3-small"_s;
+  embeddingOnly.label = u"Embedding only"_s;
+  embeddingOnly.provider = u"strata"_s;
+  embeddingOnly.capabilities = { u"embedding"_s };
+  models << embeddingOnly;
+  QgsAiPlanClient::writeCachedModels( models );
+
+  QgsAiManagedAgentPolicy policy;
+  policy.allowedModels = {
+    u"managed-plan"_s,
+    u"openai/gpt-4o-mini"_s,
+    u"deepseek/deepseek-v4-flash"_s,
+    u"text-embedding-3-small"_s,
+  };
+  QgsAiPlanClient::writeCachedAgentPolicy( policy );
+  QgsAiPlanClient::writeCachedModelPreferences( {
+    QgsAiPlanClient::ModelPreferenceInfo { u"deepseek/deepseek-v4-flash"_s, false },
+  } );
+
+  QgsAiModelRouter router;
+  QVERIFY( router.storeApiKey( QgsAiModelRouter::Provider::OpenRouter, u"sk-or-picker-test"_s ) );
+  QVERIFY( router.storeApiKey( QgsAiModelRouter::Provider::Claude, u"sk-ant-picker-test"_s ) );
+
+  QgsAiModelRouter::ProviderSettings openRouterSettings = router.providerSettings( QgsAiModelRouter::Provider::OpenRouter );
+  openRouterSettings.model = u"anthropic/claude-sonnet-4.6"_s;
+  openRouterSettings.enabled = true;
+  router.setProviderSettings( QgsAiModelRouter::Provider::OpenRouter, openRouterSettings );
+
+  QgsAiModelRouter::ProviderSettings claudeSettings = router.providerSettings( QgsAiModelRouter::Provider::Claude );
+  claudeSettings.model = u"claude-sonnet-5"_s;
+  claudeSettings.enabled = true;
+  router.setProviderSettings( QgsAiModelRouter::Provider::Claude, claudeSettings );
+
+  QString error;
+  QVERIFY2( router.setPlanSessionToken( u"strata-plan-picker-token"_s, &error ), qPrintable( error ) );
+  QgsAiModelRouter::ProviderSettings planSettings = router.providerSettings( QgsAiModelRouter::Provider::Plan );
+  planSettings.endpoint = u"http://127.0.0.1:9/ai/messages"_s;
+  planSettings.model = u"managed-plan"_s;
+  planSettings.enabled = true;
+  router.setProviderSettings( QgsAiModelRouter::Provider::Plan, planSettings );
+  router.setActiveProvider( QgsAiModelRouter::Provider::OpenRouter );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+  QApplication::processEvents();
+
+  QToolButton *modelPill = dock.findChild<QToolButton *>( u"aiModelPill"_s );
+  QVERIFY( modelPill );
+  QMenu *menu = modelPill->menu();
+  QVERIFY( menu );
+
+  const QStringList menuTexts = modelMenuTexts( menu );
+  QVERIFY( !menuTexts.contains( u"Plan backend"_s ) );
+  QVERIFY( !menuTexts.contains( u"OpenRouter"_s ) );
+  QVERIFY( !menuTexts.contains( u"Codex / ChatGPT"_s ) );
+  QVERIFY( !menuTexts.contains( u"Anthropic"_s ) );
+  QVERIFY( !menuTexts.contains( u"OpenAI"_s ) );
+
+  const QStringList selectableTexts = selectableModelMenuTexts( menu );
+  QVERIFY( !selectableTexts.isEmpty() );
+  QCOMPARE( selectableTexts.first(), u"Strata Managed"_s );
+  QVERIFY( selectableTexts.contains( u"GPT-4o mini"_s ) );
+  QVERIFY( !selectableTexts.contains( u"Claude Sonnet 4.6"_s ) );
+  QVERIFY( !selectableTexts.contains( u"Claude Sonnet 5"_s ) );
+  QVERIFY( !selectableTexts.contains( u"DeepSeek V4 Flash"_s ) );
+  QVERIFY( !selectableTexts.contains( u"Embedding only"_s ) );
+  QCOMPARE( router.activeProvider(), QgsAiModelRouter::Provider::Plan );
+  QCOMPARE( router.resolveProvider(), QgsAiModelRouter::Provider::Plan );
 }
 
 void TestQgsAiChatDockWidget::gisCardShowsSuggestionAndSendsReview()
