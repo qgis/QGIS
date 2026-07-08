@@ -14,13 +14,17 @@
  ***************************************************************************/
 
 
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
 #include "qgsattributesformmodel.h"
 #include "qgsattributesformproperties.h"
 #include "qgsattributesformview.h"
 #include "qgsattributetypedialog.h"
+#include "qgseditformconfig.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QItemSelectionModel>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -38,6 +42,7 @@ class TestQgsAttributesFormProperties : public QObject
     void cleanup();         // will be called after every testfunction.
 
     void testConfigStored();
+    void testRemoveDuplicateField();
 };
 
 void TestQgsAttributesFormProperties::initTestCase()
@@ -88,6 +93,49 @@ void TestQgsAttributesFormProperties::testConfigStored()
   attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 1, 0, fieldContainer ) ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
   QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), u"alias1"_s );
+}
+
+void TestQgsAttributesFormProperties::testRemoveDuplicateField()
+{
+  // Regression test for the "removing a duplicate field deletes every copy" bug:
+  // add the same field several times to a tab, select one copy and trigger the
+  // real trash-button slot. Exactly that copy must be removed.
+
+  auto layer = std::make_unique< QgsVectorLayer >( u"Point?field=a:integer&field=b:integer"_s, u"test"_s, u"memory"_s );
+
+  // tab
+  //  ├─ a   (row 0)
+  //  ├─ a   (row 1)
+  //  └─ a   (row 2)
+  QgsAttributeEditorContainer *tab = new QgsAttributeEditorContainer( u"tab"_s, nullptr );
+  tab->addChildElement( new QgsAttributeEditorField( u"a"_s, 0, tab ) );
+  tab->addChildElement( new QgsAttributeEditorField( u"a"_s, 0, tab ) );
+  tab->addChildElement( new QgsAttributeEditorField( u"a"_s, 0, tab ) );
+
+  QgsEditFormConfig cfg = layer->editFormConfig();
+  cfg.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
+  cfg.clearTabs();
+  cfg.addTab( tab );
+  layer->setEditFormConfig( cfg );
+
+  QgsAttributesFormProperties attributeFormProperties( layer.get() );
+  attributeFormProperties.init();
+
+  QgsAttributesFormProxyModel *proxy = attributeFormProperties.mFormLayoutProxyModel;
+  const QModelIndex tabProxyIndex = proxy->index( 0, 0, QModelIndex() );
+  QCOMPARE( proxy->rowCount( tabProxyIndex ), 3 );
+
+  // Select the middle duplicate (row 1) in the form layout view, then trigger
+  // the same slot the trash button is connected to.
+  const QModelIndex middle = proxy->index( 1, 0, tabProxyIndex );
+  attributeFormProperties.mFormLayoutView->selectionModel()->setCurrentIndex( middle, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  QCOMPARE( attributeFormProperties.mFormLayoutView->selectionModel()->selectedRows( 0 ).count(), 1 );
+
+  attributeFormProperties.removeTabOrGroupButton();
+
+  // Exactly one copy must have been removed, leaving two behind.
+  QgsAttributesFormLayoutModel *layoutModel = attributeFormProperties.mFormLayoutModel;
+  QCOMPARE( layoutModel->rowCount( layoutModel->index( 0, 0, QModelIndex() ) ), 2 );
 }
 
 QGSTEST_MAIN( TestQgsAttributesFormProperties )

@@ -478,6 +478,20 @@ class GUI_EXPORT QgsAttributesFormItem : public QObject
     void deleteChildAtIndex( int index );
 
     /**
+     * Removes the child item placed at the given \a index from this item without
+     * deleting it.
+     *
+     * Caller takes ownership of the returned object.
+     *
+     * The returned item is detached from its parent, so it can be re-inserted
+     * elsewhere in the tree.
+     * Returns a NULLPTR if \a index is out of range.
+     *
+     * \since QGIS 4.4
+     */
+    std::unique_ptr< QgsAttributesFormItem > takeChild( int index );
+
+    /**
      * Deletes all child items from this item.
      */
     void deleteChildren();
@@ -766,10 +780,11 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
 
 
 /**
+ * \ingroup gui
  * \brief Manages form layouts when configuring attributes forms via drag and drop designer.
  *
  * \warning Not part of stable API and may change in future QGIS releases.
- * \ingroup gui
+ *
  * \since QGIS 3.44
  */
 class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
@@ -873,6 +888,9 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      * \param indexes Input list of indexes, potentially with redundant indexes.
      */
     QModelIndexList curateIndexesForMimeData( const QModelIndexList &indexes ) const;
+
+    // Capture source items being dragged in an ongoing internal move.
+    mutable QList< QPersistentModelIndex > mDraggedLayoutIndexes;
 };
 
 

@@ -203,12 +203,7 @@ void QgsAttributesFormLayoutView::handleExternalDroppedItem( QModelIndex &index 
 
 void QgsAttributesFormLayoutView::handleInternalDroppedItem( QModelIndex &index )
 {
-  selectionModel()->clearCurrentIndex();
-  const auto itemType = static_cast< QgsAttributesFormData::AttributesFormItemType >( index.data( QgsAttributesFormModel::ItemTypeRole ).toInt() );
-  if ( itemType == QgsAttributesFormData::Container )
-  {
-    expandRecursively( mModel->mapFromSource( index ) );
-  }
+  selectionModel()->setCurrentIndex( mModel->mapFromSource( index ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
 }
 
 void QgsAttributesFormLayoutView::dragEnterEvent( QDragEnterEvent *event )
@@ -260,12 +255,21 @@ void QgsAttributesFormLayoutView::dropEvent( QDropEvent *event )
   if ( !( event->mimeData()->hasFormat( u"application/x-qgsattributesformavailablewidgetsrelement"_s ) || event->mimeData()->hasFormat( u"application/x-qgsattributesformlayoutelement"_s ) ) )
     return;
 
+  const bool internalMove = event->source() == this && event->mimeData()->hasFormat( u"application/x-qgsattributesformlayoutelement"_s );
+
   if ( event->source() == this )
   {
     event->setDropAction( Qt::MoveAction );
   }
 
   QTreeView::dropEvent( event );
+
+  if ( internalMove && event->isAccepted() )
+  {
+    // Reporting a CopyAction makes QAbstractItemView::startDrag() skip its clearOrRemove() step.
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+  }
 }
 
 void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index )
