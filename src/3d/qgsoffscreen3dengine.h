@@ -81,10 +81,10 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
   private:
     QSize mSize = QSize( 640, 480 );
     Qt3DRender::QCamera *mCamera = nullptr;
-    QOffscreenSurface *mOffscreenSurface = nullptr;
+    std::unique_ptr<QOffscreenSurface> mOffscreenSurface;
 
     // basic Qt3D stuff
-    Qt3DCore::QAspectEngine *mAspectEngine = nullptr;       // The aspect engine, which holds the scene and related aspects.
+    std::unique_ptr<Qt3DCore::QAspectEngine> mAspectEngine; // The aspect engine, which holds the scene and related aspects.
     Qt3DRender::QRenderAspect *mRenderAspect = nullptr;     // The render aspect, which deals with rendering the scene.
     Qt3DLogic::QLogicAspect *mLogicAspect = nullptr;        // The logic aspect, which runs jobs to do with synchronising frames.
     Qt3DRender::QRenderSettings *mRenderSettings = nullptr; // The render settings, which control the general rendering behavior.

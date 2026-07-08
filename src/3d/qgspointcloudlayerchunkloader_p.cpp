@@ -378,7 +378,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity(
         if ( indexPosition != mIndexPosition )
           return;
 
-        QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode, n );
+        QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode.get(), n );
         if ( node )
         {
           updateNodes( QList<QgsChunkNode *>() << node, mChunkUpdaterFactory.get() );
