@@ -98,9 +98,12 @@ namespace
 
     for ( const QAction *action : menu->actions() )
     {
-      if ( !action || action->isSeparator() )
+      if ( !action )
         continue;
-      texts << QString( action->text() ).remove( '&' );
+      const QString text = QString( action->text() ).remove( '&' );
+      if ( action->isSeparator() && text.isEmpty() )
+        continue;
+      texts << text;
     }
     return texts;
   }
