@@ -92,7 +92,7 @@ class QgsMapOverlayEntity : public QgsOverlayTextureEntity
   private:
     QgsWindow3DEngine *mEngine = nullptr;
     Qgs3DMapSettings *mMapSettings = nullptr;
-    QgsMapOverlayTextureGenerator *mTextureGenerator = nullptr;
+    std::unique_ptr<QgsMapOverlayTextureGenerator> mTextureGenerator;
 
     Qt3DRender::QTextureImageDataPtr mImageDataPtr;
 

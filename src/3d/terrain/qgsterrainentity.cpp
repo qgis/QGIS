@@ -76,9 +76,9 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
   connect( map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
 
-  mTextureGenerator = new QgsTerrainTextureGenerator( *map );
+  mTextureGenerator = std::make_unique<QgsTerrainTextureGenerator>( *map );
 
-  mUpdateJobFactory = std::make_unique<TerrainMapUpdateJobFactory>( mTextureGenerator );
+  mUpdateJobFactory = std::make_unique<TerrainMapUpdateJobFactory>( mTextureGenerator.get() );
 
   mTerrainTransform = new Qt3DCore::QTransform;
   mTerrainTransform->setScale( 1.0f );
@@ -90,8 +90,6 @@ QgsTerrainEntity::~QgsTerrainEntity()
 {
   // cancel / wait for jobs
   cancelActiveJobs();
-
-  delete mTextureGenerator;
 }
 
 QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const

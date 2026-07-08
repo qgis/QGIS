@@ -180,7 +180,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     Qt::MouseButton mLastClickedButton;
     QCursor mPreviousCursor = Qt::ArrowCursor;
     Qt3DRender::QPickingSettings::PickMethod mDefaultPickingMethod;
-    QMenu *mMenu = nullptr;
+    std::unique_ptr<QMenu> mMenu;
 };
 
 #endif // QGS3DAXIS_H
