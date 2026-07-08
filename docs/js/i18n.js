@@ -108,61 +108,61 @@
       "problems.1.title": "PyQGIS difficile",
       "problems.1.desc":
         "Copiare snippet da ChatGPT senza contesto del progetto. Errori di sintassi, API sbagliate, ore perse.",
-      "problems.1.fix": "L'agente esegue PyQGIS in-session con dialog di approvazione.",
+      "problems.1.fix": "Strata esegue il codice per te, con la tua approvazione.",
 
       "problems.2.title": "Ispezione layer laboriosa",
       "problems.2.desc":
         "Capire campi, CRS e estensioni richiede script manuali o round-trip nella console Python.",
-      "problems.2.fix": "Tool nativi describe_layer e list_project_layers.",
+      "problems.2.fix": "Legge layer e campi direttamente dal tuo progetto.",
 
       "problems.3.title": "Dipendenze Python mancanti",
       "problems.3.desc":
         "geopandas, osmnx, pandas… spesso non installati nell'ambiente QGIS.",
-      "problems.3.fix": "install_python_package con approvazione pip controllata.",
+      "problems.3.fix": "Installa le librerie mancanti con un clic, sempre sotto il tuo controllo.",
 
       "problems.4.title": "Scaricare dati è lento",
       "problems.4.desc":
         "Overpass, GeoJSON, GADM — fetch manuale, salvataggio, import layer.",
-      "problems.4.fix": "download_file direttamente nel workspace con una sola approval.",
+      "problems.4.fix": "Scarica e importa i dati in un solo passaggio.",
 
       "problems.5.title": "Contesto disperso",
       "problems.5.desc":
         "File di progetto, script, layer e attributi sparsi — l'AI generica non li vede.",
-      "problems.5.fix": "RAG workspace, @ file mentions e snapshot layer nel prompt.",
+      "problems.5.fix": "Usa i file e i layer del progetto come contesto per le risposte.",
 
       "problems.6.title": "Modifiche senza controllo",
       "problems.6.desc":
         "Script che sovrascrivono file o eseguono codice pericoloso senza review.",
-      "problems.6.fix": "Review diff side-by-side + approval PyQGIS e pip.",
+      "problems.6.fix": "Ogni modifica va approvata prima di essere applicata.",
 
       "problems.7.title": "Plugin AI disconnessi",
       "problems.7.desc":
         "Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.", // #spellok
-      "problems.7.fix": "Integrazione nativa in Strata.",
+      "problems.7.fix": "L'assistente è nativo in QGIS e conosce il tuo progetto.",
 
       "solution.label": "Soluzione",
-      "solution.title": "Chat laterale + Agente integrato",
+      "solution.title": "Chiedi, approva, fatto",
       "solution.subtitle":
-        "Il modo agent-native di lavorare in QGIS: descrivi, l'agente propone, tu approvi — senza uscire dall'app.",
+        "Descrivi cosa ti serve. Strata propone, tu decidi — senza uscire da QGIS.",
 
-      "solution.chat.title": "Pannello AI Assistant",
+      "solution.chat.title": "Chat accanto alla mappa",
       "solution.chat.desc":
-        "Dock widget a destra con streaming delle risposte, cronologia chat, attach file, tag @ per menzionare file del workspace e Review Proposals per accettare o rifiutare modifiche.",
-      "solution.chat.f1": "Streaming in tempo reale",
-      "solution.chat.f2": "History per workspace",
-      "solution.chat.f3": "Review Proposals con diff",
+        "Un pannello laterale dove chiedi in italiano, allegui file e vedi subito le risposte mentre lavori sulla mappa.",
+      "solution.chat.f1": "Risposte in tempo reale",
+      "solution.chat.f2": "Cronologia salvata per progetto",
+      "solution.chat.f3": "Modifiche da approvare prima di applicarle",
 
-      "solution.agent.title": "Tre modalità agente",
+      "solution.agent.title": "Tre modalità, una sola app",
       "solution.agent.desc":
-        "Stile Cursor: Plan per pianificare, Agent per eseguire e modificare, Ask per domande e review. Rules & Skills personalizzabili.",
-      "solution.agent.f1": "Plan · Agent · Ask",
-      "solution.agent.f2": "19 tool GIS integrati",
-      "solution.agent.f3": "Rules & Skills (.strata/)",
+        "Pianifica un intervento, eseguilo sul progetto o fai solo domande. Scegli il livello di autonomia che preferisci.",
+      "solution.agent.f1": "Pianifica · Esegui · Chiedi",
+      "solution.agent.f2": "Azioni GIS integrate",
+      "solution.agent.f3": "Personalizza come lavora l'assistente",
 
       "demo.label": "Demo",
       "demo.title": "Vedilo in azione",
       "demo.subtitle":
-        "Due modalità reali di Strata: l'agente esegue PyQGIS sul progetto, Plan propone un piano approvabile prima di toccare i layer.",
+        "Guarda come Strata risponde a richieste reali su progetti GIS, con approvazione prima di ogni modifica.",
       "demo.carousel.label": "Esempi interattivi di Strata",
       "demo.tabs.label": "Scegli un esempio demo",
       "demo.prev": "Esempio precedente",
@@ -198,67 +198,50 @@
       "speed.afterSteps":
         "Una richiesta in linguaggio naturale. L'agente ispeziona, propone codice, chiede approval, esegue e salva nel workspace.",
 
-      "features.label": "Feature",
-      "features.title": "Tutto ciò che serve, integrato",
+      "features.label": "Vantaggi",
+      "features.title": "Tutto integrato, zero complessità",
       "features.subtitle":
-        "Potenza di QGIS 4.1 più un assistente che conosce il tuo progetto.", // #spellok
+        "L'assistente lavora dentro QGIS con i tuoi dati, senza uscire dall'app.",
 
-      "features.1.title": "19 tool integrati",
+      "features.1.title": "Fa il lavoro al posto tuo",
       "features.1.desc":
-        "read_file, search_files, describe_layer, propose_edit, run_python, pip install, download_file, reindex e altro.",
+        "Buffer, export, analisi, download dati: chiedi in linguaggio naturale e Strata si occupa del resto.",
 
-      "features.2.title": "Rules & Skills",
+      "features.2.title": "Si adatta al tuo modo di lavorare",
       "features.2.desc":
-        "Regole inline e cartelle .strata/rules e .strata/skills per guidare l'agente come in Cursor.",
+        "Imposta regole e preferenze così l'assistente risponde come il tuo team si aspetta.",
 
-      "features.3.title": "RAG workspace",
+      "features.3.title": "Conosce i tuoi file",
       "features.3.desc":
-        "Indicizza .py, .qgs, .geojson, .md con embeddings. Chunk e vettori in SQLite locale o infrastruttura team.",
+        "Script, progetti e documenti del workspace sono disponibili come contesto per le risposte.",
 
-      "features.4.title": "Layer indexing opt-in",
+      "features.4.title": "I layer solo quando vuoi",
       "features.4.desc":
-        "Attributi e bounding box inviati a embeddings solo con consenso esplicito. Auto-reindex su edit layer.",
+        "Condividi attributi e geometrie con l'AI solo se lo decidi tu, con pieno controllo.",
 
-      "features.5.title": "Multi-provider",
+      "features.5.title": "AI già inclusa",
       "features.5.desc":
-        "In Pro e Cloud Team i modelli sono già inclusi. In Enterprise o modalità BYOK: OpenAI, Claude, Codex o LLM locali.",
+        "Con il piano Pro non serve gestire chiavi API o crediti: è tutto pronto.",
 
-      "features.6.title": "Privacy e controllo dati",
+      "features.6.title": "I tuoi dati, le tue regole",
       "features.6.desc":
-        "In Enterprise, dati e modelli restano on-premise. In Pro e Cloud Team, policy di indicizzazione trasparenti e controllo su cosa viene condiviso.",
+        "In azienda puoi tenere tutto in locale. Nel cloud decidi tu cosa condividere.",
 
-      "setup.label": "Setup avanzato (BYOK)",
-      "setup.title": "Credenziali e indicizzazione",
-      "setup.subtitle":
-        "Il piano Pro include già modelli e credenziali gestite. Questa sezione è per utenti che preferiscono configurare provider e indicizzazione in autonomia.",
-
-      "setup.creds.title": "Credenziali e login",
-      "setup.creds.1":
-        "Apri Strata → menu Visualizza → Pannelli → AI Assistant.",
-      "setup.creds.2": "Clicca sull'icona ⚙ impostazioni in alto a destra del pannello.",
-      "setup.creds.3.title": "Scegli il provider:",
-      "setup.creds.3.openai":
-        "OpenAI / Anthropic: incolla la API key (platform.openai.com o console.anthropic.com).",
-      "setup.creds.3.codex":
-        "Codex/ChatGPT: Get Codex device code → apri la pagina → Complete Codex login.",
-      "setup.creds.3.claude":
-        "Claude OAuth: attiva Use Claude OAuth → Login with Claude → incolla il codice.",
-      "setup.creds.4":
-        "Seleziona il modello dal dropdown (GPT-4o, Claude Sonnet, Codex GPT-5.4, …).",
-      "setup.creds.5":
-        "Opzionale: abilita Allow custom agent actions (tool use) — default OFF per sicurezza.",
-
-      "setup.index.title": "Indicizzazione (RAG)",
-      "setup.index.1":
-        "Workspace RAG: indicizza automaticamente i file testo del workspace. Chunk e vettori salvati in SQLite locale. La ricerca semantica viene iniettata nel prompt come Retrieved context.",
-      "setup.index.2":
-        "Layer indexing: disabilitato di default. Con Enable layer indexing, attributi e bounding box vengono inviati a OpenAI text-embedding-3-small. Auto-reindex su add/remove/edit layer.",
-      "setup.index.3":
-        "Requisito: serve una API key OpenAI (o variabile OPENAI_API_KEY) per ricostruire gli embeddings.",
-      "setup.index.4":
-        "Stato visibile nel dialog ⚙: Indexed: N file chunks, M layer chunks (last sync: …).", // #spellok
-      "setup.index.privacy":
-        "I dati dei layer vengono inviati al provider embeddings solo se abiliti esplicitamente l'indexing.",
+      "start.label": "Come iniziare",
+      "start.title": "Pronto in pochi minuti",
+      "start.subtitle":
+        "Nessuna configurazione complicata. Scarica, apri il tuo progetto QGIS e inizia subito.",
+      "start.1.title": "Scarica Strata",
+      "start.1.desc":
+        "Installa su Mac, Windows o Linux. È QGIS con l'assistente AI già dentro.",
+      "start.2.title": "Apri il tuo progetto",
+      "start.2.desc":
+        "Layer, mappe e file che usi ogni giorno. L'AI li vede e li capisce.",
+      "start.3.title": "Chiedi cosa ti serve",
+      "start.3.desc":
+        "Scrivi in italiano cosa vuoi fare. Strata propone, tu approvi, lui esegue.",
+      "start.cta.download": "Scarica gratis",
+      "start.cta.cloud": "Prova Strata Cloud",
 
       "download.label": "Download",
       "download.title": "Scarica Strata",
@@ -392,61 +375,61 @@
       "problems.1.title": "PyQGIS is hard",
       "problems.1.desc":
         "Copying snippets from ChatGPT without project context. Syntax errors, wrong APIs, hours lost.",
-      "problems.1.fix": "The agent runs PyQGIS in-session with an approval dialog.",
+      "problems.1.fix": "Strata runs the code for you, with your approval.",
 
       "problems.2.title": "Layer inspection is tedious",
       "problems.2.desc":
         "Understanding fields, CRS, and extents means manual scripts or Python console round-trips.",
-      "problems.2.fix": "Native describe_layer and list_project_layers tools.",
+      "problems.2.fix": "Reads layers and fields directly from your project.",
 
       "problems.3.title": "Missing Python deps",
       "problems.3.desc":
         "geopandas, osmnx, pandas… often not installed in the QGIS environment.",
-      "problems.3.fix": "install_python_package with controlled pip approval.",
+      "problems.3.fix": "Install missing libraries in one click, always under your control.",
 
       "problems.4.title": "Fetching data is slow",
       "problems.4.desc":
         "Overpass, GeoJSON, GADM — manual fetch, save, import layer.",
-      "problems.4.fix": "download_file straight into the workspace with one approval.",
+      "problems.4.fix": "Download and import data in a single step.",
 
       "problems.5.title": "Scattered context",
       "problems.5.desc":
         "Project files, scripts, layers, and attributes everywhere — generic AI can't see them.",
-      "problems.5.fix": "Workspace RAG, @ file mentions, and layer snapshots in the prompt.",
+      "problems.5.fix": "Uses your project files and layers as context for answers.",
 
       "problems.6.title": "Uncontrolled edits",
       "problems.6.desc":
         "Scripts overwriting files or running risky code without review.",
-      "problems.6.fix": "Side-by-side diff review + PyQGIS and pip approval.",
+      "problems.6.fix": "Every change must be approved before it is applied.",
 
       "problems.7.title": "Disconnected AI plugins",
       "problems.7.desc":
         "External assistants don't know your active layers or Processing Toolbox.",
-      "problems.7.fix": "Native integration in Strata.",
+      "problems.7.fix": "The assistant is built into QGIS and knows your project.",
 
       "solution.label": "Solution",
-      "solution.title": "Side chat + integrated agent",
+      "solution.title": "Ask, approve, done",
       "solution.subtitle":
-        "The agent-native way to work in QGIS: describe, the agent proposes, you approve — without leaving the app.",
+        "Describe what you need. Strata proposes, you decide — without leaving QGIS.",
 
-      "solution.chat.title": "AI Assistant panel",
+      "solution.chat.title": "Chat beside the map",
       "solution.chat.desc":
-        "Right-side dock with streaming replies, chat history, file attach, @ tags for workspace files, and Review Proposals to accept or reject changes.",
-      "solution.chat.f1": "Real-time streaming",
-      "solution.chat.f2": "Per-workspace history",
-      "solution.chat.f3": "Review Proposals with diff",
+        "A side panel where you ask in plain language, attach files, and see answers while you work on the map.",
+      "solution.chat.f1": "Real-time answers",
+      "solution.chat.f2": "History saved per project",
+      "solution.chat.f3": "Changes to approve before applying",
 
-      "solution.agent.title": "Three agent modes",
+      "solution.agent.title": "Three modes, one app",
       "solution.agent.desc":
-        "Cursor-style: Plan to strategize, Agent to execute and edit, Ask for Q&A and review. Customizable Rules & Skills.",
-      "solution.agent.f1": "Plan · Agent · Ask",
-      "solution.agent.f2": "19 built-in GIS tools",
-      "solution.agent.f3": "Rules & Skills (.strata/)",
+        "Plan an intervention, run it on the project, or just ask questions. Choose the level of autonomy you prefer.",
+      "solution.agent.f1": "Plan · Run · Ask",
+      "solution.agent.f2": "Built-in GIS actions",
+      "solution.agent.f3": "Customize how the assistant works",
 
       "demo.label": "Demo",
       "demo.title": "See it in action",
       "demo.subtitle":
-        "Two real Strata modes: the agent runs PyQGIS on your project; Plan proposes an approvable plan before touching layers.",
+        "See how Strata handles real GIS project requests, with approval before every change.",
       "demo.carousel.label": "Interactive Strata examples",
       "demo.tabs.label": "Choose a demo example",
       "demo.prev": "Previous example",
@@ -482,67 +465,50 @@
       "speed.afterSteps":
         "One natural-language request. The agent inspects, proposes code, asks approval, runs, and saves to the workspace.",
 
-      "features.label": "Features",
-      "features.title": "Everything built in",
+      "features.label": "Benefits",
+      "features.title": "Everything built in, zero complexity",
       "features.subtitle":
-        "Full QGIS 4.1 power plus an assistant that knows your project.",
+        "The assistant works inside QGIS with your data, without leaving the app.",
 
-      "features.1.title": "19 integrated tools",
+      "features.1.title": "Does the work for you",
       "features.1.desc":
-        "read_file, search_files, describe_layer, propose_edit, run_python, pip install, download_file, reindex, and more.",
+        "Buffer, export, analysis, data download: ask in plain language and Strata handles the rest.",
 
-      "features.2.title": "Rules & Skills",
+      "features.2.title": "Fits how you work",
       "features.2.desc":
-        "Inline rules and .strata/rules and .strata/skills folders to steer the agent like Cursor.",
+        "Set rules and preferences so the assistant responds the way your team expects.",
 
-      "features.3.title": "Workspace RAG",
+      "features.3.title": "Knows your files",
       "features.3.desc":
-        "Indexes .py, .qgs, .geojson, .md with embeddings. Chunks and vectors stored locally in SQLite or team infrastructure.",
+        "Scripts, projects, and workspace documents are available as context for answers.",
 
-      "features.4.title": "Opt-in layer indexing",
+      "features.4.title": "Layers only when you want",
       "features.4.desc":
-        "Attributes and bounding boxes sent to embeddings only with explicit consent. Auto-reindex on layer edits.",
+        "Share attributes and geometries with the AI only if you decide to, with full control.",
 
-      "features.5.title": "Multi-provider",
+      "features.5.title": "AI included",
       "features.5.desc":
-        "Pro and Cloud Team include models out of the box. Enterprise or BYOK mode: OpenAI, Claude, Codex, or local LLMs.",
+        "With the Pro plan you don't need to manage API keys or credits: it's ready to go.",
 
-      "features.6.title": "Privacy and data control",
+      "features.6.title": "Your data, your rules",
       "features.6.desc":
-        "In Enterprise, data and models stay on-premise. In Pro and Cloud Team, transparent indexing policies and control over what gets shared.",
+        "On-premise for enterprise. In the cloud, you decide what to share.",
 
-      "setup.label": "Advanced setup (BYOK)",
-      "setup.title": "Credentials and indexing",
-      "setup.subtitle":
-        "The Pro plan already includes managed models and credentials. This section is for users who prefer to configure providers and indexing themselves.",
-
-      "setup.creds.title": "Credentials and login",
-      "setup.creds.1":
-        "Open Strata → View → Panels → AI Assistant.",
-      "setup.creds.2": "Click the ⚙ settings icon at the top-right of the panel.",
-      "setup.creds.3.title": "Choose a provider:",
-      "setup.creds.3.openai":
-        "OpenAI / Anthropic: paste your API key (platform.openai.com or console.anthropic.com).",
-      "setup.creds.3.codex":
-        "Codex/ChatGPT: Get Codex device code → open the page → Complete Codex login.",
-      "setup.creds.3.claude":
-        "Claude OAuth: enable Use Claude OAuth → Login with Claude → paste the code.",
-      "setup.creds.4":
-        "Select a model from the dropdown (GPT-4o, Claude Sonnet, Codex GPT-5.4, …).",
-      "setup.creds.5":
-        "Optional: enable Allow custom agent actions (tool use) — OFF by default for safety.",
-
-      "setup.index.title": "Indexing (RAG)",
-      "setup.index.1":
-        "Workspace RAG: automatically indexes text files in the workspace. Chunks and vectors stored in local SQLite. Semantic search is injected into the prompt as Retrieved context.",
-      "setup.index.2":
-        "Layer indexing: disabled by default. With Enable layer indexing, attributes and bounding boxes are sent to OpenAI text-embedding-3-small. Auto-reindex on add/remove/edit layer.",
-      "setup.index.3":
-        "Requirement: an OpenAI API key (or OPENAI_API_KEY env var) is needed to rebuild embeddings.",
-      "setup.index.4":
-        "Status visible in the ⚙ dialog: Indexed: N file chunks, M layer chunks (last sync: …).",
-      "setup.index.privacy":
-        "Layer data is sent to the embeddings provider only if you explicitly enable indexing.",
+      "start.label": "Get started",
+      "start.title": "Ready in minutes",
+      "start.subtitle":
+        "No complicated setup. Download, open your QGIS project, and start right away.",
+      "start.1.title": "Download Strata",
+      "start.1.desc":
+        "Install on Mac, Windows, or Linux. It's QGIS with the AI assistant already inside.",
+      "start.2.title": "Open your project",
+      "start.2.desc":
+        "Layers, maps, and files you use every day. The AI sees and understands them.",
+      "start.3.title": "Ask for what you need",
+      "start.3.desc":
+        "Write what you want to do in plain language. Strata proposes, you approve, it runs.",
+      "start.cta.download": "Download free",
+      "start.cta.cloud": "Try Strata Cloud",
 
       "download.label": "Download",
       "download.title": "Download Strata",

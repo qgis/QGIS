@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/style.css?v=20260709">
+  <link rel="stylesheet" href="./css/style.css?v=20260709b">
   <link rel="icon" href="./assets/app-icon.png" type="image/png">
 </head>
 <body>
@@ -183,49 +183,49 @@
           <div class="problem-icon">⌨</div>
           <h3 data-i18n="problems.1.title">PyQGIS difficile</h3>
           <p data-i18n="problems.1.desc">Copiare snippet da ChatGPT senza contesto del progetto. Errori di sintassi, API sbagliate, ore perse.</p>
-          <p class="problem-fix" data-i18n="problems.1.fix">L'agente esegue PyQGIS in-session con dialog di approvazione.</p>
+          <p class="problem-fix" data-i18n="problems.1.fix">Strata esegue il codice per te, con la tua approvazione.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">🗂</div>
           <h3 data-i18n="problems.2.title">Ispezione layer laboriosa</h3>
           <p data-i18n="problems.2.desc">Capire campi, CRS e estensioni richiede script manuali o round-trip nella console Python.</p>
-          <p class="problem-fix" data-i18n="problems.2.fix">Tool nativi describe_layer e list_project_layers.</p>
+          <p class="problem-fix" data-i18n="problems.2.fix">Legge layer e campi direttamente dal tuo progetto.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">📦</div>
           <h3 data-i18n="problems.3.title">Dipendenze Python mancanti</h3>
           <p data-i18n="problems.3.desc">geopandas, osmnx, pandas… spesso non installati nell'ambiente QGIS.</p>
-          <p class="problem-fix" data-i18n="problems.3.fix">install_python_package con approvazione pip controllata.</p>
+          <p class="problem-fix" data-i18n="problems.3.fix">Installa le librerie mancanti con un clic, sempre sotto il tuo controllo.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">🌐</div>
           <h3 data-i18n="problems.4.title">Scaricare dati è lento</h3>
           <p data-i18n="problems.4.desc">Overpass, GeoJSON, GADM — fetch manuale, salvataggio, import layer.</p>
-          <p class="problem-fix" data-i18n="problems.4.fix">download_file direttamente nel workspace con una sola approval.</p>
+          <p class="problem-fix" data-i18n="problems.4.fix">Scarica e importa i dati in un solo passaggio.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">🔍</div>
           <h3 data-i18n="problems.5.title">Contesto disperso</h3>
           <p data-i18n="problems.5.desc">File di progetto, script, layer e attributi sparsi — l'AI generica non li vede.</p>
-          <p class="problem-fix" data-i18n="problems.5.fix">RAG workspace, @ file mentions e snapshot layer nel prompt.</p>
+          <p class="problem-fix" data-i18n="problems.5.fix">Usa i file e i layer del progetto come contesto per le risposte.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">⚠</div>
           <h3 data-i18n="problems.6.title">Modifiche senza controllo</h3>
           <p data-i18n="problems.6.desc">Script che sovrascrivono file o eseguono codice pericoloso senza review.</p>
-          <p class="problem-fix" data-i18n="problems.6.fix">Review diff side-by-side + approval PyQGIS e pip.</p>
+          <p class="problem-fix" data-i18n="problems.6.fix">Ogni modifica va approvata prima di essere applicata.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">🔌</div>
           <h3 data-i18n="problems.7.title">Plugin AI disconnessi</h3>
           <p data-i18n="problems.7.desc">Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.</p> <!--#spellok-->
-          <p class="problem-fix" data-i18n="problems.7.fix">Integrazione nativa in Strata.</p>
+          <p class="problem-fix" data-i18n="problems.7.fix">L&apos;assistente è nativo in QGIS e conosce il tuo progetto.</p>
         </article>
           </div>
         </div>
@@ -243,33 +243,33 @@
   <section class="section" id="solution">
     <div class="container">
       <span class="section-label" data-i18n="solution.label">Soluzione</span>
-      <h2 class="section-title" data-i18n="solution.title">Chat laterale + Agente integrato</h2>
+      <h2 class="section-title" data-i18n="solution.title">Chiedi, approva, fatto</h2>
       <p class="section-subtitle" data-i18n="solution.subtitle">
-        Il modo agent-native di lavorare in QGIS: descrivi, l'agente propone, tu approvi — senza uscire dall'app.
+        Descrivi cosa ti serve. Strata propone, tu decidi — senza uscire da QGIS.
       </p>
 
       <div class="solution-grid">
         <article class="solution-card">
-          <h3 data-i18n="solution.chat.title">Pannello AI Assistant</h3>
+          <h3 data-i18n="solution.chat.title">Chat accanto alla mappa</h3>
           <p data-i18n="solution.chat.desc">
-            Dock widget a destra con streaming delle risposte, cronologia chat, attach file, tag @ per menzionare file del workspace e Review Proposals per accettare o rifiutare modifiche.
+            Un pannello laterale dove chiedi in italiano, allegui file e vedi subito le risposte mentre lavori sulla mappa.
           </p>
           <ul class="solution-features">
-            <li data-i18n="solution.chat.f1">Streaming in tempo reale</li>
-            <li data-i18n="solution.chat.f2">History per workspace</li>
-            <li data-i18n="solution.chat.f3">Review Proposals con diff</li>
+            <li data-i18n="solution.chat.f1">Risposte in tempo reale</li>
+            <li data-i18n="solution.chat.f2">Cronologia salvata per progetto</li>
+            <li data-i18n="solution.chat.f3">Modifiche da approvare prima di applicarle</li>
           </ul>
         </article>
 
         <article class="solution-card">
-          <h3 data-i18n="solution.agent.title">Tre modalità agente</h3>
+          <h3 data-i18n="solution.agent.title">Tre modalità, una sola app</h3>
           <p data-i18n="solution.agent.desc">
-            Stile Cursor: Plan per pianificare, Agent per eseguire e modificare, Ask per domande e review. Rules &amp; Skills personalizzabili.
+            Pianifica un intervento, eseguilo sul progetto o fai solo domande. Scegli il livello di autonomia che preferisci.
           </p>
           <ul class="solution-features">
-            <li data-i18n="solution.agent.f1">Plan · Agent · Ask</li>
-            <li data-i18n="solution.agent.f2">19 tool GIS integrati</li>
-            <li data-i18n="solution.agent.f3">Rules &amp; Skills (.strata/)</li>
+            <li data-i18n="solution.agent.f1">Pianifica · Esegui · Chiedi</li>
+            <li data-i18n="solution.agent.f2">Azioni GIS integrate</li>
+            <li data-i18n="solution.agent.f3">Personalizza come lavora l&apos;assistente</li>
           </ul>
         </article>
       </div>
@@ -282,7 +282,7 @@
       <span class="section-label" data-i18n="demo.label">Demo</span>
       <h2 class="section-title" data-i18n="demo.title">Vedilo in azione</h2>
       <p class="section-subtitle" data-i18n="demo.subtitle">
-        Due modalità reali di Strata: l'agente esegue PyQGIS sul progetto, Plan propone un piano approvabile prima di toccare i layer.
+        Guarda come Strata risponde a richieste reali su progetti GIS, con approvazione prima di ogni modifica.
       </p>
 
       <div class="demo-carousel" aria-roledescription="carousel" data-i18n-aria-label="demo.carousel.label">
@@ -378,107 +378,82 @@
   <!-- Features -->
   <section class="section" id="features-product">
     <div class="container">
-      <span class="section-label" data-i18n="features.label">Feature</span>
-      <h2 class="section-title" data-i18n="features.title">Tutto ciò che serve, integrato</h2>
+      <span class="section-label" data-i18n="features.label">Vantaggi</span>
+      <h2 class="section-title" data-i18n="features.title">Tutto integrato, zero complessità</h2>
       <p class="section-subtitle" data-i18n="features.subtitle">
-        Potenza di QGIS 4.1 più un assistente che conosce il tuo progetto.
+        L&apos;assistente lavora dentro QGIS con i tuoi dati, senza uscire dall&apos;app.
       </p>
 
       <div class="features-grid">
         <article class="feature-card">
           <div class="feature-number">01</div>
-          <h3 data-i18n="features.1.title">19 tool integrati</h3>
-          <p data-i18n="features.1.desc">read_file, search_files, describe_layer, propose_edit, run_python, pip install, download_file, reindex e altro.</p>
+          <h3 data-i18n="features.1.title">Fa il lavoro al posto tuo</h3>
+          <p data-i18n="features.1.desc">Buffer, export, analisi, download dati: chiedi in linguaggio naturale e Strata si occupa del resto.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number">02</div>
-          <h3 data-i18n="features.2.title">Rules &amp; Skills</h3>
-          <p data-i18n="features.2.desc">Regole inline e cartelle .strata/rules e .strata/skills per guidare l'agente come in Cursor.</p>
+          <h3 data-i18n="features.2.title">Si adatta al tuo modo di lavorare</h3>
+          <p data-i18n="features.2.desc">Imposta regole e preferenze così l&apos;assistente risponde come il tuo team si aspetta.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number">03</div>
-          <h3 data-i18n="features.3.title">RAG workspace</h3>
-          <p data-i18n="features.3.desc">Indicizza .py, .qgs, .geojson, .md con embeddings. Chunk e vettori in SQLite locale o infrastruttura team.</p>
+          <h3 data-i18n="features.3.title">Conosce i tuoi file</h3>
+          <p data-i18n="features.3.desc">Script, progetti e documenti del workspace sono disponibili come contesto per le risposte.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number">04</div>
-          <h3 data-i18n="features.4.title">Layer indexing opt-in</h3>
-          <p data-i18n="features.4.desc">Attributi e bounding box inviati a embeddings solo con consenso esplicito. Auto-reindex su edit layer.</p>
+          <h3 data-i18n="features.4.title">I layer solo quando vuoi</h3>
+          <p data-i18n="features.4.desc">Condividi attributi e geometrie con l&apos;AI solo se lo decidi tu, con pieno controllo.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number">05</div>
-          <h3 data-i18n="features.5.title">Multi-provider</h3>
-          <p data-i18n="features.5.desc">In Pro e Cloud Team i modelli sono già inclusi. In Enterprise o modalità BYOK: OpenAI, Claude, Codex o LLM locali.</p>
+          <h3 data-i18n="features.5.title">AI già inclusa</h3>
+          <p data-i18n="features.5.desc">Con il piano Pro non serve gestire chiavi API o crediti: è tutto pronto.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number">06</div>
-          <h3 data-i18n="features.6.title">Privacy e controllo dati</h3>
-          <p data-i18n="features.6.desc">In Enterprise, dati e modelli restano on-premise. In Pro e Cloud Team, policy di indicizzazione trasparenti e controllo su cosa viene condiviso.</p>
+          <h3 data-i18n="features.6.title">I tuoi dati, le tue regole</h3>
+          <p data-i18n="features.6.desc">In azienda puoi tenere tutto in locale. Nel cloud decidi tu cosa condividere.</p>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- Setup -->
-  <section class="section" id="setup">
+  <!-- Start -->
+  <section class="section" id="start">
     <div class="container">
-      <span class="section-label" data-i18n="setup.label">Setup avanzato (BYOK)</span>
-      <h2 class="section-title" data-i18n="setup.title">Credenziali e indicizzazione</h2>
-      <p class="section-subtitle" data-i18n="setup.subtitle">
-        Il piano Pro include già modelli e credenziali gestite. Questa sezione è per utenti che preferiscono configurare provider e indicizzazione in autonomia.
+      <span class="section-label" data-i18n="start.label">Come iniziare</span>
+      <h2 class="section-title" data-i18n="start.title">Pronto in pochi minuti</h2>
+      <p class="section-subtitle start-subtitle" data-i18n="start.subtitle">
+        Nessuna configurazione complicata. Scarica, apri il tuo progetto QGIS e inizia subito.
       </p>
 
-      <div class="setup-grid">
-        <div class="setup-block">
-          <h3 data-i18n="setup.creds.title">Credenziali e login</h3>
-          <ol class="setup-steps">
-            <li>
-              <span class="step-num">1</span>
-              <span data-i18n="setup.creds.1">Apri Strata → menu Visualizza → Pannelli → AI Assistant.</span>
-            </li>
-            <li>
-              <span class="step-num">2</span>
-              <span data-i18n="setup.creds.2">Clicca sull'icona ⚙ impostazioni in alto a destra del pannello.</span>
-            </li>
-            <li>
-              <span class="step-num">3</span>
-              <span>
-                <strong data-i18n="setup.creds.3.title">Scegli il provider:</strong>
-                <ul class="setup-sublist">
-                  <li data-i18n="setup.creds.3.openai">OpenAI / Anthropic: incolla la API key (platform.openai.com o console.anthropic.com).</li>
-                  <li data-i18n="setup.creds.3.codex">Codex/ChatGPT: Get Codex device code → apri la pagina → Complete Codex login.</li>
-                  <li data-i18n="setup.creds.3.claude">Claude OAuth: attiva Use Claude OAuth → Login with Claude → incolla il codice.</li>
-                </ul>
-              </span>
-            </li>
-            <li>
-              <span class="step-num">4</span>
-              <span data-i18n="setup.creds.4">Seleziona il modello dal dropdown (GPT-4o, Claude Sonnet, Codex GPT-5.4, …).</span>
-            </li>
-            <li>
-              <span class="step-num">5</span>
-              <span data-i18n="setup.creds.5">Opzionale: abilita Allow custom agent actions (tool use) — default OFF per sicurezza.</span>
-            </li>
-          </ol>
-        </div>
+      <div class="vibe-steps">
+        <article class="vibe-step">
+          <span class="vibe-step-num" aria-hidden="true">1</span>
+          <h3 data-i18n="start.1.title">Scarica Strata</h3>
+          <p data-i18n="start.1.desc">Installa su Mac, Windows o Linux. È QGIS con l&apos;assistente AI già dentro.</p>
+        </article>
+        <article class="vibe-step">
+          <span class="vibe-step-num" aria-hidden="true">2</span>
+          <h3 data-i18n="start.2.title">Apri il tuo progetto</h3>
+          <p data-i18n="start.2.desc">Layer, mappe e file che usi ogni giorno. L&apos;AI li vede e li capisce.</p>
+        </article>
+        <article class="vibe-step">
+          <span class="vibe-step-num" aria-hidden="true">3</span>
+          <h3 data-i18n="start.3.title">Chiedi cosa ti serve</h3>
+          <p data-i18n="start.3.desc">Scrivi in italiano cosa vuoi fare. Strata propone, tu approvi, lui esegue.</p>
+        </article>
+      </div>
 
-        <div class="setup-block">
-          <h3 data-i18n="setup.index.title">Indicizzazione (RAG)</h3>
-          <ul class="index-list">
-            <li data-i18n="setup.index.1">Workspace RAG: indicizza automaticamente i file testo del workspace. Chunk e vettori salvati in SQLite locale. La ricerca semantica viene iniettata nel prompt come Retrieved context.</li>
-            <li data-i18n="setup.index.2">Layer indexing: disabilitato di default. Con Enable layer indexing, attributi e bounding box vengono inviati a OpenAI text-embedding-3-small. Auto-reindex su add/remove/edit layer.</li>
-            <li data-i18n="setup.index.3">Requisito: serve una API key OpenAI (o variabile OPENAI_API_KEY) per ricostruire gli embeddings.</li>
-            <li data-i18n="setup.index.4">Stato visibile nel dialog ⚙: Indexed: N file chunks, M layer chunks (last sync: …).</li> <!--#spellok-->
-          </ul>
-          <div class="privacy-box" data-i18n="setup.index.privacy">
-            I dati dei layer vengono inviati al provider embeddings solo se abiliti esplicitamente l'indexing.
-          </div>
-        </div>
+      <div class="start-cta">
+        <a href="#download" class="btn btn-primary btn-lg" data-i18n="start.cta.download">Scarica gratis</a>
+        <a href="https://strata-fe-372580174147.europe-west1.run.app/registrati" class="btn btn-secondary btn-lg" data-i18n="start.cta.cloud">Prova Strata Cloud</a>
       </div>
     </div>
   </section>

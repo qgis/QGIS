@@ -1150,116 +1150,16 @@ img {
   gap: 10px;
 }
 
-/* Setup */
-.setup-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  margin-top: 48px;
+.start-subtitle {
+  margin-bottom: 40px;
 }
 
-.setup-block {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 32px;
-}
-
-.setup-block h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-.setup-steps {
-  list-style: none;
+.start-cta {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.setup-steps > li {
-  display: flex;
-  gap: 14px;
-  font-size: 0.9375rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
-.step-num {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  color: var(--text);
-}
-
-.setup-sublist {
-  list-style: none;
-  margin-top: 8px;
-  padding-left: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.setup-sublist li {
-  font-size: 0.875rem;
-  padding-left: 14px;
-  position: relative;
-}
-
-.setup-sublist li::before {
-  content: "·";
-  position: absolute;
-  left: 0;
-  color: var(--text-subtle);
-}
-
-.privacy-box {
-  margin-top: 20px;
-  padding: 16px;
-  background: rgba(226, 168, 106, 0.08);
-  border: 1px solid rgba(226, 168, 106, 0.2);
-  border-radius: var(--radius-sm);
-  font-size: 0.875rem;
-  color: var(--warning);
-  line-height: 1.6;
-}
-
-.index-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
   gap: 16px;
-}
-
-.index-list li {
-  font-size: 0.9375rem;
-  color: var(--text-muted);
-  line-height: 1.7;
-  padding-left: 20px;
-  position: relative;
-}
-
-.index-list li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 10px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--text-subtle);
+  margin-top: 40px;
 }
 
 /* Download */
@@ -1480,7 +1380,6 @@ img {
   .vibe-steps,
   .solution-grid,
   .speed-compare,
-  .setup-grid,
   .features-grid,
   .download-grid,
   .team-grid {
