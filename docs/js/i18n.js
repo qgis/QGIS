@@ -283,8 +283,9 @@
       "team.label": "Team",
       "team.title": "Chi c'è dietro Strata",
       "team.subtitle": "Costruiamo il prodotto e conosciamo il dominio GIS.",
-      "team.francesco.role": "CTO, informatico e agronomo",
-      "team.valerio.role": "Esperto GeoAI",
+      "team.francesco.role": "Co-founder",
+      "team.valerio.role": "Co-founder",
+      "team.massimo.role": "Co-founder, agronomo esperto in GIS",
 
       "call.label": "Contatti",
       "call.title": "Organizza call",
@@ -563,8 +564,9 @@
       "team.label": "Team",
       "team.title": "The people behind Strata",
       "team.subtitle": "We build the product and know the GIS domain.",
-      "team.francesco.role": "CTO, software engineer and agronomist",
-      "team.valerio.role": "GeoAI specialist",
+      "team.francesco.role": "Co-founder",
+      "team.valerio.role": "Co-founder",
+      "team.massimo.role": "Co-founder, GIS expert agronomist",
 
       "call.label": "Contact",
       "call.title": "Book a call",

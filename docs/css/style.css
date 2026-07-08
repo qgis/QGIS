@@ -1253,10 +1253,10 @@ img {
 /* Team */
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin-top: 48px;
-  max-width: 720px;
+  max-width: 1080px;
 }
 
 .team-card {
@@ -1282,6 +1282,18 @@ img {
   object-position: center top;
   flex: none;
   background: var(--bg);
+}
+
+.team-avatar--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  background: rgba(45, 212, 191, 0.12);
+  border: 1px solid rgba(45, 212, 191, 0.28);
 }
 
 .team-name {
