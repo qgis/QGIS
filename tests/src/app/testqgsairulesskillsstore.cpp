@@ -41,7 +41,7 @@ class TestQgsAiRulesSkillsStore : public QObject
     void writeAndReadSkillRoundTrip();
     void deleteSkillRemovesFolder();
 
-    void pathEscapeIsRejectedForWrites();
+    void invalidPathIsRejectedForWrites();
     void missingWorkspaceIsRejected();
 
   private:
@@ -331,7 +331,7 @@ void TestQgsAiRulesSkillsStore::deleteSkillRemovesFolder()
   QVERIFY( !QDir( skill.folderPath ).exists() );
 }
 
-void TestQgsAiRulesSkillsStore::pathEscapeIsRejectedForWrites()
+void TestQgsAiRulesSkillsStore::invalidPathIsRejectedForWrites()
 {
   QgsAiRuleInfo info;
   // ".strata/rules" is two levels below the workspace root, so ".." x2 would only

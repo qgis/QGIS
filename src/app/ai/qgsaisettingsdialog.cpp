@@ -1022,9 +1022,7 @@ QWidget *QgsAiSettingsDialog::buildRulesSkillsPage()
   connect( mSkillDuplicateButton, &QPushButton::clicked, this, &QgsAiSettingsDialog::duplicateSelectedSkill );
   connect( mSkillDeleteButton, &QPushButton::clicked, this, &QgsAiSettingsDialog::deleteSelectedSkill );
   connect( mSkillSaveButton, &QPushButton::clicked, this, &QgsAiSettingsDialog::saveCurrentSkill );
-  connect( mSkillAddPropertyButton, &QPushButton::clicked, this, [this]() {
-    addSkillPropertyRow( QString(), QStringList(), false, false );
-  } );
+  connect( mSkillAddPropertyButton, &QPushButton::clicked, this, [this]() { addSkillPropertyRow( QString(), QStringList(), false, false ); } );
 
   refreshRulesList();
   refreshSkillsList();
@@ -1461,7 +1459,8 @@ void QgsAiSettingsDialog::setSkillDocumentInEditor( const QgsAiMarkdownDocument 
 
   for ( const QgsAiFrontmatterProperty &property : document.properties )
   {
-    if ( property.key.compare( u"name"_s, Qt::CaseInsensitive ) == 0 || property.key.compare( u"description"_s, Qt::CaseInsensitive ) == 0
+    if ( property.key.compare( u"name"_s, Qt::CaseInsensitive ) == 0
+         || property.key.compare( u"description"_s, Qt::CaseInsensitive ) == 0
          || property.key.compare( u"references"_s, Qt::CaseInsensitive ) == 0 )
       continue;
     addSkillPropertyRow( property.key, property.values, property.isList, false );
