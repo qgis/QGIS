@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/style.css?v=20260703">
+  <link rel="stylesheet" href="./css/style.css?v=20260709">
   <link rel="icon" href="./assets/app-icon.png" type="image/png">
 </head>
 <body>
@@ -176,7 +176,9 @@
         </p>
       </div>
 
-      <div class="problems-grid">
+      <div class="problems-carousel" aria-roledescription="carousel" data-i18n-aria-label="problems.carousel.label">
+        <div class="problems-carousel-viewport">
+          <div class="problems-track" data-problems-track>
         <article class="problem-card">
           <div class="problem-icon">⌨</div>
           <h3 data-i18n="problems.1.title">PyQGIS difficile</h3>
@@ -225,6 +227,14 @@
           <p data-i18n="problems.7.desc">Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.</p> <!--#spellok-->
           <p class="problem-fix" data-i18n="problems.7.fix">Integrazione nativa in Strata.</p>
         </article>
+          </div>
+        </div>
+
+        <div class="problems-carousel-footer">
+          <button type="button" class="problems-control" data-problems-prev data-i18n-aria-label="problems.prev" aria-label="Precedente">‹</button>
+          <div class="problems-dots" role="tablist" data-problems-dots aria-label="Scorri i problemi"></div>
+          <button type="button" class="problems-control" data-problems-next data-i18n-aria-label="problems.next" aria-label="Successivo">›</button>
+        </div>
       </div>
     </div>
   </section>

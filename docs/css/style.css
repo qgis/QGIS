@@ -840,17 +840,110 @@ img {
 /* Problems */
 .problems-header {
   text-align: center;
-  margin-bottom: 56px;
+  margin-bottom: 32px;
 }
 
 .problems-header .section-subtitle {
   margin: 0 auto;
 }
 
-.problems-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+.problems-carousel {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.problems-carousel-viewport {
+  overflow: hidden;
+}
+
+.problems-track {
+  display: flex;
   gap: 20px;
+  transition: transform 0.4s ease;
+  will-change: transform;
+}
+
+.problems-track .problem-card {
+  flex: 0 0 100%;
+}
+
+@media (min-width: 640px) {
+  .problems-track .problem-card {
+    flex: 0 0 calc((100% - 20px) / 2);
+  }
+}
+
+@media (min-width: 1024px) {
+  .problems-track .problem-card {
+    flex: 0 0 calc((100% - 40px) / 3);
+  }
+}
+
+.problems-carousel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.problems-control {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  background: rgba(19, 34, 56, 0.8);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-muted);
+  transition: color var(--transition), background var(--transition), border-color var(--transition);
+}
+
+.problems-control:hover {
+  color: var(--text);
+  background: rgba(45, 212, 191, 0.11);
+  border-color: rgba(45, 212, 191, 0.34);
+}
+
+.problems-control:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 3px;
+}
+
+.problems-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.problems-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: rgba(185, 199, 201, 0.35);
+  transition: transform var(--transition), background var(--transition);
+}
+
+.problems-dot:hover {
+  background: rgba(185, 199, 201, 0.55);
+}
+
+.problems-dot.active {
+  background: var(--accent);
+  transform: scale(1.2);
+}
+
+.problems-dot:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 3px;
 }
 
 .problem-card {

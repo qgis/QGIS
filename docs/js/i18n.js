@@ -101,6 +101,9 @@
       "problems.title": "Conosci questi ostacoli in QGIS?",
       "problems.subtitle":
         "Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. Strata risolve il gap tra domanda e azione nel tuo progetto.",
+      "problems.carousel.label": "Carousel problemi comuni",
+      "problems.prev": "Problema precedente",
+      "problems.next": "Problema successivo",
 
       "problems.1.title": "PyQGIS difficile",
       "problems.1.desc":
@@ -382,6 +385,9 @@
       "problems.title": "Sound familiar in QGIS?",
       "problems.subtitle":
         "GIS workflows often mean PyQGIS scripts, forum searches, and copy-paste from generic chatbots. Strata closes the gap between question and action in your project.",
+      "problems.carousel.label": "Common problems carousel",
+      "problems.prev": "Previous problem",
+      "problems.next": "Next problem",
 
       "problems.1.title": "PyQGIS is hard",
       "problems.1.desc":
@@ -909,10 +915,93 @@
     showSlide(activeIndex);
   }
 
+  function initProblemsCarousel() {
+    const carousel = document.querySelector(".problems-carousel");
+    const track = carousel?.querySelector("[data-problems-track]");
+    const dotsContainer = carousel?.querySelector("[data-problems-dots]");
+    const prev = carousel?.querySelector("[data-problems-prev]");
+    const next = carousel?.querySelector("[data-problems-next]");
+    if (!carousel || !track || !dotsContainer) return;
+
+    const cards = Array.from(track.querySelectorAll(".problem-card"));
+    if (!cards.length) return;
+
+    let activePage = 0;
+    let cardsPerView = 1;
+    const GAP_PX = 20;
+
+    function getCardsPerView() {
+      if (window.innerWidth < 640) return 1;
+      if (window.innerWidth < 1024) return 2;
+      return 3;
+    }
+
+    function getPageCount() {
+      return Math.max(1, Math.ceil(cards.length / cardsPerView));
+    }
+
+    function updateDots() {
+      dotsContainer.querySelectorAll(".problems-dot").forEach((dot, index) => {
+        const isActive = index === activePage;
+        dot.classList.toggle("active", isActive);
+        dot.setAttribute("aria-selected", isActive ? "true" : "false");
+        dot.tabIndex = isActive ? 0 : -1;
+      });
+    }
+
+    function goToPage(page) {
+      const pageCount = getPageCount();
+      activePage = Math.max(0, Math.min(page, pageCount - 1));
+
+      const cardWidth = cards[0].getBoundingClientRect().width;
+      const offset = activePage * cardsPerView * (cardWidth + GAP_PX);
+      track.style.transform = `translateX(-${offset}px)`;
+      updateDots();
+    }
+
+    function buildDots() {
+      dotsContainer.innerHTML = "";
+      const pageCount = getPageCount();
+
+      for (let index = 0; index < pageCount; index += 1) {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "problems-dot";
+        dot.setAttribute("role", "tab");
+        dot.setAttribute("aria-label", `${index + 1} / ${pageCount}`);
+        dot.addEventListener("click", () => goToPage(index));
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function refresh() {
+      cardsPerView = getCardsPerView();
+      buildDots();
+      goToPage(Math.min(activePage, getPageCount() - 1));
+    }
+
+    if (prev) {
+      prev.addEventListener("click", () => goToPage(activePage - 1));
+    }
+
+    if (next) {
+      next.addEventListener("click", () => goToPage(activePage + 1));
+    }
+
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(refresh, 150);
+    });
+
+    refresh();
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     applyTranslations(currentLang);
     initDownloadReleaseLinks();
     initDemoCarousel();
+    initProblemsCarousel();
     initMockupTyping();
 
     document.querySelectorAll("[data-lang]").forEach((btn) => {
