@@ -36,6 +36,7 @@
           <button type="button" data-lang="it" aria-pressed="true">IT</button>
           <button type="button" data-lang="en" aria-pressed="false">EN</button>
         </div>
+        <a href="https://strata-fe-372580174147.europe-west1.run.app/login" class="nav-login-link" data-i18n="nav.login">Accedi</a>
         <a href="#features" class="btn btn-primary" data-i18n="nav.downloadBtn">Inizia Subito</a>
         <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -122,6 +123,7 @@
           <h3 data-i18n="plans.team.title">Cloud Team — Collaborazione</h3>
           <p class="plan-slogan" data-i18n="plans.team.slogan">La conoscenza geografica del tuo team, centralizzata.</p>
           <p data-i18n="plans.team.desc">Condividi il contesto. Strata Cloud indicizza in modo sicuro i file di progetto, i layer e gli script del team. L'agente AI apprende dalle mappe della tua organizzazione per offrire risposte precise e coerenti a tutti i membri, semplificando la collaborazione su progetti GIS complessi.</p>
+          <a href="https://strata-fe-372580174147.europe-west1.run.app" class="plan-cta" data-i18n="plans.team.cta">Accedi alla Strata Cloud →</a>
         </article>
 
         <article class="feature-card">
@@ -515,6 +517,61 @@
     </div>
   </section>
 
+  <!-- Team -->
+  <section class="section" id="team">
+    <div class="container">
+      <span class="section-label" data-i18n="team.label">Team</span>
+      <h2 class="section-title" data-i18n="team.title">Chi c'è dietro Strata</h2>
+      <p class="section-subtitle" data-i18n="team.subtitle">
+        Costruiamo il prodotto e conosciamo il dominio GIS.
+      </p>
+
+      <div class="team-grid">
+        <article class="team-card">
+          <img class="team-avatar" src="./assets/team-francesco.png" alt="Francesco" width="72" height="72" loading="lazy">
+          <div class="team-info">
+            <h3 class="team-name">Francesco</h3>
+            <p class="team-role" data-i18n="team.francesco.role">CTO, informatico e agronomo</p>
+          </div>
+        </article>
+
+        <article class="team-card">
+          <img class="team-avatar" src="./assets/team-valerio.png" alt="Valerio" width="72" height="72" loading="lazy">
+          <div class="team-info">
+            <h3 class="team-name">Valerio</h3>
+            <p class="team-role" data-i18n="team.valerio.role">Esperto GeoAI</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call -->
+  <section class="section section-call" id="call">
+    <div class="container">
+      <span class="section-label" data-i18n="call.label">Contatti</span>
+      <h2 class="section-title" data-i18n="call.title">Organizza call</h2>
+      <p class="section-subtitle" data-i18n="call.subtitle">
+        30 minuti per capire come Strata può aiutare il tuo team GIS.
+      </p>
+
+      <div class="calendly-wrap">
+        <div
+          class="calendly-inline-widget"
+          data-url="https://calendly.com/strataqgisai/30min"
+          style="min-width:320px;height:700px;"
+        ></div>
+        <a
+          href="https://calendly.com/strataqgisai/30min"
+          class="btn btn-primary call-fallback"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-i18n="call.cta"
+        >Prenota 30 minuti</a>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer-grid">
@@ -539,6 +596,7 @@
     </div>
   </footer>
 
+  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
   <script src="./js/i18n.js"></script>
 </body>
 </html>

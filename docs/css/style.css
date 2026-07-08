@@ -171,6 +171,18 @@ img {
   gap: 16px;
 }
 
+.nav-login-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: color var(--transition);
+}
+
+.nav-login-link:hover {
+  color: var(--accent);
+}
+
 .lang-toggle {
   display: flex;
   background: var(--bg-elevated);
@@ -1030,6 +1042,21 @@ img {
   line-height: 1.6;
 }
 
+.plan-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
+  transition: gap var(--transition);
+}
+
+.plan-cta:hover {
+  gap: 10px;
+}
+
 /* Setup */
 .setup-grid {
   display: grid;
@@ -1223,6 +1250,74 @@ img {
   width: 100%;
 }
 
+/* Team */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 48px;
+  max-width: 720px;
+}
+
+.team-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  transition: border-color var(--transition);
+}
+
+.team-card:hover {
+  border-color: var(--border-strong);
+}
+
+.team-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  flex: none;
+  background: var(--bg);
+}
+
+.team-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.team-role {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Call / Calendly */
+.section-call .section-subtitle {
+  margin-bottom: 32px;
+}
+
+.calendly-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.calendly-inline-widget {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.call-fallback {
+  display: inline-flex;
+  margin: 24px auto 0;
+}
+
 /* Footer */
 .footer {
   padding: 48px 0;
@@ -1282,7 +1377,8 @@ img {
   .speed-compare,
   .setup-grid,
   .features-grid,
-  .download-grid {
+  .download-grid,
+  .team-grid {
     grid-template-columns: 1fr;
   }
 

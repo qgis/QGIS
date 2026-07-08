@@ -35,6 +35,7 @@
       "nav.demo": "Demo",
       "nav.download": "Download",
       "nav.downloadBtn": "Inizia Subito",
+      "nav.login": "Accedi",
 
       "hero.badge": "Agente AI per QGIS · Cloud o On-Premise",
       "hero.titleLine": "L'Agente AI per il tuo GIS.",
@@ -63,6 +64,7 @@
       "plans.team.slogan": "La conoscenza geografica del tuo team, centralizzata.",
       "plans.team.desc":
         "Condividi il contesto. Strata Cloud indicizza in modo sicuro i file di progetto, i layer e gli script del team. L'agente AI apprende dalle mappe della tua organizzazione per offrire risposte precise e coerenti a tutti i membri, semplificando la collaborazione su progetti GIS complessi.",
+      "plans.team.cta": "Accedi alla Strata Cloud →",
       "plans.enterprise.badge": "Ent.",
       "plans.enterprise.title": "Enterprise — Privacy totale & AI locale",
       "plans.enterprise.slogan": "I tuoi dati geografici non lasciano mai la tua rete.",
@@ -278,6 +280,17 @@
       "download.linux.note":
         "chmod +x Strata-*.AppImage && ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
 
+      "team.label": "Team",
+      "team.title": "Chi c'è dietro Strata",
+      "team.subtitle": "Costruiamo il prodotto e conosciamo il dominio GIS.",
+      "team.francesco.role": "CTO, informatico e agronomo",
+      "team.valerio.role": "Esperto GeoAI",
+
+      "call.label": "Contatti",
+      "call.title": "Organizza call",
+      "call.subtitle": "30 minuti per capire come Strata può aiutare il tuo team GIS.",
+      "call.cta": "Prenota 30 minuti",
+
       "footer.tagline": "Agente AI nativo in QGIS. Cloud o on-premise.",
       "opensource.title": "Costruito su QGIS. Aperto, trasparente, senza lock-in.",
       "opensource.desc":
@@ -302,6 +315,7 @@
       "nav.demo": "Demo",
       "nav.download": "Download",
       "nav.downloadBtn": "Get Started",
+      "nav.login": "Log in",
 
       "hero.badge": "AI Agent for QGIS · Cloud or On-Premise",
       "hero.titleLine": "The AI agent for your GIS.",
@@ -330,6 +344,7 @@
       "plans.team.slogan": "Your team's geographic knowledge, centralized.",
       "plans.team.desc":
         "Share context. Strata Cloud securely indexes your team's project files, layers, and scripts. The AI agent learns from your organization's maps to deliver precise, consistent answers for every member, simplifying collaboration on complex GIS projects.",
+      "plans.team.cta": "Log in to Strata Cloud →",
       "plans.enterprise.badge": "Ent.",
       "plans.enterprise.title": "Enterprise — Total privacy & local AI",
       "plans.enterprise.slogan": "Your geographic data never leaves your network.",
@@ -544,6 +559,17 @@
       "download.linux.file": ".AppImage file",
       "download.linux.note":
         "chmod +x Strata-*.AppImage && ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
+
+      "team.label": "Team",
+      "team.title": "The people behind Strata",
+      "team.subtitle": "We build the product and know the GIS domain.",
+      "team.francesco.role": "CTO, software engineer and agronomist",
+      "team.valerio.role": "GeoAI specialist",
+
+      "call.label": "Contact",
+      "call.title": "Book a call",
+      "call.subtitle": "30 minutes to see how Strata can help your GIS team.",
+      "call.cta": "Book 30 minutes",
 
       "footer.tagline": "Native AI agent in QGIS. Cloud or on-premise.",
       "opensource.title": "Built on QGIS. Open, transparent, no lock-in.",
