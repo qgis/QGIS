@@ -964,28 +964,24 @@ void QgsAiChatDockWidget::rebuildModelMenu()
 
   QMenu *menu = new QMenu( mModelPill );
 
-  // When a Strata account is active, the main picker is the managed Strata
-  // catalog only. External providers remain configurable in settings.
+  // BYO providers stay selectable alongside the managed Strata catalog until paid
+  // plans are live in production; revisit a Strata-only picker after launch.
+  // Never mutate the active provider here: this rebuild runs on every modelsReady
+  // refresh and would persistently override the user's explicit choice.
   QVector<ModelEntry> models;
-  bool planOnly = false;
   if ( mModelRouter )
   {
+    for ( const ModelEntry &entry : predefinedModels() )
+    {
+      if ( entry.provider != QgsAiModelRouter::Provider::Plan && mModelRouter->isProviderAvailable( entry.provider ) )
+        models.append( entry );
+    }
     if ( mModelRouter->isProviderAvailable( QgsAiModelRouter::Provider::Plan ) )
     {
-      planOnly = true;
-      mModelRouter->setActiveProvider( QgsAiModelRouter::Provider::Plan );
       QVector<ModelEntry> planEntries = cachedPlanModelEntries();
       if ( planEntries.isEmpty() )
         planEntries.append( ModelEntry { tr( "Strata Managed" ), u"managed-plan"_s, QgsAiModelRouter::Provider::Plan, tr( "Managed Strata Cloud default model" ) } );
       models += planEntries;
-    }
-    else
-    {
-      for ( const ModelEntry &entry : predefinedModels() )
-      {
-        if ( entry.provider != QgsAiModelRouter::Provider::Plan && mModelRouter->isProviderAvailable( entry.provider ) )
-          models.append( entry );
-      }
     }
   }
 
@@ -1017,7 +1013,7 @@ void QgsAiChatDockWidget::rebuildModelMenu()
       break;
     }
   }
-  if ( !planOnly && !activeRepresented && !currentModel.isEmpty() && mModelRouter->isProviderAvailable( currentProvider ) )
+  if ( !activeRepresented && !currentModel.isEmpty() && mModelRouter->isProviderAvailable( currentProvider ) )
   {
     // Insert after the last row of the same provider so it lands in the right section.
     int insertAt = models.size();
@@ -1037,7 +1033,7 @@ void QgsAiChatDockWidget::rebuildModelMenu()
   const ModelEntry *pillEntry = &models.first();
   for ( const ModelEntry &entry : models )
   {
-    if ( !planOnly && ( first || entry.provider != currentSection ) )
+    if ( first || entry.provider != currentSection )
     {
       QString header;
       switch ( entry.provider )

@@ -176,7 +176,7 @@ class TestQgsAiChatDockWidget : public QObject
 
   private slots:
     void hasRuntimeWidgets();
-    void planLoginModelPickerShowsOnlyManagedModels();
+    void planLoginModelPickerListsManagedAndByoModels();
     void gisCardShowsSuggestionAndSendsReview();
     void gisMentionAttachesHealthBlock();
     void usesPaletteBasedCursorStyling();
@@ -215,7 +215,7 @@ void TestQgsAiChatDockWidget::hasRuntimeWidgets()
   QVERIFY( runtimeLabel->text().contains( u"idle"_s, Qt::CaseInsensitive ) );
 }
 
-void TestQgsAiChatDockWidget::planLoginModelPickerShowsOnlyManagedModels()
+void TestQgsAiChatDockWidget::planLoginModelPickerListsManagedAndByoModels()
 {
   const auto guard = isolatePlanModelPickerState();
 
@@ -297,23 +297,27 @@ void TestQgsAiChatDockWidget::planLoginModelPickerShowsOnlyManagedModels()
   QMenu *menu = modelPill->menu();
   QVERIFY( menu );
 
+  // BYO sections coexist with the managed Strata section (no "Plan backend" label).
   const QStringList menuTexts = modelMenuTexts( menu );
   QVERIFY( !menuTexts.contains( u"Plan backend"_s ) );
-  QVERIFY( !menuTexts.contains( u"OpenRouter"_s ) );
-  QVERIFY( !menuTexts.contains( u"Codex / ChatGPT"_s ) );
-  QVERIFY( !menuTexts.contains( u"Anthropic"_s ) );
-  QVERIFY( !menuTexts.contains( u"OpenAI"_s ) );
+  QVERIFY( menuTexts.contains( u"Strata"_s ) );
+  QVERIFY( menuTexts.contains( u"OpenRouter"_s ) );
+  QVERIFY( menuTexts.contains( u"Anthropic"_s ) );
 
   const QStringList selectableTexts = selectableModelMenuTexts( menu );
   QVERIFY( !selectableTexts.isEmpty() );
-  QCOMPARE( selectableTexts.first(), u"Strata Managed"_s );
+  // Managed catalog entries, filtered by policy/preferences/capabilities.
+  QVERIFY( selectableTexts.contains( u"Strata Managed"_s ) );
   QVERIFY( selectableTexts.contains( u"GPT-4o mini"_s ) );
-  QVERIFY( !selectableTexts.contains( u"Claude Sonnet 4.6"_s ) );
-  QVERIFY( !selectableTexts.contains( u"Claude Sonnet 5"_s ) );
-  QVERIFY( !selectableTexts.contains( u"DeepSeek V4 Flash"_s ) );
   QVERIFY( !selectableTexts.contains( u"Embedding only"_s ) );
-  QCOMPARE( router.activeProvider(), QgsAiModelRouter::Provider::Plan );
-  QCOMPARE( router.resolveProvider(), QgsAiModelRouter::Provider::Plan );
+  // BYO entries stay selectable while signed in.
+  QVERIFY( selectableTexts.contains( u"Claude Sonnet 4.6"_s ) );
+  QVERIFY( selectableTexts.contains( u"Claude Sonnet 5"_s ) );
+  // Disabled managed preference filters the Plan copy; the BYO OpenRouter row remains.
+  QCOMPARE( selectableTexts.count( u"DeepSeek V4 Flash"_s ), 1 );
+  // Rebuilding the menu must never hijack the user's explicit provider choice.
+  QCOMPARE( router.activeProvider(), QgsAiModelRouter::Provider::OpenRouter );
+  QCOMPARE( router.resolveProvider(), QgsAiModelRouter::Provider::OpenRouter );
 }
 
 void TestQgsAiChatDockWidget::gisCardShowsSuggestionAndSendsReview()

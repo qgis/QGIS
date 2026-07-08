@@ -582,7 +582,6 @@ void QgsAiAccountWidget::onDesktopTokenReady( const QString &token )
     }
     if ( settingsChanged )
       mModelRouter->setProviderSettings( QgsAiModelRouter::Provider::Plan, planSettings );
-    mModelRouter->setActiveProvider( QgsAiModelRouter::Provider::Plan );
   }
   QString error;
   if ( !mModelRouter || !mModelRouter->setPlanSessionToken( token, &error ) )
@@ -591,6 +590,9 @@ void QgsAiAccountWidget::onDesktopTokenReady( const QString &token )
     setBusy( false );
     return;
   }
+  // Default to the Plan provider only once sign-in actually succeeded; the user
+  // can still switch back to a BYO provider afterwards.
+  mModelRouter->setActiveProvider( QgsAiModelRouter::Provider::Plan );
   mTokenEdit->clear();
   mPassword->clear();
   mStateStack->setCurrentIndex( 1 );
