@@ -15,9 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
 #include "qgsattributesformmodel.h"
+#include "qgseditformconfig.h"
 #include "qgsproject.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QString>
 
@@ -44,6 +48,7 @@ class TestQgsAttributesFormModel : public QObject
     void testAvailableWidgetsModelIndexOderInDragAndDrop();
     void testFormLayoutModel();
     void testFormLayoutModelOrphanFields();
+    void testFormLayoutModelInternalMove();
     void testInvalidRelationInAvailableWidgets();
     void testInvalidRelationInFormLayout();
 
@@ -639,6 +644,114 @@ void TestQgsAttributesFormModel::testFormLayoutModelOrphanFields()
 
   const bool discarded = mLayer->rollBack();
   QVERIFY( discarded );
+}
+
+void TestQgsAttributesFormModel::testFormLayoutModelInternalMove()
+{
+  auto layer = std::make_unique< QgsVectorLayer >( u"Point?field=a:integer&field=b:integer&field=c:integer&field=d:integer"_s, u"test"_s, u"memory"_s );
+
+  // tab
+  //  ├─ a
+  //  ├─ group
+  //  │   ├─ b
+  //  │   └─ c
+  //  └─ d
+  QgsAttributeEditorContainer *tab = new QgsAttributeEditorContainer( u"tab"_s, nullptr );
+  tab->addChildElement( new QgsAttributeEditorField( u"a"_s, 0, tab ) );
+  QgsAttributeEditorContainer *group = new QgsAttributeEditorContainer( u"group"_s, tab );
+  group->addChildElement( new QgsAttributeEditorField( u"b"_s, 1, group ) );
+  group->addChildElement( new QgsAttributeEditorField( u"c"_s, 2, group ) );
+  tab->addChildElement( group );
+  tab->addChildElement( new QgsAttributeEditorField( u"d"_s, 3, tab ) );
+
+  QgsEditFormConfig cfg = layer->editFormConfig();
+  cfg.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
+  cfg.clearTabs();
+  cfg.addTab( tab );
+  layer->setEditFormConfig( cfg );
+
+  // Move the "group" container (initially at row 1 under "tab")
+  auto moveGroupAndVerify = [&layer, this]( int targetRow, int expectedFinalRow ) {
+    QgsAttributesFormLayoutModel model( layer.get(), mProject );
+    model.populate();
+
+    const QModelIndex tabIndex = model.index( 0, 0, QModelIndex() );
+    QCOMPARE( tabIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"tab"_s );
+    QCOMPARE( model.rowCount( tabIndex ), 3 );
+
+    const QModelIndex groupIndex = model.index( 1, 0, tabIndex );
+    QCOMPARE( groupIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"group"_s );
+    QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( groupIndex.data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Container );
+    QCOMPARE( model.rowCount( groupIndex ), 2 );
+
+    // mimeData() records the dragged source item, so dropMimeData() performs a
+    // true in-place move: the source is relocated, not copied and left behind.
+    QMimeData *mimeData = model.mimeData( QModelIndexList() << groupIndex );
+    QVERIFY( mimeData );
+
+    const bool dropped = model.dropMimeData( mimeData, Qt::MoveAction, targetRow, 0, tabIndex );
+    QVERIFY( dropped );
+    delete mimeData;
+
+    // No duplicate was inserted: the container count is unchanged and the group
+    // ended up where we asked, still holding both children.
+    QCOMPARE( model.rowCount( tabIndex ), 3 );
+    const QModelIndex movedGroup = model.index( expectedFinalRow, 0, tabIndex );
+    QCOMPARE( movedGroup.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"group"_s );
+    QCOMPARE( static_cast< QgsAttributesFormData::AttributesFormItemType >( movedGroup.data( QgsAttributesFormModel::ItemTypeRole ).toInt() ), QgsAttributesFormData::Container );
+    QCOMPARE( movedGroup.parent().data( QgsAttributesFormModel::ItemIdRole ).toString(), u"tab"_s );
+    QCOMPARE( model.rowCount( movedGroup ), 2 );
+    QCOMPARE( model.index( 0, 0, movedGroup ).data( QgsAttributesFormModel::ItemIdRole ).toString(), u"b"_s );
+    QCOMPARE( model.index( 1, 0, movedGroup ).data( QgsAttributesFormModel::ItemIdRole ).toString(), u"c"_s );
+
+    // The "group" identity must appear exactly once under "tab".
+    int groupCount = 0;
+    for ( int r = 0; r < model.rowCount( tabIndex ); ++r )
+    {
+      if ( model.index( r, 0, tabIndex ).data( QgsAttributesFormModel::ItemIdRole ).toString() == "group"_L1 )
+        groupCount++;
+    }
+    QCOMPARE( groupCount, 1 );
+  };
+
+  // Move up to the top of the container.
+  moveGroupAndVerify( 0, 0 );
+
+  // Move down to the bottom of the container (dropping past the last row appends).
+  moveGroupAndVerify( 3, 2 );
+
+  // Reordering a field within its own group must move it, not drop it. Moving
+  // "b" (row 0) past "c" (row 1) inside "group" should leave the group holding
+  // [c, b] with both fields still present.
+  {
+    QgsAttributesFormLayoutModel model( layer.get(), mProject );
+    model.populate();
+
+    const QModelIndex tabIndex = model.index( 0, 0, QModelIndex() );
+    const QModelIndex groupIndex = model.index( 1, 0, tabIndex );
+    QCOMPARE( model.rowCount( groupIndex ), 2 );
+
+    const QModelIndex fieldB = model.index( 0, 0, groupIndex );
+    QCOMPARE( fieldB.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"b"_s );
+
+    QMimeData *mimeData = model.mimeData( QModelIndexList() << fieldB );
+    QVERIFY( mimeData );
+    // Drop below "c" (targetRow == 2, i.e. past the last row of the group).
+    const bool dropped = model.dropMimeData( mimeData, Qt::MoveAction, 2, 0, groupIndex );
+    QVERIFY( dropped );
+    delete mimeData;
+
+    QCOMPARE( model.rowCount( groupIndex ), 2 );
+    QCOMPARE( model.index( 0, 0, groupIndex ).data( QgsAttributesFormModel::ItemIdRole ).toString(), u"c"_s );
+    QCOMPARE( model.index( 1, 0, groupIndex ).data( QgsAttributesFormModel::ItemIdRole ).toString(), u"b"_s );
+  }
+
+  // we must use Qt::CopyAction
+  // otherwise QAbstractItemView::startDrag() will delete the dragged item after a successful drop
+  {
+    QgsAttributesFormLayoutModel model( layer.get(), mProject );
+    QVERIFY( model.supportedDragActions() & Qt::CopyAction );
+  }
 }
 
 void TestQgsAttributesFormModel::testInvalidRelationInAvailableWidgets()

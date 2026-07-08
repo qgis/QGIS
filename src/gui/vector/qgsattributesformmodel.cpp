@@ -300,6 +300,23 @@ void QgsAttributesFormItem::deleteChildAtIndex( int index )
     mChildren.erase( mChildren.begin() + index );
 }
 
+std::unique_ptr< QgsAttributesFormItem > QgsAttributesFormItem::takeChild( int index )
+{
+  if ( index < 0 || index >= static_cast< int >( mChildren.size() ) )
+    return nullptr;
+
+  std::unique_ptr< QgsAttributesFormItem > child = std::move( mChildren[index] );
+  mChildren.erase( mChildren.begin() + index );
+
+  if ( child )
+  {
+    disconnect( child.get(), &QgsAttributesFormItem::addedChildren, this, &QgsAttributesFormItem::addedChildren );
+    child->mParent = nullptr;
+  }
+
+  return child;
+}
+
 void QgsAttributesFormItem::deleteChildren()
 {
   mChildren.clear();
@@ -1332,7 +1349,9 @@ bool QgsAttributesFormLayoutModel::removeRow( int row, const QModelIndex &parent
 
 Qt::DropActions QgsAttributesFormLayoutModel::supportedDragActions() const
 {
-  return Qt::MoveAction;
+  // For internal moves, QAbstractItemView::startDrag() will delete the dragged item after a successful drop if we don't support Qt::CopyAction
+  // See QgsAttributesFormLayoutView::dropEvent where we force it to be a CopyAction.
+  return Qt::CopyAction | Qt::MoveAction;
 }
 
 Qt::DropActions QgsAttributesFormLayoutModel::supportedDropActions() const
@@ -1414,6 +1433,12 @@ QMimeData *QgsAttributesFormLayoutModel::mimeData( const QModelIndexList &indexe
   // Sort indexes since their order reflects selection order
   std::sort( curatedIndexes.begin(), curatedIndexes.end(), [this]( const QModelIndex &a, const QModelIndex &b ) { return indexLessThan( a, b ); } );
 
+  // Remember the dragged source items in the same order they are serialized below
+  // so an internal move can be performed without a rebuild of the dragged item subtree
+  mDraggedLayoutIndexes.clear();
+  for ( const QModelIndex &index : std::as_const( curatedIndexes ) )
+    mDraggedLayoutIndexes << QPersistentModelIndex( index );
+
   for ( const QModelIndex &index : std::as_const( curatedIndexes ) )
   {
     if ( index.isValid() )
@@ -1474,32 +1499,51 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
   else if ( data->hasFormat( u"application/x-qgsattributesformlayoutelement"_s ) )
   {
     Q_ASSERT( action == Qt::MoveAction ); // Internal move
-    QByteArray itemData = data->data( u"application/x-qgsattributesformlayoutelement"_s );
-    QDataStream stream( &itemData, QIODevice::ReadOnly );
 
-    while ( !stream.atEnd() )
+    const QList< QPersistentModelIndex > draggedIndexes = mDraggedLayoutIndexes;
+    mDraggedLayoutIndexes.clear();
+
+    if ( draggedIndexes.isEmpty() )
+      return false;
+
+    for ( const QPersistentModelIndex &source : draggedIndexes )
     {
-      QString text;
-      stream >> text;
+      if ( !source.isValid() )
+        return false;
+    }
 
-      QDomDocument doc;
-      if ( !doc.setContent( text ) )
-        continue;
-      const QDomElement rootElem = doc.documentElement();
-      if ( rootElem.tagName() != "form_layout_mime"_L1 || !rootElem.hasChildNodes() )
-        continue;
-      const QDomElement childElem = rootElem.firstChild().toElement();
+    QgsAttributesFormItem *destParentItem = itemForIndex( parent );
+    for ( const QPersistentModelIndex &source : draggedIndexes )
+    {
+      const QModelIndex sourceParent = source.parent();
+      const int sourceRow = source.row();
+      const int destRow = row + rows;
 
-      // Build editor element from XML and add/insert it to parent
-      QgsAttributeEditorElement *editor = QgsAttributeEditorElement::create( childElem, mLayer->id(), mLayer->fields(), QgsReadWriteContext() );
-      beginInsertRows( parent, row + rows, row + rows );
-      loadAttributeEditorElementItem( editor, itemForIndex( parent ), row + rows );
-      endInsertRows();
+      // Moving an item onto its current position is a no-op that beginMoveRows() rejects.
+      if ( sourceParent == parent && ( destRow == sourceRow || destRow == sourceRow + 1 ) )
+      {
+        isDropSuccessful = true;
+        rows++;
+        continue;
+      }
+
+      if ( !beginMoveRows( sourceParent, sourceRow, sourceRow, parent, destRow ) )
+        continue; // e.g. attempt to move a container into itself
+
+      QgsAttributesFormItem *sourceParentItem = itemForIndex( sourceParent );
+      std::unique_ptr< QgsAttributesFormItem > movedItem = sourceParentItem->takeChild( sourceRow );
+
+      int insertPosition = destRow;
+      if ( sourceParentItem == destParentItem && sourceRow < destRow )
+        insertPosition = destRow - 1; // account for the just-removed source row
+
+      destParentItem->insertChild( insertPosition, std::move( movedItem ) );
+      endMoveRows();
 
       isDropSuccessful = true;
 
-      QModelIndex addedIndex = index( row + rows, 0, parent );
-      emit internalItemDropped( addedIndex );
+      QModelIndex movedIndex = index( insertPosition, 0, parent );
+      emit internalItemDropped( movedIndex );
 
       rows++;
     }

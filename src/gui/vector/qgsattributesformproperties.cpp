@@ -515,7 +515,7 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
 void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelection &, const QItemSelection & )
 {
   // when the selection changes in the main tree, sync the DnD layout
-  // Block both selection handlers while syncing (see onFormLayoutSelectionChanged for rationale).
+  // block both selection handlers while syncing
   disconnect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
   disconnect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 
@@ -535,7 +535,7 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelect
 void QgsAttributesFormProperties::onFormLayoutSelectionChanged( const QItemSelection &, const QItemSelection &deselected )
 {
   // when the selection changes in the DnD layout, sync the main tree
-  // Block both selection handlers while syncing (see onAttributeSelectionChanged for rationale).
+  // block both selection handlers while syncing
   disconnect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
   disconnect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 
@@ -710,16 +710,19 @@ void QgsAttributesFormProperties::addContainer()
 
 void QgsAttributesFormProperties::removeTabOrGroupButton()
 {
-  // deleting an item may delete any number of nested child items -- so we delete
-  // them one at a time and then see if there's any selection left
-  while ( true )
-  {
-    const QModelIndexList items = mFormLayoutView->selectionModel()->selectedRows();
-    if ( items.empty() )
-      break;
+  // Take a snapshot of the selected rows in the proxy model, and map them to the source model.
+  // This is necessary because removing rows from the source model will invalidate the proxy model's indexes.
+  const QModelIndexList selectedRows = mFormLayoutView->selectionModel()->selectedRows();
 
-    const QModelIndex item = mFormLayoutProxyModel->mapToSource( items.at( 0 ) );
-    mFormLayoutModel->removeRow( item.row(), item.parent() );
+  QList< QPersistentModelIndex > sourceIndexes;
+  sourceIndexes.reserve( selectedRows.size() );
+  for ( const QModelIndex &proxyIndex : selectedRows )
+    sourceIndexes << QPersistentModelIndex( mFormLayoutProxyModel->mapToSource( proxyIndex ) );
+
+  for ( const QPersistentModelIndex &sourceIndex : std::as_const( sourceIndexes ) )
+  {
+    if ( sourceIndex.isValid() )
+      mFormLayoutModel->removeRow( sourceIndex.row(), sourceIndex.parent() );
   }
 }
 
