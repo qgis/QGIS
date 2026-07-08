@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/style.css?v=20260709b">
+  <link rel="stylesheet" href="./css/style.css?v=20260709c">
   <link rel="icon" href="./assets/app-icon.png" type="image/png">
 </head>
 <body>
@@ -568,23 +568,33 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer-grid">
-      <div class="footer-brand">
-        <strong>Strata</strong>
-        <span data-i18n="footer.tagline">Agente AI nativo in QGIS. Cloud o on-premise.</span>
+      <div class="footer-top">
+        <div class="footer-brand">
+          <strong>Strata</strong>
+          <span data-i18n="footer.tagline">Agente AI nativo in QGIS. Cloud o on-premise.</span>
+        </div>
+        <div class="footer-nav">
+          <nav class="footer-links" aria-label="Footer">
+            <a href="https://github.com/francemazzi/strata" data-i18n="footer.github">GitHub</a>
+            <a href="https://github.com/francemazzi/strata" target="_blank" rel="noopener noreferrer" data-i18n="footer.star">Metti una stella</a>
+            <a href="https://github.com/francemazzi/strata/releases" data-release-link data-i18n="nav.download">Download</a>
+            <a href="mailto:francemazzi@gmail.com" data-i18n="footer.contact">Contatto</a>
+          </nav>
+          <div class="lang-toggle" role="group" aria-label="Language">
+            <button type="button" data-lang="it" aria-pressed="true">IT</button>
+            <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-opensource">
         <h3 class="footer-opensource-title" data-i18n="opensource.title">Costruito su QGIS. Aperto, trasparente, senza lock-in.</h3>
         <p class="footer-opensource-desc" data-i18n="opensource.desc">Strata è costruito sul cuore open-source di QGIS. Questo garantisce piena compatibilità con i tuoi flussi GIS esistenti e ti protegge dal vincolo di formati proprietari. Paghi per l'infrastruttura cloud, la semplicità d'uso e la nostra esperienza nell'ottimizzazione dei modelli AI applicati alla cartografia, mantenendo la trasparenza e la solidità del software libero.</p>
         <p class="footer-opensource-closing" data-i18n="opensource.closing">Il GIS resta tuo. Il valore aggiunto è nel servizio.</p>
+      </div>
+
+      <div class="footer-bottom">
         <p class="footer-disclaimer" data-i18n="footer.disclaimer">Strata is an independent commercial service based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.</p>
-      </div>
-      <div class="footer-links">
-        <a href="https://github.com/francemazzi/strata" data-i18n="footer.github">GitHub</a>
-        <a href="https://github.com/francemazzi/strata" target="_blank" rel="noopener noreferrer" data-i18n="footer.star">Metti una stella</a>
-        <a href="https://github.com/francemazzi/strata/releases" data-release-link data-i18n="nav.download">Download</a>
-        <a href="mailto:francemazzi@gmail.com" data-i18n="footer.contact">Contatto</a>
-      </div>
-      <div class="lang-toggle" role="group" aria-label="Language">
-        <button type="button" data-lang="it" aria-pressed="true">IT</button>
-        <button type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
     </div>
   </footer>
