@@ -29,12 +29,15 @@ class TestQgsAiRulesSkillsStore : public QObject
     void slugify();
     void listRulesParsesFrontmatter();
     void listRulesLegacyPlainFile();
+    void ruleRawMarkdownRoundTrip();
+    void ruleTitleDerivedFromMarkdown();
     void writeAndReadRuleRoundTrip();
     void updateRuleOverwritesInPlace();
     void deleteRuleRemovesFile();
     void writeRuleRejectsEmptySlug();
 
     void listSkillsParsesFrontmatter();
+    void skillFrontmatterSupportsReferencesAndCustomProperties();
     void writeAndReadSkillRoundTrip();
     void deleteSkillRemovesFolder();
 
@@ -126,11 +129,47 @@ void TestQgsAiRulesSkillsStore::listRulesLegacyPlainFile()
   QCOMPARE( rules.size(), 1 );
   const QgsAiRuleInfo &rule = rules.first();
   QCOMPARE( rule.slug, u"legacy-notes"_s );
-  // No frontmatter: name is derived from the slug, and it defaults to always-applied.
-  QCOMPARE( rule.name, u"Legacy Notes"_s );
+  // No frontmatter: name is derived from the first content line, and it defaults to always-applied.
+  QCOMPARE( rule.name, u"Just plain legacy content, no frontmatter."_s );
   QVERIFY( rule.alwaysApply );
   QVERIFY( rule.enabled );
   QCOMPARE( mStore->readRuleBody( rule ), u"Just plain legacy content, no frontmatter."_s );
+}
+
+void TestQgsAiRulesSkillsStore::ruleRawMarkdownRoundTrip()
+{
+  const QString markdown = u"---\n"
+                           "name: Raw Rule\n"
+                           "description: Keep markdown exactly\n"
+                           "globs:\n"
+                           "  - *.qgz\n"
+                           "  - *.gpkg\n"
+                           "alwaysApply: false\n"
+                           "enabled: false\n"
+                           "---\n\n"
+                           "# Raw Rule\n\n"
+                           "Use project-safe paths only.\n"_s;
+
+  QString error;
+  QVERIFY2( mStore->writeRuleMarkdown( u".strata/rules"_s, u"raw-rule"_s, markdown, &error ), qPrintable( error ) );
+
+  const QList<QgsAiRuleInfo> rules = mStore->listRules( u".strata/rules"_s );
+  QCOMPARE( rules.size(), 1 );
+  const QgsAiRuleInfo &rule = rules.first();
+  QCOMPARE( rule.name, u"Raw Rule"_s );
+  QCOMPARE( rule.description, u"Keep markdown exactly"_s );
+  QCOMPARE( rule.globs, QStringList( { u"*.qgz"_s, u"*.gpkg"_s } ) );
+  QVERIFY( !rule.alwaysApply );
+  QVERIFY( !rule.enabled );
+  QCOMPARE( mStore->readRuleMarkdown( rule ), markdown );
+}
+
+void TestQgsAiRulesSkillsStore::ruleTitleDerivedFromMarkdown()
+{
+  QCOMPARE( QgsAiRulesSkillsStore::titleFromMarkdown( u"---\nname: Frontmatter title\n---\n# Heading title\n"_s, u"fallback-title"_s ), u"Frontmatter title"_s );
+  QCOMPARE( QgsAiRulesSkillsStore::titleFromMarkdown( u"\n# Heading title\n\nBody"_s, u"fallback-title"_s ), u"Heading title"_s );
+  QCOMPARE( QgsAiRulesSkillsStore::titleFromMarkdown( u"\nFirst useful line\n\nBody"_s, u"fallback-title"_s ), u"First useful line"_s );
+  QCOMPARE( QgsAiRulesSkillsStore::titleFromMarkdown( QString(), u"fallback-title"_s ), u"Fallback Title"_s );
 }
 
 void TestQgsAiRulesSkillsStore::writeAndReadRuleRoundTrip()
@@ -227,6 +266,35 @@ void TestQgsAiRulesSkillsStore::listSkillsParsesFrontmatter()
   QCOMPARE( skill.description, u"Use when the user asks for a print layout export"_s );
   QVERIFY( skill.enabled );
   QVERIFY( mStore->readSkillBody( skill ).contains( u"Export as PDF."_s ) );
+}
+
+void TestQgsAiRulesSkillsStore::skillFrontmatterSupportsReferencesAndCustomProperties()
+{
+  const QString markdown = u"---\n"
+                           "name: Agents SDK\n"
+                           "description: Build stateful agents on Workers\n"
+                           "references:\n"
+                           "  - workers\n"
+                           "  - agents-sdk\n"
+                           "owner: platform\n"
+                           "---\n\n"
+                           "# Agents SDK\n\n"
+                           "Prefer current Cloudflare docs.\n"_s;
+
+  QString error;
+  QVERIFY2( mStore->writeSkillMarkdown( u".strata/skills"_s, u"agents-sdk"_s, markdown, &error ), qPrintable( error ) );
+
+  const QList<QgsAiSkillInfo> skills = mStore->listSkills( u".strata/skills"_s );
+  QCOMPARE( skills.size(), 1 );
+  const QgsAiSkillInfo &skill = skills.first();
+  QCOMPARE( skill.slug, u"agents-sdk"_s );
+  QCOMPARE( skill.name, u"Agents SDK"_s );
+  QCOMPARE( skill.description, u"Build stateful agents on Workers"_s );
+
+  const QgsAiMarkdownDocument document = QgsAiRulesSkillsStore::parseMarkdownDocument( mStore->readSkillMarkdown( skill ) );
+  QCOMPARE( document.values( u"references"_s ), QStringList( { u"workers"_s, u"agents-sdk"_s } ) );
+  QCOMPARE( document.value( u"owner"_s ), u"platform"_s );
+  QCOMPARE( document.body, u"# Agents SDK\n\nPrefer current Cloudflare docs."_s );
 }
 
 void TestQgsAiRulesSkillsStore::writeAndReadSkillRoundTrip()

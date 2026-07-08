@@ -21,6 +21,7 @@
 
 #include <QCryptographicHash>
 #include <QDir>
+#include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
 #include <QJsonArray>
@@ -206,9 +207,14 @@ namespace
     if ( !dirInfo.exists() || !dirInfo.isDir() )
       return;
 
-    QDir dir( absolutePath );
     const QStringList filters = { u"*.md"_s, u"*.markdown"_s, u"*.txt"_s };
-    const QFileInfoList files = dir.entryInfoList( filters, QDir::Files | QDir::Readable, QDir::Name );
+    QFileInfoList files;
+    QDirIterator iterator( absolutePath, filters, QDir::Files | QDir::Readable, QDirIterator::Subdirectories );
+    while ( iterator.hasNext() )
+      files << QFileInfo( iterator.next() );
+    std::sort( files.begin(), files.end(), [&rootDir]( const QFileInfo &left, const QFileInfo &right ) {
+      return normalizedRelativePath( rootDir.relativeFilePath( left.absoluteFilePath() ) ) < normalizedRelativePath( rootDir.relativeFilePath( right.absoluteFilePath() ) );
+    } );
     for ( const QFileInfo &fileInfo : files )
     {
       QFile file( fileInfo.absoluteFilePath() );
