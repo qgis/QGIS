@@ -874,12 +874,24 @@ void TestQgsAiAgentSessionManager::collectsAlwaysApplyAndManualRulesFromStructur
   QVERIFY( manualRule.open( QIODevice::WriteOnly | QIODevice::Text ) );
   manualRule.write( QByteArrayLiteral(
     "---\n"
+    "name: Manual rule\n"
     "description: Only fetched when relevant\n"
     "alwaysApply: false\n"
     "---\n"
     "Full body of the manual rule should NOT appear in the prompt.\n"
   ) );
   manualRule.close();
+
+  QFile disabledRule( tempDir.filePath( u".strata/rules/disabled.md"_s ) );
+  QVERIFY( disabledRule.open( QIODevice::WriteOnly | QIODevice::Text ) );
+  disabledRule.write( QByteArrayLiteral(
+    "---\n"
+    "name: Disabled rule\n"
+    "enabled: false\n"
+    "---\n"
+    "Disabled rule body should NOT appear in the prompt.\n"
+  ) );
+  disabledRule.close();
 
   QgsAiWorkspaceTrust::setState( tempDir.path(), QgsAiWorkspaceTrust::State::Trusted );
 
@@ -901,6 +913,9 @@ void TestQgsAiAgentSessionManager::collectsAlwaysApplyAndManualRulesFromStructur
   QVERIFY( rules.contains( u".strata/rules/manual-only.md"_s ) );
   QVERIFY( rules.contains( u"Only fetched when relevant"_s ) );
   QVERIFY( rules.contains( u"read_file"_s ) );
+  // Disabled rules are omitted entirely.
+  QVERIFY( !rules.contains( u"Disabled rule"_s ) );
+  QVERIFY( !rules.contains( u"Disabled rule body"_s ) );
 
   settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
@@ -929,6 +944,19 @@ void TestQgsAiAgentSessionManager::collectsSkillsAsIndexOnly()
   ) );
   skillFile.close();
 
+  QVERIFY( QDir( tempDir.path() ).mkpath( u".strata/skills/disabled-skill"_s ) );
+  QFile disabledSkillFile( tempDir.filePath( u".strata/skills/disabled-skill/SKILL.md"_s ) );
+  QVERIFY( disabledSkillFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
+  disabledSkillFile.write( QByteArrayLiteral(
+    "---\n"
+    "name: Disabled skill\n"
+    "description: Should be skipped\n"
+    "enabled: false\n"
+    "---\n"
+    "Disabled skill body should NOT appear in the system prompt.\n"
+  ) );
+  disabledSkillFile.close();
+
   QgsAiWorkspaceTrust::setState( tempDir.path(), QgsAiWorkspaceTrust::State::Trusted );
 
   QgsAiFileContextProvider contextProvider( tempDir.path() );
@@ -948,6 +976,8 @@ void TestQgsAiAgentSessionManager::collectsSkillsAsIndexOnly()
   QVERIFY( skills.contains( u"read_file"_s ) );
   // ...never the full SKILL.md body (progressive disclosure).
   QVERIFY( !skills.contains( u"Detailed step-by-step body"_s ) );
+  QVERIFY( !skills.contains( u"Disabled skill"_s ) );
+  QVERIFY( !skills.contains( u"Disabled skill body"_s ) );
 
   settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );

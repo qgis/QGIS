@@ -26,6 +26,34 @@
 class QgsAiFileContextProvider;
 
 /**
+ * Single frontmatter property from a Markdown rule/skill file.
+ *
+ * Scalar properties use one value with isList=false. List properties preserve
+ * their item order with isList=true and serialize as YAML-style block lists.
+ */
+struct APP_EXPORT QgsAiFrontmatterProperty
+{
+    QString key;
+    QStringList values;
+    bool isList = false;
+
+    QString value() const { return values.isEmpty() ? QString() : values.first(); }
+};
+
+/**
+ * Parsed Markdown document with optional YAML frontmatter.
+ */
+struct APP_EXPORT QgsAiMarkdownDocument
+{
+    QList<QgsAiFrontmatterProperty> properties;
+    QString body;
+    bool hasFrontmatter = false;
+
+    QString value( const QString &key, const QString &defaultValue = QString() ) const;
+    QStringList values( const QString &key ) const;
+};
+
+/**
  * Metadata for a single Cursor-style rule file (`<rulesDir>/<slug>.md`).
  *
  * `alwaysApply` mirrors Cursor's rule model: true means the rule body is always
@@ -122,6 +150,19 @@ class APP_EXPORT QgsAiRulesSkillsStore
     //! Returns the markdown body (frontmatter stripped) of \a skill.
     QString readSkillBody( const QgsAiSkillInfo &skill ) const;
 
+    //! Returns the complete Markdown document for \a rule, including frontmatter.
+    QString readRuleMarkdown( const QgsAiRuleInfo &rule ) const;
+    //! Returns the complete Markdown document for \a skill, including frontmatter.
+    QString readSkillMarkdown( const QgsAiSkillInfo &skill ) const;
+
+    //! Parses a complete Markdown document into frontmatter properties and body.
+    static QgsAiMarkdownDocument parseMarkdownDocument( const QString &content );
+    //! Serializes frontmatter properties and body into a complete Markdown document.
+    static QString serializeMarkdownDocument( const QgsAiMarkdownDocument &document );
+
+    //! Derives a user-facing title from frontmatter, first heading, first line, then slug.
+    static QString titleFromMarkdown( const QString &content, const QString &fallbackSlug );
+
     /**
      * Creates or overwrites the rule file for \a info.slug inside \a rulesRelativeDir
      * with \a body as content. Returns false (and sets \a errorMessage) when the
@@ -130,11 +171,23 @@ class APP_EXPORT QgsAiRulesSkillsStore
     bool writeRule( const QString &rulesRelativeDir, const QgsAiRuleInfo &info, const QString &body, QString *errorMessage = nullptr ) const;
 
     /**
+     * Creates or overwrites the raw Markdown rule file for \a slug inside
+     * \a rulesRelativeDir. The content is written as provided.
+     */
+    bool writeRuleMarkdown( const QString &rulesRelativeDir, const QString &slug, const QString &markdown, QString *errorMessage = nullptr ) const;
+
+    /**
      * Creates or overwrites the skill folder/SKILL.md for \a info.slug inside
      * \a skillsRelativeDir with \a body as content. Returns false (and sets
      * \a errorMessage) when the resolved path escapes the workspace or the write fails.
      */
     bool writeSkill( const QString &skillsRelativeDir, const QgsAiSkillInfo &info, const QString &body, QString *errorMessage = nullptr ) const;
+
+    /**
+     * Creates or overwrites the raw Markdown skill file for \a slug inside
+     * \a skillsRelativeDir. The content is written as provided.
+     */
+    bool writeSkillMarkdown( const QString &skillsRelativeDir, const QString &slug, const QString &markdown, QString *errorMessage = nullptr ) const;
 
     //! Deletes the rule file. Returns false (and sets \a errorMessage) on failure.
     bool deleteRule( const QgsAiRuleInfo &rule, QString *errorMessage = nullptr ) const;

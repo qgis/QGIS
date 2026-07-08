@@ -99,6 +99,10 @@ class APP_EXPORT QgsAiSettingsDialog : public QDialog
     void refreshSkillsList();
     void selectSkillInEditor( const QgsAiSkillInfo &skill );
     void clearSkillEditor();
+    void clearSkillPropertyRows();
+    void addSkillPropertyRow( const QString &key, const QStringList &values = QStringList(), bool isList = false, bool required = false );
+    QgsAiMarkdownDocument skillDocumentFromEditor() const;
+    void setSkillDocumentInEditor( const QgsAiMarkdownDocument &document );
     void newSkill();
     void duplicateSelectedSkill();
     void deleteSelectedSkill();
@@ -149,24 +153,12 @@ class APP_EXPORT QgsAiSettingsDialog : public QDialog
     QCheckBox *mGisSuggestionsEnabled = nullptr;
     QCheckBox *mGisSuggestionsProjectEnabled = nullptr;
 
-    QTextEdit *mRulesEdit = nullptr;
-    QTextEdit *mSkillsEdit = nullptr;
-    QCheckBox *mLoadWorkspaceRules = nullptr;
-    QCheckBox *mLoadWorkspaceSkills = nullptr;
-    QLineEdit *mRulesPathEdit = nullptr;
-    QLineEdit *mSkillsPathEdit = nullptr;
-
     QLabel *mRulesSkillsTrustBanner = nullptr;
     QString mRulesRelativeDirForList;
     QString mSkillsRelativeDirForList;
 
     QListWidget *mRulesListWidget = nullptr;
     QWidget *mRuleEditorWidget = nullptr;
-    QLineEdit *mRuleNameEdit = nullptr;
-    QLineEdit *mRuleDescriptionEdit = nullptr;
-    QLineEdit *mRuleGlobsEdit = nullptr;
-    QCheckBox *mRuleAlwaysApply = nullptr;
-    QCheckBox *mRuleEnabled = nullptr;
     QTextEdit *mRuleBodyEdit = nullptr;
     QPushButton *mRuleNewButton = nullptr;
     QPushButton *mRuleDuplicateButton = nullptr;
@@ -177,15 +169,25 @@ class APP_EXPORT QgsAiSettingsDialog : public QDialog
 
     QListWidget *mSkillsListWidget = nullptr;
     QWidget *mSkillEditorWidget = nullptr;
-    QLineEdit *mSkillNameEdit = nullptr;
-    QLineEdit *mSkillDescriptionEdit = nullptr;
-    QCheckBox *mSkillEnabled = nullptr;
+    QVBoxLayout *mSkillPropertiesLayout = nullptr;
+    QPushButton *mSkillAddPropertyButton = nullptr;
     QTextEdit *mSkillBodyEdit = nullptr;
     QPushButton *mSkillNewButton = nullptr;
     QPushButton *mSkillDuplicateButton = nullptr;
     QPushButton *mSkillDeleteButton = nullptr;
     QPushButton *mSkillSaveButton = nullptr;
     QString mCurrentSkillSlug;
+
+    struct SkillPropertyRow
+    {
+        QWidget *rowWidget = nullptr;
+        QLineEdit *keyEdit = nullptr;
+        QTextEdit *valueEdit = nullptr;
+        QPushButton *removeButton = nullptr;
+        bool isList = false;
+        bool required = false;
+    };
+    QList<SkillPropertyRow> mSkillPropertyRows;
 
     QPushButton *mSyncRulesSkillsCloudButton = nullptr;
     QLabel *mRulesSkillsCloudStatusLabel = nullptr;

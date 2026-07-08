@@ -16,8 +16,8 @@
 #include "qgsaisettingsdialog.h"
 
 #include <algorithm>
-#include <initializer_list>
 #include <memory>
+#include <utility>
 
 #include "ai/index/qgsaicloudindexclient.h"
 #include "ai/index/qgsaiembeddingprovider.h"
@@ -924,8 +924,7 @@ QWidget *QgsAiSettingsDialog::buildRulesSkillsPage()
 
   // ---- Rules ----
   contentLayout->addWidget( sectionHeader( tr( "Rules" ), page ) );
-  QLabel *rulesHint
-    = new QLabel( tr( "Rules marked \u201cAlways\u201d are injected in full on every turn. Others are listed by name/description only \u2014 the agent reads the full content when it decides it is relevant." ), page );
+  QLabel *rulesHint = new QLabel( tr( "Rules are Markdown files stored in the workspace. The title comes from frontmatter name, the first Markdown heading, or the first non-empty line." ), page );
   rulesHint->setWordWrap( true );
   rulesHint->setProperty( "aiRole", u"rowDescription"_s );
   contentLayout->addWidget( rulesHint );
@@ -941,28 +940,11 @@ QWidget *QgsAiSettingsDialog::buildRulesSkillsPage()
   QVBoxLayout *ruleEditorLayout = new QVBoxLayout( mRuleEditorWidget );
   ruleEditorLayout->setContentsMargins( 0, 4, 0, 4 );
 
-  mRuleNameEdit = new QLineEdit( mRuleEditorWidget );
-  ruleEditorLayout->addWidget( settingRow( tr( "Name" ), QString(), mRuleNameEdit, mRuleEditorWidget ) );
-
-  mRuleDescriptionEdit = new QLineEdit( mRuleEditorWidget );
-  ruleEditorLayout->addWidget( settingRow( tr( "Description" ), QString(), mRuleDescriptionEdit, mRuleEditorWidget ) );
-
-  mRuleGlobsEdit = new QLineEdit( mRuleEditorWidget );
-  mRuleGlobsEdit->setPlaceholderText( u"*.qgz, *.gpkg"_s );
-  ruleEditorLayout->addWidget( settingRow( tr( "Globs (optional, comma-separated)" ), QString(), mRuleGlobsEdit, mRuleEditorWidget ) );
-
-  mRuleAlwaysApply = new QCheckBox( mRuleEditorWidget );
-  mRuleAlwaysApply->setChecked( true );
-  ruleEditorLayout->addWidget( settingRow( tr( "Always apply" ), tr( "When off, only the name/description are sent; the agent loads the full rule on demand." ), mRuleAlwaysApply, mRuleEditorWidget ) );
-
-  mRuleEnabled = new QCheckBox( mRuleEditorWidget );
-  mRuleEnabled->setChecked( true );
-  ruleEditorLayout->addWidget( settingRow( tr( "Enabled" ), QString(), mRuleEnabled, mRuleEditorWidget ) );
-
   mRuleBodyEdit = new QTextEdit( mRuleEditorWidget );
   mRuleBodyEdit->setAcceptRichText( false );
-  mRuleBodyEdit->setFixedHeight( 130 );
-  ruleEditorLayout->addWidget( settingRowFullWidth( tr( "Content" ), QString(), mRuleBodyEdit, mRuleEditorWidget ) );
+  mRuleBodyEdit->setPlaceholderText( tr( "# Rule title\n\nWrite the rule in Markdown. Optional frontmatter like alwaysApply, enabled, description, and globs is preserved." ) );
+  mRuleBodyEdit->setFixedHeight( 190 );
+  ruleEditorLayout->addWidget( settingRowFullWidth( tr( "Markdown" ), QString(), mRuleBodyEdit, mRuleEditorWidget ) );
 
   QHBoxLayout *ruleButtonsLayout = new QHBoxLayout();
   mRuleSaveButton = new QPushButton( tr( "Save" ), mRuleEditorWidget );
@@ -1003,21 +985,22 @@ QWidget *QgsAiSettingsDialog::buildRulesSkillsPage()
   QVBoxLayout *skillEditorLayout = new QVBoxLayout( mSkillEditorWidget );
   skillEditorLayout->setContentsMargins( 0, 4, 0, 4 );
 
-  mSkillNameEdit = new QLineEdit( mSkillEditorWidget );
-  skillEditorLayout->addWidget( settingRow( tr( "Name" ), QString(), mSkillNameEdit, mSkillEditorWidget ) );
+  skillEditorLayout->addWidget( sectionHeader( tr( "Properties" ), mSkillEditorWidget ) );
 
-  mSkillDescriptionEdit = new QLineEdit( mSkillEditorWidget );
-  mSkillDescriptionEdit->setPlaceholderText( tr( "When should the agent reach for this skill?" ) );
-  skillEditorLayout->addWidget( settingRow( tr( "Description" ), QString(), mSkillDescriptionEdit, mSkillEditorWidget ) );
+  QWidget *skillPropertiesWidget = new QWidget( mSkillEditorWidget );
+  mSkillPropertiesLayout = new QVBoxLayout( skillPropertiesWidget );
+  mSkillPropertiesLayout->setContentsMargins( 0, 0, 0, 0 );
+  mSkillPropertiesLayout->setSpacing( 6 );
+  skillEditorLayout->addWidget( skillPropertiesWidget );
 
-  mSkillEnabled = new QCheckBox( mSkillEditorWidget );
-  mSkillEnabled->setChecked( true );
-  skillEditorLayout->addWidget( settingRow( tr( "Enabled" ), QString(), mSkillEnabled, mSkillEditorWidget ) );
+  mSkillAddPropertyButton = new QPushButton( tr( "+ Add property" ), mSkillEditorWidget );
+  skillEditorLayout->addWidget( mSkillAddPropertyButton );
 
   mSkillBodyEdit = new QTextEdit( mSkillEditorWidget );
   mSkillBodyEdit->setAcceptRichText( false );
-  mSkillBodyEdit->setFixedHeight( 130 );
-  skillEditorLayout->addWidget( settingRowFullWidth( tr( "Content (SKILL.md)" ), QString(), mSkillBodyEdit, mSkillEditorWidget ) );
+  mSkillBodyEdit->setPlaceholderText( tr( "# Skill title\n\nWrite detailed Markdown instructions here." ) );
+  mSkillBodyEdit->setFixedHeight( 190 );
+  skillEditorLayout->addWidget( settingRowFullWidth( tr( "Markdown body" ), QString(), mSkillBodyEdit, mSkillEditorWidget ) );
 
   QHBoxLayout *skillButtonsLayout = new QHBoxLayout();
   mSkillSaveButton = new QPushButton( tr( "Save" ), mSkillEditorWidget );
@@ -1039,6 +1022,7 @@ QWidget *QgsAiSettingsDialog::buildRulesSkillsPage()
   connect( mSkillDuplicateButton, &QPushButton::clicked, this, &QgsAiSettingsDialog::duplicateSelectedSkill );
   connect( mSkillDeleteButton, &QPushButton::clicked, this, &QgsAiSettingsDialog::deleteSelectedSkill );
   connect( mSkillSaveButton, &QPushButton::clicked, this, &QgsAiSettingsDialog::saveCurrentSkill );
+  connect( mSkillAddPropertyButton, &QPushButton::clicked, this, [this]() { addSkillPropertyRow( QString(), QStringList(), false, false ); } );
 
   refreshRulesList();
   refreshSkillsList();
@@ -1055,45 +1039,6 @@ QWidget *QgsAiSettingsDialog::buildRulesSkillsPage()
   mRulesSkillsCloudStatusLabel->setProperty( "aiRole", u"rowDescription"_s );
   contentLayout->addWidget( mRulesSkillsCloudStatusLabel );
   connect( mSyncRulesSkillsCloudButton, &QPushButton::clicked, this, &QgsAiSettingsDialog::syncRulesSkillsToCloud );
-
-  // ---- Legacy inline rules/skills (deprecated) ----
-  QgsCollapsibleGroupBox *legacyGroup = new QgsCollapsibleGroupBox( tr( "Legacy inline rules/skills (deprecated)" ), page );
-  QVBoxLayout *legacyLayout = new QVBoxLayout( legacyGroup );
-
-  mRulesEdit = new QTextEdit( legacyGroup );
-  mRulesEdit->setAcceptRichText( false );
-  mRulesEdit->setPlaceholderText( tr( "Custom rules the agent must follow (e.g. 'Always answer in English', 'Prefer GeoPandas over osmnx', …)." ) );
-  mRulesEdit->setPlainText( currentBehavior.rulesText );
-  mRulesEdit->setFixedHeight( 90 );
-  legacyLayout->addWidget( settingRowFullWidth( tr( "Agent rules (inline)" ), QString(), mRulesEdit, legacyGroup ) );
-
-  mSkillsEdit = new QTextEdit( legacyGroup );
-  mSkillsEdit->setAcceptRichText( false );
-  mSkillsEdit->setPlaceholderText( tr( "Reusable skills/instructions the agent can leverage when relevant." ) );
-  mSkillsEdit->setPlainText( currentBehavior.skillsText );
-  mSkillsEdit->setFixedHeight( 90 );
-  legacyLayout->addWidget( settingRowFullWidth( tr( "Agent skills (inline)" ), QString(), mSkillsEdit, legacyGroup ) );
-
-  legacyLayout->addWidget( sectionHeader( tr( "Workspace folders" ), legacyGroup ) );
-
-  mLoadWorkspaceRules = new QCheckBox( legacyGroup );
-  mLoadWorkspaceRules->setChecked( currentBehavior.loadWorkspaceRules );
-  legacyLayout->addWidget( settingRow( tr( "Load rule files from workspace" ), tr( "Feeds the Rules list above into the prompt (trusted workspaces only)." ), mLoadWorkspaceRules, legacyGroup ) );
-
-  mRulesPathEdit = new QLineEdit( currentBehavior.rulesPath, legacyGroup );
-  mRulesPathEdit->setPlaceholderText( u".strata/rules"_s );
-  legacyLayout->addWidget( settingRow( tr( "Rules folder (relative)" ), QString(), mRulesPathEdit, legacyGroup ) );
-
-  mLoadWorkspaceSkills = new QCheckBox( legacyGroup );
-  mLoadWorkspaceSkills->setChecked( currentBehavior.loadWorkspaceSkills );
-  legacyLayout->addWidget( settingRow( tr( "Load skill files from workspace" ), tr( "Feeds the Skills list above into the prompt (trusted workspaces only)." ), mLoadWorkspaceSkills, legacyGroup ) );
-
-  mSkillsPathEdit = new QLineEdit( currentBehavior.skillsPath, legacyGroup );
-  mSkillsPathEdit->setPlaceholderText( u".strata/skills"_s );
-  legacyLayout->addWidget( settingRow( tr( "Skills folder (relative)" ), QString(), mSkillsPathEdit, legacyGroup ) );
-
-  legacyGroup->setCollapsed( true );
-  contentLayout->addWidget( legacyGroup );
 
   return page;
 }
@@ -1128,6 +1073,33 @@ void QgsAiSettingsDialog::refreshRulesSkillsTrustState()
     mRuleNewButton->setEnabled( writable );
   if ( mSkillNewButton )
     mSkillNewButton->setEnabled( writable );
+  if ( mRuleBodyEdit )
+    mRuleBodyEdit->setEnabled( writable );
+  if ( mRuleSaveButton )
+    mRuleSaveButton->setEnabled( writable );
+  if ( mRuleDuplicateButton )
+    mRuleDuplicateButton->setEnabled( writable && !mCurrentRuleSlug.isEmpty() );
+  if ( mRuleDeleteButton )
+    mRuleDeleteButton->setEnabled( writable && !mCurrentRuleSlug.isEmpty() );
+  for ( SkillPropertyRow &row : mSkillPropertyRows )
+  {
+    if ( row.keyEdit )
+      row.keyEdit->setEnabled( writable && !row.required );
+    if ( row.valueEdit )
+      row.valueEdit->setEnabled( writable );
+    if ( row.removeButton )
+      row.removeButton->setEnabled( writable && !row.required );
+  }
+  if ( mSkillAddPropertyButton )
+    mSkillAddPropertyButton->setEnabled( writable );
+  if ( mSkillBodyEdit )
+    mSkillBodyEdit->setEnabled( writable );
+  if ( mSkillSaveButton )
+    mSkillSaveButton->setEnabled( writable );
+  if ( mSkillDuplicateButton )
+    mSkillDuplicateButton->setEnabled( writable && !mCurrentSkillSlug.isEmpty() );
+  if ( mSkillDeleteButton )
+    mSkillDeleteButton->setEnabled( writable && !mCurrentSkillSlug.isEmpty() );
 }
 
 void QgsAiSettingsDialog::refreshRulesList()
@@ -1172,16 +1144,10 @@ void QgsAiSettingsDialog::selectRuleInEditor( const QgsAiRuleInfo &rule )
 {
   mCurrentRuleSlug = rule.slug;
   mCurrentRulePath = rule.path;
-  mRuleNameEdit->setText( rule.name );
-  mRuleDescriptionEdit->setText( rule.description );
-  mRuleGlobsEdit->setText( rule.globs.join( ", "_L1 ) );
-  mRuleAlwaysApply->setChecked( rule.alwaysApply );
-  mRuleEnabled->setChecked( rule.enabled );
-  mRuleBodyEdit->setPlainText( rulesSkillsStore().readRuleBody( rule ) );
+  mRuleBodyEdit->setPlainText( rulesSkillsStore().readRuleMarkdown( rule ) );
 
   const bool writable = rulesSkillsWritable();
-  for ( QWidget *widget : std::initializer_list<QWidget *> { mRuleNameEdit, mRuleDescriptionEdit, mRuleGlobsEdit, mRuleAlwaysApply, mRuleEnabled, mRuleBodyEdit } )
-    widget->setEnabled( writable );
+  mRuleBodyEdit->setEnabled( writable );
   mRuleSaveButton->setEnabled( writable );
   mRuleDuplicateButton->setEnabled( writable );
   mRuleDeleteButton->setEnabled( writable );
@@ -1191,16 +1157,10 @@ void QgsAiSettingsDialog::clearRuleEditor()
 {
   mCurrentRuleSlug.clear();
   mCurrentRulePath.clear();
-  mRuleNameEdit->clear();
-  mRuleDescriptionEdit->clear();
-  mRuleGlobsEdit->clear();
-  mRuleAlwaysApply->setChecked( true );
-  mRuleEnabled->setChecked( true );
   mRuleBodyEdit->clear();
 
   const bool writable = rulesSkillsWritable();
-  for ( QWidget *widget : std::initializer_list<QWidget *> { mRuleNameEdit, mRuleDescriptionEdit, mRuleGlobsEdit, mRuleAlwaysApply, mRuleEnabled, mRuleBodyEdit } )
-    widget->setEnabled( writable );
+  mRuleBodyEdit->setEnabled( writable );
   mRuleSaveButton->setEnabled( writable );
   mRuleDuplicateButton->setEnabled( false );
   mRuleDeleteButton->setEnabled( false );
@@ -1210,7 +1170,7 @@ void QgsAiSettingsDialog::newRule()
 {
   mRulesListWidget->setCurrentRow( -1 );
   clearRuleEditor();
-  mRuleNameEdit->setFocus();
+  mRuleBodyEdit->setFocus();
 }
 
 void QgsAiSettingsDialog::duplicateSelectedRule()
@@ -1222,22 +1182,16 @@ void QgsAiSettingsDialog::duplicateSelectedRule()
   for ( int i = 0; i < mRulesListWidget->count(); ++i )
     existingSlugs << mRulesListWidget->item( i )->data( Qt::UserRole ).value<QgsAiRuleInfo>().slug;
 
-  const QString baseSlug = QgsAiRulesSkillsStore::slugify( mRuleNameEdit->text() + u"-copy"_s );
+  const QString markdown = mRuleBodyEdit->toPlainText();
+  const QString title = QgsAiRulesSkillsStore::titleFromMarkdown( markdown, mCurrentRuleSlug );
+  const QString baseSlug = QgsAiRulesSkillsStore::slugify( title + u"-copy"_s );
   QString candidate = baseSlug;
   int suffix = 2;
   while ( existingSlugs.contains( candidate ) )
     candidate = u"%1-%2"_s.arg( baseSlug ).arg( suffix++ );
 
-  QgsAiRuleInfo info;
-  info.slug = candidate;
-  info.name = mRuleNameEdit->text().trimmed() + tr( " (copy)" );
-  info.description = mRuleDescriptionEdit->text().trimmed();
-  info.globs = mRuleGlobsEdit->text().split( ',', Qt::SkipEmptyParts );
-  info.alwaysApply = mRuleAlwaysApply->isChecked();
-  info.enabled = mRuleEnabled->isChecked();
-
   QString error;
-  if ( !rulesSkillsStore().writeRule( mRulesRelativeDirForList, info, mRuleBodyEdit->toPlainText(), &error ) )
+  if ( !rulesSkillsStore().writeRuleMarkdown( mRulesRelativeDirForList, candidate, markdown, &error ) )
   {
     QMessageBox::warning( this, tr( "Could not duplicate rule" ), error );
     return;
@@ -1250,7 +1204,8 @@ void QgsAiSettingsDialog::deleteSelectedRule()
 {
   if ( mCurrentRuleSlug.isEmpty() )
     return;
-  if ( QMessageBox::question( this, tr( "Delete rule" ), tr( "Delete rule \u201c%1\u201d? This cannot be undone." ).arg( mRuleNameEdit->text() ) ) != QMessageBox::Yes )
+  const QString title = QgsAiRulesSkillsStore::titleFromMarkdown( mRuleBodyEdit->toPlainText(), mCurrentRuleSlug );
+  if ( QMessageBox::question( this, tr( "Delete rule" ), tr( "Delete rule \u201c%1\u201d? This cannot be undone." ).arg( title ) ) != QMessageBox::Yes )
     return;
 
   QgsAiRuleInfo info;
@@ -1274,35 +1229,35 @@ void QgsAiSettingsDialog::saveCurrentRule()
     QMessageBox::warning( this, tr( "Workspace not trusted" ), tr( "Trust this workspace (Workspace section) before creating or editing rules." ) );
     return;
   }
-  const QString name = mRuleNameEdit->text().trimmed();
-  if ( name.isEmpty() )
+  const QString markdown = mRuleBodyEdit->toPlainText().trimmed();
+  if ( markdown.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Name required" ), tr( "Give the rule a name before saving." ) );
+    QMessageBox::warning( this, tr( "Content required" ), tr( "Write the rule Markdown before saving." ) );
     return;
   }
 
-  QgsAiRuleInfo info;
-  info.slug = mCurrentRuleSlug.isEmpty() ? QgsAiRulesSkillsStore::slugify( name ) : mCurrentRuleSlug;
-  info.name = name;
-  info.description = mRuleDescriptionEdit->text().trimmed();
-  QStringList globs;
-  for ( const QString &part : mRuleGlobsEdit->text().split( ',', Qt::SkipEmptyParts ) )
+  QString slug = mCurrentRuleSlug;
+  if ( slug.isEmpty() )
   {
-    const QString trimmedGlob = part.trimmed();
-    if ( !trimmedGlob.isEmpty() )
-      globs << trimmedGlob;
+    QStringList existingSlugs;
+    for ( int i = 0; i < mRulesListWidget->count(); ++i )
+      existingSlugs << mRulesListWidget->item( i )->data( Qt::UserRole ).value<QgsAiRuleInfo>().slug;
+
+    const QString title = QgsAiRulesSkillsStore::titleFromMarkdown( markdown, u"untitled"_s );
+    const QString baseSlug = QgsAiRulesSkillsStore::slugify( title );
+    slug = baseSlug;
+    int suffix = 2;
+    while ( existingSlugs.contains( slug ) )
+      slug = u"%1-%2"_s.arg( baseSlug ).arg( suffix++ );
   }
-  info.globs = globs;
-  info.alwaysApply = mRuleAlwaysApply->isChecked();
-  info.enabled = mRuleEnabled->isChecked();
 
   QString error;
-  if ( !rulesSkillsStore().writeRule( mRulesRelativeDirForList, info, mRuleBodyEdit->toPlainText(), &error ) )
+  if ( !rulesSkillsStore().writeRuleMarkdown( mRulesRelativeDirForList, slug, markdown, &error ) )
   {
     QMessageBox::warning( this, tr( "Could not save rule" ), error );
     return;
   }
-  mCurrentRuleSlug = info.slug;
+  mCurrentRuleSlug = slug;
   refreshRulesList();
 }
 
@@ -1346,14 +1301,19 @@ void QgsAiSettingsDialog::refreshSkillsList()
 void QgsAiSettingsDialog::selectSkillInEditor( const QgsAiSkillInfo &skill )
 {
   mCurrentSkillSlug = skill.slug;
-  mSkillNameEdit->setText( skill.name );
-  mSkillDescriptionEdit->setText( skill.description );
-  mSkillEnabled->setChecked( skill.enabled );
-  mSkillBodyEdit->setPlainText( rulesSkillsStore().readSkillBody( skill ) );
+  setSkillDocumentInEditor( QgsAiRulesSkillsStore::parseMarkdownDocument( rulesSkillsStore().readSkillMarkdown( skill ) ) );
 
   const bool writable = rulesSkillsWritable();
-  for ( QWidget *widget : std::initializer_list<QWidget *> { mSkillNameEdit, mSkillDescriptionEdit, mSkillEnabled, mSkillBodyEdit } )
-    widget->setEnabled( writable );
+  for ( SkillPropertyRow &row : mSkillPropertyRows )
+  {
+    row.keyEdit->setEnabled( writable && !row.required );
+    row.valueEdit->setEnabled( writable );
+    if ( row.removeButton )
+      row.removeButton->setEnabled( writable && !row.required );
+  }
+  if ( mSkillAddPropertyButton )
+    mSkillAddPropertyButton->setEnabled( writable );
+  mSkillBodyEdit->setEnabled( writable );
   mSkillSaveButton->setEnabled( writable );
   mSkillDuplicateButton->setEnabled( writable );
   mSkillDeleteButton->setEnabled( writable );
@@ -1362,24 +1322,160 @@ void QgsAiSettingsDialog::selectSkillInEditor( const QgsAiSkillInfo &skill )
 void QgsAiSettingsDialog::clearSkillEditor()
 {
   mCurrentSkillSlug.clear();
-  mSkillNameEdit->clear();
-  mSkillDescriptionEdit->clear();
-  mSkillEnabled->setChecked( true );
-  mSkillBodyEdit->clear();
+  QgsAiMarkdownDocument document;
+  document.properties.append( { u"name"_s, QStringList(), false } );
+  document.properties.append( { u"description"_s, QStringList(), false } );
+  document.properties.append( { u"references"_s, QStringList(), true } );
+  setSkillDocumentInEditor( document );
 
   const bool writable = rulesSkillsWritable();
-  for ( QWidget *widget : std::initializer_list<QWidget *> { mSkillNameEdit, mSkillDescriptionEdit, mSkillEnabled, mSkillBodyEdit } )
-    widget->setEnabled( writable );
+  for ( SkillPropertyRow &row : mSkillPropertyRows )
+  {
+    row.keyEdit->setEnabled( writable && !row.required );
+    row.valueEdit->setEnabled( writable );
+    if ( row.removeButton )
+      row.removeButton->setEnabled( writable && !row.required );
+  }
+  if ( mSkillAddPropertyButton )
+    mSkillAddPropertyButton->setEnabled( writable );
+  mSkillBodyEdit->setEnabled( writable );
   mSkillSaveButton->setEnabled( writable );
   mSkillDuplicateButton->setEnabled( false );
   mSkillDeleteButton->setEnabled( false );
+}
+
+void QgsAiSettingsDialog::clearSkillPropertyRows()
+{
+  for ( const SkillPropertyRow &row : std::as_const( mSkillPropertyRows ) )
+    delete row.rowWidget;
+  mSkillPropertyRows.clear();
+}
+
+void QgsAiSettingsDialog::addSkillPropertyRow( const QString &key, const QStringList &values, bool isList, bool required )
+{
+  if ( !mSkillPropertiesLayout )
+    return;
+
+  QWidget *rowWidget = new QWidget( mSkillEditorWidget );
+  QHBoxLayout *rowLayout = new QHBoxLayout( rowWidget );
+  rowLayout->setContentsMargins( 0, 0, 0, 0 );
+  rowLayout->setSpacing( 6 );
+
+  QLineEdit *keyEdit = new QLineEdit( rowWidget );
+  keyEdit->setPlaceholderText( tr( "property" ) );
+  keyEdit->setText( key );
+  keyEdit->setFixedWidth( 145 );
+  keyEdit->setEnabled( rulesSkillsWritable() && !required );
+
+  QTextEdit *valueEdit = new QTextEdit( rowWidget );
+  valueEdit->setAcceptRichText( false );
+  valueEdit->setPlaceholderText( isList ? tr( "One value per line" ) : tr( "Value" ) );
+  valueEdit->setFixedHeight( key.compare( u"description"_s, Qt::CaseInsensitive ) == 0 ? 76 : 54 );
+  valueEdit->setPlainText( isList ? values.join( '\n' ) : ( values.isEmpty() ? QString() : values.first() ) );
+  valueEdit->setEnabled( rulesSkillsWritable() );
+
+  QPushButton *removeButton = new QPushButton( tr( "Remove" ), rowWidget );
+  removeButton->setEnabled( rulesSkillsWritable() && !required );
+  removeButton->setVisible( !required );
+
+  rowLayout->addWidget( keyEdit );
+  rowLayout->addWidget( valueEdit, 1 );
+  rowLayout->addWidget( removeButton );
+  mSkillPropertiesLayout->addWidget( rowWidget );
+
+  SkillPropertyRow row;
+  row.rowWidget = rowWidget;
+  row.keyEdit = keyEdit;
+  row.valueEdit = valueEdit;
+  row.removeButton = removeButton;
+  row.isList = isList;
+  row.required = required;
+  mSkillPropertyRows << row;
+
+  connect( removeButton, &QPushButton::clicked, this, [this, rowWidget]() {
+    for ( int i = 0; i < mSkillPropertyRows.size(); ++i )
+    {
+      if ( mSkillPropertyRows.at( i ).rowWidget == rowWidget )
+      {
+        SkillPropertyRow row = mSkillPropertyRows.takeAt( i );
+        delete row.rowWidget;
+        return;
+      }
+    }
+  } );
+}
+
+QgsAiMarkdownDocument QgsAiSettingsDialog::skillDocumentFromEditor() const
+{
+  QgsAiMarkdownDocument document;
+  document.hasFrontmatter = true;
+  for ( const SkillPropertyRow &row : mSkillPropertyRows )
+  {
+    const QString key = row.keyEdit ? row.keyEdit->text().trimmed() : QString();
+    if ( key.isEmpty() )
+      continue;
+
+    const QString rawValue = row.valueEdit ? row.valueEdit->toPlainText().trimmed() : QString();
+    const QStringList lines = rawValue.split( '\n', Qt::SkipEmptyParts );
+    QStringList values;
+    for ( const QString &line : lines )
+    {
+      const QString value = line.trimmed();
+      if ( !value.isEmpty() )
+        values << value;
+    }
+
+    const bool requiredScalar = key.compare( u"name"_s, Qt::CaseInsensitive ) == 0 || key.compare( u"description"_s, Qt::CaseInsensitive ) == 0;
+    const bool isList = !requiredScalar && ( row.isList || key.compare( u"references"_s, Qt::CaseInsensitive ) == 0 || values.size() > 1 );
+    if ( !isList && !rawValue.isEmpty() )
+      values = QStringList { rawValue };
+    document.properties.append( { key, values, isList } );
+  }
+  document.body = mSkillBodyEdit ? mSkillBodyEdit->toPlainText() : QString();
+  return document;
+}
+
+void QgsAiSettingsDialog::setSkillDocumentInEditor( const QgsAiMarkdownDocument &document )
+{
+  clearSkillPropertyRows();
+
+  auto addPropertyByKey = [this, &document]( const QString &key, bool required, bool defaultList = false ) {
+    const QStringList values = document.values( key );
+    bool isList = defaultList;
+    for ( const QgsAiFrontmatterProperty &property : document.properties )
+    {
+      if ( property.key.compare( key, Qt::CaseInsensitive ) == 0 )
+      {
+        isList = property.isList;
+        break;
+      }
+    }
+    addSkillPropertyRow( key, values, isList, required );
+  };
+
+  addPropertyByKey( u"name"_s, true );
+  addPropertyByKey( u"description"_s, true );
+  addPropertyByKey( u"references"_s, false, true );
+
+  for ( const QgsAiFrontmatterProperty &property : document.properties )
+  {
+    if ( property.key.compare( u"name"_s, Qt::CaseInsensitive ) == 0
+         || property.key.compare( u"description"_s, Qt::CaseInsensitive ) == 0
+         || property.key.compare( u"references"_s, Qt::CaseInsensitive ) == 0 )
+      continue;
+    addSkillPropertyRow( property.key, property.values, property.isList, false );
+  }
+
+  if ( mSkillBodyEdit )
+    mSkillBodyEdit->setPlainText( document.body );
 }
 
 void QgsAiSettingsDialog::newSkill()
 {
   mSkillsListWidget->setCurrentRow( -1 );
   clearSkillEditor();
-  mSkillNameEdit->setFocus();
+  if ( !mSkillPropertyRows.isEmpty() && mSkillPropertyRows.first().valueEdit )
+    mSkillPropertyRows.first().valueEdit->setFocus();
 }
 
 void QgsAiSettingsDialog::duplicateSelectedSkill()
@@ -1391,20 +1487,31 @@ void QgsAiSettingsDialog::duplicateSelectedSkill()
   for ( int i = 0; i < mSkillsListWidget->count(); ++i )
     existingSlugs << mSkillsListWidget->item( i )->data( Qt::UserRole ).value<QgsAiSkillInfo>().slug;
 
-  const QString baseSlug = QgsAiRulesSkillsStore::slugify( mSkillNameEdit->text() + u"-copy"_s );
+  QgsAiMarkdownDocument document = skillDocumentFromEditor();
+  const QString name = document.value( u"name"_s, mCurrentSkillSlug ).trimmed();
+  const QString copiedName = name + tr( " (copy)" );
+  bool updatedName = false;
+  for ( QgsAiFrontmatterProperty &property : document.properties )
+  {
+    if ( property.key.compare( u"name"_s, Qt::CaseInsensitive ) == 0 )
+    {
+      property.values = QStringList { copiedName };
+      property.isList = false;
+      updatedName = true;
+      break;
+    }
+  }
+  if ( !updatedName )
+    document.properties.prepend( { u"name"_s, QStringList { copiedName }, false } );
+
+  const QString baseSlug = QgsAiRulesSkillsStore::slugify( copiedName );
   QString candidate = baseSlug;
   int suffix = 2;
   while ( existingSlugs.contains( candidate ) )
     candidate = u"%1-%2"_s.arg( baseSlug ).arg( suffix++ );
 
-  QgsAiSkillInfo info;
-  info.slug = candidate;
-  info.name = mSkillNameEdit->text().trimmed() + tr( " (copy)" );
-  info.description = mSkillDescriptionEdit->text().trimmed();
-  info.enabled = mSkillEnabled->isChecked();
-
   QString error;
-  if ( !rulesSkillsStore().writeSkill( mSkillsRelativeDirForList, info, mSkillBodyEdit->toPlainText(), &error ) )
+  if ( !rulesSkillsStore().writeSkillMarkdown( mSkillsRelativeDirForList, candidate, QgsAiRulesSkillsStore::serializeMarkdownDocument( document ), &error ) )
   {
     QMessageBox::warning( this, tr( "Could not duplicate skill" ), error );
     return;
@@ -1417,7 +1524,8 @@ void QgsAiSettingsDialog::deleteSelectedSkill()
 {
   if ( mCurrentSkillSlug.isEmpty() )
     return;
-  if ( QMessageBox::question( this, tr( "Delete skill" ), tr( "Delete skill \u201c%1\u201d? This cannot be undone." ).arg( mSkillNameEdit->text() ) ) != QMessageBox::Yes )
+  const QString name = skillDocumentFromEditor().value( u"name"_s, mCurrentSkillSlug );
+  if ( QMessageBox::question( this, tr( "Delete skill" ), tr( "Delete skill \u201c%1\u201d? This cannot be undone." ).arg( name ) ) != QMessageBox::Yes )
     return;
 
   QgsAiSkillInfo info;
@@ -1448,32 +1556,41 @@ void QgsAiSettingsDialog::saveCurrentSkill()
     QMessageBox::warning( this, tr( "Workspace not trusted" ), tr( "Trust this workspace (Workspace section) before creating or editing skills." ) );
     return;
   }
-  const QString name = mSkillNameEdit->text().trimmed();
+  const QgsAiMarkdownDocument document = skillDocumentFromEditor();
+  const QString name = document.value( u"name"_s ).trimmed();
   if ( name.isEmpty() )
   {
     QMessageBox::warning( this, tr( "Name required" ), tr( "Give the skill a name before saving." ) );
     return;
   }
-  const QString description = mSkillDescriptionEdit->text().trimmed();
+  const QString description = document.value( u"description"_s ).trimmed();
   if ( description.isEmpty() )
   {
     QMessageBox::warning( this, tr( "Description required" ), tr( "Describe when the agent should use this skill before saving." ) );
     return;
   }
 
-  QgsAiSkillInfo info;
-  info.slug = mCurrentSkillSlug.isEmpty() ? QgsAiRulesSkillsStore::slugify( name ) : mCurrentSkillSlug;
-  info.name = name;
-  info.description = description;
-  info.enabled = mSkillEnabled->isChecked();
+  QString slug = mCurrentSkillSlug;
+  if ( slug.isEmpty() )
+  {
+    QStringList existingSlugs;
+    for ( int i = 0; i < mSkillsListWidget->count(); ++i )
+      existingSlugs << mSkillsListWidget->item( i )->data( Qt::UserRole ).value<QgsAiSkillInfo>().slug;
+
+    const QString baseSlug = QgsAiRulesSkillsStore::slugify( name );
+    slug = baseSlug;
+    int suffix = 2;
+    while ( existingSlugs.contains( slug ) )
+      slug = u"%1-%2"_s.arg( baseSlug ).arg( suffix++ );
+  }
 
   QString error;
-  if ( !rulesSkillsStore().writeSkill( mSkillsRelativeDirForList, info, mSkillBodyEdit->toPlainText(), &error ) )
+  if ( !rulesSkillsStore().writeSkillMarkdown( mSkillsRelativeDirForList, slug, QgsAiRulesSkillsStore::serializeMarkdownDocument( document ), &error ) )
   {
     QMessageBox::warning( this, tr( "Could not save skill" ), error );
     return;
   }
-  mCurrentSkillSlug = info.slug;
+  mCurrentSkillSlug = slug;
   refreshSkillsList();
 }
 
@@ -1507,12 +1624,12 @@ void QgsAiSettingsDialog::syncRulesSkillsToCloud()
   QList<QgsAiRulesSkillsCloudClient::RemoteRule> remoteRules;
   remoteRules.reserve( rules.size() );
   for ( const QgsAiRuleInfo &rule : rules )
-    remoteRules << QgsAiRulesSkillsCloudClient::toRemoteRule( rule, store.readRuleBody( rule ) );
+    remoteRules << QgsAiRulesSkillsCloudClient::toRemoteRule( rule, store.readRuleMarkdown( rule ) );
 
   QList<QgsAiRulesSkillsCloudClient::RemoteSkill> remoteSkills;
   remoteSkills.reserve( skills.size() );
   for ( const QgsAiSkillInfo &skill : skills )
-    remoteSkills << QgsAiRulesSkillsCloudClient::toRemoteSkill( skill, store.readSkillBody( skill ) );
+    remoteSkills << QgsAiRulesSkillsCloudClient::toRemoteSkill( skill, store.readSkillMarkdown( skill ) );
 
   const int totalExpected = remoteRules.size() + remoteSkills.size();
   auto progress = std::make_shared<int>( 0 );
@@ -2390,12 +2507,8 @@ void QgsAiSettingsDialog::applySettings()
   {
     QgsAiAgentBehaviorSettings behaviorSettings = mSessionManager->agentBehaviorSettings();
     behaviorSettings.allowCustomActions = mAllowCustomActions->isChecked();
-    behaviorSettings.rulesText = mRulesEdit->toPlainText();
-    behaviorSettings.skillsText = mSkillsEdit->toPlainText();
-    behaviorSettings.loadWorkspaceRules = mLoadWorkspaceRules->isChecked();
-    behaviorSettings.loadWorkspaceSkills = mLoadWorkspaceSkills->isChecked();
-    behaviorSettings.rulesPath = mRulesPathEdit->text().trimmed();
-    behaviorSettings.skillsPath = mSkillsPathEdit->text().trimmed();
+    behaviorSettings.rulesPath = mRulesRelativeDirForList;
+    behaviorSettings.skillsPath = mSkillsRelativeDirForList;
     mSessionManager->setAgentBehaviorSettings( behaviorSettings );
 
     const bool canUseEmbeddings = mSessionManager->workspaceIndex() && mSessionManager->workspaceIndex()->embeddingProviderAvailable();

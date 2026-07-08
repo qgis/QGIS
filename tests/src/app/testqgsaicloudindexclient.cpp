@@ -98,6 +98,7 @@ void TestQgsAiCloudIndexClient::workspaceFoldersReadRulesAndSkills()
   QVERIFY( dir.isValid() );
   QVERIFY( QDir( dir.path() ).mkpath( u".strata/rules"_s ) );
   QVERIFY( QDir( dir.path() ).mkpath( u".strata/skills"_s ) );
+  QVERIFY( QDir( dir.path() ).mkpath( u".strata/skills/qgis"_s ) );
 
   QFile rule( QDir( dir.path() ).filePath( u".strata/rules/base.md"_s ) );
   QVERIFY( rule.open( QIODevice::WriteOnly | QIODevice::Text ) );
@@ -109,12 +110,28 @@ void TestQgsAiCloudIndexClient::workspaceFoldersReadRulesAndSkills()
   skill.write( "Inspect layer metadata before edits." );
   skill.close();
 
+  QFile nestedSkill( QDir( dir.path() ).filePath( u".strata/skills/qgis/SKILL.md"_s ) );
+  QVERIFY( nestedSkill.open( QIODevice::WriteOnly | QIODevice::Text ) );
+  nestedSkill.write( "---\nname: QGIS skill\n---\n\nNested skill markdown." );
+  nestedSkill.close();
+
   const QList<QgsAiCloudIndexClient::ContextItem> items = QgsAiCloudIndexClient::contextItemsFromWorkspaceFolders( dir.path(), u".strata/rules"_s, u".strata/skills"_s );
-  QCOMPARE( items.size(), 2 );
-  QCOMPARE( items.at( 0 ).sourceType, u"rule"_s );
-  QCOMPARE( items.at( 0 ).path, u".strata/rules/base.md"_s );
-  QCOMPARE( items.at( 1 ).sourceType, u"skill"_s );
-  QCOMPARE( items.at( 1 ).path, u".strata/skills/qgis.txt"_s );
+  QCOMPARE( items.size(), 3 );
+  bool sawRule = false;
+  bool sawFlatSkill = false;
+  bool sawNestedSkill = false;
+  for ( const QgsAiCloudIndexClient::ContextItem &item : items )
+  {
+    if ( item.sourceType == "rule"_L1 && item.path == ".strata/rules/base.md"_L1 && item.text.contains( u"Always cite assumptions"_s ) )
+      sawRule = true;
+    if ( item.sourceType == "skill"_L1 && item.path == ".strata/skills/qgis.txt"_L1 && item.text.contains( u"Inspect layer metadata"_s ) )
+      sawFlatSkill = true;
+    if ( item.sourceType == "skill"_L1 && item.path == ".strata/skills/qgis/SKILL.md"_L1 && item.text.contains( u"Nested skill markdown"_s ) )
+      sawNestedSkill = true;
+  }
+  QVERIFY( sawRule );
+  QVERIFY( sawFlatSkill );
+  QVERIFY( sawNestedSkill );
 }
 
 void TestQgsAiCloudIndexClient::validationRejectsSpatialPayloads()

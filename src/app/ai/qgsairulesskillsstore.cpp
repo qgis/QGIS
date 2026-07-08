@@ -29,23 +29,6 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
-  struct Frontmatter
-  {
-      QList<QPair<QString, QString>> fields;
-      QString body;
-      bool present = false;
-
-      QString value( const QString &key, const QString &defaultValue = QString() ) const
-      {
-        for ( const auto &field : fields )
-        {
-          if ( field.first.compare( key, Qt::CaseInsensitive ) == 0 )
-            return field.second;
-        }
-        return defaultValue;
-      }
-  };
-
   QString stripQuotes( const QString &value )
   {
     if ( value.length() >= 2 && ( ( value.startsWith( '"' ) && value.endsWith( '"' ) ) || ( value.startsWith( '\'' ) && value.endsWith( '\'' ) ) ) )
@@ -63,20 +46,41 @@ namespace
     return defaultValue;
   }
 
-  QStringList parseGlobs( const QString &value )
+  QStringList parseInlineList( const QString &value )
   {
     QString trimmed = value.trimmed();
-    // Tolerate a `[a, b]` bracketed list as well as a bare comma-separated string.
     if ( trimmed.startsWith( '[' ) && trimmed.endsWith( ']' ) )
       trimmed = trimmed.mid( 1, trimmed.length() - 2 );
-    QStringList globs;
+    QStringList values;
     for ( const QString &part : trimmed.split( ',', Qt::SkipEmptyParts ) )
     {
       const QString cleaned = stripQuotes( part.trimmed() );
       if ( !cleaned.isEmpty() )
-        globs << cleaned;
+        values << cleaned;
+    }
+    return values;
+  }
+
+  QStringList parseGlobs( const QStringList &values )
+  {
+    QStringList globs;
+    for ( const QString &value : values )
+    {
+      for ( const QString &part : parseInlineList( value ) )
+      {
+        if ( !part.isEmpty() )
+          globs << part;
+      }
     }
     return globs;
+  }
+
+  QString sanitizeYamlScalar( const QString &value )
+  {
+    QString out = value;
+    out.replace( "\r\n"_L1, " "_L1 );
+    out.replace( '\n', ' ' );
+    return out.trimmed();
   }
 
   QString titleCaseFromSlug( const QString &slug )
@@ -90,68 +94,169 @@ namespace
     return words.join( ' ' );
   }
 
-  /**
-   * Parses a leading `---\n...\n---` frontmatter block, if present. Malformed blocks
-   * (no closing marker) are treated as absent and the whole content becomes the body.
-   */
-  Frontmatter parseFrontmatter( const QString &content )
+  QString titleFromBody( const QString &body, const QString &fallbackSlug )
   {
-    Frontmatter result;
-    QString normalized = content;
-    normalized.replace( "\r\n"_L1, "\n"_L1 );
-    const QStringList lines = normalized.split( '\n' );
-
-    if ( lines.isEmpty() || lines.first().trimmed() != "---"_L1 )
+    const QStringList lines = body.split( '\n' );
+    for ( QString line : lines )
     {
-      result.body = content.trimmed();
-      return result;
-    }
-
-    int closingIndex = -1;
-    for ( int i = 1; i < lines.size(); ++i )
-    {
-      if ( lines.at( i ).trimmed() == "---"_L1 )
-      {
-        closingIndex = i;
-        break;
-      }
-    }
-    if ( closingIndex < 0 )
-    {
-      result.body = content.trimmed();
-      return result;
-    }
-
-    result.present = true;
-    for ( int i = 1; i < closingIndex; ++i )
-    {
-      const QString &line = lines.at( i );
-      const int colon = line.indexOf( ':' );
-      if ( colon < 0 )
+      line = line.trimmed();
+      if ( line.isEmpty() )
         continue;
-      const QString key = line.left( colon ).trimmed();
-      const QString value = stripQuotes( line.mid( colon + 1 ).trimmed() );
-      if ( !key.isEmpty() )
-        result.fields.append( { key, value } );
+      if ( line.startsWith( '#' ) )
+      {
+        while ( line.startsWith( '#' ) )
+          line.remove( 0, 1 );
+        line = line.trimmed();
+      }
+      if ( !line.isEmpty() )
+        return line.left( 120 );
     }
+    return titleCaseFromSlug( fallbackSlug );
+  }
 
-    QStringList bodyLines = lines.mid( closingIndex + 1 );
-    while ( !bodyLines.isEmpty() && bodyLines.first().trimmed().isEmpty() )
-      bodyLines.removeFirst();
-    result.body = bodyLines.join( '\n' ).trimmed();
+} // namespace
+
+QString QgsAiMarkdownDocument::value( const QString &key, const QString &defaultValue ) const
+{
+  for ( const QgsAiFrontmatterProperty &property : properties )
+  {
+    if ( property.key.compare( key, Qt::CaseInsensitive ) == 0 )
+      return property.value();
+  }
+  return defaultValue;
+}
+
+QStringList QgsAiMarkdownDocument::values( const QString &key ) const
+{
+  for ( const QgsAiFrontmatterProperty &property : properties )
+  {
+    if ( property.key.compare( key, Qt::CaseInsensitive ) == 0 )
+      return property.values;
+  }
+  return QStringList();
+}
+
+QgsAiMarkdownDocument QgsAiRulesSkillsStore::parseMarkdownDocument( const QString &content )
+{
+  QgsAiMarkdownDocument result;
+  QString normalized = content;
+  normalized.replace( "\r\n"_L1, "\n"_L1 );
+  const QStringList lines = normalized.split( '\n' );
+
+  if ( lines.isEmpty() || lines.first().trimmed() != "---"_L1 )
+  {
+    result.body = content.trimmed();
     return result;
   }
 
-  QString serializeFrontmatter( const QList<QPair<QString, QString>> &fields, const QString &body )
+  int closingIndex = -1;
+  for ( int i = 1; i < lines.size(); ++i )
   {
-    QString out = "---\n"_L1;
-    for ( const auto &field : fields )
-      out += u"%1: %2\n"_s.arg( field.first, field.second );
-    out += "---\n\n"_L1;
-    out += body.trimmed();
-    out += '\n';
-    return out;
+    if ( lines.at( i ).trimmed() == "---"_L1 )
+    {
+      closingIndex = i;
+      break;
+    }
   }
+  if ( closingIndex < 0 )
+  {
+    result.body = content.trimmed();
+    return result;
+  }
+
+  result.hasFrontmatter = true;
+  int currentPropertyIndex = -1;
+  for ( int i = 1; i < closingIndex; ++i )
+  {
+    const QString line = lines.at( i );
+    const QString trimmedLine = line.trimmed();
+    if ( trimmedLine.isEmpty() )
+      continue;
+
+    if ( currentPropertyIndex >= 0 && line.at( 0 ).isSpace() && trimmedLine.startsWith( "- "_L1 ) )
+    {
+      QgsAiFrontmatterProperty &property = result.properties[currentPropertyIndex];
+      property.isList = true;
+      const QString value = stripQuotes( trimmedLine.mid( 2 ).trimmed() );
+      if ( !value.isEmpty() )
+        property.values << value;
+      continue;
+    }
+
+    const int colon = line.indexOf( ':' );
+    if ( colon < 0 )
+      continue;
+
+    QgsAiFrontmatterProperty property;
+    property.key = line.left( colon ).trimmed();
+    QString value = line.mid( colon + 1 ).trimmed();
+    if ( property.key.isEmpty() )
+      continue;
+
+    if ( value.startsWith( '[' ) && value.endsWith( ']' ) )
+    {
+      property.isList = true;
+      property.values = parseInlineList( value );
+    }
+    else if ( value.isEmpty() )
+    {
+      property.isList = true;
+    }
+    else
+    {
+      property.values << stripQuotes( value );
+    }
+
+    result.properties << property;
+    currentPropertyIndex = result.properties.size() - 1;
+  }
+
+  QStringList bodyLines = lines.mid( closingIndex + 1 );
+  while ( !bodyLines.isEmpty() && bodyLines.first().trimmed().isEmpty() )
+    bodyLines.removeFirst();
+  result.body = bodyLines.join( '\n' ).trimmed();
+  return result;
+}
+
+QString QgsAiRulesSkillsStore::serializeMarkdownDocument( const QgsAiMarkdownDocument &document )
+{
+  QString out = "---\n"_L1;
+  for ( const QgsAiFrontmatterProperty &property : document.properties )
+  {
+    const QString key = property.key.trimmed();
+    if ( key.isEmpty() )
+      continue;
+    if ( property.isList )
+    {
+      out += u"%1:\n"_s.arg( key );
+      for ( const QString &value : property.values )
+      {
+        const QString cleanValue = sanitizeYamlScalar( value );
+        if ( !cleanValue.isEmpty() )
+          out += u"  - %1\n"_s.arg( cleanValue );
+      }
+      continue;
+    }
+
+    out += u"%1: %2\n"_s.arg( key, sanitizeYamlScalar( property.value() ) );
+  }
+  out += "---\n\n"_L1;
+  out += document.body.trimmed();
+  out += '\n';
+  return out;
+}
+
+QString QgsAiRulesSkillsStore::titleFromMarkdown( const QString &content, const QString &fallbackSlug )
+{
+  const QgsAiMarkdownDocument document = parseMarkdownDocument( content );
+  const QString frontmatterName = document.value( u"name"_s ).trimmed();
+  if ( !frontmatterName.isEmpty() )
+    return frontmatterName;
+  return titleFromBody( document.body, fallbackSlug );
+}
+
+namespace
+{
 
   QString readFile( const QString &path, QString *errorMessage )
   {
@@ -228,16 +333,16 @@ QList<QgsAiRuleInfo> QgsAiRulesSkillsStore::listRules( const QString &rulesRelat
   for ( const QFileInfo &entry : entries )
   {
     const QString content = readFile( entry.absoluteFilePath(), nullptr );
-    const Frontmatter fm = parseFrontmatter( content );
+    const QgsAiMarkdownDocument document = parseMarkdownDocument( content );
 
     QgsAiRuleInfo rule;
     rule.slug = entry.completeBaseName();
     rule.path = entry.absoluteFilePath();
-    rule.name = fm.value( u"name"_s, titleCaseFromSlug( rule.slug ) );
-    rule.description = fm.value( u"description"_s );
-    rule.globs = parseGlobs( fm.value( u"globs"_s ) );
-    rule.alwaysApply = parseBool( fm.value( u"alwaysApply"_s ), true );
-    rule.enabled = parseBool( fm.value( u"enabled"_s ), true );
+    rule.name = titleFromMarkdown( content, rule.slug );
+    rule.description = document.value( u"description"_s );
+    rule.globs = parseGlobs( document.values( u"globs"_s ) );
+    rule.alwaysApply = parseBool( document.value( u"alwaysApply"_s ), true );
+    rule.enabled = parseBool( document.value( u"enabled"_s ), true );
     rules << rule;
   }
   std::sort( rules.begin(), rules.end(), []( const QgsAiRuleInfo &a, const QgsAiRuleInfo &b ) { return a.name.localeAwareCompare( b.name ) < 0; } );
@@ -260,15 +365,15 @@ QList<QgsAiSkillInfo> QgsAiRulesSkillsStore::listSkills( const QString &skillsRe
       continue;
 
     const QString content = readFile( skillFile, nullptr );
-    const Frontmatter fm = parseFrontmatter( content );
+    const QgsAiMarkdownDocument document = parseMarkdownDocument( content );
 
     QgsAiSkillInfo skill;
     skill.slug = folder.fileName();
     skill.folderPath = folder.absoluteFilePath();
     skill.skillFilePath = skillFile;
-    skill.name = fm.value( u"name"_s, titleCaseFromSlug( skill.slug ) );
-    skill.description = fm.value( u"description"_s );
-    skill.enabled = parseBool( fm.value( u"enabled"_s ), true );
+    skill.name = document.value( u"name"_s, titleFromBody( document.body, skill.slug ) );
+    skill.description = document.value( u"description"_s );
+    skill.enabled = parseBool( document.value( u"enabled"_s ), true );
     skills << skill;
   }
   std::sort( skills.begin(), skills.end(), []( const QgsAiSkillInfo &a, const QgsAiSkillInfo &b ) { return a.name.localeAwareCompare( b.name ) < 0; } );
@@ -279,19 +384,50 @@ QString QgsAiRulesSkillsStore::readRuleBody( const QgsAiRuleInfo &rule ) const
 {
   if ( !rule.isValid() )
     return QString();
-  return parseFrontmatter( readFile( rule.path, nullptr ) ).body;
+  return parseMarkdownDocument( readFile( rule.path, nullptr ) ).body;
 }
 
 QString QgsAiRulesSkillsStore::readSkillBody( const QgsAiSkillInfo &skill ) const
 {
   if ( !skill.isValid() )
     return QString();
-  return parseFrontmatter( readFile( skill.skillFilePath, nullptr ) ).body;
+  return parseMarkdownDocument( readFile( skill.skillFilePath, nullptr ) ).body;
+}
+
+QString QgsAiRulesSkillsStore::readRuleMarkdown( const QgsAiRuleInfo &rule ) const
+{
+  if ( !rule.isValid() )
+    return QString();
+  return readFile( rule.path, nullptr );
+}
+
+QString QgsAiRulesSkillsStore::readSkillMarkdown( const QgsAiSkillInfo &skill ) const
+{
+  if ( !skill.isValid() )
+    return QString();
+  return readFile( skill.skillFilePath, nullptr );
 }
 
 bool QgsAiRulesSkillsStore::writeRule( const QString &rulesRelativeDir, const QgsAiRuleInfo &info, const QString &body, QString *errorMessage ) const
 {
-  if ( info.slug.trimmed().isEmpty() )
+  QgsAiMarkdownDocument document;
+  if ( !info.name.trimmed().isEmpty() )
+    document.properties.append( { u"name"_s, QStringList { info.name.trimmed() }, false } );
+  if ( !info.description.trimmed().isEmpty() )
+    document.properties.append( { u"description"_s, QStringList { info.description.trimmed() }, false } );
+  if ( !info.globs.isEmpty() )
+    document.properties.append( { u"globs"_s, info.globs, true } );
+  document.properties.append( { u"alwaysApply"_s, QStringList { info.alwaysApply ? u"true"_s : u"false"_s }, false } );
+  if ( !info.enabled )
+    document.properties.append( { u"enabled"_s, QStringList { u"false"_s }, false } );
+  document.body = body;
+
+  return writeRuleMarkdown( rulesRelativeDir, info.slug, serializeMarkdownDocument( document ), errorMessage );
+}
+
+bool QgsAiRulesSkillsStore::writeRuleMarkdown( const QString &rulesRelativeDir, const QString &slug, const QString &markdown, QString *errorMessage ) const
+{
+  if ( slug.trimmed().isEmpty() )
   {
     if ( errorMessage )
       *errorMessage = u"A rule needs a slug."_s;
@@ -301,7 +437,7 @@ bool QgsAiRulesSkillsStore::writeRule( const QString &rulesRelativeDir, const Qg
   if ( dirPath.isEmpty() )
     return false;
 
-  const QString filePath = QDir::cleanPath( QDir( dirPath ).filePath( info.slug + ".md"_L1 ) );
+  const QString filePath = QDir::cleanPath( QDir( dirPath ).filePath( slug + ".md"_L1 ) );
   if ( !mContextProvider->isInWorkspace( filePath ) )
   {
     if ( errorMessage )
@@ -309,23 +445,24 @@ bool QgsAiRulesSkillsStore::writeRule( const QString &rulesRelativeDir, const Qg
     return false;
   }
 
-  QList<QPair<QString, QString>> fields;
-  if ( !info.name.trimmed().isEmpty() )
-    fields.append( { u"name"_s, info.name.trimmed() } );
-  if ( !info.description.trimmed().isEmpty() )
-    fields.append( { u"description"_s, info.description.trimmed() } );
-  if ( !info.globs.isEmpty() )
-    fields.append( { u"globs"_s, info.globs.join( ", "_L1 ) } );
-  fields.append( { u"alwaysApply"_s, info.alwaysApply ? u"true"_s : u"false"_s } );
-  if ( !info.enabled )
-    fields.append( { u"enabled"_s, u"false"_s } );
-
-  return writeFile( filePath, serializeFrontmatter( fields, body ), errorMessage );
+  return writeFile( filePath, markdown, errorMessage );
 }
 
 bool QgsAiRulesSkillsStore::writeSkill( const QString &skillsRelativeDir, const QgsAiSkillInfo &info, const QString &body, QString *errorMessage ) const
 {
-  if ( info.slug.trimmed().isEmpty() )
+  QgsAiMarkdownDocument document;
+  document.properties.append( { u"name"_s, QStringList { info.name.trimmed().isEmpty() ? titleCaseFromSlug( info.slug ) : info.name.trimmed() }, false } );
+  document.properties.append( { u"description"_s, QStringList { info.description.trimmed() }, false } );
+  if ( !info.enabled )
+    document.properties.append( { u"enabled"_s, QStringList { u"false"_s }, false } );
+  document.body = body;
+
+  return writeSkillMarkdown( skillsRelativeDir, info.slug, serializeMarkdownDocument( document ), errorMessage );
+}
+
+bool QgsAiRulesSkillsStore::writeSkillMarkdown( const QString &skillsRelativeDir, const QString &slug, const QString &markdown, QString *errorMessage ) const
+{
+  if ( slug.trimmed().isEmpty() )
   {
     if ( errorMessage )
       *errorMessage = u"A skill needs a slug."_s;
@@ -335,7 +472,7 @@ bool QgsAiRulesSkillsStore::writeSkill( const QString &skillsRelativeDir, const 
   if ( dirPath.isEmpty() )
     return false;
 
-  const QString folderPath = QDir::cleanPath( QDir( dirPath ).filePath( info.slug ) );
+  const QString folderPath = QDir::cleanPath( QDir( dirPath ).filePath( slug ) );
   const QString filePath = QDir( folderPath ).filePath( u"SKILL.md"_s );
   if ( !mContextProvider->isInWorkspace( filePath ) )
   {
@@ -344,13 +481,7 @@ bool QgsAiRulesSkillsStore::writeSkill( const QString &skillsRelativeDir, const 
     return false;
   }
 
-  QList<QPair<QString, QString>> fields;
-  fields.append( { u"name"_s, info.name.trimmed().isEmpty() ? titleCaseFromSlug( info.slug ) : info.name.trimmed() } );
-  fields.append( { u"description"_s, info.description.trimmed() } );
-  if ( !info.enabled )
-    fields.append( { u"enabled"_s, u"false"_s } );
-
-  return writeFile( filePath, serializeFrontmatter( fields, body ), errorMessage );
+  return writeFile( filePath, markdown, errorMessage );
 }
 
 bool QgsAiRulesSkillsStore::deleteRule( const QgsAiRuleInfo &rule, QString *errorMessage ) const
