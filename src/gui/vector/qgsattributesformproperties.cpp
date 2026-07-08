@@ -514,7 +514,10 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
 
 void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelection &, const QItemSelection & )
 {
+  // when the selection changes in the main tree, sync the DnD layout
+  // Block both selection handlers while syncing (see onFormLayoutSelectionChanged for rationale).
   disconnect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
+  disconnect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 
   QModelIndex index;
   if ( mFormLayoutView->selectionModel()->selectedRows( 0 ).count() == 1 )
@@ -526,12 +529,16 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelect
 
   loadAttributeSpecificEditor( mAvailableWidgetsView, mFormLayoutView, index );
   connect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
+  connect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 }
 
 void QgsAttributesFormProperties::onFormLayoutSelectionChanged( const QItemSelection &, const QItemSelection &deselected )
 {
   // when the selection changes in the DnD layout, sync the main tree
+  // Block both selection handlers while syncing (see onAttributeSelectionChanged for rationale).
+  disconnect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
   disconnect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
+
   QModelIndex index;
   if ( deselected.indexes().count() == 1 )
   {
@@ -544,6 +551,7 @@ void QgsAttributesFormProperties::onFormLayoutSelectionChanged( const QItemSelec
   }
 
   loadAttributeSpecificEditor( mFormLayoutView, mAvailableWidgetsView, index );
+  connect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
   connect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 }
 
