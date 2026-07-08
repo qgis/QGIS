@@ -2084,6 +2084,7 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
 
       case Qgis::WkbType::LineString:
       case Qgis::WkbType::CircularString:
+      case Qgis::WkbType::NurbsCurve:
 #if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
       case Qgis::WkbType::CompoundCurve:
         return createGeosLinestring( geom, precision, flags );
@@ -2095,6 +2096,7 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
 #endif
 
       case Qgis::WkbType::Polygon:
+      case Qgis::WkbType::Triangle:
 #if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
       case Qgis::WkbType::CurvePolygon:
 #endif
