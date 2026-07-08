@@ -156,8 +156,27 @@ namespace
       { u"Claude Opus 4.8"_s, u"claude-opus-4-8"_s, QgsAiModelRouter::Provider::Claude },
       { u"Claude Sonnet 5"_s, u"claude-sonnet-5"_s, QgsAiModelRouter::Provider::Claude },
       { u"Claude Haiku 4.5"_s, u"claude-haiku-4-5"_s, QgsAiModelRouter::Provider::Claude },
-      { u"Plan backend"_s, u"managed-plan"_s, QgsAiModelRouter::Provider::Plan },
+      { u"Strata Managed"_s, u"managed-plan"_s, QgsAiModelRouter::Provider::Plan },
     };
+  }
+
+  bool isChatPlanModel( const QgsAiPlanClient::ModelInfo &model )
+  {
+    if ( model.capabilities.isEmpty() )
+      return true;
+
+    bool hasChatCapability = false;
+    bool hasEmbeddingCapability = false;
+    for ( const QString &capability : model.capabilities )
+    {
+      const QString normalized = capability.trimmed().toLower();
+      if ( normalized == "chat"_L1 || normalized == "tools"_L1 || normalized == "tool-calling"_L1 || normalized == "vision"_L1 || normalized == "reasoning"_L1 || normalized == "text-generation"_L1 )
+        hasChatCapability = true;
+      if ( normalized.contains( "embed"_L1 ) )
+        hasEmbeddingCapability = true;
+    }
+
+    return hasChatCapability || !hasEmbeddingCapability;
   }
 
   QVector<ModelEntry> cachedPlanModelEntries()
@@ -169,6 +188,8 @@ namespace
     for ( const QgsAiPlanClient::ModelInfo &model : models )
     {
       if ( model.id.isEmpty() )
+        continue;
+      if ( !isChatPlanModel( model ) )
         continue;
       if ( !policy.allowedModels.isEmpty() && !policy.allowedModels.contains( model.id ) )
         continue;
@@ -943,21 +964,28 @@ void QgsAiChatDockWidget::rebuildModelMenu()
 
   QMenu *menu = new QMenu( mModelPill );
 
-  // Only offer models whose provider is actually synced (credentialed).
+  // When a Strata account is active, the main picker is the managed Strata
+  // catalog only. External providers remain configurable in settings.
   QVector<ModelEntry> models;
+  bool planOnly = false;
   if ( mModelRouter )
   {
-    for ( const ModelEntry &entry : predefinedModels() )
-    {
-      if ( entry.provider != QgsAiModelRouter::Provider::Plan && mModelRouter->isProviderAvailable( entry.provider ) )
-        models.append( entry );
-    }
     if ( mModelRouter->isProviderAvailable( QgsAiModelRouter::Provider::Plan ) )
     {
+      planOnly = true;
+      mModelRouter->setActiveProvider( QgsAiModelRouter::Provider::Plan );
       QVector<ModelEntry> planEntries = cachedPlanModelEntries();
       if ( planEntries.isEmpty() )
-        planEntries.append( ModelEntry { tr( "Plan backend" ), u"managed-plan"_s, QgsAiModelRouter::Provider::Plan, tr( "Managed Strata Cloud default model" ) } );
+        planEntries.append( ModelEntry { tr( "Strata Managed" ), u"managed-plan"_s, QgsAiModelRouter::Provider::Plan, tr( "Managed Strata Cloud default model" ) } );
       models += planEntries;
+    }
+    else
+    {
+      for ( const ModelEntry &entry : predefinedModels() )
+      {
+        if ( entry.provider != QgsAiModelRouter::Provider::Plan && mModelRouter->isProviderAvailable( entry.provider ) )
+          models.append( entry );
+      }
     }
   }
 
@@ -989,7 +1017,7 @@ void QgsAiChatDockWidget::rebuildModelMenu()
       break;
     }
   }
-  if ( !activeRepresented && !currentModel.isEmpty() && mModelRouter->isProviderAvailable( currentProvider ) )
+  if ( !planOnly && !activeRepresented && !currentModel.isEmpty() && mModelRouter->isProviderAvailable( currentProvider ) )
   {
     // Insert after the last row of the same provider so it lands in the right section.
     int insertAt = models.size();
@@ -1009,7 +1037,7 @@ void QgsAiChatDockWidget::rebuildModelMenu()
   const ModelEntry *pillEntry = &models.first();
   for ( const ModelEntry &entry : models )
   {
-    if ( first || entry.provider != currentSection )
+    if ( !planOnly && ( first || entry.provider != currentSection ) )
     {
       QString header;
       switch ( entry.provider )
@@ -1027,7 +1055,7 @@ void QgsAiChatDockWidget::rebuildModelMenu()
           header = tr( "Anthropic" );
           break;
         case QgsAiModelRouter::Provider::Plan:
-          header = tr( "Plan backend" );
+          header = tr( "Strata" );
           break;
       }
       menu->addSection( header );
