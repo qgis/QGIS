@@ -1545,6 +1545,10 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
       QModelIndex movedIndex = index( insertPosition, 0, parent );
       emit internalItemDropped( movedIndex );
 
+      // Removing a source row placed above the drop point shifts all rows below
+      if ( sourceParentItem == destParentItem && sourceRow < row )
+        row--;
+
       rows++;
     }
   }

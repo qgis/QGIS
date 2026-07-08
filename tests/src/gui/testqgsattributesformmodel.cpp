@@ -49,6 +49,7 @@ class TestQgsAttributesFormModel : public QObject
     void testFormLayoutModel();
     void testFormLayoutModelOrphanFields();
     void testFormLayoutModelInternalMove();
+    void testFormLayoutModelInternalMultiItemMove();
     void testInvalidRelationInAvailableWidgets();
     void testInvalidRelationInFormLayout();
 
@@ -752,6 +753,74 @@ void TestQgsAttributesFormModel::testFormLayoutModelInternalMove()
     QgsAttributesFormLayoutModel model( layer.get(), mProject );
     QVERIFY( model.supportedDragActions() & Qt::CopyAction );
   }
+}
+
+void TestQgsAttributesFormModel::testFormLayoutModelInternalMultiItemMove()
+{
+  auto layer = std::make_unique< QgsVectorLayer >( u"Point?field=a:integer&field=b:integer&field=c:integer&field=d:integer"_s, u"test"_s, u"memory"_s );
+
+  // tab
+  //  ├─ a
+  //  ├─ b
+  //  ├─ c
+  //  └─ d
+  QgsAttributeEditorContainer *tab = new QgsAttributeEditorContainer( u"tab"_s, nullptr );
+  tab->addChildElement( new QgsAttributeEditorField( u"a"_s, 0, tab ) );
+  tab->addChildElement( new QgsAttributeEditorField( u"b"_s, 1, tab ) );
+  tab->addChildElement( new QgsAttributeEditorField( u"c"_s, 2, tab ) );
+  tab->addChildElement( new QgsAttributeEditorField( u"d"_s, 3, tab ) );
+
+  QgsEditFormConfig cfg = layer->editFormConfig();
+  cfg.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
+  cfg.clearTabs();
+  cfg.addTab( tab );
+  layer->setEditFormConfig( cfg );
+
+  // Drag the fields at the given rows onto targetRow and compare the resulting order
+  auto moveFieldsAndVerify = [&layer, this]( const QList< int > &sourceRows, int targetRow, const QStringList &expectedOrder ) {
+    QgsAttributesFormLayoutModel model( layer.get(), mProject );
+    model.populate();
+
+    const QModelIndex tabIndex = model.index( 0, 0, QModelIndex() );
+    QCOMPARE( model.rowCount( tabIndex ), 4 );
+
+    QModelIndexList draggedIndexes;
+    for ( const int sourceRow : sourceRows )
+      draggedIndexes << model.index( sourceRow, 0, tabIndex );
+
+    QMimeData *mimeData = model.mimeData( draggedIndexes );
+    QVERIFY( mimeData );
+
+    const bool dropped = model.dropMimeData( mimeData, Qt::MoveAction, targetRow, 0, tabIndex );
+    QVERIFY( dropped );
+    delete mimeData;
+
+    // No item may get lost or duplicated by the move
+    QCOMPARE( model.rowCount( tabIndex ), 4 );
+
+    QStringList order;
+    for ( int r = 0; r < model.rowCount( tabIndex ); ++r )
+      order << model.index( r, 0, tabIndex ).data( QgsAttributesFormModel::ItemIdRole ).toString();
+
+    QCOMPARE( order, expectedOrder );
+  };
+
+  // Move "a" and "b" downward past the end (dropping below "d" appends).
+  // The drop anchor shifts up each time a source above it is taken out;
+  // a buggy implementation loses "b" entirely here.
+  moveFieldsAndVerify( { 0, 1 }, 4, { u"c"_s, u"d"_s, u"a"_s, u"b"_s } );
+
+  // Move "a" and "b" downward in between "c" and "d".
+  moveFieldsAndVerify( { 0, 1 }, 3, { u"c"_s, u"a"_s, u"b"_s, u"d"_s } );
+
+  // Move "c" and "d" upward to the top.
+  moveFieldsAndVerify( { 2, 3 }, 0, { u"c"_s, u"d"_s, u"a"_s, u"b"_s } );
+
+  // Move "b" and "d" (non-adjacent) upward to the top.
+  moveFieldsAndVerify( { 1, 3 }, 0, { u"b"_s, u"d"_s, u"a"_s, u"c"_s } );
+
+  // Move "a" and "c" (non-adjacent) downward past the end.
+  moveFieldsAndVerify( { 0, 2 }, 4, { u"b"_s, u"d"_s, u"a"_s, u"c"_s } );
 }
 
 void TestQgsAttributesFormModel::testInvalidRelationInAvailableWidgets()
