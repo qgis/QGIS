@@ -1719,7 +1719,7 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const Q
     QString turl( url );
 
     // Add bbox placeholder resolution for WMS services using XYZ tiling with bbox parameters
-    static const QRegularExpression bboxRegex( R"(\{bbox-epsg-(\d+)\})", QRegularExpression::CaseInsensitiveOption );
+    const thread_local QRegularExpression bboxRegex( R"(\{bbox-epsg-(\d+)\})", QRegularExpression::CaseInsensitiveOption );
     QRegularExpressionMatch bboxMatch = bboxRegex.match( turl );
     if ( bboxMatch.hasMatch() )
     {
