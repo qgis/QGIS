@@ -676,6 +676,7 @@ set(QGIS_GUI_SRCS
   qgsfocuswatcher.cpp
   qgsformlabelformatwidget.cpp
   qgsfontbutton.cpp
+  qgsfontcombobox.cpp
   qgsformannotation.cpp
   qgsgeocoderlocatorfilter.cpp
   qgsgeometryrubberband.cpp
@@ -949,6 +950,7 @@ set(QGIS_GUI_HDRS
   qgsfocuskeeper.h
   qgsfocuswatcher.h
   qgsfontbutton.h
+  qgsfontcombobox.h
   qgsformannotation.h
   qgsformlabelformatwidget.h
   qgsgeocoderlocatorfilter.h
