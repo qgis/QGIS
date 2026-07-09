@@ -64,10 +64,16 @@ class APP_EXPORT QgsAiPlanClient : public QObject
         QString tier;
         //! Monthly credit quota for the current tier; 0 means unlimited (e.g. Enterprise).
         int monthlyCredits = 0;
+        //! Balance health from the backend: "ok", "low" (~80% of the last top-up consumed) or "depleted".
+        QString status;
+        //! Credit level at/below which the backend flags the balance as "low" (0 = no reference yet).
+        int warnThreshold = 0;
 
         bool isUnlimited() const { return monthlyCredits <= 0; }
         //! Percentage of the monthly quota already consumed, clamped to [0, 100]. 0 when unlimited.
         int usedPercent() const;
+        bool isLow() const { return status == QLatin1String( "low" ); }
+        bool isDepleted() const { return status == QLatin1String( "depleted" ); }
     };
 
     struct ModelPreferenceInfo

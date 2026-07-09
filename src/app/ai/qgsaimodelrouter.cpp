@@ -2161,7 +2161,7 @@ QString QgsAiModelRouter::composeHttpErrorMessage( Provider provider, int httpSt
       break;
     case 402:
       prefix = provider == Provider::OpenRouter ? tr( "Insufficient credits on your OpenRouter account — top up at openrouter.ai/credits." )
-                                                : tr( "Payment required — the account has insufficient credits." );
+                                                : tr( "Out of credits — buy a credit pack in your Strata account to continue." );
       break;
     case 403:
     {

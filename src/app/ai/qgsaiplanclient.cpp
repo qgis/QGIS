@@ -266,6 +266,8 @@ QgsAiPlanClient::BalanceInfo QgsAiPlanClient::parseBalanceJson( const QByteArray
   balance.held = root.value( u"held"_s ).toInt();
   balance.tier = root.value( u"tier"_s ).toString();
   balance.monthlyCredits = root.value( u"monthlyCredits"_s ).toInt();
+  balance.status = root.value( u"status"_s ).toString();
+  balance.warnThreshold = root.value( u"warnThreshold"_s ).toInt();
   return balance;
 }
 
