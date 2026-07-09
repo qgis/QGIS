@@ -1527,6 +1527,15 @@ int main( int argc, char *argv[] )
       setenv( "PYTHONHOME", QCoreApplication::applicationDirPath().toUtf8().constData(), 1 );
     }
   }
+
+  // Ignore the user site-packages (~/.local/lib/pythonX.Y/site-packages): a pip-installed native
+  // extension there (shapely, pyproj, …) is signed with a different Team ID, and the notarized
+  // bundle's hardened runtime refuses to dlopen it — which crashes PyQGIS on startup for anyone
+  // who has such packages. Force the embedded interpreter to use only its bundled site-packages.
+  if ( !getenv( "PYTHONNOUSERSITE" ) )
+  {
+    setenv( "PYTHONNOUSERSITE", "1", 1 );
+  }
 #endif
 
   // custom environment variables
