@@ -105,22 +105,18 @@ void QgsDevToolsPanelWidget::removeToolFactory( QgsDevToolWidgetFactory *factory
   const int row = mFactoryPages.value( factory );
   const int currentRow = mStackedWidget->currentIndex();
 
-  // Remove and delete the stacked widget entry
   if ( QWidget *w = mStackedWidget->widget( row ) )
   {
     mStackedWidget->removeWidget( w );
-    w->hide();
     w->deleteLater();
   }
 
-  // Remove and delete the QListWidgetItem itself
   if ( row >= 0 && row < mOptionsListWidget->count() )
   {
     QListWidgetItem *item = mOptionsListWidget->takeItem( row );
     delete item;
   }
 
-  // Remove mapping and shift stored indices
   mFactoryPages.remove( factory );
   for ( auto it = mFactoryPages.begin(); it != mFactoryPages.end(); ++it )
   {
