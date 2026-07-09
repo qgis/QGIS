@@ -15,6 +15,7 @@
 
 #include "qgsaiaccountwidget.h"
 
+#include <algorithm>
 #include <utility>
 
 #include "qgsaiagentsessionmanager.h"
@@ -441,15 +442,39 @@ void QgsAiAccountWidget::updateUsageCard()
   if ( !mUsageLabel || !mUsageBar )
     return;
 
-  if ( mBalance.isUnlimited() )
+  // Prepaid credits: there is no monthly quota (FREE included), so the card is driven by the
+  // available balance and the backend status flag ("ok"/"low"/"depleted"), not a % of an allowance.
+  QString text;
+  QString color;
+  if ( mBalance.isDepleted() )
   {
-    mUsageLabel->setText( tr( "%1 credits available · Unlimited plan" ).arg( mBalance.available ) );
-    mUsageBar->setValue( 0 );
-    return;
+    text = tr( "Credits exhausted — top up to keep using Strata" );
+    color = u"#f87171"_s; // red
   }
+  else if ( mBalance.isLow() )
+  {
+    text = tr( "%1 credits left · running low, consider topping up" ).arg( mBalance.available );
+    color = u"#fbbf24"_s; // amber
+  }
+  else
+  {
+    text = tr( "%1 credits available" ).arg( mBalance.available );
+  }
+  mUsageLabel->setText( text );
+  mUsageLabel->setStyleSheet( color.isEmpty() ? QString() : u"color: %1; font-weight: 600;"_s.arg( color ) );
 
-  const int percent = mBalance.usedPercent();
-  mUsageLabel->setText( tr( "%1 / %2 credits · %3% used" ).arg( mBalance.available ).arg( mBalance.monthlyCredits ).arg( percent ) );
+  // Progress toward depletion, estimated from the warning threshold (≈20% of the last top-up).
+  int percent = 0;
+  if ( mBalance.isDepleted() )
+  {
+    percent = 100;
+  }
+  else if ( mBalance.warnThreshold > 0 )
+  {
+    const int grant = mBalance.warnThreshold * 5;
+    if ( grant > 0 )
+      percent = std::clamp( static_cast<int>( ( static_cast<qint64>( grant - mBalance.available ) * 100 ) / grant ), 0, 100 );
+  }
   mUsageBar->setValue( percent );
 }
 
