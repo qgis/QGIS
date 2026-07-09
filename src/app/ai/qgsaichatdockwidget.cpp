@@ -191,8 +191,10 @@ namespace
         continue;
       if ( !isChatPlanModel( model ) )
         continue;
-      // The Pro fallback router is an infra alias: it falls back fine but must not be user-selectable.
-      if ( model.id == "openrouter/auto"_L1 )
+      // Infra aliases: the managed-plan legacy default (routes to Lite) and the Pro fallback router.
+      // Both route/fall back fine but must not be user-selectable — the picker exposes only the three
+      // tiers Lite/Standard/Pro.
+      if ( model.id == "managed-plan"_L1 || model.id == "openrouter/auto"_L1 )
         continue;
       if ( !policy.allowedModels.isEmpty() && !policy.allowedModels.contains( model.id ) )
         continue;

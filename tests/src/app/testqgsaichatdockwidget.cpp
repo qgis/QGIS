@@ -309,8 +309,9 @@ void TestQgsAiChatDockWidget::planLoginModelPickerListsManagedAndByoModels()
 
   const QStringList selectableTexts = selectableModelMenuTexts( menu );
   QVERIFY( !selectableTexts.isEmpty() );
-  // Managed catalog entries, filtered by policy/preferences/capabilities.
-  QVERIFY( selectableTexts.contains( u"Strata Managed"_s ) );
+  // Managed catalog entries, filtered by policy/preferences/capabilities. The managed-plan alias
+  // (label "Strata Managed") is a hidden infra default that routes to Lite — never user-selectable.
+  QVERIFY( !selectableTexts.contains( u"Strata Managed"_s ) );
   QVERIFY( selectableTexts.contains( u"GPT-4o mini"_s ) );
   QVERIFY( !selectableTexts.contains( u"Embedding only"_s ) );
   // BYO entries stay selectable while signed in.
