@@ -132,14 +132,10 @@ QString QgsServerOgcApi::profileToString( const Profile &profile )
   {
     case Profile::Rfc7946:
       return u"json"_s;
-#if 0
-    // This not supported yet but I am leaving it here because
-    // I am very optimistic that it will be supported soon!
     case Profile::JsonFg:
       return u"jsonfg"_s;
     case Profile::JsonFgPlus:
       return u"jsonfg-plus"_s;
-#endif
     case Profile::Unset:
       return QString();
     case Profile::RelAsKey:
@@ -159,20 +155,16 @@ QString QgsServerOgcApi::profileToUri( const Profile &profile )
   {
     case Profile::Rfc7946:
       return u"http://www.opengis.net/def/profile/OGC/0/rfc7946"_s;
-#if 0
-    // This not supported yet but I am leaving it here because
-    // I am very optimistic that it will be supported soon!
     case Profile::JsonFg:
       return u"http://www.opengis.net/def/profile/OGC/0/jsonfg"_s;
     case Profile::JsonFgPlus:
       return u"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus"_s;
-#endif
     case Profile::RelAsKey:
-      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-key"_s;
+      return u"http://www.opengis.net/def/profile/OGC/0/rel-as-key"_s;
     case Profile::RelAsUri:
-      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-uri"_s;
+      return u"http://www.opengis.net/def/profile/OGC/0/rel-as-uri"_s;
     case Profile::RelAsLink:
-      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-link"_s;
+      return u"http://www.opengis.net/def/profile/OGC/0/rel-as-link"_s;
     case Profile::Unset:
       return QString();
   }

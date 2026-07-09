@@ -43,6 +43,7 @@
 #include "qgsvaluemapfieldformatter.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayertemporalproperties.h"
 #include "qgsvectorlayerutils.h"
 
 #include <QString>
@@ -1763,6 +1764,20 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
   exporter.setAttributes( featureRequest.subsetOfAttributes() );
   exporter.setAttributeDisplayName( true );
   exporter.setTransformGeometries( false );
+  if ( requestedProfiles.contains( QgsServerOgcApi::Profile::JsonFg ) )
+  {
+    exporter.setGeoJsonProfile( Qgis::GeoJsonProfile::JsonFg );
+  }
+  else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::JsonFgPlus ) )
+  {
+    exporter.setGeoJsonProfile( Qgis::GeoJsonProfile::JsonFgPlus );
+  }
+  else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::Rfc7946 ) )
+  {
+    // This is the default anyways but better explicit than implicit
+    exporter.setGeoJsonProfile( Qgis::GeoJsonProfile::Rfc7946 );
+  }
+
   QgsFeatureList featureList;
   QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
   QgsFeature feat;
@@ -1815,13 +1830,81 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
     }
   }
 
-  // Patch feature
+  // See: https://docs.ogc.org/is/21-045r1/21-045r1.html#_temporal_information
+  QString temporalInstantField;
+  QString temporalStartField;
+  QString temporalEndField;
+  const QgsVectorLayerTemporalProperties *temporalProperties = static_cast<QgsVectorLayerTemporalProperties *>( const_cast<QgsVectorLayer *>( mapLayer )->temporalProperties() );
+  if ( temporalProperties && temporalProperties->isActive() )
+  {
+    switch ( temporalProperties->mode() )
+    {
+      case Qgis::VectorTemporalMode::FeatureDateTimeInstantFromField:
+      {
+        temporalInstantField = temporalProperties->startField();
+        break;
+      }
+      case Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromFields:
+
+      {
+        temporalStartField = temporalProperties->startField();
+        temporalEndField = temporalProperties->endField();
+        break;
+      }
+      default:
+      {
+        // Not supported for now.
+      }
+    }
+  }
+
+  // Patch features
   //  - IDs with server feature IDs
   //  - add references
   //  - format extra geometries
+  //  - add "time" if needed
+
   for ( int i = 0; i < featureList.length(); i++ )
   {
     data["features"][i]["id"] = fidMap.value( data["features"][i]["id"] ).toStdString();
+
+    if ( !temporalInstantField.isEmpty() )
+    {
+      const int instantField = mapLayer->fields().lookupField( temporalInstantField );
+      if ( requestedAttributes.contains( instantField ) )
+      {
+        if ( mapLayer->fields().at( instantField ).type() == QMetaType::QDateTime )
+        {
+          const QDateTime instant = featureList[i].attribute( instantField ).toDateTime();
+          data["features"][i]["time"] = { { "timestamp", instant.toString( Qt::ISODate ).toStdString() } };
+        }
+        else if ( mapLayer->fields().at( instantField ).type() == QMetaType::QDate )
+        {
+          data["features"][i]["time"] = { { "date", featureList[i].attribute( instantField ).toDate().toString( Qt::ISODate ).toStdString() } };
+        }
+      }
+    }
+    else if ( !temporalStartField.isEmpty() && !temporalEndField.isEmpty() )
+    {
+      const int startField = mapLayer->fields().lookupField( temporalStartField );
+      const int endField = mapLayer->fields().lookupField( temporalEndField );
+      if ( requestedAttributes.contains( startField ) && requestedAttributes.contains( endField ) )
+      {
+        if ( mapLayer->fields().at( startField ).type() == QMetaType::QDateTime && mapLayer->fields().at( endField ).type() == QMetaType::QDateTime )
+        {
+          const QDateTime start = featureList[i].attribute( startField ).toDateTime();
+          const QDateTime end = featureList[i].attribute( endField ).toDateTime();
+          data["features"][i]["time"] = { { "interval", { start.toString( Qt::ISODate ).toStdString(), "..", end.toString( Qt::ISODate ).toStdString() } } };
+        }
+        else if ( mapLayer->fields().at( startField ).type() == QMetaType::QDate && mapLayer->fields().at( endField ).type() == QMetaType::QDate )
+        {
+          data["features"][i]["time"] = {
+            { "interval",
+              { featureList[i].attribute( startField ).toDate().toString( Qt::ISODate ).toStdString(), "..", featureList[i].attribute( endField ).toDate().toString( Qt::ISODate ).toStdString() } }
+          };
+        }
+      }
+    }
 
     // Add referenced objects
     if ( hasReferencedObjects && relAs != QgsServerOgcApi::Profile::Unset )
@@ -2175,13 +2258,9 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   // Add alternate links
   apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::Rfc7946, u"This document as GEOJSON"_s ) );
   apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::Profile::Unset, u"This document as HTML"_s ) );
-#if 0
-    // This not supported yet but I am leaving it here because
-    // I am very optimistic that it will be supported soon!
-  context.response()->setHeader( u"link"_s, headerLink( context, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JSONFG, u"This document as JSONFG"_s ) );
-  context.response()
-    ->setHeader( u"link"_s, headerLink( context, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JSONFG_PLUS, u"This document as JSONFG-PLUS"_s ) );
-#endif
+  apiContext.response()->setHeader( u"link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JsonFg, u"This document as JSONFG"_s ) );
+  apiContext.response()
+    ->setHeader( u"link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JsonFgPlus, u"This document as JSONFG-PLUS"_s ) );
 
   // Add next link
   if ( exportContext.limit + exportContext.offset < matchedFeaturesCount )
@@ -2701,6 +2780,20 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     exporter.setSourceCrs( mapLayer->crs() );
     exporter.setDestinationCrs( requestedCrs );
 
+    if ( requestedProfiles.contains( QgsServerOgcApi::Profile::JsonFg ) )
+    {
+      exporter.setGeoJsonProfile( Qgis::GeoJsonProfile::JsonFg );
+    }
+    else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::JsonFgPlus ) )
+    {
+      exporter.setGeoJsonProfile( Qgis::GeoJsonProfile::JsonFgPlus );
+    }
+    else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::Rfc7946 ) )
+    {
+      // This is the default anyways but better explicit than implicit
+      exporter.setGeoJsonProfile( Qgis::GeoJsonProfile::Rfc7946 );
+    }
+
     QMap<int, ReferencedLayerInfo> referencedInfo = gatherReferencedLayerInfo( mapLayer, context );
     // remove if attributes are not requested
     referencedInfo.erase(
@@ -2710,6 +2803,32 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     QgsServerOgcApi::Profile relAs = QgsServerOgcApi::Profile::Unset;
     bool hasReferencedObjects = !referencedInfo.isEmpty();
 
+    QString temporalInstantField;
+    QString temporalStartField;
+    QString temporalEndField;
+    const QgsVectorLayerTemporalProperties *temporalProperties = static_cast<QgsVectorLayerTemporalProperties *>( const_cast<QgsVectorLayer *>( mapLayer )->temporalProperties() );
+    if ( temporalProperties && temporalProperties->isActive() )
+    {
+      switch ( temporalProperties->mode() )
+      {
+        case Qgis::VectorTemporalMode::FeatureDateTimeInstantFromField:
+        {
+          temporalInstantField = temporalProperties->startField();
+          break;
+        }
+        case Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromFields:
+
+        {
+          temporalStartField = temporalProperties->startField();
+          temporalEndField = temporalProperties->endField();
+          break;
+        }
+        default:
+        {
+          // Not supported for now.
+        }
+      }
+    }
     json data = exporter.exportFeatureToJsonObject( feature );
 
     // Patch feature
@@ -2717,6 +2836,26 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     //  - add references
     //  - format extra geometries
     data["id"] = featureId.toStdString();
+
+    if ( !temporalInstantField.isEmpty() )
+    {
+      data["time"] = { { "timestamp", feature.attribute( temporalInstantField ).toDateTime().toString( Qt::ISODate ).toStdString() } };
+    }
+    else if ( !temporalStartField.isEmpty() && !temporalEndField.isEmpty() )
+    {
+      data["time"] = {
+        { "interval",
+          { feature.attribute( temporalStartField ).toDateTime().toString( Qt::ISODate ).toStdString(), "..", feature.attribute( temporalEndField ).toDateTime().toString( Qt::ISODate ).toStdString() } }
+      };
+    }
+    else if ( !temporalStartField.isEmpty() )
+    {
+      data["time"] = { { "interval", { feature.attribute( temporalStartField ).toDateTime().toString( Qt::ISODate ).toStdString(), ".." } } };
+    }
+    else if ( !temporalEndField.isEmpty() )
+    {
+      data["time"] = { { "interval", { "..", feature.attribute( temporalEndField ).toDateTime().toString( Qt::ISODate ).toStdString() } } };
+    }
 
     if ( hasReferencedObjects )
     {

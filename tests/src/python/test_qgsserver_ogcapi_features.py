@@ -15,59 +15,35 @@ __copyright__ = "Copyright 2026, The QGIS Project"
 
 import json
 import os
-import re
-import shutil
-
-from osgeo import gdal, ogr
-from provider_python import PyProvider
 
 # Deterministic XML
 os.environ["QT_HASH_SEED"] = "1"
-
-from contextlib import contextmanager
-from urllib import parse
 
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsCoordinateReferenceSystem,
-    QgsDataProvider,
     QgsEditorWidgetSetup,
     QgsFeature,
-    QgsFeatureRequest,
     QgsField,
-    QgsFieldConstraints,
     QgsFields,
     QgsGeometry,
-    QgsMemoryProviderUtils,
     QgsProject,
-    QgsProviderMetadata,
     QgsProviderRegistry,
     QgsRelation,
     QgsRelationContext,
     QgsVectorLayer,
-    QgsVectorLayerServerProperties,
+    QgsVectorLayerTemporalProperties,
     QgsWkbTypes,
 )
 from qgis.PyQt import QtCore
 from qgis.server import (
-    QgsAccessControlFilter,
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
-    QgsServerApi,
-    QgsServerApiBadRequestException,
-    QgsServerApiContext,
-    QgsServerApiUtils,
-    QgsServerOgcApi,
-    QgsServerOgcApiHandler,
-    QgsServerQueryStringParameter,
-    QgsServiceRegistry,
 )
 from qgis.testing import unittest
-from test_qgsserver import QgsServerTestBase
 from test_qgsserver_api import QgsServerAPITestBase
-from utilities import unitTestDataPath
 
 
 class QgsServerOgcApiFeaturesTest(QgsServerAPITestBase):
@@ -116,12 +92,12 @@ class QgsServerOgcApiFeaturesTest(QgsServerAPITestBase):
         # No default
         if not profile:
             self.assertNotIn(
-                "http://www.opengis.net/def/profile/ogc/0/rel-as-key",
+                "http://www.opengis.net/def/profile/OGC/0/rel-as-key",
                 links,
             )
         else:
             self.assertIn(
-                f"http://www.opengis.net/def/profile/ogc/0/{profile}",
+                f"http://www.opengis.net/def/profile/OGC/0/{profile}",
                 links,
             )
         return j["features"][0]
@@ -357,6 +333,43 @@ class QgsServerOgcApiFeaturesTest(QgsServerAPITestBase):
         self.assertEqual(
             j["features"][0]["properties"], {"fid": 1, "name": "test", "other_id": 1}
         )
+
+    def testTemporalProperties(self):
+
+        # Layer with timestamp
+        layer = QgsVectorLayer(
+            "Point?field=event_id:integer&field=event_date:date", "temporal", "memory"
+        )
+        self.assertTrue(layer.isValid())
+        layer.temporalProperties().setIsActive(True)
+        props = layer.temporalProperties()
+        self.assertTrue(props.isActive())
+        self.assertEqual(props.startField(), "event_date")
+        self.assertFalse(props.endField())
+        self.assertEqual(
+            props.mode(),
+            QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeInstantFromField,
+        )
+
+        # Add features
+        feature = QgsFeature(layer.fields())
+        feature.setGeometry(QgsGeometry.fromWkt("POINT(0 0)"))
+        feature.setAttribute("event_id", 1)
+        feature.setAttribute("event_date", QtCore.QDate(2024, 1, 1))
+        self.assertTrue(layer.dataProvider().addFeature(feature))
+
+        # Add to project and expose to WFS
+        project = QgsProject()
+        project.addMapLayer(layer)
+        project.writeEntry("WFSLayers", "/", [layer.id()])
+
+        # Retrieve the feature and check temporal properties in the response
+        j = self._getJsonResponse(
+            "http://server.qgis.org/wfs3/collections/temporal/items/1.json?profile=json-fg",
+            project,
+        )
+        self.assertIn("event_date", j["properties"])
+        self.assertEqual(j["properties"]["time"], "2024-01-01T00:00:00Z")
 
 
 if __name__ == "__main__":
