@@ -1,6 +1,16 @@
 name: Sign release assets
 
 on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'strata-v*'
+  workflow_run:
+    workflows:
+      - '🍎 Build - MacOS Qt6'
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       tag:
@@ -16,15 +26,35 @@ jobs:
   sign-release-assets:
     name: Sign release assets
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     env:
       GH_TOKEN: ${{ github.token }}
       TAG: ${{ inputs.tag }}
 
     steps:
-      - name: Validate release tag
+      - name: Resolve release tag
+        id: resolve-tag
         shell: bash
         run: |
           set -euo pipefail
+
+          TAG="${TAG:-}"
+          if [ -z "${TAG}" ]; then
+            if [ "${{ github.event_name }}" = "push" ] && [[ "${GITHUB_REF}" == refs/tags/strata-v* ]]; then
+              TAG="${GITHUB_REF#refs/tags/}"
+            elif [ "${{ github.event_name }}" = "workflow_run" ]; then
+              HEAD_BRANCH="${{ github.event.workflow_run.head_branch }}"
+              if [[ "${HEAD_BRANCH}" == strata-v* ]]; then
+                TAG="${HEAD_BRANCH}"
+              else
+                echo "Skipping signing for non-release workflow run (${HEAD_BRANCH})."
+                echo "skip=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+            else
+              TAG=$(gh release list --repo "${GITHUB_REPOSITORY}" --limit 1 --json tagName --jq '.[0].tagName')
+            fi
+          fi
 
           case "${TAG}" in
             strata-v*) ;;
@@ -34,12 +64,92 @@ jobs:
               ;;
           esac
 
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "Resolved release tag: ${TAG}"
+
+      - name: Wait for required release binaries
+        if: steps.resolve-tag.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TAG="${{ steps.resolve-tag.outputs.tag }}"
+          for attempt in $(seq 1 120); do
+            mapfile -t assets < <(gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" --json assets --jq '.assets[].name')
+            has_appimage=0
+            has_dmg=0
+            has_exe=0
+            has_zip=0
+            for asset in "${assets[@]}"; do
+              case "${asset}" in
+                *.AppImage) has_appimage=1 ;;
+                *.dmg) has_dmg=1 ;;
+                *.exe) has_exe=1 ;;
+                *-win64.zip) has_zip=1 ;;
+              esac
+            done
+            if [ "${has_appimage}" -eq 1 ] && [ "${has_dmg}" -eq 1 ] && [ "${has_exe}" -eq 1 ] && [ "${has_zip}" -eq 1 ]; then
+              echo "All required release binaries are present."
+              exit 0
+            fi
+            echo "Attempt ${attempt}/120: waiting for release binaries (appimage=${has_appimage}, dmg=${has_dmg}, exe=${has_exe}, zip=${has_zip})"
+            sleep 300
+          done
+          echo "::error::Timed out waiting for release binaries on ${TAG}"
+          exit 1
+
+      - name: Validate release tag
+        if: steps.resolve-tag.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.resolve-tag.outputs.tag }}"
           gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null
+          echo "TAG=${TAG}" >> "$GITHUB_ENV"
+
+      - name: Skip when signatures already exist
+        if: steps.resolve-tag.outputs.skip != 'true' && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TAG="${{ steps.resolve-tag.outputs.tag }}"
+          mapfile -t assets < <(gh release view "${TAG}" --repo "${GITHUB_REPOSITORY}" --json assets --jq '.assets[].name')
+          missing=0
+          for required in "*.AppImage" "*.dmg" "*.exe" "*-win64.zip"; do
+            case "${required}" in
+              *.AppImage) pattern='\.AppImage$' ;;
+              *.dmg) pattern='\.dmg$' ;;
+              *.exe) pattern='\.exe$' ;;
+              *-win64.zip) pattern='-win64\.zip$' ;;
+            esac
+            base=""
+            for asset in "${assets[@]}"; do
+              if [[ "${asset}" =~ ${pattern} ]]; then
+                base="${asset}"
+                break
+              fi
+            done
+            if [ -z "${base}" ]; then
+              missing=1
+              break
+            fi
+            if ! printf '%s\n' "${assets[@]}" | grep -qx "${base}.sigstore.json"; then
+              missing=1
+              break
+            fi
+          done
+          if [ "${missing}" -eq 0 ]; then
+            echo "All required sigstore bundles already exist for ${TAG}."
+            echo "SKIP_SIGNING=true" >> "$GITHUB_ENV"
+          fi
 
       - name: Install cosign
+        if: steps.resolve-tag.outputs.skip != 'true' && env.SKIP_SIGNING != 'true'
         uses: sigstore/cosign-installer@v3.9.2
 
       - name: Download release assets
+        if: steps.resolve-tag.outputs.skip != 'true' && env.SKIP_SIGNING != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -53,6 +163,7 @@ jobs:
           find release-assets -maxdepth 1 -type f -print | sort
 
       - name: Sign and verify release assets
+        if: steps.resolve-tag.outputs.skip != 'true' && env.SKIP_SIGNING != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -84,7 +195,7 @@ jobs:
           fi
 
           targets=("${appimages[@]}" "${dmgs[@]}" "${exes[@]}" "${zips[@]}")
-          identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/sign-release-assets.yml@refs/heads/${GITHUB_REF_NAME}"
+          identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/sign-release-assets.yml@refs/tags/${TAG}"
 
           for file in "${targets[@]}"; do
             base="$(basename "${file}")"
@@ -120,6 +231,7 @@ jobs:
           } >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Upload signature assets
+        if: steps.resolve-tag.outputs.skip != 'true' && env.SKIP_SIGNING != 'true'
         shell: bash
         run: |
           set -euo pipefail
