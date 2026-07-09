@@ -70,19 +70,3 @@ target_compile_definitions(odbccpp
 set_property(TARGET odbccpp PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 set_property(TARGET odbccpp PROPERTY public_headers ${public_headers})
-
-install(TARGETS odbccpp
-    EXPORT odbccppTargets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-
-install(FILES ${public_headers}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/odbc
-)
-
-install(EXPORT odbccppTargets
-    FILE odbccppTargets.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/odbccpp
-)
