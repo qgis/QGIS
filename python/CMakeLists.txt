@@ -200,7 +200,8 @@ name = \"QGIS\"
 version = \"${COMPLETE_VERSION}\"
 description = \"Python bindings for QGIS\"
 authors = [ \{name = \"The QGIS Community\"\} ]
-license = \{file = \"${CMAKE_SOURCE_DIR}/COPYING\"\}
+license = \"GPL-2.0-Only\"
+license-files = [\"${CMAKE_SOURCE_DIR}/COPYING\"]
 dependencies = [\"${pyqtdist}\"]
 
 [project.urls]
