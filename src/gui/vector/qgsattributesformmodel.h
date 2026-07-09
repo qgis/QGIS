@@ -487,7 +487,7 @@ class GUI_EXPORT QgsAttributesFormItem : public QObject
      * elsewhere in the tree.
      * Returns a NULLPTR if \a index is out of range.
      *
-     * \since QGIS 4.4
+     * \since QGIS 4.2.1
      */
     std::unique_ptr< QgsAttributesFormItem > takeChild( int index );
 
@@ -697,6 +697,17 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      */
     void emitDataChangedRecursively( const QModelIndex &parent = QModelIndex(), const QVector<int> &roles = QVector<int>() );
 
+    /**
+     * Returns the icon used for items of the given \a itemType, both in the
+     * available widgets tree and in the form layout tree.
+     *
+     * An invalid icon is returned for item types without a fixed icon (e.g.,
+     * fields, whose icon depends on their editor widget type).
+     *
+     * \since QGIS 4.2.1
+     */
+    static QIcon iconForItemType( QgsAttributesFormData::AttributesFormItemType itemType );
+
     std::unique_ptr< QgsAttributesFormItem > mRootItem;
     QgsVectorLayer *mLayer;
     QgsProject *mProject;
@@ -866,9 +877,9 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
 
   signals:
     //! Informs that items were inserted (via drop) in the model from another model.
-    void externalItemDropped( QModelIndex &index );
+    void externalItemsDropped( const QModelIndexList &indexes );
     //! Informs that items were moved (via drop) in the model from the same model.
-    void internalItemDropped( QModelIndex &index );
+    void internalItemsDropped( const QModelIndexList &indexes );
 
   private:
     //! Update the field config for all items in the model.
@@ -878,6 +889,14 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
 
     QList< QgsAddAttributeFormContainerDialog::ContainerPair > recursiveListOfContainers( QgsAttributesFormItem *parent ) const;
     void loadAttributeEditorElementItem( QgsAttributeEditorElement *const editorElement, QgsAttributesFormItem *parent, const int position = -1 );
+
+    /**
+     * Sets the alias, field config and editor widget icon on a field \a item,
+     * taking the data from the corresponding layer field (matched by item name).
+     *
+     * Does nothing if no matching layer field is found.
+     */
+    void setFieldItemDataFromLayer( QgsAttributesFormItem *item );
 
     /**
      * Creates a list of indexes filtering out children whose parents are already included.

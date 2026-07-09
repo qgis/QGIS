@@ -184,26 +184,47 @@ void QgsAttributesFormLayoutView::setModel( QAbstractItemModel *model )
   QTreeView::setModel( mModel );
 
   const auto *formLayoutModel = static_cast< QgsAttributesFormLayoutModel * >( mModel->sourceModel() );
-  connect( formLayoutModel, &QgsAttributesFormLayoutModel::externalItemDropped, this, &QgsAttributesFormLayoutView::handleExternalDroppedItem );
-  connect( formLayoutModel, &QgsAttributesFormLayoutModel::internalItemDropped, this, &QgsAttributesFormLayoutView::handleInternalDroppedItem );
+  connect( formLayoutModel, &QgsAttributesFormLayoutModel::externalItemsDropped, this, &QgsAttributesFormLayoutView::handleExternalDroppedItems );
+  connect( formLayoutModel, &QgsAttributesFormLayoutModel::internalItemsDropped, this, &QgsAttributesFormLayoutView::handleInternalDroppedItems );
 }
 
 
-void QgsAttributesFormLayoutView::handleExternalDroppedItem( QModelIndex &index )
+void QgsAttributesFormLayoutView::selectDroppedItems( const QModelIndexList &indexes )
 {
-  selectionModel()->setCurrentIndex( mModel->mapFromSource( index ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  if ( indexes.isEmpty() )
+    return;
 
-  const auto itemType = static_cast< QgsAttributesFormData::AttributesFormItemType >( index.data( QgsAttributesFormModel::ItemTypeRole ).toInt() );
-
-  if ( itemType == QgsAttributesFormData::QmlWidget || itemType == QgsAttributesFormData::HtmlWidget || itemType == QgsAttributesFormData::TextWidget || itemType == QgsAttributesFormData::SpacerWidget )
+  QItemSelection selection;
+  for ( const QModelIndex &index : indexes )
   {
-    onItemDoubleClicked( mModel->mapFromSource( index ) );
+    const QModelIndex proxyIndex = mModel->mapFromSource( index );
+    selection.select( proxyIndex, proxyIndex );
+  }
+
+  // Set the current index first without touching the selection, so that the
+  // selection is changed once, keeping all dropped items selected
+  selectionModel()->setCurrentIndex( mModel->mapFromSource( indexes.constLast() ), QItemSelectionModel::NoUpdate );
+  selectionModel()->select( selection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+}
+
+void QgsAttributesFormLayoutView::handleExternalDroppedItems( const QModelIndexList &indexes )
+{
+  selectDroppedItems( indexes );
+
+  for ( const QModelIndex &index : indexes )
+  {
+    const auto itemType = static_cast< QgsAttributesFormData::AttributesFormItemType >( index.data( QgsAttributesFormModel::ItemTypeRole ).toInt() );
+
+    if ( itemType == QgsAttributesFormData::QmlWidget || itemType == QgsAttributesFormData::HtmlWidget || itemType == QgsAttributesFormData::TextWidget || itemType == QgsAttributesFormData::SpacerWidget )
+    {
+      onItemDoubleClicked( mModel->mapFromSource( index ) );
+    }
   }
 }
 
-void QgsAttributesFormLayoutView::handleInternalDroppedItem( QModelIndex &index )
+void QgsAttributesFormLayoutView::handleInternalDroppedItems( const QModelIndexList &indexes )
 {
-  selectionModel()->setCurrentIndex( mModel->mapFromSource( index ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  selectDroppedItems( indexes );
 }
 
 void QgsAttributesFormLayoutView::dragEnterEvent( QDragEnterEvent *event )

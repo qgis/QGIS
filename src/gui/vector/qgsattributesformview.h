@@ -180,8 +180,12 @@ class GUI_EXPORT QgsAttributesFormLayoutView : public QgsAttributesFormBaseView
 
   private slots:
     void onItemDoubleClicked( const QModelIndex &index );
-    void handleExternalDroppedItem( QModelIndex &index );
-    void handleInternalDroppedItem( QModelIndex &index );
+    void handleExternalDroppedItems( const QModelIndexList &indexes );
+    void handleInternalDroppedItems( const QModelIndexList &indexes );
+
+  private:
+    //! Selects all the given source model \a indexes, making the last one the current index.
+    void selectDroppedItems( const QModelIndexList &indexes );
 };
 
 
