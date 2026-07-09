@@ -3,585 +3,233 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Strata: agente AI nativo in QGIS. Cloud gestito o on-premise con AI locale.">
-  <title data-i18n="meta.title">Strata — Agente AI per QGIS | Cloud pronto all'uso o Enterprise on-premise</title>
+  <meta name="description" content="Strata: agente AI nativo in QGIS. Scarica gratis per macOS, Windows e Linux.">
+  <title data-i18n="meta.title">Strata — Agente AI per QGIS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/style.css?v=20260709c">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css?v=20260709d">
   <link rel="icon" href="./assets/app-icon.png" type="image/png">
 </head>
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar" aria-label="Main navigation">
-    <div class="container">
+    <div class="container navbar-inner">
       <a href="#" class="nav-brand" aria-label="Strata">
-        <img src="./assets/app-icon.png" alt="" width="36" height="36" aria-hidden="true">
-        <span class="nav-brand-wordmark">
-          <span>Strata</span>
-        </span>
+        <img src="./assets/app-icon.png" alt="" width="28" height="28" aria-hidden="true">
+        <span class="nav-brand-wordmark">Strata</span>
       </a>
-
-      <div class="nav-links">
-        <a href="#features" data-i18n="nav.plans">Piani</a>
-        <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
-        <a href="#demo" data-i18n="nav.demo">Demo</a>
-        <a href="#solution" data-i18n="nav.product">Prodotto</a>
-        <a href="#download" data-i18n="nav.download">Download</a>
-      </div>
 
       <div class="nav-actions">
         <div class="lang-toggle" role="group" aria-label="Language">
           <button type="button" data-lang="it" aria-pressed="true">IT</button>
           <button type="button" data-lang="en" aria-pressed="false">EN</button>
         </div>
-        <a href="https://app.getstrata.org/login" class="nav-login-link" data-i18n="nav.login">Accedi</a>
-        <a href="#features" class="btn btn-primary" data-i18n="nav.downloadBtn">Inizia Subito</a>
-        <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </button>
+        <a href="https://app.getstrata.org" class="nav-login-link" data-i18n="nav.login">ACCEDI</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero -->
   <section class="hero">
-    <div class="container hero-grid">
+    <div class="container hero-inner">
       <div class="hero-content">
-        <span class="hero-badge" data-i18n="hero.badge">Agente AI per QGIS · Cloud o On-Premise</span>
-        <h1>
-          <span class="hero-title-line" data-i18n="hero.titleLine">L'Agente AI per il tuo GIS.</span>
-          <span class="hero-highlight" data-i18n="hero.titleHighlight">Pronto all'uso, sicuro per l'azienda.</span>
-        </h1>
+        <h1 data-i18n="hero.title">L'agente AI nativo per QGIS.</h1>
         <p class="hero-subtitle" data-i18n="hero.subtitle">
-          AI nativa in QGIS. Cloud gestito o deployment on-premise.
+          Scarica, apri il progetto, chiedi cosa ti serve. Cloud gestito o on-premise.
         </p>
-        <div class="hero-pills" aria-hidden="true">
-          <span class="hero-pill" data-i18n="hero.pillPlan">Plan</span>
-          <span class="hero-pill" data-i18n="hero.pillAgent">Agent</span>
-          <span class="hero-pill" data-i18n="hero.pillAsk">Ask</span>
-          <span class="hero-pill" data-i18n="hero.pillTools">19 tool GIS integrati</span>
-        </div>
         <div class="hero-cta">
-          <a href="#features" class="btn btn-primary btn-lg" data-i18n="hero.ctaPrimary">Inizia Subito</a>
-          <a href="mailto:francemazzi@gmail.com?subject=Strata%20Enterprise" class="btn btn-secondary btn-lg" data-i18n="hero.ctaSecondary">Contatta le vendite</a>
+          <a
+            href="https://github.com/francemazzi/strata/releases"
+            class="btn btn-primary btn-lg"
+            data-hero-download
+            data-download-asset="macos"
+            data-i18n="hero.ctaPrimary"
+          >Scarica per macOS</a>
+        </div>
+        <p class="download-status hero-release-status" data-release-status data-i18n="download.status.fallback">Releases GitHub</p>
+        <div class="hero-links">
+          <a href="mailto:francemazzi@gmail.com?subject=Strata%20Enterprise" class="text-link" data-i18n="hero.linkEnterprise">Enterprise</a>
+          <span class="hero-links-sep" aria-hidden="true">·</span>
+          <a href="#demo" class="text-link" data-i18n="hero.linkDemo">Vedi demo</a>
+          <span class="hero-links-sep" aria-hidden="true">·</span>
+          <a href="https://app.getstrata.org/registrati" class="text-link" data-i18n="hero.linkCloud">Strata Cloud</a>
         </div>
       </div>
 
-      <div class="mockup" aria-hidden="true">
-        <div class="mockup-toolbar">
-          <span class="mockup-dot"></span>
-          <span class="mockup-dot"></span>
-          <span class="mockup-dot"></span>
-        </div>
-        <div class="mockup-body">
-          <div class="mockup-map">
-            <div class="mockup-map-shapes"></div>
-            <span class="mockup-map-label" data-i18n="mockup.mapLabel">Mappa GIS</span>
-          </div>
-          <div class="mockup-chat">
-            <div class="mockup-chat-header" data-i18n="mockup.chatTitle">AI Assistant</div>
-            <div class="mockup-modes">
-              <span class="mockup-mode" data-i18n="mockup.modePlan">Plan</span>
-              <span class="mockup-mode active" data-i18n="mockup.modeAgent">Agent</span>
-              <span class="mockup-mode" data-i18n="mockup.modeAsk">Ask</span>
-            </div>
-            <div class="mockup-messages">
-              <div class="mockup-bubble user" data-i18n="mockup.userMsg">Fai buffer 500m sui comuni e esporta GeoJSON</div>
-              <div class="mockup-bubble ai" data-i18n="mockup.aiMsg">Buffer eseguito. Salvato in output/buffer_500m.geojson. Approvi?</div>
-            </div>
-            <div class="mockup-input"><span data-mockup-typing></span><span class="mockup-cursor" aria-hidden="true">|</span></div>
-          </div>
-        </div>
+      <figure class="hero-visual">
+        <img
+          src="./assets/demo-chat.png"
+          alt="Strata AI assistant in QGIS"
+          width="1024"
+          height="570"
+          loading="eager"
+          data-i18n-alt="demo.agent.alt"
+        >
+      </figure>
+    </div>
+  </section>
+
+  <section class="section section-download" id="download">
+    <div class="container">
+      <h2 class="section-title section-title-center" data-i18n="download.title">Scarica Strata</h2>
+      <p class="section-subtitle section-subtitle-center" data-i18n="download.subtitle">
+        macOS, Windows e Linux. Binari da GitHub Releases.
+      </p>
+
+      <div class="download-grid download-grid-compact">
+        <article class="download-card download-card-compact">
+          <h3 data-i18n="download.macos.title">macOS</h3>
+          <p class="download-file" data-download-file="macos" data-i18n="download.macos.file">File .dmg</p>
+          <a href="https://github.com/francemazzi/strata/releases" class="text-link text-link-accent" data-download-asset="macos" data-i18n="download.action">Scarica</a>
+        </article>
+
+        <article class="download-card download-card-compact">
+          <h3 data-i18n="download.windows.title">Windows</h3>
+          <p class="download-file" data-download-file="windows" data-i18n="download.windows.file">File -win64.exe</p>
+          <a href="https://github.com/francemazzi/strata/releases" class="text-link text-link-accent" data-download-asset="windows" data-i18n="download.action">Scarica</a>
+        </article>
+
+        <article class="download-card download-card-compact">
+          <h3 data-i18n="download.linux.title">Linux</h3>
+          <p class="download-file" data-download-file="linux" data-i18n="download.linux.file">File .AppImage</p>
+          <a href="https://github.com/francemazzi/strata/releases" class="text-link text-link-accent" data-download-asset="linux" data-i18n="download.action">Scarica</a>
+        </article>
+      </div>
+
+      <p class="download-all">
+        <a href="https://github.com/francemazzi/strata/releases" class="text-link" data-release-link data-i18n="download.allReleases">Tutte le release su GitHub →</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="demo">
+    <div class="container">
+      <span class="section-label" data-i18n="demo.label">Demo</span>
+      <h2 class="section-title" data-i18n="demo.title">Vedilo in azione</h2>
+      <p class="section-subtitle" data-i18n="demo.desc">
+        Chiedi in linguaggio naturale, ispeziona layer, esegue e mostra il risultato accanto alla mappa.
+      </p>
+      <figure class="demo-single">
+        <img
+          loading="lazy"
+          src="./assets/strata-plan-mode.png"
+          alt="Strata Plan mode"
+          width="1024"
+          height="775"
+          data-i18n-alt="demo.plan.alt"
+        >
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="why">
+    <div class="container">
+      <span class="section-label" data-i18n="why.label">Perché Strata</span>
+      <h2 class="section-title" data-i18n="why.title">Chiedi, approva, fatto</h2>
+
+      <div class="features-grid features-grid-why">
+        <article class="feature-card">
+          <h3 data-i18n="why.1.title">Fa il lavoro al posto tuo</h3>
+          <p data-i18n="why.1.desc">Buffer, export, analisi: chiedi in naturale, Strata esegue con la tua approvazione.</p>
+        </article>
+        <article class="feature-card">
+          <h3 data-i18n="why.2.title">Conosce il tuo progetto</h3>
+          <p data-i18n="why.2.desc">Layer, script e documenti del workspace come contesto — non snippet generici.</p>
+        </article>
+        <article class="feature-card">
+          <h3 data-i18n="why.3.title">Tre modalità, una sola app</h3>
+          <p data-i18n="why.3.desc">Pianifica, esegui o chiedi. Scegli il livello di autonomia senza uscire da QGIS.</p>
+        </article>
+        <article class="feature-card">
+          <h3 data-i18n="why.4.title">Da ore a minuti</h3>
+          <p data-i18n="why.4.desc">Ispeziona layer, buffer, export GeoJSON: una richiesta al posto di script manuali.</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- Plans -->
-  <section class="section" id="features">
+  <section class="vibe-section" id="privacy">
     <div class="container">
-      <span class="section-label" data-i18n="plans.label">Piani e soluzioni</span>
+      <span class="section-label" data-i18n="privacy.label">Sicurezza e privacy</span>
+      <h2 class="vibe-section-title" data-i18n="privacy.title">I tuoi dati, le tue regole</h2>
+      <div class="vibe-steps">
+        <article class="vibe-step">
+          <h3 data-i18n="privacy.1.title">AI 100% offline</h3>
+          <p data-i18n="privacy.1.desc">LLM locali per analisi sul territorio, senza internet.</p>
+        </article>
+        <article class="vibe-step">
+          <h3 data-i18n="privacy.2.title">Isolamento dei dati</h3>
+          <p data-i18n="privacy.2.desc">Layer e documenti indicizzati su database cifrati interni.</p>
+        </article>
+        <article class="vibe-step">
+          <h3 data-i18n="privacy.3.title">Enterprise on-premise</h3>
+          <p data-i18n="privacy.3.desc">Zero egress, audit completo, pieno controllo per dati sensibili.</p>
+        </article>
+      </div>
+      <p class="privacy-enterprise">
+        <a href="mailto:francemazzi@gmail.com?subject=Strata%20Enterprise" class="text-link" data-i18n="privacy.enterprise">Contatta le vendite Enterprise →</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-muted" id="plans">
+    <div class="container">
+      <span class="section-label" data-i18n="plans.label">Piani</span>
       <h2 class="section-title" data-i18n="plans.title">Scegli come adottare Strata</h2>
 
-      <div class="features-grid">
+      <div class="features-grid plans-grid">
         <article class="feature-card">
           <div class="feature-number" data-i18n="plans.pro.badge">Pro</div>
           <h3 data-i18n="plans.pro.title">Pro — Chiavi in mano</h3>
-          <p class="plan-slogan" data-i18n="plans.pro.slogan">Attiva e usa, zero configurazioni.</p>
-          <p data-i18n="plans.pro.desc">Abbonamento mensile, niente API key da gestire.</p>
+          <p data-i18n="plans.pro.desc">Abbonamento mensile, AI inclusa, zero API key da gestire.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number" data-i18n="plans.team.badge">Team</div>
-          <h3 data-i18n="plans.team.title">Cloud Team — Collaborazione</h3>
-          <p class="plan-slogan" data-i18n="plans.team.slogan">La conoscenza geografica del tuo team, centralizzata.</p>
+          <h3 data-i18n="plans.team.title">Cloud Team</h3>
           <p data-i18n="plans.team.desc">Contesto condiviso del team, indicizzato in Strata Cloud.</p>
-          <a href="https://app.getstrata.org" class="plan-cta" data-i18n="plans.team.cta">Accedi alla Strata Cloud →</a>
+          <a href="https://app.getstrata.org" class="text-link text-link-accent" data-i18n="plans.team.cta">Accedi alla Strata Cloud →</a>
         </article>
 
         <article class="feature-card">
           <div class="feature-number" data-i18n="plans.enterprise.badge">Ent.</div>
-          <h3 data-i18n="plans.enterprise.title">Enterprise — Privacy totale &amp; AI locale</h3>
-          <p class="plan-slogan" data-i18n="plans.enterprise.slogan">I tuoi dati geografici non lasciano mai la tua rete.</p>
+          <h3 data-i18n="plans.enterprise.title">Enterprise</h3>
           <p data-i18n="plans.enterprise.desc">On-premise con LLM locali. Zero egress, pieno controllo.</p>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- Privacy -->
-  <section class="vibe-section" id="privacy">
-    <div class="container">
-      <span class="section-label" data-i18n="privacy.label">Sicurezza e privacy</span>
-      <h2 class="vibe-section-title" data-i18n="privacy.title">La tua mappa, i tuoi dati. Nessun compromesso sulla sicurezza.</h2>
-      <p class="section-subtitle privacy-intro" data-i18n="privacy.subtitle">
-        Per dati territoriali sensibili, tutto resta nella tua infrastruttura.
+  <section class="section section-closing">
+    <div class="container closing-inner">
+      <h2 class="section-title section-title-center" data-i18n="closing.title">Prova Strata oggi.</h2>
+      <a
+        href="https://github.com/francemazzi/strata/releases"
+        class="btn btn-primary btn-lg"
+        data-hero-download
+        data-download-asset="macos"
+        data-i18n="hero.ctaPrimary"
+      >Scarica per macOS</a>
+      <p class="closing-links">
+        <a href="https://app.getstrata.org" class="text-link" data-i18n="nav.login">ACCEDI</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://calendly.com/strataqgisai/30min" class="text-link" target="_blank" rel="noopener noreferrer" data-i18n="closing.demo">Prenota una demo</a>
       </p>
-      <div class="vibe-steps">
-        <article class="vibe-step">
-          <span class="vibe-step-num" aria-hidden="true">1</span>
-          <h3 data-i18n="privacy.1.title">AI 100% offline</h3>
-          <p data-i18n="privacy.1.desc">LLM locali per analisi sul territorio, senza internet.</p>
-        </article>
-        <article class="vibe-step">
-          <span class="vibe-step-num" aria-hidden="true">2</span>
-          <h3 data-i18n="privacy.2.title">Isolamento dei dati</h3>
-          <p data-i18n="privacy.2.desc">Layer e documenti indicizzati su database cifrati interni.</p>
-        </article>
-        <article class="vibe-step">
-          <span class="vibe-step-num" aria-hidden="true">3</span>
-          <h3 data-i18n="privacy.3.title">Conformità normativa</h3>
-          <p data-i18n="privacy.3.desc">Per organizzazioni con dati sensibili non esportabili.</p>
-        </article>
-      </div>
-      <p class="privacy-closing" data-i18n="privacy.closing">Zero egress. Audit completo. Controllo totale.</p>
     </div>
   </section>
 
-  <!-- Problems -->
-  <section class="section" id="problems">
-    <div class="container">
-      <div class="problems-header">
-        <span class="section-label" data-i18n="problems.label">Problemi comuni</span>
-        <h2 class="section-title" data-i18n="problems.title">Conosci questi ostacoli in QGIS?</h2>
-      </div>
-
-      <div class="problems-carousel" aria-roledescription="carousel" data-i18n-aria-label="problems.carousel.label">
-        <div class="problems-carousel-viewport">
-          <div class="problems-track" data-problems-track>
-        <article class="problem-card">
-          <div class="problem-icon">⌨</div>
-          <h3 data-i18n="problems.1.title">PyQGIS difficile</h3>
-          <p data-i18n="problems.1.desc">Snippet da ChatGPT senza contesto del progetto.</p>
-          <p class="problem-fix" data-i18n="problems.1.fix">Esegue il codice con la tua approvazione.</p>
-        </article>
-
-        <article class="problem-card">
-          <div class="problem-icon">🗂</div>
-          <h3 data-i18n="problems.2.title">Ispezione layer laboriosa</h3>
-          <p data-i18n="problems.2.desc">Campi, CRS ed estensioni richiedono script manuali.</p>
-          <p class="problem-fix" data-i18n="problems.2.fix">Legge layer e campi dal progetto.</p>
-        </article>
-
-        <article class="problem-card">
-          <div class="problem-icon">📦</div>
-          <h3 data-i18n="problems.3.title">Dipendenze Python mancanti</h3>
-          <p data-i18n="problems.3.desc">geopandas, osmnx… spesso assenti in QGIS.</p>
-          <p class="problem-fix" data-i18n="problems.3.fix">Installa le librerie mancanti con un clic.</p>
-        </article>
-
-        <article class="problem-card">
-          <div class="problem-icon">🌐</div>
-          <h3 data-i18n="problems.4.title">Scaricare dati è lento</h3>
-          <p data-i18n="problems.4.desc">Overpass, GeoJSON, GADM — fetch e import manuale.</p>
-          <p class="problem-fix" data-i18n="problems.4.fix">Scarica e importa in un solo passaggio.</p>
-        </article>
-
-        <article class="problem-card">
-          <div class="problem-icon">🔍</div>
-          <h3 data-i18n="problems.5.title">Contesto disperso</h3>
-          <p data-i18n="problems.5.desc">Progetto, script e layer sparsi — l'AI generica non li vede.</p>
-          <p class="problem-fix" data-i18n="problems.5.fix">Usa file e layer del progetto come contesto.</p>
-        </article>
-
-        <article class="problem-card">
-          <div class="problem-icon">⚠</div>
-          <h3 data-i18n="problems.6.title">Modifiche senza controllo</h3>
-          <p data-i18n="problems.6.desc">Script che sovrascrivono file senza review.</p>
-          <p class="problem-fix" data-i18n="problems.6.fix">Ogni modifica va approvata prima.</p>
-        </article>
-
-        <article class="problem-card">
-          <div class="problem-icon">🔌</div>
-          <h3 data-i18n="problems.7.title">Plugin AI disconnessi</h3>
-          <p data-i18n="problems.7.desc">Assistenti esterni ignorano layer e Processing Toolbox.</p> <!--#spellok-->
-          <p class="problem-fix" data-i18n="problems.7.fix">Assistente nativo in QGIS, conosce il progetto.</p>
-        </article>
-          </div>
-        </div>
-
-        <div class="problems-carousel-footer">
-          <button type="button" class="problems-control" data-problems-prev data-i18n-aria-label="problems.prev" aria-label="Precedente">‹</button>
-          <div class="problems-dots" role="tablist" data-problems-dots aria-label="Scorri i problemi"></div>
-          <button type="button" class="problems-control" data-problems-next data-i18n-aria-label="problems.next" aria-label="Successivo">›</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Solution -->
-  <section class="section" id="solution">
-    <div class="container">
-      <span class="section-label" data-i18n="solution.label">Soluzione</span>
-      <h2 class="section-title" data-i18n="solution.title">Chiedi, approva, fatto</h2>
-      <p class="section-subtitle" data-i18n="solution.subtitle">
-        Descrivi cosa ti serve. Strata propone, tu decidi — senza uscire da QGIS.
-      </p>
-
-      <div class="solution-grid">
-        <article class="solution-card">
-          <h3 data-i18n="solution.chat.title">Chat accanto alla mappa</h3>
-          <p data-i18n="solution.chat.desc">
-            Chiedi in italiano, allega file, vedi risposte accanto alla mappa.
-          </p>
-          <ul class="solution-features">
-            <li data-i18n="solution.chat.f1">Risposte in tempo reale</li>
-            <li data-i18n="solution.chat.f2">Cronologia salvata per progetto</li>
-          </ul>
-        </article>
-
-        <article class="solution-card">
-          <h3 data-i18n="solution.agent.title">Tre modalità, una sola app</h3>
-          <p data-i18n="solution.agent.desc">
-            Pianifica, esegui o chiedi. Scegli il livello di autonomia.
-          </p>
-          <ul class="solution-features">
-            <li data-i18n="solution.agent.f1">Pianifica · Esegui · Chiedi</li>
-            <li data-i18n="solution.agent.f2">Azioni GIS integrate</li>
-          </ul>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Demo -->
-  <section class="section" id="demo">
-    <div class="container">
-      <span class="section-label" data-i18n="demo.label">Demo</span>
-      <h2 class="section-title" data-i18n="demo.title">Vedilo in azione</h2>
-
-      <div class="demo-carousel" aria-roledescription="carousel" data-i18n-aria-label="demo.carousel.label">
-        <div class="demo-carousel-header">
-          <div class="demo-tabs" role="tablist" aria-label="Esempi demo" data-i18n-aria-label="demo.tabs.label">
-            <button type="button" class="demo-tab active" role="tab" aria-selected="true" aria-controls="demo-slide-agent" id="demo-tab-agent" data-demo-target="0" data-i18n="demo.agent.tab">Agent</button>
-            <button type="button" class="demo-tab" role="tab" aria-selected="false" aria-controls="demo-slide-plan" id="demo-tab-plan" data-demo-target="1" data-i18n="demo.plan.tab">Plan</button>
-            <button type="button" class="demo-tab" role="tab" aria-selected="false" aria-controls="demo-slide-maps" id="demo-tab-maps" data-demo-target="2" data-i18n="demo.maps.tab">Analisi mappe</button>
-          </div>
-
-          <div class="demo-controls">
-            <button type="button" class="demo-control" data-demo-prev data-i18n-aria-label="demo.prev">Precedente</button>
-            <span class="demo-count" data-demo-count>1 / 3</span>
-            <button type="button" class="demo-control" data-demo-next data-i18n-aria-label="demo.next">Successivo</button>
-          </div>
-        </div>
-
-        <div class="demo-viewport">
-          <article class="demo-slide active" role="tabpanel" id="demo-slide-agent" aria-labelledby="demo-tab-agent" data-demo-slide>
-            <figure class="demo-frame">
-              <img loading="lazy" src="./assets/demo-chat.png" alt="Strata Agent mode" width="1024" height="570" data-i18n-alt="demo.agent.alt">
-            </figure>
-            <div class="demo-caption">
-              <span class="demo-kicker" data-i18n="demo.agent.kicker">Esecuzione controllata</span>
-              <h3 data-i18n="demo.agent.title">Esecuzione sul progetto</h3>
-              <p data-i18n="demo.agent.desc">
-                Chiedi in naturale, ispeziona layer, esegue e mostra il risultato.
-              </p>
-            </div>
-          </article>
-
-          <article class="demo-slide" role="tabpanel" id="demo-slide-plan" aria-labelledby="demo-tab-plan" data-demo-slide hidden>
-            <figure class="demo-frame">
-              <img loading="lazy" src="./assets/strata-plan-mode.png" alt="Strata Plan mode" width="1024" height="775" data-i18n-alt="demo.plan.alt">
-            </figure>
-            <div class="demo-caption">
-              <span class="demo-kicker" data-i18n="demo.plan.kicker">Piano prima dell'azione</span>
-              <h3 data-i18n="demo.plan.title">Piano strutturato</h3>
-              <p data-i18n="demo.plan.desc">
-                Obiettivo complesso → piano da approvare prima di agire.
-              </p>
-            </div>
-          </article>
-
-          <article class="demo-slide" role="tabpanel" id="demo-slide-maps" aria-labelledby="demo-tab-maps" data-demo-slide hidden>
-            <figure class="demo-frame">
-              <img loading="lazy" src="./assets/demo-mappe-brescia.png" alt="Strata map analysis over Brescia layers" width="1024" height="768" data-i18n-alt="demo.maps.alt">
-            </figure>
-            <div class="demo-caption">
-              <span class="demo-kicker" data-i18n="demo.maps.kicker">Domande sui layer reali</span>
-              <h3 data-i18n="demo.maps.title">Verde urbano e alberi</h3>
-              <p data-i18n="demo.maps.desc">
-                Legge i layer, calcola metriche, risponde accanto alla mappa.
-              </p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Speed -->
-  <section class="section speed-section" id="speed">
-    <div class="container">
-      <span class="section-label" data-i18n="speed.label">Produttività GIS</span>
-      <h2 class="section-title" data-i18n="speed.title">Da ore a minuti</h2>
-      <p class="section-subtitle" data-i18n="speed.subtitle">Esempio reale: ispeziona 5 layer, buffer, export GeoJSON.</p>
-
-      <div class="speed-compare">
-        <article class="speed-card">
-          <div class="speed-card-header">
-            <h3 data-i18n="speed.before">Prima</h3>
-            <span class="speed-time" data-i18n="speed.beforeTime">~45 min</span>
-          </div>
-          <p data-i18n="speed.beforeSteps">
-            Console Python, script per layer, API, dipendenze, export manuale.
-          </p>
-        </article>
-
-        <article class="speed-card highlight">
-          <div class="speed-card-header">
-            <h3 data-i18n="speed.after">Con Strata</h3>
-            <span class="speed-time" data-i18n="speed.afterTime">~5 min</span>
-          </div>
-          <p data-i18n="speed.afterSteps">
-            Una richiesta in linguaggio naturale. Approvi, esegue, salva.
-          </p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features -->
-  <section class="section" id="features-product">
-    <div class="container">
-      <span class="section-label" data-i18n="features.label">Vantaggi</span>
-      <h2 class="section-title" data-i18n="features.title">Tutto integrato, zero complessità</h2>
-
-      <div class="features-grid">
-        <article class="feature-card">
-          <div class="feature-number">01</div>
-          <h3 data-i18n="features.1.title">Fa il lavoro al posto tuo</h3>
-          <p data-i18n="features.1.desc">Buffer, export, analisi: chiedi in naturale, Strata esegue.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-number">02</div>
-          <h3 data-i18n="features.2.title">Si adatta al tuo modo di lavorare</h3>
-          <p data-i18n="features.2.desc">Regole e preferenze per risposte coerenti col team.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-number">03</div>
-          <h3 data-i18n="features.3.title">Conosce i tuoi file</h3>
-          <p data-i18n="features.3.desc">Script, progetti e documenti del workspace come contesto.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-number">04</div>
-          <h3 data-i18n="features.4.title">I layer solo quando vuoi</h3>
-          <p data-i18n="features.4.desc">Condividi layer e attributi solo quando decidi tu.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-number">05</div>
-          <h3 data-i18n="features.5.title">AI già inclusa</h3>
-          <p data-i18n="features.5.desc">Piano Pro: modelli AI pronti, zero gestione crediti.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-number">06</div>
-          <h3 data-i18n="features.6.title">I tuoi dati, le tue regole</h3>
-          <p data-i18n="features.6.desc">On-premise in locale. Nel cloud, tu decidi cosa condividere.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Start -->
-  <section class="section" id="start">
-    <div class="container">
-      <span class="section-label" data-i18n="start.label">Come iniziare</span>
-      <h2 class="section-title" data-i18n="start.title">Pronto in pochi minuti</h2>
-      <p class="section-subtitle start-subtitle" data-i18n="start.subtitle">
-        Nessuna configurazione complicata. Scarica, apri il tuo progetto QGIS e inizia subito.
-      </p>
-
-      <div class="vibe-steps">
-        <article class="vibe-step">
-          <span class="vibe-step-num" aria-hidden="true">1</span>
-          <h3 data-i18n="start.1.title">Scarica Strata</h3>
-          <p data-i18n="start.1.desc">Mac, Windows o Linux. QGIS con AI già integrata.</p>
-        </article>
-        <article class="vibe-step">
-          <span class="vibe-step-num" aria-hidden="true">2</span>
-          <h3 data-i18n="start.2.title">Apri il tuo progetto</h3>
-          <p data-i18n="start.2.desc">Apri layer e mappe che usi ogni giorno.</p>
-        </article>
-        <article class="vibe-step">
-          <span class="vibe-step-num" aria-hidden="true">3</span>
-          <h3 data-i18n="start.3.title">Chiedi cosa ti serve</h3>
-          <p data-i18n="start.3.desc">Scrivi cosa vuoi fare. Strata propone, tu approvi.</p>
-        </article>
-      </div>
-
-      <div class="start-cta">
-        <a href="#download" class="btn btn-primary btn-lg" data-i18n="start.cta.download">Scarica gratis</a>
-        <a href="https://app.getstrata.org/registrati" class="btn btn-secondary btn-lg" data-i18n="start.cta.cloud">Prova Strata Cloud</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Download -->
-  <section class="section" id="download">
-    <div class="container">
-      <div class="download-header">
-        <span class="section-label" data-i18n="download.label">Download</span>
-        <h2 class="section-title" data-i18n="download.title">Scarica Strata</h2>
-        <p class="section-subtitle" data-i18n="download.subtitle">
-          Binari da GitHub Releases.
-        </p>
-        <p class="download-status" data-release-status data-i18n="download.status.fallback">Releases GitHub</p>
-        <a href="https://github.com/francemazzi/strata/releases" class="btn btn-primary btn-lg" data-release-link data-i18n="download.cta">Vai alle Releases</a>
-      </div>
-
-      <div class="download-grid">
-        <article class="download-card">
-          <div class="download-os" aria-hidden="true">🍎</div>
-          <h3 data-i18n="download.macos.title">macOS</h3>
-          <p class="download-sub" data-i18n="download.macos.sub">Intel + Apple Silicon</p>
-          <p class="download-file" data-download-file="macos" data-i18n="download.macos.file">File .dmg</p>
-          <p class="download-note" data-i18n="download.macos.note">DMG firmato. Trascina in Applicazioni.</p>
-          <a href="https://github.com/francemazzi/strata/releases" class="btn btn-secondary" data-download-asset="macos" data-i18n="nav.downloadBtn">Scarica</a>
-        </article>
-
-        <article class="download-card">
-          <div class="download-os" aria-hidden="true">🪟</div>
-          <h3 data-i18n="download.windows.title">Windows</h3>
-          <p class="download-sub" data-i18n="download.windows.sub">10/11 x64</p>
-          <p class="download-file" data-download-file="windows" data-i18n="download.windows.file">File -win64.exe</p>
-          <p class="download-note" data-i18n="download.windows.note">Installer firmato. Verifica il publisher.</p>
-          <a href="https://github.com/francemazzi/strata/releases" class="btn btn-secondary" data-download-asset="windows" data-i18n="nav.downloadBtn">Scarica</a>
-        </article>
-
-        <article class="download-card">
-          <div class="download-os" aria-hidden="true">🐧</div>
-          <h3 data-i18n="download.linux.title">Linux</h3>
-          <p class="download-sub" data-i18n="download.linux.sub">x86_64</p>
-          <p class="download-file" data-download-file="linux" data-i18n="download.linux.file">File .AppImage</p>
-          <p class="download-note" data-i18n="download.linux.note">AppImage eseguibile. Ubuntu 22.04+.</p>
-          <a href="https://github.com/francemazzi/strata/releases" class="btn btn-secondary" data-download-asset="linux" data-i18n="nav.downloadBtn">Scarica</a>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Team -->
-  <section class="section" id="team">
-    <div class="container">
-      <span class="section-label" data-i18n="team.label">Team</span>
-      <h2 class="section-title" data-i18n="team.title">Chi c'è dietro Strata</h2>
-
-      <div class="team-grid">
-        <article class="team-card">
-          <img class="team-avatar" src="./assets/team-francesco.png" alt="Francesco" width="72" height="72" loading="lazy">
-          <div class="team-info">
-            <h3 class="team-name">Francesco</h3>
-            <p class="team-role" data-i18n="team.francesco.role">Co-founder, informatico</p>
-          </div>
-        </article>
-
-        <article class="team-card">
-          <img class="team-avatar" src="./assets/team-valerio.png" alt="Valerio" width="72" height="72" loading="lazy">
-          <div class="team-info">
-            <h3 class="team-name">Valerio</h3>
-            <p class="team-role" data-i18n="team.valerio.role">Co-founder, esperto GeoAI</p>
-          </div>
-        </article>
-
-        <article class="team-card">
-          <img class="team-avatar" src="./assets/team-massimo.png" alt="Massimo Gatta" width="72" height="72" loading="lazy">
-          <div class="team-info">
-            <h3 class="team-name">Massimo Gatta</h3>
-            <p class="team-role" data-i18n="team.massimo.role">Co-founder, esperto GIS</p>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Call -->
-  <section class="section section-call" id="call">
-    <div class="container">
-      <span class="section-label" data-i18n="call.label">Contatti</span>
-      <h2 class="section-title" data-i18n="call.title">Organizza call</h2>
-      <p class="section-subtitle" data-i18n="call.subtitle">
-        30 minuti per capire come Strata può aiutare il tuo team GIS.
-      </p>
-
-      <div class="calendly-wrap">
-        <div
-          class="calendly-inline-widget"
-          data-url="https://calendly.com/strataqgisai/30min"
-          style="min-width:320px;height:700px;"
-        ></div>
-        <a
-          href="https://calendly.com/strataqgisai/30min"
-          class="btn btn-primary call-fallback"
-          target="_blank"
-          rel="noopener noreferrer"
-          data-i18n="call.cta"
-        >Prenota 30 minuti</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
   <footer class="footer">
-    <div class="container footer-grid">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <strong>Strata</strong>
-          <span data-i18n="footer.tagline">Agente AI nativo in QGIS. Cloud o on-premise.</span>
-        </div>
-        <div class="footer-nav">
-          <nav class="footer-links" aria-label="Footer">
-            <a href="https://github.com/francemazzi/strata" data-i18n="footer.github">GitHub</a>
-            <a href="https://github.com/francemazzi/strata" target="_blank" rel="noopener noreferrer" data-i18n="footer.star">Metti una stella</a>
-            <a href="https://github.com/francemazzi/strata/releases" data-release-link data-i18n="nav.download">Download</a>
-            <a href="mailto:francemazzi@gmail.com" data-i18n="footer.contact">Contatto</a>
-          </nav>
-          <div class="lang-toggle" role="group" aria-label="Language">
-            <button type="button" data-lang="it" aria-pressed="true">IT</button>
-            <button type="button" data-lang="en" aria-pressed="false">EN</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="footer-opensource">
-        <h3 class="footer-opensource-title" data-i18n="opensource.title">Costruito su QGIS. Aperto, trasparente, senza lock-in.</h3>
-        <p class="footer-opensource-desc" data-i18n="opensource.desc">Basato su QGIS open-source. Compatibile con i tuoi flussi GIS, senza lock-in.</p>
-        <p class="footer-opensource-closing" data-i18n="opensource.closing">Il GIS resta tuo. Il valore aggiunto è nel servizio.</p>
-      </div>
-
-      <div class="footer-bottom">
-        <p class="footer-disclaimer" data-i18n="footer.disclaimer">Strata is an independent commercial service based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.</p>
-      </div>
+    <div class="container footer-minimal">
+      <nav class="footer-links" aria-label="Footer">
+        <a href="https://github.com/francemazzi/strata" data-i18n="footer.github">GitHub</a>
+        <a href="https://github.com/francemazzi/strata/releases" data-release-link data-i18n="nav.download">Download</a>
+        <a href="mailto:francemazzi@gmail.com" data-i18n="footer.contact">Contatto</a>
+        <a href="https://app.getstrata.org" data-i18n="nav.login">ACCEDI</a>
+      </nav>
+      <p class="footer-disclaimer" data-i18n="footer.disclaimer">Strata is an independent commercial service based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.</p>
     </div>
   </footer>
 
-  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
   <script src="./js/i18n.js"></script>
 </body>
 </html>
