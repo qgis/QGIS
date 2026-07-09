@@ -15,6 +15,7 @@
 
 #include "qgsaiaccountwidget.h"
 
+#include <algorithm>
 #include <utility>
 
 #include "qgsaiagentsessionmanager.h"
@@ -472,7 +473,7 @@ void QgsAiAccountWidget::updateUsageCard()
   {
     const int grant = mBalance.warnThreshold * 5;
     if ( grant > 0 )
-      percent = qBound( 0, static_cast<int>( ( static_cast<qint64>( grant - mBalance.available ) * 100 ) / grant ), 100 );
+      percent = std::clamp( static_cast<int>( ( static_cast<qint64>( grant - mBalance.available ) * 100 ) / grant ), 0, 100 );
   }
   mUsageBar->setValue( percent );
 }

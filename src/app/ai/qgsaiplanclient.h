@@ -24,6 +24,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 /**
  * Small Strata Cloud Plan API client used by the desktop settings and model picker.
  *
@@ -72,8 +74,8 @@ class APP_EXPORT QgsAiPlanClient : public QObject
         bool isUnlimited() const { return monthlyCredits <= 0; }
         //! Percentage of the monthly quota already consumed, clamped to [0, 100]. 0 when unlimited.
         int usedPercent() const;
-        bool isLow() const { return status == QLatin1String( "low" ); }
-        bool isDepleted() const { return status == QLatin1String( "depleted" ); }
+        bool isLow() const { return status == "low"_L1; }
+        bool isDepleted() const { return status == "depleted"_L1; }
     };
 
     struct ModelPreferenceInfo
