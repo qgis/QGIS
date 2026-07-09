@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Strata porta modelli linguistici avanzati dentro QGIS. Piano Pro chiavi in mano, Cloud Team per la collaborazione, Enterprise on-premise con AI locale.">
+  <meta name="description" content="Strata: agente AI nativo in QGIS. Cloud gestito o on-premise con AI locale.">
   <title data-i18n="meta.title">Strata — Agente AI per QGIS | Cloud pronto all'uso o Enterprise on-premise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,7 @@
           <button type="button" data-lang="it" aria-pressed="true">IT</button>
           <button type="button" data-lang="en" aria-pressed="false">EN</button>
         </div>
-        <a href="https://strata-fe-372580174147.europe-west1.run.app/login" class="nav-login-link" data-i18n="nav.login">Accedi</a>
+        <a href="https://app.getstrata.org/login" class="nav-login-link" data-i18n="nav.login">Accedi</a>
         <a href="#features" class="btn btn-primary" data-i18n="nav.downloadBtn">Inizia Subito</a>
         <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -56,9 +56,8 @@
           <span class="hero-title-line" data-i18n="hero.titleLine">L'Agente AI per il tuo GIS.</span>
           <span class="hero-highlight" data-i18n="hero.titleHighlight">Pronto all'uso, sicuro per l'azienda.</span>
         </h1>
-        <p class="hero-wordmark" data-i18n="hero.wordmark">Pro · Cloud Team · Enterprise</p>
         <p class="hero-subtitle" data-i18n="hero.subtitle">
-          Porta la potenza dei modelli linguistici avanzati dentro QGIS. Scegli la comodità del nostro Cloud o la sicurezza totale di un'infrastruttura 100% locale e on-premise.
+          AI nativa in QGIS. Cloud gestito o deployment on-premise.
         </p>
         <div class="hero-pills" aria-hidden="true">
           <span class="hero-pill" data-i18n="hero.pillPlan">Plan</span>
@@ -92,7 +91,7 @@
             </div>
             <div class="mockup-messages">
               <div class="mockup-bubble user" data-i18n="mockup.userMsg">Fai buffer 500m sui comuni e esporta GeoJSON</div>
-              <div class="mockup-bubble ai" data-i18n="mockup.aiMsg">Ho ispezionato il layer comuni, eseguito il buffer e salvato output/buffer_500m.geojson. Vuoi rivedere la proposta?</div>
+              <div class="mockup-bubble ai" data-i18n="mockup.aiMsg">Buffer eseguito. Salvato in output/buffer_500m.geojson. Approvi?</div>
             </div>
             <div class="mockup-input"><span data-mockup-typing></span><span class="mockup-cursor" aria-hidden="true">|</span></div>
           </div>
@@ -106,31 +105,28 @@
     <div class="container">
       <span class="section-label" data-i18n="plans.label">Piani e soluzioni</span>
       <h2 class="section-title" data-i18n="plans.title">Scegli come adottare Strata</h2>
-      <p class="section-subtitle" data-i18n="plans.subtitle">
-        Dalla attivazione immediata alla governance enterprise. Un unico agente AI, tre modalità di deployment.
-      </p>
 
       <div class="features-grid">
         <article class="feature-card">
           <div class="feature-number" data-i18n="plans.pro.badge">Pro</div>
           <h3 data-i18n="plans.pro.title">Pro — Chiavi in mano</h3>
           <p class="plan-slogan" data-i18n="plans.pro.slogan">Attiva e usa, zero configurazioni.</p>
-          <p data-i18n="plans.pro.desc">Dimentica la gestione delle API key, i crediti OpenAI e i limiti di fatturazione. Con il piano Pro hai un assistente AI nativo in QGIS, pronto all'uso con un unico abbonamento mensile. Ci occupiamo noi di connetterti ai modelli più veloci e avanzati sul mercato.</p>
+          <p data-i18n="plans.pro.desc">Abbonamento mensile, niente API key da gestire.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number" data-i18n="plans.team.badge">Team</div>
           <h3 data-i18n="plans.team.title">Cloud Team — Collaborazione</h3>
           <p class="plan-slogan" data-i18n="plans.team.slogan">La conoscenza geografica del tuo team, centralizzata.</p>
-          <p data-i18n="plans.team.desc">Condividi il contesto. Strata Cloud indicizza in modo sicuro i file di progetto, i layer e gli script del team. L'agente AI apprende dalle mappe della tua organizzazione per offrire risposte precise e coerenti a tutti i membri, semplificando la collaborazione su progetti GIS complessi.</p>
-          <a href="https://strata-fe-372580174147.europe-west1.run.app" class="plan-cta" data-i18n="plans.team.cta">Accedi alla Strata Cloud →</a>
+          <p data-i18n="plans.team.desc">Contesto condiviso del team, indicizzato in Strata Cloud.</p>
+          <a href="https://app.getstrata.org" class="plan-cta" data-i18n="plans.team.cta">Accedi alla Strata Cloud →</a>
         </article>
 
         <article class="feature-card">
           <div class="feature-number" data-i18n="plans.enterprise.badge">Ent.</div>
           <h3 data-i18n="plans.enterprise.title">Enterprise — Privacy totale &amp; AI locale</h3>
           <p class="plan-slogan" data-i18n="plans.enterprise.slogan">I tuoi dati geografici non lasciano mai la tua rete.</p>
-          <p data-i18n="plans.enterprise.desc">Pensato per organizzazioni con severi requisiti di compliance, riservatezza e data governance. Strata Enterprise funziona interamente on-premise: il software GIS e l'agente AI, basato su modelli LLM open-source ottimizzati come Llama o Mistral, girano localmente sui server aziendali o su workstation dedicate. Nessun dato inviato a terze parti, massima sovranità sul dato e pieno controllo dell'infrastruttura.</p>
+          <p data-i18n="plans.enterprise.desc">On-premise con LLM locali. Zero egress, pieno controllo.</p>
         </article>
       </div>
     </div>
@@ -142,26 +138,26 @@
       <span class="section-label" data-i18n="privacy.label">Sicurezza e privacy</span>
       <h2 class="vibe-section-title" data-i18n="privacy.title">La tua mappa, i tuoi dati. Nessun compromesso sulla sicurezza.</h2>
       <p class="section-subtitle privacy-intro" data-i18n="privacy.subtitle">
-        Per enti pubblici, utility e organizzazioni che gestiscono dati territoriali sensibili. Strata Enterprise mantiene mappe, layer e documenti GIS all'interno della tua infrastruttura.
+        Per dati territoriali sensibili, tutto resta nella tua infrastruttura.
       </p>
       <div class="vibe-steps">
         <article class="vibe-step">
           <span class="vibe-step-num" aria-hidden="true">1</span>
           <h3 data-i18n="privacy.1.title">AI 100% offline</h3>
-          <p data-i18n="privacy.1.desc">Supporto nativo per LLM locali. Esegui analisi complesse sul territorio sfruttando la potenza dell'hardware aziendale, senza connessione internet attiva.</p>
+          <p data-i18n="privacy.1.desc">LLM locali per analisi sul territorio, senza internet.</p>
         </article>
         <article class="vibe-step">
           <span class="vibe-step-num" aria-hidden="true">2</span>
           <h3 data-i18n="privacy.2.title">Isolamento dei dati</h3>
-          <p data-i18n="privacy.2.desc">L'indicizzazione dei layer e dei documenti GIS avviene su database cifrati all'interno della tua infrastruttura.</p>
+          <p data-i18n="privacy.2.desc">Layer e documenti indicizzati su database cifrati interni.</p>
         </article>
         <article class="vibe-step">
           <span class="vibe-step-num" aria-hidden="true">3</span>
           <h3 data-i18n="privacy.3.title">Conformità normativa</h3>
-          <p data-i18n="privacy.3.desc">La soluzione ideale per Pubblica Amministrazione, utility, contractor militari e organizzazioni infrastrutturali che gestiscono dati sensibili non esportabili all'estero.</p>
+          <p data-i18n="privacy.3.desc">Per organizzazioni con dati sensibili non esportabili.</p>
         </article>
       </div>
-      <p class="privacy-closing" data-i18n="privacy.closing">Strata Enterprise: zero egress, audit completo, pieno controllo su modelli, policy e infrastruttura.</p>
+      <p class="privacy-closing" data-i18n="privacy.closing">Zero egress. Audit completo. Controllo totale.</p>
     </div>
   </section>
 
@@ -171,9 +167,6 @@
       <div class="problems-header">
         <span class="section-label" data-i18n="problems.label">Problemi comuni</span>
         <h2 class="section-title" data-i18n="problems.title">Conosci questi ostacoli in QGIS?</h2>
-        <p class="section-subtitle" data-i18n="problems.subtitle">
-          Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. Strata risolve il gap tra domanda e azione nel tuo progetto.
-        </p>
       </div>
 
       <div class="problems-carousel" aria-roledescription="carousel" data-i18n-aria-label="problems.carousel.label">
@@ -182,50 +175,50 @@
         <article class="problem-card">
           <div class="problem-icon">⌨</div>
           <h3 data-i18n="problems.1.title">PyQGIS difficile</h3>
-          <p data-i18n="problems.1.desc">Copiare snippet da ChatGPT senza contesto del progetto. Errori di sintassi, API sbagliate, ore perse.</p>
-          <p class="problem-fix" data-i18n="problems.1.fix">Strata esegue il codice per te, con la tua approvazione.</p>
+          <p data-i18n="problems.1.desc">Snippet da ChatGPT senza contesto del progetto.</p>
+          <p class="problem-fix" data-i18n="problems.1.fix">Esegue il codice con la tua approvazione.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">🗂</div>
           <h3 data-i18n="problems.2.title">Ispezione layer laboriosa</h3>
-          <p data-i18n="problems.2.desc">Capire campi, CRS e estensioni richiede script manuali o round-trip nella console Python.</p>
-          <p class="problem-fix" data-i18n="problems.2.fix">Legge layer e campi direttamente dal tuo progetto.</p>
+          <p data-i18n="problems.2.desc">Campi, CRS ed estensioni richiedono script manuali.</p>
+          <p class="problem-fix" data-i18n="problems.2.fix">Legge layer e campi dal progetto.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">📦</div>
           <h3 data-i18n="problems.3.title">Dipendenze Python mancanti</h3>
-          <p data-i18n="problems.3.desc">geopandas, osmnx, pandas… spesso non installati nell'ambiente QGIS.</p>
-          <p class="problem-fix" data-i18n="problems.3.fix">Installa le librerie mancanti con un clic, sempre sotto il tuo controllo.</p>
+          <p data-i18n="problems.3.desc">geopandas, osmnx… spesso assenti in QGIS.</p>
+          <p class="problem-fix" data-i18n="problems.3.fix">Installa le librerie mancanti con un clic.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">🌐</div>
           <h3 data-i18n="problems.4.title">Scaricare dati è lento</h3>
-          <p data-i18n="problems.4.desc">Overpass, GeoJSON, GADM — fetch manuale, salvataggio, import layer.</p>
-          <p class="problem-fix" data-i18n="problems.4.fix">Scarica e importa i dati in un solo passaggio.</p>
+          <p data-i18n="problems.4.desc">Overpass, GeoJSON, GADM — fetch e import manuale.</p>
+          <p class="problem-fix" data-i18n="problems.4.fix">Scarica e importa in un solo passaggio.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">🔍</div>
           <h3 data-i18n="problems.5.title">Contesto disperso</h3>
-          <p data-i18n="problems.5.desc">File di progetto, script, layer e attributi sparsi — l'AI generica non li vede.</p>
-          <p class="problem-fix" data-i18n="problems.5.fix">Usa i file e i layer del progetto come contesto per le risposte.</p>
+          <p data-i18n="problems.5.desc">Progetto, script e layer sparsi — l'AI generica non li vede.</p>
+          <p class="problem-fix" data-i18n="problems.5.fix">Usa file e layer del progetto come contesto.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">⚠</div>
           <h3 data-i18n="problems.6.title">Modifiche senza controllo</h3>
-          <p data-i18n="problems.6.desc">Script che sovrascrivono file o eseguono codice pericoloso senza review.</p>
-          <p class="problem-fix" data-i18n="problems.6.fix">Ogni modifica va approvata prima di essere applicata.</p>
+          <p data-i18n="problems.6.desc">Script che sovrascrivono file senza review.</p>
+          <p class="problem-fix" data-i18n="problems.6.fix">Ogni modifica va approvata prima.</p>
         </article>
 
         <article class="problem-card">
           <div class="problem-icon">🔌</div>
           <h3 data-i18n="problems.7.title">Plugin AI disconnessi</h3>
-          <p data-i18n="problems.7.desc">Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.</p> <!--#spellok-->
-          <p class="problem-fix" data-i18n="problems.7.fix">L&apos;assistente è nativo in QGIS e conosce il tuo progetto.</p>
+          <p data-i18n="problems.7.desc">Assistenti esterni ignorano layer e Processing Toolbox.</p> <!--#spellok-->
+          <p class="problem-fix" data-i18n="problems.7.fix">Assistente nativo in QGIS, conosce il progetto.</p>
         </article>
           </div>
         </div>
@@ -252,24 +245,22 @@
         <article class="solution-card">
           <h3 data-i18n="solution.chat.title">Chat accanto alla mappa</h3>
           <p data-i18n="solution.chat.desc">
-            Un pannello laterale dove chiedi in italiano, allegui file e vedi subito le risposte mentre lavori sulla mappa.
+            Chiedi in italiano, allega file, vedi risposte accanto alla mappa.
           </p>
           <ul class="solution-features">
             <li data-i18n="solution.chat.f1">Risposte in tempo reale</li>
             <li data-i18n="solution.chat.f2">Cronologia salvata per progetto</li>
-            <li data-i18n="solution.chat.f3">Modifiche da approvare prima di applicarle</li>
           </ul>
         </article>
 
         <article class="solution-card">
           <h3 data-i18n="solution.agent.title">Tre modalità, una sola app</h3>
           <p data-i18n="solution.agent.desc">
-            Pianifica un intervento, eseguilo sul progetto o fai solo domande. Scegli il livello di autonomia che preferisci.
+            Pianifica, esegui o chiedi. Scegli il livello di autonomia.
           </p>
           <ul class="solution-features">
             <li data-i18n="solution.agent.f1">Pianifica · Esegui · Chiedi</li>
             <li data-i18n="solution.agent.f2">Azioni GIS integrate</li>
-            <li data-i18n="solution.agent.f3">Personalizza come lavora l&apos;assistente</li>
           </ul>
         </article>
       </div>
@@ -281,9 +272,6 @@
     <div class="container">
       <span class="section-label" data-i18n="demo.label">Demo</span>
       <h2 class="section-title" data-i18n="demo.title">Vedilo in azione</h2>
-      <p class="section-subtitle" data-i18n="demo.subtitle">
-        Guarda come Strata risponde a richieste reali su progetti GIS, con approvazione prima di ogni modifica.
-      </p>
 
       <div class="demo-carousel" aria-roledescription="carousel" data-i18n-aria-label="demo.carousel.label">
         <div class="demo-carousel-header">
@@ -307,9 +295,9 @@
             </figure>
             <div class="demo-caption">
               <span class="demo-kicker" data-i18n="demo.agent.kicker">Esecuzione controllata</span>
-              <h3 data-i18n="demo.agent.title">Agent mode — esecuzione sul progetto</h3>
+              <h3 data-i18n="demo.agent.title">Esecuzione sul progetto</h3>
               <p data-i18n="demo.agent.desc">
-                Chiedi in linguaggio naturale (es. «crea maschera esterna»): l'assistant ispeziona i layer, esegue run_python e mostra il risultato sulla mappa.
+                Chiedi in naturale, ispeziona layer, esegue e mostra il risultato.
               </p>
             </div>
           </article>
@@ -320,9 +308,9 @@
             </figure>
             <div class="demo-caption">
               <span class="demo-kicker" data-i18n="demo.plan.kicker">Piano prima dell'azione</span>
-              <h3 data-i18n="demo.plan.title">Plan mode — piano prima dell'azione</h3>
+              <h3 data-i18n="demo.plan.title">Piano strutturato</h3>
               <p data-i18n="demo.plan.desc">
-                Descrivi un obiettivo complesso (es. censimento alberi): Strata propone step strutturati e pulsanti Accept plan / Reject / revise prima di modificare il progetto.
+                Obiettivo complesso → piano da approvare prima di agire.
               </p>
             </div>
           </article>
@@ -333,9 +321,9 @@
             </figure>
             <div class="demo-caption">
               <span class="demo-kicker" data-i18n="demo.maps.kicker">Domande sui layer reali</span>
-              <h3 data-i18n="demo.maps.title">Analisi mappe — verde urbano e alberi</h3>
+              <h3 data-i18n="demo.maps.title">Verde urbano e alberi</h3>
               <p data-i18n="demo.maps.desc">
-                L'assistente legge i layer del progetto, unisce geometrie sovrapposte, calcola superfici, conta gli alberi e restituisce una risposta verificabile direttamente accanto alla mappa.
+                Legge i layer, calcola metriche, risponde accanto alla mappa.
               </p>
             </div>
           </article>
@@ -358,7 +346,7 @@
             <span class="speed-time" data-i18n="speed.beforeTime">~45 min</span>
           </div>
           <p data-i18n="speed.beforeSteps">
-            Aprire console Python, scrivere script per ogni layer, cercare API su StackExchange, installare dipendenze, debuggare path, export manuale.
+            Console Python, script per layer, API, dipendenze, export manuale.
           </p>
         </article>
 
@@ -368,7 +356,7 @@
             <span class="speed-time" data-i18n="speed.afterTime">~5 min</span>
           </div>
           <p data-i18n="speed.afterSteps">
-            Una richiesta in linguaggio naturale. L'agente ispeziona, propone codice, chiede approval, esegue e salva nel workspace.
+            Una richiesta in linguaggio naturale. Approvi, esegue, salva.
           </p>
         </article>
       </div>
@@ -380,45 +368,42 @@
     <div class="container">
       <span class="section-label" data-i18n="features.label">Vantaggi</span>
       <h2 class="section-title" data-i18n="features.title">Tutto integrato, zero complessità</h2>
-      <p class="section-subtitle" data-i18n="features.subtitle">
-        L&apos;assistente lavora dentro QGIS con i tuoi dati, senza uscire dall&apos;app.
-      </p>
 
       <div class="features-grid">
         <article class="feature-card">
           <div class="feature-number">01</div>
           <h3 data-i18n="features.1.title">Fa il lavoro al posto tuo</h3>
-          <p data-i18n="features.1.desc">Buffer, export, analisi, download dati: chiedi in linguaggio naturale e Strata si occupa del resto.</p>
+          <p data-i18n="features.1.desc">Buffer, export, analisi: chiedi in naturale, Strata esegue.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number">02</div>
           <h3 data-i18n="features.2.title">Si adatta al tuo modo di lavorare</h3>
-          <p data-i18n="features.2.desc">Imposta regole e preferenze così l&apos;assistente risponde come il tuo team si aspetta.</p>
+          <p data-i18n="features.2.desc">Regole e preferenze per risposte coerenti col team.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number">03</div>
           <h3 data-i18n="features.3.title">Conosce i tuoi file</h3>
-          <p data-i18n="features.3.desc">Script, progetti e documenti del workspace sono disponibili come contesto per le risposte.</p>
+          <p data-i18n="features.3.desc">Script, progetti e documenti del workspace come contesto.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number">04</div>
           <h3 data-i18n="features.4.title">I layer solo quando vuoi</h3>
-          <p data-i18n="features.4.desc">Condividi attributi e geometrie con l&apos;AI solo se lo decidi tu, con pieno controllo.</p>
+          <p data-i18n="features.4.desc">Condividi layer e attributi solo quando decidi tu.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number">05</div>
           <h3 data-i18n="features.5.title">AI già inclusa</h3>
-          <p data-i18n="features.5.desc">Con il piano Pro non serve gestire chiavi API o crediti: è tutto pronto.</p>
+          <p data-i18n="features.5.desc">Piano Pro: modelli AI pronti, zero gestione crediti.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-number">06</div>
           <h3 data-i18n="features.6.title">I tuoi dati, le tue regole</h3>
-          <p data-i18n="features.6.desc">In azienda puoi tenere tutto in locale. Nel cloud decidi tu cosa condividere.</p>
+          <p data-i18n="features.6.desc">On-premise in locale. Nel cloud, tu decidi cosa condividere.</p>
         </article>
       </div>
     </div>
@@ -437,23 +422,23 @@
         <article class="vibe-step">
           <span class="vibe-step-num" aria-hidden="true">1</span>
           <h3 data-i18n="start.1.title">Scarica Strata</h3>
-          <p data-i18n="start.1.desc">Installa su Mac, Windows o Linux. È QGIS con l&apos;assistente AI già dentro.</p>
+          <p data-i18n="start.1.desc">Mac, Windows o Linux. QGIS con AI già integrata.</p>
         </article>
         <article class="vibe-step">
           <span class="vibe-step-num" aria-hidden="true">2</span>
           <h3 data-i18n="start.2.title">Apri il tuo progetto</h3>
-          <p data-i18n="start.2.desc">Layer, mappe e file che usi ogni giorno. L&apos;AI li vede e li capisce.</p>
+          <p data-i18n="start.2.desc">Apri layer e mappe che usi ogni giorno.</p>
         </article>
         <article class="vibe-step">
           <span class="vibe-step-num" aria-hidden="true">3</span>
           <h3 data-i18n="start.3.title">Chiedi cosa ti serve</h3>
-          <p data-i18n="start.3.desc">Scrivi in italiano cosa vuoi fare. Strata propone, tu approvi, lui esegue.</p>
+          <p data-i18n="start.3.desc">Scrivi cosa vuoi fare. Strata propone, tu approvi.</p>
         </article>
       </div>
 
       <div class="start-cta">
         <a href="#download" class="btn btn-primary btn-lg" data-i18n="start.cta.download">Scarica gratis</a>
-        <a href="https://strata-fe-372580174147.europe-west1.run.app/registrati" class="btn btn-secondary btn-lg" data-i18n="start.cta.cloud">Prova Strata Cloud</a>
+        <a href="https://app.getstrata.org/registrati" class="btn btn-secondary btn-lg" data-i18n="start.cta.cloud">Prova Strata Cloud</a>
       </div>
     </div>
   </section>
@@ -465,7 +450,7 @@
         <span class="section-label" data-i18n="download.label">Download</span>
         <h2 class="section-title" data-i18n="download.title">Scarica Strata</h2>
         <p class="section-subtitle" data-i18n="download.subtitle">
-          Binari precompilati da GitHub Releases. macOS e Windows sono firmati; Linux AppImage richiede ancora verifica manuale.
+          Binari da GitHub Releases.
         </p>
         <p class="download-status" data-release-status data-i18n="download.status.fallback">Releases GitHub</p>
         <a href="https://github.com/francemazzi/strata/releases" class="btn btn-primary btn-lg" data-release-link data-i18n="download.cta">Vai alle Releases</a>
@@ -477,7 +462,7 @@
           <h3 data-i18n="download.macos.title">macOS</h3>
           <p class="download-sub" data-i18n="download.macos.sub">Intel + Apple Silicon</p>
           <p class="download-file" data-download-file="macos" data-i18n="download.macos.file">File .dmg</p>
-          <p class="download-note" data-i18n="download.macos.note">Build universal firmata e notarizzata. Trascina Strata in Applicazioni e avvia.</p>
+          <p class="download-note" data-i18n="download.macos.note">DMG firmato. Trascina in Applicazioni.</p>
           <a href="https://github.com/francemazzi/strata/releases" class="btn btn-secondary" data-download-asset="macos" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
 
@@ -486,7 +471,7 @@
           <h3 data-i18n="download.windows.title">Windows</h3>
           <p class="download-sub" data-i18n="download.windows.sub">10/11 x64</p>
           <p class="download-file" data-download-file="windows" data-i18n="download.windows.file">File -win64.exe</p>
-          <p class="download-note" data-i18n="download.windows.note">Installer NSIS firmato Authenticode. Verifica il publisher; la reputazione SmartScreen può richiedere tempo.</p>
+          <p class="download-note" data-i18n="download.windows.note">Installer firmato. Verifica il publisher.</p>
           <a href="https://github.com/francemazzi/strata/releases" class="btn btn-secondary" data-download-asset="windows" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
 
@@ -495,7 +480,7 @@
           <h3 data-i18n="download.linux.title">Linux</h3>
           <p class="download-sub" data-i18n="download.linux.sub">x86_64</p>
           <p class="download-file" data-download-file="linux" data-i18n="download.linux.file">File .AppImage</p>
-          <p class="download-note" data-i18n="download.linux.note">chmod +x Strata-*.AppImage &amp;&amp; ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.</p>
+          <p class="download-note" data-i18n="download.linux.note">AppImage eseguibile. Ubuntu 22.04+.</p>
           <a href="https://github.com/francemazzi/strata/releases" class="btn btn-secondary" data-download-asset="linux" data-i18n="nav.downloadBtn">Scarica</a>
         </article>
       </div>
@@ -507,9 +492,6 @@
     <div class="container">
       <span class="section-label" data-i18n="team.label">Team</span>
       <h2 class="section-title" data-i18n="team.title">Chi c'è dietro Strata</h2>
-      <p class="section-subtitle" data-i18n="team.subtitle">
-        Costruiamo il prodotto e conosciamo il dominio GIS.
-      </p>
 
       <div class="team-grid">
         <article class="team-card">
@@ -589,7 +571,7 @@
 
       <div class="footer-opensource">
         <h3 class="footer-opensource-title" data-i18n="opensource.title">Costruito su QGIS. Aperto, trasparente, senza lock-in.</h3>
-        <p class="footer-opensource-desc" data-i18n="opensource.desc">Strata è costruito sul cuore open-source di QGIS. Questo garantisce piena compatibilità con i tuoi flussi GIS esistenti e ti protegge dal vincolo di formati proprietari. Paghi per l'infrastruttura cloud, la semplicità d'uso e la nostra esperienza nell'ottimizzazione dei modelli AI applicati alla cartografia, mantenendo la trasparenza e la solidità del software libero.</p>
+        <p class="footer-opensource-desc" data-i18n="opensource.desc">Basato su QGIS open-source. Compatibile con i tuoi flussi GIS, senza lock-in.</p>
         <p class="footer-opensource-closing" data-i18n="opensource.closing">Il GIS resta tuo. Il valore aggiunto è nel servizio.</p>
       </div>
 

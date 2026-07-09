@@ -26,7 +26,7 @@
     it: {
       "meta.title": "Strata — Agente AI per QGIS | Cloud pronto all'uso o Enterprise on-premise",
       "meta.description":
-        "Strata porta modelli linguistici avanzati dentro QGIS. Piano Pro chiavi in mano, Cloud Team per la collaborazione, Enterprise on-premise con AI locale.",
+        "Strata: agente AI nativo in QGIS. Cloud gestito o on-premise con AI locale.",
 
       "nav.plans": "Piani",
       "nav.privacy": "Privacy",
@@ -40,9 +40,7 @@
       "hero.badge": "Agente AI per QGIS · Cloud o On-Premise",
       "hero.titleLine": "L'Agente AI per il tuo GIS.",
       "hero.titleHighlight": "Pronto all'uso, sicuro per l'azienda.",
-      "hero.wordmark": "Pro · Cloud Team · Enterprise",
-      "hero.subtitle":
-        "Porta la potenza dei modelli linguistici avanzati dentro QGIS. Scegli la comodità del nostro Cloud o la sicurezza totale di un'infrastruttura 100% locale e on-premise.",
+      "hero.subtitle": "AI nativa in QGIS. Cloud gestito o deployment on-premise.",
       "hero.pillPlan": "Plan",
       "hero.pillAgent": "Agent",
       "hero.pillAsk": "Ask",
@@ -52,40 +50,34 @@
 
       "plans.label": "Piani e soluzioni",
       "plans.title": "Scegli come adottare Strata",
-      "plans.subtitle":
-        "Dalla attivazione immediata alla governance enterprise. Un unico agente AI, tre modalità di deployment.",
       "plans.pro.badge": "Pro",
       "plans.pro.title": "Pro — Chiavi in mano",
       "plans.pro.slogan": "Attiva e usa, zero configurazioni.",
-      "plans.pro.desc":
-        "Dimentica la gestione delle API key, i crediti OpenAI e i limiti di fatturazione. Con il piano Pro hai un assistente AI nativo in QGIS, pronto all'uso con un unico abbonamento mensile. Ci occupiamo noi di connetterti ai modelli più veloci e avanzati sul mercato.",
+      "plans.pro.desc": "Abbonamento mensile, niente API key da gestire.",
       "plans.team.badge": "Team",
       "plans.team.title": "Cloud Team — Collaborazione",
       "plans.team.slogan": "La conoscenza geografica del tuo team, centralizzata.",
-      "plans.team.desc":
-        "Condividi il contesto. Strata Cloud indicizza in modo sicuro i file di progetto, i layer e gli script del team. L'agente AI apprende dalle mappe della tua organizzazione per offrire risposte precise e coerenti a tutti i membri, semplificando la collaborazione su progetti GIS complessi.",
+      "plans.team.desc": "Contesto condiviso del team, indicizzato in Strata Cloud.",
       "plans.team.cta": "Accedi alla Strata Cloud →",
       "plans.enterprise.badge": "Ent.",
       "plans.enterprise.title": "Enterprise — Privacy totale & AI locale",
       "plans.enterprise.slogan": "I tuoi dati geografici non lasciano mai la tua rete.",
-      "plans.enterprise.desc":
-        "Pensato per organizzazioni con severi requisiti di compliance, riservatezza e data governance. Strata Enterprise funziona interamente on-premise: il software GIS e l'agente AI, basato su modelli LLM open-source ottimizzati come Llama o Mistral, girano localmente sui server aziendali o su workstation dedicate. Nessun dato inviato a terze parti, massima sovranità sul dato e pieno controllo dell'infrastruttura.",
+      "plans.enterprise.desc": "On-premise con LLM locali. Zero egress, pieno controllo.",
 
       "privacy.label": "Sicurezza e privacy",
       "privacy.title": "La tua mappa, i tuoi dati. Nessun compromesso sulla sicurezza.",
       "privacy.subtitle":
-        "Per enti pubblici, utility e organizzazioni che gestiscono dati territoriali sensibili. Strata Enterprise mantiene mappe, layer e documenti GIS all'interno della tua infrastruttura.",
+        "Per dati territoriali sensibili, tutto resta nella tua infrastruttura.",
       "privacy.1.title": "AI 100% offline",
       "privacy.1.desc":
-        "Supporto nativo per LLM locali. Esegui analisi complesse sul territorio sfruttando la potenza dell'hardware aziendale, senza connessione internet attiva.",
+        "LLM locali per analisi sul territorio, senza internet.",
       "privacy.2.title": "Isolamento dei dati",
       "privacy.2.desc":
-        "L'indicizzazione dei layer e dei documenti GIS avviene su database cifrati all'interno della tua infrastruttura.",
+        "Layer e documenti indicizzati su database cifrati interni.",
       "privacy.3.title": "Conformità normativa",
       "privacy.3.desc":
-        "La soluzione ideale per Pubblica Amministrazione, utility, contractor militari e organizzazioni infrastrutturali che gestiscono dati sensibili non esportabili all'estero.",
-      "privacy.closing":
-        "Strata Enterprise: zero egress, audit completo, pieno controllo su modelli, policy e infrastruttura.",
+        "Per organizzazioni con dati sensibili non esportabili.",
+      "privacy.closing": "Zero egress. Audit completo. Controllo totale.",
 
       "mockup.mapLabel": "Mappa GIS",
       "mockup.chatTitle": "AI Assistant",
@@ -94,51 +86,43 @@
       "mockup.modeAsk": "Ask",
       "mockup.userMsg": "Fai buffer 500m sui comuni e esporta GeoJSON",
       "mockup.aiMsg":
-        "Ho ispezionato il layer comuni, eseguito il buffer e salvato output/buffer_500m.geojson. Vuoi rivedere la proposta?",
+        "Buffer eseguito. Salvato in output/buffer_500m.geojson. Approvi?",
       "mockup.input": "buffer 500m sui comuni ed esporta GeoJSON…",
 
       "problems.label": "Problemi comuni",
       "problems.title": "Conosci questi ostacoli in QGIS?",
-      "problems.subtitle":
-        "Workflow GIS spesso richiedono script PyQGIS, ricerca forum e copia-incolla da chat generiche. Strata risolve il gap tra domanda e azione nel tuo progetto.",
       "problems.carousel.label": "Carousel problemi comuni",
       "problems.prev": "Problema precedente",
       "problems.next": "Problema successivo",
 
       "problems.1.title": "PyQGIS difficile",
-      "problems.1.desc":
-        "Copiare snippet da ChatGPT senza contesto del progetto. Errori di sintassi, API sbagliate, ore perse.",
-      "problems.1.fix": "Strata esegue il codice per te, con la tua approvazione.",
+      "problems.1.desc": "Snippet da ChatGPT senza contesto del progetto.",
+      "problems.1.fix": "Esegue il codice con la tua approvazione.",
 
       "problems.2.title": "Ispezione layer laboriosa",
-      "problems.2.desc":
-        "Capire campi, CRS e estensioni richiede script manuali o round-trip nella console Python.",
-      "problems.2.fix": "Legge layer e campi direttamente dal tuo progetto.",
+      "problems.2.desc": "Campi, CRS ed estensioni richiedono script manuali.",
+      "problems.2.fix": "Legge layer e campi dal progetto.",
 
       "problems.3.title": "Dipendenze Python mancanti",
-      "problems.3.desc":
-        "geopandas, osmnx, pandas… spesso non installati nell'ambiente QGIS.",
-      "problems.3.fix": "Installa le librerie mancanti con un clic, sempre sotto il tuo controllo.",
+      "problems.3.desc": "geopandas, osmnx… spesso assenti in QGIS.",
+      "problems.3.fix": "Installa le librerie mancanti con un clic.",
 
       "problems.4.title": "Scaricare dati è lento",
-      "problems.4.desc":
-        "Overpass, GeoJSON, GADM — fetch manuale, salvataggio, import layer.",
-      "problems.4.fix": "Scarica e importa i dati in un solo passaggio.",
+      "problems.4.desc": "Overpass, GeoJSON, GADM — fetch e import manuale.",
+      "problems.4.fix": "Scarica e importa in un solo passaggio.",
 
       "problems.5.title": "Contesto disperso",
-      "problems.5.desc":
-        "File di progetto, script, layer e attributi sparsi — l'AI generica non li vede.",
-      "problems.5.fix": "Usa i file e i layer del progetto come contesto per le risposte.",
+      "problems.5.desc": "Progetto, script e layer sparsi — l'AI generica non li vede.",
+      "problems.5.fix": "Usa file e layer del progetto come contesto.",
 
       "problems.6.title": "Modifiche senza controllo",
-      "problems.6.desc":
-        "Script che sovrascrivono file o eseguono codice pericoloso senza review.",
-      "problems.6.fix": "Ogni modifica va approvata prima di essere applicata.",
+      "problems.6.desc": "Script che sovrascrivono file senza review.",
+      "problems.6.fix": "Ogni modifica va approvata prima.",
 
       "problems.7.title": "Plugin AI disconnessi",
       "problems.7.desc":
-        "Assistenti esterni non conoscono i tuoi layer attivi né il Processing Toolbox.", // #spellok
-      "problems.7.fix": "L'assistente è nativo in QGIS e conosce il tuo progetto.",
+        "Assistenti esterni ignorano layer e Processing Toolbox.", // #spellok
+      "problems.7.fix": "Assistente nativo in QGIS, conosce il progetto.",
 
       "solution.label": "Soluzione",
       "solution.title": "Chiedi, approva, fatto",
@@ -147,43 +131,39 @@
 
       "solution.chat.title": "Chat accanto alla mappa",
       "solution.chat.desc":
-        "Un pannello laterale dove chiedi in italiano, allegui file e vedi subito le risposte mentre lavori sulla mappa.",
+        "Chiedi in italiano, allega file, vedi risposte accanto alla mappa.",
       "solution.chat.f1": "Risposte in tempo reale",
       "solution.chat.f2": "Cronologia salvata per progetto",
-      "solution.chat.f3": "Modifiche da approvare prima di applicarle",
 
       "solution.agent.title": "Tre modalità, una sola app",
       "solution.agent.desc":
-        "Pianifica un intervento, eseguilo sul progetto o fai solo domande. Scegli il livello di autonomia che preferisci.",
+        "Pianifica, esegui o chiedi. Scegli il livello di autonomia.",
       "solution.agent.f1": "Pianifica · Esegui · Chiedi",
       "solution.agent.f2": "Azioni GIS integrate",
-      "solution.agent.f3": "Personalizza come lavora l'assistente",
 
       "demo.label": "Demo",
       "demo.title": "Vedilo in azione",
-      "demo.subtitle":
-        "Guarda come Strata risponde a richieste reali su progetti GIS, con approvazione prima di ogni modifica.",
       "demo.carousel.label": "Esempi interattivi di Strata",
       "demo.tabs.label": "Scegli un esempio demo",
       "demo.prev": "Esempio precedente",
       "demo.next": "Esempio successivo",
       "demo.agent.tab": "Agent",
       "demo.agent.kicker": "Esecuzione controllata",
-      "demo.agent.title": "Agent mode — esecuzione sul progetto",
+      "demo.agent.title": "Esecuzione sul progetto",
       "demo.agent.desc":
-        "Chiedi in linguaggio naturale (es. «crea maschera esterna»): l'assistant ispeziona i layer, esegue run_python e mostra il risultato sulla mappa.",
+        "Chiedi in naturale, ispeziona layer, esegue e mostra il risultato.",
       "demo.agent.alt": "Strata in Agent mode con pannello AI accanto alla mappa GIS",
       "demo.plan.tab": "Plan",
       "demo.plan.kicker": "Piano prima dell'azione",
-      "demo.plan.title": "Plan mode — piano prima dell'azione",
+      "demo.plan.title": "Piano strutturato",
       "demo.plan.desc":
-        "Descrivi un obiettivo complesso (es. censimento alberi): Strata propone step strutturati e pulsanti Accept plan / Reject / revise prima di modificare il progetto.",
+        "Obiettivo complesso → piano da approvare prima di agire.",
       "demo.plan.alt": "Strata in Plan mode con piano approvabile prima delle modifiche",
       "demo.maps.tab": "Analisi mappe",
       "demo.maps.kicker": "Domande sui layer reali",
-      "demo.maps.title": "Analisi mappe — verde urbano e alberi",
+      "demo.maps.title": "Verde urbano e alberi",
       "demo.maps.desc":
-        "L'assistente legge i layer del progetto, unisce geometrie sovrapposte, calcola superfici, conta gli alberi e restituisce una risposta verificabile direttamente accanto alla mappa.",
+        "Legge i layer, calcola metriche, risponde accanto alla mappa.",
       "demo.maps.alt": "Analisi Strata su mappa di Brescia con risposta AI su verde urbano e alberi",
 
       "speed.label": "Produttività GIS",
@@ -192,40 +172,38 @@
       "speed.before": "Prima",
       "speed.beforeTime": "~45 min",
       "speed.beforeSteps":
-        "Aprire console Python, scrivere script per ogni layer, cercare API su StackExchange, installare dipendenze, debuggare path, export manuale.",
+        "Console Python, script per layer, API, dipendenze, export manuale.",
       "speed.after": "Con Strata",
       "speed.afterTime": "~5 min",
       "speed.afterSteps":
-        "Una richiesta in linguaggio naturale. L'agente ispeziona, propone codice, chiede approval, esegue e salva nel workspace.",
+        "Una richiesta in linguaggio naturale. Approvi, esegue, salva.",
 
       "features.label": "Vantaggi",
       "features.title": "Tutto integrato, zero complessità",
-      "features.subtitle":
-        "L'assistente lavora dentro QGIS con i tuoi dati, senza uscire dall'app.",
 
       "features.1.title": "Fa il lavoro al posto tuo",
       "features.1.desc":
-        "Buffer, export, analisi, download dati: chiedi in linguaggio naturale e Strata si occupa del resto.",
+        "Buffer, export, analisi: chiedi in naturale, Strata esegue.",
 
       "features.2.title": "Si adatta al tuo modo di lavorare",
       "features.2.desc":
-        "Imposta regole e preferenze così l'assistente risponde come il tuo team si aspetta.",
+        "Regole e preferenze per risposte coerenti col team.",
 
       "features.3.title": "Conosce i tuoi file",
       "features.3.desc":
-        "Script, progetti e documenti del workspace sono disponibili come contesto per le risposte.",
+        "Script, progetti e documenti del workspace come contesto.",
 
       "features.4.title": "I layer solo quando vuoi",
       "features.4.desc":
-        "Condividi attributi e geometrie con l'AI solo se lo decidi tu, con pieno controllo.",
+        "Condividi layer e attributi solo quando decidi tu.",
 
       "features.5.title": "AI già inclusa",
       "features.5.desc":
-        "Con il piano Pro non serve gestire chiavi API o crediti: è tutto pronto.",
+        "Piano Pro: modelli AI pronti, zero gestione crediti.",
 
       "features.6.title": "I tuoi dati, le tue regole",
       "features.6.desc":
-        "In azienda puoi tenere tutto in locale. Nel cloud decidi tu cosa condividere.",
+        "On-premise in locale. Nel cloud, tu decidi cosa condividere.",
 
       "start.label": "Come iniziare",
       "start.title": "Pronto in pochi minuti",
@@ -233,42 +211,37 @@
         "Nessuna configurazione complicata. Scarica, apri il tuo progetto QGIS e inizia subito.",
       "start.1.title": "Scarica Strata",
       "start.1.desc":
-        "Installa su Mac, Windows o Linux. È QGIS con l'assistente AI già dentro.",
+        "Mac, Windows o Linux. QGIS con AI già integrata.",
       "start.2.title": "Apri il tuo progetto",
       "start.2.desc":
-        "Layer, mappe e file che usi ogni giorno. L'AI li vede e li capisce.",
+        "Apri layer e mappe che usi ogni giorno.",
       "start.3.title": "Chiedi cosa ti serve",
       "start.3.desc":
-        "Scrivi in italiano cosa vuoi fare. Strata propone, tu approvi, lui esegue.",
+        "Scrivi cosa vuoi fare. Strata propone, tu approvi.",
       "start.cta.download": "Scarica gratis",
       "start.cta.cloud": "Prova Strata Cloud",
 
       "download.label": "Download",
       "download.title": "Scarica Strata",
-      "download.subtitle":
-        "Binari precompilati da GitHub Releases. macOS e Windows sono firmati; Linux AppImage richiede ancora verifica manuale.",
+      "download.subtitle": "Binari da GitHub Releases.",
       "download.cta": "Vai alle Releases",
       "download.status.fallback": "Releases GitHub",
       "download.status.complete": "Ultima release completa: {version}",
       "download.macos.title": "macOS",
       "download.macos.sub": "Intel + Apple Silicon",
       "download.macos.file": "File .dmg",
-      "download.macos.note":
-        "Build universal firmata e notarizzata. Trascina Strata in Applicazioni e avvia.",
+      "download.macos.note": "DMG firmato. Trascina in Applicazioni.",
       "download.windows.title": "Windows",
       "download.windows.sub": "10/11 x64",
       "download.windows.file": "File -win64.exe",
-      "download.windows.note":
-        "Installer NSIS firmato Authenticode. Verifica il publisher; la reputazione SmartScreen può richiedere tempo.",
+      "download.windows.note": "Installer firmato. Verifica il publisher.",
       "download.linux.title": "Linux",
       "download.linux.sub": "x86_64",
       "download.linux.file": "File .AppImage",
-      "download.linux.note":
-        "chmod +x Strata-*.AppImage && ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
+      "download.linux.note": "AppImage eseguibile. Ubuntu 22.04+.",
 
       "team.label": "Team",
       "team.title": "Chi c'è dietro Strata",
-      "team.subtitle": "Costruiamo il prodotto e conosciamo il dominio GIS.",
       "team.francesco.role": "Co-founder, informatico",
       "team.valerio.role": "Co-founder, esperto GeoAI",
       "team.massimo.role": "Co-founder, esperto GIS",
@@ -281,7 +254,7 @@
       "footer.tagline": "Agente AI nativo in QGIS. Cloud o on-premise.",
       "opensource.title": "Costruito su QGIS. Aperto, trasparente, senza lock-in.",
       "opensource.desc":
-        "Strata è costruito sul cuore open-source di QGIS. Questo garantisce piena compatibilità con i tuoi flussi GIS esistenti e ti protegge dal vincolo di formati proprietari. Paghi per l'infrastruttura cloud, la semplicità d'uso e la nostra esperienza nell'ottimizzazione dei modelli AI applicati alla cartografia, mantenendo la trasparenza e la solidità del software libero.",
+        "Basato su QGIS open-source. Compatibile con i tuoi flussi GIS, senza lock-in.",
       "opensource.closing": "Il GIS resta tuo. Il valore aggiunto è nel servizio.",
       "footer.disclaimer":
         "Strata is an independent commercial service based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
@@ -293,7 +266,7 @@
     en: {
       "meta.title": "Strata — AI Agent for QGIS | Managed Cloud or Enterprise On-Premise",
       "meta.description":
-        "Strata brings advanced language models into QGIS. Pro plan ready to use, Cloud Team for collaboration, Enterprise on-premise with local AI.",
+        "Strata: native AI agent in QGIS. Managed cloud or on-premise with local AI.",
 
       "nav.plans": "Plans",
       "nav.privacy": "Privacy",
@@ -307,9 +280,7 @@
       "hero.badge": "AI Agent for QGIS · Cloud or On-Premise",
       "hero.titleLine": "The AI agent for your GIS.",
       "hero.titleHighlight": "Ready to use, secure for enterprise.",
-      "hero.wordmark": "Pro · Cloud Team · Enterprise",
-      "hero.subtitle":
-        "Bring advanced language models into QGIS. Choose the convenience of our managed Cloud or the full security of a 100% local, on-premise infrastructure.",
+      "hero.subtitle": "Native AI in QGIS. Managed cloud or on-premise.",
       "hero.pillPlan": "Plan",
       "hero.pillAgent": "Agent",
       "hero.pillAsk": "Ask",
@@ -319,40 +290,34 @@
 
       "plans.label": "Plans & solutions",
       "plans.title": "Choose how to adopt Strata",
-      "plans.subtitle":
-        "From instant activation to enterprise governance. One AI agent, three deployment modes.",
       "plans.pro.badge": "Pro",
       "plans.pro.title": "Pro — Turnkey",
       "plans.pro.slogan": "Activate and use, zero configuration.",
-      "plans.pro.desc":
-        "Forget managing API keys, OpenAI credits, and billing limits. With Pro you get a native AI assistant in QGIS, ready to use with a single monthly subscription. We connect you to the fastest, most advanced models on the market.",
+      "plans.pro.desc": "Monthly subscription, no API keys to manage.",
       "plans.team.badge": "Team",
       "plans.team.title": "Cloud Team — Collaboration",
       "plans.team.slogan": "Your team's geographic knowledge, centralized.",
-      "plans.team.desc":
-        "Share context. Strata Cloud securely indexes your team's project files, layers, and scripts. The AI agent learns from your organization's maps to deliver precise, consistent answers for every member, simplifying collaboration on complex GIS projects.",
+      "plans.team.desc": "Shared team context, indexed in Strata Cloud.",
       "plans.team.cta": "Log in to Strata Cloud →",
       "plans.enterprise.badge": "Ent.",
       "plans.enterprise.title": "Enterprise — Total privacy & local AI",
       "plans.enterprise.slogan": "Your geographic data never leaves your network.",
-      "plans.enterprise.desc":
-        "Built for organizations with strict compliance, confidentiality, and data governance requirements. Strata Enterprise runs entirely on-premise: the GIS software and AI agent, powered by optimized open-source LLMs like Llama or Mistral, run locally on company servers or dedicated workstations. No data sent to third parties, full data sovereignty and infrastructure control.",
+      "plans.enterprise.desc": "On-premise with local LLMs. Zero egress, full control.",
 
       "privacy.label": "Security & privacy",
       "privacy.title": "Your map, your data. No compromise on security.",
       "privacy.subtitle":
-        "For public agencies, utilities, and organizations handling sensitive territorial data. Strata Enterprise keeps maps, layers, and GIS documents inside your infrastructure.",
+        "For sensitive territorial data, everything stays in your infrastructure.",
       "privacy.1.title": "100% offline AI",
       "privacy.1.desc":
-        "Native support for local LLMs. Run complex territorial analysis using your company hardware, with no active internet connection required.",
+        "Local LLMs for territorial analysis, no internet required.",
       "privacy.2.title": "Data isolation",
       "privacy.2.desc":
-        "Layer and GIS document indexing runs on encrypted databases within your infrastructure.",
+        "Layers and documents indexed on encrypted internal databases.",
       "privacy.3.title": "Regulatory compliance",
       "privacy.3.desc":
-        "The ideal solution for public administration, utilities, military contractors, and infrastructure organizations managing sensitive data that cannot be exported abroad.",
-      "privacy.closing":
-        "Strata Enterprise: zero egress, full audit trail, complete control over models, policies, and infrastructure.",
+        "For organizations with sensitive, non-exportable data.",
+      "privacy.closing": "Zero egress. Full audit. Total control.",
 
       "mockup.mapLabel": "GIS map",
       "mockup.chatTitle": "AI Assistant",
@@ -361,51 +326,43 @@
       "mockup.modeAsk": "Ask",
       "mockup.userMsg": "Buffer municipalities by 500m and export GeoJSON",
       "mockup.aiMsg":
-        "I inspected the municipalities layer, ran the buffer, and saved output/buffer_500m.geojson. Review the proposal?",
+        "Buffer done. Saved to output/buffer_500m.geojson. Approve?",
       "mockup.input": "buffer municipalities by 500m and export GeoJSON…",
 
       "problems.label": "Common problems",
       "problems.title": "Sound familiar in QGIS?",
-      "problems.subtitle":
-        "GIS workflows often mean PyQGIS scripts, forum searches, and copy-paste from generic chatbots. Strata closes the gap between question and action in your project.",
       "problems.carousel.label": "Common problems carousel",
       "problems.prev": "Previous problem",
       "problems.next": "Next problem",
 
       "problems.1.title": "PyQGIS is hard",
-      "problems.1.desc":
-        "Copying snippets from ChatGPT without project context. Syntax errors, wrong APIs, hours lost.",
-      "problems.1.fix": "Strata runs the code for you, with your approval.",
+      "problems.1.desc": "Snippets from ChatGPT without project context.",
+      "problems.1.fix": "Runs the code with your approval.",
 
       "problems.2.title": "Layer inspection is tedious",
-      "problems.2.desc":
-        "Understanding fields, CRS, and extents means manual scripts or Python console round-trips.",
-      "problems.2.fix": "Reads layers and fields directly from your project.",
+      "problems.2.desc": "Fields, CRS, and extents need manual scripts.",
+      "problems.2.fix": "Reads layers and fields from your project.",
 
       "problems.3.title": "Missing Python deps",
-      "problems.3.desc":
-        "geopandas, osmnx, pandas… often not installed in the QGIS environment.",
-      "problems.3.fix": "Install missing libraries in one click, always under your control.",
+      "problems.3.desc": "geopandas, osmnx… often missing in QGIS.",
+      "problems.3.fix": "Install missing libraries in one click.",
 
       "problems.4.title": "Fetching data is slow",
-      "problems.4.desc":
-        "Overpass, GeoJSON, GADM — manual fetch, save, import layer.",
-      "problems.4.fix": "Download and import data in a single step.",
+      "problems.4.desc": "Overpass, GeoJSON, GADM — manual fetch and import.",
+      "problems.4.fix": "Download and import in one step.",
 
       "problems.5.title": "Scattered context",
-      "problems.5.desc":
-        "Project files, scripts, layers, and attributes everywhere — generic AI can't see them.",
-      "problems.5.fix": "Uses your project files and layers as context for answers.",
+      "problems.5.desc": "Project, scripts, and layers everywhere — generic AI can't see them.",
+      "problems.5.fix": "Uses project files and layers as context.",
 
       "problems.6.title": "Uncontrolled edits",
-      "problems.6.desc":
-        "Scripts overwriting files or running risky code without review.",
-      "problems.6.fix": "Every change must be approved before it is applied.",
+      "problems.6.desc": "Scripts overwriting files without review.",
+      "problems.6.fix": "Every change must be approved first.",
 
       "problems.7.title": "Disconnected AI plugins",
       "problems.7.desc":
-        "External assistants don't know your active layers or Processing Toolbox.",
-      "problems.7.fix": "The assistant is built into QGIS and knows your project.",
+        "External assistants ignore layers and Processing Toolbox.",
+      "problems.7.fix": "Native QGIS assistant that knows your project.",
 
       "solution.label": "Solution",
       "solution.title": "Ask, approve, done",
@@ -414,43 +371,39 @@
 
       "solution.chat.title": "Chat beside the map",
       "solution.chat.desc":
-        "A side panel where you ask in plain language, attach files, and see answers while you work on the map.",
+        "Ask in plain language, attach files, see answers beside the map.",
       "solution.chat.f1": "Real-time answers",
       "solution.chat.f2": "History saved per project",
-      "solution.chat.f3": "Changes to approve before applying",
 
       "solution.agent.title": "Three modes, one app",
       "solution.agent.desc":
-        "Plan an intervention, run it on the project, or just ask questions. Choose the level of autonomy you prefer.",
+        "Plan, run, or ask. Choose your level of autonomy.",
       "solution.agent.f1": "Plan · Run · Ask",
       "solution.agent.f2": "Built-in GIS actions",
-      "solution.agent.f3": "Customize how the assistant works",
 
       "demo.label": "Demo",
       "demo.title": "See it in action",
-      "demo.subtitle":
-        "See how Strata handles real GIS project requests, with approval before every change.",
       "demo.carousel.label": "Interactive Strata examples",
       "demo.tabs.label": "Choose a demo example",
       "demo.prev": "Previous example",
       "demo.next": "Next example",
       "demo.agent.tab": "Agent",
       "demo.agent.kicker": "Controlled execution",
-      "demo.agent.title": "Agent mode — execution on your project",
+      "demo.agent.title": "Execution on your project",
       "demo.agent.desc":
-        "Ask in plain language (e.g. \"create external mask\"): the assistant inspects layers, runs run_python, and shows the result on the map.",
+        "Ask in plain language, inspect layers, run, and show the result.",
       "demo.agent.alt": "Strata in Agent mode with the AI panel next to the GIS map",
       "demo.plan.tab": "Plan",
       "demo.plan.kicker": "Plan before action",
-      "demo.plan.title": "Plan mode — plan before action",
+      "demo.plan.title": "Structured plan",
       "demo.plan.desc":
-        "Describe a complex goal (e.g. tree inventory): Strata proposes structured steps and Accept plan / Reject / revise buttons before changing the project.",
+        "Complex goal → plan to approve before acting.",
       "demo.plan.alt": "Strata in Plan mode with an approvable plan before changes",
       "demo.maps.tab": "Map analysis",
       "demo.maps.kicker": "Questions over real layers",
-      "demo.maps.title": "Map analysis — urban green and trees",
+      "demo.maps.title": "Urban green and trees",
       "demo.maps.desc":
-        "The assistant reads project layers, dissolves overlapping geometries, calculates surfaces, counts trees, and returns a verifiable answer right beside the map.",
+        "Reads layers, computes metrics, answers beside the map.",
       "demo.maps.alt": "Strata analysis over a Brescia map with an AI answer about urban green and trees",
 
       "speed.label": "GIS productivity",
@@ -459,40 +412,38 @@
       "speed.before": "Before",
       "speed.beforeTime": "~45 min",
       "speed.beforeSteps":
-        "Open Python console, write scripts per layer, search StackExchange for APIs, install deps, debug paths, manual export.",
+        "Python console, scripts per layer, APIs, deps, manual export.",
       "speed.after": "With Strata",
       "speed.afterTime": "~5 min",
       "speed.afterSteps":
-        "One natural-language request. The agent inspects, proposes code, asks approval, runs, and saves to the workspace.",
+        "One natural-language request. You approve, it runs, saves.",
 
       "features.label": "Benefits",
       "features.title": "Everything built in, zero complexity",
-      "features.subtitle":
-        "The assistant works inside QGIS with your data, without leaving the app.",
 
       "features.1.title": "Does the work for you",
       "features.1.desc":
-        "Buffer, export, analysis, data download: ask in plain language and Strata handles the rest.",
+        "Buffer, export, analysis: ask in plain language, Strata runs it.",
 
       "features.2.title": "Fits how you work",
       "features.2.desc":
-        "Set rules and preferences so the assistant responds the way your team expects.",
+        "Rules and preferences for team-consistent answers.",
 
       "features.3.title": "Knows your files",
       "features.3.desc":
-        "Scripts, projects, and workspace documents are available as context for answers.",
+        "Scripts, projects, and workspace documents as context.",
 
       "features.4.title": "Layers only when you want",
       "features.4.desc":
-        "Share attributes and geometries with the AI only if you decide to, with full control.",
+        "Share layers and attributes only when you decide.",
 
       "features.5.title": "AI included",
       "features.5.desc":
-        "With the Pro plan you don't need to manage API keys or credits: it's ready to go.",
+        "Pro plan: AI models ready, zero credit management.",
 
       "features.6.title": "Your data, your rules",
       "features.6.desc":
-        "On-premise for enterprise. In the cloud, you decide what to share.",
+        "On-premise locally. In the cloud, you choose what to share.",
 
       "start.label": "Get started",
       "start.title": "Ready in minutes",
@@ -500,42 +451,37 @@
         "No complicated setup. Download, open your QGIS project, and start right away.",
       "start.1.title": "Download Strata",
       "start.1.desc":
-        "Install on Mac, Windows, or Linux. It's QGIS with the AI assistant already inside.",
+        "Mac, Windows, or Linux. QGIS with AI built in.",
       "start.2.title": "Open your project",
       "start.2.desc":
-        "Layers, maps, and files you use every day. The AI sees and understands them.",
+        "Open the layers and maps you use every day.",
       "start.3.title": "Ask for what you need",
       "start.3.desc":
-        "Write what you want to do in plain language. Strata proposes, you approve, it runs.",
+        "Write what you want to do. Strata proposes, you approve.",
       "start.cta.download": "Download free",
       "start.cta.cloud": "Try Strata Cloud",
 
       "download.label": "Download",
       "download.title": "Download Strata",
-      "download.subtitle":
-        "Prebuilt binaries from GitHub Releases. macOS and Windows are signed; Linux AppImage still requires manual verification.",
+      "download.subtitle": "Binaries from GitHub Releases.",
       "download.cta": "Go to Releases",
       "download.status.fallback": "GitHub Releases",
       "download.status.complete": "Latest complete release: {version}",
       "download.macos.title": "macOS",
       "download.macos.sub": "Intel + Apple Silicon",
       "download.macos.file": ".dmg file",
-      "download.macos.note":
-        "Signed and notarized universal build. Drag Strata to Applications and launch.",
+      "download.macos.note": "Signed DMG. Drag to Applications.",
       "download.windows.title": "Windows",
       "download.windows.sub": "10/11 x64",
       "download.windows.file": "-win64.exe file",
-      "download.windows.note":
-        "Signed Authenticode NSIS installer. Verify the publisher; SmartScreen reputation can take time to warm up.",
+      "download.windows.note": "Signed installer. Verify the publisher.",
       "download.linux.title": "Linux",
       "download.linux.sub": "x86_64",
       "download.linux.file": ".AppImage file",
-      "download.linux.note":
-        "chmod +x Strata-*.AppImage && ./Strata-*.AppImage. Ubuntu 22.04+, glibc ≥ 2.35.",
+      "download.linux.note": "Runnable AppImage. Ubuntu 22.04+.",
 
       "team.label": "Team",
       "team.title": "The people behind Strata",
-      "team.subtitle": "We build the product and know the GIS domain.",
       "team.francesco.role": "Co-founder, software engineer",
       "team.valerio.role": "Co-founder, GeoAI specialist",
       "team.massimo.role": "Co-founder, GIS expert",
@@ -548,7 +494,7 @@
       "footer.tagline": "Native AI agent in QGIS. Cloud or on-premise.",
       "opensource.title": "Built on QGIS. Open, transparent, no lock-in.",
       "opensource.desc":
-        "Strata is built on QGIS's open-source core. This ensures full compatibility with your existing GIS workflows and protects you from proprietary format lock-in. You pay for cloud infrastructure, ease of use, and our expertise in optimizing AI models for cartography — while keeping the transparency and reliability of free software.",
+        "Built on open-source QGIS. Compatible with your GIS workflows, no lock-in.",
       "opensource.closing": "The GIS stays yours. The added value is in the service.",
       "footer.disclaimer":
         "Strata is an independent commercial service based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.",
