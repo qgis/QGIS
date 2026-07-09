@@ -195,7 +195,7 @@ jobs:
           fi
 
           targets=("${appimages[@]}" "${dmgs[@]}" "${exes[@]}" "${zips[@]}")
-          identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/sign-release-assets.yml@${GITHUB_WORKFLOW_REF}"
+          identity="https://github.com/${GITHUB_WORKFLOW_REF}"
 
           for file in "${targets[@]}"; do
             base="$(basename "${file}")"
