@@ -119,6 +119,14 @@ QgsCoverageCleanAlgorithm *QgsCoverageCleanAlgorithm::createInstance() const
   return new QgsCoverageCleanAlgorithm();
 }
 
+bool QgsCoverageCleanAlgorithm::prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
+{
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 14
+  throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS build based on GEOS 3.14 or later" ) );
+#endif
+  return true;
+}
+
 QVariantMap QgsCoverageCleanAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
@@ -165,7 +173,6 @@ QVariantMap QgsCoverageCleanAlgorithm::processAlgorithm( const QVariantMap &para
     {
       featuresWithoutGeom.append( inFeature );
     }
-
 
     feedback->setProgress( current * step * 0.2 );
     current++;
