@@ -21,10 +21,13 @@
 #include "qgsattributesformview.h"
 #include "qgsattributetypedialog.h"
 #include "qgseditformconfig.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgsgui.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
 #include <QItemSelectionModel>
+#include <QMimeData>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -43,12 +46,14 @@ class TestQgsAttributesFormProperties : public QObject
 
     void testConfigStored();
     void testRemoveDuplicateField();
+    void testDropMultipleItems();
 };
 
 void TestQgsAttributesFormProperties::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsGui::editorWidgetRegistry()->initEditors();
 }
 
 void TestQgsAttributesFormProperties::cleanupTestCase()
@@ -97,17 +102,30 @@ void TestQgsAttributesFormProperties::testConfigStored()
 
 void TestQgsAttributesFormProperties::testRemoveDuplicateField()
 {
-  // Regression test for the "removing a duplicate field deletes every copy" bug:
-  // add the same field several times to a tab, select one copy and trigger the
-  // real trash-button slot. Exactly that copy must be removed.
+  /*
+    - removing a copy of a duplicated field must remove exactly that copy
+
+    - dropping a duplicate at or above the currently selected row makes
+      QItemSelectionModel emit a no-op selectionChanged() signal from within
+      rowsAboutToBeInserted(). If the selection-changed handlers react to it
+      by writing to the source model, the proxy model mapping gets corrupted:
+      it gains a phantom row and all subsequent proxy indexes are shifted,
+      leading to wrong items being removed and "QSortFilterProxyModel:
+      inconsistent changes reported by source model" warnings
+
+    - the drop-then-remove flow must also work when appending below the
+      selection and when the selection is changed before removing.
+  */
 
   auto layer = std::make_unique< QgsVectorLayer >( u"Point?field=a:integer&field=b:integer"_s, u"test"_s, u"memory"_s );
 
   // tab
-  //  ├─ a   (row 0)
+  //  ├─ b   (row 0)
   //  ├─ a   (row 1)
-  //  └─ a   (row 2)
+  //  ├─ a   (row 2)
+  //  └─ a   (row 3)
   QgsAttributeEditorContainer *tab = new QgsAttributeEditorContainer( u"tab"_s, nullptr );
+  tab->addChildElement( new QgsAttributeEditorField( u"b"_s, 1, tab ) );
   tab->addChildElement( new QgsAttributeEditorField( u"a"_s, 0, tab ) );
   tab->addChildElement( new QgsAttributeEditorField( u"a"_s, 0, tab ) );
   tab->addChildElement( new QgsAttributeEditorField( u"a"_s, 0, tab ) );
@@ -121,21 +139,165 @@ void TestQgsAttributesFormProperties::testRemoveDuplicateField()
   QgsAttributesFormProperties attributeFormProperties( layer.get() );
   attributeFormProperties.init();
 
-  QgsAttributesFormProxyModel *proxy = attributeFormProperties.mFormLayoutProxyModel;
-  const QModelIndex tabProxyIndex = proxy->index( 0, 0, QModelIndex() );
-  QCOMPARE( proxy->rowCount( tabProxyIndex ), 3 );
+  // Mutating the model from selection-changed handlers while rows are being
+  // inserted or removed corrupts the proxy model mapping
+  QTest::failOnWarning( QRegularExpression( u".*inconsistent changes.*"_s ) );
 
-  // Select the middle duplicate (row 1) in the form layout view, then trigger
-  // the same slot the trash button is connected to.
-  const QModelIndex middle = proxy->index( 1, 0, tabProxyIndex );
-  attributeFormProperties.mFormLayoutView->selectionModel()->setCurrentIndex( middle, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  QgsAttributesFormProxyModel *layoutProxy = attributeFormProperties.mFormLayoutProxyModel;
+  QgsAttributesFormLayoutModel *layoutModel = attributeFormProperties.mFormLayoutModel;
+  const QModelIndex tabProxyIndex = layoutProxy->index( 0, 0, QModelIndex() );
+  const QModelIndex tabSourceIndex = layoutModel->index( 0, 0, QModelIndex() );
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 4 );
+
+  // Select the middle duplicate (row 2) in the form layout view, then trigger
+  // the same slot the trash button is connected to. Exactly that copy must be
+  // removed.
+  attributeFormProperties.mFormLayoutView->selectionModel()->setCurrentIndex( layoutProxy->index( 2, 0, tabProxyIndex ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  QCOMPARE( attributeFormProperties.mFormLayoutView->selectionModel()->selectedRows( 0 ).count(), 1 );
+  attributeFormProperties.removeTabOrGroupButton();
+  QCOMPARE( layoutModel->rowCount( tabSourceIndex ), 3 );
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 3 );
+
+  // Remove the remaining duplicate the same way, leaving [b, a]
+  attributeFormProperties.mFormLayoutView->selectionModel()->setCurrentIndex( layoutProxy->index( 2, 0, tabProxyIndex ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  attributeFormProperties.removeTabOrGroupButton();
+  QCOMPARE( layoutModel->rowCount( tabSourceIndex ), 2 );
+  QCOMPARE( layoutModel->index( 0, 0, tabSourceIndex ).data( QgsAttributesFormModel::ItemNameRole ).toString(), u"b"_s );
+  QCOMPARE( layoutModel->index( 1, 0, tabSourceIndex ).data( QgsAttributesFormModel::ItemNameRole ).toString(), u"a"_s );
+
+  // Select field "a" in the available widgets view, like a user would do before
+  // dragging it. This auto-selects the matching layout item (row 1) and loads
+  // the attribute type dialog.
+  const QgsAttributesAvailableWidgetsModel *availableWidgetsModel = static_cast<QgsAttributesAvailableWidgetsView *>( attributeFormProperties.mAvailableWidgetsView )->availableWidgetsModel();
+  const QModelIndex fieldContainer = availableWidgetsModel->fieldContainer();
+  const QModelIndex fieldAProxyIndex = attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 0, 0, fieldContainer ) );
+  QCOMPARE( fieldAProxyIndex.data( QgsAttributesFormModel::ItemNameRole ).toString(), u"a"_s );
+  attributeFormProperties.mAvailableWidgetsView->selectionModel()->setCurrentIndex( fieldAProxyIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
   QCOMPARE( attributeFormProperties.mFormLayoutView->selectionModel()->selectedRows( 0 ).count(), 1 );
 
-  attributeFormProperties.removeTabOrGroupButton();
+  // Drop a duplicate of field "a" at row 0, i.e. above the selected row
+  QMimeData *mimeData = attributeFormProperties.mAvailableWidgetsProxyModel->mimeData( QModelIndexList() << fieldAProxyIndex );
+  QVERIFY( layoutProxy->dropMimeData( mimeData, Qt::CopyAction, 0, 0, tabProxyIndex ) );
+  delete mimeData;
 
-  // Exactly one copy must have been removed, leaving two behind.
-  QgsAttributesFormLayoutModel *layoutModel = attributeFormProperties.mFormLayoutModel;
-  QCOMPARE( layoutModel->rowCount( layoutModel->index( 0, 0, QModelIndex() ) ), 2 );
+  // The proxy model must stay in sync with the source model
+  QCOMPARE( layoutModel->rowCount( tabSourceIndex ), 3 );
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 3 );
+  for ( int row = 0; row < 3; row++ )
+  {
+    QCOMPARE( layoutProxy->mapToSource( layoutProxy->index( row, 0, tabProxyIndex ) ).row(), row );
+  }
+
+  // The freshly dropped copy (row 0) gets auto-selected; the trash button must
+  // remove exactly that copy
+  QCOMPARE( attributeFormProperties.mFormLayoutView->selectionModel()->selectedRows( 0 ).count(), 1 );
+  attributeFormProperties.removeTabOrGroupButton();
+  QCOMPARE( layoutModel->rowCount( tabSourceIndex ), 2 );
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 2 );
+  QCOMPARE( layoutModel->index( 0, 0, tabSourceIndex ).data( QgsAttributesFormModel::ItemNameRole ).toString(), u"b"_s );
+  QCOMPARE( layoutModel->index( 1, 0, tabSourceIndex ).data( QgsAttributesFormModel::ItemNameRole ).toString(), u"a"_s );
+
+  // Drop the duplicate once more, this time appending it below the selection;
+  // the fresh copy is auto-selected and must be the one removed
+  mimeData = attributeFormProperties.mAvailableWidgetsProxyModel->mimeData( QModelIndexList() << fieldAProxyIndex );
+  QVERIFY( layoutProxy->dropMimeData( mimeData, Qt::CopyAction, -1, -1, tabProxyIndex ) );
+  delete mimeData;
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 3 );
+  QCOMPARE( attributeFormProperties.mFormLayoutView->selectionModel()->selectedRows( 0 ).count(), 1 );
+  attributeFormProperties.removeTabOrGroupButton();
+  QCOMPARE( layoutModel->rowCount( tabSourceIndex ), 2 );
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 2 );
+
+  // Drop it yet again, but this time change the selection to the first copy
+  // before removing. Again, exactly one copy must be removed.
+  mimeData = attributeFormProperties.mAvailableWidgetsProxyModel->mimeData( QModelIndexList() << fieldAProxyIndex );
+  QVERIFY( layoutProxy->dropMimeData( mimeData, Qt::CopyAction, -1, -1, tabProxyIndex ) );
+  delete mimeData;
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 3 );
+
+  attributeFormProperties.mFormLayoutView->selectionModel()->setCurrentIndex( layoutProxy->index( 1, 0, tabProxyIndex ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  attributeFormProperties.removeTabOrGroupButton();
+  QCOMPARE( layoutModel->rowCount( tabSourceIndex ), 2 );
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 2 );
+}
+
+void TestQgsAttributesFormProperties::testDropMultipleItems()
+{
+  // Dropping several items at once onto the form layout tree must leave all
+  // dropped items selected, not only the last one. This holds both for
+  // internal moves and for items dragged from the available widgets tree.
+
+  auto layer = std::make_unique< QgsVectorLayer >( u"Point?field=a:integer&field=b:integer&field=c:integer&field=d:integer"_s, u"test"_s, u"memory"_s );
+
+  // tab
+  //  ├─ a
+  //  ├─ b
+  //  ├─ c
+  //  └─ d
+  QgsAttributeEditorContainer *tab = new QgsAttributeEditorContainer( u"tab"_s, nullptr );
+  tab->addChildElement( new QgsAttributeEditorField( u"a"_s, 0, tab ) );
+  tab->addChildElement( new QgsAttributeEditorField( u"b"_s, 1, tab ) );
+  tab->addChildElement( new QgsAttributeEditorField( u"c"_s, 2, tab ) );
+  tab->addChildElement( new QgsAttributeEditorField( u"d"_s, 3, tab ) );
+
+  QgsEditFormConfig cfg = layer->editFormConfig();
+  cfg.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
+  cfg.clearTabs();
+  cfg.addTab( tab );
+  layer->setEditFormConfig( cfg );
+
+  QgsAttributesFormProperties attributeFormProperties( layer.get() );
+  attributeFormProperties.init();
+
+  QgsAttributesFormProxyModel *layoutProxy = attributeFormProperties.mFormLayoutProxyModel;
+  const QModelIndex tabProxyIndex = layoutProxy->index( 0, 0, QModelIndex() );
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 4 );
+
+  // Returns the sorted rows and the names of the currently selected layout items
+  auto selectedRowsAndNames = [&attributeFormProperties]( QList< int > &rows, QStringList &names ) {
+    rows.clear();
+    names.clear();
+    const QModelIndexList selectedIndexes = attributeFormProperties.mFormLayoutView->selectionModel()->selectedRows( 0 );
+    for ( const QModelIndex &index : selectedIndexes )
+      rows << index.row();
+    std::sort( rows.begin(), rows.end() );
+    const QModelIndex parent = selectedIndexes.isEmpty() ? QModelIndex() : selectedIndexes.at( 0 ).parent();
+    for ( const int row : std::as_const( rows ) )
+      names << attributeFormProperties.mFormLayoutView->model()->index( row, 0, parent ).data( QgsAttributesFormModel::ItemNameRole ).toString();
+  };
+
+  // Internal move: drag "a" and "b" (rows 0 and 1) past the end of the tab
+  QMimeData *mimeData = layoutProxy->mimeData( QModelIndexList() << layoutProxy->index( 0, 0, tabProxyIndex ) << layoutProxy->index( 1, 0, tabProxyIndex ) );
+  QVERIFY( mimeData );
+  QVERIFY( layoutProxy->dropMimeData( mimeData, Qt::MoveAction, 4, 0, tabProxyIndex ) );
+  delete mimeData;
+
+  // Resulting order is [c, d, a, b]; both moved items must remain selected
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 4 );
+  QList< int > selectedRows;
+  QStringList selectedNames;
+  selectedRowsAndNames( selectedRows, selectedNames );
+  QCOMPARE( selectedRows, QList< int >() << 2 << 3 );
+  QCOMPARE( selectedNames, QStringList() << u"a"_s << u"b"_s );
+
+  // External drop: drag fields "a" and "b" from the available widgets tree
+  const QgsAttributesAvailableWidgetsModel *availableWidgetsModel = static_cast<QgsAttributesAvailableWidgetsView *>( attributeFormProperties.mAvailableWidgetsView )->availableWidgetsModel();
+  const QModelIndex fieldContainer = availableWidgetsModel->fieldContainer();
+  QModelIndexList availableWidgetsIndexes;
+  availableWidgetsIndexes
+    << attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 0, 0, fieldContainer ) )
+    << attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 1, 0, fieldContainer ) );
+
+  mimeData = attributeFormProperties.mAvailableWidgetsProxyModel->mimeData( availableWidgetsIndexes );
+  QVERIFY( mimeData );
+  QVERIFY( layoutProxy->dropMimeData( mimeData, Qt::CopyAction, -1, -1, tabProxyIndex ) );
+  delete mimeData;
+
+  // Both dropped copies (appended at rows 4 and 5) must be selected
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 6 );
+  selectedRowsAndNames( selectedRows, selectedNames );
+  QCOMPARE( selectedRows, QList< int >() << 4 << 5 );
+  QCOMPARE( selectedNames, QStringList() << u"a"_s << u"b"_s );
 }
 
 QGSTEST_MAIN( TestQgsAttributesFormProperties )

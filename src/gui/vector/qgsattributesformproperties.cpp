@@ -512,8 +512,14 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
   mAttributeTypeFrame->layout()->addWidget( mAttributeContainerEdit );
 }
 
-void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelection &, const QItemSelection & )
+void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
+  if ( selected.isEmpty() && deselected.isEmpty() )
+  {
+    // No-op notification, emitted e.g. by QItemSelectionModel when rows are inserted
+    return;
+  }
+
   // when the selection changes in the main tree, sync the DnD layout
   // block both selection handlers while syncing
   disconnect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
@@ -532,8 +538,14 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelect
   connect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 }
 
-void QgsAttributesFormProperties::onFormLayoutSelectionChanged( const QItemSelection &, const QItemSelection &deselected )
+void QgsAttributesFormProperties::onFormLayoutSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
+  if ( selected.isEmpty() && deselected.isEmpty() )
+  {
+    // No-op notification, emitted e.g. by QItemSelectionModel when rows are inserted
+    return;
+  }
+
   // when the selection changes in the DnD layout, sync the main tree
   // block both selection handlers while syncing
   disconnect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
@@ -718,6 +730,9 @@ void QgsAttributesFormProperties::removeTabOrGroupButton()
   sourceIndexes.reserve( selectedRows.size() );
   for ( const QModelIndex &proxyIndex : selectedRows )
     sourceIndexes << QPersistentModelIndex( mFormLayoutProxyModel->mapToSource( proxyIndex ) );
+
+  // Clear the selection up front so that no selection handler fires while rows are being removed
+  mFormLayoutView->selectionModel()->clearSelection();
 
   for ( const QPersistentModelIndex &sourceIndex : std::as_const( sourceIndexes ) )
   {
