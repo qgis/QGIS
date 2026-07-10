@@ -484,15 +484,20 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       //update preview on text change
       connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [qmlWrapper, qmlCode, previewFeature, errorFeedbackWidget] {
+        QQuickWidget *qmlWidget = dynamic_cast<QQuickWidget *>( qmlWrapper->widget() );
         if ( qmlCode->text().trimmed().isEmpty() )
         {
           errorFeedbackWidget->setText( QObject::tr( "No QML code" ) );
+          if ( qmlWidget )
+          {
+            qmlWidget->setSource( QUrl() );
+          }
           return;
         }
         qmlWrapper->setQmlCode( qmlCode->text() );
         qmlWrapper->reinitWidget();
         qmlWrapper->setFeature( previewFeature );
-        if ( QQuickWidget *qmlWidget = dynamic_cast<QQuickWidget *>( qmlWrapper->widget() ) )
+        if ( qmlWidget )
         {
           const QList<QQmlError> errors = qmlWidget->errors();
           if ( !errors.isEmpty() )
