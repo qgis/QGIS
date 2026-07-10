@@ -2,6 +2,8 @@
 
 An AI-native fork of QGIS with a built-in assistant: chat with your maps, run multi-step geospatial agents, and query your entire workspace — right inside the desktop.
 
+Use Strata with a managed **Strata Cloud** account, or keep your own provider credentials in **BYOK** mode.
+
 ## Open Source and Attribution
 
 > Strata is an independent, unofficial fork based on QGIS. It is not endorsed by or affiliated with QGIS.ORG or the QGIS project.
@@ -23,6 +25,7 @@ QGIS is part of the Open-Source Geospatial Foundation ([OSGeo](https://www.osgeo
 
 - [Download](#download)
 - [Demo](#demo--see-it-in-action)
+- [Strata Cloud](#strata-cloud-login-and-registration)
 - [Configure AI](#configure-ai-on-first-launch)
 - [Roadmap](strata_cursor_roadmap.md)
 - [QGIS upstream](#qgis-upstream--original-documentation)
@@ -70,21 +73,50 @@ For multi-step work, switch to **Plan**: Strata outlines layers, fields, and sym
 
 ---
 
+## Strata Cloud login and registration
+
+Strata Cloud is the recommended setup when you want managed AI models, credit accounting, and account-level model preferences without handling provider API keys.
+
+You can create and use a Strata Cloud account in two ways:
+
+- **From the web app**: register at [app.getstrata.org/registrati](https://app.getstrata.org/registrati), then sign in at [app.getstrata.org](https://app.getstrata.org).
+- **From Strata Desktop**: open **AI Assistant → ⚙ settings → Account**, choose **Sign up** or **Log in**, and enter email + password.
+
+Current account policy:
+
+- Registration and login use email/password. Passwords must be at least 8 characters.
+- If an email is already registered, use **Log in** instead of creating a second account.
+- After a successful desktop login, Strata exchanges the web access token for a desktop session token and selects the managed **Strata Cloud / Plan Account** provider.
+- The web account area shows credit balance, usage history, and credit purchase options.
+- Signing out from Strata Desktop removes the local desktop session token.
+
+Credential and data policy:
+
+- Strata Cloud desktop tokens are stored through Strata's local secret store. When the QGIS authentication vault is unlocked or configured, secrets are encrypted there; otherwise Strata warns that credentials are stored unencrypted in local settings.
+- Cloud context sync is opt-in. Strata only uploads explicitly approved safe context, and blocks geometry, coordinates, WKT, and datasource URI payloads before upload.
+- BYOK remains available for OpenAI, OpenRouter, Anthropic, Codex/ChatGPT, and Claude OAuth if you prefer to use your own provider credentials.
+
+---
+
 ## Configure AI on first launch
 
 1. Open Strata.
 2. Menu **View → Panels → AI Assistant**.
 3. Click the **⚙ settings** icon in the top-right corner of the panel.
-4. Paste your **API key** for OpenAI/Anthropic, or sign in with **Codex/ChatGPT** or **Claude OAuth**.
-5. Close the dialog and try sending a message in the chat.
+4. In **Account**, log in or create a **Strata Cloud** account for managed models and credits.
+5. If you prefer BYOK, configure a provider under the provider settings instead: OpenAI/OpenRouter/Anthropic API key, **Codex/ChatGPT** login, or **Claude OAuth**.
+6. Close the dialog and try sending a message in the chat.
 
-Where to get API keys:
+Provider credential options:
 - **OpenAI**: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+- **OpenRouter**: [openrouter.ai/keys](https://openrouter.ai/keys)
 - **Anthropic**: [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
 - **Codex/ChatGPT**: in the settings dialog, choose “Get Codex device code”, open the page shown, and complete sign-in. The Codex model uses `gpt-5.5`.
 - **Claude OAuth**: in the settings dialog, choose “Login with Claude” and paste the authorization code when prompted.
 
-Keys are stored **locally only** in the application settings on your machine. OAuth logins save only the refresh token in QGIS's encrypted auth store. Credentials are never sent to any server other than the provider you chose.
+BYOK keys are stored locally on your machine. OAuth logins save refresh tokens locally through the same secret-store path used by Strata Cloud desktop tokens. Credentials are never sent to any server other than the provider or Strata Cloud endpoint you choose.
+
+Developers can override the managed backend with `STRATA_PLAN_ENDPOINT` and provide a desktop token with `STRATA_PLAN_TOKEN`.
 
 ---
 
