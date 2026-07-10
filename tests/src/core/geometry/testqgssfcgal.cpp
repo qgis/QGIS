@@ -1184,7 +1184,11 @@ void TestQgsSfcgal::primitiveCone()
 
   // check export as SFCGAL geometry
   std::unique_ptr<QgsSfcgalGeometry> poly = cone->primitiveAsPolyhedralSurface();
+#if SFCGAL_VERSION_NUM == SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> expectedCone = openWktFile( "cone_v2.3.0.wkt" );
+#else
   std::unique_ptr<QgsSfcgalGeometry> expectedCone = openWktFile( "cone.wkt" );
+#endif
   QCOMPARE( poly->asWkt( 1 ), expectedCone->asWkt( 1 ) );
   std::unique_ptr<QgsSfcgalGeometry> poly2 = cone2->primitiveAsPolyhedralSurface();
   QCOMPARE( poly2->asWkt( 1 ), expectedCone->asWkt( 1 ) );
@@ -1325,7 +1329,11 @@ void TestQgsSfcgal::primitiveCylinder()
 
   // check export as SFCGAL geometry
   std::unique_ptr<QgsSfcgalGeometry> poly = cylinder->primitiveAsPolyhedralSurface();
+#if SFCGAL_VERSION_NUM == SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> expectedCylinder = openWktFile( "cylinder_v2.3.0.wkt" );
+#else
   std::unique_ptr<QgsSfcgalGeometry> expectedCylinder = openWktFile( "cylinder.wkt" );
+#endif
   QCOMPARE( poly->asWkt( 1 ), expectedCylinder->asWkt( 1 ) );
   std::unique_ptr<QgsSfcgalGeometry> poly2 = cylinder2->primitiveAsPolyhedralSurface();
   QCOMPARE( poly2->asWkt( 1 ), expectedCylinder->asWkt( 1 ) );
