@@ -170,6 +170,55 @@ class TestPyQgsAppStartup(unittest.TestCase):
             [testmod + "\n", "--specialScriptArgument's\n", 'a "Quoted" text arg\n'],
         )
 
+    def testIfaceMenuDeletion(self):
+        testfile = "pyqgis_iface_menu_deletion.txt"
+        testfilepath = os.path.join(self.TMP_DIR, testfile).replace("\\", "/")
+        testcode = [
+            f"import sys\nf = open('{testfilepath}', 'a')\n",
+            f"from qgis.utils import iface\n",
+            f"from qgis.PyQt.QtWidgets import QAction, QMenu\n",
+            f"from qgis.PyQt.QtCore import QCoreApplication, QEvent\n",
+            f"menu_name = '&Test Menu'\n"
+            f"action = QAction('Temporary Action', iface.mainWindow())\n"
+            f"iface.removePluginDatabaseMenu(menu_name, action)\n"
+            f"iface.removePluginMenu(menu_name, action)\n"
+            f"iface.removePluginRasterMenu(menu_name, action)\n"
+            f"iface.removePluginVectorMenu(menu_name, action)\n"
+            f"iface.removePluginWebMenu(menu_name, action)\n"
+            f"iface.removePluginMeshMenu(menu_name, action)\n"
+            f"QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)\n"
+            f"QCoreApplication.processEvents()\n"
+            f"menu_count = 0\n"
+            f"for menu in iface.mainWindow().menuBar().findChildren(QMenu):\n"
+            f"    if menu.title() == menu_name:\n"
+            f"        menu_count += 1\n"
+            f"f.write(str(menu_count) + '\\n')\n"
+            f"f.close()\n",
+        ]
+        testmod = os.path.join(self.TMP_DIR, "pyqgis_iface_menu_deletion.py").replace(
+            "\\", "/"
+        )
+        f = open(testmod, "w")
+        f.writelines(testcode)
+        f.close()
+
+        testfile_lines = self.doTestStartup(
+            testFile=testfilepath,
+            timeOut=10,
+            additionalArguments=[
+                "--code",
+                testmod,
+                "--specialScriptArgument's",
+                'a "Quoted" text arg',
+                "--",
+            ],
+        )
+
+        self.assertTrue(
+            int(testfile_lines[0]) == 0,
+            "Menu should have been deleted",
+        )
+
 
 if __name__ == "__main__":
     # look for qgis bin path
