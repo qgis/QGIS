@@ -1509,6 +1509,7 @@ static QVariant fcnGetTimeZone( const QVariantList &values, const QgsExpressionC
   }
   return QVariant();
 #else
+  Q_UNUSED( values )
   parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnGetTimeZone" ) );
   return QVariant();
 #endif
@@ -1526,6 +1527,7 @@ static QVariant fcnSetTimeZone( const QVariantList &values, const QgsExpressionC
   }
   return QVariant();
 #else
+  Q_UNUSED( values )
   parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnSetTimeZone" ) );
   return QVariant();
 #endif
@@ -1542,6 +1544,7 @@ static QVariant fcnConvertTimeZone( const QVariantList &values, const QgsExpress
   }
   return QVariant();
 #else
+  Q_UNUSED( values )
   parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnConvertTimeZone" ) );
   return QVariant();
 #endif
@@ -1557,6 +1560,7 @@ static QVariant fcnTimeZoneToId( const QVariantList &values, const QgsExpression
   }
   return QVariant();
 #else
+  Q_UNUSED( values )
   parent->setEvalErrorString( QObject::tr( "Qt is built without Qt timezone support, cannot use fcnTimeZoneToId" ) );
   return QVariant();
 #endif
@@ -2830,7 +2834,7 @@ static QVariant fcnCrsFromText( const QVariantList &values, const QgsExpressionC
 
 static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString concat;
+  QString concat( "" );
   for ( const QVariant &value : values )
   {
     if ( !QgsVariantUtils::isNull( value ) )
@@ -5402,7 +5406,7 @@ static QVariant fcnEquals( const QVariantList &values, const QgsExpressionContex
   return fGeom.isExactlyEqual( sGeom ) ? TVL_True : TVL_False;
 }
 
-static QVariant fcnIsExactlyEqual( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnIsEqualsExact( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
@@ -5425,7 +5429,7 @@ static QVariant fcnIsExactlyEqual( const QVariantList &values, const QgsExpressi
   return ret;
 }
 
-static QVariant fcnIsTopologicallyEqual( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnIsEqualsTopological( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
@@ -5448,7 +5452,7 @@ static QVariant fcnIsTopologicallyEqual( const QVariantList &values, const QgsEx
   return ret;
 }
 
-static QVariant fcnIsFuzzyEqual( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnIsEqualsFuzzy( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
@@ -7326,12 +7330,18 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
 {
   const QString layerProperty = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
 
+  bool translate = true;
+  if ( values.length() >= 3 )
+  {
+    translate = QgsExpressionUtils::getTVLValue( values.at( 2 ), parent ) == QgsExpressionUtils::TVL::True;
+  }
+
   bool foundLayer = false;
   const QVariant res = QgsExpressionUtils::runMapLayerFunctionThreadSafe(
     values.at( 0 ),
     context,
     parent,
-    [layerProperty]( QgsMapLayer *layer ) -> QVariant {
+    [layerProperty, translate]( QgsMapLayer *layer ) -> QVariant {
       if ( !layer )
         return QVariant();
 
@@ -7398,23 +7408,23 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         switch ( layer->type() )
         {
           case Qgis::LayerType::Vector:
-            return QCoreApplication::translate( "expressions", "Vector" );
+            return translate ? QCoreApplication::translate( "expressions", "Vector" ) : u"Vector"_s;
           case Qgis::LayerType::Raster:
-            return QCoreApplication::translate( "expressions", "Raster" );
+            return translate ? QCoreApplication::translate( "expressions", "Raster" ) : u"Raster"_s;
           case Qgis::LayerType::Mesh:
-            return QCoreApplication::translate( "expressions", "Mesh" );
+            return translate ? QCoreApplication::translate( "expressions", "Mesh" ) : u"Mesh"_s;
           case Qgis::LayerType::VectorTile:
-            return QCoreApplication::translate( "expressions", "Vector Tile" );
+            return translate ? QCoreApplication::translate( "expressions", "Vector Tile" ) : u"Vector Tile"_s;
           case Qgis::LayerType::Plugin:
-            return QCoreApplication::translate( "expressions", "Plugin" );
+            return translate ? QCoreApplication::translate( "expressions", "Plugin" ) : u"Plugin"_s;
           case Qgis::LayerType::Annotation:
-            return QCoreApplication::translate( "expressions", "Annotation" );
+            return translate ? QCoreApplication::translate( "expressions", "Annotation" ) : u"Annotation"_s;
           case Qgis::LayerType::PointCloud:
-            return QCoreApplication::translate( "expressions", "Point Cloud" );
+            return translate ? QCoreApplication::translate( "expressions", "Point Cloud" ) : u"Point Cloud"_s;
           case Qgis::LayerType::Group:
-            return QCoreApplication::translate( "expressions", "Group" );
+            return translate ? QCoreApplication::translate( "expressions", "Group" ) : u"Group"_s;
           case Qgis::LayerType::TiledScene:
-            return QCoreApplication::translate( "expressions", "Tiled Scene" );
+            return translate ? QCoreApplication::translate( "expressions", "Tiled Scene" ) : u"Tiled Scene"_s;
         }
       }
       else
@@ -9046,7 +9056,7 @@ static QVariant fcnGeomOverlayEquals( const QVariantList &values, const QgsExpre
   return executeGeomOverlay( values, context, parent, geomFunction, false, 0.01 ); //grow amount should adapt to current units
 }
 
-static QVariant fcnGeomOverlayExactlyEqual( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnGeomOverlayEqualsExact( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   RelationFunction geomFunction = []( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend backend ) -> bool {
     return geometry.isExactlyEqual( other, backend );
@@ -9054,7 +9064,7 @@ static QVariant fcnGeomOverlayExactlyEqual( const QVariantList &values, const Qg
   return executeGeomOverlay( values, context, parent, geomFunction, false, 0.01 ); //grow amount should adapt to current units
 }
 
-static QVariant fcnGeomOverlayTopologicallyEqual( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnGeomOverlayEqualsTopological( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   RelationFunction geomFunction = []( const QgsGeometry &geometry, const QgsGeometry &other, const QVariantList &, Qgis::GeometryBackend backend ) -> bool {
     return geometry.isTopologicallyEqual( other, backend );
@@ -9062,7 +9072,7 @@ static QVariant fcnGeomOverlayTopologicallyEqual( const QVariantList &values, co
   return executeGeomOverlay( values, context, parent, geomFunction, false, 0.01 ); //grow amount should adapt to current units
 }
 
-static QVariant fcnGeomOverlayFuzzyEqual( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnGeomOverlayEqualsFuzzy( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   // This parameter is the epsilon tolerance
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 10 ), parent );
@@ -9130,18 +9140,18 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"sqrt"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnSqrt, u"Math"_s )
       << new QgsStaticExpressionFunction( u"radians"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"degrees"_s ), fcnRadians, u"Math"_s )
       << new QgsStaticExpressionFunction( u"degrees"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"radians"_s ), fcnDegrees, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"azimuth"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point_a"_s ) << QgsExpressionFunction::Parameter( u"point_b"_s ), fcnAzimuth, u"GeometryGroup"_s )
+      << new QgsStaticExpressionFunction( u"azimuth"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point1"_s ) << QgsExpressionFunction::Parameter( u"point2"_s ), fcnAzimuth, u"GeometryGroup"_s )
       << new QgsStaticExpressionFunction(
            u"bearing"_s,
            QgsExpressionFunction::ParameterList()
-             << QgsExpressionFunction::Parameter( u"point_a"_s )
-             << QgsExpressionFunction::Parameter( u"point_b"_s )
+             << QgsExpressionFunction::Parameter( u"point1"_s )
+             << QgsExpressionFunction::Parameter( u"point2"_s )
              << QgsExpressionFunction::Parameter( u"source_crs"_s, true, QVariant() )
              << QgsExpressionFunction::Parameter( u"ellipsoid"_s, true, QVariant() ),
            fcnBearing,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"inclination"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point_a"_s ) << QgsExpressionFunction::Parameter( u"point_b"_s ), fcnInclination, u"GeometryGroup"_s )
+      << new QgsStaticExpressionFunction( u"inclination"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point1"_s ) << QgsExpressionFunction::Parameter( u"point2"_s ), fcnInclination, u"GeometryGroup"_s )
       << new QgsStaticExpressionFunction(
            u"project"_s,
            QgsExpressionFunction::ParameterList()
@@ -9869,9 +9879,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       { u"overlay_contains"_s, fcnGeomOverlayContains },
       { u"overlay_crosses"_s, fcnGeomOverlayCrosses },
       { u"overlay_equals"_s, fcnGeomOverlayEquals },
-      { u"overlay_exactly_equals"_s, fcnGeomOverlayExactlyEqual },
-      { u"overlay_topologically_equals"_s, fcnGeomOverlayTopologicallyEqual },
-      { u"overlay_fuzzy_equals"_s, fcnGeomOverlayFuzzyEqual },
+      { u"overlay_equals_exact"_s, fcnGeomOverlayEqualsExact },
+      { u"overlay_equals_topological"_s, fcnGeomOverlayEqualsTopological },
+      { u"overlay_equals_fuzzy"_s, fcnGeomOverlayEqualsFuzzy },
       { u"overlay_touches"_s, fcnGeomOverlayTouches },
       { u"overlay_disjoint"_s, fcnGeomOverlayDisjoint },
       { u"overlay_within"_s, fcnGeomOverlayWithin },
@@ -9894,7 +9904,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           << QgsExpressionFunction::Parameter( u"return_details"_s, true, false, false )
           << QgsExpressionFunction::Parameter( u"sort_by_intersection_size"_s, true, QString(), false )
           << QgsExpressionFunction::Parameter( u"backend"_s, true, defaultBackend, false )
-          << QgsExpressionFunction::Parameter( u"epsilon"_s, true, 1e-8, false ),
+          << QgsExpressionFunction::Parameter( u"epsilon"_s, true, 1e-4, false ),
         i.value(),
         u"GeometryGroup"_s,
         QString(),
@@ -10057,31 +10067,31 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"within"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnWithin, u"GeometryGroup"_s )
       << new QgsStaticExpressionFunction( u"equals"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnEquals, u"GeometryGroup"_s )
       << new QgsStaticExpressionFunction(
-           u"exactly_equals"_s,
+           u"equals_exact"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
              << QgsExpressionFunction::Parameter( u"geometry2"_s )
              << QgsExpressionFunction::Parameter( u"backend"_s, true, u"QGIS"_s ),
-           fcnIsExactlyEqual,
+           fcnIsEqualsExact,
            u"GeometryGroup"_s
          )
       << new QgsStaticExpressionFunction(
-           u"topologically_equals"_s,
+           u"equals_topological"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
              << QgsExpressionFunction::Parameter( u"geometry2"_s )
              << QgsExpressionFunction::Parameter( u"backend"_s, true, u"GEOS"_s ),
-           fcnIsTopologicallyEqual,
+           fcnIsEqualsTopological,
            u"GeometryGroup"_s
          )
       << new QgsStaticExpressionFunction(
-           u"fuzzy_equals"_s,
+           u"equals_fuzzy"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
              << QgsExpressionFunction::Parameter( u"geometry2"_s )
              << QgsExpressionFunction::Parameter( u"backend"_s, true, u"QGIS"_s )
-             << QgsExpressionFunction::Parameter( u"epsilon"_s, true, 1e-8 ),
-           fcnIsFuzzyEqual,
+             << QgsExpressionFunction::Parameter( u"epsilon"_s, true, 1e-4 ),
+           fcnIsEqualsFuzzy,
            u"GeometryGroup"_s
          )
       << new QgsStaticExpressionFunction( u"translate"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"dx"_s ) << QgsExpressionFunction::Parameter( u"dy"_s ), fcnTranslate, u"GeometryGroup"_s )
@@ -10625,7 +10635,15 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     // **General** functions
     functions
-      << new QgsStaticExpressionFunction( u"layer_property"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"layer"_s ) << QgsExpressionFunction::Parameter( u"property"_s ), fcnGetLayerProperty, u"Map Layers"_s )
+      << new QgsStaticExpressionFunction(
+           u"layer_property"_s,
+           QgsExpressionFunction::ParameterList()
+             << QgsExpressionFunction::Parameter( u"layer"_s )
+             << QgsExpressionFunction::Parameter( u"property"_s )
+             << QgsExpressionFunction::Parameter( u"translate"_s, true, true ),
+           fcnGetLayerProperty,
+           u"Map Layers"_s
+         )
       << new QgsStaticExpressionFunction( u"decode_uri"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"layer"_s ) << QgsExpressionFunction::Parameter( u"part"_s, true ), fcnDecodeUri, u"Map Layers"_s )
       << new QgsStaticExpressionFunction( u"mime_type"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"binary_data"_s ), fcnMimeType, u"General"_s )
       << new QgsStaticExpressionFunction(
@@ -10764,7 +10782,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"array_length"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayLength, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_contains"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayContains, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_count"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayCount, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_all"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array_a"_s ) << QgsExpressionFunction::Parameter( u"array_b"_s ), fcnArrayAll, u"Arrays"_s )
+      << new QgsStaticExpressionFunction( u"array_all"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array1"_s ) << QgsExpressionFunction::Parameter( u"array2"_s ), fcnArrayAll, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_find"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayFind, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_get"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"pos"_s ), fcnArrayGet, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_first"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayFirst, u"Arrays"_s )
@@ -10798,7 +10816,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            true
          )
       << new QgsStaticExpressionFunction( u"array_replace"_s, -1, fcnArrayReplace, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_prioritize"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"array_prioritize"_s ), fcnArrayPrioritize, u"Arrays"_s )
+      << new QgsStaticExpressionFunction( u"array_prioritize"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"priority"_s ), fcnArrayPrioritize, u"Arrays"_s )
       << new QgsStaticExpressionFunction( u"array_cat"_s, -1, fcnArrayCat, u"Arrays"_s )
       << new QgsStaticExpressionFunction(
            u"array_slice"_s,

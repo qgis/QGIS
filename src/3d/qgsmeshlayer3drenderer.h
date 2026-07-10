@@ -21,7 +21,6 @@
 #include "qgsabstract3drenderer.h"
 #include "qgsmaplayerref.h"
 #include "qgsmesh3dsymbol.h"
-#include "qgsphongmaterialsettings.h"
 
 #include <QObject>
 

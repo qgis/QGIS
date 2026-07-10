@@ -25,7 +25,6 @@
 #include "qgslayoutrendercontext.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsrendercontext.h"
-#include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
 
 #include <QPainter>
@@ -513,16 +512,18 @@ bool QgsLayoutUtils::itemIsAClippingSource( const QgsLayoutItem *item )
   return false;
 }
 
+constexpr double pointToMM = 25.4 / 72.0;
+
 double QgsLayoutUtils::pointsToMM( const double pointSize )
 {
   //conversion to mm based on 1 point = 1/72 inch
-  return ( pointSize * 0.3527 );
+  return ( pointSize * pointToMM );
 }
 
 double QgsLayoutUtils::mmToPoints( const double mmSize )
 {
   //conversion to points based on 1 point = 1/72 inch
-  return ( mmSize / 0.3527 );
+  return ( mmSize / pointToMM );
 }
 
 QVector< double > QgsLayoutUtils::predefinedScales( const QgsLayout *layout )
@@ -536,7 +537,6 @@ QVector< double > QgsLayoutUtils::predefinedScales( const QgsLayout *layout )
   if ( !hasProjectScales || mapScales.isEmpty() )
   {
     // default to global map tool scales
-    QgsSettings settings;
     const QStringList scales = QgsSettingsRegistryCore::settingsMapScales->value();
     for ( const QString &scale : scales )
     {

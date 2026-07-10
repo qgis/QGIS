@@ -4,6 +4,7 @@ Content-Type: application/json; charset=utf-8
 {
   "features": [
     {
+      "featureType": "testlayer2",
       "geometry": {
         "coordinates": [
           8.2035,

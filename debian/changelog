@@ -1,8 +1,20 @@
-qgis (4.1.0) UNRELEASED; urgency=medium
+qgis (4.3.0) UNRELEASED; urgency=medium
+
+  * New development version 4.3 after branch of 4.2
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 03 Jul 2026 14:18:44 +0200
+
+qgis (4.2.0) unstable; urgency=medium
+
+  * Release of 4.2.0
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 03 Jul 2026 14:18:44 +0200
+
+qgis (4.1.0) unstable; urgency=medium
 
   * New development version 4.1 after branch of 4.0
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 06 Mar 2026 13:11:42 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 03 Jul 2026 14:15:54 +0200
 
 qgis (4.0.0) unstable; urgency=medium
 

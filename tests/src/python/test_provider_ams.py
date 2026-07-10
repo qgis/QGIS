@@ -786,6 +786,86 @@ class TestPyQgsAMSProvider(QgisTestCase, RasterProviderTestCase):
         self.assertEqual(rl.dataProvider().bandScale(1), 1)
         self.assertEqual(rl.dataProvider().bandOffset(1), 0)
 
+    def test_tile_service_extent_fallback_to_service_info(self):
+        """
+        Test that when a tile service layer has no extent info at the layer level,
+        the provider falls back to the service-level fullExtent.
+        """
+        endpoint = self.basetestpath + "/tile_extent_fallback_fake_qgis_http_endpoint"
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""
+                {
+ "currentVersion": 11.1,
+ "serviceDescription": "",
+ "mapName": "Layers",
+ "description": "",
+ "copyrightText": "",
+ "layers": [
+  {
+   "id": 1,
+   "name": "Layer 1",
+   "parentLayerId": -1,
+   "defaultVisibility": true,
+   "subLayerIds": null,
+   "minScale": 0,
+   "maxScale": 0,
+   "type": "Feature Layer"
+  }
+ ],
+ "spatialReference": {
+  "wkid": 4326,
+  "latestWkid": 4326
+ },
+ "singleFusedMapCache": true,
+ "fullExtent": {
+  "xmin": -10.0,
+  "ymin": -20.0,
+  "xmax": 30.0,
+  "ymax": 40.0,
+  "spatialReference": {
+   "wkid": 4326,
+   "latestWkid": 4326
+  }
+ },
+ "units": "esriDecimalDegrees",
+ "capabilities": "Map,TilesOnly"
+}"""
+            )
+        with open(self.sanitize_local_url(endpoint, "/1?f=json"), "wb") as f:
+            f.write(
+                b"""
+                {
+ "currentVersion": 11.1,
+ "id": 1,
+ "name": "Layer 1",
+ "type": "Feature Layer",
+ "parentLayer": {
+  "id": -1,
+  "name": "Root"
+ },
+ "defaultVisibility": true,
+ "minScale": 0,
+ "maxScale": 0,
+ "spatialReference": {
+  "wkid": 4326,
+  "latestWkid": 4326
+ }
+}"""
+            )
+
+        rl = QgsRasterLayer(
+            "url='http://" + endpoint + "' layer='1'",
+            "test",
+            "arcgismapserver",
+        )
+        self.assertTrue(rl.isValid())
+        self.assertEqual(rl.crs(), QgsCoordinateReferenceSystem("EPSG:4326"))
+        self.assertAlmostEqual(rl.extent().xMinimum(), -10.0, 5)
+        self.assertAlmostEqual(rl.extent().yMinimum(), -20.0, 5)
+        self.assertAlmostEqual(rl.extent().xMaximum(), 30.0, 5)
+        self.assertAlmostEqual(rl.extent().yMaximum(), 40.0, 5)
+
 
 if __name__ == "__main__":
     unittest.main()

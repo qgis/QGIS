@@ -1,0 +1,58 @@
+<!-- template for the WFS3 API collection schema page -->
+{% include "header.html" %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1><a title="View items of: {{ title }}" href="{% for link in links %}
+        {% if link.type == "text/html" and link.rel == "items" %}
+        {{ link.href }}
+        {% endif %}
+        {% endfor %}">{{ title }}</a></h1>
+        <h3>Schema</h3>
+
+        <div>The schema of the feature type describes the "returnables" and "receivables". "Returnables" are feature properties that are returned in responses to a query. "Receivables" are feature properties are feature properties that have to or can be provided by the client in mutation operations (create, replace, or update). Unless otherwise specified, a property is both a returnable and a receivable.</div>
+        <div>
+        <dl>
+        {% for name, property in properties %}
+            <dt>{{ name }}</dt>
+            <dd>
+                <ul class="list-unstyled">
+                {% if existsIn(property, "role") %}
+                <li>Special role: {{ property.role }}</li>
+                {% endif %}
+                {% if existsIn(property, "type") %}
+                <li>Data type: {{ property.type }}.</li>
+                {% endif %}
+                {% if existsIn(property, "description") %}
+                <li>{{ property.description }}</li>
+                {% endif %}
+                {% if existsIn(property, "format") %}
+                <li>Format: {{ property.format }}</li>
+                {% endif %}
+                {% if existsIn(property, "readOnly") %}
+                <li>This property is returnable but not receivable.</li>
+                {% endif %}
+                </ul>
+            </dd>
+        {% endfor %}
+        </dl>
+        </div>
+
+        <h3>Links</h3>
+            <ul>
+            {% for link in links %}
+                {% if link.rel != "self" %}
+                <li><a rel="{{ link.rel }}" href="{{ link.href }}">{{ link.title }}</a></li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+
+    </div>
+
+    <div class="col-md-6">
+
+    </div>
+
+</div>
+
+{% include "footer.html" %}

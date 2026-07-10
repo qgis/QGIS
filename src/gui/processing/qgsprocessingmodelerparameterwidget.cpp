@@ -261,7 +261,7 @@ QVariant QgsProcessingModelerParameterWidget::value() const
   return QVariant::fromValue( QgsProcessingModelChildParameterSource() );
 }
 
-void QgsProcessingModelerParameterWidget::setDialog( QDialog *dialog )
+void QgsProcessingModelerParameterWidget::setDialog( QWidget *dialog )
 {
   if ( mStaticWidgetWrapper )
     mStaticWidgetWrapper->setDialog( dialog );

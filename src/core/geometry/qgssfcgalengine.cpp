@@ -633,6 +633,65 @@ bool QgsSfcgalEngine::isSimple( const sfcgal::geometry *geom, QString *errorMsg 
 #endif
 }
 
+sfcgal::shared_geom QgsSfcgalEngine::geometryN( const sfcgal::geometry *geom, unsigned int index, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal_geometry_type_t type = sfcgal_geometry_type_id( geom );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  const sfcgal::geometry *out = nullptr;
+
+  switch ( type )
+  {
+    case SFCGAL_TYPE_GEOMETRYCOLLECTION:
+    case SFCGAL_TYPE_MULTILINESTRING:
+    case SFCGAL_TYPE_MULTIPOINT:
+    case SFCGAL_TYPE_MULTIPOLYGON:
+    case SFCGAL_TYPE_MULTISOLID:
+    {
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+      // Prior to version 2.1, index < nrGeoms is not checked
+      // by sfcgal_geometry_collection_geometry_n
+      const unsigned int nrGeoms = sfcgal_geometry_collection_num_geometries( geom );
+      if ( index < nrGeoms )
+      {
+        out = sfcgal_geometry_collection_geometry_n( geom, index );
+      }
+      else
+      {
+        sfcgal::errorHandler()->addText( u"Cannot access geometry at position %s. GeometryCollection has only %d geometries."_s.arg( index ).arg( nrGeoms ) );
+      }
+#else
+      out = sfcgal_geometry_collection_geometry_n( geom, index );
+#endif
+      break;
+    }
+    case SFCGAL_TYPE_LINESTRING:
+    case SFCGAL_TYPE_POINT:
+    case SFCGAL_TYPE_POLYGON:
+    case SFCGAL_TYPE_POLYHEDRALSURFACE:
+    case SFCGAL_TYPE_SOLID:
+    case SFCGAL_TYPE_TRIANGLE:
+    case SFCGAL_TYPE_TRIANGULATEDSURFACE:
+      if ( index == 0 )
+      {
+        out = geom;
+      }
+      break;
+    default:
+      out = nullptr;
+  }
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  sfcgal::shared_geom result = cloneGeometry( out, errorMsg );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return result;
+}
+
 sfcgal::shared_geom QgsSfcgalEngine::boundary( const sfcgal::geometry *geom, QString *errorMsg )
 {
 #if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
@@ -951,12 +1010,25 @@ sfcgal::shared_geom QgsSfcgalEngine::simplify( const sfcgal::geometry *geom, dou
 #endif
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg )
+sfcgal::shared_geom QgsSfcgalEngine::approximateMedialAxis( const sfcgal::geometry *geom, bool extendToEdges, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, nullptr );
 
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  sfcgal::geometry *result = nullptr;
+  if ( extendToEdges )
+  {
+    result = sfcgal_geometry_projected_medial_axis( geom );
+  }
+  else
+  {
+    result = sfcgal_geometry_approximate_medial_axis( geom );
+  }
+#else
+  Q_UNUSED( extendToEdges )
   sfcgal::geometry *result = sfcgal_geometry_approximate_medial_axis( geom );
+#endif
   CHECK_SUCCESS( errorMsg, nullptr );
 
   return sfcgal::make_shared_geom( result );
@@ -1020,12 +1092,50 @@ sfcgal::shared_geom QgsSfcgalEngine::transform( const sfcgal::geometry *geom, co
   return sfcgal::make_shared_geom( result );
 }
 
+sfcgal::shared_geom QgsSfcgalEngine::split3D( const sfcgal::geometry *geom, const QgsPoint &planePoint, const QgsVector3D &planeNormal, bool closeGeometries, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal::geometry *result = sfcgal_geometry_split_3d( geom, planePoint.x(), planePoint.y(), planePoint.z(), planeNormal.x(), planeNormal.y(), planeNormal.z(), closeGeometries );
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return sfcgal::make_shared_geom( result );
+}
+
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalEngine::toSfcgalGeometry( sfcgal::shared_prim &prim, sfcgal::primitiveType type, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( prim.get(), nullptr );
 
   return std::make_unique<QgsSfcgalGeometry>( prim, type );
+}
+
+sfcgal::shared_prim QgsSfcgalEngine::createBox( double sizeX, double sizeY, double sizeZ, QString *errorMsg )
+{
+  sfcgal::primitive *result = sfcgal_primitive_create( SFCGAL_TYPE_BOX );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  sfcgal_primitive_set_parameter_double( result, "x_extent", sizeX );
+  sfcgal_primitive_set_parameter_double( result, "y_extent", sizeY );
+  sfcgal_primitive_set_parameter_double( result, "z_extent", sizeZ );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
+sfcgal::shared_prim QgsSfcgalEngine::createCone( double bottomRadius, double height, double topRadius, unsigned int radial, QString *errorMsg )
+{
+  sfcgal::primitive *result = sfcgal_primitive_create( SFCGAL_TYPE_CONE );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  sfcgal_primitive_set_parameter_double( result, "bottom_radius", bottomRadius );
+  sfcgal_primitive_set_parameter_double( result, "height", height );
+  sfcgal_primitive_set_parameter_double( result, "top_radius", topRadius );
+  sfcgal_primitive_set_parameter_int( result, "num_radial", radial );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
 }
 
 sfcgal::shared_prim QgsSfcgalEngine::createCube( double size, QString *errorMsg )
@@ -1039,21 +1149,52 @@ sfcgal::shared_prim QgsSfcgalEngine::createCube( double size, QString *errorMsg 
   return sfcgal::make_shared_prim( result );
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::primitiveAsPolyhedral( const sfcgal::primitive *prim, const QgsMatrix4x4 &mat, QString *errorMsg )
+sfcgal::shared_prim QgsSfcgalEngine::createCylinder( double radius, double height, unsigned int radial, QString *errorMsg )
+{
+  sfcgal::primitive *result = sfcgal_primitive_create( SFCGAL_TYPE_CYLINDER );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  sfcgal_primitive_set_parameter_double( result, "radius", radius );
+  sfcgal_primitive_set_parameter_double( result, "height", height );
+  sfcgal_primitive_set_parameter_int( result, "num_radial", radial );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
+sfcgal::shared_prim QgsSfcgalEngine::createSphere( double radius, unsigned int subdivisions, QString *errorMsg )
+{
+  sfcgal::primitive *result = sfcgal_primitive_create( SFCGAL_TYPE_SPHERE );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  sfcgal_primitive_set_parameter_double( result, "radius", radius );
+  sfcgal_primitive_set_parameter_int( result, "num_subdivisions", subdivisions );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
+sfcgal::shared_prim QgsSfcgalEngine::createTorus( double mainRadius, double tubeRadius, unsigned int mainRadial, unsigned int tubeRadial, QString *errorMsg )
+{
+  sfcgal::primitive *result = sfcgal_primitive_create( SFCGAL_TYPE_TORUS );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  sfcgal_primitive_set_parameter_double( result, "main_radius", mainRadius );
+  sfcgal_primitive_set_parameter_double( result, "tube_radius", tubeRadius );
+  sfcgal_primitive_set_parameter_int( result, "main_num_radial", mainRadial );
+  sfcgal_primitive_set_parameter_int( result, "tube_num_radial", tubeRadial );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::primitiveAsPolyhedral( const sfcgal::primitive *prim, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( prim, nullptr );
 
   sfcgal::geometry *result = sfcgal_primitive_as_polyhedral_surface( prim );
   CHECK_SUCCESS( errorMsg, nullptr );
-
-  if ( !mat.isIdentity() )
-  {
-    sfcgal::geometry *result2 = sfcgal_geometry_transform( result, mat.constData() );
-    sfcgal_geometry_delete( result );
-    result = result2;
-    CHECK_SUCCESS( errorMsg, nullptr );
-  }
 
   return sfcgal::make_shared_geom( result );
 }
@@ -1088,9 +1229,10 @@ double QgsSfcgalEngine::primitiveArea( const sfcgal::primitive *prim, bool withD
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( prim, std::numeric_limits<double>::quiet_NaN() );
 
-  double out = sfcgal_primitive_area( prim, withDiscretization );
+  double area = sfcgal_primitive_area( prim, withDiscretization );
+
   CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
-  return out;
+  return area;
 }
 
 double QgsSfcgalEngine::primitiveVolume( const sfcgal::primitive *prim, bool withDiscretization, QString *errorMsg )
@@ -1098,9 +1240,10 @@ double QgsSfcgalEngine::primitiveVolume( const sfcgal::primitive *prim, bool wit
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( prim, std::numeric_limits<double>::quiet_NaN() );
 
-  double out = sfcgal_primitive_volume( prim, withDiscretization );
+  const double volume = sfcgal_primitive_volume( prim, withDiscretization );
   CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
-  return out;
+
+  return volume;
 }
 
 void sfcgal::to_json( json &j, const sfcgal::PrimitiveParameterDesc &p )
@@ -1267,6 +1410,34 @@ void QgsSfcgalEngine::primitiveSetParameter( sfcgal::primitive *prim, const QStr
   {
     sfcgal::errorHandler()->addText( u"Caught json exception"_s );
   }
+}
+
+sfcgal::shared_prim QgsSfcgalEngine::primitiveTranslate( const sfcgal::primitive *prim, const QgsVector3D &translation, QString *errorMsg )
+{
+  sfcgal::primitive *result = sfcgal_primitive_translate( prim, translation.x(), translation.y(), translation.z() );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::primitiveRotate( const sfcgal::primitive *prim, double angle, const QgsVector3D &axisVector, const QgsPoint &center, QString *errorMsg )
+{
+  const QgsPoint rotationCenter = center.isEmpty() ? QgsPoint( 0, 0, 0 ) : center;
+
+  sfcgal::primitive *result = sfcgal_primitive_rotate( prim, angle, axisVector.x(), axisVector.y(), axisVector.z(), rotationCenter.x(), rotationCenter.y(), rotationCenter.z() );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::primitiveScale( const sfcgal::primitive *prim, const QgsVector3D &scaleFactor, const QgsPoint &center, QString *errorMsg )
+{
+  const QgsPoint scaleCenter = center.isEmpty() ? QgsPoint( 0, 0, 0 ) : center;
+
+  sfcgal::primitive *result = sfcgal_primitive_scale( prim, scaleFactor.x(), scaleFactor.y(), scaleFactor.z(), scaleCenter.x(), scaleCenter.y(), scaleCenter.z() );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
 }
 
 #endif

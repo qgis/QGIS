@@ -373,6 +373,14 @@ class CORE_EXPORT QgsProperty
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const;
 
     /**
+     * Returns the set of any variables referenced by the property's expression.
+     *
+     * Returns an empty set if the property is inactive or not of type Qgis::PropertyType::Expression.
+     * \since QGIS 4.2
+     */
+    QSet<QString> referencedVariables() const;
+
+    /**
      * Returns TRUE if the property is set to a linked project color.
      *
      * \since QGIS 3.6

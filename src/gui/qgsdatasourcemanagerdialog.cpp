@@ -63,6 +63,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   mBrowserWidget = new QgsBrowserDockWidget( u"Browser"_s, mBrowserModel, this );
   mBrowserWidget->setFeatures( QDockWidget::NoDockWidgetFeatures );
   mBrowserWidget->setTitleBarWidget( new QWidget( mBrowserWidget ) );
+  mBrowserWidget->setMessageBar( mMessageBar );
 
   QWidget *browserWidgetWrapper = new QWidget( this );
   browserWidgetWrapper->setLayout( new QVBoxLayout( browserWidgetWrapper ) );

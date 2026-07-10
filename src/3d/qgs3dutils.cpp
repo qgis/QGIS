@@ -15,6 +15,7 @@
 
 #include "qgs3dutils.h"
 
+#include "qgs3d.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgsabstract3dengine.h"
@@ -29,6 +30,7 @@
 #include "qgsfeedback.h"
 #include "qgsglobechunkedentity.h"
 #include "qgslinestring.h"
+#include "qgsmaterial3dhandler.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattributebyramprenderer.h"
@@ -522,6 +524,17 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
+float srgbFloatToLinear( float srgb )
+{
+  // from https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
+  return srgb <= 0.04045f ? srgb / 12.92f : std::pow( ( srgb + 0.055f ) / 1.055f, 2.4f );
+}
+
+QColor Qgs3DUtils::srgbToLinear( const QColor &color )
+{
+  return QColor::fromRgbF( srgbFloatToLinear( color.redF() ), srgbFloatToLinear( color.greenF() ), srgbFloatToLinear( color.blueF() ), color.alphaF() );
+}
+
 void Qgs3DUtils::extractPointPositions(
   const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions, const QgsVector3D &translation
 )
@@ -555,7 +568,7 @@ void Qgs3DUtils::extractPointPositions(
     positions.append( QVector3D(
       static_cast<float>( pt.x() - chunkOrigin.x() + translation.x() ),
       static_cast<float>( pt.y() - chunkOrigin.y() + translation.y() ),
-      static_cast< float >( h + translation.z() )
+      static_cast<float>( h - chunkOrigin.z() + translation.z() )
     ) );
     // clang-format on
     QgsDebugMsgLevel( u"%1 %2 %3"_s.arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
@@ -994,6 +1007,49 @@ QByteArray Qgs3DUtils::addDefinesToShaderCode( const QByteArray &shaderCode, con
   return newShaderCode;
 }
 
+QVector3D Qgs3DUtils::axisStringToVector( const QString &axis )
+{
+  if ( axis == "x"_L1 )
+    return QVector3D( 1.0f, 0.0f, 0.0f );
+  if ( axis == "-x"_L1 )
+    return QVector3D( -1.0f, 0.0f, 0.0f );
+  if ( axis == "y"_L1 )
+    return QVector3D( 0.0f, 1.0f, 0.0f );
+  if ( axis == "-y"_L1 )
+    return QVector3D( 0.0f, -1.0f, 0.0f );
+  if ( axis == "z"_L1 )
+    return QVector3D( 0.0f, 0.0f, 1.0f );
+  if ( axis == "-z"_L1 )
+    return QVector3D( 0.0f, 0.0f, -1.0f );
+  return QVector3D();
+}
+
+QMatrix4x4 Qgs3DUtils::axisTransformMatrix( const QString &upAxis, const QString &forwardAxis )
+{
+  const QVector3D up = axisStringToVector( upAxis );
+  const QVector3D forward = axisStringToVector( forwardAxis );
+
+  if ( up.isNull() || forward.isNull() )
+    return QMatrix4x4();
+
+  const QVector3D right = QVector3D::crossProduct( forward, up );
+  if ( right.isNull() )
+    return QMatrix4x4();
+
+  const float data[9] = {
+    right.x(),
+    right.y(),
+    right.z(),
+    forward.x(),
+    forward.y(),
+    forward.z(),
+    up.x(),
+    up.y(),
+    up.z(),
+  };
+  return QMatrix4x4( QMatrix3x3( data ) );
+}
+
 QByteArray Qgs3DUtils::removeDefinesFromShaderCode( const QByteArray &shaderCode, const QStringList &defines )
 {
   QByteArray newShaderCode = shaderCode;
@@ -1067,70 +1123,86 @@ QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, con
 
   // pick an arbitrary point mid-way between near and far plane
   const float pointDistance = ( cameraController->camera()->farPlane() + cameraController->camera()->nearPlane() ) / 2;
-  const QVector3D worldPoint = ray.origin() + pointDistance * ray.direction().normalized();
+  const QVector3D worldPoint = ray.point( pointDistance );
   const QgsVector3D mapTransform = worldToMapCoordinates( worldPoint, mapSettings->origin() );
   const QgsPoint mapPoint( mapTransform.x(), mapTransform.y(), mapTransform.z() );
   return mapPoint;
 }
 
-// computes the portion of the Y=y plane the camera is looking at
-void Qgs3DUtils::calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ )
+QVector3D Qgs3DUtils::calculateDirectionalLightUpVector( const QVector3D &lightDirection )
 {
-  const QVector3D cameraPos = camera->position();
-  const QMatrix4x4 projectionMatrix = camera->projectionMatrix();
-  const QMatrix4x4 viewMatrix = camera->viewMatrix();
-  float depth = 1.0f;
-  QVector4D viewCenter = viewMatrix * QVector4D( camera->viewCenter(), 1.0f );
-  viewCenter /= viewCenter.w();
-  viewCenter = projectionMatrix * viewCenter;
-  viewCenter /= viewCenter.w();
-  depth = viewCenter.z();
-  // clang-format off
-  QVector<QVector3D> viewFrustumPoints = {
-    QVector3D( 0.0f, 0.0f, depth ),
-    QVector3D( 0.0f, 1.0f, depth ),
-    QVector3D( 1.0f, 0.0f, depth ),
-    QVector3D( 1.0f, 1.0f, depth ),
-    QVector3D( 0.0f, 0.0f, 0 ),
-    QVector3D( 0.0f, 1.0f, 0 ),
-    QVector3D( 1.0f, 0.0f, 0 ),
-    QVector3D( 1.0f, 1.0f, 0 )
-  };
-  // clang-format on
-  maxX = std::numeric_limits<float>::lowest();
-  maxY = std::numeric_limits<float>::lowest();
-  maxZ = std::numeric_limits<float>::lowest();
-  minX = std::numeric_limits<float>::max();
-  minY = std::numeric_limits<float>::max();
-  minZ = std::numeric_limits<float>::max();
-  for ( int i = 0; i < viewFrustumPoints.size(); ++i )
+  QVector3D up( 0.0f, 1.0f, 0.0f );
+  if ( std::abs( QVector3D::dotProduct( lightDirection, up ) ) > 0.99f )
+    up = QVector3D( 0.0f, 0.0f, 1.0f );
+  return up;
+}
+
+std::vector<float> Qgs3DUtils::calculateCascadeSplits( int numberCascades, float nearPlane, float farPlane, float lambda )
+{
+  // prevent division by zero if nearPlane is 0 or negative
+  const float safeNearPlane = std::max( nearPlane, 0.0001f );
+
+  std::vector<float> cascadeSplits( numberCascades + 1 );
+
+  // "Practical Split Scheme" for cascading shadow maps.
+  for ( int i = 0; i <= numberCascades; ++i )
   {
-    // convert from view port space to world space
-    viewFrustumPoints[i] = viewFrustumPoints[i].unproject( viewMatrix, projectionMatrix, QRect( 0, 0, 1, 1 ) );
-    minX = std::min( minX, viewFrustumPoints[i].x() );
-    maxX = std::max( maxX, viewFrustumPoints[i].x() );
-    minY = std::min( minY, viewFrustumPoints[i].y() );
-    maxY = std::max( maxY, viewFrustumPoints[i].y() );
-    minZ = std::min( minZ, viewFrustumPoints[i].z() );
-    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
-    // find the intersection between the line going from cameraPos to the frustum quad point
-    // and the horizontal plane Z=z
-    // if the intersection is on the back side of the viewing panel we get a point that is
-    // maxRenderingDistance units in front of the camera
-    const QVector3D pt = cameraPos;
-    const QVector3D vect = ( viewFrustumPoints[i] - pt ).normalized();
-    float t = ( z - pt.z() ) / vect.z();
-    if ( t < 0 )
-      t = maxRenderingDistance;
-    else
-      t = std::min( t, maxRenderingDistance );
-    viewFrustumPoints[i] = pt + t * vect;
-    minX = std::min( minX, viewFrustumPoints[i].x() );
-    maxX = std::max( maxX, viewFrustumPoints[i].x() );
-    minY = std::min( minY, viewFrustumPoints[i].y() );
-    maxY = std::max( maxY, viewFrustumPoints[i].y() );
-    minZ = std::min( minZ, viewFrustumPoints[i].z() );
-    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
+    const float p = static_cast<float>( i ) / static_cast<float>( numberCascades );
+    const float logSplit = safeNearPlane * std::pow( farPlane / safeNearPlane, p );
+    const float uniSplit = safeNearPlane + ( farPlane - safeNearPlane ) * p;
+    cascadeSplits[i] = lambda * logSplit + ( 1.0f - lambda ) * uniSplit;
+  }
+  return cascadeSplits;
+}
+
+void Qgs3DUtils::calculateFrustumSliceCorners( float zNear, float zFar, float fov, float aspectRatio, const QMatrix4x4 &invertedCameraView, QVector3D ( &corners )[8], QVector3D &center )
+{
+  const float fovC = static_cast< float >( std::tan( fov * M_PI / 360.0 ) );
+  const float halfYNear = zNear * fovC;
+  const float halfXNear = halfYNear * aspectRatio;
+  const float halfYFar = zFar * fovC;
+  const float halfXFar = halfYFar * aspectRatio;
+
+  // calculate the 8 corners of the camera frustum slice in camera view space, and transform to world space
+  corners[0] = invertedCameraView.map( QVector3D( -halfXNear, -halfYNear, -zNear ) );
+  corners[1] = invertedCameraView.map( QVector3D( halfXNear, -halfYNear, -zNear ) );
+  corners[2] = invertedCameraView.map( QVector3D( halfXNear, halfYNear, -zNear ) );
+  corners[3] = invertedCameraView.map( QVector3D( -halfXNear, halfYNear, -zNear ) );
+  corners[4] = invertedCameraView.map( QVector3D( -halfXFar, -halfYFar, -zFar ) );
+  corners[5] = invertedCameraView.map( QVector3D( halfXFar, -halfYFar, -zFar ) );
+  corners[6] = invertedCameraView.map( QVector3D( halfXFar, halfYFar, -zFar ) );
+  corners[7] = invertedCameraView.map( QVector3D( -halfXFar, halfYFar, -zFar ) );
+
+  // find the center
+  center = QVector3D( 0, 0, 0 );
+  for ( int j = 0; j < 8; ++j )
+  {
+    center += corners[j];
+  }
+  center /= 8.0f;
+}
+
+void Qgs3DUtils::calculateViewSpaceOrthographicBounds(
+  const QVector3D ( &worldCorners )[8], const QMatrix4x4 &viewMatrix, float &left, float &right, float &bottom, float &top, float &nearPlane, float &farPlane
+)
+{
+  // transform corners to find the bounding box
+  left = std::numeric_limits<float>::max();
+  right = std::numeric_limits<float>::lowest();
+  bottom = std::numeric_limits<float>::max();
+  top = std::numeric_limits<float>::lowest();
+  nearPlane = std::numeric_limits<float>::max();
+  farPlane = std::numeric_limits<float>::lowest();
+  for ( int j = 0; j < 8; ++j )
+  {
+    const QVector3D lightSpaceCorner = viewMatrix.map( worldCorners[j] );
+    left = std::min( left, lightSpaceCorner.x() );
+    right = std::max( right, lightSpaceCorner.x() );
+    bottom = std::min( bottom, lightSpaceCorner.y() );
+    top = std::max( top, lightSpaceCorner.y() );
+    const float zDistance = -lightSpaceCorner.z();
+    nearPlane = std::min( nearPlane, zDistance );
+    farPlane = std::max( farPlane, zDistance );
   }
 }
 
@@ -1219,4 +1291,97 @@ std::unique_ptr<Qt3DRender::QCamera> Qgs3DUtils::copyCamera( Qt3DRender::QCamera
   copy->setAspectRatio( cam->aspectRatio() );
   copy->setFieldOfView( cam->fieldOfView() );
   return copy;
+}
+
+void Qgs3DUtils::setTextureFiltering( Qt3DRender::QAbstractTexture *texture, const QgsMaterialContext &context )
+{
+  texture->setGenerateMipMaps( true );
+  texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+  texture->setMinificationFilter( Qt3DRender::QTexture2D::LinearMipMapLinear );
+
+  switch ( context.textureFilterQuality() )
+  {
+    case Qgis::TextureFilterQuality::Trilinear:
+      texture->setMaximumAnisotropy( 1 );
+      break;
+    case Qgis::TextureFilterQuality::Anisotropic2x:
+      texture->setMaximumAnisotropy( 2 );
+      break;
+    case Qgis::TextureFilterQuality::Anisotropic4x:
+      texture->setMaximumAnisotropy( 4 );
+      break;
+    case Qgis::TextureFilterQuality::Anisotropic8x:
+      texture->setMaximumAnisotropy( 8 );
+      break;
+    case Qgis::TextureFilterQuality::Anisotropic16x:
+      texture->setMaximumAnisotropy( 16 );
+      break;
+  }
+}
+
+Qt3DRender::QAbstractTexture::TextureFormat Qgs3DUtils::determineTextureFormat( QImage::Format imageFormat, bool isSrgb, bool &requiresConversionToRgb )
+{
+  requiresConversionToRgb = false;
+  switch ( imageFormat )
+  {
+    case QImage::Format_RGBA32FPx4:
+    case QImage::Format_RGBA32FPx4_Premultiplied:
+      return Qt3DRender::QAbstractTexture::RGBA32F;
+
+    case QImage::Format_RGBX32FPx4:
+      return Qt3DRender::QAbstractTexture::RGB32F;
+
+    case QImage::Format_RGBA16FPx4:
+    case QImage::Format_RGBA16FPx4_Premultiplied:
+      return Qt3DRender::QAbstractTexture::RGBA16F;
+
+    case QImage::Format_RGBX16FPx4:
+      return Qt3DRender::QAbstractTexture::RGB16F;
+
+    case QImage::Format_RGBA8888:
+    case QImage::Format_RGBA8888_Premultiplied:
+    case QImage::Format_ARGB32:
+    case QImage::Format_ARGB32_Premultiplied:
+      return isSrgb ? Qt3DRender::QAbstractTexture::SRGB8_Alpha8 : Qt3DRender::QAbstractTexture::RGBA8_UNorm;
+
+    case QImage::Format_RGB32:
+    case QImage::Format_RGB888:
+      return isSrgb ? Qt3DRender::QAbstractTexture::SRGB8 : Qt3DRender::QAbstractTexture::RGB8_UNorm;
+
+    case QImage::Format_Grayscale8:
+    case QImage::Format_Alpha8:
+      return Qt3DRender::QAbstractTexture::R8_UNorm;
+    case QImage::Format_Grayscale16:
+      return Qt3DRender::QAbstractTexture::R16_UNorm;
+
+    case QImage::Format_Invalid:
+    case QImage::Format_Mono:
+    case QImage::Format_MonoLSB:
+    case QImage::Format_Indexed8:
+    case QImage::Format_RGB16:
+    case QImage::Format_ARGB8565_Premultiplied:
+    case QImage::Format_RGB666:
+    case QImage::Format_ARGB6666_Premultiplied:
+    case QImage::Format_RGB555:
+    case QImage::Format_ARGB8555_Premultiplied:
+    case QImage::Format_RGB444:
+    case QImage::Format_ARGB4444_Premultiplied:
+    case QImage::Format_RGBX8888:
+    case QImage::Format_BGR30:
+    case QImage::Format_A2BGR30_Premultiplied:
+    case QImage::Format_RGB30:
+    case QImage::Format_A2RGB30_Premultiplied:
+    case QImage::Format_RGBX64:
+    case QImage::Format_RGBA64:
+    case QImage::Format_RGBA64_Premultiplied:
+    case QImage::Format_BGR888:
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
+    case QImage::Format_CMYK8888:
+#endif
+    case QImage::NImageFormats:
+      // image format isn't compatible, it needs converting by caller
+      requiresConversionToRgb = true;
+      break;
+  }
+  return isSrgb ? Qt3DRender::QAbstractTexture::SRGB8_Alpha8 : Qt3DRender::QAbstractTexture::RGBA8_UNorm;
 }

@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodeldesignerconfigwidget.h"
+#include "qgsmodeldesignerdialog.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgroupboxdefinitionwidget.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
@@ -102,7 +103,8 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingPointCloudAttributeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingVectorTileDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingRasterOptionsWidgetWrapper() );
-
+  addParameterWidgetFactory( new QgsProcessingHeatmapPixelSizeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingReliefColorsWidgetWrapper() );
 
   mModelConfigWidgetFactory = std::make_unique< QgsProcessingGuiInternalModelConfigWidgetFactory >();
   registerModelConfigWidgetFactory( mModelConfigWidgetFactory.get() );

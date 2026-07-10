@@ -17,7 +17,8 @@
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QDebug>
 #include <QFile>
@@ -42,8 +43,10 @@ using namespace Qt::StringLiterals;
 #include <excpt.h>
 #endif
 
-QLatin1String QgsOpenClUtils::SETTINGS_GLOBAL_ENABLED_KEY = "OpenClEnabled"_L1;
-QLatin1String QgsOpenClUtils::SETTINGS_DEFAULT_DEVICE_KEY = "OpenClDefaultDevice"_L1;
+const QgsSettingsEntryBool *QgsOpenClUtils::settingsOpenClEnabled
+  = new QgsSettingsEntryBool( u"opencl-enabled"_s, QgsSettingsTree::sTreeCore, false, u"If true, OpenCL-accelerated rendering and processing is enabled when a compatible device is available."_s );
+const QgsSettingsEntryString *QgsOpenClUtils::settingsOpenClDefaultDevice
+  = new QgsSettingsEntryString( u"opencl-default-device"_s, QgsSettingsTree::sTreeCore, QString(), u"Identifier of the OpenCL device used by default. If empty, the first available device is used."_s );
 QLatin1String QgsOpenClUtils::LOGMESSAGE_TAG = "OpenCL"_L1;
 bool QgsOpenClUtils::sAvailable = false;
 
@@ -296,7 +299,7 @@ QString QgsOpenClUtils::deviceInfo( const Info infoType, cl::Device device )
 
 bool QgsOpenClUtils::enabled()
 {
-  return QgsSettings().value( SETTINGS_GLOBAL_ENABLED_KEY, false, QgsSettings::Section::Core ).toBool();
+  return settingsOpenClEnabled->value();
 }
 
 cl::Device QgsOpenClUtils::activeDevice()
@@ -320,12 +323,12 @@ QString QgsOpenClUtils::activePlatformVersion()
 
 void QgsOpenClUtils::storePreferredDevice( const QString deviceId )
 {
-  QgsSettings().setValue( SETTINGS_DEFAULT_DEVICE_KEY, deviceId, QgsSettings::Section::Core );
+  settingsOpenClDefaultDevice->setValue( deviceId );
 }
 
 QString QgsOpenClUtils::preferredDevice()
 {
-  return QgsSettings().value( SETTINGS_DEFAULT_DEVICE_KEY, QString(), QgsSettings::Section::Core ).toString();
+  return settingsOpenClDefaultDevice->value();
 }
 
 QString QgsOpenClUtils::deviceId( const cl::Device device )
@@ -525,7 +528,7 @@ bool QgsOpenClUtils::available()
 
 void QgsOpenClUtils::setEnabled( bool enabled )
 {
-  QgsSettings().setValue( SETTINGS_GLOBAL_ENABLED_KEY, enabled, QgsSettings::Section::Core );
+  settingsOpenClEnabled->setValue( enabled );
 }
 
 

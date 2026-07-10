@@ -92,6 +92,8 @@ class TestQgsProperty : public QObject
     void asVariant();
     void isProjectColor();
     void referencedFieldsIgnoreContext();
+    void referencedVariables();
+    void collectionReferencedVariables();
     void mapToMap();
 
   private:
@@ -1922,6 +1924,62 @@ void TestQgsProperty::referencedFieldsIgnoreContext()
 
   QCOMPARE( collection.referencedFields( QgsExpressionContext() ), QSet<QString>() << u"boo"_s );
   QCOMPARE( collection.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << u"boo"_s << u"foo"_s << u"bar"_s );
+}
+
+void TestQgsProperty::referencedVariables()
+{
+  // expression with vars
+  QgsProperty p = QgsProperty::fromExpression( u"@var1 + @var2"_s );
+  QCOMPARE( p.referencedVariables(), QSet<QString>() << u"var1"_s << u"var2"_s );
+
+  // single var
+  p.setExpressionString( u"@scale"_s );
+  QCOMPARE( p.referencedVariables(), QSet<QString>() << u"scale"_s );
+
+  // no vars
+  p.setExpressionString( u"1 + 1"_s );
+  QVERIFY( p.referencedVariables().isEmpty() );
+  p.setExpressionString( u"\"notavar\" + 1"_s );
+  QVERIFY( p.referencedVariables().isEmpty() );
+
+  // inactive property returns empty set
+  p.setExpressionString( u"@var"_s );
+  p.setActive( false );
+  QVERIFY( p.referencedVariables().isEmpty() );
+  p.setActive( true );
+  QCOMPARE( p.referencedVariables(), QSet<QString>() << u"var"_s );
+
+  // non-expression property returns empty set
+  const QgsProperty staticProp = QgsProperty::fromValue( u"test"_s, true );
+  QCOMPARE( staticProp.propertyType(), Qgis::PropertyType::Static );
+  QVERIFY( staticProp.referencedVariables().isEmpty() );
+
+  const QgsProperty fieldProp = QgsProperty::fromField( u"field"_s, true );
+  QCOMPARE( fieldProp.propertyType(), Qgis::PropertyType::Field );
+  QVERIFY( fieldProp.referencedVariables().isEmpty() );
+}
+
+void TestQgsProperty::collectionReferencedVariables()
+{
+  QgsPropertyCollection collection;
+
+  // fresh empty collection
+  QVERIFY( collection.referencedVariables().isEmpty() );
+
+  // active vars
+  collection.setProperty( PropertyKeys::Property1, QgsProperty::fromExpression( u"@var1 + @var2"_s, true ) );
+  QCOMPARE( collection.referencedVariables(), QSet<QString>() << u"var1"_s << u"var2"_s );
+
+  // inactive var
+  collection.setProperty( PropertyKeys::Property2, QgsProperty::fromExpression( u"@var"_s, false ) );
+  QVERIFY( !collection.referencedVariables().contains( u"var"_s ) );
+  QCOMPARE( collection.referencedVariables(), QSet<QString>() << u"var1"_s << u"var2"_s );
+
+  // test non expresesion
+  collection.setProperty( PropertyKeys::Property3, QgsProperty::fromValue( "test", true ) );
+  QCOMPARE( collection.referencedVariables(), QSet<QString>() << u"var1"_s << u"var2"_s );
+  collection.setProperty( PropertyKeys::Property4, QgsProperty::fromField( u"my_field"_s, true ) );
+  QCOMPARE( collection.referencedVariables(), QSet<QString>() << u"var1"_s << u"var2"_s );
 }
 
 void TestQgsProperty::checkCurveResult( const QList<QgsPointXY> &controlPoints, const QVector<double> &x, const QVector<double> &y )

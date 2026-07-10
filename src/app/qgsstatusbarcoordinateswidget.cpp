@@ -56,7 +56,6 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mLabel->setAlignment( Qt::AlignCenter );
   mLabel->setFrameStyle( QFrame::NoFrame );
   mLabel->setText( tr( "Coordinate" ) );
-  mLabel->setToolTip( tr( "Current map coordinate" ) );
 
   mLineEdit = new QLineEdit( this );
   mLineEdit->setMinimumWidth( 10 );
@@ -64,8 +63,6 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mLineEdit->setContentsMargins( 0, 0, 0, 0 );
   mLineEdit->setAlignment( Qt::AlignCenter );
   connect( mLineEdit, &QLineEdit::returnPressed, this, &QgsStatusBarCoordinatesWidget::validateCoordinates );
-
-  mLineEdit->setToolTip( tr( "Current map coordinate (longitude latitude or east north)" ) );
 
   //toggle to switch between mouse pos and extents display in status bar widget
   mToggleExtentsViewButton = new QToolButton( this );
@@ -89,24 +86,24 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mDizzyTimer = new QTimer( this );
   connect( mDizzyTimer, &QTimer::timeout, this, &QgsStatusBarCoordinatesWidget::dizzy );
 
-  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::coordinateCrsChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged );
-  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::geographicCoordinateFormatChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged );
-  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::coordinateTypeChanged, this, &QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged );
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::coordinateCrsChanged, this, &QgsStatusBarCoordinatesWidget::applyCoordinateDisplaySettings );
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::geographicCoordinateFormatChanged, this, &QgsStatusBarCoordinatesWidget::applyCoordinateDisplaySettings );
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::coordinateTypeChanged, this, &QgsStatusBarCoordinatesWidget::applyCoordinateDisplaySettings );
 
-  coordinateDisplaySettingsChanged();
+  applyCoordinateDisplaySettings();
 }
 
 void QgsStatusBarCoordinatesWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
   if ( mMapCanvas )
   {
-    disconnect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::showMouseCoordinates );
-    disconnect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent );
+    disconnect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::updateMouseCoordinates );
+    disconnect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::updateCoordinates );
   }
 
   mMapCanvas = mapCanvas;
-  connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::showMouseCoordinates );
-  connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent );
+  connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::updateMouseCoordinates );
+  connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::updateCoordinates );
 }
 
 void QgsStatusBarCoordinatesWidget::setFont( const QFont &myFont )
@@ -353,18 +350,18 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
   {
     //extents view mode!
     mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( u"extents.svg"_s ) );
-    mLineEdit->setToolTip( tr( "Map coordinates for the current view extents" ) );
     mLineEdit->setReadOnly( true );
-    showExtent();
+    mLabel->setText( tr( "Extents" ) );
   }
   else
   {
     //mouse cursor pos view mode!
     mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( u"tracking.svg"_s ) );
-    mLineEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
     mLineEdit->setReadOnly( false );
     mLabel->setText( tr( "Coordinate" ) );
   }
+
+  applyCoordinateDisplaySettings();
 }
 
 void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
@@ -377,22 +374,31 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
   mMapCanvas->redrawAllLayers();
 }
 
-void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &mapPoint )
+void QgsStatusBarCoordinatesWidget::updateMouseCoordinates( const QgsPointXY &mapPoint )
 {
   mLastCoordinate = mapPoint;
   mLastCoordinateCrs = mMapCanvas->mapSettings().destinationCrs();
-  updateCoordinateDisplay();
+
+  updateCoordinates();
 }
 
-void QgsStatusBarCoordinatesWidget::showExtent()
+void QgsStatusBarCoordinatesWidget::updateCoordinates()
 {
-  if ( !mToggleExtentsViewButton->isChecked() )
+  if ( mToggleExtentsViewButton->isChecked() )
   {
-    return;
+    mLineEdit->setText( QgsCoordinateUtils::formatExtentForProject( QgsProject::instance(), mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(), mMousePrecisionDecimalPlaces ) );
   }
-
-  mLabel->setText( tr( "Extents" ) );
-  mLineEdit->setText( QgsCoordinateUtils::formatExtentForProject( QgsProject::instance(), mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(), mMousePrecisionDecimalPlaces ) );
+  else
+  {
+    if ( mLastCoordinate.isEmpty() || !QgsProject::instance()->crs().isSameCelestialBody( mLastCoordinateCrs ) )
+    {
+      mLineEdit->clear();
+    }
+    else
+    {
+      mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), mLastCoordinate, mLastCoordinateCrs, static_cast<int>( mMousePrecisionDecimalPlaces ) ) );
+    }
+  }
 
   ensureCoordinatesVisible();
 }
@@ -428,45 +434,31 @@ void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
   }
 }
 
-void QgsStatusBarCoordinatesWidget::updateCoordinateDisplay()
-{
-  if ( mToggleExtentsViewButton->isChecked() )
-  {
-    return;
-  }
-
-  if ( mLastCoordinate.isEmpty() )
-    mLineEdit->clear();
-  else
-    mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), mLastCoordinate, mLastCoordinateCrs, static_cast<int>( mMousePrecisionDecimalPlaces ) ) );
-
-  ensureCoordinatesVisible();
-}
-
-void QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged()
+void QgsStatusBarCoordinatesWidget::applyCoordinateDisplaySettings()
 {
   const QgsCoordinateReferenceSystem coordinateCrs = QgsProject::instance()->displaySettings()->coordinateCrs();
 
   const Qgis::CoordinateOrder projectOrder = QgsProject::instance()->displaySettings()->coordinateAxisOrder();
   const Qgis::CoordinateOrder order = projectOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( coordinateCrs ) : projectOrder;
 
+  const bool isExtent = mToggleExtentsViewButton->isChecked();
   switch ( order )
   {
     case Qgis::CoordinateOrder::XY:
       if ( coordinateCrs.isGeographic() )
-        mLineEdit->setToolTip( tr( "Current map coordinate (Longitude, Latitude)" ) );
+        mLineEdit->setToolTip( isExtent ? tr( "Current map extent (Longitude, Latitude : Longitude, Latitude)" ) : tr( "Current map coordinate (Longitude, Latitude)" ) );
       else
-        mLineEdit->setToolTip( tr( "Current map coordinate (Easting, Northing)" ) );
+        mLineEdit->setToolTip( isExtent ? tr( "Current map extent (Easting, Northing : Easting, Northing)" ) : tr( "Current map coordinate (Easting, Northing)" ) );
       break;
     case Qgis::CoordinateOrder::YX:
       if ( coordinateCrs.isGeographic() )
-        mLineEdit->setToolTip( tr( "Current map coordinate (Latitude, Longitude)" ) );
+        mLineEdit->setToolTip( isExtent ? tr( "Current map coordinate (Latitude, Longitude : Latitude, Longitude)" ) : tr( "Current map coordinate (Latitude, Longitude)" ) );
       else
-        mLineEdit->setToolTip( tr( "Current map coordinate (Northing, Easting)" ) );
+        mLineEdit->setToolTip( isExtent ? tr( "Current map coordinate (Northing, Easting : Northing, Easting)" ) : tr( "Current map coordinate (Northing, Easting)" ) );
       break;
     case Qgis::CoordinateOrder::Default:
       break;
   }
 
-  updateCoordinateDisplay();
+  updateCoordinates();
 }

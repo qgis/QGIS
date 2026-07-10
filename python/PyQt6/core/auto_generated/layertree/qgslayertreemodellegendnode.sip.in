@@ -152,6 +152,15 @@ Notification from model that information from associated map view has
 changed. Default implementation does nothing.
 %End
 
+    virtual void invalidateDisplayData();
+%Docstring
+Invalidates cached display data for the node.
+
+The default implementation does nothing.
+
+.. versionadded:: 4.2
+%End
+
     struct ItemContext
     {
           ItemContext();
@@ -331,6 +340,7 @@ renderer.
     static double MINIMUM_SIZE;
     static double MAXIMUM_SIZE;
 
+
     QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSymbolLegendNode.
@@ -347,6 +357,7 @@ Constructor for QgsSymbolLegendNode.
 
     virtual bool setData( const QVariant &value, int role );
 
+    virtual void invalidateDisplayData();
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
@@ -728,6 +739,7 @@ definition of the node's appearance
 
     virtual QVariant data( int role ) const;
 
+    virtual void invalidateDisplayData();
 
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext &ctx );
 

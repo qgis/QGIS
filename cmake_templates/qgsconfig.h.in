@@ -109,6 +109,8 @@
 
 #cmakedefine HAVE_DRACO
 
+#cmakedefine HAVE_TRACY
+
 #cmakedefine ENABLE_TESTS
 
 #cmakedefine HAVE_PDF4QT

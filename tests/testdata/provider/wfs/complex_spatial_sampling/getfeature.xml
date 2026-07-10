@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sams="http://www.opengis.net/samplingSpatial/2.0" xmlns:ef="http://inspire.ec.europa.eu/schemas/ef/4.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:sam="http://www.opengis.net/sampling/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" numberMatched="4123" numberReturned="1" timeStamp="2026-06-01T15:24:54.956Z" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 https://data.geoscience.fr/api/surfacewater/schemas/wfs/2.0/wfs.xsd http://www.opengis.net/samplingSpatial/2.0 http://schemas.opengis.net/samplingSpatial/2.0/spatialSamplingFeature.xsd http://www.opengis.net/gml/3.2 https://data.geoscience.fr/api/surfacewater/schemas/gml/3.2.1/gml.xsd"><wfs:boundedBy>
+    <gml:Envelope>
+      <gml:lowerCorner>47.557 7.6062</gml:lowerCorner>
+      <gml:upperCorner>47.557 7.6062</gml:upperCorner>
+    </gml:Envelope>
+  </wfs:boundedBy><wfs:member>
+    <sams:SF_SpatialSamplingFeature gml:id="A021005050">
+      <gml:identifier codeSpace="http://www.ietf.org/rfc/rfc2616">https://data.geoscience.fr/id/WaterQuantityMonitoringPoint/A021005050</gml:identifier>
+      <gml:name>Le Rhin en Suisse [Rheinhalle]</gml:name>
+      <gml:boundedBy>
+        <gml:Envelope srsDimension="2" srsName="urn:ogc:def:crs:EPSG::4326">
+          <gml:lowerCorner>47.557 7.6062</gml:lowerCorner>
+          <gml:upperCorner>47.557 7.6062</gml:upperCorner>
+        </gml:Envelope>
+      </gml:boundedBy>
+      <sam:sampledFeature xlink:href="https://data.geoscience.fr/id/WatercourseLinkSequence/A0210000"/>
+      <sams:shape>
+        <gml:Point gml:id="SF_PT.A021005050" srsDimension="2" srsName="urn:ogc:def:crs:EPSG::4326">
+          <gml:pos>47.557 7.6062</gml:pos>
+        </gml:Point>
+      </sams:shape>
+    </sams:SF_SpatialSamplingFeature>
+  </wfs:member></wfs:FeatureCollection>

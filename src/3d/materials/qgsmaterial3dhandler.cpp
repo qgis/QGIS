@@ -15,6 +15,10 @@
 
 #include "qgsmaterial3dhandler.h"
 
+#include "qgs3drendercontext.h"
+
+#include <QPropertyAnimation>
+#include <QSequentialAnimationGroup>
 #include <QString>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
@@ -27,6 +31,35 @@
 
 using namespace Qt::StringLiterals;
 
+
+QgsMaterialContext QgsMaterialContext::fromRenderContext( const Qgs3DRenderContext &context )
+{
+  QgsMaterialContext res;
+  res.mSelectedColor = context.selectionColor();
+  res.mTextureFilterQuality = context.textureFilterQuality();
+  return res;
+}
+
+bool QgsMaterialContext::isPreview() const
+{
+  return mIsPreview;
+}
+
+void QgsMaterialContext::setIsPreview( bool isPreview )
+{
+  mIsPreview = isPreview;
+}
+
+QgsMaterial *QgsAbstractMaterial3DHandler::toInstancedMaterial(
+  const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform
+) const
+{
+  Q_UNUSED( flags )
+  Q_UNUSED( settings )
+  Q_UNUSED( context )
+  Q_UNUSED( transform )
+  return nullptr;
+}
 
 QByteArray QgsAbstractMaterial3DHandler::dataDefinedVertexColorsAsByte( const QgsAbstractMaterialSettings *settings, const QgsExpressionContext &expressionContext ) const
 {
@@ -41,11 +74,6 @@ void QgsAbstractMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstract
   Q_UNUSED( geometry )
   Q_UNUSED( vertexCount )
   Q_UNUSED( dataDefinedBytes )
-}
-
-int QgsAbstractMaterial3DHandler::dataDefinedByteStride( const QgsAbstractMaterialSettings * ) const
-{
-  return 0;
 }
 
 QList<QgsAbstractMaterial3DHandler::PreviewMeshType> QgsAbstractMaterial3DHandler::previewMeshTypes() const
@@ -134,7 +162,7 @@ Qt3DCore::QEntity *QgsAbstractMaterial3DHandler::createPreviewMesh( const QStrin
 }
 
 Qt3DCore::QEntity *QgsAbstractMaterial3DHandler::createPreviewScene(
-  const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, Qt3DExtras::Qt3DWindow *, Qt3DCore::QEntity *parent
+  const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, QWindow *, Qt3DCore::QEntity *parent
 ) const
 {
   auto *root = new Qt3DCore::QEntity( parent );
@@ -156,6 +184,25 @@ Qt3DCore::QEntity *QgsAbstractMaterial3DHandler::createPreviewScene(
   lightTransform->setTranslation( QVector3D( 3, 3, 3 ) );
   lightEntity->addComponent( light );
   lightEntity->addComponent( lightTransform );
+
+  auto *animGroup = new QSequentialAnimationGroup( lightEntity );
+  animGroup->setLoopCount( -1 );
+
+  auto *swingLeft = new QPropertyAnimation( lightTransform, "translation", animGroup );
+  swingLeft->setDuration( 8000 );
+  swingLeft->setStartValue( QVector3D( 3, 3, 3 ) );
+  swingLeft->setEndValue( QVector3D( -5, 5, 3 ) );
+  swingLeft->setEasingCurve( QEasingCurve::InOutSine );
+
+  auto *swingRight = new QPropertyAnimation( lightTransform, "translation", animGroup );
+  swingRight->setDuration( 8000 );
+  swingRight->setStartValue( QVector3D( -5, 5, 3 ) );
+  swingRight->setEndValue( QVector3D( 3, 3, 3 ) );
+  swingRight->setEasingCurve( QEasingCurve::InOutSine );
+
+  animGroup->addAnimation( swingLeft );
+  animGroup->addAnimation( swingRight );
+  animGroup->start();
 
   return root;
 }

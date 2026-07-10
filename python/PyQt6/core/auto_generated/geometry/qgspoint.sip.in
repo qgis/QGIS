@@ -452,6 +452,10 @@ Example
 
     virtual bool deleteVertex( QgsVertexId position );
 
+    virtual bool deleteVertices( const QSet<QgsVertexId> &positions );
+
+    virtual bool hasVertex( QgsVertexId position ) const;
+
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 

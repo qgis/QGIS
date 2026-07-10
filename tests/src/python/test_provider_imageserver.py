@@ -725,7 +725,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
  "maxRecordCount": 1000,
  "maxDownloadImageCount": 20,
  "maxMosaicImageCount": 20,
- "singleFusedMapCache": true,
+ "singleFusedMapCache": false,
  "tileInfo": {
   "rows": 256,
   "cols": 256,
@@ -1102,13 +1102,9 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         self.assertEqual(rl.dataProvider().dataType(3), Qgis.DataType.UInt16)
         self.assertEqual(rl.dataProvider().dataType(4), Qgis.DataType.UInt16)
 
-        # we always populate nodata values for integers, so that we can
-        # safely pad raster blocks which were requested outside of the
-        # providers extent
         for i in range(1, 5):
-            self.assertTrue(rl.dataProvider().sourceHasNoDataValue(i))
-            self.assertTrue(rl.dataProvider().useSourceNoDataValue(i))
-            self.assertEqual(rl.dataProvider().sourceNoDataValue(i), 65535)
+            self.assertFalse(rl.dataProvider().sourceHasNoDataValue(i))
+            self.assertFalse(rl.dataProvider().useSourceNoDataValue(i))
 
         self.assertFalse(rl.elevationProperties().isEnabled())
 
@@ -1343,7 +1339,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
   "sortField" : "",
   "sortValue" : null,
   "sortAscending" : true,
-  "singleFusedMapCache" : true,
+  "singleFusedMapCache" : false,
   "tileInfo" : {
     "rows" : 256,
     "cols" : 256,
@@ -1430,6 +1426,196 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         self.assertTrue(rl.dataProvider().useSourceNoDataValue(1))
         self.assertEqual(rl.dataProvider().sourceNoDataValue(1), 32767.0)
 
+    def test_missing_min_max(self):
+        """
+        Test guessing min/max values from pixel type
+        """
+        DATA = {
+            "U8": (0, 255),
+            "U4": (0, 15),
+            "U2": (0, 3),
+            "U1": (0, 1),
+            "S8": (-128.0, 127.0),
+            "U16": (0.0, 65535.0),
+            "S16": (-32768.0, 32767.0),
+            "U32": (0, None),
+            "S32": (None, None),
+            "F32": (None, None),
+            "F64": (None, None),
+            "C64": (None, None),
+            "C128": (None, None),
+        }
+
+        for pixel_type, (min, max) in DATA.items():
+            for test_min in (True, False):
+                endpoint = (
+                    self.basetestpath
+                    + f"/minmax{pixel_type}{test_min}_test_fake_qgis_http_endpoint"
+                )
+                with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+                    f.write(
+                        """
+                        {
+         "currentVersion": 10.91,
+         "name": "CharlotteLAS",
+         "description": "My service description",
+         "copyrightText": "My copyright string",
+         "extent": {
+          "xmin": 1440000,
+          "ymin": 535000,
+          "xmax": 1455000,
+          "ymax": 550000,
+          "spatialReference": {
+           "wkid": 102719,
+           "latestWkid": 2264
+          }
+         },
+         "initialExtent": {
+          "xmin": 1440000,
+          "ymin": 535000,
+          "xmax": 1455000,
+          "ymax": 550000,
+          "spatialReference": {
+           "wkid": 102719,
+           "latestWkid": 2264
+          }
+         },
+         "fullExtent": {
+          "xmin": 1440000,
+          "ymin": 535000,
+          "xmax": 1455000,
+          "ymax": 550000,
+          "spatialReference": {
+           "wkid": 102719,
+           "latestWkid": 2264
+          }
+         },
+         "hasMultidimensions": false,
+         "pixelSizeX": 10,
+         "pixelSizeY": 10,
+         "datasetFormat": "AMD",
+         "uncompressedSize": 9000000,
+         "blockWidth": 2048,
+         "blockHeight": 256,
+         "compressionType": "None",
+         "bandNames": [
+          "Band_1"
+         ],
+         "allowCopy": true,
+         "allowAnalysis": true,
+         "bandCount": 1,
+         "pixelType": "PIXEL_TYPE",
+         "minPixelSize": 0,
+         "maxPixelSize": 0,
+         "serviceDataType": "esriImageServiceDataTypeGeneric",
+         "objectIdField": "OBJECTID",
+         "fields": [
+          {
+           "name": "OBJECTID",
+           "type": "esriFieldTypeOID",
+           "alias": "OBJECTID",
+           "domain": null
+          }
+         ],
+         "capabilities": "Image,Metadata,Catalog,Mensuration",
+         "defaultMosaicMethod": "Northwest",
+         "allowedMosaicMethods": "NorthWest,Center,LockRaster,ByAttribute,Nadir,Viewpoint,Seamline,None",
+         "sortField": "",
+         "sortValue": null,
+         "sortAscending": true,
+         "mosaicOperator": "First",
+         "maxDownloadSizeLimit": 0,
+         "defaultCompressionQuality": 10000,
+         "defaultResamplingMethod": "Bilinear",
+         "maxImageHeight": 4100,
+         "maxImageWidth": 15000,
+         "maxRecordCount": 1000,
+         "maxDownloadImageCount": 0,
+         "maxMosaicImageCount": 20,
+         "allowRasterFunction": true,
+         "rasterFunctionInfos": [
+         ],
+         "rasterTypeInfos": [
+          {
+           "name": "Raster Dataset",
+           "description": "Supports all ArcGIS Raster Datasets",
+           "help": ""
+          }
+         ],
+         "mensurationCapabilities": "Basic",
+         "hasHistograms": true,
+         "hasColormap": false,
+         "hasRasterAttributeTable": false,
+         "minScale": 0,
+         "maxScale": 0,
+         "exportTilesAllowed": false,
+         "supportsStatistics": true,
+         "supportsAdvancedQueries": true,
+         "editFieldsInfo": null,
+         "ownershipBasedAccessControlForRasters": null,
+         "allowComputeTiePoints": false,
+         "useStandardizedQueries": true,
+         "advancedQueryCapabilities": {
+          "useStandardizedQueries": true,
+          "supportsStatistics": true,
+          "supportsOrderBy": true,
+          "supportsDistinct": true,
+          "supportsPagination": true
+         },
+         "spatialReference": {
+          "wkid": 102719,
+          "latestWkid": 2264
+         }
+        }""".replace("PIXEL_TYPE", pixel_type).encode()
+                    )
+
+                rl = QgsRasterLayer(
+                    "url='http://" + endpoint + "'",
+                    "test",
+                    "arcgisimageserver",
+                )
+                self.assertTrue(rl.isValid())
+                if test_min:
+                    if min is not None:
+                        self.assertTrue(
+                            rl.dataProvider().hasStatistics(
+                                1, Qgis.RasterBandStatistic.Min
+                            ),
+                            f"No minimum for {pixel_type}, should be set",
+                        )
+                        band_stats = rl.dataProvider().bandStatistics(
+                            1, Qgis.RasterBandStatistic.Min
+                        )
+                        self.assertEqual(band_stats.bandNumber, 1)
+                        self.assertEqual(band_stats.minimumValue, min)
+                    else:
+                        self.assertFalse(
+                            rl.dataProvider().hasStatistics(
+                                1, Qgis.RasterBandStatistic.Min
+                            ),
+                            f"Unexpected minimum {band_stats.minimumValue} for {pixel_type}, should not be set",
+                        )
+                else:
+                    if max is not None:
+                        self.assertTrue(
+                            rl.dataProvider().hasStatistics(
+                                1, Qgis.RasterBandStatistic.Max
+                            ),
+                            f"No maximum for {pixel_type}, should be set",
+                        )
+                        band_stats = rl.dataProvider().bandStatistics(
+                            1, Qgis.RasterBandStatistic.Min
+                        )
+                        self.assertEqual(band_stats.bandNumber, 1)
+                        self.assertEqual(band_stats.maximumValue, max)
+                    else:
+                        self.assertFalse(
+                            rl.dataProvider().hasStatistics(
+                                1, Qgis.RasterBandStatistic.Max
+                            ),
+                            f"Unexpected maximum {band_stats.maximumValue} for {pixel_type}, should not be set",
+                        )
+
     @unittest.skipIf(
         not QgsGdalUtils.supportsMrfLercCompression(),
         "GDAL build with LERC support required",
@@ -1487,7 +1673,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         lerc_blob = gdal.VSIFReadL(1, size, vsi_file)
         gdal.VSIFCloseL(vsi_file)
         gdal.Unlink("/vsimem/test.lrc")
-        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpretation=RSP_BilinearInterpolation&pixelType=F32&lercVersion=2&compression=LERC&compressionTolerance=0&format=lerc"
+        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpolation=RSP_BilinearInterpolation&pixelType=F32&lercVersion=2&compression=LERC&compressionTolerance=0&format=lerc"
         with open(self.sanitize_local_url(endpoint, query), "wb") as f:
             f.write(lerc_blob)
 
@@ -1501,7 +1687,11 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
 
         # fetch block outside raster extent
         block = rl.dataProvider().block(1, QgsRectangle(20, 20, 30, 30), 2, 2)
-        self.assertFalse(block.isValid())
+        self.assertTrue(block.isValid())
+        # should be all no-data
+        for r in range(0, 2):
+            for c in range(0, 2):
+                self.assertTrue(block.isNoData(r, c))
 
         # invalid size
         block = rl.dataProvider().block(1, QgsRectangle(0, 0, 10, 10), 0, 0)
@@ -1554,7 +1744,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         gdal.VSIFCloseL(vsi_file)
         gdal.Unlink("/vsimem/test.tif")
 
-        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpretation=RSP_BilinearInterpolation&pixelType=U16&format=tiff"
+        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpolation=RSP_BilinearInterpolation&pixelType=U16&format=tiff"
 
         with open(self.sanitize_local_url(endpoint, query), "wb") as f:
             f.write(tiff_blob)
@@ -1621,7 +1811,7 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         gdal.VSIFCloseL(vsi_file)
         gdal.Unlink("/vsimem/test.jpg")
 
-        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpretation=RSP_BilinearInterpolation&pixelType=U8&format=jpg"
+        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpolation=RSP_BilinearInterpolation&pixelType=U8&format=jpg"
         with open(self.sanitize_local_url(endpoint, query), "wb") as f:
             f.write(jpg_blob)
 
@@ -1639,6 +1829,185 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
         self.assertAlmostEqual(block.value(0, 1), 100, delta=15)
         self.assertAlmostEqual(block.value(1, 0), 150, delta=15)
         self.assertAlmostEqual(block.value(1, 1), 200, delta=15)
+
+    def test_fetch_block_png(self):
+        """
+        Test fetching a block for a U8 data type when no explicit format is specified
+        """
+        endpoint = self.basetestpath + "/fetch_png_fake_qgis_http_endpoint"
+
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""{
+  "currentVersion": 10.91,
+  "pixelType": "U8",
+  "extent": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 10,
+    "ymax": 10,
+    "spatialReference": {
+      "wkid": 4326
+    }
+  },
+  "capabilities": "Image",
+  "bandCount": 1,
+  "type": "ImageServer",
+  "serviceSourceType": "esriImageServiceSourceTypeDataset",
+  "serviceDataType": "esriImageServiceDataTypeElevation",
+  "spatialReference": {
+    "wkid": 4326,
+    "latestWkid": 4326
+  }
+}"""
+            )
+
+        # 2x2 PNG blob
+        mem_ds = gdal.GetDriverByName("MEM").Create("", 2, 2, 1, gdal.GDT_Byte)
+        # raster data = 10, 20, 30, 40
+        mem_ds.GetRasterBand(1).WriteRaster(
+            0, 0, 2, 2, struct.pack("B" * 4, 10, 20, 30, 40)
+        )
+
+        gdal.GetDriverByName("PNG").CreateCopy("/vsimem/test.png", mem_ds)
+
+        vsi_file = gdal.VSIFOpenL("/vsimem/test.png", "rb")
+        gdal.VSIFSeekL(vsi_file, 0, 2)
+        size = gdal.VSIFTellL(vsi_file)
+        gdal.VSIFSeekL(vsi_file, 0, 0)
+        jpg_blob = gdal.VSIFReadL(1, size, vsi_file)
+        gdal.VSIFCloseL(vsi_file)
+        gdal.Unlink("/vsimem/test.png")
+
+        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&bandIds=0&interpolation=RSP_BilinearInterpolation&pixelType=U8&format=png8"
+        with open(self.sanitize_local_url(endpoint, query), "wb") as f:
+            f.write(jpg_blob)
+
+        rl = QgsRasterLayer(
+            "url='http://" + endpoint + "'", "test", "arcgisimageserver"
+        )
+        self.assertTrue(rl.isValid())
+
+        block = rl.dataProvider().block(1, QgsRectangle(0, 0, 10, 10), 2, 2)
+        self.assertTrue(block.isValid())
+
+        self.assertEqual(block.value(0, 0), 10)
+        self.assertEqual(block.value(0, 1), 20)
+        self.assertEqual(block.value(1, 0), 30)
+        self.assertEqual(block.value(1, 1), 40)
+
+    def test_fetch_block_rgb_alpha(self):
+        """
+        Test fetching a block for a RGB service, where we need the
+        source's nodata mask
+        """
+        endpoint = self.basetestpath + "/fetch_rgb_mask_fake_qgis_http_endpoint"
+
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""{
+  "currentVersion": 10.91,
+  "pixelType": "U8",
+  "extent": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 10,
+    "ymax": 10,
+    "spatialReference": {
+      "wkid": 4326
+    }
+  },
+  "capabilities": "Image",
+  "bandCount": 3,
+  "type": "ImageServer",
+  "serviceSourceType": "esriImageServiceSourceTypeDataset",
+  "serviceDataType": "esriImageServiceDataTypeRGB",
+  "spatialReference": {
+    "wkid": 4326,
+    "latestWkid": 4326
+  }
+}"""
+            )
+
+        mem_ds = gdal.GetDriverByName("MEM").Create("", 2, 2, 4, gdal.GDT_Byte)
+
+        # checkerboard pattern of Valid/NoData
+        # Pixel 0,0: Valid (Alpha 255)
+        # Pixel 0,1: NoData (Alpha 0)
+        # Pixel 1,0: Valid (Alpha 255)
+        # Pixel 1,1: NoData (Alpha 0)
+
+        # Band 1 (Red) - values: 10, 0, 50, 0
+        mem_ds.GetRasterBand(1).WriteRaster(
+            0, 0, 2, 2, struct.pack("B" * 4, 10, 0, 50, 0)
+        )
+        # Band 2 (Green) - values: 20, 0, 60, 0
+        mem_ds.GetRasterBand(2).WriteRaster(
+            0, 0, 2, 2, struct.pack("B" * 4, 20, 0, 60, 0)
+        )
+        # Band 3 (Blue) - values: 30, 0, 70, 0
+        mem_ds.GetRasterBand(3).WriteRaster(
+            0, 0, 2, 2, struct.pack("B" * 4, 30, 0, 70, 0)
+        )
+        # Band 4 (Alpha Mask) - values: 255, 0, 255, 0
+        mem_ds.GetRasterBand(4).WriteRaster(
+            0, 0, 2, 2, struct.pack("B" * 4, 255, 0, 255, 0)
+        )
+
+        gdal.GetDriverByName("PNG").CreateCopy("/vsimem/test_rgba.png", mem_ds)
+
+        vsi_file = gdal.VSIFOpenL("/vsimem/test_rgba.png", "rb")
+        gdal.VSIFSeekL(vsi_file, 0, 2)
+        size = gdal.VSIFTellL(vsi_file)
+        gdal.VSIFSeekL(vsi_file, 0, 0)
+        png_blob = gdal.VSIFReadL(1, size, vsi_file)
+        gdal.VSIFCloseL(vsi_file)
+        gdal.Unlink("/vsimem/test_rgba.png")
+
+        # the query MUST NOT include &bandIds= because the image server provider logic strips it out
+        # and forces &format=png32 when serviceDataType == esriImageServiceDataTypeRGB
+        # See QgsImageServerProvider::readBlockInternal for further explanations
+        query = "/exportImage?bbox=0.000000,0.000000,10.000000,10.000000&size=2,2&f=image&interpolation=RSP_BilinearInterpolation&pixelType=U8&format=png32"
+        with open(self.sanitize_local_url(endpoint, query), "wb") as f:
+            f.write(png_blob)
+
+        rl = QgsRasterLayer(
+            "url='http://" + endpoint + "'", "test", "arcgisimageserver"
+        )
+        self.assertTrue(rl.isValid())
+
+        # Band 1 (Red)
+        block_b1 = rl.dataProvider().block(1, QgsRectangle(0, 0, 10, 10), 2, 2)
+        self.assertTrue(block_b1.isValid())
+
+        self.assertFalse(block_b1.isNoData(0, 0))
+        self.assertEqual(block_b1.value(0, 0), 10)
+        self.assertTrue(block_b1.isNoData(0, 1))
+        self.assertFalse(block_b1.isNoData(1, 0))
+        self.assertEqual(block_b1.value(1, 0), 50)
+        self.assertTrue(block_b1.isNoData(1, 1))
+
+        # Band 2 (Green)
+        block_b2 = rl.dataProvider().block(2, QgsRectangle(0, 0, 10, 10), 2, 2)
+        self.assertTrue(block_b2.isValid())
+
+        self.assertFalse(block_b2.isNoData(0, 0))
+        self.assertEqual(block_b2.value(0, 0), 20)
+        self.assertTrue(block_b2.isNoData(0, 1))
+        self.assertFalse(block_b2.isNoData(1, 0))
+        self.assertEqual(block_b2.value(1, 0), 60)
+        self.assertTrue(block_b2.isNoData(1, 1))
+
+        # Band 3 (Red)
+        block_b3 = rl.dataProvider().block(3, QgsRectangle(0, 0, 10, 10), 2, 2)
+        self.assertTrue(block_b3.isValid())
+
+        self.assertFalse(block_b3.isNoData(0, 0))
+        self.assertEqual(block_b3.value(0, 0), 30)
+        self.assertTrue(block_b3.isNoData(0, 1))
+        self.assertFalse(block_b3.isNoData(1, 0))
+        self.assertEqual(block_b3.value(1, 0), 70)
+        self.assertTrue(block_b3.isNoData(1, 1))
 
     def test_raster_attribute_table(self):
         """
@@ -1862,6 +2231,170 @@ class TestPyQgsImageServerProvider(QgisTestCase, RasterProviderTestCase):
                 [6, 31, 106587346.0, 179, 174, 163, "Barren Land"],
             ],
         )
+
+    def test_fetch_block_tiled_one_tile(self):
+        """
+        Test fetching data from a tiled service, one tile required only
+        """
+        endpoint = self.basetestpath + "/fetch_tiled_fake_qgis_http_endpoint"
+
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""{
+  "currentVersion": 10.91,
+  "pixelType": "U16",
+  "capabilities": "Image",
+  "singleFusedMapCache": true,
+  "serviceDataType": "esriImageServiceDataTypeElevation",
+  "minLOD": 0,
+  "maxLOD": 0,
+  "fullExtent": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 10,
+    "ymax": 10,
+    "spatialReference": {"wkid": 4326}
+  },
+  "bandCount": 1,
+  "type": "ImageServer",
+  "tileInfo": {
+    "rows": 2,
+    "cols": 2,
+    "format": "TIFF",
+    "origin": {"x": 0, "y": 10},
+    "spatialReference": {"wkid": 4326},
+    "lods": [
+      {"level": 0, "resolution": 5.0, "scale": 10000}
+    ]
+  }
+}"""
+            )
+
+        # 2x2 TIFF for tile at /tile/0/0/0
+        mem_ds = gdal.GetDriverByName("MEM").Create("", 2, 2, 1, gdal.GDT_UInt16)
+        mem_ds.GetRasterBand(1).WriteRaster(
+            0, 0, 2, 2, struct.pack("H" * 4, 11, 22, 33, 44)
+        )
+        gdal.GetDriverByName("GTiff").CreateCopy("/vsimem/test_tile.tif", mem_ds)
+        vsi_file = gdal.VSIFOpenL("/vsimem/test_tile.tif", "rb")
+        gdal.VSIFSeekL(vsi_file, 0, 2)
+        size = gdal.VSIFTellL(vsi_file)
+        gdal.VSIFSeekL(vsi_file, 0, 0)
+        tiff_blob = gdal.VSIFReadL(1, size, vsi_file)
+        gdal.VSIFCloseL(vsi_file)
+        gdal.Unlink("/vsimem/test_tile.tif")
+
+        with open(self.sanitize_local_url(endpoint, "/tile/0/0/0"), "wb") as f:
+            f.write(tiff_blob)
+
+        rl = QgsRasterLayer(
+            "url='http://" + endpoint + "'", "test", "arcgisimageserver"
+        )
+        self.assertTrue(rl.isValid())
+
+        block = rl.dataProvider().block(1, QgsRectangle(0, 0, 10, 10), 2, 2)
+        self.assertTrue(block.isValid())
+
+        self.assertEqual(block.value(0, 0), 11)
+        self.assertEqual(block.value(0, 1), 22)
+        self.assertEqual(block.value(1, 0), 33)
+        self.assertEqual(block.value(1, 1), 44)
+
+    def test_fetch_block_tiled_multiple(self):
+        """
+        Test fetching a block from a tiled service that requires downloading
+        and stitching multiple tiles together
+        """
+        endpoint = self.basetestpath + "/fetch_tiled_multi_fake_qgis_http_endpoint"
+
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""{
+  "currentVersion": 10.91,
+  "pixelType": "U16",
+  "capabilities": "Image",
+  "singleFusedMapCache": true,
+  "serviceDataType": "esriImageServiceDataTypeElevation",
+  "minLOD": 0,
+  "maxLOD": 0,
+  "fullExtent": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 20,
+    "ymax": 20,
+    "spatialReference": {"wkid": 4326}
+  },
+  "bandCount": 1,
+  "type": "ImageServer",
+  "tileInfo": {
+    "rows": 2,
+    "cols": 2,
+    "format": "TIFF",
+    "origin": {"x": 0, "y": 20},
+    "spatialReference": {"wkid": 4326},
+    "lods": [
+      {"level": 0, "resolution": 5.0, "scale": 10000}
+    ]
+  }
+}"""
+            )
+
+        def create_tile(vals):
+            mem_ds = gdal.GetDriverByName("MEM").Create("", 2, 2, 1, gdal.GDT_UInt16)
+            mem_ds.GetRasterBand(1).WriteRaster(0, 0, 2, 2, struct.pack("H" * 4, *vals))
+            gdal.GetDriverByName("GTiff").CreateCopy("/vsimem/test_tile.tif", mem_ds)
+            vsi_file = gdal.VSIFOpenL("/vsimem/test_tile.tif", "rb")
+            gdal.VSIFSeekL(vsi_file, 0, 2)
+            size = gdal.VSIFTellL(vsi_file)
+            gdal.VSIFSeekL(vsi_file, 0, 0)
+            blob = gdal.VSIFReadL(1, size, vsi_file)
+            gdal.VSIFCloseL(vsi_file)
+            gdal.Unlink("/vsimem/test_tile.tif")
+            return blob
+
+        # mock the 4 tiles required to build the full 20x20 extent
+        with open(
+            self.sanitize_local_url(endpoint, "/tile/0/0/0"), "wb"
+        ) as f:  # Top-Left
+            f.write(create_tile([1, 2, 3, 4]))
+        with open(
+            self.sanitize_local_url(endpoint, "/tile/0/0/1"), "wb"
+        ) as f:  # Top-Right
+            f.write(create_tile([5, 6, 7, 8]))
+        with open(
+            self.sanitize_local_url(endpoint, "/tile/0/1/0"), "wb"
+        ) as f:  # Bottom-Left
+            f.write(create_tile([9, 10, 11, 12]))
+        with open(
+            self.sanitize_local_url(endpoint, "/tile/0/1/1"), "wb"
+        ) as f:  # Bottom-Right
+            f.write(create_tile([13, 14, 15, 16]))
+
+        rl = QgsRasterLayer(
+            "url='http://" + endpoint + "'", "test", "arcgisimageserver"
+        )
+        self.assertTrue(rl.isValid())
+
+        block = rl.dataProvider().block(
+            1, QgsRectangle(0.001, 0.001, 19.999, 19.999), 4, 4
+        )
+        self.assertTrue(block.isValid())
+        self.assertEqual(block.value(0, 0), 1)
+        self.assertEqual(block.value(0, 1), 2)
+        self.assertEqual(block.value(0, 2), 5)
+        self.assertEqual(block.value(0, 3), 6)
+        self.assertEqual(block.value(1, 0), 3)
+        self.assertEqual(block.value(1, 1), 4)
+        self.assertEqual(block.value(1, 2), 7)
+        self.assertEqual(block.value(1, 3), 8)
+        self.assertEqual(block.value(2, 0), 9)
+        self.assertEqual(block.value(2, 1), 10)
+        self.assertEqual(block.value(2, 2), 13)
+        self.assertEqual(block.value(2, 3), 14)
+        self.assertEqual(block.value(3, 0), 11)
+        self.assertEqual(block.value(3, 1), 12)
+        self.assertEqual(block.value(3, 2), 15)
+        self.assertEqual(block.value(3, 3), 16)
 
 
 if __name__ == "__main__":

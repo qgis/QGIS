@@ -69,7 +69,6 @@
 #include "qgsrenderer.h"
 #include "qgsrulebasedlabeling.h"
 #include "qgsruntimeprofiler.h"
-#include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
@@ -219,7 +218,6 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath, const QString &b
   connect( this, &QgsVectorLayer::readOnlyChanged, this, &QgsVectorLayer::supportsEditingChanged );
 
   // Default simplify drawing settings
-  QgsSettings settings;
   mSimplifyMethod.setSimplifyHints( QgsVectorLayer::settingsSimplifyDrawingHints->valueWithDefaultOverride( mSimplifyMethod.simplifyHints() ) );
   mSimplifyMethod.setSimplifyAlgorithm( QgsVectorLayer::settingsSimplifyAlgorithm->valueWithDefaultOverride( mSimplifyMethod.simplifyAlgorithm() ) );
   mSimplifyMethod.setThreshold( QgsVectorLayer::settingsSimplifyDrawingTol->valueWithDefaultOverride( mSimplifyMethod.threshold() ) );
@@ -1503,6 +1501,20 @@ Qgis::VectorEditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId, int
   return result;
 }
 
+Qgis::VectorEditResult QgsVectorLayer::deleteVertices( QgsFeatureId featureId, const QSet<int> &vertices )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( !isValid() || !mEditBuffer || !mDataProvider )
+    return Qgis::VectorEditResult::InvalidLayer;
+
+  QgsVectorLayerEditUtils utils( this );
+  Qgis::VectorEditResult result = utils.deleteVertices( featureId, vertices );
+
+  if ( result == Qgis::VectorEditResult::Success || result == Qgis::VectorEditResult::EmptyGeometry )
+    updateExtents();
+  return result;
+}
 
 bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount, QgsVectorLayer::DeleteContext *context )
 {
@@ -2628,6 +2640,39 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       }
     }
 
+    // custom comments
+    // mAttributeCustomCommentMap is cleared, because when a custom comment is null the provider comment should be considered
+    mAttributeCustomCommentMap.clear();
+    QDomNode customCommentsNode = layerNode.namedItem( u"customComments"_s );
+    if ( !customCommentsNode.isNull() )
+    {
+      QDomElement customCommentEntryElem;
+
+      QDomNodeList customCommentNodeList = customCommentsNode.toElement().elementsByTagName( u"customComment"_s );
+      for ( int i = 0; i < customCommentNodeList.size(); ++i )
+      {
+        customCommentEntryElem = customCommentNodeList.at( i ).toElement();
+
+        const QString field = customCommentEntryElem.attribute( u"field"_s );
+
+        //empty values are important as well (to override provider comments with nothing)
+        const QString customCommentEntryValue = customCommentEntryElem.attribute( u"value"_s );
+        QString customComment = customCommentEntryValue;
+        if ( !customCommentEntryValue.isEmpty() )
+        {
+          //translate comment if it's not empty
+          customComment = context.projectTranslator()->translate( u"project:layers:%1:fieldcustomcomments"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ), customCommentEntryValue );
+          QgsDebugMsgLevel( "context" + u"project:layers:%1:fieldcustomcomments"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ) + " source " + customCommentEntryValue, 3 );
+        }
+        if ( fields().lookupField( field ) < 0 )
+        {
+          QgsDebugMsgLevel( u"Warning: Field %1 not found in layer %2 to load custom comment from setting "_s.arg( field, name() ), 2 );
+          continue;
+        }
+        mAttributeCustomCommentMap.insert( field, customComment );
+      }
+    }
+
     // IMPORTANT - we don't clear mAttributeSplitPolicy here, as it may contain policies which are coming direct
     // from the data provider. Instead we leave any existing policies and only overwrite them if the style
     // has a specific value for that field's policy
@@ -2782,7 +2827,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
           {
             QList<QVariant> translatedValueList;
             const QList<QVariant> valueList = optionsMap[u"map"_s].toList();
-            for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+            for ( int i = 0; i < valueList.count(); i++ )
             {
               QMap<QString, QVariant> translatedValueMap;
               QString translatedKey
@@ -3196,6 +3241,27 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
       aliasElem.appendChild( aliasEntryElem );
     }
     node.appendChild( aliasElem );
+
+    //custom comments
+    QDomElement customCommentElem = doc.createElement( u"customComments"_s );
+    bool hasCustomComments = false;
+    for ( const QgsField &field : std::as_const( mFields ) )
+    {
+      //if empty ("") we store it, if null we don't store it
+      const QString customComment = field.customComment();
+      if ( customComment.isNull() )
+        continue;
+
+      hasCustomComments = true;
+      QDomElement customCommentEntryElem = doc.createElement( u"customComment"_s );
+      customCommentEntryElem.setAttribute( u"field"_s, field.name() );
+      customCommentEntryElem.setAttribute( u"value"_s, customComment );
+      customCommentElem.appendChild( customCommentEntryElem );
+    }
+    if ( hasCustomComments )
+    {
+      node.appendChild( customCommentElem );
+    }
 
     //split policies
     {
@@ -3729,6 +3795,56 @@ QString QgsVectorLayer::attributeAlias( int index ) const
     return QString();
 
   return fields().at( index ).alias();
+}
+
+void QgsVectorLayer::setFieldCustomComment( int attIndex, const QString &customCommentString )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( attIndex < 0 || attIndex >= fields().count() )
+    return;
+
+  QString name = fields().at( attIndex ).name();
+
+  mAttributeCustomCommentMap.insert( name, customCommentString );
+  mFields[attIndex].setCustomComment( customCommentString );
+  mEditFormConfig.setFields( mFields );
+  emit layerModified();
+}
+
+void QgsVectorLayer::removeFieldCustomComment( int attIndex )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( attIndex < 0 || attIndex >= fields().count() )
+    return;
+
+  QString name = fields().at( attIndex ).name();
+  mFields[attIndex].setCustomComment( QString() );
+  if ( mAttributeCustomCommentMap.contains( name ) )
+  {
+    mAttributeCustomCommentMap.remove( name );
+    updateFields();
+    mEditFormConfig.setFields( mFields );
+    emit layerModified();
+  }
+}
+
+QString QgsVectorLayer::attributeCustomComment( int index ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( index < 0 || index >= fields().count() )
+    return QString();
+
+  return fields().at( index ).customComment();
+}
+
+QgsStringMap QgsVectorLayer::attributeCustomComments() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mAttributeCustomCommentMap;
 }
 
 QString QgsVectorLayer::attributeDisplayName( int index ) const
@@ -4650,6 +4766,16 @@ void QgsVectorLayer::updateFields()
       continue;
 
     mFields[index].setAlias( aliasIt.value() );
+  }
+
+  // set custom comments
+  for ( auto customCommentIt = mAttributeCustomCommentMap.constBegin(); customCommentIt != mAttributeCustomCommentMap.constEnd(); ++customCommentIt )
+  {
+    int index = mFields.lookupField( customCommentIt.key() );
+    if ( index < 0 )
+      continue;
+
+    mFields[index].setCustomComment( customCommentIt.value() );
   }
 
   for ( auto splitPolicyIt = mAttributeSplitPolicy.constBegin(); splitPolicyIt != mAttributeSplitPolicy.constEnd(); ++splitPolicyIt )
@@ -5722,26 +5848,63 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       QDomElement anchorPointElem = pointPlacementElem.firstChildElement( u"AnchorPoint"_s );
       if ( !anchorPointElem.isNull() )
       {
+        bool xOffsetOk = false;
+        double xOffset = 0.0;
+        bool yOffsetOk = false;
+        double yOffset = 0.0;
+
         QDomElement anchorPointXElem = anchorPointElem.firstChildElement( u"AnchorPointX"_s );
         if ( !anchorPointXElem.isNull() )
         {
-          bool ok;
-          double xOffset = anchorPointXElem.text().toDouble( &ok );
-          if ( ok )
-          {
-            settings.xOffset = xOffset;
-            settings.offsetUnits = sldUnitSize;
-          }
+          xOffset = anchorPointXElem.text().toDouble( &xOffsetOk );
         }
         QDomElement anchorPointYElem = anchorPointElem.firstChildElement( u"AnchorPointY"_s );
         if ( !anchorPointYElem.isNull() )
         {
-          bool ok;
-          double yOffset = anchorPointYElem.text().toDouble( &ok );
-          if ( ok )
+          yOffset = anchorPointYElem.text().toDouble( &yOffsetOk );
+        }
+
+        if ( xOffsetOk & yOffsetOk )
+        {
+          // Round values in increments of 0.5
+          xOffset = std::round( xOffset * 2.0 ) / 2.0;
+          yOffset = std::round( yOffset * 2.0 ) / 2.0;
+
+          if ( xOffset == 1.0 && yOffset == 0.0 )
           {
-            settings.yOffset = yOffset;
-            settings.offsetUnits = sldUnitSize;
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveLeft );
+          }
+          else if ( xOffset == 0.5 && yOffset == 0.0 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Above );
+          }
+          else if ( xOffset == 0.0 && yOffset == 0.0 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveRight );
+          }
+          else if ( xOffset == 1.0 && yOffset == 0.5 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Left );
+          }
+          else if ( xOffset == 0.5 && yOffset == 0.5 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Over );
+          }
+          else if ( xOffset == 0.0 && yOffset == 0.5 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Right );
+          }
+          else if ( xOffset == 1.0 && yOffset == 1.0 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowLeft );
+          }
+          else if ( xOffset == 0.5 && yOffset == 1.0 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Below );
+          }
+          else
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowRight );
           }
         }
       }

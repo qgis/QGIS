@@ -10,6 +10,7 @@
 
 
 
+
 class QgsRasterMinMaxOrigin
 {
 %Docstring(signature="appended")
@@ -137,6 +138,7 @@ Returns a string to serialize StatAccuracy
 %Docstring
 Deserialize StatAccuracy
 %End
+
 
 };
 

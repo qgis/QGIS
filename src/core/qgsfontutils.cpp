@@ -20,7 +20,8 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QApplication>
 #include <QFile>
@@ -32,6 +33,9 @@
 #include <QStringList>
 
 using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryStringList *QgsFontUtils::settingsRecentFontFamilies
+  = new QgsSettingsEntryStringList( u"recent"_s, QgsSettingsTree::sTreeFonts, QStringList(), u"List of recently used font families."_s );
 
 bool QgsFontUtils::fontMatchOnSystem( const QFont &f )
 {
@@ -606,8 +610,7 @@ void QgsFontUtils::addRecentFontFamily( const QString &family )
     return;
   }
 
-  QgsSettings settings;
-  QStringList recentFamilies = settings.value( u"fonts/recent"_s ).toStringList();
+  QStringList recentFamilies = settingsRecentFontFamilies->value();
 
   //remove matching families
   recentFamilies.removeAll( family );
@@ -618,13 +621,12 @@ void QgsFontUtils::addRecentFontFamily( const QString &family )
   //trim to 10 fonts
   recentFamilies = recentFamilies.mid( 0, 10 );
 
-  settings.setValue( u"fonts/recent"_s, recentFamilies );
+  settingsRecentFontFamilies->setValue( recentFamilies );
 }
 
 QStringList QgsFontUtils::recentFontFamilies()
 {
-  const QgsSettings settings;
-  return settings.value( u"fonts/recent"_s ).toStringList();
+  return settingsRecentFontFamilies->value();
 }
 
 void QgsFontUtils::setFontFamily( QFont &font, const QString &family )

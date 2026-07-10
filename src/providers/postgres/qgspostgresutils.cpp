@@ -318,7 +318,7 @@ QString QgsPostgresUtils::andWhereClauses( const QString &c1, const QString &c2 
 
 void QgsPostgresUtils::replaceInvalidXmlChars( QString &xml )
 {
-  static const QRegularExpression replaceRe { u"([\\x00-\\x08\\x0B-\\x1F\\x7F])"_s };
+  const thread_local QRegularExpression replaceRe { u"([\\x00-\\x08\\x0B-\\x1F\\x7F])"_s };
   QRegularExpressionMatchIterator it { replaceRe.globalMatch( xml ) };
   while ( it.hasNext() )
   {
@@ -330,7 +330,7 @@ void QgsPostgresUtils::replaceInvalidXmlChars( QString &xml )
 
 void QgsPostgresUtils::restoreInvalidXmlChars( QString &xml )
 {
-  static const QRegularExpression replaceRe { QStringLiteral( R"raw(UTF-8\[(\d+)\])raw" ) };
+  const thread_local QRegularExpression replaceRe { QStringLiteral( R"raw(UTF-8\[(\d+)\])raw" ) };
   QRegularExpressionMatchIterator it { replaceRe.globalMatch( xml ) };
   while ( it.hasNext() )
   {
@@ -631,46 +631,6 @@ bool QgsPostgresUtils::moveProjectToSchema( QgsPostgresConn *conn, const QString
 
   conn->commit();
   return true;
-}
-
-QString QgsPostgresUtils::variantMapToHtml( const QVariantMap &variantMap, const QString &title )
-{
-  QString result;
-  if ( !title.isEmpty() )
-  {
-    result += u"<tr><td class=\"highlight\">%1</td><td></td></tr>"_s.arg( title );
-  }
-  for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
-  {
-    const QVariantMap childMap = it.value().toMap();
-    const QVariantList childList = it.value().toList();
-    if ( !childList.isEmpty() )
-    {
-      result += u"<tr><td class=\"highlight\">%1</td><td><ul>"_s.arg( it.key() );
-      for ( const QVariant &v : childList )
-      {
-        const QVariantMap grandChildMap = v.toMap();
-        if ( !grandChildMap.isEmpty() )
-        {
-          result += u"<li><table>%1</table></li>"_s.arg( variantMapToHtml( grandChildMap ) );
-        }
-        else
-        {
-          result += u"<li>%1</li>"_s.arg( QgsStringUtils::insertLinks( v.toString() ) );
-        }
-      }
-      result += "</ul></td></tr>"_L1;
-    }
-    else if ( !childMap.isEmpty() )
-    {
-      result += u"<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>"_s.arg( it.key(), variantMapToHtml( childMap ) );
-    }
-    else
-    {
-      result += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>"_s.arg( it.key(), QgsStringUtils::insertLinks( it.value().toString() ) );
-    }
-  }
-  return result;
 }
 
 bool QgsPostgresUtils::setProjectComment( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName, const QString &comment )

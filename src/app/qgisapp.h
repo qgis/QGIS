@@ -115,6 +115,8 @@ class Qgs3DMapCanvasWidget;
 class QgsVertexEditor;
 class QgsMapLayerActionContext;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryInteger;
+template<class T> class QgsSettingsEntryEnumFlag;
 
 class QDomDocument;
 class QNetworkReply;
@@ -165,21 +167,29 @@ class QgsAppGpsSettingsMenu;
 class Qgs3DMapScene;
 class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
-class QgsCustomization;
 class QgsCustomizationDialog;
+class QgsTopocentricWidget;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
 
 #include "qgis.h"
 #include "qgis_app.h"
+#include "qgsannotation.h"
+#include "qgsappdbutils.h"
 #include "qgsappdevtoolutils.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsauthmanager.h"
+#include "qgsbrowserdockwidget.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscustomization.h"
 #include "qgslayertreeregistrybridge.h"
+#include "qgslayoutdesignerinterface.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmasterlayoutinterface.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagelogviewer.h"
 #include "qgsmimedatautils.h"
 #include "qgsoptionsutils.h"
 #include "qgsoptionswidgetfactory.h"
@@ -230,16 +240,30 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     enum class AppOption : int
     {
-      NoOption = 0,              //! No Option
-      RestorePlugins = 1 << 0,   //! Automatically restore and load previously enabled plugins.
-      SkipBadLayers = 1 << 1,    //! Skip loading layers that are detected as problematic.
-      SkipVersionCheck = 1 << 2, //! Bypass the version compatibility check during startup.
-      EnablePython = 1 << 3      //! Enable the Python interface for scripting and plugins.
+      NoOption = 0,              //!< No Option
+      RestorePlugins = 1 << 0,   //!< Automatically restore and load previously enabled plugins.
+      SkipBadLayers = 1 << 1,    //!< Skip loading layers that are detected as problematic.
+      SkipVersionCheck = 1 << 2, //!< Bypass the version compatibility check during startup.
+      EnablePython = 1 << 3      //!< Enable the Python interface for scripting and plugins.
     };
     Q_DECLARE_FLAGS( AppOptions, AppOption )
     static const AppOptions DEFAULT_OPTIONS;
 
     static const QgsSettingsEntryBool *settingsAskToDeleteFeatures;
+    static const QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction> *settingsLegendDoubleClickAction SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsEnableEventTracing SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsHideSplash SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsMapTipsEnabled SIP_SKIP;
+    static const QgsSettingsEntryInteger *settingsMapTipsDelay SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsAskToSaveProjectChanges SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsWarnOldProjectVersion SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsNewProjectDefault SIP_SKIP;
+    static const QgsSettingsEntryInteger *settingsProjOpenAtLaunch SIP_SKIP;
+    static const QgsSettingsEntryString *settingsProjOpenAtLaunchPath SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsProjOpenedOKAtLaunch SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsShowScriptWarning SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsDisplayWaylandWarning SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsRestoreDefaultWindowState SIP_SKIP;
 
     //! Constructor
     QgisApp(
@@ -248,7 +272,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       const QString &rootProfileLocation = QString(),
       const QString &activeProfile = QString(),
       QWidget *parent = nullptr,
-      Qt::WindowFlags fl = Qt::Window
+      Qt::WindowFlags fl = Qt::Window,
+      std::unique_ptr<QgsCustomization> customization = nullptr
     );
     //! Constructor for unit tests
     QgisApp();
@@ -1529,7 +1554,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void openURL( QString url, bool useQgisDocDirectory = true );
 
     //! Opens the plugin manager (since QGIS 4.0)
-    void showPluginManager( int tabIndex = -1 );
+    void showPluginManager( int tabIndex = -1, const QString &searchTerm = QString() );
 
   protected:
     void showEvent( QShowEvent *event ) override;
@@ -2648,6 +2673,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QLabel *mOnTheFlyProjectionStatusLabel = nullptr;
     //! Widget in status bar used to show status of on the fly projection
     QToolButton *mOnTheFlyProjectionStatusButton = nullptr;
+    //! Popup menu shown on the CRS button when the project uses a topocentric CRS
+    QMenu *mTopocentricMenu = nullptr;
+    //! Widget embedded in mTopocentricMenu to display the topocentric origin
+    QgsTopocentricWidget *mTopocentricWidget = nullptr;
     QToolButton *mMessageButton = nullptr;
     //! Menu that contains the list of actions of the selected vector layer
     QMenu *mFeatureActionMenu = nullptr;

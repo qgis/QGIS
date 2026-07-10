@@ -16,8 +16,13 @@
 #include "qgs3doptions.h"
 
 #include "qgis.h"
+#include "qgisapp.h"
+#include "qgs3d.h"
+#include "qgs3dmapcanvas.h"
 #include "qgsapplication.h"
+#include "qgscameracontroller.h"
 #include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QString>
 #include <Qt3DRender/QCamera>
@@ -40,12 +45,25 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QVariant::fromValue( Qgis::NavigationMode::TerrainBased ) );
   mCameraNavigationModeCombo->addItem( tr( "Walk Mode (First Person)" ), QVariant::fromValue( Qgis::NavigationMode::Walk ) );
 
-  cboCameraProjectionType->addItem( tr( "Perspective Projection" ), Qt3DRender::QCameraLens::PerspectiveProjection );
-  cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), Qt3DRender::QCameraLens::OrthographicProjection );
+  cboCameraProjectionType->addItem( tr( "Perspective Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::Perspective ) );
+  cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), QVariant::fromValue( Qgis::Map3DProjectionType::Orthographic ) );
 
-  mInvertVerticalAxisCombo->addItem( tr( "Never" ), QVariant::fromValue( Qgis::VerticalAxisInversion::Never ) );
-  mInvertVerticalAxisCombo->addItem( tr( "Only When Dragging" ), QVariant::fromValue( Qgis::VerticalAxisInversion::WhenDragging ) );
-  mInvertVerticalAxisCombo->addItem( tr( "Always" ), QVariant::fromValue( Qgis::VerticalAxisInversion::Always ) );
+  mVerticalAxisInversionComboBox->setDefaultText( tr( "Do not invert" ) );
+  mVerticalAxisInversionComboBox->addItem( tr( "When rotating (mouse captured)" ), QVariant::fromValue( Qgis::VerticalAxisInversion::WhenRotatingCaptured ) );
+  mVerticalAxisInversionComboBox->addItem( tr( "When rotating (while dragging)" ), QVariant::fromValue( Qgis::VerticalAxisInversion::WhenRotatingDragging ) );
+  mVerticalAxisInversionComboBox->addItem( tr( "When pivoting around terrain" ), QVariant::fromValue( Qgis::VerticalAxisInversion::WhenPivoting ) );
+
+  mTextureFilterQualityCombo->addItem( tr( "Off (Trilinear)" ), QVariant::fromValue( Qgis::TextureFilterQuality::Trilinear ) );
+  mTextureFilterQualityCombo->addItem( tr( "2×" ), QVariant::fromValue( Qgis::TextureFilterQuality::Anisotropic2x ) );
+  mTextureFilterQualityCombo->addItem( tr( "4×" ), QVariant::fromValue( Qgis::TextureFilterQuality::Anisotropic4x ) );
+  mTextureFilterQualityCombo->addItem( tr( "8×" ), QVariant::fromValue( Qgis::TextureFilterQuality::Anisotropic8x ) );
+  mTextureFilterQualityCombo->addItem( tr( "16×" ), QVariant::fromValue( Qgis::TextureFilterQuality::Anisotropic16x ) );
+
+  mShadowQualityCombo->addItem( tr( "Low" ), QVariant::fromValue( Qgis::ShadowQuality::Low ) );
+  mShadowQualityCombo->addItem( tr( "Medium" ), QVariant::fromValue( Qgis::ShadowQuality::Medium ) );
+  mShadowQualityCombo->addItem( tr( "High" ), QVariant::fromValue( Qgis::ShadowQuality::High ) );
+  mShadowQualityCombo->addItem( tr( "Very High" ), QVariant::fromValue( Qgis::ShadowQuality::VeryHigh ) );
+  mShadowQualityCombo->addItem( tr( "Extreme" ), QVariant::fromValue( Qgis::ShadowQuality::Extreme ) );
 
   mCameraMovementSpeed->setClearValue( 4 );
   spinCameraFieldOfView->setClearValue( 45.0 );
@@ -54,17 +72,24 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   const Qgis::NavigationMode defaultNavMode = settings.enumValue( u"map3d/defaultNavigation"_s, Qgis::NavigationMode::TerrainBased, QgsSettings::App );
   mCameraNavigationModeCombo->setCurrentIndex( mCameraNavigationModeCombo->findData( QVariant::fromValue( defaultNavMode ) ) );
 
-  const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
-  mInvertVerticalAxisCombo->setCurrentIndex( mInvertVerticalAxisCombo->findData( QVariant::fromValue( axisInversion ) ) );
+  const Qgis::VerticalAxisInversionFlags axisInversion = settings.flagValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversionFlags(), QgsSettings::App );
+  mVerticalAxisInversionComboBox->setItemCheckState( 0, ( axisInversion & Qgis::VerticalAxisInversion::WhenRotatingCaptured ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+  mVerticalAxisInversionComboBox->setItemCheckState( 1, ( axisInversion & Qgis::VerticalAxisInversion::WhenRotatingDragging ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+  mVerticalAxisInversionComboBox->setItemCheckState( 2, ( axisInversion & Qgis::VerticalAxisInversion::WhenPivoting ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
 
-  const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
-  cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( static_cast<int>( defaultProjection ) ) );
+  const Qgis::Map3DProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qgis::Map3DProjectionType::Perspective, QgsSettings::App );
+  cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( QVariant::fromValue( defaultProjection ) ) );
 
   mCameraMovementSpeed->setValue( settings.value( u"map3d/defaultMovementSpeed"_s, 5, QgsSettings::App ).toDouble() );
   spinCameraFieldOfView->setValue( settings.value( u"map3d/defaultFieldOfView"_s, 45, QgsSettings::App ).toInt() );
 
   mGpuMemoryLimit->setClearValue( 500 );
   mGpuMemoryLimit->setValue( settings.value( u"map3d/gpuMemoryLimit"_s, 500.0, QgsSettings::App ).toDouble() );
+
+  mMSAA->setChecked( Qgs3D::settingMsaaEnabled->value() );
+
+  mTextureFilterQualityCombo->setCurrentIndex( mTextureFilterQualityCombo->findData( QVariant::fromValue( Qgs3D::settingTextureFilterQuality->value() ) ) );
+  mShadowQualityCombo->setCurrentIndex( mShadowQualityCombo->findData( QVariant::fromValue( Qgs3D::settingShadowQuality->value() ) ) );
 }
 
 QString Qgs3DOptionsWidget::helpKey() const
@@ -77,12 +102,28 @@ void Qgs3DOptionsWidget::apply()
 {
   QgsSettings settings;
   settings.setEnumValue( u"map3d/defaultNavigation"_s, mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>(), QgsSettings::App );
-  settings.setEnumValue( u"map3d/axisInversion"_s, mInvertVerticalAxisCombo->currentData().value<Qgis::VerticalAxisInversion>(), QgsSettings::App );
-  settings.setValue( u"map3d/defaultProjection"_s, static_cast<Qt3DRender::QCameraLens::ProjectionType>( cboCameraProjectionType->currentData().toInt() ), QgsSettings::App );
+  settings.setEnumValue( u"map3d/defaultProjection"_s, cboCameraProjectionType->currentData().value<Qgis::Map3DProjectionType>(), QgsSettings::App );
   settings.setValue( u"map3d/defaultMovementSpeed"_s, mCameraMovementSpeed->value(), QgsSettings::App );
   settings.setValue( u"map3d/defaultFieldOfView"_s, spinCameraFieldOfView->value(), QgsSettings::App );
 
   settings.setValue( u"map3d/gpuMemoryLimit"_s, mGpuMemoryLimit->value(), QgsSettings::App );
+
+  Qgs3D::settingMsaaEnabled->setValue( mMSAA->isChecked() );
+  Qgs3D::settingTextureFilterQuality->setValue( mTextureFilterQualityCombo->currentData().value< Qgis::TextureFilterQuality >() );
+  Qgs3D::settingShadowQuality->setValue( mShadowQualityCombo->currentData().value< Qgis::ShadowQuality >() );
+
+  Qgis::VerticalAxisInversionFlags axisInversion;
+  for ( QVariant flag : mVerticalAxisInversionComboBox->checkedItemsData() )
+    axisInversion.setFlag( flag.value<Qgis::VerticalAxisInversion>() );
+
+  settings.setFlagValue( u"map3d/axisInversion"_s, axisInversion, QgsSettings::App );
+
+  // Apply axis inversion setting to existing map views
+  for ( Qgs3DMapCanvas *canvas : QgisApp::instance()->mapCanvases3D() )
+  {
+    if ( QgsCameraController *cameraController = canvas->cameraController() )
+      cameraController->setVerticalAxisInversion( axisInversion );
+  }
 }
 
 

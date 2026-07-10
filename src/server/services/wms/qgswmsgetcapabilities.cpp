@@ -790,7 +790,9 @@ namespace QgsWms
     appendLayerWgs84BoundingRect( doc, parentLayer, wgs84BoundingRect );
     appendLayerCrsExtents( doc, parentLayer, crsExtents );
 
-    appendLayersFromTreeGroup( doc, parentLayer, serverIface, project, request, layerTreeGroup, wmsLayerInfos, projectSettings, parentDateRanges );
+    // when the group is opaque we should not append any child layers
+    if ( layerTreeGroup->wmsGroupRequestMode() != Qgis::WmsGroupRequestMode::Opaque )
+      appendLayersFromTreeGroup( doc, parentLayer, serverIface, project, request, layerTreeGroup, wmsLayerInfos, projectSettings, parentDateRanges );
   }
 
   QDomElement getLayersAndStylesCapabilitiesElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, bool projectSettings )
@@ -1187,6 +1189,7 @@ namespace QgsWms
           if ( projectSettings )
           {
             layerElem.setAttribute( u"mutuallyExclusive"_s, treeGroupChild->isMutuallyExclusive() );
+            layerElem.setAttribute( u"opaque"_s, ( treeGroupChild->wmsGroupRequestMode() == Qgis::WmsGroupRequestMode::Opaque ) );
           }
 
           const QString shortName = treeGroupChild->serverProperties()->shortName();
@@ -1221,6 +1224,7 @@ namespace QgsWms
             layerElem.appendChild( treeNameElem );
           }
 
+
           QList<QgsDateTimeRange> childrenDateRanges;
           handleLayersFromTreeGroup( doc, layerElem, serverIface, project, request, treeGroupChild, wmsLayerInfos, projectSettings, childrenDateRanges );
 
@@ -1230,8 +1234,8 @@ namespace QgsWms
             parentDateRanges.append( childrenDateRanges );
           }
 
-          // Check if child layer elements have been added
-          if ( layerElem.elementsByTagName( u"Layer"_s ).length() == 0 )
+          // Check if child layer elements have been added - anyway opaque groups are added even without any children
+          if ( ( treeGroupChild->wmsGroupRequestMode() != Qgis::WmsGroupRequestMode::Opaque ) && layerElem.elementsByTagName( u"Layer"_s ).length() == 0 )
           {
             continue;
           }
@@ -1614,6 +1618,9 @@ namespace QgsWms
 
       QStringList layerList;
 
+      QHash<const QgsMapLayer *, QStringList> acceptableLayersAndRequestNames;
+      collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, *project );
+
       const QgsLayerTree *projectLayerTreeRoot = project->layerTreeRoot();
       QList<QgsMapLayer *> projectLayerOrder = projectLayerTreeRoot->layerOrder();
       for ( int i = 0; i < projectLayerOrder.size(); ++i )
@@ -1621,6 +1628,12 @@ namespace QgsWms
         QgsMapLayer *l = projectLayerOrder.at( i );
 
         if ( restrictedLayers.contains( l->name() ) ) //unpublished layer
+        {
+          continue;
+        }
+
+        //Continue when the layer is an opaque layer child
+        if ( !acceptableLayersAndRequestNames.contains( l ) )
         {
           continue;
         }

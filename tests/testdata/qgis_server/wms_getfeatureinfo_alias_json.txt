@@ -11,6 +11,7 @@ Content-Type: application/json; charset=utf-8
     },
   "features": [
     {
+      "featureType": "fields_alias",
       "geometry": null,
       "id": "fields_alias.2",
       "properties": {

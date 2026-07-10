@@ -22,17 +22,13 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 
-#include "qgsapplication.h"
 #include "qgsbox3d.h"
 #include "qgscompoundcurve.h"
 #include "qgscoordinatetransform.h"
-#include "qgsfeedback.h"
-#include "qgsgeometrytransformer.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
 #include "qgslinesegment.h"
 #include "qgsvector3d.h"
-#include "qgswkbptr.h"
 
 #include <QDomDocument>
 #include <QJsonObject>
@@ -284,17 +280,8 @@ QgsLineString *QgsLineString::clone() const
 
 void QgsLineString::clear()
 {
-  mX.clear();
-  mY.clear();
-  mZ.clear();
-  mM.clear();
   mWkbType = Qgis::WkbType::LineString;
-  clearCache();
-}
-
-bool QgsLineString::isEmpty() const
-{
-  return mX.isEmpty();
+  QgsSimpleCurve::clear();
 }
 
 int QgsLineString::indexOf( const QgsPoint &point ) const
@@ -747,23 +734,6 @@ QgsLineString *QgsLineString::simplifyByDistance( double tolerance ) const
   return new QgsLineString( newX, newY, newZ, newM );
 }
 
-bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
-{
-  if ( !wkbPtr )
-  {
-    return false;
-  }
-
-  Qgis::WkbType type = wkbPtr.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != Qgis::WkbType::LineString )
-  {
-    return false;
-  }
-  mWkbType = type;
-  importVerticesFromWkb( wkbPtr );
-  return true;
-}
-
 QgsBox3D QgsLineString::calculateBoundingBox3D() const
 {
   if ( mX.empty() )
@@ -796,116 +766,11 @@ QgsBox3D QgsLineString::calculateBoundingBox3d() const
   return calculateBoundingBox3D();
 }
 
-void QgsLineString::scroll( int index )
-{
-  const int size = mX.size();
-  if ( index < 1 || index >= size - 1 )
-    return;
-
-  const bool useZ = is3D();
-  const bool useM = isMeasure();
-
-  QVector<double> newX( size );
-  QVector<double> newY( size );
-  QVector<double> newZ( useZ ? size : 0 );
-  QVector<double> newM( useM ? size : 0 );
-  auto it = std::copy( mX.constBegin() + index, mX.constEnd() - 1, newX.begin() );
-  it = std::copy( mX.constBegin(), mX.constBegin() + index, it );
-  *it = *newX.constBegin();
-  mX = std::move( newX );
-
-  it = std::copy( mY.constBegin() + index, mY.constEnd() - 1, newY.begin() );
-  it = std::copy( mY.constBegin(), mY.constBegin() + index, it );
-  *it = *newY.constBegin();
-  mY = std::move( newY );
-  if ( useZ )
-  {
-    it = std::copy( mZ.constBegin() + index, mZ.constEnd() - 1, newZ.begin() );
-    it = std::copy( mZ.constBegin(), mZ.constBegin() + index, it );
-    *it = *newZ.constBegin();
-    mZ = std::move( newZ );
-  }
-  if ( useM )
-  {
-    it = std::copy( mM.constBegin() + index, mM.constEnd() - 1, newM.begin() );
-    it = std::copy( mM.constBegin(), mM.constBegin() + index, it );
-    *it = *newM.constBegin();
-    mM = std::move( newM );
-  }
-}
-
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
  * See details in QEP #17
  ****************************************************************************/
-bool QgsLineString::fromWkt( const QString &wkt )
-{
-  clear();
-
-  QPair<Qgis::WkbType, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
-
-  if ( QgsWkbTypes::flatType( parts.first ) != Qgis::WkbType::LineString )
-    return false;
-  mWkbType = parts.first;
-
-  QString secondWithoutParentheses = parts.second;
-  secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  parts.second = parts.second.remove( '(' ).remove( ')' );
-  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
-    return true;
-
-  QgsPointSequence points = QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() );
-  // There is a non number in the coordinates sequence
-  // LineString ( A b, 1 2)
-  if ( points.isEmpty() )
-    return false;
-
-  setPoints( points );
-  return true;
-}
-
-int QgsLineString::wkbSize( QgsAbstractGeometry::WkbFlags ) const
-{
-  int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  binarySize += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );
-  return binarySize;
-}
-
-QByteArray QgsLineString::asWkb( WkbFlags flags ) const
-{
-  QByteArray wkbArray;
-  wkbArray.resize( QgsLineString::wkbSize( flags ) );
-  QgsWkbPtr wkb( wkbArray );
-  wkb << static_cast<char>( QgsApplication::endian() );
-  wkb << static_cast<quint32>( wkbType() );
-  QgsPointSequence pts;
-  points( pts );
-  QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure(), flags );
-  return wkbArray;
-}
-
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests.
- * See details in QEP #17
- ****************************************************************************/
-
-QString QgsLineString::asWkt( int precision ) const
-{
-  QString wkt = wktTypeStr() + ' ';
-
-  if ( isEmpty() )
-    wkt += "EMPTY"_L1;
-  else
-  {
-    QgsPointSequence pts;
-    points( pts );
-    wkt += QgsGeometryUtils::pointsToWKT( pts, precision, is3D(), isMeasure() );
-  }
-  return wkt;
-}
-
 QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   QgsPointSequence pts;
@@ -935,11 +800,15 @@ QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QStri
   return elemLineString;
 }
 
-json QgsLineString::asJsonObject( int precision ) const
+json QgsLineString::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
+  // The current profiles do not make any difference for LineString,
+  // but we keep the parameter in case we need to add specific handling
+  // for future profiles
+  Q_UNUSED( profile )
   QgsPointSequence pts;
   points( pts );
-  return { { "type", "LineString" }, { "coordinates", QgsGeometryUtils::pointsToJson( pts, precision ) } };
+  return { { "type", "LineString" }, { "coordinates", QgsGeometryUtils::pointsToJson( pts, precision, profile ) } };
 }
 
 QString QgsLineString::asKml( int precision ) const
@@ -1032,61 +901,23 @@ double QgsLineString::length() const
 
 std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsLineString::splitCurveAtVertex( int index ) const
 {
-  const bool useZ = is3D();
-  const bool useM = isMeasure();
+  QVector< double > x1, y1, z1, m1;
+  QVector< double > x2, y2, z2, m2;
+  QgsSimpleCurve::splitCurveAtVertexProtected( index, x1, y1, z1, m1, x2, y2, z2, m2 );
 
-  const int size = mX.size();
-  if ( size == 0 )
-    return std::make_tuple( std::make_unique< QgsLineString >(), std::make_unique< QgsLineString >() );
-
-  index = std::clamp( index, 0, size - 1 );
-
-  const int part1Size = index + 1;
-  QVector< double > x1( part1Size );
-  QVector< double > y1( part1Size );
-  QVector< double > z1( useZ ? part1Size : 0 );
-  QVector< double > m1( useM ? part1Size : 0 );
-
-  const double *sourceX = mX.constData();
-  const double *sourceY = mY.constData();
-  const double *sourceZ = useZ ? mZ.constData() : nullptr;
-  const double *sourceM = useM ? mM.constData() : nullptr;
-
-  double *destX = x1.data();
-  double *destY = y1.data();
-  double *destZ = useZ ? z1.data() : nullptr;
-  double *destM = useM ? m1.data() : nullptr;
-
-  std::copy( sourceX, sourceX + part1Size, destX );
-  std::copy( sourceY, sourceY + part1Size, destY );
-  if ( useZ )
-    std::copy( sourceZ, sourceZ + part1Size, destZ );
-  if ( useM )
-    std::copy( sourceM, sourceM + part1Size, destM );
-
-  const int part2Size = size - index;
-  if ( part2Size < 2 )
-    return std::make_tuple( std::make_unique< QgsLineString >( x1, y1, z1, m1 ), std::make_unique< QgsLineString >() );
-
-  QVector< double > x2( part2Size );
-  QVector< double > y2( part2Size );
-  QVector< double > z2( useZ ? part2Size : 0 );
-  QVector< double > m2( useM ? part2Size : 0 );
-  destX = x2.data();
-  destY = y2.data();
-  destZ = useZ ? z2.data() : nullptr;
-  destM = useM ? m2.data() : nullptr;
-  std::copy( sourceX + index, sourceX + size, destX );
-  std::copy( sourceY + index, sourceY + size, destY );
-  if ( useZ )
-    std::copy( sourceZ + index, sourceZ + size, destZ );
-  if ( useM )
-    std::copy( sourceM + index, sourceM + size, destM );
-
-  if ( part1Size < 2 )
-    return std::make_tuple( std::make_unique< QgsLineString >(), std::make_unique< QgsLineString >( x2, y2, z2, m2 ) );
+  std::unique_ptr< QgsLineString > first;
+  if ( x1.isEmpty() || ( x1.size() < 2 && x2.size() >= 2 ) )
+    first = std::make_unique< QgsLineString >();
   else
-    return std::make_tuple( std::make_unique< QgsLineString >( x1, y1, z1, m1 ), std::make_unique< QgsLineString >( x2, y2, z2, m2 ) );
+    first = std::make_unique< QgsLineString >( x1, y1, z1, m1 );
+
+  std::unique_ptr< QgsLineString > second;
+  if ( x2.isEmpty() || x2.size() < 2 )
+    second = std::make_unique< QgsLineString >();
+  else
+    second = std::make_unique< QgsLineString >( x2, y2, z2, m2 );
+
+  return std::make_tuple( std::move( first ), std::move( second ) );
 }
 
 QVector<QgsLineString *> QgsLineString::splitToDisjointXYParts() const
@@ -1160,24 +991,6 @@ double QgsLineString::length3D() const
   }
 }
 
-QgsPoint QgsLineString::startPoint() const
-{
-  if ( numPoints() < 1 )
-  {
-    return QgsPoint();
-  }
-  return pointN( 0 );
-}
-
-QgsPoint QgsLineString::endPoint() const
-{
-  if ( numPoints() < 1 )
-  {
-    return QgsPoint();
-  }
-  return pointN( numPoints() - 1 );
-}
-
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
@@ -1191,111 +1004,11 @@ QgsLineString *QgsLineString::curveToLine( double tolerance, SegmentationToleran
   return clone();
 }
 
-int QgsLineString::numPoints() const
-{
-  return mX.size();
-}
-
-int QgsLineString::nCoordinates() const
-{
-  return mX.size();
-}
-
-QgsPoint QgsLineString::pointN( int i ) const
-{
-  if ( i < 0 || i >= mX.size() )
-  {
-    return QgsPoint();
-  }
-
-  double x = mX.at( i );
-  double y = mY.at( i );
-  double z = std::numeric_limits<double>::quiet_NaN();
-  double m = std::numeric_limits<double>::quiet_NaN();
-
-  bool hasZ = is3D();
-  if ( hasZ )
-  {
-    z = mZ.at( i );
-  }
-  bool hasM = isMeasure();
-  if ( hasM )
-  {
-    m = mM.at( i );
-  }
-
-  Qgis::WkbType t = Qgis::WkbType::Point;
-  if ( mWkbType == Qgis::WkbType::LineString25D )
-  {
-    t = Qgis::WkbType::Point25D;
-  }
-  else if ( hasZ && hasM )
-  {
-    t = Qgis::WkbType::PointZM;
-  }
-  else if ( hasZ )
-  {
-    t = Qgis::WkbType::PointZ;
-  }
-  else if ( hasM )
-  {
-    t = Qgis::WkbType::PointM;
-  }
-  return QgsPoint( t, x, y, z, m );
-}
-
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
  * See details in QEP #17
  ****************************************************************************/
-
-double QgsLineString::xAt( int index ) const
-{
-  if ( index >= 0 && index < mX.size() )
-    return mX.at( index );
-  else
-    return 0.0;
-}
-
-double QgsLineString::yAt( int index ) const
-{
-  if ( index >= 0 && index < mY.size() )
-    return mY.at( index );
-  else
-    return 0.0;
-}
-
-void QgsLineString::setXAt( int index, double x )
-{
-  if ( index >= 0 && index < mX.size() )
-    mX[index] = x;
-  clearCache();
-}
-
-void QgsLineString::setYAt( int index, double y )
-{
-  if ( index >= 0 && index < mY.size() )
-    mY[index] = y;
-  clearCache();
-}
-
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests.
- * See details in QEP #17
- ****************************************************************************/
-
-void QgsLineString::points( QgsPointSequence &pts ) const
-{
-  pts.clear();
-  int nPoints = numPoints();
-  pts.reserve( nPoints );
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    pts.push_back( pointN( i ) );
-  }
-}
 
 void QgsLineString::setPoints( size_t size, const double *x, const double *y, const double *z, const double *m )
 {
@@ -1367,141 +1080,15 @@ void QgsLineString::setPoints( size_t size, const double *x, const double *y, co
   }
 }
 
-void QgsLineString::setPoints( const QgsPointSequence &points )
-{
-  clearCache(); //set bounding box invalid
-
-  if ( points.isEmpty() )
-  {
-    clear();
-    return;
-  }
-
-  //get wkb type from first point
-  const QgsPoint &firstPt = points.at( 0 );
-  bool hasZ = firstPt.is3D();
-  bool hasM = firstPt.isMeasure();
-
-  setZMTypeFromSubGeometry( &firstPt, Qgis::WkbType::LineString );
-
-  mX.resize( points.size() );
-  mY.resize( points.size() );
-  if ( hasZ )
-  {
-    mZ.resize( points.size() );
-  }
-  else
-  {
-    mZ.clear();
-  }
-  if ( hasM )
-  {
-    mM.resize( points.size() );
-  }
-  else
-  {
-    mM.clear();
-  }
-
-  for ( int i = 0; i < points.size(); ++i )
-  {
-    mX[i] = points.at( i ).x();
-    mY[i] = points.at( i ).y();
-    if ( hasZ )
-    {
-      double z = points.at( i ).z();
-      mZ[i] = std::isnan( z ) ? 0 : z;
-    }
-    if ( hasM )
-    {
-      double m = points.at( i ).m();
-      mM[i] = std::isnan( m ) ? 0 : m;
-    }
-  }
-}
-
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsLineString::append( const QgsLineString *line )
-{
-  if ( !line )
-  {
-    return;
-  }
-
-  if ( numPoints() < 1 )
-  {
-    setZMTypeFromSubGeometry( line, Qgis::WkbType::LineString );
-  }
-
-  // do not store duplicate points
-  if ( numPoints() > 0 && line->numPoints() > 0 && endPoint() == line->startPoint() )
-  {
-    mX.pop_back();
-    mY.pop_back();
-
-    if ( is3D() )
-    {
-      mZ.pop_back();
-    }
-    if ( isMeasure() )
-    {
-      mM.pop_back();
-    }
-  }
-
-  mX += line->mX;
-  mY += line->mY;
-
-  if ( is3D() )
-  {
-    if ( line->is3D() )
-    {
-      mZ += line->mZ;
-    }
-    else
-    {
-      // if append line does not have z coordinates, fill with NaN to match number of points in final line
-      mZ.insert( mZ.count(), mX.size() - mZ.size(), std::numeric_limits<double>::quiet_NaN() );
-    }
-  }
-
-  if ( isMeasure() )
-  {
-    if ( line->isMeasure() )
-    {
-      mM += line->mM;
-    }
-    else
-    {
-      // if append line does not have m values, fill with NaN to match number of points in final line
-      mM.insert( mM.count(), mX.size() - mM.size(), std::numeric_limits<double>::quiet_NaN() );
-    }
-  }
-
-  clearCache(); //set bounding box invalid
-}
-
 QgsLineString *QgsLineString::reversed() const
 {
-  QgsLineString *copy = clone();
-  std::reverse( copy->mX.begin(), copy->mX.end() );
-  std::reverse( copy->mY.begin(), copy->mY.end() );
-  if ( copy->is3D() )
-  {
-    std::reverse( copy->mZ.begin(), copy->mZ.end() );
-  }
-  if ( copy->isMeasure() )
-  {
-    std::reverse( copy->mM.begin(), copy->mM.end() );
-  }
-
-  copy->mSummedUpArea = -mSummedUpArea;
-  return copy;
+  return qgis::down_cast< QgsLineString *>( QgsSimpleCurve::reversed() );
 }
 
 void QgsLineString::visitPointsByRegularDistance(
@@ -1851,157 +1438,9 @@ QgsLineString *QgsLineString::createEmptyWithSameType() const
   return result.release();
 }
 
-int QgsLineString::compareToSameClass( const QgsAbstractGeometry *other ) const
-{
-  const QgsLineString *otherLine = qgsgeometry_cast<const QgsLineString *>( other );
-  if ( !otherLine )
-    return -1;
-
-  const int size = mX.size();
-  const int otherSize = otherLine->mX.size();
-  if ( size > otherSize )
-  {
-    return 1;
-  }
-  else if ( size < otherSize )
-  {
-    return -1;
-  }
-
-  if ( is3D() && !otherLine->is3D() )
-    return 1;
-  else if ( !is3D() && otherLine->is3D() )
-    return -1;
-  const bool considerZ = is3D();
-
-  if ( isMeasure() && !otherLine->isMeasure() )
-    return 1;
-  else if ( !isMeasure() && otherLine->isMeasure() )
-    return -1;
-  const bool considerM = isMeasure();
-
-  for ( int i = 0; i < size; i++ )
-  {
-    const double x = mX[i];
-    const double otherX = otherLine->mX[i];
-    if ( x < otherX )
-    {
-      return -1;
-    }
-    else if ( x > otherX )
-    {
-      return 1;
-    }
-
-    const double y = mY[i];
-    const double otherY = otherLine->mY[i];
-    if ( y < otherY )
-    {
-      return -1;
-    }
-    else if ( y > otherY )
-    {
-      return 1;
-    }
-
-    if ( considerZ )
-    {
-      const double z = mZ[i];
-      const double otherZ = otherLine->mZ[i];
-
-      if ( z < otherZ )
-      {
-        return -1;
-      }
-      else if ( z > otherZ )
-      {
-        return 1;
-      }
-    }
-
-    if ( considerM )
-    {
-      const double m = mM[i];
-      const double otherM = otherLine->mM[i];
-
-      if ( m < otherM )
-      {
-        return -1;
-      }
-      else if ( m > otherM )
-      {
-        return 1;
-      }
-    }
-  }
-  return 0;
-}
-
 QString QgsLineString::geometryType() const
 {
   return u"LineString"_s;
-}
-
-int QgsLineString::dimension() const
-{
-  return 1;
-}
-
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests.
- * See details in QEP #17
- ****************************************************************************/
-
-void QgsLineString::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
-{
-  double *zArray = nullptr;
-  bool hasZ = is3D();
-  int nPoints = numPoints();
-
-  // it's possible that transformCoords will throw an exception - so we need to use
-  // a smart pointer for the dummy z values in order to ensure that they always get cleaned up
-  std::unique_ptr< double[] > dummyZ;
-  if ( !hasZ || !transformZ )
-  {
-    dummyZ = std::make_unique<double[]>( nPoints );
-    zArray = dummyZ.get();
-  }
-  else
-  {
-    zArray = mZ.data();
-  }
-  ct.transformCoords( nPoints, mX.data(), mY.data(), zArray, d );
-  clearCache();
-}
-
-void QgsLineString::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
-{
-  int nPoints = numPoints();
-  bool hasZ = is3D();
-  bool hasM = isMeasure();
-  double *x = mX.data();
-  double *y = mY.data();
-  double *z = hasZ ? mZ.data() : nullptr;
-  double *m = hasM ? mM.data() : nullptr;
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    double xOut, yOut;
-    t.map( *x, *y, &xOut, &yOut );
-    *x++ = xOut;
-    *y++ = yOut;
-    if ( hasZ )
-    {
-      *z = *z * zScale + zTranslate;
-      z++;
-    }
-    if ( hasM )
-    {
-      *m = *m * mScale + mTranslate;
-      m++;
-    }
-  }
-  clearCache();
 }
 
 /***************************************************************************
@@ -2036,26 +1475,6 @@ bool QgsLineString::insertVertex( QgsVertexId position, const QgsPoint &vertex )
   return true;
 }
 
-bool QgsLineString::moveVertex( QgsVertexId position, const QgsPoint &newPos )
-{
-  if ( position.vertex < 0 || position.vertex >= mX.size() )
-  {
-    return false;
-  }
-  mX[position.vertex] = newPos.x();
-  mY[position.vertex] = newPos.y();
-  if ( is3D() && newPos.is3D() )
-  {
-    mZ[position.vertex] = newPos.z();
-  }
-  if ( isMeasure() && newPos.isMeasure() )
-  {
-    mM[position.vertex] = newPos.m();
-  }
-  clearCache(); //set bounding box invalid
-  return true;
-}
-
 bool QgsLineString::deleteVertex( QgsVertexId position )
 {
   if ( position.vertex >= mX.size() || position.vertex < 0 )
@@ -2077,6 +1496,49 @@ bool QgsLineString::deleteVertex( QgsVertexId position )
   if ( numPoints() == 1 )
   {
     clear();
+  }
+
+  clearCache(); //set bounding box invalid
+  return true;
+}
+
+bool QgsLineString::deleteVertices( const QSet<QgsVertexId> &positions )
+{
+  if ( positions.isEmpty() )
+  {
+    return false;
+  }
+
+  QList<QgsVertexId> vertices( positions.begin(), positions.end() );
+
+  for ( QgsVertexId pos : positions )
+  {
+    if ( !hasVertex( pos ) )
+    {
+      return false;
+    }
+  }
+
+  if ( numPoints() <= vertices.size() + 1 )
+  {
+    clear();
+    return true;
+  }
+
+  std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex > b.vertex; } );
+
+  for ( QgsVertexId position : vertices )
+  {
+    mX.remove( position.vertex );
+    mY.remove( position.vertex );
+    if ( is3D() )
+    {
+      mZ.remove( position.vertex );
+    }
+    if ( isMeasure() )
+    {
+      mM.remove( position.vertex );
+    }
   }
 
   clearCache(); //set bounding box invalid
@@ -2360,36 +1822,6 @@ void QgsLineString::sumUpArea3D( double &sum ) const
   sum += mSummedUpArea3D;
 }
 
-void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr &wkb )
-{
-  bool hasZ = is3D();
-  bool hasM = isMeasure();
-  int nVertices = 0;
-  wkb >> nVertices;
-  mX.resize( nVertices );
-  mY.resize( nVertices );
-  hasZ ? mZ.resize( nVertices ) : mZ.clear();
-  hasM ? mM.resize( nVertices ) : mM.clear();
-  double *x = mX.data();
-  double *y = mY.data();
-  double *m = hasM ? mM.data() : nullptr;
-  double *z = hasZ ? mZ.data() : nullptr;
-  for ( int i = 0; i < nVertices; ++i )
-  {
-    wkb >> *x++;
-    wkb >> *y++;
-    if ( hasZ )
-    {
-      wkb >> *z++;
-    }
-    if ( hasM )
-    {
-      wkb >> *m++;
-    }
-  }
-  clearCache(); //set bounding box invalid
-}
-
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
@@ -2464,89 +1896,6 @@ double QgsLineString::segmentLength( QgsVertexId startVertex ) const
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsLineString::addZValue( double zValue )
-{
-  if ( QgsWkbTypes::hasZ( mWkbType ) )
-    return false;
-
-  clearCache();
-  if ( mWkbType == Qgis::WkbType::Unknown )
-  {
-    mWkbType = Qgis::WkbType::LineStringZ;
-    return true;
-  }
-
-  mWkbType = QgsWkbTypes::addZ( mWkbType );
-
-  mZ.clear();
-  int nPoints = numPoints();
-  mZ.reserve( nPoints );
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    mZ << zValue;
-  }
-  return true;
-}
-
-bool QgsLineString::addMValue( double mValue )
-{
-  if ( QgsWkbTypes::hasM( mWkbType ) )
-    return false;
-
-  clearCache();
-  if ( mWkbType == Qgis::WkbType::Unknown )
-  {
-    mWkbType = Qgis::WkbType::LineStringM;
-    return true;
-  }
-
-  if ( mWkbType == Qgis::WkbType::LineString25D )
-  {
-    mWkbType = Qgis::WkbType::LineStringZM;
-  }
-  else
-  {
-    mWkbType = QgsWkbTypes::addM( mWkbType );
-  }
-
-  mM.clear();
-  int nPoints = numPoints();
-  mM.reserve( nPoints );
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    mM << mValue;
-  }
-  return true;
-}
-
-bool QgsLineString::dropZValue()
-{
-  if ( !is3D() )
-    return false;
-
-  clearCache();
-  mWkbType = QgsWkbTypes::dropZ( mWkbType );
-  mZ.clear();
-  return true;
-}
-
-bool QgsLineString::dropMValue()
-{
-  if ( !isMeasure() )
-    return false;
-
-  clearCache();
-  mWkbType = QgsWkbTypes::dropM( mWkbType );
-  mM.clear();
-  return true;
-}
-
-void QgsLineString::swapXy()
-{
-  std::swap( mX, mY );
-  clearCache();
-}
-
 bool QgsLineString::convertTo( Qgis::WkbType type )
 {
   if ( type == mWkbType )
@@ -2566,125 +1915,6 @@ bool QgsLineString::convertTo( Qgis::WkbType type )
     return QgsCurve::convertTo( type );
   }
 }
-
-bool QgsLineString::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
-{
-  if ( !transformer )
-    return false;
-
-  bool hasZ = is3D();
-  bool hasM = isMeasure();
-  int size = mX.size();
-
-  double *srcX = mX.data();
-  double *srcY = mY.data();
-  double *srcM = hasM ? mM.data() : nullptr;
-  double *srcZ = hasZ ? mZ.data() : nullptr;
-
-  bool res = true;
-  for ( int i = 0; i < size; ++i )
-  {
-    double x = *srcX;
-    double y = *srcY;
-    double z = hasZ ? *srcZ : std::numeric_limits<double>::quiet_NaN();
-    double m = hasM ? *srcM : std::numeric_limits<double>::quiet_NaN();
-    if ( !transformer->transformPoint( x, y, z, m ) )
-    {
-      res = false;
-      break;
-    }
-
-    *srcX++ = x;
-    *srcY++ = y;
-    if ( hasM )
-      *srcM++ = m;
-    if ( hasZ )
-      *srcZ++ = z;
-
-    if ( feedback && feedback->isCanceled() )
-    {
-      res = false;
-      break;
-    }
-  }
-  clearCache();
-  return res;
-}
-
-void QgsLineString::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
-{
-  bool hasZ = is3D();
-  bool hasM = isMeasure();
-  int size = mX.size();
-
-  double *srcX = mX.data();
-  double *srcY = mY.data();
-  double *srcM = hasM ? mM.data() : nullptr;
-  double *srcZ = hasZ ? mZ.data() : nullptr;
-
-  double *destX = srcX;
-  double *destY = srcY;
-  double *destM = srcM;
-  double *destZ = srcZ;
-
-  int filteredPoints = 0;
-  for ( int i = 0; i < size; ++i )
-  {
-    double x = *srcX++;
-    double y = *srcY++;
-    double z = hasZ ? *srcZ++ : std::numeric_limits<double>::quiet_NaN();
-    double m = hasM ? *srcM++ : std::numeric_limits<double>::quiet_NaN();
-
-    if ( filter( QgsPoint( x, y, z, m ) ) )
-    {
-      filteredPoints++;
-      *destX++ = x;
-      *destY++ = y;
-      if ( hasM )
-        *destM++ = m;
-      if ( hasZ )
-        *destZ++ = z;
-    }
-  }
-
-  mX.resize( filteredPoints );
-  mY.resize( filteredPoints );
-  if ( hasZ )
-    mZ.resize( filteredPoints );
-  if ( hasM )
-    mM.resize( filteredPoints );
-
-  clearCache();
-}
-
-void QgsLineString::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
-{
-  bool hasZ = is3D();
-  bool hasM = isMeasure();
-  int size = mX.size();
-
-  double *srcX = mX.data();
-  double *srcY = mY.data();
-  double *srcM = hasM ? mM.data() : nullptr;
-  double *srcZ = hasZ ? mZ.data() : nullptr;
-
-  for ( int i = 0; i < size; ++i )
-  {
-    double x = *srcX;
-    double y = *srcY;
-    double z = hasZ ? *srcZ : std::numeric_limits<double>::quiet_NaN();
-    double m = hasM ? *srcM : std::numeric_limits<double>::quiet_NaN();
-    QgsPoint res = transform( QgsPoint( x, y, z, m ) );
-    *srcX++ = res.x();
-    *srcY++ = res.y();
-    if ( hasM )
-      *srcM++ = res.m();
-    if ( hasZ )
-      *srcZ++ = res.z();
-  }
-  clearCache();
-}
-
 
 std::unique_ptr< QgsLineString > QgsLineString::measuredLine( double start, double end ) const
 {

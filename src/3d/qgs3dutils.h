@@ -23,9 +23,13 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
+#include "qgsmaterial.h"
 #include "qgsray3d.h"
 #include "qgsraycastresult.h"
 
+#include <QMatrix3x3>
+#include <QMatrix4x4>
+#include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCullFace>
 
@@ -47,9 +51,28 @@ namespace Qt3DExtras
   class QPhongMaterial;
 }
 
+namespace Qt3DRender
+{
+  class QAbstractTexture;
+}
+
 class QSurface;
 class Qgs3DRenderContext;
 class QgsRayCastContext;
+class QgsMaterialContext;
+
+/**
+ * \ingroup qgis_3d
+ * \brief Pairs a Qt3D geometry with its material and transform. Used as a return type when loading 3D model files (GLTF, OBJ).
+ * \note Not available in Python bindings
+ * \since QGIS 4.2
+ */
+struct _3D_EXPORT QgsMeshNodeData
+{
+    std::unique_ptr<Qt3DCore::QGeometry> geometry; //!< Geometry
+    std::unique_ptr<QgsMaterial> material;         //!< Material
+    QMatrix4x4 meshTransform;                      //!< Mesh space (raw coordinates) to object space transform
+};
 
 /**
  * \ingroup qgis_3d
@@ -158,6 +181,30 @@ class _3D_EXPORT Qgs3DUtils
     static QString matrix4x4toString( const QMatrix4x4 &m );
     //! Convert a string to a 4x4 transform matrix
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
+
+    /**
+     * Converts a SRGB color to a linear color.
+     *
+     * Color alpha is retained without change.
+     *
+     * \warning This method is designed for conversion of single colors only, for passing
+     * static colors to shaders. It is not appropriate for use for bulk conversion operations, e.g.
+     * converting an image from sRGB to linear colors.
+     *
+     * \since QGIS 4.2
+     */
+    static QColor srgbToLinear( const QColor &color );
+
+    /**
+     * Given a QImage \a format, returns the most appropriate corresponding texture format.
+     *
+     * \param format QImage format to convert
+     * \param isSrgb determines whether RGB formats should be interpreted as SRGB color spaces.
+     * \param requiresConversionToRgb will be set to TRUE if the image format is not appropriate for a 3D texture and the image requires conversion to RGB by the caller.
+     *
+     * \since QGIS 4.2
+     */
+    static Qt3DRender::QAbstractTexture::TextureFormat determineTextureFormat( QImage::Format format, bool isSrgb, bool &requiresConversionToRgb );
 
     //! Calculates (x,y,z) positions of (multi)point from the given feature
     static void extractPointPositions(
@@ -359,6 +406,16 @@ class _3D_EXPORT Qgs3DUtils
     static QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines );
 
     /**
+     * Computes a 3x3 orientation matrix from the given up and forward axis strings.
+     *
+     * \a upAxis and \a forwardAxis are case-sensitive axis strings: "x", "-x", "y", "-y",
+     * "z", or "-z".
+     *
+     * \since QGIS 4.2
+     */
+    static QMatrix4x4 axisTransformMatrix( const QString &upAxis, const QString &forwardAxis );
+
+    /**
      * Removes some define macros from a shader source code.
      *
      * \param shaderCode shader code
@@ -405,10 +462,63 @@ class _3D_EXPORT Qgs3DUtils
     static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings );
 
     /**
-     * Computes the portion of the Y=y plane the camera is looking at
-     * \since QGIS 3.44
+     * Calculates an appropriate up vector for a directional light.
+     *
+     * The returned vector is guaranteed never to be parallel to the line of sight from eye to center.
+     *
+     * \param lightDirection direction vector of the light, must be normalized.
+     *
+     * \since QGIS 4.2
      */
-    static void calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ );
+    static QVector3D calculateDirectionalLightUpVector( const QVector3D &lightDirection );
+
+    /**
+     * Calculates the split distances for cascading shadow maps using the "Practical Split Scheme".
+     *
+     * \param numberCascades Number of shadow cascades.
+     * \param nearPlane Camera's near plane.
+     * \param farPlane Camera's far plane.
+     * \param lambda Weighting factor between logarithmic and uniform splits (valid values are between 0.0 to 1.0).
+     *
+     * \returns A vector of size numCascades + 1 containing the distances of the split planes.
+     *
+     * \since QGIS 4.2
+     */
+    static std::vector<float> calculateCascadeSplits( int numberCascades, float nearPlane, float farPlane, float lambda = 0.9f );
+
+    /**
+     * Calculates the 8 corners of a camera frustum slice in world space and its center point.
+     *
+     * \param zNear Near plane distance of the slice.
+     * \param zFar Far plane distance of the slice.
+     * \param fov Camera field of view (in degrees).
+     * \param aspectRatio Aspect ratio of the camera.
+     * \param invertedCameraView Inverted view matrix of the camera (view to world transform).
+     * \param corners will be set to the calculated world-space corners.
+     * \param center will be set to the center point of the frustum slice in world space.
+     *
+     * \since QGIS 4.2
+     */
+    static void calculateFrustumSliceCorners( float zNear, float zFar, float fov, float aspectRatio, const QMatrix4x4 &invertedCameraView, QVector3D ( &corners )[8], QVector3D &center );
+
+    /**
+     * Calculates the orthographic projection bounds required to tightly enclose a set of 8 world-space
+     * corners .
+     *
+     * \param worldCorners Array of corners (e.g. frustrum corners) in world coordinates.
+     * \param viewMatrix The view matrix to transform the corners into (e.g. a light's view matrix).
+     * \param left will be set to the calculated left orthographic bound (minimum X in view space).
+     * \param right will be set to the calculated right orthographic bound (maximum X in view space).
+     * \param bottom will be set to the calculated bottom orthographic bound (minimum Y in view space).
+     * \param top will be set to the calculated top orthographic bound (maximum Y in view space).
+     * \param nearPlane will be set to the calculated near plane distance.
+     * \param farPlane will be set to the calculated far plane distance.
+     *
+     * \since QGIS 4.2
+     */
+    static void calculateViewSpaceOrthographicBounds(
+      const QVector3D ( &worldCorners )[8], const QMatrix4x4 &viewMatrix, float &left, float &right, float &bottom, float &top, float &nearPlane, float &farPlane
+    );
 
     /**
      * Returns a list of 4 planes derived from a line extending from \a startPoint to \a endPoint.
@@ -434,6 +544,14 @@ class _3D_EXPORT Qgs3DUtils
      */
     static std::unique_ptr<Qt3DRender::QCamera> copyCamera( Qt3DRender::QCamera *cam ) SIP_SKIP;
 
+    /**
+     * Sets the default filtering options for a \a texture.
+     *
+     * \note This should not be called for textures which have special filtering considerations,
+     * eg look up tables, data tables, "screen space" textures, or textures where mipmapping is not appropriate.
+     */
+    static void setTextureFiltering( Qt3DRender::QAbstractTexture *texture, const QgsMaterialContext &context );
+
     // we start with a maximal z range because we can't know this upfront. There's too many
     // factors to consider eg vertex z data, terrain heights, data defined offsets and extrusion heights,...
     // This range will be refined after populating the nodes to the actual z range of the generated chunks nodes.
@@ -441,6 +559,13 @@ class _3D_EXPORT Qgs3DUtils
     // height will exceed this amount!
     static constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -100000;
     static constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 100000;
+
+  private:
+    /**
+     * Converts an axis string ("x", "-x", "y", "-y", "z", "-z") to a unit QVector3D.
+     * Returns a null vector for any unrecognised input.
+    */
+    static QVector3D axisStringToVector( const QString &axis );
 };
 
 #endif // QGS3DUTILS_H

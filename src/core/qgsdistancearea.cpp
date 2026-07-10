@@ -461,9 +461,13 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
     if ( sourceCrs().mapUnits() != Qgis::DistanceUnit::Meters )
     {
       distance = ( distance * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, sourceCrs().mapUnits() ) );
+      p2 = p1.project( distance, azimuth );
       result = p1.distance( p2 );
     }
-    p2 = p1.project( distance, azimuth );
+    else
+    {
+      p2 = p1.project( distance, azimuth );
+    }
   }
   QgsDebugMsgLevel(
     u"Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]"_s
@@ -930,7 +934,8 @@ void QgsDistanceArea::computeAreaInit() const
   }
 
   mGeod = std::make_unique<geod_geodesic>();
-  geod_init( mGeod.get(), mSemiMajor, 1 / mInvFlattening );
+  const double flattening = qgsDoubleNear( mInvFlattening, 0.0 ) ? 0.0 : 1.0 / mInvFlattening;
+  geod_init( mGeod.get(), mSemiMajor, flattening );
 }
 
 void QgsDistanceArea::setFromParams( const QgsEllipsoidUtils::EllipsoidParameters &params )

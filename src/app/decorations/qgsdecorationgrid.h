@@ -40,8 +40,8 @@ class APP_EXPORT QgsDecorationGrid : public QgsDecorationItem
 
     enum GridStyle
     {
-      Line = 0, // lines
-      Marker    //markers
+      Line = 0, //!< Lines
+      Marker    //!< Markers
     };
 
     enum GridAnnotationDirection

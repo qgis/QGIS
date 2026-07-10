@@ -155,6 +155,8 @@ using namespace Qt::StringLiterals;
 
 #include "qgsdockablewidgethelper.h"
 
+#include "qgspersistentmenu.h"
+
 #ifdef HAVE_3D
 #include "qgs3d.h"
 #include "qgs3danimationsettings.h"
@@ -198,6 +200,10 @@ using namespace Qt::StringLiterals;
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgsdatasourceselectdialog.h"
+
+#ifdef HAVE_POSTGRESQL
+#include <libpq-fe.h>
+#endif
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -421,6 +427,7 @@ using namespace Qt::StringLiterals;
 #include "qgselevationshadingrenderersettingswidget.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssnappingwidget.h"
+#include "qgstopocentricwidget.h"
 #include "qgsstackeddiagramproperties.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbar.h"
@@ -653,18 +660,18 @@ static QgsMessageOutput *messageOutputViewer_()
 
 static void customSrsValidation_( QgsCoordinateReferenceSystem &srs )
 {
-  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  const Qgis::UnknownLayerCrsBehavior mode = QgsSettingsRegistryCore::settingsUnknownCrsBehavior->value();
   switch ( mode )
   {
-    case QgsOptions::UnknownLayerCrsBehavior::NoAction:
+    case Qgis::UnknownLayerCrsBehavior::NoAction:
       return;
 
-    case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
-      srs.createFromOgcWmsCrs( QgsSettings().value( u"Projections/layerDefaultCrs"_s, Qgis::geographicCrsAuthId() ).toString() );
+    case Qgis::UnknownLayerCrsBehavior::UseDefaultCrs:
+      srs.createFromOgcWmsCrs( QgsSettingsRegistryCore::settingsLayerDefaultCrs->value() );
       break;
 
-    case QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs:
-    case QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs:
+    case Qgis::UnknownLayerCrsBehavior::PromptUserForCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseProjectCrs:
       // can't take any action immediately for these -- we may be in a background thread
       break;
   }
@@ -691,10 +698,9 @@ void QgisApp::emitCustomCrsValidation( QgsCoordinateReferenceSystem &srs )
 void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
 {
   Q_UNUSED( index )
-  QgsSettings settings;
-  switch ( settings.value( u"qgis/legendDoubleClickAction"_s, 0 ).toInt() )
+  switch ( settingsLegendDoubleClickAction->value() )
   {
-    case 0:
+    case Qgis::LegendLayerDoubleClickAction::LayerProperties:
     {
       //show properties
       if ( mLayerTreeView )
@@ -725,14 +731,14 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
       QgisApp::instance()->layerProperties();
       break;
     }
-    case 1:
+    case Qgis::LegendLayerDoubleClickAction::AttributeTable:
     {
       QgsSettings settings;
       QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( u"qgis/attributeTableBehavior"_s, QgsAttributeTableFilterModel::ShowAll );
       QgisApp::instance()->attributeTable( initialMode );
       break;
     }
-    case 2:
+    case Qgis::LegendLayerDoubleClickAction::LayerStyling:
       mapStyleDock( true );
       break;
     default:
@@ -767,14 +773,13 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
 
 void QgisApp::toggleEventTracing()
 {
-  QgsSettings settings;
-  if ( !settings.value( u"qgis/enableEventTracing"_s, false ).toBool() )
+  if ( !settingsEnableEventTracing->value() )
   {
     // make sure the setting is available in Options > Advanced
-    if ( !settings.contains( u"qgis/enableEventTracing"_s ) )
-      settings.setValue( u"qgis/enableEventTracing"_s, false );
+    if ( !settingsEnableEventTracing->exists() )
+      settingsEnableEventTracing->setValue( false );
 
-    messageBar()->pushWarning( tr( "Event Tracing" ), tr( "Tracing is not enabled. Look for \"enableEventTracing\" in Options > Advanced." ) );
+    messageBar()->pushWarning( tr( "Event Tracing" ), tr( "Tracing is not enabled. Look for \"enable-event-tracing\" in Options > Advanced." ) );
     return;
   }
 
@@ -910,21 +915,21 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 {
   static QString sAuthId = QString();
 
-  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  const Qgis::UnknownLayerCrsBehavior mode = QgsSettingsRegistryCore::settingsUnknownCrsBehavior->value();
   switch ( mode )
   {
-    case QgsOptions::UnknownLayerCrsBehavior::NoAction:
+    case Qgis::UnknownLayerCrsBehavior::NoAction:
       break;
 
-    case QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseDefaultCrs:
     {
-      srs.createFromOgcWmsCrs( QgsSettings().value( u"Projections/layerDefaultCrs"_s, Qgis::geographicCrsAuthId() ).toString() );
+      srs.createFromOgcWmsCrs( QgsSettingsRegistryCore::settingsLayerDefaultCrs->value() );
       sAuthId = srs.authid();
       visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to CRS %1" ).arg( srs.userFriendlyIdentifier() ), Qgis::MessageLevel::Warning );
       break;
     }
 
-    case QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs:
+    case Qgis::UnknownLayerCrsBehavior::PromptUserForCrs:
     {
       // \note this class is not a descendent of QWidget so we can't pass
       // it in the ctor of the layer projection selector
@@ -964,7 +969,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
       break;
     }
 
-    case QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseProjectCrs:
     {
       // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
       srs = QgsProject::instance()->crs();
@@ -989,8 +994,35 @@ QgisApp *QgisApp::sInstance = nullptr;
 const QgisApp::AppOptions QgisApp::DEFAULT_OPTIONS = QgisApp::AppOptions( QgisApp::AppOption::RestorePlugins ) | QgisApp::AppOption::EnablePython;
 
 const QgsSettingsEntryBool *QgisApp::settingsAskToDeleteFeatures = new QgsSettingsEntryBool( u"ask-to-delete-features"_s, QgsSettingsTree::sTreeApp, true );
+const QgsSettingsEntryEnumFlag<Qgis::LegendLayerDoubleClickAction> *QgisApp::settingsLegendDoubleClickAction = new QgsSettingsEntryEnumFlag<
+  Qgis::LegendLayerDoubleClickAction>( u"legend-double-click-action"_s, QgsSettingsTree::sTreeApp, Qgis::LegendLayerDoubleClickAction::LayerProperties, u"Action performed when double-clicking a layer in the legend"_s );
+const QgsSettingsEntryBool *QgisApp::settingsEnableEventTracing
+  = new QgsSettingsEntryBool( u"enable-event-tracing"_s, QgsSettingsTree::sTreeApp, false, u"Whether event tracing is enabled for performance diagnostics"_s );
+const QgsSettingsEntryBool *QgisApp::settingsHideSplash = new QgsSettingsEntryBool( u"hide-splash"_s, QgsSettingsTree::sTreeApp, false, u"Whether the splash screen is hidden at QGIS startup"_s );
+const QgsSettingsEntryBool *QgisApp::settingsMapTipsEnabled = new QgsSettingsEntryBool( u"enabled"_s, QgsSettingsTree::sTreeMapTips, false, u"Whether map tips are enabled"_s );
+const QgsSettingsEntryInteger *QgisApp::settingsMapTipsDelay = new QgsSettingsEntryInteger( u"delay"_s, QgsSettingsTree::sTreeMapTips, 850, u"Delay in milliseconds before a map tip is displayed"_s );
+const QgsSettingsEntryBool *QgisApp::settingsAskToSaveProjectChanges
+  = new QgsSettingsEntryBool( u"ask-to-save-project-changes"_s, QgsSettingsTree::sTreeProject, true, u"Whether to ask the user to save project changes when closing"_s );
+const QgsSettingsEntryBool *QgisApp::settingsWarnOldProjectVersion
+  = new QgsSettingsEntryBool( u"warn-old-project-version"_s, QgsSettingsTree::sTreeProject, true, u"Whether to warn when opening a project saved with an older QGIS version"_s );
+const QgsSettingsEntryBool *QgisApp::settingsNewProjectDefault
+  = new QgsSettingsEntryBool( u"new-project-default"_s, QgsSettingsTree::sTreeProject, false, u"Whether new projects open from the default project template"_s );
+const QgsSettingsEntryInteger *QgisApp::settingsProjOpenAtLaunch
+  = new QgsSettingsEntryInteger( u"proj-open-at-launch"_s, QgsSettingsTree::sTreeProject, 0, u"Behavior when QGIS launches: 0=new project, 1=most recent, 2=welcome page, 3=specific project"_s );
+const QgsSettingsEntryString *QgisApp::settingsProjOpenAtLaunchPath
+  = new QgsSettingsEntryString( u"proj-open-at-launch-path"_s, QgsSettingsTree::sTreeProject, QString(), u"Path of the specific project to open at launch"_s );
+const QgsSettingsEntryBool *QgisApp::settingsProjOpenedOKAtLaunch
+  = new QgsSettingsEntryBool( u"project-opened-ok-at-launch"_s, QgsSettingsTree::sTreeProject, true, u"Whether the project specified to open at launch was opened successfully last time"_s );
+const QgsSettingsEntryBool *QgisApp::settingsShowScriptWarning
+  = new QgsSettingsEntryBool( u"show-script-warning"_s, QgsSettingsTree::sTreeApp, true, u"Whether to warn the user before running a Python script embedded in a project"_s );
+const QgsSettingsEntryBool *QgisApp::settingsDisplayWaylandWarning
+  = new QgsSettingsEntryBool( u"display-wayland-warning"_s, QgsSettingsTree::sTreeGui, true, u"Whether to show the warning dialog when running QGIS under Wayland"_s );
+const QgsSettingsEntryBool *QgisApp::settingsRestoreDefaultWindowState
+  = new QgsSettingsEntryBool( u"restore-default-window-state"_s, QgsSettingsTree::sTreeApp, false, u"Whether to restore the default window state on next QGIS startup"_s );
 
-QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp(
+  QSplashScreen *splash, AppOptions options, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl, std::unique_ptr<QgsCustomization> customization
+)
   : QMainWindow( parent, fl )
   , mSplash( splash )
 {
@@ -1033,9 +1065,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 
-  QgsDockableWidgetHelper::sAddTabifiedDockWidgetFunction = []( Qt::DockWidgetArea dockArea, QDockWidget *dock, const QStringList &tabSiblings, bool raiseTab ) {
-    QgisApp::instance()->addTabifiedDockWidget( dockArea, dock, tabSiblings, raiseTab );
-  };
   QgsDockableWidgetHelper::sAppStylesheetFunction = []() -> QString { return QgisApp::instance()->styleSheet(); };
   QgsDockableWidgetHelper::sOwnerWindow = QgisApp::instance();
 
@@ -1095,12 +1124,12 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
 
-  if ( !settings.value( u"qgis/main_canvas_preview_jobs"_s ).isValid() )
+  if ( !QgsMapCanvas::settingsMainCanvasPreviewJobs->exists() )
   {
     // So that it appears in advanced settings
-    settings.setValue( u"qgis/main_canvas_preview_jobs"_s, true );
+    QgsMapCanvas::settingsMainCanvasPreviewJobs->setValue( true );
   }
-  mMapCanvas->setPreviewJobsEnabled( settings.value( u"qgis/main_canvas_preview_jobs"_s, true ).toBool() );
+  mMapCanvas->setPreviewJobsEnabled( QgsMapCanvas::settingsMainCanvasPreviewJobs->value() );
   // record profiling time on the main canvas only
   mMapCanvas->mapSettings().setFlag( Qgis::MapSettingsFlag::RecordProfile );
 
@@ -1112,7 +1141,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   endProfile();
 
   // what type of project to auto-open
-  mProjOpen = settings.value( u"qgis/projOpenAtLaunch"_s, 0 ).toInt();
+  mProjOpen = settingsProjOpenAtLaunch->value();
 
   // a bar to warn the user with non-blocking messages
   startProfile( tr( "Message bar" ) );
@@ -1138,6 +1167,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   mUserInputDockWidget->setAnchorWidget( mMapCanvas );
   mUserInputDockWidget->setAnchorWidgetPoint( QgsFloatingWidget::TopRight );
   mUserInputDockWidget->setAnchorPoint( QgsFloatingWidget::TopRight );
+
+  mMapCanvas->setUserInputWidget( mUserInputDockWidget );
 
   endProfile();
 
@@ -1245,6 +1276,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   functionProfile( &QgisApp::createStatusBar, this, u"Status bar"_s );
   functionProfile( &QgisApp::setupCanvasTools, this, u"Create canvas tools"_s );
   mMapCanvas->setStatusBar( mStatusBar );
+  mMapCanvas->setMessageBar( mInfoBar );
 
   applyDefaultSettingsToCanvas( mMapCanvas );
 
@@ -1747,7 +1779,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   mMapTipsVisible = false;
   // This turns on the map tip if they where active in the last session
-  if ( settings.value( u"qgis/enableMapTips"_s, false ).toBool() )
+  if ( settingsMapTipsEnabled->value() )
   {
     toggleMapTips( true );
   }
@@ -1756,6 +1788,9 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   // setup drag drop
   setAcceptDrops( true );
+
+  // must be done before show() to properly restore state
+  setCustomization( std::move( customization ) );
 
   mFullScreenMode = false;
   mPrevScreenModeMaximized = false;
@@ -1979,7 +2014,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   if ( QGuiApplication::platformName() == "wayland"_L1 )
   {
-    const bool displayWaylandWarning = settings.value( u"/UI/displayWaylandWarning"_s, true ).toBool();
+    const bool displayWaylandWarning = settingsDisplayWaylandWarning->value();
     if ( displayWaylandWarning )
     {
       const QString shortMessage = tr( "Wayland session detected: User experience will be degraded" );
@@ -2008,7 +2043,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
       QPushButton *ignoreButton = new QPushButton( tr( "Ignore" ) );
       connect( ignoreButton, &QPushButton::clicked, this, [this, messageWidget] {
-        QgsSettings().setValue( u"/UI/displayWaylandWarning"_s, false );
+        QgisApp::settingsDisplayWaylandWarning->setValue( false );
         messageBar()->popWidget( messageWidget );
       } );
       messageWidget->layout()->addWidget( ignoreButton );
@@ -2113,6 +2148,9 @@ QgisApp::QgisApp()
 
   mVectorLayerTools = new QgsGuiVectorLayerTools();
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+
+  mMapCanvas->setUserInputWidget( mUserInputDockWidget );
+  mMapCanvas->setMessageBar( mInfoBar );
 
   connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::onActiveLayerChanged );
   // More tests may need more members to be initialized
@@ -2761,8 +2799,12 @@ void QgisApp::dataSourceManager( const QString &pageName, const QString &layerUr
           break;
 
         case Qgis::LayerType::VectorTile:
-          QgsAppLayerHandling::addLayer<QgsVectorTileLayer>( uri, baseName, providerKey );
+        {
+          QString vectorTileUri = uri;
+          QgsVectorTileUtils::updateUriSources( vectorTileUri );
+          QgsAppLayerHandling::addLayer<QgsVectorTileLayer>( vectorTileUri, baseName, providerKey );
           break;
+        }
 
         case Qgis::LayerType::PointCloud:
           QgsAppLayerHandling::addLayer<QgsPointCloudLayer>( uri, baseName, providerKey );
@@ -2912,7 +2954,7 @@ void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
   canvas->enableAntiAliasing( QgsSettingsRegistryGui::settingsEnableAntiAliasing->value() );
   double zoomFactor = QgsSettingsRegistryGui::settingsZoomFactor->value();
   canvas->setWheelFactor( zoomFactor );
-  canvas->setCachingEnabled( settings.value( u"qgis/enable_render_caching"_s, true ).toBool() );
+  canvas->setCachingEnabled( QgsMapCanvas::settingsEnableRenderCaching->value() );
   canvas->setParallelRenderingEnabled( settings.value( u"qgis/parallel_rendering"_s, true ).toBool() );
   canvas->setMapUpdateInterval( QgsSettingsRegistryGui::settingsMapUpdateInterval->value() );
   canvas->setSegmentationTolerance( QgsSettingsRegistryGui::settingsSegmentationTolerance->value() );
@@ -3419,9 +3461,9 @@ void QgisApp::createMenus()
   // Layer menu
 
   // Panel and Toolbar Submenus
-  mPanelMenu = new QMenu( tr( "Panels" ), this );
+  mPanelMenu = new QgsPersistentMenu( tr( "Panels" ), this );
   mPanelMenu->setObjectName( u"mPanelMenu"_s );
-  mToolbarMenu = new QMenu( tr( "Toolbars" ), this );
+  mToolbarMenu = new QgsPersistentMenu( tr( "Toolbars" ), this );
   mToolbarMenu->setObjectName( u"mToolbarMenu"_s );
 
   // Get platform for menu layout customization (Gnome, Kde, Mac, Win)
@@ -4645,22 +4687,9 @@ void QgisApp::createOverview()
   mLayerTreeCanvasBridge->setOverviewCanvas( mOverviewCanvas );
 }
 
-void QgisApp::addDockWidget( Qt::DockWidgetArea area, QDockWidget *thepDockWidget )
+void QgisApp::addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockWidget )
 {
-  QMainWindow::addDockWidget( area, thepDockWidget );
-  // Make the right and left docks consume all vertical space and top
-  // and bottom docks nest between them
-  setCorner( Qt::TopLeftCorner, Qt::LeftDockWidgetArea );
-  setCorner( Qt::BottomLeftCorner, Qt::LeftDockWidgetArea );
-  setCorner( Qt::TopRightCorner, Qt::RightDockWidgetArea );
-  setCorner( Qt::BottomRightCorner, Qt::RightDockWidgetArea );
-  // add to the Panel submenu
-  mPanelMenu->addAction( thepDockWidget->toggleViewAction() );
-
-  thepDockWidget->show();
-
-  // refresh the map canvas
-  refreshMapCanvas();
+  QgsGuiUtils::addDockWidget( this, area, dockWidget );
 }
 
 void QgisApp::removeDockWidget( QDockWidget *thepDockWidget )
@@ -4743,6 +4772,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   mapCanvas->setObjectName( name );
   mapCanvas->setProject( QgsProject::instance() );
   mapCanvas->setStatusBar( mStatusBar );
+  mapCanvas->setMessageBar( mInfoBar );
 
   connect( mapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   connect( mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::canvasLayersChanged, mapCanvas, &QgsMapCanvas::setLayers );
@@ -5161,7 +5191,7 @@ void QgisApp::createMapTips()
   // set the delay to 0.850 seconds or time defined in the Settings
   // timer will be started next time the mouse moves
   QgsSettings settings;
-  int timerInterval = settings.value( u"qgis/mapTipsDelay"_s, 850 ).toInt();
+  int timerInterval = settingsMapTipsDelay->value();
   mpMapTipsTimer->setInterval( timerInterval );
   mpMapTipsTimer->setSingleShot( true );
 
@@ -5449,7 +5479,7 @@ void QgisApp::updateProjectFromTemplates()
   }
 
   // add <blank> entry, which loads a blank template (regardless of "default template")
-  if ( settings.value( u"qgis/newProjectDefault"_s, QVariant( false ) ).toBool() )
+  if ( settingsNewProjectDefault->value() )
     mProjectFromTemplateMenu->addAction( tr( "< Blank >" ) );
 }
 
@@ -5675,7 +5705,13 @@ QString QgisApp::getVersionString()
   // postgres
   versionString += u"<td>%1</td><td>"_s.arg( tr( "PostgreSQL client version" ) );
 #ifdef HAVE_POSTGRESQL
-  versionString += QStringLiteral( POSTGRESQL_VERSION );
+  const QString libpqVersionCompiled { POSTGRESQL_VERSION };
+  const QString libpqVersionRunning { u"%1.%2"_s.arg( PQlibVersion() / 10000 ).arg( PQlibVersion() / 10000 >= 10 ? PQlibVersion() % 10000 : PQlibVersion() / 100 % 100 ) };
+  versionString += libpqVersionCompiled;
+  if ( libpqVersionCompiled != libpqVersionRunning )
+  {
+    versionString += u" (%1)<br/>%2 (%3)"_s.arg( compLabel, libpqVersionRunning, runLabel );
+  }
 #else
   versionString += tr( "No support" );
 #endif
@@ -5729,7 +5765,9 @@ QString QgisApp::getVersionString()
 void QgisApp::setCustomization( std::unique_ptr<QgsCustomization> customization )
 {
   mCustomization = std::move( customization );
-  mCustomization->setQgisApp( this );
+
+  if ( mCustomization )
+    mCustomization->setQgisApp( this );
 }
 
 QgsCustomization *QgisApp::customization() const
@@ -5951,10 +5989,10 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // don't open template if last auto-opening of a project failed
   if ( !forceBlank )
   {
-    forceBlank = !settings.value( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) ).toBool();
+    forceBlank = !settingsProjOpenedOKAtLaunch->value();
   }
 
-  if ( !forceBlank && settings.value( u"qgis/newProjectDefault"_s, QVariant( false ) ).toBool() )
+  if ( !forceBlank && settingsNewProjectDefault->value() )
   {
     fileNewFromDefaultTemplate();
   }
@@ -6064,11 +6102,11 @@ void QgisApp::fileOpenAfterLaunch()
   }
   if ( mProjOpen == 2 ) // specific project
   {
-    projPath = settings.value( u"qgis/projOpenAtLaunchPath"_s ).toString();
+    projPath = settingsProjOpenAtLaunchPath->value();
   }
 
   // whether last auto-opening of a project failed
-  bool projOpenedOK = settings.value( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) ).toBool();
+  bool projOpenedOK = settingsProjOpenedOKAtLaunch->value();
 
   // notify user if last attempt at auto-opening a project failed
 
@@ -6080,10 +6118,10 @@ void QgisApp::fileOpenAfterLaunch()
   if ( !projOpenedOK )
   {
     // only show the following 'auto-open project failed' message once, at launch
-    settings.setValue( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) );
+    settingsProjOpenedOKAtLaunch->setValue( true );
 
     // set auto-open project back to 'New' to avoid re-opening bad project
-    settings.setValue( u"qgis/projOpenAtLaunch"_s, QVariant( 0 ) );
+    settingsProjOpenAtLaunch->setValue( 0 );
 
     visibleMessageBar()->pushMessage( autoOpenMsgTitle, tr( "Failed to open: %1" ).arg( projPath ), Qgis::MessageLevel::Critical );
     return;
@@ -6092,7 +6130,7 @@ void QgisApp::fileOpenAfterLaunch()
   if ( mProjOpen == 3 ) // new project
   {
     // open default template, if defined
-    if ( settings.value( u"qgis/newProjectDefault"_s, QVariant( false ) ).toBool() )
+    if ( settingsNewProjectDefault->value() )
     {
       fileNewFromDefaultTemplate();
     }
@@ -6116,7 +6154,7 @@ void QgisApp::fileOpenAfterLaunch()
   if ( projectIsFromStorage || QFile::exists( projPath ) )
   {
     // set flag to check on next app launch if the following project opened OK
-    settings.setValue( u"qgis/projOpenedOKAtLaunch"_s, QVariant( false ) );
+    settingsProjOpenedOKAtLaunch->setValue( false );
 
     if ( !addProject( projPath ) )
     {
@@ -6136,8 +6174,7 @@ void QgisApp::fileOpenAfterLaunch()
 
 void QgisApp::fileOpenedOKAfterLaunch()
 {
-  QgsSettings settings;
-  settings.setValue( u"qgis/projOpenedOKAtLaunch"_s, QVariant( true ) );
+  settingsProjOpenedOKAtLaunch->setValue( true );
 }
 
 void QgisApp::fileNewFromTemplateAction( QAction *qAction )
@@ -6860,6 +6897,7 @@ void QgisApp::dxfExport()
 
     QgsMapSettings settings( mapCanvas()->mapSettings() );
     settings.setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( d.mapTheme() ) );
+
     dxfExport.setMapSettings( settings );
     dxfExport.addLayers( d.layers() );
     dxfExport.setSymbologyScale( d.symbologyScale() );
@@ -7012,7 +7050,7 @@ void QgisApp::runScript( const QString &filePath )
     return;
 
   QgsSettings settings;
-  bool showScriptWarning = settings.value( u"UI/showScriptWarning"_s, true ).toBool();
+  bool showScriptWarning = settingsShowScriptWarning->value();
 
   QMessageBox msgbox;
   if ( showScriptWarning )
@@ -7026,7 +7064,7 @@ void QgisApp::runScript( const QString &filePath )
     QCheckBox *cb = new QCheckBox( tr( "Don't show this again." ) );
     msgbox.setCheckBox( cb );
     msgbox.exec();
-    settings.setValue( u"UI/showScriptWarning"_s, !msgbox.checkBox()->isChecked() );
+    settingsShowScriptWarning->setValue( !msgbox.checkBox()->isChecked() );
   }
 
   if ( !showScriptWarning || msgbox.result() == QMessageBox::Yes )
@@ -10725,7 +10763,7 @@ void QgisApp::toggleMapTips( bool enabled )
 {
   mMapTipsVisible = enabled;
   // Store if maptips are active
-  QgsSettings().setValue( u"/qgis/enableMapTips"_s, mMapTipsVisible );
+  QgisApp::settingsMapTipsEnabled->setValue( mMapTipsVisible );
 
   // if off, stop the timer
   if ( !mMapTipsVisible )
@@ -12367,12 +12405,15 @@ void QgisApp::legendGroupSetWmsData()
 
   QgsGroupWmsDataDialog dlg( *currentGroup->serverProperties(), this );
   dlg.setHasTimeDimension( currentGroup->hasWmsTimeDimension() );
-  if ( dlg.exec() && ( *dlg.serverProperties() != *currentGroup->serverProperties() || dlg.hasTimeDimension() != currentGroup->hasWmsTimeDimension() ) )
+  dlg.setGroupRequestMode( currentGroup->wmsGroupRequestMode() );
+  if ( dlg.exec()
+       && ( *dlg.serverProperties() != *currentGroup->serverProperties() || dlg.hasTimeDimension() != currentGroup->hasWmsTimeDimension() || dlg.groupRequestMode() != currentGroup->wmsGroupRequestMode() ) )
   {
     QgsProject::instance()->setDirty( true );
 
     dlg.serverProperties()->copyTo( currentGroup->serverProperties() );
     currentGroup->setHasWmsTimeDimension( dlg.hasTimeDimension() );
+    currentGroup->setWmsGroupRequestMode( dlg.groupRequestMode() );
   }
 }
 
@@ -12381,13 +12422,15 @@ void QgisApp::zoomToLayerExtent()
   mLayerTreeView->defaultActions()->zoomToLayers( mMapCanvas );
 }
 
-void QgisApp::showPluginManager( int tabIndex )
+void QgisApp::showPluginManager( int tabIndex, const QString &searchTerm )
 {
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
+    QString escapedSearchTerm = searchTerm;
+    escapedSearchTerm = escapedSearchTerm.replace( '\'', "\\'" );
     // Call pluginManagerInterface()->showPluginManager() as soon as the plugin installer says the remote data is fetched.
-    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady(%1)"_s.arg( tabIndex ) );
+    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady(%1%2)"_s.arg( tabIndex ).arg( escapedSearchTerm.isEmpty() ? QString() : u", '%1'"_s.arg( escapedSearchTerm ) ) );
   }
   else
 #endif
@@ -12610,7 +12653,7 @@ void QgisApp::customize()
 
   if ( !mCustomizationDialog )
   {
-    mCustomizationDialog.reset( new QgsCustomizationDialog( this ) );
+    mCustomizationDialog = make_qobject_unique<QgsCustomizationDialog>( this );
   }
 
   mCustomizationDialog->show();
@@ -12803,6 +12846,12 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     for ( Qgs3DMapCanvasWidget *canvas3D : std::as_const( mOpen3DMapViews ) )
     {
       canvas3D->measurementLineTool()->updateSettings();
+      canvas3D->mapCanvas3D()->mapSettings()->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
+      canvas3D->mapCanvas3D()->mapSettings()->setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
+
+      QgsShadowSettings shadowSettings = canvas3D->mapCanvas3D()->mapSettings()->shadowSettings();
+      shadowSettings.setShadowQuality( Qgs3D::settingShadowQuality->value() );
+      canvas3D->mapCanvas3D()->mapSettings()->setShadowSettings( shadowSettings );
     }
 #endif
 
@@ -13430,7 +13479,6 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
     connect( profileWidget, &QgsElevationProfileWidget::profileDataChanged, widget, &Qgs3DMapCanvasWidget::setProfileData );
     connect( profileWidget, &QgsElevationProfileWidget::profileDataRemoved, widget, &Qgs3DMapCanvasWidget::removeProfileData );
     connect( profileWidget, &QgsElevationProfileWidget::profileCursorMoved, widget, &Qgs3DMapCanvasWidget::updateProfileCursorPosition );
-    profileWidget->updateCurveIn3D();
   }
 
   return widget;
@@ -13554,9 +13602,14 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     map->setCameraNavigationMode( defaultNavMode );
 
     map->setCameraMovementSpeed( settings.value( u"map3d/defaultMovementSpeed"_s, 5, QgsSettings::App ).toDouble() );
-    const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
+    const Qgis::Map3DProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qgis::Map3DProjectionType::Perspective, QgsSettings::App );
     map->setProjectionType( defaultProjection );
     map->setFieldOfView( settings.value( u"map3d/defaultFieldOfView"_s, 45, QgsSettings::App ).toInt() );
+    map->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
+    map->setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
+    QgsShadowSettings shadowSettings = map->shadowSettings();
+    shadowSettings.setShadowQuality( Qgs3D::settingShadowQuality->value() );
+    map->setShadowSettings( shadowSettings );
 
     map->setTransformContext( QgsProject::instance()->transformContext() );
     map->setPathResolver( QgsProject::instance()->pathResolver() );
@@ -13608,13 +13661,25 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     }
 
     // new scenes default to a single directional light
-    map->setLightSources( QList<QgsLightSource *>() << new QgsDirectionalLightSettings() );
+    auto directionalLight = std::make_unique< QgsDirectionalLightSettings >();
+    const QString lightId = directionalLight->id();
+    map->setLightSources( { directionalLight.release() } );
+    // set this light to be the default shadow source, but don't enable shadows by default
+    QgsShadowSettings shadow = map->shadowSettings();
+    shadow.setLightSource( lightId );
+    map->setShadowSettings( shadow );
+
     map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
     map->setRendererUsage( Qgis::RendererUsage::View );
 
     connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map] { map->setTransformContext( QgsProject::instance()->transformContext() ); } );
 
     canvasWidget->setMapSettings( map );
+
+    for ( QgsElevationProfileWidget *profileWidget : std::as_const( mElevationProfileWidgets ) )
+    {
+      profileWidget->updateCurveIn3D();
+    }
 
     // configure initial position of the camera (it should approximate the current 2D view)
     switch ( sceneMode )
@@ -13658,9 +13723,11 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
       }
     }
 
-    const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
-    if ( canvasWidget->mapCanvas3D()->cameraController() )
-      canvasWidget->mapCanvas3D()->cameraController()->setVerticalAxisInversion( axisInversion );
+    if ( QgsCameraController *cameraController = canvasWidget->mapCanvas3D()->cameraController() )
+    {
+      const Qgis::VerticalAxisInversionFlags axisInversion = settings.flagValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversionFlags(), QgsSettings::App );
+      cameraController->setVerticalAxisInversion( axisInversion );
+    }
 
     QDomImplementation DomImplementation;
     QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
@@ -13727,7 +13794,7 @@ bool QgisApp::saveDirty()
   QgsCanvasRefreshBlocker refreshBlocker;
 
   QgsSettings settings;
-  bool askThem = settings.value( u"qgis/askToSaveProjectChanges"_s, true ).toBool();
+  bool askThem = settingsAskToSaveProjectChanges->value();
 
   if ( askThem && QgsProject::instance()->isDirty() )
   {
@@ -14691,16 +14758,65 @@ void QgisApp::updateCrsStatusBar()
   const QgsCoordinateReferenceSystem projectCrs = QgsProject::instance()->crs();
   if ( projectCrs.isValid() )
   {
+    mOnTheFlyProjectionStatusButton->setMenu( nullptr );
+
+    double lat = 0.0, lon = 0.0;
+    const bool isTopocentric = projectCrs.topocentricOrigin( lat, lon );
+
     if ( !projectCrs.authid().isEmpty() )
       mOnTheFlyProjectionStatusButton->setText( projectCrs.authid() );
+    else if ( isTopocentric )
+      mOnTheFlyProjectionStatusButton->setText( tr( "Topocentric" ) );
     else
       mOnTheFlyProjectionStatusButton->setText( tr( "Unknown CRS" ) );
 
     mOnTheFlyProjectionStatusButton->setToolTip( tr( "Current CRS: %1" ).arg( projectCrs.userFriendlyIdentifier() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( u"mIconProjectionEnabled.svg"_s ) );
+
+    if ( isTopocentric )
+    {
+      if ( !mTopocentricMenu )
+      {
+        mTopocentricMenu = new QMenu( mOnTheFlyProjectionStatusButton );
+        mTopocentricWidget = new QgsTopocentricWidget( mTopocentricMenu );
+        QWidgetAction *wa = new QWidgetAction( mTopocentricMenu );
+        wa->setDefaultWidget( mTopocentricWidget );
+        mTopocentricMenu->addAction( wa );
+
+        connect( mTopocentricWidget, &QgsTopocentricWidget::originChanged, this, [this]( double latitude, double longitude ) {
+          const QgsCoordinateReferenceSystem newCrs = QgsProject::instance()->crs().toTopocentricCrs( latitude, longitude );
+
+          if ( !newCrs.isValid() )
+            return;
+
+          const QgsRectangle savedExtent = mMapCanvas->extent();
+          mMapCanvas->freeze( true );
+          QgsProject::instance()->setCrs( newCrs );
+          mMapCanvas->setExtent( savedExtent );
+          mMapCanvas->freeze( false );
+          mMapCanvas->redrawAllLayers(); // this is necessary because the map doesn't always refresh automatically on topocentric crs change
+        } );
+      }
+
+      const QgsRectangle topoBaseCrsBounds = projectCrs.topocentricBaseCrs().bounds();
+      const double defaultLat = ( topoBaseCrsBounds.yMinimum() + topoBaseCrsBounds.yMaximum() ) / 2.0;
+      const double defaultLon = ( topoBaseCrsBounds.xMinimum() + topoBaseCrsBounds.xMaximum() ) / 2.0;
+      mTopocentricWidget->setDefaultOrigin( defaultLat, defaultLon );
+      mTopocentricWidget->setLatitude( lat );
+      mTopocentricWidget->setLongitude( lon );
+      mOnTheFlyProjectionStatusButton->setMenu( mTopocentricMenu );
+      mOnTheFlyProjectionStatusButton->setPopupMode( QToolButton::MenuButtonPopup );
+    }
+    else
+    {
+      mOnTheFlyProjectionStatusButton->setPopupMode( QToolButton::InstantPopup );
+    }
   }
   else
   {
+    mOnTheFlyProjectionStatusButton->setMenu( nullptr );
+    mOnTheFlyProjectionStatusButton->setPopupMode( QToolButton::InstantPopup );
+
     mOnTheFlyProjectionStatusButton->setText( QString() );
     mOnTheFlyProjectionStatusButton->setToolTip( tr( "No projection" ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( u"mIconProjectionDisabled.svg"_s ) );
@@ -16406,7 +16522,7 @@ void QgisApp::projectVersionMismatchOccurred( const QString &projectVersion )
   {
     QgsSettings settings;
 
-    if ( settings.value( u"qgis/warnOldProjectVersion"_s, QVariant( true ) ).toBool() )
+    if ( settingsWarnOldProjectVersion->value() )
     {
       QString smalltext = tr(
                             "This project file was saved by QGIS version %1."
@@ -16508,6 +16624,11 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
   map->setSelectionColor( mMapCanvas->selectionColor() );
   map->setBackgroundColor( mMapCanvas->canvasColor() );
   map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
+  map->setMsaaEnabled( Qgs3D::settingMsaaEnabled->value() );
+  map->setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
+  QgsShadowSettings shadowSettings = map->shadowSettings();
+  shadowSettings.setShadowQuality( Qgs3D::settingShadowQuality->value() );
+  map->setShadowSettings( shadowSettings );
 
   QgsVector3D savedOrigin = map->origin();
 
@@ -17585,86 +17706,7 @@ void QgisApp::triggerCrashHandler()
 
 void QgisApp::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockWidget, const QStringList &tabifyWith, bool raiseTab )
 {
-  QList<QDockWidget *> dockWidgetsInArea;
-  const QList<QDockWidget *> allDockWidgets = findChildren<QDockWidget *>();
-  for ( QDockWidget *w : allDockWidgets )
-  {
-    if ( w->isVisible() && dockWidgetArea( w ) == area )
-    {
-      dockWidgetsInArea << w;
-    }
-  }
-
-  addDockWidget( area, dockWidget ); // First add the dock widget, then attempt to tabify
-  if ( dockWidgetsInArea.empty() )
-    return;
-
-  // Get the base dock widget that we'll use to tabify our new dockWidget
-  QDockWidget *tabifyWithDockWidget = nullptr;
-  for ( const QString &targetName : tabifyWith )
-  {
-    auto it = std::find_if( dockWidgetsInArea.begin(), dockWidgetsInArea.end(), [&targetName]( QDockWidget *cw ) {
-      return cw->objectName() == targetName || cw->property( "dock_uuid" ).toString() == targetName;
-    } );
-
-    if ( it != dockWidgetsInArea.end() )
-    {
-      tabifyWithDockWidget = *it;
-      break;
-    }
-  }
-
-  if ( !tabifyWithDockWidget )
-  {
-    // fallback to the first available dock widget if no matches were found, or if no tabifyWith names were specified
-    tabifyWithDockWidget = dockWidgetsInArea.at( 0 );
-  }
-  if ( tabifyWithDockWidget == dockWidget )
-    return;
-
-  // find the currently active dock widget so that we can restore that if we're not raising the new tab
-  QTabBar *existingTabBar = nullptr;
-  int currentTabIndex = -1;
-  if ( !raiseTab && dockWidgetsInArea.length() > 1 )
-  {
-    // Chances are we've already got a tabBar, if so, get
-    // currentTabIndex to restore status after inserting our new tab
-    const QList<QTabBar *> tabBars = findChildren<QTabBar *>( QString(), Qt::FindDirectChildrenOnly );
-    bool tabBarFound = false;
-    for ( QTabBar *tabBar : tabBars )
-    {
-      for ( int i = 0; i < tabBar->count(); i++ )
-      {
-        if ( tabBar->tabText( i ) == tabifyWithDockWidget->windowTitle() )
-        {
-          existingTabBar = tabBar;
-          currentTabIndex = tabBar->currentIndex();
-          tabBarFound = true;
-          break;
-        }
-      }
-      if ( tabBarFound )
-      {
-        break;
-      }
-    }
-  }
-
-  // Now we can put the new dockWidget on top of tabifyWith
-  tabifyDockWidget( tabifyWithDockWidget, dockWidget );
-
-  // Should we restore dock widgets status?
-  if ( !raiseTab )
-  {
-    if ( existingTabBar )
-    {
-      existingTabBar->setCurrentIndex( currentTabIndex );
-    }
-    else
-    {
-      tabifyWithDockWidget->raise(); // Single base dock widget, we can just raise it
-    }
-  }
+  QgsGuiUtils::addTabifiedDockWidget( this, area, dockWidget, tabifyWith, raiseTab );
 }
 
 QgsAttributeEditorContext QgisApp::createAttributeEditorContext()

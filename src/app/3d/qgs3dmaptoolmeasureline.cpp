@@ -43,7 +43,7 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvasWidget *canvasWi
   : Qgs3DMapTool( canvasWidget->mapCanvas3D() )
 {
   // Dialog
-  mDialog.reset( new Qgs3DMeasureDialog( this, canvasWidget ) );
+  mDialog = make_qobject_unique<Qgs3DMeasureDialog>( this, canvasWidget );
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
   mDialog->restorePosition();
 }
@@ -147,8 +147,11 @@ void Qgs3DMapToolMeasureLine::restart()
   mDone = false;
   mDialog->resetTable();
 
-  mRubberBand->reset();
-  mRubberBand->setHideLastMarker( true );
+  if ( mRubberBand )
+  {
+    mRubberBand->reset();
+    mRubberBand->setHideLastMarker( true );
+  }
 }
 
 void Qgs3DMapToolMeasureLine::undo()

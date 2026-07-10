@@ -18,6 +18,7 @@
 #ifndef QGS_WFS3_HANDLERS_H
 #define QGS_WFS3_HANDLERS_H
 
+#include "qgscoordinatereferencesystem.h"
 #include "qgsfields.h"
 #include "qgsserverogcapihandler.h"
 
@@ -28,6 +29,7 @@ using namespace Qt::StringLiterals;
 class QgsFeatureRequest;
 class QgsServerOgcApi;
 class QgsFeature;
+class QgsMapLayer;
 
 /**
  * The QgsWfs3AbstractItemsHandler class provides some
@@ -45,7 +47,7 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * \param context the server api context
      * \throws QgsServerApiNotFoundException if the layer is NOT published
      */
-    void checkLayerIsAccessible( QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+    static void checkLayerIsAccessible( QgsVectorLayer *layer, const QgsServerApiContext &context );
 
     /**
      * Creates a filtered QgsFeatureRequest containing only fields published for WFS and plugin filters applied.
@@ -62,7 +64,15 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * \param context the server api context
      * \return QgsFields list with filters applied
      */
-    QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+    static QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context );
+
+    /**
+     * Adds the information about the available fields as a json object, to be used in the schema operation.
+     * \param data the json object to be filled with the fields information
+     * \param layer the vector layer
+     * \param context the server api context
+     */
+    void gatherLayerFieldsInfo( json &data, const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
 
     /**
      * Returns the HTML template path for the handler in the given \a context
@@ -94,6 +104,65 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * but does not check if the user has permissions to edit the layer, as this is expected to be handled by plugins.
      */
     bool canUpdateFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Removes the 'offset' and 'limit' query parameters from the given \a urlQuery ignoring case,
+     * and returns the modified query. If \a removeProfile is TRUE, also the 'profile' query parameter is removed.
+     */
+    static QUrlQuery removeOffsetAndLimit( const QUrlQuery &urlQuery, bool removeProfile = false );
+
+    /**
+     * Returns TRUE if the given \a crs is published in the WFS service in the given \a apiContext, FALSE otherwise.
+     */
+    static bool crsIsPublished( const QgsCoordinateReferenceSystem &crs, const QgsServerApiContext &context );
+
+
+  protected:
+    /**
+     * Referenced layer information from ValueRelation and RelationReference widgets
+     */
+    struct ReferencedLayerInfo
+    {
+        const QgsVectorLayer *referencedLayer;   //!< The referenced layer
+        QString referencingFieldOapifIdentifier; //!< The OAPIF name of the field in the referencing layer that contains the reference to the other layer (compound primary keys are not supported)
+        int referencingFieldIdx = -1;            //!< The index of the referencing field in the referencing layer
+        QString referencedLayerOapifIdentifier;  //!< The name used by OAPIF to identify the referenced layer (collectionId)
+        QString referencedFieldOapifIdentifier;  //!< The OAPIF name of the field in the referenced layer that is used as a primary key (compounf primary keys are not supported)
+        bool valueIsPk;                          //!< True if the referenced field is a primary key of the referenced layer, false otherwise
+        QString referencingFieldComment;         //!< The comment of the referencing field (if available), to be used in the description of the reference
+    };
+
+    /**
+     * Returns the information about the referenced layers for the given \a mapLayer and \a apiContext.
+     * The returned map has as key the index of the field in the \a mapLayer that contains the reference to the other layer, and as value a ReferencedLayerInfo struct with the information about the referenced layer.
+     * Unpublished fields or referenced layers are not returned as well as relations using compound primary keys (i.e. referencing multiple fields) or referencing fields that are not a primary key of the referenced layer.
+     */
+    QMap<int, ReferencedLayerInfo> gatherReferencedLayerInfo( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Returns the name used by OAPIF to identify the collection
+     * \throw QgsServerApiImproperlyConfiguredException if referenced layer is not found
+     */
+    QString referencedLayerIdentifier( const QgsVectorLayer *mapLayer, int fieldIdx, const QgsServerApiContext &context, QString *referencedLayerTitle = nullptr ) const;
+
+    /**
+     * Creates the link to the referenced feature to be set in the referencing feature JSON
+     */
+    json relatedFeatureReference( const QVariant &referencedFeatureValue, const ReferencedLayerInfo &referencedInfo, QgsServerOgcApi::Profile relAs, const QgsServerApiContext &context ) const;
+
+    /**
+     * Returns the URI to the feature(s) given the collection ID and the field values, it may return a
+     * direct link to the feature if the collection has a unique key or it may return a link to the
+     * items endpoint with filters on the field values.
+     * Note that the field names in fieldValueMap should be the field names as defined in the collection schema,
+     * not necessarily the same as the field names in the underlying data source.
+     * If valueMap contains a single "id" field name and there is no such a fieldName in the layer, this is considered the
+     * unique identifier of the feature and the URI to the feature will be returned using the "id" value, otherwise a link
+     * to the items endpoint with filters on the field values will be returned.
+     */
+    static QString uri(
+      const QString &collectionId, const QMap<QString, QVariant> &fieldValueMap, const QgsServerApiContext &context, QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON
+    );
 };
 
 /**
@@ -134,7 +203,7 @@ class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
     QRegularExpression path() const override { return QRegularExpression( R"re((.html|.json)?$)re" ); }
     std::string operationId() const override { return "getLandingPage"; }
     QStringList tags() const override { return { u"Capabilities"_s }; }
-    std::string summary() const override { return "WFS 3.0 Landing Page"; }
+    std::string summary() const override { return "OGC API Landing Page"; }
     std::string description() const override
     {
       return "The landing page provides links to the API definition, the Conformance "
@@ -162,11 +231,11 @@ class QgsWfs3ConformanceHandler : public QgsServerOgcApiHandler
     std::string summary() const override { return "Information about standards that this API conforms to."; }
     std::string description() const override
     {
-      return "List all requirements classes specified in a standard (e.g., WFS 3.0 "
+      return "List all requirements classes specified in a standard (e.g., OGCAPI Features 1.0 "
              "Part 1: Core) that the server conforms to.";
     }
     QStringList tags() const override { return { u"Capabilities"_s }; }
-    std::string linkTitle() const override { return "WFS 3.0 conformance classes"; }
+    std::string linkTitle() const override { return "Conformance classes"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::conformance; }
     json schema( const QgsServerApiContext &context ) const override;
     const QString templatePath( const QgsServerApiContext &context ) const override;
@@ -221,14 +290,14 @@ class QgsWfs3DescribeCollectionHandler : public QgsWfs3AbstractItemsHandler
 
 /**
  * The CollectionsItemsHandler list all items in the collection
- * Path: /collections/{collectionId}
+ * Path: /collections/{collectionId}/items
  */
 class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
 {
   public:
     QgsWfs3CollectionsItemsHandler();
     void handleRequest( const QgsServerApiContext &context ) const override;
-    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items(\.geojson|\.json|\.html|/)?$)re" ); }
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items(\.geojson|\.json|\.html|\.fgb|/)?$)re" ); }
     std::string operationId() const override { return "getFeatures"; }
     std::string summary() const override { return "Retrieve features of feature collection {collectionId}."; }
     std::string description() const override
@@ -237,7 +306,7 @@ class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
              "consist of multiple feature collections. A feature collection is often a "
              "collection of features of a similar type, based on a common schema. "
              "Use content negotiation or specify a file extension to request HTML (.html) "
-             "or GeoJSON (.json).";
+             "GeoJSON (.json) or FlatGeobuf (.fgb).";
     }
     std::string linkTitle() const override { return "Retrieve the features of the collection"; }
     QStringList tags() const override { return { u"Features"_s }; }
@@ -246,8 +315,42 @@ class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
     json schema( const QgsServerApiContext &context ) const override;
 
   private:
+    struct ExportContext
+    {
+        qlonglong limit = -1;
+        qlonglong offset = 0;
+        QgsStringMap attrFilters;
+        QString filterExpression;
+        QgsRectangle filterRect;
+    };
+
     // Retrieve the fields filter parameters
     const QList<QgsServerQueryStringParameter> fieldParameters( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
+
+    // Json output
+    void writeJsonOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &context, const ExportContext &exportContext ) const;
+
+    // FlatGeobuf output
+    void writeFlatGeobufOutput( const QgsVectorLayer *mapLayer, QgsFeatureRequest &featureRequest, const QgsServerApiContext &context, const ExportContext &exportContext ) const;
+};
+
+/**
+ * The CollectionsSchemaHandler returns the JSON schema of the collection
+ * Path: /collections/{collectionId}/schema
+ */
+class QgsWfs3CollectionsSchemaHandler : public QgsWfs3AbstractItemsHandler
+{
+  public:
+    QgsWfs3CollectionsSchemaHandler();
+    void handleRequest( const QgsServerApiContext &context ) const override;
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/schema(\.json|\.html|/)?$)re" ); }
+    std::string operationId() const override { return "getCollectionSchema"; }
+    std::string description() const override { return "Return the JSON schema of the collection with ID {collectionId}."; }
+    std::string summary() const override { return "Return the JSON schema of the collection with ID {collectionId}."; }
+    std::string linkTitle() const override { return "Collection schema"; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
+    QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::schema; }
+    json schema( const QgsServerApiContext &context ) const override;
 };
 
 
@@ -256,17 +359,19 @@ class QgsWfs3CollectionsFeatureHandler : public QgsWfs3AbstractItemsHandler
   public:
     QgsWfs3CollectionsFeatureHandler();
     void handleRequest( const QgsServerApiContext &context ) const override;
-    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html|/)?$)re" ); }
+    QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html|\.fgb|/)?$)re" ); }
     std::string operationId() const override { return "getFeature"; }
     std::string description() const override
     {
-      return "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json).";
+      return "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html), GeoJSON (.json) or "
+             "FlatGeobuf (.fgb).";
     }
     std::string summary() const override { return "Retrieve a single feature with ID {featureId} from the collection with ID {collectionId}."; }
     std::string linkTitle() const override { return "Retrieve a feature"; }
     QStringList tags() const override { return { u"Features"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     json schema( const QgsServerApiContext &context ) const override;
+    QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &apiContext ) const override;
 };
 
 

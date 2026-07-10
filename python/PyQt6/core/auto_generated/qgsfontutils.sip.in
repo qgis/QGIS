@@ -10,6 +10,7 @@
 
 
 
+
 class QgsFontUtils
 {
 %Docstring(signature="appended")
@@ -258,6 +259,7 @@ Applies some workarounds for specific font quirks.
 
 .. versionadded:: 3.34
 %End
+
 };
 
 

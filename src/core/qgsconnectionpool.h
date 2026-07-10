@@ -105,22 +105,12 @@ template<typename T> class QgsConnectionPoolGroup
       QgsDebugMsgLevel( u"Trying to acquire connection"_s, 2 );
       const int requiredFreeConnectionCount = requestMayBeNested ? 1 : 3;
       // we are going to acquire a resource - if no resource is available, we will block here
-      if ( timeout >= 0 )
+      if ( !sem.tryAcquire( requiredFreeConnectionCount, QDeadlineTimer( timeout ) ) )
       {
-        if ( !sem.tryAcquire( requiredFreeConnectionCount, timeout ) )
-        {
-          QgsDebugMsgLevel( u"Failed to acquire semaphore"_s, 2 );
-          return nullptr;
-        }
+        QgsDebugMsgLevel( u"Failed to acquire semaphore"_s, 2 );
+        return nullptr;
       }
-      else
-      {
-        // we should still be able to use tryAcquire with a negative timeout here, but
-        // tryAcquire is broken on Qt > 5.8 with negative timeouts - see
-        // https://bugreports.qt.io/browse/QTBUG-64413
-        // https://lists.osgeo.org/pipermail/qgis-developer/2017-November/050456.html
-        sem.acquire( requiredFreeConnectionCount );
-      }
+
       sem.release( requiredFreeConnectionCount - 1 );
 
       // quick (preferred) way - use cached connection

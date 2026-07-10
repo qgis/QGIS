@@ -38,6 +38,7 @@ using namespace Qt::StringLiterals;
 QgsMapSettings::QgsMapSettings()
   : mDpi( QgsPainting::qtDefaultDpiX() ) // DPI that will be used by default for QImage instances
   , mSize( QSize( 0, 0 ) )
+  , mEllipsoid( Qgis::geoNone() )
   , mBackgroundColor( Qt::white )
   , mSelectionColor( Qt::yellow )
   , mFlags( Qgis::MapSettingsFlag::Antialiasing | Qgis::MapSettingsFlag::UseAdvancedEffects | Qgis::MapSettingsFlag::DrawLabeling | Qgis::MapSettingsFlag::DrawSelection )

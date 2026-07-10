@@ -52,6 +52,10 @@ class CORE_EXPORT QgsNullMaterialSettings : public QgsAbstractMaterialSettings
 
     QgsNullMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;
+
+    QColor averageColor() const override;
+
+    void setColorsFromBase( const QColor &baseColor ) override;
 };
 
 

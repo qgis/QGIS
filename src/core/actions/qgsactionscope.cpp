@@ -78,9 +78,9 @@ void QgsActionScope::setDescription( const QString &description )
   mDescription = description;
 }
 
-uint qHash( const QgsActionScope &key, uint seed )
+size_t qHash( const QgsActionScope &key, size_t seed )
 {
-  uint hash = seed;
+  size_t hash = seed;
 
   hash |= qHash( key.expressionContextScope().variableNames().join( ',' ), seed );
   hash |= qHash( key.id(), seed );

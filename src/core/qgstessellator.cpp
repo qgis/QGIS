@@ -555,7 +555,7 @@ QVector3D QgsTessellator::applyTransformWithExtrusion( const QVector3D point, fl
 }
 
 
-void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2> *, float> *zHash )
+void ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, std::vector<double> *zValues )
 {
   const int pCount = ring->numPoints();
 
@@ -568,16 +568,16 @@ void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<
   // earcut handles duplicates, we do not need to remove them here
   for ( int i = 0; i < pCount - 1; ++i )
   {
-    const float x = static_cast<float>( *srcXData++ );
-    const float y = static_cast<float>( *srcYData++ );
+    const double x = *srcXData++;
+    const double y = *srcYData++;
 
     std::array<double, 2> pt = { x, y };
     polyline.push_back( pt );
+  }
 
-    if ( zHash && srcZData )
-    {
-      ( *zHash )[&pt] = *srcZData++;
-    }
+  if ( zValues && srcZData )
+  {
+    zValues->insert( zValues->end(), srcZData, srcZData + pCount - 1 );
   }
 }
 
@@ -626,21 +626,32 @@ std::vector<QVector3D> QgsTessellator::generateConstrainedDelaunayTriangles( con
 
 std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon *polygonNew )
 {
-  QHash<std::array<double, 2> *, float> z;
-  std::vector<std::vector<std::array<double, 2>>> rings;
-  std::vector<std::array<double, 2>> polyline;
+  const bool useZValues = !mInputZValueIgnored && polygonNew->is3D();
+  const int allVerticesCount = polygonNew->nCoordinates();
+  std::vector<double> zValues;
 
-  ringToEarcutPoints( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, mInputZValueIgnored ? nullptr : &z );
-  rings.push_back( polyline );
+  if ( useZValues )
+    zValues.reserve( allVerticesCount );
+
+  std::vector<std::vector<std::array<double, 2>>> rings;
+  rings.reserve( polygonNew->numInteriorRings() + 1 );
+
+  {
+    std::vector<std::array<double, 2>> polyline;
+    ringToEarcutPoints( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, useZValues ? &zValues : nullptr );
+    rings.push_back( std::move( polyline ) );
+  }
 
   for ( int i = 0; i < polygonNew->numInteriorRings(); ++i )
   {
     std::vector<std::array<double, 2>> holePolyline;
-    ringToEarcutPoints( qgsgeometry_cast<const QgsLineString *>( polygonNew->interiorRing( i ) ), holePolyline, mInputZValueIgnored ? nullptr : &z );
-    rings.push_back( holePolyline );
+    ringToEarcutPoints( qgsgeometry_cast<const QgsLineString *>( polygonNew->interiorRing( i ) ), holePolyline, useZValues ? &zValues : nullptr );
+    rings.push_back( std::move( holePolyline ) );
   }
 
   std::vector<std::array<double, 2>> points;
+  points.reserve( allVerticesCount );
+
   for ( const auto &ring : rings )
   {
     points.insert( points.end(), ring.begin(), ring.end() );
@@ -648,19 +659,17 @@ std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon
 
   std::vector<uint32_t> indices = mapbox::earcut<uint32_t>( rings );
   std::vector<QVector3D> trianglePoints;
-  trianglePoints.reserve( points.size() );
+  trianglePoints.reserve( indices.size() );
 
   for ( size_t i = 0; i < indices.size(); i++ )
   {
     uint32_t vertexIndex = indices[i];
-    std::array<double, 2> vertex = points[vertexIndex];
 
-    double x = vertex[0];
-    double y = vertex[1];
+    const float x = static_cast<float>( points[vertexIndex][0] );
+    const float y = static_cast<float>( points[vertexIndex][1] );
+    const float z = static_cast<float>( useZValues ? zValues[vertexIndex] : 0.0 );
 
-    float zValue = z.value( &vertex, 0.0f );
-
-    trianglePoints.emplace_back( x / mScale, y / mScale, zValue );
+    trianglePoints.emplace_back( x / mScale, y / mScale, z );
   }
 
   return trianglePoints;
@@ -772,9 +781,22 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   if ( !mInputZValueIgnored && !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
     return; // this should not happen - pNormal should be normalized to unit length
 
-  const bool buildWalls = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Walls );
-  const bool buildFloor = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Floor );
-  const bool buildRoof = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Roof );
+  bool buildWalls = false;
+  bool buildFloor = false;
+  bool buildRoof = false;
+  if ( qgsDoubleNear( extrusionHeight, 0 ) )
+  {
+    // no extrusion -- if either floor or roof are enabled, we just build the roof. These two surfaces would otherwise
+    // be identical
+    buildRoof = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Floor ) || mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Roof );
+  }
+  else
+  {
+    // extrusion
+    buildWalls = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Walls );
+    buildFloor = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Floor );
+    buildRoof = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Roof );
+  }
 
   if ( buildFloor || buildRoof )
   {
@@ -795,21 +817,24 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       const QVector3D p3( static_cast<float>( triangle->xAt( 2 ) ), static_cast<float>( triangle->yAt( 2 ) ), static_cast<float>( triangle->zAt( 2 ) ) );
       std::array<QVector3D, 3> points = { p1, p2, p3 };
 
-      for ( const QVector3D &point : points )
+      if ( buildRoof )
       {
-        addVertex( point, normal, frontTangent, extrusionHeight, &base, &extrusionOrigin );
-      }
-
-      if ( mAddBackFaces )
-      {
-        for ( size_t i = points.size(); i-- > 0; )
+        for ( const QVector3D &point : points )
         {
-          const QVector3D &point = points[i];
-          addVertex( point, -normal, backTangent, extrusionHeight, &base, &extrusionOrigin );
+          addVertex( point, normal, frontTangent, extrusionHeight, &base, &extrusionOrigin );
+        }
+
+        if ( mAddBackFaces )
+        {
+          for ( size_t i = points.size(); i-- > 0; )
+          {
+            const QVector3D &point = points[i];
+            addVertex( point, -normal, backTangent, extrusionHeight, &base, &extrusionOrigin );
+          }
         }
       }
 
-      if ( extrusionHeight != 0 && buildFloor )
+      if ( buildFloor )
       {
         for ( const QVector3D &point : points )
         {
@@ -885,21 +910,24 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           const std::array<QVector3D, 3> points = { trianglePoints[i + 0], trianglePoints[i + 1], trianglePoints[i + 2] };
 
           // roof
-          for ( const QVector3D &point : points )
+          if ( buildRoof )
           {
-            addVertex( point, normal, frontTangent, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
-          }
-
-          if ( mAddBackFaces )
-          {
-            for ( size_t i = points.size(); i-- > 0; )
+            for ( const QVector3D &point : points )
             {
-              const QVector3D &point = points[i];
-              addVertex( point, -normal, backTangent, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
+              addVertex( point, normal, frontTangent, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
+            }
+
+            if ( mAddBackFaces )
+            {
+              for ( size_t i = points.size(); i-- > 0; )
+              {
+                const QVector3D &point = points[i];
+                addVertex( point, -normal, backTangent, extrusionHeight, &base, &extrusionOrigin, &vertexBuffer, vertexBufferSize );
+              }
             }
           }
 
-          if ( extrusionHeight != 0 && buildFloor )
+          if ( buildFloor )
           {
             for ( const QVector3D &point : points )
             {
@@ -929,7 +957,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   }
 
   // add walls if extrusion is enabled
-  if ( extrusionHeight != 0 && buildWalls )
+  if ( buildWalls )
   {
     makeWalls( *exterior, false, extrusionHeight );
     for ( int i = 0; i < polygon.numInteriorRings(); ++i )

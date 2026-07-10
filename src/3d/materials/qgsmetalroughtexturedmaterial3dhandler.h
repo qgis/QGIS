@@ -43,14 +43,16 @@ class _3D_EXPORT QgsMetalRoughTexturedMaterial3DHandler : public QgsAbstractMate
     QgsMetalRoughTexturedMaterial3DHandler() = default;
 
     QMap<QString, QString> toExportParameters( const QgsAbstractMaterialSettings *settings ) const override;
-    QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
-    void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &materialContext ) const override;
+    QgsMaterial *toMaterial( const QgsAbstractMaterialSettings *settings, Qgis::MaterialRenderingTechnique technique, const QgsMaterialContext &context ) const override;
+    QgsMaterial *toInstancedMaterial(
+      const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context, Qgis::InstancedMaterialFlags flags, const QMatrix4x4 &transform = QMatrix4x4()
+    ) const override;
     bool updatePreviewScene( Qt3DCore::QEntity *sceneRoot, const QgsAbstractMaterialSettings *settings, const QgsMaterialContext &context ) const override;
 
   private:
-    static Qt3DRender::QTexture2D *loadTexture( const QString &path );
+    static Qt3DRender::QTexture2D *loadTexture( const QString &path, bool isSrgb, const QgsMaterialContext &context );
 
-    static void applySettingsToMaterial( const QgsMetalRoughTexturedMaterialSettings *metalRoughTexturedSettings, QgsMetalRoughMaterial *material );
+    static void applySettingsToMaterial( const QgsMetalRoughTexturedMaterialSettings *metalRoughTexturedSettings, QgsMetalRoughMaterial *material, const QgsMaterialContext &context );
 };
 
 

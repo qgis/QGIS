@@ -37,6 +37,7 @@ class QgsLegendSettings;
 class QgsMapSettings;
 class QgsSymbol;
 class QgsRenderContext;
+class QgsSettingsEntryDouble;
 class QgsTextFormat;
 class QgsTextDocument;
 class QgsTextDocumentMetrics;
@@ -181,6 +182,15 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      *  Default implementation does nothing.
     */
     virtual void invalidateMapBasedData() {}
+
+    /**
+     * Invalidates cached display data for the node.
+     *
+     * The default implementation does nothing.
+     *
+     * \since QGIS 4.2
+     */
+    virtual void invalidateDisplayData() {}
 
     struct ItemContext
     {
@@ -408,6 +418,11 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     static double MINIMUM_SIZE;
     static double MAXIMUM_SIZE;
 
+#ifndef SIP_RUN
+    static const QgsSettingsEntryDouble *settingsLegendSymbolMinimumSize SIP_SKIP;
+    static const QgsSettingsEntryDouble *settingsLegendSymbolMaximumSize SIP_SKIP;
+#endif
+
     /**
      * Constructor for QgsSymbolLegendNode.
      * \param nodeLayer layer node
@@ -420,7 +435,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     Qt::ItemFlags flags() const override;
     QVariant data( int role ) const override;
     bool setData( const QVariant &value, int role ) override;
-
+    void invalidateDisplayData() override;
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
     QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
@@ -827,7 +842,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
     ~QgsDataDefinedSizeLegendNode() override;
 
     QVariant data( int role ) const override;
-
+    void invalidateDisplayData() override;
     ItemMetrics draw( const QgsLegendSettings &settings, ItemContext &ctx ) override;
 
 #ifdef SIP_RUN

@@ -48,6 +48,7 @@ Contains configuration settings for an editor form.
       AllProperties,
       Alias,
       Editable,
+      CustomComment,
     };
 
     QgsEditFormConfig( const QgsEditFormConfig &o );

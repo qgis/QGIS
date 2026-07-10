@@ -371,6 +371,8 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
 
     if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
+    else
+      feedback->featureAddedToSink( u"OUTPUT"_s );
 
     if ( feedback )
     {
@@ -381,6 +383,7 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap ret;
   ret[u"OUTPUT"_s] = identifier;
@@ -689,11 +692,16 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
         {
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
         }
+        else
+        {
+          feedback->featureAddedToSink( u"OUTPUT"_s );
+        }
       }
     }
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   QVariantMap ret;
   ret[u"OUTPUT"_s] = identifier;
@@ -824,8 +832,11 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   for ( DataGroup &dataGroup : mDataPerGroup )
   {
     if ( dataGroup.dataset3dStakedValue.isValid() )
-      dataGroup.datasetValues = avgMethod->calculate( dataGroup.dataset3dStakedValue );
+      dataGroup.datasetValues = avgMethod->calculate( dataGroup.dataset3dStakedValue, feedback );
   }
+
+  if ( feedback && feedback->isCanceled() )
+    return {};
 
   // create raster
   const double pixelSize = parameterAsDouble( parameters, u"PIXEL_SIZE"_s, context );
@@ -858,7 +869,10 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   rasterFileWriter.setOutputFormat( outputFormat );
 
   std::unique_ptr<QgsRasterDataProvider> rasterDataProvider( rasterFileWriter.createMultiBandRaster( Qgis::DataType::Float64, width, height, extent, mTransform.destinationCrs(), mDataPerGroup.count() ) );
-  rasterDataProvider->setEditable( true );
+  if ( !rasterDataProvider )
+    throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( fileName ) );
+  if ( !rasterDataProvider->isEditable() && !rasterDataProvider->setEditable( true ) )
+    throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( rasterDataProvider->error().summary() ) );
 
   const bool hasReportsDuringClose = rasterDataProvider->hasReportsDuringClose();
   const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
@@ -868,13 +882,16 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
     const DataGroup &dataGroup = mDataPerGroup.at( i );
     QgsRasterBlockFeedback rasterBlockFeedBack;
     if ( feedback )
-      QObject::connect( &rasterBlockFeedBack, &QgsFeedback::canceled, feedback, &QgsFeedback::cancel );
+      QObject::connect( feedback, &QgsFeedback::canceled, &rasterBlockFeedBack, &QgsRasterBlockFeedback::cancel, Qt::DirectConnection );
 
     if ( dataGroup.datasetValues.isValid() )
     {
       std::unique_ptr<QgsRasterBlock> block(
         QgsMeshUtils::exportRasterBlock( mTriangularMesh, dataGroup.datasetValues, dataGroup.activeFaces, dataGroup.metadata.dataType(), mTransform, pixelSize, extent, &rasterBlockFeedBack )
       );
+
+      if ( feedback && feedback->isCanceled() )
+        return {};
 
       if ( !rasterDataProvider->writeBlock( block.get(), i + 1 ) )
       {
@@ -1144,6 +1161,8 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
 
       if ( !sinkLines->addFeature( lineFeat, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( sinkLines.get(), parameters, u"OUTPUT_LINES"_s ) );
+      else
+        feedback->featureAddedToSink( u"OUTPUT_LINES"_s );
     }
 
     for ( int l = 0; l < mLevels.count() - 1; ++l )
@@ -1161,7 +1180,14 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
       QgsFeature polygonFeature;
       polygonFeature.setGeometry( polygon );
       polygonFeature.setAttributes( polygonAttributes );
-      sinkPolygons->addFeature( polygonFeature );
+      if ( !sinkPolygons->addFeature( polygonFeature ) )
+      {
+        throw QgsProcessingException( writeFeatureError( sinkPolygons.get(), parameters, QString() ) );
+      }
+      else
+      {
+        feedback->featureAddedToSink( u"OUTPUT_POLYGONS"_s );
+      }
     }
 
     if ( feedback )
@@ -1171,9 +1197,15 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   if ( sinkPolygons )
+  {
     sinkPolygons->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT_POLYGONS"_s );
+  }
   if ( sinkLines )
+  {
     sinkLines->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT_LINES"_s );
+  }
 
   QVariantMap ret;
   ret[u"OUTPUT_LINES"_s] = lineIdentifier;

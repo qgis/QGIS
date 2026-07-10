@@ -18,11 +18,11 @@
 #include "qgsimageserverprovider.h"
 
 #include <cpl_vsi.h>
-#include <gdal.h>
 
 #include "qgsapplication.h"
 #include "qgsarcgisrestquery.h"
 #include "qgsarcgisrestutils.h"
+#include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgdalutils.h"
@@ -32,7 +32,7 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgsstringutils.h"
-#include "qgstilecache.h"
+#include "qgstiledownloadmanager.h"
 
 #include <QDir>
 #include <QFontMetrics>
@@ -76,13 +76,10 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
     return;
   }
 
-  if ( mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly ) )
+  mRasterCapabilities = Qgis::RasterInterfaceCapability::Size;
+  if ( !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly ) )
   {
-    // not an image service
-    appendError( QgsErrorMessage( tr( "Service has support for Image Tiles only -- this is currently not supported" ) ) );
-    QgsMessageLog::logMessage( tr( "Service has support for Image Tiles only -- this is currently not supported" ), tr( "ImageServer" ) );
-    mValid = false;
-    return;
+    mRasterCapabilities |= Qgis::RasterInterfaceCapability::Identify | Qgis::RasterInterfaceCapability::IdentifyValue;
   }
 
   mHasRat = mServiceInfo.value( u"hasRasterAttributeTable"_s ).toBool();
@@ -178,39 +175,6 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
     }
   }
 
-  // for integer data types, we enforce that there is a nodata value for every band.
-  // we require this as we can't fallback to a nan value for padding raster blocks
-  // with nodata when required
-  switch ( mDataType )
-  {
-    case Qgis::DataType::UnknownDataType:
-      break;
-
-    case Qgis::DataType::Byte:
-    case Qgis::DataType::UInt16:
-    case Qgis::DataType::Int16:
-    case Qgis::DataType::UInt32:
-    case Qgis::DataType::Int32:
-    case Qgis::DataType::Int8:
-      while ( mSrcHasNoDataValue.size() < mBandCount )
-      {
-        mSrcNoDataValue.append( QgsArcGisRestUtils::defaultNoDataForDataType( mDataType, ok ) );
-        mSrcHasNoDataValue.append( true );
-        mUseSrcNoDataValue.append( true );
-      }
-      break;
-
-    case Qgis::DataType::Float32:
-    case Qgis::DataType::Float64:
-    case Qgis::DataType::CInt16:
-    case Qgis::DataType::CInt32:
-    case Qgis::DataType::CFloat32:
-    case Qgis::DataType::CFloat64:
-    case Qgis::DataType::ARGB32:
-    case Qgis::DataType::ARGB32_Premultiplied:
-      break;
-  }
-
   for ( const QVariant &min : mLayerInfo.value( u"minValues"_s ).toList() )
   {
     mMinValues.append( min.toDouble() );
@@ -231,6 +195,39 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
   if ( mLayerInfo.value( u"serviceDataType"_s ).toString().compare( "esriImageServiceDataTypeElevation"_L1, Qt::CaseInsensitive ) == 0 )
   {
     elevationProperties()->setContainsElevationData( true );
+    // set extreme Earth elevation limits for elevation data if service did not contain this information
+    if ( mCrs.isEarthCrs() )
+    {
+      for ( qsizetype i = mMinValues.count(); i < mBandCount; ++i )
+      {
+        mMinValues.append( -11500 );
+      }
+      for ( qsizetype i = mMaxValues.count(); i < mBandCount; ++i )
+      {
+        mMaxValues.append( 9000 );
+      }
+    }
+  }
+
+  // populate remaining missing min/max values with appropriate values for certain data types, if we can!
+  const QgsArcGisRestUtils::PixelTypeLimitUsefulness pixelTypeLimitUsefulness = QgsArcGisRestUtils::pixelTypeLimitUsefulness( mPixelType );
+  if ( pixelTypeLimitUsefulness.minIsUseful || pixelTypeLimitUsefulness.maxIsUseful )
+  {
+    const std::optional< std::pair< double, double > > typeRange = QgsArcGisRestUtils::rangeForPixelType( mPixelType );
+    if ( pixelTypeLimitUsefulness.minIsUseful && typeRange.has_value() )
+    {
+      for ( qsizetype i = mMinValues.count(); i < mBandCount; ++i )
+      {
+        mMinValues.append( typeRange->first );
+      }
+    }
+    if ( pixelTypeLimitUsefulness.maxIsUseful && typeRange.has_value() )
+    {
+      for ( qsizetype i = mMaxValues.count(); i < mBandCount; ++i )
+      {
+        mMaxValues.append( typeRange->second );
+      }
+    }
   }
 
   QgsLayerMetadata::SpatialExtent spatialExtent;
@@ -241,8 +238,10 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
   mLayerMetadata.setExtent( metadataExtent );
   mLayerMetadata.setCrs( mCrs );
 
-  mTiled = mServiceInfo.value( u"singleFusedMapCache"_s ).toBool();
-  if ( dataSource.param( u"tiled"_s ).toLower() == "false" || dataSource.param( u"tiled"_s ) == "0" )
+  mSupportsTiles = mServiceInfo.value( u"singleFusedMapCache"_s ).toBool() || mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly );
+  // default to tiled mode
+  mTiled = mSupportsTiles;
+  if ( ( dataSource.param( u"tiled"_s ).toLower() == "false" || dataSource.param( u"tiled"_s ) == "0" ) && !mCapabilities.testFlag( Qgis::ArcGisRestServiceCapability::TilesOnly ) )
   {
     mTiled = false;
   }
@@ -278,6 +277,11 @@ QgsImageServerProvider::QgsImageServerProvider( const QString &uri, const Provid
     }
     std::sort( mResolutions.begin(), mResolutions.end() );
   }
+
+  if ( mServiceInfo.contains( u"minLOD"_s ) )
+    mMinLOD = mServiceInfo.value( u"minLOD"_s ).toInt();
+  if ( mServiceInfo.contains( u"maxLOD"_s ) )
+    mMaxLOD = mServiceInfo.value( u"maxLOD"_s ).toInt();
 }
 
 QgsImageServerProvider::QgsImageServerProvider( const QgsImageServerProvider &other, const QgsDataProvider::ProviderOptions &providerOptions )
@@ -286,6 +290,7 @@ QgsImageServerProvider::QgsImageServerProvider( const QgsImageServerProvider &ot
   , mServiceInfo( other.mServiceInfo )
   , mLayerInfo( other.mLayerInfo )
   , mCapabilities( other.mCapabilities )
+  , mRasterCapabilities( other.mRasterCapabilities )
   , mCrs( other.mCrs )
   , mExtent( other.mExtent )
   , mPixelSizeX( other.mPixelSizeX )
@@ -299,7 +304,10 @@ QgsImageServerProvider::QgsImageServerProvider( const QgsImageServerProvider &ot
   , mMeanValues( other.mMeanValues )
   , mStdevValues( other.mStdevValues )
   , mRequestHeaders( other.mRequestHeaders )
+  , mSupportsTiles( other.mSupportsTiles )
   , mTiled( other.mTiled )
+  , mMinLOD( other.mMinLOD )
+  , mMaxLOD( other.mMaxLOD )
   , mMaxImageWidth( other.mMaxImageWidth )
   , mMaxImageHeight( other.mMaxImageHeight )
   , mLayerMetadata( other.mLayerMetadata )
@@ -359,7 +367,7 @@ Qgis::RasterColorInterpretation QgsImageServerProvider::colorInterpretation( int
 
 Qgis::RasterInterfaceCapabilities QgsImageServerProvider::capabilities() const
 {
-  return Qgis::RasterInterfaceCapability::Size | Qgis::RasterInterfaceCapability::Identify | Qgis::RasterInterfaceCapability::IdentifyValue;
+  return mRasterCapabilities;
 }
 
 int QgsImageServerProvider::xSize() const
@@ -594,12 +602,85 @@ QList<double> QgsImageServerProvider::nativeResolutions() const
   return mResolutions;
 }
 
+QgsRasterBlock *QgsImageServerProvider::block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback )
+{
+  auto block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+
+  bool useNoDataMask = true;
+  if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
+  {
+    block->setNoDataValue( sourceNoDataValue( bandNo ) );
+    useNoDataMask = false;
+  }
+
+  if ( block->isEmpty() )
+  {
+    QgsDebugError( u"Couldn't create raster block"_s );
+    block->setError( { tr( "Couldn't create raster block." ), u"Raster"_s } );
+    block->setValid( false );
+    return block.release();
+  }
+
+  if ( !mExtent.intersects( boundingBox ) )
+  {
+    // the requested extent is completely outside of the raster's extent - nothing to do
+    block->setIsNoData();
+    return block.release();
+  }
+  if ( !mExtent.contains( boundingBox ) )
+  {
+    QRect subRect = QgsRasterBlock::subRect( boundingBox, width, height, mExtent );
+    block->setIsNoDataExcept( subRect );
+  }
+
+  std::vector<GByte> maskData;
+  const qgssize dataSize = static_cast< qgssize >( width ) * static_cast< qgssize >( height );
+  if ( useNoDataMask )
+  {
+    maskData.resize( dataSize );
+  }
+
+  bool foundNoDataMask = false;
+  if ( !readBlockInternal( bandNo, boundingBox, width, height, block->bits(), useNoDataMask ? &maskData : nullptr, &foundNoDataMask, feedback ) )
+  {
+    if ( !feedback || !feedback->isCanceled() )
+    {
+      QgsDebugError( u"Error occurred while reading block"_s );
+      block->setError( { tr( "Error occurred while reading block." ), u"Raster"_s } );
+    }
+    block->setIsNoData();
+    block->setValid( false );
+    return block.release();
+  }
+  else if ( useNoDataMask && foundNoDataMask )
+  {
+    for ( qgssize i = 0; i < dataSize; ++i )
+    {
+      if ( maskData[i] == 0 )
+      {
+        block->setIsNoData( i );
+      }
+    }
+  }
+
+  block->applyScaleOffset( bandScale( bandNo ), bandOffset( bandNo ) );
+  block->applyNoDataValues( userNoDataValues( bandNo ) );
+  return block.release();
+}
+
 bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback )
+{
+  return readBlockInternal( bandNo, viewExtent, width, height, data, nullptr, nullptr, feedback );
+}
+
+bool QgsImageServerProvider::readBlockInternal(
+  int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, std::vector<GByte> *noDataMask, bool *foundNoDataMask, QgsRasterBlockFeedback *feedback
+)
 {
   if ( !mValid || width <= 0 || height <= 0 )
     return false;
 
-  QgsDataSourceUri dataSource( dataSourceUri() );
+  const QgsDataSourceUri dataSource( dataSourceUri() );
   QString url = dataSource.param( u"url"_s );
   if ( !dataSource.param( u"layer"_s ).isEmpty() )
   {
@@ -614,97 +695,6 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
   if ( requestExtent.isEmpty() )
   {
     QgsDebugMsgLevel( u"draw request outside view extent."_s, 2 );
-    return false;
-  }
-
-  QRect blockSubRectPixels( 0, 0, width, height ); // Hoisted and defaults to full size
-  if ( requestExtent != viewExtent )
-  {
-    blockSubRectPixels = QgsRasterBlock::subRect( viewExtent, width, height, requestExtent );
-    query.addQueryItem( u"bbox"_s, u"%1,%2,%3,%4"_s.arg( requestExtent.xMinimum(), 0, 'f' ).arg( requestExtent.yMinimum(), 0, 'f' ).arg( requestExtent.xMaximum(), 0, 'f' ).arg( requestExtent.yMaximum(), 0, 'f' ) );
-    query.addQueryItem( u"size"_s, u"%1,%2"_s.arg( blockSubRectPixels.width() ).arg( blockSubRectPixels.height() ) );
-  }
-  else
-  {
-    query.addQueryItem( u"bbox"_s, u"%1,%2,%3,%4"_s.arg( viewExtent.xMinimum(), 0, 'f' ).arg( viewExtent.yMinimum(), 0, 'f' ).arg( viewExtent.xMaximum(), 0, 'f' ).arg( viewExtent.yMaximum(), 0, 'f' ) );
-    query.addQueryItem( u"size"_s, u"%1,%2"_s.arg( width ).arg( height ) );
-  }
-
-  query.addQueryItem( u"f"_s, u"image"_s );
-  query.addQueryItem( u"bandIds"_s, QString::number( bandNo - 1 ) );
-  query.addQueryItem( u"interpretation"_s, u"RSP_BilinearInterpolation"_s );
-  query.addQueryItem( u"pixelType"_s, mPixelType );
-
-  // determine the request format
-  // default to tiff as a safe option since it handles all bit depths and nodata.
-  QString requestFormat = u"tiff"_s;
-  QString vsiExtension = u".tif"_s;
-  if ( !dataSource.param( u"format"_s ).isEmpty() )
-  {
-    // provider has a hardcoded format, use that
-    requestFormat = dataSource.param( u"format"_s );
-    vsiExtension.clear();
-  }
-  else if ( mMaximumLercVersionSupported > 0 && ( mDataType == Qgis::DataType::Float32 || mDataType == Qgis::DataType::Float64 ) )
-  {
-    // if the data is floating point and both server and client support it, request LERC compression for smaller transfers
-    requestFormat = u"lerc"_s;
-    vsiExtension.clear();
-    if ( mMaximumLercVersionSupported >= 2 )
-    {
-      // for now GDAL can only read v2 lerc, so don't request a later version then that.
-      // if lerc version 1 is maximum supported, then the server won't support the lercVersion query item at all
-      query.addQueryItem( u"lercVersion"_s, u"2"_s );
-    }
-    query.addQueryItem( u"compression"_s, u"LERC"_s );
-    // we want lossless compression
-    query.addQueryItem( u"compressionTolerance"_s, u"0"_s );
-  }
-  query.addQueryItem( u"format"_s, requestFormat );
-
-  queryUrl.setQuery( query );
-
-  queryUrl = QgsArcGisRestQueryUtils::parseUrl( queryUrl );
-
-  QgsBlockingNetworkRequest networkRequest;
-  networkRequest.setAuthCfg( mAuthCfg );
-  QNetworkRequest req( queryUrl );
-  mRequestHeaders.updateNetworkRequest( req );
-  QgsSetRequestInitiatorClass( req, u"QgsImageServerProvider"_s );
-
-  if ( networkRequest.get( req, false, feedback ) != QgsBlockingNetworkRequest::NoError )
-  {
-    if ( !feedback || !feedback->isCanceled() )
-    {
-      QgsDebugMsgLevel( u"Network request failed: %1"_s.arg( networkRequest.errorMessage() ), 2 );
-    }
-    return false;
-  }
-
-  const QgsNetworkReplyContent reply = networkRequest.reply();
-  QByteArray rawData = reply.content();
-  if ( rawData.isEmpty() || ( feedback && feedback->isCanceled() ) )
-    return false;
-
-  // use GDAL to read raw raster data, and handle eg lerc decompression
-  // first create in-memory dataset
-  const QString vsimemFilename = u"/vsimem/ims_%1%2"_s.arg( QUuid::createUuid().toString( QUuid::WithoutBraces ), vsiExtension );
-  VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), reinterpret_cast<GByte *>( rawData.data() ), rawData.size(), false ) );
-  // open the in-memory dataset
-  GDALDatasetH hDS = GDALOpen( vsimemFilename.toUtf8().constData(), GA_ReadOnly );
-  if ( !hDS || ( feedback && feedback->isCanceled() ) )
-  {
-    QgsDebugMsgLevel( u"GDAL failed to open the downloaded image payload."_s, 2 );
-    VSIUnlink( vsimemFilename.toUtf8().constData() );
-    return false;
-  }
-
-  // we'll always have a single-band raster, so we request the first band
-  GDALRasterBandH hBand = GDALGetRasterBand( hDS, 1 );
-  if ( !hBand || ( feedback && feedback->isCanceled() ) )
-  {
-    GDALClose( hDS );
-    VSIUnlink( vsimemFilename.toUtf8().constData() );
     return false;
   }
 
@@ -760,6 +750,135 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
       break;
   }
 
+  if ( mTiled )
+  {
+    return readTiledBlock( viewExtent, width, height, data, gdalType, elementSize, feedback );
+  }
+
+  QRect blockSubRectPixels( 0, 0, width, height ); // Hoisted and defaults to full size
+  if ( requestExtent != viewExtent )
+  {
+    blockSubRectPixels = QgsRasterBlock::subRect( viewExtent, width, height, requestExtent );
+    query.addQueryItem( u"bbox"_s, u"%1,%2,%3,%4"_s.arg( requestExtent.xMinimum(), 0, 'f' ).arg( requestExtent.yMinimum(), 0, 'f' ).arg( requestExtent.xMaximum(), 0, 'f' ).arg( requestExtent.yMaximum(), 0, 'f' ) );
+    query.addQueryItem( u"size"_s, u"%1,%2"_s.arg( blockSubRectPixels.width() ).arg( blockSubRectPixels.height() ) );
+  }
+  else
+  {
+    query.addQueryItem( u"bbox"_s, u"%1,%2,%3,%4"_s.arg( viewExtent.xMinimum(), 0, 'f' ).arg( viewExtent.yMinimum(), 0, 'f' ).arg( viewExtent.xMaximum(), 0, 'f' ).arg( viewExtent.yMaximum(), 0, 'f' ) );
+    query.addQueryItem( u"size"_s, u"%1,%2"_s.arg( width ).arg( height ) );
+  }
+
+  query.addQueryItem( u"f"_s, u"image"_s );
+  query.addQueryItem( u"bandIds"_s, QString::number( bandNo - 1 ) );
+  query.addQueryItem( u"interpolation"_s, u"RSP_BilinearInterpolation"_s );
+  query.addQueryItem( u"pixelType"_s, mPixelType );
+
+  int responseBandNumber = 1;
+
+  // determine the request format
+  // default to tiff as a safe option since it handles all bit depths and nodata.
+  QString requestFormat = u"tiff"_s;
+  QString vsiExtension = u".tif"_s;
+  if ( !dataSource.param( u"format"_s ).isEmpty() )
+  {
+    // provider has a hardcoded format, use that
+    requestFormat = dataSource.param( u"format"_s );
+    vsiExtension.clear();
+  }
+  else if ( mDataType == Qgis::DataType::Byte )
+  {
+    requestFormat = u"png8"_s;
+    vsiExtension = u".png"_s;
+    // hack to get around ImageServer pixel mask logic for RGB images
+    if ( mServiceInfo.value( u"serviceDataType"_s ).toString() == "esriImageServiceDataTypeRGB" )
+    {
+      // gross hack -- for RGB byte data, we need to force the service to return a PNG32 image so that we
+      // get the alpha mask.
+      // we'll throw away two of those unwanted bands shortly :o
+      requestFormat = u"png32"_s;
+      query.removeQueryItem( u"bandIds"_s );
+      responseBandNumber = bandNo;
+    }
+  }
+  else if ( mMaximumLercVersionSupported > 0 && ( mDataType == Qgis::DataType::Float32 || mDataType == Qgis::DataType::Float64 ) )
+  {
+    // if the data is floating point and both server and client support it, request LERC compression for smaller transfers
+    requestFormat = u"lerc"_s;
+    vsiExtension.clear();
+    if ( mMaximumLercVersionSupported >= 2 )
+    {
+      // for now GDAL can only read v2 lerc, so don't request a later version then that.
+      // if lerc version 1 is maximum supported, then the server won't support the lercVersion query item at all
+      query.addQueryItem( u"lercVersion"_s, u"2"_s );
+    }
+    query.addQueryItem( u"compression"_s, u"LERC"_s );
+    // we want lossless compression
+    query.addQueryItem( u"compressionTolerance"_s, u"0"_s );
+  }
+  query.addQueryItem( u"format"_s, requestFormat );
+
+  queryUrl.setQuery( query );
+
+  queryUrl = QgsArcGisRestQueryUtils::parseUrl( queryUrl );
+  QByteArray rawData;
+  if ( queryUrl == mLastReply.requestUrl )
+  {
+    // optimization -- if we are requesting the EXACT same data as the last request, just take the
+    // same reply. This helps with the RGB data situation, where QGIS requests three separate blocks
+    // for the different channels, yet we have to retrieve the data as a complete RGB request from
+    // ImageServer providers. (Otherwise we'd been requesting the RGB data for just the red channel and
+    // throwing away the green and blue, then requesting the RGB data again for the green channel and
+    // throwing away the red and blue, etc...)
+    rawData = mLastReply.response;
+  }
+  else
+  {
+    mLastReply = ServiceReply();
+
+    QgsBlockingNetworkRequest networkRequest;
+    networkRequest.setAuthCfg( mAuthCfg );
+    QNetworkRequest req( queryUrl );
+    mRequestHeaders.updateNetworkRequest( req );
+    QgsSetRequestInitiatorClass( req, u"QgsImageServerProvider"_s );
+
+    if ( networkRequest.get( req, false, feedback ) != QgsBlockingNetworkRequest::NoError )
+    {
+      if ( !feedback || !feedback->isCanceled() )
+      {
+        QgsDebugMsgLevel( u"Network request failed: %1"_s.arg( networkRequest.errorMessage() ), 2 );
+      }
+      return false;
+    }
+
+    const QgsNetworkReplyContent reply = networkRequest.reply();
+    rawData = reply.content();
+    mLastReply.requestUrl = queryUrl;
+    mLastReply.response = rawData;
+  }
+  if ( rawData.isEmpty() || ( feedback && feedback->isCanceled() ) )
+    return false;
+
+  // use GDAL to read raw raster data, and handle eg lerc decompression
+  // first create in-memory dataset
+  const QString vsimemFilename = u"/vsimem/ims_%1%2"_s.arg( QUuid::createUuid().toString( QUuid::WithoutBraces ), vsiExtension );
+  VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), reinterpret_cast<GByte *>( rawData.data() ), rawData.size(), false ) );
+  // open the in-memory dataset
+  GDALDatasetH hDS = GDALOpen( vsimemFilename.toUtf8().constData(), GA_ReadOnly );
+  if ( !hDS || ( feedback && feedback->isCanceled() ) )
+  {
+    QgsDebugMsgLevel( u"GDAL failed to open the downloaded image payload."_s, 2 );
+    VSIUnlink( vsimemFilename.toUtf8().constData() );
+    return false;
+  }
+
+  GDALRasterBandH hBand = GDALGetRasterBand( hDS, responseBandNumber );
+  if ( !hBand || ( feedback && feedback->isCanceled() ) )
+  {
+    GDALClose( hDS );
+    VSIUnlink( vsimemFilename.toUtf8().constData() );
+    return false;
+  }
+
   if ( feedback && feedback->isCanceled() )
   {
     GDALClose( hDS );
@@ -784,6 +903,25 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
   const CPLErr err
     = GDALRasterIOEx( hBand, GF_Read, 0, 0, GDALGetRasterXSize( hDS ), GDALGetRasterYSize( hDS ), targetData, blockSubRectPixels.width(), blockSubRectPixels.height(), gdalType, pixelSpace, lineSpace, &extraArg );
 
+  if ( noDataMask )
+  {
+    *foundNoDataMask = false;
+    const int maskFlags = GDALGetMaskFlags( hBand );
+    if ( !( maskFlags & GMF_ALL_VALID ) )
+    {
+      if ( GDALRasterBandH hMaskBand = GDALGetMaskBand( hBand ) )
+      {
+        // Read the mask array
+        CPLErr err = GDALRasterIOEx( hMaskBand, GF_Read, 0, 0, GDALGetRasterXSize( hDS ), GDALGetRasterYSize( hDS ), noDataMask->data(), width, height, GDT_Byte, 0, 0, nullptr );
+
+        if ( err == CE_None )
+        {
+          *foundNoDataMask = true;
+        }
+      }
+    }
+  }
+
   GDALClose( hDS );
   VSIUnlink( vsimemFilename.toUtf8().constData() );
 
@@ -793,6 +931,231 @@ bool QgsImageServerProvider::readBlock( int bandNo, const QgsRectangle &viewExte
   }
 
   return err == CE_None;
+}
+
+bool QgsImageServerProvider::readTiledBlock( const QgsRectangle &viewExtent, int width, int height, void *data, GDALDataType gdalType, int elementSize, QgsRasterBlockFeedback *feedback )
+{
+  const QgsDataSourceUri dataSource( dataSourceUri() );
+  const QString baseUrl = dataSource.param( u"url"_s );
+  const QString authcfg = dataSource.authConfigId();
+
+  const double targetResolution = viewExtent.width() / width;
+
+  // tile details
+  const QVariantMap tileInfo = mServiceInfo.value( u"tileInfo"_s ).toMap();
+  const int tileWidth = tileInfo[u"cols"_s].toInt();
+  const int tileHeight = tileInfo[u"rows"_s].toInt();
+  const QVariantMap origin = tileInfo[u"origin"_s].toMap();
+  const double originX = origin[u"x"_s].toDouble();
+  const double originY = origin[u"y"_s].toDouble();
+
+  // sort level of detail array by decreasing resolution, i.e. less detailed tiles first
+  QList<QVariant> lodEntries = tileInfo[u"lods"_s].toList();
+  if ( lodEntries.isEmpty() )
+    return false;
+
+  // sometimes the lods array contains NOT available levels, i.e. outside of the minLOD/maxLOD range!
+  // strip them out here
+  lodEntries.erase(
+    std::remove_if(
+      lodEntries.begin(),
+      lodEntries.end(),
+      [this]( const QVariant &lodEntry ) {
+        const int currentLevel = lodEntry.toMap()[u"level"_s].toInt();
+        return ( mMaxLOD >= 0 && currentLevel > mMaxLOD ) || ( mMinLOD >= 0 && currentLevel < mMinLOD );
+      }
+    ),
+    lodEntries.end()
+  );
+
+  if ( lodEntries.isEmpty() )
+    return false;
+  std::sort( lodEntries.begin(), lodEntries.end(), []( const QVariant &a, const QVariant &b ) { return a.toMap().value( u"resolution"_s ).toDouble() > b.toMap().value( u"resolution"_s ).toDouble(); } );
+
+  // pick appropriate tile level to match target resolution
+  // iterate through the lod array to find the first level (ie, the most course level)
+  // that satisfies the required resolution
+  int level = lodEntries.constLast().toMap().value( u"level"_s ).toInt();
+  double resolution = lodEntries.constLast().toMap().value( u"resolution"_s ).toDouble();
+  for ( const QVariant &lodEntry : std::as_const( lodEntries ) )
+  {
+    if ( lodEntry.toMap()[u"resolution"_s].toDouble() <= targetResolution )
+    {
+      level = lodEntry.toMap()[u"level"_s].toInt();
+      resolution = lodEntry.toMap()[u"resolution"_s].toDouble();
+      break;
+    }
+  }
+
+  // calculate required tile ranges
+  const int tileXStart = static_cast<int>( std::floor( ( viewExtent.xMinimum() - originX ) / ( tileWidth * resolution ) ) );
+  const int tileYStart = static_cast<int>( std::floor( ( originY - viewExtent.yMaximum() ) / ( tileHeight * resolution ) ) );
+  const int tileXEnd = static_cast<int>( std::ceil( ( viewExtent.xMaximum() - originX ) / ( tileWidth * resolution ) ) );
+  const int tileYEnd = static_cast<int>( std::ceil( ( originY - viewExtent.yMinimum() ) / ( tileHeight * resolution ) ) );
+
+  // build list of requested tiles
+  TileRequests requests;
+  int index = 0;
+  for ( int tileY = tileYStart; tileY <= tileYEnd; ++tileY )
+  {
+    for ( int tileX = tileXStart; tileX <= tileXEnd; ++tileX )
+    {
+      const QUrl url = QgsArcGisRestQueryUtils::parseUrl( QUrl( baseUrl + u"/tile/%1/%2/%3"_s.arg( level ).arg( tileY ).arg( tileX ) ) );
+      // calculate map extent for tile
+      const double tileXMin = originX + tileX * ( resolution * tileWidth );
+      const double tileXMax = tileXMin + ( resolution * tileWidth );
+      const double tileYMax = originY - tileY * ( resolution * tileHeight );
+      const double tileYMin = tileYMax - ( resolution * tileHeight );
+      const QgsRectangle mapExtent( tileXMin, tileYMin, tileXMax, tileYMax );
+      if ( viewExtent.intersects( mapExtent ) )
+      {
+        requests.push_back( TileRequest( url, index++, mapExtent ) );
+      }
+    }
+  }
+
+  QHash<int, QByteArray> tileData;
+  tileData.reserve( requests.size() );
+  if ( QThread::currentThread() == QApplication::instance()->thread() )
+  {
+    // running on main thread, use a blocking get to handle authcfg and SSL errors ok.
+    for ( const TileRequest &r : std::as_const( requests ) )
+    {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
+      QNetworkRequest request( r.url );
+      QgsSetRequestInitiatorClass( request, u"QgsImageServerProvider"_s );
+      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+      request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+      mRequestHeaders.updateNetworkRequest( request );
+      const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( request, authcfg, false, feedback );
+      if ( reply.error() == QNetworkReply::NoError )
+      {
+        tileData.insert( r.index, reply.content() );
+      }
+    }
+  }
+  else
+  {
+    // running on background thread, use tile download manager for efficient network handling
+    std::vector<std::unique_ptr<QgsTileDownloadManagerReply>> replies;
+    replies.reserve( requests.size() );
+    std::vector<TileRequest> activeRequests;
+    activeRequests.reserve( requests.size() );
+
+    // use a local event loop to loop until all required tiles are fetched. This is safe to do, we are in a background thread
+    QEventLoop loop;
+    if ( feedback )
+    {
+      QObject::connect( feedback, &QgsFeedback::canceled, &loop, &QEventLoop::quit );
+    }
+
+    int pendingReplies = 0;
+    auto onReplyFinished = [&pendingReplies, &loop] {
+      pendingReplies--;
+      if ( pendingReplies == 0 )
+        loop.quit();
+    };
+
+    for ( const TileRequest &r : std::as_const( requests ) )
+    {
+      QNetworkRequest request( r.url );
+      QgsSetRequestInitiatorClass( request, u"QgsImageServerProvider"_s );
+      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+      request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+      mRequestHeaders.updateNetworkRequest( request );
+
+      if ( !authcfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, authcfg ) )
+        continue;
+
+      std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( request ) );
+      QObject::connect( reply.get(), &QgsTileDownloadManagerReply::finished, &loop, onReplyFinished );
+      replies.emplace_back( std::move( reply ) );
+
+      activeRequests.push_back( r );
+      pendingReplies++;
+    }
+
+    if ( pendingReplies != 0 )
+    {
+      // loop till all replies are finished
+      loop.exec();
+
+      if ( !feedback || !feedback->isCanceled() )
+      {
+        for ( size_t i = 0; i < replies.size(); ++i )
+        {
+          if ( replies[i]->hasFinished() && replies[i]->error() == QNetworkReply::NoError )
+          {
+            tileData.insert( activeRequests[i].index, replies[i]->data() );
+          }
+        }
+      }
+    }
+  }
+
+  if ( tileData.isEmpty() || ( feedback && feedback->isCanceled() ) )
+    return false;
+
+  // got all tile data. Now we need to stitch the tiles together into a single raster block.
+  // we use GDAL to read tile data, as it may been compressed in eg LERC format
+
+  bool success = true;
+  for ( const TileRequest &req : std::as_const( requests ) )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
+    auto tileDataIt = tileData.constFind( req.index );
+    if ( tileDataIt == tileData.constEnd() )
+    {
+      continue;
+    }
+    QByteArray rawTileData = tileDataIt.value();
+    if ( rawTileData.isEmpty() )
+    {
+      continue;
+    }
+
+    // use GDAL to read raw raster data, and handle eg lerc decompression
+    // first create in-memory dataset
+    const QString vsimemFilename = u"/vsimem/ims_tile_%1_%2"_s.arg( QUuid::createUuid().toString( QUuid::WithoutBraces ) ).arg( req.index );
+    VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), reinterpret_cast<GByte *>( rawTileData.data() ), rawTileData.size(), false ) );
+
+    // open the in-memory dataset
+    GDALDatasetH hDS = GDALOpen( vsimemFilename.toUtf8().constData(), GA_ReadOnly );
+    if ( hDS )
+    {
+      GDALRasterBandH hBand = GDALGetRasterBand( hDS, 1 );
+      if ( hBand )
+      {
+        // pixels from requested block covered by this tile
+        // (i.e. the "destination" rect)
+        const QRect blockPixelRect = QgsRasterBlock::subRect( viewExtent, width, height, req.mapExtent );
+        // pixels from tile that we need (tile may be partially outside of requested block extent)
+        // (i.e. the "source" rect)
+        const QRect tilePixelRect = QgsRasterBlock::subRect( req.mapExtent, GDALGetRasterXSize( hDS ), GDALGetRasterYSize( hDS ), req.mapExtent.intersect( viewExtent ) );
+
+        // copy tile data into block data
+        void *targetData = static_cast<GByte *>( data ) + ( static_cast<GSpacing>( blockPixelRect.y() ) * width + blockPixelRect.x() ) * elementSize;
+        GSpacing lineSpace = static_cast<GSpacing>( width ) * elementSize;
+        if ( GDALRasterIOEx( hBand, GF_Read, tilePixelRect.x(), tilePixelRect.y(), tilePixelRect.width(), tilePixelRect.height(), targetData, blockPixelRect.width(), blockPixelRect.height(), gdalType, elementSize, lineSpace, nullptr )
+             != CPLErr::CE_None )
+        {
+          success = false;
+        }
+      }
+      GDALClose( hDS );
+    }
+    else
+    {
+      success = false;
+    }
+    VSIUnlink( vsimemFilename.toUtf8().constData() );
+  }
+
+  return success;
 }
 
 bool QgsImageServerProvider::readNativeAttributeTable( QString *errorMessage )
@@ -893,7 +1256,7 @@ QgsImageServerProviderMetadata::QgsImageServerProviderMetadata()
 
 QIcon QgsImageServerProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( u"mIconAms.svg"_s );
+  return QgsApplication::getThemeIcon( u"mIconImageServer.svg"_s );
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsImageServerProviderMetadata::providerCapabilities() const
@@ -931,6 +1294,10 @@ QVariantMap QgsImageServerProviderMetadata::decodeUri( const QString &uri ) cons
   {
     components.insert( u"layer"_s, dsUri.param( u"layer"_s ) );
   }
+  if ( dsUri.param( u"tiled"_s ).compare( "false"_L1, Qt::CaseInsensitive ) == 0 || dsUri.param( u"tiled"_s ) == "0" )
+  {
+    components.insert( u"tiled"_s, false );
+  }
 
   return components;
 }
@@ -954,6 +1321,10 @@ QString QgsImageServerProviderMetadata::encodeUri( const QVariantMap &parts ) co
   if ( !parts.value( u"format"_s ).toString().isEmpty() )
   {
     dsUri.setParam( u"format"_s, parts.value( u"format"_s ).toString() );
+  }
+  if ( parts.contains( u"tiled"_s ) && !parts.value( u"tiled"_s ).toBool() )
+  {
+    dsUri.setParam( u"tiled"_s, u"false"_s );
   }
   if ( !parts.value( u"layer"_s ).toString().isEmpty() )
   {

@@ -34,6 +34,7 @@ from qgis.core import (
     QgsProject,
 )
 from qgis.gui import (
+    QgsCollapsibleGroupBox,
     QgsColorButton,
     QgsFilterLineEdit,
     QgsGui,
@@ -66,8 +67,8 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import iface
 
+from processing.core.exceptions import InvalidParameterValue
 from processing.gui.wrappers import (
-    InvalidParameterValue,
     WidgetWrapper,
     WidgetWrapperFactory,
 )
@@ -84,7 +85,6 @@ class ModelerParametersDialog(QDialog):
     ):
         super().__init__()
         self.setObjectName("ModelerParametersDialog")
-        self.setModal(True)
 
         if iface is not None:
             self.setStyleSheet(iface.mainWindow().styleSheet())
@@ -233,7 +233,6 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.configuration = configuration
         self.context = context
         self.dialog = dialog
-        self.widget_labels = {}
         self.previous_output_definitions = {}
         self.block_changes_signal = 0
 
@@ -305,15 +304,16 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 self.algorithmItem.setConfiguration(self.configuration)
             self.verticalLayout.addWidget(self.algorithmItem)
 
+        self.grpAdvanced = QgsCollapsibleGroupBox(self.tr("Advanced Parameters"))
+        self.grpAdvancedVLayout = QVBoxLayout()
+        self.grpAdvanced.setLayout(self.grpAdvancedVLayout)
+        self.grpAdvanced.hide()
+
+        self.verticalLayout.addWidget(self.grpAdvanced)
+
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
-                self.advancedButton = QPushButton()
-                self.advancedButton.setText(self.tr("Show advanced parameters"))
-                self.advancedButton.clicked.connect(self.showAdvancedParametersClicked)
-                advancedButtonHLayout = QHBoxLayout()
-                advancedButtonHLayout.addWidget(self.advancedButton)
-                advancedButtonHLayout.addStretch()
-                self.verticalLayout.addLayout(advancedButtonHLayout)
+                self.grpAdvanced.show()
                 break
         for param in self._alg.parameterDefinitions():
             if (
@@ -339,14 +339,18 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                     tooltip = param.description()
                     widget.setToolTip(tooltip)
                     label = wrapper.label
-                self.widget_labels[param.name()] = label
 
                 if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
-                    label.setVisible(self.showAdvanced)
-                    widget.setVisible(self.showAdvanced)
-
-                self.verticalLayout.addWidget(label)
-                self.verticalLayout.addWidget(widget)
+                    self.grpAdvancedVLayout.addWidget(label)
+                    self.grpAdvancedVLayout.addWidget(widget)
+                else:
+                    # Regular parameters
+                    self.verticalLayout.insertWidget(
+                        self.verticalLayout.count() - 1, label
+                    )
+                    self.verticalLayout.insertWidget(
+                        self.verticalLayout.count() - 1, widget
+                    )
 
         for output in self._alg.destinationParameterDefinitions():
             if output.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
@@ -358,14 +362,10 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             widget.setDialog(self.dialog)
             widget.setWidgetContext(widget_context)
             widget.registerProcessingContextGenerator(self.context_generator)
+            if isinstance(widget, QgsProcessingModelerParameterWidget):
+                widget.changed.connect(self.emit_changed_signal)
 
             self.wrappers[output.name()] = widget
-
-            item = QgsFilterLineEdit()
-            if hasattr(item, "setPlaceholderText"):
-                item.setPlaceholderText(
-                    self.tr("[Enter name if this is a final result]")
-                )
 
             label = widget.createLabel()
             if label is not None:

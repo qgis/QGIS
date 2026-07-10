@@ -66,6 +66,7 @@ set(QGIS_APP_SRCS
   qgsrasterattributetableapputils.cpp
   qgssnappinglayertreemodel.cpp
   qgssnappingwidget.cpp
+  qgstopocentricwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
@@ -102,9 +103,6 @@ set(QGIS_APP_SRCS
   qgsmaptoolrotatefeature.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolscalefeature.cpp
-  qgsmaptoolselect.cpp
-  qgsmaptoolselectionhandler.cpp
-  qgsmaptoolselectutils.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
   qgsmaptoolsplitparts.cpp
@@ -356,6 +354,7 @@ if (WITH_3D)
     3d/qgs3dapputils.cpp
     3d/qgs3dicongenerator.cpp
     3d/qgs3dmapconfigwidget.cpp
+    3d/qgs3dmapexportwidget.cpp
     3d/qgs3dmaptoolidentify.cpp
     3d/qgs3dmaptoolmeasureline.cpp
     3d/qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp
@@ -366,6 +365,7 @@ if (WITH_3D)
     3d/qgs3dnavigationwidget.cpp
     3d/qgs3doptions.cpp
     3d/qgsannotationlayer3drendererwidget.cpp
+    3d/qgscategorized3drendererwidget.cpp
     3d/qgsgoochmaterialwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
@@ -379,13 +379,13 @@ if (WITH_3D)
     3d/qgsphongmaterialwidget.cpp
     3d/qgsphongtexturedmaterialwidget.cpp
     3d/qgsrulebased3drendererwidget.cpp
+    3d/qgs3dsymbolbutton.cpp
     3d/qgssimplelinematerialwidget.cpp
     3d/qgssymbol3dwidget.cpp
     3d/qgstiledscenelayer3drendererwidget.cpp
     3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
-    3d/qgsmap3dexportwidget.cpp
     layout/qgslayout3dmapwidget.cpp
     3d/qgsskyboxrenderingsettingswidget.cpp
     3d/qgsshadowrenderingsettingswidget.cpp
@@ -555,6 +555,7 @@ target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\
 target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")
 if (POSTGRES_FOUND)
   target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=\"${PostgreSQL_VERSION_STRING}\")
+  target_link_libraries(qgis_app PRIVATE PostgreSQL::PostgreSQL)
 endif()
 
 target_include_directories(qgis_app PUBLIC

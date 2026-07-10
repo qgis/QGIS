@@ -53,8 +53,6 @@ QgsRasterCalcNode::QgsRasterCalcNode( const QString &rasterName )
 
 QgsRasterCalcNode::~QgsRasterCalcNode()
 {
-  delete mLeft;
-  delete mRight;
   for ( int i = 0; i < mFunctionArgs.size(); ++i )
   {
     if ( mFunctionArgs.at( i ) )

@@ -12,6 +12,9 @@ QgsEditFormConfig.Alias.__doc__ = "Alias"
 QgsEditFormConfig.Editable = QgsEditFormConfig.DataDefinedProperty.Editable
 QgsEditFormConfig.Editable.is_monkey_patched = True
 QgsEditFormConfig.Editable.__doc__ = "Editable state \n.. versionadded:: 3.30"
+QgsEditFormConfig.CustomComment = QgsEditFormConfig.DataDefinedProperty.CustomComment
+QgsEditFormConfig.CustomComment.is_monkey_patched = True
+QgsEditFormConfig.CustomComment.__doc__ = "Custom comment \n.. versionadded:: 4.2"
 QgsEditFormConfig.DataDefinedProperty.__doc__ = """Data defined properties.
 Form data defined overrides are stored in a property collection
 and they can be retrieved using the indexes specified in this
@@ -25,6 +28,10 @@ enum.
 * ``Editable``: Editable state
 
   .. versionadded:: 3.30
+
+* ``CustomComment``: Custom comment
+
+  .. versionadded:: 4.2
 
 
 """

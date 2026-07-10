@@ -32,7 +32,7 @@
    <item>
     <widget class="QSplitter" name="m3DOptionsSplitter">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="childrenCollapsible">
       <bool>false</bool>
@@ -51,10 +51,10 @@
        </size>
       </property>
       <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+       <enum>QFrame::Shape::NoFrame</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+       <enum>QFrame::Shadow::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_23">
        <property name="leftMargin">
@@ -136,7 +136,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Camera &amp; Skybox</string>
+           <string>Camera</string>
           </property>
           <property name="toolTip">
            <string>Camera and skybox settings</string>
@@ -170,10 +170,10 @@
        </sizepolicy>
       </property>
       <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+       <enum>QFrame::Shape::NoFrame</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+       <enum>QFrame::Shadow::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="leftMargin">
@@ -191,7 +191,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>5</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -207,7 +207,7 @@
            <item>
             <widget class="QgsScrollArea" name="scrollAreaGeneral">
              <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
+              <enum>QFrame::Shape::NoFrame</enum>
              </property>
              <property name="widgetResizable">
               <bool>true</bool>
@@ -217,8 +217,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>803</width>
-                <height>649</height>
+                <width>811</width>
+                <height>648</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -242,9 +242,113 @@
                 </widget>
                </item>
                <item>
+                <widget class="QGroupBox" name="groupBoxBackground">
+                 <property name="title">
+                  <string>Background</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_7">
+                  <item row="0" column="0">
+                   <widget class="QComboBox" name="comboBox"/>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QgsStackedWidget" name="stackedWidget">
+                    <property name="currentIndex">
+                     <number>0</number>
+                    </property>
+                    <widget class="QWidget" name="pageGradient">
+                     <layout class="QGridLayout" name="gridLayout_9" columnstretch="0,1">
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
+                      <item row="1" column="0">
+                       <widget class="QLabel" name="labelBottomColor">
+                        <property name="text">
+                         <string>Bottom color</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="1">
+                       <widget class="QgsColorButton" name="mBtnGradientBottomColor">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QgsColorButton" name="mBtnGradientTopColor">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="labelTopColor">
+                        <property name="text">
+                         <string>Top color</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="1">
+                       <spacer name="verticalSpacer_2">
+                        <property name="orientation">
+                         <enum>Qt::Orientation::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </widget>
+                    <widget class="QWidget" name="pageSkybox">
+                     <layout class="QGridLayout" name="gridLayout_10">
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
+                     </layout>
+                    </widget>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer">
                  <property name="orientation">
-                  <enum>Qt::Vertical</enum>
+                  <enum>Qt::Orientation::Vertical</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -274,7 +378,7 @@
            <item>
             <widget class="QgsScrollArea" name="scrollAreaTerrain">
              <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
+              <enum>QFrame::Shape::NoFrame</enum>
              </property>
              <property name="widgetResizable">
               <bool>true</bool>
@@ -284,8 +388,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>259</width>
-                <height>326</height>
+                <width>811</width>
+                <height>648</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutTerrain">
@@ -459,7 +563,7 @@
                <item>
                 <spacer name="verticalSpacerTerrain">
                  <property name="orientation">
-                  <enum>Qt::Vertical</enum>
+                  <enum>Qt::Orientation::Vertical</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -489,7 +593,7 @@
            <item>
             <widget class="QgsScrollArea" name="scrollAreaLight">
              <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
+              <enum>QFrame::Shape::NoFrame</enum>
              </property>
              <property name="widgetResizable">
               <bool>true</bool>
@@ -499,8 +603,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>73</width>
-                <height>46</height>
+                <width>811</width>
+                <height>648</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -543,7 +647,7 @@
                <item>
                 <spacer name="verticalSpacerLights">
                  <property name="orientation">
-                  <enum>Qt::Vertical</enum>
+                  <enum>Qt::Orientation::Vertical</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -573,7 +677,7 @@
            <item>
             <widget class="QgsScrollArea" name="scrollAreaShadow">
              <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
+              <enum>QFrame::Shape::NoFrame</enum>
              </property>
              <property name="widgetResizable">
               <bool>true</bool>
@@ -583,8 +687,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>221</width>
-                <height>176</height>
+                <width>811</width>
+                <height>648</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -686,9 +790,122 @@
                 <widget class="QgsAmbientOcclusionSettingsWidget" name="mAmbientOcclusionSettingsWidget" native="true"/>
                </item>
                <item>
+                <widget class="QGroupBox" name="mBloomGroupBox">
+                 <property name="title">
+                  <string>Show Bloom Lighting Effect</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_4">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_9">
+                    <property name="text">
+                     <string>Strength</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QgsDoubleSpinBox" name="mSpinBloomIntensity">
+                    <property name="toolTip">
+                     <string>Controls the overall intensity of the bloom lighting effect</string>
+                    </property>
+                    <property name="maximum">
+                     <double>10000.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>0.010000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>0.050000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_10">
+                    <property name="text">
+                     <string>Radius</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QgsDoubleSpinBox" name="mSpinBloomRadius">
+                    <property name="toolTip">
+                     <string>Controls the overall size of the bloom lighting effect</string>
+                    </property>
+                    <property name="decimals">
+                     <number>1</number>
+                    </property>
+                    <property name="maximum">
+                     <double>10.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>0.100000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>5.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox_2">
+                 <property name="title">
+                  <string>Color Grading</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_3">
+                  <item row="1" column="1">
+                   <widget class="QgsDoubleSpinBox" name="mSpinExposure">
+                    <property name="minimum">
+                     <double>-5.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>5.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>0.050000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>0.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_8">
+                    <property name="toolTip">
+                     <string>Adjusts the overall brightness of the 3D scene. A value of 0.0 leaves the original brightness unchanged. Positive values will brighten the scene, while negative values will darken it.</string>
+                    </property>
+                    <property name="text">
+                     <string>Exposure adjustment</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_3">
+                    <property name="text">
+                     <string>Tone mapping</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QComboBox" name="mComboToneMapping">
+                    <property name="toolTip">
+                     <string>Determines how extremely bright, High Dynamic Range (HDR) colors are displayed on a standard monitor.</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacerShadow">
                  <property name="orientation">
-                  <enum>Qt::Vertical</enum>
+                  <enum>Qt::Orientation::Vertical</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -718,7 +935,7 @@
            <item>
             <widget class="QgsScrollArea" name="scrollAreaCameraSkybox">
              <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
+              <enum>QFrame::Shape::NoFrame</enum>
              </property>
              <property name="widgetResizable">
               <bool>true</bool>
@@ -728,8 +945,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>291</width>
-                <height>528</height>
+                <width>385</width>
+                <height>579</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -755,16 +972,6 @@
                    <widget class="QLabel" name="labelCameraProjectionType">
                     <property name="text">
                      <string>Projection type</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1" colspan="2">
-                   <widget class="QgsSpinBox" name="spinCameraFieldOfView">
-                    <property name="suffix">
-                     <string>°</string>
-                    </property>
-                    <property name="maximum">
-                     <number>180</number>
                     </property>
                    </widget>
                   </item>
@@ -805,6 +1012,16 @@
                    <widget class="QLabel" name="labelMovementSpeed">
                     <property name="text">
                      <string>Movement speed</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1" colspan="2">
+                   <widget class="QgsDoubleSpinBox" name="spinCameraFieldOfView">
+                    <property name="suffix">
+                     <string>°</string>
+                    </property>
+                    <property name="maximum">
+                     <double>180.000000000000000</double>
                     </property>
                    </widget>
                   </item>
@@ -884,33 +1101,19 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupSkyboxSettings">
-                 <property name="title">
-                  <string>Show Skybox</string>
-                 </property>
-                 <property name="checkable">
-                  <bool>true</bool>
-                 </property>
-                 <property name="checked">
-                  <bool>false</bool>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_3"/>
-                </widget>
-               </item>
-               <item>
                 <widget class="QCheckBox" name="mShowMapOverlayCheckBox">
+                 <property name="styleSheet">
+                  <string notr="true">font-weight: bold</string>
+                 </property>
                  <property name="text">
                   <string>Show 2D map overlay</string>
-                 </property>
-                 <property name="styleSheet">
-                   <string notr="true">font-weight: bold</string>
                  </property>
                 </widget>
                </item>
                <item>
                 <spacer name="verticalSpacerCameraSkybox">
                  <property name="orientation">
-                  <enum>Qt::Vertical</enum>
+                  <enum>Qt::Orientation::Vertical</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -940,7 +1143,7 @@
            <item>
             <widget class="QgsScrollArea" name="scrollAreaAdvanced">
              <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
+              <enum>QFrame::Shape::NoFrame</enum>
              </property>
              <property name="widgetResizable">
               <bool>true</bool>
@@ -950,8 +1153,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>803</width>
-                <height>649</height>
+                <width>359</width>
+                <height>312</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutAdvanced">
@@ -1075,7 +1278,7 @@
                   <item row="2" column="0">
                    <spacer name="verticalSpacerAdvanced">
                     <property name="orientation">
-                     <enum>Qt::Vertical</enum>
+                     <enum>Qt::Orientation::Vertical</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
@@ -1104,12 +1307,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -1118,6 +1315,12 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
@@ -1154,6 +1357,17 @@
    <header>qgsextentgroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>qgsstackedwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>m3DOptionsListWidget</tabstop>
@@ -1173,7 +1387,6 @@
   <tabstop>spinCameraFieldOfView</tabstop>
   <tabstop>mCameraNavigationModeCombo</tabstop>
   <tabstop>mCameraMovementSpeed</tabstop>
-  <tabstop>groupSkyboxSettings</tabstop>
   <tabstop>scrollAreaAdvanced</tabstop>
   <tabstop>spinMapResolution</tabstop>
   <tabstop>spinScreenError</tabstop>
@@ -1185,7 +1398,6 @@
   <tabstop>edlDistanceSpinBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

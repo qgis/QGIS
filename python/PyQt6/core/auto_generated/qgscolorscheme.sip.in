@@ -10,6 +10,7 @@
 
 
 
+
 typedef QList< QPair< QColor, QString > > QgsNamedColorList;
 
 class QgsColorScheme
@@ -197,6 +198,7 @@ Sets whether a this scheme should be shown in color button menus.
              to hide from menus
 %End
 
+
   protected:
 
 
@@ -242,6 +244,7 @@ Returns the most recently used color.
 
 .. seealso:: :py:func:`addRecentColor`
 %End
+
 };
 
 class QgsCustomColorScheme : QgsColorScheme
@@ -270,6 +273,7 @@ dialog.
 
 
     virtual QgsCustomColorScheme *clone() const /Factory/;
+
 
 };
 

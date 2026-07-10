@@ -164,9 +164,9 @@ Returns the current value of the parameter.
 .. seealso:: :py:func:`setWidgetValue`
 %End
 
-    void setDialog( QDialog *dialog );
+    void setDialog( QWidget *dialog );
 %Docstring
-Sets the parent ``dialog`` in which the widget is shown.
+Sets the parent ``dialog`` (or widget) in which the widget is shown.
 
 .. versionadded:: 3.8
 %End

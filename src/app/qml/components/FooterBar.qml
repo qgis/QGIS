@@ -10,6 +10,7 @@ Rectangle {
   
   implicitHeight: 60
   color: "transparent"
+  clip: true
 
   RowLayout {
     anchors.fill: parent

@@ -69,6 +69,7 @@ Returns ``True`` if this vertex ID is valid for the specified ``geom``.
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

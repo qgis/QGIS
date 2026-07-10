@@ -48,6 +48,8 @@ Returns a new instance of QgsMetalRoughTexturedMaterialSettings.
 
     virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
 
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+
 
     QString baseColorTexturePath() const;
 %Docstring
@@ -77,6 +79,45 @@ Returns the path to the normal texture map.
 .. seealso:: :py:func:`setNormalTexturePath`
 %End
 
+    QString heightTexturePath() const;
+%Docstring
+Returns the path to the height texture map.
+
+.. seealso:: :py:func:`setHeightTexturePath`
+%End
+
+    double parallaxScale() const;
+%Docstring
+Returns the parallax scale, which dictates the strength of the height
+displacement effect.
+
+.. seealso:: :py:func:`setParallaxScale`
+
+.. seealso:: :py:func:`heightTexturePath`
+%End
+
+    QString emissionTexturePath() const;
+%Docstring
+Returns the path to the emission/luminosity texture map.
+
+.. seealso:: :py:func:`emissionFactor`
+
+.. seealso:: :py:func:`setEmissionTexturePath`
+%End
+
+    double emissionFactor() const;
+%Docstring
+Returns the emission factor, which dictates the strength of the emission
+effect.
+
+A value of 1.0 indicates that the emission texture values should be used
+directly. Larger values result in more light emission.
+
+.. seealso:: :py:func:`setEmissionFactor`
+
+.. seealso:: :py:func:`emissionTexturePath`
+%End
+
     QString ambientOcclusionTexturePath() const;
 %Docstring
 Returns the path to the ambient occlusion texture map.
@@ -88,9 +129,10 @@ Returns the path to the ambient occlusion texture map.
 %Docstring
 Returns the texture scale.
 
-The texture scale changes the size of the displayed texture in the 3D
-scene. If the texture scale is less than 1, the texture will be
-stretched.
+The texture scale changes the size of the material's textures in the 3D
+scene.
+
+If the texture scale is less than 1 the textures will be stretched.
 
 .. seealso:: :py:func:`setTextureScale`
 %End
@@ -100,6 +142,24 @@ stretched.
 Returns the texture rotation, in degrees.
 
 .. seealso:: :py:func:`setTextureRotation`
+%End
+
+    QPointF textureOffset() const;
+%Docstring
+Returns the texture offset.
+
+.. seealso:: :py:func:`setTextureOffset`
+
+.. versionadded:: 4.2
+%End
+
+    double opacity() const;
+%Docstring
+Returns the opacity of the surface
+
+.. seealso:: :py:func:`setOpacity`
+
+.. versionadded:: 4.2
 %End
 
     void setBaseColorTexturePath( const QString &path );
@@ -130,11 +190,50 @@ Sets the ``path`` to the normal texture map.
 .. seealso:: :py:func:`normalTexturePath`
 %End
 
+    void setHeightTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` to the height texture map.
+
+.. seealso:: :py:func:`heightTexturePath`
+%End
+
+    void setParallaxScale( double scale );
+%Docstring
+Sets the parallax ``scale``, which dictates the strength of the height
+displacement effect.
+
+.. seealso:: :py:func:`parallaxScale`
+
+.. seealso:: :py:func:`setHeightTexturePath`
+%End
+
     void setAmbientOcclusionTexturePath( const QString &path );
 %Docstring
 Sets the ``path`` to the ambient occlusion texture map.
 
 .. seealso:: :py:func:`ambientOcclusionTexturePath`
+%End
+
+    void setEmissionTexturePath( const QString &path );
+%Docstring
+Sets the ``path`` to the emission/luminosity texture map.
+
+.. seealso:: :py:func:`setEmissionFactor`
+
+.. seealso:: :py:func:`emissionTexturePath`
+%End
+
+    void setEmissionFactor( double factor );
+%Docstring
+Sets the emission ``factor``, which dictates the strength of the
+emission effect.
+
+A value of 1.0 indicates that the emission texture values should be used
+directly. Larger values result in more light emission.
+
+.. seealso:: :py:func:`emissionFactor`
+
+.. seealso:: :py:func:`setEmissionTexturePath`
 %End
 
     void setTextureScale( double scale );
@@ -155,6 +254,22 @@ Sets the texture ``rotation``, in degrees.
 .. seealso:: :py:func:`textureRotation`
 %End
 
+    void setTextureOffset( QPointF offset );
+%Docstring
+Sets the texture ``offset``.
+
+.. seealso:: :py:func:`textureOffset`
+%End
+
+    void setOpacity( double opacity );
+%Docstring
+Sets the ``opacity`` of the surface.
+
+.. seealso:: :py:func:`opacity`
+
+.. versionadded:: 4.2
+%End
+
     virtual bool requiresTextureCoordinates() const;
 
     virtual bool requiresTangents() const;
@@ -163,6 +278,30 @@ Sets the texture ``rotation``, in degrees.
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
+
+    virtual QColor averageColor() const;
+
+%Docstring
+Returns an approximate color representing the blended material color.
+
+This function returns an approximation of the material's appearance
+based on the average color of the base color texture and the emission
+texture. Other texture maps are not taken into account.
+%End
+
+    virtual void setColorsFromBase( const QColor &baseColor );
+
+%Docstring
+Decomposes a base color into the material's color components, and sets
+the material's colors accordingly.
+
+This method has no effect for QgsMetalRoughTexturedMaterialSettings, as
+the material is fully defined by texture maps.
+
+:param baseColor: The color to decompose (ignored)
+
+.. versionadded:: 4.2
+%End
 
     bool operator==( const QgsMetalRoughTexturedMaterialSettings &other ) const;
 

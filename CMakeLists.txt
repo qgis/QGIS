@@ -27,6 +27,7 @@ set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built"
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_QTPOSITIONING TRUE CACHE BOOL "Determines whether QtPositioning support should be included")
 set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
+set (WITH_TRACY FALSE CACHE BOOL "Determines whether Tracy profiler support should be included")
 
 set (SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
 set (QGISPOSTFIX "" CACHE STRING "Optional postfix to apply to public shared objects and executables")
@@ -64,7 +65,7 @@ endif()
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "4")
-set(CPACK_PACKAGE_VERSION_MINOR "1")
+set(CPACK_PACKAGE_VERSION_MINOR "3")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -78,6 +79,7 @@ message(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps which are only relevant for releases to speed up compilation time for development")
 
@@ -579,7 +581,12 @@ if(WITH_CORE)
   if (WITH_DRACO)
     find_package(Draco REQUIRED)
     message(STATUS "Found Draco: ${DRACO_LIBRARY} (${DRACO_VERSION})")
-    set(HAVE_DRACO TRUE)  # used in qgisconfig.h
+    set(HAVE_DRACO TRUE)  # used in qgsconfig.h
+  endif()
+
+  if (WITH_TRACY)
+    find_package(Tracy REQUIRED)
+    set(HAVE_TRACY TRUE)
   endif()
 
   #############################################################

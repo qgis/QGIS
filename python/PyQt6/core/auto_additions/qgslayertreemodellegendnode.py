@@ -61,13 +61,13 @@ except (NameError, AttributeError):
     pass
 try:
     QgsLayerTreeModelLegendNode.__attribute_docs__ = {'dataChanged': 'Emitted on internal data change so the layer tree model can forward the\nsignal to views\n', 'sizeChanged': 'Emitted when the size of this node changes.\n\n.. versionadded:: 3.16\n'}
-    QgsLayerTreeModelLegendNode.__virtual_methods__ = ['flags', 'setData', 'isEmbeddedInParent', 'setEmbeddedInParent', 'userLabel', 'setUserLabel', 'userPatchSize', 'setUserPatchSize', 'setColumnBreak', 'columnBreak', 'isScaleOK', 'invalidateMapBasedData', 'draw', 'drawSymbol', 'exportSymbolToJson', 'drawSymbolText']
+    QgsLayerTreeModelLegendNode.__virtual_methods__ = ['flags', 'setData', 'isEmbeddedInParent', 'setEmbeddedInParent', 'userLabel', 'setUserLabel', 'userPatchSize', 'setUserPatchSize', 'setColumnBreak', 'columnBreak', 'isScaleOK', 'invalidateMapBasedData', 'invalidateDisplayData', 'draw', 'drawSymbol', 'exportSymbolToJson', 'drawSymbolText']
     QgsLayerTreeModelLegendNode.__abstract_methods__ = ['data']
     QgsLayerTreeModelLegendNode.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
 try:
-    QgsSymbolLegendNode.__overridden_methods__ = ['flags', 'data', 'setData', 'drawSymbol', 'exportSymbolToJson', 'setEmbeddedInParent', 'setUserLabel', 'isScaleOK', 'invalidateMapBasedData']
+    QgsSymbolLegendNode.__overridden_methods__ = ['flags', 'data', 'setData', 'invalidateDisplayData', 'drawSymbol', 'exportSymbolToJson', 'setEmbeddedInParent', 'setUserLabel', 'isScaleOK', 'invalidateMapBasedData']
     QgsSymbolLegendNode.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
@@ -92,7 +92,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsDataDefinedSizeLegendNode.__overridden_methods__ = ['data', 'draw']
+    QgsDataDefinedSizeLegendNode.__overridden_methods__ = ['data', 'invalidateDisplayData', 'draw']
     QgsDataDefinedSizeLegendNode.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass

@@ -1,0 +1,109 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssunpositioncalculator.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+struct QgsSunPositionResult
+{
+%TypeHeaderCode
+#include "qgssunpositioncalculator.h"
+%End
+    double azimuth;
+
+    double apparentElevation;
+
+    QDateTime solarMidnightBefore;
+
+    QDateTime solarTransit;
+
+    QDateTime solarMidnightAfter;
+
+    QDateTime sunrise;
+
+    QDateTime sunset;
+
+    QDateTime civilDawn;
+
+    QDateTime civilDusk;
+
+    QDateTime nauticalDawn;
+
+    QDateTime nauticalDusk;
+
+    QDateTime astronomicalDawn;
+
+    QDateTime astronomicalDusk;
+};
+
+class QgsSunPositionCalculator
+{
+%Docstring(signature="appended")
+Calculates the sun's position and related sun events for a given
+datetime.
+
+This class is a high-level wrapper around the freespa algorithm for
+calculating solar position and events.
+
+.. warning::
+
+   This class only supports sun position calculation from the Earth. Other celestial bodies are not supported.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgssunpositioncalculator.h"
+%End
+  public:
+    static QgsSunPositionResult calculate(
+      const QgsPointXY &point,
+      const QgsCoordinateReferenceSystem &crs,
+      const QgsCoordinateTransformContext &context,
+      const QDateTime &dateTime,
+      double elevationMeters = 0.0,
+      double pressure = 1013.25,
+      double temperature = 15.0
+    );
+%Docstring
+Calculates the solar position and events for a given point and time.
+
+:param point: the target point in the specified ``crs``.
+:param crs: Coordinate Reference System associated with the ``point``.
+:param context: coordinate transform context.
+:param dateTime: the date and time for the calculation.
+:param elevationMeters: optional elevation of the observer in meters
+                        above sea level.
+:param pressure: atmospheric pressure used for refraction correction (in
+                 millibars, hPa). The default is one standard
+                 atmosphere, or 1013.25 hPa.
+:param temperature: the local temperature used for refraction
+                    correction, in degrees Celsius.
+
+:return: A :py:class:`QgsSunPositionResult` containing the calculated
+         solar angles and event times.
+
+.. warning::
+
+   This method only supports sun position calculation from the Earth. Other celestial bodies are not supported.
+
+:raises QgsCsException: if the point could not be transformed to WGS84
+
+:raises QgsInvalidArgumentException: when the specified arguments are
+                                     invalid
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssunpositioncalculator.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

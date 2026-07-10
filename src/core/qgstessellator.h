@@ -303,7 +303,7 @@ class CORE_EXPORT QgsTessellator
         inline bool operator==( const VertexPoint &other ) const { return position == other.position && normal == other.normal && tangent == other.tangent; }
     };
 
-    friend uint qHash( const VertexPoint &key, size_t seed )
+    friend size_t qHash( const VertexPoint &key, size_t seed )
     {
       return qHashMulti( seed, key.position.x(), key.position.y(), key.position.z(), key.normal.x(), key.normal.y(), key.normal.z(), key.tangent.x(), key.tangent.y(), key.tangent.z(), key.tangent.w() );
     }
@@ -328,7 +328,6 @@ class CORE_EXPORT QgsTessellator
     void addVertex( const QVector3D &point, const QVector3D &normal, const QVector4D &tangent, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, bool isFloor = false );
     void makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeight );
     void addExtrusionWallQuad( const QVector3D &pt1, const QVector3D &pt2, float height, float u1, float u2 );
-    void ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2> *, float> *zHash );
     std::vector<QVector3D> generateConstrainedDelaunayTriangles( const QgsPolygon *polygonNew );
     std::vector<QVector3D> generateEarcutTriangles( const QgsPolygon *polygonNew );
 

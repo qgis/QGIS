@@ -21,6 +21,7 @@
 #include "qgsdoublespinbox.h"
 #include "qgsguiutils.h"
 #include "qgslogger.h"
+#include "qgsscreenhelper.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingstree.h"
 #include "qgssymbollayerutils.h"
@@ -464,6 +465,9 @@ QgsColorWheel::QgsColorWheel( QWidget *parent )
     wheelGradient.setColorAt( relativePos, gradColor );
   }
   mWheelBrush = QBrush( wheelGradient );
+
+  auto screenHelper = new QgsScreenHelper( this );
+  connect( screenHelper, &QgsScreenHelper::screenDpiChanged, this, &QgsColorWheel::invalidateImages );
 }
 
 QgsColorWheel::~QgsColorWheel() = default;
@@ -496,19 +500,19 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   }
 
   //draw wheel centered on widget
-  const QPointF center = QPointF( mWidgetImage.width() / 2.0, mWidgetImage.height() / 2.0 );
-  imagePainter.drawImage( QPointF( center.x() - ( mWheelImage.width() / 2.0 ), center.y() - ( mWheelImage.height() / 2.0 ) ), mWheelImage );
+  const QPointF center = QPointF( mWidgetImage.width() / 2.0 / mWidgetImage.devicePixelRatioF(), mWidgetImage.height() / 2.0 / mWidgetImage.devicePixelRatioF() );
+  imagePainter.drawImage( QPointF( center.x() - ( mWheelImage.width() / 2.0 / mWidgetImage.devicePixelRatioF() ), center.y() - ( mWheelImage.height() / 2.0 / mWidgetImage.devicePixelRatioF() ) ), mWheelImage );
 
   //draw hue marker
   const float h = hueF() * HUE_MAX;
-  const double length = mWheelImage.width() / 2.0;
+  const double length = mWheelImage.width() / 2.0 / mWidgetImage.devicePixelRatioF();
   QLineF hueMarkerLine = QLineF( center.x(), center.y(), center.x() + length, center.y() );
   hueMarkerLine.setAngle( h );
   imagePainter.save();
   //use sourceIn mode for nicer antialiasing
   imagePainter.setCompositionMode( QPainter::CompositionMode_SourceIn );
   QPen pen;
-  pen.setWidthF( 2 * devicePixelRatioF() );
+  pen.setWidthF( 2 * mWidgetImage.devicePixelRatioF() );
   //adapt pen color for hue
   pen.setColor( h > 20 && h < 200 ? Qt::black : Qt::white );
   imagePainter.setPen( pen );
@@ -520,10 +524,10 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   {
     createTriangle();
   }
-  imagePainter.drawImage( QPointF( center.x() - ( mWheelImage.width() / 2.0 ), center.y() - ( mWheelImage.height() / 2.0 ) ), mTriangleImage );
+  imagePainter.drawImage( QPointF( center.x() - ( mWheelImage.width() / 2.0 / mWidgetImage.devicePixelRatioF() ), center.y() - ( mWheelImage.height() / 2.0 / mWidgetImage.devicePixelRatioF() ) ), mTriangleImage );
 
   //draw current color marker
-  const double triangleRadius = length - mWheelThickness * devicePixelRatioF() - 1;
+  const double triangleRadius = length - ( mWheelThickness + 1 ) * mWheelImage.devicePixelRatioF();
 
   //adapted from equations at https://github.com/timjb/colortriangle/blob/master/colortriangle.js by Tim Baumann
   const double lightness = mCurrentColor.lightnessF();
@@ -545,7 +549,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   pen.setColor( lightness > 0.7 ? Qt::black : Qt::white );
   imagePainter.setPen( pen );
   imagePainter.setBrush( Qt::NoBrush );
-  imagePainter.drawEllipse( QPointF( x + center.x(), y + center.y() ), 4.0 * devicePixelRatioF(), 4.0 * devicePixelRatioF() );
+  imagePainter.drawEllipse( QPointF( x + center.x(), y + center.y() ), 4.0 * mWheelImage.devicePixelRatioF(), 4.0 * mWheelImage.devicePixelRatioF() );
   imagePainter.end();
 
   //draw image onto widget
@@ -572,33 +576,21 @@ void QgsColorWheel::createImages( const QSizeF size )
   //recreate cache images at correct size
   const double pixelRatio = devicePixelRatioF();
   mWheelImage = QImage( wheelSize * pixelRatio, wheelSize * pixelRatio, QImage::Format_ARGB32 );
+  mWheelImage.setDevicePixelRatio( pixelRatio );
   mTriangleImage = QImage( wheelSize * pixelRatio, wheelSize * pixelRatio, QImage::Format_ARGB32 );
+  mTriangleImage.setDevicePixelRatio( pixelRatio );
   mWidgetImage = QImage( size.width() * pixelRatio, size.height() * pixelRatio, QImage::Format_ARGB32 );
+  mWidgetImage.setDevicePixelRatio( pixelRatio );
 
   //trigger a redraw for the images
   mWheelDirty = true;
   mTriangleDirty = true;
 }
 
-void QgsColorWheel::resizeEvent( QResizeEvent *event )
+void QgsColorWheel::resizeEvent( QResizeEvent * )
 {
-  QgsColorWidget::resizeEvent( event );
-#ifdef Q_OS_WIN
-  // For some reason the first reported size than that of the parent widget, leading to a cut-off color wheel
-  if ( event->size().width() > parentWidget()->size().width() )
-  {
-    QSize newSize( std::min( event->size().width(), parentWidget()->size().width() - 2 ), std::min( event->size().height(), parentWidget()->size().height() - 2 ) );
-    resize( newSize );
-    createImages( newSize );
-  }
-  else
-  {
-    createImages( event->size() );
-  }
-#else
-  //recreate images for new size
-  createImages( event->size() );
-#endif
+  // force a recreation on next paint
+  invalidateImages();
 }
 
 void QgsColorWheel::setColorFromPos( const QPointF pos )
@@ -626,7 +618,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
     const double hueRadians = h * 2 * M_PI;
     double rad0 = std::fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
     double rad1 = std::fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
-    const double length = mWheelImage.width() / 2.0 / devicePixelRatioF();
+    const double length = mWheelImage.width() / 2.0 / mWheelImage.devicePixelRatioF();
     const double triangleLength = length - mWheelThickness - 1;
 
     const double a = 0.5 * triangleLength;
@@ -702,7 +694,7 @@ void QgsColorWheel::mousePressEvent( QMouseEvent *event )
     //create a line from the widget's center to the event
     const QLineF line = QLineF( width() / 2.0, height() / 2.0, event->pos().x(), event->pos().y() );
 
-    const double innerLength = mWheelImage.width() / 2.0 / devicePixelRatioF() - mWheelThickness;
+    const double innerLength = mWheelImage.width() / 2.0 / mWheelImage.devicePixelRatioF() - mWheelThickness * mWheelImage.devicePixelRatioF();
     if ( line.length() < innerLength )
     {
       mClickedPart = QgsColorWheel::Triangle;
@@ -732,6 +724,12 @@ void QgsColorWheel::mouseReleaseEvent( QMouseEvent *event )
   }
 }
 
+void QgsColorWheel::invalidateImages()
+{
+  // force a recreation on next paint
+  mWidgetImage = QImage();
+}
+
 void QgsColorWheel::createWheel()
 {
   if ( mWheelImage.isNull() )
@@ -740,7 +738,7 @@ void QgsColorWheel::createWheel()
   }
 
   const int maxSize = std::min( mWheelImage.width(), mWheelImage.height() );
-  const double wheelRadius = maxSize / 2.0;
+  const double wheelRadius = maxSize / 2.0 / mWheelImage.devicePixelRatioF();
 
   mWheelImage.fill( Qt::transparent );
   QPainter p( &mWheelImage );
@@ -750,12 +748,12 @@ void QgsColorWheel::createWheel()
 
   //draw hue wheel as a circle
   p.translate( wheelRadius, wheelRadius );
-  p.drawEllipse( QPointF( 0.0, 0.0 ), wheelRadius, wheelRadius );
+  p.drawEllipse( QPointF( 0, 0 ), wheelRadius, wheelRadius );
 
   //cut hole in center of circle to make a ring
   p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
   p.setBrush( QBrush( Qt::black ) );
-  p.drawEllipse( QPointF( 0, 0 ), wheelRadius - mWheelThickness * devicePixelRatioF(), wheelRadius - mWheelThickness * devicePixelRatioF() );
+  p.drawEllipse( QPointF( 0, 0 ), wheelRadius - mWheelThickness * mWheelImage.devicePixelRatioF(), wheelRadius - mWheelThickness * mWheelImage.devicePixelRatioF() );
   p.end();
 
   mWheelDirty = false;
@@ -768,7 +766,7 @@ void QgsColorWheel::createTriangle()
     return;
   }
 
-  const QPointF center = QPointF( mWheelImage.width() / 2.0, mWheelImage.height() / 2.0 );
+  const QPointF center = QPointF( mWheelImage.width() / 2.0 / mWheelImage.devicePixelRatioF(), mWheelImage.height() / 2.0 / mWheelImage.devicePixelRatioF() );
   mTriangleImage.fill( Qt::transparent );
 
   QPainter imagePainter( &mTriangleImage );
@@ -776,8 +774,8 @@ void QgsColorWheel::createTriangle()
 
   const float angle = hueF();
   const float angleDegree = angle * HUE_MAX;
-  const double wheelRadius = mWheelImage.width() / 2.0;
-  const double triangleRadius = wheelRadius - mWheelThickness * devicePixelRatioF() - 1;
+  const double wheelRadius = mWheelImage.width() / 2.0 / mWheelImage.devicePixelRatioF();
+  const double triangleRadius = wheelRadius - mWheelThickness * mWheelImage.devicePixelRatioF() - 1;
 
   //pure version of hue (at full saturation and value)
   const QColor pureColor = QColor::fromHsvF( angle, 1., 1. );
@@ -1439,8 +1437,8 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
   mSpinBox = new QgsDoubleSpinBox();
   mSpinBox->setShowClearButton( false );
   //set spinbox to a reasonable width
-  const int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( u"888%"_s );
-  mSpinBox->setMinimumWidth( largestCharWidth + 35 );
+  const int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( u"888.88%"_s );
+  mSpinBox->setFixedWidth( largestCharWidth + 35 );
   mSpinBox->setMinimum( 0 );
   mSpinBox->setMaximum( convertRealToDisplay( 1.f ) );
   mSpinBox->setValue( convertRealToDisplay( componentValueF() ) );

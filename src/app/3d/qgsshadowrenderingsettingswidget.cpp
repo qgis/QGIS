@@ -16,6 +16,9 @@
 #include "qgsshadowrenderingsettingswidget.h"
 
 #include "qgis.h"
+#include "qgs3d.h"
+#include "qgslightswidget.h"
+#include "qgssettingsentryenumflag.h"
 
 #include <QCheckBox>
 #include <QLineEdit>
@@ -29,36 +32,38 @@ QgsShadowRenderingSettingsWidget::QgsShadowRenderingSettingsWidget( QWidget *par
 
   shadowRenderinMaximumDistanceSpinBox->setClearValue( 1500.00 );
   shadowBiasSpinBox->setClearValue( 0.000010 );
-  shadowMapResolutionSpinBox->setClearValue( 2048 );
+}
+
+void QgsShadowRenderingSettingsWidget::setLightSourceModel( QgsLightsModel *model )
+{
+  mLightsModel = model;
+  mLightsProxyModel = new QgsLightsProxyModel( this );
+  mLightsProxyModel->setSourceModel( mLightsModel );
+  mLightsProxyModel->setAllowedLightTypes( { Qgis::LightSourceType::Directional, Qgis::LightSourceType::Sun } );
+  mLightSourceComboBox->setModel( mLightsProxyModel );
 }
 
 void QgsShadowRenderingSettingsWidget::setShadowSettings( const QgsShadowSettings &shadowSettings )
 {
-  usedDirectionalLightComboBox->setCurrentIndex( shadowSettings.selectedDirectionalLight() );
+  if ( mLightsModel )
+  {
+    const QModelIndex sourceIndex = mLightsModel->indexFromLightId( shadowSettings.lightSource() );
+    const QModelIndex proxyIndex = mLightsProxyModel->mapFromSource( sourceIndex );
+    if ( proxyIndex.isValid() )
+    {
+      mLightSourceComboBox->setCurrentIndex( proxyIndex.row() );
+    }
+  }
   shadowRenderinMaximumDistanceSpinBox->setValue( shadowSettings.maximumShadowRenderingDistance() );
   shadowBiasSpinBox->setValue( shadowSettings.shadowBias() );
-  shadowMapResolutionSpinBox->setValue( shadowSettings.shadowMapResolution() );
 }
 
 QgsShadowSettings QgsShadowRenderingSettingsWidget::toShadowSettings()
 {
   QgsShadowSettings settings;
-  settings.setSelectedDirectionalLight( usedDirectionalLightComboBox->currentIndex() );
+  settings.setLightSource( mLightSourceComboBox->currentData( QgsLightsModel::LightId ).toString() );
   settings.setMaximumShadowRenderingDistance( shadowRenderinMaximumDistanceSpinBox->value() );
   settings.setShadowBias( shadowBiasSpinBox->value() );
-  settings.setShadowMapResolution( shadowMapResolutionSpinBox->value() );
+  settings.setShadowQuality( Qgs3D::settingShadowQuality->value() );
   return settings;
-}
-
-void QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged( int newCount )
-{
-  const int previousItemIndex = usedDirectionalLightComboBox->currentIndex();
-  while ( usedDirectionalLightComboBox->count() < newCount )
-    usedDirectionalLightComboBox->addItem( tr( "Directional light %1" ).arg( usedDirectionalLightComboBox->count() + 1 ) );
-  while ( usedDirectionalLightComboBox->count() > newCount )
-    usedDirectionalLightComboBox->removeItem( usedDirectionalLightComboBox->count() - 1 );
-  if ( previousItemIndex < 0 || previousItemIndex >= usedDirectionalLightComboBox->count() )
-    usedDirectionalLightComboBox->setCurrentIndex( 0 );
-  else
-    usedDirectionalLightComboBox->setCurrentIndex( previousItemIndex );
 }

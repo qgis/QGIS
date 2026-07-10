@@ -79,6 +79,7 @@ class GUI_EXPORT QgsAttributesFormData
         QString mAlias;
         QgsPropertyCollection mDataDefinedProperties;
         QString mComment;
+        QString mCustomComment;
         QString mDefaultValueExpression;
         Qgis::FieldDomainSplitPolicy mSplitPolicy = Qgis::FieldDomainSplitPolicy::Duplicate;
         Qgis::FieldDuplicatePolicy mDuplicatePolicy = Qgis::FieldDuplicatePolicy::Duplicate;

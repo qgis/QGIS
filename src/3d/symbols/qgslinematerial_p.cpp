@@ -15,6 +15,8 @@
 
 #include "qgslinematerial_p.h"
 
+#include "qgs3dutils.h"
+
 #include <QColor>
 #include <QSizeF>
 #include <QString>
@@ -39,7 +41,7 @@ using namespace Qt::StringLiterals;
 QgsLineMaterial::QgsLineMaterial()
   : mParameterThickness( new Qt3DRender::QParameter( "THICKNESS", 10, this ) )
   , mParameterMiterLimit( new Qt3DRender::QParameter( "MITER_LIMIT", -1, this ) ) // 0.75
-  , mParameterLineColor( new Qt3DRender::QParameter( "lineColor", QColor( 0, 255, 0 ), this ) )
+  , mParameterLineColor( new Qt3DRender::QParameter( "lineColor", QVariant(), this ) )
   , mParameterUseVertexColors( new Qt3DRender::QParameter( "useVertexColors", false, this ) )
   , mParameterWindowScale( new Qt3DRender::QParameter( "WIN_SCALE", QSizeF(), this ) )
 {
@@ -49,6 +51,7 @@ QgsLineMaterial::QgsLineMaterial()
   addParameter( mParameterUseVertexColors );
   addParameter( mParameterWindowScale );
 
+  setLineColor( QColor( 0, 255, 0 ) );
   //Parameter { name: "tex0"; value: txt },
   //Parameter { name: "useTex"; value: false },
 
@@ -81,12 +84,7 @@ QgsLineMaterial::QgsLineMaterial()
 
 void QgsLineMaterial::setLineColor( const QColor &color )
 {
-  mParameterLineColor->setValue( color );
-}
-
-QColor QgsLineMaterial::lineColor() const
-{
-  return mParameterLineColor->value().value<QColor>();
+  mParameterLineColor->setValue( Qgs3DUtils::srgbToLinear( color ) );
 }
 
 void QgsLineMaterial::setUseVertexColors( bool enabled )
@@ -94,19 +92,9 @@ void QgsLineMaterial::setUseVertexColors( bool enabled )
   mParameterUseVertexColors->setValue( enabled );
 }
 
-bool QgsLineMaterial::useVertexColors() const
-{
-  return mParameterUseVertexColors->value().toBool();
-}
-
 void QgsLineMaterial::setLineWidth( float width )
 {
   mParameterThickness->setValue( width );
-}
-
-float QgsLineMaterial::lineWidth() const
-{
-  return mParameterThickness->value().toFloat();
 }
 
 void QgsLineMaterial::setViewportSize( const QSizeF &viewportSize )

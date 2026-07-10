@@ -131,6 +131,8 @@ class CORE_EXPORT QgsProcessing
     static const QgsSettingsEntryString *settingsDefaultOutputVectorLayerExt;
     //! Settings entry default output raster layer format
     static const QgsSettingsEntryString *settingsDefaultOutputRasterLayerFormat;
+    //! Settings entry default GUI parameter value (per algorithm id and parameter name)
+    static const QgsSettingsEntryVariant *settingsDefaultGuiParam;
 #endif
 };
 

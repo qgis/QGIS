@@ -360,6 +360,16 @@ Returns a GeoJSON representation of the geometry as a string.
 .. seealso:: :py:func:`asJsonObject`
 %End
 
+    QString asGeoJson(int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy );
+%Docstring
+Export the geometry to a GeoJSON string, with the given ``precision``
+and following the specified GeoJSON ``profile``. Note: this is identical
+to :py:func:`~QgsAbstractGeometry.asJson` when using the Legacy profile,
+but differs when using other profiles.
+
+.. versionadded:: 4.4
+%End
+
 
     virtual QString asKml( int precision = 17 ) const = 0;
 %Docstring
@@ -520,6 +530,32 @@ Deletes a vertex within the geometry
 .. seealso:: :py:func:`insertVertex`
 
 .. seealso:: :py:func:`moveVertex`
+%End
+
+    virtual bool deleteVertices( const QSet<QgsVertexId> &positions ) = 0;
+%Docstring
+Deletes vertices within the geometry. If ``positions`` contains vertices
+not belonging to the geometry, ``False`` is returned and the geometry is
+not modified. If a vertex cannot be deleted, the method returns
+``False`` and the geometry may be left in a partially modified and
+invalid state.
+
+:param positions: set of vertex ids to delete
+
+:return: ``True`` if all requested vertices were deleted, ``False`` if
+         at least one vertex could not be deleted
+
+.. seealso:: :py:func:`deleteVertex`
+
+.. versionadded:: 4.2
+%End
+
+    virtual bool hasVertex( QgsVertexId position ) const = 0;
+%Docstring
+Returns ``True`` if the geometry contains a vertex matching the given
+``position``.
+
+.. versionadded:: 4.2
 %End
 
     virtual double length() const;

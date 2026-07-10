@@ -53,6 +53,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
   public:
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNamedListNode *sTreeNewsFeed = QgsSettingsTree::sTreeApp->createNamedListNode( u"news-feed"_s );
+    static const QgsSettingsEntryBool *settingsFeedDisabled;
     static const QgsSettingsEntryInteger64 *settingsFeedLastFetchTime;
     static const QgsSettingsEntryString *settingsFeedLanguage;
     static const QgsSettingsEntryDouble *settingsFeedLatitude;

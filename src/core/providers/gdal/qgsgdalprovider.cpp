@@ -2088,9 +2088,6 @@ QgsRasterHistogram QgsGdalProvider::histogram(
   }
 
   const double myScale { bandScale( bandNo ) };
-  // Adjust bin count according to scale
-  // Fix issue GH #59461
-  myHistogram.binCount = static_cast<int>( myHistogram.binCount * myScale );
 
   if ( ( sourceHasNoDataValue( bandNo ) && !useSourceNoDataValue( bandNo ) ) || !userNoDataValues( bandNo ).isEmpty() )
   {
@@ -2524,7 +2521,7 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
 
 QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( const QList<int> &list )
 {
-  if ( mInClosing )
+  if ( mInClosing || !mGdalDataset )
     return QList<QgsRasterPyramid>();
 
   QList< int > overviewList = list;

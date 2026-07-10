@@ -73,6 +73,8 @@ Abstract base class for all 2D vector feature renderers.
       sipType = sipType_QgsRuleBasedRenderer;
     else if ( type == QLatin1String( "heatmapRenderer" ) )
       sipType = sipType_QgsHeatmapRenderer;
+    else if ( type == QLatin1String( "mergedFeatureRenderer" ) )
+      sipType = sipType_QgsMergedFeatureRenderer;
     else if ( type == QLatin1String( "invertedPolygonRenderer" ) )
       sipType = sipType_QgsInvertedPolygonRenderer;
     else if ( type == QLatin1String( "pointCluster" ) )
@@ -394,6 +396,18 @@ Sets the symbol to be used for a legend symbol item.
                renderer.
 
 .. seealso:: :py:func:`legendKeys`
+%End
+
+    virtual void setLegendSymbolItemLabel( const QString &key, const QString &label );
+%Docstring
+Sets the label for a legend symbol item.
+
+:param key: rule key for legend symbol
+:param label: new label for the legend item
+
+.. seealso:: :py:func:`legendKeys`
+
+.. versionadded:: 4.2
 %End
 
     virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok /Out/ ) const;

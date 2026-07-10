@@ -506,6 +506,8 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     }
 
     GDALSetRasterNoDataValue( GDALGetRasterBand( tmpDS.get(), 1 ), noDataValue );
+    // fill with nodata, so that there are no unintended 0 values where there are no tiles
+    GDALFillRaster( GDALGetRasterBand( tmpDS.get(), 1 ), noDataValue, 0 );
 
     // Write tiles to the temporary raster
     CPLErrorReset();
@@ -799,7 +801,7 @@ QString QgsPostgresRasterProvider::htmlMetadata() const
     { tr( "Primary Keys SQL" ), pkSql() },
     { tr( "Temporal Column" ), mTemporalFieldIndex >= 0 && mAttributeFields.exists( mTemporalFieldIndex ) ? mAttributeFields.field( mTemporalFieldIndex ).name() : QString() },
   };
-  return QgsPostgresUtils::variantMapToHtml( additionalInformation, tr( "Additional information" ) );
+  return QgsVariantUtils::variantToHtml( additionalInformation, tr( "Additional information" ) );
 }
 
 QString QgsPostgresRasterProvider::lastErrorTitle()

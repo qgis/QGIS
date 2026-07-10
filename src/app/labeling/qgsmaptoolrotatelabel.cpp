@@ -340,7 +340,7 @@ void QgsMapToolRotateLabel::createRotationPreviewBox()
   if ( boxPoints.empty() )
     return;
 
-  mRotationPreviewBox.reset( new QgsRubberBand( mCanvas, Qgis::GeometryType::Line ) );
+  mRotationPreviewBox = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Line );
   mRotationPreviewBox->setColor( QColor( 0, 0, 255, 65 ) );
   mRotationPreviewBox->setWidth( 3 );
   setRotationPreviewBox( mCurrentRotation - mStartRotation );

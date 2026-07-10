@@ -100,6 +100,10 @@ const QgsSettingsEntryString *QgsRasterLayer::settingsRasterDefaultZoomedInResam
   = new QgsSettingsEntryString( u"default-zoomed-in-resampling"_s, QgsSettingsTree::sTreeRaster, u"nearest neighbour"_s, u"Default zoomed-in resampling method for raster layers"_s );
 const QgsSettingsEntryString *QgsRasterLayer::settingsRasterDefaultZoomedOutResampling
   = new QgsSettingsEntryString( u"default-zoomed-out-resampling"_s, QgsSettingsTree::sTreeRaster, u"nearest neighbour"_s, u"Default zoomed-out resampling method for raster layers"_s );
+const QgsSettingsEntryString *QgsRasterLayer::settingsRasterDefaultContrastEnhancementAlgorithm
+  = new QgsSettingsEntryString( u"default-contrast-enhancement-algorithm/%1"_s, QgsSettingsTree::sTreeRaster, QString(), u"Default contrast enhancement algorithm per renderer type (singleBand, multiBandSingleByte, multiBandMultiByte)"_s );
+const QgsSettingsEntryString *QgsRasterLayer::settingsRasterDefaultContrastEnhancementLimits
+  = new QgsSettingsEntryString( u"default-contrast-enhancement-limits/%1"_s, QgsSettingsTree::sTreeRaster, QString(), u"Default contrast enhancement limits per renderer type (singleBand, multiBandSingleByte, multiBandMultiByte)"_s );
 
 #define ERR( message ) QGS_ERROR_MESSAGE( message, "Raster layer" )
 
@@ -809,9 +813,10 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     QgsDebugMsgLevel( u"Set Data provider QgsLayerMetadata identifier[%1]"_s.arg( metadata().identifier() ), 4 );
   }
 
-  if ( provider == "gdal"_L1 )
+  if ( provider == "gdal"_L1 || provider == "wms"_L1 )
   {
-    // make sure that the /vsigzip or /vsizip is added to uri, if applicable
+    // if provider has updated its URI, make sure we store the updated one.
+    // TODO: this probably should be enabled for all provider, but we'll play it safe for now...
     mDataSource = mDataProvider->dataSourceUri();
   }
 
@@ -1536,8 +1541,6 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings( QgsContrastEnhancement:
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  const QgsSettings mySettings;
-
   QString key;
   QString defaultAlg;
   QString defaultLimits;
@@ -1574,12 +1577,12 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings( QgsContrastEnhancement:
   }
   QgsDebugMsgLevel( "key = " + key, 4 );
 
-  const QString myAlgorithmString = mySettings.value( "/Raster/defaultContrastEnhancementAlgorithm/" + key, defaultAlg ).toString();
+  const QString myAlgorithmString = settingsRasterDefaultContrastEnhancementAlgorithm->valueWithDefaultOverride( defaultAlg, { key } );
   QgsDebugMsgLevel( "myAlgorithmString = " + myAlgorithmString, 4 );
 
   myAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( myAlgorithmString );
 
-  const QString myLimitsString = mySettings.value( "/Raster/defaultContrastEnhancementLimits/" + key, defaultLimits ).toString();
+  const QString myLimitsString = settingsRasterDefaultContrastEnhancementLimits->valueWithDefaultOverride( defaultLimits, { key } );
   QgsDebugMsgLevel( "myLimitsString = " + myLimitsString, 4 );
   myLimits = QgsRasterMinMaxOrigin::limitsFromString( myLimitsString );
 

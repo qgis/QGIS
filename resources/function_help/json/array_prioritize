@@ -7,7 +7,7 @@
     "arg": "array",
     "description": "an array"
   }, {
-    "arg": "array_prioritize",
+    "arg": "priority",
     "description": "an array with values ordered by priority"
   }],
   "examples": [{

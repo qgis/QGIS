@@ -124,7 +124,7 @@ class GrassUtils:
             try:
                 lines = proc.stdout.readlines()
                 for line in lines:
-                    if "GRASS GIS " in line:
+                    if "GRASS " in line:
                         line = line.split(" ")[-1].strip()
                         if line.startswith("7.") or line.startswith("8."):
                             GrassUtils.version = line
@@ -357,9 +357,7 @@ class GrassUtils:
         mkdir(os.path.join(folder, "PERMANENT", ".tmp"))
         GrassUtils.writeGrassWindow(os.path.join(folder, "PERMANENT", "DEFAULT_WIND"))
         with open(os.path.join(folder, "PERMANENT", "MYNAME"), "w") as outfile:
-            outfile.write(
-                "QGIS GRASS GIS interface: temporary data processing location.\n"
-            )
+            outfile.write("QGIS GRASS interface: temporary data processing location.\n")
 
         GrassUtils.writeGrassWindow(os.path.join(folder, "PERMANENT", "WIND"))
         mkdir(os.path.join(folder, "PERMANENT", "sqlite"))
@@ -423,7 +421,7 @@ class GrassUtils:
 
     @staticmethod
     def executeGrass(commands, feedback, outputCommands=None):
-        loglines = [GrassUtils.tr("GRASS GIS execution console output")]
+        loglines = [GrassUtils.tr("GRASS execution console output")]
         grassOutDone = False
         command, grassenv = GrassUtils.prepareGrassExecution(commands)
         # QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
@@ -590,7 +588,7 @@ class GrassUtils:
                 cmdpath = os.path.join(GrassUtils.path, "bin", "r.out.gdal.exe")
                 if not os.path.exists(cmdpath):
                     return GrassUtils.tr(
-                        'The GRASS GIS folder "{}" does not contain a valid set '
+                        'The GRASS folder "{}" does not contain a valid set '
                         "of GRASS modules.\nPlease, check that GRASS is correctly "
                         "installed and available on your system."
                     ).format(os.path.join(GrassUtils.path, "bin"))
@@ -602,13 +600,13 @@ class GrassUtils:
             if isWindows() or isMac():
                 if GrassUtils.path is None:
                     return GrassUtils.tr(
-                        "Could not locate GRASS GIS folder. Please make "
-                        "sure that GRASS GIS is correctly installed before "
+                        "Could not locate GRASS folder. Please make "
+                        "sure that GRASS is correctly installed before "
                         "running GRASS algorithms."
                     )
                 if GrassUtils.command is None:
                     return GrassUtils.tr(
-                        "GRASS GIS binary {} can't be found on this system from a shell. "
+                        "GRASS binary {} can't be found on this system from a shell. "
                         "Please install it or configure your PATH {} environment variable."
                     ).format(
                         "(grass.bat)" if isWindows() else "(grass.sh)",
@@ -665,12 +663,12 @@ class GrassUtils:
             return "https://grass.osgeo.org/grass-stable/manuals/"
 
     @staticmethod
-    def getSupportedOutputRasterExtensions():
+    def getSupportedOutputRasterFormatAndExtensions():
         # We use the same extensions as GDAL because:
         # - GRASS is also using GDAL for raster imports.
         # - Chances that GRASS is compiled with another version of
         # GDAL than QGIS are very limited!
-        return GdalUtils.getSupportedOutputRasterExtensions()
+        return GdalUtils.getSupportedOutputRasterFormatAndExtensions()
 
     @staticmethod
     def getRasterFormatFromFilename(filename):

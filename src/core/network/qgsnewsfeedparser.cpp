@@ -36,6 +36,7 @@
 
 using namespace Qt::StringLiterals;
 
+const QgsSettingsEntryBool *QgsNewsFeedParser::settingsFeedDisabled = new QgsSettingsEntryBool( u"disabled"_s, sTreeNewsFeed, false, u"Whether the news feed is disabled"_s );
 const QgsSettingsEntryInteger64 *QgsNewsFeedParser::settingsFeedLastFetchTime
   = new QgsSettingsEntryInteger64( u"last-fetch-time"_s, sTreeNewsFeed, 0, u"Feed last fetch time"_s, Qgis::SettingsOptions(), 0 );
 const QgsSettingsEntryString *QgsNewsFeedParser::settingsFeedLanguage = new QgsSettingsEntryString( u"lang"_s, sTreeNewsFeed, QString(), u"Feed language"_s );
@@ -60,7 +61,7 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
   , mFeedKey( keyForFeed( mBaseUrl ) )
 {
   // Synchronize enabled/disabled state
-  mEnabled = !QgsSettings().value( u"%1/disabled"_s.arg( mFeedKey ), false, QgsSettings::Core ).toBool();
+  mEnabled = !settingsFeedDisabled->value( mFeedKey );
 
   // first thing we do is populate with existing entries
   readStoredEntries();
@@ -119,7 +120,7 @@ void QgsNewsFeedParser::setEnabled( bool enabled )
   mEnabled = enabled;
   emit enabledChanged();
 
-  QgsSettings().setValue( u"%1/disabled"_s.arg( mFeedKey ), !mEnabled, QgsSettings::Core );
+  settingsFeedDisabled->setValue( !mEnabled, { mFeedKey } );
 }
 
 QList<QgsNewsFeedParser::Entry> QgsNewsFeedParser::entries() const
@@ -243,9 +244,9 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     Entry incomingEntry;
     const QVariantMap entryMap = e.toMap();
     incomingEntry.key = entryMap.value( u"pk"_s ).toInt();
-    incomingEntry.title = entryMap.value( u"title"_s ).toString();
+    incomingEntry.title = entryMap.value( u"title"_s ).toString().trimmed();
     incomingEntry.imageUrl = entryMap.value( u"image"_s ).toString();
-    incomingEntry.content = entryMap.value( u"content"_s ).toString();
+    incomingEntry.content = entryMap.value( u"content"_s ).toString().trimmed();
     incomingEntry.link = entryMap.value( u"url"_s ).toString();
     incomingEntry.sticky = entryMap.value( u"sticky"_s ).toBool();
     incomingEntry.published.setSecsSinceEpoch( entryMap.value( u"publish_from"_s ).toLongLong() );
@@ -429,7 +430,7 @@ void QgsNewsFeedParser::fetchImageForEntry( const QgsNewsFeedParser::Entry &entr
 
 QString QgsNewsFeedParser::keyForFeed( const QString &baseUrl )
 {
-  static const QRegularExpression sRegexp( u"[^a-zA-Z0-9]"_s );
+  const thread_local QRegularExpression sRegexp( u"[^a-zA-Z0-9]"_s );
   QString res = baseUrl;
   res = res.replace( sRegexp, QString() );
   return res;

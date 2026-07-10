@@ -937,6 +937,51 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         assert vl.sourceCrs().isGeographic()
         assert vl.sourceCrs().hasAxisInverted()
 
+    def testQuotedString(self):
+
+        endpoint = (
+            self.__class__.basetestpath + "/fake_qgis_http_endpoint_testQuotedString"
+        )
+        create_landing_page_api_collection(endpoint)
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "feat.1",
+                    "properties": {"foo": 'bar"baz'},
+                    "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]},
+                }
+            ],
+        }
+
+        no_items = {"type": "FeatureCollection", "features": []}
+
+        filename = sanitize(
+            endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+        )
+        with open(filename, "wb") as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+        os.unlink(filename)
+
+        filename = sanitize(
+            endpoint,
+            "/collections/mycollection/items?limit=1000&" + ACCEPT_ITEMS,
+        )
+        with open(filename, "wb") as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+        values = [f["foo"] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, ['bar"baz'])
+
     def testDateTimeFiltering(self):
 
         endpoint = (
@@ -3207,9 +3252,19 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         ) as f:
             f.write(
                 (
-                    "OGC-NumberMatched: 2\r\nLink: <http://"
+                    # Test bugfix for https://github.com/qgis/QGIS/issues/66365
+                    # Note that the 2 links are folded in a pseudo-single one
+                    # as QgsNetworkReply::rawHeaderPairs() does...
+                    # Cf https://doc.qt.io/archives/qt-6.9/qnetworkreply.html#setRawHeader
+                    "OGC-NumberMatched: 2\r\n"
+                    + "Link: <http://"
                     + endpoint
-                    + '/collections/mycollection/items?f=fgb&offset=next_offset>; rel="next"; type="application/flatgeobuf"\r\n\r\n'
+                    + '/collections/mycollection/items?f=other_format&offset=next_offset&with=some,comma>; rel="next"; type="other_format"'
+                    + ", "
+                    + "<http://"
+                    + endpoint
+                    + '/collections/mycollection/items?f=fgb&offset=next_offset>; rel="next"; type="application/flatgeobuf"\r\n'
+                    + "\r\n"
                 ).encode("utf-8")
                 + data
             )

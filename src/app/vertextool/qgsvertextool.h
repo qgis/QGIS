@@ -57,7 +57,7 @@ struct Vertex
 };
 
 //! qHash implementation - we use Vertex in QSet
-uint qHash( const Vertex &v );
+size_t qHash( const Vertex &v );
 
 
 class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing

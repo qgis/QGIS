@@ -111,15 +111,9 @@ QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization 
     {
       // yes, this is MASSIVELY simplifying the problem!!
 
-      static QStringList smallWords;
-      static QStringList newPhraseSeparators;
-      static QRegularExpression splitWords;
-      if ( smallWords.empty() )
-      {
-        smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via" ).split( '|' );
-        newPhraseSeparators = QObject::tr( ".|:" ).split( '|' );
-        splitWords = QRegularExpression( u"\\b"_s, QRegularExpression::UseUnicodePropertiesOption );
-      }
+      const thread_local QStringList smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via" ).split( '|' );
+      const thread_local QStringList newPhraseSeparators = QObject::tr( ".|:" ).split( '|' );
+      const thread_local QRegularExpression splitWords = QRegularExpression( u"\\b"_s, QRegularExpression::UseUnicodePropertiesOption );
 
       const bool allSameCase = string.toLower() == string || string.toUpper() == string;
       const QStringList parts = ( allSameCase ? string.toLower() : string ).split( splitWords, Qt::SkipEmptyParts );

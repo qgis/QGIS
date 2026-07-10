@@ -37,6 +37,7 @@
 #include "qgsdualview.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfilebaseddataitemprovider.h"
 #include "qgsgdalutils.h"
 #include "qgsgui.h"
 #include "qgslayertreemodellegendnode.h"
@@ -414,7 +415,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   //paths hidden from browser
-  const QStringList hiddenPathList = mSettings->value( u"/browser/hiddenPaths"_s ).toStringList();
+  const QStringList hiddenPathList = QgsDirectoryItem::settingsHiddenPaths->value();
   for ( const QString &path : hiddenPathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mListHiddenBrowserPaths );
@@ -518,12 +519,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbAttrTableBehavior->setCurrentIndex( cmbAttrTableBehavior->findData( mSettings->enumValue( u"/qgis/attributeTableBehavior"_s, QgsAttributeTableFilterModel::ShowAll ) ) );
 
   mAttrTableViewComboBox->clear();
-  mAttrTableViewComboBox->addItem( tr( "Remember Last View" ), -1 );
-  mAttrTableViewComboBox->addItem( tr( "Table View" ), QgsDualView::AttributeTable );
-  mAttrTableViewComboBox->addItem( tr( "Form View" ), QgsDualView::AttributeEditor );
-  mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( mSettings->value( u"/qgis/attributeTableView"_s, -1 ).toInt() ) );
+  mAttrTableViewComboBox->addItem( tr( "Remember Last View" ), QgsAttributeTableDialog::RememberLast );
+  mAttrTableViewComboBox->addItem( tr( "Table View" ), QgsAttributeTableDialog::AttributeTable );
+  mAttrTableViewComboBox->addItem( tr( "Form View" ), QgsAttributeTableDialog::AttributeEditor );
+  mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( static_cast<int>( QgsAttributeTableDialog::settingsAttributeTableInitialView->value() ) ) );
 
-  spinBoxAttrTableRowCache->setValue( mSettings->value( u"/qgis/attributeTableRowCache"_s, 10000 ).toInt() );
+  spinBoxAttrTableRowCache->setValue( QgsDualView::settingsAttributeTableRowCache->value() );
   spinBoxAttrTableRowCache->setClearValue( 10000 );
   spinBoxAttrTableRowCache->setSpecialValueText( tr( "All" ) );
 
@@ -538,7 +539,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbScanItemsInBrowser->clear();
   cmbScanItemsInBrowser->addItem( tr( "Check File Contents" ), "contents" ); // 0
   cmbScanItemsInBrowser->addItem( tr( "Check Extension" ), "extension" );    // 1
-  int index = cmbScanItemsInBrowser->findData( mSettings->value( u"/qgis/scanItemsInBrowser2"_s, QString() ) );
+  int index = cmbScanItemsInBrowser->findData( QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->value() );
   if ( index == -1 )
     index = 1;
   cmbScanItemsInBrowser->setCurrentIndex( index );
@@ -557,31 +558,31 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mCheckMonitorDirectories->setChecked( QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->value() );
 
   //set the default projection behavior radio buttons
-  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  const Qgis::UnknownLayerCrsBehavior mode = QgsSettingsRegistryCore::settingsUnknownCrsBehavior->value();
   switch ( mode )
   {
-    case NoAction:
+    case Qgis::UnknownLayerCrsBehavior::NoAction:
       radCrsNoAction->setChecked( true );
       break;
-    case PromptUserForCrs:
+    case Qgis::UnknownLayerCrsBehavior::PromptUserForCrs:
       radPromptForProjection->setChecked( true );
       break;
-    case UseProjectCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseProjectCrs:
       radUseProjectProjection->setChecked( true );
       break;
-    case UseDefaultCrs:
+    case Qgis::UnknownLayerCrsBehavior::UseDefaultCrs:
       radUseGlobalProjection->setChecked( true );
       break;
   }
 
-  QString myLayerDefaultCrs = mSettings->value( u"/Projections/layerDefaultCrs"_s, Qgis::geographicCrsAuthId() ).toString();
+  QString myLayerDefaultCrs = QgsSettingsRegistryCore::settingsLayerDefaultCrs->value();
   mLayerDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myLayerDefaultCrs );
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
   const QString defaultProjectCrs = mSettings->value( u"/projections/defaultProjectCrs"_s, Qgis::geographicCrsAuthId(), QgsSettings::App ).toString();
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::DefaultCrs, false );
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
-  leProjectGlobalCrs->setNotSetText( tr( "No projection (or unknown/non-Earth projection)" ) );
+  leProjectGlobalCrs->setNotSetText( tr( "No projection (arbitrary Cartesian coordinate system)" ) );
   leProjectGlobalCrs->setCrs( QgsCoordinateReferenceSystem( defaultProjectCrs ) );
   leProjectGlobalCrs->setMessage( tr(
     "<h1>Default projection for new projects</h1>"
@@ -649,7 +650,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAreaUnitsComboBox->addItem( tr( "Square Degrees" ), static_cast<int>( Qgis::AreaUnit::SquareDegrees ) );
   mAreaUnitsComboBox->addItem( tr( "Map Units" ), static_cast<int>( Qgis::AreaUnit::Unknown ) );
 
-  Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings->value( u"/qgis/measure/areaunits"_s ).toString(), &ok );
+  Qgis::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( QgsSettingsRegistryCore::settingsMeasureAreaUnits->value(), &ok );
   if ( !ok )
     areaUnits = Qgis::AreaUnit::SquareMeters;
   mAreaUnitsComboBox->setCurrentIndex( mAreaUnitsComboBox->findData( static_cast<int>( areaUnits ) ) );
@@ -759,9 +760,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   cbxLegendClassifiers->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->value() );
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() );
-  cbxHideSplash->setChecked( mSettings->value( u"/qgis/hideSplash"_s, false ).toBool() );
+  cbxHideSplash->setChecked( QgisApp::settingsHideSplash->value() );
   cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
-  cbxCheckVersion->setChecked( mSettings->value( u"/qgis/checkVersion"_s, true ).toBool() );
+  cbxCheckVersion->setChecked( QgsWelcomeScreen::settingsCheckVersion->value() );
   cbxCheckVersion->setVisible( mSettings->value( u"/qgis/allowVersionCheck"_s, true ).toBool() );
   cbxAttributeTableDocked->setChecked( QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() );
   cbxAutosizeAttributeTable->setChecked( QgsAttributeTableDialog::settingsAutosizeAttributeTable->value() );
@@ -773,7 +774,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->enumValue( u"/qgis/copyFeatureFormat"_s, QgsClipboard::AttributesWithWKT ) ) );
   leNullValue->setText( QgsApplication::nullRepresentation() );
 
-  cmbLegendDoubleClickAction->setCurrentIndex( mSettings->value( u"/qgis/legendDoubleClickAction"_s, 0 ).toInt() );
+  cmbLegendDoubleClickAction->setCurrentIndex( static_cast<int>( QgisApp::settingsLegendDoubleClickAction->value() ) );
 
   mLayerTreeInsertionMethod->addItem( tr( "Above currently selected layer" ), QVariant::fromValue( Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) );
   mLayerTreeInsertionMethod->addItem( tr( "Always on top of the layer tree" ), QVariant::fromValue( Qgis::LayerTreeInsertionMethod::TopOfTree ) );
@@ -792,7 +793,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mLegendGraphicResolutionSpinBox->setValue( mSettings->value( u"/qgis/defaultLegendGraphicResolution"_s, 0 ).toInt() );
 
   // Map Tips delay
-  mMapTipsDelaySpinBox->setValue( mSettings->value( u"qgis/mapTipsDelay"_s, 850 ).toInt() );
+  mMapTipsDelaySpinBox->setValue( QgisApp::settingsMapTipsDelay->value() );
   mMapTipsDelaySpinBox->setClearValue( 850 );
 
   mRespectScreenDpiCheckBox->setChecked( QgsSettingsRegistryGui::settingsRespectScreenDPI->value() );
@@ -816,16 +817,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   pbnMeasureColor->setContext( u"gui"_s );
   pbnMeasureColor->setDefaultColor( QColor( 222, 155, 67 ) );
 
-  int projOpen = mSettings->value( u"/qgis/projOpenAtLaunch"_s, 0 ).toInt();
+  int projOpen = QgisApp::settingsProjOpenAtLaunch->value();
   mProjectOnLaunchCmbBx->setCurrentIndex( projOpen );
-  mProjectOnLaunchLineEdit->setText( mSettings->value( u"/qgis/projOpenAtLaunchPath"_s ).toString() );
+  mProjectOnLaunchLineEdit->setText( QgisApp::settingsProjOpenAtLaunchPath->value() );
   mProjectOnLaunchLineEdit->setEnabled( projOpen == 2 );
   mProjectOnLaunchPushBtn->setEnabled( projOpen == 2 );
   connect( mProjectOnLaunchPushBtn, &QAbstractButton::pressed, this, &QgsOptions::selectProjectOnLaunch );
 
-  chbAskToSaveProjectChanges->setChecked( mSettings->value( u"qgis/askToSaveProjectChanges"_s, QVariant( true ) ).toBool() );
+  chbAskToSaveProjectChanges->setChecked( QgisApp::settingsAskToSaveProjectChanges->value() );
   mLayerDeleteConfirmationChkBx->setChecked( mSettings->value( u"qgis/askToDeleteLayers"_s, true ).toBool() );
-  chbWarnOldProjectVersion->setChecked( mSettings->value( u"/qgis/warnOldProjectVersion"_s, QVariant( true ) ).toBool() );
+  chbWarnOldProjectVersion->setChecked( QgisApp::settingsWarnOldProjectVersion->value() );
 
   Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
   mProjectTrustBehaviorComboBox->setCurrentIndex( mProjectTrustBehaviorComboBox->findData( QVariant::fromValue( embeddedScriptMode ) ) );
@@ -854,16 +855,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mDefaultPathsComboBox->addItem( tr( "Absolute" ), static_cast<int>( Qgis::FilePathType::Absolute ) );
   mDefaultPathsComboBox->addItem( tr( "Relative" ), static_cast<int>( Qgis::FilePathType::Relative ) );
-  mDefaultPathsComboBox->setCurrentIndex( mDefaultPathsComboBox->findData(
-    static_cast<int>( mSettings->value( u"/qgis/defaultProjectPathsRelative"_s, QVariant( true ) ).toBool() ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute )
-  ) );
+  mDefaultPathsComboBox->setCurrentIndex(
+    mDefaultPathsComboBox->findData( static_cast<int>( QgsProject::settingsDefaultProjectPathsRelative->value() ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute ) )
+  );
 
   Qgis::ProjectFileFormat defaultProjectFileFormat = mSettings->enumValue( u"/qgis/defaultProjectFileFormat"_s, Qgis::ProjectFileFormat::Qgz );
   mFileFormatQgzButton->setChecked( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgz );
   mFileFormatQgsButton->setChecked( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgs );
 
   // templates
-  cbxProjectDefaultNew->setChecked( mSettings->value( u"/qgis/newProjectDefault"_s, QVariant( false ) ).toBool() );
+  cbxProjectDefaultNew->setChecked( QgisApp::settingsNewProjectDefault->value() );
   QString templateDirName = mSettings->value( u"/qgis/projectTemplateDir"_s, QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
   // make dir if it doesn't exist - should just be called once
   QDir templateDir;
@@ -1565,7 +1566,7 @@ void QgsOptions::saveOptions()
   {
     pathsList << mListHiddenBrowserPaths->item( i )->text();
   }
-  mSettings->setValue( u"/browser/hiddenPaths"_s, pathsList );
+  QgsDirectoryItem::settingsHiddenPaths->setValue( pathsList );
 
   //QGIS help locations
   QStringList helpPaths;
@@ -1632,18 +1633,18 @@ void QgsOptions::saveOptions()
   bool showLegendClassifiers = QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->value();
   QgsSettingsRegistryCore::settingsLayerTreeShowLegendClassifiers->setValue( cbxLegendClassifiers->isChecked() );
   QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->setValue( mShowFeatureCountByDefaultCheckBox->isChecked() );
-  mSettings->setValue( u"/qgis/hideSplash"_s, cbxHideSplash->isChecked() );
+  QgisApp::settingsHideSplash->setValue( cbxHideSplash->isChecked() );
   mSettings->setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
 
-  mSettings->setValue( u"/qgis/checkVersion"_s, cbxCheckVersion->isChecked() );
+  QgsWelcomeScreen::settingsCheckVersion->setValue( cbxCheckVersion->isChecked() );
   QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->setValue( cbxAttributeTableDocked->isChecked() );
   QgsAttributeTableDialog::settingsAutosizeAttributeTable->setValue( cbxAutosizeAttributeTable->isChecked() );
   mSettings->setEnumValue( u"/qgis/attributeTableBehavior"_s, ( QgsAttributeTableFilterModel::FilterMode ) cmbAttrTableBehavior->currentData().toInt() );
-  mSettings->setValue( u"/qgis/attributeTableView"_s, mAttrTableViewComboBox->currentData() );
-  mSettings->setValue( u"/qgis/attributeTableRowCache"_s, spinBoxAttrTableRowCache->value() );
+  QgsAttributeTableDialog::settingsAttributeTableInitialView->setValue( static_cast<QgsAttributeTableDialog::InitialView>( mAttrTableViewComboBox->currentData().toInt() ) );
+  QgsDualView::settingsAttributeTableRowCache->setValue( spinBoxAttrTableRowCache->value() );
   mSettings->setEnumValue( u"/qgis/promptForSublayers"_s, static_cast<Qgis::SublayerPromptMode>( cmbPromptSublayers->currentData().toInt() ) );
 
-  mSettings->setValue( u"/qgis/scanItemsInBrowser2"_s, cmbScanItemsInBrowser->currentData().toString() );
+  QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->setValue( cmbScanItemsInBrowser->currentData().toString() );
   QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( cmbScanZipInBrowser->currentData().toString() );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->setValue( mCheckMonitorDirectories->isChecked() );
 
@@ -1655,25 +1656,25 @@ void QgsOptions::saveOptions()
   QgsSymbolLegendNode::MAXIMUM_SIZE = mLegendSymbolMaximumSizeSpinBox->value();
 
   mSettings->setValue( u"/qgis/defaultLegendGraphicResolution"_s, mLegendGraphicResolutionSpinBox->value() );
-  mSettings->setValue( u"/qgis/mapTipsDelay"_s, mMapTipsDelaySpinBox->value() );
+  QgisApp::settingsMapTipsDelay->setValue( mMapTipsDelaySpinBox->value() );
   QgsSettingsRegistryGui::settingsRespectScreenDPI->setValue( mRespectScreenDpiCheckBox->isChecked() );
 
   mSettings->setEnumValue( u"/qgis/copyFeatureFormat"_s, ( QgsClipboard::CopyFormat ) mComboCopyFeatureFormat->currentData().toInt() );
   QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
 
-  mSettings->setValue( u"/qgis/legendDoubleClickAction"_s, cmbLegendDoubleClickAction->currentIndex() );
+  QgisApp::settingsLegendDoubleClickAction->setValue( static_cast<Qgis::LegendLayerDoubleClickAction>( cmbLegendDoubleClickAction->currentIndex() ) );
   QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->setValue( mLayerTreeInsertionMethod->currentData().value<Qgis::LayerTreeInsertionMethod>() );
 
   // project
-  mSettings->setValue( u"/qgis/projOpenAtLaunch"_s, mProjectOnLaunchCmbBx->currentIndex() );
-  mSettings->setValue( u"/qgis/projOpenAtLaunchPath"_s, mProjectOnLaunchLineEdit->text() );
+  QgisApp::settingsProjOpenAtLaunch->setValue( mProjectOnLaunchCmbBx->currentIndex() );
+  QgisApp::settingsProjOpenAtLaunchPath->setValue( mProjectOnLaunchLineEdit->text() );
 
-  mSettings->setValue( u"/qgis/askToSaveProjectChanges"_s, chbAskToSaveProjectChanges->isChecked() );
+  QgisApp::settingsAskToSaveProjectChanges->setValue( chbAskToSaveProjectChanges->isChecked() );
   mSettings->setValue( u"qgis/askToDeleteLayers"_s, mLayerDeleteConfirmationChkBx->isChecked() );
-  mSettings->setValue( u"/qgis/warnOldProjectVersion"_s, chbWarnOldProjectVersion->isChecked() );
-  if ( ( mSettings->value( u"/qgis/projectTemplateDir"_s ).toString() != leTemplateFolder->text() ) || ( mSettings->value( u"/qgis/newProjectDefault"_s ).toBool() != cbxProjectDefaultNew->isChecked() ) )
+  QgisApp::settingsWarnOldProjectVersion->setValue( chbWarnOldProjectVersion->isChecked() );
+  if ( ( mSettings->value( u"/qgis/projectTemplateDir"_s ).toString() != leTemplateFolder->text() ) || ( QgisApp::settingsNewProjectDefault->value() != cbxProjectDefaultNew->isChecked() ) )
   {
-    mSettings->setValue( u"/qgis/newProjectDefault"_s, cbxProjectDefaultNew->isChecked() );
+    QgisApp::settingsNewProjectDefault->setValue( cbxProjectDefaultNew->isChecked() );
     mSettings->setValue( u"/qgis/projectTemplateDir"_s, leTemplateFolder->text() );
     QgisApp::instance()->updateProjectFromTemplates();
   }
@@ -1701,7 +1702,7 @@ void QgsOptions::saveOptions()
   }
   QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders->setValue( untrustedProjectsFoldersList );
 
-  mSettings->setValue( u"/qgis/defaultProjectPathsRelative"_s, static_cast<Qgis::FilePathType>( mDefaultPathsComboBox->currentData().toInt() ) == Qgis::FilePathType::Relative );
+  QgsProject::settingsDefaultProjectPathsRelative->setValue( static_cast<Qgis::FilePathType>( mDefaultPathsComboBox->currentData().toInt() ) == Qgis::FilePathType::Relative );
 
   mSettings->setEnumValue( u"/qgis/defaultProjectFileFormat"_s, mFileFormatQgsButton->isChecked() ? Qgis::ProjectFileFormat::Qgs : Qgis::ProjectFileFormat::Qgz );
 
@@ -1717,22 +1718,22 @@ void QgsOptions::saveOptions()
   //projection defined...
   if ( radPromptForProjection->isChecked() )
   {
-    mSettings->setEnumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs, QgsSettings::App );
+    QgsSettingsRegistryCore::settingsUnknownCrsBehavior->setValue( Qgis::UnknownLayerCrsBehavior::PromptUserForCrs );
   }
   else if ( radUseProjectProjection->isChecked() )
   {
-    mSettings->setEnumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs, QgsSettings::App );
+    QgsSettingsRegistryCore::settingsUnknownCrsBehavior->setValue( Qgis::UnknownLayerCrsBehavior::UseProjectCrs );
   }
   else if ( radCrsNoAction->isChecked() )
   {
-    mSettings->setEnumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+    QgsSettingsRegistryCore::settingsUnknownCrsBehavior->setValue( Qgis::UnknownLayerCrsBehavior::NoAction );
   }
   else
   {
-    mSettings->setEnumValue( u"/projections/unknownCrsBehavior"_s, QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs, QgsSettings::App );
+    QgsSettingsRegistryCore::settingsUnknownCrsBehavior->setValue( Qgis::UnknownLayerCrsBehavior::UseDefaultCrs );
   }
 
-  mSettings->setValue( u"/Projections/layerDefaultCrs"_s, mLayerDefaultCrs.authid() );
+  QgsSettingsRegistryCore::settingsLayerDefaultCrs->setValue( mLayerDefaultCrs.authid() );
   mSettings->setValue( u"/projections/defaultProjectCrs"_s, leProjectGlobalCrs->crs().authid(), QgsSettings::App );
   mSettings->setEnumValue( u"/projections/newProjectCrsBehavior"_s, radProjectUseCrsOfFirstLayer->isChecked() ? QgsGui::UseCrsOfFirstLayerAdded : QgsGui::UsePresetCrs, QgsSettings::App );
   mSettings->setValue( u"/projections/promptWhenMultipleTransformsExist"_s, mShowDatumTransformDialogCheckBox->isChecked(), QgsSettings::App );
@@ -1746,7 +1747,7 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsMeasureDisplayUnits->setValue( QgsUnitTypes::encodeUnit( distanceUnit ) );
 
   Qgis::AreaUnit areaUnit = static_cast<Qgis::AreaUnit>( mAreaUnitsComboBox->currentData().toInt() );
-  mSettings->setValue( u"/qgis/measure/areaunits"_s, QgsUnitTypes::encodeUnit( areaUnit ) );
+  QgsSettingsRegistryCore::settingsMeasureAreaUnits->setValue( QgsUnitTypes::encodeUnit( areaUnit ) );
 
   Qgis::AngleUnit angleUnit = static_cast<Qgis::AngleUnit>( mAngleUnitsComboBox->currentData().toInt() );
   mSettings->setValue( u"/qgis/measure/angleunits"_s, QgsUnitTypes::encodeUnit( angleUnit ) );
@@ -2045,7 +2046,7 @@ void QgsOptions::restoreDefaultWindowState()
   // richard
   if ( QMessageBox::warning( this, tr( "Restore UI Defaults" ), tr( "Are you sure to reset the UI to default (needs restart)?" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
     return;
-  mSettings->setValue( u"/qgis/restoreDefaultWindowState"_s, true );
+  QgisApp::settingsRestoreDefaultWindowState->setValue( true );
 }
 
 void QgsOptions::mCustomVariablesChkBx_toggled( bool chkd )

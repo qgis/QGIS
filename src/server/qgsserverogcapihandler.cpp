@@ -121,10 +121,14 @@ void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &conte
     case QgsServerOgcApi::ContentType::GEOJSON:
     case QgsServerOgcApi::ContentType::JSON:
     case QgsServerOgcApi::ContentType::OPENAPI3:
+    case QgsServerOgcApi::ContentType::SCHEMA_JSON:
       jsonDump( data, context, QgsServerOgcApi::contentTypeMimes().value( contentType ).first() );
       break;
     case QgsServerOgcApi::ContentType::XML:
       // Not handled yet
+      break;
+    case QgsServerOgcApi::ContentType::FLATGEOBUF:
+      // Handled separately in the handler if supported, so do nothing here
       break;
   }
 }
@@ -210,6 +214,37 @@ json QgsServerOgcApiHandler::link( const QgsServerApiContext &context, const Qgs
     { "title", title != "" ? title : linkTitle() },
   };
   return l;
+}
+
+QString QgsServerOgcApiHandler::headerLink(
+  const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType, const QgsServerOgcApi::ContentType contentType, const QgsServerOgcApi::Profile &profile, const QString &title
+) const
+{
+  const QString profileStr { profile != QgsServerOgcApi::Profile::Unset ? QgsServerOgcApi::profileToString( profile ) : QString() };
+  QString hrefStr = QString::fromStdString( href( context, "/", QgsServerOgcApi::contentTypeToExtension( contentType ) ) );
+
+  if ( !profileStr.isEmpty() )
+  {
+    hrefStr += "&profile="_L1 + profileStr;
+  }
+
+  QString titleStr = !title.isEmpty() ? title : QString::fromStdString( linkTitle() );
+  titleStr.replace( '\\', "\\\\"_L1 );
+  titleStr.replace( '"', "\\\""_L1 );
+
+  QString linkStr = u"<%1>; rel=\"%2\"; title=\"%3\"; type=\"%4\""_s.arg(
+    QString::fromStdString( href( context, "/", QgsServerOgcApi::contentTypeToExtension( contentType ) ) ),
+    QString::fromStdString( QgsServerOgcApi::relToString( linkType ) ),
+    titleStr,
+    QString::fromStdString( QgsServerOgcApi::mimeType( contentType ) )
+  );
+
+  if ( !profileStr.isEmpty() )
+  {
+    linkStr += u"; profile=\"%1\""_s.arg( profileStr );
+  }
+
+  return linkStr;
 }
 
 json QgsServerOgcApiHandler::links( const QgsServerApiContext &context ) const
@@ -461,7 +496,27 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     }
     else
     {
-      QgsMessageLog::logMessage( u"The client requested an unsupported extension: %1"_s.arg( extension ), u"Server"_s, Qgis::MessageLevel::Warning );
+      // Hardcoded aliases
+#if 0
+    // This not supported yet but I am leaving it here because
+    // I am very optimistic that it will be supported soon!
+
+      if ( ( extension.compare( u"JSONFG"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 ) || ( extension.compare( u"JSONFG-PLUS"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 ) )
+      {
+        result = QgsServerOgcApi::ContentType::JSON;
+        found = true;
+      }
+      else
+#endif
+      if ( extension.compare( u"FGB"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+      {
+        result = QgsServerOgcApi::ContentType::FLATGEOBUF;
+        found = true;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( u"The client requested an unsupported extension: %1"_s.arg( extension ), u"Server"_s, Qgis::MessageLevel::Warning );
+      }
     }
   }
   // ... then "Accept"
@@ -515,6 +570,59 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     }
   }
   return result;
+}
+
+QgsServerOgcApi::Profile QgsServerOgcApiHandler::profileFromString( const QString &profile, bool &ok )
+{
+  if ( profile.compare( "RFC7946"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::Rfc7946;
+  }
+  else if ( profile.compare( "REL-AS-KEY"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::RelAsKey;
+  }
+  else if ( profile.compare( "REL-AS-URI"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::RelAsUri;
+  }
+  else if ( profile.compare( "REL-AS-LINK"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::RelAsLink;
+  }
+  else
+  {
+    ok = false;
+    return QgsServerOgcApi::Profile::Unset;
+  }
+  BUILTIN_UNREACHABLE
+}
+
+QList<QgsServerOgcApi::Profile> QgsServerOgcApiHandler::profilesFromRequest( const QgsServerRequest *request ) const
+{
+  const QStringList profileStrings { request->queryParameter( u"profile"_s ).split( ',', Qt::SkipEmptyParts ) };
+  QList<QgsServerOgcApi::Profile> profiles;
+  if ( !profileStrings.isEmpty() )
+  {
+    for ( const auto &profileString : std::as_const( profileStrings ) )
+    {
+      bool ok { false };
+      const QgsServerOgcApi::Profile p { profileFromString( profileString, ok ) };
+      if ( ok )
+      {
+        profiles.push_back( p );
+      }
+      else
+      {
+        throw QgsServerApiBadRequestException( u"Unsupported profile requested: %1"_s.arg( profileString ) );
+      }
+    }
+  }
+  return profiles;
 }
 
 QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )

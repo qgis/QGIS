@@ -59,6 +59,9 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
     void mSortCheckBox_stateChanged( int state );
     void mSortDirectionButton_clicked();
 
+    void mGenerateCategoriesFromRendererCheckBox_stateChanged( int state );
+    void mApplyRendererStyleCheckBox_stateChanged( int state );
+
     void mSeriesListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void mSeriesListWidget_itemChanged( QListWidgetItem *item );
     void mAddSeriesPushButton_clicked();
@@ -68,6 +71,8 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
     void mLinkedMapComboBox_itemChanged( QgsLayoutItem *item );
     void mFilterOnlyVisibleFeaturesCheckBox_stateChanged( int state );
     void mIntersectAtlasCheckBox_stateChanged( int state );
+
+    void layoutAtlasToggled( bool atlasEnabled );
 
   private:
     //! Sets the GUI elements to the values of mChartItem

@@ -18,6 +18,7 @@ endif()
 #############################################################
 # Tests:
 set(TESTS
+ testqgsdistanceutils.cpp
  testqgsgeometrysnapper.cpp
  testqgsinterpolator.cpp
  testqgsprocessingalgspt1.cpp

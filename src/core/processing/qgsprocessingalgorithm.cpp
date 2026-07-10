@@ -170,7 +170,7 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
   }
 }
 
-QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
+QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QMainWindow * ) const
 {
   return nullptr;
 }
@@ -1257,6 +1257,10 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
       {
         throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
       }
+      else
+      {
+        feedback->featureAddedToSink( u"OUTPUT"_s );
+      }
     }
 
     feedback->setProgress( current * step );
@@ -1264,6 +1268,7 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   }
 
   sink->finalize();
+  feedback->featureSinkFinalized( u"OUTPUT"_s );
 
   mSource.reset();
 

@@ -51,6 +51,7 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
 
     QgsMetalRoughTexturedMaterialSettings *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractMaterialSettings *other ) const override;
+    QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const override;
 
     /**
      * Returns the path to the base color texture map.
@@ -81,6 +82,40 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     QString normalTexturePath() const { return mNormalTexturePath; }
 
     /**
+     * Returns the path to the height texture map.
+     *
+     * \see setHeightTexturePath()
+     */
+    QString heightTexturePath() const { return mHeightTexturePath; }
+
+    /**
+     * Returns the parallax scale, which dictates the strength of the height displacement effect.
+     *
+     * \see setParallaxScale()
+     * \see heightTexturePath()
+     */
+    double parallaxScale() const { return mParallaxScale; }
+
+    /**
+     * Returns the path to the emission/luminosity texture map.
+     *
+     * \see emissionFactor()
+     * \see setEmissionTexturePath()
+     */
+    QString emissionTexturePath() const { return mEmissionTexturePath; }
+
+    /**
+     * Returns the emission factor, which dictates the strength of the emission effect.
+     *
+     * A value of 1.0 indicates that the emission texture values should be used directly.
+     * Larger values result in more light emission.
+     *
+     * \see setEmissionFactor()
+     * \see emissionTexturePath()
+     */
+    double emissionFactor() const { return mEmissionFactor; }
+
+    /**
      * Returns the path to the ambient occlusion texture map.
      *
      * \see setAmbientOcclusionTexturePath()
@@ -90,8 +125,9 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     /**
      * Returns the texture scale.
      *
-     * The texture scale changes the size of the displayed texture in the 3D scene.
-     * If the texture scale is less than 1, the texture will be stretched.
+     * The texture scale changes the size of the material's textures in the 3D scene.
+     *
+     * If the texture scale is less than 1 the textures will be stretched.
      *
      * \see setTextureScale()
      */
@@ -103,6 +139,22 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
      * \see setTextureRotation()
      */
     double textureRotation() const { return mTextureRotation; }
+
+    /**
+     * Returns the texture offset.
+     *
+     * \see setTextureOffset()
+     * \since QGIS 4.2
+     */
+    QPointF textureOffset() const { return mTextureOffset; }
+
+    /**
+     * Returns the opacity of the surface
+     *
+     * \see setOpacity()
+     * \since QGIS 4.2
+     */
+    double opacity() const { return mOpacity; }
 
     /**
      * Sets the \a path to the base color texture map.
@@ -133,11 +185,45 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
     void setNormalTexturePath( const QString &path ) { mNormalTexturePath = path; }
 
     /**
+     * Sets the \a path to the height texture map.
+     *
+     * \see heightTexturePath()
+     */
+    void setHeightTexturePath( const QString &path ) { mHeightTexturePath = path; }
+
+    /**
+     * Sets the parallax \a scale, which dictates the strength of the height displacement effect.
+     *
+     * \see parallaxScale()
+     * \see setHeightTexturePath()
+     */
+    void setParallaxScale( double scale ) { mParallaxScale = scale; }
+
+    /**
      * Sets the \a path to the ambient occlusion texture map.
      *
      * \see ambientOcclusionTexturePath()
      */
     void setAmbientOcclusionTexturePath( const QString &path ) { mAmbientOcclusionTexturePath = path; }
+
+    /**
+     * Sets the \a path to the emission/luminosity texture map.
+     *
+     * \see setEmissionFactor()
+     * \see emissionTexturePath()
+     */
+    void setEmissionTexturePath( const QString &path ) { mEmissionTexturePath = path; }
+
+    /**
+     * Sets the emission \a factor, which dictates the strength of the emission effect.
+     *
+     * A value of 1.0 indicates that the emission texture values should be used directly.
+     * Larger values result in more light emission.
+     *
+     * \see emissionFactor()
+     * \see setEmissionTexturePath()
+     */
+    void setEmissionFactor( double factor ) { mEmissionFactor = factor; }
 
     /**
      * Sets the texture \a scale.
@@ -156,10 +242,47 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
      */
     void setTextureRotation( double rotation ) { mTextureRotation = rotation; }
 
+    /**
+     * Sets the texture \a offset.
+     *
+     * \see textureOffset()
+     */
+    void setTextureOffset( QPointF offset ) { mTextureOffset = offset; }
+
+    /**
+     * Sets the \a opacity of the surface.
+     *
+     * \see opacity()
+     * \since QGIS 4.2
+     */
+    void setOpacity( double opacity ) { mOpacity = opacity; }
+
     bool requiresTextureCoordinates() const override;
     bool requiresTangents() const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
+
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * This function returns an approximation of the
+     * material's appearance based on the average color of the base color texture and the
+     * emission texture.
+     * Other texture maps are not taken into account.
+     */
+    QColor averageColor() const override;
+
+    /**
+     * Decomposes a base color into the material's color components, and sets the material's colors accordingly.
+     *
+     * This method has no effect for QgsMetalRoughTexturedMaterialSettings, as the material
+     * is fully defined by texture maps.
+     *
+     * \param baseColor The color to decompose (ignored)
+     *
+     * \since QGIS 4.2
+     */
+    void setColorsFromBase( const QColor &baseColor ) override;
 
     bool operator==( const QgsMetalRoughTexturedMaterialSettings &other ) const
     {
@@ -168,20 +291,40 @@ class CORE_EXPORT QgsMetalRoughTexturedMaterialSettings : public QgsAbstractMate
              && mRoughnessTexturePath == other.mRoughnessTexturePath
              && mNormalTexturePath == other.mNormalTexturePath
              && mAmbientOcclusionTexturePath == other.mAmbientOcclusionTexturePath
+             && mHeightTexturePath == other.mHeightTexturePath
+             && mEmissionTexturePath == other.mEmissionTexturePath
              && qgsDoubleNear( mTextureScale, other.mTextureScale )
              && qgsDoubleNear( mTextureRotation, other.mTextureRotation )
+             && qgsDoubleNear( mEmissionFactor, other.mEmissionFactor )
+             && qgsDoubleNear( mParallaxScale, other.mParallaxScale )
+             && qgsDoubleNear( mTextureOffset.x(), other.mTextureOffset.x() )
+             && qgsDoubleNear( mTextureOffset.y(), other.mTextureOffset.y() )
+             && qgsDoubleNear( mOpacity, other.mOpacity )
              && dataDefinedProperties() == other.dataDefinedProperties();
     }
+
+  private:
+    QColor textureAverageColor( const QString &texturePath ) const;
 
   private:
     QString mBaseColorTexturePath;
     QString mMetalnessTexturePath;
     QString mRoughnessTexturePath;
     QString mNormalTexturePath;
+    QString mHeightTexturePath;
+    double mParallaxScale { 0.1 };
+
     QString mAmbientOcclusionTexturePath;
+
+    QString mEmissionTexturePath;
+    double mEmissionFactor { 1.0 };
 
     double mTextureScale { 1.0 };
     double mTextureRotation { 0.0 };
+    QPointF mTextureOffset { 0.0, 0.0 };
+    double mOpacity { 1.0 };
+
+    mutable std::optional<QColor> mAverageColor;
 };
 
 

@@ -214,6 +214,9 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connectio
   connect( mDigitizing, &QgsAppGpsDigitizing::trackVertexAdded, this, &QgsGpsInformationWidget::updateTrackInformation );
   connect( mDigitizing, &QgsAppGpsDigitizing::trackReset, this, &QgsGpsInformationWidget::updateTrackInformation );
   connect( mDigitizing, &QgsAppGpsDigitizing::distanceAreaChanged, this, &QgsGpsInformationWidget::updateTrackInformation );
+
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGpsInformationWidget::onCanvasCrsChanged );
+  onCanvasCrsChanged();
 }
 
 QgsGpsInformationWidget::~QgsGpsInformationWidget()
@@ -605,4 +608,9 @@ void QgsGpsInformationWidget::setStatusIndicator( Qgis::GpsFixStatus statusValue
 void QgsGpsInformationWidget::showStatusBarMessage( const QString &msg )
 {
   QgisApp::instance()->statusBarIface()->showMessage( msg );
+}
+
+void QgsGpsInformationWidget::onCanvasCrsChanged()
+{
+  setEnabled( mMapCanvas->mapSettings().destinationCrs().isEarthCrs() );
 }

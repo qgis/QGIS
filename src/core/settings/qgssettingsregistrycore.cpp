@@ -17,24 +17,46 @@
 #include "pal.h"
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsbabelformatregistry.h"
+#include "qgscolorscheme.h"
+#include "qgscoordinatereferencesystemregistry.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgscptcityarchive.h"
 #include "qgsdirectoryitem.h"
+#include "qgsfilebaseddataitemprovider.h"
 #include "qgsgpsdetector.h"
+#include "qgsimagecache.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslayout.h"
+#include "qgslayoutgridsettings.h"
+#include "qgslayoutsnapper.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsnewsfeedparser.h"
+#include "qgsogrdbconnection.h"
 #include "qgsogrproviderutils.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterminmaxorigin.h"
+#include "qgsrasterrendererregistry.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsproxy.h"
+#include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
 
-#include <QSettings>
 #include <QString>
+
+#ifdef HAVE_OPENCL
+#include "qgsopenclutils.h"
+#endif
+
+#include <QSettings>
 #include <QThread>
 
 using namespace Qt::StringLiterals;
@@ -162,7 +184,7 @@ const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecution
   = new QgsSettingsEntryStringList( u"code-execution-denied-projects-folders"_s, QgsSettingsTree::sTreeCore, QStringList(), u"Projects and folders that are untrusted and denied execution of embedded scripts"_s );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsMeasurePlanimetric
-  = new QgsSettingsEntryBool( u"planimetric"_s, QgsSettingsTree::sTreeMeasure, true, u"Whether measurements should be planimetric (ellipsoid off) or use the ellipsoid"_s );
+  = new QgsSettingsEntryBool( u"planimetric"_s, QgsSettingsTree::sTreeMeasure, false, u"Whether measurements should be planimetric (ellipsoid off) or use the ellipsoid"_s );
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsMeasureKeepBaseUnit
   = new QgsSettingsEntryBool( u"keep-base-unit"_s, QgsSettingsTree::sTreeMeasure, true, u"Whether to keep base measurement units instead of converting to larger units"_s );
@@ -172,6 +194,15 @@ const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsMeasureDecimalPl
 
 const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsMeasureDisplayUnits
   = new QgsSettingsEntryString( u"display-units"_s, QgsSettingsTree::sTreeMeasure, QString(), u"Distance display units (encoded unit string)"_s );
+
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsMeasureAreaUnits
+  = new QgsSettingsEntryString( u"area-units"_s, QgsSettingsTree::sTreeMeasure, QString(), u"Area display units (encoded unit string)"_s );
+
+const QgsSettingsEntryEnumFlag<Qgis::UnknownLayerCrsBehavior> *QgsSettingsRegistryCore::settingsUnknownCrsBehavior = new QgsSettingsEntryEnumFlag<
+  Qgis::UnknownLayerCrsBehavior>( u"unknown-crs-behavior"_s, QgsSettingsTree::sTreeCrs, Qgis::UnknownLayerCrsBehavior::NoAction, u"Behavior when encountering a layer with an unknown CRS"_s );
+
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsLayerDefaultCrs
+  = new QgsSettingsEntryString( u"layer-default-crs"_s, QgsSettingsTree::sTreeCrs, u"EPSG:4326"_s, u"Default CRS used for layers with unknown CRS when the unknown CRS behavior is set to UseDefaultCrs"_s );
 
 const QgsSettingsEntryEnumFlag<Qgis::LayerTreeInsertionMethod> *QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod = new QgsSettingsEntryEnumFlag<
   Qgis::LayerTreeInsertionMethod>( u"insertion-method"_s, QgsSettingsTree::sTreeLayerTree, Qgis::LayerTreeInsertionMethod::AboveInsertionPoint, u"Method for inserting layers into the layer tree"_s );
@@ -230,12 +261,40 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   settingsMeasureDecimalPlaces->copyValueFromKey( u"/qgis/measure/decimalplaces"_s, true );
   settingsMeasureDisplayUnits->copyValueFromKey( u"qgis/measure/displayunits"_s, true );
   settingsMeasureDisplayUnits->copyValueFromKey( u"/qgis/measure/displayunits"_s, true );
+  settingsMeasureAreaUnits->copyValueFromKey( u"qgis/measure/areaunits"_s, true );
+  settingsMeasureAreaUnits->copyValueFromKey( u"/qgis/measure/areaunits"_s, true );
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"qgis/layerTreeInsertionMethod"_s, true );
   settingsLayerTreeInsertionMethod->copyValueFromKey( u"/qgis/layerTreeInsertionMethod"_s, true );
   settingsScanZipInBrowser->copyValueFromKey( u"qgis/scanZipInBrowser2"_s, true );
   settingsScanZipInBrowser->copyValueFromKey( u"/qgis/scanZipInBrowser2"_s, true );
+  QgsProject::settingsAnonymizeNewProjects->copyValueFromKey( u"core/projects/anonymize_new_projects"_s, true );
+  QgsProject::settingsAnonymizeSavedProjects->copyValueFromKey( u"core/projects/anonymize_saved_projects"_s, true );
+  QgsProject::settingsDefaultProjectPathsRelative->copyValueFromKey( u"qgis/defaultProjectPathsRelative"_s, true );
+  QgsProject::settingsDefaultProjectPathsRelative->copyValueFromKey( u"/qgis/defaultProjectPathsRelative"_s, true );
+  // old key was stored under QgsSettings::App, i.e. "app/projections/unknownCrsBehavior"
+  settingsUnknownCrsBehavior->copyValueFromKey( u"app/projections/unknownCrsBehavior"_s, true );
+  settingsLayerDefaultCrs->copyValueFromKey( u"Projections/layerDefaultCrs"_s, true );
+  settingsLayerDefaultCrs->copyValueFromKey( u"/Projections/layerDefaultCrs"_s, true );
+  QgsApplication::settingsApplicationFullName->copyValueFromKey( u"qgis/application_full_name"_s, true );
+  QgsApplication::settingsApplicationFullName->copyValueFromKey( u"/qgis/application_full_name"_s, true );
+
+  // gdal/skipDrivers was a comma-joined string; convert to a proper QStringList
+  {
+    QgsSettings s;
+    if ( s.contains( u"gdal/skipDrivers"_s ) )
+    {
+      const QString joined = s.value( u"gdal/skipDrivers"_s ).toString();
+      QgsApplication::settingsSkippedGdalDrivers->setValue( joined.isEmpty() ? QStringList() : joined.split( ','_L1 ) );
+      s.remove( u"gdal/skipDrivers"_s );
+    }
+  }
+
+  QgsDirectoryParamWidget::settingsDirectoryHiddenColumns->copyValueFromKey( u"dataitem/directoryHiddenColumns"_s, true );
+  QgsDirectoryParamWidget::settingsDirectoryHiddenColumns->copyValueFromKey( u"/dataitem/directoryHiddenColumns"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"qgis/monitorDirectoriesInBrowser"_s, true );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->copyValueFromKey( u"/qgis/monitorDirectoriesInBrowser"_s, true );
+  QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"qgis/scanItemsInBrowser2"_s, {}, true );
+  QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->copyValueFromKey( u"/qgis/scanItemsInBrowser2"_s, {}, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"qgis/scanItemsFastScanUris"_s, true );
   settingsScanItemsFastScanUris->copyValueFromKey( u"/qgis/scanItemsFastScanUris"_s, true );
   settingsSymbolsListGroupsIndex->copyValueFromKey( u"qgis/symbolsListGroupsIndex"_s, true );
@@ -260,6 +319,11 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsRasterLayer::settingsRasterDefaultZoomedInResampling->copyValueFromKey( u"/Raster/defaultZoomedInResampling"_s, true );
   QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"Raster/defaultZoomedOutResampling"_s, true );
   QgsRasterLayer::settingsRasterDefaultZoomedOutResampling->copyValueFromKey( u"/Raster/defaultZoomedOutResampling"_s, true );
+  for ( const QString &rendererKey : { u"singleBand"_s, u"multiBandSingleByte"_s, u"multiBandMultiByte"_s } )
+  {
+    QgsRasterLayer::settingsRasterDefaultContrastEnhancementAlgorithm->copyValueFromKey( u"Raster/defaultContrastEnhancementAlgorithm/%1"_s, { rendererKey }, true );
+    QgsRasterLayer::settingsRasterDefaultContrastEnhancementLimits->copyValueFromKey( u"Raster/defaultContrastEnhancementLimits/%1"_s, { rendererKey }, true );
+  }
   // No copyValueFromKey for settingsFavoriteDirs: old key "browser/favourites" is identical to new key path
   QgsNetworkAccessManager::settingsProxyEnabled->copyValueFromKey( u"proxy/proxyEnabled"_s, true );
   QgsNetworkAccessManager::settingsProxyHost->copyValueFromKey( u"proxy/proxyHost"_s, true );
@@ -271,11 +335,35 @@ void QgsSettingsRegistryCore::migrateOldSettings()
   QgsNetworkAccessManager::settingsNoProxyUrls->copyValueFromKey( u"proxy/noProxyUrls"_s, true );
   QgsNetworkAccessManager::settingsProxyAuthCfg->copyValueFromKey( u"proxy/authcfg"_s, true );
   QgsApplication::settingsNullRepresentation->copyValueFromKey( u"qgis/nullValue"_s, true );
+  QgsImageCache::settingsMaxImageCacheSize->copyValueFromKey( u"qgis/maxImageCacheSize"_s, true );
+  QgsSymbolLegendNode::settingsLegendSymbolMinimumSize->copyValueFromKey( u"qgis/legendsymbolMinimumSize"_s, true );
+  QgsSymbolLegendNode::settingsLegendSymbolMaximumSize->copyValueFromKey( u"qgis/legendsymbolMaximumSize"_s, true );
+#ifdef HAVE_OPENCL
+  QgsOpenClUtils::settingsOpenClEnabled->copyValueFromKey( u"core/OpenClEnabled"_s, true );
+  QgsOpenClUtils::settingsOpenClDefaultDevice->copyValueFromKey( u"core/OpenClDefaultDevice"_s, true );
+#endif
   QgsOgrProviderUtils::settingsWalForSqlite3->copyValueFromKey( u"qgis/walForSqlite3"_s, true );
+
+  QgsLayoutGridSettings::settingsGridStyle->copyValueFromKey( u"gui/LayoutDesigner/gridStyle"_s, true );
+  QgsLayoutGridSettings::settingsGridColor->copyValueFromKeys( u"gui/LayoutDesigner/gridRed"_s, u"gui/LayoutDesigner/gridGreen"_s, u"gui/LayoutDesigner/gridBlue"_s, u"gui/LayoutDesigner/gridAlpha"_s, true );
+  QgsLayoutGridSettings::settingsGridResolution->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapGridResolution"_s, true );
+  QgsLayoutGridSettings::settingsGridOffsetX->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapGridOffsetX"_s, true );
+  QgsLayoutGridSettings::settingsGridOffsetY->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapGridOffsetY"_s, true );
+  QgsLayoutSnapper::settingsSnapTolerance->copyValueFromKey( u"gui/LayoutDesigner/defaultSnapTolerancePixels"_s, true );
+
+  QgsRasterRendererRegistry::settingsDefaultRedBand->copyValueFromKey( u"Raster/defaultRedBand"_s, true );
+  QgsRasterRendererRegistry::settingsDefaultGreenBand->copyValueFromKey( u"Raster/defaultGreenBand"_s, true );
+  QgsRasterRendererRegistry::settingsDefaultBlueBand->copyValueFromKey( u"Raster/defaultBlueBand"_s, true );
+  QgsRasterRendererRegistry::settingsUseStandardDeviation->copyValueFromKey( u"Raster/useStandardDeviation"_s, true );
+  QgsRasterRendererRegistry::settingsDefaultStandardDeviation->copyValueFromKey( u"Raster/defaultStandardDeviation"_s, true );
 
   pal::Pal::settingsRenderingLabelCandidatesLimitPoints->copyValueFromKey( u"core/rendering/label_candidates_limit_points"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitLines->copyValueFromKey( u"core/rendering/label_candidates_limit_lines"_s, true );
   pal::Pal::settingsRenderingLabelCandidatesLimitPolygons->copyValueFromKey( u"core/rendering/label_candidates_limit_polygons"_s, true );
+
+  QgsCustomColorScheme::settingsPaletteColors->copyValueFromKey( u"colors/palettecolors"_s, {}, true );
+  QgsCustomColorScheme::settingsPaletteLabels->copyValueFromKey( u"colors/palettelabels"_s, {}, true );
+  QgsUserColorScheme::settingsShowInMenuList->copyValueFromKey( u"colors/showInMenuList"_s, {}, true );
 
   // digitizing settings - added in 3.30
   {
@@ -462,6 +550,158 @@ void QgsSettingsRegistryCore::migrateOldSettings()
         QgsBabelFormatRegistry::settingsBabelTrkUpload->copyValueFromKey( u"/Plugin-GPS/devices/%1/trkupload"_s, { device }, true );
       }
     }
+  }
+
+  // recent CRS
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"UI/recentProjectionsAuthId"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsAuthId->copyValueFromKey( u"crs/recentProjectionsAuthId"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"UI/recentProjectionsWkt"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsWkt->copyValueFromKey( u"crs/recentProjectionsWkt"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"UI/recentProjectionsProj4"_s, {}, true );
+  QgsCoordinateReferenceSystemRegistry::settingsRecentProjectionsProj4->copyValueFromKey( u"crs/recentProjectionsProj4"_s, {}, true );
+
+  // auth settings
+  QgsAuthManager::settingsPasswordHelperInsecureFallback->copyValueFromKey( u"auth/password_helper_insecure_fallback"_s, {}, true );
+  QgsAuthManager::settingsUsePasswordHelper->copyValueFromKey( u"auth/use_password_helper"_s, {}, true );
+  QgsAuthManager::settingsPasswordHelperLogging->copyValueFromKey( u"auth/password_helper_logging"_s, {}, true );
+
+  // raster cumulative cut
+  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"Raster/cumulativeCutLower"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutLower->copyValueFromKey( u"raster/cumulativeCutLower"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"Raster/cumulativeCutUpper"_s, {}, true );
+  QgsRasterMinMaxOrigin::settingsCumulativeCutUpper->copyValueFromKey( u"raster/cumulativeCutUpper"_s, {}, true );
+
+  // CptCity
+  QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"CptCity/baseDir"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityBaseDir->copyValueFromKey( u"core/cptcity-base-dir"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"CptCity/archiveName"_s, {}, true );
+  QgsCptCityArchive::settingsCptCityArchiveName->copyValueFromKey( u"core/cptcity-archive-name"_s, {}, true );
+
+  // encoding
+  QgsVectorFileWriter::settingsDefaultEncoding->copyValueFromKey( u"UI/encoding"_s, {}, true );
+
+  // browser custom directory colors - dynamic per-path key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"qgis/browserPathColors"_s );
+    const QStringList keys = settings->childKeys();
+    for ( const QString &mangledPath : keys )
+    {
+      QgsDirectoryItem::settingsCustomPathColor->setValue( settings->value( mangledPath ).toString(), { mangledPath } );
+    }
+    settings->endGroup();
+    settings->remove( u"qgis/browserPathColors"_s );
+  }
+
+  // news feed disabled state - dynamic per-feed key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"core/NewsFeed"_s );
+    const QStringList feedKeys = settings->childGroups();
+    for ( const QString &feedKey : feedKeys )
+    {
+      const QString disabledKey = feedKey + "/disabled"_L1;
+      if ( settings->contains( disabledKey ) )
+      {
+        QgsNewsFeedParser::settingsFeedDisabled->setValue( settings->value( disabledKey ).toBool(), { feedKey } );
+        settings->remove( disabledKey );
+      }
+    }
+    settings->endGroup();
+  }
+
+  // application custom variables - dynamic per-variable name key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"variables"_s );
+    const QStringList keys = settings->childKeys();
+    for ( const QString &name : keys )
+    {
+      QgsApplication::settingsCustomVariable->setValue( settings->value( name ), { name } );
+    }
+    settings->endGroup();
+    settings->remove( u"variables"_s );
+  }
+
+  // processing default GUI parameter values - dynamic per-algorithm-id and per-parameter-name key
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"Processing/DefaultGuiParam"_s );
+    const QStringList algIds = settings->childGroups();
+    for ( const QString &algId : algIds )
+    {
+      settings->beginGroup( algId );
+      const QStringList paramNames = settings->childKeys();
+      for ( const QString &paramName : paramNames )
+      {
+        QgsProcessing::settingsDefaultGuiParam->setValue( settings->value( paramName ), { algId, paramName } );
+      }
+      settings->endGroup();
+    }
+    settings->endGroup();
+    settings->remove( u"Processing/DefaultGuiParam"_s );
+  }
+
+  // coordinate transform context - per source/destination CRS pair
+  // old keys: Projections/<srcAuthId>//<destAuthId>_coordinateOp and _allowFallback
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"Projections"_s );
+    const QStringList projectionKeys = settings->allKeys();
+    for ( const QString &key : projectionKeys )
+    {
+      if ( !key.contains( "coordinateOp"_L1 ) )
+        continue;
+      const QStringList split = key.split( '/' );
+      if ( split.size() < 2 )
+        continue;
+      const QString srcAuthId = split.at( 0 );
+      const QString destAuthId = split.at( 1 ).split( '_' ).at( 0 );
+      if ( srcAuthId.isEmpty() || destAuthId.isEmpty() )
+        continue;
+
+      const QString proj = settings->value( key ).toString();
+      const QString fallbackKey = u"%1//%2_allowFallback"_s.arg( srcAuthId, destAuthId );
+      const bool allowFallback = settings->value( fallbackKey ).toBool();
+      QgsCoordinateTransformContext::settingsCoordinateOperation->setValue( proj, { srcAuthId, destAuthId } );
+      QgsCoordinateTransformContext::settingsAllowFallback->setValue( allowFallback, { srcAuthId, destAuthId } );
+    }
+    // remove all legacy entries
+    for ( const QString &key : projectionKeys )
+    {
+      if ( key.contains( "srcTransform"_L1 ) || key.contains( "destTransform"_L1 ) || key.contains( "coordinateOp"_L1 ) || key.contains( "allowFallback"_L1 ) )
+      {
+        settings->remove( key );
+      }
+    }
+    settings->endGroup();
+  }
+
+  // OGR DB connections (GeoPackage, SpatiaLite) - dynamic per-driver and per-connection key
+  // old keys: providers/ogr/<driver>/connections/<conn>/path and providers/ogr/<driver>/connections/selected
+  {
+    auto settings = QgsSettings::get();
+    settings->beginGroup( u"ogr"_s, QgsSettings::Section::Providers );
+    const QStringList drivers = settings->childGroups();
+    for ( const QString &driver : drivers )
+    {
+      settings->beginGroup( driver );
+      settings->beginGroup( u"connections"_s );
+      const QStringList connNames = settings->childGroups();
+      for ( const QString &connName : connNames )
+      {
+        const QString path = settings->value( u"%1/path"_s.arg( connName ) ).toString();
+        if ( !path.isEmpty() )
+          QgsOgrDbConnection::settingsOgrConnectionPath->setValue( path, { driver, connName } );
+      }
+      const QString selected = settings->value( u"selected"_s ).toString();
+      if ( !selected.isEmpty() )
+        QgsOgrDbConnection::sTreeOgrConnectionItems->setSelectedItem( selected, { driver } );
+      settings->endGroup(); // connections
+      settings->endGroup(); // driver
+    }
+    settings->endGroup(); // ogr
+    settings->remove( u"ogr"_s, QgsSettings::Section::Providers );
   }
 }
 

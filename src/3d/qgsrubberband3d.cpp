@@ -33,6 +33,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgstessellator.h"
+#include "qgsunlitmaterial.h"
 #include "qgsvertexid.h"
 
 #include <QColor>
@@ -76,7 +77,7 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *en
 
 void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
 {
-  mMarkerEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
+  mMarkerEntity = make_qobject_unique<Qt3DCore::QEntity>( parentEntity );
   mMarkerGeometry = new QgsBillboardGeometry();
   mMarkerGeometryRenderer = new Qt3DRender::QGeometryRenderer;
   mMarkerGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
@@ -93,7 +94,7 @@ void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
 
 void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
 {
-  mLineEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
+  mLineEntity = make_qobject_unique<Qt3DCore::QEntity>( parentEntity );
 
   QgsLineVertexData dummyLineData;
   mLineGeometry = dummyLineData.createGeometry( mLineEntity );
@@ -126,7 +127,7 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
 
 void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
 {
-  mPolygonEntity.reset( new Qt3DCore::QEntity( parentEntity ) );
+  mPolygonEntity = make_qobject_unique<Qt3DCore::QEntity>( parentEntity );
 
   mPolygonGeometry = new QgsTessellatedPolygonGeometry();
 
@@ -135,11 +136,11 @@ void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
   polygonGeometryRenderer->setGeometry( mPolygonGeometry );
   mPolygonEntity->addComponent( polygonGeometryRenderer );
 
-  QgsPhongMaterialSettings polygonMaterialSettings = QgsPhongMaterialSettings();
-  polygonMaterialSettings.setAmbient( mColor );
-  polygonMaterialSettings.setDiffuse( mColor );
-  polygonMaterialSettings.setOpacity( DEFAULT_POLYGON_OPACITY );
-  mPolygonMaterial = Qgs3D::toMaterial( &polygonMaterialSettings, Qgis::MaterialRenderingTechnique::Triangles, QgsMaterialContext() );
+  QColor color = mColor;
+  color.setAlphaF( DEFAULT_POLYGON_OPACITY );
+  mPolygonMaterial = new QgsUnlitMaterial();
+  mPolygonMaterial->setColor( color );
+
   mPolygonEntity->addComponent( mPolygonMaterial );
 
   mPolygonTransform = new QgsGeoTransform;
@@ -248,11 +249,10 @@ void QgsRubberBand3D::setColor( const QColor color )
 
     if ( mPolygonFillEnabled )
     {
-      QgsPhongMaterialSettings polygonMaterialSettings;
-      polygonMaterialSettings.setAmbient( mColor );
-      polygonMaterialSettings.setDiffuse( mColor );
-      polygonMaterialSettings.setOpacity( DEFAULT_POLYGON_OPACITY );
-      mPolygonMaterial = Qgs3D::toMaterial( &polygonMaterialSettings, Qgis::MaterialRenderingTechnique::Triangles, QgsMaterialContext() );
+      QColor color = mColor;
+      color.setAlphaF( DEFAULT_POLYGON_OPACITY );
+      mPolygonMaterial = new QgsUnlitMaterial();
+      mPolygonMaterial->setColor( color );
       mPolygonEntity->addComponent( mPolygonMaterial );
     }
   }
@@ -494,7 +494,7 @@ void QgsRubberBand3D::updateMarkerMaterial()
       mMarkerMaterial = new QgsPoint3DBillboardMaterial();
       mMarkerEntity->addComponent( mMarkerMaterial );
       //TODO: QgsAbstract3DEngine::sizeChanged should have const QSize &size param
-      QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [this] { mMarkerMaterial->setViewportSize( mEngine->size() ); } );
+      QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [material = mMarkerMaterial, engine = mEngine] { material->setViewportSize( engine->size() ); } );
     }
 
     mMarkerMaterial->setTexture2DFromSymbol( mMarkerSymbol.get(), Qgs3DRenderContext::fromMapSettings( mMapSettings ) );

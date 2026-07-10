@@ -15,6 +15,8 @@
 
 #include "qgstexturematerial.h"
 
+#include "qgs3dutils.h"
+
 #include <QString>
 #include <QUrl>
 #include <Qt3DRender/QEffect>
@@ -37,6 +39,7 @@ QgsTextureMaterial::QgsTextureMaterial( QNode *parent )
   , mGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mGL3Shader( new Qt3DRender::QShaderProgram( this ) )
   , mFilterKey( new Qt3DRender::QFilterKey( this ) )
+  , mTransformParameter( new Qt3DRender::QParameter( u"meshMatrix"_s, QVariant::fromValue( QMatrix4x4() ), this ) )
 {
   init();
 }
@@ -46,8 +49,6 @@ QgsTextureMaterial::~QgsTextureMaterial() = default;
 
 void QgsTextureMaterial::init()
 {
-  connect( mTextureParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsTextureMaterial::handleTextureChanged );
-
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect();
 
   effect->addParameter( mTextureParameter );
@@ -68,6 +69,7 @@ void QgsTextureMaterial::init()
   mGL3RenderPass->setShaderProgram( mGL3Shader );
   mGL3Technique->addRenderPass( mGL3RenderPass );
   effect->addTechnique( mGL3Technique );
+  effect->addParameter( mTransformParameter );
 
   setEffect( effect );
 }
@@ -82,9 +84,30 @@ Qt3DRender::QAbstractTexture *QgsTextureMaterial::texture() const
   return mTextureParameter->value().value<Qt3DRender::QAbstractTexture *>();
 }
 
-void QgsTextureMaterial::handleTextureChanged( const QVariant &var )
+void QgsTextureMaterial::setInstancingEnabled( bool enabled, Qgis::InstancedMaterialFlags flags )
 {
-  emit textureChanged( var.value<Qt3DRender::QAbstractTexture *>() );
+  mInstanced = enabled;
+  mInstanceFlags = flags;
+
+  if ( mInstanced )
+  {
+    QStringList defines = { u"HAS_TEXTURE"_s };
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedScale ) )
+      defines << u"USE_INSTANCE_SCALE"_s;
+    if ( mInstanceFlags.testFlag( Qgis::InstancedMaterialFlag::DataDefinedRotation ) )
+      defines << u"USE_INSTANCE_ROTATION"_s;
+    const QByteArray vertCode = Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) );
+    mGL3Shader->setVertexShaderCode( Qgs3DUtils::addDefinesToShaderCode( vertCode, defines ) );
+  }
+  else
+  {
+    mGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/texture.vert"_s ) ) );
+  }
+}
+
+void QgsTextureMaterial::setInstancingMeshTransform( const QMatrix4x4 &transform )
+{
+  mTransformParameter->setValue( QVariant::fromValue( transform ) );
 }
 
 ///@endcond PRIVATE

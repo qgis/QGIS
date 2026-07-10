@@ -18,9 +18,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #include "qgswmsdescribelayer.h"
 
+#include "qgslayertree.h"
 #include "qgsproject.h"
 #include "qgsserverprojectutils.h"
 #include "qgswmsrequest.h"
@@ -74,6 +74,21 @@ namespace QgsWms
     {
       throw QgsServiceException( u"InvalidParameterValue"_s, u"Layers is empty"_s, 400 );
     }
+
+    // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result
+    QHash<const QgsMapLayer *, QStringList> acceptableLayersAndRequestNames;
+    collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, *project, layersList );
+    auto firstFoundInacceptableLayer = std::find_if( layersList.cbegin(), layersList.cend(), [&]( const QString &layerName ) {
+      //return when the requested layer has not been found as a acceptable layer
+      return !std::any_of( acceptableLayersAndRequestNames.cbegin(), acceptableLayersAndRequestNames.cend(), [&]( const QStringList &requestedNames ) { return requestedNames.contains( layerName ); } );
+    } );
+    if ( firstFoundInacceptableLayer != layersList.cend() )
+    {
+      QgsWmsParameter param( QgsWmsParameter::LAYER );
+      param.mValue = *firstFoundInacceptableLayer;
+      throw QgsBadRequestException( QgsServiceException::OGC_LayerNotDefined, param );
+    }
+
     QDomDocument myDocument = QDomDocument();
 
     const QDomNode header = myDocument.createProcessingInstruction( u"xml"_s, u"version=\"1.0\" encoding=\"UTF-8\""_s );
@@ -127,6 +142,7 @@ namespace QgsWms
     const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
     // WCS layers
     const QStringList wcsLayerIds = QgsServerProjectUtils::wcsLayerIds( *project );
+
 
     for ( QgsMapLayer *layer : project->mapLayers() )
     {

@@ -11,6 +11,7 @@ Content-Type: application/geo+json; charset=utf-8
     },
   "features": [
     {
+      "featureType": "testlayer èé",
       "geometry": null,
       "id": "testlayer èé.2",
       "properties": {

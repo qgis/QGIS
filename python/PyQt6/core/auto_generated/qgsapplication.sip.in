@@ -257,7 +257,10 @@ Returns the path to the master qgis.db file.
 
   static QString qgisSettingsDirPath();
 %Docstring
-Returns the path to the settings directory in user's home dir
+Returns the path to the settings directory in user's home dir.
+
+This is the path to the root directory of the user's current active QGIS
+profile.
 %End
 
   static QString qgisUserDatabaseFilePath();
@@ -458,7 +461,7 @@ Returns the QGIS platform name, e.g., "desktop", "server",
 Returns the QGIS application full name.
 
 It can be defined by the environment variable QGIS_APPLICATION_FULL_NAME
-or the /qgis/application_full_name in the QGIS config file.
+or the app/full-name setting in the QGIS config file.
 
 By default it is equal to :py:func:`~QgsApplication.applicationName`+'
 '+:py:func:`~QgsApplication.platform`

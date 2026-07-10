@@ -667,6 +667,47 @@ bool QgsGeometry::deleteVertex( int atVertex )
   return d->geometry->deleteVertex( id );
 }
 
+bool QgsGeometry::deleteVertices( const QSet<int> &atVertices )
+{
+  if ( !d->geometry )
+  {
+    return false;
+  }
+
+  // if it is a point, set the geometry to nullptr
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point )
+  {
+    if ( atVertices.size() != 1 && !atVertices.contains( 0 ) )
+      return false;
+
+    reset( nullptr );
+    return true;
+  }
+
+  QSet<QgsVertexId> vertexIds;
+  for ( int vertex : atVertices )
+  {
+    QgsVertexId id;
+    if ( !vertexIdFromVertexNr( vertex, id ) )
+      return false;
+
+    vertexIds.insert( id );
+  }
+
+  // create a copy of the original geometry to restore it in case of failure
+  std::unique_ptr< QgsAbstractGeometry > originalGeometry( d->geometry->clone() );
+
+  detach();
+
+  if ( !d->geometry->deleteVertices( vertexIds ) )
+  {
+    reset( std::move( originalGeometry ) );
+    return false;
+  }
+
+  return true;
+}
+
 bool QgsGeometry::toggleCircularAtVertex( int atVertex )
 {
   if ( !d->geometry )
@@ -823,7 +864,19 @@ bool QgsGeometry::addTopologicalPoint( const QgsPoint &point, double snappingTol
   if ( sqrDistVertexSnap < sqrSnappingTolerance )
     return false; // the vertex already exists - do not insert it
 
-  if ( !insertVertex( point, segmentAfterVertex ) )
+  // Let's ignore the Z and M values of the supplied topological point and calculate
+  // interpolated values instead, using the previous and next geometry vertices.
+  // This should make sure that the geometry's Z and M values are preserved when adding
+  // topological points and splitting
+  QgsPoint interpolatedPoint( point );
+  if ( d->geometry.get()->is3D() || d->geometry.get()->isMeasure() )
+  {
+    const QgsPoint vertexBefore = vertexAt( segmentAfterVertex - 1 );
+    const QgsPoint vertexAfter = vertexAt( segmentAfterVertex );
+    interpolatedPoint = QgsGeometryUtils::interpolatePointOnSegment( point.x(), point.y(), vertexBefore, vertexAfter );
+  }
+
+  if ( !insertVertex( interpolatedPoint, segmentAfterVertex ) )
   {
     QgsDebugError( u"failed to insert topo point"_s );
     return false;
@@ -1147,6 +1200,35 @@ Qgis::GeometryOperationResult QgsGeometry::rotate( double rotation, const QgsPoi
   return Qgis::GeometryOperationResult::Success;
 }
 
+static void removeDuplicateAdjacentPointsAt( QgsAbstractGeometry *geom, const QgsPointSequence &points )
+{
+  // this is a workaround for removing duplicated points introduced by GEOS when splitting 3d geometries
+  // on topologically added points. It makes no sense to be called for 2d geometries, so it shouldn't.
+  if ( !geom->is3D() )
+  {
+    Q_ASSERT( false );
+    return;
+  }
+
+  for ( const QgsPoint &pt : points )
+  {
+    QgsVertexId vertexId, prevVertexId, nextVertexId;
+    const QgsPoint closestPt = QgsGeometryUtils::closestVertex( *geom, pt, vertexId );
+    geom->adjacentVertices( vertexId, prevVertexId, nextVertexId );
+    const double dist = QgsGeometryUtils::sqrDistance2D( pt, closestPt );
+    if ( dist == 0 )
+    {
+      // make sure the geometry is snapped (z) to the topo point
+      ( void ) geom->moveVertex( vertexId, pt );
+      // remove adjacent vertices which are duplicates on the XY plane
+      if ( const QgsPoint v = geom->vertexAt( prevVertexId ); v.x() == pt.x() && v.y() == pt.y() )
+        ( void ) geom->deleteVertex( prevVertexId );
+      else if ( const QgsPoint v = geom->vertexAt( nextVertexId ); v.x() == pt.x() && v.y() == pt.y() )
+        ( void ) geom->deleteVertex( nextVertexId );
+    }
+  }
+}
+
 Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature
 )
@@ -1170,13 +1252,34 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   // We're trying adding the split line's vertices to the geometry so that
   // snap to segment always produces a valid split (see https://github.com/qgis/QGIS/issues/29270)
   QgsGeometry tmpGeom( *this );
+  QgsPointSequence addedTopologicalPoints;
   for ( const QgsPoint &v : splitLine )
   {
-    tmpGeom.addTopologicalPoint( v );
+    if ( tmpGeom.addTopologicalPoint( v ) )
+    {
+      // POLYGON Z geometries need special handling to cater for GEOS limitations.
+      // Splitting of polygons relies on GEOS extracting lines, unioning with the split line and then polygonizing.
+      // The problem is that during the union operation GEOS will interpolate new Z values where the split line intersects
+      // the polygon rings, even though we have added topological points with the correct Z values at that location.
+      // This results in duplicate vertices and/or wrong Z values on the split geometry.
+      // Our solution for that is:
+      // 1. Collect the topo points that were added (these have the desired interpolated Z values).
+      // 2. Visit the split geometries at the XY location of those topo points and make sure they still have the desired Z value.
+      // 3. Remove the adjacent vertex to the topo point if it has same XY coordinates. Any vertex with XY coordinates same as a
+      //    topo point was introduced by GEOS and is not wanted.
+      if ( tmpGeom.constGet()->is3D() && tmpGeom.constGet()->dimension() == 2 )
+      {
+        QgsVertexId vId;
+        const QgsPoint topoPoint = QgsGeometryUtils::closestVertex( *tmpGeom.constGet(), v, vId );
+        addedTopologicalPoints.append( topoPoint );
+      }
+    }
   }
 
   QVector<QgsGeometry > newGeoms;
   QgsLineString splitLineString( splitLine );
+  splitLineString.dropZValue();
+  splitLineString.dropMValue();
 
   QgsGeos geos( tmpGeom.get() );
   mLastError.clear();
@@ -1184,6 +1287,14 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
 
   if ( result == QgsGeometryEngine::Success )
   {
+    if ( !addedTopologicalPoints.isEmpty() )
+    {
+      for ( int i = 0; i < newGeoms.size(); ++i )
+      {
+        QgsAbstractGeometry *geom = newGeoms[i].get();
+        removeDuplicateAdjacentPointsAt( geom, addedTopologicalPoints );
+      }
+    }
     if ( splitFeature )
       *this = newGeoms.takeAt( 0 );
     newGeometries = newGeoms;
@@ -1247,9 +1358,22 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   QgsPointSequence reshapePoints;
   reshapeLineString.points( reshapePoints );
   QgsGeometry tmpGeom( *this );
+  QgsPointSequence addedTopologicalPoints;
   for ( const QgsPoint &v : std::as_const( reshapePoints ) )
   {
-    tmpGeom.addTopologicalPoint( v );
+    if ( tmpGeom.addTopologicalPoint( v ) )
+    {
+      // When reshaping 3D lines or polygons we want to make sure that any topological points added
+      // are preserved in the final geometry. GEOS will interpolate between geometry and reshapeLineString
+      // and may create duplicate vertices with different Z values. We will manually snap Z to those topo
+      // points later and remove any duplicated vertices.
+      if ( tmpGeom.constGet()->is3D() )
+      {
+        QgsVertexId vId;
+        const QgsPoint topoPoint = QgsGeometryUtils::closestVertex( *tmpGeom.constGet(), v, vId );
+        addedTopologicalPoints.append( topoPoint );
+      }
+    }
   }
 
   QgsGeos geos( tmpGeom.get() );
@@ -1258,6 +1382,10 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   std::unique_ptr< QgsAbstractGeometry > geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
   if ( errorCode == QgsGeometryEngine::Success && geom )
   {
+    if ( !addedTopologicalPoints.isEmpty() )
+    {
+      removeDuplicateAdjacentPointsAt( geom.get(), addedTopologicalPoints );
+    }
     reset( std::move( geom ) );
     return Qgis::GeometryOperationResult::Success;
   }
@@ -1694,16 +1822,21 @@ QString QgsGeometry::asWkt( int precision ) const
 
 QString QgsGeometry::asJson( int precision ) const
 {
-  return QString::fromStdString( asJsonObject( precision ).dump() );
+  return asGeoJson( precision, Qgis::GeoJsonProfile::Rfc7946 );
 }
 
-json QgsGeometry::asJsonObject( int precision ) const
+QString QgsGeometry::asGeoJson( int precision, Qgis::GeoJsonProfile profile ) const
+{
+  return QString::fromStdString( asJsonObject( precision, profile ).dump() );
+}
+
+json QgsGeometry::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   if ( !d->geometry )
   {
     return nullptr;
   }
-  return d->geometry->asJsonObject( precision );
+  return d->geometry->asJsonObject( precision, profile );
 }
 
 QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM, bool avoidDuplicates ) const
@@ -3059,6 +3192,25 @@ QgsGeometry QgsGeometry::simplifyCoverageVW( double tolerance, bool preserveBoun
   return result;
 }
 
+QgsGeometry QgsGeometry::cleanCoverage( const QgsCoverageCleanParameters &parameters, QgsFeedback *feedback ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::Polygon )
+    return QgsGeometry();
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  const QgsGeometry result( geos.cleanCoverage( parameters, &mLastError, feedback ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
 QgsGeometry QgsGeometry::node() const
 {
   if ( !d->geometry )
@@ -3744,6 +3896,9 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
 
 bool QgsGeometry::isExactlyEqual( const QgsGeometry &g, Qgis::GeometryBackend backend ) const
 {
+  // === WARNING ===
+  // if tolerance/epsilon value is changed in `geos.isFuzzyEqual` or in implementation of `QgsAbstractGeometry::operator==`, documentation must be updaded accordingly and also changed in expression helper files (resources/function_help/json)
+
   if ( !d->geometry || g.isNull() )
   {
     return false;
@@ -3762,13 +3917,13 @@ bool QgsGeometry::isExactlyEqual( const QgsGeometry &g, Qgis::GeometryBackend ba
   {
     case Qgis::GeometryBackend::GEOS:
     {
-      //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
-      if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
-        return false;
-
       // avoid calling geos for trivial point case
       if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
         return *d->geometry == *g.d->geometry;
+
+      //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
+      if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
+        return false;
 
       QgsGeos geos( d->geometry.get() );
       // fuzzy check call, with near zero epsilon, will behave as an exact comparison
@@ -3777,6 +3932,10 @@ bool QgsGeometry::isExactlyEqual( const QgsGeometry &g, Qgis::GeometryBackend ba
 
     case Qgis::GeometryBackend::QGIS:
     {
+      //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
+      if ( ( !d->geometry->is3D() && d->geometry->boundingBox() != g.d->geometry->boundingBox() ) || ( d->geometry->is3D() && d->geometry->boundingBox3D() != g.d->geometry->boundingBox3D() ) )
+        return false;
+
       // slower check - actually test the geometries
       return *d->geometry == *g.d->geometry;
     }
@@ -3799,18 +3958,14 @@ bool QgsGeometry::isTopologicallyEqual( const QgsGeometry &g, Qgis::GeometryBack
   if ( type() != g.type() )
     return false;
 
-  //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
-  if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
-    return false;
-
   mLastError.clear();
   switch ( backend )
   {
     case Qgis::GeometryBackend::GEOS:
     {
-      // avoid calling geos for trivial point case
-      if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point && QgsWkbTypes::flatType( g.d->geometry->wkbType() ) == Qgis::WkbType::Point )
-        return *d->geometry == *g.d->geometry;
+      //  another nice fast check upfront -- if the bounding boxes aren't equal, the geometries themselves can't be equal!
+      if ( d->geometry->boundingBox() != g.d->geometry->boundingBox() )
+        return false;
 
       QgsGeos geos( d->geometry.get() );
       return geos.isEqual( g.d->geometry.get(), &mLastError );

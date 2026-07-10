@@ -963,7 +963,7 @@ void QgsElevationProfileCanvas::generationFinished()
   {
     // here we should invalidate cached results only for the layers which have been refined
 
-    // and if no layers are being refeined, don't invalidate anything
+    // and if no layers are being refined, don't invalidate anything
 
     mPlotItem->updatePlot();
   }

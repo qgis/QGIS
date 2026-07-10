@@ -29,6 +29,7 @@
 #include "qgsmaterial3dhandler.h"
 #include "qgsmaterialregistry.h"
 #include "qgsoffscreen3dengine.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgsshadowrenderview.h"
 
 #include <QCryptographicHash>
@@ -80,7 +81,10 @@ void Qgs3DIconGenerator::generateIcon( QgsStyle *style, QgsStyle::StyleEntity ty
 
     case QgsStyle::MaterialSettingsEntity:
     {
-      generateThumbnailForMaterial( style, name );
+      // capturing 3d thumbnails involves event looping -- we don't want to trigger an event loop immediately here,
+      // as this method may have been called while painting a widget (eg a list widget showing the style model), and
+      // processing the event loop while drawing a widget is a VERY BAD THING
+      QMetaObject::invokeMethod( this, &Qgs3DIconGenerator::generateThumbnailForMaterial, Qt::QueuedConnection, style, name );
       break;
     }
   }
@@ -191,6 +195,8 @@ QImage Qgs3DIconGenerator::renderMaterial( const QgsAbstractMaterialSettings *se
   engine.frameGraph()->setRenderCaptureEnabled( true );
 
   QgsMaterialContext context;
+  context.setTextureFilterQuality( Qgs3D::settingTextureFilterQuality->value() );
+  context.setIsPreview( true );
   const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( settings );
   if ( !handler )
     return QImage();

@@ -20,6 +20,8 @@
 #include <QString>
 #include <QStringList>
 
+#include "moc_qgsattributetableconfig.cpp"
+
 using namespace Qt::StringLiterals;
 
 QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns() const
@@ -183,6 +185,8 @@ void QgsAttributeTableConfig::readXml( const QDomNode &node )
       mActionWidgetStyle = ButtonList;
     else
       mActionWidgetStyle = DropDown;
+
+    mAddFeatureMethod = qgsEnumKeyToValue( configNode.toElement().attribute( u"addFeatureMethod"_s ), AddFeatureMethod::Unset );
   }
   else
   {
@@ -221,6 +225,16 @@ void QgsAttributeTableConfig::setSortExpression( const QString &sortExpression )
   mSortExpression = sortExpression;
 }
 
+QgsAttributeTableConfig::AddFeatureMethod QgsAttributeTableConfig::addFeatureMethod() const
+{
+  return mAddFeatureMethod;
+}
+
+void QgsAttributeTableConfig::setAddFeatureMethod( const AddFeatureMethod addFeatureMethod )
+{
+  mAddFeatureMethod = addFeatureMethod;
+}
+
 int QgsAttributeTableConfig::columnWidth( int column ) const
 {
   return mColumns.at( column ).width;
@@ -243,7 +257,11 @@ void QgsAttributeTableConfig::setColumnHidden( int column, bool hidden )
 
 bool QgsAttributeTableConfig::operator!=( const QgsAttributeTableConfig &other ) const
 {
-  return mSortExpression != other.mSortExpression || mColumns != other.mColumns || mActionWidgetStyle != other.mActionWidgetStyle || mSortOrder != other.mSortOrder;
+  return mSortExpression != other.mSortExpression
+         || mColumns != other.mColumns
+         || mActionWidgetStyle != other.mActionWidgetStyle
+         || mSortOrder != other.mSortOrder
+         || mAddFeatureMethod != other.mAddFeatureMethod;
 }
 
 Qt::SortOrder QgsAttributeTableConfig::sortOrder() const
@@ -272,6 +290,9 @@ void QgsAttributeTableConfig::writeXml( QDomNode &node ) const
   configElement.setAttribute( u"sortExpression"_s, mSortExpression );
 
   configElement.setAttribute( u"sortOrder"_s, mSortOrder );
+
+  if ( mAddFeatureMethod != AddFeatureMethod::Unset )
+    configElement.setAttribute( u"addFeatureMethod"_s, qgsEnumValueToKey( mAddFeatureMethod ) );
 
   QDomElement columnsElement = doc.createElement( u"columns"_s );
 

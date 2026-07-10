@@ -843,33 +843,39 @@ Qgis.EmbeddedScriptMode.__doc__ = """Authorisation to run script embedded in pro
 # --
 Qgis.EmbeddedScriptMode.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.EmbeddedScriptType.Macro.__doc__ = ""
-Qgis.EmbeddedScriptType.ExpressionFunction.__doc__ = ""
-Qgis.EmbeddedScriptType.Action.__doc__ = ""
-Qgis.EmbeddedScriptType.FormInitCode.__doc__ = ""
+Qgis.EmbeddedScriptType.Macro.__doc__ = "Project macros"
+Qgis.EmbeddedScriptType.ExpressionFunction.__doc__ = "Expression functions"
+Qgis.EmbeddedScriptType.Action.__doc__ = "Map layers' action \n.. versionadded:: 4.0"
+Qgis.EmbeddedScriptType.FormInitCode.__doc__ = "Attribute forms' initiation code \n.. versionadded:: 4.0"
 Qgis.EmbeddedScriptType.__doc__ = """Type of Python Embedded in projects
 
 .. versionadded:: 3.40
 
-* ``Macro``: 
-* ``ExpressionFunction``: 
-* ``Action``: 
-* ``FormInitCode``: 
+* ``Macro``: Project macros
+* ``ExpressionFunction``: Expression functions
+* ``Action``: Map layers' action
+
+  .. versionadded:: 4.0
+
+* ``FormInitCode``: Attribute forms' initiation code
+
+  .. versionadded:: 4.0
+
 
 """
 # --
 Qgis.EmbeddedScriptType.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.ProjectTrustStatus.Undetermined.__doc__ = ""
-Qgis.ProjectTrustStatus.Trusted.__doc__ = ""
-Qgis.ProjectTrustStatus.Untrusted.__doc__ = ""
+Qgis.ProjectTrustStatus.Undetermined.__doc__ = "The project trust has not yet been determined by the user"
+Qgis.ProjectTrustStatus.Trusted.__doc__ = "The project has been determined by the user as trusted"
+Qgis.ProjectTrustStatus.Untrusted.__doc__ = "The project has been determined by the user as untrusted"
 Qgis.ProjectTrustStatus.__doc__ = """Project trust status
 
 .. versionadded:: 4.0
 
-* ``Undetermined``: 
-* ``Trusted``: 
-* ``Untrusted``: 
+* ``Undetermined``: The project trust has not yet been determined by the user
+* ``Trusted``: The project has been determined by the user as trusted
+* ``Untrusted``: The project has been determined by the user as untrusted
 
 """
 # --
@@ -1027,6 +1033,9 @@ QgsVectorDataProvider.FeatureSymbology.__doc__ = "Provider is able retrieve embe
 QgsVectorDataProvider.CacheData = Qgis.VectorProviderCapability.CacheData
 QgsVectorDataProvider.CacheData.is_monkey_patched = True
 QgsVectorDataProvider.CacheData.__doc__ = "Provider caches source data and should force provider data reloads when dependent layers are committed \n.. versionadded:: 4.2"
+QgsVectorDataProvider.ReadFieldDomains = Qgis.VectorProviderCapability.ReadFieldDomains
+QgsVectorDataProvider.ReadFieldDomains.is_monkey_patched = True
+QgsVectorDataProvider.ReadFieldDomains.__doc__ = "Provider can read field domains and their properties \n.. versionadded:: 4.2"
 QgsVectorDataProvider.EditingCapabilities = Qgis.VectorProviderCapability.EditingCapabilities
 QgsVectorDataProvider.EditingCapabilities.is_monkey_patched = True
 QgsVectorDataProvider.EditingCapabilities.__doc__ = "Bitmask of all editing capabilities"
@@ -1076,6 +1085,10 @@ Qgis.VectorProviderCapability.__doc__ = """Vector data provider capabilities.
   .. versionadded:: 3.20
 
 * ``CacheData``: Provider caches source data and should force provider data reloads when dependent layers are committed
+
+  .. versionadded:: 4.2
+
+* ``ReadFieldDomains``: Provider can read field domains and their properties
 
   .. versionadded:: 4.2
 
@@ -4661,6 +4674,23 @@ Qgis.CrsWktVariant.__doc__ = """Coordinate reference system WKT formatting varia
 # --
 Qgis.CrsWktVariant.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.UnknownLayerCrsBehavior.NoAction.__doc__ = "Take no action and leave as unknown CRS"
+Qgis.UnknownLayerCrsBehavior.PromptUserForCrs.__doc__ = "User is prompted for a CRS choice"
+Qgis.UnknownLayerCrsBehavior.UseProjectCrs.__doc__ = "Copy the current project's CRS"
+Qgis.UnknownLayerCrsBehavior.UseDefaultCrs.__doc__ = "Use the default layer CRS set via QGIS options"
+Qgis.UnknownLayerCrsBehavior.__doc__ = """Behavior to use when encountering a layer with an unknown (invalid) CRS.
+
+.. versionadded:: 4.2
+
+* ``NoAction``: Take no action and leave as unknown CRS
+* ``PromptUserForCrs``: User is prompted for a CRS choice
+* ``UseProjectCrs``: Copy the current project's CRS
+* ``UseDefaultCrs``: Use the default layer CRS set via QGIS options
+
+"""
+# --
+Qgis.UnknownLayerCrsBehavior.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.Axis.X.__doc__ = "X-axis"
 Qgis.Axis.Y.__doc__ = "Y-axis"
 Qgis.Axis.Z.__doc__ = "Z-axis"
@@ -7712,6 +7742,49 @@ Qgis.PlotToolFlags = lambda flags=0: Qgis.PlotToolFlag(flags)
 Qgis.PlotToolFlags.baseClass = Qgis
 PlotToolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.Map3DDebugFlag.ShowTerrainBoundingBoxes.__doc__ = "Displays bounding boxes of terrain tiles."
+Qgis.Map3DDebugFlag.ShowTerrainTileInfo.__doc__ = "Displays extra tile info on top of terrain tiles."
+Qgis.Map3DDebugFlag.ShowCameraViewCenter.__doc__ = "Shows the camera's view center as a sphere."
+Qgis.Map3DDebugFlag.ShowCameraRotationCenter.__doc__ = "Shows the camera's rotation center as a sphere."
+Qgis.Map3DDebugFlag.ShowLightSourceOrigins.__doc__ = "Shows the light source origins as a sphere."
+Qgis.Map3DDebugFlag.ShowFPS.__doc__ = "Shows the frames per second (FPS)."
+Qgis.Map3DDebugFlag.ShowDebugPanel.__doc__ = "Shows the debug panel next to the map."
+Qgis.Map3DDebugFlag.__doc__ = """Flags that control debug options for 3D maps.
+
+.. warning::
+
+   These are debugging options only, and are not considered part of stable API.
+
+.. versionadded:: 4.2
+
+* ``ShowTerrainBoundingBoxes``: Displays bounding boxes of terrain tiles.
+* ``ShowTerrainTileInfo``: Displays extra tile info on top of terrain tiles.
+* ``ShowCameraViewCenter``: Shows the camera's view center as a sphere.
+* ``ShowCameraRotationCenter``: Shows the camera's rotation center as a sphere.
+* ``ShowLightSourceOrigins``: Shows the light source origins as a sphere.
+* ``ShowFPS``: Shows the frames per second (FPS).
+* ``ShowDebugPanel``: Shows the debug panel next to the map.
+
+"""
+# --
+Qgis.Map3DDebugFlag.baseClass = Qgis
+Qgis.Map3DDebugFlags = lambda flags=0: Qgis.Map3DDebugFlag(flags)
+Qgis.Map3DDebugFlags.baseClass = Qgis
+Map3DDebugFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.Map3DProjectionType.Orthographic.__doc__ = "Orthogonal projection"
+Qgis.Map3DProjectionType.Perspective.__doc__ = "Perspective projection"
+Qgis.Map3DProjectionType.__doc__ = """3D map projection type
+
+.. versionadded:: 4.2
+
+* ``Orthographic``: Orthogonal projection
+* ``Perspective``: Perspective projection
+
+"""
+# --
+Qgis.Map3DProjectionType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.Point3DShape.Cylinder.__doc__ = "Cylinder"
 Qgis.Point3DShape.Sphere.__doc__ = "Sphere"
 Qgis.Point3DShape.Cone.__doc__ = "Cone"
@@ -7773,29 +7846,92 @@ Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
 # --
 Qgis.MaterialRenderingTechnique.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.InstancedMaterialFlag.DataDefinedScale.__doc__ = "Per-instance data-defined scale"
+Qgis.InstancedMaterialFlag.DataDefinedRotation.__doc__ = "Per-instance data-defined rotation"
+Qgis.InstancedMaterialFlag.__doc__ = """Optional per-instance properties of instanced materials.
+
+.. versionadded:: 4.2
+
+* ``DataDefinedScale``: Per-instance data-defined scale
+* ``DataDefinedRotation``: Per-instance data-defined rotation
+
+"""
+# --
+Qgis.InstancedMaterialFlag.baseClass = Qgis
+Qgis.InstancedMaterialFlags = lambda flags=0: Qgis.InstancedMaterialFlag(flags)
+Qgis.InstancedMaterialFlags.baseClass = Qgis
+InstancedMaterialFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.TextureFilterQuality.Trilinear.__doc__ = "Trilinear (LinearMipmapLinear)"
+Qgis.TextureFilterQuality.Anisotropic2x.__doc__ = "Anisotropic filtering (2x)"
+Qgis.TextureFilterQuality.Anisotropic4x.__doc__ = "Anisotropic filtering (4x)"
+Qgis.TextureFilterQuality.Anisotropic8x.__doc__ = "Anisotropic filtering (8x)"
+Qgis.TextureFilterQuality.Anisotropic16x.__doc__ = "Anisotropic filtering (16x)"
+Qgis.TextureFilterQuality.__doc__ = """Texture filtering qualities.
+
+.. versionadded:: 4.2
+
+* ``Trilinear``: Trilinear (LinearMipmapLinear)
+* ``Anisotropic2x``: Anisotropic filtering (2x)
+* ``Anisotropic4x``: Anisotropic filtering (4x)
+* ``Anisotropic8x``: Anisotropic filtering (8x)
+* ``Anisotropic16x``: Anisotropic filtering (16x)
+
+"""
+# --
+Qgis.TextureFilterQuality.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ShadowQuality.Low.__doc__ = "Low quality"
+Qgis.ShadowQuality.Medium.__doc__ = "Medium quality"
+Qgis.ShadowQuality.High.__doc__ = "High quality"
+Qgis.ShadowQuality.VeryHigh.__doc__ = "Very high quality"
+Qgis.ShadowQuality.Extreme.__doc__ = "Extremely high quality"
+Qgis.ShadowQuality.__doc__ = """Shadow texture quality.
+
+.. versionadded:: 4.2
+
+* ``Low``: Low quality
+* ``Medium``: Medium quality
+* ``High``: High quality
+* ``VeryHigh``: Very high quality
+* ``Extreme``: Extremely high quality
+
+"""
+# --
+Qgis.ShadowQuality.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LightSourceType.Point.__doc__ = "Point light source"
 Qgis.LightSourceType.Directional.__doc__ = "Directional light source"
+Qgis.LightSourceType.Sun.__doc__ = "Sun based light source \n.. versionadded:: 4.2"
 Qgis.LightSourceType.__doc__ = """Light source types for 3D scenes.
 
 .. versionadded:: 3.26
 
 * ``Point``: Point light source
 * ``Directional``: Directional light source
+* ``Sun``: Sun based light source
+
+  .. versionadded:: 4.2
+
 
 """
 # --
 Qgis.LightSourceType.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.SkyboxType.DistinctTextures.__doc__ = "Cube map built from distinct textures"
-Qgis.SkyboxType.__doc__ = """Skybox types for 3D scenes.
+Qgis.Map3DBackgroundType.NoBackground.__doc__ = "No background"
+Qgis.Map3DBackgroundType.FixedGradientBackground.__doc__ = "Two color gradient, fixed in place"
+Qgis.Map3DBackgroundType.DistinctTextureSkybox.__doc__ = "Skybox with 6 distinct textures for different faces"
+Qgis.Map3DBackgroundType.__doc__ = """Background types for 3D map view.
 
 .. versionadded:: 4.2
 
-* ``DistinctTextures``: Cube map built from distinct textures
+* ``NoBackground``: No background
+* ``FixedGradientBackground``: Two color gradient, fixed in place
+* ``DistinctTextureSkybox``: Skybox with 6 distinct textures for different faces
 
 """
 # --
-Qgis.SkyboxType.baseClass = Qgis
+Qgis.Map3DBackgroundType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SkyboxCubeMapping.NativeZUp.__doc__ = "Textures exported for Z-up (+X Right, +Y Forward, +Z Up)"
 Qgis.SkyboxCubeMapping.OpenGLYUp.__doc__ = "Standard OpenGL/WebGL standard (+X Right, +Y Top, -Z Forward)"
@@ -7847,20 +7983,74 @@ Qgis.SceneMode.__doc__ = """The 3D scene mode used in 3D map views.
 # --
 Qgis.SceneMode.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements"
-Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes"
-Qgis.VerticalAxisInversion.Always.__doc__ = "Always invert vertical axis movements"
+Qgis.VerticalAxisInversion.WhenRotatingDragging.__doc__ = "When rotating camera around self with mouse captured \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.WhenRotatingCaptured.__doc__ = "When rotating camera around self with mouse button pressed \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.WhenPivoting.__doc__ = "When pivoting camera around point in terrain \n.. versionadded:: 4.2"
+Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements \n.. deprecated:: 4.2"
+Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes \n.. deprecated:: 4.2"
+Qgis.VerticalAxisInversion.Always.__doc__ = "Always invert vertical axis movements \n.. deprecated:: 4.2"
 Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D views.
 
 .. versionadded:: 3.30
 
+* ``WhenRotatingDragging``: When rotating camera around self with mouse captured
+
+  .. versionadded:: 4.2
+
+* ``WhenRotatingCaptured``: When rotating camera around self with mouse button pressed
+
+  .. versionadded:: 4.2
+
+* ``WhenPivoting``: When pivoting camera around point in terrain
+
+  .. versionadded:: 4.2
+
 * ``Never``: Never invert vertical axis movements
+
+  .. deprecated:: 4.2
+
 * ``WhenDragging``: Invert vertical axis movements when dragging in first person modes
+
+  .. deprecated:: 4.2
+
 * ``Always``: Always invert vertical axis movements
+
+  .. deprecated:: 4.2
+
 
 """
 # --
 Qgis.VerticalAxisInversion.baseClass = Qgis
+Qgis.VerticalAxisInversionFlags = lambda flags=0: Qgis.VerticalAxisInversion(flags)
+Qgis.VerticalAxisInversionFlags.baseClass = Qgis
+VerticalAxisInversionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.ToneMappingMethod.Clamp.__doc__ = "Clamp HDR colors to SDR color ranges, leave SDR colors unchanged. This is computationally cheap and ensures exact reproduction of SDR colors, but causes bright highlights to visibly clip and lose detail."
+Qgis.ToneMappingMethod.Aces.__doc__ = "Applies an approximation to the Academy Color Encoding System (ACES) filmic tone curve. This provides a natural, cinematic highlight roll-off and preserves detail in extreme brightness."
+Qgis.ToneMappingMethod.__doc__ = """Defines the method used to map High Dynamic Range (HDR) scene colors
+to the Standard Dynamic Range (SDR) of a display monitor.
+
+.. versionadded:: 4.2
+
+* ``Clamp``: Clamp HDR colors to SDR color ranges, leave SDR colors unchanged. This is computationally cheap and ensures exact reproduction of SDR colors, but causes bright highlights to visibly clip and lose detail.
+* ``Aces``: Applies an approximation to the Academy Color Encoding System (ACES) filmic tone curve. This provides a natural, cinematic highlight roll-off and preserves detail in extreme brightness.
+
+"""
+# --
+Qgis.ToneMappingMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.Export3DSceneFormat.Obj.__doc__ = "Wavefront OBJ format."
+Qgis.Export3DSceneFormat.StlAscii.__doc__ = "STL ascii format."
+Qgis.Export3DSceneFormat.__doc__ = """The file format used when exporting a 3D scene.
+
+.. versionadded:: 4.2
+
+* ``Obj``: Wavefront OBJ format.
+* ``StlAscii``: STL ascii format.
+
+"""
+# --
+Qgis.Export3DSceneFormat.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ProfileSurfaceSymbology.Line.__doc__ = "The elevation surface will be rendered using a line symbol"
 Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ = "The elevation surface will be rendered using a fill symbol below the surface level"
@@ -8408,6 +8598,21 @@ Qgis.LayerTreeInsertionMethod.__doc__ = """Layer tree insertion methods
 # --
 Qgis.LayerTreeInsertionMethod.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.LegendLayerDoubleClickAction.LayerProperties.__doc__ = "Open the layer properties dialog"
+Qgis.LegendLayerDoubleClickAction.AttributeTable.__doc__ = "Open the attribute table"
+Qgis.LegendLayerDoubleClickAction.LayerStyling.__doc__ = "Open the layer styling dock"
+Qgis.LegendLayerDoubleClickAction.__doc__ = """Action performed when double-clicking a layer in the legend.
+
+.. versionadded:: 4.0
+
+* ``LayerProperties``: Open the layer properties dialog
+* ``AttributeTable``: Open the attribute table
+* ``LayerStyling``: Open the layer styling dock
+
+"""
+# --
+Qgis.LegendLayerDoubleClickAction.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LayerTreeFilterFlag.SkipVisibilityCheck.__doc__ = "If set, the standard visibility check should be skipped"
 Qgis.LayerTreeFilterFlag.__doc__ = """Layer tree filter flags.
 
@@ -8506,6 +8711,24 @@ Qgis.LegendJsonRenderFlag.baseClass = Qgis
 Qgis.LegendJsonRenderFlags = lambda flags=0: Qgis.LegendJsonRenderFlag(flags)
 Qgis.LegendJsonRenderFlags.baseClass = Qgis
 LegendJsonRenderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.GeoJsonProfile.Legacy.__doc__ = "Legacy GeoJson profile used in QGIS prior to 4.2, which included some non-standard extensions and deviations from the RFC7946 standard, such as support for  transforming geometries to a CRS different than CRS84. This profile is still available for backward compatibility but is not recommended for new projects."
+Qgis.GeoJsonProfile.Rfc7946.__doc__ = "GeoJson profile compliant with RFC7946 standard \"http://www.opengis.net/def/profile/OGC/0/rfc7946\""
+Qgis.GeoJsonProfile.JsonFg.__doc__ = "GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg\""
+Qgis.GeoJsonProfile.JsonFgPlus.__doc__ = "GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus\""
+Qgis.GeoJsonProfile.__doc__ = """GeoJson export Profile according to OGC Features and Geometries JSON - Part 1: Core
+https://docs.ogc.org/is/21-045r1/21-045r1.html
+
+.. versionadded:: 4.2
+
+* ``Legacy``: Legacy GeoJson profile used in QGIS prior to 4.2, which included some non-standard extensions and deviations from the RFC7946 standard, such as support for  transforming geometries to a CRS different than CRS84. This profile is still available for backward compatibility but is not recommended for new projects.
+* ``Rfc7946``: GeoJson profile compliant with RFC7946 standard \"http://www.opengis.net/def/profile/OGC/0/rfc7946\"
+* ``JsonFg``: GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg\"
+* ``JsonFgPlus``: GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus\"
+
+"""
+# --
+Qgis.GeoJsonProfile.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ActionType.Invalid.__doc__ = "Invalid"
 Qgis.ActionType.MapLayerAction.__doc__ = "Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class."
@@ -12323,6 +12546,39 @@ Qgis.RasterBandStatistics = lambda flags=0: Qgis.RasterBandStatistic(flags)
 Qgis.RasterBandStatistics.baseClass = Qgis
 RasterBandStatistics = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.SensorThingsVersion.Version1_1.__doc__ = "1.1"
+Qgis.SensorThingsVersion.Version2_0.__doc__ = "2.0"
+Qgis.SensorThingsVersion.__doc__ = """OGC SensorThings API versions.
+
+.. versionadded:: 4.2
+
+* ``Version1_1``: 1.1
+* ``Version2_0``: 2.0
+
+"""
+# --
+Qgis.SensorThingsVersion.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SensorThingsExtension.MultiDatastream.__doc__ = "MultiDatastream extension"
+Qgis.SensorThingsExtension.SensingExtensionObservationsMeasurements.__doc__ = "Sensing Extension (Observations & Measurements)"
+Qgis.SensorThingsExtension.SensingExtensionSampling.__doc__ = "Sensing Extension (Sampling)"
+Qgis.SensorThingsExtension.SensingExtensionRelations.__doc__ = "Sensing Extension (Relations)"
+Qgis.SensorThingsExtension.__doc__ = """OGC SensorThings extensions.
+
+.. versionadded:: 4.2
+
+* ``MultiDatastream``: MultiDatastream extension
+* ``SensingExtensionObservationsMeasurements``: Sensing Extension (Observations & Measurements)
+* ``SensingExtensionSampling``: Sensing Extension (Sampling)
+* ``SensingExtensionRelations``: Sensing Extension (Relations)
+
+"""
+# --
+Qgis.SensorThingsExtension.baseClass = Qgis
+Qgis.SensorThingsExtensions = lambda flags=0: Qgis.SensorThingsExtension(flags)
+Qgis.SensorThingsExtensions.baseClass = Qgis
+SensorThingsExtensions = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SensorThingsEntity.Invalid.__doc__ = "An invalid/unknown entity"
 Qgis.SensorThingsEntity.Thing.__doc__ = "A Thing is an object of the physical world (physical things) or the information world (virtual things) that is capable of being identified and integrated into communication networks"
 Qgis.SensorThingsEntity.Location.__doc__ = "A Location entity locates the Thing or the Things it associated with. A Thing’s Location entity is defined as the last known location of the Thing"
@@ -12333,6 +12589,20 @@ Qgis.SensorThingsEntity.ObservedProperty.__doc__ = "An ObservedProperty specifie
 Qgis.SensorThingsEntity.Observation.__doc__ = "An Observation is the act of measuring or otherwise determining the value of a property"
 Qgis.SensorThingsEntity.FeatureOfInterest.__doc__ = "In the context of the Internet of Things, many Observations’ FeatureOfInterest can be the Location of the Thing. For example, the FeatureOfInterest of a wifi-connect thermostat can be the Location of the thermostat (i.e., the living room where the thermostat is located in). In the case of remote sensing, the FeatureOfInterest can be the geographical area or volume that is being sensed"
 Qgis.SensorThingsEntity.MultiDatastream.__doc__ = "A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\". \n.. versionadded:: 3.38"
+Qgis.SensorThingsEntity.Feature.__doc__ = "A Feature is an abstraction of real-world phenomena. It acts as an independent entity that can represent the proximate feature (e.g., a physical sample) or the ultimate real-world object being observed, replacing the v1.1 FeatureOfInterest. \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.FeatureType.__doc__ = "A FeatureType provides the classification and schema definition for a Feature, describing the common properties and structure expected for a specific category of Features. \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.Deployment.__doc__ = "A Deployment is the association of a Sensor to a Thing that hosts this Sensor, and to the Datastreams that contain the Observations produced by the Sensor while it is/was hosted on this Thing. Implemented in the \"Sensing Extension (Observations & Measurements)\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ObservingProcedure.__doc__ = "An Observing Procedure. Implemented in the \"Sensing Extension (Observations & Measurements)\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.Sampling.__doc__ = "The Sampling is the act of taking one or more Samples. The Sampling takes Samples from a SampledFeature. The Sampling is executed by a Sampler, following a SamplingProcedure. The Sampling can be associated with a Thing. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.SamplingProcedure.__doc__ = "The SamplingProcedure describes the method, or procedure, that the Sampler uses to create Samples. A Sampler must implement at least one SamplingProcedure, but can implement many. A Sample is created using one SamplingProcedure, though this SamplingProcedure may not be known. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.Sampler.__doc__ = "The Sampler describes the machine, device, human or other entity that executed the sampling procedure to produce a sample. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.PreparationStep.__doc__ = "When applying a PreparationProcdedure to a Sample, the process is recorded in individual PreparationSteps. For a simple, short PreparationProcedure, a single PreparationStep can be sufficient to record the fact that the preparation procedure was applied to the Sample, and the time at which the procedure was applied. For a complex procedure, that takes a long time, many PreparationSteps may be recorded. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.PreparationProcedure.__doc__ = "After a sample is taken, a preparation procedure can be applied to it. The difference with the sampling procedure is that the preparation procedure does not result in one or more new samples, but that an existing sample is modified. The PreparationProcedure stores the generic procedure that can be applied to many samples. Implemented in the \"Sampling Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ThingRelation.__doc__ = "A ThingRelation Entity relates a source Thing to a target Thing, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.RelationRole.__doc__ = "The RelationRole Entity holds a name and definition for both directions of the relation. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.FeatureRelation.__doc__ = "A FeatureRelation Entity relates a source Feature to a target Feature, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.DatastreamRelation.__doc__ = "A DatastreamRelation Entity relates a source Datastream to a target Datastream, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
+Qgis.SensorThingsEntity.ObservationRelation.__doc__ = "A ObservationRelation Entity relates a source Observation to a target Observation, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\". \n.. versionadded:: 4.2"
 Qgis.SensorThingsEntity.__doc__ = """OGC SensorThings API entity types.
 
 .. versionadded:: 3.36
@@ -12349,6 +12619,62 @@ Qgis.SensorThingsEntity.__doc__ = """OGC SensorThings API entity types.
 * ``MultiDatastream``: A MultiDatastream groups a collection of Observations and the Observations in a MultiDatastream have a complex result type. Implemented in the SensorThings version 1.1 \"MultiDatastream extension\".
 
   .. versionadded:: 3.38
+
+* ``Feature``: A Feature is an abstraction of real-world phenomena. It acts as an independent entity that can represent the proximate feature (e.g., a physical sample) or the ultimate real-world object being observed, replacing the v1.1 FeatureOfInterest.
+
+  .. versionadded:: 4.2
+
+* ``FeatureType``: A FeatureType provides the classification and schema definition for a Feature, describing the common properties and structure expected for a specific category of Features.
+
+  .. versionadded:: 4.2
+
+* ``Deployment``: A Deployment is the association of a Sensor to a Thing that hosts this Sensor, and to the Datastreams that contain the Observations produced by the Sensor while it is/was hosted on this Thing. Implemented in the \"Sensing Extension (Observations & Measurements)\".
+
+  .. versionadded:: 4.2
+
+* ``ObservingProcedure``: An Observing Procedure. Implemented in the \"Sensing Extension (Observations & Measurements)\".
+
+  .. versionadded:: 4.2
+
+* ``Sampling``: The Sampling is the act of taking one or more Samples. The Sampling takes Samples from a SampledFeature. The Sampling is executed by a Sampler, following a SamplingProcedure. The Sampling can be associated with a Thing. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``SamplingProcedure``: The SamplingProcedure describes the method, or procedure, that the Sampler uses to create Samples. A Sampler must implement at least one SamplingProcedure, but can implement many. A Sample is created using one SamplingProcedure, though this SamplingProcedure may not be known. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``Sampler``: The Sampler describes the machine, device, human or other entity that executed the sampling procedure to produce a sample. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``PreparationStep``: When applying a PreparationProcdedure to a Sample, the process is recorded in individual PreparationSteps. For a simple, short PreparationProcedure, a single PreparationStep can be sufficient to record the fact that the preparation procedure was applied to the Sample, and the time at which the procedure was applied. For a complex procedure, that takes a long time, many PreparationSteps may be recorded. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``PreparationProcedure``: After a sample is taken, a preparation procedure can be applied to it. The difference with the sampling procedure is that the preparation procedure does not result in one or more new samples, but that an existing sample is modified. The PreparationProcedure stores the generic procedure that can be applied to many samples. Implemented in the \"Sampling Extension\".
+
+  .. versionadded:: 4.2
+
+* ``ThingRelation``: A ThingRelation Entity relates a source Thing to a target Thing, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``RelationRole``: The RelationRole Entity holds a name and definition for both directions of the relation. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``FeatureRelation``: A FeatureRelation Entity relates a source Feature to a target Feature, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``DatastreamRelation``: A DatastreamRelation Entity relates a source Datastream to a target Datastream, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
+
+* ``ObservationRelation``: A ObservationRelation Entity relates a source Observation to a target Observation, or to an external resource, using a RelationRole. Implemented in the \"Relations Extension\".
+
+  .. versionadded:: 4.2
 
 
 """
@@ -12608,6 +12934,57 @@ Qgis.TriangulationAlgorithm.__doc__ = """Triangulation algorithms.
 """
 # --
 Qgis.TriangulationAlgorithm.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.WmsGroupRequestMode.Normal.__doc__ = "Group and children can be requested"
+Qgis.WmsGroupRequestMode.Opaque.__doc__ = "Group can be requested, children cannot (appears like a single layer)"
+Qgis.WmsGroupRequestMode.__doc__ = """Request mode of groups in a WMS context.
+
+When a group is opaque, WMS treats it as a single opaque layer instead
+of a collection of individual layers.
+Its child layers are hidden from GetCapabilities requests.
+Any direct requests (like GetMap or GetFeatureInfo etc.) for a child layer will result in an error.
+Child layers are rendered whenever a request is made for the group itself.
+
+.. versionadded:: 4.2
+
+* ``Normal``: Group and children can be requested
+* ``Opaque``: Group can be requested, children cannot (appears like a single layer)
+
+"""
+# --
+Qgis.WmsGroupRequestMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DockableWidgetInitialState.RestorePreviousState.__doc__ = "Restore the previous state of this dock"
+Qgis.DockableWidgetInitialState.ForceDocked.__doc__ = "Force the widget to be docked"
+Qgis.DockableWidgetInitialState.ForceDialog.__doc__ = "Force the widget to be shown in a dialog"
+Qgis.DockableWidgetInitialState.__doc__ = """Dockable widget initial states.
+
+.. versionadded:: 4.2
+
+* ``RestorePreviousState``: Restore the previous state of this dock
+* ``ForceDocked``: Force the widget to be docked
+* ``ForceDialog``: Force the widget to be shown in a dialog
+
+"""
+# --
+Qgis.DockableWidgetInitialState.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder.__doc__ = "Polygon with longest common border is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MaximumArea.__doc__ = "Polygon with largest area is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MinimumArea.__doc__ = "Polygon with minimum area is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MinimumIndex.__doc__ = "Polygon with smallest input index is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.__doc__ = """Merge strategies for coverage cleaning operations.
+
+.. versionadded:: 4.4
+
+* ``LongestBorder``: Polygon with longest common border is selected to merge overlapping polygons into
+* ``MaximumArea``: Polygon with largest area is selected to merge overlapping polygons into
+* ``MinimumArea``: Polygon with minimum area is selected to merge overlapping polygons into
+* ``MinimumIndex``: Polygon with smallest input index is selected to merge overlapping polygons into
+
+"""
+# --
+Qgis.CoverageCleanOverlapMergeStrategy.baseClass = Qgis
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 5.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
     Qgis.__annotations__ = {'QGIS_DEV_VERSION': str, 'DEFAULT_SEARCH_RADIUS_MM': float, 'DEFAULT_MAPTOPIXEL_THRESHOLD': float, 'DEFAULT_HIGHLIGHT_COLOR': 'QColor', 'DEFAULT_HIGHLIGHT_BUFFER_MM': float, 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': float, 'SCALE_PRECISION': float, 'DEFAULT_Z_COORDINATE': float, 'DEFAULT_M_COORDINATE': float, 'UI_SCALE_FACTOR': float, 'DEFAULT_SNAP_TOLERANCE': float, 'DEFAULT_SNAP_UNITS': 'Qgis.MapToolUnit', 'USER_CRS_START_ID': int, 'DEFAULT_POINT_SIZE': float, 'DEFAULT_LINE_WIDTH': float, 'DEFAULT_SEGMENT_EPSILON': float}

@@ -17,6 +17,7 @@
 #define QGSSKYBOXSETTINGS_H
 
 #include "qgis_3d.h"
+#include "qgsabstract3dmapbackgroundsettings.h"
 #include "qgsskyboxentity.h"
 
 #include <QMap>
@@ -36,22 +37,20 @@ class QDomElement;
  * \ingroup qgis_3d
  * \since QGIS 3.16
  */
-class _3D_EXPORT QgsSkyboxSettings
+class _3D_EXPORT QgsSkyboxSettings : public QgsAbstract3DMapBackgroundSettings
 {
   public:
     QgsSkyboxSettings() = default;
     QgsSkyboxSettings( const QgsSkyboxSettings &other );
     QgsSkyboxSettings &operator=( QgsSkyboxSettings const &rhs );
 
-    //! Reads settings from a DOM \a element
-    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
-    //! Writes settings to a DOM \a element
-    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
+    Qgis::Map3DBackgroundType type() const override { return Qgis::Map3DBackgroundType::DistinctTextureSkybox; }
+    QgsSkyboxSettings *clone() const override SIP_FACTORY;
 
-    //! Returns the type of the skybox
-    Qgis::SkyboxType skyboxType() const { return mSkyboxType; }
-    //! Sets the type of the skybox
-    void setSkyboxType( Qgis::SkyboxType type ) { mSkyboxType = type; }
+    //! Reads settings from a DOM \a element
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
+    //! Writes settings to a DOM \a element
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const override;
 
 #if ENABLE_PANORAMIC_SKYBOX
     //! Returns the panoramic texture path of a skybox of type "Panormaic skybox"
@@ -88,15 +87,53 @@ class _3D_EXPORT QgsSkyboxSettings
      */
     void setCubeMapping( Qgis::SkyboxCubeMapping mapping );
 
-  private:
-    Qgis::SkyboxType mSkyboxType = Qgis::SkyboxType::DistinctTextures;
+    /**
+     * Returns TRUE if the skybox should generate environmental lighting effects.
+     *
+     * \see setEnvironmentalLightingEnabled()
+     * \see environmentalLightStrength()
+     * \since QGIS 4.2
+     */
+    bool environmentalLightingEnabled() const { return mEnableEnvironmentalLighting; }
 
+    /**
+     * Sets whether the skybox should generate environmental lighting effects.
+     *
+     * \see environmentalLightingEnabled()
+     * \see setEnvironmentalLightStrength()
+     * \since QGIS 4.2
+     */
+    void setEnvironmentalLightingEnabled( bool enabled ) { mEnableEnvironmentalLighting = enabled; }
+
+    /**
+     * Returns the environmental light strength, as a factor between 0 and 1.
+     *
+     * \see setEnvironmentalLightStrength()
+     * \see environmentalLightingEnabled()
+     *
+     * \since QGIS 4.2
+     */
+    double environmentalLightStrength() const { return mEnvironmentalLightStrength; }
+
+    /**
+     * Sets the \a strength of the environmental light, as a factor between 0 and 1.
+     *
+     * \see environmentalLightStrength()
+     * \see setEnvironmentalLightingEnabled()
+     *
+     * \since QGIS 4.2
+     */
+    void setEnvironmentalLightStrength( double strength ) { mEnvironmentalLightStrength = strength; }
+
+  private:
 #if ENABLE_PANORAMIC_SKYBOX
     QString mPanoramicTexturePath;
 #endif
 
     Qgis::SkyboxCubeMapping mCubeMapping = Qgis::SkyboxCubeMapping::NativeZUp;
     QMap<QString, QString> mCubeMapFacesPaths;
+    bool mEnableEnvironmentalLighting = true;
+    double mEnvironmentalLightStrength = 1.0;
 };
 
 #endif // QGSSKYBOXSETTINGS_H

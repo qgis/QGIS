@@ -340,10 +340,10 @@ class TEST_EXPORT QgsTest : public QObject
           QString msg = QString( "%1 Comparison failed in starting from char %2." ).arg( header ).arg( QString::number( i ) );
 
           // create copies of data as QTest::compare_helper will delete them
-          char *actualCopy = new char[act.size() + 1];
+          char *actualCopy = qstrdup( act.constData() );
           memcpy( actualCopy, act.data(), act.size() );
           actualCopy[act.size()] = 0;
-          char *expectedCopy = new char[exp.size() + 1];
+          char *expectedCopy = qstrdup( exp.constData() );
           memcpy( expectedCopy, exp.data(), exp.size() );
           expectedCopy[exp.size()] = 0;
 

@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsCesiumUtils
 {
 %Docstring(signature="appended")
@@ -61,11 +63,13 @@ Extracts GLTF binary data and other contents from the legacy b3dm
 (Batched 3D Model) tile format. Returns empty byte array on error.
 %End
 
+
     struct TileContents
     {
         QByteArray gltf;
 
         QgsVector3D rtcCenter;
+
     };
 
  static TileContents extractGltfFromTileContent( const QByteArray &tileContent ) /Deprecated="Since 4.2.  use extractTileContent() which can handle composite tiles as well."/;
@@ -81,7 +85,7 @@ Parses tile content. Returns empty byte array on error.
    : use :py:func:`~QgsCesiumUtils.extractTileContent` which can handle composite tiles as well.
 %End
 
-    static QVector<QgsCesiumUtils::TileContents> extractTileContent( const QByteArray &tileContent );
+    static QVector<QgsCesiumUtils::TileContents> extractTileContent( const QByteArray &tileContent, const QString &baseUri = QString() );
 %Docstring
 Parses tile content and returns a list of TileContents.
 
@@ -92,6 +96,28 @@ error or for unsupported tile types (pnts, i3dm).
 
 .. versionadded:: 4.2
 %End
+
+    static QgsTiledSceneBoundingVolume boundingVolumeFromRegion( const QgsBox3D &region, const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Calculates oriented bounding box in EPSG:4978 from "region" defined with
+min/max lat/lon coordinates in EPSG:4978.
+
+.. note::
+
+   added in QGIS 4.2
+%End
+
+    static QString appendQueryFromBaseUrl( const QString &contentUri, const QUrl &baseUrl );
+%Docstring
+Copies any query items from the base URL to the content URI - to
+replicate undocumented Cesium JS behavior that is used at least by
+Google Tiles.
+
+.. note::
+
+   added in QGIS 4.2
+%End
+
 };
 
 /************************************************************************

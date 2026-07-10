@@ -21,6 +21,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgsmapcanvasitem.h"
 #include "qgsmaptool.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgsrubberband.h"
 #include "qgssymbol.h"
 #include "qobjectuniqueptr.h"
@@ -59,9 +60,9 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
      * \param canvas map canvas where the edit take place
      * \param layer layer to be edited
      * \param symbolLayer symbol layer affected by the blank segments
-     * \param blankSegmentFieldIndex index of the field containing the digitized blank segments
+     * \param propertyButton data defined property button associated with this map tool
      */
-    QgsMapToolEditBlankSegmentsBase( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsLineSymbolLayer *symbolLayer, int blankSegmentFieldIndex );
+    QgsMapToolEditBlankSegmentsBase( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, QgsPropertyOverrideButton *propertyButton );
 
     /**
      * Destructor
@@ -135,6 +136,11 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
     void setCurrentBlankSegment( int currentBlankSegmentIndex );
 
     /**
+     * Process \a event in order to select the current feature at the event mouse position
+     */
+    void selectFeature( QgsMapMouseEvent *event );
+
+    /**
      * \ingroup gui
      * \brief Rubber band used to draw blank segments on edition
      * \since QGIS 4.0
@@ -156,8 +162,8 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
     std::vector<QObjectUniquePtr<QgsBlankSegmentRubberBand>> mBlankSegments;
     QgsVectorLayer *mLayer = nullptr;
     std::unique_ptr<QgsSymbol> mSymbol;
-    const QString mSymbolLayerId;
-    QgsTemplatedLineSymbolLayerBase *mSymbolLayer = nullptr;
+    QgsTemplatedLineSymbolLayerBase *mSymbolLayer = nullptr;               // original symbol layer
+    QgsTemplatedLineSymbolLayerBase *mRenderedPointsSymbolLayer = nullptr; // original symbol layer clone to retrieve rendered points
 
     int mBlankSegmentsFieldIndex = -1;
     QgsFeatureId mCurrentFeatureId = FID_NULL;
@@ -165,6 +171,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
     State mState = State::SelectFeature;
     int mCurrentBlankSegmentIndex = -1;
     int mHoveredBlankSegmentIndex = -1;
+    QgsPropertyOverrideButton *mPropertyButton = nullptr;
 
     // currently edited blank segment, start point is the fixed point and end point is the currently
     // modified one
@@ -189,10 +196,10 @@ template<class T> class GUI_EXPORT QgsMapToolEditBlankSegments : public QgsMapTo
      * \param canvas map canvas where the edit take place
      * \param layer layer to be edited
      * \param symbolLayer symbol layer affected by the blank segments
-     * \param blankSegmentFieldIndex index of the field containing the digitized blank segments
+     * \param propertyButton data defined property button associated with this map tool
      */
-    QgsMapToolEditBlankSegments( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsLineSymbolLayer *symbolLayer, int blankSegmentFieldIndex )
-      : QgsMapToolEditBlankSegmentsBase( canvas, layer, symbolLayer, blankSegmentFieldIndex )
+    QgsMapToolEditBlankSegments( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsTemplatedLineSymbolLayerBase *symbolLayer, QgsPropertyOverrideButton *propertyButton )
+      : QgsMapToolEditBlankSegmentsBase( canvas, layer, symbolLayer, propertyButton )
     {}
 
     QgsTemplatedLineSymbolLayerBase *createRenderedPointsSymbolLayer( const QgsTemplatedLineSymbolLayerBase *originalSl ) override

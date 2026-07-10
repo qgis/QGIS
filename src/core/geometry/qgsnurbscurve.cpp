@@ -660,6 +660,43 @@ bool QgsNurbsCurve::deleteVertex( QgsVertexId position )
   return true;
 }
 
+bool QgsNurbsCurve::deleteVertices( const QSet<QgsVertexId> &positions )
+{
+  if ( positions.isEmpty() )
+  {
+    return false;
+  }
+
+  for ( QgsVertexId pos : positions )
+  {
+    if ( !hasVertex( pos ) )
+    {
+      return false;
+    }
+  }
+
+  if ( mControlPoints.size() - positions.size() <= mDegree )
+  {
+    clear();
+    return true;
+  }
+
+  QList<QgsVertexId> sortedPositions( positions.begin(), positions.end() );
+  std::sort( sortedPositions.begin(), sortedPositions.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex > b.vertex; } );
+
+  for ( QgsVertexId position : sortedPositions )
+  {
+    int idx = position.vertex;
+    mControlPoints.remove( idx );
+    if ( idx < mWeights.size() )
+      mWeights.remove( idx );
+  }
+
+  generateUniformKnots();
+  clearCache();
+  return true;
+}
+
 void QgsNurbsCurve::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
   QVector<QgsPoint> newPts;
@@ -1711,8 +1748,12 @@ QDomElement QgsNurbsCurve::asGml3( QDomDocument &doc, int precision, const QStri
   return line->asGml3( doc, precision, ns, axisOrder );
 }
 
-json QgsNurbsCurve::asJsonObject( int precision ) const
+json QgsNurbsCurve::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
+  // The current profiles do not make any difference for NURBS curves, as GeoJSON does not support them,
+  // so we convert to LineString but we keep the parameter in case we need to add specific handling
+  // for future profiles
+  Q_UNUSED( profile )
   std::unique_ptr<QgsLineString> line( curveToLine() );
   if ( !line )
     return json::object();

@@ -15,6 +15,8 @@
 
 #include "qgsmetalroughtexturedmaterialsettings.h"
 
+#include "qgsapplication.h"
+#include "qgsimagecache.h"
 #include "qgssymbollayerutils.h"
 
 #include <QString>
@@ -32,12 +34,12 @@ bool QgsMetalRoughTexturedMaterialSettings::supportsTechnique( Qgis::MaterialRen
   {
     case Qgis::MaterialRenderingTechnique::Triangles:
     case Qgis::MaterialRenderingTechnique::TrianglesDataDefined: //technique is supported but color can't be datadefined
+    case Qgis::MaterialRenderingTechnique::InstancedPoints:
       return true;
 
     case Qgis::MaterialRenderingTechnique::Points:
     case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
     case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
-    case Qgis::MaterialRenderingTechnique::InstancedPoints:
     case Qgis::MaterialRenderingTechnique::Lines:
     case Qgis::MaterialRenderingTechnique::Billboards:
       return false;
@@ -64,6 +66,11 @@ bool QgsMetalRoughTexturedMaterialSettings::equals( const QgsAbstractMaterialSet
   return *this == *otherMetal;
 }
 
+QSet<QgsAbstractMaterialSettings::Property> QgsMetalRoughTexturedMaterialSettings::supportedProperties() const
+{
+  return { QgsAbstractMaterialSettings::Property::TextureRotation, QgsAbstractMaterialSettings::Property::TextureScale, QgsAbstractMaterialSettings::Property::TextureOffset };
+}
+
 bool QgsMetalRoughTexturedMaterialSettings::requiresTextureCoordinates() const
 {
   return true;
@@ -71,7 +78,74 @@ bool QgsMetalRoughTexturedMaterialSettings::requiresTextureCoordinates() const
 
 bool QgsMetalRoughTexturedMaterialSettings::requiresTangents() const
 {
-  return !mNormalTexturePath.isEmpty();
+  return !mNormalTexturePath.isEmpty() || !mHeightTexturePath.isEmpty();
+}
+
+QColor QgsMetalRoughTexturedMaterialSettings::textureAverageColor( const QString &texturePath ) const
+{
+  bool fitsInCache = false;
+  QImage texture = QgsApplication::imageCache()->pathAsImage( texturePath, QSize(), true, 1.0, fitsInCache );
+  if ( texture.isNull() )
+  {
+    return QColor( 127, 127, 127 );
+  }
+
+  if ( texture.format() != QImage::Format_ARGB32 )
+  {
+    texture = texture.convertToFormat( QImage::Format_ARGB32 );
+  }
+
+  unsigned long long red = 0;
+  unsigned long long green = 0;
+  unsigned long long blue = 0;
+  unsigned long long pixelCount = 0;
+
+  // downsampling to ensure a fast computation
+  const int sampleStep = std::min( texture.width() / 5, texture.height() / 5 );
+  const int width = texture.width();
+  const int height = texture.height();
+  for ( int y = 0; y < height; y += sampleStep )
+  {
+    const QRgb *line = reinterpret_cast< const QRgb * >( texture.constScanLine( y ) );
+    for ( int x = 0; x < width; x += sampleStep )
+    {
+      const QRgb pixel = line[x];
+      red += qRed( pixel );
+      green += qGreen( pixel );
+      blue += qBlue( pixel );
+      pixelCount++;
+    }
+  }
+
+  return QColor( static_cast<int>( red / pixelCount ), static_cast<int>( green / pixelCount ), static_cast<int>( blue / pixelCount ) );
+}
+
+QColor QgsMetalRoughTexturedMaterialSettings::averageColor() const
+{
+  if ( mAverageColor.has_value() )
+  {
+    return *mAverageColor;
+  }
+
+  mAverageColor = textureAverageColor( mBaseColorTexturePath );
+  if ( !mEmissionTexturePath.isEmpty() )
+  {
+    const QColor emission = textureAverageColor( mEmissionTexturePath );
+
+    const double red = std::clamp( mAverageColor->redF() + emission.redF() * mEmissionFactor, 0.0, 1.0 );
+    const double green = std::clamp( mAverageColor->greenF() + emission.greenF() * mEmissionFactor, 0.0, 1.0 );
+    const double blue = std::clamp( mAverageColor->blueF() + emission.blueF() * mEmissionFactor, 0.0, 1.0 );
+
+    mAverageColor = QColor::fromRgbF( static_cast<float>( red ), static_cast<float>( green ), static_cast<float>( blue ) );
+  }
+
+  return *mAverageColor;
+}
+
+void QgsMetalRoughTexturedMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  Q_UNUSED( baseColor );
+  QgsDebugMsgLevel( u"setColorsFromBase() has no effect for textured PBR materials"_s, 2 );
 }
 
 void QgsMetalRoughTexturedMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -80,9 +154,15 @@ void QgsMetalRoughTexturedMaterialSettings::readXml( const QDomElement &elem, co
   mMetalnessTexturePath = elem.attribute( u"metalness_texture_path"_s, QString() );
   mRoughnessTexturePath = elem.attribute( u"roughness_texture_path"_s, QString() );
   mNormalTexturePath = elem.attribute( u"normal_texture_path"_s, QString() );
+  mHeightTexturePath = elem.attribute( u"height_texture_path"_s, QString() );
   mAmbientOcclusionTexturePath = elem.attribute( u"ambient_occlusion_texture_path"_s, QString() );
+  mEmissionTexturePath = elem.attribute( u"emission_texture_path"_s, QString() );
+  mEmissionFactor = elem.attribute( u"emission_factor"_s, QString( "1.0" ) ).toDouble();
+  mParallaxScale = elem.attribute( u"parallax_scale"_s, QString( "0.1" ) ).toDouble();
   mTextureScale = elem.attribute( u"texture_scale"_s, QString( "1.0" ) ).toDouble();
   mTextureRotation = elem.attribute( u"texture_rotation"_s, QString( "0.0" ) ).toDouble();
+  mTextureOffset = QgsSymbolLayerUtils::decodePoint( elem.attribute( u"texture_offset"_s ) );
+  mOpacity = elem.attribute( u"opacity"_s, u"1.0"_s ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -93,9 +173,18 @@ void QgsMetalRoughTexturedMaterialSettings::writeXml( QDomElement &elem, const Q
   elem.setAttribute( u"metalness_texture_path"_s, mMetalnessTexturePath );
   elem.setAttribute( u"roughness_texture_path"_s, mRoughnessTexturePath );
   elem.setAttribute( u"normal_texture_path"_s, mNormalTexturePath );
+  elem.setAttribute( u"parallax_scale"_s, mParallaxScale );
+  elem.setAttribute( u"height_texture_path"_s, mHeightTexturePath );
+  elem.setAttribute( u"emission_texture_path"_s, mEmissionTexturePath );
   elem.setAttribute( u"ambient_occlusion_texture_path"_s, mAmbientOcclusionTexturePath );
+  if ( !qgsDoubleNear( mEmissionFactor, 1.0 ) )
+    elem.setAttribute( u"emission_factor"_s, mEmissionFactor );
   elem.setAttribute( u"texture_scale"_s, mTextureScale );
   elem.setAttribute( u"texture_rotation"_s, mTextureRotation );
+  if ( !qgsDoubleNear( mTextureOffset.x(), 0 ) || !qgsDoubleNear( mTextureOffset.y(), 0 ) )
+    elem.setAttribute( u"texture_offset"_s, QgsSymbolLayerUtils::encodePoint( mTextureOffset ) );
+  if ( !qgsDoubleNear( mOpacity, 1 ) )
+    elem.setAttribute( u"opacity"_s, mOpacity );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }

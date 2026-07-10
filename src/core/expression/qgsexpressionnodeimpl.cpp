@@ -104,6 +104,16 @@ QString QgsExpressionNode::NodeList::cleanNamedNodeName( const QString &name )
     cleaned = u"geometry2"_s;
   else if ( cleaned == "i"_L1 )
     cleaned = u"vertex"_s;
+  else if ( cleaned == "array_a"_L1 )
+    cleaned = u"array1"_s;
+  else if ( cleaned == "array_b"_L1 )
+    cleaned = u"array2"_s;
+  else if ( cleaned == "point_a"_L1 )
+    cleaned = u"point1"_s;
+  else if ( cleaned == "point_b"_L1 )
+    cleaned = u"point2"_s;
+  else if ( cleaned == "array_prioritize"_L1 )
+    cleaned = u"priority"_s;
 
   return cleaned;
 }
@@ -2138,6 +2148,7 @@ QList<const QgsExpressionNode *> QgsExpressionNodeInOperator::nodes() const
 {
   QList<const QgsExpressionNode *> lst;
   lst << this;
+  lst << mNode.get();
   const QList< QgsExpressionNode * > nodeList = mList->list();
   for ( const QgsExpressionNode *n : nodeList )
     lst += n->nodes();

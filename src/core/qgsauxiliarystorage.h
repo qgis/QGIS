@@ -25,6 +25,7 @@
 #include "qgspallabeling.h"
 #include "qgsproperty.h"
 #include "qgssqliteutils.h"
+#include "qgssymbollayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
 
@@ -237,6 +238,20 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * \since QGIS 3.20
      */
     static int createProperty( QgsCallout::Property property, QgsVectorLayer *vlayer, bool overwriteExisting = true );
+
+    /**
+     * Creates if necessary a new auxiliary field for a symbol layer 's property and
+     * activates this property in settings.
+     *
+     * \param propertyKey The property to create
+     * \param layer The vector layer
+     * \param symbolLayer the symbol layer to create the property on
+     * \param overwriteExisting controls whether an existing property should be completely overwritten or upgraded to a coalesce("new aux field", 'existing' || 'property' || 'expression') type property
+     *
+     * \returns The index of the auxiliary field or -1
+     * \since QGIS 4.2
+     */
+    static int createProperty( QgsSymbolLayer::Property propertyKey, QgsVectorLayer *layer, QgsSymbolLayer *symbolLayer, bool overwriteExisting = true );
 
     /**
      * Creates a new auxiliary field from a property definition.

@@ -568,6 +568,57 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
             )
         )
 
+    @unittest.skipIf(
+        "ept" not in QgsProviderRegistry.instance().providerList(),
+        "EPT provider not available",
+    )
+    def testRenderExpression2(self):
+        layer = QgsPointCloudLayer(
+            unitTestDataPath() + "/point_clouds/ept/lone-star-laszip/ept.json",
+            "test",
+            "ept",
+        )
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsPointCloudAttributeByRampRenderer()
+
+        renderer.setAttribute("Intensity")
+        renderer.setMinimum(17)
+        renderer.setMaximum(2744)
+        ramp = QgsStyle.defaultStyle().colorRamp("Spectral")
+        shader = QgsColorRampShader(17, 2744, ramp)
+        shader.classifyColorRamp()
+        renderer.setColorRampShader(shader)
+
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+        from qgis.core import QgsProperty, QgsPropertyCollection
+
+        colorExpr = "@value * scale_linear(@OriginId, 0, 3, 0, 1)"
+        props = QgsPropertyCollection()
+        props.setProperty(
+            QgsPointCloudRenderer.Property.Color,
+            QgsProperty.fromExpression(colorExpr),
+        )
+        layer.renderer().setDataDefinedProperties(props)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(layer.extent())
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "ramp_expression",
+                "ramp_expression",
+                mapsettings,
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

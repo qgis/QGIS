@@ -369,6 +369,7 @@ The development version
       ReloadData,
       FeatureSymbology,
       CacheData,
+      ReadFieldDomains,
       EditingCapabilities,
     };
 
@@ -1504,6 +1505,14 @@ The development version
       PreferredGdal,
     };
 
+    enum class UnknownLayerCrsBehavior /BaseType=IntEnum/
+    {
+      NoAction,
+      PromptUserForCrs,
+      UseProjectCrs,
+      UseDefaultCrs,
+    };
+
     enum class Axis /BaseType=IntEnum/
     {
       X,
@@ -2405,6 +2414,24 @@ The development version
     typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
 
 
+    enum class Map3DDebugFlag /BaseType=IntFlag/
+    {
+      ShowTerrainBoundingBoxes,
+      ShowTerrainTileInfo,
+      ShowCameraViewCenter,
+      ShowCameraRotationCenter,
+      ShowLightSourceOrigins,
+      ShowFPS,
+      ShowDebugPanel,
+    };
+    typedef QFlags<Qgis::Map3DDebugFlag> Map3DDebugFlags;
+
+
+    enum class Map3DProjectionType /BaseType=IntEnum/
+    {
+      Orthographic,
+      Perspective,
+    };
 
     enum class Point3DShape /BaseType=IntEnum/
     {
@@ -2431,17 +2458,44 @@ The development version
       Billboards,
     };
 
+    enum class InstancedMaterialFlag /BaseType=IntFlag/
+    {
+      DataDefinedScale,
+      DataDefinedRotation,
+    };
+    typedef QFlags<Qgis::InstancedMaterialFlag> InstancedMaterialFlags;
+
+
+    enum class TextureFilterQuality /BaseType=IntEnum/
+    {
+      Trilinear,
+      Anisotropic2x,
+      Anisotropic4x,
+      Anisotropic8x,
+      Anisotropic16x,
+    };
+
+    enum class ShadowQuality /BaseType=IntEnum/
+    {
+      Low,
+      Medium,
+      High,
+      VeryHigh,
+      Extreme,
+    };
+
     enum class LightSourceType /BaseType=IntEnum/
     {
       Point,
       Directional,
+      Sun,
     };
 
-    enum class SkyboxType /BaseType=IntEnum/
+    enum class Map3DBackgroundType /BaseType=IntEnum/
     {
-      DistinctTextures,
-      // this is currently broken for z-up coordinate system
-      //Panoramic, //!< Panoramic texture
+      NoBackground,
+      FixedGradientBackground,
+      DistinctTextureSkybox,
     };
 
     enum class SkyboxCubeMapping /BaseType=IntEnum/
@@ -2466,11 +2520,31 @@ The development version
       Globe
     };
 
-    enum class VerticalAxisInversion /BaseType=IntEnum/
+    enum class VerticalAxisInversion /BaseType=IntFlag/
     {
+      WhenRotatingDragging,
+      WhenRotatingCaptured,
+      WhenPivoting,
+
+      // Legacy aliases for old flying-only enum:
+
       Never,
       WhenDragging,
       Always,
+    };
+    typedef QFlags<Qgis::VerticalAxisInversion> VerticalAxisInversionFlags;
+
+
+    enum class ToneMappingMethod /BaseType=IntEnum/
+    {
+      Clamp,
+      Aces,
+    };
+
+    enum class Export3DSceneFormat /BaseType=IntEnum/
+    {
+      Obj,
+      StlAscii
     };
 
     enum class ProfileSurfaceSymbology /BaseType=IntEnum/
@@ -2670,6 +2744,13 @@ The development version
       OptimalInInsertionGroup,
     };
 
+    enum class LegendLayerDoubleClickAction /BaseType=IntEnum/
+    {
+      LayerProperties,
+      AttributeTable,
+      LayerStyling,
+    };
+
     enum class LayerTreeFilterFlag /BaseType=IntFlag/
     {
       SkipVisibilityCheck,
@@ -2710,6 +2791,14 @@ The development version
     };
     typedef QFlags<Qgis::LegendJsonRenderFlag> LegendJsonRenderFlags;
 
+
+    enum class GeoJsonProfile /BaseType=IntEnum/
+    {
+      Legacy,
+      Rfc7946,
+      JsonFg,
+      JsonFgPlus,
+    };
 
     enum class ActionType /BaseType=IntEnum/
     {
@@ -3606,6 +3695,23 @@ The development version
     typedef QFlags<Qgis::RasterBandStatistic> RasterBandStatistics;
 
 
+    enum class SensorThingsVersion /BaseType=IntEnum/
+    {
+        Version1_1,
+        Version2_0,
+    };
+
+    enum class SensorThingsExtension /BaseType=IntFlag/
+    {
+      MultiDatastream,
+      SensingExtensionObservationsMeasurements,
+      SensingExtensionSampling,
+      SensingExtensionRelations,
+    };
+
+    typedef QFlags<Qgis::SensorThingsExtension> SensorThingsExtensions;
+
+
     enum class SensorThingsEntity /BaseType=IntEnum/
     {
       Invalid,
@@ -3618,6 +3724,21 @@ The development version
       Observation,
       FeatureOfInterest,
       MultiDatastream,
+      // version 2.0
+      Feature,
+      FeatureType,
+      Deployment,
+      ObservingProcedure,
+      Sampling,
+      SamplingProcedure,
+      Sampler,
+      PreparationStep,
+      PreparationProcedure,
+      ThingRelation,
+      RelationRole,
+      FeatureRelation,
+      DatastreamRelation,
+      ObservationRelation,
     };
 
     enum class ColorModel /BaseType=IntEnum/
@@ -3734,6 +3855,27 @@ The development version
     {
       ConstrainedDelaunay,
       Earcut
+    };
+
+    enum class WmsGroupRequestMode /BaseType=IntEnum/
+    {
+      Normal,
+      Opaque,
+    };
+
+    enum class DockableWidgetInitialState /BaseType=IntEnum/
+    {
+      RestorePreviousState,
+      ForceDocked,
+      ForceDialog,
+    };
+
+    enum class CoverageCleanOverlapMergeStrategy /BaseType=IntEnum/
+    {
+      LongestBorder,
+      MaximumArea,
+      MinimumArea,
+      MinimumIndex,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -3947,6 +4089,8 @@ QFlags<Qgis::MarkerLinePlacement> operator|(Qgis::MarkerLinePlacement f1, QFlags
 
 QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToolFlag> f2);
 
+QFlags<Qgis::VerticalAxisInversion> operator|(Qgis::VerticalAxisInversion f1, QFlags<Qgis::VerticalAxisInversion> f2);
+
 QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
 
 QFlags<Qgis::ProjectCapability> operator|(Qgis::ProjectCapability f1, QFlags<Qgis::ProjectCapability> f2);
@@ -4075,12 +4219,18 @@ QFlags<Qgis::SymbolConverterCapability> operator|(Qgis::SymbolConverterCapabilit
 
 QFlags<Qgis::ArcGisRestServiceCapability> operator|(Qgis::ArcGisRestServiceCapability f1, QFlags<Qgis::ArcGisRestServiceCapability> f2);
 
+QFlags<Qgis::InstancedMaterialFlag> operator|(Qgis::InstancedMaterialFlag f1, QFlags<Qgis::InstancedMaterialFlag> f2);
+
+QFlags<Qgis::Map3DDebugFlag> operator|(Qgis::Map3DDebugFlag f1, QFlags<Qgis::Map3DDebugFlag> f2);
+
+QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QFlags<Qgis::SensorThingsExtension> f2);
 
 
 
 
 
-uint qHash( const QVariant &variant );
+
+size_t qHash( const QVariant &variant );
 %Docstring
 Hash for QVariant
 %End
@@ -4111,6 +4261,30 @@ Compare two doubles (but allow some difference)
 :param a: first double
 :param b: second double
 :param epsilon: maximum difference allowable between doubles
+%End
+
+bool qgsDoubleLessThanOrNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
+%Docstring
+Compare two doubles to see if one is less than the other or very near to
+the other.
+
+:param a: first double
+:param b: second double
+:param epsilon: maximum tolerance when comparing near values
+
+.. versionadded:: 4.2
+%End
+
+bool qgsDoubleGreaterThanOrNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
+%Docstring
+Compare two doubles to see if one is greater than the other or very near
+to the other.
+
+:param a: first double
+:param b: second double
+:param epsilon: maximum tolerance when comparing near values
+
+.. versionadded:: 4.2
 %End
 
 bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON );

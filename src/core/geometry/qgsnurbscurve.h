@@ -179,7 +179,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
+    json asJsonObject( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy ) const override SIP_SKIP;
     QString asKml( int precision = 17 ) const override;
     int dimension() const override SIP_HOLDGIL;
     bool isEmpty() const override SIP_HOLDGIL;
@@ -194,6 +194,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     bool dropZValue() override;
     bool dropMValue() override;
     bool deleteVertex( QgsVertexId position ) override;
+    bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
 #ifndef SIP_RUN
     void filterVertices( const std::function<bool( const QgsPoint & )> &filter ) override;
 #endif

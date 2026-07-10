@@ -45,19 +45,28 @@ set(odbccpp_sources
     internal/UtilInternal.cpp
 )
 
-# Static library
-add_library(odbccpp_static
+add_library(odbccpp
     STATIC
-        ${odbccpp_sources}
+        ${odbccpp_sources})
+
+target_include_directories(odbccpp
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-target_compile_definitions(odbccpp_static
+target_link_libraries(odbccpp
+    PUBLIC
+        ODBC::ODBC
+)
+
+target_compile_definitions(odbccpp
     PUBLIC
         ODBC_STATIC
         "NS_ODBC=qgs::odbc"
         "NS_ODBC_START=namespace qgs { namespace odbc {"
         "NS_ODBC_END=} }"
 )
+set_property(TARGET odbccpp PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-target_include_directories(odbccpp_static PUBLIC ${ODBC_INCLUDE_DIRS})
-set_property(TARGET odbccpp_static PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET odbccpp PROPERTY public_headers ${public_headers})

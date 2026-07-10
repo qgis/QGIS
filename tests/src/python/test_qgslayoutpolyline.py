@@ -11,6 +11,7 @@ __date__ = "14/03/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 import unittest
+from pathlib import Path
 
 from qgis.core import (
     Qgis,
@@ -149,6 +150,110 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
         )
         self.polyline.setEndMarker(QgsLayoutItemPolyline.MarkerMode.NoMarker)
 
+    def testStartArrowVersion1(self):
+        project = QgsProject()
+        layout = QgsLayout(project)
+        layout.initializeDefaults()
+
+        polygon = QPolygonF()
+        polygon.append(QPointF(100.0, 50.0))
+        polygon.append(QPointF(200.0, 100.0))
+        layout_polyline = QgsLayoutItemPolyline(polygon, layout)
+
+        document = QDomDocument("testdoc")
+        root = document.createElement("test")
+        self.assertTrue(layout_polyline.writeXml(root, document, QgsReadWriteContext()))
+        element = root.firstChildElement()
+        self.assertFalse(element.isNull())
+        element.setAttribute("version", "1")
+        layout_polyline_v1 = QgsLayoutItemPolyline(layout)
+        self.assertTrue(
+            layout_polyline_v1.readXml(
+                root.firstChildElement(), document, QgsReadWriteContext()
+            )
+        )
+
+        layout.addLayoutItem(layout_polyline_v1)
+
+        properties = {"color": "0,0,0,255", "width": "10.0", "capstyle": "square"}
+        style = QgsLineSymbol.createSimple(properties)
+        layout_polyline_v1.setSymbol(style)
+
+        layout_polyline_v1.setStartMarker(QgsLayoutItemPolyline.MarkerMode.ArrowHead)
+        layout_polyline_v1.setArrowHeadWidth(30.0)
+
+        self.assertTrue(
+            self.render_layout_check("composerpolyline_startArrowVersion1", layout)
+        )
+
+    def testStartArrowVersion2(self):
+        project = QgsProject()
+        layout = QgsLayout(project)
+        layout.initializeDefaults()
+
+        polygon = QPolygonF()
+        polygon.append(QPointF(100.0, 50.0))
+        polygon.append(QPointF(200.0, 100.0))
+        layout_polyline = QgsLayoutItemPolyline(polygon, layout)
+        layout.addLayoutItem(layout_polyline)
+
+        properties = {"color": "0,0,0,255", "width": "10.0", "capstyle": "square"}
+        style = QgsLineSymbol.createSimple(properties)
+        layout_polyline.setSymbol(style)
+
+        layout_polyline.setStartMarker(QgsLayoutItemPolyline.MarkerMode.ArrowHead)
+        layout_polyline.setArrowHeadWidth(30.0)
+
+        self.assertTrue(
+            self.render_layout_check("composerpolyline_startArrowVersion2", layout)
+        )
+
+    def testBothArrows(self):
+        project = QgsProject()
+        layout = QgsLayout(project)
+        layout.initializeDefaults()
+
+        polygon = QPolygonF()
+        polygon.append(QPointF(100.0, 50.0))
+        polygon.append(QPointF(200.0, 100.0))
+        layout_polyline = QgsLayoutItemPolyline(polygon, layout)
+        layout.addLayoutItem(layout_polyline)
+
+        properties = {"color": "0,0,0,255", "width": "10.0", "capstyle": "square"}
+        style = QgsLineSymbol.createSimple(properties)
+        layout_polyline.setSymbol(style)
+
+        layout_polyline.setStartMarker(QgsLayoutItemPolyline.MarkerMode.ArrowHead)
+        layout_polyline.setEndMarker(QgsLayoutItemPolyline.MarkerMode.ArrowHead)
+        layout_polyline.setArrowHeadWidth(30.0)
+
+        self.assertTrue(self.render_layout_check("composerpolyline_bothArrows", layout))
+
+    def testBothSvgMarkers(self):
+        project = QgsProject()
+        layout = QgsLayout(project)
+        layout.initializeDefaults()
+
+        polygon = QPolygonF()
+        polygon.append(QPointF(100.0, 50.0))
+        polygon.append(QPointF(200.0, 100.0))
+        layout_polyline = QgsLayoutItemPolyline(polygon, layout)
+        layout.addLayoutItem(layout_polyline)
+
+        properties = {"color": "0,0,0,255", "width": "0.5", "capstyle": "square"}
+        style = QgsLineSymbol.createSimple(properties)
+        layout_polyline.setSymbol(style)
+
+        svg_path = Path(TEST_DATA_DIR) / "test_symbol_svg.svg"
+        layout_polyline.setStartMarker(QgsLayoutItemPolyline.MarkerMode.SvgMarker)
+        layout_polyline.setStartSvgMarkerPath(svg_path.as_posix())
+        layout_polyline.setEndMarker(QgsLayoutItemPolyline.MarkerMode.SvgMarker)
+        layout_polyline.setEndSvgMarkerPath(svg_path.as_posix())
+
+        self.assertTrue(
+            self.render_layout_check("composerpolyline_bothSvgMarkers", layout)
+        )
+
     def testRemoveNode(self):
         """Test removeNode method"""
 
@@ -273,6 +378,55 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
 
         self.assertEqual(shape2.nodes(), shape.nodes())
         self.assertEqual(shape2.symbol().symbolLayer(0).color().name(), "#ff0000")
+
+    def testSavingLoadingArrowVersions(self):
+        project = QgsProject()
+        layout = QgsLayout(project)
+        polygon = QPolygonF()
+        polygon.append(QPointF(0.0, 0.0))
+        polygon.append(QPointF(100.0, 0.0))
+
+        def _write_xml(polyline):
+            document = QDomDocument("testdoc")
+            root = document.createElement("test")
+            self.assertTrue(polyline.writeXml(root, document, QgsReadWriteContext()))
+            element = root.firstChildElement()
+            self.assertFalse(element.isNull())
+            return element, document
+
+        def _check_version(polyline, version):
+            element, document = _write_xml(polyline)
+            self.assertEqual(element.attribute("version"), version)
+            return element, document
+
+        # new polylines have version 2 by default
+        polyline_v2 = QgsLayoutItemPolyline(polygon, layout)
+        element, document = _check_version(polyline_v2, "2")
+
+        # load polyline from xml
+        restored_v2 = QgsLayoutItemPolyline(layout)
+        self.assertTrue(restored_v2.readXml(element, document, QgsReadWriteContext()))
+        _check_version(restored_v2, "2")
+
+        # save/load polyline version 1
+        element, document = _write_xml(restored_v2)
+        element.setAttribute("version", "1")
+        self.assertEqual(element.attribute("version"), "1")
+
+        polyline_v1 = QgsLayoutItemPolyline(layout)
+        self.assertTrue(polyline_v1.readXml(element, document, QgsReadWriteContext()))
+        _check_version(polyline_v1, "1")
+
+        # loading from an XML without "version" should result in version 1
+        element, document = _write_xml(polyline_v2)
+        element.removeAttribute("version")
+        self.assertFalse(element.hasAttribute("version"))
+
+        polyline_no_version = QgsLayoutItemPolyline(layout)
+        self.assertTrue(
+            polyline_no_version.readXml(element, document, QgsReadWriteContext())
+        )
+        _check_version(polyline_no_version, "1")
 
     def testBounds(self):
         pr = QgsProject()

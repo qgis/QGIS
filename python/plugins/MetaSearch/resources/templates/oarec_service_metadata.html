@@ -39,8 +39,11 @@
 
         <section id="collections">
             <h4>{{ gettext('Collections') }}</h4>
-            {% for j in obj.collections()['collections'] %}
-                {% if j.id in obj.records() %}
+            {% set collections = obj.collections()['collections'] %}
+            {% set records = obj.records() %}
+
+            {% for j in collections %}
+                {% if j.id in records %}
                     <p><b>{{ j.title }}</b><br/>{{ j.description }}</p>
                 {% endif %}
             {% endfor %}

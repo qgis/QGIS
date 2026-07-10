@@ -36,41 +36,72 @@ class QFile;
 #ifndef SIP_RUN
 
 #ifdef QGISDEBUG
+
 #define QgsDebugError( str ) QgsLogger::debug( QString( str ), 0, __FILE__, __FUNCTION__, __LINE__ )
-#define QgsDebugMsgLevel( str, level )                                               \
-  if ( ( level ) <= QgsLogger::debugLevel() )                                        \
-  {                                                                                  \
-    QgsLogger::debug( QString( str ), ( level ), __FILE__, __FUNCTION__, __LINE__ ); \
-  }                                                                                  \
-  ( void ) ( 0 )
+
+#define QgsDebugMsgLevel( str, level )                                                 \
+  do                                                                                   \
+  {                                                                                    \
+    if ( ( level ) <= QgsLogger::debugLevel() )                                        \
+    {                                                                                  \
+      QgsLogger::debug( QString( str ), ( level ), __FILE__, __FUNCTION__, __LINE__ ); \
+    }                                                                                  \
+  } while ( false )
+
 #define QgsDebugErrorLoc( str, file, func, line ) QgsLogger::debug( QString( str ), 0, ( file ), ( func ), ( line ) )
-#define QgsDebugMsgLevelLoc( str, level, file, func, line )                      \
-  if ( ( level ) <= QgsLogger::debugLevel() )                                    \
-  {                                                                              \
-    QgsLogger::debug( QString( str ), ( level ), ( file ), ( func ), ( line ) ); \
-  }                                                                              \
-  ( void ) ( 0 )
+
+#define QgsDebugMsgLevelLoc( str, level, file, func, line )                        \
+  do                                                                               \
+  {                                                                                \
+    if ( ( level ) <= QgsLogger::debugLevel() )                                    \
+    {                                                                              \
+      QgsLogger::debug( QString( str ), ( level ), ( file ), ( func ), ( line ) ); \
+    }                                                                              \
+  } while ( false )
+
 #define QgsDebugCall QgsScopeLogger _qgsScopeLogger( __FILE__, __FUNCTION__, __LINE__ )
+
 #else
+
 #define QgsDebugCall \
   do                 \
   {                  \
   } while ( false )
-#define QgsDebugError( str ) \
-  do                         \
-  {                          \
+
+#define QgsDebugError( str )                            \
+  do                                                    \
+  {                                                     \
+    if constexpr ( false )                              \
+    {                                                   \
+      QgsLogger::debug( QString( str ), 0, "", "", 0 ); \
+    }                                                   \
   } while ( false )
-#define QgsDebugMsgLevel( str, level ) \
-  do                                   \
-  {                                    \
+
+#define QgsDebugMsgLevel( str, level )                          \
+  do                                                            \
+  {                                                             \
+    if constexpr ( false )                                      \
+    {                                                           \
+      QgsLogger::debug( QString( str ), ( level ), "", "", 0 ); \
+    }                                                           \
   } while ( false )
-#define QgsDebugErrorLoc( str, file, func, line ) \
-  do                                              \
-  {                                               \
+
+#define QgsDebugErrorLoc( str, file, func, line )                          \
+  do                                                                       \
+  {                                                                        \
+    if constexpr ( false )                                                 \
+    {                                                                      \
+      QgsLogger::debug( QString( str ), 0, ( file ), ( func ), ( line ) ); \
+    }                                                                      \
   } while ( false )
-#define QgsDebugMsgLevelLoc( str, level, file, func, line ) \
-  do                                                        \
-  {                                                         \
+
+#define QgsDebugMsgLevelLoc( str, level, file, func, line )                        \
+  do                                                                               \
+  {                                                                                \
+    if constexpr ( false )                                                         \
+    {                                                                              \
+      QgsLogger::debug( QString( str ), ( level ), ( file ), ( func ), ( line ) ); \
+    }                                                                              \
   } while ( false )
 #endif
 

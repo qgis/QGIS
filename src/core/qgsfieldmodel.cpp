@@ -474,7 +474,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
   }
 }
 
-QString QgsFieldModel::fieldToolTip( const QgsField &field )
+QString QgsFieldModel::fieldToolTip( const QgsField &field, const QString &predefinedComment )
 {
   QString toolTip;
   if ( !field.alias().isEmpty() )
@@ -488,7 +488,21 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field )
 
   toolTip += u"<br><font style='font-family:monospace; white-space: nowrap;'>%3</font>"_s.arg( field.displayType( true ) );
 
-  const QString comment = field.comment();
+  QString comment = field.comment();
+  if ( !predefinedComment.isNull() )
+  {
+    //predefinedComment overrides the comment - even when it's empty (not when it's null)
+    comment = predefinedComment;
+  }
+  else
+  {
+    //otherwise custom comment overrides the comment - even when it's empty (not when it's null)
+    const QString customComment = field.customComment();
+    if ( !customComment.isNull() )
+    {
+      comment = customComment;
+    }
+  }
 
   if ( !comment.isEmpty() )
   {
@@ -498,9 +512,9 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field )
   return toolTip;
 }
 
-QString QgsFieldModel::fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer )
+QString QgsFieldModel::fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer, const QString &predefinedComment )
 {
-  QString toolTip = QgsFieldModel::fieldToolTip( field );
+  QString toolTip = QgsFieldModel::fieldToolTip( field, predefinedComment );
   const QgsFields fields = layer->fields();
   const int fieldIdx = fields.indexOf( field.name() );
 

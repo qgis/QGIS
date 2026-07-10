@@ -355,7 +355,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
     }
   }
 
-  auto saveInvalidFile = [&invalidSink, &parameters]( QgsAttributes &attributes, bool readable ) {
+  auto saveInvalidFile = [&invalidSink, &parameters, feedback, invalidDest]( QgsAttributes &attributes, bool readable ) {
     if ( invalidSink )
     {
       QgsFeature f;
@@ -363,6 +363,8 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
       f.setAttributes( attributes );
       if ( !invalidSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( invalidSink.get(), parameters, u"INVALID"_s ) );
+      else
+        feedback->featureAddedToSink( u"INVALID"_s );
     }
   };
 
@@ -425,6 +427,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
       f.setAttributes( attributes );
       if ( !outputSink->addFeature( f, QgsFeatureSink::FastInsert ) )
         throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, u"OUTPUT"_s ) );
+      feedback->featureSinkFinalized( u"OUTPUT"_s );
     }
   }
 
@@ -432,6 +435,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
   if ( outputSink )
   {
     outputSink->finalize();
+    feedback->featureSinkFinalized( u"OUTPUT"_s );
     outputs.insert( u"OUTPUT"_s, outputDest );
 
     if ( context.willLoadLayerOnCompletion( outputDest ) )
@@ -443,6 +447,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
   if ( invalidSink )
   {
     invalidSink->finalize();
+    feedback->featureSinkFinalized( u"INVALID"_s );
     outputs.insert( u"INVALID"_s, invalidDest );
   }
   return outputs;
