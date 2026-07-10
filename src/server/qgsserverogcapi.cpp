@@ -154,17 +154,17 @@ QString QgsServerOgcApi::profileToUri( const Profile &profile )
   switch ( profile )
   {
     case Profile::Rfc7946:
-      return u"http://www.opengis.net/def/profile/OGC/0/rfc7946"_s;
+      return u"http://www.opengis.net/def/profile/ogc/0/rfc7946"_s;
     case Profile::JsonFg:
-      return u"http://www.opengis.net/def/profile/OGC/0/jsonfg"_s;
+      return u"http://www.opengis.net/def/profile/ogc/0/jsonfg"_s;
     case Profile::JsonFgPlus:
-      return u"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus"_s;
+      return u"http://www.opengis.net/def/profile/ogc/0/jsonfg-plus"_s;
     case Profile::RelAsKey:
-      return u"http://www.opengis.net/def/profile/OGC/0/rel-as-key"_s;
+      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-key"_s;
     case Profile::RelAsUri:
-      return u"http://www.opengis.net/def/profile/OGC/0/rel-as-uri"_s;
+      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-uri"_s;
     case Profile::RelAsLink:
-      return u"http://www.opengis.net/def/profile/OGC/0/rel-as-link"_s;
+      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-link"_s;
     case Profile::Unset:
       return QString();
   }

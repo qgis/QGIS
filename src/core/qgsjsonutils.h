@@ -154,6 +154,7 @@ class CORE_EXPORT QgsJsonExporter
     /**
      * Sets whether geometries should be transformed in EPSG 4326 (default
      * behavior) or just keep as it is.
+     * This is only effective if the JSON profile is different than "Legacy" (which is the default value).
      * \since QGIS 3.12
      */
     void setTransformGeometries( bool activate ) { mTransformGeometries = activate; }
