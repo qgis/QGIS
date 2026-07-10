@@ -459,7 +459,7 @@ void Qgs3DAxis::createAxisScene()
 
 void Qgs3DAxis::createMenu()
 {
-  mMenu = std::make_unique<QMenu>();
+  mMenu = make_qobject_unique<QMenu>();
 
   // axis type menu
   QAction *typeOffAct = new QAction( tr( "&Off" ), mMenu.get() );
