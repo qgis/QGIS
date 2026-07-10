@@ -86,6 +86,13 @@
       "plans.enterprise.title": "Enterprise",
       "plans.enterprise.desc": "On-premise con LLM locali. Zero egress, pieno controllo.",
 
+      "team.label": "Team",
+      "team.title": "Chi c'è dietro Strata",
+      "team.francesco.role": "Co-founder, informatico",
+      "team.valerio.role": "Co-founder, esperto GeoAI",
+      "team.massimo.role": "Co-founder, esperto GIS",
+      "team.demo": "Prenota una demo",
+
       "closing.title": "Prova Strata oggi.",
       "closing.demo": "Prenota una demo",
 
@@ -169,6 +176,13 @@
       "plans.enterprise.badge": "Ent.",
       "plans.enterprise.title": "Enterprise",
       "plans.enterprise.desc": "On-premise with local LLMs. Zero egress, full control.",
+
+      "team.label": "Team",
+      "team.title": "The people behind Strata",
+      "team.francesco.role": "Co-founder, software engineer",
+      "team.valerio.role": "Co-founder, GeoAI specialist",
+      "team.massimo.role": "Co-founder, GIS expert",
+      "team.demo": "Book a demo",
 
       "closing.title": "Try Strata today.",
       "closing.demo": "Book a demo",

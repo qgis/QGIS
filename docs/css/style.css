@@ -417,6 +417,60 @@ img {
   margin-top: 12px;
 }
 
+/* Team */
+.section-team {
+  border-top: 1px solid var(--border);
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.team-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: border-color var(--transition);
+}
+
+.team-card:hover {
+  border-color: var(--border-strong);
+}
+
+.team-avatar {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  object-fit: cover;
+  object-position: center top;
+}
+
+.team-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.team-role {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.team-demo-cta {
+  margin-top: 32px;
+  text-align: center;
+}
+
 /* Privacy */
 .vibe-section {
   padding: 72px 0;
@@ -532,6 +586,7 @@ img {
   .features-grid,
   .features-grid-why,
   .plans-grid,
+  .team-grid,
   .download-grid,
   .vibe-steps {
     grid-template-columns: 1fr;
