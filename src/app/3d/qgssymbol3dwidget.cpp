@@ -21,6 +21,7 @@
 #include "qgsabstractmaterialsettings.h"
 #include "qgsapplication.h"
 #include "qgsline3dsymbol.h"
+#include "qgsmaterialwidget.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsproject.h"
@@ -29,6 +30,7 @@
 #include "qgsstylesavedialog.h"
 #include "qgsvectorlayer.h"
 
+#include <QMenu>
 #include <QMessageBox>
 #include <QStackedWidget>
 #include <QString>
@@ -57,6 +59,12 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
   mStyleWidget->setStyle( QgsStyle::defaultStyle() );
   mStyleWidget->setEntityTypes( QList<QgsStyle::StyleEntity>() << QgsStyle::Symbol3DEntity << QgsStyle::MaterialSettingsEntity );
   mStyleWidget->setLayerType( mLayer->geometryType() );
+
+  mAdvancedMaterialSettingsAction = new QAction( tr( "Advanced Material Settings…" ), this );
+  connect( mAdvancedMaterialSettingsAction, &QAction::triggered, this, &QgsSymbol3DWidget::showAdvancedSymbolSettings );
+
+  mStyleWidget->advancedMenu()->addAction( mAdvancedMaterialSettingsAction );
+  mStyleWidget->showAdvancedButton( true );
 
   connect( mStyleWidget, &QgsStyleItemsListWidget::selectionChangedWithStylePath, this, &QgsSymbol3DWidget::setSymbolFromStyle );
   connect( mStyleWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsSymbol3DWidget::saveSymbol );
@@ -300,4 +308,38 @@ void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol
   }
   // When anything is not right
   widgetStack->setCurrentWidget( widgetUnsupported );
+}
+
+void QgsSymbol3DWidget::showAdvancedSymbolSettings()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsMaterialWidget *panelWidget = new QgsMaterialWidget( this );
+    panelWidget->setSettings( symbol()->materialSettings(), mLayer );
+    panelWidget->setTechnique( mStyleWidget->proxyModel()->renderingTechnique() );
+    panelWidget->setFilterByTechnique( true );
+    panelWidget->setDockMode( dockMode() );
+    panelWidget->setPanelTitle( tr( "Advanced Symbol Settings" ) );
+    connect( panelWidget, &QgsMaterialWidget::changed, this, [this, panelWidget]() {
+      std::unique_ptr<QgsAbstract3DSymbol> newSymbol = symbol();
+      newSymbol->setMaterialSettings( panelWidget->settings().release() );
+      setSymbol( newSymbol.get(), mLayer );
+      emit widgetChanged();
+    } );
+    panel->openPanel( panelWidget );
+  }
+  else
+  {
+    QgsMaterialWidgetDialog dialog( symbol()->materialSettings(), this );
+    dialog.setTechnique( mStyleWidget->proxyModel()->renderingTechnique() );
+    dialog.setFilterByTechnique( true );
+    if ( dialog.exec() == QDialog::Accepted )
+    {
+      std::unique_ptr<QgsAbstract3DSymbol> newSymbol = symbol();
+      newSymbol->setMaterialSettings( dialog.settings().release() );
+      setSymbol( newSymbol.get(), mLayer );
+      emit widgetChanged();
+    }
+  }
 }
