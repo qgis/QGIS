@@ -400,11 +400,11 @@ namespace
       if ( step.contains( u"requires_approval"_s ) )
         attributes << u"approval: %1"_s.arg( step.value( u"requires_approval"_s ).toBool() ? u"yes"_s : u"no"_s );
       if ( !dependsOn.isEmpty() )
-        attributes << u"depends on: %1"_s.arg( dependsOn.join( u", "_s ) );
+        attributes << u"depends on: %1"_s.arg( dependsOn.join( ", "_L1 ) );
 
       QString line = u"%1. %2"_s.arg( index++ ).arg( title );
       if ( !attributes.isEmpty() )
-        line += u" (%1)"_s.arg( attributes.join( u"; "_s ) );
+        line += u" (%1)"_s.arg( attributes.join( "; "_L1 ) );
       lines << line;
     }
 
@@ -1818,8 +1818,10 @@ void QgsAiChatDockWidget::sendPlanRevision( const QString &messageId, const QStr
   const QString feedback = revisionEdit ? revisionEdit->toPlainText().trimmed() : QString();
   markMessageStatus( messageId, metadata, u"plan_status"_s, u"rejected"_s );
   setModeLabel( u"Plan"_s );
-  mSessionManager->sendUserMessage( tr( "Revise the previous plan before execution. Keep Plan mode and return a new fenced strata_agent_plan JSON block.\n\nOriginal plan:\n%1\n\nUser revision request:\n%2" )
-                                      .arg( planMarkdown.trimmed(), feedback.isEmpty() ? tr( "The plan was rejected; propose a safer or clearer revision." ) : feedback ) );
+  mSessionManager->sendUserMessage(
+    tr( "Revise the previous plan before execution. Keep Plan mode and return a new fenced strata_agent_plan JSON block.\n\nOriginal plan:\n%1\n\nUser revision request:\n%2" )
+      .arg( planMarkdown.trimmed(), feedback.isEmpty() ? tr( "The plan was rejected; propose a safer or clearer revision." ) : feedback )
+  );
   reloadTranscriptFromHistory();
 }
 
