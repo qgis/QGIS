@@ -484,6 +484,11 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       //update preview on text change
       connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [qmlWrapper, qmlCode, previewFeature, errorFeedbackWidget] {
+        if ( qmlCode->text().trimmed().isEmpty() )
+        {
+          errorFeedbackWidget->setText( QObject::tr( "No QML code" ) );
+          return;
+        }
         qmlWrapper->setQmlCode( qmlCode->text() );
         qmlWrapper->reinitWidget();
         qmlWrapper->setFeature( previewFeature );
