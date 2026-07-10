@@ -7,6 +7,4 @@ project(odbccpp)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-find_package(ODBC REQUIRED)
-
 add_subdirectory(src)
