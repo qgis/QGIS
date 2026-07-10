@@ -2054,8 +2054,9 @@ if (WITH_QTWEBENGINE)
 endif()
 
 if (WITH_QTGAMEPAD)
+    # QtGamepadLegacy from https://github.com/pumphaus/qtgamepadlegacy must be used for Qt6 builds
     target_link_libraries(qgis_gui
-      Qt::Gamepad
+      Qt::GamepadLegacy
     )
 endif()
 
