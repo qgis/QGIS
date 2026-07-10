@@ -448,8 +448,6 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
       {
         fInfo.format = "date-time";
         fInfo.type = "string";
-        // TODO: connect with temporal properties
-        // fInfo.role = "primary-instant";
         break;
       }
       case QMetaType::Type::QTime:
@@ -501,13 +499,23 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
   }
 
   QList<QString> publishedFieldNames;
+  QgsAttributeList publishedAttributeIds;
   for ( const QgsField &f : std::as_const( constPublishedFields ) )
   {
     publishedFieldNames.push_back( f.name() );
+    publishedAttributeIds.push_back( mapLayer->fields().lookupField( f.name() ) );
   }
 
   // Cannot be const :/
   QgsEditFormConfig config { mapLayer->editFormConfig() };
+
+  // See: https://docs.ogc.org/is/21-045r1/21-045r1.html#_temporal_information
+  QString temporalInstantField;
+  QString temporalStartField;
+  QString temporalEndField;
+  bool isDateTimeField = false;
+
+  exposedTimeDimensions( temporalInstantField, temporalStartField, temporalEndField, isDateTimeField, mapLayer, publishedAttributeIds );
 
   std::function< void( QgsAttributeEditorElement * )> traverseTab;
   traverseTab = [&]( QgsAttributeEditorElement *element ) -> void {
@@ -682,7 +690,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
         }
         else
         {
-          // FIXME: if the widget type is unknown, should we skip the field or include it with best effort?
+          // TODO: if the widget type is unknown, should we skip the field or include it with best effort?
           //         For instance, if a relation is set, we could still include the reference information even
           //         if the widget type is unknown.
           //         For now, we skip and warn (info level) assuming that if the widget is not set this is intentional.
@@ -744,6 +752,25 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
         if ( const QString suffix = widgetConfig.value( u"Suffix"_s ).toString(); !suffix.isEmpty() )
         {
           fInfo.unit = suffix.toStdString();
+        }
+
+        // Time dimension
+        // FIXME: It isn't clear if a date can be used as an instant or as a start/end of an interval.
+        // For now, we assume it doesn't
+        if ( isDateTimeField )
+        {
+          if ( field.name() == temporalInstantField )
+          {
+            fInfo.role = "primary-instant";
+          }
+          else if ( field.name() == temporalStartField )
+          {
+            fInfo.role = "primary-interval-start";
+          }
+          else if ( field.name() == temporalEndField )
+          {
+            fInfo.role = "primary-interval-end";
+          }
         }
 
         availableFieldInformation.push_back( fInfo );
@@ -2807,6 +2834,9 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   // Retrieve feature from storage
   const QString featureId { match.captured( u"featureId"_s ) };
   QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context );
+
+  // Set destination CRS
+  featureRequest.setDestinationCrs( requestedCrs, context.project()->transformContext() );
 
   const QString fidExpression { QgsServerFeatureId::getExpressionFromServerFid( featureId, mapLayer->dataProvider() ) };
   if ( !fidExpression.isEmpty() )
