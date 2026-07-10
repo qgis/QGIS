@@ -327,9 +327,96 @@ namespace
     return stripped.trimmed();
   }
 
+  QString removeAgentPlanProtocolBlocks( const QString &text )
+  {
+    QString stripped = text;
+    static const QRegularExpression planRe( u"```strata_agent_plan\\s*\\n[\\s\\S]*?\\n```"_s, QRegularExpression::CaseInsensitiveOption );
+    stripped.remove( planRe );
+    return stripped.trimmed();
+  }
+
+  QJsonObject planJsonFromMetadata( const QVariantMap &metadata )
+  {
+    const QString json = metadata.value( u"plan_json"_s ).toString();
+    if ( json.isEmpty() )
+      return QJsonObject();
+
+    QJsonParseError parseError;
+    const QJsonDocument doc = QJsonDocument::fromJson( json.toUtf8(), &parseError );
+    if ( parseError.error != QJsonParseError::NoError || !doc.isObject() )
+      return QJsonObject();
+    return doc.object();
+  }
+
+  QStringList jsonStringArray( const QJsonArray &array )
+  {
+    QStringList strings;
+    for ( const QJsonValue &value : array )
+    {
+      const QString item = value.toString().trimmed();
+      if ( !item.isEmpty() )
+        strings << item;
+    }
+    return strings;
+  }
+
+  QString agentPlanMarkdown( const QJsonObject &plan )
+  {
+    if ( plan.isEmpty() )
+      return QString();
+
+    QStringList lines;
+    const QString objective = plan.value( u"objective"_s ).toString().trimmed();
+    const QString mode = plan.value( u"mode"_s ).toString().trimmed();
+    if ( !objective.isEmpty() )
+      lines << u"**Objective:** %1"_s.arg( objective );
+    if ( !mode.isEmpty() )
+      lines << u"**Mode:** %1"_s.arg( mode );
+    if ( !lines.isEmpty() )
+      lines << QString();
+
+    const QJsonArray steps = plan.value( u"steps"_s ).toArray();
+    int index = 1;
+    for ( const QJsonValue &value : steps )
+    {
+      if ( !value.isObject() )
+        continue;
+      const QJsonObject step = value.toObject();
+      const QString title = step.value( u"title"_s ).toString().trimmed();
+      if ( title.isEmpty() )
+        continue;
+
+      QStringList attributes;
+      const QString id = step.value( u"id"_s ).toString().trimmed();
+      const QString tool = step.value( u"tool"_s ).toString().trimmed();
+      const QString risk = step.value( u"risk"_s ).toString().trimmed();
+      const QStringList dependsOn = jsonStringArray( step.value( u"depends_on"_s ).toArray() );
+      if ( !id.isEmpty() )
+        attributes << u"id: %1"_s.arg( id );
+      if ( !tool.isEmpty() )
+        attributes << u"tool: %1"_s.arg( tool );
+      if ( !risk.isEmpty() )
+        attributes << u"risk: %1"_s.arg( risk );
+      if ( step.contains( u"requires_approval"_s ) )
+        attributes << u"approval: %1"_s.arg( step.value( u"requires_approval"_s ).toBool() ? u"yes"_s : u"no"_s );
+      if ( !dependsOn.isEmpty() )
+        attributes << u"depends on: %1"_s.arg( dependsOn.join( u", "_s ) );
+
+      QString line = u"%1. %2"_s.arg( index++ ).arg( title );
+      if ( !attributes.isEmpty() )
+        line += u" (%1)"_s.arg( attributes.join( u"; "_s ) );
+      lines << line;
+    }
+
+    return lines.join( '\n' ).trimmed();
+  }
+
   QString planMarkdownFromMetadata( const QVariantMap &metadata )
   {
-    return metadata.value( u"plan_markdown"_s ).toString().trimmed();
+    const QString markdown = metadata.value( u"plan_markdown"_s ).toString().trimmed();
+    if ( !markdown.isEmpty() )
+      return markdown;
+    return agentPlanMarkdown( planJsonFromMetadata( metadata ) );
   }
 
   QJsonObject questionsPayloadFromMetadata( const QVariantMap &metadata )
@@ -520,6 +607,8 @@ namespace
       line.remove( QRegularExpression( u"^[-*]\\s+"_s ) );
       line.remove( QRegularExpression( u"^\\d+[.)]\\s+"_s ) );
       if ( line.isEmpty() )
+        continue;
+      if ( line.startsWith( '#'_L1 ) || line.startsWith( "**Objective:**"_L1 ) || line.startsWith( "**Mode:**"_L1 ) || line.startsWith( "Objective:"_L1 ) || line.startsWith( "Mode:"_L1 ) )
         continue;
       QJsonObject step;
       step.insert( u"id"_s, u"step_%1"_s.arg( index++ ) );
@@ -1215,7 +1304,8 @@ QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QS
   headerLayout->addWidget( roleLabel );
   headerLayout->addStretch( 1 );
   const QString uiKind = metadata.value( u"ui_kind"_s ).toString();
-  if ( uiKind == "plan"_L1 )
+  const bool isPlanUi = uiKind == "plan"_L1 || uiKind == "agent_plan"_L1;
+  if ( isPlanUi )
   {
     QLabel *status = new QLabel( metadata.value( u"plan_status"_s, u"pending"_s ).toString(), card );
     status->setObjectName( u"aiPlanStatusLabel"_s );
@@ -1230,11 +1320,13 @@ QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QS
   cardLayout->addLayout( headerLayout );
 
   QString renderContent = content;
-  if ( uiKind == "plan"_L1 )
+  if ( isPlanUi )
   {
     const QString planMarkdown = planMarkdownFromMetadata( metadata );
     if ( !planMarkdown.isEmpty() )
       renderContent = planMarkdown;
+    else if ( uiKind == "agent_plan"_L1 )
+      renderContent = removeAgentPlanProtocolBlocks( content );
   }
   else if ( uiKind == "questions"_L1 )
   {
@@ -1265,7 +1357,7 @@ QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QS
   for ( const TechnicalSection &section : std::as_const( rendered.technicalSections ) )
     cardLayout->addWidget( createCollapsibleSection( section.title, section.content, section.language, true ) );
 
-  if ( uiKind == "plan"_L1 )
+  if ( isPlanUi )
   {
     const QString planMarkdown = planMarkdownFromMetadata( metadata );
     if ( !planMarkdown.isEmpty() )
@@ -1585,8 +1677,8 @@ void QgsAiChatDockWidget::acceptPlan( const QString &messageId, const QString &p
   markMessageStatus( messageId, metadata, u"plan_status"_s, u"accepted"_s );
   QString workflowError;
   const QString workflowPath = saveWorkflowPlan( planMarkdown, messageId, &workflowError );
-  setModeLabel( u"Ask before edits"_s );
-  QString prompt = tr( "Execute the accepted plan exactly. Use the existing approval/review dialogs for any operation that requires confirmation." );
+  setModeLabel( u"Agent"_s );
+  QString prompt = tr( "Execute the accepted plan exactly in Agent mode. Use the tool safety checks and any per-tool approval/review dialogs that apply." );
   if ( !workflowPath.isEmpty() )
     prompt += u"\n\n"_s + tr( "Saved reusable workflow: %1" ).arg( workflowPath );
   else if ( !workflowError.isEmpty() )
@@ -1621,7 +1713,7 @@ QString QgsAiChatDockWidget::saveWorkflowPlan( const QString &planMarkdown, cons
   manifest.insert( u"version"_s, 1 );
   manifest.insert( u"createdAt"_s, QDateTime::currentDateTimeUtc().toString( Qt::ISODateWithMs ) );
   manifest.insert( u"sourceMessageId"_s, messageId );
-  manifest.insert( u"mode"_s, u"ask_before_edits"_s );
+  manifest.insert( u"mode"_s, u"auto_edit"_s );
   manifest.insert( u"planMarkdown"_s, trimmedPlan );
   manifest.insert( u"steps"_s, workflowStepsFromMarkdown( trimmedPlan ) );
   QJsonObject runner;
@@ -1710,9 +1802,9 @@ void QgsAiChatDockWidget::runWorkflowPlan( const QString &messageId, const QStri
 
   QString error;
   const QString workflowPath = saveWorkflowPlan( planMarkdown, messageId, &error );
-  setModeLabel( u"Ask before edits"_s );
+  setModeLabel( u"Agent"_s );
   mSessionManager->sendUserMessage(
-    tr( "Run this .strataflow workflow through the Strata agent. Use native GIS tools where available, keep provenance for each step, and request approval before any mutating action.\n\nWorkflow path: %1\n\nPlan:\n%2" )
+    tr( "Run this .strataflow workflow through the Strata agent. Use native GIS tools where available, keep provenance for each step, and respect all per-tool safety checks and approval dialogs.\n\nWorkflow path: %1\n\nPlan:\n%2" )
       .arg( workflowPath.isEmpty() ? error : workflowPath, planMarkdown.trimmed() )
   );
   reloadTranscriptFromHistory();
@@ -1726,7 +1818,7 @@ void QgsAiChatDockWidget::sendPlanRevision( const QString &messageId, const QStr
   const QString feedback = revisionEdit ? revisionEdit->toPlainText().trimmed() : QString();
   markMessageStatus( messageId, metadata, u"plan_status"_s, u"rejected"_s );
   setModeLabel( u"Plan"_s );
-  mSessionManager->sendUserMessage( tr( "Revise the previous plan before execution. Keep Plan mode and return a new proposed_plan block.\n\nOriginal plan:\n%1\n\nUser revision request:\n%2" )
+  mSessionManager->sendUserMessage( tr( "Revise the previous plan before execution. Keep Plan mode and return a new fenced strata_agent_plan JSON block.\n\nOriginal plan:\n%1\n\nUser revision request:\n%2" )
                                       .arg( planMarkdown.trimmed(), feedback.isEmpty() ? tr( "The plan was rejected; propose a safer or clearer revision." ) : feedback ) );
   reloadTranscriptFromHistory();
 }

@@ -119,7 +119,7 @@ class TestQgsAiAgentSessionManager : public QObject
     void askAndAgentAdvertiseCaptureMapCanvasTool();
     void askBeforeEditsOnlyAdvertisesReadOnlyAndApprovalTools();
     void managedPolicyRestrictsAgentTools();
-    void managedPolicyV1IsIgnored();
+    void managedPolicyBelowV3IsIgnored();
     void managedPolicyWithUnknownToolIsIgnored();
     void managedPolicyDoesNotRestrictByokProviders();
     void agentModeOmitsUnavailableTools();
@@ -506,7 +506,7 @@ void TestQgsAiAgentSessionManager::managedPolicyRestrictsAgentTools()
   manager.setAgentBehaviorSettings( updated );
 
   QgsAiManagedAgentPolicy policy;
-  policy.toolCatalogVersion = 2;
+  policy.toolCatalogVersion = 3;
   policy.tier = u"FREE"_s;
   policy.allowedTools = QStringList { u"read_file"_s };
   policy.allowedModels = QStringList { u"managed-plan"_s };
@@ -528,7 +528,7 @@ void TestQgsAiAgentSessionManager::managedPolicyRestrictsAgentTools()
   settings.remove( u"qgis_ai/agent"_s );
 }
 
-void TestQgsAiAgentSessionManager::managedPolicyV1IsIgnored()
+void TestQgsAiAgentSessionManager::managedPolicyBelowV3IsIgnored()
 {
   QgsSettings settings;
   settings.remove( u"strata/agent"_s );
@@ -556,7 +556,7 @@ void TestQgsAiAgentSessionManager::managedPolicyV1IsIgnored()
   manager.setAgentBehaviorSettings( updated );
 
   QgsAiManagedAgentPolicy policy;
-  policy.toolCatalogVersion = 1;
+  policy.toolCatalogVersion = 2;
   policy.tier = u"FREE"_s;
   policy.allowedTools = QStringList { u"read_file"_s };
   policy.allowedModels = QStringList { u"managed-plan"_s };
@@ -605,7 +605,7 @@ void TestQgsAiAgentSessionManager::managedPolicyWithUnknownToolIsIgnored()
   manager.setAgentBehaviorSettings( updated );
 
   QgsAiManagedAgentPolicy policy;
-  policy.toolCatalogVersion = 2;
+  policy.toolCatalogVersion = 3;
   policy.tier = u"FREE"_s;
   policy.allowedTools = QStringList { u"read_file"_s, u"unknown_future_tool"_s };
   policy.allowedModels = QStringList { u"managed-plan"_s };
@@ -654,7 +654,7 @@ void TestQgsAiAgentSessionManager::managedPolicyDoesNotRestrictByokProviders()
   manager.setAgentBehaviorSettings( updated );
 
   QgsAiManagedAgentPolicy policy;
-  policy.toolCatalogVersion = 2;
+  policy.toolCatalogVersion = 3;
   policy.tier = u"FREE"_s;
   policy.allowedTools = QStringList { u"read_file"_s };
   policy.allowedModels = QStringList { u"managed-plan"_s };

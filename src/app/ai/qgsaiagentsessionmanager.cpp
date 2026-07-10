@@ -56,6 +56,8 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
+  constexpr int MIN_MANAGED_TOOL_CATALOG_VERSION = 3;
+
   QString defaultRulesPath()
   {
     return u".strata/rules"_s;
@@ -91,6 +93,7 @@ namespace
   QStringList reviewerReadOnlyTools()
   {
     return QStringList {
+      u"echo"_s,
       u"read_file"_s,
       u"search_files"_s,
       u"list_files"_s,
@@ -104,6 +107,7 @@ namespace
       u"index_status"_s,
       u"search_workspace"_s,
       u"web_search"_s,
+      u"web_fetch"_s,
       u"catalog_search"_s,
     };
   }
@@ -1050,7 +1054,7 @@ QStringList QgsAiAgentSessionManager::allowedToolsForActiveAgent() const
   QStringList managedAllowed;
   const bool applyManagedPolicy = mRouter
                                   && mRouter->activeProvider() == QgsAiModelRouter::Provider::Plan
-                                  && mManagedAgentPolicy.toolCatalogVersion >= 2
+                                  && mManagedAgentPolicy.toolCatalogVersion >= MIN_MANAGED_TOOL_CATALOG_VERSION
                                   && !mManagedAgentPolicy.isEmpty()
                                   && !managedPolicyReferencesUnknownTools( mManagedAgentPolicy, mToolRegistry );
   if ( applyManagedPolicy )

@@ -50,7 +50,7 @@ namespace
   QByteArray policyBody()
   {
     return QByteArrayLiteral(
-      R"({"toolCatalogVersion":2,"tier":"PRO","modes":["ask","plan","ask_before_edits","auto_edit"],"allowedTools":["read_file","web_search","run_python"],"allowedModels":["managed-plan","gpt-4o"],"presets":[{"mode":"reviewer","label":"Reviewer","allowedTools":["read_file","web_search"],"allowedModels":["managed-plan"]},{"mode":"editor","label":"Editor","allowedTools":["read_file","run_python"],"allowedModels":["managed-plan","gpt-4o"]}]})"
+      R"({"toolCatalogVersion":3,"tier":"PRO","modes":["ask","plan","ask_before_edits","auto_edit"],"allowedTools":["read_file","web_search","run_python"],"allowedModels":["managed-plan","gpt-4o"],"presets":[{"mode":"reviewer","label":"Reviewer","allowedTools":["read_file","web_search"],"allowedModels":["managed-plan"]},{"mode":"editor","label":"Editor","allowedTools":["read_file","run_python"],"allowedModels":["managed-plan","gpt-4o"]}]})"
     );
   }
 } //namespace
@@ -97,7 +97,7 @@ void TestQgsAiPlanClient::parsesAgentPolicy()
   QVERIFY( agents.first().allowedTools.contains( u"web_search"_s ) );
 
   const QgsAiManagedAgentPolicy policy = QgsAiPlanClient::parseAgentPolicyJson( policyBody() );
-  QCOMPARE( policy.toolCatalogVersion, 2 );
+  QCOMPARE( policy.toolCatalogVersion, 3 );
   QCOMPARE( policy.tier, u"PRO"_s );
   QVERIFY( policy.modes.contains( u"ask_before_edits"_s ) );
   QVERIFY( policy.allowedModels.contains( u"gpt-4o"_s ) );

@@ -188,6 +188,7 @@ class TestQgsAiChatDockWidget : public QObject
     void collapsesTechnicalCodeBlocks();
     void transcriptMessagesFitNarrowDockWithoutHorizontalScroll();
     void acceptingPlanSwitchesToAgentAndSendsPlan();
+    void acceptingAgentPlanJsonSwitchesToAgent();
     void workflowComposerExportsReportAndDryRun();
     void questionCardSendsStructuredAnswers();
     void layerIndexingConsentPolicy();
@@ -656,7 +657,7 @@ void TestQgsAiChatDockWidget::acceptingPlanSwitchesToAgentAndSendsPlan()
   QVERIFY( exportReport );
   accept->click();
 
-  QCOMPARE( manager.activeAgent(), u"ask_before_edits"_s );
+  QCOMPARE( manager.activeAgent(), u"editor"_s );
   QVERIFY( !manager.history().isEmpty() );
   QVERIFY( manager.history().first().content.contains( u"Accepted plan"_s ) );
   QVERIFY( manager.history().first().content.contains( u"Patch UI"_s ) );
@@ -670,11 +671,61 @@ void TestQgsAiChatDockWidget::acceptingPlanSwitchesToAgentAndSendsPlan()
   const QJsonObject workflow = QJsonDocument::fromJson( workflowFile.readAll() ).object();
   QCOMPARE( workflow.value( u"kind"_s ).toString(), u"strataflow"_s );
   QCOMPARE( workflow.value( u"version"_s ).toInt(), 1 );
+  QCOMPARE( workflow.value( u"mode"_s ).toString(), u"auto_edit"_s );
   QVERIFY( workflow.value( u"planMarkdown"_s ).toString().contains( u"Patch UI"_s ) );
   QVERIFY( workflow.value( u"runner"_s ).toObject().value( u"dryRunSupported"_s ).toBool() );
   QVERIFY( workflow.value( u"runner"_s ).toObject().value( u"requiresApproval"_s ).toBool() );
   QVERIFY( workflow.value( u"provenance"_s ).toObject().value( u"metadataOnly"_s ).toBool() );
   QCOMPARE( workflow.value( u"steps"_s ).toArray().size(), 2 );
+}
+
+void TestQgsAiChatDockWidget::acceptingAgentPlanJsonSwitchesToAgent()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( nullptr, &contextProvider, &reviewEngine );
+  QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+
+  QJsonObject step;
+  step.insert( u"id"_s, u"s1"_s );
+  step.insert( u"title"_s, u"Load boundary"_s );
+  step.insert( u"risk"_s, u"medium"_s );
+  step.insert( u"tool"_s, u"download_file"_s );
+  step.insert( u"requires_approval"_s, true );
+  step.insert( u"depends_on"_s, QJsonArray() );
+
+  QJsonObject plan;
+  plan.insert( u"version"_s, 1 );
+  plan.insert( u"objective"_s, u"Download official boundary"_s );
+  plan.insert( u"mode"_s, u"auto_edit"_s );
+  plan.insert( u"steps"_s, QJsonArray { step } );
+  const QString planJson = QString::fromUtf8( QJsonDocument( plan ).toJson( QJsonDocument::Compact ) );
+
+  QgsAiChatMessage planMessage;
+  planMessage.id = u"agent-plan-1"_s;
+  planMessage.role = QgsAiChatRole::Assistant;
+  planMessage.content = u"Ready.\n```strata_agent_plan\n%1\n```"_s.arg( planJson );
+  planMessage.metadata.insert( u"ui_kind"_s, u"agent_plan"_s );
+  planMessage.metadata.insert( u"plan_json"_s, planJson );
+  planMessage.metadata.insert( u"plan_status"_s, u"pending"_s );
+
+  manager.messageAdded( planMessage );
+  QVERIFY( visibleLabelText( dock ).contains( u"Download official boundary"_s ) );
+  QVERIFY( visibleLabelText( dock ).contains( u"Load boundary"_s ) );
+  QVERIFY( !visibleLabelText( dock ).contains( u"strata_agent_plan"_s ) );
+
+  QPushButton *accept = dock.findChild<QPushButton *>( u"aiAcceptPlanButton"_s );
+  QVERIFY( accept );
+  accept->click();
+
+  QCOMPARE( manager.activeAgent(), u"editor"_s );
+  QVERIFY( !manager.history().isEmpty() );
+  QVERIFY( manager.history().first().content.contains( u"Accepted plan"_s ) );
+  QVERIFY( manager.history().first().content.contains( u"Load boundary"_s ) );
 }
 
 void TestQgsAiChatDockWidget::workflowComposerExportsReportAndDryRun()
@@ -698,8 +749,10 @@ void TestQgsAiChatDockWidget::workflowComposerExportsReportAndDryRun()
 
   manager.messageAdded( planMessage );
   QPushButton *dryRun = dock.findChild<QPushButton *>( u"aiDryRunWorkflowButton"_s );
+  QPushButton *runWorkflow = dock.findChild<QPushButton *>( u"aiRunWorkflowButton"_s );
   QPushButton *exportReport = dock.findChild<QPushButton *>( u"aiExportWorkflowReportButton"_s );
   QVERIFY( dryRun );
+  QVERIFY( runWorkflow );
   QVERIFY( exportReport );
 
   exportReport->click();
@@ -718,6 +771,14 @@ void TestQgsAiChatDockWidget::workflowComposerExportsReportAndDryRun()
   QVERIFY( !manager.history().isEmpty() );
   QVERIFY( manager.history().first().content.contains( u"Dry-run this .strataflow workflow"_s ) );
   QVERIFY( manager.history().first().content.contains( u"Do not call mutating tools"_s ) );
+
+  runWorkflow->click();
+  QCOMPARE( manager.activeAgent(), u"editor"_s );
+  QStringList history;
+  for ( const QgsAiChatMessage &message : manager.history() )
+    history << message.content;
+  QVERIFY( history.join( '\n' ).contains( u"Run this .strataflow workflow"_s ) );
+  QVERIFY( history.join( '\n' ).contains( u"per-tool safety checks"_s ) );
 }
 
 void TestQgsAiChatDockWidget::questionCardSendsStructuredAnswers()
