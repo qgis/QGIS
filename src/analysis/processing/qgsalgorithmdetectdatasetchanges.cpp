@@ -227,7 +227,8 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
     }
     else if ( f.hasGeometry() && f.geometry().isEmpty() )
     {
-      if ( originalEmptyGeometryAttributes.contains( attrs ) )
+      auto emptyGeomIt = originalEmptyGeometryAttributes.constFind( attrs );
+      if ( emptyGeomIt != originalEmptyGeometryAttributes.constEnd() )
       {
         feedback->reportError(
           QObject::tr(
@@ -235,7 +236,7 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
             "one or more features with EMPTY geometries - results may be misleading (features %1 and %2)"
           )
             .arg( f.id() )
-            .arg( originalEmptyGeometryAttributes.value( attrs ) )
+            .arg( emptyGeomIt.value() )
         );
       }
       else
@@ -303,10 +304,11 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
     }
     else if ( revisedFeature.hasGeometry() && revisedFeature.geometry().isEmpty() )
     {
-      if ( originalEmptyGeometryAttributes.contains( attrs ) )
+      auto emptyIt = originalEmptyGeometryAttributes.constFind( attrs );
+      if ( emptyIt != originalEmptyGeometryAttributes.constEnd() )
       {
         // found a match for feature
-        unchangedOriginalIds.insert( originalEmptyGeometryAttributes.value( attrs ) );
+        unchangedOriginalIds.insert( emptyIt.value() );
         matched = true;
       }
     }
