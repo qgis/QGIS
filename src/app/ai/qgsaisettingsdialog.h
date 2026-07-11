@@ -33,6 +33,7 @@ class QLabel;
 class QLineEdit;
 class QListWidget;
 class QPushButton;
+class QSpinBox;
 class QStackedWidget;
 class QTextEdit;
 class QVBoxLayout;
@@ -150,6 +151,7 @@ class APP_EXPORT QgsAiSettingsDialog : public QDialog
     QLabel *mClaudeOAuthStatus = nullptr;
 
     QCheckBox *mAllowCustomActions = nullptr;
+    QSpinBox *mMaxToolIterationsPerTurn = nullptr;
     QCheckBox *mGisSuggestionsEnabled = nullptr;
     QCheckBox *mGisSuggestionsProjectEnabled = nullptr;
 

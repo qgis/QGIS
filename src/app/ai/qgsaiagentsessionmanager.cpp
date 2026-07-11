@@ -90,6 +90,15 @@ namespace
     return defaultValue;
   }
 
+  int normalizedToolCallPauseLimit( const QVariant &value )
+  {
+    bool ok = false;
+    const int parsed = value.toInt( &ok );
+    if ( !ok || parsed < QgsAiAgentBehaviorSettings::MIN_TOOL_CALL_PAUSE_LIMIT || parsed > QgsAiAgentBehaviorSettings::MAX_TOOL_CALL_PAUSE_LIMIT )
+      return QgsAiAgentBehaviorSettings::DEFAULT_TOOL_CALL_PAUSE_LIMIT;
+    return parsed;
+  }
+
   QStringList reviewerReadOnlyTools()
   {
     return QStringList {
@@ -354,6 +363,34 @@ bool QgsAiAgentSessionManager::updateMessageMetadata( const QString &messageId, 
     message.metadata = metadata;
     if ( mHistoryStore && mHistoryStore->hasPersistentHistoryScope() && !mActiveSessionId.isEmpty() )
       mHistoryStore->updateMessageMetadata( mActiveSessionId, messageId, metadata );
+    return true;
+  }
+
+  return false;
+}
+
+bool QgsAiAgentSessionManager::continueAfterToolLimit( const QString &messageId )
+{
+  if ( !mRouter || hasActiveRequest() || messageId.isEmpty() )
+    return false;
+
+  for ( QgsAiChatMessage &message : mHistory )
+  {
+    if ( message.id != messageId )
+      continue;
+    if ( message.metadata.value( u"ui_kind"_s ).toString() != "tool_limit"_L1 )
+      return false;
+    if ( message.metadata.value( u"tool_limit_status"_s, u"pending"_s ).toString() != "pending"_L1 )
+      return false;
+
+    QVariantMap metadata = message.metadata;
+    metadata.insert( u"tool_limit_status"_s, u"continued"_s );
+    if ( !updateMessageMetadata( messageId, metadata ) )
+      return false;
+
+    mToolIterations = 0;
+    emit requestRunningChanged( true );
+    startProviderAttempt( mActiveProvider );
     return true;
   }
 
@@ -1005,6 +1042,7 @@ void QgsAiAgentSessionManager::setAgentBehaviorSettings( const QgsAiAgentBehavio
     mBehaviorSettings.rulesPath = defaultRulesPath();
   if ( mBehaviorSettings.skillsPath.trimmed().isEmpty() )
     mBehaviorSettings.skillsPath = defaultSkillsPath();
+  mBehaviorSettings.maxToolIterationsPerTurn = normalizedToolCallPauseLimit( mBehaviorSettings.maxToolIterationsPerTurn );
 
   persistBehaviorSettings();
   refreshRouterToolPolicy();
@@ -1099,6 +1137,8 @@ void QgsAiAgentSessionManager::loadPersistedBehaviorSettings()
   mBehaviorSettings.rulesPath = settingValueWithLegacy( settings, u"strata/agent/rules_path"_s, QStringList { u"geoai/agent/rules_path"_s, u"qgis_ai/agent/rules_path"_s }, defaultRulesPath() ).toString();
   mBehaviorSettings.skillsPath
     = settingValueWithLegacy( settings, u"strata/agent/skills_path"_s, QStringList { u"geoai/agent/skills_path"_s, u"qgis_ai/agent/skills_path"_s }, defaultSkillsPath() ).toString();
+  mBehaviorSettings.maxToolIterationsPerTurn
+    = normalizedToolCallPauseLimit( settings.value( u"strata/agent/max_tool_iterations_per_turn"_s, QgsAiAgentBehaviorSettings::DEFAULT_TOOL_CALL_PAUSE_LIMIT ) );
 }
 
 void QgsAiAgentSessionManager::persistBehaviorSettings() const
@@ -1111,6 +1151,7 @@ void QgsAiAgentSessionManager::persistBehaviorSettings() const
   settings.setValue( u"strata/agent/load_workspace_skills"_s, mBehaviorSettings.loadWorkspaceSkills );
   settings.setValue( u"strata/agent/rules_path"_s, mBehaviorSettings.rulesPath );
   settings.setValue( u"strata/agent/skills_path"_s, mBehaviorSettings.skillsPath );
+  settings.setValue( u"strata/agent/max_tool_iterations_per_turn"_s, mBehaviorSettings.maxToolIterationsPerTurn );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }
@@ -1702,8 +1743,17 @@ QString QgsAiAgentSessionManager::formatAgentMemoryForPrompt() const
 
 QList<QgsAiChatMessage> QgsAiAgentSessionManager::trimHistoryByTokenBudget( int budgetTokens ) const
 {
-  if ( mHistory.isEmpty() )
-    return mHistory;
+  QList<QgsAiChatMessage> providerHistory;
+  providerHistory.reserve( mHistory.size() );
+  for ( const QgsAiChatMessage &message : mHistory )
+  {
+    if ( message.metadata.value( u"ui_kind"_s ).toString() == "tool_limit"_L1 )
+      continue;
+    providerHistory.append( message );
+  }
+
+  if ( providerHistory.isEmpty() )
+    return providerHistory;
 
   // Identify "atomic groups" so we don't split a tool_use round from its tool_results when trimming.
   struct GroupRange
@@ -1713,14 +1763,14 @@ QList<QgsAiChatMessage> QgsAiAgentSessionManager::trimHistoryByTokenBudget( int 
   };
   QList<GroupRange> groups;
   int i = 0;
-  while ( i < mHistory.size() )
+  while ( i < providerHistory.size() )
   {
     int start = i;
     int end = i;
-    const bool isAssistantWithTools = mHistory.at( i ).role == QgsAiChatRole::Assistant && mHistory.at( i ).metadata.contains( u"tool_calls"_s );
+    const bool isAssistantWithTools = providerHistory.at( i ).role == QgsAiChatRole::Assistant && providerHistory.at( i ).metadata.contains( u"tool_calls"_s );
     if ( isAssistantWithTools )
     {
-      while ( end + 1 < mHistory.size() && mHistory.at( end + 1 ).role == QgsAiChatRole::Tool )
+      while ( end + 1 < providerHistory.size() && providerHistory.at( end + 1 ).role == QgsAiChatRole::Tool )
         ++end;
     }
     groups.append( { start, end } );
@@ -1728,10 +1778,10 @@ QList<QgsAiChatMessage> QgsAiAgentSessionManager::trimHistoryByTokenBudget( int 
   }
 
   // Walk groups newest-first; keep what fits, but always keep at least the most recent group.
-  auto groupTokens = [this]( const GroupRange &g ) {
+  auto groupTokens = [&providerHistory]( const GroupRange &g ) {
     int total = 0;
     for ( int j = g.start; j <= g.end; ++j )
-      total += mHistory.at( j ).content.size() / 4;
+      total += providerHistory.at( j ).content.size() / 4;
     return total;
   };
 
@@ -1751,7 +1801,7 @@ QList<QgsAiChatMessage> QgsAiAgentSessionManager::trimHistoryByTokenBudget( int 
   {
     const GroupRange &range = groups.at( g );
     for ( int j = range.start; j <= range.end; ++j )
-      result.append( mHistory.at( j ) );
+      result.append( providerHistory.at( j ) );
   }
   return result;
 }
@@ -1920,10 +1970,16 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
   }
 
   ++mToolIterations;
-  if ( mToolIterations > MAX_TOOL_ITERATIONS_PER_TURN )
+  const int maxToolIterations = normalizedToolCallPauseLimit( mBehaviorSettings.maxToolIterationsPerTurn );
+  if ( mToolIterations > maxToolIterations )
   {
-    const QgsAiChatMessage error = buildAssistantMessage( u"Stopping: the model exceeded the maximum number of tool calls (%1) for a single turn."_s.arg( MAX_TOOL_ITERATIONS_PER_TURN ) );
-    recordHistoryMessage( error );
+    QgsAiChatMessage limitMessage = buildAssistantMessage(
+      tr( "Numero massimo raggiunto: l'agente ha usato %1 round di tool call. Premi Continue per concedere un altro blocco di %1." ).arg( maxToolIterations )
+    );
+    limitMessage.metadata.insert( u"ui_kind"_s, u"tool_limit"_s );
+    limitMessage.metadata.insert( u"tool_limit_status"_s, u"pending"_s );
+    limitMessage.metadata.insert( u"tool_limit"_s, maxToolIterations );
+    recordHistoryMessage( limitMessage );
     mActiveRequestId.clear();
     emit requestRunningChanged( false );
     return;

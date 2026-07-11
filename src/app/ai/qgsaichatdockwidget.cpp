@@ -1290,7 +1290,7 @@ QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QS
     "QFrame#aiMessage { border: 0; border-radius: 0; background: palette(base); } "
     "QLabel#aiMessageRole { color: palette(mid); font-weight: 600; } "
     "QLabel#aiMessageBody { color: palette(text); } "
-    "QLabel#aiPlanStatusLabel, QLabel#aiQuestionsStatusLabel { color: palette(highlight); font-weight: 600; }"
+    "QLabel#aiPlanStatusLabel, QLabel#aiQuestionsStatusLabel, QLabel#aiToolLimitStatusLabel { color: palette(highlight); font-weight: 600; }"
   ) );
 
   QVBoxLayout *cardLayout = new QVBoxLayout( card );
@@ -1315,6 +1315,12 @@ QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QS
   {
     QLabel *status = new QLabel( metadata.value( u"questions_status"_s, u"pending"_s ).toString(), card );
     status->setObjectName( u"aiQuestionsStatusLabel"_s );
+    headerLayout->addWidget( status );
+  }
+  else if ( uiKind == "tool_limit"_L1 )
+  {
+    QLabel *status = new QLabel( metadata.value( u"tool_limit_status"_s, u"pending"_s ).toString(), card );
+    status->setObjectName( u"aiToolLimitStatusLabel"_s );
     headerLayout->addWidget( status );
   }
   cardLayout->addLayout( headerLayout );
@@ -1368,6 +1374,10 @@ QWidget *QgsAiChatDockWidget::createMessageWidget( const QString &role, const QS
     const QJsonObject payload = questionsPayloadFromMetadata( metadata );
     if ( !payload.isEmpty() )
       cardLayout->addWidget( createQuestionsWidget( messageId, payload, metadata ) );
+  }
+  else if ( uiKind == "tool_limit"_L1 )
+  {
+    cardLayout->addWidget( createToolLimitActionsWidget( messageId, metadata ) );
   }
 
   if ( messageRole == QgsAiChatRole::User )
@@ -1615,6 +1625,46 @@ QWidget *QgsAiChatDockWidget::createQuestionsWidget( const QString &messageId, c
   connect( submit, &QPushButton::clicked, this, [this, messageId, metadata, questionsCard]() { sendQuestionAnswers( messageId, metadata, questionsCard ); } );
 
   return questionsCard;
+}
+
+QWidget *QgsAiChatDockWidget::createToolLimitActionsWidget( const QString &messageId, const QVariantMap &metadata )
+{
+  QFrame *limitCard = new QFrame( mTranscriptContainer );
+  limitCard->setObjectName( u"aiToolLimitCard"_s );
+  limitCard->setFrameShape( QFrame::NoFrame );
+  applyTranscriptWidthPolicy( limitCard );
+  limitCard->setStyleSheet( u"QFrame#aiToolLimitCard { background: palette(base); border: 0; border-radius: 0; }"_s );
+
+  QHBoxLayout *layout = new QHBoxLayout( limitCard );
+  layout->setContentsMargins( 8, 4, 8, 4 );
+  layout->setSpacing( 6 );
+
+  QPushButton *continueButton = new QPushButton( tr( "Continue" ), limitCard );
+  continueButton->setObjectName( u"aiContinueToolLimitButton"_s );
+  const QString status = metadata.value( u"tool_limit_status"_s, u"pending"_s ).toString();
+  continueButton->setProperty( "tool_limit_status", status );
+  const bool pending = status == "pending"_L1;
+  continueButton->setEnabled( pending && !mRequestRunning && mSessionManager );
+  continueButton->setStyleSheet(
+    u"QPushButton#aiContinueToolLimitButton { background: palette(highlight); color: palette(highlighted-text); border: 0; border-radius: 6px; padding: 4px 10px; font-weight: 600; } QPushButton#aiContinueToolLimitButton:disabled { background: palette(button); color: palette(mid); }"_s
+  );
+  layout->addWidget( continueButton );
+  layout->addStretch( 1 );
+
+  connect( continueButton, &QPushButton::clicked, this, [this, messageId, continueButton]() {
+    if ( !mSessionManager || mRequestRunning )
+      return;
+    continueButton->setEnabled( false );
+    if ( mSessionManager->continueAfterToolLimit( messageId ) )
+    {
+      continueButton->setProperty( "tool_limit_status", u"continued"_s );
+      continueButton->setEnabled( false );
+    }
+    else
+      continueButton->setEnabled( continueButton->property( "tool_limit_status" ).toString() == "pending"_L1 && !mRequestRunning );
+  } );
+
+  return limitCard;
 }
 
 void QgsAiChatDockWidget::clearTranscriptWidgets()
@@ -2177,6 +2227,9 @@ void QgsAiChatDockWidget::setRequestRunning( bool running )
     mInputTextEdit->setEnabled( !running );
   if ( mCancelButton )
     mCancelButton->setEnabled( running );
+  const QList<QPushButton *> continueButtons = findChildren<QPushButton *>( u"aiContinueToolLimitButton"_s );
+  for ( QPushButton *button : continueButtons )
+    button->setEnabled( button->property( "tool_limit_status" ).toString() == "pending"_L1 && !running && mSessionManager );
   if ( !running && mStreamingInProgress )
     closeStreamingAssistantMessage();
 }

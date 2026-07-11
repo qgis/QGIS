@@ -49,6 +49,7 @@
 #include <QRegularExpression>
 #include <QScopeGuard>
 #include <QSettings>
+#include <QSpinBox>
 #include <QString>
 #include <QTemporaryDir>
 #include <QTextEdit>
@@ -191,6 +192,7 @@ class TestQgsAiChatDockWidget : public QObject
     void acceptingAgentPlanJsonSwitchesToAgent();
     void workflowComposerExportsReportAndDryRun();
     void questionCardSendsStructuredAnswers();
+    void toolLimitMessageShowsContinueButton();
     void layerIndexingConsentPolicy();
     void settingsDialogContainsManualIndexingControls();
     void historyMenuPromptsForSavedProjectWhenUnsaved();
@@ -832,6 +834,58 @@ void TestQgsAiChatDockWidget::questionCardSendsStructuredAnswers()
   QVERIFY( manager.history().first().content.contains( u"default"_s ) );
 }
 
+void TestQgsAiChatDockWidget::toolLimitMessageShowsContinueButton()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  QgsAiModelRouter router;
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+
+  {
+    QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+    QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+
+    QgsAiChatMessage limitMessage;
+    limitMessage.id = u"tool-limit-pending"_s;
+    limitMessage.role = QgsAiChatRole::Assistant;
+    limitMessage.content = u"Maximum number reached."_s;
+    limitMessage.metadata.insert( u"ui_kind"_s, u"tool_limit"_s );
+    limitMessage.metadata.insert( u"tool_limit_status"_s, u"pending"_s );
+    limitMessage.metadata.insert( u"tool_limit"_s, 5 );
+
+    manager.messageAdded( limitMessage );
+    QPushButton *continueButton = dock.findChild<QPushButton *>( u"aiContinueToolLimitButton"_s );
+    QVERIFY( continueButton );
+    QCOMPARE( continueButton->text(), u"Continue"_s );
+    QVERIFY( continueButton->isEnabled() );
+
+    manager.requestRunningChanged( true );
+    QVERIFY( !continueButton->isEnabled() );
+    manager.requestRunningChanged( false );
+    QVERIFY( continueButton->isEnabled() );
+  }
+
+  {
+    QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+    QgsAiChatDockWidget dock( &manager, &router, &reviewEngine );
+
+    QgsAiChatMessage limitMessage;
+    limitMessage.id = u"tool-limit-continued"_s;
+    limitMessage.role = QgsAiChatRole::Assistant;
+    limitMessage.content = u"Maximum number reached."_s;
+    limitMessage.metadata.insert( u"ui_kind"_s, u"tool_limit"_s );
+    limitMessage.metadata.insert( u"tool_limit_status"_s, u"continued"_s );
+    limitMessage.metadata.insert( u"tool_limit"_s, 5 );
+
+    manager.messageAdded( limitMessage );
+    QPushButton *continueButton = dock.findChild<QPushButton *>( u"aiContinueToolLimitButton"_s );
+    QVERIFY( continueButton );
+    QVERIFY( !continueButton->isEnabled() );
+  }
+}
+
 void TestQgsAiChatDockWidget::layerIndexingConsentPolicy()
 {
   // Round-trip the single key in the user's QSettings without redirecting the
@@ -892,6 +946,7 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   const QString crashOptInKey = u"strata/crash_reporting/metadata_only_opt_in"_s;
   const QString releaseDryRunChecksumKey = u"strata/release/dry_run_checksum"_s;
   const QString releaseDryRunManifestKey = u"strata/release/dry_run_manifest"_s;
+  const QString maxToolIterationsKey = u"strata/agent/max_tool_iterations_per_turn"_s;
   const bool hadE5ModelDirEnv = qEnvironmentVariableIsSet( "STRATA_AI_EMBEDDING_MODEL_DIR" );
   const QByteArray savedE5ModelDirEnv = qgetenv( "STRATA_AI_EMBEDDING_MODEL_DIR" );
   const bool hadOpenAiKey = settings.contains( openAiKey );
@@ -914,12 +969,15 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   const QVariant savedReleaseDryRunChecksum = settings.value( releaseDryRunChecksumKey );
   const bool hadReleaseDryRunManifest = settings.contains( releaseDryRunManifestKey );
   const QVariant savedReleaseDryRunManifest = settings.value( releaseDryRunManifestKey );
+  const bool hadMaxToolIterations = settings.contains( maxToolIterationsKey );
+  const QVariant savedMaxToolIterations = settings.value( maxToolIterationsKey );
   settings.setValue( openAiKey, u"sk-old-test-key"_s );
   settings.setValue( legacyEmbeddingProviderKey, u"openai"_s );
   settings.remove( embeddingProviderKey );
   settings.setValue( automaticIndexingKey, true );
   settings.setValue( layerIndexingKey, true );
   settings.setValue( privacyMetadataOnlyKey, true );
+  settings.remove( maxToolIterationsKey );
   settings.remove( releaseDryRunChecksumKey );
   settings.remove( releaseDryRunManifestKey );
   qputenv( "STRATA_AI_EMBEDDING_MODEL_DIR", QFile::encodeName( QDir( tempDir.path() ).filePath( u"missing-e5"_s ) ) );
@@ -944,8 +1002,9 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   bool e5UiStateFound = false;
   bool onboardingControlsFound = false;
   bool releaseDryRunOk = false;
+  bool agentLimitControlFound = false;
   QTimer::
-    singleShot( 0, &dock, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, &e5UiStateFound, &onboardingControlsFound, &releaseDryRunOk, e5ProviderListed]() {
+    singleShot( 0, &dock, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, &e5UiStateFound, &onboardingControlsFound, &releaseDryRunOk, &agentLimitControlFound, e5ProviderListed]() {
       QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
       if ( settingsDialog )
       {
@@ -993,6 +1052,11 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
           releaseDryRunButton->click();
           releaseDryRunOk = releaseDryRunStatus->text().contains( u"checksum"_s, Qt::CaseInsensitive ) && !releaseDryRunStatus->property( "checksum" ).toString().isEmpty();
         }
+        QSpinBox *maxToolIterations = settingsDialog->findChild<QSpinBox *>( u"aiMaxToolIterationsPerTurnSpinBox"_s );
+        agentLimitControlFound = maxToolIterations
+                                 && maxToolIterations->minimum() == QgsAiAgentBehaviorSettings::MIN_TOOL_CALL_PAUSE_LIMIT
+                                 && maxToolIterations->maximum() == QgsAiAgentBehaviorSettings::MAX_TOOL_CALL_PAUSE_LIMIT
+                                 && maxToolIterations->value() == QgsAiAgentBehaviorSettings::DEFAULT_TOOL_CALL_PAUSE_LIMIT;
         settingsDialog->reject();
       }
       inspected = true;
@@ -1040,6 +1104,10 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
     settings.setValue( releaseDryRunManifestKey, savedReleaseDryRunManifest );
   else
     settings.remove( releaseDryRunManifestKey );
+  if ( hadMaxToolIterations )
+    settings.setValue( maxToolIterationsKey, savedMaxToolIterations );
+  else
+    settings.remove( maxToolIterationsKey );
   qunsetenv( "STRATA_AI_EMBEDDING_MODEL_DIR" );
   if ( hadE5ModelDirEnv )
     qputenv( "STRATA_AI_EMBEDDING_MODEL_DIR", savedE5ModelDirEnv );
@@ -1053,6 +1121,7 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   QVERIFY( e5UiStateFound );
   QVERIFY( onboardingControlsFound );
   QVERIFY( releaseDryRunOk );
+  QVERIFY( agentLimitControlFound );
   QCOMPARE( layerIndexingChecked, !e5ProviderListed );
   QCOMPARE( layerIndexingEnabled, !e5ProviderListed );
 }

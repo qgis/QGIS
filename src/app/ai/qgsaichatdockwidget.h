@@ -110,6 +110,7 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     QWidget *createCollapsibleSection( const QString &title, const QString &content, const QString &language = QString(), bool collapsed = true );
     QWidget *createPlanActionsWidget( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata );
     QWidget *createQuestionsWidget( const QString &messageId, const QJsonObject &payload, const QVariantMap &metadata );
+    QWidget *createToolLimitActionsWidget( const QString &messageId, const QVariantMap &metadata );
     void clearTranscriptWidgets();
     void scrollTranscriptToBottom();
     void setModeLabel( const QString &label );

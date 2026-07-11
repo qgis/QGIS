@@ -114,6 +114,7 @@ class TestQgsAiAgentSessionManager : public QObject
     void findsWorkspaceFilesForMentions();
     void allowsExplicitExternalAttachmentContext();
     void agentBehaviorSettingsRoundTrip();
+    void toolCallLimitPausesAndContinues();
     void agentBehaviorTogglePropagatesToRouter();
     void planModeDoesNotAdvertiseTools();
     void askAndAgentAdvertiseCaptureMapCanvasTool();
@@ -292,6 +293,7 @@ void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
     QVERIFY( defaults.rulesText.isEmpty() );
     QVERIFY( defaults.skillsText.isEmpty() );
     QCOMPARE( defaults.rulesPath, u".strata/rules"_s );
+    QCOMPARE( defaults.maxToolIterationsPerTurn, QgsAiAgentBehaviorSettings::DEFAULT_TOOL_CALL_PAUSE_LIMIT );
 
     QgsAiAgentBehaviorSettings updated = defaults;
     updated.allowCustomActions = true;
@@ -299,6 +301,7 @@ void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
     updated.skillsText = u"Prefer GeoPandas."_s;
     updated.rulesPath = u"ai/rules"_s;
     updated.skillsPath = QString();
+    updated.maxToolIterationsPerTurn = 7;
     manager.setAgentBehaviorSettings( updated );
 
     const QgsAiAgentBehaviorSettings reread = manager.agentBehaviorSettings();
@@ -308,6 +311,7 @@ void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
     QCOMPARE( reread.rulesPath, u"ai/rules"_s );
     // Empty skill path must fall back to the default folder so the file loader stays predictable.
     QCOMPARE( reread.skillsPath, u".strata/skills"_s );
+    QCOMPARE( reread.maxToolIterationsPerTurn, 7 );
   }
 
   QgsAiAgentSessionManager reloaded( nullptr, &contextProvider, &reviewEngine );
@@ -315,10 +319,107 @@ void TestQgsAiAgentSessionManager::agentBehaviorSettingsRoundTrip()
   QCOMPARE( restored.allowCustomActions, true );
   QCOMPARE( restored.rulesText, u"Always answer in English."_s );
   QCOMPARE( restored.skillsText, u"Prefer GeoPandas."_s );
+  QCOMPARE( restored.maxToolIterationsPerTurn, 7 );
+
+  settings.setValue( u"strata/agent/max_tool_iterations_per_turn"_s, 0 );
+  QgsAiAgentSessionManager invalidLow( nullptr, &contextProvider, &reviewEngine );
+  QCOMPARE( invalidLow.agentBehaviorSettings().maxToolIterationsPerTurn, QgsAiAgentBehaviorSettings::DEFAULT_TOOL_CALL_PAUSE_LIMIT );
+
+  settings.setValue( u"strata/agent/max_tool_iterations_per_turn"_s, 999 );
+  QgsAiAgentSessionManager invalidHigh( nullptr, &contextProvider, &reviewEngine );
+  QCOMPARE( invalidHigh.agentBehaviorSettings().maxToolIterationsPerTurn, QgsAiAgentBehaviorSettings::DEFAULT_TOOL_CALL_PAUSE_LIMIT );
 
   settings.remove( u"strata/agent"_s );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
+}
+
+void TestQgsAiAgentSessionManager::toolCallLimitPausesAndContinues()
+{
+  clearProviderSettings();
+  QgsSettings settings;
+  settings.remove( u"ai/provider/openrouter"_s );
+  settings.remove( u"strata/agent"_s );
+  const auto cleanup = qScopeGuard( [&settings]() {
+    settings.remove( u"ai/provider/openrouter"_s );
+    settings.remove( u"ai/network/maxRetries"_s );
+    settings.remove( u"strata/agent"_s );
+    clearProviderSettings();
+  } );
+
+  QgsAiTestLoopbackServer server;
+  server.responses
+    << QgsAiTestLoopbackServer::jsonResponse(
+      200,
+      "OK",
+      QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"call_1\",\"type\":\"function\",\"function\":{\"name\":\"echo\",\"arguments\":\"{\\\"text\\\":\\\"first\\\"}\"}}]},\"finish_reason\":\"tool_calls\"}]}" )
+    )
+    << QgsAiTestLoopbackServer::jsonResponse(
+      200,
+      "OK",
+      QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"call_2\",\"type\":\"function\",\"function\":{\"name\":\"echo\",\"arguments\":\"{\\\"text\\\":\\\"second\\\"}\"}}]},\"finish_reason\":\"tool_calls\"}]}" )
+    )
+    << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"Done\"},\"finish_reason\":\"stop\"}]}" ) );
+  QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
+
+  settings.setValue( u"ai/provider/openrouter/apiKey"_s, u"sk-or-loopback-test"_s );
+  settings.setValue( u"ai/network/maxRetries"_s, 0 );
+
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<QgsAiEchoTool>() );
+
+  QgsAiModelRouter router;
+  router.setToolRegistry( &registry );
+  router.setActiveProvider( QgsAiModelRouter::Provider::OpenRouter );
+  QgsAiModelRouter::ProviderSettings providerSettings = router.providerSettings( QgsAiModelRouter::Provider::OpenRouter );
+  providerSettings.endpoint = u"http://127.0.0.1:%1/api/v1/chat/completions"_s.arg( server.serverPort() );
+  providerSettings.model = u"test/model"_s;
+  providerSettings.enabled = true;
+  router.setProviderSettings( QgsAiModelRouter::Provider::OpenRouter, providerSettings );
+
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QgsAiFileContextProvider contextProvider( tempDir.path() );
+  QgsAiReviewPatchEngine reviewEngine;
+  QgsAiAgentSessionManager manager( &router, &contextProvider, &reviewEngine );
+  manager.setToolRegistry( &registry );
+
+  QgsAiAgentBehaviorSettings behavior = manager.agentBehaviorSettings();
+  behavior.allowCustomActions = true;
+  behavior.maxToolIterationsPerTurn = 1;
+  manager.setAgentBehaviorSettings( behavior );
+  manager.setActiveAgent( u"editor"_s );
+
+  manager.sendUserMessage( u"exercise tool limit"_s );
+  QTRY_VERIFY_WITH_TIMEOUT( !manager.hasActiveRequest(), 10000 );
+  QCOMPARE( server.requestCount, 2 );
+
+  const QList<QgsAiChatMessage> pausedHistory = manager.history();
+  QVERIFY( pausedHistory.size() >= 4 );
+  const QgsAiChatMessage limitMessage = pausedHistory.last();
+  QCOMPARE( limitMessage.metadata.value( u"ui_kind"_s ).toString(), u"tool_limit"_s );
+  QCOMPARE( limitMessage.metadata.value( u"tool_limit_status"_s ).toString(), u"pending"_s );
+  QCOMPARE( limitMessage.metadata.value( u"tool_limit"_s ).toInt(), 1 );
+  QCOMPARE( pausedHistory.at( pausedHistory.size() - 2 ).role, QgsAiChatRole::Tool );
+  QCOMPARE( pausedHistory.at( pausedHistory.size() - 2 ).metadata.value( u"tool_name"_s ).toString(), u"echo"_s );
+
+  QVERIFY( manager.continueAfterToolLimit( limitMessage.id ) );
+  QTRY_VERIFY_WITH_TIMEOUT( !manager.hasActiveRequest(), 10000 );
+  QCOMPARE( server.requestCount, 3 );
+  QVERIFY( server.requestBodies.size() >= 3 );
+  QVERIFY( !server.requestBodies.at( 2 ).contains( "Numero massimo raggiunto" ) );
+  QCOMPARE( manager.history().last().content, u"Done"_s );
+
+  bool sawContinuedLimit = false;
+  for ( const QgsAiChatMessage &message : manager.history() )
+  {
+    if ( message.id == limitMessage.id )
+    {
+      sawContinuedLimit = message.metadata.value( u"tool_limit_status"_s ).toString() == "continued"_L1;
+      break;
+    }
+  }
+  QVERIFY( sawContinuedLimit );
 }
 
 void TestQgsAiAgentSessionManager::agentBehaviorTogglePropagatesToRouter()

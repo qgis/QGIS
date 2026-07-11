@@ -77,6 +77,7 @@
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QScreen>
+#include <QSpinBox>
 #include <QStackedWidget>
 #include <QStandardItemModel>
 #include <QString>
@@ -890,6 +891,14 @@ QWidget *QgsAiSettingsDialog::buildAgentPage()
   mAllowCustomActions->setChecked( currentBehavior.allowCustomActions );
   contentLayout->addWidget(
     settingRow( tr( "Allow custom agent actions" ), tr( "When enabled, the agent can call tools like read_file, propose_edit, run_python. Destructive tools still require confirmation in their dedicated review dialogs." ), mAllowCustomActions, page )
+  );
+
+  mMaxToolIterationsPerTurn = new QSpinBox( page );
+  mMaxToolIterationsPerTurn->setObjectName( u"aiMaxToolIterationsPerTurnSpinBox"_s );
+  mMaxToolIterationsPerTurn->setRange( QgsAiAgentBehaviorSettings::MIN_TOOL_CALL_PAUSE_LIMIT, QgsAiAgentBehaviorSettings::MAX_TOOL_CALL_PAUSE_LIMIT );
+  mMaxToolIterationsPerTurn->setValue( currentBehavior.maxToolIterationsPerTurn );
+  contentLayout->addWidget(
+    settingRow( tr( "Maximum tool calls before pause" ), tr( "The agent pauses after this many tool-use rounds and shows a Continue button before running another block." ), mMaxToolIterationsPerTurn, page )
   );
 
   QgsSettings gisToggleSettings;
@@ -2507,6 +2516,7 @@ void QgsAiSettingsDialog::applySettings()
   {
     QgsAiAgentBehaviorSettings behaviorSettings = mSessionManager->agentBehaviorSettings();
     behaviorSettings.allowCustomActions = mAllowCustomActions->isChecked();
+    behaviorSettings.maxToolIterationsPerTurn = mMaxToolIterationsPerTurn->value();
     behaviorSettings.rulesPath = mRulesRelativeDirForList;
     behaviorSettings.skillsPath = mSkillsRelativeDirForList;
     mSessionManager->setAgentBehaviorSettings( behaviorSettings );

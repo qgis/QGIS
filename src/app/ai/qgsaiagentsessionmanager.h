@@ -49,6 +49,10 @@ struct APP_EXPORT QgsAiChatContextFile
  */
 struct APP_EXPORT QgsAiAgentBehaviorSettings
 {
+    static constexpr int DEFAULT_TOOL_CALL_PAUSE_LIMIT = 5;
+    static constexpr int MIN_TOOL_CALL_PAUSE_LIMIT = 1;
+    static constexpr int MAX_TOOL_CALL_PAUSE_LIMIT = 50;
+
     //! Master toggle. When false the agent must not use any custom tool/action.
     bool allowCustomActions = false;
     //! Inline rules text injected into the system prompt.
@@ -63,6 +67,8 @@ struct APP_EXPORT QgsAiAgentBehaviorSettings
     QString rulesPath = u".strata/rules"_s;
     //! Workspace-relative directory for skills files. Defaults to ".strata/skills".
     QString skillsPath = u".strata/skills"_s;
+    //! Tool-use rounds allowed before pausing for explicit user continuation.
+    int maxToolIterationsPerTurn = DEFAULT_TOOL_CALL_PAUSE_LIMIT;
 };
 
 class APP_EXPORT QgsAiAgentSessionManager : public QObject
@@ -134,6 +140,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
 
     void sendUserMessage( const QString &text, const QString &filePath = QString(), const QString &selectedText = QString() );
     void sendUserMessage( const QString &text, const QList<QgsAiChatContextFile> &contextFiles );
+    bool continueAfterToolLimit( const QString &messageId );
     void cancelActiveRequest();
     bool hasActiveRequest() const { return !mActiveRequestId.isEmpty(); }
     QStringList projectFileCandidates( const QString &query, int maxResults = 25 ) const;
@@ -211,8 +218,6 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
      */
     QgsAiUsage sessionUsage() const { return mSessionUsage; }
 
-    //! Maximum tool-use rounds the agent will run before bailing out for a single user turn.
-    static constexpr int MAX_TOOL_ITERATIONS_PER_TURN = 8;
     //! Rough token budget for the conversation history sent to the provider (excludes system prompt).
     static constexpr int HISTORY_TOKEN_BUDGET = 32768;
 
