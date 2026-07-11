@@ -172,9 +172,11 @@ set if geometries are to be correctly automatically reprojected to WGS
 
     void setTransformGeometries( bool activate );
 %Docstring
-Sets whether geometries should be transformed in EPSG 4326 (default
+Sets whether geometries should be transformed in CRS84 (default
 behavior) or just keep as it is. This is only effective if the JSON
-profile is different than "Legacy" (which is the default value).
+profile is "Legacy" (which is the default value) because for the other
+profiles the required transformations are done automatically provided
+that source and destination CRS are sets correctly.
 
 .. versionadded:: 3.12
 %End

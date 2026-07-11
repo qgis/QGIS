@@ -118,7 +118,8 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
   const bool destinationCrsIsRfc7946Compliant = mDestinationCrs.authid() == "OGC:CRS84" || mDestinationCrs.authid() == "EPSG:4326" || mDestinationCrs.authid() == "CRS:84";
   const bool sourceCrsIsRfc7946Compliant = ( mCrs.authid() == "OGC:CRS84" || mCrs.authid() == "CRS:84" || mCrs.authid() == "EPSG:4326" );
   // Output requires CRS84 coordinates if the GeoJSON profile is RFC7946 or JSON-FG+ (which requires RFC7946 compliance for geometries) or if the requested CRS is CRS84
-  const bool requiresCRS84geom = ( mGeoJsonProfile == Qgis::GeoJsonProfile::Rfc7946 || mGeoJsonProfile == Qgis::GeoJsonProfile::JsonFgPlus ) || destinationCrsIsRfc7946Compliant;
+  const bool requiresCRS84geom = ( mGeoJsonProfile == Qgis::GeoJsonProfile::Rfc7946 || mGeoJsonProfile == Qgis::GeoJsonProfile::JsonFgPlus )
+                                 || ( mTransformGeometries && destinationCrsIsRfc7946Compliant );
 
   // Already transformed
   const bool geomRequiresTransformToDestinationCrs = mCrs != mDestinationCrs;

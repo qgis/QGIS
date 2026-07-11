@@ -3160,7 +3160,13 @@ namespace QgsWms
         exporter.setAttributeDisplayName( true );
         exporter.setAttributes( attributes );
         exporter.setIncludeGeometry( withGeometry );
+        // Always add CRS information so that the export knows if it needs to transform geometries
+        // to CRS84 in case the requested profile needs it, the feature geometyries are already
+        // in the CRS of the request, so no transformation is needed
         exporter.setTransformGeometries( false );
+        exporter.setDestinationCrs( destCRS );
+        // This is the CRS of the features that the exporter receives
+        exporter.setSourceCrs( destCRS );
 
         QgsJsonUtils::addCrsInfo( jsonCollection, destCRS );
 
