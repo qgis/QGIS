@@ -1003,8 +1003,21 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
   bool onboardingControlsFound = false;
   bool releaseDryRunOk = false;
   bool agentLimitControlFound = false;
-  QTimer::
-    singleShot( 0, &dock, [&inspected, &controlsFound, &layerIndexingChecked, &layerIndexingEnabled, &localStatusFound, &downloadButtonFound, &defaultProviderSelected, &e5UiStateFound, &onboardingControlsFound, &releaseDryRunOk, &agentLimitControlFound, e5ProviderListed]() {
+  QTimer::singleShot(
+    0,
+    &dock,
+    [&inspected,
+     &controlsFound,
+     &layerIndexingChecked,
+     &layerIndexingEnabled,
+     &localStatusFound,
+     &downloadButtonFound,
+     &defaultProviderSelected,
+     &e5UiStateFound,
+     &onboardingControlsFound,
+     &releaseDryRunOk,
+     &agentLimitControlFound,
+     e5ProviderListed]() {
       QDialog *settingsDialog = qobject_cast<QDialog *>( QApplication::activeModalWidget() );
       if ( settingsDialog )
       {
@@ -1060,7 +1073,8 @@ void TestQgsAiChatDockWidget::settingsDialogContainsManualIndexingControls()
         settingsDialog->reject();
       }
       inspected = true;
-    } );
+    }
+  );
 
   const bool invoked = QMetaObject::invokeMethod( &dock, "openProviderSettings", Qt::DirectConnection );
 

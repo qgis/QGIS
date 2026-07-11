@@ -349,16 +349,10 @@ void TestQgsAiAgentSessionManager::toolCallLimitPausesAndContinues()
 
   QgsAiTestLoopbackServer server;
   server.responses
-    << QgsAiTestLoopbackServer::jsonResponse(
-      200,
-      "OK",
-      QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"call_1\",\"type\":\"function\",\"function\":{\"name\":\"echo\",\"arguments\":\"{\\\"text\\\":\\\"first\\\"}\"}}]},\"finish_reason\":\"tool_calls\"}]}" )
-    )
-    << QgsAiTestLoopbackServer::jsonResponse(
-      200,
-      "OK",
-      QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"call_2\",\"type\":\"function\",\"function\":{\"name\":\"echo\",\"arguments\":\"{\\\"text\\\":\\\"second\\\"}\"}}]},\"finish_reason\":\"tool_calls\"}]}" )
-    )
+    << QgsAiTestLoopbackServer::
+         jsonResponse( 200, "OK", QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"call_1\",\"type\":\"function\",\"function\":{\"name\":\"echo\",\"arguments\":\"{\\\"text\\\":\\\"first\\\"}\"}}]},\"finish_reason\":\"tool_calls\"}]}" ) )
+    << QgsAiTestLoopbackServer::
+         jsonResponse( 200, "OK", QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"call_2\",\"type\":\"function\",\"function\":{\"name\":\"echo\",\"arguments\":\"{\\\"text\\\":\\\"second\\\"}\"}}]},\"finish_reason\":\"tool_calls\"}]}" ) )
     << QgsAiTestLoopbackServer::jsonResponse( 200, "OK", QByteArrayLiteral( "{\"choices\":[{\"message\":{\"role\":\"assistant\",\"content\":\"Done\"},\"finish_reason\":\"stop\"}]}" ) );
   QVERIFY( server.listen( QHostAddress::LocalHost, 0 ) );
 

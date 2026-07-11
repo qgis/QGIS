@@ -1137,8 +1137,7 @@ void QgsAiAgentSessionManager::loadPersistedBehaviorSettings()
   mBehaviorSettings.rulesPath = settingValueWithLegacy( settings, u"strata/agent/rules_path"_s, QStringList { u"geoai/agent/rules_path"_s, u"qgis_ai/agent/rules_path"_s }, defaultRulesPath() ).toString();
   mBehaviorSettings.skillsPath
     = settingValueWithLegacy( settings, u"strata/agent/skills_path"_s, QStringList { u"geoai/agent/skills_path"_s, u"qgis_ai/agent/skills_path"_s }, defaultSkillsPath() ).toString();
-  mBehaviorSettings.maxToolIterationsPerTurn
-    = normalizedToolCallPauseLimit( settings.value( u"strata/agent/max_tool_iterations_per_turn"_s, QgsAiAgentBehaviorSettings::DEFAULT_TOOL_CALL_PAUSE_LIMIT ) );
+  mBehaviorSettings.maxToolIterationsPerTurn = normalizedToolCallPauseLimit( settings.value( u"strata/agent/max_tool_iterations_per_turn"_s, QgsAiAgentBehaviorSettings::DEFAULT_TOOL_CALL_PAUSE_LIMIT ) );
 }
 
 void QgsAiAgentSessionManager::persistBehaviorSettings() const
