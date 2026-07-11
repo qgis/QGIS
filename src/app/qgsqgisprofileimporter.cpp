@@ -36,20 +36,20 @@ using namespace Qt::StringLiterals;
 namespace
 {
 
-QString legacyAppDataLocation( const QString &org, const QString &app )
-{
+  QString legacyAppDataLocation( const QString &org, const QString &app )
+  {
 #if defined( Q_OS_WIN )
-  const QString base = qEnvironmentVariable( u"APPDATA"_s );
+    const QString base = qEnvironmentVariable( u"APPDATA"_s );
 #elif defined( Q_OS_MACOS )
-  const QString base = QDir::homePath() + u"/Library/Application Support"_s;
+    const QString base = QDir::homePath() + u"/Library/Application Support"_s;
 #else
-  const QString base = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation );
+    const QString base = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation );
 #endif
-  if ( base.isEmpty() )
-    return QString();
+    if ( base.isEmpty() )
+      return QString();
 
-  return QDir( base ).filePath( org + u'/' + app );
-}
+    return QDir( base ).filePath( org + u'/' + app );
+  }
 
   const QString IMPORT_TAG = u"Strata QGIS profile import"_s;
 
