@@ -26,6 +26,7 @@
 #include <QObject>
 #include <QSet>
 #include <QSettings>
+#include <QStandardPaths>
 #include <QString>
 #include <QStringList>
 #include <QUuid>
@@ -34,6 +35,21 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
+
+QString legacyAppDataLocation( const QString &org, const QString &app )
+{
+#if defined( Q_OS_WIN )
+  const QString base = qEnvironmentVariable( u"APPDATA"_s );
+#elif defined( Q_OS_MACOS )
+  const QString base = QDir::homePath() + u"/Library/Application Support"_s;
+#else
+  const QString base = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation );
+#endif
+  if ( base.isEmpty() )
+    return QString();
+
+  return QDir( base ).filePath( org + u'/' + app );
+}
 
   const QString IMPORT_TAG = u"Strata QGIS profile import"_s;
 
@@ -255,8 +271,10 @@ QList<QgsQgisProfileImporter::Candidate> QgsQgisProfileImporter::detectCandidate
   };
 
   const QDir configRootPath( configLocalStorageLocation );
+  addRoot( QDir( legacyAppDataLocation( u"QGIS"_s, u"QGIS3"_s ) ).filePath( u"profiles"_s ), u"QGIS 3"_s );
+  addRoot( QDir( legacyAppDataLocation( u"QGIS"_s, u"QGIS4"_s ) ).filePath( u"profiles"_s ), u"Profilo QGIS legacy"_s );
   addRoot( QDir::cleanPath( configRootPath.filePath( u"../QGIS3/profiles"_s ) ), u"QGIS 3"_s );
-  addRoot( QDir::cleanPath( configRootPath.filePath( u"../QGIS4/profiles"_s ) ), u"QGIS 4"_s );
+  addRoot( QDir::cleanPath( configRootPath.filePath( u"../QGIS4/profiles"_s ) ), u"Profilo QGIS legacy"_s );
   addRoot( QDir::home().filePath( u".qgis3/profiles"_s ), u"QGIS 3 legacy"_s );
 
   return candidates;

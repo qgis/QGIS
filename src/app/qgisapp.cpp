@@ -1942,7 +1942,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   QgsStyle::defaultStyle();
   endProfile();
 
-  mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
+  mSplash->showMessage( tr( "Strata Ready!" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
 
   QgsMessageLog::logMessage( QgsApplication::showSettings(), QString(), Qgis::MessageLevel::Info );
 
@@ -13297,21 +13297,21 @@ void QgisApp::pyQgisApiDocumentation()
 void QgisApp::reportaBug()
 {
   QgsSettings settings;
-  QString reportaBugUrl = settings.value( u"qgis/reportaBugUrl"_s, tr( "https://qgis.org/resources/support/bug-reporting/" ) ).toString();
+  QString reportaBugUrl = settings.value( u"qgis/reportaBugUrl"_s, tr( "https://github.com/francemazzi/strata/issues" ) ).toString();
   openURL( reportaBugUrl, false );
 }
 
 void QgisApp::getInvolved()
 {
   QgsSettings settings;
-  QString getInvolvedUrl = settings.value( u"qgis/getInvolved"_s, tr( "https://qgis.org/community/involve/" ) ).toString();
+  QString getInvolvedUrl = settings.value( u"qgis/getInvolved"_s, tr( "https://github.com/francemazzi/strata" ) ).toString();
   openURL( getInvolvedUrl, false );
 }
 
 void QgisApp::donate()
 {
   QgsSettings settings;
-  QString donateUrl = settings.value( u"qgis/donate"_s, tr( "https://qgis.org/funding/donate/" ) ).toString();
+  QString donateUrl = settings.value( u"qgis/donate"_s, tr( "https://github.com/sponsors/francemazzi" ) ).toString();
   openURL( donateUrl, false );
 }
 
@@ -13325,7 +13325,7 @@ void QgisApp::supportProviders()
 void QgisApp::helpQgisHomePage()
 {
   QgsSettings settings;
-  QString helpQgisHomePageUrl = settings.value( u"qgis/helpQgisHomePageUrl"_s, u"https://qgis.org"_s ).toString();
+  QString helpQgisHomePageUrl = settings.value( u"qgis/helpQgisHomePageUrl"_s, u"https://getstrata.org"_s ).toString();
   openURL( helpQgisHomePageUrl, false );
 }
 
@@ -16507,7 +16507,7 @@ void QgisApp::keyReleaseEvent( QKeyEvent *event )
   if ( event->key() == Qt::Key_Close )
   {
     // do something useful here
-    int ret = QMessageBox::question( this, tr( "Exit QGIS" ), tr( "Do you really want to quit QGIS?" ), QMessageBox::Yes | QMessageBox::No );
+    int ret = QMessageBox::question( this, tr( "Exit Strata" ), tr( "Do you really want to quit Strata?" ), QMessageBox::Yes | QMessageBox::No );
     switch ( ret )
     {
       case QMessageBox::Yes:

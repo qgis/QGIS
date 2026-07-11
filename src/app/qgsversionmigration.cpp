@@ -383,11 +383,23 @@ QgsError Qgs3To4Migration::runMigration( const QString &oldProfilePath, const QS
   // - any plugin folders -- require users to reinstall those, so that we don't copy broken, non-updated 3.x plugins
   QgsFileUtils::copyDirectory( oldProfilePath, newProfilePath, QgsFileUtils::CopyFlag::NoSymLinks, { u".*\\b__pycache__$"_s, u".*\\.[pP][yY][cC]$"_s, u".*[\\/]python[\\/]plugins$"_s } );
 
+  newProfileDir.remove( u"getstrata.org/Strata.ini"_s );
   newProfileDir.remove( u"QGIS/QGIS4.ini"_s );
-  newProfileDir.rename( u"QGIS/QGIS3.ini"_s, u"QGIS/QGIS4.ini"_s );
+  QDir( newProfileDir.filePath( u"getstrata.org"_s ) ).mkpath( u"."_s );
+  if ( newProfileDir.exists( u"QGIS/QGIS3.ini"_s ) )
+  {
+    newProfileDir.rename( u"QGIS/QGIS3.ini"_s, u"getstrata.org/Strata.ini"_s );
+  }
 
-  // do a one-time search and replace for the old profiles path in the ini file to the new path
-  QgsFileUtils::replaceTextInFile( newProfileDir.filePath( u"QGIS/QGIS4.ini"_s ), oldProfilePath, newProfilePath );
+  const QString settingsIniPath = newProfileDir.filePath( u"getstrata.org/Strata.ini"_s );
+  if ( QFile::exists( settingsIniPath ) )
+  {
+    QgsFileUtils::replaceTextInFile( settingsIniPath, oldProfilePath, newProfilePath );
+  }
+  else if ( newProfileDir.exists( u"QGIS/QGIS4.ini"_s ) )
+  {
+    QgsFileUtils::replaceTextInFile( newProfileDir.filePath( u"QGIS/QGIS4.ini"_s ), oldProfilePath, newProfilePath );
+  }
 
   QgsSettings newSettings;
   newSettings.setValue( u"migration/migrated_from_3"_s, true );

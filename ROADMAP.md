@@ -12,10 +12,10 @@
 
 1. [Stato attuale](#0-stato-attuale-luglio-2026)
 2. [Fase 0 — Fondamenta prodotto e distribuzione — 50%](#fase-0--fondamenta-prodotto-e-distribuzione--50)
-3. [Fase 1 — Assistant operativo MVP — 90%](#fase-1--assistant-operativo-mvp--90)
-4. [Fase 2 — Strata Context Engine — 60%](#fase-2--strata-context-engine--60)
+3. [Fase 1 — Assistant operativo MVP — 85%](#fase-1--assistant-operativo-mvp--85)
+4. [Fase 2 — Strata Context Engine — 55%](#fase-2--strata-context-engine--55)
 5. [Fase 3 — GIS Tab — 15%](#fase-3--gis-tab--15)
-6. [Fase 4 — Agent Mode v2 — 50%](#fase-4--agent-mode-v2--50)
+6. [Fase 4 — Agent Mode v2 — 45%](#fase-4--agent-mode-v2--45)
 7. [Fase 5 — Workflow Composer e riproducibilità — 20%](#fase-5--workflow-composer-e-riproducibilità--20)
 8. [Fase 6 — Vertical Packs — 0%](#fase-6--vertical-packs--0)
 9. [Fase 7 — Team ed Enterprise — 0%](#fase-7--team-ed-enterprise--0)
@@ -38,6 +38,7 @@
 - Item `[ ]` con sotto-checkbox miste — parziale: le sub-voci `[x]` dicono cosa esiste, le `[ ]` cosa manca
 - Le percentuali di fase sono **pesate per effort**, non il semplice rapporto checkbox (il rapporto grezzo è indicato dove diverge)
 - Gli ID tra parentesi (CTX/AGT/TAB/REV/WFL/ENT/MAP) sono gli ID dell'ex backlog dettagliato, ora inline
+- Il suffisso **(need: N)** indica in quanti dei 27 meeting utente (Granola, mag–lug 2026) è emerso quel bisogno
 
 ## Vista d'insieme
 
@@ -45,10 +46,10 @@
 | Fase                           | %    | Gap principale                                                             |
 | ------------------------------ | ---- | -------------------------------------------------------------------------- |
 | 0 — Fondamenta                 | 50%  | demo project, telemetria, auto-update in-app, wizard AI                    |
-| 1 — Assistant MVP              | 90%  | execution log JSON, risk policy formale, modalità Expert, `inspect_crs`    |
-| 2 — Context Engine             | 60%  | project graph completo, summarizer stili/layout, context packs, preview UI |
-| 3 — GIS Tab                    | 15%  | tab UI dedicata, shortcut Tab/Esc, ranking, analytics                      |
-| 4 — Agent v2                   | 50%  | JSON planner, step verifier, GIS diff/rollback strutturato                 |
+| 1 — Assistant MVP              | 85%  | execution log JSON, risk policy, Expert, tool raster, atlanti, modello locale |
+| 2 — Context Engine             | 55%  | project graph completo, summarizer stili/layout, context packs, ingestione PDF |
+| 3 — GIS Tab                    | 15%  | tab UI dedicata, shortcut Tab/Esc, ranking, chat contestuale in-tool       |
+| 4 — Agent v2                   | 45%  | JSON planner, step verifier, GIS diff/rollback, fonti citate               |
 | 5 — Workflow Composer          | 20%  | schema `.strataflow` tipizzato, runner deterministico, report PDF          |
 | 6 — Vertical Packs             | 0%   | tutto                                                                      |
 | 7 — Team/Enterprise            | 0%   | tutto                                                                      |
@@ -57,6 +58,7 @@
 | 10 — Marketplace/SDK           | 0%   | tutto                                                                      |
 | 13 — AI-GAP tool GIS core      | 100% | chiusa                                                                     |
 | 14 — AI-MAP (Map Context + 3D) | 0%   | tutto                                                                      |
+| B8 — Data Hub (backend)        | 0%   | fase **B8** in `strata-be/ROADMAP.md` — bisogno n.1 utenti (need: 15)      |
 
 
 ## Architettura AI esistente
@@ -78,11 +80,12 @@ flowchart LR
 
 ## Prossimo focus
 
+- [ ] **B8 Data Hub (backend)** — ricerca federata fonti territoriali + estrazione AOI (`strata-be/ROADMAP.md`); bisogno n.1 dalle interviste (need: 15)
 - [ ] GIS diff/rollback strutturato (layer/stile/layout) + execution log JSON per run — chiude i gap di Fase 4
+- [ ] Report generator v1 anticipato (PDF + DOCX: capitolati, perizie) (need: 12)
 - [ ] AI-MAP: Map Context Provider + layer descriptor + `capture_view` — Sezione 14
 - [ ] Demo project + onboarding AI wizard — chiude i gap critici di Fase 0
 - [ ] GIS Tab UI dedicata (oltre il suggestion engine inline)
-- [ ] Workflow Composer: schema `.strataflow` v1 sopra la v0 esistente
 
 Loop di valore da possedere: `contesto → piano → azione → verifica → diff → output → workflow → report`.
 
@@ -121,21 +124,24 @@ Cosa evitare:
   - [x] Banner one-shot + settings dialog provider
   - [ ] Wizard AI completo (provider → privacy → modello → demo)
 - [x] Strata Cloud desktop (login/registrazione, session token, `qgsaiaccountwidget`, model picker Lite/Standard/Pro, prepaid balance warnings, BYO provider con account attivo)
+- [ ] Pricing UX Strata Cloud: conversione token→euro nel dock, esempi "col pacchetto X fai N operazioni", alert crediti esauriti in chat con link diretto alla ricarica (need: 9)
 - [x] Landing page redesign (`docs/`) + README con setup AI
 - [x] Rules/skills editor markdown in AI settings (`qgsairulesskillsstore`)
 - [ ] Documentazione operativa
   - [x] README + landing
   - [ ] Guida "5 task in 5 minuti" + pagina "Try Strata in 10 minutes" + video demo 60–90 s
 - [ ] Benchmark baseline (tempo utente vs tempo Strata su 5 workflow demo)
+- [ ] Ticket automatico su errore/loop AI + tracciamento valutazione risposte (canale feedback beta/design partner)
 
 ---
 
-# Fase 1 — Assistant operativo MVP — 90%
+# Fase 1 — Assistant operativo MVP — 85%
 
-> Assistant che esegue task GIS concreti dentro QGIS, con sicurezza, approvazioni e review. (Rapporto checkbox grezzo ~76%; la superficie tool + AI-GAP domina l'effort, i gap residui sono rifiniture.)
+> Assistant che esegue task GIS concreti dentro QGIS, con sicurezza, approvazioni e review. (Rapporto checkbox grezzo ~67%; la superficie tool + AI-GAP domina l'effort, i gap residui sono estensioni mirate.)
 
 - [x] Dock assistant production-grade (`qgsaichatdockwidget`)
 - [x] Router 5 provider LLM + Strata Cloud Plan (`qgsaimodelrouter`, `qgsaiplanclient`)
+- [ ] Provider modello locale (Ollama/endpoint compatibile) — anticipato dalla Fase 7: blocker esplicito per PA ed enterprise (need: 12)
 - [x] Tool registry GIS — **41 tool** registrati (`qgsaitoolregistry`, `qgisapp.cpp` L1442–1484) (AGT-001)
   - [x] Read/inspect (13): `read_file`, `search_files`, `list_files`, `list_project_layers`, `describe_layer`, `get_active_canvas_extent`, `set_canvas_extent`, `capture_map_canvas`, `read_message_log`, `query_features`, `identify_features_at`, `index_status`, `search_workspace`
   - [x] Layer/GIS (8): `add_layer_from_file`, `add_layer_from_service`, `run_processing_algorithm`, `style_layer`, `style_layer_advanced`, `create_print_layout`, `edit_print_layout`, `export_map`
@@ -147,11 +153,14 @@ Cosa evitare:
   - [ ] `inspect_crs` dedicato (oggi parziale via `describe_layer` / `manage_project`)
   - [ ] `inspect_project` completo (oggi snapshot layer nel prompt + `list_project_layers`)
   - [ ] `create_memory_note`
+  - [ ] Tool raster dedicati: `raster_calculator`, statistiche zonali, NDVI tipizzato — oggi solo via `run_processing_algorithm`/`run_python` (need: 11)
+  - [ ] Supporto atlanti in `create_print_layout`/`edit_print_layout` + cartigli SVG aziendali (need: 10)
 - [x] Modalità operative (`qgsaiagentsessionmanager`) (AGT-003)
   - [x] Ask — agent `reviewer`, 14 tool read-only + web search
   - [x] Plan — agent `planner`, blocchi `<proposed_plan>`, Accept/Reject
   - [x] Agent — agent `editor`, tutti i tool
   - [ ] Expert — PyQGIS avanzato con conferma sempre
+  - [ ] Didattica "explain" — spiega passo-passo i comandi senza eseguire, per corsi e non esperti (need: CREA/formazione)
 - [x] Safety layer PyQGIS (AGT-007, AGT-008)
   - [x] Approval dialog `run_python` / pip / download (`qgsaipythonapprovaldialog`)
   - [x] Workspace trust (`qgsaiworkspacetrust`)
@@ -172,9 +181,9 @@ Cosa evitare:
 
 ---
 
-# Fase 2 — Strata Context Engine — 60%
+# Fase 2 — Strata Context Engine — 55%
 
-> Comprensione reale del workspace GIS: progetto, layer, CRS, campi, stili, layout. (Rapporto grezzo ~50%; l'infrastruttura RAG/indexing pesa più dei singoli summarizer.)
+> Comprensione reale del workspace GIS: progetto, layer, CRS, campi, stili, layout. (Rapporto grezzo ~48%; l'infrastruttura RAG/indexing pesa più dei singoli summarizer.)
 
 - [x] RAG locale SQLite con cosine similarity (`qgsaiworkspaceindex`)
 - [x] Layer chunking vector + raster (`qgsailayerchunker`)
@@ -201,6 +210,9 @@ Cosa evitare:
   - [ ] Pack dichiarativi (`crs_debug`, `styling`, …) visibili all'utente
 - [ ] Context preview UI (CTX-013)
 - [ ] Context budget manager (intent detection → relevance scoring → context pack)
+- [ ] Ingestione PDF/Excel/CSV come contesto: piani urbanistici, perizie, archivi storici (need: 5)
+
+> Nota: la ricerca cataloghi (`catalog_search`) diventa registry-first grazie alla fase **B8 Data Hub** del backend (`strata-be/ROADMAP.md`) — zero lavoro client, stesso schema di risposta.
 
 ---
 
@@ -213,6 +225,7 @@ Cosa evitare:
 - [x] Chip suggerimenti nel dock con dismiss persistente per progetto + explain-why base (`detail`, `actionPrompt`, campo `risk`)
 - [x] Toggle globale/progetto in settings (`strata/gis_tab/`*)
 - [ ] Tab/panel UI dedicato GIS Tab
+- [ ] Chat contestuale dentro gli strumenti QGIS (Field Calculator, Layout Manager) con contesto auto-iniettato (need: Fiandaca — "il futuro")
 - [ ] Shortcut Tab accetta / Esc ignora
 - [ ] Ranking suggerimenti (rilevanza contesto, accettazione storica, severità errore, probabilità workflow, bonus low-risk)
 - [ ] Suggestion memory oltre il dismiss (decay, soppressione suggerimenti ignorati)
@@ -227,9 +240,9 @@ Cosa evitare:
 
 ---
 
-# Fase 4 — Agent Mode v2 — 50%
+# Fase 4 — Agent Mode v2 — 45%
 
-> Agente affidabile su workflow GIS multi-step reali: piano validabile, verifica per step, diff e rollback GIS.
+> Agente affidabile su workflow GIS multi-step reali: piano validabile, verifica per step, diff e rollback GIS, output verificabili con fonti.
 
 - [x] Loop multi-step (max 8 iterazioni/turn) con streaming, cancel, provider fallback
 - [x] Plan → Agent handoff
@@ -255,6 +268,8 @@ Cosa evitare:
 - [ ] Agent run history strutturato
   - [x] Chat history SQLite
   - [ ] Storico run consultabile e rieseguibile
+- [ ] Fonti citate negli output: dataset/documento riferito per ogni affermazione su dati normativi o tecnici — condizione d'acquisto per i professionisti (need: 12)
+- [ ] Aggiornamento layer da fonte cambiata con storico versioni e diff — si aggancia a `DataSubscription` di B8 (need: cliente diretto)
 - [ ] Agent memory per progetto (AGT-010)
 - [ ] 20 workflow multi-step demo affidabili
 
@@ -283,7 +298,8 @@ Cosa evitare:
   - [ ] Provenance per output: checksum input, algoritmi, parametri, created_at su ogni file generato
 - [ ] Report generator
   - [x] Export report JSON (`.strataflow.report.json`, status ready_for_dry_run)
-  - [ ] Report tecnico v1: PDF/HTML/DOCX con mappa, tabelle, log riproducibilità
+  - [ ] Report tecnico v1: PDF **e DOCX** (capitolati, perizie) con mappa, tabelle, log riproducibilità — **anticipato a Q4 2026** (need: 12)
+- [ ] Documentazione automatica del progetto — mantiene il contesto di lavoro tra sessioni e collaboratori (need: 12, richiesta diretta)
 - [ ] Workflow graph UI (lista step, grafo, parametri, log) (WFL-005)
 
 ---
@@ -293,6 +309,8 @@ Cosa evitare:
 > Da prodotto generico a prodotto vendibile: workflow pronti per PA, agricoltura, ambiente, utilities.
 
 - [ ] Pack installer + pack validation (verifica requisiti input)
+- [ ] **Pack Verde urbano** — censimenti arborei, VTA, NDVI verde pubblico, capitolati potature, crediti di carbonio; **primo pack**: clienti già paganti nel segmento (need: 8)
+- [ ] **Pack Energia / screening vincoli** — fattibilità siti fotovoltaici, vincoli idrogeologici/paesaggistici/belle arti, incrocio catasto; prospect in pipeline: Re5, Pratifly, Refive (need: 7)
 - [ ] Pack PA locale/urbanistica: controllo CRS, buffer vincoli, overlay particelle-vincoli, report vincoli, layout delibera, QA geometrie, export open data
 - [ ] Pack agricoltura: import particelle aziendali, calcolo superfici per coltura, buffer corsi d'acqua, overlay suolo/pendenza, report aziendale, QA fascicolo, export consulente
 - [ ] Pack ambiente/forestazione: copertura suolo, buffer aree protette, report intervento forestale, change detection, QA raster/vector, export relazione tecnica
@@ -430,23 +448,23 @@ Note: workaround stopgap possibile via skill `.strata/skills/3d.md` + `run_pytho
 ## Q3 2026 — Fase 4 gap + AI-MAP inizio + Fase 0 gap critici
 
 - [ ] Sprint 1 `[IN CORSO]` — GIS diff v1 (layer metadata), execution log JSON per run, step verifier base, tool `inspect_crs`, JSON planner
-- [ ] Sprint 2 — AI-MAP-1 (provider) + AI-MAP-2 (layer descriptor), project graph strutturato, context packs espliciti
-- [ ] Sprint 3 — Demo project bundled, onboarding AI wizard, checksum SHA256 release, guida "5 task in 5 minuti"
-- [ ] Sprint 4 — AI-MAP-3 (`capture_view`), context preview UI, layer cards YAML
+- [ ] Sprint 2 — **B8 Data Hub v1 backend** (registry sorgenti + ricerca federata), AI-MAP-1 (provider) + AI-MAP-2 (layer descriptor), project graph strutturato, context packs espliciti
+- [ ] Sprint 3 — Demo project bundled, onboarding AI wizard, pricing UX (token→euro, alert crediti), checksum SHA256 release, guida "5 task in 5 minuti"
+- [ ] Sprint 4 — **B8 estrazione AOI + scenes search** (backend), AI-MAP-3 (`capture_view`), context preview UI, layer cards YAML
 
 ## Q4 2026 — GIS Tab UI + Agent v2 maturo + azioni 3D + inizio Fase 5
 
 - [ ] Sprint 5 — GIS Tab v1: tab/panel dedicato, shortcut Tab/Esc, ranking base
-- [ ] Sprint 6 — Tool 3D (`configure_layer_3d`, `configure_terrain`, `export_3d_scene`), diff stile/layout, rollback GIS strutturato, run history, 20 workflow demo
-- [ ] Sprint 7 — Schema `.strataflow` v1 (sopra la v0 JSON del dock), save run as workflow da sessione, runner base
+- [ ] Sprint 6 — Tool 3D (`configure_layer_3d`, `configure_terrain`, `export_3d_scene`), tool raster dedicati, diff stile/layout, rollback GIS strutturato, run history, 20 workflow demo
+- [ ] Sprint 7 — **Report generator v1 (PDF+DOCX, anticipato da Q1 2027)**, schema `.strataflow` v1 (sopra la v0 JSON del dock), save run as workflow da sessione, runner base
 - [ ] Sprint 8 — Auto-update in-app, telemetria opt-in, crash reporting Strata-branded, benchmark baseline, beta 100–300 utenti tecnici
 
 ## Q1 2027 — Fase 5 completa + inizio Fase 6
 
-- [ ] Sprint 9–10 — Parameter editor, export PyQGIS, provenance per output, report generator v1 (PDF), export Processing model, Composer UI v1
-- [ ] Sprint 11–12 — Vertical pack PA/urbanistica (5+ workflow) + pack agricoltura, dry-run workflow, artifact bundle per run
+- [ ] Sprint 9–10 — Parameter editor, export PyQGIS, provenance per output, template report verticali, export Processing model, Composer UI v1
+- [ ] Sprint 11–12 — **Vertical pack Verde urbano** (primo, clienti paganti) + **pack Energia/screening vincoli** (Re5, Pratifly, Refive), dry-run workflow, artifact bundle per run
 
 ## Q2 2027 — Fase 6 + inizio Fase 7
 
-- [ ] Sprint 13–14 — Pack ambiente + utilities, pack validation e sample data
+- [ ] Sprint 13–14 — Pack PA/urbanistica + agricoltura; pack ambiente/utilities se capacità; pack validation e sample data
 - [ ] Sprint 15–16 — Admin policy dati, model allowlist, audit log enterprise, on-prem beta, team workspace, primo pilota enterprise/ente

@@ -41,7 +41,7 @@ QgsNative::Capabilities QgsLinuxNative::capabilities() const
 void QgsLinuxNative::initializeMainWindow( QWindow *, const QString &, const QString &, const QString & )
 {
   // Hardcoded desktop file value matching our official .deb packages
-  mDesktopFile = u"org.qgis.qgis.desktop"_s;
+  mDesktopFile = u"com.francemazzi.strata.desktop"_s;
 }
 
 void QgsLinuxNative::openFileExplorerAndSelectFile( const QString &path )
@@ -54,7 +54,7 @@ void QgsLinuxNative::openFileExplorerAndSelectFile( const QString &path )
 
   QDBusInterface iface( u"org.freedesktop.FileManager1"_s, u"/org/freedesktop/FileManager1"_s, u"org.freedesktop.FileManager1"_s, QDBusConnection::sessionBus() );
 
-  iface.call( QDBus::NoBlock, u"ShowItems"_s, QStringList( QUrl::fromLocalFile( path ).toString() ), u"QGIS"_s );
+  iface.call( QDBus::NoBlock, u"ShowItems"_s, QStringList( QUrl::fromLocalFile( path ).toString() ), u"Strata"_s );
   if ( iface.lastError().type() != QDBusError::NoError )
   {
     QgsNative::openFileExplorerAndSelectFile( path );

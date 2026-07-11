@@ -632,7 +632,7 @@ QJsonObject QgsAiConfigureSnappingTool::schema() const
   properties.insert( u"type"_s, prop( u"string"_s, u"vertex, segment, vertex_and_segment or none."_s ) );
   properties.insert( u"tolerance"_s, prop( u"number"_s, u"Snapping tolerance. Must be >= 0."_s ) );
   properties.insert( u"units"_s, prop( u"string"_s, u"pixels, project or layer."_s ) );
-  properties.insert( u"layer_ids"_s, prop( u"array"_s, u"Optional vector layer ids for advanced per-layer snapping."_s ) );
+  properties.insert( u"layer_ids"_s, propArray( prop( u"string"_s, u"Vector layer id."_s ), u"Optional vector layer ids for advanced per-layer snapping."_s ) );
   return schemaObject( properties );
 }
 

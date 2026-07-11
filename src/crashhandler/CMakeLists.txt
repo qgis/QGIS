@@ -14,7 +14,7 @@ endif()
 
 set (SRCS main.cpp)
 win32_icon(SRCS)
-win32_version_info("QGIS Crash Handler" "qgiscrashhandler" SRCS)
+win32_version_info("Strata Crash Handler" "qgiscrashhandler" SRCS)
 add_executable(qgiscrashhandler WIN32
   ${SRCS}
   ${CRASH_UIS_H}

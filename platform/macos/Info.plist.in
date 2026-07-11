@@ -40,7 +40,7 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>QGIS Project document</string>
+			<string>Strata Project document</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleTypeIconFile</key>
@@ -56,7 +56,7 @@
 		</dict>
     <dict>
 			<key>CFBundleTypeName</key>
-			<string>QGIS Project zipped container</string>
+			<string>Strata Project zipped container</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleTypeIconFile</key>
@@ -205,7 +205,7 @@
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>QGIS style document</string>
+			<string>Strata style document</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleTypeIconFile</key>
@@ -229,7 +229,7 @@
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>QGIS composer template</string>
+			<string>Strata composer template</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleTypeIconFile</key>
@@ -241,7 +241,7 @@
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>QGIS layer definition document</string>
+			<string>Strata layer definition document</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleTypeIconFile</key>
@@ -331,6 +331,6 @@
 	<key>NSHighResolutionCapable</key>
 	<string>True</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>QGIS needs local network access to communicate with devices on your network.</string>
+	<string>Strata needs local network access to communicate with devices on your network.</string>
 </dict>
 </plist>

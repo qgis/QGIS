@@ -541,13 +541,13 @@
                     <item row="1" column="0">
                      <widget class="QCheckBox" name="cbxShowNews">
                       <property name="toolTip">
-                       <string>If checked, QGIS project news is shown on the welcome page on startup</string>
+                       <string>If checked, Strata news is shown on the welcome page on startup</string>
                       </property>
                       <property name="text">
-                       <string>Show QGIS news feed on welcome page</string>
+                       <string>Show news feed on welcome page</string>
                       </property>
                       <property name="checked">
-                       <bool>true</bool>
+                       <bool>false</bool>
                       </property>
                      </widget>
                     </item>

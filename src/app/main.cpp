@@ -36,7 +36,9 @@
 #include <QQuickWindow>
 #include <QSGRendererInterface>
 #include <QScreen>
+#include <QSettings>
 #include <QSplashScreen>
+#include <QStandardPaths>
 #include <QStandardPaths>
 #include <QString>
 #include <QStringList>
@@ -114,6 +116,7 @@ typedef SInt32 SRefCon;
 #include "qgsuserprofile.h"
 #include "layers/qgsapplayerhandling.h"
 #include "options/qgsuserprofileselectiondialog.h"
+#include "qgsfileutils.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -236,6 +239,101 @@ void myPrint( const char *fmt, ... )
 #endif
   va_end( ap );
 }
+
+namespace
+{
+
+QString computeAppDataLocation( const QString &org, const QString &app )
+{
+#if defined( Q_OS_WIN )
+  const QString base = qEnvironmentVariable( u"APPDATA"_s );
+#elif defined( Q_OS_MACOS )
+  const QString base = QDir::homePath() + u"/Library/Application Support"_s;
+#else
+  const QString base = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation );
+#endif
+  if ( base.isEmpty() )
+    return QString();
+
+  return QDir( base ).filePath( org + u'/' + app );
+}
+
+void migrateLegacyProfileSettingsIni( const QString &profilePath )
+{
+  const QString targetDir = QDir( profilePath ).filePath( u"getstrata.org"_s );
+  const QString targetIni = QDir( targetDir ).filePath( u"Strata.ini"_s );
+  if ( QFile::exists( targetIni ) )
+    return;
+
+  const QStringList legacyCandidates {
+    QDir( profilePath ).filePath( u"qgis.org/QGIS4.ini"_s ),
+    QDir( profilePath ).filePath( u"QGIS/QGIS4.ini"_s ),
+  };
+
+  for ( const QString &legacyIni : legacyCandidates )
+  {
+    if ( !QFile::exists( legacyIni ) )
+      continue;
+
+    QDir().mkpath( targetDir );
+    if ( QFile::copy( legacyIni, targetIni ) )
+      return;
+
+    if ( QFile::rename( legacyIni, targetIni ) )
+      return;
+  }
+}
+
+void migrateLegacyStrataAppDataIfNeeded()
+{
+  if ( qEnvironmentVariableIsSet( "STRATA_CUSTOM_CONFIG_PATH" ) || qEnvironmentVariableIsSet( "QGIS_CUSTOM_CONFIG_PATH" ) )
+    return;
+
+  const QString legacyRoot = computeAppDataLocation( u"QGIS"_s, u"QGIS4"_s );
+  const QString newRoot = computeAppDataLocation( u"Strata"_s, u"Strata"_s );
+
+  if ( legacyRoot.isEmpty() || newRoot.isEmpty() || legacyRoot == newRoot )
+    return;
+
+  if ( !QDir( legacyRoot ).exists() )
+    return;
+
+  const QString migrationMarkerPath = QDir( newRoot ).filePath( u"profiles/profiles.ini"_s );
+  if ( QFile::exists( migrationMarkerPath ) )
+  {
+    QSettings markerSettings( migrationMarkerPath, QSettings::IniFormat );
+    if ( markerSettings.value( u"strata/migration/fromQgis4"_s, false ).toBool() )
+      return;
+  }
+
+  if ( QDir( newRoot ).exists() )
+  {
+    const QDir newProfiles( QDir( newRoot ).filePath( u"profiles"_s ) );
+    if ( newProfiles.exists() && !newProfiles.entryList( QDir::Dirs | QDir::NoDotAndDotDot ).isEmpty() )
+      return;
+  }
+
+  QgsDebugMsgLevel( u"Migrating legacy QGIS profile data from %1 to %2"_s.arg( legacyRoot, newRoot ), 1 );
+
+  ( void ) QgsFileUtils::copyDirectory( legacyRoot, newRoot, QgsFileUtils::CopyFlag::NoSymLinks, QStringList() );
+
+  const QDir profilesDir( QDir( newRoot ).filePath( u"profiles"_s ) );
+  if ( profilesDir.exists() )
+  {
+    const QStringList profiles = profilesDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+    for ( const QString &profile : profiles )
+    {
+      migrateLegacyProfileSettingsIni( profilesDir.filePath( profile ) );
+    }
+  }
+
+  QDir().mkpath( QDir( newRoot ).filePath( u"profiles"_s ) );
+  QSettings migrationSettings( migrationMarkerPath, QSettings::IniFormat );
+  migrationSettings.setValue( u"strata/migration/fromQgis4"_s, true );
+  migrationSettings.sync();
+}
+
+} // namespace
 
 void copyProfileNamesFromQgis3( const QString &configLocalStorageLocation )
 {
@@ -1052,6 +1150,8 @@ int main( int argc, char *argv[] )
     exit( 1 ); //exit for now until a version of qgis is capable of running non interactive
   }
 
+  migrateLegacyStrataAppDataIfNeeded();
+
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
@@ -1134,8 +1234,14 @@ int main( int argc, char *argv[] )
   if ( configLocalStorageLocation.isEmpty() )
   {
     QSettings globalSettings( globalsettingsfile, QSettings::IniFormat );
-    if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+    if ( getenv( "STRATA_CUSTOM_CONFIG_PATH" ) )
     {
+      configLocalStorageLocation = getenv( "STRATA_CUSTOM_CONFIG_PATH" );
+      preventSettingsMigration = true;
+    }
+    else if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+    {
+      QgsDebugMsgLevel( u"QGIS_CUSTOM_CONFIG_PATH is deprecated, use STRATA_CUSTOM_CONFIG_PATH instead"_s, 1 );
       configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
       // If an explicit QGIS_CUSTOM_CONFIG_PATH was specified, we don't do ANY settings migration logic.
       // We'll instead leave that up to the system administrator to do.

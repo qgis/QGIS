@@ -165,9 +165,9 @@ int main( int argc, char *argv[] )
   }
 
   // Set up the QSettings environment must be done after qapp is created
-  QgsApplication::setOrganizationName( u"QGIS"_s );
-  QgsApplication::setOrganizationDomain( u"qgis.org"_s );
-  QgsApplication::setApplicationName( u"QGIS4"_s );
+  QgsApplication::setOrganizationName( u"Strata"_s );
+  QgsApplication::setOrganizationDomain( u"getstrata.org"_s );
+  QgsApplication::setApplicationName( u"Strata"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();

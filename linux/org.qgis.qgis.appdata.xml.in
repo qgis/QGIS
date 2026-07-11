@@ -4,9 +4,9 @@
   <name>Strata</name>
   <summary>The AI-native GIS</summary>
   <screenshots>
-    <screenshot type="default"><caption>QGIS</caption><image type="source">https://docs.qgis.org/testing/en/_images/answer_symbology2.png</image></screenshot>
+    <screenshot type="default"><caption>Strata</caption><image type="source">https://docs.qgis.org/testing/en/_images/answer_symbology2.png</image></screenshot>
     <screenshot type="default"><caption>3D Map View</caption><image type="source">https://docs.qgis.org/testing/en/_images/3dmapview.png</image></screenshot>
-    <screenshot type="default"><caption>QGIS Project Properties</caption><image type="source">https://docs.qgis.org/testing/en/_images/selectCRS.png</image></screenshot>
+    <screenshot type="default"><caption>Strata Project Properties</caption><image type="source">https://docs.qgis.org/testing/en/_images/selectCRS.png</image></screenshot>
   </screenshots>
   <developer id="com.francemazzi">
     <name>Francesco Mazzi</name>
@@ -21,10 +21,10 @@
   <project_license>GPL-2.0+</project_license>
   <url type="vcs-browser">https://github.com/francemazzi/strata/</url>
   <url type="bugtracker">https://github.com/francemazzi/strata/issues</url>
-  <url type="donation">https://qgis.org/funding/donate/</url>
-  <url type="faq">https://qgis.org/resources/support/faq/</url>
-  <url type="help">https://qgis.org/resources/hub/#documentation</url>
-  <url type="homepage">https://francemazzi.github.io/strata/</url>
+  <url type="donation">https://github.com/sponsors/francemazzi</url>
+  <url type="faq">https://github.com/francemazzi/strata/discussions</url>
+  <url type="help">https://github.com/francemazzi/strata</url>
+  <url type="homepage">https://getstrata.org/</url>
 
   <project_group>Strata</project_group>
   <releases>
@@ -55,6 +55,6 @@
   <launchable type="desktop-id">com.francemazzi.strata.desktop</launchable>
   <content_rating type="oars-1.1"/>
   <provides>
-    <binary>qgis</binary>
+    <binary>Strata</binary>
   </provides>
 </component>

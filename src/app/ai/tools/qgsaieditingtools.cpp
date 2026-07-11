@@ -400,7 +400,15 @@ QJsonObject QgsAiEditFeatureGeometryTool::schema() const
   properties.insert( u"before_vertex"_s, prop( u"integer"_s, u"Insert before this vertex index for insert_vertex."_s ) );
   properties.insert( u"x"_s, prop( u"number"_s, u"New vertex x coordinate."_s ) );
   properties.insert( u"y"_s, prop( u"number"_s, u"New vertex y coordinate."_s ) );
-  properties.insert( u"split_line"_s, prop( u"array"_s, u"Line for split_feature as [{x,y}, ...] or [[x,y], ...]."_s ) );
+  {
+    QJsonObject pointSchema;
+    pointSchema.insert( u"type"_s, u"object"_s );
+    QJsonObject pointProps;
+    pointProps.insert( u"x"_s, prop( u"number"_s, u"x coordinate."_s ) );
+    pointProps.insert( u"y"_s, prop( u"number"_s, u"y coordinate."_s ) );
+    pointSchema.insert( u"properties"_s, pointProps );
+    properties.insert( u"split_line"_s, propArray( pointSchema, u"Line for split_feature as [{x,y}, ...] or [[x,y], ...]."_s ) );
+  }
   properties.insert( u"rollback_token"_s, prop( u"string"_s, u"Optional token returned by a previous edit_feature_geometry call. If set, restores the previous geometry."_s ) );
   return schemaObject( properties );
 }

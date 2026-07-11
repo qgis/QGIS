@@ -915,7 +915,7 @@
      <normaloff>:/images/themes/default/mActionFileExit.svg</normaloff>:/images/themes/default/mActionFileExit.svg</iconset>
    </property>
    <property name="text">
-    <string>Exit QGIS</string>
+    <string>Exit Strata</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -1976,7 +1976,7 @@ Shift+O to turn segments into straight or curve lines.</string>
      <normaloff>:/images/themes/default/mActionQgisHomePage.png</normaloff>:/images/themes/default/mActionQgisHomePage.png</iconset>
    </property>
    <property name="text">
-    <string>QGIS Home Page</string>
+    <string>Strata Home Page</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+H</string>
@@ -3435,7 +3435,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   </action>
   <action name="mActionDonate">
    <property name="text">
-    <string>Donate to QGIS</string>
+    <string>Support Strata</string>
    </property>
   </action>
   <action name="mActionGetInvolved">

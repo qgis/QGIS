@@ -33,23 +33,23 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
 
   connect( mUserFeedbackText, &QPlainTextEdit::textChanged, this, &QgsCrashDialog::userFeedbackText_textChanged );
 
-  mCrashHeaderMessage->setText( tr( "QGIS ended unexpectedly" ) );
+  mCrashHeaderMessage->setText( tr( "Strata ended unexpectedly" ) );
   connect( mReloadQGISButton, &QPushButton::clicked, this, &QgsCrashDialog::reloadQGIS );
   connect( mCopyReportButton, &QPushButton::clicked, this, &QgsCrashDialog::createBugReport );
   mCopyReportButton->setEnabled( false );
 
   mCrashMessage->setText(
     tr(
-      "Oh dear! Something unexpected happened and QGIS ended without being able to handle the error gracefully."
+      "Oh dear! Something unexpected happened and Strata ended without being able to handle the error gracefully."
       "<br><br>"
     )
     + tr(
-      "Are you keen to help us fix bugs? QGIS relies on donations to pay developers to do funded bug fixing to improve the stability of the software. "
-      "We also have a team of enthusiastic volunteers who are all working hard to improve the quality of QGIS. To do that, we need your help. "
-      "<a href=\"https://qgis.org/resources/support/bug-reporting/#bugs-features-and-issues\">Find out how to help our developers</a>."
+      "Are you keen to help us fix bugs? We rely on community reports to improve the stability of Strata. "
+      "We also have a team of enthusiastic volunteers who are all working hard to improve the quality of the software. To do that, we need your help. "
+      "<a href=\"https://github.com/francemazzi/strata/issues\">Find out how to report issues</a>."
       "<br><br>"
       "Send us a helpful bug report by using the 'Copy Report' button below, <br>then open a ticket on the "
-      "<a href=\"https://github.com/qgis/QGIS/issues\">QGIS Issue Tracker</a>."
+      "<a href=\"https://github.com/francemazzi/strata/issues\">Strata Issue Tracker</a>."
     )
   );
   mCrashMessage->setTextInteractionFlags( Qt::TextBrowserInteraction );

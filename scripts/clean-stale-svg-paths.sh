@@ -7,9 +7,15 @@ PROFILE="${1:-${QGIS_PROFILE_PATH:-}}"
 
 if [[ -z "${PROFILE}" ]]; then
   if [[ "$(uname -s)" == "Darwin" ]]; then
-    PROFILE="${HOME}/Library/Application Support/QGIS/QGIS4/profiles/default"
+    PROFILE="${HOME}/Library/Application Support/Strata/Strata/profiles/default"
+    LEGACY_PROFILE="${HOME}/Library/Application Support/QGIS/QGIS4/profiles/default"
   else
-    PROFILE="${HOME}/.local/share/QGIS/QGIS4/profiles/default"
+    PROFILE="${HOME}/.local/share/Strata/Strata/profiles/default"
+    LEGACY_PROFILE="${HOME}/.local/share/QGIS/QGIS4/profiles/default"
+  fi
+
+  if [[ ! -d "${PROFILE}" && -d "${LEGACY_PROFILE}" ]]; then
+    PROFILE="${LEGACY_PROFILE}"
   fi
 fi
 

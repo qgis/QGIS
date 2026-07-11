@@ -36,7 +36,7 @@
 
 using namespace Qt::StringLiterals;
 
-#define FEED_URL "https://feed.qgis.org/"
+#define FEED_URL "https://github.com/francemazzi/strata/releases.atom"
 
 
 QgsWelcomeScreenController::QgsWelcomeScreenController( QgsWelcomeScreen *welcomeScreen )
@@ -148,6 +148,7 @@ QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   mTemplateProjectsModel = new QgsTemplateProjectsModel( this );
 
   mNewsFeedParser = new QgsNewsFeedParser( QUrl( QStringLiteral( FEED_URL ) ), QString(), this );
+  mNewsFeedParser->setEnabled( false );
   mNewsFeedModel = new QgsNewsFeedProxyModel( mNewsFeedParser, this );
 
   mWelcomeScreenController = new QgsWelcomeScreenController( this );

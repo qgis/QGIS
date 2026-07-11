@@ -40,4 +40,13 @@ inline QJsonObject prop( const QString &type, const QString &description )
   return p;
 }
 
+inline QJsonObject propArray( const QJsonObject &items, const QString &description )
+{
+  QJsonObject p;
+  p.insert( u"type"_s, u"array"_s );
+  p.insert( u"items"_s, items );
+  p.insert( u"description"_s, description );
+  return p;
+}
+
 #endif // QGSAITOOLSCHEMAUTIL_H

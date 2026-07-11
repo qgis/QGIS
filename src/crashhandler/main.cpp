@@ -34,7 +34,7 @@ int main( int argc, char *argv[] )
   if ( argc < 2 )
   {
     std::cout
-      << "QGIS Crash Handler Usage: \n"
+      << "Strata Crash Handler Usage: \n"
       << "qgiscrashhandler {infofile}"
       << std::endl;
     return -1;
@@ -42,8 +42,8 @@ int main( int argc, char *argv[] )
 
   QApplication app( argc, argv );
   QApplication::setQuitOnLastWindowClosed( true );
-  QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setApplicationName( "QGIS4" );
+  QCoreApplication::setOrganizationName( "Strata" );
+  QCoreApplication::setApplicationName( "Strata" );
 
   QString extraInfoFile = QString( argv[1] );
   std::cout << "Extra Info File: " << extraInfoFile.toUtf8().constData() << std::endl;

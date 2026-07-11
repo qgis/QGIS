@@ -11,14 +11,14 @@
 
   const translations = {
     it: {
-      "meta.title": "Strata — Agente AI per QGIS",
+      "meta.title": "Strata — GIS con AI nativa",
       "meta.description":
-        "Strata: agente AI nativo in QGIS. Scarica gratis per macOS, Windows e Linux.",
+        "Strata: il GIS con AI nativa. Scarica gratis per macOS, Windows e Linux.",
 
       "nav.download": "Download",
       "nav.login": "ACCEDI",
 
-      "hero.title": "L'agente AI nativo per QGIS.",
+      "hero.title": "L'agente AI nativo per il GIS.",
       "hero.subtitle":
         "Scarica, apri il progetto, chiedi cosa ti serve. Cloud gestito o on-premise.",
       "hero.ctaPrimary.macos": "Scarica per macOS",
@@ -58,7 +58,7 @@
         "Layer, script e documenti del workspace come contesto — non snippet generici.",
       "why.3.title": "Tre modalità, una sola app",
       "why.3.desc":
-        "Pianifica, esegui o chiedi. Scegli il livello di autonomia senza uscire da QGIS.",
+        "Pianifica, esegui o chiedi. Scegli il livello di autonomia senza uscire da Strata.",
       "why.4.title": "Da ore a minuti",
       "why.4.desc":
         "Ispeziona layer, buffer, export GeoJSON: una richiesta al posto di script manuali.",
@@ -102,14 +102,14 @@
       "footer.contact": "Contatto",
     },
     en: {
-      "meta.title": "Strata — AI Agent for QGIS",
+      "meta.title": "Strata — The AI-native GIS",
       "meta.description":
-        "Strata: native AI agent in QGIS. Download free for macOS, Windows, and Linux.",
+        "Strata: the AI-native GIS. Download free for macOS, Windows, and Linux.",
 
       "nav.download": "Download",
       "nav.login": "SIGN IN",
 
-      "hero.title": "The native AI agent for QGIS.",
+      "hero.title": "The native AI agent for GIS.",
       "hero.subtitle":
         "Download, open your project, ask for what you need. Managed cloud or on-premise.",
       "hero.ctaPrimary.macos": "Download for macOS",
@@ -149,7 +149,7 @@
         "Layers, scripts, and workspace documents as context — not generic snippets.",
       "why.3.title": "Three modes, one app",
       "why.3.desc":
-        "Plan, run, or ask. Choose your level of autonomy without leaving QGIS.",
+        "Plan, run, or ask. Choose your level of autonomy without leaving Strata.",
       "why.4.title": "From hours to minutes",
       "why.4.desc":
         "Inspect layers, buffer, export GeoJSON: one request instead of manual scripts.",
