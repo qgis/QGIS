@@ -120,7 +120,7 @@ class TestQgsAiAgentSessionManager : public QObject
     void askAndAgentAdvertiseCaptureMapCanvasTool();
     void askBeforeEditsOnlyAdvertisesReadOnlyAndApprovalTools();
     void managedPolicyRestrictsAgentTools();
-    void managedPolicyBelowV3IsIgnored();
+    void managedPolicyBelowV4IsIgnored();
     void managedPolicyWithUnknownToolIsIgnored();
     void managedPolicyDoesNotRestrictByokProviders();
     void agentModeOmitsUnavailableTools();
@@ -602,7 +602,7 @@ void TestQgsAiAgentSessionManager::managedPolicyRestrictsAgentTools()
   manager.setAgentBehaviorSettings( updated );
 
   QgsAiManagedAgentPolicy policy;
-  policy.toolCatalogVersion = 3;
+  policy.toolCatalogVersion = 4;
   policy.tier = u"FREE"_s;
   policy.allowedTools = QStringList { u"read_file"_s };
   policy.allowedModels = QStringList { u"managed-plan"_s };
@@ -624,7 +624,7 @@ void TestQgsAiAgentSessionManager::managedPolicyRestrictsAgentTools()
   settings.remove( u"qgis_ai/agent"_s );
 }
 
-void TestQgsAiAgentSessionManager::managedPolicyBelowV3IsIgnored()
+void TestQgsAiAgentSessionManager::managedPolicyBelowV4IsIgnored()
 {
   QgsSettings settings;
   settings.remove( u"strata/agent"_s );

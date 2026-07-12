@@ -696,7 +696,6 @@ void TestQgsAiChatDockWidget::acceptingAgentPlanJsonSwitchesToAgent()
   step.insert( u"id"_s, u"s1"_s );
   step.insert( u"title"_s, u"Load boundary"_s );
   step.insert( u"risk"_s, u"medium"_s );
-  step.insert( u"tool"_s, u"download_file"_s );
   step.insert( u"requires_approval"_s, true );
   step.insert( u"depends_on"_s, QJsonArray() );
 
