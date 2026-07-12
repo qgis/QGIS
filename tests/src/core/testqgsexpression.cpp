@@ -2975,6 +2975,11 @@ class TestQgsExpression : public QObject
         << u"regexp_match( uuid('invalid-format'), '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')"_s
         << false
         << QVariant( 1 );
+      QTest::newRow( "uuid version unsupported" ) << u"uuid(version:=1)"_s << true << QVariant();
+      QTest::newRow( "uuid v4" ) << u"regexp_match( uuid(version:=4), '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')"_s << false << QVariant( 1 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 9, 0 )
+      QTest::newRow( "uuid v7" ) << u"regexp_match( uuid(version:=7), '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')"_s << false << QVariant( 1 );
+#endif
 
       //exif functions
       QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
