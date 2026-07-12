@@ -85,6 +85,7 @@ sudo apt-get install -y --no-install-recommends \
   ocl-icd-opencl-dev \
   fuse \
   libfuse2t64 \
+  xvfb \
   wget \
   file \
   desktop-file-utils \
@@ -324,9 +325,9 @@ done < <(find "${APPDIR}/usr/lib" -maxdepth 3 -name 'libqgis_*.so*' -print0)
 echo "==> Smoke testing PyQGIS in AppImage"
 SMOKE_DIR="$(mktemp -d)"
 SMOKE_OUT="${SMOKE_DIR}/pyqgis-smoke.json"
-QT_QPA_PLATFORM=offscreen \
-STRATA_PYQGIS_SMOKE_OUT="${SMOKE_OUT}" \
-timeout 90s "./${OUTPUT}" --nologo --profiles-path "${SMOKE_DIR}/profiles" --code scripts/ci/smoke_pyqgis.py
+xvfb-run -a \
+  env STRATA_PYQGIS_SMOKE_OUT="${SMOKE_OUT}" \
+  timeout 90s "./${OUTPUT}" --nologo --profiles-path "${SMOKE_DIR}/profiles" --code scripts/ci/smoke_pyqgis.py
 if [ ! -s "${SMOKE_OUT}" ]; then
   echo "ERROR: PyQGIS smoke marker was not written by the AppImage." >&2
   exit 1
