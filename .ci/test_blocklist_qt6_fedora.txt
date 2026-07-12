@@ -19,6 +19,11 @@ test_core_layerdefinition
 # Fails under the binary-only CI image used by this fork
 PyQgsAppStartup
 
+# Fedora 44 hosted CI intermittently times out/core-dumps this point cloud profile
+# Python test under the binary-only ALL_BUT_PROVIDERS run.
+# Run 29184227670 / job 86636832319 failed with timeout 124 after 55s.
+PyQgsPointCloudLayerProfileGenerator
+
 # Pre-existing Qt 6 Linux QgisApp() heap corruption in this fork CI.
 # Baseline master run 27549905874 / Fedora ALL_BUT_PROVIDERS job 81479115481
 # already failed app tests with malloc/SIGSEGV during QgisApp startup. PR run
