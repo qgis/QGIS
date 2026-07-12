@@ -896,12 +896,7 @@ QWidget *QgsAiSettingsDialog::buildAgentPage()
   mRememberPythonApprovalsForSession = new QCheckBox( page );
   mRememberPythonApprovalsForSession->setChecked( currentBehavior.rememberPythonApprovalsForSession );
   contentLayout->addWidget(
-    settingRow(
-      tr( "Remember Python approvals for this session" ),
-      tr( "After you approve one safe Python execution, Strata can run subsequent low-risk Python snippets in this app session without asking again. High-risk code still asks." ),
-      mRememberPythonApprovalsForSession,
-      page
-    )
+    settingRow( tr( "Remember Python approvals for this session" ), tr( "After you approve one safe Python execution, Strata can run subsequent low-risk Python snippets in this app session without asking again. High-risk code still asks." ), mRememberPythonApprovalsForSession, page )
   );
 
   mMaxToolIterationsPerTurn = new QSpinBox( page );

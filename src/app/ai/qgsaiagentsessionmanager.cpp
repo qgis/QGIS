@@ -18,11 +18,11 @@
 #include <algorithm>
 #include <utility>
 
+#include "ai/tools/qgsairunpythontool.h"
 #include "qgsaiauditlog.h"
 #include "qgsaifilecontextprovider.h"
 #include "qgsaigissuggestionengine.h"
 #include "qgsaireviewpatchengine.h"
-#include "ai/tools/qgsairunpythontool.h"
 #include "qgsairulesskillsstore.h"
 #include "qgsaitool.h"
 #include "qgsaitoolregistry.h"
