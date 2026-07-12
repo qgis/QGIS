@@ -34,6 +34,7 @@ sudo apt-get install -y --no-install-recommends \
   python3-pyqt6.qtwebengine \
   python3-pyqt6.qtmultimedia \
   python3-pyqt6.qtpositioning \
+  python3-pyqt6.qtserialport \
   python3-packaging \
   python3-requests \
   python3-sip-dev \
