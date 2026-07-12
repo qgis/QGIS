@@ -30,6 +30,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QString>
+#include <QStringList>
 #include <QTemporaryFile>
 #include <QUuid>
 
@@ -106,6 +107,16 @@ QgsAiRunPythonTool::QgsAiRunPythonTool( QWidget *dialogParent )
   : mDialogParent( dialogParent )
 {}
 
+void QgsAiRunPythonTool::setRememberApprovalsForSession( bool enabled )
+{
+  if ( mRememberApprovalsForSession == enabled )
+    return;
+
+  mRememberApprovalsForSession = enabled;
+  if ( !enabled )
+    mLowRiskApprovalGrantedForSession = false;
+}
+
 bool QgsAiRunPythonTool::isAvailable() const
 {
   return QgsPythonRunner::isValid() && QgsAiWorkspaceTrust::isCurrentWorkspaceTrusted();
@@ -127,8 +138,8 @@ QString QgsAiRunPythonTool::description() const
 {
   return QStringLiteral(
     "Executes a snippet of PyQGIS code in the running QGIS session. "
-    "Captures stdout/stderr and any Python traceback. The user must approve the "
-    "code via a modal dialog before it runs; refusal returns 'user_rejected'. "
+    "Captures stdout/stderr and any Python traceback. The user must approve "
+    "high-risk code via a modal dialog before it runs; refusal returns 'user_rejected'. "
     "Use this tool ONLY when the action genuinely requires Python (e.g. driving "
     "the QGIS API to add a runtime layer). Prefer propose_edit/propose_create_file "
     "for static file changes."
@@ -155,16 +166,26 @@ QgsAiToolResult QgsAiRunPythonTool::execute( const QJsonObject &args )
     return QgsAiToolResult::error( availabilityReason() );
 
   const QString description = args.value( u"description"_s ).toString();
-
-  // Modal approval: user must explicitly click Run.
-  QgsAiPythonApprovalDialog dialog( description, code, mDialogParent );
-  const int dialogResult = dialog.exec();
-  if ( dialogResult != QDialog::Accepted )
+  const QStringList riskMarkers = QgsAiPythonApprovalDialog::detectRiskMarkers( code );
+  const bool hasRiskMarkers = !riskMarkers.isEmpty();
+  const bool approvedBySessionGrant = mRememberApprovalsForSession && mLowRiskApprovalGrantedForSession && !hasRiskMarkers;
+  if ( !approvedBySessionGrant )
   {
-    QgsMessageLog::logMessage( u"run_python rejected by user (codeChars=%1)"_s.arg( code.size() ), u"AI/Python"_s, Qgis::MessageLevel::Info, false );
-    QJsonObject output;
-    output.insert( u"status"_s, u"user_rejected"_s );
-    return QgsAiToolResult::ok( output );
+    QgsAiPythonApprovalDialog dialog( description, code, mRememberApprovalsForSession && !hasRiskMarkers, mDialogParent );
+    const int dialogResult = dialog.exec();
+    if ( dialogResult != QDialog::Accepted )
+    {
+      QgsMessageLog::logMessage( u"run_python rejected by user (codeChars=%1)"_s.arg( code.size() ), u"AI/Python"_s, Qgis::MessageLevel::Info, false );
+      QJsonObject output;
+      output.insert( u"status"_s, u"user_rejected"_s );
+      return QgsAiToolResult::ok( output );
+    }
+    if ( mRememberApprovalsForSession && !hasRiskMarkers )
+      mLowRiskApprovalGrantedForSession = true;
+  }
+  else
+  {
+    QgsMessageLog::logMessage( u"run_python: using remembered low-risk Python approval for this session (codeChars=%1)"_s.arg( code.size() ), u"AI/Python"_s, Qgis::MessageLevel::Info, false );
   }
 
   // Persist user code and capture-output paths to disk so the wrapper can read

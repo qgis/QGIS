@@ -29,6 +29,7 @@ class TestQgsAiPythonApprovalDialog : public QObject
     void riskMarkersDetectNetworkAndSubprocess();
     void riskMarkersEmptyForBenignCode();
     void dialogShowsBannerAndChips();
+    void dialogShowsSessionApprovalHintWhenEnabled();
     void auditLogAppendWritesLine();
 };
 
@@ -73,6 +74,19 @@ void TestQgsAiPythonApprovalDialog::dialogShowsBannerAndChips()
   // Benign code: no chip row at all.
   QgsAiPythonApprovalDialog benignDialog( u"test"_s, u"print('hi')"_s, nullptr );
   QVERIFY( !benignDialog.findChild<QLabel *>( u"aiPythonRiskMarkersLabel"_s ) );
+}
+
+void TestQgsAiPythonApprovalDialog::dialogShowsSessionApprovalHintWhenEnabled()
+{
+  QgsAiPythonApprovalDialog dialog( u"test"_s, u"print('hi')"_s, true, nullptr );
+  QLabel *footer = dialog.findChild<QLabel *>( u"aiPythonApprovalFooterLabel"_s );
+  QVERIFY( footer );
+  QVERIFY2( footer->text().contains( u"later low-risk Python snippets"_s ), qPrintable( footer->text() ) );
+
+  QgsAiPythonApprovalDialog defaultDialog( u"test"_s, u"print('hi')"_s, nullptr );
+  QLabel *defaultFooter = defaultDialog.findChild<QLabel *>( u"aiPythonApprovalFooterLabel"_s );
+  QVERIFY( defaultFooter );
+  QVERIFY( !defaultFooter->text().contains( u"later low-risk Python snippets"_s ) );
 }
 
 void TestQgsAiPythonApprovalDialog::auditLogAppendWritesLine()

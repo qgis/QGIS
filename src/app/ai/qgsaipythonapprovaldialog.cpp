@@ -56,6 +56,10 @@ QStringList QgsAiPythonApprovalDialog::detectRiskMarkers( const QString &code )
 }
 
 QgsAiPythonApprovalDialog::QgsAiPythonApprovalDialog( const QString &description, const QString &code, QWidget *parent )
+  : QgsAiPythonApprovalDialog( description, code, false, parent )
+{}
+
+QgsAiPythonApprovalDialog::QgsAiPythonApprovalDialog( const QString &description, const QString &code, bool canRememberSessionApproval, QWidget *parent )
   : QDialog( parent )
 {
   setWindowTitle( tr( "AI: confirm Python execution" ) );
@@ -106,9 +110,14 @@ QgsAiPythonApprovalDialog::QgsAiPythonApprovalDialog( const QString &description
   layout->addWidget( mEditor, /*stretch=*/1 );
 
   QLabel *footer = new QLabel( this );
+  footer->setObjectName( u"aiPythonApprovalFooterLabel"_s );
   footer->setTextFormat( Qt::PlainText );
   footer->setWordWrap( true );
-  footer->setText( tr( "Click Run only if you understand and trust this code. Click Cancel to refuse." ) );
+  footer->setText(
+    canRememberSessionApproval
+      ? tr( "Click Run only if you understand and trust this code. This approval will allow later low-risk Python snippets to run without asking again during this app session. High-risk code still asks." )
+      : tr( "Click Run only if you understand and trust this code. Click Cancel to refuse." )
+  );
   layout->addWidget( footer );
 
   QDialogButtonBox *buttons = new QDialogButtonBox( this );

@@ -36,9 +36,11 @@ class APP_EXPORT QgsAiPythonApprovalDialog : public QDialog
     /**
      * \param description  Free-form description from the model explaining the intent.
      * \param code         The Python source the model wants executed.
+     * \param canRememberSessionApproval  True when approving this low-risk snippet can grant subsequent low-risk Python runs for the app session.
      * \param parent       Parent widget for modal positioning.
      */
-    QgsAiPythonApprovalDialog( const QString &description, const QString &code, QWidget *parent = nullptr );
+    QgsAiPythonApprovalDialog( const QString &description, const QString &code, bool canRememberSessionApproval = false, QWidget *parent = nullptr );
+    QgsAiPythonApprovalDialog( const QString &description, const QString &code, QWidget *parent );
 
     /**
      * Heuristic scan of \a code for risky operations (network access, file

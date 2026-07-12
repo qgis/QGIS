@@ -893,6 +893,17 @@ QWidget *QgsAiSettingsDialog::buildAgentPage()
     settingRow( tr( "Allow custom agent actions" ), tr( "When enabled, the agent can call tools like read_file, propose_edit, run_python. Destructive tools still require confirmation in their dedicated review dialogs." ), mAllowCustomActions, page )
   );
 
+  mRememberPythonApprovalsForSession = new QCheckBox( page );
+  mRememberPythonApprovalsForSession->setChecked( currentBehavior.rememberPythonApprovalsForSession );
+  contentLayout->addWidget(
+    settingRow(
+      tr( "Remember Python approvals for this session" ),
+      tr( "After you approve one safe Python execution, Strata can run subsequent low-risk Python snippets in this app session without asking again. High-risk code still asks." ),
+      mRememberPythonApprovalsForSession,
+      page
+    )
+  );
+
   mMaxToolIterationsPerTurn = new QSpinBox( page );
   mMaxToolIterationsPerTurn->setObjectName( u"aiMaxToolIterationsPerTurnSpinBox"_s );
   mMaxToolIterationsPerTurn->setRange( QgsAiAgentBehaviorSettings::MIN_TOOL_CALL_PAUSE_LIMIT, QgsAiAgentBehaviorSettings::MAX_TOOL_CALL_PAUSE_LIMIT );
@@ -2516,6 +2527,7 @@ void QgsAiSettingsDialog::applySettings()
   {
     QgsAiAgentBehaviorSettings behaviorSettings = mSessionManager->agentBehaviorSettings();
     behaviorSettings.allowCustomActions = mAllowCustomActions->isChecked();
+    behaviorSettings.rememberPythonApprovalsForSession = mRememberPythonApprovalsForSession->isChecked();
     behaviorSettings.maxToolIterationsPerTurn = mMaxToolIterationsPerTurn->value();
     behaviorSettings.rulesPath = mRulesRelativeDirForList;
     behaviorSettings.skillsPath = mSkillsRelativeDirForList;

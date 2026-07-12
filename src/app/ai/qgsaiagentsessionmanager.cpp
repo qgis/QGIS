@@ -22,6 +22,7 @@
 #include "qgsaifilecontextprovider.h"
 #include "qgsaigissuggestionengine.h"
 #include "qgsaireviewpatchengine.h"
+#include "ai/tools/qgsairunpythontool.h"
 #include "qgsairulesskillsstore.h"
 #include "qgsaitool.h"
 #include "qgsaitoolregistry.h"
@@ -1027,6 +1028,7 @@ void QgsAiAgentSessionManager::sendUserMessage( const QString &text, const QList
 void QgsAiAgentSessionManager::setToolRegistry( QgsAiToolRegistry *registry )
 {
   mToolRegistry = registry;
+  syncRunPythonApprovalSettings();
   if ( mRouter )
   {
     mRouter->setToolRegistry( registry );
@@ -1044,6 +1046,7 @@ void QgsAiAgentSessionManager::setAgentBehaviorSettings( const QgsAiAgentBehavio
     mBehaviorSettings.skillsPath = defaultSkillsPath();
   mBehaviorSettings.maxToolIterationsPerTurn = normalizedToolCallPauseLimit( mBehaviorSettings.maxToolIterationsPerTurn );
 
+  syncRunPythonApprovalSettings();
   persistBehaviorSettings();
   refreshRouterToolPolicy();
 }
@@ -1128,6 +1131,19 @@ void QgsAiAgentSessionManager::refreshRouterToolPolicy()
   );
 }
 
+void QgsAiAgentSessionManager::syncRunPythonApprovalSettings()
+{
+  if ( !mToolRegistry )
+    return;
+
+  QgsAiTool *tool = mToolRegistry->find( u"run_python"_s );
+  QgsAiRunPythonTool *runPythonTool = dynamic_cast<QgsAiRunPythonTool *>( tool );
+  if ( !runPythonTool )
+    return;
+
+  runPythonTool->setRememberApprovalsForSession( mBehaviorSettings.rememberPythonApprovalsForSession );
+}
+
 void QgsAiAgentSessionManager::loadPersistedBehaviorSettings()
 {
   QgsSettings settings;
@@ -1143,6 +1159,7 @@ void QgsAiAgentSessionManager::loadPersistedBehaviorSettings()
   mBehaviorSettings.skillsPath
     = settingValueWithLegacy( settings, u"strata/agent/skills_path"_s, QStringList { u"geoai/agent/skills_path"_s, u"qgis_ai/agent/skills_path"_s }, defaultSkillsPath() ).toString();
   mBehaviorSettings.maxToolIterationsPerTurn = normalizedToolCallPauseLimit( settings.value( u"strata/agent/max_tool_iterations_per_turn"_s, QgsAiAgentBehaviorSettings::DEFAULT_TOOL_CALL_PAUSE_LIMIT ) );
+  mBehaviorSettings.rememberPythonApprovalsForSession = settings.value( u"strata/agent/remember_python_approvals_for_session"_s, false ).toBool();
 }
 
 void QgsAiAgentSessionManager::persistBehaviorSettings() const
@@ -1156,6 +1173,7 @@ void QgsAiAgentSessionManager::persistBehaviorSettings() const
   settings.setValue( u"strata/agent/rules_path"_s, mBehaviorSettings.rulesPath );
   settings.setValue( u"strata/agent/skills_path"_s, mBehaviorSettings.skillsPath );
   settings.setValue( u"strata/agent/max_tool_iterations_per_turn"_s, mBehaviorSettings.maxToolIterationsPerTurn );
+  settings.setValue( u"strata/agent/remember_python_approvals_for_session"_s, mBehaviorSettings.rememberPythonApprovalsForSession );
   settings.remove( u"geoai/agent"_s );
   settings.remove( u"qgis_ai/agent"_s );
 }

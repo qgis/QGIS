@@ -69,6 +69,8 @@ struct APP_EXPORT QgsAiAgentBehaviorSettings
     QString skillsPath = u".strata/skills"_s;
     //! Tool-use rounds allowed before pausing for explicit user continuation.
     int maxToolIterationsPerTurn = DEFAULT_TOOL_CALL_PAUSE_LIMIT;
+    //! When true, one low-risk run_python approval grants subsequent low-risk Python runs for this app session.
+    bool rememberPythonApprovalsForSession = false;
 };
 
 class APP_EXPORT QgsAiAgentSessionManager : public QObject
@@ -270,6 +272,7 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
     QStringList allowedToolsForActiveAgent() const;
     bool isToolAllowedForActiveAgent( const QString &toolName ) const;
     void refreshRouterToolPolicy();
+    void syncRunPythonApprovalSettings();
     //! Per-profile folder where Processing Toolbox picks up user scripts.
     static QString processingScriptsFolder();
     QList<QgsAiChatMessage> trimHistoryByTokenBudget( int budgetTokens ) const;
