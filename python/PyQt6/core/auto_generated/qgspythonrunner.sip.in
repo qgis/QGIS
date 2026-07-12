@@ -29,6 +29,7 @@ Returns ``True`` if the runner has an instance (and thus is able to run
 commands)
 %End
 
+
     static bool run( const QString &command, const QString &messageOnError = QString() );
 %Docstring
 Execute a Python statement
@@ -74,6 +75,7 @@ Assign an instance of Python runner so that
 called during app initialization. Takes ownership of the object, deletes
 previous instance.
 %End
+
 
   protected:
     QgsPythonRunner();

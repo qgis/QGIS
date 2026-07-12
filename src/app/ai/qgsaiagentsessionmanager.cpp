@@ -1424,11 +1424,13 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   }
   if ( mToolRegistry && mBehaviorSettings.allowCustomActions && ( mActiveAgent == "editor"_L1 || mActiveAgent == "ask_before_edits"_L1 ) )
   {
-    QMap<QString, QString> unavailableReasons = mToolRegistry->unavailableToolReasons( QStringList {
-      u"run_python"_s,
-      u"install_python_package"_s,
-      u"download_file"_s,
-    } );
+    QMap<QString, QString> unavailableReasons = mToolRegistry->unavailableToolReasons(
+      QStringList {
+        u"run_python"_s,
+        u"install_python_package"_s,
+        u"download_file"_s,
+      }
+    );
     const QStringList highImpactTools {
       u"run_python"_s,
       u"install_python_package"_s,
@@ -1586,14 +1588,16 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
         remoteSteps << u"add_layer_from_file for local vector/raster files"_s;
       if ( canRunPython )
         remoteSteps << u"run_python for QGIS/PyQGIS operations that need code"_s;
-      prompt += u"  - For remote GIS/layer data, prefer this available sequence: %1. Cite source_host/final_url/sha256/trust_level when download_file provides them.\n"_s.arg( remoteSteps.join( u", then "_s ) );
+      prompt += u"  - For remote GIS/layer data, prefer this available sequence: %1. Cite source_host/final_url/sha256/trust_level when download_file provides them.\n"_s.arg(
+        remoteSteps.join( ", then "_L1 )
+      );
     }
     if ( canWebSearch )
       prompt += "  - Use web_search for broad discovery only; use catalog_search when available and the user needs reliable GIS data sources.\n"_L1;
   }
   if ( canInstallPythonPackage && canRunPython )
   {
-    prompt += u"  - To use a Python library not bundled with QGIS (geopy, osmnx, requests, shapely, pandas, ...):\n"_s;
+    prompt += "  - To use a Python library not bundled with QGIS (geopy, osmnx, requests, shapely, pandas, ...):\n"_L1;
     prompt += "      1) Briefly state the plan in chat.\n"_L1;
     prompt += "      2) Call install_python_package with exact pinned specs (the user approves).\n"_L1;
     prompt += "      3) Then call run_python to use them.\n"_L1;
@@ -1609,7 +1613,8 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   if ( canDownloadFile && ( canAddLayerFromFile || canRunPython ) )
   {
     const QString loadStep = canAddLayerFromFile ? u"add_layer_from_file"_s : u"run_python"_s;
-    prompt += u"  - Concrete example: for 'boundary of Pomponesco, Italy', prefer download_file with an Overpass API query (admin_level=8 boundary as GeoJSON), save in workspace, then add it as a layer via %1. Use osmnx only when a true graph/network API is needed.\n"_s.arg( loadStep );
+    prompt += u"  - Concrete example: for 'boundary of Pomponesco, Italy', prefer download_file with an Overpass API query (admin_level=8 boundary as GeoJSON), save in workspace, then add it as a layer via %1. Use osmnx only when a true graph/network API is needed.\n"_s
+                .arg( loadStep );
   }
   if ( canRunPython )
   {
@@ -2053,9 +2058,9 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
                                       && mManagedAgentPolicy.toolCatalogVersion >= MIN_MANAGED_TOOL_CATALOG_VERSION
                                       && !mManagedAgentPolicy.isEmpty()
                                       && !managedPolicyReferencesUnknownTools( mManagedAgentPolicy, mToolRegistry );
-      const QStringList managedAllowed = applyManagedPolicy
-                                           ? ( mActiveAgent == "ask_before_edits"_L1 ? mManagedAgentPolicy.allowedTools : mManagedAgentPolicy.allowedToolsForPreset( QgsAiPresetModeForAgent( mActiveAgent ) ) )
-                                           : QStringList();
+      const QStringList managedAllowed = applyManagedPolicy ? ( mActiveAgent == "ask_before_edits"_L1 ? mManagedAgentPolicy.allowedTools
+                                                                                                      : mManagedAgentPolicy.allowedToolsForPreset( QgsAiPresetModeForAgent( mActiveAgent ) ) )
+                                                            : QStringList();
       const bool blockedByManagedPolicy = modeAllowsTool && applyManagedPolicy && !managedAllowed.contains( call.name );
       const QString blockedReason = blockedByManagedPolicy ? u"managed_policy"_s : ( toolAvailable ? u"agent_mode"_s : u"tool_unavailable"_s );
       metadata.insert( u"blocked_reason"_s, blockedReason );

@@ -5,21 +5,44 @@ import sys
 import zipfile
 from pathlib import Path
 
-
 CHECKS = {
     "macos": (
-        ("qgispython support library", lambda p: fnmatch.fnmatch(Path(p).name, "*qgispython*")),
-        ("PyQGIS qgis Python package", lambda p: Path(p).name == "__init__.py" and "qgis" in Path(p).parts),
+        (
+            "qgispython support library",
+            lambda p: fnmatch.fnmatch(Path(p).name, "*qgispython*"),
+        ),
+        (
+            "PyQGIS qgis Python package",
+            lambda p: Path(p).name == "__init__.py" and "qgis" in Path(p).parts,
+        ),
         ("PyQGIS core module", lambda p: fnmatch.fnmatch(Path(p).name, "_core*.so")),
-        ("Python runtime", lambda p: fnmatch.fnmatch(Path(p).name, "python3*") or "Python.framework" in Path(p).parts),
+        (
+            "Python runtime",
+            lambda p: (
+                fnmatch.fnmatch(Path(p).name, "python3*")
+                or "Python.framework" in Path(p).parts
+            ),
+        ),
         ("PyQt6 package", lambda p: "PyQt6" in Path(p).parts),
         ("PyQt6 Qsci module", lambda p: fnmatch.fnmatch(Path(p).name, "*Qsci*.so")),
     ),
     "windows": (
-        ("qgispython support library", lambda p: fnmatch.fnmatch(Path(p).name, "*qgispython*.dll")),
-        ("PyQGIS qgis Python package", lambda p: Path(p).name == "__init__.py" and "qgis" in Path(p).parts),
+        (
+            "qgispython support library",
+            lambda p: fnmatch.fnmatch(Path(p).name, "*qgispython*.dll"),
+        ),
+        (
+            "PyQGIS qgis Python package",
+            lambda p: Path(p).name == "__init__.py" and "qgis" in Path(p).parts,
+        ),
         ("PyQGIS core module", lambda p: fnmatch.fnmatch(Path(p).name, "_core*.pyd")),
-        ("Python runtime", lambda p: Path(p).name.lower() == "python.exe" or fnmatch.fnmatch(Path(p).name.lower(), "python3*.dll")),
+        (
+            "Python runtime",
+            lambda p: (
+                Path(p).name.lower() == "python.exe"
+                or fnmatch.fnmatch(Path(p).name.lower(), "python3*.dll")
+            ),
+        ),
         ("PyQt6 package", lambda p: "PyQt6" in Path(p).parts),
         ("PyQt6 Qsci module", lambda p: fnmatch.fnmatch(Path(p).name, "*Qsci*.pyd")),
     ),
@@ -56,7 +79,9 @@ def iter_artifact_paths(path):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Verify a packaged Strata artifact contains PyQGIS runtime files.")
+    parser = argparse.ArgumentParser(
+        description="Verify a packaged Strata artifact contains PyQGIS runtime files."
+    )
     parser.add_argument("--platform", choices=sorted(CHECKS), required=True)
     parser.add_argument("artifact", type=Path)
     args = parser.parse_args()

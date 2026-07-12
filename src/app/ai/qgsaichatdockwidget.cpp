@@ -1776,10 +1776,11 @@ bool QgsAiChatDockWidget::requestWorkflowRevisionForDisallowedTools( const QStri
 
   markMessageStatus( messageId, metadata, u"plan_status"_s, u"revision_requested"_s );
   setModeLabel( u"Plan"_s );
-  mSessionManager->sendUserMessage(
-    tr( "Revise this workflow plan before execution. The current Agent allowlist does not permit these tools: %1.\n\nOriginal plan:\n%2\n\nReturn a new fenced strata_agent_plan JSON block using only available Agent tools, or explain which setting or managed policy must change." )
-      .arg( disallowedTools.join( ", "_L1 ), planMarkdown.trimmed() )
-  );
+  mSessionManager->sendUserMessage( tr(
+                                      "Revise this workflow plan before execution. The current Agent allowlist does not permit these tools: %1.\n\nOriginal plan:\n%2\n\nReturn a new fenced "
+                                      "strata_agent_plan JSON block using only available Agent tools, or explain which setting or managed policy must change."
+  )
+                                      .arg( disallowedTools.join( ", "_L1 ), planMarkdown.trimmed() ) );
   reloadTranscriptFromHistory();
   return true;
 }

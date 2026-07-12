@@ -2,14 +2,12 @@ import json
 import os
 import sys
 
-from qgis.PyQt.QtCore import QTimer
-from qgis.PyQt.QtWidgets import QApplication
-
+import console
 import qgis.core
 import qgis.gui
 from qgis.PyQt import Qsci
-import console
-
+from qgis.PyQt.QtCore import QTimer
+from qgis.PyQt.QtWidgets import QApplication
 
 out_path = os.environ.get("STRATA_PYQGIS_SMOKE_OUT")
 if out_path:

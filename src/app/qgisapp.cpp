@@ -3547,11 +3547,7 @@ void QgisApp::showPythonDialog()
   {
     const QString reason = QgsPythonRunner::unavailableReason();
     visibleMessageBar()
-      ->pushMessage(
-        tr( "Python Console" ),
-        reason.isEmpty() ? tr( "Python support is not available in this QGIS instance. Check that PyQGIS loads correctly and that the QScintilla/PyQt Qsci bindings are available." ) : reason,
-        Qgis::MessageLevel::Warning
-      );
+      ->pushMessage( tr( "Python Console" ), reason.isEmpty() ? tr( "Python support is not available in this QGIS instance. Check that PyQGIS loads correctly and that the QScintilla/PyQt Qsci bindings are available." ) : reason, Qgis::MessageLevel::Warning );
     return;
   }
 
