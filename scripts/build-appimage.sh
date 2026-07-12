@@ -86,6 +86,7 @@ sudo apt-get install -y --no-install-recommends \
   fuse \
   libfuse2t64 \
   xvfb \
+  xauth \
   wget \
   file \
   desktop-file-utils \
