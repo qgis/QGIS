@@ -38,6 +38,9 @@ class CORE_EXPORT QgsPythonRunner
     */
     static bool isValid();
 
+    //! Returns the last known reason Python support is unavailable, or an empty string if no reason is known.
+    static QString unavailableReason() SIP_SKIP;
+
     //! Execute a Python statement
     static bool run( const QString &command, const QString &messageOnError = QString() );
 
@@ -72,6 +75,9 @@ class CORE_EXPORT QgsPythonRunner
     */
     static void setInstance( QgsPythonRunner *runner SIP_TRANSFER );
 
+    //! Sets the reason Python support is unavailable. Cleared automatically when a valid runner is installed.
+    static void setUnavailableReason( const QString &reason ) SIP_SKIP;
+
   protected:
     //! Protected constructor: can be instantiated only from children
     QgsPythonRunner() = default;
@@ -96,6 +102,7 @@ class CORE_EXPORT QgsPythonRunner
     virtual bool setArgvCommand( const QStringList &arguments, const QString &messageOnError = QString() ) = 0;
 
     static QgsPythonRunner *sInstance;
+    static QString sUnavailableReason;
 };
 
 #endif // QGSPYTHONRUNNER_H

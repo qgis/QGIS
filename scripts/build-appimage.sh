@@ -34,6 +34,8 @@ sudo apt-get install -y --no-install-recommends \
   python3-pyqt6.qtwebengine \
   python3-pyqt6.qtmultimedia \
   python3-pyqt6.qtpositioning \
+  python3-packaging \
+  python3-requests \
   python3-sip-dev \
   python3-pyqtbuild \
   pyqt6-dev \
@@ -113,18 +115,111 @@ echo "==> Relaxing Qt6 minimum version 6.6.0 -> 6.4.0 (noble ships 6.4.2)"
 # committed CMakeLists.txt so upstream merges stay clean.
 sed -i 's|set(QT_MIN_VERSION 6\.6\.0)|set(QT_MIN_VERSION 6.4.0)|' CMakeLists.txt
 
+stage_appimage_python_runtime() {
+  local py_version
+  local py_stdlib
+  local py_bundle_lib
+  local py_bundle_site
+
+  py_version="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+  py_stdlib="$(python3 -c 'import sysconfig; print(sysconfig.get_path("stdlib"))')"
+  py_bundle_lib="${APPDIR}/usr/lib/python${py_version}"
+  py_bundle_site="${py_bundle_lib}/site-packages"
+
+  echo "==> Staging Python ${py_version} runtime into AppDir"
+  mkdir -p "${py_bundle_lib}" "${py_bundle_site}"
+  cp -a "${py_stdlib}/." "${py_bundle_lib}/"
+
+  while IFS= read -r py_site; do
+    if [ -d "${py_site}" ]; then
+      echo "    copying Python packages from ${py_site}"
+      cp -a "${py_site}/." "${py_bundle_site}/"
+    fi
+  done < <(python3 - <<'PY'
+import site
+import sys
+import sysconfig
+from pathlib import Path
+
+paths = []
+for key in ("purelib", "platlib"):
+    path = sysconfig.get_path(key)
+    if path:
+        paths.append(path)
+try:
+    paths.extend(site.getsitepackages())
+except AttributeError:
+    pass
+paths.extend([
+    f"/usr/lib/python{sys.version_info.major}/dist-packages",
+    f"/usr/lib/python{sys.version_info.major}.{sys.version_info.minor}/dist-packages",
+])
+
+seen = set()
+for path in paths:
+    p = Path(path)
+    if p.exists():
+        resolved = str(p.resolve())
+        if resolved not in seen:
+            seen.add(resolved)
+            print(resolved)
+PY
+  )
+
+  find "${py_bundle_lib}" -type d -name '__pycache__' -prune -exec rm -rf {} +
+  find "${py_bundle_lib}" -type d \( -name 'test' -o -name 'tests' \) -prune -exec rm -rf {} + || true
+}
+
+verify_appimage_pyqgis_runtime() {
+  local py_version
+  local py_site
+  local app_pythonpath
+  local qgispython_lib
+
+  py_version="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+  py_site="${APPDIR}/usr/lib/python${py_version}/site-packages"
+  app_pythonpath="${APPDIR}/usr/share/qgis/python:${APPDIR}/usr/share/qgis/python/plugins:${py_site}"
+
+  qgispython_lib="$(find "${APPDIR}/usr/lib" -maxdepth 4 -name 'libqgispython*.so*' -print -quit)"
+  if [ -z "${qgispython_lib}" ]; then
+    echo "ERROR: qgispython support library was not installed into AppDir." >&2
+    exit 1
+  fi
+  if [ ! -d "${APPDIR}/usr/share/qgis/python/qgis" ]; then
+    echo "ERROR: PyQGIS Python package is missing from AppDir." >&2
+    exit 1
+  fi
+  if [ ! -d "${py_site}/PyQt6" ]; then
+    echo "ERROR: PyQt6 was not staged into AppDir Python site-packages." >&2
+    exit 1
+  fi
+  if ! find "${py_site}/PyQt6" -maxdepth 2 -iname '*Qsci*' -print -quit | grep -q .; then
+    echo "ERROR: PyQt6.Qsci was not staged into AppDir Python site-packages." >&2
+    exit 1
+  fi
+
+  echo "==> Verifying bundled PyQGIS runtime"
+  QT_QPA_PLATFORM=offscreen \
+  PYTHONHOME="${APPDIR}/usr" \
+  PYTHONNOUSERSITE=1 \
+  PYTHONPATH="${app_pythonpath}" \
+  LD_LIBRARY_PATH="${APPDIR}/usr/lib:${APPDIR}/usr/lib/qgis:${APPDIR}/usr/lib/x86_64-linux-gnu:/usr/local/lib:${LD_LIBRARY_PATH:-}" \
+    python3 - <<'PY'
+import qgis.core
+import qgis.gui
+from qgis.PyQt import Qsci
+import console
+
+print("PyQGIS runtime check OK")
+PY
+}
+
 echo "==> Configuring CMake (Release, ENABLE_AI_ASSISTANT=ON)"
 # WITH_PDAL=OFF: noble does not ship libpdal-dev where cmake expects it,
 # and PDAL (point cloud reading) is optional. Users who need point cloud
 # providers can install Strata from source.
-# WITH_PYTHON=OFF + WITH_BINDINGS=OFF: noble ships sip6 which rejects the
-# /Movable/ annotation in python/PyQt6/core/conversions.sip:1249 (the
-# %If(MOVABLE_MAPPED_TYPE) guard does not gate parsing in sip6). Disabling
-# WITH_BINDINGS alone is not enough because CMakeLists.txt:321 tests
-# WITH_PYTHON to add dependencies on python targets (pycore, pygui,
-# pyanalysis, pyplugin-installer, qgispython, staged-plugins) that only
-# exist when WITH_BINDINGS=ON. Both are disabled together. PyQGIS plugin
-# support is lost in the AppImage; source builds still get it.
+# WITH_PYTHON=ON + WITH_BINDINGS=ON: production AppImages must include PyQGIS,
+# the Python Console and AI run_python/install_python_package support.
 # WITH_AUTH=ON (default): QCA Qt6 built from source above and installed
 # under /usr/local. CMake's FindQCA picks it up automatically.
 cmake -S . -B build -G Ninja \
@@ -133,8 +228,8 @@ cmake -S . -B build -G Ninja \
   -DQGIS_APP_NAME=Strata \
   -DSTRATA_VERSION="${VERSION}" \
   -DENABLE_AI_ASSISTANT=ON \
-  -DWITH_PYTHON=OFF \
-  -DWITH_BINDINGS=OFF \
+  -DWITH_PYTHON=ON \
+  -DWITH_BINDINGS=ON \
   -DWITH_DESKTOP=ON \
   -DWITH_3D=ON \
   -DWITH_QTWEBENGINE=ON \
@@ -151,6 +246,8 @@ echo "==> Installing into ${APPDIR}"
 rm -rf "${APPDIR}"
 mkdir -p "${APPDIR}"
 DESTDIR="" cmake --install build
+stage_appimage_python_runtime
+verify_appimage_pyqgis_runtime
 
 echo "==> Staging AppDir metadata"
 mkdir -p "${APPDIR}/usr/share/applications"
@@ -220,6 +317,19 @@ done < <(find "${APPDIR}/usr/lib" -maxdepth 3 -name 'libqgis_*.so*' -print0)
   --desktop-file "${APPDIR}/com.francemazzi.strata.desktop" \
   --icon-file "${APPDIR}/strata.png" \
   "${LIBRARY_ARGS[@]}"
+
+echo "==> Smoke testing PyQGIS in AppImage"
+SMOKE_DIR="$(mktemp -d)"
+SMOKE_OUT="${SMOKE_DIR}/pyqgis-smoke.json"
+QT_QPA_PLATFORM=offscreen \
+STRATA_PYQGIS_SMOKE_OUT="${SMOKE_OUT}" \
+timeout 90s "./${OUTPUT}" --nologo --profiles-path "${SMOKE_DIR}/profiles" --code scripts/ci/smoke_pyqgis.py
+if [ ! -s "${SMOKE_OUT}" ]; then
+  echo "ERROR: PyQGIS smoke marker was not written by the AppImage." >&2
+  exit 1
+fi
+cat "${SMOKE_OUT}"
+rm -rf "${SMOKE_DIR}"
 
 echo "==> Done"
 ls -lh Strata-*.AppImage

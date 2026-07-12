@@ -130,6 +130,27 @@ QStringList QgsAiToolRegistry::availableToolNames() const
   return names;
 }
 
+QMap<QString, QString> QgsAiToolRegistry::unavailableToolReasons( const QStringList &toolNames ) const
+{
+  const QSet<QString> filter( toolNames.begin(), toolNames.end() );
+  QMap<QString, QString> reasons;
+  for ( auto it = mTools.cbegin(); it != mTools.cend(); ++it )
+  {
+    if ( !filter.isEmpty() && !filter.contains( it->first ) )
+      continue;
+
+    const QgsAiTool *tool = it->second.get();
+    if ( !tool || tool->isAvailable() )
+      continue;
+
+    QString reason = tool->availabilityReason().trimmed();
+    if ( reason.isEmpty() )
+      reason = u"runtime dependency or policy gate is not satisfied"_s;
+    reasons.insert( it->first, reason );
+  }
+  return reasons;
+}
+
 QJsonArray QgsAiToolRegistry::schemasJson( const QStringList &allowedTools ) const
 {
   return schemasJsonForFormat( WireFormat::AnthropicTools, allowedTools );

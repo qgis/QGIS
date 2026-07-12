@@ -56,7 +56,7 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
-  constexpr int MIN_MANAGED_TOOL_CATALOG_VERSION = 3;
+  constexpr int MIN_MANAGED_TOOL_CATALOG_VERSION = 4;
 
   QString defaultRulesPath()
   {
@@ -1103,6 +1103,11 @@ QStringList QgsAiAgentSessionManager::allowedToolsForActiveAgent() const
   return localAllowed;
 }
 
+QStringList QgsAiAgentSessionManager::allowedToolNamesForActiveAgent() const
+{
+  return allowedToolsForActiveAgent();
+}
+
 bool QgsAiAgentSessionManager::isToolAllowedForActiveAgent( const QString &toolName ) const
 {
   return allowedToolsForActiveAgent().contains( toolName );
@@ -1405,11 +1410,42 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   // but only when the user actually allows custom actions. Otherwise we hide the catalog
   // entirely so the model does not even attempt tool use.
   const QStringList allowedTools = allowedToolsForActiveAgent();
+  const bool canCatalogSearch = allowedTools.contains( u"catalog_search"_s );
+  const bool canWebSearch = allowedTools.contains( u"web_search"_s );
+  const bool canDownloadFile = allowedTools.contains( u"download_file"_s );
+  const bool canAddLayerFromFile = allowedTools.contains( u"add_layer_from_file"_s );
+  const bool canRunPython = allowedTools.contains( u"run_python"_s );
+  const bool canInstallPythonPackage = allowedTools.contains( u"install_python_package"_s );
   if ( !allowedTools.isEmpty() )
   {
     prompt += "\n== Available tools ==\n"_L1;
     prompt += allowedTools.join( ", "_L1 );
     prompt += '\n';
+  }
+  if ( mToolRegistry && mBehaviorSettings.allowCustomActions && ( mActiveAgent == "editor"_L1 || mActiveAgent == "ask_before_edits"_L1 ) )
+  {
+    QMap<QString, QString> unavailableReasons = mToolRegistry->unavailableToolReasons( QStringList {
+      u"run_python"_s,
+      u"install_python_package"_s,
+      u"download_file"_s,
+    } );
+    const QStringList highImpactTools {
+      u"run_python"_s,
+      u"install_python_package"_s,
+      u"download_file"_s,
+    };
+    for ( const QString &toolName : highImpactTools )
+    {
+      if ( !allowedTools.contains( toolName ) && !unavailableReasons.contains( toolName ) && mToolRegistry->find( toolName ) )
+        unavailableReasons.insert( toolName, u"Not allowed by the active agent mode or managed Strata Plan policy for this tier."_s );
+    }
+    if ( !unavailableReasons.isEmpty() )
+    {
+      prompt += "\n== Unavailable tools ==\n"_L1;
+      for ( auto it = unavailableReasons.cbegin(); it != unavailableReasons.cend(); ++it )
+        prompt += u"- %1: %2\n"_s.arg( it.key(), it.value() );
+      prompt += "- Do not tell the user you ran, will run, or can directly use an unavailable tool. Explain the listed setting or runtime dependency instead, and prefer available native tools when they satisfy the request.\n"_L1;
+    }
   }
 
   // Fixed security guardrails: every agent mode gets them, and they outrank any
@@ -1536,22 +1572,64 @@ QString QgsAiAgentSessionManager::buildSystemPrompt( const QString &extraContext
   prompt += "- Never call propose_edit blind: read the file first to capture the exact original text.\n"_L1;
   prompt += "- Keep proposals small and reviewable. One concept per proposal.\n"_L1;
   prompt += "- Do not invent file paths; resolve them via search_files or list_files.\n"_L1;
-  prompt += "- External libraries and remote data are AVAILABLE. Do NOT refuse with phrases like 'I cannot run external libraries in this environment.' You can.\n"_L1;
-  prompt += "  - For remote GIS/layer data, prefer catalog_search first, then download_file(url, dest_path), then add_layer_from_file. Cite source_host/final_url/sha256/trust_level when download_file provides them.\n"_L1;
-  prompt += "  - Use web_search for broad discovery only; use catalog_search when the user needs reliable GIS data sources.\n"_L1;
-  prompt += u"  - To use a Python library not bundled with QGIS (geopy, osmnx, requests, shapely, pandas, …):\n"_s;
-  prompt += "      1) Briefly state the plan in chat.\n"_L1;
-  prompt += "      2) Call install_python_package with exact pinned specs (the user approves).\n"_L1;
-  prompt += "      3) Then call run_python to use them.\n"_L1;
-  prompt += u"  - Concrete example — 'boundary of Pomponesco, Italy': prefer download_file with an Overpass API query (admin_level=8 boundary as GeoJSON), save in workspace, then add it as a layer via add_layer_from_file or run_python. Use osmnx only when a true graph/network API is needed.\n"_s;
-  prompt += QStringLiteral(
-              "- Reusable automation: when the user wants a workflow they can repeat or share with the team, do NOT just run it via run_python — also save it as a Processing script. "
-              "The Processing scripts folder for this profile is: %1 . "
-              "Use propose_create_file to write a script there following the standard QgsProcessingAlgorithm template "
-              "(class extending QgsProcessingAlgorithm with name(), displayName(), createInstance(), initAlgorithm(), processAlgorithm()). "
-              "After acceptance the script appears in the Processing Toolbox under 'Scripts' and is callable like any built-in algorithm.\n"
-  )
-              .arg( processingScriptsFolder() );
+  if ( canCatalogSearch || canDownloadFile || canAddLayerFromFile || canRunPython || canWebSearch )
+  {
+    prompt += "- Use only the remote-data and execution tools listed in Available tools for this turn.\n"_L1;
+    if ( canCatalogSearch || canDownloadFile || canAddLayerFromFile || canRunPython )
+    {
+      QStringList remoteSteps;
+      if ( canCatalogSearch )
+        remoteSteps << u"catalog_search for reliable GIS sources"_s;
+      if ( canDownloadFile )
+        remoteSteps << u"download_file(url, dest_path) for trusted downloads"_s;
+      if ( canAddLayerFromFile )
+        remoteSteps << u"add_layer_from_file for local vector/raster files"_s;
+      if ( canRunPython )
+        remoteSteps << u"run_python for QGIS/PyQGIS operations that need code"_s;
+      prompt += u"  - For remote GIS/layer data, prefer this available sequence: %1. Cite source_host/final_url/sha256/trust_level when download_file provides them.\n"_s.arg( remoteSteps.join( u", then "_s ) );
+    }
+    if ( canWebSearch )
+      prompt += "  - Use web_search for broad discovery only; use catalog_search when available and the user needs reliable GIS data sources.\n"_L1;
+  }
+  if ( canInstallPythonPackage && canRunPython )
+  {
+    prompt += u"  - To use a Python library not bundled with QGIS (geopy, osmnx, requests, shapely, pandas, ...):\n"_s;
+    prompt += "      1) Briefly state the plan in chat.\n"_L1;
+    prompt += "      2) Call install_python_package with exact pinned specs (the user approves).\n"_L1;
+    prompt += "      3) Then call run_python to use them.\n"_L1;
+  }
+  else if ( canRunPython )
+  {
+    prompt += "- Python execution is available, but install_python_package is not. Use only bundled/project Python libraries and do not claim you installed packages.\n"_L1;
+  }
+  else
+  {
+    prompt += "- Python execution is not available in this mode or policy. Do not propose run_python; use available native tools or explain the limitation.\n"_L1;
+  }
+  if ( canDownloadFile && ( canAddLayerFromFile || canRunPython ) )
+  {
+    const QString loadStep = canAddLayerFromFile ? u"add_layer_from_file"_s : u"run_python"_s;
+    prompt += u"  - Concrete example: for 'boundary of Pomponesco, Italy', prefer download_file with an Overpass API query (admin_level=8 boundary as GeoJSON), save in workspace, then add it as a layer via %1. Use osmnx only when a true graph/network API is needed.\n"_s.arg( loadStep );
+  }
+  if ( canRunPython )
+  {
+    prompt += QStringLiteral(
+                "- Reusable automation: when the user wants a workflow they can repeat or share with the team, do not just run it via run_python; also save it as a Processing script. "
+                "The Processing scripts folder for this profile is: %1 . "
+                "Use propose_create_file to write a script there following the standard QgsProcessingAlgorithm template "
+                "(class extending QgsProcessingAlgorithm with name(), displayName(), createInstance(), initAlgorithm(), processAlgorithm()). "
+                "After acceptance the script appears in the Processing Toolbox under 'Scripts' and is callable like any built-in algorithm.\n"
+    )
+                .arg( processingScriptsFolder() );
+  }
+  else
+  {
+    prompt += QStringLiteral(
+                "- Reusable automation: when the user wants a workflow they can repeat or share with the team, save it as a Processing script when propose_create_file is available. "
+                "The Processing scripts folder for this profile is: %1 .\n"
+    )
+                .arg( processingScriptsFolder() );
+  }
 
   if ( !extraContext.isEmpty() )
   {
@@ -1949,17 +2027,62 @@ void QgsAiAgentSessionManager::onToolCallsRequested( const QString &requestId, c
       metadata.insert( u"tool_call_id"_s, call.id );
       metadata.insert( u"args_keys"_s, call.args.keys().join( ',' ) );
       QString risk = u"unknown"_s;
-      if ( const QgsAiTool *tool = mToolRegistry->find( call.name ) )
+      const QgsAiTool *tool = mToolRegistry->find( call.name );
+      if ( tool )
         risk = QgsAiToolRiskLevelName( tool->riskLevel() );
+      const QStringList availableTools = mToolRegistry->availableToolNames();
+      const bool toolAvailable = availableTools.contains( call.name );
+      bool modeAllowsTool = false;
+      if ( toolAvailable )
+      {
+        if ( mActiveAgent == "editor"_L1 )
+        {
+          modeAllowsTool = true;
+        }
+        else if ( mActiveAgent == "reviewer"_L1 )
+        {
+          modeAllowsTool = reviewerReadOnlyTools().contains( call.name );
+        }
+        else if ( mActiveAgent == "ask_before_edits"_L1 )
+        {
+          modeAllowsTool = reviewerReadOnlyTools().contains( call.name ) || ( tool && tool->requiresApproval() );
+        }
+      }
+      const bool applyManagedPolicy = mRouter
+                                      && mRouter->activeProvider() == QgsAiModelRouter::Provider::Plan
+                                      && mManagedAgentPolicy.toolCatalogVersion >= MIN_MANAGED_TOOL_CATALOG_VERSION
+                                      && !mManagedAgentPolicy.isEmpty()
+                                      && !managedPolicyReferencesUnknownTools( mManagedAgentPolicy, mToolRegistry );
+      const QStringList managedAllowed = applyManagedPolicy
+                                           ? ( mActiveAgent == "ask_before_edits"_L1 ? mManagedAgentPolicy.allowedTools : mManagedAgentPolicy.allowedToolsForPreset( QgsAiPresetModeForAgent( mActiveAgent ) ) )
+                                           : QStringList();
+      const bool blockedByManagedPolicy = modeAllowsTool && applyManagedPolicy && !managedAllowed.contains( call.name );
+      const QString blockedReason = blockedByManagedPolicy ? u"managed_policy"_s : ( toolAvailable ? u"agent_mode"_s : u"tool_unavailable"_s );
+      metadata.insert( u"blocked_reason"_s, blockedReason );
       QgsAiAuditLog::appendToolEvent( u"blocked_by_policy"_s, call.name, risk, false, metadata );
       QVariantMap memory;
       memory.insert( u"tool_name"_s, call.name );
       memory.insert( u"risk_level"_s, risk );
-      memory.insert( u"reason"_s, u"blocked_by_policy"_s );
+      memory.insert( u"reason"_s, blockedReason );
       rememberAgentEvent( u"tool_blocked"_s, memory );
       QgsMessageLog::logMessage( u"Blocked disallowed tool call in %1 mode: %2"_s.arg( mActiveAgent, call.name ), u"AI"_s, Qgis::MessageLevel::Warning, false );
-      const QString message = mActiveAgent == "planner"_L1 ? u"Plan mode does not execute tools or change workspace state. No tool was run."_s
-                                                           : u"This mode does not allow the requested tool '%1'. No tool was run."_s.arg( call.name );
+      QString message;
+      if ( mActiveAgent == "planner"_L1 )
+      {
+        message = u"Plan mode does not execute tools or change workspace state. No tool was run."_s;
+      }
+      else if ( blockedByManagedPolicy )
+      {
+        message = u"The managed Strata Plan policy for this tier does not allow the requested tool '%1' in %2 mode. No tool was run."_s.arg( call.name, QgsAiRuntimeModeForAgent( mActiveAgent ) );
+      }
+      else if ( !toolAvailable )
+      {
+        message = u"The requested tool '%1' is not available in this QGIS session. No tool was run."_s.arg( call.name );
+      }
+      else
+      {
+        message = u"The active mode '%1' does not allow the requested tool '%2'. No tool was run."_s.arg( QgsAiRuntimeModeForAgent( mActiveAgent ), call.name );
+      }
       const QgsAiChatMessage error = buildAssistantMessage( message );
       recordHistoryMessage( error );
       mActiveRequestId.clear();

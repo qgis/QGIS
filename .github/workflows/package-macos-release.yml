@@ -241,6 +241,12 @@ jobs:
         env:
           MACOS_DEVELOPER_ID: ${{ secrets.MACOS_DEVELOPER_ID }}
 
+      - name: Verify PyQGIS runtime in signed app
+        if: ${{ inputs.sign_and_notarize && startsWith(inputs.release_tag, 'strata-v') }}
+        run: |
+          APP_PATH=$(ls -d universal/*.app | head -n1)
+          python3 scripts/ci/verify_pyqgis_bundle.py --platform macos "${APP_PATH}"
+
       - name: Create dmg
         run: |
           QGIS_APP_NAME="Strata"

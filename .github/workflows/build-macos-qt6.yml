@@ -156,6 +156,7 @@ jobs:
                 ${STRATA_VERSION_OPT} \
                 -D WITH_VCPKG=ON \
                 -D WITH_QTWEBENGINE=OFF \
+                -D WITH_PYTHON=ON \
                 -D WITH_BINDINGS=ON \
                 -D WITH_ORACLE=ON \
                 -D WITH_GEOGRAPHICLIB=OFF \
@@ -483,6 +484,12 @@ jobs:
           codesign --verify --strict --verbose=2 "${APP_PATH}"
         env:
           MACOS_DEVELOPER_ID: ${{ secrets.MACOS_DEVELOPER_ID }}
+
+      - name: 🐍 Verify PyQGIS runtime in signed app
+        if: ${{ env.IS_STRATA_RELEASE == 'true' }}
+        run: |
+          APP_PATH=$(ls -d universal/*.app | head -n1)
+          python3 scripts/ci/verify_pyqgis_bundle.py --platform macos "${APP_PATH}"
 
       - name: Create dmg
         run: |

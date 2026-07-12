@@ -287,7 +287,12 @@ bool QgsAiInstallPythonPackageTool::isAvailable() const
 QString QgsAiInstallPythonPackageTool::availabilityReason() const
 {
   if ( !QgsPythonRunner::isValid() )
-    return u"Python package installation is not available because the QGIS Python runner is unavailable. Start QGIS with Python enabled (do not use --nopython), build with WITH_BINDINGS, and verify that the qgispython support library loads."_s;
+  {
+    const QString reason = QgsPythonRunner::unavailableReason();
+    return reason.isEmpty()
+             ? u"Python package installation is not available because the QGIS Python runner is unavailable. Start QGIS with Python enabled (do not use --nopython), build with WITH_BINDINGS, and verify that the qgispython support library loads."_s
+             : u"Python package installation is not available: %1"_s.arg( reason );
+  }
   return u"install_python_package is disabled because this workspace is not trusted. Trust the workspace from the AI provider settings to enable package installation."_s;
 }
 

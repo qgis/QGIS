@@ -36,7 +36,7 @@ LAUNCHER="${OUTPUT}/Launch Strata.command"
 cat > "${LAUNCHER}" <<EOF
 #!/usr/bin/env bash
 cd "${ROOT}"
-exec "${ROOT}/scripts/run-strata-dev.sh"
+exec env STRATA_BUILD_DIR="${BUILD}" "${ROOT}/scripts/run-strata-dev.sh"
 EOF
 chmod +x "${LAUNCHER}"
 

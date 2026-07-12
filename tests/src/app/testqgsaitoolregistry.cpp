@@ -46,6 +46,7 @@
 #include <QImage>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QMap>
 #include <QScopeGuard>
 #include <QSignalSpy>
 #include <QSize>
@@ -124,6 +125,7 @@ class TestQgsAiToolRegistry : public QObject
     void schemasJsonContainsAllTools();
     void schemasJsonFilter();
     void unavailableToolsAreHiddenAndNotExecuted();
+    void unavailableToolReasonsAreReported();
     void executeRoundTrip();
     void registryAuditsRiskyToolMetadataOnly();
     void captureMapCanvasRequiresConsent();
@@ -227,6 +229,20 @@ void TestQgsAiToolRegistry::unavailableToolsAreHiddenAndNotExecuted()
   const QgsAiToolResult result = registry.execute( u"run_python"_s, args );
   QVERIFY( !result.success );
   QVERIFY( result.errorMessage.contains( u"unavailable"_s ) );
+}
+
+void TestQgsAiToolRegistry::unavailableToolReasonsAreReported()
+{
+  QgsAiToolRegistry registry;
+  registry.registerTool( std::make_unique<FakeEchoTool>( u"run_python"_s, true, false ) );
+  registry.registerTool( std::make_unique<FakeEchoTool>( u"read_file"_s ) );
+
+  const QMap<QString, QString> reasons = registry.unavailableToolReasons();
+  QCOMPARE( reasons.size(), 1 );
+  QCOMPARE( reasons.value( u"run_python"_s ), u"tool unavailable"_s );
+
+  const QMap<QString, QString> filtered = registry.unavailableToolReasons( QStringList() << u"read_file"_s );
+  QVERIFY( filtered.isEmpty() );
 }
 
 void TestQgsAiToolRegistry::executeRoundTrip()

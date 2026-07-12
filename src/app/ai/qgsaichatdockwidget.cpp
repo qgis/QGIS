@@ -348,6 +348,32 @@ namespace
     return doc.object();
   }
 
+  QJsonObject planJsonForExecution( const QString &planMarkdown, const QVariantMap &metadata )
+  {
+    QJsonObject plan = planJsonFromMetadata( metadata );
+    if ( !plan.isEmpty() )
+      return plan;
+    return QgsAiAgentSessionManager::extractAgentPlanJson( planMarkdown );
+  }
+
+  QStringList planToolNames( const QJsonObject &plan )
+  {
+    QStringList tools;
+    QSet<QString> seen;
+    const QJsonArray steps = plan.value( u"steps"_s ).toArray();
+    for ( const QJsonValue &value : steps )
+    {
+      if ( !value.isObject() )
+        continue;
+      const QString tool = value.toObject().value( u"tool"_s ).toString().trimmed();
+      if ( tool.isEmpty() || seen.contains( tool ) )
+        continue;
+      seen.insert( tool );
+      tools << tool;
+    }
+    return tools;
+  }
+
   QStringList jsonStringArray( const QJsonArray &array )
   {
     QStringList strings;
@@ -1521,7 +1547,7 @@ QWidget *QgsAiChatDockWidget::createPlanActionsWidget( const QString &messageId,
     updateRuntimeState( u"workflow"_s, path.isEmpty() ? error : tr( "Saved %1" ).arg( path ) );
   } );
   connect( dryRunWorkflowButton, &QPushButton::clicked, this, [this, messageId, planMarkdown]() { dryRunWorkflowPlan( messageId, planMarkdown ); } );
-  connect( runWorkflowButton, &QPushButton::clicked, this, [this, messageId, planMarkdown]() { runWorkflowPlan( messageId, planMarkdown ); } );
+  connect( runWorkflowButton, &QPushButton::clicked, this, [this, messageId, planMarkdown, metadata]() { runWorkflowPlan( messageId, planMarkdown, metadata ); } );
   connect( exportWorkflowReportButton, &QPushButton::clicked, this, [this, messageId, planMarkdown]() {
     QString error;
     const QString path = exportWorkflowReport( planMarkdown, messageId, &error );
@@ -1719,15 +1745,57 @@ void QgsAiChatDockWidget::markMessageStatus( const QString &messageId, const QVa
   mSessionManager->updateMessageMetadata( messageId, updated );
 }
 
+QStringList QgsAiChatDockWidget::disallowedWorkflowTools( const QString &planMarkdown, const QVariantMap &metadata ) const
+{
+  if ( !mSessionManager )
+    return QStringList();
+
+  const QJsonObject plan = planJsonForExecution( planMarkdown, metadata );
+  if ( plan.isEmpty() )
+    return QStringList();
+
+  const QStringList requestedTools = planToolNames( plan );
+  if ( requestedTools.isEmpty() )
+    return QStringList();
+
+  const QStringList allowedTools = mSessionManager->allowedToolNamesForActiveAgent();
+  QStringList disallowed;
+  for ( const QString &toolName : requestedTools )
+  {
+    if ( !allowedTools.contains( toolName ) )
+      disallowed << toolName;
+  }
+  return disallowed;
+}
+
+bool QgsAiChatDockWidget::requestWorkflowRevisionForDisallowedTools( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata )
+{
+  const QStringList disallowedTools = disallowedWorkflowTools( planMarkdown, metadata );
+  if ( disallowedTools.isEmpty() )
+    return false;
+
+  markMessageStatus( messageId, metadata, u"plan_status"_s, u"revision_requested"_s );
+  setModeLabel( u"Plan"_s );
+  mSessionManager->sendUserMessage(
+    tr( "Revise this workflow plan before execution. The current Agent allowlist does not permit these tools: %1.\n\nOriginal plan:\n%2\n\nReturn a new fenced strata_agent_plan JSON block using only available Agent tools, or explain which setting or managed policy must change." )
+      .arg( disallowedTools.join( ", "_L1 ), planMarkdown.trimmed() )
+  );
+  reloadTranscriptFromHistory();
+  return true;
+}
+
 void QgsAiChatDockWidget::acceptPlan( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata )
 {
   if ( !mSessionManager || planMarkdown.trimmed().isEmpty() || mRequestRunning )
     return;
 
+  setModeLabel( u"Agent"_s );
+  if ( requestWorkflowRevisionForDisallowedTools( messageId, planMarkdown, metadata ) )
+    return;
+
   markMessageStatus( messageId, metadata, u"plan_status"_s, u"accepted"_s );
   QString workflowError;
   const QString workflowPath = saveWorkflowPlan( planMarkdown, messageId, &workflowError );
-  setModeLabel( u"Agent"_s );
   QString prompt = tr( "Execute the accepted plan exactly in Agent mode. Use the tool safety checks and any per-tool approval/review dialogs that apply." );
   if ( !workflowPath.isEmpty() )
     prompt += u"\n\n"_s + tr( "Saved reusable workflow: %1" ).arg( workflowPath );
@@ -1845,14 +1913,17 @@ void QgsAiChatDockWidget::dryRunWorkflowPlan( const QString &messageId, const QS
   reloadTranscriptFromHistory();
 }
 
-void QgsAiChatDockWidget::runWorkflowPlan( const QString &messageId, const QString &planMarkdown )
+void QgsAiChatDockWidget::runWorkflowPlan( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata )
 {
   if ( !mSessionManager || planMarkdown.trimmed().isEmpty() || mRequestRunning )
     return;
 
+  setModeLabel( u"Agent"_s );
+  if ( requestWorkflowRevisionForDisallowedTools( messageId, planMarkdown, metadata ) )
+    return;
+
   QString error;
   const QString workflowPath = saveWorkflowPlan( planMarkdown, messageId, &error );
-  setModeLabel( u"Agent"_s );
   mSessionManager->sendUserMessage(
     tr( "Run this .strataflow workflow through the Strata agent. Use native GIS tools where available, keep provenance for each step, and respect all per-tool safety checks and approval dialogs.\n\nWorkflow path: %1\n\nPlan:\n%2" )
       .arg( workflowPath.isEmpty() ? error : workflowPath, planMarkdown.trimmed() )

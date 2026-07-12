@@ -114,7 +114,12 @@ bool QgsAiRunPythonTool::isAvailable() const
 QString QgsAiRunPythonTool::availabilityReason() const
 {
   if ( !QgsPythonRunner::isValid() )
-    return u"Python runner is not available in this QGIS instance. Start QGIS with Python enabled (do not use --nopython), build with WITH_BINDINGS, and verify that the qgispython support library loads."_s;
+  {
+    const QString reason = QgsPythonRunner::unavailableReason();
+    return reason.isEmpty()
+             ? u"Python runner is not available in this QGIS instance. Start QGIS with Python enabled (do not use --nopython), build with WITH_BINDINGS, and verify that the qgispython support library loads."_s
+             : reason;
+  }
   return u"run_python is disabled because this workspace is not trusted. Trust the workspace from the AI provider settings to enable Python execution."_s;
 }
 

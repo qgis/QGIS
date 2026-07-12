@@ -193,6 +193,7 @@ jobs:
                 ${CODE_SIGN_OPT} \
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
+                -D WITH_PYTHON=ON \
                 -D WITH_BINDINGS=ON \
                 -D WITH_GEOGRAPHICLIB=OFF \
                 -D WITH_SFCGAL=OFF \
@@ -211,6 +212,15 @@ jobs:
       - name: 📦 Package
         shell: bash
         run: cmake --build "${{ github.workspace }}/build" --target bundle --config Release
+
+      - name: 🐍 Verify PyQGIS runtime in Windows package
+        shell: powershell
+        run: |
+          $zip = Get-ChildItem -Path "${{ github.workspace }}\build" -File -Filter "*-win64.zip" | Select-Object -First 1
+          if (-not $zip) {
+            throw "No Windows zip artifact found under build/."
+          }
+          python scripts/ci/verify_pyqgis_bundle.py --platform windows "$($zip.FullName)"
 
       - name: 🔎 Verify signed Windows release artifacts
         if: ${{ env.IS_STRATA_RELEASE == 'true' && env.WINDOWS_CODESIGN_CONFIGURED == 'true' }}

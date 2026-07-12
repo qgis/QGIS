@@ -23,6 +23,7 @@
 #include "qgsaitool.h"
 
 #include <QJsonArray>
+#include <QMap>
 #include <QObject>
 #include <QStringList>
 
@@ -45,6 +46,9 @@ class APP_EXPORT QgsAiToolRegistry : public QObject
 
     //! Returns registered tool names whose runtime dependencies are currently available.
     QStringList availableToolNames() const;
+
+    //! Returns reasons for registered tools which are currently unavailable.
+    QMap<QString, QString> unavailableToolReasons( const QStringList &toolNames = QStringList() ) const;
 
     int count() const { return mTools.size(); }
 

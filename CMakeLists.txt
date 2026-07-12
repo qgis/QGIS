@@ -339,7 +339,7 @@ if(WITH_CORE)
       DEPENDS qgis qgis_auth_plugins provider_wms provider_postgres staged-plugins resources svg doc icons
     )
     if ( WITH_PYTHON )
-      add_dependencies(qgis_desktop qgispython pycore pygui pyanalysis staged-plugins pyplugin-installer )
+      add_dependencies(qgis_desktop qgispython pycore pygui pyanalysis pyprocessing staged-plugins pyplugin-installer )
     endif()
   endif()
 

@@ -1821,17 +1821,23 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     QgsProject::instance()->setBadLayerHandler( mAppBadLayersHandler );
   }
 
+#ifdef WITH_BINDINGS
   if ( options.testFlag( AppOption::EnablePython ) )
   {
     mSplash->showMessage( tr( "Starting Python" ), static_cast<int>( Qt::AlignHCenter | Qt::AlignBottom ), splashTextColor );
     qApp->processEvents();
     loadPythonSupport();
 
-#ifdef WITH_BINDINGS
     QgsApplication::dataItemProviderRegistry()->addProvider( new QgsPyDataItemProvider() );
     registerCustomDropHandler( new QgsPyDropHandler() );
-#endif
   }
+  else
+  {
+    QgsPythonRunner::setUnavailableReason( tr( "Python support was disabled for this session. Start Strata without --nopython to enable the Python Console and AI Python tools." ) );
+  }
+#else
+  QgsPythonRunner::setUnavailableReason( tr( "Python support is not available because this Strata build was compiled without Python bindings (WITH_BINDINGS=OFF)." ) );
+#endif
 
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsProjectDataItemProvider() );
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsStacDataItemProvider() );
@@ -3539,8 +3545,13 @@ void QgisApp::showPythonDialog()
 #ifdef WITH_BINDINGS
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
   {
+    const QString reason = QgsPythonRunner::unavailableReason();
     visibleMessageBar()
-      ->pushMessage( tr( "Python Console" ), tr( "Python support is not available in this QGIS instance. Check that PyQGIS loads correctly and that the QScintilla/PyQt Qsci bindings are available." ), Qgis::MessageLevel::Warning );
+      ->pushMessage(
+        tr( "Python Console" ),
+        reason.isEmpty() ? tr( "Python support is not available in this QGIS instance. Check that PyQGIS loads correctly and that the QScintilla/PyQt Qsci bindings are available." ) : reason,
+        Qgis::MessageLevel::Warning
+      );
     return;
   }
 
@@ -12755,6 +12766,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
 void QgisApp::loadPythonSupport()
 {
   QgsScopedRuntimeProfile profile( tr( "Loading Python support" ) );
+  QgsPythonRunner::setUnavailableReason( tr( "Python support has not finished initializing." ) );
 
   QString pythonlibName( QStringLiteral( "qgispython" QGISPOSTFIX ) );
 #if defined( Q_OS_UNIX )
@@ -12774,7 +12786,9 @@ void QgisApp::loadPythonSupport()
     pythonlib.setFileName( pythonlibName );
     if ( !pythonlib.load() )
     {
-      QgsMessageLog::logMessage( tr( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() ) );
+      const QString reason = tr( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() );
+      QgsPythonRunner::setUnavailableReason( reason );
+      QgsMessageLog::logMessage( reason );
       return;
     }
   }
@@ -12785,7 +12799,9 @@ void QgisApp::loadPythonSupport()
   if ( !pythonlib_inst )
   {
     //using stderr on purpose because we want end users to see this [TS]
-    QgsMessageLog::logMessage( tr( "Couldn't resolve python support library's instance() symbol." ) );
+    const QString reason = tr( "Couldn't resolve python support library's instance() symbol." );
+    QgsPythonRunner::setUnavailableReason( reason );
+    QgsMessageLog::logMessage( reason );
     return;
   }
 
@@ -12826,6 +12842,14 @@ void QgisApp::loadPythonSupport()
 
     mPythonUtils->initGDAL();
     // QgsMessageLog::logMessage( tr( "Python support ENABLED :-) " ), QString(), Qgis::MessageLevel::Info );
+  }
+  else
+  {
+    QString className, text;
+    QString reason = tr( "PyQGIS did not initialize. Check that the bundled Python runtime, PyQt and QScintilla bindings are available." );
+    if ( mPythonUtils && mPythonUtils->getError( className, text ) && ( !className.isEmpty() || !text.isEmpty() ) )
+      reason += u" %1: %2"_s.arg( className, text );
+    QgsPythonRunner::setUnavailableReason( reason );
   }
 #endif
 }

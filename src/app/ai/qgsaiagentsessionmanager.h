@@ -153,6 +153,8 @@ class APP_EXPORT QgsAiAgentSessionManager : public QObject
 
     void setToolRegistry( QgsAiToolRegistry *registry );
     QgsAiToolRegistry *toolRegistry() const { return mToolRegistry; }
+    //! Returns tool names allowed by the current local mode and managed policy.
+    QStringList allowedToolNamesForActiveAgent() const;
 
     /**
      * Sets the workspace RAG index used to retrieve relevant chunks for each

@@ -103,12 +103,36 @@ if(NOT WITH_SFCGAL)
 endif()
 
 # sip 6.11 has support for the Movable Mapped Type Annotation
-# Including the annotation with older sip versions will throw a parser error,
-# so we need to generate a file without it for older versions
+# Including the annotation with older sip versions will throw a parser error.
+# sip-build still parses annotations inside disabled %If blocks, so generate a
+# single mapped type whose annotation and conversion body match the SIP version.
 if(${SIP_VERSION_STR} VERSION_LESS 6.11.0)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} MOVABLE_MAPPED_TYPE)
+  set(SIP_UNIQUE_PTR_MAPPED_TYPE_ANNOTATIONS "")
+  set(SIP_UNIQUE_PTR_UTILITY_INCLUDE "")
+  set(SIP_UNIQUE_PTR_CONVERT_TO_TYPE_CODE [[  // only one way for now...
+  return 0;]])
 else()
-  set(SIP_MOVABLE_STR "Movable,")
+  set(SIP_UNIQUE_PTR_MAPPED_TYPE_ANNOTATIONS "Movable,")
+  set(SIP_UNIQUE_PTR_UTILITY_INCLUDE "#include <utility>      // For std::move().")
+  set(SIP_UNIQUE_PTR_CONVERT_TO_TYPE_CODE [[  const sipTypeDef *sip_type = sipFindType("TYPE");
+
+  if (sipIsErr == NULL)
+    return sipCanConvertToType(sipPy, sip_type, 0);
+
+  if (sipPy == Py_None)
+    return 1;
+
+  int state;
+  TYPE *type_ = reinterpret_cast<TYPE *>(sipConvertToType(sipPy, sip_type, sipTransferObj, 0, &state, sipIsErr));
+
+  sipReleaseType(type_, sip_type, state);
+
+  if (*sipIsErr)
+    return 0;
+
+  *sipCppPtr = new std::unique_ptr<TYPE>(type_);
+  return sipGetState(sipTransferObj);]])
 endif()
 if(Qt6Core_VERSION_MINOR LESS 5)
 # https://github.com/qgis/QGIS/issues/57760

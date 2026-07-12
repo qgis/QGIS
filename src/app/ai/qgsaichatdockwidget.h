@@ -116,10 +116,12 @@ class APP_EXPORT QgsAiChatDockWidget : public QgsDockWidget
     void setModeLabel( const QString &label );
     void markMessageStatus( const QString &messageId, const QVariantMap &metadata, const QString &key, const QString &value );
     void acceptPlan( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata );
+    QStringList disallowedWorkflowTools( const QString &planMarkdown, const QVariantMap &metadata ) const;
+    bool requestWorkflowRevisionForDisallowedTools( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata );
     QString saveWorkflowPlan( const QString &planMarkdown, const QString &messageId, QString *errorMessage = nullptr ) const;
     QString exportWorkflowReport( const QString &planMarkdown, const QString &messageId, QString *errorMessage = nullptr ) const;
     void dryRunWorkflowPlan( const QString &messageId, const QString &planMarkdown );
-    void runWorkflowPlan( const QString &messageId, const QString &planMarkdown );
+    void runWorkflowPlan( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata );
     void sendPlanRevision( const QString &messageId, const QString &planMarkdown, const QVariantMap &metadata, QTextEdit *revisionEdit );
     void sendQuestionAnswers( const QString &messageId, const QVariantMap &metadata, QWidget *questionsCard );
     void appendStreamChunk( const QString &chunk );

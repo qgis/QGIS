@@ -21,6 +21,7 @@
 using namespace Qt::StringLiterals;
 
 QgsPythonRunner *QgsPythonRunner::sInstance = nullptr;
+QString QgsPythonRunner::sUnavailableReason;
 
 ///////////////////////////
 // static methods
@@ -28,6 +29,11 @@ QgsPythonRunner *QgsPythonRunner::sInstance = nullptr;
 bool QgsPythonRunner::isValid()
 {
   return nullptr != sInstance;
+}
+
+QString QgsPythonRunner::unavailableReason()
+{
+  return sUnavailableReason;
 }
 
 bool QgsPythonRunner::run( const QString &command, const QString &messageOnError )
@@ -118,4 +124,11 @@ void QgsPythonRunner::setInstance( QgsPythonRunner *runner )
 {
   delete sInstance;
   sInstance = runner;
+  if ( sInstance )
+    sUnavailableReason.clear();
+}
+
+void QgsPythonRunner::setUnavailableReason( const QString &reason )
+{
+  sUnavailableReason = reason;
 }
