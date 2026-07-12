@@ -32,7 +32,7 @@ configure_file(${CMAKE_SOURCE_DIR}/scripts/ts2appinfo.py.in ${CMAKE_BINARY_DIR}/
 
 if (UNIX AND NOT APPLE AND PYQT_FOUND)
   add_custom_command(
-    OUTPUT ${CMAKE_BINARY_DIR}/org.qgis.qgis.desktop ${CMAKE_BINARY_DIR}/org.qgis.qgis.appdata.xml
+    OUTPUT ${CMAKE_BINARY_DIR}/com.francemazzi.strata.desktop ${CMAKE_BINARY_DIR}/com.francemazzi.strata.appdata.xml
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     COMMAND ${Python_EXECUTABLE}
     ARGS ${CMAKE_BINARY_DIR}/ts2appinfo.py "${CMAKE_BINARY_DIR}"
@@ -40,10 +40,10 @@ if (UNIX AND NOT APPLE AND PYQT_FOUND)
     DEPENDS ${QM_FILES} ${CMAKE_SOURCE_DIR}/linux/org.qgis.qgis.desktop.in ${CMAKE_SOURCE_DIR}/linux/org.qgis.qgis.appdata.xml.in
   )
 
-  set(MD_FILES ${CMAKE_BINARY_DIR}/org.qgis.qgis.desktop ${CMAKE_BINARY_DIR}/org.qgis.qgis.appdata.xml)
+  set(MD_FILES ${CMAKE_BINARY_DIR}/com.francemazzi.strata.desktop ${CMAKE_BINARY_DIR}/com.francemazzi.strata.appdata.xml)
 
-  install(FILES ${CMAKE_BINARY_DIR}/org.qgis.qgis.desktop DESTINATION share/applications)
-  install(FILES ${CMAKE_BINARY_DIR}/org.qgis.qgis.appdata.xml DESTINATION share/metainfo)
+  install(FILES ${CMAKE_BINARY_DIR}/com.francemazzi.strata.desktop DESTINATION share/applications)
+  install(FILES ${CMAKE_BINARY_DIR}/com.francemazzi.strata.appdata.xml DESTINATION share/metainfo)
 endif()
 
 # creating a custom target is needed to make the files build
