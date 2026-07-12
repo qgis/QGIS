@@ -6,8 +6,6 @@ import console
 import qgis.core
 import qgis.gui
 from qgis.PyQt import Qsci
-from qgis.PyQt.QtCore import QTimer
-from qgis.PyQt.QtWidgets import QApplication
 
 out_path = os.environ.get("STRATA_PYQGIS_SMOKE_OUT")
 if out_path:
@@ -24,6 +22,7 @@ if out_path:
             sort_keys=True,
         )
 
-app = QApplication.instance()
-if app is not None:
-    QTimer.singleShot(0, app.quit)
+# The AppImage smoke test only needs to prove that the bundled PyQGIS runtime
+# imports successfully. Avoid Qt/QGIS teardown in CI, which can abort after the
+# success marker has already been written.
+os._exit(0)
