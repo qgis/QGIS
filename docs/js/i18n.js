@@ -28,6 +28,8 @@
       "hero.linkEnterprise": "Enterprise",
       "hero.linkDemo": "Vedi demo",
       "hero.linkCloud": "Strata Cloud",
+      "hero.demo.alt":
+        "Demo Strata: mappa di priorità soccorsi dopo il terremoto in Venezuela",
 
       "download.title": "Scarica Strata",
       "download.subtitle": "macOS, Windows e Linux. Binari da GitHub Releases.",
@@ -119,6 +121,8 @@
       "hero.linkEnterprise": "Enterprise",
       "hero.linkDemo": "See demo",
       "hero.linkCloud": "Strata Cloud",
+      "hero.demo.alt":
+        "Strata demo: rescue priority map after the Venezuela earthquake",
 
       "download.title": "Download Strata",
       "download.subtitle": "macOS, Windows, and Linux. Binaries from GitHub Releases.",

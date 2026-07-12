@@ -299,8 +299,14 @@ img {
   background: var(--bg-elevated);
 }
 
-.hero-visual img {
+.hero-visual img,
+.hero-visual-media {
   width: 100%;
+}
+
+.hero-visual-media {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 
 /* Download */
