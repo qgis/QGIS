@@ -8,6 +8,12 @@
     "optional": true,
     "default": "'WithBraces'",
     "description": "The format, as the UUID will be formatted. 'WithBraces', 'WithoutBraces' or 'Id128'."
+  },
+  {
+    "arg": "version",
+    "optional": true,
+    "default": "4",
+    "description": "The UUID version to create. Supported versions are version 4 or 7."
   }],
   "examples": [{
     "expression": "uuid()",
@@ -18,6 +24,9 @@
   }, {
     "expression": "uuid('Id128')",
     "returns": "'0bd2f60ff1574a6d96afd4ba4cb366a1'"
+  }, {
+    "expression": "uuid(version:=7)",
+    "returns": "'{0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}'"
   }],
   "tags": ["createuuid", "generates", "method", "unique", "quuid", "identifier", "row"]
 }
