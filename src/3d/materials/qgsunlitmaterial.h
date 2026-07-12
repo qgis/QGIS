@@ -81,7 +81,6 @@ class _3D_EXPORT QgsUnlitMaterial : public QgsMaterial
     void updateShaders();
 
     Qt3DRender::QShaderProgram *mShaderProgram = nullptr;
-    Qgis::MaterialRenderingTechnique mRenderingTechnique;
     bool mDataDefinedEnabled = false;
     bool mInstanced = false;
     Qgis::InstancedMaterialFlags mInstanceFlags;

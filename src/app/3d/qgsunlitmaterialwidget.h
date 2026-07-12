@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSUNLIITMATERIALWIDGET_H
-#define QGSUNLIITMATERIALWIDGET_H
+#ifndef QGSUNLITMATERIALWIDGET_H
+#define QGSUNLITMATERIALWIDGET_H
 
 #include "ui_unlitmaterialwidgetbase.h"
 
@@ -38,4 +38,4 @@ class QgsUnlitMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Unl
     void updatePreview();
 };
 
-#endif // QGSUNLIITMATERIALWIDGET_H
+#endif // QGSUNLITMATERIALWIDGET_H
