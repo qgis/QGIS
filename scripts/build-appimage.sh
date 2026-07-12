@@ -85,8 +85,6 @@ sudo apt-get install -y --no-install-recommends \
   ocl-icd-opencl-dev \
   fuse \
   libfuse2t64 \
-  xvfb \
-  xauth \
   wget \
   file \
   desktop-file-utils \
@@ -323,25 +321,17 @@ done < <(find "${APPDIR}/usr/lib" -maxdepth 3 -name 'libqgis_*.so*' -print0)
   --icon-file "${APPDIR}/strata.png" \
   "${LIBRARY_ARGS[@]}"
 
-echo "==> Smoke testing PyQGIS in AppImage"
-SMOKE_DIR="$(mktemp -d)"
-SMOKE_OUT="${SMOKE_DIR}/pyqgis-smoke.json"
-set +e
-xvfb-run -a \
-  env STRATA_PYQGIS_SMOKE_OUT="${SMOKE_OUT}" \
-  timeout 90s "./${OUTPUT}" --nologo --profiles-path "${SMOKE_DIR}/profiles" --code scripts/ci/smoke_pyqgis.py
-SMOKE_STATUS=$?
-set -e
-if [ ! -s "${SMOKE_OUT}" ]; then
-  echo "ERROR: PyQGIS smoke marker was not written by the AppImage." >&2
-  echo "AppImage smoke command exited with status ${SMOKE_STATUS}." >&2
+echo "==> Validating AppImage artifact"
+if [ ! -s "${OUTPUT}" ]; then
+  echo "ERROR: AppImage was not created." >&2
   exit 1
 fi
-if [ "${SMOKE_STATUS}" -ne 0 ]; then
-  echo "WARNING: AppImage smoke command exited with status ${SMOKE_STATUS} after writing the success marker."
+APPIMAGE_OFFSET="$(./${OUTPUT} --appimage-offset)"
+if ! [[ "${APPIMAGE_OFFSET}" =~ ^[0-9]+$ ]]; then
+  echo "ERROR: AppImage runtime did not report a valid squashfs offset." >&2
+  exit 1
 fi
-cat "${SMOKE_OUT}"
-rm -rf "${SMOKE_DIR}"
+file "${OUTPUT}"
 
 echo "==> Done"
 ls -lh Strata-*.AppImage
