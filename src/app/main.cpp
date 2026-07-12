@@ -245,7 +245,7 @@ namespace
   QString computeAppDataLocation( const QString &org, const QString &app )
   {
 #if defined( Q_OS_WIN )
-    const QString base = qEnvironmentVariable( u"APPDATA"_s );
+    const QString base = qEnvironmentVariable( "APPDATA" );
 #elif defined( Q_OS_MACOS )
     const QString base = QDir::homePath() + u"/Library/Application Support"_s;
 #else
