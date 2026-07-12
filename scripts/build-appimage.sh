@@ -37,9 +37,11 @@ sudo apt-get install -y --no-install-recommends \
   python3-packaging \
   python3-requests \
   python3-sip-dev \
+  python3-pyqt6.sip \
   python3-pyqtbuild \
   pyqt6-dev \
   pyqt6-dev-tools \
+  pyqt6.qsci-dev \
   sip-tools \
   libqt6core5compat6-dev \
   qt6-base-dev \
