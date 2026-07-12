@@ -47,7 +47,11 @@ jobs:
               exit 1
             fi
             echo "Modified files: ${MODIFIED_FILES[@]}"
-            pre-commit run --files ${MODIFIED_FILES[@]} || (echo "Differences:" && git diff && echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
+            if [ "${#MODIFIED_FILES[@]}" -eq 0 ]; then
+              echo "No modified files; skipping pre-commit."
+              exit 0
+            fi
+            pre-commit run --files "${MODIFIED_FILES[@]}" || (echo "Differences:" && git diff && echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
         env:
           GITHUB_EVENT_PULL_REQUEST_BASE_REF: ${{ github.event.pull_request.base.ref }}
 
