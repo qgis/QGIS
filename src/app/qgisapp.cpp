@@ -2424,6 +2424,7 @@ void QgisApp::dropEvent( QDropEvent *event )
     {
       QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionMethod( method );
       mLayerTreeDrop = false;
+      updateNewLayerInsertionPoint();
     }
 
     timer->deleteLater();
@@ -4527,6 +4528,17 @@ void QgisApp::setupConnections()
 
   connect( mLayerTreeView, &QgsLayerTreeView::datasetsDropped, this, [this]( QDropEvent *event ) {
     mLayerTreeDrop = true;
+
+    QgsLayerTreeRegistryBridge::InsertionPoint insertionPoint = mLayerTreeView->datasetDropInsertionPoint();
+    if ( insertionPoint.group )
+    {
+      // if the target group is embedded, defer to the first non-embedded parent, at worst the top level item
+      QgsLayerTreeGroup *insertGroup = QgsLayerTreeUtils::firstGroupWithoutCustomProperty( insertionPoint.group, u"embedded"_s );
+      if ( insertGroup != insertionPoint.group )
+        insertionPoint = QgsLayerTreeRegistryBridge::InsertionPoint( insertGroup, 0 );
+      QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( insertionPoint );
+    }
+
     dropEvent( event );
   } );
 
@@ -5107,6 +5119,9 @@ void QgisApp::setupLayerTreeViewFromSettings()
 
 void QgisApp::updateNewLayerInsertionPoint()
 {
+  if ( mLayerTreeDrop )
+    return;
+
   QgsLayerTreeRegistryBridge::InsertionPoint insertionPoint = layerTreeInsertionPoint();
   QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( insertionPoint );
 }

@@ -15,6 +15,7 @@
 
 #include "qgslayertreeview.h"
 
+#include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
@@ -24,13 +25,19 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
 #include "qgsmessagebar.h"
+#include "qgsmimedatautils.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidersublayerdetails.h"
 #include "qgsscreenhelper.h"
+#include "qgssvgcache.h"
 
 #include <QApplication>
 #include <QContextMenuEvent>
+#include <QFileInfo>
 #include <QHeaderView>
 #include <QMenu>
 #include <QMimeData>
+#include <QPainter>
 #include <QScrollBar>
 #include <QString>
 
@@ -838,56 +845,370 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 
 void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
+  if ( isDatasetDrag( event->mimeData() ) )
   {
-    // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
-    {
-      event->accept();
-      return;
-    }
+    mDragPayloadType = classifyDragPayload( event->mimeData() );
+    mDatasetDragActive = true;
+    viewport()->update();
+    event->accept();
+    return;
   }
   QTreeView::dragEnterEvent( event );
 }
 
 void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
+  if ( isDatasetDrag( event->mimeData() ) )
   {
-    // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
+    switch ( mDragPayloadType )
     {
-      event->accept();
-      return;
+      case DragPayloadType::Datasets:
+      {
+        const DropTarget target = computeDropTarget( event->position().toPoint() );
+        mDropIndicatorRect = target.indicatorRect;
+        mDropIndicatorInto = target.into;
+        viewport()->update();
+        event->accept();
+        break;
+      }
+
+      case DragPayloadType::Project:
+        clearDropIndicator();
+        event->accept();
+        break;
+
+      case DragPayloadType::Invalid:
+        clearDropIndicator();
+        event->ignore();
+        break;
     }
+    return;
   }
+  clearDropIndicator();
   QTreeView::dragMoveEvent( event );
+}
+
+void QgsLayerTreeView::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  mDatasetDragActive = false;
+  viewport()->update();
+  clearDropIndicator();
+  QTreeView::dragLeaveEvent( event );
 }
 
 void QgsLayerTreeView::dropEvent( QDropEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
+  if ( isDatasetDrag( event->mimeData() ) )
   {
-    // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
+    mDatasetDragActive = false;
+    viewport()->update();
+
+    if ( mDragPayloadType == DragPayloadType::Invalid )
     {
-      event->accept();
-
-      QModelIndex index = indexAt( event->pos() );
-      if ( index.isValid() )
-      {
-        setCurrentIndex( index );
-      }
-
-      emit datasetsDropped( event );
+      // should not be reached as drag moves are not accepted
+      clearDropIndicator();
+      event->ignore();
       return;
     }
+
+    event->accept();
+
+    const DropTarget target = mDragPayloadType == DragPayloadType::Project ? DropTarget() : computeDropTarget( event->position().toPoint() );
+    clearDropIndicator();
+
+    const QModelIndex index = indexAt( event->position().toPoint() );
+    if ( index.isValid() )
+    {
+      setCurrentIndex( index );
+    }
+
+    // expose the insertion point matching the drop position while handlers run
+    mDatasetDropInsertionPoint = QgsLayerTreeRegistryBridge::InsertionPoint( target.group, target.row );
+    emit datasetsDropped( event );
+    mDatasetDropInsertionPoint = QgsLayerTreeRegistryBridge::InsertionPoint( nullptr, 0 );
+    return;
   }
   if ( event->keyboardModifiers() & Qt::AltModifier || event->keyboardModifiers() & Qt::ControlModifier )
   {
     event->accept();
   }
   QTreeView::dropEvent( event );
+}
+
+bool QgsLayerTreeView::viewportEvent( QEvent *event )
+{
+  // Safety net for the drag overlay: when a refused drop is released over the view,
+  // some platforms deliver neither a drop nor a drag leave event. Mouse and hover
+  // events cannot occur while a drag is in progress, so receiving one here means the
+  // drag is over and any leftover overlay state must be cleared.
+  if ( mDatasetDragActive )
+  {
+    switch ( event->type() )
+    {
+      case QEvent::MouseMove:
+      case QEvent::HoverEnter:
+      case QEvent::HoverMove:
+      case QEvent::HoverLeave:
+        mDatasetDragActive = false;
+        clearDropIndicator();
+        viewport()->update();
+        break;
+
+      default:
+        break;
+    }
+  }
+  return QTreeView::viewportEvent( event );
+}
+
+void QgsLayerTreeView::paintEvent( QPaintEvent *event )
+{
+  QTreeView::paintEvent( event );
+
+  if ( mDatasetDragActive && mDragPayloadType != DragPayloadType::Datasets )
+  {
+    QPainter painter( viewport() );
+    paintDragOverlay( painter );
+    return;
+  }
+
+  if ( mDropIndicatorRect.isNull() )
+    return;
+
+  QPainter painter( viewport() );
+  painter.setRenderHint( QPainter::Antialiasing );
+  const QPen pen( palette().color( QPalette::Highlight ), 2 );
+  painter.setPen( pen );
+  if ( mDropIndicatorInto )
+  {
+    painter.drawRect( QRectF( mDropIndicatorRect ).adjusted( 1, 1, -1, -1 ) );
+  }
+  else
+  {
+    painter.drawLine( mDropIndicatorRect.left(), mDropIndicatorRect.top(), mDropIndicatorRect.right(), mDropIndicatorRect.top() );
+  }
+}
+
+void QgsLayerTreeView::paintDragOverlay( QPainter &painter ) const
+{
+  const int iconSize = fontMetrics().height() * 3;
+
+  QString message;
+  QPixmap pixmap;
+  switch ( mDragPayloadType )
+  {
+    case DragPayloadType::Datasets:
+      return;
+
+    case DragPayloadType::Project:
+      message = tr( "Load QGIS project\nThe current project will be replaced" );
+      pixmap = QPixmap( QgsApplication::iconsPath() + u"qgis-icon-512x512.png"_s ).scaled( QSize( iconSize, iconSize ) * devicePixelRatioF(), Qt::KeepAspectRatio, Qt::SmoothTransformation );
+      pixmap.setDevicePixelRatio( devicePixelRatioF() );
+      break;
+
+    case DragPayloadType::Invalid:
+    {
+      message = tr( "This file type cannot be loaded" );
+      const double renderSize = iconSize * devicePixelRatioF();
+      bool fitsInCache = false;
+      QImage image
+        = QgsApplication::svgCache()->svgAsImage( QgsApplication::pkgDataPath() + u"/svg/backgrounds/background_forbidden.svg"_s, renderSize, QColor(), QColor( 180, 180, 180 ), renderSize / 16, 1.0, fitsInCache );
+      image.setDevicePixelRatio( devicePixelRatioF() );
+      pixmap = QPixmap::fromImage( image );
+      break;
+    }
+  }
+
+  painter.setRenderHint( QPainter::Antialiasing );
+
+  // partially hide the view
+  QColor washColor = palette().color( QPalette::Window );
+  washColor.setAlpha( 220 );
+  painter.fillRect( viewport()->rect(), washColor );
+
+  QFont messageFont = font();
+  messageFont.setBold( true );
+  painter.setFont( messageFont );
+
+  // center the icon and the message as one block, with a one line high gap in between
+  const int spacing = fontMetrics().height();
+  const QRect availableRect = viewport()->rect().adjusted( iconSize / 2, 0, -iconSize / 2, 0 );
+  const QRect textRect = painter.boundingRect( availableRect, Qt::AlignHCenter | Qt::TextWordWrap, message );
+  const int blockTop = ( viewport()->height() - ( iconSize + spacing + textRect.height() ) ) / 2;
+
+  painter.drawPixmap( QPointF( ( viewport()->width() - iconSize ) / 2.0, blockTop ), pixmap );
+
+  painter.setPen( palette().color( QPalette::WindowText ) );
+  painter.drawText( QRect( availableRect.left(), blockTop + iconSize + spacing, availableRect.width(), textRect.height() ), Qt::AlignHCenter | Qt::TextWordWrap, message );
+}
+
+QgsLayerTreeRegistryBridge::InsertionPoint QgsLayerTreeView::datasetDropInsertionPoint() const
+{
+  return mDatasetDropInsertionPoint;
+}
+
+bool QgsLayerTreeView::isDatasetDrag( const QMimeData *mimeData )
+{
+  return !mimeData->hasFormat( u"application/qgis.layertreemodeldata"_s ) && ( mimeData->hasUrls() || mimeData->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) );
+}
+
+QgsLayerTreeView::DragPayloadType QgsLayerTreeView::classifyDragPayload( const QMimeData *mimeData )
+{
+  bool hasDataset = false;
+
+  if ( QgsMimeDataUtils::isUriList( mimeData ) )
+  {
+    const QgsMimeDataUtils::UriList uris = QgsMimeDataUtils::decodeUriList( mimeData );
+    for ( const QgsMimeDataUtils::Uri &uri : uris )
+    {
+      if ( uri.layerType == "project"_L1 )
+      {
+        return DragPayloadType::Project;
+      }
+      // any other uri comes from QGIS itself (e.g. the browser) and is a loadable dataset
+      hasDataset = true;
+    }
+  }
+
+  const QList<QUrl> urls = mimeData->urls();
+  for ( const QUrl &url : urls )
+  {
+    const QString fileName = url.toLocalFile();
+    if ( fileName.isEmpty() )
+    {
+      // remote url: assume it points to a loadable dataset
+      hasDataset = true;
+      continue;
+    }
+    if ( fileName.endsWith( ".qgs"_L1, Qt::CaseInsensitive ) || fileName.endsWith( ".qgz"_L1, Qt::CaseInsensitive ) )
+      return DragPayloadType::Project;
+
+    if ( !hasDataset )
+    {
+      const QFileInfo fileInfo( fileName );
+      if ( fileInfo.suffix().isEmpty() || fileInfo.isDir() )
+      {
+        // the fast, extension based check cannot say anything meaningful about
+        // extensionless files and directories, while the full dataset open attempted on
+        // drop might succeed (e.g. raster file without extension, directory based formats).
+        hasDataset = true;
+      }
+      else
+      {
+        hasDataset = !QgsProviderRegistry::instance()->querySublayers( fileName, Qgis::SublayerQueryFlag::FastScan ).isEmpty();
+      }
+    }
+  }
+
+  return hasDataset ? DragPayloadType::Datasets : DragPayloadType::Invalid;
+}
+
+QgsLayerTreeView::DropTarget QgsLayerTreeView::computeDropTarget( const QPoint &pos ) const
+{
+  DropTarget target;
+  QgsLayerTree *root = layerTreeModel() ? layerTreeModel()->rootGroup() : nullptr;
+  if ( !root )
+  {
+    return target;
+  }
+
+  const QModelIndex index = indexAt( pos );
+  if ( !index.isValid() )
+  {
+    // Below the last item: append to the root group
+    target.group = root;
+    target.row = root->children().count();
+    target.indicatorRect = indicatorRectForInsertion( root, target.row );
+    return target;
+  }
+
+  QgsLayerTreeNode *node = index2node( index );
+  if ( !node )
+  {
+    // Legend or other embedded node: find the layer node owning it
+    QModelIndex layerIndex = index;
+    while ( layerIndex.isValid() && !index2node( layerIndex ) )
+    {
+      layerIndex = layerIndex.parent();
+    }
+    if ( !layerIndex.isValid() || !( node = index2node( layerIndex ) ) )
+    {
+      target.group = root;
+      target.row = root->children().count();
+      target.indicatorRect = indicatorRectForInsertion( root, target.row );
+      return target;
+    }
+    // Insert below the layer owning the legend node
+    QgsLayerTreeGroup *parent = QgsLayerTree::toGroup( node->parent() ? node->parent() : root );
+    target.group = parent;
+    target.row = parent->children().indexOf( node ) + 1;
+    target.indicatorRect = indicatorRectForInsertion( parent, target.row );
+    return target;
+  }
+
+  QgsLayerTreeGroup *parent = node->parent() ? QgsLayerTree::toGroup( node->parent() ) : root;
+  const int nodeRow = parent->children().indexOf( node );
+  const QRect rect = visualRect( index );
+
+  if ( QgsLayerTree::isGroup( node ) )
+  {
+    // Top quarter: above; bottom quarter: below; middle: into the group
+    if ( pos.y() < rect.top() + rect.height() / 4 )
+    {
+      target.group = parent;
+      target.row = nodeRow;
+      target.indicatorRect = QRect( rect.left(), rect.top(), viewport()->width() - rect.left(), 0 );
+    }
+    else if ( pos.y() > rect.bottom() - rect.height() / 4 )
+    {
+      target.group = parent;
+      target.row = nodeRow + 1;
+      target.indicatorRect = QRect( rect.left(), rect.bottom() + 1, viewport()->width() - rect.left(), 0 );
+    }
+    else
+    {
+      target.group = QgsLayerTree::toGroup( node );
+      target.row = 0;
+      target.into = true;
+      target.indicatorRect = QRect( rect.left(), rect.top(), viewport()->width() - rect.left(), rect.height() );
+    }
+  }
+  else
+  {
+    // Layer node: upper half inserts above, lower half below
+    const bool below = pos.y() >= rect.center().y();
+    target.group = parent;
+    target.row = nodeRow + ( below ? 1 : 0 );
+    const int y = below ? rect.bottom() + 1 : rect.top();
+    target.indicatorRect = QRect( rect.left(), y, viewport()->width() - rect.left(), 0 );
+  }
+  return target;
+}
+
+QRect QgsLayerTreeView::indicatorRectForInsertion( QgsLayerTreeGroup *group, int row ) const
+{
+  const QList<QgsLayerTreeNode *> children = group->children();
+  if ( row < children.count() )
+  {
+    const QRect rect = visualRect( node2index( children.at( row ) ) );
+    return QRect( rect.left(), rect.top(), viewport()->width() - rect.left(), 0 );
+  }
+  if ( !children.isEmpty() )
+  {
+    const QRect rect = visualRect( node2index( children.constLast() ) );
+    return QRect( rect.left(), rect.bottom() + 1, viewport()->width() - rect.left(), 0 );
+  }
+  return QRect( 0, 0, viewport()->width(), 0 );
+}
+
+void QgsLayerTreeView::clearDropIndicator()
+{
+  if ( !mDropIndicatorRect.isNull() )
+  {
+    mDropIndicatorRect = QRect();
+    mDropIndicatorInto = false;
+    viewport()->update();
+  }
 }
 
 void QgsLayerTreeView::resizeEvent( QResizeEvent *event )
