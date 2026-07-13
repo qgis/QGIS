@@ -1153,9 +1153,9 @@ private:
 };
 
 PDFRealizedFontImpl::PDFRealizedFontImpl() :
+    m_systemFontFaceIndex(0),
     m_library(nullptr),
     m_face(nullptr),
-    m_systemFontFaceIndex(0),
     m_pixelSize(0.0),
     m_parentFont(nullptr),
     m_isEmbedded(false),
