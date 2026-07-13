@@ -186,6 +186,14 @@ class GUI_EXPORT QgsAttributesFormLayoutView : public QgsAttributesFormBaseView
   private:
     //! Selects all the given source model \a indexes, making the last one the current index.
     void selectDroppedItems( const QModelIndexList &indexes );
+
+    //! Recursively records the expanded state of the subtree rooted at source model \a sourceIndex.
+    void storeExpandedState( const QModelIndex &sourceIndex );
+
+    //! Recursively restores the expanded state of the subtree rooted at source model \a sourceIndex.
+    void restoreExpandedState( const QModelIndex &sourceIndex );
+
+    QHash< QgsAttributesFormItem *, bool > mDraggedExpandedState;
 };
 
 

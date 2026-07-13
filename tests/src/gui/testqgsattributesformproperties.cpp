@@ -47,6 +47,7 @@ class TestQgsAttributesFormProperties : public QObject
     void testConfigStored();
     void testRemoveDuplicateField();
     void testDropMultipleItems();
+    void testMoveContainerIntoContainer();
 };
 
 void TestQgsAttributesFormProperties::initTestCase()
@@ -298,6 +299,74 @@ void TestQgsAttributesFormProperties::testDropMultipleItems()
   selectedRowsAndNames( selectedRows, selectedNames );
   QCOMPARE( selectedRows, QList< int >() << 4 << 5 );
   QCOMPARE( selectedNames, QStringList() << u"a"_s << u"b"_s );
+}
+
+void TestQgsAttributesFormProperties::testMoveContainerIntoContainer()
+{
+  // Moving a container into another container (through the filter proxy) must
+  // relocate it, not lose it. This is exercised with the source container
+  // sitting above the destination container under the same parent, so that
+  // removing the source shifts the destination's row — a case that a plain
+  // (non-persistent) destination parent index would get wrong.
+
+  auto layer = std::make_unique< QgsVectorLayer >( u"Point?field=a:integer&field=b:integer"_s, u"test"_s, u"memory"_s );
+
+  // tab
+  //  ├─ groupA
+  //  │   └─ a
+  //  └─ groupB
+  //      └─ b
+  QgsAttributeEditorContainer *tab = new QgsAttributeEditorContainer( u"tab"_s, nullptr );
+  QgsAttributeEditorContainer *groupA = new QgsAttributeEditorContainer( u"groupA"_s, tab );
+  groupA->addChildElement( new QgsAttributeEditorField( u"a"_s, 0, groupA ) );
+  tab->addChildElement( groupA );
+  QgsAttributeEditorContainer *groupB = new QgsAttributeEditorContainer( u"groupB"_s, tab );
+  groupB->addChildElement( new QgsAttributeEditorField( u"b"_s, 1, groupB ) );
+  tab->addChildElement( groupB );
+
+  QgsEditFormConfig cfg = layer->editFormConfig();
+  cfg.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
+  cfg.clearTabs();
+  cfg.addTab( tab );
+  layer->setEditFormConfig( cfg );
+
+  QgsAttributesFormProperties attributeFormProperties( layer.get() );
+  attributeFormProperties.init();
+
+  QgsAttributesFormProxyModel *layoutProxy = attributeFormProperties.mFormLayoutProxyModel;
+  QgsAttributesFormLayoutModel *layoutModel = attributeFormProperties.mFormLayoutModel;
+
+  const QModelIndex tabProxyIndex = layoutProxy->index( 0, 0, QModelIndex() );
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 2 );
+  const QModelIndex groupAProxyIndex = layoutProxy->index( 0, 0, tabProxyIndex );
+  const QModelIndex groupBProxyIndex = layoutProxy->index( 1, 0, tabProxyIndex );
+  QCOMPARE( groupAProxyIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"groupA"_s );
+  QCOMPARE( groupBProxyIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"groupB"_s );
+
+  // Move groupA into groupB (append)
+  QMimeData *mimeData = layoutProxy->mimeData( QModelIndexList() << groupAProxyIndex );
+  QVERIFY( mimeData );
+  QVERIFY( layoutProxy->dropMimeData( mimeData, Qt::MoveAction, -1, -1, groupBProxyIndex ) );
+  delete mimeData;
+
+  // The tab now holds only groupB, which in turn holds [b, groupA]; groupA still holds a.
+  const QModelIndex tabSourceIndex = layoutModel->index( 0, 0, QModelIndex() );
+  QCOMPARE( layoutModel->rowCount( tabSourceIndex ), 1 );
+  const QModelIndex movedGroupB = layoutModel->index( 0, 0, tabSourceIndex );
+  QCOMPARE( movedGroupB.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"groupB"_s );
+  QCOMPARE( layoutModel->rowCount( movedGroupB ), 2 );
+  QCOMPARE( layoutModel->index( 0, 0, movedGroupB ).data( QgsAttributesFormModel::ItemIdRole ).toString(), u"b"_s );
+  const QModelIndex movedGroupA = layoutModel->index( 1, 0, movedGroupB );
+  QCOMPARE( movedGroupA.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"groupA"_s );
+  QCOMPARE( layoutModel->rowCount( movedGroupA ), 1 );
+  QCOMPARE( layoutModel->index( 0, 0, movedGroupA ).data( QgsAttributesFormModel::ItemIdRole ).toString(), u"a"_s );
+
+  // The proxy must stay consistent with the source model
+  QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 1 );
+  const QModelIndex groupBProxyAfter = layoutProxy->index( 0, 0, tabProxyIndex );
+  QCOMPARE( groupBProxyAfter.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"groupB"_s );
+  QCOMPARE( layoutProxy->rowCount( groupBProxyAfter ), 2 );
+  QCOMPARE( layoutProxy->index( 1, 0, groupBProxyAfter ).data( QgsAttributesFormModel::ItemIdRole ).toString(), u"groupA"_s );
 }
 
 QGSTEST_MAIN( TestQgsAttributesFormProperties )
