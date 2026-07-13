@@ -1334,9 +1334,18 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   Q_UNUSED( preserveCircular );
   Q_UNUSED( splitFeature );
 
+  QVector< QgsGeometry> newGeoms;
+
   QgsGeos geos( this->constGet() );
   mLastError.clear();
-  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *segmentizedLine, newGeometries, topological, topologyTestPoints, &mLastError );
+  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *segmentizedLine, newGeoms, topological, topologyTestPoints, &mLastError );
+
+  if ( result == QgsGeometryEngine::Success )
+  {
+    if ( splitFeature )
+      *this = newGeoms.takeAt( 0 );
+    newGeometries = newGeoms;
+  }
   switch ( result )
   {
     case QgsGeometryEngine::Success:
