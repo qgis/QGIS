@@ -134,12 +134,13 @@ class APP_EXPORT QgsSimplifyUserInputWidget : public QWidget, private Ui::Simpli
     Q_OBJECT
 
   public:
-    QgsSimplifyUserInputWidget( QWidget *parent = nullptr );
+    QgsSimplifyUserInputWidget( QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     void updateStatusText( const QString &text );
     void enableOkButton( bool enabled );
 
     void setConfig( QgsMapToolSimplify::Method method, double tolerance, Qgis::MapToolUnit units, double smoothOffset, int smoothIterations );
+    void setTargetLayer( QgsMapLayer *layer );
 
   signals:
     void accepted();
@@ -153,6 +154,11 @@ class APP_EXPORT QgsSimplifyUserInputWidget : public QWidget, private Ui::Simpli
   protected:
     bool eventFilter( QObject *object, QEvent *ev ) override;
     void keyReleaseEvent( QKeyEvent *event ) override;
+
+  private:
+    QString mapUnitComboText() const;
+
+    QPointer< QgsMapCanvas > mCanvas;
 };
 
 #endif

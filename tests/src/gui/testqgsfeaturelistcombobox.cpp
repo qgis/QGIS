@@ -24,6 +24,7 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QBrush>
 #include <QLineEdit>
 #include <QSignalSpy>
 #include <QString>
@@ -53,6 +54,7 @@ class TestQgsFeatureListComboBox : public QObject
     void nullRepresentation();
     void testNotExistingYetFeature();
     void testFeatureFurtherThanFetchLimit();
+    void testNullFormatting();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer;
@@ -305,6 +307,54 @@ void TestQgsFeatureListComboBox::testFeatureFurtherThanFetchLimit()
   QCOMPARE( cb->lineEdit()->text(), u"33"_s );
   QCOMPARE( model->mEntries.count(), 21 );
   QCOMPARE( model->mEntries.at( 0 ).identifierFields.at( 0 ).toInt(), 33 );
+}
+
+void TestQgsFeatureListComboBox::testNullFormatting()
+{
+  auto cb = std::make_unique<QgsFeatureListComboBox>();
+
+  auto layer = std::make_unique<QgsVectorLayer>( u"LineString?field=pk:int&field=material:string"_s, u"vl2"_s, u"memory"_s );
+  layer->setDisplayExpression( u"pk"_s );
+  layer->startEditing();
+
+  QgsFeature ft1( layer->fields() );
+  ft1.setAttribute( u"pk"_s, 10 );
+  ft1.setAttribute( u"material"_s, "iron" );
+  layer->addFeature( ft1 );
+
+  QgsFeature ft2( layer->fields() );
+  ft2.setAttribute( u"pk"_s, 20 );
+  ft2.setAttribute( u"material"_s, QVariant() );
+  layer->addFeature( ft2 );
+
+  layer->commitChanges();
+
+  QgsApplication::setNullRepresentation( u"nope"_s );
+
+  QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
+  QSignalSpy spy( model, &QgsFeatureFilterModel::filterJobCompleted );
+
+  cb->setAllowNull( true );
+  cb->setSourceLayer( layer.get() );
+  cb->setIdentifierFields( { u"pk"_s } );
+  cb->setDisplayExpression( u"\"material\""_s );
+
+  //check if everything is fine:
+  spy.wait();
+
+  QCOMPARE( model->rowCount( QModelIndex() ), 3 );
+
+  // the null entry should be formatted as null (gray)
+  QCOMPARE( model->data( model->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), u"nope"_s );
+  QCOMPARE( model->data( model->index( 0, 0, QModelIndex() ), Qt::ForegroundRole ).value<QBrush>().color(), QColor( Qt::gray ) );
+
+  // real features must not be formatted as null, even if their display value is NULL
+  QCOMPARE( model->data( model->index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
+  QVERIFY( !model->data( model->index( 1, 0, QModelIndex() ), Qt::FontRole ).value<QFont>().italic() );
+  QVERIFY( !model->data( model->index( 1, 0, QModelIndex() ), Qt::ForegroundRole ).isValid() );
+  QCOMPARE( model->data( model->index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), u"iron"_s );
+  QVERIFY( !model->data( model->index( 2, 0, QModelIndex() ), Qt::FontRole ).value<QFont>().italic() );
+  QVERIFY( !model->data( model->index( 2, 0, QModelIndex() ), Qt::ForegroundRole ).isValid() );
 }
 
 QGSTEST_MAIN( TestQgsFeatureListComboBox )

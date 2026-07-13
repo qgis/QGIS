@@ -570,6 +570,44 @@ void TestQgsField::displayString()
   QCOMPARE( stringArrayField.displayString( QStringList() << "A" << "B" << "C" ), u"A, B, C"_s );
   const QgsField intArrayField( u"intArray"_s, QMetaType::Type::QVariantList, u"IntArray"_s );
   QCOMPARE( intArrayField.displayString( QVariantList() << 1 << 2 << 3 ), u"1, 2, 3"_s );
+
+  // Test string-based json display strings
+  {
+    const QgsField jsonField( u"json"_s, QMetaType::Type::QString, u"json"_s );
+    QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
+    QCOMPARE( jsonField.displayString( jsonValue ), QString( "[\n    1,\n    5,\n    8\n]\n" ) );
+    QVariantMap variantMap;
+    variantMap.insert( u"a"_s, 1 );
+    variantMap.insert( u"c"_s, 3 );
+    jsonValue = QVariant::fromValue( variantMap );
+    QCOMPARE( jsonField.displayString( jsonValue ), QString( "{\n    \"a\": 1,\n    \"c\": 3\n}\n" ) );
+    //primitive values fall back to the original value
+    jsonValue = QVariant::fromValue( QString( "foo" ) );
+    QCOMPARE( jsonField.displayString( jsonValue ), QString( "foo" ) );
+    jsonValue = QVariant::fromValue( QString( "42" ) );
+    QCOMPARE( jsonField.displayString( jsonValue ), QString( "42" ) );
+    jsonValue = QVariant::fromValue( QString( "true" ) );
+    QCOMPARE( jsonField.displayString( jsonValue ), QString( "true" ) );
+  }
+
+  // Test map-based json field (i.e. OGR geopackage or Postgres JSON fields) display strings
+  {
+    const QgsField jsonField( u"json"_s, QMetaType::Type::QVariantMap, u"json"_s );
+    QVariant jsonValue = QVariant::fromValue( QVariantList() << 1 << 5 << 8 );
+    QCOMPARE( jsonField.displayString( jsonValue ), QString( "[\n    1,\n    5,\n    8\n]\n" ) );
+    QVariantMap variantMap;
+    variantMap.insert( u"a"_s, 1 );
+    variantMap.insert( u"c"_s, 3 );
+    jsonValue = QVariant::fromValue( variantMap );
+    QCOMPARE( jsonField.displayString( jsonValue ), QString( "{\n    \"a\": 1,\n    \"c\": 3\n}\n" ) );
+    //primitive values fall back to the original value
+    jsonValue = QVariant::fromValue( QString( "foo" ) );
+    QCOMPARE( jsonField.displayString( jsonValue ), QString( "foo" ) );
+    jsonValue = QVariant::fromValue( QString( "42" ) );
+    QCOMPARE( jsonField.displayString( jsonValue ), QString( "42" ) );
+    jsonValue = QVariant::fromValue( QString( "true" ) );
+    QCOMPARE( jsonField.displayString( jsonValue ), QString( "true" ) );
+  }
 }
 
 void TestQgsField::convertCompatible()

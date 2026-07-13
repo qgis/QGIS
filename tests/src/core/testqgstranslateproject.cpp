@@ -163,6 +163,10 @@ void TestQgsTranslateProject::createTsFile()
   QVERIFY( tsFileContent.contains( "<source>Runwayid</source>" ) );
   //Value (Alias: Name)
   QVERIFY( tsFileContent.contains( "<source>Name</source>" ) );
+  //Name (Custom Comment: This is the ID of the runway)
+  QVERIFY( tsFileContent.contains( "<source>This is the ID of the runway</source>" ) );
+  //Value (Custom Comment: And - confusingly enough - this is the name of the runway)
+  QVERIFY( tsFileContent.contains( "<source>And - confusingly enough - this is the name of the runway</source>" ) );
   //Name (Constraint Description: Road needs a type)
   QVERIFY( tsFileContent.contains( "<source>Road needs a type</source>" ) );
   //Value (Constraint Description: Value should not be 1337)
@@ -329,6 +333,11 @@ void TestQgsTranslateProject::translateProject()
   QCOMPARE( lines_fields.field( u"Name"_s ).alias(), u"Pistenid"_s ); //#spellok
   //Value (Alias: Name) -> Pistenname
   QCOMPARE( lines_fields.field( u"Value"_s ).alias(), u"Pistenname"_s ); //#spellok
+  //Name (Custom Comment: This is the ID of the runway) -> Das ist die ID der Piste
+  QCOMPARE( lines_fields.field( u"Name"_s ).customComment(), u"Das ist die ID der Piste"_s ); //#spellok
+  //Value (Custom Comment: And - confusingly enough - this is the name of the runway) -> Und das ist - verwirrend genug - der Name der Piste
+  QCOMPARE( lines_fields.field( u"Value"_s ).customComment(), u"Und das ist - verwirrend genug - der Name der Piste"_s ); //#spellok
+
   //Name (Constraint Description: Road needs a type)
   QCOMPARE( lines_fields.field( u"Name"_s ).constraints().constraintDescription(), u"Piste braucht eine Art"_s ); //#spellok
   //Value (Constraint Description: Value should not be 1337)

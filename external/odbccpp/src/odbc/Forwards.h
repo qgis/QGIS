@@ -20,6 +20,7 @@ class ResultSetMetaDataBase;
 class ResultSetMetaDataUnicode;
 class StatementBase;
 class Statement;
+class StringConverter;
 class ValueBuffer;
 //------------------------------------------------------------------------------
 typedef Reference<Connection> ConnectionRef;

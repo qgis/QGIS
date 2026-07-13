@@ -28,6 +28,7 @@
 #include "qgsprojectstorageregistry.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsserverinterface.h"
 #include "qgsserverprojectutils.h"
 #include "qgsvectorlayer.h"
 
@@ -149,7 +150,7 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
   return AVAILABLE_PROJECTS;
 }
 
-json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServerSettings *serverSettings, const QgsServerRequest &request )
+json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServerSettings *serverSettings, const QgsServerRequest &request, const QgsServerInterface *serverInterface )
 {
   // Helper for QStringList
   auto jList = []( const QStringList &l ) -> json {
@@ -312,11 +313,20 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     const bool useIds { QgsServerProjectUtils::wmsUseLayerIds( *p ) };
     QStringList typenames;
     const QStringList wmsRestrictedLayers { QgsServerProjectUtils::wmsRestrictedLayers( *p ) };
+    const QStringList wfsLayerIds { QgsServerProjectUtils::wfsLayerIds( *p ) };
+    QSet<QString> allowedLayerIds;
     const auto constLayers { p->mapLayers().values() };
     for ( const auto &l : constLayers )
     {
       if ( !wmsRestrictedLayers.contains( l->name() ) )
       {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        if ( serverInterface && serverInterface->accessControls() && !serverInterface->accessControls()->layerReadPermission( l ) )
+        {
+          continue;
+        }
+#endif
+        allowedLayerIds.insert( l->id() );
         typenames.push_back( useIds ? l->id() : l->name() );
       }
     }
@@ -403,7 +413,15 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     capabilities["owsServiceTitle"] = QgsServerProjectUtils::owsServiceTitle( *p ).toStdString();
     capabilities["wcsLayerIds"] = jList( QgsServerProjectUtils::wcsLayerIds( *p ) );
     capabilities["wcsServiceUrl"] = QgsServerProjectUtils::wcsServiceUrl( *p, request, *serverSettings ).toStdString();
-    capabilities["wfsLayerIds"] = jList( QgsServerProjectUtils::wfsLayerIds( *p ) );
+    QStringList filteredWfsLayerIds;
+    for ( const QString &layerId : std::as_const( wfsLayerIds ) )
+    {
+      if ( allowedLayerIds.contains( layerId ) )
+      {
+        filteredWfsLayerIds.push_back( layerId );
+      }
+    }
+    capabilities["wfsLayerIds"] = jList( filteredWfsLayerIds );
     capabilities["wfsServiceUrl"] = QgsServerProjectUtils::wfsServiceUrl( *p, request, *serverSettings ).toStdString();
     capabilities["wfstDeleteLayerIds"] = jList( QgsServerProjectUtils::wfstDeleteLayerIds( *p ) );
     capabilities["wfstInsertLayerIds"] = jList( QgsServerProjectUtils::wfstInsertLayerIds( *p ) );
@@ -453,7 +471,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     QStringList wmsLayersQueryable;
     for ( const auto &l : constLayers )
     {
-      if ( !wmsRestrictedLayers.contains( l->name() ) )
+      if ( allowedLayerIds.contains( l->id() ) )
       {
         json wmsLayer {
           { "name", l->name().toStdString() },
@@ -568,7 +586,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     info["wms_layers_queryable"] = jList( wmsLayersQueryable );
     info["wms_layers_searchable"] = jList( wmsLayersSearchable );
     info["wms_layers_typename_id_map"] = wmsLayersTypenameIdMap;
-    info["toc"] = layerTree( *p, wmsLayersQueryable, wmsLayersSearchable, wmsRestrictedLayers );
+    info["toc"] = layerTree( *p, wmsLayersQueryable, wmsLayersSearchable, wmsRestrictedLayers, allowedLayerIds, filteredWfsLayerIds );
   }
   else
   {
@@ -577,10 +595,16 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
   return info;
 }
 
-json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringList &wmsLayersQueryable, const QStringList &wmsLayersSearchable, const QStringList &wmsRestrictedLayers )
+json QgsLandingPageUtils::layerTree(
+  const QgsProject &project,
+  const QStringList &wmsLayersQueryable,
+  const QStringList &wmsLayersSearchable,
+  const QStringList &wmsRestrictedLayers,
+  const QSet<QString> &allowedLayerIds,
+  const QStringList &wfsLayerIds
+)
 {
   const bool useIds { QgsServerProjectUtils::wmsUseLayerIds( project ) };
-  const QStringList wfsLayerIds { QgsServerProjectUtils::wfsLayerIds( project ) };
 
 
   std::function<json( const QgsLayerTreeNode *, const QString & )> harvest = [&]( const QgsLayerTreeNode *node, const QString &parentId ) -> json {
@@ -596,7 +620,10 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
     if ( QgsLayerTree::isLayer( node ) )
     {
       const QgsLayerTreeLayer *l { static_cast<const QgsLayerTreeLayer *>( node ) };
-      if ( l->layer() && ( l->layer()->type() == Qgis::LayerType::Vector || l->layer()->type() == Qgis::LayerType::Raster ) && !wmsRestrictedLayers.contains( l->name() ) )
+      if ( l->layer()
+           && ( l->layer()->type() == Qgis::LayerType::Vector || l->layer()->type() == Qgis::LayerType::Raster )
+           && !wmsRestrictedLayers.contains( l->name() )
+           && allowedLayerIds.contains( l->layerId() ) )
       {
         rec["id"] = l->layerId().toStdString();
         nodeIdentifier = l->layerId();

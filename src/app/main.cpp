@@ -1447,7 +1447,15 @@ int main( int argc, char *argv[] )
   // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
   QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
 #else
-  QgsApplication::setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
+  if ( QgsApplication::platformName() == "wayland"_L1 )
+  {
+    // wayland requires a desktop file to correct set window icons
+    QgsApplication::setDesktopFileName( "org.qgis.qgis" );
+  }
+  else
+  {
+    QgsApplication::setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
+  }
 #endif
 
 #ifdef Q_OS_MACOS
@@ -1682,9 +1690,8 @@ int main( int argc, char *argv[] )
     QApplication::setFont( defaultFont );
   }
 
-  QgisApp *qgis = new QgisApp( mypSplash, qgisAppOptions, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, qgisAppOptions, rootProfileFolder, profileName, nullptr, Qt::Window, std::move( customization ) ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( u"QgisApp"_s );
-  qgis->setCustomization( std::move( customization ) );
 
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified

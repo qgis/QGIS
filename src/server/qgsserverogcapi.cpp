@@ -32,6 +32,7 @@ using namespace Qt::StringLiterals;
 QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMime = []() -> QMap<QgsServerOgcApi::ContentType, QStringList> {
   QMap<QgsServerOgcApi::ContentType, QStringList> map;
   map[QgsServerOgcApi::ContentType::JSON] = QStringList { u"application/json"_s };
+  map[QgsServerOgcApi::ContentType::SCHEMA_JSON] = QStringList { u"application/schema+json"_s };
   map[QgsServerOgcApi::ContentType::GEOJSON] = QStringList { u"application/geo+json"_s, u"application/vnd.geo+json"_s, u"application/geojson"_s };
   map[QgsServerOgcApi::ContentType::HTML] = QStringList { u"text/html"_s };
   map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringList { u"application/vnd.oai.openapi+json;version=3.0"_s };
@@ -42,7 +43,7 @@ QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMim
 
 QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType>> QgsServerOgcApi::sContentTypeAliases = []() -> QHash<ContentType, QList<ContentType>> {
   QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType>> map;
-  map[ContentType::JSON] = { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::OPENAPI3 };
+  map[ContentType::JSON] = { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::OPENAPI3, QgsServerOgcApi::ContentType::SCHEMA_JSON };
   return map;
 }();
 
@@ -129,18 +130,24 @@ QString QgsServerOgcApi::profileToString( const Profile &profile )
 {
   switch ( profile )
   {
-    case Profile::RFC7946:
+    case Profile::Rfc7946:
       return u"json"_s;
 #if 0
     // This not supported yet but I am leaving it here because
     // I am very optimistic that it will be supported soon!
-    case Profile::JSONFG:
+    case Profile::JsonFg:
       return u"jsonfg"_s;
-    case Profile::JSONFG_PLUS:
+    case Profile::JsonFgPlus:
       return u"jsonfg-plus"_s;
 #endif
-    case Profile::NONE:
+    case Profile::Unset:
       return QString();
+    case Profile::RelAsKey:
+      return u"rel-as-key"_s;
+    case Profile::RelAsUri:
+      return u"rel-as-uri"_s;
+    case Profile::RelAsLink:
+      return u"rel-as-link"_s;
   }
   Q_UNREACHABLE();
   return QString();
@@ -150,17 +157,23 @@ QString QgsServerOgcApi::profileToUri( const Profile &profile )
 {
   switch ( profile )
   {
-    case Profile::RFC7946:
+    case Profile::Rfc7946:
       return u"http://www.opengis.net/def/profile/OGC/0/rfc7946"_s;
 #if 0
     // This not supported yet but I am leaving it here because
     // I am very optimistic that it will be supported soon!
-    case Profile::JSONFG:
+    case Profile::JsonFg:
       return u"http://www.opengis.net/def/profile/OGC/0/jsonfg"_s;
-    case Profile::JSONFG_PLUS:
+    case Profile::JsonFgPlus:
       return u"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus"_s;
 #endif
-    case Profile::NONE:
+    case Profile::RelAsKey:
+      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-key"_s;
+    case Profile::RelAsUri:
+      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-uri"_s;
+    case Profile::RelAsLink:
+      return u"http://www.opengis.net/def/profile/ogc/0/rel-as-link"_s;
+    case Profile::Unset:
       return QString();
   }
   Q_UNREACHABLE();
@@ -169,6 +182,10 @@ QString QgsServerOgcApi::profileToUri( const Profile &profile )
 
 std::string QgsServerOgcApi::relToString( const Rel &rel )
 {
+  if ( rel == Rel::schema )
+  {
+    return "http://www.opengis.net/def/rel/ogc/1.0/schema";
+  }
   static const QMetaEnum metaEnum = QMetaEnum::fromType<QgsServerOgcApi::Rel>();
   std::string val { metaEnum.valueToKey( rel ) };
   std::replace( val.begin(), val.end(), '_', '-' );
@@ -190,14 +207,20 @@ std::string QgsServerOgcApi::contentTypeToStdString( const ContentType &ct )
 
 QString QgsServerOgcApi::contentTypeToExtension( const ContentType &ct )
 {
-  const QString extension { contentTypeToString( ct ).toLower() };
-  // Special case for flatgeobuf, which is a bit too long for
-  // an extension and has a widely used alternative (fgb)
-  if ( extension.compare( u"flatgeobuf"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  switch ( ct )
   {
-    return u"fgb"_s;
+    case ContentType::SCHEMA_JSON:
+    {
+      return u"json"_s;
+    }
+    case ContentType::FLATGEOBUF:
+    {
+      return u"fgb"_s;
+    }
+    default:
+      return contentTypeToString( ct ).toLower();
   }
-  return extension;
+  // UNREACHABLE CODE
 }
 
 QgsServerOgcApi::ContentType QgsServerOgcApi::contentTypeFromExtension( const std::string &extension )

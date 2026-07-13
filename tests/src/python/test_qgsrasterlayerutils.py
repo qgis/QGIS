@@ -7,7 +7,10 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
+import shutil
+import tempfile
 import unittest
+from pathlib import Path
 
 from qgis.core import (
     Qgis,
@@ -16,9 +19,11 @@ from qgis.core import (
     QgsPointXY,
     QgsRasterLayer,
     QgsRasterLayerUtils,
+    QgsRasterReliefColor,
     QgsRectangle,
 )
 from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.PyQt.QtGui import QColor
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
@@ -380,6 +385,72 @@ class TestQgsRasterLayerUtils(QgisTestCase):
         extent = QgsRectangle()
         aligned = QgsRasterLayerUtils.alignRasterExtent(extent, grid_origin, xres, yres)
         self.assertEqual(aligned, QgsRectangle())
+
+    def test_optimized_relief_classes(self):
+        # invalid provider
+        res = QgsRasterLayerUtils.calculateOptimizedReliefClasses(None, 6)
+        self.assertFalse(res)
+
+        # we work on a temporary copy of the layer, where we are sure there's
+        # no .aux.xml that may have been created by a previous test
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_layer = Path(tmpdir) / "dem.tif"
+            shutil.copy(self.get_test_data_path("raster/dem.tif"), test_layer)
+            raster_layer = QgsRasterLayer(test_layer.as_posix())
+            self.assertTrue(raster_layer.isValid())
+
+            # invalid band
+            res = QgsRasterLayerUtils.calculateOptimizedReliefClasses(
+                raster_layer.dataProvider(), 6
+            )
+            self.assertFalse(res)
+
+            # valid band
+            res = QgsRasterLayerUtils.calculateOptimizedReliefClasses(
+                raster_layer.dataProvider(), 1
+            )
+            self.assertEqual(
+                [round(r.minElevation, 5) for r in res],
+                [
+                    85.0,
+                    104.43651,
+                    104.43651,
+                    104.43651,
+                    104.43651,
+                    104.43651,
+                    190.33333,
+                    226.69841,
+                    226.69841,
+                ],
+            )
+            self.assertEqual(
+                [round(r.maxElevation, 5) for r in res],
+                [
+                    104.43651,
+                    104.43651,
+                    104.43651,
+                    104.43651,
+                    104.43651,
+                    190.33333,
+                    226.69841,
+                    226.69841,
+                    243.0,
+                ],
+            )
+            self.assertEqual(
+                [r.color.name() for r in res],
+                [
+                    "#07a590",
+                    "#0cdda2",
+                    "#21fcb7",
+                    "#f7fc98",
+                    "#fcc408",
+                    "#fca60f",
+                    "#af650f",
+                    "#ff855c",
+                    "#cccccc",
+                ],
+            )
 
 
 if __name__ == "__main__":

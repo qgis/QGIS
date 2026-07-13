@@ -107,6 +107,8 @@ class GUI_EXPORT QgsMaterialWidget : public QgsPanelWidget, private Ui::Material
      */
     void setType( const QString &type );
 
+    void setDockMode( bool dockMode ) override;
+
   public slots:
 
     /**

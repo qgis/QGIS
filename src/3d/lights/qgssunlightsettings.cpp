@@ -23,8 +23,6 @@
 #include <QDomDocument>
 #include <QString>
 #include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QSphereMesh>
 #include <Qt3DRender/QDirectionalLight>
 
 using namespace Qt::StringLiterals;

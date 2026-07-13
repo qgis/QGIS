@@ -35,7 +35,7 @@ QgsMapOverlayEntity::QgsMapOverlayEntity( QgsWindow3DEngine *engine, QgsOverlayT
   : QgsOverlayTextureEntity( new Qt3DRender::QTexture2D(), debugTextureRenderView->overlayLayer(), parent )
   , mEngine( engine )
   , mMapSettings( mapSettings )
-  , mTextureGenerator( new QgsMapOverlayTextureGenerator( *mapSettings, SIZE() ) )
+  , mTextureGenerator( std::make_unique<QgsMapOverlayTextureGenerator>( *mapSettings, SIZE() ) )
 {
   Qt3DRender::QTexture2D *mapTexture = mTextureParameter->value().value<Qt3DRender::QTexture2D *>();
   mapTexture->setFormat( Qt3DRender::QAbstractTexture::RGBA8_UNorm );
@@ -65,16 +65,14 @@ QgsMapOverlayEntity::QgsMapOverlayEntity( QgsWindow3DEngine *engine, QgsOverlayT
   onSizeChanged();
   connect( mEngine, &QgsWindow3DEngine::sizeChanged, this, &QgsMapOverlayEntity::onSizeChanged );
 
-  connect( mTextureGenerator, &QgsMapOverlayTextureGenerator::textureReady, this, &QgsMapOverlayEntity::onTextureReady );
+  connect( mTextureGenerator.get(), &QgsMapOverlayTextureGenerator::textureReady, this, &QgsMapOverlayEntity::onTextureReady );
 
   connectToLayersRepaintRequest();
   connect( mapSettings, &Qgs3DMapSettings::layersChanged, this, &QgsMapOverlayEntity::onLayersChanged );
 }
 
 QgsMapOverlayEntity::~QgsMapOverlayEntity()
-{
-  delete mTextureGenerator;
-}
+{}
 
 void QgsMapOverlayEntity::update( const QgsRectangle &extent, const QVector<QgsPointXY> &frustumExtent, double rotationDegrees, bool showFrustum )
 {

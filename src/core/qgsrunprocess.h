@@ -195,9 +195,26 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
      */
     QProcess::ProcessError processError() const;
 
+    /**
+     * Returns the process working directory.
+     *
+     * \see setWorkingDirectory()
+     * \since QGIS 4.2
+     */
+    QString workingDirectory() const;
+
+    /**
+     * Sets the process working \a directory.
+     *
+     * \see workingDirectory()
+     * \since QGIS 4.2
+     */
+    void setWorkingDirectory( const QString &directory );
+
   private:
     QString mProcess;
     QStringList mArguments;
+    QString mWorkingDir;
     std::function< void( const QByteArray & ) > mStdoutHandler;
     std::function< void( const QByteArray & ) > mStderrHandler;
 

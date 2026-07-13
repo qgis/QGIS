@@ -122,32 +122,50 @@ QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QSt
 }
 
 
-json QgsMultiSurface::asJsonObject( int precision ) const
+json QgsMultiSurface::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
-  json polygons( json::array() );
-  for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
+  switch ( profile )
   {
-    if ( qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
+    case Qgis::GeoJsonProfile::Legacy:
+    case Qgis::GeoJsonProfile::Rfc7946:
     {
-      json coordinates( json::array() );
-      std::unique_ptr< QgsPolygon > polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
-      std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
-      QgsPointSequence exteriorPts;
-      exteriorLineString->points( exteriorPts );
-      coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision ) );
-
-      std::unique_ptr< QgsLineString > interiorLineString;
-      for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
+      json polygons( json::array() );
+      for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
       {
-        interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
-        QgsPointSequence interiorPts;
-        interiorLineString->points( interiorPts );
-        coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision ) );
+        if ( auto curveGeom = qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
+        {
+          json coordinates( json::array() );
+          std::unique_ptr< QgsPolygon > polygon( curveGeom->surfaceToPolygon() );
+          std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
+          QgsPointSequence exteriorPts;
+          exteriorLineString->points( exteriorPts );
+          coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision, profile ) );
+
+          std::unique_ptr< QgsLineString > interiorLineString;
+          for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
+          {
+            interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
+            QgsPointSequence interiorPts;
+            interiorLineString->points( interiorPts );
+            coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision, profile ) );
+          }
+          polygons.push_back( coordinates );
+        }
       }
-      polygons.push_back( coordinates );
+      return { { "type", "MultiPolygon" }, { "coordinates", polygons } };
+    }
+    case Qgis::GeoJsonProfile::JsonFg:
+    case Qgis::GeoJsonProfile::JsonFgPlus:
+    {
+      json geometries( json::array() );
+      for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
+      {
+        geometries.push_back( geom->asJsonObject( precision, profile ) );
+      }
+      return { { "type", "MultiSurface" }, { "geometries", geometries } };
     }
   }
-  return { { "type", "MultiPolygon" }, { "coordinates", polygons } };
+  BUILTIN_UNREACHABLE
 }
 
 bool QgsMultiSurface::addGeometry( QgsAbstractGeometry *g )

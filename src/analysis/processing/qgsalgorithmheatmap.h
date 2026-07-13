@@ -1,0 +1,55 @@
+/***************************************************************************
+                         qgsalgorithmheatmap.h
+                         ---------------------
+    begin                : June 2026
+    copyright            : (C) 2026 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSALGORITHMHEATMAP_H
+#define QGSALGORITHMHEATMAP_H
+
+
+#include "qgis_sip.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsrenderer.h"
+
+#define SIP_NO_FILE
+
+///@cond PRIVATE
+
+/**
+ * Native heatmap algorithm.
+ */
+class QgsHeatmapAlgorithm : public QgsProcessingAlgorithm
+{
+  public:
+    QgsHeatmapAlgorithm() = default;
+    ~QgsHeatmapAlgorithm() override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QIcon icon() const override;
+    QString shortHelpString() const override;
+    QString shortDescription() const override;
+    QgsHeatmapAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+};
+
+///@endcond PRIVATE
+
+#endif // QGSALGORITHMHEATMAP_H

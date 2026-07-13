@@ -49,58 +49,63 @@
           (Qt3DRender::QRenderStateSet{116/<no_name>}) [ (QDepthTest:Always), (QBlendEquationArguments:[ (sourceRgb:SourceAlpha), (destinationRgb:Source1Alpha), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]), (QBlendEquation:Add) ]
             (Qt3DRender::QRenderTargetSelector{118/<no_name>}) [ (outputs:[ (DepthStencil:{59[D24S8]/<no_name>), (Color0:{58[RGBA16F]/<no_name>) ]) ]
       (Qt3DRender::QBlitFramebuffer{119/MsaaBlitFramebuffer}) [D]
-      (Qt3DRender::QBlitFramebuffer{120/MsaaDepthBlitFramebuffer}) [D]
-      (Qt3DRender::QNoDraw{121/depth::NoDraw}) [D]
-        (Qt3DRender::QSubtreeEnabler{122/depth::SubtreeEnabler})
-          (Qt3DRender::QLayerFilter{124/<no_name>}) [ (AcceptAnyMatchingLayers:[ {123/depth::Layer} ]) ]
-            (Qt3DRender::QRenderTargetSelector{125/<no_name>}) [ (outputs:[ (Color0:{127[RGB8_UNorm]/depth::mColorTexture) ]) ]
-              (Qt3DRender::QRenderCapture{129/<no_name>})
-      (Qt3DRender::QNoDraw{142/ambient_occlusion::NoDraw}) [D]
-        (Qt3DRender::QSubtreeEnabler{143/ambient_occlusion::SubtreeEnabler})
-          (Qt3DRender::QRenderStateSet{146/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
-            (Qt3DRender::QLayerFilter{149/<no_name>}) [ (AcceptAnyMatchingLayers:[ {144/ambient_occlusion::Layer(AO)} ]) ]
-              (Qt3DRender::QRenderTargetSelector{153/ambient_occlusion::RenderTargetSelector(AO)}) [ (outputs:[ (Color0:{151[R32F]/ambient_occlusion::ColorTarget(AO)) ]) ]
-          (Qt3DRender::QRenderStateSet{176/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
-            (Qt3DRender::QLayerFilter{179/<no_name>}) [ (AcceptAnyMatchingLayers:[ {145/ambient_occlusion::Layer(Blur)} ]) ]
-              (Qt3DRender::QRenderTargetSelector{183/ambient_occlusion::RenderTargetSelector(Blur)}) [ (outputs:[ (Color0:{181[R32F]/ambient_occlusion::ColorTarget(blur)) ]) ]
-      (Qt3DRender::QNoDraw{196/bloom::NoDraw})
-        (Qt3DRender::QSubtreeEnabler{197/bloom::SubtreeEnabler}) [D]
-          (Qt3DRender::QRenderStateSet{200/<no_name>}) [  ]
-            (Qt3DRender::QRenderTargetSelector{205/<no_name>}) [ (outputs:[ (Color0:{204[RG11B10F]/<no_name>) ]) ]
-              (Qt3DRender::QClearBuffers{206/<no_name>})
-                (Qt3DRender::QLayerFilter{207/<no_name>}) [ (AcceptAnyMatchingLayers:[ {201/bloom::Layer(DownsamplePass1)} ]) ]
-            (Qt3DRender::QRenderTargetSelector{224/<no_name>}) [ (outputs:[ (Color0:{223[RG11B10F]/<no_name>) ]) ]
-              (Qt3DRender::QClearBuffers{225/<no_name>})
-                (Qt3DRender::QLayerFilter{226/<no_name>}) [ (AcceptAnyMatchingLayers:[ {220/bloom::Layer(DownsamplePass2)} ]) ]
-            (Qt3DRender::QRenderTargetSelector{243/<no_name>}) [ (outputs:[ (Color0:{242[RG11B10F]/<no_name>) ]) ]
-              (Qt3DRender::QClearBuffers{244/<no_name>})
-                (Qt3DRender::QLayerFilter{245/<no_name>}) [ (AcceptAnyMatchingLayers:[ {239/bloom::Layer(DownsamplePass3)} ]) ]
-            (Qt3DRender::QRenderTargetSelector{262/<no_name>}) [ (outputs:[ (Color0:{261[RG11B10F]/<no_name>) ]) ]
-              (Qt3DRender::QClearBuffers{263/<no_name>})
-                (Qt3DRender::QLayerFilter{264/<no_name>}) [ (AcceptAnyMatchingLayers:[ {258/bloom::Layer(DownsamplePass4)} ]) ]
-            (Qt3DRender::QRenderTargetSelector{281/<no_name>}) [ (outputs:[ (Color0:{280[RG11B10F]/<no_name>) ]) ]
-              (Qt3DRender::QClearBuffers{282/<no_name>})
-                (Qt3DRender::QLayerFilter{283/<no_name>}) [ (AcceptAnyMatchingLayers:[ {277/bloom::Layer(DownsamplePass5)} ]) ]
-            (Qt3DRender::QRenderTargetSelector{299/<no_name>}) [ (outputs:[ (Color0:{261[RG11B10F]/<no_name>) ]) ]
-              (Qt3DRender::QRenderStateSet{300/<no_name>}) [ (QBlendEquation:Add), (QBlendEquationArguments:[ (sourceRgb:One), (destinationRgb:One), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]) ]
-                (Qt3DRender::QLayerFilter{315/<no_name>}) [ (AcceptAnyMatchingLayers:[ {296/bloom::Layer(UpsamplePass4)} ]) ]
-            (Qt3DRender::QRenderTargetSelector{319/<no_name>}) [ (outputs:[ (Color0:{242[RG11B10F]/<no_name>) ]) ]
-              (Qt3DRender::QRenderStateSet{320/<no_name>}) [ (QBlendEquation:Add), (QBlendEquationArguments:[ (sourceRgb:One), (destinationRgb:One), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]) ]
-                (Qt3DRender::QLayerFilter{335/<no_name>}) [ (AcceptAnyMatchingLayers:[ {316/bloom::Layer(UpsamplePass3)} ]) ]
-            (Qt3DRender::QRenderTargetSelector{339/<no_name>}) [ (outputs:[ (Color0:{223[RG11B10F]/<no_name>) ]) ]
-              (Qt3DRender::QRenderStateSet{340/<no_name>}) [ (QBlendEquation:Add), (QBlendEquationArguments:[ (sourceRgb:One), (destinationRgb:One), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]) ]
-                (Qt3DRender::QLayerFilter{355/<no_name>}) [ (AcceptAnyMatchingLayers:[ {336/bloom::Layer(UpsamplePass2)} ]) ]
-            (Qt3DRender::QRenderTargetSelector{359/<no_name>}) [ (outputs:[ (Color0:{204[RG11B10F]/<no_name>) ]) ]
-              (Qt3DRender::QRenderStateSet{360/<no_name>}) [ (QBlendEquation:Add), (QBlendEquationArguments:[ (sourceRgb:One), (destinationRgb:One), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]) ]
-                (Qt3DRender::QLayerFilter{375/<no_name>}) [ (AcceptAnyMatchingLayers:[ {356/bloom::Layer(UpsamplePass1)} ]) ]
-      (Qt3DRender::QNoDraw{376/post_processing::NoDraw}) [D]
-        (Qt3DRender::QSubtreeEnabler{377/post_processing::SubtreeEnabler})
-          (Qt3DRender::QRenderTargetSelector{378/post_processing::RenderTargetSelector}) [D] [ (outputs:[ (Color0:{381[RGB8_UNorm]/post_processing::ColorTarget), (Depth:{383[DepthFormat]/post_processing::DepthTarget) ]) ]
-            (Qt3DRender::QLayerFilter{384/post_processing::Sub pass::Postprocessing}) [ (AcceptAnyMatchingLayers:[ {385/<no_name>} ]) ]
-              (Qt3DRender::QClearBuffers{386/<no_name>})
-            (Qt3DRender::QNoDraw{421/post_processing::Sub pass::OverlayTexture::NoDraw})
-              (Qt3DRender::QSubtreeEnabler{422/post_processing::Sub pass::OverlayTexture::SubtreeEnabler}) [D]
-                (Qt3DRender::QLayerFilter{424/<no_name>}) [ (AcceptAnyMatchingLayers:[ {423/post_processing::Sub pass::OverlayTexture::Layer} ]) ]
-                  (Qt3DRender::QRenderStateSet{425/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
-            (Qt3DRender::QNoDraw{428/post_processing::Sub pass::RenderCapture})
-              (Qt3DRender::QRenderCapture{429/<no_name>})
+        (Qt3DRender::QNoDraw{120/<no_name>})
+      (Qt3DRender::QBlitFramebuffer{121/MsaaDepthBlitFramebuffer}) [D]
+        (Qt3DRender::QNoDraw{122/<no_name>})
+      (Qt3DRender::QNoDraw{123/depth::NoDraw}) [D]
+        (Qt3DRender::QSubtreeEnabler{124/depth::SubtreeEnabler})
+          (Qt3DRender::QLayerFilter{126/<no_name>}) [ (AcceptAnyMatchingLayers:[ {125/depth::Layer} ]) ]
+            (Qt3DRender::QRenderTargetSelector{127/<no_name>}) [ (outputs:[ (Color0:{129[RGB8_UNorm]/depth::mColorTexture) ]) ]
+              (Qt3DRender::QRenderCapture{131/<no_name>})
+      (Qt3DRender::QNoDraw{144/ambient_occlusion::NoDraw}) [D]
+        (Qt3DRender::QSubtreeEnabler{145/ambient_occlusion::SubtreeEnabler})
+          (Qt3DRender::QRenderStateSet{148/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
+            (Qt3DRender::QLayerFilter{151/<no_name>}) [ (AcceptAnyMatchingLayers:[ {146/ambient_occlusion::Layer(AO)} ]) ]
+              (Qt3DRender::QRenderTargetSelector{155/ambient_occlusion::RenderTargetSelector(AO)}) [ (outputs:[ (Color0:{153[R32F]/ambient_occlusion::ColorTarget(AO)) ]) ]
+          (Qt3DRender::QRenderStateSet{178/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
+            (Qt3DRender::QLayerFilter{181/<no_name>}) [ (AcceptAnyMatchingLayers:[ {147/ambient_occlusion::Layer(Blur)} ]) ]
+              (Qt3DRender::QRenderTargetSelector{185/ambient_occlusion::RenderTargetSelector(Blur)}) [ (outputs:[ (Color0:{183[R32F]/ambient_occlusion::ColorTarget(blur)) ]) ]
+      (Qt3DRender::QNoDraw{198/bloom::NoDraw})
+        (Qt3DRender::QSubtreeEnabler{199/bloom::SubtreeEnabler}) [D]
+          (Qt3DRender::QRenderStateSet{202/<no_name>}) [  ]
+            (Qt3DRender::QRenderTargetSelector{207/<no_name>}) [ (outputs:[ (Color0:{206[RG11B10F]/<no_name>) ]) ]
+              (Qt3DRender::QClearBuffers{208/<no_name>})
+                (Qt3DRender::QLayerFilter{209/<no_name>}) [ (AcceptAnyMatchingLayers:[ {203/bloom::Layer(DownsamplePass1)} ]) ]
+            (Qt3DRender::QRenderTargetSelector{226/<no_name>}) [ (outputs:[ (Color0:{225[RG11B10F]/<no_name>) ]) ]
+              (Qt3DRender::QClearBuffers{227/<no_name>})
+                (Qt3DRender::QLayerFilter{228/<no_name>}) [ (AcceptAnyMatchingLayers:[ {222/bloom::Layer(DownsamplePass2)} ]) ]
+            (Qt3DRender::QRenderTargetSelector{245/<no_name>}) [ (outputs:[ (Color0:{244[RG11B10F]/<no_name>) ]) ]
+              (Qt3DRender::QClearBuffers{246/<no_name>})
+                (Qt3DRender::QLayerFilter{247/<no_name>}) [ (AcceptAnyMatchingLayers:[ {241/bloom::Layer(DownsamplePass3)} ]) ]
+            (Qt3DRender::QRenderTargetSelector{264/<no_name>}) [ (outputs:[ (Color0:{263[RG11B10F]/<no_name>) ]) ]
+              (Qt3DRender::QClearBuffers{265/<no_name>})
+                (Qt3DRender::QLayerFilter{266/<no_name>}) [ (AcceptAnyMatchingLayers:[ {260/bloom::Layer(DownsamplePass4)} ]) ]
+            (Qt3DRender::QRenderTargetSelector{283/<no_name>}) [ (outputs:[ (Color0:{282[RG11B10F]/<no_name>) ]) ]
+              (Qt3DRender::QClearBuffers{284/<no_name>})
+                (Qt3DRender::QLayerFilter{285/<no_name>}) [ (AcceptAnyMatchingLayers:[ {279/bloom::Layer(DownsamplePass5)} ]) ]
+            (Qt3DRender::QRenderTargetSelector{301/<no_name>}) [ (outputs:[ (Color0:{263[RG11B10F]/<no_name>) ]) ]
+              (Qt3DRender::QRenderStateSet{302/<no_name>}) [ (QBlendEquation:Add), (QBlendEquationArguments:[ (sourceRgb:One), (destinationRgb:One), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]) ]
+                (Qt3DRender::QLayerFilter{317/<no_name>}) [ (AcceptAnyMatchingLayers:[ {298/bloom::Layer(UpsamplePass4)} ]) ]
+            (Qt3DRender::QRenderTargetSelector{321/<no_name>}) [ (outputs:[ (Color0:{244[RG11B10F]/<no_name>) ]) ]
+              (Qt3DRender::QRenderStateSet{322/<no_name>}) [ (QBlendEquation:Add), (QBlendEquationArguments:[ (sourceRgb:One), (destinationRgb:One), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]) ]
+                (Qt3DRender::QLayerFilter{337/<no_name>}) [ (AcceptAnyMatchingLayers:[ {318/bloom::Layer(UpsamplePass3)} ]) ]
+            (Qt3DRender::QRenderTargetSelector{341/<no_name>}) [ (outputs:[ (Color0:{225[RG11B10F]/<no_name>) ]) ]
+              (Qt3DRender::QRenderStateSet{342/<no_name>}) [ (QBlendEquation:Add), (QBlendEquationArguments:[ (sourceRgb:One), (destinationRgb:One), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]) ]
+                (Qt3DRender::QLayerFilter{357/<no_name>}) [ (AcceptAnyMatchingLayers:[ {338/bloom::Layer(UpsamplePass2)} ]) ]
+            (Qt3DRender::QRenderTargetSelector{361/<no_name>}) [ (outputs:[ (Color0:{206[RG11B10F]/<no_name>) ]) ]
+              (Qt3DRender::QRenderStateSet{362/<no_name>}) [ (QBlendEquation:Add), (QBlendEquationArguments:[ (sourceRgb:One), (destinationRgb:One), (sourceAlpha:One), (destinationAlpha:Zero), (bufferIndex:-1) ]) ]
+                (Qt3DRender::QLayerFilter{377/<no_name>}) [ (AcceptAnyMatchingLayers:[ {358/bloom::Layer(UpsamplePass1)} ]) ]
+      (Qt3DRender::QNoDraw{378/post_processing::NoDraw}) [D]
+        (Qt3DRender::QSubtreeEnabler{379/post_processing::SubtreeEnabler})
+          (Qt3DRender::QRenderTargetSelector{380/post_processing::RenderTargetSelector}) [D] [ (outputs:[ (Color0:{383[RGB8_UNorm]/post_processing::ColorTarget), (Depth:{385[DepthFormat]/post_processing::DepthTarget) ]) ]
+            (Qt3DRender::QLayerFilter{386/post_processing::Sub pass::Postprocessing}) [ (AcceptAnyMatchingLayers:[ {387/<no_name>} ]) ]
+              (Qt3DRender::QClearBuffers{388/<no_name>})
+            (Qt3DRender::QNoDraw{423/post_processing::Sub pass::OverlayTexture::NoDraw})
+              (Qt3DRender::QSubtreeEnabler{424/post_processing::Sub pass::OverlayTexture::SubtreeEnabler}) [D]
+                (Qt3DRender::QLayerFilter{426/<no_name>}) [ (AcceptAnyMatchingLayers:[ {425/post_processing::Sub pass::OverlayTexture::Layer} ]) ]
+                  (Qt3DRender::QRenderStateSet{427/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
+            (Qt3DRender::QNoDraw{430/post_processing::Sub pass::RenderCapture})
+              (Qt3DRender::QRenderCapture{431/<no_name>})
+      (Qt3DRender::QRenderTargetSelector{432/<no_name>}) [ (outputs:[ (DepthStencil:{59[D24S8]/<no_name>), (Color0:{58[RGBA16F]/<no_name>) ]) ]
+        (Qt3DRender::QClearBuffers{433/<no_name>}) [D]
+          (Qt3DRender::QNoDraw{434/<no_name>})

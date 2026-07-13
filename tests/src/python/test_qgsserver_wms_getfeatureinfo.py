@@ -687,6 +687,49 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         )
 
     def testGetFeatureInfoJSON(self):
+
+        # simple test with geometry with underlying layer in 4326 and CRS is OGC:CRS84
+        self.wms_request_compare(
+            "GetFeatureInfo",
+            "&layers=testlayer%20%C3%A8%C3%A9&styles=&"
+            + "info_format=application%2Fjson&transparent=true&"
+            + "width=600&height=400&srs=OGC:CRS84&"
+            + "bbox=8.2034387,44.9014173,8.2036094,44.9015094&"
+            + "query_layers=testlayer2&X=203&Y=116&"
+            + "with_geometry=true",
+            "wms_getfeatureinfo_geometry_CRS84_json",
+            "test_project.qgs",
+            normalizeJson=True,
+        )
+
+        # simple test with geometry with underlying layer in 4326 and CRS is CRS:84
+        self.wms_request_compare(
+            "GetFeatureInfo",
+            "&layers=testlayer%20%C3%A8%C3%A9&styles=&"
+            + "info_format=application%2Fjson&transparent=true&"
+            + "width=600&height=400&srs=CRS:84&"
+            + "bbox=8.2034387,44.9014173,8.2036094,44.9015094&"
+            + "query_layers=testlayer2&X=203&Y=116&"
+            + "with_geometry=true",
+            "wms_getfeatureinfo_geometry_CRS84_json",
+            "test_project.qgs",
+            normalizeJson=True,
+        )
+
+        # simple test with geometry with underlying layer in 3857
+        self.wms_request_compare(
+            "GetFeatureInfo",
+            "&layers=testlayer%20%C3%A8%C3%A9&styles=&"
+            + "info_format=application%2Fjson&transparent=true&"
+            + "width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C"
+            + "5606005.488876367%2C913235.426296057%2C5606035.347090538&"
+            + "query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&"
+            + "with_geometry=true",
+            "wms_getfeatureinfo_geometry_json",
+            "test_project_epsg3857.qgs",
+            normalizeJson=True,
+        )
+
         # simple test without geometry and info_format=application/json
         self.wms_request_compare(
             "GetFeatureInfo",
@@ -721,20 +764,6 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             + "query_layers=testlayer%20%C3%A8%C3%A9,fields_alias,exclude_attribute&"
             + "X=190&Y=320&FEATURE_COUNT=2&FI_POINT_TOLERANCE=200",
             "wms_getfeatureinfo_multiple_json",
-            normalizeJson=True,
-        )
-
-        # simple test with geometry with underlying layer in 3857
-        self.wms_request_compare(
-            "GetFeatureInfo",
-            "&layers=testlayer%20%C3%A8%C3%A9&styles=&"
-            + "info_format=application%2Fjson&transparent=true&"
-            + "width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C"
-            + "5606005.488876367%2C913235.426296057%2C5606035.347090538&"
-            + "query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&"
-            + "with_geometry=true",
-            "wms_getfeatureinfo_geometry_json",
-            "test_project_epsg3857.qgs",
             normalizeJson=True,
         )
 
@@ -795,20 +824,6 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             + "info_format=application%2Fjson&transparent=true&"
             + "width=600&height=400&srs=EPSG:4326&"
             + "bbox=44.9014173,8.2034387,44.9015094,8.2036094&"
-            + "query_layers=testlayer2&X=203&Y=116&"
-            + "with_geometry=true",
-            "wms_getfeatureinfo_geometry_CRS84_json",
-            "test_project.qgs",
-            normalizeJson=True,
-        )
-
-        # simple test with geometry with underlying layer in 4326 and CRS is CRS84
-        self.wms_request_compare(
-            "GetFeatureInfo",
-            "&layers=testlayer%20%C3%A8%C3%A9&styles=&"
-            + "info_format=application%2Fjson&transparent=true&"
-            + "width=600&height=400&srs=OGC:CRS84&"
-            + "bbox=8.2034387,44.9014173,8.2036094,44.9015094&"
             + "query_layers=testlayer2&X=203&Y=116&"
             + "with_geometry=true",
             "wms_getfeatureinfo_geometry_CRS84_json",

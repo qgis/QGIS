@@ -1822,16 +1822,21 @@ QString QgsGeometry::asWkt( int precision ) const
 
 QString QgsGeometry::asJson( int precision ) const
 {
-  return QString::fromStdString( asJsonObject( precision ).dump() );
+  return asGeoJson( precision, Qgis::GeoJsonProfile::Rfc7946 );
 }
 
-json QgsGeometry::asJsonObject( int precision ) const
+QString QgsGeometry::asGeoJson( int precision, Qgis::GeoJsonProfile profile ) const
+{
+  return QString::fromStdString( asJsonObject( precision, profile ).dump() );
+}
+
+json QgsGeometry::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   if ( !d->geometry )
   {
     return nullptr;
   }
-  return d->geometry->asJsonObject( precision );
+  return d->geometry->asJsonObject( precision, profile );
 }
 
 QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM, bool avoidDuplicates ) const
@@ -3183,6 +3188,25 @@ QgsGeometry QgsGeometry::simplifyCoverageVW( double tolerance, bool preserveBoun
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometry result( geos.simplifyCoverageVW( tolerance, preserveBoundary, &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
+QgsGeometry QgsGeometry::cleanCoverage( const QgsCoverageCleanParameters &parameters, QgsFeedback *feedback ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::Polygon )
+    return QgsGeometry();
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  const QgsGeometry result( geos.cleanCoverage( parameters, &mLastError, feedback ) );
   result.mLastError = mLastError;
   return result;
 }

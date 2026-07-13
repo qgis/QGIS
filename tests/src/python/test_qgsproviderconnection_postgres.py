@@ -20,6 +20,7 @@ from qgis.core import (
     QgsDataSourceUri,
     QgsField,
     QgsFields,
+    QgsMapLayer,
     QgsProviderConnectionException,
     QgsProviderRegistry,
     QgsRasterLayer,
@@ -1101,6 +1102,113 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         self.assertEqual(
             [["o_2_raster_for_move"], ["o_4_raster_for_move"], ["raster_for_move"]],
             tables,
+        )
+
+    def test_rename_table_updates_layer_styles(self):
+        """Test that renaming a table also updates f_table_name in layer_styles."""
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        conn.executeSql(
+            """
+            DROP TABLE IF EXISTS qgis_test.rename_style_test CASCADE;
+            CREATE TABLE qgis_test.rename_style_test (id SERIAL PRIMARY KEY, geom geometry(POINT,4326));
+            INSERT INTO qgis_test.rename_style_test (geom) VALUES (ST_GeomFromText('POINT(0 0)', 4326));
+            """
+        )
+
+        vl = QgsVectorLayer(
+            conn.tableUri("qgis_test", "rename_style_test"),
+            "test_rename_with_style",
+            "postgres",
+        )
+        self.assertTrue(vl.isValid())
+        result, msg = vl.saveStyleToDatabaseV2("test_style", "", False, "")
+        self.assertTrue(result == QgsMapLayer.SaveStyleResult.Success)
+
+        # Verify style was saved under the original name
+        rows = conn.executeSql(
+            "SELECT f_table_name FROM public.layer_styles "
+            "WHERE f_table_schema = 'qgis_test' AND f_table_name = 'rename_style_test'"
+        )
+        self.assertEqual(len(rows), 1)
+
+        conn.renameVectorTable(
+            "qgis_test", "rename_style_test", "rename_style_test_renamed"
+        )
+
+        # Style must now reference the new table name
+        rows = conn.executeSql(
+            "SELECT f_table_name FROM public.layer_styles "
+            "WHERE f_table_schema = 'qgis_test' AND f_table_name = 'rename_style_test_renamed'"
+        )
+        self.assertEqual(len(rows), 1)
+
+        # No stale row for the old name
+        rows = conn.executeSql(
+            "SELECT f_table_name FROM public.layer_styles "
+            "WHERE f_table_schema = 'qgis_test' AND f_table_name = 'rename_style_test'"
+        )
+        self.assertEqual(len(rows), 0)
+
+        conn.executeSql(
+            "DROP TABLE IF EXISTS qgis_test.rename_style_test_renamed CASCADE"
+        )
+
+    def test_move_table_to_schema_updates_layer_styles(self):
+        """Test that moving a table also updates f_table_schema in layer_styles."""
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        conn.executeSql(
+            """
+            DROP TABLE IF EXISTS qgis_test.move_style_test CASCADE;
+            DROP SCHEMA IF EXISTS qgis_schema_test CASCADE;
+            CREATE TABLE qgis_test.move_style_test (id SERIAL PRIMARY KEY, geom geometry(POINT,4326));
+            INSERT INTO qgis_test.move_style_test (geom) VALUES (ST_GeomFromText('POINT(0 0)', 4326));
+            CREATE SCHEMA IF NOT EXISTS qgis_schema_test;
+            """
+        )
+
+        vl = QgsVectorLayer(
+            conn.tableUri("qgis_test", "move_style_test"),
+            "test_move_with_style",
+            "postgres",
+        )
+        self.assertTrue(vl.isValid())
+        result, msg = vl.saveStyleToDatabaseV2("test_style_move", "", False, "")
+        self.assertTrue(result == QgsMapLayer.SaveStyleResult.Success)
+
+        # Verify style initially points to the source schema
+        rows = conn.executeSql(
+            "SELECT f_table_schema FROM public.layer_styles "
+            "WHERE f_table_schema = 'qgis_test' AND f_table_name = 'move_style_test'"
+        )
+        self.assertEqual(len(rows), 1)
+
+        conn.moveTableToSchema(
+            "qgis_test",
+            "move_style_test",
+            "qgis_schema_test",
+        )
+
+        # Style must now reference the target schema
+        rows = conn.executeSql(
+            "SELECT f_table_schema FROM public.layer_styles "
+            "WHERE f_table_schema = 'qgis_schema_test' AND f_table_name = 'move_style_test'"
+        )
+        self.assertEqual(len(rows), 1)
+
+        # No stale row for the old schema
+        rows = conn.executeSql(
+            "SELECT f_table_schema FROM public.layer_styles "
+            "WHERE f_table_schema = 'qgis_test' AND f_table_name = 'move_style_test'"
+        )
+        self.assertEqual(len(rows), 0)
+
+        conn.executeSql(
+            "DROP TABLE IF EXISTS qgis_schema_test.move_style_test CASCADE;"
+            "DROP SCHEMA IF EXISTS qgis_schema_test CASCADE;"
         )
 
 

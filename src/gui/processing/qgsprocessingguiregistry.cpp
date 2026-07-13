@@ -103,7 +103,8 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingPointCloudAttributeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingVectorTileDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingRasterOptionsWidgetWrapper() );
-
+  addParameterWidgetFactory( new QgsProcessingHeatmapPixelSizeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingReliefColorsWidgetWrapper() );
 
   mModelConfigWidgetFactory = std::make_unique< QgsProcessingGuiInternalModelConfigWidgetFactory >();
   registerModelConfigWidgetFactory( mModelConfigWidgetFactory.get() );

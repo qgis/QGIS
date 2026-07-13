@@ -51,6 +51,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
   public:
     // Note: non a scoped enum or qHash fails
     //! Rel link types
+    // NOLINTBEGIN(readability-identifier-naming)
     enum Rel
     {
       // The following registered link relation types are used
@@ -67,32 +68,41 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       // In addition the following link relation types are used for which no applicable registered link relation type could be identified:
       items,       //!< Refers to a resource that is comprised of members of the collection represented by the link’s context.
       conformance, //!< The target IRI points to a resource which represents the collection resource for the context IRI.
-      data         //!< The target IRI points to resource data
+      data,        //!< The target IRI points to resource data
+      schema,      //!< "http://www.opengis.net/def/rel/ogc/0.0/schema"
+      profile      //!< "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/feature-references"
     };
     Q_ENUM( Rel )
+    // NOLINTEND(readability-identifier-naming)
 
     // Note: cannot be a scoped enum because qHash does not support them
     //! Media types used for content negotiation, insert more specific first
+    // NOLINTBEGIN(readability-identifier-naming)
     enum ContentType
     {
       GEOJSON,
       OPENAPI3, //!< "application/openapi+json;version=3.0"
       JSON,
+      SCHEMA_JSON, //!< "application/schema+json"
       HTML,
       XML,
       FLATGEOBUF //!< "application/flatgeobuf"
     };
     Q_ENUM( ContentType )
+    // NOLINTEND(readability-identifier-naming)
 
     //! JSON profile
     enum class Profile
     {
-      NONE,    //!< No profile
-      RFC7946, //!< GeoJSON profile according to RFC7946
+      Unset,   //!< No profile
+      Rfc7946, //!< GeoJSON profile according to RFC7946
       // This not supported yet but I am leaving it here because
       // I am very optimistic that it will be supported soon!
-      //  JSONFG,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
-      //  JSONFG_PLUS //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
+      //  JsonFg,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
+      //  JsonFgPlus //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
+      RelAsLink, //!< JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link
+      RelAsKey,  //!< JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key
+      RelAsUri   //!< JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
     };
     Q_ENUM( Profile )
 
@@ -165,7 +175,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     static QUrl sanitizeUrl( const QUrl &url );
 
     /**
-     * Returns the string representation of \a rel attribute.
+     * Returns the string representation of \a rel attribute, to be used or "rel" link attribute in an OGC API response.
      */
     static std::string relToString( const QgsServerOgcApi::Rel &rel );
 

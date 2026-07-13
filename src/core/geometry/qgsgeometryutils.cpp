@@ -1071,18 +1071,47 @@ QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence &points, int prec
 }
 
 
-json QgsGeometryUtils::pointsToJson( const QgsPointSequence &points, int precision )
+json QgsGeometryUtils::pointsToJson( const QgsPointSequence &points, int precision, Qgis::GeoJsonProfile profile )
 {
   json coordinates( json::array() );
   for ( const QgsPoint &p : points )
   {
-    if ( p.is3D() )
+    switch ( profile )
     {
-      coordinates.push_back( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ), qgsRound( p.z(), precision ) } );
-    }
-    else
-    {
-      coordinates.push_back( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ) } );
+      case Qgis::GeoJsonProfile::Rfc7946:
+      case Qgis::GeoJsonProfile::Legacy:
+      {
+        if ( p.is3D() )
+        {
+          coordinates.push_back( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ), qgsRound( p.z(), precision ) } );
+        }
+        else
+        {
+          coordinates.push_back( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ) } );
+        }
+        break;
+      }
+      case Qgis::GeoJsonProfile::JsonFg:
+      case Qgis::GeoJsonProfile::JsonFgPlus:
+      {
+        if ( p.is3D() && p.isMeasure() )
+        {
+          coordinates.push_back( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ), qgsRound( p.z(), precision ), qgsRound( p.m(), precision ) } );
+        }
+        else if ( p.is3D() )
+        {
+          coordinates.push_back( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ), qgsRound( p.z(), precision ) } );
+        }
+        else if ( p.isMeasure() )
+        {
+          coordinates.push_back( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ), qgsRound( p.m(), precision ) } );
+        }
+        else
+        {
+          coordinates.push_back( { qgsRound( p.x(), precision ), qgsRound( p.y(), precision ) } );
+        }
+        break;
+      }
     }
   }
   return coordinates;

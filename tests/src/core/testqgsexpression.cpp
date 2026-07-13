@@ -2289,6 +2289,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "concat" ) << "concat('a', 'b', 'c', 'd')" << false << QVariant( "abcd" );
       QTest::newRow( "concat function single" ) << "concat('a')" << false << QVariant( "a" );
       QTest::newRow( "concat function with NULL" ) << "concat(NULL,'a','b')" << false << QVariant( "ab" );
+      QTest::newRow( "concat function with only NULL" ) << "concat(NULL)" << false << QVariant( "" );
+      QTest::newRow( "concat function with multi NULL" ) << "concat(NULL, NULL)" << false << QVariant( "" );
       QTest::newRow( "concat_ws no args" ) << "concat_ws()" << true << QVariant();
       QTest::newRow( "concat_ws one arg" ) << "concat_ws(' ')" << true << QVariant();
       QTest::newRow( "concat_ws comma" ) << "concat_ws(',', 'b', NULL, 'd')" << false << QVariant( "b,d" );

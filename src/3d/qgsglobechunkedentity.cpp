@@ -335,7 +335,7 @@ Qt3DCore::QEntity *QgsGlobeChunkLoader::createEntity( Qt3DCore::QEntity *parent 
 QgsGlobeChunkLoaderFactory::QgsGlobeChunkLoaderFactory( Qgs3DMapSettings *mapSettings )
   : mMapSettings( mapSettings )
 {
-  mTextureGenerator = new QgsTerrainTextureGenerator( *mapSettings );
+  mTextureGenerator = std::make_unique<QgsTerrainTextureGenerator>( *mapSettings );
 
   // it does not matter what kind of ellipsoid is used, this is for rough estimates
   mDistanceArea.setEllipsoid( mapSettings->crs().ellipsoidAcronym() );
@@ -348,13 +348,11 @@ QgsGlobeChunkLoaderFactory::QgsGlobeChunkLoaderFactory( Qgs3DMapSettings *mapSet
 }
 
 QgsGlobeChunkLoaderFactory::~QgsGlobeChunkLoaderFactory()
-{
-  delete mTextureGenerator;
-}
+{}
 
 QgsChunkLoader *QgsGlobeChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
 {
-  return new QgsGlobeChunkLoader( node, Qgs3DRenderContext::fromMapSettings( mMapSettings ), mTextureGenerator, mGlobeCrsToLatLon );
+  return new QgsGlobeChunkLoader( node, Qgs3DRenderContext::fromMapSettings( mMapSettings ), mTextureGenerator.get(), mGlobeCrsToLatLon );
 }
 
 QgsChunkNode *QgsGlobeChunkLoaderFactory::createRootNode() const

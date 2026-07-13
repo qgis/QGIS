@@ -296,6 +296,7 @@ class QgsMssqlProviderMetadata final : public QgsProviderMetadata
       const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause
     ) override;
 
+    using QgsProviderMetadata::createEmptyLayer;
     Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,

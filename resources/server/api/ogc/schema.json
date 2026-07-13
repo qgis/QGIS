@@ -1,5 +1,9 @@
 { "components" : {
     "schemas" : {
+      "anyObject" : {
+        "type" : "object",
+        "description" : "any JSON object"
+      },
       "exception" : {
         "required" : [ "code" ],
         "type" : "object",
@@ -294,7 +298,7 @@
         }
       }
     },
-    "parameters" : {      
+    "parameters" : {
       "limit" : {
         "name" : "limit",
         "in" : "query",

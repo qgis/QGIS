@@ -15,10 +15,11 @@
 
 #include "qgsmetalroughmaterial3dhandler.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
-#include "qgshighlightmaterial.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgsmetalroughmaterialsettings.h"
+#include "qgsunlitmaterial.h"
 
 #include <QString>
 #include <Qt3DCore/QAttribute>
@@ -43,7 +44,7 @@ QgsMaterial *QgsMetalRoughMaterial3DHandler::toMaterial( const QgsAbstractMateri
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial();
+        return Qgs3D::createHighlightMaterial();
       }
 
       QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial( nullptr );

@@ -33,6 +33,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgstessellator.h"
+#include "qgsunlitmaterial.h"
 #include "qgsvertexid.h"
 
 #include <QColor>
@@ -135,12 +136,11 @@ void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
   polygonGeometryRenderer->setGeometry( mPolygonGeometry );
   mPolygonEntity->addComponent( polygonGeometryRenderer );
 
-  QgsPhongMaterialSettings polygonMaterialSettings = QgsPhongMaterialSettings();
-  polygonMaterialSettings.setAmbient( mColor );
-  polygonMaterialSettings.setDiffuse( mColor );
-  polygonMaterialSettings.setOpacity( DEFAULT_POLYGON_OPACITY );
-  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
-  mPolygonMaterial = Qgs3D::toMaterial( &polygonMaterialSettings, Qgis::MaterialRenderingTechnique::Triangles, materialContext );
+  QColor color = mColor;
+  color.setAlphaF( DEFAULT_POLYGON_OPACITY );
+  mPolygonMaterial = new QgsUnlitMaterial();
+  mPolygonMaterial->setColor( color );
+
   mPolygonEntity->addComponent( mPolygonMaterial );
 
   mPolygonTransform = new QgsGeoTransform;
@@ -249,12 +249,10 @@ void QgsRubberBand3D::setColor( const QColor color )
 
     if ( mPolygonFillEnabled )
     {
-      QgsPhongMaterialSettings polygonMaterialSettings;
-      polygonMaterialSettings.setAmbient( mColor );
-      polygonMaterialSettings.setDiffuse( mColor );
-      polygonMaterialSettings.setOpacity( DEFAULT_POLYGON_OPACITY );
-      QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
-      mPolygonMaterial = Qgs3D::toMaterial( &polygonMaterialSettings, Qgis::MaterialRenderingTechnique::Triangles, materialContext );
+      QColor color = mColor;
+      color.setAlphaF( DEFAULT_POLYGON_OPACITY );
+      mPolygonMaterial = new QgsUnlitMaterial();
+      mPolygonMaterial->setColor( color );
       mPolygonEntity->addComponent( mPolygonMaterial );
     }
   }

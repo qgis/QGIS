@@ -1448,6 +1448,8 @@ void QgsCameraController::depthBufferCaptured( const QImage &depthImage )
   // between the rendering and now anyway...
   mDepthBufferCamera = Qgs3DUtils::copyCamera( mCamera );
 
+  emit depthBufferReady();
+
   if ( mCurrentOperation == MouseOperation::ZoomWheel )
   {
     handleTerrainNavigationWheelZoom();

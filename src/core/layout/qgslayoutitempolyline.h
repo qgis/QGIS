@@ -236,6 +236,8 @@ class CORE_EXPORT QgsLayoutItemPolyline : public QgsLayoutNodesItem
     QColor mArrowHeadStrokeColor = Qt::black;
     QColor mArrowHeadFillColor = Qt::black;
 
+    int mVersion = 2;
+
     //! Create a default symbol.
     void createDefaultPolylineStyleSymbol();
 

@@ -364,6 +364,17 @@
         "year": 2025
       },
       "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "DZ",
+        "name": "QGIS Algeria User Group",
+        "logo_url": "https:\/\/dz.qgis.org\/img\/QGIS_DZ.png",
+        "website": "https:\/\/dz.qgis.org",
+        "year": 2026
+      },
+      "geometry": null
     }
   ]
 }

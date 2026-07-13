@@ -102,7 +102,27 @@ class GUI_EXPORT QgisInterface : public QObject
   public:
     QgisInterface() = default;
 
+    /**
+     * Returns the inbuilt plugin manager interface.
+     *
+     * \warning The methods in this interface are suitable for managing c++ plugins only.
+     *
+     * \see showPluginManager()
+     */
     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
+
+    /**
+     * Shows the Plugin Manager window.
+     *
+     * \param tabIndex initial tab to open. If -1, the last used tab will be opened.
+     * \param searchTerm optional pre-filled search term.
+     *
+     * \note Unlike the methods from pluginManagerInterface(), the plugin manager dialog
+     * shown by this method will fully handle Python plugins.
+     *
+     * \since QGIS 4.2
+     */
+    virtual void showPluginManager( int tabIndex = -1, const QString &searchTerm = QString() ) = 0;
 
     virtual QgsLayerTreeView *layerTreeView() = 0;
 

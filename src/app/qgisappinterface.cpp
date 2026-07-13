@@ -77,6 +77,11 @@ QgsPluginManagerInterface *QgisAppInterface::pluginManagerInterface()
   return &pluginManagerIface;
 }
 
+void QgisAppInterface::showPluginManager( int tabIndex, const QString &searchTerm )
+{
+  qgis->showPluginManager( tabIndex, searchTerm );
+}
+
 QgsLayerTreeView *QgisAppInterface::layerTreeView()
 {
   return qgis->layerTreeView();

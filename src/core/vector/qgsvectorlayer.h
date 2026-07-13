@@ -400,7 +400,7 @@ typedef QSet<int> QgsAttributeIds;
  *
  * \subsection grass Grass data provider (grass)
  *
- * Provider to display vector data in a GRASS GIS layer.
+ * Provider to display vector data in a GRASS layer.
  *
  * \see QgsVectorLayerUtils()
  */

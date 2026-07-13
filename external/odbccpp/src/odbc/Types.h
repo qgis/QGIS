@@ -318,7 +318,7 @@ public:
      *
      * @return  Returns the unscaled value of this decimal number.
      */
-    const char* unscaledValue() const { return value_.c_str(); };
+    const char* unscaledValue() const { return value_.c_str(); }
 
     /**
      * Returns a string representation of this number.

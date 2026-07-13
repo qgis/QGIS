@@ -82,20 +82,20 @@ set_target_properties(provider_hana_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUIL
 
 target_compile_definitions(provider_hana
     PRIVATE
-        $<TARGET_PROPERTY:odbccpp_static,INTERFACE_COMPILE_DEFINITIONS>)
+        $<TARGET_PROPERTY:odbccpp,INTERFACE_COMPILE_DEFINITIONS>)
 target_compile_definitions(provider_hana_a
     PRIVATE
-        $<TARGET_PROPERTY:odbccpp_static,INTERFACE_COMPILE_DEFINITIONS>)
+        $<TARGET_PROPERTY:odbccpp,INTERFACE_COMPILE_DEFINITIONS>)
 
 target_link_libraries(provider_hana
   qgis_core
-  odbccpp_static
+  odbccpp
   ${ODBC_LIBRARIES}
 )
 
 target_link_libraries(provider_hana_a
   qgis_core
-  odbccpp_static
+  odbccpp
   ${ODBC_LIBRARIES}
 )
 

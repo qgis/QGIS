@@ -847,16 +847,11 @@ void QgsRasterLayerProperties::apply()
     }
   }
 
-  // Do nothing on "bad" layers
-  if ( !mRasterLayer->isValid() )
-    return;
-
   // apply all plugin dialogs
   for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )
   {
     page->apply();
   }
-
 
   /*
    * Legend Tab
@@ -872,9 +867,12 @@ void QgsRasterLayerProperties::apply()
   //set whether the layer histogram should be inverted
   //mRasterLayer->setInvertHistogram( cboxInvertColorMap->isChecked() );
 
-  mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
-  mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
-  mRasterLayer->brightnessFilter()->setGamma( mGammaSpinBox->value() );
+  if ( mRasterLayer->brightnessFilter() )
+  {
+    mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
+    mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
+    mRasterLayer->brightnessFilter()->setGamma( mGammaSpinBox->value() );
+  }
 
   QgsDebugMsgLevel( u"processing transparency tab"_s, 3 );
   /*

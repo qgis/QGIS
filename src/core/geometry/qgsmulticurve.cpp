@@ -124,20 +124,41 @@ QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QStri
   return elemMultiCurve;
 }
 
-json QgsMultiCurve::asJsonObject( int precision ) const
+json QgsMultiCurve::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
-  json coordinates( json::array() );
-  for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
+  switch ( profile )
   {
-    if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
+    case Qgis::GeoJsonProfile::Legacy:
+    case Qgis::GeoJsonProfile::Rfc7946:
     {
-      std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
-      QgsPointSequence pts;
-      lineString->points( pts );
-      coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision ) );
+      json coordinates( json::array() );
+      for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
+      {
+        if ( auto curveGeom = qgsgeometry_cast<const QgsCurve *>( geom ) )
+        {
+          std::unique_ptr< QgsLineString > lineString( curveGeom->curveToLine() );
+          QgsPointSequence pts;
+          lineString->points( pts );
+          coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision, profile ) );
+        }
+      }
+      return { { "type", "MultiLineString" }, { "coordinates", coordinates } };
+    }
+    case Qgis::GeoJsonProfile::JsonFg:
+    case Qgis::GeoJsonProfile::JsonFgPlus:
+    {
+      json geometries( json::array() );
+      for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
+      {
+        if ( auto curveGeom = qgsgeometry_cast<const QgsCurve *>( geom ) )
+        {
+          geometries.push_back( curveGeom->asJsonObject( precision, profile ) );
+        }
+      }
+      return { { "type", "MultiCurve" }, { "geometries", geometries } };
     }
   }
-  return { { "type", "MultiLineString" }, { "coordinates", coordinates } };
+  BUILTIN_UNREACHABLE
 }
 
 bool QgsMultiCurve::addGeometry( QgsAbstractGeometry *g )

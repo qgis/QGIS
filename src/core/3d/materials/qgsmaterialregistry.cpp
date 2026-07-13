@@ -24,6 +24,7 @@
 #include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterialsettings.h"
 #include "qgssimplelinematerialsettings.h"
+#include "qgsunlitmaterialsettings.h"
 
 #include <QString>
 
@@ -67,7 +68,10 @@ bool QgsMaterialRegistry::populate()
     new QgsMaterialSettingsMetadata( u"phongtextured"_s, QObject::tr( "Legacy Textured (Phong)" ), QgsPhongTexturedMaterialSettings::create, QgsPhongTexturedMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconPhongTexturedMaterial.svg"_s ) )
   );
   addMaterialSettingsType(
-    new QgsMaterialSettingsMetadata( u"simpleline"_s, QObject::tr( "Single Color (Unlit)" ), QgsSimpleLineMaterialSettings::create, QgsSimpleLineMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconSimpleLineMaterial.svg"_s ) )
+    new QgsMaterialSettingsMetadata( u"simpleline"_s, QObject::tr( "Single Color Lines (Unlit)" ), QgsSimpleLineMaterialSettings::create, QgsSimpleLineMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconSimpleLineMaterial.svg"_s ) )
+  );
+  addMaterialSettingsType(
+    new QgsMaterialSettingsMetadata( u"unlit"_s, QObject::tr( "Single Color (Unlit)" ), QgsUnlitMaterialSettings::create, QgsUnlitMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( u"/mIconUnlitMaterial.svg"_s ) )
   );
 
   return true;

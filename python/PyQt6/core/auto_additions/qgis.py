@@ -1101,6 +1101,21 @@ Qgis.VectorProviderCapabilities = lambda flags=0: Qgis.VectorProviderCapability(
 QgsVectorDataProvider.Capabilities = Qgis.VectorProviderCapabilities
 Qgis.VectorProviderCapabilities.baseClass = Qgis
 VectorProviderCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.CreateLayerActionOnExisting.Abort.__doc__ = "Abort the creation on detecting an existing layer."
+Qgis.CreateLayerActionOnExisting.CreateOrOverwriteFile.__doc__ = "Create or overwrite whole file. For existing file-based datasources the entire datasource will be deleted, including all other layers in it. For non file-based datasources this is treated the same as CreateOrOverwriteLayer."
+Qgis.CreateLayerActionOnExisting.CreateOrOverwriteLayer.__doc__ = "Create or overwrite existing layer only. For existing file-based datasources other layers in the datasource will be untouched."
+Qgis.CreateLayerActionOnExisting.__doc__ = """Actions to take when attempting to create a layer on an existing datasource
+
+.. versionadded:: 4.2
+
+* ``Abort``: Abort the creation on detecting an existing layer.
+* ``CreateOrOverwriteFile``: Create or overwrite whole file. For existing file-based datasources the entire datasource will be deleted, including all other layers in it. For non file-based datasources this is treated the same as CreateOrOverwriteLayer.
+* ``CreateOrOverwriteLayer``: Create or overwrite existing layer only. For existing file-based datasources other layers in the datasource will be untouched.
+
+"""
+# --
+Qgis.CreateLayerActionOnExisting.baseClass = Qgis
 QgsVectorDataProvider.FeatureCountState = Qgis.FeatureCountState
 # monkey patching scoped based enum
 QgsVectorDataProvider.Uncounted = Qgis.FeatureCountState.Uncounted
@@ -8712,6 +8727,24 @@ Qgis.LegendJsonRenderFlags = lambda flags=0: Qgis.LegendJsonRenderFlag(flags)
 Qgis.LegendJsonRenderFlags.baseClass = Qgis
 LegendJsonRenderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.GeoJsonProfile.Legacy.__doc__ = "Legacy GeoJson profile used in QGIS prior to 4.2, which included some non-standard extensions and deviations from the RFC7946 standard, such as support for  transforming geometries to a CRS different than CRS84. This profile is still available for backward compatibility but is not recommended for new projects."
+Qgis.GeoJsonProfile.Rfc7946.__doc__ = "GeoJson profile compliant with RFC7946 standard \"http://www.opengis.net/def/profile/OGC/0/rfc7946\""
+Qgis.GeoJsonProfile.JsonFg.__doc__ = "GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg\""
+Qgis.GeoJsonProfile.JsonFgPlus.__doc__ = "GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus\""
+Qgis.GeoJsonProfile.__doc__ = """GeoJson export Profile according to OGC Features and Geometries JSON - Part 1: Core
+https://docs.ogc.org/is/21-045r1/21-045r1.html
+
+.. versionadded:: 4.2
+
+* ``Legacy``: Legacy GeoJson profile used in QGIS prior to 4.2, which included some non-standard extensions and deviations from the RFC7946 standard, such as support for  transforming geometries to a CRS different than CRS84. This profile is still available for backward compatibility but is not recommended for new projects.
+* ``Rfc7946``: GeoJson profile compliant with RFC7946 standard \"http://www.opengis.net/def/profile/OGC/0/rfc7946\"
+* ``JsonFg``: GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg\"
+* ``JsonFgPlus``: GeoJson profile from OGC Features and Geometries JSON Part 1: core \"http://www.opengis.net/def/profile/OGC/0/jsonfg-plus\"
+
+"""
+# --
+Qgis.GeoJsonProfile.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.ActionType.Invalid.__doc__ = "Invalid"
 Qgis.ActionType.MapLayerAction.__doc__ = "Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class."
 Qgis.ActionType.AttributeAction.__doc__ = "Custom actions (manually defined in layer properties), corresponds to QgsAction class."
@@ -12950,6 +12983,23 @@ Qgis.DockableWidgetInitialState.__doc__ = """Dockable widget initial states.
 """
 # --
 Qgis.DockableWidgetInitialState.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder.__doc__ = "Polygon with longest common border is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MaximumArea.__doc__ = "Polygon with largest area is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MinimumArea.__doc__ = "Polygon with minimum area is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.MinimumIndex.__doc__ = "Polygon with smallest input index is selected to merge overlapping polygons into"
+Qgis.CoverageCleanOverlapMergeStrategy.__doc__ = """Merge strategies for coverage cleaning operations.
+
+.. versionadded:: 4.4
+
+* ``LongestBorder``: Polygon with longest common border is selected to merge overlapping polygons into
+* ``MaximumArea``: Polygon with largest area is selected to merge overlapping polygons into
+* ``MinimumArea``: Polygon with minimum area is selected to merge overlapping polygons into
+* ``MinimumIndex``: Polygon with smallest input index is selected to merge overlapping polygons into
+
+"""
+# --
+Qgis.CoverageCleanOverlapMergeStrategy.baseClass = Qgis
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 5.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
     Qgis.__annotations__ = {'QGIS_DEV_VERSION': str, 'DEFAULT_SEARCH_RADIUS_MM': float, 'DEFAULT_MAPTOPIXEL_THRESHOLD': float, 'DEFAULT_HIGHLIGHT_COLOR': 'QColor', 'DEFAULT_HIGHLIGHT_BUFFER_MM': float, 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': float, 'SCALE_PRECISION': float, 'DEFAULT_Z_COORDINATE': float, 'DEFAULT_M_COORDINATE': float, 'UI_SCALE_FACTOR': float, 'DEFAULT_SNAP_TOLERANCE': float, 'DEFAULT_SNAP_UNITS': 'Qgis.MapToolUnit', 'USER_CRS_START_ID': int, 'DEFAULT_POINT_SIZE': float, 'DEFAULT_LINE_WIDTH': float, 'DEFAULT_SEGMENT_EPSILON': float}

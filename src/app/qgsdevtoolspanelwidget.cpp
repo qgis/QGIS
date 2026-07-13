@@ -97,18 +97,38 @@ void QgsDevToolsPanelWidget::addToolFactory( QgsDevToolWidgetFactory *factory )
 
 void QgsDevToolsPanelWidget::removeToolFactory( QgsDevToolWidgetFactory *factory )
 {
-  if ( mFactoryPages.contains( factory ) )
+  if ( !mFactoryPages.contains( factory ) )
   {
-    const int currentRow = mStackedWidget->currentIndex();
-    const int row = mFactoryPages.value( factory );
-    if ( QWidget *widget = mStackedWidget->widget( row ) )
+    return;
+  }
+
+  const int row = mFactoryPages.value( factory );
+  const int currentRow = mStackedWidget->currentIndex();
+
+  if ( QWidget *w = mStackedWidget->widget( row ) )
+  {
+    mStackedWidget->removeWidget( w );
+    w->deleteLater();
+  }
+
+  if ( row >= 0 && row < mOptionsListWidget->count() )
+  {
+    QListWidgetItem *item = mOptionsListWidget->takeItem( row );
+    delete item;
+  }
+
+  mFactoryPages.remove( factory );
+  for ( auto it = mFactoryPages.begin(); it != mFactoryPages.end(); ++it )
+  {
+    if ( it.value() > row )
     {
-      mStackedWidget->removeWidget( widget );
+      it.value() -= 1;
     }
-    mOptionsListWidget->removeItemWidget( mOptionsListWidget->item( row ) );
-    mFactoryPages.remove( factory );
-    if ( currentRow == row )
-      setCurrentTool( 0 );
+  }
+
+  if ( currentRow == row )
+  {
+    setCurrentTool( 0 );
   }
 }
 

@@ -38,25 +38,13 @@ QgsEditorConfigWidget *QgsJsonEditWidgetFactory::configWidget( QgsVectorLayer *v
 
 unsigned int QgsJsonEditWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
-  const QMetaType::Type type = vl->fields().field( fieldIdx ).type();
-
-  switch ( type )
+  const QgsField field = vl->fields().field( fieldIdx );
+  // Handle the json field
+  if ( field.typeName().compare( u"json"_s, Qt::CaseInsensitive ) == 0 || field.typeName().compare( u"jsonb"_s, Qt::CaseInsensitive ) == 0 )
   {
-    case QMetaType::Type::QVariantMap:
-    {
-      const QString typeName = vl->fields().field( fieldIdx ).typeName();
-      if ( typeName == "json"_L1 || typeName == "jsonb"_L1 )
-        return 21;
-      return 15;
-    }
-    break;
-    case QMetaType::Type::QVariantList:
-      return 10;
-      break;
-    default:
-      return 5;
-      break;
+    return 15;
   }
+  return 5;
 }
 
 bool QgsJsonEditWidgetFactory::isReadOnly() const

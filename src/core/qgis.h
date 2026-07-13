@@ -566,12 +566,25 @@ int QgisEvent = QEvent::User + 1;
 
     /**
      * \ingroup core
+     * \brief Actions to take when attempting to create a layer on an existing datasource
+     * \since QGIS 4.2
+     */
+   enum class CreateLayerActionOnExisting : int
+   {
+     Abort, //!< Abort the creation on detecting an existing layer.
+     CreateOrOverwriteFile, //!< Create or overwrite whole file. For existing file-based datasources the entire datasource will be deleted, including all other layers in it. For non file-based datasources this is treated the same as CreateOrOverwriteLayer.
+     CreateOrOverwriteLayer, //!< Create or overwrite existing layer only. For existing file-based datasources other layers in the datasource will be untouched.
+   };
+    Q_ENUM( CreateLayerActionOnExisting )
+
+    /**
+     * \ingroup core
      * \brief Enumeration of feature count states
      * \since QGIS 3.20
      */
     enum class FeatureCountState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorDataProvider, FeatureCountState ) : int
-      {
-      Uncounted = -2, //!< Feature count not yet computed
+    {
+      Uncounted = -2,    //!< Feature count not yet computed
       UnknownCount = -1, //!< Provider returned an unknown feature count
     };
     Q_ENUM( FeatureCountState )
@@ -5024,6 +5037,20 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( LegendJsonRenderFlags )
 
     /**
+     * GeoJson export Profile according to OGC Features and Geometries JSON - Part 1: Core
+     * https://docs.ogc.org/is/21-045r1/21-045r1.html
+     * \since QGIS 4.2
+     */
+    enum class GeoJsonProfile : int
+    {
+      Legacy, //!< Legacy GeoJson profile used in QGIS prior to 4.2, which included some non-standard extensions and deviations from the RFC7946 standard, such as support for  transforming geometries to a CRS different than CRS84. This profile is still available for backward compatibility but is not recommended for new projects.
+      Rfc7946,    //!< GeoJson profile compliant with RFC7946 standard "http://www.opengis.net/def/profile/OGC/0/rfc7946"
+      JsonFg,     //!< GeoJson profile from OGC Features and Geometries JSON Part 1: core "http://www.opengis.net/def/profile/OGC/0/jsonfg"
+      JsonFgPlus, //!< GeoJson profile from OGC Features and Geometries JSON Part 1: core "http://www.opengis.net/def/profile/OGC/0/jsonfg-plus"
+    };
+    Q_ENUM( GeoJsonProfile )
+
+    /**
      * Action types.
      *
      * Prior to QGIS 3.30 this was available as QgsActionMenu::ActionType
@@ -6883,6 +6910,20 @@ int QgisEvent = QEvent::User + 1;
       ForceDialog,          //!< Force the widget to be shown in a dialog
     };
     Q_ENUM( DockableWidgetInitialState )
+
+    /**
+     * Merge strategies for coverage cleaning operations.
+     *
+     * \since QGIS 4.4
+     */
+    enum class CoverageCleanOverlapMergeStrategy : int
+    {
+      LongestBorder = 0, //!< Polygon with longest common border is selected to merge overlapping polygons into
+      MaximumArea = 1,   //!< Polygon with largest area is selected to merge overlapping polygons into
+      MinimumArea = 2,   //!< Polygon with minimum area is selected to merge overlapping polygons into
+      MinimumIndex = 3,  //!< Polygon with smallest input index is selected to merge overlapping polygons into
+    };
+    Q_ENUM( CoverageCleanOverlapMergeStrategy )
 
     /**
      * Identify search radius in mm

@@ -20,11 +20,11 @@
 #include "qgscolorutils.h"
 #include "qgsgeotransform.h"
 #include "qgssymbollayerutils.h"
+#include "qgsunlitmaterial.h"
 
 #include <QDomDocument>
 #include <QString>
 #include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DRender/QPointLight>
 
@@ -74,8 +74,9 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
     originTransform->setGeoTranslation( position().toVector3D() );
     originEntity->addComponent( originTransform );
 
-    Qt3DExtras::QPhongMaterial *materialLightOriginCenter = new Qt3DExtras::QPhongMaterial;
-    materialLightOriginCenter->setAmbient( color() );
+    auto materialLightOriginCenter = new QgsUnlitMaterial();
+    materialLightOriginCenter->setColor( color() );
+    materialLightOriginCenter->setCastsShadows( false );
     originEntity->addComponent( materialLightOriginCenter );
 
     Qt3DExtras::QSphereMesh *rendererLightOriginCenter = new Qt3DExtras::QSphereMesh;

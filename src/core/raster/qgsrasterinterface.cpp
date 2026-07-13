@@ -355,8 +355,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram, int bandN
       // There is no best default value, to display something reasonable in histogram chart,
       // binCount should be small, OTOH, to get precise data for cumulative cut, the number should be big.
       // Because it is easier to define fixed lower value for the chart, we calc optimum binCount
-      // for higher resolution (to avoid calculating that where histogram() is used. In any case,
-      // it does not make sense to use more than width*height;
+      // for higher resolution (to avoid calculating that where histogram() is used.
 
       // for Int16/Int32 make sure bin count <= actual range, because there is no sense in having
       // bins at fractional values
@@ -367,7 +366,22 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram, int bandN
       else
       {
         // This is for not integer types
-        myBinCount = static_cast<qint64>( histogram.width ) * static_cast<qint64>( histogram.height );
+        const QgsRasterBandStats stats = bandStatistics( bandNo, Qgis::RasterBandStatistic::StdDev | Qgis::RasterBandStatistic::Range, boundingBox, sampleSize );
+        // If stats are not available or stdDev is 0, use width*height as binCount
+        // but this could lead to binCount being too large
+        if ( stats.statsGathered.testFlags( Qgis::RasterBandStatistic::StdDev | Qgis::RasterBandStatistic::Range ) )
+        {
+          // Use Scott's Rule to determine bin count: binCount = 3.49 * stdDev / n^(1/3)
+          // In standard C++ (prior to C++26), std::sqrt is not a constexpr function,
+          // so we precompute the constant value  24 * sqrt( M_PI ) = 42.538892421732385
+          constexpr double SCOTTS_COEFFICIENT = 42.538892421732385;
+          myBinCount = static_cast<qint64>( stats.range / ( stats.stdDev * std::cbrt( SCOTTS_COEFFICIENT / ( sampleSize > 0 ? sampleSize : static_cast<double>( histogram.width ) * histogram.height ) ) ) );
+        }
+        else
+        {
+          // Fallback using the whole histogram size
+          myBinCount = static_cast<qint64>( histogram.width ) * static_cast<qint64>( histogram.height );
+        }
       }
     }
   }

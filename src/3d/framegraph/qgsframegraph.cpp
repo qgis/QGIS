@@ -311,10 +311,12 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mMsaaBlitNode = new Qt3DRender::QBlitFramebuffer( mGlobalParamsStorage );
   mMsaaBlitNode->setObjectName( "MsaaBlitFramebuffer" );
   mMsaaBlitNode->setEnabled( false );
+  new Qt3DRender::QNoDraw( mMsaaBlitNode );
 
   mMsaaDepthBlitNode = new Qt3DRender::QBlitFramebuffer( mGlobalParamsStorage );
   mMsaaDepthBlitNode->setObjectName( "MsaaDepthBlitFramebuffer" );
   mMsaaDepthBlitNode->setEnabled( false );
+  new Qt3DRender::QNoDraw( mMsaaDepthBlitNode );
 
   // depth buffer processing
   constructDepthRenderPass();
@@ -330,6 +332,15 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 #ifdef HAVE_TRACY
   constructThumbnailCapturePass();
 #endif
+
+  // fix FBO incomplete issue when using globe and 3D animations export with MSAA enabled
+  // (with globe, canvas simply stays empty with FBO incomplete msg appearing on window resize)
+  Qt3DRender::QRenderTargetSelector *targetSelector = new Qt3DRender::QRenderTargetSelector( mGlobalParamsStorage );
+  targetSelector->setTarget( forwardRenderView().regularRenderTarget() );
+  mMsaaClearBuffers = new Qt3DRender::QClearBuffers( targetSelector );
+  mMsaaClearBuffers->setEnabled( false );
+  mMsaaClearBuffers->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
+  new Qt3DRender::QNoDraw( mMsaaClearBuffers );
 
   mRubberBandsRootEntity = new Qt3DCore::QEntity( mRootEntity );
   mRubberBandsRootEntity->setObjectName( "mRubberBandsRootEntity" );
@@ -587,6 +598,7 @@ void QgsFrameGraph::setMsaaEnabled( bool enabled )
     mMsaaDepthBlitNode->setSource( nullptr );
     mMsaaDepthBlitNode->setDestination( nullptr );
     mMsaaBlitConfigured = false;
+    mMsaaClearBuffers->setEnabled( false );
   }
 
   forwardRenderView().setMsaaEnabled( enabled );
@@ -609,6 +621,8 @@ void QgsFrameGraph::setMsaaEnabled( bool enabled )
     mMsaaDepthBlitNode->setSourceAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
     mMsaaDepthBlitNode->setDestinationAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
     mMsaaDepthBlitNode->setInterpolationMethod( Qt3DRender::QBlitFramebuffer::Nearest );
+
+    mMsaaClearBuffers->setEnabled( true );
   }
 
   Qt3DRender::QRenderTarget *target = enabled ? forwardRenderView().msaaRenderTarget() : forwardRenderView().regularRenderTarget();

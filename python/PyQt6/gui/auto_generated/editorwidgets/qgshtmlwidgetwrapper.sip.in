@@ -61,8 +61,6 @@ Returns true if the widget needs feature geometry
 
 };
 
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

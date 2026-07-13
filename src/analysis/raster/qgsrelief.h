@@ -22,6 +22,7 @@
 
 #include "qgis_analysis.h"
 #include "qgsogrutils.h"
+#include "qgsrasterlayerutils.h"
 
 #include <QColor>
 #include <QMap>
@@ -40,19 +41,9 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsRelief
 {
   public:
-    struct ReliefColor
-    {
-        ReliefColor( const QColor &c, double min, double max )
-          : color( c )
-          , minElevation( min )
-          , maxElevation( max )
-        {}
-
-        QColor color;
-        double minElevation;
-        double maxElevation;
-    };
-
+    /**
+     * Constructor for QgsRelief.
+     */
     QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
     ~QgsRelief();
 
@@ -60,27 +51,88 @@ class ANALYSIS_EXPORT QgsRelief
     QgsRelief &operator=( const QgsRelief &rh ) = delete;
 
     /**
-     * Starts the calculation, reads from mInputFile and stores the result in mOutputFile
-     * \param feedback feedback object that receives update and that is checked for cancellation.
-     * \returns 0 in case of success
-    */
-    int processRaster( QgsFeedback *feedback = nullptr );
-
-    double zFactor() const { return mZFactor; }
-    void setZFactor( double factor ) { mZFactor = factor; }
-
-    void clearReliefColors();
-    void addReliefColorClass( const QgsRelief::ReliefColor &color );
-    QList<QgsRelief::ReliefColor> reliefColors() const { return mReliefColors; }
-    void setReliefColors( const QList<QgsRelief::ReliefColor> &c ) { mReliefColors = c; }
+     * Calculation results.
+     *
+     * \since QGIS 4.2
+     */
+    enum class Result : int
+    {
+      Success = 0,              //!< Calculation succeeded
+      InvalidInput = 1,         //!< Invalid input layer
+      OutputCreationFailed = 3, //!< Creation of output layer failed
+      InvalidInputSize = 6,     //!< Input raster was too small (at least 3 rows are required)
+      Canceled = 7,             //!< Operation was canceled
+    };
 
     /**
-     * Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
+     * Starts the calculation.
+     *
+     * Reads from the intput input file and stores the result in the output file.
+     *
+     * \param feedback feedback object that receives update and that is checked for cancellation.
+     *
+     * \returns result code. Prior to QGIS 4.2 the results were returned as a raw integer value.
+    */
+    QgsRelief::Result processRaster( QgsFeedback *feedback = nullptr );
+
+    /**
+     * Returns the z factor, which controls vertical elevation exaggeration.
+     *
+     * \see setZFactor()
+     */
+    double zFactor() const { return mZFactor; }
+
+    /**
+     * Sets the z \a factor, which controls vertical elevation exaggeration.
+     *
+     * \see zFactor()
+     */
+    void setZFactor( double factor ) { mZFactor = factor; }
+
+    /**
+     * Clears all existing relief colors.
+     *
+     * \see addReliefColorClass()
+     * \see reliefColors()
+     * \see setReliefColors()
+     */
+    void clearReliefColors();
+
+    /**
+     * Adds a relief \a color.
+     *
+     * \see clearReliefColors()
+     * \see reliefColors()
+     * \see setReliefColors()
+     */
+    void addReliefColorClass( const QgsRasterReliefColor &color );
+
+    /**
+     * Returns a list of all relief colors.
+     *
+     * \see clearReliefColors()
+     * \see addReliefColorClass()
+     * \see setReliefColors()
+     */
+    QList<QgsRasterReliefColor> reliefColors() const { return mReliefColors; }
+
+    /**
+     * Sets the list of relief colors.
+     *
+     * \see clearReliefColors()
+     * \see addReliefColorClass()
+     * \see reliefColors()
+     */
+    void setReliefColors( const QList<QgsRasterReliefColor> &c ) { mReliefColors = c; }
+
+    /**
+     * Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression.
+     *
      * \returns TRUE in case of success
     */
-    QList<QgsRelief::ReliefColor> calculateOptimizedReliefClasses();
+    QList<QgsRasterReliefColor> calculateOptimizedReliefClasses();
 
-    //! Write frequency of elevation values to file for manual inspection
+    //! Writes frequency of elevation values to a \a file for manual inspection
     bool exportFrequencyDistributionToCsv( const QString &file );
 
   private:
@@ -108,24 +160,9 @@ class ANALYSIS_EXPORT QgsRelief
     std::unique_ptr<QgsHillshadeFilter> mHillshadeFilter315;
 
     //relief colors and corresponding elevations
-    QList<ReliefColor> mReliefColors;
+    QList<QgsRasterReliefColor> mReliefColors;
 
     bool processNineCellWindow( float *x1, float *x2, float *x3, float *x4, float *x5, float *x6, float *x7, float *x8, float *x9, unsigned char *red, unsigned char *green, unsigned char *blue );
-
-    //! Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction
-    gdal::dataset_unique_ptr openInputFile( int &nCellsX, int &nCellsY );
-
-    /**
-     * Opens the output driver and tests if it supports the creation of a new dataset
-     * \returns nullptr on error and the driver handle on success
-    */
-    GDALDriverH openOutputDriver();
-
-    /**
-     * Opens the output file and sets the same geotransform and CRS as the input data
-     * \returns the output dataset or nullptr in case of error
-    */
-    gdal::dataset_unique_ptr openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
 
     /**
      * Retrieves the color corresponding to the specified \a elevation.
@@ -139,17 +176,7 @@ class ANALYSIS_EXPORT QgsRelief
      * Returns class (0-255) for an elevation value
      * \returns elevation class or -1 in case of error
     */
-    int frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange );
-    //! Do one iteration of class break optimisation (algorithm from Garcia and Rodriguez)
-    void optimiseClassBreaks( QList<int> &breaks, double *frequencies );
-
-    /**
-     * Calculates coefficients a and b
-     * \param input data points ( elevation class / frequency )
-     * \param a slope
-     * \param b y value for x=0
-     */
-    bool calculateRegression( const QList<QPair<int, double>> &input, double &a, double &b );
+    static int frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange );
 };
 
 #endif // QGSRELIEF_H

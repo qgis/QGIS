@@ -29,10 +29,10 @@ QgsTerrainGenerator *QgsDemTerrainGenerator::create()
   return new QgsDemTerrainGenerator();
 }
 
+QgsDemTerrainGenerator::QgsDemTerrainGenerator() = default;
+
 QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
-{
-  delete mHeightMapGenerator;
-}
+{}
 
 void QgsDemTerrainGenerator::setLayer( QgsRasterLayer *layer )
 {
@@ -106,15 +106,14 @@ void QgsDemTerrainGenerator::updateGenerator()
     const QgsRectangle intersectExtent = mExtent.intersect( layerExtent );
 
     mTerrainTilingScheme = QgsTilingScheme( intersectExtent, mCrs );
-    delete mHeightMapGenerator;
-    mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution, mTransformContext );
+    mHeightMapGenerator = std::make_unique<QgsDemHeightMapGenerator>( dem, mTerrainTilingScheme, mResolution, mTransformContext );
+
     mIsValid = true;
   }
   else
   {
     mTerrainTilingScheme = QgsTilingScheme();
-    delete mHeightMapGenerator;
-    mHeightMapGenerator = nullptr;
+    mHeightMapGenerator.reset();
     mIsValid = false;
   }
 }

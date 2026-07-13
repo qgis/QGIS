@@ -70,6 +70,10 @@ class CORE_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     {
       sipType = sipType_QgsMetalRoughTexturedMaterialSettings;
     }
+    else if ( sipCpp->type() == "unlit" )
+    {
+      sipType = sipType_QgsUnlitMaterialSettings;
+    }
     else
     {
       sipType = 0;

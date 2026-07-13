@@ -167,8 +167,8 @@ class QgsAppGpsSettingsMenu;
 class Qgs3DMapScene;
 class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
-class QgsCustomization;
 class QgsCustomizationDialog;
+class QgsTopocentricWidget;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -181,6 +181,8 @@ class QgsCustomizationDialog;
 #include "qgsattributetablefiltermodel.h"
 #include "qgsauthmanager.h"
 #include "qgsbrowserdockwidget.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscustomization.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgslayoutdesignerinterface.h"
 #include "qgsmaplayeractionregistry.h"
@@ -270,7 +272,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       const QString &rootProfileLocation = QString(),
       const QString &activeProfile = QString(),
       QWidget *parent = nullptr,
-      Qt::WindowFlags fl = Qt::Window
+      Qt::WindowFlags fl = Qt::Window,
+      std::unique_ptr<QgsCustomization> customization = nullptr
     );
     //! Constructor for unit tests
     QgisApp();
@@ -1551,7 +1554,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void openURL( QString url, bool useQgisDocDirectory = true );
 
     //! Opens the plugin manager (since QGIS 4.0)
-    void showPluginManager( int tabIndex = -1 );
+    void showPluginManager( int tabIndex = -1, const QString &searchTerm = QString() );
 
   protected:
     void showEvent( QShowEvent *event ) override;
@@ -2670,6 +2673,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QLabel *mOnTheFlyProjectionStatusLabel = nullptr;
     //! Widget in status bar used to show status of on the fly projection
     QToolButton *mOnTheFlyProjectionStatusButton = nullptr;
+    //! Popup menu shown on the CRS button when the project uses a topocentric CRS
+    QMenu *mTopocentricMenu = nullptr;
+    //! Widget embedded in mTopocentricMenu to display the topocentric origin
+    QgsTopocentricWidget *mTopocentricWidget = nullptr;
     QToolButton *mMessageButton = nullptr;
     //! Menu that contains the list of actions of the selected vector layer
     QMenu *mFeatureActionMenu = nullptr;

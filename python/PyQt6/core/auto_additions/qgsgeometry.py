@@ -32,6 +32,10 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsCoverageCleanParameters.__group__ = ['geometry']
+except (NameError, AttributeError):
+    pass
+try:
     QgsGeometry.Error.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

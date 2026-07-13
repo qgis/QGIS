@@ -1748,8 +1748,12 @@ QDomElement QgsNurbsCurve::asGml3( QDomDocument &doc, int precision, const QStri
   return line->asGml3( doc, precision, ns, axisOrder );
 }
 
-json QgsNurbsCurve::asJsonObject( int precision ) const
+json QgsNurbsCurve::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
+  // The current profiles do not make any difference for NURBS curves, as GeoJSON does not support them,
+  // so we convert to LineString but we keep the parameter in case we need to add specific handling
+  // for future profiles
+  Q_UNUSED( profile )
   std::unique_ptr<QgsLineString> line( curveToLine() );
   if ( !line )
     return json::object();

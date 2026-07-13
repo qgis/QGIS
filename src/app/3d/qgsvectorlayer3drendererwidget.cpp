@@ -39,7 +39,7 @@
 using namespace Qt::StringLiterals;
 
 QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
   , mLayer( layer )
 {
   // If layer is null, the widget cannot be created.
@@ -60,8 +60,8 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
   setLayout( scrollLayout );
 
   connect( widgetSymbol, &QgsSymbol3DWidget::widgetChanged, this, &QgsSingleSymbol3DRendererWidget::widgetChanged );
+  connect( widgetSymbol, &QgsSymbol3DWidget::showPanel, this, &QgsSingleSymbol3DRendererWidget::openPanel );
 }
-
 
 void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
@@ -100,6 +100,12 @@ std::unique_ptr<QgsAbstract3DSymbol> QgsSingleSymbol3DRendererWidget::symbol()
   return widgetSymbol->symbol(); // cloned or null
 }
 
+void QgsSingleSymbol3DRendererWidget::setDockMode( bool dockMode )
+{
+  widgetSymbol->setDockMode( dockMode );
+  QgsPanelWidget::setDockMode( dockMode );
+}
+
 // -------
 
 QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
@@ -136,10 +142,12 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
 
   connect( cboRendererType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
   connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
   connect( widgetCategorizedRenderer, &QgsCategorized3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetCategorizedRenderer, &QgsCategorized3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
+
   connect( widgetBaseProperties, &QgsVectorLayer3DPropertiesWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
 
   setProperty( "helpPage", u"working_with_vector/vector_properties.html#d-view-properties"_s );
@@ -195,6 +203,7 @@ void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 void QgsVectorLayer3DRendererWidget::setDockMode( bool dockMode )
 {
   QgsPanelWidget::setDockMode( dockMode );
+  widgetSingleSymbolRenderer->setDockMode( dockMode );
   widgetRuleBasedRenderer->setDockMode( dockMode );
   widgetCategorizedRenderer->setDockMode( dockMode );
 }

@@ -114,7 +114,7 @@ QVariant QgsColorRampLegendNode::data( int role ) const
   }
   else if ( role == Qt::DecorationRole )
   {
-    if ( mPixmap.isNull() || mPixmap.size() != mIconSize )
+    if ( mPixmap.isNull() )
     {
       const QFont font = data( Qt::FontRole ).value< QFont >();
 
@@ -126,30 +126,42 @@ QVariant QgsColorRampLegendNode::data( int role ) const
       const QRect minBoundingRect = fm.boundingRect( minLabel );
       const QRect maxBoundingRect = fm.boundingRect( maxLabel );
 
-      const int minLabelWidth = minBoundingRect.width();
-      const int maxLabelWidth = maxBoundingRect.width();
-      const int maxTextWidth = std::max( minLabelWidth, maxLabelWidth );
-      const int labelGapFromRamp = fm.boundingRect( u"x"_s ).width();
-      const int extraAllowance = labelGapFromRamp * 0.4; // extra allowance to avoid text clipping on right
-      QRect labelRect;
+      QgsScreenProperties targetScreen = model() && !model()->targetScreenProperties().isEmpty() ? *model()->targetScreenProperties().begin() : QgsScreenProperties();
+      double devicePixelRatio = 1;
+      if ( targetScreen.isValid() )
+      {
+        devicePixelRatio = targetScreen.devicePixelRatio();
+      }
+
+      const double minLabelWidth = minBoundingRect.width() * devicePixelRatio;
+      const double maxLabelWidth = maxBoundingRect.width() * devicePixelRatio;
+      const double maxTextWidth = std::max( minLabelWidth, maxLabelWidth );
+      const double labelGapFromRamp = fm.boundingRect( u"x"_s ).width() * devicePixelRatio;
+      const double extraAllowance = labelGapFromRamp * 0.4; // extra allowance to avoid text clipping on right
+      QRectF labelRect;
       QSize rampSize;
       switch ( mSettings.orientation() )
       {
         case Qt::Vertical:
-          labelRect = QRect( mIconSize.width() + labelGapFromRamp, 0, maxTextWidth + extraAllowance, mIconSize.height() );
+          labelRect = QRectF( ( mIconSize.width() + labelGapFromRamp ) / devicePixelRatio, 0, ( maxTextWidth + extraAllowance ) / devicePixelRatio, mIconSize.height() / devicePixelRatio );
           mPixmap = QPixmap( mIconSize.width() + maxTextWidth + labelGapFromRamp + extraAllowance, mIconSize.height() );
           rampSize = mIconSize;
           break;
 
         case Qt::Horizontal:
-          labelRect
-            = QRect( 0, mIconSize.height() + labelGapFromRamp, std::max( mIconSize.width(), minLabelWidth + maxLabelWidth + labelGapFromRamp ), std::max( minBoundingRect.height(), maxBoundingRect.height() ) + extraAllowance );
-          mPixmap = QPixmap( std::max( mIconSize.width(), minLabelWidth + maxLabelWidth + labelGapFromRamp ), mIconSize.height() + maxTextWidth + labelGapFromRamp + extraAllowance );
+          labelRect = QRectF(
+            0,
+            ( mIconSize.height() + labelGapFromRamp ) / devicePixelRatio,
+            std::max( static_cast<double>( mIconSize.width() ), minLabelWidth + maxLabelWidth + labelGapFromRamp ) / devicePixelRatio,
+            ( std::max( minBoundingRect.height() * devicePixelRatio, maxBoundingRect.height() * devicePixelRatio ) + extraAllowance ) / devicePixelRatio
+          );
+          mPixmap = QPixmap( std::max( static_cast< double >( mIconSize.width() ), minLabelWidth + maxLabelWidth + labelGapFromRamp ), mIconSize.height() + maxTextWidth + labelGapFromRamp + extraAllowance );
           rampSize = QSize( labelRect.width(), mIconSize.height() );
           break;
       }
 
       mPixmap.fill( Qt::transparent );
+      mPixmap.setDevicePixelRatio( devicePixelRatio );
 
       QPixmap pix;
 
@@ -169,6 +181,8 @@ QVariant QgsColorRampLegendNode::data( int role ) const
         pix = QPixmap( rampSize );
         pix.fill( Qt::transparent );
       }
+
+      pix.setDevicePixelRatio( devicePixelRatio );
 
       QPainter p( &mPixmap );
       p.drawPixmap( 0, 0, pix );
@@ -537,4 +551,11 @@ QJsonObject QgsColorRampLegendNode::exportSymbolToJson( const QgsLegendSettings 
   json[u"max"_s] = mMaximumValue;
 
   return json;
+}
+
+void QgsColorRampLegendNode::invalidateDisplayData()
+{
+  mPixmap = QPixmap();
+  const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 );
+  mIconSize = mSettings.orientation() == Qt::Vertical ? QSize( iconSize, iconSize * 6 ) : QSize( iconSize * 6, iconSize );
 }

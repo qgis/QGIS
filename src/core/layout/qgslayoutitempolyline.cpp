@@ -138,16 +138,40 @@ void QgsLayoutItemPolyline::drawStartMarker( QPainter *painter )
     case MarkerMode::ArrowHead:
     {
       // calculate angle at start of line
-      const QLineF startLine( mPolygon.at( 0 ), mPolygon.at( 1 ) );
-      const double angle = startLine.angle();
-      drawArrow( painter, mPolygon.at( 0 ), angle );
+      if ( mVersion == 2 )
+      {
+        const QLineF startLine( mPolygon.at( 1 ), mPolygon.at( 0 ) );
+        const double angle = startLine.angle();
+
+        // move start point depending on arrow width
+        const QVector2D dir = QVector2D( startLine.dx(), startLine.dy() ).normalized();
+        QPointF startPoint = startLine.p2();
+        startPoint += ( dir * 0.5 * mArrowHeadWidth ).toPointF();
+
+        drawArrow( painter, startPoint, angle );
+      }
+      else if ( mVersion == 1 )
+      {
+        const QLineF startLine( mPolygon.at( 0 ), mPolygon.at( 1 ) );
+        const double angle = startLine.angle();
+        drawArrow( painter, mPolygon.at( 0 ), angle );
+      }
+
       break;
     }
 
     case MarkerMode::SvgMarker:
     {
       // calculate angle at start of line
-      const QLineF startLine( mPolygon.at( 0 ), mPolygon.at( 1 ) );
+      QLineF startLine;
+      if ( mVersion == 2 )
+      {
+        startLine = QLineF( mPolygon.at( 1 ), mPolygon.at( 0 ) );
+      }
+      else if ( mVersion == 1 )
+      {
+        startLine = QLineF( mPolygon.at( 0 ), mPolygon.at( 1 ) );
+      }
       const double angle = startLine.angle();
       drawSvgMarker( painter, mPolygon.at( 0 ), angle, mStartMarkerFile, mStartArrowHeadHeight );
       break;
@@ -171,7 +195,7 @@ void QgsLayoutItemPolyline::drawEndMarker( QPainter *painter )
       const QLineF endLine( mPolygon.at( mPolygon.count() - 2 ), mPolygon.at( mPolygon.count() - 1 ) );
       const double angle = endLine.angle();
 
-      //move end point depending on arrow width
+      // move end point depending on arrow width
       const QVector2D dir = QVector2D( endLine.dx(), endLine.dy() ).normalized();
       QPointF endPoint = endLine.p2();
       endPoint += ( dir * 0.5 * mArrowHeadWidth ).toPointF();
@@ -451,6 +475,7 @@ bool QgsLayoutItemPolyline::writePropertiesToElement( QDomElement &elmt, QDomDoc
   elmt.setAttribute( u"startMarkerMode"_s, mStartMarker );
   elmt.setAttribute( u"startMarkerFile"_s, startMarkerPath );
   elmt.setAttribute( u"endMarkerFile"_s, endMarkerPath );
+  elmt.setAttribute( u"version"_s, mVersion );
 
   return true;
 }
@@ -468,6 +493,7 @@ bool QgsLayoutItemPolyline::readPropertiesFromElement( const QDomElement &elmt, 
   setEndSvgMarkerPath( QgsSymbolLayerUtils::svgSymbolNameToPath( endMarkerPath, context.pathResolver() ) );
   mEndMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( u"markerMode"_s, u"0"_s ).toInt() );
   mStartMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( u"startMarkerMode"_s, u"0"_s ).toInt() );
+  mVersion = elmt.attribute( u"version"_s, u"1"_s ).toInt();
 
   QgsLayoutNodesItem::readPropertiesFromElement( elmt, doc, context );
 

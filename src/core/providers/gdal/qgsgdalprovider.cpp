@@ -2088,9 +2088,6 @@ QgsRasterHistogram QgsGdalProvider::histogram(
   }
 
   const double myScale { bandScale( bandNo ) };
-  // Adjust bin count according to scale
-  // Fix issue GH #59461
-  myHistogram.binCount = static_cast<int>( myHistogram.binCount * myScale );
 
   if ( ( sourceHasNoDataValue( bandNo ) && !useSourceNoDataValue( bandNo ) ) || !userNoDataValues( bandNo ).isEmpty() )
   {

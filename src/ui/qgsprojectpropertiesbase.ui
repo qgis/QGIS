@@ -1094,7 +1094,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_21">
                   <item>
-                   <widget class="QgsProjectionSelectionTreeWidget" name="projectionSelector" native="true"/>
+                   <widget class="QgsCrsSelectionWidget" name="projectionSelector" native="true"/>
                   </item>
                  </layout>
                 </widget>
@@ -3630,9 +3630,9 @@
    <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsProjectionSelectionTreeWidget</class>
+   <class>QgsCrsSelectionWidget</class>
    <extends>QWidget</extends>
-   <header>qgsprojectionselectiontreewidget.h</header>
+   <header>qgsprojectionselectiondialog.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

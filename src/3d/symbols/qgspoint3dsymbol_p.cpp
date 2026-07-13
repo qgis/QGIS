@@ -25,7 +25,6 @@
 #include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
 #include "qgsgltf3dutils.h"
-#include "qgshighlightmaterial.h"
 #include "qgslogger.h"
 #include "qgsmaterial3dhandler.h"
 #include "qgsmetalroughmaterial.h"
@@ -37,6 +36,7 @@
 #include "qgspoint3dsymbol.h"
 #include "qgssourcecache.h"
 #include "qgstexturematerial.h"
+#include "qgsunlitmaterial.h"
 #include "qgsvectorlayer.h"
 
 #include <QFileInfo>
@@ -338,7 +338,7 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
 
   if ( materialContext.isHighlighted() )
   {
-    QgsHighlightMaterial *mat = new QgsHighlightMaterial();
+    QgsUnlitMaterial *mat = Qgs3D::createHighlightMaterial();
     mat->setInstancingEnabled( true, flags );
     mat->setInstancingMeshTransform( meshTransform );
     return mat;
@@ -812,7 +812,7 @@ void QgsModelPoint3DSymbolHandler::addInstancedEntities(
     QgsMaterial *mat = nullptr;
     if ( materialContext.isHighlighted() )
     {
-      QgsHighlightMaterial *highlightMaterial = new QgsHighlightMaterial();
+      QgsUnlitMaterial *highlightMaterial = Qgs3D::createHighlightMaterial();
       highlightMaterial->setInstancingEnabled( true, instancedFlags );
       highlightMaterial->setInstancingMeshTransform( meshTransformCombined );
       mat = highlightMaterial;

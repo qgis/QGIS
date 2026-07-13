@@ -96,6 +96,7 @@ A sort/filter proxy model for coordinate reference systems.
       FilterHorizontal,
       FilterVertical,
       FilterCompound,
+      FilterTopocentricCompatible,
     };
     typedef QFlags<QgsCoordinateReferenceSystemProxyModel::Filter> Filters;
 

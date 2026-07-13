@@ -439,7 +439,7 @@
         }
       },
       "collectionInfo" : {
-        "required" : [ "links", "name" ],
+        "required" : [ "id", "links" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -484,6 +484,17 @@
               "type" : "string"
             },
             "default" : [ "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ]
+          },
+          "storageCrs" : {
+            "title" : "Storage CRS",
+            "description" : "The CRS identifier, from the list of supported CRS identifiers, that may be used to retrieve features from a collection without the need to apply a CRS transformation",
+            "type" : "string"
+          },
+          "storageCrsCoordinateEpoch" :
+          {
+            "description" : "Point in time at which coordinates in the spatial feature collection are referenced to the dynamic coordinate reference system in `storageCrs`, that may be used to retrieve features from a collection without the need to apply a change of coordinate epoch. It is expressed as a decimal year in the Gregorian calendar",
+            "type" : "number",
+            "example": "2017-03-25 in the Gregorian calendar is epoch 2017.23"
           }
         }
       },
@@ -659,6 +670,19 @@
             "type" : "number"
           }
         }
+      },
+      "bbox-crs" : {
+        "name" : "bbox-crs",
+        "in": "query",
+        "description" : "The coordinate reference system of the `bbox` parameter. Default is WGS84 longitude/latitude.",
+        "required" : false,
+        "style" : "form",
+        "explode" : false,
+        "schema" : {
+          "type" : "string",
+          "default" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+          }
+        },
       },
       "time" : {
         "name" : "time",

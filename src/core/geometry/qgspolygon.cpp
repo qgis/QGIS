@@ -17,6 +17,8 @@
 
 #include "qgspolygon.h"
 
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
@@ -377,4 +379,27 @@ QgsCurvePolygon *QgsPolygon::toCurveType() const
     }
   }
   return curvePolygon;
+}
+
+
+json QgsPolygon::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
+{
+  json coordinates = json::array();
+  if ( exteriorRing() )
+  {
+    std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );
+    QgsPointSequence exteriorPts;
+    exteriorLineString->points( exteriorPts );
+    coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision, profile ) );
+
+    std::unique_ptr< QgsLineString > interiorLineString;
+    for ( int i = 0, n = numInteriorRings(); i < n; ++i )
+    {
+      interiorLineString.reset( interiorRing( i )->curveToLine() );
+      QgsPointSequence interiorPts;
+      interiorLineString->points( interiorPts );
+      coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision, profile ) );
+    }
+  }
+  return { { "type", "Polygon" }, { "coordinates", coordinates } };
 }

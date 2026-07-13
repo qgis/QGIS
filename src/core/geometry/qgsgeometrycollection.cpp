@@ -495,12 +495,12 @@ QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, con
   return elemMultiGeometry;
 }
 
-json QgsGeometryCollection::asJsonObject( int precision ) const
+json QgsGeometryCollection::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json coordinates( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
-    coordinates.push_back( geom->asJsonObject( precision ) );
+    coordinates.push_back( geom->asJsonObject( precision, profile ) );
   }
   return { { "type", "GeometryCollection" }, { "geometries", coordinates } };
 }

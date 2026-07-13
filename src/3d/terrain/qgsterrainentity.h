@@ -65,7 +65,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     ~QgsTerrainEntity() override;
 
     //! Returns pointer to the generator of textures for terrain tiles
-    QgsTerrainTextureGenerator *textureGenerator() { return mTextureGenerator; }
+    QgsTerrainTextureGenerator *textureGenerator() { return mTextureGenerator.get(); }
 
     //! Returns the transform attached to the terrain entity
     Qt3DCore::QTransform *transform() const { return mTerrainTransform; }
@@ -80,7 +80,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     void onTerrainElevationOffsetChanged();
 
   private:
-    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
+    std::unique_ptr<QgsTerrainTextureGenerator> mTextureGenerator;
     Qt3DCore::QTransform *mTerrainTransform = nullptr;
 
     std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;

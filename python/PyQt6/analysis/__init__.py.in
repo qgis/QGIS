@@ -32,6 +32,10 @@ from qgis.core import QgsExifTools
 # preserve API compatibility as QgsAlignRaster.Item moved to QgsAlignRasterData.RasterItem
 from qgis.core import QgsAlignRasterData
 
+# preserve API compatibility as QgsRelief.ReliefColor moved to core as QgsRasterReliefColor
+from qgis.core import QgsRasterReliefColor as _QgsRasterReliefColor
+QgsRelief.ReliefColor = _QgsRasterReliefColor
+
 QgsAlignRaster.Item = QgsAlignRasterData.RasterItem
 
 QgsAlignRaster.ResampleAlg = _Qgis.GdalResampleAlgorithm

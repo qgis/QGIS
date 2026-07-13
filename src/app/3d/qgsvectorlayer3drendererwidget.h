@@ -21,6 +21,7 @@
 #include "qgsabstract3dsymbol.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgspanelwidget.h"
 
 class QComboBox;
 class QCheckBox;
@@ -36,7 +37,7 @@ class QgsSymbol3DWidget;
 class QgsVectorLayer3DPropertiesWidget;
 
 
-class QgsSingleSymbol3DRendererWidget : public QWidget
+class QgsSingleSymbol3DRendererWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
@@ -47,6 +48,7 @@ class QgsSingleSymbol3DRendererWidget : public QWidget
 
     //! Returns the cloned symbol or NULLPTR.
     std::unique_ptr<QgsAbstract3DSymbol> symbol();
+    void setDockMode( bool dockMode ) override;
 
   signals:
     void widgetChanged();

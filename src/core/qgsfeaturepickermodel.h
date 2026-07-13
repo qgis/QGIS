@@ -26,6 +26,10 @@
  * \brief Provides a list of features based on filter conditions.
  *
  * Features are fetched asynchronously.
+ *
+ * Entries are identified by their feature id.
+ * To identify features by attribute values (e.g. a foreign key) instead,
+ * use QgsFeatureFilterModel.
  */
 class CORE_EXPORT QgsFeaturePickerModel : public QgsFeaturePickerModelBase
 {

@@ -139,7 +139,7 @@ QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const 
   return elemMultiCurve;
 }
 
-json QgsMultiLineString::asJsonObject( int precision ) const
+json QgsMultiLineString::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   json coordinates( json::array() );
   for ( const QgsAbstractGeometry *geom : mGeometries )
@@ -149,7 +149,7 @@ json QgsMultiLineString::asJsonObject( int precision ) const
       const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
       QgsPointSequence pts;
       lineString->points( pts );
-      coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision ) );
+      coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision, profile ) );
     }
   }
   return { { "type", "MultiLineString" }, { "coordinates", coordinates } };

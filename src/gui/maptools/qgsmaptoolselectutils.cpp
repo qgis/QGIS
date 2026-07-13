@@ -147,8 +147,10 @@ QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, 
   const QgsMapToPixel *transform = canvas->getCoordinateTransform();
   QgsPointXY point = transform->transform( mapPoint );
   QgsPointXY ll = transform->toMapCoordinates( static_cast<int>( point.x() - boxSize ), static_cast<int>( point.y() + boxSize ) );
+  QgsPointXY lr = transform->toMapCoordinates( static_cast<int>( point.x() + boxSize ), static_cast<int>( point.y() + boxSize ) );
   QgsPointXY ur = transform->toMapCoordinates( static_cast<int>( point.x() + boxSize ), static_cast<int>( point.y() - boxSize ) );
-  return QgsRectangle( ll, ur );
+  QgsPointXY ul = transform->toMapCoordinates( static_cast<int>( point.x() - boxSize ), static_cast<int>( point.y() - boxSize ) );
+  return QgsGeometry::fromPolygonXY( QgsPolygonXY() << QgsPolylineXY { ll, lr, ur, ul, ll } ).boundingBox();
 }
 
 void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers )

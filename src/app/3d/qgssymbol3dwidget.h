@@ -50,6 +50,8 @@ class QgsSymbol3DWidget : public QgsPanelWidget
     //! Sets symbol and layer (does not take ownership)
     void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *vlayer );
 
+    void setDockMode( bool dockMode ) override;
+
   private slots:
 
     void setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity entity, const QString &stylePath );

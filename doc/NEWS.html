@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
+  <meta name="generator" content="pandoc 3.10" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>QGIS News</title>
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     html {
       color: #1a1a1a;
       background-color: #fdfdfd;
@@ -88,6 +91,7 @@
       color: #606060;
     }
     code {
+      white-space: pre-wrap;
       font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
@@ -151,10 +155,13 @@
     #TOC a:not(:hover) {
       text-decoration: none;
     }
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     /* The extra [class] is a hack that increases specificity enough to
        override a similar rule in reveal.js */
@@ -174,6 +181,9 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#whats-new-in-version-4.2-belém-do-pará"
+id="toc-whats-new-in-version-4.2-belém-do-pará">What’s new in Version
+4.2 ‘Belém do Pará’?</a></li>
 <li><a href="#whats-new-in-version-4.0-norrköping"
 id="toc-whats-new-in-version-4.0-norrköping">What’s new in Version 4.0
 ‘Norrköping’?</a></li>
@@ -367,6 +377,94 @@ id="toc-version-0.0.3-alpha-august-10-2002">Version 0.0.3-alpha August
 </ul>
 </nav>
 <p>Change history for the QGIS Project</p>
+<h1 id="whats-new-in-version-4.2-belém-do-pará">What’s new in Version
+4.2 ‘Belém do Pará’?</h1>
+<p>This release has following new features:</p>
+<ul>
+<li>Breaking Changes: Move QGIS4 settings storage location with
+automated migration from QGIS3</li>
+<li>User Interface: Add layer menu to load and save styles</li>
+<li>Symbology: Add categorized renderer for 3D Symbols</li>
+<li>Symbology: Add physically based material with texture support</li>
+<li>Symbology: Add trim distance start and end to Hashes/Markers line
+symbol layer</li>
+<li>Symbology: Add data-defined control for metal rough base, emission
+color</li>
+<li>Symbology: Data defined control over phong/metal rough texture
+scale, rotation and offset</li>
+<li>Symbology: Add optional solid emission color to metal rough
+material</li>
+<li>Symbology: Add opacity support to metal rough materials</li>
+<li>Symbology: Add 3d material settings to style database</li>
+<li>Symbology: Allow choice of up/forward axis for 3d point model
+symbols</li>
+<li>Symbology: Add extra items for templated line symbol layer</li>
+<li>3D Features: Generate environmental lighting from skybox</li>
+<li>3D Features: Support 3D model instancing</li>
+<li>3D Features: Allow control over 3d map color grading effects</li>
+<li>3D Features: Optional light bloom effects</li>
+<li>3D Features: Add multisample anti aliasing (MSAA)</li>
+<li>3D Features: Add gradient background to 3D scene</li>
+<li>3D Features: 3D Tiles: add instancing support</li>
+<li>3D Features: Add implicit tiling for 3D Tiles</li>
+<li>3D Features: Add camera controls dialog to control the 3D camera in
+map coordinates</li>
+<li>3D Features: Add support for 3D composite tiles (“cmpt”)</li>
+<li>3D Features: Improve 3D map view “Invert vertical axis”
+setting.</li>
+<li>3D Features: 3d export stl</li>
+<li>Point Clouds: Add overview-length optional parameter to build vpc
+algorithm</li>
+<li>Point Clouds: Add reading support for multi-overview VPC files</li>
+<li>Point Clouds: Add support for a vpc-in-zip (.vpz) virtual point
+cloud format</li>
+<li>Point Clouds: Add per layer elevation shading</li>
+<li>Point Clouds: Support arithmetic operators on color objects in
+expressions</li>
+<li>Point Clouds: Modify renderer color by expression</li>
+<li>Print Layouts: Add new layout chart item functionality to derive
+plot data and styling from the source vector layer renderer</li>
+<li>Print Layouts: Add new option to clip a picture item by a
+shape-based item</li>
+<li>Print Layouts: Geospatial PDF layer management enhancement</li>
+<li>Expressions: Add scale_cubic_bezier expression function, handle
+bezier-cubic interpolation when converting MapBox styles</li>
+<li>Expressions: Add concat_ws expression function</li>
+<li>Data Management: Adding “Field Calculator” menu item to the
+attribute table header</li>
+<li>Processing: Dynamically show child step feature counts as model
+progresses</li>
+<li>Processing: Add an area threshold parameter</li>
+<li>Processing: Add support for the SFCGAL extend to edges parameter in
+medial axis algorithm</li>
+<li>Processing: Add processing in user defined menu or toolbar</li>
+<li>Processing: Random subset algorithms ported to C++</li>
+<li>Application and Project Options: Topocentric projection</li>
+<li>Sensors: Add support for SensorThings 2.0, including Sensing,
+Sampling and Relations extensions</li>
+<li>Profile Plots: Display elevation profile curve in 3D</li>
+<li>Browser: Rework how ESRI REST services are exposed in the
+browser</li>
+<li>Data Providers: Greatly speed up the FeatureServer provider for map
+viewing</li>
+<li>Data Providers: Enable parallel provider load for AFS, AMS
+providers, and some related fixes</li>
+<li>Data Providers: Support STAC assets from other cloud optimized data
+types and blob stores</li>
+<li>QGIS Server: Add support for HIGHLIGHT_LABELFRAME options WMS
+params</li>
+<li>QGIS Server: FlatGeobuf OAPIF export plus various fixes</li>
+<li>Programmability: Expose concave hull of polygons functionality</li>
+<li>Notable Fixes: Bug fixes by Even Rouault (Spatialys)</li>
+<li>Notable Fixes: Bug fixes by Denis Rouzaud (OPENGIS.ch)</li>
+<li>Notable Fixes: Bug fixes by Alessandro Pasotti (QCooperative)</li>
+<li>Notable Fixes: Bug fixes by Julien Cabieces (Oslandia)</li>
+<li>Notable Fixes: Bug fixes by Germán Carrillo (OPENGIS.ch)</li>
+<li>Notable Fixes: Bug fixes by David Signer (OPENGIS.ch)</li>
+<li>Notable Fixes: Bug fixes by Stefanos Natsis (Lutra Consulting)</li>
+<li>Notable Fixes: Bug fixes by Loïc Bartoletti (Oslandia)</li>
+<li></li>
+</ul>
 <h1 id="whats-new-in-version-4.0-norrköping">What’s new in Version 4.0
 ‘Norrköping’?</h1>
 <p>This release has following new features:</p>
@@ -4487,10 +4585,9 @@ crash</li>
 <li>minor code change; commented out superfluous code</li>
 </ul>
 <p>2004-08-26 [mcoletti] 0.4.0devel21 Now explicitly check for command
-line arguments via $# instead of <span
-class="math inline">@.<em>U</em><em>s</em><em>i</em><em>n</em><em>g</em></span>@
-caused the script to crash when more than one command line argument was
-passed in. (E.g., specifying multiple files for CVS commits.)</p>
+line arguments via $# instead of $@. Using $@ caused the script to crash
+when more than one command line argument was passed in. (E.g.,
+specifying multiple files for CVS commits.)</p>
 <p>2004-08-25 [mcoletti] 0.4.0devel20 Now explicitly use
 QgsMapLayerRegistry instance instead of data members. (Of which two both
 referred to the same instance.)</p>

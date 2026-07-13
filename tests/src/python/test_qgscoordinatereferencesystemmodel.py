@@ -589,6 +589,19 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         self.assertIn("Compound", top_level_items)
         self.assertIn("Vertical", top_level_items)
 
+        model.setFilters(
+            QgsCoordinateReferenceSystemProxyModel.Filter.FilterTopocentricCompatible
+        )
+        top_level_items = [
+            model.data(model.index(row, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
+            for row in range(model.rowCount(QModelIndex()))
+        ]
+        self.assertNotIn("Projected", top_level_items)
+        self.assertIn("Geographic (2D)", top_level_items)
+        self.assertIn("Geographic (3D)", top_level_items)
+        self.assertIn("Compound", top_level_items)
+        self.assertIn("Vertical", top_level_items)
+
         model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filters())
 
         # find WGS84 in Geographic2d group

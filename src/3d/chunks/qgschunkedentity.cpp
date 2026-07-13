@@ -75,9 +75,9 @@ QgsChunkedEntity::QgsChunkedEntity( Qgs3DMapSettings *mapSettings, float tau, Qg
   , mOwnsFactory( ownsFactory )
   , mPrimitivesBudget( primitiveBudget )
 {
-  mRootNode = loaderFactory->createRootNode();
-  mChunkLoaderQueue = new QgsChunkList;
-  mReplacementQueue = new QgsChunkList;
+  mRootNode.reset( loaderFactory->createRootNode() );
+  mChunkLoaderQueue = std::make_unique<QgsChunkList>();
+  mReplacementQueue = std::make_unique<QgsChunkList>();
 
   // in case the chunk loader factory supports fetching of hierarchy in background (to avoid GUI freezes)
   connect( loaderFactory, &QgsChunkLoaderFactory::childrenPrepared, this, [this] {
@@ -108,8 +108,6 @@ QgsChunkedEntity::~QgsChunkedEntity()
       Q_ASSERT( false ); // impossible!
   }
 
-  delete mChunkLoaderQueue;
-
   while ( !mReplacementQueue->isEmpty() )
   {
     QgsChunkListEntry *entry = mReplacementQueue->takeFirst();
@@ -117,9 +115,6 @@ QgsChunkedEntity::~QgsChunkedEntity()
     // remove loaded data from node
     entry->chunk->unloadChunk(); // also deletes the entry
   }
-
-  delete mReplacementQueue;
-  delete mRootNode;
 
   if ( mOwnsFactory )
   {
@@ -150,7 +145,7 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneContext &sceneContext )
   mFrustumCulled = 0;
   mCurrentTime = QTime::currentTime();
 
-  update( mRootNode, sceneContext );
+  update( mRootNode.get(), sceneContext );
 
 #ifdef QGISDEBUG
   int enabled = 0, disabled = 0, unloaded = 0;

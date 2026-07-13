@@ -620,6 +620,17 @@ void QgsPostgresDataItemGuiProvider::renameLayer( QgsPGLayerItem *layerItem, Qgs
 
   notify( tr( "Rename %1" ).arg( typeName ), tr( "%1 '%2' renamed correctly to '%3'." ).arg( typeName, oldName, newName ), context, Qgis::MessageLevel::Success );
 
+  if ( QgsPostgresUtils::tableExists( conn, u"public"_s, u"layer_styles"_s ) )
+  {
+    const QString updateStylesSql = u"UPDATE public.layer_styles SET f_table_name=%1 WHERE f_table_schema=%2 AND f_table_name=%3"_s
+                                      .arg( QgsPostgresConn::quotedValue( dlg.name() ), QgsPostgresConn::quotedValue( schemaName ), QgsPostgresConn::quotedValue( tableName ) );
+
+    QgsPostgresResult stylesResult( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", updateStylesSql ) );
+    if ( stylesResult.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      notify( tr( "Rename %1" ).arg( typeName ), tr( "Unable to update layer styles for '%1'.\n%2" ).arg( dlg.name(), stylesResult.PQresultErrorMessage() ), context, Qgis::MessageLevel::Warning );
+    }
+  }
   conn->unref();
 
   if ( layerItem->parent() )

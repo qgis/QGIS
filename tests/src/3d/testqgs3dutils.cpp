@@ -96,6 +96,8 @@ class TestQgs3DUtils : public QgsTest
     void testCalculateCascadeSplits();
     void testCalculateViewSpaceOrthographicBounds_data();
     void testCalculateViewSpaceOrthographicBounds();
+    void testDetermineTextureFormat_data();
+    void testDetermineTextureFormat();
 
   private:
     QgsRasterLayer *mLayerRgb;
@@ -700,6 +702,52 @@ void TestQgs3DUtils::testCalculateViewSpaceOrthographicBounds()
   QGSCOMPARENEAR( actualFar, expectedFar, 0.0001f );
 }
 
+void TestQgs3DUtils::testDetermineTextureFormat_data()
+{
+  QTest::addColumn<QImage::Format>( "imageFormat" );
+  QTest::addColumn<bool>( "useSrgbFor8Bit" );
+  QTest::addColumn<Qt3DRender::QAbstractTexture::TextureFormat>( "expectedFormat" );
+  QTest::addColumn<bool>( "expectedRequiresConversion" );
+
+  QTest::newRow( "RGBA32FPx4" ) << QImage::Format_RGBA32FPx4 << false << Qt3DRender::QAbstractTexture::RGBA32F << false;
+  QTest::newRow( "RGBA32FPx4_Premultiplied" ) << QImage::Format_RGBA32FPx4_Premultiplied << true << Qt3DRender::QAbstractTexture::RGBA32F << false;
+  QTest::newRow( "RGBX32FPx4" ) << QImage::Format_RGBX32FPx4 << false << Qt3DRender::QAbstractTexture::RGB32F << false;
+  QTest::newRow( "RGBA16FPx4" ) << QImage::Format_RGBA16FPx4 << false << Qt3DRender::QAbstractTexture::RGBA16F << false;
+  QTest::newRow( "RGBA16FPx4_Premultiplied" ) << QImage::Format_RGBA16FPx4_Premultiplied << true << Qt3DRender::QAbstractTexture::RGBA16F << false;
+  QTest::newRow( "RGBX16FPx4" ) << QImage::Format_RGBX16FPx4 << false << Qt3DRender::QAbstractTexture::RGB16F << false;
+  QTest::newRow( "RGBA8888 sRGB" ) << QImage::Format_RGBA8888 << true << Qt3DRender::QAbstractTexture::SRGB8_Alpha8 << false;
+  QTest::newRow( "RGBA8888 UNorm" ) << QImage::Format_RGBA8888 << false << Qt3DRender::QAbstractTexture::RGBA8_UNorm << false;
+  QTest::newRow( "ARGB32 sRGB" ) << QImage::Format_ARGB32 << true << Qt3DRender::QAbstractTexture::SRGB8_Alpha8 << false;
+  QTest::newRow( "ARGB32_Premultiplied UNorm" ) << QImage::Format_ARGB32_Premultiplied << false << Qt3DRender::QAbstractTexture::RGBA8_UNorm << false;
+  QTest::newRow( "RGB32 sRGB" ) << QImage::Format_RGB32 << true << Qt3DRender::QAbstractTexture::SRGB8 << false;
+  QTest::newRow( "RGB32 UNorm" ) << QImage::Format_RGB32 << false << Qt3DRender::QAbstractTexture::RGB8_UNorm << false;
+  QTest::newRow( "RGB888 sRGB" ) << QImage::Format_RGB888 << true << Qt3DRender::QAbstractTexture::SRGB8 << false;
+  QTest::newRow( "RGB888 UNorm" ) << QImage::Format_RGB888 << false << Qt3DRender::QAbstractTexture::RGB8_UNorm << false;
+  QTest::newRow( "Grayscale8" ) << QImage::Format_Grayscale8 << true << Qt3DRender::QAbstractTexture::R8_UNorm << false;
+  QTest::newRow( "Alpha8" ) << QImage::Format_Alpha8 << false << Qt3DRender::QAbstractTexture::R8_UNorm << false;
+  QTest::newRow( "Grayscale16" ) << QImage::Format_Grayscale16 << true << Qt3DRender::QAbstractTexture::R16_UNorm << false;
+  QTest::newRow( "Invalid format sRGB" ) << QImage::Format_Invalid << true << Qt3DRender::QAbstractTexture::SRGB8_Alpha8 << true;
+  QTest::newRow( "Invalid format UNorm" ) << QImage::Format_Invalid << false << Qt3DRender::QAbstractTexture::RGBA8_UNorm << true;
+  QTest::newRow( "Mono format" ) << QImage::Format_Mono << false << Qt3DRender::QAbstractTexture::RGBA8_UNorm << true;
+  QTest::newRow( "Indexed8 format" ) << QImage::Format_Indexed8 << true << Qt3DRender::QAbstractTexture::SRGB8_Alpha8 << true;
+  QTest::newRow( "RGB16 format" ) << QImage::Format_RGB16 << false << Qt3DRender::QAbstractTexture::RGBA8_UNorm << true;
+  QTest::newRow( "RGBA64 format" ) << QImage::Format_RGBA64 << true << Qt3DRender::QAbstractTexture::SRGB8_Alpha8 << true;
+  QTest::newRow( "BGR888 format" ) << QImage::Format_BGR888 << false << Qt3DRender::QAbstractTexture::RGBA8_UNorm << true;
+}
+
+void TestQgs3DUtils::testDetermineTextureFormat()
+{
+  QFETCH( QImage::Format, imageFormat );
+  QFETCH( bool, useSrgbFor8Bit );
+  QFETCH( Qt3DRender::QAbstractTexture::TextureFormat, expectedFormat );
+  QFETCH( bool, expectedRequiresConversion );
+
+  bool requiresConversionToRgb = false;
+  Qt3DRender::QAbstractTexture::TextureFormat actualFormat = Qgs3DUtils::determineTextureFormat( imageFormat, useSrgbFor8Bit, requiresConversionToRgb );
+
+  QCOMPARE( actualFormat, expectedFormat );
+  QCOMPARE( requiresConversionToRgb, expectedRequiresConversion );
+}
 
 QGSTEST_MAIN( TestQgs3DUtils )
 #include "testqgs3dutils.moc"

@@ -1,0 +1,73 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparameterreliefcolors.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProcessingParameterReliefColors : QgsProcessingParameterString
+{
+%Docstring(signature="appended")
+A parameter for raster relief colors.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameterreliefcolors.h"
+%End
+  public:
+    QgsProcessingParameterReliefColors( const QString &name, const QString &description = QString(), const QString &parentLayerParameter = QString(), bool optional = true );
+%Docstring
+Constructor for QgsProcessingParameterReliefColors.
+%End
+
+    virtual QgsProcessingParameterReliefColors *clone() const;
+
+    virtual QString type() const;
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    QString parentLayerParameter() const;
+%Docstring
+Returns the linked parent layer parameter name.
+%End
+
+    QList< QgsRasterReliefColor> valueAsReliefColors( const QVariant &value, const QgsProcessingContext &context ) const;
+%Docstring
+Returns the parameter value interpreted as a list of raster relief
+colors.
+%End
+
+    static QVariant colorsAsVariant( const QList< QgsRasterReliefColor> &colors );
+%Docstring
+Returns a list of raster relief colors encoded as a variant value.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparameterreliefcolors.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

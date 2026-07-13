@@ -860,7 +860,12 @@ class QgsPluginInstaller(QObject):
                 success = False
 
             try:
-                shutil.move(extractDir.filePath(pluginName), pluginsDirectory)
+                # we copy instead of move, so that the target files inherit parent folder permissions on windows
+                shutil.copytree(
+                    extractDir.filePath(pluginName),
+                    pluginDirectory,
+                    copy_function=shutil.copy,
+                )
             except:
                 infoString = (
                     self.tr("Could not store plugin to the plugin directory:")

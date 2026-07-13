@@ -126,6 +126,82 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mPageTopocentric">
+          <layout class="QVBoxLayout" name="verticalLayoutTopocentric">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <layout class="QFormLayout" name="formLayoutTopoOrigin">
+             <item row="0" column="0">
+              <widget class="QLabel" name="mLabelTopoBaseCrs">
+               <property name="text">
+                <string>Base CRS:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QgsProjectionSelectionWidget" name="mTopocentricBaseSelector"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="mLabelTopoLat">
+               <property name="text">
+                <string>Origin latitude:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QgsDoubleSpinBox" name="mSpinBoxTopoLat">
+               <property name="minimum">
+                <double>-90.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>90.000000000000000</double>
+               </property>
+               <property name="decimals">
+                <number>1</number>
+               </property>
+               <property name="suffix">
+                <string> °</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="mLabelTopoLon">
+               <property name="text">
+                <string>Origin longitude:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QgsDoubleSpinBox" name="mSpinBoxTopoLon">
+               <property name="minimum">
+                <double>-180.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>180.000000000000000</double>
+               </property>
+               <property name="decimals">
+                <number>1</number>
+               </property>
+               <property name="suffix">
+                <string> °</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -153,6 +229,16 @@
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

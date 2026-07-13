@@ -28,6 +28,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsfontutils.h"
 #include "qgsgdalutils.h"
+#include "qgsgeometryfactory.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutmanager.h"
@@ -5009,6 +5010,40 @@ void TestQgsProcessingAlgsPt1::compareDatasets()
   QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 4LL );
   QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
   QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 1LL );
+
+  // empty geometry comparisons
+  auto emptyGeom = QgsGeometryFactory::geomFromWkbType( originalLayer->wkbType() );
+  f.setAttributes( QgsAttributes() << 7 << u"g1"_s << u"a1"_s );
+  f.setGeometry( std::move( emptyGeom ) );
+  originalLayer->dataProvider()->addFeature( f );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 4LL );
+  QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
+  QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 2LL );
+
+  f.setAttributes( QgsAttributes() << 7 << u"g1"_s << u"c1"_s );
+  originalLayer->dataProvider()->addFeature( f );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 4LL );
+  QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
+  QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 3LL );
+
+  f.setAttributes( QgsAttributes() << 7 << u"g1"_s << u"a1"_s );
+  revisedLayer->dataProvider()->addFeature( f );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( u"UNCHANGED_COUNT"_s ).toLongLong(), 5LL );
+  QCOMPARE( results.value( u"ADDED_COUNT"_s ).toLongLong(), 2LL );
+  QCOMPARE( results.value( u"DELETED_COUNT"_s ).toLongLong(), 2LL );
+
+  // check EMPTY geometry in output layer
+  QgsFeatureIterator featIt = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"UNCHANGED"_s ).toString() ) )->getFeatures( u"pk = 7"_s );
+  QgsFeature outputFeat;
+  QVERIFY( featIt.nextFeature( outputFeat ) );
+  QVERIFY( outputFeat.isValid() );
+  QVERIFY( outputFeat.geometry().isEmpty() && !outputFeat.geometry().isNull() );
 }
 
 void TestQgsProcessingAlgsPt1::shapefileEncoding()

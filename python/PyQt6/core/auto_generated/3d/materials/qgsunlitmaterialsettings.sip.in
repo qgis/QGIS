@@ -1,0 +1,91 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsunlitmaterialsettings.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsUnlitMaterialSettings : QgsAbstractMaterialSettings
+{
+%Docstring(signature="appended")
+Basic shading material used for rendering solid color, unlit objects.
+
+Unlit objects are flat shaded, with no interaction with lights in the
+scene.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsunlitmaterialsettings.h"
+%End
+  public:
+    QgsUnlitMaterialSettings();
+
+    virtual QString type() const;
+
+
+    static bool supportsTechnique( Qgis::MaterialRenderingTechnique technique );
+%Docstring
+Returns ``True`` if the specified ``technique`` is supported by the
+material.
+%End
+
+    static QgsAbstractMaterialSettings *create() /Factory/;
+%Docstring
+Returns a new instance of QgsUnlitMaterialSettings.
+%End
+
+    virtual QgsUnlitMaterialSettings *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+
+    virtual QSet< QgsAbstractMaterialSettings::Property > supportedProperties() const;
+
+
+    QColor color() const;
+%Docstring
+Returns the material color.
+
+.. seealso:: :py:func:`setColor`
+%End
+
+    void setColor( const QColor &color );
+%Docstring
+Sets the material's ``color``.
+
+.. seealso:: :py:func:`color`
+%End
+
+    virtual QColor averageColor() const;
+
+    virtual void setColorsFromBase( const QColor &baseColor );
+
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+
+    bool operator==( const QgsUnlitMaterialSettings &other ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/./3d/materials/qgsunlitmaterialsettings.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

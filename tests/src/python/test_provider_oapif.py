@@ -937,6 +937,51 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         assert vl.sourceCrs().isGeographic()
         assert vl.sourceCrs().hasAxisInverted()
 
+    def testQuotedString(self):
+
+        endpoint = (
+            self.__class__.basetestpath + "/fake_qgis_http_endpoint_testQuotedString"
+        )
+        create_landing_page_api_collection(endpoint)
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "feat.1",
+                    "properties": {"foo": 'bar"baz'},
+                    "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]},
+                }
+            ],
+        }
+
+        no_items = {"type": "FeatureCollection", "features": []}
+
+        filename = sanitize(
+            endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+        )
+        with open(filename, "wb") as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+        os.unlink(filename)
+
+        filename = sanitize(
+            endpoint,
+            "/collections/mycollection/items?limit=1000&" + ACCEPT_ITEMS,
+        )
+        with open(filename, "wb") as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+        values = [f["foo"] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, ['bar"baz'])
+
     def testDateTimeFiltering(self):
 
         endpoint = (

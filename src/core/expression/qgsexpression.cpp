@@ -475,7 +475,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   int index = 0;
   while ( index < action.size() )
   {
-    static const QRegularExpression sRegEx { u"\\[%(.*?)%\\]"_s, QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
+    const thread_local QRegularExpression sRegEx { u"\\[%(.*?)%\\]"_s, QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
 
     const QRegularExpressionMatch match = sRegEx.match( action, index );
     if ( !match.hasMatch() )

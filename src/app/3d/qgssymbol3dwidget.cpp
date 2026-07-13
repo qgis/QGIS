@@ -94,6 +94,15 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
   updateSymbolWidget( symbol );
 }
 
+void QgsSymbol3DWidget::setDockMode( bool dockMode )
+{
+  QgsPanelWidget::setDockMode( dockMode );
+  if ( Qgs3DSymbolWidget *w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
+  {
+    w->setDockMode( dockMode );
+  }
+}
+
 void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity entity, const QString &stylePath )
 {
   if ( name.isEmpty() )
@@ -263,8 +272,10 @@ void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol
       w->setSymbol( newSymbol, mLayer );
       widgetStack->addWidget( w );
       widgetStack->setCurrentWidget( w );
+      w->setDockMode( dockMode() );
       // start receiving updates from widget
       connect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
+      connect( w, &Qgs3DSymbolWidget::showPanel, this, &QgsSymbol3DWidget::openPanel );
 
       connect( w, &Qgs3DSymbolWidget::renderingTechniqueChanged, this, [w, this] {
         mStyleWidget->proxyModel()->setRenderingTechnique( w->renderingTechnique() );

@@ -677,6 +677,11 @@ bool QgsSymbolLegendNode::setData( const QVariant &value, int role )
   return true;
 }
 
+void QgsSymbolLegendNode::invalidateDisplayData()
+{
+  mPixmap = QPixmap();
+}
+
 QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
   QgsSymbol *s = mCustomSymbol ? mCustomSymbol.get() : mItem.symbol();
@@ -1520,6 +1525,11 @@ QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
     return QgsLayerTreeModelLegendNode::DataDefinedSizeLegend;
   }
   return QVariant();
+}
+
+void QgsDataDefinedSizeLegendNode::invalidateDisplayData()
+{
+  mImage = QImage();
 }
 
 QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( const QgsLegendSettings &settings, QgsLayerTreeModelLegendNode::ItemContext &ctx )

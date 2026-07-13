@@ -508,13 +508,137 @@ QImage QgsImageCache::renderImage(
     }
   }
 
-  if (
-    !im.hasAlphaChannel()
+  if ( !im.hasAlphaChannel() )
+  {
+    // different logic below depending on whether caller has explicitly
+    // asked for opacity reduction or not
+    if ( opacity < 1.0 )
+    {
+      // dropping the opacity, so image MUST have an alpha channel
+      switch ( im.format() )
+      {
+        case QImage::Format_Invalid:
+        case QImage::NImageFormats:
+          // don't auto-add alpha for these
+          break;
+
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
-    && im.format() != QImage::Format_CMYK8888
+        case QImage::Format_CMYK8888:
+          // never auto-add alpha for CMYK -- this is not supported
+          break;
 #endif
-  )
-    im = im.convertToFormat( QImage::Format_ARGB32 );
+
+        case QImage::Format_RGBX64:
+        case QImage::Format_RGBA64:
+        case QImage::Format_RGBA64_Premultiplied:
+        case QImage::Format_Grayscale16:
+          // 64 bit source, convert to 64 bit Premultiplied
+          im = im.convertToFormat( QImage::Format_RGBA64_Premultiplied );
+          break;
+
+        case QImage::Format_RGBX16FPx4:
+        case QImage::Format_RGBA16FPx4:
+        case QImage::Format_RGBA16FPx4_Premultiplied:
+          // 16 bit floating point source, convert to 64 bit Premultiplied
+          im = im.convertToFormat( QImage::Format_RGBA16FPx4_Premultiplied );
+          break;
+
+        case QImage::Format_RGBX32FPx4:
+        case QImage::Format_RGBA32FPx4:
+        case QImage::Format_RGBA32FPx4_Premultiplied:
+          // 32 bit floating point source, convert to 64 bit Premultiplied
+          im = im.convertToFormat( QImage::Format_RGBA32FPx4_Premultiplied );
+          break;
+
+        case QImage::Format_Mono:
+        case QImage::Format_MonoLSB:
+        case QImage::Format_Indexed8:
+        case QImage::Format_RGB32:
+        case QImage::Format_ARGB32:
+        case QImage::Format_ARGB32_Premultiplied:
+        case QImage::Format_RGB16:
+        case QImage::Format_ARGB8565_Premultiplied:
+        case QImage::Format_RGB666:
+        case QImage::Format_ARGB6666_Premultiplied:
+        case QImage::Format_RGB555:
+        case QImage::Format_ARGB8555_Premultiplied:
+        case QImage::Format_RGB888:
+        case QImage::Format_RGB444:
+        case QImage::Format_ARGB4444_Premultiplied:
+        case QImage::Format_RGBX8888:
+        case QImage::Format_RGBA8888:
+        case QImage::Format_RGBA8888_Premultiplied:
+        case QImage::Format_BGR30:
+        case QImage::Format_A2BGR30_Premultiplied:
+        case QImage::Format_RGB30:
+        case QImage::Format_A2RGB30_Premultiplied:
+        case QImage::Format_Alpha8:
+        case QImage::Format_Grayscale8:
+        case QImage::Format_BGR888:
+          im = im.convertToFormat( QImage::Format_ARGB32 );
+          break;
+      }
+    }
+    else
+    {
+      // for RGB images only, we automatically add an alpha channel.
+      // this is partly to maintain api, but mostly for convenience
+      // so that painting operations on the result "just work"
+      // without every caller needing to worry about adding alpha
+      // channels
+
+      // for non-rgb (or for HDR image formats) we don't auto-add alpha
+      // channels -- this would be a lossy operation
+      switch ( im.format() )
+      {
+        case QImage::Format_Invalid:
+        case QImage::Format_RGBX64:
+        case QImage::Format_RGBA64:
+        case QImage::Format_RGBA64_Premultiplied:
+        case QImage::Format_Grayscale16:
+        case QImage::Format_RGBX16FPx4:
+        case QImage::Format_RGBA16FPx4:
+        case QImage::Format_RGBA16FPx4_Premultiplied:
+        case QImage::Format_RGBX32FPx4:
+        case QImage::Format_RGBA32FPx4:
+        case QImage::Format_RGBA32FPx4_Premultiplied:
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
+        case QImage::Format_CMYK8888:
+#endif
+        case QImage::NImageFormats:
+          // don't auto-add alpha for these
+          break;
+
+        case QImage::Format_Mono:
+        case QImage::Format_MonoLSB:
+        case QImage::Format_Indexed8:
+        case QImage::Format_RGB32:
+        case QImage::Format_ARGB32:
+        case QImage::Format_ARGB32_Premultiplied:
+        case QImage::Format_RGB16:
+        case QImage::Format_ARGB8565_Premultiplied:
+        case QImage::Format_RGB666:
+        case QImage::Format_ARGB6666_Premultiplied:
+        case QImage::Format_RGB555:
+        case QImage::Format_ARGB8555_Premultiplied:
+        case QImage::Format_RGB888:
+        case QImage::Format_RGB444:
+        case QImage::Format_ARGB4444_Premultiplied:
+        case QImage::Format_RGBX8888:
+        case QImage::Format_RGBA8888:
+        case QImage::Format_RGBA8888_Premultiplied:
+        case QImage::Format_BGR30:
+        case QImage::Format_A2BGR30_Premultiplied:
+        case QImage::Format_RGB30:
+        case QImage::Format_A2RGB30_Premultiplied:
+        case QImage::Format_Alpha8:
+        case QImage::Format_Grayscale8:
+        case QImage::Format_BGR888:
+          im = im.convertToFormat( QImage::Format_ARGB32 );
+          break;
+      }
+    }
+  }
 
   if ( opacity < 1.0 )
     QgsImageOperation::multiplyOpacity( im, opacity );

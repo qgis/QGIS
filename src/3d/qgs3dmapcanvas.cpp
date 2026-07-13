@@ -42,7 +42,7 @@
 using namespace Qt::StringLiterals;
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
-  : m_aspectEngine( new Qt3DCore::QAspectEngine )
+  : m_aspectEngine( std::make_unique<Qt3DCore::QAspectEngine>() )
   , m_renderAspect( new Qt3DRender::QRenderAspect )
   , m_inputAspect( new Qt3DInput::QInputAspect )
   , m_logicAspect( new Qt3DLogic::QLogicAspect )
@@ -85,8 +85,6 @@ Qgs3DMapCanvas::~Qgs3DMapCanvas()
   mScene = nullptr;
   mMapSettings->deleteLater();
   mMapSettings = nullptr;
-
-  delete m_aspectEngine;
 }
 
 void Qgs3DMapCanvas::setRootEntity( Qt3DCore::QEntity *root )

@@ -58,21 +58,13 @@ double tileY2lat( const int y, const int z )
   return 180.0 / M_PI * std::atan( 0.5 * ( std::exp( n ) - std::exp( -n ) ) );
 }
 
-void extent2TileXY( QgsRectangle extent, const int zoom, int &xMin, int &yMin, int &xMax, int &yMax )
-{
-  xMin = lon2tileX( extent.xMinimum(), zoom );
-  yMin = lat2tileY( extent.yMinimum(), zoom );
-  xMax = lon2tileX( extent.xMaximum(), zoom );
-  yMax = lat2tileY( extent.xMaximum(), zoom );
-}
-
-QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, const int tileSize )
+QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, long long &tileCount, const int tileSize )
 {
   int minX = lon2tileX( extent.xMinimum(), zoom );
   int minY = lat2tileY( extent.yMaximum(), zoom );
   int maxX = lon2tileX( extent.xMaximum(), zoom );
   int maxY = lat2tileY( extent.yMinimum(), zoom );
-  ;
+  tileCount = static_cast<long long>( maxX - minX + 1 ) * static_cast<long long>( maxY - minY + 1 );
 
   int i = 0;
   QMap<QString, MetaTile> tiles;
@@ -211,7 +203,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
 void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *feedback )
 {
-  if ( mTotalTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
+  if ( mTotalMetaTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
   {
     for ( QgsMapLayer *layer : std::as_const( mLayers ) )
     {
@@ -337,17 +329,20 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   mOutputDir = outputDir;
   mTms = tms;
 
-  mTotalTiles = 0;
+  long long totalTiles = 0;
+  mTotalMetaTiles = 0;
   for ( int z = mMinZoom; z <= mMaxZoom; z++ )
   {
     if ( feedback->isCanceled() )
       break;
 
-    mMetaTiles += getMetatiles( mWgs84Extent, z, mMetaTileSize );
-    feedback->pushWarning( QObject::tr( "%1 tiles will be created for zoom level %2" ).arg( mMetaTiles.size() - mTotalTiles ).arg( z ) );
-    mTotalTiles = mMetaTiles.size();
+    long long tileCount = 0;
+    mMetaTiles += getMetatiles( mWgs84Extent, z, tileCount, mMetaTileSize );
+    feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
+    mTotalMetaTiles = mMetaTiles.size();
+    totalTiles += tileCount;
   }
-  feedback->pushWarning( QObject::tr( "A total of %1 tiles will be created" ).arg( mTotalTiles ) );
+  feedback->pushInfo( QObject::tr( "A total of %1 metatiles (%2 tiles) will be created" ).arg( mTotalMetaTiles ).arg( totalTiles ) );
 
   checkLayersUsagePolicy( feedback );
 
@@ -449,7 +444,7 @@ void QgsXyzTilesDirectoryAlgorithm::processMetaTile( QgsMapRendererSequentialJob
   mRendererJobs.remove( job );
   job->deleteLater();
 
-  mFeedback->setProgress( 100.0 * ( mProcessedTiles++ ) / mTotalTiles );
+  mFeedback->setProgress( 100.0 * ( mProcessedMetaTiles++ ) / mTotalMetaTiles );
 
   if ( mFeedback->isCanceled() )
   {
@@ -533,17 +528,20 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   QString boundsStr = QString( "%1,%2,%3,%4" ).arg( mWgs84Extent.xMinimum() ).arg( mWgs84Extent.yMinimum() ).arg( mWgs84Extent.xMaximum() ).arg( mWgs84Extent.yMaximum() );
   mMbtilesWriter->setMetadataValue( "bounds", boundsStr );
 
-  mTotalTiles = 0;
+  long long totalTiles = 0;
+  mTotalMetaTiles = 0;
   for ( int z = mMinZoom; z <= mMaxZoom; z++ )
   {
     if ( feedback->isCanceled() )
       break;
 
-    mMetaTiles += getMetatiles( mWgs84Extent, z, mMetaTileSize );
-    feedback->pushInfo( QObject::tr( "%1 tiles will be created for zoom level %2" ).arg( mMetaTiles.size() - mTotalTiles ).arg( z ) );
-    mTotalTiles = mMetaTiles.size();
+    long long tileCount = 0;
+    mMetaTiles += getMetatiles( mWgs84Extent, z, tileCount, mMetaTileSize );
+    feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
+    mTotalMetaTiles = mMetaTiles.size();
+    totalTiles += tileCount;
   }
-  feedback->pushInfo( QObject::tr( "A total of %1 tiles will be created" ).arg( mTotalTiles ) );
+  feedback->pushInfo( QObject::tr( "A total of %1 metatiles (%2 tiles) will be created" ).arg( mTotalMetaTiles ).arg( totalTiles ) );
 
   checkLayersUsagePolicy( feedback );
 
@@ -588,7 +586,7 @@ void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *
   mRendererJobs.remove( job );
   job->deleteLater();
 
-  mFeedback->setProgress( 100.0 * ( mProcessedTiles++ ) / mTotalTiles );
+  mFeedback->setProgress( 100.0 * ( mProcessedMetaTiles++ ) / mTotalMetaTiles );
 
   if ( mFeedback->isCanceled() )
   {

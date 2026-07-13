@@ -369,6 +369,7 @@ class PyProvider(QgsVectorDataProvider):
                     QVariant.LongLong,
                     QVariant.StringList,
                     QVariant.List,
+                    QVariant.UserType,
                 ):
                     continue
                 self._fields.append(new_f)

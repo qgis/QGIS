@@ -48,7 +48,6 @@ from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.NumberInputPanel import NumberInputPanel
 from processing.gui.ParametersPanel import ParametersPanel
-from processing.gui.wrappers import WidgetWrapper
 from processing.tools.dataobjects import createContext
 
 
@@ -91,16 +90,7 @@ class GdalParametersPanel(ParametersPanel):
             wrapper.widgetValueHasChanged.connect(self.parametersHaveChanged)
 
             # TODO - remove when all wrappers correctly emit widgetValueHasChanged!
-
-            # For compatibility with 3.x API, we need to check whether the wrapper is
-            # the deprecated WidgetWrapper class. If not, it's the newer
-            # QgsAbstractProcessingParameterWidgetWrapper class
-            # TODO QGIS 5.0 - remove
-            if issubclass(wrapper.__class__, WidgetWrapper):
-                w = wrapper.widget
-            else:
-                w = wrapper.wrappedWidget()
-
+            w = wrapper.wrappedWidget()
             self.connectWidgetChangedSignals(w)
             for c in w.findChildren(QWidget):
                 self.connectWidgetChangedSignals(c)

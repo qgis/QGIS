@@ -376,8 +376,15 @@ The development version
     typedef QFlags<Qgis::VectorProviderCapability> VectorProviderCapabilities;
 
 
+   enum class CreateLayerActionOnExisting /BaseType=IntEnum/
+   {
+     Abort,
+     CreateOrOverwriteFile,
+     CreateOrOverwriteLayer,
+   };
+
     enum class FeatureCountState /BaseType=IntEnum/
-      {
+    {
       Uncounted,
       UnknownCount,
     };
@@ -2792,6 +2799,14 @@ The development version
     typedef QFlags<Qgis::LegendJsonRenderFlag> LegendJsonRenderFlags;
 
 
+    enum class GeoJsonProfile /BaseType=IntEnum/
+    {
+      Legacy,
+      Rfc7946,
+      JsonFg,
+      JsonFgPlus,
+    };
+
     enum class ActionType /BaseType=IntEnum/
     {
       Invalid,
@@ -3860,6 +3875,14 @@ The development version
       RestorePreviousState,
       ForceDocked,
       ForceDialog,
+    };
+
+    enum class CoverageCleanOverlapMergeStrategy /BaseType=IntEnum/
+    {
+      LongestBorder,
+      MaximumArea,
+      MinimumArea,
+      MinimumIndex,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
