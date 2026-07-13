@@ -28,8 +28,16 @@
       "hero.linkEnterprise": "Enterprise",
       "hero.linkDemo": "Vedi demo",
       "hero.linkCloud": "Strata Cloud",
-      "hero.demo.alt":
-        "Demo Strata: mappa di priorità soccorsi dopo il terremoto in Venezuela",
+
+      "demo.chapter.intro": "Cos'è Strata",
+      "demo.chapter.case": "Il caso: terremoto in Venezuela",
+      "demo.chapter.fetch": "Strata scarica i dati dal web",
+      "demo.chapter.load": "Caricare dati locali",
+      "demo.chapter.analysis": "Analisi scuotimento per comune",
+      "demo.chapter.priority": "Mappa di priorità e export PDF",
+      "demo.chapter.result": "Risultato e confronto",
+      "demo.carousel.prev": "Capitolo precedente",
+      "demo.carousel.next": "Capitolo successivo",
 
       "download.title": "Scarica Strata",
       "download.subtitle": "macOS, Windows e Linux. Binari da GitHub Releases.",
@@ -121,8 +129,16 @@
       "hero.linkEnterprise": "Enterprise",
       "hero.linkDemo": "See demo",
       "hero.linkCloud": "Strata Cloud",
-      "hero.demo.alt":
-        "Strata demo: rescue priority map after the Venezuela earthquake",
+
+      "demo.chapter.intro": "What is Strata",
+      "demo.chapter.case": "The case: Venezuela earthquake",
+      "demo.chapter.fetch": "Strata fetches data from the web",
+      "demo.chapter.load": "Load local data with one command",
+      "demo.chapter.analysis": "Shaking analysis per municipality",
+      "demo.chapter.priority": "Priority map and PDF export",
+      "demo.chapter.result": "Result and case study comparison",
+      "demo.carousel.prev": "Previous chapter",
+      "demo.carousel.next": "Next chapter",
 
       "download.title": "Download Strata",
       "download.subtitle": "macOS, Windows, and Linux. Binaries from GitHub Releases.",
@@ -396,6 +412,7 @@
     currentLang = lang;
     localStorage.setItem(STORAGE_KEY, lang);
     applyTranslations(lang);
+    document.dispatchEvent(new CustomEvent("strata:langchange", { detail: { lang } }));
   }
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -420,4 +437,5 @@
   });
 
   window.STRATA_I18N = { setLanguage, RELEASES_URL, RELEASES_API_URL, findLatestCompleteRelease, detectPlatform };
+  window.STRATA_TRANSLATIONS = translations;
 })();

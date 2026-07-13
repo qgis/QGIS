@@ -1,0 +1,51 @@
+const DEMO_CHAPTERS = [
+  {
+    slug: "intro",
+    titleKey: "demo.chapter.intro",
+    webm: "./assets/demo-chapters/demo-chapter-intro.webm",
+    gif: "./assets/demo-chapters/demo-chapter-intro.gif",
+    poster: "./assets/demo-chapters/demo-chapter-intro-poster.webp",
+  },
+  {
+    slug: "case",
+    titleKey: "demo.chapter.case",
+    webm: "./assets/demo-chapters/demo-chapter-case.webm",
+    gif: "./assets/demo-chapters/demo-chapter-case.gif",
+    poster: "./assets/demo-chapters/demo-chapter-case-poster.webp",
+  },
+  {
+    slug: "fetch",
+    titleKey: "demo.chapter.fetch",
+    webm: "./assets/demo-chapters/demo-chapter-fetch.webm",
+    gif: "./assets/demo-chapters/demo-chapter-fetch.gif",
+    poster: "./assets/demo-chapters/demo-chapter-fetch-poster.webp",
+  },
+  {
+    slug: "load",
+    titleKey: "demo.chapter.load",
+    webm: "./assets/demo-chapters/demo-chapter-load.webm",
+    gif: "./assets/demo-chapters/demo-chapter-load.gif",
+    poster: "./assets/demo-chapters/demo-chapter-load-poster.webp",
+  },
+  {
+    slug: "analysis",
+    titleKey: "demo.chapter.analysis",
+    webm: "./assets/demo-chapters/demo-chapter-analysis.webm",
+    gif: "./assets/demo-chapters/demo-chapter-analysis.gif",
+    poster: "./assets/demo-chapters/demo-chapter-analysis-poster.webp",
+  },
+  {
+    slug: "priority",
+    titleKey: "demo.chapter.priority",
+    webm: "./assets/demo-chapters/demo-chapter-priority.webm",
+    gif: "./assets/demo-chapters/demo-chapter-priority.gif",
+    poster: "./assets/demo-chapters/demo-chapter-priority-poster.webp",
+  },
+  {
+    slug: "result",
+    titleKey: "demo.chapter.result",
+    webm: "./assets/demo-chapters/demo-chapter-result.webm",
+    gif: "./assets/demo-chapters/demo-chapter-result.gif",
+    poster: "./assets/demo-chapters/demo-chapter-result-poster.webp",
+  },
+];

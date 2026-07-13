@@ -8,10 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/style.css?v=20260712a">
+  <link rel="stylesheet" href="./css/style.css?v=20260713a">
   <link rel="icon" href="./assets/app-icon.png" type="image/png">
-  <link rel="preload" href="./assets/demo-priority-map-poster.webp" as="image" type="image/webp">
-  <script src="./js/hero-media.js?v=20260712a" defer></script>
+  <link rel="preload" href="./assets/demo-chapters/demo-chapter-intro-poster.webp" as="image" type="image/webp">
 </head>
 <body>
 
@@ -58,20 +57,7 @@
         </div>
       </div>
 
-      <figure class="hero-visual">
-        <img
-          id="hero-demo-media"
-          class="hero-visual-media"
-          src="./assets/demo-priority-map-poster.webp"
-          data-animated-src="./assets/demo-priority-map.gif"
-          alt="Strata genera una mappa di priorità soccorsi da dati web"
-          width="640"
-          height="360"
-          fetchpriority="high"
-          decoding="async"
-          data-i18n-alt="hero.demo.alt"
-        >
-      </figure>
+      <figure class="hero-visual" id="hero-demo-carousel" aria-label="Demo video chapters"></figure>
     </div>
   </section>
 
@@ -280,5 +266,7 @@
   </footer>
 
   <script src="./js/i18n.js"></script>
+  <script src="./js/demo-chapters.js"></script>
+  <script src="./js/demo-carousel.js?v=20260713a"></script>
 </body>
 </html>
