@@ -221,10 +221,10 @@ ProjectorData::ProjectorData(
 #endif
 
   // init helper points
-  pHelperTop = std::make_unique<QgsPointXY[]>( mDestCols );
-  pHelperBottom = std::make_unique<QgsPointXY[]>( mDestCols );
-  calcHelper( 0, pHelperTop.get() );
-  calcHelper( 1, pHelperBottom.get() );
+  pHelperTop.resize( mDestCols );
+  pHelperBottom.resize( mDestCols );
+  calcHelper( 0, pHelperTop );
+  calcHelper( 1, pHelperBottom );
   mHelperTopRow = 0;
 
   // Calculate source dimensions
@@ -438,7 +438,7 @@ inline int ProjectorData::matrixCol( int destCol ) const
   return static_cast< int >( std::floor( ( destCol + 0.5 ) / mDestColsPerMatrixCol ) );
 }
 
-void ProjectorData::calcHelper( int matrixRow, QgsPointXY *points )
+void ProjectorData::calcHelper( int matrixRow, std::vector<QgsPointXY> &points )
 {
   // TODO?: should we also precalc dest cell center coordinates for x and y?
   for ( int myDestCol = 0; myDestCol < mDestCols; myDestCol++ )
@@ -468,7 +468,7 @@ void ProjectorData::nextHelper()
 {
   // We just switch pHelperTop and pHelperBottom, memory is not lost
   swap( pHelperTop, pHelperBottom );
-  calcHelper( mHelperTopRow + 2, pHelperBottom.get() );
+  calcHelper( mHelperTopRow + 2, pHelperBottom );
   mHelperTopRow++;
 }
 
