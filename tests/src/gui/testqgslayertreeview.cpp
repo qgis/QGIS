@@ -71,6 +71,7 @@ class TestQgsLayerTreeView : public QObject
     void testComputeDropTarget();
     void testDatasetDropInsertionPoint();
     void testInvalidDragRefused();
+    void testCustomDragAccepted();
     void testFastCheckFalsePositive();
 };
 
@@ -351,6 +352,51 @@ void TestQgsLayerTreeView::testInvalidDragRefused()
   QVERIFY( !dropEvent.isAccepted() );
   QVERIFY( !dropped );
   QVERIFY( !view.datasetDropInsertionPoint().group );
+}
+
+void TestQgsLayerTreeView::testCustomDragAccepted()
+{
+  // payloads claimed by a custom drop handler are accepted and forwarded to the
+  // datasetsDropped() signal, but expose no insertion point: the handler decides
+  // what to do with the payload, it does not necessarily insert layers
+  QgsLayerTree root;
+  QgsLayerTreeModel model( &root );
+  QgsLayerTreeView view;
+  view.setModel( &model );
+  view.resize( 400, 600 );
+  view.show();
+  QVERIFY( QTest::qWaitForWindowExposed( &view ) );
+
+  TestDropHandler qptHandler( u"qpt"_s );
+  view.setCustomDropHandlers( { QPointer<QgsCustomDropHandler>( &qptHandler ) } );
+
+  QTemporaryFile qptFile( QDir::tempPath() + u"/XXXXXX.qpt"_s );
+  QVERIFY( qptFile.open() );
+  QMimeData mime;
+  mime.setUrls( { QUrl::fromLocalFile( qptFile.fileName() ) } );
+
+  bool dropped = false;
+  QgsLayerTreeRegistryBridge::InsertionPoint captured( &root, -1 );
+  connect( &view, &QgsLayerTreeView::datasetsDropped, this, [&dropped, &captured, &view]( QDropEvent * ) {
+    dropped = true;
+    captured = view.datasetDropInsertionPoint();
+  } );
+
+  const QPoint pos( 50, 50 );
+  QDragEnterEvent enterEvent( pos, Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
+  view.dragEnterEvent( &enterEvent );
+  QVERIFY( enterEvent.isAccepted() );
+
+  QDragMoveEvent moveEvent( pos, Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
+  view.dragMoveEvent( &moveEvent );
+  QVERIFY( moveEvent.isAccepted() );
+
+  QDropEvent dropEvent( QPointF( pos ), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
+  view.dropEvent( &dropEvent );
+  QVERIFY( dropEvent.isAccepted() );
+  QVERIFY( dropped );
+  // no insertion point for custom handler payloads
+  QVERIFY( !captured.group );
 }
 
 void TestQgsLayerTreeView::testFastCheckFalsePositive()
