@@ -515,7 +515,7 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
   mOptions.add( "a_srs", mParent->mTargetCrs.toWkt().toStdString() );
   mOptions.add( "minor_version", u"4"_s.toStdString() ); // delault to LAZ 1.4 to properly handle pdrf >= 6
   mOptions.add( "format", QString::number( mPointFormat ).toStdString() );
-  if ( mParent->mTransform->isShortCircuited() )
+  if ( mParent->mTransform.isShortCircuited() )
   {
     mOptions.add( "offset_x", QString::number( mParent->mIndex.offset().x() ).toStdString() );
     mOptions.add( "offset_y", QString::number( mParent->mIndex.offset().y() ).toStdString() );
