@@ -332,6 +332,26 @@ private:
     StateFlags m_stateFlags;
 };
 
+/// Information needed to draw a single text character using a "real text" drawing
+/// method (e.g. QPainter::drawText), instead of filling its vector glyph outline.
+struct PDFRealTextDrawInfo
+{
+    /// Character being drawn
+    QChar character;
+
+    /// Font used to draw the character
+    PDFFontPointer font;
+
+    /// Font size (text space units), sign matches the raw /Tf font size (adjustMatrix
+    /// already carries the same sign, so implementations combining both must use the
+    /// absolute value here to avoid applying the sign twice).
+    PDFReal fontSize = 0.0;
+
+    /// Transforms glyph/text space to user space (i.e. adjustMatrix * textMatrix),
+    /// current transformation matrix (CTM) is not included.
+    QTransform textRenderingMatrix;
+};
+
 /// Process the contents of the page.
 class PDF4QTLIBCORESHARED_EXPORT PDFPageContentProcessor : public PDFRenderErrorReporter
 {
@@ -617,7 +637,7 @@ protected:
     /// \param image Image
     /// \param stream Stream, from which image originated
     /// \returns true, if image is successfully processed
-    virtual bool performOriginalImagePainting(const PDFImage& image, const PDFStream* stream);
+    virtual bool performOriginalImagePainting(const PDFImage& image, const PDFStream* stream, PDFObjectReference reference);
 
     /// This function has to be implemented in the client drawing implementation, it should
     /// draw the image.
@@ -679,6 +699,16 @@ protected:
 
     /// Implement to react on character printing
     virtual void performOutputCharacter(const PDFTextCharacterInfo& info);
+
+    /// Implement to draw a single text character using a "real text" drawing method
+    /// (e.g. QPainter::drawText) instead of filling its vector glyph outline. This is
+    /// only called for glyphs eligible for such treatment (simple fill, no stroke, no
+    /// pattern/shading fill, horizontal writing). If the implementation is not able to
+    /// draw the character this way (e.g. no usable substitute font), it must return false,
+    /// so the caller falls back to the standard path-based glyph painting.
+    /// \param info Character, font and text rendering matrix (glyph space to user space, before CTM)
+    /// \returns true, if the character was drawn and no further path-based painting is needed
+    virtual bool performTextCharacterDrawing(const PDFRealTextDrawInfo& info) { Q_UNUSED(info); return false; }
 
     /// Implement to respond to text begin operator
     virtual void performTextBegin(ProcessOrder order);
@@ -1043,7 +1073,7 @@ private:
     PDFObject readObjectFromOperandStack(size_t startPosition) const;
 
     /// Implementation of painting of XObject image
-    void paintXObjectImage(const PDFStream* stream);
+    void paintXObjectImage(const PDFStream* stream, PDFObjectReference reference);
 
     /// Report warning about color operators in uncolored tiling pattern
     void reportWarningAboutColorOperatorsInUTP();
