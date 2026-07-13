@@ -77,7 +77,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mAvailableWidgetsView->setItemDelegate( new QgsAttributesFormTreeViewItemDelegate( mAvailableWidgetsView ) );
   mAvailableWidgetsView->setStyle( new QgsAttributesFormTreeViewProxyStyle( mAvailableWidgetsView ) );
 
-  mAvailableWidgetsModel = new QgsAttributesAvailableWidgetsModel( mLayer, QgsProject().instance(), this );
+  mAvailableWidgetsModel = new QgsAttributesAvailableWidgetsModel( mLayer, QgsProject::instance(), this );
   mAvailableWidgetsProxyModel = new QgsAttributesFormProxyModel( this );
   mAvailableWidgetsProxyModel->setAttributesFormSourceModel( mAvailableWidgetsModel );
   mAvailableWidgetsProxyModel->setRecursiveFilteringEnabled( true );
@@ -101,7 +101,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mFormLayoutView->setItemDelegate( new QgsAttributesFormTreeViewItemDelegate( mFormLayoutView ) );
   mFormLayoutView->setStyle( new QgsAttributesFormTreeViewProxyStyle( mFormLayoutView ) );
 
-  mFormLayoutModel = new QgsAttributesFormLayoutModel( mLayer, QgsProject().instance(), this );
+  mFormLayoutModel = new QgsAttributesFormLayoutModel( mLayer, QgsProject::instance(), this );
   mFormLayoutProxyModel = new QgsAttributesFormProxyModel( this );
   mFormLayoutProxyModel->setAttributesFormSourceModel( mFormLayoutModel );
   mFormLayoutProxyModel->setRecursiveFilteringEnabled( true );
