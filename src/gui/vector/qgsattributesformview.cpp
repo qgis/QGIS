@@ -225,6 +225,44 @@ void QgsAttributesFormLayoutView::handleExternalDroppedItems( const QModelIndexL
 void QgsAttributesFormLayoutView::handleInternalDroppedItems( const QModelIndexList &indexes )
 {
   selectDroppedItems( indexes );
+
+  // Restore the state captured in dropEvent() before the move took place.
+  for ( const QModelIndex &index : indexes )
+  {
+    restoreExpandedState( index );
+  }
+  mDraggedExpandedState.clear();
+}
+
+void QgsAttributesFormLayoutView::storeExpandedState( const QModelIndex &sourceIndex )
+{
+  if ( !sourceIndex.isValid() )
+    return;
+
+  if ( auto *item = static_cast< QgsAttributesFormItem * >( sourceIndex.internalPointer() ) )
+    mDraggedExpandedState.insert( item, isExpanded( mModel->mapFromSource( sourceIndex ) ) );
+
+  const int rows = mModel->sourceModel()->rowCount( sourceIndex );
+  for ( int row = 0; row < rows; ++row )
+  {
+    storeExpandedState( mModel->sourceModel()->index( row, 0, sourceIndex ) );
+  }
+}
+
+void QgsAttributesFormLayoutView::restoreExpandedState( const QModelIndex &sourceIndex )
+{
+  if ( !sourceIndex.isValid() )
+    return;
+
+  // Expand parents before children so descendant indexes are correct
+  if ( auto *item = static_cast< QgsAttributesFormItem * >( sourceIndex.internalPointer() ) )
+    setExpanded( mModel->mapFromSource( sourceIndex ), mDraggedExpandedState.value( item, true ) );
+
+  const int rows = mModel->sourceModel()->rowCount( sourceIndex );
+  for ( int row = 0; row < rows; ++row )
+  {
+    restoreExpandedState( mModel->sourceModel()->index( row, 0, sourceIndex ) );
+  }
 }
 
 void QgsAttributesFormLayoutView::dragEnterEvent( QDragEnterEvent *event )
@@ -277,6 +315,18 @@ void QgsAttributesFormLayoutView::dropEvent( QDropEvent *event )
     return;
 
   const bool internalMove = event->source() == this && event->mimeData()->hasFormat( u"application/x-qgsattributesformlayoutelement"_s );
+
+  if ( internalMove )
+  {
+    // Capture the expanded state of the dragged items now, before the move
+    // turns into a removal + insertion that would collapse moved containers.
+    mDraggedExpandedState.clear();
+    const QModelIndexList selectedProxyIndexes = selectionModel()->selectedRows();
+    for ( const QModelIndex &proxyIndex : selectedProxyIndexes )
+    {
+      storeExpandedState( mModel->mapToSource( proxyIndex ) );
+    }
+  }
 
   if ( event->source() == this )
   {
