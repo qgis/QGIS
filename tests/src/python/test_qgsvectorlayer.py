@@ -3342,7 +3342,9 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 
         # if no scope passed, should use a default constructed one including layer variables
         QgsExpressionContextUtils.setLayerVariable(layer, "var2", 4)
-        QgsExpressionContextUtils.setProjectVariable(QgsProject.instance(), "var3", 8)
+        p = QgsProject()
+        p.addMapLayer(layer)
+        QgsExpressionContextUtils.setProjectVariable(p, "var3", 8)
         layer.setDefaultValueDefinition(
             1, QgsDefaultValue("to_int(@var2) + to_int(@var3) + $id")
         )
