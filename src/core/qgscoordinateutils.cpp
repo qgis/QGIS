@@ -46,8 +46,8 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
 
   if ( automatic )
   {
-    const bool formatGeographic = project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::MapGeographic
-                                  || ( project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::CustomCrs && project->displaySettings()->coordinateCustomCrs().isGeographic() );
+    const bool formatGeographic = project && ( project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::MapGeographic
+                                  || ( project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::CustomCrs && project->displaySettings()->coordinateCustomCrs().isGeographic() ) );
 
     // we can only calculate an automatic precision if one of these is true:
     // - both map CRS and format are geographic
