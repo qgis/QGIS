@@ -60,6 +60,25 @@ class TestDropHandler : public QgsCustomDropHandler
     QString mSuffix;
 };
 
+//! A layer tree view on its own tree and model, sized and shown, ready to receive events
+struct LayerTreeViewFixture
+{
+    QgsLayerTree root;
+    QgsLayerTreeModel model;
+    QgsLayerTreeView view;
+    //! FALSE if the view could not be exposed; tests must QVERIFY this
+    bool ready = false;
+
+    LayerTreeViewFixture()
+      : model( &root )
+    {
+      view.setModel( &model );
+      view.resize( 400, 600 );
+      view.show();
+      ready = QTest::qWaitForWindowExposed( &view );
+    }
+};
+
 class TestQgsLayerTreeView : public QObject
 {
     Q_OBJECT
@@ -73,7 +92,40 @@ class TestQgsLayerTreeView : public QObject
     void testInvalidDragRefused();
     void testCustomDragAccepted();
     void testFastCheckFalsePositive();
+
+  private:
+    //! Which events of a drag & drop sequence the view accepted
+    struct DragDropResult
+    {
+        bool enterAccepted = false;
+        bool moveAccepted = false;
+        bool dropAccepted = false;
+    };
+
+    //! Drives a full drag enter / move / drop sequence on the view
+    DragDropResult performDragAndDrop( QgsLayerTreeView &view, const QMimeData *mime, const QPoint &pos );
 };
+
+TestQgsLayerTreeView::DragDropResult TestQgsLayerTreeView::performDragAndDrop( QgsLayerTreeView &view, const QMimeData *mime, const QPoint &pos )
+{
+  DragDropResult result;
+
+  QDragEnterEvent enterEvent( pos, Qt::CopyAction, mime, Qt::LeftButton, Qt::NoModifier );
+  view.dragEnterEvent( &enterEvent );
+  result.enterAccepted = enterEvent.isAccepted();
+
+  QDragMoveEvent moveEvent( pos, Qt::CopyAction, mime, Qt::LeftButton, Qt::NoModifier );
+  moveEvent.accept(); // pre-accept, so that an explicit refusal by the view is observable
+  view.dragMoveEvent( &moveEvent );
+  result.moveAccepted = moveEvent.isAccepted();
+
+  // always deliver the drop, even after a refused move: the view must refuse it too
+  QDropEvent dropEvent( QPointF( pos ), Qt::CopyAction, mime, Qt::LeftButton, Qt::NoModifier );
+  view.dropEvent( &dropEvent );
+  result.dropAccepted = dropEvent.isAccepted();
+
+  return result;
+}
 
 void TestQgsLayerTreeView::initTestCase()
 {
@@ -183,22 +235,19 @@ void TestQgsLayerTreeView::testComputeDropTarget()
   categories << QgsRendererCategory( 1, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"one"_s ) << QgsRendererCategory( 2, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"two"_s );
   layer1->setRenderer( new QgsCategorizedSymbolRenderer( u"fld"_s, categories ) );
 
-  // root: [ layer1, group[ layer2 ], layer3 ]
-  QgsLayerTree root;
-  QgsLayerTreeLayer *nodeLayer1 = root.addLayer( layer1.get() );
-  QgsLayerTreeGroup *group = root.addGroup( u"group"_s );
-  QgsLayerTreeLayer *nodeLayer2 = group->addLayer( layer2.get() );
-  root.addLayer( layer3.get() );
+  LayerTreeViewFixture f;
+  QVERIFY( f.ready );
+  QgsLayerTreeView &view = f.view;
 
-  QgsLayerTreeModel model( &root );
-  QgsLayerTreeView view;
-  view.setModel( &model );
-  view.resize( 400, 600 );
-  view.show();
-  QVERIFY( QTest::qWaitForWindowExposed( &view ) );
+  // root: [ layer1, group[ layer2 ], layer3 ]
+  QgsLayerTreeLayer *nodeLayer1 = f.root.addLayer( layer1.get() );
+  QgsLayerTreeGroup *group = f.root.addGroup( u"group"_s );
+  QgsLayerTreeLayer *nodeLayer2 = group->addLayer( layer2.get() );
+  f.root.addLayer( layer3.get() );
+
   view.expandAll();
 
-  QgsLayerTreeGroup *rootGroup = &root;
+  QgsLayerTreeGroup *rootGroup = &f.root;
 
   // layer row, top half: insert above the layer
   const QRect layer1Rect = view.visualRect( view.node2index( nodeLayer1 ) );
@@ -243,7 +292,7 @@ void TestQgsLayerTreeView::testComputeDropTarget()
   QVERIFY( !target.into );
 
   // legend node row: insert below the layer owning the legend node
-  const QList<QgsLayerTreeModelLegendNode *> legendNodes = model.layerLegendNodes( nodeLayer1 );
+  const QList<QgsLayerTreeModelLegendNode *> legendNodes = f.model.layerLegendNodes( nodeLayer1 );
   QCOMPARE( legendNodes.count(), 2 );
   const QModelIndex legendIndex = view.legendNode2index( legendNodes.first() );
   QVERIFY( legendIndex.isValid() );
@@ -266,16 +315,12 @@ void TestQgsLayerTreeView::testDatasetDropInsertionPoint()
   const std::unique_ptr<QgsVectorLayer> layer1 = std::make_unique<QgsVectorLayer>( u"Point?field=fld:integer"_s, u"layer1"_s, u"memory"_s );
   const std::unique_ptr<QgsVectorLayer> layer2 = std::make_unique<QgsVectorLayer>( u"Point?field=fld:integer"_s, u"layer2"_s, u"memory"_s );
 
-  QgsLayerTree root;
-  root.addLayer( layer1.get() );
-  QgsLayerTreeLayer *nodeLayer2 = root.addLayer( layer2.get() );
+  LayerTreeViewFixture f;
+  QVERIFY( f.ready );
+  QgsLayerTreeView &view = f.view;
 
-  QgsLayerTreeModel model( &root );
-  QgsLayerTreeView view;
-  view.setModel( &model );
-  view.resize( 400, 600 );
-  view.show();
-  QVERIFY( QTest::qWaitForWindowExposed( &view ) );
+  f.root.addLayer( layer1.get() );
+  QgsLayerTreeLayer *nodeLayer2 = f.root.addLayer( layer2.get() );
 
   // outside a datasetsDropped() handler the insertion point is invalid
   QVERIFY( !view.datasetDropInsertionPoint().group );
@@ -296,19 +341,12 @@ void TestQgsLayerTreeView::testDatasetDropInsertionPoint()
   // lower half of layer2: insert below it
   const QPoint dropPos( layer2Rect.center().x(), layer2Rect.bottom() - 1 );
 
-  QDragEnterEvent enterEvent( dropPos, Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
-  view.dragEnterEvent( &enterEvent );
-  QVERIFY( enterEvent.isAccepted() );
+  const DragDropResult result = performDragAndDrop( view, mime.get(), dropPos );
+  QVERIFY( result.enterAccepted );
+  QVERIFY( result.moveAccepted );
+  QVERIFY( result.dropAccepted );
 
-  QDragMoveEvent moveEvent( dropPos, Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
-  view.dragMoveEvent( &moveEvent );
-  QVERIFY( moveEvent.isAccepted() );
-
-  QDropEvent dropEvent( QPointF( dropPos ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
-  view.dropEvent( &dropEvent );
-  QVERIFY( dropEvent.isAccepted() );
-
-  QCOMPARE( captured.group, static_cast<QgsLayerTreeGroup *>( &root ) );
+  QCOMPARE( captured.group, static_cast<QgsLayerTreeGroup *>( &f.root ) );
   QCOMPARE( captured.position, 2 );
 
   // the insertion point is reset once the handlers have been executed
@@ -317,13 +355,8 @@ void TestQgsLayerTreeView::testDatasetDropInsertionPoint()
 
 void TestQgsLayerTreeView::testInvalidDragRefused()
 {
-  QgsLayerTree root;
-  QgsLayerTreeModel model( &root );
-  QgsLayerTreeView view;
-  view.setModel( &model );
-  view.resize( 400, 600 );
-  view.show();
-  QVERIFY( QTest::qWaitForWindowExposed( &view ) );
+  LayerTreeViewFixture f;
+  QVERIFY( f.ready );
 
   QTemporaryFile docFile( QDir::tempPath() + u"/XXXXXX.docx"_s );
   QVERIFY( docFile.open() );
@@ -331,27 +364,17 @@ void TestQgsLayerTreeView::testInvalidDragRefused()
   mime.setUrls( { QUrl::fromLocalFile( docFile.fileName() ) } );
 
   bool dropped = false;
-  connect( &view, &QgsLayerTreeView::datasetsDropped, this, [&dropped]( QDropEvent * ) { dropped = true; } );
+  connect( &f.view, &QgsLayerTreeView::datasetsDropped, this, [&dropped]( QDropEvent * ) { dropped = true; } );
 
-  const QPoint pos( 50, 50 );
-
+  const DragDropResult result = performDragAndDrop( f.view, &mime, QPoint( 50, 50 ) );
   // the drag enter is accepted, so that drag moves keep coming and the overlay is shown
-  QDragEnterEvent enterEvent( pos, Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
-  view.dragEnterEvent( &enterEvent );
-  QVERIFY( enterEvent.isAccepted() );
-
-  // but the moves are refused, no drop can happen
-  QDragMoveEvent moveEvent( pos, Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
-  moveEvent.accept(); // pre-accept to prove the view explicitly refuses it
-  view.dragMoveEvent( &moveEvent );
-  QVERIFY( !moveEvent.isAccepted() );
-
+  QVERIFY( result.enterAccepted );
+  // but the moves are explicitly refused, no drop can happen
+  QVERIFY( !result.moveAccepted );
   // even if a drop were delivered, it is refused and no handler runs
-  QDropEvent dropEvent( QPointF( pos ), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
-  view.dropEvent( &dropEvent );
-  QVERIFY( !dropEvent.isAccepted() );
+  QVERIFY( !result.dropAccepted );
   QVERIFY( !dropped );
-  QVERIFY( !view.datasetDropInsertionPoint().group );
+  QVERIFY( !f.view.datasetDropInsertionPoint().group );
 }
 
 void TestQgsLayerTreeView::testCustomDragAccepted()
@@ -359,13 +382,9 @@ void TestQgsLayerTreeView::testCustomDragAccepted()
   // payloads claimed by a custom drop handler are accepted and forwarded to the
   // datasetsDropped() signal, but expose no insertion point: the handler decides
   // what to do with the payload, it does not necessarily insert layers
-  QgsLayerTree root;
-  QgsLayerTreeModel model( &root );
-  QgsLayerTreeView view;
-  view.setModel( &model );
-  view.resize( 400, 600 );
-  view.show();
-  QVERIFY( QTest::qWaitForWindowExposed( &view ) );
+  LayerTreeViewFixture f;
+  QVERIFY( f.ready );
+  QgsLayerTreeView &view = f.view;
 
   TestDropHandler qptHandler( u"qpt"_s );
   view.setCustomDropHandlers( { QPointer<QgsCustomDropHandler>( &qptHandler ) } );
@@ -376,24 +395,16 @@ void TestQgsLayerTreeView::testCustomDragAccepted()
   mime.setUrls( { QUrl::fromLocalFile( qptFile.fileName() ) } );
 
   bool dropped = false;
-  QgsLayerTreeRegistryBridge::InsertionPoint captured( &root, -1 );
+  QgsLayerTreeRegistryBridge::InsertionPoint captured( &f.root, -1 );
   connect( &view, &QgsLayerTreeView::datasetsDropped, this, [&dropped, &captured, &view]( QDropEvent * ) {
     dropped = true;
     captured = view.datasetDropInsertionPoint();
   } );
 
-  const QPoint pos( 50, 50 );
-  QDragEnterEvent enterEvent( pos, Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
-  view.dragEnterEvent( &enterEvent );
-  QVERIFY( enterEvent.isAccepted() );
-
-  QDragMoveEvent moveEvent( pos, Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
-  view.dragMoveEvent( &moveEvent );
-  QVERIFY( moveEvent.isAccepted() );
-
-  QDropEvent dropEvent( QPointF( pos ), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
-  view.dropEvent( &dropEvent );
-  QVERIFY( dropEvent.isAccepted() );
+  const DragDropResult result = performDragAndDrop( view, &mime, QPoint( 50, 50 ) );
+  QVERIFY( result.enterAccepted );
+  QVERIFY( result.moveAccepted );
+  QVERIFY( result.dropAccepted );
   QVERIFY( dropped );
   // no insertion point for custom handler payloads
   QVERIFY( !captured.group );
@@ -410,13 +421,9 @@ void TestQgsLayerTreeView::testFastCheckFalsePositive()
   garbageShp.write( "this is not a shapefile" );
   garbageShp.close();
 
-  QgsLayerTree root;
-  QgsLayerTreeModel model( &root );
-  QgsLayerTreeView view;
-  view.setModel( &model );
-  view.resize( 400, 600 );
-  view.show();
-  QVERIFY( QTest::qWaitForWindowExposed( &view ) );
+  LayerTreeViewFixture f;
+  QVERIFY( f.ready );
+  QgsLayerTreeView &view = f.view;
 
   // fast check: fooled by the extension
   QMimeData mime;
@@ -431,18 +438,10 @@ void TestQgsLayerTreeView::testFastCheckFalsePositive()
   bool dropped = false;
   connect( &view, &QgsLayerTreeView::datasetsDropped, this, [&dropped]( QDropEvent * ) { dropped = true; } );
 
-  const QPoint pos( 50, 50 );
-  QDragEnterEvent enterEvent( pos, Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
-  view.dragEnterEvent( &enterEvent );
-  QVERIFY( enterEvent.isAccepted() );
-
-  QDragMoveEvent moveEvent( pos, Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
-  view.dragMoveEvent( &moveEvent );
-  QVERIFY( moveEvent.isAccepted() );
-
-  QDropEvent dropEvent( QPointF( pos ), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier );
-  view.dropEvent( &dropEvent );
-  QVERIFY( dropEvent.isAccepted() );
+  const DragDropResult result = performDragAndDrop( view, &mime, QPoint( 50, 50 ) );
+  QVERIFY( result.enterAccepted );
+  QVERIFY( result.moveAccepted );
+  QVERIFY( result.dropAccepted );
   QVERIFY( dropped );
 }
 
