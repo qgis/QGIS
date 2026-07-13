@@ -136,6 +136,7 @@ void TestQgsIdentify::cleanupTestCase()
 void TestQgsIdentify::init()
 {
   canvas = new QgsMapCanvas();
+  canvas->setProject( QgsProject::instance() );
   // enforce C locale because the tests expect it
   // (decimal separators / thousand separators)
   QLocale::setDefault( QLocale::c() );
