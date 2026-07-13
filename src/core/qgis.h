@@ -6926,6 +6926,25 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( CoverageCleanOverlapMergeStrategy )
 
     /**
+     * PDF rendering flags.
+     *
+     * \since QGIS 4.4
+     */
+    enum class PdfRenderFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      RenderTextAsText = 1 << 0, //!< Render text items as text objects, not painter paths
+    };
+    Q_ENUM( PdfRenderFlag )
+
+    /**
+     * PDF rendering flags.
+     *
+     * \since QGIS 4.4
+     */
+    Q_DECLARE_FLAGS( PdfRenderFlags, PdfRenderFlag )
+    Q_FLAG( PdfRenderFlags )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -7219,6 +7238,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ArcGisRestServiceCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::InstancedMaterialFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::Map3DDebugFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SensorThingsExtensions )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PdfRenderFlags )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 
