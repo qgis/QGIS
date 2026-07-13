@@ -16,6 +16,7 @@
 #include "qgslayertreeview.h"
 
 #include "qgsapplication.h"
+#include "qgscustomdrophandler.h"
 #include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
@@ -877,6 +878,13 @@ void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
         event->accept();
         break;
 
+      case DragPayloadType::Custom:
+        // only handled by the application (e.g. custom drop handlers): accept the
+        // drop, but an insertion indicator would be meaningless
+        clearDropIndicator();
+        event->accept();
+        break;
+
       case DragPayloadType::Invalid:
         clearDropIndicator();
         event->ignore();
@@ -913,7 +921,7 @@ void QgsLayerTreeView::dropEvent( QDropEvent *event )
 
     event->accept();
 
-    const DropTarget target = mDragPayloadType == DragPayloadType::Project ? DropTarget() : computeDropTarget( event->position().toPoint() );
+    const DropTarget target = mDragPayloadType == DragPayloadType::Datasets ? computeDropTarget( event->position().toPoint() ) : DropTarget();
     clearDropIndicator();
 
     const QModelIndex index = indexAt( event->position().toPoint() );
@@ -998,6 +1006,7 @@ void QgsLayerTreeView::paintDragOverlay( QPainter &painter ) const
   switch ( mDragPayloadType )
   {
     case DragPayloadType::Datasets:
+    case DragPayloadType::Custom:
       return;
 
     case DragPayloadType::Project:
@@ -1047,12 +1056,17 @@ QgsLayerTreeRegistryBridge::InsertionPoint QgsLayerTreeView::datasetDropInsertio
   return mDatasetDropInsertionPoint;
 }
 
+void QgsLayerTreeView::setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler>> &handlers )
+{
+  mCustomDropHandlers = handlers;
+}
+
 bool QgsLayerTreeView::isDatasetDrag( const QMimeData *mimeData )
 {
   return !mimeData->hasFormat( u"application/qgis.layertreemodeldata"_s ) && ( mimeData->hasUrls() || mimeData->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) );
 }
 
-QgsLayerTreeView::DragPayloadType QgsLayerTreeView::classifyDragPayload( const QMimeData *mimeData )
+QgsLayerTreeView::DragPayloadType QgsLayerTreeView::classifyDragPayload( const QMimeData *mimeData ) const
 {
   bool hasDataset = false;
 
@@ -1083,6 +1097,13 @@ QgsLayerTreeView::DragPayloadType QgsLayerTreeView::classifyDragPayload( const Q
     if ( fileName.endsWith( ".qgs"_L1, Qt::CaseInsensitive ) || fileName.endsWith( ".qgz"_L1, Qt::CaseInsensitive ) )
       return DragPayloadType::Project;
 
+    if ( fileName.endsWith( ".qlr"_L1, Qt::CaseInsensitive ) )
+    {
+      // QgsLayerDefinition files insert layers into the tree, exactly like datasets
+      hasDataset = true;
+      continue;
+    }
+
     if ( !hasDataset )
     {
       const QFileInfo fileInfo( fileName );
@@ -1100,7 +1121,18 @@ QgsLayerTreeView::DragPayloadType QgsLayerTreeView::classifyDragPayload( const Q
     }
   }
 
-  return hasDataset ? DragPayloadType::Datasets : DragPayloadType::Invalid;
+  if ( hasDataset )
+    return DragPayloadType::Datasets;
+
+  // no provider can load the payload, but the application may still handle it through
+  // custom drop handlers (.qlr, .qpt, .py, style .xml files, ...)
+  for ( QgsCustomDropHandler *handler : mCustomDropHandlers )
+  {
+    if ( handler && handler->canHandleMimeData( mimeData ) )
+      return DragPayloadType::Custom;
+  }
+
+  return DragPayloadType::Invalid;
 }
 
 QgsLayerTreeView::DropTarget QgsLayerTreeView::computeDropTarget( const QPoint &pos ) const

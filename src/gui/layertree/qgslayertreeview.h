@@ -20,10 +20,12 @@
 #include "qgis_gui.h"
 #include "qgslayertreeregistrybridge.h"
 
+#include <QPointer>
 #include <QTreeView>
 
 class QMimeData;
 class QPainter;
+class QgsCustomDropHandler;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -562,6 +564,18 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
      */
     QgsLayerTreeRegistryBridge::InsertionPoint datasetDropInsertionPoint() const;
 
+    /**
+     * Sets a list of custom drop \a handlers to consider when drop events occur on the view.
+     *
+     * Drops of payloads which no data provider can load, but which one of the \a handlers
+     * can handle, are accepted (without showing any drop indicator) and forwarded to the
+     * datasetsDropped() signal, instead of being refused as unloadable.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.4
+     */
+    void setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler>> &handlers ) SIP_SKIP;
+
   public slots:
     //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
     void refreshLayerSymbology( const QString &layerId );
@@ -676,11 +690,12 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     {
       Datasets, //!< Droppable datasets: show the insertion indicator
       Project,  //!< A QGIS project: opening it replaces the current project
+      Custom,   //!< Only handled by the application (e.g. custom drop handlers): accept the drop without feedback
       Invalid,  //!< Nothing QGIS can load: refuse the drop
     };
 
     //! Classifies the payload of a dataset drag. Called once per drag, on drag enter.
-    static DragPayloadType classifyDragPayload( const QMimeData *mimeData );
+    DragPayloadType classifyDragPayload( const QMimeData *mimeData ) const;
     DropTarget computeDropTarget( const QPoint &pos ) const;
     //! Line rect at the visual position a node inserted at group/row will take.
     QRect indicatorRectForInsertion( QgsLayerTreeGroup *group, int row ) const;
@@ -704,6 +719,8 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     bool mDatasetDragActive = false;
     //! Only valid while a datasetsDropped() handler is executing
     QgsLayerTreeRegistryBridge::InsertionPoint mDatasetDropInsertionPoint { nullptr, 0 };
+    //! Custom drop handlers to consider for payloads only the application can handle
+    QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
 
     // For model  debugging
     // void checkModel( );

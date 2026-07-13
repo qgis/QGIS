@@ -592,6 +592,7 @@ indicated by the view's drop indicator by passing it to
 .. versionadded:: 4.4
 %End
 
+
   public slots:
     void refreshLayerSymbology( const QString &layerId );
 %Docstring
