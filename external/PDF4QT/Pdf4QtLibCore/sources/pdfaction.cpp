@@ -625,7 +625,7 @@ bool PDFDestination::hasLeft() const
         case DestinationType::FitV:
         case DestinationType::FitBV:
         case DestinationType::FitR:
-            return true;
+            return !qIsNaN(m_left);
 
         default:
             break;
@@ -642,7 +642,7 @@ bool PDFDestination::hasTop() const
         case DestinationType::FitH:
         case DestinationType::FitBH:
         case DestinationType::FitR:
-            return true;
+            return !qIsNaN(m_top);
 
         default:
             break;
@@ -656,7 +656,7 @@ bool PDFDestination::hasRight() const
     switch (m_destinationType)
     {
         case DestinationType::FitR:
-            return true;
+            return !qIsNaN(m_right);
 
         default:
             break;
@@ -670,7 +670,7 @@ bool PDFDestination::hasBottom() const
     switch (m_destinationType)
     {
         case DestinationType::FitR:
-            return true;
+            return !qIsNaN(m_bottom);
 
         default:
             break;
@@ -684,7 +684,7 @@ bool PDFDestination::hasZoom() const
     switch (m_destinationType)
     {
         case DestinationType::XYZ:
-            return true;
+            return !qIsNaN(m_zoom);
 
         default:
             break;

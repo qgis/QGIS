@@ -304,6 +304,9 @@ struct PDFColorProfileIdentifier
         FileGray,
         FileRGB,
         FileCMYK,
+        WindowsSystemGray,
+        WindowsSystemRGB,
+        WindowsSystemCMYK,
         MemoryGray,
         MemoryRGB,
         MemoryCMYK,
@@ -348,6 +351,9 @@ struct PDFColorProfileIdentifier
 
     /// Create file color profile identifier
     static PDFColorProfileIdentifier createFile(Type type, QString name, QString id);
+
+    /// Create Windows system color profile identifier
+    static PDFColorProfileIdentifier createWindowsSystem(Type type, QString name, QString id);
 
     /// Create memory output intent color profile identifier
     static PDFColorProfileIdentifier createOutputIntent(Type type, QString name, QString id, QByteArray profileData);

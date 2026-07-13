@@ -267,6 +267,57 @@ void PDFPainter::performPathPainting(const QPainterPath& path, bool stroke, bool
     m_painter->drawPath(path);
 }
 
+bool PDFPainter::performTextCharacterDrawing(const PDFRealTextDrawInfo& info)
+{
+    if (!hasFeature(PDFRenderer::RealText))
+    {
+        return false;
+    }
+
+    if (isContentSuppressed())
+    {
+        return false;
+    }
+
+    const PDFFontCache::TextDrawingFontInfo* fontInfo = getFontCache()->getFontForTextDrawing(info.font, this);
+    if (!fontInfo || !fontInfo->isUsable)
+    {
+        return false;
+    }
+
+    // QFont::setPointSizeF() would resolve to a local (pre-world-transform) pixel size using
+    // the paint device's own logical DPI - but the world transform below already contains its
+    // own, independent points-to-device-pixels factor (via pagePointToDevicePointMatrix), so
+    // combining the two would apply that DPI scaling twice. QFont::setPixelSize() sets the
+    // font size directly in local units, bypassing any DPI conversion - the same way FreeType's
+    // glyph outlines (used by path-based painting) are generated directly in fontSize-scaled
+    // units. We render at a fixed, large reference pixel size for good rasterization precision,
+    // and bake the missing (fontSize / referenceSize) factor into the local transform instead.
+    constexpr int referencePixelSize = 1000;
+    QFont font = fontInfo->font;
+    font.setPixelSize(referencePixelSize);
+
+    m_painter->save();
+
+    // Glyph outlines (used by the path-based painting) are in a y-up local space, while
+    // QPainter::drawText's own local glyph space is y-down (baseline at origin, ascenders
+    // in the -y direction) - the same axis mismatch handled for images in performImagePainting.
+    // We must flip locally, so the result matches the path-based rendering after being mapped
+    // by textRenderingMatrix and the current world transform (which already contains the
+    // PDF-page-space-to-device-space flip). The sign of fontSize is already carried by
+    // textRenderingMatrix (via adjustMatrix's fontFactor), so only its magnitude is used here.
+    const qreal fontScale = qAbs(info.fontSize) / referencePixelSize;
+    const QTransform localFlipAndScale(fontScale, 0.0, 0.0, -fontScale, 0.0, 0.0);
+    m_painter->setWorldTransform(localFlipAndScale * info.textRenderingMatrix * m_painter->worldTransform(), false);
+    m_painter->setRenderHint(QPainter::Antialiasing, hasFeature(PDFRenderer::TextAntialiasing));
+    m_painter->setFont(font);
+    m_painter->setPen(QPen(getCurrentBrush().color()));
+    m_painter->drawText(QPointF(0.0, 0.0), QString(info.character));
+
+    m_painter->restore();
+    return true;
+}
+
 void PDFPainter::performClipping(const QPainterPath& path, Qt::FillRule fillRule)
 {
     Q_ASSERT(path.fillRule() == fillRule);
