@@ -736,7 +736,8 @@ void TestQgsArcGisRestUtils::testParseRendererCategorized()
 
 void TestQgsArcGisRestUtils::testRendererTransparency()
 {
-  // transparency at drawingInfo level should be applied as opacity on all symbols
+  // transparency at drawingInfo level is now a layer-level rendering setting,
+  // and should not be baked into individual symbol opacity
   // simple renderer
   {
     const QVariantMap map = jsonStringToMap(
@@ -754,7 +755,7 @@ void TestQgsArcGisRestUtils::testRendererTransparency()
     const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
     QVERIFY( ssRenderer );
     QVERIFY( ssRenderer->symbol() );
-    QCOMPARE( ssRenderer->symbol()->opacity(), 0.3 );
+    QCOMPARE( ssRenderer->symbol()->opacity(), 1.0 );
   }
 
   // uniqueValue renderer
@@ -782,7 +783,7 @@ void TestQgsArcGisRestUtils::testRendererTransparency()
     QVERIFY( catRenderer );
     QCOMPARE( catRenderer->categories().count(), 1 );
     QVERIFY( catRenderer->categories().at( 0 ).symbol() );
-    QCOMPARE( catRenderer->categories().at( 0 ).symbol()->opacity(), 0.5 );
+    QCOMPARE( catRenderer->categories().at( 0 ).symbol()->opacity(), 1.0 );
   }
 
   // classBreaks renderer
@@ -811,7 +812,7 @@ void TestQgsArcGisRestUtils::testRendererTransparency()
     QVERIFY( gradRenderer );
     QVERIFY( !gradRenderer->ranges().isEmpty() );
     QVERIFY( gradRenderer->ranges().at( 0 ).symbol() );
-    QCOMPARE( gradRenderer->ranges().at( 0 ).symbol()->opacity(), 0.75 );
+    QCOMPARE( gradRenderer->ranges().at( 0 ).symbol()->opacity(), 1.0 );
   }
 }
 
