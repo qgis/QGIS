@@ -40,10 +40,8 @@ using namespace Qt::StringLiterals;
 
 int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project )
 {
-  if ( !project )
-    project = QgsProject::instance(); // skip-keyword-check
   // Get the display precision from the project settings
-  const bool automatic = project->readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s );
+  const bool automatic = project ? project->readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s ) : true;
   int dp = 0;
 
   if ( automatic )
@@ -89,13 +87,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
 
 int QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs, QgsProject *project )
 {
-  QgsProject *prj = project;
-  if ( !prj )
-  {
-    prj = QgsProject::instance(); // skip-keyword-check
-  }
-
-  const bool automatic = prj->readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s );
+  const bool automatic = project ? project->readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s ) : true;
   if ( !automatic )
   {
     return prj->readNumEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s, 6 );
