@@ -134,7 +134,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify(
   mLastExtent = mCanvas->extent();
   mLastMapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
 
-  mCoordinatePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLastMapUnitsPerPixel, mCanvas->mapSettings().destinationCrs() );
+  mCoordinatePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLastMapUnitsPerPixel, mCanvas->mapSettings().destinationCrs(), mCanvas->project() );
 
   if ( mode == DefaultQgsSetting )
   {
