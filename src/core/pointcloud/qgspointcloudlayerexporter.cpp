@@ -211,12 +211,12 @@ void QgsPointCloudLayerExporter::prepareExport()
 
 void QgsPointCloudLayerExporter::doExport()
 {
-  mTransform = std::make_unique<QgsCoordinateTransform>( mSourceCrs, mTargetCrs, mTransformContext );
+  mTransform = QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
   if ( mExtent.isFinite() )
   {
     try
     {
-      mExtent = mTransform->transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse );
+      mExtent = mTransform.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse );
     }
     catch ( const QgsCsException &cse )
     {
@@ -397,7 +397,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
 
       try
       {
-        mParent->mTransform->transformInPlace( x, y, z );
+        mParent->mTransform.transformInPlace( x, y, z );
         const QVariantMap attributeMap = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, attributesCollection );
         handlePoint( x, y, z, attributeMap, pointsExported );
         ++pointsExported;

@@ -279,7 +279,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 
     std::unique_ptr<QgsMapLayer> mMemoryLayer;
     std::unique_ptr<QgsFeatureSink> mVectorSink;
-    std::unique_ptr<QgsCoordinateTransform> mTransform;
+    QgsCoordinateTransform mTransform;
 
 
     class ExporterBase
