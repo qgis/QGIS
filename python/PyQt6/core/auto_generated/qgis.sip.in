@@ -3885,6 +3885,14 @@ The development version
       MinimumIndex,
     };
 
+    enum class PdfRenderFlag /BaseType=IntFlag/
+    {
+      RenderTextAsText,
+    };
+
+    typedef QFlags<Qgis::PdfRenderFlag> PdfRenderFlags;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -4231,6 +4239,8 @@ QFlags<Qgis::InstancedMaterialFlag> operator|(Qgis::InstancedMaterialFlag f1, QF
 QFlags<Qgis::Map3DDebugFlag> operator|(Qgis::Map3DDebugFlag f1, QFlags<Qgis::Map3DDebugFlag> f2);
 
 QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QFlags<Qgis::SensorThingsExtension> f2);
+
+QFlags<Qgis::PdfRenderFlag> operator|(Qgis::PdfRenderFlag f1, QFlags<Qgis::PdfRenderFlag> f2);
 
 
 
