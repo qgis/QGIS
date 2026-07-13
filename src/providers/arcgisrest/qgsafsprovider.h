@@ -90,6 +90,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QString dataComment() const override;
     QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override;
     QgsAbstractVectorLayerLabeling *createLabeling( const QVariantMap &configuration = QVariantMap() ) const override;
+    QgsLayerRenderingSettings renderingSettings( const QVariantMap &configuration = QVariantMap() ) const override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
     static QString providerKey();
@@ -105,6 +106,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsLayerMetadata mLayerMetadata;
     QVariantMap mRendererDataMap;
     QVariantList mLabelingDataList;
+    QgsLayerRenderingSettings mRenderingSettings;
     QgsHttpHeaders mRequestHeaders;
     bool mServerSupportsCurvedUpdates = false;
     QString mAdminUrl;

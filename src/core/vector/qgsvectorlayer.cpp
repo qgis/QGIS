@@ -2153,6 +2153,19 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
       {
         defaultLoadedFlag = true;
         setRenderer( defaultRenderer.release() );
+
+        const QgsLayerRenderingSettings providerRenderingSettings = mDataProvider->renderingSettings();
+        if ( providerRenderingSettings.hasLayerOpacity() )
+          setOpacity( providerRenderingSettings.layerOpacity() );
+        if ( providerRenderingSettings.hasMaximumScale() )
+          setMaximumScale( providerRenderingSettings.maximumScale() );
+        if ( providerRenderingSettings.hasMinimumScale() )
+          setMinimumScale( providerRenderingSettings.minimumScale() );
+        if ( providerRenderingSettings.hasMaximumScale() || providerRenderingSettings.hasMinimumScale() )
+          setScaleBasedVisibility(
+            ( providerRenderingSettings.hasMaximumScale() && providerRenderingSettings.maximumScale() != 0 )
+            || ( providerRenderingSettings.hasMinimumScale() && providerRenderingSettings.minimumScale() != 0 )
+          );
       }
     }
 
@@ -2228,6 +2241,20 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
     {
       resultFlag = true;
       setRenderer( defaultRenderer.release() );
+
+      const QgsLayerRenderingSettings providerRenderingSettings = mDataProvider->renderingSettings();
+      if ( providerRenderingSettings.hasLayerOpacity() )
+        setOpacity( providerRenderingSettings.layerOpacity() );
+      if ( providerRenderingSettings.hasMaximumScale() )
+        setMaximumScale( providerRenderingSettings.maximumScale() );
+      if ( providerRenderingSettings.hasMinimumScale() )
+        setMinimumScale( providerRenderingSettings.minimumScale() );
+      if ( providerRenderingSettings.hasMaximumScale() || providerRenderingSettings.hasMinimumScale() )
+        setScaleBasedVisibility(
+          ( providerRenderingSettings.hasMaximumScale() && providerRenderingSettings.maximumScale() != 0 )
+          || ( providerRenderingSettings.hasMinimumScale() && providerRenderingSettings.minimumScale() != 0 )
+        );
+
       return QString();
     }
   }

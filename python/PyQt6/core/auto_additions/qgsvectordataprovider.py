@@ -11,6 +11,10 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsLayerRenderingSettings.__group__ = ['vector']
+except (NameError, AttributeError):
+    pass
+try:
     QgsVectorDataProvider.NativeType.__group__ = ['vector']
 except (NameError, AttributeError):
     pass
