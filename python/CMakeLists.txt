@@ -173,6 +173,14 @@ else()
   set(sipabi "\n[tool.sip.project]\nabi-version = \"13.9\"")
 endif()
 
+# SPDX license expressions and license-files (PEP 639) are only supported since version 6.11.0,
+# older versions require the license table form
+if(${SIP_VERSION_STR} VERSION_LESS 6.11.0)
+  set(siplicense "license = \{file = \"${CMAKE_SOURCE_DIR}/COPYING\"\}")
+else()
+  set(siplicense "license = \"GPL-2.0-Only\"\nlicense-files = [\"${CMAKE_SOURCE_DIR}/COPYING\"]")
+endif()
+
 set(toml "
 # Specify the build system.
 [build-system]
@@ -200,8 +208,7 @@ name = \"QGIS\"
 version = \"${COMPLETE_VERSION}\"
 description = \"Python bindings for QGIS\"
 authors = [ \{name = \"The QGIS Community\"\} ]
-license = \"GPL-2.0-Only\"
-license-files = [\"${CMAKE_SOURCE_DIR}/COPYING\"]
+${siplicense}
 dependencies = [\"${pyqtdist}\"]
 
 [project.urls]
