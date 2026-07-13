@@ -90,7 +90,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( const QgsCoordinateR
   const bool automatic = project ? project->readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s ) : true;
   if ( !automatic )
   {
-    return prj->readNumEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s, 6 );
+    return project->readNumEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s, 6 );
   }
 
   return calculateCoordinatePrecision( crs );
