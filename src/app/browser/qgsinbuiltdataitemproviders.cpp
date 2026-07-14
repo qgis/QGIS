@@ -2255,10 +2255,22 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
         if ( conn2 )
         {
-          const QString comment = conn2->table( schemaName, tableName ).comment();
+          QString comment;
+          QString newComment;
+
+          try
+          {
+            comment = conn2->table( schemaName, tableName ).comment();
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            errCause = ex.what();
+          }
 
           bool ok = false;
-          const QString newComment = QInputDialog::getMultiLineText( QgisApp::instance(), tr( "Table Comment" ), tr( "Comment" ), comment, &ok );
+
+          if ( errCause.isEmpty() )
+            newComment = QInputDialog::getMultiLineText( QgisApp::instance(), tr( "Table Comment" ), tr( "Comment" ), comment, &ok );
 
           if ( ok && comment != newComment )
           {
