@@ -391,10 +391,6 @@ Sets the ``symbol`` used for rendering the rubberband.
 
 Ownership of ``symbol`` is transferred to the rubberband.
 
-.. warning::
-
-   Only line and fill symbols are currently supported.
-
 .. note::
 
    Setting a symbol for the rubberband overrides any other appearance setting,

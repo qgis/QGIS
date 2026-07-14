@@ -21,6 +21,7 @@
 #include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
@@ -494,6 +495,24 @@ void QgsRubberBand::paint( QPainter *p )
       }
     }
     fillSymbol->stopRender( context );
+  }
+  else if ( QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( mSymbol.get() ) )
+  {
+    QgsRenderContext context( QgsRenderContext::fromQPainter( p ) );
+    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+
+    markerSymbol->startRender( context );
+    for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
+    {
+      for ( const QPolygonF &ring : shape )
+      {
+        for ( const QPointF &point : ring )
+        {
+          markerSymbol->renderPoint( point, nullptr, context );
+        }
+      }
+    }
+    markerSymbol->stopRender( context );
   }
   else
   {
