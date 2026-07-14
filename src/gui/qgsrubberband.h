@@ -406,8 +406,10 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *
      * Ownership of \a symbol is transferred to the rubberband.
      *
-     * \note Setting a symbol for the rubberband overrides any other appearance setting,
-     * such as the strokeColor() or width().
+     * \note Setting a symbol for the rubberband makes any other appearance setting
+     * such as the strokeColor() or width(), ineffective.
+     *
+     * \note To disable the rubberband symbol call setSymbol(NULLPTR).
      *
      * \see setSymbol()
      * \since QGIS 3.20
