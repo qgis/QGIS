@@ -60,6 +60,7 @@
 %Include auto_generated/qgsdirectionallightwidget.sip
 %Include auto_generated/qgsdockwidget.sip
 %Include auto_generated/qgsdoublevalidator.sip
+%Include auto_generated/qgsdropfeedbackoverlay.sip
 %Include auto_generated/qgsencodingfiledialog.sip
 %Include auto_generated/qgserrordialog.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
@@ -108,6 +109,7 @@
 %Include auto_generated/qgshttpheaderwidget.sip
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
+%Include auto_generated/qgslayerdropclassifier.sip
 %Include auto_generated/qgslayermetadatasearchwidget.sip
 %Include auto_generated/qgslayermetadataresultsmodel.sip
 %Include auto_generated/qgslayermetadataresultsproxymodel.sip

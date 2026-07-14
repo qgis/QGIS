@@ -1,0 +1,41 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayerdropclassifier.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLayerDropClassifier
+{
+%Docstring(signature="appended")
+Classifies the payload of a drag and drop event dropped onto a widget
+which accepts map layers, such as the layer tree view or the map canvas.
+
+The classification drives the visual feedback shown to the user while a
+drag hovers such a widget (e.g. an insertion indicator, a "load project"
+overlay or a "cannot be loaded" hint).
+
+The widget itself is responsible for handling the drop event, and may
+use the classification.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgslayerdropclassifier.h"
+%End
+  public:
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayerdropclassifier.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

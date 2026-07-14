@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgslayerdropclassifier.h"
 #include "qgslayertreeregistrybridge.h"
 
 #include <QPointer>
@@ -685,23 +686,10 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     //! Returns TRUE for drags carrying dataset URIs (and not internal layer tree reorders).
     static bool isDatasetDrag( const QMimeData *mimeData );
 
-    //! What a hovering dataset drag carries, and therefore which feedback to paint.
-    enum class DragPayloadType
-    {
-      Datasets, //!< Droppable datasets: show the insertion indicator
-      Project,  //!< A QGIS project: opening it replaces the current project
-      Custom,   //!< Only handled by the application (e.g. custom drop handlers): accept the drop without feedback
-      Invalid,  //!< Nothing QGIS can load: refuse the drop
-    };
-
-    //! Classifies the payload of a dataset drag. Called once per drag, on drag enter.
-    DragPayloadType classifyDragPayload( const QMimeData *mimeData ) const;
     DropTarget computeDropTarget( const QPoint &pos ) const;
     //! Line rect at the visual position a node inserted at group/row will take.
     QRect indicatorRectForInsertion( QgsLayerTreeGroup *group, int row ) const;
     void clearDropIndicator();
-    //! Paints the whole-viewport wash shown for project and invalid drags.
-    void paintDragOverlay( QPainter &painter ) const;
 
     QgsLayerTreeProxyModel *mProxyModel = nullptr;
 
@@ -714,7 +702,7 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     QRect mDropIndicatorRect;
     bool mDropIndicatorInto = false;
     //! Payload classification of the current dataset drag. Cached on drag enter
-    DragPayloadType mDragPayloadType = DragPayloadType::Datasets;
+    Qgis::LayerDropPayloadType mDragPayloadType = Qgis::LayerDropPayloadType::Layers;
     //! TRUE while a dataset drag hovers the view
     bool mDatasetDragActive = false;
     //! Only valid while a datasetsDropped() handler is executing

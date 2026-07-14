@@ -15,8 +15,7 @@
 
 #include "qgslayertreeview.h"
 
-#include "qgsapplication.h"
-#include "qgscustomdrophandler.h"
+#include "qgsdropfeedbackoverlay.h"
 #include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
@@ -26,15 +25,10 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
 #include "qgsmessagebar.h"
-#include "qgsmimedatautils.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidersublayerdetails.h"
 #include "qgsscreenhelper.h"
-#include "qgssvgcache.h"
 
 #include <QApplication>
 #include <QContextMenuEvent>
-#include <QFileInfo>
 #include <QHeaderView>
 #include <QMenu>
 #include <QMimeData>
@@ -848,7 +842,7 @@ void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
 {
   if ( isDatasetDrag( event->mimeData() ) )
   {
-    mDragPayloadType = classifyDragPayload( event->mimeData() );
+    mDragPayloadType = QgsLayerDropClassifier::classify( event->mimeData(), mCustomDropHandlers );
     mDatasetDragActive = true;
     viewport()->update();
     event->accept();
@@ -863,7 +857,7 @@ void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
   {
     switch ( mDragPayloadType )
     {
-      case DragPayloadType::Datasets:
+      case Qgis::LayerDropPayloadType::Layers:
       {
         const DropTarget target = computeDropTarget( event->position().toPoint() );
         mDropIndicatorRect = target.indicatorRect;
@@ -873,19 +867,19 @@ void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
         break;
       }
 
-      case DragPayloadType::Project:
+      case Qgis::LayerDropPayloadType::Project:
         clearDropIndicator();
         event->accept();
         break;
 
-      case DragPayloadType::Custom:
+      case Qgis::LayerDropPayloadType::CustomHandler:
         // only handled by the application (e.g. custom drop handlers): accept the
         // drop, but an insertion indicator would be meaningless
         clearDropIndicator();
         event->accept();
         break;
 
-      case DragPayloadType::Invalid:
+      case Qgis::LayerDropPayloadType::Invalid:
         clearDropIndicator();
         event->ignore();
         break;
@@ -911,7 +905,7 @@ void QgsLayerTreeView::dropEvent( QDropEvent *event )
     mDatasetDragActive = false;
     viewport()->update();
 
-    if ( mDragPayloadType == DragPayloadType::Invalid )
+    if ( mDragPayloadType == Qgis::LayerDropPayloadType::Invalid )
     {
       // should not be reached as drag moves are not accepted
       clearDropIndicator();
@@ -921,7 +915,7 @@ void QgsLayerTreeView::dropEvent( QDropEvent *event )
 
     event->accept();
 
-    const DropTarget target = mDragPayloadType == DragPayloadType::Datasets ? computeDropTarget( event->position().toPoint() ) : DropTarget();
+    const DropTarget target = mDragPayloadType == Qgis::LayerDropPayloadType::Layers ? computeDropTarget( event->position().toPoint() ) : DropTarget();
     clearDropIndicator();
 
     const QModelIndex index = indexAt( event->position().toPoint() );
@@ -973,10 +967,10 @@ void QgsLayerTreeView::paintEvent( QPaintEvent *event )
 {
   QTreeView::paintEvent( event );
 
-  if ( mDatasetDragActive && mDragPayloadType != DragPayloadType::Datasets )
+  if ( mDatasetDragActive && mDragPayloadType != Qgis::LayerDropPayloadType::Layers )
   {
     QPainter painter( viewport() );
-    paintDragOverlay( painter );
+    QgsDropFeedbackOverlay::paintFeedback( &painter, viewport()->rect(), mDragPayloadType, this );
     return;
   }
 
@@ -997,60 +991,6 @@ void QgsLayerTreeView::paintEvent( QPaintEvent *event )
   }
 }
 
-void QgsLayerTreeView::paintDragOverlay( QPainter &painter ) const
-{
-  const int iconSize = fontMetrics().height() * 3;
-
-  QString message;
-  QPixmap pixmap;
-  switch ( mDragPayloadType )
-  {
-    case DragPayloadType::Datasets:
-    case DragPayloadType::Custom:
-      return;
-
-    case DragPayloadType::Project:
-      message = tr( "Load QGIS project\nThe current project will be replaced" );
-      pixmap = QPixmap( QgsApplication::iconsPath() + u"qgis-icon-512x512.png"_s ).scaled( QSize( iconSize, iconSize ) * devicePixelRatioF(), Qt::KeepAspectRatio, Qt::SmoothTransformation );
-      pixmap.setDevicePixelRatio( devicePixelRatioF() );
-      break;
-
-    case DragPayloadType::Invalid:
-    {
-      message = tr( "This file type cannot be loaded" );
-      const double renderSize = iconSize * devicePixelRatioF();
-      bool fitsInCache = false;
-      QImage image
-        = QgsApplication::svgCache()->svgAsImage( QgsApplication::pkgDataPath() + u"/svg/backgrounds/background_forbidden.svg"_s, renderSize, QColor(), QColor( 180, 180, 180 ), renderSize / 16, 1.0, fitsInCache );
-      image.setDevicePixelRatio( devicePixelRatioF() );
-      pixmap = QPixmap::fromImage( image );
-      break;
-    }
-  }
-
-  painter.setRenderHint( QPainter::Antialiasing );
-
-  // partially hide the view
-  QColor washColor = palette().color( QPalette::Window );
-  washColor.setAlpha( 220 );
-  painter.fillRect( viewport()->rect(), washColor );
-
-  QFont messageFont = font();
-  messageFont.setBold( true );
-  painter.setFont( messageFont );
-
-  // center the icon and the message as one block, with a one line high gap in between
-  const int spacing = fontMetrics().height();
-  const QRect availableRect = viewport()->rect().adjusted( iconSize / 2, 0, -iconSize / 2, 0 );
-  const QRect textRect = painter.boundingRect( availableRect, Qt::AlignHCenter | Qt::TextWordWrap, message );
-  const int blockTop = ( viewport()->height() - ( iconSize + spacing + textRect.height() ) ) / 2;
-
-  painter.drawPixmap( QPointF( ( viewport()->width() - iconSize ) / 2.0, blockTop ), pixmap );
-
-  painter.setPen( palette().color( QPalette::WindowText ) );
-  painter.drawText( QRect( availableRect.left(), blockTop + iconSize + spacing, availableRect.width(), textRect.height() ), Qt::AlignHCenter | Qt::TextWordWrap, message );
-}
-
 QgsLayerTreeRegistryBridge::InsertionPoint QgsLayerTreeView::datasetDropInsertionPoint() const
 {
   return mDatasetDropInsertionPoint;
@@ -1064,75 +1004,6 @@ void QgsLayerTreeView::setCustomDropHandlers( const QVector<QPointer<QgsCustomDr
 bool QgsLayerTreeView::isDatasetDrag( const QMimeData *mimeData )
 {
   return !mimeData->hasFormat( u"application/qgis.layertreemodeldata"_s ) && ( mimeData->hasUrls() || mimeData->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) );
-}
-
-QgsLayerTreeView::DragPayloadType QgsLayerTreeView::classifyDragPayload( const QMimeData *mimeData ) const
-{
-  bool hasDataset = false;
-
-  if ( QgsMimeDataUtils::isUriList( mimeData ) )
-  {
-    const QgsMimeDataUtils::UriList uris = QgsMimeDataUtils::decodeUriList( mimeData );
-    for ( const QgsMimeDataUtils::Uri &uri : uris )
-    {
-      if ( uri.layerType == "project"_L1 )
-      {
-        return DragPayloadType::Project;
-      }
-      // any other uri comes from QGIS itself (e.g. the browser) and is a loadable dataset
-      hasDataset = true;
-    }
-  }
-
-  const QList<QUrl> urls = mimeData->urls();
-  for ( const QUrl &url : urls )
-  {
-    const QString fileName = url.toLocalFile();
-    if ( fileName.isEmpty() )
-    {
-      // remote url: assume it points to a loadable dataset
-      hasDataset = true;
-      continue;
-    }
-    if ( fileName.endsWith( ".qgs"_L1, Qt::CaseInsensitive ) || fileName.endsWith( ".qgz"_L1, Qt::CaseInsensitive ) )
-      return DragPayloadType::Project;
-
-    if ( fileName.endsWith( ".qlr"_L1, Qt::CaseInsensitive ) )
-    {
-      // QgsLayerDefinition files insert layers into the tree, exactly like datasets
-      hasDataset = true;
-      continue;
-    }
-
-    if ( !hasDataset )
-    {
-      const QFileInfo fileInfo( fileName );
-      if ( fileInfo.suffix().isEmpty() || fileInfo.isDir() )
-      {
-        // the fast, extension based check cannot say anything meaningful about
-        // extensionless files and directories, while the full dataset open attempted on
-        // drop might succeed (e.g. raster file without extension, directory based formats).
-        hasDataset = true;
-      }
-      else
-      {
-        hasDataset = !QgsProviderRegistry::instance()->querySublayers( fileName, Qgis::SublayerQueryFlag::FastScan ).isEmpty();
-      }
-    }
-  }
-
-  if ( hasDataset )
-    return DragPayloadType::Datasets;
-
-  // no provider can load the payload, but the application may still handle it through
-  // custom drop handlers (.qlr, .qpt, .py, style .xml files, ...)
-  for ( QgsCustomDropHandler *handler : mCustomDropHandlers )
-  {
-    if ( handler && handler->canHandleMimeData( mimeData ) )
-      return DragPayloadType::Custom;
-  }
-
-  return DragPayloadType::Invalid;
 }
 
 QgsLayerTreeView::DropTarget QgsLayerTreeView::computeDropTarget( const QPoint &pos ) const

@@ -17,6 +17,7 @@
 #include "qgsapplication.h"
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgscustomdrophandler.h"
+#include "qgslayerdropclassifier.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
@@ -36,7 +37,7 @@
 
 using namespace Qt::StringLiterals;
 
-//! Test drop handler which claims local files with a given suffix
+//! Test drop handler which declares (via canHandleMimeData) local files with a given suffix
 class TestDropHandler : public QgsCustomDropHandler
 {
     Q_OBJECT
@@ -58,6 +59,13 @@ class TestDropHandler : public QgsCustomDropHandler
 
   private:
     QString mSuffix;
+};
+
+//! Test drop handler mimicking a legacy handler which only implements handleFileDrop()
+class LegacyDropHandler : public QgsCustomDropHandler
+{
+    Q_OBJECT
+    // does not declare canHandleMimeData(), so it never claims a payload during a drag
 };
 
 //! A layer tree view on its own tree and model, sized and shown, ready to receive events
@@ -140,28 +148,28 @@ void TestQgsLayerTreeView::cleanupTestCase()
 
 void TestQgsLayerTreeView::testClassifyDragPayload()
 {
-  using DragPayloadType = QgsLayerTreeView::DragPayloadType;
+  using PayloadType = Qgis::LayerDropPayloadType;
 
-  QgsLayerTreeView view;
+  QVector<QPointer<QgsCustomDropHandler>> noHandlers;
 
   // project file url: the file does not need to exist, the extension is enough
   QMimeData projectFileMime;
   projectFileMime.setUrls( { QUrl::fromLocalFile( u"/home/me/project.qgz"_s ) } );
-  QCOMPARE( view.classifyDragPayload( &projectFileMime ), DragPayloadType::Project );
+  QCOMPARE( QgsLayerDropClassifier::classify( &projectFileMime, noHandlers ), PayloadType::Project );
 
   // dataset file url: providers recognize the extension of an existing file
   const QString pointsPath = QStringLiteral( TEST_DATA_DIR ) + u"/points.shp"_s;
   QVERIFY( QFile::exists( pointsPath ) );
   QMimeData datasetFileMime;
   datasetFileMime.setUrls( { QUrl::fromLocalFile( pointsPath ) } );
-  QCOMPARE( view.classifyDragPayload( &datasetFileMime ), DragPayloadType::Datasets );
+  QCOMPARE( QgsLayerDropClassifier::classify( &datasetFileMime, noHandlers ), PayloadType::Layers );
 
   // file with an extension no provider recognizes
   QTemporaryFile docFile( QDir::tempPath() + u"/XXXXXX.docx"_s );
   QVERIFY( docFile.open() );
   QMimeData invalidFileMime;
   invalidFileMime.setUrls( { QUrl::fromLocalFile( docFile.fileName() ) } );
-  QCOMPARE( view.classifyDragPayload( &invalidFileMime ), DragPayloadType::Invalid );
+  QCOMPARE( QgsLayerDropClassifier::classify( &invalidFileMime, noHandlers ), PayloadType::Invalid );
 
   // the fast, extension based check cannot judge extensionless files and directories:
   // they get the benefit of the doubt, the full check happens on drop
@@ -169,28 +177,28 @@ void TestQgsLayerTreeView::testClassifyDragPayload()
   QVERIFY( extensionlessFile.open() );
   QMimeData extensionlessFileMime;
   extensionlessFileMime.setUrls( { QUrl::fromLocalFile( extensionlessFile.fileName() ) } );
-  QCOMPARE( view.classifyDragPayload( &extensionlessFileMime ), DragPayloadType::Datasets );
+  QCOMPARE( QgsLayerDropClassifier::classify( &extensionlessFileMime, noHandlers ), PayloadType::Layers );
 
   QMimeData directoryMime;
   directoryMime.setUrls( { QUrl::fromLocalFile( QDir::tempPath() ) } );
-  QCOMPARE( view.classifyDragPayload( &directoryMime ), DragPayloadType::Datasets );
+  QCOMPARE( QgsLayerDropClassifier::classify( &directoryMime, noHandlers ), PayloadType::Layers );
 
   // mixed payload: the loadable dataset wins over the unknown file
   QMimeData mixedFileMime;
   mixedFileMime.setUrls( { QUrl::fromLocalFile( docFile.fileName() ), QUrl::fromLocalFile( pointsPath ) } );
-  QCOMPARE( view.classifyDragPayload( &mixedFileMime ), DragPayloadType::Datasets );
+  QCOMPARE( QgsLayerDropClassifier::classify( &mixedFileMime, noHandlers ), PayloadType::Layers );
 
   // a project anywhere in the payload takes precedence
   QMimeData projectAndDatasetMime;
   projectAndDatasetMime.setUrls( { QUrl::fromLocalFile( pointsPath ), QUrl::fromLocalFile( u"/home/me/project.qgs"_s ) } );
-  QCOMPARE( view.classifyDragPayload( &projectAndDatasetMime ), DragPayloadType::Project );
+  QCOMPARE( QgsLayerDropClassifier::classify( &projectAndDatasetMime, noHandlers ), PayloadType::Project );
 
   // project uri (e.g. a project stored in a geopackage, dragged from the browser)
   QgsMimeDataUtils::Uri projectUri;
   projectUri.layerType = u"project"_s;
   projectUri.uri = u"/home/me/db.gpkg"_s;
   const std::unique_ptr<QMimeData> projectUriMime( QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << projectUri ) );
-  QCOMPARE( view.classifyDragPayload( projectUriMime.get() ), DragPayloadType::Project );
+  QCOMPARE( QgsLayerDropClassifier::classify( projectUriMime.get(), noHandlers ), PayloadType::Project );
 
   // layer uri: any non-project uri from QGIS is a loadable dataset
   QgsMimeDataUtils::Uri layerUri;
@@ -198,29 +206,36 @@ void TestQgsLayerTreeView::testClassifyDragPayload()
   layerUri.providerKey = u"memory"_s;
   layerUri.uri = u"Point?field=fld:integer"_s;
   const std::unique_ptr<QMimeData> layerUriMime( QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << layerUri ) );
-  QCOMPARE( view.classifyDragPayload( layerUriMime.get() ), DragPayloadType::Datasets );
+  QCOMPARE( QgsLayerDropClassifier::classify( layerUriMime.get(), noHandlers ), PayloadType::Layers );
 
-  // layer definition files insert layers into the tree: they classify as datasets
+  // layer definition files insert layers into the tree: they classify as layers
   // and get the insertion indicator
   QTemporaryFile qlrFile( QDir::tempPath() + u"/XXXXXX.qlr"_s );
   QVERIFY( qlrFile.open() );
   QMimeData qlrFileMime;
   qlrFileMime.setUrls( { QUrl::fromLocalFile( qlrFile.fileName() ) } );
-  QCOMPARE( view.classifyDragPayload( &qlrFileMime ), DragPayloadType::Datasets );
+  QCOMPARE( QgsLayerDropClassifier::classify( &qlrFileMime, noHandlers ), PayloadType::Layers );
 
   // payloads no provider can load, but which the application handles through custom
-  // drop handlers, classify as Custom instead of Invalid
+  // drop handlers, classify as CustomHandler instead of Invalid
   QTemporaryFile qptFile( QDir::tempPath() + u"/XXXXXX.qpt"_s );
   QVERIFY( qptFile.open() );
   QMimeData qptFileMime;
   qptFileMime.setUrls( { QUrl::fromLocalFile( qptFile.fileName() ) } );
-  QCOMPARE( view.classifyDragPayload( &qptFileMime ), DragPayloadType::Invalid );
+  QCOMPARE( QgsLayerDropClassifier::classify( &qptFileMime, noHandlers ), PayloadType::Invalid );
 
   TestDropHandler qptHandler( u"qpt"_s );
-  view.setCustomDropHandlers( { QPointer<QgsCustomDropHandler>( &qptHandler ) } );
-  QCOMPARE( view.classifyDragPayload( &qptFileMime ), DragPayloadType::Custom );
-  // other unloadable payloads are still refused
-  QCOMPARE( view.classifyDragPayload( &invalidFileMime ), DragPayloadType::Invalid );
+  const QVector<QPointer<QgsCustomDropHandler>> handlers { QPointer<QgsCustomDropHandler>( &qptHandler ) };
+  QCOMPARE( QgsLayerDropClassifier::classify( &qptFileMime, handlers ), PayloadType::CustomHandler );
+  // other unloadable payloads are still refused: a modern handler declares its
+  // capabilities via canHandleMimeData() and opts out of unrecognized file drops
+  QCOMPARE( QgsLayerDropClassifier::classify( &invalidFileMime, handlers ), PayloadType::Invalid );
+
+  // a legacy handler which only implements handleFileDrop() does not declare the mime
+  // data it accepts, so it does not rescue an otherwise unloadable payload from refusal
+  LegacyDropHandler legacyHandler;
+  const QVector<QPointer<QgsCustomDropHandler>> legacyHandlers { QPointer<QgsCustomDropHandler>( &legacyHandler ) };
+  QCOMPARE( QgsLayerDropClassifier::classify( &invalidFileMime, legacyHandlers ), PayloadType::Invalid );
 }
 
 void TestQgsLayerTreeView::testComputeDropTarget()
@@ -428,7 +443,7 @@ void TestQgsLayerTreeView::testFastCheckFalsePositive()
   // fast check: fooled by the extension
   QMimeData mime;
   mime.setUrls( { QUrl::fromLocalFile( garbageShp.fileName() ) } );
-  QCOMPARE( view.classifyDragPayload( &mime ), QgsLayerTreeView::DragPayloadType::Datasets );
+  QCOMPARE( QgsLayerDropClassifier::classify( &mime ), Qgis::LayerDropPayloadType::Layers );
 
   // complete check (as performed when actually loading): rejects the file
   QVERIFY( QgsProviderRegistry::instance()->querySublayers( garbageShp.fileName() ).isEmpty() );
