@@ -200,7 +200,7 @@ void QgsMeshTransformCoordinatesDockWidget::onImportVertexClicked( bool checked 
 
 QString QgsMeshTransformCoordinatesDockWidget::displayCoordinateText( const QgsCoordinateReferenceSystem &crs, double value )
 {
-  return QString::number( value, 'f', QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( crs, QgsProject::instance() ) );
+  return QString::number( value, 'f', QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( crs, *QgsProject::instance() ) );
 }
 
 void QgsMeshTransformCoordinatesDockWidget::importVertexCoordinates()
