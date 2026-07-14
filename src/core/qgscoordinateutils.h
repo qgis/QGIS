@@ -58,7 +58,7 @@ class CORE_EXPORT QgsCoordinateUtils
      *        For backward compatibility, QgsProject.instance() will be used if the \a project
      *        parameter is not specified.
      */
-    Q_INVOKABLE static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project = nullptr );
+    Q_INVOKABLE static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project );
 
     /**
      * Calculates coordinate precision for a \a crs and \a project.
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsCoordinateUtils
      * \returns number of decimal places behind the dot
      * \since QGIS 3.18
      */
-    Q_INVOKABLE static int calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs, QgsProject *project = nullptr );
+    Q_INVOKABLE static int calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs, QgsProject *project );
 
     /**
      * Calculates a reasonable coordinate precision for a \a crs.
