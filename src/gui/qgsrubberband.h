@@ -406,8 +406,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *
      * Ownership of \a symbol is transferred to the rubberband.
      *
-     * \warning Only line and fill symbols are currently supported.
-     *
      * \note Setting a symbol for the rubberband overrides any other appearance setting,
      * such as the strokeColor() or width().
      *
