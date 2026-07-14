@@ -1953,9 +1953,9 @@ static QVariant fcnUuid( const QVariantList &values, const QgsExpressionContext 
 
   const QString format = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   if ( format.compare( u"WithoutBraces"_s, Qt::CaseInsensitive ) == 0 )
-    return QUuid::createUuid().toString( QUuid::StringFormat::WithoutBraces );
+    return uuid.toString( QUuid::StringFormat::WithoutBraces );
   else if ( format.compare( u"Id128"_s, Qt::CaseInsensitive ) == 0 )
-    return QUuid::createUuid().toString( QUuid::StringFormat::Id128 );
+    return uuid.toString( QUuid::StringFormat::Id128 );
   return uuid.toString();
 }
 
