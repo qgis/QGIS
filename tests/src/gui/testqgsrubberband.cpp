@@ -19,6 +19,7 @@
 #include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
 #include "qgsrenderchecker.h"
 #include "qgsrubberband.h"
 #include "qgssymbol.h"
@@ -56,6 +57,7 @@ class TestQgsRubberband : public QgsTest
     void testClose();        //test closing geometry
     void testLineSymbolRender();
     void testFillSymbolRender();
+    void testMarkerSymbolRender();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -373,6 +375,55 @@ void TestQgsRubberband::testFillSymbolRender()
   QVERIFY( result );
 }
 
+void TestQgsRubberband::testMarkerSymbolRender()
+{
+  auto canvas = std::make_unique<QgsMapCanvas>();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 10, 30, 20, 35 ) );
+  canvas->show();
+
+  std::unique_ptr<QgsMarkerSymbol> markerSymbol(
+    QgsMarkerSymbol::createSimple( { { u"color"_s, u"#ff00ff"_s }, { u"size"_s, u"4"_s }, { u"outline_width"_s, u"0.3"_s }, { u"outline_color"_s, u"black"_s } } )
+  );
+
+  // Simple point
+  QgsRubberBand r1( canvas.get(), Qgis::GeometryType::Point );
+  r1.addGeometry( QgsGeometry::fromWkt( u"POINT (12 32)"_s ) );
+  r1.setSymbol( markerSymbol->clone() );
+
+  // Multipoint
+  QgsRubberBand r2( canvas.get(), Qgis::GeometryType::Point );
+  r2.addGeometry( QgsGeometry::fromWkt( u"MULTIPOINT ((13 31), (13 34))"_s ) );
+  r2.setSymbol( markerSymbol->clone() );
+
+  // On each vertex of a line
+  QgsRubberBand r3( canvas.get(), Qgis::GeometryType::Point );
+  r3.addGeometry( QgsGeometry::fromWkt( u"LINESTRING((14 31, 14.5 33, 14 35))"_s ) );
+  r3.setSymbol( markerSymbol->clone() );
+
+  // On each vertex of a polygon
+  QgsRubberBand r4( canvas.get(), Qgis::GeometryType::Point );
+  r4.addGeometry( QgsGeometry::fromWkt( u"Polygon((15 32, 15 35, 18 35, 15 32))"_s ) );
+  r4.setSymbol( markerSymbol->clone() );
+
+
+  QPixmap pixmap( canvas->size() );
+  QPainter painter( &pixmap );
+  canvas->render( &painter );
+  painter.end();
+  const QString destFile = QDir::tempPath() + u"/rubberband_marker_symbol.png"_s;
+  pixmap.save( destFile );
+
+  QgsRenderChecker checker;
+  checker.setControlPathPrefix( u"rubberband"_s );
+  checker.setControlName( u"expected_marker_symbol"_s );
+  checker.setRenderedImage( destFile );
+  const bool result = checker.compareImages( u"expected_marker_symbol"_s );
+  mReport += checker.report();
+  QVERIFY( result );
+}
 
 QGSTEST_MAIN( TestQgsRubberband )
 #include "testqgsrubberband.moc"
