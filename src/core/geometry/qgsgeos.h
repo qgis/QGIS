@@ -457,6 +457,10 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
 
+    QgsGeometryEngine::EngineOperationResult splitGeometry(
+      const QgsAbstractGeometry &splitGeom, QVector<QgsGeometry > &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, QString *errorMsg SIP_OUT = nullptr
+    ) const override;
+
     EngineOperationResult splitGeometry(
       const QgsLineString &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr, bool skipIntersectionCheck = false
     ) const override;

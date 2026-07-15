@@ -119,6 +119,7 @@ QgsAvoidIntersectionsOperation::Result QgsAvoidIntersectionsOperation::apply( Qg
     case Qgis::GeometryOperationResult::AddRingCrossesExistingRings:
     case Qgis::GeometryOperationResult::AddRingNotInExistingFeature:
     case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
+    case Qgis::GeometryOperationResult::SplitPointCannotSplitPolygon:
       break;
   }
 
