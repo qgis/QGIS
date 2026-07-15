@@ -84,6 +84,7 @@ Example
       InvalidBaseGeometry,
       InvalidInput,
       SplitCannotSplitPoint,
+      SplitPointCannotSplitPolygon,
     };
 
     virtual ~QgsGeometryEngine();
@@ -414,6 +415,26 @@ are Null geometries, ``False`` is returned.
     virtual bool isSimple( QString *errorMsg = 0 ) const = 0;
 %Docstring
 Determines whether the geometry is simple (according to OGC definition).
+%End
+
+    virtual QgsGeometryEngine::EngineOperationResult splitGeometry(
+      const QgsAbstractGeometry &splitGeom, QVector<QgsGeometry > &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/, QString *errorMsg /Out/ = 0
+    ) const = 0;
+%Docstring
+Splits this geometry according to a given geometry.
+
+:param splitGeom: the geometry that splits this geometry
+:param topological: ``True`` if topological editing is enabled
+
+:return: - EngineOperationResult a result code: success or reason of
+           failure
+         - newGeometries: list of new geometries that have been created
+           with the split
+         - topologyTestPoints: points that need to be tested for
+           topological completeness in the dataset
+         - errorMsg: error messages emitted, if any
+
+.. versionadded:: 4.4
 %End
 
     virtual QgsGeometryEngine::EngineOperationResult splitGeometry(

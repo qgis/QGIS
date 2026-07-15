@@ -1314,6 +1314,8 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
       return Qgis::GeometryOperationResult::InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint:
       return Qgis::GeometryOperationResult::SplitCannotSplitPoint;
+    case QgsGeometryEngine::SplitPointCannotSplitPolygon:
+      return Qgis::GeometryOperationResult::SplitPointCannotSplitPolygon;
     case QgsGeometryEngine::NothingHappened:
       return Qgis::GeometryOperationResult::NothingHappened;
       //default: do not implement default to handle properly all cases
@@ -1328,17 +1330,14 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   const QgsCurve *curve, QVector<QgsGeometry> &newGeometries, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature
 )
 {
-  std::unique_ptr<QgsLineString> segmentizedLine( curve->curveToLine() );
-
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
   Q_UNUSED( preserveCircular );
-  Q_UNUSED( splitFeature );
 
   QVector< QgsGeometry> newGeoms;
 
   QgsGeos geos( this->constGet() );
   mLastError.clear();
-  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *segmentizedLine, newGeoms, topological, topologyTestPoints, &mLastError );
+  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *curve, newGeoms, topological, topologyTestPoints, &mLastError );
 
   if ( result == QgsGeometryEngine::Success )
   {
@@ -1360,11 +1359,14 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
       return Qgis::GeometryOperationResult::InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint:
       return Qgis::GeometryOperationResult::SplitCannotSplitPoint;
+    case QgsGeometryEngine::SplitPointCannotSplitPolygon:
+      return Qgis::GeometryOperationResult::SplitPointCannotSplitPolygon;
     case QgsGeometryEngine::NothingHappened:
       return Qgis::GeometryOperationResult::NothingHappened;
       //default: do not implement default to handle properly all cases
   }
 #else
+  std::unique_ptr<QgsLineString> segmentizedLine( curve->curveToLine() );
   QgsPointSequence points;
   segmentizedLine->points( points );
   Qgis::GeometryOperationResult result = splitGeometry( points, newGeometries, topological, topologyTestPoints, splitFeature );
@@ -1438,7 +1440,8 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
       return Qgis::GeometryOperationResult::InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
       return Qgis::GeometryOperationResult::InvalidInputGeometryType;
-    case QgsGeometryEngine::SplitCannotSplitPoint: // should not happen
+    case QgsGeometryEngine::SplitCannotSplitPoint:        // should not happen
+    case QgsGeometryEngine::SplitPointCannotSplitPolygon: // should not happen
       return Qgis::GeometryOperationResult::GeometryEngineError;
     case QgsGeometryEngine::NothingHappened:
       return Qgis::GeometryOperationResult::NothingHappened;
@@ -3685,6 +3688,7 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
     case Qgis::GeometryOperationResult::AddRingCrossesExistingRings:
     case Qgis::GeometryOperationResult::AddRingNotInExistingFeature:
     case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
+    case Qgis::GeometryOperationResult::SplitPointCannotSplitPolygon:
       return 4;
   }
   return 4;

@@ -1267,6 +1267,7 @@ The development version
       SelectionIsGreaterThanOne,
       GeometryEngineError,
       LayerNotEditable,
+      GeometryTypeHasChanged,
       // Add part issues
       AddPartSelectedGeometryNotFound,
       AddPartNotMultiGeometry,
@@ -1277,7 +1278,7 @@ The development version
       AddRingNotInExistingFeature,
       // Split features
       SplitCannotSplitPoint,
-      GeometryTypeHasChanged,
+      SplitPointCannotSplitPolygon,
     };
 
     enum class GeometryValidityFlag /BaseType=IntFlag/

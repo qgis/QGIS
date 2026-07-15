@@ -1089,14 +1089,97 @@ double QgsGeos::length( QString *errorMsg ) const
   return length;
 }
 
+
+QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
+  const QgsAbstractGeometry &splitGeom, QVector<QgsGeometry > &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg
+) const
+{
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  Q_UNUSED( topological )
+  Q_UNUSED( topologyTestPoints )
+
+  if ( !mGeos || !mGeometry )
+  {
+    return InvalidBaseGeometry;
+  }
+
+  if ( mGeometry->dimension() == 0 )
+  {
+    return SplitCannotSplitPoint; //cannot split points
+  }
+
+  if ( QgsWkbTypes::geometryType( splitGeom.wkbType() ) == Qgis::GeometryType::Point && QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Polygon )
+  {
+    return SplitPointCannotSplitPolygon; //points cannot split polygons
+  }
+
+  GEOSContextHandle_t context = QgsGeosContext::get();
+  EngineOperationResult returnCode = Success;
+
+  try
+  {
+    if ( !GEOSisValid_r( context, mGeos.get() ) )
+      return InvalidBaseGeometry;
+
+    geos::unique_ptr splitGeosGeom = asGeos( &splitGeom, mPrecision );
+    if ( !splitGeosGeom || !GEOSisValid_r( context, splitGeosGeom.get() ) || !GEOSisSimple_r( context, splitGeosGeom.get() ) )
+    {
+      return InvalidInput;
+    }
+
+    // if ( topological )
+    // {
+    //   //find out candidate points for topological corrections
+    //   if ( !topologicalTestPointsSplit( splitGeosGeom.get(), topologyTestPoints ) ) // Add support for polygons and curves?
+    //   {
+    //     return InvalidInput; // TODO: is it really an invalid input?
+    //   }
+    // }
+
+    newGeometries.clear();
+
+    geos::unique_ptr split( GEOSSplit_r( context, mGeos.get(), splitGeosGeom.get() ) );
+    if ( !split )
+    {
+      returnCode = EngineError;
+    }
+    else
+    {
+      int nParts = GEOSGetNumGeometries_r( context, split.get() );
+      for ( int i = 0; i < nParts; ++i )
+      {
+        newGeometries << QgsGeometry( fromGeos( GEOSGetGeometryN_r( context, split.get(), i ) ) );
+      }
+      returnCode = Success;
+    }
+  }
+  CATCH_GEOS_WITH_ERRMSG( EngineError )
+
+  return returnCode;
+#else
+  if ( QgsWkbTypes::flatType( splitGeom.wkbType() ) == Qgis::WkbType::LineString )
+  {
+    const QgsLineString *splitLine = qgis::down_cast< const QgsLineString * >( &splitGeom );
+    if ( splitLine )
+    {
+      return splitGeometry( *splitLine, newGeometries, topological, topologyTestPoints, errorMsg, false );
+    }
+    else
+    {
+      return InvalidInput;
+    }
+  }
+  else
+  {
+    return MethodNotImplemented;
+  }
+#endif
+}
+
 QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
   const QgsLineString &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg, bool skipIntersectionCheck
 ) const
 {
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  Q_UNUSED( skipIntersectionCheck );
-#endif
-
   EngineOperationResult returnCode = Success;
   if ( !mGeos || !mGeometry )
   {
@@ -1149,22 +1232,6 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
       }
     }
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-    geos::unique_ptr split( GEOSSplit_r( context, mGeos.get(), splitLineGeos.get() ) );
-    if ( !split )
-    {
-      returnCode = EngineError;
-    }
-    else
-    {
-      int nParts = GEOSGetNumGeometries_r( context, split.get() );
-      for ( int i = 0; i < nParts; ++i )
-      {
-        newGeometries << QgsGeometry( fromGeos( GEOSGetGeometryN_r( context, split.get(), i ) ) );
-      }
-      returnCode = Success;
-    }
-#else
     //call split function depending on geometry type
     if ( mGeometry->dimension() == 1 )
     {
@@ -1178,7 +1245,6 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
     {
       return InvalidInput;
     }
-#endif
   }
   CATCH_GEOS_WITH_ERRMSG( EngineError )
 

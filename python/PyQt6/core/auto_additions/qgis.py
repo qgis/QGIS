@@ -3920,6 +3920,9 @@ QgsGeometry.GeometryEngineError.__doc__ = "Geometry engine misses a method imple
 QgsGeometry.LayerNotEditable = Qgis.GeometryOperationResult.LayerNotEditable
 QgsGeometry.LayerNotEditable.is_monkey_patched = True
 QgsGeometry.LayerNotEditable.__doc__ = "Cannot edit layer"
+QgsGeometry.GeometryTypeHasChanged = Qgis.GeometryOperationResult.GeometryTypeHasChanged
+QgsGeometry.GeometryTypeHasChanged.is_monkey_patched = True
+QgsGeometry.GeometryTypeHasChanged.__doc__ = "Operation has changed geometry type \n.. versionadded:: 3.34"
 QgsGeometry.AddPartSelectedGeometryNotFound = Qgis.GeometryOperationResult.AddPartSelectedGeometryNotFound
 QgsGeometry.AddPartSelectedGeometryNotFound.is_monkey_patched = True
 QgsGeometry.AddPartSelectedGeometryNotFound.__doc__ = "The selected geometry cannot be found"
@@ -3941,9 +3944,9 @@ QgsGeometry.AddRingNotInExistingFeature.__doc__ = "The input ring doesn't have a
 QgsGeometry.SplitCannotSplitPoint = Qgis.GeometryOperationResult.SplitCannotSplitPoint
 QgsGeometry.SplitCannotSplitPoint.is_monkey_patched = True
 QgsGeometry.SplitCannotSplitPoint.__doc__ = "Cannot split points"
-QgsGeometry.GeometryTypeHasChanged = Qgis.GeometryOperationResult.GeometryTypeHasChanged
-QgsGeometry.GeometryTypeHasChanged.is_monkey_patched = True
-QgsGeometry.GeometryTypeHasChanged.__doc__ = "Operation has changed geometry type"
+QgsGeometry.SplitPointCannotSplitPolygon = Qgis.GeometryOperationResult.SplitPointCannotSplitPolygon
+QgsGeometry.SplitPointCannotSplitPolygon.is_monkey_patched = True
+QgsGeometry.SplitPointCannotSplitPolygon.__doc__ = "Points cannot split polygons \n.. versionadded:: 4.4"
 Qgis.GeometryOperationResult.__doc__ = """Success or failure of a geometry operation.
 
 This enum gives details about cause of failure.
@@ -3958,6 +3961,10 @@ This enum gives details about cause of failure.
 * ``SelectionIsGreaterThanOne``: More than one features were selected
 * ``GeometryEngineError``: Geometry engine misses a method implemented or an error occurred in the geometry engine
 * ``LayerNotEditable``: Cannot edit layer
+* ``GeometryTypeHasChanged``: Operation has changed geometry type
+
+  .. versionadded:: 3.34
+
 * ``AddPartSelectedGeometryNotFound``: The selected geometry cannot be found
 * ``AddPartNotMultiGeometry``: The source geometry is not multi
 * ``AddRingNotClosed``: The input ring is not closed
@@ -3965,7 +3972,10 @@ This enum gives details about cause of failure.
 * ``AddRingCrossesExistingRings``: The input ring crosses existing rings (it is not disjoint)
 * ``AddRingNotInExistingFeature``: The input ring doesn't have any existing ring to fit into
 * ``SplitCannotSplitPoint``: Cannot split points
-* ``GeometryTypeHasChanged``: Operation has changed geometry type
+* ``SplitPointCannotSplitPolygon``: Points cannot split polygons
+
+  .. versionadded:: 4.4
+
 
 """
 # --

@@ -2169,6 +2169,7 @@ int QgisEvent = QEvent::User + 1;
       SelectionIsGreaterThanOne, //!< More than one features were selected
       GeometryEngineError,       //!< Geometry engine misses a method implemented or an error occurred in the geometry engine
       LayerNotEditable,          //!< Cannot edit layer
+      GeometryTypeHasChanged,    //!< Operation has changed geometry type \since QGIS 3.34
       // Add part issues
       AddPartSelectedGeometryNotFound, //!< The selected geometry cannot be found
       AddPartNotMultiGeometry,         //!< The source geometry is not multi
@@ -2178,8 +2179,8 @@ int QgisEvent = QEvent::User + 1;
       AddRingCrossesExistingRings, //!< The input ring crosses existing rings (it is not disjoint)
       AddRingNotInExistingFeature, //!< The input ring doesn't have any existing ring to fit into
       // Split features
-      SplitCannotSplitPoint,  //!< Cannot split points
-      GeometryTypeHasChanged, //!< Operation has changed geometry type
+      SplitCannotSplitPoint,        //!< Cannot split points
+      SplitPointCannotSplitPolygon, //!< Points cannot split polygons \since QGIS 4.4
     };
     Q_ENUM( GeometryOperationResult )
 

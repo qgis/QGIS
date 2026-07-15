@@ -7,9 +7,10 @@ QgsGeometryEngine.NodedGeometryError = QgsGeometryEngine.EngineOperationResult.N
 QgsGeometryEngine.InvalidBaseGeometry = QgsGeometryEngine.EngineOperationResult.InvalidBaseGeometry
 QgsGeometryEngine.InvalidInput = QgsGeometryEngine.EngineOperationResult.InvalidInput
 QgsGeometryEngine.SplitCannotSplitPoint = QgsGeometryEngine.EngineOperationResult.SplitCannotSplitPoint
+QgsGeometryEngine.SplitPointCannotSplitPolygon = QgsGeometryEngine.EngineOperationResult.SplitPointCannotSplitPolygon
 try:
     QgsGeometryEngine.__virtual_methods__ = ['intersection', 'difference', 'symDifference', 'splitGeometry']
-    QgsGeometryEngine.__abstract_methods__ = ['geometryChanged', 'prepareGeometry', 'intersection', 'difference', 'combine', 'symDifference', 'buffer', 'simplify', 'interpolate', 'envelope', 'centroid', 'pointOnSurface', 'convexHull', 'distance', 'distanceWithin', 'intersects', 'touches', 'crosses', 'within', 'overlaps', 'contains', 'disjoint', 'relate', 'relatePattern', 'area', 'length', 'isValid', 'isEqual', 'isFuzzyEqual', 'isEmpty', 'isSimple', 'offsetCurve']
+    QgsGeometryEngine.__abstract_methods__ = ['geometryChanged', 'prepareGeometry', 'intersection', 'difference', 'combine', 'symDifference', 'buffer', 'simplify', 'interpolate', 'envelope', 'centroid', 'pointOnSurface', 'convexHull', 'distance', 'distanceWithin', 'intersects', 'touches', 'crosses', 'within', 'overlaps', 'contains', 'disjoint', 'relate', 'relatePattern', 'area', 'length', 'isValid', 'isEqual', 'isFuzzyEqual', 'isEmpty', 'isSimple', 'splitGeometry', 'offsetCurve']
     QgsGeometryEngine.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

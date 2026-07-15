@@ -207,6 +207,7 @@ Splits parts cut by the given line
          - :py:class:`QgsGeometry`.InvalidBaseGeometry
          - :py:class:`QgsGeometry`.GeometryEngineError
          - :py:class:`QgsGeometry`.SplitCannotSplitPoint
+         - :py:class:`QgsGeometry`.SplitPointCannotSplitPolygon
 
 .. deprecated:: 3.12
 
@@ -228,6 +229,7 @@ Splits parts cut by the given line
          - :py:class:`QgsGeometry`.InvalidBaseGeometry
          - :py:class:`QgsGeometry`.GeometryEngineError
          - :py:class:`QgsGeometry`.SplitCannotSplitPoint
+         - :py:class:`QgsGeometry`.SplitPointCannotSplitPolygon
 %End
 
  Qgis::GeometryOperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated="Since 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
