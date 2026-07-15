@@ -142,13 +142,13 @@ class ProcessingModelItem(QgsDataItem):
         self.runModel()
         return True
 
-    def mimeUri(self):
+    def mimeUris(self):
         u = QgsMimeDataUtils.Uri()
         u.layerType = "custom"
         u.providerKey = "processing"
         u.name = self.name()
         u.uri = self.path()
-        return u
+        return [u]
 
     def runModel(self):
         ProcessingDropHandler.runAlg(self.path())
