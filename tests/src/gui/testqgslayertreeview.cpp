@@ -65,7 +65,8 @@ class TestDropHandler : public QgsCustomDropHandler
 class LegacyDropHandler : public QgsCustomDropHandler
 {
     Q_OBJECT
-    // does not declare canHandleMimeData(), so it never claims a payload during a drag
+    // does not reimplement canHandleMimeData(), so it relies on the base default (TRUE)
+    // and claims any payload, for backward compatibility
 };
 
 //! Test drop handler which claims a custom uri provider key (browser custom uri drops)
@@ -239,11 +240,12 @@ void TestQgsLayerTreeView::testClassifyDragPayload()
   // capabilities via canHandleMimeData() and opts out of unrecognized file drops
   QCOMPARE( QgsLayerDropClassifier::classify( &invalidFileMime, handlers ), PayloadType::Invalid );
 
-  // a legacy handler which only implements handleFileDrop() does not declare the mime
-  // data it accepts, so it does not rescue an otherwise unloadable payload from refusal
+  // a legacy handler which does not reimplement canHandleMimeData() relies on the base
+  // default (TRUE): for backward compatibility it claims any payload, so an otherwise
+  // unloadable drop is accepted as a custom handler payload rather than refused
   LegacyDropHandler legacyHandler;
   const QVector<QPointer<QgsCustomDropHandler>> legacyHandlers { QPointer<QgsCustomDropHandler>( &legacyHandler ) };
-  QCOMPARE( QgsLayerDropClassifier::classify( &invalidFileMime, legacyHandlers ), PayloadType::Invalid );
+  QCOMPARE( QgsLayerDropClassifier::classify( &invalidFileMime, legacyHandlers ), PayloadType::CustomHandler );
 
   // a custom uri (e.g. a Processing model dragged from the browser) is dispatched to a
   // matching custom drop handler via handleCustomUriDrop(); it must not be classified as

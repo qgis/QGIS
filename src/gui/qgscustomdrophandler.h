@@ -42,14 +42,13 @@ class QgsMapCanvas;
  *   been complete). Accordingly handleMimeDataV2() implementations must return
  *   quickly and defer any intensive or slow processing.
  *
- * Whichever approach is used to handle the drop, a handler which recognizes specific data
- * should also reimplement canHandleMimeData(). While the handle*() methods above perform
- * the actual work when a drop occurs, canHandleMimeData() is consulted earlier, while the
- * data is still being dragged, to decide whether the drag is accepted and what feedback is
- * shown to the user. A handler which only implements a handle*() method, without
- * canHandleMimeData(), may see its drops refused before the handle*() method is ever
- * reached. Because it is called repeatedly during a drag, canHandleMimeData() must be
- * lightweight and must not perform any action.
+ * Whichever approach is used to handle the drop, a handler should also reimplement
+ * canHandleMimeData(). While the handle*() methods above perform the actual work when a
+ * drop occurs, canHandleMimeData() is consulted earlier, while the data is still being
+ * dragged, to decide whether the drag is accepted and what feedback is shown to the user.
+ * Reporting precisely the data a handler accepts lets QGIS give accurate feedback, for
+ * instance showing that unrelated data cannot be dropped. Because it is called repeatedly
+ * during a drag, canHandleMimeData() must be lightweight and must not perform any action.
  *
  */
 class GUI_EXPORT QgsCustomDropHandler : public QObject
@@ -79,7 +78,6 @@ class GUI_EXPORT QgsCustomDropHandler : public QObject
 
     /**
      * Returns TRUE if the handler is capable of handling the provided mime \a data.
-     * The base class implementation returns FALSE regardless of mime data.
      *
      * This method is called (potentially repeatedly) while mime data is dragged over a
      * widget which accepts drops, such as the main QGIS window, the layer tree or a map
@@ -88,16 +86,24 @@ class GUI_EXPORT QgsCustomDropHandler : public QObject
      * user. It must therefore be lightweight and must NOT perform any action or otherwise
      * have side effects.
      *
-     * Handlers which recognize files (handleFileDrop()) or custom URIs (handleCustomUriDrop())
-     * should reimplement this method to report the data they accept, for instance by inspecting
-     * the file suffixes in \a data urls() or the QgsMimeDataUtils::Uri entries it contains.
-     * Otherwise their drops may be refused before the corresponding handle*() method is reached.
+     * Handlers which recognize files (handleFileDrop()), custom URIs (handleCustomUriDrop())
+     * or raw mime data (handleMimeDataV2()) should reimplement this method to report precisely
+     * the data they accept, for instance by inspecting the file suffixes in \a data urls() or
+     * the QgsMimeDataUtils::Uri entries it contains. This lets QGIS show accurate feedback
+     * while dragging, such as whether the drop will be accepted or refused.
+     *
+     * \warning The base class implementation returns TRUE, for backward compatibility with
+     * handlers which predate this method and only implement a handle*() method: without it
+     * their drops could be refused before the handle*() method is reached. A handler which
+     * does not narrow this down therefore claims every payload, which suppresses the
+     * "cannot be dropped" feedback for unrelated data. This default will be removed in
+     * QGIS 5.0, where the method becomes pure virtual and must be implemented.
      *
      * \since QGIS 3.10
      */
     virtual bool canHandleMimeData( const QMimeData *data );
 
-    // TODO QGIS 5.0 - return bool
+    // TODO QGIS 5.0 - make pure virtual
 
     /**
      * Called when the specified mime \a data has been dropped onto QGIS.
