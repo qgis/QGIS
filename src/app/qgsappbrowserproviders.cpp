@@ -932,6 +932,13 @@ QString QgsBookmarkDropHandler::customUriProviderKey() const
   return u"bookmark"_s;
 }
 
+bool QgsBookmarkDropHandler::canHandleMimeData( const QMimeData * )
+{
+  // bookmarks are only handled as custom uris dropped onto a map canvas
+  // (see canHandleCustomUriCanvasDrop()), not as general mime data
+  return false;
+}
+
 bool QgsBookmarkDropHandler::canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas * )
 {
   return uri.providerKey == customUriProviderKey();

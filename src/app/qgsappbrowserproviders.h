@@ -377,6 +377,7 @@ class QgsBookmarkDropHandler : public QgsCustomDropHandler
 
   public:
     QString customUriProviderKey() const override;
+    bool canHandleMimeData( const QMimeData *data ) override;
     bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) override;
     bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) const override;
 };
