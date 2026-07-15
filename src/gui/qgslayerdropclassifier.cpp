@@ -30,6 +30,7 @@ using namespace Qt::StringLiterals;
 Qgis::LayerDropPayloadType QgsLayerDropClassifier::classify( const QMimeData *mimeData, const QVector<QPointer<QgsCustomDropHandler>> &customHandlers )
 {
   bool hasLayer = false;
+  bool hasCustomUri = false;
 
   if ( QgsMimeDataUtils::isUriList( mimeData ) )
   {
@@ -39,6 +40,21 @@ Qgis::LayerDropPayloadType QgsLayerDropClassifier::classify( const QMimeData *mi
       if ( uri.layerType == "project"_L1 )
       {
         return Qgis::LayerDropPayloadType::Project;
+      }
+      if ( uri.layerType == "custom"_L1 )
+      {
+        // a custom uri (e.g. a Processing model dragged from the browser) is not inserted
+        // as a layer: it is dispatched to a matching custom drop handler through
+        // handleCustomUriDrop(), so it must not be treated like a loadable dataset
+        for ( QgsCustomDropHandler *handler : customHandlers )
+        {
+          if ( handler && handler->customUriProviderKey() == uri.providerKey )
+          {
+            hasCustomUri = true;
+            break;
+          }
+        }
+        continue;
       }
       // any other uri comes from QGIS itself (e.g. the browser) and is a loadable dataset
       hasLayer = true;
@@ -84,6 +100,11 @@ Qgis::LayerDropPayloadType QgsLayerDropClassifier::classify( const QMimeData *mi
 
   if ( hasLayer )
     return Qgis::LayerDropPayloadType::Layers;
+
+  // a custom uri is consumed by a matching custom drop handler (loadable layers, if any,
+  // took precedence above and keep the insertion indicator)
+  if ( hasCustomUri )
+    return Qgis::LayerDropPayloadType::CustomHandler;
 
   // no provider can load the payload, but a custom drop handler may still claim the
   // mime data (e.g. .qpt print templates, .py scripts, style .xml files)

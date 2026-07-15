@@ -68,6 +68,14 @@ class LegacyDropHandler : public QgsCustomDropHandler
     // does not declare canHandleMimeData(), so it never claims a payload during a drag
 };
 
+//! Test drop handler which claims a custom uri provider key (browser custom uri drops)
+class CustomUriDropHandler : public QgsCustomDropHandler
+{
+    Q_OBJECT
+  public:
+    QString customUriProviderKey() const override { return u"test_custom"_s; }
+};
+
 //! A layer tree view on its own tree and model, sized and shown, ready to receive events
 struct LayerTreeViewFixture
 {
@@ -236,6 +244,22 @@ void TestQgsLayerTreeView::testClassifyDragPayload()
   LegacyDropHandler legacyHandler;
   const QVector<QPointer<QgsCustomDropHandler>> legacyHandlers { QPointer<QgsCustomDropHandler>( &legacyHandler ) };
   QCOMPARE( QgsLayerDropClassifier::classify( &invalidFileMime, legacyHandlers ), PayloadType::Invalid );
+
+  // a custom uri (e.g. a Processing model dragged from the browser) is dispatched to a
+  // matching custom drop handler via handleCustomUriDrop(); it must not be classified as
+  // a layer (which would show a misleading insertion indicator) but as CustomHandler
+  QgsMimeDataUtils::Uri customUri;
+  customUri.layerType = u"custom"_s;
+  customUri.providerKey = u"test_custom"_s;
+  customUri.uri = u"some_model"_s;
+  const std::unique_ptr<QMimeData> customUriMime( QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << customUri ) );
+
+  // without a handler claiming its provider key, the custom uri cannot be handled at all
+  QCOMPARE( QgsLayerDropClassifier::classify( customUriMime.get(), noHandlers ), PayloadType::Invalid );
+
+  CustomUriDropHandler customUriHandler;
+  const QVector<QPointer<QgsCustomDropHandler>> customUriHandlers { QPointer<QgsCustomDropHandler>( &customUriHandler ) };
+  QCOMPARE( QgsLayerDropClassifier::classify( customUriMime.get(), customUriHandlers ), PayloadType::CustomHandler );
 }
 
 void TestQgsLayerTreeView::testComputeDropTarget()
