@@ -48,6 +48,7 @@ class TestQgsAttributesFormProperties : public QObject
     void testRemoveDuplicateField();
     void testDropMultipleItems();
     void testMoveContainerIntoContainer();
+    void testMoveTab();
 };
 
 void TestQgsAttributesFormProperties::initTestCase()
@@ -251,7 +252,7 @@ void TestQgsAttributesFormProperties::testDropMultipleItems()
   attributeFormProperties.init();
 
   QgsAttributesFormProxyModel *layoutProxy = attributeFormProperties.mFormLayoutProxyModel;
-  const QModelIndex tabProxyIndex = layoutProxy->index( 0, 0, QModelIndex() );
+  QModelIndex tabProxyIndex = layoutProxy->index( 0, 0, QModelIndex() );
   QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 4 );
 
   // Returns the sorted rows and the names of the currently selected layout items
@@ -272,6 +273,10 @@ void TestQgsAttributesFormProperties::testDropMultipleItems()
   QVERIFY( mimeData );
   QVERIFY( layoutProxy->dropMimeData( mimeData, Qt::MoveAction, 4, 0, tabProxyIndex ) );
   delete mimeData;
+  // The internal move is performed from a queued call (see dropMimeData)
+  QCoreApplication::processEvents();
+  // The move resets the model, so proxy indexes captured earlier are invalid
+  tabProxyIndex = layoutProxy->index( 0, 0, QModelIndex() );
 
   // Resulting order is [c, d, a, b]; both moved items must remain selected
   QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 4 );
@@ -336,7 +341,7 @@ void TestQgsAttributesFormProperties::testMoveContainerIntoContainer()
   QgsAttributesFormProxyModel *layoutProxy = attributeFormProperties.mFormLayoutProxyModel;
   QgsAttributesFormLayoutModel *layoutModel = attributeFormProperties.mFormLayoutModel;
 
-  const QModelIndex tabProxyIndex = layoutProxy->index( 0, 0, QModelIndex() );
+  QModelIndex tabProxyIndex = layoutProxy->index( 0, 0, QModelIndex() );
   QCOMPARE( layoutProxy->rowCount( tabProxyIndex ), 2 );
   const QModelIndex groupAProxyIndex = layoutProxy->index( 0, 0, tabProxyIndex );
   const QModelIndex groupBProxyIndex = layoutProxy->index( 1, 0, tabProxyIndex );
@@ -348,6 +353,10 @@ void TestQgsAttributesFormProperties::testMoveContainerIntoContainer()
   QVERIFY( mimeData );
   QVERIFY( layoutProxy->dropMimeData( mimeData, Qt::MoveAction, -1, -1, groupBProxyIndex ) );
   delete mimeData;
+  // The internal move is performed from a queued call (see dropMimeData)
+  QCoreApplication::processEvents();
+  // The move resets the model, so proxy indexes captured earlier are invalid
+  tabProxyIndex = layoutProxy->index( 0, 0, QModelIndex() );
 
   // The tab now holds only groupB, which in turn holds [b, groupA]; groupA still holds a.
   const QModelIndex tabSourceIndex = layoutModel->index( 0, 0, QModelIndex() );
@@ -367,6 +376,74 @@ void TestQgsAttributesFormProperties::testMoveContainerIntoContainer()
   QCOMPARE( groupBProxyAfter.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"groupB"_s );
   QCOMPARE( layoutProxy->rowCount( groupBProxyAfter ), 2 );
   QCOMPARE( layoutProxy->index( 1, 0, groupBProxyAfter ).data( QgsAttributesFormModel::ItemIdRole ).toString(), u"groupA"_s );
+}
+void TestQgsAttributesFormProperties::testMoveTab()
+{
+  // Moving a top-level tab container to another position (a same-parent reorder
+  // at the root level, with each tab holding children) must not crash the
+  // filter proxy and must produce the expected order.
+
+  auto layer = std::make_unique< QgsVectorLayer >( u"Point?field=a:integer&field=b:integer&field=c:integer&field=d:integer"_s, u"test"_s, u"memory"_s );
+
+  // tab1{a}  tab2{b}  tab3{c}  tab4{d}
+  auto makeTab = []( const QString &name, const QString &field, int fieldIdx ) {
+    QgsAttributeEditorContainer *tab = new QgsAttributeEditorContainer( name, nullptr );
+    tab->addChildElement( new QgsAttributeEditorField( field, fieldIdx, tab ) );
+    return tab;
+  };
+
+  QgsEditFormConfig cfg = layer->editFormConfig();
+  cfg.setLayout( Qgis::AttributeFormLayout::DragAndDrop );
+  cfg.clearTabs();
+  cfg.addTab( makeTab( u"tab1"_s, u"a"_s, 0 ) );
+  cfg.addTab( makeTab( u"tab2"_s, u"b"_s, 1 ) );
+  cfg.addTab( makeTab( u"tab3"_s, u"c"_s, 2 ) );
+  cfg.addTab( makeTab( u"tab4"_s, u"d"_s, 3 ) );
+  layer->setEditFormConfig( cfg );
+
+  QgsAttributesFormProperties attributeFormProperties( layer.get() );
+  attributeFormProperties.init();
+
+  QgsAttributesFormProxyModel *layoutProxy = attributeFormProperties.mFormLayoutProxyModel;
+  QgsAttributesFormLayoutModel *layoutModel = attributeFormProperties.mFormLayoutModel;
+  QCOMPARE( layoutProxy->rowCount( QModelIndex() ), 4 );
+
+  // Build the proxy child mappings for every tab (as an expanded view would)
+  for ( int row = 0; row < 4; ++row )
+  {
+    const QModelIndex tabProxy = layoutProxy->index( row, 0, QModelIndex() );
+    QCOMPARE( layoutProxy->rowCount( tabProxy ), 1 );
+    ( void ) layoutProxy->index( 0, 0, tabProxy );
+  }
+
+  // Move tab3 (row 2) to the front (drop at row 0 among the tabs)
+  const QModelIndex tab3ProxyIndex = layoutProxy->index( 2, 0, QModelIndex() );
+  QCOMPARE( tab3ProxyIndex.data( QgsAttributesFormModel::ItemIdRole ).toString(), u"tab3"_s );
+  QMimeData *mimeData = layoutProxy->mimeData( QModelIndexList() << tab3ProxyIndex );
+  QVERIFY( mimeData );
+  QVERIFY( layoutProxy->dropMimeData( mimeData, Qt::MoveAction, 0, 0, QModelIndex() ) );
+  delete mimeData;
+  // The internal move is performed from a queued call (see dropMimeData)
+  QCoreApplication::processEvents();
+
+  // Order is now tab3, tab1, tab2, tab4 (each keeping its child)
+  QCOMPARE( layoutModel->rowCount( QModelIndex() ), 4 );
+  const QStringList expected { u"tab3"_s, u"tab1"_s, u"tab2"_s, u"tab4"_s };
+  for ( int row = 0; row < 4; ++row )
+  {
+    const QModelIndex tabSource = layoutModel->index( row, 0, QModelIndex() );
+    QCOMPARE( tabSource.data( QgsAttributesFormModel::ItemIdRole ).toString(), expected.at( row ) );
+    QCOMPARE( layoutModel->rowCount( tabSource ), 1 );
+  }
+
+  // The proxy must agree
+  QCOMPARE( layoutProxy->rowCount( QModelIndex() ), 4 );
+  for ( int row = 0; row < 4; ++row )
+  {
+    const QModelIndex tabProxy = layoutProxy->index( row, 0, QModelIndex() );
+    QCOMPARE( tabProxy.data( QgsAttributesFormModel::ItemIdRole ).toString(), expected.at( row ) );
+    QCOMPARE( layoutProxy->rowCount( tabProxy ), 1 );
+  }
 }
 
 QGSTEST_MAIN( TestQgsAttributesFormProperties )

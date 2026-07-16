@@ -1536,80 +1536,103 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
         return false;
     }
 
-    QgsAttributesFormItem *destParentItem = itemForIndex( parent );
-
+    // Defer the actual relocation until after the drag's modal event loop has
+    // exited. Mutating the model while the drag is still in
+    // progress corrupts the proxy's incremental source-to-proxy mapping
     const QPersistentModelIndex persistentParent( parent );
+    QMetaObject::invokeMethod( this, [this, draggedIndexes, persistentParent, row]() { performInternalMove( draggedIndexes, persistentParent, row ); }, Qt::QueuedConnection );
 
-    // Returns true if ancestor is item itself or one of its ancestors.
-    const auto isSelfOrAncestorOf = []( const QgsAttributesFormItem *ancestor, QgsAttributesFormItem *item ) {
-      for ( QgsAttributesFormItem *walk = item; walk; walk = walk->parent() )
-      {
-        if ( walk == ancestor )
-          return true;
-      }
-      return false;
-    };
-
-    QList< QPersistentModelIndex > movedIndexes;
-    for ( const QPersistentModelIndex &source : draggedIndexes )
-    {
-      const QModelIndex sourceParent = source.parent();
-      const int sourceRow = source.row();
-      const int destRow = row + rows;
-
-      // Moving an item onto its current position is a no-op.
-      if ( sourceParent == persistentParent && ( destRow == sourceRow || destRow == sourceRow + 1 ) )
-      {
-        isDropSuccessful = true;
-        movedIndexes << source;
-        rows++;
-        continue;
-      }
-
-      // A container cannot be moved into itself or one of its own descendants.
-      if ( isSelfOrAncestorOf( itemForIndex( source ), destParentItem ) )
-        continue;
-
-      QgsAttributesFormItem *sourceParentItem = itemForIndex( sourceParent );
-
-      // It seems that QSortFilterProxyModel mishandles row moves when filtering is enabled
-      // so we use remove + insert instead of move.
-      beginRemoveRows( sourceParent, sourceRow, sourceRow );
-      std::unique_ptr< QgsAttributesFormItem > movedItem = sourceParentItem->takeChild( sourceRow );
-      endRemoveRows();
-
-      int insertPosition = destRow;
-      if ( sourceParentItem == destParentItem && sourceRow < destRow )
-        insertPosition = destRow - 1; // account for the just-removed source row
-      insertPosition = std::clamp( insertPosition, 0, destParentItem->childCount() );
-
-      beginInsertRows( persistentParent, insertPosition, insertPosition );
-      destParentItem->insertChild( insertPosition, std::move( movedItem ) );
-      endInsertRows();
-
-      isDropSuccessful = true;
-      movedIndexes << QPersistentModelIndex( index( insertPosition, 0, persistentParent ) );
-
-      // Removing a source row placed above the drop point shifts all rows below
-      if ( sourceParentItem == destParentItem && sourceRow < row )
-        row--;
-
-      rows++;
-    }
-
-    if ( !movedIndexes.isEmpty() )
-    {
-      // Use persistent indexes while moving, since subsequent moves may shift
-      // the rows of items moved earlier
-      QModelIndexList indexes;
-      indexes.reserve( movedIndexes.size() );
-      for ( const QPersistentModelIndex &movedIndex : std::as_const( movedIndexes ) )
-        indexes << movedIndex;
-      emit internalItemsDropped( indexes );
-    }
+    isDropSuccessful = true;
   }
 
   return isDropSuccessful;
+}
+
+void QgsAttributesFormLayoutModel::performInternalMove( const QList< QPersistentModelIndex > &draggedIndexes, const QModelIndex &parent, int row )
+{
+  for ( const QPersistentModelIndex &source : draggedIndexes )
+  {
+    if ( !source.isValid() )
+      return;
+  }
+
+  QgsAttributesFormItem *destParentItem = itemForIndex( parent );
+
+  // Capture the dragged items as raw pointers: they survive the move (only the
+  // owning unique_ptr is relocated), so they stay valid across the mutations
+  // below and across the model reset.
+  QList< QgsAttributesFormItem * > draggedItems;
+  draggedItems.reserve( draggedIndexes.size() );
+  for ( const QPersistentModelIndex &source : draggedIndexes )
+    draggedItems << itemForIndex( source );
+
+  // Returns true if ancestor is item itself or one of its ancestors.
+  const auto isSelfOrAncestorOf = []( const QgsAttributesFormItem *ancestor, QgsAttributesFormItem *item ) {
+    for ( QgsAttributesFormItem *walk = item; walk; walk = walk->parent() )
+    {
+      if ( walk == ancestor )
+        return true;
+    }
+    return false;
+  };
+
+  // We signal the move as a full model reset rather than via fine-grained
+  // beginInsertRows() and friends.
+  //  This is safe here because dropMimeData() defers this call out of the drag's modal
+  // loop, so no drag indexes are invalidated. The view restores the
+  // expanded state and selection afterwards (see internalItemsDropped()).
+  beginResetModel();
+
+  int rows = 0;
+  QList< QgsAttributesFormItem * > movedItems;
+  for ( QgsAttributesFormItem *item : std::as_const( draggedItems ) )
+  {
+    QgsAttributesFormItem *sourceParentItem = item->parent();
+    if ( !sourceParentItem )
+      continue;
+
+    const int sourceRow = item->row();
+    const int destRow = row + rows;
+
+    // Moving an item onto its current position is a no-op.
+    if ( sourceParentItem == destParentItem && ( destRow == sourceRow || destRow == sourceRow + 1 ) )
+    {
+      movedItems << item;
+      rows++;
+      continue;
+    }
+
+    // A container cannot be moved into itself or one of its own descendants.
+    if ( isSelfOrAncestorOf( item, destParentItem ) )
+      continue;
+
+    std::unique_ptr< QgsAttributesFormItem > movedItem = sourceParentItem->takeChild( sourceRow );
+
+    int insertPosition = destRow;
+    if ( sourceParentItem == destParentItem && sourceRow < destRow )
+      insertPosition = destRow - 1; // account for the just-removed source row
+    insertPosition = std::clamp( insertPosition, 0, destParentItem->childCount() );
+
+    destParentItem->insertChild( insertPosition, std::move( movedItem ) );
+    movedItems << item;
+
+    // Removing a source row placed above the drop point shifts all rows below
+    if ( sourceParentItem == destParentItem && sourceRow < row )
+      row--;
+
+    rows++;
+  }
+
+  endResetModel();
+
+  if ( !movedItems.isEmpty() )
+  {
+    QModelIndexList indexes;
+    indexes.reserve( movedItems.size() );
+    for ( QgsAttributesFormItem *item : std::as_const( movedItems ) )
+      indexes << createIndex( item->row(), 0, item );
+    emit internalItemsDropped( indexes );
+  }
 }
 
 void QgsAttributesFormLayoutModel::updateFieldConfigForFieldItemsRecursive( QgsAttributesFormItem *parent, const QString &fieldName, const QgsAttributesFormData::FieldConfig &config )
