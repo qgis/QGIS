@@ -998,16 +998,16 @@ class Plugins(QObject):
                 if (
                     (allowExperimental or not plugin["experimental"])
                     and (allowDeprecated or not plugin["deprecated"])
-                    and not (
-                        key in self.mPlugins
-                        and self.mPlugins[key]["version_available"]
-                        and compareVersions(
+                    and (
+                        key not in self.mPlugins
+                        or not self.mPlugins[key]["version_available"]
+                        or compareVersions(
                             self.mPlugins[key]["version_available"],
                             plugin["version_available"],
                         )
-                        < 2
-                        and self.mPlugins[key]["experimental"]
-                        and not plugin["experimental"]
+                        == 2
+                        or not self.mPlugins[key]["experimental"]
+                        or plugin["experimental"]
                     )
                 ):
                     # The mPlugins dict contains now locally installed plugins.
