@@ -11,6 +11,7 @@ __date__ = "29/07/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import json
+import os
 import unittest
 
 from qgis.core import (
@@ -24,6 +25,7 @@ from qgis.core import (
     QgsRasterPipe,
     QgsSymbol,
     QgsSymbolLayer,
+    QgsVectorTileUtils,
     QgsWkbTypes,
     qgsDoubleNear,
 )
@@ -3144,6 +3146,50 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
         expected = "CASE WHEN \"class\" IN ('sinkhole') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_rock','sinkhole_scree') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_ice','sinkhole_water') THEN 'base64:[snip]' ELSE '' END"
         self.assertEqual(strip_base64(sprite_property), expected)
+
+    def testLoadSpritesMultipleSheets(self):
+        """
+        Test QgsVectorTileUtils.loadSprites with the multi-sheet "sprite"
+        array form. A sprite source with the id "default" is registered under
+        the "default" category, and image names referenced in the style
+        without a prefix resolve against it, while other sprite ids are
+        registered under (and referenced via) their own category.
+        """
+
+        sprite_base = os.path.join(
+            TEST_DATA_DIR, "vector_tile", "sprites", "swisstopo-sprite"
+        )
+
+        # a sprite source with id "default" -> registered under "default"
+        style = {"sprite": [{"id": "default", "url": sprite_base}]}
+        context = QgsMapBoxGlStyleConversionContext()
+        QgsVectorTileUtils.loadSprites(style, context, "file://")
+        self.assertEqual(context.spriteCategories(), ["default"])
+        self.assertFalse(context.spriteImage("default").isNull())
+        self.assertIn("scree_large_1", context.spriteDefinitions("default"))
+
+        # an unprefixed image name resolves against the default sheet,
+        # with a valid (non-empty) sprite and a positive size
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                "scree_large_1", context
+            )
+        )
+        self.assertTrue(sprite.startswith("base64:"))
+        self.assertGreater(size.width(), 0)
+
+        # a sprite source with a non-default id -> registered under that category
+        style = {"sprite": [{"id": "extra", "url": sprite_base}]}
+        context = QgsMapBoxGlStyleConversionContext()
+        QgsVectorTileUtils.loadSprites(style, context, "file://")
+        self.assertEqual(context.spriteCategories(), ["extra"])
+        # names must be prefixed with the category id to resolve
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                "extra:scree_large_1", context
+            )
+        )
+        self.assertTrue(sprite.startswith("base64:"))
 
     def testSymbolSpacingNumeric(self):
         """Test symbol-spacing with a simple numeric value"""
