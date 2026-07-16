@@ -3259,6 +3259,9 @@ bool QgsCoordinateReferenceSystem::topocentricOrigin( double &latDeg, double &lo
   if ( !pj )
     return false;
 
+  if ( !proj_crs_is_derived( ctx, pj ) )
+    return false;
+
   QgsProjUtils::proj_pj_unique_ptr conversion( proj_crs_get_coordoperation( ctx, pj ) );
   if ( !conversion )
     return false;
