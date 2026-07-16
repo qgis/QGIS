@@ -226,10 +226,12 @@ void QgsAttributesFormLayoutView::handleInternalDroppedItems( const QModelIndexL
 {
   selectDroppedItems( indexes );
 
-  // Restore the state captured in dropEvent() before the move took place.
-  for ( const QModelIndex &index : indexes )
+  // The move resets the model, collapsing the whole tree, so restore the
+  // expanded state captured in dropEvent() before the move took place.
+  const int topLevelRows = mModel->sourceModel()->rowCount( QModelIndex() );
+  for ( int row = 0; row < topLevelRows; ++row )
   {
-    restoreExpandedState( index );
+    restoreExpandedState( mModel->sourceModel()->index( row, 0, QModelIndex() ) );
   }
   mDraggedExpandedState.clear();
 }
@@ -318,13 +320,14 @@ void QgsAttributesFormLayoutView::dropEvent( QDropEvent *event )
 
   if ( internalMove )
   {
-    // Capture the expanded state of the dragged items now, before the move
-    // turns into a removal + insertion that would collapse moved containers.
+    // Capture the expanded state of the whole tree now, before the (deferred)
+    // move resets the model, which collapses everything. It is restored
+    // afterwards in handleInternalDroppedItems().
     mDraggedExpandedState.clear();
-    const QModelIndexList selectedProxyIndexes = selectionModel()->selectedRows();
-    for ( const QModelIndex &proxyIndex : selectedProxyIndexes )
+    const int topLevelRows = mModel->sourceModel()->rowCount( QModelIndex() );
+    for ( int row = 0; row < topLevelRows; ++row )
     {
-      storeExpandedState( mModel->mapToSource( proxyIndex ) );
+      storeExpandedState( mModel->sourceModel()->index( row, 0, QModelIndex() ) );
     }
   }
 

@@ -706,6 +706,8 @@ void TestQgsAttributesFormModel::testFormLayoutModelDragAndDrop()
       const bool dropped = model.dropMimeData( mimeData, Qt::MoveAction, targetRow, 0, tabIndex );
       QVERIFY( dropped );
       delete mimeData;
+      // The internal move is performed from a queued call (see dropMimeData)
+      QCoreApplication::processEvents();
 
       // No duplicate was inserted: the container count is unchanged and the group
       // ended up where we asked, still holding both children.
@@ -754,6 +756,8 @@ void TestQgsAttributesFormModel::testFormLayoutModelDragAndDrop()
       const bool dropped = model.dropMimeData( mimeData, Qt::MoveAction, 2, 0, groupIndex );
       QVERIFY( dropped );
       delete mimeData;
+      // The internal move is performed from a queued call (see dropMimeData)
+      QCoreApplication::processEvents();
 
       QCOMPARE( model.rowCount( groupIndex ), 2 );
       QCOMPARE( model.index( 0, 0, groupIndex ).data( QgsAttributesFormModel::ItemIdRole ).toString(), u"c"_s );
@@ -807,6 +811,8 @@ void TestQgsAttributesFormModel::testFormLayoutModelDragAndDrop()
       const bool dropped = model.dropMimeData( mimeData, Qt::MoveAction, targetRow, 0, tabIndex );
       QVERIFY( dropped );
       delete mimeData;
+      // The internal move is performed from a queued call (see dropMimeData)
+      QCoreApplication::processEvents();
 
       // No item may get lost or duplicated by the move
       QCOMPARE( model.rowCount( tabIndex ), 4 );

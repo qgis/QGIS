@@ -908,6 +908,14 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      */
     QModelIndexList curateIndexesForMimeData( const QModelIndexList &indexes ) const;
 
+    /**
+     * Performs the actual relocation of the \a draggedIndexes under \a parent at
+     * \a row. This is invoked (queued) from dropMimeData() after the drag's modal
+     * event loop has exited: mutating the model while the drag is still in
+     * progress corrupts QSortFilterProxyModel's mapping.
+     */
+    void performInternalMove( const QList< QPersistentModelIndex > &draggedIndexes, const QModelIndex &parent, int row );
+
     // Capture source items being dragged in an ongoing internal move.
     mutable QList< QPersistentModelIndex > mDraggedLayoutIndexes;
 };
