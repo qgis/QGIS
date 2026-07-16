@@ -129,6 +129,18 @@ QgsCanvasElevationControllerBridge::QgsCanvasElevationControllerBridge( QgsEleva
 
   connect( mCanvas, &QgsMapCanvas::layersChanged, this, &QgsCanvasElevationControllerBridge::canvasLayersChanged );
 
+  // if the project doesn't define an explicit elevation range, initialize the controller
+  // limits using the range calculated from the canvas layers so the slider is immediately usable
+  if ( QgsProject::instance()->elevationProperties()->elevationRange().isInfinite() )
+  {
+    const QgsDoubleRange layerRange = QgsElevationUtils::calculateZRangeForLayers( mCanvas->layers( true ) );
+    if ( !layerRange.isInfinite() && !layerRange.isEmpty() )
+    {
+      mController->setRangeLimits( layerRange );
+      mController->setRange( layerRange );
+    }
+  }
+
   canvasLayersChanged();
 }
 
