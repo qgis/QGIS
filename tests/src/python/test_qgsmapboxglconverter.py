@@ -3028,6 +3028,30 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         expected = "CASE WHEN \"class\" IN ('sinkhole') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_rock','sinkhole_scree') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_ice','sinkhole_water') THEN 'base64:[snip]' ELSE '' END"
         self.assertEqual(strip_base64(sprite_property), expected)
 
+        # nested match: outer match on "class" with a nested match on "subclass"
+        icon_image = [
+            "match",
+            ["get", "class"],
+            "sinkhole",
+            "arrow_brown",
+            [
+                "match",
+                ["get", "subclass"],
+                "sinkhole_rock",
+                "arrow_grey",
+                "arrow_blue",
+            ],
+        ]
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                icon_image, context
+            )
+        )
+        expected = "CASE WHEN \"class\" IN ('sinkhole') THEN 'base64:[snip]' ELSE CASE WHEN \"subclass\" IN ('sinkhole_rock') THEN 'base64:[snip]' ELSE 'base64:[snip]' END END"
+        self.assertEqual(strip_base64(sprite_property), expected)
+        # the representative sprite must be resolved (not empty)
+        self.assertTrue(sprite.startswith("base64:"))
+
         # swisstopo - lightbasemap - place_village
         icon_image = [
             "step",
