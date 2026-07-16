@@ -104,6 +104,10 @@ void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, Qg
     controller->setRange( range );
   } );
 
+  QAction *saveRangeAction = new QAction( tr( "Save Current Range to Project" ), controller );
+  controller->menu()->addAction( saveRangeAction );
+  connect( saveRangeAction, &QAction::triggered, controller, [controller] { QgsProject::instance()->elevationProperties()->setElevationRange( controller->rangeLimits() ); } );
+
   QAction *disableAction = new QAction( tr( "Disable Elevation Filter" ), controller );
   controller->menu()->addAction( disableAction );
   connect( disableAction, &QAction::triggered, senderAction, [senderAction] { senderAction->setChecked( false ); } );
