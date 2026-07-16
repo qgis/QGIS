@@ -64,6 +64,19 @@ void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, Qg
   QMenu *setLimitsFromMenu = new QMenu( tr( "Set Slider Limits From" ), controller->menu() );
   controller->menu()->addMenu( setLimitsFromMenu );
 
+  QAction *limitsFromProjectRangeAction = setLimitsFromMenu->addAction( tr( "Project Elevation Range" ) );
+  connect( limitsFromProjectRangeAction, &QAction::triggered, controller, [controller] {
+    const QgsDoubleRange range = QgsProject::instance()->elevationProperties()->elevationRange();
+    if ( range.isInfinite() )
+      return;
+    controller->setRangeLimits( range );
+    controller->setRange( range );
+  } );
+  // the project elevation range can be defined or cleared at any time, so refresh availability when the menu opens
+  connect( setLimitsFromMenu, &QMenu::aboutToShow, limitsFromProjectRangeAction, [limitsFromProjectRangeAction] {
+    limitsFromProjectRangeAction->setEnabled( !QgsProject::instance()->elevationProperties()->elevationRange().isInfinite() );
+  } );
+
   QAction *limitsFromProjectAction = setLimitsFromMenu->addAction( tr( "Project Layers" ) );
   connect( limitsFromProjectAction, &QAction::triggered, controller, [controller] {
     const QgsDoubleRange range = QgsElevationUtils::calculateZRangeForProject( QgsProject::instance() );
