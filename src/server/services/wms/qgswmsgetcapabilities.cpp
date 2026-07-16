@@ -48,6 +48,7 @@ namespace QgsWms
 {
   namespace
   {
+    QString dateToString( const QDateTime &dateTime, bool forceToDate );
 
     void appendLayerProjectSettings( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer );
 
@@ -76,6 +77,7 @@ namespace QgsWms
     );
 
     void addKeywordListElement( const QgsProject *project, QDomDocument &doc, QDomElement &parent );
+
   } // namespace
 
   void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response, bool projectSettings )
@@ -1110,7 +1112,15 @@ namespace QgsWms
       return styleElem;
     }
 
-    //! Return TRUE if date only have been written, FALSE if there is datetime
+    /**
+     * Returns \a dateTime string representation. Remove time if \a dateOnly is TRUE
+     */
+    QString dateToString( const QDateTime &dateTime, bool dateOnly )
+    {
+      return dateOnly ? dateTime.date().toString( Qt::DateFormat::ISODate ) : dateTime.toString( Qt::DateFormat::ISODate );
+    }
+
+    //! Return TRUE if date only have been written, FALSE if there are date and time
     bool writeTimeDimensionNode( QDomDocument &doc, QDomElement &layerElem, const QList<QgsDateTimeRange> &dateRanges )
     {
       // Apparently, for vectors allTemporalRanges is always empty :/
@@ -1119,11 +1129,9 @@ namespace QgsWms
       // we write a TIME dimension even if dateRanges is empty. Not sure this is appropriate but
       // it was like that from the beginning so better keep it that way to avoid regression on client side
 
-      const bool hasDateTime = std::any_of( dateRanges.constBegin(), dateRanges.constEnd(), []( const QgsDateTimeRange &r ) {
-        return r.begin().time() != QTime( 0, 0 ) || ( !r.isInstant() && r.end().time() != QTime( 0, 0 ) );
+      const bool dateOnly = std::all_of( dateRanges.constBegin(), dateRanges.constEnd(), []( const QgsDateTimeRange &r ) {
+        return r.begin().time() == QTime( 0, 0 ) && ( r.isInstant() || r.end().time() == QTime( 0, 0 ) );
       } );
-
-      const QString dateFormat = hasDateTime ? u"yyyy-MM-ddTHH:mm:ss"_s : u"yyyy-MM-dd"_s;
 
       QStringList strValues;
       for ( const QgsDateTimeRange &range : dateRanges )
@@ -1131,7 +1139,7 @@ namespace QgsWms
         // Standard ISO8601 doesn't support range with no defined begin or end
         if ( range.begin().isValid() && range.end().isValid() )
         {
-          strValues << ( range.isInstant() ? range.begin().toString( dateFormat ) : u"%1/%2"_s.arg( range.begin().toString( dateFormat ) ).arg( range.end().toString( dateFormat ) ) );
+          strValues << ( range.isInstant() ? dateToString( range.begin(), dateOnly ) : u"%1/%2"_s.arg( dateToString( range.begin(), dateOnly ) ).arg( dateToString( range.end(), dateOnly ) ) );
         }
       }
 
@@ -1143,7 +1151,7 @@ namespace QgsWms
 
       layerElem.appendChild( dimElem );
 
-      return !hasDateTime;
+      return dateOnly;
     }
 
     void appendLayersFromTreeGroup(
@@ -1395,7 +1403,7 @@ namespace QgsWms
 
             // Add all values
             const QList<QgsDateTimeRange> allRanges { l->temporalProperties()->allTemporalRanges( l ) };
-            const bool isDateList = writeTimeDimensionNode( doc, layerElem, allRanges );
+            const bool dateOnly = writeTimeDimensionNode( doc, layerElem, allRanges );
 
             parentDateRanges.append( allRanges );
 
@@ -1403,15 +1411,7 @@ namespace QgsWms
             timeExtentElem.setAttribute( u"name"_s, u"TIME"_s );
 
             const QgsDateTimeRange timeExtent { l->temporalProperties()->calculateTemporalExtent( l ) };
-            QString extent;
-            if ( isDateList )
-            {
-              extent = u"%1/%2"_s.arg( timeExtent.begin().date().toString( Qt::DateFormat::ISODate ), timeExtent.end().date().toString( Qt::DateFormat::ISODate ) );
-            }
-            else
-            {
-              extent = u"%1/%2"_s.arg( timeExtent.begin().toString( Qt::DateFormat::ISODate ), timeExtent.end().toString( Qt::DateFormat::ISODate ) );
-            }
+            const QString extent = u"%1/%2"_s.arg( dateToString( timeExtent.begin(), dateOnly ) ).arg( dateToString( timeExtent.end(), dateOnly ) );
             QDomText extentValueText = doc.createTextNode( extent );
             timeExtentElem.appendChild( extentValueText );
             layerElem.appendChild( timeExtentElem );

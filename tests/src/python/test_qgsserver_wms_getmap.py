@@ -3097,22 +3097,22 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         rl1.temporalProperties().setFixedTemporalRange(
             QgsDateTimeRange(
-                QDateTime.fromString("2025-01-12T12:34:56", Qt.DateFormat.ISODate),
-                QDateTime.fromString("2025-01-15T09:12:34", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-12T12:34:56Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-15T09:12:34Z", Qt.DateFormat.ISODate),
             )
         )
 
         rl2.temporalProperties().setFixedTemporalRange(
             QgsDateTimeRange(
-                QDateTime.fromString("2025-01-12T00:00:00", Qt.DateFormat.ISODate),
-                QDateTime.fromString("2025-01-12T00:00:00", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-12T00:00:00Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-12T00:00:00Z", Qt.DateFormat.ISODate),
             )
         )
 
         rl3.temporalProperties().setFixedTemporalRange(
             QgsDateTimeRange(
-                QDateTime.fromString("2025-01-13T00:00:00", Qt.DateFormat.ISODate),
-                QDateTime.fromString("2025-01-13T00:00:00", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-13T00:00:00Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-13T00:00:00Z", Qt.DateFormat.ISODate),
             )
         )
 
@@ -3160,7 +3160,9 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         # range date time
         date_dimension = get_time_dim("test_date_1")
         self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
-        self.assertEqual(date_dimension.text, "2025-01-12T12:34:56/2025-01-15T09:12:34")
+        self.assertEqual(
+            date_dimension.text, "2025-01-12T12:34:56Z/2025-01-15T09:12:34Z"
+        )
 
         # instant date
         date_dimension = get_time_dim("test_date_2")
@@ -3186,7 +3188,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
         self.assertEqual(
             date_dimension.text,
-            "2025-01-12T12:34:56/2025-01-15T09:12:34,2025-01-12T00:00:00",
+            "2025-01-12T12:34:56Z/2025-01-15T09:12:34Z,2025-01-12T00:00:00Z",
         )
 
         # Test different cases for group recursivity
@@ -3195,7 +3197,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
         self.assertEqual(
             date_dimension.text,
-            "2025-01-12T00:00:00",
+            "2025-01-12T00:00:00Z",
         )
 
         date_dimension = get_time_dim("SubGroupWithoutTimeDimension")
@@ -3205,7 +3207,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
         self.assertEqual(
             date_dimension.text,
-            "2025-01-12T00:00:00",
+            "2025-01-12T00:00:00Z",
         )
 
         date_dimension = get_time_dim("OtherSubGroupWithoutTimeDimension")
