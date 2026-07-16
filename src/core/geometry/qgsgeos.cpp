@@ -2412,6 +2412,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::cleanCoverage( const QgsCoverage
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 14
   ( void ) parameters;
   ( void ) errorMsg;
+  ( void ) feedback;
   throw QgsNotSupportedException( QObject::tr( "Cleaning coverages requires a QGIS build based on GEOS 3.14 or later" ) );
 #else
   if ( !mGeos )
