@@ -524,6 +524,7 @@ QgsFixedTemporalRangeDelegate::QgsFixedTemporalRangeDelegate( QObject *parent )
 QWidget *QgsFixedTemporalRangeDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
   QgsDateTimeEdit *editor = new QgsDateTimeEdit( parent );
+  editor->setTimeSpec( Qt::UTC );
   editor->setAllowNull( true );
   return editor;
 }
