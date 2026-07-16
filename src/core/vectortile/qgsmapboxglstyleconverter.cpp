@@ -4018,7 +4018,11 @@ QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBox
 
   if ( category.isEmpty() )
   {
-    spriteImage = context.spriteImage();
+    // Images referenced without a category prefix belong to the sprite source with
+    // the id "default" (if present), otherwise the single unnamed sprite sheet.
+    if ( context.spriteCategories().contains( "default"_L1 ) )
+      category = u"default"_s;
+    spriteImage = context.spriteImage( category );
   }
 
   if ( spriteImage.isNull() )
