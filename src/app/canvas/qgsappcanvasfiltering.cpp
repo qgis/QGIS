@@ -20,9 +20,13 @@
 #include "qgselevationutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsmessagebar.h"
+#include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 
 #include <QInputDialog>
+#include <QMenu>
+#include <QPointer>
 
 #include "moc_qgsappcanvasfiltering.cpp"
 
@@ -56,6 +60,37 @@ void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, Qg
   QAction *setProjectLimitsAction = new QAction( tr( "Set Elevation Range…" ), controller );
   controller->menu()->addAction( setProjectLimitsAction );
   connect( setProjectLimitsAction, &QAction::triggered, QgisApp::instance(), [] { QgisApp::instance()->showProjectProperties( tr( "Elevation" ) ); } );
+
+  QMenu *setLimitsFromMenu = new QMenu( tr( "Set Slider Limits From" ), controller->menu() );
+  controller->menu()->addMenu( setLimitsFromMenu );
+
+  QAction *limitsFromProjectAction = setLimitsFromMenu->addAction( tr( "Project Layers" ) );
+  connect( limitsFromProjectAction, &QAction::triggered, controller, [controller] {
+    const QgsDoubleRange range = QgsElevationUtils::calculateZRangeForProject( QgsProject::instance() );
+    if ( range.isInfinite() || range.isEmpty() )
+    {
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Elevation Range" ), tr( "Could not determine an elevation range from the project layers." ) );
+      return;
+    }
+    controller->setRangeLimits( range );
+    controller->setRange( range );
+  } );
+
+  QPointer<QgsMapCanvas> canvasPointer( canvas );
+  QAction *limitsFromVisibleAction = setLimitsFromMenu->addAction( tr( "Visible Layers" ) );
+  connect( limitsFromVisibleAction, &QAction::triggered, controller, [controller, canvasPointer] {
+    if ( !canvasPointer )
+      return;
+    const QgsDoubleRange range = QgsElevationUtils::calculateZRangeForLayers( canvasPointer->layers( true ) );
+    if ( range.isInfinite() || range.isEmpty() )
+    {
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Elevation Range" ), tr( "Could not determine an elevation range from the visible layers." ) );
+      return;
+    }
+    controller->setRangeLimits( range );
+    controller->setRange( range );
+  } );
+
   QAction *disableAction = new QAction( tr( "Disable Elevation Filter" ), controller );
   controller->menu()->addAction( disableAction );
   connect( disableAction, &QAction::triggered, senderAction, [senderAction] { senderAction->setChecked( false ); } );
