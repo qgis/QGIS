@@ -41,6 +41,16 @@ class CORE_EXPORT QgsElevationUtils
     static QgsDoubleRange calculateZRangeForProject( QgsProject *project );
 
     /**
+     * Calculates the elevation range for the specified \a layers.
+     *
+     * This method considers the elevation (or z) range available from each of the \a layers and
+     * returns the maximal combined elevation range of these layers.
+     *
+     * \since QGIS 4.4
+     */
+    static QgsDoubleRange calculateZRangeForLayers( const QList< QgsMapLayer * > &layers );
+
+    /**
      * Returns a list of significant elevation/z-values for the specified \a project, using
      * the values from layers contained by the project.
      *
