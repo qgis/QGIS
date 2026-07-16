@@ -28,6 +28,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsProcessingModelAlgorithm,
+    QgsProcessingFeatureSourceDefinition,
     QgsProcessingOutputLayerDefinition,
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterFileDestination,
@@ -38,6 +39,7 @@ from qgis.core import (
     QgsProcessingParameterVectorDestination,
     QgsProject,
     QgsUnitTypes,
+    QgsVectorLayer,
 )
 from qgis.testing import QgisTestCase, start_app
 
@@ -439,6 +441,38 @@ class WrappersTest(QgisTestCase):
 
         widget.deleteLater()
         alg_widget.deleteLater()
+
+    def testFeatureSourceIterateFlag(self):
+        layer = QgsVectorLayer("Point?field=name:string", "overlay", "memory")
+        self.assertTrue(layer.isValid())
+        layer.dataProvider().addFeatures([QgsFeature(), QgsFeature()])
+        QgsProject.instance().addMapLayer(layer)
+
+        alg = QgsApplication.processingRegistry().createAlgorithmById("native:clip")
+        alg_widget = AlgorithmWidget(alg)
+        param = QgsProcessingParameterFeatureSource("OVERLAY")
+        wrapper = FeatureSourceWidgetWrapper(param, alg_widget)
+        widget = wrapper.createWidget()
+
+        widget.show()
+        wrapper.setValue(
+            QgsProcessingFeatureSourceDefinition(
+                layer.id(),
+                selectedFeaturesOnly=False,
+                featureLimit=-1,
+                flags=QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature,
+            )
+        )
+        value = wrapper.value()
+        self.assertIsInstance(value, QgsProcessingFeatureSourceDefinition)
+        self.assertTrue(
+            value.flags
+            & QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature
+        )
+
+        widget.deleteLater()
+        alg_widget.deleteLater()
+        QgsProject.instance().removeMapLayer(layer)
 
     def testMatrix(self):
         self.checkConstructWrapper(

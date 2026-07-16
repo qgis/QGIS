@@ -48,6 +48,19 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 
 
+def iterating_parameter(alg, parameters):
+    for param in alg.parameterDefinitions():
+        value = parameters.get(param.name(), None)
+        if (
+            isinstance(value, QgsProcessingFeatureSourceDefinition)
+            and value.flags
+            & QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature
+        ):
+            return param.name()
+
+    return None
+
+
 def execute(alg, parameters, context=None, feedback=None, catch_exceptions=True):
     """Executes a given algorithm, showing its progress in the
     progress object passed along.
@@ -424,7 +437,9 @@ def execute_in_place(alg, parameters, context=None, feedback=None):
     return ok, results
 
 
-def executeIterating(alg, parameters, paramToIter, context, feedback):
+def executeIterating(
+    alg, parameters, paramToIter, context, feedback, load_results=True
+):
     # Generate all single-feature layers
     parameter_definition = alg.parameterDefinition(paramToIter)
     if not parameter_definition:
@@ -488,7 +503,8 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
         if not ret:
             return False
 
-    handleAlgorithmResults(alg, context, feedback)
+    if load_results:
+        handleAlgorithmResults(alg, context, feedback)
     return True
 
 

@@ -46,7 +46,7 @@ from qgis.utils import iface
 
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.gui.AlgorithmExecutor import execute
+from processing.gui.AlgorithmExecutor import execute, executeIterating, iterating_parameter
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.script import ScriptUtils
@@ -223,9 +223,25 @@ class Processing:
                 )
             )
 
-        ret, results = execute(
-            alg, parameters, context, feedback, catch_exceptions=False
-        )
+        iterate_param = iterating_parameter(alg, parameters)
+        if iterate_param:
+            ret = executeIterating(
+                alg,
+                parameters,
+                iterate_param,
+                context,
+                feedback,
+                load_results=False,
+            )
+            results = {
+                out.name(): parameters[out.name()]
+                for out in alg.outputDefinitions()
+                if out.name() in parameters
+            }
+        else:
+            ret, results = execute(
+                alg, parameters, context, feedback, catch_exceptions=False
+            )
         if ret:
             feedback.pushInfo(Processing.tr("Results: {}").format(results))
 

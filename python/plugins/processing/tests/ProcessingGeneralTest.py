@@ -20,15 +20,22 @@ __date__ = "January 2019"
 __copyright__ = "(C) 2019, Nyall Dawson"
 
 import gc
+import os
 import shutil
+import tempfile
 import unittest
 
 import nose2
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
+    QgsFeature,
+    QgsGeometry,
     QgsProcessing,
     QgsProcessingContext,
+    QgsProcessingFeatureSourceDefinition,
+    QgsProcessingFeedback,
+    QgsProcessingException,
     QgsProject,
     QgsVectorLayer,
 )
@@ -131,6 +138,108 @@ class TestProcessingGeneral(QgisTestCase):
 
         # Python should NOT have ownership
         self.assertFalse(sip.ispyowned(layer))
+
+    def testRunIteratingFeatureSource(self):
+        in_layer = QgsVectorLayer("Polygon?field=fldtxt:string", "in", "memory")
+        overlay_layer = QgsVectorLayer(
+            "Polygon?field=name:string", "overlay", "memory"
+        )
+        self.assertTrue(in_layer.isValid())
+        self.assertTrue(overlay_layer.isValid())
+
+        in_provider = in_layer.dataProvider()
+        overlay_provider = overlay_layer.dataProvider()
+
+        feature = QgsFeature(in_layer.fields())
+        feature.setAttributes(["input"])
+        feature.setGeometry(
+            QgsGeometry.fromWkt(
+                "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))"
+            )
+        )
+        in_provider.addFeature(feature)
+
+        feature_a = QgsFeature(overlay_layer.fields())
+        feature_a.setAttributes(["a"])
+        feature_a.setGeometry(
+            QgsGeometry.fromWkt(
+                "POLYGON((0 0, 5 0, 5 10, 0 10, 0 0))"
+            )
+        )
+        feature_b = QgsFeature(overlay_layer.fields())
+        feature_b.setAttributes(["b"])
+        feature_b.setGeometry(
+            QgsGeometry.fromWkt(
+                "POLYGON((5 0, 10 0, 10 10, 5 10, 5 0))"
+            )
+        )
+        overlay_provider.addFeatures([feature_a, feature_b])
+
+        QgsProject.instance().addMapLayer(in_layer)
+        QgsProject.instance().addMapLayer(overlay_layer)
+
+        with tempfile.TemporaryDirectory() as tempdir:
+            output_path = f"{tempdir}/clip.gpkg"
+            feedback = QgsProcessingFeedback()
+            result = processing.run(
+                "native:clip",
+                {
+                    "INPUT": in_layer,
+                    "OVERLAY": QgsProcessingFeatureSourceDefinition(
+                        overlay_layer.id(),
+                        selectedFeaturesOnly=False,
+                        featureLimit=-1,
+                        flags=QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature,
+                    ),
+                    "OUTPUT": output_path,
+                },
+                feedback=feedback,
+            )
+
+            self.assertIn("OUTPUT", result)
+            self.assertTrue(result["OUTPUT"].endswith("_2.gpkg"))
+            self.assertEqual(len([p for p in os.listdir(tempdir) if p.endswith(".gpkg")]), 2)
+
+        QgsProject.instance().removeMapLayer(in_layer)
+        QgsProject.instance().removeMapLayer(overlay_layer)
+
+    def testRunIteratingFeatureSourceEmptyLayerFails(self):
+        in_layer = QgsVectorLayer("Polygon?field=fldtxt:string", "in", "memory")
+        overlay_layer = QgsVectorLayer(
+            "Polygon?field=name:string", "overlay", "memory"
+        )
+        self.assertTrue(in_layer.isValid())
+        self.assertTrue(overlay_layer.isValid())
+
+        in_feature = QgsFeature(in_layer.fields())
+        in_feature.setAttributes(["input"])
+        in_feature.setGeometry(
+            QgsGeometry.fromWkt("POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))")
+        )
+        in_layer.dataProvider().addFeature(in_feature)
+
+        QgsProject.instance().addMapLayer(in_layer)
+        QgsProject.instance().addMapLayer(overlay_layer)
+
+        with tempfile.TemporaryDirectory() as tempdir:
+            with self.assertRaises(QgsProcessingException):
+                processing.run(
+                    "native:clip",
+                    {
+                        "INPUT": in_layer,
+                        "OVERLAY": QgsProcessingFeatureSourceDefinition(
+                            overlay_layer.id(),
+                            selectedFeaturesOnly=False,
+                            featureLimit=-1,
+                            flags=QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature,
+                        ),
+                        "OUTPUT": f"{tempdir}/clip.gpkg",
+                    },
+                    feedback=QgsProcessingFeedback(),
+                )
+
+        QgsProject.instance().removeMapLayer(in_layer)
+        QgsProject.instance().removeMapLayer(overlay_layer)
 
     def testProviders(self):
         """

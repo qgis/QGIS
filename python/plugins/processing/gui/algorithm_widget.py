@@ -53,7 +53,12 @@ from qgis.utils import iface
 from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import resultsList
-from processing.gui.AlgorithmExecutor import execute, execute_in_place, executeIterating
+from processing.gui.AlgorithmExecutor import (
+    execute,
+    execute_in_place,
+    executeIterating,
+    iterating_parameter,
+)
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -249,20 +254,8 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
             self.setExecutedAnyResult(True)
             self.cancelButton().setEnabled(False)
 
-            self.iterateParam = None
+            self.iterateParam = iterating_parameter(self.algorithm(), parameters)
             self._is_running = True
-
-            for param in self.algorithm().parameterDefinitions():
-                if (
-                    isinstance(
-                        parameters.get(param.name(), None),
-                        QgsProcessingFeatureSourceDefinition,
-                    )
-                    and parameters[param.name()].flags
-                    & QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature
-                ):
-                    self.iterateParam = param.name()
-                    break
 
             self.clearProgress()
             self.feedback.pushVersionInfo(self.algorithm().provider())
