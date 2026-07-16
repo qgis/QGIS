@@ -951,7 +951,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
     if ( node->flags() & Qt::ItemIsEditable )
     {
-      QAction *renameAction = new QAction( tr( "Rename Item" ), menu );
+      QAction *renameAction = new QAction( tr( "Rename Item…" ), menu );
       connect( renameAction, &QAction::triggered, this, [this] { mView->edit( mView->currentIndex() ); } );
       menu->addAction( renameAction );
       menu->addSeparator()->setObjectName( "RenameItemSeparator"_L1 );
