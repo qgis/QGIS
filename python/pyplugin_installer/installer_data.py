@@ -1006,8 +1006,6 @@ class Plugins(QObject):
                             plugin["version_available"],
                         )
                         == 2
-                        or not self.mPlugins[key]["experimental"]
-                        or plugin["experimental"]
                     )
                 ):
                     # The mPlugins dict contains now locally installed plugins.
