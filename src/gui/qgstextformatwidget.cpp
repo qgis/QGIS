@@ -1646,6 +1646,10 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     showDistanceFrame = true;
     mPlacementDistanceFrame->setEnabled( true );
   }
+  else if ( currentGeometryType == Qgis::GeometryType::Line && currentPlacement == Qgis::LabelPlacement::Horizontal )
+  {
+    showRotationFrame = true;
+  }
 
   mPlacementLineFrame->setVisible( showLineFrame );
   mPlacementPolygonFrame->setVisible( showPolygonPlacementOptions );
