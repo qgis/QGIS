@@ -12,9 +12,12 @@
 class QgsLayerDropFeedbackOverlay : QWidget
 {
 %Docstring(signature="appended")
-A translucent overlay widget which renders visual feedback while a drag
-carrying map layers, a project or an unloadable payload hovers a widget
-which accepts such drops (e.g. the layer tree view or the map canvas).
+A translucent overlay which renders visual feedback for a drag hovering
+a widget that accepts map layers.
+
+The feedback depends on the payload being dragged (map layers, a project
+or an unloadable file) and is shown over the widget which accepts such
+drops, e.g. the layer tree view or the map canvas.
 
 The overlay is transparent for mouse events and does not accept drops
 itself, so it never interferes with the drag and drop event delivery of
