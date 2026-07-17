@@ -196,8 +196,6 @@ QString QgsTestUtils::sanitizeFakeHttpEndpoint( const QString &urlString )
   return modifiedUrlString.mid( 0, posQuotationMark ) + args;
 }
 
-///@endcond
-
 // anonymous namespace to avoid potential symbol collisions
 namespace
 {
@@ -369,3 +367,5 @@ bool QgsTestUtils::testConcurrentLayerAccess( const QString &uri, const QString 
   }
   return ok;
 }
+
+///@endcond
