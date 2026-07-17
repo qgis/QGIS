@@ -937,10 +937,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
 
     //! Sets diagram rendering object (takes ownership)
     void setDiagramRenderer( QgsDiagramRenderer *r SIP_TRANSFER );
-    const QgsDiagramRenderer *diagramRenderer() const { return mDiagramRenderer; }
+    const QgsDiagramRenderer *diagramRenderer() const { return mDiagramRenderer.get(); }
 
     void setDiagramLayerSettings( const QgsDiagramLayerSettings &s );
-    const QgsDiagramLayerSettings *diagramLayerSettings() const { return mDiagramLayerSettings; }
+    const QgsDiagramLayerSettings *diagramLayerSettings() const { return mDiagramLayerSettings.get(); }
 
     /**
      * Returns the feature renderer used for rendering the features in the layer in 2D
@@ -948,7 +948,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      *
      * \see setRenderer()
      */
-    QgsFeatureRenderer *renderer() { return mRenderer; }
+    QgsFeatureRenderer *renderer() { return mRenderer.get(); }
 
     /**
      * Returns the feature renderer used for rendering the features in the layer in 2D
@@ -957,7 +957,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \see setRenderer()
      * \note not available in Python bindings
      */
-    const QgsFeatureRenderer *renderer() const SIP_SKIP { return mRenderer; }
+    const QgsFeatureRenderer *renderer() const SIP_SKIP { return mRenderer.get(); }
 
     /**
      * Sets the feature renderer which will be invoked to represent this layer in 2D map views.
@@ -1617,14 +1617,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \note Labels will only be rendered if labelsEnabled() returns TRUE.
      * \see labelsEnabled()
      */
-    const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
+    const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling.get(); }
 
     /**
      * Access to labeling configuration. May be NULLPTR if labeling is not used.
      * \note Labels will only be rendered if labelsEnabled() returns TRUE.
      * \see labelsEnabled()
      */
-    QgsAbstractVectorLayerLabeling *labeling() { return mLabeling; }
+    QgsAbstractVectorLayerLabeling *labeling() { return mLabeling.get(); }
 
     /**
      * Sets labeling configuration. Takes ownership of the object.
@@ -3010,13 +3010,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
 
     //! Renderer object which holds the information about how to display the features
-    QgsFeatureRenderer *mRenderer = nullptr;
+    std::unique_ptr<QgsFeatureRenderer> mRenderer;
 
     //! Simplification object which holds the information about how to simplify the features for fast rendering
     QgsVectorSimplifyMethod mSimplifyMethod;
 
     //! Labeling configuration
-    QgsAbstractVectorLayerLabeling *mLabeling = nullptr;
+    std::unique_ptr<QgsAbstractVectorLayerLabeling> mLabeling;
 
     //! True if labels are enabled
     bool mLabelsEnabled = false;
@@ -3042,13 +3042,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     QgsVectorLayerJoinBuffer *mJoinBuffer = nullptr;
 
     //! stores information about expression fields on this layer
-    QgsExpressionFieldBuffer *mExpressionFieldBuffer = nullptr;
+    std::unique_ptr<QgsExpressionFieldBuffer> mExpressionFieldBuffer;
 
     //diagram rendering object. 0 if diagram drawing is disabled
-    QgsDiagramRenderer *mDiagramRenderer = nullptr;
+    std::unique_ptr<QgsDiagramRenderer> mDiagramRenderer;
 
     //stores infos about diagram placement (placement type, priority, position distance)
-    QgsDiagramLayerSettings *mDiagramLayerSettings = nullptr;
+    std::unique_ptr<QgsDiagramLayerSettings> mDiagramLayerSettings;
 
     mutable bool mValidExtent2D = false;
     mutable bool mLazyExtent2D = true;
