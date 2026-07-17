@@ -628,7 +628,7 @@ public:
     virtual void performEndTransparencyGroup(ProcessOrder order, const PDFTransparencyGroup& transparencyGroup) override;
     virtual void performTextBegin(ProcessOrder order) override;
     virtual void performTextEnd(ProcessOrder order) override;
-    virtual bool performOriginalImagePainting(const PDFImage& image, const PDFStream* stream) override;
+    virtual bool performOriginalImagePainting(const PDFImage& image, const PDFStream* stream, PDFObjectReference reference) override;
     virtual void performImagePainting(const QImage& image) override;
     virtual void performMeshPainting(const PDFMesh& mesh) override;
 

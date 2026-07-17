@@ -15,13 +15,14 @@
 
 #include "qgsmetalroughtexturedmaterial3dhandler.h"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
-#include "qgshighlightmaterial.h"
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgsmetalroughtexturedmaterialsettings.h"
+#include "qgsunlitmaterial.h"
 
 #include <QString>
 #include <Qt3DCore/QEntity>
@@ -51,7 +52,7 @@ QgsMaterial *QgsMetalRoughTexturedMaterial3DHandler::toMaterial( const QgsAbstra
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial();
+        return Qgs3D::createHighlightMaterial();
       }
 
       QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial( nullptr );
@@ -114,14 +115,13 @@ Qt3DRender::QTexture2D *QgsMetalRoughTexturedMaterial3DHandler::loadTexture( con
 
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
 
-  if ( isSrgb )
+  bool requiresConversionToRgb = false;
+  Qt3DRender::QAbstractTexture::TextureFormat textureFormat = Qgs3DUtils::determineTextureFormat( image.format(), isSrgb, requiresConversionToRgb );
+  if ( requiresConversionToRgb )
   {
-    texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
+    image.convertTo( QImage::Format::Format_ARGB32_Premultiplied );
   }
-  else
-  {
-    texture->setFormat( Qt3DRender::QAbstractTexture::RGBA8_UNorm );
-  }
+  texture->setFormat( textureFormat );
 
   texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
   texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );

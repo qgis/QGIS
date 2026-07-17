@@ -24,6 +24,7 @@
 #include "qgspostgresconnpool.h"
 #include "qgspostgresprovider.h"
 #include "qgspostgresprovidermetadatautils.h"
+#include "qgspostgresutils.h"
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 
@@ -219,6 +220,25 @@ void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, cons
 void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
 {
   executeSqlPrivate( u"ALTER TABLE %1.%2 RENAME TO %3"_s.arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ), QgsPostgresConn::quotedIdentifier( newName ) ) );
+
+  const QgsDataSourceUri dsUri { uri() };
+  auto conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
+
+  if ( conn )
+  {
+    if ( QgsPostgresUtils::tableExists( conn->get(), u"public"_s, u"layer_styles"_s ) )
+    {
+      try
+      {
+        executeSqlPrivate( u"UPDATE public.layer_styles SET f_table_name=%1 WHERE f_table_schema=%2 AND f_table_name=%3"_s
+                             .arg( QgsPostgresConn::quotedValue( newName ), QgsPostgresConn::quotedValue( schema ), QgsPostgresConn::quotedValue( name ) ) );
+      }
+      catch ( const QgsProviderConnectionException &e )
+      {
+        QgsDebugError( u"Failed to update layer_styles table: %1"_s.arg( e.what() ) );
+      }
+    }
+  }
 }
 
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderConnection::tablesPrivate( const QString &schema, const QString &table, const TableFlags &flags, QgsFeedback *feedback ) const
@@ -1957,6 +1977,13 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
       );
       sqlAdditionalCommands.append( sqlAddConstraint );
     }
+  }
+
+  if ( QgsPostgresUtils::tableExists( conn->get(), u"public"_s, u"layer_styles"_s ) )
+  {
+    const QString sqlMoveStyles = u"UPDATE public.layer_styles SET f_table_schema=%1 WHERE f_table_schema=%2 AND f_table_name=%3;"_s
+                                    .arg( QgsPostgresConn::quotedValue( targetSchema ), QgsPostgresConn::quotedValue( sourceSchema ), QgsPostgresConn::quotedValue( tableName ) );
+    sqlAdditionalCommands.append( sqlMoveStyles );
   }
 
   conn->get()->begin();

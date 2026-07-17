@@ -11,9 +11,10 @@ the Free Software Foundation; either version 2 of the License, or
 import os
 import unittest
 
-from qgis.core import QgsPdfRenderer
-from qgis.PyQt.QtCore import QRectF, Qt
+from qgis.core import Qgis, QgsPdfRenderer
+from qgis.PyQt.QtCore import QBuffer, QRect, QRectF, QSize, Qt
 from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
@@ -86,6 +87,34 @@ class TestQgsPdfRenderer(QgisTestCase):
                 "expected_render_page2",
             )
         )
+
+    def test_pdf_text_rendering_objects(self):
+        """
+        Test that text from the PDF is rendered as text objects, not paths or rasters
+        """
+        pdf_path = os.path.join(TEST_DATA_DIR, "sample_pdf.pdf")
+        renderer = QgsPdfRenderer(pdf_path, Qgis.PdfRenderFlag.RenderTextAsText)
+
+        # render via qpainter to svg, so we can test for text objects in svg
+        buffer = QBuffer()
+        generator = QSvgGenerator()
+        generator.setOutputDevice(buffer)
+        generator.setSize(QSize(600, 423))
+        generator.setViewBox(QRect(0, 0, 600, 423))
+
+        painter = QPainter(generator)
+        render_success = renderer.render(painter, QRectF(0, 0, 600, 423), pageIndex=0)
+        painter.end()
+
+        self.assertTrue(render_success)
+
+        svg_content = bytes(buffer.data()).decode("utf-8")
+
+        # PDF4QT writes text character-by-character, not in complete strings
+        self.assertIn(">P</text>", svg_content)
+        self.assertIn(">A</text>", svg_content)
+        self.assertIn(">G</text>", svg_content)
+        self.assertIn(">E</text>", svg_content)
 
 
 if __name__ == "__main__":

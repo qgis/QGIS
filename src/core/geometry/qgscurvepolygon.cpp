@@ -397,26 +397,48 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
   return elemCurvePolygon;
 }
 
-json QgsCurvePolygon::asJsonObject( int precision ) const
+json QgsCurvePolygon::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
-  json coordinates( json::array() );
-  if ( auto *lExteriorRing = exteriorRing() )
+  switch ( profile )
   {
-    std::unique_ptr< QgsLineString > exteriorLineString( lExteriorRing->curveToLine() );
-    QgsPointSequence exteriorPts;
-    exteriorLineString->points( exteriorPts );
-    coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision ) );
-
-    std::unique_ptr< QgsLineString > interiorLineString;
-    for ( int i = 0, n = numInteriorRings(); i < n; ++i )
+    case Qgis::GeoJsonProfile::Legacy:
+    case Qgis::GeoJsonProfile::Rfc7946:
     {
-      interiorLineString.reset( interiorRing( i )->curveToLine() );
-      QgsPointSequence interiorPts;
-      interiorLineString->points( interiorPts );
-      coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision ) );
+      json coordinates( json::array() );
+      if ( const QgsCurve *lExteriorRing = exteriorRing() )
+      {
+        std::unique_ptr< QgsLineString > exteriorLineString( lExteriorRing->curveToLine() );
+        QgsPointSequence exteriorPts;
+        exteriorLineString->points( exteriorPts );
+        coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision, profile ) );
+
+        std::unique_ptr< QgsLineString > interiorLineString;
+        for ( int i = 0, n = numInteriorRings(); i < n; ++i )
+        {
+          interiorLineString.reset( interiorRing( i )->curveToLine() );
+          QgsPointSequence interiorPts;
+          interiorLineString->points( interiorPts );
+          coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision, profile ) );
+        }
+      }
+      return { { "type", "Polygon" }, { "coordinates", coordinates } };
+    }
+    case Qgis::GeoJsonProfile::JsonFg:
+    case Qgis::GeoJsonProfile::JsonFgPlus:
+    {
+      json geometries = json::array();
+      if ( const QgsCurve *lExteriorRing = exteriorRing() )
+      {
+        geometries.push_back( lExteriorRing->asJsonObject( precision, profile ) );
+        for ( int i = 0, n = numInteriorRings(); i < n; ++i )
+        {
+          geometries.push_back( interiorRing( i )->asJsonObject( precision, profile ) );
+        }
+      }
+      return { { "type", "CurvePolygon" }, { "geometries", geometries } };
     }
   }
-  return { { "type", "Polygon" }, { "coordinates", coordinates } };
+  BUILTIN_UNREACHABLE
 }
 
 QString QgsCurvePolygon::asKml( int precision ) const

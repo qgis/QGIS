@@ -2656,8 +2656,14 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QString field = customCommentEntryElem.attribute( u"field"_s );
 
         //empty values are important as well (to override provider comments with nothing)
-        const QString customComment = customCommentEntryElem.attribute( u"value"_s );
-
+        const QString customCommentEntryValue = customCommentEntryElem.attribute( u"value"_s );
+        QString customComment = customCommentEntryValue;
+        if ( !customCommentEntryValue.isEmpty() )
+        {
+          //translate comment if it's not empty
+          customComment = context.projectTranslator()->translate( u"project:layers:%1:fieldcustomcomments"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ), customCommentEntryValue );
+          QgsDebugMsgLevel( "context" + u"project:layers:%1:fieldcustomcomments"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ) + " source " + customCommentEntryValue, 3 );
+        }
         if ( fields().lookupField( field ) < 0 )
         {
           QgsDebugMsgLevel( u"Warning: Field %1 not found in layer %2 to load custom comment from setting "_s.arg( field, name() ), 2 );
@@ -5842,26 +5848,63 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       QDomElement anchorPointElem = pointPlacementElem.firstChildElement( u"AnchorPoint"_s );
       if ( !anchorPointElem.isNull() )
       {
+        bool xOffsetOk = false;
+        double xOffset = 0.0;
+        bool yOffsetOk = false;
+        double yOffset = 0.0;
+
         QDomElement anchorPointXElem = anchorPointElem.firstChildElement( u"AnchorPointX"_s );
         if ( !anchorPointXElem.isNull() )
         {
-          bool ok;
-          double xOffset = anchorPointXElem.text().toDouble( &ok );
-          if ( ok )
-          {
-            settings.xOffset = xOffset;
-            settings.offsetUnits = sldUnitSize;
-          }
+          xOffset = anchorPointXElem.text().toDouble( &xOffsetOk );
         }
         QDomElement anchorPointYElem = anchorPointElem.firstChildElement( u"AnchorPointY"_s );
         if ( !anchorPointYElem.isNull() )
         {
-          bool ok;
-          double yOffset = anchorPointYElem.text().toDouble( &ok );
-          if ( ok )
+          yOffset = anchorPointYElem.text().toDouble( &yOffsetOk );
+        }
+
+        if ( xOffsetOk & yOffsetOk )
+        {
+          // Round values in increments of 0.5
+          xOffset = std::round( xOffset * 2.0 ) / 2.0;
+          yOffset = std::round( yOffset * 2.0 ) / 2.0;
+
+          if ( xOffset == 1.0 && yOffset == 0.0 )
           {
-            settings.yOffset = yOffset;
-            settings.offsetUnits = sldUnitSize;
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveLeft );
+          }
+          else if ( xOffset == 0.5 && yOffset == 0.0 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Above );
+          }
+          else if ( xOffset == 0.0 && yOffset == 0.0 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::AboveRight );
+          }
+          else if ( xOffset == 1.0 && yOffset == 0.5 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Left );
+          }
+          else if ( xOffset == 0.5 && yOffset == 0.5 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Over );
+          }
+          else if ( xOffset == 0.0 && yOffset == 0.5 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Right );
+          }
+          else if ( xOffset == 1.0 && yOffset == 1.0 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowLeft );
+          }
+          else if ( xOffset == 0.5 && yOffset == 1.0 )
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Below );
+          }
+          else
+          {
+            settings.pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::BelowRight );
           }
         }
       }

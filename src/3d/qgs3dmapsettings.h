@@ -637,15 +637,15 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Returns the camera lens' projection type
-     * \since QGIS 3.18
+     * \since QGIS 4.2
      */
-    Qt3DRender::QCameraLens::ProjectionType projectionType() const SIP_SKIP;
+    Qgis::Map3DProjectionType projectionType() const;
 
     /**
      * Sets the camera lens' projection type
-     * \since QGIS 3.18
+     * \since QGIS 4.2
      */
-    void setProjectionType( const Qt3DRender::QCameraLens::ProjectionType projectionType ) SIP_SKIP;
+    void setProjectionType( const Qgis::Map3DProjectionType projectionType );
 
 #ifndef SIP_RUN
 
@@ -1268,11 +1268,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsPhongMaterialSettings mTerrainShadingMaterial; //!< Material to use for the terrain (if shading is enabled). Diffuse color is ignored.
     QString mTerrainMapTheme;                         //!< Name of map theme used for terrain's texture (empty means use the current map theme)
     Qgis::Map3DDebugFlags mDebugFlags;
-    bool mShowLabels = false;                                                                                 //!< Whether to display labels on terrain tiles
-    bool mStopUpdates = false;                                                                                //!< Whether to stop updating scene on zoom
-    QList<QgsLightSource *> mLightSources;                                                                    //!< List of light sources in the scene (owned by the settings)
-    double mFieldOfView = 45.0;                                                                               //!< Camera lens field of view value
-    Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection; //!< Camera lens projection type
+    bool mShowLabels = false;                                                           //!< Whether to display labels on terrain tiles
+    bool mStopUpdates = false;                                                          //!< Whether to stop updating scene on zoom
+    QList<QgsLightSource *> mLightSources;                                              //!< List of light sources in the scene (owned by the settings)
+    double mFieldOfView = 45.0;                                                         //!< Camera lens field of view value
+    Qgis::Map3DProjectionType mProjectionType = Qgis::Map3DProjectionType::Perspective; //!< Camera lens projection type
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     double mCameraMovementSpeed = 5.0;
     QList<QgsMapLayerRef> mLayers; //!< Layers to be rendered

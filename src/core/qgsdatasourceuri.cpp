@@ -245,20 +245,22 @@ QString QgsDataSourceUri::removePassword( const QString &aUri, bool hide )
   {
     if ( aUri.contains( " password='"_L1 ) )
     {
-      regexp.setPattern( u" password='[^']*' "_s );
+      regexp.setPattern( u" password='[^']*'"_s );
     }
     else
     {
-      regexp.setPattern( u" password=.* "_s );
+      // InvertedGreedinessOption doesn't work here, disable it
+      regexp.setPatternOptions( QRegularExpression::NoPatternOption );
+      regexp.setPattern( u" password=[^ ]*"_s );
     }
 
     if ( hide )
     {
-      safeName.replace( regexp, u" password=%1 "_s.arg( HIDING_TOKEN ) );
+      safeName.replace( regexp, u" password=%1"_s.arg( HIDING_TOKEN ) );
     }
     else
     {
-      safeName.replace( regexp, u" "_s );
+      safeName.replace( regexp, u""_s );
     }
   }
   else if ( aUri.contains( ",password="_L1 ) )

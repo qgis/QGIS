@@ -48,7 +48,7 @@ int QgisEvent = QEvent::User + 1;
 // qHash implementation for scoped enum type
 // https://gitlab.com/frostasm/programming-knowledge-base/-/snippets/20120
 #define QHASH_FOR_CLASS_ENUM( T )                                                     \
-  inline uint qHash( const T &t, uint seed )                                          \
+  inline size_t qHash( const T &t, size_t seed )                                      \
   {                                                                                   \
     return ::qHash( static_cast<typename std::underlying_type<T>::type>( t ), seed ); \
   }
@@ -566,12 +566,25 @@ int QgisEvent = QEvent::User + 1;
 
     /**
      * \ingroup core
+     * \brief Actions to take when attempting to create a layer on an existing datasource
+     * \since QGIS 4.2
+     */
+   enum class CreateLayerActionOnExisting : int
+   {
+     Abort, //!< Abort the creation on detecting an existing layer.
+     CreateOrOverwriteFile, //!< Create or overwrite whole file. For existing file-based datasources the entire datasource will be deleted, including all other layers in it. For non file-based datasources this is treated the same as CreateOrOverwriteLayer.
+     CreateOrOverwriteLayer, //!< Create or overwrite existing layer only. For existing file-based datasources other layers in the datasource will be untouched.
+   };
+    Q_ENUM( CreateLayerActionOnExisting )
+
+    /**
+     * \ingroup core
      * \brief Enumeration of feature count states
      * \since QGIS 3.20
      */
     enum class FeatureCountState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorDataProvider, FeatureCountState ) : int
-      {
-      Uncounted = -2, //!< Feature count not yet computed
+    {
+      Uncounted = -2,    //!< Feature count not yet computed
       UnknownCount = -1, //!< Provider returned an unknown feature count
     };
     Q_ENUM( FeatureCountState )
@@ -4331,6 +4344,18 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( Map3DDebugFlags )
 
     /**
+     * 3D map projection type
+     *
+     * \since QGIS 4.2
+     */
+    enum class Map3DProjectionType : int
+    {
+      Orthographic = 0, //!< Orthogonal projection
+      Perspective = 1,  //!< Perspective projection
+    };
+    Q_ENUM( Map3DProjectionType )
+
+    /**
      * 3D point shape types.
      *
      * \note Prior to QGIS 3.36 this was available as QgsPoint3DSymbol::Shape
@@ -5010,6 +5035,20 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( LegendJsonRenderFlag )
     Q_DECLARE_FLAGS( LegendJsonRenderFlags, LegendJsonRenderFlag )
     Q_FLAG( LegendJsonRenderFlags )
+
+    /**
+     * GeoJson export Profile according to OGC Features and Geometries JSON - Part 1: Core
+     * https://docs.ogc.org/is/21-045r1/21-045r1.html
+     * \since QGIS 4.2
+     */
+    enum class GeoJsonProfile : int
+    {
+      Legacy, //!< Legacy GeoJson profile used in QGIS prior to 4.2, which included some non-standard extensions and deviations from the RFC7946 standard, such as support for  transforming geometries to a CRS different than CRS84. This profile is still available for backward compatibility but is not recommended for new projects.
+      Rfc7946,    //!< GeoJson profile compliant with RFC7946 standard "http://www.opengis.net/def/profile/OGC/0/rfc7946"
+      JsonFg,     //!< GeoJson profile from OGC Features and Geometries JSON Part 1: core "http://www.opengis.net/def/profile/OGC/0/jsonfg"
+      JsonFgPlus, //!< GeoJson profile from OGC Features and Geometries JSON Part 1: core "http://www.opengis.net/def/profile/OGC/0/jsonfg-plus"
+    };
+    Q_ENUM( GeoJsonProfile )
 
     /**
      * Action types.
@@ -6876,7 +6915,7 @@ int QgisEvent = QEvent::User + 1;
     /**
      * Style save format
      *
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     enum class SaveStyleFormat : int SIP_ENUM_BASETYPE( IntFlag )
     {
@@ -6886,6 +6925,39 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( SaveStyleFormat )
     Q_DECLARE_FLAGS( SaveStyleFormats, SaveStyleFormat )
     Q_FLAG( SaveStyleFormats )
+
+    /**
+     * Merge strategies for coverage cleaning operations.
+     *
+     * \since QGIS 4.4
+     */
+    enum class CoverageCleanOverlapMergeStrategy : int
+    {
+      LongestBorder = 0, //!< Polygon with longest common border is selected to merge overlapping polygons into
+      MaximumArea = 1,   //!< Polygon with largest area is selected to merge overlapping polygons into
+      MinimumArea = 2,   //!< Polygon with minimum area is selected to merge overlapping polygons into
+      MinimumIndex = 3,  //!< Polygon with smallest input index is selected to merge overlapping polygons into
+    };
+    Q_ENUM( CoverageCleanOverlapMergeStrategy )
+
+    /**
+     * PDF rendering flags.
+     *
+     * \since QGIS 4.4
+     */
+    enum class PdfRenderFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      RenderTextAsText = 1 << 0, //!< Render text items as text objects, not painter paths
+    };
+    Q_ENUM( PdfRenderFlag )
+
+    /**
+     * PDF rendering flags.
+     *
+     * \since QGIS 4.4
+     */
+    Q_DECLARE_FLAGS( PdfRenderFlags, PdfRenderFlag )
+    Q_FLAG( PdfRenderFlags )
 
     /**
      * Identify search radius in mm
@@ -7182,6 +7254,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::InstancedMaterialFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SaveStyleFormats )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::Map3DDebugFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SensorThingsExtensions )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PdfRenderFlags )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 
@@ -7241,7 +7314,7 @@ template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *ob
 }
 
 //! Hash for QVariant
-CORE_EXPORT uint qHash( const QVariant &variant );
+CORE_EXPORT size_t qHash( const QVariant &variant );
 
 /**
  * Returns a string representation of a double

@@ -82,6 +82,11 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
   populateActions();
 }
 
+void QgsConfigureShortcutsDialog::setFilter( const QString &filterText )
+{
+  mLeFilter->setText( filterText );
+}
+
 void QgsConfigureShortcutsDialog::populateActions()
 {
   const QList<QObject *> objects = mManager->listAll();
@@ -487,19 +492,19 @@ void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent *event )
   {
     // modifiers
     case Qt::Key_Meta:
-      mModifiers |= Qt::META;
+      mModifiers.setFlag( Qt::KeyboardModifier::MetaModifier );
       updateShortcutText();
       break;
     case Qt::Key_Alt:
-      mModifiers |= Qt::ALT;
+      mModifiers.setFlag( Qt::KeyboardModifier::AltModifier );
       updateShortcutText();
       break;
     case Qt::Key_Control:
-      mModifiers |= Qt::CTRL;
+      mModifiers.setFlag( Qt::KeyboardModifier::ControlModifier );
       updateShortcutText();
       break;
     case Qt::Key_Shift:
-      mModifiers |= Qt::SHIFT;
+      mModifiers.setFlag( Qt::KeyboardModifier::ShiftModifier );
       updateShortcutText();
       break;
 
@@ -527,19 +532,19 @@ void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent *event )
   {
     // modifiers
     case Qt::Key_Meta:
-      mModifiers &= ~Qt::META;
+      mModifiers.setFlag( Qt::KeyboardModifier::MetaModifier, false );
       updateShortcutText();
       break;
     case Qt::Key_Alt:
-      mModifiers &= ~Qt::ALT;
+      mModifiers.setFlag( Qt::KeyboardModifier::AltModifier, false );
       updateShortcutText();
       break;
     case Qt::Key_Control:
-      mModifiers &= ~Qt::CTRL;
+      mModifiers.setFlag( Qt::KeyboardModifier::ControlModifier, false );
       updateShortcutText();
       break;
     case Qt::Key_Shift:
-      mModifiers &= ~Qt::SHIFT;
+      mModifiers.setFlag( Qt::KeyboardModifier::ShiftModifier, false );
       updateShortcutText();
       break;
 
@@ -549,7 +554,7 @@ void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent *event )
     default:
     {
       // an ordinary key - set it with modifiers as a shortcut
-      setCurrentActionShortcut( QKeySequence( mModifiers + mKey ) );
+      setCurrentActionShortcut( QKeySequence( static_cast< int >( mModifiers ) + mKey ) );
       setGettingShortcut( false );
     }
   }
@@ -567,13 +572,13 @@ QObject *QgsConfigureShortcutsDialog::currentObject()
 void QgsConfigureShortcutsDialog::updateShortcutText()
 {
   // update text of the button so that user can see what has typed already
-  const QKeySequence s( mModifiers + mKey );
+  const QKeySequence s( static_cast< int >( mModifiers ) + mKey );
   btnChangeShortcut->setText( tr( "Input: " ) + s.toString( QKeySequence::NativeText ) );
 }
 
 void QgsConfigureShortcutsDialog::setGettingShortcut( bool getting )
 {
-  mModifiers = 0;
+  mModifiers = Qt::KeyboardModifiers();
   mKey = 0;
   mGettingShortcut = getting;
   if ( !getting )

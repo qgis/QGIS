@@ -378,7 +378,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity(
         if ( indexPosition != mIndexPosition )
           return;
 
-        QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode, n );
+        QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode.get(), n );
         if ( node )
         {
           updateNodes( QList<QgsChunkNode *>() << node, mChunkUpdaterFactory.get() );
@@ -432,7 +432,7 @@ QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const Qgs
 
   // transform ray
   const QgsVector3D rayOriginMapCoords = factory->mRenderContext.worldToMapCoordinates( ray.origin() );
-  const QgsVector3D pointMapCoords = factory->mRenderContext.worldToMapCoordinates( ray.origin() + ray.origin().length() * ray.direction().normalized() );
+  const QgsVector3D pointMapCoords = factory->mRenderContext.worldToMapCoordinates( ray.point( ray.origin().length() ) );
   QgsVector3D rayDirectionMapCoords = pointMapCoords - rayOriginMapCoords;
   rayDirectionMapCoords.normalize();
 

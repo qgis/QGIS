@@ -1539,6 +1539,10 @@ class TestQgsExpression : public QObject
       QTest::newRow( "extend null" ) << "extend(NULL, 1, 2)" << false << QVariant();
       QTest::newRow( "extend point" ) << "extend(geom_from_wkt('POINT(1 2)'),1,2)" << false << QVariant();
       QTest::newRow( "extend line" ) << "geom_to_wkt(extend(geom_from_wkt('LineString(0 0, 1 0, 1 1)'),1,2))" << false << QVariant( "LineString (-1 0, 1 0, 1 3)" );
+      QTest::newRow( "extend line with deflection" )
+        << "geom_to_wkt(extend(geom_from_wkt('LineString(0 0, 1 0, 1 1)'),1,2, 45, -45), 3)"
+        << false
+        << QVariant( "LineString (-0.707 0.707, 0 0, 1 0, 1 1, -0.414 2.414)" );
       QTest::newRow( "start_point point" ) << "geom_to_wkt(start_point(geom_from_wkt('POINT(2 0)')))" << false << QVariant( "Point (2 0)" );
       QTest::newRow( "start_point multipoint" ) << "geom_to_wkt(start_point(geom_from_wkt('MULTIPOINT((3 3), (1 1), (2 2))')))" << false << QVariant( "Point (3 3)" );
       QTest::newRow( "start_point line" ) << "geom_to_wkt(start_point(geom_from_wkt('LINESTRING(4 1, 1 1, 2 2)')))" << false << QVariant( "Point (4 1)" );
@@ -2289,6 +2293,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "concat" ) << "concat('a', 'b', 'c', 'd')" << false << QVariant( "abcd" );
       QTest::newRow( "concat function single" ) << "concat('a')" << false << QVariant( "a" );
       QTest::newRow( "concat function with NULL" ) << "concat(NULL,'a','b')" << false << QVariant( "ab" );
+      QTest::newRow( "concat function with only NULL" ) << "concat(NULL)" << false << QVariant( "" );
+      QTest::newRow( "concat function with multi NULL" ) << "concat(NULL, NULL)" << false << QVariant( "" );
       QTest::newRow( "concat_ws no args" ) << "concat_ws()" << true << QVariant();
       QTest::newRow( "concat_ws one arg" ) << "concat_ws(' ')" << true << QVariant();
       QTest::newRow( "concat_ws comma" ) << "concat_ws(',', 'b', NULL, 'd')" << false << QVariant( "b,d" );
@@ -2973,6 +2979,11 @@ class TestQgsExpression : public QObject
         << u"regexp_match( uuid('invalid-format'), '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')"_s
         << false
         << QVariant( 1 );
+      QTest::newRow( "uuid version unsupported" ) << u"uuid(version:=1)"_s << true << QVariant();
+      QTest::newRow( "uuid v4" ) << u"regexp_match( uuid(version:=4), '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')"_s << false << QVariant( 1 );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 9, 0 )
+      QTest::newRow( "uuid v7" ) << u"regexp_match( uuid(version:=7), '({[a-zA-Z\\\\d]{8}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{4}\\\\-[a-zA-Z\\\\d]{12}})')"_s << false << QVariant( 1 );
+#endif
 
       //exif functions
       QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
@@ -4153,7 +4164,7 @@ class TestQgsExpression : public QObject
       QCOMPARE( functionNodes.size(), 5 );
       QgsExpressionFunction *fd;
       QSet<QString> actualFunctions;
-      for ( const auto &f : functionNodes )
+      for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
         fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
@@ -4167,12 +4178,25 @@ class TestQgsExpression : public QObject
       QList<const QgsExpressionNodeBinaryOperator *> binaryOpsNodes( exp.findNodes<QgsExpressionNodeBinaryOperator>() );
       QCOMPARE( binaryOpsNodes.size(), 2 );
       QSet<QgsExpressionNodeBinaryOperator::BinaryOperator> actualBinaryOps;
-      for ( const auto &f : binaryOpsNodes )
+      for ( const QgsExpressionNodeBinaryOperator *f : std::as_const( binaryOpsNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntBinaryOperator );
         actualBinaryOps << f->op();
       }
       QCOMPARE( actualBinaryOps, expectedBinaryOps );
+
+      exp.setExpression( R"(if(current_value('a') in (1, 2), 'yes', 'no'))"_L1 );
+      functionNodes = exp.findNodes<QgsExpressionNodeFunction>();
+      actualFunctions.clear();
+      for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
+      {
+        QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
+        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+        actualFunctions << fd->name();
+      }
+      expectedFunctions.clear();
+      expectedFunctions << u"if"_s << u"current_value"_s;
+      QCOMPARE( actualFunctions, expectedFunctions );
     }
 
     void referenced_columns_all_attributes()

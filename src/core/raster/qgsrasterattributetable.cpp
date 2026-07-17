@@ -488,12 +488,17 @@ bool QgsRasterAttributeTable::insertRow( int position, const QVariantList &rowDa
 
   for ( int idx = 0; idx < mFields.count(); ++idx )
   {
+    const QMetaType::Type type = mFields.at( idx ).type;
     QVariant cell( rowData[idx] );
-    if ( !cell.canConvert( mFields.at( idx ).type ) || !cell.convert( mFields.at( idx ).type ) )
+    if ( type == QMetaType::Type::QDateTime && cell.toString().isEmpty() )
+    {
+      dataValid.append( QVariant() );
+    }
+    else if ( !cell.canConvert( type ) || !cell.convert( type ) )
     {
       if ( errorMessage )
       {
-        *errorMessage = tr( "Row data at column %1 cannot be converted to field type (%2)." ).arg( idx ).arg( QVariant::typeToName( mFields.at( idx ).type ) );
+        *errorMessage = tr( "Row data at column %1 cannot be converted to field type (%2)." ).arg( idx ).arg( QVariant::typeToName( type ) );
       }
       return false;
     }

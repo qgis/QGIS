@@ -19,9 +19,8 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgspanelwidget.h"
 #include "qgspropertycollection.h"
-
-#include <QWidget>
 
 #define SIP_NO_FILE
 
@@ -35,7 +34,7 @@ class QgsVectorLayer;
  * \note Not available in Python bindings
  * \since QGIS 3.16
  */
-class GUI_EXPORT QgsMaterialSettingsWidget : public QWidget
+class GUI_EXPORT QgsMaterialSettingsWidget : public QgsPanelWidget
 {
     Q_OBJECT
 

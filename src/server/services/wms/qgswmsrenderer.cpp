@@ -3412,13 +3412,22 @@ namespace QgsWms
       }
 
       QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ) );
-      QString fieldTextString = featureAttributes.at( i ).toString();
-      if ( layer )
+
+      // For GML: skip formatter and return null value if the attribute value is null
+      if ( mWmsParameters.infoFormat() == QgsWmsParameters::Format::GML && QgsVariantUtils::isNull( featureAttributes.at( i ) ) )
       {
-        fieldTextString = QgsExpression::replaceExpressionText( replaceValueMapAndRelation( layer, i, fieldTextString ), &expressionContext );
+        fieldElem.setAttribute( "xsi:nil"_L1, "true"_L1 );
       }
-      QDomText fieldText = doc.createTextNode( fieldTextString );
-      fieldElem.appendChild( fieldText );
+      else
+      {
+        QString fieldTextString = featureAttributes.at( i ).toString();
+        if ( layer )
+        {
+          fieldTextString = QgsExpression::replaceExpressionText( replaceValueMapAndRelation( layer, i, fieldTextString ), &expressionContext );
+        }
+        QDomText fieldText = doc.createTextNode( fieldTextString );
+        fieldElem.appendChild( fieldText );
+      }
       typeNameElement.appendChild( fieldElem );
     }
 
@@ -3657,6 +3666,18 @@ namespace QgsWms
         {
           bufferSettings.setEnabled( true );
           bufferSettings.setSize( static_cast<double>( param.mBufferSize ) );
+        }
+
+        if ( param.mFrameSize > 0 )
+        {
+          QgsTextBackgroundSettings background;
+          background.setEnabled( true );
+          background.setSize( QSize( param.mFrameSize, param.mFrameSize ) );
+          background.setType( QgsTextBackgroundSettings::ShapeRectangle );
+          background.setStrokeColor( param.mFrameOutlineColor );
+          background.setStrokeWidth( param.mFrameOutlineWidth );
+          background.setFillColor( param.mFrameBackgroundColor );
+          textFormat.setBackground( background );
         }
 
         textFormat.setBuffer( bufferSettings );

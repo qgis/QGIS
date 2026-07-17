@@ -352,6 +352,13 @@ public:
     ///  Replaces all objects by references in the dictionary
     void replaceObjectsByReferences(PDFDictionary& dictionary);
 
+    /// Recursively replaces stream objects nested inside dictionaries or arrays
+    /// by references to newly created document objects. Nested streams are illegal
+    /// in a serialized PDF, this function makes any in-memory object tree
+    /// serializable. Top-level stream object is left intact (only its dictionary
+    /// is processed).
+    PDFObject replaceNestedStreamsByReferences(const PDFObject& object);
+
     /// If object is reference, the dereference attempt is performed
     /// and object is returned. If it is not a reference, then self
     /// is returned. If dereference attempt fails, then null object
@@ -759,6 +766,25 @@ public:
                                                 QString subject,
                                                 QString contents,
                                                 TextAlignment textAlignment);
+
+    /// Free text annotation displays text directly on a page. This overload
+    /// also sets text style and can auto-resize rectangle to fit the contents.
+    /// \param page Page to which is annotation added
+    /// \param rectangle Area in which is text displayed
+    /// \param title Title
+    /// \param subject Subject
+    /// \param contents Contents (text displayed)
+    /// \param style Style of displayed text (font family, size, color, alignment)
+    /// \param autoResizeToContents If set to true, rectangle is expanded to fit contents
+    /// \param padding Padding used when auto resizing
+    PDFObjectReference createAnnotationFreeText(PDFObjectReference page,
+                                                QRectF rectangle,
+                                                QString title,
+                                                QString subject,
+                                                QString contents,
+                                                const PDFFreeTextStyle& style,
+                                                bool autoResizeToContents,
+                                                PDFReal padding = 2.0);
 
 
     /// Free text annotation displays text directly on a page. Text appears directly on the page, in the same way, 
@@ -1409,6 +1435,20 @@ public:
     void setAnnotationTitle(PDFObjectReference annotation,
                             QString title);
 
+    /// Sets free text annotation style (DA + Q entries).
+    /// \param annotation Annotation
+    /// \param style Free text style
+    void setFreeTextAnnotationStyle(PDFObjectReference annotation,
+                                    const PDFFreeTextStyle& style);
+
+    /// Expands free text annotation rectangle to fit current contents.
+    /// \param annotation Annotation
+    /// \param style Free text style used for text metrics
+    /// \param padding Padding added around text
+    void resizeFreeTextAnnotationToContents(PDFObjectReference annotation,
+                                            const PDFFreeTextStyle& style,
+                                            PDFReal padding = 2.0);
+
 
     /// Set AcroForm to catalog.
     /// \param acroForm Reference to AcroForm object.
@@ -1586,7 +1626,29 @@ public:
 
 /* END GENERATED CODE */
 
+public:
+    static QByteArray normalizeFreeTextFontName(QString fontName);
+    static QString decodeFreeTextFontName(QByteArray fontName);
+    static QByteArray createFreeTextDefaultAppearance(const PDFFreeTextStyle& style);
+    static PDFAnnotationDefaultAppearance getDefaultFreeTextAppearance(const PDFDictionary* dictionary);
+    static QColor readColorFromPDFObject(const PDFObjectStorage* storage, PDFObject object, QColor defaultColor = Qt::black);
+    static PDFObject createPDFColor(const QColor& color);
+
 private:
+    static QByteArray formatPDFReal(PDFReal value);
+    static void appendPDFPoint(QByteArray& data, const QPointF& point);
+    static QColor getAnnotationDrawColor(const std::vector<PDFReal>& color, PDFReal opacity);
+    static QByteArray getBlendModeNameForAppearance(BlendMode blendMode);
+    static void appendHighlightQuadrilateralPath(QByteArray& data, const PDFAnnotationQuadrilaterals::Quadrilateral& quadrilateral);
+
+    PDFFreeTextStyle createDefaultFreeTextStyle(TextAlignment alignment) const;
+    bool updateHighlightAnnotationAppearanceStream(PDFObjectReference annotationReference,
+                                                   const PDFHighlightAnnotation* annotation);
+    QRectF resizeFreeTextRectangleToContents(QRectF rectangle,
+                                             const QString& contents,
+                                             const PDFFreeTextStyle& style,
+                                             PDFReal padding) const;
+
     QRectF getPopupWindowRect(const QRectF& rectangle) const;
     QString getProducerString() const;
     PDFObjectReference getPageTreeRoot() const;

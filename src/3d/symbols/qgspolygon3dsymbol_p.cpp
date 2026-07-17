@@ -39,7 +39,6 @@
 
 #include <QString>
 #include <Qt3DCore/QBuffer>
-#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QAbstractTextureImage>
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QEffect>

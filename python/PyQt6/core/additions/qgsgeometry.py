@@ -15,13 +15,12 @@
 ***************************************************************************
 """
 
+from qgis.core import QgsJsonUtils as _JsonUtils
+
 
 def _geometryNonZero(self):
     return not self.isEmpty()
 
 
 def _mapping_geometry(geometry):
-    geo = geometry.asJson()
-    # We have to use eval because exportToGeoJSON() gives us
-    # back a string that looks like a dictionary.
-    return eval(geo)
+    return _JsonUtils.geometryToGeoJsonVariant(geometry)

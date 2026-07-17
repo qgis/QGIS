@@ -376,8 +376,15 @@ The development version
     typedef QFlags<Qgis::VectorProviderCapability> VectorProviderCapabilities;
 
 
+   enum class CreateLayerActionOnExisting /BaseType=IntEnum/
+   {
+     Abort,
+     CreateOrOverwriteFile,
+     CreateOrOverwriteLayer,
+   };
+
     enum class FeatureCountState /BaseType=IntEnum/
-      {
+    {
       Uncounted,
       UnknownCount,
     };
@@ -2427,6 +2434,12 @@ The development version
     typedef QFlags<Qgis::Map3DDebugFlag> Map3DDebugFlags;
 
 
+    enum class Map3DProjectionType /BaseType=IntEnum/
+    {
+      Orthographic,
+      Perspective,
+    };
+
     enum class Point3DShape /BaseType=IntEnum/
     {
       Cylinder,
@@ -2785,6 +2798,14 @@ The development version
     };
     typedef QFlags<Qgis::LegendJsonRenderFlag> LegendJsonRenderFlags;
 
+
+    enum class GeoJsonProfile /BaseType=IntEnum/
+    {
+      Legacy,
+      Rfc7946,
+      JsonFg,
+      JsonFgPlus,
+    };
 
     enum class ActionType /BaseType=IntEnum/
     {
@@ -3865,6 +3886,22 @@ The development version
     typedef QFlags<Qgis::SaveStyleFormat> SaveStyleFormats;
 
 
+    enum class CoverageCleanOverlapMergeStrategy /BaseType=IntEnum/
+    {
+      LongestBorder,
+      MaximumArea,
+      MinimumArea,
+      MinimumIndex,
+    };
+
+    enum class PdfRenderFlag /BaseType=IntFlag/
+    {
+      RenderTextAsText,
+    };
+
+    typedef QFlags<Qgis::PdfRenderFlag> PdfRenderFlags;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -4214,12 +4251,14 @@ QFlags<Qgis::Map3DDebugFlag> operator|(Qgis::Map3DDebugFlag f1, QFlags<Qgis::Map
 
 QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QFlags<Qgis::SensorThingsExtension> f2);
 
+QFlags<Qgis::PdfRenderFlag> operator|(Qgis::PdfRenderFlag f1, QFlags<Qgis::PdfRenderFlag> f2);
 
 
 
 
 
-uint qHash( const QVariant &variant );
+
+size_t qHash( const QVariant &variant );
 %Docstring
 Hash for QVariant
 %End

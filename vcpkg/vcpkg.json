@@ -2,13 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "2b65c20fc66eda893aa15a15a453c3cf09500b19",
+      "baseline": "a0400024711b283056538ac19ced80b91a83c24c",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "d42399a4a16f6091710bbeb3c207386544b469ba",
+        "baseline": "b2f7537dda5bce38b0f43e6391a308b8a52ca920",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -89,7 +89,10 @@
     {
       "name": "qtbase",
       "default-features": false,
-      "host": true
+      "host": true,
+      "features": [
+        "thread"
+      ]
     },
     {
       "name": "qtmultimedia",
@@ -210,6 +213,7 @@
           ]
         },
         "py-pysal",
+        "py-pysfcgal",
         "py-pytz",
         "py-pyyaml",
         "py-qscintilla",

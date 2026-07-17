@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscurve.h"
+#include "qgssimplecurve.h"
 
 #include <QString>
 #include <QVector>
@@ -32,7 +33,7 @@ using namespace Qt::StringLiterals;
  * \class QgsCircularString
  * \brief Circular string geometry type.
  */
-class CORE_EXPORT QgsCircularString : public QgsCurve
+class CORE_EXPORT QgsCircularString : public QgsSimpleCurve
 {
   public:
     // clang-format off
@@ -87,192 +88,26 @@ class CORE_EXPORT QgsCircularString : public QgsCurve
         const QgsPoint &center,
         bool useShortestArc = true );
 
-#ifndef SIP_RUN
-  private:
-    bool fuzzyHelper( double epsilon,
-                      const QgsAbstractGeometry &other,
-                      bool is3DFlag,
-                      bool isMeasureFlag,
-                      std::function<bool( double, double, double, double, double, double, double, double, double )> comparator3DMeasure,
-                      std::function<bool( double, double, double, double, double, double, double )> comparator3D,
-                      std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
-                      std::function<bool( double, double, double, double, double )> comparator2D ) const
-    {
-      const QgsCircularString *otherLine = qgsgeometry_cast< const QgsCircularString * >( &other );
-      if ( !otherLine )
-        return false;
-
-      if ( mWkbType != otherLine->mWkbType )
-        return false;
-
-      const int size = mX.count();
-      if ( size != otherLine->mX.count() )
-        return false;
-
-      bool result = true;
-      const double *xData = mX.constData();
-      const double *yData = mY.constData();
-      const double *zData = is3DFlag ? mZ.constData() : nullptr;
-      const double *mData = isMeasureFlag ? mM.constData() : nullptr;
-      const double *otherXData = otherLine->mX.constData();
-      const double *otherYData = otherLine->mY.constData();
-      const double *otherZData = is3DFlag ? otherLine->mZ.constData() : nullptr;
-      const double *otherMData = isMeasureFlag ? otherLine->mM.constData() : nullptr;
-      for ( int i = 0; i < size; ++i )
-      {
-        if ( is3DFlag && isMeasureFlag )
-        {
-          result &= comparator3DMeasure( epsilon, *xData++, *yData++, *zData++, *mData++,
-                                         *otherXData++, *otherYData++, *otherZData++, *otherMData++ );
-        }
-        else if ( is3DFlag )
-        {
-          result &= comparator3D( epsilon, *xData++, *yData++, *zData++,
-                                  *otherXData++, *otherYData++, *otherZData++ );
-        }
-        else if ( isMeasureFlag )
-        {
-          result &= comparatorMeasure( epsilon, *xData++, *yData++, *mData++,
-                                       *otherXData++, *otherYData++, *otherMData++ );
-        }
-        else
-        {
-          result &= comparator2D( epsilon, *xData++, *yData++,
-                                  *otherXData++, *otherYData++ );
-        }
-        if ( ! result )
-        {
-          return false;
-        }
-      }
-
-      return result;
-    }
-#endif // !SIP_RUN
-
-  public:
-    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
-    {
-      return fuzzyHelper(
-               epsilon,
-               other,
-               is3D(),
-               isMeasure(),
-               []( double epsilon, double x1, double y1, double z1, double m1,
-                   double x2, double y2, double z2, double m2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, z1, m1, x2, y2, z2, m2 );
-      },
-      []( double epsilon, double x1, double y1, double z1,
-          double x2, double y2, double z2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, z1, x2, y2, z2 );
-      },
-      []( double epsilon, double x1, double y1, double m1,
-          double x2, double y2, double m2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, m1, x2, y2, m2 );
-      },
-      []( double epsilon, double x1, double y1,
-          double x2, double y2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, x2, y2 );
-      } );
-    }
-
-    bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
-    {
-      return fuzzyHelper(
-               epsilon,
-               other,
-               is3D(),
-               isMeasure(),
-               []( double epsilon, double x1, double y1, double z1, double m1,
-                   double x2, double y2, double z2, double m2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, z1, m1, x2, y2, z2, m2 );
-      },
-      []( double epsilon, double x1, double y1, double z1,
-          double x2, double y2, double z2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, z1, x2, y2, z2 );
-      },
-      []( double epsilon, double x1, double y1, double m1,
-          double x2, double y2, double m2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, m1, x2, y2, m2 );
-      },
-      []( double epsilon, double x1, double y1,
-          double x2, double y2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, x2, y2 );
-      } );
-    }
-
-    bool equals( const QgsCurve &other ) const override
-    {
-      return fuzzyEqual( other, 1e-8 );
-    }
-
-
     QString geometryType() const override SIP_HOLDGIL;
-    int dimension() const override SIP_HOLDGIL;
     QgsCircularString *clone() const override SIP_FACTORY;
     void clear() override;
 
-    bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    bool fromWkt( const QString &wkt ) override;
-
-    int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
-    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
-    QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
-    bool isEmpty() const override SIP_HOLDGIL;
+    json asJsonObject( int precision = 17, Qgis::GeoJsonProfile profile = Qgis::GeoJsonProfile::Legacy ) const override SIP_SKIP;
     bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
-    int numPoints() const override SIP_HOLDGIL;
     int indexOf( const QgsPoint &point ) const final;
 
-    /**
-     * Returns the point at index i within the circular string.
-     */
-    QgsPoint pointN( int i ) const SIP_HOLDGIL;
-
-    void points( QgsPointSequence &pts SIP_OUT ) const override;
-
-    /**
-     * Sets the circular string's points
-     */
-    void setPoints( const QgsPointSequence &points );
-
-    /**
-     * Appends the contents of another circular \a string to the end of this circular string.
-     *
-     * \param string circular string to append. Ownership is not transferred.
-     *
-     * \warning It is the caller's responsibility to ensure that the first point in the appended
-     * \a string matches the last point in the existing curve, or the result will be undefined.
-     *
-     * \since QGIS 3.20
-     */
-    void append( const QgsCircularString *string );
-
     double length() const override;
-    QgsPoint startPoint() const override SIP_HOLDGIL;
-    QgsPoint endPoint() const override SIP_HOLDGIL;
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
     QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     QgsAbstractGeometry *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
 
     void draw( QPainter &p ) const override;
-    void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override SIP_THROW( QgsCsException );
-    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
     bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
     double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;
@@ -283,25 +118,11 @@ class CORE_EXPORT QgsCircularString : public QgsCurve
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
     double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const override;
-    QgsCircularString *reversed() const override  SIP_FACTORY;
+    QgsCircularString *reversed() const override SIP_FACTORY;
     QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
     QgsCircularString *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;
-    bool addZValue( double zValue = 0 ) override;
-    bool addMValue( double mValue = 0 ) override;
-    bool dropZValue() override;
-    bool dropMValue() override;
-    void swapXy() override;
-    double xAt( int index ) const override SIP_HOLDGIL;
-    double yAt( int index ) const override SIP_HOLDGIL;
-    double zAt( int index ) const override SIP_HOLDGIL;
-    double mAt( int index ) const override SIP_HOLDGIL;
-
-    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
-    void scroll( int firstVertexIndex ) final;
 
 #ifndef SIP_RUN
-    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
-    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
     std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;
 
     /**
@@ -351,16 +172,9 @@ class CORE_EXPORT QgsCircularString : public QgsCurve
 #endif
 
   protected:
-
-    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsBox3D calculateBoundingBox3D() const override;
 
   private:
-    QVector<double> mX;
-    QVector<double> mY;
-    QVector<double> mZ;
-    QVector<double> mM;
-
 #if 0
     static void arcTo( QPainterPath &path, QPointF pt1, QPointF pt2, QPointF pt3 );
 #endif

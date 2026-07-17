@@ -19,9 +19,7 @@
 #include "qgsaabb.h"
 #include "qgsbox3d.h"
 #include "qgsgeotransform.h"
-#include "qgsphongmaterial.h"
-
-#include <Qt3DExtras/QPhongMaterial>
+#include "qgsunlitmaterial.h"
 
 #include "moc_qgschunkboundsentity_p.cpp"
 
@@ -34,8 +32,8 @@ QgsChunkBoundsEntity::QgsChunkBoundsEntity( const QgsVector3D &vertexDataOrigin,
   mAabbMesh = new Qgs3DWiredMesh;
   addComponent( mAabbMesh );
 
-  auto *bboxesMaterial = new QgsPhongMaterial();
-  bboxesMaterial->setAmbient( Qt::red );
+  auto *bboxesMaterial = new QgsUnlitMaterial();
+  bboxesMaterial->setColor( Qt::red );
   bboxesMaterial->setCastsShadows( false );
   addComponent( bboxesMaterial );
 

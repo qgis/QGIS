@@ -16,6 +16,7 @@
 #include "qgssymbolselectordialog.h"
 
 #include "qgsexpressioncontextutils.h"
+#include "qgsscreenhelper.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
@@ -124,36 +125,34 @@ class SymbolLayerItem : public QStandardItem
   public:
     explicit SymbolLayerItem( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QgsVectorLayer *vectorLayer, QScreen *screen )
       : mVectorLayer( vectorLayer )
-      , mScreen( screen )
     {
-      setLayer( layer, symbolType );
+      setLayer( layer, symbolType, screen );
     }
 
     explicit SymbolLayerItem( QgsSymbol *symbol, QgsVectorLayer *vectorLayer, QScreen *screen )
       : mVectorLayer( vectorLayer )
-      , mScreen( screen )
     {
-      setSymbol( symbol );
+      setSymbol( symbol, screen );
     }
 
-    void setLayer( QgsSymbolLayer *layer, Qgis::SymbolType symbolType )
+    void setLayer( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QScreen *screen )
     {
       mLayer = layer;
       mIsLayer = true;
       mSymbol = nullptr;
       mSymbolType = symbolType;
-      updatePreview();
+      updatePreview( screen );
     }
 
-    void setSymbol( QgsSymbol *symbol )
+    void setSymbol( QgsSymbol *symbol, QScreen *screen )
     {
       mSymbol = symbol;
       mIsLayer = false;
       mLayer = nullptr;
-      updatePreview();
+      updatePreview( screen );
     }
 
-    void updatePreview()
+    void updatePreview( QScreen *screen )
     {
       if ( !mSize.isValid() )
       {
@@ -162,18 +161,17 @@ class SymbolLayerItem : public QStandardItem
       }
       QIcon icon;
       if ( mIsLayer )
-        icon = QgsSymbolLayerUtils::
-          symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer, QgsScreenProperties( mScreen.data() ) );
+        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, Qgis::RenderUnit::Millimeters, mSize, QgsMapUnitScale(), mSymbol ? mSymbol->type() : mSymbolType, mVectorLayer, QgsScreenProperties( screen ) );
       else
       {
         QgsExpressionContext expContext;
         expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
-        icon = QIcon( QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol, mSize, 0, nullptr, false, &expContext, nullptr, QgsScreenProperties( mScreen.data() ) ) );
+        icon = QIcon( QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol, mSize, 0, nullptr, false, &expContext, nullptr, QgsScreenProperties( screen ) ) );
       }
       setIcon( icon );
 
       if ( auto *lParent = parent() )
-        static_cast<SymbolLayerItem *>( lParent )->updatePreview();
+        static_cast<SymbolLayerItem *>( lParent )->updatePreview( screen );
     }
 
     int type() const override { return SYMBOL_LAYER_ITEM_TYPE; }
@@ -240,7 +238,6 @@ class SymbolLayerItem : public QStandardItem
     bool mIsLayer = false;
     QSize mSize;
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Hybrid;
-    QPointer<QScreen> mScreen;
 };
 
 ///@endcond
@@ -382,6 +379,10 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsSymbolSelectorWidget::projectDataChanged );
 
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QList<QgsMapLayer *> &layers )>( &QgsProject::layersWillBeRemoved ), this, &QgsSymbolSelectorWidget::layersAboutToBeRemoved );
+
+  auto screenHelper = new QgsScreenHelper( this );
+  connect( screenHelper, &QgsScreenHelper::screenDpiChanged, this, &QgsSymbolSelectorWidget::updatePreview );
+  connect( screenHelper, &QgsScreenHelper::screenDpiChanged, this, &QgsSymbolSelectorWidget::updateListIcons );
 }
 
 QgsSymbolSelectorWidget *QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::unique_ptr<QgsSymbol> symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent )
@@ -515,9 +516,6 @@ void QgsSymbolSelectorWidget::updatePreview()
   std::unique_ptr<QgsSymbol> symbolClone( mSymbol->clone() );
   const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, QgsScreenProperties( screen() ) );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
-  // Hope this is a appropriate place
-  if ( !mBlockModified )
-    emit symbolModified();
 }
 
 void QgsSymbolSelectorWidget::updateLayerPreview()
@@ -525,7 +523,7 @@ void QgsSymbolSelectorWidget::updateLayerPreview()
   // get current layer item and update its icon
   SymbolLayerItem *item = currentLayerItem();
   if ( item )
-    item->updatePreview();
+    item->updatePreview( screen() );
   // update also preview of the whole symbol
   updatePreview();
 }
@@ -574,6 +572,7 @@ void QgsSymbolSelectorWidget::layerChanged()
     setWidget( layerProp );
     connect( layerProp, &QgsLayerPropertiesWidget::changed, mDataDefineRestorer.get(), &DataDefinedRestorer::restore );
     connect( layerProp, &QgsLayerPropertiesWidget::changed, this, &QgsSymbolSelectorWidget::updateLayerPreview );
+    connect( layerProp, &QgsLayerPropertiesWidget::changed, this, &QgsSymbolSelectorWidget::emitSymbolModified );
     // This connection when layer type is changed
     connect( layerProp, &QgsLayerPropertiesWidget::changeLayer, this, &QgsSymbolSelectorWidget::changeLayer );
 
@@ -611,7 +610,7 @@ void QgsSymbolSelectorWidget::symbolChanged()
     parent->removeRow( 0 );
     loadSymbol( symbol, parent );
     layersTree->setCurrentIndex( parent->child( 0 )->index() );
-    parent->updatePreview();
+    parent->updatePreview( screen() );
   }
   else
   {
@@ -621,6 +620,7 @@ void QgsSymbolSelectorWidget::symbolChanged()
     layersTree->setCurrentIndex( newIndex );
   }
   updatePreview();
+  emitSymbolModified();
   // connect it back once things are set
   connect( layersTree->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
 }
@@ -700,11 +700,12 @@ void QgsSymbolSelectorWidget::addLayer()
   // its own owned QgsSymbolLayer clone, and isn't reliant on a pointer to the object owned by parentSymbol.
   SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayerPtr, parentSymbol->type(), mVectorLayer, screen() ); // cppcheck-suppress invalidLifetime
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
-  item->updatePreview();
+  item->updatePreview( screen() );
 
   layersTree->setCurrentIndex( mSymbolLayersModel->indexFromItem( newLayerItem ) );
   updateUi();
   updatePreview();
+  emitSymbolModified();
 }
 
 void QgsSymbolSelectorWidget::removeLayer()
@@ -718,13 +719,14 @@ void QgsSymbolSelectorWidget::removeLayer()
   QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
 
   parent->removeRow( row );
-  parent->updatePreview();
+  parent->updatePreview( screen() );
 
   const QModelIndex newIdx = parent->child( 0 )->index();
   layersTree->setCurrentIndex( newIdx );
 
   updateUi();
   updatePreview();
+  emitSymbolModified();
   //finally delete the removed layer pointer
   delete tmpLayer;
 }
@@ -756,12 +758,13 @@ void QgsSymbolSelectorWidget::moveLayerByOffset( int offset )
 
   QList<QStandardItem *> rowItems = parent->takeRow( row );
   parent->insertRows( row + offset, rowItems );
-  parent->updatePreview();
+  parent->updatePreview( screen() );
 
   const QModelIndex newIdx = rowItems[0]->index();
   layersTree->setCurrentIndex( newIdx );
 
   updatePreview();
+  emitSymbolModified();
   updateUi();
 }
 
@@ -806,11 +809,12 @@ void QgsSymbolSelectorWidget::duplicateLayer()
     loadSymbol( newLayer->subSymbol(), newLayerItem );
     layersTree->setExpanded( newLayerItem->index(), true );
   }
-  item->updatePreview();
+  item->updatePreview( screen() );
 
   layersTree->setCurrentIndex( mSymbolLayersModel->indexFromItem( newLayerItem ) );
   updateUi();
   updatePreview();
+  emitSymbolModified();
 }
 
 void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
@@ -824,7 +828,7 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
   QgsSymbol *symbol = static_cast<SymbolLayerItem *>( item->parent() )->symbol();
 
   // update symbol layer item
-  item->setLayer( newLayer, symbol->type() );
+  item->setLayer( newLayer, symbol->type(), screen() );
   // When it is a marker symbol
   if ( newLayer->subSymbol() )
   {
@@ -836,11 +840,31 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
   const int layerIdx = item->parent()->rowCount() - item->row() - 1;
   symbol->changeSymbolLayer( layerIdx, newLayer );
 
-  item->updatePreview();
+  item->updatePreview( screen() );
   updatePreview();
+  emitSymbolModified();
   // Important: This lets the layer have its own layer properties widget
   layerChanged();
 }
+
+void QgsSymbolSelectorWidget::updateListIcons()
+{
+  QScreen *currentScreen = screen();
+  std::function<void( SymbolLayerItem * item )> updateItem;
+  updateItem = [currentScreen, &updateItem]( SymbolLayerItem *item ) {
+    for ( int row = 0; row < item->rowCount(); ++row )
+    {
+      if ( auto child = dynamic_cast< SymbolLayerItem * >( item->child( row ) ) )
+      {
+        updateItem( child );
+        child->updatePreview( currentScreen );
+      }
+    }
+  };
+
+  updateItem( static_cast<SymbolLayerItem *>( mSymbolLayersModel->invisibleRootItem() ) );
+}
+
 
 QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent, bool embedded )
   : QDialog( parent )
@@ -1027,5 +1051,13 @@ void QgsSymbolSelectorWidget::layersAboutToBeRemoved( const QList<QgsMapLayer *>
   if ( mVectorLayer && layers.contains( mVectorLayer ) )
   {
     disconnect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsSymbolSelectorWidget::projectDataChanged );
+  }
+}
+
+void QgsSymbolSelectorWidget::emitSymbolModified()
+{
+  if ( !mBlockModified )
+  {
+    emit symbolModified();
   }
 }

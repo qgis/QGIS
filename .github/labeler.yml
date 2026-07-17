@@ -54,10 +54,6 @@
     '.github/**/*',
   ]
 
-"DB Manager":
-- changed-files:
-  - any-glob-to-any-file: ['python/plugins/db_manager/**/*']
-
 "Digitizing":
 - changed-files:
   - any-glob-to-any-file: [

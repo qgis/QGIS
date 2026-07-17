@@ -95,11 +95,11 @@ __pragma( warning( push ) ) __pragma( warning( disable : 4273 ) )
  *
  * \since QGIS 3.32
  */
-CORE_EXPORT inline uint qHash( QgsTileXYZ id ) SIP_SKIP
+CORE_EXPORT inline size_t qHash( QgsTileXYZ id ) SIP_SKIP
 {
-  const uint h1 = qHash( static_cast< quint64 >( id.column() ) );
-  const uint h2 = qHash( static_cast< quint64 >( id.row() ) );
-  const uint h3 = qHash( static_cast< quint64 >( id.zoomLevel() ) );
+  const size_t h1 = qHash( static_cast< quint64 >( id.column() ) );
+  const size_t h2 = qHash( static_cast< quint64 >( id.row() ) );
+  const size_t h3 = qHash( static_cast< quint64 >( id.zoomLevel() ) );
   return h1 ^ ( h2 << 1 ) ^ ( h3 << 2 );
 }
 

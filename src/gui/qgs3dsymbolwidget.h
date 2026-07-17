@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgspanelwidget.h"
 
 #include <QDialog>
 #include <QWidget>
@@ -33,7 +34,7 @@ class QDialogButtonBox;
  * \brief Base class for 3D symbol configuration widgets.
  * \since QGIS 3.16
  */
-class GUI_EXPORT Qgs3DSymbolWidget : public QWidget
+class GUI_EXPORT Qgs3DSymbolWidget : public QgsPanelWidget
 {
     Q_OBJECT
 

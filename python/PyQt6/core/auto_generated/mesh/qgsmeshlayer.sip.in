@@ -251,6 +251,14 @@ Sets new renderer settings
                 and emit rendererChanged signal
 %End
 
+    void invalidateRendererCache();
+%Docstring
+Invalidates the cache used by the renderer to store the values of the
+active scalar and vector dataset groups.
+
+.. versionadded:: 4.4
+%End
+
     QgsMeshTimeSettings timeSettings() const;
 %Docstring
 Returns time format settings

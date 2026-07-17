@@ -49,7 +49,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   mCamera->setViewCenter( QVector3D( 0, 0, 0 ) );
 
   // Set up the engine and the aspects that we want to use.
-  mAspectEngine = new Qt3DCore::QAspectEngine();
+  mAspectEngine = std::make_unique<Qt3DCore::QAspectEngine>();
 
   mRenderAspect = new Qt3DRender::QRenderAspect();
 
@@ -71,7 +71,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 
   // Create the offscreen frame graph, which will manage all of the resources required
   // for rendering without a QWindow.
-  mOffscreenSurface = new QOffscreenSurface();
+  mOffscreenSurface = std::make_unique<QOffscreenSurface>();
 
   QSurfaceFormat format;
 
@@ -99,7 +99,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   mOffscreenSurface->setFormat( format );
   mOffscreenSurface->create();
 
-  mFrameGraph = new QgsFrameGraph( mOffscreenSurface, mSize, mCamera, mRoot );
+  mFrameGraph = new QgsFrameGraph( mOffscreenSurface.get(), mSize, mCamera, mRoot );
   mFrameGraph->shadowRenderView().setEnabled( false );
   // Set this frame graph to be in use.
   // the render settings also sets itself as the parent of mSurfaceSelector
@@ -110,10 +110,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 }
 
 QgsOffscreen3DEngine::~QgsOffscreen3DEngine()
-{
-  delete mAspectEngine;
-  delete mOffscreenSurface;
-}
+{}
 
 void QgsOffscreen3DEngine::setSize( QSize s )
 {
@@ -164,5 +161,5 @@ QSize QgsOffscreen3DEngine::size() const
 
 QSurface *QgsOffscreen3DEngine::surface() const
 {
-  return mOffscreenSurface;
+  return mOffscreenSurface.get();
 }

@@ -898,6 +898,40 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.assertAlmostEqual(results.zRange().lower(), 15.0, 2)
         self.assertAlmostEqual(results.zRange().upper(), 22.5000, 2)
 
+    def testPolygonGenerationFollowingLinestringZExactly(self):
+        """
+        Test that a purely vertical line from a polygon is correctly
+        handled by the generator
+        """
+        vl = QgsVectorLayer("PolygonZ?crs=EPSG:3857", "polygon", "memory")
+        self.assertTrue(vl.isValid())
+
+        polygon_wkt = "Polygon Z ((547405.88 6150237.19 0, 547405.88 6150237.19 5, 547413.39 6150203.24 5, 547413.39 6150203.24 0, 547405.88 6150237.19 0))"
+        feature = QgsFeature()
+        feature.setGeometry(QgsGeometry.fromWkt(polygon_wkt))
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            "LineString (547394.297515 6150220.613784, 547416.10922 6150225.219982)"
+        )
+        req = QgsProfileRequest(curve)
+        req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+        results = generator.takeResults()
+
+        self.assertEqual(
+            self.round_dict(results.distanceToHeightMap(), 1, 1),
+            {14.9: 5.0},
+        )
+
+        self.assertAlmostEqual(results.zRange().lower(), 0.0, 2)
+        self.assertAlmostEqual(results.zRange().upper(), 5.0, 2)
+
     def testPolygonGenerationTerrain(self):
         vl = QgsVectorLayer("PolygonZ?crs=EPSG:27700", "lines", "memory")
         self.assertTrue(vl.isValid())
@@ -2847,6 +2881,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         layer: QgsVectorLayer,
         expectedFeatures: list[list[tuple[int, int]]],
         geomType: Qgis.GeometryType,
+        allowNullHeight: bool = False,
     ):
         """
         The expectedFeatures is a list of valid features, with each tuple
@@ -2873,7 +2908,10 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
             self.assertEqual(feat.geometry.type(), geomType)
 
         for _, height in enumerate(results.distanceToHeightMap()):
-            self.assertTrue(math.isnan(height) or height > 0.0)
+            if allowNullHeight:
+                self.assertTrue(math.isnan(height) or height >= 0.0)
+            else:
+                self.assertTrue(math.isnan(height) or height > 0.0)
 
         return results
 
@@ -2969,6 +3007,46 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         self.doCheckLine(
             req, 50, vl, [[(1, 1), (0, 1), (2, 1)]], Qgis.GeometryType.Line
         )
+
+    def testLineGenerationFeatureIsCurve(self):
+        """
+        Test that a purely vertical feature matching the profile curve is
+        correctly handled by the generator.
+        """
+        line_wkt = (
+            "LineString Z (389688.6 4601015.0 266.1, 389690.6 4601015.4 266.4, "
+            "389695.1 4601016.3 266.4, 389696.8 4601016.6 266.2, "
+            "389698.0 4601016.9 266.2, 389705.2 4601018.4 266.3, "
+            "389707.4 4601018.8 266.3, 389710.4 4601019.4 266.4, "
+            "389714.7 4601020.3 266.7, 389719.1 4601021.2 267.0, "
+            "389721.5 4601021.7 267.1, 389723.5 4601022.1 267.3, "
+            "389733.7 4601024.3 267.9, 389746.4 4601027.0 268.7, "
+            "389753.9 4601029.0 269.3, 389759.1 4601030.9 269.8)"
+        )
+
+        vl = QgsVectorLayer("LineStringZ?crs=epsg:3857", "line", "memory")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.crs().authid(), "EPSG:3857")
+        vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
+        vl.elevationProperties().setExtrusionEnabled(False)
+
+        vl_feature = QgsFeature()
+        vl_feature.setGeometry(QgsGeometry.fromWkt(line_wkt))
+        self.assertTrue(vl.dataProvider().addFeature(vl_feature))
+
+        # Do an intersection
+        curve = QgsLineString()
+        curve.fromWkt(line_wkt)
+        req = QgsProfileRequest(curve)
+
+        req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        generator = vl.createProfileGenerator(req)
+        self.assertTrue(generator.generateProfile())
+
+        # Check the result
+        results = generator.takeResults().asGeometries()
+        self.assertEqual(len(results), 15)
+        self.doCheckLine(req, 0, vl, [[(1, 15)]], Qgis.GeometryType.Line, True)
 
     @unittest.skipIf(
         Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 11,

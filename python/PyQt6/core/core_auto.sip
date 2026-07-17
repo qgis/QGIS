@@ -240,6 +240,7 @@
 %Include auto_generated/./3d/materials/qgsphongmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgsphongtexturedmaterialsettings.sip
 %Include auto_generated/./3d/materials/qgssimplelinematerialsettings.sip
+%Include auto_generated/./3d/materials/qgsunlitmaterialsettings.sip
 %Include auto_generated/actions/qgsaction.sip
 %Include auto_generated/actions/qgsactionmanager.sip
 %Include auto_generated/actions/qgsactionscope.sip
@@ -384,6 +385,7 @@
 %Include auto_generated/geometry/qgsrectangle.sip
 %Include auto_generated/geometry/qgsreferencedgeometry.sip
 %Include auto_generated/geometry/qgsregularpolygon.sip
+%Include auto_generated/geometry/qgssimplecurve.sip
 %Include auto_generated/geometry/qgssphere.sip
 %Include auto_generated/geometry/qgssurface.sip
 %Include auto_generated/geometry/qgstriangle.sip
@@ -617,7 +619,9 @@
 %Include auto_generated/processing/qgsprocessingparameteraggregate.sip
 %Include auto_generated/processing/qgsprocessingparameterdxflayers.sip
 %Include auto_generated/processing/qgsprocessingparameterfieldmap.sip
+%Include auto_generated/processing/qgsprocessingparameterheatmappixelsize.sip
 %Include auto_generated/processing/qgsprocessingparametermeshdataset.sip
+%Include auto_generated/processing/qgsprocessingparameterreliefcolors.sip
 %Include auto_generated/processing/qgsprocessingparameters.sip
 %Include auto_generated/processing/qgsprocessingparametertininputlayers.sip
 %Include auto_generated/processing/qgsprocessingparametertype.sip

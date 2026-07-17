@@ -348,6 +348,7 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
     bool mMsaaBlitConfigured = false;
     Qt3DRender::QBlitFramebuffer *mMsaaBlitNode = nullptr;
     Qt3DRender::QBlitFramebuffer *mMsaaDepthBlitNode = nullptr;
+    Qt3DRender::QClearBuffers *mMsaaClearBuffers = nullptr;
 
     // holds renderviews according to their name
     std::map<QString, std::unique_ptr<QgsAbstractRenderView>> mRenderViewMap;

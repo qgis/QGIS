@@ -1822,16 +1822,21 @@ QString QgsGeometry::asWkt( int precision ) const
 
 QString QgsGeometry::asJson( int precision ) const
 {
-  return QString::fromStdString( asJsonObject( precision ).dump() );
+  return asGeoJson( precision, Qgis::GeoJsonProfile::Rfc7946 );
 }
 
-json QgsGeometry::asJsonObject( int precision ) const
+QString QgsGeometry::asGeoJson( int precision, Qgis::GeoJsonProfile profile ) const
+{
+  return QString::fromStdString( asJsonObject( precision, profile ).dump() );
+}
+
+json QgsGeometry::asJsonObject( int precision, Qgis::GeoJsonProfile profile ) const
 {
   if ( !d->geometry )
   {
     return nullptr;
   }
-  return d->geometry->asJsonObject( precision );
+  return d->geometry->asJsonObject( precision, profile );
 }
 
 QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM, bool avoidDuplicates ) const
@@ -2847,7 +2852,7 @@ QgsGeometry QgsGeometry::variableWidthBufferByM( int segments ) const
   return engine.variableWidthBufferByM( segments );
 }
 
-QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) const
+QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance, double startDeflection, double endDeflection ) const
 {
   if ( !d->geometry || type() != Qgis::GeometryType::Line )
   {
@@ -2861,7 +2866,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
     results.reserve( parts.count() );
     for ( const QgsGeometry &part : parts )
     {
-      QgsGeometry result = part.extendLine( startDistance, endDistance );
+      QgsGeometry result = part.extendLine( startDistance, endDistance, startDeflection, endDeflection );
       if ( !result.isNull() )
         results << result;
     }
@@ -2882,7 +2887,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
       return QgsGeometry();
 
     std::unique_ptr< QgsLineString > newLine( line->clone() );
-    newLine->extend( startDistance, endDistance );
+    newLine->extend( startDistance, endDistance, startDeflection, endDeflection );
     return QgsGeometry( std::move( newLine ) );
   }
 }
@@ -3183,6 +3188,25 @@ QgsGeometry QgsGeometry::simplifyCoverageVW( double tolerance, bool preserveBoun
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometry result( geos.simplifyCoverageVW( tolerance, preserveBoundary, &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
+QgsGeometry QgsGeometry::cleanCoverage( const QgsCoverageCleanParameters &parameters, QgsFeedback *feedback ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
+       && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::Polygon )
+    return QgsGeometry();
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  const QgsGeometry result( geos.cleanCoverage( parameters, &mLastError, feedback ) );
   result.mLastError = mLastError;
   return result;
 }

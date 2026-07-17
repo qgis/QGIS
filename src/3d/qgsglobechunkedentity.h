@@ -96,7 +96,7 @@ class QgsGlobeChunkLoaderFactory : public QgsChunkLoaderFactory
 
   private:
     Qgs3DMapSettings *mMapSettings = nullptr;
-    QgsTerrainTextureGenerator *mTextureGenerator = nullptr; // owned by the factory
+    std::unique_ptr<QgsTerrainTextureGenerator> mTextureGenerator;
     QgsDistanceArea mDistanceArea;
     QgsCoordinateTransform mGlobeCrsToLatLon;
     double mRadiusX, mRadiusY, mRadiusZ;

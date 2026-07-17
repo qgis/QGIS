@@ -1757,6 +1757,44 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Highlight")
 
+    def test_wms_getmap_highlight_frame(self):
+        # highlight layer with label frame
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "MAP": urllib.parse.quote(self.projectPath),
+                        "SERVICE": "WMS",
+                        "VERSION": "1.1.1",
+                        "REQUEST": "GetMap",
+                        "LAYERS": "Country_Labels",
+                        "HIGHLIGHT_GEOM": "POLYGON((-15000000 10000000, -15000000 6110620, 2500000 6110620, 2500000 10000000, -15000000 10000000))",
+                        "HIGHLIGHT_SYMBOL": '<StyledLayerDescriptor><UserStyle><Name>Highlight</Name><FeatureTypeStyle><Rule><Name>Symbol</Name><LineSymbolizer><Stroke><SvgParameter name="stroke">%23ea1173</SvgParameter><SvgParameter name="stroke-opacity">1</SvgParameter><SvgParameter name="stroke-width">1.6</SvgParameter></Stroke></LineSymbolizer></Rule></FeatureTypeStyle></UserStyle></StyledLayerDescriptor>',
+                        "HIGHLIGHT_LABELSTRING": "Highlight Layer!",
+                        "HIGHLIGHT_LABELFONT": "QGIS Vera Sans",
+                        "HIGHLIGHT_LABELSIZE": "20",
+                        "HIGHLIGHT_LABELCOLOR": "%2300FF0000",
+                        "HIGHLIGHT_LABELBUFFERCOLOR": "%232300FF00",
+                        "HIGHLIGHT_LABELBUFFERSIZE": "1.5",
+                        "HIGHLIGHT_LABELFRAMEBACKGROUNDCOLOR": "%23FF0000",
+                        "HIGHLIGHT_LABELFRAMEOUTLINECOLOR": "%2300FFFF",
+                        "HIGHLIGHT_LABELFRAMESIZE": 5,
+                        "HIGHLIGHT_LABELFRAMEOUTLINEWIDTH": 2,
+                        "STYLES": "",
+                        "FORMAT": "image/png",
+                        "BBOX": "-16817707,-4710778,5696513,14587125",
+                        "HEIGHT": "500",
+                        "WIDTH": "500",
+                        "CRS": "EPSG:3857",
+                    }.items()
+                )
+            ]
+        )
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Highlight_Label_Frame")
+
     def test_wms_getmap_highlight_point(self):
         # checks SLD stroke-width works for Points See issue 19795 comments
         qs = "?" + "&".join(

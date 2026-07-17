@@ -63,7 +63,26 @@ class QgsSymbolLayerId;
 class CORE_EXPORT QgsSymbolLayerUtils
 {
   public:
+    /**
+     * Lossy-encodes a \a color to a string.
+     *
+     * \warning Use of this method is discouraged, as it loses color precision and does not handle
+     * non-RGB color values losslessly. Use QgsColorUtils::colorToString() instead.
+     *
+     * \see decodeColor()
+     * \see QgsColorUtils::colorToString()
+    */
     static QString encodeColor( const QColor &color );
+
+    /**
+     * Decodes a string to a color.
+     *
+     * \warning Use of this method is discouraged, as it handles only colors lossy-encoded using
+     * encodeColor(). Use QgsColorUtils::colorFromString() instead.
+     *
+     * \see encodeColor()
+     * \see QgsColorUtils::colorFromString()
+     */
     static QColor decodeColor( const QString &str );
 
     static QString encodeSldAlpha( int alpha );

@@ -79,6 +79,8 @@
 #include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparameterheatmappixelsize.h"
+#include "qgsprocessingparameterreliefcolors.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingpointcloudexpressionlineedit.h"
@@ -235,11 +237,13 @@ class DummyPluginLayer : public QgsPluginLayer
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override { Q_UNUSED( transformContext ); };
 };
 
-class TestProcessingGui : public QObject
+class TestProcessingGui : public QgsTest
 {
     Q_OBJECT
   public:
-    TestProcessingGui() = default;
+    TestProcessingGui()
+      : QgsTest( "Processing GUI" )
+    {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -322,6 +326,10 @@ class TestProcessingGui : public QObject
     void testTinInputLayerWrapper();
     void testDxfLayersWrapper();
     void testAlignRasterLayersWrapper();
+    void testHeatmapPixelSizeWidget();
+    void testHeatmapPixelSizeWrapper();
+    void testReliefColorsWidget();
+    void testReliefColorsWrapper();
     void testRasterOptionsWrapper();
     void testMeshDatasetWrapperLayerInProject();
     void testMeshDatasetWrapperLayerOutsideProject();
@@ -10641,6 +10649,309 @@ void TestProcessingGui::testAlignRasterLayersWrapper()
   QVERIFY( definition.checkValueIsAcceptable( value, &context ) );
   QString valueAsPythonString = definition.valueAsPythonString( value, context );
   QCOMPARE( valueAsPythonString, u"[{'inputFile': '%1','outputFile': '%2','resampleMethod': 1,'rescale': False}]"_s.arg( rasterLayer->source() ).arg( layerMap["outputFile"].toString() ) );
+}
+
+void TestProcessingGui::testHeatmapPixelSizeWidget()
+{
+  QgsHeatmapPixelSizeWidget widget;
+  // no layer set
+  QSignalSpy changedSpy( &widget, &QgsHeatmapPixelSizeWidget::valueChanged );
+  widget.mCellYSpinBox->setValue( 20 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 20 );
+  QCOMPARE( changedSpy.size(), 1 );
+  widget.mCellXSpinBox->setValue( 30 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 30 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 30 );
+  QCOMPARE( changedSpy.size(), 2 );
+
+  widget.mRowsSpinBox->setValue( 10 );
+  widget.mColumnsSpinBox->setValue( 15 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 10 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 15 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 30 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 30 );
+  QCOMPARE( changedSpy.size(), 2 );
+
+  widget.mCellXSpinBox->setValue( 40 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 10 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 15 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 40 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 40 );
+  QCOMPARE( changedSpy.size(), 3 );
+
+  widget.setValue( 50 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 10 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 15 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 50 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 50 );
+  QCOMPARE( widget.value(), 50 );
+  QCOMPARE( changedSpy.size(), 4 );
+
+  QgsVectorLayer pointsLayer( testDataPath( u"points.shp"_s ) );
+  QVERIFY( pointsLayer.isValid() );
+
+  widget.setLayer( &pointsLayer );
+  QCOMPARE( widget.layer(), &pointsLayer );
+  QCOMPARE( widget.mRowsSpinBox->value(), 5 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 6 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 50 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 50 );
+  QCOMPARE( widget.value(), 50 );
+  // didn't change
+  QCOMPARE( changedSpy.size(), 4 );
+
+  widget.setRadius( 8 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 2 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 2 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 50 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 50 );
+  QCOMPARE( widget.value(), 50 );
+  // didn't change
+  QCOMPARE( changedSpy.size(), 4 );
+
+  widget.setValue( 10 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 5 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 6 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 10 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 10 );
+  QCOMPARE( widget.value(), 10 );
+
+  widget.setRadiusField( u"Pilots"_s );
+  QCOMPARE( widget.mRowsSpinBox->value(), 4 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 5 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 10 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 10 );
+  QCOMPARE( widget.value(), 10 );
+}
+
+void TestProcessingGui::testHeatmapPixelSizeWrapper()
+{
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterHeatmapPixelSize param( u"num"_s, u"num"_s );
+    QgsProcessingHeatmapPixelSizeWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    if ( auto widget = qobject_cast< QgsHeatmapPixelSizeWidget * >( w ) )
+    {
+      QVERIFY( !widget->layer() );
+    }
+    else
+    {
+      QVERIFY( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->expressionsEnabled() );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->decimals(), 6 );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->singleStep(), 1.0 );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->minimum(), 0.0 );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->maximum(), 99999999999.0 );
+    }
+
+    QSignalSpy spy( &wrapper, &QgsProcessingHeatmapPixelSizeWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( 5, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 5.0 );
+
+    if ( auto widget = qobject_cast< QgsHeatmapPixelSizeWidget * >( w ) )
+    {
+      QCOMPARE( widget->value(), 5.0 );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->value(), 5.0 );
+    }
+    wrapper.setWidgetValue( u"28356"_s, context );
+    QCOMPARE( spy.count(), 2 );
+    if ( auto widget = qobject_cast< QgsHeatmapPixelSizeWidget * >( w ) )
+    {
+      QCOMPARE( widget->value(), 28356.0 );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->value(), 28356.0 );
+    }
+
+    wrapper.setWidgetValue( QVariant(), context ); // not optional, so shouldn't work
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 0.0 );
+    if ( auto widget = qobject_cast< QgsHeatmapPixelSizeWidget * >( w ) )
+    {
+      QCOMPARE( widget->value(), 0.0 );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->value(), 0.0 );
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), u"num"_s );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    if ( auto widget = qobject_cast< QgsHeatmapPixelSizeWidget * >( w ) )
+    {
+      widget->setValue( 37.0 );
+    }
+    else
+    {
+      static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->setValue( 37.0 );
+    }
+    QCOMPARE( spy.count(), 4 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 37.0 );
+    delete w;
+
+    // with default value
+    QgsProcessingParameterHeatmapPixelSize paramDefault( u"num"_s, u"num"_s );
+    paramDefault.setDefaultValue( 55 );
+
+    QgsProcessingHeatmapPixelSizeWidgetWrapper wrapperDefault( &paramDefault, type );
+
+    w = wrapperDefault.createWrappedWidget( context );
+    QCOMPARE( wrapperDefault.parameterValue().toDouble(), 55.0 );
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( Qgis::ProcessingMode::Standard );
+
+  // batch wrapper
+  testWrapper( Qgis::ProcessingMode::Batch );
+
+  // modeler wrapper
+  testWrapper( Qgis::ProcessingMode::Modeler );
+}
+
+void TestProcessingGui::testReliefColorsWidget()
+{
+  QgsReliefColorsWidget widget;
+  QCOMPARE( widget.colors().size(), 0 );
+
+  QSignalSpy changedSpy( &widget, &QgsReliefColorsWidget::valueChanged );
+
+  widget.setColors( { QgsRasterReliefColor( QColor( 255, 0, 0 ), 10, 20 ), QgsRasterReliefColor( QColor( 255, 255, 0 ), 20, 30.5 ), QgsRasterReliefColor( QColor( 255, 0, 255 ), 30.5, 50 ) } );
+  QCOMPARE( changedSpy.count(), 1 );
+
+  QCOMPARE( widget.colors().size(), 3 );
+  QCOMPARE( widget.colors().at( 0 ), QgsRasterReliefColor( QColor( 255, 0, 0 ), 10, 20 ) );
+  QCOMPARE( widget.colors().at( 1 ), QgsRasterReliefColor( QColor( 255, 255, 0 ), 20, 30.5 ) );
+  QCOMPARE( widget.colors().at( 2 ), QgsRasterReliefColor( QColor( 255, 0, 255 ), 30.5, 50 ) );
+
+  // no crash when clicking auto with no layer
+  widget.autoCalculate();
+
+  // calculating automatic colors
+  auto raster = std::make_unique<QgsRasterLayer >( testDataPath( u"/raster/dem.tif"_s ), u"raster"_s );
+  widget.setLayer( raster.get() );
+
+  widget.autoCalculate();
+  QCOMPARE( widget.colors().size(), 9 );
+  QCOMPARE( changedSpy.count(), 3 );
+}
+
+void TestProcessingGui::testReliefColorsWrapper()
+{
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterReliefColors param( u"num"_s, u"num"_s, QString(), false );
+    QgsProcessingReliefColorsWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    if ( auto widget = qobject_cast< QgsReliefColorsWidget * >( w ) )
+    {
+      QVERIFY( !widget->layer() );
+      QCOMPARE( widget->colors().size(), 0 );
+    }
+    else
+    {
+      QVERIFY( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text().isEmpty() );
+    }
+
+    QSignalSpy spy( &wrapper, &QgsProcessingReliefColorsWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( "12.5,12.8,15,16,18;22.5,22.8,115,116,118", context );
+    QCOMPARE( spy.count(), 1 );
+
+    if ( auto widget = qobject_cast< QgsReliefColorsWidget * >( w ) )
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), "12.5,12.80000000000000071,15,16,18;22.5,22.80000000000000071,115,116,118" );
+      QCOMPARE( widget->colors().size(), 2 );
+      QCOMPARE( widget->colors().at( 0 ).minElevation, 12.5 );
+      QCOMPARE( widget->colors().at( 0 ).maxElevation, 12.8 );
+      QCOMPARE( widget->colors().at( 0 ).color, QColor( 15, 16, 18 ) );
+      QCOMPARE( widget->colors().at( 1 ).minElevation, 22.5 );
+      QCOMPARE( widget->colors().at( 1 ).maxElevation, 22.8 );
+      QCOMPARE( widget->colors().at( 1 ).color, QColor( 115, 116, 118 ) );
+    }
+    else
+    {
+      QCOMPARE( wrapper.widgetValue().toString(), "12.5,12.8,15,16,18;22.5,22.8,115,116,118" );
+      QCOMPARE( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text(), "12.5,12.8,15,16,18;22.5,22.8,115,116,118" );
+    }
+
+    wrapper.setWidgetValue( u"12.5,12.8,15,16,18"_s, context );
+    QCOMPARE( spy.count(), 2 );
+    if ( auto widget = qobject_cast< QgsReliefColorsWidget * >( w ) )
+    {
+      QCOMPARE( widget->colors().size(), 1 );
+      QCOMPARE( widget->colors().at( 0 ).minElevation, 12.5 );
+      QCOMPARE( widget->colors().at( 0 ).maxElevation, 12.8 );
+      QCOMPARE( widget->colors().at( 0 ).color, QColor( 15, 16, 18 ) );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text(), u"12.5,12.8,15,16,18"_s );
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), u"num"_s );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    if ( auto widget = qobject_cast< QgsReliefColorsWidget * >( w ) )
+    {
+      widget->setColors( {
+        QgsRasterReliefColor( QColor( 1, 2, 3 ), 1, 2 ),
+        QgsRasterReliefColor( QColor( 11, 12, 13 ), 2, 3 ),
+      } );
+    }
+    else
+    {
+      static_cast<QLineEdit *>( wrapper.wrappedWidget() )->setText( "1,2,1,2,3;2,3,11,12,13" );
+    }
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toString(), "1,2,1,2,3;2,3,11,12,13" );
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( Qgis::ProcessingMode::Standard );
+
+  // batch wrapper
+  testWrapper( Qgis::ProcessingMode::Batch );
+
+  // modeler wrapper
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::testRasterOptionsWrapper()

@@ -60,9 +60,6 @@ target_link_libraries(qgis_quick
     ${QT_VERSION_BASE}::Positioning
     qgis_core)
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Android")
-  target_link_libraries(qgis_quick ${QT_VERSION_BASE}::AndroidExtras)
-endif()
 target_compile_definitions(qgis_quick PRIVATE "-DQT_NO_FOREACH")
 
 GENERATE_EXPORT_HEADER(

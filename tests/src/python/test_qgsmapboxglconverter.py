@@ -22,14 +22,12 @@ from qgis.core import (
     QgsPalLayerSettings,
     QgsRasterLayer,
     QgsRasterPipe,
-    QgsSettings,
     QgsSymbol,
     QgsSymbolLayer,
     QgsWkbTypes,
     qgsDoubleNear,
 )
 from qgis.PyQt.QtCore import (
-    QCoreApplication,
     QSize,
     QSizeF,
     Qt,
@@ -846,6 +844,67 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 False,
             ),
             """concat("numero", "indice_de_repetition")""",
+        )
+
+        # slice with start and end index
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["slice", ["get", "ue_kz"], 0, 1],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", 1, 1)""",
+        )
+
+        # slice with start index only
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["slice", ["get", "ue_kz"], 2],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", 3)""",
+        )
+
+        # slice with non-constant (expression) indices: arithmetic cannot be folded
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["slice", ["get", "ue_kz"], ["get", "start"], ["get", "end"]],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", ("start") + 1, ("end") - ("start"))""",
+        )
+
+        # slice used within a filter expression
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                [
+                    "all",
+                    ["==", ["get", "art"], "T"],
+                    [
+                        "in",
+                        ["slice", ["get", "ue_kz"], 0, 1],
+                        [
+                            "literal",
+                            ["A", "B", "C", "D", "E", "F", "G", "H", "U", "V"],
+                        ],
+                    ],
+                ],
+                conversion_context,
+                False,
+            ),
+            """("art" IS 'T') AND (substr("ue_kz", 1, 1) IN ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'U', 'V'))""",
+        )
+
+        # slice compared with == within a filter expression
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["==", ["slice", ["get", "ue_kz"], 0, 1], "T"],
+                conversion_context,
+                False,
+            ),
+            """substr("ue_kz", 1, 1) IS 'T'""",
         )
 
         self.assertEqual(

@@ -291,26 +291,36 @@ bool CombinedCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int sourceR
     case Qgis::CrsType::Other:
       break;
 
-    case Qgis::CrsType::Geodetic:
-    case Qgis::CrsType::Geocentric:
-    case Qgis::CrsType::Geographic2d:
-    case Qgis::CrsType::Geographic3d:
     case Qgis::CrsType::Projected:
-    case Qgis::CrsType::Temporal:
-    case Qgis::CrsType::Engineering:
-    case Qgis::CrsType::Bound:
     case Qgis::CrsType::DerivedProjected:
+      if ( mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterTopocentricCompatible ) )
+        return false;
       if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterHorizontal ) )
         return false;
       break;
 
+    case Qgis::CrsType::Geocentric:
+    case Qgis::CrsType::Geographic3d:
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterHorizontal ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterTopocentricCompatible ) )
+        return false;
+      break;
+
+    case Qgis::CrsType::Geodetic:
+    case Qgis::CrsType::Geographic2d:
+    case Qgis::CrsType::Temporal:
+    case Qgis::CrsType::Engineering:
+    case Qgis::CrsType::Bound:
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterHorizontal ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterTopocentricCompatible ) )
+        return false;
+      break;
+
     case Qgis::CrsType::Vertical:
-      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterVertical ) )
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterVertical ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterTopocentricCompatible ) )
         return false;
       break;
 
     case Qgis::CrsType::Compound:
-      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterCompound ) )
+      if ( !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterCompound ) && !mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::Filter::FilterTopocentricCompatible ) )
         return false;
       break;
   }
@@ -336,6 +346,9 @@ bool CombinedCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int sourceR
           return crs.isValid();
 
         case QgsProjectionSelectionWidget::CurrentCrs:
+          // prevent adding "no projection"/invalid entry in the base crs widget of topocentric crs
+          if ( mFilters.testFlag( QgsCoordinateReferenceSystemProxyModel::FilterTopocentricCompatible ) )
+            return crs.isValid();
           // hide invalid current CRS value option only if "not set" option is shown
           return crs.isValid() || !mVisibleOptions.testFlag( QgsProjectionSelectionWidget::CrsNotSet );
 
@@ -522,6 +535,11 @@ bool QgsProjectionSelectionWidget::optionVisible( QgsProjectionSelectionWidget::
   return !matches.empty();
 }
 
+void QgsProjectionSelectionWidget::setAllowTopocentricCrs( bool allow )
+{
+  mAllowTopocentricCrs = allow;
+}
+
 void QgsProjectionSelectionWidget::selectCrs()
 {
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
@@ -547,6 +565,9 @@ void QgsProjectionSelectionWidget::selectCrs()
       mActivePanel->setNotSetText( mModel->combinedModel()->notSetText() );
 
     mActivePanel->setPanelTitle( mDialogTitle );
+
+    if ( !mAllowTopocentricCrs )
+      mActivePanel->setAllowTopocentricCrs( false );
 
     if ( optionVisible( QgsProjectionSelectionWidget::CrsOption::CrsNotSet ) )
     {
@@ -582,6 +603,9 @@ void QgsProjectionSelectionWidget::selectCrs()
       dlg.setOgcWmsCrsFilter( ogcFilter );
     dlg.setCrs( crs() );
     dlg.setWindowTitle( mDialogTitle );
+
+    if ( !mAllowTopocentricCrs )
+      dlg.setAllowTopocentricCrs( false );
 
     if ( !mModel->combinedModel()->notSetText().isEmpty() )
       dlg.setNotSetText( mModel->combinedModel()->notSetText() );

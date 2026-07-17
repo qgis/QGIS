@@ -36,8 +36,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
+QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )
+  , mCanvas( canvas )
 {
   setupUi( this );
 
@@ -48,7 +49,10 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
 
   mToleranceUnitsComboBox->addItem( tr( "Layer Units" ), QVariant::fromValue( Qgis::MapToolUnit::Layer ) );
   mToleranceUnitsComboBox->addItem( tr( "Pixels" ), QVariant::fromValue( Qgis::MapToolUnit::Pixels ) );
-  mToleranceUnitsComboBox->addItem( tr( "Map Units" ), QVariant::fromValue( Qgis::MapToolUnit::Project ) );
+  mToleranceUnitsComboBox->addItem( mapUnitComboText(), QVariant::fromValue( Qgis::MapToolUnit::Project ) );
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] {
+    mToleranceUnitsComboBox->setItemText( mToleranceUnitsComboBox->findData( QVariant::fromValue( Qgis::MapToolUnit::Project ) ), mapUnitComboText() );
+  } );
 
   mToleranceSpinBox->setShowClearButton( false );
 
@@ -97,6 +101,20 @@ void QgsSimplifyUserInputWidget::setConfig( QgsMapToolSimplify::Method method, d
   mIterationsSpin->setValue( smoothIterations );
 }
 
+void QgsSimplifyUserInputWidget::setTargetLayer( QgsMapLayer *layer )
+{
+  QString layerUnitText;
+  if ( layer && layer->crs().mapUnits() != Qgis::DistanceUnit::Unknown )
+  {
+    layerUnitText = tr( "Layer Units (%1)" ).arg( QgsUnitTypes::toString( layer->crs().mapUnits() ) );
+  }
+  else
+  {
+    layerUnitText = tr( "Layer Units" );
+  }
+  mToleranceUnitsComboBox->setItemText( mToleranceUnitsComboBox->findData( QVariant::fromValue( Qgis::MapToolUnit::Layer ) ), layerUnitText );
+}
+
 void QgsSimplifyUserInputWidget::updateStatusText( const QString &text )
 {
   labelStatus->setText( text );
@@ -136,6 +154,20 @@ void QgsSimplifyUserInputWidget::keyReleaseEvent( QKeyEvent *event )
     return;
   }
   QWidget::keyReleaseEvent( event );
+}
+
+QString QgsSimplifyUserInputWidget::mapUnitComboText() const
+{
+  QString mapUnit;
+  if ( mCanvas )
+  {
+    const Qgis::DistanceUnit mapUnits = mCanvas->mapUnits();
+    if ( mapUnits != Qgis::DistanceUnit::Unknown )
+    {
+      mapUnit = QgsUnitTypes::toString( mapUnits );
+    }
+  }
+  return mapUnit.isEmpty() ? tr( "Map Units" ) : tr( "Map Units (%1)" ).arg( mapUnit );
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -212,7 +244,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
 
 void QgsMapToolSimplify::createUserInputWidget()
 {
-  mSimplifyUserWidget = new QgsSimplifyUserInputWidget();
+  mSimplifyUserWidget = new QgsSimplifyUserInputWidget( canvas() );
   mSimplifyUserWidget->setConfig( method(), tolerance(), toleranceUnits(), smoothOffset(), smoothIterations() );
 
   connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::methodChanged, this, &QgsMapToolSimplify::setMethod );
@@ -222,6 +254,9 @@ void QgsMapToolSimplify::createUserInputWidget()
   connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::smoothIterationsChanged, this, &QgsMapToolSimplify::setSmoothIterations );
   connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::accepted, this, &QgsMapToolSimplify::storeSimplified );
   connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::rejected, this, &QgsMapToolSimplify::clearSelection );
+
+  mSimplifyUserWidget->setTargetLayer( currentVectorLayer() );
+  connect( canvas(), &QgsMapCanvas::currentLayerChanged, this, [this]( QgsMapLayer *layer ) { mSimplifyUserWidget->setTargetLayer( layer ); } );
 
   QgisApp::instance()->addUserInputWidget( mSimplifyUserWidget );
   mSimplifyUserWidget->setFocus( Qt::TabFocusReason );

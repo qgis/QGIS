@@ -15,8 +15,9 @@
 
 #include "qgsnullmaterial3dhandler.h"
 
-#include "qgshighlightmaterial.h"
+#include "qgs3d.h"
 #include "qgsmaterial.h"
+#include "qgsunlitmaterial.h"
 
 #include <QMap>
 #include <QString>
@@ -35,7 +36,7 @@ QgsMaterial *QgsNullMaterial3DHandler::toMaterial( const QgsAbstractMaterialSett
       case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
       case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
       {
-        return new QgsHighlightMaterial();
+        return Qgs3D::createHighlightMaterial();
       }
       case Qgis::MaterialRenderingTechnique::InstancedPoints:
       {

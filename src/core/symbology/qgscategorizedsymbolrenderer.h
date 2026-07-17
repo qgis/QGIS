@@ -407,6 +407,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     bool legendSymbolItemsCheckable() const override;
     bool legendSymbolItemChecked( const QString &key ) override;
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
+    void setLegendSymbolItemLabel( const QString &key, const QString &label ) override;
     void checkLegendSymbolItem( const QString &key, bool state = true ) override;
     QString legendClassificationAttribute() const override { return classAttribute(); }
 

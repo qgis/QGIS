@@ -264,20 +264,29 @@ public:
         using iterator_category = std::random_access_iterator_tag;
         using difference_type   = ptrdiff_t;
         using value_type        = T;
-        using pointer           = T*;
-        using reference         = T&;
+        using pointer           = const T*;
+        using reference         = const T&;
 
         inline Iterator() : value(T(0)) { }
         inline Iterator(T value) : value(value) { }
 
         inline bool operator==(const Iterator& other) const { return value == other.value; }
         inline bool operator!=(const Iterator& other) const { return value != other.value; }
+        inline bool operator<(const Iterator& other) const { return value < other.value; }
+        inline bool operator>(const Iterator& other) const { return value > other.value; }
+        inline bool operator<=(const Iterator& other) const { return value <= other.value; }
+        inline bool operator>=(const Iterator& other) const { return value >= other.value; }
 
-        inline T operator*() const { return value; }
-        inline Iterator& operator+=(ptrdiff_t movement) { value += T(movement); return *this; }
-        inline Iterator& operator-=(ptrdiff_t movement) { value -= T(movement); return *this; }
-        inline Iterator operator+(ptrdiff_t movement) const { return Iterator(value + T(movement)); }
-        inline ptrdiff_t operator-(const Iterator& other) const { return ptrdiff_t(value - other.value); }
+        inline reference operator*() const { return value; }
+        inline pointer operator->() const { return &value; }
+        inline T operator[](difference_type n) const { return value + T(n); }
+
+        inline Iterator& operator+=(difference_type movement) { value += T(movement); return *this; }
+        inline Iterator& operator-=(difference_type movement) { value -= T(movement); return *this; }
+        inline Iterator operator+(difference_type movement) const { return Iterator(value + T(movement)); }
+        friend inline Iterator operator+(difference_type movement, const Iterator& it) { return Iterator(it.value + T(movement)); }
+        inline Iterator operator-(difference_type movement) const { return Iterator(value - T(movement)); }
+        inline difference_type operator-(const Iterator& other) const { return difference_type(value - other.value); }
 
         inline Iterator& operator++()
         {

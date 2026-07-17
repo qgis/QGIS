@@ -2667,9 +2667,10 @@ void PDFTransparencyRenderer::performTextEnd(ProcessOrder order)
     }
 }
 
-bool PDFTransparencyRenderer::performOriginalImagePainting(const PDFImage& image, const PDFStream* stream)
+bool PDFTransparencyRenderer::performOriginalImagePainting(const PDFImage& image, const PDFStream* stream, PDFObjectReference reference)
 {
     Q_UNUSED(stream);
+    Q_UNUSED(reference);
 
     PDFFloatBitmap texture = getImage(image);
 

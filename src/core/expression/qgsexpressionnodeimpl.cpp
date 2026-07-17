@@ -2148,6 +2148,7 @@ QList<const QgsExpressionNode *> QgsExpressionNodeInOperator::nodes() const
 {
   QList<const QgsExpressionNode *> lst;
   lst << this;
+  lst << mNode.get();
   const QList< QgsExpressionNode * > nodeList = mList->list();
   for ( const QgsExpressionNode *n : nodeList )
     lst += n->nodes();

@@ -813,9 +813,10 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     QgsDebugMsgLevel( u"Set Data provider QgsLayerMetadata identifier[%1]"_s.arg( metadata().identifier() ), 4 );
   }
 
-  if ( provider == "gdal"_L1 )
+  if ( provider == "gdal"_L1 || provider == "wms"_L1 )
   {
-    // make sure that the /vsigzip or /vsizip is added to uri, if applicable
+    // if provider has updated its URI, make sure we store the updated one.
+    // TODO: this probably should be enabled for all provider, but we'll play it safe for now...
     mDataSource = mDataProvider->dataSourceUri();
   }
 
