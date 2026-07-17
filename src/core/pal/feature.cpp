@@ -1271,6 +1271,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
       }
       else if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal )
       {
+        // TODO: this code is likely dead -- it doesn't look possible to reach here with a Horizontal arrangement
         lPos.emplace_back(
           std::make_unique<
             LabelPosition >( i, candidateStartX - labelWidth / 2, candidateStartY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over )
@@ -1520,6 +1521,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
     }
     else if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal )
     {
+      // TODO: this code is likely dead -- it doesn't look possible to reach here with a Horizontal arrangement
       lPos.emplace_back(
         std::make_unique<
           LabelPosition >( i, candidateStartX - labelWidth / 2, candidateStartY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over )
