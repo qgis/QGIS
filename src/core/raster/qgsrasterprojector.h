@@ -268,11 +268,11 @@ class ProjectorData
 
     //! Array of source points for each destination column on top of current CPMatrix grid row
     /* Warning: using QList is slow on access */
-    QgsPointXY *pHelperTop = nullptr;
+    std::unique_ptr<QgsPointXY[]> pHelperTop;
 
     //! Array of source points for each destination column on bottom of current CPMatrix grid row
     /* Warning: using QList is slow on access */
-    QgsPointXY *pHelperBottom = nullptr;
+    std::unique_ptr<QgsPointXY[]> pHelperBottom;
 
     //! Current mHelperTop matrix row
     int mHelperTopRow = 0;
