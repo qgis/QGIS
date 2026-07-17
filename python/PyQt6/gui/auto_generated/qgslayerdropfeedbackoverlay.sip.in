@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsdropfeedbackoverlay.h                                     *
+ * src/gui/qgslayerdropfeedbackoverlay.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/
@@ -9,7 +9,7 @@
 
 
 
-class QgsDropFeedbackOverlay : QWidget
+class QgsLayerDropFeedbackOverlay : QWidget
 {
 %Docstring(signature="appended")
 A translucent overlay widget which renders visual feedback while a drag
@@ -30,13 +30,13 @@ the hosting widget provides its own (or no) feedback.
 %End
 
 %TypeHeaderCode
-#include "qgsdropfeedbackoverlay.h"
+#include "qgslayerdropfeedbackoverlay.h"
 %End
   public:
-    explicit QgsDropFeedbackOverlay( QWidget *parent /TransferThis/ = 0 );
+    explicit QgsLayerDropFeedbackOverlay( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsDropFeedbackOverlay, with the specified ``parent``
-widget.
+Constructor for QgsLayerDropFeedbackOverlay, with the specified
+``parent`` widget.
 %End
 
     void setPayloadType( Qgis::LayerDropPayloadType type );
@@ -65,8 +65,8 @@ Nothing is drawn for :py:class:`Qgis`.LayerDropPayloadType.Layers or
 The ``widget`` supplies the palette, font and device pixel ratio used
 for themed, hidpi-aware rendering. This is exposed so that widgets which
 prefer to paint the feedback directly (e.g. within their own
-:py:func:`~QgsDropFeedbackOverlay.paintEvent`) can reuse the exact same
-rendering without hosting an overlay widget.
+:py:func:`~QgsLayerDropFeedbackOverlay.paintEvent`) can reuse the exact
+same rendering without hosting an overlay widget.
 %End
 
   protected:
@@ -78,7 +78,7 @@ rendering without hosting an overlay widget.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsdropfeedbackoverlay.h                                     *
+ * src/gui/qgslayerdropfeedbackoverlay.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.py again   *
  ************************************************************************/

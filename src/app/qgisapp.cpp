@@ -265,8 +265,8 @@ using namespace Qt::StringLiterals;
 #include "qgscoordinateutils.h"
 #include "qgscredentialdialog.h"
 #include "qgscustomdrophandler.h"
-#include "qgsdropfeedbackoverlay.h"
 #include "qgslayerdropclassifier.h"
+#include "qgslayerdropfeedbackoverlay.h"
 #include "qgscustomprojectopenhandler.h"
 #include "qgscustomization.h"
 #include "qgscustomizationdialog.h"
@@ -2385,7 +2385,7 @@ void QgisApp::updateCanvasDropFeedback( Qgis::LayerDropPayloadType payloadType, 
   }
 
   if ( !mCanvasDropFeedbackOverlay )
-    mCanvasDropFeedbackOverlay = new QgsDropFeedbackOverlay( mMapCanvas->viewport() );
+    mCanvasDropFeedbackOverlay = new QgsLayerDropFeedbackOverlay( mMapCanvas->viewport() );
   mCanvasDropFeedbackOverlay->setPayloadType( payloadType );
   mCanvasDropFeedbackOverlay->setGeometry( mMapCanvas->viewport()->rect() );
   mCanvasDropFeedbackOverlay->raise();

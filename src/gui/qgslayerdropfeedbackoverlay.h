@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdropfeedbackoverlay.h
+  qgslayerdropfeedbackoverlay.h
   --------------------------------------
   Date                 : July 2026
   Copyright            : (C) 2026 by Denis Rouzaud
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSDROPFEEDBACKOVERLAY_H
-#define QGSDROPFEEDBACKOVERLAY_H
+#ifndef QGSLAYERDROPFEEDBACKOVERLAY_H
+#define QGSLAYERDROPFEEDBACKOVERLAY_H
 
 #include "qgis.h"
 #include "qgis_gui.h"
@@ -38,13 +38,13 @@
  *
  * \since QGIS 4.4
  */
-class GUI_EXPORT QgsDropFeedbackOverlay : public QWidget
+class GUI_EXPORT QgsLayerDropFeedbackOverlay : public QWidget
 {
     Q_OBJECT
 
   public:
-    //! Constructor for QgsDropFeedbackOverlay, with the specified \a parent widget.
-    explicit QgsDropFeedbackOverlay( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    //! Constructor for QgsLayerDropFeedbackOverlay, with the specified \a parent widget.
+    explicit QgsLayerDropFeedbackOverlay( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the \a type of payload to render feedback for, triggering a repaint.
@@ -78,4 +78,4 @@ class GUI_EXPORT QgsDropFeedbackOverlay : public QWidget
     Qgis::LayerDropPayloadType mPayloadType = Qgis::LayerDropPayloadType::Layers;
 };
 
-#endif // QGSDROPFEEDBACKOVERLAY_H
+#endif // QGSLAYERDROPFEEDBACKOVERLAY_H

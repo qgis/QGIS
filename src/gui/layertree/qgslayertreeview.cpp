@@ -15,8 +15,8 @@
 
 #include "qgslayertreeview.h"
 
-#include "qgsdropfeedbackoverlay.h"
 #include "qgsgui.h"
+#include "qgslayerdropfeedbackoverlay.h"
 #include "qgslayertree.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgslayertreemodel.h"
@@ -970,7 +970,7 @@ void QgsLayerTreeView::paintEvent( QPaintEvent *event )
   if ( mDatasetDragActive && mDragPayloadType != Qgis::LayerDropPayloadType::Layers )
   {
     QPainter painter( viewport() );
-    QgsDropFeedbackOverlay::paintFeedback( &painter, viewport()->rect(), mDragPayloadType, this );
+    QgsLayerDropFeedbackOverlay::paintFeedback( &painter, viewport()->rect(), mDragPayloadType, this );
     return;
   }
 

@@ -55,11 +55,11 @@ class QgsCustomProjectOpenHandler;
 class QgsCustomLayerOrderWidget;
 class QgsDockWidget;
 class QgsDoubleSpinBox;
-class QgsDropFeedbackOverlay;
 class QgsElevationProfile;
 class QgsFeature;
 class QgsFeatureStore;
 class QgsGeometry;
+class QgsLayerDropFeedbackOverlay;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayout;
@@ -2705,7 +2705,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Keep track of whether ongoing dataset(s) is/are being dropped through the table of contents
     bool mLayerTreeDrop = false;
     //! Overlay shown over the map canvas while a project drag hovers it. Lazily created.
-    QgsDropFeedbackOverlay *mCanvasDropFeedbackOverlay = nullptr;
+    QgsLayerDropFeedbackOverlay *mCanvasDropFeedbackOverlay = nullptr;
 
     bool mInitializationHasCompleted = false;
     QStringList mDeferredFileOpenPaths;

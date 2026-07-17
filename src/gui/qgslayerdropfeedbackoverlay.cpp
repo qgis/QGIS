@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdropfeedbackoverlay.cpp
+  qgslayerdropfeedbackoverlay.cpp
   --------------------------------------
   Date                 : July 2026
   Copyright            : (C) 2026 by Denis Rouzaud
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdropfeedbackoverlay.h"
+#include "qgslayerdropfeedbackoverlay.h"
 
 #include "qgsapplication.h"
 #include "qgssvgcache.h"
@@ -21,11 +21,11 @@
 #include <QPainter>
 #include <QString>
 
-#include "moc_qgsdropfeedbackoverlay.cpp"
+#include "moc_qgslayerdropfeedbackoverlay.cpp"
 
 using namespace Qt::StringLiterals;
 
-QgsDropFeedbackOverlay::QgsDropFeedbackOverlay( QWidget *parent )
+QgsLayerDropFeedbackOverlay::QgsLayerDropFeedbackOverlay( QWidget *parent )
   : QWidget( parent )
 {
   // never interfere with the drag and drop event delivery of the covered widget
@@ -35,7 +35,7 @@ QgsDropFeedbackOverlay::QgsDropFeedbackOverlay( QWidget *parent )
   setFocusPolicy( Qt::NoFocus );
 }
 
-void QgsDropFeedbackOverlay::setPayloadType( Qgis::LayerDropPayloadType type )
+void QgsLayerDropFeedbackOverlay::setPayloadType( Qgis::LayerDropPayloadType type )
 {
   if ( mPayloadType == type )
     return;
@@ -44,13 +44,13 @@ void QgsDropFeedbackOverlay::setPayloadType( Qgis::LayerDropPayloadType type )
   update();
 }
 
-void QgsDropFeedbackOverlay::paintEvent( QPaintEvent * )
+void QgsLayerDropFeedbackOverlay::paintEvent( QPaintEvent * )
 {
   QPainter painter( this );
   paintFeedback( &painter, rect(), mPayloadType, this );
 }
 
-void QgsDropFeedbackOverlay::paintFeedback( QPainter *painter, const QRect &rect, Qgis::LayerDropPayloadType payloadType, const QWidget *widget )
+void QgsLayerDropFeedbackOverlay::paintFeedback( QPainter *painter, const QRect &rect, Qgis::LayerDropPayloadType payloadType, const QWidget *widget )
 {
   const int iconSize = widget->fontMetrics().height() * 3;
 

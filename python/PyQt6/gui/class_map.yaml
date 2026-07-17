@@ -2206,12 +2206,6 @@ QgsDoubleValidator: src/gui/qgsdoublevalidator.h#L44
 QgsDrawSourceWidget.create: src/gui/effects/qgspainteffectwidget.h#L77
 QgsDrawSourceWidget.setPaintEffect: src/gui/effects/qgspainteffectwidget.h#L79
 QgsDrawSourceWidget: src/gui/effects/qgspainteffectwidget.h#L70
-QgsDropFeedbackOverlay.QgsDropFeedbackOverlay: src/gui/qgsdropfeedbackoverlay.h#L47
-QgsDropFeedbackOverlay.paintEvent: src/gui/qgsdropfeedbackoverlay.h#L75
-QgsDropFeedbackOverlay.paintFeedback: src/gui/qgsdropfeedbackoverlay.h#L72
-QgsDropFeedbackOverlay.payloadType: src/gui/qgsdropfeedbackoverlay.h#L59
-QgsDropFeedbackOverlay.setPayloadType: src/gui/qgsdropfeedbackoverlay.h#L53
-QgsDropFeedbackOverlay: src/gui/qgsdropfeedbackoverlay.h#L41
 QgsDualView.QgsDualView: src/gui/attributetable/qgsdualview.h#L94
 QgsDualView.attributeTableConfig: src/gui/attributetable/qgsdualview.h#L239
 QgsDualView.cancelProgress: src/gui/attributetable/qgsdualview.h#L286
@@ -3663,6 +3657,12 @@ QgsLabelingEngineRulesWidget.changed: src/gui/labeling/qgslabelingengineruleswid
 QgsLabelingEngineRulesWidget.setRules: src/gui/labeling/qgslabelingengineruleswidget.h#L124
 QgsLabelingEngineRulesWidget: src/gui/labeling/qgslabelingengineruleswidget.h#L109
 QgsLayerDropClassifier: src/gui/qgslayerdropclassifier.h#L40
+QgsLayerDropFeedbackOverlay.QgsLayerDropFeedbackOverlay: src/gui/qgslayerdropfeedbackoverlay.h#L47
+QgsLayerDropFeedbackOverlay.paintEvent: src/gui/qgslayerdropfeedbackoverlay.h#L75
+QgsLayerDropFeedbackOverlay.paintFeedback: src/gui/qgslayerdropfeedbackoverlay.h#L72
+QgsLayerDropFeedbackOverlay.payloadType: src/gui/qgslayerdropfeedbackoverlay.h#L59
+QgsLayerDropFeedbackOverlay.setPayloadType: src/gui/qgslayerdropfeedbackoverlay.h#L53
+QgsLayerDropFeedbackOverlay: src/gui/qgslayerdropfeedbackoverlay.h#L41
 QgsLayerMetadataResultsModel.QgsLayerMetadataResultsModel: src/gui/qgslayermetadataresultsmodel.h#L80
 QgsLayerMetadataResultsModel.cancel: src/gui/qgslayermetadataresultsmodel.h#L140
 QgsLayerMetadataResultsModel.columnCount: src/gui/qgslayermetadataresultsmodel.h#L88
