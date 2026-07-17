@@ -215,9 +215,22 @@ void QgsAttributesFormLayoutView::handleExternalDroppedItems( const QModelIndexL
   {
     const auto itemType = static_cast< QgsAttributesFormData::AttributesFormItemType >( index.data( QgsAttributesFormModel::ItemTypeRole ).toInt() );
 
-    if ( itemType == QgsAttributesFormData::QmlWidget || itemType == QgsAttributesFormData::HtmlWidget || itemType == QgsAttributesFormData::TextWidget || itemType == QgsAttributesFormData::SpacerWidget )
+    switch ( itemType )
     {
-      onItemDoubleClicked( mModel->mapFromSource( index ) );
+      case QgsAttributesFormData::QmlWidget:
+      case QgsAttributesFormData::HtmlWidget:
+      case QgsAttributesFormData::TextWidget:
+      case QgsAttributesFormData::SpacerWidget:
+        // These need to be configured right after being dropped
+        onItemDoubleClicked( mModel->mapFromSource( index ) );
+        break;
+
+      case QgsAttributesFormData::Field:
+      case QgsAttributesFormData::Relation:
+      case QgsAttributesFormData::Container:
+      case QgsAttributesFormData::WidgetType:
+      case QgsAttributesFormData::Action:
+        break;
     }
   }
 }
