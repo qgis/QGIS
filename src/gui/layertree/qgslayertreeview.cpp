@@ -840,7 +840,7 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 
 void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( isDatasetDrag( event->mimeData() ) )
+  if ( QgsLayerDropClassifier::isDatasetDrag( event->mimeData() ) )
   {
     mDragPayloadType = QgsLayerDropClassifier::classify( event->mimeData(), mCustomDropHandlers );
     mDatasetDragActive = true;
@@ -853,7 +853,7 @@ void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
 
 void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
 {
-  if ( isDatasetDrag( event->mimeData() ) )
+  if ( QgsLayerDropClassifier::isDatasetDrag( event->mimeData() ) )
   {
     switch ( mDragPayloadType )
     {
@@ -900,7 +900,7 @@ void QgsLayerTreeView::dragLeaveEvent( QDragLeaveEvent *event )
 
 void QgsLayerTreeView::dropEvent( QDropEvent *event )
 {
-  if ( isDatasetDrag( event->mimeData() ) )
+  if ( QgsLayerDropClassifier::isDatasetDrag( event->mimeData() ) )
   {
     mDatasetDragActive = false;
     viewport()->update();
@@ -999,11 +999,6 @@ QgsLayerTreeRegistryBridge::InsertionPoint QgsLayerTreeView::datasetDropInsertio
 void QgsLayerTreeView::setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler>> &handlers )
 {
   mCustomDropHandlers = handlers;
-}
-
-bool QgsLayerTreeView::isDatasetDrag( const QMimeData *mimeData )
-{
-  return !mimeData->hasFormat( u"application/qgis.layertreemodeldata"_s ) && ( mimeData->hasUrls() || mimeData->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) );
 }
 
 QgsLayerTreeView::DropTarget QgsLayerTreeView::computeDropTarget( const QPoint &pos ) const

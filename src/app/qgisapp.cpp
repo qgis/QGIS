@@ -2330,8 +2330,7 @@ void QgisApp::dragEnterEvent( QDragEnterEvent *event )
 
 void QgisApp::dragMoveEvent( QDragMoveEvent *event )
 {
-  const bool datasetDrag = ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
-                           && !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s );
+  const bool datasetDrag = QgsLayerDropClassifier::isDatasetDrag( event->mimeData() );
   if ( !datasetDrag )
   {
     // let QMainWindow handle non-dataset drags (e.g. dock widget dragging)
@@ -2399,8 +2398,7 @@ void QgisApp::dropEvent( QDropEvent *event )
     mCanvasDropFeedbackOverlay->hide();
 
   // refuse payloads which nothing can load or handle, mirroring the drag refusal in dragMoveEvent()
-  const bool datasetDrag = ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
-                           && !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s );
+  const bool datasetDrag = QgsLayerDropClassifier::isDatasetDrag( event->mimeData() );
   if ( datasetDrag && QgsLayerDropClassifier::classify( event->mimeData(), mCustomDropHandlers ) == Qgis::LayerDropPayloadType::Invalid )
   {
     event->ignore();

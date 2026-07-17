@@ -23,8 +23,11 @@
 #include <QPointer>
 #include <QVector>
 
+#define SIP_NO_FILE
+
 class QMimeData;
 class QgsCustomDropHandler;
+
 
 /**
  * \ingroup gui
@@ -37,6 +40,8 @@ class QgsCustomDropHandler;
  *
  * The widget itself is responsible for handling the drop event, and may use the classification.
  *
+ * \note Not available in Python bindings
+ *
  * \since QGIS 4.4
  */
 class GUI_EXPORT QgsLayerDropClassifier
@@ -48,10 +53,16 @@ class GUI_EXPORT QgsLayerDropClassifier
      * If no data provider recognizes the payload, the \a customHandlers are consulted:
      * when one of them can handle the mime data, the payload classifies as
      * Qgis::LayerDropPayloadType::CustomHandler, otherwise as Qgis::LayerDropPayloadType::Invalid.
-     *
-     * \note Not available in Python bindings
      */
-    static Qgis::LayerDropPayloadType classify( const QMimeData *mimeData, const QVector<QPointer<QgsCustomDropHandler>> &customHandlers = QVector<QPointer<QgsCustomDropHandler>>() ) SIP_SKIP;
+    static Qgis::LayerDropPayloadType classify( const QMimeData *mimeData, const QVector<QPointer<QgsCustomDropHandler>> &customHandlers = QVector<QPointer<QgsCustomDropHandler>>() );
+
+    /**
+     * Returns TRUE if the \a mimeData represents a drag of datasets onto a widget which accepts
+     * map layers (local files, or uris originating from within QGIS such as the browser panel),
+     * as opposed to an internal layer tree reordering. This is the kind of drag which classify()
+     * applies to.
+     */
+    static bool isDatasetDrag( const QMimeData *mimeData );
 };
 
 #endif // QGSLAYERDROPCLASSIFIER_H

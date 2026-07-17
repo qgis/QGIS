@@ -116,3 +116,10 @@ Qgis::LayerDropPayloadType QgsLayerDropClassifier::classify( const QMimeData *mi
 
   return Qgis::LayerDropPayloadType::Invalid;
 }
+
+bool QgsLayerDropClassifier::isDatasetDrag( const QMimeData *mimeData )
+{
+  // internal layer tree reordering carries its own mime type and must not be treated as a
+  // dataset drag; anything else with file urls or a QGIS uri list is a dataset/layer drag
+  return !mimeData->hasFormat( u"application/qgis.layertreemodeldata"_s ) && ( mimeData->hasUrls() || mimeData->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) );
+}

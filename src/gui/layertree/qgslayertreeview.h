@@ -683,9 +683,6 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
         QRect indicatorRect;
     };
 
-    //! Returns TRUE for drags carrying dataset URIs (and not internal layer tree reorders).
-    static bool isDatasetDrag( const QMimeData *mimeData );
-
     DropTarget computeDropTarget( const QPoint &pos ) const;
     //! Line rect at the visual position a node inserted at group/row will take.
     QRect indicatorRectForInsertion( QgsLayerTreeGroup *group, int row ) const;
