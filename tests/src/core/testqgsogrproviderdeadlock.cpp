@@ -25,10 +25,7 @@ using namespace Qt::StringLiterals;
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsogrproviderutils.h"
-#include "qgsprovidermetadata.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidersublayerdetails.h"
-#include "qgsvectorlayer.h"
+#include "qgstestutils.h"
 
 #include <QDeadlineTimer>
 #include <QObject>
@@ -104,83 +101,6 @@ class OgrLayerStressWorker : public QThread
     int mLoops = 0;
     int mAcquisitions = 0;
     int mFailedAcquisitions = 0;
-};
-
-/**
- * Repeatedly queries sublayers, as the browser does when creating children
- * for a file item: this code path acquires the dataset mutex of the shared
- * dataset and the global mutex in close succession, racing against
- * getLayer() calls from the stress workers which take them in the opposite order
- */
-class OgrSublayerQueryWorker : public QThread
-{
-    Q_OBJECT
-
-  public:
-    OgrSublayerQueryWorker( const QString &uri, std::atomic<bool> &stop )
-      : mUri( uri )
-      , mStop( stop )
-    {}
-
-    void run() override
-    {
-      QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s );
-      while ( !mStop )
-      {
-        mLoops++;
-        const QList<QgsProviderSublayerDetails> sublayers = metadata->querySublayers( mUri );
-        if ( sublayers.size() == 2 )
-          mSuccessfulQueries++;
-      }
-    }
-
-    int loops() const { return mLoops; }
-    int successfulQueries() const { return mSuccessfulQueries; }
-
-  private:
-    QString mUri;
-    std::atomic<bool> &mStop;
-    int mLoops = 0;
-    int mSuccessfulQueries = 0;
-};
-
-/**
- * Repeatedly opens and closes a real vector layer, as the app does when adding
- * layers from the browser: QgsOgrProvider construction runs loadMetadata(),
- * which manipulates the dataset and global mutexes
- */
-class OgrVectorLayerWorker : public QThread
-{
-    Q_OBJECT
-
-  public:
-    OgrVectorLayerWorker( const QString &uri, std::atomic<bool> &stop )
-      : mUri( uri )
-      , mStop( stop )
-    {}
-
-    void run() override
-    {
-      while ( !mStop )
-      {
-        mLoops++;
-        auto layer = std::make_unique<QgsVectorLayer>( mUri, u"worker"_s, u"ogr"_s );
-        if ( !layer->isValid() )
-          continue;
-        QgsFeature f;
-        if ( layer->getFeatures().nextFeature( f ) )
-          mValidLayers++;
-      }
-    }
-
-    int loops() const { return mLoops; }
-    int validLayers() const { return mValidLayers; }
-
-  private:
-    QString mUri;
-    std::atomic<bool> &mStop;
-    int mLoops = 0;
-    int mValidLayers = 0;
 };
 
 //! Concurrently invalidates the dataset cache, racing against getLayer()/release()
@@ -304,11 +224,6 @@ void TestQgsOgrProviderDeadLock::testConcurrentLayerAccess()
 
   addThread( new OgrCacheInvalidator( dsName, stop ) );
 
-  OgrSublayerQueryWorker *sublayerWorker = addThread( new OgrSublayerQueryWorker( dsName, stop ) );
-
-  OgrVectorLayerWorker *vectorLayerWorker1 = addThread( new OgrVectorLayerWorker( dsName + u"|layername=layer1"_s, stop ) );
-  OgrVectorLayerWorker *vectorLayerWorker2 = addThread( new OgrVectorLayerWorker( dsName + u"|layername=layer2"_s, stop ) );
-
   std::vector<OgrLayerStressWorker *> workers;
   for ( int i = 0; i < WORKER_COUNT; i++ )
   {
@@ -318,8 +233,14 @@ void TestQgsOgrProviderDeadLock::testConcurrentLayerAccess()
   for ( auto &thread : threads )
     thread->start();
 
-  // let all threads contend for a fixed time window, then ask them to stop
-  QTest::qSleep( RUN_TIME_MS );
+  // Run the generic concurrent access stress test from this thread while the
+  // OGR specific workers hammer the same dataset in the background: its layer
+  // opens run loadMetadata() and its sublayer queries acquire the dataset
+  // mutex of the shared dataset and the global mutex in close succession,
+  // racing against getLayer() calls from the stress workers which take them
+  // in the opposite order. It blocks for RUN_TIME_MS, defining the contention
+  // window, and returns FALSE if its own threads deadlock.
+  const bool genericTestPassed = QgsTestUtils::testConcurrentLayerAccess( dsName, u"ogr"_s, RUN_TIME_MS, TIMEOUT_MS );
   stop = true;
 
   // Use a single shared deadline across all threads: if the mutex ordering is
@@ -345,6 +266,7 @@ void TestQgsOgrProviderDeadLock::testConcurrentLayerAccess()
   // a thread stuck past the deadline means a deadlock between the global mutex
   // and a dataset mutex (we cannot recover the stuck threads, only report)
   QVERIFY2( allFinished, "Deadlock detected: not all threads accessing the OGR dataset finished in time" );
+  QVERIFY2( genericTestPassed, "Generic concurrent layer access test deadlocked or gave inconsistent results" );
 
   for ( const OgrLayerStressWorker *worker : workers )
   {
@@ -352,12 +274,6 @@ void TestQgsOgrProviderDeadLock::testConcurrentLayerAccess()
     QCOMPARE( worker->acquisitions(), worker->loops() );
     QVERIFY( worker->acquisitions() > 0 );
   }
-  QCOMPARE( sublayerWorker->successfulQueries(), sublayerWorker->loops() );
-  QVERIFY( sublayerWorker->successfulQueries() > 0 );
-  QCOMPARE( vectorLayerWorker1->validLayers(), vectorLayerWorker1->loops() );
-  QVERIFY( vectorLayerWorker1->validLayers() > 0 );
-  QCOMPARE( vectorLayerWorker2->validLayers(), vectorLayerWorker2->loops() );
-  QVERIFY( vectorLayerWorker2->validLayers() > 0 );
 }
 
 QGSTEST_MAIN( TestQgsOgrProviderDeadLock )
