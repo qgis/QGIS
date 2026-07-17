@@ -74,11 +74,7 @@ QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *laye
 }
 
 QgsPointCloudLayerExporter::~QgsPointCloudLayerExporter()
-{
-  delete mMemoryLayer;
-  delete mVectorSink;
-  delete mTransform;
-}
+{}
 
 bool QgsPointCloudLayerExporter::setFormat( const ExportFormat format )
 {
@@ -197,8 +193,8 @@ QgsFields QgsPointCloudLayerExporter::outputFields()
 
 void QgsPointCloudLayerExporter::prepareExport()
 {
-  delete mMemoryLayer;
-  mMemoryLayer = nullptr;
+  mMemoryLayer.reset();
+
 
   if ( mFormat == ExportFormat::Memory )
   {
@@ -209,13 +205,13 @@ void QgsPointCloudLayerExporter::prepareExport()
     }
 #endif
 
-    mMemoryLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), Qgis::WkbType::PointZ, mTargetCrs );
+    mMemoryLayer.reset( QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), Qgis::WkbType::PointZ, mTargetCrs ) );
   }
 }
 
 void QgsPointCloudLayerExporter::doExport()
 {
-  mTransform = new QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
+  mTransform = std::make_unique<QgsCoordinateTransform>( mSourceCrs, mTargetCrs, mTransformContext );
   if ( mExtent.isFinite() )
   {
     try
@@ -278,7 +274,7 @@ void QgsPointCloudLayerExporter::doExport()
       saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
       saveOptions.actionOnExistingFile = mActionOnExistingFile;
       saveOptions.feedback = mFeedback;
-      mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), Qgis::WkbType::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
+      mVectorSink.reset( QgsVectorFileWriter::create( mFilename, outputFields(), Qgis::WkbType::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions ) );
       ExporterVector exp( this );
       exp.run();
       return;
@@ -292,9 +288,7 @@ QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
   {
     case ExportFormat::Memory:
     {
-      QgsMapLayer *retVal = mMemoryLayer;
-      mMemoryLayer = nullptr;
-      return retVal;
+      return mMemoryLayer.release();
     }
 
     case ExportFormat::Las:
@@ -450,7 +444,7 @@ void QgsPointCloudLayerExporter::ExporterMemory::handlePoint( double x, double y
 
 void QgsPointCloudLayerExporter::ExporterMemory::handleNode()
 {
-  QgsVectorLayer *vl = qgis::down_cast<QgsVectorLayer *>( mParent->mMemoryLayer );
+  QgsVectorLayer *vl = qgis::down_cast<QgsVectorLayer *>( mParent->mMemoryLayer.get() );
   if ( vl )
   {
     if ( !vl->dataProvider()->addFeatures( mFeatures ) )
@@ -475,8 +469,7 @@ QgsPointCloudLayerExporter::ExporterVector::ExporterVector( QgsPointCloudLayerEx
 
 QgsPointCloudLayerExporter::ExporterVector::~ExporterVector()
 {
-  delete mParent->mVectorSink;
-  mParent->mVectorSink = nullptr;
+  mParent->mVectorSink.reset();
 }
 
 void QgsPointCloudLayerExporter::ExporterVector::handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber )

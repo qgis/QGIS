@@ -221,10 +221,10 @@ ProjectorData::ProjectorData(
 #endif
 
   // init helper points
-  pHelperTop = new QgsPointXY[mDestCols];
-  pHelperBottom = new QgsPointXY[mDestCols];
-  calcHelper( 0, pHelperTop );
-  calcHelper( 1, pHelperBottom );
+  pHelperTop = std::make_unique<QgsPointXY[]>( mDestCols );
+  pHelperBottom = std::make_unique<QgsPointXY[]>( mDestCols );
+  calcHelper( 0, pHelperTop.get() );
+  calcHelper( 1, pHelperBottom.get() );
   mHelperTopRow = 0;
 
   // Calculate source dimensions
@@ -235,10 +235,7 @@ ProjectorData::ProjectorData(
 }
 
 ProjectorData::~ProjectorData()
-{
-  delete[] pHelperTop;
-  delete[] pHelperBottom;
-}
+{}
 
 
 void ProjectorData::calcSrcExtent()
@@ -470,11 +467,8 @@ void ProjectorData::calcHelper( int matrixRow, QgsPointXY *points )
 void ProjectorData::nextHelper()
 {
   // We just switch pHelperTop and pHelperBottom, memory is not lost
-  QgsPointXY *tmp = nullptr;
-  tmp = pHelperTop;
-  pHelperTop = pHelperBottom;
-  pHelperBottom = tmp;
-  calcHelper( mHelperTopRow + 2, pHelperBottom );
+  swap( pHelperTop, pHelperBottom );
+  calcHelper( mHelperTopRow + 2, pHelperBottom.get() );
   mHelperTopRow++;
 }
 

@@ -81,7 +81,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
   feedback.setRenderPartialOutput( true );
   QgsRasterIterator iterator( mR->mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
-  drawer.draw( *( mR->renderContext() ), mR->mRasterViewPort, &feedback );
+  drawer.draw( *( mR->renderContext() ), mR->mRasterViewPort.get(), &feedback );
   mR->mReadyToCompose = true;
   QgsDebugMsgLevel( u"total raster preview time: %1 ms"_s.arg( t.elapsed() ), 3 );
   mLastPreview = QTime::currentTime();
@@ -95,7 +95,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   , mLayerOpacity( layer->opacity() )
   , mProviderCapabilities( layer->dataProvider()->providerCapabilities() )
   , mInterfaceCapabilities( layer->dataProvider()->capabilities() )
-  , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
+  , mFeedback( std::make_unique<QgsRasterLayerRendererFeedback>( this ) )
   , mEnableProfile( rendererContext.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
   mReadyToCompose = false;
@@ -226,7 +226,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   //
   //this is not a class level member because every time the user pans or zooms
   //the contents of the rasterViewPort will change
-  mRasterViewPort = new QgsRasterViewPort();
+  mRasterViewPort = std::make_unique<QgsRasterViewPort>();
 
   mRasterViewPort->mDrawnExtent = visibleExtentOfRasterInMapCrs;
   if ( rendererContext.coordinateTransform().isValid() )
@@ -500,11 +500,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
-{
-  delete mFeedback;
-
-  delete mRasterViewPort;
-}
+{}
 
 bool QgsRasterLayerRenderer::render()
 {
@@ -600,7 +596,7 @@ bool QgsRasterLayerRenderer::render()
   }
 
   QgsRasterDrawer drawer( &iterator );
-  drawer.draw( *( renderContext() ), mRasterViewPort, mFeedback );
+  drawer.draw( *( renderContext() ), mRasterViewPort.get(), mFeedback.get() );
 
   if ( mDrawElevationMap )
     drawElevationMap();
@@ -638,7 +634,7 @@ bool QgsRasterLayerRenderer::render()
 
 QgsFeedback *QgsRasterLayerRenderer::feedback() const
 {
-  return mFeedback;
+  return mFeedback.get();
 }
 
 bool QgsRasterLayerRenderer::forceRasterRender() const
@@ -698,7 +694,7 @@ void QgsRasterLayerRenderer::prepareLabeling( QgsRasterLayer *layer )
 void QgsRasterLayerRenderer::drawLabeling()
 {
   if ( mLabelProvider )
-    mLabelProvider->generateLabels( *renderContext(), mPipe.get(), mRasterViewPort, mFeedback );
+    mLabelProvider->generateLabels( *renderContext(), mPipe.get(), mRasterViewPort.get(), mFeedback.get() );
 }
 
 void QgsRasterLayerRenderer::drawElevationMap()
@@ -724,7 +720,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
     std::unique_ptr<QgsRasterBlock> elevationBlock;
     if ( mRasterViewPort->mSrcCRS == mRasterViewPort->mDestCRS )
     {
-      elevationBlock.reset( dataProvider->block( mElevationBand, mRasterViewPort->mDrawnExtent, outputWidth, outputHeight, mFeedback ) );
+      elevationBlock.reset( dataProvider->block( mElevationBand, mRasterViewPort->mDrawnExtent, outputWidth, outputHeight, mFeedback.get() ) );
       canRenderElevation = true;
     }
     else
@@ -779,7 +775,7 @@ void QgsRasterLayerRenderer::drawElevationMap()
         );
 
         // Now we can do the resampling
-        std::unique_ptr<QgsRasterBlock> sourcedata( dataProvider->block( mElevationBand, viewExtentInLayerCoordinate, sourceWidth, sourceHeight, mFeedback ) );
+        std::unique_ptr<QgsRasterBlock> sourcedata( dataProvider->block( mElevationBand, viewExtentInLayerCoordinate, sourceWidth, sourceHeight, mFeedback.get() ) );
         gdal::dataset_unique_ptr gdalDsInput = QgsGdalUtils::blockToSingleBandMemoryDataset( viewExtentInLayerCoordinate, sourcedata.get() );
 
 
