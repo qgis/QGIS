@@ -243,6 +243,11 @@ QString QgsOgrProviderConnection::tableUri( const QString &, const QString &name
   return QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s )->encodeUri( parts );
 }
 
+QString QgsOgrProviderConnection::styleStorageUri( const QString &schema, const QString &tableName, const QString &, Qgis::WkbType ) const
+{
+  return tableUri( schema, tableName );
+}
+
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOgrProviderConnection::tables( const QString &, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   QList<QgsAbstractDatabaseProviderConnection::TableProperty> tableInfo;

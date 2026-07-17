@@ -19,7 +19,6 @@
 #include "qgsapplication.h"
 #include "qgsdataitem.h"
 #include "qgsdataitemguiprovider.h"
-#include "qgsdatasourceuri.h"
 #include "qgsdbimportvectorlayerdialog.h"
 #include "qgsmaplayerutils.h"
 #include "qgsmessagebar.h"
@@ -163,16 +162,14 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection(
         if ( styleSourceLayer )
         {
           QString styleUri;
-          if ( connectionProvider == "ogr"_L1 )
+          try
           {
-            styleUri = connection->tableUri( destSchema, destTableName );
+            styleUri = connection->styleStorageUri( destSchema, destTableName, destGeometryColumn, styleSourceLayer->wkbType() );
           }
-          else
+          catch ( QgsProviderConnectionException &e )
           {
-            QgsDataSourceUri destUri( connection->tableUri( destSchema, destTableName ) );
-            destUri.setGeometryColumn( destGeometryColumn );
-            destUri.setWkbType( styleSourceLayer->wkbType() );
-            styleUri = destUri.uri( false );
+            pushError( QObject::tr( "Failed to save style to database!\n\n" ) + e.what() );
+            return;
           }
           const QgsSaveStyleResult styleResult = QgsMapLayerUtils::saveLayerStyleToDatabase( styleSourceLayer, connectionProvider, styleUri, destTableName, QString(), true, QString() );
           const QString errMsg = styleResult.providerSaveStyleError.isEmpty() ? styleResult.qmlError : styleResult.providerSaveStyleError;
@@ -287,19 +284,14 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection(
         if ( styleSourceLayer )
         {
           QString styleUri;
-          // OGR providers use a file-path based URI (e.g. /path/file.gpkg|layername=foo) that
-          // QgsDataSourceUri cannot round-trip; geometry column/wkbType are derived from the
-          // layer by the OGR saveStyle implementation, so use the table URI directly.
-          if ( connectionProvider == "ogr"_L1 )
+          try
           {
-            styleUri = connection->tableUri( destSchema, destTableName );
+            styleUri = connection->styleStorageUri( destSchema, destTableName, destGeometryColumn, styleSourceLayer->wkbType() );
           }
-          else
+          catch ( QgsProviderConnectionException &e )
           {
-            QgsDataSourceUri destUri( connection->tableUri( destSchema, destTableName ) );
-            destUri.setGeometryColumn( destGeometryColumn );
-            destUri.setWkbType( styleSourceLayer->wkbType() );
-            styleUri = destUri.uri( false );
+            pushError( QObject::tr( "Failed to save style to database!\n\n" ) + e.what() );
+            return;
           }
           const QgsSaveStyleResult styleResult = QgsMapLayerUtils::saveLayerStyleToDatabase( styleSourceLayer, connectionProvider, styleUri, destTableName, QString(), true, QString() );
           const QString errMsg = styleResult.providerSaveStyleError.isEmpty() ? styleResult.qmlError : styleResult.providerSaveStyleError;
