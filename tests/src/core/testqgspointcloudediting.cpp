@@ -591,6 +591,19 @@ void TestQgsPointCloudEditing::testVPCStarStopEditing()
   QVERIFY( !layer->index() );
   QVERIFY( layer->isVpc() );
 
+  // check if start/stop works when no sub index is loaded
+  QVector< QgsPointCloudSubIndex > subIndexes = layer->subIndexes();
+  QVERIFY( !subIndexes.at( 0 ).index().isValid() );
+  QVERIFY( !subIndexes.at( 1 ).index().isValid() );
+  QVERIFY( !subIndexes.at( 2 ).index().isValid() );
+  QVERIFY( !subIndexes.at( 3 ).index().isValid() );
+  QVERIFY( layer->startEditing() );
+  QVERIFY( layer->isEditable() );
+  QVERIFY( !layer->isModified() );
+  QVERIFY( layer->rollBack() );
+  QVERIFY( !layer->isEditable() );
+  QVERIFY( !layer->isModified() );
+
   QgsVirtualPointCloudProvider *vpcProvider = qobject_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() );
   QVERIFY( vpcProvider );
 
@@ -610,7 +623,7 @@ void TestQgsPointCloudEditing::testVPCStarStopEditing()
   QCOMPARE( spyStop.size(), 0 );
   QCOMPARE( spyModify.size(), 0 );
 
-  QVector< QgsPointCloudSubIndex > subIndexes = layer->subIndexes();
+  subIndexes = layer->subIndexes();
   QVERIFY( !subIndexes.at( 0 ).index().isValid() );
   QVERIFY( !subIndexes.at( 1 ).index().isValid() );
   QVERIFY( dynamic_cast<QgsPointCloudEditingIndex *>( subIndexes.at( 2 ).index().get() ) );
