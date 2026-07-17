@@ -135,6 +135,8 @@ class TestQgsLabelingEngine : public QgsTest
     void testRotationBasedOrientationPoint();
     void testRotationBasedOrientationPointHtmlLabel();
     void testRotationBasedOrientationLine();
+    void testHorizontalRotation_data();
+    void testHorizontalRotation();
     void testMapUnitLetterSpacing();
     void testMapUnitWordSpacing();
     void testLineHeightAbsolute();
@@ -5647,6 +5649,76 @@ void TestQgsLabelingEngine::testRotationBasedOrientationLine()
 
   vl2->setLabeling( nullptr );
   QgsProject::instance()->removeMapLayer( vl2 );
+}
+
+void TestQgsLabelingEngine::testHorizontalRotation_data()
+{
+  QTest::addColumn<QgsLabelLineSettings::AnchorTextPoint>( "textAnchor" );
+  QTest::addColumn<double>( "angle" );
+  QTest::addColumn<QString>( "referenceImage" );
+
+  QTest::newRow( "center 45 degrees" ) << QgsLabelLineSettings::AnchorTextPoint::CenterOfText << 45.0 << "horizontal_angle_center_45";
+  QTest::newRow( "center -45 degrees" ) << QgsLabelLineSettings::AnchorTextPoint::CenterOfText << -45.0 << "horizontal_angle_center_neg45";
+  QTest::newRow( "end 45 degrees" ) << QgsLabelLineSettings::AnchorTextPoint::EndOfText << 45.0 << "horizontal_angle_end_45";
+  QTest::newRow( "start 45 degrees" ) << QgsLabelLineSettings::AnchorTextPoint::StartOfText << 45.0 << "horizontal_angle_start_45";
+}
+
+void TestQgsLabelingEngine::testHorizontalRotation()
+{
+  QFETCH( QgsLabelLineSettings::AnchorTextPoint, textAnchor );
+  QFETCH( double, angle );
+  QFETCH( QString, referenceImage );
+
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = u"'XXXXXXXX'"_s;
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Horizontal;
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
+  settings.placementSettings().setMultiPartBehavior( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly );
+  settings.lineSettings().setAnchorTextPoint( textAnchor );
+  settings.angleOffset = angle;
+
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (190000 5000010, 190200 5000000)"_s ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 10 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  engineSettings.setFlag( Qgis::LabelingFlag::DrawLabelRectOnly, true );
+  // engineSettings.setFlag( Qgis::LabelingFlag::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testMapUnitLetterSpacing()
