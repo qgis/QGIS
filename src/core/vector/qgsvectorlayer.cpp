@@ -48,6 +48,7 @@
 #include "qgsgeometry.h"
 #include "qgsgeometryoptions.h"
 #include "qgslayermetadataformatter.h"
+#include "qgslayerrenderingsettings.h"
 #include "qgslogger.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsmaplayerlegend.h"
@@ -2154,18 +2155,7 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
         defaultLoadedFlag = true;
         setRenderer( defaultRenderer.release() );
 
-        const QgsLayerRenderingSettings providerRenderingSettings = mDataProvider->renderingSettings();
-        if ( providerRenderingSettings.hasLayerOpacity() )
-          setOpacity( providerRenderingSettings.layerOpacity() );
-        if ( providerRenderingSettings.hasMaximumScale() )
-          setMaximumScale( providerRenderingSettings.maximumScale() );
-        if ( providerRenderingSettings.hasMinimumScale() )
-          setMinimumScale( providerRenderingSettings.minimumScale() );
-        if ( providerRenderingSettings.hasMaximumScale() || providerRenderingSettings.hasMinimumScale() )
-          setScaleBasedVisibility(
-            ( providerRenderingSettings.hasMaximumScale() && providerRenderingSettings.maximumScale() != 0 )
-            || ( providerRenderingSettings.hasMinimumScale() && providerRenderingSettings.minimumScale() != 0 )
-          );
+        applyRendererSettings();
       }
     }
 
@@ -2242,18 +2232,7 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
       resultFlag = true;
       setRenderer( defaultRenderer.release() );
 
-      const QgsLayerRenderingSettings providerRenderingSettings = mDataProvider->renderingSettings();
-      if ( providerRenderingSettings.hasLayerOpacity() )
-        setOpacity( providerRenderingSettings.layerOpacity() );
-      if ( providerRenderingSettings.hasMaximumScale() )
-        setMaximumScale( providerRenderingSettings.maximumScale() );
-      if ( providerRenderingSettings.hasMinimumScale() )
-        setMinimumScale( providerRenderingSettings.minimumScale() );
-      if ( providerRenderingSettings.hasMaximumScale() || providerRenderingSettings.hasMinimumScale() )
-        setScaleBasedVisibility(
-          ( providerRenderingSettings.hasMaximumScale() && providerRenderingSettings.maximumScale() != 0 )
-          || ( providerRenderingSettings.hasMinimumScale() && providerRenderingSettings.minimumScale() != 0 )
-        );
+      applyRendererSettings();
 
       return QString();
     }
@@ -5387,6 +5366,26 @@ void QgsVectorLayer::clearEditBuffer()
 
   delete mEditBuffer;
   mEditBuffer = nullptr;
+}
+
+void QgsVectorLayer::applyRendererSettings()
+{
+  const QgsLayerRenderingSettings *providerRenderingSettings = mDataProvider->renderingSettings();
+
+  if ( !providerRenderingSettings )
+    return;
+
+  if ( providerRenderingSettings->hasLayerOpacity() )
+    setOpacity( providerRenderingSettings->layerOpacity() );
+  if ( providerRenderingSettings->hasMaximumScale() )
+    setMaximumScale( providerRenderingSettings->maximumScale() );
+  if ( providerRenderingSettings->hasMinimumScale() )
+    setMinimumScale( providerRenderingSettings->minimumScale() );
+  if ( providerRenderingSettings->hasMaximumScale() || providerRenderingSettings->hasMinimumScale() )
+    setScaleBasedVisibility(
+      ( providerRenderingSettings->hasMaximumScale() && providerRenderingSettings->maximumScale() != 0 )
+      || ( providerRenderingSettings->hasMinimumScale() && providerRenderingSettings->minimumScale() != 0 )
+    );
 }
 
 QVariant QgsVectorLayer::aggregate(
