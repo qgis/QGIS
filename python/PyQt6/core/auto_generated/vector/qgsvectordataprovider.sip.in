@@ -15,69 +15,6 @@ typedef QHash<int, QString> QgsAttrPalIndexNameHash;
 
 
 
-class QgsLayerRenderingSettings
-{
-%Docstring(signature="appended")
-Stores layer-level rendering settings supplied by data providers.
-
-These settings are intended for layer-wide rendering behavior (such as
-opacity and scale based visibility)
-
-.. versionadded:: 4.4
-%End
-
-%TypeHeaderCode
-#include "qgsvectordataprovider.h"
-%End
-  public:
-    void setLayerOpacity( double opacity );
-%Docstring
-Sets layer opacity in the range [0, 1].
-%End
-
-    bool hasLayerOpacity() const;
-%Docstring
-Returns ``True`` if layer opacity is set.
-%End
-
-    double layerOpacity() const;
-%Docstring
-Returns layer opacity in the range [0, 1].
-%End
-
-    void setMinimumScale( double scale );
-%Docstring
-Sets minimum scale denominator for visibility.
-%End
-
-    bool hasMinimumScale() const;
-%Docstring
-Returns ``True`` if minimum scale is set.
-%End
-
-    double minimumScale() const;
-%Docstring
-Returns minimum scale denominator.
-%End
-
-    void setMaximumScale( double scale );
-%Docstring
-Sets maximum scale denominator for visibility.
-%End
-
-    bool hasMaximumScale() const;
-%Docstring
-Returns ``True`` if maximum scale is set.
-%End
-
-    double maximumScale() const;
-%Docstring
-Returns maximum scale denominator.
-%End
-
-};
-
-
 class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink, QgsFeatureSource
 {
 %Docstring(signature="appended")
