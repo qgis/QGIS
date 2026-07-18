@@ -47,70 +47,7 @@ class QgsTransaction;
 class QgsFeedback;
 class QgsFeatureRenderer;
 class QgsAbstractVectorLayerLabeling;
-
-
-/**
- * \ingroup core
- * \brief Stores layer-level rendering settings supplied by data providers.
- *
- * These settings are intended for layer-wide rendering behavior (such as opacity
- * and scale based visibility)
- *
- * \since QGIS 4.4
- */
-class CORE_EXPORT QgsLayerRenderingSettings
-{
-  public:
-    /**
-     * Sets layer opacity in the range [0, 1].
-     */
-    void setLayerOpacity( double opacity ) { mLayerOpacity = opacity; }
-
-    /**
-     * Returns TRUE if layer opacity is set.
-     */
-    bool hasLayerOpacity() const { return mLayerOpacity.has_value(); }
-
-    /**
-     * Returns layer opacity in the range [0, 1].
-     */
-    double layerOpacity() const { return mLayerOpacity.value_or( 1.0 ); }
-
-    /**
-     * Sets minimum scale denominator for visibility.
-     */
-    void setMinimumScale( double scale ) { mMinimumScale = scale; }
-
-    /**
-     * Returns TRUE if minimum scale is set.
-     */
-    bool hasMinimumScale() const { return mMinimumScale.has_value(); }
-
-    /**
-     * Returns minimum scale denominator.
-     */
-    double minimumScale() const { return mMinimumScale.value_or( 0 ); }
-
-    /**
-     * Sets maximum scale denominator for visibility.
-     */
-    void setMaximumScale( double scale ) { mMaximumScale = scale; }
-
-    /**
-     * Returns TRUE if maximum scale is set.
-     */
-    bool hasMaximumScale() const { return mMaximumScale.has_value(); }
-
-    /**
-     * Returns maximum scale denominator.
-     */
-    double maximumScale() const { return mMaximumScale.value_or( 0 ); }
-
-  private:
-    std::optional<double> mLayerOpacity;
-    std::optional<double> mMinimumScale;
-    std::optional<double> mMaximumScale;
-};
+class QgsLayerRenderingSettings;
 
 
 /**
@@ -617,11 +554,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * When called with an empty \a configuration map the provider's default rendering settings will be returned.
      *
-     * Providers which do not support this should return a default constructed settings object.
+     * Providers which do not support this should return nullptr.
      *
      * \since QGIS 4.4
      */
-    virtual QgsLayerRenderingSettings renderingSettings( const QVariantMap &configuration = QVariantMap() ) const SIP_SKIP;
+    virtual const QgsLayerRenderingSettings *renderingSettings( const QVariantMap &configuration = QVariantMap() ) const SIP_SKIP;
 
     /**
      * Convert \a value to \a type

@@ -1269,6 +1269,7 @@ set(QGIS_CORE_HDRS
   qgsinterval.h
   qgsjsonutils.h
   qgslayerdefinition.h
+  qgslayerrenderingsettings.h
   qgslayernotesutils.h
   qgslegendrenderer.h
   qgslegendsettings.h
