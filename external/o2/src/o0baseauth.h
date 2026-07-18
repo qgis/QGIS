@@ -89,14 +89,14 @@ public:
     /// This will default to using qDebug/qWarning, unless a custom logger function has been registered
     static void log( const QString& message, LogLevel level = LogLevel::Debug );
 
-public Q_SLOTS:
+public slots:
     /// Authenticate.
     Q_INVOKABLE virtual void link() = 0;
 
     /// De-authenticate.
     Q_INVOKABLE virtual void unlink() = 0;
 
-Q_SIGNALS:
+signals:
     /// Emitted when client needs to open a web browser window, with the given URL.
     void openBrowser(const QUrl &url);
 

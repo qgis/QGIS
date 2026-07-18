@@ -40,7 +40,7 @@ public:
     /// In order to do so, O2Requestor needs to know the format of the Authentication HTTP header.
     void setAccessTokenInAuthenticationHTTPHeaderFormat(const QString &value);
 
-public Q_SLOTS:
+public slots:
     /// Make a GET request.
     /// @return Request ID or -1 if there are too many requests in the queue.
     int get(const QNetworkRequest &req, int timeout = 60*1000);
@@ -67,7 +67,7 @@ public Q_SLOTS:
     /// @return Request ID or -1 if there are too many requests in the queue.
     int customRequest(const QNetworkRequest &req, const QByteArray &verb, const QByteArray &data, int timeout = 60*1000);
 
-Q_SIGNALS:
+signals:
 
     /// Emitted when a request has been completed or failed.
     void finished(int id, QNetworkReply::NetworkError error, QByteArray data);
@@ -84,7 +84,7 @@ Q_SIGNALS:
     /// Emitted when an upload has progressed.
     void uploadProgress(int id, qint64 bytesSent, qint64 bytesTotal);
 
-protected Q_SLOTS:
+protected slots:
     /// Handle refresh completion.
     void onRefreshFinished(QNetworkReply::NetworkError error);
 

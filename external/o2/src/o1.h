@@ -87,14 +87,14 @@ public:
     /// Build a concatenated/percent-encoded string from a list of headers.
     static QByteArray encodeHeaders(const QList<O0RequestParameter> &headers);
 
-public Q_SLOTS:
+public slots:
     /// Authenticate.
     Q_INVOKABLE void link() override;
 
     /// De-authenticate.
     Q_INVOKABLE void unlink() override;
 
-Q_SIGNALS:
+signals:
     void requestTokenUrlChanged();
     void authorizeUrlChanged();
     void accessTokenUrlChanged();
@@ -103,11 +103,11 @@ Q_SIGNALS:
     void requestParametersChanged();
     void callbackUrlChanged(const QString& url);
 
-public Q_SLOTS:
+public slots:
     /// Handle verification received from the reply server.
     virtual void onVerificationReceived(QMap<QString,QString> params);
 
-protected Q_SLOTS:
+protected slots:
     /// Handle token request error.
     virtual void onTokenRequestError(QNetworkReply::NetworkError error);
 

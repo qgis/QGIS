@@ -33,14 +33,14 @@ public:
     QString uniqueState();
     void setUniqueState(const QString &state);
 
-Q_SIGNALS:
+signals:
     void verificationReceived(QMap<QString, QString>);
     void serverClosed(bool); // whether it has found parameters
     void replyContentChanged();
     void timeoutChanged(int timeout);
     void callbackTriesChanged(int maxtries);
 
-public Q_SLOTS:
+public slots:
     void onIncomingConnection();
     void onBytesReady();
     QMap<QString, QString> parseQueryParams(QByteArray *data);
