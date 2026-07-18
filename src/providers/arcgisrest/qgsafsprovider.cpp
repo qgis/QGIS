@@ -818,9 +818,9 @@ QgsAbstractVectorLayerLabeling *QgsAfsProvider::createLabeling( const QVariantMa
   return QgsArcGisRestUtils::convertLabeling( mLabelingDataList ).release();
 }
 
-QgsLayerRenderingSettings QgsAfsProvider::renderingSettings( const QVariantMap & ) const
+const QgsLayerRenderingSettings *QgsAfsProvider::renderingSettings( const QVariantMap & ) const
 {
-  return mRenderingSettings;
+  return &mRenderingSettings;
 }
 
 bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
