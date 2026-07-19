@@ -36,6 +36,7 @@ class TestQgsDataSourceUri : public QObject
     void checkConnectionInfo_data();
     void checkAuthParams();
     void checkParameterKeys();
+    void checkRemovePassword_data();
     void checkRemovePassword();
     void checkUnicodeUri();
 };
@@ -803,22 +804,60 @@ void TestQgsDataSourceUri::checkParameterKeys()
   QVERIFY( uri.parameterKeys().contains( QLatin1String( "bar" ) ) );
 }
 
+void TestQgsDataSourceUri::checkRemovePassword_data()
+{
+  QTest::addColumn<QString>( "uri" );
+  QTest::addColumn<bool>( "hide" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "postgres" ) << QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ) << false << QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" );
+
+  QTest::newRow( "postgres with hide" ) << QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ) << true << QStringLiteral( "postgresql://user:XXXXXXXX@127.0.0.1:5432?dbname=test" );
+
+  QTest::newRow( "postgres no password" ) << QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) << false << QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" );
+
+  QTest::newRow( "password without quote in the middle" )
+    << QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password=sHertogenbosch2023 srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" )
+    << false
+    << QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" );
+
+  QTest::newRow( "password without quote in the middle with hide" )
+    << QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password=sHertogenbosch2023 srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" )
+    << true
+    << QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password=XXXXXXXX srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" );
+
+  QTest::newRow( "password with quote in the middle" )
+    << QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" )
+    << false
+    << QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" );
+
+  QTest::newRow( "password with quote in the middle with hide" )
+    << QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" )
+    << true
+    << QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password=XXXXXXXX srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" );
+
+  QTest::newRow( "password without quote at the end" ) << QStringLiteral( "dbname='geodata' host=localhost port=1521 user='QGIS' password=qgis" ) << false << QStringLiteral( "dbname='geodata' host=localhost port=1521 user='QGIS'" );
+
+  QTest::newRow( "password without quote at the end with hide" )
+    << QStringLiteral( "dbname='geodata' host=localhost port=1521 user='QGIS' password=qgis" )
+    << true
+    << QStringLiteral( "dbname='geodata' host=localhost port=1521 user='QGIS' password=XXXXXXXX" );
+
+  QTest::newRow( "password with quote at the end" ) << QStringLiteral( "dbname='geodata' host=localhost port=1521 user='QGIS' password='qgis'" ) << false << QStringLiteral( "dbname='geodata' host=localhost port=1521 user='QGIS'" );
+
+  QTest::newRow( "password with quote at the end with hide" )
+    << QStringLiteral( "dbname='geodata' host=localhost port=1521 user='QGIS' password='qgis'" )
+    << true
+    << QStringLiteral( "dbname='geodata' host=localhost port=1521 user='QGIS' password=XXXXXXXX" );
+}
+
 void TestQgsDataSourceUri::checkRemovePassword()
 {
-  const QString uri0 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ) );
-  QCOMPARE( uri0, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
+  QFETCH( QString, uri );
+  QFETCH( bool, hide );
+  QFETCH( QString, expected );
 
-  const QString uri1 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ), true );
-  QCOMPARE( uri1, QStringLiteral( "postgresql://user:XXXXXXXX@127.0.0.1:5432?dbname=test" ) );
-
-  const QString uri2 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
-  QCOMPARE( uri2, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
-
-  const QString uri3 = QgsDataSourceUri::removePassword( QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ) );
-  QCOMPARE( uri3, QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ) );
-
-  const QString uri4 = QgsDataSourceUri::removePassword( QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ), true );
-  QCOMPARE( uri4, QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password=XXXXXXXX srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ) );
+  QCOMPARE( QgsDataSourceUri::removePassword( uri, hide ), expected );
 }
 
 void TestQgsDataSourceUri::checkUnicodeUri()
