@@ -421,6 +421,17 @@ if (WIN32)
 
   win32_icon(QGIS_APPMAIN_SRCS)
   win32_version_info("QGIS Desktop" ${QGIS_APP_NAME} QGIS_APPMAIN_SRCS)
+
+  set(_manifest ${CMAKE_SOURCE_DIR}/platform/windows/rc/qgis.manifest)
+  if (MSVC)
+    list(APPEND QGIS_APPMAIN_SRCS ${_manifest})
+  else()
+    # MinGW: CMake doesn't handle .manifest files natively.
+    # https://gitlab.kitware.com/cmake/cmake/-/issues/23244
+    file(CONFIGURE OUTPUT qgis-manifest.rc
+      CONTENT "1 24 \"${_manifest}\"")
+    list(APPEND QGIS_APPMAIN_SRCS ${CMAKE_CURRENT_BINARY_DIR}/qgis-manifest.rc)
+  endif()
 else()
   set (QGIS_APPMAIN_SRCS main.cpp ${TEST_RCCS})
 endif()
