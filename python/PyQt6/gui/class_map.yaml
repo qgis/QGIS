@@ -3124,6 +3124,8 @@ QgsFontButton.sizeHint: src/gui/qgsfontbutton.h#L74
 QgsFontButton.textFormat: src/gui/qgsfontbutton.h#L136
 QgsFontButton.wheelEvent: src/gui/qgsfontbutton.h#L294
 QgsFontButton: src/gui/qgsfontbutton.h#L47
+QgsFontComboBox.QgsFontComboBox: src/gui/qgsfontcombobox.h#L47
+QgsFontComboBox: src/gui/qgsfontcombobox.h#L30
 QgsFontMarkerSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L1179
 QgsFontMarkerSymbolLayerWidget.setAngle: src/gui/symbology/qgssymbollayerwidget.h#L1194
 QgsFontMarkerSymbolLayerWidget.setCharacter: src/gui/symbology/qgssymbollayerwidget.h#L1200
