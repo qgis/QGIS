@@ -15,6 +15,7 @@
 
 #include "qgsenumerationwidgetwrapper.h"
 
+#include "qgsapplication.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
@@ -58,8 +59,12 @@ void QgsEnumerationWidgetWrapper::initWidget( QWidget *editor )
 
   if ( mComboBox )
   {
-    QStringList enumValues;
-    layer()->dataProvider()->enumValues( fieldIdx(), enumValues );
+    const QgsField field( layer()->fields().at( fieldIdx() ) );
+    // also add NULL entry if not restricted by constraints
+    if ( !( field.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull ) )
+    {
+      mComboBox->addItem( QgsApplication::nullRepresentation(), QgsVariantUtils::createNullVariant( field.type() ) );
+    }
 
     const QList<QPair<QString, QString>> values( layer()->dataProvider()->codedValues( fieldIdx() ) );
     for ( const QPair<QString, QString> &pair : values )
