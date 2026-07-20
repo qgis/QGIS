@@ -106,6 +106,7 @@ class QgsOgrProvider final : public QgsVectorDataProvider
     QString defaultValueClause( int fieldIndex ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
     void updateExtents() override;
+    QList<QPair<QString, QString>> codedValues( int index ) const override;
 
     using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
