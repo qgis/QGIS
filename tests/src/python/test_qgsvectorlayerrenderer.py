@@ -1005,11 +1005,24 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
         layer = QgsVectorLayer(world_map_path, "world", "ogr")
         self.assertTrue(layer.isValid())
 
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute("$id % 3")
+
+        red = QgsFillSymbol.createSimple({"color": "red", "outline_style": "no"})
+        renderer.addCategory(QgsRendererCategory(0, red, "0"))
+
+        green = QgsFillSymbol.createSimple({"color": "green", "outline_style": "no"})
+        renderer.addCategory(QgsRendererCategory(1, green, "1"))
+
+        blue = QgsFillSymbol.createSimple({"color": "blue", "outline_style": "no"})
+        renderer.addCategory(QgsRendererCategory(2, blue, "2"))
+        layer.setRenderer(renderer)
+
         topo_crs = QgsCoordinateReferenceSystem("EPSG:4978").toTopocentricCrs(0, 0)
         self.assertTrue(topo_crs.isValid())
 
         mapsettings = QgsMapSettings()
-        mapsettings.setOutputSize(QSize(500, 500))
+        mapsettings.setOutputSize(QSize(1000, 1000))
         mapsettings.setOutputDpi(96)
         mapsettings.setDestinationCrs(topo_crs)
         mapsettings.setExtent(QgsRectangle(-10000000, -10000000, 10000000, 10000000))
@@ -1025,7 +1038,7 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
         self.assertTrue(topo_crs.isValid())
 
         mapsettings = QgsMapSettings()
-        mapsettings.setOutputSize(QSize(500, 500))
+        mapsettings.setOutputSize(QSize(1000, 1000))
         mapsettings.setOutputDpi(96)
         mapsettings.setDestinationCrs(topo_crs)
         mapsettings.setExtent(QgsRectangle(-10000000, -10000000, 10000000, 10000000))
@@ -1041,7 +1054,7 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
         self.assertTrue(topo_crs.isValid())
 
         mapsettings = QgsMapSettings()
-        mapsettings.setOutputSize(QSize(500, 500))
+        mapsettings.setOutputSize(QSize(1000, 1000))
         mapsettings.setOutputDpi(96)
         mapsettings.setDestinationCrs(topo_crs)
         mapsettings.setExtent(QgsRectangle(-10000000, -10000000, 10000000, 10000000))
