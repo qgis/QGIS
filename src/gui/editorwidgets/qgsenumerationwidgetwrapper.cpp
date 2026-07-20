@@ -61,10 +61,10 @@ void QgsEnumerationWidgetWrapper::initWidget( QWidget *editor )
     QStringList enumValues;
     layer()->dataProvider()->enumValues( fieldIdx(), enumValues );
 
-    const auto constEnumValues = enumValues;
-    for ( const QString &s : constEnumValues )
+    const QList<QPair<QString, QString>> values( layer()->dataProvider()->codedValues( fieldIdx() ) );
+    for ( const QPair<QString, QString> &pair : values )
     {
-      mComboBox->addItem( s, s );
+      mComboBox->addItem( pair.second, pair.first );
     }
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
