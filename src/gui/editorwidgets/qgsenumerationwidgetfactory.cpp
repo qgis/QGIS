@@ -37,9 +37,8 @@ QgsEditorConfigWidget *QgsEnumerationWidgetFactory::configWidget( QgsVectorLayer
 
 unsigned int QgsEnumerationWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
-  QStringList list;
-  vl->dataProvider()->enumValues( fieldIdx, list );
-  if ( !list.isEmpty() )
+  const QList<QPair<QString, QString>> values = vl->dataProvider()->codedValues( fieldIdx );
+  if ( !values.isEmpty() )
     return 20;
   else
     return 0;
