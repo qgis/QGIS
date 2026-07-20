@@ -18,6 +18,7 @@
 
 #include "qgscheckboxfieldformatter.h"
 #include "qgsdatetimefieldformatter.h"
+#include "qgsenumerationfieldformatter.h"
 #include "qgsfallbackfieldformatter.h"
 #include "qgsfieldformatter.h"
 #include "qgskeyvaluefieldformatter.h"
@@ -41,6 +42,7 @@ QgsFieldFormatterRegistry::QgsFieldFormatterRegistry( QObject *parent )
   addFieldFormatter( new QgsDateTimeFieldFormatter() );
   addFieldFormatter( new QgsRangeFieldFormatter() );
   addFieldFormatter( new QgsCheckBoxFieldFormatter() );
+  addFieldFormatter( new QgsEnumerationFieldFormatter() );
 
   mFallbackFieldFormatter = std::make_unique<QgsFallbackFieldFormatter>();
 }
