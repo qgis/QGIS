@@ -513,9 +513,8 @@ QgsGeometry QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry(
     return QgsGeometry();
   }
 
-  // prevent division by zero
-  if ( std::abs( topoLat ) < 1e-6 )
-    topoLat = topoLat >= 0 ? 1e-6 : -1e-6;
+  if ( std::abs( topoLat ) < degreeStep )
+    topoLat = topoLat >= 0 ? degreeStep : -degreeStep;
 
   const double topoLonRad = topoLon * M_PI / 180.0;
   const double topoLatRad = topoLat * M_PI / 180.0;
