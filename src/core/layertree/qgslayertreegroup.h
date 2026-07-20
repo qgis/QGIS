@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 // clang-format on
 #endif
 
-        /**
+    /**
      * Returns the group's name.
      */
         QString name() const override;
@@ -73,6 +73,16 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Sets the group's name.
      */
     void setName( const QString &n ) override;
+
+    /**
+     * Returns the group's unique identifier.
+     *
+     * The id is generated automatically on construction and preserved across clone()
+     * and project save/load, so it stays distinct even for groups with the same name()
+     *
+     * \since QGIS 4.4
+     */
+    QString id() const { return mId; }
 
     /**
      * Insert a new group node with given name at specified position. The newly created node is owned by this group.
@@ -431,6 +441,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
     QString mName;
 
+    QString mId;
+
     bool mChangingChildVisibility = false;
 
     //! Whether the group is mutually exclusive (i.e. only one child can be checked at a time)
@@ -457,6 +469,10 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 #endif
 
     QgsLayerTreeGroup &operator=( const QgsLayerTreeGroup & ) = delete;
+
+    // only QgsLayerTreeUtils::regenerateGroupIds may assign a new id
+    friend class QgsLayerTreeUtils;
+    void setId( const QString &id );
 
     /**
      * Helper method to migrate project before 3.44 where shortName, title and abstract were

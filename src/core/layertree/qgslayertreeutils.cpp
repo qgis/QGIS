@@ -23,6 +23,7 @@
 #include <QDomElement>
 #include <QString>
 #include <QTextStream>
+#include <QUuid>
 
 using namespace Qt::StringLiterals;
 
@@ -310,6 +311,16 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup *group )
   const auto constNodesToRemove = nodesToRemove;
   for ( QgsLayerTreeNode *node : constNodesToRemove )
     group->removeChildNode( node );
+}
+
+void QgsLayerTreeUtils::regenerateGroupIds( QgsLayerTreeNode *node )
+{
+  if ( QgsLayerTree::isGroup( node ) )
+    QgsLayerTree::toGroup( node )->setId( QUuid::createUuid().toString( QUuid::WithoutBraces ) );
+
+  const QList<QgsLayerTreeNode *> children = node->children();
+  for ( QgsLayerTreeNode *child : children )
+    regenerateGroupIds( child );
 }
 
 void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc )
