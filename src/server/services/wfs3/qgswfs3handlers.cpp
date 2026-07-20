@@ -635,12 +635,11 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
         }
         else if ( widgetType == "Enumeration" )
         {
-          QStringList enumValues;
-          mapLayer->dataProvider()->enumValues( fieldElement->idx(), enumValues );
+          const QList<QPair<QString, QString>> enumValues = mapLayer->dataProvider()->codedValues( fieldElement->idx() );
           fInfo.enumValues = json::array();
-          for ( const QString &value : std::as_const( enumValues ) )
+          for ( const QPair<QString, QString> &value : enumValues )
           {
-            fInfo.enumValues->push_back( value.toStdString() );
+            fInfo.enumValues->push_back( value.first.toStdString() );
           }
         }
         else if ( widgetType == "Geometry"_L1 )

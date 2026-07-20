@@ -221,11 +221,25 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * or if the given attribute is not an enum type.
      * \param index the index of the attribute
      * \param enumList reference to the list to fill
+     * \deprecated QGIS 4.4. Use codedValues() instead.
      */
-    virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const
+    Q_DECL_DEPRECATED virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const SIP_DEPRECATED
     {
       Q_UNUSED( index )
       enumList.clear();
+    }
+
+    /**
+     * Returns the possible enum or coded values of an attribute in key-value pairs. Returns an empty list if a provider does not support
+     * enum types, if the given attribute is not an enum type or using a field domain for coded values.
+     * \param index the index of the attribute
+     * \returns list of code-value pairs. If the attribute is enum type, then both key and value will contain the same enum value
+     * \since QGIS 4.4
+     */
+    virtual QList<QPair<QString, QString>> codedValues( int index ) const
+    {
+      Q_UNUSED( index )
+      return {};
     }
 
     using QgsFeatureSink::addFeatures;
