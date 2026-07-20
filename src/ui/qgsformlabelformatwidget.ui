@@ -235,7 +235,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QFontComboBox" name="mFontFamilyCmbBx"/>
+       <widget class="QgsFontComboBox" name="mFontFamilyCmbBx"/>
       </item>
      </layout>
     </widget>
@@ -260,16 +260,21 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
+   <class>QgsFontComboBox</class>
+   <extends>QFontComboBox</extends>
+   <header>qgsfontcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
