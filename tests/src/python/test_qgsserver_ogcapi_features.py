@@ -479,11 +479,19 @@ class QgsServerOgcApiFeaturesTest(QgsServerAPITestBase):
         )
         self.assertEqual(j["time"], {"timestamp": "2024-01-01T11:00:00Z"})
 
-        # Test Rfc profile does not have any temporal properties
+        # Test Legacy profile does not have any temporal properties
         j = self._getJsonResponse(
             "http://server.qgis.org/wfs3/collections/temporal/items/1.json",
             project,
         )
+        self.assertNotIn("time", j)
+
+        # Test that Rfc7946 profile does not have any temporal properties
+        j = self._getJsonResponse(
+            "http://server.qgis.org/wfs3/collections/temporal/items/1.json?profile=rfc7946",
+            project,
+        )
+        self.assertNotIn("time", j)
 
     def testSingleFeatureJsonProfiles(self):
 
@@ -584,7 +592,7 @@ class QgsServerOgcApiFeaturesTest(QgsServerAPITestBase):
             j["features"][0]["place"]["coordinates"][1], 5633001, delta=1
         )
 
-        # Test CRS with explicit profile RFC7946 error is returned because
+        # Test CRS with explicit profile RFC7946 error is returned because CRS is not OGC:CRS84
         j = self._getJsonResponse(
             "http://server.qgis.org/wfs3/collections/temporal/items.json?profile=rfc7946&crs=http://www.opengis.net/def/crs/EPSG/0/3857",
             project,
