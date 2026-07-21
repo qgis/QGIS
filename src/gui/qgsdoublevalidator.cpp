@@ -133,7 +133,7 @@ QRegularExpression QgsDoubleValidator::createExpression( int decimals )
     localeDecimalPoint == '.' ? QString() : QRegularExpression::escape( localeDecimalPoint ),
     QString::number( decimals ),
     localeNegativeSign == '-' ? QString() : QRegularExpression::escape( localeNegativeSign ),
-    localeExponential == 'E' ? QString() : localeExponential
+    localeExponential.toUpper() == 'E' ? QString() : localeExponential
   ) );
 }
 
