@@ -71,7 +71,6 @@ CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
 
 shlibs = -Xqgis-plugin-grass -Xlibqgis-customwidgets
 
-
 ifneq (,$(filter oracle,$(DEB_BUILD_OPTIONS)))
 CONTROL_EXPRESSIONS += oracle
 shlibs += -Xqgis-provider-oracle
@@ -168,7 +167,7 @@ CMAKE_OPTS := \
 	-DWITH_SFCGAL=TRUE \
 	-DWITH_GEOGRAPHICLIB=TRUE
 
-ifneq (,$(filter $(DISTRIBUTION),trixie plucky))
+ifeq (,$(filter $(DISTRIBUTION),trixie plucky))
 	CMAKE_OPTS += -DWITH_INTERNAL_NLOHMANN_JSON=OFF
 else
 	CMAKE_OPTS += -DWITH_INTERNAL_NLOHMANN_JSON=ON
