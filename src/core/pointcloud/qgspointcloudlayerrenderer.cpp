@@ -22,11 +22,13 @@
 #include "delaunator.hpp"
 #include "qgsapplication.h"
 #include "qgselevationmap.h"
+#include "qgsellipsoidutils.h"
 #include "qgslogger.h"
 #include "qgsmapclippingutils.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmessagelog.h"
 #include "qgspointcloudattribute.h"
+#include "qgspointcloudblock.h"
 #include "qgspointcloudblockrequest.h"
 #include "qgspointcloudextentrenderer.h"
 #include "qgspointcloudindex.h"
@@ -132,6 +134,34 @@ bool QgsPointCloudLayerRenderer::render()
       renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
   }
 
+  double topoLat = 0.0, topoLon = 0.0;
+  if ( renderContext()->coordinateTransform().destinationCrs().topocentricOrigin( topoLat, topoLon ) )
+  {
+    const QgsEllipsoidUtils::EllipsoidParameters ellipsoidParams = QgsEllipsoidUtils::ellipsoidParameters( renderContext()->coordinateTransform().destinationCrs().ellipsoidAcronym() );
+    if ( ellipsoidParams.valid && ellipsoidParams.semiMajor > 0 && ellipsoidParams.semiMinor > 0 )
+    {
+      const double a = ellipsoidParams.semiMajor;
+      const double b = ellipsoidParams.semiMinor;
+      const double latRad = topoLat * M_PI / 180.0;
+
+      const double beta = std::atan2( b * std::sin( latRad ), a * std::cos( latRad ) );
+      const double xa = a * std::cos( beta );
+      const double zb = b * std::sin( beta );
+      const double originRadius = std::sqrt( xa * xa + zb * zb );
+
+      const double geocentricLatRad = std::atan2( b * b * std::sin( latRad ), a * a * std::cos( latRad ) );
+      const double centerOffset = originRadius * std::fabs( std::sin( latRad - geocentricLatRad ) );
+
+      const double horizonDiscRadius = b - centerOffset;
+      if ( horizonDiscRadius > 0 )
+      {
+        mFilterBelowHorizon = true;
+        mHorizonPlaneZ = -originRadius;
+        mHorizonDiscRadius = horizonDiscRadius;
+      }
+    }
+  }
+
   if ( mRenderer->type() == "extent"_L1 )
   {
     // special case for extent only renderer!
@@ -171,7 +201,8 @@ bool QgsPointCloudLayerRenderer::render()
   if ( !context.renderContext().zRange().isInfinite()
        || mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::BottomToTop
        || mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::TopToBottom
-       || renderContext()->elevationMap() )
+       || renderContext()->elevationMap()
+       || mFilterBelowHorizon )
     mAttributes.push_back( QgsPointCloudAttribute( u"Z"_s, QgsPointCloudAttribute::Int32 ) );
 
   // collect attributes required by renderer
@@ -300,7 +331,11 @@ bool QgsPointCloudLayerRenderer::render()
 bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex &pc )
 {
   QgsPointCloudRenderContext context( *renderContext(), pc.scale(), pc.offset(), mZScale, mZOffset, mFeedback.get() );
-
+  if ( mFilterBelowHorizon )
+  {
+    context.setHorizonFilter( mHorizonPlaneZ, mHorizonDiscRadius );
+    context.setHorizonFilterEnabled( true );
+  }
 
 #ifdef QGISDEBUG
   QElapsedTimer t;
