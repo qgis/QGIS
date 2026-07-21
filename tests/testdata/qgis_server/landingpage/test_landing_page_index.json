@@ -1,6 +1,7 @@
 Content-Type: application/json
 
 {
+  "QGIS_SERVER_API_WFS3_ROOT_PATH": "/ogcapi",
   "links": [
     {
       "href": "http://server.qgis.org/index.json",
