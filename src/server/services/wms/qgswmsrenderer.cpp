@@ -3161,7 +3161,7 @@ namespace QgsWms
         exporter.setAttributes( attributes );
         exporter.setIncludeGeometry( withGeometry );
         // Always add CRS information so that the export knows if it needs to transform geometries
-        // to CRS84 in case the requested profile needs it, the feature geometyries are already
+        // to CRS84 in case the requested profile needs it, the feature geometries are already
         // in the CRS of the request, so no transformation is needed
         exporter.setTransformGeometries( false );
         exporter.setDestinationCrs( destCRS );
