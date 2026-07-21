@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgsenumerationfieldformatter.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+class QgsEnumerationFieldFormatter : QgsFieldFormatter
+{
+%Docstring(signature="appended")
+Field formatter for an Enumeration field.
+
+Enumeration values can be either list of values (eg. postgres ENUM type)
+or code-value pairs (eg. gpkg field domains)
+
+A map of code-value pairs is used in both cases, with values==codes in
+case only values are provided (eg. postgres ENUM type)
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsenumerationfieldformatter.h"
+%End
+  public:
+    QgsEnumerationFieldFormatter();
+%Docstring
+Default constructor of field formatter provider supplied enumerated
+values.
+%End
+
+    virtual QString id() const;
+
+
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+
+
+    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+
+
+    virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgsenumerationfieldformatter.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
