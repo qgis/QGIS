@@ -86,6 +86,10 @@ class CORE_EXPORT QgsPointCloudLayerRenderer : public QgsMapLayerRenderer
     double mZOffset = 0;
     double mZScale = 1.0;
 
+    bool mFilterBelowHorizon = false;
+    double mHorizonPlaneZ = 0;
+    double mHorizonDiscRadius = 0;
+
     QgsPointCloudAttributeCollection mLayerAttributes;
     QgsPointCloudAttributeCollection mAttributes;
     QgsGeometry mCloudExtent;
