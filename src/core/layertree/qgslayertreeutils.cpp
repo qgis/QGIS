@@ -17,13 +17,13 @@
 
 #include "qgslayertree.h"
 #include "qgslogger.h"
+#include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
 #include <QDomElement>
 #include <QString>
 #include <QTextStream>
-#include <QUuid>
 
 using namespace Qt::StringLiterals;
 
@@ -316,7 +316,7 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup *group )
 void QgsLayerTreeUtils::regenerateGroupIds( QgsLayerTreeNode *node )
 {
   if ( QgsLayerTree::isGroup( node ) )
-    QgsLayerTree::toGroup( node )->setId( QUuid::createUuid().toString( QUuid::WithoutBraces ) );
+    QgsLayerTree::toGroup( node )->setId( QgsMapLayer::generateId( u"group"_s ) );
 
   const QList<QgsLayerTreeNode *> children = node->children();
   for ( QgsLayerTreeNode *child : children )

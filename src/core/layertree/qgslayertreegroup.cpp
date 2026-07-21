@@ -23,7 +23,6 @@
 #include <QDomElement>
 #include <QString>
 #include <QStringList>
-#include <QUuid>
 
 #include "moc_qgslayertreegroup.cpp"
 
@@ -32,7 +31,7 @@ using namespace Qt::StringLiterals;
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
   : QgsLayerTreeNode( NodeGroup, checked )
   , mName( name )
-  , mId( QUuid::createUuid().toString( QUuid::WithoutBraces ) )
+  , mId( QgsMapLayer::generateId( u"group"_s ) )
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
 {
   init();
