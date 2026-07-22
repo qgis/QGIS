@@ -80,9 +80,9 @@ class EnumProvider(PyProvider):
     def createProvider(cls, uri, providerOptions, flags=QgsDataProvider.ReadFlags()):
         return EnumProvider(uri, providerOptions, flags)
 
-    def enumValues(self, fieldIdx):
+    def codedValues(self, fieldIdx):
         if self.fields()[fieldIdx].name().startswith("enum"):
-            return ["value1", "value2", "value3"]
+            return [("value1", "value1"), ("value2", "value2"), ("value3", "value3")]
         return []
 
 

@@ -1906,6 +1906,22 @@ void QgsPostgresProvider::enumValues( int index, QStringList &enumList ) const
   }
 }
 
+QList<QPair<QString, QString>> QgsPostgresProvider::codedValues( int index ) const
+{
+  QStringList enumList;
+  Q_NOWARN_DEPRECATED_PUSH
+  enumValues( index, enumList );
+  Q_NOWARN_DEPRECATED_POP
+
+  QList<QPair<QString, QString>> values;
+  for ( const QString &s : std::as_const( enumList ) )
+  {
+    values.append( qMakePair( s, s ) );
+  }
+
+  return values;
+}
+
 bool QgsPostgresProvider::parseEnumRange( QStringList &enumValues, const QString &attributeName ) const
 {
   enumValues.clear();
