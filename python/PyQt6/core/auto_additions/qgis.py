@@ -11598,6 +11598,7 @@ Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__ = "Can set alia
 Qgis.DatabaseProviderConnectionCapability2.SetTableComment.__doc__ = "Can set comments for tables via setTableComment() \n.. versionadded:: 3.44"
 Qgis.DatabaseProviderConnectionCapability2.EditFieldDomain.__doc__ = "Can edit existing field domain \n.. versionadded:: 4.0"
 Qgis.DatabaseProviderConnectionCapability2.DeleteFieldDomain.__doc__ = "Can delete existing field domain \n.. versionadded:: 4.0"
+Qgis.DatabaseProviderConnectionCapability2.StyleStorage.__doc__ = "Can save/load styles to/from the database \n.. versionadded:: 4.2"
 Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum represents the extended operations supported by the connection.
 
 .. versionadded:: 3.32
@@ -11615,6 +11616,10 @@ Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum repr
 * ``DeleteFieldDomain``: Can delete existing field domain
 
   .. versionadded:: 4.0
+
+* ``StyleStorage``: Can save/load styles to/from the database
+
+  .. versionadded:: 4.2
 
 
 """
@@ -13013,6 +13018,22 @@ Qgis.DockableWidgetInitialState.__doc__ = """Dockable widget initial states.
 """
 # --
 Qgis.DockableWidgetInitialState.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SaveStyleFormat.QML.__doc__ = "QML style format"
+Qgis.SaveStyleFormat.SLD.__doc__ = "SLD style format"
+Qgis.SaveStyleFormat.__doc__ = """Style save format
+
+.. versionadded:: 4.4
+
+* ``QML``: QML style format
+* ``SLD``: SLD style format
+
+"""
+# --
+Qgis.SaveStyleFormat.baseClass = Qgis
+Qgis.SaveStyleFormats = lambda flags=0: Qgis.SaveStyleFormat(flags)
+Qgis.SaveStyleFormats.baseClass = Qgis
+SaveStyleFormats = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.CoverageCleanOverlapMergeStrategy.LongestBorder.__doc__ = "Polygon with longest common border is selected to merge overlapping polygons into"
 Qgis.CoverageCleanOverlapMergeStrategy.MaximumArea.__doc__ = "Polygon with largest area is selected to merge overlapping polygons into"
