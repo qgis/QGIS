@@ -176,6 +176,47 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     QgsFeedback *feedback() const { return mFeedback; }
 
+    /**
+     * Sets the horizon filter used to discard points which fall below the visible horizon of the
+     * ellipsoid when rendering point clouds in a topocentric CRS.
+     *
+     * A point is considered to be below the horizon when its z value is
+     * lower than \a planeZ AND its horizontal distance from the origin is lower than \a discRadius.
+     *
+     * \see isBelowHorizon()
+     * \since QGIS 4.4
+     */
+    void setHorizonFilter( double planeZ, double discRadius )
+    {
+      mHorizonPlaneZ = planeZ;
+      mHorizonDiscRadiusSquared = discRadius * discRadius;
+    }
+
+    /**
+     * Sets whether or not to filter points based on horizon.
+     *
+     * \see horizonFilterEnabled()
+     * \since QGIS 4.4
+     */
+    void setHorizonFilterEnabled( bool enabled ) { mFilterBelowHorizon = enabled; }
+
+    /**
+     * Returns true if a horizon filter has been set via setHorizonFilter() and enabled via
+     * setHorizonFilterEnabled().
+     *
+     * \since QGIS 4.4
+     */
+    bool horizonFilterEnabled() const { return mFilterBelowHorizon; }
+
+    /**
+     * Returns true if the point at the given destination CRS coordinates \a x, \a y, \a z falls
+     * below the visible horizon and should be discarded from rendering.
+     *
+     * \see setHorizonFilter()
+     * \since QGIS 4.4
+     */
+    bool isBelowHorizon( double x, double y, double z ) const { return mFilterBelowHorizon && z < mHorizonPlaneZ && ( x * x + y * y ) < mHorizonDiscRadiusSquared; }
+
 #ifndef SIP_RUN
 
     /**
@@ -264,6 +305,10 @@ class CORE_EXPORT QgsPointCloudRenderContext
     int mZOffset = 0;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
+
+    bool mFilterBelowHorizon = false;
+    double mHorizonPlaneZ = 0;
+    double mHorizonDiscRadiusSquared = 0;
 
     QgsFeedback *mFeedback = nullptr;
 

@@ -24,6 +24,7 @@ from qgis.core import (
     QgsPointCloudLayer,
     QgsPointCloudRenderContext,
     QgsPointCloudRenderer,
+    QgsProject,
     QgsProviderRegistry,
     QgsReadWriteContext,
     QgsRectangle,
@@ -33,7 +34,7 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVector3D,
 )
-from qgis.PyQt.QtCore import QDir, QSize, Qt
+from qgis.PyQt.QtCore import QSize, Qt
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
@@ -615,6 +616,104 @@ class TestQgsPointCloudAttributeByRampRenderer(QgisTestCase):
             self.render_map_settings_check(
                 "ramp_expression",
                 "ramp_expression",
+                mapsettings,
+            )
+        )
+
+    @unittest.skipIf(
+        "copc" not in QgsProviderRegistry.instance().providerList(),
+        "COPC provider not available",
+    )
+    def testRenderTopocentricSouthPole(self):
+        layer = QgsPointCloudLayer(
+            unitTestDataPath() + "/point_clouds/copc/lola-clipped-small.copc.laz",
+            "lola",
+            "copc",
+        )
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsPointCloudAttributeByRampRenderer()
+        renderer.setAttribute("Z")
+        renderer.setMinimum(-1729687.317)
+        renderer.setMaximum(1731121.556)
+
+        ramp = QgsStyle.defaultStyle().colorRamp("Viridis")
+        shader = QgsColorRampShader(-1729687.317, 1731121.556, ramp)
+        shader.classifyColorRamp()
+        renderer.setColorRampShader(shader)
+
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(5)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        project = QgsProject()
+        project.addMapLayer(layer)
+
+        topo_crs = layer.crs().toTopocentricCrs(-90, 0)
+        self.assertTrue(topo_crs.isValid())
+        project.setCrs(topo_crs)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(600, 600))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(project.crs())
+        mapsettings.setExtent(QgsRectangle(133401.56, 24275.40, 133901.01, 24792.99))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "ramp_topocentric_south_pole_lola",
+                "ramp_topocentric_south_pole_lola",
+                mapsettings,
+            )
+        )
+
+    @unittest.skipIf(
+        "copc" not in QgsProviderRegistry.instance().providerList(),
+        "COPC provider not available",
+    )
+    def testRenderTopocentricNorthPole(self):
+        layer = QgsPointCloudLayer(
+            unitTestDataPath() + "/point_clouds/copc/lola-clipped-small.copc.laz",
+            "lola",
+            "copc",
+        )
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsPointCloudAttributeByRampRenderer()
+        renderer.setAttribute("Z")
+        renderer.setMinimum(-1729687.317)
+        renderer.setMaximum(1731121.556)
+
+        ramp = QgsStyle.defaultStyle().colorRamp("Viridis")
+        shader = QgsColorRampShader(-1729687.317, 1731121.556, ramp)
+        shader.classifyColorRamp()
+        renderer.setColorRampShader(shader)
+
+        layer.setRenderer(renderer)
+
+        layer.renderer().setPointSize(5)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        project = QgsProject()
+        project.addMapLayer(layer)
+
+        topo_crs = layer.crs().toTopocentricCrs(90, 0)
+        self.assertTrue(topo_crs.isValid())
+        project.setCrs(topo_crs)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(600, 600))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(project.crs())
+        mapsettings.setExtent(QgsRectangle(133443.2, -24706.6, 133890.7, -24285.3))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "ramp_topocentric_north_pole_lola",
+                "ramp_topocentric_north_pole_lola",
                 mapsettings,
             )
         )
