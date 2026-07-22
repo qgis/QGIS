@@ -57,7 +57,13 @@ void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) 
   else
   {
     const json projects = projectsData( *context.request(), context.serverInterface() );
-    json data { { "links", links( context ) }, { "projects", projects }, { "projects_count", projects.size() } };
+    json data {
+      { "links", links( context ) },
+      { "projects", projects },
+      { "projects_count", projects.size() },
+      // Add env variable to allow creation of OAPIF URL
+      { "QGIS_SERVER_API_WFS3_ROOT_PATH", context.serverInterface()->serverSettings()->apiWfs3RootPath().toStdString() }
+    };
     write( data, context, { { "pageTitle", linkTitle() }, { "navigation", json::array() } } );
   }
 }
