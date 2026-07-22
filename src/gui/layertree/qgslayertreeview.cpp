@@ -16,6 +16,7 @@
 #include "qgslayertreeview.h"
 
 #include "qgsgui.h"
+#include "qgslayerdropfeedbackoverlay.h"
 #include "qgslayertree.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgslayertreemodel.h"
@@ -31,6 +32,7 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QMimeData>
+#include <QPainter>
 #include <QScrollBar>
 #include <QString>
 
@@ -838,56 +840,273 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 
 void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
+  if ( QgsLayerDropClassifier::isDatasetDrag( event->mimeData() ) )
   {
-    // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
-    {
-      event->accept();
-      return;
-    }
+    mDragPayloadType = QgsLayerDropClassifier::classify( event->mimeData(), mCustomDropHandlers );
+    mDatasetDragActive = true;
+    viewport()->update();
+    event->accept();
+    return;
   }
   QTreeView::dragEnterEvent( event );
 }
 
 void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
+  if ( QgsLayerDropClassifier::isDatasetDrag( event->mimeData() ) )
   {
-    // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
+    switch ( mDragPayloadType )
     {
-      event->accept();
-      return;
+      case Qgis::LayerDropPayloadType::Layers:
+      {
+        const DropTarget target = computeDropTarget( event->position().toPoint() );
+        mDropIndicatorRect = target.indicatorRect;
+        mDropIndicatorInto = target.into;
+        viewport()->update();
+        event->accept();
+        break;
+      }
+
+      case Qgis::LayerDropPayloadType::Project:
+        clearDropIndicator();
+        event->accept();
+        break;
+
+      case Qgis::LayerDropPayloadType::CustomHandler:
+        // only handled by the application (e.g. custom drop handlers): accept the
+        // drop, but an insertion indicator would be meaningless
+        clearDropIndicator();
+        event->accept();
+        break;
+
+      case Qgis::LayerDropPayloadType::Invalid:
+        clearDropIndicator();
+        event->ignore();
+        break;
     }
+    return;
   }
+  clearDropIndicator();
   QTreeView::dragMoveEvent( event );
+}
+
+void QgsLayerTreeView::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  mDatasetDragActive = false;
+  viewport()->update();
+  clearDropIndicator();
+  QTreeView::dragLeaveEvent( event );
 }
 
 void QgsLayerTreeView::dropEvent( QDropEvent *event )
 {
-  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
+  if ( QgsLayerDropClassifier::isDatasetDrag( event->mimeData() ) )
   {
-    // the mime data are coming from layer tree, so ignore that, do not import those layers again
-    if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
+    mDatasetDragActive = false;
+    viewport()->update();
+
+    if ( mDragPayloadType == Qgis::LayerDropPayloadType::Invalid )
     {
-      event->accept();
-
-      QModelIndex index = indexAt( event->pos() );
-      if ( index.isValid() )
-      {
-        setCurrentIndex( index );
-      }
-
-      emit datasetsDropped( event );
+      // should not be reached as drag moves are not accepted
+      clearDropIndicator();
+      event->ignore();
       return;
     }
+
+    event->accept();
+
+    const DropTarget target = mDragPayloadType == Qgis::LayerDropPayloadType::Layers ? computeDropTarget( event->position().toPoint() ) : DropTarget();
+    clearDropIndicator();
+
+    const QModelIndex index = indexAt( event->position().toPoint() );
+    if ( index.isValid() )
+    {
+      setCurrentIndex( index );
+    }
+
+    // expose the insertion point matching the drop position while handlers run
+    mDatasetDropInsertionPoint = QgsLayerTreeRegistryBridge::InsertionPoint( target.group, target.row );
+    emit datasetsDropped( event );
+    mDatasetDropInsertionPoint = QgsLayerTreeRegistryBridge::InsertionPoint( nullptr, 0 );
+    return;
   }
   if ( event->keyboardModifiers() & Qt::AltModifier || event->keyboardModifiers() & Qt::ControlModifier )
   {
     event->accept();
   }
   QTreeView::dropEvent( event );
+}
+
+bool QgsLayerTreeView::viewportEvent( QEvent *event )
+{
+  // Safety net for the drag overlay: when a refused drop is released over the view,
+  // some platforms deliver neither a drop nor a drag leave event. Mouse and hover
+  // events cannot occur while a drag is in progress, so receiving one here means the
+  // drag is over and any leftover overlay state must be cleared.
+  if ( mDatasetDragActive )
+  {
+    switch ( event->type() )
+    {
+      case QEvent::MouseMove:
+      case QEvent::HoverEnter:
+      case QEvent::HoverMove:
+      case QEvent::HoverLeave:
+        mDatasetDragActive = false;
+        clearDropIndicator();
+        viewport()->update();
+        break;
+
+      default:
+        break;
+    }
+  }
+  return QTreeView::viewportEvent( event );
+}
+
+void QgsLayerTreeView::paintEvent( QPaintEvent *event )
+{
+  QTreeView::paintEvent( event );
+
+  if ( mDatasetDragActive && mDragPayloadType != Qgis::LayerDropPayloadType::Layers )
+  {
+    QPainter painter( viewport() );
+    QgsLayerDropFeedbackOverlay::paintFeedback( &painter, viewport()->rect(), mDragPayloadType, this );
+    return;
+  }
+
+  if ( mDropIndicatorRect.isNull() )
+    return;
+
+  QPainter painter( viewport() );
+  painter.setRenderHint( QPainter::Antialiasing );
+  const QPen pen( palette().color( QPalette::Highlight ), 2 );
+  painter.setPen( pen );
+  if ( mDropIndicatorInto )
+  {
+    painter.drawRect( QRectF( mDropIndicatorRect ).adjusted( 1, 1, -1, -1 ) );
+  }
+  else
+  {
+    painter.drawLine( mDropIndicatorRect.left(), mDropIndicatorRect.top(), mDropIndicatorRect.right(), mDropIndicatorRect.top() );
+  }
+}
+
+QgsLayerTreeRegistryBridge::InsertionPoint QgsLayerTreeView::datasetDropInsertionPoint() const
+{
+  return mDatasetDropInsertionPoint;
+}
+
+void QgsLayerTreeView::setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler>> &handlers )
+{
+  mCustomDropHandlers = handlers;
+}
+
+QgsLayerTreeView::DropTarget QgsLayerTreeView::computeDropTarget( const QPoint &pos ) const
+{
+  DropTarget target;
+  QgsLayerTree *root = layerTreeModel() ? layerTreeModel()->rootGroup() : nullptr;
+  if ( !root )
+  {
+    return target;
+  }
+
+  const QModelIndex index = indexAt( pos );
+  if ( !index.isValid() )
+  {
+    // Below the last item: append to the root group
+    target.group = root;
+    target.row = root->children().count();
+    target.indicatorRect = indicatorRectForInsertion( root, target.row );
+    return target;
+  }
+
+  QgsLayerTreeNode *node = index2node( index );
+  if ( !node )
+  {
+    // Legend or other embedded node: find the layer node owning it
+    QModelIndex layerIndex = index;
+    while ( layerIndex.isValid() && !index2node( layerIndex ) )
+    {
+      layerIndex = layerIndex.parent();
+    }
+    if ( !layerIndex.isValid() || !( node = index2node( layerIndex ) ) )
+    {
+      target.group = root;
+      target.row = root->children().count();
+      target.indicatorRect = indicatorRectForInsertion( root, target.row );
+      return target;
+    }
+    // Insert below the layer owning the legend node
+    QgsLayerTreeGroup *parent = QgsLayerTree::toGroup( node->parent() ? node->parent() : root );
+    target.group = parent;
+    target.row = parent->children().indexOf( node ) + 1;
+    target.indicatorRect = indicatorRectForInsertion( parent, target.row );
+    return target;
+  }
+
+  QgsLayerTreeGroup *parent = node->parent() ? QgsLayerTree::toGroup( node->parent() ) : root;
+  const int nodeRow = parent->children().indexOf( node );
+  const QRect rect = visualRect( index );
+
+  if ( QgsLayerTree::isGroup( node ) )
+  {
+    // Top quarter: above; bottom quarter: below; middle: into the group
+    if ( pos.y() < rect.top() + rect.height() / 4 )
+    {
+      target.group = parent;
+      target.row = nodeRow;
+      target.indicatorRect = QRect( rect.left(), rect.top(), viewport()->width() - rect.left(), 0 );
+    }
+    else if ( pos.y() > rect.bottom() - rect.height() / 4 )
+    {
+      target.group = parent;
+      target.row = nodeRow + 1;
+      target.indicatorRect = QRect( rect.left(), rect.bottom() + 1, viewport()->width() - rect.left(), 0 );
+    }
+    else
+    {
+      target.group = QgsLayerTree::toGroup( node );
+      target.row = 0;
+      target.into = true;
+      target.indicatorRect = QRect( rect.left(), rect.top(), viewport()->width() - rect.left(), rect.height() );
+    }
+  }
+  else
+  {
+    // Layer node: upper half inserts above, lower half below
+    const bool below = pos.y() >= rect.center().y();
+    target.group = parent;
+    target.row = nodeRow + ( below ? 1 : 0 );
+    const int y = below ? rect.bottom() + 1 : rect.top();
+    target.indicatorRect = QRect( rect.left(), y, viewport()->width() - rect.left(), 0 );
+  }
+  return target;
+}
+
+QRect QgsLayerTreeView::indicatorRectForInsertion( QgsLayerTreeGroup *group, int row ) const
+{
+  const QList<QgsLayerTreeNode *> children = group->children();
+  if ( row < children.count() )
+  {
+    const QRect rect = visualRect( node2index( children.at( row ) ) );
+    return QRect( rect.left(), rect.top(), viewport()->width() - rect.left(), 0 );
+  }
+  if ( !children.isEmpty() )
+  {
+    const QRect rect = visualRect( node2index( children.constLast() ) );
+    return QRect( rect.left(), rect.bottom() + 1, viewport()->width() - rect.left(), 0 );
+  }
+  return QRect( 0, 0, viewport()->width(), 0 );
+}
+
+void QgsLayerTreeView::clearDropIndicator()
+{
+  if ( !mDropIndicatorRect.isNull() )
+  {
+    mDropIndicatorRect = QRect();
+    mDropIndicatorInto = false;
+    viewport()->update();
+  }
 }
 
 void QgsLayerTreeView::resizeEvent( QResizeEvent *event )

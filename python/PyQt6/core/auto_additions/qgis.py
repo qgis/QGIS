@@ -8643,6 +8643,27 @@ Qgis.LayerTreeInsertionMethod.__doc__ = """Layer tree insertion methods
 # --
 Qgis.LayerTreeInsertionMethod.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.LayerDropPayloadType.Layers.__doc__ = "One or more loadable map layers or datasets (including layer definition files)"
+Qgis.LayerDropPayloadType.Project.__doc__ = "A QGIS project; opening it replaces the current project"
+Qgis.LayerDropPayloadType.CustomHandler.__doc__ = "No data provider can load it, but a custom drop handler can consume it"
+Qgis.LayerDropPayloadType.Invalid.__doc__ = "Nothing which QGIS can load or handle"
+Qgis.LayerDropPayloadType.__doc__ = """Types of payload which may be dragged onto a widget accepting map layers, such
+as the layer tree view or the map canvas.
+
+This drives the visual feedback shown to the user while a drag hovers such a
+widget, and lets the widget decide whether to accept the drop.
+
+.. versionadded:: 4.4
+
+* ``Layers``: One or more loadable map layers or datasets (including layer definition files)
+* ``Project``: A QGIS project; opening it replaces the current project
+* ``CustomHandler``: No data provider can load it, but a custom drop handler can consume it
+* ``Invalid``: Nothing which QGIS can load or handle
+
+"""
+# --
+Qgis.LayerDropPayloadType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LegendLayerDoubleClickAction.LayerProperties.__doc__ = "Open the layer properties dialog"
 Qgis.LegendLayerDoubleClickAction.AttributeTable.__doc__ = "Open the attribute table"
 Qgis.LegendLayerDoubleClickAction.LayerStyling.__doc__ = "Open the layer styling dock"

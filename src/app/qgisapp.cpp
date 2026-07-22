@@ -265,6 +265,8 @@ using namespace Qt::StringLiterals;
 #include "qgscoordinateutils.h"
 #include "qgscredentialdialog.h"
 #include "qgscustomdrophandler.h"
+#include "qgslayerdropclassifier.h"
+#include "qgslayerdropfeedbackoverlay.h"
 #include "qgscustomprojectopenhandler.h"
 #include "qgscustomization.h"
 #include "qgscustomizationdialog.h"
@@ -2300,12 +2302,19 @@ QgisApp::~QgisApp()
 
 void QgisApp::dragEnterEvent( QDragEnterEvent *event )
 {
+  const Qgis::LayerDropPayloadType payloadType = QgsLayerDropClassifier::classify( event->mimeData(), mCustomDropHandlers );
+
   if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.uri"_s ) )
   {
-    // the mime data are coming from layer tree, so ignore that, do not import those layers again
+    // the mime data are coming from layer tree, so ignore that, do not import those layers again.
+    // Accept the drag enter (even for unloadable payloads) so that we remain the drop target and
+    // keep receiving drag move events; dragMoveEvent() then refuses payloads which cannot be loaded.
     if ( !event->mimeData()->hasFormat( u"application/qgis.layertreemodeldata"_s ) )
       event->acceptProposedAction();
   }
+
+  // show the feedback overlay over the map canvas
+  updateCanvasDropFeedback( payloadType, event->position() );
 
   // check if any custom handlers can operate on the data
   const QVector<QPointer<QgsCustomDropHandler>> handlers = mCustomDropHandlers;
@@ -2319,8 +2328,83 @@ void QgisApp::dragEnterEvent( QDragEnterEvent *event )
   }
 }
 
+void QgisApp::dragMoveEvent( QDragMoveEvent *event )
+{
+  const bool datasetDrag = QgsLayerDropClassifier::isDatasetDrag( event->mimeData() );
+  if ( !datasetDrag )
+  {
+    // let QMainWindow handle non-dataset drags (e.g. dock widget dragging)
+    QMainWindow::dragMoveEvent( event );
+    return;
+  }
+
+  const Qgis::LayerDropPayloadType payloadType = QgsLayerDropClassifier::classify( event->mimeData(), mCustomDropHandlers );
+  updateCanvasDropFeedback( payloadType, event->position() );
+
+  // refuse payloads which no data provider can load and no custom handler can consume,
+  // so that the drop is rejected, consistently with the layer tree view.
+  // Note: we reject by accepting the event with Qt::IgnoreAction rather than calling
+  // event->ignore() which would make the platform end the drag and would immediately
+  // hide the feedback overlay. Accepting with IgnoreAction keeps us the drag target
+  // while still showing a "no drop" cursor and refusing the drop.
+  if ( payloadType == Qgis::LayerDropPayloadType::Invalid )
+  {
+    event->setDropAction( Qt::IgnoreAction );
+    event->accept();
+  }
+  else
+  {
+    event->acceptProposedAction();
+  }
+}
+
+void QgisApp::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  if ( mCanvasDropFeedbackOverlay )
+    mCanvasDropFeedbackOverlay->hide();
+  QMainWindow::dragLeaveEvent( event );
+}
+
+void QgisApp::updateCanvasDropFeedback( Qgis::LayerDropPayloadType payloadType, const QPointF &pos )
+{
+  // Show a canvas overlay for project drags and for payloads which cannot be loaded.
+  // Layer/custom payloads give no canvas overlay and custom handlers manage their own feedback.
+  bool showOverlay = ( payloadType == Qgis::LayerDropPayloadType::Project || payloadType == Qgis::LayerDropPayloadType::Invalid ) && mMapCanvas;
+  if ( showOverlay )
+  {
+    // only while the drag actually hovers the canvas
+    const QPoint canvasPos = mMapCanvas->viewport()->mapFromGlobal( mapToGlobal( pos.toPoint() ) );
+    showOverlay = mMapCanvas->viewport()->rect().contains( canvasPos );
+  }
+
+  if ( !showOverlay )
+  {
+    if ( mCanvasDropFeedbackOverlay )
+      mCanvasDropFeedbackOverlay->hide();
+    return;
+  }
+
+  if ( !mCanvasDropFeedbackOverlay )
+    mCanvasDropFeedbackOverlay = new QgsLayerDropFeedbackOverlay( mMapCanvas->viewport() );
+  mCanvasDropFeedbackOverlay->setPayloadType( payloadType );
+  mCanvasDropFeedbackOverlay->setGeometry( mMapCanvas->viewport()->rect() );
+  mCanvasDropFeedbackOverlay->raise();
+  mCanvasDropFeedbackOverlay->show();
+}
+
 void QgisApp::dropEvent( QDropEvent *event )
 {
+  if ( mCanvasDropFeedbackOverlay )
+    mCanvasDropFeedbackOverlay->hide();
+
+  // refuse payloads which nothing can load or handle, mirroring the drag refusal in dragMoveEvent()
+  const bool datasetDrag = QgsLayerDropClassifier::isDatasetDrag( event->mimeData() );
+  if ( datasetDrag && QgsLayerDropClassifier::classify( event->mimeData(), mCustomDropHandlers ) == Qgis::LayerDropPayloadType::Invalid )
+  {
+    event->ignore();
+    return;
+  }
+
   // dragging app is locked for the duration of dropEvent. This causes explorer windows to hang
   // while large projects/layers are loaded. So instead we return from dropEvent as quickly as possible
   // and do the actual handling of the drop after a very short timeout
@@ -2424,6 +2508,7 @@ void QgisApp::dropEvent( QDropEvent *event )
     {
       QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionMethod( method );
       mLayerTreeDrop = false;
+      updateNewLayerInsertionPoint();
     }
 
     timer->deleteLater();
@@ -2454,6 +2539,9 @@ void QgisApp::registerCustomDropHandler( QgsCustomDropHandler *handler )
   {
     canvas->setCustomDropHandlers( mCustomDropHandlers );
   }
+
+  if ( mLayerTreeView )
+    mLayerTreeView->setCustomDropHandlers( mCustomDropHandlers );
 }
 
 void QgisApp::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
@@ -2465,6 +2553,9 @@ void QgisApp::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
   {
     canvas->setCustomDropHandlers( mCustomDropHandlers );
   }
+
+  if ( mLayerTreeView )
+    mLayerTreeView->setCustomDropHandlers( mCustomDropHandlers );
 }
 
 void QgisApp::registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
@@ -4527,6 +4618,17 @@ void QgisApp::setupConnections()
 
   connect( mLayerTreeView, &QgsLayerTreeView::datasetsDropped, this, [this]( QDropEvent *event ) {
     mLayerTreeDrop = true;
+
+    QgsLayerTreeRegistryBridge::InsertionPoint insertionPoint = mLayerTreeView->datasetDropInsertionPoint();
+    if ( insertionPoint.group )
+    {
+      // if the target group is embedded, defer to the first non-embedded parent, at worst the top level item
+      QgsLayerTreeGroup *insertGroup = QgsLayerTreeUtils::firstGroupWithoutCustomProperty( insertionPoint.group, u"embedded"_s );
+      if ( insertGroup != insertionPoint.group )
+        insertionPoint = QgsLayerTreeRegistryBridge::InsertionPoint( insertGroup, 0 );
+      QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( insertionPoint );
+    }
+
     dropEvent( event );
   } );
 
@@ -4967,6 +5069,10 @@ void QgisApp::initLayerTreeView()
   mLayerTreeView->setModel( model );
   mLayerTreeView->setMessageBar( mInfoBar );
 
+  // let the view accept drags which no data provider can load, but which a custom
+  // drop handler will consume (e.g. .qlr, .qpt, .py, style .xml files)
+  mLayerTreeView->setCustomDropHandlers( mCustomDropHandlers );
+
   mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider( mLayerTreeView, mMapCanvas ) );
   new QgsLayerTreeViewFilterIndicatorProvider( mLayerTreeView );                                                                          // gets parented to the layer view
   new QgsLayerTreeViewEmbeddedIndicatorProvider( mLayerTreeView );                                                                        // gets parented to the layer view
@@ -5107,6 +5213,9 @@ void QgisApp::setupLayerTreeViewFromSettings()
 
 void QgisApp::updateNewLayerInsertionPoint()
 {
+  if ( mLayerTreeDrop )
+    return;
+
   QgsLayerTreeRegistryBridge::InsertionPoint insertionPoint = layerTreeInsertionPoint();
   QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionPoint( insertionPoint );
 }
@@ -7104,7 +7213,7 @@ QList<QgsMapLayer *> QgisApp::openFile( const QString &fileName, const QString &
   }
   else if ( fi.suffix().compare( "qlr"_L1, Qt::CaseInsensitive ) == 0 )
   {
-    QgsLayerTreeRegistryBridge::InsertionPoint p = layerTreeInsertionPoint();
+    QgsLayerTreeRegistryBridge::InsertionPoint p = QgsProject::instance()->layerTreeRegistryBridge()->layerInsertionPoint();
     QgsAppLayerHandling::openLayerDefinition( fileName, &p );
   }
   else if ( fi.suffix().compare( "qpt"_L1, Qt::CaseInsensitive ) == 0 )

@@ -1,0 +1,87 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayerdropfeedbackoverlay.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayerDropFeedbackOverlay : QWidget
+{
+%Docstring(signature="appended")
+A translucent overlay which renders visual feedback for a drag hovering
+a widget that accepts map layers.
+
+The feedback depends on the payload being dragged (map layers, a project
+or an unloadable file) and is shown over the widget which accepts such
+drops, e.g. the layer tree view or the map canvas.
+
+The overlay is transparent for mouse events and does not accept drops
+itself, so it never interferes with the drag and drop event delivery of
+the widget it covers. It is meant to be laid over a target widget
+(matching its geometry), shown while a drag hovers and hidden on drop or
+drag leave.
+
+Nothing is drawn for :py:class:`Qgis`.LayerDropPayloadType.Layers or
+:py:class:`Qgis`.LayerDropPayloadType.CustomHandler payloads, for which
+the hosting widget provides its own (or no) feedback.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgslayerdropfeedbackoverlay.h"
+%End
+  public:
+    explicit QgsLayerDropFeedbackOverlay( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayerDropFeedbackOverlay, with the specified
+``parent`` widget.
+%End
+
+    void setPayloadType( Qgis::LayerDropPayloadType type );
+%Docstring
+Sets the ``type`` of payload to render feedback for, triggering a
+repaint.
+
+.. seealso:: :py:func:`payloadType`
+%End
+
+    Qgis::LayerDropPayloadType payloadType() const;
+%Docstring
+Returns the type of payload the overlay currently renders feedback for.
+
+.. seealso:: :py:func:`setPayloadType`
+%End
+
+    static void paintFeedback( QPainter *painter, const QRect &rect, Qgis::LayerDropPayloadType payloadType, const QWidget *widget );
+%Docstring
+Renders the drop feedback for ``payloadType`` into ``rect`` using
+``painter``.
+
+Nothing is drawn for :py:class:`Qgis`.LayerDropPayloadType.Layers or
+:py:class:`Qgis`.LayerDropPayloadType.CustomHandler payloads.
+
+The ``widget`` supplies the palette, font and device pixel ratio used
+for themed, hidpi-aware rendering. This is exposed so that widgets which
+prefer to paint the feedback directly (e.g. within their own
+:py:func:`~QgsLayerDropFeedbackOverlay.paintEvent`) can reuse the exact
+same rendering without hosting an overlay widget.
+%End
+
+  protected:
+    virtual void paintEvent( QPaintEvent *event );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayerdropfeedbackoverlay.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

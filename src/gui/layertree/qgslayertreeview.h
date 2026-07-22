@@ -18,9 +18,15 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgslayerdropclassifier.h"
+#include "qgslayertreeregistrybridge.h"
 
+#include <QPointer>
 #include <QTreeView>
 
+class QMimeData;
+class QPainter;
+class QgsCustomDropHandler;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -543,6 +549,34 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
      */
     bool hideValidLayers() const;
 
+    /**
+     * Returns the insertion point corresponding to the position at which the last
+     * dataset drop event occurred.
+     *
+     * The returned insertion point is only valid while a handler connected to the
+     * datasetsDropped() signal is executing. At other times an insertion point
+     * with a NULLPTR group is returned.
+     *
+     * Handlers of the datasetsDropped() signal can use this insertion point to add
+     * the dropped layers at the exact position indicated by the view's drop
+     * indicator by passing it to QgsLayerTreeRegistryBridge::setLayerInsertionPoint().
+     *
+     * \since QGIS 4.4
+     */
+    QgsLayerTreeRegistryBridge::InsertionPoint datasetDropInsertionPoint() const;
+
+    /**
+     * Sets a list of custom drop \a handlers to consider when drop events occur on the view.
+     *
+     * Drops of payloads which no data provider can load, but which one of the \a handlers
+     * can handle, are accepted (without showing any drop indicator) and forwarded to the
+     * datasetsDropped() signal, instead of being refused as unloadable.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.4
+     */
+    void setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler>> &handlers ) SIP_SKIP;
+
   public slots:
     //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
     void refreshLayerSymbology( const QString &layerId );
@@ -598,7 +632,11 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
 
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragMoveEvent( QDragMoveEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
+
+    void paintEvent( QPaintEvent *event ) override;
+    bool viewportEvent( QEvent *event ) override;
 
     void resizeEvent( QResizeEvent *event ) override;
 
@@ -630,6 +668,26 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     int mLayerMarkWidth;
 
   private:
+    //! Insertion position for a dataset drop, plus the matching indicator shape.
+    struct DropTarget
+    {
+        QgsLayerTreeGroup *group = nullptr;
+        int row = 0;
+        //! True when dropping into a hovered group rather than between rows.
+        bool into = false;
+
+        /**
+         * Indicator in viewport coordinates: a zero-height line or, for
+         * into-group drops, the hovered row rectangle.
+         */
+        QRect indicatorRect;
+    };
+
+    DropTarget computeDropTarget( const QPoint &pos ) const;
+    //! Line rect at the visual position a node inserted at group/row will take.
+    QRect indicatorRectForInsertion( QgsLayerTreeGroup *group, int row ) const;
+    void clearDropIndicator();
+
     QgsLayerTreeProxyModel *mProxyModel = nullptr;
 
     QgsMessageBar *mMessageBar = nullptr;
@@ -637,11 +695,25 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     bool mShowPrivateLayers = false;
     bool mHideValidLayers = false;
 
+    //! Active dataset-drag indicator; null when no dataset drag is hovering.
+    QRect mDropIndicatorRect;
+    bool mDropIndicatorInto = false;
+    //! Payload classification of the current dataset drag. Cached on drag enter
+    Qgis::LayerDropPayloadType mDragPayloadType = Qgis::LayerDropPayloadType::Layers;
+    //! TRUE while a dataset drag hovers the view
+    bool mDatasetDragActive = false;
+    //! Only valid while a datasetsDropped() handler is executing
+    QgsLayerTreeRegistryBridge::InsertionPoint mDatasetDropInsertionPoint { nullptr, 0 };
+    //! Custom drop handlers to consider for payloads only the application can handle
+    QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
+
     // For model  debugging
     // void checkModel( );
 
     // friend so it can access viewOptions() method and mLastReleaseMousePos without making them public
     friend class QgsLayerTreeViewItemDelegate;
+
+    friend class TestQgsLayerTreeView;
 };
 
 

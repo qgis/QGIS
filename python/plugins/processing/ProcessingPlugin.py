@@ -97,6 +97,13 @@ class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
 
 
 class ProcessingDropHandler(QgsCustomDropHandler):
+    def canHandleMimeData(self, data):
+        for url in data.urls():
+            file_name = url.toLocalFile()
+            if file_name and file_name.lower().endswith(".model3"):
+                return True
+        return False
+
     def handleFileDrop(self, file):
         if not file.lower().endswith(".model3"):
             return False
@@ -135,13 +142,13 @@ class ProcessingModelItem(QgsDataItem):
         self.runModel()
         return True
 
-    def mimeUri(self):
+    def mimeUris(self):
         u = QgsMimeDataUtils.Uri()
         u.layerType = "custom"
         u.providerKey = "processing"
         u.name = self.name()
         u.uri = self.path()
-        return u
+        return [u]
 
     def runModel(self):
         ProcessingDropHandler.runAlg(self.path())

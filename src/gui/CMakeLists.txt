@@ -697,6 +697,8 @@ set(QGIS_GUI_SRCS
   qgsidentifymenu.cpp
   qgsimagedroptextedit.cpp
   qgskeyvaluewidget.cpp
+  qgslayerdropclassifier.cpp
+  qgslayerdropfeedbackoverlay.cpp
   qgslayermetadatasearchwidget.cpp
   qgslayermetadataresultsmodel.cpp
   qgslayermetadatasourceselectprovider.cpp
@@ -972,6 +974,8 @@ set(QGIS_GUI_HDRS
   qgsidentifymenu.h
   qgsimagedroptextedit.h
   qgskeyvaluewidget.h
+  qgslayerdropclassifier.h
+  qgslayerdropfeedbackoverlay.h
   qgslayermetadatasearchwidget.h
   qgslayermetadataresultsmodel.h
   qgslayermetadataresultsproxymodel.h
