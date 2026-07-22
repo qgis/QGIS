@@ -2775,6 +2775,36 @@ Qgis.LabelMultiLineAlignment.__doc__ = """Text alignment for multi-line labels.
 """
 # --
 Qgis.LabelMultiLineAlignment.baseClass = Qgis
+QgsLabelLineSettings.AnchorTextPoint = Qgis.TextAnchorPoint
+# monkey patching scoped based enum
+QgsLabelLineSettings.StartOfText = Qgis.TextAnchorPoint.StartOfText
+QgsLabelLineSettings.StartOfText.is_monkey_patched = True
+QgsLabelLineSettings.StartOfText.__doc__ = "Anchor using start of text"
+QgsLabelLineSettings.CenterOfText = Qgis.TextAnchorPoint.CenterOfText
+QgsLabelLineSettings.CenterOfText.is_monkey_patched = True
+QgsLabelLineSettings.CenterOfText.__doc__ = "Anchor using center of text"
+QgsLabelLineSettings.EndOfText = Qgis.TextAnchorPoint.EndOfText
+QgsLabelLineSettings.EndOfText.is_monkey_patched = True
+QgsLabelLineSettings.EndOfText.__doc__ = "Anchor using end of text"
+QgsLabelLineSettings.FollowPlacement = Qgis.TextAnchorPoint.FollowPlacement
+QgsLabelLineSettings.FollowPlacement.is_monkey_patched = True
+QgsLabelLineSettings.FollowPlacement.__doc__ = "Automatically set the anchor point based on the line anchor point value. Values <25% of line length will use the start of text, values > 75% will use the end of text, and values in between will use the center of the text."
+Qgis.TextAnchorPoint.__doc__ = """Anchor point of label text.
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsLabelLineSettings`.AnchorTextPoint
+
+.. versionadded:: 4.4
+
+* ``StartOfText``: Anchor using start of text
+* ``CenterOfText``: Anchor using center of text
+* ``EndOfText``: Anchor using end of text
+* ``FollowPlacement``: Automatically set the anchor point based on the line anchor point value. Values <25% of line length will use the start of text, values > 75% will use the end of text, and values in between will use the center of the text.
+
+"""
+# --
+Qgis.TextAnchorPoint.baseClass = Qgis
 QgsProviderMetadata.FilterType = Qgis.FileFilterType
 # monkey patching scoped based enum
 QgsProviderMetadata.FilterVector = Qgis.FileFilterType.Vector

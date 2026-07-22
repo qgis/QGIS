@@ -283,22 +283,18 @@ class QgsSpatialIndexData : public QSharedData
       double low[] = { std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
       double high[] = { std::numeric_limits<double>::max(), std::numeric_limits<double>::max() };
       const SpatialIndex::Region query( low, high, 2 );
-      QgsSpatialIndexCopyVisitor visitor( mRTree );
+      QgsSpatialIndexCopyVisitor visitor( mRTree.get() );
       other.mRTree->intersectsWithQuery( query, visitor );
     }
 
-    ~QgsSpatialIndexData()
-    {
-      delete mRTree;
-      delete mStorage;
-    }
+    ~QgsSpatialIndexData() {}
 
     QgsSpatialIndexData &operator=( const QgsSpatialIndexData &rh ) = delete;
 
     void initTree( IDataStream *inputStream = nullptr )
     {
       // for now only memory manager
-      mStorage = StorageManager::createNewMemoryStorageManager();
+      mStorage.reset( StorageManager::createNewMemoryStorageManager() );
 
       // R-Tree parameters
       const double fillFactor = 0.7;
@@ -311,16 +307,16 @@ class QgsSpatialIndexData : public QSharedData
       SpatialIndex::id_type indexId;
 
       if ( inputStream && inputStream->hasNext() )
-        mRTree = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, *inputStream, *mStorage, fillFactor, indexCapacity, leafCapacity, dimension, variant, indexId );
+        mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, *inputStream, *mStorage, fillFactor, indexCapacity, leafCapacity, dimension, variant, indexId ) );
       else
-        mRTree = RTree::createNewRTree( *mStorage, fillFactor, indexCapacity, leafCapacity, dimension, variant, indexId );
+        mRTree.reset( RTree::createNewRTree( *mStorage, fillFactor, indexCapacity, leafCapacity, dimension, variant, indexId ) );
     }
 
     //! Storage manager
-    SpatialIndex::IStorageManager *mStorage = nullptr;
+    std::unique_ptr<SpatialIndex::IStorageManager> mStorage;
 
     //! R-tree containing spatial index
-    SpatialIndex::ISpatialIndex *mRTree = nullptr;
+    std::unique_ptr<SpatialIndex::ISpatialIndex> mRTree;
 
     mutable QRecursiveMutex mMutex;
 };

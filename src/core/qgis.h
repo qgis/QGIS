@@ -1465,6 +1465,22 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( LabelMultiLineAlignment )
 
     /**
+     * Anchor point of label text.
+     *
+     * \note Prior to QGIS 4.4 this was available as QgsLabelLineSettings::AnchorTextPoint
+     *
+     * \since QGIS 4.4
+     */
+    enum class TextAnchorPoint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabelLineSettings, AnchorTextPoint ) : int
+    {
+      StartOfText,     //!< Anchor using start of text
+      CenterOfText,    //!< Anchor using center of text
+      EndOfText,       //!< Anchor using end of text
+      FollowPlacement, //!< Automatically set the anchor point based on the line anchor point value. Values <25% of line length will use the start of text, values > 75% will use the end of text, and values in between will use the center of the text.
+    };
+    Q_ENUM( TextAnchorPoint )
+
+    /**
      * Type of file filters
      *
      * Prior to QGIS 3.32 this was available as QgsProviderMetadata::FilterType

@@ -80,9 +80,9 @@ void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
   mMarkerEntity = make_qobject_unique<Qt3DCore::QEntity>( parentEntity );
   mMarkerGeometry = new QgsBillboardGeometry();
   mMarkerGeometryRenderer = new Qt3DRender::QGeometryRenderer;
-  mMarkerGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
+  mMarkerGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
   mMarkerGeometryRenderer->setGeometry( mMarkerGeometry );
-  mMarkerGeometryRenderer->setVertexCount( mMarkerGeometry->count() );
+  mMarkerGeometryRenderer->setVertexCount( 4 );
 
   setMarkerType( mMarkerType );
   mMarkerEntity->addComponent( mMarkerGeometryRenderer );
@@ -452,7 +452,8 @@ void QgsRubberBand3D::updateGeometry()
     lineData.vertices.pop_back();
 
   mMarkerGeometry->setPositions( lineData.vertices );
-  mMarkerGeometryRenderer->setVertexCount( static_cast<int>( lineData.vertices.count() ) );
+  mMarkerGeometryRenderer->setVertexCount( 4 );
+  mMarkerGeometryRenderer->setInstanceCount( lineData.vertices.count() );
   mMarkerTransform->setGeoTranslation( dataOrigin );
 
   if ( mGeometryType == Qgis::GeometryType::Polygon )

@@ -26,7 +26,7 @@ Build-Depends:
  libsqlite3-dev,
  libsqlite3-mod-spatialite,
  libzip-dev,
- nlohmann-json3-dev,
+#!trixie !plucky# nlohmann-json3-dev (>= 3.12.0),
  ninja-build,
  ocl-icd-opencl-dev,
  opencl-headers,
@@ -355,7 +355,7 @@ Depends:
  libqgisgrass{GRASSVER}-{QGIS_ABI} (= ${binary:Version}),
  libqgispython{QGIS_ABI} (= ${binary:Version}),
  libsqlite3-dev,
- nlohmann-json3-dev,
+#!trixie !plucky# nlohmann-json3-dev (>= 3.12.0),
  python3-dev,
  ${misc:Depends}
 Replaces: libqgis-qt6-dev

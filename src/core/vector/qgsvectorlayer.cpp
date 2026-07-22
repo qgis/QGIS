@@ -165,6 +165,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath, const QString &b
 
   mGeometryOptions = std::make_unique<QgsGeometryOptions>();
   mActions = new QgsActionManager( this );
+  mActions->setParent( this );
   mConditionalStyles = new QgsConditionalLayerStyles( this );
   mStoredExpressionManager = new QgsStoredExpressionManager();
   mStoredExpressionManager->setParent( this );
@@ -173,7 +174,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath, const QString &b
   mJoinBuffer->setParent( this );
   connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
 
-  mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
+  mExpressionFieldBuffer = std::make_unique<QgsExpressionFieldBuffer>();
   // if we're given a provider type, try to create and bind one to this layer
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
@@ -232,20 +233,6 @@ QgsVectorLayer::~QgsVectorLayer()
   emit willBeDeleted();
 
   setValid( false );
-
-  delete mDataProvider;
-  delete mEditBuffer;
-  delete mJoinBuffer;
-  delete mExpressionFieldBuffer;
-  delete mLabeling;
-  delete mDiagramLayerSettings;
-  delete mDiagramRenderer;
-
-  delete mActions;
-
-  delete mRenderer;
-  delete mConditionalStyles;
-  delete mStoredExpressionManager;
 
   if ( mFeatureCounter )
     mFeatureCounter->cancel();
@@ -795,8 +782,7 @@ void QgsVectorLayer::setDiagramRenderer( QgsDiagramRenderer *r )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  delete mDiagramRenderer;
-  mDiagramRenderer = r;
+  mDiagramRenderer.reset( r );
   emit rendererChanged();
   emit styleChanged();
 }
@@ -1809,11 +1795,10 @@ void QgsVectorLayer::setLabeling( QgsAbstractVectorLayerLabeling *labeling )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mLabeling == labeling )
+  if ( mLabeling.get() == labeling )
     return;
 
-  delete mLabeling;
-  mLabeling = labeling;
+  mLabeling.reset( labeling );
 }
 
 bool QgsVectorLayer::startEditing()
@@ -2519,7 +2504,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   if ( categories.testFlag( Fields ) )
   {
     if ( !mExpressionFieldBuffer )
-      mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
+      mExpressionFieldBuffer = std::make_unique<QgsExpressionFieldBuffer>();
     mExpressionFieldBuffer->readXml( layerNode );
 
     updateFields();
@@ -3048,12 +3033,11 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
     {
       QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Diagrams" ) );
 
-      delete mDiagramRenderer;
-      mDiagramRenderer = nullptr;
+      mDiagramRenderer.reset();
       QDomElement singleCatDiagramElem = node.firstChildElement( u"SingleCategoryDiagramRenderer"_s );
       if ( !singleCatDiagramElem.isNull() )
       {
-        mDiagramRenderer = new QgsSingleCategoryDiagramRenderer();
+        mDiagramRenderer = std::make_unique<QgsSingleCategoryDiagramRenderer>();
         mDiagramRenderer->readXml( singleCatDiagramElem, context );
       }
       QDomElement linearDiagramElem = node.firstChildElement( u"LinearlyInterpolatedDiagramRenderer"_s );
@@ -3067,13 +3051,13 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
             linearDiagramElem.setAttribute( u"classificationField"_s, mFields.at( idx ).name() );
         }
 
-        mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
+        mDiagramRenderer = std::make_unique<QgsLinearlyInterpolatedDiagramRenderer>();
         mDiagramRenderer->readXml( linearDiagramElem, context );
       }
       QDomElement stackedDiagramElem = node.firstChildElement( u"StackedDiagramRenderer"_s );
       if ( !stackedDiagramElem.isNull() )
       {
-        mDiagramRenderer = new QgsStackedDiagramRenderer();
+        mDiagramRenderer = std::make_unique<QgsStackedDiagramRenderer>();
         mDiagramRenderer->readXml( stackedDiagramElem, context );
       }
 
@@ -3117,8 +3101,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
             diagramSettingsElem.appendChild( propertiesElem );
           }
 
-          delete mDiagramLayerSettings;
-          mDiagramLayerSettings = new QgsDiagramLayerSettings();
+          mDiagramLayerSettings = std::make_unique<QgsDiagramLayerSettings>();
           mDiagramLayerSettings->readXml( diagramSettingsElem );
         }
       }
@@ -4542,17 +4525,16 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
   if ( r && !isSpatial() && mWkbType != Qgis::WkbType::Unknown )
     return;
 
-  if ( r != mRenderer )
+  if ( r != mRenderer.get() )
   {
-    delete mRenderer;
-    mRenderer = r;
+    mRenderer.reset( r );
     mSymbolFeatureCounted = false;
     mSymbolFeatureCountMap.clear();
     mSymbolFeatureIdMap.clear();
 
     if ( mRenderer )
     {
-      const double refreshRate = QgsSymbolLayerUtils::rendererFrameRate( mRenderer );
+      const double refreshRate = QgsSymbolLayerUtils::rendererFrameRate( mRenderer.get() );
       if ( refreshRate <= 0 )
       {
         mRefreshRendererTimer->stop();
@@ -5329,13 +5311,15 @@ void QgsVectorLayer::createEditBuffer()
   if ( mDataProvider->transaction() )
   {
     mEditBuffer = new QgsVectorLayerEditPassthrough( this );
-
     connect( mDataProvider->transaction(), &QgsTransaction::dirtied, this, &QgsVectorLayer::onDirtyTransaction, Qt::UniqueConnection );
   }
   else
   {
     mEditBuffer = new QgsVectorLayerEditBuffer( this );
   }
+
+  mEditBuffer->setParent( this );
+
   // forward signals
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::invalidateSymbolCountedFlag );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::layerModified ); // TODO[MD]: necessary?
@@ -6088,7 +6072,7 @@ void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings &s )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   if ( !mDiagramLayerSettings )
-    mDiagramLayerSettings = new QgsDiagramLayerSettings();
+    mDiagramLayerSettings = std::make_unique<QgsDiagramLayerSettings>();
   *mDiagramLayerSettings = s;
 }
 
