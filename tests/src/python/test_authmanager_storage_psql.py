@@ -14,6 +14,8 @@ import os
 import unittest
 
 from qgis.core import (
+    Qgis,
+    QgsAuthConfigurationStorage,
     QgsAuthConfigurationStorageDb,
     QgsProviderConnectionException,
     QgsProviderRegistry,
@@ -100,6 +102,8 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
 
         conn.createSchema(config["schema"])
 
+        cls.config = config
+
         cls.storage = QgsAuthConfigurationStorageDb(config)
 
         assert cls.storage.type().startswith("DB-QPSQL")
@@ -113,6 +117,72 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
             cls.storage.quotedQualifiedIdentifier(cls.storage.methodConfigTableName())
             == f'{schema}"auth_configs"'
         )
+
+    def testInitialization(self):
+        """Test initialization of the storage"""
+
+        # Use a temporary schema to test initialization, so we don't drop the existing schema
+        init_schema = "qgis_auth_test_init"
+        # Drop the schema if it exists and create it again
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(
+            f"dbname='{self.config['dbname']}' host={self.config['host']} port={self.config['port']} user='{self.config['user']}' password='{self.config['password']}'",
+            {},
+        )
+
+        try:
+            conn.dropSchema(init_schema, True)
+        except QgsProviderConnectionException:
+            pass
+
+        conn.createSchema(init_schema)
+
+        # Create a new storage with the temporary schema
+        init_config = self.config.copy()
+        init_config["schema"] = init_schema
+        storage = QgsAuthConfigurationStorageDb(init_config)
+        storage.setReadOnly(True)
+        self.assertFalse(
+            storage.capabilities()
+            & Qgis.AuthConfigurationStorageCapability.CreateMasterPassword
+        )
+
+        self.assertTrue(storage.isReadOnly())
+        storage.initialize()
+
+        # Check tables do not exists yet
+        self.assertFalse(conn.tableExists(init_schema, "auth_pass"))
+
+        # Set readonly to False and initialize again
+        storage.setReadOnly(False)
+        self.assertFalse(
+            storage.capabilities()
+            & Qgis.AuthConfigurationStorageCapability.CreateMasterPassword
+        )
+        storage.initialize()
+
+        # Check tables exist now
+        self.assertTrue(conn.tableExists(init_schema, "auth_pass"))
+
+        # Check that capabilities are set correctly
+        self.assertTrue(
+            storage.capabilities()
+            & Qgis.AuthConfigurationStorageCapability.CreateMasterPassword
+        )
+
+        # Set master password and check that capabilities are set correctly
+        pwds = storage.masterPasswords()
+        self.assertEqual(len(pwds), 0)
+
+        pwd_config = QgsAuthConfigurationStorage.MasterPasswordConfig()
+        pwd_config.hash = "hash"
+        pwd_config.salt = "salt"
+        pwd_config.civ = "civ"
+
+        self.assertTrue(storage.storeMasterPassword(pwd_config))
+
+        pwds = storage.masterPasswords()
+        self.assertEqual(len(pwds), 1)
 
 
 if __name__ == "__main__":
