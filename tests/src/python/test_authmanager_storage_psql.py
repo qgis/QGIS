@@ -30,12 +30,6 @@ __date__ = "2024-06-24"
 __copyright__ = "Copyright 2024, The QGIS Project"
 
 
-# Skip if driver QPSQL/QPSQL7 is not available
-@unittest.skipIf(
-    not QtSql.QSqlDatabase.isDriverAvailable("QPSQL")
-    and not QtSql.QSqlDatabase.isDriverAvailable("QPSQL7"),
-    "QPSQL/QPSQL7 driver not available",
-)
 class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorageBase):
 
     @classmethod
@@ -69,9 +63,7 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
                 key, value = item.split("=")
                 config[key] = value
 
-        config["driver"] = (
-            "QPSQL" if QtSql.QSqlDatabase.isDriverAvailable("QPSQL") else "QPSQL7"
-        )
+        config["driver"] = "QPSQL"
         config["database"] = config["dbname"]
 
         # Remove single quotes if present in user and password and database
@@ -91,6 +83,13 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
         # to initialize the application before using the provider registry
         super().setUpClass()
 
+        # This is here because it needs the QT core application to be initialized
+        # Skip if driver QPSQL/QPSQL7 is not available
+        if not QtSql.QSqlDatabase.isDriverAvailable(
+            "QPSQL"
+        ) and not QtSql.QSqlDatabase.isDriverAvailable("QPSQL7"):
+            raise unittest.SkipTest("QPSQL/QPSQL7 driver not available")
+
         # Make sure all tables are dropped by dropping the schema
         md = QgsProviderRegistry.instance().providerMetadata("postgres")
         # connection uri
@@ -104,7 +103,7 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
 
         cls.storage = QgsAuthConfigurationStorageDb(config)
 
-        assert cls.storage.type() == "DB-QPSQL"
+        assert cls.storage.type().startswith("DB-QPSQL")
 
         if config["schema"]:
             schema = f"\"{config['schema']}\"."
