@@ -778,19 +778,23 @@ namespace QgsWms
 
     QDomElement layerParentElem = doc.createElement( QStringLiteral( "Layer" ) );
 
-    // Root Layer name
-    QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
-    if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
+    const bool skipNameForGroup = QgsServerProjectUtils::wmsSkipNameForGroup( *project );
+    if ( !skipNameForGroup )
     {
-      rootLayerName = project->title();
-    }
+      // Root Layer name
+      QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
+      if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
+      {
+        rootLayerName = project->title();
+      }
 
-    if ( !rootLayerName.isEmpty() )
-    {
-      QDomElement layerParentNameElem = doc.createElement( QStringLiteral( "Name" ) );
-      QDomText layerParentNameText = doc.createTextNode( rootLayerName );
-      layerParentNameElem.appendChild( layerParentNameText );
-      layerParentElem.appendChild( layerParentNameElem );
+      if ( !rootLayerName.isEmpty() )
+      {
+        QDomElement layerParentNameElem = doc.createElement( QStringLiteral( "Name" ) );
+        QDomText layerParentNameText = doc.createTextNode( rootLayerName );
+        layerParentNameElem.appendChild( layerParentNameText );
+        layerParentElem.appendChild( layerParentNameElem );
+      }
     }
 
     // Root Layer title
