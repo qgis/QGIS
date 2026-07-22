@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
+#include <memory>
 
 #include "qgsapplication.h"
 
@@ -24,6 +26,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSettings>
+#include <QStandardPaths>
 #include <QString>
 #include <QStringList>
 #include <QTimer>
@@ -46,6 +49,9 @@ typedef SInt32 SRefCon;
 #include "qgsprocess.h"
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
+#include "qgsuserprofilemanager.h"
+#include "qgsuserprofile.h"
+#include "qgserror.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -72,6 +78,18 @@ static QString myProjectFileName;
 // This is the 'leftover' arguments collection
 static QStringList sFileList;
 
+// Shared by the fast path and the parser below so they treat these alike.
+static bool isProfileOption( const QString &arg )
+{
+  return arg == "--profile"_L1 || arg == "--profiles-path"_L1 || arg == "-S"_L1;
+}
+
+// A missing, empty or option-like value would otherwise swallow the next token.
+static bool isValidProfileValue( const QString &value )
+{
+  return !value.isEmpty() && !value.startsWith( "--"_L1 ) && value != "-S"_L1 && value != "-h"_L1 && value != "-v"_L1;
+}
+
 int main( int argc, char *argv[] )
 {
 #ifdef Q_OS_WIN // Windows
@@ -92,6 +110,15 @@ int main( int argc, char *argv[] )
     if ( arg == "--json"_L1 || arg == "--verbose"_L1 || arg == "--no-python"_L1 )
     {
       // ignore these arguments
+      continue;
+    }
+    if ( isProfileOption( arg ) )
+    {
+      // Malformed here too: bail out and let the parser below report it.
+      if ( i + 1 >= argc || !isValidProfileValue( QString( argv[i + 1] ) ) )
+        break;
+      // real value, skip it and keep scanning for --help/--version
+      ++i;
       continue;
     }
     if ( arg == "--help"_L1 || arg == "-h"_L1 )
@@ -123,6 +150,45 @@ int main( int argc, char *argv[] )
   // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
   // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
   QStringList args = QCoreApplication::arguments();
+
+  // The profile decides where settings and plugins load from, so resolve it
+  // before init(). Scan up to "--", ahead of the flag removal below so a
+  // missing value can't eat one of those flags.
+  QString profileName;
+  QString configLocalStorageLocation;
+  for ( int i = 1; i < args.size(); )
+  {
+    const QString arg = args.at( i );
+    if ( arg == "--"_L1 )
+      break;
+
+    if ( arg == "--profile"_L1 )
+    {
+      if ( i + 1 >= args.size() || !isValidProfileValue( args.at( i + 1 ) ) )
+      {
+        std::cerr << "The --profile option requires a profile name\n";
+        return 1;
+      }
+      profileName = args.at( i + 1 );
+      args.removeAt( i );
+      args.removeAt( i );
+    }
+    else if ( arg == "--profiles-path"_L1 || arg == "-S"_L1 )
+    {
+      if ( i + 1 >= args.size() || !isValidProfileValue( args.at( i + 1 ) ) )
+      {
+        std::cerr << "The --profiles-path option requires a directory path\n";
+        return 1;
+      }
+      configLocalStorageLocation = QDir::toNativeSeparators( QFileInfo( args.at( i + 1 ) ).absoluteFilePath() );
+      args.removeAt( i );
+      args.removeAt( i );
+    }
+    else
+    {
+      ++i;
+    }
+  }
 
   QgsProcessingExec::Flags flags;
 
@@ -169,7 +235,46 @@ int main( int argc, char *argv[] )
   QgsApplication::setOrganizationDomain( u"qgis.org"_s );
   QgsApplication::setApplicationName( u"QGIS4"_s );
 
-  QgsApplication::init();
+  // No profile option: keep the original init() so the default is unchanged.
+  if ( !profileName.isEmpty() || !configLocalStorageLocation.isEmpty() )
+  {
+    if ( configLocalStorageLocation.isEmpty() )
+    {
+      if ( const char *customConfigPath = getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+        configLocalStorageLocation = QString::fromLocal8Bit( customConfigPath );
+
+      // A set-but-empty env var must still fall back, or the root becomes "/profiles".
+      if ( configLocalStorageLocation.isEmpty() )
+        configLocalStorageLocation = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
+    }
+
+    const QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
+    QgsUserProfileManager manager( rootProfileFolder );
+
+    // An empty profile name means the default profile.
+    const QString requestedProfile = profileName.isEmpty() ? manager.defaultProfileName() : profileName;
+
+    // getProfile() swallows creation errors, so create explicitly and surface
+    // them. Only a missing folder is fatal; a failed master-db copy is
+    // tolerated, as QGIS does elsewhere.
+    if ( !manager.profileExists( requestedProfile ) )
+    {
+      const QgsError error = manager.createUserProfile( requestedProfile );
+      if ( !error.isEmpty() && !manager.profileExists( requestedProfile ) )
+      {
+        std::cerr << "Could not create profile " << requestedProfile.toLocal8Bit().constData() << ": " << error.summary().toLocal8Bit().constData() << "\n";
+        return 1;
+      }
+    }
+
+    // Already created above; don't let getProfile() do it again.
+    std::unique_ptr<QgsUserProfile> profile = manager.getProfile( requestedProfile, false );
+    QgsApplication::init( profile->folder() );
+  }
+  else
+  {
+    QgsApplication::init();
+  }
   QgsApplication::initQgis();
 
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
