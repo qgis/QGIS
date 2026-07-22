@@ -166,7 +166,7 @@ Returns the text to use for the link point with the specified ``index``
 on the specified ``edge``.
 %End
 
-    QPointF linkPoint( Qt::Edge edge, int index, bool incoming ) const;
+    QPointF linkPoint( Qt::Edge edge, int index ) const;
 %Docstring
 Returns the location of the link point with the specified ``index`` on
 the specified ``edge``.
