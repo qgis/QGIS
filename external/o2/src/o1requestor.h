@@ -19,7 +19,7 @@ class O0_EXPORT O1Requestor: public QObject {
 public:
     explicit O1Requestor(QNetworkAccessManager *manager, O1 *authenticator, QObject *parent = nullptr);
 
-public Q_SLOTS:
+public slots:
     /// Make a GET request.
     /// @param  req                 Network request.
     /// @param  signingParameters   Extra (non-OAuth) parameters participating in signing.

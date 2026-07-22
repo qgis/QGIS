@@ -28,7 +28,6 @@ if(NOT o2_SHOW_TRACE)
 endif()
 
 option(o2_WITH_TESTS "Enable tests" OFF)
-option(o2_WITH_TWITTER "Authenticate with Twitter" OFF)
 option(o2_WITH_DROPBOX "Authenticate with Dropbox" OFF)
 option(o2_WITH_GOOGLE "Authenticate with Google" OFF)
 option(o2_WITH_VIMEO "Authenticate with Vimeo" OFF)
@@ -45,9 +44,6 @@ option(o2_WITH_KEYCHAIN "keychain store" ON)
 
 option(o2_WITH_OAUTH1 "Include OAuth1 authentication" OFF)
 
-if (o2_WITH_TWITTER)
-    set(HAVE_TWITTER_SUPPORT 1)
-endif()
 if (o2_WITH_DROPBOX)
     set(HAVE_DROPBOX_SUPPORT 1)
 endif()
@@ -96,7 +92,7 @@ if(o2_WITH_KEYCHAIN)
     endif()
 endif(o2_WITH_KEYCHAIN)
 
-if(o2_WITH_TWITTER OR o2_WITH_DROPBOX OR o2_WITH_FLICKR OR o2_WITH_SMUGMUG)
+if(o2_WITH_DROPBOX OR o2_WITH_FLICKR OR o2_WITH_SMUGMUG)
   set(o2_WITH_OAUTH1 ON)
 endif()
 
