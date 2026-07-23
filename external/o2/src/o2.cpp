@@ -368,9 +368,7 @@ void O2::onVerificationReceived(const QMap<QString, QString> response) {
         QMap<QString, QString> parameters;
         parameters.insert(O2_OAUTH2_GRANT_TYPE_CODE, code());
         parameters.insert(O2_OAUTH2_CLIENT_ID, clientId_);
-        //No client secret with PKCE
-        if ( grantFlow_ != GrantFlowPkce )
-        {
+        if (!clientSecret_.isEmpty()) {
             parameters.insert(O2_OAUTH2_CLIENT_SECRET, clientSecret_);
         }
         parameters.insert(O2_OAUTH2_REDIRECT_URI, redirectUri_);
@@ -594,7 +592,9 @@ void O2::refresh() {
     refreshRequest.setHeader(QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM);
     QMap<QString, QString> parameters;
     parameters.insert(O2_OAUTH2_CLIENT_ID, clientId_);
-    parameters.insert(O2_OAUTH2_CLIENT_SECRET, clientSecret_);
+    if (!clientSecret_.isEmpty()) {
+        parameters.insert(O2_OAUTH2_CLIENT_SECRET, clientSecret_);
+    }
     parameters.insert(O2_OAUTH2_REFRESH_TOKEN, refreshToken());
     parameters.insert(O2_OAUTH2_GRANT_TYPE, O2_OAUTH2_REFRESH_TOKEN);
 

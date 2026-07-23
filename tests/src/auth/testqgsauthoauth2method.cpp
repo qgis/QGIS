@@ -298,6 +298,12 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
 
   config3->deleteLater();
 
+  qDebug() << "Verify validity without client secret (public client, RFC 6749 sec. 2.1)";
+  QgsAuthOAuth2Config *config3b = baseConfig( true );
+  config3b->setClientSecret( QString() );
+  QVERIFY( config3b->isValid() );
+  config3b->deleteLater();
+
   qDebug() << "Validate equality";
   QgsAuthOAuth2Config *config4 = baseConfig( true );
   QgsAuthOAuth2Config *config5 = baseConfig( true );
