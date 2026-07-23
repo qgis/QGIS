@@ -52,6 +52,20 @@ Returns the ID for the map layer associated with this node.
 .. seealso:: :py:func:`layer`
 %End
 
+    virtual QString id() const;
+%Docstring
+Returns the node's unique identifier.
+
+For a layer node this is the id of the map layer it references, i.e. the
+value returned by :py:func:`~QgsLayerTreeLayer.layerId`. A layer node
+has no identity independent of the layer it points at, so two nodes
+referencing the same layer share an id.
+
+.. seealso:: :py:func:`layerId`
+
+.. versionadded:: 4.4
+%End
+
     QgsMapLayer *layer() const;
 %Docstring
 Returns the map layer associated with this node.

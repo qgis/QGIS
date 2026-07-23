@@ -69,7 +69,6 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QUrl>
-#include <QUuid>
 #include <QXmlStreamReader>
 
 #include "moc_qgsmaplayer.cpp"
@@ -2936,19 +2935,7 @@ void QgsMapLayer::setOriginalXmlProperties( const QString &originalXmlProperties
 
 QString QgsMapLayer::generateId( const QString &layerName )
 {
-  // Generate the unique ID of this layer
-  const QString uuid = QUuid::createUuid().toString();
-  // trim { } from uuid
-  QString id = layerName + '_' + uuid.mid( 1, uuid.length() - 2 );
-  // Tidy the ID up to avoid characters that may cause problems
-  // elsewhere (e.g in some parts of XML). Replaces every non-word
-  // character (word characters are the alphabet, numbers and
-  // underscore) with an underscore.
-  // Note that the first backslash in the regular expression is
-  // there for the compiler, so the pattern is actually \W
-  const thread_local QRegularExpression idRx( u"[\\W]"_s );
-  id.replace( idRx, u"_"_s );
-  return id;
+  return QgsStringUtils::createUniqueId( layerName );
 }
 
 bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const

@@ -79,6 +79,18 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     }
 
     /**
+     * Returns the node's unique identifier.
+     *
+     * For a layer node this is the id of the map layer it references, i.e. the
+     * value returned by layerId(). A layer node has no identity independent of
+     * the layer it points at, so two nodes referencing the same layer share an id.
+     *
+     * \see layerId()
+     * \since QGIS 4.4
+     */
+    QString id() const override { return layerId(); }
+
+    /**
      * Returns the map layer associated with this node.
      *
      * \warning This can be (and often is!) NULLPTR, e.g. in the case of a layer node representing a layer

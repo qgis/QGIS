@@ -65,6 +65,15 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
 
         /**
      * Returns the node's unique identifier.
+     *
+     * \since QGIS 4.4
+     */
+    QString id() const override { return mId; }
+
+    /**
+     * Returns the node's unique identifier.
+     *
+     * \note Equivalent to id(); retained for API compatibility.
      */
         QString nodeId() const
     {
