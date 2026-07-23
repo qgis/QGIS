@@ -2932,6 +2932,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     void createEditBuffer();
     void clearEditBuffer();
 
+    //! Apply render settings from data provider
+    void applyRendererSettings();
+
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
     QgsVectorDataProvider *mDataProvider = nullptr;
     QgsVectorLayerSelectionProperties *mSelectionProperties = nullptr;

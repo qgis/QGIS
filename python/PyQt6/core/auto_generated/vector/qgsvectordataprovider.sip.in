@@ -10,6 +10,7 @@
 
 
 
+
 typedef QHash<int, QString> QgsAttrPalIndexNameHash;
 
 
@@ -585,6 +586,7 @@ labeling settings. Other providers will return ``None``.
 
 .. versionadded:: 3.6
 %End
+
 
     static QVariant convertValue( QMetaType::Type type, const QString &value );
 %Docstring

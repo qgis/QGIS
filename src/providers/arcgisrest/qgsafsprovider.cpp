@@ -337,7 +337,28 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   const QVariant transparency = layerData.value( u"drawingInfo"_s ).toMap().value( u"transparency"_s );
   if ( transparency.isValid() )
   {
-    mRendererDataMap.insert( u"transparency"_s, transparency );
+    bool ok = false;
+    const double transparencyValue = transparency.toDouble( &ok );
+    if ( ok )
+      mRenderingSettings.setLayerOpacity( ( 100.0 - transparencyValue ) / 100.0 );
+  }
+
+  const QVariant minScale = layerData.value( u"minScale"_s );
+  if ( minScale.isValid() )
+  {
+    bool ok = false;
+    const double minScaleValue = minScale.toDouble( &ok );
+    if ( ok )
+      mRenderingSettings.setMinimumScale( minScaleValue );
+  }
+
+  const QVariant maxScale = layerData.value( u"maxScale"_s );
+  if ( maxScale.isValid() )
+  {
+    bool ok = false;
+    const double maxScaleValue = maxScale.toDouble( &ok );
+    if ( ok )
+      mRenderingSettings.setMaximumScale( maxScaleValue );
   }
 
   mValid = true;
@@ -795,6 +816,11 @@ QgsFeatureRenderer *QgsAfsProvider::createRenderer( const QVariantMap & ) const
 QgsAbstractVectorLayerLabeling *QgsAfsProvider::createLabeling( const QVariantMap & ) const
 {
   return QgsArcGisRestUtils::convertLabeling( mLabelingDataList ).release();
+}
+
+const QgsLayerRenderingSettings *QgsAfsProvider::renderingSettings( const QVariantMap & ) const
+{
+  return &mRenderingSettings;
 }
 
 bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
