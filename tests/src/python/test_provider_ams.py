@@ -22,6 +22,9 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsSettings,
     QgsRasterLayer,
+    QgsNetworkAccessManager,
+    QgsRasterBlockFeedback,
+    QgsRectangle,
 )
 from qgis.testing import start_app, QgisTestCase
 from raster_provider_test_base import RasterProviderTestCase
@@ -791,6 +794,90 @@ class TestPyQgsAMSProvider(QgisTestCase, RasterProviderTestCase):
         self.assertEqual(rl.dataProvider().sourceDataType(1), Qgis.DataType.ARGB32)
         self.assertEqual(rl.dataProvider().bandScale(1), 1)
         self.assertEqual(rl.dataProvider().bandOffset(1), 0)
+
+    def test_preview_single_lod_service(self):
+        """
+        Previewing a service at its LOD boundary must not request invalid levels.
+        """
+        endpoint = self.basetestpath + "/single_lod_preview_fake_qgis_http_endpoint"
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""{
+  "currentVersion": 11.1,
+  "mapName": "Layers",
+  "layers": [],
+  "spatialReference": {
+    "wkid": 4326,
+    "latestWkid": 4326
+  },
+  "singleFusedMapCache": true,
+  "fullExtent": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 10,
+    "ymax": 10,
+    "spatialReference": {
+      "wkid": 4326,
+      "latestWkid": 4326
+    }
+  },
+  "tileInfo": {
+    "rows": 2,
+    "cols": 2,
+    "format": "PNG",
+    "origin": {
+      "x": 0,
+      "y": 10
+    },
+    "spatialReference": {
+      "wkid": 4326,
+      "latestWkid": 4326
+    },
+    "lods": [
+      {
+        "level": 0,
+        "resolution": 5,
+        "scale": 10000
+      }
+    ]
+  },
+  "capabilities": "Map,TilesOnly"
+}"""
+            )
+
+        layer = QgsRasterLayer(
+            "url='http://" + endpoint + "'",
+            "test",
+            "arcgismapserver",
+        )
+        self.assertTrue(layer.isValid())
+
+        tile_levels = []
+
+        def record_tile_level(request):
+            path = request.url().path()
+            if "/tile/" in path:
+                tile_levels.append(int(path.split("/tile/", 1)[1].split("/", 1)[0]))
+
+        preprocessor_id = QgsNetworkAccessManager.setRequestPreprocessor(
+            record_tile_level
+        )
+        feedback = QgsRasterBlockFeedback()
+        feedback.setPreviewOnly(True)
+        try:
+            block = layer.dataProvider().block(
+                1,
+                QgsRectangle(0, 0, 10, 10),
+                2,
+                2,
+                feedback,
+            )
+        finally:
+            QgsNetworkAccessManager.removeRequestPreprocessor(preprocessor_id)
+
+        self.assertTrue(block.isValid())
+        self.assertTrue(tile_levels)
+        self.assertEqual(set(tile_levels), {0})
 
 
 if __name__ == "__main__":
