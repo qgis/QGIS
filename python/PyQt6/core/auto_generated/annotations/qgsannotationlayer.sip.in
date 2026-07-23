@@ -217,6 +217,15 @@ only be visible when the linked layer is also visible.
 .. versionadded:: 3.40
 %End
 
+  signals:
+
+    void itemsChanged();
+%Docstring
+Emitted when items are added, removed or modified in the layer.
+
+.. versionadded:: 4.4
+%End
+
 };
 
 

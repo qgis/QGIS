@@ -120,6 +120,21 @@ QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationRotat
 
 
 //
+// QgsAnnotationItemEditOperationSetItemBounds
+//
+
+QgsAnnotationItemEditOperationSetItemBounds::QgsAnnotationItemEditOperationSetItemBounds( const QString &itemId, const QgsRectangle &bounds )
+  : QgsAbstractAnnotationItemEditOperation( itemId )
+  , mBounds( bounds )
+{}
+
+QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationSetItemBounds::type() const
+{
+  return Type::SetItemBounds;
+}
+
+
+//
 // QgsAnnotationItemEditOperationAddNode
 //
 

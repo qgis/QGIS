@@ -21,6 +21,8 @@
 #include "qgsrendereditemdetails.h"
 #include "qgsrendereditemresults.h"
 
+#include <QComboBox>
+
 #include "moc_qgsannotationitemwidget.cpp"
 
 QgsAnnotationItemBaseWidget::QgsAnnotationItemBaseWidget( QWidget *parent )
@@ -30,6 +32,12 @@ QgsAnnotationItemBaseWidget::QgsAnnotationItemBaseWidget( QWidget *parent )
 bool QgsAnnotationItemBaseWidget::setItem( QgsAnnotationItem *item )
 {
   return setNewItem( item );
+}
+
+void QgsAnnotationItemBaseWidget::populateRotationModeComboBox( QComboBox *comboBox )
+{
+  comboBox->addItem( tr( "Ignore Map Rotation" ), QVariant::fromValue( Qgis::SymbolRotationMode::IgnoreMapRotation ) );
+  comboBox->addItem( tr( "Rotate With Map" ), QVariant::fromValue( Qgis::SymbolRotationMode::RespectMapRotation ) );
 }
 
 void QgsAnnotationItemBaseWidget::setLayer( QgsAnnotationLayer *layer )

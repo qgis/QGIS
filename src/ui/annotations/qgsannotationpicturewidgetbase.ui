@@ -98,6 +98,47 @@
    <item row="2" column="0">
     <widget class="QComboBox" name="mSizeModeCombo"/>
    </item>
+   <item row="6" column="0">
+    <widget class="QGroupBox" name="mRotationGroupBox">
+     <property name="title">
+      <string>Rotation</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_7">
+      <item row="0" column="0" colspan="2">
+       <widget class="QComboBox" name="mRotationModeCombo"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelAngle">
+        <property name="text">
+         <string>Angle</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsDoubleSpinBox" name="mSpinAngle">
+        <property name="wrapping">
+         <bool>true</bool>
+        </property>
+        <property name="suffix">
+         <string> °</string>
+        </property>
+        <property name="decimals">
+         <number>2</number>
+        </property>
+        <property name="minimum">
+         <double>-360.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.500000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="8" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
