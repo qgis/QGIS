@@ -461,6 +461,10 @@ QgsAnnotationLineTextItemWidget::QgsAnnotationLineTextItemWidget( QWidget *paren
 
   mTextEdit->setMode( QgsRichTextEditor::Mode::QgsTextRenderer );
 
+  mAlignmentCombo->addItem( tr( "Start of Line" ), QVariant::fromValue( Qgis::TextAnchorPoint::StartOfText ) );
+  mAlignmentCombo->addItem( tr( "Center of Line" ), QVariant::fromValue( Qgis::TextAnchorPoint::CenterOfText ) );
+  mAlignmentCombo->addItem( tr( "End of Line" ), QVariant::fromValue( Qgis::TextAnchorPoint::EndOfText ) );
+
   connect( mTextFormatButton, &QgsFontButton::changed, this, [this] {
     mTextEdit->setMode( mTextFormatButton->textFormat().allowHtmlFormatting() ? QgsRichTextEditor::Mode::QgsTextRenderer : QgsRichTextEditor::Mode::PlainText );
 
@@ -490,6 +494,11 @@ QgsAnnotationLineTextItemWidget::QgsAnnotationLineTextItemWidget( QWidget *paren
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
+
+  connect( mAlignmentCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [this] {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
 }
 
 QgsAnnotationLineTextItemWidget::~QgsAnnotationLineTextItemWidget() = default;
@@ -512,6 +521,8 @@ void QgsAnnotationLineTextItemWidget::updateItem( QgsAnnotationItem *item )
     lineTextItem->setOffsetFromLine( mSpinOffset->value() );
     lineTextItem->setOffsetFromLineUnit( mOffsetUnitWidget->unit() );
     lineTextItem->setOffsetFromLineMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+
+    lineTextItem->setTextAnchor( mAlignmentCombo->currentData().value< Qgis::TextAnchorPoint >() );
 
     mBlockChangedSignal = false;
     mPropertiesWidget->updateItem( lineTextItem );
@@ -552,6 +563,8 @@ bool QgsAnnotationLineTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mSpinOffset->setValue( mItem->offsetFromLine() );
   mOffsetUnitWidget->setUnit( mItem->offsetFromLineUnit() );
   mOffsetUnitWidget->setMapUnitScale( mItem->offsetFromLineMapUnitScale() );
+
+  mAlignmentCombo->setCurrentIndex( mAlignmentCombo->findData( QVariant::fromValue( mItem->textAnchor() ) ) );
 
   mBlockChangedSignal = false;
 

@@ -203,7 +203,8 @@ have already been calculated.
       const QgsTextFormat &format,
       double offsetAlongLine = 0,
       double offsetFromLine = 0,
-      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort
+      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort,
+      Qgis::TextAnchorPoint textAnchor = Qgis::TextAnchorPoint::StartOfText
     );
 %Docstring
 Draws text along a line using the specified settings.
@@ -213,12 +214,21 @@ Draws text along a line using the specified settings.
 :param context: render context
 :param format: text format
 :param offsetAlongLine: offset along the line (in painter units) to
-                        start text at
+                        start text at. Only applies when ``textAnchor``
+                        is :py:class:`Qgis`.TextAnchorPoint.StartOfText.
 :param offsetFromLine: offset from the line (in painter units). Negative
                        values will shift the text to the left of the
                        line, positive values will shift the text to the
                        right.
 :param flags: curved text behavior flags (since QGIS 4.0)
+:param textAnchor: dictates where on the line the text should be
+                   anchored to. If the anchor point is the start of the
+                   text, the text will always start at the start of the
+                   line (and potential extend past the end of the line).
+                   If the anchor point is the end of the text, then the
+                   text will always end at the end of the line and
+                   potential extend past the start of the line. (since
+                   QGIS 4.4)
 
 .. versionadded:: 3.32
 %End
@@ -230,7 +240,8 @@ Draws text along a line using the specified settings.
       QgsRenderContext &context,
       double offsetAlongLine = 0,
       double offsetFromLine = 0,
-      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort
+      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort,
+      Qgis::TextAnchorPoint textAnchor = Qgis::TextAnchorPoint::StartOfText
     );
 %Docstring
 Draws a text document along a line using the specified settings.
@@ -240,12 +251,21 @@ Draws a text document along a line using the specified settings.
 :param document: text document to draw
 :param context: render context
 :param offsetAlongLine: offset along the line (in painter units) to
-                        start text at
+                        start text at. Only applies when ``textAnchor``
+                        is :py:class:`Qgis`.TextAnchorPoint.StartOfText.
 :param offsetFromLine: offset from the line (in painter units). Negative
                        values will shift the text to the left of the
                        line, positive values will shift the text to the
                        right.
 :param flags: curved text behavior flags (since QGIS 4.0)
+:param textAnchor: dictates where on the line the text should be
+                   anchored to. If the anchor point is the start of the
+                   text, the text will always start at the start of the
+                   line (and potential extend past the end of the line).
+                   If the anchor point is the end of the text, then the
+                   text will always end at the end of the line and
+                   potential extend past the start of the line. (since
+                   QGIS 4.4)
 
 .. versionadded:: 3.32
 %End

@@ -64,14 +64,12 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( this );
 
   const QUrl urlVert( u"qrc:/shaders/billboards.vert"_s );
-  const QUrl urlGeom( u"qrc:/shaders/billboards.geom"_s );
 
   switch ( mode )
   {
     case Mode::SingleTexture:
     {
       shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( urlVert ) );
-      shaderProgram->setGeometryShaderCode( Qt3DRender::QShaderProgram::loadSource( urlGeom ) );
       break;
     }
     case Mode::AtlasTexture:
@@ -80,9 +78,6 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
       const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, QStringList( { "TEXTURE_ATLAS" } ) );
       shaderProgram->setVertexShaderCode( finalVertexShaderCode );
 
-      const QByteArray geomShaderCode = Qt3DRender::QShaderProgram::loadSource( urlGeom );
-      const QByteArray finalGeomShaderCode = Qgs3DUtils::addDefinesToShaderCode( geomShaderCode, QStringList( { "TEXTURE_ATLAS" } ) );
-      shaderProgram->setGeometryShaderCode( finalGeomShaderCode );
       break;
     }
     case Mode::AtlasTextureWithPixelOffsets:
@@ -91,9 +86,6 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
       const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, QStringList( { "TEXTURE_ATLAS", "TEXTURE_ATLAS_PIXEL_OFFSETS" } ) );
       shaderProgram->setVertexShaderCode( finalVertexShaderCode );
 
-      const QByteArray geomShaderCode = Qt3DRender::QShaderProgram::loadSource( urlGeom );
-      const QByteArray finalGeomShaderCode = Qgs3DUtils::addDefinesToShaderCode( geomShaderCode, QStringList( { "TEXTURE_ATLAS", "TEXTURE_ATLAS_PIXEL_OFFSETS" } ) );
-      shaderProgram->setGeometryShaderCode( finalGeomShaderCode );
       break;
     }
   }

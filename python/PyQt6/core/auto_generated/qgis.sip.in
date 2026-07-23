@@ -872,6 +872,14 @@ The development version
       Justify,
     };
 
+    enum class TextAnchorPoint /BaseType=IntEnum/
+    {
+      StartOfText,
+      CenterOfText,
+      EndOfText,
+      FollowPlacement,
+    };
+
     enum class FileFilterType /BaseType=IntEnum/
     {
       Vector,

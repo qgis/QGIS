@@ -94,7 +94,7 @@
           <v-list>
             <v-list-item-group>
               <template v-if="project.capabilities.wfsLayerIds.length">
-                <v-list-item :href="'./project/' + project.id + '/wfs3'">
+                <v-list-item :href="'./project/' + project.id + QGIS_SERVER_API_WFS3_ROOT_PATH">
                   <v-list-item-content>
                     <v-list-item-title>OAPIF/WFS3</v-list-item-title>
                   </v-list-item-content>
@@ -130,7 +130,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default {
   props: {
-    project: Object
+    project: Object,
+    QGIS_SERVER_API_WFS3_ROOT_PATH: String
   },
   filters: {
     camelTitle(str) {

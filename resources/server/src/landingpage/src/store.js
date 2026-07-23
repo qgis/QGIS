@@ -28,6 +28,7 @@ export default new Vuex.Store({
     identifyResults: {},
     baseMap: "",
     mapScaleDenominator: 1,
+    QGIS_SERVER_API_WFS3_ROOT_PATH: "/wfs3",
   },
   mutations: {
     setCatalog(state, payload) {
@@ -53,6 +54,9 @@ export default new Vuex.Store({
     },
     setProject(state, project) {
       Vue.set(state.projects, project.id, project)
+    },
+    setQGIS_SERVER_API_WFS3_ROOT_PATH(state, path) {
+      state.QGIS_SERVER_API_WFS3_ROOT_PATH = path
     },
     setToc(state, { projectId, toc }) {
       Vue.set(state.tocs, projectId, toc)
@@ -90,6 +94,7 @@ export default new Vuex.Store({
             })
             commit("setCatalog", json.projects)
             commit("setStatus", json.projects.length ? `projects` : `empty`)
+            commit("setQGIS_SERVER_API_WFS3_ROOT_PATH", json.QGIS_SERVER_API_WFS3_ROOT_PATH)            
           })
           .catch((error) => {
             commit("setError", error.message)

@@ -47,7 +47,7 @@ else
 	DISTRIBUTION := $(DIST)
 endif
 
-ifeq (,$(filter $(DISTRIBUTION),trixie plucky questing))
+ifeq (,$(filter $(DISTRIBUTION),trixie plucky questing resolute stonking))
 	DISTRIBUTION := sid
 endif
 
@@ -70,7 +70,6 @@ GRASSABI=$(subst .,,$(shell pkg-config --modversion grass 2>/dev/null|cut -d. -f
 CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
 
 shlibs = -Xqgis-plugin-grass -Xlibqgis-customwidgets
-
 
 ifneq (,$(filter oracle,$(DEB_BUILD_OPTIONS)))
 CONTROL_EXPRESSIONS += oracle
@@ -140,7 +139,6 @@ PYTHON_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's,-L\(.*\) -L[
 CMAKE_OPTS := \
 	-G Ninja \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
-	-DWITH_INTERNAL_NLOHMANN_JSON=OFF \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DPEDANTIC=TRUE \
@@ -169,7 +167,13 @@ CMAKE_OPTS := \
 	-DWITH_SFCGAL=TRUE \
 	-DWITH_GEOGRAPHICLIB=TRUE
 
-ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
+ifeq (,$(filter $(DISTRIBUTION),trixie plucky))
+	CMAKE_OPTS += -DWITH_INTERNAL_NLOHMANN_JSON=OFF
+else
+	CMAKE_OPTS += -DWITH_INTERNAL_NLOHMANN_JSON=ON
+endif
+
+ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing resolute stonking sid))
 	CMAKE_OPTS += -DWITH_INTERNAL_SPATIALINDEX=TRUE
 endif
 

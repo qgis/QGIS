@@ -97,7 +97,7 @@
                   <v-card-title>{{ project.title }}</v-card-title>
                   <v-divider></v-divider>
                   <v-card-text style="height: 300px">
-                    <ProjectMetadata :project="project" />
+                    <ProjectMetadata :project="project" :QGIS_SERVER_API_WFS3_ROOT_PATH="QGIS_SERVER_API_WFS3_ROOT_PATH" />
                   </v-card-text>
                   <v-divider></v-divider>
                   <v-card-actions>
@@ -153,6 +153,9 @@ export default {
     },
     catalog() {
       return this.$store.state.catalog;
+    },
+    QGIS_SERVER_API_WFS3_ROOT_PATH() {
+      return this.$store.state.QGIS_SERVER_API_WFS3_ROOT_PATH;
     },
     error() {
       let error = this.$store.state.error;
