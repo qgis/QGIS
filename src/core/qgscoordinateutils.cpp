@@ -38,18 +38,16 @@ using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE_API
 
-int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project )
+int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject &project )
 {
-  if ( !project )
-    project = QgsProject::instance(); // skip-keyword-check
   // Get the display precision from the project settings
-  const bool automatic = project->readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s );
+  const bool automatic = project.readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s );
   int dp = 0;
 
   if ( automatic )
   {
-    const bool formatGeographic = project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::MapGeographic
-                                  || ( project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::CustomCrs && project->displaySettings()->coordinateCustomCrs().isGeographic() );
+    const bool formatGeographic = ( project.displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::MapGeographic
+                                  || ( project.displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::CustomCrs && project.displaySettings()->coordinateCustomCrs().isGeographic() ) );
 
     // we can only calculate an automatic precision if one of these is true:
     // - both map CRS and format are geographic
@@ -65,7 +63,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
     }
     else
     {
-      switch ( project->displaySettings()->geographicCoordinateFormat()->angleFormat() )
+      switch ( project.displaySettings()->geographicCoordinateFormat()->angleFormat() )
       {
         case QgsGeographicCoordinateNumericFormat::AngleFormat::DegreesMinutesSeconds:
         case QgsGeographicCoordinateNumericFormat::AngleFormat::DegreesMinutes:
@@ -78,7 +76,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
     }
   }
   else
-    dp = project->readNumEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s );
+    dp = project.readNumEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s );
 
   // Keep dp sensible
   if ( dp < 0 )
@@ -87,18 +85,12 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
   return dp;
 }
 
-int QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs, QgsProject *project )
+int QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs, QgsProject &project )
 {
-  QgsProject *prj = project;
-  if ( !prj )
-  {
-    prj = QgsProject::instance(); // skip-keyword-check
-  }
-
-  const bool automatic = prj->readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s );
+  const bool automatic = project.readBoolEntry( u"PositionPrecision"_s, u"/Automatic"_s );
   if ( !automatic )
   {
-    return prj->readNumEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s, 6 );
+    return project.readNumEntry( u"PositionPrecision"_s, u"/DecimalPlaces"_s, 6 );
   }
 
   return calculateCoordinatePrecision( crs );

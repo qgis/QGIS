@@ -672,5 +672,5 @@ void CoordinateItemDelegate::setEditorData( QWidget *editor, const QModelIndex &
 
 int CoordinateItemDelegate::displayDecimalPlaces() const
 {
-  return QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( mCrs, QgsProject::instance() );
+  return QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( mCrs, *QgsProject::instance() );
 }

@@ -14985,7 +14985,9 @@ void QgisApp::selectionModeChanged( QgsMapToolSelect::Mode mode )
 
 void QgisApp::updateMouseCoordinatePrecision()
 {
-  mCoordsEdit->setMouseCoordinatesPrecision( QgsCoordinateUtils::calculateCoordinatePrecision( mapCanvas()->mapUnitsPerPixel(), mapCanvas()->mapSettings().destinationCrs() ) );
+  mCoordsEdit->setMouseCoordinatesPrecision(
+    QgsCoordinateUtils::calculateCoordinatePrecision( mapCanvas()->mapUnitsPerPixel(), mapCanvas()->mapSettings().destinationCrs(), mapCanvas()->project() ? *mapCanvas()->project() : *QgsProject::instance() )
+  );
 }
 
 void QgisApp::showStatusMessage( const QString &message )
