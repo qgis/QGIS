@@ -19,7 +19,9 @@ import unittest
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
+    QgsRasterBlockFeedback,
     QgsRasterLayer,
+    QgsRectangle,
     QgsSettings,
 )
 from qgis.testing import QgisTestCase, start_app
@@ -865,6 +867,74 @@ class TestPyQgsAMSProvider(QgisTestCase, RasterProviderTestCase):
         self.assertAlmostEqual(rl.extent().yMinimum(), -20.0, 5)
         self.assertAlmostEqual(rl.extent().xMaximum(), 30.0, 5)
         self.assertAlmostEqual(rl.extent().yMaximum(), 40.0, 5)
+
+    def test_preview_single_lod_service(self):
+        """
+        Previewing a service at its LOD boundary must not request invalid levels.
+        """
+        endpoint = self.basetestpath + "/single_lod_preview_fake_qgis_http_endpoint"
+        with open(self.sanitize_local_url(endpoint, "?f=json"), "wb") as f:
+            f.write(
+                b"""{
+  "currentVersion": 11.1,
+  "mapName": "Layers",
+  "layers": [],
+  "spatialReference": {
+    "wkid": 4326,
+    "latestWkid": 4326
+  },
+  "singleFusedMapCache": true,
+  "fullExtent": {
+    "xmin": 0,
+    "ymin": 0,
+    "xmax": 10,
+    "ymax": 10,
+    "spatialReference": {
+      "wkid": 4326,
+      "latestWkid": 4326
+    }
+  },
+  "tileInfo": {
+    "rows": 2,
+    "cols": 2,
+    "format": "PNG",
+    "origin": {
+      "x": 0,
+      "y": 10
+    },
+    "spatialReference": {
+      "wkid": 4326,
+      "latestWkid": 4326
+    },
+    "lods": [
+      {
+        "level": 0,
+        "resolution": 5,
+        "scale": 10000
+      }
+    ]
+  },
+  "capabilities": "Map,TilesOnly"
+}"""
+            )
+
+        layer = QgsRasterLayer(
+            "url='http://" + endpoint + "'",
+            "test",
+            "arcgismapserver",
+        )
+        self.assertTrue(layer.isValid())
+
+        feedback = QgsRasterBlockFeedback()
+        feedback.setPreviewOnly(True)
+        block = layer.dataProvider().block(
+            1,
+            QgsRectangle(0, 0, 10, 10),
+            2,
+            2,
+            feedback,
+        )
+        self.assertTrue(block.isValid())
 
 
 if __name__ == "__main__":
