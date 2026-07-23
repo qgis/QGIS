@@ -19,6 +19,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
+#include "qgsstringutils.h"
 
 #include <QDomElement>
 #include <QString>
@@ -31,7 +32,7 @@ using namespace Qt::StringLiterals;
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
   : QgsLayerTreeNode( NodeGroup, checked )
   , mName( name )
-  , mId( QgsMapLayer::generateId( u"group"_s ) )
+  , mId( QgsStringUtils::createUniqueId( u"group"_s ) )
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
 {
   init();

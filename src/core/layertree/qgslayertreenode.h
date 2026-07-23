@@ -191,6 +191,17 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     virtual void setName( const QString &name ) = 0;
 
     /**
+     * Returns the node's unique identifier.
+     *
+     * Each node subclass defines the identity it exposes: a group or custom node
+     * returns its own generated id, while a layer node returns the id of the map
+     * layer it references (see QgsLayerTreeLayer::layerId()).
+     *
+     * \since QGIS 4.4
+     */
+    virtual QString id() const = 0;
+
+    /**
      * Read layer tree from XML. Returns new instance.
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */

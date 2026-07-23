@@ -45,9 +45,20 @@ other than layers and groups.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    virtual QString id() const;
+%Docstring
+Returns the node's unique identifier.
+
+.. versionadded:: 4.4
+%End
+
         QString nodeId() const;
 %Docstring
 Returns the node's unique identifier.
+
+.. note::
+
+   Equivalent to :py:func:`~QgsLayerTreeCustomNode.id`; retained for API compatibility.
 %End
 
     virtual QString name() const;

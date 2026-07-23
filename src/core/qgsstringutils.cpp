@@ -21,6 +21,7 @@
 
 #include <QRegularExpression>
 #include <QString>
+#include <QUuid>
 #include <QStringList>
 #include <QTextBoundaryFinder>
 #include <QVector>
@@ -67,6 +68,23 @@ QString QgsStringUtils::unaccent( const QString &input )
   }
 
   return out;
+}
+
+QString QgsStringUtils::createUniqueId( const QString &base )
+{
+  // A random UUID guarantees uniqueness; the base is a human-readable prefix.
+  const QString uuid = QUuid::createUuid().toString();
+  // trim the surrounding { } from the UUID
+  QString id = base.isEmpty() ? uuid.mid( 1, uuid.length() - 2 )
+                              : base + '_' + uuid.mid( 1, uuid.length() - 2 );
+  // Tidy the id up to avoid characters that may cause problems elsewhere (e.g.
+  // in some parts of XML). Replaces every non-word character (word characters
+  // are the alphabet, numbers and underscore) with an underscore.
+  // Note that the first backslash in the regular expression is there for the
+  // compiler, so the pattern is actually \W
+  const thread_local QRegularExpression idRx( u"[\\W]"_s );
+  id.replace( idRx, u"_"_s );
+  return id;
 }
 
 QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization capitalization )

@@ -172,6 +172,18 @@ Returns name of the node
 Set name of the node. Emits nameChanged signal.
 %End
 
+    virtual QString id() const = 0;
+%Docstring
+Returns the node's unique identifier.
+
+Each node subclass defines the identity it exposes: a group or custom
+node returns its own generated id, while a layer node returns the id of
+the map layer it references (see
+:py:func:`QgsLayerTreeLayer.layerId()`).
+
+.. versionadded:: 4.4
+%End
+
     static QgsLayerTreeNode *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Read layer tree from XML. Returns new instance. Does not resolve textual

@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      *
      * \since QGIS 4.4
      */
-    QString id() const { return mId; }
+    QString id() const override { return mId; }
 
     /**
      * Insert a new group node with given name at specified position. The newly created node is owned by this group.
