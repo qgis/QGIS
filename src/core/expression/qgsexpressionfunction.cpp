@@ -2956,17 +2956,25 @@ static QVariant fcnLeft( const QVariantList &values, const QgsExpressionContext 
 
 static QVariant fcnRPad( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   QString fill = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  if ( fill.isEmpty() )
+  {
+    fill = u" "_s;
+  }
   return string.leftJustified( length, fill.at( 0 ), true );
 }
 
 static QVariant fcnLPad( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   QString fill = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  if ( fill.isEmpty() )
+  {
+    fill = u" "_s;
+  }
   return string.rightJustified( length, fill.at( 0 ), true );
 }
 
@@ -9634,8 +9642,18 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"strpos"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"haystack"_s ) << QgsExpressionFunction::Parameter( u"needle"_s ), fcnStrpos, u"String"_s )
       << new QgsStaticExpressionFunction( u"left"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnLeft, u"String"_s )
       << new QgsStaticExpressionFunction( u"right"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnRight, u"String"_s )
-      << new QgsStaticExpressionFunction( u"rpad"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s ), fcnRPad, u"String"_s )
-      << new QgsStaticExpressionFunction( u"lpad"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s ), fcnLPad, u"String"_s )
+      << new QgsStaticExpressionFunction(
+           u"rpad"_s,
+           QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s, true, u" "_s ),
+           fcnRPad,
+           u"String"_s
+         )
+      << new QgsStaticExpressionFunction(
+           u"lpad"_s,
+           QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s, true, u" "_s ),
+           fcnLPad,
+           u"String"_s
+         )
       << new QgsStaticExpressionFunction( u"format"_s, -1, fcnFormatString, u"String"_s )
       << new QgsStaticExpressionFunction(
            u"format_number"_s,
