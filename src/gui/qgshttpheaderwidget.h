@@ -75,6 +75,15 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
      */
     Q_DECL_DEPRECATED void updateSettings( QgsSettings &settings, const QString &key ) const SIP_DEPRECATED;
 
+  signals:
+
+    /**
+     * Emitted when the referer or any key/value header pair shown in the widget is changed.
+     *
+     * \since QGIS 4.1
+     */
+    void changed();
+
   private slots:
 
     /**
