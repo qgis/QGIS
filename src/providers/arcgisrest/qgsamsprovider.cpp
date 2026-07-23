@@ -545,7 +545,11 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     }
 
     auto getRequests = [&levelToResMap, &viewExtent, tileWidth, tileHeight, ox, oy, targetRes, &dataSource]( int level, TileRequests &requests ) {
-      const double resolution = levelToResMap.value( level );
+      const auto resolutionIt = levelToResMap.constFind( level );
+      if ( resolutionIt == levelToResMap.constEnd() || resolutionIt.value() <= 0 || targetRes <= 0 )
+        return;
+
+      const double resolution = resolutionIt.value();
 
       // Get necessary tiles to fill extent
       // tile_x = ox + i * (resolution * tileWidth)
