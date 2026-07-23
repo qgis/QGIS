@@ -16,6 +16,7 @@
 #include "qgsvectorlayerrenderer.h"
 
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystemutils.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturefilterprovider.h"
@@ -527,15 +528,33 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
   QgsRenderContext &context = *renderContext();
   context.expressionContext().appendScope( symbolScope );
 
+  if ( mSelectionSymbol && isMainRenderer )
+    mSelectionSymbol->startRender( context, mFields );
+
+  QgsGeometry horizonGeom;
+  double lat, lon;
+  if ( context.coordinateTransform().destinationCrs().topocentricOrigin( lat, lon ) )
+  {
+    horizonGeom = QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry( context.coordinateTransform().destinationCrs(), context.coordinateTransform().sourceCrs(), context.transformContext(), 0.1 );
+  }
+
   std::unique_ptr< QgsGeometryEngine > clipEngine;
-  if ( mApplyClipFilter )
+  if ( mApplyClipFilter && !horizonGeom.isEmpty() )
+  {
+    const QgsGeometry visibleRegionGeom = mClipFilterGeom.intersection( horizonGeom );
+    clipEngine.reset( QgsGeometry::createGeometryEngine( visibleRegionGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+  else if ( mApplyClipFilter && horizonGeom.isEmpty() )
   {
     clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
     clipEngine->prepareGeometry();
   }
-
-  if ( mSelectionSymbol && isMainRenderer )
-    mSelectionSymbol->startRender( context, mFields );
+  else if ( !mApplyClipFilter && !horizonGeom.isEmpty() )
+  {
+    clipEngine.reset( QgsGeometry::createGeometryEngine( horizonGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
 
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
@@ -549,10 +568,20 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
       }
 
       if ( !fet.hasGeometry() || fet.geometry().isEmpty() )
-        continue; // skip features without geometry
+        continue;
 
       if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
         continue; // skip features outside of clipping region
+
+      // topocentric horizon clipping
+      if ( !horizonGeom.isEmpty() )
+      {
+        QgsGeometry clippedGeom = fet.geometry().intersection( horizonGeom );
+        if ( clippedGeom.isEmpty() )
+          continue;
+
+        fet.setGeometry( clippedGeom );
+      }
 
       if ( mApplyClipGeometries )
         context.setFeatureClipGeometry( mClipFeatureGeom );
@@ -699,13 +728,6 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   auto scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
 
-  std::unique_ptr< QgsGeometryEngine > clipEngine;
-  if ( mApplyClipFilter )
-  {
-    clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
-    clipEngine->prepareGeometry();
-  }
-
   if ( mApplyLabelClipGeometries )
     context.setFeatureClipGeometry( mLabelClipFeatureGeom );
 
@@ -718,6 +740,31 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   QElapsedTimer timer;
   timer.start();
   quint64 totalLabelTime = 0;
+
+  QgsGeometry horizonGeom;
+  double lat, lon;
+  if ( context.coordinateTransform().destinationCrs().topocentricOrigin( lat, lon ) )
+  {
+    horizonGeom = QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry( context.coordinateTransform().destinationCrs(), context.coordinateTransform().sourceCrs(), context.transformContext(), 0.1 );
+  }
+
+  std::unique_ptr< QgsGeometryEngine > clipEngine;
+  if ( mApplyClipFilter && !horizonGeom.isEmpty() )
+  {
+    const QgsGeometry visibleRegionGeom = mClipFilterGeom.intersection( horizonGeom );
+    clipEngine.reset( QgsGeometry::createGeometryEngine( visibleRegionGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+  else if ( mApplyClipFilter && horizonGeom.isEmpty() )
+  {
+    clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+  else if ( !mApplyClipFilter && !horizonGeom.isEmpty() )
+  {
+    clipEngine.reset( QgsGeometry::createGeometryEngine( horizonGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
 
   // 1. fetch features
   QgsFeature fet;
@@ -732,10 +779,20 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     }
 
     if ( !fet.hasGeometry() )
-      continue; // skip features without geometry
+      continue;
 
     if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
       continue; // skip features outside of clipping region
+
+    // topocentric horizon clipping
+    if ( !horizonGeom.isEmpty() )
+    {
+      QgsGeometry clippedGeom = fet.geometry().intersection( horizonGeom );
+      if ( clippedGeom.isEmpty() )
+        continue;
+
+      fet.setGeometry( clippedGeom );
+    }
 
     if ( !mNoSetLayerExpressionContext )
       context.expressionContext().setFeature( fet );
