@@ -949,6 +949,14 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addSeparator()->setObjectName( "UserCheckableSeparator"_L1 );
     }
 
+    if ( node->flags() & Qt::ItemIsEditable )
+    {
+      QAction *renameAction = new QAction( tr( "Rename Item…" ), menu );
+      connect( renameAction, &QAction::triggered, this, [this] { mView->edit( mView->currentIndex() ); } );
+      menu->addAction( renameAction );
+      menu->addSeparator()->setObjectName( "RenameItemSeparator"_L1 );
+    }
+
     if ( QgsSymbolLegendNode *symbolNode = qobject_cast<QgsSymbolLegendNode *>( node ) )
     {
       // symbology item
