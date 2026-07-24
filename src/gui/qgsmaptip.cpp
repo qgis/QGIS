@@ -41,6 +41,7 @@ using namespace Qt::StringLiterals;
 #include <QLabel>
 #include <QDesktopServices>
 #include <QHBoxLayout>
+#include <QTextDocument>
 
 #include "qgsmaptip.h"
 #include "moc_qgsmaptip.cpp"
@@ -53,23 +54,22 @@ const QString QgsMapTip::sMapTipTemplate = "<html>\n"
                                            "        margin: 0;\n"
                                            "        font: %1pt \"%2\";\n"
                                            "        color: %3;\n"
-                                           "        width: %4px;\n"
                                            "    }\n"
                                            "    #QgsWebViewContainer {\n"
-                                           "        background-color: %5;\n"
-                                           "        border: 1px solid %6;\n"
+                                           "        background-color: %4;\n"
+                                           "        border: 1px solid %5;\n"
                                            "        display: inline-block;\n"
                                            "        margin: 0\n"
                                            "    }\n"
                                            "    #QgsWebViewContainerInner {\n"
-                                           "        margin: 5px\n"
+                                           "        margin: 0\n"
                                            "    }\n"
                                            "    </style>\n"
                                            "  </head>\n"
                                            "  <body>\n"
                                            "    <div id='QgsWebViewContainer'>\n"
                                            "      <div id='QgsWebViewContainerInner'>\n"
-                                           "      %7\n"
+                                           "      %6\n"
                                            "      </div>\n"
                                            "    </div>\n"
                                            "  </body>\n"
@@ -170,7 +170,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer, QgsPointXY &mapPosition, const 
 
   mWebView->setMaximumSize( MAX_WIDTH, MAX_HEIGHT );
 
-  tipHtml = QgsMapTip::htmlText( tipText, MAX_WIDTH );
+  tipHtml = QgsMapTip::htmlText( tipText );
 
   QgsDebugMsgLevel( tipHtml, 2 );
 
@@ -184,7 +184,41 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer, QgsPointXY &mapPosition, const 
 
 void QgsMapTip::resizeAndMoveToolTip()
 {
-  mWebView->adjustSize();
+  // QgsWebView is a QTextBrowser subclass. adjustSize() uses sizeHint() which
+  // returns a small default size and does not reflect the actual rendered content.
+  // Instead, query the document directly for its ideal size and resize to fit.
+  QTextDocument *doc = mWebView->document();
+  if ( doc )
+  {
+    const int frameWidth = mWebView->frameWidth();
+    const int viewportMargins = frameWidth * 2;
+
+    // Remove any text width constraint so idealWidth() reports the true width.
+    doc->setDocumentMargin( 0 );
+    doc->setTextWidth( -1 );
+    const qreal idealWidth = doc->idealWidth();
+
+    // Clamp to the maximum size already set on the widget.
+    const int maxW = mWebView->maximumWidth();
+    const int maxH = mWebView->maximumHeight();
+
+    // Add small padding to account for contributions that idealWidth()/size()
+    // does not fully capture.
+    static constexpr int PADDING = 16;
+
+    const int contentWidth = std::min( static_cast<int>( std::ceil( idealWidth ) ) + viewportMargins + PADDING, maxW );
+
+    // Re-layout the document at the chosen width (minus frame and padding) to
+    // get the accurate height.
+    doc->setTextWidth( contentWidth - viewportMargins );
+    const int contentHeight = std::min( static_cast<int>( std::ceil( doc->size().height() ) ) + viewportMargins + PADDING, maxH );
+
+    mWebView->resize( contentWidth, contentHeight );
+  }
+  else
+  {
+    mWebView->adjustSize();
+  }
 
   int cursorOffset = 0;
   // attempt to shift the tip away from the cursor.
@@ -400,7 +434,7 @@ QString QgsMapTip::fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, Qgs
   return QgsExpression::replaceExpressionText( rlayer->mapTipTemplate(), &context );
 }
 
-QString QgsMapTip::htmlText( const QString &text, int maxWidth )
+QString QgsMapTip::htmlText( const QString &text )
 {
   const QgsSettings settings;
   const QFont defaultFont = qApp->font();
@@ -409,7 +443,7 @@ QString QgsMapTip::htmlText( const QString &text, int maxWidth )
   const QString backgroundColor = QgsApplication::palette().base().color().name();
   const QString strokeColor = QgsApplication::palette().shadow().color().name();
   const QString textColor = QgsApplication::palette().toolTipText().color().name();
-  return sMapTipTemplate.arg( fontSize ).arg( fontFamily ).arg( textColor ).arg( maxWidth == -1 ? "" : QString::number( maxWidth ) ).arg( backgroundColor ).arg( strokeColor ).arg( text );
+  return sMapTipTemplate.arg( fontSize ).arg( fontFamily ).arg( textColor ).arg( backgroundColor ).arg( strokeColor ).arg( text );
 }
 
 // This slot handles all clicks
@@ -461,7 +495,7 @@ QString QgsMapTip::vectorMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *ma
   }
 
   // Insert the map tip text into the html template
-  return QgsMapTip::htmlText( tipText, mapCanvas->width() / 2 );
+  return QgsMapTip::htmlText( tipText );
 }
 
 QString QgsMapTip::rasterMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QString &mapTemplate )
@@ -484,5 +518,5 @@ QString QgsMapTip::rasterMapTipPreviewText( QgsMapLayer *layer, QgsMapCanvas *ma
   const QString tipText = QgsExpression::replaceExpressionText( mapTemplate, &context );
 
   // Insert the map tip text into the html template
-  return QgsMapTip::htmlText( tipText, mapCanvas->width() / 2 );
+  return QgsMapTip::htmlText( tipText );
 }
