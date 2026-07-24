@@ -1343,8 +1343,6 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
       return Qgis::GeometryOperationResult::InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint:
       return Qgis::GeometryOperationResult::SplitCannotSplitPoint;
-    case QgsGeometryEngine::SplitPointCannotSplitPolygon:
-      return Qgis::GeometryOperationResult::SplitPointCannotSplitPolygon;
     case QgsGeometryEngine::NothingHappened:
       return Qgis::GeometryOperationResult::NothingHappened;
       //default: do not implement default to handle properly all cases
@@ -1388,8 +1386,6 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
       return Qgis::GeometryOperationResult::InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint:
       return Qgis::GeometryOperationResult::SplitCannotSplitPoint;
-    case QgsGeometryEngine::SplitPointCannotSplitPolygon:
-      return Qgis::GeometryOperationResult::SplitPointCannotSplitPolygon;
     case QgsGeometryEngine::NothingHappened:
       return Qgis::GeometryOperationResult::NothingHappened;
       //default: do not implement default to handle properly all cases
@@ -1469,8 +1465,7 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
       return Qgis::GeometryOperationResult::InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
       return Qgis::GeometryOperationResult::InvalidInputGeometryType;
-    case QgsGeometryEngine::SplitCannotSplitPoint:        // should not happen
-    case QgsGeometryEngine::SplitPointCannotSplitPolygon: // should not happen
+    case QgsGeometryEngine::SplitCannotSplitPoint: // should not happen
       return Qgis::GeometryOperationResult::GeometryEngineError;
     case QgsGeometryEngine::NothingHappened:
       return Qgis::GeometryOperationResult::NothingHappened;
@@ -3725,7 +3720,6 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
     case Qgis::GeometryOperationResult::AddRingCrossesExistingRings:
     case Qgis::GeometryOperationResult::AddRingNotInExistingFeature:
     case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
-    case Qgis::GeometryOperationResult::SplitPointCannotSplitPolygon:
       return 4;
   }
   return 4;
