@@ -3360,7 +3360,7 @@ class TestQgsGeometry(QgisTestCase):
 
         curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
         assert curvepolygon.deleteVertices([0]), "Delete vertices [0] failed"
-        expwkt = "CurvePolygon( CompoundCurve( CircularString(2 0, 1.5 -0.5, 1 -1), (1 -1, 0 0, 2 0) ) )"
+        expwkt = "CurvePolygon( CompoundCurve( CircularString(2 0, 1.5 -0.5, 1 -1), (1 -1, 2 0) ) )"
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3372,7 +3372,7 @@ class TestQgsGeometry(QgisTestCase):
 
         curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
         assert curvepolygon.deleteVertices([0, 1]), "Delete vertices [0, 1] failed"
-        expwkt = "CurvePolygon( CompoundCurve( CircularString (2 0, 1.5 -0.5, 1 -1), (1 -1, 0 0, 2 0)))"
+        expwkt = "CurvePolygon( CompoundCurve( CircularString (2 0, 1.5 -0.5, 1 -1), (1 -1, 2 0)))"
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3427,7 +3427,7 @@ class TestQgsGeometry(QgisTestCase):
         assert curvepolygon.deleteVertices([0, 1, 2, 3, 4]), (
             "Delete vertices [0, 1, 2, 3, 4] failed"
         )
-        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 19, 14 20)))"
+        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 20)))"
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3436,7 +3436,7 @@ class TestQgsGeometry(QgisTestCase):
         assert curvepolygon.deleteVertices([0, 1, 2, 3, 4, 12, 13, 14, 15, 16]), (
             "Delete vertices [0, 1, 2, 3, 4, 12, 13, 14, 15, 16] failed"
         )
-        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 19, 14 20)))"
+        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 20)))"
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3447,7 +3447,7 @@ class TestQgsGeometry(QgisTestCase):
         ), (
             "Delete vertices [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] failed"
         )
-        expwkt = "CurvePolygon (CompoundCurve ((14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 19, 14 8)))"
+        expwkt = "CurvePolygon (CompoundCurve ((14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 8)))"
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3456,7 +3456,7 @@ class TestQgsGeometry(QgisTestCase):
         assert curvepolygon.deleteVertices(
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
         ), "Delete vertices [0, 1, 2, 3, 4, 12, 13, 14, 15, 16] failed"
-        expwkt = "CurvePolygon (CompoundCurve ((14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 19, 14 8)))"
+        expwkt = "CurvePolygon (CompoundCurve ((14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 8)))"
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3482,7 +3482,7 @@ class TestQgsGeometry(QgisTestCase):
         # circularstrings should not merge, but be joined with a line connecting the start/end points
         curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
         assert curvepolygon.deleteVertices([24, 23]), "Delete vertices [24, 23] failed"
-        expwkt = "CurvePolygon (CompoundCurve (CircularString (3 19, 0 22, 3 25, 6 28, 9 25),(9 25, 14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 3 19)))"
+        expwkt = "CurvePolygon (CompoundCurve (CircularString (3 25, 6 28, 9 25),(9 25, 14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 3 25)))"
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
