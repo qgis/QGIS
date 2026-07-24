@@ -200,7 +200,6 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * - QgsGeometry::InvalidBaseGeometry
      * - QgsGeometry::GeometryEngineError
      * - QgsGeometry::SplitCannotSplitPoint
-     * - QgsGeometry::SplitPointCannotSplitPolygon
      *
      * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
@@ -218,7 +217,6 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * - QgsGeometry::InvalidBaseGeometry
      * - QgsGeometry::GeometryEngineError
      * - QgsGeometry::SplitCannotSplitPoint
-     * - QgsGeometry::SplitPointCannotSplitPolygon
      */
     Qgis::GeometryOperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 
