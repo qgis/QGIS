@@ -1248,6 +1248,10 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   {
     return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
+  if ( splitLine.size() == 0 )
+  {
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+  }
 
   // We're trying adding the split line's vertices to the geometry so that
   // snap to segment always produces a valid split (see https://github.com/qgis/QGIS/issues/29270)
@@ -1277,6 +1281,24 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   }
 
   QVector<QgsGeometry > newGeoms;
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  Q_UNUSED( skipIntersectionTest )
+
+  std::unique_ptr< QgsAbstractGeometry > splitGeom;
+  if ( splitLine.size() > 1 )
+  {
+    splitGeom.reset( new QgsLineString( splitLine ) );
+    splitGeom->dropZValue();
+    splitGeom->dropMValue();
+  }
+  else if ( splitLine.size() == 1 )
+  {
+    splitGeom.reset( new QgsPoint( splitLine[0].x(), splitLine[0].y() ) );
+  }
+  QgsGeos geos( tmpGeom.get() );
+  mLastError.clear();
+  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *splitGeom.get(), newGeoms, topological, topologyTestPoints, &mLastError );
+#else
   QgsLineString splitLineString( splitLine );
   splitLineString.dropZValue();
   splitLineString.dropMValue();
@@ -1284,6 +1306,7 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   QgsGeos geos( tmpGeom.get() );
   mLastError.clear();
   QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( splitLineString, newGeoms, topological, topologyTestPoints, &mLastError, skipIntersectionTest );
+#endif
 
   if ( result == QgsGeometryEngine::Success )
   {
