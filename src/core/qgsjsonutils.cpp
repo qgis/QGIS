@@ -117,7 +117,12 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
 
   const bool destinationCrsIsRfc7946Compliant = mDestinationCrs.authid() == "OGC:CRS84" || mDestinationCrs.authid() == "EPSG:4326" || mDestinationCrs.authid() == "CRS:84";
   const bool sourceCrsIsRfc7946Compliant = ( mCrs.authid() == "OGC:CRS84" || mCrs.authid() == "CRS:84" || mCrs.authid() == "EPSG:4326" );
-  const bool requiresCRS84geom = mGeoJsonProfile == Qgis::GeoJsonProfile::Rfc7946 || mGeoJsonProfile == Qgis::GeoJsonProfile::JsonFgPlus;
+  // Output requires CRS84 coordinates if the GeoJSON profile is RFC7946 or JSON-FG+ (which requires RFC7946 compliance for geometries) or if the requested CRS is CRS84
+  const bool requiresCRS84geom = ( mGeoJsonProfile == Qgis::GeoJsonProfile::Rfc7946 || mGeoJsonProfile == Qgis::GeoJsonProfile::JsonFgPlus )
+                                 || ( mTransformGeometries && destinationCrsIsRfc7946Compliant );
+
+  // Already transformed
+  const bool geomRequiresTransformToDestinationCrs = mCrs != mDestinationCrs;
 
   QgsGeometry geom = feature.geometry();
 
@@ -187,9 +192,14 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
   {
     // If it is JSON-FG plus we need both CRS84 and the requested CRS
     QgsGeometry transformedCRS84Geom = geom;
-    if ( mTransformGeometries )
+
+    if ( requiresCRS84geom )
     {
-      if ( mCrs.isValid() && !sourceCrsIsRfc7946Compliant && ( requiresCRS84geom || destinationCrsIsRfc7946Compliant ) )
+      if ( sourceCrsIsRfc7946Compliant )
+      {
+        transformedCRS84Geom = geom;
+      }
+      else
       {
         try
         {
@@ -200,26 +210,28 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
           Q_UNUSED( cse )
         }
       }
-      // Do we need to transform the main geometry to the destination CRS?
-      if ( mGeoJsonProfile != Qgis::GeoJsonProfile::Rfc7946 )
+    }
+
+    // Do we need to transform the main geometry to the destination CRS?
+    if ( mGeoJsonProfile != Qgis::GeoJsonProfile::Rfc7946 && geomRequiresTransformToDestinationCrs )
+    {
+      if ( destinationCrsIsRfc7946Compliant )
       {
-        if ( destinationCrsIsRfc7946Compliant )
+        geom = transformedCRS84Geom;
+      }
+      else if ( mCrs.isValid() )
+      {
+        try
         {
-          geom = transformedCRS84Geom;
+          geom.transform( mTransform );
         }
-        else if ( mCrs.isValid() && mTransformGeometries )
+        catch ( QgsCsException &cse )
         {
-          try
-          {
-            geom.transform( mTransform );
-          }
-          catch ( QgsCsException &cse )
-          {
-            Q_UNUSED( cse )
-          }
+          Q_UNUSED( cse )
         }
       }
     }
+
 
     std::function<void( json & )> invertCoords;
     invertCoords = [&invertCoords]( json &geometry ) {

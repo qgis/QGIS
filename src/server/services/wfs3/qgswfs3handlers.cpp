@@ -43,6 +43,7 @@
 #include "qgsvaluemapfieldformatter.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayertemporalproperties.h"
 #include "qgsvectorlayerutils.h"
 
 #include <QString>
@@ -447,8 +448,6 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
       {
         fInfo.format = "date-time";
         fInfo.type = "string";
-        // TODO: connect with temporal properties
-        // fInfo.role = "primary-instant";
         break;
       }
       case QMetaType::Type::QTime:
@@ -500,13 +499,23 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
   }
 
   QList<QString> publishedFieldNames;
+  QgsAttributeList publishedAttributeIds;
   for ( const QgsField &f : std::as_const( constPublishedFields ) )
   {
     publishedFieldNames.push_back( f.name() );
+    publishedAttributeIds.push_back( mapLayer->fields().lookupField( f.name() ) );
   }
 
   // Cannot be const :/
   QgsEditFormConfig config { mapLayer->editFormConfig() };
+
+  // See: https://docs.ogc.org/is/21-045r1/21-045r1.html#_temporal_information
+  QString temporalInstantField;
+  QString temporalStartField;
+  QString temporalEndField;
+  bool isDateTimeField = false;
+
+  exposedTimeDimensions( temporalInstantField, temporalStartField, temporalEndField, isDateTimeField, mapLayer, publishedAttributeIds );
 
   std::function< void( QgsAttributeEditorElement * )> traverseTab;
   traverseTab = [&]( QgsAttributeEditorElement *element ) -> void {
@@ -681,7 +690,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
         }
         else
         {
-          // FIXME: if the widget type is unknown, should we skip the field or include it with best effort?
+          // TODO: if the widget type is unknown, should we skip the field or include it with best effort?
           //         For instance, if a relation is set, we could still include the reference information even
           //         if the widget type is unknown.
           //         For now, we skip and warn (info level) assuming that if the widget is not set this is intentional.
@@ -743,6 +752,25 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
         if ( const QString suffix = widgetConfig.value( u"Suffix"_s ).toString(); !suffix.isEmpty() )
         {
           fInfo.unit = suffix.toStdString();
+        }
+
+        // Time dimension
+        // FIXME: It isn't clear if a date can be used as an instant or as a start/end of an interval.
+        // For now, we assume it doesn't
+        if ( isDateTimeField )
+        {
+          if ( field.name() == temporalInstantField )
+          {
+            fInfo.role = "primary-instant";
+          }
+          else if ( field.name() == temporalStartField )
+          {
+            fInfo.role = "primary-interval-start";
+          }
+          else if ( field.name() == temporalEndField )
+          {
+            fInfo.role = "primary-interval-end";
+          }
         }
 
         availableFieldInformation.push_back( fInfo );
@@ -1689,6 +1717,121 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
   return data;
 }
 
+void QgsWfs3AbstractItemsHandler::exposedTimeDimensions(
+  QString &temporalInstantField, QString &temporalStartField, QString &temporalEndField, bool &isDateTime, const QgsVectorLayer *mapLayer, const QgsAttributeList &requestedAttributes
+) const
+{
+  const QgsMapLayerServerProperties *serverProperties = mapLayer->serverProperties();
+  QList<QgsMapLayerServerProperties::WmsDimensionInfo> dimensions { serverProperties->wmsDimensions() };
+  isDateTime = false;
+
+  for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dimension : std::as_const( dimensions ) )
+  {
+    if ( dimension.name == "time" || dimension.name == "date" )
+    {
+      if ( dimension.fieldName.isEmpty() )
+      {
+        continue;
+      }
+      else if ( dimension.endFieldName.isEmpty() )
+      {
+        if ( !requestedAttributes.contains( mapLayer->fields().indexOf( dimension.fieldName ) ) )
+        {
+          continue;
+        }
+        temporalInstantField = dimension.fieldName;
+      }
+      else
+      {
+        if ( !requestedAttributes.contains( mapLayer->fields().indexOf( dimension.fieldName ) ) || !requestedAttributes.contains( mapLayer->fields().indexOf( dimension.endFieldName ) ) )
+        {
+          continue;
+        }
+        temporalStartField = dimension.fieldName;
+        temporalEndField = dimension.endFieldName;
+      }
+      isDateTime = dimension.name == "time";
+    }
+  }
+}
+
+json QgsWfs3AbstractItemsHandler::timeDimensionInfo( const QgsFeature &feature, const QString &temporalInstantField, const QString &temporalStartField, const QString &temporalEndField, bool isDateTime ) const
+{
+  json data = json::object();
+
+  if ( !temporalInstantField.isEmpty() )
+  {
+    if ( isDateTime )
+    {
+      data["time"] = { { "timestamp", feature.attribute( temporalInstantField ).toDateTime().toUTC().toString( Qt::ISODate ).toStdString() } };
+    }
+    else
+    {
+      data["time"] = { { "date", feature.attribute( temporalInstantField ).toDate().toString( Qt::ISODate ).toStdString() } };
+    }
+  }
+  else if ( !temporalStartField.isEmpty() && !temporalEndField.isEmpty() )
+  {
+    if ( isDateTime )
+    {
+      data["time"] = {
+        { "interval",
+          { feature.attribute( temporalStartField ).toDateTime().toUTC().toString( Qt::ISODate ).toStdString(),
+            feature.attribute( temporalEndField ).toDateTime().toUTC().toString( Qt::ISODate ).toStdString() } }
+      };
+    }
+    else
+    {
+      data["time"] = {
+        { "interval", { feature.attribute( temporalStartField ).toDate().toString( Qt::ISODate ).toStdString(), feature.attribute( temporalEndField ).toDate().toString( Qt::ISODate ).toStdString() } }
+      };
+    }
+  }
+  else if ( !temporalStartField.isEmpty() )
+  {
+    if ( isDateTime )
+    {
+      data["time"] = { { "interval", { feature.attribute( temporalStartField ).toDateTime().toUTC().toString( Qt::ISODate ).toStdString(), ".." } } };
+    }
+    else
+    {
+      data["time"] = { { "interval", { feature.attribute( temporalStartField ).toDate().toString( Qt::ISODate ).toStdString(), ".." } } };
+    }
+  }
+  else if ( !temporalEndField.isEmpty() )
+  {
+    if ( isDateTime )
+    {
+      data["time"] = { { "interval", { "..", feature.attribute( temporalEndField ).toDateTime().toUTC().toString( Qt::ISODate ).toStdString() } } };
+    }
+    else
+    {
+      data["time"] = { { "interval", { "..", feature.attribute( temporalEndField ).toDate().toString( Qt::ISODate ).toStdString() } } };
+    }
+  }
+  return data;
+}
+
+Qgis::GeoJsonProfile QgsWfs3AbstractItemsHandler::jsonProfileFromRequest( const QgsServerApiContext &context ) const
+{
+  const QList<QgsServerOgcApi::Profile> requestedProfiles = profilesFromRequest( context.request() );
+
+  if ( requestedProfiles.contains( QgsServerOgcApi::Profile::JsonFg ) )
+  {
+    return Qgis::GeoJsonProfile::JsonFg;
+  }
+  else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::JsonFgPlus ) )
+  {
+    return Qgis::GeoJsonProfile::JsonFgPlus;
+  }
+  else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::Rfc7946 ) )
+  {
+    return Qgis::GeoJsonProfile::Rfc7946;
+  }
+
+  return Qgis::GeoJsonProfile::Legacy;
+}
+
 const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::fieldParameters( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
 {
   QList<QgsServerQueryStringParameter> params;
@@ -1758,11 +1901,19 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
       relAs = QgsServerOgcApi::Profile::RelAsKey;
   }
 
+  const Qgis::GeoJsonProfile currentProfile { jsonProfileFromRequest( context ) };
+
   // Exporter for JSON output
   QgsJsonExporter exporter { const_cast<QgsVectorLayer *>( mapLayer ) };
   exporter.setAttributes( featureRequest.subsetOfAttributes() );
   exporter.setAttributeDisplayName( true );
+  // Geometries are already transformed by the feature request
   exporter.setTransformGeometries( false );
+  // Note: the feature geometry is already in the requested CRS
+  exporter.setSourceCrs( featureRequest.destinationCrs() );
+  exporter.setDestinationCrs( featureRequest.destinationCrs() );
+  exporter.setGeoJsonProfile( currentProfile );
+
   QgsFeatureList featureList;
   QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
   QgsFeature feat;
@@ -1815,13 +1966,36 @@ void QgsWfs3CollectionsItemsHandler::writeJsonOutput( const QgsVectorLayer *mapL
     }
   }
 
-  // Patch feature
+  // See: https://docs.ogc.org/is/21-045r1/21-045r1.html#_temporal_information
+  QString temporalInstantField;
+  QString temporalStartField;
+  QString temporalEndField;
+  bool isDateTimeField = false;
+
+  if ( currentProfile == Qgis::GeoJsonProfile::JsonFg || currentProfile == Qgis::GeoJsonProfile::JsonFgPlus )
+  {
+    exposedTimeDimensions( temporalInstantField, temporalStartField, temporalEndField, isDateTimeField, mapLayer, requestedAttributes );
+  }
+
+  // Patch features
   //  - IDs with server feature IDs
   //  - add references
   //  - format extra geometries
+  //  - add "time" if needed
+
   for ( int i = 0; i < featureList.length(); i++ )
   {
     data["features"][i]["id"] = fidMap.value( data["features"][i]["id"] ).toStdString();
+
+    // Temporal
+    if ( currentProfile == Qgis::GeoJsonProfile::JsonFg || currentProfile == Qgis::GeoJsonProfile::JsonFgPlus )
+    {
+      const json timeData = timeDimensionInfo( featureList[i], temporalInstantField, temporalStartField, temporalEndField, isDateTimeField );
+      if ( timeData.contains( "time" ) )
+      {
+        data["features"][i].update( timeData );
+      }
+    }
 
     // Add referenced objects
     if ( hasReferencedObjects && relAs != QgsServerOgcApi::Profile::Unset )
@@ -2175,13 +2349,9 @@ void QgsWfs3CollectionsItemsHandler::writeFlatGeobufOutput( const QgsVectorLayer
   // Add alternate links
   apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::Rfc7946, u"This document as GEOJSON"_s ) );
   apiContext.response()->addHeader( u"Link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::HTML, QgsServerOgcApi::Profile::Unset, u"This document as HTML"_s ) );
-#if 0
-    // This not supported yet but I am leaving it here because
-    // I am very optimistic that it will be supported soon!
-  context.response()->setHeader( u"link"_s, headerLink( context, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JSONFG, u"This document as JSONFG"_s ) );
-  context.response()
-    ->setHeader( u"link"_s, headerLink( context, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JSONFG_PLUS, u"This document as JSONFG-PLUS"_s ) );
-#endif
+  apiContext.response()->setHeader( u"link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JsonFg, u"This document as JSONFG"_s ) );
+  apiContext.response()
+    ->setHeader( u"link"_s, headerLink( apiContext, QgsServerOgcApi::Rel::alternate, QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::Profile::JsonFgPlus, u"This document as JSONFG-PLUS"_s ) );
 
   // Add next link
   if ( exportContext.limit + exportContext.offset < matchedFeaturesCount )
@@ -2260,6 +2430,13 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       if ( !requestedCrs.isValid() )
       {
         throw QgsServerApiBadRequestException( u"Requested CRS is not valid"_s );
+      }
+
+      // Check if requested profile is Rfc7946, if so, the requested CRS must be OGC:CRS84
+      const Qgis::GeoJsonProfile requestedProfile { jsonProfileFromRequest( context ) };
+      if ( requestedProfile == Qgis::GeoJsonProfile::Rfc7946 && requestedCrs.authid() != "OGC:CRS84"_L1 )
+      {
+        throw QgsServerApiBadRequestException( u"Requested CRS must be OGC:CRS84 when requested profile is Rfc7946"_s );
       }
 
       // resultType
@@ -2401,7 +2578,9 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       }
 
       // WFS3 initial core specs only serves CRS84 but we support transformations with new profiles
+      // unless requested profile is Rfc 7946 (CRS84) then we transform to the requested CRS
       featureRequest.setDestinationCrs( requestedCrs, context.project()->transformContext() );
+
       // Add offset to limit because paging is not supported by QgsFeatureRequest
       featureRequest.setLimit( limit + offset );
 
@@ -2635,6 +2814,13 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     throw QgsServerApiBadRequestException( u"Requested CRS is not valid"_s );
   }
 
+  // Check if requested profile is Rfc7946, if so, the requested CRS must be OGC:CRS84
+  const Qgis::GeoJsonProfile requestedProfile { jsonProfileFromRequest( context ) };
+  if ( requestedProfile == Qgis::GeoJsonProfile::Rfc7946 && requestedCrs.authid() != "OGC:CRS84"_L1 )
+  {
+    throw QgsServerApiBadRequestException( u"Requested CRS must be OGC:CRS84 when requested profile is Rfc7946"_s );
+  }
+
   const QString collectionId { match.captured( u"collectionId"_s ) };
   // May throw if not found
   QgsVectorLayer *mapLayer { layerFromCollectionId( context, collectionId ) };
@@ -2648,6 +2834,9 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   // Retrieve feature from storage
   const QString featureId { match.captured( u"featureId"_s ) };
   QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context );
+
+  // Set destination CRS
+  featureRequest.setDestinationCrs( requestedCrs, context.project()->transformContext() );
 
   const QString fidExpression { QgsServerFeatureId::getExpressionFromServerFid( featureId, mapLayer->dataProvider() ) };
   if ( !fidExpression.isEmpty() )
@@ -2678,8 +2867,6 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     throw QgsServerApiInternalServerError( u"Invalid feature [%1]"_s.arg( featureId ) );
   }
 
-  const QList<QgsServerOgcApi::Profile> requestedProfiles = profilesFromRequest( context.request() );
-
   auto doGet = [&]() {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = context.serverInterface()->accessControls();
@@ -2694,12 +2881,17 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
     const QgsAttributeList requestedAttributes = featureRequest.subsetOfAttributes();
 
+    // Note: the feature geometry is already in the requested CRS
     QgsJsonExporter exporter { mapLayer };
     exporter.setAttributes( requestedAttributes );
     exporter.setAttributeDisplayName( true );
-    exporter.setTransformGeometries( true );
-    exporter.setSourceCrs( mapLayer->crs() );
+    exporter.setTransformGeometries( false );
+    // Set CRS info so that the exporter can handle the transformation to CRS84 if the profile requires it
+    exporter.setSourceCrs( requestedCrs );
     exporter.setDestinationCrs( requestedCrs );
+    exporter.setGeoJsonProfile( requestedProfile );
+
+    json data = exporter.exportFeatureToJsonObject( feature );
 
     QMap<int, ReferencedLayerInfo> referencedInfo = gatherReferencedLayerInfo( mapLayer, context );
     // remove if attributes are not requested
@@ -2710,7 +2902,20 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     QgsServerOgcApi::Profile relAs = QgsServerOgcApi::Profile::Unset;
     bool hasReferencedObjects = !referencedInfo.isEmpty();
 
-    json data = exporter.exportFeatureToJsonObject( feature );
+    // Temporal
+    if ( requestedProfile == Qgis::GeoJsonProfile::JsonFg || requestedProfile == Qgis::GeoJsonProfile::JsonFgPlus )
+    {
+      QString temporalInstantField;
+      QString temporalStartField;
+      QString temporalEndField;
+      bool isDateTime( false );
+      exposedTimeDimensions( temporalInstantField, temporalStartField, temporalEndField, isDateTime, mapLayer, requestedAttributes );
+      const json timeData = timeDimensionInfo( feature, temporalInstantField, temporalStartField, temporalEndField, isDateTime );
+      if ( timeData.contains( "time" ) )
+      {
+        data.update( timeData );
+      }
+    }
 
     // Patch feature
     //  - IDs with server feature IDs
@@ -2720,6 +2925,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
     if ( hasReferencedObjects )
     {
+      const QList<QgsServerOgcApi::Profile> requestedProfiles = profilesFromRequest( context.request() );
       if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsUri ) )
         relAs = QgsServerOgcApi::Profile::RelAsUri;
       else if ( requestedProfiles.contains( QgsServerOgcApi::Profile::RelAsLink ) )
@@ -2918,6 +3124,20 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
         // Now we need to send the updated feature to the client
         feature = mapLayer->getFeature( feature.id() );
+        // Transform the geometry to the requested CRS because that's what doGet expects
+        if ( mapLayer->crs() != requestedCrs )
+        {
+          QgsGeometry geom { feature.geometry() };
+          try
+          {
+            geom.transform( QgsCoordinateTransform( mapLayer->crs(), requestedCrs, context.project()->transformContext() ) );
+          }
+          catch ( QgsCsException & )
+          {
+            throw QgsServerApiInternalServerError( u"Geometry could not be transformed to requested CRS"_s );
+          }
+          feature.setGeometry( geom );
+        }
         doGet();
       }
       catch ( json::exception &ex )
@@ -3041,6 +3261,20 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
       // Now we need to send the updated feature to the client
       feature = mapLayer->getFeature( feature.id() );
+      // Transform the geometry to the requested CRS because that's what doGet expects
+      if ( mapLayer->crs() != requestedCrs )
+      {
+        QgsGeometry geom { feature.geometry() };
+        try
+        {
+          geom.transform( QgsCoordinateTransform( mapLayer->crs(), requestedCrs, context.project()->transformContext() ) );
+        }
+        catch ( QgsCsException & )
+        {
+          throw QgsServerApiInternalServerError( u"Geometry could not be transformed to requested CRS"_s );
+        }
+        feature.setGeometry( geom );
+      }
       doGet();
 
       break;
