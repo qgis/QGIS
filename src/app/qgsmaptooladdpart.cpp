@@ -167,7 +167,6 @@ void QgsMapToolAddPart::finalizeEditCommand( QgsVectorLayer *layer, Qgis::Geomet
     case Qgis::GeometryOperationResult::NothingHappened:
     case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
     case Qgis::GeometryOperationResult::GeometryTypeHasChanged:
-    case Qgis::GeometryOperationResult::SplitPointCannotSplitPolygon:
       // Should not reach here
       // Other OperationResults should not be returned by addPart
       errorMessage = tr( "Unexpected OperationResult: %1" ).arg( qgsEnumValueToKey( errorCode ) );

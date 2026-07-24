@@ -1110,7 +1110,9 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
 
   if ( QgsWkbTypes::geometryType( splitGeom.wkbType() ) == Qgis::GeometryType::Point && QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Polygon )
   {
-    return SplitPointCannotSplitPolygon; //points cannot split polygons
+    //currently, points cannot split polygons,
+    //but it could change in the future in GEOS
+    return EngineError;
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();

@@ -1453,7 +1453,6 @@ Splits parts cut by the given line
          - InvalidBaseGeometry
          - GeometryEngineError
          - SplitCannotSplitPoint
-         - SplitPointCannotSplitPolygon
 
 .. note::
 
@@ -1483,7 +1482,6 @@ Splits parts cut by the given line
          - InvalidBaseGeometry
          - GeometryEngineError
          - SplitCannotSplitPoint
-         - SplitPointCannotSplitPolygon
 
 .. note::
 
@@ -1509,7 +1507,6 @@ Splits features cut by the given line
          - InvalidBaseGeometry
          - GeometryEngineError
          - SplitCannotSplitPoint
-         - SplitPointCannotSplitPolygon
 
 .. note::
 
@@ -1539,7 +1536,6 @@ Splits features cut by the given line
          - InvalidBaseGeometry
          - GeometryEngineError
          - SplitCannotSplitPoint
-         - SplitPointCannotSplitPolygon
 
 .. note::
 
@@ -1567,7 +1563,6 @@ Splits features cut by the given curve
            - InvalidBaseGeometry
            - GeometryEngineError
            - SplitCannotSplitPoint
-           - SplitPointCannotSplitPolygon
 
          - topologyTestPoints: topological points to be tested against other layers
 

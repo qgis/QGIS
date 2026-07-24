@@ -103,8 +103,7 @@ class QgsFeedback;
       InvalidBaseGeometry,    //!< The geometry on which the operation occurs is not valid
       InvalidInput,           //!< The input is not valid
       /* split */
-      SplitCannotSplitPoint,        //!< Points cannot be split
-      SplitPointCannotSplitPolygon, //!< Points cannot split polygons \since QGIS 4.4
+      SplitCannotSplitPoint, //!< Points cannot be split
     };
 
     virtual ~QgsGeometryEngine() = default;
