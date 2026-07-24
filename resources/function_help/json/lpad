@@ -11,6 +11,8 @@
     "description": "length of new string"
   }, {
     "arg": "fill",
+    "optional": true,
+    "default":"' '",
     "description": "character to pad the remaining space with"
   }],
   "examples": [{
