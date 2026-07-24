@@ -2740,13 +2740,61 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   // Zoom the map canvas in response to a mouse wheel event. Moving the
   // wheel forward (away) from the user zooms in
 
-  QgsDebugMsgLevel( "Wheel event delta " + QString::number( e->angleDelta().y() ), 2 );
+  QgsDebugMsgLevel( "Wheel event delta " + QString::number( e->angleDelta().x() ) + " / " + QString::number( e->angleDelta().y() ), 2 );
 
   if ( mMapTool )
   {
     mMapTool->wheelEvent( e );
     if ( e->isAccepted() )
       return;
+  }
+
+  // Classify scroll direction to ONLY do either vertical (zoom) or horizontal (temporal) navigation
+  // (not both at the same time), with quick timeout as fallback for missing phase info.
+  constexpr int WHEEL_RESET_TIMEOUT_MS = 200;
+  if ( e->phase() == Qt::ScrollBegin || !mLastWheelEventTimer.isValid() || mLastWheelEventTimer.elapsed() > WHEEL_RESET_TIMEOUT_MS )
+  {
+    mWheelAxisLock = WheelAxis::Undecided;
+  }
+  mLastWheelEventTimer.restart();
+
+  // Hysteresis to allow switching between horizontal and vertical direction mid-scroll.
+  constexpr int WHEEL_AXIS_BREAKOUT_FACTOR = 20;
+  constexpr int WHEEL_AXIS_BREAKOUT_MIN_DELTA = 10;
+
+  const int absX = std::abs( e->angleDelta().x() );
+  const int absY = std::abs( e->angleDelta().y() );
+  switch ( mWheelAxisLock )
+  {
+    case WheelAxis::Undecided:
+      if ( absX > absY )
+        mWheelAxisLock = WheelAxis::Horizontal;
+      else if ( absY > absX )
+        mWheelAxisLock = WheelAxis::Vertical;
+      // else: ambiguous (equal, or no movement yet) - wait for a clearer event
+      break;
+
+    case WheelAxis::Horizontal:
+      if ( absY >= WHEEL_AXIS_BREAKOUT_MIN_DELTA && absY > ( absX * WHEEL_AXIS_BREAKOUT_FACTOR ) )
+      {
+        mWheelAxisLock = WheelAxis::Vertical;
+      }
+      break;
+
+    case WheelAxis::Vertical:
+      if ( absX >= WHEEL_AXIS_BREAKOUT_MIN_DELTA && absX > ( absY * WHEEL_AXIS_BREAKOUT_FACTOR ) )
+      {
+        mWheelAxisLock = WheelAxis::Horizontal;
+      }
+      break;
+  }
+
+  if ( mWheelAxisLock == WheelAxis::Horizontal )
+  {
+    // Forward horizontal scroll events (e.g. for temporal navigation)
+    emit horizontalWheelScrolled( e );
+    e->accept();
+    return;
   }
 
   if ( e->angleDelta().y() == 0 )

@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QUrl>
+#include <QWheelEvent>
 
 #include "moc_qgstemporalcontrollerdockwidget.cpp"
 
@@ -53,24 +54,34 @@ QgsTemporalController *QgsTemporalControllerDockWidget::temporalController()
 
 void QgsTemporalControllerDockWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
-  if ( canvas && canvas->viewport() )
-    canvas->viewport()->installEventFilter( this );
-}
+  if ( !canvas )
+    return;
 
-bool QgsTemporalControllerDockWidget::eventFilter( QObject *object, QEvent *event )
-{
-  if ( event->type() == QEvent::Wheel )
-  {
-    QWheelEvent *wheelEvent = qgis::down_cast<QWheelEvent *>( event );
-    // handle horizontal wheel events by scrubbing timeline
-    if ( wheelEvent->angleDelta().x() != 0 )
+  disconnect( mHorizontalScrollConnection );
+  mHorizontalScrollConnection = connect( canvas, &QgsMapCanvas::horizontalWheelScrolled, this, [this]( QWheelEvent *event ) {
+    // Trackpads may send several "short" scroll events compared to mouse wheels that send one "large" scroll event,
+    // so we need to collect enough scroll "steps" before changing frames.
+    constexpr int WHEEL_RESET_TIMEOUT_MS = 200;
+    if ( event->phase() == Qt::ScrollBegin || !mScrollGestureTimer.isValid() || mScrollGestureTimer.elapsed() > WHEEL_RESET_TIMEOUT_MS )
     {
-      const int step = -wheelEvent->angleDelta().x() / 120.0;
-      mControllerWidget->temporalController()->setCurrentFrameNumber( mControllerWidget->temporalController()->currentFrameNumber() + step );
-      return true;
+      mAccumulatedScrollSteps = 0;
     }
-  }
-  return QgsDockWidget::eventFilter( object, event );
+    mScrollGestureTimer.restart();
+
+    int deltaX = event->angleDelta().x();
+    // Make horizontal scrolling actually feel natural with "natural scrolling" turned on in macOS
+    if ( event->inverted() )
+      deltaX = -deltaX;
+
+    mAccumulatedScrollSteps += deltaX / 120.0;
+    const int frameSteps = static_cast<int>( mAccumulatedScrollSteps );
+    if ( frameSteps != 0 )
+    {
+      mAccumulatedScrollSteps -= frameSteps;
+      QgsTemporalNavigationObject *controller = mControllerWidget->temporalController();
+      controller->setCurrentFrameNumber( controller->currentFrameNumber() - frameSteps );
+    }
+  } );
 }
 
 void QgsTemporalControllerDockWidget::exportAnimation()
