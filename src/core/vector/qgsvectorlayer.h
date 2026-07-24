@@ -1460,7 +1460,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * - InvalidBaseGeometry
      * - GeometryEngineError
      * - SplitCannotSplitPoint
-     * - SplitPointCannotSplitPolygon
      *
      * \note Calls to splitParts() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1483,7 +1482,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * - InvalidBaseGeometry
      * - GeometryEngineError
      * - SplitCannotSplitPoint
-     * - SplitPointCannotSplitPolygon
      *
      * \note Calls to splitParts() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1505,7 +1503,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * - InvalidBaseGeometry
      * - GeometryEngineError
      * - SplitCannotSplitPoint
-     * - SplitPointCannotSplitPolygon
      *
      * \note Calls to splitFeatures() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1528,7 +1525,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * - InvalidBaseGeometry
      * - GeometryEngineError
      * - SplitCannotSplitPoint
-     * - SplitPointCannotSplitPolygon
      *
      * \note Calls to splitFeatures() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1552,7 +1548,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * - InvalidBaseGeometry
      * - GeometryEngineError
      * - SplitCannotSplitPoint
-     * - SplitPointCannotSplitPolygon
      *
      * \note Calls to splitFeatures() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed

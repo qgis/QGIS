@@ -84,7 +84,6 @@ Example
       InvalidBaseGeometry,
       InvalidInput,
       SplitCannotSplitPoint,
-      SplitPointCannotSplitPolygon,
     };
 
     virtual ~QgsGeometryEngine();
