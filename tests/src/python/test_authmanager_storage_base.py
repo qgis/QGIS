@@ -885,12 +885,17 @@ class TestAuthManagerStorageBase:
             self.storage.capabilities()
             & Qgis.AuthConfigurationStorageCapability.UpdateSetting
         ):
-            raise unittest.SkipTest(
-                "Storage does not support reading certificate authorities"
-            )
+            raise unittest.SkipTest("Storage does not support reading settings")
 
         auth_manager = QgsApplication.authManager()
         auth_manager.ensureInitialized()
+
+        # Reset self.storage to point to the instance of QgsAuthConfigurationStorage that is registered with the auth manager
+        self.storage = (
+            QgsApplication.authManager()
+            .authConfigurationStorageRegistry()
+            .storage(self.storage.id())
+        )
 
         temp_dir = QTemporaryDir()
         temp_dir_path = temp_dir.path()
