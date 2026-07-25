@@ -2395,6 +2395,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Deletes all the layout designer windows
     void deleteLayoutDesigners();
 
+    //! Returns the OpenGL version and GL renderer string if available
+    static QString openGlReportString();
+
     void setupLayoutManagerConnections();
 
     void setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableAction );
