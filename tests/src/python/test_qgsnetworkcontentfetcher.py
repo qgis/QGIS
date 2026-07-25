@@ -172,6 +172,7 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
 
     def testAuthConfig(self):
         authm = QgsApplication.authManager()
+        self.assertTrue(authm.setMasterPassword("masterpassword", True))
         auth_config = QgsAuthMethodConfig("APIHeader")
         auth_config.setConfig("key", "value")
         auth_config.setName("test_header_config")
@@ -199,6 +200,7 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
 
     def testAuthConfigRedirectSameHost(self):
         authm = QgsApplication.authManager()
+        self.assertTrue(authm.setMasterPassword("masterpassword", True))
         auth_config = QgsAuthMethodConfig("APIHeader")
         auth_config.setConfig("key", "value")
         auth_config.setName("test_header_config")
@@ -228,6 +230,7 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
 
     def testAuthConfigRedirectDifferentHost(self):
         authm = QgsApplication.authManager()
+        self.assertTrue(authm.setMasterPassword("masterpassword", True))
         auth_config = QgsAuthMethodConfig("APIHeader")
         auth_config.setConfig("key", "value")
         auth_config.setName("test_header_config")
