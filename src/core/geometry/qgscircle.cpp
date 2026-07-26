@@ -371,7 +371,7 @@ int QgsCircle::innerTangents( const QgsCircle &other, QgsPointXY &line1P1, QgsPo
 QgsCircle QgsCircle::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) // cppcheck-suppress duplInheritedMember
 {
   const double delta_x = std::fabs( pt1.x() - pt2.x() );
-  const double delta_y = std::fabs( pt1.x() - pt2.y() );
+  const double delta_y = std::fabs( pt1.y() - pt2.y() );
   if ( !qgsDoubleNear( delta_x, delta_y ) )
   {
     return QgsCircle();
