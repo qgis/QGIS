@@ -83,6 +83,7 @@ void TestQgsCircle::fromExtent()
 {
   QVERIFY( QgsCircle().fromExtent( QgsPoint( -5, -5 ), QgsPoint( 5, 5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 0 ) );
   QVERIFY( QgsCircle().fromExtent( QgsPoint( -7.5, -2.5 ), QgsPoint( 2.5, 200.5 ) ).isEmpty() );
+  QVERIFY( QgsCircle().fromExtent( QgsPoint( 0, 1 ), QgsPoint( 6, 7 ) ) == QgsCircle( QgsPoint( 3, 4 ), 3, 0 ) );
 }
 
 void TestQgsCircle::from3Points()
