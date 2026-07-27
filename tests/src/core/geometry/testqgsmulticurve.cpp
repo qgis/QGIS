@@ -334,7 +334,8 @@ void TestQgsMultiCurve::addGeometries()
   QVector<double> weights { 1, 1 };
   QgsNurbsCurve ncPart( controlPoints, degree, knots, weights );
 
-  //NurbsCurve not allowed in MultiCurves
+
+  //As it is a fresh type and not supported by other software, NurbsCurve not allowed in MultiCurves at the moment
   geoms << part.clone() << linePart.clone() << ccPart.clone() << ncPart.clone();
   QVERIFY( !mc.addGeometries( geoms ) );
   geoms.clear();
