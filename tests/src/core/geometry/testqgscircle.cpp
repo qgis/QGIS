@@ -149,7 +149,32 @@ void TestQgsCircle::from3tangentsMulti()
   QVector<QgsCircle> circles;
   QgsCircle circ;
 
+  // the 1st tangent and the 2nd tangent are parallel
   circles = QgsCircle::from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 5 ), QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ) );
+  QCOMPARE( circles.count(), 2 );
+
+  circ = circles.at( 0 );
+  QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 8.5355, 2.5000 ), 0.0001 );
+  QGSCOMPARENEAR( circ.radius(), 2.5, 0.0001 );
+
+  circ = circles.at( 1 );
+  QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 1.4645, 2.5000 ), 0.0001 );
+  QGSCOMPARENEAR( circ.radius(), 2.5, 0.0001 );
+
+  // the 1st tangent and the 3rd tangent are parallel
+  circles = QgsCircle::from3TangentsMulti( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ), QgsPoint( 5, 5 ), QgsPoint( 10, 5 ) );
+  QCOMPARE( circles.count(), 2 );
+
+  circ = circles.at( 0 );
+  QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 8.5355, 2.5000 ), 0.0001 );
+  QGSCOMPARENEAR( circ.radius(), 2.5, 0.0001 );
+
+  circ = circles.at( 1 );
+  QGSCOMPARENEARPOINT( circ.center(), QgsPoint( 1.4645, 2.5000 ), 0.0001 );
+  QGSCOMPARENEAR( circ.radius(), 2.5, 0.0001 );
+
+  // the 2nd tangent and the 3rd tangent are parallel
+  circles = QgsCircle::from3TangentsMulti( QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ), QgsPoint( 0, 0 ), QgsPoint( 5, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 5 ) );
   QCOMPARE( circles.count(), 2 );
 
   circ = circles.at( 0 );
