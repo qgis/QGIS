@@ -148,6 +148,7 @@ bool QgsMultiCurve::addGeometry( QgsAbstractGeometry *g )
     return false;
   }
 
+  //As it is a fresh type and not supported by other software, NurbsCurve not allowed in MultiCurves at the moment
   const Qgis::WkbType flatType = QgsWkbTypes::flatType( g->wkbType() );
   if ( !( flatType == Qgis::WkbType::LineString || flatType == Qgis::WkbType::CircularString || flatType == Qgis::WkbType::CompoundCurve ) )
   {
@@ -181,6 +182,7 @@ bool QgsMultiCurve::addGeometries( const QVector<QgsAbstractGeometry *> &geometr
       return false;
     }
 
+    //As it is a fresh type and not supported by other software, NurbsCurve not allowed in MultiCurves at the moment
     const Qgis::WkbType flatType = QgsWkbTypes::flatType( g->wkbType() );
     if ( !( flatType == Qgis::WkbType::LineString || flatType == Qgis::WkbType::CircularString || flatType == Qgis::WkbType::CompoundCurve ) )
     {
@@ -219,6 +221,7 @@ bool QgsMultiCurve::insertGeometry( QgsAbstractGeometry *g, int index )
     return false;
   }
 
+  //As it is a fresh type and not supported by other software, NurbsCurve not allowed in MultiCurves at the moment
   const Qgis::WkbType flatType = QgsWkbTypes::flatType( g->wkbType() );
   if ( !( flatType == Qgis::WkbType::LineString || flatType == Qgis::WkbType::CircularString || flatType == Qgis::WkbType::CompoundCurve ) )
   {
