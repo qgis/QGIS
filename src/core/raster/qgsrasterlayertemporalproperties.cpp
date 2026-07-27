@@ -391,8 +391,17 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
       {
         const QDomElement rangeElement = ranges.at( i ).toElement();
         const int band = rangeElement.attribute( u"band"_s ).toInt();
-        const QDateTime begin = QDateTime::fromString( rangeElement.attribute( u"begin"_s ), Qt::ISODate );
-        const QDateTime end = QDateTime::fromString( rangeElement.attribute( u"end"_s ), Qt::ISODate );
+        QDateTime begin = QDateTime::fromString( rangeElement.attribute( u"begin"_s ), Qt::ISODate );
+        QDateTime end = QDateTime::fromString( rangeElement.attribute( u"end"_s ), Qt::ISODate );
+
+        // fixed range dates per band were wrongly written in local time specification in the past while they were actually UTC.
+        // So let's force them to UTC !
+        if ( begin.timeSpec() == Qt::LocalTime )
+          begin.setTimeSpec( Qt::UTC );
+
+        if ( end.timeSpec() == Qt::LocalTime )
+          end.setTimeSpec( Qt::UTC );
+
         const bool includeBeginning = rangeElement.attribute( u"includeBeginning"_s ).toInt();
         const bool includeEnd = rangeElement.attribute( u"includeEnd"_s ).toInt();
         mRangePerBand.insert( band, QgsDateTimeRange( begin, end, includeBeginning, includeEnd ) );
