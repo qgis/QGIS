@@ -290,7 +290,7 @@ QVector<QgsCircle> QgsCircle::from3TangentsMulti(
   else if ( !isIntersect_tg1tg3 )
     return from2ParallelsLine( pt1_tg1, pt2_tg1, pt1_tg3, pt2_tg3, pt1_tg2, pt2_tg2, pos, epsilon );
   else if ( !isIntersect_tg2tg3 )
-    return from2ParallelsLine( pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, pt1_tg1, pt1_tg1, pos, epsilon );
+    return from2ParallelsLine( pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, pt1_tg1, pt2_tg1, pos, epsilon );
 
   if ( p1.is3D() )
   {
