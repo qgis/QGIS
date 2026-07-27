@@ -194,7 +194,8 @@ void TestQgsMultiCurve::addGeometry()
   QCOMPARE( mc.vertexCount( 1, 0 ), 3 );
   QCOMPARE( mc.vertexCount( 2, 0 ), 5 );
 
-  //Only LinearString, CircularString and CompoundCurves are allowed
+  //Only LinearString, CircularString and CompoundCurves are allowed.
+  //As it is a fresh type and not supported by other software, NurbsCurve not allowed in MultiCurves at the moment.
   QVector<QgsPoint> controlPoints { QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) };
   int degree = 1;
   QVector<double> knots { 0, 0, 1, 1 };
@@ -616,6 +617,7 @@ void TestQgsMultiCurve::insertGeometry()
 
   QCOMPARE( mc.numGeometries(), 3 );
 
+  //As it is a fresh type and not supported by other software, NurbsCurve not allowed in MultiCurves at the moment
   QVector<QgsPoint> controlPoints { QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) };
   int degree = 1;
   QVector<double> knots { 0, 0, 1, 1 };
