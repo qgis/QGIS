@@ -5653,19 +5653,19 @@ void TestQgsLabelingEngine::testRotationBasedOrientationLine()
 
 void TestQgsLabelingEngine::testHorizontalRotation_data()
 {
-  QTest::addColumn<QgsLabelLineSettings::AnchorTextPoint>( "textAnchor" );
+  QTest::addColumn<Qgis::TextAnchorPoint>( "textAnchor" );
   QTest::addColumn<double>( "angle" );
   QTest::addColumn<QString>( "referenceImage" );
 
-  QTest::newRow( "center 45 degrees" ) << QgsLabelLineSettings::AnchorTextPoint::CenterOfText << 45.0 << "horizontal_angle_center_45";
-  QTest::newRow( "center -45 degrees" ) << QgsLabelLineSettings::AnchorTextPoint::CenterOfText << -45.0 << "horizontal_angle_center_neg45";
-  QTest::newRow( "end 45 degrees" ) << QgsLabelLineSettings::AnchorTextPoint::EndOfText << 45.0 << "horizontal_angle_end_45";
-  QTest::newRow( "start 45 degrees" ) << QgsLabelLineSettings::AnchorTextPoint::StartOfText << 45.0 << "horizontal_angle_start_45";
+  QTest::newRow( "center 45 degrees" ) << Qgis::TextAnchorPoint::CenterOfText << 45.0 << "horizontal_angle_center_45";
+  QTest::newRow( "center -45 degrees" ) << Qgis::TextAnchorPoint::CenterOfText << -45.0 << "horizontal_angle_center_neg45";
+  QTest::newRow( "end 45 degrees" ) << Qgis::TextAnchorPoint::EndOfText << 45.0 << "horizontal_angle_end_45";
+  QTest::newRow( "start 45 degrees" ) << Qgis::TextAnchorPoint::StartOfText << 45.0 << "horizontal_angle_start_45";
 }
 
 void TestQgsLabelingEngine::testHorizontalRotation()
 {
-  QFETCH( QgsLabelLineSettings::AnchorTextPoint, textAnchor );
+  QFETCH( Qgis::TextAnchorPoint, textAnchor );
   QFETCH( double, angle );
   QFETCH( QString, referenceImage );
 
