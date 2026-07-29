@@ -203,28 +203,23 @@ class WidgetWrapperFactory:
             return WidgetWrapperFactory.create_wrapper_from_metadata(
                 param, dialog, row, col
             )
-        else:
-            # try from c++ registry first
-            class_type = dialog.__class__.__name__
-            if class_type == "ModelerParametersDialog":
-                wrapper = QgsGui.processingGuiRegistry().createModelerParameterWidget(
-                    dialog.model, dialog.childId, param, dialog.context
-                )
-            else:
-                dialog_type = dialogTypes.get(
-                    class_type, QgsProcessingGui.WidgetType.Standard
-                )
-                wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(
-                    param, dialog_type
-                )
-            if wrapper is not None:
-                wrapper.setDialog(dialog)
-                return wrapper
 
-            # fallback to Python registry
-            return WidgetWrapperFactory.create_wrapper_from_class(
-                param, dialog, row, col
+        # retrieve from c++ registry
+        class_type = dialog.__class__.__name__
+        if class_type == "ModelerParametersDialog":
+            wrapper = QgsGui.processingGuiRegistry().createModelerParameterWidget(
+                dialog.model, dialog.childId, param, dialog.context
             )
+        else:
+            dialog_type = dialogTypes.get(
+                class_type, QgsProcessingGui.WidgetType.Standard
+            )
+            wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(
+                param, dialog_type
+            )
+
+        wrapper.setDialog(dialog)
+        return wrapper
 
     @staticmethod
     def create_wrapper_from_metadata(param, dialog, row=0, col=0):
@@ -244,7 +239,3 @@ class WidgetWrapperFactory:
             wrapper = wrapper(param, dialog, row, col, **params)
         # or a wrapper instance
         return wrapper
-
-    @staticmethod
-    def create_wrapper_from_class(param, dialog, row=0, col=0):
-        assert False, param.type()
