@@ -2791,10 +2791,6 @@ void TestQgsGeometry::splitGeometry()
   QVERIFY( newGeoms.count() == 1 );
   QCOMPARE( newGeoms[0].asWkt( 2 ), u"LineString (2 2, 3 3)"_s );
 
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  // Skip "Do not split on self-intersections"
-  // It's not yet supported for GEOS 3.15
-#else
   // Do not split on self-intersections - https://github.com/qgis/QGIS/issues/14070
   g2 = QgsGeometry::fromWkt( "LineString (0 0, 10 0, 10 2, 6 2, 6 -2, 3 -2, 3 2, 0 2, 0 0)" );
   testPoints.clear();
@@ -2807,7 +2803,6 @@ void TestQgsGeometry::splitGeometry()
   QCOMPARE( newGeoms[3].asWkt( 2 ), u"LineString (3 -1, 3 1)"_s );
   QCOMPARE( newGeoms[4].asWkt( 2 ), u"LineString (3 1, 3 2, 0 2, 0 1)"_s );
   QCOMPARE( newGeoms[5].asWkt( 2 ), u"LineString (0 1, 0 0)"_s );
-#endif
 
   // Same, but with a single split point on an existing vertex
   g2 = QgsGeometry::fromWkt( "LineString (0 0, 10 0, 10 2, 6 2, 6 -2, 3 -2, 3 2, 0 2, 0 0)" );
