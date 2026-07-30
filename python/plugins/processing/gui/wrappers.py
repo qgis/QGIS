@@ -24,11 +24,7 @@ import os
 from copy import deepcopy
 from inspect import isclass
 
-from qgis.core import (
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterExtent,
-    QgsProcessingParameterPoint,
-)
+from qgis.core import QgsProcessingParameterDefinition
 from qgis.gui import (
     QgsAbstractProcessingParameterWidgetWrapper,
     QgsGui,
@@ -77,10 +73,6 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
         if self.dialogType == DIALOG_BATCH:
             return None
         desc = self.parameterDefinition().description()
-        if isinstance(self.parameterDefinition(), QgsProcessingParameterExtent):
-            desc += self.tr(" (xmin, xmax, ymin, ymax)")
-        if isinstance(self.parameterDefinition(), QgsProcessingParameterPoint):
-            desc += self.tr(" (x, y)")
         if (
             self.parameterDefinition().flags()
             & QgsProcessingParameterDefinition.Flag.FlagOptional
