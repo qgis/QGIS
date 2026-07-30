@@ -1584,22 +1584,16 @@ Qgis::GeometryOperationResult QgsVectorLayer::addRing( QgsCurve *ring, QgsFeatur
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  std::unique_ptr<QgsCurve> uniquePtrRing( ring );
+
   if ( !isValid() || !mEditBuffer || !mDataProvider )
-  {
-    delete ring;
     return Qgis::GeometryOperationResult::LayerNotEditable;
-  }
 
-  if ( !ring )
-  {
+  if ( !uniquePtrRing )
     return Qgis::GeometryOperationResult::InvalidInputGeometryType;
-  }
 
-  if ( !ring->isClosed() )
-  {
-    delete ring;
+  if ( !uniquePtrRing->isClosed() )
     return Qgis::GeometryOperationResult::AddRingNotClosed;
-  }
 
   QgsVectorLayerEditUtils utils( this );
   Qgis::GeometryOperationResult result = Qgis::GeometryOperationResult::AddRingNotInExistingFeature;
@@ -1607,16 +1601,15 @@ Qgis::GeometryOperationResult QgsVectorLayer::addRing( QgsCurve *ring, QgsFeatur
   //first try with selected features
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    result = utils.addRing( static_cast< QgsCurve * >( ring->clone() ), mSelectedFeatureIds, featureId );
+    result = utils.addRing( static_cast< QgsCurve * >( uniquePtrRing->clone() ), mSelectedFeatureIds, featureId );
   }
 
   if ( result != Qgis::GeometryOperationResult::Success )
   {
     //try with all intersecting features
-    result = utils.addRing( static_cast< QgsCurve * >( ring->clone() ), QgsFeatureIds(), featureId );
+    result = utils.addRing( static_cast< QgsCurve * >( uniquePtrRing.release() ), QgsFeatureIds(), featureId );
   }
 
-  delete ring;
   return result;
 }
 
