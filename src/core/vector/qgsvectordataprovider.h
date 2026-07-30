@@ -558,7 +558,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * \since QGIS 4.4
      */
-    virtual const QgsLayerRenderingSettings *renderingSettings( const QVariantMap &configuration = QVariantMap() ) const SIP_SKIP;
+    virtual const QgsLayerRenderingSettings *renderingSettings( const QVariantMap &configuration = QVariantMap() ) const;
 
     /**
      * Convert \a value to \a type
