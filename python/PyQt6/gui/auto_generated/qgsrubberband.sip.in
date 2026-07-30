@@ -14,6 +14,32 @@
 #include <qgsrubberband.h>
 %End
 
+
+class QgsRubberBandPreviewItem
+{
+%Docstring(signature="appended")
+Abstract interface for rendering custom preview overlays attached to a
+:py:class:`QgsRubberBand`.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsrubberband.h"
+%End
+  public:
+    virtual ~QgsRubberBandPreviewItem();
+
+    virtual void render( QgsRenderContext &context, const QgsRubberBand *rubberBand ) = 0;
+%Docstring
+Renders the custom preview overlay using the shared render context.
+
+:param context: The destination render context
+:param rubberBand: The parent rubber band
+%End
+};
+
+
 class QgsRubberBand : QgsMapCanvasItem
 {
 %Docstring(signature="appended")
@@ -188,6 +214,26 @@ type according to geometryType.
 :param geometryType: Defines how the data should be drawn onto the
                      screen. (Use :py:class:`Qgis`.Line,
                      :py:class:`Qgis`.Polygon or :py:class:`Qgis`.Point)
+%End
+
+    void addPreviewItem( QgsRubberBandPreviewItem *item /Transfer/ );
+%Docstring
+Adds a custom preview ``item`` decorator to the rubber band.
+
+Ownership of the item is transferred to the rubber band.
+
+.. seealso:: :py:func:`clearPreviewItems`
+
+.. versionadded:: 4.4
+%End
+
+    void clearPreviewItems();
+%Docstring
+Clears all registered preview items.
+
+.. seealso:: :py:func:`addPreviewItem` )
+
+.. versionadded:: 4.4
 %End
 
     void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
