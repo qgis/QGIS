@@ -180,8 +180,20 @@ class GUI_EXPORT QgsAttributesFormLayoutView : public QgsAttributesFormBaseView
 
   private slots:
     void onItemDoubleClicked( const QModelIndex &index );
-    void handleExternalDroppedItem( QModelIndex &index );
-    void handleInternalDroppedItem( QModelIndex &index );
+    void handleExternalDroppedItems( const QModelIndexList &indexes );
+    void handleInternalDroppedItems( const QModelIndexList &indexes );
+
+  private:
+    //! Selects all the given source model \a indexes, making the last one the current index.
+    void selectDroppedItems( const QModelIndexList &indexes );
+
+    //! Recursively records the expanded state of the subtree rooted at source model \a sourceIndex.
+    void storeExpandedState( const QModelIndex &sourceIndex );
+
+    //! Recursively restores the expanded state of the subtree rooted at source model \a sourceIndex.
+    void restoreExpandedState( const QModelIndex &sourceIndex );
+
+    QHash< QgsAttributesFormItem *, bool > mDraggedExpandedState;
 };
 
 
