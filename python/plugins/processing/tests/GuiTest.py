@@ -29,9 +29,6 @@ from qgis.core import (
 from qgis.testing import QgisTestCase, start_app
 
 from processing.gui.algorithm_widget import AlgorithmWidget
-from processing.gui.wrappers import (
-    FeatureSourceWidgetWrapper,
-)
 
 start_app()
 QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
