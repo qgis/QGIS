@@ -39,8 +39,6 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import iface
 
-from processing.core.ProcessingConfig import ProcessingConfig
-
 DIALOG_STANDARD = QgsProcessingGui.WidgetType.Standard
 DIALOG_BATCH = QgsProcessingGui.WidgetType.Batch
 DIALOG_MODELER = QgsProcessingGui.WidgetType.Modeler
@@ -52,17 +50,6 @@ dialogTypes = {
     "ModelerParametersDialog": DIALOG_MODELER,
     "BatchAlgorithmDialog": DIALOG_BATCH,
 }
-
-
-def getExtendedLayerName(layer):
-    authid = layer.crs().authid()
-    if (
-        ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF)
-        and authid is not None
-    ):
-        return f"{layer.name()} [{authid}]"
-    else:
-        return layer.name()
 
 
 class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
