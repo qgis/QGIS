@@ -28,7 +28,6 @@ from qgis.core import (
     QgsProcessingParameterDefinition,
     QgsProcessingParameterExtent,
     QgsProcessingParameterPoint,
-    QgsSettings,
 )
 from qgis.gui import (
     QgsAbstractProcessingParameterWidgetWrapper,
@@ -36,12 +35,10 @@ from qgis.gui import (
     QgsProcessingGui,
 )
 from qgis.PyQt.QtWidgets import (
-    QFileDialog,
     QLabel,
 )
 from qgis.utils import iface
 
-from processing.core.exceptions import InvalidParameterValue
 from processing.core.ProcessingConfig import ProcessingConfig
 
 DIALOG_STANDARD = QgsProcessingGui.WidgetType.Standard
@@ -86,22 +83,6 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
         if param.defaultValue() is not None:
             self.setValue(param.defaultValue())
 
-    def comboValue(self, validator=None, combobox=None):
-        if combobox is None:
-            combobox = self.widget
-        idx = combobox.findText(combobox.currentText())
-        if idx < 0:
-            v = combobox.currentText().strip()
-            if validator is not None and not validator(v):
-                raise InvalidParameterValue(self.param, self.widget)
-            return v
-        if combobox.currentData() == self.NOT_SET_OPTION:
-            return None
-        elif combobox.currentData() is not None:
-            return combobox.currentData()
-        else:
-            return combobox.currentText()
-
     def createWidget(self, **kwargs):
         pass
 
@@ -135,54 +116,8 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
     def setWidgetValue(self, value, context):
         self.setValue(value)
 
-    def setComboValue(self, value, combobox=None):
-        if combobox is None:
-            combobox = self.widget
-        if isinstance(value, list):
-            if value:
-                value = value[0]
-            else:
-                value = None
-        values = [combobox.itemData(i) for i in range(combobox.count())]
-        try:
-            idx = values.index(value)
-            combobox.setCurrentIndex(idx)
-            return
-        except ValueError:
-            pass
-        if combobox.isEditable():
-            if value is not None:
-                combobox.setEditText(str(value))
-        else:
-            combobox.setCurrentIndex(0)
-
     def refresh(self):
         pass
-
-    def getFileName(self, initial_value=""):
-        """Shows a file open dialog"""
-        settings = QgsSettings()
-        if os.path.isdir(initial_value):
-            path = initial_value
-        elif os.path.isdir(os.path.dirname(initial_value)):
-            path = os.path.dirname(initial_value)
-        elif settings.contains("/Processing/LastInputPath"):
-            path = str(settings.value("/Processing/LastInputPath"))
-        else:
-            path = ""
-
-        # TODO: should use selectedFilter argument for default file format
-        filename, selected_filter = QFileDialog.getOpenFileName(
-            self.widget,
-            self.tr("Select File"),
-            path,
-            self.parameterDefinition().createFileFilter(),
-        )
-        if filename:
-            settings.setValue(
-                "/Processing/LastInputPath", os.path.dirname(str(filename))
-            )
-        return filename, selected_filter
 
 
 class WidgetWrapperFactory:
