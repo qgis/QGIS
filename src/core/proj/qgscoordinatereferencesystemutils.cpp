@@ -17,6 +17,12 @@
 #include "qgscoordinatereferencesystemutils.h"
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgsgeometry.h"
+#include "qgslinestring.h"
+#include "qgsmessagelog.h"
+#include "qgspolygon.h"
 
 #include <QString>
 
@@ -495,4 +501,58 @@ QString QgsCoordinateReferenceSystemUtils::translateProjection( const QString &p
   if ( projection == "gstmerc"_L1 )
     return QObject::tr( "Gauss-Schreiber" );
   return QString();
+}
+
+QgsGeometry QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry(
+  const QgsCoordinateReferenceSystem &topocentricCrs, const QgsCoordinateReferenceSystem &outputCrs, const QgsCoordinateTransformContext &transformContext, double degreeStep
+)
+{
+  double topoLat = 0.0, topoLon = 0.0;
+  if ( !topocentricCrs.topocentricOrigin( topoLat, topoLon ) )
+  {
+    return QgsGeometry();
+  }
+
+  if ( std::abs( topoLat ) < degreeStep )
+    topoLat = topoLat >= 0 ? degreeStep : -degreeStep;
+
+  const double topoLonRad = topoLon * M_PI / 180.0;
+  const double topoLatRad = topoLat * M_PI / 180.0;
+
+  // add the horizon points, spaced at degreeStep intervals, to build up the clipping geometry
+  QVector<double> x, y;
+  const int pointCount = static_cast< int >( 360.0 / degreeStep ) + 2;
+  x.reserve( pointCount );
+  y.reserve( pointCount );
+  for ( double lon = -180.0; lon <= 180.0; lon += degreeStep )
+  {
+    const double lonRad = lon * M_PI / 180.0;
+    const double latRad = std::atan( -std::cos( lonRad - topoLonRad ) / std::tan( topoLatRad ) );
+    x.append( lon );
+    y.append( latRad * 180.0 / M_PI );
+  }
+
+  // unless we explicitly add the pole points, we are clipping too much of the world above/below 45/-45 latitude
+  const double pole = topoLat > 0 ? 90.0 : -90.0;
+  x.append( 180.0 );
+  y.append( pole );
+  x.append( -180.0 );
+  y.append( pole );
+
+  auto exteriorRing = std::make_unique< QgsLineString >( x, y );
+  QgsGeometry horizonGeom( std::make_unique< QgsPolygon >( exteriorRing.release() ) );
+
+  const QgsCoordinateReferenceSystem geoCrs = topocentricCrs.toGeographicCrs();
+  QgsCoordinateTransform geoToOutput( geoCrs, outputCrs, transformContext );
+  try
+  {
+    horizonGeom.transform( geoToOutput );
+  }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Topocentric horizon geometry transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+    return QgsGeometry();
+  }
+
+  return horizonGeom;
 }
