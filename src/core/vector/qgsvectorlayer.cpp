@@ -34,6 +34,7 @@
 #include "qgsconditionalstyle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdiagramrenderer.h"
 #include "qgsexpressioncontext.h"
@@ -1669,6 +1670,36 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurve *ring )
 
   QgsVectorLayerEditUtils utils( this );
   Qgis::GeometryOperationResult result = utils.addPart( uniquePtrRing.release(), *mSelectedFeatureIds.constBegin() );
+
+  if ( result == Qgis::GeometryOperationResult::Success )
+    updateExtents();
+  return result;
+}
+
+Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurvePolygon *polygon )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  std::unique_ptr<QgsCurvePolygon> uniquePtrPolygon( polygon );
+
+  if ( !isValid() || !mEditBuffer || !mDataProvider )
+    return Qgis::GeometryOperationResult::LayerNotEditable;
+
+  //number of selected features must be 1
+
+  if ( mSelectedFeatureIds.empty() )
+  {
+    QgsDebugMsgLevel( u"Number of selected features <1"_s, 3 );
+    return Qgis::GeometryOperationResult::SelectionIsEmpty;
+  }
+  else if ( mSelectedFeatureIds.size() > 1 )
+  {
+    QgsDebugMsgLevel( u"Number of selected features >1"_s, 3 );
+    return Qgis::GeometryOperationResult::SelectionIsGreaterThanOne;
+  }
+
+  QgsVectorLayerEditUtils utils( this );
+  Qgis::GeometryOperationResult result = utils.addPart( uniquePtrPolygon.release(), *mSelectedFeatureIds.constBegin() );
 
   if ( result == Qgis::GeometryOperationResult::Success )
     updateExtents();
