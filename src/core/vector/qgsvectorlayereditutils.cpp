@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgsabstractgeometry.h"
+#include "qgscurvepolygon.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryoptions.h"
 #include "qgslinestring.h"
@@ -429,6 +430,56 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
     }
   }
   Qgis::GeometryOperationResult errorCode = geometry.addPartV2( ring, mLayer->wkbType() );
+
+  if ( errorCode == Qgis::GeometryOperationResult::Success )
+  {
+    if ( firstPart && QgsWkbTypes::isSingleType( mLayer->wkbType() ) && mLayer->dataProvider()->doesStrictFeatureTypeCheck() )
+    {
+      //convert back to single part if required by layer
+      geometry.convertToSingleType();
+    }
+    mLayer->changeGeometry( featureId, geometry );
+  }
+  return errorCode;
+}
+
+Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurvePolygon *polygon, QgsFeatureId featureId )
+{
+  std::unique_ptr<QgsCurvePolygon> uniquePtrPoly( polygon );
+
+  if ( !mLayer->isSpatial() )
+    return Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound;
+
+  if ( mLayer->geometryType() != Qgis::GeometryType::Polygon )
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+
+  QgsGeometry geometry;
+  bool firstPart = false;
+  QgsFeature f;
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) )
+    return Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound;
+
+  if ( !f.hasGeometry() )
+  {
+    //no existing geometry, so adding first part to null geometry
+    firstPart = true;
+  }
+  else
+  {
+    geometry = f.geometry();
+    switch ( geometry.polygonOrientation() )
+    {
+      case Qgis::AngularDirection::Clockwise:
+        polygon->forceClockwise();
+        break;
+      case Qgis::AngularDirection::CounterClockwise:
+        polygon->forceCounterClockwise();
+        break;
+      case Qgis::AngularDirection::NoOrientation:
+        break;
+    }
+  }
+  Qgis::GeometryOperationResult errorCode = geometry.addPartV2( uniquePtrPoly.release(), mLayer->wkbType() );
 
   if ( errorCode == Qgis::GeometryOperationResult::Success )
   {
