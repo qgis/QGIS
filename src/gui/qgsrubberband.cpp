@@ -120,6 +120,21 @@ void QgsRubberBand::reset( Qgis::GeometryType geometryType )
   update();
 }
 
+void QgsRubberBand::addPreviewItem( QgsRubberBandPreviewItem *item )
+{
+  if ( item )
+  {
+    mPreviewItems.push_back( std::unique_ptr< QgsRubberBandPreviewItem>( item ) );
+    update();
+  }
+}
+
+void QgsRubberBand::clearPreviewItems()
+{
+  mPreviewItems.clear();
+  update();
+}
+
 void QgsRubberBand::addPoint( const QgsPointXY &p, bool doUpdate /* = true */, int geometryIndex, int ringIndex )
 {
   if ( geometryIndex < 0 )
@@ -528,6 +543,14 @@ void QgsRubberBand::paint( QPainter *p )
       {
         drawShape( p, shape );
       }
+    }
+  }
+
+  for ( const auto &item : mPreviewItems )
+  {
+    if ( item )
+    {
+      item->render( context, this );
     }
   }
 }

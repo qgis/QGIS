@@ -9,6 +9,10 @@ QgsRubberBand.ICON_DIAMOND = QgsRubberBand.IconType.ICON_DIAMOND
 QgsRubberBand.ICON_FULL_DIAMOND = QgsRubberBand.IconType.ICON_FULL_DIAMOND
 QgsRubberBand.ICON_SVG = QgsRubberBand.IconType.ICON_SVG
 try:
+    QgsRubberBandPreviewItem.__abstract_methods__ = ['render']
+except (NameError, AttributeError):
+    pass
+try:
     QgsRubberBand.__overridden_methods__ = ['updatePosition', 'paint']
 except (NameError, AttributeError):
     pass

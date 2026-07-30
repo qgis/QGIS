@@ -41,6 +41,29 @@ class QgsSymbol;
 //%End
 #endif
 
+class QgsRubberBand;
+
+/**
+ * \ingroup gui
+ * \brief Abstract interface for rendering custom preview overlays attached to a QgsRubberBand.
+ *
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsRubberBandPreviewItem
+{
+  public:
+    virtual ~QgsRubberBandPreviewItem() = default;
+
+    /**
+   * Renders the custom preview overlay using the shared render context.
+   *
+   * \param context The destination render context
+   * \param rubberBand The parent rubber band
+   */
+    virtual void render( QgsRenderContext &context, const QgsRubberBand *rubberBand ) = 0;
+};
+
+
 /**
  * \ingroup gui
  * \brief Responsible for drawing transient features (e.g. digitizing lines) on the map.
@@ -239,6 +262,24 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *  \param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
     void reset( Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
+
+    /**
+     * Adds a custom preview \a item decorator to the rubber band.
+     *
+     * Ownership of the item is transferred to the rubber band.
+     *
+     * \see clearPreviewItems()
+     * \since QGIS 4.4
+     */
+    void addPreviewItem( QgsRubberBandPreviewItem *item SIP_TRANSFER );
+
+    /**
+     * Clears all registered preview items.
+     *
+     * \see addPreviewItem())
+     * \since QGIS 4.4
+     */
+    void clearPreviewItems();
 
     /**
      * Adds a vertex to the rubberband and update canvas.
@@ -464,6 +505,8 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Polygon;
     double mTranslationOffsetX = 0.0;
     double mTranslationOffsetY = 0.0;
+
+    std::vector<std::unique_ptr<QgsRubberBandPreviewItem>> mPreviewItems;
 
     QgsRubberBand();
 };
