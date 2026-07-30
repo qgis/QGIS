@@ -1655,6 +1655,8 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurve *ring )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  std::unique_ptr<QgsCurve> uniquePtrRing( ring );
+
   if ( !isValid() || !mEditBuffer || !mDataProvider )
     return Qgis::GeometryOperationResult::LayerNotEditable;
 
@@ -1672,7 +1674,7 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurve *ring )
   }
 
   QgsVectorLayerEditUtils utils( this );
-  Qgis::GeometryOperationResult result = utils.addPart( ring, *mSelectedFeatureIds.constBegin() );
+  Qgis::GeometryOperationResult result = utils.addPart( uniquePtrRing.release(), *mSelectedFeatureIds.constBegin() );
 
   if ( result == Qgis::GeometryOperationResult::Success )
     updateExtents();
