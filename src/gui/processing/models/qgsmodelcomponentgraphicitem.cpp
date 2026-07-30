@@ -483,7 +483,8 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   {
     h = fm.height() * 1.1;
     h = h + componentSize.height() / 2.0;
-    pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN, h );
+    const double w = fm.boundingRect( "Out" ).width(); // Only to know the width ot the text
+    pt = QPointF( componentSize.width() / 2 - SOCKET_MARGIN - w, h );
     painter->drawText( pt, QObject::tr( "Out" ) );
     if ( !mComponent->linksCollapsed( Qt::BottomEdge ) )
     {
@@ -696,10 +697,11 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
       if ( linkPointCount( Qt::BottomEdge ) )
       {
         const int pointIndex = !mComponent->linksCollapsed( Qt::BottomEdge ) ? index : -1;
+        const double offsetX = !mComponent->linksCollapsed( Qt::BottomEdge ) ? SOCKET_MARGIN : 17;
         const QFontMetricsF fm( mFont );
         const double h = fm.height() * 1.2 * ( pointIndex + 1 ) + fm.height() / 2.0;
         const double y = h + itemSize().height() / 2.0 + 6.4;
-        const double x = !mComponent->linksCollapsed( Qt::BottomEdge ) ? ( itemSize().width() / 2 - SOCKET_MARGIN ) : 10.4;
+        const double x = itemSize().width() / 2 - offsetX;
         return QPointF( x, y );
       }
       break;
