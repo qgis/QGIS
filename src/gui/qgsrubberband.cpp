@@ -444,6 +444,22 @@ void QgsRubberBand::paint( QPainter *p )
   if ( mPoints.isEmpty() )
     return;
 
+  QgsRenderContext context;
+  if ( mMapCanvas )
+  {
+    context = QgsRenderContext::fromMapSettings( mMapCanvas->mapSettings() );
+    if ( QPaintDevice *device = p->device() )
+    {
+      context.setScaleFactor( device->physicalDpiX() / 25.4 );
+    }
+    context.setPainter( p );
+  }
+  else
+  {
+    context = QgsRenderContext::fromQPainter( p );
+    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+  }
+
   QVector<QVector<QPolygonF>> shapes;
   shapes.reserve( mPoints.size() );
   for ( const QgsPolygonXY &poly : std::as_const( mPoints ) )
@@ -467,9 +483,6 @@ void QgsRubberBand::paint( QPainter *p )
 
   if ( QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( mSymbol.get() ) )
   {
-    QgsRenderContext context( QgsRenderContext::fromQPainter( p ) );
-    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
-
     lineSymbol->startRender( context );
     for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
     {
@@ -482,9 +495,6 @@ void QgsRubberBand::paint( QPainter *p )
   }
   else if ( QgsFillSymbol *fillSymbol = dynamic_cast<QgsFillSymbol *>( mSymbol.get() ) )
   {
-    QgsRenderContext context( QgsRenderContext::fromQPainter( p ) );
-    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
-
     fillSymbol->startRender( context );
     for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
     {
