@@ -88,7 +88,7 @@ void TestQgsMapToolAddPart::initTestCase()
 
   mLayerMultiPolygon->startEditing();
   QgsFeature f;
-  const QString wkt( "MultiPolygon (((2 2, 4 2, 4 4, 2 4)))" );
+  const QString wkt( "MultiPolygon (((2 2, 4 2, 4 4, 2 4, 2 2)))" );
   f.setGeometry( QgsGeometry::fromWkt( wkt ) );
   mLayerMultiPolygon->dataProvider()->addFeatures( QgsFeatureList() << f );
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 1 );
@@ -141,8 +141,10 @@ void TestQgsMapToolAddPart::testAddPart()
   event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 5, 5 ), Qt::RightButton );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4)),((5 5, 5 5, 6 5, 6 6, 5 6, 5 5)))";
+  const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4, 2 2)),((5 5, 5 5, 6 5, 6 6, 5 6, 5 5)))";
   QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), wkt );
+
+  mLayerMultiPolygon->undoStack()->undo();
 }
 
 void TestQgsMapToolAddPart::testAddPartClockWise()
@@ -165,8 +167,10 @@ void TestQgsMapToolAddPart::testAddPartClockWise()
   event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 15, 15 ), Qt::RightButton );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4)),((5 5, 5 5, 6 5, 6 6, 5 6, 5 5)),((15 15, 16 15, 16 16, 15 16, 15 15)))";
+  const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4, 2 2)),((15 15, 16 15, 16 16, 15 16, 15 15)))";
   QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), wkt );
+
+  mLayerMultiPolygon->undoStack()->undo();
 }
 
 void TestQgsMapToolAddPart::testAddPartToSingleGeometryLess()
