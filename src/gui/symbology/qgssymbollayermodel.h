@@ -16,6 +16,8 @@
 #ifndef QGSSYMBOLLAYERMODEL_H
 #define QGSSYMBOLLAYERMODEL_H
 
+#include "qgis.h"
+#include "qgis_gui.h"
 #include "qgsvectorlayer.h"
 
 #include <QAbstractItemModel>
@@ -34,7 +36,7 @@ class QgsSymbolLayer;
  * \ingroup gui
  * \since QGIS 4.4
  */
-class QgsSymbolLayerModelNode : public QObject
+class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
 {
     Q_OBJECT
   public:
@@ -128,6 +130,8 @@ class QgsSymbolLayerModelNode : public QObject
 
     //! whether the node should be shown in GUI as expanded
     bool mExpanded = true;
+
+    friend class TestQgsSymbolLayerModel;
 };
 
 /**
@@ -136,7 +140,7 @@ class QgsSymbolLayerModelNode : public QObject
  * \ingroup gui
  * \since QGIS 4.4
  */
-class QgsSymbolLayerModel : public QAbstractItemModel
+class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
 {
     Q_OBJECT
 
