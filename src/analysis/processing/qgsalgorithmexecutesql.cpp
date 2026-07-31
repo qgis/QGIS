@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmexecutesql.h
+                         qgsalgorithmexecutesql.cpp
                          ---------------------------------
     begin                : August 2026
     copyright            : (C) 2026 by Nyall Dawson
@@ -68,16 +68,17 @@ QString QgsExecuteSqlAlgorithm::groupId() const
 
 QString QgsExecuteSqlAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Runs a query with SQL syntax." );
+  return QObject::tr( "Runs an SQL query on vector layers using virtual layers." );
 }
 
 QString QgsExecuteSqlAlgorithm::shortHelpString() const
 {
   return QObject::tr(
-    "This algorithm runs a query with SQL syntax.\n]n"
-    "Input data sources are identified with 'input1', 'input2', ..., 'inputN'' "
-    "and a simple query will look like: 'SELECT * FROM input1'.\n]n"
-    "The result of the query will be added as a new layer."
+    "This algorithm executes an SQL query on input vector layers using QGIS virtual layers.\n\n"
+    "Input layers are made available inside the query using aliases 'input1', 'input2', ..., 'inputN', corresponding to the order of layers supplied.\n\n"
+    "The query engine uses SQLite and SpatiaLite syntax, allowing spatial functions like ST_Intersects, ST_Buffer, and attribute aggregation. "
+    "Additionally, QGIS variable expressions in the format [% @var %] will be evaluated before running the query.\n\n"
+    "The result of the query will be materialized and stored in a new layer."
   );
 }
 
@@ -93,15 +94,28 @@ Qgis::ProcessingAlgorithmFlags QgsExecuteSqlAlgorithm::flags() const
 
 void QgsExecuteSqlAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter(
-    new QgsProcessingParameterMultipleLayers( u"INPUT_DATASOURCES"_s, QObject::tr( "Input data sources (called input1, .., inputN in the query)" ), Qgis::ProcessingSourceType::Vector, QVariant(), true )
+  auto inputDataSources = std::make_unique<
+    QgsProcessingParameterMultipleLayers>( u"INPUT_DATASOURCES"_s, QObject::tr( "Input data sources (called input1, .., inputN in the query)" ), Qgis::ProcessingSourceType::Vector, QVariant(), true );
+  inputDataSources->setHelp(
+    QObject::tr( "Input vector layers to query. Inside the SQL statement, these layers are referenced as 'input1', 'input2', ..., 'inputN' according to their order in this list." )
   );
+  addParameter( inputDataSources.release() );
 
-  addParameter( new QgsProcessingParameterString( u"INPUT_QUERY"_s, QObject::tr( "SQL query" ) ) );
+  auto inputQuery = std::make_unique<QgsProcessingParameterString>( u"INPUT_QUERY"_s, QObject::tr( "SQL query" ) );
+  inputQuery->setHelp(
+    QObject::tr( "The SQL query to execute using SQLite/SpatiaLite syntax. Example: 'SELECT * FROM input1 WHERE area > 100'. Expressions enclosed in [% %] will be expanded before execution." )
+  );
+  addParameter( inputQuery.release() );
 
-  addParameter( new QgsProcessingParameterString( u"INPUT_UID_FIELD"_s, QObject::tr( "Unique identifier field" ), QVariant(), false, true ) );
+  auto inputUidField = std::make_unique<QgsProcessingParameterString>( u"INPUT_UID_FIELD"_s, QObject::tr( "Unique identifier field" ), QVariant(), false, true );
+  inputUidField->setHelp(
+    QObject::tr( "Defines the field to be used as a unique integer identifier (primary key) for output features. If left empty, an autoincrementing ID field will be automatically generated." )
+  );
+  addParameter( inputUidField.release() );
 
-  addParameter( new QgsProcessingParameterString( u"INPUT_GEOMETRY_FIELD"_s, QObject::tr( "Geometry field" ), QVariant(), false, true ) );
+  auto inputGeometryField = std::make_unique<QgsProcessingParameterString>( u"INPUT_GEOMETRY_FIELD"_s, QObject::tr( "Geometry field" ), QVariant(), false, true );
+  inputGeometryField->setHelp( QObject::tr( "Specifies the name of the column in the query output that contains the feature geometries (e.g. 'geometry' or 'geom')." ) );
+  addParameter( inputGeometryField.release() );
 
   QStringList geometryTypeOptions;
   geometryTypeOptions.reserve( static_cast<int>( mGeometryTypes.size() ) );
@@ -110,11 +124,17 @@ void QgsExecuteSqlAlgorithm::initAlgorithm( const QVariantMap & )
     geometryTypeOptions.append( typePair.second );
   }
 
-  addParameter( new QgsProcessingParameterEnum( u"INPUT_GEOMETRY_TYPE"_s, QObject::tr( "Geometry type" ), geometryTypeOptions, false, 0 ) );
+  auto inputGeometryType = std::make_unique<QgsProcessingParameterEnum>( u"INPUT_GEOMETRY_TYPE"_s, QObject::tr( "Geometry type" ), geometryTypeOptions, false, 0 );
+  inputGeometryType->setHelp( QObject::tr( "Explicitly defines the geometry type of the query result. If set to 'Autodetect', the algorithm will attempt to infer the type from the result features." ) );
+  addParameter( inputGeometryType.release() );
 
-  addParameter( new QgsProcessingParameterCrs( u"INPUT_GEOMETRY_CRS"_s, QObject::tr( "CRS" ), QVariant(), true ) );
+  auto inputGeometryCrs = std::make_unique<QgsProcessingParameterCrs>( u"INPUT_GEOMETRY_CRS"_s, QObject::tr( "CRS" ), QVariant(), true );
+  inputGeometryCrs->setHelp( QObject::tr( "Specifies the coordinate reference system (CRS) for the output geometry. If left empty, the algorithm will attempt to infer the CRS from the input layers." ) );
+  addParameter( inputGeometryCrs.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "SQL Output" ) ) );
+  auto output = std::make_unique<QgsProcessingParameterFeatureSink>( u"OUTPUT"_s, QObject::tr( "SQL Output" ) );
+  output->setHelp( QObject::tr( "Specifies the destination layer for the features returned by the SQL query." ) );
+  addParameter( output.release() );
 }
 
 QVariantMap QgsExecuteSqlAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
