@@ -717,7 +717,7 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
     if ( mMapPointRubberBand )
       mMapPointRubberBand->hide();
   } );
-  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::captureCanceled, this, [this] {
+  connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::captureFinished, this, [this] {
     if ( mRubberBand )
       mRubberBand->show();
     if ( mToleranceRubberBand )
