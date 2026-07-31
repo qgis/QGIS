@@ -218,7 +218,7 @@ QVariantMap QgsExecuteSqlAlgorithm::processAlgorithm( const QVariantMap &paramet
   QgsVectorLayer virtualLayer( layerDefinition.toString(), u"temp_vlayer"_s, u"virtual"_s );
   if ( !virtualLayer.isValid() )
   {
-    throw QgsProcessingException( virtualLayer.dataProvider() ? virtualLayer.dataProvider()->error().message() : QObject::tr( "Invalid virtual layer" ) );
+    throw QgsProcessingException( virtualLayer.dataProvider() ? virtualLayer.dataProvider()->error().summary() : QObject::tr( "Invalid virtual layer" ) );
   }
 
   if ( virtualLayer.wkbType() == Qgis::WkbType::Unknown )
