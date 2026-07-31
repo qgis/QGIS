@@ -256,7 +256,7 @@ void QgsMapToolSimplify::createUserInputWidget()
   connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::rejected, this, &QgsMapToolSimplify::clearSelection );
 
   mSimplifyUserWidget->setTargetLayer( currentVectorLayer() );
-  connect( canvas(), &QgsMapCanvas::currentLayerChanged, this, [this]( QgsMapLayer *layer ) { mSimplifyUserWidget->setTargetLayer( layer ); } );
+  connect( canvas(), &QgsMapCanvas::currentLayerChanged, mSimplifyUserWidget, &QgsSimplifyUserInputWidget::setTargetLayer );
 
   QgisApp::instance()->addUserInputWidget( mSimplifyUserWidget );
   mSimplifyUserWidget->setFocus( Qt::TabFocusReason );
