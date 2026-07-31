@@ -722,8 +722,6 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
       mRubberBand->show();
     if ( mToleranceRubberBand )
       mToleranceRubberBand->show();
-    if ( mMapPointRubberBand )
-      mMapPointRubberBand->show();
   } );
 
   mCaptureCurveFromFeatureMapTool = std::make_unique<QgsMapToolProfileCurveFromFeature>( canvas );
@@ -1465,6 +1463,10 @@ void QgsElevationProfileWidget::createOrUpdateRubberBands()
     if ( mToleranceRubberBand )
       mToleranceRubberBand->hide();
   }
+
+  // hide the map point band, it will be shown again on hover
+  if ( mMapPointRubberBand )
+    mMapPointRubberBand->hide();
 }
 
 void QgsElevationProfileWidget::onProjectElevationPropertiesChanged()
