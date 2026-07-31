@@ -348,6 +348,12 @@ void QgsRasterLayer::reload()
   if ( mDataProvider )
   {
     mDataProvider->reloadData();
+
+    const QgsRectangle extent = mDataProvider->extent();
+    if ( mDataProvider->isValid() && !extent.isNull() )
+    {
+      setExtent( extent );
+    }
   }
 }
 
