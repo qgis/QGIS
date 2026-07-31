@@ -612,19 +612,19 @@ void QgsElevationProfileCanvas::adjustRangeForAxisScaleLock( double &xMinimum, d
 
   const double currentRatio = horizontalScale / verticalScale;
 
-  if ( currentRatio <= mLockedAxisScale )
+  if ( currentRatio > mLockedAxisScale )
   {
     const double height = horizontalScale * mPlotItem->plotArea().height() / mLockedAxisScale;
-    const double deltaHeight = ( yMaximum - yMinimum ) - height;
-    yMinimum += deltaHeight / 2;
-    yMaximum -= deltaHeight / 2;
+    const double deltaHeight = height - ( yMaximum - yMinimum );
+    yMinimum -= deltaHeight / 2;
+    yMaximum += deltaHeight / 2;
   }
   else
   {
     const double width = verticalScale * mPlotItem->plotArea().width() * mLockedAxisScale;
-    const double deltaWidth = ( ( xMaximum - xMinimum ) - width );
-    xMinimum += deltaWidth / 2;
-    xMaximum -= deltaWidth / 2;
+    const double deltaWidth = width - ( xMaximum - xMinimum );
+    xMinimum -= deltaWidth / 2;
+    xMaximum += deltaWidth / 2;
   }
 }
 
