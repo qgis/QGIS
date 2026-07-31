@@ -27,7 +27,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from .BarPlot import BarPlot
 from .BoxPlot import BoxPlot
 from .EliminateSelection import EliminateSelection
-from .ExecuteSQL import ExecuteSQL
 from .FieldPyculator import FieldsPyculator
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
@@ -73,7 +72,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             BarPlot(),
             BoxPlot(),
             EliminateSelection(),
-            ExecuteSQL(),
             FieldsPyculator(),
             HubDistanceLines(),
             HubDistancePoints(),
