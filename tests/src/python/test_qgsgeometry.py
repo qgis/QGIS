@@ -15860,6 +15860,91 @@ class TestQgsGeometry(QgisTestCase):
         self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 3)))
         self.assertTrue(nc.hasVertex(QgsVertexId(0, 0, 4)))
 
+    @unittest.skipIf(Qgis.geosVersionInt() < 31500, "GEOS 3.15 required")
+    def testOverlayOperationsOnCurves(self):
+        """Test Overlay operations on curves (borrowed from GEOS' OverlayNGTest.cpp)"""
+
+        def run_test(name, data):
+            geom_a = QgsGeometry.fromWkt(data["wkt_a"])
+            geom_b = QgsGeometry.fromWkt(data["wkt_b"])
+
+            if data["op"] == "intersection":
+                res = geom_a.intersection(geom_b)
+            elif data["op"] == "difference":
+                res = geom_a.difference(geom_b)
+            elif data["op"] == "symdifference":
+                res = geom_a.symDifference(geom_b)
+            elif data["op"] == "union":
+                res = geom_a.combine(geom_b)
+
+            res.normalize()
+            exp = QgsGeometry.fromWkt(data["expected"])
+            exp.normalize()
+            equal = res.isExactlyEqual(exp)
+            if not equal:
+                msg = f"Test '{name}' failed!\nEXPECTED: {exp.asWkt()}\nOBTAINED: {res.asWkt()}"
+                return False, msg
+
+            return True, ""
+
+        # Tests from GEOS tests/unit/operation/overlayng/OverlayNGTest.cpp
+        # Overlay operations: Difference, SymDifference, Union, Intersection
+        # Let's select only a few tests to avoid too much duplication, but
+        # still be able to spot failures related to QGIS curve handling.
+        test_cases = {
+            "test_46": {
+                "wkt_a": "CURVEPOLYGON (COMPOUNDCURVE((10 0, 0 0, 0 10, 10 10), CIRCULARSTRING (10 10, 15 5, 10 0)))",
+                "wkt_b": "CURVEPOLYGON (COMPOUNDCURVE((10 10, 20 10, 20 0, 10 0), CIRCULARSTRING (10 0, 5 5, 10 10)))",
+                "expected": "CURVEPOLYGON (CIRCULARSTRING (10 10, 15 5, 10 0, 5 5, 10 10))",
+                "op": "intersection",
+            },
+            "test_47": {
+                "wkt_a": "CURVEPOLYGON (COMPOUNDCURVE((10 0, 0 0, 0 10, 10 10), CIRCULARSTRING (10 10, 15 5, 10 0)))",
+                "wkt_b": "CURVEPOLYGON (COMPOUNDCURVE((10 10, 20 10, 20 0, 10 0), CIRCULARSTRING (10 0, 5 5, 10 10)))",
+                "expected": "MULTISURFACE (CURVEPOLYGON (COMPOUNDCURVE ((10 0, 0 0, 0 10, 10 10), CIRCULARSTRING (10 10, 5 5, 10 0))), CURVEPOLYGON (COMPOUNDCURVE (CIRCULARSTRING (10 0, 15 5, 10 10), (10 10, 20 10, 20 0, 10 0))))",
+                "op": "symdifference",
+            },
+            "test_49": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (-5 5, 0 0, 5 5)",
+                "expected": "MULTIPOINT ((4.330127018922194 2.5), (-4.330127018922194 2.5))",
+                "op": "intersection",
+            },
+            "test_50": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (4 3, 0 -5, -4 3)",
+                "expected": "MULTICURVE (CIRCULARSTRING (-5 0, -4.743416490252569 1.58113883008419, -4 3), CIRCULARSTRING (4 3, 4.743416490252569 1.5811388300841898, 5 0))",
+                "op": "intersection",
+            },
+            "test_51": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (4 3, 0 -5, -4 3)",
+                "expected": "CIRCULARSTRING (-4 3, 0 5, 4 3)",
+                "op": "difference",
+            },
+            "test_52": {
+                "wkt_a": "CIRCULARSTRING (-5 0, 0 5, 5 0)",
+                "wkt_b": "CIRCULARSTRING (4 3, 0 -5, -4 3)",
+                "expected": "MULTICURVE (CIRCULARSTRING (-4 3, 0 5, 4 3), CIRCULARSTRING (5 0, 0 -5, -5 0))",
+                "op": "symdifference",
+            },
+            "test_55": {
+                "wkt_a": "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))",
+                "wkt_b": "CURVEPOLYGON (CIRCULARSTRING (4 5, 5 6, 6 5, 5 4, 4 5))",
+                "expected": "CURVEPOLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), CIRCULARSTRING (4 5, 5 6, 6 5, 5 4, 4 5))",
+                "op": "difference",
+            },
+            "test_61": {
+                "wkt_a": "CURVEPOLYGON (CIRCULARSTRING (-5 0, 0 5, 5 0, 0 4, -5 0))",
+                "wkt_b": "CURVEPOLYGON (COMPOUNDCURVE((-5 0, 5 0), CIRCULARSTRING (5 0, 0 4, -5 0)))",
+                "expected": "CURVEPOLYGON (COMPOUNDCURVE (CIRCULARSTRING (-5 0, 0 5, 5 0), (5 0, -5 0)))",
+                "op": "union",
+            },
+        }
+        for name, data in test_cases.items():
+            res, msg = run_test(name, data)
+            self.assertTrue(res, msg)
+
 
 if __name__ == "__main__":
     unittest.main()
