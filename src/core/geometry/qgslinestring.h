@@ -134,7 +134,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
               double d = PyFloat_AsDouble( element );
               if ( PyErr_Occurred() )
               {
-                Py_DECREF( value );
+                Py_DECREF( element );
                 sipIsErr = 1;
                 break;
               }

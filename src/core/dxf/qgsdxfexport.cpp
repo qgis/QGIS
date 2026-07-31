@@ -811,6 +811,9 @@ void QgsDxfExport::writeEntities()
               if ( !symbolLayer )
                 continue;
 
+              if ( !isSymbolLayerEnabled( symbolLayer, sctx ) )
+                continue;
+
               bool isGeometryGenerator = ( symbolLayer->layerType() == QLatin1String( "GeometryGenerator" ) );
               if ( isGeometryGenerator )
               {
@@ -828,6 +831,11 @@ void QgsDxfExport::writeEntities()
           // take first symbollayer from first symbol
           QgsSymbol *s = symbolList.first();
           if ( !s || s->symbolLayerCount() < 1 )
+          {
+            continue;
+          }
+
+          if ( !isSymbolLayerEnabled( s->symbolLayer( 0 ), sctx ) )
           {
             continue;
           }
@@ -876,6 +884,7 @@ void QgsDxfExport::prepareRenderers()
   Q_ASSERT( mJobs.empty() ); // If this fails, stopRenderers() was not called after the last job
 
   mRenderContext = QgsRenderContext();
+  mRenderContext.setPathResolver( mMapSettings.pathResolver() );
   mRenderContext.setRendererScale( mSymbologyScale );
   mRenderContext.setExtent( mMapSettings.extent() );
   QgsDistanceArea da;
@@ -1000,10 +1009,14 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
 
       int llayer = item.layer();
       const QList<QgsFeature> &featureList = levelIt.value();
+      QgsSymbolLayer *symbolLayer = levelIt.key()->symbolLayer( llayer );
       for ( const QgsFeature &feature : featureList )
       {
         sctx.setFeature( &feature );
-        addFeature( sctx, ct, job->layerName, levelIt.key()->symbolLayer( llayer ), levelIt.key() );
+        sctx.renderContext().expressionContext().setFeature( feature );
+        if ( !isSymbolLayerEnabled( symbolLayer, sctx ) )
+          continue;
+        addFeature( sctx, ct, job->layerName, symbolLayer, levelIt.key() );
       }
     }
   }
@@ -1067,7 +1080,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
 
     QgsPropertyCollection props = symbolLayer->dataDefinedProperties();
 
-    uint ddSymbolHash = dataDefinedSymbolClassHash( *( ctx.feature() ), props );
+    uint ddSymbolHash = dataDefinedSymbolClassHash( *( ctx.feature() ), props, ctx.renderContext().expressionContext() );
     if ( symbolLayerDDBlocks.contains( ddSymbolHash ) )
     {
       const DataDefinedBlockInfo &info = symbolLayerDDBlocks[ddSymbolHash];
@@ -1108,26 +1121,31 @@ void QgsDxfExport::writePointBlockReference( const QgsPoint &pt, const QgsSymbol
   writeGroup( 0, pt );  // Insertion point (in OCS)
 }
 
-uint QgsDxfExport::dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop )
+uint QgsDxfExport::dataDefinedSymbolClassHash( const QgsFeature &fet, const QgsPropertyCollection &prop, const QgsExpressionContext &context )
 {
+  // Hash the evaluated result of each data-defined property that affects the
+  // BLOCK content, not only the source attribute values.
   uint hashValue = 0;
 
-  QgsPropertyCollection dxfProp = prop;
-  dxfProp.setProperty( QgsSymbolLayer::Property::Size, QgsProperty() );
-  dxfProp.setProperty( QgsSymbolLayer::Property::Angle, QgsProperty() );
-  QList< QString > fields = dxfProp.referencedFields().values();
-  std::sort( fields.begin(), fields.end() );
+  QgsExpressionContext ctx = context;
+  ctx.setFeature( fet );
+
+  QList<int> keys = prop.propertyKeys().values();
+  keys.removeAll( static_cast<int>( QgsSymbolLayer::Property::Size ) );
+  keys.removeAll( static_cast<int>( QgsSymbolLayer::Property::Angle ) );
+  std::sort( keys.begin(), keys.end() ); //ensure a stable order
+
   int i = 0;
-  for ( const auto &field : std::as_const( fields ) ) //convert set to list to have a well defined order
+  for ( int key : std::as_const( keys ) )
   {
-    QVariant attValue = fet.attribute( field );
+    const QVariant evaluated = prop.value( key, ctx );
     if ( i == 0 )
     {
-      hashValue =  qHash( attValue );
+      hashValue = qHash( evaluated );
     }
     else
     {
-      hashValue = hashValue ^ qHash( attValue );
+      hashValue = hashValue ^ qHash( evaluated );
     }
     ++i;
   }
@@ -2007,17 +2025,30 @@ QgsRenderContext QgsDxfExport::renderContext() const
 
 double QgsDxfExport::mapUnitScaleFactor( double scale, Qgis::RenderUnit symbolUnits, Qgis::DistanceUnit mapUnits, double mapUnitsPerPixel )
 {
-  if ( symbolUnits == Qgis::RenderUnit::MapUnits )
+  switch ( symbolUnits )
   {
-    return 1.0;
-  }
-  else if ( symbolUnits == Qgis::RenderUnit::Millimeters )
-  {
-    return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 );
-  }
-  else if ( symbolUnits == Qgis::RenderUnit::Pixels )
-  {
-    return mapUnitsPerPixel;
+    case Qgis::RenderUnit::MapUnits:
+      return 1.0;
+
+    case Qgis::RenderUnit::Millimeters:
+      return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 );
+
+    case Qgis::RenderUnit::Points:
+      // 1 pt = 25.4/72 mm
+      return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 * 25.4 / 72.0 );
+
+    case Qgis::RenderUnit::Inches:
+      return ( scale * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits ) / 1000.0 * 25.4 );
+
+    case Qgis::RenderUnit::MetersInMapUnits:
+      return QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mapUnits );
+
+    case Qgis::RenderUnit::Pixels:
+      return mapUnitsPerPixel;
+
+    case Qgis::RenderUnit::Unknown:
+    case Qgis::RenderUnit::Percentage:
+      break;
   }
   return 1.0;
 }
@@ -2251,6 +2282,15 @@ bool QgsDxfExport::hasBlockBreakingDataDefinedProperties( const QgsSymbolLayer *
   }
 
   return blockBreak;
+}
+
+bool QgsDxfExport::isSymbolLayerEnabled( const QgsSymbolLayer *layer, QgsSymbolRenderContext &context )
+{
+  if ( !layer || !layer->enabled() )
+    return false;
+  if ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( QgsSymbolLayer::Property::LayerEnabled, context.renderContext().expressionContext(), true ) )
+    return false;
+  return true;
 }
 
 double QgsDxfExport::dashSize() const
@@ -2670,7 +2710,7 @@ void QgsDxfExport::createDDBlockInfo()
         QgsFeature fet;
         while ( featureIt.nextFeature( fet ) )
         {
-          uint symbolHash = dataDefinedSymbolClassHash( fet, properties );
+          uint symbolHash = dataDefinedSymbolClassHash( fet, properties, sctx.renderContext().expressionContext() );
           if ( blockSymbolMap.contains( symbolHash ) )
           {
             blockSymbolMap[symbolHash].first += 1;

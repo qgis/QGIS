@@ -45,25 +45,27 @@ class SERVER_EXPORT QgsServerResponse
     virtual ~QgsServerResponse() = default;
 
     /**
-     *  Set Header entry
-     *  Add Header entry to the response
-     *  Note that it is usually an error to set Header after data have been sent through the wire
+     *  Set a single header \a value replacing any existing value(s) for the same \a key
+     *  \note that it is usually an error to set Header after data have been sent through the wire
+     *  \see addHeader() for a method that allows setting multiple values for the same header key
+     *  \see removeHeader() to clear header values for a given key
      */
     virtual void setHeader( const QString &key, const QString &value ) = 0;
 
     /**
-     * Clear header
+     * Clear all header values for the given \a key
      * Undo a previous 'setHeader' call
      */
     virtual void removeHeader( const QString &key ) = 0;
 
     /**
-     * Returns the header value
+     * Returns a single header value for a given \a key
      */
     virtual QString header( const QString &key ) const = 0;
 
     /**
-     * Returns the header value
+     * Returns the header values as a map: only the last value is returned if multiple values are set for the same header
+     * \see fullHeaders() to get all the values for all the headers
      */
     virtual QMap<QString, QString> headers() const = 0;
 

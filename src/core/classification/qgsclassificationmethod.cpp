@@ -157,8 +157,8 @@ void QgsClassificationMethod::setLabelPrecision( int precision )
 
 QString QgsClassificationMethod::formatNumber( double value ) const
 {
-  static const QRegularExpression RE_TRAILING_ZEROES = QRegularExpression( "[.,]?0*$" );
-  static const QRegularExpression RE_NEGATIVE_ZERO = QRegularExpression( "^\\-0(?:[.,]0*)?$" );
+  const thread_local QRegularExpression RE_TRAILING_ZEROES = QRegularExpression( "[.,]?0*$" );
+  const thread_local QRegularExpression RE_NEGATIVE_ZERO = QRegularExpression( "^\\-0(?:[.,]0*)?$" );
   if ( mLabelPrecision > 0 )
   {
     QString valueStr = QLocale().toString( value, 'f', mLabelPrecision );

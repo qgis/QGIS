@@ -83,15 +83,7 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
   layersParam->setFlags( layersParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( layersParam.release() );
 
-  QStringList imageFormats;
-  const QList<QByteArray> supportedImageFormats { QImageWriter::supportedImageFormats() };
-  for ( const QByteArray &format : supportedImageFormats )
-  {
-    if ( format == QByteArray( "svg" ) )
-      continue;
-    imageFormats << QString( format );
-  }
-  auto extensionParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "EXTENSION" ), QObject::tr( "Image format" ), imageFormats, false, imageFormats.indexOf( QLatin1String( "png" ) ) );
+  auto extensionParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "EXTENSION" ), QObject::tr( "Image format" ), QgsProcessingUtils::supportedImageFormats(), false, 0 );
   extensionParam->setFlags( extensionParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( extensionParam.release() );
 
@@ -176,16 +168,9 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   const QString directory = parameterAsFileOutput( parameters, QStringLiteral( "FOLDER" ), context );
   const QString fileName = QDir( directory ).filePath( QStringLiteral( "atlas" ) );
 
-  QStringList imageFormats;
-  const QList<QByteArray> supportedImageFormats { QImageWriter::supportedImageFormats() };
-  for ( const QByteArray &format : supportedImageFormats )
-  {
-    if ( format == QByteArray( "svg" ) )
-      continue;
-    imageFormats << QString( format );
-  }
+  const QStringList imageFormats = QgsProcessingUtils::supportedImageFormats();
   const int idx = parameterAsEnum( parameters, QStringLiteral( "EXTENSION" ), context );
-  const QString extension = '.' + imageFormats.at( idx );
+  const QString extension = '.' + imageFormats.at( idx ).toLower();
 
   QgsLayoutExporter::ImageExportSettings settings;
 

@@ -44,7 +44,7 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
 
   mSvgSelectorWidget->setAllowParameters( true );
   mSvgSelectorWidget->sourceLineEdit()->setPropertyOverrideToolButtonVisible( true );
-  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastSVGMarkerDir" ) );
+  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastComposerPictureDir" ) );
   mSvgSelectorWidget->initParametersModel( layoutObject(), coverageLayer() );
 
   mResizeModeComboBox->addItem( tr( "Zoom" ), QgsLayoutItemPicture::Zoom );
@@ -77,8 +77,6 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgParametersChanged, this, &QgsLayoutPictureWidget::setSvgDynamicParameters );
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
-
-  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastComposerPictureDir" ) );
 
   setPanelTitle( tr( "Picture Properties" ) );
 

@@ -59,6 +59,13 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * \return QgsFields list with filters applied
      */
     QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+
+
+    /**
+     * Removes the 'offset' and 'limit' query parameters from the given \a urlQuery ignoring case,
+     * and returns the modified query.
+     */
+    static QUrlQuery removeOffsetAndLimit( const QUrlQuery &urlQuery );
 };
 
 /**

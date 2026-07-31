@@ -21972,19 +21972,19 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>要選擇特徵，請在圖層面板中選擇一個向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="206"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="208"/>
         <source>CRS Exception</source>
         <translation>CRS 例外</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="207"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="209"/>
         <source>Selection extends beyond layer&apos;s coordinate system</source>
         <translation>選擇超出圖層的座標系統</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="451"/>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="468"/>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="632"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="453"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="470"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="634"/>
         <source>Error determining selection: %1</source>
         <translation>確定選擇錯誤: %1</translation>
     </message>
@@ -22589,7 +22589,7 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1632"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7312"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7318"/>
         <source>Invalid pair of array, length not identical</source>
         <translation>無效的陣列配對，長度不相同</translation>
     </message>
@@ -22753,14 +22753,14 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2980"/>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2992"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7582"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7593"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7604"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7615"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7626"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7637"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7648"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7659"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7588"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7599"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7610"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7621"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7632"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7643"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7654"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7665"/>
         <source>Function `%1` requires a value which represents a possible file path</source>
         <translation>函式 `%1` 需要一個值來表示可能的檔案路徑</translation>
     </message>
@@ -22961,12 +22961,12 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <translation>無法將 &apos;%1&apos; 轉換為顏色</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6870"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6876"/>
         <source>Function `decode_uri` requires a valid layer.</source>
         <translation>函式 `decode_uri` 需要有效的圖層。</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6893"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6899"/>
         <source>Invalid band number %1 for layer</source>
         <translation>圖層的波段號碼 %1 無效。</translation>
     </message>
@@ -22987,38 +22987,38 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
         <translation>在 transform() 函式中捕獲到轉換錯誤: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6852"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6858"/>
         <source>Layer %1 has invalid data provider</source>
         <translation>圖層 %1 的資料提供者無效</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6913"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6919"/>
         <source>Invalid raster statistic: &apos;%1&apos;</source>
         <translation>無效的網格統計: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6941"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6947"/>
         <source>Function `raster_statistic` requires a valid raster layer.</source>
         <translation>函式 `raster_statistic` 需要有效的網格圖層。</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7158"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7207"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7164"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7213"/>
         <source>No such option &apos;%1&apos;</source>
         <translation>沒有這樣的選項 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7331"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7337"/>
         <source>Function array_replace requires 2 or 3 arguments</source>
         <translation>函式 array_replace 需要 2 或 3 個引數</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7738"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7744"/>
         <source>Hash method %1 is not available on this system.</source>
         <translation>雜湊方法 %1 在此係統上不可用。</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7820"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7826"/>
         <source>Layer &apos;%1&apos; could not be loaded.</source>
         <translation>圖層 &apos;%1&apos; 無法載入。</translation>
     </message>
@@ -27966,7 +27966,7 @@ See the &quot;Polygonize&quot; or &quot;Lines to polygons&quot; algorithms for a
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="31"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="34"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="35"/>
         <source>Join to features in</source>
         <translation>連結到圖徵</translation>
     </message>
@@ -27977,7 +27977,7 @@ See the &quot;Polygonize&quot; or &quot;Lines to polygons&quot; algorithms for a
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="41"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="45"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="46"/>
         <source>By comparing to</source>
         <translation>透過比較</translation>
     </message>
@@ -28015,7 +28015,7 @@ The additional attributes and their values are taken from a second vector layer.
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="367"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="142"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="143"/>
         <source>No spatial index exists for join layer, performance will be severely degraded</source>
         <translation>連結圖層不存在空間索引，效能將大幅下降</translation>
     </message>
@@ -31808,7 +31808,7 @@ The sort order for features may be specified, if so, then the incremental field 
         <location filename="../src/analysis/processing/qgsalgorithmflattenrelationships.cpp" line="42"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="40"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="73"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="97"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbynearest.cpp" line="43"/>
         <location filename="../src/analysis/processing/qgsalgorithmmergevector.cpp" line="40"/>
         <location filename="../src/analysis/processing/qgsalgorithmorderbyexpression.cpp" line="42"/>
@@ -33162,7 +33162,7 @@ NOTE: M values will be dropped from the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="63"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="49"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="72"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="73"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbynearest.cpp" line="58"/>
         <source>Discard records which could not be joined</source>
         <translation>丟棄無法連結的記錄</translation>
@@ -33177,7 +33177,7 @@ NOTE: M values will be dropped from the output.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="67"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="51"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="74"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbynearest.cpp" line="66"/>
         <source>Joined layer</source>
         <translation>已連結圖層</translation>
@@ -36231,9 +36231,9 @@ Optionally, a specific output CRS can be specified. If it is not specified, the 
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlayoutmapextent.cpp" line="96"/>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="130"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="122"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="117"/>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="121"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="105"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="139"/>
         <source>Cannot find layout with name &quot;%1&quot;</source>
         <translation>找不到名稱為 &quot;%1&quot; 的圖面配置</translation>
@@ -37331,116 +37331,116 @@ Extracted label information include: position (served as point geometries), the 
         <translation>無效的日期時間引數 &quot;%1&quot;: 最小值 %2 大於或等於最大值 %3！</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="993"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="994"/>
         <source>Could not create memory layer</source>
         <translation>無法建立記憶體圖層</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="125"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1064"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1142"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1065"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1143"/>
         <source>Could not create layer %1: %2</source>
         <translation>無法建立圖層 %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1002"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1003"/>
         <source>%1: Aliases are not compatible with scratch layers</source>
         <translation>%1:別名與暫存圖層不相容</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1004"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1005"/>
         <source>%1: Comments are not compatible with scratch layers</source>
         <translation>%1: 註釋與暫存圖層不相容</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1123"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1158"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1124"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1159"/>
         <source>%1: Aliases are not supported by the %2 provider</source>
         <translation>%1: 別名不被 %2 提供者支援</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1125"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1160"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1126"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1161"/>
         <source>%1: Comments are not supported by the %2 provider</source>
         <translation>%1: 註釋不被 %2 提供者支援</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1334"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1335"/>
         <source>Input parameters</source>
         <translation>輸入引數</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1347"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1348"/>
         <source>Outputs</source>
         <translation>輸出</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1350"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1351"/>
         <source>Examples</source>
         <translation>範例</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1354"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1355"/>
         <source>Algorithm author:</source>
         <translation>演算法作者:</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1356"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1357"/>
         <source>Help author:</source>
         <translation>幫助作者:</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1358"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1359"/>
         <source>Algorithm version:</source>
         <translation>演算法版本:</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1477"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1478"/>
         <source>Cannot store existing FID values in temporary GeoPackage layer, these will be moved to &quot;OLD_FID&quot; instead.</source>
         <translation>無法將現有的 FID 值儲存在暫時的 GeoPackage 圖層中，這些將被移至 &quot;OLD_FID&quot;。</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1485"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1486"/>
         <source>Error writing feature # %1 to output layer: %2</source>
         <translation>寫入輸出圖層的特徵 # %1 時發生錯誤: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1493"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1494"/>
         <source>There were %1 errors writing features, only the first %2 have been reported.</source>
         <translation>寫入特徵時發生 %1 個錯誤，僅報告前 %2 個。</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1703"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1704"/>
         <source>Invalid data defined parameter for %1, requires &apos;expression&apos; or &apos;field&apos; values.</source>
         <translation>為 %1 定義的引數資料無效，需要 &apos;expression&apos; 或 &apos;field&apos; 值。</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2056"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2105"/>
         <source>Feature could not be written to %1: %2</source>
         <translation>無法寫入圖徵到 %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2058"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2107"/>
         <source>Feature could not be written to %1</source>
         <translation>無法寫入圖徵到 %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2070"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2119"/>
         <source>%n feature(s) could not be written to %1: %2</source>
         <translation><numerusform>%n 個圖徵無法寫入 %1：%2</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2072"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2121"/>
         <source>%n feature(s) could not be written to %1</source>
         <translation><numerusform>%n 個圖徵無法寫入 %1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2084"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2133"/>
         <source>Features could not be written to %1: %2</source>
         <translation>無法寫入圖徵到 %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2086"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2135"/>
         <source>Features could not be written to %1</source>
         <translation>無法寫入圖徵到 %1</translation>
     </message>
@@ -40017,7 +40017,7 @@ Last frames:
         <translation>表示用於儲存檔案的外部儲存的可變長度字串的 URL</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="49"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="50"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="262"/>
         <source>count</source>
         <translation>計數</translation>
@@ -40043,105 +40043,105 @@ Last frames:
         <translation>最大值</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="36"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="37"/>
         <source>Where the features</source>
         <translation>特徵所在的地方</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="47"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="48"/>
         <source>Fields to summarise (leave empty to use all fields)</source>
         <translation>要彙總的欄位(留空以使用所有欄位)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="50"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="51"/>
         <source>unique</source>
         <translation>唯一</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="51"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="52"/>
         <source>min</source>
         <translation>分鐘</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="52"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="53"/>
         <source>max</source>
         <translation>最大值</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="54"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="55"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="272"/>
         <source>sum</source>
         <translation>總和</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="55"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="56"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="274"/>
         <source>mean</source>
         <translation>平均值</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="56"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="57"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="276"/>
         <source>median</source>
         <translation>中位數</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="60"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="61"/>
         <source>q1</source>
         <translation>q1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="61"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="62"/>
         <source>q3</source>
         <translation>q3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="62"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="63"/>
         <source>iqr</source>
         <translation>iqr</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="63"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="64"/>
         <source>empty</source>
         <translation>空的</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="64"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="65"/>
         <source>filled</source>
         <translation>填充</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="65"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="66"/>
         <source>min_length</source>
         <translation>最小長度</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="66"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="67"/>
         <source>max_length</source>
         <translation>最大長度</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="67"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="68"/>
         <source>mean_length</source>
         <translation>平均長度</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="69"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="70"/>
         <source>Summaries to calculate (leave empty to use all available)</source>
         <translation>要計算的摘要(留空以使用所有可用的)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="83"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="84"/>
         <source>Join attributes by location (summary)</source>
         <translation>按位置連結屬性(摘要)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="88"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="89"/>
         <source>summary,aggregate,join,intersects,intersecting,touching,within,contains,overlaps,relation,spatial,stats,statistics,sum,maximum,minimum,mean,average,standard,deviation,count,distinct,unique,variance,median,quartile,range,majority,minority,histogram,distinct</source>
         <translation>摘要、聚合、連結、交集、相交、接觸、內部、包含、重疊、關係、空間、統計、統計資料、總和、最大值、最小值、平均值、標準、偏差、計數、不同、唯一、方差、中位數、四分位數、範圍、大多數、小多數、直方圖、不同</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="107"/>
         <source>This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
 
 The additional attributes and their values are taken from a second vector layer. A spatial criteria is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
@@ -40150,7 +40150,7 @@ The algorithm calculates a statistical summary for the values from matching feat
         <translation>此演算法接受一個輸入向量圖層，並建立一個新的向量圖層，該圖層是輸入圖層的擴充套件版本，並在其屬性表中具有額外的屬性。額外的屬性及其值來自第二個向量圖層。應用空間標準來選擇從第二個圖層中新增到結果圖層中每個特徵的值。該演算法計算第二個圖層中匹配特徵的值的統計摘要(例如，最大值、平均值等)。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="113"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="114"/>
         <source>Calculates summaries of attributes from one vector layer to another by location.</source>
         <translation>透過位置計算從一個向量圖層到另一個向量圖層的屬性摘要。</translation>
     </message>
@@ -40165,24 +40165,24 @@ The algorithm calculates a statistical summary for the values from matching feat
         <translation>標準差(樣本)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="53"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="54"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="282"/>
         <source>range</source>
         <translation>範圍</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="57"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="58"/>
         <source>stddev</source>
         <translation>標準差</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="58"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="59"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="284"/>
         <source>minority</source>
         <translation>少數</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="59"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="60"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="286"/>
         <source>majority</source>
         <translation>多數</translation>
@@ -41668,12 +41668,12 @@ By default only the m value from the first vertex of each feature is extracted, 
         <translation>此演算法附加代表每個唯一值計數的欄位，這些值來自定義為多邊形的區域中的網格圖層。</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsstringutils.cpp" line="72"/>
+        <location filename="../src/core/qgsstringutils.cpp" line="67"/>
         <source>a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via</source>
         <translation>a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsstringutils.cpp" line="73"/>
+        <location filename="../src/core/qgsstringutils.cpp" line="68"/>
         <source>.|:</source>
         <translation>.|：</translation>
     </message>
@@ -47023,12 +47023,12 @@ If a coverage layer is set, the selected layout&apos;s atlas settings exposed in
         <translation>要指派給解鎖的地圖專案的地圖圖層</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="86"/>
         <source>Image format</source>
         <translation>影像格式</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="90"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="64"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="71"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="70"/>
@@ -47036,13 +47036,13 @@ If a coverage layer is set, the selected layout&apos;s atlas settings exposed in
         <translation>DPI(留空以使用預設佈局DPI)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="94"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="75"/>
         <source>Generate world file</source>
         <translation>生成世界檔案</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="98"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="86"/>
@@ -47050,47 +47050,47 @@ If a coverage layer is set, the selected layout&apos;s atlas settings exposed in
         <translation>匯出RDF元資料(標題、作者等)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="110"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="102"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="83"/>
         <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="116"/>
         <source>Enable antialiasing</source>
         <translation>啟用抗鋸齒</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="147"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="139"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="134"/>
         <source>Error setting atlas filter expression</source>
         <translation>設定地圖集濾波器表示式時發生錯誤</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="166"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="158"/>
         <source>Layout being export doesn&apos;t have an enabled atlas</source>
         <translation>正在匯出的佈局沒有啟用的地圖集</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="165"/>
         <source>Error setting atlas filename expression</source>
         <translation>設定地圖集檔名表達式時發生錯誤</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="225"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="210"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="262"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="357"/>
         <source>Exporting %n atlas feature(s)</source>
         <translation><numerusform>正在輸出 %n 個地圖集圖徵</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="230"/>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="162"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="215"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="146"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="204"/>
         <source>Successfully exported layout to %1</source>
         <translation>成功匯出佈局至 %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="235"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="220"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="272"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="383"/>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="167"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="151"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="209"/>
         <source>Cannot write to %1.
 
@@ -47098,24 +47098,24 @@ This file may be open in another application.</source>
         <translation>無法寫入 %1。該檔案可能在其他應用程式中開啟。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="238"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="223"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="278"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="389"/>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="170"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="154"/>
         <source>Trying to create the image resulted in a memory overflow.
 
 Please try a lower resolution or a smaller paper size.</source>
         <translation>嘗試建立影像導致記憶體溢位。請嘗試較低的解析度或較小的紙張大小。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="243"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="228"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="283"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="394"/>
         <source>Error encountered while exporting atlas.</source>
         <translation>匯出地圖集時遇到錯誤。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="254"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="239"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="293"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="404"/>
         <source>No atlas features found</source>
@@ -47294,12 +47294,12 @@ If a coverage layer is set, the selected layout's atlas settings exposed in this
         <translation>此演算法輸出列印圖面配置為影像檔案(例如 PNG 或 JPEG 影像)。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="94"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1791"/>
         <source> format</source>
         <translation>格式</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="103"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="87"/>
         <source>Image file</source>
         <translation>影像檔案</translation>
     </message>
@@ -48799,13 +48799,13 @@ Optional GDAL-defined dataset and layer options can be specified. For more infor
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="133"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1072"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1073"/>
         <source>%1: Aliases are not supported by %2</source>
         <translation>%1: 別名不被 %2 支援</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="135"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1074"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1075"/>
         <source>%1: Comments are not supported by %2</source>
         <translation>%1: 註釋不被 %2 支援</translation>
     </message>
@@ -50086,62 +50086,62 @@ The created point layer will be in the same spatial reference system as the sele
         <translation>可編輯</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="793"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="794"/>
         <source>below %1 %2</source>
         <translation>低於 %1 %2</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="805"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="806"/>
         <source>above %1 %2</source>
         <translation>高於 %1 %2</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1101"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1102"/>
         <source>Face %1 invalid</source>
         <translation>面 %1 無效</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1104"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1105"/>
         <source>Too many vertices for face %1</source>
         <translation>面 %1 的頂點過多</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1107"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1108"/>
         <source>Face %1 is flat</source>
         <translation>面 %1 是平坦的</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1110"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1111"/>
         <source>Vertex %1 is a unique shared vertex</source>
         <translation>頂點 %1 是唯一的共點</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1113"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1114"/>
         <source>Vertex %1 is invalid</source>
         <translation>頂點 %1 無效</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1116"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1117"/>
         <source>Face %1 is manifold</source>
         <translation>面 %1 是流形</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1137"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1138"/>
         <source>Mesh layer &quot;%1&quot; not support mesh editing</source>
         <translation>網格圖層 &quot;%1&quot; 不支援網格編輯</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1143"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1144"/>
         <source>Mesh layer &quot;%1&quot; already in editing mode</source>
         <translation>網格圖層 &quot;%1&quot; 已在編輯模式中</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1166"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1167"/>
         <source>Unable to start editing of mesh layer &quot;%1&quot;: %2</source>
         <translation>無法開始編輯網格圖層 &quot;%1&quot;: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1211"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1212"/>
         <source>Edited mesh layer &quot;%1&quot; can&apos;t be save due to an error: %2</source>
         <translation>編輯的網格圖層 &quot;%1&quot; 由於錯誤無法儲存: %2</translation>
     </message>
@@ -52788,7 +52788,7 @@ For more details, please see the following papers:
         <translation>該符號在 QGIS 中不支援</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsmarkersymbollayer.cpp" line="4234"/>
+        <location filename="../src/core/symbology/qgsmarkersymbollayer.cpp" line="4208"/>
         <location filename="../src/core/textrenderer/qgstextformat.cpp" line="623"/>
         <source>Font “%1” not available on system</source>
         <translation>系統中找不到字型 “%1”</translation>
@@ -56726,102 +56726,102 @@ This algorithm does not change the layer geometry type, which will remain multip
         <translation>在唯一欄位 &quot;%1&quot; 中發現 NULL 或無效值</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="90"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="91"/>
         <source>Profile curve</source>
         <translation>剖面曲線</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="92"/>
         <source>Map layers</source>
         <translation>地圖圖層</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="92"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="93"/>
         <source>Chart width (in pixels)</source>
         <translation>圖表寬度(以畫素為單位)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="93"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="94"/>
         <source>Chart height (in pixels)</source>
         <translation>圖表高度(以畫素為單位)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="95"/>
         <source>Terrain layer</source>
         <translation>地形圖層</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="97"/>
         <source>Chart minimum distance (X axis)</source>
         <translation>圖表最小距離(X 軸)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="100"/>
         <source>Chart maximum distance (X axis)</source>
         <translation>圖表最大距離(X 軸)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="103"/>
         <source>Chart minimum elevation (Y axis)</source>
         <translation>圖表最小高程(Y 軸)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="105"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="106"/>
         <source>Chart maximum elevation (Y axis)</source>
         <translation>圖表最大高程(Y 軸)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="110"/>
         <source>Chart text color</source>
         <translation>圖表文字顏色</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="112"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="113"/>
         <source>Chart background color</source>
         <translation>圖表背景顏色</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="115"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="116"/>
         <source>Chart border color</source>
         <translation>圖表邊框顏色</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="120"/>
         <source>Profile tolerance</source>
         <translation>剖面容忍值</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="123"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="124"/>
         <source>Chart DPI</source>
         <translation>圖表 DPI</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="127"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="128"/>
         <source>Output image</source>
         <translation>輸出影像</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="137"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="138"/>
         <source>Generate elevation profile image</source>
         <translation>生成高程剖面影像</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="142"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="143"/>
         <source>altitude,elevation,terrain,dem</source>
         <translation>高度、高程、地形、數值地形模型</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="147"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="148"/>
         <source>Plots</source>
         <translation>繪圖</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="157"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="158"/>
         <source>This algorithm creates an elevation profile image from a list of map layer and an optional terrain.</source>
         <translation>此演算法從地圖圖層列表和選用的地形生成高程剖面影像。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="162"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="163"/>
         <source>Creates an elevation profile image from a list of map layer and an optional terrain.</source>
         <translation>從地圖圖層列表和選用的地形生成高程剖面影像。</translation>
     </message>
@@ -58272,60 +58272,60 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
         <translation>載入圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3119"/>
+        <location filename="../src/app/qgisapp.cpp" line="3123"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3120"/>
+        <location filename="../src/app/qgisapp.cpp" line="3124"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3121"/>
+        <location filename="../src/app/qgisapp.cpp" line="3125"/>
         <source>Minimizes the active window to the dock</source>
         <translation>將活動視窗最小化到停靠區</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3124"/>
+        <location filename="../src/app/qgisapp.cpp" line="3128"/>
         <source>Zoom</source>
         <translation>縮放</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3125"/>
+        <location filename="../src/app/qgisapp.cpp" line="3129"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>在預定義的大小和使用者設定的視窗大小之間切換</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3128"/>
+        <location filename="../src/app/qgisapp.cpp" line="3132"/>
         <source>Bring All to Front</source>
         <translation>將所有物件移到最前面</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3129"/>
+        <location filename="../src/app/qgisapp.cpp" line="3133"/>
         <source>Bring forward all open windows</source>
         <translation>將所有開啟的視窗向前移</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3137"/>
+        <location filename="../src/app/qgisapp.cpp" line="3141"/>
         <source>Current Edits</source>
         <translation>當前編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3280"/>
-        <location filename="../src/app/qgisapp.cpp" line="10713"/>
-        <location filename="../src/app/qgisapp.cpp" line="10856"/>
-        <location filename="../src/app/qgisapp.cpp" line="10942"/>
-        <location filename="../src/app/qgisapp.cpp" line="11105"/>
-        <location filename="../src/app/qgisapp.cpp" line="11132"/>
-        <location filename="../src/app/qgisapp.cpp" line="11155"/>
+        <location filename="../src/app/qgisapp.cpp" line="3284"/>
+        <location filename="../src/app/qgisapp.cpp" line="10717"/>
+        <location filename="../src/app/qgisapp.cpp" line="10860"/>
+        <location filename="../src/app/qgisapp.cpp" line="10946"/>
+        <location filename="../src/app/qgisapp.cpp" line="11109"/>
+        <location filename="../src/app/qgisapp.cpp" line="11136"/>
+        <location filename="../src/app/qgisapp.cpp" line="11159"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3273"/>
-        <location filename="../src/app/qgisapp.cpp" line="3280"/>
+        <location filename="../src/app/qgisapp.cpp" line="3277"/>
+        <location filename="../src/app/qgisapp.cpp" line="3284"/>
         <source>Failed to open Python console:</source>
         <translation>無法開啟 Python 控制檯:</translation>
     </message>
@@ -58362,44 +58362,44 @@ Please contact the developers.
         <translation>QGIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3390"/>
-        <location filename="../src/app/qgisapp.cpp" line="16973"/>
+        <location filename="../src/app/qgisapp.cpp" line="3394"/>
+        <location filename="../src/app/qgisapp.cpp" line="16977"/>
         <source>Panels</source>
         <translation>面板</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3392"/>
-        <location filename="../src/app/qgisapp.cpp" line="16993"/>
+        <location filename="../src/app/qgisapp.cpp" line="3396"/>
+        <location filename="../src/app/qgisapp.cpp" line="16997"/>
         <source>Toolbars</source>
         <translation>工具列</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3443"/>
+        <location filename="../src/app/qgisapp.cpp" line="3447"/>
         <source>Window</source>
         <translation>視窗</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3461"/>
+        <location filename="../src/app/qgisapp.cpp" line="3465"/>
         <source>&amp;Web</source>
         <translation>&amp;網頁</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4057"/>
+        <location filename="../src/app/qgisapp.cpp" line="4061"/>
         <source>Render</source>
         <translation>彩現</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4061"/>
+        <location filename="../src/app/qgisapp.cpp" line="4065"/>
         <source>Toggle map rendering</source>
         <translation>切換地圖渲染</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4076"/>
+        <location filename="../src/app/qgisapp.cpp" line="4080"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>CRS 狀態 - 點選以開啟座標參考系統對話方塊</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4080"/>
+        <location filename="../src/app/qgisapp.cpp" line="4084"/>
         <source>Ready</source>
         <translation>準備就緒</translation>
     </message>
@@ -58416,7 +58416,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1327"/>
         <location filename="../src/app/qgisapp.cpp" line="1361"/>
-        <location filename="../src/app/qgisapp.cpp" line="4952"/>
+        <location filename="../src/app/qgisapp.cpp" line="4956"/>
         <source>Layer Styling</source>
         <translation>圖層樣式</translation>
     </message>
@@ -58441,299 +58441,299 @@ Please contact the developers.
         <translation>Ctrl+Alt+=</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3475"/>
+        <location filename="../src/app/qgisapp.cpp" line="3479"/>
         <source>&amp;User Profiles</source>
         <translation>&amp;使用者設定檔</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4049"/>
+        <location filename="../src/app/qgisapp.cpp" line="4053"/>
         <source> °</source>
         <translation> °</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4093"/>
+        <location filename="../src/app/qgisapp.cpp" line="4097"/>
         <source>Ctrl+K</source>
         <translation>Ctrl+K</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4096"/>
+        <location filename="../src/app/qgisapp.cpp" line="4100"/>
         <source>Trigger Locator</source>
         <translation>觸發定位器</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4395"/>
+        <location filename="../src/app/qgisapp.cpp" line="4399"/>
         <source>Transforms are not installed: %1 </source>
         <translation>轉換未安裝: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4396"/>
+        <location filename="../src/app/qgisapp.cpp" line="4400"/>
         <source>Missing datum transforms</source>
         <translation>缺少基準轉換</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4589"/>
+        <location filename="../src/app/qgisapp.cpp" line="4593"/>
         <source>Overview</source>
         <translation>概覽</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4866"/>
+        <location filename="../src/app/qgisapp.cpp" line="4870"/>
         <source>Layers</source>
         <translation>圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4920"/>
+        <location filename="../src/app/qgisapp.cpp" line="4924"/>
         <source>Manage Map Themes</source>
         <translation>管理地圖主題</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4996"/>
+        <location filename="../src/app/qgisapp.cpp" line="5000"/>
         <source>Layer Order</source>
         <translation>圖層順序</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5000"/>
+        <location filename="../src/app/qgisapp.cpp" line="5004"/>
         <source>Ctrl+9</source>
         <translation>Ctrl+9</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5003"/>
+        <location filename="../src/app/qgisapp.cpp" line="5007"/>
         <source>Show Layer Order Panel</source>
         <translation>顯示圖層順序面板</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5404"/>
-        <location filename="../src/app/qgisapp.cpp" line="6041"/>
+        <location filename="../src/app/qgisapp.cpp" line="5408"/>
+        <location filename="../src/app/qgisapp.cpp" line="6045"/>
         <source>&lt; Blank &gt;</source>
         <translation>&lt; 空白 &gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5486"/>
+        <location filename="../src/app/qgisapp.cpp" line="5490"/>
         <source>QGIS version</source>
         <translation>QGIS 版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5504"/>
+        <location filename="../src/app/qgisapp.cpp" line="5508"/>
         <source>QGIS code revision</source>
         <translation>QGIS 程式碼修訂</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5642"/>
+        <location filename="../src/app/qgisapp.cpp" line="5646"/>
         <source>This copy of QGIS writes debugging output.</source>
         <translation>此 QGIS 複本寫入除錯輸出。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7938"/>
+        <location filename="../src/app/qgisapp.cpp" line="7942"/>
         <source>Diagram Properties</source>
         <translation>圖表屬性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7949"/>
+        <location filename="../src/app/qgisapp.cpp" line="7953"/>
         <source>Annotations</source>
         <translation>註記</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7953"/>
+        <location filename="../src/app/qgisapp.cpp" line="7957"/>
         <source>Annotations (%1)</source>
         <translation>註記 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8586"/>
+        <location filename="../src/app/qgisapp.cpp" line="8590"/>
         <source>Export failed</source>
         <translation>匯出失敗</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8586"/>
+        <location filename="../src/app/qgisapp.cpp" line="8590"/>
         <source>A problem occurred while exporting: %1</source>
         <translation>匯出時發生問題: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8588"/>
+        <location filename="../src/app/qgisapp.cpp" line="8592"/>
         <source>Cannot open file</source>
         <translation>無法開啟檔案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8588"/>
+        <location filename="../src/app/qgisapp.cpp" line="8592"/>
         <source>Cannot open exported file: %1</source>
         <translation>無法開啟匯出檔案: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8664"/>
+        <location filename="../src/app/qgisapp.cpp" line="8668"/>
         <source>Some of the &lt;b&gt;%n&lt;/b&gt; selected feature(s) about to be deleted &lt;b&gt;are outside of the current map view&lt;/b&gt;. Would you still like to continue?</source>
         <translation><numerusform>部分 &lt;b&gt;%n&lt;/b&gt; 選取的圖徵位於 &lt;b&gt;目前地圖檢視範圍之外&lt;/b&gt;，您仍要繼續刪除嗎？</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8665"/>
-        <location filename="../src/app/qgisapp.cpp" line="8687"/>
-        <location filename="../src/app/qgisapp.cpp" line="8701"/>
+        <location filename="../src/app/qgisapp.cpp" line="8669"/>
+        <location filename="../src/app/qgisapp.cpp" line="8691"/>
+        <location filename="../src/app/qgisapp.cpp" line="8705"/>
         <source>Delete %n Feature(s)</source>
         <translation><numerusform>刪除 %n 個圖徵</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8682"/>
+        <location filename="../src/app/qgisapp.cpp" line="8686"/>
         <source>%n feature(s) on layer &quot;%1&quot;, </source>
         <translation><numerusform>圖層「%1」上的 %n 個圖徵，</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8702"/>
+        <location filename="../src/app/qgisapp.cpp" line="8706"/>
         <source>Don&apos;t show this message again</source>
         <translation>不再顯示此訊息</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8735"/>
+        <location filename="../src/app/qgisapp.cpp" line="8739"/>
         <source>%n feature(s) deleted: %1</source>
         <translation><numerusform>%n 個圖徵已刪除：%1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9693"/>
-        <location filename="../src/app/qgisapp.cpp" line="9751"/>
+        <location filename="../src/app/qgisapp.cpp" line="9697"/>
+        <location filename="../src/app/qgisapp.cpp" line="9755"/>
         <source>Resulting geometry type (multipart) is incompatible with layer type (singlepart).</source>
         <translation>結果幾何型別(多部分)與圖層型別(單部分)不相容。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9702"/>
+        <location filename="../src/app/qgisapp.cpp" line="9706"/>
         <source>Merge Features</source>
         <translation>合併圖徵</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10318"/>
+        <location filename="../src/app/qgisapp.cpp" line="10322"/>
         <source>%n geometries collapsed due to intersection avoidance.</source>
         <translation><numerusform>%n 個幾何圖形因避免交集而合併。</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10379"/>
+        <location filename="../src/app/qgisapp.cpp" line="10383"/>
         <source>Cannot copy style</source>
         <translation>無法複製樣式</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10402"/>
+        <location filename="../src/app/qgisapp.cpp" line="10406"/>
         <source>Cannot parse style</source>
         <translation>無法解析樣式</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10414"/>
+        <location filename="../src/app/qgisapp.cpp" line="10418"/>
         <source>Cannot paste style</source>
         <translation>無法貼上樣式</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10570"/>
+        <location filename="../src/app/qgisapp.cpp" line="10574"/>
         <source>Layer cannot be edited</source>
         <translation>圖層無法編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10763"/>
+        <location filename="../src/app/qgisapp.cpp" line="10767"/>
         <source>Start Mesh Frame Edit</source>
         <translation>開始網格框編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10763"/>
+        <location filename="../src/app/qgisapp.cpp" line="10767"/>
         <source>Starting editing the frame of this mesh layer will remove all dataset groups.
 Alternatively, you can create a new mesh layer from that one.</source>
         <translation>開始編輯此網格圖層的框架將移除所有資料叢集組。另外，您可以從該圖層建立一個新的網格圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10767"/>
+        <location filename="../src/app/qgisapp.cpp" line="10771"/>
         <source>Edit Current Mesh</source>
         <translation>編輯當前網格</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10768"/>
+        <location filename="../src/app/qgisapp.cpp" line="10772"/>
         <source>Edit a Copy</source>
         <translation>編輯副本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10815"/>
-        <location filename="../src/app/qgisapp.cpp" line="10841"/>
-        <location filename="../src/app/qgisapp.cpp" line="11035"/>
+        <location filename="../src/app/qgisapp.cpp" line="10819"/>
+        <location filename="../src/app/qgisapp.cpp" line="10845"/>
+        <location filename="../src/app/qgisapp.cpp" line="11039"/>
         <source>Mesh editing</source>
         <translation>網格編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10816"/>
+        <location filename="../src/app/qgisapp.cpp" line="10820"/>
         <source>Unable to start mesh editing for layer &quot;%1&quot;</source>
         <translation>無法為圖層 &quot;%1&quot; 開始網格編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10842"/>
-        <location filename="../src/app/qgisapp.cpp" line="10930"/>
-        <location filename="../src/app/qgisapp.cpp" line="11036"/>
-        <location filename="../src/app/qgisapp.cpp" line="11059"/>
+        <location filename="../src/app/qgisapp.cpp" line="10846"/>
+        <location filename="../src/app/qgisapp.cpp" line="10934"/>
+        <location filename="../src/app/qgisapp.cpp" line="11040"/>
+        <location filename="../src/app/qgisapp.cpp" line="11063"/>
         <source>Unable to save editing for layer &quot;%1&quot;</source>
         <translation>無法為圖層 &quot;%1&quot; 儲存編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11132"/>
-        <location filename="../src/app/qgisapp.cpp" line="11155"/>
+        <location filename="../src/app/qgisapp.cpp" line="11136"/>
+        <location filename="../src/app/qgisapp.cpp" line="11159"/>
         <source>Could not %1 changes to layer %2</source>
         <translation>無法對圖層 %2 %1 變更</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11660"/>
+        <location filename="../src/app/qgisapp.cpp" line="11664"/>
         <source>No legend entries selected</source>
         <translation>未選取任何圖例項目</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11660"/>
+        <location filename="../src/app/qgisapp.cpp" line="11664"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>請選擇您想在圖例中移除的圖層和群組。</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11705"/>
+        <location filename="../src/app/qgisapp.cpp" line="11709"/>
         <source>(%n more hidden layer(s))</source>
         <comment>number of hidden layers not shown</comment>
         <translation><numerusform>（還有 %n 個隱藏圖層）</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11707"/>
+        <location filename="../src/app/qgisapp.cpp" line="11711"/>
         <source>The following hidden layers will be removed:
 %1</source>
         <translation>以下隱藏圖層將被移除: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11710"/>
+        <location filename="../src/app/qgisapp.cpp" line="11714"/>
         <source>Remove layers and groups</source>
         <translation>移除圖層和群組</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11698"/>
+        <location filename="../src/app/qgisapp.cpp" line="11702"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation><numerusform>確定要移除 %n 個圖例項目嗎？</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11729"/>
+        <location filename="../src/app/qgisapp.cpp" line="11733"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation><numerusform>%n 個圖例項目已移除。</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11809"/>
+        <location filename="../src/app/qgisapp.cpp" line="11813"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (%2 型別不支援)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11851"/>
+        <location filename="../src/app/qgisapp.cpp" line="11855"/>
         <source>Cannot copy style to duplicated layer.</source>
         <translation>無法將樣式複製到重複的圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13102"/>
+        <location filename="../src/app/qgisapp.cpp" line="13106"/>
         <source>Map %1</source>
         <translation>地圖 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13300"/>
+        <location filename="../src/app/qgisapp.cpp" line="13304"/>
         <source>3D Map %1</source>
         <translation>3D 地圖 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13525"/>
+        <location filename="../src/app/qgisapp.cpp" line="13529"/>
         <source>Do you want to save the current project? %1</source>
         <translation>您想要儲存當前專案嗎？ %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5769"/>
-        <location filename="../src/app/qgisapp.cpp" line="11651"/>
-        <location filename="../src/app/qgisapp.cpp" line="13733"/>
+        <location filename="../src/app/qgisapp.cpp" line="5773"/>
+        <location filename="../src/app/qgisapp.cpp" line="11655"/>
+        <location filename="../src/app/qgisapp.cpp" line="13737"/>
         <source>Active Tasks</source>
         <translation>活動任務</translation>
     </message>
@@ -58773,126 +58773,126 @@ Alternatively, you can create a new mesh layer from that one.</source>
         <translation>日誌訊息</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3435"/>
+        <location filename="../src/app/qgisapp.cpp" line="3439"/>
         <source>Preferences…</source>
         <translation>偏好設定…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3510"/>
+        <location filename="../src/app/qgisapp.cpp" line="3514"/>
         <source>Open Active Profile Folder</source>
         <translation>開啟活動設定檔資料夾</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3516"/>
+        <location filename="../src/app/qgisapp.cpp" line="3520"/>
         <source>New Profile…</source>
         <translation>新增設定檔…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4933"/>
+        <location filename="../src/app/qgisapp.cpp" line="4937"/>
         <source>Filter Legend by Map Content</source>
         <translation>依地圖內容過濾圖例</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4954"/>
+        <location filename="../src/app/qgisapp.cpp" line="4958"/>
         <source>Open the Layer Styling panel</source>
         <translation>開啟圖層樣式面板</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5719"/>
+        <location filename="../src/app/qgisapp.cpp" line="5723"/>
         <source>Add Virtual Layer</source>
         <translation>新增虛擬圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6201"/>
+        <location filename="../src/app/qgisapp.cpp" line="6205"/>
         <source>Calculating raster expression…</source>
         <translation>計算網格表示式…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6372"/>
+        <location filename="../src/app/qgisapp.cpp" line="6376"/>
         <source>Revert Project</source>
         <translation>還原專案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6372"/>
+        <location filename="../src/app/qgisapp.cpp" line="6376"/>
         <source>Are you sure you want to discard all unsaved changes the current project?</source>
         <translation>您確定要放棄當前專案中所有未儲存的變更嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6694"/>
+        <location filename="../src/app/qgisapp.cpp" line="6698"/>
         <source>Save Project As</source>
         <translation>另存專案為</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8126"/>
-        <location filename="../src/app/qgisapp.cpp" line="8385"/>
+        <location filename="../src/app/qgisapp.cpp" line="8130"/>
+        <location filename="../src/app/qgisapp.cpp" line="8389"/>
         <source>Layer Exported</source>
         <translation>圖層已匯出</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8146"/>
+        <location filename="../src/app/qgisapp.cpp" line="8150"/>
         <source>Save Raster</source>
         <translation>儲存網格</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8143"/>
+        <location filename="../src/app/qgisapp.cpp" line="8147"/>
         <source>Cannot write raster. Error code: %1</source>
         <translation>無法寫入網格。錯誤程式碼: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8792"/>
+        <location filename="../src/app/qgisapp.cpp" line="8796"/>
         <source>Merging features…</source>
         <translation>合併特徵…</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10280"/>
+        <location filename="../src/app/qgisapp.cpp" line="10284"/>
         <source>
 %n children on layer %1 duplicated</source>
         <translation><numerusform>%n 子專案在圖層 %1 中重複</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10309"/>
+        <location filename="../src/app/qgisapp.cpp" line="10313"/>
         <source>%n feature(s) were pasted.%1</source>
         <translation><numerusform>%n 個圖徵已被貼上.%1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10435"/>
+        <location filename="../src/app/qgisapp.cpp" line="10439"/>
         <source>Error copying layer</source>
         <translation>複製圖層時出錯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10471"/>
+        <location filename="../src/app/qgisapp.cpp" line="10475"/>
         <source>Error pasting layer</source>
         <translation>貼上圖層時出錯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10678"/>
-        <location filename="../src/app/qgisapp.cpp" line="10828"/>
-        <location filename="../src/app/qgisapp.cpp" line="10916"/>
+        <location filename="../src/app/qgisapp.cpp" line="10682"/>
+        <location filename="../src/app/qgisapp.cpp" line="10832"/>
+        <location filename="../src/app/qgisapp.cpp" line="10920"/>
         <source>Stop Editing</source>
         <translation>停止編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12785"/>
+        <location filename="../src/app/qgisapp.cpp" line="12789"/>
         <source>https://qgis.org/resources/support/bug-reporting/</source>
         <translation>https://qgis.org/resources/support/bug-reporting/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12792"/>
+        <location filename="../src/app/qgisapp.cpp" line="12796"/>
         <source>https://qgis.org/community/involve/</source>
         <translation>https://qgis.org/community/involve/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12799"/>
+        <location filename="../src/app/qgisapp.cpp" line="12803"/>
         <source>https://qgis.org/funding/donate/</source>
         <translation>https://qgis.org/funding/donate/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12806"/>
+        <location filename="../src/app/qgisapp.cpp" line="12810"/>
         <source>https://qgis.org/resources/support/commercial-support/</source>
         <translation>https://qgis.org/resources/support/commercial-support/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13733"/>
+        <location filename="../src/app/qgisapp.cpp" line="13737"/>
         <source>The following tasks are currently running which depend on layers in this project:
 
 %1
@@ -58901,140 +58901,140 @@ Please cancel these tasks and retry.</source>
         <translation>目前有以下任務正在執行，這些任務依賴於此專案中的圖層: %1請取消這些任務並重試。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14455"/>
+        <location filename="../src/app/qgisapp.cpp" line="14459"/>
         <source>Current CRS: %1</source>
         <translation>當前 CRS: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14462"/>
+        <location filename="../src/app/qgisapp.cpp" line="14466"/>
         <source>No projection</source>
         <translation>無投影</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15268"/>
+        <location filename="../src/app/qgisapp.cpp" line="15272"/>
         <source>Add Point Feature</source>
         <translation>新增點圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15298"/>
+        <location filename="../src/app/qgisapp.cpp" line="15302"/>
         <source>Add Line Feature</source>
         <translation>新增線圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15317"/>
+        <location filename="../src/app/qgisapp.cpp" line="15321"/>
         <source>Add Polygon Feature</source>
         <translation>新增多邊形圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15334"/>
+        <location filename="../src/app/qgisapp.cpp" line="15338"/>
         <source>Add Record</source>
         <translation>新增記錄</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15890"/>
+        <location filename="../src/app/qgisapp.cpp" line="15894"/>
         <source>Map Views</source>
         <translation>地圖檢視</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15893"/>
+        <location filename="../src/app/qgisapp.cpp" line="15897"/>
         <source>A view with this name already exists</source>
         <translation>此名稱的檢視已存在</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5914"/>
+        <location filename="../src/app/qgisapp.cpp" line="5918"/>
         <source>Default failed to open: %1</source>
         <translation>預設無法開啟: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5918"/>
+        <location filename="../src/app/qgisapp.cpp" line="5922"/>
         <source>Default not found: %1</source>
         <translation>預設未找到: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5920"/>
+        <location filename="../src/app/qgisapp.cpp" line="5924"/>
         <source>Open Template Project</source>
         <translation>開啟範本專案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5943"/>
+        <location filename="../src/app/qgisapp.cpp" line="5947"/>
         <source>Auto-open Project</source>
         <translation>自動開啟專案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5981"/>
+        <location filename="../src/app/qgisapp.cpp" line="5985"/>
         <source>Failed to open: %1</source>
         <translation>無法開啟: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6005"/>
+        <location filename="../src/app/qgisapp.cpp" line="6009"/>
         <source>Not valid project file: %1</source>
         <translation>無效的專案檔案: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6016"/>
+        <location filename="../src/app/qgisapp.cpp" line="6020"/>
         <source>Project failed to open: %1</source>
         <translation>專案無法開啟: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6021"/>
+        <location filename="../src/app/qgisapp.cpp" line="6025"/>
         <source>Default template has been reopened: %1</source>
         <translation>預設樣板已重新開啟: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6026"/>
+        <location filename="../src/app/qgisapp.cpp" line="6030"/>
         <source>File not found: %1</source>
         <translation>找不到檔案: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6409"/>
+        <location filename="../src/app/qgisapp.cpp" line="6413"/>
         <source>Loading project: %1</source>
         <translation>載入專案: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6450"/>
+        <location filename="../src/app/qgisapp.cpp" line="6454"/>
         <source>Unable to open project</source>
         <translation>無法開啟專案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4591"/>
+        <location filename="../src/app/qgisapp.cpp" line="4595"/>
         <source>Ctrl+8</source>
         <translation>Ctrl+8</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4594"/>
+        <location filename="../src/app/qgisapp.cpp" line="4598"/>
         <source>Show Overview Panel</source>
         <translation>顯示概覽面板</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4870"/>
+        <location filename="../src/app/qgisapp.cpp" line="4874"/>
         <source>Ctrl+1</source>
         <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4873"/>
+        <location filename="../src/app/qgisapp.cpp" line="4877"/>
         <source>Show Layers Panel</source>
         <translation>顯示圖層面板</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6551"/>
+        <location filename="../src/app/qgisapp.cpp" line="6555"/>
         <source>Project loaded</source>
         <translation>專案已載入</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6584"/>
+        <location filename="../src/app/qgisapp.cpp" line="6588"/>
         <source>Choose a QGIS project file</source>
         <translation>選擇一個 QGIS 專案檔案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6647"/>
-        <location filename="../src/app/qgisapp.cpp" line="6735"/>
-        <location filename="../src/app/qgisapp.cpp" line="17302"/>
+        <location filename="../src/app/qgisapp.cpp" line="6651"/>
+        <location filename="../src/app/qgisapp.cpp" line="6739"/>
+        <location filename="../src/app/qgisapp.cpp" line="17306"/>
         <source>Saved project to: %1</source>
         <translation>已儲存專案至: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6655"/>
-        <location filename="../src/app/qgisapp.cpp" line="6741"/>
+        <location filename="../src/app/qgisapp.cpp" line="6659"/>
+        <location filename="../src/app/qgisapp.cpp" line="6745"/>
         <source>Unable to save project %1</source>
         <translation>無法儲存專案 %1</translation>
     </message>
@@ -59100,489 +59100,489 @@ Please cancel these tasks and retry.</source>
         <translation>字型安裝失敗</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2983"/>
+        <location filename="../src/app/qgisapp.cpp" line="2987"/>
         <source>To reselect features, choose a vector layer in the legend.</source>
         <translation>要重新選擇圖徵，請在圖例中選擇一個向量圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4035"/>
+        <location filename="../src/app/qgisapp.cpp" line="4039"/>
         <source>Rotation</source>
         <translation>旋轉</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4912"/>
-        <location filename="../src/app/qgisapp.cpp" line="4914"/>
+        <location filename="../src/app/qgisapp.cpp" line="4916"/>
+        <location filename="../src/app/qgisapp.cpp" line="4918"/>
         <source>Add Group</source>
         <translation>新增群組</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4928"/>
+        <location filename="../src/app/qgisapp.cpp" line="4932"/>
         <source>Filter Legend</source>
         <translation>過濾圖例</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4938"/>
+        <location filename="../src/app/qgisapp.cpp" line="4942"/>
         <source>Show Private Layers</source>
         <translation>顯示私有圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4943"/>
+        <location filename="../src/app/qgisapp.cpp" line="4947"/>
         <source>Show Broken Layers Only</source>
         <translation>僅顯示損壞的圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4949"/>
+        <location filename="../src/app/qgisapp.cpp" line="4953"/>
         <source>Filter legend by expression</source>
         <translation>以表達式篩選圖例</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4960"/>
-        <location filename="../src/app/qgisapp.cpp" line="4962"/>
+        <location filename="../src/app/qgisapp.cpp" line="4964"/>
+        <location filename="../src/app/qgisapp.cpp" line="4966"/>
         <source>Expand All</source>
         <translation>展開全部</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4964"/>
-        <location filename="../src/app/qgisapp.cpp" line="4966"/>
+        <location filename="../src/app/qgisapp.cpp" line="4968"/>
+        <location filename="../src/app/qgisapp.cpp" line="4970"/>
         <source>Collapse All</source>
         <translation>收合全部</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5248"/>
+        <location filename="../src/app/qgisapp.cpp" line="5252"/>
         <source>Clear List</source>
         <translation>清除清單</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5462"/>
+        <location filename="../src/app/qgisapp.cpp" line="5466"/>
         <source>https://qgis.org/funding/membership/members/</source>
         <translation>https://qgis.org/funding/membership/members/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5483"/>
+        <location filename="../src/app/qgisapp.cpp" line="5487"/>
         <source>Compiled</source>
         <translation>已編譯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5484"/>
+        <location filename="../src/app/qgisapp.cpp" line="5488"/>
         <source>Running</source>
         <translation>執行中</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5490"/>
+        <location filename="../src/app/qgisapp.cpp" line="5494"/>
         <source>QGIS code branch</source>
         <translation>QGIS 程式碼分支</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5508"/>
+        <location filename="../src/app/qgisapp.cpp" line="5512"/>
         <source>Libraries</source>
         <translation>函式庫</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5513"/>
+        <location filename="../src/app/qgisapp.cpp" line="5517"/>
         <source>Qt version</source>
         <translation>Qt 版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5524"/>
+        <location filename="../src/app/qgisapp.cpp" line="5528"/>
         <source>Python version</source>
         <translation>Python 版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5555"/>
+        <location filename="../src/app/qgisapp.cpp" line="5559"/>
         <source>PROJ version</source>
         <translation>PROJ 版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5563"/>
+        <location filename="../src/app/qgisapp.cpp" line="5567"/>
         <source>EPSG Registry database version</source>
         <translation>EPSG 註冊資料庫版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5569"/>
+        <location filename="../src/app/qgisapp.cpp" line="5573"/>
         <source>GEOS version</source>
         <translation>GEOS 版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5579"/>
+        <location filename="../src/app/qgisapp.cpp" line="5583"/>
         <source>SQLite version</source>
         <translation>SQLite 版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5597"/>
+        <location filename="../src/app/qgisapp.cpp" line="5601"/>
         <source>PDAL version</source>
         <translation>PDAL 版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5606"/>
+        <location filename="../src/app/qgisapp.cpp" line="5610"/>
         <source>PostgreSQL client version</source>
         <translation>PostgreSQL 客戶端版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5616"/>
-        <location filename="../src/app/qgisapp.cpp" line="5625"/>
+        <location filename="../src/app/qgisapp.cpp" line="5620"/>
+        <location filename="../src/app/qgisapp.cpp" line="5629"/>
         <source>No support</source>
         <translation>不支援</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5621"/>
+        <location filename="../src/app/qgisapp.cpp" line="5625"/>
         <source>SpatiaLite version</source>
         <translation>SpatiaLite 版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5630"/>
+        <location filename="../src/app/qgisapp.cpp" line="5634"/>
         <source>QWT version</source>
         <translation>QWT 版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5634"/>
+        <location filename="../src/app/qgisapp.cpp" line="5638"/>
         <source>QScintilla2 version</source>
         <translation>QScintilla2 版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5638"/>
+        <location filename="../src/app/qgisapp.cpp" line="5642"/>
         <source>OS version</source>
         <translation>作業系統版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5649"/>
+        <location filename="../src/app/qgisapp.cpp" line="5653"/>
         <source>Active Python plugins</source>
         <translation>啟用的 Python 外掛程式</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5719"/>
+        <location filename="../src/app/qgisapp.cpp" line="5723"/>
         <source>Cannot get virtual layer select dialog from provider.</source>
         <translation>無法從提供者獲取虛擬圖層選擇對話方塊。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6120"/>
-        <location filename="../src/app/qgisapp.cpp" line="6130"/>
+        <location filename="../src/app/qgisapp.cpp" line="6124"/>
+        <location filename="../src/app/qgisapp.cpp" line="6134"/>
         <source>New GPX File</source>
         <translation>新 GPX 檔案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6120"/>
+        <location filename="../src/app/qgisapp.cpp" line="6124"/>
         <source>GPS eXchange file</source>
         <translation>GPS 交換檔案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6130"/>
+        <location filename="../src/app/qgisapp.cpp" line="6134"/>
         <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
         <translation>無法使用給定名稱建立 GPX 檔案。請使用其他名稱或在其他目錄中重試。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6202"/>
-        <location filename="../src/app/qgisapp.cpp" line="6217"/>
+        <location filename="../src/app/qgisapp.cpp" line="6206"/>
         <location filename="../src/app/qgisapp.cpp" line="6221"/>
         <location filename="../src/app/qgisapp.cpp" line="6225"/>
-        <location filename="../src/app/qgisapp.cpp" line="6232"/>
+        <location filename="../src/app/qgisapp.cpp" line="6229"/>
         <location filename="../src/app/qgisapp.cpp" line="6236"/>
         <location filename="../src/app/qgisapp.cpp" line="6240"/>
         <location filename="../src/app/qgisapp.cpp" line="6244"/>
         <location filename="../src/app/qgisapp.cpp" line="6248"/>
+        <location filename="../src/app/qgisapp.cpp" line="6252"/>
         <source>Raster calculator</source>
         <translation>網格計算器</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6217"/>
-        <location filename="../src/app/qgisapp.cpp" line="6285"/>
+        <location filename="../src/app/qgisapp.cpp" line="6221"/>
+        <location filename="../src/app/qgisapp.cpp" line="6289"/>
         <source>Calculation complete.</source>
         <translation>計算完成。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6221"/>
-        <location filename="../src/app/qgisapp.cpp" line="6297"/>
+        <location filename="../src/app/qgisapp.cpp" line="6225"/>
+        <location filename="../src/app/qgisapp.cpp" line="6301"/>
         <source>Could not create destination file.</source>
         <translation>無法建立目標檔案。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6225"/>
-        <location filename="../src/app/qgisapp.cpp" line="6301"/>
+        <location filename="../src/app/qgisapp.cpp" line="6229"/>
+        <location filename="../src/app/qgisapp.cpp" line="6305"/>
         <source>Could not read input layer.</source>
         <translation>無法讀取輸入圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6232"/>
+        <location filename="../src/app/qgisapp.cpp" line="6236"/>
         <source>Could not parse raster formula.</source>
         <translation>無法解析網格公式。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6236"/>
-        <location filename="../src/app/qgisapp.cpp" line="6312"/>
+        <location filename="../src/app/qgisapp.cpp" line="6240"/>
+        <location filename="../src/app/qgisapp.cpp" line="6316"/>
         <source>Insufficient memory available for operation.</source>
         <translation>可用記憶體不足以進行操作。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6240"/>
+        <location filename="../src/app/qgisapp.cpp" line="6244"/>
         <source>Invalid band number for input layer.</source>
         <translation>輸入圖層的波段編號無效。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6261"/>
+        <location filename="../src/app/qgisapp.cpp" line="6265"/>
         <source>Mesh Calculator</source>
         <translation>網格計算器</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6261"/>
+        <location filename="../src/app/qgisapp.cpp" line="6265"/>
         <source>Mesh calculator with mesh layer in edit mode is not supported.</source>
         <translation>不支援編輯模式下的網格圖層的網格計算器。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6270"/>
+        <location filename="../src/app/qgisapp.cpp" line="6274"/>
         <source>Calculating mesh expression…</source>
         <translation>正在計算網格表示式…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6285"/>
         <location filename="../src/app/qgisapp.cpp" line="6289"/>
         <location filename="../src/app/qgisapp.cpp" line="6293"/>
         <location filename="../src/app/qgisapp.cpp" line="6297"/>
         <location filename="../src/app/qgisapp.cpp" line="6301"/>
-        <location filename="../src/app/qgisapp.cpp" line="6308"/>
+        <location filename="../src/app/qgisapp.cpp" line="6305"/>
         <location filename="../src/app/qgisapp.cpp" line="6312"/>
+        <location filename="../src/app/qgisapp.cpp" line="6316"/>
         <source>Mesh calculator</source>
         <translation>網格計算器</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6289"/>
+        <location filename="../src/app/qgisapp.cpp" line="6293"/>
         <source>Could not evaluate the formula.</source>
         <translation>無法評估公式。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6293"/>
+        <location filename="../src/app/qgisapp.cpp" line="6297"/>
         <source>Invalid or incompatible datasets used.</source>
         <translation>使用了無效或不相容的資料集。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6308"/>
+        <location filename="../src/app/qgisapp.cpp" line="6312"/>
         <source>Could not parse mesh formula.</source>
         <translation>無法解析網格公式。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6333"/>
-        <location filename="../src/app/qgisapp.cpp" line="6577"/>
-        <location filename="../src/app/qgisapp.cpp" line="6687"/>
+        <location filename="../src/app/qgisapp.cpp" line="6337"/>
+        <location filename="../src/app/qgisapp.cpp" line="6581"/>
+        <location filename="../src/app/qgisapp.cpp" line="6691"/>
         <source>QGIS Project Formats</source>
         <translation>QGIS 專案格式</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6439"/>
+        <location filename="../src/app/qgisapp.cpp" line="6443"/>
         <source>Do you want to open the backup file
 %1
 instead?</source>
         <translation>您想要開啟備份檔案%1嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6635"/>
+        <location filename="../src/app/qgisapp.cpp" line="6639"/>
         <source>Insufficient permissions</source>
         <translation>許可權不足</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6635"/>
+        <location filename="../src/app/qgisapp.cpp" line="6639"/>
         <source>The project file is not writable.</source>
         <translation>專案檔案無法寫入。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6792"/>
+        <location filename="../src/app/qgisapp.cpp" line="6796"/>
         <source>Successfully exported DXF to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>成功將 DXF 輸出至 &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6840"/>
-        <location filename="../src/app/qgisapp.cpp" line="6847"/>
-        <location filename="../src/app/qgisapp.cpp" line="6874"/>
+        <location filename="../src/app/qgisapp.cpp" line="6844"/>
+        <location filename="../src/app/qgisapp.cpp" line="6851"/>
+        <location filename="../src/app/qgisapp.cpp" line="6878"/>
         <source>Load template</source>
         <translation>載入樣板</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6840"/>
+        <location filename="../src/app/qgisapp.cpp" line="6844"/>
         <source>Could not read template file</source>
         <translation>無法讀取樣板檔案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6847"/>
-        <location filename="../src/app/qgisapp.cpp" line="6874"/>
+        <location filename="../src/app/qgisapp.cpp" line="6851"/>
+        <location filename="../src/app/qgisapp.cpp" line="6878"/>
         <source>Could not load template file</source>
         <translation>無法載入樣板檔案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7532"/>
+        <location filename="../src/app/qgisapp.cpp" line="7536"/>
         <source>No action selected</source>
         <translation>未選擇任何動作</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7547"/>
-        <location filename="../src/app/qgisapp.cpp" line="7565"/>
+        <location filename="../src/app/qgisapp.cpp" line="7551"/>
+        <location filename="../src/app/qgisapp.cpp" line="7569"/>
         <source>Run feature action&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;</source>
         <translation>執行圖徵動作&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7657"/>
+        <location filename="../src/app/qgisapp.cpp" line="7661"/>
         <source>Original source URI: %1</source>
         <translation>原始來源 URI: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7859"/>
+        <location filename="../src/app/qgisapp.cpp" line="7863"/>
         <source>Commit Errors</source>
         <translation>提交錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7875"/>
+        <location filename="../src/app/qgisapp.cpp" line="7879"/>
         <source>Commit errors</source>
         <translation>提交錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7855"/>
+        <location filename="../src/app/qgisapp.cpp" line="7859"/>
         <source>Could not commit changes to layer %1</source>
         <translation>無法將變更提交至圖層 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7860"/>
+        <location filename="../src/app/qgisapp.cpp" line="7864"/>
         <source>Errors: %1
 </source>
         <translation>錯誤: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7864"/>
+        <location filename="../src/app/qgisapp.cpp" line="7868"/>
         <source>Show more</source>
         <translation>顯示更多</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7938"/>
+        <location filename="../src/app/qgisapp.cpp" line="7942"/>
         <source>Please select a vector layer first</source>
         <translation>請先選擇一個向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8612"/>
-        <location filename="../src/app/qgisapp.cpp" line="12629"/>
-        <location filename="../src/app/qgisapp.cpp" line="12636"/>
-        <location filename="../src/app/qgisapp.cpp" line="12696"/>
-        <location filename="../src/app/qgisapp.cpp" line="12703"/>
-        <location filename="../src/app/qgisapp.cpp" line="12749"/>
-        <location filename="../src/app/qgisapp.cpp" line="12756"/>
+        <location filename="../src/app/qgisapp.cpp" line="8616"/>
+        <location filename="../src/app/qgisapp.cpp" line="12633"/>
+        <location filename="../src/app/qgisapp.cpp" line="12640"/>
+        <location filename="../src/app/qgisapp.cpp" line="12700"/>
+        <location filename="../src/app/qgisapp.cpp" line="12707"/>
+        <location filename="../src/app/qgisapp.cpp" line="12753"/>
+        <location filename="../src/app/qgisapp.cpp" line="12760"/>
         <source>No Layer Selected</source>
         <translation>未選擇圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8612"/>
+        <location filename="../src/app/qgisapp.cpp" line="8616"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>要刪除圖徵，您必須在圖例中選擇一個向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8619"/>
+        <location filename="../src/app/qgisapp.cpp" line="8623"/>
         <source>No Vector Layer Selected</source>
         <translation>未選擇向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8619"/>
+        <location filename="../src/app/qgisapp.cpp" line="8623"/>
         <source>Deleting features only works on vector layers</source>
         <translation>刪除圖徵僅適用於向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8625"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>Provider does not support deletion</source>
         <translation>提供者不支援刪除</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8625"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>Data provider does not support deleting features</source>
         <translation>資料提供者不支援刪除圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8631"/>
-        <location filename="../src/app/qgisapp.cpp" line="9477"/>
-        <location filename="../src/app/qgisapp.cpp" line="9487"/>
-        <location filename="../src/app/qgisapp.cpp" line="9589"/>
-        <location filename="../src/app/qgisapp.cpp" line="9650"/>
-        <location filename="../src/app/qgisapp.cpp" line="10031"/>
-        <location filename="../src/app/qgisapp.cpp" line="10084"/>
+        <location filename="../src/app/qgisapp.cpp" line="8635"/>
+        <location filename="../src/app/qgisapp.cpp" line="9481"/>
+        <location filename="../src/app/qgisapp.cpp" line="9491"/>
+        <location filename="../src/app/qgisapp.cpp" line="9593"/>
+        <location filename="../src/app/qgisapp.cpp" line="9654"/>
+        <location filename="../src/app/qgisapp.cpp" line="10035"/>
+        <location filename="../src/app/qgisapp.cpp" line="10088"/>
         <source>Layer not editable</source>
         <translation>圖層不可編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8631"/>
-        <location filename="../src/app/qgisapp.cpp" line="10031"/>
-        <location filename="../src/app/qgisapp.cpp" line="10084"/>
+        <location filename="../src/app/qgisapp.cpp" line="8635"/>
+        <location filename="../src/app/qgisapp.cpp" line="10035"/>
+        <location filename="../src/app/qgisapp.cpp" line="10088"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>當前圖層不可編輯。請在數化工具列中選擇「開始編輯」。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8639"/>
+        <location filename="../src/app/qgisapp.cpp" line="8643"/>
         <source>No Features Selected</source>
         <translation>未選擇任何圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8715"/>
+        <location filename="../src/app/qgisapp.cpp" line="8719"/>
         <source>Features deleted</source>
         <translation>圖徵已刪除</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8720"/>
+        <location filename="../src/app/qgisapp.cpp" line="8724"/>
         <source>Problem deleting features</source>
         <translation>刪除圖徵時出現問題</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8738"/>
+        <location filename="../src/app/qgisapp.cpp" line="8742"/>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
         <translation><numerusform>%n 個圖徵已刪除。</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6201"/>
-        <location filename="../src/app/qgisapp.cpp" line="6270"/>
-        <location filename="../src/app/qgisapp.cpp" line="8792"/>
+        <location filename="../src/app/qgisapp.cpp" line="6205"/>
+        <location filename="../src/app/qgisapp.cpp" line="6274"/>
+        <location filename="../src/app/qgisapp.cpp" line="8796"/>
         <source>Abort</source>
         <translation>中止</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8893"/>
+        <location filename="../src/app/qgisapp.cpp" line="8897"/>
         <source>Title can not be empty!</source>
         <translation>標題不能為空！</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8876"/>
-        <location filename="../src/app/qgisapp.cpp" line="8904"/>
+        <location filename="../src/app/qgisapp.cpp" line="8880"/>
+        <location filename="../src/app/qgisapp.cpp" line="8908"/>
         <source>Title already exists!</source>
         <translation>標題已存在！</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9469"/>
-        <location filename="../src/app/qgisapp.cpp" line="9569"/>
-        <location filename="../src/app/qgisapp.cpp" line="9631"/>
+        <location filename="../src/app/qgisapp.cpp" line="9473"/>
+        <location filename="../src/app/qgisapp.cpp" line="9573"/>
+        <location filename="../src/app/qgisapp.cpp" line="9635"/>
         <source>No active layer</source>
         <translation>沒有活動圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9469"/>
+        <location filename="../src/app/qgisapp.cpp" line="9473"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>找不到活動圖層。請在圖層列表中選擇一個圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9500"/>
-        <location filename="../src/app/qgisapp.cpp" line="9662"/>
-        <location filename="../src/app/qgisapp.cpp" line="9719"/>
+        <location filename="../src/app/qgisapp.cpp" line="9504"/>
+        <location filename="../src/app/qgisapp.cpp" line="9666"/>
+        <location filename="../src/app/qgisapp.cpp" line="9723"/>
         <source>Not enough features selected</source>
         <translation>選擇的圖徵不足</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9663"/>
-        <location filename="../src/app/qgisapp.cpp" line="9720"/>
+        <location filename="../src/app/qgisapp.cpp" line="9667"/>
+        <location filename="../src/app/qgisapp.cpp" line="9724"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>合併工具至少需要兩個選擇的圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9518"/>
+        <location filename="../src/app/qgisapp.cpp" line="9522"/>
         <source>Merged feature attributes</source>
         <translation>合併的圖徵屬性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5758"/>
-        <location filename="../src/app/qgisapp.cpp" line="11644"/>
-        <location filename="../src/app/qgisapp.cpp" line="13726"/>
+        <location filename="../src/app/qgisapp.cpp" line="5762"/>
+        <location filename="../src/app/qgisapp.cpp" line="11648"/>
+        <location filename="../src/app/qgisapp.cpp" line="13730"/>
         <source> • %1</source>
         <translation> • %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5769"/>
+        <location filename="../src/app/qgisapp.cpp" line="5773"/>
         <source>The following tasks are currently running in the background:
 
 %1
@@ -59591,224 +59591,224 @@ Do you want to try canceling these active tasks?</source>
         <translation>以下任務目前正在背景執行中： %1 您要嘗試取消這些正在執行的任務嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8126"/>
+        <location filename="../src/app/qgisapp.cpp" line="8130"/>
         <source>Successfully saved raster layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>成功將網格圖層儲存到 &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8240"/>
+        <location filename="../src/app/qgisapp.cpp" line="8244"/>
         <source>Error saving layer definition file</source>
         <translation>儲存圖層定義檔時出錯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8385"/>
+        <location filename="../src/app/qgisapp.cpp" line="8389"/>
         <source>Successfully saved vector layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>成功將向量圖層儲存到 &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8217"/>
-        <location filename="../src/app/qgisapp.cpp" line="8392"/>
+        <location filename="../src/app/qgisapp.cpp" line="8221"/>
+        <location filename="../src/app/qgisapp.cpp" line="8396"/>
         <source>Save Error</source>
         <translation>儲存錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4467"/>
+        <location filename="../src/app/qgisapp.cpp" line="4471"/>
         <source>Loading “%1”</source>
         <translation>正在載入“%1”</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5540"/>
+        <location filename="../src/app/qgisapp.cpp" line="5544"/>
         <source>GDAL version</source>
         <translation>GDAL 版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6514"/>
+        <location filename="../src/app/qgisapp.cpp" line="6518"/>
         <source>Resolve vector layer dependencies</source>
         <translation>解析向量圖層依賴性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6578"/>
-        <location filename="../src/app/qgisapp.cpp" line="6688"/>
+        <location filename="../src/app/qgisapp.cpp" line="6582"/>
+        <location filename="../src/app/qgisapp.cpp" line="6692"/>
         <source>QGIS Bundled Project Format</source>
         <translation>QGIS 打包專案格式</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6579"/>
-        <location filename="../src/app/qgisapp.cpp" line="6689"/>
+        <location filename="../src/app/qgisapp.cpp" line="6583"/>
+        <location filename="../src/app/qgisapp.cpp" line="6693"/>
         <source>QGIS XML Project Format</source>
         <translation>QGIS XML 專案格式</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6629"/>
+        <location filename="../src/app/qgisapp.cpp" line="6633"/>
         <source>Project Has Changed on Disk</source>
         <translation>專案在磁碟上已更改</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6629"/>
+        <location filename="../src/app/qgisapp.cpp" line="6633"/>
         <source>The project file on the disk has been modified externally, saving the current project will overwrite any change. Do you still want to proceed?</source>
         <translation>磁碟上的專案檔案已被外部修改，儲存當前專案將覆蓋任何更改。您仍然想繼續嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6792"/>
-        <location filename="../src/app/qgisapp.cpp" line="6812"/>
+        <location filename="../src/app/qgisapp.cpp" line="6796"/>
         <location filename="../src/app/qgisapp.cpp" line="6816"/>
         <location filename="../src/app/qgisapp.cpp" line="6820"/>
+        <location filename="../src/app/qgisapp.cpp" line="6824"/>
         <source>DXF export</source>
         <translation>DXF 輸出</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6801"/>
+        <location filename="../src/app/qgisapp.cpp" line="6805"/>
         <source>DXF Export</source>
         <translation>DXF 輸出</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6917"/>
+        <location filename="../src/app/qgisapp.cpp" line="6921"/>
         <source>Don&apos;t show this again.</source>
         <translation>不再顯示此訊息。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8209"/>
+        <location filename="../src/app/qgisapp.cpp" line="8213"/>
         <source>Layer Saved</source>
         <translation>圖層已儲存</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8209"/>
+        <location filename="../src/app/qgisapp.cpp" line="8213"/>
         <source>Successfully saved scratch layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>成功將暫存圖層儲存到 &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8218"/>
+        <location filename="../src/app/qgisapp.cpp" line="8222"/>
         <source>Could not make temporary scratch layer permanent.
 Error: %1</source>
         <translation>無法將暫時的暫存圖層變更為永久。錯誤: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8223"/>
+        <location filename="../src/app/qgisapp.cpp" line="8227"/>
         <source>Save Scratch Layer</source>
         <translation>儲存暫存圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8393"/>
+        <location filename="../src/app/qgisapp.cpp" line="8397"/>
         <source>Export to vector file %1 failed.
 Error: %2</source>
         <translation>匯出到向量檔案 %1 失敗。錯誤:%2</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8664"/>
-        <location filename="../src/app/qgisapp.cpp" line="8700"/>
+        <location filename="../src/app/qgisapp.cpp" line="8668"/>
+        <location filename="../src/app/qgisapp.cpp" line="8704"/>
         <source>Delete %n feature(s) from layer &quot;%1&quot;</source>
         <translation><numerusform>從圖層「%1」刪除 %n 個圖徵</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8686"/>
+        <location filename="../src/app/qgisapp.cpp" line="8690"/>
         <source>Delete at least %n feature(s) on other layer(s)</source>
         <translation><numerusform>至少刪除 %n 個圖徵於其他圖層</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8686"/>
+        <location filename="../src/app/qgisapp.cpp" line="8690"/>
         <source>Delete %n feature(s) on layer &quot;%1&quot;, %2 as well and all of its other descendants.
 Delete these features?</source>
         <translation><numerusform>刪除圖層 &quot;%n&quot; 上的 %1 個圖徵，還有 %2 及其所有其他後代。要刪除這些圖徵嗎？</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8700"/>
+        <location filename="../src/app/qgisapp.cpp" line="8704"/>
         <source>&lt;b&gt;%n&lt;/b&gt; selected feature(s) are about to be deleted. Would you like to continue?</source>
         <translation><numerusform>&lt;b&gt;%n&lt;/b&gt; 個選取的圖徵即將被刪除。您想繼續嗎？</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8720"/>
+        <location filename="../src/app/qgisapp.cpp" line="8724"/>
         <source>A problem occurred during deletion from layer &quot;%1&quot;. %n feature(s) not deleted.</source>
         <translation><numerusform>刪除圖層「%1」時發生問題。未刪除 %n 個圖徵。</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8843"/>
+        <location filename="../src/app/qgisapp.cpp" line="8847"/>
         <source>print layout</source>
         <translation>列印配置</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8847"/>
+        <location filename="../src/app/qgisapp.cpp" line="8851"/>
         <source>report</source>
         <translation>報告</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8852"/>
+        <location filename="../src/app/qgisapp.cpp" line="8856"/>
         <source>Enter a unique %1 title</source>
         <translation>輸入唯一的 %1 標題</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8855"/>
+        <location filename="../src/app/qgisapp.cpp" line="8859"/>
         <source>(a title will be automatically generated if left empty)</source>
         <translation>（若留空，標題將自動產生）</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8988"/>
+        <location filename="../src/app/qgisapp.cpp" line="8992"/>
         <source>%1 copy</source>
         <translation>%1 複本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9023"/>
+        <location filename="../src/app/qgisapp.cpp" line="9027"/>
         <source>Set as atlas feature for %1</source>
         <translation>設為 %1 的地圖集特徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9501"/>
+        <location filename="../src/app/qgisapp.cpp" line="9505"/>
         <source>The merge tool requires at least two selected features.</source>
         <translation>合併工具需要至少兩個選定的特徵。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9544"/>
-        <location filename="../src/app/qgisapp.cpp" line="9774"/>
+        <location filename="../src/app/qgisapp.cpp" line="9548"/>
+        <location filename="../src/app/qgisapp.cpp" line="9778"/>
         <source>Invalid result</source>
         <translation>無效的結果</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9590"/>
+        <location filename="../src/app/qgisapp.cpp" line="9594"/>
         <source>Modifying features can only be done for layers in editing mode.</source>
         <translation>只能在編輯模式下修改特徵。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9679"/>
-        <location filename="../src/app/qgisapp.cpp" line="9692"/>
-        <location filename="../src/app/qgisapp.cpp" line="9737"/>
-        <location filename="../src/app/qgisapp.cpp" line="9750"/>
-        <location filename="../src/app/qgisapp.cpp" line="9766"/>
+        <location filename="../src/app/qgisapp.cpp" line="9683"/>
+        <location filename="../src/app/qgisapp.cpp" line="9696"/>
+        <location filename="../src/app/qgisapp.cpp" line="9741"/>
+        <location filename="../src/app/qgisapp.cpp" line="9754"/>
+        <location filename="../src/app/qgisapp.cpp" line="9770"/>
         <source>Merge failed</source>
         <translation>合併失敗</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9680"/>
-        <location filename="../src/app/qgisapp.cpp" line="9738"/>
+        <location filename="../src/app/qgisapp.cpp" line="9684"/>
+        <location filename="../src/app/qgisapp.cpp" line="9742"/>
         <source>An error occurred during the merge operation.</source>
         <translation>合併操作期間發生錯誤。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2982"/>
-        <location filename="../src/app/qgisapp.cpp" line="9872"/>
-        <location filename="../src/app/qgisapp.cpp" line="9904"/>
-        <location filename="../src/app/qgisapp.cpp" line="9919"/>
-        <location filename="../src/app/qgisapp.cpp" line="9935"/>
-        <location filename="../src/app/qgisapp.cpp" line="9951"/>
-        <location filename="../src/app/qgisapp.cpp" line="9971"/>
+        <location filename="../src/app/qgisapp.cpp" line="2986"/>
+        <location filename="../src/app/qgisapp.cpp" line="9876"/>
+        <location filename="../src/app/qgisapp.cpp" line="9908"/>
+        <location filename="../src/app/qgisapp.cpp" line="9923"/>
+        <location filename="../src/app/qgisapp.cpp" line="9939"/>
+        <location filename="../src/app/qgisapp.cpp" line="9955"/>
+        <location filename="../src/app/qgisapp.cpp" line="9975"/>
         <source>No active vector layer</source>
         <translation>沒有活動的向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9920"/>
+        <location filename="../src/app/qgisapp.cpp" line="9924"/>
         <source>To invert selection, choose a vector layer in the legend</source>
         <translation>要反轉選擇，請在圖例中選擇一個向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10037"/>
+        <location filename="../src/app/qgisapp.cpp" line="10041"/>
         <source>Features cut</source>
         <translation>圖徵已剪下</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10090"/>
+        <location filename="../src/app/qgisapp.cpp" line="10094"/>
         <source>Features pasted</source>
         <translation>特徵已貼上</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10320"/>
+        <location filename="../src/app/qgisapp.cpp" line="10324"/>
         <source>Paste features</source>
         <translation>貼上特徵</translation>
     </message>
@@ -60030,7 +60030,7 @@ Delete these features?</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2029"/>
-        <location filename="../src/app/qgisapp.cpp" line="6797"/>
+        <location filename="../src/app/qgisapp.cpp" line="6801"/>
         <source>More Info</source>
         <translation>更多資訊</translation>
     </message>
@@ -60075,77 +60075,77 @@ Delete these features?</source>
         <translation>樣式無法完全轉換</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6071"/>
+        <location filename="../src/app/qgisapp.cpp" line="6075"/>
         <source>Layer creation failed: %1</source>
         <translation>圖層建立失敗: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6244"/>
+        <location filename="../src/app/qgisapp.cpp" line="6248"/>
         <source>An error occurred while performing the calculation.</source>
         <translation>執行計算時發生錯誤。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6347"/>
+        <location filename="../src/app/qgisapp.cpp" line="6351"/>
         <source>All Project Files</source>
         <translation>所有專案檔案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6354"/>
+        <location filename="../src/app/qgisapp.cpp" line="6358"/>
         <source>Open Project</source>
         <translation>開啟專案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6812"/>
+        <location filename="../src/app/qgisapp.cpp" line="6816"/>
         <source>DXF export failed, device is not writable</source>
         <translation>DXF 輸出失敗，裝置不可寫入</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6816"/>
+        <location filename="../src/app/qgisapp.cpp" line="6820"/>
         <source>DXF export failed, the device is invalid</source>
         <translation>DXF 輸出失敗，裝置無效</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6820"/>
+        <location filename="../src/app/qgisapp.cpp" line="6824"/>
         <source>DXF export failed, the extent could not be determined</source>
         <translation>DXF 輸出失敗，無法確定範圍</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6911"/>
+        <location filename="../src/app/qgisapp.cpp" line="6915"/>
         <source>Security warning</source>
         <translation>安全警告</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6912"/>
+        <location filename="../src/app/qgisapp.cpp" line="6916"/>
         <source>Executing a script from an untrusted source can harm your computer. Only continue if you trust the source of the script. Continue?</source>
         <translation>從不受信任的來源執行指令碼可能會損害您的電腦。只有在您信任該指令碼的來源時，才繼續。要繼續嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7632"/>
+        <location filename="../src/app/qgisapp.cpp" line="7636"/>
         <source>Repair Data Source</source>
         <translation>修復資料來源</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8136"/>
+        <location filename="../src/app/qgisapp.cpp" line="8140"/>
         <source>source provider</source>
         <translation>來源提供者</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8138"/>
+        <location filename="../src/app/qgisapp.cpp" line="8142"/>
         <source>destination provider</source>
         <translation>目的地提供者</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8140"/>
+        <location filename="../src/app/qgisapp.cpp" line="8144"/>
         <source>data source creation</source>
         <translation>資料來源建立</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8142"/>
+        <location filename="../src/app/qgisapp.cpp" line="8146"/>
         <source>write error</source>
         <translation>寫入錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8732"/>
+        <location filename="../src/app/qgisapp.cpp" line="8736"/>
         <source>%1 on layer %2. </source>
         <translation>%1 在圖層 %2。</translation>
     </message>
@@ -60153,80 +60153,80 @@ Delete these features?</source>
         <location filename="../src/app/qgisapp.cpp" line="800"/>
         <location filename="../src/app/qgisapp.cpp" line="821"/>
         <location filename="../src/app/qgisapp.cpp" line="822"/>
-        <location filename="../src/app/qgisapp.cpp" line="8867"/>
+        <location filename="../src/app/qgisapp.cpp" line="8871"/>
         <source>Create %1</source>
         <translation>建立 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9205"/>
+        <location filename="../src/app/qgisapp.cpp" line="9209"/>
         <source>Duplicate Feature</source>
         <translation>複製特徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9212"/>
+        <location filename="../src/app/qgisapp.cpp" line="9216"/>
         <source>Duplicate Feature and Digitize</source>
         <translation>複製圖徵與數位化</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9233"/>
+        <location filename="../src/app/qgisapp.cpp" line="9237"/>
         <source>Set as Atlas Feature for %1</source>
         <translation>設為 %1 的地圖集特徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9545"/>
+        <location filename="../src/app/qgisapp.cpp" line="9549"/>
         <source>Could not store value &apos;%1&apos; in field of type %2: %3</source>
         <translation>無法將值 &apos;%1&apos; 儲存至類型為 %2 的欄位：%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9873"/>
-        <location filename="../src/app/qgisapp.cpp" line="9905"/>
+        <location filename="../src/app/qgisapp.cpp" line="9877"/>
+        <location filename="../src/app/qgisapp.cpp" line="9909"/>
         <source>To deselect all features, choose a vector layer in the legend</source>
         <translation>要取消選擇所有特徵，請在圖例中選擇向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10305"/>
+        <location filename="../src/app/qgisapp.cpp" line="10309"/>
         <source>No features pasted.</source>
         <translation>未貼上任何特徵。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10313"/>
+        <location filename="../src/app/qgisapp.cpp" line="10317"/>
         <source>%1 of %2 features could be pasted.</source>
         <translation>已貼上 %2 中的 %1 個圖徵。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10318"/>
+        <location filename="../src/app/qgisapp.cpp" line="10322"/>
         <source> Geometry collapsed due to intersection avoidance.</source>
         <translation>幾何因避免交集而崩潰。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10341"/>
+        <location filename="../src/app/qgisapp.cpp" line="10345"/>
         <source>Pasted</source>
         <translation>已貼上</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10342"/>
+        <location filename="../src/app/qgisapp.cpp" line="10346"/>
         <source>Paste as Scratch Layer</source>
         <translation>以暫存圖層貼上</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10342"/>
+        <location filename="../src/app/qgisapp.cpp" line="10346"/>
         <source>Layer name</source>
         <translation>圖層名稱</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10674"/>
+        <location filename="../src/app/qgisapp.cpp" line="10678"/>
         <source>%1 and %2</source>
         <translation>%1 和 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10676"/>
+        <location filename="../src/app/qgisapp.cpp" line="10680"/>
         <source>%1, %2, …</source>
         <translation>%1, %2, …</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10570"/>
-        <location filename="../src/app/qgisapp.cpp" line="10649"/>
-        <location filename="../src/app/qgisapp.cpp" line="10904"/>
+        <location filename="../src/app/qgisapp.cpp" line="10574"/>
+        <location filename="../src/app/qgisapp.cpp" line="10653"/>
+        <location filename="../src/app/qgisapp.cpp" line="10908"/>
         <source>Start editing failed</source>
         <translation>開始編輯失敗</translation>
     </message>
@@ -60251,50 +60251,50 @@ Delete these features?</source>
         <translation>將剖面工具曲線向右推移</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3855"/>
+        <location filename="../src/app/qgisapp.cpp" line="3859"/>
         <source>Show Vertex Editor</source>
         <translation>顯示頂點編輯器</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6248"/>
+        <location filename="../src/app/qgisapp.cpp" line="6252"/>
         <source>An error occurred while performing the calculation using OpenCL. See OpenCL log messages for details.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7856"/>
+        <location filename="../src/app/qgisapp.cpp" line="7860"/>
         <source>Could not commit changes</source>
         <translation>無法提交更改</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10649"/>
-        <location filename="../src/app/qgisapp.cpp" line="10905"/>
+        <location filename="../src/app/qgisapp.cpp" line="10653"/>
+        <location filename="../src/app/qgisapp.cpp" line="10909"/>
         <source>Provider cannot be opened for editing</source>
         <translation>提供者無法開啟以進行編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10678"/>
+        <location filename="../src/app/qgisapp.cpp" line="10682"/>
         <source>Do you want to save the changes to layers %1?</source>
         <translation>您想要將更改儲存到圖層 %1 嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10678"/>
-        <location filename="../src/app/qgisapp.cpp" line="10828"/>
-        <location filename="../src/app/qgisapp.cpp" line="10916"/>
+        <location filename="../src/app/qgisapp.cpp" line="10682"/>
+        <location filename="../src/app/qgisapp.cpp" line="10832"/>
+        <location filename="../src/app/qgisapp.cpp" line="10920"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>您想要將更改儲存到圖層 %1 嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10713"/>
+        <location filename="../src/app/qgisapp.cpp" line="10717"/>
         <source>Problems during roll back: &apos;%1&apos;</source>
         <translation>回滾期間出現問題: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10801"/>
+        <location filename="../src/app/qgisapp.cpp" line="10805"/>
         <source>Mesh Editing</source>
         <translation>網格編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10801"/>
+        <location filename="../src/app/qgisapp.cpp" line="10805"/>
         <source>At least one topological error in the mesh prevents starting editing.
 Some errors can be fixed by removing invalid elements.
 
@@ -60302,23 +60302,23 @@ Do you want to try to fix errors before starting editing?</source>
         <translation>網格中至少有一個拓撲錯誤阻止開始編輯。某些錯誤可以透過移除無效元素來修正。您想在開始編輯之前嘗試修正錯誤嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10856"/>
-        <location filename="../src/app/qgisapp.cpp" line="10942"/>
+        <location filename="../src/app/qgisapp.cpp" line="10860"/>
+        <location filename="../src/app/qgisapp.cpp" line="10946"/>
         <source>Problems during roll back</source>
         <translation>回滾期間出現問題</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10929"/>
+        <location filename="../src/app/qgisapp.cpp" line="10933"/>
         <source>Stop editing</source>
         <translation>停止編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11058"/>
+        <location filename="../src/app/qgisapp.cpp" line="11062"/>
         <source>Save edits</source>
         <translation>儲存編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11105"/>
+        <location filename="../src/app/qgisapp.cpp" line="11109"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -60326,78 +60326,78 @@ Errors: %3
         <translation>無法 %1 更改到圖層 %2錯誤: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11105"/>
-        <location filename="../src/app/qgisapp.cpp" line="11132"/>
-        <location filename="../src/app/qgisapp.cpp" line="11155"/>
+        <location filename="../src/app/qgisapp.cpp" line="11109"/>
+        <location filename="../src/app/qgisapp.cpp" line="11136"/>
+        <location filename="../src/app/qgisapp.cpp" line="11159"/>
         <source>rollback</source>
         <translation>回滾</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11105"/>
-        <location filename="../src/app/qgisapp.cpp" line="11132"/>
-        <location filename="../src/app/qgisapp.cpp" line="11155"/>
+        <location filename="../src/app/qgisapp.cpp" line="11109"/>
+        <location filename="../src/app/qgisapp.cpp" line="11136"/>
+        <location filename="../src/app/qgisapp.cpp" line="11159"/>
         <source>cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11203"/>
+        <location filename="../src/app/qgisapp.cpp" line="11207"/>
         <source>Save</source>
         <translation>儲存</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11203"/>
-        <location filename="../src/app/qgisapp.cpp" line="11231"/>
-        <location filename="../src/app/qgisapp.cpp" line="11259"/>
+        <location filename="../src/app/qgisapp.cpp" line="11207"/>
+        <location filename="../src/app/qgisapp.cpp" line="11235"/>
+        <location filename="../src/app/qgisapp.cpp" line="11263"/>
         <source>all</source>
         <translation>全部</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11231"/>
+        <location filename="../src/app/qgisapp.cpp" line="11235"/>
         <source>Rollback</source>
         <translation>回滾</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11259"/>
+        <location filename="../src/app/qgisapp.cpp" line="11263"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11275"/>
+        <location filename="../src/app/qgisapp.cpp" line="11279"/>
         <source>Current edits</source>
         <translation>當前編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11275"/>
+        <location filename="../src/app/qgisapp.cpp" line="11279"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%1 當前對 %2 圖層的變更？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11425"/>
+        <location filename="../src/app/qgisapp.cpp" line="11429"/>
         <source>Error Setting Filter</source>
         <translation>設定過濾器時發生錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11425"/>
+        <location filename="../src/app/qgisapp.cpp" line="11429"/>
         <source>The filtered layer returned no rows. The PostgreSQL raster provider requires at least one row in order to extract the information required to create a valid layer.</source>
         <translation>過濾的圖層未返回任何列。PostgreSQL 網格提供者至少需要一列，以擷取建立有效圖層所需的資訊。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11455"/>
+        <location filename="../src/app/qgisapp.cpp" line="11459"/>
         <source>Filter on Joined Fields</source>
         <translation>在已連結欄位上過濾</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11455"/>
+        <location filename="../src/app/qgisapp.cpp" line="11459"/>
         <source>You are about to set a subset filter on a layer that has joined fields. Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. Would you like to create a virtual layer out of this layer first?</source>
         <translation>您即將在具有已連結欄位的圖層上設定子集過濾器。已連結欄位無法過濾，除非您先將圖層轉換為虛擬圖層。您想先從這個圖層建立虛擬圖層嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11624"/>
+        <location filename="../src/app/qgisapp.cpp" line="11628"/>
         <source>Required Layers</source>
         <translation>所需圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11624"/>
+        <location filename="../src/app/qgisapp.cpp" line="11628"/>
         <source>The following layers are marked as required by the project:
 
 %1
@@ -60406,7 +60406,7 @@ Please deselect them (or unmark as required) and retry.</source>
         <translation>以下圖層被標記為專案所需: %1請取消選擇它們(或取消標記為所需)並重試。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11651"/>
+        <location filename="../src/app/qgisapp.cpp" line="11655"/>
         <source>The following tasks are currently running which depend on this layer:
 
 %1
@@ -60415,554 +60415,554 @@ Please cancel these tasks and retry.</source>
         <translation>以下任務目前正在執行，依賴於此圖層: %1請取消這些任務並重試。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11758"/>
+        <location filename="../src/app/qgisapp.cpp" line="11762"/>
         <source>copy</source>
         <translation>複製</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11763"/>
+        <location filename="../src/app/qgisapp.cpp" line="11767"/>
         <source>Plugin layer</source>
         <translation>外掛程式圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11767"/>
+        <location filename="../src/app/qgisapp.cpp" line="11771"/>
         <source>Group layer</source>
         <translation>群組圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11797"/>
-        <location filename="../src/app/qgisapp.cpp" line="11808"/>
+        <location filename="../src/app/qgisapp.cpp" line="11801"/>
+        <location filename="../src/app/qgisapp.cpp" line="11812"/>
         <source>Duplicate layer: </source>
         <translation>重複圖層:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11798"/>
+        <location filename="../src/app/qgisapp.cpp" line="11802"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1(重複導致無效圖層)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11853"/>
+        <location filename="../src/app/qgisapp.cpp" line="11857"/>
         <source>Layer duplication complete</source>
         <translation>圖層複製完成</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11853"/>
+        <location filename="../src/app/qgisapp.cpp" line="11857"/>
         <source>Note that it&apos;s using the same data source.</source>
         <translation>請注意，它正在使用相同的資料來源。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11882"/>
+        <location filename="../src/app/qgisapp.cpp" line="11886"/>
         <source>Set scale visibility for selected layers</source>
         <translation>為選定的圖層設定比例尺能見度</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11940"/>
+        <location filename="../src/app/qgisapp.cpp" line="11944"/>
         <source>Set CRS for %1</source>
         <translation>為 %1 設定 CRS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12273"/>
+        <location filename="../src/app/qgisapp.cpp" line="12277"/>
         <source>Loading Python support</source>
         <translation>正在載入 Python 支援</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12293"/>
+        <location filename="../src/app/qgisapp.cpp" line="12297"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>無法載入 Python 支援庫: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12304"/>
+        <location filename="../src/app/qgisapp.cpp" line="12308"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>無法解析 python 支援庫的 instance() 符號。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12366"/>
+        <location filename="../src/app/qgisapp.cpp" line="12370"/>
         <source>There is a new version of QGIS available</source>
         <translation>有可用的 QGIS 新版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12370"/>
+        <location filename="../src/app/qgisapp.cpp" line="12374"/>
         <source>You are running a development version of QGIS</source>
         <translation>您正在執行 QGIS 的開發版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12374"/>
+        <location filename="../src/app/qgisapp.cpp" line="12378"/>
         <source>You are running the current version of QGIS</source>
         <translation>您正在執行 QGIS 的當前版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12382"/>
-        <location filename="../src/app/qgisapp.cpp" line="12388"/>
+        <location filename="../src/app/qgisapp.cpp" line="12386"/>
+        <location filename="../src/app/qgisapp.cpp" line="12392"/>
         <source>QGIS Version Information</source>
         <translation>QGIS 版本資訊</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12388"/>
+        <location filename="../src/app/qgisapp.cpp" line="12392"/>
         <source>Unable to get current version information from server</source>
         <translation>無法從伺服器獲取當前版本資訊</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12452"/>
+        <location filename="../src/app/qgisapp.cpp" line="12456"/>
         <source>Style Manager</source>
         <translation>樣式管理器</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12453"/>
+        <location filename="../src/app/qgisapp.cpp" line="12457"/>
         <source>Keyboard Shortcuts</source>
         <translation>鍵盤快捷鍵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12454"/>
+        <location filename="../src/app/qgisapp.cpp" line="12458"/>
         <source>Custom Projections</source>
         <translation>自定義投影</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12455"/>
+        <location filename="../src/app/qgisapp.cpp" line="12459"/>
         <source>Interface Customization</source>
         <translation>介面客製化</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12629"/>
-        <location filename="../src/app/qgisapp.cpp" line="12636"/>
+        <location filename="../src/app/qgisapp.cpp" line="12633"/>
+        <location filename="../src/app/qgisapp.cpp" line="12640"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>要執行完整的直方圖拉伸，您需要選擇一個網格圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12696"/>
-        <location filename="../src/app/qgisapp.cpp" line="12703"/>
+        <location filename="../src/app/qgisapp.cpp" line="12700"/>
+        <location filename="../src/app/qgisapp.cpp" line="12707"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>要更改亮度或對比度，您需要選擇一個網格圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12749"/>
-        <location filename="../src/app/qgisapp.cpp" line="12756"/>
+        <location filename="../src/app/qgisapp.cpp" line="12753"/>
+        <location filename="../src/app/qgisapp.cpp" line="12760"/>
         <source>To change gamma, you need to have a raster layer selected.</source>
         <translation>要更改伽瑪，您需要選擇一個網格圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12936"/>
+        <location filename="../src/app/qgisapp.cpp" line="12940"/>
         <source>Map tool handler is not properly constructed</source>
         <translation>地圖工具處理器未正確構造</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13158"/>
-        <location filename="../src/app/qgisapp.cpp" line="13165"/>
+        <location filename="../src/app/qgisapp.cpp" line="13162"/>
+        <location filename="../src/app/qgisapp.cpp" line="13169"/>
         <source>3D Map</source>
         <translation>3D 地圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13158"/>
+        <location filename="../src/app/qgisapp.cpp" line="13162"/>
         <source>3D Maps</source>
         <translation>3D 地圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13185"/>
+        <location filename="../src/app/qgisapp.cpp" line="13189"/>
         <source>No Elevation Profiles Found</source>
         <translation>未找到高程剖面</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13193"/>
+        <location filename="../src/app/qgisapp.cpp" line="13197"/>
         <source>Copy From %1</source>
         <translation>從 %1 複製</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13242"/>
+        <location filename="../src/app/qgisapp.cpp" line="13246"/>
         <source>Elevation Profile</source>
         <translation>高程剖面</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13246"/>
+        <location filename="../src/app/qgisapp.cpp" line="13250"/>
         <source>Elevation Profile (%1)</source>
         <translation>高程剖面 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13290"/>
+        <location filename="../src/app/qgisapp.cpp" line="13294"/>
         <source>New 3D Map View</source>
         <translation>新增 3D 地圖檢視</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13290"/>
+        <location filename="../src/app/qgisapp.cpp" line="13294"/>
         <source>Project extent is not valid. Please add or activate a layer to render.</source>
         <translation>專案範圍無效。請新增或啟用一個圖層以進行渲染。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13303"/>
+        <location filename="../src/app/qgisapp.cpp" line="13307"/>
         <source>3D Globe %1</source>
         <translation>3D 地球儀 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13525"/>
-        <location filename="../src/app/qgisapp.cpp" line="17311"/>
+        <location filename="../src/app/qgisapp.cpp" line="13529"/>
+        <location filename="../src/app/qgisapp.cpp" line="17315"/>
         <source>Save Project</source>
         <translation>儲存專案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13627"/>
+        <location filename="../src/app/qgisapp.cpp" line="13631"/>
         <source>Save Raster Attribute Table</source>
         <translation>儲存網格屬性表</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13627"/>
+        <location filename="../src/app/qgisapp.cpp" line="13631"/>
         <source>Do you want to save the changes to the attribute tables (bands: %1) associated with layer &apos;%2&apos;?</source>
         <translation>您是否要將與圖層 &apos;%1&apos; 相關的屬性表 (波段: %2) 的變更儲存？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13638"/>
-        <location filename="../src/app/qgisapp.cpp" line="13646"/>
+        <location filename="../src/app/qgisapp.cpp" line="13642"/>
+        <location filename="../src/app/qgisapp.cpp" line="13650"/>
         <source>Error Saving Raster Attribute Table</source>
         <translation>儲存網格屬性表時發生錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13638"/>
+        <location filename="../src/app/qgisapp.cpp" line="13642"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos;: %2</source>
         <translation>儲存圖層 &apos;%1&apos; 的網格屬性表時發生錯誤:%2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13646"/>
+        <location filename="../src/app/qgisapp.cpp" line="13650"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos; to VAT.DBF file &apos;%2&apos;: %3</source>
         <translation>儲存圖層 &apos;%1&apos; 的網格屬性表到 VAT.DBF 檔案 &apos;%2&apos; 時發生錯誤:%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13694"/>
-        <location filename="../src/app/qgisapp.cpp" line="13697"/>
+        <location filename="../src/app/qgisapp.cpp" line="13698"/>
+        <location filename="../src/app/qgisapp.cpp" line="13701"/>
         <source>Close Project</source>
         <translation>關閉專案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13694"/>
+        <location filename="../src/app/qgisapp.cpp" line="13698"/>
         <source>This project includes one or more temporary layers. These layers are not permanently saved and their contents will be lost. Are you sure you want to proceed?</source>
         <translation>此專案包含一個或多個臨時圖層。這些圖層不會永久儲存，其內容將會遺失。您確定要繼續嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13697"/>
+        <location filename="../src/app/qgisapp.cpp" line="13701"/>
         <source>This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?</source>
         <translation>此專案包含一個或多個臨時暫存圖層。這些圖層不會儲存到磁碟上，其內容將永遠遺失。您確定要繼續嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14452"/>
+        <location filename="../src/app/qgisapp.cpp" line="14456"/>
         <source>Unknown CRS</source>
         <translation>未知的 CRS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14584"/>
+        <location filename="../src/app/qgisapp.cpp" line="14588"/>
         <source>Pan distance %1 (%2)</source>
         <translation>平移距離 %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14595"/>
+        <location filename="../src/app/qgisapp.cpp" line="14599"/>
         <source>Add to the current selection</source>
         <translation>新增至當前選擇</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14599"/>
+        <location filename="../src/app/qgisapp.cpp" line="14603"/>
         <source>Subtract from the current selection</source>
         <translation>從當前選擇中減去</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14603"/>
+        <location filename="../src/app/qgisapp.cpp" line="14607"/>
         <source>Intersect with the current selection</source>
         <translation>與當前選擇相交</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14607"/>
+        <location filename="../src/app/qgisapp.cpp" line="14611"/>
         <source>Select features completely within</source>
         <translation>選擇完全在內的特徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14611"/>
+        <location filename="../src/app/qgisapp.cpp" line="14615"/>
         <source>Add features completely within to the current selection</source>
         <translation>將完全在內的特徵新增至當前選擇</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14615"/>
+        <location filename="../src/app/qgisapp.cpp" line="14619"/>
         <source>Subtract features completely within from the current selection</source>
         <translation>從當前選擇中減去完全在內的特徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14619"/>
+        <location filename="../src/app/qgisapp.cpp" line="14623"/>
         <source>Intersect features completely within with the current selection</source>
         <translation>將完全包含於目前選擇範圍內的圖徵進行交集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14764"/>
+        <location filename="../src/app/qgisapp.cpp" line="14768"/>
         <source>1 feature selected on layer %1 (%2).</source>
         <translation>圖層 %1 上選擇了 1 個特徵 (%2)。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15967"/>
+        <location filename="../src/app/qgisapp.cpp" line="15971"/>
         <source>A profile with this name already exists</source>
         <translation>已存在相同名稱的設定檔</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15970"/>
+        <location filename="../src/app/qgisapp.cpp" line="15974"/>
         <source>New Profile Name</source>
         <translation>新設定檔名稱</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15986"/>
+        <location filename="../src/app/qgisapp.cpp" line="15990"/>
         <source>New Profile</source>
         <translation>新設定檔</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15986"/>
+        <location filename="../src/app/qgisapp.cpp" line="15990"/>
         <source>Cannot create folder &apos;%1&apos;</source>
         <translation>無法建立資料夾 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16007"/>
+        <location filename="../src/app/qgisapp.cpp" line="16011"/>
         <source>Task failed</source>
         <translation>任務失敗</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16083"/>
+        <location filename="../src/app/qgisapp.cpp" line="16087"/>
         <source>New bookmark</source>
         <translation>新增書籤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16159"/>
+        <location filename="../src/app/qgisapp.cpp" line="16163"/>
         <source>This project file was created by a newer version of QGIS (%1) and could not be completely loaded.</source>
         <translation>此專案檔案是由較新版本的 QGIS (%1) 建立的，無法完全載入。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16385"/>
+        <location filename="../src/app/qgisapp.cpp" line="16389"/>
         <source>Select Transformation for %1</source>
         <translation>為 %1 選擇轉換</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16779"/>
+        <location filename="../src/app/qgisapp.cpp" line="16783"/>
         <source>Network request to %1 timed out, any data received is likely incomplete.</source>
         <translation>對 %1 的網路請求超時，任何接收的資料可能不完整。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16842"/>
+        <location filename="../src/app/qgisapp.cpp" line="16846"/>
         <source>QGIS Authentication</source>
         <translation>QGIS 認證</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16986"/>
+        <location filename="../src/app/qgisapp.cpp" line="16990"/>
         <source>%1 Panel</source>
         <translation>%1 面板</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17078"/>
+        <location filename="../src/app/qgisapp.cpp" line="17082"/>
         <source>Transaction</source>
         <translation>交易</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17091"/>
-        <location filename="../src/app/qgisapp.cpp" line="17141"/>
+        <location filename="../src/app/qgisapp.cpp" line="17095"/>
+        <location filename="../src/app/qgisapp.cpp" line="17145"/>
         <source>Cannot duplicate feature in not editable mode on layer %1</source>
         <translation>無法在圖層 %1 的非可編輯模式下複製圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17121"/>
+        <location filename="../src/app/qgisapp.cpp" line="17125"/>
         <source>%1 children on layer %2 duplicated</source>
         <translation>圖層 %2 上的 %1 個子項目重複</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17125"/>
+        <location filename="../src/app/qgisapp.cpp" line="17129"/>
         <source>%1 features on layer %2 duplicated
 %3</source>
         <translation>圖層 %2 上的 %1 個圖徵重複
 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17154"/>
+        <location filename="../src/app/qgisapp.cpp" line="17158"/>
         <source>Digitize the duplicate on layer %1</source>
         <translation>在圖層 %1 上數位化複製圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17158"/>
+        <location filename="../src/app/qgisapp.cpp" line="17162"/>
         <source>Duplicate digitized</source>
         <translation>重複數位化</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="17171"/>
+        <location filename="../src/app/qgisapp.cpp" line="17175"/>
         <source>%n children on layer %1 duplicated</source>
         <translation><numerusform>%n 個子圖徵在圖層 %1 上已複製</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17174"/>
+        <location filename="../src/app/qgisapp.cpp" line="17178"/>
         <source>Feature on layer %1 duplicated
 %2</source>
         <translation>圖層 %1 中的圖徵重複%2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17192"/>
+        <location filename="../src/app/qgisapp.cpp" line="17196"/>
         <source>Templates</source>
         <translation>樣板</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17203"/>
+        <location filename="../src/app/qgisapp.cpp" line="17207"/>
         <source>Template Name</source>
         <translation>範本名稱</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17203"/>
+        <location filename="../src/app/qgisapp.cpp" line="17207"/>
         <source>Name for the template</source>
         <translation>範本的名稱</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17209"/>
+        <location filename="../src/app/qgisapp.cpp" line="17213"/>
         <source>Template not saved</source>
         <translation>範本未儲存</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17209"/>
+        <location filename="../src/app/qgisapp.cpp" line="17213"/>
         <source>The template can not have an empty name.</source>
         <translation>範本不能有空名稱。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17216"/>
+        <location filename="../src/app/qgisapp.cpp" line="17220"/>
         <source>Overwrite Template</source>
         <translation>覆蓋範本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17217"/>
+        <location filename="../src/app/qgisapp.cpp" line="17221"/>
         <source>The template %1 already exists, do you want to replace it?</source>
         <translation>範本 %1 已存在，您要替換它嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17218"/>
+        <location filename="../src/app/qgisapp.cpp" line="17222"/>
         <source>Overwrite</source>
         <translation>覆蓋</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17230"/>
+        <location filename="../src/app/qgisapp.cpp" line="17234"/>
         <source>Template saved</source>
         <translation>範本已儲存</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17230"/>
+        <location filename="../src/app/qgisapp.cpp" line="17234"/>
         <source>Template %1 was saved</source>
         <translation>範本 %1 已儲存</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17316"/>
+        <location filename="../src/app/qgisapp.cpp" line="17320"/>
         <source>Save as Local File</source>
         <translation>另存為本地檔案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17047"/>
+        <location filename="../src/app/qgisapp.cpp" line="17051"/>
         <source>Layer %1</source>
         <translation>圖層 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9478"/>
-        <location filename="../src/app/qgisapp.cpp" line="9581"/>
-        <location filename="../src/app/qgisapp.cpp" line="9642"/>
+        <location filename="../src/app/qgisapp.cpp" line="9482"/>
+        <location filename="../src/app/qgisapp.cpp" line="9585"/>
+        <location filename="../src/app/qgisapp.cpp" line="9646"/>
         <source>The merge features tool only works on vector layers.</source>
         <translation>合併圖徵工具僅適用於向量圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9488"/>
-        <location filename="../src/app/qgisapp.cpp" line="9651"/>
+        <location filename="../src/app/qgisapp.cpp" line="9492"/>
+        <location filename="../src/app/qgisapp.cpp" line="9655"/>
         <source>Merging features can only be done for layers in editing mode.</source>
         <translation>合併圖徵僅能在編輯模式的圖層上進行。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9570"/>
-        <location filename="../src/app/qgisapp.cpp" line="9632"/>
+        <location filename="../src/app/qgisapp.cpp" line="9574"/>
+        <location filename="../src/app/qgisapp.cpp" line="9636"/>
         <source>Please select a layer in the layer list</source>
         <translation>請在圖層列表中選擇一個圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9580"/>
-        <location filename="../src/app/qgisapp.cpp" line="9641"/>
+        <location filename="../src/app/qgisapp.cpp" line="9584"/>
+        <location filename="../src/app/qgisapp.cpp" line="9645"/>
         <source>Invalid layer</source>
         <translation>無效的圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9936"/>
+        <location filename="../src/app/qgisapp.cpp" line="9940"/>
         <source>To select all, choose a vector layer in the legend.</source>
         <translation>要選擇所有，請在圖例中選擇一個向量圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9952"/>
-        <location filename="../src/app/qgisapp.cpp" line="9972"/>
+        <location filename="../src/app/qgisapp.cpp" line="9956"/>
+        <location filename="../src/app/qgisapp.cpp" line="9976"/>
         <source>To select features, choose a vector layer in the legend.</source>
         <translation>要選擇圖徵，請在圖例中選擇一個向量圖層。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13507"/>
+        <location filename="../src/app/qgisapp.cpp" line="13511"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>專案中有圖層處於編輯模式且有未儲存的編輯，這些編輯將不會被儲存！</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="14770"/>
-        <location filename="../src/app/qgisapp.cpp" line="14779"/>
+        <location filename="../src/app/qgisapp.cpp" line="14774"/>
+        <location filename="../src/app/qgisapp.cpp" line="14783"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation><numerusform>%n 個圖徵已選取於圖層 %1。</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15922"/>
+        <location filename="../src/app/qgisapp.cpp" line="15926"/>
         <source>Exit QGIS</source>
         <translation>退出 QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15922"/>
+        <location filename="../src/app/qgisapp.cpp" line="15926"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>您真的想退出 QGIS 嗎？</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15969"/>
+        <location filename="../src/app/qgisapp.cpp" line="15973"/>
         <source>New profile name</source>
         <translation>新設定檔名稱</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16005"/>
+        <location filename="../src/app/qgisapp.cpp" line="16009"/>
         <source>Task complete</source>
         <translation>任務完成</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16147"/>
+        <location filename="../src/app/qgisapp.cpp" line="16151"/>
         <source>This project file was saved by QGIS version %1. When saving this project file, QGIS will update it to version %2, possibly rendering it unusable with older versions of QGIS.</source>
         <translation>此專案檔案是由 QGIS 版本 %1 儲存的。儲存此專案檔案時，QGIS 將其更新為版本 %2，可能會使其在舊版本的 QGIS 中無法使用。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16152"/>
+        <location filename="../src/app/qgisapp.cpp" line="16156"/>
         <source>Project file is older</source>
         <translation>專案檔案較舊</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16779"/>
+        <location filename="../src/app/qgisapp.cpp" line="16783"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>請檢查 &lt;a href=&quot;#messageLog&quot;&gt;訊息日誌&lt;/a&gt;以獲取更多資訊。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16685"/>
+        <location filename="../src/app/qgisapp.cpp" line="16689"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16685"/>
+        <location filename="../src/app/qgisapp.cpp" line="16689"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>此圖層沒有屬性對話方塊。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16750"/>
+        <location filename="../src/app/qgisapp.cpp" line="16754"/>
         <source>Proxy authentication required</source>
         <translation>需要代理身份驗證</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6925"/>
+        <location filename="../src/app/qgisapp.cpp" line="6929"/>
         <source>Failed to run Python script:</source>
         <translation>無法執行 Python 指令碼:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8639"/>
+        <location filename="../src/app/qgisapp.cpp" line="8643"/>
         <source>The current layer has no selected features</source>
         <translation>目前的圖層沒有選取圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4036"/>
-        <location filename="../src/app/qgisapp.cpp" line="4050"/>
+        <location filename="../src/app/qgisapp.cpp" line="4040"/>
+        <location filename="../src/app/qgisapp.cpp" line="4054"/>
         <source>Current clockwise map rotation in degrees</source>
         <translation>目前的順時針地圖旋轉角度(度)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4085"/>
+        <location filename="../src/app/qgisapp.cpp" line="4089"/>
         <source>Messages</source>
         <translation>訊息</translation>
     </message>
@@ -91808,6 +91808,10 @@ p, li { white-space: pre-wrap; }
         <translation>is_selected(get_feature_by_id(&apos;streets&apos;, 1))</translation>
     </message>
     <message>
+        <source>whether to return translated string. Currently affects only &apos;type&apos; property. By default translated strings are returned. Setting this to false will disable translation, always returning English strings.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <source>Calculates the 3D length of a geometry line object. If the geometry is not a 3D line object, it returns its 2D length. Calculations are always planimetric in the Spatial Reference System (SRS) of this geometry, and the units of the returned length will match the units for the SRS. This differs from the calculations performed by the $length function, which will perform ellipsoidal calculations based on the project&apos;s ellipsoid and distance unit settings.</source>
         <translation>計算幾何線物件的 3D 長度。如果幾何圖形不是 3D 線物件，則返回其 2D 長度。計算始終在此幾何圖形的空間參考系統 (SRS) 中進行，返回的長度單位將與 SRS 的單位匹配。這與 $length 函式執行的計算不同，後者將根據專案的橢球體和距離單位設定執行橢圓計算。</translation>
     </message>
@@ -95240,12 +95244,12 @@ p, li { white-space: pre-wrap; }
         <translation>最大值</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9444"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9450"/>
         <source>If represent_value is called with 1 parameter, it must be an attribute.</source>
         <translation>如果 represent_value 只用 1 個引數呼叫，則必須是屬性。</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9454"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9460"/>
         <source>represent_value must be called with exactly 1 or 2 parameters.</source>
         <translation>represent_value 必須用恰好 1 或 2 個引數呼叫。</translation>
     </message>
@@ -95773,7 +95777,7 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
 <context>
     <name>QgsExpressionNodeIndexOperator</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionnodeimpl.cpp" line="2242"/>
+        <location filename="../src/core/expression/qgsexpressionnodeimpl.cpp" line="2243"/>
         <source>[] can only be used with map or array values, not %1</source>
         <translation>[] 只能用於地圖或陣列值，而不是 %1</translation>
     </message>
@@ -118398,47 +118402,47 @@ Evaluation error: %1</source>
 <context>
     <name>QgsLayoutPictureWidget</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="83"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="81"/>
         <source>Picture Properties</source>
         <translation>圖片屬性</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="86"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="84"/>
         <source>Select Fill Color</source>
         <translation>選擇填充顏色</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="89"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="87"/>
         <source>Select Stroke Color</source>
         <translation>選擇描邊顏色</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="472"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="470"/>
         <source>Change Picture</source>
         <translation>變更圖片</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="135"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="133"/>
         <source>Change Picture Rotation</source>
         <translation>變更圖片旋轉</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="148"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="146"/>
         <source>Change Resize Mode</source>
         <translation>變更調整模式</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="173"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="171"/>
         <source>Change Placement</source>
         <translation>變更放置方式</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="210"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="208"/>
         <source>Toggle Rotation Sync</source>
         <translation>切換旋轉同步</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="252"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="250"/>
         <source>Change Rotation Map</source>
         <translation>變更旋轉地圖</translation>
     </message>
@@ -118513,47 +118517,47 @@ Evaluation error: %1</source>
         <translation>右下角</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="96"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="94"/>
         <source>Grid North</source>
         <translation>方格北</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="97"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="95"/>
         <source>True North</source>
         <translation>真北</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="405"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="403"/>
         <source>Change Picture Fill Color</source>
         <translation>更改影像填充顏色</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="413"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="411"/>
         <source>Change Picture Stroke Color</source>
         <translation>更改影像描邊顏色</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="421"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="419"/>
         <source>Change Picture Stroke Width</source>
         <translation>更改影像描邊寬度</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="429"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="427"/>
         <source>Change Picture North Offset</source>
         <translation>更改影像北偏移</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="437"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="435"/>
         <source>Change Picture North Mode</source>
         <translation>更改影像北型式</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="462"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="460"/>
         <source>Change Picture Type</source>
         <translation>更改影像型別</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="482"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="480"/>
         <source>Set SVG parameters</source>
         <translation>設定 SVG 引數</translation>
     </message>
@@ -123885,68 +123889,68 @@ Rasterizing map is recommended for proper rendering.</source>
 <context>
     <name>QgsMapToolSelectUtils::QgsMapToolSelectMenuActions</name>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="669"/>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="708"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="671"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="710"/>
         <source>Select Feature</source>
         <translation>選擇圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="672"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="674"/>
         <source>Add to Selection</source>
         <translation>加入選擇</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="675"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="677"/>
         <source>Intersect with Selection</source>
         <translation>與選擇交集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="678"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="680"/>
         <source>Remove from Selection</source>
         <translation>從選擇中移除</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="684"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="686"/>
         <source>Searching…</source>
         <translation>搜尋中…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="691"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="693"/>
         <source>Select All (%1)</source>
         <translation>全選 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="693"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="695"/>
         <source>Add All to Selection (%1)</source>
         <translation>將全部新增到選擇 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="695"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="697"/>
         <source>Intersect All with Selection (%1)</source>
         <translation>與選擇交集全部 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="697"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="699"/>
         <source>Remove All from Selection (%1)</source>
         <translation>從選擇中移除全部 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="710"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="712"/>
         <source>Add Feature to Selection</source>
         <translation>將圖徵新增到選擇</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="712"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="714"/>
         <source>Intersect Feature with Selection</source>
         <translation>與選擇交集圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="714"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="716"/>
         <source>Remove Feature from Selection</source>
         <translation>從選擇中移除圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="746"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="748"/>
         <source>Feature %1</source>
         <translation>圖徵 %1</translation>
     </message>
@@ -125736,73 +125740,73 @@ If the terrain has no value for the point, the default elevation will be used.</
 <context>
     <name>QgsMeshLayer</name>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2149"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2150"/>
         <source>Information from provider</source>
         <translation>來自提供者的資訊</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2153"/>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2192"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2154"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2193"/>
         <source>Extent</source>
         <translation>範圍</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1201"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1202"/>
         <source>Unknown inconsistent mesh error</source>
         <translation>未知的不一致網格錯誤</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1869"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1870"/>
         <source>Labeling</source>
         <translation>標註</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2162"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2163"/>
         <source>Vertex count</source>
         <translation>頂點數</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2166"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2167"/>
         <source>Face count</source>
         <translation>面數</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2170"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2171"/>
         <source>Edge count</source>
         <translation>邊緣數</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2174"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2175"/>
         <source>Dataset groups count</source>
         <translation>資料叢集組數</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2187"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2188"/>
         <source>Identification</source>
         <translation>識別</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2197"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2198"/>
         <source>Access</source>
         <translation>存取</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2202"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2203"/>
         <source>Contacts</source>
         <translation>聯絡人</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2207"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2208"/>
         <source>Links</source>
         <translation>連結</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2212"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2213"/>
         <source>History</source>
         <translation>歷史</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2247"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2248"/>
         <source>Create %1 provider</source>
         <translation>建立 %1 提供者</translation>
     </message>
@@ -133806,13 +133810,13 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="106"/>
-        <location filename="../src/app/qgisapp.cpp" line="12486"/>
+        <location filename="../src/app/qgisapp.cpp" line="12490"/>
         <source>General</source>
         <translation>一般</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="107"/>
-        <location filename="../src/app/qgisapp.cpp" line="12487"/>
+        <location filename="../src/app/qgisapp.cpp" line="12491"/>
         <source>System</source>
         <translation>系統</translation>
     </message>
@@ -133823,7 +133827,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
-        <location filename="../src/app/qgisapp.cpp" line="12488"/>
+        <location filename="../src/app/qgisapp.cpp" line="12492"/>
         <source>CRS Handling</source>
         <translation>CRS 處理</translation>
     </message>
@@ -133839,13 +133843,13 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="114"/>
-        <location filename="../src/app/qgisapp.cpp" line="12489"/>
+        <location filename="../src/app/qgisapp.cpp" line="12493"/>
         <source>Coordinate Transforms</source>
         <translation>座標轉換</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="117"/>
-        <location filename="../src/app/qgisapp.cpp" line="12490"/>
+        <location filename="../src/app/qgisapp.cpp" line="12494"/>
         <source>Data Sources</source>
         <translation>資料來源</translation>
     </message>
@@ -133866,31 +133870,31 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
-        <location filename="../src/app/qgisapp.cpp" line="12495"/>
+        <location filename="../src/app/qgisapp.cpp" line="12499"/>
         <source>Colors</source>
         <translation>顏色</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="121"/>
-        <location filename="../src/app/qgisapp.cpp" line="12492"/>
+        <location filename="../src/app/qgisapp.cpp" line="12496"/>
         <source>Canvas &amp; Legend</source>
         <translation>畫布與圖例</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="123"/>
-        <location filename="../src/app/qgisapp.cpp" line="12493"/>
+        <location filename="../src/app/qgisapp.cpp" line="12497"/>
         <source>Map Tools</source>
         <translation>地圖工具</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="125"/>
-        <location filename="../src/app/qgisapp.cpp" line="12494"/>
+        <location filename="../src/app/qgisapp.cpp" line="12498"/>
         <source>Digitizing</source>
         <translation>數位化</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="119"/>
-        <location filename="../src/app/qgisapp.cpp" line="12491"/>
+        <location filename="../src/app/qgisapp.cpp" line="12495"/>
         <source>GDAL</source>
         <translation>GDAL</translation>
     </message>
@@ -133901,7 +133905,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
-        <location filename="../src/app/qgisapp.cpp" line="12499"/>
+        <location filename="../src/app/qgisapp.cpp" line="12503"/>
         <source>Network</source>
         <translation>網路</translation>
     </message>
@@ -134048,19 +134052,19 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="130"/>
-        <location filename="../src/app/qgisapp.cpp" line="12498"/>
+        <location filename="../src/app/qgisapp.cpp" line="12502"/>
         <source>Authentication</source>
         <translation>身份驗證</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="129"/>
-        <location filename="../src/app/qgisapp.cpp" line="12497"/>
+        <location filename="../src/app/qgisapp.cpp" line="12501"/>
         <source>Variables</source>
         <translation>變數</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsadvancedoptions.cpp" line="100"/>
-        <location filename="../src/app/qgisapp.cpp" line="12502"/>
+        <location filename="../src/app/qgisapp.cpp" line="12506"/>
         <source>Advanced</source>
         <translation>進階</translation>
     </message>
@@ -134116,13 +134120,13 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
-        <location filename="../src/app/qgisapp.cpp" line="12496"/>
+        <location filename="../src/app/qgisapp.cpp" line="12500"/>
         <source>Layouts</source>
         <translation>圖面配置</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
-        <location filename="../src/app/qgisapp.cpp" line="12500"/>
+        <location filename="../src/app/qgisapp.cpp" line="12504"/>
         <source>Locator</source>
         <translation>定位器</translation>
     </message>
@@ -134138,7 +134142,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="133"/>
-        <location filename="../src/app/qgisapp.cpp" line="12501"/>
+        <location filename="../src/app/qgisapp.cpp" line="12505"/>
         <source>Acceleration</source>
         <translation>加速</translation>
     </message>
@@ -146985,7 +146989,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12415"/>
+        <location filename="../src/app/qgisapp.cpp" line="12419"/>
         <source>General</source>
         <translation>一般</translation>
     </message>
@@ -147021,7 +147025,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12418"/>
+        <location filename="../src/app/qgisapp.cpp" line="12422"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
@@ -147032,7 +147036,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12424"/>
+        <location filename="../src/app/qgisapp.cpp" line="12428"/>
         <source>Variables</source>
         <translation>變數</translation>
     </message>
@@ -147178,7 +147182,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12423"/>
+        <location filename="../src/app/qgisapp.cpp" line="12427"/>
         <source>Relations</source>
         <translation>關係</translation>
     </message>
@@ -147284,7 +147288,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12422"/>
+        <location filename="../src/app/qgisapp.cpp" line="12426"/>
         <source>Data Sources</source>
         <translation>資料來源</translation>
     </message>
@@ -147325,7 +147329,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12416"/>
+        <location filename="../src/app/qgisapp.cpp" line="12420"/>
         <source>Metadata</source>
         <translation>元資料</translation>
     </message>
@@ -147336,7 +147340,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12426"/>
+        <location filename="../src/app/qgisapp.cpp" line="12430"/>
         <source>QGIS Server</source>
         <translation>QGIS 伺服器</translation>
     </message>
@@ -147602,7 +147606,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12425"/>
+        <location filename="../src/app/qgisapp.cpp" line="12429"/>
         <source>Macros</source>
         <translation>巨集</translation>
     </message>
@@ -147748,7 +147752,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12419"/>
+        <location filename="../src/app/qgisapp.cpp" line="12423"/>
         <source>Transformations</source>
         <translation>轉換</translation>
     </message>
@@ -147759,7 +147763,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12427"/>
+        <location filename="../src/app/qgisapp.cpp" line="12431"/>
         <source>Temporal</source>
         <translation>時間的</translation>
     </message>
@@ -147830,7 +147834,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12417"/>
+        <location filename="../src/app/qgisapp.cpp" line="12421"/>
         <source>View Settings</source>
         <translation>檢視設定</translation>
     </message>
@@ -148001,7 +148005,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12420"/>
+        <location filename="../src/app/qgisapp.cpp" line="12424"/>
         <source>Styles</source>
         <translation>樣式</translation>
     </message>
@@ -148032,7 +148036,7 @@ Proceed?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12421"/>
+        <location filename="../src/app/qgisapp.cpp" line="12425"/>
         <source>Colors</source>
         <translation>顏色</translation>
     </message>
@@ -176765,47 +176769,47 @@ Check the processing framework log to look for errors.</source>
 <context>
     <name>expressions</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6799"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6805"/>
         <source>Vector</source>
         <translation>向量</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6801"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6807"/>
         <source>Raster</source>
         <translation>網格</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6803"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6809"/>
         <source>Mesh</source>
         <translation>網格</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6805"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6811"/>
         <source>Vector Tile</source>
         <translation>向量圖磚</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6807"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6813"/>
         <source>Plugin</source>
         <translation>外掛程式</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6809"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6815"/>
         <source>Annotation</source>
         <translation>註記</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6811"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6817"/>
         <source>Point Cloud</source>
         <translation>點雲</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6813"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6819"/>
         <source>Group</source>
         <translation>群組</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6815"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6821"/>
         <source>Tiled Scene</source>
         <translation>拼幅場景</translation>
     </message>

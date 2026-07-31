@@ -20817,7 +20817,8 @@ Ez nem várt eredményhez vezethet.</translation>
     <message>
         <source>&lt;h3&gt;Missing dependency. This algorithm cannot be run :-( &lt;/h3&gt;
 {0}</source>
-        <translation type="unfinished"/>
+        <translation>&lt;h3&gt;Hiányzó függőség. Ez az algoritmus nem futtatható :-( &lt;/h3&gt;
+{0}</translation>
     </message>
 </context>
 <context>
@@ -22154,19 +22155,19 @@ Valószínűleg azért látja ezt az üzenetet, mert nincs beállítva a DISPLAY
         <translation>Elemek kiválasztáshoz jelöljön ki egy vektorréteget a rétegek panelen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="206"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="208"/>
         <source>CRS Exception</source>
         <translation>CRS kivétel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="207"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="209"/>
         <source>Selection extends beyond layer&apos;s coordinate system</source>
         <translation>A kiválasztás túllóg a réteg koordináta-rendszerén</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="451"/>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="468"/>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="632"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="453"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="470"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="634"/>
         <source>Error determining selection: %1</source>
         <translation>Hiba a kiválasztás meghatározásakor: %1</translation>
     </message>
@@ -22782,7 +22783,7 @@ A távolság a réteg mértékegységében lesz meghatározva, és az irány az 
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1632"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7312"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7318"/>
         <source>Invalid pair of array, length not identical</source>
         <translation>Hibás tömb pár, méret nem azonos</translation>
     </message>
@@ -22946,14 +22947,14 @@ A távolság a réteg mértékegységében lesz meghatározva, és az irány az 
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2980"/>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2992"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7582"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7593"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7604"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7615"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7626"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7637"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7648"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7659"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7588"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7599"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7610"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7621"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7632"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7643"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7654"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7665"/>
         <source>Function `%1` requires a value which represents a possible file path</source>
         <translation>A(z) `%1` függvény olyan értéket vár, amely egy lehetséges fájlútvonalat ábrázol</translation>
     </message>
@@ -23154,12 +23155,12 @@ A távolság a réteg mértékegységében lesz meghatározva, és az irány az 
         <translation>„%1” nem konvertálható át színné</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6870"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6876"/>
         <source>Function `decode_uri` requires a valid layer.</source>
         <translation>A `decode_uri` függvényhez egy érvényes réteg szükséges.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6893"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6899"/>
         <source>Invalid band number %1 for layer</source>
         <translation>Hibás %1 sávszám a réteghez</translation>
     </message>
@@ -23180,38 +23181,38 @@ A távolság a réteg mértékegységében lesz meghatározva, és az irány az 
         <translation>Transzformációs hiba elkapva a transform() függvény végrehajtása során: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6852"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6858"/>
         <source>Layer %1 has invalid data provider</source>
         <translation>%1 rétegnek érvénytelen az adatszolgáltatója</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6913"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6919"/>
         <source>Invalid raster statistic: &apos;%1&apos;</source>
         <translation>Hibás raszterstatisztika: „%1”</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6941"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6947"/>
         <source>Function `raster_statistic` requires a valid raster layer.</source>
         <translation>A `raster_statistic` függvényhez egy érvényes raszterréteg szükséges.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7158"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7207"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7164"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7213"/>
         <source>No such option &apos;%1&apos;</source>
         <translation>Nincs ilyen beállítás „%1”</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7331"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7337"/>
         <source>Function array_replace requires 2 or 3 arguments</source>
         <translation>Az array_replace függvény 2 vagy 3 argumentumot vár</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7738"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7744"/>
         <source>Hash method %1 is not available on this system.</source>
         <translation>A(z) %1 hash módszer nem érhető el ezen a rendszeren.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7820"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7826"/>
         <source>Layer &apos;%1&apos; could not be loaded.</source>
         <translation>A(z) „%1” réteget nem sikerült betölteni.</translation>
     </message>
@@ -28216,7 +28217,7 @@ Alternatív lehetőségként lásd még a „Felületkészítés” és a „Von
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="31"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="34"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="35"/>
         <source>Join to features in</source>
         <translation>Elemek összekapcsolása ebben</translation>
     </message>
@@ -28227,7 +28228,7 @@ Alternatív lehetőségként lásd még a „Felületkészítés” és a „Von
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="41"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="45"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="46"/>
         <source>By comparing to</source>
         <translation>Összehasonlítva ezzel</translation>
     </message>
@@ -28267,7 +28268,7 @@ A további attribútumok és az értékük egy második vektorrétegből jönnek
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="367"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="142"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="143"/>
         <source>No spatial index exists for join layer, performance will be severely degraded</source>
         <translation>Nincs térbeli index az összekapcsolt réteghez, a teljesítmény jelentősen romlani fog</translation>
     </message>
@@ -32138,7 +32139,7 @@ Megadható az elemek rendezési sorrendje is, ilyenkor a növekvő mezőértéke
         <location filename="../src/analysis/processing/qgsalgorithmflattenrelationships.cpp" line="42"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="40"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="73"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="97"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbynearest.cpp" line="43"/>
         <location filename="../src/analysis/processing/qgsalgorithmmergevector.cpp" line="40"/>
         <location filename="../src/analysis/processing/qgsalgorithmorderbyexpression.cpp" line="42"/>
@@ -33527,7 +33528,7 @@ MEGJEGYZÉS: az M értékek törlődnek az eredményből.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="63"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="49"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="72"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="73"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbynearest.cpp" line="58"/>
         <source>Discard records which could not be joined</source>
         <translation>A nem összekapcsolható rekordok eldobása</translation>
@@ -33542,7 +33543,7 @@ MEGJEGYZÉS: az M értékek törlődnek az eredményből.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbyattribute.cpp" line="67"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbylocation.cpp" line="51"/>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="73"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="74"/>
         <location filename="../src/analysis/processing/qgsalgorithmjoinbynearest.cpp" line="66"/>
         <source>Joined layer</source>
         <translation>Összekapcsolt réteg</translation>
@@ -36697,9 +36698,9 @@ Opcionálisan kimeneti koordináta-rendszer is megadható. Ha nincs megadva, akk
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextractlayoutmapextent.cpp" line="96"/>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="130"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="122"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="117"/>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="121"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="105"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="139"/>
         <source>Cannot find layout with name &quot;%1&quot;</source>
         <translation>Nem található „%1” nevű elrendezés</translation>
@@ -37801,116 +37802,116 @@ A kinyert címkeinformációk tartalmazzák: pozíció (pontgeometriaként), a h
         <translation>Hibás „%1” dátum/idő paraméter: min érték %2 &gt;= max érték %3!</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="993"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="994"/>
         <source>Could not create memory layer</source>
         <translation>Nem sikerült a memóriaréteget létrehozni</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="125"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1064"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1142"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1065"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1143"/>
         <source>Could not create layer %1: %2</source>
         <translation>%1 réteget nem sikerült létrehozni: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1002"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1003"/>
         <source>%1: Aliases are not compatible with scratch layers</source>
         <translation>%1: Az álnevek nem kompatibilisek a munkarétegekkel</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1004"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1005"/>
         <source>%1: Comments are not compatible with scratch layers</source>
         <translation>%1: A megjegyzések nem kompatibilisek a munkarétegekkel</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1123"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1158"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1124"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1159"/>
         <source>%1: Aliases are not supported by the %2 provider</source>
         <translation>%1: A(z) %2 szolgáltató nem támogatja az álneveket</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1125"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1160"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1126"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1161"/>
         <source>%1: Comments are not supported by the %2 provider</source>
         <translation>%1: A(z) %2 szolgáltató nem támogatja a megjegyzéseket</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1334"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1335"/>
         <source>Input parameters</source>
         <translation>Bemeneti paraméterek</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1347"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1348"/>
         <source>Outputs</source>
         <translation>Kimenetek</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1350"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1351"/>
         <source>Examples</source>
         <translation>Példák</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1354"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1355"/>
         <source>Algorithm author:</source>
         <translation>Algoritmus szerzője:</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1356"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1357"/>
         <source>Help author:</source>
         <translation>Súgó szerzője:</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1358"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1359"/>
         <source>Algorithm version:</source>
         <translation>Algoritmus verziója:</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1477"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1478"/>
         <source>Cannot store existing FID values in temporary GeoPackage layer, these will be moved to &quot;OLD_FID&quot; instead.</source>
         <translation>A meglévő FID értékeket nem lehet az ideiglenes GeoPackage rétegben tárolni. Helyette az &quot;OLD_FID&quot;-be kerülnek át.</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1485"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1486"/>
         <source>Error writing feature # %1 to output layer: %2</source>
         <translation>Hiba a(z) # %1 elem kimeneti rétegre írásakor: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1493"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1494"/>
         <source>There were %1 errors writing features, only the first %2 have been reported.</source>
         <translation>%1 hiba történt az elemek írásakor, de csak az első %2 hibát jelentettük.</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1703"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1704"/>
         <source>Invalid data defined parameter for %1, requires &apos;expression&apos; or &apos;field&apos; values.</source>
         <translation>%1 adatvezérelt paramétere érvénytelen, &apos;kifejezés&apos; vagy &apos;mező&apos; értéket vár</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2056"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2105"/>
         <source>Feature could not be written to %1: %2</source>
         <translation>Az elemet nem sikerült kiírni ide: %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2058"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2107"/>
         <source>Feature could not be written to %1</source>
         <translation>Az elemet nem sikerült kiírni ide: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2070"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2119"/>
         <source>%n feature(s) could not be written to %1: %2</source>
         <translation><numerusform>%n elemet nem sikerült kiírni ide: %1: %2</numerusform><numerusform>%n elemet nem sikerült kiírni ide: %1: %2</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2072"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2121"/>
         <source>%n feature(s) could not be written to %1</source>
         <translation><numerusform>%n elemet nem sikerült kiírni ide: %1</numerusform><numerusform>%n elemet nem sikerült kiírni ide: %1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2084"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2133"/>
         <source>Features could not be written to %1: %2</source>
         <translation>Az elemeket nem sikerült kiírni ide: %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2086"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="2135"/>
         <source>Features could not be written to %1</source>
         <translation>Az elemeket nem sikerült kiírni ide: %1</translation>
     </message>
@@ -40490,7 +40491,7 @@ Utolsó keretek:
         <translation>Változó hosszúságú karakterlánc, amely a dokumentum külső helyen való tárolására használt URL-t jelöli</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="49"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="50"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="262"/>
         <source>count</source>
         <translation>darabszám</translation>
@@ -40516,105 +40517,105 @@ Utolsó keretek:
         <translation>maximum</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="36"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="37"/>
         <source>Where the features</source>
         <translation>Ahol az elemek</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="47"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="48"/>
         <source>Fields to summarise (leave empty to use all fields)</source>
         <translation>Összegzendő mezők (hagyja üresen az összes mező használatához)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="50"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="51"/>
         <source>unique</source>
         <translation>egyedi</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="51"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="52"/>
         <source>min</source>
         <translation>min</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="52"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="53"/>
         <source>max</source>
         <translation>max</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="54"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="55"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="272"/>
         <source>sum</source>
         <translation>összeg</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="55"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="56"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="274"/>
         <source>mean</source>
         <translation>átlag</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="56"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="57"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="276"/>
         <source>median</source>
         <translation>medián</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="60"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="61"/>
         <source>q1</source>
         <translation>q1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="61"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="62"/>
         <source>q3</source>
         <translation>q3</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="62"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="63"/>
         <source>iqr</source>
         <translation>iqr</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="63"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="64"/>
         <source>empty</source>
         <translation>üres</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="64"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="65"/>
         <source>filled</source>
         <translation>kitöltött</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="65"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="66"/>
         <source>min_length</source>
         <translation>min_hossz</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="66"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="67"/>
         <source>max_length</source>
         <translation>max_hossz</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="67"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="68"/>
         <source>mean_length</source>
         <translation>átlag_hossz</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="69"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="70"/>
         <source>Summaries to calculate (leave empty to use all available)</source>
         <translation>Számítandó összegzések (hagyja üresen minden lehetségeshez)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="83"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="84"/>
         <source>Join attributes by location (summary)</source>
         <translation>Attribútumok összekapcsolása hely alapján (összegzés)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="88"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="89"/>
         <source>summary,aggregate,join,intersects,intersecting,touching,within,contains,overlaps,relation,spatial,stats,statistics,sum,maximum,minimum,mean,average,standard,deviation,count,distinct,unique,variance,median,quartile,range,majority,minority,histogram,distinct</source>
         <translation>összegzés,összesít,aggregál,összekapcsolás,metsz,metszés,érint,belül,tartalmaz,átfed,kapcsolat,térbeli,statisztika,statisztikák,összeg,maximum,minimum,közép,átlag,szabvány,szórás,mennyiség,különböző,egyedi,variancia,medián,kvartilis,tartomány,többségi,kisebbségi,hisztogram,eltér,summary,aggregate,join,intersects,intersecting,touching,within,contains,overlaps,relation,spatial,stats,statistics,sum,maximum,minimum,mean,average,standard,deviation,count,distinct,unique,variance,median,quartile,range,majority,minority,histogram,distinct</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="107"/>
         <source>This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
 
 The additional attributes and their values are taken from a second vector layer. A spatial criteria is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
@@ -40625,7 +40626,7 @@ A hozzáadott attribútumok és értékeik egy második vektorrétegből szárma
 Az algoritmus statisztikai összesítést számol ki a második réteg megfelelő elemeinek értékeiből (pl. maximális érték, átlagérték, stb.). </translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="113"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="114"/>
         <source>Calculates summaries of attributes from one vector layer to another by location.</source>
         <translation>Attribútumokat összesít egy vektorrétegből egy másikba, hely alapján.</translation>
     </message>
@@ -40640,24 +40641,24 @@ Az algoritmus statisztikai összesítést számol ki a második réteg megfelel�
         <translation>szórás (minta)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="53"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="54"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="282"/>
         <source>range</source>
         <translation>tartomány</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="57"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="58"/>
         <source>stddev</source>
         <translation>szórás</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="58"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="59"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="284"/>
         <source>minority</source>
         <translation>kisebbség</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="59"/>
+        <location filename="../src/analysis/processing/qgsalgorithmjoinbylocationsummary.cpp" line="60"/>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="286"/>
         <source>majority</source>
         <translation>többség</translation>
@@ -42174,12 +42175,12 @@ Alapértelmezetten csak az egyes elemek első töréspontjából bontja ki a M �
         <translation>Ez az algoritmus olyan mezőket fűz hozzá, amelyek a raszterrétegen a zónákat ábrázoló felületeken belüli egyedi értékek számát reprezentálják.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsstringutils.cpp" line="72"/>
+        <location filename="../src/core/qgsstringutils.cpp" line="67"/>
         <source>a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via</source>
         <translation>egy|és|mint|de|ha|sem|vagy|a|az|által|ahogy|akkor|ameddig|amíg|annyira|azaz|bár|ezért|hanem|hogy|hol|hát|illetve|is|meg|mégpedig|mert|mivel|pedig|s|se|sem|úgyhogy|vagyis|valamint|viszont</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsstringutils.cpp" line="73"/>
+        <location filename="../src/core/qgsstringutils.cpp" line="68"/>
         <source>.|:</source>
         <translation>.|:</translation>
     </message>
@@ -47676,12 +47677,12 @@ Ha be van állítva fedvényréteg, akkor a kiválasztott elrendezés atlaszbeá
         <translation>A feloldott térképelem(ek)hez hozzárendelendő térképrétegek</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="86"/>
         <source>Image format</source>
         <translation>Képformátum</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="98"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="90"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="64"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="71"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="70"/>
@@ -47689,13 +47690,13 @@ Ha be van állítva fedvényréteg, akkor a kiválasztott elrendezés atlaszbeá
         <translation>DPI (hagyja üresen az elrendezés alapértelmezett DPI-jéhez)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="94"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="75"/>
         <source>Generate world file</source>
         <translation>World-fájl létrehozása</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="106"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="98"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="80"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="86"/>
@@ -47703,47 +47704,47 @@ Ha be van állítva fedvényréteg, akkor a kiválasztott elrendezés atlaszbeá
         <translation>RDF metaadatok exportálása (cím, szerző, stb.)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="110"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="102"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="83"/>
         <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="116"/>
         <source>Enable antialiasing</source>
         <translation>Élsimítás engedélyezése</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="147"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="139"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="134"/>
         <source>Error setting atlas filter expression</source>
         <translation>Hiba az atlasz szűrőkifejezésének beállításakor</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="166"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="158"/>
         <source>Layout being export doesn&apos;t have an enabled atlas</source>
         <translation>Az exportálandó elrendezésben nincs engedélyezett atlasz</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="173"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="165"/>
         <source>Error setting atlas filename expression</source>
         <translation>Hiba az atlasz fájlnév-kifejezésének beállításakor</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="225"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="210"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="262"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="357"/>
         <source>Exporting %n atlas feature(s)</source>
         <translation><numerusform>%n atlaszelem exportálása</numerusform><numerusform>%n atlaszelem exportálása</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="230"/>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="162"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="215"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="146"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="204"/>
         <source>Successfully exported layout to %1</source>
         <translation>Az elrendezés sikeresen exportálva ide: %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="235"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="220"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="272"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="383"/>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="167"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="151"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayouttopdf.cpp" line="209"/>
         <source>Cannot write to %1.
 
@@ -47753,10 +47754,10 @@ This file may be open in another application.</source>
 Lehetséges, hogy a fájlt egy másik alkalmazás használja.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="238"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="223"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="278"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="389"/>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="170"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="154"/>
         <source>Trying to create the image resulted in a memory overflow.
 
 Please try a lower resolution or a smaller paper size.</source>
@@ -47765,14 +47766,14 @@ Please try a lower resolution or a smaller paper size.</source>
 Próbálkozzon kisebb felbontással vagy kisebb papírmérettel.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="243"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="228"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="283"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="394"/>
         <source>Error encountered while exporting atlas.</source>
         <translation>Az atlasz exportálása közben hiba lépett fel.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="254"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastoimage.cpp" line="239"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="293"/>
         <location filename="../src/analysis/processing/qgsalgorithmlayoutatlastopdf.cpp" line="404"/>
         <source>No atlas features found</source>
@@ -47956,12 +47957,12 @@ Ha be van állítva fedvényréteg, akkor a kiválasztott elrendezés atlaszbeá
         <translation>Ez az algoritmus egy nyomtatási elrendezést képfájllá alakít át (pl. PNG vagy JPG kép).</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="94"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1791"/>
         <source> format</source>
         <translation>formátum</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="103"/>
+        <location filename="../src/analysis/processing/qgsalgorithmlayouttoimage.cpp" line="87"/>
         <source>Image file</source>
         <translation>Képfájl</translation>
     </message>
@@ -49520,13 +49521,13 @@ Opcionális GDAL-specifikus adathalmaz- és rétegbeállítások adhatók meg. T
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="133"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1072"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1073"/>
         <source>%1: Aliases are not supported by %2</source>
         <translation>%1: A(z) %2 nem támogatja az álneveket</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmsavefeatures.cpp" line="135"/>
-        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1074"/>
+        <location filename="../src/core/processing/qgsprocessingutils.cpp" line="1075"/>
         <source>%1: Comments are not supported by %2</source>
         <translation>%1: A(z) %2 nem támogatja a megjegyzéseket</translation>
     </message>
@@ -50828,62 +50829,62 @@ A létrehozott pontréteg ugyanabban a vetületi rendszerben lesz mint a kivála
         <translation>Szerkeszthető</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="793"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="794"/>
         <source>below %1 %2</source>
         <translation>%1 %2 alatt</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="805"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="806"/>
         <source>above %1 %2</source>
         <translation>%1 %2 fölött</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1101"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1102"/>
         <source>Face %1 invalid</source>
         <translation>%1 lap érvénytelen</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1104"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1105"/>
         <source>Too many vertices for face %1</source>
         <translation>%1 lapnak túl sok töréspontja van</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1107"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1108"/>
         <source>Face %1 is flat</source>
         <translation>%1 lap lapos</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1110"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1111"/>
         <source>Vertex %1 is a unique shared vertex</source>
         <translation>%1 töréspont egy egyedi megosztott csúcs</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1113"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1114"/>
         <source>Vertex %1 is invalid</source>
         <translation>%1 töréspont hibás</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1116"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1117"/>
         <source>Face %1 is manifold</source>
         <translation>%1 lap manifold</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1137"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1138"/>
         <source>Mesh layer &quot;%1&quot; not support mesh editing</source>
         <translation>„%1” hálóréteg nem támogatja a hálószerkesztést</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1143"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1144"/>
         <source>Mesh layer &quot;%1&quot; already in editing mode</source>
         <translation>„%1” hálóréteg már szerkesztési módban van</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1166"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1167"/>
         <source>Unable to start editing of mesh layer &quot;%1&quot;: %2</source>
         <translation> Nem lehet elkezdeni a(z) „%1” hálóréteg szerkesztését: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1211"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1212"/>
         <source>Edited mesh layer &quot;%1&quot; can&apos;t be save due to an error: %2</source>
         <translation>A szerkesztett „%1” hálóréteget egy hiba miatt nem sikerült elmenteni: %2</translation>
     </message>
@@ -53576,7 +53577,7 @@ További részletekért tekintse meg a következő publikációkat:
         <translation>A szimbólumot nem támogatja a QGIS</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsmarkersymbollayer.cpp" line="4234"/>
+        <location filename="../src/core/symbology/qgsmarkersymbollayer.cpp" line="4208"/>
         <location filename="../src/core/textrenderer/qgstextformat.cpp" line="623"/>
         <source>Font “%1” not available on system</source>
         <translation>„%1” betűkészlet nem érhető el a rendszeren</translation>
@@ -57586,102 +57587,102 @@ Ez az algoritmus nem változtatja meg a réteg geometriatípusát, ami továbbra
         <translation>A(z) „%1” egyedi mezőben NULL vagy érvénytelen érték található</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="90"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="91"/>
         <source>Profile curve</source>
         <translation>Szintgörbe</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="91"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="92"/>
         <source>Map layers</source>
         <translation>Térképrétegek</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="92"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="93"/>
         <source>Chart width (in pixels)</source>
         <translation>Grafikon szélessége (pixelben)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="93"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="94"/>
         <source>Chart height (in pixels)</source>
         <translation>Grafikon magassága (pixelben)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="94"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="95"/>
         <source>Terrain layer</source>
         <translation>Terep réteg</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="96"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="97"/>
         <source>Chart minimum distance (X axis)</source>
         <translation>Grafikon minimum távolsága (X tengely)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="99"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="100"/>
         <source>Chart maximum distance (X axis)</source>
         <translation>Grafikon maximum távolsága (X tengely)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="102"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="103"/>
         <source>Chart minimum elevation (Y axis)</source>
         <translation>Grafikon minimum magassága (Y tengely)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="105"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="106"/>
         <source>Chart maximum elevation (Y axis)</source>
         <translation>Grafikon maximum magassága (Y tengely)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="109"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="110"/>
         <source>Chart text color</source>
         <translation>Grafikon szövegszíne</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="112"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="113"/>
         <source>Chart background color</source>
         <translation>Grafikon háttérszíne</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="115"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="116"/>
         <source>Chart border color</source>
         <translation>Grafikon körvonalszíne</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="119"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="120"/>
         <source>Profile tolerance</source>
         <translation>Metszet tűréshatára</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="123"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="124"/>
         <source>Chart DPI</source>
         <translation>Grafikon DPI</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="127"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="128"/>
         <source>Output image</source>
         <translation>Kimeneti kép</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="137"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="138"/>
         <source>Generate elevation profile image</source>
         <translation>Szintmetszet kép létrehozása</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="142"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="143"/>
         <source>altitude,elevation,terrain,dem</source>
         <translation>magasság,szint,profil,terep,dem,dtm,altitude,elevation,terrain</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="147"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="148"/>
         <source>Plots</source>
         <translation>Diagramok</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="157"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="158"/>
         <source>This algorithm creates an elevation profile image from a list of map layer and an optional terrain.</source>
         <translation>Ez az algoritmus egy szintmetszet ábrázoló képet hoz létre térképrétegekből és egy opcionális terepből.</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="162"/>
+        <location filename="../src/analysis/processing/qgsalgorithmgenerateelevationprofile.cpp" line="163"/>
         <source>Creates an elevation profile image from a list of map layer and an optional terrain.</source>
         <translation>Egy szintmetszet ábrázoló képet hoz létre a térképrétegekből és egy opcionális terepből.</translation>
     </message>
@@ -59137,60 +59138,60 @@ Ha többsávos rasztert ad meg az adatraszter-veremben, az algoritmus mindig a r
         <translation>Rétegek betöltése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3119"/>
+        <location filename="../src/app/qgisapp.cpp" line="3123"/>
         <source>Minimize</source>
         <translation>Minimalizálás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3120"/>
+        <location filename="../src/app/qgisapp.cpp" line="3124"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3121"/>
+        <location filename="../src/app/qgisapp.cpp" line="3125"/>
         <source>Minimizes the active window to the dock</source>
         <translation>Aktív ablak minimalizálása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3124"/>
+        <location filename="../src/app/qgisapp.cpp" line="3128"/>
         <source>Zoom</source>
         <translation>Nagyítás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3125"/>
+        <location filename="../src/app/qgisapp.cpp" line="3129"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>Váltás az ablak előre definiált és felhasználó által beállított méretei között</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3128"/>
+        <location filename="../src/app/qgisapp.cpp" line="3132"/>
         <source>Bring All to Front</source>
         <translation>Összes előtérbe hozása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3129"/>
+        <location filename="../src/app/qgisapp.cpp" line="3133"/>
         <source>Bring forward all open windows</source>
         <translation>Minden nyitott ablak előrehozása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3137"/>
+        <location filename="../src/app/qgisapp.cpp" line="3141"/>
         <source>Current Edits</source>
         <translation>Aktuális szerkesztések</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3280"/>
-        <location filename="../src/app/qgisapp.cpp" line="10713"/>
-        <location filename="../src/app/qgisapp.cpp" line="10856"/>
-        <location filename="../src/app/qgisapp.cpp" line="10942"/>
-        <location filename="../src/app/qgisapp.cpp" line="11105"/>
-        <location filename="../src/app/qgisapp.cpp" line="11132"/>
-        <location filename="../src/app/qgisapp.cpp" line="11155"/>
+        <location filename="../src/app/qgisapp.cpp" line="3284"/>
+        <location filename="../src/app/qgisapp.cpp" line="10717"/>
+        <location filename="../src/app/qgisapp.cpp" line="10860"/>
+        <location filename="../src/app/qgisapp.cpp" line="10946"/>
+        <location filename="../src/app/qgisapp.cpp" line="11109"/>
+        <location filename="../src/app/qgisapp.cpp" line="11136"/>
+        <location filename="../src/app/qgisapp.cpp" line="11159"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3273"/>
-        <location filename="../src/app/qgisapp.cpp" line="3280"/>
+        <location filename="../src/app/qgisapp.cpp" line="3277"/>
+        <location filename="../src/app/qgisapp.cpp" line="3284"/>
         <source>Failed to open Python console:</source>
         <translation>Hiba a Python-konzol megnyitása közben:</translation>
     </message>
@@ -59229,44 +59230,44 @@ Forduljon a fejlesztőkhöz.
         <translation>QGIS – %1 („%2”)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3390"/>
-        <location filename="../src/app/qgisapp.cpp" line="16973"/>
+        <location filename="../src/app/qgisapp.cpp" line="3394"/>
+        <location filename="../src/app/qgisapp.cpp" line="16977"/>
         <source>Panels</source>
         <translation>Panelek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3392"/>
-        <location filename="../src/app/qgisapp.cpp" line="16993"/>
+        <location filename="../src/app/qgisapp.cpp" line="3396"/>
+        <location filename="../src/app/qgisapp.cpp" line="16997"/>
         <source>Toolbars</source>
         <translation>Eszköztárak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3443"/>
+        <location filename="../src/app/qgisapp.cpp" line="3447"/>
         <source>Window</source>
         <translation>Ablak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3461"/>
+        <location filename="../src/app/qgisapp.cpp" line="3465"/>
         <source>&amp;Web</source>
         <translation>&amp;Web</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4057"/>
+        <location filename="../src/app/qgisapp.cpp" line="4061"/>
         <source>Render</source>
         <translation>Megjelenít</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4061"/>
+        <location filename="../src/app/qgisapp.cpp" line="4065"/>
         <source>Toggle map rendering</source>
         <translation>Térkép kirajzolása be/ki</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4076"/>
+        <location filename="../src/app/qgisapp.cpp" line="4080"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>CRS státus – Kattintson ide a vetület párbeszédablak megnyitásához</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4080"/>
+        <location filename="../src/app/qgisapp.cpp" line="4084"/>
         <source>Ready</source>
         <translation>Kész</translation>
     </message>
@@ -59283,7 +59284,7 @@ Forduljon a fejlesztőkhöz.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1327"/>
         <location filename="../src/app/qgisapp.cpp" line="1361"/>
-        <location filename="../src/app/qgisapp.cpp" line="4952"/>
+        <location filename="../src/app/qgisapp.cpp" line="4956"/>
         <source>Layer Styling</source>
         <translation>Rétegstílus</translation>
     </message>
@@ -59308,301 +59309,301 @@ Forduljon a fejlesztőkhöz.
         <translation>Ctrl+Alt+=</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3475"/>
+        <location filename="../src/app/qgisapp.cpp" line="3479"/>
         <source>&amp;User Profiles</source>
         <translation>&amp;Felhasználói profilok</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4049"/>
+        <location filename="../src/app/qgisapp.cpp" line="4053"/>
         <source> °</source>
         <translation> °</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4093"/>
+        <location filename="../src/app/qgisapp.cpp" line="4097"/>
         <source>Ctrl+K</source>
         <translation>Ctrl+K</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4096"/>
+        <location filename="../src/app/qgisapp.cpp" line="4100"/>
         <source>Trigger Locator</source>
         <translation>Keresősáv aktiválása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4395"/>
+        <location filename="../src/app/qgisapp.cpp" line="4399"/>
         <source>Transforms are not installed: %1 </source>
         <translation>A transzformációk nincsenek telepítve: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4396"/>
+        <location filename="../src/app/qgisapp.cpp" line="4400"/>
         <source>Missing datum transforms</source>
         <translation>Hiányzó dátumtranszformáció</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4589"/>
+        <location filename="../src/app/qgisapp.cpp" line="4593"/>
         <source>Overview</source>
         <translation>Áttekintő</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4866"/>
+        <location filename="../src/app/qgisapp.cpp" line="4870"/>
         <source>Layers</source>
         <translation>Rétegek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4920"/>
+        <location filename="../src/app/qgisapp.cpp" line="4924"/>
         <source>Manage Map Themes</source>
         <translation>Térképtémák kezelése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4996"/>
+        <location filename="../src/app/qgisapp.cpp" line="5000"/>
         <source>Layer Order</source>
         <translation>Rétegsorrend</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5000"/>
+        <location filename="../src/app/qgisapp.cpp" line="5004"/>
         <source>Ctrl+9</source>
         <translation>Ctrl+9</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5003"/>
+        <location filename="../src/app/qgisapp.cpp" line="5007"/>
         <source>Show Layer Order Panel</source>
         <translation>Rétegsorrend panel bekapcsolása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5404"/>
-        <location filename="../src/app/qgisapp.cpp" line="6041"/>
+        <location filename="../src/app/qgisapp.cpp" line="5408"/>
+        <location filename="../src/app/qgisapp.cpp" line="6045"/>
         <source>&lt; Blank &gt;</source>
         <translation>&lt; Üres &gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5486"/>
+        <location filename="../src/app/qgisapp.cpp" line="5490"/>
         <source>QGIS version</source>
         <translation>QGIS-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5504"/>
+        <location filename="../src/app/qgisapp.cpp" line="5508"/>
         <source>QGIS code revision</source>
         <translation>QGIS forráskódverzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5642"/>
+        <location filename="../src/app/qgisapp.cpp" line="5646"/>
         <source>This copy of QGIS writes debugging output.</source>
         <translation>A QGIS jelen példánya hibakeresési eredményeket ír.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7938"/>
+        <location filename="../src/app/qgisapp.cpp" line="7942"/>
         <source>Diagram Properties</source>
         <translation>Diagramtulajdonságok</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7949"/>
+        <location filename="../src/app/qgisapp.cpp" line="7953"/>
         <source>Annotations</source>
         <translation>Annotációk</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7953"/>
+        <location filename="../src/app/qgisapp.cpp" line="7957"/>
         <source>Annotations (%1)</source>
         <translation>Annotációk (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8586"/>
+        <location filename="../src/app/qgisapp.cpp" line="8590"/>
         <source>Export failed</source>
         <translation>Nem sikerült exportálni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8586"/>
+        <location filename="../src/app/qgisapp.cpp" line="8590"/>
         <source>A problem occurred while exporting: %1</source>
         <translation>Hiba történt az exportálás során: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8588"/>
+        <location filename="../src/app/qgisapp.cpp" line="8592"/>
         <source>Cannot open file</source>
         <translation>A fájl nem nyitható meg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8588"/>
+        <location filename="../src/app/qgisapp.cpp" line="8592"/>
         <source>Cannot open exported file: %1</source>
         <translation>Nem lehet megnyitni az exportált fájlt: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8664"/>
+        <location filename="../src/app/qgisapp.cpp" line="8668"/>
         <source>Some of the &lt;b&gt;%n&lt;/b&gt; selected feature(s) about to be deleted &lt;b&gt;are outside of the current map view&lt;/b&gt;. Would you still like to continue?</source>
         <translation><numerusform>A törlésre kiválasztott &lt;b&gt;%n&lt;/b&gt; elem közül néhány &lt;b&gt;kívül esik az aktuális térképnézeten&lt;/b&gt;. Így is szeretné folytatni?</numerusform><numerusform>A törlésre kiválasztott &lt;b&gt;%n&lt;/b&gt; elem közül néhány &lt;b&gt;kívül esik az aktuális térképnézeten&lt;/b&gt;. Így is szeretné folytatni?</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8665"/>
-        <location filename="../src/app/qgisapp.cpp" line="8687"/>
-        <location filename="../src/app/qgisapp.cpp" line="8701"/>
+        <location filename="../src/app/qgisapp.cpp" line="8669"/>
+        <location filename="../src/app/qgisapp.cpp" line="8691"/>
+        <location filename="../src/app/qgisapp.cpp" line="8705"/>
         <source>Delete %n Feature(s)</source>
         <translation><numerusform>%n elem törlése</numerusform><numerusform>%n elem törlése</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8682"/>
+        <location filename="../src/app/qgisapp.cpp" line="8686"/>
         <source>%n feature(s) on layer &quot;%1&quot;, </source>
         <translation><numerusform>„%1” réteg %n elemét, </numerusform><numerusform>„%1” réteg %n elemét, </numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8702"/>
+        <location filename="../src/app/qgisapp.cpp" line="8706"/>
         <source>Don&apos;t show this message again</source>
         <translation>Ne jelenjen meg újra ez az üzenet</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8735"/>
+        <location filename="../src/app/qgisapp.cpp" line="8739"/>
         <source>%n feature(s) deleted: %1</source>
         <translation><numerusform>%n elem törölve: %1</numerusform><numerusform>%n elem törölve: %1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9693"/>
-        <location filename="../src/app/qgisapp.cpp" line="9751"/>
+        <location filename="../src/app/qgisapp.cpp" line="9697"/>
+        <location filename="../src/app/qgisapp.cpp" line="9755"/>
         <source>Resulting geometry type (multipart) is incompatible with layer type (singlepart).</source>
         <translation>Az eredményül kapott geometriatípus (többrészű) nem kompatibilis a rétegtípussal (egyrészes).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9702"/>
+        <location filename="../src/app/qgisapp.cpp" line="9706"/>
         <source>Merge Features</source>
         <translation>Elemek összevonása</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10318"/>
+        <location filename="../src/app/qgisapp.cpp" line="10322"/>
         <source>%n geometries collapsed due to intersection avoidance.</source>
         <translation><numerusform>%n geometria összeomlott a metszés elkerülése miatt.</numerusform><numerusform>%n geometria összeomlott a metszés elkerülése miatt.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10379"/>
+        <location filename="../src/app/qgisapp.cpp" line="10383"/>
         <source>Cannot copy style</source>
         <translation>Nem lehet másolni a stílust</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10402"/>
+        <location filename="../src/app/qgisapp.cpp" line="10406"/>
         <source>Cannot parse style</source>
         <translation>Nem lehet a stílust értelmezni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10414"/>
+        <location filename="../src/app/qgisapp.cpp" line="10418"/>
         <source>Cannot paste style</source>
         <translation>Nem lehet beilleszteni a stílust</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10570"/>
+        <location filename="../src/app/qgisapp.cpp" line="10574"/>
         <source>Layer cannot be edited</source>
         <translation>A réteget nem lehet szerkeszteni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10763"/>
+        <location filename="../src/app/qgisapp.cpp" line="10767"/>
         <source>Start Mesh Frame Edit</source>
         <translation>Hálóváz szerkesztésének indítása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10763"/>
+        <location filename="../src/app/qgisapp.cpp" line="10767"/>
         <source>Starting editing the frame of this mesh layer will remove all dataset groups.
 Alternatively, you can create a new mesh layer from that one.</source>
         <translation>Ezen hálóréteg vázának szerkesztését megkezdve el lesz távolítva az összes adathalmazcsoport.
 Alternatív megoldásként létrehozhat ebből egy új hálóréteget.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10767"/>
+        <location filename="../src/app/qgisapp.cpp" line="10771"/>
         <source>Edit Current Mesh</source>
         <translation>Jelenlegi háló szerkesztése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10768"/>
+        <location filename="../src/app/qgisapp.cpp" line="10772"/>
         <source>Edit a Copy</source>
         <translation>Másolat szerkesztése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10815"/>
-        <location filename="../src/app/qgisapp.cpp" line="10841"/>
-        <location filename="../src/app/qgisapp.cpp" line="11035"/>
+        <location filename="../src/app/qgisapp.cpp" line="10819"/>
+        <location filename="../src/app/qgisapp.cpp" line="10845"/>
+        <location filename="../src/app/qgisapp.cpp" line="11039"/>
         <source>Mesh editing</source>
         <translation>Háló szerkesztése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10816"/>
+        <location filename="../src/app/qgisapp.cpp" line="10820"/>
         <source>Unable to start mesh editing for layer &quot;%1&quot;</source>
         <translation>Nem sikerült elkezdeni a(z) „%1” réteg hálójának szerkesztését</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10842"/>
-        <location filename="../src/app/qgisapp.cpp" line="10930"/>
-        <location filename="../src/app/qgisapp.cpp" line="11036"/>
-        <location filename="../src/app/qgisapp.cpp" line="11059"/>
+        <location filename="../src/app/qgisapp.cpp" line="10846"/>
+        <location filename="../src/app/qgisapp.cpp" line="10934"/>
+        <location filename="../src/app/qgisapp.cpp" line="11040"/>
+        <location filename="../src/app/qgisapp.cpp" line="11063"/>
         <source>Unable to save editing for layer &quot;%1&quot;</source>
         <translation>Nem lehet menteni a(z) „%1” réteg szerkesztését</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11132"/>
-        <location filename="../src/app/qgisapp.cpp" line="11155"/>
+        <location filename="../src/app/qgisapp.cpp" line="11136"/>
+        <location filename="../src/app/qgisapp.cpp" line="11159"/>
         <source>Could not %1 changes to layer %2</source>
         <translation>Nem lehet %1 %2 réteg változtatásait</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11660"/>
+        <location filename="../src/app/qgisapp.cpp" line="11664"/>
         <source>No legend entries selected</source>
         <translation>Nincs kiválasztott jelkulcsi elem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11660"/>
+        <location filename="../src/app/qgisapp.cpp" line="11664"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>Válassza ki a rétegeket és csoportokat, melyeket el kíván távolítani a jelmagyarázatból.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11705"/>
+        <location filename="../src/app/qgisapp.cpp" line="11709"/>
         <source>(%n more hidden layer(s))</source>
         <comment>number of hidden layers not shown</comment>
         <translation><numerusform>(további %n rejtett réteg)</numerusform><numerusform>(további %n rejtett réteg)</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11707"/>
+        <location filename="../src/app/qgisapp.cpp" line="11711"/>
         <source>The following hidden layers will be removed:
 %1</source>
         <translation>A következő rejtett rétegek el lesznek távolítva:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11710"/>
+        <location filename="../src/app/qgisapp.cpp" line="11714"/>
         <source>Remove layers and groups</source>
         <translation>Rétegek és csoportok eltávolítása</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11698"/>
+        <location filename="../src/app/qgisapp.cpp" line="11702"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation><numerusform>Eltávolít %n jelkulcsi elemet?</numerusform><numerusform>Eltávolít %n jelkulcsi elemet?</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="11729"/>
+        <location filename="../src/app/qgisapp.cpp" line="11733"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation><numerusform>%n jelkulcsi elem eltávolítva.</numerusform><numerusform>%n jelkulcsi elem eltávolítva.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11809"/>
+        <location filename="../src/app/qgisapp.cpp" line="11813"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (%2 típus nem támogatott)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11851"/>
+        <location filename="../src/app/qgisapp.cpp" line="11855"/>
         <source>Cannot copy style to duplicated layer.</source>
         <translation>A stílus nem másolható a duplikált rétegre.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13102"/>
+        <location filename="../src/app/qgisapp.cpp" line="13106"/>
         <source>Map %1</source>
         <translation>Térkép %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13300"/>
+        <location filename="../src/app/qgisapp.cpp" line="13304"/>
         <source>3D Map %1</source>
         <translation>3D térkép %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13525"/>
+        <location filename="../src/app/qgisapp.cpp" line="13529"/>
         <source>Do you want to save the current project? %1</source>
         <translation>Szeretné menteni az aktuális projektet? %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5769"/>
-        <location filename="../src/app/qgisapp.cpp" line="11651"/>
-        <location filename="../src/app/qgisapp.cpp" line="13733"/>
+        <location filename="../src/app/qgisapp.cpp" line="5773"/>
+        <location filename="../src/app/qgisapp.cpp" line="11655"/>
+        <location filename="../src/app/qgisapp.cpp" line="13737"/>
         <source>Active Tasks</source>
         <translation>Aktív feladatok</translation>
     </message>
@@ -59642,78 +59643,78 @@ Alternatív megoldásként létrehozhat ebből egy új hálóréteget.</translat
         <translation>Üzenetnapló</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3435"/>
+        <location filename="../src/app/qgisapp.cpp" line="3439"/>
         <source>Preferences…</source>
         <translation>Beállítások…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3510"/>
+        <location filename="../src/app/qgisapp.cpp" line="3514"/>
         <source>Open Active Profile Folder</source>
         <translation>Aktív profilkönyvtár megnyitása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3516"/>
+        <location filename="../src/app/qgisapp.cpp" line="3520"/>
         <source>New Profile…</source>
         <translation>Új profil…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4933"/>
+        <location filename="../src/app/qgisapp.cpp" line="4937"/>
         <source>Filter Legend by Map Content</source>
         <translation>Jelmagyarázat szűrése a térkép tartalmával</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4954"/>
+        <location filename="../src/app/qgisapp.cpp" line="4958"/>
         <source>Open the Layer Styling panel</source>
         <translation>Rétegstílus panel megnyitása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5719"/>
+        <location filename="../src/app/qgisapp.cpp" line="5723"/>
         <source>Add Virtual Layer</source>
         <translation>Virtuális réteg hozzáadása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6201"/>
+        <location filename="../src/app/qgisapp.cpp" line="6205"/>
         <source>Calculating raster expression…</source>
         <translation>Raszterkifejezés számítása…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6372"/>
+        <location filename="../src/app/qgisapp.cpp" line="6376"/>
         <source>Revert Project</source>
         <translation>Projekt visszaállítása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6372"/>
+        <location filename="../src/app/qgisapp.cpp" line="6376"/>
         <source>Are you sure you want to discard all unsaved changes the current project?</source>
         <translation>Biztosan el szeretné vetni az aktuális projekt összes nem mentett módosítását?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6694"/>
+        <location filename="../src/app/qgisapp.cpp" line="6698"/>
         <source>Save Project As</source>
         <translation>Projekt mentése másként</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8126"/>
-        <location filename="../src/app/qgisapp.cpp" line="8385"/>
+        <location filename="../src/app/qgisapp.cpp" line="8130"/>
+        <location filename="../src/app/qgisapp.cpp" line="8389"/>
         <source>Layer Exported</source>
         <translation>A réteg exportálva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8146"/>
+        <location filename="../src/app/qgisapp.cpp" line="8150"/>
         <source>Save Raster</source>
         <translation>Raszter mentése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8143"/>
+        <location filename="../src/app/qgisapp.cpp" line="8147"/>
         <source>Cannot write raster. Error code: %1</source>
         <translation>A rasztert nem lehet kiírni. Hibakód: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8792"/>
+        <location filename="../src/app/qgisapp.cpp" line="8796"/>
         <source>Merging features…</source>
         <translation>Elemek összevonása…</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10280"/>
+        <location filename="../src/app/qgisapp.cpp" line="10284"/>
         <source>
 %n children on layer %1 duplicated</source>
         <translation><numerusform>
@@ -59721,49 +59722,49 @@ Alternatív megoldásként létrehozhat ebből egy új hálóréteget.</translat
 %1 rétegen %n gyerek duplikálva</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10309"/>
+        <location filename="../src/app/qgisapp.cpp" line="10313"/>
         <source>%n feature(s) were pasted.%1</source>
         <translation><numerusform>%n elem lett beillesztve.%1</numerusform><numerusform>%n elem lett beillesztve.%1</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10435"/>
+        <location filename="../src/app/qgisapp.cpp" line="10439"/>
         <source>Error copying layer</source>
         <translation>Hiba a réteg másolása során</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10471"/>
+        <location filename="../src/app/qgisapp.cpp" line="10475"/>
         <source>Error pasting layer</source>
         <translation>Hiba a réteg beillesztése során</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10678"/>
-        <location filename="../src/app/qgisapp.cpp" line="10828"/>
-        <location filename="../src/app/qgisapp.cpp" line="10916"/>
+        <location filename="../src/app/qgisapp.cpp" line="10682"/>
+        <location filename="../src/app/qgisapp.cpp" line="10832"/>
+        <location filename="../src/app/qgisapp.cpp" line="10920"/>
         <source>Stop Editing</source>
         <translation>Szerkesztés vége</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12785"/>
+        <location filename="../src/app/qgisapp.cpp" line="12789"/>
         <source>https://qgis.org/resources/support/bug-reporting/</source>
         <translation>https://qgis.org/resources/support/bug-reporting/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12792"/>
+        <location filename="../src/app/qgisapp.cpp" line="12796"/>
         <source>https://qgis.org/community/involve/</source>
         <translation>https://qgis.org/community/involve/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12799"/>
+        <location filename="../src/app/qgisapp.cpp" line="12803"/>
         <source>https://qgis.org/funding/donate/</source>
         <translation>https://qgis.org/funding/donate/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12806"/>
+        <location filename="../src/app/qgisapp.cpp" line="12810"/>
         <source>https://qgis.org/resources/support/commercial-support/</source>
         <translation>https://qgis.org/resources/support/commercial-support/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13733"/>
+        <location filename="../src/app/qgisapp.cpp" line="13737"/>
         <source>The following tasks are currently running which depend on layers in this project:
 
 %1
@@ -59776,140 +59777,140 @@ Please cancel these tasks and retry.</source>
 Szakítsa meg ezeket a feladatokat és próbálja újra.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14455"/>
+        <location filename="../src/app/qgisapp.cpp" line="14459"/>
         <source>Current CRS: %1</source>
         <translation>Aktuális koordináta-rendszer: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14462"/>
+        <location filename="../src/app/qgisapp.cpp" line="14466"/>
         <source>No projection</source>
         <translation>Nincs vetület</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15268"/>
+        <location filename="../src/app/qgisapp.cpp" line="15272"/>
         <source>Add Point Feature</source>
         <translation>Pontelem hozzáadása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15298"/>
+        <location filename="../src/app/qgisapp.cpp" line="15302"/>
         <source>Add Line Feature</source>
         <translation>Vonalelem hozzáadása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15317"/>
+        <location filename="../src/app/qgisapp.cpp" line="15321"/>
         <source>Add Polygon Feature</source>
         <translation>Felületelem hozzáadása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15334"/>
+        <location filename="../src/app/qgisapp.cpp" line="15338"/>
         <source>Add Record</source>
         <translation>Rekord hozzáadása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15890"/>
+        <location filename="../src/app/qgisapp.cpp" line="15894"/>
         <source>Map Views</source>
         <translation>Térképnézetek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15893"/>
+        <location filename="../src/app/qgisapp.cpp" line="15897"/>
         <source>A view with this name already exists</source>
         <translation>Már létezik ilyen nevű nézet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5914"/>
+        <location filename="../src/app/qgisapp.cpp" line="5918"/>
         <source>Default failed to open: %1</source>
         <translation>Nem sikerült megnyitni az alapértelmezettet: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5918"/>
+        <location filename="../src/app/qgisapp.cpp" line="5922"/>
         <source>Default not found: %1</source>
         <translation>Nem található az alapértelmezett: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5920"/>
+        <location filename="../src/app/qgisapp.cpp" line="5924"/>
         <source>Open Template Project</source>
         <translation>Sablonprojekt megnyitása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5943"/>
+        <location filename="../src/app/qgisapp.cpp" line="5947"/>
         <source>Auto-open Project</source>
         <translation>Projekt automatikus megnyitása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5981"/>
+        <location filename="../src/app/qgisapp.cpp" line="5985"/>
         <source>Failed to open: %1</source>
         <translation>Nem sikerült megnyitni: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6005"/>
+        <location filename="../src/app/qgisapp.cpp" line="6009"/>
         <source>Not valid project file: %1</source>
         <translation>Hibás projektfájl: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6016"/>
+        <location filename="../src/app/qgisapp.cpp" line="6020"/>
         <source>Project failed to open: %1</source>
         <translation>Nem sikerült megnyitni a projektet: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6021"/>
+        <location filename="../src/app/qgisapp.cpp" line="6025"/>
         <source>Default template has been reopened: %1</source>
         <translation>Az alapértelmezett sablon újra meg lett nyitva: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6026"/>
+        <location filename="../src/app/qgisapp.cpp" line="6030"/>
         <source>File not found: %1</source>
         <translation>Fájl nem található: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6409"/>
+        <location filename="../src/app/qgisapp.cpp" line="6413"/>
         <source>Loading project: %1</source>
         <translation>Projekt betöltése: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6450"/>
+        <location filename="../src/app/qgisapp.cpp" line="6454"/>
         <source>Unable to open project</source>
         <translation>Nem lehet megnyitni a projektet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4591"/>
+        <location filename="../src/app/qgisapp.cpp" line="4595"/>
         <source>Ctrl+8</source>
         <translation>Ctrl+8</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4594"/>
+        <location filename="../src/app/qgisapp.cpp" line="4598"/>
         <source>Show Overview Panel</source>
         <translation>Áttekintő térkép panel bekapcsolása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4870"/>
+        <location filename="../src/app/qgisapp.cpp" line="4874"/>
         <source>Ctrl+1</source>
         <translation>Ctrl+1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4873"/>
+        <location filename="../src/app/qgisapp.cpp" line="4877"/>
         <source>Show Layers Panel</source>
         <translation>Rétegek panel bekapcsolása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6551"/>
+        <location filename="../src/app/qgisapp.cpp" line="6555"/>
         <source>Project loaded</source>
         <translation>A projekt betöltve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6584"/>
+        <location filename="../src/app/qgisapp.cpp" line="6588"/>
         <source>Choose a QGIS project file</source>
         <translation>Válasszon egy QGIS projektfájlt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6647"/>
-        <location filename="../src/app/qgisapp.cpp" line="6735"/>
-        <location filename="../src/app/qgisapp.cpp" line="17302"/>
+        <location filename="../src/app/qgisapp.cpp" line="6651"/>
+        <location filename="../src/app/qgisapp.cpp" line="6739"/>
+        <location filename="../src/app/qgisapp.cpp" line="17306"/>
         <source>Saved project to: %1</source>
         <translation>Projekt elmentve ide: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6655"/>
-        <location filename="../src/app/qgisapp.cpp" line="6741"/>
+        <location filename="../src/app/qgisapp.cpp" line="6659"/>
+        <location filename="../src/app/qgisapp.cpp" line="6745"/>
         <source>Unable to save project %1</source>
         <translation>%1 projektet nem lehet menteni</translation>
     </message>
@@ -59975,272 +59976,272 @@ Szakítsa meg ezeket a feladatokat és próbálja újra.</translation>
         <translation>Betűkészlet telepítése sikertelen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2983"/>
+        <location filename="../src/app/qgisapp.cpp" line="2987"/>
         <source>To reselect features, choose a vector layer in the legend.</source>
         <translation>Az elemek újbóli kiválasztásához ki kell választani egy vektorréteget a jelmagyarázatban.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4035"/>
+        <location filename="../src/app/qgisapp.cpp" line="4039"/>
         <source>Rotation</source>
         <translation>Forgatás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4912"/>
-        <location filename="../src/app/qgisapp.cpp" line="4914"/>
+        <location filename="../src/app/qgisapp.cpp" line="4916"/>
+        <location filename="../src/app/qgisapp.cpp" line="4918"/>
         <source>Add Group</source>
         <translation>Csoport hozzáadása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4928"/>
+        <location filename="../src/app/qgisapp.cpp" line="4932"/>
         <source>Filter Legend</source>
         <translation>Jelmagyarázat szűrése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4938"/>
+        <location filename="../src/app/qgisapp.cpp" line="4942"/>
         <source>Show Private Layers</source>
         <translation>Privát rétegek megjelenítése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4943"/>
+        <location filename="../src/app/qgisapp.cpp" line="4947"/>
         <source>Show Broken Layers Only</source>
         <translation>Csak a hibás rétegek megjelenítése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4949"/>
+        <location filename="../src/app/qgisapp.cpp" line="4953"/>
         <source>Filter legend by expression</source>
         <translation>Jelmagyarázat szűrése kifejezéssel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4960"/>
-        <location filename="../src/app/qgisapp.cpp" line="4962"/>
+        <location filename="../src/app/qgisapp.cpp" line="4964"/>
+        <location filename="../src/app/qgisapp.cpp" line="4966"/>
         <source>Expand All</source>
         <translation>Összes kibontása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4964"/>
-        <location filename="../src/app/qgisapp.cpp" line="4966"/>
+        <location filename="../src/app/qgisapp.cpp" line="4968"/>
+        <location filename="../src/app/qgisapp.cpp" line="4970"/>
         <source>Collapse All</source>
         <translation>Összes becsukása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5248"/>
+        <location filename="../src/app/qgisapp.cpp" line="5252"/>
         <source>Clear List</source>
         <translation>Lista ürítése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5462"/>
+        <location filename="../src/app/qgisapp.cpp" line="5466"/>
         <source>https://qgis.org/funding/membership/members/</source>
         <translation>https://qgis.org/funding/membership/members/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5483"/>
+        <location filename="../src/app/qgisapp.cpp" line="5487"/>
         <source>Compiled</source>
         <translation>Lefordítva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5484"/>
+        <location filename="../src/app/qgisapp.cpp" line="5488"/>
         <source>Running</source>
         <translation>Fut</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5490"/>
+        <location filename="../src/app/qgisapp.cpp" line="5494"/>
         <source>QGIS code branch</source>
         <translation>QGIS forráskódág</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5508"/>
+        <location filename="../src/app/qgisapp.cpp" line="5512"/>
         <source>Libraries</source>
         <translation>Könyvtárak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5513"/>
+        <location filename="../src/app/qgisapp.cpp" line="5517"/>
         <source>Qt version</source>
         <translation>Qt-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5524"/>
+        <location filename="../src/app/qgisapp.cpp" line="5528"/>
         <source>Python version</source>
         <translation>Python-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5555"/>
+        <location filename="../src/app/qgisapp.cpp" line="5559"/>
         <source>PROJ version</source>
         <translation>PROJ-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5563"/>
+        <location filename="../src/app/qgisapp.cpp" line="5567"/>
         <source>EPSG Registry database version</source>
         <translation>EPSG-nyilvántartási adatbázis verziója</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5569"/>
+        <location filename="../src/app/qgisapp.cpp" line="5573"/>
         <source>GEOS version</source>
         <translation>GEOS-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5579"/>
+        <location filename="../src/app/qgisapp.cpp" line="5583"/>
         <source>SQLite version</source>
         <translation>SQLite-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5597"/>
+        <location filename="../src/app/qgisapp.cpp" line="5601"/>
         <source>PDAL version</source>
         <translation>PDAL-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5606"/>
+        <location filename="../src/app/qgisapp.cpp" line="5610"/>
         <source>PostgreSQL client version</source>
         <translation>Postgresql kliens verziója</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5616"/>
-        <location filename="../src/app/qgisapp.cpp" line="5625"/>
+        <location filename="../src/app/qgisapp.cpp" line="5620"/>
+        <location filename="../src/app/qgisapp.cpp" line="5629"/>
         <source>No support</source>
         <translation>Nincs támogatás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5621"/>
+        <location filename="../src/app/qgisapp.cpp" line="5625"/>
         <source>SpatiaLite version</source>
         <translation>SpatiaLite-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5630"/>
+        <location filename="../src/app/qgisapp.cpp" line="5634"/>
         <source>QWT version</source>
         <translation>QWT-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5634"/>
+        <location filename="../src/app/qgisapp.cpp" line="5638"/>
         <source>QScintilla2 version</source>
         <translation>QScintilla2-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5638"/>
+        <location filename="../src/app/qgisapp.cpp" line="5642"/>
         <source>OS version</source>
         <translation>OS-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5649"/>
+        <location filename="../src/app/qgisapp.cpp" line="5653"/>
         <source>Active Python plugins</source>
         <translation>Aktív Python-modulok</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5719"/>
+        <location filename="../src/app/qgisapp.cpp" line="5723"/>
         <source>Cannot get virtual layer select dialog from provider.</source>
         <translation>Nem lehet lekérni a virtuális rétegválasztó párbeszédablakot a szolgáltatótól.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6120"/>
-        <location filename="../src/app/qgisapp.cpp" line="6130"/>
+        <location filename="../src/app/qgisapp.cpp" line="6124"/>
+        <location filename="../src/app/qgisapp.cpp" line="6134"/>
         <source>New GPX File</source>
         <translation>Új GPX fájl</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6120"/>
+        <location filename="../src/app/qgisapp.cpp" line="6124"/>
         <source>GPS eXchange file</source>
         <translation>GPS adatcserefájl</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6130"/>
+        <location filename="../src/app/qgisapp.cpp" line="6134"/>
         <source>Unable to create a GPX file with the given name. Try again with another name or in another directory.</source>
         <translation>Nem lehet a GPX fájlt létrehozni a megadott névvel. Próbálja újra egy másik névvel vagy egy másik könyvtárban.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6202"/>
-        <location filename="../src/app/qgisapp.cpp" line="6217"/>
+        <location filename="../src/app/qgisapp.cpp" line="6206"/>
         <location filename="../src/app/qgisapp.cpp" line="6221"/>
         <location filename="../src/app/qgisapp.cpp" line="6225"/>
-        <location filename="../src/app/qgisapp.cpp" line="6232"/>
+        <location filename="../src/app/qgisapp.cpp" line="6229"/>
         <location filename="../src/app/qgisapp.cpp" line="6236"/>
         <location filename="../src/app/qgisapp.cpp" line="6240"/>
         <location filename="../src/app/qgisapp.cpp" line="6244"/>
         <location filename="../src/app/qgisapp.cpp" line="6248"/>
+        <location filename="../src/app/qgisapp.cpp" line="6252"/>
         <source>Raster calculator</source>
         <translation>Raszterkalkulátor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6217"/>
-        <location filename="../src/app/qgisapp.cpp" line="6285"/>
+        <location filename="../src/app/qgisapp.cpp" line="6221"/>
+        <location filename="../src/app/qgisapp.cpp" line="6289"/>
         <source>Calculation complete.</source>
         <translation>A számítás elkészült.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6221"/>
-        <location filename="../src/app/qgisapp.cpp" line="6297"/>
+        <location filename="../src/app/qgisapp.cpp" line="6225"/>
+        <location filename="../src/app/qgisapp.cpp" line="6301"/>
         <source>Could not create destination file.</source>
         <translation>Nem lehetett létrehozni a célfájlt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6225"/>
-        <location filename="../src/app/qgisapp.cpp" line="6301"/>
+        <location filename="../src/app/qgisapp.cpp" line="6229"/>
+        <location filename="../src/app/qgisapp.cpp" line="6305"/>
         <source>Could not read input layer.</source>
         <translation>Nem lehetett beolvasni a bemeneti réteget.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6232"/>
+        <location filename="../src/app/qgisapp.cpp" line="6236"/>
         <source>Could not parse raster formula.</source>
         <translation>Nem sikerült értelmezni a raszterképletet.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6236"/>
-        <location filename="../src/app/qgisapp.cpp" line="6312"/>
+        <location filename="../src/app/qgisapp.cpp" line="6240"/>
+        <location filename="../src/app/qgisapp.cpp" line="6316"/>
         <source>Insufficient memory available for operation.</source>
         <translation>Nincs elég memória művelethez.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6240"/>
+        <location filename="../src/app/qgisapp.cpp" line="6244"/>
         <source>Invalid band number for input layer.</source>
         <translation>A bemeneti réteg sávszáma érvénytelen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6261"/>
+        <location filename="../src/app/qgisapp.cpp" line="6265"/>
         <source>Mesh Calculator</source>
         <translation>Hálókalkulátor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6261"/>
+        <location filename="../src/app/qgisapp.cpp" line="6265"/>
         <source>Mesh calculator with mesh layer in edit mode is not supported.</source>
         <translation>Szerkesztés módban lévő hálóréteggel a hálókalkulátor nem támogatott.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6270"/>
+        <location filename="../src/app/qgisapp.cpp" line="6274"/>
         <source>Calculating mesh expression…</source>
         <translation>Hálókifejezés számítása…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6285"/>
         <location filename="../src/app/qgisapp.cpp" line="6289"/>
         <location filename="../src/app/qgisapp.cpp" line="6293"/>
         <location filename="../src/app/qgisapp.cpp" line="6297"/>
         <location filename="../src/app/qgisapp.cpp" line="6301"/>
-        <location filename="../src/app/qgisapp.cpp" line="6308"/>
+        <location filename="../src/app/qgisapp.cpp" line="6305"/>
         <location filename="../src/app/qgisapp.cpp" line="6312"/>
+        <location filename="../src/app/qgisapp.cpp" line="6316"/>
         <source>Mesh calculator</source>
         <translation>Hálókalkulátor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6289"/>
+        <location filename="../src/app/qgisapp.cpp" line="6293"/>
         <source>Could not evaluate the formula.</source>
         <translation>Nem sikerült értelmezni a képletet.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6293"/>
+        <location filename="../src/app/qgisapp.cpp" line="6297"/>
         <source>Invalid or incompatible datasets used.</source>
         <translation>Hibás vagy inkompatibilis adathalmazt használ.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6308"/>
+        <location filename="../src/app/qgisapp.cpp" line="6312"/>
         <source>Could not parse mesh formula.</source>
         <translation>Nem sikerült értelmezni a hálóképletet.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6333"/>
-        <location filename="../src/app/qgisapp.cpp" line="6577"/>
-        <location filename="../src/app/qgisapp.cpp" line="6687"/>
+        <location filename="../src/app/qgisapp.cpp" line="6337"/>
+        <location filename="../src/app/qgisapp.cpp" line="6581"/>
+        <location filename="../src/app/qgisapp.cpp" line="6691"/>
         <source>QGIS Project Formats</source>
         <translation>QGIS projektformátumok</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6439"/>
+        <location filename="../src/app/qgisapp.cpp" line="6443"/>
         <source>Do you want to open the backup file
 %1
 instead?</source>
@@ -60249,217 +60250,217 @@ instead?</source>
 biztonsági mentést akarja megnyitni helyette?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6635"/>
+        <location filename="../src/app/qgisapp.cpp" line="6639"/>
         <source>Insufficient permissions</source>
         <translation>Nem megfelelő jogosultság</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6635"/>
+        <location filename="../src/app/qgisapp.cpp" line="6639"/>
         <source>The project file is not writable.</source>
         <translation>A projektfájl nem írható.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6792"/>
+        <location filename="../src/app/qgisapp.cpp" line="6796"/>
         <source>Successfully exported DXF to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>A DXF sikeresen exportálva ide: &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6840"/>
-        <location filename="../src/app/qgisapp.cpp" line="6847"/>
-        <location filename="../src/app/qgisapp.cpp" line="6874"/>
+        <location filename="../src/app/qgisapp.cpp" line="6844"/>
+        <location filename="../src/app/qgisapp.cpp" line="6851"/>
+        <location filename="../src/app/qgisapp.cpp" line="6878"/>
         <source>Load template</source>
         <translation>Sablon betöltése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6840"/>
+        <location filename="../src/app/qgisapp.cpp" line="6844"/>
         <source>Could not read template file</source>
         <translation>Nem lehet beolvasni a sablonfájlt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6847"/>
-        <location filename="../src/app/qgisapp.cpp" line="6874"/>
+        <location filename="../src/app/qgisapp.cpp" line="6851"/>
+        <location filename="../src/app/qgisapp.cpp" line="6878"/>
         <source>Could not load template file</source>
         <translation>Nem lehet betölteni a sablonfájlt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7532"/>
+        <location filename="../src/app/qgisapp.cpp" line="7536"/>
         <source>No action selected</source>
         <translation>Nincs kiválasztva művelet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7547"/>
-        <location filename="../src/app/qgisapp.cpp" line="7565"/>
+        <location filename="../src/app/qgisapp.cpp" line="7551"/>
+        <location filename="../src/app/qgisapp.cpp" line="7569"/>
         <source>Run feature action&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;%1&lt;/b&gt; elem művelet futtatása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7657"/>
+        <location filename="../src/app/qgisapp.cpp" line="7661"/>
         <source>Original source URI: %1</source>
         <translation>Eredeti forrás URI: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7859"/>
+        <location filename="../src/app/qgisapp.cpp" line="7863"/>
         <source>Commit Errors</source>
         <translation>Hibák a véglegesítés közben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7875"/>
+        <location filename="../src/app/qgisapp.cpp" line="7879"/>
         <source>Commit errors</source>
         <translation>Véglegesítési hibák</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7855"/>
+        <location filename="../src/app/qgisapp.cpp" line="7859"/>
         <source>Could not commit changes to layer %1</source>
         <translation>%1 rétegen nem lehetett véglegesíteni változásokat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7860"/>
+        <location filename="../src/app/qgisapp.cpp" line="7864"/>
         <source>Errors: %1
 </source>
         <translation>Hibák: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7864"/>
+        <location filename="../src/app/qgisapp.cpp" line="7868"/>
         <source>Show more</source>
         <translation>Továbbiak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7938"/>
+        <location filename="../src/app/qgisapp.cpp" line="7942"/>
         <source>Please select a vector layer first</source>
         <translation>Előbb válasszon egy vektorréteget</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8612"/>
-        <location filename="../src/app/qgisapp.cpp" line="12629"/>
-        <location filename="../src/app/qgisapp.cpp" line="12636"/>
-        <location filename="../src/app/qgisapp.cpp" line="12696"/>
-        <location filename="../src/app/qgisapp.cpp" line="12703"/>
-        <location filename="../src/app/qgisapp.cpp" line="12749"/>
-        <location filename="../src/app/qgisapp.cpp" line="12756"/>
+        <location filename="../src/app/qgisapp.cpp" line="8616"/>
+        <location filename="../src/app/qgisapp.cpp" line="12633"/>
+        <location filename="../src/app/qgisapp.cpp" line="12640"/>
+        <location filename="../src/app/qgisapp.cpp" line="12700"/>
+        <location filename="../src/app/qgisapp.cpp" line="12707"/>
+        <location filename="../src/app/qgisapp.cpp" line="12753"/>
+        <location filename="../src/app/qgisapp.cpp" line="12760"/>
         <source>No Layer Selected</source>
         <translation>Nincs kiválasztva réteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8612"/>
+        <location filename="../src/app/qgisapp.cpp" line="8616"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Az elemek törléséhez ki kell választani egy vektorréteget a jelmagyarázatban</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8619"/>
+        <location filename="../src/app/qgisapp.cpp" line="8623"/>
         <source>No Vector Layer Selected</source>
         <translation>Nincs kiválasztva vektorréteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8619"/>
+        <location filename="../src/app/qgisapp.cpp" line="8623"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Az elemek törlése csak vektorrétegben lehetséges</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8625"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>Provider does not support deletion</source>
         <translation>A szolgáltató nem támogatja a törlést</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8625"/>
+        <location filename="../src/app/qgisapp.cpp" line="8629"/>
         <source>Data provider does not support deleting features</source>
         <translation>Az adatszolgáltató nem támogatja az elemek törlését</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8631"/>
-        <location filename="../src/app/qgisapp.cpp" line="9477"/>
-        <location filename="../src/app/qgisapp.cpp" line="9487"/>
-        <location filename="../src/app/qgisapp.cpp" line="9589"/>
-        <location filename="../src/app/qgisapp.cpp" line="9650"/>
-        <location filename="../src/app/qgisapp.cpp" line="10031"/>
-        <location filename="../src/app/qgisapp.cpp" line="10084"/>
+        <location filename="../src/app/qgisapp.cpp" line="8635"/>
+        <location filename="../src/app/qgisapp.cpp" line="9481"/>
+        <location filename="../src/app/qgisapp.cpp" line="9491"/>
+        <location filename="../src/app/qgisapp.cpp" line="9593"/>
+        <location filename="../src/app/qgisapp.cpp" line="9654"/>
+        <location filename="../src/app/qgisapp.cpp" line="10035"/>
+        <location filename="../src/app/qgisapp.cpp" line="10088"/>
         <source>Layer not editable</source>
         <translation>A réteg nem szerkeszthető</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8631"/>
-        <location filename="../src/app/qgisapp.cpp" line="10031"/>
-        <location filename="../src/app/qgisapp.cpp" line="10084"/>
+        <location filename="../src/app/qgisapp.cpp" line="8635"/>
+        <location filename="../src/app/qgisapp.cpp" line="10035"/>
+        <location filename="../src/app/qgisapp.cpp" line="10088"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Az aktuális réteg nem szerkeszthető. Válassza ki a „Szerkesztés kezdését” a digitalizálás eszköztáron.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8639"/>
+        <location filename="../src/app/qgisapp.cpp" line="8643"/>
         <source>No Features Selected</source>
         <translation>Nincs kiválasztva elem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8715"/>
+        <location filename="../src/app/qgisapp.cpp" line="8719"/>
         <source>Features deleted</source>
         <translation>Elemek törölve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8720"/>
+        <location filename="../src/app/qgisapp.cpp" line="8724"/>
         <source>Problem deleting features</source>
         <translation>Probléma az elemek törlése közben</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8738"/>
+        <location filename="../src/app/qgisapp.cpp" line="8742"/>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
         <translation><numerusform>%n elem törölve.</numerusform><numerusform>%n elem törölve.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6201"/>
-        <location filename="../src/app/qgisapp.cpp" line="6270"/>
-        <location filename="../src/app/qgisapp.cpp" line="8792"/>
+        <location filename="../src/app/qgisapp.cpp" line="6205"/>
+        <location filename="../src/app/qgisapp.cpp" line="6274"/>
+        <location filename="../src/app/qgisapp.cpp" line="8796"/>
         <source>Abort</source>
         <translation>Megszakítás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8893"/>
+        <location filename="../src/app/qgisapp.cpp" line="8897"/>
         <source>Title can not be empty!</source>
         <translation>A cím nem lehet üres!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8876"/>
-        <location filename="../src/app/qgisapp.cpp" line="8904"/>
+        <location filename="../src/app/qgisapp.cpp" line="8880"/>
+        <location filename="../src/app/qgisapp.cpp" line="8908"/>
         <source>Title already exists!</source>
         <translation>A cím már létezik!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9469"/>
-        <location filename="../src/app/qgisapp.cpp" line="9569"/>
-        <location filename="../src/app/qgisapp.cpp" line="9631"/>
+        <location filename="../src/app/qgisapp.cpp" line="9473"/>
+        <location filename="../src/app/qgisapp.cpp" line="9573"/>
+        <location filename="../src/app/qgisapp.cpp" line="9635"/>
         <source>No active layer</source>
         <translation>Nincs aktív réteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9469"/>
+        <location filename="../src/app/qgisapp.cpp" line="9473"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Nincs aktív réteg. Válasszon egy réteget a réteglistában</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9500"/>
-        <location filename="../src/app/qgisapp.cpp" line="9662"/>
-        <location filename="../src/app/qgisapp.cpp" line="9719"/>
+        <location filename="../src/app/qgisapp.cpp" line="9504"/>
+        <location filename="../src/app/qgisapp.cpp" line="9666"/>
+        <location filename="../src/app/qgisapp.cpp" line="9723"/>
         <source>Not enough features selected</source>
         <translation>Nincs elég elem kiválasztva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9663"/>
-        <location filename="../src/app/qgisapp.cpp" line="9720"/>
+        <location filename="../src/app/qgisapp.cpp" line="9667"/>
+        <location filename="../src/app/qgisapp.cpp" line="9724"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Az összevonás eszközhöz legalább két kiválasztott elemre van szükség</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9518"/>
+        <location filename="../src/app/qgisapp.cpp" line="9522"/>
         <source>Merged feature attributes</source>
         <translation>Összevont elemattribútumok</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5758"/>
-        <location filename="../src/app/qgisapp.cpp" line="11644"/>
-        <location filename="../src/app/qgisapp.cpp" line="13726"/>
+        <location filename="../src/app/qgisapp.cpp" line="5762"/>
+        <location filename="../src/app/qgisapp.cpp" line="11648"/>
+        <location filename="../src/app/qgisapp.cpp" line="13730"/>
         <source> • %1</source>
         <translation> • %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5769"/>
+        <location filename="../src/app/qgisapp.cpp" line="5773"/>
         <source>The following tasks are currently running in the background:
 
 %1
@@ -60472,123 +60473,123 @@ Do you want to try canceling these active tasks?</source>
 Meg akarja szakítani ezeket az aktív feladatokat?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8126"/>
+        <location filename="../src/app/qgisapp.cpp" line="8130"/>
         <source>Successfully saved raster layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>A raszterréteg sikeresen elmentve ide: &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8240"/>
+        <location filename="../src/app/qgisapp.cpp" line="8244"/>
         <source>Error saving layer definition file</source>
         <translation>Hiba a rétegdefiníciós fájl mentése közben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8385"/>
+        <location filename="../src/app/qgisapp.cpp" line="8389"/>
         <source>Successfully saved vector layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>A vektorréteg sikeresen elmentve ide: &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8217"/>
-        <location filename="../src/app/qgisapp.cpp" line="8392"/>
+        <location filename="../src/app/qgisapp.cpp" line="8221"/>
+        <location filename="../src/app/qgisapp.cpp" line="8396"/>
         <source>Save Error</source>
         <translation>Mentési hiba</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4467"/>
+        <location filename="../src/app/qgisapp.cpp" line="4471"/>
         <source>Loading “%1”</source>
         <translation>„%1” betöltése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5540"/>
+        <location filename="../src/app/qgisapp.cpp" line="5544"/>
         <source>GDAL version</source>
         <translation>GDAL-verzió</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6514"/>
+        <location filename="../src/app/qgisapp.cpp" line="6518"/>
         <source>Resolve vector layer dependencies</source>
         <translation>Vektorréteg függőségeinek feloldása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6578"/>
-        <location filename="../src/app/qgisapp.cpp" line="6688"/>
+        <location filename="../src/app/qgisapp.cpp" line="6582"/>
+        <location filename="../src/app/qgisapp.cpp" line="6692"/>
         <source>QGIS Bundled Project Format</source>
         <translation>QGIS Csomagolt projektformátum</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6579"/>
-        <location filename="../src/app/qgisapp.cpp" line="6689"/>
+        <location filename="../src/app/qgisapp.cpp" line="6583"/>
+        <location filename="../src/app/qgisapp.cpp" line="6693"/>
         <source>QGIS XML Project Format</source>
         <translation>QGIS XML projektformátum</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6629"/>
+        <location filename="../src/app/qgisapp.cpp" line="6633"/>
         <source>Project Has Changed on Disk</source>
         <translation>A projekt megváltozott a háttértárolón</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6629"/>
+        <location filename="../src/app/qgisapp.cpp" line="6633"/>
         <source>The project file on the disk has been modified externally, saving the current project will overwrite any change. Do you still want to proceed?</source>
         <translation>Kívülről módosították a háttértárolón a projektfájlt, az aktuális projekt mentése felül fogja írni a módosításokat. Folytatni kívánja?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6792"/>
-        <location filename="../src/app/qgisapp.cpp" line="6812"/>
+        <location filename="../src/app/qgisapp.cpp" line="6796"/>
         <location filename="../src/app/qgisapp.cpp" line="6816"/>
         <location filename="../src/app/qgisapp.cpp" line="6820"/>
+        <location filename="../src/app/qgisapp.cpp" line="6824"/>
         <source>DXF export</source>
         <translation>DXF exportálás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6801"/>
+        <location filename="../src/app/qgisapp.cpp" line="6805"/>
         <source>DXF Export</source>
         <translation>DXF exportálás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6917"/>
+        <location filename="../src/app/qgisapp.cpp" line="6921"/>
         <source>Don&apos;t show this again.</source>
         <translation>Ne jelenjen meg újra.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8209"/>
+        <location filename="../src/app/qgisapp.cpp" line="8213"/>
         <source>Layer Saved</source>
         <translation>Réteg elmentve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8209"/>
+        <location filename="../src/app/qgisapp.cpp" line="8213"/>
         <source>Successfully saved scratch layer to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>A munkaréteg sikeresen elmentve ide:&lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8218"/>
+        <location filename="../src/app/qgisapp.cpp" line="8222"/>
         <source>Could not make temporary scratch layer permanent.
 Error: %1</source>
         <translation>Az ideiglenes munkaréteget nem sikerült megmaradóvá tenni.
 Hiba: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8223"/>
+        <location filename="../src/app/qgisapp.cpp" line="8227"/>
         <source>Save Scratch Layer</source>
         <translation>Munkaréteg mentése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8393"/>
+        <location filename="../src/app/qgisapp.cpp" line="8397"/>
         <source>Export to vector file %1 failed.
 Error: %2</source>
         <translation>Hiba a(z) %1 vektorfájlba exportálás közben.
 Hiba: %2</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8664"/>
-        <location filename="../src/app/qgisapp.cpp" line="8700"/>
+        <location filename="../src/app/qgisapp.cpp" line="8668"/>
+        <location filename="../src/app/qgisapp.cpp" line="8704"/>
         <source>Delete %n feature(s) from layer &quot;%1&quot;</source>
         <translation><numerusform>&quot;%1&quot; réteg %n elemének törlése</numerusform><numerusform>&quot;%1&quot; réteg %n elemének törlése</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8686"/>
+        <location filename="../src/app/qgisapp.cpp" line="8690"/>
         <source>Delete at least %n feature(s) on other layer(s)</source>
         <translation><numerusform>Töröl legalább %n elemet a többi rétegről</numerusform><numerusform>Töröl legalább %n elemet a többi rétegről</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8686"/>
+        <location filename="../src/app/qgisapp.cpp" line="8690"/>
         <source>Delete %n feature(s) on layer &quot;%1&quot;, %2 as well and all of its other descendants.
 Delete these features?</source>
         <translation><numerusform>Töröl %n elemet a(z) „%1” rétegről, valamint ezeket is: %2
@@ -60598,104 +60599,104 @@ Törli ezeket az elemeket?</numerusform><numerusform>Töröl %n elemet a(z) „%
 Törli ezeket az elemeket?</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8700"/>
+        <location filename="../src/app/qgisapp.cpp" line="8704"/>
         <source>&lt;b&gt;%n&lt;/b&gt; selected feature(s) are about to be deleted. Would you like to continue?</source>
         <translation><numerusform>&lt;b&gt;%n&lt;/b&gt; kiválasztott elem lesz törölve. Szeretné folytatni?</numerusform><numerusform>&lt;b&gt;%n&lt;/b&gt; kiválasztott elem lesz törölve. Szeretné folytatni?</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8720"/>
+        <location filename="../src/app/qgisapp.cpp" line="8724"/>
         <source>A problem occurred during deletion from layer &quot;%1&quot;. %n feature(s) not deleted.</source>
         <translation><numerusform>&quot;%1&quot; rétegből történő törlés közben hiba lépett fel. %n elem nem lett törölve.</numerusform><numerusform>&quot;%1&quot; rétegből történő törlés közben hiba lépett fel. %n elem nem lett törölve.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8843"/>
+        <location filename="../src/app/qgisapp.cpp" line="8847"/>
         <source>print layout</source>
         <translation>nyomtatási elrendezés</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8847"/>
+        <location filename="../src/app/qgisapp.cpp" line="8851"/>
         <source>report</source>
         <translation>jelentés</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8852"/>
+        <location filename="../src/app/qgisapp.cpp" line="8856"/>
         <source>Enter a unique %1 title</source>
         <translation>Egyedi %1 cím megadása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8855"/>
+        <location filename="../src/app/qgisapp.cpp" line="8859"/>
         <source>(a title will be automatically generated if left empty)</source>
         <translation>(automatikusan lesz generálva egy cím, ha üresen marad)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8988"/>
+        <location filename="../src/app/qgisapp.cpp" line="8992"/>
         <source>%1 copy</source>
         <translation>%1 másolata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9023"/>
+        <location filename="../src/app/qgisapp.cpp" line="9027"/>
         <source>Set as atlas feature for %1</source>
         <translation>Beállítás %1 atlaszelemeként</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9501"/>
+        <location filename="../src/app/qgisapp.cpp" line="9505"/>
         <source>The merge tool requires at least two selected features.</source>
         <translation>Az összevonás eszköz legalább két kiválasztott elemet igényel.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9544"/>
-        <location filename="../src/app/qgisapp.cpp" line="9774"/>
+        <location filename="../src/app/qgisapp.cpp" line="9548"/>
+        <location filename="../src/app/qgisapp.cpp" line="9778"/>
         <source>Invalid result</source>
         <translation>Hibás eredmény</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9590"/>
+        <location filename="../src/app/qgisapp.cpp" line="9594"/>
         <source>Modifying features can only be done for layers in editing mode.</source>
         <translation>Az elemek módosítása csak szerkesztési módban lévő rétegeknél végezhető el.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9679"/>
-        <location filename="../src/app/qgisapp.cpp" line="9692"/>
-        <location filename="../src/app/qgisapp.cpp" line="9737"/>
-        <location filename="../src/app/qgisapp.cpp" line="9750"/>
-        <location filename="../src/app/qgisapp.cpp" line="9766"/>
+        <location filename="../src/app/qgisapp.cpp" line="9683"/>
+        <location filename="../src/app/qgisapp.cpp" line="9696"/>
+        <location filename="../src/app/qgisapp.cpp" line="9741"/>
+        <location filename="../src/app/qgisapp.cpp" line="9754"/>
+        <location filename="../src/app/qgisapp.cpp" line="9770"/>
         <source>Merge failed</source>
         <translation>Sikertelen egyesítés</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9680"/>
-        <location filename="../src/app/qgisapp.cpp" line="9738"/>
+        <location filename="../src/app/qgisapp.cpp" line="9684"/>
+        <location filename="../src/app/qgisapp.cpp" line="9742"/>
         <source>An error occurred during the merge operation.</source>
         <translation>Hiba történt az összevonás művelet során.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2982"/>
-        <location filename="../src/app/qgisapp.cpp" line="9872"/>
-        <location filename="../src/app/qgisapp.cpp" line="9904"/>
-        <location filename="../src/app/qgisapp.cpp" line="9919"/>
-        <location filename="../src/app/qgisapp.cpp" line="9935"/>
-        <location filename="../src/app/qgisapp.cpp" line="9951"/>
-        <location filename="../src/app/qgisapp.cpp" line="9971"/>
+        <location filename="../src/app/qgisapp.cpp" line="2986"/>
+        <location filename="../src/app/qgisapp.cpp" line="9876"/>
+        <location filename="../src/app/qgisapp.cpp" line="9908"/>
+        <location filename="../src/app/qgisapp.cpp" line="9923"/>
+        <location filename="../src/app/qgisapp.cpp" line="9939"/>
+        <location filename="../src/app/qgisapp.cpp" line="9955"/>
+        <location filename="../src/app/qgisapp.cpp" line="9975"/>
         <source>No active vector layer</source>
         <translation>Nincs aktív vektorréteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9920"/>
+        <location filename="../src/app/qgisapp.cpp" line="9924"/>
         <source>To invert selection, choose a vector layer in the legend</source>
         <translation>A kiválasztás megfordításához ki kell választani egy vektorréteget a jelmagyarázatban</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10037"/>
+        <location filename="../src/app/qgisapp.cpp" line="10041"/>
         <source>Features cut</source>
         <translation>Elemek kivágva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10090"/>
+        <location filename="../src/app/qgisapp.cpp" line="10094"/>
         <source>Features pasted</source>
         <translation>Elemek beillesztve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10320"/>
+        <location filename="../src/app/qgisapp.cpp" line="10324"/>
         <source>Paste features</source>
         <translation>Elemek beillesztése</translation>
     </message>
@@ -60917,7 +60918,7 @@ Törli ezeket az elemeket?</numerusform></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2029"/>
-        <location filename="../src/app/qgisapp.cpp" line="6797"/>
+        <location filename="../src/app/qgisapp.cpp" line="6801"/>
         <source>More Info</source>
         <translation>További info</translation>
     </message>
@@ -60962,77 +60963,77 @@ Törli ezeket az elemeket?</numerusform></translation>
         <translation>A stílust nem sikerült teljesen konvertálni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6071"/>
+        <location filename="../src/app/qgisapp.cpp" line="6075"/>
         <source>Layer creation failed: %1</source>
         <translation>Réteg létrehozása nem sikerült: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6244"/>
+        <location filename="../src/app/qgisapp.cpp" line="6248"/>
         <source>An error occurred while performing the calculation.</source>
         <translation>Hiba történt a számítás végrehajtása közben.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6347"/>
+        <location filename="../src/app/qgisapp.cpp" line="6351"/>
         <source>All Project Files</source>
         <translation>Minden projektfájl</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6354"/>
+        <location filename="../src/app/qgisapp.cpp" line="6358"/>
         <source>Open Project</source>
         <translation>Projekt megnyitása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6812"/>
+        <location filename="../src/app/qgisapp.cpp" line="6816"/>
         <source>DXF export failed, device is not writable</source>
         <translation>Sikertelen DXF export, az eszköz nem írható</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6816"/>
+        <location filename="../src/app/qgisapp.cpp" line="6820"/>
         <source>DXF export failed, the device is invalid</source>
         <translation>Sikertelen DXF export, az eszköz érvénytelen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6820"/>
+        <location filename="../src/app/qgisapp.cpp" line="6824"/>
         <source>DXF export failed, the extent could not be determined</source>
         <translation>Sikertelen DXF export, a terjedelem nem határozható meg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6911"/>
+        <location filename="../src/app/qgisapp.cpp" line="6915"/>
         <source>Security warning</source>
         <translation>Biztonsági figyelmeztetés</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6912"/>
+        <location filename="../src/app/qgisapp.cpp" line="6916"/>
         <source>Executing a script from an untrusted source can harm your computer. Only continue if you trust the source of the script. Continue?</source>
         <translation>Nem megbízható forrásból származó parancsfájl végrehajtása károsíthatja számítógépét. Csak akkor folytassa, ha megbízik a parancsfájl forrásában. Folytatja?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7632"/>
+        <location filename="../src/app/qgisapp.cpp" line="7636"/>
         <source>Repair Data Source</source>
         <translation>Adatforrás javítása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8136"/>
+        <location filename="../src/app/qgisapp.cpp" line="8140"/>
         <source>source provider</source>
         <translation>forrásszolgáltató</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8138"/>
+        <location filename="../src/app/qgisapp.cpp" line="8142"/>
         <source>destination provider</source>
         <translation>célszolgáltató</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8140"/>
+        <location filename="../src/app/qgisapp.cpp" line="8144"/>
         <source>data source creation</source>
         <translation>adatforrás létrehozás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8142"/>
+        <location filename="../src/app/qgisapp.cpp" line="8146"/>
         <source>write error</source>
         <translation>írási hiba</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8732"/>
+        <location filename="../src/app/qgisapp.cpp" line="8736"/>
         <source>%1 on layer %2. </source>
         <translation>%1 %2 rétegen.</translation>
     </message>
@@ -61040,80 +61041,80 @@ Törli ezeket az elemeket?</numerusform></translation>
         <location filename="../src/app/qgisapp.cpp" line="800"/>
         <location filename="../src/app/qgisapp.cpp" line="821"/>
         <location filename="../src/app/qgisapp.cpp" line="822"/>
-        <location filename="../src/app/qgisapp.cpp" line="8867"/>
+        <location filename="../src/app/qgisapp.cpp" line="8871"/>
         <source>Create %1</source>
         <translation>%1 létrehozása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9205"/>
+        <location filename="../src/app/qgisapp.cpp" line="9209"/>
         <source>Duplicate Feature</source>
         <translation>Elem duplikálása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9212"/>
+        <location filename="../src/app/qgisapp.cpp" line="9216"/>
         <source>Duplicate Feature and Digitize</source>
         <translation>Elem kétszerezése és digitalizálás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9233"/>
+        <location filename="../src/app/qgisapp.cpp" line="9237"/>
         <source>Set as Atlas Feature for %1</source>
         <translation>Beállítás %1 atlaszelemeként</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9545"/>
+        <location filename="../src/app/qgisapp.cpp" line="9549"/>
         <source>Could not store value &apos;%1&apos; in field of type %2: %3</source>
         <translation>A(z) „%1” érték nem tárolható %2 típusú mezőben: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9873"/>
-        <location filename="../src/app/qgisapp.cpp" line="9905"/>
+        <location filename="../src/app/qgisapp.cpp" line="9877"/>
+        <location filename="../src/app/qgisapp.cpp" line="9909"/>
         <source>To deselect all features, choose a vector layer in the legend</source>
         <translation>Az összes elem kijelölésének megszüntetéséhez válasszon egy vektorréteget a jelmagyarázatból</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10305"/>
+        <location filename="../src/app/qgisapp.cpp" line="10309"/>
         <source>No features pasted.</source>
         <translation>Nincs beillesztett elem.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10313"/>
+        <location filename="../src/app/qgisapp.cpp" line="10317"/>
         <source>%1 of %2 features could be pasted.</source>
         <translation>%2 elemből %1 beilleszthető.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10318"/>
+        <location filename="../src/app/qgisapp.cpp" line="10322"/>
         <source> Geometry collapsed due to intersection avoidance.</source>
         <translation>A geometria összeomlott a metszés elkerülése miatt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10341"/>
+        <location filename="../src/app/qgisapp.cpp" line="10345"/>
         <source>Pasted</source>
         <translation>Beillesztve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10342"/>
+        <location filename="../src/app/qgisapp.cpp" line="10346"/>
         <source>Paste as Scratch Layer</source>
         <translation>Beillesztés ideiglenes munkarétegként</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10342"/>
+        <location filename="../src/app/qgisapp.cpp" line="10346"/>
         <source>Layer name</source>
         <translation>Rétegnév</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10674"/>
+        <location filename="../src/app/qgisapp.cpp" line="10678"/>
         <source>%1 and %2</source>
         <translation>%1 és %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10676"/>
+        <location filename="../src/app/qgisapp.cpp" line="10680"/>
         <source>%1, %2, …</source>
         <translation>%1, %2, …</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10570"/>
-        <location filename="../src/app/qgisapp.cpp" line="10649"/>
-        <location filename="../src/app/qgisapp.cpp" line="10904"/>
+        <location filename="../src/app/qgisapp.cpp" line="10574"/>
+        <location filename="../src/app/qgisapp.cpp" line="10653"/>
+        <location filename="../src/app/qgisapp.cpp" line="10908"/>
         <source>Start editing failed</source>
         <translation>Nem sikerült megkezdeni a szerkesztést</translation>
     </message>
@@ -61138,50 +61139,50 @@ Törli ezeket az elemeket?</numerusform></translation>
         <translation>A szintprofil görbéjét jobbra tolja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3855"/>
+        <location filename="../src/app/qgisapp.cpp" line="3859"/>
         <source>Show Vertex Editor</source>
         <translation>Töréspontszerkesztő megjelenítése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6248"/>
+        <location filename="../src/app/qgisapp.cpp" line="6252"/>
         <source>An error occurred while performing the calculation using OpenCL. See OpenCL log messages for details.</source>
         <translation>Hiba történt az OpenCL-el végzett számítás során. A részletekért tekintse meg az OpenCL naplóüzeneteit.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7856"/>
+        <location filename="../src/app/qgisapp.cpp" line="7860"/>
         <source>Could not commit changes</source>
         <translation>Nem sikerült véglegesíteni a módosításokat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10649"/>
-        <location filename="../src/app/qgisapp.cpp" line="10905"/>
+        <location filename="../src/app/qgisapp.cpp" line="10653"/>
+        <location filename="../src/app/qgisapp.cpp" line="10909"/>
         <source>Provider cannot be opened for editing</source>
         <translation>A szolgáltató nem nyitható meg szerkesztésre</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10678"/>
+        <location filename="../src/app/qgisapp.cpp" line="10682"/>
         <source>Do you want to save the changes to layers %1?</source>
         <translation>Szeretné menteni a(z) %1 rétegeken végzett módosításokat?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10678"/>
-        <location filename="../src/app/qgisapp.cpp" line="10828"/>
-        <location filename="../src/app/qgisapp.cpp" line="10916"/>
+        <location filename="../src/app/qgisapp.cpp" line="10682"/>
+        <location filename="../src/app/qgisapp.cpp" line="10832"/>
+        <location filename="../src/app/qgisapp.cpp" line="10920"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>%1 rétegen végzett módosításokat el szeretné menteni?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10713"/>
+        <location filename="../src/app/qgisapp.cpp" line="10717"/>
         <source>Problems during roll back: &apos;%1&apos;</source>
         <translation>Problémák a visszaállítás során: „%1”</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10801"/>
+        <location filename="../src/app/qgisapp.cpp" line="10805"/>
         <source>Mesh Editing</source>
         <translation>Hálószerkesztés</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10801"/>
+        <location filename="../src/app/qgisapp.cpp" line="10805"/>
         <source>At least one topological error in the mesh prevents starting editing.
 Some errors can be fixed by removing invalid elements.
 
@@ -61192,23 +61193,23 @@ Egyes hibák az érvénytelen elemek eltávolításával javíthatók.
 Megpróbálja kijavítani a hibákat a szerkesztés megkezdése előtt?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10856"/>
-        <location filename="../src/app/qgisapp.cpp" line="10942"/>
+        <location filename="../src/app/qgisapp.cpp" line="10860"/>
+        <location filename="../src/app/qgisapp.cpp" line="10946"/>
         <source>Problems during roll back</source>
         <translation>Probléma a visszavonás közben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10929"/>
+        <location filename="../src/app/qgisapp.cpp" line="10933"/>
         <source>Stop editing</source>
         <translation>Szerkesztés vége</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11058"/>
+        <location filename="../src/app/qgisapp.cpp" line="11062"/>
         <source>Save edits</source>
         <translation>Szerkesztések mentése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11105"/>
+        <location filename="../src/app/qgisapp.cpp" line="11109"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -61219,78 +61220,78 @@ Errors: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11105"/>
-        <location filename="../src/app/qgisapp.cpp" line="11132"/>
-        <location filename="../src/app/qgisapp.cpp" line="11155"/>
+        <location filename="../src/app/qgisapp.cpp" line="11109"/>
+        <location filename="../src/app/qgisapp.cpp" line="11136"/>
+        <location filename="../src/app/qgisapp.cpp" line="11159"/>
         <source>rollback</source>
         <translation>visszavonni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11105"/>
-        <location filename="../src/app/qgisapp.cpp" line="11132"/>
-        <location filename="../src/app/qgisapp.cpp" line="11155"/>
+        <location filename="../src/app/qgisapp.cpp" line="11109"/>
+        <location filename="../src/app/qgisapp.cpp" line="11136"/>
+        <location filename="../src/app/qgisapp.cpp" line="11159"/>
         <source>cancel</source>
         <translation>elvetni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11203"/>
+        <location filename="../src/app/qgisapp.cpp" line="11207"/>
         <source>Save</source>
         <translation>Menti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11203"/>
-        <location filename="../src/app/qgisapp.cpp" line="11231"/>
-        <location filename="../src/app/qgisapp.cpp" line="11259"/>
+        <location filename="../src/app/qgisapp.cpp" line="11207"/>
+        <location filename="../src/app/qgisapp.cpp" line="11235"/>
+        <location filename="../src/app/qgisapp.cpp" line="11263"/>
         <source>all</source>
         <translation>minden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11231"/>
+        <location filename="../src/app/qgisapp.cpp" line="11235"/>
         <source>Rollback</source>
         <translation>Visszavonja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11259"/>
+        <location filename="../src/app/qgisapp.cpp" line="11263"/>
         <source>Cancel</source>
         <translation>Elveti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11275"/>
+        <location filename="../src/app/qgisapp.cpp" line="11279"/>
         <source>Current edits</source>
         <translation>Aktuális szerkesztések</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11275"/>
+        <location filename="../src/app/qgisapp.cpp" line="11279"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%1 %2 réteg aktuális módosításait?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11425"/>
+        <location filename="../src/app/qgisapp.cpp" line="11429"/>
         <source>Error Setting Filter</source>
         <translation>Hiba a szűrő beállításakor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11425"/>
+        <location filename="../src/app/qgisapp.cpp" line="11429"/>
         <source>The filtered layer returned no rows. The PostgreSQL raster provider requires at least one row in order to extract the information required to create a valid layer.</source>
         <translation>A szűrt réteg nem adott vissza sorokat. A PostgreSQL raszterszolgáltatónak legalább egy sorra van szüksége az érvényes réteg létrehozásához szükséges információk kinyeréséhez.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11455"/>
+        <location filename="../src/app/qgisapp.cpp" line="11459"/>
         <source>Filter on Joined Fields</source>
         <translation>Szűrés az összekapcsolt mezőkön</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11455"/>
+        <location filename="../src/app/qgisapp.cpp" line="11459"/>
         <source>You are about to set a subset filter on a layer that has joined fields. Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. Would you like to create a virtual layer out of this layer first?</source>
         <translation>Egy részhalmazszűrőt készül beállítani egy olyan rétegen, amelyhez összekapcsolt mezők tartoznak. Az összekapcsolt mezők nem szűrhetőek, hacsak nem konvertálja előbb a réteget virtuális réteggé. Szeretne először egy virtuális réteget készíteni ebből a rétegből?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11624"/>
+        <location filename="../src/app/qgisapp.cpp" line="11628"/>
         <source>Required Layers</source>
         <translation>Kötelező rétegek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11624"/>
+        <location filename="../src/app/qgisapp.cpp" line="11628"/>
         <source>The following layers are marked as required by the project:
 
 %1
@@ -61303,7 +61304,7 @@ Please deselect them (or unmark as required) and retry.</source>
 Válassza ki ezeket (vagy szüntesse meg a projekt igényt) és próbálja újra.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11651"/>
+        <location filename="../src/app/qgisapp.cpp" line="11655"/>
         <source>The following tasks are currently running which depend on this layer:
 
 %1
@@ -61316,555 +61317,555 @@ Please cancel these tasks and retry.</source>
 Szakítsa meg ezeket a feladatokat és próbálja újra.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11758"/>
+        <location filename="../src/app/qgisapp.cpp" line="11762"/>
         <source>copy</source>
         <translation>másolata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11763"/>
+        <location filename="../src/app/qgisapp.cpp" line="11767"/>
         <source>Plugin layer</source>
         <translation>Modulréteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11767"/>
+        <location filename="../src/app/qgisapp.cpp" line="11771"/>
         <source>Group layer</source>
         <translation>Csoportréteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11797"/>
-        <location filename="../src/app/qgisapp.cpp" line="11808"/>
+        <location filename="../src/app/qgisapp.cpp" line="11801"/>
+        <location filename="../src/app/qgisapp.cpp" line="11812"/>
         <source>Duplicate layer: </source>
         <translation>Rétegmásolat:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11798"/>
+        <location filename="../src/app/qgisapp.cpp" line="11802"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (a duplikálás érvénytelen réteget eredményezett)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11853"/>
+        <location filename="../src/app/qgisapp.cpp" line="11857"/>
         <source>Layer duplication complete</source>
         <translation>Rétegmásolat elkészült</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11853"/>
+        <location filename="../src/app/qgisapp.cpp" line="11857"/>
         <source>Note that it&apos;s using the same data source.</source>
         <translation>Vegye figyelembe, hogy ez ugyanazt az adatforrást használja.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11882"/>
+        <location filename="../src/app/qgisapp.cpp" line="11886"/>
         <source>Set scale visibility for selected layers</source>
         <translation>Kiválasztott rétegek méretarányfüggő láthatósága</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="11940"/>
+        <location filename="../src/app/qgisapp.cpp" line="11944"/>
         <source>Set CRS for %1</source>
         <translation>%1 CRS-ének beállítása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12273"/>
+        <location filename="../src/app/qgisapp.cpp" line="12277"/>
         <source>Loading Python support</source>
         <translation>Python-támogatás betöltése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12293"/>
+        <location filename="../src/app/qgisapp.cpp" line="12297"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>Nem sikerült betölteni a Python-támogatási könyvtárat: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12304"/>
+        <location filename="../src/app/qgisapp.cpp" line="12308"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>Nem sikerült feloldani a python-támogatási könyvtár instance() szimbólumát.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12366"/>
+        <location filename="../src/app/qgisapp.cpp" line="12370"/>
         <source>There is a new version of QGIS available</source>
         <translation>Megjelent a QGIS új verziója</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12370"/>
+        <location filename="../src/app/qgisapp.cpp" line="12374"/>
         <source>You are running a development version of QGIS</source>
         <translation>A QGIS fejlesztői változatát futtatja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12374"/>
+        <location filename="../src/app/qgisapp.cpp" line="12378"/>
         <source>You are running the current version of QGIS</source>
         <translation>A QGIS aktuális változatát futtatja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12382"/>
-        <location filename="../src/app/qgisapp.cpp" line="12388"/>
+        <location filename="../src/app/qgisapp.cpp" line="12386"/>
+        <location filename="../src/app/qgisapp.cpp" line="12392"/>
         <source>QGIS Version Information</source>
         <translation>QGIS verzióinformáció</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12388"/>
+        <location filename="../src/app/qgisapp.cpp" line="12392"/>
         <source>Unable to get current version information from server</source>
         <translation>Nem lehet az aktuális változatra vonatkozó információt lekérni a szerverről</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12452"/>
+        <location filename="../src/app/qgisapp.cpp" line="12456"/>
         <source>Style Manager</source>
         <translation>Stíluskezelő</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12453"/>
+        <location filename="../src/app/qgisapp.cpp" line="12457"/>
         <source>Keyboard Shortcuts</source>
         <translation>Gyorsbillentyűk</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12454"/>
+        <location filename="../src/app/qgisapp.cpp" line="12458"/>
         <source>Custom Projections</source>
         <translation>Egyéni vetületek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12455"/>
+        <location filename="../src/app/qgisapp.cpp" line="12459"/>
         <source>Interface Customization</source>
         <translation>A felület testreszabása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12629"/>
-        <location filename="../src/app/qgisapp.cpp" line="12636"/>
+        <location filename="../src/app/qgisapp.cpp" line="12633"/>
+        <location filename="../src/app/qgisapp.cpp" line="12640"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>A hisztogram teljes nyújtásának végrehajtásához ki kell választania egy raszterréteget.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12696"/>
-        <location filename="../src/app/qgisapp.cpp" line="12703"/>
+        <location filename="../src/app/qgisapp.cpp" line="12700"/>
+        <location filename="../src/app/qgisapp.cpp" line="12707"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>A fényesség vagy kontraszt módosításához ki kell választania egy raszterréteget.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12749"/>
-        <location filename="../src/app/qgisapp.cpp" line="12756"/>
+        <location filename="../src/app/qgisapp.cpp" line="12753"/>
+        <location filename="../src/app/qgisapp.cpp" line="12760"/>
         <source>To change gamma, you need to have a raster layer selected.</source>
         <translation>A gamma módosításához ki kell választania egy raszterréteget.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="12936"/>
+        <location filename="../src/app/qgisapp.cpp" line="12940"/>
         <source>Map tool handler is not properly constructed</source>
         <translation>A térképeszköz-kezelő nincs megfelelően felépítve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13158"/>
-        <location filename="../src/app/qgisapp.cpp" line="13165"/>
+        <location filename="../src/app/qgisapp.cpp" line="13162"/>
+        <location filename="../src/app/qgisapp.cpp" line="13169"/>
         <source>3D Map</source>
         <translation>3D térkép</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13158"/>
+        <location filename="../src/app/qgisapp.cpp" line="13162"/>
         <source>3D Maps</source>
         <translation>3D térképek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13185"/>
+        <location filename="../src/app/qgisapp.cpp" line="13189"/>
         <source>No Elevation Profiles Found</source>
         <translation>Nem található szintmetszet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13193"/>
+        <location filename="../src/app/qgisapp.cpp" line="13197"/>
         <source>Copy From %1</source>
         <translation>Másolás innen: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13242"/>
+        <location filename="../src/app/qgisapp.cpp" line="13246"/>
         <source>Elevation Profile</source>
         <translation>Szintmetszet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13246"/>
+        <location filename="../src/app/qgisapp.cpp" line="13250"/>
         <source>Elevation Profile (%1)</source>
         <translation>Szintmetszet (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13290"/>
+        <location filename="../src/app/qgisapp.cpp" line="13294"/>
         <source>New 3D Map View</source>
         <translation>Új 3D térképnézet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13290"/>
+        <location filename="../src/app/qgisapp.cpp" line="13294"/>
         <source>Project extent is not valid. Please add or activate a layer to render.</source>
         <translation>A projekt terjedelme nem érvényes. Adjon hozzá vagy aktiváljon egy megjelenítendő réteget.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13303"/>
+        <location filename="../src/app/qgisapp.cpp" line="13307"/>
         <source>3D Globe %1</source>
         <translation>3D földgömb %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13525"/>
-        <location filename="../src/app/qgisapp.cpp" line="17311"/>
+        <location filename="../src/app/qgisapp.cpp" line="13529"/>
+        <location filename="../src/app/qgisapp.cpp" line="17315"/>
         <source>Save Project</source>
         <translation>Projekt mentése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13627"/>
+        <location filename="../src/app/qgisapp.cpp" line="13631"/>
         <source>Save Raster Attribute Table</source>
         <translation>Raszter-attribútumtábla mentése</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13627"/>
+        <location filename="../src/app/qgisapp.cpp" line="13631"/>
         <source>Do you want to save the changes to the attribute tables (bands: %1) associated with layer &apos;%2&apos;?</source>
         <translation>Menti a(z) „%2” réteghez tartozó attribútumtáblák (sávok: %1) módosításait?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13638"/>
-        <location filename="../src/app/qgisapp.cpp" line="13646"/>
+        <location filename="../src/app/qgisapp.cpp" line="13642"/>
+        <location filename="../src/app/qgisapp.cpp" line="13650"/>
         <source>Error Saving Raster Attribute Table</source>
         <translation>Hiba a raszter-attribútumtábla mentésekor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13638"/>
+        <location filename="../src/app/qgisapp.cpp" line="13642"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos;: %2</source>
         <translation>Hiba történt „%1” réteg raszter-attribútumtáblájának mentésekor: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13646"/>
+        <location filename="../src/app/qgisapp.cpp" line="13650"/>
         <source>An error occurred while saving raster attribute table for layer &apos;%1&apos; to VAT.DBF file &apos;%2&apos;: %3</source>
         <translation>Hiba történt „%1” réteg raszter-attribútumtáblájának mentésekor a(z) „%2” VAT.DBF fájlba: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13694"/>
-        <location filename="../src/app/qgisapp.cpp" line="13697"/>
+        <location filename="../src/app/qgisapp.cpp" line="13698"/>
+        <location filename="../src/app/qgisapp.cpp" line="13701"/>
         <source>Close Project</source>
         <translation>Projekt bezárása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13694"/>
+        <location filename="../src/app/qgisapp.cpp" line="13698"/>
         <source>This project includes one or more temporary layers. These layers are not permanently saved and their contents will be lost. Are you sure you want to proceed?</source>
         <translation>Ez a projekt egy vagy több ideiglenes réteget tartalmaz. Ezek a rétegek nem lettek tartósan elmentve, így a tartalmuk el fog veszni. Biztosan folytatni akarja?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13697"/>
+        <location filename="../src/app/qgisapp.cpp" line="13701"/>
         <source>This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?</source>
         <translation>Ez a projekt egy vagy több ideiglenes munkaréteget tartalmaz. Ezek a rétegek nem lettek lemezre mentve, így a tartalmuk véglegesen el fog veszni. Biztosan folytatni akarja?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14452"/>
+        <location filename="../src/app/qgisapp.cpp" line="14456"/>
         <source>Unknown CRS</source>
         <translation>Ismeretlen koordináta-rendszer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14584"/>
+        <location filename="../src/app/qgisapp.cpp" line="14588"/>
         <source>Pan distance %1 (%2)</source>
         <translation>Eltolás távolsága %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14595"/>
+        <location filename="../src/app/qgisapp.cpp" line="14599"/>
         <source>Add to the current selection</source>
         <translation>Hozzáadás az aktuális kiválasztáshoz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14599"/>
+        <location filename="../src/app/qgisapp.cpp" line="14603"/>
         <source>Subtract from the current selection</source>
         <translation>Eltávolítás az aktuális kiválasztásból</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14603"/>
+        <location filename="../src/app/qgisapp.cpp" line="14607"/>
         <source>Intersect with the current selection</source>
         <translation>Metszet az aktuális kiválasztással</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14607"/>
+        <location filename="../src/app/qgisapp.cpp" line="14611"/>
         <source>Select features completely within</source>
         <translation>Teljesen belül eső elemek kiválasztása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14611"/>
+        <location filename="../src/app/qgisapp.cpp" line="14615"/>
         <source>Add features completely within to the current selection</source>
         <translation>Teljesen beleleső elemek hozzáadása az aktuális kiválasztáshoz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14615"/>
+        <location filename="../src/app/qgisapp.cpp" line="14619"/>
         <source>Subtract features completely within from the current selection</source>
         <translation>Teljesen beleleső elemek eltávolítása az aktuális kiválasztásból</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14619"/>
+        <location filename="../src/app/qgisapp.cpp" line="14623"/>
         <source>Intersect features completely within with the current selection</source>
         <translation>Metszet a teljesen beleeső elemek és az aktuális kiválasztás között</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="14764"/>
+        <location filename="../src/app/qgisapp.cpp" line="14768"/>
         <source>1 feature selected on layer %1 (%2).</source>
         <translation>1 elem kiválasztva a(z) %1 rétegen (%2).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15967"/>
+        <location filename="../src/app/qgisapp.cpp" line="15971"/>
         <source>A profile with this name already exists</source>
         <translation>Már létezik ilyen nevű profil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15970"/>
+        <location filename="../src/app/qgisapp.cpp" line="15974"/>
         <source>New Profile Name</source>
         <translation>Új profil neve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15986"/>
+        <location filename="../src/app/qgisapp.cpp" line="15990"/>
         <source>New Profile</source>
         <translation>Új profil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15986"/>
+        <location filename="../src/app/qgisapp.cpp" line="15990"/>
         <source>Cannot create folder &apos;%1&apos;</source>
         <translation>Nem sikerült létrehozni a(z) „%1” mappát</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16007"/>
+        <location filename="../src/app/qgisapp.cpp" line="16011"/>
         <source>Task failed</source>
         <translation>A feladat nem sikerült</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16083"/>
+        <location filename="../src/app/qgisapp.cpp" line="16087"/>
         <source>New bookmark</source>
         <translation>Új könyvjelző</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16159"/>
+        <location filename="../src/app/qgisapp.cpp" line="16163"/>
         <source>This project file was created by a newer version of QGIS (%1) and could not be completely loaded.</source>
         <translation>Ezt a projektfájlt a QGIS újabb verziójával (%1) hozták létre, és nem lehetett teljesen betölteni.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16385"/>
+        <location filename="../src/app/qgisapp.cpp" line="16389"/>
         <source>Select Transformation for %1</source>
         <translation>Válasszon transzformációt ehhez: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16779"/>
+        <location filename="../src/app/qgisapp.cpp" line="16783"/>
         <source>Network request to %1 timed out, any data received is likely incomplete.</source>
         <translation>Időtúllépés a(z) %1 felé indított hálózati kérésben, a kapott adatok valószínűleg hiányosak.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16842"/>
+        <location filename="../src/app/qgisapp.cpp" line="16846"/>
         <source>QGIS Authentication</source>
         <translation>QGIS hitelesítés</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16986"/>
+        <location filename="../src/app/qgisapp.cpp" line="16990"/>
         <source>%1 Panel</source>
         <translation>%1 panel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17078"/>
+        <location filename="../src/app/qgisapp.cpp" line="17082"/>
         <source>Transaction</source>
         <translation>Tranzakció</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17091"/>
-        <location filename="../src/app/qgisapp.cpp" line="17141"/>
+        <location filename="../src/app/qgisapp.cpp" line="17095"/>
+        <location filename="../src/app/qgisapp.cpp" line="17145"/>
         <source>Cannot duplicate feature in not editable mode on layer %1</source>
         <translation>%1 réteg elemeiről másolatot csak szerkesztési módban lehet létrehozni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17121"/>
+        <location filename="../src/app/qgisapp.cpp" line="17125"/>
         <source>%1 children on layer %2 duplicated</source>
         <translation>A(z) %2 rétegen %1 gyerek duplikálva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17125"/>
+        <location filename="../src/app/qgisapp.cpp" line="17129"/>
         <source>%1 features on layer %2 duplicated
 %3</source>
         <translation>A(z) %2 rétegen %1 elem duplikálva
 %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17154"/>
+        <location filename="../src/app/qgisapp.cpp" line="17158"/>
         <source>Digitize the duplicate on layer %1</source>
         <translation>Másolat digitalizálása a(z) %1 rétegen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17158"/>
+        <location filename="../src/app/qgisapp.cpp" line="17162"/>
         <source>Duplicate digitized</source>
         <translation>Másolat digitalizálva</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="17171"/>
+        <location filename="../src/app/qgisapp.cpp" line="17175"/>
         <source>%n children on layer %1 duplicated</source>
         <translation><numerusform>%1 rétegen %n gyerek duplikálva</numerusform><numerusform>%1 rétegen %n gyerek duplikálva</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17174"/>
+        <location filename="../src/app/qgisapp.cpp" line="17178"/>
         <source>Feature on layer %1 duplicated
 %2</source>
         <translation>A(z) %1 réteg eleme duplikálva
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17192"/>
+        <location filename="../src/app/qgisapp.cpp" line="17196"/>
         <source>Templates</source>
         <translation>Sablonok</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17203"/>
+        <location filename="../src/app/qgisapp.cpp" line="17207"/>
         <source>Template Name</source>
         <translation>Sablon neve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17203"/>
+        <location filename="../src/app/qgisapp.cpp" line="17207"/>
         <source>Name for the template</source>
         <translation>A sablon neve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17209"/>
+        <location filename="../src/app/qgisapp.cpp" line="17213"/>
         <source>Template not saved</source>
         <translation>Sablon nincs mentve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17209"/>
+        <location filename="../src/app/qgisapp.cpp" line="17213"/>
         <source>The template can not have an empty name.</source>
         <translation>A sablon neve nem lehet üres.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17216"/>
+        <location filename="../src/app/qgisapp.cpp" line="17220"/>
         <source>Overwrite Template</source>
         <translation>Sablon felülírása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17217"/>
+        <location filename="../src/app/qgisapp.cpp" line="17221"/>
         <source>The template %1 already exists, do you want to replace it?</source>
         <translation>A(z) %1 sablon már létezik, le akarja cserélni?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17218"/>
+        <location filename="../src/app/qgisapp.cpp" line="17222"/>
         <source>Overwrite</source>
         <translation>Felülírás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17230"/>
+        <location filename="../src/app/qgisapp.cpp" line="17234"/>
         <source>Template saved</source>
         <translation>Sablon elmentve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17230"/>
+        <location filename="../src/app/qgisapp.cpp" line="17234"/>
         <source>Template %1 was saved</source>
         <translation>%1 sablon elmentve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17316"/>
+        <location filename="../src/app/qgisapp.cpp" line="17320"/>
         <source>Save as Local File</source>
         <translation>Mentés helyi fájlként</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="17047"/>
+        <location filename="../src/app/qgisapp.cpp" line="17051"/>
         <source>Layer %1</source>
         <translation>%1 réteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9478"/>
-        <location filename="../src/app/qgisapp.cpp" line="9581"/>
-        <location filename="../src/app/qgisapp.cpp" line="9642"/>
+        <location filename="../src/app/qgisapp.cpp" line="9482"/>
+        <location filename="../src/app/qgisapp.cpp" line="9585"/>
+        <location filename="../src/app/qgisapp.cpp" line="9646"/>
         <source>The merge features tool only works on vector layers.</source>
         <translation>Az elemek összevonása eszköz csak vektorrétegeken működik.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9488"/>
-        <location filename="../src/app/qgisapp.cpp" line="9651"/>
+        <location filename="../src/app/qgisapp.cpp" line="9492"/>
+        <location filename="../src/app/qgisapp.cpp" line="9655"/>
         <source>Merging features can only be done for layers in editing mode.</source>
         <translation>Elemeket összevonni csak szerkeszthető rétegen lehet.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9570"/>
-        <location filename="../src/app/qgisapp.cpp" line="9632"/>
+        <location filename="../src/app/qgisapp.cpp" line="9574"/>
+        <location filename="../src/app/qgisapp.cpp" line="9636"/>
         <source>Please select a layer in the layer list</source>
         <translation>Válasszon egy réteget a réteglistában</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9580"/>
-        <location filename="../src/app/qgisapp.cpp" line="9641"/>
+        <location filename="../src/app/qgisapp.cpp" line="9584"/>
+        <location filename="../src/app/qgisapp.cpp" line="9645"/>
         <source>Invalid layer</source>
         <translation>Hibás réteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9936"/>
+        <location filename="../src/app/qgisapp.cpp" line="9940"/>
         <source>To select all, choose a vector layer in the legend.</source>
         <translation>Az összes kiválasztásához választani kell egy vektorréteget a jelmagyarázatban.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9952"/>
-        <location filename="../src/app/qgisapp.cpp" line="9972"/>
+        <location filename="../src/app/qgisapp.cpp" line="9956"/>
+        <location filename="../src/app/qgisapp.cpp" line="9976"/>
         <source>To select features, choose a vector layer in the legend.</source>
         <translation>Elemek kiválasztásához választani kell egy vektorréteget a jelmagyarázatban.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="13507"/>
+        <location filename="../src/app/qgisapp.cpp" line="13511"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>A projekt szerkesztés alatt álló, nem mentett rétegeket tartalmaz, amelyek NEM lesznek elmentve!</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="14770"/>
-        <location filename="../src/app/qgisapp.cpp" line="14779"/>
+        <location filename="../src/app/qgisapp.cpp" line="14774"/>
+        <location filename="../src/app/qgisapp.cpp" line="14783"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation><numerusform>%1 rétegen %n elem kiválasztva.</numerusform><numerusform>%1 rétegen %n elem kiválasztva.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15922"/>
+        <location filename="../src/app/qgisapp.cpp" line="15926"/>
         <source>Exit QGIS</source>
         <translation>Kilépés a QGIS-ből</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15922"/>
+        <location filename="../src/app/qgisapp.cpp" line="15926"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>Ki szeretne lépni a QGIS-ből?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="15969"/>
+        <location filename="../src/app/qgisapp.cpp" line="15973"/>
         <source>New profile name</source>
         <translation>Új profil neve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16005"/>
+        <location filename="../src/app/qgisapp.cpp" line="16009"/>
         <source>Task complete</source>
         <translation>Feladat befejezve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16147"/>
+        <location filename="../src/app/qgisapp.cpp" line="16151"/>
         <source>This project file was saved by QGIS version %1. When saving this project file, QGIS will update it to version %2, possibly rendering it unusable with older versions of QGIS.</source>
         <translation>Ezt a projektet a QGIS %1 verziójával mentették. A projektfájlt mentéskor a QGIS frissíteni fogja a(z) %2 verzióra, ezzel esetleg használhatatlanná téve a QGIS régebbi verziói számára.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16152"/>
+        <location filename="../src/app/qgisapp.cpp" line="16156"/>
         <source>Project file is older</source>
         <translation>A projektfájl régebbi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16779"/>
+        <location filename="../src/app/qgisapp.cpp" line="16783"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>További információkért tekintse meg az &lt;a href=&quot;#messageLog&quot;&gt;üzenetnaplót&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16685"/>
+        <location filename="../src/app/qgisapp.cpp" line="16689"/>
         <source>Warning</source>
         <translation>Figyelmeztetés</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16685"/>
+        <location filename="../src/app/qgisapp.cpp" line="16689"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>A réteghez nem tartozik tulajdonságok párbeszédablak.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="16750"/>
+        <location filename="../src/app/qgisapp.cpp" line="16754"/>
         <source>Proxy authentication required</source>
         <translation>Proxy hitelesítés szükséges</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6925"/>
+        <location filename="../src/app/qgisapp.cpp" line="6929"/>
         <source>Failed to run Python script:</source>
         <translation>Nem sikerült a Python-szkriptet futtatni:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8639"/>
+        <location filename="../src/app/qgisapp.cpp" line="8643"/>
         <source>The current layer has no selected features</source>
         <translation>Az aktuális rétegen nincs kiválasztott elem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4036"/>
-        <location filename="../src/app/qgisapp.cpp" line="4050"/>
+        <location filename="../src/app/qgisapp.cpp" line="4040"/>
+        <location filename="../src/app/qgisapp.cpp" line="4054"/>
         <source>Current clockwise map rotation in degrees</source>
         <translation>Aktuális térkép forgatása fokban megadva az óramutató járásával egyező irányban</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4085"/>
+        <location filename="../src/app/qgisapp.cpp" line="4089"/>
         <source>Messages</source>
         <translation>Üzenetek</translation>
     </message>
@@ -92864,6 +92865,10 @@ p, li { white-space: pre-wrap; }
         <translation>is_selected(get_feature_by_id(&apos;utak&apos;, 1))</translation>
     </message>
     <message>
+        <source>whether to return translated string. Currently affects only &apos;type&apos; property. By default translated strings are returned. Setting this to false will disable translation, always returning English strings.</source>
+        <translation>a lefordított karakterláncot adja-e vissza. Jelenleg csak a „type” tulajdonságra van hatással. Alapértelmezés szerint a lefordított karakterláncok kerülnek visszaadásra. Ezt a beállítást false-ra állítva kikapcsolja a fordítást, és mindig az angol karakterláncokat ad vissza.</translation>
+    </message>
+    <message>
         <source>Calculates the 3D length of a geometry line object. If the geometry is not a 3D line object, it returns its 2D length. Calculations are always planimetric in the Spatial Reference System (SRS) of this geometry, and the units of the returned length will match the units for the SRS. This differs from the calculations performed by the $length function, which will perform ellipsoidal calculations based on the project&apos;s ellipsoid and distance unit settings.</source>
         <translation>Egy vonalgeometria 3D hosszát számítja ki. Ha a geometria nem egy 3D vonalobjektum, akkor a 2D hosszát adja vissza. A számítás mindig planimetrikus, ami a geometria Térbeli Vetületi Rendszerén (SRS) alapul, és az eredmény mértékegysége megegyezik a vetületi rendszerével. Ez különbözik a $length függvény számításától, ami ellipszoidi számítást végez a projekt ellipszoid és távolság mértékegység beállításai alapján.</translation>
     </message>
@@ -96296,12 +96301,12 @@ p, li { white-space: pre-wrap; }
         <translation>maximum</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9444"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9450"/>
         <source>If represent_value is called with 1 parameter, it must be an attribute.</source>
         <translation>Ha a represent_value egy paraméterrel van hívva, akkor annak egy attribútumnak kell lennie.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9454"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="9460"/>
         <source>represent_value must be called with exactly 1 or 2 parameters.</source>
         <translation>A represent_value-t pontosan egy vagy két paraméterrel kell hívni.</translation>
     </message>
@@ -96864,7 +96869,7 @@ Változtassa meg a szkript nevét és mentse el, hogy a QGIS az indulásnál aut
 <context>
     <name>QgsExpressionNodeIndexOperator</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionnodeimpl.cpp" line="2242"/>
+        <location filename="../src/core/expression/qgsexpressionnodeimpl.cpp" line="2243"/>
         <source>[] can only be used with map or array values, not %1</source>
         <translation>[] csak asszociatív tömb vagy tömb értékekkel használható, %1 nem használható</translation>
     </message>
@@ -119593,47 +119598,47 @@ Kiértékelési hiba: %1</translation>
 <context>
     <name>QgsLayoutPictureWidget</name>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="83"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="81"/>
         <source>Picture Properties</source>
         <translation>Kép tulajdonságai</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="86"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="84"/>
         <source>Select Fill Color</source>
         <translation>Kitöltőszín választása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="89"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="87"/>
         <source>Select Stroke Color</source>
         <translation>Körvonalszín választása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="472"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="470"/>
         <source>Change Picture</source>
         <translation>Kép módosítása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="135"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="133"/>
         <source>Change Picture Rotation</source>
         <translation>Kép elforgatásának módosítása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="148"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="146"/>
         <source>Change Resize Mode</source>
         <translation>Átméretezési mód módosítása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="173"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="171"/>
         <source>Change Placement</source>
         <translation>Elhelyezés módosítása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="210"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="208"/>
         <source>Toggle Rotation Sync</source>
         <translation>Forgatás szinkronizálásának átváltása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="252"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="250"/>
         <source>Change Rotation Map</source>
         <translation>Térkép elforgatásának módosítása</translation>
     </message>
@@ -119708,47 +119713,47 @@ Kiértékelési hiba: %1</translation>
         <translation>Jobbra lent</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="96"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="94"/>
         <source>Grid North</source>
         <translation>Hálózati észak</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="97"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="95"/>
         <source>True North</source>
         <translation>Valódi észak</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="405"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="403"/>
         <source>Change Picture Fill Color</source>
         <translation>Kép kitöltő színének módosítása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="413"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="411"/>
         <source>Change Picture Stroke Color</source>
         <translation>Kép körvonalszínének módosítása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="421"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="419"/>
         <source>Change Picture Stroke Width</source>
         <translation>Kép körvonalszélességének módosítása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="429"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="427"/>
         <source>Change Picture North Offset</source>
         <translation>Kép északi eltérésének módosítása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="437"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="435"/>
         <source>Change Picture North Mode</source>
         <translation>Kép északmódjának módosítása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="462"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="460"/>
         <source>Change Picture Type</source>
         <translation>Képtípus módosítása</translation>
     </message>
     <message>
-        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="482"/>
+        <location filename="../src/gui/layout/qgslayoutpicturewidget.cpp" line="480"/>
         <source>Set SVG parameters</source>
         <translation>SVG paraméterek beállítása</translation>
     </message>
@@ -125094,68 +125099,68 @@ A megfelelő megjelenítéshez ajánlott a térkép raszterizálása.</translati
 <context>
     <name>QgsMapToolSelectUtils::QgsMapToolSelectMenuActions</name>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="669"/>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="708"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="671"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="710"/>
         <source>Select Feature</source>
         <translation>Elem kiválasztása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="672"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="674"/>
         <source>Add to Selection</source>
         <translation>Hozzáadás a kiválasztáshoz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="675"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="677"/>
         <source>Intersect with Selection</source>
         <translation>Metszi a kiválasztást</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="678"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="680"/>
         <source>Remove from Selection</source>
         <translation>Eltávolítás a kiválasztásból</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="684"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="686"/>
         <source>Searching…</source>
         <translation>Keresés…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="691"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="693"/>
         <source>Select All (%1)</source>
         <translation>Összes kiválasztása (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="693"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="695"/>
         <source>Add All to Selection (%1)</source>
         <translation>Összes hozzáadása a kiválasztáshoz (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="695"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="697"/>
         <source>Intersect All with Selection (%1)</source>
         <translation>Összes, ami metszi a kiválasztást (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="697"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="699"/>
         <source>Remove All from Selection (%1)</source>
         <translation>Összes eltávolítása a kiválasztásból (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="710"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="712"/>
         <source>Add Feature to Selection</source>
         <translation>Elem hozzáadása a kiválasztáshoz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="712"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="714"/>
         <source>Intersect Feature with Selection</source>
         <translation>Elem metszi a kiválasztást</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="714"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="716"/>
         <source>Remove Feature from Selection</source>
         <translation>Elem eltávolítása a kiválasztásból</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="746"/>
+        <location filename="../src/app/qgsmaptoolselectutils.cpp" line="748"/>
         <source>Feature %1</source>
         <translation>Elem %1</translation>
     </message>
@@ -126950,73 +126955,73 @@ Ha a terep egy adott pontban nem tartalmaz értéket, akkor az alapértelmezett 
 <context>
     <name>QgsMeshLayer</name>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2149"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2150"/>
         <source>Information from provider</source>
         <translation>Információk a szolgálatóról</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2153"/>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2192"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2154"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2193"/>
         <source>Extent</source>
         <translation>Terjedelem</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1201"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1202"/>
         <source>Unknown inconsistent mesh error</source>
         <translation>Ismeretlen inkonzisztens hálóhiba</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1869"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="1870"/>
         <source>Labeling</source>
         <translation>Címkézés</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2162"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2163"/>
         <source>Vertex count</source>
         <translation>Csúcsok száma</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2166"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2167"/>
         <source>Face count</source>
         <translation>Lapok száma</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2170"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2171"/>
         <source>Edge count</source>
         <translation>Élek száma</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2174"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2175"/>
         <source>Dataset groups count</source>
         <translation>Adathalmazcsoportok száma</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2187"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2188"/>
         <source>Identification</source>
         <translation>Azonosítás</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2197"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2198"/>
         <source>Access</source>
         <translation>Hozzáférés</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2202"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2203"/>
         <source>Contacts</source>
         <translation>Kapcsolatok</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2207"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2208"/>
         <source>Links</source>
         <translation>Hivatkozások</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2212"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2213"/>
         <source>History</source>
         <translation>Előzmények</translation>
     </message>
     <message>
-        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2247"/>
+        <location filename="../src/core/mesh/qgsmeshlayer.cpp" line="2248"/>
         <source>Create %1 provider</source>
         <translation>%1 szolgáltató létrehozása</translation>
     </message>
@@ -135052,13 +135057,13 @@ Mindig hálózatról: mindig a hálózatról töltse le és ne ellenőrizze, hog
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="106"/>
-        <location filename="../src/app/qgisapp.cpp" line="12486"/>
+        <location filename="../src/app/qgisapp.cpp" line="12490"/>
         <source>General</source>
         <translation>Általános</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="107"/>
-        <location filename="../src/app/qgisapp.cpp" line="12487"/>
+        <location filename="../src/app/qgisapp.cpp" line="12491"/>
         <source>System</source>
         <translation>Rendszer</translation>
     </message>
@@ -135069,7 +135074,7 @@ Mindig hálózatról: mindig a hálózatról töltse le és ne ellenőrizze, hog
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
-        <location filename="../src/app/qgisapp.cpp" line="12488"/>
+        <location filename="../src/app/qgisapp.cpp" line="12492"/>
         <source>CRS Handling</source>
         <translation>CRS-kezelés</translation>
     </message>
@@ -135085,13 +135090,13 @@ Mindig hálózatról: mindig a hálózatról töltse le és ne ellenőrizze, hog
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="114"/>
-        <location filename="../src/app/qgisapp.cpp" line="12489"/>
+        <location filename="../src/app/qgisapp.cpp" line="12493"/>
         <source>Coordinate Transforms</source>
         <translation>Koordináta-transzformációk</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="117"/>
-        <location filename="../src/app/qgisapp.cpp" line="12490"/>
+        <location filename="../src/app/qgisapp.cpp" line="12494"/>
         <source>Data Sources</source>
         <translation>Adatforrások</translation>
     </message>
@@ -135112,31 +135117,31 @@ Mindig hálózatról: mindig a hálózatról töltse le és ne ellenőrizze, hog
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="127"/>
-        <location filename="../src/app/qgisapp.cpp" line="12495"/>
+        <location filename="../src/app/qgisapp.cpp" line="12499"/>
         <source>Colors</source>
         <translation>Színek</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="121"/>
-        <location filename="../src/app/qgisapp.cpp" line="12492"/>
+        <location filename="../src/app/qgisapp.cpp" line="12496"/>
         <source>Canvas &amp; Legend</source>
         <translation>Térkép és jelmagyarázat</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="123"/>
-        <location filename="../src/app/qgisapp.cpp" line="12493"/>
+        <location filename="../src/app/qgisapp.cpp" line="12497"/>
         <source>Map Tools</source>
         <translation>Térképeszközök</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="125"/>
-        <location filename="../src/app/qgisapp.cpp" line="12494"/>
+        <location filename="../src/app/qgisapp.cpp" line="12498"/>
         <source>Digitizing</source>
         <translation>Digitalizálás</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="119"/>
-        <location filename="../src/app/qgisapp.cpp" line="12491"/>
+        <location filename="../src/app/qgisapp.cpp" line="12495"/>
         <source>GDAL</source>
         <translation>GDAL</translation>
     </message>
@@ -135147,7 +135152,7 @@ Mindig hálózatról: mindig a hálózatról töltse le és ne ellenőrizze, hog
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="131"/>
-        <location filename="../src/app/qgisapp.cpp" line="12499"/>
+        <location filename="../src/app/qgisapp.cpp" line="12503"/>
         <source>Network</source>
         <translation>Hálózat</translation>
     </message>
@@ -135294,19 +135299,19 @@ Mindig hálózatról: mindig a hálózatról töltse le és ne ellenőrizze, hog
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui"/>
         <location filename="../src/app/options/qgsoptions.cpp" line="130"/>
-        <location filename="../src/app/qgisapp.cpp" line="12498"/>
+        <location filename="../src/app/qgisapp.cpp" line="12502"/>
         <source>Authentication</source>
         <translation>Hitelesítés</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="129"/>
-        <location filename="../src/app/qgisapp.cpp" line="12497"/>
+        <location filename="../src/app/qgisapp.cpp" line="12501"/>
         <source>Variables</source>
         <translation>Változók</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsadvancedoptions.cpp" line="100"/>
-        <location filename="../src/app/qgisapp.cpp" line="12502"/>
+        <location filename="../src/app/qgisapp.cpp" line="12506"/>
         <source>Advanced</source>
         <translation>Speciális</translation>
     </message>
@@ -135362,13 +135367,13 @@ Mindig hálózatról: mindig a hálózatról töltse le és ne ellenőrizze, hog
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="128"/>
-        <location filename="../src/app/qgisapp.cpp" line="12496"/>
+        <location filename="../src/app/qgisapp.cpp" line="12500"/>
         <source>Layouts</source>
         <translation>Elrendezések</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
-        <location filename="../src/app/qgisapp.cpp" line="12500"/>
+        <location filename="../src/app/qgisapp.cpp" line="12504"/>
         <source>Locator</source>
         <translation>Keresés</translation>
     </message>
@@ -135384,7 +135389,7 @@ Mindig hálózatról: mindig a hálózatról töltse le és ne ellenőrizze, hog
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="133"/>
-        <location filename="../src/app/qgisapp.cpp" line="12501"/>
+        <location filename="../src/app/qgisapp.cpp" line="12505"/>
         <source>Acceleration</source>
         <translation>Gyorsítás</translation>
     </message>
@@ -148372,7 +148377,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12415"/>
+        <location filename="../src/app/qgisapp.cpp" line="12419"/>
         <source>General</source>
         <translation>Általános</translation>
     </message>
@@ -148408,7 +148413,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12418"/>
+        <location filename="../src/app/qgisapp.cpp" line="12422"/>
         <source>CRS</source>
         <translation>Koordináta-rendszer</translation>
     </message>
@@ -148419,7 +148424,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12424"/>
+        <location filename="../src/app/qgisapp.cpp" line="12428"/>
         <source>Variables</source>
         <translation>Változók</translation>
     </message>
@@ -148565,7 +148570,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12423"/>
+        <location filename="../src/app/qgisapp.cpp" line="12427"/>
         <source>Relations</source>
         <translation>Kapcsolatok</translation>
     </message>
@@ -148671,7 +148676,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12422"/>
+        <location filename="../src/app/qgisapp.cpp" line="12426"/>
         <source>Data Sources</source>
         <translation>Adatforrások</translation>
     </message>
@@ -148712,7 +148717,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12416"/>
+        <location filename="../src/app/qgisapp.cpp" line="12420"/>
         <source>Metadata</source>
         <translation>Metaadat</translation>
     </message>
@@ -148723,7 +148728,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12426"/>
+        <location filename="../src/app/qgisapp.cpp" line="12430"/>
         <source>QGIS Server</source>
         <translation>QGIS Szerver</translation>
     </message>
@@ -148989,7 +148994,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12425"/>
+        <location filename="../src/app/qgisapp.cpp" line="12429"/>
         <source>Macros</source>
         <translation>Makrók</translation>
     </message>
@@ -149135,7 +149140,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12419"/>
+        <location filename="../src/app/qgisapp.cpp" line="12423"/>
         <source>Transformations</source>
         <translation>Transzformációk</translation>
     </message>
@@ -149146,7 +149151,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12427"/>
+        <location filename="../src/app/qgisapp.cpp" line="12431"/>
         <source>Temporal</source>
         <translation>Időbeliség</translation>
     </message>
@@ -149217,7 +149222,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12417"/>
+        <location filename="../src/app/qgisapp.cpp" line="12421"/>
         <source>View Settings</source>
         <translation>Nézet beállításai</translation>
     </message>
@@ -149388,7 +149393,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12420"/>
+        <location filename="../src/app/qgisapp.cpp" line="12424"/>
         <source>Styles</source>
         <translation>Stílusok</translation>
     </message>
@@ -149419,7 +149424,7 @@ Folytatja?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
-        <location filename="../src/app/qgisapp.cpp" line="12421"/>
+        <location filename="../src/app/qgisapp.cpp" line="12425"/>
         <source>Colors</source>
         <translation>Színek</translation>
     </message>
@@ -178305,47 +178310,47 @@ A hibaüzenet megtekintéséhez nézze meg a feldolgozó keretrendszer naplójá
 <context>
     <name>expressions</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6799"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6805"/>
         <source>Vector</source>
         <translation>Vektor</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6801"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6807"/>
         <source>Raster</source>
         <translation>Raszter</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6803"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6809"/>
         <source>Mesh</source>
         <translation>Háló</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6805"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6811"/>
         <source>Vector Tile</source>
         <translation>Vektorcsempe</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6807"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6813"/>
         <source>Plugin</source>
         <translation>Modul</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6809"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6815"/>
         <source>Annotation</source>
         <translation>Annotáció</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6811"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6817"/>
         <source>Point Cloud</source>
         <translation>Pontfelhő</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6813"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6819"/>
         <source>Group</source>
         <translation>Csoport</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6815"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6821"/>
         <source>Tiled Scene</source>
         <translation>Csempézett jelenet</translation>
     </message>

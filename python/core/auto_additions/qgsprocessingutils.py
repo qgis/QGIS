@@ -78,6 +78,8 @@ try:
     QgsProcessingUtils.removePointerValuesFromMap = staticmethod(QgsProcessingUtils.removePointerValuesFromMap)
     QgsProcessingUtils.preprocessQgisProcessParameters = staticmethod(QgsProcessingUtils.preprocessQgisProcessParameters)
     QgsProcessingUtils.resolveDefaultEncoding = staticmethod(QgsProcessingUtils.resolveDefaultEncoding)
+    QgsProcessingUtils.supportedImageFormats = staticmethod(QgsProcessingUtils.supportedImageFormats)
+    QgsProcessingUtils.supportedImageFileFilters = staticmethod(QgsProcessingUtils.supportedImageFileFilters)
     QgsProcessingUtils.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
