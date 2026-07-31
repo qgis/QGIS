@@ -86,8 +86,6 @@ class TestQgsGeometry : public QgsTest
     void vertexIterator();
     void partIterator();
 
-    void geos();
-
     void curveIndexOf_data();
     void curveIndexOf();
     void splitCurve_data();
@@ -816,32 +814,6 @@ void TestQgsGeometry::partIterator()
   QCOMPARE( geom.asWkt(), u"Point (1 2)"_s );
 
   // See test_qgsgeometry.py for geometry-type specific checks!
-}
-
-void TestQgsGeometry::geos()
-{
-  // test GEOS conversion utils
-
-  // empty parts should NOT be added to a GEOS collection -- it can cause crashes in GEOS
-  QgsMultiPolygon polyWithEmptyParts;
-  geos::unique_ptr asGeos( QgsGeos::asGeos( &polyWithEmptyParts ) );
-  QgsGeometry res( QgsGeos::fromGeos( asGeos.get() ) );
-  QCOMPARE( res.asWkt(), u"MultiPolygon EMPTY"_s );
-  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString() ) );
-  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) ) ) );
-  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString() ) );
-  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString( QVector<QgsPoint>() << QgsPoint( 10, 0 ) << QgsPoint( 10, 1 ) << QgsPoint( 11, 1 ) << QgsPoint( 10, 0 ) ) ) );
-  asGeos = QgsGeos::asGeos( &polyWithEmptyParts );
-  QCOMPARE( GEOSGetNumGeometries_r( QgsGeosContext::get(), asGeos.get() ), 2 );
-  res = QgsGeometry( QgsGeos::fromGeos( asGeos.get() ) );
-  QCOMPARE( res.asWkt(), u"MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((10 0, 10 1, 11 1, 10 0)))"_s );
-
-  // Empty geometry
-  QgsPoint point;
-  asGeos = QgsGeos::asGeos( &point );
-  // should be treated as a null geometry, not an empty point in order to maintain api compatibility with
-  // earlier QGIS 3.x releases
-  QVERIFY( !QgsGeos::fromGeos( asGeos.get() ) );
 }
 
 void TestQgsGeometry::curveIndexOf_data()

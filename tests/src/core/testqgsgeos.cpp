@@ -49,6 +49,13 @@ class TestQgsGeos : public QObject
     void geometryConversionMultiSurface();
     void geometryConversionGeometryCollection();
 #endif
+
+    void geosCollectionAndEmptyParts();
+
+    void pointGeometryFromGeos_data();
+    void pointGeometryFromGeos();
+    void linestringGeometryFromGeos_data();
+    void linestringGeometryFromGeos();
 };
 
 void TestQgsGeos::compareGeoms( const QgsAbstractGeometry *inputGeom, const QString expectedWkt )
@@ -422,6 +429,97 @@ void TestQgsGeos::geometryConversionGeometryCollection()
   */
 }
 #endif
+
+void TestQgsGeos::geosCollectionAndEmptyParts()
+{
+  // test GEOS conversion utils
+
+  // empty parts should NOT be added to a GEOS collection -- it can cause crashes in GEOS
+  QgsMultiPolygon polyWithEmptyParts;
+  geos::unique_ptr asGeos( QgsGeos::asGeos( &polyWithEmptyParts ) );
+  QgsGeometry res( QgsGeos::fromGeos( asGeos.get() ) );
+  QCOMPARE( res.asWkt(), u"MultiPolygon EMPTY"_s );
+  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString() ) );
+  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) ) ) );
+  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString() ) );
+  polyWithEmptyParts.addGeometry( new QgsPolygon( new QgsLineString( QVector<QgsPoint>() << QgsPoint( 10, 0 ) << QgsPoint( 10, 1 ) << QgsPoint( 11, 1 ) << QgsPoint( 10, 0 ) ) ) );
+  asGeos = QgsGeos::asGeos( &polyWithEmptyParts );
+  QCOMPARE( GEOSGetNumGeometries_r( QgsGeosContext::get(), asGeos.get() ), 2 );
+  res = QgsGeometry( QgsGeos::fromGeos( asGeos.get() ) );
+  QCOMPARE( res.asWkt(), u"MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((10 0, 10 1, 11 1, 10 0)))"_s );
+
+  // Empty geometry
+  QgsPoint point;
+  asGeos = QgsGeos::asGeos( &point );
+  // should be treated as a null geometry, not an empty point in order to maintain api compatibility with
+  // earlier QGIS 3.x releases
+  QVERIFY( !QgsGeos::fromGeos( asGeos.get() ) );
+}
+
+void TestQgsGeos::pointGeometryFromGeos_data()
+{
+  QTest::addColumn<double>( "x" );
+  QTest::addColumn<double>( "y" );
+
+  QTest::newRow( "point_geos_1" ) << 30.0 << 10.0;
+}
+
+void TestQgsGeos::pointGeometryFromGeos()
+{
+  QFETCH( double, x );
+  QFETCH( double, y );
+
+  GEOSContextHandle_t context = QgsGeosContext::get();
+  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( context, 1, 2 );
+  GEOSCoordSeq_setX_r( context, coord, 0, x );
+  GEOSCoordSeq_setY_r( context, coord, 0, y );
+  GEOSGeometry *geosPt = GEOSGeom_createPoint_r( context, coord );
+
+  const QgsGeometry geom = QgsGeos::geometryFromGeos( geosPt );
+  QVERIFY( geom.wkbType() == Qgis::WkbType::Point );
+
+  const QgsPointXY geomPt = geom.asPoint();
+
+  QGSCOMPARENEAR( x, geomPt.x(), 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( y, geomPt.y(), 4 * std::numeric_limits<double>::epsilon() );
+}
+
+void TestQgsGeos::linestringGeometryFromGeos_data()
+{
+  QTest::addColumn<QVariantList>( "line" );
+  QVariantList line;
+  line << QVariant( QPointF( 30.0, 10.0 ) ) << QVariant( QPointF( 10.0, 30.0 ) ) << QVariant( QPointF( 40.0, 40.0 ) );
+  QTest::newRow( "linestring_geos_1" ) << line;
+}
+
+void TestQgsGeos::linestringGeometryFromGeos()
+{
+  QFETCH( QVariantList, line );
+  GEOSContextHandle_t context = QgsGeosContext::get();
+
+  //create geos coord sequence first
+  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( context, line.count(), 2 );
+  for ( int i = 0; i < line.count(); i++ )
+  {
+    const QPointF pt = line.at( i ).toPointF();
+    GEOSCoordSeq_setX_r( context, coord, i, pt.x() );
+    GEOSCoordSeq_setY_r( context, coord, i, pt.y() );
+  }
+  GEOSGeometry *geosLine = GEOSGeom_createLineString_r( context, coord );
+  const QgsGeometry geom = QgsGeos::geometryFromGeos( geosLine );
+  QVERIFY( geom.wkbType() == Qgis::WkbType::LineString );
+
+  const QgsPolylineXY polyline = geom.asPolyline();
+
+  QCOMPARE( polyline.size(), line.size() );
+  for ( int i = 0; i < polyline.size(); ++i )
+  {
+    const QgsPointXY &polylinePt = polyline.at( i );
+    const QPointF linePt = line.at( i ).toPointF();
+    QGSCOMPARENEAR( polylinePt.x(), linePt.x(), 4 * std::numeric_limits<double>::epsilon() );
+    QGSCOMPARENEAR( polylinePt.y(), linePt.y(), 4 * std::numeric_limits<double>::epsilon() );
+  }
+}
 
 QGSTEST_MAIN( TestQgsGeos )
 #include "testqgsgeos.moc"
