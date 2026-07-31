@@ -37,7 +37,7 @@ class TestQgsRubberband : public QgsTest
     Q_OBJECT
   public:
     TestQgsRubberband()
-      : QgsTest( u"Rubberband Tests"_s )
+      : QgsTest( u"Rubberband Tests"_s, u"rubberband"_s )
     {}
 
   private slots:
@@ -324,20 +324,11 @@ void TestQgsRubberband::testLineSymbolRender()
   std::unique_ptr<QgsLineSymbol> lineSymbol( QgsLineSymbol::createSimple( { { u"line_color"_s, u"#0000ff"_s }, { u"line_width"_s, u"3"_s }, { u"capstyle"_s, u"round"_s } } ) );
   r.setSymbol( lineSymbol.release() );
 
-  QPixmap pixmap( canvas->size() );
-  QPainter painter( &pixmap );
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  QPainter painter( &image );
   canvas->render( &painter );
   painter.end();
-  const QString destFile = QDir::tempPath() + u"/rubberband_line_symbol.png"_s;
-  pixmap.save( destFile );
-
-  QgsRenderChecker checker;
-  checker.setControlPathPrefix( u"rubberband"_s );
-  checker.setControlName( u"expected_line_symbol"_s );
-  checker.setRenderedImage( destFile );
-  const bool result = checker.compareImages( u"expected_line_symbol"_s );
-  mReport += checker.report();
-  QVERIFY( result );
+  QGSVERIFYIMAGECHECK( u"line_symbol"_s, u"line_symbol"_s, image );
 }
 
 void TestQgsRubberband::testFillSymbolRender()
@@ -357,20 +348,11 @@ void TestQgsRubberband::testFillSymbolRender()
   );
   r.setSymbol( fillSymbol.release() );
 
-  QPixmap pixmap( canvas->size() );
-  QPainter painter( &pixmap );
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  QPainter painter( &image );
   canvas->render( &painter );
   painter.end();
-  const QString destFile = QDir::tempPath() + u"/rubberband_fill_symbol.png"_s;
-  pixmap.save( destFile );
-
-  QgsRenderChecker checker;
-  checker.setControlPathPrefix( u"rubberband"_s );
-  checker.setControlName( u"expected_fill_symbol"_s );
-  checker.setRenderedImage( destFile );
-  const bool result = checker.compareImages( u"expected_fill_symbol"_s );
-  mReport += checker.report();
-  QVERIFY( result );
+  QGSVERIFYIMAGECHECK( u"fill_symbol"_s, u"fill_symbol"_s, image );
 }
 
 
