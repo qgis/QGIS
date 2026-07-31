@@ -1326,7 +1326,7 @@ tests:
         name: expected/pycalculator_points.gml
         type: vector
 
-  - algorithm: qgis:executesql
+  - algorithm: native:executesql
     name: Test execute SQL
     params:
       INPUT_DATASOURCES:
