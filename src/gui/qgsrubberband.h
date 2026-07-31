@@ -276,7 +276,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Clears all registered preview items.
      *
-     * \see addPreviewItem())
+     * \see addPreviewItem()
      * \since QGIS 4.4
      */
     void clearPreviewItems();

@@ -231,7 +231,7 @@ Ownership of the item is transferred to the rubber band.
 %Docstring
 Clears all registered preview items.
 
-.. seealso:: :py:func:`addPreviewItem` )
+.. seealso:: :py:func:`addPreviewItem`
 
 .. versionadded:: 4.4
 %End
