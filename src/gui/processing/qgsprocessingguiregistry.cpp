@@ -105,6 +105,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingRasterOptionsWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingHeatmapPixelSizeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingReliefColorsWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingExecuteSqlWidgetWrapper() );
 
   mModelConfigWidgetFactory = std::make_unique< QgsProcessingGuiInternalModelConfigWidgetFactory >();
   registerModelConfigWidgetFactory( mModelConfigWidgetFactory.get() );
