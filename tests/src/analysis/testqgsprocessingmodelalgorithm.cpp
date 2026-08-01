@@ -2762,7 +2762,9 @@ void TestQgsProcessingModelAlgorithm::modelSource()
 {
   QgsProcessingModelChildParameterSource source;
   source.setExpression( u"expression"_s );
+  Q_NOWARN_DEPRECATED_PUSH
   source.setExpressionText( u"expression string"_s );
+  Q_NOWARN_DEPRECATED_POP
   source.setOutputName( u"output name "_s );
   source.setStaticValue( QString( "value" ) );
   source.setOutputChildId( u"output child id"_s );
@@ -2779,7 +2781,9 @@ void TestQgsProcessingModelAlgorithm::modelSource()
   ds >> res;
 
   QCOMPARE( res.expression(), u"expression"_s );
+  Q_NOWARN_DEPRECATED_PUSH
   QCOMPARE( res.expressionText(), u"expression string"_s );
+  Q_NOWARN_DEPRECATED_POP
   QCOMPARE( res.outputName(), u"output name "_s );
   QCOMPARE( res.staticValue().toString(), u"value"_s );
   QCOMPARE( res.outputChildId(), u"output child id"_s );
