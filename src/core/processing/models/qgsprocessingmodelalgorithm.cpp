@@ -508,10 +508,19 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         if ( ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::NoThreading ) && ( QThread::currentThread() != qApp->thread() ) )
         {
           // child algorithm run step must be called on main thread
-          auto runOnMainThread = [modelThread, &context, &modelFeedback, &results, &childAlg, &childParams]
+          bool exceptionFromMainThread = false;
+          auto runOnMainThread = [modelThread, &context, &modelFeedback, &results, &childAlg, &childParams, &exceptionFromMainThread, &childResult]
           {
             Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->runPrepared() must be run on the main thread" );
-            results = childAlg->runPrepared( childParams, context, &modelFeedback );
+            try
+            {
+              results = childAlg->runPrepared( childParams, context, &modelFeedback );
+            }
+            catch ( QgsProcessingException &e )
+            {
+              exceptionFromMainThread = true;
+              childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed );
+            }
             context.pushToThread( modelThread );
           };
 
@@ -523,14 +532,19 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 #ifndef __clang_analyzer__
           QMetaObject::invokeMethod( qApp, runOnMainThread, Qt::BlockingQueuedConnection );
 #endif
+          if ( !exceptionFromMainThread )
+          {
+            runResult = true;
+            childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
+          }
         }
         else
         {
           // safe to run on model thread
           results = childAlg->runPrepared( childParams, context, &modelFeedback );
+          runResult = true;
+          childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
         }
-        runResult = true;
-        childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
       }
       catch ( QgsProcessingException &e )
       {
