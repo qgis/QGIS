@@ -334,6 +334,8 @@ class TestProcessingGui : public QgsTest
     void testMeshDatasetWrapperLayerInProject();
     void testMeshDatasetWrapperLayerOutsideProject();
     void testModelGraphicsView();
+    void testExecuteSqlWidget();
+    void testExecuteSqlWidgetWrapper();
 
   private:
     QString mTempDir;
@@ -12175,6 +12177,113 @@ void TestProcessingGui::testModelGraphicsView()
   QCOMPARE( algDest.childAlgorithms().size(), 3 );
   QCOMPARE( algDest.childAlgorithms().value( u"native:buffer_2"_s ).modelOutputs().size(), 1 );
   QCOMPARE( algDest.childAlgorithms().value( u"native:buffer_2"_s ).modelOutputs().value( algDest.childAlgorithms().value( u"native:buffer_2"_s ).modelOutputs().keys().at( 0 ) ).comment()->description(), u"output comm"_s );
+}
+
+void TestProcessingGui::testExecuteSqlWidget()
+{
+  QgsExecuteSqlWidget w;
+  QSignalSpy changedSpy( &w, &QgsExecuteSqlWidget::changed );
+  w.setValue( u"test"_s );
+  QCOMPARE( w.value(), u"test"_s );
+  QCOMPARE( changedSpy.size(), 1 );
+  w.setValue( u"test"_s );
+  QCOMPARE( changedSpy.size(), 1 );
+
+  w.setValue( u"test2"_s );
+  QCOMPARE( w.value(), u"test2"_s );
+  QCOMPARE( changedSpy.size(), 2 );
+
+  w.textEdit()->setPlainText( u"test3"_s );
+  QCOMPARE( w.value(), u"test3"_s );
+  QCOMPARE( changedSpy.size(), 3 );
+}
+
+void TestProcessingGui::testExecuteSqlWidgetWrapper()
+{
+  // execute sql works with string parameters
+  QgsProcessingParameterString param( u"sql"_s, u"Enter SQL"_s );
+
+  // standard wrapper
+  QgsProcessingExecuteSqlWidgetWrapper wrapper( &param );
+
+  QgsProcessingContext context;
+  QWidget *w = wrapper.createWrappedWidget( context );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingExecuteSqlWidgetWrapper::widgetValueHasChanged );
+  wrapper.setWidgetValue( u"select * from table"_s, context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toString(), u"select * from table"_s );
+  QCOMPARE( static_cast<QgsExecuteSqlWidget *>( wrapper.wrappedWidget() )->value(), u"select * from table"_s );
+  wrapper.setWidgetValue( QString(), context );
+  QCOMPARE( spy.count(), 2 );
+  QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast<QgsExecuteSqlWidget *>( wrapper.wrappedWidget() )->value().isEmpty() );
+
+  QLabel *l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), u"Enter SQL"_s );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  static_cast<QgsExecuteSqlWidget *>( wrapper.wrappedWidget() )->setValue( u"select * from b"_s );
+  QCOMPARE( spy.count(), 3 );
+  static_cast<QgsExecuteSqlWidget *>( wrapper.wrappedWidget() )->setValue( QString() );
+  QCOMPARE( spy.count(), 4 );
+
+  delete w;
+
+  // batch wrapper
+  QgsProcessingExecuteSqlWidgetWrapper wrapperB( &param, Qgis::ProcessingMode::Batch );
+
+  w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingExecuteSqlWidgetWrapper::widgetValueHasChanged );
+  wrapperB.setWidgetValue( u"a"_s, context );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( wrapperB.widgetValue().toString(), u"a"_s );
+  QCOMPARE( static_cast<QgsExecuteSqlWidget *>( wrapperB.wrappedWidget() )->value(), u"a"_s );
+  wrapperB.setWidgetValue( QString(), context );
+  QCOMPARE( spy2.count(), 2 );
+  QVERIFY( wrapperB.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast<QgsExecuteSqlWidget *>( wrapperB.wrappedWidget() )->value().isEmpty() );
+
+  // check signal
+  static_cast<QgsExecuteSqlWidget *>( w )->setValue( u"x"_s );
+  QCOMPARE( spy2.count(), 3 );
+  static_cast<QgsExecuteSqlWidget *>( w )->setValue( QString() );
+  QCOMPARE( spy2.count(), 4 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingExecuteSqlWidgetWrapper wrapperM( &param, Qgis::ProcessingMode::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingExecuteSqlWidgetWrapper::widgetValueHasChanged );
+  wrapperM.setWidgetValue( u"a"_s, context );
+  QCOMPARE( wrapperM.widgetValue().toString(), u"a"_s );
+  QCOMPARE( spy3.count(), 1 );
+  QCOMPARE( static_cast<QgsExecuteSqlWidget *>( wrapperM.wrappedWidget() )->value(), u"a"_s );
+  wrapperM.setWidgetValue( QString(), context );
+  QVERIFY( wrapperM.widgetValue().toString().isEmpty() );
+  QCOMPARE( spy3.count(), 2 );
+  QVERIFY( static_cast<QgsExecuteSqlWidget *>( wrapperM.wrappedWidget() )->value().isEmpty() );
+
+  // check signal
+  static_cast<QgsExecuteSqlWidget *>( w )->setValue( u"x"_s );
+  QCOMPARE( spy3.count(), 3 );
+  static_cast<QgsExecuteSqlWidget *>( w )->setValue( QString() );
+  QCOMPARE( spy3.count(), 4 );
+
+  // should be a label in modeler mode
+  l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), u"Enter SQL"_s );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
 }
 
 void TestProcessingGui::cleanupTempDir()

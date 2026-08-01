@@ -105,6 +105,8 @@ void QgsExecuteSqlAlgorithm::initAlgorithm( const QVariantMap & )
   inputQuery->setHelp(
     QObject::tr( "The SQL query to execute using SQLite/SpatiaLite syntax. Example: 'SELECT * FROM input1 WHERE area > 100'. Expressions enclosed in [% %] will be expanded before execution." )
   );
+  inputQuery->setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"executesql"_s } } ) } } );
+
   addParameter( inputQuery.release() );
 
   auto inputUidField = std::make_unique<QgsProcessingParameterString>( u"INPUT_UID_FIELD"_s, QObject::tr( "Unique identifier field" ), QVariant(), false, true );

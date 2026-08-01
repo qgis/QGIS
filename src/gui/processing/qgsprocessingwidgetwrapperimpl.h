@@ -2420,6 +2420,53 @@ class GUI_EXPORT QgsProcessingReliefColorsWidgetWrapper : public QgsAbstractProc
     friend class TestProcessingGui;
 };
 
+class GUI_EXPORT QgsExecuteSqlWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsExecuteSqlWidget( QWidget *parent = nullptr );
+    void setValue( const QString &text );
+    QString value() const;
+    QgsFieldExpressionWidget *expressionWidget() const { return mExpressionWidget; }
+    QPlainTextEdit *textEdit() const { return mTextEdit; }
+
+  signals:
+
+    void changed();
+
+  private slots:
+
+    void insertExpression();
+
+  private:
+    QPlainTextEdit *mTextEdit = nullptr;
+    QgsFieldExpressionWidget *mExpressionWidget = nullptr;
+    QPushButton *mInsertButton = nullptr;
+};
+
+class GUI_EXPORT QgsProcessingExecuteSqlWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+    QgsProcessingExecuteSqlWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override SIP_FACTORY;
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+  private:
+    QgsExecuteSqlWidget *mExecuteSqlWidget = nullptr;
+
+    friend class TestProcessingGui;
+};
 
 ///@endcond PRIVATE
 

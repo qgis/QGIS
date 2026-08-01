@@ -9185,4 +9185,108 @@ QString QgsProcessingReliefColorsWidgetWrapper::modelerExpressionFormatString() 
 }
 
 
+//
+// QgsExecuteSqlWidget
+//
+
+QgsExecuteSqlWidget::QgsExecuteSqlWidget( QWidget *parent )
+  : QWidget( parent )
+{
+  QVBoxLayout *mainLayout = new QVBoxLayout( this );
+  mainLayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mTextEdit = new QPlainTextEdit( this );
+  mainLayout->addWidget( mTextEdit, 1 );
+
+  QHBoxLayout *bottomLayout = new QHBoxLayout();
+  bottomLayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mExpressionWidget = new QgsFieldExpressionWidget( this );
+  bottomLayout->addWidget( mExpressionWidget, 1 );
+
+  mInsertButton = new QPushButton( tr( "Insert" ), this );
+  bottomLayout->addWidget( mInsertButton );
+
+  mainLayout->addLayout( bottomLayout );
+
+  connect( mInsertButton, &QPushButton::clicked, this, &QgsExecuteSqlWidget::insertExpression );
+  connect( mTextEdit, &QPlainTextEdit::textChanged, this, &QgsExecuteSqlWidget::changed );
+}
+
+void QgsExecuteSqlWidget::insertExpression()
+{
+  if ( !mExpressionWidget->currentText().isEmpty() )
+  {
+    const QString formattedExpression = u"[% %1 %]"_s.arg( mExpressionWidget->currentText() );
+    mTextEdit->insertPlainText( formattedExpression );
+  }
+}
+
+void QgsExecuteSqlWidget::setValue( const QString &text )
+{
+  if ( text == value() )
+    return;
+
+  mTextEdit->setPlainText( text );
+}
+
+QString QgsExecuteSqlWidget::value() const
+{
+  return mTextEdit->toPlainText();
+}
+
+//
+// QgsProcessingExecuteSqlWidgetWrapper
+//
+
+QgsProcessingExecuteSqlWidgetWrapper::QgsProcessingExecuteSqlWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QObject *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingExecuteSqlWidgetWrapper::parameterType() const
+{
+  return u"executesql"_s;
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingExecuteSqlWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingExecuteSqlWidgetWrapper( parameter, type );
+}
+
+QWidget *QgsProcessingExecuteSqlWidgetWrapper::createWidget()
+{
+  mExecuteSqlWidget = new QgsExecuteSqlWidget();
+  mExecuteSqlWidget->expressionWidget()->registerExpressionContextGenerator( this );
+
+  if ( parameterDefinition() )
+  {
+    mExecuteSqlWidget->setToolTip( parameterDefinition()->toolTip() );
+  }
+
+  connect( mExecuteSqlWidget, &QgsExecuteSqlWidget::changed, this, [this] { emit widgetValueHasChanged( this ); } );
+
+  return mExecuteSqlWidget;
+}
+
+void QgsProcessingExecuteSqlWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( !mExecuteSqlWidget )
+  {
+    return;
+  }
+
+  const QString sqlText = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+  mExecuteSqlWidget->setValue( sqlText );
+}
+
+QVariant QgsProcessingExecuteSqlWidgetWrapper::widgetValue() const
+{
+  if ( !mExecuteSqlWidget )
+  {
+    return QVariant();
+  }
+
+  return mExecuteSqlWidget->value();
+}
+
 ///@endcond PRIVATE
