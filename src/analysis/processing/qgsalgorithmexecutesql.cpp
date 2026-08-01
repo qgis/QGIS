@@ -188,6 +188,10 @@ QVariantMap QgsExecuteSqlAlgorithm::processAlgorithm( const QVariantMap &paramet
 
   QgsExpressionContext localContext = createExpressionContext( parameters, context );
   const QString expandedQuery = QgsExpression::replaceExpressionText( query, &localContext );
+
+  feedback->pushInfo( QObject::tr( "Executing query:" ) );
+  feedback->pushCommandInfo( expandedQuery );
+
   layerDefinition.setQuery( expandedQuery );
 
   if ( !uniqueIdentifierField.isEmpty() )
