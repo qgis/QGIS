@@ -159,7 +159,9 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm(
         }
         case Qgis::ProcessingModelChildParameterSource::ExpressionText:
         {
+          Q_NOWARN_DEPRECATED_PUSH
           expressionText = QgsExpression::replaceExpressionText( source.expressionText(), &expressionContext );
+          Q_NOWARN_DEPRECATED_POP
           break;
         }
 

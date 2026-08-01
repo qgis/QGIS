@@ -1357,7 +1357,9 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+              Q_NOWARN_DEPRECATED_PUSH
               parameterValueAsString = u": %1"_s.arg( firstParameterSource.expressionText() );
+              Q_NOWARN_DEPRECATED_POP
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ModelOutput:
