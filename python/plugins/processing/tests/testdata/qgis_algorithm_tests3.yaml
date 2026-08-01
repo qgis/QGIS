@@ -1343,6 +1343,23 @@ tests:
         name: expected/execute_sql.gml
         type: vector
 
+  - algorithm: native:executesql
+    name: Test execute SQL embedded expression
+    params:
+      INPUT_DATASOURCES:
+        params:
+        - name: points.gml
+          type: vector
+        type: multi
+      INPUT_GEOMETRY_FIELD: ''
+      INPUT_GEOMETRY_TYPE: 0
+      INPUT_QUERY: select * from input1 where id2=[% 1 + 1 %]
+      INPUT_UID_FIELD: ''
+    results:
+      OUTPUT:
+        name: expected/execute_sql.gml
+        type: vector
+
   - algorithm: native:polygonfromlayerextent
     name: Polygon from raster extent
     params:
