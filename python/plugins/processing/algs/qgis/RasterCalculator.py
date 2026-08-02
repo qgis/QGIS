@@ -26,6 +26,7 @@ from qgis.core import (
     QgsCoordinateTransform,
     QgsMapLayer,
     QgsProcessing,
+    QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingParameterCrs,
     QgsProcessingParameterExtent,
