@@ -110,7 +110,7 @@ void QgsGeometryAngleCheck::fixError( const QMap<QString, QgsFeaturePool *> &fea
   const QgsVertexId vidx = error->vidx();
 
   // Check if point still exists
-  if ( !vidx.isValid( geometry ) )
+  if ( !geometry->hasVertex( vidx ) )
   {
     error->setObsolete();
     return;
