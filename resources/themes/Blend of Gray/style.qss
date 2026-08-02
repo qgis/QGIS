@@ -539,6 +539,7 @@ QSizeGrip
 QDockWidget
 {
     titlebar-close-icon: url(@theme_path/icons/close.svg);
+    titlebar-normal-icon: none;
 }
 
 QDockWidget::separator
@@ -558,16 +559,20 @@ QDockWidget::close-button, QDockWidget::float-button
 {
     text-align: center;
     spacing: 1px; /* spacing between items in the tool bar */
+    icon-size: 32px; /* maximum icon size */
+    padding: 1px;
+    border: transparent; /* must be transparent for hover effect */
+    background: transparent; /* must be transparent for hover effect */
 }
 
 QDockWidget::close-button:hover, QDockWidget::float-button:hover
 {
-    background: #242424;
+    background: @hover;
 }
 
 QDockWidget::close-button:pressed, QDockWidget::float-button:pressed
 {
-    padding: 1px -1px -1px 1px;
+    padding: 1px 0px 0px 1px;
 }
 
 QMainWindow::separator
