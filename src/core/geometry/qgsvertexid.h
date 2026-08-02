@@ -87,8 +87,10 @@ struct CORE_EXPORT QgsVertexId
 
   /**
    * Returns TRUE if this vertex ID is valid for the specified \a geom.
+   *
+   * \deprecated QGIS 4.4. Use QgsAbstractGeometry::hasVertex() instead.
    */
-  bool isValid( const QgsAbstractGeometry *geom ) const SIP_HOLDGIL;
+  Q_DECL_DEPRECATED bool isValid( const QgsAbstractGeometry *geom ) const SIP_HOLDGIL SIP_DEPRECATED;
 
   //! Part number
   int part = -1;

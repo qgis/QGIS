@@ -79,7 +79,7 @@ void QgsGeometryAreaCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
   const double layerToMapUnits = scaleFactor( featurePool->layer() );
 
   // Check if polygon still exists
-  if ( !vidx.isValid( geom ) )
+  if ( !geom->hasVertex( QgsVertexId( vidx.part, 0, 0 ) ) )
   {
     error->setObsolete();
     return;
