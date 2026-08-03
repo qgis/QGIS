@@ -145,6 +145,12 @@ stdenv.mkDerivation {
     fileset = qgisSourceFiles;
   };
 
+  postPatch = ''
+    substituteInPlace python/utils.py \
+      --replace-fail '("mod_spatialite", "sqlite3_modspatialite_init")' \
+        '("${libspatialite}/lib/mod_spatialite${stdenv.hostPlatform.extensions.sharedLibrary}", "sqlite3_modspatialite_init")'
+  '';
+
   nativeBuildInputs = [
     makeWrapper
     wrapGAppsHook3
