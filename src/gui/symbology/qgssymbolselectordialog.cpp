@@ -556,7 +556,7 @@ void QgsSymbolSelectorWidget::addLayer()
   mSymbolLayersModel->updateNode( parentSymbol, node );
   updateExpandedStateFromNode( node );
 
-  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( node->children().at( 0 ) ) );
+  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( node->children().at( insertIdx != -1 ? insertIdx : 0 ) ) );
   updateUi();
   updatePreview();
   emitSymbolModified();
