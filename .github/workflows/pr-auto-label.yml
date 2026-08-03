@@ -20,7 +20,8 @@ jobs:
         with:
           sparse-checkout: |
             .github
-      - name: "labeler"
-        uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0
-        with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+      # - name: "labeler"
+      #   uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0
+      #   with:
+      #     configuration-path: ".github/labeler.yml"
+      #     repo-token: "${{ secrets.GITHUB_TOKEN }}"
