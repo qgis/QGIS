@@ -64,12 +64,12 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *en
       setupMarker( parentEntity );
       break;
     case Qgis::GeometryType::Line:
-      setupLine( parentEntity, engine );
+      setupLine( parentEntity );
       setupMarker( parentEntity );
       break;
     case Qgis::GeometryType::Polygon:
       setupMarker( parentEntity );
-      setupLine( parentEntity, engine );
+      setupLine( parentEntity );
       setupPolygon( parentEntity );
       break;
     case Qgis::GeometryType::Null:
@@ -96,7 +96,7 @@ void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
   mMarkerEntity->addComponent( mMarkerTransform );
 }
 
-void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DEngine *engine )
+void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
 {
   mLineEntity = make_qobject_unique<Qt3DCore::QEntity>( parentEntity );
 
@@ -119,8 +119,8 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DE
   mLineMaterial->setLineWidth( mWidth );
   mLineMaterial->setLineColor( mColor );
 
-  QObject::connect( engine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this] { mLineMaterial->setViewportSize( mEngine->size() ); } );
-  mLineMaterial->setViewportSize( engine->size() );
+  QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this] { mLineMaterial->setViewportSize( mEngine->size() ); } );
+  mLineMaterial->setViewportSize( mEngine->size() );
 
   mLineEntity->addComponent( mLineMaterial );
 

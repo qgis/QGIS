@@ -37,9 +37,9 @@ QgsRubberBandRenderView::QgsRubberBandRenderView( const QString &viewName, Qt3DR
   // rubberband rendering pass
   constructRenderPass( fwdRenderTarget ); //#spellok
 
-  mRubberBandsRootEntity = new Qt3DCore::QEntity( rootSceneEntity );
-  mRubberBandsRootEntity->setObjectName( "mRubberBandsRootEntity" );
-  mRubberBandsRootEntity->addComponent( mLayer );
+  mRootEntity = new Qt3DCore::QEntity( rootSceneEntity );
+  mRootEntity->setObjectName( "mRubberBandsRootEntity" );
+  mRootEntity->addComponent( mLayer );
 }
 
 void QgsRubberBandRenderView::constructRenderPass( Qt3DRender::QRenderTarget *fwdRenderTarget ) //#spellok
@@ -76,7 +76,7 @@ void QgsRubberBandRenderView::constructRenderPass( Qt3DRender::QRenderTarget *fw
 
 Qt3DCore::QEntity *QgsRubberBandRenderView::rubberBandEntity() const
 {
-  return mRubberBandsRootEntity;
+  return mRootEntity;
 }
 
 Qt3DRender::QRenderTargetSelector *QgsRubberBandRenderView::renderTargetSelector() const
