@@ -21141,9 +21141,9 @@ QgsVectorTileWriter.writeSingleTile: src/core/vectortile/qgsvectortilewriter.h#L
 QgsVectorTileWriter.writeTiles: src/core/vectortile/qgsvectortilewriter.h#L166
 QgsVectorTileWriter: src/core/vectortile/qgsvectortilewriter.h#L77
 QgsVertexId.QgsVertexId: src/core/geometry/qgsvertexid.h#L46
-QgsVertexId.__repr__: src/core/geometry/qgsvertexid.h#L107
+QgsVertexId.__repr__: src/core/geometry/qgsvertexid.h#L109
 QgsVertexId.isValid: src/core/geometry/qgsvertexid.h#L51
-QgsVertexId.isValid: src/core/geometry/qgsvertexid.h#L91
+QgsVertexId.isValid: src/core/geometry/qgsvertexid.h#L93
 QgsVertexId.partEqual: src/core/geometry/qgsvertexid.h#L68
 QgsVertexId.ringEqual: src/core/geometry/qgsvertexid.h#L77
 QgsVertexId.vertexEqual: src/core/geometry/qgsvertexid.h#L86
