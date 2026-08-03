@@ -141,13 +141,12 @@ void QgsLabelEngineConfigWidget::apply()
 
 void QgsLabelEngineConfigWidget::setDefaults()
 {
-  const pal::Pal p;
   spinCandLine->setValue( 5 );
   spinCandPolygon->setValue( 10 );
   chkShowCandidates->setChecked( false );
   chkShowMetrics->setChecked( false );
   chkShowAllLabels->setChecked( false );
-  chkShowPartialsLabels->setChecked( p.showPartialLabels() );
+  chkShowPartialsLabels->setChecked( pal::Pal::DEFAULT_SHOW_PARTIAL_LABELS );
   mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( QVariant::fromValue( Qgis::TextRenderFormat::AlwaysOutlines ) ) );
   mPlacementVersionComboBox->setCurrentIndex( mPlacementVersionComboBox->findData( static_cast<int>( Qgis::LabelPlacementEngineVersion::Version2 ) ) );
 }

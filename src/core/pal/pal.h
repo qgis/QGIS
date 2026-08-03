@@ -173,6 +173,8 @@ namespace pal
        */
       void setShowPartialLabels( bool show );
 
+      static constexpr bool DEFAULT_SHOW_PARTIAL_LABELS = true;
+
       /**
        * Returns whether partial labels should be allowed.
        *
@@ -307,7 +309,7 @@ namespace pal
       /**
        * \brief show partial labels (cut-off by the map canvas) or not
        */
-      bool mShowPartialLabels = true;
+      bool mShowPartialLabels = DEFAULT_SHOW_PARTIAL_LABELS;
 
       double mMaxLineCandidatesPerMapUnit = 0;
       double mMaxPolygonCandidatesPerMapUnitSquared = 0;
