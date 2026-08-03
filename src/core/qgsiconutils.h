@@ -21,8 +21,11 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QSize>
+
 class QgsMapLayer;
 class QIcon;
+class QString;
 
 /**
  * \ingroup core
@@ -115,12 +118,16 @@ class CORE_EXPORT QgsIconUtils
     static QIcon iconForLayerType( Qgis::LayerType type );
 
     /**
-     * Returns a copy of \a icon with a underlay icon in
-     * indicating that the field's values are governed by a field domain.
+     * Returns a copy of \a icon with an underlay icon rendered from the
+     * image file at \a overlayPath.
+     *
+     * \param icon The base icon to which the overlay will be added.
+     * \param overlayPath The path to the overlay image file.
+     * \param size The requested size of the resultant icon. Default value is the standard small icon size 16x16 pixels.
      *
      * \since QGIS 4.2
      */
-    static QIcon addFieldDomainOverlay( const QIcon &icon );
+    static QIcon addOverlay( const QIcon &icon, const QString &overlayPath, QSize size = QSize( 16, 16 ) );
 };
 
 #endif // QGSICONUTILS_H
