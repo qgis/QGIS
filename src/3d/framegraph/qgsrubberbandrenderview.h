@@ -44,7 +44,7 @@ namespace Qt3DCore
  * an RGB texture that can be captured into a QImage and sent to the CPU for
  * calculating real 3D points from mouse coordinates (for zoom, rotation, drag..)
  *
- * \since QGIS 4.2
+ * \since QGIS 4.4
  */
 class QgsRubberBandRenderView : public QgsAbstractRenderView
 {
@@ -62,7 +62,7 @@ class QgsRubberBandRenderView : public QgsAbstractRenderView
     Qt3DRender::QLayer *mLayer = nullptr;
     Qt3DRender::QCamera *mMainCamera = nullptr;
     Qt3DRender::QRenderTargetSelector *mRenderTargetSelector = nullptr;
-    Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
+    Qt3DCore::QEntity *mRootEntity = nullptr;
 
     void constructRenderPass( Qt3DRender::QRenderTarget *fwdRenderTarget ); //#spellok
 };
