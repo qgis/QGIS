@@ -204,17 +204,18 @@ QIcon QgsIconUtils::iconForLayerType( Qgis::LayerType type )
   return QIcon();
 }
 
-QIcon QgsIconUtils::addFieldDomainOverlay( const QIcon &icon )
+QIcon QgsIconUtils::addOverlay( const QIcon &icon, const QString &overlayPath, QSize size )
 {
   if ( icon.isNull() )
     return icon;
 
-  const QSize size = icon.actualSize( QSize( 16, 16 ) );
-  const qreal dpr = QgsApplication::getThemeIcon( u"/field_indicators/mIndicatorFieldDomain.svg"_s ).pixmap( size ).devicePixelRatio();
+  size = icon.actualSize( size );
+  const QIcon overlayIcon( overlayPath );
+  const qreal dpr = overlayIcon.pixmap( size ).devicePixelRatio();
 
   // Render through a QIcon so the SVG scales correctly and honours device pixel ratio
-  // (QgsApplication::getThemePixmap ignores the size argument when no colors are passed).
-  QPixmap pixmap = QgsApplication::getThemeIcon( u"/field_indicators/mIndicatorFieldDomain.svg"_s ).pixmap( size, dpr );
+  // (QPixmap loaded directly from a file ignores the size argument when no colors are passed).
+  QPixmap pixmap = overlayIcon.pixmap( size, dpr );
 
   QPainter painter( &pixmap );
   painter.drawPixmap( 0, 0, icon.pixmap( size, dpr ) );

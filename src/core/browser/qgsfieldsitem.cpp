@@ -231,7 +231,7 @@ QIcon QgsFieldItem::icon()
   }
 
   if ( mDomain )
-    icon = QgsIconUtils::addFieldDomainOverlay( icon );
+    icon = QgsIconUtils::addOverlay( icon, QgsApplication::iconPath( u"/field_indicators/mIndicatorFieldDomain.svg"_s ) );
 
   return icon;
 }
