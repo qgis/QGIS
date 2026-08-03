@@ -5,7 +5,6 @@
   fetchFromGitHub,
   lndir,
   makeWrapper,
-  replaceVars,
   wrapGAppsHook3,
   wrapQtAppsHook,
 

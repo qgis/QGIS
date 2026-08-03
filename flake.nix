@@ -80,9 +80,6 @@
           };
 
           devShells.default =
-            let
-              nixPatches = pkgs.lib.concatStringsSep " " self'.packages.qgis.passthru.unwrapped.patches;
-            in
             pkgs.mkShell {
               inputsFrom = [
                 self'.packages.qgis
