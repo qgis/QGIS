@@ -74,14 +74,6 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      */
     void setName( const QString &n ) override;
 
-    /**
-     * Returns the group's unique identifier.
-     *
-     * The id is generated automatically on construction and preserved across clone()
-     * and project save/load, so it stays distinct even for groups with the same name()
-     *
-     * \since QGIS 4.4
-     */
     QString id() const override { return mId; }
 
     /**

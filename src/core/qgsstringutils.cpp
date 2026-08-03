@@ -73,10 +73,8 @@ QString QgsStringUtils::unaccent( const QString &input )
 QString QgsStringUtils::createUniqueId( const QString &base )
 {
   // A random UUID guarantees uniqueness; the base is a human-readable prefix.
-  const QString uuid = QUuid::createUuid().toString();
-  // trim the surrounding { } from the UUID
-  QString id = base.isEmpty() ? uuid.mid( 1, uuid.length() - 2 )
-                              : base + '_' + uuid.mid( 1, uuid.length() - 2 );
+  const QString uuid = QUuid::createUuid().toString( QUuid::StringFormat::WithoutBraces );
+  QString id = base.isEmpty() ? uuid : base + '_' + uuid;
   // Tidy the id up to avoid characters that may cause problems elsewhere (e.g.
   // in some parts of XML). Replaces every non-word character (word characters
   // are the alphabet, numbers and underscore) with an underscore.

@@ -197,9 +197,12 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
      * returns its own generated id, while a layer node returns the id of the map
      * layer it references (see QgsLayerTreeLayer::layerId()).
      *
+     * The base class returns an empty string; subclasses override this to return
+     * their identifier.
+     *
      * \since QGIS 4.4
      */
-    virtual QString id() const = 0;
+    virtual QString id() const { return QString(); }
 
     /**
      * Read layer tree from XML. Returns new instance.

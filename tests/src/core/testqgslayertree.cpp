@@ -829,19 +829,19 @@ void TestQgsLayerTree::testCustomNodes()
 {
   auto custom = std::make_unique< QgsLayerTreeCustomNode >( u"custom-id"_s );
   QVERIFY( QgsLayerTree::isCustomNode( custom.get() ) );
-  QCOMPARE( custom->nodeId(), u"custom-id"_s );
+  QCOMPARE( custom->id(), u"custom-id"_s );
   QCOMPARE( custom->name(), u"custom-id"_s );
   custom->setName( u"Custom Name"_s );
   QCOMPARE( custom->name(), u"Custom Name"_s );
 
   QgsLayerTreeCustomNode *custom2 = custom->clone();
-  QCOMPARE( custom2->nodeId(), u"custom-id"_s );
+  QCOMPARE( custom2->id(), u"custom-id"_s );
   QCOMPARE( custom2->name(), u"Custom Name"_s );
 
   QgsLayerTree root;
   QgsLayerTreeCustomNode *custom3 = root.insertCustomNode( -1, u"custom-id-3"_s, u"Custom Name 3"_s );
   QVERIFY( custom3 );
-  QCOMPARE( custom3->nodeId(), u"custom-id-3"_s );
+  QCOMPARE( custom3->id(), u"custom-id-3"_s );
   QCOMPARE( custom3->name(), u"Custom Name 3"_s );
   QCOMPARE( root.children().count(), 1 );
 
@@ -852,7 +852,7 @@ void TestQgsLayerTree::testCustomNodes()
     if ( QgsLayerTree::isCustomNode( node ) )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
-      QCOMPARE( customNode->nodeId(), u"custom-id-3"_s );
+      QCOMPARE( customNode->id(), u"custom-id-3"_s );
       QCOMPARE( customNode->name(), u"Custom Name 3"_s );
       count++;
     }

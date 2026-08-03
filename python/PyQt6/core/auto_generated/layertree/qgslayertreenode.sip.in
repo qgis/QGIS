@@ -172,7 +172,7 @@ Returns name of the node
 Set name of the node. Emits nameChanged signal.
 %End
 
-    virtual QString id() const = 0;
+    virtual QString id() const;
 %Docstring
 Returns the node's unique identifier.
 

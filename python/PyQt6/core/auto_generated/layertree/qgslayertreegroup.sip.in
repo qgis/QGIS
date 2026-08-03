@@ -54,16 +54,6 @@ Sets the group's name.
 %End
 
     virtual QString id() const;
-%Docstring
-Returns the group's unique identifier.
-
-The id is generated automatically on construction and preserved across
-:py:func:`~QgsLayerTreeGroup.clone` and project save/load, so it stays
-distinct even for groups with the same
-:py:func:`~QgsLayerTreeGroup.name`
-
-.. versionadded:: 4.4
-%End
 
     QgsLayerTreeGroup *insertGroup( int index, const QString &name );
 %Docstring

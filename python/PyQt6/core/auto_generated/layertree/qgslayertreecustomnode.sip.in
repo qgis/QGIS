@@ -46,19 +46,14 @@ other than layers and groups.
 %End
 
     virtual QString id() const;
+
+ QString nodeId() const /Deprecated="Since 4.4. Use id() instead."/;
 %Docstring
 Returns the node's unique identifier.
 
-.. versionadded:: 4.4
-%End
+.. deprecated:: 4.4
 
-        QString nodeId() const;
-%Docstring
-Returns the node's unique identifier.
-
-.. note::
-
-   Equivalent to :py:func:`~QgsLayerTreeCustomNode.id`; retained for API compatibility.
+   Use :py:func:`~QgsLayerTreeCustomNode.id` instead.
 %End
 
     virtual QString name() const;

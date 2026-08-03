@@ -138,12 +138,12 @@ QgsLayerTreeCustomNode *QgsLayerTreeGroup::insertCustomNode( int index, const QS
 
 QgsLayerTreeCustomNode *QgsLayerTreeGroup::insertCustomNode( int index, QgsLayerTreeCustomNode *node SIP_TRANSFER )
 {
-  if ( node->nodeId().trimmed().isEmpty() )
+  if ( node->id().trimmed().isEmpty() )
     return nullptr;
 
   // Avoid registering two custom nodes with the same id
   const QStringList customNodeIds = findCustomNodeIds();
-  if ( customNodeIds.contains( node->nodeId() ) )
+  if ( customNodeIds.contains( node->id() ) )
     return nullptr;
 
   insertChildNode( index, node );
@@ -243,7 +243,7 @@ void QgsLayerTreeGroup::removeCustomNode( QgsLayerTreeCustomNode *customNode )
     if ( QgsLayerTree::isCustomNode( child ) )
     {
       QgsLayerTreeCustomNode *childCustom = QgsLayerTree::toCustomNode( child );
-      if ( childCustom->nodeId() == customNode->nodeId() )
+      if ( childCustom->id() == customNode->id() )
       {
         removeChildren( mChildren.indexOf( child ), 1 );
         break;
@@ -346,7 +346,7 @@ QgsLayerTreeCustomNode *QgsLayerTreeGroup::findCustomNode( const QString &id ) c
     if ( QgsLayerTree::isCustomNode( child ) )
     {
       QgsLayerTreeCustomNode *childCustom = QgsLayerTree::toCustomNode( child );
-      if ( childCustom->nodeId() == id )
+      if ( childCustom->id() == id )
         return childCustom;
     }
     else if ( QgsLayerTree::isGroup( child ) )
@@ -758,7 +758,7 @@ QStringList QgsLayerTreeGroup::findCustomNodeIds() const
     if ( QgsLayerTree::isGroup( child ) )
       lst << QgsLayerTree::toGroup( child )->findCustomNodeIds();
     else if ( QgsLayerTree::isCustomNode( child ) )
-      lst << QgsLayerTree::toCustomNode( child )->nodeId();
+      lst << QgsLayerTree::toCustomNode( child )->id();
   }
   return lst;
 }
