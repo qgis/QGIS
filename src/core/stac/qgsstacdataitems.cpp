@@ -128,6 +128,8 @@ QgsStacAssetLayerItem::QgsStacAssetLayerItem(
 {
   updateToolTip();
   setState( Qgis::BrowserItemState::Populated );
+
+  mCapabilities.setFlag( Qgis::BrowserItemCapability::ReadOnly, true );
 }
 
 bool QgsStacAssetLayerItem::hasDragEnabled() const
