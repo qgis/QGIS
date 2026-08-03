@@ -31,7 +31,7 @@ class QgsSymbolLayer;
 
 
 /**
- * \brief Abstract base class for nodes contained within a QgsSymbolLayerModel. May represent a symbol or a layer.
+ * \brief Class for nodes contained within a QgsSymbolLayerModel. May represent a symbol or a layer.
  * \warning Not part of stable API and may change in future QGIS releases.
  * \ingroup gui
  * \since QGIS 4.4
@@ -49,29 +49,29 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
      */
     QgsSymbolLayerModelNode( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QgsVectorLayer *vectorLayer, QScreen *screen );
     /**
-     * Constructor for QgsSymbolLayerModelNode for a symbol node
+     * Constructor for QgsSymbolLayerModelNode for a symbol node.
      */
     QgsSymbolLayerModelNode( QgsSymbol *symbol, QgsVectorLayer *vectorLayer, QScreen *screen );
     ~QgsSymbolLayerModelNode() override;
 
 
-    //! Returns whether the node is a symbol layer. And otherwise, it is a symbol.
+    //! Returns TRUE if the node is a symbol layer. And otherwise, it is a symbol.
     bool isLayer() const { return mIsLayer; }
 
     //! Returns the item preview icon.
     QIcon icon() const;
 
-    //! Returns the item's data for the given role
+    //! Returns the item's data for the given role.
     QVariant data( int role ) const;
 
-    //! returns the symbol pointer; helpful in determining a layer's parent symbol
+    //! Returns the symbol pointer; helpful in determining a layer's parent symbol.
     QgsSymbol *symbol() { return mSymbol; }
 
-    //! returns the symbol layer pointer
+    //! Returns the symbol layer pointer.
     QgsSymbolLayer *layer() { return mLayer; }
 
     /**
-     * Adds a child \a node to this node, transferring ownership of the node
+     * Adds a child \a node to this node, transferring ownership of the node.
      * to this node.
      */
     void addChildNode( QgsSymbolLayerModelNode *node );
@@ -81,15 +81,15 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
      */
     void deleteChildren();
 
-    //! Returns whether the node should be shown as expanded or collapsed in GUI
+    //! Returns TRUE if the node should be shown as expanded or collapsed in GUI.
     bool expanded() const;
     //! Sets whether the node should be shown as expanded or collapsed in GUI
     void setExpanded( bool expanded );
 
-    //! Gets pointer to the parent. If parent is NULLPTR, the node is a root node
+    //! Returns the pointer of the parent node. If parent is NULLPTR, the node is a root node.
     QgsSymbolLayerModelNode *parent() { return mParent; }
 
-    //! Returns whether the node is a root node (i.e. has no parent)
+    //! Returns TRUE if the node is a root node (i.e. has no parent).
     bool isRootNode() const { return mParent == nullptr; }
 
     /**
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
     QgsSymbolLayerModelNode *mParent = nullptr;
     QList<QgsSymbolLayerModelNode *> mChildren;
 
-    //! whether the node should be shown in GUI as expanded
+    //! Whether the node should be shown in GUI as expanded.
     bool mExpanded = true;
 
     friend class TestQgsSymbolLayerModel;
@@ -172,9 +172,9 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
     void setSymbol( QgsSymbol *symbol );
 
     /**
-     * Set the QScreen of the model and rebuild the model
+     * Set the QScreen of the model and rebuild the model.
      *
-     * used to determine the icon size on different dpi monitor
+     * Used to determine the icon size on different dpi monitor
      */
     void setScreen( QScreen *screen );
 
@@ -190,7 +190,7 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
      */
     QgsSymbolLayerModelNode *index2node( const QModelIndex &index ) const;
 
-    //! Returns the root node of the model
+    //! Returns the root node of the model.
     QgsSymbolLayerModelNode *rootNode() const { return mRootNode.get(); }
 
 
