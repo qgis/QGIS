@@ -132,6 +132,20 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
         QString referencingFieldComment;         //!< The comment of the referencing field (if available), to be used in the description of the reference
     };
 
+    void exposedTimeDimensions( QString &instantField, QString &startField, QString &endField, bool &isDateTime, const QgsVectorLayer *mapLayer, const QgsAttributeList &requestedAttributes ) const;
+
+    /**
+     *  Returns the json["time"] interval information for the given \a feature, using the given \a temporalInstantField, \a temporalStartField and \a temporalEndField.
+     *  See: https://docs.ogc.org/is/21-045r1/21-045r1.html#time
+     *  \note: this method returns an empty json object if the given temporal fields are empty.
+     */
+    json timeDimensionInfo( const QgsFeature &feature, const QString &temporalInstantField, const QString &temporalStartField, const QString &temporalEndField, bool isDateTime ) const;
+
+    /**
+     * Returns the json profile to be used for the response of the handler, based on the "profile" query parameter in the given \a context, default to Legacy.
+     */
+    Qgis::GeoJsonProfile jsonProfileFromRequest( const QgsServerApiContext &context ) const;
+
     /**
      * Returns the information about the referenced layers for the given \a mapLayer and \a apiContext.
      * The returned map has as key the index of the field in the \a mapLayer that contains the reference to the other layer, and as value a ReferencedLayerInfo struct with the information about the referenced layer.
@@ -323,6 +337,7 @@ class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
         QString filterExpression;
         QgsRectangle filterRect;
     };
+
 
     // Retrieve the fields filter parameters
     const QList<QgsServerQueryStringParameter> fieldParameters( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;

@@ -254,7 +254,8 @@ QList<QPair<QLabel *, QWidget *>> QgsVectorLayerSaveAsDialog::createControls( co
         {
           QSpinBox *sb = new QSpinBox();
           sb->setObjectName( it.key() );
-          sb->setMaximum( std::numeric_limits<int>::max() ); // the default is 99
+          sb->setMaximum( std::numeric_limits<int>::max() );  // the default is 99
+          sb->setMinimum( std::min( 0, opt->defaultValue ) ); // allow negative (default) values i.e. ZSTD default compression level -1
           sb->setValue( opt->defaultValue );
           control = sb;
         }

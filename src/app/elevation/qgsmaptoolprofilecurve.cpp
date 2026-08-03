@@ -63,7 +63,7 @@ void QgsMapToolProfileCurve::keyPressEvent( QKeyEvent *e )
   if ( e->key() == Qt::Key_Escape )
   {
     canvas()->setMapTool( mPreviousTool );
-    emit captureCanceled();
+    emit captureFinished();
   }
 }
 
@@ -73,6 +73,8 @@ void QgsMapToolProfileCurve::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   QgsMapToolCapture::cadCanvasReleaseEvent( e );
   if ( !wasCapturing && isCapturing() )
     emit captureStarted();
+  else if ( wasCapturing && !isCapturing() )
+    emit captureFinished();
 }
 
 QgsMapLayer *QgsMapToolProfileCurve::layer() const

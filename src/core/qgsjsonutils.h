@@ -152,8 +152,11 @@ class CORE_EXPORT QgsJsonExporter
     QgsCoordinateReferenceSystem sourceCrs() const;
 
     /**
-     * Sets whether geometries should be transformed in EPSG 4326 (default
+     * Sets whether geometries should be transformed in CRS84 (default
      * behavior) or just keep as it is.
+     * This is only effective if the JSON profile is "Legacy" (which is the default value)
+     * because for the other profiles the required transformations are done automatically
+     * provided that source and destination CRS are sets correctly.
      * \since QGIS 3.12
      */
     void setTransformGeometries( bool activate ) { mTransformGeometries = activate; }

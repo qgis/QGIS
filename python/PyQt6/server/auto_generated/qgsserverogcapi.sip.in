@@ -75,10 +75,8 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
     {
       Unset,
       Rfc7946,
-      // This not supported yet but I am leaving it here because
-      // I am very optimistic that it will be supported soon!
-      //  JsonFg,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
-      //  JsonFgPlus //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
+      JsonFg,
+      JsonFgPlus,
       RelAsLink,
       RelAsKey,
       RelAsUri

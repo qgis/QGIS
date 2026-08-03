@@ -579,6 +579,16 @@ QgsServerOgcApi::Profile QgsServerOgcApiHandler::profileFromString( const QStrin
     ok = true;
     return QgsServerOgcApi::Profile::Rfc7946;
   }
+  else if ( profile.compare( "JSON-FG"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::JsonFg;
+  }
+  else if ( profile.compare( "JSON-FG-PLUS"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsServerOgcApi::Profile::JsonFgPlus;
+  }
   else if ( profile.compare( "REL-AS-KEY"_L1, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
   {
     ok = true;

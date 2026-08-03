@@ -113,26 +113,7 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPoint &p, QgsFeatureId atFeat
 
 Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId featureId, int vertex )
 {
-  if ( !mLayer->isSpatial() )
-    return Qgis::VectorEditResult::InvalidLayer;
-
-  QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
-    return Qgis::VectorEditResult::FetchFeatureFailed; // geometry not found
-
-  QgsGeometry geometry = f.geometry();
-
-  if ( !geometry.deleteVertex( vertex ) )
-    return Qgis::VectorEditResult::EditFailed;
-
-  if ( geometry.constGet() && geometry.constGet()->nCoordinates() == 0 )
-  {
-    //last vertex deleted, set geometry to null
-    geometry.set( nullptr );
-  }
-
-  mLayer->changeGeometry( featureId, geometry );
-  return !geometry.isNull() ? Qgis::VectorEditResult::Success : Qgis::VectorEditResult::EmptyGeometry;
+  return deleteVertices( featureId, { vertex } );
 }
 
 Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertices( QgsFeatureId featureId, const QSet<int> &vertices )
@@ -406,6 +387,8 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSe
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, QgsFeatureId featureId )
 {
+  std::unique_ptr<QgsCurve> uniquePtrRing( ring );
+
   if ( !mLayer->isSpatial() )
     return Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound;
 
@@ -423,12 +406,12 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
   else
   {
     geometry = f.geometry();
-    if ( mLayer->geometryType() == Qgis::GeometryType::Polygon && ring->orientation() != geometry.polygonOrientation() )
+    if ( mLayer->geometryType() == Qgis::GeometryType::Polygon && uniquePtrRing->orientation() != geometry.polygonOrientation() )
     {
-      ring = ring->reversed();
+      uniquePtrRing.reset( uniquePtrRing->reversed() );
     }
   }
-  Qgis::GeometryOperationResult errorCode = geometry.addPartV2( ring, mLayer->wkbType() );
+  Qgis::GeometryOperationResult errorCode = geometry.addPartV2( uniquePtrRing.release(), mLayer->wkbType() );
 
   if ( errorCode == Qgis::GeometryOperationResult::Success )
   {

@@ -290,7 +290,7 @@ QVector<QgsCircle> QgsCircle::from3TangentsMulti(
   else if ( !isIntersect_tg1tg3 )
     return from2ParallelsLine( pt1_tg1, pt2_tg1, pt1_tg3, pt2_tg3, pt1_tg2, pt2_tg2, pos, epsilon );
   else if ( !isIntersect_tg2tg3 )
-    return from2ParallelsLine( pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, pt1_tg1, pt1_tg1, pos, epsilon );
+    return from2ParallelsLine( pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, pt1_tg1, pt2_tg1, pos, epsilon );
 
   if ( p1.is3D() )
   {
@@ -376,7 +376,7 @@ int QgsCircle::innerTangents( const QgsCircle &other, QgsPointXY &line1P1, QgsPo
 QgsCircle QgsCircle::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) // cppcheck-suppress duplInheritedMember
 {
   const double delta_x = std::fabs( pt1.x() - pt2.x() );
-  const double delta_y = std::fabs( pt1.x() - pt2.y() );
+  const double delta_y = std::fabs( pt1.y() - pt2.y() );
   if ( !qgsDoubleNear( delta_x, delta_y ) )
   {
     return QgsCircle();

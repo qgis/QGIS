@@ -17,10 +17,10 @@ class O0_EXPORT O2Reply: public QTimer {
 public:
     explicit O2Reply(QNetworkReply *reply, int timeOut = 60 * 1000, QObject *parent = nullptr);
 
-Q_SIGNALS:
+signals:
     void error(QNetworkReply::NetworkError);
 
-public Q_SLOTS:
+public slots:
     /// When time out occurs, the QNetworkReply's error() signal is triggered.
     void onTimeOut();
 

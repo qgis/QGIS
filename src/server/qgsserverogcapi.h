@@ -94,15 +94,13 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     //! JSON profile
     enum class Profile
     {
-      Unset,   //!< No profile
-      Rfc7946, //!< GeoJSON profile according to RFC7946
-      // This not supported yet but I am leaving it here because
-      // I am very optimistic that it will be supported soon!
-      //  JsonFg,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
-      //  JsonFgPlus //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
-      RelAsLink, //!< JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link
-      RelAsKey,  //!< JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key
-      RelAsUri   //!< JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
+      Unset,      //!< No profile
+      Rfc7946,    //!< GeoJSON profile according to RFC7946
+      JsonFg,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
+      JsonFgPlus, //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
+      RelAsLink,  //!< JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link
+      RelAsKey,   //!< JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key
+      RelAsUri    //!< JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
     };
     Q_ENUM( Profile )
 

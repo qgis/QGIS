@@ -1474,17 +1474,7 @@ bool QgsVectorLayer::moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, in
 
 Qgis::VectorEditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId, int vertex )
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( !isValid() || !mEditBuffer || !mDataProvider )
-    return Qgis::VectorEditResult::InvalidLayer;
-
-  QgsVectorLayerEditUtils utils( this );
-  Qgis::VectorEditResult result = utils.deleteVertex( featureId, vertex );
-
-  if ( result == Qgis::VectorEditResult::Success )
-    updateExtents();
-  return result;
+  return deleteVertices( featureId, { vertex } );
 }
 
 Qgis::VectorEditResult QgsVectorLayer::deleteVertices( QgsFeatureId featureId, const QSet<int> &vertices )
@@ -1584,22 +1574,16 @@ Qgis::GeometryOperationResult QgsVectorLayer::addRing( QgsCurve *ring, QgsFeatur
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  std::unique_ptr<QgsCurve> uniquePtrRing( ring );
+
   if ( !isValid() || !mEditBuffer || !mDataProvider )
-  {
-    delete ring;
     return Qgis::GeometryOperationResult::LayerNotEditable;
-  }
 
-  if ( !ring )
-  {
+  if ( !uniquePtrRing )
     return Qgis::GeometryOperationResult::InvalidInputGeometryType;
-  }
 
-  if ( !ring->isClosed() )
-  {
-    delete ring;
+  if ( !uniquePtrRing->isClosed() )
     return Qgis::GeometryOperationResult::AddRingNotClosed;
-  }
 
   QgsVectorLayerEditUtils utils( this );
   Qgis::GeometryOperationResult result = Qgis::GeometryOperationResult::AddRingNotInExistingFeature;
@@ -1607,16 +1591,15 @@ Qgis::GeometryOperationResult QgsVectorLayer::addRing( QgsCurve *ring, QgsFeatur
   //first try with selected features
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    result = utils.addRing( static_cast< QgsCurve * >( ring->clone() ), mSelectedFeatureIds, featureId );
+    result = utils.addRing( static_cast< QgsCurve * >( uniquePtrRing->clone() ), mSelectedFeatureIds, featureId );
   }
 
   if ( result != Qgis::GeometryOperationResult::Success )
   {
     //try with all intersecting features
-    result = utils.addRing( static_cast< QgsCurve * >( ring->clone() ), QgsFeatureIds(), featureId );
+    result = utils.addRing( static_cast< QgsCurve * >( uniquePtrRing.release() ), QgsFeatureIds(), featureId );
   }
 
-  delete ring;
   return result;
 }
 
@@ -1665,6 +1648,8 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurve *ring )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  std::unique_ptr<QgsCurve> uniquePtrRing( ring );
+
   if ( !isValid() || !mEditBuffer || !mDataProvider )
     return Qgis::GeometryOperationResult::LayerNotEditable;
 
@@ -1682,7 +1667,7 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurve *ring )
   }
 
   QgsVectorLayerEditUtils utils( this );
-  Qgis::GeometryOperationResult result = utils.addPart( ring, *mSelectedFeatureIds.constBegin() );
+  Qgis::GeometryOperationResult result = utils.addPart( uniquePtrRing.release(), *mSelectedFeatureIds.constBegin() );
 
   if ( result == Qgis::GeometryOperationResult::Success )
     updateExtents();

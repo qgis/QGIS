@@ -4476,6 +4476,7 @@ QgsMapCanvasAnnotationItem: src/gui/qgsmapcanvasannotationitem.h#L39
 QgsMapCanvasInteractionBlocker.blockCanvasInteraction: src/gui/qgsmapcanvasinteractionblocker.h#L46
 QgsMapCanvasInteractionBlocker: src/gui/qgsmapcanvasinteractionblocker.h#L30
 QgsMapCanvasItem.boundingRect: src/gui/qgsmapcanvasitem.h#L62
+QgsMapCanvasItem.canvas: src/gui/qgsmapcanvasitem.h#L81
 QgsMapCanvasItem.paint: src/gui/qgsmapcanvasitem.h#L43
 QgsMapCanvasItem.paint: src/gui/qgsmapcanvasitem.h#L45
 QgsMapCanvasItem.rect: src/gui/qgsmapcanvasitem.h#L65
