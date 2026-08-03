@@ -244,7 +244,7 @@ class _3D_EXPORT QgsFrameGraph : public Qt3DCore::QEntity
 
     /**
      * Returns rubber band renderview
-     * \since QGIS 3.44
+     * \since QGIS 4.4
      */
     QgsRubberBandRenderView &rubberBandRenderView();
 
