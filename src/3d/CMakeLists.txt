@@ -13,6 +13,7 @@ set(QGIS_3D_SRCS
   qgsannotationlayerchunkloader_p.cpp
   qgs3danimationsettings.cpp
   qgs3dexportobject.cpp
+  qgs3deditingtoolbar.cpp
   qgs3dhighlightfeaturehandler.cpp
   qgs3dmapexportsettings.cpp
   qgs3dmapscene.cpp
@@ -173,6 +174,7 @@ set(QGIS_3D_HDRS
   qgs3danimationsettings.h
   qgs3daxis.h
   qgs3daxissettings.h
+  qgs3deditingtoolbar.h
   qgs3dhighlightfeaturehandler.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
