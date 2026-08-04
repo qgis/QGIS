@@ -44,7 +44,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLabel" name="lblMetalness">
+    <widget class="QLabel" name="mLblMetalness">
      <property name="text">
       <string>Metalness</string>
      </property>
@@ -58,7 +58,7 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QLabel" name="lblRoughness_4">
+    <widget class="QLabel" name="mLblAnisotropy">
      <property name="text">
       <string>Anisotropy</string>
      </property>
@@ -102,7 +102,7 @@
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="QLabel" name="lblRoughness_5">
+    <widget class="QLabel" name="mLblAnisotropyRotation">
      <property name="text">
       <string>Anisotropy direction</string>
      </property>
@@ -126,35 +126,35 @@
     </widget>
    </item>
    <item row="9" column="1">
-    <widget class="QLabel" name="lblSpecular_3">
+    <widget class="QLabel" name="mLblEmissionStrength">
      <property name="text">
       <string>Emission strength</string>
      </property>
     </widget>
    </item>
    <item row="10" column="1">
-    <widget class="QLabel" name="lblRoughness_2">
+    <widget class="QLabel" name="mLblRoughness_2">
      <property name="text">
       <string>Opacity</string>
      </property>
     </widget>
    </item>
    <item row="6" column="1">
-    <widget class="QLabel" name="lblSpecular_6">
+    <widget class="QLabel" name="mLblClearCoatFactor">
      <property name="text">
       <string>Clear coat strength</string>
      </property>
     </widget>
    </item>
    <item row="8" column="1">
-    <widget class="QLabel" name="lblSpecular_2">
+    <widget class="QLabel" name="mLblEmission">
      <property name="text">
       <string>Emission</string>
      </property>
     </widget>
    </item>
    <item row="7" column="1">
-    <widget class="QLabel" name="lblSpecular_7">
+    <widget class="QLabel" name="mLblClearCoatRoughness">
      <property name="text">
       <string>Clear coat roughness</string>
      </property>
@@ -168,7 +168,7 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QLabel" name="lblRoughness_3">
+    <widget class="QLabel" name="mLblReflectance">
      <property name="text">
       <string>Reflectance</string>
      </property>
@@ -235,7 +235,7 @@
     </spacer>
    </item>
    <item row="2" column="1">
-    <widget class="QLabel" name="lblRoughness">
+    <widget class="QLabel" name="mLblRoughness">
      <property name="text">
       <string>Roughness</string>
      </property>

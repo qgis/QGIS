@@ -84,35 +84,6 @@ QgsMaterialSettingsWidget *QgsMetalRoughMaterialWidget::create()
   return new QgsMetalRoughMaterialWidget();
 }
 
-void QgsMetalRoughMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
-{
-  switch ( technique )
-  {
-    case Qgis::MaterialRenderingTechnique::Triangles:
-    case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
-    case Qgis::MaterialRenderingTechnique::InstancedPoints:
-    case Qgis::MaterialRenderingTechnique::Points:
-    case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
-    {
-      mBaseColorDataDefinedButton->setVisible( false );
-      mEmissionColorDataDefinedButton->setVisible( false );
-      break;
-    }
-
-    case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
-    {
-      mBaseColorDataDefinedButton->setVisible( true );
-      mEmissionColorDataDefinedButton->setVisible( true );
-      break;
-    }
-
-    case Qgis::MaterialRenderingTechnique::Lines:
-    case Qgis::MaterialRenderingTechnique::Billboards:
-      // not supported
-      break;
-  }
-}
-
 void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
   const QgsMetalRoughMaterialSettings *material = dynamic_cast<const QgsMetalRoughMaterialSettings *>( settings );
@@ -188,4 +159,48 @@ void QgsMetalRoughMaterialWidget::updatePreview()
     return;
   const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
   mPreviewWidget->updatePreview( newSettings.get() );
+}
+
+void QgsMetalRoughMaterialWidget::updateWidgetVisibility()
+{
+  const bool hasDataDefined = ( mTechnique == Qgis::MaterialRenderingTechnique::TrianglesDataDefined );
+  const bool fullMode = ( mStyle == QgsMaterialSettingsWidget::WidgetStyle::Full );
+
+  // metalness
+  mLblMetalness->setVisible( fullMode );
+  mMetalnessWidget->setVisible( fullMode );
+  mBaseColorDataDefinedButton->setVisible( fullMode && hasDataDefined );
+
+  // roughness
+  mLblRoughness->setVisible( fullMode );
+  mRoughnessWidget->setVisible( fullMode );
+
+  // reflectance
+  mLblReflectance->setVisible( fullMode );
+  mReflectanceWidget->setVisible( fullMode );
+
+  // anisotropy
+  mLblAnisotropy->setVisible( fullMode );
+  mAnisotropyWidget->setVisible( fullMode );
+
+  // anisotropy direction
+  mLblAnisotropyRotation->setVisible( fullMode );
+  mAnisotropyRotationWidget->setVisible( fullMode );
+
+  // clear coat strength
+  mLblClearCoatFactor->setVisible( fullMode );
+  mClearCoatFactorWidget->setVisible( fullMode );
+
+  // clear coat roughness
+  mLblClearCoatRoughness->setVisible( fullMode );
+  mClearCoatRoughnessWidget->setVisible( fullMode );
+
+  // emission
+  mLblEmission->setVisible( fullMode );
+  mButtonEmissionColor->setVisible( fullMode );
+  mEmissionColorDataDefinedButton->setVisible( fullMode && hasDataDefined );
+
+  // emission strength
+  mLblEmissionStrength->setVisible( fullMode );
+  mEmissionStrengthSpinBox->setVisible( fullMode );
 }

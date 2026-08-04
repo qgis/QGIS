@@ -145,3 +145,34 @@ void QgsPhongTexturedMaterialWidget::updatePreview()
   const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
   mPreviewWidget->updatePreview( newSettings.get() );
 }
+
+void QgsPhongTexturedMaterialWidget::updateWidgetVisibility()
+{
+  const bool fullMode = ( mStyle == QgsMaterialSettingsWidget::WidgetStyle::Full );
+
+  // ambient
+  lblAmbient->setVisible( fullMode );
+  btnAmbient->setVisible( fullMode );
+
+  // specular
+  lblSpecular->setVisible( fullMode );
+  btnSpecular->setVisible( fullMode );
+
+  // shininess
+  lblShininess->setVisible( fullMode );
+  spinShininess->setVisible( fullMode );
+
+  // texture scale
+  lblTextureScale->setVisible( fullMode );
+  textureScaleSpinBox->setVisible( fullMode );
+  mTextureScaleDataDefinedButton->setVisible( fullMode );
+
+  // texture rotation
+  lblTextureRotation->setVisible( fullMode );
+  textureRotationSpinBox->setVisible( fullMode );
+  mTextureRotationDataDefinedButton->setVisible( fullMode );
+
+  mLblTextureOffset->setVisible( fullMode );
+  mTextureOffsetWidget->setVisible( fullMode );
+  mTextureOffsetDataDefinedButton->setVisible( fullMode );
+}

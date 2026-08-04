@@ -91,3 +91,6 @@ void QgsUnlitMaterialWidget::updatePreview()
   const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
   mPreviewWidget->updatePreview( newSettings.get() );
 }
+
+void QgsUnlitMaterialWidget::updateWidgetVisibility()
+{}

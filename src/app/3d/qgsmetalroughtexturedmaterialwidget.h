@@ -39,6 +39,9 @@ class QgsMetalRoughTexturedMaterialWidget : public QgsMaterialSettingsWidget, pr
   private slots:
 
     void updatePreview();
+
+  protected:
+    void updateWidgetVisibility() final;
 };
 
 #endif // QGSMETALROUGHTEXTUREDMATERIALWIDGET_H

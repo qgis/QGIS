@@ -84,33 +84,6 @@ void QgsGoochMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   updatePreview();
 }
 
-void QgsGoochMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
-{
-  switch ( technique )
-  {
-    case Qgis::MaterialRenderingTechnique::Triangles:
-    case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
-    case Qgis::MaterialRenderingTechnique::InstancedPoints:
-    case Qgis::MaterialRenderingTechnique::Points:
-    case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
-      mDiffuseDataDefinedButton->setVisible( false );
-      mWarmDataDefinedButton->setVisible( false );
-      mCoolDataDefinedButton->setVisible( false );
-      mSpecularDataDefinedButton->setVisible( false );
-      break;
-    case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
-      mDiffuseDataDefinedButton->setVisible( true );
-      mWarmDataDefinedButton->setVisible( true );
-      mCoolDataDefinedButton->setVisible( true );
-      mSpecularDataDefinedButton->setVisible( true );
-      break;
-    case Qgis::MaterialRenderingTechnique::Lines:
-    case Qgis::MaterialRenderingTechnique::Billboards:
-      // not supported
-      break;
-  }
-}
-
 std::unique_ptr<QgsAbstractMaterialSettings> QgsGoochMaterialWidget::settings()
 {
   auto m = std::make_unique<QgsGoochMaterialSettings>();
@@ -151,4 +124,47 @@ void QgsGoochMaterialWidget::updatePreview()
     return;
   const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
   mPreviewWidget->updatePreview( newSettings.get() );
+}
+
+void QgsGoochMaterialWidget::updateWidgetVisibility()
+{
+  const bool hasDataDefined = ( mTechnique == Qgis::MaterialRenderingTechnique::TrianglesDataDefined );
+  const bool fullMode = ( mStyle == QgsMaterialSettingsWidget::WidgetStyle::Full );
+
+  // diffuse
+  mDiffuseDataDefinedButton->setVisible( hasDataDefined );
+
+  // warm
+  mWarmDataDefinedButton->setVisible( hasDataDefined );
+
+  // cool
+  lblAmbient_2->setVisible( fullMode );
+  btnCool->setVisible( fullMode );
+  mCoolDataDefinedButton->setVisible( fullMode && hasDataDefined );
+
+  // specular
+  lblSpecular->setVisible( fullMode );
+  btnSpecular->setVisible( fullMode );
+  mSpecularDataDefinedButton->setVisible( fullMode && hasDataDefined );
+
+  // shininess
+  lblShininess->setVisible( fullMode );
+  spinShininess->setVisible( fullMode );
+
+  // alpha
+  lblShininess_2->setVisible( fullMode );
+  spinAlpha->setVisible( fullMode );
+
+  // beta
+  lblShininess_3->setVisible( fullMode );
+  spinBeta->setVisible( fullMode );
+
+  if ( fullMode )
+  {
+    gridLayout->setVerticalSpacing( -1 );
+  }
+  else
+  {
+    gridLayout->setVerticalSpacing( 3 );
+  }
 }
