@@ -170,6 +170,14 @@ void QgsMetalRoughMaterialWidget::setPreviewVisible( bool visible )
   mPreviewWidget->setVisible( visible );
   // Ensure the widgets expand without widening the label column.
   mGridLayout->setColumnStretch( 0, visible ? 1 : 0 );
+  if ( !visible )
+  {
+    mVerticalSpacer->changeSize( 0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed );
+  }
+  else
+  {
+    mVerticalSpacer->changeSize( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  }
   updatePreview();
 }
 
