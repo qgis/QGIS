@@ -134,6 +134,14 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsGoochMaterialWidget::settings()
 void QgsGoochMaterialWidget::setPreviewVisible( bool visible )
 {
   mPreviewWidget->setVisible( visible );
+  if ( !visible )
+  {
+    mVerticalSpacer->changeSize( 0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed );
+  }
+  else
+  {
+    mVerticalSpacer->changeSize( 20, 40, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  }
   updatePreview();
 }
 
