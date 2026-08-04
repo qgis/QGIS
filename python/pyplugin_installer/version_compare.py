@@ -17,9 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
-Here is Python function for comparing version numbers. It's case insensitive
-and recognizes all major notations, prefixes (ver. and version), delimiters
-(. - and _) and suffixes (alpha, beta, rc, preview and trunk).
+Here is Python function for comparing version numbers.
 
 Usage: compareVersions(version1, version2)
 
@@ -30,20 +28,19 @@ and returns integer value:
 2 - version 2 is higher
 
 -----------------------------------------------------------------------------
-HOW DOES IT WORK...
-First, both arguments are converted to uppercase Unicode and stripped of
-'VERSION' or 'VER.' prefix. Then they are chopped into a list of particular
-numeric and alphabetic elements. The dots, dashes and underlines are recognized
-as delimiters. Also numbers and non numbers are separated. See example below:
 
-'Ver 0.03-120_rc7foo' is converted to ['0','03','120','RC','7','FOO']
+It relies on packaging.version and PEP440 for version comparisons,
+in a nutshell, this relies on the following scheme (PEP440):
+        `[N!]N(.N)*[{a|b|rc}N][.postN][.devN]`
 
-Then every pair of elements, from left to right, is compared as string
-or as number to provide the best result (you know, 11>9 but also '03'>'007').
-The comparing stops when one of elements is greater. If comparing achieves
-the end of the shorter list and the matter is still unresolved, the longer
-list is usually recognized as higher, except following suffixes:
-ALPHA, BETA, RC, PREVIEW and TRUNK which make the version number lower.
+we also tweaked a more permissive regexp for backward compatibility:
+    - case insensitive
+    - allow `alpha`, `beta` in full wording
+    - works with `[+local]` segment version instead of `[-local]`
+
+see :
+    https://packaging.pypa.io/en/stable/version.html
+    https://peps.python.org/pep-0440/
 """
 
 import re
@@ -56,37 +53,25 @@ from qgis.core import Qgis
 
 def normalizeVersion(s):
     """remove possible prefix from given string and convert to uppercase"""
-
-    prefixes = [
-        "VERSION",
-        "VER.",
-        "VER",
-        "V.",
-        "V",
-        "REVISION",
-        "REV.",
-        "REV",
-        "R.",
-        "R",
-    ]
-    if not s:
-        return ""
-    s = str(s).upper()
-    for i in prefixes:
-        if s[: len(i)] == i:
-            s = s.replace(i, "")
-    s = s.strip()
-    return s
+    try:
+        return Version(s).public
+    except InvalidVersion:
+        # handles bit more things than packaging:
+        #   like "ver. 1.0-201609011405-2690BD9"
+        pattern = re.compile(
+            r"^(?P<epoch>\D+)?(?P<version>(?P<release>\d+(?:\.\d+)*)(?P<pre>(?:a|alpha|b|beta|rc)\d+?)?((?P<post>\.post\d+))?(?P<dev>\.dev\d+)?)(?P<build>\+|-\S+)?$"
+        )
+        m = pattern.match(s.lower())
+        if not m:
+            return ""
+        return Version(
+            f"{m.group('release') or ''}{m.group('pre') or ''}{m.group('post') or ''}{m.group('dev') or ''}"
+        ).public
 
 
 # ------------------------------------------------------------------------ #
 def compareVersions(a, b):
     """Compare two version numbers. Return 0 if a==b or error, 1 if a>b and 2 if b>a"""
-    if not a or not b:
-        return 0
-    a = normalizeVersion(a)
-    b = normalizeVersion(b)
-
     try:
         # PEP 440 comparison
         va, vb = Version(a), Version(b)
@@ -98,6 +83,8 @@ def compareVersions(a, b):
             return 0
     except InvalidVersion:
         # blunt str comparison
+        a = normalizeVersion(a)
+        b = normalizeVersion(b)
         if a < b:
             return 2
         elif a > b:
@@ -106,63 +93,12 @@ def compareVersions(a, b):
             return 0
 
 
-"""
-COMPARE CURRENT QGIS VERSION WITH qgisMinimumVersion AND qgisMaximumVersion
-ALLOWED FORMATS ARE: major.minor OR major.minor.bugfix, where each segment must be 0..99
-"""
-
-
-def splitVersion(s):
-    """split string into 2 or 3 numerical segments"""
-    if not s or type(s) is not str:
-        return None
-    l = str(s).split(".")
-    for c in l:
-        if not c.isnumeric():
-            return None
-        if int(c) > 99:
-            return None
-    if len(l) not in [2, 3]:
-        return None
-    return l
-
-
 def isCompatible(curVer, minVer, maxVer):
-    """Compare current QGIS version with qgisMinVersion and qgisMaxVersion"""
+    """Check if minVer <= curVer <= maxVer"""
 
-    if not minVer or not curVer or not maxVer:
-        return False
-
-    minVer = splitVersion(re.sub(r"[^0-9.]+", "", minVer))
-    maxVer = splitVersion(re.sub(r"[^0-9.]+", "", maxVer))
-    curVer = splitVersion(re.sub(r"[^0-9.]+", "", curVer))
-
-    if not minVer or not curVer or not maxVer:
-        return False
-
-    if len(minVer) < 3:
-        minVer += ["0"]
-
-    if len(curVer) < 3:
-        curVer += ["0"]
-
-    if len(maxVer) < 3:
-        maxVer += ["99"]
-
-    minVer = f"{int(minVer[0]):04n}{int(minVer[1]):04n}{int(minVer[2]):04n}"
-    maxVer = f"{int(maxVer[0]):04n}{int(maxVer[1]):04n}{int(maxVer[2]):04n}"
-    curVer = f"{int(curVer[0]):04n}{int(curVer[1]):04n}{int(curVer[2]):04n}"
-
-    return minVer <= curVer and maxVer >= curVer
+    return compareVersions(curVer, minVer) < 2 and compareVersions(maxVer, curVer) < 2
 
 
-def pyQgisVersion():
-    """Return current QGIS version number as X.Y.Z for testing plugin compatibility.
-    If Y = 99, bump up to (X+1.0.0), so e.g. 2.99 becomes 3.0.0
-    This way QGIS X.99 is only compatible with plugins for the upcoming major release.
-    """
-    x, y, z = re.findall(r"^(\d*).(\d*).(\d*)", Qgis.QGIS_VERSION)[0]
-    if y == "99":
-        x = str(int(x) + 1)
-        y = z = "0"
-    return f"{x}.{y}.{z}"
+def pyQgisVersion() -> str:
+    """Return current QGIS version number."""
+    return Version(Qgis.QGIS_VERSION.split("-", 1)[0]).public
