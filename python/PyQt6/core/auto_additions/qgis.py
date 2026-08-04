@@ -5529,6 +5529,9 @@ QgsLabelingEngineSettings.DrawLabelMetrics.__doc__ = "Whether to render label me
 QgsLabelingEngineSettings.SingleCandidateOnly = Qgis.LabelingFlag.SingleCandidateOnly
 QgsLabelingEngineSettings.SingleCandidateOnly.is_monkey_patched = True
 QgsLabelingEngineSettings.SingleCandidateOnly.__doc__ = "Generate only the single least-cost candidate for each feature. Useful for fast labeling, such as interactive labeling previews. \n.. versionadded:: 4.4"
+QgsLabelingEngineSettings.DisableSearchTree = Qgis.LabelingFlag.DisableSearchTree
+QgsLabelingEngineSettings.DisableSearchTree.is_monkey_patched = True
+QgsLabelingEngineSettings.DisableSearchTree.__doc__ = "Disable the creation of the label search tree \n.. versionadded:: 4.4"
 Qgis.LabelingFlag.__doc__ = """Various flags that affect drawing and placement of labels.
 
 Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.Flag
@@ -5550,6 +5553,10 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.F
   .. versionadded:: 3.30
 
 * ``SingleCandidateOnly``: Generate only the single least-cost candidate for each feature. Useful for fast labeling, such as interactive labeling previews.
+
+  .. versionadded:: 4.4
+
+* ``DisableSearchTree``: Disable the creation of the label search tree
 
   .. versionadded:: 4.4
 
