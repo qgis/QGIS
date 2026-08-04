@@ -96,6 +96,9 @@ namespace pal
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitLines;
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPolygons;
 
+      /**
+       * Constructor for pal labeling engine.
+       */
       Pal( Qgis::LabelingFlags flags );
       ~Pal();
 
