@@ -266,8 +266,6 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
      */
     void setWidget( QWidget *widget );
 
-    void updateExpandedStateFromNode( QgsSymbolLayerModelNode *node );
-
     QgsStyle *mStyle = nullptr;
     QgsSymbol *mSymbol = nullptr;
     std::unique_ptr<QgsSymbol> mOwnedSymbol;

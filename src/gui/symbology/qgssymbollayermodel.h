@@ -77,14 +77,26 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
     void addChildNode( QgsSymbolLayerModelNode *node );
 
     /**
+     * Inserts a child \a node to this node at \a index, transferring ownership of the node.
+     * to this node.
+     */
+    void insertChildNode( int index, QgsSymbolLayerModelNode *node );
+
+    /**
+     * Move a child \a node of the current node, the ownership of the moved node is transferred
+     * to the current node.
+     */
+    void moveChildNode( QgsSymbolLayerModelNode *node, int to );
+
+    /**
+     * Remove a child \a node of the current node
+     */
+    void removeChildNode( QgsSymbolLayerModelNode *node );
+
+    /**
      * Deletes all child nodes from this node.
      */
     void deleteChildren();
-
-    //! Returns TRUE if the node should be shown as expanded or collapsed in GUI.
-    bool expanded() const;
-    //! Sets whether the node should be shown as expanded or collapsed in GUI
-    void setExpanded( bool expanded );
 
     //! Returns the pointer of the parent node. If parent is NULLPTR, the node is a root node.
     QgsSymbolLayerModelNode *parent() { return mParent; }
@@ -128,9 +140,6 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
     QgsSymbolLayerModelNode *mParent = nullptr;
     QList<QgsSymbolLayerModelNode *> mChildren;
 
-    //! Whether the node should be shown in GUI as expanded.
-    bool mExpanded = true;
-
     friend class TestQgsSymbolLayerModel;
 };
 
@@ -160,6 +169,27 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
      * Updates the descendants of the given \a parent node with the given \a symbol.
      */
     void updateNode( QgsSymbol *symbol, QgsSymbolLayerModelNode *parent );
+
+    /**
+     * Moves the symbol layer \a node by the \a offset in the parent hierarchy
+     */
+    void moveLayerByOffset( QgsSymbolLayerModelNode *node, int offset );
+
+    /**
+     * Duplicates the symbol layer \a node in the parent node hierarchy
+     */
+    QgsSymbolLayerModelNode *duplicateLayer( QgsSymbolLayerModelNode *node );
+
+    /**
+     * Adds the symbol layer node inserted right before the \a idx
+     */
+    QgsSymbolLayerModelNode *addLayer( QModelIndex index );
+
+    /**
+     * Removes the symbol layer \a node from it's parent node hierachy
+     */
+    void removeLayer( QgsSymbolLayerModelNode *node );
+
 
     /**
      * Updates the preview icon of the given \a node. And recursively updates the parents of the node.

@@ -18,6 +18,8 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsguiutils.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
@@ -160,19 +162,45 @@ void QgsSymbolLayerModelNode::addChildNode( QgsSymbolLayerModelNode *node )
   mChildren.append( node );
 }
 
-bool QgsSymbolLayerModelNode::expanded() const
+void QgsSymbolLayerModelNode::insertChildNode( int index, QgsSymbolLayerModelNode *node )
 {
-  return mExpanded;
-}
-
-void QgsSymbolLayerModelNode::setExpanded( bool expanded )
-{
-  if ( mExpanded == expanded )
+  if ( !node )
     return;
 
-  mExpanded = expanded;
+  Q_ASSERT( !node->mParent );
+  node->mParent = this;
+
+  mChildren.insert( index, node );
 }
 
+
+void QgsSymbolLayerModelNode::moveChildNode( QgsSymbolLayerModelNode *node, int to )
+{
+  if ( !node )
+    return;
+
+  // Only allow moving a node that is a child of this current node
+  Q_ASSERT( node->mParent == this );
+
+  int idx = mChildren.indexOf( node );
+  if ( idx != -1 )
+  {
+    mChildren.move( idx, to );
+  }
+}
+
+
+void QgsSymbolLayerModelNode::removeChildNode( QgsSymbolLayerModelNode *node )
+{
+  if ( !node )
+    return;
+
+  int idx = mChildren.indexOf( node );
+  if ( idx != -1 )
+  {
+    delete mChildren.takeAt( idx );
+  }
+}
 
 int QgsSymbolLayerModelNode::rowCount() const
 {
@@ -305,6 +333,138 @@ void QgsSymbolLayerModel::updateNode( QgsSymbol *symbol, QgsSymbolLayerModelNode
   endInsertRows();
 }
 
+void QgsSymbolLayerModel::moveLayerByOffset( QgsSymbolLayerModelNode *node, int offset )
+{
+  if ( !node->isLayer() )
+    return;
+
+  QgsSymbolLayerModelNode *parent = node->parent();
+  QModelIndex parentIndex = node2index( parent );
+  const int row = node->rowIndex();
+
+
+  QgsSymbol *parentSymbol = parent->symbol();
+
+  const int layerIdx = parent->rowCount() - row - 1;
+  // switch layers
+  QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
+  parentSymbol->insertSymbolLayer( layerIdx - offset, tmpLayer );
+
+
+  beginMoveRows( parentIndex, row, row, parentIndex, row + offset + ( offset == 1 ? 1 : 0 ) );
+  parent->moveChildNode( node, row + offset );
+  endMoveRows();
+}
+
+QgsSymbolLayerModelNode *QgsSymbolLayerModel::duplicateLayer( QgsSymbolLayerModelNode *node )
+{
+  if ( !node->isLayer() )
+    return nullptr;
+
+  QgsSymbolLayer *source = node->layer();
+  const int insertIdx = node->rowIndex();
+  QgsSymbolLayerModelNode *parent = node->parent();
+  QModelIndex parentIndex = node2index( parent );
+
+  QgsSymbol *parentSymbol = parent->symbol();
+
+  QgsSymbolLayer *newLayer = source->clone();
+  QgsSymbolLayerUtils::resetSymbolLayerIds( newLayer );
+  if ( insertIdx == -1 )
+    parentSymbol->appendSymbolLayer( newLayer );
+  else
+    parentSymbol->insertSymbolLayer( parent->rowCount() - insertIdx, newLayer );
+
+
+  beginInsertRows( parentIndex, insertIdx, insertIdx );
+
+  QgsSymbolLayerModelNode *newNode = new QgsSymbolLayerModelNode( newLayer, parentSymbol->type(), mVectorLayer, mScreen );
+  if ( insertIdx == -1 )
+    parent->addChildNode( newNode );
+  else
+    parent->insertChildNode( insertIdx, newNode );
+
+  if ( newLayer->subSymbol() )
+  {
+    loadSymbol( newLayer->subSymbol(), newNode );
+  }
+
+  endInsertRows();
+
+  return newNode;
+}
+
+QgsSymbolLayerModelNode *QgsSymbolLayerModel::addLayer( QModelIndex index )
+{
+  if ( !index.isValid() )
+    return nullptr;
+
+  int insertIdx = -1;
+  QgsSymbolLayerModelNode *node = index2node( index );
+  if ( node->isLayer() )
+  {
+    insertIdx = node->rowIndex();
+    node = static_cast<QgsSymbolLayerModelNode *>( node->parent() );
+  }
+
+
+  QgsSymbol *parentSymbol = node->symbol();
+
+  // save data-defined values at marker level
+  const QgsProperty ddSize( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize() : QgsProperty() );
+  const QgsProperty ddAngle( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle() : QgsProperty() );
+  const QgsProperty ddWidth( parentSymbol->type() == Qgis::SymbolType::Line ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth() : QgsProperty() );
+
+  QgsSymbolLayer *newLayerPtr = nullptr;
+  {
+    std::unique_ptr< QgsSymbolLayer > newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
+    newLayerPtr = newLayer.get();
+    if ( insertIdx == -1 )
+      parentSymbol->appendSymbolLayer( newLayer.release() );
+    else
+      parentSymbol->insertSymbolLayer( node->rowCount() - insertIdx, newLayer.release() );
+  }
+
+  // restore data-defined values at marker level
+  if ( ddSize )
+    static_cast<QgsMarkerSymbol *>( parentSymbol )->setDataDefinedSize( ddSize );
+  if ( ddAngle )
+    static_cast<QgsMarkerSymbol *>( parentSymbol )->setDataDefinedAngle( ddAngle );
+  if ( ddWidth )
+    static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth );
+
+
+  const int atRowIndex = ( insertIdx == -1 ) ? 0 : insertIdx;
+  beginInsertRows( node2index( node ), atRowIndex, atRowIndex );
+
+  // TODO -- using newLayerPtr is not safe in some circumstances here. This needs reworking so that QgsSymbolLayerModelNode does has
+  // its own owned QgsSymbolLayer clone, and isn't reliant on a pointer to the object owned by parentSymbol.
+  QgsSymbolLayerModelNode *newNode = new QgsSymbolLayerModelNode( newLayerPtr, parentSymbol->type(), mVectorLayer, mScreen );
+  node->insertChildNode( atRowIndex, newNode );
+
+  endInsertRows();
+
+  return newNode;
+}
+
+void QgsSymbolLayerModel::removeLayer( QgsSymbolLayerModelNode *node )
+{
+  if ( !node->isLayer() )
+    return;
+
+  const int row = node->rowIndex();
+  QgsSymbolLayerModelNode *parent = static_cast<QgsSymbolLayerModelNode *>( node->parent() );
+  const int layerIdx = parent->rowCount() - row - 1; // The index in the model and the symbol are inverted
+  QgsSymbol *parentSymbol = parent->symbol();
+  QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
+  //finally delete the removed layer pointer
+  delete tmpLayer;
+
+
+  beginRemoveRows( node2index( parent ), row, row );
+  parent->removeChildNode( node );
+  endRemoveRows();
+}
 void QgsSymbolLayerModel::updatePreview( QgsSymbolLayerModelNode *node )
 {
   const QModelIndex index = node2index( node );
@@ -363,7 +523,5 @@ void QgsSymbolLayerModel::loadSymbol( QgsSymbol *symbol, QgsSymbolLayerModelNode
     {
       loadSymbol( symbol->symbolLayer( i )->subSymbol(), layerNode );
     }
-    layerNode->setExpanded( true );
   }
-  symbolNode->setExpanded( true );
 }
