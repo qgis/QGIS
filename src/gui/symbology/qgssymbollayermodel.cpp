@@ -403,7 +403,7 @@ QgsSymbolLayerModelNode *QgsSymbolLayerModel::addLayer( QModelIndex index )
   if ( node->isLayer() )
   {
     insertIdx = node->rowIndex();
-    node = static_cast<QgsSymbolLayerModelNode *>( node->parent() );
+    node = node->parent();
   }
 
 
@@ -452,7 +452,7 @@ void QgsSymbolLayerModel::removeLayer( QgsSymbolLayerModelNode *node )
     return;
 
   const int row = node->rowIndex();
-  QgsSymbolLayerModelNode *parent = static_cast<QgsSymbolLayerModelNode *>( node->parent() );
+  QgsSymbolLayerModelNode *parent = node->parent();
   const int layerIdx = parent->rowCount() - row - 1; // The index in the model and the symbol are inverted
   QgsSymbol *parentSymbol = parent->symbol();
   QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
@@ -468,7 +468,7 @@ void QgsSymbolLayerModel::removeLayer( QgsSymbolLayerModelNode *node )
 void QgsSymbolLayerModel::changeLayer( QgsSymbolLayerModelNode *node, QgsSymbolLayer *newLayer )
 {
   QgsSymbolLayerModelNode *parentNode = node->parent();
-  QgsSymbol *parentSymbol = static_cast<QgsSymbolLayerModelNode *>( parentNode )->symbol();
+  QgsSymbol *parentSymbol = parentNode->symbol();
 
   const int layerIdx = parentNode->rowCount() - node->rowIndex() - 1;
   parentSymbol->changeSymbolLayer( layerIdx, newLayer );
