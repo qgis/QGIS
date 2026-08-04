@@ -64,7 +64,8 @@ const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitLines =
 const QgsSettingsEntryInteger *Pal::settingsRenderingLabelCandidatesLimitPolygons = new QgsSettingsEntryInteger( u"label-candidates-limit-polygons"_s, sTreePal, 0 );
 
 
-Pal::Pal()
+Pal::Pal( Qgis::LabelingFlags flags )
+  : mFlags( flags )
 {
   mGlobalCandidatesLimitPoint = Pal::settingsRenderingLabelCandidatesLimitPoints->value();
   mGlobalCandidatesLimitLine = Pal::settingsRenderingLabelCandidatesLimitLines->value();
