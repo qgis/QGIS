@@ -54,6 +54,10 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
     QgsSymbolLayerModelNode( QgsSymbol *symbol, QgsVectorLayer *vectorLayer, QScreen *screen );
     ~QgsSymbolLayerModelNode() override;
 
+    /**
+     * Sets the \a layer associated with the node, and the \a symbolType of the QgsSymbol it belongs to.
+     */
+    void setLayer( QgsSymbolLayer *layer, Qgis::SymbolType symbolType );
 
     //! Returns TRUE if the node is a symbol layer. And otherwise, it is a symbol.
     bool isLayer() const { return mIsLayer; }
@@ -89,7 +93,7 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
     void moveChildNode( QgsSymbolLayerModelNode *node, int to );
 
     /**
-     * Remove a child \a node of the current node
+     * Remove a child \a node of the current node.
      */
     void removeChildNode( QgsSymbolLayerModelNode *node );
 
@@ -126,7 +130,6 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
     int rowIndex() const;
 
   private:
-    void setLayer( QgsSymbolLayer *layer, Qgis::SymbolType symbolType );
     void setSymbol( QgsSymbol *symbol );
 
     QgsSymbolLayer *mLayer = nullptr;
@@ -190,6 +193,10 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
      */
     void removeLayer( QgsSymbolLayerModelNode *node );
 
+    /**
+     * Change the symbol layer assoicated with \a node by a \a newLayer symbol layer
+     */
+    void changeLayer( QgsSymbolLayerModelNode *node, QgsSymbolLayer *newLayer );
 
     /**
      * Updates the preview icon of the given \a node. And recursively updates the parents of the node.
@@ -226,7 +233,7 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
 
   private:
     QModelIndex indexOfParentTreeNode( QgsSymbolLayerModelNode *parentNode ) const;
-    void loadSymbol( QgsSymbol *symbol, QgsSymbolLayerModelNode *parent, bool update = false );
+    void loadSymbol( QgsSymbol *symbol, QgsSymbolLayerModelNode *parent );
     void rebuild();
 
     std::unique_ptr<QgsSymbolLayerModelNode> mRootNode;
