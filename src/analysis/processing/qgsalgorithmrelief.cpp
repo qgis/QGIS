@@ -74,6 +74,17 @@ void QgsReliefAlgorithm::initAlgorithm( const QVariantMap & )
   );
   addParameter( colorsParam.release() );
 
+  auto outputNodataParam = std::make_unique<QgsProcessingParameterNumber>( u"NODATA"_s, QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999.0 );
+  outputNodataParam->setHelp( QObject::tr( "The NODATA value to use in the output raster." ) );
+  outputNodataParam->setFlags( outputNodataParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( outputNodataParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setHelp( QObject::tr( "The raster creation options for the output raster. These options control things like colorimetry, compression, etc." ) );
+  creationOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
+
   auto outputParam = std::make_unique<QgsProcessingParameterRasterDestination>( u"OUTPUT"_s, QObject::tr( "Relief" ) );
   outputParam->setHelp( QObject::tr( "The output shaded relief raster layer." ) );
   addParameter( outputParam.release() );
@@ -115,6 +126,8 @@ QVariantMap QgsReliefAlgorithm::processAlgorithm( const QVariantMap &parameters,
 {
   const double zFactor = parameterAsDouble( parameters, u"Z_FACTOR"_s, context );
   const bool automaticColors = parameterAsBoolean( parameters, u"AUTO_COLORS"_s, context );
+  const QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
+  const double outputNodata = parameterAsDouble( parameters, u"NODATA"_s, context );
   const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
   const QString frequencyDistribution = parameterAsFileOutput( parameters, u"FREQUENCY_DISTRIBUTION"_s, context );
@@ -135,6 +148,12 @@ QVariantMap QgsReliefAlgorithm::processAlgorithm( const QVariantMap &parameters,
 
   relief.setReliefColors( reliefColors );
   relief.setZFactor( zFactor );
+
+  if ( !creationOptions.isEmpty() )
+  {
+    relief.setCreationOptions( creationOptions.split( '|' ) );
+  }
+  relief.setOutputNodataValue( outputNodata );
 
   if ( !frequencyDistribution.isEmpty() )
     relief.exportFrequencyDistributionToCsv( frequencyDistribution );
