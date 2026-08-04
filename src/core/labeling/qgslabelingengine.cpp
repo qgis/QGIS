@@ -88,9 +88,11 @@ class QgsLabelSorter
 // QgsLabelingEngine
 //
 
-QgsLabelingEngine::QgsLabelingEngine()
+QgsLabelingEngine::QgsLabelingEngine( const QgsMapSettings &mapSettings )
   : mResults( new QgsLabelingResults )
-{}
+{
+  setMapSettings( mapSettings );
+}
 
 QgsLabelingEngine::~QgsLabelingEngine()
 {
@@ -801,8 +803,8 @@ void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMa
 //  QgsDefaultLabelingEngine
 //
 
-QgsDefaultLabelingEngine::QgsDefaultLabelingEngine()
-  : QgsLabelingEngine()
+QgsDefaultLabelingEngine::QgsDefaultLabelingEngine( const QgsMapSettings &mapSettings )
+  : QgsLabelingEngine( mapSettings )
 {}
 
 void QgsDefaultLabelingEngine::run( QgsRenderContext &context )
@@ -830,8 +832,8 @@ void QgsDefaultLabelingEngine::run( QgsRenderContext &context )
 //  QgsStagedRenderLabelingEngine
 //
 
-QgsStagedRenderLabelingEngine::QgsStagedRenderLabelingEngine()
-  : QgsLabelingEngine()
+QgsStagedRenderLabelingEngine::QgsStagedRenderLabelingEngine( const QgsMapSettings &mapSettings )
+  : QgsLabelingEngine( mapSettings )
 {}
 
 void QgsStagedRenderLabelingEngine::run( QgsRenderContext &context )
