@@ -7943,6 +7943,19 @@ Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
 # --
 Qgis.MaterialRenderingTechnique.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.MaterialWidgetMode.Compact.__doc__ = "Shows only the main material settings"
+Qgis.MaterialWidgetMode.Full.__doc__ = "Shows all material settings"
+Qgis.MaterialWidgetMode.__doc__ = """Modes for material settings widgets.
+
+.. versionadded:: 4.4
+
+* ``Compact``: Shows only the main material settings
+* ``Full``: Shows all material settings
+
+"""
+# --
+Qgis.MaterialWidgetMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.InstancedMaterialFlag.DataDefinedScale.__doc__ = "Per-instance data-defined scale"
 Qgis.InstancedMaterialFlag.DataDefinedRotation.__doc__ = "Per-instance data-defined rotation"
 Qgis.InstancedMaterialFlag.__doc__ = """Optional per-instance properties of instanced materials.

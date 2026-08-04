@@ -2480,6 +2480,12 @@ The development version
       Billboards,
     };
 
+    enum class MaterialWidgetMode /BaseType=IntEnum/
+    {
+      Compact,
+      Full,
+    };
+
     enum class InstancedMaterialFlag /BaseType=IntFlag/
     {
       DataDefinedScale,
