@@ -206,7 +206,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
 
   mSymbolLayersModel->setSymbol( mSymbol );
 
-  updateExpandedStateFromNode( mSymbolLayersModel->rootNode() );
+  layersTree->expandAll();
   // loadSymbol( mSymbol, static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->invisibleRootItem() ) );
   updatePreview();
 
@@ -330,7 +330,7 @@ void QgsSymbolSelectorWidget::reloadSymbol()
 {
   mSymbolLayersModel->setSymbol( mSymbol );
   // loadSymbol( mSymbol, static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->invisibleRootItem() ) );
-  updateExpandedStateFromNode( mSymbolLayersModel->rootNode() );
+  layersTree->expandAll();
 }
 
 void QgsSymbolSelectorWidget::updateUi()
@@ -465,7 +465,8 @@ void QgsSymbolSelectorWidget::symbolChanged()
     QgsSymbolLayerModelNode *parent = static_cast<QgsSymbolLayerModelNode *>( currentNode->parent() );
 
     mSymbolLayersModel->updateNode( symbol, parent );
-    updateExpandedStateFromNode( parent );
+
+    layersTree->expandRecursively( mSymbolLayersModel->node2index( parent->children().at( 0 ) ) );
     layersTree->setCurrentIndex( mSymbolLayersModel->node2index( parent->children().at( 0 ) ) );
   }
   else
@@ -518,45 +519,11 @@ void QgsSymbolSelectorWidget::updateLockButtonIcon()
 void QgsSymbolSelectorWidget::addLayer()
 {
   const QModelIndex idx = layersTree->currentIndex();
-  if ( !idx.isValid() )
-    return;
 
-  int insertIdx = -1;
-  QgsSymbolLayerModelNode *node = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( idx ) );
-  if ( node->isLayer() )
-  {
-    insertIdx = node->rowIndex();
-    node = static_cast<QgsSymbolLayerModelNode *>( node->parent() );
-  }
+  QgsSymbolLayerModelNode *newNode = mSymbolLayersModel->addLayer( idx );
 
-  QgsSymbol *parentSymbol = node->symbol();
-
-  // save data-defined values at marker level
-  const QgsProperty ddSize( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize() : QgsProperty() );
-  const QgsProperty ddAngle( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle() : QgsProperty() );
-  const QgsProperty ddWidth( parentSymbol->type() == Qgis::SymbolType::Line ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth() : QgsProperty() );
-
-  {
-    std::unique_ptr< QgsSymbolLayer > newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
-    if ( insertIdx == -1 )
-      parentSymbol->appendSymbolLayer( newLayer.release() );
-    else
-      parentSymbol->insertSymbolLayer( node->rowCount() - insertIdx, newLayer.release() );
-  }
-
-  // restore data-defined values at marker level
-  if ( ddSize )
-    static_cast<QgsMarkerSymbol *>( parentSymbol )->setDataDefinedSize( ddSize );
-  if ( ddAngle )
-    static_cast<QgsMarkerSymbol *>( parentSymbol )->setDataDefinedAngle( ddAngle );
-  if ( ddWidth )
-    static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth );
-
-
-  mSymbolLayersModel->updateNode( parentSymbol, node );
-  updateExpandedStateFromNode( node );
-
-  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( node->children().at( insertIdx != -1 ? insertIdx : 0 ) ) );
+  layersTree->expandRecursively( mSymbolLayersModel->node2index( newNode ) );
+  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( newNode ) );
   updateUi();
   updatePreview();
   emitSymbolModified();
@@ -565,23 +532,12 @@ void QgsSymbolSelectorWidget::addLayer()
 void QgsSymbolSelectorWidget::removeLayer()
 {
   QgsSymbolLayerModelNode *node = currentLayerNode();
-  const int row = node->rowIndex();
-  QgsSymbolLayerModelNode *parent = static_cast<QgsSymbolLayerModelNode *>( node->parent() );
-  const int layerIdx = parent->rowCount() - row - 1; // IMPORTANT
-  QgsSymbol *parentSymbol = parent->symbol();
-  QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
 
-  mSymbolLayersModel->updateNode( parentSymbol, parent );
-  updateExpandedStateFromNode( parent );
-
-  const QModelIndex newIdx = mSymbolLayersModel->node2index( parent->children().at( 0 ) );
-  layersTree->setCurrentIndex( newIdx );
+  mSymbolLayersModel->removeLayer( node );
 
   updateUi();
   updatePreview();
   emitSymbolModified();
-  //finally delete the removed layer pointer
-  delete tmpLayer;
 }
 
 void QgsSymbolSelectorWidget::moveLayerDown()
@@ -599,20 +555,10 @@ void QgsSymbolSelectorWidget::moveLayerByOffset( int offset )
   QgsSymbolLayerModelNode *node = currentLayerNode();
   if ( !node )
     return;
-  const int row = node->rowIndex();
 
-  QgsSymbolLayerModelNode *parent = node->parent();
-  QgsSymbol *parentSymbol = parent->symbol();
+  mSymbolLayersModel->moveLayerByOffset( node, offset );
 
-  const int layerIdx = parent->rowCount() - row - 1;
-  // switch layers
-  QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
-  parentSymbol->insertSymbolLayer( layerIdx - offset, tmpLayer );
-
-  mSymbolLayersModel->updateNode( parentSymbol, parent );
-  updateExpandedStateFromNode( parent );
-
-  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( parent->children().at( row + offset ) ) );
+  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( node ) );
 
   updatePreview();
   emitSymbolModified();
@@ -639,24 +585,14 @@ void QgsSymbolSelectorWidget::duplicateLayer()
   if ( !node->isLayer() )
     return;
 
-  QgsSymbolLayer *source = node->layer();
-  const int insertIdx = node->rowIndex();
-  node = static_cast<QgsSymbolLayerModelNode *>( node->parent() );
+  QgsSymbolLayerModelNode *newNode = mSymbolLayersModel->duplicateLayer( node );
 
-  QgsSymbol *parentSymbol = node->symbol();
+  if ( newNode )
+  {
+    layersTree->expandRecursively( mSymbolLayersModel->node2index( newNode ) );
+    layersTree->setCurrentIndex( mSymbolLayersModel->node2index( newNode ) );
+  }
 
-  QgsSymbolLayer *newLayer = source->clone();
-  QgsSymbolLayerUtils::resetSymbolLayerIds( newLayer );
-  if ( insertIdx == -1 )
-    parentSymbol->appendSymbolLayer( newLayer );
-  else
-    parentSymbol->insertSymbolLayer( node->rowCount() - insertIdx, newLayer );
-
-
-  mSymbolLayersModel->updateNode( parentSymbol, node );
-  updateExpandedStateFromNode( node );
-
-  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( node->children().at( insertIdx == -1 ? 0 : insertIdx ) ) );
   updateUi();
   updatePreview();
   emitSymbolModified();
@@ -674,7 +610,7 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
   symbol->changeSymbolLayer( layerIdx, newLayer );
 
   mSymbolLayersModel->updateNode( symbol, parentNode );
-  updateExpandedStateFromNode( parentNode );
+  layersTree->expandRecursively( mSymbolLayersModel->node2index( parentNode ) );
   layersTree->setCurrentIndex( mSymbolLayersModel->node2index( parentNode->children().at( layerIdx ) ) );
   updatePreview();
   emitSymbolModified();
@@ -875,16 +811,6 @@ void QgsSymbolSelectorWidget::layersAboutToBeRemoved( const QList<QgsMapLayer *>
   {
     disconnect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsSymbolSelectorWidget::projectDataChanged );
   }
-}
-
-void QgsSymbolSelectorWidget::updateExpandedStateFromNode( QgsSymbolLayerModelNode *node )
-{
-  const QModelIndex idx = mSymbolLayersModel->node2index( node );
-  layersTree->setExpanded( idx, node->expanded() );
-
-  const auto constChildren = node->children();
-  for ( QgsSymbolLayerModelNode *child : constChildren )
-    updateExpandedStateFromNode( child );
 }
 
 void QgsSymbolSelectorWidget::emitSymbolModified()
