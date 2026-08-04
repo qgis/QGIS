@@ -5525,6 +5525,9 @@ QgsLabelingEngineSettings.IgnoreObstacles.__doc__ = "Disable obstacle handling \
 QgsLabelingEngineSettings.SingleCandidateOnly = Qgis.LabelingFlag.SingleCandidateOnly
 QgsLabelingEngineSettings.SingleCandidateOnly.is_monkey_patched = True
 QgsLabelingEngineSettings.SingleCandidateOnly.__doc__ = "Generate only the single least-cost candidate for each feature. Useful for fast labeling, such as interactive labeling previews. \n.. versionadded:: 4.4"
+QgsLabelingEngineSettings.IgnoreOverlaps = Qgis.LabelingFlag.IgnoreOverlaps
+QgsLabelingEngineSettings.IgnoreOverlaps.is_monkey_patched = True
+QgsLabelingEngineSettings.IgnoreOverlaps.__doc__ = "Disable overlap detection and search solver, immediately returning lowest cost candidate per feature \n.. versionadded:: 4.4"
 QgsLabelingEngineSettings.DisableSearchTree = Qgis.LabelingFlag.DisableSearchTree
 QgsLabelingEngineSettings.DisableSearchTree.is_monkey_patched = True
 QgsLabelingEngineSettings.DisableSearchTree.__doc__ = "Disable the creation of the label search tree \n.. versionadded:: 4.4"
@@ -5553,6 +5556,10 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.F
   .. versionadded:: 4.4
 
 * ``SingleCandidateOnly``: Generate only the single least-cost candidate for each feature. Useful for fast labeling, such as interactive labeling previews.
+
+  .. versionadded:: 4.4
+
+* ``IgnoreOverlaps``: Disable overlap detection and search solver, immediately returning lowest cost candidate per feature
 
   .. versionadded:: 4.4
 

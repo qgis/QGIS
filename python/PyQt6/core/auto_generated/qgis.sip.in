@@ -1762,6 +1762,7 @@ The development version
       DrawLabelMetrics,
       IgnoreObstacles,
       SingleCandidateOnly,
+      IgnoreOverlaps,
       DisableSearchTree,
     };
 
