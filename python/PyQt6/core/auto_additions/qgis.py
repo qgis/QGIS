@@ -5526,6 +5526,9 @@ QgsLabelingEngineSettings.CollectUnplacedLabels.__doc__ = "Whether unplaced labe
 QgsLabelingEngineSettings.DrawLabelMetrics = Qgis.LabelingFlag.DrawLabelMetrics
 QgsLabelingEngineSettings.DrawLabelMetrics.is_monkey_patched = True
 QgsLabelingEngineSettings.DrawLabelMetrics.__doc__ = "Whether to render label metric guides (for debugging) \n.. versionadded:: 3.30"
+QgsLabelingEngineSettings.SingleCandidateOnly = Qgis.LabelingFlag.SingleCandidateOnly
+QgsLabelingEngineSettings.SingleCandidateOnly.is_monkey_patched = True
+QgsLabelingEngineSettings.SingleCandidateOnly.__doc__ = "Generate only the single least-cost candidate for each feature. Useful for fast labeling, such as interactive labeling previews. \n.. versionadded:: 4.4"
 Qgis.LabelingFlag.__doc__ = """Various flags that affect drawing and placement of labels.
 
 Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.Flag
@@ -5545,6 +5548,10 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.F
 * ``DrawLabelMetrics``: Whether to render label metric guides (for debugging)
 
   .. versionadded:: 3.30
+
+* ``SingleCandidateOnly``: Generate only the single least-cost candidate for each feature. Useful for fast labeling, such as interactive labeling previews.
+
+  .. versionadded:: 4.4
 
 
 """

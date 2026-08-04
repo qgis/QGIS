@@ -2691,6 +2691,22 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
     }
   }
 
+  if ( !lPos.empty() && pal->flags().testFlag( Qgis::LabelingFlag::SingleCandidateOnly ) )
+  {
+    // retain only the single least-cost candidate
+    // Note that we didn't handle this flag earlier, as we wanted to generate the full number
+    // of candidates considering the geometry of the feature, and then only NOW cull to the best
+    // one.
+    auto minIt = std::min_element( lPos.begin(), lPos.end(), []( const std::unique_ptr< LabelPosition > &a, const std::unique_ptr< LabelPosition > &b ) { return a->cost() < b->cost(); } );
+
+    if ( minIt != lPos.end() )
+    {
+      std::unique_ptr< LabelPosition > bestCandidate = std::move( *minIt );
+      lPos.clear();
+      lPos.emplace_back( std::move( bestCandidate ) );
+    }
+  }
+
   return lPos;
 }
 
