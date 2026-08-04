@@ -123,7 +123,7 @@ let
     python-dateutil
     pytz
     pyyaml
-    qscintilla-qt6
+    pyqt6-qscintilla
     requests
     setuptools
     sip
@@ -216,8 +216,8 @@ stdenv.mkDerivation {
     "-DWITH_PDAL=True"
     "-DENABLE_TESTS=False"
     "-DQT_PLUGINS_DIR=${qtbase}/${qtbase.qtPluginPrefix}"
-    "-DQSCI_SIP_DIR=${py.pkgs.qscintilla-qt6}/${py.sitePackages}/PyQt6/bindings"
-    "-DQSCI_DIST_INFO=${py.pkgs.qscintilla-qt6}/${py.sitePackages}/pyqt6_qscintilla-${py.pkgs.qscintilla-qt6.version}.dist-info"
+    "-DQSCI_SIP_DIR=${py.pkgs.pyqt6-qscintilla}/${py.sitePackages}/PyQt6/bindings"
+    "-DQSCI_DIST_INFO=${py.pkgs.pyqt6-qscintilla}/${py.sitePackages}/pyqt6_qscintilla-${py.pkgs.pyqt6-qscintilla.version}.dist-info"
     "-DPYQT6_DIST_INFO=${py.pkgs.pyqt6}/${py.sitePackages}/pyqt6-${py.pkgs.pyqt6.version}.dist-info"
   ]
   ++ lib.optionals stdenv.hostPlatform.isDarwin [
