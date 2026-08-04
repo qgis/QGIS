@@ -539,7 +539,10 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       switch ( feat->feature->feature()->overlapHandling() )
       {
         case Qgis::LabelOverlapHandling::PreventOverlap:
-          pruneHardConflicts();
+          if ( !mFlags.testFlag( Qgis::LabelingFlag::IgnoreOverlaps ) )
+          {
+            pruneHardConflicts();
+          }
           break;
 
         case Qgis::LabelOverlapHandling::AllowOverlapIfRequired:
@@ -566,7 +569,10 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
           break;
         case Qgis::LabelOverlapHandling::AllowOverlapIfRequired:
         case Qgis::LabelOverlapHandling::AllowOverlapAtNoCost:
-          pruneHardConflicts();
+          if ( !mFlags.testFlag( Qgis::LabelingFlag::IgnoreOverlaps ) )
+          {
+            pruneHardConflicts();
+          }
           break;
       }
 
@@ -634,17 +640,20 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
         //prob->feat[idlp] = j;
 
         // lookup for overlapping candidate
-        const QgsRectangle searchBounds = lp->boundingBoxForCandidateConflicts( this );
-        prob->allCandidatesIndex().intersects( searchBounds, [&lp, this]( const LabelPosition *lp2 ) -> bool {
-          if ( candidatesAreConflicting( lp.get(), lp2 ) )
-          {
-            lp->incrementNumOverlaps();
-          }
+        if ( !mFlags.testFlag( Qgis::LabelingFlag::IgnoreOverlaps ) )
+        {
+          const QgsRectangle searchBounds = lp->boundingBoxForCandidateConflicts( this );
+          prob->allCandidatesIndex().intersects( searchBounds, [&lp, this]( const LabelPosition *lp2 ) -> bool {
+            if ( candidatesAreConflicting( lp.get(), lp2 ) )
+            {
+              lp->incrementNumOverlaps();
+            }
 
-          return true;
-        } );
+            return true;
+          } );
 
-        nbOverlaps += lp->getNumOverlaps();
+          nbOverlaps += lp->getNumOverlaps();
+        }
 
         prob->addCandidatePosition( std::move( lp ) );
 
