@@ -213,7 +213,10 @@ void QgsMapLayerLegendUtils::setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeL
   {
     QDomDocument doc;
     QgsReadWriteContext rwContext;
-    rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
+    if ( nodeLayer->layer() && nodeLayer->layer()->project() )
+    {
+      rwContext.setPathResolver( nodeLayer->layer()->project()->pathResolver() );
+    }
     const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( u"custom symbol"_s, symbol, doc, rwContext );
     doc.appendChild( elem );
     nodeLayer->setCustomProperty( "legend/custom-symbol-" + QString::number( originalIndex ), doc.toString() );
@@ -233,7 +236,10 @@ std::unique_ptr< QgsSymbol > QgsMapLayerLegendUtils::legendNodeCustomSymbol( Qgs
   const QDomElement elem = doc.documentElement();
 
   QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
+  if ( nodeLayer->layer() && nodeLayer->layer()->project() )
+  {
+    rwContext.setPathResolver( nodeLayer->layer()->project()->pathResolver() );
+  }
 
   return QgsSymbolLayerUtils::loadSymbol( elem, rwContext );
 }
@@ -244,7 +250,10 @@ void QgsMapLayerLegendUtils::setLegendNodeColorRampSettings( QgsLayerTreeLayer *
   {
     QDomDocument doc;
     QgsReadWriteContext rwContext;
-    rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
+    if ( nodeLayer->layer() && nodeLayer->layer()->project() )
+    {
+      rwContext.setPathResolver( nodeLayer->layer()->project()->pathResolver() );
+    }
     QDomElement elem = doc.createElement( u"rampSettings"_s );
     settings->writeXml( doc, elem, rwContext );
     doc.appendChild( elem );
@@ -265,7 +274,10 @@ QgsColorRampLegendNodeSettings *QgsMapLayerLegendUtils::legendNodeColorRampSetti
   const QDomElement elem = doc.documentElement();
 
   QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
+  if ( nodeLayer->layer() && nodeLayer->layer()->project() )
+  {
+    rwContext.setPathResolver( nodeLayer->layer()->project()->pathResolver() );
+  }
 
   QgsColorRampLegendNodeSettings settings;
   settings.readXml( elem, rwContext );
