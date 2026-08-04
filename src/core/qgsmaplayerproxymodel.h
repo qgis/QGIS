@@ -40,11 +40,24 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     Q_PROPERTY( QStringList exceptedLayerIds READ exceptedLayerIds WRITE setExceptedLayerIds )
 
   public:
+    // TODO QGIS 5.0 -- remove deprecated constructor
     /**
-     * \brief QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
-     * It can be used to filter the layers list in a widget.
+     * \brief QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel
+     * as source model. It can be used to filter the layers list in a widget.
+     *
+     * \deprecated QGIS 4.4. Will be removed in QGIS 5.0. Use the constructor with the QgsProject argument instead.
      */
-    explicit QgsMapLayerProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    Q_DECL_DEPRECATED explicit QgsMapLayerProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr ) SIP_DEPRECATED;
+
+    /**
+     * \brief QgsMapLayerProxyModel creates a proxy model with a QgsMapLayerModel as source model.
+     * It can be used to filter the layers list in a widget.
+     *
+     * Layers are taken from \a project.
+     *
+     * \since QGIS 4.4
+     */
+    explicit QgsMapLayerProxyModel( QObject *parent SIP_TRANSFERTHIS, QgsProject *project );
 
     /**
      * \brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
