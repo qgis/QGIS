@@ -1038,7 +1038,7 @@ void QgsLayoutLegendWidget::mAddToolButton_clicked()
     visibleLayers = mMapCanvas->layers( true );
   }
 
-  QgsLayoutLegendLayersDialog addDialog( this );
+  QgsLayoutLegendLayersDialog addDialog( this, mLegend->layout()->project() );
   addDialog.setVisibleLayers( visibleLayers );
   if ( addDialog.exec() == QDialog::Accepted )
   {

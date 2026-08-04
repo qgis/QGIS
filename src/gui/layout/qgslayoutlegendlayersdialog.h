@@ -25,6 +25,7 @@
 
 class QgsMapLayer;
 class QgsMapLayerProxyModel;
+class QgsProject;
 
 /**
  * \ingroup gui
@@ -38,8 +39,16 @@ class GUI_EXPORT QgsLayoutLegendLayersDialog : public QDialog, private Ui::QgsLa
     Q_OBJECT
 
   public:
+    // TODO QGIS 5.0 -- remove deprecated constructor
+
     //! constructor
-    QgsLayoutLegendLayersDialog( QWidget *parent = nullptr );
+    Q_DECL_DEPRECATED QgsLayoutLegendLayersDialog( QWidget *parent = nullptr );
+
+    /**
+     * Constructor, taking layers from \a project.
+     * \since QGIS 4.4
+     */
+    QgsLayoutLegendLayersDialog( QWidget *parent, QgsProject *project );
 
     /**
      * Sets a list of visible \a layers, to use for filtering within the dialog.
