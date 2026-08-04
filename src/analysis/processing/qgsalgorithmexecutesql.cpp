@@ -165,7 +165,7 @@ QVariantMap QgsExecuteSqlAlgorithm::processAlgorithm( const QVariantMap &paramet
     // When using this algorithm from the graphic modeler, it may try to
     // access (thanks the QgsVirtualLayerProvider) to memory layer that
     // belongs to temporary QgsMapLayerStore, not project.
-    // So, we write them to disk is this is the case.
+    // So, we write them to disk if this is the case.
     if ( context.project() && !context.project()->mapLayer( vectorLayer->id() ) )
     {
       const QString basename = u"memorylayer."_s + QgsVectorFileWriter::supportedFormatExtensions().value( 0 );
