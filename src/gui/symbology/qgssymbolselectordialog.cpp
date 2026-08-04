@@ -207,7 +207,6 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   mSymbolLayersModel->setSymbol( mSymbol );
 
   layersTree->expandAll();
-  // loadSymbol( mSymbol, static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->invisibleRootItem() ) );
   updatePreview();
 
   connect( btnUp, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::moveLayerUp );
@@ -329,7 +328,6 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol )
 void QgsSymbolSelectorWidget::reloadSymbol()
 {
   mSymbolLayersModel->setSymbol( mSymbol );
-  // loadSymbol( mSymbol, static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->invisibleRootItem() ) );
   layersTree->expandAll();
 }
 
@@ -339,7 +337,7 @@ void QgsSymbolSelectorWidget::updateUi()
   if ( !currentIdx.isValid() )
     return;
 
-  QgsSymbolLayerModelNode *node = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( currentIdx ) );
+  QgsSymbolLayerModelNode *node = mSymbolLayersModel->index2node( currentIdx );
   if ( !node->isLayer() )
   {
     btnUp->setEnabled( false );
@@ -389,7 +387,7 @@ QgsSymbolLayerModelNode *QgsSymbolSelectorWidget::currentLayerNode()
   if ( !idx.isValid() )
     return nullptr;
 
-  QgsSymbolLayerModelNode *node = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( idx ) );
+  QgsSymbolLayerModelNode *node = mSymbolLayersModel->index2node( idx );
   if ( !node->isLayer() )
     return nullptr;
 
@@ -402,7 +400,7 @@ QgsSymbolLayer *QgsSymbolSelectorWidget::currentLayer()
   if ( !idx.isValid() )
     return nullptr;
 
-  QgsSymbolLayerModelNode *node = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( idx ) );
+  QgsSymbolLayerModelNode *node = mSymbolLayersModel->index2node( idx );
   if ( node->isLayer() )
     return node->layer();
 
@@ -413,13 +411,13 @@ void QgsSymbolSelectorWidget::layerChanged()
 {
   updateUi();
 
-  QgsSymbolLayerModelNode *currentNode = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( layersTree->currentIndex() ) );
+  QgsSymbolLayerModelNode *currentNode = mSymbolLayersModel->index2node( layersTree->currentIndex() );
   if ( !currentNode )
     return;
 
   if ( currentNode->isLayer() )
   {
-    QgsSymbolLayerModelNode *parent = static_cast<QgsSymbolLayerModelNode *>( currentNode->parent() );
+    QgsSymbolLayerModelNode *parent = currentNode->parent();
     mDataDefineRestorer = std::make_unique<DataDefinedRestorer>( parent->symbol(), currentNode->layer() );
     QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentNode->layer(), parent->symbol(), mVectorLayer );
     layerProp->setDockMode( this->dockMode() );
@@ -452,7 +450,7 @@ void QgsSymbolSelectorWidget::layerChanged()
 
 void QgsSymbolSelectorWidget::symbolChanged()
 {
-  QgsSymbolLayerModelNode *currentNode = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( layersTree->currentIndex() ) );
+  QgsSymbolLayerModelNode *currentNode = mSymbolLayersModel->index2node( layersTree->currentIndex() );
   if ( !currentNode || currentNode->isLayer() )
     return;
   // disconnect to avoid recreating widget
@@ -462,7 +460,7 @@ void QgsSymbolSelectorWidget::symbolChanged()
     // it is a sub-symbol
 
     QgsSymbol *symbol = currentNode->symbol();
-    QgsSymbolLayerModelNode *parent = static_cast<QgsSymbolLayerModelNode *>( currentNode->parent() );
+    QgsSymbolLayerModelNode *parent = currentNode->parent();
 
     mSymbolLayersModel->updateNode( symbol, parent );
 
@@ -581,7 +579,7 @@ void QgsSymbolSelectorWidget::duplicateLayer()
   if ( !idx.isValid() )
     return;
 
-  QgsSymbolLayerModelNode *node = static_cast<QgsSymbolLayerModelNode *>( mSymbolLayersModel->index2node( idx ) );
+  QgsSymbolLayerModelNode *node = mSymbolLayersModel->index2node( idx );
   if ( !node->isLayer() )
     return;
 
