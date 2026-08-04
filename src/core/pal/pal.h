@@ -96,11 +96,16 @@ namespace pal
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitLines;
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPolygons;
 
-      Pal();
+      Pal( Qgis::LabelingFlags flags );
       ~Pal();
 
       Pal( const Pal &other ) = delete;
       Pal &operator=( const Pal &other ) = delete;
+
+      /**
+       * Returns labeling flags.
+       */
+      Qgis::LabelingFlags flags() const { return mFlags; }
 
       /**
        * \brief add a new layer
@@ -285,6 +290,8 @@ namespace pal
       QList< QgsAbstractLabelingEngineRule * > rules() const { return mRules; }
 
     private:
+      Qgis::LabelingFlags mFlags;
+
       std::vector< std::pair< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > > mLayers;
 
       QList< QgsAbstractLabelingEngineRule * > mRules;
