@@ -599,7 +599,7 @@ void TestQgsLabelingEngine::zOrder()
   engine.addProvider( provider2 );
 
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl << vl2 );
-
+  engine.setMapSettings( mapSettings );
 
   p.begin( &img );
   engine.run( context );
@@ -611,6 +611,7 @@ void TestQgsLabelingEngine::zOrder()
 
   //flip layer order and re-test
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2 << vl );
+  engine.setMapSettings( mapSettings );
 
   p.begin( &img );
   engine.run( context );
