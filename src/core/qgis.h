@@ -4421,6 +4421,18 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( MaterialRenderingTechnique )
 
     /**
+     * Modes for material settings widgets.
+     *
+     * \since QGIS 4.4
+     */
+    enum class MaterialWidgetMode : int
+    {
+      Compact, //!< Shows only the main material settings
+      Full,    //!< Shows all material settings
+    };
+    Q_ENUM( MaterialWidgetMode )
+
+    /**
      * Optional per-instance properties of instanced materials.
      *
      * \since QGIS 4.2

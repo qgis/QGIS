@@ -36,6 +36,9 @@ class QgsUnlitMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Unl
 
   private slots:
     void updatePreview();
+
+  protected:
+    void updateWidgetVisibility() final;
 };
 
 #endif // QGSUNLITMATERIALWIDGET_H

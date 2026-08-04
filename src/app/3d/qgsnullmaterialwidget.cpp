@@ -41,3 +41,6 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsNullMaterialWidget::settings()
 
 void QgsNullMaterialWidget::setPreviewVisible( bool )
 {}
+
+void QgsNullMaterialWidget::updateWidgetVisibility()
+{}
