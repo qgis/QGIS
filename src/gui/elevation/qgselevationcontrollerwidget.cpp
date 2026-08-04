@@ -26,6 +26,7 @@
 
 #include <QEvent>
 #include <QHBoxLayout>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
 #include <QMouseEvent>
@@ -61,8 +62,24 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   mInvertDirectionAction->setCheckable( true );
   mMenu->addAction( mInvertDirectionAction );
 
-  mSettingsAction->sizeSpin()->clear();
-  connect( mSettingsAction->sizeSpin(), qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size ) { setFixedRangeSize( size < 0 ? -1 : size ); } );
+  connect( mSettingsAction->sizeSpin(), qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size ) {
+    if ( mSettingsAction->sizeSpin()->isCleared() )
+    {
+      setFixedRangeSize( -1 );
+      setRange( rangeLimits() );
+      whileBlocking( mSettingsAction->sizeSpin() )->setValue( rangeLimits().upper() - rangeLimits().lower() );
+    }
+    else if ( mSettingsAction->lockButton()->isChecked() )
+    {
+      setFixedRangeSize( size );
+    }
+  } );
+  connect( mSettingsAction->lockButton(), &QToolButton::toggled, this, [this]( bool locked ) {
+    if ( locked )
+      setFixedRangeSize( mSettingsAction->sizeSpin()->value() );
+    else
+      setFixedRangeSize( -1 );
+  } );
 
   mMenu->addSeparator();
 
@@ -98,6 +115,14 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
 
     emit rangeChanged( range() );
     mSliderLabels->setRange( range() );
+  } );
+
+  connect( mMenu, &QMenu::aboutToShow, this, [this]() {
+    if ( !mSettingsAction->lockButton()->isChecked() )
+    {
+      const QSignalBlocker blocker( mSettingsAction->sizeSpin() );
+      mSettingsAction->sizeSpin()->setValue( range().upper() - range().lower() );
+    }
   } );
 
   connect( mInvertDirectionAction, &QAction::toggled, this, [this]() {
@@ -233,8 +258,17 @@ void QgsElevationControllerWidget::setFixedRangeSize( double size )
   {
     mSlider->setFixedRangeSize( static_cast<int>( std::round( mFixedRangeSize * mSliderPrecision ) ) );
   }
-  if ( mFixedRangeSize != mSettingsAction->sizeSpin()->value() )
+
+  {
+    const QSignalBlocker blockLock( mSettingsAction->lockButton() );
+    mSettingsAction->lockButton()->setChecked( mFixedRangeSize >= 0 );
+  }
+  if ( mFixedRangeSize >= 0 )
+  {
+    const QSignalBlocker blockSpin( mSettingsAction->sizeSpin() );
     mSettingsAction->sizeSpin()->setValue( mFixedRangeSize );
+  }
+
   emit fixedRangeSizeChanged( mFixedRangeSize );
 }
 
@@ -441,18 +475,26 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
   QGridLayout *gLayout = new QGridLayout();
   gLayout->setContentsMargins( 3, 2, 3, 2 );
 
-  QLabel *label = new QLabel( tr( "Fixed Range Size" ) );
+  QLabel *label = new QLabel( tr( "Visible Range Size" ) );
   gLayout->addWidget( label, 0, 0 );
 
   mSizeSpin = new QgsDoubleSpinBox();
   mSizeSpin->setDecimals( 4 );
-  mSizeSpin->setMinimum( -1.0 );
+  mSizeSpin->setMinimum( 0.0 );
   mSizeSpin->setMaximum( 999999999.0 );
-  mSizeSpin->setClearValue( -1, tr( "Not set" ) );
+  mSizeSpin->setClearValue( 0, tr( "Full Range" ) );
   mSizeSpin->setKeyboardTracking( false );
-  mSizeSpin->setToolTip( tr( "Limit elevation range to a fixed size" ) );
+  mSizeSpin->setToolTip( tr( "Currently visible elevation range" ) );
+  mSizeSpin->installEventFilter( this );
 
   gLayout->addWidget( mSizeSpin, 0, 1 );
+
+  mLockButton = new QToolButton();
+  mLockButton->setIcon( QgsApplication::getThemeIcon( u"/cadtools/lock.svg"_s ) );
+  mLockButton->setCheckable( true );
+  mLockButton->setToolTip( tr( "Lock the elevation range to a fixed size" ) );
+
+  gLayout->addWidget( mLockButton, 0, 2 );
 
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
@@ -462,6 +504,26 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
 QgsDoubleSpinBox *QgsElevationControllerSettingsAction::sizeSpin()
 {
   return mSizeSpin;
+}
+
+QToolButton *QgsElevationControllerSettingsAction::lockButton()
+{
+  return mLockButton;
+}
+
+bool QgsElevationControllerSettingsAction::eventFilter( QObject *watched, QEvent *event )
+{
+  if ( watched == mSizeSpin && event->type() == QEvent::KeyPress )
+  {
+    const QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+    if ( keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter )
+    {
+      mSizeSpin->interpretText();
+      if ( !mSizeSpin->isCleared() )
+        mLockButton->setChecked( true );
+    }
+  }
+  return QWidgetAction::eventFilter( watched, event );
 }
 
 ///@endcond PRIVATE

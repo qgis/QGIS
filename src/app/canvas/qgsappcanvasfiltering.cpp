@@ -20,9 +20,13 @@
 #include "qgselevationutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsmessagebar.h"
+#include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 
 #include <QInputDialog>
+#include <QMenu>
+#include <QPointer>
 
 #include "moc_qgsappcanvasfiltering.cpp"
 
@@ -56,6 +60,54 @@ void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, Qg
   QAction *setProjectLimitsAction = new QAction( tr( "Set Elevation Range…" ), controller );
   controller->menu()->addAction( setProjectLimitsAction );
   connect( setProjectLimitsAction, &QAction::triggered, QgisApp::instance(), [] { QgisApp::instance()->showProjectProperties( tr( "Elevation" ) ); } );
+
+  QMenu *setLimitsFromMenu = new QMenu( tr( "Set Slider Limits From" ), controller->menu() );
+  controller->menu()->addMenu( setLimitsFromMenu );
+
+  QAction *limitsFromProjectRangeAction = setLimitsFromMenu->addAction( tr( "Project Elevation Range" ) );
+  connect( limitsFromProjectRangeAction, &QAction::triggered, controller, [controller] {
+    const QgsDoubleRange range = QgsProject::instance()->elevationProperties()->elevationRange();
+    if ( range.isInfinite() )
+      return;
+    controller->setRangeLimits( range );
+    controller->setRange( range );
+  } );
+  // the project elevation range can be defined or cleared at any time, so refresh availability when the menu opens
+  connect( setLimitsFromMenu, &QMenu::aboutToShow, limitsFromProjectRangeAction, [limitsFromProjectRangeAction] {
+    limitsFromProjectRangeAction->setEnabled( !QgsProject::instance()->elevationProperties()->elevationRange().isInfinite() );
+  } );
+
+  QAction *limitsFromProjectAction = setLimitsFromMenu->addAction( tr( "Project Layers" ) );
+  connect( limitsFromProjectAction, &QAction::triggered, controller, [controller] {
+    const QgsDoubleRange range = QgsElevationUtils::calculateZRangeForProject( QgsProject::instance() );
+    if ( range.isInfinite() || range.isEmpty() )
+    {
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Elevation Range" ), tr( "Could not determine an elevation range from the project layers." ) );
+      return;
+    }
+    controller->setRangeLimits( range );
+    controller->setRange( range );
+  } );
+
+  QPointer<QgsMapCanvas> canvasPointer( canvas );
+  QAction *limitsFromVisibleAction = setLimitsFromMenu->addAction( tr( "Visible Layers" ) );
+  connect( limitsFromVisibleAction, &QAction::triggered, controller, [controller, canvasPointer] {
+    if ( !canvasPointer )
+      return;
+    const QgsDoubleRange range = QgsElevationUtils::calculateZRangeForLayers( canvasPointer->layers( true ) );
+    if ( range.isInfinite() || range.isEmpty() )
+    {
+      QgisApp::instance()->messageBar()->pushWarning( tr( "Elevation Range" ), tr( "Could not determine an elevation range from the visible layers." ) );
+      return;
+    }
+    controller->setRangeLimits( range );
+    controller->setRange( range );
+  } );
+
+  QAction *saveRangeAction = new QAction( tr( "Save Current Range to Project" ), controller );
+  controller->menu()->addAction( saveRangeAction );
+  connect( saveRangeAction, &QAction::triggered, controller, [controller] { QgsProject::instance()->elevationProperties()->setElevationRange( controller->rangeLimits() ); } );
+
   QAction *disableAction = new QAction( tr( "Disable Elevation Filter" ), controller );
   controller->menu()->addAction( disableAction );
   connect( disableAction, &QAction::triggered, senderAction, [senderAction] { senderAction->setChecked( false ); } );
@@ -93,6 +145,18 @@ QgsCanvasElevationControllerBridge::QgsCanvasElevationControllerBridge( QgsEleva
   }
 
   connect( mCanvas, &QgsMapCanvas::layersChanged, this, &QgsCanvasElevationControllerBridge::canvasLayersChanged );
+
+  // if the project doesn't define an explicit elevation range, initialize the controller
+  // limits using the range calculated from the canvas layers so the slider is immediately usable
+  if ( QgsProject::instance()->elevationProperties()->elevationRange().isInfinite() )
+  {
+    const QgsDoubleRange layerRange = QgsElevationUtils::calculateZRangeForLayers( mCanvas->layers( true ) );
+    if ( !layerRange.isInfinite() && !layerRange.isEmpty() )
+    {
+      mController->setRangeLimits( layerRange );
+      mController->setRange( layerRange );
+    }
+  }
 
   canvasLayersChanged();
 }
