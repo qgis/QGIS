@@ -1760,6 +1760,7 @@ The development version
       DrawUnplacedLabels,
       CollectUnplacedLabels,
       DrawLabelMetrics,
+      SingleCandidateOnly,
     };
 
     typedef QFlags<Qgis::LabelingFlag> LabelingFlags;
