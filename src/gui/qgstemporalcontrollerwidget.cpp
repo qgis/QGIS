@@ -134,7 +134,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
 
   connect( mSettings, &QPushButton::clicked, this, &QgsTemporalControllerWidget::settings_clicked );
 
-  mMapLayerModel = new QgsMapLayerModel( this );
+  mMapLayerModel = new QgsMapLayerModel( this, QgsProject::instance() );
 
   mRangeMenu = std::make_unique<QMenu>( this );
 

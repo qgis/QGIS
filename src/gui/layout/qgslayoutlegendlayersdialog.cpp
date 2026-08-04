@@ -19,6 +19,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 
 #include <QStandardItem>
@@ -29,6 +30,10 @@
 using namespace Qt::StringLiterals;
 
 QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
+  : QgsLayoutLegendLayersDialog( parent, QgsProject::instance() )
+{}
+
+QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent, QgsProject *project )
   : QDialog( parent )
 {
   setupUi( this );
@@ -37,7 +42,7 @@ QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
   mFilterLineEdit->setShowClearButton( true );
   mFilterLineEdit->setShowSearchIcon( true );
 
-  mModel = new QgsMapLayerProxyModel( listMapLayers );
+  mModel = new QgsMapLayerProxyModel( listMapLayers, project );
   listMapLayers->setModel( mModel );
   const QModelIndex firstLayer = mModel->index( 0, 0 );
   listMapLayers->selectionModel()->select( firstLayer, QItemSelectionModel::Select );
