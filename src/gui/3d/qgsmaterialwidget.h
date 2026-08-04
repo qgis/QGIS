@@ -109,6 +109,18 @@ class GUI_EXPORT QgsMaterialWidget : public QgsPanelWidget, private Ui::Material
 
     void setDockMode( bool dockMode ) override;
 
+    /**
+     * Sets the widget display \a style.
+     *
+     * The widget style controls the number of material settings exposed for editing:
+     *
+     * - Compact style only exposes the most commonly used settings
+     * - Full style exposes all material settings.
+     *
+     * \since QGIS 4.4
+     */
+    void setStyle( Qgis::MaterialWidgetStyle style );
+
   public slots:
 
     /**
@@ -137,6 +149,7 @@ class GUI_EXPORT QgsMaterialWidget : public QgsPanelWidget, private Ui::Material
 
     bool mFilterByTechnique = false;
     Qgis::MaterialRenderingTechnique mTechnique = Qgis::MaterialRenderingTechnique::Triangles;
+    Qgis::MaterialWidgetStyle mStyle = Qgis::MaterialWidgetStyle::Full;
 };
 
 
