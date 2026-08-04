@@ -3047,6 +3047,7 @@ int QgisEvent = QEvent::User + 1;
       DrawUnplacedLabels = 1 << 6,    //!< Whether to render unplaced labels as an indicator/warning for users
       CollectUnplacedLabels = 1 << 7, //!< Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered) \since QGIS 3.20
       DrawLabelMetrics = 1 << 8,      //!< Whether to render label metric guides (for debugging) \since QGIS 3.30
+      IgnoreObstacles = 1 << 9,       //!< Disable obstacle handling \since QGIS 4.4
       SingleCandidateOnly = 1 << 10,  //!< Generate only the single least-cost candidate for each feature. Useful for fast labeling, such as interactive labeling previews. \since QGIS 4.4
       DisableSearchTree = 1 << 12,    //!< Disable the creation of the label search tree \since QGIS 4.4
     };

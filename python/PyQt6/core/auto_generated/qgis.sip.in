@@ -1761,6 +1761,7 @@ The development version
       DrawUnplacedLabels,
       CollectUnplacedLabels,
       DrawLabelMetrics,
+      IgnoreObstacles,
       SingleCandidateOnly,
       DisableSearchTree,
     };
