@@ -34,6 +34,7 @@ class QgsMapToolClippingPlanes;
 class Qgs3DMapToolPointCloudChangeAttributePaintbrush;
 class QLabel;
 class QProgressBar;
+class QActionGroup;
 
 class Qgs3DAnimationWidget;
 class Qgs3DMapCanvas;
@@ -58,6 +59,7 @@ class QgsSettingsEntryBool;
 class QgsGeometry;
 class QgsElevationProfile;
 class QgsProfilePoint;
+class Qgs3DEditingToolBar;
 
 //! Helper validator for classification classes
 class ClassValidator : public QValidator
@@ -97,6 +99,15 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     Qgs3DMapToolMeasureLine *measurementLineTool() { return mMapToolMeasureLine; }
 
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
+
+    /**
+     * Add new editing toolbar.
+     * Takes ownership
+     * \param newToolBar new toolbar
+     */
+    void addEditingToolBar( Qgs3DEditingToolBar *newToolBar );
+    //! Returns all added editing toolbars
+    QList<Qgs3DEditingToolBar *> editingToolBars() const;
 
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
@@ -173,6 +184,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void updateProfileRubberBands( QgsElevationProfile *profile );
     void hideProfileRubberBands( QgsElevationProfile *profile );
 
+    void updateEditingToolBar();
+
     QString mCanvasName;
     Qgs3DMapCanvas *mCanvas = nullptr;
     Qgs3DAnimationWidget *mAnimationWidget = nullptr;
@@ -217,7 +230,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionDisableClippingPlanes = nullptr;
     QAction *mActionToggleEditing = nullptr;
     QAction *mActionUndo = nullptr;
+    QMetaObject::Connection mUndoConnection;
     QAction *mActionRedo = nullptr;
+    QMetaObject::Connection mRedoConnection;
     QAction *mEditingToolsAction = nullptr;
     QAction *mActionNudgeLeft = nullptr;
     QAction *mActionNudgeRight = nullptr;
@@ -231,6 +246,10 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QgsMessageBar *mMessageBar = nullptr;
     bool mGpuMemoryLimitReachedReported = false;
 
+    QAction *mActionEditingToolbar = nullptr;
+    QActionGroup *mToolActionGroup = nullptr;
+
+    QgsMapLayer *mLayer = nullptr;
     //! Container QWidget that encapsulates 3D QWindow
     QWidget *mContainer = nullptr;
     //! On-Screen Navigation widget.
