@@ -601,17 +601,13 @@ void QgsSymbolSelectorWidget::duplicateLayer()
 void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
 {
   QgsSymbolLayerModelNode *node = currentLayerNode();
-  QgsSymbolLayerModelNode *parentNode = node->parent();
 
-  QgsSymbol *symbol = static_cast<QgsSymbolLayerModelNode *>( parentNode )->symbol();
+  mSymbolLayersModel->changeLayer( node, newLayer );
 
+  QModelIndex nodeIndex = mSymbolLayersModel->node2index( node );
+  layersTree->expandRecursively( nodeIndex );
+  layersTree->setCurrentIndex( nodeIndex );
 
-  const int layerIdx = parentNode->rowCount() - node->rowIndex() - 1;
-  symbol->changeSymbolLayer( layerIdx, newLayer );
-
-  mSymbolLayersModel->updateNode( symbol, parentNode );
-  layersTree->expandRecursively( mSymbolLayersModel->node2index( parentNode ) );
-  layersTree->setCurrentIndex( mSymbolLayersModel->node2index( parentNode->children().at( layerIdx ) ) );
   updatePreview();
   emitSymbolModified();
   // Important: This lets the layer have its own layer properties widget
