@@ -328,7 +328,7 @@ void QgsSymbolLayerModel::updateNode( QgsSymbol *symbol, QgsSymbolLayerModelNode
 
   beginInsertRows( parentIndex, 0, symbol->symbolLayerCount() - 1 );
 
-  loadSymbol( symbol, parent, true );
+  loadSymbol( symbol, parent );
 
   endInsertRows();
 }
@@ -341,7 +341,6 @@ void QgsSymbolLayerModel::moveLayerByOffset( QgsSymbolLayerModelNode *node, int 
   QgsSymbolLayerModelNode *parent = node->parent();
   QModelIndex parentIndex = node2index( parent );
   const int row = node->rowIndex();
-
 
   QgsSymbol *parentSymbol = parent->symbol();
 
@@ -465,6 +464,31 @@ void QgsSymbolLayerModel::removeLayer( QgsSymbolLayerModelNode *node )
   parent->removeChildNode( node );
   endRemoveRows();
 }
+
+void QgsSymbolLayerModel::changeLayer( QgsSymbolLayerModelNode *node, QgsSymbolLayer *newLayer )
+{
+  QgsSymbolLayerModelNode *parentNode = node->parent();
+  QgsSymbol *parentSymbol = static_cast<QgsSymbolLayerModelNode *>( parentNode )->symbol();
+
+  const int layerIdx = parentNode->rowCount() - node->rowIndex() - 1;
+  parentSymbol->changeSymbolLayer( layerIdx, newLayer );
+
+  if ( node->rowCount() > 0 )
+  {
+    beginRemoveRows( node2index( node ), 0, node->rowCount() - 1 );
+    node->deleteChildren();
+    endRemoveRows();
+  }
+
+  node->setLayer( newLayer, parentSymbol->type() );
+  if ( newLayer->subSymbol() )
+  {
+    updateNode( newLayer->subSymbol(), node );
+  }
+
+  updatePreview( node );
+}
+
 void QgsSymbolLayerModel::updatePreview( QgsSymbolLayerModelNode *node )
 {
   const QModelIndex index = node2index( node );
@@ -492,7 +516,7 @@ void QgsSymbolLayerModel::setScreen( QScreen *screen )
   rebuild();
 }
 
-void QgsSymbolLayerModel::loadSymbol( QgsSymbol *symbol, QgsSymbolLayerModelNode *parent, bool update )
+void QgsSymbolLayerModel::loadSymbol( QgsSymbol *symbol, QgsSymbolLayerModelNode *parent )
 {
   if ( !symbol )
     return;
@@ -502,17 +526,9 @@ void QgsSymbolLayerModel::loadSymbol( QgsSymbol *symbol, QgsSymbolLayerModelNode
     return;
   }
 
-  QgsSymbolLayerModelNode *symbolNode;
-  if ( !update )
-  {
-    symbolNode = new QgsSymbolLayerModelNode( symbol, mVectorLayer, mScreen );
-    parent->addChildNode( symbolNode );
-  }
-  else
-  {
-    symbolNode = parent;
-  }
 
+  QgsSymbolLayerModelNode *symbolNode = new QgsSymbolLayerModelNode( symbol, mVectorLayer, mScreen );
+  parent->addChildNode( symbolNode );
 
   const int count = symbol->symbolLayerCount();
   for ( int i = count - 1; i >= 0; i-- )
