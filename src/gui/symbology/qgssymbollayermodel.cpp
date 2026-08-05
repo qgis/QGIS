@@ -68,7 +68,6 @@ void QgsSymbolLayerModelNode::setScreen( QScreen *screen )
   mScreen = screen;
 }
 
-
 void QgsSymbolLayerModelNode::setSymbol( QgsSymbol *symbol )
 {
   mSymbol = symbol;
