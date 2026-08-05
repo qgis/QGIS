@@ -442,12 +442,12 @@ void QgsMapToolCapture::setCurrentShapeMapToolIsActivated( bool activated )
 {
   if ( activated )
   {
-    connect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolCapture::onTransientGeometryChanged );
+    connect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolCapture::onShapeToolTransientGeometryChanged );
     mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
   }
   else
   {
-    disconnect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolCapture::onTransientGeometryChanged );
+    disconnect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolCapture::onShapeToolTransientGeometryChanged );
     mCurrentShapeMapTool->deactivate();
   }
 }
@@ -1740,7 +1740,7 @@ void QgsMapToolCapture::updateExtraSnapLayer()
   }
 }
 
-void QgsMapToolCapture::onTransientGeometryChanged( const QgsReferencedGeometry &geometry )
+void QgsMapToolCapture::onShapeToolTransientGeometryChanged( const QgsReferencedGeometry &geometry )
 {
   QgsReferencedGeometry correctedGeometry = geometry;
 
