@@ -413,6 +413,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     void setCurrentShapeMapToolIsActivated( bool activated );
 
+    void onTransientGeometryChanged( const QgsReferencedGeometry &geometry );
+
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
 
