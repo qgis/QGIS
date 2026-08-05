@@ -64,7 +64,10 @@ QgsMapLayerModel::QgsMapLayerModel( QgsProject *project, QObject *parent )
 
 void QgsMapLayerModel::setProject( QgsProject *project )
 {
-  if ( mProject == ( project ? project : QgsProject::instance() ) ) // skip-keyword-check
+  if ( !project )
+    return;
+
+  if ( mProject == project )
     return;
 
   // remove layers from previous project
@@ -75,7 +78,7 @@ void QgsMapLayerModel::setProject( QgsProject *project )
     disconnect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   }
 
-  mProject = project ? project : QgsProject::instance(); // skip-keyword-check
+  mProject = project;
 
   connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
   connect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
