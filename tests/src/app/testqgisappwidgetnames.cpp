@@ -14,8 +14,11 @@
  ***************************************************************************/
 
 #include "qgisapp.h"
+#include "qgsnewsfeedparser.h"
 #include "qgsprocessingregistry.h"
 #include "qgstest.h"
+#include "qgsuserprofilemanager.h"
+#include "qgswelcomescreen.h"
 
 #include <QApplication>
 #include <QSplashScreen>
@@ -54,7 +57,35 @@ TestQgisAppWidgetNames::TestQgisAppWidgetNames()
 //runs before all tests
 void TestQgisAppWidgetNames::initTestCase()
 {
+  // Create an empty default style to avoid font downloading
+  // Font downloading may trigger a timeout and make the test flaky
+  const QString settingsFolder = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+  QVERIFY( !settingsFolder.isEmpty() );
+
+  QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( settingsFolder );
+  QgsUserProfileManager manager( rootProfileFolder );
+  std::unique_ptr< QgsUserProfile > profile = manager.getProfile();
+  const QString profileFolder = profile->folder();
+
+  QString styleFilepath = profileFolder + u"/symbology-style.db"_s;
+  QgsStyle style;
+  style.createDatabase( styleFilepath );
+
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
+  // check that style is empty
+  QVERIFY( QgsStyle::defaultStyle()->textFormatNames().isEmpty() );
+
+  QgsNewsFeedParser::settingsFeedDisabled->setValue( true, "httpsfeedqgisorg" );
+
   mQgisApp = new QgisApp( new QSplashScreen() );
+
+  // Check that feed parser have been correctly disabled to avoid HTTP requests in CI that could
+  // trigger a timeout and make the test flaky
+  QVERIFY( mQgisApp->mWelcomeScreen );
+  QVERIFY( mQgisApp->mWelcomeScreen->mNewsFeedParser );
+  QVERIFY( !mQgisApp->mWelcomeScreen->mNewsFeedParser->enabled() );
 }
 
 //runs after all tests
@@ -62,6 +93,8 @@ void TestQgisAppWidgetNames::cleanupTestCase()
 {
   // Hack to avoid an issue when deleting the application
   QgsApplication::processingRegistry()->blockSignals( true );
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgisAppWidgetNames::init()
