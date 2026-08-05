@@ -17,6 +17,7 @@
 #define QGS3DMAPCANVASWIDGET_H
 
 #include "qgis_app.h"
+#include "qgs3dmapcanvaswidgetinterface.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 #include "qobjectuniqueptr.h"
@@ -76,7 +77,7 @@ class ClassValidator : public QValidator
     QRegularExpression mRx;
 };
 
-class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
+class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget, public Qgs3DMapCanvasWidgetInterface
 {
     Q_OBJECT
 
@@ -92,7 +93,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void setMainCanvas( QgsMapCanvas *canvas );
 
-    Qgs3DMapCanvas *mapCanvas3D() { return mCanvas; }
+    Qgs3DMapCanvas *mapCanvas3D() override { return mCanvas; }
 
     Qgs3DAnimationWidget *animationWidget() { return mAnimationWidget; }
 
@@ -100,14 +101,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
 
-    /**
-     * Add new editing toolbar.
-     * Takes ownership
-     * \param newToolBar new toolbar
-     */
-    void addEditingToolBar( Qgs3DEditingToolBar *newToolBar );
-    //! Returns all added editing toolbars
-    QList<Qgs3DEditingToolBar *> editingToolBars() const;
+    void addEditingToolBar( Qgs3DEditingToolBar *newToolBar ) override;
+    QList<Qgs3DEditingToolBar *> editingToolBars() const override;
 
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
