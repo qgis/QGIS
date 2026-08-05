@@ -187,27 +187,27 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
     void updateNode( QgsSymbol *symbol, QgsSymbolLayerModelNode *parent );
 
     /**
-     * Moves the symbol layer \a node by the \a offset in the parent hierarchy
+     * Moves the symbol layer \a node by the \a offset in the parent hierarchy.
      */
     void moveLayerByOffset( QgsSymbolLayerModelNode *node, int offset );
 
     /**
-     * Duplicates the symbol layer \a node in the parent node hierarchy
+     * Duplicates the symbol layer \a node in the parent node hierarchy.
      */
     QgsSymbolLayerModelNode *duplicateLayer( QgsSymbolLayerModelNode *node );
 
     /**
-     * Adds the symbol layer node inserted right before the \a idx
+     * Adds the symbol layer node inserted right before the \a idx.
      */
     QgsSymbolLayerModelNode *addLayer( QModelIndex index );
 
     /**
-     * Removes the symbol layer \a node from it's parent node hierarchy
+     * Removes the symbol layer \a node from it's parent node hierarchy.
      */
     void removeLayer( QgsSymbolLayerModelNode *node );
 
     /**
-     * Change the symbol layer associated with \a node by a \a newLayer symbol layer
+     * Change the symbol layer associated with \a node by a \a newLayer symbol layer.
      */
     void changeLayer( QgsSymbolLayerModelNode *node, QgsSymbolLayer *newLayer );
 
@@ -226,7 +226,7 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
      * Set the QScreen of the model itself. And traverses all the nodes in the model
      * to set their QScreen and update their preview icons.
      *
-     * Used to determine the icon size on different dpi monitor
+     * Used to determine the icon size on different dpi monitors.
      */
     void setScreen( QScreen *screen );
 

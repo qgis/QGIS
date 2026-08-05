@@ -461,7 +461,6 @@ QgsSymbolLayerModelNode *QgsSymbolLayerModel::addLayer( QModelIndex index )
   // TODO -- using newLayerPtr is not safe in some circumstances here. This needs reworking so that QgsSymbolLayerModelNode does has
   // its own owned QgsSymbolLayer clone, and isn't reliant on a pointer to the object owned by parentSymbol.
   auto newNode = std::make_unique<QgsSymbolLayerModelNode>( newLayerPtr, parentSymbol->type(), mVectorLayer, mScreen );
-  // QgsSymbolLayerModelNode *newNodePtr = newNode.get();
 
   QgsSymbolLayerModelNode *newNodePtr = node->insertChildNode( atRowIndex, std::move( newNode ) );
 
