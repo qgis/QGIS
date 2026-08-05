@@ -220,7 +220,7 @@ handoff calculation of aggregates to the provider.
 :return: calculated aggregate value
 %End
 
-    virtual void enumValues( int index, QStringList &enumList /Out/ ) const;
+ virtual void enumValues( int index, QStringList &enumList /Out/ ) const /Deprecated="Since 4.4. Use codedValues() instead."/;
 %Docstring
 Returns the possible enum values of an attribute. Returns an empty
 stringlist if a provider does not support enum types or if the given
@@ -228,7 +228,26 @@ attribute is not an enum type.
 
 :param index: the index of the attribute
 
-:return: reference to the list to fill
+:return: - enumList: reference to the list to fill
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsVectorDataProvider.codedValues` instead.
+%End
+
+    virtual QList<QPair<QString, QString>> codedValues( int index ) const;
+%Docstring
+Returns the possible enum or coded values of an attribute in key-value
+pairs. Returns an empty list if a provider does not support enum types,
+if the given attribute is not an enum type or using a field domain for
+coded values.
+
+:param index: the index of the attribute
+
+:return: list of code-value pairs. If the attribute is enum type, then
+         both key and value will contain the same enum value
+
+.. versionadded:: 4.4
 %End
 
     virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );

@@ -340,6 +340,7 @@
 %Include auto_generated/expression/qgsexpressionnodeimpl.sip
 %Include auto_generated/fieldformatter/qgscheckboxfieldformatter.sip
 %Include auto_generated/fieldformatter/qgsdatetimefieldformatter.sip
+%Include auto_generated/fieldformatter/qgsenumerationfieldformatter.sip
 %Include auto_generated/fieldformatter/qgsfallbackfieldformatter.sip
 %Include auto_generated/fieldformatter/qgskeyvaluefieldformatter.sip
 %Include auto_generated/fieldformatter/qgslistfieldformatter.sip
