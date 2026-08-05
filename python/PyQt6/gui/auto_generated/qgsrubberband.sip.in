@@ -41,28 +41,6 @@ widget for tracking the mouse while drawing polylines or polygons.
 %End
   public:
 
-    enum IconType /BaseType=IntEnum/
-    {
-
-      ICON_NONE,
-
-      ICON_CROSS,
-
-      ICON_X,
-
-      ICON_BOX,
-
-      ICON_CIRCLE,
-
-      ICON_FULL_BOX,
-
-      ICON_DIAMOND,
-
-      ICON_FULL_DIAMOND,
-
-      ICON_SVG
-    };
-
     QgsRubberBand( QgsMapCanvas *mapCanvas /TransferThis/, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
 %Docstring
 Creates a new RubberBand.
@@ -136,7 +114,7 @@ Sets the width of the line. Stroke width for polygon.
 Returns the current width of the line or stroke width for polygon.
 %End
 
-    void setIcon( IconType icon );
+    void setIcon( Qgis::RubberBandIconType icon );
 %Docstring
 Sets the icon type to highlight point geometries.
 
@@ -155,7 +133,7 @@ function automatically calls setIcon(ICON_SVG)
 %End
 
 
-    IconType icon() const;
+    Qgis::RubberBandIconType icon() const;
 %Docstring
 Returns the current icon type to highlight point geometries.
 %End

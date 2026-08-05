@@ -78,57 +78,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     Q_PROPERTY( QColor secondaryStrokeColor READ secondaryStrokeColor WRITE setSecondaryStrokeColor )
     Q_PROPERTY( int width READ width WRITE setWidth )
 
-    //! Icons
-    enum IconType
-    {
-
-      /**
-       * No icon is used
-       */
-      ICON_NONE,
-
-      /**
-       * A cross is used to highlight points (+)
-       */
-      ICON_CROSS,
-
-      /**
-       * A cross is used to highlight points (x)
-       */
-      ICON_X,
-
-      /**
-       * A box is used to highlight points (□)
-       */
-      ICON_BOX,
-
-      /**
-       * A circle is used to highlight points (○)
-       */
-      ICON_CIRCLE,
-
-      /**
-       * A full box is used to highlight points (■)
-       */
-      ICON_FULL_BOX,
-
-      /**
-       * A diamond is used to highlight points (◇)
-       */
-      ICON_DIAMOND,
-
-      /**
-       * A diamond is used to highlight points (◆)
-       */
-      ICON_FULL_DIAMOND,
-
-      /**
-       * An svg image is used to highlight points
-       * \since QGIS 3.10
-       */
-      ICON_SVG
-    };
-
     /**
      * Creates a new RubberBand.
      *  \param mapCanvas The map canvas to draw onto.
@@ -196,7 +145,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * Sets the icon type to highlight point geometries.
      *  \param icon The icon to visualize point geometries
      */
-    void setIcon( IconType icon );
+    void setIcon( Qgis::RubberBandIconType icon );
 
     /**
      * Set the path to the svg file to use to draw points.
@@ -211,7 +160,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Returns the current icon type to highlight point geometries.
      */
-    IconType icon() const { return mIconType; }
+    Qgis::RubberBandIconType icon() const { return mIconType; }
 
     /**
      * Sets the size of the point icons
@@ -451,7 +400,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     double mIconSize = 5;
 
     //! Icon to be shown.
-    IconType mIconType = ICON_CIRCLE;
+    Qgis::RubberBandIconType mIconType = Qgis::RubberBandIconType::Circle;
     std::unique_ptr<QSvgRenderer> mSvgRenderer;
     QPoint mSvgOffset;
 

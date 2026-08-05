@@ -85,14 +85,14 @@ void QgsRubberBand::setWidth( double width )
   mPen.setWidthF( width );
 }
 
-void QgsRubberBand::setIcon( IconType icon )
+void QgsRubberBand::setIcon( Qgis::RubberBandIconType icon )
 {
   mIconType = icon;
 }
 
 void QgsRubberBand::setSvgIcon( const QString &path, QPoint drawOffset )
 {
-  setIcon( ICON_SVG );
+  setIcon( Qgis::RubberBandIconType::SVG );
   mSvgRenderer = std::make_unique<QSvgRenderer>( path );
   mSvgOffset = drawOffset;
 }
@@ -561,46 +561,46 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
 
         switch ( mIconType )
         {
-          case ICON_NONE:
+          case Qgis::RubberBandIconType::NoIcon:
             break;
 
-          case ICON_CROSS:
+          case Qgis::RubberBandIconType::CrossPlus:
             p->drawLine( QLineF( x - s, y, x + s, y ) );
             p->drawLine( QLineF( x, y - s, x, y + s ) );
             break;
 
-          case ICON_X:
+          case Qgis::RubberBandIconType::CrossX:
             p->drawLine( QLineF( x - s, y - s, x + s, y + s ) );
             p->drawLine( QLineF( x - s, y + s, x + s, y - s ) );
             break;
 
-          case ICON_BOX:
+          case Qgis::RubberBandIconType::Box:
             p->drawLine( QLineF( x - s, y - s, x + s, y - s ) );
             p->drawLine( QLineF( x + s, y - s, x + s, y + s ) );
             p->drawLine( QLineF( x + s, y + s, x - s, y + s ) );
             p->drawLine( QLineF( x - s, y + s, x - s, y - s ) );
             break;
 
-          case ICON_FULL_BOX:
+          case Qgis::RubberBandIconType::BoxFilled:
             p->drawRect( QRectF( static_cast<int>( x - s ), static_cast<int>( y - s ), mIconSize, mIconSize ) );
             break;
 
-          case ICON_CIRCLE:
+          case Qgis::RubberBandIconType::Circle:
             p->drawEllipse( QRectF( static_cast<int>( x - s ), static_cast<int>( y - s ), mIconSize, mIconSize ) );
             break;
 
-          case ICON_DIAMOND:
-          case ICON_FULL_DIAMOND:
+          case Qgis::RubberBandIconType::Diamond:
+          case Qgis::RubberBandIconType::DiamondFilled:
           {
             QPointF pts[] = { QPointF( x, y - s ), QPointF( x + s, y ), QPointF( x, y + s ), QPointF( x - s, y ) };
-            if ( mIconType == ICON_FULL_DIAMOND )
+            if ( mIconType == Qgis::RubberBandIconType::DiamondFilled )
               p->drawPolygon( pts, 4 );
             else
               p->drawPolyline( pts, 4 );
             break;
           }
 
-          case ICON_SVG:
+          case Qgis::RubberBandIconType::SVG:
           {
             QRectF viewBox = mSvgRenderer->viewBoxF();
             QRectF r( mSvgOffset.x(), mSvgOffset.y(), viewBox.width(), viewBox.height() );
