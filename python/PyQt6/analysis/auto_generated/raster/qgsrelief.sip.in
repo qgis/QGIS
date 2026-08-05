@@ -110,6 +110,44 @@ Sets the list of relief colors.
 .. seealso:: :py:func:`reliefColors`
 %End
 
+    void setCreationOptions( const QStringList &list );
+%Docstring
+Sets a list of data source creation options to use when creating the
+output raster file.
+
+.. seealso:: :py:func:`creationOptions`
+
+.. versionadded:: 4.4
+%End
+
+    QStringList creationOptions() const;
+%Docstring
+Returns the list of data source creation options which will be used when
+creating the output raster file.
+
+.. seealso:: :py:func:`setCreationOptions`
+
+.. versionadded:: 4.4
+%End
+
+    void setOutputNodataValue( double value );
+%Docstring
+Sets no data value for output file.
+
+.. seealso:: :py:func:`outputNodataValue`
+
+.. versionadded:: 4.4
+%End
+
+    double outputNodataValue() const;
+%Docstring
+Returns no data value used for output file.
+
+.. seealso:: :py:func:`setOutputNodataValue`
+
+.. versionadded:: 4.4
+%End
+
     QList<QgsRasterReliefColor> calculateOptimizedReliefClasses();
 %Docstring
 Calculates class breaks according with the method of Buenzli (2011)
