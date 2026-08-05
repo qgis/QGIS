@@ -57,7 +57,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      *
      * \since QGIS 4.4
      */
-    explicit QgsMapLayerProxyModel( QObject *parent SIP_TRANSFERTHIS, QgsProject *project );
+    explicit QgsMapLayerProxyModel( QgsProject *project, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * \brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel

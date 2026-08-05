@@ -23,10 +23,10 @@
 #include "moc_qgsmaplayerproxymodel.cpp"
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
-  : QgsMapLayerProxyModel( parent, QgsProject::instance() ) // skip-keyword-check
+  : QgsMapLayerProxyModel( QgsProject::instance(), parent ) // skip-keyword-check
 {}
 
-QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent, QgsProject *project )
+QgsMapLayerProxyModel::QgsMapLayerProxyModel( QgsProject *project, QObject *parent )
   : QSortFilterProxyModel( parent )
   , mFilters( Qgis::LayerFilter::All )
   , mModel( new QgsMapLayerModel( project, parent ) )
