@@ -29,10 +29,6 @@
 
 using namespace Qt::StringLiterals;
 
-QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
-  : QgsLayoutLegendLayersDialog( parent, QgsProject::instance() )
-{}
-
 QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent, QgsProject *project )
   : QDialog( parent )
 {
