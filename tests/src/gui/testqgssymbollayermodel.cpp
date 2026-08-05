@@ -99,8 +99,6 @@ void TestQgsSymbolLayerModel::testModel()
   QVERIFY( model.index2node( simpleMarkerIndex )->isLayer() );
 
   delete vl;
-
-  QVERIFY( true );
 }
 
 
