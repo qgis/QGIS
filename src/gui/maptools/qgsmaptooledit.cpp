@@ -83,6 +83,23 @@ QgsRubberBand *QgsMapToolEdit::createRubberBand( Qgis::GeometryType geometryType
   return rb;
 }
 
+QgsRubberBand *QgsMapToolEdit::createRubberBandForLayer( QgsVectorLayer *layer, const QList< QgsFeatureId > &fids, bool alternativeBand )
+{
+  QgsVectorLayer *vlayer = layer ? layer : currentVectorLayer();
+  Qgis::GeometryType geomType = vlayer ? vlayer->geometryType() : Qgis::GeometryType::Line;
+
+  QgsRubberBand *rb = createRubberBand( geomType, alternativeBand );
+  prepareRubberBandForLayer( rb, vlayer, fids );
+
+  return rb;
+}
+
+void QgsMapToolEdit::prepareRubberBandForLayer( QgsRubberBand *rubberBand, QgsVectorLayer *layer, const QList< QgsFeatureId > &fids )
+{
+  if ( !rubberBand )
+    return;
+}
+
 QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
 {
   return mCanvas ? qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ) : nullptr;
