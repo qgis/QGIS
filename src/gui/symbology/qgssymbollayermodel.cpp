@@ -436,14 +436,13 @@ QgsSymbolLayerModelNode *QgsSymbolLayerModel::addLayer( QModelIndex index )
   const QgsProperty ddAngle( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle() : QgsProperty() );
   const QgsProperty ddWidth( parentSymbol->type() == Qgis::SymbolType::Line ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth() : QgsProperty() );
 
-  QgsSymbolLayer *newLayerPtr = nullptr;
+  QgsSymbolLayer *newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() ).release();
   {
-    std::unique_ptr< QgsSymbolLayer > newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
-    newLayerPtr = newLayer.get();
+    // Transfer the ownership to the parent symbol, which takes ownership of the layer
     if ( insertIdx == -1 )
-      parentSymbol->appendSymbolLayer( newLayer.release() );
+      parentSymbol->appendSymbolLayer( newLayer );
     else
-      parentSymbol->insertSymbolLayer( node->rowCount() - insertIdx, newLayer.release() );
+      parentSymbol->insertSymbolLayer( node->rowCount() - insertIdx, newLayer );
   }
 
   // restore data-defined values at marker level
@@ -458,9 +457,7 @@ QgsSymbolLayerModelNode *QgsSymbolLayerModel::addLayer( QModelIndex index )
   const int atRowIndex = ( insertIdx == -1 ) ? 0 : insertIdx;
   beginInsertRows( node2index( node ), atRowIndex, atRowIndex );
 
-  // TODO -- using newLayerPtr is not safe in some circumstances here. This needs reworking so that QgsSymbolLayerModelNode does has
-  // its own owned QgsSymbolLayer clone, and isn't reliant on a pointer to the object owned by parentSymbol.
-  auto newNode = std::make_unique<QgsSymbolLayerModelNode>( newLayerPtr, parentSymbol->type(), mVectorLayer, mScreen );
+  auto newNode = std::make_unique<QgsSymbolLayerModelNode>( newLayer, parentSymbol->type(), mVectorLayer, mScreen );
 
   QgsSymbolLayerModelNode *newNodePtr = node->insertChildNode( atRowIndex, std::move( newNode ) );
 
