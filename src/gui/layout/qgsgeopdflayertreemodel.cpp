@@ -29,7 +29,7 @@
 using namespace Qt::StringLiterals;
 
 QgsGeospatialPdfLayerTreeModel::QgsGeospatialPdfLayerTreeModel( const QList<QgsMapLayer *> &layers, QObject *parent )
-  : QgsMapLayerModel( layers, parent )
+  : QgsMapLayerModel( QgsProject::instance(), layers, parent )
 {
   setItemsCanBeReordered( true );
 }

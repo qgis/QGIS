@@ -29,7 +29,7 @@ QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent, QgsProject *project )
   : QSortFilterProxyModel( parent )
   , mFilters( Qgis::LayerFilter::All )
-  , mModel( new QgsMapLayerModel( parent, project ) )
+  , mModel( new QgsMapLayerModel( project, parent ) )
 {
   setSourceModel( mModel );
   setDynamicSortFilter( true );
