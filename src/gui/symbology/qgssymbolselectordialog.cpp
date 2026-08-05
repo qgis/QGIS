@@ -234,7 +234,6 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
 
   // set symbol as active item in the tree
   const QModelIndex newIndex = layersTree->model()->index( 0, 0 );
-
   layersTree->setCurrentIndex( newIndex );
 
   setPanelTitle( tr( "Symbol Selector" ) );
@@ -315,7 +314,6 @@ QgsSymbolWidgetContext QgsSymbolSelectorWidget::context() const
   return mContext;
 }
 
-
 void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol )
 {
   if ( !symbol )
@@ -350,8 +348,6 @@ void QgsSymbolSelectorWidget::updateUi()
 
   const int rowCount = node->parent()->rowCount();
   const int currentRow = node->rowIndex();
-  // const int rowCount = mSymbolLayersModel->rowCount( mSymbolLayersModel->node2index( node->parent() ) );
-
 
   btnUp->setEnabled( currentRow > 0 );
   btnDown->setEnabled( currentRow < rowCount - 1 );
