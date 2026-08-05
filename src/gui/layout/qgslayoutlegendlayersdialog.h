@@ -39,11 +39,6 @@ class GUI_EXPORT QgsLayoutLegendLayersDialog : public QDialog, private Ui::QgsLa
     Q_OBJECT
 
   public:
-    // TODO QGIS 5.0 -- remove deprecated constructor
-
-    //! constructor
-    Q_DECL_DEPRECATED QgsLayoutLegendLayersDialog( QWidget *parent = nullptr );
-
     /**
      * Constructor, taking layers from \a project.
      * \since QGIS 4.4
