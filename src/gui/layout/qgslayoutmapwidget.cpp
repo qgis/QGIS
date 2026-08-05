@@ -2125,11 +2125,11 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
 
   if ( map->layout() && map->layout()->project() )
   {
-    mLayerModel = new QgsMapLayerModel( this, map->layout()->project() );
+    mLayerModel = new QgsMapLayerModel( map->layout()->project(), this );
   }
   else
   {
-    mLayerModel = new QgsMapLayerModel( this, QgsProject::instance() );
+    mLayerModel = new QgsMapLayerModel( QgsProject::instance(), this );
   }
   mLayerModel->setItemsCheckable( true );
   mLayersTreeView->setModel( mLayerModel );
