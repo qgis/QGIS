@@ -592,7 +592,7 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
   const QList<QgsAnnotationItemNode> itemNodes = annotationItem->nodesV2( context );
   QgsRubberBand *vertexNodeBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Point );
 
-  vertexNodeBand->setIcon( QgsRubberBand::ICON_BOX );
+  vertexNodeBand->setIcon( Qgis::RubberBandIconType::Box );
   vertexNodeBand->setWidth( scaleFactor );
   vertexNodeBand->setIconSize( scaleFactor * 5 );
   vertexNodeBand->setColor( QColor( 200, 0, 120, 255 ) );
@@ -601,7 +601,7 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
   calloutNodeBand->setWidth( scaleFactor );
   calloutNodeBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
   calloutNodeBand->setColor( QColor( 120, 200, 0, 255 ) );
-  calloutNodeBand->setIcon( QgsRubberBand::ICON_X );
+  calloutNodeBand->setIcon( Qgis::RubberBandIconType::CrossX );
   calloutNodeBand->setIconSize( scaleFactor * 5 );
 
   // store item nodes in a spatial index for quick searching
@@ -812,7 +812,7 @@ void QgsMapToolModifyAnnotation::createHoveredNodeBand()
   const double scaleFactor = canvas()->fontMetrics().xHeight() * .2;
 
   mHoveredNodeRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Point );
-  mHoveredNodeRubberBand->setIcon( QgsRubberBand::ICON_FULL_BOX );
+  mHoveredNodeRubberBand->setIcon( Qgis::RubberBandIconType::BoxFilled );
   mHoveredNodeRubberBand->setWidth( scaleFactor );
   mHoveredNodeRubberBand->setIconSize( scaleFactor * 5 );
   mHoveredNodeRubberBand->setColor( QColor( 200, 0, 120, 255 ) );

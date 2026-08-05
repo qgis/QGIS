@@ -4018,7 +4018,7 @@ void QgsProcessingPointPanel::updateRubberBand()
   {
     mMapPointRubberBand = make_qobject_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Point );
     mMapPointRubberBand->setZValue( 1000 );
-    mMapPointRubberBand->setIcon( QgsRubberBand::ICON_X );
+    mMapPointRubberBand->setIcon( Qgis::RubberBandIconType::CrossX );
 
     const double scaleFactor = mCanvas->fontMetrics().xHeight() * .4;
     mMapPointRubberBand->setWidth( scaleFactor );

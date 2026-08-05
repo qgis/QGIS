@@ -3902,6 +3902,19 @@ The development version
     typedef QFlags<Qgis::PdfRenderFlag> PdfRenderFlags;
 
 
+    enum class RubberBandIconType /BaseType=IntEnum/
+    {
+      NoIcon,
+      CrossPlus,
+      CrossX,
+      Box,
+      Circle,
+      BoxFilled,
+      Diamond,
+      DiamondFilled,
+      SVG
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
