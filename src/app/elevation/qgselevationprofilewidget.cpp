@@ -110,7 +110,7 @@ QgsElevationProfileLayersDialog::QgsElevationProfileLayersDialog( QWidget *paren
   mFilterLineEdit->setShowClearButton( true );
   mFilterLineEdit->setShowSearchIcon( true );
 
-  mModel = new QgsMapLayerProxyModel( listMapLayers );
+  mModel = new QgsMapLayerProxyModel( QgsProject::instance(), listMapLayers );
   listMapLayers->setModel( mModel );
   const QModelIndex firstLayer = mModel->index( 0, 0 );
   listMapLayers->selectionModel()->select( firstLayer, QItemSelectionModel::Select );
