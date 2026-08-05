@@ -391,14 +391,14 @@ Sets the ``symbol`` used for rendering the rubberband.
 
 Ownership of ``symbol`` is transferred to the rubberband.
 
-.. warning::
+.. note::
 
-   Only line and fill symbols are currently supported.
+   Setting a symbol for the rubberband makes any other appearance setting
+   such as the :py:func:`~QgsRubberBand.strokeColor` or :py:func:`~QgsRubberBand.width`, ineffective.
 
 .. note::
 
-   Setting a symbol for the rubberband overrides any other appearance setting,
-   such as the :py:func:`~QgsRubberBand.strokeColor` or :py:func:`~QgsRubberBand.width`.
+   To disable the rubberband symbol call setSymbol(``None``).
 
 .. seealso:: :py:func:`setSymbol`
 
