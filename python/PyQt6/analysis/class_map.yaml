@@ -345,8 +345,12 @@ QgsRasterMatrix.tangens: src/analysis/raster/qgsrastermatrix.h#L136
 QgsRasterMatrix: src/analysis/raster/qgsrastermatrix.h#L29
 QgsRelief.addReliefColorClass: src/analysis/raster/qgsrelief.h#L108
 QgsRelief.clearReliefColors: src/analysis/raster/qgsrelief.h#L99
-QgsRelief.exportFrequencyDistributionToCsv: src/analysis/raster/qgsrelief.h#L136
+QgsRelief.creationOptions: src/analysis/raster/qgsrelief.h#L142
+QgsRelief.exportFrequencyDistributionToCsv: src/analysis/raster/qgsrelief.h#L168
+QgsRelief.outputNodataValue: src/analysis/raster/qgsrelief.h#L158
 QgsRelief.processRaster: src/analysis/raster/qgsrelief.h#L76
+QgsRelief.setCreationOptions: src/analysis/raster/qgsrelief.h#L134
+QgsRelief.setOutputNodataValue: src/analysis/raster/qgsrelief.h#L150
 QgsRelief.setReliefColors: src/analysis/raster/qgsrelief.h#L126
 QgsRelief.setZFactor: src/analysis/raster/qgsrelief.h#L90
 QgsRelief.zFactor: src/analysis/raster/qgsrelief.h#L83
