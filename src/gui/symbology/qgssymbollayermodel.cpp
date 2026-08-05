@@ -63,6 +63,12 @@ void QgsSymbolLayerModelNode::setLayer( QgsSymbolLayer *layer, Qgis::SymbolType 
   mSymbolType = symbolType;
 }
 
+void QgsSymbolLayerModelNode::setScreen( QScreen *screen )
+{
+  mScreen = screen;
+}
+
+
 void QgsSymbolLayerModelNode::setSymbol( QgsSymbol *symbol )
 {
   mSymbol = symbol;
@@ -532,7 +538,22 @@ void QgsSymbolLayerModel::setSymbol( QgsSymbol *symbol )
 void QgsSymbolLayerModel::setScreen( QScreen *screen )
 {
   mScreen = screen;
-  rebuild();
+
+  // BFS traversal to set the screen for all nodes and update their preview icons
+  QList<QgsSymbolLayerModelNode * > stack;
+  stack.append( mRootNode.get() );
+
+  while ( !stack.isEmpty() )
+  {
+    QgsSymbolLayerModelNode *node = stack.takeLast();
+    node->setScreen( mScreen );
+    updatePreview( node );
+
+    for ( int i = 0; i < node->rowCount(); ++i )
+    {
+      stack.append( node->childrenAt( i ) );
+    }
+  }
 }
 
 void QgsSymbolLayerModel::loadSymbol( QgsSymbol *symbol, QgsSymbolLayerModelNode *parent )
