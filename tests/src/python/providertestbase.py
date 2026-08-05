@@ -330,6 +330,13 @@ class ProviderTestCase(FeatureSourceTestCase):
             QgsTestUtils.testProviderIteratorThreadSafety(self.source, request)
         )
 
+    def testConcurrentLayerAccessThreadSafety(self):
+        self.assertTrue(
+            QgsTestUtils.testConcurrentLayerAccess(
+                self.source.dataSourceUri(), self.source.name()
+            )
+        )
+
     def testOrderBy(self):
         try:
             self.disableCompiler()
