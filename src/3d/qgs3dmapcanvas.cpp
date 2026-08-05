@@ -16,6 +16,7 @@
 #include "qgs3dmapcanvas.h"
 
 #include "qgs3daxis.h"
+#include "qgs3dmapcanvaswidgetinterface.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
@@ -41,7 +42,7 @@
 
 using namespace Qt::StringLiterals;
 
-Qgs3DMapCanvas::Qgs3DMapCanvas()
+Qgs3DMapCanvas::Qgs3DMapCanvas( Qgs3DMapCanvasWidgetInterface *widgetInterface )
   : m_aspectEngine( std::make_unique<Qt3DCore::QAspectEngine>() )
   , m_renderAspect( new Qt3DRender::QRenderAspect )
   , m_inputAspect( new Qt3DInput::QInputAspect )
@@ -50,6 +51,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   , m_defaultCamera( new Qt3DRender::QCamera )
   , m_inputSettings( new Qt3DInput::QInputSettings )
   , m_root( new Qt3DCore::QEntity )
+  , mWidgetInterface( widgetInterface )
 {
   setSurfaceType( QSurface::OpenGLSurface );
 
@@ -85,6 +87,11 @@ Qgs3DMapCanvas::~Qgs3DMapCanvas()
   mScene = nullptr;
   mMapSettings->deleteLater();
   mMapSettings = nullptr;
+}
+
+Qgs3DMapCanvasWidgetInterface *Qgs3DMapCanvas::canvasWidgetInterface()
+{
+  return mWidgetInterface;
 }
 
 void Qgs3DMapCanvas::setRootEntity( Qt3DCore::QEntity *root )
