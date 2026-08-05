@@ -61,6 +61,11 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
      */
     void setLayer( QgsSymbolLayer *layer, Qgis::SymbolType symbolType );
 
+    /**
+     * Sets the \a screen associated with the node, which is used to render the preview icons.
+     */
+    void setScreen( QScreen *screen );
+
     //! Returns TRUE if the node is a symbol layer. And otherwise, it is a symbol.
     bool isLayer() const { return mIsLayer; }
 
@@ -210,7 +215,8 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
     void setSymbol( QgsSymbol *symbol );
 
     /**
-     * Set the QScreen of the model and rebuild the model.
+     * Set the QScreen of the model itself. And traverses all the nodes in the model
+     * to set their QScreen and update their preview icons.
      *
      * Used to determine the icon size on different dpi monitor
      */
