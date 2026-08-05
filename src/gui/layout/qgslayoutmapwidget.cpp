@@ -480,7 +480,7 @@ void QgsLayoutMapWidget::aboutToShowLayersMenu()
 
   if ( !mMapLayerModel )
   {
-    mMapLayerModel = new QgsMapLayerProxyModel( this, mMapItem->layout()->project() );
+    mMapLayerModel = new QgsMapLayerProxyModel( mMapItem->layout()->project(), this );
     mMapLayerModel->setFilters( Qgis::LayerFilter::SpatialLayer );
   }
 

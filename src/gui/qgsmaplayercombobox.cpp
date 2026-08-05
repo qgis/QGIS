@@ -27,7 +27,7 @@
 QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
   : QComboBox( parent )
 {
-  mProxyModel = new QgsMapLayerProxyModel( this, QgsProject::instance() ); // skip-keyword-check
+  mProxyModel = new QgsMapLayerProxyModel( QgsProject::instance(), this ); // skip-keyword-check
   setModel( mProxyModel );
 
   connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsMapLayerComboBox::indexChanged );
