@@ -33,7 +33,7 @@ class QgsSymbolLayer;
 
 
 /**
- * \brief Class for nodes contained within a QgsSymbolLayerModel. May represent a symbol or a layer.
+ * \brief A node contained within a QgsSymbolLayerModel. May represent a symbol or a layer.
  * \warning Not part of stable API and may change in future QGIS releases.
  * \ingroup gui
  * \since QGIS 4.4
