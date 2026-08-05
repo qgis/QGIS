@@ -30,13 +30,24 @@ Abstract interface for rendering custom preview overlays attached to a
   public:
     virtual ~QgsRubberBandPreviewItem();
 
-    virtual void render( QgsRenderContext &context, const QgsRubberBand *rubberBand ) = 0;
+    QgsRubberBand *rubberBand();
 %Docstring
-Renders the custom preview overlay using the shared render context.
-
-:param context: The destination render context
-:param rubberBand: The parent rubber band
+Returns the rubber band associated with the item.
 %End
+
+    virtual void render( QgsRenderContext &context ) = 0;
+%Docstring
+Renders the custom preview overlay using the specified render
+``context``.
+%End
+
+  protected:
+    QgsRubberBandPreviewItem( QgsRubberBand *rubberBand );
+%Docstring
+Constructor for a QgsRubberBandPreviewItem, attached to the specified
+``rubberBand``.
+%End
+
 };
 
 
