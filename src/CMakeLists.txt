@@ -52,3 +52,7 @@ endif()
 if (WITH_QGIS_PROCESS)
   add_subdirectory(process)
 endif()
+
+if (HAVE_WEBENGINE)
+  add_subdirectory(html_to_pdf)
+endif()
