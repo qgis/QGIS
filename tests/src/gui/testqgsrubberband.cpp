@@ -35,13 +35,17 @@ using namespace Qt::StringLiterals;
 class MockRubberBandPreviewItem : public QgsRubberBandPreviewItem
 {
   public:
-    void render( QgsRenderContext &context, const QgsRubberBand *rubberBand ) override
+    MockRubberBandPreviewItem( QgsRubberBand *band )
+      : QgsRubberBandPreviewItem( band )
+    {}
+
+    void render( QgsRenderContext &context ) override
     {
       QPainter *p = context.painter();
-      if ( !p || !rubberBand )
+      if ( !p || !rubberBand() )
         return;
 
-      const QgsGeometry geom = rubberBand->asGeometry();
+      const QgsGeometry geom = rubberBand()->asGeometry();
       if ( geom.isEmpty() )
         return;
 
@@ -55,7 +59,7 @@ class MockRubberBandPreviewItem : public QgsRubberBandPreviewItem
         centerMapPt = geom.centroid().asPoint();
       }
 
-      const QPointF pt = rubberBand->toCanvasCoordinates( centerMapPt ) - rubberBand->pos();
+      const QPointF pt = rubberBand()->toCanvasCoordinates( centerMapPt ) - rubberBand()->pos();
 
       QgsScopedQPainterState painterState( p );
       p->setPen( Qt::NoPen );
@@ -402,7 +406,7 @@ void TestQgsRubberband::testPreviewItems()
   QgsRubberBand r( canvas.get(), Qgis::GeometryType::Polygon );
   r.addGeometry( QgsGeometry::fromWkt( u"POLYGON((50 50, 50 150, 150 150, 150 50, 50 50))"_s ) );
 
-  auto mockItem = new MockRubberBandPreviewItem();
+  auto mockItem = new MockRubberBandPreviewItem( &r );
   r.addPreviewItem( mockItem );
 
   QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
@@ -441,7 +445,7 @@ void TestQgsRubberband::testPreviewItemsFillSymbol()
   );
   r.setSymbol( fillSymbol.release() );
 
-  auto mockItem = new MockRubberBandPreviewItem();
+  auto mockItem = new MockRubberBandPreviewItem( &r );
   r.addPreviewItem( mockItem );
 
   QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );

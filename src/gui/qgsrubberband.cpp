@@ -550,7 +550,7 @@ void QgsRubberBand::paint( QPainter *p )
   {
     if ( item )
     {
-      item->render( context, this );
+      item->render( context );
     }
   }
 }
@@ -814,4 +814,17 @@ QgsGeometry QgsRubberBand::asGeometry() const
     }
   }
   return geom;
+}
+
+//
+// QgsRubberBandPreviewItem
+//
+
+QgsRubberBandPreviewItem::QgsRubberBandPreviewItem( QgsRubberBand *rubberBand )
+  : mRubberBand( rubberBand )
+{}
+
+QgsRubberBand *QgsRubberBandPreviewItem::rubberBand()
+{
+  return mRubberBand.data();
 }

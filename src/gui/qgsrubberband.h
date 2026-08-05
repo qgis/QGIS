@@ -24,6 +24,7 @@
 #include <QBrush>
 #include <QObject>
 #include <QPen>
+#include <QPointer>
 #include <QPolygon>
 #include <QSvgRenderer>
 #include <QVector>
@@ -55,12 +56,23 @@ class GUI_EXPORT QgsRubberBandPreviewItem
     virtual ~QgsRubberBandPreviewItem() = default;
 
     /**
-   * Renders the custom preview overlay using the shared render context.
-   *
-   * \param context The destination render context
-   * \param rubberBand The parent rubber band
-   */
-    virtual void render( QgsRenderContext &context, const QgsRubberBand *rubberBand ) = 0;
+     * Returns the rubber band associated with the item.
+     */
+    QgsRubberBand *rubberBand();
+
+    /**
+     * Renders the custom preview overlay using the specified render \a context.
+    */
+    virtual void render( QgsRenderContext &context ) = 0;
+
+  protected:
+    /**
+     * Constructor for a QgsRubberBandPreviewItem, attached to the specified \a rubberBand.
+     */
+    QgsRubberBandPreviewItem( QgsRubberBand *rubberBand );
+
+  private:
+    QPointer< QgsRubberBand > mRubberBand;
 };
 
 
