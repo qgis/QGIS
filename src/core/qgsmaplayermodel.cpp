@@ -29,7 +29,17 @@
 
 using namespace Qt::StringLiterals;
 
+// TODO QGIS 5.0 Remove deprecated constructor
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent, QgsProject *project )
+  : QgsMapLayerModel( project ? project : QgsProject::instance(), layers, parent ) // skip-keyword-check
+{}
+
+// TODO QGIS 5.0 Remove deprecated constructor
+QgsMapLayerModel::QgsMapLayerModel( QObject *parent, QgsProject *project )
+  : QgsMapLayerModel( project ? project : QgsProject::instance(), parent ) // skip-keyword-check
+{}
+
+QgsMapLayerModel::QgsMapLayerModel( QgsProject *project, const QList<QgsMapLayer *> &layers, QObject *parent )
   : QAbstractItemModel( parent )
   , mProject( project )
 {
@@ -40,7 +50,7 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject 
   addLayers( layers );
 }
 
-QgsMapLayerModel::QgsMapLayerModel( QObject *parent, QgsProject *project )
+QgsMapLayerModel::QgsMapLayerModel( QgsProject *project, QObject *parent )
   : QAbstractItemModel( parent )
   , mProject( project )
 {
