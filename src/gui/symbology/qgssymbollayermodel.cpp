@@ -155,15 +155,15 @@ void QgsSymbolLayerModelNode::deleteChildren()
   mChildren.clear();
 }
 
-void QgsSymbolLayerModelNode::addChildNode( std::unique_ptr<QgsSymbolLayerModelNode> node )
+QgsSymbolLayerModelNode *QgsSymbolLayerModelNode::addChildNode( std::unique_ptr<QgsSymbolLayerModelNode> node )
 {
   if ( !node )
-    return;
+    return nullptr;
 
   Q_ASSERT( !node->mParent );
   node->mParent = this;
 
-  mChildren.emplace_back( std::move( node ) );
+  return mChildren.emplace_back( std::move( node ) ).get();
 }
 
 QgsSymbolLayerModelNode *QgsSymbolLayerModelNode::insertChildNode( int index, std::unique_ptr<QgsSymbolLayerModelNode> node )
@@ -400,19 +400,20 @@ QgsSymbolLayerModelNode *QgsSymbolLayerModel::duplicateLayer( QgsSymbolLayerMode
   beginInsertRows( parentIndex, insertIdx, insertIdx );
 
   auto newNode = std::make_unique<QgsSymbolLayerModelNode>( newLayer, parentSymbol->type(), mVectorLayer, mScreen );
+  QgsSymbolLayerModelNode *newNodePtr;
   if ( insertIdx == -1 )
-    parent->addChildNode( std::move( newNode ) );
+    newNodePtr = parent->addChildNode( std::move( newNode ) );
   else
-    parent->insertChildNode( insertIdx, std::move( newNode ) );
+    newNodePtr = parent->insertChildNode( insertIdx, std::move( newNode ) );
 
   if ( newLayer->subSymbol() )
   {
-    loadSymbol( newLayer->subSymbol(), newNode.get() );
+    loadSymbol( newLayer->subSymbol(), newNodePtr );
   }
 
   endInsertRows();
 
-  return newNode.get();
+  return newNodePtr;
 }
 
 QgsSymbolLayerModelNode *QgsSymbolLayerModel::addLayer( QModelIndex index )

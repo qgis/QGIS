@@ -88,7 +88,7 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
      * Adds a child \a node to this node, transferring ownership of the node.
      * to this node.
      */
-    void addChildNode( std::unique_ptr<QgsSymbolLayerModelNode> node );
+    QgsSymbolLayerModelNode *addChildNode( std::unique_ptr<QgsSymbolLayerModelNode> node );
 
     /**
      * Inserts a child \a node to this node at \a index, transferring ownership of the node.
