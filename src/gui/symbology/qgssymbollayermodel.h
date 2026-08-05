@@ -48,16 +48,19 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
     QgsSymbolLayerModelNode();
     /**
      * Constructor for QgsSymbolLayerModelNode for a symbol layer node. e.g a child node of a symbol.
+     * \note The ownership of the symbol layer is not transferred and must exist for the lifetime of the object.
      */
     QgsSymbolLayerModelNode( QgsSymbolLayer *layer, Qgis::SymbolType symbolType, QgsVectorLayer *vectorLayer, QScreen *screen );
     /**
      * Constructor for QgsSymbolLayerModelNode for a symbol node.
+     * \note The ownership of the symbol is not transferred and must exist for the lifetime of the object.
      */
     QgsSymbolLayerModelNode( QgsSymbol *symbol, QgsVectorLayer *vectorLayer, QScreen *screen );
     ~QgsSymbolLayerModelNode() override;
 
     /**
      * Sets the \a layer associated with the node, and the \a symbolType of the QgsSymbol it belongs to.
+     * \note The ownership of the symbol layer is not transferred and must exist for the lifetime of the object.
      */
     void setLayer( QgsSymbolLayer *layer, Qgis::SymbolType symbolType );
 
@@ -136,6 +139,10 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
     int rowIndex() const;
 
   private:
+    /**
+     * Sets the \a symbol associated with the node.
+     * \note The ownership of the symbol is not transferred and must exist for the lifetime of the object.
+     */
     void setSymbol( QgsSymbol *symbol );
 
     QgsSymbolLayer *mLayer = nullptr;
@@ -211,6 +218,7 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
 
     /**
      * Sets the \a symbol associated with the model.
+     * \note The ownership of the symbol is not transferred and must exist for the lifetime of the model.
      */
     void setSymbol( QgsSymbol *symbol );
 
