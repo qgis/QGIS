@@ -83,7 +83,7 @@ void TestQgsSymbolLayerModel::testModel()
   auto centroidFillLayer = std::make_unique<QgsCentroidFillSymbolLayer>();
 
   fillSymbol->appendSymbolLayer( centroidFillLayer.release() );
-  model.updateNode( fillSymbol.get(), model.index2node( fillIndex ) );
+  model.setSymbol( fillSymbol.get() );
 
   QCOMPARE( model.rowCount( fillIndex ), 2 );
 
@@ -97,6 +97,22 @@ void TestQgsSymbolLayerModel::testModel()
   QVERIFY( !model.index2node( markerIndex )->isLayer() );
   QCOMPARE( model.data( simpleMarkerIndex, Qt::DisplayRole ).toString(), u"Simple Marker"_s );
   QVERIFY( model.index2node( simpleMarkerIndex )->isLayer() );
+
+
+  model.addLayer( simpleMarkerIndex );
+  QCOMPARE( model.rowCount( markerIndex ), 2 );
+
+  model.duplicateLayer( model.index2node( simpleMarkerIndex ) );
+  QCOMPARE( model.rowCount( markerIndex ), 3 );
+
+  model.removeLayer( model.index2node( simpleMarkerIndex ) );
+  QCOMPARE( model.rowCount( markerIndex ), 2 );
+
+  auto gradientFillLayer = std::make_unique<QgsGradientFillSymbolLayer>();
+  model.changeLayer( model.index2node( centroidIndex ), gradientFillLayer.release() );
+  QCOMPARE( model.rowCount( fillIndex ), 2 );
+  QCOMPARE( model.data( model.index( 0, 0, fillIndex ), Qt::DisplayRole ).toString(), u"Gradient Fill"_s );
+  QCOMPARE( model.data( model.index( 1, 0, fillIndex ), Qt::DisplayRole ).toString(), u"Simple Fill"_s );
 
   delete vl;
 }
