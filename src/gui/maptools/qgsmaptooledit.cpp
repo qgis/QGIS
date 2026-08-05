@@ -19,6 +19,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgsrubberband_impl.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
@@ -98,6 +99,15 @@ void QgsMapToolEdit::prepareRubberBandForLayer( QgsRubberBand *rubberBand, QgsVe
 {
   if ( !rubberBand )
     return;
+
+  if ( QgsVectorLayer *vlayer = layer ? layer : currentVectorLayer() )
+  {
+    // attach label preview decorator if the layer has labeling enabled and a valid feature was provided
+    if ( !fids.isEmpty() && vlayer->labelsEnabled() && vlayer->labeling() )
+    {
+      rubberBand->addPreviewItem( new QgsVectorLayerLabelRubberBandPreview( rubberBand, fids, vlayer ) );
+    }
+  }
 }
 
 QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
