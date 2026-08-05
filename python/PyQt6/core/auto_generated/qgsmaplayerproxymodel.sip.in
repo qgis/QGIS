@@ -32,7 +32,7 @@ the layers list in a widget.
    Will be removed in QGIS 5.0. Use the constructor with the :py:class:`QgsProject` argument instead.
 %End
 
-    explicit QgsMapLayerProxyModel( QObject *parent /TransferThis/, QgsProject *project );
+    explicit QgsMapLayerProxyModel( QgsProject *project, QObject *parent /TransferThis/ = 0 );
 %Docstring
 QgsMapLayerProxyModel creates a proxy model with a QgsMapLayerModel as
 source model. It can be used to filter the layers list in a widget.
