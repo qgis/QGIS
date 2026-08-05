@@ -464,8 +464,8 @@ void QgsSymbolSelectorWidget::symbolChanged()
 
     mSymbolLayersModel->updateNode( symbol, parent );
 
-    layersTree->expandRecursively( mSymbolLayersModel->node2index( parent->children().at( 0 ) ) );
-    layersTree->setCurrentIndex( mSymbolLayersModel->node2index( parent->children().at( 0 ) ) );
+    layersTree->expandRecursively( mSymbolLayersModel->node2index( parent->childrenAt( 0 ) ) );
+    layersTree->setCurrentIndex( mSymbolLayersModel->node2index( parent->childrenAt( 0 ) ) );
   }
   else
   {

@@ -16,6 +16,8 @@
 #ifndef QGSSYMBOLLAYERMODEL_H
 #define QGSSYMBOLLAYERMODEL_H
 
+#include <deque>
+
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsvectorlayer.h"
@@ -78,13 +80,13 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
      * Adds a child \a node to this node, transferring ownership of the node.
      * to this node.
      */
-    void addChildNode( QgsSymbolLayerModelNode *node );
+    void addChildNode( std::unique_ptr<QgsSymbolLayerModelNode> node );
 
     /**
      * Inserts a child \a node to this node at \a index, transferring ownership of the node.
      * to this node.
      */
-    void insertChildNode( int index, QgsSymbolLayerModelNode *node );
+    QgsSymbolLayerModelNode *insertChildNode( int index, std::unique_ptr<QgsSymbolLayerModelNode> node );
 
     /**
      * Move a child \a node of the current node, the ownership of the moved node is transferred
@@ -109,15 +111,14 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
     bool isRootNode() const { return mParent == nullptr; }
 
     /**
-     * Returns a list of children belonging to the node.
+     * Returns the child node at the given \a index.
      */
-    QList<QgsSymbolLayerModelNode *> children() { return mChildren; }
+    QgsSymbolLayerModelNode *childrenAt( int index ) const;
 
     /**
-     * Returns a list of children belonging to the node.
+     * Returns the index position of the given \a node within the current node's children.
      */
-    QList<QgsSymbolLayerModelNode *> children() const { return mChildren; }
-
+    int indexOf( const QgsSymbolLayerModelNode *node );
 
     /**
      * Returns the number of rows(children) belonging to the node.
@@ -141,7 +142,7 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
     QPointer<QScreen> mScreen;
 
     QgsSymbolLayerModelNode *mParent = nullptr;
-    QList<QgsSymbolLayerModelNode *> mChildren;
+    std::deque<std::unique_ptr<QgsSymbolLayerModelNode>> mChildren;
 
     friend class TestQgsSymbolLayerModel;
 };
@@ -189,12 +190,12 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
     QgsSymbolLayerModelNode *addLayer( QModelIndex index );
 
     /**
-     * Removes the symbol layer \a node from it's parent node hierachy
+     * Removes the symbol layer \a node from it's parent node hierarchy
      */
     void removeLayer( QgsSymbolLayerModelNode *node );
 
     /**
-     * Change the symbol layer assoicated with \a node by a \a newLayer symbol layer
+     * Change the symbol layer associated with \a node by a \a newLayer symbol layer
      */
     void changeLayer( QgsSymbolLayerModelNode *node, QgsSymbolLayer *newLayer );
 
