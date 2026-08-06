@@ -71,7 +71,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      *
      * \deprecated QGIS 4.4. Will be removed in QGIS 5.0. Use the constructor with the explicit QgsProject argument instead.
      */
-    Q_DECL_DEPRECATED explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProject *project = nullptr ) SIP_DEPRECATED;
+    explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProject *project = nullptr ) SIP_DEPRECATED;
 
     /**
      * \brief QgsMapLayerModel creates a model to display a specific list of
@@ -91,15 +91,14 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      *
      * \since QGIS 4.4
      */
-    explicit QgsMapLayerModel( QgsProject &project, QObject *parent SIP_TRANSFERTHIS = nullptr ) SIP_SKIP;
+    explicit QgsMapLayerModel( QgsProject *project, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * \brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
      *
      * \since QGIS 4.4
      */
-    explicit QgsMapLayerModel( QgsProject &project, const QList<QgsMapLayer *> &layers, QObject *parent SIP_TRANSFERTHIS = nullptr ) SIP_SKIP;
-
+    explicit QgsMapLayerModel( QgsProject *project, const QList<QgsMapLayer *> &layers, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * \brief Defines if layers should be selectable in the widget
