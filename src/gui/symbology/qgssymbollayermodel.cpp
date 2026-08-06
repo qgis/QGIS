@@ -87,6 +87,8 @@ QIcon QgsSymbolLayerModelNode::icon() const
   else
   {
     QgsExpressionContext expContext;
+    // TODO -- this model should have a way to register an explicit expression context, so that the preview icons
+    // correctly reflect atlas features/map scales/etc
     expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
     icon = QIcon( QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol, iconSize, 0, nullptr, false, &expContext, nullptr, QgsScreenProperties( mScreen.data() ) ) );
   }
@@ -432,7 +434,7 @@ QgsSymbolLayerModelNode *QgsSymbolLayerModel::addLayer( QModelIndex index )
 
   QgsSymbol *parentSymbol = node->symbol();
 
-  // save data-defined values at marker level
+  // save data-defined values from symbol, to apply to the new symbol layer
   const QgsProperty ddSize( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize() : QgsProperty() );
   const QgsProperty ddAngle( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle() : QgsProperty() );
   const QgsProperty ddWidth( parentSymbol->type() == Qgis::SymbolType::Line ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth() : QgsProperty() );
@@ -446,7 +448,7 @@ QgsSymbolLayerModelNode *QgsSymbolLayerModel::addLayer( QModelIndex index )
       parentSymbol->insertSymbolLayer( node->rowCount() - insertIdx, newLayer );
   }
 
-  // restore data-defined values at marker level
+  // restore data-defined values from the symbol
   if ( ddSize )
     static_cast<QgsMarkerSymbol *>( parentSymbol )->setDataDefinedSize( ddSize );
   if ( ddAngle )
@@ -561,7 +563,6 @@ void QgsSymbolLayerModel::loadSymbol( QgsSymbol *symbol, QgsSymbolLayerModelNode
   {
     return;
   }
-
 
   auto symbolNode = std::make_unique<QgsSymbolLayerModelNode>( symbol, mVectorLayer, mScreen );
   const int count = symbol->symbolLayerCount();

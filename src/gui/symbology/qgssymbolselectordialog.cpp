@@ -476,7 +476,6 @@ void QgsSymbolSelectorWidget::symbolChanged()
   connect( layersTree->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
 }
 
-
 void QgsSymbolSelectorWidget::setWidget( QWidget *widget )
 {
   const int index = stackedWidget->addWidget( widget );
