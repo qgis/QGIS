@@ -18,6 +18,7 @@
 
 #include "qgis_3d.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsdemheightmapcache_p.h"
 #include "qgsrasterlayer.h"
 #include "qgsterraingenerator.h"
 
@@ -33,7 +34,7 @@ class QgsDemHeightMapGenerator;
  * \note Not available in Python bindings
  *
  */
-class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
+class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator, public QgsTerrainGeneratorWithCache
 {
     Q_OBJECT
 
@@ -44,7 +45,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     static QgsTerrainGenerator *create() SIP_FACTORY;
 
     QgsDemTerrainGenerator();
-    ~QgsDemTerrainGenerator() override;
+    virtual ~QgsDemTerrainGenerator() override;
 
     //! Sets raster layer with elevation model to be used for terrain generation
     void setLayer( QgsRasterLayer *layer );
@@ -75,16 +76,23 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     Type type() const override;
     QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
+
     float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
     QgsTerrainGenerator::Capabilities capabilities() const override;
 
+    void rootChunkHeightRange( float &hMin, float &hMax ) const override;
+
+    virtual int qualityAt( double x, double y, const Qgs3DRenderContext &context ) const override;
+    virtual QgsDemHeightMapCache *heightMapCache() const override { return mCache.get(); }
+
   private:
     void updateGenerator();
 
     std::unique_ptr<QgsDemHeightMapGenerator> mHeightMapGenerator;
+    std::unique_ptr<QgsDemHeightMapCache> mCache;
 
     QgsCoordinateReferenceSystem mCrs;
 
@@ -96,6 +104,8 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     int mResolution = 16;
     //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks
     float mSkirtHeight = 10.f;
+    //! root node used to search best height map data according to x/y
+    mutable QgsChunkNode *mRootNode = nullptr;
 };
 
 

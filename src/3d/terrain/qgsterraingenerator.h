@@ -128,6 +128,14 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     //! Returns whether the terrain generator is valid
     bool isValid() const;
 
+    /**
+     * Computes min/max from heightMap data
+     * \param heightMap height map input data
+     * \param zMin output min value
+     * \param zMax output max value
+     */
+    static void computeHeightMapMinMax( const QByteArray &heightMap, float &zMin, float &zMax ) SIP_SKIP;
+
   signals:
 
     //! Emitted when the terrain changed (for example, raster DEM or mesh have data changed)
