@@ -43,8 +43,6 @@ QgsModelDataViewerDockWidget::QgsModelDataViewerDockWidget( QWidget *parent, Qgs
   , mLayer( layer )
   , mChildId( childId )
   , mOutputName( outputName )
-
-
 {
   setupUi( this );
 

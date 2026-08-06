@@ -28,7 +28,7 @@ class QgsSpinBox;
  *
  * \ingroup gui
  * \note Not available in Python bindings.
- * \since QGIS 4.2
+ * \since QGIS 4.4
  */
 class GUI_EXPORT QgsModelDataViewerDockWidget : public QgsDockWidget, private Ui::QgsModelDataViewerDockWidgetBase
 {

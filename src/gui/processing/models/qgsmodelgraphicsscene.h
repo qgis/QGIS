@@ -273,7 +273,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Emitted when the user delete a child algorithm.
      *
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     void childAlgorithmDeleted( const QString &childId );
 
@@ -295,7 +295,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Emitted when the user opts to view the previous log from the child algorithm with matching ID and parameter name.
      *
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     void showDataViewerDock( const QString &childId, const QString &paramName );
 

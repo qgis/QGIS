@@ -233,7 +233,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
  * \ingroup gui
  * \brief A button to open the model designer data viewer.
  * \warning Not stable API
- * \since QGIS 4.2
+ * \since QGIS 4.4
  */
 class GUI_EXPORT QgsModelDesignerDataViewerButtonGraphicItem : public QgsModelDesignerFlatButtonGraphicItem SIP_SKIP
 {

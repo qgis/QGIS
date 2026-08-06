@@ -263,7 +263,7 @@ the specified child algorithm.
 %Docstring
 Emitted when the user delete a child algorithm.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
 
@@ -288,7 +288,7 @@ algorithm with matching ID.
 Emitted when the user opts to view the previous log from the child
 algorithm with matching ID and parameter name.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
 

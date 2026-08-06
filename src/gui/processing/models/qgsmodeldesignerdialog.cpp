@@ -713,7 +713,7 @@ void QgsModelDesignerDialog::setLastRunResult( const QgsProcessingModelResult &r
     {
       layerId = result.outputs().value( paramName ).toString();
     }
-    // Not an output gotta be an input them
+    // Not an output gotta be an input then
     else if ( result.inputs().contains( paramName ) )
     {
       layerId = childAlgorithmInputs.value( paramName ).toString();
@@ -1581,7 +1581,7 @@ void QgsModelDesignerDialog::showDataViewerDock( const QString &childId, const Q
     layerId = result.outputs().value( paramName ).toString();
     paramDescription = mModel->childAlgorithm( childId ).algorithm()->outputDefinition( paramName )->description();
   }
-  // Not an output gotta be an input them
+  // Not an output gotta be an input then
   else if ( result.inputs().contains( paramName ) )
   {
     layerId = childAlgorithmInputs.value( paramName ).toString();
