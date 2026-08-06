@@ -38,9 +38,8 @@ class QgsSymbolLayer;
  * \ingroup gui
  * \since QGIS 4.4
  */
-class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
+class GUI_EXPORT QgsSymbolLayerModelNode
 {
-    Q_OBJECT
   public:
     /**
      * Constructor for QgsSymbolLayerModelNode for an empty node. e.g a root node.
@@ -56,7 +55,7 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
      * \note The ownership of the symbol is not transferred and must exist for the lifetime of the object.
      */
     QgsSymbolLayerModelNode( QgsSymbol *symbol, QgsVectorLayer *vectorLayer, QScreen *screen );
-    ~QgsSymbolLayerModelNode() override;
+    ~QgsSymbolLayerModelNode();
 
     /**
      * Sets the \a layer associated with the node, and the \a symbolType of the QgsSymbol it belongs to.
@@ -121,7 +120,7 @@ class GUI_EXPORT QgsSymbolLayerModelNode : public QObject
     /**
      * Returns the child node at the given \a index.
      */
-    QgsSymbolLayerModelNode *childrenAt( int index ) const;
+    QgsSymbolLayerModelNode *childAt( int index ) const;
 
     /**
      * Returns the index position of the given \a node within the current node's children.
