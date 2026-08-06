@@ -138,7 +138,6 @@ string      "'"{str_char}*"'"
 "OR"                { B_OP(boOr);  return OR;  }
 
 "="                 { B_OP(boEQ); return EQ; }
-"!="                { B_OP(boNE); return NE; }
 "<="                { B_OP(boLE); return LE; }
 ">="                { B_OP(boGE); return GE; }
 "<>"                { B_OP(boNE); return NE; }
@@ -147,8 +146,6 @@ string      "'"{str_char}*"'"
 
 "LIKE"              { B_OP(boLike); return LIKE; }
 "NOT"{white}"LIKE"  { B_OP(boNotLike); return LIKE; }
-"ILIKE"             { B_OP(boILike); return LIKE; }
-"NOT"{white}"ILIKE" { B_OP(boNotILike); return LIKE; }
 "IS"                { B_OP(boIs); return IS; }
 "IS"{white}"NOT"    { B_OP(boIsNot); return IS; }
 

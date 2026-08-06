@@ -7,18 +7,9 @@
         <h1>Functions</h1>
 
 	<table class="table table-sm table-params">
-	<tr><th scope="col">Name</th><th scope="col">Arguments</th><th scope="col">Returns</th></tr>
         {% for function in functions %}
 	    <tr>
-                <td>{{ function.name }}</td>
-                <td>
-	            <ol>
-	            {% for argument in function.arguments %}
-	                <li>{{ argument.type|join(" or ") }}</li>
-		    {% endfor %}
-		    </ol>
-                </td>
-                <td>{{ function.returns }}</td>
+                <td>{{ function.description }}</td>
             </tr>
         {% endfor %}
 	</table>

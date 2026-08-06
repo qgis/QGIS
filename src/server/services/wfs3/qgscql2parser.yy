@@ -315,11 +315,11 @@ expression_non_logical:
             QString expectedMessage;
             if ( func->params() == func->minParams() )
             {
-               expectedMessage = QObject::tr( "Expected %1 but got %2." ).arg( QString::number( func->params() ), QString::number( $3->count() ) );
+              expectedMessage = QObject::tr( "Expected %1 but got %2." ).arg( QString::number( func->params() ), QString::number( $3->count() ) );
             }
             else
             {
-               expectedMessage = QObject::tr( "Expected between %1 and %2 parameters but %3 were provided." ).arg( QString::number( func->minParams() ), QString::number( func->params() ), QString::number( $3->count() ) );
+              expectedMessage = QObject::tr( "Expected between %1 and %2 parameters but %3 were provided." ).arg( QString::number( func->minParams() ), QString::number( func->params() ), QString::number( $3->count() ) );
             }
             cql2_error(&yyloc, parser_ctx, QObject::tr( "%1 function is called with wrong number of arguments. %2" ).arg( func->name(), expectedMessage ).toUtf8().constData() );
             delete $3;

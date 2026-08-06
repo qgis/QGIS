@@ -23,8 +23,10 @@
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorrelation.h"
 #include "qgsbufferserverrequest.h"
+#include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfunction.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsfeaturerequest.h"
 #include "qgsjsonutils.h"
@@ -163,6 +165,16 @@ json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
             { "default", defaultResponse() } } } } }
   };
   return data;
+}
+
+const QString QgsWfs3AbstractHandler::templatePath( const QgsServerApiContext &context ) const
+{
+  // resources/server/api + /ogc/templates/wfs3/ + operationId() + .html
+  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
+  path += "/ogc/templates/wfs3/"_L1;
+  path += QString::fromStdString( operationId() );
+  path += ".html"_L1;
+  return path;
 }
 
 QString QgsWfs3AbstractItemsHandler::referencedLayerIdentifier( const QgsVectorLayer *mapLayer, int fieldIdx, const QgsServerApiContext &context, QString *referencedLayerTitle ) const
@@ -878,16 +890,6 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
   data["properties"] = fieldsInfo;
 }
 
-const QString QgsWfs3AbstractItemsHandler::templatePath( const QgsServerApiContext &context ) const
-{
-  // resources/server/api + /ogc/templates/wfs3/ + operationId() + .html
-  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += "/ogc/templates/wfs3/"_L1;
-  path += QString::fromStdString( operationId() );
-  path += ".html"_L1;
-  return path;
-}
-
 bool QgsWfs3AbstractItemsHandler::canInsertFeatures( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const
 {
   const QStringList wfstInsertLayerIds = QgsServerProjectUtils::wfstInsertLayerIds( *context.project() );
@@ -1171,18 +1173,20 @@ void QgsWfs3ConformanceHandler::handleRequest( const QgsServerApiContext &contex
 
         "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
         "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators",
-        "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison",
-        "http://www.opengis.net/spec/cql2/1.0/conf/accent-insensitive-comparison",
         "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions",
         "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions-plus",
         "http://www.opengis.net/spec/cql2/1.0/conf/spatial-functions",
-        // "http://www.opengis.net/spec/cql2/1.0/conf/temporal-functions", 	NYI
-        // "http://www.opengis.net/spec/cql2/1.0/conf/array-functions",		NYI
         "http://www.opengis.net/spec/cql2/1.0/conf/property-property",
         "http://www.opengis.net/spec/cql2/1.0/conf/functions",
         "http://www.opengis.net/spec/cql2/1.0/conf/arithmetic",
         "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
-        // "http://www.opengis.net/spec/cql2/1.0/conf/cql2-json",		NYI
+
+        // NYI
+        // "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/accent-insensitive-comparison",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/temporal-functions",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/array-functions",
+        // "http://www.opengis.net/spec/cql2/1.0/conf/cql2-json",
       } }
   };
   json navigation = json::array();
@@ -1417,7 +1421,6 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
 #endif
 
   // TODO: add JSONFG and JSONFG-PLUS
-
 
   json crss = json::array();
   for ( const auto &crs : QgsServerApiUtils::publishedCrsList( context.project() ) )
@@ -4055,9 +4058,100 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsFeatureHandler::parameter
 QgsWfs3FunctionsHandler::QgsWfs3FunctionsHandler()
 {}
 
+// CQL2 standard function names (from all declared conformance classes).
+// These are NOT reported in /functions — that endpoint only reports
+// custom functions beyond the CQL2 spec.
+static const QSet<QString> cql2StandardFunctions {
+  u"s_contains"_s,
+  u"s_crosses"_s,
+  u"s_disjoint"_s,
+  u"s_equals"_s,
+  u"s_intersects"_s,
+  u"s_overlaps"_s,
+  u"s_touches"_s,
+  u"s_within"_s,
+};
+
+// Map QGIS expression parameter default value type to CQL2 value types.
+// The CQL2 spec uses: string, number, boolean, date, datetime, time, geometry.
+// QGIS parameters don't carry explicit type info, so we infer from defaultValue.
+static QString cql2TypeFromParameter( const QgsExpressionFunction::Parameter &param )
+{
+  switch ( param.defaultValue().userType() )
+  {
+    case QMetaType::Type::Double:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::Float:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::ULongLong:
+      return u"number"_s;
+
+    case QMetaType::Type::Bool:
+      return u"boolean"_s;
+
+    case QMetaType::Type::QDate:
+      return u"date"_s;
+
+    case QMetaType::Type::QDateTime:
+      return u"datetime"_s;
+
+    case QMetaType::Type::QTime:
+      return u"time"_s;
+
+    default:
+      return u"string"_s;
+  }
+}
+
 void QgsWfs3FunctionsHandler::handleRequest( const QgsServerApiContext &context ) const
 {
-  json data { { "links", links( context ) }, { "functions", { { { "name", "var" }, { "arguments", { { { "type", { "string" } } } } }, { "returns", "string" } } } } };
+  // Collect all QGIS expression functions that are NOT CQL2 standard functions.
+  // The /functions endpoint reports "custom" functions — i.e., functions beyond
+  // the CQL2 standard set (as per OGC CQL2 §7.7 conf/functions).
+  json functionsArray = json::array();
+
+  const QList<QgsExpressionFunction *> &functions = QgsExpression::Functions();
+  for ( QgsExpressionFunction *func : functions )
+  {
+    const QString name = func->name();
+    if ( cql2StandardFunctions.contains( name ) )
+      continue;
+
+    json funcObj;
+    funcObj["name"] = name.toStdString();
+
+    // Arguments
+    json argsArray = json::array();
+    const QgsExpressionFunction::ParameterList &params = func->parameters();
+    for ( const QgsExpressionFunction::Parameter &param : params )
+    {
+      json argObj;
+      argObj["name"] = param.name().toStdString();
+      argObj["type"] = json::array();
+      argObj["type"].push_back( cql2TypeFromParameter( param ).toStdString() );
+      argsArray.push_back( argObj );
+    }
+    funcObj["arguments"] = argsArray;
+
+    // Return type (best-effort from group/category hints)
+    funcObj["returns"] = json::array();
+    funcObj["returns"].push_back( u"string"_s.toStdString() ); // conservative default
+
+    // Description
+    if ( !func->helpText().isEmpty() )
+    {
+      // Use helpText as description, truncating if excessively long
+      QString desc = func->helpText();
+      if ( desc.length() > 2000 )
+        desc = desc.left( 2000 );
+      funcObj["description"] = desc.toStdString();
+    }
+
+    functionsArray.push_back( funcObj );
+  }
+
+  json data { { "links", links( context ) }, { "functions", functionsArray } };
 
   json navigation = json::array();
   const QUrl url { context.request()->url() };
