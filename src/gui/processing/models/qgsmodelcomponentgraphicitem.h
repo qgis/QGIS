@@ -224,7 +224,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns the location of the link point with the specified \a index on the specified \a edge.
      */
-    QPointF linkPoint( Qt::Edge edge, int index, bool incoming ) const;
+    QPointF linkPoint( Qt::Edge edge, int index ) const;
 
     /**
      * Returns the best link point to use for a link originating at a specified \a other item.
@@ -443,6 +443,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     static constexpr double DEFAULT_BUTTON_WIDTH = 16;
     static constexpr double DEFAULT_BUTTON_HEIGHT = 16;
     static constexpr double BUTTON_MARGIN = 2;
+    static constexpr double SOCKET_MARGIN = 25; //! Margin from the edge of the component to socket
     static constexpr double TEXT_MARGIN = 4;
     static constexpr double RECT_PEN_SIZE = 2;
     static constexpr double RECT_OUTLINE_SIZE = 10;
