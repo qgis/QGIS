@@ -1560,7 +1560,7 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
     for ( QgsModelArrowItem *arrow : arrows )
     {
       arrow->setShowBadge( false );
-      arrow->RemoveDataViewerButton();
+      arrow->removeDataViewerButton();
     }
   }
   else
