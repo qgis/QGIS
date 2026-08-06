@@ -59,6 +59,7 @@ class QgsQlrDropHandler : public QgsCustomDropHandler
   public:
     QString customUriProviderKey() const override;
     void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
+    bool canHandleMimeData( const QMimeData *data ) override;
 };
 
 /**
@@ -98,6 +99,7 @@ class QgsQptDropHandler : public QgsCustomDropHandler
     QString customUriProviderKey() const override;
     void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
     bool handleFileDrop( const QString &file ) override;
+    bool canHandleMimeData( const QMimeData *data ) override;
 };
 
 
@@ -138,6 +140,7 @@ class QgsPyDropHandler : public QgsCustomDropHandler
     QString customUriProviderKey() const override;
     void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
     bool handleFileDrop( const QString &file ) override;
+    bool canHandleMimeData( const QMimeData *data ) override;
 };
 
 
@@ -180,6 +183,7 @@ class QgsStyleXmlDropHandler : public QgsCustomDropHandler
     QString customUriProviderKey() const override;
     void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
     bool handleFileDrop( const QString &file ) override;
+    bool canHandleMimeData( const QMimeData *data ) override;
 };
 
 /**
@@ -373,6 +377,7 @@ class QgsBookmarkDropHandler : public QgsCustomDropHandler
 
   public:
     QString customUriProviderKey() const override;
+    bool canHandleMimeData( const QMimeData *data ) override;
     bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) override;
     bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) const override;
 };

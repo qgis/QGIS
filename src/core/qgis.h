@@ -4954,6 +4954,24 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( LayerTreeInsertionMethod )
 
     /**
+     * Types of payload which may be dragged onto a widget accepting map layers, such
+     * as the layer tree view or the map canvas.
+     *
+     * This drives the visual feedback shown to the user while a drag hovers such a
+     * widget, and lets the widget decide whether to accept the drop.
+     *
+     * \since QGIS 4.4
+     */
+    enum class LayerDropPayloadType : int
+    {
+      Layers,        //!< One or more loadable map layers or datasets (including layer definition files)
+      Project,       //!< A QGIS project; opening it replaces the current project
+      CustomHandler, //!< No data provider can load it, but a custom drop handler can consume it
+      Invalid,       //!< Nothing which QGIS can load or handle
+    };
+    Q_ENUM( LayerDropPayloadType )
+
+    /**
      * Action performed when double-clicking a layer in the legend.
      *
      * \since QGIS 4.0
