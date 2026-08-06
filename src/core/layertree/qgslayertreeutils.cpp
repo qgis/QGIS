@@ -17,6 +17,8 @@
 
 #include "qgslayertree.h"
 #include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsstringutils.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
@@ -310,6 +312,16 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup *group )
   const auto constNodesToRemove = nodesToRemove;
   for ( QgsLayerTreeNode *node : constNodesToRemove )
     group->removeChildNode( node );
+}
+
+void QgsLayerTreeUtils::regenerateGroupIds( QgsLayerTreeNode *node )
+{
+  if ( QgsLayerTree::isGroup( node ) )
+    QgsLayerTree::toGroup( node )->setId( QgsStringUtils::createUniqueId( u"group"_s ) );
+
+  const QList<QgsLayerTreeNode *> children = node->children();
+  for ( QgsLayerTreeNode *child : children )
+    regenerateGroupIds( child );
 }
 
 void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc )

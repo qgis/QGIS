@@ -64,6 +64,18 @@ Returns ``True`` if any of the layers is modified
 Removes layer nodes that refer to invalid layers
 %End
 
+    static void regenerateGroupIds( QgsLayerTreeNode *node );
+%Docstring
+Assigns a fresh unique id to every group in the sub-tree rooted at
+``node``.
+
+Call this on a copied sub-tree before inserting it into a project
+(paste, duplicate, QLR import) so duplicated groups do not share an id
+with their source. Layer and custom nodes are not changed.
+
+.. versionadded:: 4.4
+%End
+
     static void storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
 %Docstring
 Stores in a layer's originalXmlProperties the layer properties

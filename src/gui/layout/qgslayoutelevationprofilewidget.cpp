@@ -699,7 +699,7 @@ void QgsLayoutElevationProfileWidget::syncLayerTreeAndProfileItemSources()
     else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
-      source = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() );
+      source = QgsApplication::profileSourceRegistry()->findSourceById( customNode->id() );
     }
 
     if ( !source )
@@ -855,9 +855,9 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
     else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
-      if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )
+      if ( mLayerTree->findCustomNode( customNode->id() )->isVisible() )
       {
-        if ( QgsAbstractProfileSource *customSource = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() ) )
+        if ( QgsAbstractProfileSource *customSource = QgsApplication::profileSourceRegistry()->findSourceById( customNode->id() ) )
         {
           sources << customSource;
         }
