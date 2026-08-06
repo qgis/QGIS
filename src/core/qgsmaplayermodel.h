@@ -71,7 +71,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      *
      * \deprecated QGIS 4.4. Will be removed in QGIS 5.0. Use the constructor with the explicit QgsProject argument instead.
      */
-    Q_DECL_DEPRECATED explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProject *project = nullptr ) SIP_DEPRECATED;
+    explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProject *project = nullptr ) SIP_DEPRECATED;
 
     /**
      * \brief QgsMapLayerModel creates a model to display a specific list of
