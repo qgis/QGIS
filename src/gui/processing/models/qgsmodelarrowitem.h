@@ -208,7 +208,7 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
     void setShowBadge( bool visible );
 
     /**
-     * Sets the arrow's data viewer button to open th edata viewer.
+     * Sets the arrow's data viewer button to open the data viewer.
      *
      */
     SIP_SKIP void setDataViewerButton( const QString &childId = QString(), const QString &paramOrOutputName = QString() );
@@ -218,13 +218,13 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * Called before running the model, so it's not mixed with previsous run results.
      *
      */
-    SIP_SKIP void RemoveDataViewerButton();
+    SIP_SKIP void removeDataViewerButton();
 
   signals:
     /**
      * Emitted when the user opts to view the previous log from the child algorithm with matching ID and paramName.
      *
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     void showDataViewerDock( const QString &childId, const QString &paramName );
 

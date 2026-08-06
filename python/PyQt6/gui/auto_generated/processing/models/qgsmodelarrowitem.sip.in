@@ -140,7 +140,7 @@ Returns the index of the end item that arrow ends at.
 Emitted when the user opts to view the previous log from the child
 algorithm with matching ID and paramName.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
   public slots:

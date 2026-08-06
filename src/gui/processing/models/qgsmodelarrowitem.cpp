@@ -312,19 +312,15 @@ void QgsModelArrowItem::setDataViewerButton( const QString &childId, const QStri
     mDataViewerButton = nullptr;
   }
 
-  QgsModelDesignerDataViewerButtonGraphicItem *openDataViewerButton = new QgsModelDesignerDataViewerButtonGraphicItem( this );
-  mDataViewerButton = openDataViewerButton;
-  if ( mDataViewerButton )
-  {
-    mDataViewerButton->setPosition();
-    connect( openDataViewerButton, &QgsModelDesignerDataViewerButtonGraphicItem::clicked, this, [this, childId = childId, paramOrOutputName = paramOrOutputName] {
-      emit showDataViewerDock( childId, paramOrOutputName );
-    } );
-  }
+  mDataViewerButton = new QgsModelDesignerDataViewerButtonGraphicItem( this );
+  mDataViewerButton->setPosition();
+  connect( mDataViewerButton, &QgsModelDesignerDataViewerButtonGraphicItem::clicked, this, [this, childId = childId, paramOrOutputName = paramOrOutputName] {
+    emit showDataViewerDock( childId, paramOrOutputName );
+  } );
 }
 
 
-void QgsModelArrowItem::RemoveDataViewerButton()
+void QgsModelArrowItem::removeDataViewerButton()
 {
   if ( mDataViewerButton )
   {
