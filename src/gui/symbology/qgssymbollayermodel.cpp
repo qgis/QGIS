@@ -117,8 +117,10 @@ QVariant QgsSymbolLayerModelNode::data( int role ) const
           return QCoreApplication::translate( "QgsSymbolLayerModelNode", "Fill" );
         case Qgis::SymbolType::Line:
           return QCoreApplication::translate( "QgsSymbolLayerModelNode", "Line" );
-        default:
+        case Qgis::SymbolType::Hybrid:
           return "Symbol";
+        default:
+          QgsDebugError( "Unhandled Symbol Type" );
       }
     }
   }
@@ -146,11 +148,8 @@ QVariant QgsSymbolLayerModelNode::data( int role ) const
     font.setBold( true );
     return font;
   }
-  else if ( role == Qt::CheckStateRole )
-    return QVariant(); // could be true/false
   return QVariant();
 }
-
 
 void QgsSymbolLayerModelNode::deleteChildren()
 {
@@ -179,7 +178,6 @@ QgsSymbolLayerModelNode *QgsSymbolLayerModelNode::insertChildNode( int index, st
   return mChildren.insert( mChildren.begin() + index, std::move( node ) )->get();
 }
 
-
 void QgsSymbolLayerModelNode::moveChildNode( QgsSymbolLayerModelNode *node, int to )
 {
   if ( !node )
@@ -197,7 +195,6 @@ void QgsSymbolLayerModelNode::moveChildNode( QgsSymbolLayerModelNode *node, int 
   }
 }
 
-
 void QgsSymbolLayerModelNode::removeChildNode( QgsSymbolLayerModelNode *node )
 {
   if ( !node )
@@ -210,7 +207,7 @@ void QgsSymbolLayerModelNode::removeChildNode( QgsSymbolLayerModelNode *node )
   }
 }
 
-QgsSymbolLayerModelNode *QgsSymbolLayerModelNode::childrenAt( int index ) const
+QgsSymbolLayerModelNode *QgsSymbolLayerModelNode::childAt( int index ) const
 {
   return mChildren.at( index ).get();
 }
@@ -282,7 +279,7 @@ QModelIndex QgsSymbolLayerModel::index( int row, int column, const QModelIndex &
   if ( !node )
     return QModelIndex(); // have no children
 
-  return createIndex( row, column, static_cast<QObject *>( node->childrenAt( row ) ) );
+  return createIndex( row, column, node->childAt( row ) );
 };
 
 QModelIndex QgsSymbolLayerModel::parent( const QModelIndex &child ) const
@@ -374,7 +371,7 @@ void QgsSymbolLayerModel::moveLayerByOffset( QgsSymbolLayerModelNode *node, int 
   parentSymbol->insertSymbolLayer( layerIdx - offset, tmpLayer );
 
 
-  beginMoveRows( parentIndex, row, row, parentIndex, row + offset + ( offset == 1 ? 1 : 0 ) );
+  beginMoveRows( parentIndex, row, row, parentIndex, row + offset + ( offset > 0 ? 1 : 0 ) );
   parent->moveChildNode( node, row + offset );
   endMoveRows();
 }
@@ -549,7 +546,7 @@ void QgsSymbolLayerModel::setScreen( QScreen *screen )
 
     for ( int i = 0; i < node->rowCount(); ++i )
     {
-      stack.append( node->childrenAt( i ) );
+      stack.append( node->childAt( i ) );
     }
   }
 }

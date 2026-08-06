@@ -460,8 +460,8 @@ void QgsSymbolSelectorWidget::symbolChanged()
 
     mSymbolLayersModel->updateNode( symbol, parent );
 
-    layersTree->expandRecursively( mSymbolLayersModel->node2index( parent->childrenAt( 0 ) ) );
-    layersTree->setCurrentIndex( mSymbolLayersModel->node2index( parent->childrenAt( 0 ) ) );
+    layersTree->expandRecursively( mSymbolLayersModel->node2index( parent->childAt( 0 ) ) );
+    layersTree->setCurrentIndex( mSymbolLayersModel->node2index( parent->childAt( 0 ) ) );
   }
   else
   {
@@ -490,8 +490,7 @@ void QgsSymbolSelectorWidget::updateLockButton()
   QgsSymbolLayer *layer = currentLayer();
   if ( !layer )
     return;
-  bool locked = layer->isLocked();
-  mLockColorAction->setChecked( locked );
+  mLockColorAction->setChecked( layer->isLocked() );
   mLockSelectionColorAction->setChecked( layer->userFlags() & Qgis::SymbolLayerUserFlag::DisableSelectionRecoloring );
 
   updateLockButtonIcon();
