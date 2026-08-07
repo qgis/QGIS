@@ -69,9 +69,9 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * If \a project is not specified then the QgsProject.instance() project will be used to
      * populate the model.
      *
-     * \deprecated QGIS 4.4. Will be removed in QGIS 5.0. Use the constructor with the explicit QgsProject argument instead.
+     * \note Will be removed in QGIS 5.0. Use the constructor with the explicit QgsProject argument instead.
      */
-    Q_DECL_DEPRECATED explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProject *project = nullptr ) SIP_DEPRECATED;
+    explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProject *project = nullptr ) SIP_DEPRECATED;
 
     /**
      * \brief QgsMapLayerModel creates a model to display a specific list of
@@ -84,6 +84,8 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      */
     Q_DECL_DEPRECATED explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = nullptr, QgsProject *project = nullptr ) SIP_DEPRECATED;
 
+    // TODO QGIS 5.0 -- drop SIP_SKIP from the following constructors, so that they are available in Python
+
     /**
      * \brief QgsMapLayerModel creates a model to display layers in widgets.
      *
@@ -91,14 +93,14 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      *
      * \since QGIS 4.4
      */
-    explicit QgsMapLayerModel( QgsProject *project, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsMapLayerModel( QgsProject *project, QObject *parent SIP_TRANSFERTHIS = nullptr ) SIP_SKIP;
 
     /**
      * \brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
      *
      * \since QGIS 4.4
      */
-    explicit QgsMapLayerModel( QgsProject *project, const QList<QgsMapLayer *> &layers, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsMapLayerModel( QgsProject *project, const QList<QgsMapLayer *> &layers, QObject *parent SIP_TRANSFERTHIS = nullptr ) SIP_SKIP;
 
     /**
      * \brief Defines if layers should be selectable in the widget
