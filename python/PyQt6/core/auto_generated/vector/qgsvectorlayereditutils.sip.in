@@ -194,6 +194,8 @@ Adds a new polygon part to a multipart or geometryless feature
          - :py:class:`QgsGeometry`.InvalidInput
 
 
+
+.. versionadded:: 4.4
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );

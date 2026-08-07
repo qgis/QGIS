@@ -1430,6 +1430,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * changes can be discarded by calling rollBack().
      *
      * \note available in Python as addPolygonPart
+     * \since QGIS 4.4
      */
     Q_INVOKABLE Qgis::GeometryOperationResult addPart( QgsCurvePolygon *polygon SIP_TRANSFER ) SIP_PYNAME( addPolygonPart );
 
