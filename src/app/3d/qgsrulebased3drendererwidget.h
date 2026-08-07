@@ -92,6 +92,7 @@ class QgsRuleBased3DRendererWidget : public QgsPanelWidget, private Ui::QgsRuleB
     void setDockMode( bool dockMode ) override;
 
   protected slots:
+    void updateRulesFrom2D();
     void addRule();
     void editRule();
     void editRule( const QModelIndex &index );
