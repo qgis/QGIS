@@ -243,6 +243,11 @@ QString QgsOgrProviderConnection::tableUri( const QString &, const QString &name
   return QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s )->encodeUri( parts );
 }
 
+QString QgsOgrProviderConnection::styleStorageUri( const QString &schema, const QString &tableName, const QString &, Qgis::WkbType ) const
+{
+  return tableUri( schema, tableName );
+}
+
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOgrProviderConnection::tables( const QString &, const TableFlags &flags, QgsFeedback *feedback ) const
 {
   QList<QgsAbstractDatabaseProviderConnection::TableProperty> tableInfo;
@@ -587,6 +592,11 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
     {
       mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain;
     }
+  }
+
+  if ( mDriverName == "GPKG"_L1 || mDriverName == "SQLite"_L1 )
+  {
+    mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::StyleStorage;
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 5, 0 )
