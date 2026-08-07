@@ -190,7 +190,7 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
     /**
      * Adds any layers from a \a project which currently aren't within the profile's layer tree.
      *
-     * \param forceUnchecked since QGIS 4.4, Optionally force any added layer to be unchecked in the profile's layer tree.
+     * \param forceUnchecked Optionally force any added layer to be unchecked in the profile's layer tree. (since QGIS 4.4)
      * \since QGIS 4.0
      */
     void populateMissingLayers( QgsProject *project, bool forceUnchecked = false );
