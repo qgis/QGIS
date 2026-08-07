@@ -21,5 +21,15 @@ QgsMaterialSettingsWidget::QgsMaterialSettingsWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {}
 
-void QgsMaterialSettingsWidget::setTechnique( Qgis::MaterialRenderingTechnique )
-{}
+void QgsMaterialSettingsWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
+{
+  mTechnique = technique;
+  updateWidgetVisibility();
+}
+
+
+void QgsMaterialSettingsWidget::setStyle( WidgetStyle style )
+{
+  mStyle = style;
+  updateWidgetVisibility();
+}

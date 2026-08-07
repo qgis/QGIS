@@ -23,6 +23,7 @@
 
 #include <QWidget>
 
+class QAction;
 class QLabel;
 class QStackedWidget;
 
@@ -56,6 +57,7 @@ class QgsSymbol3DWidget : public QgsPanelWidget
 
     void setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity entity, const QString &stylePath );
     void saveSymbol();
+    void showAdvancedSymbolSettings();
 
   private:
     void updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol );
@@ -66,6 +68,8 @@ class QgsSymbol3DWidget : public QgsPanelWidget
     QgsStyleItemsListWidget *mStyleWidget = nullptr;
 
     QgsVectorLayer *mLayer = nullptr;
+
+    QAction *mAdvancedSymbolSettingsAction = nullptr;
 };
 
 

@@ -20,6 +20,8 @@
 
 #include "qgs3dsymbolwidget.h"
 
+#include <QMatrix4x4>
+
 class QgsPoint3DSymbol;
 
 
@@ -40,9 +42,11 @@ class QgsPoint3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Point3DSymb
 
   private slots:
     void onShapeChanged();
+    void onBillboardHeightChanged();
 
   private:
     Qgis::MaterialRenderingTechnique mRenderingTechnique = Qgis::MaterialRenderingTechnique::InstancedPoints;
+    QMatrix4x4 mTransform;
 };
 
 #endif // QGSPOINT3DSYMBOLWIDGET_H

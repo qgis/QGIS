@@ -32,7 +32,6 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   setupUi( this );
   spinOffset->setClearValue( 0.0 );
   spinExtrusion->setClearValue( 0.0 );
-  spinEdgeWidth->setClearValue( 1.0 );
 
   cboCullingMode->addItem( tr( "No Culling" ), Qgs3DTypes::NoCulling );
   cboCullingMode->addItem( tr( "Front" ), Qgs3DTypes::Front );
@@ -60,15 +59,13 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( widgetMaterial, &QgsMaterialWidget::showPanel, this, &QgsPolygon3DSymbolWidget::openPanel );
   connect( btnHeightDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnExtrusionDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( groupEdges, &QGroupBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( btnEdgeColor, &QgsColorButton::colorChanged, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( spinEdgeWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::updateGuiState );
 
   widgetMaterial->setTechnique( renderingTechnique() );
   widgetMaterial->setFilterByTechnique( true );
   widgetMaterial->setDockMode( dockMode() );
+  widgetMaterial->setStyle( QgsMaterialSettingsWidget::WidgetStyle::Compact );
 }
 
 Qgs3DSymbolWidget *QgsPolygon3DSymbolWidget::create( QgsVectorLayer * )
@@ -103,9 +100,11 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
   btnHeightDD->init( static_cast<int>( QgsAbstract3DSymbol::Property::Height ), polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
   btnExtrusionDD->init( static_cast<int>( QgsAbstract3DSymbol::Property::ExtrusionHeight ), polygonSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
 
-  groupEdges->setChecked( polygonSymbol->edgesEnabled() );
-  spinEdgeWidth->setValue( polygonSymbol->edgeWidth() );
-  btnEdgeColor->setColor( polygonSymbol->edgeColor() );
+  qDebug() << "est ce que enabled" << polygonSymbol->edgesEnabled();
+
+  mEdgesEnabled = polygonSymbol->edgesEnabled();
+  mEdgeWidth = polygonSymbol->edgeWidth();
+  mEdgeColor = polygonSymbol->edgeColor();
 }
 
 QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
@@ -130,9 +129,10 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   ddp.setProperty( QgsAbstract3DSymbol::Property::ExtrusionHeight, btnExtrusionDD->toProperty() );
   sym->setDataDefinedProperties( ddp );
 
-  sym->setEdgesEnabled( groupEdges->isChecked() );
-  sym->setEdgeWidth( spinEdgeWidth->value() );
-  sym->setEdgeColor( btnEdgeColor->color() );
+  qDebug() << "on set le smybol" << mEdgesEnabled;
+  sym->setEdgesEnabled( mEdgesEnabled );
+  sym->setEdgeWidth( mEdgeWidth );
+  sym->setEdgeColor( mEdgeColor );
 
   return sym.release();
 }
