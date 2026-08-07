@@ -175,6 +175,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * - QgsGeometry::InvalidInput
      *
      * \note available in python bindings as addPolygonPart
+     * \since QGIS 4.4
      */
     Qgis::GeometryOperationResult addPart( QgsCurvePolygon *polygon SIP_TRANSFER, QgsFeatureId featureId ) SIP_PYNAME( addPolygonPart );
 

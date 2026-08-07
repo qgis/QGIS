@@ -1431,6 +1431,8 @@ Adds a new polygon part to a multipart feature.
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 
 
+
+.. versionadded:: 4.4
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
