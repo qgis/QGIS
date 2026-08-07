@@ -55,6 +55,7 @@ class QgsAbstractGeometrySimplifier;
 class QgsActionManager;
 class QgsConditionalLayerStyles;
 class QgsCurve;
+class QgsCurvePolygon;
 class QgsDiagramLayerSettings;
 class QgsDiagramRenderer;
 class QgsEditorWidgetWrapper;
@@ -1419,6 +1420,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \note available in Python as addCurvedPart
      */
     Q_INVOKABLE Qgis::GeometryOperationResult addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
+
+    /**
+     * Adds a new polygon part to a multipart feature.
+     *
+     * \note Calls to addPart() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     *
+     * \note available in Python as addPolygonPart
+     * \since QGIS 4.4
+     */
+    Q_INVOKABLE Qgis::GeometryOperationResult addPart( QgsCurvePolygon *polygon SIP_TRANSFER ) SIP_PYNAME( addPolygonPart );
 
     /**
      * Translates feature by dx, dy
