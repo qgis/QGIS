@@ -418,6 +418,22 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      */
     void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Returns the rubber band components that will be rendered for this band.
+     *
+     * \see setRenderedComponents()
+     * \since QGIS 4.4
+     */
+    Qgis::RubberBandComponents renderedComponents() const;
+
+    /**
+     * Sets the rubber band \a components that should be rendered for this band.
+     *
+     * \see renderedComponents()
+     * \since QGIS 4.4
+     */
+    void setRenderedComponents( Qgis::RubberBandComponents components );
+
   protected:
     using QgsMapCanvasItem::paint;
 
@@ -454,6 +470,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
 
     //! Icon to be shown.
     Qgis::RubberBandIconType mIconType = Qgis::RubberBandIconType::Circle;
+    Qgis::RubberBandComponents mComponentsToRender = Qgis::RubberBandComponent::Symbol | Qgis::RubberBandComponent::PreviewItems;
     std::unique_ptr<QSvgRenderer> mSvgRenderer;
     QPoint mSvgOffset;
 

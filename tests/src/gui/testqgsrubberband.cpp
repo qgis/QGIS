@@ -94,6 +94,8 @@ class TestQgsRubberband : public QgsTest
     void testFillSymbolRender();
     void testPreviewItems();
     void testPreviewItemsFillSymbol();
+    void testRenderComponentsPreviewItemOnly();
+    void testRenderComponentsSymbolOnly();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -457,6 +459,60 @@ void TestQgsRubberband::testPreviewItemsFillSymbol()
   QGSVERIFYIMAGECHECK( u"preview_item_fill_symbol"_s, u"preview_item_fill_symbol"_s, image );
 
   r.clearPreviewItems();
+}
+
+void TestQgsRubberband::testRenderComponentsPreviewItemOnly()
+{
+  // test rendering preview items, without symbol
+  auto canvas = std::make_unique<QgsMapCanvas>();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 0, 0, 200, 200 ) );
+  canvas->show();
+
+  QgsRubberBand r( canvas.get(), Qgis::GeometryType::Polygon );
+  r.addGeometry( QgsGeometry::fromWkt( u"POLYGON((50 50, 50 150, 150 150, 150 50, 50 50))"_s ) );
+  r.setRenderedComponents( Qgis::RubberBandComponent::PreviewItems );
+  QCOMPARE( r.renderedComponents(), Qgis::RubberBandComponent::PreviewItems );
+
+  auto mockItem = new MockRubberBandPreviewItem( &r );
+  r.addPreviewItem( mockItem );
+
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::white );
+  QPainter painter( &image );
+  canvas->render( &painter );
+  painter.end();
+
+  QGSVERIFYIMAGECHECK( u"preview_item_no_symbol"_s, u"preview_item_no_symbol"_s, image );
+}
+
+void TestQgsRubberband::testRenderComponentsSymbolOnly()
+{
+  // test rendering preview items, without symbol
+  auto canvas = std::make_unique<QgsMapCanvas>();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 0, 0, 200, 200 ) );
+  canvas->show();
+
+  QgsRubberBand r( canvas.get(), Qgis::GeometryType::Polygon );
+  r.addGeometry( QgsGeometry::fromWkt( u"POLYGON((50 50, 50 150, 150 150, 150 50, 50 50))"_s ) );
+  r.setRenderedComponents( Qgis::RubberBandComponent::Symbol );
+  QCOMPARE( r.renderedComponents(), Qgis::RubberBandComponent::Symbol );
+
+  auto mockItem = new MockRubberBandPreviewItem( &r );
+  r.addPreviewItem( mockItem );
+
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::white );
+  QPainter painter( &image );
+  canvas->render( &painter );
+  painter.end();
+
+  QGSVERIFYIMAGECHECK( u"symbol_only"_s, u"symbol_only"_s, image );
 }
 
 QGSTEST_MAIN( TestQgsRubberband )
