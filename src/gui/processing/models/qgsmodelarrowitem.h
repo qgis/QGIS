@@ -23,8 +23,9 @@
 #include <QGraphicsRectItem>
 #include <QObject>
 
-class QgsModelComponentGraphicItem;
 class QgsModelArrowItem;
+class QgsModelComponentGraphicItem;
+class QgsModelDesignerDataViewerButtonGraphicItem;
 
 ///@cond NOT_STABLE
 
@@ -203,6 +204,27 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      */
     SIP_SKIP void setShowBadge( bool visible );
 
+    /**
+     * Sets the arrow's data viewer button to open th edata viewer.
+     *
+     */
+    SIP_SKIP void setDataViewerButton( const QString &childId = QString(), const QString &paramOrOutputName = QString() );
+
+    /**
+     * Removes the data viewer button from the arrow, if it exists.
+     * Called before running the model, so it's not mixed with previsous run results.
+     *
+     */
+    SIP_SKIP void RemoveDataViewerButton();
+
+  signals:
+    /**
+     * Emitted when the user opts to view the previous log from the child algorithm with matching ID and paramName.
+     *
+     * \since QGIS 4.2
+     */
+    void showDataViewerDock( const QString &childId, const QString &paramName );
+
   public slots:
 
     /**
@@ -229,6 +251,9 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
 
     // Optional child badge item. Not created by default.
     QgsModelDesignerArrowBadgeItem *mBadgeItem = nullptr;
+
+    // Optional data viewer button. Not created by default.
+    QgsModelDesignerDataViewerButtonGraphicItem *mDataViewerButton = nullptr;
 
     QPointF mStartPoint;
     QPointF mEndPoint;
