@@ -104,7 +104,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
     QString fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas );
 
     // Insert the raw map tip text into an HTML template and return the result
-    static QString htmlText( const QString &text, int maxWidth = -1 );
+    static QString htmlText( const QString &text );
 
     // Flag to indicate if a maptip is currently being displayed
     bool mMapTipVisible;
