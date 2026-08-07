@@ -90,5 +90,44 @@ QgsProcessingGui.Modeler = _Qgis.ProcessingMode.Modeler
 QgsProcessingGui.Modeler.is_monkey_patched = True
 QgsProcessingGui.Modeler.__doc__ = "Modeler mode"
 
+QgsRubberBand.IconType = _Qgis.RubberBandIconType
+# monkey patching scoped based enum
+QgsRubberBand.ICON_NONE = _Qgis.RubberBandIconType.NoIcon
+QgsRubberBand.IconType.ICON_NONE = _Qgis.RubberBandIconType.NoIcon
+QgsRubberBand.ICON_NONE.is_monkey_patched = True
+QgsRubberBand.ICON_NONE.__doc__ = "No icon is used"
+QgsRubberBand.ICON_CROSS = _Qgis.RubberBandIconType.CrossPlus
+QgsRubberBand.IconType.ICON_CROSS = _Qgis.RubberBandIconType.CrossPlus
+QgsRubberBand.ICON_CROSS.is_monkey_patched = True
+QgsRubberBand.ICON_CROSS.__doc__ = "A cross is used to highlight points (+)"
+QgsRubberBand.ICON_X = _Qgis.RubberBandIconType.CrossX
+QgsRubberBand.IconType.ICON_X = _Qgis.RubberBandIconType.CrossX
+QgsRubberBand.ICON_X.is_monkey_patched = True
+QgsRubberBand.ICON_X.__doc__ = "A cross is used to highlight points (x)"
+QgsRubberBand.ICON_BOX = _Qgis.RubberBandIconType.Box
+QgsRubberBand.IconType.ICON_BOX = _Qgis.RubberBandIconType.Box
+QgsRubberBand.ICON_BOX.is_monkey_patched = True
+QgsRubberBand.ICON_BOX.__doc__ = "A box is used to highlight points (□)"
+QgsRubberBand.ICON_CIRCLE = _Qgis.RubberBandIconType.Circle
+QgsRubberBand.IconType.ICON_CIRCLE = _Qgis.RubberBandIconType.Circle
+QgsRubberBand.ICON_CIRCLE.is_monkey_patched = True
+QgsRubberBand.ICON_CIRCLE.__doc__ = "A circle is used to highlight points (○)"
+QgsRubberBand.ICON_NONE = _Qgis.RubberBandIconType.BoxFilled
+QgsRubberBand.IconType.ICON_NONE = _Qgis.RubberBandIconType.BoxFilled
+QgsRubberBand.ICON_NONE.is_monkey_patched = True
+QgsRubberBand.ICON_NONE.__doc__ = "A filled box is used to highlight points (■)"
+QgsRubberBand.ICON_DIAMOND = _Qgis.RubberBandIconType.Diamond
+QgsRubberBand.IconType.ICON_DIAMOND = _Qgis.RubberBandIconType.Diamond
+QgsRubberBand.ICON_DIAMOND.is_monkey_patched = True
+QgsRubberBand.ICON_DIAMOND.__doc__ = "A diamond is used to highlight points (◇)"
+QgsRubberBand.ICON_FULL_DIAMOND = _Qgis.RubberBandIconType.DiamondFilled
+QgsRubberBand.IconType.ICON_FULL_DIAMOND = _Qgis.RubberBandIconType.DiamondFilled
+QgsRubberBand.ICON_FULL_DIAMOND.is_monkey_patched = True
+QgsRubberBand.ICON_FULL_DIAMOND.__doc__ = "A filled diamond is used to highlight points (◆)"
+QgsRubberBand.ICON_SVG = _Qgis.RubberBandIconType.SVG
+QgsRubberBand.IconType.ICON_SVG = _Qgis.RubberBandIconType.SVG
+QgsRubberBand.ICON_SVG.is_monkey_patched = True
+QgsRubberBand.ICON_SVG.__doc__ = "An SVG image is used to highlight points"
+
 # Classes patched
 QgsSettingsEnumEditorWidgetWrapper = PyQgsSettingsEnumEditorWidgetWrapper

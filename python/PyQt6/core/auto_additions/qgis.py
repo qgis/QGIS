@@ -13054,6 +13054,33 @@ Qgis.PdfRenderFlag.baseClass = Qgis
 Qgis.PdfRenderFlags = lambda flags=0: Qgis.PdfRenderFlag(flags)
 Qgis.PdfRenderFlags.baseClass = Qgis
 PdfRenderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.RubberBandIconType.NoIcon.__doc__ = "No icon is used"
+Qgis.RubberBandIconType.CrossPlus.__doc__ = "A cross is used to highlight points (+)"
+Qgis.RubberBandIconType.CrossX.__doc__ = "A cross is used to highlight points (x)"
+Qgis.RubberBandIconType.Box.__doc__ = "A box is used to highlight points (□)"
+Qgis.RubberBandIconType.Circle.__doc__ = "A circle is used to highlight points (○)"
+Qgis.RubberBandIconType.BoxFilled.__doc__ = "A filled box is used to highlight points (■)"
+Qgis.RubberBandIconType.Diamond.__doc__ = "A diamond is used to highlight points (◇)"
+Qgis.RubberBandIconType.DiamondFilled.__doc__ = "A filled diamond is used to highlight points (◆)"
+Qgis.RubberBandIconType.SVG.__doc__ = "An SVG image is used to highlight points"
+Qgis.RubberBandIconType.__doc__ = """Rubber band icon type.
+
+.. versionadded:: 4.4.
+
+* ``NoIcon``: No icon is used
+* ``CrossPlus``: A cross is used to highlight points (+)
+* ``CrossX``: A cross is used to highlight points (x)
+* ``Box``: A box is used to highlight points (□)
+* ``Circle``: A circle is used to highlight points (○)
+* ``BoxFilled``: A filled box is used to highlight points (■)
+* ``Diamond``: A diamond is used to highlight points (◇)
+* ``DiamondFilled``: A filled diamond is used to highlight points (◆)
+* ``SVG``: An SVG image is used to highlight points
+
+"""
+# --
+Qgis.RubberBandIconType.baseClass = Qgis
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 5.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
     Qgis.__annotations__ = {'QGIS_DEV_VERSION': str, 'DEFAULT_SEARCH_RADIUS_MM': float, 'DEFAULT_MAPTOPIXEL_THRESHOLD': float, 'DEFAULT_HIGHLIGHT_COLOR': 'QColor', 'DEFAULT_HIGHLIGHT_BUFFER_MM': float, 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': float, 'SCALE_PRECISION': float, 'DEFAULT_Z_COORDINATE': float, 'DEFAULT_M_COORDINATE': float, 'UI_SCALE_FACTOR': float, 'DEFAULT_SNAP_TOLERANCE': float, 'DEFAULT_SNAP_UNITS': 'Qgis.MapToolUnit', 'USER_CRS_START_ID': int, 'DEFAULT_POINT_SIZE': float, 'DEFAULT_LINE_WIDTH': float, 'DEFAULT_SEGMENT_EPSILON': float}
