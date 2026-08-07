@@ -18,6 +18,7 @@
 #include "qgscoordinatereferencesystem.h"
 
 #include <cmath>
+#include <nlohmann/json.hpp>
 #include <proj.h>
 #include <proj_constants.h>
 #include <proj_experimental.h>
@@ -25,7 +26,6 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgscoordinatereferencesystem_legacy_p.h"
 #include "qgscoordinatereferencesystem_p.h"
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgscoordinatereferencesystemutils.h"
@@ -476,7 +476,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
   // first chance for proj 6 - scan through legacy systems and try to use authid directly
   const QString legacyKey = wmsCrs.toLower();
-  for ( auto it = sAuthIdToQgisSrsIdMap.constBegin(); it != sAuthIdToQgisSrsIdMap.constEnd(); ++it )
+  for ( auto it = authIdToQgisSrsIdMap().constBegin(); it != authIdToQgisSrsIdMap().constEnd(); ++it )
   {
     if ( it.key().compare( legacyKey, Qt::CaseInsensitive ) == 0 )
     {
@@ -576,7 +576,7 @@ bool QgsCoordinateReferenceSystem::createFromSrid( const long id )
   locker.unlock();
 
   // first chance for proj 6 - scan through legacy systems and try to use authid directly
-  for ( auto it = sAuthIdToQgisSrsIdMap.constBegin(); it != sAuthIdToQgisSrsIdMap.constEnd(); ++it )
+  for ( auto it = authIdToQgisSrsIdMap().constBegin(); it != authIdToQgisSrsIdMap().constEnd(); ++it )
   {
     if ( it.value().endsWith( u",%1"_s.arg( id ) ) )
     {
@@ -619,7 +619,7 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
   locker.unlock();
 
   // first chance for proj 6 - scan through legacy systems and try to use authid directly
-  for ( auto it = sAuthIdToQgisSrsIdMap.constBegin(); it != sAuthIdToQgisSrsIdMap.constEnd(); ++it )
+  for ( auto it = authIdToQgisSrsIdMap().constBegin(); it != authIdToQgisSrsIdMap().constEnd(); ++it )
   {
     if ( it.value().startsWith( QString::number( id ) + ',' ) )
     {
@@ -2585,7 +2585,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   d->mEllipsoidAcronym.clear();
   d->setPj( std::move( crs ) );
 
-  const QString dbVals = sAuthIdToQgisSrsIdMap.value( u"%1:%2"_s.arg( auth, code ).toUpper() );
+  const QString dbVals = authIdToQgisSrsIdMap().value( u"%1:%2"_s.arg( auth, code ).toUpper() );
   if ( !dbVals.isEmpty() )
   {
     const QStringList parts = dbVals.split( ',' );
@@ -2944,7 +2944,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         const bool isGeographic = testIsGeographic( crs.get() );
 
         // work out srid and srsid
-        const QString dbVals = sAuthIdToQgisSrsIdMap.value( u"%1:%2"_s.arg( authority, code ) );
+        const QString dbVals = QgsCoordinateReferenceSystem::authIdToQgisSrsIdMap().value( u"%1:%2"_s.arg( authority, code ) );
         QString srsId;
         QString srId;
         if ( !dbVals.isEmpty() )
@@ -3661,4 +3661,55 @@ bool operator>=( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateRefe
 bool operator<=( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
 {
   return !( c1 > c2 );
+}
+
+QMap<QString, QString> loadauthIdToQgisSrsIdMapFromJson()
+{
+  QMap<QString, QString> map;
+
+  const QString jsonPath = QgsApplication::pkgDataPath() + u"/resources/data/coordinate_reference_system_legacy.json"_s;
+
+  QFile file( jsonPath );
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    QgsDebugError( u"Failed to open the coordinate reference legacyu map JSON file: %1"_s.arg( jsonPath ) );
+    return map;
+  }
+
+  const QByteArray jsonContent = file.readAll();
+  try
+  {
+    const json mapJson = json::parse( jsonContent.toStdString() );
+
+    if ( !mapJson.is_object() )
+    {
+      QgsDebugError( u"Failed to parse coordinate reference legacy map JSON, expected object."_s );
+      return map;
+    }
+
+    for ( auto &item : mapJson.items() )
+    {
+      if ( item.value().is_string() )
+      {
+        QString key = QString::fromStdString( item.key() );
+        QString value = QString::fromStdString( item.value().get<std::string>() );
+
+        map.insert( key, value );
+      }
+    }
+  }
+
+  catch ( nlohmann::json::exception &ex )
+  {
+    QgsDebugError( u"Failed to parse Google fonts JSON: %1"_s.arg( ex.what() ) );
+    return map;
+  }
+
+  return map;
+}
+
+const QMap<QString, QString> &QgsCoordinateReferenceSystem::authIdToQgisSrsIdMap()
+{
+  static const QMap<QString, QString> sAuthIdToQgisSrsIdMap = loadauthIdToQgisSrsIdMapFromJson();
+  return sAuthIdToQgisSrsIdMap;
 }
