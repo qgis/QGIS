@@ -3663,7 +3663,7 @@ bool operator<=( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateRefe
   return !( c1 > c2 );
 }
 
-QMap<QString, QString> loadauthIdToQgisSrsIdMapFromJson()
+QMap<QString, QString> loadAuthIdToQgisSrsIdMapFromJson()
 {
   QMap<QString, QString> map;
 
@@ -3710,6 +3710,6 @@ QMap<QString, QString> loadauthIdToQgisSrsIdMapFromJson()
 
 const QMap<QString, QString> &QgsCoordinateReferenceSystem::authIdToQgisSrsIdMap()
 {
-  static const QMap<QString, QString> sAuthIdToQgisSrsIdMap = loadauthIdToQgisSrsIdMapFromJson();
+  static const QMap<QString, QString> sAuthIdToQgisSrsIdMap = loadAuthIdToQgisSrsIdMapFromJson();
   return sAuthIdToQgisSrsIdMap;
 }
