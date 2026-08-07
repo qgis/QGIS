@@ -15,5 +15,6 @@ try:
     QgsIconUtils.iconTiledScene = staticmethod(QgsIconUtils.iconTiledScene)
     QgsIconUtils.iconForLayer = staticmethod(QgsIconUtils.iconForLayer)
     QgsIconUtils.iconForLayerType = staticmethod(QgsIconUtils.iconForLayerType)
+    QgsIconUtils.addOverlay = staticmethod(QgsIconUtils.addOverlay)
 except (NameError, AttributeError):
     pass
