@@ -376,7 +376,7 @@ void TestQgs3DExporter::test3DSceneExporter()
 
   // =========== create polygon 3D renderer
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol();
-  symbol3d->setExtrusionHeight( 1000.f );
+  symbol3d->setExtrusionHeight( 10.f );
   QgsPhongMaterialSettings materialSettings;
   materialSettings.setAmbient( QColor( 50, 50, 20 ) );
   materialSettings.setDiffuse( Qt::lightGray );
