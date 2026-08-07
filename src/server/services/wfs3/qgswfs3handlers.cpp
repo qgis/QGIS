@@ -832,7 +832,6 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
     data["required"] = requiredFields;
   }
 
-
   for ( const auto &fInfo : availableFieldInformation )
   {
     const std::string fieldName = fInfo.identifier;
