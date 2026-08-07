@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgsfeature.h"
+#include "qgsproject.h"
 #include "qgssqliteutils.h"
 
 #include <QObject>
@@ -58,7 +59,15 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
       GPKG
     };
 
-    QgsOfflineEditing();
+    // TODO QGIS 5.0 - remove default constructor
+    QgsOfflineEditing() SIP_DEPRECATED;
+
+    /**
+     * QgsOfflineEditing object based on a QgsProject instance. This allows the offline editing plugin to be used with multiple projects.
+     *
+     * \since QGIS 4.4
+     */
+    QgsOfflineEditing( QgsProject *project );
 
     /**
      * Convert current project for offline editing
@@ -191,6 +200,9 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void committedGeometriesChanges( const QString &qgisLayerId, const QgsGeometryMap &changedGeometries );
     void startListenFeatureChanges();
     void stopListenFeatureChanges();
+
+  private:
+    QgsProject *mProject = nullptr;
 };
 
 #endif // QGS_OFFLINE_EDITING_H
