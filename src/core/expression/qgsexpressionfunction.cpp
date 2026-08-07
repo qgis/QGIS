@@ -1606,11 +1606,13 @@ static QVariant fcnLower( const QVariantList &values, const QgsExpressionContext
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   return QVariant( str.toLower() );
 }
+
 static QVariant fcnUpper( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   return QVariant( str.toUpper() );
 }
+
 static QVariant fcnTitle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -2903,7 +2905,6 @@ static QVariant fcnUnaccent( const QVariantList &values, const QgsExpressionCont
 
   return QgsStringUtils::unaccent( values[0].toString() );
 }
-
 
 static QVariant fcnRight( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
