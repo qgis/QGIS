@@ -29,26 +29,45 @@
 
 using namespace Qt::StringLiterals;
 
+// TODO QGIS 5.0 Remove deprecated constructor
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent, QgsProject *project )
+  : QgsMapLayerModel( project ? project : QgsProject::instance(), layers, parent ) // skip-keyword-check
+{}
+
+// TODO QGIS 5.0 Remove deprecated constructor
+QgsMapLayerModel::QgsMapLayerModel( QObject *parent, QgsProject *project )
+  : QgsMapLayerModel( project ? project : QgsProject::instance(), parent ) // skip-keyword-check
+{}
+
+QgsMapLayerModel::QgsMapLayerModel( QgsProject *project, const QList<QgsMapLayer *> &layers, QObject *parent )
   : QAbstractItemModel( parent )
-  , mProject( project ? project : QgsProject::instance() ) // skip-keyword-check
+  , mProject( project )
 {
-  connect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+  if ( mProject )
+  {
+    connect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+  }
   addLayers( layers );
 }
 
-QgsMapLayerModel::QgsMapLayerModel( QObject *parent, QgsProject *project )
+QgsMapLayerModel::QgsMapLayerModel( QgsProject *project, QObject *parent )
   : QAbstractItemModel( parent )
-  , mProject( project ? project : QgsProject::instance() ) // skip-keyword-check
+  , mProject( project )
 {
-  connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
-  connect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
-  addLayers( mProject->mapLayers().values() );
+  if ( mProject )
+  {
+    connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
+    connect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+    addLayers( mProject->mapLayers().values() );
+  }
 }
 
 void QgsMapLayerModel::setProject( QgsProject *project )
 {
-  if ( mProject == ( project ? project : QgsProject::instance() ) ) // skip-keyword-check
+  if ( !project )
+    return;
+
+  if ( mProject == project )
     return;
 
   // remove layers from previous project
@@ -59,7 +78,7 @@ void QgsMapLayerModel::setProject( QgsProject *project )
     disconnect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   }
 
-  mProject = project ? project : QgsProject::instance(); // skip-keyword-check
+  mProject = project;
 
   connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
   connect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );

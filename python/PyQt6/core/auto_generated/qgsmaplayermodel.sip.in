@@ -33,16 +33,21 @@ A model for display of map layers in widgets.
       Additional,
     };
 
-    explicit QgsMapLayerModel( QObject *parent /TransferThis/ = 0, QgsProject *project = 0 );
+
+    explicit QgsMapLayerModel( QObject *parent /TransferThis/ = 0, QgsProject *project = 0 ) /Deprecated/;
 %Docstring
 QgsMapLayerModel creates a model to display layers in widgets.
 
 If ``project`` is not specified then the
 :py:func:`QgsProject.instance()` project will be used to populate the
 model.
+
+.. note::
+
+   Will be removed in QGIS 5.0. Use the constructor with the explicit :py:class:`QgsProject` argument instead.
 %End
 
-    explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = 0, QgsProject *project = 0 );
+ explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = 0, QgsProject *project = 0 ) /Deprecated="Since 4.4. Will be removed in QGIS 5.0. Use the constructor with the explicit QgsProject argument instead."/;
 %Docstring
 QgsMapLayerModel creates a model to display a specific list of layers in
 a widget.
@@ -50,7 +55,14 @@ a widget.
 If ``project`` is not specified then the
 :py:func:`QgsProject.instance()` project will be used to populate the
 model.
+
+.. deprecated:: 4.4
+
+   Will be removed in QGIS 5.0. Use the constructor with the explicit :py:class:`QgsProject` argument instead.
 %End
+
+
+
 
     void setItemsCheckable( bool checkable );
 %Docstring
