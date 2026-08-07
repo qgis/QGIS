@@ -496,61 +496,67 @@ void QgsRubberBand::paint( QPainter *p )
     shapes.append( rings );
   }
 
-  if ( QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( mSymbol.get() ) )
+  if ( mComponentsToRender.testFlag( Qgis::RubberBandComponent::Symbol ) )
   {
-    lineSymbol->startRender( context );
-    for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
+    if ( QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( mSymbol.get() ) )
     {
-      for ( const QPolygonF &ring : shape )
-      {
-        lineSymbol->renderPolyline( ring, nullptr, context );
-      }
-    }
-    lineSymbol->stopRender( context );
-  }
-  else if ( QgsFillSymbol *fillSymbol = dynamic_cast<QgsFillSymbol *>( mSymbol.get() ) )
-  {
-    fillSymbol->startRender( context );
-    for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
-    {
-      for ( const QPolygonF &ring : shape )
-      {
-        fillSymbol->renderPolygon( ring, nullptr, nullptr, context );
-      }
-    }
-    fillSymbol->stopRender( context );
-  }
-  else
-  {
-    int iterations = mSecondaryPen.color().isValid() ? 2 : 1;
-    for ( int i = 0; i < iterations; ++i )
-    {
-      if ( i == 0 && iterations > 1 )
-      {
-        // first iteration with multi-pen painting, so use secondary pen
-        mSecondaryPen.setWidthF( mPen.widthF() + QgsGuiUtils::scaleIconSize( 2 ) );
-        p->setBrush( Qt::NoBrush );
-        p->setPen( mSecondaryPen );
-      }
-      else
-      {
-        // "top" layer, use primary pen/brush
-        p->setBrush( mBrush );
-        p->setPen( mPen );
-      }
-
+      lineSymbol->startRender( context );
       for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
       {
-        drawShape( p, shape );
+        for ( const QPolygonF &ring : shape )
+        {
+          lineSymbol->renderPolyline( ring, nullptr, context );
+        }
+      }
+      lineSymbol->stopRender( context );
+    }
+    else if ( QgsFillSymbol *fillSymbol = dynamic_cast<QgsFillSymbol *>( mSymbol.get() ) )
+    {
+      fillSymbol->startRender( context );
+      for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
+      {
+        for ( const QPolygonF &ring : shape )
+        {
+          fillSymbol->renderPolygon( ring, nullptr, nullptr, context );
+        }
+      }
+      fillSymbol->stopRender( context );
+    }
+    else
+    {
+      int iterations = mSecondaryPen.color().isValid() ? 2 : 1;
+      for ( int i = 0; i < iterations; ++i )
+      {
+        if ( i == 0 && iterations > 1 )
+        {
+          // first iteration with multi-pen painting, so use secondary pen
+          mSecondaryPen.setWidthF( mPen.widthF() + QgsGuiUtils::scaleIconSize( 2 ) );
+          p->setBrush( Qt::NoBrush );
+          p->setPen( mSecondaryPen );
+        }
+        else
+        {
+          // "top" layer, use primary pen/brush
+          p->setBrush( mBrush );
+          p->setPen( mPen );
+        }
+
+        for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
+        {
+          drawShape( p, shape );
+        }
       }
     }
   }
 
-  for ( const auto &item : mPreviewItems )
+  if ( mComponentsToRender.testFlag( Qgis::RubberBandComponent::PreviewItems ) )
   {
-    if ( item )
+    for ( const auto &item : mPreviewItems )
     {
-      item->render( context );
+      if ( item )
+      {
+        item->render( context );
+      }
     }
   }
 }
@@ -698,6 +704,16 @@ void QgsRubberBand::updateRect()
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + r.width() * res, topLeft.y() - r.height() * res );
 
   setRect( rect );
+}
+
+Qgis::RubberBandComponents QgsRubberBand::renderedComponents() const
+{
+  return mComponentsToRender;
+}
+
+void QgsRubberBand::setRenderedComponents( Qgis::RubberBandComponents components )
+{
+  mComponentsToRender = components;
 }
 
 QgsSymbol *QgsRubberBand::symbol() const

@@ -440,6 +440,25 @@ Ownership of ``symbol`` is transferred to the rubberband.
 .. versionadded:: 3.20
 %End
 
+    Qgis::RubberBandComponents renderedComponents() const;
+%Docstring
+Returns the rubber band components that will be rendered for this band.
+
+.. seealso:: :py:func:`setRenderedComponents`
+
+.. versionadded:: 4.4
+%End
+
+    void setRenderedComponents( Qgis::RubberBandComponents components );
+%Docstring
+Sets the rubber band ``components`` that should be rendered for this
+band.
+
+.. seealso:: :py:func:`renderedComponents`
+
+.. versionadded:: 4.4
+%End
+
   protected:
 
     virtual void paint( QPainter *p );
