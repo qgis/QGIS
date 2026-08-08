@@ -58,10 +58,9 @@ void QgsMapRendererStagedRenderJob::startPrivate()
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
     if ( mFlags & RenderLabelsByMapLayer )
-      mLabelingEngineV2 = std::make_unique<QgsStagedRenderLabelingEngine>();
+      mLabelingEngineV2 = std::make_unique<QgsStagedRenderLabelingEngine>( mSettings );
     else
-      mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>();
-    mLabelingEngineV2->setMapSettings( mSettings );
+      mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( mSettings );
   }
 
   mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2.get(), true );

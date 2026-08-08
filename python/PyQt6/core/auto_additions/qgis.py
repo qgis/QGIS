@@ -5526,6 +5526,18 @@ QgsLabelingEngineSettings.CollectUnplacedLabels.__doc__ = "Whether unplaced labe
 QgsLabelingEngineSettings.DrawLabelMetrics = Qgis.LabelingFlag.DrawLabelMetrics
 QgsLabelingEngineSettings.DrawLabelMetrics.is_monkey_patched = True
 QgsLabelingEngineSettings.DrawLabelMetrics.__doc__ = "Whether to render label metric guides (for debugging) \n.. versionadded:: 3.30"
+QgsLabelingEngineSettings.IgnoreObstacles = Qgis.LabelingFlag.IgnoreObstacles
+QgsLabelingEngineSettings.IgnoreObstacles.is_monkey_patched = True
+QgsLabelingEngineSettings.IgnoreObstacles.__doc__ = "Disable obstacle handling \n.. versionadded:: 4.4"
+QgsLabelingEngineSettings.SingleCandidateOnly = Qgis.LabelingFlag.SingleCandidateOnly
+QgsLabelingEngineSettings.SingleCandidateOnly.is_monkey_patched = True
+QgsLabelingEngineSettings.SingleCandidateOnly.__doc__ = "Generate only the single least-cost candidate for each feature. Useful for fast labeling, such as interactive labeling previews. \n.. versionadded:: 4.4"
+QgsLabelingEngineSettings.IgnoreOverlaps = Qgis.LabelingFlag.IgnoreOverlaps
+QgsLabelingEngineSettings.IgnoreOverlaps.is_monkey_patched = True
+QgsLabelingEngineSettings.IgnoreOverlaps.__doc__ = "Disable overlap detection and search solver, immediately returning lowest cost candidate per feature \n.. versionadded:: 4.4"
+QgsLabelingEngineSettings.DisableSearchTree = Qgis.LabelingFlag.DisableSearchTree
+QgsLabelingEngineSettings.DisableSearchTree.is_monkey_patched = True
+QgsLabelingEngineSettings.DisableSearchTree.__doc__ = "Disable the creation of the label search tree \n.. versionadded:: 4.4"
 Qgis.LabelingFlag.__doc__ = """Various flags that affect drawing and placement of labels.
 
 Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.Flag
@@ -5545,6 +5557,22 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsLabelingEngineSettings`.F
 * ``DrawLabelMetrics``: Whether to render label metric guides (for debugging)
 
   .. versionadded:: 3.30
+
+* ``IgnoreObstacles``: Disable obstacle handling
+
+  .. versionadded:: 4.4
+
+* ``SingleCandidateOnly``: Generate only the single least-cost candidate for each feature. Useful for fast labeling, such as interactive labeling previews.
+
+  .. versionadded:: 4.4
+
+* ``IgnoreOverlaps``: Disable overlap detection and search solver, immediately returning lowest cost candidate per feature
+
+  .. versionadded:: 4.4
+
+* ``DisableSearchTree``: Disable the creation of the label search tree
+
+  .. versionadded:: 4.4
 
 
 """

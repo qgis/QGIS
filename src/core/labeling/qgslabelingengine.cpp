@@ -88,9 +88,15 @@ class QgsLabelSorter
 // QgsLabelingEngine
 //
 
-QgsLabelingEngine::QgsLabelingEngine()
-  : mResults( new QgsLabelingResults )
-{}
+QgsLabelingEngine::QgsLabelingEngine( const QgsMapSettings &mapSettings )
+{
+  if ( !mapSettings.labelingEngineSettings().flags().testFlag( Qgis::LabelingFlag::DisableSearchTree ) )
+  {
+    mResults = std::make_unique< QgsLabelingResults >();
+  }
+
+  setMapSettings( mapSettings );
+}
 
 QgsLabelingEngine::~QgsLabelingEngine()
 {
@@ -289,7 +295,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
 
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
 
-  mPal = std::make_unique< pal::Pal >();
+  mPal = std::make_unique< pal::Pal >( settings.flags() );
 
   mPal->setMaximumLineCandidatesPerMapUnit( settings.maximumLineCandidatesPerCm() / context.convertToMapUnits( 10, Qgis::RenderUnit::Millimeters ) );
   mPal->setMaximumPolygonCandidatesPerMapUnitSquared( settings.maximumPolygonCandidatesPerCmSquared() / std::pow( context.convertToMapUnits( 10, Qgis::RenderUnit::Millimeters ), 2 ) );
@@ -801,8 +807,8 @@ void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMa
 //  QgsDefaultLabelingEngine
 //
 
-QgsDefaultLabelingEngine::QgsDefaultLabelingEngine()
-  : QgsLabelingEngine()
+QgsDefaultLabelingEngine::QgsDefaultLabelingEngine( const QgsMapSettings &mapSettings )
+  : QgsLabelingEngine( mapSettings )
 {}
 
 void QgsDefaultLabelingEngine::run( QgsRenderContext &context )
@@ -830,8 +836,8 @@ void QgsDefaultLabelingEngine::run( QgsRenderContext &context )
 //  QgsStagedRenderLabelingEngine
 //
 
-QgsStagedRenderLabelingEngine::QgsStagedRenderLabelingEngine()
-  : QgsLabelingEngine()
+QgsStagedRenderLabelingEngine::QgsStagedRenderLabelingEngine( const QgsMapSettings &mapSettings )
+  : QgsLabelingEngine( mapSettings )
 {}
 
 void QgsStagedRenderLabelingEngine::run( QgsRenderContext &context )
