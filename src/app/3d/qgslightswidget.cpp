@@ -297,9 +297,14 @@ void QgsLightsWidget::onAddLight()
 
 void QgsLightsWidget::onAddDirectionalLight()
 {
-  if ( mLightsModel->directionalLights().size() + mLightsModel->sunLights().size() >= 4 )
+  if ( mLightsModel->directionalLights().size() >= 4 )
   {
     QMessageBox::warning( this, tr( "Add Directional Light" ), tr( "It is not possible to add more than 4 directional lights to the scene." ) );
+    return;
+  }
+  else if ( !mLightsModel->sunLights().empty() && mLightsModel->directionalLights().size() == 3 )
+  {
+    QMessageBox::warning( this, tr( "Add Directional Light" ), tr( "The scene has exceeded the maximum number of directional and sun lights. Please remove a directional light or the sun light and retry." ) );
     return;
   }
 
@@ -399,9 +404,14 @@ void QgsLightsWidget::onAddSunLight()
       break;
   }
 
-  if ( mLightsModel->directionalLights().size() + mLightsModel->sunLights().size() >= 4 )
+  if ( !mLightsModel->sunLights().isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Add Sun Light" ), tr( "It is not possible to add more than 4 directional lights to the scene." ) );
+    QMessageBox::warning( this, tr( "Add Sun Light" ), tr( "Only a single sun light can be present in the scene." ) );
+    return;
+  }
+  else if ( mLightsModel->directionalLights().size() >= 4 )
+  {
+    QMessageBox::warning( this, tr( "Add Directional Light" ), tr( "The scene has exceeded the maximum number of directional and sun lights. Please remove a directional light and retry." ) );
     return;
   }
 
