@@ -209,10 +209,14 @@ void TestQgsMapToolMoveFeature::testAvoidIntersectionAndTopoEdit()
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2.5, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  const QString wkt1 = "Polygon ((1.5 1, 2 1, 2 0, 1.5 0, 1.5 1))";
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt(), wkt1 );
+  QgsGeometry geom = mLayerBase->getFeature( 1 ).geometry();
+  geom.normalize();
+  const QString wkt1 = "Polygon ((1.5 0, 1.5 1, 2 1, 2 0, 1.5 0))";
+  QCOMPARE( geom.asWkt(), wkt1 );
+  geom = mLayerBase->getFeature( 2 ).geometry();
+  geom.normalize();
   const QString wkt2 = "Polygon ((2 0, 2 1, 2 5, 3 5, 3 0, 2 0))";
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt(), wkt2 );
+  QCOMPARE( geom.asWkt(), wkt2 );
 
   mLayerBase->undoStack()->undo();
 
@@ -240,13 +244,16 @@ void TestQgsMapToolMoveFeature::testAvoidIntersectionsCopyMove()
   QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt(), wkt2 );
 
   // copied feature
-  const QString wkt3 = "Polygon ((1.5 1, 2 1, 2 0, 1.5 0, 1.5 1))";
+  const QString wkt3 = "Polygon ((1.5 0, 1.5 1, 2 1, 2 0, 1.5 0))";
   QgsFeatureIterator fi1 = mLayerBase->getFeatures();
   QgsFeature f1;
+  QgsGeometry geom;
 
   while ( fi1.nextFeature( f1 ) )
   {
-    QCOMPARE( f1.geometry().asWkt( 2 ), wkt3 );
+    geom = f1.geometry();
+    geom.normalize();
+    QCOMPARE( geom.asWkt( 2 ), wkt3 );
     break;
   }
 
