@@ -823,6 +823,10 @@ cmake --build build --config Release
 Or you can open the generated `.sln` file in the `build` folder with Visual Studio.
 This will allow you to use all the tools that this IDE has to offer.
 
+* Note: If you build in **Debug** mode, that might cause issues
+    due to **ABI incompatibility** between Debug and Release builds.
+    Therefore, please always use **Release** or **RelWithDebInfo**.
+
 #### 4.3.2.2 Build all the dependencies locally
 
 It is also possible to build all the dependencies locally.
