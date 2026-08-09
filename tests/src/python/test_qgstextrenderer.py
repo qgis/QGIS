@@ -5793,6 +5793,69 @@ class PyQgsTextRenderer(QgisTestCase):
             )
         )
 
+    def testDrawRectBackgroundVAlignTop(self):
+        """
+        Test drawing text with a background enabled, top aligned.
+        (https://github.com/qgis/QGIS/issues/62870)
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont("bold"))
+        format.setSize(30)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setFillColor(QColor(0, 255, 0))
+        self.assertTrue(
+            self.checkRender(
+                format,
+                "rect_background_valign_top",
+                rect=QRectF(100, 100, 200, 200),
+                text=["first line", "second line"],
+                vAlignment=QgsTextRenderer.VAlignment.AlignTop,
+            )
+        )
+
+    def testDrawRectBackgroundVAlignCenter(self):
+        """
+        Test drawing text with a background enabled, vertically centered.
+        (https://github.com/qgis/QGIS/issues/62870)
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont("bold"))
+        format.setSize(30)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setFillColor(QColor(0, 255, 0))
+        self.assertTrue(
+            self.checkRender(
+                format,
+                "rect_background_valign_center",
+                rect=QRectF(100, 100, 200, 200),
+                text=["first line", "second line"],
+                vAlignment=QgsTextRenderer.VAlignment.AlignVCenter,
+            )
+        )
+
+    def testDrawRectBackgroundVAlignBottom(self):
+        """
+        Test drawing text with a background enabled, bottom aligned.
+        (https://github.com/qgis/QGIS/issues/62870)
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont("bold"))
+        format.setSize(30)
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
+        format.background().setFillColor(QColor(0, 255, 0))
+        self.assertTrue(
+            self.checkRender(
+                format,
+                "rect_background_valign_bottom",
+                rect=QRectF(100, 100, 200, 200),
+                text=["first line", "second line"],
+                vAlignment=QgsTextRenderer.VAlignment.AlignBottom,
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
