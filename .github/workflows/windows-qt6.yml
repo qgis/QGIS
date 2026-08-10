@@ -38,6 +38,11 @@ jobs:
         with:
           cmakeVersion: 3.31.6
 
+      - name: Set up Fortran
+        uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 #v1
 
