@@ -97,6 +97,7 @@ done:
 %Feature ANDROID
 %Feature VECTOR_MAPPED_TYPE
 %Feature HAVE_WEBENGINE_SIP
+%Feature MOVABLE_MAPPED_TYPE
 
 %Import QtXml/QtXmlmod.sip
 %Import QtNetwork/QtNetworkmod.sip

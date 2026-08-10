@@ -127,6 +127,14 @@ if(NOT WITH_QTWEBENGINE)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_WEBENGINE_SIP)
 endif()
 
+# sip 6.11 has support for the Movable Mapped Type Annotation
+# Including the annotation with older sip versions will throw a parser error,
+# so we need to generate a file without it for older versions
+if(${SIP_VERSION_STR} VERSION_LESS 6.11.0)
+  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} MOVABLE_MAPPED_TYPE)
+else()
+  set(SIP_MOVABLE_STR "Movable,")
+endif()
 # Deprecated annotation supports message only since version 6.9.0 with abi-version 12.16 / 13.9 and above
 if(${SIP_VERSION_STR} VERSION_LESS 6.9.0)
   set(sipabi "")
