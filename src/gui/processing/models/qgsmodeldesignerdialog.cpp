@@ -725,9 +725,7 @@ void QgsModelDesignerDialog::setLastRunResult( const QgsProcessingModelResult &r
 
     if ( QgsMapLayer *resultLayer = QgsProcessingUtils::mapLayerFromString( layerId, mLayerStore ) )
     {
-      std::unique_ptr<QgsMapLayer> layer( resultLayer->clone() );
-
-      dataViewerDockWidget->setLayer( layer.release() );
+      dataViewerDockWidget->setLayer( resultLayer );
     }
   }
 }
