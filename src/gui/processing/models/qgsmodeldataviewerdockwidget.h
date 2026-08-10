@@ -55,7 +55,7 @@ class GUI_EXPORT QgsModelDataViewerDockWidget : public QgsDockWidget, private Ui
     /**
      * Sets the layer to be displayed in the data viewer.
      *
-     * The layer is cloned, so ownership is not transferrer to the caller.
+     * The layer is cloned, ownership is not transferred to the caller.
      */
     void setLayer( QgsMapLayer *layer );
 
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsModelDataViewerDockWidget : public QgsDockWidget, private Ui
     void invertSelection();
     void addLayerToMap();
 
-    QgsMapLayer *mLayer = nullptr;
+    std::unique_ptr<QgsMapLayer> mLayer;
 
     QString mChildId;
     QString mOutputName;
