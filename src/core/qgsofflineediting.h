@@ -60,6 +60,11 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     };
 
     // TODO QGIS 5.0 - remove default constructor
+    /**
+     * Default constructor -- uses the QgsProject::instance().
+     * 
+     * \deprecated QGIS 4.4 Use the constructor which requires an explicit project instead.
+     */
     QgsOfflineEditing() SIP_DEPRECATED;
 
     /**
