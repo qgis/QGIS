@@ -300,10 +300,11 @@ QgsModelDesignerDataViewerButtonGraphicItem::QgsModelDesignerDataViewerButtonGra
   : QgsModelDesignerFlatButtonGraphicItem( link, QPicture(), QPointF() )
   , mLink( link )
 {
-  QSvgRenderer svg( QgsApplication::iconPath( u"mActionNewMapDataViewer.svg"_s ) );
+  QSvgRenderer svg( QgsApplication::iconPath( u"mActionNewMap.svg"_s ) );
   QPicture openDataViewerPicture;
   QPainter painter( &openDataViewerPicture );
-  svg.render( &painter );
+  constexpr int iconSize = 16;
+  svg.render( &painter, QRectF( 0, 0, iconSize, iconSize ) );
   painter.end();
 
   setPicture( openDataViewerPicture );
