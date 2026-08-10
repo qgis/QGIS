@@ -101,7 +101,7 @@ class APP_EXPORT QgsCustomization
      * change whether or not the item should be displayed or not.
      * It's also used to serialize these customization in an XML file.
      */
-    class QgsItem
+    class APP_EXPORT QgsItem
     {
       public:
         /**
@@ -299,7 +299,7 @@ class APP_EXPORT QgsCustomization
     /**
      * \brief Represents an action
      */
-    class QgsActionItem : public QgsItem
+    class APP_EXPORT QgsActionItem : public QgsItem
     {
       public:
         /**
@@ -358,7 +358,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a reference to an existing action item
      */
-    class QgsActionRefItem : public QgsActionItem
+    class APP_EXPORT QgsActionRefItem : public QgsActionItem
     {
       public:
         QgsActionRefItem( QgsItem *parent );
@@ -389,7 +389,7 @@ class APP_EXPORT QgsCustomization
      * Inherits from Action because QMenu are stored within a QAction and we want to keep
      * track of the menu associated action
      */
-    class QgsMenuItem : public QgsActionItem
+    class APP_EXPORT QgsMenuItem : public QgsActionItem
     {
       public:
         /**
@@ -419,7 +419,7 @@ class APP_EXPORT QgsCustomization
         ItemCapability capabilities() const override;
     };
 
-    class QgsUserMenuItem : public QgsMenuItem
+    class APP_EXPORT QgsUserMenuItem : public QgsMenuItem
     {
       public:
         /**
@@ -450,7 +450,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represents a toolbar
      */
-    class QgsToolBarItem : public QgsItem
+    class APP_EXPORT QgsToolBarItem : public QgsItem
     {
       public:
         /**
@@ -496,7 +496,7 @@ class APP_EXPORT QgsCustomization
         bool mWasVisible = false;
     };
 
-    class QgsUserToolBarItem : public QgsToolBarItem
+    class APP_EXPORT QgsUserToolBarItem : public QgsToolBarItem
     {
       public:
         /**
@@ -526,7 +526,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all ToolBar item
      */
-    class QgsToolBarsItem : public QgsItem
+    class APP_EXPORT QgsToolBarsItem : public QgsItem
     {
       public:
         /**
@@ -550,7 +550,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all Menus item
      */
-    class QgsMenusItem : public QgsItem
+    class APP_EXPORT QgsMenusItem : public QgsItem
     {
       public:
         /**
@@ -574,7 +574,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a Dock
      */
-    class QgsDockItem : public QgsItem
+    class APP_EXPORT QgsDockItem : public QgsItem
     {
       public:
         /**
@@ -622,7 +622,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all dock items
      */
-    class QgsDocksItem : public QgsItem
+    class APP_EXPORT QgsDocksItem : public QgsItem
     {
       public:
         /**
@@ -645,7 +645,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a QgsBrowserDockWidget item
      */
-    class QgsBrowserElementItem : public QgsItem
+    class APP_EXPORT QgsBrowserElementItem : public QgsItem
     {
       public:
         /**
@@ -676,7 +676,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all browser items
      */
-    class QgsBrowserElementsItem : public QgsItem
+    class APP_EXPORT QgsBrowserElementsItem : public QgsItem
     {
       public:
         /**
@@ -699,7 +699,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a QgsStatusBar widget
      */
-    class QgsStatusBarWidgetItem : public QgsItem
+    class APP_EXPORT QgsStatusBarWidgetItem : public QgsItem
     {
       public:
         /**
@@ -729,7 +729,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Root item for all StatusBarWidget
      */
-    class QgsStatusBarWidgetsItem : public QgsItem
+    class APP_EXPORT QgsStatusBarWidgetsItem : public QgsItem
     {
       public:
         /**
@@ -752,7 +752,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a processing provider
      */
-    class QgsProcessingProviderItem : public QgsItem
+    class APP_EXPORT QgsProcessingProviderItem : public QgsItem
     {
       public:
         /**
@@ -783,7 +783,7 @@ class APP_EXPORT QgsCustomization
     /**
      * Represent a processing algorithm group
      */
-    class QgsProcessingGroupItem : public QgsItem
+    class APP_EXPORT QgsProcessingGroupItem : public QgsItem
     {
       public:
         /**
@@ -816,7 +816,7 @@ class APP_EXPORT QgsCustomization
      *
      * \since QGIS 4.2
      */
-    class QgsProcessingAlgorithmItem : public QgsItem
+    class APP_EXPORT QgsProcessingAlgorithmItem : public QgsItem
     {
       public:
         /**
@@ -849,7 +849,7 @@ class APP_EXPORT QgsCustomization
      *
      * \since QGIS 4.2
      */
-    class QgsProcessingAlgorithmRefItem : public QgsItem
+    class APP_EXPORT QgsProcessingAlgorithmRefItem : public QgsItem
     {
       public:
         /**
@@ -893,7 +893,7 @@ class APP_EXPORT QgsCustomization
      *
      * \since QGIS 4.2
      */
-    class QgsProcessingProvidersItem : public QgsItem
+    class APP_EXPORT QgsProcessingProvidersItem : public QgsItem
     {
       public:
         /**
