@@ -39,7 +39,14 @@ layer data.
       GPKG
     };
 
-    QgsOfflineEditing() /Deprecated/;
+    QgsOfflineEditing() /Deprecated="Since 4.4. Use the constructor which requires an explicit project instead."/;
+%Docstring
+Default constructor -- uses the :py:func:`QgsProject.instance()`.
+
+.. deprecated:: 4.4
+
+   Use the constructor which requires an explicit project instead.
+%End
 
     QgsOfflineEditing( QgsProject *project );
 %Docstring
