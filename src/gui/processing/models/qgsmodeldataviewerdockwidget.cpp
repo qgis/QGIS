@@ -40,7 +40,6 @@ using namespace Qt::StringLiterals;
 
 QgsModelDataViewerDockWidget::QgsModelDataViewerDockWidget( QWidget *parent, QgsMapLayer *layer, QString childId, QString outputName )
   : QgsDockWidget( parent )
-  , mLayer( layer )
   , mChildId( childId )
   , mOutputName( outputName )
 {
@@ -88,11 +87,11 @@ QgsModelDataViewerDockWidget::QgsModelDataViewerDockWidget( QWidget *parent, Qgs
 
   connect( mActionZoomToLayer, &QAction::triggered, this, [this]() {
     if ( mLayer )
-      mMapCanvas->zoomToLayers( QList<QgsMapLayer *> { mLayer } );
+      mMapCanvas->zoomToLayers( QList<QgsMapLayer *> { mLayer.get() } );
   } );
   connect( mActionZoomToSelection, &QAction::triggered, this, [this]() {
     if ( mLayer )
-      mMapCanvas->zoomToSelected( mLayer );
+      mMapCanvas->zoomToSelected( mLayer.get() );
   } );
 
   connect( mActionPan, &QAction::triggered, this, [this]() { mMapCanvas->setMapTool( mToolPan ); } );
@@ -137,11 +136,11 @@ QgsModelDataViewerDockWidget::~QgsModelDataViewerDockWidget()
 
 void QgsModelDataViewerDockWidget::setLayer( QgsMapLayer *layer )
 {
-  mLayer = layer->clone();
+  mLayer.reset( layer->clone() );
 
 
-  mMapCanvas->setLayers( QList<QgsMapLayer *>( { mLayer } ) );
-  mMapCanvas->setCurrentLayer( mLayer );
+  mMapCanvas->setLayers( QList<QgsMapLayer *>( { mLayer.get() } ) );
+  mMapCanvas->setCurrentLayer( mLayer.get() );
 
   mMapCanvas->setDestinationCrs( mLayer->crs() );
   mMapCanvas->setExtent( mMapCanvas->fullExtent() );
@@ -166,7 +165,7 @@ void QgsModelDataViewerDockWidget::loadAttributeTable()
 
   mSplitter->setSizes( QList<int> { 180, 100 } );
   // Initialize the cache
-  QgsVectorLayerCache *layerCache = new QgsVectorLayerCache( qobject_cast<QgsVectorLayer *>( mLayer ), maxFeatures, this );
+  QgsVectorLayerCache *layerCache = new QgsVectorLayerCache( qobject_cast<QgsVectorLayer *>( mLayer.get() ), maxFeatures, this );
   layerCache->setCacheGeometry( false );
   QgsAttributeTableModel *tableModel = new QgsAttributeTableModel( layerCache, this );
   tableModel->setRequest( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setLimit( maxFeatures ) );
@@ -180,7 +179,7 @@ void QgsModelDataViewerDockWidget::loadAttributeTable()
   tableModel->loadLayer();
 
   /* Workaround there is a dummy column extra column when a the layer has no fields, so we manually hide it */
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer.get() );
   if ( vl && vl->fields().isEmpty() )
   {
     mTableView->setColumnHidden( 0, true );
@@ -198,8 +197,8 @@ void QgsModelDataViewerDockWidget::toggleProjectLayer( bool checked )
   if ( !checked )
   {
     // We only care about our current mLayer being inspected
-    mMapCanvas->setLayers( { mLayer } );
-    mMapCanvas->setCurrentLayer( mLayer );
+    mMapCanvas->setLayers( { mLayer.get() } );
+    mMapCanvas->setCurrentLayer( mLayer.get() );
     return;
   }
 
@@ -255,9 +254,9 @@ void QgsModelDataViewerDockWidget::toggleProjectLayer( bool checked )
     }
 
 
-    canvasLayers.prepend( mLayer );
+    canvasLayers.prepend( mLayer.get() );
     mMapCanvas->setLayers( canvasLayers );
-    mMapCanvas->setCurrentLayer( mLayer );
+    mMapCanvas->setCurrentLayer( mLayer.get() );
   }
 }
 
@@ -267,7 +266,7 @@ void QgsModelDataViewerDockWidget::selectAll()
   if ( !mLayer )
     return;
 
-  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer ) )
+  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer.get() ) )
     vl->selectAll();
 }
 
@@ -278,7 +277,7 @@ void QgsModelDataViewerDockWidget::selectByExpression()
     return;
 
 
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer.get() );
   if ( !vl )
   {
     return;
@@ -295,9 +294,9 @@ void QgsModelDataViewerDockWidget::deselectAll()
   if ( !mLayer )
     return;
 
-  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer ) )
+  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer.get() ) )
     vl->removeSelection();
-  else if ( QgsVectorTileLayer *vtl = qobject_cast<QgsVectorTileLayer *>( mLayer ) )
+  else if ( QgsVectorTileLayer *vtl = qobject_cast<QgsVectorTileLayer *>( mLayer.get() ) )
     vtl->removeSelection();
   else
     return;
@@ -308,7 +307,7 @@ void QgsModelDataViewerDockWidget::invertSelection()
   if ( !mLayer )
     return;
 
-  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer ) )
+  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer.get() ) )
     vl->invertSelection();
 }
 
