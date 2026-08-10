@@ -23,6 +23,8 @@
 
 #include <QList>
 
+class QgsProject;
+
 /**
  * \ingroup core
  * \class QgsColorSchemeRegistry
@@ -176,11 +178,23 @@ class CORE_EXPORT QgsColorSchemeRegistry
      */
     QColor fetchRandomStyleColor() const;
 
+    /**
+     * Sets the \a project associated with the registry, used to provide the "Project colors" scheme.
+     *
+     * If \a project is NULLPTR, the project colors scheme is removed from the registry.
+     *
+     * \since QGIS 4.4
+     */
+    void setProject( QgsProject *project );
+
+
   private:
     QList< QgsColorScheme * > mColorSchemeList;
 
     QgsColorScheme *mRandomStyleColorScheme = nullptr;
     QgsNamedColorList mRandomStyleColors;
+
+    QgsProject *mProject = nullptr;
 
     mutable int mNextRandomStyleColorIndex = 0;
 
