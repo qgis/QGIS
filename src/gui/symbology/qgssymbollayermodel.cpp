@@ -475,13 +475,13 @@ void QgsSymbolLayerModel::removeLayer( QgsSymbolLayerModelNode *node )
   QgsSymbolLayerModelNode *parent = node->parent();
   const int layerIdx = parent->rowCount() - row - 1; // The index in the model and the symbol are inverted
   QgsSymbol *parentSymbol = parent->symbol();
-  QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
-  //finally delete the removed layer pointer
-  delete tmpLayer;
-
 
   beginRemoveRows( node2index( parent ), row, row );
   parent->removeChildNode( node );
+
+  QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
+  //finally delete the removed layer pointer
+  delete tmpLayer;
   endRemoveRows();
 }
 
