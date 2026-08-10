@@ -1594,6 +1594,15 @@ void QgsModelDesignerDialog::showDataViewerDock( const QString &childId, const Q
 
     dataViewerDock->setWindowTitle( tr( "Data Viewer - %1 - %2" ).arg( mModel->childAlgorithm( childId ).description() ).arg( paramDescription ) );
 
+    connect( dataViewerDock, &QgsDockWidget::closed, this, [this, dataViewerDock]() {
+      int deleteIdx = mDataViewerDocks.indexOf( dataViewerDock );
+      if ( deleteIdx != -1 )
+      {
+        mDataViewerDocks.remove( deleteIdx );
+      }
+      dataViewerDock->deleteLater();
+    } );
+
     addDockWidget( Qt::BottomDockWidgetArea, dataViewerDock );
 
     mDataViewerDocks.append( dataViewerDock );
