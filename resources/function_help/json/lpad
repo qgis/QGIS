@@ -2,7 +2,7 @@
   "name": "lpad",
   "type": "function",
   "groups": ["String"],
-  "description": "Returns a string padded on the left to the specified width, using a fill character. If the target width is smaller than the string's length, the string is truncated.",
+  "description": "Returns a string padded on the left to the specified width, using a fill character. If the target width is smaller than the string's length, the string is truncated. If the fill parameter is omitted, the function will default to a space character.",
   "arguments": [{
     "arg": "string",
     "description": "string to pad"
@@ -18,6 +18,9 @@
   "examples": [{
     "expression": "lpad('Hello', 10, 'x')",
     "returns": "'xxxxxHello'"
+  }, {
+    "expression": "lpad('Hello', 10)",
+    "returns": "'     Hello'"
   }, {
     "expression": "lpad('Hello', 3, 'x')",
     "returns": "'Hel'"
