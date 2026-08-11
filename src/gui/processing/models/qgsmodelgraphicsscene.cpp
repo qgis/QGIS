@@ -185,6 +185,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     item->setPos( box.position().x(), box.position().y() );
     mGroupBoxItems.insert( box.uuid(), item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
+    connect( item, &QgsModelComponentGraphicItem::childAlgorithmDeleted, this, &QgsModelGraphicsScene::childAlgorithmDeleted );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
     connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
   }

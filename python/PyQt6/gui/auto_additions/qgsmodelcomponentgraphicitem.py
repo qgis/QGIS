@@ -19,7 +19,7 @@ try:
     QgsModelComponentGraphicItem.__virtual_methods__ = ['flags', 'linkPointCount', 'linkPointText', 'editComment', 'canDeleteComponent', 'deleteComponent', 'editComponent', 'paintBackground', 'strokeStyle', 'outlineColor', 'titleAlignment', 'iconPicture', 'iconPixmap']
     QgsModelComponentGraphicItem.__abstract_methods__ = ['fillColor', 'strokeColor', 'textColor', 'updateStoredComponentPosition']
     QgsModelComponentGraphicItem.__overridden_methods__ = ['mouseDoubleClickEvent', 'hoverEnterEvent', 'hoverMoveEvent', 'hoverLeaveEvent', 'itemChange', 'boundingRect', 'contains', 'paint']
-    QgsModelComponentGraphicItem.__signal_arguments__ = {'aboutToChange': ['text: str', 'id: Optional[str] = None']}
+    QgsModelComponentGraphicItem.__signal_arguments__ = {'aboutToChange': ['text: str', 'id: Optional[str] = None'], 'childAlgorithmDeleted': ['id: str']}
     QgsModelComponentGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass

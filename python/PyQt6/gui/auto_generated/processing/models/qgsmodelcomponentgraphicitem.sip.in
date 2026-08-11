@@ -265,7 +265,7 @@ Emitted when the definition of the associated component is changed by
 the item.
 %End
 
-    void childAlgorithmDeleted();
+    void childAlgorithmDeleted( const QString &id );
 %Docstring
 Emitted when a child algorithm is deleted from the model.
 %End
