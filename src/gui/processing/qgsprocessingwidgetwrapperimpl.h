@@ -20,6 +20,7 @@
 #define QGSPROCESSINGWIDGETWRAPPERIMPL_H
 
 #include "ui_qgsheatmappixelsizewidgetbase.h"
+#include "ui_qgsinterpolationsourcewidgetbase.h"
 #include "ui_qgsprocessingreliefcolorswidgetbase.h"
 
 #include "qgshighlightablelineedit.h"
@@ -2464,6 +2465,56 @@ class GUI_EXPORT QgsProcessingExecuteSqlWidgetWrapper : public QgsAbstractProces
 
   private:
     QgsExecuteSqlWidget *mExecuteSqlWidget = nullptr;
+
+    friend class TestProcessingGui;
+};
+
+class GUI_EXPORT QgsInterpolationSourceWidget : public QWidget, private Ui::QgsInterpolationSourceWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsInterpolationSourceWidget( QWidget *parent = nullptr );
+
+    void setValue( const QVariant &value, QgsProcessingContext &context );
+    QVariant value() const;
+
+  signals:
+
+    void changed();
+
+  private slots:
+    void addLayer();
+    void removeLayer();
+    void layerChanged( QgsVectorLayer *layer );
+
+  private:
+    void addLayerData( QgsVectorLayer *layer, const QString &attribute );
+
+    friend class TestProcessingGui;
+};
+
+class GUI_EXPORT QgsProcessingInterpolationSourceWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+    QgsProcessingInterpolationSourceWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent = nullptr );
+
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
+    ) override;
+
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+  private:
+    QgsInterpolationSourceWidget *mWidget = nullptr;
 
     friend class TestProcessingGui;
 };

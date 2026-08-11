@@ -45,6 +45,7 @@
 #include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparameterheatmappixelsize.h"
+#include "qgsprocessingparameterinterpolationsource.h"
 #include "qgsprocessingparametermeshdataset.h"
 #include "qgsprocessingparameterreliefcolors.h"
 #include "qgsprocessingparametertininputlayers.h"
@@ -809,6 +810,7 @@ class TestQgsProcessing : public QgsTest
     void parameterPointCloudAttribute();
     void parameterAnnotationLayer();
     void parameterVectorTileOut();
+    void parameterInterpolationSource();
     void checkParamValues();
     void runAlgorithm();
     void combineLayerExtent();
@@ -9450,6 +9452,45 @@ void TestQgsProcessing::parameterVectorTileOut()
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).name, u"my_dest"_s );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).outputName, u"x"_s );
   QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).layerTypeHint, QgsProcessingUtils::LayerHint::VectorTile );
+}
+
+void TestQgsProcessing::parameterInterpolationSource()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  auto def = std::make_unique<QgsProcessingParameterInterpolationSource>( "non_optional", QString() );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( "12.5" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "a::|::b" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "a::~::b::~::c" ) );
+  QVERIFY( def->checkValueIsAcceptable( "a::~::b::~::c::~::d" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "a::~::b::~::c::~::d::|::a::~::b::~::c" ) );
+  QVERIFY( def->checkValueIsAcceptable( "a::~::b::~::c::~::d::|::a::~::b::~::c::~::d" ) );
+  // string
+  QVariantMap params;
+  params.insert( "non_optional", QString( "abcdef" ) );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), u"None"_s );
+  QCOMPARE( def->valueAsPythonString( QString( "a::~::b::~::c::~::d::|::a::~::b::~::c::~::d" ), context ), u"'a::~::b::~::c::~::d::|::a::~::b::~::c::~::d'"_s );
+
+  QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
+  QCOMPARE( def->valueAsJsonObject( u"a::~::b::~::c::~::d::|::a::~::b::~::c::~::d"_s, context ), QVariant( u"a::~::b::~::c::~::d::|::a::~::b::~::c::~::d"_s ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, u"QgsProcessingParameterInterpolationSource('non_optional', '')"_s );
+
+  const QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterInterpolationSource fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  def.reset( dynamic_cast<QgsProcessingParameterInterpolationSource *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast<QgsProcessingParameterInterpolationSource *>( def.get() ) );
 }
 
 void TestQgsProcessing::parameterBand()
