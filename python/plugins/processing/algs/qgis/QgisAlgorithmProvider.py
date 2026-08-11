@@ -30,7 +30,6 @@ from .EliminateSelection import EliminateSelection
 from .FieldPyculator import FieldsPyculator
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
-from .IdwInterpolation import IdwInterpolation
 from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
 from .MeanAndStdDevPlot import MeanAndStdDevPlot
@@ -75,7 +74,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             FieldsPyculator(),
             HubDistanceLines(),
             HubDistancePoints(),
-            IdwInterpolation(),
             KNearestConcaveHull(),
             LinesToPolygons(),
             MeanAndStdDevPlot(),

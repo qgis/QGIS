@@ -574,7 +574,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 "qgis:distancetonearesthubpoints",
                 "qgis:eliminateselectedpolygons",
                 "qgis:generatepointspixelcentroidsalongline",
-                "qgis:idwinterpolation",
                 "qgis:knearestconcavehull",
                 "qgis:meanandstandarddeviationplot",
                 "qgis:pointsdisplacement",
