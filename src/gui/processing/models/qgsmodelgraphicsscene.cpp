@@ -313,8 +313,6 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
                   {
                     if ( paramIt.key() == parameter->name() )
                     {
-                      source.outputChildId();
-                      source.outputName();
                       addDataViewerButtonForArrow( arrow, source.outputChildId(), source.outputName() );
                       break;
                     }
