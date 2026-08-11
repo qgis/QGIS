@@ -323,6 +323,7 @@ QVariantMap QgsRasterCalculatorModelerAlgorithm::processAlgorithm( const QVarian
     cellSize = minCellSize;
   }
 
+  const QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
   const QString expression = parameterAsExpression( parameters, u"EXPRESSION"_s, context );
   const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
@@ -331,6 +332,7 @@ QVariantMap QgsRasterCalculatorModelerAlgorithm::processAlgorithm( const QVarian
   double height = std::round( ( bbox.yMaximum() - bbox.yMinimum() ) / cellSize );
 
   QgsRasterCalculator calc( expression, outputFile, outputFormat, bbox, crs, width, height, entries, context.transformContext() );
+  calc.setCreationOptions( creationOptions.split( '|', Qt::SplitBehaviorFlags::SkipEmptyParts ) );
   QgsRasterCalculator::Result result = calc.processCalculation( feedback );
   qDeleteAll( mLayers );
   mLayers.clear();
