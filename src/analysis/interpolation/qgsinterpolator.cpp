@@ -57,12 +57,12 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
     QgsAttributeList attList;
     switch ( layer.valueSource )
     {
-      case QgsInterpolator::ValueSource::Attribute:
+      case Qgis::InterpolationValueSource::Attribute:
         attList.push_back( layer.interpolationAttribute );
         break;
 
-      case QgsInterpolator::ValueSource::Z:
-      case QgsInterpolator::ValueSource::M:
+      case Qgis::InterpolationValueSource::Z:
+      case Qgis::InterpolationValueSource::M:
         break;
     }
 
@@ -85,7 +85,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
 
       switch ( layer.valueSource )
       {
-        case QgsInterpolator::ValueSource::Attribute:
+        case Qgis::InterpolationValueSource::Attribute:
         {
           QVariant attributeVariant = feature.attribute( layer.interpolationAttribute );
           if ( QgsVariantUtils::isNull( attributeVariant ) ) //attribute not found, something must be wrong (e.g. NULL value)
@@ -100,8 +100,8 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
           break;
         }
 
-        case QgsInterpolator::ValueSource::Z:
-        case QgsInterpolator::ValueSource::M:
+        case Qgis::InterpolationValueSource::Z:
+        case Qgis::InterpolationValueSource::M:
           break;
       }
 
@@ -114,7 +114,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
   return QgsInterpolator::Result::Success;
 }
 
-bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, ValueSource source, double attributeValue )
+bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, Qgis::InterpolationValueSource source, double attributeValue )
 {
   if ( geom.isNull() || geom.isEmpty() )
     return true; // nothing to do
@@ -122,16 +122,16 @@ bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, ValueSource s
   //validate source
   switch ( source )
   {
-    case QgsInterpolator::ValueSource::Attribute:
+    case Qgis::InterpolationValueSource::Attribute:
       break;
 
-    case QgsInterpolator::ValueSource::M:
+    case Qgis::InterpolationValueSource::M:
       if ( !geom.constGet()->isMeasure() )
         return false;
       else
         break;
 
-    case QgsInterpolator::ValueSource::Z:
+    case Qgis::InterpolationValueSource::Z:
       if ( !geom.constGet()->is3D() )
         return false;
       else
@@ -142,15 +142,15 @@ bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, ValueSource s
   {
     switch ( source )
     {
-      case QgsInterpolator::ValueSource::M:
+      case Qgis::InterpolationValueSource::M:
         mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).m() ) );
         break;
 
-      case QgsInterpolator::ValueSource::Z:
+      case Qgis::InterpolationValueSource::Z:
         mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).z() ) );
         break;
 
-      case QgsInterpolator::ValueSource::Attribute:
+      case Qgis::InterpolationValueSource::Attribute:
         mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), attributeValue ) );
         break;
     }
