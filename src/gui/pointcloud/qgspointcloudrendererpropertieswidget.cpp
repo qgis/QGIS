@@ -443,6 +443,8 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
 
 void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
 {
+  mDirectionalLightWidget->setEnableAzimuth( !mHillshadingMultidirCheckBox->isChecked() );
+
   if ( !mBlockChangedSignal )
     emit changed();
 }
