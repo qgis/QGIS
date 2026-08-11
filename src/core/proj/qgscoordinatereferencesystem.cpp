@@ -3672,7 +3672,7 @@ QMap<QString, QString> loadAuthIdToQgisSrsIdMapFromJson()
   QFile file( jsonPath );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugError( u"Failed to open the coordinate reference legacyu map JSON file: %1"_s.arg( jsonPath ) );
+    QgsDebugError( u"Failed to open the coordinate reference legacy map JSON file: %1"_s.arg( jsonPath ) );
     return map;
   }
 
@@ -3701,7 +3701,7 @@ QMap<QString, QString> loadAuthIdToQgisSrsIdMapFromJson()
 
   catch ( nlohmann::json::exception &ex )
   {
-    QgsDebugError( u"Failed to parse Google fonts JSON: %1"_s.arg( ex.what() ) );
+    QgsDebugError( u"Failed to parse the coordinate reference legacy map JSON: %1"_s.arg( ex.what() ) );
     return map;
   }
 
