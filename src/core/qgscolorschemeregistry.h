@@ -194,7 +194,7 @@ class CORE_EXPORT QgsColorSchemeRegistry
     QgsColorScheme *mRandomStyleColorScheme = nullptr;
     QgsNamedColorList mRandomStyleColors;
 
-    QgsProject *mProject = nullptr;
+    QPointer< QgsProject > mProject;
 
     mutable int mNextRandomStyleColorIndex = 0;
 
