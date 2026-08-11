@@ -6789,8 +6789,8 @@ QgsRubberBand.asGeometry: src/gui/qgsrubberband.h#L394
 QgsRubberBand.clearPreviewItems: src/gui/qgsrubberband.h#L243
 QgsRubberBand.closePoints: src/gui/qgsrubberband.h#L263
 QgsRubberBand.copyPointsFrom: src/gui/qgsrubberband.h#L330
-QgsRubberBand.drawShape: src/gui/qgsrubberband.h#L435
-QgsRubberBand.drawShape: src/gui/qgsrubberband.h#L442
+QgsRubberBand.drawShape: src/gui/qgsrubberband.h#L451
+QgsRubberBand.drawShape: src/gui/qgsrubberband.h#L458
 QgsRubberBand.fillColor: src/gui/qgsrubberband.h#L143
 QgsRubberBand.getPoint: src/gui/qgsrubberband.h#L388
 QgsRubberBand.icon: src/gui/qgsrubberband.h#L198
@@ -6798,10 +6798,11 @@ QgsRubberBand.iconSize: src/gui/qgsrubberband.h#L208
 QgsRubberBand.movePoint: src/gui/qgsrubberband.h#L283
 QgsRubberBand.movePoint: src/gui/qgsrubberband.h#L289
 QgsRubberBand.numberOfVertices: src/gui/qgsrubberband.h#L377
-QgsRubberBand.paint: src/gui/qgsrubberband.h#L428
+QgsRubberBand.paint: src/gui/qgsrubberband.h#L444
 QgsRubberBand.partSize: src/gui/qgsrubberband.h#L296
 QgsRubberBand.removeLastPoint: src/gui/qgsrubberband.h#L277
 QgsRubberBand.removePoint: src/gui/qgsrubberband.h#L272
+QgsRubberBand.renderedComponents: src/gui/qgsrubberband.h#L427
 QgsRubberBand.reset: src/gui/qgsrubberband.h#L225
 QgsRubberBand.secondaryStrokeColor: src/gui/qgsrubberband.h#L166
 QgsRubberBand.setBrushStyle: src/gui/qgsrubberband.h#L218
@@ -6810,6 +6811,7 @@ QgsRubberBand.setFillColor: src/gui/qgsrubberband.h#L138
 QgsRubberBand.setIcon: src/gui/qgsrubberband.h#L183
 QgsRubberBand.setIconSize: src/gui/qgsrubberband.h#L203
 QgsRubberBand.setLineStyle: src/gui/qgsrubberband.h#L213
+QgsRubberBand.setRenderedComponents: src/gui/qgsrubberband.h#L435
 QgsRubberBand.setSecondaryStrokeColor: src/gui/qgsrubberband.h#L161
 QgsRubberBand.setStrokeColor: src/gui/qgsrubberband.h#L149
 QgsRubberBand.setSvgIcon: src/gui/qgsrubberband.h#L192
@@ -6823,7 +6825,7 @@ QgsRubberBand.size: src/gui/qgsrubberband.h#L371
 QgsRubberBand.strokeColor: src/gui/qgsrubberband.h#L154
 QgsRubberBand.symbol: src/gui/qgsrubberband.h#L404
 QgsRubberBand.updatePosition: src/gui/qgsrubberband.h#L396
-QgsRubberBand.updateRect: src/gui/qgsrubberband.h#L445
+QgsRubberBand.updateRect: src/gui/qgsrubberband.h#L461
 QgsRubberBand.width: src/gui/qgsrubberband.h#L177
 QgsRubberBand: src/gui/qgsrubberband.h#L90
 QgsRubberBandPreviewItem.render: src/gui/qgsrubberband.h#L66
