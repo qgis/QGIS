@@ -6631,14 +6631,40 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( RasterBandStatistics )
 
     /**
+     * Interpolation source types.
+     *
+     * \since QGIS 4.4. Prior to 4.4 this was available as QgsInterpolator::SourceType.
+     */
+    enum class InterpolationSourceType : int
+    {
+      Points,  //!< Point source
+      StructureLines, //!< Structure lines
+      BreakLines, //!< Break lines
+    };
+    Q_ENUM( InterpolationSourceType )
+
+    /**
+     * Source for interpolated values from features.
+     *
+     * \since QGIS 4.4. Prior to 4.4 this was available as QgsInterpolator::ValueSource.
+     */
+    enum class InterpolationValueSource : int
+    {
+      Attribute, //!< Take value from feature's attribute
+      Z,         //!< Use feature's geometry Z values for interpolation
+      M,         //!< Use feature's geometry M values for interpolation
+    };
+    Q_ENUM( InterpolationValueSource )
+
+    /**
      * OGC SensorThings API versions.
      *
      * \since QGIS 4.2
      */
     enum class SensorThingsVersion : int
     {
-        Version1_1, //!< 1.1
-        Version2_0, //!< 2.0
+      Version1_1, //!< 1.1
+      Version2_0, //!< 2.0
     };
     Q_ENUM( SensorThingsVersion );
 
