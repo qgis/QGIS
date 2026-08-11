@@ -305,15 +305,10 @@ void QgsModelArrowItem::setShowBadge( bool visible )
 
 void QgsModelArrowItem::setDataViewerButton( const QString &childId, const QString &paramOrOutputName )
 {
-  if ( mDataViewerButton )
-  {
-    scene()->removeItem( mDataViewerButton );
-    delete mDataViewerButton;
-    mDataViewerButton = nullptr;
-  }
+  removeDataViewerButton();
 
   mDataViewerButton = new QgsModelDesignerDataViewerButtonGraphicItem( this );
-  mDataViewerButton->setPosition();
+  mDataViewerButton->setPosition( path() );
   connect( mDataViewerButton, &QgsModelDesignerDataViewerButtonGraphicItem::clicked, this, [this, childId = childId, paramOrOutputName = paramOrOutputName] {
     emit showDataViewerDock( childId, paramOrOutputName );
   } );
@@ -417,7 +412,7 @@ void QgsModelArrowItem::updatePath()
 
   if ( mDataViewerButton )
   {
-    mDataViewerButton->setPosition();
+    mDataViewerButton->setPosition( path );
   }
 }
 

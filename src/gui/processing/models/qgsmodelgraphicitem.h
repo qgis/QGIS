@@ -244,10 +244,7 @@ class GUI_EXPORT QgsModelDesignerDataViewerButtonGraphicItem : public QgsModelDe
     /**
      * Sets the position of the button along the path
      */
-    void setPosition();
-
-  private:
-    QgsModelArrowItem *mLink = nullptr;
+    void setPosition( QPainterPath path );
 };
 
 
