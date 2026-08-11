@@ -118,6 +118,9 @@ class APP_EXPORT QgsCustomization
          */
         QgsItem( const QString &name, const QString &title, QgsItem *parent = nullptr );
 
+        QgsItem( const QgsItem & ) = delete;
+        QgsItem &operator=( const QgsItem & ) = delete;
+
         /**
          * Destructor
          */
