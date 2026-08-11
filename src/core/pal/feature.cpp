@@ -1170,7 +1170,24 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
         // this only applies to non closed linestrings, since the middle of a closed linestring is effectively arbitrary
         // and irrelevant to labeling
         double costLineCenter = 2 * std::fabs( labelTextAnchor - lineAnchorPoint ) / totalLineLength; // 0 -> 1
-        cost += costLineCenter * 0.0005;                                                              // < 0, 0.0005 >
+
+        // add a little tie breaker amount -- otherwise if we are generating an even number of candidates, we may end up with
+        // two with exactly the same cost centered over the mid point of the feature. So add a tiny PLACEMENT_TIEBREAKER amount
+        // so that one of these is always preferred, giving us a stable labeling solution:
+        // eg:
+        //   Line:  ============|============[ Anchor ]==========|==============
+        //                      |  <-same dist-> | <-same dist-> |
+        //              [-- Candidate --]        |       [-- Candidate --]
+        //                      |                |               |
+        //                 Anchor < Mid          |          Anchor > Mid
+        //                                       |     cost += PLACEMENT_TIEBREAKER
+        if ( labelTextAnchor > lineAnchorPoint )
+        {
+          constexpr double PLACEMENT_TIEBREAKER = 0.000001234;
+          cost += PLACEMENT_TIEBREAKER;
+        }
+
+        cost += costLineCenter * 0.0005; // < 0, 0.0005 >
       }
 
       if ( placementIsFlexible )
