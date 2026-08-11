@@ -63,6 +63,7 @@
 #include "qgsprocessingoutputdestinationwidget.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameterheatmappixelsize.h"
+#include "qgsprocessingparameterinterpolationsource.h"
 #include "qgsprocessingparameterreliefcolors.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingpointcloudexpressionlineedit.h"
@@ -9287,6 +9288,215 @@ QVariant QgsProcessingExecuteSqlWidgetWrapper::widgetValue() const
   }
 
   return mExecuteSqlWidget->value();
+}
+
+//
+// QgsInterpolationSourceWidget
+//
+
+QgsInterpolationSourceWidget::QgsInterpolationSourceWidget( QWidget *parent )
+  : QWidget( parent )
+{
+  setupUi( this );
+
+  btnAdd->setIcon( QgsApplication::getThemeIcon( u"/symbologyAdd.svg"_s ) );
+  btnRemove->setIcon( QgsApplication::getThemeIcon( u"/symbologyRemove.svg"_s ) );
+
+  connect( btnAdd, &QToolButton::clicked, this, &QgsInterpolationSourceWidget::addLayer );
+  connect( btnRemove, &QToolButton::clicked, this, &QgsInterpolationSourceWidget::removeLayer );
+
+  cmbLayers->setFilters( Qgis::LayerFilter::VectorLayer );
+  cmbFields->setFilters( QgsFieldProxyModel::Filter::Numeric );
+
+  connect( cmbLayers, &QgsMapLayerComboBox::layerChanged, this, [this]( QgsMapLayer *layer ) { layerChanged( qobject_cast<QgsVectorLayer *>( layer ) ); } );
+
+  layerChanged( qobject_cast< QgsVectorLayer * >( cmbLayers->currentLayer() ) );
+}
+
+void QgsInterpolationSourceWidget::addLayer()
+{
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( cmbLayers->currentLayer() );
+  if ( !layer )
+  {
+    return;
+  }
+
+  const QString attribute = chkUseZCoordinate->isChecked() ? u"Z_COORD"_s : cmbFields->currentField();
+  addLayerData( layer, attribute );
+  emit changed();
+}
+
+void QgsInterpolationSourceWidget::removeLayer()
+{
+  QTreeWidgetItem *item = layersTree->currentItem();
+  if ( !item )
+  {
+    return;
+  }
+  delete item;
+  emit changed();
+}
+
+void QgsInterpolationSourceWidget::layerChanged( QgsVectorLayer *layer )
+{
+  chkUseZCoordinate->setEnabled( false );
+  chkUseZCoordinate->setChecked( false );
+
+  if ( !layer || !layer->isValid() )
+  {
+    return;
+  }
+
+  if ( QgsWkbTypes::hasZ( layer->wkbType() ) )
+  {
+    chkUseZCoordinate->setEnabled( true );
+  }
+
+  cmbFields->setLayer( layer );
+}
+
+void QgsInterpolationSourceWidget::addLayerData( QgsVectorLayer *layer, const QString &attribute )
+{
+  QTreeWidgetItem *item = new QTreeWidgetItem();
+  item->setText( 0, layer->name() );
+  item->setText( 1, attribute );
+  item->setData( 0, Qt::UserRole, layer->source() );
+  layersTree->addTopLevelItem( item );
+
+  QComboBox *comboBox = new QComboBox();
+  comboBox->addItem( tr( "Points" ), QVariant::fromValue( Qgis::InterpolationSourceType::Points ) );
+  comboBox->addItem( tr( "Structure Lines" ), QVariant::fromValue( Qgis::InterpolationSourceType::StructureLines ) );
+  comboBox->addItem( tr( "Break Lines" ), QVariant::fromValue( Qgis::InterpolationSourceType::BreakLines ) );
+  comboBox->setCurrentIndex( 0 );
+  layersTree->setItemWidget( item, 2, comboBox );
+}
+
+void QgsInterpolationSourceWidget::setValue( const QVariant &value, QgsProcessingContext &context )
+{
+  layersTree->clear();
+  const QStringList rows = value.toString().split( "::|::"_L1, Qt::SkipEmptyParts );
+  int itemIndex = 0;
+  for ( const QString &row : rows )
+  {
+    const QStringList tokens = row.split( "::~::"_L1 );
+    if ( tokens.size() < 4 )
+    {
+      continue;
+    }
+
+    const QString layerSource = tokens.at( 0 );
+    auto layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerSource, context, true, QgsProcessingUtils::LayerHint::Vector ) );
+    if ( !layer || !layer->isValid() )
+      continue;
+
+    bool isInt = false;
+    const int fieldIndexInt = tokens.at( 2 ).toInt( &isInt );
+    if ( isInt && fieldIndexInt == -1 )
+    {
+      addLayerData( layer, u"Z_COORD"_s );
+    }
+    else if ( isInt )
+    {
+      addLayerData( layer, layer->fields().at( fieldIndexInt ).name() );
+    }
+    else
+    {
+      addLayerData( layer, tokens.at( 2 ) );
+    }
+
+    const Qgis::InterpolationSourceType sourceType = static_cast< Qgis::InterpolationSourceType >( tokens.at( 3 ).toInt() );
+    QComboBox *comboBox = qobject_cast<QComboBox *>( layersTree->itemWidget( layersTree->topLevelItem( itemIndex ), 2 ) );
+    if ( comboBox )
+    {
+      comboBox->setCurrentIndex( comboBox->findData( QVariant::fromValue( sourceType ) ) );
+    }
+    itemIndex++;
+  }
+  emit changed();
+}
+
+QVariant QgsInterpolationSourceWidget::value() const
+{
+  QStringList result;
+  for ( int index = 0; index < layersTree->topLevelItemCount(); ++index )
+  {
+    QTreeWidgetItem *item = layersTree->topLevelItem( index );
+    if ( !item )
+    {
+      continue;
+    }
+
+    const QString layerSource = item->data( 0, Qt::UserRole ).toString();
+    QString interpolationAttribute = item->text( 1 );
+
+    int valueSource = static_cast<int>( Qgis::InterpolationValueSource::Attribute );
+    if ( interpolationAttribute == "Z_COORD"_L1 )
+    {
+      valueSource = static_cast<int>( Qgis::InterpolationValueSource::Z );
+      interpolationAttribute = u"-1"_s;
+    }
+
+    QComboBox *comboBox = qobject_cast<QComboBox *>( layersTree->itemWidget( item, 2 ) );
+    const int inputType = comboBox ? static_cast< int >( comboBox->currentData().value< Qgis::InterpolationSourceType >() ) : 0;
+
+    result << u"%1::~::%2::~::%3::~::%4"_s.arg( layerSource ).arg( valueSource ).arg( interpolationAttribute ).arg( inputType );
+  }
+
+  if ( result.isEmpty() )
+    return QVariant();
+
+  return result.join( "::|::"_L1 );
+}
+
+
+//
+// QgsProcessingInterpolationSourceWidgetWrapper
+//
+
+QgsProcessingInterpolationSourceWidgetWrapper::QgsProcessingInterpolationSourceWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QObject *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingInterpolationSourceWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterInterpolationSource::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingInterpolationSourceWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingInterpolationSourceWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingInterpolationSourceWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
+{
+  return nullptr;
+}
+
+QWidget *QgsProcessingInterpolationSourceWidgetWrapper::createWidget()
+{
+  mWidget = new QgsInterpolationSourceWidget();
+  if ( parameterDefinition() )
+  {
+    mWidget->setToolTip( parameterDefinition()->toolTip() );
+  }
+
+  connect( mWidget, &QgsInterpolationSourceWidget::changed, this, [this] { emit widgetValueHasChanged( this ); } );
+  return mWidget;
+}
+
+void QgsProcessingInterpolationSourceWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mWidget )
+  {
+    mWidget->setValue( value, context );
+  }
+}
+
+QVariant QgsProcessingInterpolationSourceWidgetWrapper::widgetValue() const
+{
+  return mWidget ? mWidget->value() : QVariant();
 }
 
 ///@endcond PRIVATE
