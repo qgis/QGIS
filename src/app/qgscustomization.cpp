@@ -188,7 +188,7 @@ unsigned int QgsCustomization::QgsItem::childrenCount() const
 
 void QgsCustomization::QgsItem::insertChild( int position, std::unique_ptr<QgsItem> item )
 {
-  if ( position < 0 && position >= static_cast<int>( mChildItemList.size() ) )
+  if ( position < 0 || position > static_cast<int>( mChildItemList.size() ) )
   {
     QgsDebugError( u"Insert item impossible, invalid position"_s );
     return;
@@ -201,7 +201,7 @@ void QgsCustomization::QgsItem::insertChild( int position, std::unique_ptr<QgsIt
 
 void QgsCustomization::QgsItem::deleteChild( int position )
 {
-  if ( position < 0 && position >= static_cast<int>( mChildItemList.size() ) )
+  if ( position < 0 || position >= static_cast<int>( mChildItemList.size() ) )
   {
     QgsDebugError( u"Delete item impossible, invalid position"_s );
     return;
