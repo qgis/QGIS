@@ -51,7 +51,6 @@ QgsModelDataViewerDockWidget::QgsModelDataViewerDockWidget( QWidget *parent, Qgs
 
   setLayer( layer );
 
-
   if ( !mLayer || !mLayer->isValid() || mLayer->type() != Qgis::LayerType::Vector )
   {
     mActionZoomToSelection->setEnabled( false );
@@ -84,7 +83,6 @@ QgsModelDataViewerDockWidget::QgsModelDataViewerDockWidget( QWidget *parent, Qgs
 
   mMapCanvas->setMapTool( mToolPan );
 
-
   connect( mActionZoomToLayer, &QAction::triggered, this, [this]() {
     if ( mLayer )
       mMapCanvas->zoomToLayers( QList<QgsMapLayer *> { mLayer.get() } );
@@ -102,15 +100,12 @@ QgsModelDataViewerDockWidget::QgsModelDataViewerDockWidget( QWidget *parent, Qgs
   connect( mActionSelectNone, &QAction::triggered, this, &QgsModelDataViewerDockWidget::deselectAll );
   connect( mActionInvertSelection, &QAction::triggered, this, &QgsModelDataViewerDockWidget::invertSelection );
 
-
   QActionGroup *actionGroup = new QActionGroup( this );
   actionGroup->addAction( mActionPan );
   actionGroup->addAction( mActionSelectFeatures );
   actionGroup->setExclusive( true );
 
-
   connect( mActionToggleProjectLayers, &QAction::toggled, this, &QgsModelDataViewerDockWidget::toggleProjectLayer );
-
 
   QgsProject *project = QgsProject::instance();
 
@@ -118,7 +113,6 @@ QgsModelDataViewerDockWidget::QgsModelDataViewerDockWidget( QWidget *parent, Qgs
   connect( project->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, [this]( QgsLayerTreeNode *, const QString & ) { toggleProjectLayer( mActionToggleProjectLayers->isChecked() ); } );
   connect( project->layerTreeRoot(), &QgsLayerTreeNode::visibilityChanged, this, [this]( QgsLayerTreeNode * ) { toggleProjectLayer( mActionToggleProjectLayers->isChecked() ); } );
   connect( project->layerTreeRoot(), &QgsLayerTree::layerOrderChanged, this, [this]() { toggleProjectLayer( mActionToggleProjectLayers->isChecked() ); } );
-
 
   connect( project, &QgsProject::layersAdded, this, [this]( const QList<QgsMapLayer *> & ) { toggleProjectLayer( mActionToggleProjectLayers->isChecked() ); } );
 
@@ -132,7 +126,6 @@ QgsModelDataViewerDockWidget::~QgsModelDataViewerDockWidget()
   delete mToolPan;
   delete mToolSelect;
 }
-
 
 void QgsModelDataViewerDockWidget::setLayer( QgsMapLayer *layer )
 {
@@ -270,12 +263,10 @@ void QgsModelDataViewerDockWidget::selectAll()
     vl->selectAll();
 }
 
-
 void QgsModelDataViewerDockWidget::selectByExpression()
 {
   if ( !mLayer )
     return;
-
 
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer.get() );
   if ( !vl )
@@ -287,7 +278,6 @@ void QgsModelDataViewerDockWidget::selectByExpression()
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
 }
-
 
 void QgsModelDataViewerDockWidget::deselectAll()
 {
