@@ -95,7 +95,7 @@ tests:
           - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation using attribute
     params:
       DISTANCE_COEFFICIENT: 2.0
@@ -110,7 +110,7 @@ tests:
           - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
         type: rasterhash
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation using Z value
     params:
       DISTANCE_COEFFICIENT: 2.0
@@ -125,7 +125,7 @@ tests:
           - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
         type: rasterhash
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation with breaklines
     params:
       DISTANCE_COEFFICIENT: 2.0
@@ -140,7 +140,7 @@ tests:
           - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
         type: rasterhash
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation using attribute (old parameters)
     params:
       DISTANCE_COEFFICIENT: 2.0
@@ -156,7 +156,7 @@ tests:
           - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
         type: rasterhash
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation using Z value (old parameters)
     params:
       DISTANCE_COEFFICIENT: 2.0
@@ -172,7 +172,7 @@ tests:
           - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
         type: rasterhash
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation with breaklines (old parameters)
     params:
       DISTANCE_COEFFICIENT: 2.0
