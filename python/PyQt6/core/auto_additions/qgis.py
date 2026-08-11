@@ -12629,6 +12629,36 @@ Qgis.RasterBandStatistics = lambda flags=0: Qgis.RasterBandStatistic(flags)
 Qgis.RasterBandStatistics.baseClass = Qgis
 RasterBandStatistics = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.InterpolationSourceType.Points.__doc__ = "Point source"
+Qgis.InterpolationSourceType.StructureLines.__doc__ = "Structure lines"
+Qgis.InterpolationSourceType.BreakLines.__doc__ = "Break lines"
+Qgis.InterpolationSourceType.__doc__ = """Interpolation source types.
+
+.. versionadded:: 4.4.
+
+* ``Points``: Point source
+* ``StructureLines``: Structure lines
+* ``BreakLines``: Break lines
+
+"""
+# --
+Qgis.InterpolationSourceType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.InterpolationValueSource.Attribute.__doc__ = "Take value from feature's attribute"
+Qgis.InterpolationValueSource.Z.__doc__ = "Use feature's geometry Z values for interpolation"
+Qgis.InterpolationValueSource.M.__doc__ = "Use feature's geometry M values for interpolation"
+Qgis.InterpolationValueSource.__doc__ = """Source for interpolated values from features.
+
+.. versionadded:: 4.4.
+
+* ``Attribute``: Take value from feature's attribute
+* ``Z``: Use feature's geometry Z values for interpolation
+* ``M``: Use feature's geometry M values for interpolation
+
+"""
+# --
+Qgis.InterpolationValueSource.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.SensorThingsVersion.Version1_1.__doc__ = "1.1"
 Qgis.SensorThingsVersion.Version2_0.__doc__ = "2.0"
 Qgis.SensorThingsVersion.__doc__ = """OGC SensorThings API versions.
