@@ -1794,6 +1794,7 @@ void QgsModelChildAlgorithmGraphicItem::deleteComponent()
     {
       emit changed();
       emit requestModelRepaint();
+      emit childAlgorithmDeleted( child->childId() );
     }
   }
 }

@@ -326,7 +326,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public Q
     /**
      * Emitted when a child algorithm is deleted from the model.
      */
-    void childAlgorithmDeleted();
+    void childAlgorithmDeleted( const QString &id );
 
     /**
      * Emitted when item requests that all connected arrows are repainted.
