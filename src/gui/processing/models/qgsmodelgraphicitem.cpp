@@ -298,7 +298,6 @@ bool QgsModelDesignerSocketGraphicItem::isDefaultParameterValue() const
 
 QgsModelDesignerDataViewerButtonGraphicItem::QgsModelDesignerDataViewerButtonGraphicItem( QgsModelArrowItem *link )
   : QgsModelDesignerFlatButtonGraphicItem( link, QPicture(), QPointF() )
-  , mLink( link )
 {
   QSvgRenderer svg( QgsApplication::iconPath( u"mActionNewMap.svg"_s ) );
   QPicture openDataViewerPicture;
@@ -308,12 +307,11 @@ QgsModelDesignerDataViewerButtonGraphicItem::QgsModelDesignerDataViewerButtonGra
   painter.end();
 
   setPicture( openDataViewerPicture );
-  setPosition();
 }
 
-void QgsModelDesignerDataViewerButtonGraphicItem::setPosition()
+void QgsModelDesignerDataViewerButtonGraphicItem::setPosition( QPainterPath path )
 {
-  QPointF middlePos = mLink->path().pointAtPercent( 0.5 );
+  QPointF middlePos = path.pointAtPercent( 0.5 );
   QRectF rect = boundingRect();
   QPointF offset = rect.center() + QPointF( 0, -25 );
   setPos( middlePos - offset );
