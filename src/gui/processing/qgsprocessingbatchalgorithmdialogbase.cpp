@@ -155,7 +155,8 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
     ) );
 
     handleAlgorithmResults( algorithm(), *mTaskContext, mBatchFeedback.get(), mCurrentParameters );
-    executeNext();
+    // must not start the next step from within QgsTaskManager::taskStatusChanged() (fix #53806)
+    QMetaObject::invokeMethod( this, &QgsProcessingBatchAlgorithmDialogBase::executeNext, Qt::QueuedConnection );
   }
   else if ( mBatchFeedback->isCanceled() )
   {
@@ -174,7 +175,8 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
         { QStringLiteral( "errors" ), taskErrors }
       }
     ) );
-    executeNext();
+    // must not start the next step from within QgsTaskManager::taskStatusChanged() (fix #53806)
+    QMetaObject::invokeMethod( this, &QgsProcessingBatchAlgorithmDialogBase::executeNext, Qt::QueuedConnection );
   }
 }
 
