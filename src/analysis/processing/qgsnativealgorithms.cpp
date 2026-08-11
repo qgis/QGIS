@@ -153,6 +153,7 @@
 #include "qgsalgorithmgeometrybyexpression.h"
 #include "qgsalgorithmgltftovector.h"
 #include "qgsalgorithmheatmap.h"
+#include "qgsalgorithmidwinterpolation.h"
 #include "qgsruntimeprofiler.h"
 
 #include <QString>
@@ -525,6 +526,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsHillshadeAlgorithm() );
   addAlgorithm( new QgsHubDistanceAlgorithm() );
   addAlgorithm( new QgsHypsometricCurvesAlgorithm() );
+  addAlgorithm( new QgsIdwInterpolationAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
   addAlgorithm( new QgsInterpolatePointAlgorithm() );
   addAlgorithm( new QgsIntersectionAlgorithm() );
