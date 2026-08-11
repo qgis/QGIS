@@ -33,13 +33,28 @@
 
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QString>
 #include <QUrl>
 
 #include "moc_qgsappbrowserproviders.cpp"
 
 using namespace Qt::StringLiterals;
+
+//! Returns TRUE if the mime data contains a local file url with the given suffix
+static bool mimeDataContainsFileWithSuffix( const QMimeData *data, const QString &suffix )
+{
+  const QList<QUrl> urls = data->urls();
+  for ( const QUrl &url : urls )
+  {
+    const QString fileName = url.toLocalFile();
+    if ( !fileName.isEmpty() && QFileInfo( fileName ).suffix().compare( suffix, Qt::CaseInsensitive ) == 0 )
+      return true;
+  }
+  return false;
+}
 
 QIcon QgsBookmarksItem::iconBookmarks()
 {
@@ -155,6 +170,11 @@ void QgsQlrDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) 
   QgsAppLayerHandling::openLayerDefinition( path );
 }
 
+bool QgsQlrDropHandler::canHandleMimeData( const QMimeData *data )
+{
+  return mimeDataContainsFileWithSuffix( data, u"qlr"_s );
+}
+
 //
 // QgsQptDataItemProvider
 //
@@ -204,6 +224,11 @@ bool QgsQptDropHandler::handleFileDrop( const QString &file )
     return true;
   }
   return false;
+}
+
+bool QgsQptDropHandler::canHandleMimeData( const QMimeData *data )
+{
+  return mimeDataContainsFileWithSuffix( data, u"qpt"_s );
 }
 
 //
@@ -343,6 +368,11 @@ bool QgsPyDropHandler::handleFileDrop( const QString &file )
   return false;
 }
 
+bool QgsPyDropHandler::canHandleMimeData( const QMimeData *data )
+{
+  return mimeDataContainsFileWithSuffix( data, u"py"_s );
+}
+
 
 //
 // QgsStyleXmlDataItem
@@ -458,6 +488,18 @@ bool QgsStyleXmlDropHandler::handleFileDrop( const QString &file )
   {
     QgsStyleXmlDataItem::browseStyle( file );
     return true;
+  }
+  return false;
+}
+
+bool QgsStyleXmlDropHandler::canHandleMimeData( const QMimeData *data )
+{
+  const QList<QUrl> urls = data->urls();
+  for ( const QUrl &url : urls )
+  {
+    const QString fileName = url.toLocalFile();
+    if ( !fileName.isEmpty() && QgsStyle::isXmlStyleFile( fileName ) )
+      return true;
   }
   return false;
 }
@@ -888,6 +930,13 @@ void QgsBookmarkItem::setBookmark( const QgsBookmark &bookmark )
 QString QgsBookmarkDropHandler::customUriProviderKey() const
 {
   return u"bookmark"_s;
+}
+
+bool QgsBookmarkDropHandler::canHandleMimeData( const QMimeData * )
+{
+  // bookmarks are only handled as custom uris dropped onto a map canvas
+  // (see canHandleCustomUriCanvasDrop()), not as general mime data
+  return false;
 }
 
 bool QgsBookmarkDropHandler::canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas * )
