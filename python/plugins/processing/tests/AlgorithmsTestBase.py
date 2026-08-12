@@ -594,7 +594,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 "qgis:setstyleforrasterlayer",
                 "qgis:setstyleforvectorlayer",
                 "qgis:texttofloat",
-                "qgis:tininterpolation",
                 "qgis:variabledistancebuffer",
                 "qgis:vectorlayerhistogram",
                 "qgis:vectorlayerscatterplot",

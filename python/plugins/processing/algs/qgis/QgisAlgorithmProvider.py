@@ -47,7 +47,6 @@ from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
-from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorLayerHistogram import VectorLayerHistogram
@@ -91,7 +90,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             SetVectorStyle(),
             StatisticsByCategories(),
             TextToFloat(),
-            TinInterpolation(),
             TopoColor(),
             VariableDistanceBuffer(),
             VectorLayerHistogram(),

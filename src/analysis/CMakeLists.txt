@@ -306,6 +306,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsumlinelength.cpp
   processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtaperedbuffer.cpp
+  processing/qgsalgorithmtininterpolation.cpp
   processing/qgsalgorithmtinmeshcreation.cpp
   processing/qgsalgorithmtotalcurvature.cpp
   processing/qgsalgorithmtransect.cpp
