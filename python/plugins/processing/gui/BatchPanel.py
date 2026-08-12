@@ -61,6 +61,7 @@ from qgis.gui import (
     QgsAbstractProcessingParameterWidgetWrapper,
     QgsExpressionBuilderDialog,
     QgsFindFilesByPatternDialog,
+    QgsGui,
     QgsPanelWidget,
     QgsProcessingContextGenerator,
     QgsProcessingParameterWidgetContext,
@@ -93,7 +94,6 @@ from qgis.utils import iface
 
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 from processing.gui.MultipleInputDialog import MultipleInputDialog
-from processing.gui.wrappers import WidgetWrapperFactory
 from processing.tools import dataobjects
 from processing.tools.dataobjects import createContext
 
@@ -887,9 +887,13 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                     continue
 
                 column = self.parameter_to_column[param.name()]
-                wrapper = WidgetWrapperFactory.create_wrapper(
-                    param, self.parent, row, column
+
+                wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(
+                    param, Qgis.ProcessingMode.Batch
                 )
+
+                wrapper.setDialog(self.parent)
+
                 wrappers[param.name()] = wrapper
                 self.setCellWrapper(row, column, wrapper, context)
 
