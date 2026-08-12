@@ -80,6 +80,7 @@
 #include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparameterheatmappixelsize.h"
+#include "qgsprocessingparameterinterpolationpixelsize.h"
 #include "qgsprocessingparameterinterpolationsource.h"
 #include "qgsprocessingparameterreliefcolors.h"
 #include "qgsprocessingparameters.h"
@@ -339,6 +340,8 @@ class TestProcessingGui : public QgsTest
     void testExecuteSqlWidgetWrapper();
     void testInterpolationSourceWidget();
     void testInterpolationSourceWrapper();
+    void testInterpolationPixelSizeWidget();
+    void testInterpolationPixelSizeWrapper();
 
   private:
     QString mTempDir;
@@ -12438,6 +12441,183 @@ void TestProcessingGui::testInterpolationSourceWrapper()
   QCOMPARE( l->toolTip(), param.toolTip() );
   delete w;
   delete l;
+}
+
+void TestProcessingGui::testInterpolationPixelSizeWidget()
+{
+  QgsInterpolationPixelSizeWidget widget;
+  // no source set
+  QSignalSpy changedSpy( &widget, &QgsInterpolationPixelSizeWidget::valueChanged );
+  widget.mCellYSpinBox->setValue( 20 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 20 );
+  QCOMPARE( changedSpy.size(), 1 );
+  widget.mCellXSpinBox->setValue( 30 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 30 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 30 );
+  QCOMPARE( changedSpy.size(), 2 );
+
+  widget.mRowsSpinBox->setValue( 10 );
+  widget.mColumnsSpinBox->setValue( 15 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 10 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 15 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 30 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 30 );
+  QCOMPARE( changedSpy.size(), 2 );
+
+  widget.mCellXSpinBox->setValue( 40 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 10 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 15 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 40 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 40 );
+  QCOMPARE( changedSpy.size(), 3 );
+
+  widget.setValue( 5 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 10 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 15 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 5 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 5 );
+  QCOMPARE( widget.value(), 5 );
+  QCOMPARE( changedSpy.size(), 4 );
+
+  // with source
+  auto pointsLayer = new QgsVectorLayer( testDataPath( u"points.shp"_s ) );
+  QVERIFY( pointsLayer->isValid() );
+
+  QgsProject p;
+  p.addMapLayer( pointsLayer );
+
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  const QString testValue = u"%1::~::1::~::-1::~::1"_s.arg( pointsLayer->source() );
+
+  widget.setSourceData( testValue, context );
+  QCOMPARE( widget.mRowsSpinBox->value(), 6 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 8 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 5 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 5 );
+  QCOMPARE( widget.value(), 5 );
+  // didn't change
+  QCOMPARE( changedSpy.size(), 4 );
+
+  widget.setValue( 10 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 3 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 5 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 10 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 10 );
+  QCOMPARE( widget.value(), 10 );
+
+  widget.setExtent( QgsRectangle( 10, 20, 60, 45 ) );
+  QCOMPARE( widget.mRowsSpinBox->value(), 4 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 6 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 10 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 10 );
+  QCOMPARE( widget.value(), 10 );
+}
+
+void TestProcessingGui::testInterpolationPixelSizeWrapper()
+{
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterInterpolationPixelSize param( u"num"_s, u"num"_s );
+    QgsProcessingInterpolationPixelSizeWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    if ( !qobject_cast< QgsInterpolationPixelSizeWidget * >( w ) )
+    {
+      QVERIFY( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->expressionsEnabled() );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->decimals(), 6 );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->singleStep(), 1.0 );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->minimum(), 0.0 );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->maximum(), 99999999999.0 );
+    }
+
+    QSignalSpy spy( &wrapper, &QgsProcessingInterpolationPixelSizeWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( 5, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 5.0 );
+
+    if ( auto widget = qobject_cast< QgsInterpolationPixelSizeWidget * >( w ) )
+    {
+      QCOMPARE( widget->value(), 5.0 );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->value(), 5.0 );
+    }
+    wrapper.setWidgetValue( u"28356"_s, context );
+    QCOMPARE( spy.count(), 2 );
+    if ( auto widget = qobject_cast< QgsInterpolationPixelSizeWidget * >( w ) )
+    {
+      QCOMPARE( widget->value(), 28356.0 );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->value(), 28356.0 );
+    }
+
+    wrapper.setWidgetValue( QVariant(), context ); // not optional, so shouldn't work
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 0.0 );
+    if ( auto widget = qobject_cast< QgsInterpolationPixelSizeWidget * >( w ) )
+    {
+      QCOMPARE( widget->value(), 0.0 );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->value(), 0.0 );
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), u"num"_s );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    if ( auto widget = qobject_cast< QgsInterpolationPixelSizeWidget * >( w ) )
+    {
+      widget->setValue( 37.0 );
+    }
+    else
+    {
+      static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->setValue( 37.0 );
+    }
+    QCOMPARE( spy.count(), 4 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 37.0 );
+    delete w;
+
+    // with default value
+    QgsProcessingParameterInterpolationPixelSize paramDefault( u"num"_s, u"num"_s );
+    paramDefault.setDefaultValue( 55 );
+
+    QgsProcessingInterpolationPixelSizeWidgetWrapper wrapperDefault( &paramDefault, type );
+
+    w = wrapperDefault.createWrappedWidget( context );
+    QCOMPARE( wrapperDefault.parameterValue().toDouble(), 55.0 );
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( Qgis::ProcessingMode::Standard );
+
+  // batch wrapper
+  testWrapper( Qgis::ProcessingMode::Batch );
+
+  // modeler wrapper
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::cleanupTempDir()

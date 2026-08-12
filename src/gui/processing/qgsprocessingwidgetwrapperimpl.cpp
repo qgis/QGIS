@@ -63,6 +63,7 @@
 #include "qgsprocessingoutputdestinationwidget.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameterheatmappixelsize.h"
+#include "qgsprocessingparameterinterpolationpixelsize.h"
 #include "qgsprocessingparameterinterpolationsource.h"
 #include "qgsprocessingparameterreliefcolors.h"
 #include "qgsprocessingparameters.h"
@@ -9498,5 +9499,271 @@ QVariant QgsProcessingInterpolationSourceWidgetWrapper::widgetValue() const
 {
   return mWidget ? mWidget->value() : QVariant();
 }
+
+
+//
+// QgsInterpolationPixelSizeWidget
+//
+
+QgsInterpolationPixelSizeWidget::QgsInterpolationPixelSizeWidget( QWidget *parent )
+  : QgsPanelWidget( parent )
+{
+  setupUi( this );
+
+  mCellXSpinBox->setShowClearButton( false );
+  mCellYSpinBox->setShowClearButton( false );
+  mRowsSpinBox->setShowClearButton( false );
+  mColumnsSpinBox->setShowClearButton( false );
+
+  connect( mCellYSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), mCellXSpinBox, &QgsDoubleSpinBox::setValue );
+  connect( mCellXSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsInterpolationPixelSizeWidget::pixelSizeChanged );
+  connect( mRowsSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsInterpolationPixelSizeWidget::rowsChanged );
+  connect( mColumnsSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsInterpolationPixelSizeWidget::columnsChanged );
+}
+
+void QgsInterpolationPixelSizeWidget::setSourceData( const QString &sourceData, QgsProcessingContext &context )
+{
+  mExtent.setNull();
+  const QStringList rows = sourceData.split( "::|::"_L1, Qt::SkipEmptyParts );
+  for ( const QString &row : rows )
+  {
+    const QStringList tokens = row.split( "::~::"_L1 );
+    if ( tokens.isEmpty() )
+    {
+      continue;
+    }
+
+    std::unique_ptr<QgsFeatureSource> source( QgsProcessingUtils::variantToSource( tokens.at( 0 ), context ) );
+    if ( source )
+    {
+      mExtent.combineExtentWith( source->sourceExtent() );
+    }
+  }
+
+  pixelSizeChanged();
+}
+
+void QgsInterpolationPixelSizeWidget::setExtent( const QgsRectangle &extent )
+{
+  mExtent = extent;
+  pixelSizeChanged();
+}
+
+void QgsInterpolationPixelSizeWidget::pixelSizeChanged()
+{
+  const double prevValue = value();
+  const double cellSize = mCellXSpinBox->value();
+  if ( qgsDoubleLessThanOrNear( cellSize, 0 ) || mExtent.isNull() )
+  {
+    emit valueChanged();
+    return;
+  }
+
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  const int rows = std::max( static_cast<int>( std::round( mExtent.height() / cellSize ) ) + 1, 1 );
+  const int cols = std::max( static_cast<int>( std::round( mExtent.width() / cellSize ) ) + 1, 1 );
+
+  whileBlocking( mRowsSpinBox )->setValue( rows );
+  whileBlocking( mColumnsSpinBox )->setValue( cols );
+
+  if ( !qgsDoubleNear( prevValue, value() ) )
+  {
+    emit valueChanged();
+  }
+}
+
+void QgsInterpolationPixelSizeWidget::rowsChanged()
+{
+  const int rows = mRowsSpinBox->value();
+  if ( rows <= 0 || mExtent.isNull() )
+    return;
+
+  const double cellSize = mExtent.height() / rows;
+  if ( qgsDoubleNear( cellSize, 0.0 ) )
+    return;
+
+  const int cols = std::max( static_cast<int>( std::round( mExtent.width() / cellSize ) ) + 1, 1 );
+
+  whileBlocking( mColumnsSpinBox )->setValue( cols );
+  whileBlocking( mCellXSpinBox )->setValue( cellSize );
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  emit valueChanged();
+}
+
+void QgsInterpolationPixelSizeWidget::columnsChanged()
+{
+  const int cols = mColumnsSpinBox->value();
+  if ( cols < 2 || mExtent.isNull() )
+    return;
+
+  const double cellSize = mExtent.width() / ( cols - 1 );
+  if ( qgsDoubleNear( cellSize, 0.0 ) )
+    return;
+
+  const int rows = std::max( static_cast<int>( std::round( mExtent.height() / cellSize ) ), 1 );
+
+  whileBlocking( mRowsSpinBox )->setValue( rows );
+  whileBlocking( mCellXSpinBox )->setValue( cellSize );
+  whileBlocking( mCellYSpinBox )->setValue( cellSize );
+
+  emit valueChanged();
+}
+
+double QgsInterpolationPixelSizeWidget::value() const
+{
+  return mCellXSpinBox->value();
+}
+
+void QgsInterpolationPixelSizeWidget::setValue( double value )
+{
+  mCellXSpinBox->setValue( value );
+  mCellYSpinBox->setValue( value );
+}
+
+
+//
+// QgsProcessingInterpolationPixelSizeWidgetWrapper
+//
+
+QgsProcessingInterpolationPixelSizeWidgetWrapper::QgsProcessingInterpolationPixelSizeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingInterpolationPixelSizeWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterInterpolationPixelSize::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingInterpolationPixelSizeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingInterpolationPixelSizeWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingInterpolationPixelSizeWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
+{
+  return nullptr;
+}
+
+QWidget *QgsProcessingInterpolationPixelSizeWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      mWidget = new QgsInterpolationPixelSizeWidget();
+      connect( mWidget, &QgsInterpolationPixelSizeWidget::valueChanged, this, [this] { emit widgetValueHasChanged( this ); } );
+      return mWidget;
+    }
+
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+    {
+      mFallbackSpinBox = new QgsDoubleSpinBox();
+      mFallbackSpinBox->setShowClearButton( false );
+      mFallbackSpinBox->setMinimum( 0.0 );
+      mFallbackSpinBox->setMaximum( 99999999999.0 );
+      mFallbackSpinBox->setDecimals( 6 );
+      mFallbackSpinBox->setToolTip( tr( "Resolution of each pixel in output raster" ) );
+      connect( mFallbackSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this] { emit widgetValueHasChanged( this ); } );
+      return mFallbackSpinBox;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingInterpolationPixelSizeWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      auto param = dynamic_cast<const QgsProcessingParameterInterpolationPixelSize *>( parameterDefinition() );
+      if ( !param || !mWidget )
+        return;
+
+      for ( QgsAbstractProcessingParameterWidgetWrapper *wrapper : std::as_const( wrappers ) )
+      {
+        if ( wrapper->parameterDefinition()->name() == param->interpolationSourceParameter() )
+        {
+          sourceChanged( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] { sourceChanged( wrapper ); } );
+        }
+        else if ( wrapper->parameterDefinition()->name() == param->extentParameter() )
+        {
+          extentChanged( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] { extentChanged( wrapper ); } );
+        }
+      }
+      break;
+    }
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingInterpolationPixelSizeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
+{
+  if ( mWidget )
+    mWidget->setValue( value.toDouble() );
+  else if ( mFallbackSpinBox )
+    mFallbackSpinBox->setValue( value.toDouble() );
+}
+
+QVariant QgsProcessingInterpolationPixelSizeWidgetWrapper::widgetValue() const
+{
+  if ( mWidget )
+    return mWidget->value();
+  else if ( mFallbackSpinBox )
+    return mFallbackSpinBox->value();
+  return QVariant();
+}
+
+void QgsProcessingInterpolationPixelSizeWidgetWrapper::sourceChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
+{
+  if ( mWidget )
+  {
+    QgsProcessingContext *context = nullptr;
+    std::unique_ptr<QgsProcessingContext> tmpContext;
+    if ( mProcessingContextGenerator )
+      context = mProcessingContextGenerator->processingContext();
+
+    if ( !context )
+    {
+      tmpContext = std::make_unique<QgsProcessingContext>();
+      context = tmpContext.get();
+    }
+
+    mWidget->setSourceData( wrapper->parameterValue().toString(), *context );
+  }
+}
+
+void QgsProcessingInterpolationPixelSizeWidgetWrapper::extentChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
+{
+  if ( mWidget )
+  {
+    QgsProcessingContext *context = nullptr;
+    std::unique_ptr<QgsProcessingContext> tmpContext;
+    if ( mProcessingContextGenerator )
+      context = mProcessingContextGenerator->processingContext();
+
+    if ( !context )
+    {
+      tmpContext = std::make_unique<QgsProcessingContext>();
+      context = tmpContext.get();
+    }
+
+    const QgsRectangle extent = QgsProcessingParameters::parameterAsExtent( wrapper->parameterDefinition(), wrapper->parameterValue(), *context );
+
+    mWidget->setExtent( extent );
+  }
+}
+
 
 ///@endcond PRIVATE
