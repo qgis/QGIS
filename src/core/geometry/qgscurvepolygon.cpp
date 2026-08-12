@@ -863,6 +863,22 @@ void QgsCurvePolygon::removeInteriorRings( double minimumAllowedArea )
   clearCache();
 }
 
+void QgsCurvePolygon::removeRing( int ringId )
+{
+  if ( ringId == 0 )
+  {
+    mExteriorRing.reset();
+    if ( !mInteriorRings.isEmpty() )
+    {
+      mExteriorRing.reset( mInteriorRings.takeFirst() );
+    }
+  }
+  else
+  {
+    removeInteriorRing( ringId - 1 );
+  }
+}
+
 void QgsCurvePolygon::removeInvalidRings()
 {
   QVector<QgsCurve *> validRings;
@@ -1335,18 +1351,7 @@ bool QgsCurvePolygon::deleteVertices( const QSet<QgsVertexId> &positions )
     if ( vertices.size() > n - 4 )
     {
       // no points will be left in ring, so remove whole ring
-      if ( ringId == 0 )
-      {
-        mExteriorRing.reset();
-        if ( !mInteriorRings.isEmpty() )
-        {
-          mExteriorRing.reset( mInteriorRings.takeFirst() );
-        }
-      }
-      else
-      {
-        removeInteriorRing( ringId - 1 );
-      }
+      removeRing( ringId );
       continue;
     }
 
@@ -1376,18 +1381,7 @@ bool QgsCurvePolygon::deleteVertices( const QSet<QgsVertexId> &positions )
     // in such case, we are removing the whole geometry in that operation
     if ( ring->numPoints() == 0 )
     {
-      if ( ringId == 0 )
-      {
-        mExteriorRing.reset();
-        if ( !mInteriorRings.isEmpty() )
-        {
-          mExteriorRing.reset( mInteriorRings.takeFirst() );
-        }
-      }
-      else
-      {
-        removeInteriorRing( ringId - 1 );
-      }
+      removeRing( ringId );
       continue;
     }
 
