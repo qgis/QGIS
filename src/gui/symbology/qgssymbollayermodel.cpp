@@ -370,7 +370,6 @@ void QgsSymbolLayerModel::moveLayerByOffset( QgsSymbolLayerModelNode *node, int 
   QgsSymbolLayer *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
   parentSymbol->insertSymbolLayer( layerIdx - offset, tmpLayer );
 
-
   beginMoveRows( parentIndex, row, row, parentIndex, row + offset + ( offset > 0 ? 1 : 0 ) );
   parent->moveChildNode( node, row + offset );
   endMoveRows();
