@@ -131,7 +131,7 @@ tests:
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
-        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        name: pointsz.gml::~::1::~::-1::~::0::|::custom/breaklines.gml::~::0::~::1::~::2
         type: interpolation
       PIXEL_SIZE: 0.1
     results:
@@ -178,7 +178,7 @@ tests:
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
-        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        name: pointsz.gml::~::1::~::-1::~::0::|::custom/breaklines.gml::~::0::~::1::~::2
         type: interpolation
       COLUMNS: 80
       ROWS: 80
