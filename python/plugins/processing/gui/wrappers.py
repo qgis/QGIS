@@ -21,8 +21,6 @@ __date__ = "May 2016"
 __copyright__ = "(C) 2016, Arnaud Morvan"
 
 import os
-from copy import deepcopy
-from inspect import isclass
 
 from qgis.gui import (
     QgsGui,
@@ -49,18 +47,6 @@ class WidgetWrapperFactory:
 
     @staticmethod
     def create_wrapper(param, dialog, row=0, col=0):
-        wrapper_metadata = param.metadata().get("widget_wrapper", None)
-        # VERY messy logic here to avoid breaking 3.0 API which allowed metadata "widget_wrapper" value to be either
-        # a string name of a class OR a dict.
-        # TODO QGIS 5.0 -- require widget_wrapper to be a dict.
-        if wrapper_metadata and (
-            not isinstance(wrapper_metadata, dict)
-            or wrapper_metadata.get("class", None) is not None
-        ):
-            return WidgetWrapperFactory.create_wrapper_from_metadata(
-                param, dialog, row, col
-            )
-
         # retrieve from c++ registry
         class_type = dialog.__class__.__name__
         if class_type == "ModelerParametersDialog":
@@ -76,23 +62,4 @@ class WidgetWrapperFactory:
             )
 
         wrapper.setDialog(dialog)
-        return wrapper
-
-    @staticmethod
-    def create_wrapper_from_metadata(param, dialog, row=0, col=0):
-        wrapper = param.metadata().get("widget_wrapper", None)
-        params = {}
-        # wrapper metadata should be a dict with class key
-        if isinstance(wrapper, dict):
-            params = deepcopy(wrapper)
-            wrapper = params.pop("class")
-        # wrapper metadata should be a class path
-        if isinstance(wrapper, str):
-            tokens = wrapper.split(".")
-            mod = __import__(".".join(tokens[:-1]), fromlist=[tokens[-1]])
-            wrapper = getattr(mod, tokens[-1])
-        # or directly a class object
-        if isclass(wrapper):
-            wrapper = wrapper(param, dialog, row, col, **params)
-        # or a wrapper instance
         return wrapper
