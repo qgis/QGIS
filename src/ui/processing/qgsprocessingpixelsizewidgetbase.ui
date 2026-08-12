@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsHeatmapPixelSizeWidgetBase</class>
- <widget class="QgsPanelWidget" name="QgsHeatmapPixelSizeWidgetBase">
+ <class>QgsProcessingPixelSizeWidgetBase</class>
+ <widget class="QgsPanelWidget" name="QgsProcessingPixelSizeWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -134,11 +134,12 @@
   </layout>
  </widget>
  <customwidgets>
- <customwidget>
-  <class>QgsPanelWidget</class>
-  <extends>QWidget</extends>
-  <header>qgspanelwidget.h</header>
- </customwidget>
+  <customwidget>
+   <class>QgsPanelWidget</class>
+   <extends>QWidget</extends>
+   <header>qgspanelwidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
