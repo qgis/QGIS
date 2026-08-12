@@ -2,7 +2,7 @@
 
 tests:
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation using attribute
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
@@ -17,7 +17,7 @@ tests:
           - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation using Z value
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
@@ -32,12 +32,12 @@ tests:
           - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation with breaklines
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
-        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        name: pointsz.gml::~::1::~::-1::~::0::|::custom/breaklines.gml::~::0::~::1::~::2
         type: interpolation
       METHOD: 0
       PIXEL_SIZE: 0.1
@@ -47,7 +47,7 @@ tests:
           - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation using attribute (old parameters)
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
@@ -63,7 +63,7 @@ tests:
           - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation using Z value (old parameters)
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
@@ -79,12 +79,12 @@ tests:
           - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
         type: rasterhash
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation with breaklines (old parameters)
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
-        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        name: pointsz.gml::~::1::~::-1::~::0::|::custom/breaklines.gml::~::0::~::1::~::2
         type: interpolation
       METHOD: 0
       COLUMNS: 80
