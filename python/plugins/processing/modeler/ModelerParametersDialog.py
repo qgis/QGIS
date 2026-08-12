@@ -69,7 +69,6 @@ from qgis.utils import iface
 
 from processing.core.exceptions import InvalidParameterValue
 from processing.gui.wrappers import (
-    WidgetWrapper,
     WidgetWrapperFactory,
 )
 from processing.tools.dataobjects import createContext
@@ -521,9 +520,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 continue
             try:
                 wrapper = self.wrappers[param.name()]
-                if issubclass(wrapper.__class__, WidgetWrapper):
-                    val = wrapper.value()
-                elif issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
+                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
                     val = wrapper.value()
                 else:
                     val = wrapper.parameterValue()
