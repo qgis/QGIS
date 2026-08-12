@@ -63,9 +63,11 @@ QString QgsIdwInterpolationAlgorithm::shortDescription() const
 QString QgsIdwInterpolationAlgorithm::shortHelpString() const
 {
   return QObject::tr(
-    "This algorithm generates an Inverse Distance Weighted (IDW) interpolation surface from vector layers.\n\n"
-    "Sample features are weighted during interpolation such that the influence of one feature relative to another "
-    "declines with distance from the cell being evaluated."
+    "This algorithm generates an Inverse Distance Weighted (IDW) interpolation surface raster from one or more vector layers.\n\n"
+    "IDW calculates cell values using a linearly weighted combination of sample points. The weighting is an inverse function of "
+    "distance, meaning closer sample points exert greater influence on the target cell value than more distant points.\n\n"
+    "Input layers can supply sample values from feature attributes or feature Z coordinates. Features can be specified "
+    "as discrete points, structure lines, or breaklines."
   );
 }
 
