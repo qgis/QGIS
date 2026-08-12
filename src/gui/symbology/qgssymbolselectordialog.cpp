@@ -607,7 +607,6 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
 }
 
 void QgsSymbolSelectorWidget::updateListIcons()
-
 {
   mSymbolLayersModel->setScreen( screen() );
 }
