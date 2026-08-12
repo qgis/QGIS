@@ -27,13 +27,11 @@ from qgis.gui import (
     QgsProcessingGui,
 )
 
-DIALOG_STANDARD = QgsProcessingGui.WidgetType.Standard
 DIALOG_MODELER = QgsProcessingGui.WidgetType.Modeler
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 dialogTypes = {
-    "AlgorithmWidget": DIALOG_STANDARD,
     "ModelerParametersDialog": DIALOG_MODELER,
 }
 

@@ -28,7 +28,6 @@ from qgis.core import (
     QgsProcessingModelAlgorithm,
     QgsProcessingOutputLayerDefinition,
     QgsProcessingParameterDefinition,
-    QgsProcessingParameterExtent,
     QgsProject,
 )
 from qgis.gui import (
@@ -41,11 +40,10 @@ from qgis.gui import (
     QgsProcessingParametersWidget,
     QgsProcessingParameterWidgetContext,
 )
-from qgis.PyQt.QtWidgets import QLabel, QSizePolicy, QVBoxLayout, QWidget
+from qgis.PyQt.QtWidgets import QLabel, QVBoxLayout, QWidget
 from qgis.utils import iface
 
 from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
-from processing.gui.wrappers import WidgetWrapperFactory
 from processing.tools.dataobjects import createContext
 
 
@@ -143,7 +141,10 @@ class ParametersPanel(QgsProcessingParametersWidget):
                     self.wrappers[param.name()].setLinkedVectorLayer(self.active_layer)
                     continue
 
-                wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent())
+                wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(
+                    param, Qgis.ProcessingMode.Standard
+                )
+                wrapper.setDialog(self.parent())
                 wrapper.setWidgetContext(widget_context)
                 wrapper.registerProcessingContextGenerator(self.context_generator)
                 wrapper.registerProcessingParametersGenerator(self)
