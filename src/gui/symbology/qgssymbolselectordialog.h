@@ -29,7 +29,6 @@
 #include <QDialogButtonBox>
 #include <QPointer>
 #include <QStandardItemModel>
-#include <qstyleditemdelegate.h>
 
 class QgsStyle;
 class QgsSymbol;
