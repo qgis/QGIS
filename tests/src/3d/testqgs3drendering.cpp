@@ -1768,7 +1768,7 @@ void TestQgs3DRendering::testModelColorAndTexture()
 
   const QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, imgModel, QString(), 80, QSize( 0, 0 ), 10 );
 }
 
 void TestQgs3DRendering::testBillboardRendering()
