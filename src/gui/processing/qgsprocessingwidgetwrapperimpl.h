@@ -19,8 +19,8 @@
 #ifndef QGSPROCESSINGWIDGETWRAPPERIMPL_H
 #define QGSPROCESSINGWIDGETWRAPPERIMPL_H
 
-#include "ui_qgsheatmappixelsizewidgetbase.h"
 #include "ui_qgsinterpolationsourcewidgetbase.h"
+#include "ui_qgsprocessingpixelsizewidgetbase.h"
 #include "ui_qgsprocessingreliefcolorswidgetbase.h"
 
 #include "qgshighlightablelineedit.h"
@@ -2280,7 +2280,7 @@ class GUI_EXPORT QgsProcessingVectorTileDestinationWidgetWrapper : public QgsPro
 };
 
 
-class GUI_EXPORT QgsHeatmapPixelSizeWidget : public QgsPanelWidget, private Ui::QgsHeatmapPixelSizeWidgetBase
+class GUI_EXPORT QgsHeatmapPixelSizeWidget : public QgsPanelWidget, private Ui::QgsProcessingPixelSizeWidgetBase
 {
     Q_OBJECT
   public:
@@ -2515,6 +2515,66 @@ class GUI_EXPORT QgsProcessingInterpolationSourceWidgetWrapper : public QgsAbstr
 
   private:
     QgsInterpolationSourceWidget *mWidget = nullptr;
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsInterpolationPixelSizeWidget : public QgsPanelWidget, private Ui::QgsProcessingPixelSizeWidgetBase
+{
+    Q_OBJECT
+  public:
+    QgsInterpolationPixelSizeWidget( QWidget *parent = nullptr );
+
+    void setSourceData( const QString &sourceData, QgsProcessingContext &context );
+    void setExtent( const QgsRectangle &extent );
+
+    double value() const;
+    void setValue( double value );
+
+  signals:
+    void valueChanged();
+
+  private slots:
+    void pixelSizeChanged();
+    void rowsChanged();
+    void columnsChanged();
+
+  private:
+    QgsRectangle mExtent;
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsProcessingInterpolationPixelSizeWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+  public:
+    QgsProcessingInterpolationPixelSizeWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
+    ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override;
+    void postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers ) override;
+
+  protected:
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+  private slots:
+    void sourceChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
+    void extentChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
+
+  private:
+    QgsInterpolationPixelSizeWidget *mWidget = nullptr;
+    QgsDoubleSpinBox *mFallbackSpinBox = nullptr;
 
     friend class TestProcessingGui;
 };
