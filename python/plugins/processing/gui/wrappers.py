@@ -24,16 +24,10 @@ import os
 from copy import deepcopy
 from inspect import isclass
 
-from qgis.core import QgsProcessingParameterDefinition
 from qgis.gui import (
-    QgsAbstractProcessingParameterWidgetWrapper,
     QgsGui,
     QgsProcessingGui,
 )
-from qgis.PyQt.QtWidgets import (
-    QLabel,
-)
-from qgis.utils import iface
 
 DIALOG_STANDARD = QgsProcessingGui.WidgetType.Standard
 DIALOG_BATCH = QgsProcessingGui.WidgetType.Batch
@@ -46,57 +40,6 @@ dialogTypes = {
     "ModelerParametersDialog": DIALOG_MODELER,
     "BatchAlgorithmDialog": DIALOG_BATCH,
 }
-
-
-class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
-    NOT_SET_OPTION = "~~~~!!!!NOT SET!!!!~~~~~~~"
-
-    def __init__(self, param, dialog, row=0, col=0, **kwargs):
-        self.dialogType = dialogTypes.get(
-            dialog.__class__.__name__, QgsProcessingGui.WidgetType.Standard
-        )
-        super().__init__(param, self.dialogType)
-
-        self.dialog = dialog
-        self.row = row
-        self.col = col
-
-        self.widget = self.createWidget(**kwargs)
-        self.label = self.createLabel()
-        if param.defaultValue() is not None:
-            self.setValue(param.defaultValue())
-
-    def createWidget(self, **kwargs):
-        pass
-
-    def createLabel(self):
-        if self.dialogType == DIALOG_BATCH:
-            return None
-        desc = self.parameterDefinition().description()
-        if (
-            self.parameterDefinition().flags()
-            & QgsProcessingParameterDefinition.Flag.FlagOptional
-        ):
-            desc += self.tr(" [optional]")
-
-        label = QLabel(desc)
-        label.setToolTip(self.parameterDefinition().name())
-        return label
-
-    def setValue(self, value):
-        pass
-
-    def value(self):
-        return None
-
-    def widgetValue(self):
-        return self.value()
-
-    def setWidgetValue(self, value, context):
-        self.setValue(value)
-
-    def refresh(self):
-        pass
 
 
 class WidgetWrapperFactory:
