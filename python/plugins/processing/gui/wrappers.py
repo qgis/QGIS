@@ -28,7 +28,6 @@ from qgis.gui import (
 )
 
 DIALOG_STANDARD = QgsProcessingGui.WidgetType.Standard
-DIALOG_BATCH = QgsProcessingGui.WidgetType.Batch
 DIALOG_MODELER = QgsProcessingGui.WidgetType.Modeler
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -36,7 +35,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 dialogTypes = {
     "AlgorithmWidget": DIALOG_STANDARD,
     "ModelerParametersDialog": DIALOG_MODELER,
-    "BatchAlgorithmDialog": DIALOG_BATCH,
 }
 
 
