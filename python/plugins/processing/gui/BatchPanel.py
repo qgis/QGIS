@@ -93,7 +93,7 @@ from qgis.utils import iface
 
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 from processing.gui.MultipleInputDialog import MultipleInputDialog
-from processing.gui.wrappers import WidgetWrapper, WidgetWrapperFactory
+from processing.gui.wrappers import WidgetWrapperFactory
 from processing.tools import dataobjects
 from processing.tools.dataobjects import createContext
 
@@ -847,16 +847,8 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         wrapper.setWidgetContext(widget_context)
         wrapper.registerProcessingContextGenerator(self.context_generator)
 
-        # For compatibility with 3.x API, we need to check whether the wrapper is
-        # the deprecated WidgetWrapper class. If not, it's the newer
-        # QgsAbstractProcessingParameterWidgetWrapper class
-        # TODO QGIS 5.0 - remove
-        is_cpp_wrapper = not issubclass(wrapper.__class__, WidgetWrapper)
-        if is_cpp_wrapper:
-            widget = wrapper.createWrappedWidget(context)
-            wrapper.widgetValueHasChanged.connect(self.parameterChanged)
-        else:
-            widget = wrapper.widget
+        widget = wrapper.createWrappedWidget(context)
+        wrapper.widgetValueHasChanged.connect(self.parameterChanged)
 
         self.tblParameters.setCellWidget(row, column, widget)
 
