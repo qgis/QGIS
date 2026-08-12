@@ -63,13 +63,14 @@ QString QgsTinInterpolationAlgorithm::shortDescription() const
 QString QgsTinInterpolationAlgorithm::shortHelpString() const
 {
   return QObject::tr(
-    "This algorithm generates a Triangulated Irregular Network (TIN) interpolation of a point vector layer.\n\n"
-    "With the TIN method you can create a surface formed by triangles of nearest neighbor points.\n\n"
-    "To do this, circumcircles around selected sample points are created and their intersections "
-    "are connected to a network of non overlapping and as compact as possible triangles."
-    "The resulting surfaces are not smooth.\n\n"
-    "The algorithm creates both the raster layer of the interpolated values "
-    "and the vector line layer with the triangulation boundaries."
+    "This algorithm generates a Triangulated Irregular Network (TIN) interpolation surface raster from one or more vector layers.\n\n"
+    "The TIN method constructs a Delaunay triangulation network from sample features. Surfaces within the constructed triangles "
+    "are interpolated using either Linear or Clough-Tocher (cubic) methods. To do this, circumcircles around selected "
+    "sample points are created and their intersections are connected to a network of non overlapping and as compact "
+    "as possible triangles.\n\n"
+    "Input layers can supply sample values from feature attributes or feature Z coordinates. Features can be specified as discrete "
+    "points, structure lines, or breaklines.\n\n"
+    "Optionally, the algorithm can also output a vector line layer representing the triangulation network boundaries."
   );
 }
 
