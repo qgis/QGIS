@@ -36,9 +36,10 @@ class GUI_EXPORT QgsVectorLayerLabelRubberBandPreview : public QgsRubberBandPrev
 {
   public:
     /**
-   * Constructor for QgsVectorLayerLabelRubberBandPreview.
-   * \param fids Feature IDs for the features being manipulated
-   * \param layer The vector layer containing labeling configuration.
+     * Constructor for QgsVectorLayerLabelRubberBandPreview.
+     * \param rubberBand associated rubber band
+     * \param fids Feature IDs for the features being manipulated
+     * \param layer The vector layer containing labeling configuration.
    */
     QgsVectorLayerLabelRubberBandPreview( QgsRubberBand *rubberBand, const QList< QgsFeatureId > &fids, QgsVectorLayer *layer );
 
