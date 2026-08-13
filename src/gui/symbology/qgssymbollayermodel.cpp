@@ -249,11 +249,17 @@ QVariant QgsSymbolLayerModel::data( const QModelIndex &index, int role ) const
   if ( !index.isValid() )
     return QVariant();
 
-  QgsSymbolLayerModelNode *node = index2node( index );
-  if ( !node )
-    return QVariant();
 
-  return node->data( role );
+  if ( index.column() == NameColumn )
+  {
+    QgsSymbolLayerModelNode *node = index2node( index );
+    if ( !node )
+      return QVariant();
+
+    return node->data( role );
+  }
+
+  return QVariant();
 };
 
 int QgsSymbolLayerModel::rowCount( const QModelIndex &parent ) const
@@ -267,7 +273,7 @@ int QgsSymbolLayerModel::rowCount( const QModelIndex &parent ) const
 
 int QgsSymbolLayerModel::columnCount( const QModelIndex & ) const
 {
-  return 1;
+  return 2;
 };
 
 QModelIndex QgsSymbolLayerModel::index( int row, int column, const QModelIndex &parent ) const

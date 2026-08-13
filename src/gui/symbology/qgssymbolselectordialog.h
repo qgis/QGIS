@@ -29,6 +29,7 @@
 #include <QDialogButtonBox>
 #include <QPointer>
 #include <QStandardItemModel>
+#include <QStyledItemDelegate>
 
 class QgsStyle;
 class QgsSymbol;
@@ -76,6 +77,20 @@ class DataDefinedRestorer : public QObject
 
     void save();
 };
+
+class EyelidLayerDelegate : public QStyledItemDelegate SIP_SKIP
+{
+    Q_OBJECT
+  public:
+    EyelidLayerDelegate( QTreeView *parent );
+
+  protected:
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+  private:
+    QTreeView *mLayersTree;
+};
+
 ///@endcond
 #endif
 
@@ -264,6 +279,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
      * \param widget The widget to set to configure the active symbol layer.
      */
     void setWidget( QWidget *widget );
+    void eyelidClicked( const QModelIndex &index );
 
     QgsStyle *mStyle = nullptr;
     QgsSymbol *mSymbol = nullptr;
@@ -401,5 +417,6 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     QgsSymbolSelectorWidget *mSelectorWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
 };
+
 
 #endif

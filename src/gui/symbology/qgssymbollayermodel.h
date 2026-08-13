@@ -244,6 +244,12 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
     //! Returns the root node of the model.
     QgsSymbolLayerModelNode *rootNode() const { return mRootNode.get(); }
 
+    //! Columns in the model.
+    enum Columns
+    {
+      NameColumn = 0,
+      EyelidColumn
+    };
 
   private:
     QModelIndex indexOfParentTreeNode( QgsSymbolLayerModelNode *parentNode ) const;

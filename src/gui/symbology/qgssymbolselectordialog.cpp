@@ -115,6 +115,43 @@ void DataDefinedRestorer::restore()
   save();
 }
 
+EyelidLayerDelegate::EyelidLayerDelegate( QTreeView *parent )
+  : QStyledItemDelegate( parent )
+  , mLayersTree( parent )
+{}
+
+void EyelidLayerDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  QStyledItemDelegate::paint( painter, option, index );
+
+
+  QgsSymbolLayerModel *symbolLayerModel = static_cast<QgsSymbolLayerModel *>( mLayersTree->model() );
+
+  QgsSymbolLayerModelNode *node = symbolLayerModel->index2node( index );
+
+  if ( !node || !node->isLayer() )
+    return;
+
+  QgsSymbolLayer *symbolLayer = node->layer();
+
+  QIcon icon;
+  if ( symbolLayer->dataDefinedProperties().isActive( QgsSymbolLayer::Property::LayerEnabled ) )
+  {
+    icon = QgsApplication::getThemeIcon( "/mIconDataDefineExpressionOn.svg" );
+  }
+  else if ( symbolLayer->enabled() )
+  {
+    icon = QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" );
+  }
+  else
+  {
+    icon = QgsApplication::getThemeIcon( "/mActionHideAllLayers.svg" );
+  }
+
+  const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2, option.rect.top() + ( option.rect.height() - 16 ) / 2, 16, 16 );
+  icon.paint( painter, iconRect );
+}
+
 ///@endcond
 
 //////////
@@ -182,6 +219,15 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   // Set the symbol
   layersTree->setModel( mSymbolLayersModel );
   layersTree->setHeaderHidden( true );
+
+  layersTree->header()->setSectionResizeMode( QgsSymbolLayerModel::NameColumn, QHeaderView::Stretch );
+  layersTree->header()->setMinimumSectionSize( 10 );
+  layersTree->header()->setStretchLastSection( false );
+  layersTree->header()->resizeSection( QgsSymbolLayerModel::EyelidColumn, 20 );
+
+  EyelidLayerDelegate *eyeDelegate = new EyelidLayerDelegate( layersTree );
+  layersTree->setItemDelegateForColumn( QgsSymbolLayerModel::EyelidColumn, eyeDelegate );
+  connect( layersTree, &QTreeView::clicked, this, &QgsSymbolSelectorWidget::eyelidClicked );
 
   //get first feature from layer for previews
   if ( mVectorLayer )
@@ -474,6 +520,35 @@ void QgsSymbolSelectorWidget::symbolChanged()
   emitSymbolModified();
   // connect it back once things are set
   connect( layersTree->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
+}
+
+void QgsSymbolSelectorWidget::eyelidClicked( const QModelIndex &index )
+{
+  if ( index.column() == QgsSymbolLayerModel::EyelidColumn )
+  {
+    QgsSymbolLayerModel *symbolLayerModel = static_cast<QgsSymbolLayerModel *>( layersTree->model() );
+    QgsSymbolLayerModelNode *node = symbolLayerModel->index2node( index );
+
+    if ( !node )
+      return;
+
+    if ( !node->isLayer() )
+      return;
+
+    QgsSymbolLayer *symbolLayer = node->layer();
+    if ( symbolLayer->dataDefinedProperties().isActive( QgsSymbolLayer::Property::LayerEnabled ) )
+    {
+      return;
+    }
+
+    symbolLayer->setEnabled( !symbolLayer->enabled() );
+
+    updatePreview();
+    updateUi();
+    updateLayerPreview();
+    layerChanged();
+    emit symbolModified();
+  }
 }
 
 void QgsSymbolSelectorWidget::setWidget( QWidget *widget )
