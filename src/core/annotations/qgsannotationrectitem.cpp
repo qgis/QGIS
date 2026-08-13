@@ -222,7 +222,7 @@ void QgsAnnotationRectItem::render( QgsRenderContext &context, QgsFeedback *feed
     if ( rotated )
     {
       painter->save();
-      rotatePainterAroundPoint( painter, rotationCenter, angle );
+      QgsPainting::rotatePainterAroundPoint( painter, rotationCenter, angle );
     }
     mBackgroundSymbol->startRender( context );
     mBackgroundSymbol->renderPolygon( painterBounds, nullptr, nullptr, context );
@@ -240,7 +240,7 @@ void QgsAnnotationRectItem::render( QgsRenderContext &context, QgsFeedback *feed
   if ( rotated )
   {
     painter->save();
-    rotatePainterAroundPoint( painter, rotationCenter, angle );
+    QgsPainting::rotatePainterAroundPoint( painter, rotationCenter, angle );
   }
 
   renderInBounds( context, painterBounds, feedback );

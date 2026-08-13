@@ -454,7 +454,6 @@ The item must have valid :py:func:`~QgsAnnotationItem.callout` set.
 .. versionadded:: 3.40
 %End
 
-
   private:
     QgsAnnotationItem( const QgsAnnotationItem &other );
 };

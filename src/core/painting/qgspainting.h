@@ -135,6 +135,16 @@ class CORE_EXPORT QgsPainting
      * \since QGIS 3.40
      */
     static void drawPicture( QPainter *painter, const QPointF &point, const QPicture &picture );
+
+    /**
+     * Rotates a \a painter by \a angle degrees clockwise around \a point.
+     *
+     * \note This is a low-level method, which alters the \a painter state and relies on the
+     * caller saving/restoring painter state accordingly.
+     *
+     * \since QGIS 4.4
+     */
+    static void rotatePainterAroundPoint( QPainter *painter, const QPointF &point, double angle );
 };
 
 #endif // QGSPAINTING_H

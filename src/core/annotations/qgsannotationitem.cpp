@@ -20,6 +20,7 @@
 #include "qgsannotationitemnode.h"
 #include "qgsapplication.h"
 #include "qgscalloutsregistry.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
@@ -199,7 +200,7 @@ void QgsAnnotationItem::renderCallout( QgsRenderContext &context, const QRectF &
     anchor.transform( anchorTransform );
 
     painter->save();
-    rotatePainterAroundPoint( painter, center, angle );
+    QgsPainting::rotatePainterAroundPoint( painter, center, angle );
   }
 
   mCallout->startRender( context );
@@ -208,13 +209,6 @@ void QgsAnnotationItem::renderCallout( QgsRenderContext &context, const QRectF &
 
   if ( rotated )
     painter->restore();
-}
-
-void QgsAnnotationItem::rotatePainterAroundPoint( QPainter *painter, const QPointF &point, double angle )
-{
-  painter->translate( point.x(), point.y() );
-  painter->rotate( angle );
-  painter->translate( -point.x(), -point.y() );
 }
 
 Qgis::RenderUnit QgsAnnotationItem::offsetFromCalloutUnit() const
