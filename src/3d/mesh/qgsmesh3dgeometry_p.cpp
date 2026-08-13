@@ -117,7 +117,7 @@ static QByteArray createDatasetVertexDataIndexed( const QgsTriangularMesh &mesh,
 
   const QVector<double> scalarMagnitude = QgsMeshLayerUtils::calculateMagnitudeOnVertices( nativeMesh, data.scalarGroupMetadata, data.scalarData, data.activeFaceFlagValues );
 
-  //Calculate normals with Z value equal to verticaleMagnitude
+  //Calculate normals with Z value equal to verticalMagnitude
   const QVector<QVector3D> normals = QgsMeshLayerUtils::calculateNormals( mesh, verticalMagnitude, data.isVerticalMagnitudeRelative );
 
   // Populate a buffer with the interleaved per-vertex data with
@@ -163,7 +163,7 @@ static QByteArray createDatasetVertexData(
 
   const QVector<double> scalarMagnitude = QgsMeshLayerUtils::calculateMagnitudeOnVertices( nativeMesh, data.scalarGroupMetadata, data.scalarData, data.activeFaceFlagValues );
 
-  //Calculate normals with Z value equal to verticaleMagnitude
+  //Calculate normals with Z value equal to verticalMagnitude
   const QVector<QVector3D> normals = QgsMeshLayerUtils::calculateNormals( mesh, verticalMagnitude, data.isVerticalMagnitudeRelative );
 
   const QList<int> facesInExtent = mesh.faceIndexesForRectangle( extent );

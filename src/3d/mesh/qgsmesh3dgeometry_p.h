@@ -167,7 +167,7 @@ class QgsMeshDataset3DGeometry : public QgsMesh3DGeometry
     void prepareData();
 
     //! Returns the number of active faces
-    int extractDataset( QVector<double> &verticaleMagnitude, QVector<double> &scalarMagnitude, QgsMeshDataBlock &verticalActiveFaceFlagValues );
+    int extractDataset( QVector<double> &verticalMagnitude, QVector<double> &scalarMagnitude, QgsMeshDataBlock &verticalActiveFaceFlagValues );
     void prepareVerticesDatasetAttribute( Qt3DCore::QBuffer *buffer, int stride, int offset );
 
     bool mIsVerticalMagnitudeRelative;
