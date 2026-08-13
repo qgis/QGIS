@@ -113,7 +113,7 @@ class QgsMesh3DGeometry : public Qt3DCore::QGeometry
     QgsRectangle mExtent;
     float mVertScale;
     QgsTriangularMesh mTriangulaMesh;
-    bool mWireframeEnabled;
+    bool mWireframeEnabled = false;
 
     Qt3DCore::QBuffer *mVertexBuffer = nullptr;
     Qt3DCore::QBuffer *mIndexBuffer = nullptr;
