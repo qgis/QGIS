@@ -3976,15 +3976,15 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         metadata.setFees("a handful of roos")
         layer.setMetadata(metadata)
 
-        # clone layer
-        clone = layer.clone()
-
-        self.assertEqual(layer.metadata().fees(), "a handful of roos")
-
         # generate xml from layer
         layer_doc = QDomDocument("doc")
         layer_elem = layer_doc.createElement("maplayer")
         layer.writeLayerXml(layer_elem, layer_doc, QgsReadWriteContext())
+
+        # clone layer
+        clone = layer.clone()
+
+        self.assertEqual(clone.metadata().fees(), "a handful of roos")
 
         # generate xml from clone
         clone_doc = QDomDocument("doc")
