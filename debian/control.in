@@ -28,6 +28,7 @@ Build-Depends:
  libzip-dev,
 #!trixie !plucky# nlohmann-json3-dev (>= 3.12.0),
  ninja-build,
+ nodejs,
  ocl-icd-opencl-dev,
  opencl-headers,
  pkgconf,
@@ -66,7 +67,8 @@ Build-Depends:
  libcups2-dev,
 #oracle# oracle-instantclient-basiclite, oracle-instantclient-devel,
 #pdal# libpdal-dev, pdal,
- locales
+ locales,
+ yarnpkg
 #apidoc#Build-Depends-indep:
 #apidoc# doxygen
 Build-Conflicts:
@@ -476,6 +478,8 @@ Depends:
  qgis-server-common (= ${source:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
+Recommends:
+ qgis-server-landingpage (= ${binary:Version})
 Replaces: qgis-server-qt6
 Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -561,6 +565,18 @@ Description: QGIS server providing various OGC services
  display databases of geographic information.
  .
  This package contains the WCS service.
+
+Package: qgis-server-landingpage
+Architecture: any
+Depends:
+ qgis-server-common (= ${source:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS server providing various OGC services
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the landing page/catalog webapp for QGIS server.
 
 #apidoc#Package: qgis-api-doc
 #apidoc#Architecture: all

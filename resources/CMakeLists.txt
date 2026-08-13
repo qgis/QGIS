@@ -39,7 +39,8 @@ endif()
 
 # Server landingpage webapp
 if (WITH_SERVER_LANDINGPAGE_WEBAPP)
-  find_program(YARN yarn REQUIRED)
+  # Debian/Ubuntu's yarnpkg package installs the binary as "yarnpkg" (not "yarn")
+  find_program(YARN NAMES yarn yarnpkg REQUIRED)
 
   file(GLOB_RECURSE LANDINGPAGE_SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} server/src/landingpage/*)
   set(LANDINGPAGE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/output/data/resources/server/src/landingpage)
