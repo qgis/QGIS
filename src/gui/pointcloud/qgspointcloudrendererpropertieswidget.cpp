@@ -129,7 +129,10 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
   mHillshadingZFactorSpinBox->setClearValue( 1.0 );
   connect( mHillshadingZFactorSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-  connect( mHillshadingMultidirCheckBox, &QCheckBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mHillshadingMultidirCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
+    mDirectionalLightWidget->setEnableAzimuth( !checked );
+    emitWidgetChanged();
+  } );
 
   mMaxErrorUnitWidget->setUnits(
     { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches }
@@ -441,8 +444,6 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
 
 void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
 {
-  mDirectionalLightWidget->setEnableAzimuth( !mHillshadingMultidirCheckBox->isChecked() );
-
   if ( !mBlockChangedSignal )
     emit widgetChanged();
 }
