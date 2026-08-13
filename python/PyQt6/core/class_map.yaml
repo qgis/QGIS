@@ -898,6 +898,7 @@ QgsAnnotationLayer.htmlMetadata: src/core/annotations/qgsannotationlayer.h#L190
 QgsAnnotationLayer.isEditable: src/core/annotations/qgsannotationlayer.h#L186
 QgsAnnotationLayer.isEmpty: src/core/annotations/qgsannotationlayer.h#L130
 QgsAnnotationLayer.item: src/core/annotations/qgsannotationlayer.h#L145
+QgsAnnotationLayer.itemsChanged: src/core/annotations/qgsannotationlayer.h#L235
 QgsAnnotationLayer.itemsInBounds: src/core/annotations/qgsannotationlayer.h#L155
 QgsAnnotationLayer.linkedVisibilityLayer: src/core/annotations/qgsannotationlayer.h#L217
 QgsAnnotationLayer.paintEffect: src/core/annotations/qgsannotationlayer.h#L198
