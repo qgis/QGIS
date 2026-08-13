@@ -261,3 +261,10 @@ void QgsPainting::drawPicture( QPainter *painter, const QPointF &point, const QP
   painter->drawPicture( QPointF( point.x() / xScale, point.y() / yScale ), picture );
   painter->scale( 1 / xScale, 1 / yScale );
 }
+
+void QgsPainting::rotatePainterAroundPoint( QPainter *painter, const QPointF &point, double angle )
+{
+  painter->translate( point.x(), point.y() );
+  painter->rotate( angle );
+  painter->translate( -point.x(), -point.y() );
+}
