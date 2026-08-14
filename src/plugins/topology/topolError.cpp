@@ -42,7 +42,7 @@ bool TopolError::fixMove( const FeatureLayer &fl1, const FeatureLayer &fl2 )
 
   // 0 means success
   const QgsGeometry g = f1.geometry();
-  QgsGeometry difference = g.makeDifference( f2.geometry() );
+  QgsGeometry difference = g.difference( f2.geometry() );
   if ( !difference.isNull() )
   {
     return fl1.layer->changeGeometry( f1.id(), difference );

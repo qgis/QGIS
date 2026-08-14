@@ -1393,8 +1393,9 @@ class CORE_EXPORT QgsGeometry
      * \param other geometry that should not be intersect
      * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      * \note Not available in Python
+     * \deprecated QGIS 4.4
      */
-    int makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) SIP_SKIP;
+    Q_DECL_DEPRECATED int makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) SIP_SKIP;
 
     /**
      * Returns the geometry formed by modifying this geometry such that it does not
@@ -1402,8 +1403,9 @@ class CORE_EXPORT QgsGeometry
      * \param other geometry that should not be intersect
      * \param feedback optional feedback object for early cancellation (since QGIS 4.2).
      * \returns difference geometry, or empty geometry if difference could not be calculated
+     * \deprecated QGIS 4.4. Use QgsGeometry::difference().
      */
-    QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) const;
+    Q_DECL_DEPRECATED QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = nullptr ) const SIP_DEPRECATED;
 
     /**
      * Returns the bounding box of the geometry.

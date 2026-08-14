@@ -1428,7 +1428,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback *f
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.difference( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
   if ( !diffGeom )
   {
     return 1;
@@ -1440,23 +1440,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback *f
 
 QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other, QgsFeedback *feedback ) const
 {
-  if ( !d->geometry || other.isNull() )
-  {
-    return QgsGeometry();
-  }
-
-  QgsGeos geos( d->geometry.get() );
-
-  mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
-  if ( !diffGeom )
-  {
-    QgsGeometry result;
-    result.mLastError = mLastError;
-    return result;
-  }
-
-  return QgsGeometry( diffGeom.release() );
+  return difference( other, QgsGeometryParameters(), feedback );
 }
 
 QgsRectangle QgsGeometry::boundingBox() const
