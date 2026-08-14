@@ -155,7 +155,8 @@ class GUI_EXPORT QgsSymbolLayerModelNode
     QgsSymbolLayerModelNode *mParent = nullptr;
     std::deque<std::unique_ptr<QgsSymbolLayerModelNode>> mChildren;
 
-    Q_DISABLE_COPY( QgsSymbolLayerModelNode )
+    QgsSymbolLayerModelNode( const QgsSymbolLayerModelNode & ) = delete;
+    QgsSymbolLayerModelNode &operator=( const QgsSymbolLayerModelNode & ) = delete;
 
     friend class TestQgsSymbolLayerModel;
 };
