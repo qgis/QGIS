@@ -774,6 +774,20 @@ IN type expression.
 .. versionadded:: 3.18
 %End
 
+    QgsExpression simplified() const;
+%Docstring
+Returns an expression which is the simplest direct equivalent of this
+expression
+
+Eg. an expression like ``1 + 2`` can be effectively replaced by the
+expression ``3``, or a nested expression like
+``coalesce(coalesce("field_a", "field_b"), "field_c")`` could be
+replaced by a single ``coalesce("field_a", "field_b", "field_c")``
+expression.
+
+.. versionadded:: 4.4
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsExpression: '%1'>" ).arg( sipCpp->expression() );
