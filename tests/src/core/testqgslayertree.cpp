@@ -1371,7 +1371,7 @@ void TestQgsLayerTree::testGroupIdCreateCloneRemove()
   for ( QgsLayerTreeGroup *g : { a, b, aChild } )
   {
     QVERIFY( !g->id().isEmpty() );
-    QVERIFY( g->id().startsWith( u"group_"_s ) );
+    QVERIFY( g->id().startsWith( "group_"_L1 ) );
   }
   QVERIFY( a->id() != b->id() );
   QVERIFY( a->id() != aChild->id() );

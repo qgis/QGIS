@@ -181,6 +181,9 @@ node returns its own generated id, while a layer node returns the id of
 the map layer it references (see
 :py:func:`QgsLayerTreeLayer.layerId()`).
 
+The base class returns an empty string; subclasses override this to
+return their identifier.
+
 .. versionadded:: 4.4
 %End
 

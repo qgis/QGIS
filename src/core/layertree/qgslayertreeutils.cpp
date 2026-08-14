@@ -18,8 +18,8 @@
 #include "qgslayertree.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
-#include "qgsstringutils.h"
 #include "qgsproject.h"
+#include "qgsstringutils.h"
 #include "qgsvectorlayer.h"
 
 #include <QDomElement>

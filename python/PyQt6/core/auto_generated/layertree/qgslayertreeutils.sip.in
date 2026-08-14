@@ -66,7 +66,7 @@ Removes layer nodes that refer to invalid layers
 
     static void regenerateGroupIds( QgsLayerTreeNode *node );
 %Docstring
-Assigns a fresh unique id to every group in the sub-tree rooted at
+Assigns a new unique id to every group in the sub-tree rooted at
 ``node``.
 
 Call this on a copied sub-tree before inserting it into a project

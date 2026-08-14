@@ -21,9 +21,9 @@
 
 #include <QRegularExpression>
 #include <QString>
-#include <QUuid>
 #include <QStringList>
 #include <QTextBoundaryFinder>
+#include <QUuid>
 #include <QVector>
 
 using namespace Qt::StringLiterals;
@@ -78,9 +78,7 @@ QString QgsStringUtils::createUniqueId( const QString &base )
   // Tidy the id up to avoid characters that may cause problems elsewhere (e.g.
   // in some parts of XML). Replaces every non-word character (word characters
   // are the alphabet, numbers and underscore) with an underscore.
-  // Note that the first backslash in the regular expression is there for the
-  // compiler, so the pattern is actually \W
-  const thread_local QRegularExpression idRx( u"[\\W]"_s );
+  const thread_local QRegularExpression idRx( uR"([\W])"_s );
   id.replace( idRx, u"_"_s );
   return id;
 }
