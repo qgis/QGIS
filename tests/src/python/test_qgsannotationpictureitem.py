@@ -1111,16 +1111,13 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         # The 40x10 item rotated 90 degrees around its center (100, 100) covers
         # the screen region x in [95, 105], y in [80, 120]. The callout therefore
         # leaves the rotated item at its top edge middle (100, 80) and runs up to
-        # the anchor at (100, 40): a vertical green line at x == 100. Without the
-        # rotation compensation the callout would attach near (90, 55) instead.
-        on_line = image.pixelColor(100, 60)
-        self.assertGreater(on_line.green(), 200)
-        self.assertLess(on_line.red(), 100)
-        self.assertLess(on_line.blue(), 100)
-
-        # the buggy attachment location must remain background (white)
-        off_line = image.pixelColor(115, 55)
-        self.assertEqual(off_line, QColor(255, 255, 255))
+        # the anchor at (100, 40). Without the rotation compensation it would
+        # attach near (90, 55) instead.
+        self.assertTrue(
+            self.image_check(
+                "picture_rotated_callout", "picture_rotated_callout", image
+            )
+        )
 
     def test_render_rotated_balloon_callout(self):
         """
@@ -1165,17 +1162,16 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
 
         # The rotated item covers the screen region x in [96, 104], y in [70, 130].
         # The balloon wedge therefore leaves the item top edge (around 100, 70) and
-        # runs up towards the anchor at (100, 40): probe a point on that wedge.
-        on_wedge = image.pixelColor(100, 55)
-        self.assertGreater(on_wedge.blue(), 200)
-        self.assertLess(on_wedge.red(), 100)
-        self.assertLess(on_wedge.green(), 100)
-
-        # If the balloon were not rotated, an axis-aligned balloon around the
-        # unrotated bounds (x in [70, 130], y in [96, 104]) would fill this point,
-        # which lies beside the rotated item and must stay background.
-        beside_item = image.pixelColor(80, 100)
-        self.assertEqual(beside_item, QColor(255, 255, 255))
+        # runs up towards the anchor at (100, 40). If the balloon were not rotated,
+        # an axis-aligned balloon around the unrotated bounds (x in [70, 130],
+        # y in [96, 104]) would be drawn beside the rotated item instead.
+        self.assertTrue(
+            self.image_check(
+                "picture_rotated_balloon_callout",
+                "picture_rotated_balloon_callout",
+                image,
+            )
+        )
 
     def testRenderFixedSizeRaster(self):
         item = QgsAnnotationPictureItem(
