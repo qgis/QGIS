@@ -496,6 +496,118 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         self.assertFalse(scope.variable("layer_vertical_crs_description"))
         self.assertFalse(scope.variable("layer_vertical_crs_wkt"))
 
+    def test_simplified_expressions(self):
+        exp = QgsExpression()
+        self.assertFalse(exp.simplified().isValid())
+
+        exp = QgsExpression('-("abc")')
+        self.assertEqual(exp.simplified().dump(), "- abc")
+
+        exp = QgsExpression("-(-5)")
+        self.assertEqual(exp.simplified().dump(), "5")
+
+        exp = QgsExpression("-(-(-5))")
+        self.assertEqual(exp.simplified().dump(), "-5")
+
+        exp = QgsExpression('NOT "asd"')
+        self.assertEqual(exp.simplified().dump(), "NOT asd")
+
+        exp = QgsExpression("NOT false")
+        # note -- dump changes true -> 1
+        self.assertEqual(exp.simplified().dump(), "1")
+
+        exp = QgsExpression("NOT true")
+        # note -- dump changes false -> 0
+        self.assertEqual(exp.simplified().dump(), "0")
+
+        exp = QgsExpression("NOT NOT false")
+        # note -- dump changes false -> 0
+        self.assertEqual(exp.simplified().dump(), "0")
+
+        exp = QgsExpression("1+2")
+        self.assertEqual(exp.simplified().dump(), "3")
+
+        exp = QgsExpression("(1 + 2) * 4")
+        self.assertEqual(exp.simplified().dump(), "12")
+
+        exp = QgsExpression('(1 + 2) * "asd"')
+        self.assertEqual(exp.simplified().dump(), "3 * asd")
+
+        exp = QgsExpression('(1 + "asd") * 4')
+        self.assertEqual(exp.simplified().dump(), "(1 + asd) * 4")
+
+        exp = QgsExpression("(1 - (-2)) * 4")
+        self.assertEqual(exp.simplified().dump(), "12")
+
+        exp = QgsExpression("(1 - (1/'a')) * 4")
+        self.assertEqual(exp.simplified().dump(), "(1 - 1 / 'a') * 4")
+
+        exp = QgsExpression("'abc' || 'def'")
+        self.assertEqual(exp.simplified().dump(), "'abcdef'")
+
+        exp = QgsExpression("lower('HELLO')")
+        self.assertEqual(exp.simplified().dump(), "lower('HELLO')")
+
+        exp = QgsExpression("lower('HEL' || 'LO')")
+        self.assertEqual(exp.simplified().dump(), "lower('HELLO')")
+
+        exp = QgsExpression('CASE WHEN true THEN "field_a" ELSE "field_b" END')
+        self.assertEqual(exp.simplified().dump(), "field_a")
+
+        exp = QgsExpression('CASE WHEN true THEN "field_a" END')
+        self.assertEqual(exp.simplified().dump(), "field_a")
+
+        exp = QgsExpression('CASE WHEN false THEN "field_a" ELSE "field_b" END')
+        self.assertEqual(exp.simplified().dump(), "field_b")
+
+        exp = QgsExpression('CASE WHEN false THEN "field_a" END')
+        self.assertEqual(exp.simplified().dump(), "NULL")
+
+        exp = QgsExpression(
+            'CASE WHEN false THEN "field_a" WHEN true THEN "field_c" ELSE "field_b" END'
+        )
+        self.assertEqual(exp.simplified().dump(), "field_c")
+
+        exp = QgsExpression(
+            'CASE WHEN NOT false THEN "field_a" WHEN true THEN "field_c" ELSE "field_b" END'
+        )
+        self.assertEqual(exp.simplified().dump(), "field_a")
+
+        exp = QgsExpression(
+            'CASE WHEN "c" + 2 > 3 THEN "field_a" WHEN true THEN "field_c" ELSE "field_b" END'
+        )
+        self.assertEqual(
+            exp.simplified().dump(),
+            "CASE WHEN c + 2 > 3 THEN field_a WHEN TRUE THEN field_c ELSE field_b END",
+        )
+
+        exp = QgsExpression("1 IN (1, 2, 3)")
+        self.assertEqual(exp.simplified().dump(), "TRUE")
+
+        exp = QgsExpression("5 IN (1, 2, 3)")
+        self.assertEqual(exp.simplified().dump(), "0")
+
+        exp = QgsExpression("'a' NOT IN ('b', 'c')")
+        self.assertEqual(exp.simplified().dump(), "1")
+
+        exp = QgsExpression("'a' NOT IN ('b', 'c', 'a')")
+        self.assertEqual(exp.simplified().dump(), "FALSE")
+
+        exp = QgsExpression('"my_field" IN (1 + 1, 2 * 3)')
+        self.assertEqual(exp.simplified().dump(), "my_field  IN (2, 6)")
+
+        exp = QgsExpression('5 IN (1 + 1, 2 * 3, "a")')
+        self.assertEqual(exp.simplified().dump(), "5  IN (2, 6, a)")
+
+        exp = QgsExpression('6 IN (1 + 1, 2 * 3, "a")')
+        self.assertEqual(exp.simplified().dump(), "TRUE")
+
+        exp = QgsExpression('6 NOT IN (1 + 1, 2 * 3, "a")')
+        self.assertEqual(exp.simplified().dump(), "FALSE")
+
+        exp = QgsExpression('6 NOT IN ("c", 1 + 1, 2 * 3, "a")')
+        self.assertEqual(exp.simplified().dump(), "FALSE")
+
 
 if __name__ == "__main__":
     unittest.main()

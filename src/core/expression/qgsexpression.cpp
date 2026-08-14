@@ -1485,6 +1485,17 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
   return true;
 }
 
+QgsExpression QgsExpression::simplified() const
+{
+  if ( !d->mRootNode )
+    return QgsExpression();
+
+  QgsExpression res = *this;
+  res.detach();
+  res.d->mRootNode.reset( d->mRootNode->simplifiedNode() );
+  return res;
+}
+
 const QgsExpressionNode *QgsExpression::rootNode() const
 {
   return d->mRootNode.get();
