@@ -55,6 +55,7 @@ configuration.
       QGIS_SERVER_DISABLE_GETPRINT,
       QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES,
       QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS,
+      QGIS_SERVER_LANDING_PAGE_PROJECTS_RECURSIVE,
       QGIS_SERVER_LOG_PROFILE,
       QGIS_SERVER_SERVICE_URL,
       QGIS_SERVER_WMS_SERVICE_URL,
@@ -242,6 +243,16 @@ service to find projects. Multiple connections can be specified by
 separating them with '||'.
 
 .. versionadded:: 3.16
+%End
+
+    bool landingPageProjectsRecursive() const;
+%Docstring
+Returns ``True`` if
+:py:func:`~QgsServerSettings.landingPageProjectsDirectories` should be
+scanned recursively for .qgs and .qgz projects in subdirectories,
+default to ``False``.
+
+.. versionadded:: 4.4
 %End
 
     QString landingPageBaseUrlPrefix() const;

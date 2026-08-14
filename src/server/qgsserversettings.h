@@ -73,6 +73,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_DISABLE_GETPRINT,                     //!< Disabled WMS GetPrint request and don't load layouts. Improves project read time. \since QGIS 3.16
       QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES,    //!< Directories used by the landing page service to find .qgs and .qgz projects \since QGIS 3.16
       QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS, //!< PostgreSQL connection strings used by the landing page service to find projects \since QGIS 3.16
+      QGIS_SERVER_LANDING_PAGE_PROJECTS_RECURSIVE,      //!< Recursively scan QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES for .qgs and .qgz projects \since QGIS 4.4
       QGIS_SERVER_LOG_PROFILE, //!< When QGIS_SERVER_LOG_LEVEL is 0 this flag adds to the logs detailed information about the time taken by the different processing steps inside the QGIS Server request \since QGIS 3.16
       QGIS_SERVER_SERVICE_URL,                  //!< To set the service URL if it's not present in the project. \since QGIS 3.20
       QGIS_SERVER_WMS_SERVICE_URL,              //!< To set the WMS service URL if it's not present in the project. \since QGIS 3.20
@@ -237,6 +238,13 @@ class SERVER_EXPORT QgsServerSettings
      * \since QGIS 3.16
      */
     QString landingPageProjectsPgConnections() const;
+
+    /**
+     * Returns TRUE if landingPageProjectsDirectories() should be scanned
+     * recursively for .qgs and .qgz projects in subdirectories, default to FALSE.
+     * \since QGIS 4.4
+     */
+    bool landingPageProjectsRecursive() const;
 
     /**
      * Returns the landing page base URL regular expression, defaults to `/`.

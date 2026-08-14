@@ -47,6 +47,9 @@ struct QgsLandingPageUtils
    *
    * Multiple paths and connections may be separated by two pipe chars: '||'
    *
+   * Directories are scanned recursively for projects if
+   * QGIS_SERVER_LANDING_PAGE_PROJECTS_RECURSIVE is set to TRUE.
+   *
    * \returns hash of project paths (or other storage identifiers) with a digest key
    */
     static QMap<QString, QString> projects( const QgsServerSettings &settings );

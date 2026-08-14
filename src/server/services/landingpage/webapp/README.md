@@ -19,6 +19,9 @@ export QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES=/path/to/projectdirectory
 ./output/bin/qgis_mapserver -p /path/to/projectdirectory/test.qgz
 ```
 
+Set `QGIS_SERVER_LANDING_PAGE_PROJECTS_RECURSIVE=1` to also discover projects
+in subdirectories of the configured project directories.
+
 Then open http://localhost:8000 in a web browser (default port `8000`).
 
 
