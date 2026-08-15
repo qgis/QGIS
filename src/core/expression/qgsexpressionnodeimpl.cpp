@@ -207,7 +207,7 @@ QgsExpressionNode *QgsExpressionNodeUnaryOperator::simplifiedNode() const
   std::unique_ptr< QgsExpressionNode > simplifiedOperand( mOperand->simplifiedNode() );
   if ( simplifiedOperand->nodeType() == ntLiteral )
   {
-    QgsExpressionNodeUnaryOperator tempNode( mOp, simplifiedOperand.release() );
+    QgsExpressionNodeUnaryOperator tempNode( mOp, simplifiedOperand->clone() );
     QgsExpression parentExp;
     QVariant result = tempNode.eval( &parentExp, nullptr );
     if ( !parentExp.hasEvalError() )
@@ -216,7 +216,7 @@ QgsExpressionNode *QgsExpressionNodeUnaryOperator::simplifiedNode() const
     }
   }
 
-  return new QgsExpressionNodeUnaryOperator( mOp, mOperand->simplifiedNode() );
+  return new QgsExpressionNodeUnaryOperator( mOp, simplifiedOperand.release() );
 }
 
 bool QgsExpressionNodeUnaryOperator::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
@@ -1320,7 +1320,7 @@ QgsExpressionNode *QgsExpressionNodeBinaryOperator::simplifiedNode() const
   // if both operands are literals, evaluate the operation
   if ( opLeft->nodeType() == ntLiteral && opRight->nodeType() == ntLiteral )
   {
-    QgsExpressionNodeBinaryOperator tempNode( mOp, opLeft.release(), opRight.release() );
+    QgsExpressionNodeBinaryOperator tempNode( mOp, opLeft->clone(), opRight->clone() );
     QgsExpression parentExp;
     QVariant result = tempNode.eval( &parentExp, nullptr );
     if ( !parentExp.hasEvalError() )
@@ -1329,7 +1329,7 @@ QgsExpressionNode *QgsExpressionNodeBinaryOperator::simplifiedNode() const
     }
   }
 
-  return new QgsExpressionNodeBinaryOperator( mOp, mOpLeft->simplifiedNode(), mOpRight->simplifiedNode() );
+  return new QgsExpressionNodeBinaryOperator( mOp, opLeft.release(), opRight.release() );
 }
 
 //
