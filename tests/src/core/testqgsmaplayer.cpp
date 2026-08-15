@@ -527,56 +527,56 @@ void TestQgsMapLayer::publicSourceOnGdalWithCredentials()
 
 void TestQgsMapLayer::cloneServerProperties()
 {
-  auto source = std::make_unique<QgsVectorLayer>( u"Point"_s, u"source"_s, u"memory"_s );
-  source->serverProperties()->setShortName( u"MyShortName"_s );
-  source->serverProperties()->setTitle( u"MyTitle"_s );
-  source->serverProperties()->setWfsTitle( u"MyWfsTitle"_s );
-  source->serverProperties()->setAbstract( u"MyAbstract"_s );
-  source->serverProperties()->setKeywordList( u"keyword1,keyword2,keyword3"_s );
-  source->serverProperties()->setDataUrl( u"MyDataUrl"_s );
-  source->serverProperties()->setDataUrlFormat( u"text/html"_s );
-  source->serverProperties()->setAttribution( u"MyAttribution"_s );
-  source->serverProperties()->setAttributionUrl( u"MyAttributionUrl"_s );
-  source->serverProperties()->setLegendUrl( u"MyLegendUrl"_s );
-  source->serverProperties()->setLegendUrlFormat( u"image/png"_s );
+  auto source = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "source" ), QStringLiteral( "memory" ) );
+  source->serverProperties()->setShortName( QStringLiteral( "MyShortName" ) );
+  source->serverProperties()->setTitle( QStringLiteral( "MyTitle" ) );
+  source->serverProperties()->setWfsTitle( QStringLiteral( "MyWfsTitle" ) );
+  source->serverProperties()->setAbstract( QStringLiteral( "MyAbstract" ) );
+  source->serverProperties()->setKeywordList( QStringLiteral( "keyword1,keyword2,keyword3" ) );
+  source->serverProperties()->setDataUrl( QStringLiteral( "MyDataUrl" ) );
+  source->serverProperties()->setDataUrlFormat( QStringLiteral( "text/html" ) );
+  source->serverProperties()->setAttribution( QStringLiteral( "MyAttribution" ) );
+  source->serverProperties()->setAttributionUrl( QStringLiteral( "MyAttributionUrl" ) );
+  source->serverProperties()->setLegendUrl( QStringLiteral( "MyLegendUrl" ) );
+  source->serverProperties()->setLegendUrlFormat( QStringLiteral( "image/png" ) );
 
-  const QgsServerMetadataUrlProperties::MetadataUrl metadataUrl( u"https://www.test.url"_s, u"FGDC"_s, u"text/xml"_s );
+  const QgsServerMetadataUrlProperties::MetadataUrl metadataUrl( QStringLiteral( "https://www.test.url" ), QStringLiteral( "FGDC" ), QStringLiteral( "text/xml" ) );
   source->serverProperties()->addMetadataUrl( metadataUrl );
 
   const QgsServerWmsDimensionProperties::WmsDimensionInfo
-    wmsDimension( u"elevation"_s, u"field_name"_s, u"end_field_name"_s, u"foot"_s, u"ft"_s, QgsServerWmsDimensionProperties::WmsDimensionInfo::ReferenceValue, QVariant( u"0"_s ) );
+    wmsDimension( QStringLiteral( "elevation" ), QStringLiteral( "field_name" ), QStringLiteral( "end_field_name" ), QStringLiteral( "foot" ), QStringLiteral( "ft" ), QgsServerWmsDimensionProperties::WmsDimensionInfo::ReferenceValue, QVariant( "0" ) );
   QVERIFY( source->serverProperties()->addWmsDimension( wmsDimension ) );
 
   std::unique_ptr<QgsVectorLayer> clone( source->clone() );
   QVERIFY( clone );
 
-  QCOMPARE( source->serverProperties()->shortName(), u"MyShortName"_s );
-  QCOMPARE( source->serverProperties()->title(), u"MyTitle"_s );
-  QCOMPARE( source->serverProperties()->wfsTitle(), u"MyWfsTitle"_s );
-  QCOMPARE( source->serverProperties()->abstract(), u"MyAbstract"_s );
-  QCOMPARE( source->serverProperties()->keywordList(), u"keyword1,keyword2,keyword3"_s );
-  QCOMPARE( source->serverProperties()->dataUrl(), u"MyDataUrl"_s );
-  QCOMPARE( source->serverProperties()->dataUrlFormat(), u"text/html"_s );
-  QCOMPARE( source->serverProperties()->attribution(), u"MyAttribution"_s );
-  QCOMPARE( source->serverProperties()->attributionUrl(), u"MyAttributionUrl"_s );
-  QCOMPARE( source->serverProperties()->legendUrl(), u"MyLegendUrl"_s );
-  QCOMPARE( source->serverProperties()->legendUrlFormat(), u"image/png"_s );
+  QCOMPARE( source->serverProperties()->shortName(), QStringLiteral( "MyShortName" ) );
+  QCOMPARE( source->serverProperties()->title(), QStringLiteral( "MyTitle" ) );
+  QCOMPARE( source->serverProperties()->wfsTitle(), QStringLiteral( "MyWfsTitle" ) );
+  QCOMPARE( source->serverProperties()->abstract(), QStringLiteral( "MyAbstract" ) );
+  QCOMPARE( source->serverProperties()->keywordList(), QStringLiteral( "keyword1,keyword2,keyword3" ) );
+  QCOMPARE( source->serverProperties()->dataUrl(), QStringLiteral( "MyDataUrl" ) );
+  QCOMPARE( source->serverProperties()->dataUrlFormat(), QStringLiteral( "text/html" ) );
+  QCOMPARE( source->serverProperties()->attribution(), QStringLiteral( "MyAttribution" ) );
+  QCOMPARE( source->serverProperties()->attributionUrl(), QStringLiteral( "MyAttributionUrl" ) );
+  QCOMPARE( source->serverProperties()->legendUrl(), QStringLiteral( "MyLegendUrl" ) );
+  QCOMPARE( source->serverProperties()->legendUrlFormat(), QStringLiteral( "image/png" ) );
   QCOMPARE( source->serverProperties()->metadataUrls().size(), 1 );
   QCOMPARE( source->serverProperties()->metadataUrls().at( 0 ), metadataUrl );
   QCOMPARE( source->serverProperties()->wmsDimensions().size(), 1 );
   QCOMPARE( source->serverProperties()->wmsDimensions().at( 0 ), wmsDimension );
 
-  QCOMPARE( clone->serverProperties()->shortName(), u"MyShortName"_s );
-  QCOMPARE( clone->serverProperties()->title(), u"MyTitle"_s );
-  QCOMPARE( clone->serverProperties()->wfsTitle(), u"MyWfsTitle"_s );
-  QCOMPARE( clone->serverProperties()->abstract(), u"MyAbstract"_s );
-  QCOMPARE( clone->serverProperties()->keywordList(), u"keyword1,keyword2,keyword3"_s );
-  QCOMPARE( clone->serverProperties()->dataUrl(), u"MyDataUrl"_s );
-  QCOMPARE( clone->serverProperties()->dataUrlFormat(), u"text/html"_s );
-  QCOMPARE( clone->serverProperties()->attribution(), u"MyAttribution"_s );
-  QCOMPARE( clone->serverProperties()->attributionUrl(), u"MyAttributionUrl"_s );
-  QCOMPARE( clone->serverProperties()->legendUrl(), u"MyLegendUrl"_s );
-  QCOMPARE( clone->serverProperties()->legendUrlFormat(), u"image/png"_s );
+  QCOMPARE( clone->serverProperties()->shortName(), QStringLiteral( "MyShortName" ) );
+  QCOMPARE( clone->serverProperties()->title(), QStringLiteral( "MyTitle" ) );
+  QCOMPARE( clone->serverProperties()->wfsTitle(), QStringLiteral( "MyWfsTitle" ) );
+  QCOMPARE( clone->serverProperties()->abstract(), QStringLiteral( "MyAbstract" ) );
+  QCOMPARE( clone->serverProperties()->keywordList(), QStringLiteral( "keyword1,keyword2,keyword3" ) );
+  QCOMPARE( clone->serverProperties()->dataUrl(), QStringLiteral( "MyDataUrl" ) );
+  QCOMPARE( clone->serverProperties()->dataUrlFormat(), QStringLiteral( "text/html" ) );
+  QCOMPARE( clone->serverProperties()->attribution(), QStringLiteral( "MyAttribution" ) );
+  QCOMPARE( clone->serverProperties()->attributionUrl(), QStringLiteral( "MyAttributionUrl" ) );
+  QCOMPARE( clone->serverProperties()->legendUrl(), QStringLiteral( "MyLegendUrl" ) );
+  QCOMPARE( clone->serverProperties()->legendUrlFormat(), QStringLiteral( "image/png" ) );
   QCOMPARE( clone->serverProperties()->metadataUrls().size(), 1 );
   QCOMPARE( clone->serverProperties()->metadataUrls().at( 0 ), metadataUrl );
   QCOMPARE( clone->serverProperties()->wmsDimensions().size(), 1 );
