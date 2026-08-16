@@ -259,6 +259,7 @@ void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *propertie
 
   properties->setShortName( mShortName );
   properties->setTitle( mTitle );
+  properties->setWfsTitle( mWfsTitle );
   properties->setAbstract( mAbstract );
   properties->setKeywordList( mKeywordList );
   properties->setDataUrl( mDataUrl );
@@ -275,6 +276,7 @@ bool QgsMapLayerServerProperties::operator==( const QgsMapLayerServerProperties 
          && QgsServerWmsDimensionProperties::operator==( other )
          && mShortName == other.mShortName
          && mTitle == other.mTitle
+         && mWfsTitle == other.mWfsTitle
          && mAbstract == other.mAbstract
          && mKeywordList == other.mKeywordList
          && mDataUrl == other.mDataUrl
