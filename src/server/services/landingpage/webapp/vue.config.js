@@ -2,7 +2,6 @@ const LicensePlugin = require('webpack-license-plugin')
 
 module.exports = {
   publicPath: './',
-  outputDir: '../../api/ogc/static/landingpage/',
   assetsDir: './',
   configureWebpack: {
     devtool: "source-map",
@@ -17,7 +16,7 @@ module.exports = {
   },
   runtimeCompiler: true,
   devServer: {
-    proxy: "http://192.168.99.47:8001",
+    proxy: "http://127.0.0.1:8001",
   },
   transpileDependencies: ["vuetify"],
 }
