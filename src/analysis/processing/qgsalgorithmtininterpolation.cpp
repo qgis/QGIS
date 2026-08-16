@@ -181,7 +181,7 @@ QVariantMap QgsTinInterpolationAlgorithm::processAlgorithm( const QVariantMap &p
         data.interpolationAttribute = source->fields().lookupField( tokens.at( 2 ) );
         if ( data.interpolationAttribute < 0 )
         {
-          throw QgsProcessingException( QObject::tr( "Field %1 does not existing in layer %2." ).arg( tokens.at( 2 ) ).arg( layerIndex + 1 ) );
+          throw QgsProcessingException( QObject::tr( "Field %1 does not exist in layer %2." ).arg( tokens.at( 2 ) ).arg( layerIndex + 1 ) );
         }
       }
       else if ( data.interpolationAttribute < 0 )
