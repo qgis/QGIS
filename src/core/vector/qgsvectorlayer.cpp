@@ -1844,7 +1844,13 @@ bool QgsVectorLayer::startEditing()
 
   mDataProvider->enterUpdateMode();
 
+  static bool sIsStartingEditing = false;
+  if ( sIsStartingEditing )
+    return false;
+
+  sIsStartingEditing = true;
   emit beforeEditingStarted();
+  sIsStartingEditing = false;
 
   createEditBuffer();
 
