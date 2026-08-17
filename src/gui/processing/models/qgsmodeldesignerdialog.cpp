@@ -380,6 +380,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
 QgsModelDesignerDialog::~QgsModelDesignerDialog()
 {
+  blockSignals( true );
   if ( mAlgorithmWidget )
   {
     delete mAlgorithmWidget;
