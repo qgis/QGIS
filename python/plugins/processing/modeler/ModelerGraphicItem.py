@@ -198,6 +198,8 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
         dlg.setModal(True)
         dlg.setComments(self.component().comment().description())
         dlg.setCommentColor(self.component().comment().color())
+        if hasattr(dlg, 'btnHelp') and dlg.btnHelp:
+            dlg.btnHelp.setVisible(True)
         if edit_comment:
             dlg.switchToCommentTab()
         if dlg.exec():
