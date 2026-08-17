@@ -144,7 +144,6 @@ QVariantMap QgsTinInterpolationAlgorithm::processAlgorithm( const QVariantMap &p
   QgsCoordinateReferenceSystem layerCrs;
 
   const QStringList layerRows = interpolationData.split( "::|::"_L1, Qt::SkipEmptyParts );
-  int layerIndex = 0;
   for ( const QString &row : std::as_const( layerRows ) )
   {
     const QStringList tokens = row.split( "::~::"_L1 );
@@ -154,7 +153,7 @@ QVariantMap QgsTinInterpolationAlgorithm::processAlgorithm( const QVariantMap &p
     }
 
     QgsInterpolator::LayerData data;
-    std::unique_ptr<QgsFeatureSource> source( QgsProcessingUtils::variantToSource( tokens.at( 0 ), context ) );
+    std::unique_ptr<QgsProcessingFeatureSource> source( QgsProcessingUtils::variantToSource( tokens.at( 0 ), context ) );
 
     if ( !source )
     {
@@ -181,16 +180,16 @@ QVariantMap QgsTinInterpolationAlgorithm::processAlgorithm( const QVariantMap &p
         data.interpolationAttribute = source->fields().lookupField( tokens.at( 2 ) );
         if ( data.interpolationAttribute < 0 )
         {
-          throw QgsProcessingException( QObject::tr( "Field %1 does not exist in layer %2." ).arg( tokens.at( 2 ) ).arg( layerIndex + 1 ) );
+          throw QgsProcessingException( QObject::tr( "Field %1 does not exist in layer %2." ).arg( tokens.at( 2 ), source->sourceName() ) );
         }
       }
       else if ( data.interpolationAttribute < 0 )
       {
-        throw QgsProcessingException( QObject::tr( "Layer %1 is set to use a value attribute, but no attribute was set." ).arg( layerIndex + 1 ) );
+        throw QgsProcessingException( QObject::tr( "Layer %1 is set to use a value attribute, but no attribute was set." ).arg( source->sourceName() ) );
       }
       else if ( data.interpolationAttribute >= source->fields().size() )
       {
-        throw QgsProcessingException( QObject::tr( "Layer %1 is set to use an invalid attribute." ).arg( layerIndex + 1 ) );
+        throw QgsProcessingException( QObject::tr( "Layer %1 is set to use an invalid attribute." ).arg( source->sourceName() ) );
       }
     }
 
@@ -198,7 +197,6 @@ QVariantMap QgsTinInterpolationAlgorithm::processAlgorithm( const QVariantMap &p
 
     layerDataList.append( data );
     sourceHolders.push_back( std::move( source ) );
-    layerIndex++;
   }
 
   const QgsTinInterpolator::TinInterpolation tinMethod = ( method == 0 ) ? QgsTinInterpolator::TinInterpolation::Linear : QgsTinInterpolator::TinInterpolation::CloughTocher;
