@@ -246,10 +246,8 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
     if ( !childFrom )
       return;
 
-    mPreviousInputSocketNumber = mFromSocket->index();
-    const QgsProcessingParameterDefinition *param = childFrom->algorithm()->parameterDefinitions().at( mPreviousInputSocketNumber );
+    const QgsProcessingParameterDefinition *param = childFrom->algorithm()->parameterDefinitions().at( mFromSocket->index() );
     const QList<QgsProcessingModelChildParameterSource> currentSources = childFrom->parameterSources().value( param->name() );
-    mPreviousInputChildId = childFrom->childId();
 
     for ( const QgsProcessingModelChildParameterSource &source : currentSources )
     {
@@ -319,6 +317,8 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
             return;
           }
 
+          mPreviousInputChildId = childFrom->childId();
+          mPreviousInputSocketNumber = mFromSocket->index();
           mFromSocket = item->outSocketAt( socketIndex );
         }
         break;
