@@ -649,6 +649,14 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       childResults.insert( childId, results );
       childResult.setOutputs( results );
 
+      for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
+      {
+        if ( it.value().canConvert< QgsMapLayer * >() || it.value().typeId() == QMetaType::QString )
+        {
+          context.expressionContext().setVariable( QStringLiteral( "model_child_%1_%2" ).arg( childId, it.key() ), it.value() );
+        }
+      }
+
       if ( modelFeedback )
       {
         if ( childResult.executionStatus() == Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed )
