@@ -38,7 +38,7 @@ def resolveFieldIndex(source, attr):
     else:
         index = source.fields().lookupField(attr)
         if index == -1:
-            raise ValueError("Wrong field name")
+            raise ValueError(f"Field '{attr}' not found in layer fields")
         return index
 
 
