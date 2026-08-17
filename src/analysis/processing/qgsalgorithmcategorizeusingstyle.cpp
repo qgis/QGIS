@@ -126,6 +126,7 @@ class SetCategorizedRendererPostProcessor : public QgsProcessingLayerPostProcess
       {
         vl->setRenderer( mRenderer.release() );
         vl->triggerRepaint();
+        vl->emitStyleChanged();
       }
     }
 
