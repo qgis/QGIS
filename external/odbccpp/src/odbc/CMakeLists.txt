@@ -70,3 +70,5 @@ target_compile_definitions(odbccpp
 set_property(TARGET odbccpp PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 set_property(TARGET odbccpp PROPERTY public_headers ${public_headers})
+
+set_target_properties(odbccpp PROPERTIES AUTOMOC OFF AUTOUIC OFF AUTORCC OFF)
