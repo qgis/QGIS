@@ -746,6 +746,8 @@ bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
   }
 
   updateExtents();
+  emit fullExtentChanged();
+  emit dataChanged();
 
   return true;
 }
