@@ -3143,8 +3143,24 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         group.addLayer(rl4)
         groupWithoutTimeDim.addGroup("OtherSubGroupWithoutTimeDimension").addLayer(rl3)
 
+        # Test group with Opaque Mode
+
+        opaqueGroupWithTimeDim = project.layerTreeRoot().addGroup(
+            "OpaqueGroupWithTimeDimension"
+        )
+        opaqueGroupWithTimeDim.setHasWmsTimeDimension(True)
+        opaqueGroupWithTimeDim.setWmsGroupRequestMode(Qgis.WmsGroupRequestMode.Opaque)
+
+        opaqueGroupWithTimeDim.addLayer(rl1)
+        group = opaqueGroupWithTimeDim.addGroup("OpaqueSubGroupWithTimeDimension")
+        group.setHasWmsTimeDimension(True)
+        group.setWmsGroupRequestMode(Qgis.WmsGroupRequestMode.Opaque)
+        group.addLayer(rl2)
+        group.addLayer(rl4)
+
         def get_time_dim(layer_name):
             r, h = self._result(self._execute_request_project(qs, project))
+
             t = et.fromstring(r)
             ns = t.nsmap
             del ns[None]
@@ -3212,6 +3228,16 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         date_dimension = get_time_dim("OtherSubGroupWithoutTimeDimension")
         self.assertEqual(date_dimension, None)
+
+        # Now test with Opaque mode, we should get exactly the same result than with Normal mode
+
+        # group with time dimension option
+        date_dimension = get_time_dim("OpaqueGroupWithTimeDimension")
+        self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
+        self.assertEqual(
+            date_dimension.text,
+            "2025-01-12T12:34:56Z/2025-01-15T09:12:34Z,2025-01-12T00:00:00Z",
+        )
 
     def test_get_map_labeling_opacities(self):
         """Test if OPACITIES is also applied to labels"""
