@@ -2305,17 +2305,21 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     mOriginalStyleElement = layer_node.toElement();
   mOriginalStyleDocument = layer_node.ownerDocument();
 
+  QString error;
+  readSymbology( layer_node, error, context );
+
   if ( !mDataProvider )
   {
-    if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
+    if ( ( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
+    {
+      return true;
+    }
+    else
     {
       QgsDebugError( u"Raster data provider could not be created for %1"_s.arg( mDataSource ) );
       return false;
     }
   }
-
-  QString error;
-  const bool res = readSymbology( layer_node, error, context );
 
   // old wms settings we need to correct
   if ( res && mProviderKey == "wms"_L1 && !renderer() )
