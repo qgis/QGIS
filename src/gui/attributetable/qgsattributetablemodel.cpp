@@ -478,9 +478,9 @@ void QgsAttributeTableModel::loadLayer()
   // table view may be updated with inconsistent model which may assume
   // wrong number of attributes)
 
+  mResettingModel = true;
   loadAttributes();
 
-  mResettingModel = true;
   beginResetModel();
 
   if ( rowCount() != 0 )
