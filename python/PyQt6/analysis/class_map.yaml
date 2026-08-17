@@ -224,11 +224,11 @@ QgsIDWInterpolator: src/analysis/interpolation/qgsidwinterpolator.h#L29
 QgsInternalGeometrySnapper.snapFeature: src/analysis/vector/qgsgeometrysnapper.h#L155
 QgsInternalGeometrySnapper.snappedGeometries: src/analysis/vector/qgsgeometrysnapper.h#L160
 QgsInternalGeometrySnapper: src/analysis/vector/qgsgeometrysnapper.h#L142
-QgsInterpolator.QgsInterpolator: src/analysis/interpolation/qgsinterpolator.h#L100
-QgsInterpolator.cacheBaseData: src/analysis/interpolation/qgsinterpolator.h#L146
-QgsInterpolator.interpolatePoint: src/analysis/interpolation/qgsinterpolator.h#L131
-QgsInterpolator: src/analysis/interpolation/qgsinterpolator.h#L71
-QgsInterpolatorVertexData: src/analysis/interpolation/qgsinterpolator.h#L41
+QgsInterpolator.QgsInterpolator: src/analysis/interpolation/qgsinterpolator.h#L85
+QgsInterpolator.cacheBaseData: src/analysis/interpolation/qgsinterpolator.h#L131
+QgsInterpolator.interpolatePoint: src/analysis/interpolation/qgsinterpolator.h#L116
+QgsInterpolator: src/analysis/interpolation/qgsinterpolator.h#L72
+QgsInterpolatorVertexData: src/analysis/interpolation/qgsinterpolator.h#L42
 QgsKernelDensityEstimation.QgsKernelDensityEstimation: src/analysis/raster/qgskde.h#L70
 QgsKernelDensityEstimation.addFeature: src/analysis/raster/qgskde.h#L125
 QgsKernelDensityEstimation.finalise: src/analysis/raster/qgskde.h#L132
