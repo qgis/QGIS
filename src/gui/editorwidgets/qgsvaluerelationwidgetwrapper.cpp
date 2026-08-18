@@ -622,7 +622,7 @@ void QgsValueRelationWidgetWrapper::populate()
     // Only build the cache once the filter can actually be evaluated.
     // During QgsAttributeForm::init() (before setFeature() is called)
     // the form feature is not yet set, so the filter expression cannot be evaluated.
-    // Postpone building the cache until the form feature is set, which will trigger a call to populate() again.
+    // Not building the cache until the form feature is set, which will trigger a call to populate() again.
     if ( QgsValueRelationFieldFormatter::expressionIsUsable( mExpression, formFeature(), context().parentFormFeature() ) )
     {
       if ( context().parentFormFeature().isValid() )

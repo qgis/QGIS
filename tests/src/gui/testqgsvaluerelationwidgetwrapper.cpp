@@ -169,9 +169,8 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
 
 void TestQgsValueRelationWidgetWrapper::testUnEvaluableFilterDoesNotFetchWholeTable()
 {
-  // A filter using current_value() cannot be evaluated until the form feature is set. The
-  // related table must not be fetched unfiltered in the meantime: that request returns the
-  // values the filter exists to exclude, and it reads the whole table to do so.
+  // A filter using current_value() cannot be evaluated until the form feature is set. To avoid
+  // fetching the entire table of unneeded data, the related table is not loaded beforehand.
   QgsVectorLayer vl1( u"Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string"_s, u"vl1"_s, u"memory"_s );
   QgsVectorLayer vl2( u"Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int"_s, u"vl2"_s, u"memory"_s );
   QgsProject::instance()->addMapLayer( &vl1, false, false );
