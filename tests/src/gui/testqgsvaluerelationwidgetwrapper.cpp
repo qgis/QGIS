@@ -136,6 +136,9 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
   w.setConfig( cfg );
   w.widget();
 
+  // the filter uses current_value(), so it can only be evaluated once a form feature is set
+  w.setFeature( f3 );
+
   // when the widget wrapper is enabled, the container should be enabled
   // as well as items
   w.setEnabled( true );
