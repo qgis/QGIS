@@ -223,7 +223,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
      * Called when the symbol layer model data has changed (e.g enable property). Updates
      * the symbol preview, widget to take changes into account.
      */
-    void modelDataChanged();
+    void modelDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QList<int> &roles = QList<int>() );
 
     /**
      * Called when layers are about to be removed from the project.
