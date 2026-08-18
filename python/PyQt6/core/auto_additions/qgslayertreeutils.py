@@ -8,6 +8,7 @@ try:
     QgsLayerTreeUtils.layersEditable = staticmethod(QgsLayerTreeUtils.layersEditable)
     QgsLayerTreeUtils.layersModified = staticmethod(QgsLayerTreeUtils.layersModified)
     QgsLayerTreeUtils.removeInvalidLayers = staticmethod(QgsLayerTreeUtils.removeInvalidLayers)
+    QgsLayerTreeUtils.regenerateGroupIds = staticmethod(QgsLayerTreeUtils.regenerateGroupIds)
     QgsLayerTreeUtils.storeOriginalLayersProperties = staticmethod(QgsLayerTreeUtils.storeOriginalLayersProperties)
     QgsLayerTreeUtils.replaceChildrenOfEmbeddedGroups = staticmethod(QgsLayerTreeUtils.replaceChildrenOfEmbeddedGroups)
     QgsLayerTreeUtils.updateEmbeddedGroupsProjectPath = staticmethod(QgsLayerTreeUtils.updateEmbeddedGroupsProjectPath)
