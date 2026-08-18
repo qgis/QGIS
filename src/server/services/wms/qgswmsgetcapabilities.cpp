@@ -50,7 +50,7 @@ namespace QgsWms
   {
     QString dateToString( const QDateTime &dateTime, bool forceToDate );
 
-    void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, QList<QgsDateTimeRange> &parentDateRanges );
+    void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, QList<QgsDateTimeRange> &dateRanges );
 
     void appendLayerProjectSettings( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer );
 
@@ -1123,9 +1123,9 @@ namespace QgsWms
     }
 
     /**
-     * Update recursively \a parentDateRanges with all \a layerTreeGroup children date ranges
+     * Update recursively \a dateRanges with all \a layerTreeGroup children date ranges
      */
-    void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, QList<QgsDateTimeRange> &parentDateRanges )
+    void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, QList<QgsDateTimeRange> &dateRanges )
     {
       QList<QgsLayerTreeNode *> layerTreeGroupChildren = layerTreeGroup->children();
       for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
@@ -1136,22 +1136,25 @@ namespace QgsWms
         {
           QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
           QList<QgsDateTimeRange> childrenDateRanges;
-          getChildrenRanges( treeGroupChild, childrenDateRanges );
+          getChildrenRanges( treeGroupChild, wmsLayerInfos, childrenDateRanges );
 
           if ( treeGroupChild->hasWmsTimeDimension() )
           {
-            parentDateRanges.append( childrenDateRanges );
+            dateRanges.append( childrenDateRanges );
           }
         }
         else
         {
           QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
           QgsMapLayer *l = treeLayer->layer();
-          if ( l->temporalProperties() && l->temporalProperties()->isActive() )
+
+          if ( wmsLayerInfos.contains( treeLayer->layerId() ) // layer need to be published
+               && l->temporalProperties()
+               && l->temporalProperties()->isActive() )
           {
             // Add all values
             const QList<QgsDateTimeRange> allRanges { l->temporalProperties()->allTemporalRanges( l ) };
-            parentDateRanges.append( allRanges );
+            dateRanges.append( allRanges );
           }
         }
       }
@@ -1273,7 +1276,7 @@ namespace QgsWms
           if ( treeGroupChild->hasWmsTimeDimension() )
           {
             QList<QgsDateTimeRange> childrenDateRanges;
-            getChildrenRanges( treeGroupChild, childrenDateRanges );
+            getChildrenRanges( treeGroupChild, wmsLayerInfos, childrenDateRanges );
             writeTimeDimensionNode( doc, layerElem, childrenDateRanges );
           }
 
