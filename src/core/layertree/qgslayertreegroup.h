@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 // clang-format on
 #endif
 
-    /**
+        /**
      * Returns the group's name.
      */
         QString name() const override;

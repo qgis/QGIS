@@ -45,7 +45,7 @@ other than layers and groups.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QString id() const;
+        virtual QString id() const;
 
  QString nodeId() const /Deprecated="Since 4.4. Use id() instead."/;
 %Docstring

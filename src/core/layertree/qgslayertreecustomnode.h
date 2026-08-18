@@ -63,7 +63,10 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
 // clang-format on
 #endif
 
-    QString id() const override { return mId; }
+        QString id() const override
+    {
+      return mId;
+    }
 
     /**
      * Returns the node's unique identifier.
