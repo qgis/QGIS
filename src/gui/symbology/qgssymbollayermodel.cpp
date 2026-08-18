@@ -148,6 +148,17 @@ QVariant QgsSymbolLayerModelNode::data( int role ) const
     font.setBold( true );
     return font;
   }
+  else if ( role == Qt::CheckStateRole && mIsLayer )
+  {
+    if ( mLayer->enabled() )
+    {
+      return Qt::CheckState::Checked;
+    }
+    else
+    {
+      return Qt::CheckState::Unchecked;
+    }
+  }
   return QVariant();
 }
 
@@ -243,6 +254,14 @@ QgsSymbolLayerModel::QgsSymbolLayerModel( QgsVectorLayer *vl, QObject *parent, Q
   , mScreen( screen )
 {}
 
+Qt::ItemFlags QgsSymbolLayerModel::flags( const QModelIndex &index ) const
+{
+  if ( !index.isValid() )
+    return Qt::ItemFlags();
+
+  return Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsUserCheckable;
+}
+
 
 QVariant QgsSymbolLayerModel::data( const QModelIndex &index, int role ) const
 {
@@ -255,6 +274,32 @@ QVariant QgsSymbolLayerModel::data( const QModelIndex &index, int role ) const
 
   return node->data( role );
 };
+
+bool QgsSymbolLayerModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !index.isValid() )
+    return false;
+
+  QgsSymbolLayerModelNode *node = index2node( index );
+  if ( !node )
+    return false;
+
+  if ( role == Qt::CheckStateRole )
+  {
+    if ( !node->isLayer() )
+      return false;
+
+
+    bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
+    QgsSymbolLayer *symbolLayer = node->layer();
+    symbolLayer->setEnabled( checked );
+
+    emit dataChanged( index, index, { Qt::CheckStateRole } );
+    updatePreview( node );
+    return true;
+  }
+  return QAbstractItemModel::setData( index, value, role );
+}
 
 int QgsSymbolLayerModel::rowCount( const QModelIndex &parent ) const
 {

@@ -178,6 +178,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   btnDown->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
 
   mSymbolLayersModel = new QgsSymbolLayerModel( mVectorLayer, layersTree, screen() );
+  connect( mSymbolLayersModel, &QAbstractItemModel::dataChanged, this, &QgsSymbolSelectorWidget::modelDataChanged );
 
   // Set the symbol
   layersTree->setModel( mSymbolLayersModel );
@@ -785,6 +786,13 @@ void QgsSymbolSelectorWidget::projectDataChanged()
   symbolChanged();
   updatePreview();
   mBlockModified = false;
+}
+
+void QgsSymbolSelectorWidget::modelDataChanged()
+{
+  updatePreview();
+  emitSymbolModified();
+  layerChanged();
 }
 
 void QgsSymbolSelectorWidget::layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers )
