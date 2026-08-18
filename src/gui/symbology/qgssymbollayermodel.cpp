@@ -259,9 +259,16 @@ Qt::ItemFlags QgsSymbolLayerModel::flags( const QModelIndex &index ) const
   if ( !index.isValid() )
     return Qt::ItemFlags();
 
-  return Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsUserCheckable;
-}
+  Qt::ItemFlags f = Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable;
 
+  QgsSymbolLayerModelNode *node = index2node( index );
+  if ( node->isLayer() )
+  {
+    f |= Qt::ItemFlag::ItemIsUserCheckable;
+  }
+
+  return f;
+}
 
 QVariant QgsSymbolLayerModel::data( const QModelIndex &index, int role ) const
 {
@@ -290,7 +297,7 @@ bool QgsSymbolLayerModel::setData( const QModelIndex &index, const QVariant &val
       return false;
 
 
-    bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
+    bool checked = value.value<Qt::CheckState>() == Qt::Checked;
     QgsSymbolLayer *symbolLayer = node->layer();
     symbolLayer->setEnabled( checked );
 
