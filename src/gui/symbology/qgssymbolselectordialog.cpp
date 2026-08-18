@@ -321,6 +321,7 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol )
 
   mSymbol = symbol;
   mSymbolLayersModel->setSymbol( symbol );
+  layersTree->expandAll();
 }
 
 void QgsSymbolSelectorWidget::reloadSymbol()
