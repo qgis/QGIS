@@ -788,11 +788,14 @@ void QgsSymbolSelectorWidget::projectDataChanged()
   mBlockModified = false;
 }
 
-void QgsSymbolSelectorWidget::modelDataChanged()
+void QgsSymbolSelectorWidget::modelDataChanged( const QModelIndex &, const QModelIndex &, const QList<int> &roles )
 {
-  updatePreview();
-  emitSymbolModified();
-  layerChanged();
+  if ( roles.contains( Qt::CheckStateRole ) )
+  {
+    emitSymbolModified();
+    layerChanged();
+    updatePreview();
+  }
 }
 
 void QgsSymbolSelectorWidget::layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers )
