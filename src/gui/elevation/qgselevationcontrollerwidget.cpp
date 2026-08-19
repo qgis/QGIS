@@ -276,9 +276,19 @@ void QgsElevationControllerWidget::setRangeLimits( const QgsDoubleRange &limits 
   mBlockSliderChanges = true;
   mSlider->setRangeLimits( static_cast<int>( std::floor( limits.lower() * mSliderPrecision ) ), static_cast<int>( std::ceil( limits.upper() * mSliderPrecision ) ) );
 
+  // the slider holds the fixed size in its own integer units, which the new precision changed
+  if ( mFixedRangeSize >= 0 )
+    mSlider->setFixedRangeSize( static_cast<int>( std::round( mFixedRangeSize * mSliderPrecision ) ) );
+
   // clip current range to fit limits
-  const double newCurrentLower = std::max( mCurrentRange.lower(), limits.lower() );
-  const double newCurrentUpper = std::min( mCurrentRange.upper(), limits.upper() );
+  double newCurrentLower = std::max( mCurrentRange.lower(), limits.lower() );
+  double newCurrentUpper = std::min( mCurrentRange.upper(), limits.upper() );
+  if ( mFixedRangeSize >= 0 )
+  {
+    // a locked size is kept, the range moves inside the new limits instead of being clipped
+    newCurrentUpper = std::min( newCurrentLower + mFixedRangeSize, limits.upper() );
+    newCurrentLower = std::max( newCurrentUpper - mFixedRangeSize, limits.lower() );
+  }
   const bool rangeHasChanged = newCurrentLower != mCurrentRange.lower() || newCurrentUpper != mCurrentRange.upper();
 
   mSlider->setRange( static_cast<int>( std::floor( newCurrentLower * mSliderPrecision ) ), static_cast<int>( std::ceil( newCurrentUpper * mSliderPrecision ) ) );
