@@ -20,9 +20,11 @@
 #include "qgselevationutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 
-#include <QInputDialog>
+#include <QMenu>
+#include <QPointer>
 
 #include "moc_qgsappcanvasfiltering.cpp"
 
@@ -53,9 +55,8 @@ void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, Qg
 {
   QgsElevationControllerWidget *controller = new QgsElevationControllerWidget();
 
-  QAction *setProjectLimitsAction = new QAction( tr( "Set Elevation Range…" ), controller );
-  controller->menu()->addAction( setProjectLimitsAction );
-  connect( setProjectLimitsAction, &QAction::triggered, QgisApp::instance(), [] { QgisApp::instance()->showProjectProperties( tr( "Elevation" ) ); } );
+  controller->menu()->addSeparator();
+
   QAction *disableAction = new QAction( tr( "Disable Elevation Filter" ), controller );
   controller->menu()->addAction( disableAction );
   connect( disableAction, &QAction::triggered, senderAction, [senderAction] { senderAction->setChecked( false ); } );
@@ -93,6 +94,8 @@ QgsCanvasElevationControllerBridge::QgsCanvasElevationControllerBridge( QgsEleva
   }
 
   connect( mCanvas, &QgsMapCanvas::layersChanged, this, &QgsCanvasElevationControllerBridge::canvasLayersChanged );
+
+  mController->setMapCanvas( mCanvas );
 
   canvasLayersChanged();
 }
