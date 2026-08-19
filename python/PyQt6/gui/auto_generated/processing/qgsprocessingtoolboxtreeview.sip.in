@@ -118,6 +118,9 @@ Returns the current filters controlling the view's contents.
 Sets the vector ``layer`` for the in-place algorithms
 %End
 
+
+
+
   public slots:
 
     void setFilterString( const QString &filter );
