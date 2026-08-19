@@ -16,6 +16,8 @@
 
 #include "qgsmathutils.h"
 
+#include <cmath>
+
 #include "qgis.h"
 
 #include "moc_qgsmathutils.cpp"
@@ -85,4 +87,31 @@ void QgsMathUtils::doubleToRational( double value, qlonglong &numerator, qlonglo
 
   numerator = sign * currentAConvergent;
   denominator = currentBConvergent;
+}
+
+double QgsMathUtils::roundingInterval( double span, int divisions )
+{
+  if ( !std::isfinite( span ) || span <= 0 || divisions < 1 )
+    return 0;
+
+  return std::pow( 10.0, std::floor( std::log10( span / divisions ) ) );
+}
+
+QgsDoubleRange QgsMathUtils::roundedRange( const QgsDoubleRange &range )
+{
+  const double interval = roundingInterval( range.upper() - range.lower() );
+  if ( interval <= 0 )
+    return range;
+
+  double lower = std::floor( range.lower() / interval ) * interval;
+  double upper = std::ceil( range.upper() / interval ) * interval;
+
+  const int decimals = -static_cast<int>( std::floor( std::log10( interval ) ) );
+  if ( decimals > 0 )
+  {
+    // strip the noise the multiplication above leaves in fractional values
+    lower = qgsRound( lower, decimals );
+    upper = qgsRound( upper, decimals );
+  }
+  return QgsDoubleRange( lower, upper );
 }
