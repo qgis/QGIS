@@ -517,7 +517,7 @@ void QgsModelViewToolLink::addAlgorithm( const QString &algorithmId, const QPoin
     const QList<const QgsProcessingOutputDefinition *> definitions = childAlg.algorithm()->outputDefinitions();
     for ( const QgsProcessingOutputDefinition *outputDef : definitions )
     {
-      if ( QgsApplication::processingRegistry()->isCompatible( outputDef, parameter ) )
+      if ( QgsApplication::processingRegistry()->isCompatibleDefinition( outputDef, parameter ) )
       {
         view()->beginCommand( tr( "Add Algorithm" ) );
         QString childAlgorithmId = scene()->model()->addChildAlgorithm( childAlg );

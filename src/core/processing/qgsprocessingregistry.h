@@ -111,8 +111,8 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 
-    bool isCompatible(const QgsProcessingParameterDefinition* parameterA, const QgsProcessingParameterDefinition* parameterB);
-    bool isCompatible(const QgsProcessingOutputDefinition* outputDef, const QgsProcessingParameterDefinition* parameterB);
+    bool isCompatibleDefinition(const QgsProcessingParameterDefinition* parameterDefSource, const QgsProcessingParameterDefinition* parameterDefTarget);
+    bool isCompatibleDefinition(const QgsProcessingOutputDefinition* outputDefSource, const QgsProcessingParameterDefinition* parameterDefTarget);
 
     /**
      * Returns basic algorithm information for the algorithm with matching ID.

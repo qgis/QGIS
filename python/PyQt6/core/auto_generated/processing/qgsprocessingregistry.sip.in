@@ -99,8 +99,8 @@ Returns a list of all available algorithms from registered providers.
 .. seealso:: :py:func:`algorithmById`
 %End
 
-    bool isCompatible(const QgsProcessingParameterDefinition* parameterA, const QgsProcessingParameterDefinition* parameterB);
-    bool isCompatible(const QgsProcessingOutputDefinition* outputDef, const QgsProcessingParameterDefinition* parameterB);
+    bool isCompatibleDefinition(const QgsProcessingParameterDefinition* parameterDefSource, const QgsProcessingParameterDefinition* parameterDefTarget);
+    bool isCompatibleDefinition(const QgsProcessingOutputDefinition* outputDefSource, const QgsProcessingParameterDefinition* parameterDefTarget);
 
     QgsProcessingAlgorithmInformation algorithmInformation( const QString &id ) const;
 %Docstring

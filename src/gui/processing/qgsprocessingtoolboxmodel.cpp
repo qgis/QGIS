@@ -974,7 +974,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         const auto outputs = alg->outputDefinitions();
         for ( const QgsProcessingOutputDefinition *output : outputs )
         {
-          if ( QgsApplication::processingRegistry()->isCompatible( output, mParameterDefinition ) )
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( output, mParameterDefinition ) )
           {
             found = true;
             break;
@@ -996,7 +996,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
           if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
             continue;
 
-          if ( QgsApplication::processingRegistry()->isCompatible( mOutputDefinfition, def ) )
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( mOutputDefinfition, def ) )
           {
             found = true;
             break;
@@ -1010,7 +1010,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
           if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
             continue;
 
-          if ( QgsApplication::processingRegistry()->isCompatible( mParameterDefinition, def ) )
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( mParameterDefinition, def ) )
           {
             found = true;
             break;

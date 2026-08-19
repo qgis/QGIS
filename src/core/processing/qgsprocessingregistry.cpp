@@ -307,19 +307,19 @@ QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() cons
   return mParameterTypes.values();
 }
 
-bool QgsProcessingRegistry::isCompatible( const QgsProcessingParameterDefinition *parameterDef, const QgsProcessingParameterDefinition *parameterDefTarget )
+bool QgsProcessingRegistry::isCompatibleDefinition( const QgsProcessingParameterDefinition *parameterDefSource, const QgsProcessingParameterDefinition *parameterDefTarget )
 {
   const QgsProcessingParameterType *paramTargetType = parameterType( parameterDefTarget->type() );
   if ( paramTargetType )
-    return paramTargetType->acceptedParameterTypes().contains( parameterDef->type() );
+    return paramTargetType->acceptedParameterTypes().contains( parameterDefSource->type() );
   return false;
 }
 
-bool QgsProcessingRegistry::isCompatible( const QgsProcessingOutputDefinition *outputDef, const QgsProcessingParameterDefinition *parameterDefTarget )
+bool QgsProcessingRegistry::isCompatibleDefinition( const QgsProcessingOutputDefinition *outputDefSource, const QgsProcessingParameterDefinition *parameterDefTarget )
 {
   const QgsProcessingParameterType *paramTargetType = parameterType( parameterDefTarget->type() );
 
   if ( paramTargetType )
-    return paramTargetType->acceptedOutputTypes().contains( outputDef->type() );
+    return paramTargetType->acceptedOutputTypes().contains( outputDefSource->type() );
   return false;
 }
