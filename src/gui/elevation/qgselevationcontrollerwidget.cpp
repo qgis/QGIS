@@ -207,6 +207,11 @@ QgsMapCanvas *QgsElevationControllerWidget::mapCanvas() const
 void QgsElevationControllerWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
+
+  // a project which defines no elevation range of its own leaves the widget with a guessed
+  // range, the canvas layers give a usable one instead
+  if ( mMapCanvas && QgsProject::instance()->elevationProperties()->elevationRange().isInfinite() )
+    setLimitsFromRange( QgsElevationUtils::calculateZRangeForLayers( mMapCanvas->layers( true ) ) );
 }
 
 bool QgsElevationControllerWidget::layerHasElevation( QgsMapLayer *layer )
