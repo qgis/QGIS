@@ -243,7 +243,6 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mMenuEdit->insertSeparator( mActionDeleteComponents );
 
   mAlgorithmsModel = new QgsModelerToolboxModel( this );
-  // mAlgorithmsModel->setFilterAlgorithmCompatibleWithOutput( QgsProcessingOutputVectorLayer::typeName() );
   mToolboxTree->setToolboxProxyModel( mAlgorithmsModel );
 
   QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::Filter::Modeler;
@@ -251,9 +250,6 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   {
     filters |= QgsProcessingToolboxProxyModel::Filter::ShowKnownIssues;
   }
-
-  // filters |= QgsProcessingToolboxProxyModel::Filter::ForSocketOutput;
-
   mToolboxTree->setFilters( filters );
   mToolboxTree->setDragDropMode( QTreeWidget::DragOnly );
   mToolboxTree->setDropIndicatorShown( true );

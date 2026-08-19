@@ -604,8 +604,6 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
     /**
      * TODO
      */
-    void setFilterAlgorithmCompatibleWithOutput( const QString &output );
-
     void setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition );
     void setFilterOutput( const QgsProcessingOutputDefinition *outputDefinition );
 
@@ -625,7 +623,6 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
     Filters mFilters = Filters();
     QString mFilterString;
     QPointer<QgsVectorLayer> mInPlaceLayer;
-    QString mOutputName;
 
     const QgsProcessingOutputDefinition *mOutputDefinfition = nullptr;
     const QgsProcessingParameterDefinition *mParameterDefinition = nullptr;

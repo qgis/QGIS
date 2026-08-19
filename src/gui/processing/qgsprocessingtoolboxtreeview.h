@@ -126,8 +126,6 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
     /**
      * TODO
      */
-    void setFilterAlgorithmCompatibleWithOutput( const QString &outputName );
-
     void setFilterParameter( const QgsProcessingParameterDefinition *outputName );
     void setFilterOutput( const QgsProcessingOutputDefinition *outputName );
 

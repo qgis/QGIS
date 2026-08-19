@@ -133,11 +133,6 @@ QgsProcessingToolboxProxyModel::Filters QgsProcessingToolboxTreeView::filters() 
   return mModel->filters();
 }
 
-void QgsProcessingToolboxTreeView::setFilterAlgorithmCompatibleWithOutput( const QString &outputName )
-{
-  mModel->setFilterAlgorithmCompatibleWithOutput( outputName );
-}
-
 void QgsProcessingToolboxTreeView::setFilterParameter( const QgsProcessingParameterDefinition *outputName )
 {
   mModel->setFilterParameter( outputName );

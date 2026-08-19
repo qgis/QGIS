@@ -32,9 +32,9 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingtoolboxtreeview.h"
 
+#include <QHeaderView>
 #include <QString>
 #include <QVBoxLayout>
-#include <qheaderview.h>
 
 #include "moc_qgsmodelviewtoollink.cpp"
 
@@ -116,7 +116,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
     }
   }
 
-  // Do nothing if we disconnect unlink
+  // Do nothing if we unlink sockets
   if ( !mToSocket && mPendingUnlink )
   {
     // but it might have been an unlink, so we properly end the command
@@ -153,29 +153,17 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
       filters |= QgsProcessingToolboxProxyModel::Filter::ShowKnownIssues;
     }
 
-    QString outputTypeName;
     if ( !mFromSocket->isInput() ) //is an output
     {
       QgsProcessingModelComponent *outputComponent = mFromSocket->component();
       if ( const QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent ) )
       {
-        outputTypeName = outputChildAlgorithm->algorithm()->outputDefinitions().at( mFromSocket->index() )->type();
         toolboxView->setFilterOutput( outputChildAlgorithm->algorithm()->outputDefinitions().at( mFromSocket->index() ) );
       }
       else if ( const QgsProcessingModelParameter *paramFrom = dynamic_cast<QgsProcessingModelParameter *>( outputComponent ) )
       {
         toolboxView->setFilterParameter( scene()->model()->parameterDefinition( paramFrom->parameterName() ) );
-
-        outputTypeName = scene()->model()->parameterDefinition( paramFrom->parameterName() )->type();
-        qDebug() << "param name:" << paramFrom->parameterName();
-        qDebug() << "type" << paramFrom->parameterName();
-
-
-        // newInputParamSource = QgsProcessingModelChildParameterSource::fromModelParameter( paramFrom->parameterName() );
-        // outParamDescription = paramFrom->description();
       }
-
-      toolboxView->setFilterAlgorithmCompatibleWithOutput( outputTypeName );
       filters |= QgsProcessingToolboxProxyModel::Filter::ForSocketOutput;
     }
     else
@@ -185,10 +173,6 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
       {
         const QgsProcessingParameterDefinition *paramDef = outputChildAlgorithm->algorithm()->parameterDefinitions().at( mFromSocket->index() );
         toolboxView->setFilterParameter( paramDef );
-        // outputTypeName = outputChildAlgorithm->algorithm()->outputDefinitions().at( mFromSocket->index() )->type();
-        outputTypeName = outputChildAlgorithm->algorithm()->parameterDefinitions().at( mFromSocket->index() )->type();
-        qDebug() << "baldlzdlz:" << outputTypeName;
-        toolboxView->setFilterAlgorithmCompatibleWithOutput( outputTypeName );
         filters |= QgsProcessingToolboxProxyModel::Filter::ForSocketInput;
       }
     }
@@ -213,18 +197,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
     connect( lineEdit, &QgsFilterLineEdit::returnPressed, this, [lbd]() { lbd(); } );
 
     connect( toolboxView, &QgsProcessingToolboxTreeView::clicked, this, [lbd]( const QModelIndex & ) { lbd(); } );
-    connect( toolboxView, &QgsProcessingToolboxTreeView::doubleClicked, this, [lbd]( const QModelIndex & ) {
-      lbd();
-
-      // if ( toolboxView->selectedAlgorithm() )
-      // {
-      //   addAlgorithm( toolboxView->selectedAlgorithm()->id(), event->modelPoint(), mFromSocket );
-      //   widget->close();
-      // }
-
-      // if ( toolboxView->selectedParameterType() )
-      // addInput( toolboxView->selectedParameterType()->id(), QPointF() );
-    } );
+    connect( toolboxView, &QgsProcessingToolboxTreeView::doubleClicked, this, [lbd]( const QModelIndex & ) { lbd(); } );
 
 
     layout->addWidget( lineEdit );

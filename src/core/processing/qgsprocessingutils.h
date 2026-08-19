@@ -39,7 +39,6 @@ class QgsPointCloudLayer;
 class QgsAnnotationLayer;
 class QgsVectorTileLayer;
 class QgsTiledSceneLayer;
-class QgsProcessingParameterDefinition;
 
 #include <QString>
 #include <QVariant>
@@ -666,8 +665,6 @@ class CORE_EXPORT QgsProcessingUtils
      * \since QGIS 4.2
      */
     static QString supportedImageFileFilters();
-
-
 
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );

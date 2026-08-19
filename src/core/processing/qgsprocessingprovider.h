@@ -358,18 +358,6 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      */
     const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
 
-    /**
-     * Returns a set of algorithms compatible with the output \a outputName.
-     * \see algorithm()
-     */
-    QSet< const QgsProcessingAlgorithm * > algorithmsCompatibleWithOutput(const QString &outputName) const;
-
-    /**
-     * TODO
-     * \see algorithm()
-     */
-    QSet< const QgsProcessingAlgorithm * > algorithmsCompatibleWithParameter(const QString &parameterName) const;
-
   signals:
 
     /**
@@ -395,11 +383,6 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
   private:
 
     QMap< QString, const QgsProcessingAlgorithm * > mAlgorithms;
-
-    QMap <QString, QSet<const QgsProcessingAlgorithm *>> mOutputCompatibleAlgorithms;
-    QMap <QString, QSet<const QgsProcessingAlgorithm *>> mInputCompatibleAlgorithms;
-
-
 
 #ifdef SIP_RUN
     QgsProcessingProvider( const QgsProcessingProvider &other );

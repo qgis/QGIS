@@ -573,12 +573,10 @@ against the algorithm name, short description, tags, etc.
 .. seealso:: :py:func:`filterString`
 %End
 
-    void setFilterAlgorithmCompatibleWithOutput( const QString &output );
+    void setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition );
 %Docstring
 TODO
 %End
-
-    void setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition );
     void setFilterOutput( const QgsProcessingOutputDefinition *outputDefinition );
 
     QString filterString() const;

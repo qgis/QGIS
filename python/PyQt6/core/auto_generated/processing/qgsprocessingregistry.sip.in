@@ -99,20 +99,6 @@ Returns a list of all available algorithms from registered providers.
 .. seealso:: :py:func:`algorithmById`
 %End
 
-    QSet< const QgsProcessingAlgorithm * > algorithmsCompatibleWithOutput(const QString &outputName) const;
-%Docstring
-Returns a set of algorithms compatible with the output ``outputName``.
-
-.. seealso:: :py:func:`algorithm`
-%End
-
-    QSet< const QgsProcessingAlgorithm * > algorithmsCompatibleWithParameter(const QString &parameterName) const;
-%Docstring
-TODO
-
-.. seealso:: :py:func:`algorithm`
-%End
-
     bool isCompatible(const QgsProcessingParameterDefinition* parameterA, const QgsProcessingParameterDefinition* parameterB);
     bool isCompatible(const QgsProcessingOutputDefinition* outputDef, const QgsProcessingParameterDefinition* parameterB);
 

@@ -734,8 +734,6 @@ as the recommended default. Remaining filters are sorted alphabetically.
 .. versionadded:: 4.2
 %End
 
-
-
 };
 
 class QgsProcessingFeatureSource : QgsFeatureSource

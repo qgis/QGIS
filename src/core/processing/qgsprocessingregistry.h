@@ -111,18 +111,6 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 
-    /**
-     * Returns a set of algorithms compatible with the output \a outputName.
-     * \see algorithm()
-     */
-    QSet< const QgsProcessingAlgorithm * > algorithmsCompatibleWithOutput(const QString &outputName) const;
-
-    /**
-     * TODO
-     * \see algorithm()
-     */
-    QSet< const QgsProcessingAlgorithm * > algorithmsCompatibleWithParameter(const QString &parameterName) const;
-
     bool isCompatible(const QgsProcessingParameterDefinition* parameterA, const QgsProcessingParameterDefinition* parameterB);
     bool isCompatible(const QgsProcessingOutputDefinition* outputDef, const QgsProcessingParameterDefinition* parameterB);
 

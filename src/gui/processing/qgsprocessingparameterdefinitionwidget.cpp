@@ -132,7 +132,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionWidget::create
 
   if ( !mRequiredCheckBox->isChecked() )
     flags |= Qgis::ProcessingParameterFlag::Optional;
-  if ( !mAdvancedCheckBox->isChecked() )
+  if ( mAdvancedCheckBox->isChecked() )
     flags |= Qgis::ProcessingParameterFlag::Advanced;
 
   if ( mDefinitionWidget )

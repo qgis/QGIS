@@ -881,14 +881,6 @@ void QgsProcessingToolboxProxyModel::setFilterString( const QString &filter )
   invalidateFilter();
 }
 
-void QgsProcessingToolboxProxyModel::setFilterAlgorithmCompatibleWithOutput( const QString &outputName )
-{
-  mOutputName = outputName;
-
-  // mFilters.setFlag( Filter::ForSocketOutput );
-  invalidateFilter();
-}
-
 void QgsProcessingToolboxProxyModel::setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition )
 {
   mParameterDefinition = parameterDefinition;
@@ -973,30 +965,9 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       }
     }
 
-    /*
-    if ( mFilters & Filter::ForSocketOutput )
-    {
-      // const QString algId = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString();
-      const QgsProcessingAlgorithm *alg = mModel->algorithmForIndex( sourceIndex );
-      qDebug() << "filter out ?";
-      qDebug() << "mOutputName:" << mOutputName;
-      qDebug() << "alg id" << alg->id();
-      qDebug() << "true/false ?" << mModel->processingRegistry()->algorithmsCompatibleWithOutput( mOutputName ).contains( alg );
-      ;
-      if ( !mModel->processingRegistry()->algorithmsCompatibleWithOutput( mOutputName ).contains( alg ) )
-        return false;
-      // return mModel->processingRegistry()->algorithmsCompatibleWithOutput(mOutputName).contains(alg);
-    }
-    */
-
     if ( mFilters & Filter::ForSocketInput )
     {
       const QgsProcessingAlgorithm *alg = mModel->algorithmForIndex( sourceIndex );
-      qDebug() << "alg id:" << alg->id();
-      if ( alg->id() == "script:algRectAlongLines" )
-      {
-        qDebug() << "alg rect ";
-      }
       if ( mParameterDefinition )
       {
         bool found = false;
@@ -1017,15 +988,6 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
     if ( mFilters & Filter::ForSocketOutput )
     {
       const QgsProcessingAlgorithm *alg = mModel->algorithmForIndex( sourceIndex );
-      qDebug() << "ForSocketInput mOutputName" << mOutputName;
-      // qDebug() <<
-      // qDebug() << "paramType->acceptedOutputTypes():" << mModel->processingRegistry()->algorithmsCompatibleWithParameter( mOutputName );
-      qDebug() << "true/false ?" << !mModel->processingRegistry()->algorithmsCompatibleWithParameter( mOutputName ).contains( alg );
-
-      /*
-      if ( !mModel->processingRegistry()->algorithmsCompatibleWithParameter( mOutputName ).contains( alg ) )
-        return false;
-      */
       bool found = false;
       if ( mOutputDefinfition )
       {
@@ -1112,23 +1074,10 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
 
     if ( mFilters & Filter::ForSocketInput )
     {
-      const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( mOutputName );
+      const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( mParameterDefinition->type() );
       const QString paramId = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::ParameterTypeId ) ).toString();
       if ( !paramType->acceptedParameterTypes().contains( paramId ) )
         return false;
-
-      // const QgsProcessingParameterType *paramType = mModel->parameterTypeForIndex( sourceIndex );
-
-      /*
-      qDebug() << "paramType->name():" << paramType->name();
-
-      qDebug() << "mOutputName:" << mOutputName;
-      qDebug() << "paramType->acceptedOutputTypes():" << paramType->acceptedOutputTypes();
-      qDebug() << "accepted ?:"<< !paramType->acceptedOutputTypes().contains( mOutputName );
-
-      qDebug() << "paramType->acceptedParameterTypes():" << paramType->acceptedParameterTypes();
-      qDebug() << "accepted ?:"<< !paramType->acceptedParameterTypes().contains( mOutputName );
-      */
     }
 
     return true;
