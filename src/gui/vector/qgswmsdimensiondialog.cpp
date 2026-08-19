@@ -68,13 +68,13 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
 
   // Set default display combobox
   mDefaultDisplayComboBox->clear();
-  QMap<int, QString> defaultDisplayLabels = QgsMapLayerServerProperties::wmsDimensionDefaultDisplayLabels();
-  for ( auto it = defaultDisplayLabels.constBegin(); it != defaultDisplayLabels.constEnd(); it++ )
+  QMap<Qgis::WmsDimensionDefaultDisplay, QString> defaultDisplayDescriptions = QgsMapLayerServerProperties::wmsDimensionDefaultDisplayDescriptions();
+  for ( auto it = defaultDisplayDescriptions.constBegin(); it != defaultDisplayDescriptions.constEnd(); it++ )
   {
-    mDefaultDisplayComboBox->addItem( it.value(), QVariant( it.key() ) );
+    mDefaultDisplayComboBox->addItem( it.value(), QVariant( static_cast<int>( it.key() ) ) );
   }
   // Set default display to All values
-  mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( QgsMapLayerServerProperties::WmsDimensionInfo::AllValues ) ) );
+  mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( static_cast<int>( Qgis::WmsDimensionDefaultDisplay::AllValues ) ) ) );
 
   mReferenceValueLabel->setEnabled( false );
   mReferenceValueComboBox->setEnabled( false );
@@ -102,8 +102,8 @@ void QgsWmsDimensionDialog::setInfo( const QgsMapLayerServerProperties::WmsDimen
   mUnitsLineEdit->setText( info.units );
   mUnitSymbolLineEdit->setText( info.unitSymbol );
 
-  mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( info.defaultDisplayType ) ) );
-  if ( info.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::ReferenceValue )
+  mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( static_cast<int>( info.defaultDisplayType ) ) ) );
+  if ( info.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::ReferenceValue )
   {
     const int referenceValueIndex = mReferenceValueComboBox->findData( info.referenceValue );
     if ( referenceValueIndex == -1 )
@@ -137,8 +137,15 @@ QgsMapLayerServerProperties::WmsDimensionInfo QgsWmsDimensionDialog::info() cons
   {
     refValue = mReferenceValueComboBox->currentData();
   }
-  return QgsMapLayerServerProperties::
-    WmsDimensionInfo( name, mFieldComboBox->currentField(), mEndFieldComboBox->currentField(), mUnitsLineEdit->text(), mUnitSymbolLineEdit->text(), mDefaultDisplayComboBox->currentData().toInt(), refValue );
+  return QgsMapLayerServerProperties::WmsDimensionInfo(
+    name,
+    mFieldComboBox->currentField(),
+    mEndFieldComboBox->currentField(),
+    mUnitsLineEdit->text(),
+    mUnitSymbolLineEdit->text(),
+    static_cast<Qgis::WmsDimensionDefaultDisplay>( mDefaultDisplayComboBox->currentData().toInt() ),
+    refValue
+  );
 }
 
 void QgsWmsDimensionDialog::nameChanged( const QString &name )

@@ -575,7 +575,7 @@ void TestQgsMapLayer::cloneServerProperties()
   source->serverProperties()->addMetadataUrl( metadataUrl );
 
   const QgsServerWmsDimensionProperties::WmsDimensionInfo
-    wmsDimension( u"elevation"_s, u"field_name"_s, u"end_field_name"_s, u"foot"_s, u"ft"_s, QgsServerWmsDimensionProperties::WmsDimensionInfo::ReferenceValue, QVariant( u"0"_s ) );
+    wmsDimension( u"elevation"_s, u"field_name"_s, u"end_field_name"_s, u"foot"_s, u"ft"_s, Qgis::WmsDimensionDefaultDisplay::ReferenceValue, QVariant( u"0"_s ) );
   QVERIFY( source->serverProperties()->addWmsDimension( wmsDimension ) );
 
   std::unique_ptr<QgsVectorLayer> clone( source->clone() );

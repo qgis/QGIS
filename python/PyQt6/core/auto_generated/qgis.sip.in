@@ -3920,6 +3920,15 @@ The development version
     typedef QFlags<Qgis::PdfRenderFlag> PdfRenderFlags;
 
 
+
+    enum class WmsDimensionDefaultDisplay /BaseType=IntEnum/
+    {
+      AllValues,
+      MinValue,
+      MaxValue,
+      ReferenceValue,
+    };
+
     enum class RubberBandIconType /BaseType=IntEnum/
     {
       NoIcon,
