@@ -23,6 +23,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsmathutils.h"
 #include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsrange.h"
@@ -224,8 +225,9 @@ void QgsElevationControllerWidget::setLimitsFromRange( const QgsDoubleRange &ran
   if ( range.isInfinite() || range.isEmpty() )
     return;
 
-  setRangeLimits( range );
-  setRange( range );
+  const QgsDoubleRange rounded = QgsMathUtils::roundedRange( range );
+  setRangeLimits( rounded );
+  setRange( rounded );
 }
 
 void QgsElevationControllerWidget::setRange( const QgsDoubleRange &range )
