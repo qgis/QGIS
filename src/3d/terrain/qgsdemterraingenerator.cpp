@@ -17,10 +17,21 @@
 
 #include <limits>
 
+#include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdemterraintilegeometry_p.h"
 #include "qgsdemterraintileloader_p.h"
+#include "qgsfutureutils.h"
+#include "qgsgeotransform.h"
 #include "qgsrasterlayer.h"
+#include "qgsterrainentity.h"
+#include "qgsterraintileentity_p.h"
+#include "qgsthreadingutils.h"
+
+#include <QFuture>
+#include <QGeometryRenderer>
+#include <Qt3DCore/QEntity>
 
 #include "moc_qgsdemterraingenerator.cpp"
 
@@ -84,14 +95,87 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
     return std::numeric_limits<float>::quiet_NaN();
 }
 
-QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
+static void heightMapMinMax( const QByteArray &heightMap, float &zMin, float &zMax )
 {
-  // A bit of a hack to make cloning terrain generator work properly
-  return new QgsDemTerrainTileLoader( mTerrain, node, const_cast<QgsDemTerrainGenerator *>( this ) );
+  const float *zBits = ( const float * ) heightMap.constData();
+  int zCount = heightMap.count() / sizeof( float );
+  bool first = true;
+
+  zMin = zMax = std::numeric_limits<float>::quiet_NaN();
+  for ( int i = 0; i < zCount; ++i )
+  {
+    float z = zBits[i];
+    if ( std::isnan( z ) )
+      continue;
+    if ( first )
+    {
+      zMin = zMax = z;
+      first = false;
+    }
+    zMin = std::min( zMin, z );
+    zMax = std::max( zMax, z );
+  }
+}
+
+QFuture<QgsChunkLoaderResult> QgsDemTerrainGenerator::loadChunk( QgsChunkNode *node )
+{
+  return QgsFutureUtils::combine( mHeightMapGenerator->render( node->tileId() ), loadTextureResources( node ) )
+    .then( this, [this, node]( std::tuple<QByteArray, QgsTerrainGenerator::TerrainTextureResources> results ) {
+      QByteArray heightMap = std::get<0>( results );
+      TerrainTextureResources textureResources = std::get<1>( results );
+      return QgsChunkLoaderResult { [this, heightMap, node, textureResources]( Qt3DCore::QEntity *parent ) -> Qt3DCore::QEntity * {
+        QGIS_CHECK_MAIN_THREAD_ACCESS
+        float zMin, zMax;
+        heightMapMinMax( heightMap, zMin, zMax );
+
+        if ( std::isnan( zMin ) || std::isnan( zMax ) )
+        {
+          // no data available for this tile
+          return nullptr;
+        }
+
+        Qgs3DMapSettings *map = mTerrain->mapSettings();
+        Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( map );
+        QgsChunkNodeId nodeId = node->tileId();
+        QgsRectangle extent = map->terrainGenerator()->tilingScheme().tileToExtent( nodeId );
+        double side = extent.width();
+
+        QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( nodeId );
+
+        // create geometry renderer
+
+        Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
+        mesh->setGeometry( new DemTerrainTileGeometry( mResolution, side, map->terrainSettings()->verticalScale(), mSkirtHeight, heightMap, mesh ) );
+        entity->addComponent( mesh ); // takes ownership if the component has no parent
+
+        // create material
+
+        createTextureComponent( textureResources, entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty(), context );
+
+        // create transform
+        QgsGeoTransform *transform = new QgsGeoTransform;
+        transform->setGeoTranslation( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
+        entity->addComponent( transform );
+
+        // clang-format off
+          node->setExactBox3D(
+            QgsBox3D( extent.xMinimum(), extent.yMinimum(), zMin * map->terrainSettings()->verticalScale(),
+                      extent.xMinimum() + side, extent.yMinimum() + side, zMax * map->terrainSettings()->verticalScale() )
+          );
+        // clang-format on
+        node->updateParentBoundingBoxesRecursively();
+
+        entity->setParent( parent );
+        return entity;
+      } };
+    } );
 }
 
 void QgsDemTerrainGenerator::setExtent( const QgsRectangle &extent )
 {
+  if ( mExtent == extent )
+    return;
+
   mExtent = extent;
   updateGenerator();
 }

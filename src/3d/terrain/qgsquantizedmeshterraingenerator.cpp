@@ -21,6 +21,7 @@
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfutureutils.h"
 #include "qgsgeotransform.h"
 #include "qgsgltf3dutils.h"
 #include "qgslogger.h"
@@ -34,7 +35,7 @@
 #include "qgsrectangle.h"
 #include "qgsterrainentity.h"
 #include "qgsterraintileentity_p.h"
-#include "qgsterraintileloader.h"
+#include "qgsthreadingutils.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenetile.h"
@@ -49,183 +50,12 @@
 #include <QString>
 #include <QTextureMaterial>
 #include <QThreadPool>
+#include <QtConcurrentRun>
 #include <QtGlobal>
 
 #include "moc_qgsquantizedmeshterraingenerator.cpp"
 
 using namespace Qt::StringLiterals;
-
-///@cond PRIVATE
-
-class QgsQuantizedMeshTerrainChunkLoader : public QgsTerrainTileLoader
-{
-    Q_OBJECT
-  public:
-    QgsQuantizedMeshTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, long long tileId, QgsTiledSceneIndex index, const QgsCoordinateTransform &tileCrsToMapCrs );
-    void start() override;
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
-
-  protected:
-    void onTextureLoaded() override;
-
-  private:
-    QgsTerrainTileEntity *mEntity = nullptr;
-    bool mMeshLoaded = false;
-    bool mTextureLoaded = false;
-    std::mutex mFinishedMutex;
-    long long mTileId;
-    QgsTiledSceneIndex mIndex;
-    QgsCoordinateTransform mTileCrsToMapCrs;
-};
-
-QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader(
-  QgsTerrainEntity *terrain_, QgsChunkNode *node, long long tileId, QgsTiledSceneIndex index, const QgsCoordinateTransform &tileCrsToMapCrs
-)
-  : QgsTerrainTileLoader( terrain_, node )
-  , mTileId( tileId )
-  , mIndex( std::move( index ) )
-  , mTileCrsToMapCrs( tileCrsToMapCrs )
-{}
-
-void QgsQuantizedMeshTerrainChunkLoader::start()
-{
-  QgsChunkNode *node = chunk();
-
-  loadTexture(); // Start loading texture
-
-  // Access terrain only on the original thread.
-  Qgs3DMapSettings *map = terrain()->mapSettings();
-  double vertScale = map->terrainSettings()->verticalScale();
-  bool shadingEnabled = map->isTerrainShadingEnabled();
-  QgsVector3D chunkOrigin = node->box3D().center();
-
-  Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( map );
-  QThreadPool::globalInstance()->start( [this, node, vertScale, chunkOrigin, shadingEnabled, context]() {
-    if ( mTileId == QgsQuantizedMeshIndex::ROOT_TILE_ID )
-    {
-      // Nothing to load for imaginary root tile
-      emit finished();
-      return;
-    }
-
-    QgsTiledSceneTile tile = mIndex.getTile( mTileId );
-
-    QString uri = tile.resources().value( u"content"_s ).toString();
-    Q_ASSERT( !uri.isEmpty() );
-
-    uri = tile.baseUrl().resolved( uri ).toString();
-    QByteArray content = mIndex.retrieveContent( uri );
-
-    QgsGltf3DUtils::EntityTransform entityTransform;
-    entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
-    entityTransform.chunkOriginTargetCrs = chunkOrigin;
-    entityTransform.ecefToTargetCrs = &mTileCrsToMapCrs;
-    entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() );
-
-    try
-    {
-      QgsBox3D box3D = node->box3D();
-      QgsQuantizedMeshTile qmTile( content );
-      qmTile.removeDegenerateTriangles();
-
-      // We now know the exact height range of the tile, set it to the node.
-      box3D.setZMinimum( qmTile.mHeader.MinimumHeight * vertScale );
-      box3D.setZMaximum( qmTile.mHeader.MaximumHeight * vertScale );
-      node->setExactBox3D( box3D );
-
-      if ( shadingEnabled && qmTile.mNormalCoords.size() == 0 )
-      {
-        qmTile.generateNormals();
-      }
-
-      tinygltf::Model model = qmTile.toGltf( true, 100, true );
-
-      QStringList errors;
-      Qt3DCore::QEntity *gltfEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, context, &errors );
-      if ( !errors.isEmpty() )
-      {
-        QgsDebugError( "gltf load errors: " + errors.join( '\n' ) );
-        emit finished();
-        return;
-      }
-
-      QgsTerrainTileEntity *terrainEntity = new QgsTerrainTileEntity( node->tileId() );
-      // We count on only having one mesh.
-      Q_ASSERT( gltfEntity->children().size() == 1 );
-      gltfEntity->children()[0]->setParent( terrainEntity );
-
-      QgsGeoTransform *transform = new QgsGeoTransform;
-      transform->setGeoTranslation( chunkOrigin );
-      terrainEntity->addComponent( transform );
-
-      terrainEntity->moveToThread( QgsApplication::instance()->thread() );
-      mEntity = terrainEntity;
-    }
-    catch ( QgsQuantizedMeshParsingException &ex )
-    {
-      QgsDebugError( u"Failed to parse tile from '%1'"_s.arg( uri ) );
-      emit finished();
-      return;
-    }
-
-    {
-      std::lock_guard lock( mFinishedMutex );
-      if ( mTextureLoaded )
-        emit finished();
-      mMeshLoaded = true;
-    }
-  } );
-}
-
-Qt3DCore::QEntity *QgsQuantizedMeshTerrainChunkLoader::createEntity( Qt3DCore::QEntity *parent )
-{
-  if ( mEntity )
-  {
-    mEntity->setParent( parent );
-    Qgs3DMapSettings *map = terrain()->mapSettings();
-
-    Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( map );
-
-    Qt3DRender::QTexture2D *texture = createTexture( mEntity, QgsMaterialContext::fromRenderContext( context ) );
-
-    // Copied from part of QgsTerrainTileLoader::createTextureComponent, since we can't use that directly on the GLTF entity.
-    Qt3DRender::QMaterial *material = nullptr;
-    if ( map->isTerrainShadingEnabled() )
-    {
-      const QgsPhongMaterialSettings &shadingMaterial = map->terrainShadingMaterial();
-      Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = new Qt3DExtras::QDiffuseSpecularMaterial;
-      diffuseMapMaterial->setDiffuse( QVariant::fromValue( texture ) );
-      diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
-      diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
-      diffuseMapMaterial->setShininess( shadingMaterial.shininess() );
-      material = diffuseMapMaterial;
-    }
-    else
-    {
-      Qt3DExtras::QTextureMaterial *textureMaterial = new Qt3DExtras::QTextureMaterial;
-      textureMaterial->setTexture( texture );
-      material = textureMaterial;
-    }
-    // Get the child that actually has the mesh and add the texture
-    Qt3DCore::QEntity *gltfEntity = mEntity->findChild<Qt3DCore::QEntity *>();
-    // Remove default material
-    auto oldMaterial = gltfEntity->componentsOfType<QgsMetalRoughMaterial>();
-    Q_ASSERT( oldMaterial.size() > 0 );
-    gltfEntity->removeComponent( oldMaterial[0] );
-    gltfEntity->addComponent( material );
-  }
-  return mEntity;
-}
-
-void QgsQuantizedMeshTerrainChunkLoader::onTextureLoaded()
-{
-  std::lock_guard lock( mFinishedMutex );
-  if ( mMeshLoaded )
-    emit finished();
-  mTextureLoaded = true;
-}
-
-///@endcond
 
 QgsTerrainGenerator *QgsQuantizedMeshTerrainGenerator::create()
 {
@@ -305,10 +135,127 @@ float QgsQuantizedMeshTerrainGenerator::heightAt( double x, double y, const Qgs3
   return QgsMeshLayerUtils::interpolateZForPoint( triMesh, point.x(), point.y() );
 }
 
-QgsChunkLoader *QgsQuantizedMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
+QFuture<QgsChunkLoaderResult> QgsQuantizedMeshTerrainGenerator::loadChunk( QgsChunkNode *node )
 {
   long long tileId = QgsQuantizedMeshIndex::encodeTileId( nodeIdToTile( node->tileId() ) );
-  return new QgsQuantizedMeshTerrainChunkLoader( mTerrain, node, tileId, mIndex, mTileCrsToMapCrs );
+
+  // Access terrain only on the original thread.
+  Qgs3DMapSettings *map = mTerrain->mapSettings();
+  double vertScale = map->terrainSettings()->verticalScale();
+  bool shadingEnabled = map->isTerrainShadingEnabled();
+  QgsVector3D chunkOrigin = node->box3D().center();
+  Qgs3DRenderContext renderCtx = Qgs3DRenderContext::fromMapSettings( map );
+
+  return QgsFutureUtils::combine( //
+      loadTextureResources( node ),
+      QtConcurrent::run( [node, vertScale, chunkOrigin, shadingEnabled, renderCtx, tileId, index = mIndex, tileCrsToMapCrs = mTileCrsToMapCrs]() mutable -> QgsTerrainTileEntity * {
+        if ( tileId == QgsQuantizedMeshIndex::ROOT_TILE_ID )
+        {
+          // Nothing to load for imaginary root tile
+          return nullptr;
+        }
+
+        QgsTiledSceneTile tile = index.getTile( tileId );
+
+        QString uri = tile.resources().value( u"content"_s ).toString();
+        Q_ASSERT( !uri.isEmpty() );
+
+        uri = tile.baseUrl().resolved( uri ).toString();
+        QByteArray content = index.retrieveContent( uri );
+
+        QgsGltf3DUtils::EntityTransform entityTransform;
+        entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
+        entityTransform.chunkOriginTargetCrs = chunkOrigin;
+        entityTransform.ecefToTargetCrs = &tileCrsToMapCrs;
+        entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() );
+
+        try
+        {
+          QgsBox3D box3D = node->box3D();
+          QgsQuantizedMeshTile qmTile( content );
+          qmTile.removeDegenerateTriangles();
+
+          // We now know the exact height range of the tile, set it to the node.
+          box3D.setZMinimum( qmTile.mHeader.MinimumHeight * vertScale );
+          box3D.setZMaximum( qmTile.mHeader.MaximumHeight * vertScale );
+          node->setExactBox3D( box3D );
+
+          if ( shadingEnabled && qmTile.mNormalCoords.size() == 0 )
+          {
+            qmTile.generateNormals();
+          }
+
+          tinygltf::Model model = qmTile.toGltf( true, 100, true );
+
+          QStringList errors;
+          Qt3DCore::QEntity *gltfEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, renderCtx, &errors );
+          if ( !errors.isEmpty() )
+          {
+            QgsDebugError( "gltf load errors: " + errors.join( '\n' ) );
+            return nullptr;
+          }
+
+          QgsTerrainTileEntity *terrainEntity = new QgsTerrainTileEntity( node->tileId() );
+          // We count on only having one mesh.
+          Q_ASSERT( gltfEntity->children().size() == 1 );
+          gltfEntity->children()[0]->setParent( terrainEntity );
+
+          QgsGeoTransform *transform = new QgsGeoTransform;
+          transform->setGeoTranslation( chunkOrigin );
+          terrainEntity->addComponent( transform );
+
+          terrainEntity->moveToThread( QgsApplication::instance()->thread() );
+          return terrainEntity;
+        }
+        catch ( QgsQuantizedMeshParsingException &ex )
+        {
+          QgsDebugError( u"Failed to parse tile from '%1'"_s.arg( uri ) );
+          return nullptr;
+        }
+      } ) )
+    .then( this, [this]( std::tuple<QgsTerrainGenerator::TerrainTextureResources, QgsTerrainTileEntity *> results ) {
+      QgsTerrainGenerator::TerrainTextureResources textureResources = std::get<0>( results );
+      QgsTerrainTileEntity *entity = std::get<1>( results );
+
+      return QgsChunkLoaderResult { [this, entity, textureResources]( Qt3DCore::QEntity *parent ) {
+        QGIS_CHECK_MAIN_THREAD_ACCESS
+        if ( entity )
+        {
+          entity->setParent( parent );
+          Qgs3DMapSettings *map = mTerrain->mapSettings();
+          Qgs3DRenderContext renderCtx = Qgs3DRenderContext::fromMapSettings( map );
+
+          Qt3DRender::QTexture2D *texture = createTexture( entity, QgsMaterialContext::fromRenderContext( renderCtx ), textureResources );
+
+          // Copied from part of QgsTerrainTileLoader::createTextureComponent, since we can't use that directly on the GLTF entity.
+          Qt3DRender::QMaterial *material = nullptr;
+          if ( map->isTerrainShadingEnabled() )
+          {
+            const QgsPhongMaterialSettings &shadingMaterial = map->terrainShadingMaterial();
+            Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = new Qt3DExtras::QDiffuseSpecularMaterial;
+            diffuseMapMaterial->setDiffuse( QVariant::fromValue( texture ) );
+            diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
+            diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
+            diffuseMapMaterial->setShininess( shadingMaterial.shininess() );
+            material = diffuseMapMaterial;
+          }
+          else
+          {
+            Qt3DExtras::QTextureMaterial *textureMaterial = new Qt3DExtras::QTextureMaterial;
+            textureMaterial->setTexture( texture );
+            material = textureMaterial;
+          }
+          // Get the child that actually has the mesh and add the texture
+          Qt3DCore::QEntity *gltfEntity = entity->findChild<Qt3DCore::QEntity *>();
+          // Remove default material
+          auto oldMaterial = gltfEntity->componentsOfType<QgsMetalRoughMaterial>();
+          Q_ASSERT( oldMaterial.size() > 0 );
+          gltfEntity->removeComponent( oldMaterial[0] );
+          gltfEntity->addComponent( material );
+        }
+        return entity;
+      } };
+    } );
 }
 
 QgsChunkNode *QgsQuantizedMeshTerrainGenerator::createRootNode() const
@@ -320,7 +267,7 @@ QgsChunkNode *QgsQuantizedMeshTerrainGenerator::createRootNode() const
   );
 }
 
-QVector<QgsChunkNode *> QgsQuantizedMeshTerrainGenerator::createChildren( QgsChunkNode *node ) const
+QFuture<QVector<QgsChunkNode *>> QgsQuantizedMeshTerrainGenerator::createChildren( QgsChunkNode *node )
 {
   QVector<QgsChunkNode *> children;
 
@@ -342,7 +289,7 @@ QVector<QgsChunkNode *> QgsQuantizedMeshTerrainGenerator::createChildren( QgsChu
     children.push_back( new QgsChunkNode( childId, QgsBox3D( corner1, corner2 ), mMetadata->geometricErrorAtZoom( tile.zoomLevel() ), node ) );
   }
 
-  return children;
+  return QtFuture::makeReadyValueFuture( children );
 }
 
 bool QgsQuantizedMeshTerrainGenerator::setLayer( QgsTiledSceneLayer *layer )
@@ -381,5 +328,3 @@ QgsTileXYZ QgsQuantizedMeshTerrainGenerator::nodeIdToTile( QgsChunkNodeId nodeId
     return { 0, 0, -1 };
   return { nodeId.x, mMetadata->mTileScheme == "tms"_L1 ? ( 1 << ( nodeId.d - 1 ) ) - nodeId.y - 1 : nodeId.y, nodeId.d - 1 };
 }
-
-#include "qgsquantizedmeshterraingenerator.moc"

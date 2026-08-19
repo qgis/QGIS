@@ -18,16 +18,22 @@
 
 #include "qgis_3d.h"
 #include "qgschunkloader.h"
+#include "qgsmaterial3dhandler.h"
+#include "qgsphongmaterialsettings.h"
 #include "qgstilingscheme.h"
+
+#include <QTexture>
 
 #define SIP_NO_FILE
 
-class QgsAABB;
 class Qgs3DMapSettings;
 class Qgs3DRenderContext;
+class QgsAABB;
+class QgsCoordinateTransformContext;
 class QgsRectangle;
 class QgsTerrainEntity;
-class QgsCoordinateTransformContext;
+class QgsTerrainTextureGenerator;
+class QgsTerrainTileEntity;
 
 class QDomElement;
 class QDomDocument;
@@ -46,7 +52,7 @@ class QgsProject;
  * \note Not available in Python bindings
  *
  */
-class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
+class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoader
 {
     Q_OBJECT
   public:
@@ -74,6 +80,10 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
     Q_FLAG( Capabilities )
+
+    //! Create new terrain generator
+    QgsTerrainGenerator();
+    ~QgsTerrainGenerator() override;
 
     /**
      * Returns flags containing the supported capabilities
@@ -128,12 +138,36 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     //! Returns whether the terrain generator is valid
     bool isValid() const;
 
+    //! Returns pointer to the generator of textures for terrain tiles
+    QgsTerrainTextureGenerator *textureGenerator() { return mTextureGenerator.get(); }
+
+    QFuture<QgsChunkLoaderResult> updateChunk( QgsChunkNode *node ) override;
+
   signals:
 
     //! Emitted when the terrain changed (for example, raster DEM or mesh have data changed)
     void terrainChanged();
 
   protected:
+    struct TerrainTextureResources
+    {
+        QImage image;
+        QgsRectangle extentTerrainCrs;
+        QgsRectangle extentMapCrs;
+        QString tileDebugText;
+    };
+
+    //! Asynchronously loads resources for creating texture
+    QFuture<TerrainTextureResources> loadTextureResources( QgsChunkNode *node );
+    //! Creates a new texture that is linked to the entity
+    Qt3DRender::QTexture2D *createTexture( QgsTerrainTileEntity *entity, const QgsMaterialContext &context, const TerrainTextureResources &resources ) const;
+    //! Creates material component for the entity with the rendered map as a texture
+    void createTextureComponent(
+      const TerrainTextureResources &resources, QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture, const Qgs3DRenderContext &context
+    );
+
+    std::unique_ptr<QgsTerrainTextureGenerator> mTextureGenerator;
+
     QgsTilingScheme mTerrainTilingScheme; //!< Tiling scheme of the terrain
     QgsTerrainEntity *mTerrain = nullptr;
     QgsRectangle mExtent;

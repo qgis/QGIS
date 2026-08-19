@@ -40,14 +40,12 @@
 #define SIP_NO_FILE
 
 class Qgs3DMapSettings;
-class QgsTiledSceneChunkLoaderFactory;
 
 
 /**
  * \ingroup qgis_3d
- * \brief This loader class is responsible for async loading of data for a single tile
- * of tiled scene chunk entity and creation of final 3D entity from the data
- * previously prepared in a worker thread.
+ * \brief This loader is responsible for creation of individual tiles of tiled
+ * scene chunk entity whenever a new tile is requested by the entity.
  *
  * \since QGIS 3.34
  */
@@ -55,57 +53,32 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
 {
     Q_OBJECT
   public:
-    QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset );
-    void start() override;
-
-    ~QgsTiledSceneChunkLoader() override;
-
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
-
-  private:
-    const QgsTiledSceneChunkLoaderFactory &mFactory;
-    double mZValueScale;
-    double mZValueOffset;
-    QgsTiledSceneIndex mIndex;
-    QFutureWatcher<void> *mFutureWatcher = nullptr;
-    Qt3DCore::QEntity *mEntity = nullptr;
-};
-
-
-/**
- * \ingroup qgis_3d
- * \brief This loader factory is responsible for creation of loaders for individual tiles
- * of tiled scene chunk entity whenever a new tile is requested by the entity.
- *
- * \since QGIS 3.34
- */
-class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
-{
-    Q_OBJECT
-  public:
-    QgsTiledSceneChunkLoaderFactory(
+    QgsTiledSceneChunkLoader(
       const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double zValueScale, double zValueOffset
     );
 
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
     QgsChunkNode *createRootNode() const override;
-    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
-
-    bool canCreateChildren( QgsChunkNode *node ) override;
-    void prepareChildren( QgsChunkNode *node ) override;
+    QFuture<QVector<QgsChunkNode *>> createChildren( QgsChunkNode *node ) override;
 
     QgsChunkNode *nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const;
-    void fetchHierarchyForNode( long long nodeId, QgsChunkNode *origNode );
+    QFuture<void> fetchHierarchyForNode( long long nodeId );
 
-    Qgs3DRenderContext mRenderContext;
-    QString mRelativePathBase;
-    mutable QgsTiledSceneIndex mIndex;
-    double mZValueScale = 1.0;
-    double mZValueOffset = 0;
-    QgsCoordinateTransform mBoundsTransform;
-    QgsCoordinateReferenceSystem mLayerCrs;
-    QSet<long long> mPendingHierarchyFetches;
-    QSet<long long> mFutureHierarchyFetches;
+  private:
+    QFuture<void> prepareChildren( QgsChunkNode *node );
+
+    QHash<long long, QFuture<void>> mRunningHierarchyFetches;
+
+    // Each worker thread loading a chunk copies this data.
+    struct
+    {
+        Qgs3DRenderContext mRenderContext;
+        QgsTiledSceneIndex mIndex;
+        double mZValueScale = 1.0;
+        double mZValueOffset = 0;
+        QgsCoordinateReferenceSystem mLayerCrs;
+        QgsCoordinateTransform mBoundsTransform;
+    } mData;
 };
 
 
@@ -113,9 +86,9 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
  * \ingroup qgis_3d
  * \brief 3D entity used for rendering of tiled scene layers.
  *
- * It is implemented using tiling approach with QgsChunkedEntity. Internally it uses
- * QgsTiledSceneChunkLoaderFactory and QgsTiledSceneChunkLoader to do the actual work
- * of loading and creating 3D sub-entities for each tile.
+ * It is implemented using tiling approach with QgsChunkedEntity. Internally it
+ * uses QgsTiledSceneChunkLoader to do the actual work of loading and creating
+ * 3D sub-entities for each tile.
  *
  * \since QGIS 3.34
  */
@@ -137,8 +110,6 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
     ~QgsTiledSceneLayerChunkedEntity() override;
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
-
-    int pendingJobsCount() const override;
 
   private:
     mutable QgsTiledSceneIndex mIndex;
