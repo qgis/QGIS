@@ -99,8 +99,9 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
      *
      * \see hasTimeDimension()
      * \since QGIS 3.44
+     * \deprecated QGIS 4.4. Use QgsGroupWmsDataDialog constructor server properties parameter to add/remove TIME dimension instead.
      */
-    void setHasTimeDimension( bool hasTimeDimension );
+    Q_DECL_DEPRECATED void setHasTimeDimension( bool hasTimeDimension ) SIP_DEPRECATED;
 
     /**
      * Returns whether the time dimension should be computed for this group or not.
@@ -153,6 +154,49 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
     void accept() override;
 
   private:
+    /**
+     * Returns time dimension default display type
+     *
+     * \see setTimeDimensionDefaultDisplay()
+     * \since QGIS 4.4
+     */
+    Qgis::WmsDimensionDefaultDisplay timeDimensionDefaultDisplay() const;
+
+    /**
+     * Sets \a timeDimensionDefaultDisplay time dimension default display type
+     *
+     * \see timeDimensionDefaultDisplay()
+     * \since QGIS 4.4
+     */
+    void setTimeDimensionDefaultDisplay( Qgis::WmsDimensionDefaultDisplay timeDimensionDefaultDisplay );
+
+    /**
+     * Returns time dimension reference value used when default display
+     * is set to Qgis::WmsDimensionDefaultDisplay::ReferenceValue
+     *
+     * \see setTimeDimensionReferenceValue()
+     * \see setTimeDimensionDefaultDisplay()
+     * \see timeDimensionDefaultDisplay()
+     * \since QGIS 4.4
+     */
+    QDateTime timeDimensionReferenceValue() const;
+
+    /**
+     * Sets \a timeDimensionReferenceValue time dimension reference value used when default display
+     * is set to Qgis::WmsDimensionDefaultDisplay::ReferenceValue
+     *
+     * \see timeDimensionReferenceValue()
+     * \see setTimeDimensionDefaultDisplay()
+     * \see timeDimensionDefaultDisplay()
+     * \since QGIS 4.4
+     */
+    void setTimeDimensionReferenceValue( const QDateTime &timeDimensionReferenceValue );
+
+    /**
+     * Update current server properties with widget content
+     */
+    void updateServerProperties() const;
+
     std::unique_ptr<QgsMapLayerServerProperties> mServerProperties;
 };
 

@@ -92,7 +92,7 @@ Sets group WMS abstract
    Use :py:func:`~QgsGroupWmsDataDialog.serverProperties`->:py:func:`~QgsGroupWmsDataDialog.setAbstract` instead.
 %End
 
-    void setHasTimeDimension( bool hasTimeDimension );
+ void setHasTimeDimension( bool hasTimeDimension ) /Deprecated="Since 4.4. Use QgsGroupWmsDataDialog constructor server properties parameter to add/remove TIME dimension instead."/;
 %Docstring
 Sets whether the time dimension should be computed for this group or not
 
@@ -105,6 +105,10 @@ Sets whether the time dimension should be computed for this group or not
 .. seealso:: :py:func:`hasTimeDimension`
 
 .. versionadded:: 3.44
+
+.. deprecated:: 4.4
+
+   Use QgsGroupWmsDataDialog constructor server properties parameter to add/remove TIME dimension instead.
 %End
 
     bool hasTimeDimension() const;
