@@ -113,11 +113,40 @@ class TestQgsElevationControllerWidget(QgisTestCase):
             int(w.slider().minimum() + slider_range * 0.4),
             int(w.slider().minimum() + slider_range * 0.7),
         )
+        # slider values are snapped to round values, here multiples of 1
         self.assertEqual(len(spy), 3)
-        self.assertAlmostEqual(spy[-1][0].lower(), 459.644, 3)
-        self.assertAlmostEqual(spy[-1][0].upper(), 729.495, 3)
-        self.assertAlmostEqual(w.range().lower(), 459.644, 3)
-        self.assertAlmostEqual(w.range().upper(), 729.495, 3)
+        self.assertEqual(spy[-1][0], QgsDoubleRange(460, 729))
+        self.assertEqual(w.range(), QgsDoubleRange(460, 729))
+
+    def test_slider_snapping(self):
+        """
+        Slider interaction should snap to round values and to significant elevations
+        """
+        w = QgsElevationControllerWidget()
+        w.setRangeLimits(QgsDoubleRange(0, 1000))
+
+        slider = w.slider()
+
+        def slider_pos(elevation):
+            """slider position matching an elevation, whatever precision the slider uses"""
+            return slider.minimum() + round(
+                elevation * (slider.maximum() - slider.minimum()) / 1000
+            )
+
+        slider.setRange(slider_pos(123), slider_pos(457))
+        # a 0 - 1000 range is rounded to multiples of 100, so the slider snaps to multiples of 10
+        self.assertEqual(w.range(), QgsDoubleRange(120, 460))
+
+        # an elevation which is significant for the layers is a closer snapping target than 120
+        w.setSignificantElevations([123.4])
+        slider.setRange(slider_pos(122), slider_pos(457))
+        self.assertEqual(w.range(), QgsDoubleRange(123.4, 460))
+
+        # a locked range size must not be altered by snapping
+        w.setFixedRangeSize(35.5)
+        slider.setRange(slider_pos(223), slider_pos(457))
+        self.assertAlmostEqual(w.range().lower(), 220, 6)
+        self.assertAlmostEqual(w.range().upper() - w.range().lower(), 35.5, 6)
 
     def testFixedRangeSize(self):
         """
