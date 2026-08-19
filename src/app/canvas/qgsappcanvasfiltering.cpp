@@ -106,7 +106,7 @@ void QgsCanvasElevationControllerBridge::canvasLayersChanged()
     return;
 
   // disconnect from old layers
-  for ( QgsMapLayer *layer : std::as_const( mCanvasLayers ) )
+  for ( QgsMapLayer *layer : std::as_const( mElevationLayers ) )
   {
     if ( layer )
     {
@@ -115,12 +115,17 @@ void QgsCanvasElevationControllerBridge::canvasLayersChanged()
   }
 
   // and connect to new
+  QList<QgsMapLayer *> elevationLayers;
   const QList<QgsMapLayer *> layers = mCanvas->layers( true );
   for ( QgsMapLayer *layer : layers )
   {
+    if ( !layer->elevationProperties() )
+      continue;
+
     connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::changed, this, &QgsCanvasElevationControllerBridge::updateSignificantElevations );
+    elevationLayers << layer;
   }
-  mCanvasLayers = _qgis_listRawToQPointer( layers );
+  mElevationLayers = _qgis_listRawToQPointer( elevationLayers );
 
   updateSignificantElevations();
 }
@@ -130,7 +135,7 @@ void QgsCanvasElevationControllerBridge::updateSignificantElevations()
   if ( !mCanvas )
     return;
 
-  mController->setSignificantElevations( QgsElevationUtils::significantZValuesForLayers( _qgis_listQPointerToRaw( mCanvasLayers ) ) );
+  mController->setSignificantElevations( QgsElevationUtils::significantZValuesForLayers( _qgis_listQPointerToRaw( mElevationLayers ) ) );
 }
 
 void QgsCanvasElevationControllerBridge::controllerZRangeChanged( const QgsDoubleRange & )
