@@ -32,10 +32,12 @@
 #include "qgslogger.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsthreadingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgswkbtypes.h"
 
+#include <QFuture>
 #include <QString>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometryRenderer>
@@ -47,190 +49,10 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-
-QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkLoaderFactory *factory, QgsChunkNode *node )
-  : QgsChunkLoader( node )
-  , mFactory( factory )
-  , mRenderContext( factory->mRenderContext )
-  , mSource( new QgsVectorLayerFeatureSource( factory->mLayer ) )
-{}
-
-void QgsVectorLayerChunkLoader::start()
-{
-  QgsChunkNode *node = chunk();
-
-  QgsVectorLayer *layer = mFactory->mLayer;
-  mLayerName = mFactory->mLayer->name();
-
-  QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mFactory->mSymbol.get() );
-  if ( !handler )
-  {
-    QgsDebugError( u"Unknown 3D symbol type for vector layer: "_s + mFactory->mSymbol->type() );
-    return;
-  }
-  mHandler.reset( handler );
-
-  QgsExpressionContext exprContext;
-  exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-  exprContext.setFields( layer->fields() );
-  mRenderContext.setExpressionContext( exprContext );
-
-  QSet<QString> attributeNames;
-  if ( !mHandler->prepare( mRenderContext, attributeNames, node->box3D() ) )
-  {
-    QgsDebugError( u"Failed to prepare 3D feature handler!"_s );
-    return;
-  }
-
-  // build the feature request
-  // only a subset of data to be queried
-  QgsFeatureRequest req;
-  req.setSubsetOfAttributes( attributeNames, layer->fields() );
-
-  QgsCoordinateTransform layerToRenderCrs;
-  if ( mFactory->mIsGeocentric )
-  {
-    layerToRenderCrs = QgsCoordinateTransform( layer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() );
-    layerToRenderCrs.setBallparkTransformsAreAppropriate( true );
-
-    QgsRectangle filterRect;
-    if ( layer->crs().type() == Qgis::CrsType::Geocentric )
-    {
-      try
-      {
-        filterRect = layerToRenderCrs.transformBox3D( node->box3D(), Qgis::TransformDirection::Reverse ).toRectangle();
-      }
-      catch ( const QgsCsException & )
-      {
-        QgsDebugError( u"Error transforming node box3D to layer CRS"_s );
-      }
-    }
-    else
-    {
-      const QgsRectangle lonLatRect = QgsGlobeUtils::nodeIdToLonLatRect( node->tileId() );
-      filterRect = Qgs3DUtils::tryReprojectExtent2D( lonLatRect, mFactory->mCrsToLatLon.destinationCrs(), layer->crs(), mRenderContext.transformContext() );
-    }
-    req.setFilterRect( filterRect );
-  }
-  else
-  {
-    req.setCoordinateTransform( QgsCoordinateTransform( layer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() ) );
-    req.setFilterRect( node->box3D().toRectangle() );
-  }
-
-  //
-  // this will be run in a background thread
-  //
-  mFutureWatcher = new QFutureWatcher<void>( this );
-
-  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, [this] {
-    if ( !mCanceled )
-      mFactory->mNodesAreLeafs[mNode->tileId().text()] = mNodeIsLeaf;
-  } );
-
-  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-
-  const bool isGeocentric = mFactory->mIsGeocentric;
-  const QFuture<void> future = QtConcurrent::run( [req = std::move( req ), layerToRenderCrs, isGeocentric, this] {
-    const QgsScopedEvent e( u"3D"_s, u"VL chunk load"_s );
-
-    QgsFeature f;
-    QgsFeatureIterator fi = mSource->getFeatures( req );
-    int featureCount = 0;
-    bool featureLimitReached = false;
-    while ( fi.nextFeature( f ) )
-    {
-      if ( mCanceled )
-        return;
-
-      if ( ++featureCount > mFactory->mMaxFeatures )
-      {
-        featureLimitReached = true;
-        break;
-      }
-
-      if ( isGeocentric )
-      {
-        QgsGeometry g = f.geometry();
-        if ( !g.constGet()->is3D() )
-          g.get()->addZValue( 0 );
-
-        try
-        {
-          g.transform( layerToRenderCrs, Qgis::TransformDirection::Forward, true );
-        }
-        catch ( QgsCsException &e )
-        {
-          QgsDebugError( u"Error transforming feature %1 geometry to globe CRS: %2"_s.arg( f.id() ).arg( e.what() ) );
-          continue;
-        }
-        f.setGeometry( g );
-      }
-
-      mRenderContext.expressionContext().setFeature( f );
-      mHandler->processFeature( f, mRenderContext );
-    }
-
-    if ( !featureLimitReached )
-    {
-      QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( mNode->tileId().text() ), 3 );
-
-      if ( featureCount == 0 || std::max<double>( mNode->box3D().width(), mNode->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
-        mNodeIsLeaf = true;
-    }
-  } );
-
-  // emit finished() as soon as the handler is populated with features
-  mFutureWatcher->setFuture( future );
-}
-
-QgsVectorLayerChunkLoader::~QgsVectorLayerChunkLoader()
-{
-  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
-  {
-    disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-    mFutureWatcher->waitForFinished();
-  }
-}
-
-void QgsVectorLayerChunkLoader::cancel()
-{
-  mCanceled = true;
-}
-
-Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *parent )
-{
-  if ( mHandler->featureCount() == 0 )
-  {
-    // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
-    // we just make sure first that its initial estimated vertical range does not affect its parents' bboxes calculation
-    mNode->setExactBox3D( QgsBox3D() );
-    mNode->updateParentBoundingBoxesRecursively();
-    return nullptr;
-  }
-
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
-  entity->setObjectName( mLayerName + "_" + mNode->tileId().text() );
-  mHandler->finalize( entity, mRenderContext );
-
-  // fix the vertical range of the node from the estimated vertical range to the true range
-  if ( mHandler->zMinimum() != std::numeric_limits<float>::max() && mHandler->zMaximum() != std::numeric_limits<float>::lowest() )
-  {
-    QgsBox3D box = mNode->box3D();
-    box.setZMinimum( mHandler->zMinimum() );
-    box.setZMaximum( mHandler->zMaximum() );
-    mNode->setExactBox3D( box );
-    mNode->updateParentBoundingBoxesRecursively();
-  }
-
-  return entity;
-}
-
-
 ///////////////
 
 
-QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures )
+QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures )
   : mRenderContext( context )
   , mLayer( vl )
   , mSymbol( symbol->clone() )
@@ -323,35 +145,184 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
   }
 }
 
-QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
+QFuture<QgsChunkLoaderResult> QgsVectorLayerChunkLoader::loadChunk( QgsChunkNode *node )
 {
-  return new QgsVectorLayerChunkLoader( this, node );
+  QgsFeature3DHandler *handlerPtr = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( mLayer, mSymbol.get() );
+  if ( !handlerPtr )
+  {
+    QgsDebugError( u"Unknown 3D symbol type for vector layer: "_s + mSymbol->type() );
+    return QtFuture::makeReadyValueFuture( QgsChunkLoaderResult::sEmpty );
+  }
+  // Needs to be in shared_ptr instead of unique_ptr so it can be captured in copyable std::function
+  std::shared_ptr<QgsFeature3DHandler> handler( handlerPtr );
+
+  Qgs3DRenderContext renderCtx = mRenderContext; // Copy, since we mutate it locally per-chunk
+
+  QgsExpressionContext exprContext;
+  exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  exprContext.setFields( mLayer->fields() );
+  renderCtx.setExpressionContext( exprContext );
+
+  QSet<QString> attributeNames;
+  if ( !handler->prepare( renderCtx, attributeNames, node->box3D() ) )
+  {
+    QgsDebugError( u"Failed to prepare 3D feature handler!"_s );
+    return QtFuture::makeReadyValueFuture( QgsChunkLoaderResult::sEmpty );
+  }
+
+  // build the feature request
+  // only a subset of data to be queried
+  QgsFeatureRequest req;
+  req.setSubsetOfAttributes( attributeNames, mLayer->fields() );
+
+  QgsCoordinateTransform layerToRenderCrs;
+  if ( mIsGeocentric )
+  {
+    layerToRenderCrs = QgsCoordinateTransform( mLayer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() );
+    layerToRenderCrs.setBallparkTransformsAreAppropriate( true );
+
+    QgsRectangle filterRect;
+    if ( mLayer->crs().type() == Qgis::CrsType::Geocentric )
+    {
+      try
+      {
+        filterRect = layerToRenderCrs.transformBox3D( node->box3D(), Qgis::TransformDirection::Reverse ).toRectangle();
+      }
+      catch ( const QgsCsException & )
+      {
+        QgsDebugError( u"Error transforming node box3D to layer CRS"_s );
+      }
+    }
+    else
+    {
+      const QgsRectangle lonLatRect = QgsGlobeUtils::nodeIdToLonLatRect( node->tileId() );
+      filterRect = Qgs3DUtils::tryReprojectExtent2D( lonLatRect, mCrsToLatLon.destinationCrs(), mLayer->crs(), mRenderContext.transformContext() );
+    }
+    req.setFilterRect( filterRect );
+  }
+  else
+  {
+    req.setCoordinateTransform( QgsCoordinateTransform( mLayer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() ) );
+    req.setFilterRect( node->box3D().toRectangle() );
+  }
+
+
+  auto source = std::make_unique<QgsVectorLayerFeatureSource>( mLayer );
+
+  QPointer<QgsVectorLayerChunkLoader> weakThis = this;
+  return QtConcurrent::run(
+    [req = std::move( req ), source = std::move( source ), handler = std::move( handler ), this, renderCtx, node, layerToRenderCrs, maxFeatures = mMaxFeatures, isGeocentric = mIsGeocentric, weakThis](
+      QPromise<QgsChunkLoaderResult> &promise
+    ) mutable {
+      const QgsScopedEvent e( u"3D"_s, u"VL chunk load"_s );
+
+      QgsFeature f;
+      QgsFeatureIterator fi = source->getFeatures( req );
+      int featureCount = 0;
+      bool featureLimitReached = false;
+      while ( fi.nextFeature( f ) )
+      {
+        if ( promise.isCanceled() )
+          return;
+
+        if ( ++featureCount > maxFeatures )
+        {
+          featureLimitReached = true;
+          break;
+        }
+
+        if ( isGeocentric )
+        {
+          QgsGeometry g = f.geometry();
+          if ( !g.constGet()->is3D() )
+            g.get()->addZValue( 0 );
+
+          try
+          {
+            g.transform( layerToRenderCrs, Qgis::TransformDirection::Forward, true );
+          }
+          catch ( QgsCsException &e )
+          {
+            QgsDebugError( u"Error transforming feature %1 geometry to globe CRS: %2"_s.arg( f.id() ).arg( e.what() ) );
+            continue;
+          }
+          f.setGeometry( g );
+        }
+
+        renderCtx.expressionContext().setFeature( f );
+        handler->processFeature( f, renderCtx );
+      }
+
+      bool nodeIsLeaf = false;
+      if ( !featureLimitReached )
+      {
+        QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( node->tileId().text() ), 3 );
+
+        if ( featureCount == 0 || std::max<double>( node->box3D().width(), node->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
+          nodeIsLeaf = true;
+      }
+
+      QgsThreadingUtils::runOnMainThread( [weakThis, nodeIsLeaf, key = node->tileId().text()]() {
+        if ( weakThis )
+        {
+          QMutexLocker<QMutex> locker( &weakThis->mNodesAreLeafsMutex );
+          weakThis->mNodesAreLeafs[key] = nodeIsLeaf;
+        }
+      } );
+
+      promise.addResult( QgsChunkLoaderResult { [this, handler, node, renderCtx]( Qt3DCore::QEntity *parent ) -> Qt3DCore::QEntity * {
+        QGIS_CHECK_MAIN_THREAD_ACCESS
+        if ( handler->featureCount() == 0 )
+        {
+          // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
+          // we just make sure first that its initial estimated vertical range does not affect its parents' bboxes calculation
+          node->setExactBox3D( QgsBox3D() );
+          node->updateParentBoundingBoxesRecursively();
+          return nullptr;
+        }
+
+        Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+        entity->setObjectName( mLayer->name() + "_" + node->tileId().text() );
+        handler->finalize( entity, renderCtx );
+
+        // fix the vertical range of the node from the estimated vertical range to the true range
+        if ( handler->zMinimum() != std::numeric_limits<float>::max() && handler->zMaximum() != std::numeric_limits<float>::lowest() )
+        {
+          QgsBox3D box = node->box3D();
+          box.setZMinimum( handler->zMinimum() );
+          box.setZMaximum( handler->zMaximum() );
+          node->setExactBox3D( box );
+          node->updateParentBoundingBoxesRecursively();
+        }
+
+        return entity;
+      } } );
+    }
+  );
 }
 
-QgsChunkNode *QgsVectorLayerChunkLoaderFactory::createRootNode() const
+QgsChunkNode *QgsVectorLayerChunkLoader::createRootNode() const
 {
   if ( mIsGeocentric )
     return new QgsChunkNode( mRootNodeId, mRootBox3D, mRootError );
 
-  return QgsQuadtreeChunkLoaderFactory::createRootNode();
+  return QgsQuadtreeChunkLoader::createRootNode();
 }
 
-bool QgsVectorLayerChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
+QFuture<QVector<QgsChunkNode *>> QgsVectorLayerChunkLoader::createChildren( QgsChunkNode *node )
 {
-  return mNodesAreLeafs.contains( node->tileId().text() );
-}
-
-QVector<QgsChunkNode *> QgsVectorLayerChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
-{
-  if ( mNodesAreLeafs.value( node->tileId().text(), false ) )
-    return {};
+  {
+    QMutexLocker locker( &mNodesAreLeafsMutex );
+    if ( mNodesAreLeafs.value( node->tileId().text(), false ) )
+      return QtFuture::makeReadyValueFuture( QVector<QgsChunkNode *> {} );
+  }
 
   if ( !mIsGeocentric )
-    return QgsQuadtreeChunkLoaderFactory::createChildren( node );
+    return QgsQuadtreeChunkLoader::createChildren( node );
 
   QVector<QgsChunkNode *> children;
   if ( mMaxLevel != -1 && node->level() >= mMaxLevel )
-    return children;
+    return QtFuture::makeReadyValueFuture( children );
 
   const QgsChunkNodeId nodeId = node->tileId();
   const float childError = node->error() / 2;
@@ -362,7 +333,7 @@ QVector<QgsChunkNode *> QgsVectorLayerChunkLoaderFactory::createChildren( QgsChu
     const QgsChunkNodeId eastId( 1, 1, 0 );
     children << new QgsChunkNode( westId, QgsBox3D( -mRadius.x(), -mRadius.y(), -mRadius.z(), mRadius.x(), 0, mRadius.z() ), childError, node );
     children << new QgsChunkNode( eastId, QgsBox3D( -mRadius.x(), 0, -mRadius.z(), mRadius.x(), mRadius.y(), mRadius.z() ), childError, node );
-    return children;
+    return QtFuture::makeReadyValueFuture( children );
   }
 
   for ( int i = 0; i < 4; ++i )
@@ -371,7 +342,7 @@ QVector<QgsChunkNode *> QgsVectorLayerChunkLoaderFactory::createChildren( QgsChu
     const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy );
     children << new QgsChunkNode( childId, QgsGlobeUtils::nodeIdToBox3D( childId, mCrsToLatLon ), childError, node );
   }
-  return children;
+  return QtFuture::makeReadyValueFuture( children );
 }
 
 
@@ -381,7 +352,7 @@ QVector<QgsChunkNode *> QgsVectorLayerChunkLoaderFactory::createChildren( QgsChu
 QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity(
   Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol
 )
-  : QgsAbstractFeatureBasedChunkedEntity( map, 3, new QgsVectorLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, symbol, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
+  : QgsAbstractFeatureBasedChunkedEntity( map, 3, new QgsVectorLayerChunkLoader( Qgs3DRenderContext::fromMapSettings( map ), vl, symbol, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
 {
   onTerrainElevationOffsetChanged();
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
@@ -396,13 +367,13 @@ QgsVectorLayerChunkedEntity::~QgsVectorLayerChunkedEntity()
 // if the AltitudeClamping is `Absolute`, do not apply the offset
 bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
 {
-  QgsVectorLayerChunkLoaderFactory *loaderFactory = static_cast<QgsVectorLayerChunkLoaderFactory *>( mChunkLoaderFactory );
-  if ( loaderFactory )
+  QgsVectorLayerChunkLoader *loader = static_cast<QgsVectorLayerChunkLoader *>( mChunkLoader );
+  if ( loader )
   {
-    QString symbolType = loaderFactory->mSymbol.get()->type();
+    QString symbolType = loader->mSymbol.get()->type();
     if ( symbolType == "line" )
     {
-      QgsLine3DSymbol *lineSymbol = static_cast<QgsLine3DSymbol *>( loaderFactory->mSymbol.get() );
+      QgsLine3DSymbol *lineSymbol = static_cast<QgsLine3DSymbol *>( loader->mSymbol.get() );
       if ( lineSymbol && lineSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
       {
         return false;
@@ -410,7 +381,7 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
     }
     else if ( symbolType == "point" )
     {
-      QgsPoint3DSymbol *pointSymbol = static_cast<QgsPoint3DSymbol *>( loaderFactory->mSymbol.get() );
+      QgsPoint3DSymbol *pointSymbol = static_cast<QgsPoint3DSymbol *>( loader->mSymbol.get() );
       if ( pointSymbol && pointSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
       {
         return false;
@@ -418,7 +389,7 @@ bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
     }
     else if ( symbolType == "polygon" )
     {
-      QgsPolygon3DSymbol *polygonSymbol = static_cast<QgsPolygon3DSymbol *>( loaderFactory->mSymbol.get() );
+      QgsPolygon3DSymbol *polygonSymbol = static_cast<QgsPolygon3DSymbol *>( loader->mSymbol.get() );
       if ( polygonSymbol && polygonSymbol->altitudeClamping() == Qgis::AltitudeClamping::Absolute )
       {
         return false;

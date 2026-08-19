@@ -29,8 +29,6 @@
 #include "qgsraycastingutils.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
-#include "qgsterraintextureimage_p.h"
-#include "qgsterraintileentity_p.h"
 
 #include <QString>
 #include <Qt3DCore/QTransform>
@@ -41,24 +39,6 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-
-//! Factory for map update jobs
-class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
-{
-  public:
-    TerrainMapUpdateJobFactory( QgsTerrainTextureGenerator *textureGenerator )
-      : mTextureGenerator( textureGenerator )
-    {}
-
-    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override { return new TerrainMapUpdateJob( mTextureGenerator, chunk ); }
-
-  private:
-    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
-};
-
-
-// -----------
-
 
 QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *parent )
   : QgsChunkedEntity( map, map->terrainSettings()->maximumScreenError(), map->terrainGenerator(), false, std::numeric_limits<int>::max(), parent )
@@ -77,8 +57,6 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
   connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
 
   mTextureGenerator = std::make_unique<QgsTerrainTextureGenerator>( *map );
-
-  mUpdateJobFactory = std::make_unique<TerrainMapUpdateJobFactory>( mTextureGenerator.get() );
 
   mTerrainTransform = new Qt3DCore::QTransform;
   mTerrainTransform->setScale( 1.0f );
@@ -173,7 +151,7 @@ void QgsTerrainEntity::invalidateMapImages()
 
   // handle active nodes
 
-  updateNodes( mActiveNodes, mUpdateJobFactory.get() );
+  updateNodes( mActiveNodes );
 
   // handle inactive nodes afterwards
 
@@ -188,7 +166,7 @@ void QgsTerrainEntity::invalidateMapImages()
     inactiveNodes << node;
   }
 
-  updateNodes( inactiveNodes, mUpdateJobFactory.get() );
+  updateNodes( inactiveNodes );
 
   setNeedsUpdate( true );
 }
@@ -202,42 +180,6 @@ void QgsTerrainEntity::onTerrainElevationOffsetChanged()
 float QgsTerrainEntity::terrainElevationOffset() const
 {
   return mMapSettings->terrainSettings()->elevationOffset();
-}
-
-
-// -----------
-
-
-TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node )
-  : QgsChunkQueueJob( node )
-  , mTextureGenerator( textureGenerator )
-{}
-
-void TerrainMapUpdateJob::start()
-{
-  QgsChunkNode *node = chunk();
-
-  QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity() );
-  connect( mTextureGenerator, &QgsTerrainTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
-  mJobId = mTextureGenerator->render( entity->textureImage()->imageExtent(), node->tileId(), entity->textureImage()->imageDebugText() );
-}
-
-void TerrainMapUpdateJob::cancel()
-{
-  if ( mJobId != -1 )
-    mTextureGenerator->cancelJob( mJobId );
-}
-
-
-void TerrainMapUpdateJob::onTileReady( int jobId, const QImage &image )
-{
-  if ( mJobId == jobId )
-  {
-    QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( mNode->entity() );
-    entity->textureImage()->setImage( image );
-    mJobId = -1;
-    emit finished();
-  }
 }
 
 /// @endcond
