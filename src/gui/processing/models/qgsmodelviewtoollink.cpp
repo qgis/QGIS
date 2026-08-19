@@ -185,7 +185,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   }
 
   // Do nothing if we unlink sockets
-  if ( !mToSocket && mPendingUnlink )
+  if ( !mToSocket && mPreviousInputSocketNumber != -1 )
   {
     // but it might have been an unlink, so we properly end the command
     view()->endCommand();
@@ -360,7 +360,6 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
   mFromSocket = socket;
   mPreviousInputChildId.clear();
   mPreviousInputSocketNumber = -1;
-  mPendingUnlink = false;
 
   // If it's an input socket and it's already connected, we want 'From' to be the output at the other end of the connection
   if ( mFromSocket->isInput() )
@@ -443,7 +442,6 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
           mPreviousInputChildId = childFrom->childId();
           mPreviousInputSocketNumber = mFromSocket->index();
           mFromSocket = item->outSocketAt( socketIndex );
-          mPendingUnlink = true;
         }
         break;
 

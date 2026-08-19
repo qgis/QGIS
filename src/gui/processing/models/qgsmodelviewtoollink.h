@@ -84,7 +84,5 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
     // We use them to restore the connection when aborting, or to skip the undo step when the same input is selected
     QString mPreviousInputChildId;
     int mPreviousInputSocketNumber = -1;
-
-    bool mPendingUnlink = false;
 };
 #endif // QGSMODELVIEWTOOLLINK_H
