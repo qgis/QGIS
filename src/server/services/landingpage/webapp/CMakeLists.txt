@@ -38,7 +38,7 @@ endif()
 add_custom_command(
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/dist/index.html
   DEPENDS ${WEBAPP_SRCS}
-  COMMAND ${CMAKE_COMMAND} -E copy_directory_if_newer ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
+  COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
   COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/yarn_commands.cmake
 )
 
