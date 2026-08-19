@@ -240,7 +240,11 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
 
     /**
      * Returns the model node corresponding to the given \a index.
+     *
+     * Returns the rootNode() for an invalid \a index.
+     *
      * \see node2index()
+     * \see rootNode()
      */
     QgsSymbolLayerModelNode *index2node( const QModelIndex &index ) const;
 

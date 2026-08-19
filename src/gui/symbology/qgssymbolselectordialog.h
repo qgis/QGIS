@@ -254,6 +254,12 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
     QgsSymbolLayer *currentLayer();
 
     /**
+     * The node which is current in the symbol layers tree, or NULLPTR if there
+     * is none. Both a symbol node and a symbol layer node can be current.
+     */
+    QgsSymbolLayerModelNode *currentNode();
+
+    /**
      * Move the current active layer by a set offset in the list.
      * \param offset The offset to move the layer by
      */

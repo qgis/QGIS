@@ -331,11 +331,10 @@ void QgsSymbolSelectorWidget::reloadSymbol()
 
 void QgsSymbolSelectorWidget::updateUi()
 {
-  const QModelIndex currentIdx = layersTree->currentIndex();
-  if ( !currentIdx.isValid() )
+  QgsSymbolLayerModelNode *node = currentNode();
+  if ( !node )
     return;
 
-  QgsSymbolLayerModelNode *node = mSymbolLayersModel->index2node( currentIdx );
   if ( !node->isLayer() )
   {
     btnUp->setEnabled( false );
@@ -379,12 +378,8 @@ void QgsSymbolSelectorWidget::updateLayerPreview()
 
 QgsSymbolLayerModelNode *QgsSymbolSelectorWidget::currentLayerNode()
 {
-  const QModelIndex idx = layersTree->currentIndex();
-  if ( !idx.isValid() )
-    return nullptr;
-
-  QgsSymbolLayerModelNode *node = mSymbolLayersModel->index2node( idx );
-  if ( !node->isLayer() )
+  QgsSymbolLayerModelNode *node = currentNode();
+  if ( !node || !node->isLayer() )
     return nullptr;
 
   return node;
@@ -392,30 +387,32 @@ QgsSymbolLayerModelNode *QgsSymbolSelectorWidget::currentLayerNode()
 
 QgsSymbolLayer *QgsSymbolSelectorWidget::currentLayer()
 {
+  QgsSymbolLayerModelNode *node = currentLayerNode();
+  return node ? node->layer() : nullptr;
+}
+
+QgsSymbolLayerModelNode *QgsSymbolSelectorWidget::currentNode()
+{
   const QModelIndex idx = layersTree->currentIndex();
   if ( !idx.isValid() )
     return nullptr;
 
-  QgsSymbolLayerModelNode *node = mSymbolLayersModel->index2node( idx );
-  if ( node->isLayer() )
-    return node->layer();
-
-  return nullptr;
+  return mSymbolLayersModel->index2node( idx );
 }
 
 void QgsSymbolSelectorWidget::layerChanged()
 {
   updateUi();
 
-  QgsSymbolLayerModelNode *currentNode = mSymbolLayersModel->index2node( layersTree->currentIndex() );
-  if ( !currentNode )
+  QgsSymbolLayerModelNode *node = currentNode();
+  if ( !node )
     return;
 
-  if ( currentNode->isLayer() )
+  if ( node->isLayer() )
   {
-    QgsSymbolLayerModelNode *parent = currentNode->parent();
-    mDataDefineRestorer = std::make_unique<DataDefinedRestorer>( parent->symbol(), currentNode->layer() );
-    QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentNode->layer(), parent->symbol(), mVectorLayer );
+    QgsSymbolLayerModelNode *parent = node->parent();
+    mDataDefineRestorer = std::make_unique<DataDefinedRestorer>( parent->symbol(), node->layer() );
+    QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( node->layer(), parent->symbol(), mVectorLayer );
     layerProp->setDockMode( this->dockMode() );
     layerProp->setContext( mContext );
     setWidget( layerProp );
@@ -432,10 +429,10 @@ void QgsSymbolSelectorWidget::layerChanged()
     // then it must be a symbol
     mDataDefineRestorer.reset();
     Q_NOWARN_DEPRECATED_PUSH
-    currentNode->symbol()->setLayer( mVectorLayer );
+    node->symbol()->setLayer( mVectorLayer );
     Q_NOWARN_DEPRECATED_POP
     // Now populate symbols of that type using the symbols list widget:
-    QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( currentNode->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
+    QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( node->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
     symbolsList->setContext( mContext );
 
     setWidget( symbolsList );
@@ -446,17 +443,17 @@ void QgsSymbolSelectorWidget::layerChanged()
 
 void QgsSymbolSelectorWidget::symbolChanged()
 {
-  QgsSymbolLayerModelNode *currentNode = mSymbolLayersModel->index2node( layersTree->currentIndex() );
-  if ( !currentNode || currentNode->isLayer() )
+  QgsSymbolLayerModelNode *node = currentNode();
+  if ( !node || node->isLayer() )
     return;
   // disconnect to avoid recreating widget
   disconnect( layersTree->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
-  if ( currentNode->parent() && !currentNode->parent()->isRootNode() )
+  if ( node->parent() && !node->parent()->isRootNode() )
   {
     // it is a sub-symbol
 
-    QgsSymbol *symbol = currentNode->symbol();
-    QgsSymbolLayerModelNode *parent = currentNode->parent();
+    QgsSymbol *symbol = node->symbol();
+    QgsSymbolLayerModelNode *parent = node->parent();
 
     mSymbolLayersModel->updateNode( symbol, parent );
 
@@ -524,6 +521,8 @@ void QgsSymbolSelectorWidget::addLayer()
 void QgsSymbolSelectorWidget::removeLayer()
 {
   QgsSymbolLayerModelNode *node = currentLayerNode();
+  if ( !node )
+    return;
 
   mSymbolLayersModel->removeLayer( node );
 
@@ -569,12 +568,8 @@ void QgsSymbolSelectorWidget::lockLayer()
 
 void QgsSymbolSelectorWidget::duplicateLayer()
 {
-  const QModelIndex idx = layersTree->currentIndex();
-  if ( !idx.isValid() )
-    return;
-
-  QgsSymbolLayerModelNode *node = mSymbolLayersModel->index2node( idx );
-  if ( !node->isLayer() )
+  QgsSymbolLayerModelNode *node = currentLayerNode();
+  if ( !node )
     return;
 
   QgsSymbolLayerModelNode *newNode = mSymbolLayersModel->duplicateLayer( node );
