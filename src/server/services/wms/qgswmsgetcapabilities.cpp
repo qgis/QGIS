@@ -50,7 +50,7 @@ namespace QgsWms
   {
     QString dateToString( const QDateTime &dateTime, bool forceToDate );
 
-    void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, QList<QgsDateTimeRange> &dateRanges );
+    void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, const QStringList &restrictedLayers, QList<QgsDateTimeRange> &dateRanges );
 
     void appendLayerProjectSettings( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer );
 
@@ -1123,9 +1123,10 @@ namespace QgsWms
     }
 
     /**
-     * Update recursively \a dateRanges with all \a layerTreeGroup children date ranges
+     * Update recursively \a dateRanges with all \a layerTreeGroup children date ranges.
+     * Don't return date range for layer not published in \a wmsLayerInfos or group which name appears in \a restrictedLayers
      */
-    void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, QList<QgsDateTimeRange> &dateRanges )
+    void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, const QStringList &restrictedLayers, QList<QgsDateTimeRange> &dateRanges )
     {
       QList<QgsLayerTreeNode *> layerTreeGroupChildren = layerTreeGroup->children();
       for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
@@ -1135,11 +1136,11 @@ namespace QgsWms
         if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
         {
           QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
-          QList<QgsDateTimeRange> childrenDateRanges;
-          getChildrenRanges( treeGroupChild, wmsLayerInfos, childrenDateRanges );
-
-          if ( treeGroupChild->hasWmsTimeDimension() )
+          if ( !restrictedLayers.contains( treeGroupChild->name() ) // skip restricted group
+               && treeGroupChild->hasWmsTimeDimension() )
           {
+            QList<QgsDateTimeRange> childrenDateRanges;
+            getChildrenRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
             dateRanges.append( childrenDateRanges );
           }
         }
@@ -1276,7 +1277,7 @@ namespace QgsWms
           if ( treeGroupChild->hasWmsTimeDimension() )
           {
             QList<QgsDateTimeRange> childrenDateRanges;
-            getChildrenRanges( treeGroupChild, wmsLayerInfos, childrenDateRanges );
+            getChildrenRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
             writeTimeDimensionNode( doc, layerElem, childrenDateRanges );
           }
 

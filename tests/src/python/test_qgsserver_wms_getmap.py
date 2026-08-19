@@ -3096,7 +3096,12 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_5"
         )
 
-        for rl in [rl1, rl2, rl3, rl4, rl5]:
+        # layer children of a restricted (not published) group, should never appeared
+        rl6 = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_6"
+        )
+
+        for rl in [rl1, rl2, rl3, rl4, rl5, rl6]:
             timeProps = rl.temporalProperties()
             timeProps.setIsActive(True)
             timeProps.setMode(Qgis.RasterTemporalMode.FixedTemporalRange)
@@ -3129,14 +3134,20 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             )
         )
 
+        rl6.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-15T00:00:00Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-15T00:00:00Z", Qt.DateFormat.ISODate),
+            )
+        )
+
         project = QgsProject()
 
         # Set a filename to avoid capabilities cache breaking test
         project.setFileName("test_get_capabilities_time_dimension")
 
-        project.addMapLayers([rl1, rl2, rl3, rl4, rl5], False)
+        project.addMapLayers([rl1, rl2, rl3, rl4, rl5, rl6], False)
 
-        project.writeEntry("WMSRestrictedLayers", "/", ["test_date_5"])
         groupWithTimeDim = project.layerTreeRoot().addGroup("GroupWithTimeDimension")
         groupWithTimeDim.setHasWmsTimeDimension(True)
         groupWithoutTimeDim = project.layerTreeRoot().addGroup(
@@ -3150,6 +3161,9 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         group.addLayer(rl4)
         group.addLayer(rl5)
         groupWithTimeDim.addGroup("SubGroupWithoutTimeDimension").addLayer(rl3)
+        group = groupWithTimeDim.addGroup("RestrictedSubGroupWithTimeDimension")
+        group.setHasWmsTimeDimension(True)
+        group.addLayer(rl6)
 
         groupWithoutTimeDim.addLayer(rl1)
         group = groupWithoutTimeDim.addGroup("OtherSubGroupWithTimeDimension")
@@ -3174,6 +3188,12 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         group.addLayer(rl2)
         group.addLayer(rl4)
         group.addLayer(rl5)
+
+        project.writeEntry(
+            "WMSRestrictedLayers",
+            "/",
+            ["test_date_5", "RestrictedSubGroupWithTimeDimension"],
+        )
 
         def get_time_dim(layer_name):
             r, h = self._result(self._execute_request_project(qs, project))
