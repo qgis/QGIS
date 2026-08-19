@@ -265,6 +265,15 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
 
     static bool layerHasElevation( QgsMapLayer *layer );
 
+    /**
+     * Snaps a \a range selected through the slider to the round values (and significant
+     * elevations) which the slider snaps to.
+     */
+    QgsDoubleRange snappedRange( const QgsDoubleRange &range ) const;
+
+    //! Snaps a single elevation \a value to the closest snapping target.
+    double snapValue( double value ) const;
+
     QToolButton *mConfigureButton = nullptr;
     QgsElevationControllerSettingsAction *mSettingsAction = nullptr;
     QMenu *mMenu = nullptr;
@@ -273,6 +282,9 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     QPointer<QgsMapCanvas> mMapCanvas;
     QgsDoubleRange mRangeLimits;
     QgsDoubleRange mCurrentRange;
+    QList<double> mSignificantElevations;
+    double mSnapInterval = 0;
+    int mSnapDecimals = 0;
     double mFixedRangeSize = -1;
     int mBlockSliderChanges = 0;
     double mSliderPrecision = 100;

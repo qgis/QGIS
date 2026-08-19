@@ -134,8 +134,19 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
     if ( mBlockSliderChanges )
       return;
 
-    emit rangeChanged( range() );
-    mSliderLabels->setRange( range() );
+    const QgsDoubleRange snapped = snappedRange( range() );
+
+    // move the handles onto the snapped values
+    mBlockSliderChanges++;
+    mSlider->setRange( static_cast<int>( std::floor( snapped.lower() * mSliderPrecision ) ), static_cast<int>( std::ceil( snapped.upper() * mSliderPrecision ) ) );
+    mBlockSliderChanges--;
+
+    if ( snapped == mCurrentRange )
+      return;
+
+    mCurrentRange = snapped;
+    emit rangeChanged( mCurrentRange );
+    mSliderLabels->setRange( mCurrentRange );
   } );
 
   connect( mMenu, &QMenu::aboutToShow, this, [this]() {
@@ -257,6 +268,11 @@ void QgsElevationControllerWidget::setRangeLimits( const QgsDoubleRange &limits 
   // pick a reasonable slider precision, given that the slider operates in integer values only
   mSliderPrecision = std::max( 1000, mSlider->height() ) / limitRange;
 
+  // snap the slider to a tenth of the interval used to round elevation ranges, so that dragging
+  // stays smooth while still selecting round values
+  mSnapInterval = QgsMathUtils::roundingInterval( limitRange, 100 );
+  mSnapDecimals = mSnapInterval > 0 ? std::max( 0, -static_cast<int>( std::floor( std::log10( mSnapInterval ) ) ) ) : 0;
+
   mBlockSliderChanges = true;
   mSlider->setRangeLimits( static_cast<int>( std::floor( limits.lower() * mSliderPrecision ) ), static_cast<int>( std::ceil( limits.upper() * mSliderPrecision ) ) );
 
@@ -272,6 +288,50 @@ void QgsElevationControllerWidget::setRangeLimits( const QgsDoubleRange &limits 
     emit rangeChanged( mCurrentRange );
 
   mSliderLabels->setLimits( mRangeLimits );
+}
+
+QgsDoubleRange QgsElevationControllerWidget::snappedRange( const QgsDoubleRange &range ) const
+{
+  if ( mSnapInterval <= 0 )
+    return range;
+
+  double lower = snapValue( range.lower() );
+  double upper;
+  if ( mFixedRangeSize >= 0 )
+  {
+    // snapping must not alter the locked range size
+    upper = lower + mFixedRangeSize;
+    if ( upper > mRangeLimits.upper() )
+    {
+      upper = mRangeLimits.upper();
+      lower = upper - mFixedRangeSize;
+    }
+  }
+  else
+  {
+    upper = std::max( snapValue( range.upper() ), lower );
+  }
+
+  return QgsDoubleRange( lower, upper );
+}
+
+double QgsElevationControllerWidget::snapValue( double value ) const
+{
+  double snapped = std::round( value / mSnapInterval ) * mSnapInterval;
+  if ( mSnapDecimals > 0 )
+  {
+    // strip the noise the multiplication above leaves in fractional values
+    snapped = qgsRound( snapped, mSnapDecimals );
+  }
+
+  // an elevation which is significant for the layers is a better snapping target than a round value
+  for ( double elevation : mSignificantElevations )
+  {
+    if ( std::fabs( elevation - value ) < std::fabs( snapped - value ) )
+      snapped = elevation;
+  }
+
+  return std::clamp( snapped, mRangeLimits.lower(), mRangeLimits.upper() );
 }
 
 void QgsElevationControllerWidget::updateWidgetMask()
@@ -320,6 +380,7 @@ void QgsElevationControllerWidget::setInverted( bool inverted )
 
 void QgsElevationControllerWidget::setSignificantElevations( const QList<double> &elevations )
 {
+  mSignificantElevations = elevations;
   mSliderLabels->setSignificantElevations( elevations );
 }
 
