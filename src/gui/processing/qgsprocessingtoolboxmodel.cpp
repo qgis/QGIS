@@ -1042,6 +1042,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       /* Always hide in the toolbox */
       return false;
     }
+
     if ( mFilters & Filter::ForSocketOutput )
     {
       // Don't show any parameters if your looking for something compatible with output !
@@ -1070,7 +1071,6 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
           return false; // couldn't find a match for this word, so hide algorithm
       }
     }
-
 
     if ( mFilters & Filter::ForSocketInput )
     {
