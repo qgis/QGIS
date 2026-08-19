@@ -152,6 +152,8 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
     };
     Q_ENUM( PredefinedWmsDimensionName )
 
+    SIP_SKIP static constexpr const char *TIME_DIMENSION_NAME = "TIME";
+
     /**
      * Setting to define QGIS Server WMS Dimension.
      * \since QGIS 3.10
@@ -175,6 +177,20 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
           , endFieldName( dimEndFieldName )
           , units( dimUnits )
           , unitSymbol( dimUnitSymbol )
+          , defaultDisplayType( dimDefaultDisplayType )
+          , mReferenceValue( dimReferenceValue )
+        {}
+
+        /**
+         * Constructor for layer tree group TIME WmsDimensionInfo which doesn't require field and unit information.
+         * \param dimName dimension name (expected to be "TIME" for time dimension
+         * \param dimDefaultDisplayType dimension default value display type
+         * \param dimReferenceValue dimension reference value used if default display type is Qgis::WmsDimensionDefaultDisplay::ReferenceValue
+         */
+        explicit WmsDimensionInfo(
+          const QString &dimName, Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = Qgis::WmsDimensionDefaultDisplay::AllValues, const QVariant &dimReferenceValue = QVariant()
+        )
+          : name( dimName )
           , defaultDisplayType( dimDefaultDisplayType )
           , mReferenceValue( dimReferenceValue )
         {}

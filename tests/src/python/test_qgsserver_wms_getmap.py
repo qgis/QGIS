@@ -34,6 +34,7 @@ from qgis.core import (
     QgsPalLayerSettings,
     QgsProject,
     QgsRasterLayer,
+    QgsServerWmsDimensionProperties,
     QgsTextFormat,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
@@ -3187,25 +3188,33 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         project.addMapLayers([rl1, rl2, rl3, rl4, rl5, rl6], False)
 
         groupWithTimeDim = project.layerTreeRoot().addGroup("GroupWithTimeDimension")
-        groupWithTimeDim.setHasWmsTimeDimension(True)
+        groupWithTimeDim.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo("TIME")
+        )
         groupWithoutTimeDim = project.layerTreeRoot().addGroup(
             "GroupWithoutTimeDimension"
         )
 
         groupWithTimeDim.addLayer(rl1)
         group = groupWithTimeDim.addGroup("SubGroupWithTimeDimension")
-        group.setHasWmsTimeDimension(True)
+        group.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo("TIME")
+        )
         group.addLayer(rl2)
         group.addLayer(rl4)
         group.addLayer(rl5)
         groupWithTimeDim.addGroup("SubGroupWithoutTimeDimension").addLayer(rl3)
         group = groupWithTimeDim.addGroup("RestrictedSubGroupWithTimeDimension")
-        group.setHasWmsTimeDimension(True)
+        group.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo("TIME")
+        )
         group.addLayer(rl6)
 
         groupWithoutTimeDim.addLayer(rl1)
         group = groupWithoutTimeDim.addGroup("OtherSubGroupWithTimeDimension")
-        group.setHasWmsTimeDimension(True)
+        group.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo("TIME")
+        )
         group.addLayer(rl2)
         group.addLayer(rl4)
         group.addLayer(rl5)
@@ -3216,12 +3225,16 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         opaqueGroupWithTimeDim = project.layerTreeRoot().addGroup(
             "OpaqueGroupWithTimeDimension"
         )
-        opaqueGroupWithTimeDim.setHasWmsTimeDimension(True)
+        opaqueGroupWithTimeDim.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo("TIME")
+        )
         opaqueGroupWithTimeDim.setWmsGroupRequestMode(Qgis.WmsGroupRequestMode.Opaque)
 
         opaqueGroupWithTimeDim.addLayer(rl1)
         group = opaqueGroupWithTimeDim.addGroup("OpaqueSubGroupWithTimeDimension")
-        group.setHasWmsTimeDimension(True)
+        group.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo("TIME")
+        )
         group.setWmsGroupRequestMode(Qgis.WmsGroupRequestMode.Opaque)
         group.addLayer(rl2)
         group.addLayer(rl4)
@@ -3312,6 +3325,243 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self.assertEqual(
             date_dimension.text,
             "2025-01-12T12:34:56Z/2025-01-15T09:12:34Z,2025-01-12T00:00:00Z",
+        )
+
+    def test_get_capabilities_time_dimension_defaultvalue(self):
+        """Test if get capabilities return correct time dimension default value"""
+
+        # Test get capabilities
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "SERVICE": "WMS",
+                        "VERSION": "1.3.0",
+                        "REQUEST": "GetCapabilities",
+                    }.items()
+                )
+            ]
+        )
+
+        rl_range = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_range"
+        )
+        rl_instant1 = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_instant_1"
+        )
+        rl_instant_2 = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_instant_2"
+        )
+        rl_nodate = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_nodate"
+        )
+
+        rl_notpublished = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(),
+            "test_date_notpublished",
+        )
+
+        rl_child_of_restricted_group = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(),
+            "test_date_child_of_restricted_group",
+        )
+
+        for rl in [
+            rl_range,
+            rl_instant1,
+            rl_instant_2,
+            rl_notpublished,
+            rl_child_of_restricted_group,
+        ]:
+            timeProps = rl.temporalProperties()
+            timeProps.setIsActive(True)
+            timeProps.setMode(Qgis.RasterTemporalMode.FixedTemporalRange)
+
+        rl_range.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-12T12:34:56Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-15T09:12:34Z", Qt.DateFormat.ISODate),
+            )
+        )
+
+        rl_instant1.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-12T00:00:00Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-12T00:00:00Z", Qt.DateFormat.ISODate),
+            )
+        )
+
+        rl_instant_2.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-13T00:00:00Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-13T00:00:00Z", Qt.DateFormat.ISODate),
+            )
+        )
+
+        rl_notpublished.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-14T00:00:00Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-14T00:00:00Z", Qt.DateFormat.ISODate),
+            )
+        )
+
+        rl_child_of_restricted_group.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-15T00:00:00Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-15T00:00:00Z", Qt.DateFormat.ISODate),
+            )
+        )
+
+        project = QgsProject()
+
+        # Set a filename to avoid capabilities cache breaking test
+        project.setFileName("test_get_capabilities_time_dimension_default_minvalue")
+
+        project.addMapLayers(
+            [rl_range, rl_instant1, rl_instant_2, rl_nodate, rl_notpublished], False
+        )
+
+        project.writeEntry("WMSRestrictedLayers", "/", ["test_date_notpublished"])
+        groupWithTimeDim = project.layerTreeRoot().addGroup("GroupWithTimeDimension")
+        groupWithTimeDim.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo(
+                "TIME", Qgis.WmsDimensionDefaultDisplay.MinValue
+            )
+        )
+
+        groupWithTimeDim.addLayer(rl_range)
+        group = groupWithTimeDim.addGroup("SubGroupWithTimeDimension")
+        group.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo(
+                "TIME", Qgis.WmsDimensionDefaultDisplay.MaxValue
+            )
+        )
+        group.addLayer(rl_instant1)
+        group.addLayer(rl_nodate)
+        group.addLayer(rl_notpublished)
+        groupWithTimeDim.addGroup("SubGroupWithoutTimeDimension").addLayer(rl_instant_2)
+
+        # Test group with Opaque Mode
+
+        opaqueGroupWithTimeDim = project.layerTreeRoot().addGroup(
+            "OpaqueGroupWithTimeDimension"
+        )
+        opaqueGroupWithTimeDim.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo("TIME")
+        )
+        opaqueGroupWithTimeDim.setWmsGroupRequestMode(Qgis.WmsGroupRequestMode.Opaque)
+
+        opaqueGroupWithTimeDim.addLayer(rl_range)
+        group = opaqueGroupWithTimeDim.addGroup("OpaqueSubGroupWithTimeDimension")
+        group.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo(
+                "TIME", Qgis.WmsDimensionDefaultDisplay.MinValue
+            )
+        )
+        group.setWmsGroupRequestMode(Qgis.WmsGroupRequestMode.Opaque)
+        group.addLayer(rl_instant1)
+        group.addLayer(rl_nodate)
+        group.addLayer(rl_notpublished)
+
+        def get_time_dim(layer_name):
+            r, h = self._result(self._execute_request_project(qs, project))
+
+            t = et.fromstring(r)
+            ns = t.nsmap
+            del ns[None]
+            ns["wms"] = "http://www.opengis.net/wms"
+
+            dims = t.xpath(
+                f"//wms:Layer/wms:Name[text()='{layer_name}']/../wms:Dimension",
+                namespaces=ns,
+            )
+
+            return dims[0] if dims else None
+
+        # Test with MinValue
+        date_dimension = get_time_dim("GroupWithoutTimeDimension")
+        self.assertEqual(date_dimension, None)
+
+        date_dimension = get_time_dim("GroupWithTimeDimension")
+        self.assertEqual(
+            date_dimension.attrib,
+            {"units": "ISO8601", "name": "TIME", "default": "2025-01-12T00:00:00Z"},
+        )
+
+        date_dimension = get_time_dim("SubGroupWithTimeDimension")
+        self.assertEqual(
+            date_dimension.attrib,
+            {"units": "ISO8601", "name": "TIME", "default": "2025-01-12T00:00:00Z"},
+        )
+
+        # Test with MaxValue
+        groupWithTimeDim.serverProperties().setWmsDimensions(
+            [
+                QgsServerWmsDimensionProperties.WmsDimensionInfo(
+                    "TIME", Qgis.WmsDimensionDefaultDisplay.MaxValue
+                )
+            ]
+        )
+        project.setFileName("test_get_capabilities_time_dimension_default_maxvalue")
+
+        date_dimension = get_time_dim("GroupWithTimeDimension")
+        self.assertEqual(
+            date_dimension.attrib,
+            {"units": "ISO8601", "name": "TIME", "default": "2025-01-15T09:12:34Z"},
+        )
+
+        date_dimension = get_time_dim("SubGroupWithTimeDimension")
+        self.assertEqual(
+            date_dimension.attrib,
+            {"units": "ISO8601", "name": "TIME", "default": "2025-01-12T00:00:00Z"},
+        )
+
+        # Test with empty ReferenceValue
+        groupWithTimeDim.serverProperties().setWmsDimensions(
+            [
+                QgsServerWmsDimensionProperties.WmsDimensionInfo(
+                    "TIME", Qgis.WmsDimensionDefaultDisplay.ReferenceValue
+                )
+            ]
+        )
+        project.setFileName(
+            "test_get_capabilities_time_dimension_default_referencevalue_empty"
+        )
+
+        date_dimension = get_time_dim("GroupWithTimeDimension")
+        self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
+
+        date_dimension = get_time_dim("SubGroupWithTimeDimension")
+        self.assertEqual(
+            date_dimension.attrib,
+            {"units": "ISO8601", "name": "TIME", "default": "2025-01-12T00:00:00Z"},
+        )
+
+        # Test with valid ReferenceValue
+        groupWithTimeDim.serverProperties().setWmsDimensions(
+            [
+                QgsServerWmsDimensionProperties.WmsDimensionInfo(
+                    "TIME",
+                    Qgis.WmsDimensionDefaultDisplay.ReferenceValue,
+                    QDateTime.fromString("2025-01-16T01:20:30Z", Qt.DateFormat.ISODate),
+                )
+            ]
+        )
+        project.setFileName(
+            "test_get_capabilities_time_dimension_default_referencevalue_valid"
+        )
+
+        date_dimension = get_time_dim("GroupWithTimeDimension")
+        self.assertEqual(
+            date_dimension.attrib,
+            {"units": "ISO8601", "name": "TIME", "default": "2025-01-16T01:20:30Z"},
+        )
+
+        date_dimension = get_time_dim("SubGroupWithTimeDimension")
+        self.assertEqual(
+            date_dimension.attrib,
+            {"units": "ISO8601", "name": "TIME", "default": "2025-01-12T00:00:00Z"},
         )
 
     def test_get_map_labeling_opacities(self):
