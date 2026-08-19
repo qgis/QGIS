@@ -31,6 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 
+#include <QSet>
 #include <QString>
 #include <QTimer>
 

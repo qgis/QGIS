@@ -19,6 +19,7 @@
 #include "qgis_3d.h"
 #include "qgsrulebased3drenderer.h"
 
+#include <QHash>
 #include <QMap>
 #include <QObject>
 #include <QVector>
