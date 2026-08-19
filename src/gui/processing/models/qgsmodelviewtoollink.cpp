@@ -546,21 +546,22 @@ void QgsModelViewToolLink::addInput( const QString &inputId, const QPointF &pos,
   const QgsProcessingParameterDefinition *socketParameter = outputChildAlgorithm->algorithm()->parameterDefinitions().at( socket->index() );
   QgsProcessingParameterDefinition *newParameter = socketParameter->clone();
 
-  QString safeName = QgsProcessingModelAlgorithm::safeName( newParameter->description() );
-  QString nameCandidate = safeName.toLower();
+  QString nameCandidate = newParameter->name();
+  QString descriptionCandidate = newParameter->description();
   int i = 2;
   while ( scene()->model()->parameterDefinition( nameCandidate ) )
   {
-    nameCandidate = safeName.toLower() + QString::number( i );
+    nameCandidate = u"%1 (%2)"_s.arg( socketParameter->name() ).arg( i );
+    descriptionCandidate = u"%1 (%2)"_s.arg( socketParameter->description() ).arg( i );
     i += 1;
   }
   newParameter->setName( nameCandidate );
-
+  newParameter->setDescription( descriptionCandidate );
 
   // QgsProcessingParameterDefinition* newParemeter = QgsApplication::processingRegistry()->parameterType(inputId)->create("Balbal lorem ipsum");
   QgsProcessingModelParameter component = QgsProcessingModelParameter( newParameter->name() );
 
-  component.setDescription( newParameter->name() );
+  component.setDescription( newParameter->description() );
   component.setPosition( pos );
   qDebug() << "pos:" << pos;
   view()->beginCommand( tr( "Add input" ) );
