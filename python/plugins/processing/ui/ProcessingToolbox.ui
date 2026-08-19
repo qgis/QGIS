@@ -53,16 +53,11 @@
     <item>
      <widget class="QgsProcessingToolboxTreeView" name="algorithmTree">
       <property name="contextMenuPolicy">
-       <enum>Qt::CustomContextMenu</enum>
+       <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
       </property>
       <property name="headerHidden">
        <bool>true</bool>
       </property>
-      <column>
-       <property name="text">
-        <string notr="true">1</string>
-       </property>
-      </column>
      </widget>
     </item>
     <item>
@@ -72,10 +67,10 @@
 color: rgb(255, 255, 255);</string>
       </property>
       <property name="frameShape">
-       <enum>QFrame::Box</enum>
+       <enum>QFrame::Shape::Box</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+       <enum>QFrame::Shadow::Raised</enum>
       </property>
       <property name="text">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You can add more algorithms to the toolbox, &lt;a href=&quot;enable&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;enable additional providers.&lt;/span&gt;&lt;/a&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;a href=&quot;close&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;[close]&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -97,7 +92,7 @@ color: rgb(255, 255, 255);</string>
    <extends>QLineEdit</extends>
    <header>qgis.gui</header>
   </customwidget>
-    <customwidget>
+  <customwidget>
    <class>QgsProcessingToolboxTreeView</class>
    <extends>QTreeView</extends>
    <header>qgis.gui</header>

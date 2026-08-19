@@ -194,6 +194,28 @@ QList< const QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithms() cons
   return algs;
 }
 
+QSet< const QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithmsCompatibleWithOutput( const QString &outputName ) const
+{
+  QSet< const QgsProcessingAlgorithm * > algs;
+  QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
+  for ( ; it != mProviders.constEnd(); ++it )
+  {
+    algs.unite( it.value()->algorithmsCompatibleWithOutput( outputName ) );
+  }
+  return algs;
+}
+
+QSet< const QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithmsCompatibleWithParameter( const QString &parameterName ) const
+{
+  QSet< const QgsProcessingAlgorithm * > algs;
+  QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
+  for ( ; it != mProviders.constEnd(); ++it )
+  {
+    algs.unite( it.value()->algorithmsCompatibleWithParameter( parameterName ) );
+  }
+  return algs;
+}
+
 QgsProcessingAlgorithmInformation QgsProcessingRegistry::algorithmInformation( const QString &id ) const
 {
   const auto it = mCachedInformation.constFind( id );
@@ -305,4 +327,22 @@ QgsProcessingParameterType *QgsProcessingRegistry::parameterType( const QString 
 QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() const
 {
   return mParameterTypes.values();
+}
+
+
+bool QgsProcessingRegistry::isCompatible( const QgsProcessingParameterDefinition *parameterDef, const QgsProcessingParameterDefinition *parameterDefTarget )
+{
+  const QgsProcessingParameterType *paramTargetType = parameterType( parameterDefTarget->type() );
+  if ( paramTargetType )
+    return paramTargetType->acceptedParameterTypes().contains( parameterDef->type() );
+  return false;
+}
+
+bool QgsProcessingRegistry::isCompatible( const QgsProcessingOutputDefinition *outputDef, const QgsProcessingParameterDefinition *parameterDefTarget )
+{
+  const QgsProcessingParameterType *paramTargetType = parameterType( parameterDefTarget->type() );
+
+  if ( paramTargetType )
+    return paramTargetType->acceptedOutputTypes().contains( outputDef->type() );
+  return false;
 }

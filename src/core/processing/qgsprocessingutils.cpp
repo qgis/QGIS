@@ -28,6 +28,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingparametertype.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterfilewriter.h"
@@ -1847,6 +1848,7 @@ QString QgsProcessingUtils::supportedImageFileFilters()
 
   return fileFilters.join( ";;"_L1 );
 }
+
 
 //
 // QgsProcessingFeatureSource

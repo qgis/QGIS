@@ -177,7 +177,7 @@ Returns whether the socket is an input socket or not.
 
 Convenient function around mEdge member
 %End
-    QgsProcessingModelComponent *component();
+    QgsProcessingModelComponent *component() const;
 %Docstring
 Return the component associated to the socket.
 %End

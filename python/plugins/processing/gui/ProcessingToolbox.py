@@ -103,10 +103,9 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 self.txtTip.setVisible(self.disabledProviders())
 
         self.txtTip.linkActivated.connect(openSettings)
-        if hasattr(self.searchBox, "setPlaceholderText"):
-            self.searchBox.setPlaceholderText(
-                QCoreApplication.translate("ProcessingToolbox", "Search…")
-            )
+        self.searchBox.setPlaceholderText(
+            QCoreApplication.translate("ProcessingToolbox", "Search…")
+        )
 
         # connect to existing providers
         for p in QgsApplication.processingRegistry().providers():
