@@ -52,7 +52,10 @@ Qgs3DHighlightFeatureHandler::~Qgs3DHighlightFeatureHandler()
   }
   for ( auto it = mHighlightCategorizedHandlers.constBegin(); it != mHighlightCategorizedHandlers.constEnd(); ++it )
   {
-    qDeleteAll( it.value() );
+    QSet<QgsFeature3DHandler *> uniqueHandlers;
+    for ( QgsFeature3DHandler *handler : it.value() )
+      uniqueHandlers.insert( handler );
+    qDeleteAll( uniqueHandlers );
   }
 }
 
@@ -173,12 +176,15 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
               continue;
 
             handler->prepare( renderContext, attributeNames, box );
-            QgsFeature3DHandler *handlerPtr = handler.release();
 
             const QVariant value = category.value();
             if ( value.userType() == QMetaType::Type::QVariantList )
             {
               const QVariantList variantList = value.toList();
+              if ( variantList.isEmpty() )
+                continue;
+
+              QgsFeature3DHandler *handlerPtr = handler.release();
               for ( const QVariant &listElt : variantList )
               {
                 handlersHash.insert( listElt.toString(), handlerPtr );
@@ -186,6 +192,7 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
             }
             else
             {
+              QgsFeature3DHandler *handlerPtr = handler.release();
               handlersHash.insert( QgsVariantUtils::isNull( value ) ? QString() : value.toString(), handlerPtr );
             }
           }
