@@ -13113,6 +13113,27 @@ Qgis.PdfRenderFlags = lambda flags=0: Qgis.PdfRenderFlag(flags)
 Qgis.PdfRenderFlags.baseClass = Qgis
 PdfRenderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.WmsDimensionDefaultDisplay.AllValues.__doc__ = "Display all values of the dimension"
+Qgis.WmsDimensionDefaultDisplay.MinValue.__doc__ = "Display minimum value of the dimension"
+Qgis.WmsDimensionDefaultDisplay.MaxValue.__doc__ = "Display maximum value of the dimension"
+Qgis.WmsDimensionDefaultDisplay.ReferenceValue.__doc__ = "Display a reference value"
+Qgis.WmsDimensionDefaultDisplay.__doc__ = """QGIS Server WMS Dimension default display types
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsServerWmsDimensionProperties`.WmsDimensionInfo.DefaultDisplay
+
+.. versionadded:: 4.4
+
+* ``AllValues``: Display all values of the dimension
+* ``MinValue``: Display minimum value of the dimension
+* ``MaxValue``: Display maximum value of the dimension
+* ``ReferenceValue``: Display a reference value
+
+"""
+# --
+Qgis.WmsDimensionDefaultDisplay.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.RubberBandIconType.NoIcon.__doc__ = "No icon is used"
 Qgis.RubberBandIconType.CrossPlus.__doc__ = "A cross is used to highlight points (+)"
 Qgis.RubberBandIconType.CrossX.__doc__ = "A cross is used to highlight points (x)"
