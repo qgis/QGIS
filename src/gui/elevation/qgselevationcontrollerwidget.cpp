@@ -573,6 +573,7 @@ void QgsElevationControllerLabels::setSignificantElevations( const QList<double>
 
 QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWidget *parent )
   : QWidgetAction( parent )
+  , mMenu( qobject_cast<QMenu *>( parent ) )
 {
   QGridLayout *gLayout = new QGridLayout();
   gLayout->setContentsMargins( 3, 2, 3, 2 );
@@ -627,7 +628,6 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
   mSizeSpin->setClearValue( 0, tr( "Full Range" ) );
   mSizeSpin->setKeyboardTracking( false );
   mSizeSpin->setToolTip( rangeToolTip );
-  mSizeSpin->installEventFilter( this );
 
   gLayout->addWidget( mSizeSpin, 1, 1, 1, 2 );
 
@@ -664,6 +664,16 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
 
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
+
+  // watch the whole panel, so that hovering any of its widgets marks this action as the
+  // active one and key presses are never handed over to the menu
+  w->installEventFilter( this );
+  const QList<QWidget *> children = w->findChildren<QWidget *>();
+  for ( QWidget *child : children )
+    child->installEventFilter( this );
+
+  connect( this, &QAction::hovered, this, &QgsElevationControllerSettingsAction::onHover );
+
   setDefaultWidget( w );
 }
 
@@ -715,17 +725,51 @@ void QgsElevationControllerSettingsAction::setInverted( bool inverted )
 
 bool QgsElevationControllerSettingsAction::eventFilter( QObject *watched, QEvent *event )
 {
-  if ( watched == mSizeSpin && event->type() == QEvent::KeyPress )
+  switch ( event->type() )
   {
-    const QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
-    if ( keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter )
+    case QEvent::Enter:
+      onHover();
+      break;
+
+    case QEvent::KeyPress:
     {
-      mSizeSpin->interpretText();
-      if ( !mSizeSpin->isCleared() )
-        mLockButton->setChecked( true );
+      const QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+      if ( keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter )
+      {
+        // spin boxes leave the return key for their parents to handle, which would make the
+        // menu activate its highlighted action and close. Apply the typed value ourselves instead.
+        QgsDoubleSpinBox *spin = qobject_cast<QgsDoubleSpinBox *>( watched );
+        if ( !spin )
+          spin = qobject_cast<QgsDoubleSpinBox *>( watched->parent() );
+
+        if ( spin )
+        {
+          spin->interpretText();
+          if ( spin == mSizeSpin && !mSizeSpin->isCleared() )
+            mLockButton->setChecked( true );
+          return true;
+        }
+      }
+      break;
     }
+
+    default:
+      break;
   }
   return QWidgetAction::eventFilter( watched, event );
+}
+
+void QgsElevationControllerSettingsAction::onHover()
+{
+  // see https://bugreports.qt.io/browse/QTBUG-10427
+  // the menu keeps highlighting the action the mouse last passed over, and would trigger it
+  // when the user hits enter while interacting with this widget
+  if ( mSuppressRecurse || !mMenu )
+    return;
+
+  mSuppressRecurse = true;
+  mMenu->setActiveAction( this );
+  mSuppressRecurse = false;
 }
 
 ///@endcond PRIVATE
