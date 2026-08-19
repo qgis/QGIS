@@ -162,6 +162,27 @@ class TestQgsElevationControllerWidget(QgisTestCase):
         w.slider().setLowerValue(50)
         self.assertAlmostEqual(w.range().upper() - w.range().lower(), 10.0001, 6)
 
+    def test_fixed_range_size_with_new_limits(self):
+        """
+        A locked range size must survive a change of the limits
+        """
+        w = QgsElevationControllerWidget()
+        w.setRangeLimits(QgsDoubleRange(0, 100))
+        w.setFixedRangeSize(10)
+        w.setRange(QgsDoubleRange(20, 30))
+        self.assertAlmostEqual(w.range().upper() - w.range().lower(), 10, 6)
+
+        # the slider holds the fixed size in its own integer units, which follow the limits
+        w.setRangeLimits(QgsDoubleRange(0, 1000))
+        self.assertEqual(w.slider().fixedRangeSize(), round(w.slider().maximum() / 100))
+        self.assertAlmostEqual(w.range().upper() - w.range().lower(), 10, 6)
+
+        # limits which no longer fit the range move it instead of shrinking it
+        w.setRange(QgsDoubleRange(20, 30))
+        w.setRangeLimits(QgsDoubleRange(0, 25))
+        self.assertAlmostEqual(w.range().lower(), 15, 6)
+        self.assertAlmostEqual(w.range().upper(), 25, 6)
+
     def test_project_interaction(self):
         """
         Test interaction of widget with project
