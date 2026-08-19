@@ -53,7 +53,7 @@ class GUI_EXPORT QgsElevationControllerLabels : public QWidget SIP_SKIP
     QList<double> mSignificantElevations;
 };
 
-class GUI_EXPORT QgsElevationControllerSettingsAction : public QWidgetAction
+class GUI_EXPORT QgsElevationControllerSettingsAction : public QWidgetAction SIP_SKIP
 {
     Q_OBJECT
 
