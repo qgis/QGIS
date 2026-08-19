@@ -18,7 +18,12 @@
 
 #include "qgis_3d.h"
 #include "qgschunkloader.h"
+#include "qgsmaterial3dhandler.h"
+#include "qgsphongmaterialsettings.h"
+#include "qgsterraintileentity_p.h"
 #include "qgstilingscheme.h"
+
+#include <QTexture>
 
 #define SIP_NO_FILE
 
@@ -46,7 +51,7 @@ class QgsProject;
  * \note Not available in Python bindings
  *
  */
-class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
+class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoader
 {
     Q_OBJECT
   public:
@@ -134,6 +139,23 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     void terrainChanged();
 
   protected:
+    struct TerrainTextureResources
+    {
+        QImage image;
+        QgsRectangle extentTerrainCrs;
+        QgsRectangle extentMapCrs;
+        QString tileDebugText;
+    };
+
+    //! Asynchronously loads resources for creating texture
+    QFuture<TerrainTextureResources> loadTextureResources( QgsChunkNode *node );
+    //! Creates a new texture that is linked to the entity
+    Qt3DRender::QTexture2D *createTexture( QgsTerrainTileEntity *entity, const QgsMaterialContext &context, const TerrainTextureResources &resources ) const;
+    //! Creates material component for the entity with the rendered map as a texture
+    void createTextureComponent(
+      const TerrainTextureResources &resources, QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture, const Qgs3DRenderContext &context
+    );
+
     QgsTilingScheme mTerrainTilingScheme; //!< Tiling scheme of the terrain
     QgsTerrainEntity *mTerrain = nullptr;
     QgsRectangle mExtent;

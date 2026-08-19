@@ -28,7 +28,6 @@
 #include "qgsgeotransform.h"
 #include "qgsimagetexture.h"
 #include "qgsmeshterraingenerator.h"
-#include "qgsmeshterraintileloader_p.h"
 #include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
@@ -291,12 +290,10 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const QString 
 QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin )
 {
   QgsFlatTerrainGenerator *generator = qgis::down_cast<QgsFlatTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
-  FlatTerrainChunkLoader *flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( generator->createChunkLoader( node ) );
-  flatTerrainLoader->start();
-  if ( mExportTextures )
-    terrain->textureGenerator()->waitForFinished();
+  QFuture<QgsChunkLoaderResult> resultPromise = generator->loadChunk( node );
+  resultPromise.waitForFinished();
   // the entity we created will be deallocated once the scene exporter is deallocated
-  Qt3DCore::QEntity *entity = flatTerrainLoader->createEntity( this );
+  Qt3DCore::QEntity *entity = resultPromise.takeResult().createEntity( this );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
 
   const QList<QgsGeoTransform *> transforms = entity->findChildren<QgsGeoTransform *>();
@@ -314,12 +311,9 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
   // create the entity synchronously and then it will be deleted once our scene exporter instance is deallocated
   QgsDemTerrainGenerator *generator = qgis::down_cast<QgsDemTerrainGenerator *>( terrain->mapSettings()->terrainGenerator()->clone() );
   generator->setResolution( mTerrainResolution );
-  QgsDemTerrainTileLoader *loader = qobject_cast<QgsDemTerrainTileLoader *>( generator->createChunkLoader( node ) );
-  loader->start();
-  generator->heightMapGenerator()->waitForFinished();
-  if ( mExportTextures )
-    terrain->textureGenerator()->waitForFinished();
-  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+  QFuture<QgsChunkLoaderResult> resultPromise = generator->loadChunk( node );
+  resultPromise.waitForFinished();
+  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( resultPromise.takeResult().createEntity( this ) );
 
   const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();
   for ( QgsGeoTransform *transform : transforms )
@@ -334,10 +328,9 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
 QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin )
 {
   QgsMeshTerrainGenerator *generator = qgis::down_cast<QgsMeshTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
-  QgsMeshTerrainTileLoader *loader = qobject_cast<QgsMeshTerrainTileLoader *>( generator->createChunkLoader( node ) );
-  loader->start();
-  // TODO: export textures
-  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+  QFuture<QgsChunkLoaderResult> resultPromise = generator->loadChunk( node );
+  resultPromise.waitForFinished();
+  QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( resultPromise.takeResult().createEntity( this ) );
 
   const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();
   for ( QgsGeoTransform *transform : transforms )

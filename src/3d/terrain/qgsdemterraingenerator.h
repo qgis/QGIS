@@ -77,12 +77,12 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     void setExtent( const QgsRectangle &extent ) override;
     float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
 
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
 
     QgsTerrainGenerator::Capabilities capabilities() const override;
 
-  private:
-    void updateGenerator();
+  protected:
+    virtual void updateGenerator();
 
     std::unique_ptr<QgsDemHeightMapGenerator> mHeightMapGenerator;
 

@@ -29,7 +29,6 @@
 
 #include "qgs3drendercontext.h"
 #include "qgsabstractfeaturebasedchunkedentity.h"
-#include "qgsbillboardgeometry.h"
 #include "qgschunkloader.h"
 #include "qgstextformat.h"
 
@@ -54,13 +53,13 @@ namespace Qt3DCore
  *
  * \since QGIS 4.0
  */
-class QgsAnnotationLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
+class QgsAnnotationLayerChunkLoader : public QgsQuadtreeChunkLoader
 {
     Q_OBJECT
 
   public:
     //! Constructs the factory
-    QgsAnnotationLayerChunkLoaderFactory(
+    QgsAnnotationLayerChunkLoader(
       const Qgs3DRenderContext &context,
       QgsAnnotationLayer *layer,
       int leafLevel,
@@ -75,7 +74,7 @@ class QgsAnnotationLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactor
     );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
 
     Qgs3DRenderContext mRenderContext;
     QgsAnnotationLayer *mLayer = nullptr;
@@ -87,47 +86,6 @@ class QgsAnnotationLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactor
     double mCalloutLineWidth = 2;
     QgsTextFormat mTextFormat;
 };
-
-
-/**
- * \ingroup qgis_3d
- * \brief This loader class is responsible for async loading of data for QgsAnnotationLayerChunkedEntity
- * and creation of final 3D entity from the data previously prepared in a worker thread.
- *
- * \since QGIS 4.0
- */
-class QgsAnnotationLayerChunkLoader : public QgsChunkLoader
-{
-    Q_OBJECT
-
-  public:
-    //! Constructs the loader
-    QgsAnnotationLayerChunkLoader( const QgsAnnotationLayerChunkLoaderFactory *factory, QgsChunkNode *node );
-    ~QgsAnnotationLayerChunkLoader() override;
-
-    void start() override;
-    void cancel() override;
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
-
-  private:
-    const QgsAnnotationLayerChunkLoaderFactory *mFactory = nullptr;
-    Qgs3DRenderContext mRenderContext;
-    bool mCanceled = false;
-    QFutureWatcher<void> *mFutureWatcher = nullptr;
-    QString mLayerName;
-    QgsVector3D mChunkOrigin;
-
-    std::vector< std::unique_ptr< QgsAnnotationItem > > mItemsToRender;
-
-    QVector< QgsBillboardGeometry::BillboardAtlasData > mBillboardPositions;
-    QVector< QgsBillboardGeometry::BillboardAtlasData > mTextBillboardPositions;
-    QVector< QgsLineString > mCalloutLines;
-    QImage mBillboardAtlas;
-    QImage mTextBillboardAtlas;
-    double mZMin = std::numeric_limits< double >::max();
-    double mZMax = std::numeric_limits< double >::lowest();
-};
-
 
 /**
  * \ingroup qgis_3d

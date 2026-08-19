@@ -31,6 +31,7 @@
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
 
+#include <QFuture>
 #include <QString>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QGeometryRenderer>
@@ -62,62 +63,60 @@ static bool hasLargeBounds( const QgsTiledSceneTile &t, const QgsCoordinateTrans
 
 ///
 
-QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset )
-  : QgsChunkLoader( node )
-  , mFactory( factory )
+QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader(
+  const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double zValueScale, double zValueOffset
+)
+  : mRenderContext( context )
+  , mIndex( index )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
-  , mIndex( index )
-{}
-
-void QgsTiledSceneChunkLoader::start()
+  , mLayerCrs( layerCrs )
 {
-  QgsChunkNode *node = chunk();
+  mBoundsTransform = QgsCoordinateTransform( tileCrs, context.crs(), context.transformContext() );
+}
 
-  mFutureWatcher = new QFutureWatcher<void>( this );
-  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-
-  const QgsCoordinateTransform &boundsTransform = mFactory.mBoundsTransform;
-
+QFuture<QgsChunkLoaderResult> QgsTiledSceneChunkLoader::loadChunk( QgsChunkNode *node )
+{
   const QgsChunkNodeId tileId = node->tileId();
   const QgsVector3D chunkOrigin = node->box3D().center();
-  const bool isGlobe = mFactory.mRenderContext.crs().type() == Qgis::CrsType::Geocentric;
-  const QFuture<void> future = QtConcurrent::run( [this, tileId, boundsTransform, chunkOrigin, isGlobe] {
+  const bool isGlobe = mRenderContext.crs().type() == Qgis::CrsType::Geocentric;
+  return QtConcurrent::run( [this, tileId, chunkOrigin, isGlobe]() -> QgsChunkLoaderResult {
     const QgsTiledSceneTile tile = mIndex.getTile( tileId.uniqueId );
 
     // we do not load tiles that are too big when not in globe scene mode...
     // the problem is that their 3D bounding boxes with ECEF coordinates are huge
     // and we are unable to turn them into planar bounding boxes
-    if ( !isGlobe && hasLargeBounds( tile, boundsTransform ) )
-      return;
+    if ( !isGlobe && hasLargeBounds( tile, mBoundsTransform ) )
+      return QgsChunkLoaderResult::sEmpty;
 
     QString uri = tile.resources().value( u"content"_s ).toString();
     if ( uri.isEmpty() )
     {
       // nothing to show for this tile
       // TODO: can we skip loading it at all?
-      return;
+      return QgsChunkLoaderResult::sEmpty;
     }
 
     uri = tile.baseUrl().resolved( uri ).toString();
-    QByteArray content = mFactory.mIndex.retrieveContent( uri );
+    QByteArray content = mIndex.retrieveContent( uri );
     if ( content.isEmpty() )
     {
       // the request probably failed
       // TODO: how can we report it?
-      return;
+      return QgsChunkLoaderResult::sEmpty;
     }
 
     QgsGltf3DUtils::EntityTransform entityTransform;
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
     entityTransform.chunkOriginTargetCrs = chunkOrigin;
-    entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
+    entityTransform.ecefToTargetCrs = &mBoundsTransform;
     entityTransform.zValueScale = mZValueScale;
     entityTransform.zValueOffset = mZValueOffset;
     entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
     const QString &format = tile.metadata().value( u"contentFormat"_s ).value<QString>();
     QStringList errors;
+    Qt3DCore::QEntity *entity = nullptr;
     if ( format == "quantizedmesh"_L1 )
     {
       try
@@ -125,7 +124,7 @@ void QgsTiledSceneChunkLoader::start()
         QgsQuantizedMeshTile qmTile( content );
         qmTile.removeDegenerateTriangles();
         tinygltf::Model model = qmTile.toGltf( true, 100 );
-        mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, mFactory.mRenderContext, &errors );
+        entity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, uri, mRenderContext, &errors );
       }
       catch ( QgsQuantizedMeshParsingException &ex )
       {
@@ -136,7 +135,7 @@ void QgsTiledSceneChunkLoader::start()
     {
       const QVector<QgsCesiumUtils::TileContents> tileContents = QgsCesiumUtils::extractTileContent( content, uri );
       if ( tileContents.isEmpty() )
-        return;
+        return QgsChunkLoaderResult::sEmpty;
 
       QVector<Qt3DCore::QEntity *> childEntities;
 
@@ -163,21 +162,21 @@ void QgsTiledSceneChunkLoader::start()
         if ( instancedPrimitives.isEmpty() )
         {
           // the common case (b3dm or glTF tile without EXT_mesh_gpu_instancing)
-          Qt3DCore::QEntity *e = QgsGltf3DUtils::parsedGltfToEntity( model, innerTransform, uri, mFactory.mRenderContext, &errors );
+          Qt3DCore::QEntity *e = QgsGltf3DUtils::parsedGltfToEntity( model, innerTransform, uri, mRenderContext, &errors );
           if ( e )
             childEntities << e;
         }
         else
         {
           // the instanced case (i3dm or glTF tile with EXT_mesh_gpu_instancing)
-          QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( mFactory.mRenderContext );
+          QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( mRenderContext );
           childEntities << QgsGltf3DUtils::createInstancedEntities( model, instancedPrimitives, innerTransform, uri, materialContext, &errors );
 
           if ( !innerContent.instancing.has_value() )
           {
             // for glTF tiles with EXT_mesh_gpu_instancing, the model can have a mixture of instanced
             // and non-instanced nodes. Handle the non-instanced nodes here (if any).
-            Qt3DCore::QEntity *nonInstancedEntity = QgsGltf3DUtils::parsedGltfToEntity( model, innerTransform, uri, mFactory.mRenderContext, &errors );
+            Qt3DCore::QEntity *nonInstancedEntity = QgsGltf3DUtils::parsedGltfToEntity( model, innerTransform, uri, mRenderContext, &errors );
             if ( nonInstancedEntity )
               childEntities << nonInstancedEntity;
           }
@@ -185,33 +184,33 @@ void QgsTiledSceneChunkLoader::start()
 
         if ( childEntities.size() == 1 )
         {
-          mEntity = childEntities[0];
+          entity = childEntities[0];
         }
         else
         {
-          mEntity = new Qt3DCore::QEntity;
+          entity = new Qt3DCore::QEntity;
           for ( Qt3DCore::QEntity *e : childEntities )
-            e->setParent( mEntity );
+            e->setParent( entity );
         }
       }
     }
     else if ( format == "draco"_L1 )
     {
       QgsGltfUtils::I3SNodeContext i3sContext;
-      i3sContext.initFromTile( tile, mFactory.mLayerCrs, mFactory.mBoundsTransform.sourceCrs(), mFactory.mRenderContext.transformContext() );
+      i3sContext.initFromTile( tile, mLayerCrs, mBoundsTransform.sourceCrs(), mRenderContext.transformContext() );
 
       QString dracoLoadError;
       tinygltf::Model model;
       if ( !QgsGltfUtils::loadDracoModel( content, i3sContext, model, &dracoLoadError ) )
       {
         errors.append( dracoLoadError );
-        return;
+        return QgsChunkLoaderResult::sEmpty;
       }
 
-      mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, QString(), mFactory.mRenderContext, &errors );
+      entity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, QString(), mRenderContext, &errors );
     }
     else
-      return; // unsupported tile content type
+      return QgsChunkLoaderResult::sEmpty; // unsupported tile content type
 
     // TODO: report errors somewhere?
     if ( !errors.isEmpty() )
@@ -219,56 +218,24 @@ void QgsTiledSceneChunkLoader::start()
       QgsDebugError( "gltf load errors: " + errors.join( '\n' ) );
     }
 
-    if ( mEntity )
+    if ( entity )
     {
       QgsGeoTransform *transform = new QgsGeoTransform;
       transform->setGeoTranslation( chunkOrigin );
-      mEntity->addComponent( transform );
+      entity->addComponent( transform );
 
-      mEntity->moveToThread( QgsApplication::instance()->thread() );
+      entity->moveToThread( QgsApplication::instance()->thread() );
     }
+
+    return QgsChunkLoaderResult { [entity]( Qt3DCore::QEntity *parent ) {
+      if ( entity )
+        entity->setParent( parent );
+      return entity;
+    } };
   } );
-
-  // emit finished() as soon as the handler is populated with features
-  mFutureWatcher->setFuture( future );
 }
 
-QgsTiledSceneChunkLoader::~QgsTiledSceneChunkLoader()
-{
-  if ( !mFutureWatcher->isFinished() )
-  {
-    disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-    mFutureWatcher->waitForFinished();
-  }
-}
-
-Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *parent )
-{
-  if ( mEntity )
-    mEntity->setParent( parent );
-  return mEntity;
-}
-
-///
-
-QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory(
-  const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double zValueScale, double zValueOffset
-)
-  : mRenderContext( context )
-  , mIndex( index )
-  , mZValueScale( zValueScale )
-  , mZValueOffset( zValueOffset )
-  , mLayerCrs( layerCrs )
-{
-  mBoundsTransform = QgsCoordinateTransform( tileCrs, context.crs(), context.transformContext() );
-}
-
-QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
-{
-  return new QgsTiledSceneChunkLoader( node, mIndex, *this, mZValueScale, mZValueOffset );
-}
-
-QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const
+QgsChunkNode *QgsTiledSceneChunkLoader::nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const
 {
   QgsChunkNode *node = nullptr;
   if ( mRenderContext.crs().type() != Qgis::CrsType::Geocentric && hasLargeBounds( t, mBoundsTransform ) )
@@ -293,14 +260,14 @@ QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneT
 }
 
 
-QgsChunkNode *QgsTiledSceneChunkLoaderFactory::createRootNode() const
+QgsChunkNode *QgsTiledSceneChunkLoader::createRootNode() const
 {
   const QgsTiledSceneTile t = mIndex.rootTile();
   return nodeForTile( t, QgsChunkNodeId( t.id() ), nullptr );
 }
 
 
-QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
+QVector<QgsChunkNode *> QgsTiledSceneChunkLoader::createChildren( QgsChunkNode *node ) const
 {
   QVector<QgsChunkNode *> children;
   const long long indexTileId = node->tileId().uniqueId;
@@ -353,7 +320,7 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
   return children;
 }
 
-bool QgsTiledSceneChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
+bool QgsTiledSceneChunkLoader::canCreateChildren( QgsChunkNode *node )
 {
   long long nodeId = node->tileId().uniqueId;
   if ( mFutureHierarchyFetches.contains( nodeId ) || mPendingHierarchyFetches.contains( nodeId ) )
@@ -384,28 +351,22 @@ bool QgsTiledSceneChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
   return true;
 }
 
-void QgsTiledSceneChunkLoaderFactory::fetchHierarchyForNode( long long nodeId, QgsChunkNode *origNode )
+QFuture<void> QgsTiledSceneChunkLoader::fetchHierarchyForNode( long long nodeId )
 {
   Q_ASSERT( !mPendingHierarchyFetches.contains( nodeId ) );
   mFutureHierarchyFetches.remove( nodeId );
   mPendingHierarchyFetches.insert( nodeId );
 
-  QFutureWatcher<void> *futureWatcher = new QFutureWatcher<void>( this );
-  connect( futureWatcher, &QFutureWatcher<void>::finished, this, [this, origNode, nodeId, futureWatcher] {
-    mPendingHierarchyFetches.remove( nodeId );
-    emit childrenPrepared( origNode );
-    futureWatcher->deleteLater();
-  } );
-  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId] { mIndex.fetchHierarchy( nodeId ); } ) );
+  return QtConcurrent::run( [this, nodeId] { mIndex.fetchHierarchy( nodeId ); } ) //
+    .then( this, [this, nodeId]() { mPendingHierarchyFetches.remove( nodeId ); } );
 }
 
-void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
+QFuture<void> QgsTiledSceneChunkLoader::prepareChildren( QgsChunkNode *node )
 {
   long long nodeId = node->tileId().uniqueId;
   if ( mFutureHierarchyFetches.contains( nodeId ) )
   {
-    fetchHierarchyForNode( nodeId, node );
-    return;
+    return fetchHierarchyForNode( nodeId );
   }
 
   // we need to make sure that if a child tile's content references another tileset JSON,
@@ -413,17 +374,18 @@ void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
   // end up trying to load tileset JSON file instead of the actual content
 
   const QVector<long long> childIds = mIndex.childTileIds( nodeId );
+  QList<QFuture<void>> fetches;
   for ( long long childId : childIds )
   {
     if ( mFutureHierarchyFetches.contains( childId ) )
     {
-      fetchHierarchyForNode( childId, node );
+      fetches.append( fetchHierarchyForNode( childId ) );
     }
   }
+  return QtFuture::whenAll( fetches.begin(), fetches.end() );
 }
 
-
-///
+//////////
 
 QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity(
   Qgs3DMapSettings *map,
@@ -435,7 +397,7 @@ QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity(
   double zValueScale,
   double zValueOffset
 )
-  : QgsChunkedEntity( map, maximumScreenError, new QgsTiledSceneChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), index, tileCrs, layerCrs, zValueScale, zValueOffset ), true )
+  : QgsChunkedEntity( map, maximumScreenError, new QgsTiledSceneChunkLoader( Qgs3DRenderContext::fromMapSettings( map ), index, tileCrs, layerCrs, zValueScale, zValueOffset ), true )
   , mIndex( index )
 {
   setShowBoundingBoxes( showBoundingBoxes );
@@ -449,7 +411,7 @@ QgsTiledSceneLayerChunkedEntity::~QgsTiledSceneLayerChunkedEntity()
 
 int QgsTiledSceneLayerChunkedEntity::pendingJobsCount() const
 {
-  return QgsChunkedEntity::pendingJobsCount() + static_cast<QgsTiledSceneChunkLoaderFactory *>( mChunkLoaderFactory )->mPendingHierarchyFetches.count();
+  return QgsChunkedEntity::pendingJobsCount() + static_cast<QgsTiledSceneChunkLoader *>( mChunkLoader )->mPendingHierarchyFetches.count();
 }
 
 QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const

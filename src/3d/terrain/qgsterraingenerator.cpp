@@ -15,12 +15,19 @@
 
 #include "qgsterraingenerator.h"
 
+#include "qgs3d.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgscoordinatetransform.h"
+#include "qgsphongtexturedmaterial.h"
+#include "qgsterrainentity.h"
+#include "qgsterraintexturegenerator_p.h"
+#include "qgsterraintextureimage_p.h"
+#include "qgstexturematerial.h"
 
 #include <QString>
+#include <QTechnique>
 
 #include "moc_qgsterraingenerator.cpp"
 
@@ -79,4 +86,84 @@ bool QgsTerrainGenerator::isValid() const
 QgsTerrainGenerator::Capabilities QgsTerrainGenerator::capabilities() const
 {
   return QgsTerrainGenerator::Capability::NoCapabilities;
+}
+
+QFuture<QgsTerrainGenerator::TerrainTextureResources> QgsTerrainGenerator::loadTextureResources( QgsChunkNode *node )
+{
+  const Qgs3DMapSettings *map = mTerrain->mapSettings();
+  const QgsChunkNodeId nodeId = node->tileId();
+  const QgsRectangle extentTerrainCrs = map->terrainGenerator()->tilingScheme().tileToExtent( nodeId );
+  const QgsRectangle extentMapCrs = Qgs3DUtils::tryReprojectExtent2D( extentTerrainCrs, map->terrainGenerator()->crs(), map->crs(), map->transformContext() );
+  const QString tileDebugText = node->tileId().text();
+
+  return mTerrain->textureGenerator()->render( extentMapCrs, node->tileId(), tileDebugText ).then( this, [extentTerrainCrs, extentMapCrs, tileDebugText]( QImage img ) {
+    return TerrainTextureResources {
+      img,
+      extentTerrainCrs,
+      extentMapCrs,
+      tileDebugText,
+    };
+  } );
+}
+
+void QgsTerrainGenerator::createTextureComponent(
+  const TerrainTextureResources &resources, QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture, const Qgs3DRenderContext &context
+)
+{
+  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
+  Qt3DRender::QTexture2D *texture = useTexture || !isShadingEnabled ? createTexture( entity, materialContext, resources ) : nullptr;
+
+  QgsMaterial *material = nullptr;
+  if ( texture )
+  {
+    if ( isShadingEnabled )
+    {
+      QgsPhongTexturedMaterial *phongTexturedMaterial = new QgsPhongTexturedMaterial();
+      phongTexturedMaterial->setAmbient( shadingMaterial.ambient() );
+      phongTexturedMaterial->setSpecular( shadingMaterial.specular() );
+      phongTexturedMaterial->setShininess( static_cast<float>( shadingMaterial.shininess() ) );
+      phongTexturedMaterial->setDiffuseTexture( texture );
+      phongTexturedMaterial->setOpacity( static_cast<float>( shadingMaterial.opacity() ) );
+      material = phongTexturedMaterial;
+    }
+    else
+    {
+      QgsTextureMaterial *textureMaterial = new QgsTextureMaterial;
+      textureMaterial->setTexture( texture );
+      material = textureMaterial;
+    }
+  }
+  else
+  {
+    materialContext.setIsSelected( false );
+    material = Qgs3D::toMaterial( &shadingMaterial, Qgis::MaterialRenderingTechnique::Triangles, materialContext );
+  }
+
+  // no backface culling on terrain, to allow terrain to be viewed from underground
+  const QVector<Qt3DRender::QTechnique *> techniques = material->effect()->techniques();
+  for ( Qt3DRender::QTechnique *technique : techniques )
+  {
+    const QVector<Qt3DRender::QRenderPass *> passes = technique->renderPasses();
+    for ( Qt3DRender::QRenderPass *pass : passes )
+    {
+      Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+      cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+      pass->addRenderState( cullFace );
+    }
+  }
+
+  entity->addComponent( material ); // takes ownership if the component has no parent
+}
+
+Qt3DRender::QTexture2D *QgsTerrainGenerator::createTexture( QgsTerrainTileEntity *entity, const QgsMaterialContext &context, const QgsTerrainGenerator::TerrainTextureResources &resources ) const
+{
+  Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
+  QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( resources.image, resources.extentMapCrs, resources.tileDebugText );
+  Qgs3DUtils::setTextureFiltering( texture, context );
+  texture->setFormat( Qt3DRender::QAbstractTexture::SRGB8_Alpha8 );
+  texture->addTextureImage( textureImage ); //texture take the ownership of textureImage if has no parant
+
+  entity->setTextureImage( textureImage );
+
+  return texture;
 }

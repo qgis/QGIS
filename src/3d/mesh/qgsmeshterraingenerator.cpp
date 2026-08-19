@@ -19,40 +19,15 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
+#include "qgschunkloader.h"
 #include "qgsmaterial3dhandler.h"
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsmeshlayerutils.h"
-#include "qgsmeshterraintileloader_p.h"
 #include "qgsterrainentity.h"
 
 #include "moc_qgsmeshterraingenerator.cpp"
-
-QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsTriangularMesh &triangularMesh, const QgsMesh3DSymbol *symbol )
-  : QgsTerrainTileLoader( terrain, node )
-  , mTriangularMesh( triangularMesh )
-  , mSymbol( symbol->clone() )
-{}
-
-void QgsMeshTerrainTileLoader::start()
-{
-  loadTexture();
-}
-
-Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
-{
-  Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( terrain()->mapSettings() );
-  QgsMesh3DTerrainTileEntity *entity = new QgsMesh3DTerrainTileEntity( context, mTriangularMesh, mSymbol.get(), mNode->tileId(), parent );
-  entity->build();
-  createTexture( entity, QgsMaterialContext::fromRenderContext( context ) );
-
-  return entity;
-}
-
-//
-// QgsMeshTerrainGenerator
-//
 
 QgsTerrainGenerator *QgsMeshTerrainGenerator::create()
 {
@@ -63,9 +38,18 @@ QgsMeshTerrainGenerator::QgsMeshTerrainGenerator()
   : mSymbol( std::make_unique<QgsMesh3DSymbol>() )
 {}
 
-QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
+QFuture<QgsChunkLoaderResult> QgsMeshTerrainGenerator::loadChunk( QgsChunkNode *node )
 {
-  return new QgsMeshTerrainTileLoader( mTerrain, node, mTriangularMesh, symbol() );
+  return loadTextureResources( node ).then( this, [this, node]( TerrainTextureResources resources ) {
+    return QgsChunkLoaderResult { [this, node, resources]( Qt3DCore::QEntity *parent ) -> Qt3DCore::QEntity * {
+      Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( mTerrain->mapSettings() );
+      QgsMesh3DTerrainTileEntity *entity = new QgsMesh3DTerrainTileEntity( context, mTriangularMesh, mSymbol.get(), node->tileId(), parent );
+      entity->build();
+      createTexture( entity, QgsMaterialContext::fromRenderContext( context ), resources );
+
+      return entity;
+    } };
+  } );
 }
 
 float QgsMeshTerrainGenerator::rootChunkError( const Qgs3DMapSettings & ) const

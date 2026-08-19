@@ -49,21 +49,21 @@ namespace Qt3DCore
 
 /**
  * \ingroup qgis_3d
- * \brief This loader factory is responsible for creation of loaders for individual tiles
- * of QgsVectorLayerChunkedEntity whenever a new tile is requested by the entity.
+ * \brief This loader is responsible for creation of individual tiles of
+ * QgsVectorLayerChunkedEntity whenever a new tile is requested by the entity.
  *
  * \since QGIS 3.12
  */
-class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
+class QgsVectorLayerChunkLoader : public QgsQuadtreeChunkLoader
 {
     Q_OBJECT
 
   public:
-    //! Constructs the factory
-    QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures );
+    //! Constructs the loader
+    QgsVectorLayerChunkLoader( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
     bool canCreateChildren( QgsChunkNode *node ) override;
     QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
@@ -72,40 +72,8 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
     //! Contains loaded nodes and whether they are leaf nodes or not
     mutable QHash< QString, bool > mNodesAreLeafs;
+    mutable QMutex mNodesAreLeafsMutex;
     int mMaxFeatures;
-};
-
-
-/**
- * \ingroup qgis_3d
- * \brief This loader class is responsible for async loading of data for a single tile
- * of QgsVectorLayerChunkedEntity and creation of final 3D entity from the data
- * previously prepared in a worker thread.
- *
- * \since QGIS 3.12
- */
-class QgsVectorLayerChunkLoader : public QgsChunkLoader
-{
-    Q_OBJECT
-
-  public:
-    //! Constructs the loader
-    QgsVectorLayerChunkLoader( const QgsVectorLayerChunkLoaderFactory *factory, QgsChunkNode *node );
-    ~QgsVectorLayerChunkLoader() override;
-
-    void start() override;
-    void cancel() override;
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
-
-  private:
-    const QgsVectorLayerChunkLoaderFactory *mFactory;
-    std::unique_ptr<QgsFeature3DHandler> mHandler;
-    Qgs3DRenderContext mRenderContext;
-    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
-    bool mCanceled = false;
-    QFutureWatcher<void> *mFutureWatcher = nullptr;
-    QString mLayerName;
-    bool mNodeIsLeaf = false;
 };
 
 

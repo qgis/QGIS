@@ -23,11 +23,13 @@
 
 ///@cond PRIVATE
 
-QgsQuadtreeChunkLoaderFactory::QgsQuadtreeChunkLoaderFactory() = default;
+QgsChunkLoaderResult QgsChunkLoaderResult::sEmpty = QgsChunkLoaderResult( []( Qt3DCore::QEntity * ) { return nullptr; } );
 
-QgsQuadtreeChunkLoaderFactory::~QgsQuadtreeChunkLoaderFactory() = default;
+QgsQuadtreeChunkLoader::QgsQuadtreeChunkLoader() = default;
 
-void QgsQuadtreeChunkLoaderFactory::setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel, const QgsBox3D &clippingBox3D )
+QgsQuadtreeChunkLoader::~QgsQuadtreeChunkLoader() = default;
+
+void QgsQuadtreeChunkLoader::setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel, const QgsBox3D &clippingBox3D )
 {
   mRootBox3D = rootBox3D;
   mRootError = rootError;
@@ -35,12 +37,12 @@ void QgsQuadtreeChunkLoaderFactory::setupQuadtree( const QgsBox3D &rootBox3D, fl
   mClippingBox3D = clippingBox3D;
 }
 
-QgsChunkNode *QgsQuadtreeChunkLoaderFactory::createRootNode() const
+QgsChunkNode *QgsQuadtreeChunkLoader::createRootNode() const
 {
   return new QgsChunkNode( QgsChunkNodeId( 0, 0, 0 ), mRootBox3D, mRootError );
 }
 
-QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
+QVector<QgsChunkNode *> QgsQuadtreeChunkLoader::createChildren( QgsChunkNode *node ) const
 {
   QVector<QgsChunkNode *> children;
 
@@ -86,6 +88,18 @@ QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkN
       children << new QgsChunkNode( childId, childBox3D, childError, node );
   }
   return children;
+}
+
+bool QgsChunkLoader::canCreateChildren( QgsChunkNode *node )
+{
+  Q_UNUSED( node );
+  return true;
+}
+
+QFuture<void> QgsChunkLoader::prepareChildren( QgsChunkNode *node )
+{
+  Q_UNUSED( node );
+  return {};
 }
 
 /// @endcond
