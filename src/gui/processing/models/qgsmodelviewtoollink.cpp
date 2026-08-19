@@ -40,6 +40,74 @@
 
 using namespace Qt::StringLiterals;
 
+
+///@cond PRIVATE
+class PopupToolboxWidget : public QWidget
+{
+    Q_OBJECT
+  public:
+    PopupToolboxWidget( QWidget *parent = nullptr )
+      : QWidget( parent )
+    {
+      QVBoxLayout *layout = new QVBoxLayout();
+      layout->setSpacing( 0 );
+      layout->setContentsMargins( 0, 0, 0, 0 );
+
+      mLineEdit = new QgsFilterLineEdit( this );
+      mLineEdit->setShowSearchIcon( true );
+      mLineEdit->setPlaceholderText( tr( "Search…" ) );
+      mLineEdit->setFocus();
+
+      mToolboxTreeView = new QgsProcessingToolboxTreeView( this );
+      mToolboxTreeView->header()->setVisible( false );
+      mToolboxTreeView->setAlternatingRowColors( true );
+
+      connect( mLineEdit, &QgsFilterLineEdit::textChanged, mToolboxTreeView, &QgsProcessingToolboxTreeView::setFilterString );
+
+      layout->addWidget( mLineEdit );
+      layout->addWidget( mToolboxTreeView );
+
+      setLayout( layout );
+
+      connect( mLineEdit, &QgsFilterLineEdit::returnPressed, this, [this]() { itemSelected(); } );
+      connect( mToolboxTreeView, &QgsProcessingToolboxTreeView::clicked, this, [this]( const QModelIndex & ) { itemSelected(); } );
+      connect( mToolboxTreeView, &QgsProcessingToolboxTreeView::doubleClicked, this, [this]( const QModelIndex & ) { itemSelected(); } );
+    }
+
+    QgsProcessingToolboxTreeView *toolboxView() const { return mToolboxTreeView; }
+
+  signals:
+    void algorithmAdded( const QString &algorithmId );
+    void parameterAdded( const QString &parameterTypeId );
+
+
+  private:
+    QgsFilterLineEdit *mLineEdit = nullptr;
+    QgsProcessingToolboxTreeView *mToolboxTreeView = nullptr;
+
+    void itemSelected()
+    {
+      if ( mToolboxTreeView->selectedAlgorithm() )
+      {
+        // addAlgorithm( toolboxView->selectedAlgorithm()->id(), mFromSocket );
+        emit algorithmAdded( mToolboxTreeView->selectedAlgorithm()->id() );
+        close();
+      }
+      if ( mToolboxTreeView->selectedParameterType() )
+      {
+        // addInput( toolboxView->selectedParameterType()->id(), mFromSocket );
+        emit parameterAdded( mToolboxTreeView->selectedParameterType()->id() );
+        close();
+      }
+    }
+};
+
+// For PopupToolboxWidget
+#include "qgsmodelviewtoollink.moc"
+
+///@endcond
+
+
 QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Link Tool" ) )
 {
@@ -129,22 +197,11 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
   if ( !mToSocket )
   {
-    QWidget *widget = new QWidget();
+    // QWidget *widget = new QWidget();
+    PopupToolboxWidget *widget = new PopupToolboxWidget();
     widget->setAttribute( Qt::WA_DeleteOnClose );
     widget->setWindowFlags( Qt::Popup );
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setSpacing( 0 );
-    layout->setContentsMargins( 0, 0, 0, 0 );
-
-    QgsFilterLineEdit *lineEdit = new QgsFilterLineEdit( widget );
-    lineEdit->setShowSearchIcon( true );
-    lineEdit->setPlaceholderText( tr( "Search…" ) );
-    lineEdit->setFocus();
-
-    QgsProcessingToolboxTreeView *toolboxView = new QgsProcessingToolboxTreeView( widget );
-    toolboxView->header()->setVisible( false );
-    toolboxView->setAlternatingRowColors( true );
+    widget->move( event->globalPos() );
 
     QgsSettings settings;
     QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::Filter::Modeler;
@@ -158,11 +215,11 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
       QgsProcessingModelComponent *outputComponent = mFromSocket->component();
       if ( const QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent ) )
       {
-        toolboxView->setFilterOutput( outputChildAlgorithm->algorithm()->outputDefinitions().at( mFromSocket->index() ) );
+        widget->toolboxView()->setFilterOutput( outputChildAlgorithm->algorithm()->outputDefinitions().at( mFromSocket->index() ) );
       }
       else if ( const QgsProcessingModelParameter *paramFrom = dynamic_cast<QgsProcessingModelParameter *>( outputComponent ) )
       {
-        toolboxView->setFilterParameter( scene()->model()->parameterDefinition( paramFrom->parameterName() ) );
+        widget->toolboxView()->setFilterParameter( scene()->model()->parameterDefinition( paramFrom->parameterName() ) );
       }
       filters |= QgsProcessingToolboxProxyModel::Filter::ForSocketOutput;
     }
@@ -172,40 +229,16 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
       if ( const QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent ) )
       {
         const QgsProcessingParameterDefinition *paramDef = outputChildAlgorithm->algorithm()->parameterDefinitions().at( mFromSocket->index() );
-        toolboxView->setFilterParameter( paramDef );
+        widget->toolboxView()->setFilterParameter( paramDef );
         filters |= QgsProcessingToolboxProxyModel::Filter::ForSocketInput;
       }
     }
 
-    toolboxView->setFilters( filters );
-    connect( lineEdit, &QgsFilterLineEdit::textChanged, toolboxView, &QgsProcessingToolboxTreeView::setFilterString );
+    widget->toolboxView()->setFilters( filters );
 
+    connect( widget, &PopupToolboxWidget::algorithmAdded, this, [this, event]( const QString &algorithmId ) { addAlgorithm( algorithmId, event->modelPoint(), mFromSocket ); } );
+    connect( widget, &PopupToolboxWidget::parameterAdded, this, [this, event]( const QString &parameterTypeId ) { addInput( parameterTypeId, event->modelPoint(), mFromSocket ); } );
 
-    auto lbd = [this, widget, event, toolboxView]() {
-      if ( toolboxView->selectedAlgorithm() )
-      {
-        addAlgorithm( toolboxView->selectedAlgorithm()->id(), event->modelPoint(), mFromSocket );
-        widget->close();
-      }
-      if ( toolboxView->selectedParameterType() )
-      {
-        addInput( toolboxView->selectedParameterType()->id(), event->modelPoint(), mFromSocket );
-        widget->close();
-      }
-    };
-
-    connect( lineEdit, &QgsFilterLineEdit::returnPressed, this, [lbd]() { lbd(); } );
-
-    connect( toolboxView, &QgsProcessingToolboxTreeView::clicked, this, [lbd]( const QModelIndex & ) { lbd(); } );
-    connect( toolboxView, &QgsProcessingToolboxTreeView::doubleClicked, this, [lbd]( const QModelIndex & ) { lbd(); } );
-
-
-    layout->addWidget( lineEdit );
-    layout->addWidget( toolboxView );
-
-    widget->setLayout( layout );
-
-    widget->move( event->globalPos() );
     widget->show();
     return;
   }
