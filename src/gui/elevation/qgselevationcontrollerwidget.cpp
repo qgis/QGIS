@@ -19,13 +19,19 @@
 
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
+#include "qgselevationutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerelevationproperties.h"
 #include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsrange.h"
 #include "qgsrangeslider.h"
 
+#include <QCheckBox>
 #include <QEvent>
 #include <QHBoxLayout>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
 #include <QMouseEvent>
@@ -57,14 +63,45 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
 
   mSettingsAction = new QgsElevationControllerSettingsAction( mMenu );
   mMenu->addAction( mSettingsAction );
-  mInvertDirectionAction = new QAction( tr( "Invert Direction" ), this );
-  mInvertDirectionAction->setCheckable( true );
-  mMenu->addAction( mInvertDirectionAction );
 
-  mSettingsAction->sizeSpin()->clear();
-  connect( mSettingsAction->sizeSpin(), qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size ) { setFixedRangeSize( size < 0 ? -1 : size ); } );
+  QMenu *limitsMenu = mSettingsAction->limitsMenu();
 
-  mMenu->addSeparator();
+  QAction *limitsFromProjectRangeAction = limitsMenu->addAction( tr( "Project Elevation Range" ) );
+  connect( limitsFromProjectRangeAction, &QAction::triggered, this, [this] {
+    const QgsDoubleRange range = QgsProject::instance()->elevationProperties()->elevationRange();
+    if ( range.isInfinite() )
+      return;
+
+    // an explicitly configured range is applied as it is
+    setRangeLimits( range );
+    setRange( range );
+  } );
+
+  QAction *limitsFromProjectLayersAction = limitsMenu->addAction( tr( "Project Layers" ) );
+  connect( limitsFromProjectLayersAction, &QAction::triggered, this, [this] { setLimitsFromRange( QgsElevationUtils::calculateZRangeForProject( QgsProject::instance() ) ); } );
+
+  QAction *limitsFromCurrentLayerAction = limitsMenu->addAction( tr( "Current Layer" ) );
+  connect( limitsFromCurrentLayerAction, &QAction::triggered, this, [this] {
+    if ( mMapCanvas )
+      setLimitsFromRange( QgsElevationUtils::calculateZRangeForLayers( { mMapCanvas->currentLayer() } ) );
+  } );
+
+  // the project and the current layer change at any time, so refresh availability when the menu opens
+  connect( limitsMenu, &QMenu::aboutToShow, this, [this, limitsFromProjectRangeAction, limitsFromProjectLayersAction, limitsFromCurrentLayerAction] {
+    limitsFromProjectRangeAction->setEnabled( !QgsProject::instance()->elevationProperties()->elevationRange().isInfinite() );
+
+    const QMap<QString, QgsMapLayer *> projectLayers = QgsProject::instance()->mapLayers();
+    limitsFromProjectLayersAction->setEnabled( std::any_of( projectLayers.begin(), projectLayers.end(), []( QgsMapLayer *layer ) { return layerHasElevation( layer ); } ) );
+
+    limitsFromCurrentLayerAction->setEnabled( mMapCanvas && layerHasElevation( mMapCanvas->currentLayer() ) );
+  } );
+
+  connect( mSettingsAction, &QgsElevationControllerSettingsAction::limitsChanged, this, &QgsElevationControllerWidget::setRangeLimits );
+  connect( mSettingsAction, &QgsElevationControllerSettingsAction::fixedRangeSizeChanged, this, &QgsElevationControllerWidget::setFixedRangeSize );
+  connect( mSettingsAction, &QgsElevationControllerSettingsAction::fullRangeRequested, this, [this] {
+    setRange( rangeLimits() );
+    mSettingsAction->updateRangeSize( rangeLimits().upper() - rangeLimits().lower() );
+  } );
 
   mSlider = new QgsRangeSlider( Qt::Vertical );
   mSlider->setFlippedDirection( true );
@@ -100,11 +137,16 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
     mSliderLabels->setRange( range() );
   } );
 
-  connect( mInvertDirectionAction, &QAction::toggled, this, [this]() {
-    mSlider->setFlippedDirection( !mInvertDirectionAction->isChecked() );
-    mSliderLabels->setInverted( mInvertDirectionAction->isChecked() );
+  connect( mMenu, &QMenu::aboutToShow, this, [this]() {
+    mSettingsAction->setLimits( mRangeLimits );
+    mSettingsAction->updateRangeSize( range().upper() - range().lower() );
+  } );
 
-    emit invertedChanged( mInvertDirectionAction->isChecked() );
+  connect( mSettingsAction, &QgsElevationControllerSettingsAction::invertedChanged, this, [this]( bool inverted ) {
+    mSlider->setFlippedDirection( !inverted );
+    mSliderLabels->setInverted( inverted );
+
+    emit invertedChanged( inverted );
   } );
 
   // default initial value to full range
@@ -157,6 +199,30 @@ QMenu *QgsElevationControllerWidget::menu()
   return mMenu;
 }
 
+QgsMapCanvas *QgsElevationControllerWidget::mapCanvas() const
+{
+  return mMapCanvas;
+}
+
+void QgsElevationControllerWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+}
+
+bool QgsElevationControllerWidget::layerHasElevation( QgsMapLayer *layer )
+{
+  return layer && layer->elevationProperties() && layer->elevationProperties()->hasElevation();
+}
+
+void QgsElevationControllerWidget::setLimitsFromRange( const QgsDoubleRange &range )
+{
+  if ( range.isInfinite() || range.isEmpty() )
+    return;
+
+  setRangeLimits( range );
+  setRange( range );
+}
+
 void QgsElevationControllerWidget::setRange( const QgsDoubleRange &range )
 {
   if ( range == mCurrentRange )
@@ -173,10 +239,11 @@ void QgsElevationControllerWidget::setRange( const QgsDoubleRange &range )
 
 void QgsElevationControllerWidget::setRangeLimits( const QgsDoubleRange &limits )
 {
-  if ( limits.isInfinite() )
+  if ( limits.isInfinite() || limits.upper() <= limits.lower() )
     return;
 
   mRangeLimits = limits;
+  mSettingsAction->setLimits( mRangeLimits );
 
   const double limitRange = limits.upper() - limits.lower();
 
@@ -233,14 +300,15 @@ void QgsElevationControllerWidget::setFixedRangeSize( double size )
   {
     mSlider->setFixedRangeSize( static_cast<int>( std::round( mFixedRangeSize * mSliderPrecision ) ) );
   }
-  if ( mFixedRangeSize != mSettingsAction->sizeSpin()->value() )
-    mSettingsAction->sizeSpin()->setValue( mFixedRangeSize );
+
+  mSettingsAction->setFixedRangeSize( mFixedRangeSize );
+
   emit fixedRangeSizeChanged( mFixedRangeSize );
 }
 
 void QgsElevationControllerWidget::setInverted( bool inverted )
 {
-  mInvertDirectionAction->setChecked( inverted );
+  mSettingsAction->setInverted( inverted );
 }
 
 void QgsElevationControllerWidget::setSignificantElevations( const QList<double> &elevations )
@@ -441,27 +509,155 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
   QGridLayout *gLayout = new QGridLayout();
   gLayout->setContentsMargins( 3, 2, 3, 2 );
 
-  QLabel *label = new QLabel( tr( "Fixed Range Size" ) );
-  gLayout->addWidget( label, 0, 0 );
+  QLabel *limitsLabel = new QLabel( tr( "Limits" ) );
+  limitsLabel->setToolTip( tr( "Lowest and highest elevations which can be selected with the slider" ) );
+  gLayout->addWidget( limitsLabel, 0, 0 );
+
+  mLowerSpin = new QgsDoubleSpinBox();
+  mLowerSpin->setDecimals( 4 );
+  mLowerSpin->setMinimum( -999999999.0 );
+  mLowerSpin->setMaximum( 999999999.0 );
+  mLowerSpin->setShowClearButton( false );
+  mLowerSpin->setKeyboardTracking( false );
+  mLowerSpin->setToolTip( tr( "Lowest elevation which can be selected" ) );
+
+  gLayout->addWidget( mLowerSpin, 0, 1 );
+
+  mUpperSpin = new QgsDoubleSpinBox();
+  mUpperSpin->setDecimals( 4 );
+  mUpperSpin->setMinimum( -999999999.0 );
+  mUpperSpin->setMaximum( 999999999.0 );
+  mUpperSpin->setShowClearButton( false );
+  mUpperSpin->setKeyboardTracking( false );
+  mUpperSpin->setToolTip( tr( "Highest elevation which can be selected" ) );
+
+  gLayout->addWidget( mUpperSpin, 0, 2 );
+
+  mLimitsButton = new QToolButton();
+  mLimitsButton->setIcon( QgsApplication::getThemeIcon( u"/mActionRefresh.svg"_s ) );
+  mLimitsButton->setPopupMode( QToolButton::InstantPopup );
+  mLimitsButton->setToolTip( tr( "Set the elevation limits from a predefined source" ) );
+  mLimitsMenu = new QMenu( mLimitsButton );
+  mLimitsButton->setMenu( mLimitsMenu );
+
+  gLayout->addWidget( mLimitsButton, 0, 3 );
+
+  const QString rangeToolTip = tr(
+    "Size of the elevation range shown in the map, i.e. the difference between "
+    "the upper and the lower handle of the slider. Lock it to keep this size while "
+    "moving the slider, or clear it to show the full range."
+  );
+
+  QLabel *rangeLabel = new QLabel( tr( "Range" ) );
+  rangeLabel->setToolTip( rangeToolTip );
+  gLayout->addWidget( rangeLabel, 1, 0 );
 
   mSizeSpin = new QgsDoubleSpinBox();
   mSizeSpin->setDecimals( 4 );
-  mSizeSpin->setMinimum( -1.0 );
+  mSizeSpin->setMinimum( 0.0 );
   mSizeSpin->setMaximum( 999999999.0 );
-  mSizeSpin->setClearValue( -1, tr( "Not set" ) );
+  mSizeSpin->setClearValue( 0, tr( "Full Range" ) );
   mSizeSpin->setKeyboardTracking( false );
-  mSizeSpin->setToolTip( tr( "Limit elevation range to a fixed size" ) );
+  mSizeSpin->setToolTip( rangeToolTip );
+  mSizeSpin->installEventFilter( this );
 
-  gLayout->addWidget( mSizeSpin, 0, 1 );
+  gLayout->addWidget( mSizeSpin, 1, 1, 1, 2 );
+
+  mLockButton = new QToolButton();
+  mLockButton->setIcon( QgsApplication::getThemeIcon( u"/cadtools/lock.svg"_s ) );
+  mLockButton->setCheckable( true );
+  mLockButton->setToolTip( tr( "Lock the elevation range to a fixed size" ) );
+
+  gLayout->addWidget( mLockButton, 1, 3 );
+
+  mInvertCheckBox = new QCheckBox( tr( "Invert direction" ) );
+  mInvertCheckBox->setToolTip( tr( "Invert the direction of the elevation slider" ) );
+
+  gLayout->addWidget( mInvertCheckBox, 2, 0, 1, 4 );
+
+  const auto emitLimits = [this] { emit limitsChanged( QgsDoubleRange( mLowerSpin->value(), mUpperSpin->value() ) ); };
+  connect( mLowerSpin, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, emitLimits );
+  connect( mUpperSpin, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, emitLimits );
+
+  connect( mSizeSpin, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double size ) {
+    if ( mSizeSpin->isCleared() )
+    {
+      emit fixedRangeSizeChanged( -1 );
+      emit fullRangeRequested();
+    }
+    else if ( mLockButton->isChecked() )
+    {
+      emit fixedRangeSizeChanged( size );
+    }
+  } );
+  connect( mLockButton, &QToolButton::toggled, this, [this]( bool locked ) { emit fixedRangeSizeChanged( locked ? mSizeSpin->value() : -1 ); } );
+
+  connect( mInvertCheckBox, &QCheckBox::toggled, this, &QgsElevationControllerSettingsAction::invertedChanged );
 
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
   setDefaultWidget( w );
 }
 
-QgsDoubleSpinBox *QgsElevationControllerSettingsAction::sizeSpin()
+QMenu *QgsElevationControllerSettingsAction::limitsMenu()
 {
-  return mSizeSpin;
+  return mLimitsMenu;
+}
+
+void QgsElevationControllerSettingsAction::setLimits( const QgsDoubleRange &limits )
+{
+  const QSignalBlocker blockLower( mLowerSpin );
+  const QSignalBlocker blockUpper( mUpperSpin );
+  // the limits can always be widened, but never crossed over
+  mLowerSpin->setMaximum( limits.upper() );
+  mUpperSpin->setMinimum( limits.lower() );
+  mLowerSpin->setValue( limits.lower() );
+  mUpperSpin->setValue( limits.upper() );
+}
+
+void QgsElevationControllerSettingsAction::setFixedRangeSize( double size )
+{
+  {
+    const QSignalBlocker blockLock( mLockButton );
+    mLockButton->setChecked( size >= 0 );
+  }
+
+  if ( size >= 0 )
+  {
+    const QSignalBlocker blockSpin( mSizeSpin );
+    mSizeSpin->setValue( size );
+  }
+}
+
+void QgsElevationControllerSettingsAction::updateRangeSize( double size )
+{
+  // a locked size is the one the user asked for, it must not be overwritten
+  if ( mLockButton->isChecked() )
+    return;
+
+  const QSignalBlocker blockSpin( mSizeSpin );
+  mSizeSpin->setValue( size );
+}
+
+void QgsElevationControllerSettingsAction::setInverted( bool inverted )
+{
+  // not blocked, the widget follows the checkbox through invertedChanged()
+  mInvertCheckBox->setChecked( inverted );
+}
+
+bool QgsElevationControllerSettingsAction::eventFilter( QObject *watched, QEvent *event )
+{
+  if ( watched == mSizeSpin && event->type() == QEvent::KeyPress )
+  {
+    const QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+    if ( keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter )
+    {
+      mSizeSpin->interpretText();
+      if ( !mSizeSpin->isCleared() )
+        mLockButton->setChecked( true );
+    }
+  }
+  return QWidgetAction::eventFilter( watched, event );
 }
 
 ///@endcond PRIVATE
