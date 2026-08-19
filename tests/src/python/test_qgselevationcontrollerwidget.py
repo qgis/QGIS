@@ -9,7 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 import unittest
 
 from qgis.core import QgsDoubleRange, QgsProject
-from qgis.gui import QgsElevationControllerWidget
+from qgis.gui import QgsElevationControllerWidget, QgsMapCanvas
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import QgisTestCase, start_app
@@ -67,6 +67,29 @@ class TestQgsElevationControllerWidget(QgisTestCase):
         self.assertEqual(w.rangeLimits(), QgsDoubleRange(171, 815.5))
         self.assertEqual(w.range(), QgsDoubleRange(171, 815.5))
         self.assertEqual(len(spy), 6)
+
+        # zero width or inverted limits => should be ignored
+        w.setRangeLimits(QgsDoubleRange(200, 200))
+        self.assertEqual(w.rangeLimits(), QgsDoubleRange(171, 815.5))
+        w.setRangeLimits(QgsDoubleRange(500, 200))
+        self.assertEqual(w.rangeLimits(), QgsDoubleRange(171, 815.5))
+        self.assertEqual(len(spy), 6)
+
+    def test_map_canvas(self):
+        """
+        The canvas provides the layers the limits entries work on
+        """
+        w = QgsElevationControllerWidget()
+        self.assertIsNone(w.mapCanvas())
+
+        canvas = QgsMapCanvas()
+        w.setMapCanvas(canvas)
+        self.assertEqual(w.mapCanvas(), canvas)
+
+        # a canvas without layers must not alter the limits
+        limits = w.rangeLimits()
+        w.setMapCanvas(canvas)
+        self.assertEqual(w.rangeLimits(), limits)
 
     def test_slider_interaction(self):
         """
