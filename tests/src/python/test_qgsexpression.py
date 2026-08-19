@@ -13,6 +13,7 @@ __copyright__ = "Copyright 2012, The QGIS Project"
 from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,
+    QgsEditorWidgetSetup,
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
@@ -22,7 +23,7 @@ from qgis.core import (
     QgsFields,
     QgsVectorLayer,
 )
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QMetaType, QVariant
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
 
@@ -607,6 +608,24 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
 
         exp = QgsExpression('6 NOT IN ("c", 1 + 1, 2 * 3, "a")')
         self.assertEqual(exp.simplified().dump(), "FALSE")
+
+    def testRepresentValueNonExistingLayerContext(self):
+        editor_widget_setup = QgsEditorWidgetSetup("RelationReference", {})
+        field = QgsField(QgsField("test", QMetaType.Type.QString))
+        field.setEditorWidgetSetup(editor_widget_setup)
+        fields = QgsFields()
+        fields.append(field)
+
+        f = QgsFeature(fields)
+        f.setAttributes(["stay safe"])
+
+        expression = QgsExpression('represent_value("test")')
+
+        context = QgsExpressionContext()
+        context.setFeature(f)
+        context.setFields(fields)
+
+        v = expression.evaluate(context)
 
 
 if __name__ == "__main__":
