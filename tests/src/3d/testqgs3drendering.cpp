@@ -136,6 +136,7 @@ class TestQgs3DRendering : public QgsTest
     void testTiledSceneInstanced();
     void testSunLightDawn();
     void testSunLightDusk();
+    void testAntiAliasing();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -2863,6 +2864,39 @@ void TestQgs3DRendering::testSunLightDusk()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QGSVERIFYIMAGECHECK( "sun_light_dusk", "sun_light_dusk", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testAntiAliasing()
+{
+  const QgsRectangle fullExtent = mLayerBuildings->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setMsaaEnabled( true );
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
+
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 250, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+
+  QGSVERIFYIMAGECHECK( "msaa_on", "msaa_on", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )
