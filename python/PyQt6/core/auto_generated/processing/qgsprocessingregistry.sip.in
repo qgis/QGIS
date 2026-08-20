@@ -100,7 +100,22 @@ Returns a list of all available algorithms from registered providers.
 %End
 
     bool isCompatibleDefinition(const QgsProcessingParameterDefinition* parameterDefSource, const QgsProcessingParameterDefinition* parameterDefTarget);
+%Docstring
+Returns ``True`` if the ``parameterDefTarget`` accepts
+``parameterDefSource`` as compatible Processing parameter types for
+parameter type of ``parameterDefTarget``.
+
+.. versionadded:: 4.4
+%End
+
     bool isCompatibleDefinition(const QgsProcessingOutputDefinition* outputDefSource, const QgsProcessingParameterDefinition* parameterDefTarget);
+%Docstring
+Returns ``True`` if the ``parameterDefTarget`` accepts
+``outputDefSource`` as compatible Processing ouput types for parameter
+type of ``parameterDefTarget``.
+
+.. versionadded:: 4.4
+%End
 
     QgsProcessingAlgorithmInformation algorithmInformation( const QString &id ) const;
 %Docstring

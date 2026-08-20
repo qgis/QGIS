@@ -575,9 +575,20 @@ against the algorithm name, short description, tags, etc.
 
     void setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition );
 %Docstring
-TODO
+Sets the ``parameterDefinition``, such has only algorithms or parameters
+which are compatible with the specified parameter definition will be
+shown.
+
+.. versionadded:: 4.4
 %End
+
     void setFilterOutput( const QgsProcessingOutputDefinition *outputDefinition );
+%Docstring
+Sets the ``outputDefinition``, such has only algorithms which are
+compatible with the specified output definition will be shown.
+
+.. versionadded:: 4.4
+%End
 
     QString filterString() const;
 %Docstring

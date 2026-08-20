@@ -602,9 +602,19 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
     void setFilterString( const QString &filter );
 
     /**
-     * TODO
+     * Sets the \a parameterDefinition, such has only algorithms or parameters which are compatible
+     * with the specified parameter definition will be shown.
+     *
+     * \since QGIS 4.4
      */
     void setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition );
+
+    /**
+     * Sets the \a outputDefinition, such has only algorithms which are compatible
+     * with the specified output definition will be shown.
+     *
+     * \since QGIS 4.4
+     */
     void setFilterOutput( const QgsProcessingOutputDefinition *outputDefinition );
 
     /**

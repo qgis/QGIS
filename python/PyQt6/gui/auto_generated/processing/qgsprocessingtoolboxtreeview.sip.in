@@ -120,9 +120,20 @@ Sets the vector ``layer`` for the in-place algorithms
 
     void setFilterParameter( const QgsProcessingParameterDefinition *outputName );
 %Docstring
-TODO
+Sets the ``parameterDefinition``, such has only algorithms or parameters
+which are compatible with the specified parameter definition will be
+shown.
+
+.. versionadded:: 4.4
 %End
+
     void setFilterOutput( const QgsProcessingOutputDefinition *outputName );
+%Docstring
+Sets the ``outputDefinition``, such has only algorithms which are
+compatible with the specified output definition will be shown.
+
+.. versionadded:: 4.4
+%End
 
 
   public slots:
