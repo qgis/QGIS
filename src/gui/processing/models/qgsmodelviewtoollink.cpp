@@ -236,8 +236,9 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
     widget->toolboxView()->setFilters( filters );
 
-    connect( widget, &PopupToolboxWidget::algorithmAdded, this, [this, event]( const QString &algorithmId ) { addAlgorithm( algorithmId, event->modelPoint(), mFromSocket ); } );
-    connect( widget, &PopupToolboxWidget::parameterAdded, this, [this, event]( const QString &parameterTypeId ) { addInput( parameterTypeId, event->modelPoint(), mFromSocket ); } );
+    const QPointF modelPoint = event->modelPoint();
+    connect( widget, &PopupToolboxWidget::algorithmAdded, this, [this, modelPoint]( const QString &algorithmId ) { addAlgorithm( algorithmId, modelPoint, mFromSocket ); } );
+    connect( widget, &PopupToolboxWidget::parameterAdded, this, [this, modelPoint]( const QString &parameterTypeId ) { addInput( parameterTypeId, modelPoint, mFromSocket ); } );
 
     widget->show();
     return;
