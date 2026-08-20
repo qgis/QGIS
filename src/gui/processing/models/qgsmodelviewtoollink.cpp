@@ -547,8 +547,8 @@ void QgsModelViewToolLink::addInput( const QString &inputId, const QPointF &pos,
   const QgsProcessingParameterDefinition *socketParameter = outputChildAlgorithm->algorithm()->parameterDefinitions().at( socket->index() );
   QgsProcessingParameterDefinition *newParameter = socketParameter->clone();
 
-  QString nameCandidate = newParameter->name();
-  QString descriptionCandidate = newParameter->description();
+  QString nameCandidate = socketParameter->name();
+  QString descriptionCandidate = socketParameter->description();
   int i = 2;
   while ( scene()->model()->parameterDefinition( nameCandidate ) )
   {
@@ -556,6 +556,17 @@ void QgsModelViewToolLink::addInput( const QString &inputId, const QPointF &pos,
     descriptionCandidate = u"%1 (%2)"_s.arg( socketParameter->description() ).arg( i );
     i += 1;
   }
+  QgsProcessingParameterDefinition *newParameter;
+  if ( socketParameter->type() == inputId )
+  {
+    // clone if they are the same type so we have nicer default
+    newParameter = socketParameter->clone();
+  }
+  else
+  {
+    newParameter = QgsApplication::processingRegistry()->parameterType( inputId )->create( nameCandidate );
+  }
+
   newParameter->setName( nameCandidate );
   newParameter->setDescription( descriptionCandidate );
 
