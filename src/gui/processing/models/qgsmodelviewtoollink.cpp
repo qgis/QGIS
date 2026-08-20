@@ -197,7 +197,6 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
   if ( !mToSocket )
   {
-    // QWidget *widget = new QWidget();
     PopupToolboxWidget *widget = new PopupToolboxWidget();
     widget->setAttribute( Qt::WA_DeleteOnClose );
     widget->setWindowFlags( Qt::Popup );
@@ -475,63 +474,55 @@ void QgsModelViewToolLink::addAlgorithm( const QString &algorithmId, const QPoin
   QPointF offset( childAlg.size().width() / 2, childAlg.size().height() * 2 );
   childAlg.setPosition( pos + offset );
 
+  QgsProcessingModelComponent *outputComponent = socket->component();
+  QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent );
+  if ( !outputChildAlgorithm )
+  {
+    // Should not happen
+    return;
+  }
 
+  // If connect from an output socket the newly added algorithm needs to have a source.
   if ( !socket->isInput() )
   {
-    QgsProcessingModelComponent *outputComponent = socket->component();
-    const QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent );
-
+    const QgsProcessingOutputDefinition *outputDef = outputChildAlgorithm->algorithm()->outputDefinitions().at( socket->index() );
     const QString outputName = outputChildAlgorithm->algorithm()->outputDefinitions().at( socket->index() )->name();
     const QString outputTypeName = outputChildAlgorithm->algorithm()->outputDefinitions().at( socket->index() )->type();
 
     const QList<const QgsProcessingParameterDefinition *> definitions = alg->parameterDefinitions();
-    for ( const QgsProcessingParameterDefinition *definition : definitions )
+    for ( const QgsProcessingParameterDefinition *paramDef : definitions )
     {
-      const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( definition->type() );
-      if ( !paramType )
-        continue;
-
-      if ( !paramType->acceptedOutputTypes().contains( outputTypeName ) )
-        continue;
-
-      QgsProcessingModelChildParameterSource newInputParamSource = QgsProcessingModelChildParameterSource::fromChildOutput( outputChildAlgorithm->childId(), outputName );
-      childAlg.addParameterSources( definition->name(), { newInputParamSource } );
-      view()->beginCommand( tr( "Add Algorithm" ) );
-      scene()->model()->addChildAlgorithm( childAlg );
-      view()->endCommand();
-      break;
+      if ( QgsApplication::processingRegistry()->isCompatibleDefinition( outputDef, paramDef ) )
+      {
+        QgsProcessingModelChildParameterSource newInputParamSource = QgsProcessingModelChildParameterSource::fromChildOutput( outputChildAlgorithm->childId(), outputName );
+        childAlg.addParameterSources( paramDef->name(), { newInputParamSource } );
+        break;
+      }
     }
   }
-  else
-  {
-    QgsProcessingModelComponent *outputComponent = socket->component();
-    QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent );
 
+  view()->beginCommand( tr( "Add Algorithm" ) );
+  QString childAlgorithmId = scene()->model()->addChildAlgorithm( childAlg );
+  view()->endCommand();
+
+  // If connect from an input socket the existing algorithm needs to have a the newly added algorithm as a source.
+  if ( socket->isInput() )
+  {
     const QString parameterName = outputChildAlgorithm->algorithm()->parameterDefinitions().at( socket->index() )->name();
     const QgsProcessingParameterDefinition *parameter = outputChildAlgorithm->algorithm()->parameterDefinitions().at( socket->index() );
-
-    // QgsProcessingModelChildParameterSource newInputParamSource = QgsProcessingModelChildParameterSource::fromChildOutput( childAlg.childId(), parameterName );
-    // outputChildAlgorithm->addParameterSources(parameterName, { newInputParamSource });
 
     const QList<const QgsProcessingOutputDefinition *> definitions = childAlg.algorithm()->outputDefinitions();
     for ( const QgsProcessingOutputDefinition *outputDef : definitions )
     {
       if ( QgsApplication::processingRegistry()->isCompatibleDefinition( outputDef, parameter ) )
       {
-        view()->beginCommand( tr( "Add Algorithm" ) );
-        QString childAlgorithmId = scene()->model()->addChildAlgorithm( childAlg );
-        view()->endCommand();
-
         QgsProcessingModelChildParameterSource newInputParamSource = QgsProcessingModelChildParameterSource::fromChildOutput( childAlgorithmId, outputDef->name() );
         outputChildAlgorithm->addParameterSources( parameterName, { newInputParamSource } );
         scene()->model()->setChildAlgorithm( *outputChildAlgorithm );
-
-
         break;
       }
     }
   }
-
 
   scene()->requestRebuildRequired();
 }
@@ -572,7 +563,6 @@ void QgsModelViewToolLink::addInput( const QString &inputId, const QPointF &pos,
 
   component.setDescription( newParameter->description() );
   component.setPosition( pos );
-  qDebug() << "pos:" << pos;
   view()->beginCommand( tr( "Add input" ) );
   scene()->model()->addModelParameter( newParameter, component );
   view()->endCommand();
