@@ -531,10 +531,10 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
     {
       Toolbox SIP_MONKEYPATCH_COMPAT_NAME( FilterToolbox ) = 1 << 1,                 //!< Filters out any algorithms and content which should not be shown in the toolbox
       Modeler SIP_MONKEYPATCH_COMPAT_NAME( FilterModeler ) = 1 << 2,                 //!< Filters out any algorithms and content which should not be shown in the modeler
-      InPlace SIP_MONKEYPATCH_COMPAT_NAME( FilterInPlace ) = 1 << 3,                 //!< Only show algorithms which support in-place edits, mInPlaceLayer must be set
+      InPlace SIP_MONKEYPATCH_COMPAT_NAME( FilterInPlace ) = 1 << 3,                 //!< Only show algorithms which support in-place edits
       ShowKnownIssues SIP_MONKEYPATCH_COMPAT_NAME( FilterShowKnownIssues ) = 1 << 4, //!< Show algorithms with known issues (hidden by default)
-      ForSocketOutput = 1 << 5,                                                      //!< Only show algorithms compatible with a certain output
-      ForSocketInput = 1 << 6,                                                       //!< Only show algorithms compatible with a certain parameters
+      ForSocketOutput SIP_MONKEYPATCH_COMPAT_NAME( FilterForSocketOutput ) = 1 << 5, //!< Only show algorithms compatible with a certain socket output, use with setFilterOutput
+      ForSocketInput SIP_MONKEYPATCH_COMPAT_NAME( FilterForSocketInput ) = 1 << 6,   //!< Only show algorithms compatible with a certain input socket, use with setFilterOutput or setFilterParameter
     };
     Q_ENUM( Filter )
     Q_DECLARE_FLAGS( Filters, Filter )

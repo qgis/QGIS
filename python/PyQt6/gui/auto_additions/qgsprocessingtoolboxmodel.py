@@ -148,17 +148,19 @@ QgsProcessingToolboxProxyModel.FilterModeler.__doc__ = "Filters out any algorith
 QgsProcessingToolboxProxyModel.FilterInPlace = QgsProcessingToolboxProxyModel.Filter.InPlace
 QgsProcessingToolboxProxyModel.Filter.FilterInPlace = QgsProcessingToolboxProxyModel.Filter.InPlace
 QgsProcessingToolboxProxyModel.FilterInPlace.is_monkey_patched = True
-QgsProcessingToolboxProxyModel.FilterInPlace.__doc__ = "Only show algorithms which support in-place edits, mInPlaceLayer must be set"
+QgsProcessingToolboxProxyModel.FilterInPlace.__doc__ = "Only show algorithms which support in-place edits"
 QgsProcessingToolboxProxyModel.FilterShowKnownIssues = QgsProcessingToolboxProxyModel.Filter.ShowKnownIssues
 QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues = QgsProcessingToolboxProxyModel.Filter.ShowKnownIssues
 QgsProcessingToolboxProxyModel.FilterShowKnownIssues.is_monkey_patched = True
 QgsProcessingToolboxProxyModel.FilterShowKnownIssues.__doc__ = "Show algorithms with known issues (hidden by default)"
-QgsProcessingToolboxProxyModel.ForSocketOutput = QgsProcessingToolboxProxyModel.Filter.ForSocketOutput
-QgsProcessingToolboxProxyModel.ForSocketOutput.is_monkey_patched = True
-QgsProcessingToolboxProxyModel.ForSocketOutput.__doc__ = "Only show algorithms compatible with a certain output"
-QgsProcessingToolboxProxyModel.ForSocketInput = QgsProcessingToolboxProxyModel.Filter.ForSocketInput
-QgsProcessingToolboxProxyModel.ForSocketInput.is_monkey_patched = True
-QgsProcessingToolboxProxyModel.ForSocketInput.__doc__ = "Only show algorithms compatible with a certain parameters"
+QgsProcessingToolboxProxyModel.FilterForSocketOutput = QgsProcessingToolboxProxyModel.Filter.ForSocketOutput
+QgsProcessingToolboxProxyModel.Filter.FilterForSocketOutput = QgsProcessingToolboxProxyModel.Filter.ForSocketOutput
+QgsProcessingToolboxProxyModel.FilterForSocketOutput.is_monkey_patched = True
+QgsProcessingToolboxProxyModel.FilterForSocketOutput.__doc__ = "Only show algorithms compatible with a certain socket output, use with setFilterOutput"
+QgsProcessingToolboxProxyModel.FilterForSocketInput = QgsProcessingToolboxProxyModel.Filter.ForSocketInput
+QgsProcessingToolboxProxyModel.Filter.FilterForSocketInput = QgsProcessingToolboxProxyModel.Filter.ForSocketInput
+QgsProcessingToolboxProxyModel.FilterForSocketInput.is_monkey_patched = True
+QgsProcessingToolboxProxyModel.FilterForSocketInput.__doc__ = "Only show algorithms compatible with a certain input socket, use with setFilterOutput or setFilterParameter"
 QgsProcessingToolboxProxyModel.Filter.__doc__ = """Available filter flags for filtering the model
 
 * ``Toolbox``: Filters out any algorithms and content which should not be shown in the toolbox
@@ -169,7 +171,7 @@ QgsProcessingToolboxProxyModel.Filter.__doc__ = """Available filter flags for fi
 
   Available as ``QgsProcessingToolboxProxyModel.FilterModeler`` in older QGIS releases.
 
-* ``InPlace``: Only show algorithms which support in-place edits, mInPlaceLayer must be set
+* ``InPlace``: Only show algorithms which support in-place edits
 
   Available as ``QgsProcessingToolboxProxyModel.FilterInPlace`` in older QGIS releases.
 
@@ -177,8 +179,14 @@ QgsProcessingToolboxProxyModel.Filter.__doc__ = """Available filter flags for fi
 
   Available as ``QgsProcessingToolboxProxyModel.FilterShowKnownIssues`` in older QGIS releases.
 
-* ``ForSocketOutput``: Only show algorithms compatible with a certain output
-* ``ForSocketInput``: Only show algorithms compatible with a certain parameters
+* ``ForSocketOutput``: Only show algorithms compatible with a certain socket output, use with setFilterOutput
+
+  Available as ``QgsProcessingToolboxProxyModel.FilterForSocketOutput`` in older QGIS releases.
+
+* ``ForSocketInput``: Only show algorithms compatible with a certain input socket, use with setFilterOutput or setFilterParameter
+
+  Available as ``QgsProcessingToolboxProxyModel.FilterForSocketInput`` in older QGIS releases.
+
 
 """
 # --
