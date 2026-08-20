@@ -538,14 +538,11 @@ void QgsModelViewToolLink::addAlgorithm( const QString &algorithmId, const QPoin
 
 void QgsModelViewToolLink::addInput( const QString &inputId, const QPointF &pos, const QgsModelDesignerSocketGraphicItem *socket )
 {
-  // param.reset( QgsApplication::processingRegistry()->parameterType( mType )->create( name ) );
-
   QgsProcessingModelComponent *outputComponent = socket->component();
   QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent );
 
 
   const QgsProcessingParameterDefinition *socketParameter = outputChildAlgorithm->algorithm()->parameterDefinitions().at( socket->index() );
-  QgsProcessingParameterDefinition *newParameter = socketParameter->clone();
 
   QString nameCandidate = socketParameter->name();
   QString descriptionCandidate = socketParameter->description();
