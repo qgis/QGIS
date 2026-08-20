@@ -28,6 +28,7 @@ class TestQgsRange : public QObject
     void cleanup();         // will be called after every testfunction.
     void testMergeRangesDate();
     void testMergeRangesDateTime();
+    void testMinMax();
 
   private:
 };
@@ -114,6 +115,25 @@ void TestQgsRange::testMergeRangesDateTime()
   QCOMPARE( res.at( 1 ).end(), QDateTime( QDate( 2020, 1, 15 ), QTime( 0, 0, 0 ) ) );
   QCOMPARE( res.at( 2 ).begin(), QDateTime( QDate( 2020, 1, 19 ), QTime( 0, 0, 0 ) ) );
   QCOMPARE( res.at( 2 ).end(), QDateTime( QDate( 2020, 1, 27 ), QTime( 0, 0, 0 ) ) );
+}
+
+void TestQgsRange::testMinMax()
+{
+  QCOMPARE( QgsDateRange::min( {} ), QDate() );                                                                                                                                 // 0 item
+  QCOMPARE( QgsDateRange::min( { QgsDateRange( QDate( 2026, 5, 1 ), QDate( 2026, 6, 1 ) ) } ), QDate( 2026, 5, 1 ) );                                                           // 1 item
+  QCOMPARE( QgsDateRange::min( { QgsDateRange( QDate( 2026, 5, 1 ), QDate( 2026, 6, 1 ) ), QgsDateRange( QDate( 2026, 4, 1 ), QDate( 2026, 6, 1 ) ) } ), QDate( 2026, 4, 1 ) ); // 2 items
+  QCOMPARE( QgsDateRange::min( { QgsDateRange( QDate(), QDate( 2026, 6, 1 ) ), QgsDateRange( QDate( 2026, 4, 1 ), QDate( 2026, 6, 1 ) ) } ),
+            QDate() );                                                                                                                                                          // begin invalid
+  QCOMPARE( QgsDateRange::min( { QgsDateRange( QDate( 2026, 5, 1 ), QDate() ), QgsDateRange( QDate( 2026, 4, 1 ), QDate( 2026, 6, 1 ) ) } ), QDate( 2026, 4, 1 ) );             // end invalid
+  QCOMPARE( QgsDateRange::min( { QgsDateRange( QDate( 2026, 5, 1 ), QDate( 2026, 6, 1 ) ), QgsDateRange( QDate( 2026, 6, 1 ), QDate( 2026, 4, 1 ) ) } ), QDate( 2026, 5, 1 ) ); // empty
+
+  QCOMPARE( QgsDateRange::max( {} ), QDate() );                                                                                                                                   // 0 item
+  QCOMPARE( QgsDateRange::max( { QgsDateRange( QDate( 2026, 5, 1 ), QDate( 2026, 6, 1 ) ) } ), QDate( 2026, 6, 1 ) );                                                             // 1 item
+  QCOMPARE( QgsDateRange::max( { QgsDateRange( QDate( 2026, 5, 1 ), QDate( 2026, 6, 1 ) ), QgsDateRange( QDate( 2026, 4, 1 ), QDate( 2026, 6, 15 ) ) } ), QDate( 2026, 6, 15 ) ); // 2 items
+  QCOMPARE( QgsDateRange::max( { QgsDateRange( QDate(), QDate( 2026, 6, 1 ) ), QgsDateRange( QDate( 2026, 4, 1 ), QDate( 2026, 6, 15 ) ) } ), QDate( 2026, 6, 15 ) );             // begin invalid
+  QCOMPARE( QgsDateRange::max( { QgsDateRange( QDate( 2026, 5, 1 ), QDate() ), QgsDateRange( QDate( 2026, 4, 1 ), QDate( 2026, 6, 15 ) ) } ),
+            QDate() );                                                                                                                                                          // end invalid
+  QCOMPARE( QgsDateRange::max( { QgsDateRange( QDate( 2026, 5, 1 ), QDate( 2026, 6, 1 ) ), QgsDateRange( QDate( 2026, 6, 1 ), QDate( 2026, 4, 1 ) ) } ), QDate( 2026, 6, 1 ) ); // empty
 }
 
 
