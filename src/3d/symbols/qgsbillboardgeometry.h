@@ -107,6 +107,8 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
     Qt3DCore::QAttribute *mAtlasOffsetAttribute = nullptr;
     Qt3DCore::QAttribute *mAtlasSizeAttribute = nullptr;
     Qt3DCore::QAttribute *mAtlasPixelOffsetAttribute = nullptr;
+    Qt3DCore::QAttribute *mBoundingVolumeAttribute = nullptr;
+    Qt3DCore::QBuffer *mBoundingVolumeBuffer = nullptr;
     Qt3DCore::QBuffer *mVertexBuffer = nullptr;
     int mVertexCount = 0;
 };
