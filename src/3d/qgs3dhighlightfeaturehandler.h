@@ -19,6 +19,7 @@
 #include "qgis_3d.h"
 #include "qgsrulebased3drenderer.h"
 
+#include <QHash>
 #include <QMap>
 #include <QObject>
 #include <QVector>
@@ -76,6 +77,8 @@ class _3D_EXPORT Qgs3DHighlightFeatureHandler : public QObject
     QMap<QgsMapLayer *, QgsFeature3DHandler *> mHighlightHandlers;
     //! Per layer feature handlers for rule based 3d renderers
     QMap<QgsMapLayer *, QgsRuleBased3DRenderer::RuleToHandlerMap> mHighlightRuleBasedHandlers;
+    //! Per layer feature handlers for categorized 3d renderers
+    QMap<QgsMapLayer *, QHash<QString, QgsFeature3DHandler *>> mHighlightCategorizedHandlers;
     //! Singleshot timer is used to trigger finalizing the 3d entities and adding them to the scene
     std::unique_ptr<QTimer> mHighlightHandlerTimer;
 };
