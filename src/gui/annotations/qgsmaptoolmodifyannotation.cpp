@@ -24,6 +24,7 @@
 #include "qgsannotationitemnode.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationrectitem.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
@@ -34,10 +35,13 @@
 #include "qgssnapindicator.h"
 
 #include <QScreen>
+#include <QString>
 #include <QTransform>
 #include <QWindow>
 
 #include "moc_qgsmaptoolmodifyannotation.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsAnnotationItemNodesSpatialIndex : public RTree<int, float, 2, float>
@@ -664,8 +668,7 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
   mHoverRubberBand->show();
 
   const QgsAnnotationItem *annotationItem = annotationItemFromId( item->layerId(), item->itemId() );
-  QgsAnnotationLayer *layer = annotationLayerFromId( item->layerId() );
-  if ( !annotationItem || !layer )
+  if ( !annotationItem )
   {
     // fall back to a plain axis-aligned hover rectangle
     mHoverRubberBand->reset( Qgis::GeometryType::Line );
@@ -677,6 +680,7 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
     return;
   }
 
+  QgsAnnotationLayer *layer = annotationLayerFromId( item->layerId() );
   const QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransform( layer->crs(), canvas()->mapSettings().destinationCrs(), canvas()->mapSettings().transformContext() );
 
   // Rotate corners around the center in pixel space. Node points already went
@@ -686,18 +690,26 @@ void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItem
   const double mapRotation = canvas()->mapSettings().rotation();
   const double frameRotation = rectItem ? rectItem->appliedRotation( mapRotation ) - mapRotation : 0;
   const QgsMapToPixel *mapToPixel = canvas()->getCoordinateTransform();
-  const bool rotated = rectItem && !qgsDoubleNear( frameRotation, 0 );
+  bool rotated = rectItem && !qgsDoubleNear( frameRotation, 0 );
 
-  QTransform rotationTransform;
+  QgsPointXY centerMap;
   if ( rotated )
   {
-    QgsPointXY centerMap = itemMapBounds.center();
     try
     {
       centerMap = layerToMapTransform.transform( rectItem->bounds().center() );
     }
     catch ( QgsCsException & )
-    {}
+    {
+      // no reliable pivot, so fall back to an unrotated band
+      QgsDebugError( u"Error transforming annotation item center"_s );
+      rotated = false;
+    }
+  }
+
+  QTransform rotationTransform;
+  if ( rotated )
+  {
     const QgsPointXY centerPixel = mapToPixel->transform( centerMap );
     rotationTransform.translate( centerPixel.x(), centerPixel.y() );
     rotationTransform.rotate( frameRotation );
