@@ -35,6 +35,7 @@
 #include "qgsrectangle.h"
 
 #include <QDomDocument>
+#include <QElapsedTimer>
 #include <QGestureEvent>
 #include <QGraphicsView>
 #include <QTimer>
@@ -1224,6 +1225,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     //! Emit key release event
     void keyReleased( QKeyEvent *e );
 
+    //! Emitted when scrolling horizontally over the canvas
+    void horizontalWheelScrolled( QWheelEvent *event ) SIP_SKIP;
+
     /**
      * Emit map tool changed with the old tool
      */
@@ -1573,6 +1577,18 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
 
     QPointer<QgsAbstract2DMapController> mMapController;
+
+    //! Axis a wheel action is locked to, so that a diagonal swipe doesn't mix zooming and temporal navigation
+    enum class WheelAxis
+    {
+      Undecided,
+      Horizontal,
+      Vertical
+    };
+    //! Axis the current wheel action is locked to
+    WheelAxis mWheelAxisLock = WheelAxis::Undecided;
+    //! Time since the last wheel event, used to detect the start of a new wheel event
+    QElapsedTimer mLastWheelEventTimer;
 
     QPointer< QgsStatusBar > mStatusBar;
 
