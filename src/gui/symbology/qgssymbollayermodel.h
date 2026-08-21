@@ -218,7 +218,7 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
     /**
      * Updates the preview icon of the given \a node. And recursively updates the parents of the node.
      */
-    void updatePreview( QgsSymbolLayerModelNode *node );
+    void updatePreviewIcons( QgsSymbolLayerModelNode *node );
 
     /**
      * Sets the \a symbol associated with the model.

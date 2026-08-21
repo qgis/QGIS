@@ -302,7 +302,7 @@ bool QgsSymbolLayerModel::setData( const QModelIndex &index, const QVariant &val
     symbolLayer->setEnabled( checked );
 
     emit dataChanged( index, index, { Qt::CheckStateRole } );
-    updatePreview( node );
+    updatePreviewIcons( node );
     return true;
   }
   return QAbstractItemModel::setData( index, value, role );
@@ -557,17 +557,17 @@ void QgsSymbolLayerModel::changeLayer( QgsSymbolLayerModelNode *node, QgsSymbolL
     updateNode( newLayer->subSymbol(), node );
   }
 
-  updatePreview( node );
+  updatePreviewIcons( node );
 }
 
-void QgsSymbolLayerModel::updatePreview( QgsSymbolLayerModelNode *node )
+void QgsSymbolLayerModel::updatePreviewIcons( QgsSymbolLayerModelNode *node )
 {
   const QModelIndex index = node2index( node );
   emit dataChanged( index, index, QVector<int>() << Qt::DecorationRole );
 
   // Recursively update the parent's preview up to the root node.
   if ( QgsSymbolLayerModelNode *lParent = node->parent() )
-    updatePreview( lParent );
+    updatePreviewIcons( lParent );
 }
 
 
@@ -593,7 +593,7 @@ void QgsSymbolLayerModel::setScreen( QScreen *screen )
   {
     QgsSymbolLayerModelNode *node = stack.takeLast();
     node->setScreen( mScreen );
-    updatePreview( node );
+    updatePreviewIcons( node );
 
     for ( int i = 0; i < node->rowCount(); ++i )
     {
