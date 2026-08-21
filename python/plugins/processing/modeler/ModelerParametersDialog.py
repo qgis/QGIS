@@ -63,7 +63,6 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import iface
 
-from processing.core.exceptions import InvalidParameterValue
 from processing.tools.dataobjects import createContext
 
 
@@ -430,11 +429,9 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 or param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden
             ):
                 continue
-            try:
-                wrapper = self.wrappers[param.name()]
-                val = wrapper.value()
-            except InvalidParameterValue:
-                val = None
+
+            wrapper = self.wrappers[param.name()]
+            val = wrapper.value()
 
             if isinstance(val, QgsProcessingModelChildParameterSource):
                 val = [val]
