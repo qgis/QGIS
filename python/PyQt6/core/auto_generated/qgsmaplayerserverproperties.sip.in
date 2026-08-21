@@ -109,22 +109,6 @@ Manages QGIS Server properties for WMS dimensions.
 
     struct WmsDimensionInfo
     {
- explicit WmsDimensionInfo(
-          const QString &dimName,
-          const QString &dimFieldName,
-          const QString &dimEndFieldName,
-          const QString &dimUnits,
-          const QString &dimUnitSymbol,
-          int dimDefaultDisplayType = static_cast<int>( Qgis::WmsDimensionDefaultDisplay::AllValues ),
-          const QVariant &dimReferenceValue = QVariant()
-        ) /Deprecated="Since 4.4. Use constructor with Qgis.WmsDimensionDefaultDisplay enum instead of int."/;
-%Docstring
-Constructor for WmsDimensionInfo.
-
-.. deprecated:: 4.4
-
-   Use constructor with :py:class:`Qgis`.WmsDimensionDefaultDisplay enum instead of int.
-%End
         explicit WmsDimensionInfo(
           const QString &dimName,
           const QString &dimFieldName,
