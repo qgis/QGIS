@@ -252,6 +252,20 @@ void QgsServerSettings::initSettings()
     mSettings[sProjectsPgConnections.envVar] = sProjectsPgConnections;
   }
 
+  // recursively scan the landing page projects directories
+  {
+    const Setting sProjectsRecursive = {
+      QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_RECURSIVE,
+      QgsServerSettingsEnv::DEFAULT_VALUE,
+      u"Recursively scan the landing page projects directories for .qgs and .qgz projects"_s,
+      u"/qgis/server_projects_recursive"_s,
+      QMetaType::Type::Bool,
+      QVariant( false ),
+      QVariant()
+    };
+    mSettings[sProjectsRecursive.envVar] = sProjectsRecursive;
+  }
+
   // landing page base URL prefix
   {
     const Setting sLandingPageBaseUrlPrefix
@@ -586,6 +600,11 @@ QString QgsServerSettings::landingPageProjectsDirectories() const
 QString QgsServerSettings::landingPageProjectsPgConnections() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS, true ).toString();
+}
+
+bool QgsServerSettings::landingPageProjectsRecursive() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_RECURSIVE, true ).toBool();
 }
 
 QString QgsServerSettings::landingPageBaseUrlPrefix() const

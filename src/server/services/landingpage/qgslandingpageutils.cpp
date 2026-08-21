@@ -33,6 +33,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QCryptographicHash>
+#include <QDirIterator>
 #include <QDomDocument>
 #include <QFileSystemWatcher>
 #include <QString>
@@ -81,6 +82,7 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
 
   // Scan QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES
   const QString envDirName = QgsServerSettings::name( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES );
+  const bool recursive { settings.landingPageProjectsRecursive() };
   if ( AVAILABLE_PROJECTS.isEmpty() )
   {
     const auto cProjectDirs { projectDir.split( u"||"_s ) };
@@ -92,15 +94,25 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
         if ( dir.exists() )
         {
           dirWatcher.addPath( dir.path() );
-          const auto constFiles { dir.entryList() };
-          for ( const auto &f : constFiles )
+          if ( recursive )
           {
-            if ( f.endsWith( u".qgs"_s, Qt::CaseSensitivity::CaseInsensitive ) || f.endsWith( u".qgz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
+            // Watch subdirectories too, so nested projects also invalidate the cache on change
+            QDirIterator subDirsIt( path, QDir::Dirs | QDir::NoDotAndDotDot, QDirIterator::Subdirectories );
+            while ( subDirsIt.hasNext() )
             {
-              const QString fullPath { path + '/' + f };
+              dirWatcher.addPath( subDirsIt.next() );
+            }
+          }
+          const QDirIterator::IteratorFlags iteratorFlags { recursive ? QDirIterator::Subdirectories : QDirIterator::IteratorFlag::NoIteratorFlags };
+          QDirIterator filesIt( path, QDir::Files | QDir::NoDotAndDotDot, iteratorFlags );
+          while ( filesIt.hasNext() )
+          {
+            const QString fullPath { filesIt.next() };
+            if ( fullPath.endsWith( u".qgs"_s, Qt::CaseSensitivity::CaseInsensitive ) || fullPath.endsWith( u".qgz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
+            {
               const auto projectHash { QCryptographicHash::hash( fullPath.toUtf8(), QCryptographicHash::Md5 ).toHex() };
               AVAILABLE_PROJECTS[projectHash] = fullPath;
-              QgsMessageLog::logMessage( u"Adding filesystem project '%1' with id '%2'"_s.arg( QFileInfo( f ).fileName(), QString::fromUtf8( projectHash ) ), u"Landing Page"_s, Qgis::MessageLevel::Info );
+              QgsMessageLog::logMessage( u"Adding filesystem project '%1' with id '%2'"_s.arg( QFileInfo( fullPath ).fileName(), QString::fromUtf8( projectHash ) ), u"Landing Page"_s, Qgis::MessageLevel::Info );
             }
           }
         }
