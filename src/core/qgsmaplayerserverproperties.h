@@ -159,27 +159,6 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
     struct CORE_EXPORT WmsDimensionInfo
     {
         /**
-         * Constructor for WmsDimensionInfo.
-         * \deprecated QGIS 4.4. Use constructor with Qgis::WmsDimensionDefaultDisplay enum instead of int.
-         */
-        Q_DECL_DEPRECATED explicit WmsDimensionInfo(
-          const QString &dimName,
-          const QString &dimFieldName,
-          const QString &dimEndFieldName,
-          const QString &dimUnits,
-          const QString &dimUnitSymbol,
-          int dimDefaultDisplayType = static_cast<int>( Qgis::WmsDimensionDefaultDisplay::AllValues ),
-          const QVariant &dimReferenceValue = QVariant()
-        ) SIP_DEPRECATED : name( dimName ),
-                           fieldName( dimFieldName ),
-                           endFieldName( dimEndFieldName ),
-                           units( dimUnits ),
-                           unitSymbol( dimUnitSymbol ),
-                           defaultDisplayType( Qgis::WmsDimensionDefaultDisplay( dimDefaultDisplayType ) ),
-                           referenceValue( dimReferenceValue )
-        {}
-
-        /**
        * Constructor for WmsDimensionInfo.
        */
         explicit WmsDimensionInfo(
