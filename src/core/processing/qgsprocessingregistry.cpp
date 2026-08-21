@@ -306,3 +306,20 @@ QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() cons
 {
   return mParameterTypes.values();
 }
+
+bool QgsProcessingRegistry::isCompatibleDefinition( const QgsProcessingParameterDefinition *parameterDefSource, const QgsProcessingParameterDefinition *parameterDefTarget )
+{
+  const QgsProcessingParameterType *paramTargetType = parameterType( parameterDefTarget->type() );
+  if ( paramTargetType )
+    return paramTargetType->acceptedParameterTypes().contains( parameterDefSource->type() );
+  return false;
+}
+
+bool QgsProcessingRegistry::isCompatibleDefinition( const QgsProcessingOutputDefinition *outputDefSource, const QgsProcessingParameterDefinition *parameterDefTarget )
+{
+  const QgsProcessingParameterType *paramTargetType = parameterType( parameterDefTarget->type() );
+
+  if ( paramTargetType )
+    return paramTargetType->acceptedOutputTypes().contains( outputDefSource->type() );
+  return false;
+}

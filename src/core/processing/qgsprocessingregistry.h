@@ -112,6 +112,22 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 
     /**
+     *  Returns TRUE if the \a parameterDefTarget accepts \a parameterDefSource as
+     *  compatible Processing parameter types for parameter type of \a parameterDefTarget.
+     *
+     *  \since QGIS 4.4
+     */
+    bool isCompatibleDefinition(const QgsProcessingParameterDefinition* parameterDefSource, const QgsProcessingParameterDefinition* parameterDefTarget);
+
+    /**
+     *  Returns TRUE if the \a parameterDefTarget accepts \a outputDefSource as
+     *  compatible Processing ouput types for parameter type of \a parameterDefTarget.
+     *
+     *  \since QGIS 4.4
+     */
+    bool isCompatibleDefinition(const QgsProcessingOutputDefinition* outputDefSource, const QgsProcessingParameterDefinition* parameterDefTarget);
+
+    /**
      * Returns basic algorithm information for the algorithm with matching ID.
      *
      * This method uses an internal cache to ensure that information is quickly

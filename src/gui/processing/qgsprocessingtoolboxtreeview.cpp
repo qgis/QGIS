@@ -133,6 +133,17 @@ QgsProcessingToolboxProxyModel::Filters QgsProcessingToolboxTreeView::filters() 
   return mModel->filters();
 }
 
+void QgsProcessingToolboxTreeView::setFilterParameter( const QgsProcessingParameterDefinition *outputName )
+{
+  mModel->setFilterParameter( outputName );
+}
+
+void QgsProcessingToolboxTreeView::setFilterOutput( const QgsProcessingOutputDefinition *outputName )
+{
+  mModel->setFilterOutput( outputName );
+}
+
+
 void QgsProcessingToolboxTreeView::setInPlaceLayer( QgsVectorLayer *layer )
 {
   mModel->setInPlaceLayer( layer );

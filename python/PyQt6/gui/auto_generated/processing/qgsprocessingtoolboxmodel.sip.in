@@ -464,6 +464,11 @@ Returns the index corresponding to the specified ``providerId``.
 Returns the index corresponding to the parent of a given node.
 %End
 
+    QgsProcessingRegistry *processingRegistry() const;
+%Docstring
+Returns the processing registry associated with the model.
+%End
+
   signals:
 
     void recentAlgorithmAdded();
@@ -502,6 +507,8 @@ supports filtering the results.
       Modeler,
       InPlace,
       ShowKnownIssues,
+      ForSocketOutput,
+      ForSocketInput,
     };
     typedef QFlags<QgsProcessingToolboxProxyModel::Filter> Filters;
 
@@ -564,6 +571,23 @@ Matches are performed using a variety of tests, including checking
 against the algorithm name, short description, tags, etc.
 
 .. seealso:: :py:func:`filterString`
+%End
+
+    void setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition );
+%Docstring
+Sets the ``parameterDefinition``, such has only algorithms or parameters
+which are compatible with the specified parameter definition will be
+shown.
+
+.. versionadded:: 4.4
+%End
+
+    void setFilterOutput( const QgsProcessingOutputDefinition *outputDefinition );
+%Docstring
+Sets the ``outputDefinition``, such has only algorithms which are
+compatible with the specified output definition will be shown.
+
+.. versionadded:: 4.4
 %End
 
     QString filterString() const;

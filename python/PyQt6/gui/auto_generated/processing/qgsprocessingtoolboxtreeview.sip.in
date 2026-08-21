@@ -118,6 +118,24 @@ Returns the current filters controlling the view's contents.
 Sets the vector ``layer`` for the in-place algorithms
 %End
 
+    void setFilterParameter( const QgsProcessingParameterDefinition *outputName );
+%Docstring
+Sets the ``parameterDefinition``, such has only algorithms or parameters
+which are compatible with the specified parameter definition will be
+shown.
+
+.. versionadded:: 4.4
+%End
+
+    void setFilterOutput( const QgsProcessingOutputDefinition *outputName );
+%Docstring
+Sets the ``outputDefinition``, such has only algorithms which are
+compatible with the specified output definition will be shown.
+
+.. versionadded:: 4.4
+%End
+
+
   public slots:
 
     void setFilterString( const QString &filter );

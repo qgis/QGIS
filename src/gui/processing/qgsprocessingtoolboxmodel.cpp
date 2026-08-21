@@ -823,6 +823,15 @@ QModelIndex QgsProcessingToolboxModel::indexOfParentTreeNode( QgsProcessingToolb
   return createIndex( row, 0, static_cast<QObject *>( parentNode ) );
 }
 
+QgsProcessingRegistry *QgsProcessingToolboxModel::processingRegistry() const
+{
+  if ( mRegistry )
+  {
+    return mRegistry.get();
+  }
+  return nullptr;
+}
+
 //
 // QgsProcessingToolboxProxyModel
 //
@@ -871,6 +880,23 @@ void QgsProcessingToolboxProxyModel::setFilterString( const QString &filter )
   mFilterString = filter;
   invalidateFilter();
 }
+
+void QgsProcessingToolboxProxyModel::setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition )
+{
+  mParameterDefinition = parameterDefinition;
+  mOutputDefinfition = nullptr;
+
+  invalidateFilter();
+}
+
+void QgsProcessingToolboxProxyModel::setFilterOutput( const QgsProcessingOutputDefinition *outputDefinition )
+{
+  mParameterDefinition = nullptr;
+  mOutputDefinfition = outputDefinition;
+
+  invalidateFilter();
+}
+
 
 bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
@@ -938,6 +964,63 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         return false;
       }
     }
+
+    if ( mFilters & Filter::ForSocketInput )
+    {
+      const QgsProcessingAlgorithm *alg = mModel->algorithmForIndex( sourceIndex );
+      if ( mParameterDefinition )
+      {
+        bool found = false;
+        const auto outputs = alg->outputDefinitions();
+        for ( const QgsProcessingOutputDefinition *output : outputs )
+        {
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( output, mParameterDefinition ) )
+          {
+            found = true;
+            break;
+          }
+        }
+        if ( !found )
+          return false;
+      }
+    }
+
+    if ( mFilters & Filter::ForSocketOutput )
+    {
+      const QgsProcessingAlgorithm *alg = mModel->algorithmForIndex( sourceIndex );
+      bool found = false;
+      if ( mOutputDefinfition )
+      {
+        for ( const QgsProcessingParameterDefinition *def : alg->parameterDefinitions() )
+        {
+          if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
+            continue;
+
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( mOutputDefinfition, def ) )
+          {
+            found = true;
+            break;
+          }
+        }
+      }
+      if ( mParameterDefinition )
+      {
+        for ( const QgsProcessingParameterDefinition *def : alg->parameterDefinitions() )
+        {
+          if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
+            continue;
+
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( mParameterDefinition, def ) )
+          {
+            found = true;
+            break;
+          }
+        }
+      }
+      if ( !found )
+        return false;
+    }
+
     if ( mFilters & Filter::Modeler )
     {
       bool isHiddenFromModeler = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt()
@@ -960,6 +1043,11 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       return false;
     }
 
+    if ( mFilters & Filter::ForSocketOutput )
+    {
+      // Don't show any parameters if your looking for something compatible with output !
+      return false;
+    }
     if ( !mFilterString.trimmed().isEmpty() )
     {
       QStringList partsToSearch;
@@ -982,6 +1070,14 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         if ( !found )
           return false; // couldn't find a match for this word, so hide algorithm
       }
+    }
+
+    if ( mFilters & Filter::ForSocketInput )
+    {
+      const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( mParameterDefinition->type() );
+      const QString paramId = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::ParameterTypeId ) ).toString();
+      if ( !paramType->acceptedParameterTypes().contains( paramId ) )
+        return false;
     }
 
     return true;

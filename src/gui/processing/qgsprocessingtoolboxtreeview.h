@@ -123,6 +123,23 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      */
     void setInPlaceLayer( QgsVectorLayer *layer );
 
+    /**
+     * Sets the \a parameterDefinition, such has only algorithms or parameters which are compatible
+     * with the specified parameter definition will be shown.
+     *
+     *  \since QGIS 4.4
+     */
+    void setFilterParameter( const QgsProcessingParameterDefinition *outputName );
+
+    /**
+     * Sets the \a outputDefinition, such has only algorithms which are compatible
+     * with the specified output definition will be shown.
+     *
+     *  \since QGIS 4.4
+     */
+    void setFilterOutput( const QgsProcessingOutputDefinition *outputName );
+
+
   public slots:
 
     /**
