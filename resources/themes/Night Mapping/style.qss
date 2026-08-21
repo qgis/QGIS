@@ -644,11 +644,17 @@ QTabWidget::pane {
     top:-1px;
 }
 
+QTabWidget[tabPosition="2"]::pane {
+    border: 1px solid @itemdarkbackground;
+    top:0px;
+    left:-1px;
+}
+
 QTabWidget[tabPosition="0"] QTabBar {
     border-bottom: 1px solid @itemdarkbackground;
 }
 
-QTabBar::tab {
+QTabBar::tab:top, QTabBar::tab:bottom {
     color: @text;
     border: 1px solid @itemdarkbackground;
     border-bottom: none;
@@ -660,31 +666,27 @@ QTabBar::tab {
     margin-right: -0.05em;
 }
 
-QTabBar::tab:disabled {
-    color: @itemdarkbackground;
-}
-
-QTabBar::tab:last, QTabBar::tab:only-one
-{
-    margin-right: 0;
-}
-
-QTabBar::tab:first:!selected
-{
-    margin-left: 0px;
-}
-
 QTabBar::tab:bottom {
     border-top: none;
     border-bottom: 1px solid @itemdarkbackground;
 }
 
-QTabBar::tab:!selected
+QTabBar::tab:top:last, QTabBar::tab:bottom:last, QTabBar::tab:top:only-one, QTabBar::tab:bottom:only-one
+{
+    margin-right: 0;
+}
+
+QTabBar::tab:top:first:!selected, QTabBar::tab:bottom:first:!selected
+{
+    margin-left: 0px;
+}
+
+QTabBar::tab:top:!selected
 {
     margin-top: 0.3em;
 }
 
-QTabBar::tab:selected
+QTabBar::tab:top:selected
 {
     margin-bottom: 0px;
     background-color: @background;
@@ -700,6 +702,54 @@ QTabBar::tab:bottom:selected
 {
     margin-top: 0px;
     background-color: @background;
+}
+
+QTabBar::tab:left, QTabBar::tab:right {
+    color: @text;
+    border: 1px solid @itemdarkbackground;
+    border-right: none;
+    background-color: transparent;
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    padding-left: 0.1em;
+    padding-right: 0.1em;
+}
+
+QTabBar::tab:right {
+    border-left: none;
+    border-right: 1px solid @itemdarkbackground;
+}
+
+QTabBar::tab:left:last, QTabBar::tab:right:last, QTabBar::tab:left:only-one, QTabBar::tab:right:only-one
+{
+    margin-right: 0;
+}
+
+QTabBar::tab:left:!selected
+{
+    margin-left: 0.3em;
+}
+
+QTabBar::tab:left:selected
+{
+    margin-left: 0px;
+    background-color: @background;
+}
+
+QTabBar::tab:right:!selected
+{
+    margin-left: 0px;
+    margin-right: 0.3em;
+}
+
+QTabBar::tab:right:selected
+{
+    margin-right: 0px;
+    background-color: @background;
+}
+
+QTabBar::tab:disabled {
+    color: @itemdarkbackground !important;
 }
 
 QGroupBox::indicator:hover,
