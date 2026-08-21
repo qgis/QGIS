@@ -15,6 +15,7 @@
 #ifndef QGSPOINT3DBILLBOARDMATERIAL_H
 #define QGSPOINT3DBILLBOARDMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
@@ -57,7 +58,7 @@ class _3D_EXPORT QgsPoint3DBillboardMaterial : public QgsMaterial
     /**
      * Constructor for QgsPoint3DBillboardMaterial, using the specified \a mode.
      */
-    QgsPoint3DBillboardMaterial( Mode mode = Mode::SingleTexture );
+    QgsPoint3DBillboardMaterial( Mode mode = Mode::SingleTexture, Qgis::BillboardScaleMode scaleMode = Qgis::BillboardScaleMode::ViewIndependent );
     ~QgsPoint3DBillboardMaterial() override;
 
     //! Set the billboard size.
@@ -93,6 +94,8 @@ class _3D_EXPORT QgsPoint3DBillboardMaterial : public QgsMaterial
     Qt3DRender::QParameter *mSize = nullptr;
     Qt3DRender::QParameter *mViewportSize = nullptr;
     Qt3DRender::QParameter *mTexture2D = nullptr;
+
+    Qgis::BillboardScaleMode mScaleMode = Qgis::BillboardScaleMode::ViewIndependent;
 };
 
 

@@ -4433,6 +4433,18 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( InstancedMaterialFlags )
 
     /**
+     * 3D billboard scaling modes.
+     *
+     * \since QGIS 4.4
+     */
+    enum class BillboardScaleMode : int
+    {
+      ViewIndependent, //!< Billboard has a fixed pixel size on the screen, regardless of the camera distance
+      Perspective      //!< Billboard size is scaled with perspective distance from camera, using world units
+    };
+    Q_ENUM( BillboardScaleMode )
+
+    /**
      * Texture filtering qualities.
      *
      * \since QGIS 4.2

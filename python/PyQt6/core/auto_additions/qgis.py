@@ -7945,6 +7945,19 @@ Qgis.InstancedMaterialFlags = lambda flags=0: Qgis.InstancedMaterialFlag(flags)
 Qgis.InstancedMaterialFlags.baseClass = Qgis
 InstancedMaterialFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.BillboardScaleMode.ViewIndependent.__doc__ = "Billboard has a fixed pixel size on the screen, regardless of the camera distance"
+Qgis.BillboardScaleMode.Perspective.__doc__ = "Billboard size is scaled with perspective distance from camera, using world units"
+Qgis.BillboardScaleMode.__doc__ = """3D billboard scaling modes.
+
+.. versionadded:: 4.4
+
+* ``ViewIndependent``: Billboard has a fixed pixel size on the screen, regardless of the camera distance
+* ``Perspective``: Billboard size is scaled with perspective distance from camera, using world units
+
+"""
+# --
+Qgis.BillboardScaleMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.TextureFilterQuality.Trilinear.__doc__ = "Trilinear (LinearMipmapLinear)"
 Qgis.TextureFilterQuality.Anisotropic2x.__doc__ = "Anisotropic filtering (2x)"
 Qgis.TextureFilterQuality.Anisotropic4x.__doc__ = "Anisotropic filtering (4x)"

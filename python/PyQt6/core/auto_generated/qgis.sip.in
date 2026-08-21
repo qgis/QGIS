@@ -2486,6 +2486,12 @@ The development version
     typedef QFlags<Qgis::InstancedMaterialFlag> InstancedMaterialFlags;
 
 
+    enum class BillboardScaleMode /BaseType=IntEnum/
+    {
+      ViewIndependent,
+      Perspective
+    };
+
     enum class TextureFilterQuality /BaseType=IntEnum/
     {
       Trilinear,
