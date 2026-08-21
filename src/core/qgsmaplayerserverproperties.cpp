@@ -145,10 +145,10 @@ QMap<int, QString> QgsServerWmsDimensionProperties::wmsDimensionDefaultDisplayLa
 QMap<Qgis::WmsDimensionDefaultDisplay, QString> QgsServerWmsDimensionProperties::wmsDimensionDefaultDisplayDescriptions()
 {
   QMap<Qgis::WmsDimensionDefaultDisplay, QString> labels;
-  labels[Qgis::WmsDimensionDefaultDisplay::AllValues] = QObject::tr( "All values" );
-  labels[Qgis::WmsDimensionDefaultDisplay::MinValue] = QObject::tr( "Min value" );
-  labels[Qgis::WmsDimensionDefaultDisplay::MaxValue] = QObject::tr( "Max value" );
-  labels[Qgis::WmsDimensionDefaultDisplay::ReferenceValue] = QObject::tr( "Reference value" );
+  labels[Qgis::WmsDimensionDefaultDisplay::AllValues] = QObject::tr( "All Values" );
+  labels[Qgis::WmsDimensionDefaultDisplay::MinValue] = QObject::tr( "Min Value" );
+  labels[Qgis::WmsDimensionDefaultDisplay::MaxValue] = QObject::tr( "Max Value" );
+  labels[Qgis::WmsDimensionDefaultDisplay::ReferenceValue] = QObject::tr( "Reference Value" );
   return labels;
 }
 
