@@ -3090,7 +3090,18 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         rl4 = QgsRasterLayer(
             self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_4"
         )
-        for rl in [rl1, rl2, rl3, rl4]:
+
+        # not published layer
+        rl5 = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_5"
+        )
+
+        # layer children of a restricted (not published) group, should never appeared
+        rl6 = QgsRasterLayer(
+            self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_6"
+        )
+
+        for rl in [rl1, rl2, rl3, rl4, rl5, rl6]:
             timeProps = rl.temporalProperties()
             timeProps.setIsActive(True)
             timeProps.setMode(Qgis.RasterTemporalMode.FixedTemporalRange)
@@ -3116,12 +3127,26 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             )
         )
 
+        rl5.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-14T00:00:00Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-14T00:00:00Z", Qt.DateFormat.ISODate),
+            )
+        )
+
+        rl6.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-15T00:00:00Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-15T00:00:00Z", Qt.DateFormat.ISODate),
+            )
+        )
+
         project = QgsProject()
 
         # Set a filename to avoid capabilities cache breaking test
         project.setFileName("test_get_capabilities_time_dimension")
 
-        project.addMapLayers([rl1, rl2, rl3, rl4], False)
+        project.addMapLayers([rl1, rl2, rl3, rl4, rl5, rl6], False)
 
         groupWithTimeDim = project.layerTreeRoot().addGroup("GroupWithTimeDimension")
         groupWithTimeDim.setHasWmsTimeDimension(True)
@@ -3134,17 +3159,45 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         group.setHasWmsTimeDimension(True)
         group.addLayer(rl2)
         group.addLayer(rl4)
+        group.addLayer(rl5)
         groupWithTimeDim.addGroup("SubGroupWithoutTimeDimension").addLayer(rl3)
+        group = groupWithTimeDim.addGroup("RestrictedSubGroupWithTimeDimension")
+        group.setHasWmsTimeDimension(True)
+        group.addLayer(rl6)
 
         groupWithoutTimeDim.addLayer(rl1)
         group = groupWithoutTimeDim.addGroup("OtherSubGroupWithTimeDimension")
         group.setHasWmsTimeDimension(True)
         group.addLayer(rl2)
         group.addLayer(rl4)
+        group.addLayer(rl5)
         groupWithoutTimeDim.addGroup("OtherSubGroupWithoutTimeDimension").addLayer(rl3)
+
+        # Test group with Opaque Mode
+
+        opaqueGroupWithTimeDim = project.layerTreeRoot().addGroup(
+            "OpaqueGroupWithTimeDimension"
+        )
+        opaqueGroupWithTimeDim.setHasWmsTimeDimension(True)
+        opaqueGroupWithTimeDim.setWmsGroupRequestMode(Qgis.WmsGroupRequestMode.Opaque)
+
+        opaqueGroupWithTimeDim.addLayer(rl1)
+        group = opaqueGroupWithTimeDim.addGroup("OpaqueSubGroupWithTimeDimension")
+        group.setHasWmsTimeDimension(True)
+        group.setWmsGroupRequestMode(Qgis.WmsGroupRequestMode.Opaque)
+        group.addLayer(rl2)
+        group.addLayer(rl4)
+        group.addLayer(rl5)
+
+        project.writeEntry(
+            "WMSRestrictedLayers",
+            "/",
+            ["test_date_5", "RestrictedSubGroupWithTimeDimension"],
+        )
 
         def get_time_dim(layer_name):
             r, h = self._result(self._execute_request_project(qs, project))
+
             t = et.fromstring(r)
             ns = t.nsmap
             del ns[None]
@@ -3212,6 +3265,16 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         date_dimension = get_time_dim("OtherSubGroupWithoutTimeDimension")
         self.assertEqual(date_dimension, None)
+
+        # Now test with Opaque mode, we should get exactly the same result than with Normal mode
+
+        # group with time dimension option
+        date_dimension = get_time_dim("OpaqueGroupWithTimeDimension")
+        self.assertEqual(date_dimension.attrib, {"units": "ISO8601", "name": "TIME"})
+        self.assertEqual(
+            date_dimension.text,
+            "2025-01-12T12:34:56Z/2025-01-15T09:12:34Z,2025-01-12T00:00:00Z",
+        )
 
     def test_get_map_labeling_opacities(self):
         """Test if OPACITIES is also applied to labels"""
