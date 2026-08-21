@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
 #include "qgselevationutils.h"
+#include "qgsguiutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerelevationproperties.h"
@@ -79,12 +80,12 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   } );
 
   QAction *limitsFromProjectLayersAction = limitsMenu->addAction( tr( "Project Layers" ) );
-  connect( limitsFromProjectLayersAction, &QAction::triggered, this, [this] { setLimitsFromRange( QgsElevationUtils::calculateZRangeForProject( QgsProject::instance() ) ); } );
+  connect( limitsFromProjectLayersAction, &QAction::triggered, this, [this] { setLimitsFromLayers( QgsProject::instance()->mapLayers().values() ); } );
 
   QAction *limitsFromCurrentLayerAction = limitsMenu->addAction( tr( "Current Layer" ) );
   connect( limitsFromCurrentLayerAction, &QAction::triggered, this, [this] {
     if ( mMapCanvas )
-      setLimitsFromRange( QgsElevationUtils::calculateZRangeForLayers( { mMapCanvas->currentLayer() } ) );
+      setLimitsFromLayers( { mMapCanvas->currentLayer() } );
   } );
 
   // the project and the current layer change at any time, so refresh availability when the menu opens
@@ -220,15 +221,23 @@ void QgsElevationControllerWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
 
-  // a project which defines no elevation range of its own leaves the widget with a guessed
-  // range, the canvas layers give a usable one instead
+  // a project which defines no elevation range of its own leaves
+  // the widget with an estimated range, the canvas layers give a usable one instead
   if ( mMapCanvas && QgsProject::instance()->elevationProperties()->elevationRange().isInfinite() )
-    setLimitsFromRange( QgsElevationUtils::calculateZRangeForLayers( mMapCanvas->layers( true ) ) );
+    setLimitsFromLayers( mMapCanvas->layers( true ) );
 }
 
 bool QgsElevationControllerWidget::layerHasElevation( QgsMapLayer *layer )
 {
   return layer && layer->elevationProperties() && layer->elevationProperties()->hasElevation();
+}
+
+void QgsElevationControllerWidget::setLimitsFromLayers( const QList<QgsMapLayer *> &layers )
+{
+  // raster layers gather statistics over their elevation band for this, which is not instant
+  const QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+
+  setLimitsFromRange( QgsElevationUtils::calculateZRangeForLayers( layers ) );
 }
 
 void QgsElevationControllerWidget::setLimitsFromRange( const QgsDoubleRange &range )
@@ -621,7 +630,7 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
   mLimitsButton = new QToolButton();
   mLimitsButton->setIcon( QgsApplication::getThemeIcon( u"/mActionRefresh.svg"_s ) );
   mLimitsButton->setPopupMode( QToolButton::InstantPopup );
-  mLimitsButton->setToolTip( tr( "Set the elevation limits from a predefined source" ) );
+  mLimitsButton->setToolTip( tr( "Take the elevation limits from the project or the layers" ) );
   mLimitsMenu = new QMenu( mLimitsButton );
   mLimitsButton->setMenu( mLimitsMenu );
 
@@ -641,7 +650,7 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
   mSizeSpin->setDecimals( 4 );
   mSizeSpin->setMinimum( 0.0 );
   mSizeSpin->setMaximum( 999999999.0 );
-  mSizeSpin->setClearValue( 0, tr( "Full Range" ) );
+  mSizeSpin->setClearValue( 0, tr( "Full range" ) );
   mSizeSpin->setKeyboardTracking( false );
   mSizeSpin->setToolTip( rangeToolTip );
 
