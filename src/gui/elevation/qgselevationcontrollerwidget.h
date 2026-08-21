@@ -267,6 +267,9 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     //! Applies a \a range calculated from layer data to both the limits and the current range
     void setLimitsFromRange( const QgsDoubleRange &range );
 
+    //! Applies the elevation range of \a layers
+    void setLimitsFromLayers( const QList<QgsMapLayer *> &layers );
+
     static bool layerHasElevation( QgsMapLayer *layer );
 
     /**
