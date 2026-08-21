@@ -114,6 +114,15 @@ bool QgsAnnotationPictureItem::writeXml( QDomElement &element, QDomDocument &doc
   element.setAttribute( u"lockAspect"_s, mLockAspectRatio ? u"1"_s : u"0"_s );
   element.setAttribute( u"path"_s, mPath );
   element.setAttribute( u"format"_s, qgsEnumValueToKey( mFormat ) );
+  if ( !m3DSize.isNull() )
+  {
+    element.setAttribute( u"size3D"_s, QgsSymbolLayerUtils::encodeSize( m3DSize ) );
+  }
+  if ( m3DBillboardScaleMode != Qgis::BillboardScaleMode::ViewIndependent )
+  {
+    element.setAttribute( u"billboardMode"_s, qgsEnumValueToKey( m3DBillboardScaleMode ) );
+  }
+
   writeCommonProperties( element, document, context );
   return true;
 }
@@ -127,6 +136,9 @@ bool QgsAnnotationPictureItem::readXml( const QDomElement &element, const QgsRea
 {
   mLockAspectRatio = element.attribute( u"lockAspect"_s, u"1"_s ).toInt();
 
+  m3DSize = element.attribute( u"size3D"_s ).isEmpty() ? QSizeF() : QgsSymbolLayerUtils::decodeSize( element.attribute( u"size3D"_s ) );
+  m3DBillboardScaleMode = qgsEnumKeyToValue( element.attribute( u"billboardMode"_s ), Qgis::BillboardScaleMode::ViewIndependent );
+
   const Qgis::PictureFormat format = qgsEnumKeyToValue( element.attribute( u"format"_s ), Qgis::PictureFormat::Unknown );
   setPath( format, element.attribute( u"path"_s ) );
 
@@ -138,6 +150,8 @@ QgsAnnotationPictureItem *QgsAnnotationPictureItem::clone() const
 {
   auto item = std::make_unique< QgsAnnotationPictureItem >( mFormat, mPath, bounds() );
   item->setLockAspectRatio( mLockAspectRatio );
+  item->setBillboard3DScaleMode( m3DBillboardScaleMode );
+  item->setBillboard3DSize( m3DSize );
 
   item->copyCommonProperties( this );
   return item.release();
