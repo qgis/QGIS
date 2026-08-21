@@ -27,6 +27,7 @@
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometry.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolselectannotationmousehandles.h"
 #include "qgsmaptopixel.h"
@@ -41,10 +42,13 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QKeySequence>
 #include <QScreen>
+#include <QString>
 #include <QTransform>
 #include <QWindow>
 
 #include "moc_qgsmaptoolselectannotation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAnnotationItemRubberBand::QgsAnnotationItemRubberBand( const QString &layerId, const QString &itemId, QgsMapCanvas *canvas )
   : QgsRubberBand( canvas, Qgis::GeometryType::Line )
@@ -111,13 +115,17 @@ void QgsAnnotationItemRubberBand::updateBoundingBox( const QgsRectangle &boundin
       const QPolygonF corners = rectItem->rotatedBoundsGeometry( rectItem->bounds(), renderContext ).asQPolygonF();
       for ( const QPointF &corner : corners )
       {
-        QgsPointXY mapPoint( corner.x(), corner.y() );
+        QgsPointXY mapPoint;
         try
         {
-          mapPoint = layerToMap.transform( mapPoint );
+          mapPoint = layerToMap.transform( QgsPointXY( corner.x(), corner.y() ) );
         }
         catch ( QgsCsException & )
-        {}
+        {
+          // the band is still bounded by the item bounding box corners below
+          QgsDebugError( u"Error transforming annotation item corner"_s );
+          continue;
+        }
         includePixel( toCanvasCoordinates( mapPoint ) );
       }
     }
@@ -747,8 +755,6 @@ void QgsMapToolSelectAnnotation::attemptSetSceneRect( QgsAnnotationItemRubberBan
     return;
 
   QgsAnnotationLayer *annotationLayer = annotationItemRubberBand->layer();
-  if ( !annotationLayer )
-    return;
 
   // on-screen rotation = the item's own rotation plus the map rotation when
   // the item follows it.
