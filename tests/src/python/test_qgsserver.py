@@ -33,6 +33,7 @@ import base64
 import difflib
 import email
 import re
+import subprocess
 import tempfile
 import unittest
 import urllib.error
@@ -380,6 +381,70 @@ class QgsServerTestBase(QgisTestCase):
         self.assertTrue(
             self._img_diff(response, test_name, max_diff, max_size_diff, outputFormat)
         )
+
+    def _pdf_diff_error(
+        self,
+        response,
+        headers,
+        test_name: str,
+        max_diff=100,
+        max_size_diff=QSize(),
+    ):
+
+        if self.regenerate_reference:
+            reference_path = (
+                unitTestDataPath("control_images")
+                + "/qgis_server/"
+                + test_name
+                + "/"
+                + test_name
+                + ".png"
+            )
+            self.store_reference(reference_path, response)
+
+        self.assertEqual(
+            headers.get("Content-Type"),
+            "application/pdf",
+            f"Content type is wrong: {headers.get('Content-Type')} instead of application/pdf\n{response}",
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_pdf = os.path.join(temp_dir, f"{test_name}_result.pdf")
+
+            with open(temp_pdf, "wb") as f:
+                f.write(response)
+
+            # Generate an image from pdf to compare with expected control image
+            temp_image = os.path.join(temp_dir, f"{test_name}_result.png")
+            command = [
+                "pdftoppm",
+                temp_pdf,
+                temp_image,
+                "-png",
+                "-singlefile",
+                "-scale-to",
+                "500",
+            ]
+            res = subprocess.run(command)
+
+            self.assertTrue(
+                res.returncode == 0,
+                f"Error while executing following command : {' '.join(command)}",
+            )
+
+            rendered_image = QImage(temp_image)
+
+            self.assertTrue(
+                self.image_check(
+                    test_name,
+                    test_name,
+                    rendered_image,
+                    test_name,
+                    allowed_mismatch=max_diff,
+                    control_path_prefix="qgis_server",
+                    size_tolerance=max_size_diff,
+                )
+            )
 
     def _execute_request(
         self,
