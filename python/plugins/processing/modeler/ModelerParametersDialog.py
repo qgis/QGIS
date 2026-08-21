@@ -29,7 +29,6 @@ from qgis.core import (
     QgsProcessingModelChildAlgorithm,
     QgsProcessingModelChildParameterSource,
     QgsProcessingModelOutput,
-    QgsProcessingOutputDefinition,
     QgsProcessingParameterDefinition,
     QgsProject,
 )
@@ -134,61 +133,6 @@ class ModelerParametersDialog(QDialog):
 
     def switchToCommentTab(self):
         self.widget.switchToCommentTab()
-
-    def getAvailableValuesOfType(self, paramType, outTypes=[], dataTypes=[]):
-        # upgrade paramType to list
-        if paramType is None:
-            paramType = []
-        elif not isinstance(paramType, (tuple, list)):
-            paramType = [paramType]
-        if outTypes is None:
-            outTypes = []
-        elif not isinstance(outTypes, (tuple, list)):
-            outTypes = [outTypes]
-
-        return self.model.availableSourcesForChild(
-            self.childId,
-            [
-                p.typeName()
-                for p in paramType
-                if issubclass(p, QgsProcessingParameterDefinition)
-            ],
-            [
-                o.typeName()
-                for o in outTypes
-                if issubclass(o, QgsProcessingOutputDefinition)
-            ],
-            dataTypes,
-        )
-
-    def resolveValueDescription(self, value):
-        if isinstance(value, QgsProcessingModelChildParameterSource):
-            if value.source() == Qgis.ProcessingModelChildParameterSource.StaticValue:
-                return value.staticValue()
-            elif (
-                value.source()
-                == Qgis.ProcessingModelChildParameterSource.ModelParameter
-            ):
-                return self.model.parameterDefinition(
-                    value.parameterName()
-                ).description()
-            elif value.source() == Qgis.ProcessingModelChildParameterSource.ChildOutput:
-                alg = self.model.childAlgorithm(value.outputChildId())
-
-                output_name = (
-                    alg.algorithm().outputDefinition(value.outputName()).description()
-                )
-                # see if this output has been named by the model designer -- if so, we use that friendly name
-                for name, output in alg.modelOutputs().items():
-                    if output.childOutputName() == value.outputName():
-                        output_name = name
-                        break
-
-                return self.tr("'{0}' from algorithm '{1}'").format(
-                    output_name, alg.description()
-                )
-
-        return value
 
     def setPreviousValues(self):
         self.widget.setPreviousValues()
