@@ -1003,6 +1003,7 @@ set(QGIS_CORE_SRCS
   fieldformatter/qgscheckboxfieldformatter.cpp
   fieldformatter/qgsrangefieldformatter.cpp
   fieldformatter/qgsdatetimefieldformatter.cpp
+  fieldformatter/qgsenumerationfieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
   fieldformatter/qgskeyvaluefieldformatter.cpp
   fieldformatter/qgslistfieldformatter.cpp
@@ -1562,6 +1563,7 @@ set(QGIS_CORE_HDRS
 
   fieldformatter/qgscheckboxfieldformatter.h
   fieldformatter/qgsdatetimefieldformatter.h
+  fieldformatter/qgsenumerationfieldformatter.h
   fieldformatter/qgsfallbackfieldformatter.h
   fieldformatter/qgskeyvaluefieldformatter.h
   fieldformatter/qgslistfieldformatter.h
