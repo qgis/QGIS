@@ -22,6 +22,7 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsdataitem.h"
 #include "qgsfield.h"
+#include "qgsfielddomain.h"
 
 #include <QString>
 
@@ -162,8 +163,21 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
 
     bool equal( const QgsDataItem *other ) override;
 
+    /**
+     * Sets the domain for the field. The item will take ownership of the domain.
+     *
+     * \since QGIS 4.2
+     */
+    void setDomain( QgsFieldDomain *domain SIP_TRANSFER );
+
+    /**
+     * Returns TRUE if the field is governed by a field domain.
+     *
+     * \since QGIS 3.44
+     */
   private:
     const QgsField mField;
+    std::unique_ptr<QgsFieldDomain> mDomain;
 };
 
 #endif // QGSFIELDSITEM_H
