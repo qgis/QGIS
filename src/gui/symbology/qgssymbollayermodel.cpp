@@ -511,6 +511,9 @@ void QgsSymbolLayerModel::changeLayer( QgsSymbolLayerModelNode *node, QgsSymbolL
 void QgsSymbolLayerModel::updatePreview( QgsSymbolLayerModelNode *node )
 {
   const QModelIndex index = node2index( node );
+  if ( !index.isValid() )
+    return;
+
   emit dataChanged( index, index, QVector<int>() << Qt::DecorationRole );
 
   // Recursively update the parent's preview up to the root node.
