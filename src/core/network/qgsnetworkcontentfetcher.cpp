@@ -211,7 +211,10 @@ void QgsNetworkContentFetcher::contentLoaded( bool ok )
     return;
   }
 
-  //redirect, so fetch redirect target
+  //redirect, so fetch redirect target, but don't leak the authcfg if redirecting to a different server
+  const QUrl redirectUrl( redirect.toUrl() );
+  const QString authCfg( redirectUrl.host() == mReply->request().url().host() ? mAuthCfg : QString() );
   mReply.release()->deleteLater();
-  fetchContent( redirect.toUrl(), mAuthCfg );
+
+  fetchContent( redirectUrl, authCfg );
 }
