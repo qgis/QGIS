@@ -508,16 +508,6 @@ class ModelerParametersWidget(QgsProcessingModelConfigWidget):
         )
         self.widget.widgetChanged.connect(self.widgetChanged)
 
-        class ContextGenerator(QgsProcessingContextGenerator):
-            def __init__(self, context):
-                super().__init__()
-                self.processing_context = context
-
-            def processingContext(self):
-                return self.processing_context
-
-        self.context_generator = ContextGenerator(self.context)
-
         self.setupUi()
         self.params = None
 
