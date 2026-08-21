@@ -331,19 +331,6 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         if not self.block_changes_signal:
             self.widgetChanged.emit()
 
-    def showAdvancedParametersClicked(self):
-        self.showAdvanced = not self.showAdvanced
-        if self.showAdvanced:
-            self.advancedButton.setText(self.tr("Hide advanced parameters"))
-        else:
-            self.advancedButton.setText(self.tr("Show advanced parameters"))
-        for param in self._alg.parameterDefinitions():
-            if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
-                wrapper = self.wrappers[param.name()]
-                wrapper.setVisible(self.showAdvanced)
-
-                self.widget_labels[param.name()].setVisible(self.showAdvanced)
-
     def setPreviousValues(self):
         self.block_changes_signal += 1
         if self.childId is not None:
