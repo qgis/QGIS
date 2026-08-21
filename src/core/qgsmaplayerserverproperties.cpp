@@ -133,10 +133,22 @@ void QgsServerWmsDimensionProperties::setWmsDimensions( const QList<QgsServerWms
 QMap<int, QString> QgsServerWmsDimensionProperties::wmsDimensionDefaultDisplayLabels()
 {
   QMap<int, QString> labels;
-  labels[QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues] = QObject::tr( "All values" );
-  labels[QgsServerWmsDimensionProperties::WmsDimensionInfo::MinValue] = QObject::tr( "Min value" );
-  labels[QgsServerWmsDimensionProperties::WmsDimensionInfo::MaxValue] = QObject::tr( "Max value" );
-  labels[QgsServerWmsDimensionProperties::WmsDimensionInfo::ReferenceValue] = QObject::tr( "Reference value" );
+  const QMap<Qgis::WmsDimensionDefaultDisplay, QString> descriptions = wmsDimensionDefaultDisplayDescriptions();
+  for ( auto it = descriptions.cbegin(); it != descriptions.cend(); it++ )
+  {
+    labels[static_cast<int>( it.key() )] = descriptions[it.key()];
+  }
+
+  return labels;
+}
+
+QMap<Qgis::WmsDimensionDefaultDisplay, QString> QgsServerWmsDimensionProperties::wmsDimensionDefaultDisplayDescriptions()
+{
+  QMap<Qgis::WmsDimensionDefaultDisplay, QString> labels;
+  labels[Qgis::WmsDimensionDefaultDisplay::AllValues] = QObject::tr( "All Values" );
+  labels[Qgis::WmsDimensionDefaultDisplay::MinValue] = QObject::tr( "Min Value" );
+  labels[Qgis::WmsDimensionDefaultDisplay::MaxValue] = QObject::tr( "Max Value" );
+  labels[Qgis::WmsDimensionDefaultDisplay::ReferenceValue] = QObject::tr( "Reference Value" );
   return labels;
 }
 
@@ -200,8 +212,8 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
       continue;
     }
     QVariant dimRefValue;
-    const int dimDefaultDisplayType = dimElem.attribute( u"defaultDisplayType"_s ).toInt();
-    if ( dimDefaultDisplayType == QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues )
+    const Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = static_cast<Qgis::WmsDimensionDefaultDisplay>( dimElem.attribute( u"defaultDisplayType"_s ).toInt() );
+    if ( dimDefaultDisplayType == Qgis::WmsDimensionDefaultDisplay::AllValues )
     {
       const QString dimRefValueStr = dimElem.attribute( u"referenceValue"_s );
       if ( !dimRefValueStr.isEmpty() )
@@ -237,7 +249,7 @@ void QgsServerWmsDimensionProperties::writeXml( QDomNode &layer_node, QDomDocume
       dimElem.setAttribute( u"endFieldName"_s, dim.endFieldName );
       dimElem.setAttribute( u"units"_s, dim.units );
       dimElem.setAttribute( u"unitSymbol"_s, dim.unitSymbol );
-      dimElem.setAttribute( u"defaultDisplayType"_s, dim.defaultDisplayType );
+      dimElem.setAttribute( u"defaultDisplayType"_s, static_cast<int>( dim.defaultDisplayType ) );
       dimElem.setAttribute( u"referenceValue"_s, dim.referenceValue.toString() );
       wmsDimsElem.appendChild( dimElem );
     }

@@ -122,6 +122,15 @@ QgsDateTimeRange(QgsDateTimeRange)
 Copy constructor.
 """
 
+# MonkeyPatch old QgsServerWmsDimensionProperties.WmsDimensionInfo.DefaultDisplay enum manually
+# because sipify doesn't know how to deal with inner class unnest
+
+QgsServerWmsDimensionProperties.WmsDimensionInfo.DefaultDisplay = Qgis.WmsDimensionDefaultDisplay
+QgsServerWmsDimensionProperties.WmsDimensionInfo.AllValues = Qgis.WmsDimensionDefaultDisplay.AllValues
+QgsServerWmsDimensionProperties.WmsDimensionInfo.MinValue = Qgis.WmsDimensionDefaultDisplay.MinValue
+QgsServerWmsDimensionProperties.WmsDimensionInfo.MaxValue = Qgis.WmsDimensionDefaultDisplay.MaxValue
+QgsServerWmsDimensionProperties.WmsDimensionInfo.ReferenceValue = Qgis.WmsDimensionDefaultDisplay.ReferenceValue
+
 
 QgsProperty.__bool__ = lambda self: self.propertyType() != Qgis.PropertyType.Invalid
 QgsOptionalExpression.__bool__ = lambda self: self.enabled()

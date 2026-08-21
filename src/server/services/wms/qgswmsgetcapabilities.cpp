@@ -1369,15 +1369,15 @@ namespace QgsWms
               {
                 dimElem.setAttribute( u"unitSymbol"_s, dim.unitSymbol );
               }
-              if ( !values.isEmpty() && dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::MinValue )
+              if ( !values.isEmpty() && dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::MinValue )
               {
                 dimElem.setAttribute( u"default"_s, values.first().toString() );
               }
-              else if ( !values.isEmpty() && dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::MaxValue )
+              else if ( !values.isEmpty() && dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::MaxValue )
               {
                 dimElem.setAttribute( u"default"_s, values.last().toString() );
               }
-              else if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::ReferenceValue )
+              else if ( dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::ReferenceValue )
               {
                 dimElem.setAttribute( u"default"_s, dim.referenceValue.toString() );
               }
