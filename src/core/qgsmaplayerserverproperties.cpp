@@ -212,7 +212,7 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
       continue;
     }
     QVariant dimRefValue;
-    const Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = qgsEnumKeyToValue( dimElem.attribute( u"defaultDisplayType"_s ), Qgis::WmsDimensionDefaultDisplay::AllValues );
+    const Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = static_cast<Qgis::WmsDimensionDefaultDisplay>( dimElem.attribute( u"defaultDisplayType"_s ).toInt() );
     if ( dimDefaultDisplayType == Qgis::WmsDimensionDefaultDisplay::AllValues )
     {
       const QString dimRefValueStr = dimElem.attribute( u"referenceValue"_s );
@@ -249,7 +249,7 @@ void QgsServerWmsDimensionProperties::writeXml( QDomNode &layer_node, QDomDocume
       dimElem.setAttribute( u"endFieldName"_s, dim.endFieldName );
       dimElem.setAttribute( u"units"_s, dim.units );
       dimElem.setAttribute( u"unitSymbol"_s, dim.unitSymbol );
-      dimElem.setAttribute( u"defaultDisplayType"_s, qgsEnumValueToKey( dim.defaultDisplayType ) );
+      dimElem.setAttribute( u"defaultDisplayType"_s, static_cast<int>( dim.defaultDisplayType ) );
       dimElem.setAttribute( u"referenceValue"_s, dim.referenceValue.toString() );
       wmsDimsElem.appendChild( dimElem );
     }
