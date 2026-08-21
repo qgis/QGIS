@@ -372,7 +372,7 @@ void QgsSymbolSelectorWidget::updateLayerPreview()
 
   QgsSymbolLayerModelNode *node = currentLayerNode();
   if ( node )
-    mSymbolLayersModel->updatePreview( node );
+    mSymbolLayersModel->updatePreviewIcons( node );
   // update also preview of the whole symbol
   updatePreview();
 }
