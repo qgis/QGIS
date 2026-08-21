@@ -10,6 +10,7 @@
 
 
 
+
 class QgsColorSchemeRegistry
 {
 %Docstring(signature="appended")
@@ -180,6 +181,18 @@ This method is thread safe.
 
 .. versionadded:: 3.2
 %End
+
+    void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` associated with the registry, used to provide the
+"Project colors" scheme.
+
+If ``project`` is ``None``, the project colors scheme is removed from
+the registry.
+
+.. versionadded:: 4.4
+%End
+
 
 };
 
