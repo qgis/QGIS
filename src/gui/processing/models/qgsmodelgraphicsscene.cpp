@@ -185,6 +185,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     item->setPos( box.position().x(), box.position().y() );
     mGroupBoxItems.insert( box.uuid(), item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
+    connect( item, &QgsModelComponentGraphicItem::childAlgorithmDeleted, this, &QgsModelGraphicsScene::childAlgorithmDeleted );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
     connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
   }
@@ -233,6 +234,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
     connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
+    connect( item, &QgsModelChildAlgorithmGraphicItem::childAlgorithmDeleted, this, [this, childId] { emit childAlgorithmDeleted( childId ); } );
     connect( item, &QgsModelChildAlgorithmGraphicItem::runFromHere, this, [this, childId] { emit runFromChild( childId ); } );
     connect( item, &QgsModelChildAlgorithmGraphicItem::runSelected, this, &QgsModelGraphicsScene::runSelected );
     connect( item, &QgsModelChildAlgorithmGraphicItem::showPreviousResults, this, [this, childId] { emit showChildAlgorithmOutputs( childId ); } );
@@ -295,6 +297,36 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
 
             const QString layerId = mLastResult.childResults().value( it.value().childId() ).inputs().value( parameter->name() ).toString();
             addFeatureCountItemForArrow( arrow, layerId );
+
+
+            // For the dataviewer button we actually need the name of the parent child algorithm
+            QMap<QString, QgsProcessingModelChildParameterSources> childParams = mModel->childAlgorithm( ( it.value().childId() ) ).parameterSources();
+            QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator paramIt = childParams.constBegin();
+            for ( ; paramIt != childParams.constEnd(); ++paramIt )
+            {
+              const auto constValue = paramIt.value();
+              for ( const QgsProcessingModelChildParameterSource &source : constValue )
+              {
+                switch ( source.source() )
+                {
+                  case Qgis::ProcessingModelChildParameterSource::ChildOutput:
+                  {
+                    if ( paramIt.key() == parameter->name() )
+                    {
+                      addDataViewerButtonForArrow( arrow, source.outputChildId(), source.outputName() );
+                      break;
+                    }
+                    break;
+                  }
+                  case Qgis::ProcessingModelChildParameterSource::ModelParameter:
+                  case Qgis::ProcessingModelChildParameterSource::StaticValue:
+                  case Qgis::ProcessingModelChildParameterSource::Expression:
+                  case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+                  case Qgis::ProcessingModelChildParameterSource::ModelOutput:
+                    break;
+                }
+              }
+            }
           }
         }
         if ( parameter->isDestination() )
@@ -389,6 +421,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
 
       QString layerId = mLastResult.childResults().value( it.value().childId() ).outputs().value( outputIt.value().childOutputName() ).toString();
       addFeatureCountItemForArrow( arrow, layerId );
+      addDataViewerButtonForArrow( arrow, it.value().childId(), outputIt.value().childOutputName() );
 
       addCommentItemForComponent( model, outputIt.value(), item );
     }
@@ -710,6 +743,16 @@ void QgsModelGraphicsScene::addFeatureCountItemForArrow( QgsModelArrowItem *arro
   }
 }
 
+void QgsModelGraphicsScene::addDataViewerButtonForArrow( QgsModelArrowItem *arrow, const QString &childId, const QString &paramOrOutputName )
+{
+  if ( !( mLastResult.childResults().value( childId ).inputs().contains( paramOrOutputName ) || mLastResult.childResults().value( childId ).outputs().contains( paramOrOutputName ) ) )
+  {
+    return;
+  }
+
+  arrow->setDataViewerButton( childId, paramOrOutputName );
+  connect( arrow, &QgsModelArrowItem::showDataViewerDock, this, &QgsModelGraphicsScene::showDataViewerDock );
+}
 
 QgsMessageBar *QgsModelGraphicsScene::messageBar() const
 {
