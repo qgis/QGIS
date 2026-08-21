@@ -40,67 +40,6 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0" colspan="3">
-    <widget class="QgsCollapsibleGroupBox" name="groupEdges">
-     <property name="title">
-      <string>Edges</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Width</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QgsDoubleSpinBox" name="spinEdgeWidth">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="suffix">
-         <string> px</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Color</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QgsColorButton" name="btnEdgeColor">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
@@ -282,9 +221,6 @@
   <tabstop>mComboRenderedFacade</tabstop>
   <tabstop>chkAddBackFaces</tabstop>
   <tabstop>chkInvertNormals</tabstop>
-  <tabstop>groupEdges</tabstop>
-  <tabstop>spinEdgeWidth</tabstop>
-  <tabstop>btnEdgeColor</tabstop>
  </tabstops>
  <resources/>
  <connections/>
