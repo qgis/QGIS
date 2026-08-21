@@ -552,25 +552,34 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
 bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds &id )
 {
+  bool returnValue = true;
+  bool deleted = false;
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
     const QgsFeatureMap::iterator fit = mFeatures.find( *it );
 
     // check whether such feature exists
     if ( fit == mFeatures.end() )
+    {
+      returnValue = false;
       continue;
+    }
 
     // update spatial index
     if ( mSpatialIndex )
       mSpatialIndex->deleteFeature( *fit );
 
     mFeatures.erase( fit );
+    deleted = true;
   }
 
-  updateExtents();
-  clearMinMaxCache();
+  if ( deleted )
+  {
+    updateExtents();
+    clearMinMaxCache();
+  }
 
-  return true;
+  return returnValue;
 }
 
 bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
