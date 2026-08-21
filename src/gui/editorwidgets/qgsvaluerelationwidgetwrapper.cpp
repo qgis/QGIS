@@ -619,16 +619,23 @@ void QgsValueRelationWidgetWrapper::populate()
   // Initialize, note that signals are blocked, to avoid double signals on new features
   if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression ) || QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( mExpression ) )
   {
-    if ( context().parentFormFeature().isValid() )
+    // Only build the cache once the filter can actually be evaluated.
+    // During QgsAttributeForm::init() (before setFeature() is called)
+    // the form feature is not yet set, so the filter expression cannot be evaluated.
+    // Not building the cache until the form feature is set, which will trigger a call to populate() again.
+    if ( QgsValueRelationFieldFormatter::expressionIsUsable( mExpression, formFeature(), context().parentFormFeature() ) )
     {
-      mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature(), context().parentFormFeature() );
-    }
-    else
-    {
-      mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature() );
+      if ( context().parentFormFeature().isValid() )
+      {
+        mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature(), context().parentFormFeature() );
+      }
+      else
+      {
+        mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature() );
+      }
     }
   }
-  else if ( mCache.empty() )
+  else if ( mCache.isEmpty() )
   {
     mCache = QgsValueRelationFieldFormatter::createCache( config() );
   }
