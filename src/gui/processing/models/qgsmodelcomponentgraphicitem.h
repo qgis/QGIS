@@ -603,11 +603,11 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void editComment() override;
 
     /**
-     * Applies the updated algorithm definition from \a algorithm to the model.
+     * Applies edits to the item, using an updated child \a algorithm definition.
      *
      * \since QGIS 4.4
      */
-    void applyNewAlgorithm( const QgsProcessingModelChildAlgorithm &algorithm );
+    void applyEdit( const QgsProcessingModelChildAlgorithm &algorithm );
 
   signals:
 
