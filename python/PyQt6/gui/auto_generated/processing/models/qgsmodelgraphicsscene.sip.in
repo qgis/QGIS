@@ -288,7 +288,7 @@ algorithm with matching ID.
 Creates a new graphic item for a model parameter.
 %End
 
-    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const /Factory/;
+    QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const /Factory/;
 %Docstring
 Creates a new graphic item for a model child algorithm.
 %End

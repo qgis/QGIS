@@ -161,63 +161,6 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
         self.edit(edit_comment=True)
 
 
-class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
-    """
-    IMPORTANT! This is intentionally a MINIMAL class, only containing code which HAS TO BE HERE
-    because it contains Python code for compatibility with deprecated methods ONLY.
-
-    Don't add anything here -- edit the c++ base class instead!
-    """
-
-    def __init__(self, element, model):
-        super().__init__(element, model, None)
-
-    def edit(self, edit_comment=False):
-        elemAlg = self.component().algorithm()
-        context = createContext()
-        dlg = QgsProcessingModelerParametersDialog(
-            elemAlg,
-            self.model(),
-            context,
-            self.component().childId(),
-            self.component().configuration(),
-        )
-        dlg.setWidgetContext(self.createWidgetContext())
-        dlg.setModal(True)
-        dlg.setComments(self.component().comment().description())
-        dlg.setCommentColor(self.component().comment().color())
-        if edit_comment:
-            dlg.switchToCommentTab()
-        if dlg.exec():
-            alg = dlg.createAlgorithm()
-            self.apply_new_alg(alg)
-            self.rebuildConfigurationDockWidget.emit()
-
-    def apply_new_alg(self, alg):
-        alg.setChildId(self.component().childId())
-        alg.copyNonDefinitionPropertiesFromModel(self.model())
-        if alg.toVariant() == self.component().toVariant():
-            # nothing changed, treat as cancel was pressed
-            return
-
-        # TODO -- ideally we'd include the changed parameter name in the
-        # command ID, so that we get more granular undo/redo (i.e. per
-        # parameter change, not per child algorithm change)
-        undo_command_id = f"alg:{self.component().childId()}"
-        self.aboutToChange.emit(
-            self.tr("Edit {}").format(alg.description()), undo_command_id
-        )
-        self.model().setChildAlgorithm(alg)
-        self.requestModelRepaint.emit()
-        self.changed.emit()
-
-    def editComponent(self):
-        self.edit()
-
-    def editComment(self):
-        self.edit(edit_comment=True)
-
-
 class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
     """
     IMPORTANT! This is intentionally a MINIMAL class, only containing code which HAS TO BE HERE

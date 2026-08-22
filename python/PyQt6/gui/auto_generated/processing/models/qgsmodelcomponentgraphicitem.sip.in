@@ -544,6 +544,19 @@ output could not be matched.
 .. versionadded:: 4.2
 %End
 
+    virtual void editComponent();
+
+    virtual void editComment();
+
+
+    void applyNewAlgorithm( const QgsProcessingModelChildAlgorithm &algorithm );
+%Docstring
+Applies the updated algorithm definition from ``algorithm`` to the
+model.
+
+.. versionadded:: 4.4
+%End
+
   signals:
 
     void runFromHere();
