@@ -84,7 +84,7 @@ class GUI_EXPORT QgsProcessingModelerParametersPanelWidget : public QgsPanelWidg
    */
     std::unique_ptr< QgsProcessingModelChildAlgorithm > createAlgorithm();
 
-    QgsProcessingContext *processingContext() override;
+    QgsProcessingContext *processingContext() const override;
 
     /**
      * Sets the \a context in which the panel is shown, e.g., the

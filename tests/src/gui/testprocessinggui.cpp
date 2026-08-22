@@ -678,7 +678,7 @@ class TestProcessingContextGenerator : public QgsProcessingContextGenerator
       : mContext( context )
     {}
 
-    QgsProcessingContext *processingContext() override { return &mContext; }
+    QgsProcessingContext *processingContext() const override { return &mContext; }
 
     QgsProcessingContext &mContext;
 };

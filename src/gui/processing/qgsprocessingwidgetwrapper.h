@@ -63,7 +63,7 @@ class GUI_EXPORT QgsProcessingContextGenerator
      * \note Ownership of the context is not transferred - it is intended that subclasses
      * return a pointer to a context which they have already created and own.
      */
-    virtual QgsProcessingContext *processingContext() = 0;
+    virtual QgsProcessingContext *processingContext() const = 0;
 
     virtual ~QgsProcessingContextGenerator() = default;
 };
