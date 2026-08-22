@@ -24,6 +24,7 @@
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
 #include "qgschunkedentity.h"
+#include "qgsdemheightmapcache_p.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
@@ -464,6 +465,7 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, Qgis::AltitudeClampi
 
     const float z = ( terrainZ + geomZ ) * ( context.terrainSettings() ? static_cast<float>( context.terrainSettings()->verticalScale() ) : 1 ) + offset;
     lineString->setZAt( i, z );
+    QgsDebugMsgLevel( u"x:%1, y:%2, z:%3, h:%4c"_s.arg( lineString->xAt( i ) ).arg( lineString->yAt( i ) ).arg( lineString->zAt( i ) ).arg( terrainZ ), 2 );
   }
 }
 
@@ -548,9 +550,12 @@ void Qgs3DUtils::extractPointPositions(
     {
       geomZ = pt.z();
     }
-    const float terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator()
-                             ? static_cast<float>( context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * ( context.terrainSettings() ? context.terrainSettings()->verticalScale() : 1 ) )
-                             : 0.f;
+    float terrainZ = 0.0f;
+    if ( context.terrainRenderingEnabled() && context.terrainGenerator() )
+    {
+      terrainZ = context.terrainGenerator()->heightAt( pt.x(), pt.y(), context );
+      terrainZ *= context.terrainSettings() ? context.terrainSettings()->verticalScale() : 1;
+    }
     float h = 0.0f;
     switch ( altClamp )
     {
@@ -571,7 +576,7 @@ void Qgs3DUtils::extractPointPositions(
       static_cast<float>( h - chunkOrigin.z() + translation.z() )
     ) );
     // clang-format on
-    QgsDebugMsgLevel( u"%1 %2 %3"_s.arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
+    QgsDebugMsgLevel( u"x:%1, y:%2 z:%3 (h:%4"_s.arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z(), h ), 2 );
   }
 }
 
