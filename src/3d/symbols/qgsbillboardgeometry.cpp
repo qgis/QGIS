@@ -43,6 +43,21 @@ QgsBillboardGeometry::QgsBillboardGeometry( Qt3DCore::QNode *parent )
   quadVertexAttribute->setName( u"vertexPosition"_s );
   addAttribute( quadVertexAttribute );
 
+  mBoundingVolumeBuffer = new Qt3DCore::QBuffer( this );
+
+  mBoundingVolumeAttribute = new Qt3DCore::QAttribute( this );
+  mBoundingVolumeAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+  mBoundingVolumeAttribute->setBuffer( mBoundingVolumeBuffer );
+  mBoundingVolumeAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
+  mBoundingVolumeAttribute->setVertexSize( 3 );
+  mBoundingVolumeAttribute->setByteOffset( 0 );
+  mBoundingVolumeAttribute->setByteStride( 3 * sizeof( float ) );
+  mBoundingVolumeAttribute->setCount( 0 );
+  mBoundingVolumeAttribute->setName( u"boundingPosition"_s );
+
+  addAttribute( mBoundingVolumeAttribute );
+  setBoundingVolumePositionAttribute( mBoundingVolumeAttribute );
+
   setMode( Mode::PositionOnly );
 }
 
@@ -190,15 +205,40 @@ void QgsBillboardGeometry::setPositions( const QVector<QVector3D> &vertices )
   vertexBufferData.resize( vertices.size() * 3 * sizeof( float ) );
   float *rawVertexArray = reinterpret_cast<float *>( vertexBufferData.data() );
   int idx = 0;
-  for ( const auto &v : vertices )
+
+  float minX = std::numeric_limits< float >::max();
+  float minY = std::numeric_limits< float >::max();
+  float minZ = std::numeric_limits< float >::max();
+  float maxX = std::numeric_limits< float >::lowest();
+  float maxY = std::numeric_limits< float >::lowest();
+  float maxZ = std::numeric_limits< float >::lowest();
+  for ( const QVector3D &v : vertices )
   {
     rawVertexArray[idx++] = v.x();
     rawVertexArray[idx++] = v.y();
     rawVertexArray[idx++] = v.z();
+
+    minX = std::min( minX, v.x() );
+    minY = std::min( minY, v.y() );
+    minZ = std::min( minZ, v.z() );
+    maxX = std::max( maxX, v.x() );
+    maxY = std::max( maxY, v.y() );
+    maxZ = std::max( maxZ, v.z() );
   }
 
   mVertexCount = vertices.count();
   mVertexBuffer->setData( vertexBufferData );
+
+  if ( vertices.isEmpty() )
+  {
+    mBoundingVolumeAttribute->setCount( 0 );
+  }
+  else
+  {
+    const float boundingData[6] = { minX, minY, minZ, maxX, maxY, maxZ };
+    mBoundingVolumeBuffer->setData( QByteArray( reinterpret_cast<const char *>( boundingData ), sizeof( boundingData ) ) );
+    mBoundingVolumeAttribute->setCount( 2 );
+  }
 
   emit countChanged( mVertexCount );
 }
@@ -269,6 +309,33 @@ void QgsBillboardGeometry::setBillboardData( const QVector<BillboardAtlasData> &
 
   mVertexCount = billboards.count();
   mVertexBuffer->setData( vertexBufferData );
+
+  if ( billboards.isEmpty() )
+  {
+    mBoundingVolumeAttribute->setCount( 0 );
+  }
+  else
+  {
+    float minX = std::numeric_limits< float >::max();
+    float minY = std::numeric_limits< float >::max();
+    float minZ = std::numeric_limits< float >::max();
+    float maxX = std::numeric_limits< float >::lowest();
+    float maxY = std::numeric_limits< float >::lowest();
+    float maxZ = std::numeric_limits< float >::lowest();
+    for ( const BillboardAtlasData &b : billboards )
+    {
+      minX = std::min( minX, b.position.x() );
+      minY = std::min( minY, b.position.y() );
+      minZ = std::min( minZ, b.position.z() );
+      maxX = std::max( maxX, b.position.x() );
+      maxY = std::max( maxY, b.position.y() );
+      maxZ = std::max( maxZ, b.position.z() );
+    }
+
+    const float boundingData[6] = { minX, minY, minZ, maxX, maxY, maxZ };
+    mBoundingVolumeBuffer->setData( QByteArray( reinterpret_cast<const char *>( boundingData ), sizeof( boundingData ) ) );
+    mBoundingVolumeAttribute->setCount( 2 );
+  }
 
   emit countChanged( mVertexCount );
 }
