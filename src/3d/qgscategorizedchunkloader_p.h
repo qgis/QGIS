@@ -33,6 +33,7 @@
 #include "qgschunkloader.h"
 
 #include <QFutureWatcher>
+#include <QMutex>
 
 #define SIP_NO_FILE
 
@@ -49,85 +50,46 @@ namespace Qt3DCore
 
 /**
  * \ingroup qgis_3d
- * \brief This loader factory is responsible for creation of loaders for individual tiles
- * of QgsCategorizedChunkedEntity whenever a new tile is requested by the entity.
+ * \brief This loader factory is responsible for loading individual tiles of
+ * QgsCategorizedChunkedEntity whenever a new tile is requested by the entity.
  *
  * \since QGIS 4.2
  */
-class QgsCategorizedChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
+class QgsCategorizedChunkLoader : public QgsQuadtreeChunkLoader
 {
     Q_OBJECT
 
   public:
-    //! Constructs the factory (vectorLayer and renderer must not be null)
-    QgsCategorizedChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vectorLayer, const QgsCategorized3DRenderer *renderer, double zMin, double zMax, int maxFeatures );
-    ~QgsCategorizedChunkLoaderFactory() override;
+    //! Constructs the loader (vectorLayer and renderer must not be null)
+    QgsCategorizedChunkLoader( const Qgs3DRenderContext &context, QgsVectorLayer *vectorLayer, const QgsCategorized3DRenderer *renderer, double zMin, double zMax, int maxFeatures );
+    ~QgsCategorizedChunkLoader() override;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
     bool canCreateChildren( QgsChunkNode *node ) override;
     QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
+  private:
     Qgs3DRenderContext mRenderContext;
     const QgsVectorLayer *mLayer = nullptr;
     const Qgs3DCategoryList *mCategories = nullptr;
     QString mAttributeName;
     //! Contains loaded nodes and whether they are leaf nodes or not
     mutable QHash< QString, bool > mNodesAreLeafs;
+    mutable QMutex mNodesAreLeafsMutex;
     int mMaxFeatures = 0;
+
+    friend class QgsCategorizedChunkedEntity;
 };
-
-
-/**
- * \ingroup qgis_3d
- * \brief This loader class is responsible for async loading of data for a single tile
- * of QgsCategorizedChunkedEntity and creation of final 3D entity from the data
- * previously prepared in a worker thread.
- *
- * \since QGIS 4.2
- */
-class QgsCategorizedChunkLoader : public QgsChunkLoader
-{
-    Q_OBJECT
-
-  public:
-    //! Constructs the loader (factory and node must not be null)
-    QgsCategorizedChunkLoader( const QgsCategorizedChunkLoaderFactory *factory, QgsChunkNode *node );
-    ~QgsCategorizedChunkLoader() override;
-
-    void start() override;
-    virtual void cancel() override;
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
-
-  private:
-    const QSet<QString> prepareHandlers( const QgsBox3D &chunkExtent );
-    void processFeature( const QgsFeature &feature ) const;
-    QString filter() const;
-
-  private:
-    const QgsCategorizedChunkLoaderFactory *mFactory = nullptr;
-    Qgs3DRenderContext mContext;
-    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
-    bool mCanceled = false;
-    QFutureWatcher<void> *mFutureWatcher = nullptr;
-    bool mNodeIsLeaf = false;
-
-    std::vector<std::unique_ptr<QgsFeature3DHandler>> mHandlers;
-    //! hashtable for faster access to symbols
-    QHash<QString, QgsFeature3DHandler *> mFeaturesHandlerHash;
-    std::unique_ptr<QgsExpression> mExpression;
-    int mAttributeIdx = -1;
-};
-
 
 /**
  * \ingroup qgis_3d
  * \brief 3D entity used for rendering of vector layers using categories (just like
  * in case of 2D categories rendering).
  *
- * It is implemented using tiling approach with QgsChunkedEntity. Internally it uses
- * QgsCategorizedChunkLoaderFactory and QgsCategorizedChunkLoader to do the actual work
- * of loading and creating 3D sub-entities for each tile.
+ * It is implemented using tiling approach with QgsChunkedEntity. Internally it
+ * uses QgsCategorizedChunkLoader to do the actual work of loading and creating
+ * 3D sub-entities for each tile.
  *
  * \since QGIS 4.2
  */

@@ -45,12 +45,13 @@
 
 /**
  * \ingroup qgis_3d
- * \brief This loader factory is responsible for creation of loaders for individual tiles
- * of QgsQgsPointCloudLayerChunkedEntity whenever a new tile is requested by the entity.
+ * \brief This loader factory is responsible for creation of individual tiles
+ * of QgsQgsPointCloudLayerChunkedEntity whenever a new tile is requested by
+ * the entity.
  *
  * \since QGIS 3.18
  */
-class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
+class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
 {
     Q_OBJECT
 
@@ -59,21 +60,20 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
      * Constructs the factory
      * The factory takes ownership over the passed \a symbol
      */
-    QgsPointCloudLayerChunkLoaderFactory(
+    QgsPointCloudLayerChunkLoader(
       const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int pointBudget
     );
 
-    //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
     QgsChunkNode *createRootNode() const override;
     QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
     int primitivesCount( QgsChunkNode *node ) const override;
 
     bool canCreateChildren( QgsChunkNode *node ) override;
-    void prepareChildren( QgsChunkNode *node ) override;
+    QFuture<void> prepareChildren( QgsChunkNode *node ) override;
 
     //! Fetches hierarchy for node, children and grand children in a background thread
-    void fetchHierarchyForNode( const QgsPointCloudNodeId &nodeId, QgsChunkNode *origNode );
+    QFuture<void> fetchHierarchyForNode( const QgsPointCloudNodeId &nodeId );
 
     Qgs3DRenderContext mRenderContext;
     QgsCoordinateTransform mCoordinateTransform;
@@ -86,40 +86,6 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     QgsRectangle mExtent; //!< This should hold the map's extent in layer's crs
     QSet<QgsPointCloudNodeId> mPendingHierarchyFetches;
     QSet<QgsPointCloudNodeId> mFutureHierarchyFetches;
-};
-
-
-/**
- * \ingroup qgis_3d
- * \brief This loader class is responsible for async loading of data for a single tile
- * of QgsPointCloudLayerChunkedEntity and creation of final 3D entity from the data
- * previously prepared in a worker thread.
- *
- * \since QGIS 3.18
- */
-class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
-{
-    Q_OBJECT
-
-  public:
-    /**
-     * Constructs the loader
-     * QgsPointCloudLayerChunkLoader takes ownership over symbol
-     */
-    QgsPointCloudLayerChunkLoader(
-      const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr<QgsPointCloud3DSymbol> symbol, const QgsCoordinateTransform &coordinateTransform, double zValueScale, double zValueOffset
-    );
-    ~QgsPointCloudLayerChunkLoader() override;
-
-    void start() override;
-    void cancel() override;
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
-
-  private:
-    const QgsPointCloudLayerChunkLoaderFactory *mFactory;
-    std::unique_ptr<QgsPointCloud3DSymbolHandler> mHandler;
-    QgsPointCloud3DRenderContext mContext;
-    QFutureWatcher<void> *mFutureWatcher = nullptr;
 };
 
 
@@ -168,7 +134,6 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
     static QgsPointCloudIndex resolveIndex( const QgsPointCloudLayer *pcl, int indexPosition );
 
     QgsPointCloudLayer *mLayer = nullptr;
-    std::unique_ptr<QgsChunkUpdaterFactory> mChunkUpdaterFactory;
     int mIndexPosition;
 };
 
