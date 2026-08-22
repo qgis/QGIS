@@ -510,10 +510,11 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     QPicture mPicture;
 };
 
+#ifndef SIP_RUN
 /**
  * \ingroup gui
  * \brief A graphic item representing a child algorithm in the model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGraphicItem
@@ -684,7 +685,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     double mProgress = -1;
     bool mIsValid = true;
 };
-
+#endif
 
 /**
  * \ingroup gui
@@ -724,7 +725,7 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     QPicture mPicture;
 };
 
-
+#ifndef SIP_RUN
 /**
  * \ingroup gui
  * \brief A graphic item representing a model comment in the model designer.
@@ -772,7 +773,7 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
     std::unique_ptr<QgsProcessingModelComponent> mParentComponent;
     QPointer<QgsModelComponentGraphicItem> mParentItem;
 };
-
+#endif
 
 /**
  * \ingroup gui

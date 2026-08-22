@@ -24,12 +24,6 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsModelChildAlgorithmGraphicItem.__attribute_docs__ = {'runFromHere': 'Emitted when the user opts to run the model from this child algorithm.\n\n.. versionadded:: 3.38\n', 'runSelected': 'Emitted when the user opts to run selected steps from the model.\n\n.. versionadded:: 3.38\n', 'showPreviousResults': 'Emitted when the user opts to view previous results from this child\nalgorithm.\n\n.. versionadded:: 3.38\n', 'showLog': 'Emitted when the user opts to view the previous log from this child\nalgorithm.\n\n.. versionadded:: 3.38\n', 'rebuildConfigurationDockWidget': 'Requests that any associated configuration dock widget is rebuilt to\nreflect the current state of the child algorithm.\n\n.. versionadded:: 4.2\n'}
-    QgsModelChildAlgorithmGraphicItem.__overridden_methods__ = ['contextMenuEvent', 'canDeleteComponent', 'editComponent', 'editComment', 'paintBackground', 'fillColor', 'strokeColor', 'textColor', 'outlineColor', 'iconPixmap', 'iconPicture', 'linkPointCount', 'linkPointText', 'updateStoredComponentPosition', 'deleteComponent']
-    QgsModelChildAlgorithmGraphicItem.__group__ = ['processing', 'models']
-except (NameError, AttributeError):
-    pass
-try:
     QgsModelParameterGraphicItem.__overridden_methods__ = ['contextMenuEvent', 'canDeleteComponent', 'linkColor', 'fillColor', 'strokeColor', 'textColor', 'iconPicture', 'linkPointCount', 'linkPointText', 'updateStoredComponentPosition', 'deleteComponent']
     QgsModelParameterGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
@@ -37,11 +31,6 @@ except (NameError, AttributeError):
 try:
     QgsModelOutputGraphicItem.__overridden_methods__ = ['canDeleteComponent', 'fillColor', 'strokeColor', 'textColor', 'iconPicture', 'updateStoredComponentPosition', 'deleteComponent']
     QgsModelOutputGraphicItem.__group__ = ['processing', 'models']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsModelCommentGraphicItem.__overridden_methods__ = ['contextMenuEvent', 'canDeleteComponent', 'fillColor', 'strokeColor', 'textColor', 'strokeStyle', 'updateStoredComponentPosition', 'deleteComponent', 'editComponent']
-    QgsModelCommentGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass
 try:
