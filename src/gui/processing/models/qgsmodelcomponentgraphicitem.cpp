@@ -1565,7 +1565,7 @@ void QgsModelChildAlgorithmGraphicItem::editComment()
   edit( true );
 }
 
-void QgsModelChildAlgorithmGraphicItem::applyNewAlgorithm( const QgsProcessingModelChildAlgorithm &algorithm )
+void QgsModelChildAlgorithmGraphicItem::applyEdit( const QgsProcessingModelChildAlgorithm &algorithm )
 {
   const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() );
   if ( !child )
@@ -1730,7 +1730,7 @@ void QgsModelChildAlgorithmGraphicItem::edit( bool editComment )
     std::unique_ptr< QgsProcessingModelChildAlgorithm > alg = dlg.createAlgorithm();
     if ( alg )
     {
-      applyNewAlgorithm( *alg );
+      applyEdit( *alg );
       emit rebuildConfigurationDockWidget();
     }
   }
