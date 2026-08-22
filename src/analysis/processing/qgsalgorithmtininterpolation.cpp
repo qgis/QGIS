@@ -106,6 +106,17 @@ void QgsTinInterpolationAlgorithm::initAlgorithm( const QVariantMap & )
   rowsParam->setFlags( rowsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( rowsParam.release() );
 
+  auto outputNodataParam = std::make_unique<QgsProcessingParameterNumber>( u"NODATA"_s, QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999.0 );
+  outputNodataParam->setHelp( QObject::tr( "The NODATA value to use in the output raster." ) );
+  outputNodataParam->setFlags( outputNodataParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( outputNodataParam.release() );
+
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setHelp( QObject::tr( "The raster creation options for the output raster. These options control things like colorimetry, compression, etc." ) );
+  creationOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
+
   auto outputParam = std::make_unique<QgsProcessingParameterRasterDestination>( u"OUTPUT"_s, QObject::tr( "Interpolated" ) );
   addParameter( outputParam.release() );
 
@@ -121,6 +132,8 @@ QVariantMap QgsTinInterpolationAlgorithm::processAlgorithm( const QVariantMap &p
   const int method = parameterAsEnum( parameters, u"METHOD"_s, context );
   const QgsRectangle boundingBox = parameterAsExtent( parameters, u"EXTENT"_s, context );
   const double pixelSize = parameterAsDouble( parameters, u"PIXEL_SIZE"_s, context );
+  const QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
+  const double outputNodata = parameterAsDouble( parameters, u"NODATA"_s, context );
   const QString output = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
 
   int columns = parameterAsInt( parameters, u"COLUMNS"_s, context );
@@ -213,6 +226,11 @@ QVariantMap QgsTinInterpolationAlgorithm::processAlgorithm( const QVariantMap &p
   }
 
   QgsGridFileWriter writer( &interpolator, output, boundingBox, columns, rows );
+  if ( !creationOptions.isEmpty() )
+  {
+    writer.setCreationOptions( creationOptions.split( '|' ) );
+  }
+  writer.setNoDataValue( outputNodata );
   writer.writeFile( feedback );
 
   if ( triangulationSink )
