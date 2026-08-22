@@ -598,6 +598,16 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      */
     int indexForOutput( const QString &output ) const;
 
+    void editComponent() override;
+    void editComment() override;
+
+    /**
+     * Applies the updated algorithm definition from \a algorithm to the model.
+     *
+     * \since QGIS 4.4
+     */
+    void applyNewAlgorithm( const QgsProcessingModelChildAlgorithm &algorithm );
+
   signals:
 
     /**
@@ -659,6 +669,13 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void activateAlgorithm();
 
   private:
+    /**
+     * Opens the dialog to edit the child algorithm parameters or comments.
+     *
+     * \param editComment set to TRUE to focus the comments tab
+     */
+    void edit( bool editComment = false );
+
     QPicture mPicture;
     QPixmap mPixmap;
     bool mStarted = false;

@@ -300,7 +300,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Creates a new graphic item for a model child algorithm.
      */
-    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const SIP_FACTORY;
+    QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const SIP_FACTORY;
 
     /**
      * Creates a new graphic item for a model output.
