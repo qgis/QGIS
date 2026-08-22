@@ -24,7 +24,7 @@ An interface for objects which can create Processing contexts.
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-    virtual QgsProcessingContext *processingContext() = 0;
+    virtual QgsProcessingContext *processingContext() const = 0;
 %Docstring
 This method needs to be reimplemented in all classes which implement
 this interface and return a Processing context.

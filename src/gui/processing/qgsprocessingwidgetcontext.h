@@ -175,7 +175,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
      * \see registerProcessingContextGenerator()
      * \since QGIS 4.0
      */
-    QgsProcessingContextGenerator *processingContextGenerator();
+    const QgsProcessingContextGenerator *processingContextGenerator() const;
 
     /**
      * Returns the associated model designer dialog, if applicable.

@@ -173,7 +173,7 @@ is not transferred.
 .. versionadded:: 4.0
 %End
 
-    QgsProcessingContextGenerator *processingContextGenerator();
+    const QgsProcessingContextGenerator *processingContextGenerator() const;
 %Docstring
 Returns the Processing context generator class that will be used to
 retrieve a Processing context for the widget when required.

@@ -475,7 +475,7 @@ std::unique_ptr< QgsProcessingModelChildAlgorithm > QgsProcessingModelerParamete
   return newChildAlgorithm;
 }
 
-QgsProcessingContext *QgsProcessingModelerParametersPanelWidget::processingContext()
+QgsProcessingContext *QgsProcessingModelerParametersPanelWidget::processingContext() const
 {
   return &mContext;
 }
