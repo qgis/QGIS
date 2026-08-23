@@ -101,23 +101,8 @@ Populates the scene by creating items representing the specified
 Returns list of selected component items.
 %End
 
-    QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
-%Docstring
-Returns the topmost component item at a specified ``position``.
-%End
 
-    QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
-%Docstring
-Returns the graphic item corresponding to the specified group box
-``uuid``.
-%End
 
-    QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
-%Docstring
-Returns the graphic item corresponding to the specified child algorithm
-
-.. versionadded:: 3.44
-%End
 
     void resetChildAlgorithmItems( const QSet<QString> &childAlgorithmSubset = QSet<QString>() );
 %Docstring
@@ -288,25 +273,13 @@ algorithm with matching ID.
 Creates a new graphic item for a model parameter.
 %End
 
-    QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const /Factory/;
-%Docstring
-Creates a new graphic item for a model child algorithm.
-%End
 
     virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const /Factory/;
 %Docstring
 Creates a new graphic item for a model output.
 %End
 
-    virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const /Factory/;
-%Docstring
-Creates a new graphic item for a model comment.
-%End
 
-    QgsModelComponentGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const /Factory/;
-%Docstring
-Creates a new graphic item for a model group box.
-%End
 
 };
 
