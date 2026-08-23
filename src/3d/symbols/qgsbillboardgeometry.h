@@ -95,13 +95,17 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
     void countChanged( int count );
 
   private:
-    enum class Mode
+    enum class Attribute
     {
-      PositionOnly,
-      PositionAndTextureData,
-      PositionAndTextureDataWithPixelOffsets,
+      Position = 1 << 0,
+      TextureData = 1 << 1,
+      PixelOffsets = 1 << 2,
     };
-    void setMode( Mode mode );
+    Q_DECLARE_FLAGS( Attributes, Attribute )
+    Q_FLAG( Attributes )
+
+    void setAttributes( Attributes attributes );
+    Attributes mAttributes;
 
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QAttribute *mAtlasOffsetAttribute = nullptr;
