@@ -146,8 +146,8 @@ QMap<Qgis::WmsDimensionDefaultDisplay, QString> QgsServerWmsDimensionProperties:
 {
   QMap<Qgis::WmsDimensionDefaultDisplay, QString> labels;
   labels[Qgis::WmsDimensionDefaultDisplay::AllValues] = QObject::tr( "All Values" );
-  labels[Qgis::WmsDimensionDefaultDisplay::MinValue] = QObject::tr( "Min Value" );
-  labels[Qgis::WmsDimensionDefaultDisplay::MaxValue] = QObject::tr( "Max Value" );
+  labels[Qgis::WmsDimensionDefaultDisplay::MinValue] = QObject::tr( "Minimum Value" );
+  labels[Qgis::WmsDimensionDefaultDisplay::MaxValue] = QObject::tr( "Maximum Value" );
   labels[Qgis::WmsDimensionDefaultDisplay::ReferenceValue] = QObject::tr( "Reference Value" );
   return labels;
 }
