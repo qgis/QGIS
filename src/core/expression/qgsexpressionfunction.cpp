@@ -7324,21 +7324,24 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
         return context->cachedValue( cacheValueKey );
       }
 
-      const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
-      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-
-      const QString cacheKey = u"repvalfcn:%1:%2"_s.arg( layer ? layer->id() : u"[None]"_s, fieldName );
-
-      QVariant cache;
-      if ( !context->hasCachedValue( cacheKey ) )
+      if ( layer )
       {
-        cache = formatter->createCache( layer, fieldIndex, setup.config() );
-        context->setCachedValue( cacheKey, cache );
-      }
-      else
-        cache = context->cachedValue( cacheKey );
+        const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
+        const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
-      result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
+        const QString cacheKey = u"repvalfcn:%1:%2"_s.arg( layer ? layer->id() : u"[None]"_s, fieldName );
+
+        QVariant cache;
+        if ( !context->hasCachedValue( cacheKey ) )
+        {
+          cache = formatter->createCache( layer, fieldIndex, setup.config() );
+          context->setCachedValue( cacheKey, cache );
+        }
+        else
+          cache = context->cachedValue( cacheKey );
+
+        result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
+      }
 
       context->setCachedValue( cacheValueKey, result );
     }
