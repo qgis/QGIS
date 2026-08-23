@@ -84,6 +84,7 @@ void QgsBillboardGeometry::setMode( Mode mode )
   mPositionAttribute->setDivisor( 1 );
   mPositionAttribute->setName( "instancePosition" );
   addAttribute( mPositionAttribute );
+  setBoundingVolumePositionAttribute( mPositionAttribute );
 
   switch ( mode )
   {
@@ -199,6 +200,7 @@ void QgsBillboardGeometry::setPositions( const QVector<QVector3D> &vertices )
 
   mVertexCount = vertices.count();
   mVertexBuffer->setData( vertexBufferData );
+  mPositionAttribute->setCount( mVertexCount );
 
   emit countChanged( mVertexCount );
 }
@@ -269,6 +271,7 @@ void QgsBillboardGeometry::setBillboardData( const QVector<BillboardAtlasData> &
 
   mVertexCount = billboards.count();
   mVertexBuffer->setData( vertexBufferData );
+  mPositionAttribute->setCount( mVertexCount );
 
   emit countChanged( mVertexCount );
 }
