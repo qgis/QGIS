@@ -59,7 +59,7 @@ class GUI_EXPORT QgsProcessingContextGenerator
      * This method needs to be reimplemented in all classes which implement this interface
      * and return a Processing context.
      *
-     * Note that ownership of the context is not transferred - it is intended that subclasses
+     * \note Ownership of the context is not transferred - it is intended that subclasses
      * return a pointer to a context which they have already created and own.
      */
     virtual QgsProcessingContext *processingContext() = 0;
@@ -285,6 +285,26 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
 
     QgsModelDesignerDialog *mModelDialog = nullptr;
 };
+
+/**
+ * \class QgsProcessingWidgetContextGenerator
+ * \brief An interface for objects which can create Processing widget contexts.
+ *
+ * \ingroup gui
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsProcessingWidgetContextGenerator
+{
+  public:
+    /**
+   * This method needs to be reimplemented in all classes which implement this interface
+   * and return a Processing widget context.
+   */
+    virtual QgsProcessingParameterWidgetContext createWidgetContext() = 0;
+
+    virtual ~QgsProcessingWidgetContextGenerator() = default;
+};
+
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
