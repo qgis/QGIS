@@ -250,6 +250,20 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiRegistry::createModelConfigWidge
   return nullptr;
 }
 
+void QgsProcessingGuiRegistry::registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator )
+{
+  mWidgetContextGenerator = generator;
+}
+
+QgsProcessingParameterWidgetContext QgsProcessingGuiRegistry::createWidgetContext()
+{
+  if ( mWidgetContextGenerator )
+  {
+    return mWidgetContextGenerator->createWidgetContext();
+  }
+  return QgsProcessingParameterWidgetContext();
+}
+
 /// @cond PRIVATE
 bool QgsProcessingGuiInternalModelConfigWidgetFactory::supportsComponent( QgsProcessingModelComponent *component ) const
 {
