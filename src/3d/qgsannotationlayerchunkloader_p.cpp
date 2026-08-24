@@ -457,9 +457,8 @@ Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntit
     billboardGeometryRenderer->setVertexCount( 4 );
     billboardGeometryRenderer->setInstanceCount( mBillboardPositions.count() );
 
-    QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::Mode::AtlasTextureWithPixelOffsets );
+    QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::ExtraAttribute::TextureData | QgsPoint3DBillboardMaterial::ExtraAttribute::PixelOffsets );
     billboardMaterial->setTexture2DFromImage( mBillboardAtlas );
-
 
     Qt3DCore::QEntity *billboardEntity = new Qt3DCore::QEntity;
     billboardEntity->addComponent( billboardMaterial );
@@ -478,7 +477,7 @@ Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntit
     billboardGeometryRenderer->setVertexCount( 4 );
     billboardGeometryRenderer->setInstanceCount( mTextBillboardPositions.count() );
 
-    QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::Mode::AtlasTextureWithPixelOffsets );
+    QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::ExtraAttribute::TextureData | QgsPoint3DBillboardMaterial::ExtraAttribute::PixelOffsets );
     billboardMaterial->setTexture2DFromImage( mTextBillboardAtlas );
 
     Qt3DCore::QEntity *billboardEntity = new Qt3DCore::QEntity;

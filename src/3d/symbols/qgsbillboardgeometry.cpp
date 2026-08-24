@@ -56,7 +56,10 @@ void QgsBillboardGeometry::setAttributes( QgsBillboardGeometry::Attributes attri
 
   // position is always present
   uint stride = 3 * sizeof( float );
-
+  if ( attributes.testFlag( Attribute::Size ) )
+  {
+    stride += 2 * sizeof( float );
+  }
   if ( attributes.testFlag( Attribute::TextureData ) )
   {
     stride += ( 2 + 2 ) * sizeof( float );
@@ -86,6 +89,27 @@ void QgsBillboardGeometry::setAttributes( QgsBillboardGeometry::Attributes attri
   addAttribute( mPositionAttribute );
   setBoundingVolumePositionAttribute( mPositionAttribute );
   offset += 3 * sizeof( float );
+
+  if ( attributes.testFlag( Attribute::Size ) )
+  {
+    mSizeAttribute = new Qt3DCore::QAttribute( this );
+    mSizeAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+    mSizeAttribute->setBuffer( mVertexBuffer );
+    mSizeAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
+    mSizeAttribute->setVertexSize( 2 );
+    mSizeAttribute->setByteOffset( offset );
+    mSizeAttribute->setByteStride( stride );
+    mSizeAttribute->setDivisor( 1 );
+    mSizeAttribute->setName( u"instanceSize"_s );
+    addAttribute( mSizeAttribute );
+    offset += 2 * sizeof( float );
+  }
+  else
+  {
+    removeAttribute( mSizeAttribute );
+    delete mSizeAttribute;
+    mSizeAttribute = nullptr;
+  }
 
   if ( attributes.testFlag( Attribute::TextureData ) )
   {
@@ -169,6 +193,35 @@ void QgsBillboardGeometry::setPositions( const QVector<QVector3D> &vertices )
   mVertexCount = vertices.count();
   mVertexBuffer->setData( vertexBufferData );
   mPositionAttribute->setCount( mVertexCount );
+
+  emit countChanged( mVertexCount );
+}
+
+void QgsBillboardGeometry::setPositionsAndSizes( const QVector<QVector3D> &positions, const QVector<QSizeF> &sizes )
+{
+  Attributes attributes = Attribute::Position;
+  attributes.setFlag( Attribute::Size );
+  setAttributes( attributes );
+
+  const qsizetype size = std::min( positions.size(), sizes.size() );
+  QByteArray vertexBufferData;
+  vertexBufferData.resize( size * ( 3 + 2 ) * sizeof( float ) );
+  float *rawArray = reinterpret_cast<float *>( vertexBufferData.data() );
+  int idx = 0;
+  for ( qsizetype i = 0; i < size; ++i )
+  {
+    rawArray[idx++] = positions[i].x();
+    rawArray[idx++] = positions[i].y();
+    rawArray[idx++] = positions[i].z();
+
+    rawArray[idx++] = sizes[i].width();
+    rawArray[idx++] = sizes[i].height();
+  }
+
+  mVertexCount = size;
+  mVertexBuffer->setData( vertexBufferData );
+  mPositionAttribute->setCount( mVertexCount );
+  mSizeAttribute->setCount( mVertexCount );
 
   emit countChanged( mVertexCount );
 }
