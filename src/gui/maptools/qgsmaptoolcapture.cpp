@@ -454,6 +454,11 @@ void QgsMapToolCapture::setCurrentShapeMapToolIsActivated( bool activated )
 
 void QgsMapToolCapture::onTransientGeometryChanged( const QgsReferencedGeometry &geometry )
 {
+  if ( mLayerPreviewRubberBand )
+  {
+    mLayerPreviewRubberBand->setToGeometry( geometry, geometry.crs() );
+  }
+
   emit transientGeometryChanged( geometry );
 }
 
@@ -1008,7 +1013,14 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     }
 
     if ( !mRubberBand )
+    {
       mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line ) );
+    }
+    if ( !mLayerPreviewRubberBand )
+    {
+      mLayerPreviewRubberBand.reset( createRubberBandForLayer( currentVectorLayer(), { -1 } ) );
+      mLayerPreviewRubberBand->setRenderedComponents( Qgis::RubberBandComponent::PreviewItems );
+    }
 
     if ( !mTempRubberBand )
     {
@@ -1092,6 +1104,11 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   if ( !mRubberBand )
   {
     mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line ) );
+  }
+  if ( !mLayerPreviewRubberBand )
+  {
+    mLayerPreviewRubberBand.reset( createRubberBandForLayer( currentVectorLayer(), { -1 } ) );
+    mLayerPreviewRubberBand->setRenderedComponents( Qgis::RubberBandComponent::PreviewItems );
   }
 
   if ( mTempRubberBand )
@@ -1401,6 +1418,7 @@ bool QgsMapToolCapture::isCapturing() const
 void QgsMapToolCapture::stopCapturing()
 {
   mRubberBand.reset();
+  mLayerPreviewRubberBand.reset();
 
   deleteTempRubberBand();
 
