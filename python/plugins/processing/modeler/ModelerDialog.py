@@ -43,7 +43,6 @@ from qgis.gui import (
     QgsProcessingContextGenerator,
     QgsProcessingParameterDefinitionDialog,
     QgsProcessingParametersGenerator,
-    QgsProcessingParameterWidgetContext,
 )
 from qgis.PyQt.QtCore import (
     QCoreApplication,

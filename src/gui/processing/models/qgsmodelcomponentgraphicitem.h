@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingwidgetcontext.h"
 
 #include <QFont>
 #include <QGraphicsObject>
@@ -47,7 +48,7 @@ class QgsModelArrowItem;
  * \warning Not stable API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
+class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public QgsProcessingWidgetContextGenerator
 {
     Q_OBJECT
 
@@ -288,6 +289,15 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     QList< QgsModelArrowItem * > outgoingArrows();
 
+    /**
+     * Register a Processing widget context generator class that will be used to retrieve
+     * a widget context for the item when required.
+     * \since QGIS 4.4
+     */
+    void registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator );
+
+    QgsProcessingParameterWidgetContext createWidgetContext() override;
+
   signals:
 
     // TODO - rework this, should be triggered externally when the model actually changes!
@@ -436,6 +446,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QList< QgsModelDesignerSocketGraphicItem * > mInSockets;
     QList< QgsModelDesignerSocketGraphicItem * > mOutSockets;
 
+    QgsProcessingWidgetContextGenerator *mWidgetContextGenerator = nullptr;
 
     static constexpr double MIN_COMPONENT_WIDTH = 70;
     static constexpr double MIN_COMPONENT_HEIGHT = 30;

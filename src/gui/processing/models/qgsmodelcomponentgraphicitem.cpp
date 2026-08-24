@@ -854,6 +854,20 @@ QList<QgsModelArrowItem *> QgsModelComponentGraphicItem::outgoingArrows()
   return arrows;
 }
 
+void QgsModelComponentGraphicItem::registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator )
+{
+  mWidgetContextGenerator = generator;
+}
+
+QgsProcessingParameterWidgetContext QgsModelComponentGraphicItem::createWidgetContext()
+{
+  if ( mWidgetContextGenerator )
+  {
+    return mWidgetContextGenerator->createWidgetContext();
+  }
+  return QgsProcessingParameterWidgetContext();
+}
+
 QgsModelParameterGraphicItem::QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( parameter, model, parent )
 {
