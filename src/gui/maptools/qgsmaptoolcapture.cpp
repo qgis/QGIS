@@ -1285,6 +1285,30 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
 
     mCadDockWidget->removePreviousPoint();
     validateGeometry();
+
+    // Determine target CRS
+    QgsCoordinateReferenceSystem targetCrs = layer() ? layer()->crs() : mCanvas->mapSettings().destinationCrs();
+
+    // Emit updated transient geometry
+    if ( mCaptureCurve.numPoints() > 0 )
+    {
+      std::unique_ptr< QgsCompoundCurve > tempCurve( mCaptureCurve.clone() );
+      if ( mCaptureMode == CapturePolygon )
+      {
+        auto curvePolygon = std::make_unique< QgsCurvePolygon >();
+        tempCurve->close();
+        curvePolygon->setExteriorRing( tempCurve.release() );
+        onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+      }
+      else
+      {
+        onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+      }
+    }
+    else
+    {
+      onTransientGeometryChanged( QgsReferencedGeometry() );
+    }
   }
 }
 
