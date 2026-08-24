@@ -265,7 +265,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
                 QgsQueryResultDialog dialog( conn2.release() );
                 dialog.setObjectName( u"SqlUpdateDialog"_s );
-                dialog.setStyleSheet( QgisApp::instance()->styleSheet() );
+                dialog.setStyleSheet( QgsGui::applicationStyleSheet() );
 
                 const QString layerName = layer->name();
                 dialog.setWindowTitle( tr( "%1 — Update SQL" ).arg( layerName ) );
@@ -345,7 +345,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
                   QgsQueryResultMainWindow *dialog = new QgsQueryResultMainWindow( conn2.release(), layerName );
                   dialog->setAttribute( Qt::WA_DeleteOnClose );
-                  dialog->setStyleSheet( QgisApp::instance()->styleSheet() );
+                  dialog->setStyleSheet( QgsGui::applicationStyleSheet() );
                   dialog->resultWidget()->setSqlVectorLayerOptions( options );
 
                   connect( dialog->resultWidget(), &QgsQueryResultWidget::requestDialogTitleUpdate, dialog, [dialog]( const QString &fileName ) {
