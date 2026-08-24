@@ -459,6 +459,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.cpp
+  processing/qgsprocessingwidgetcontext.cpp
   processing/qgsprocessingwidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
@@ -1492,6 +1493,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.h
+  processing/qgsprocessingwidgetcontext.h
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 
