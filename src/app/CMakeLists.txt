@@ -301,6 +301,8 @@ set(QGIS_APP_SRCS
   mesh/qgsmeshtransformcoordinatesdockwidget.cpp
   mesh/qgsmeshselectbyexpressiondialog.cpp
 
+  processing/qgsappprocessingutils.cpp
+
   vector/qgsvectorelevationpropertieswidget.cpp
 )
 
