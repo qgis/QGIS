@@ -19,7 +19,6 @@ __author__ = "Victor Olaya"
 __date__ = "November 2016"
 __copyright__ = "(C) 2016, Victor Olaya"
 
-import math
 import os
 
 from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
@@ -29,17 +28,14 @@ from qgis.core import (
     QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingException,
-    QgsProcessingOutputRasterLayer,
     QgsProcessingParameterCrs,
     QgsProcessingParameterExtent,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterNumber,
     QgsProcessingParameterRasterDestination,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterString,
     QgsProcessingUtils,
 )
-from qgis.PyQt.QtCore import QObject
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -63,25 +59,8 @@ class RasterCalculator(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        class ParameterRasterCalculatorExpression(QgsProcessingParameterString):
-            def __init__(self, name="", description="", multiLine=False):
-                super().__init__(name, description, multiLine=multiLine)
-                self.setMetadata(
-                    {
-                        "widget_wrapper": "processing.algs.qgis.ui.RasterCalculatorWidgets.ExpressionWidgetWrapper"
-                    }
-                )
-
-            def type(self):
-                return "raster_calc_expression"
-
-            def clone(self):
-                return ParameterRasterCalculatorExpression(
-                    self.name(), self.description(), self.multiLine()
-                )
-
         self.addParameter(
-            ParameterRasterCalculatorExpression(
+            QgsProcessingParameterString(
                 self.EXPRESSION, self.tr("Expression"), multiLine=True
             )
         )

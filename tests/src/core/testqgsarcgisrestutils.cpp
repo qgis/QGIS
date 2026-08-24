@@ -68,6 +68,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testParsePictureFillSymbolNullOutline();
     void testParseRendererSimple();
     void testParseRendererCategorized();
+    void testRendererTransparency();
     void testVisualVariableRotationGeographic();
     void testVisualVariableRotationArithmetic();
     void testVisualVariableRotationDefaultsToGeographic();
@@ -731,6 +732,88 @@ void TestQgsArcGisRestUtils::testParseRendererCategorized()
   QCOMPARE( catRenderer->categories().at( 1 ).value().toString(), u"Canada"_s );
   QCOMPARE( catRenderer->categories().at( 1 ).label(), u"Canada"_s );
   QVERIFY( catRenderer->categories().at( 1 ).symbol() );
+}
+
+void TestQgsArcGisRestUtils::testRendererTransparency()
+{
+  // transparency at drawingInfo level is now a layer-level rendering setting,
+  // and should not be baked into individual symbol opacity
+  // simple renderer
+  {
+    const QVariantMap map = jsonStringToMap(
+      "{"
+      "\"type\": \"simple\","
+      "\"symbol\": "
+      "{\"color\":[0,0,128,255],\"size\":15,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,128,255],\"width\":1,\"type\":"
+      "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+      "\"transparency\": 70"
+      "}"
+    );
+    QgsReadWriteContext rwContext;
+    QgsSymbolConverterContext context( rwContext );
+    const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+    const QgsSingleSymbolRenderer *ssRenderer = dynamic_cast<QgsSingleSymbolRenderer *>( renderer.get() );
+    QVERIFY( ssRenderer );
+    QVERIFY( ssRenderer->symbol() );
+    QCOMPARE( ssRenderer->symbol()->opacity(), 1.0 );
+  }
+
+  // uniqueValue renderer
+  {
+    const QVariantMap map = jsonStringToMap(
+      "{"
+      "\"type\": \"uniqueValue\","
+      "\"field1\": \"TYPE\","
+      "\"uniqueValueInfos\": ["
+      "{"
+      "\"value\": \"A\","
+      "\"symbol\": "
+      "{\"color\":[255,0,0,255],\"size\":8,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,0,255],\"width\":1,\"type\":"
+      "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+      "\"label\": \"A\""
+      "}"
+      "],"
+      "\"transparency\": 50"
+      "}"
+    );
+    QgsReadWriteContext rwContext;
+    QgsSymbolConverterContext context( rwContext );
+    const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+    const QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( renderer.get() );
+    QVERIFY( catRenderer );
+    QCOMPARE( catRenderer->categories().count(), 1 );
+    QVERIFY( catRenderer->categories().at( 0 ).symbol() );
+    QCOMPARE( catRenderer->categories().at( 0 ).symbol()->opacity(), 1.0 );
+  }
+
+  // classBreaks renderer
+  {
+    const QVariantMap map = jsonStringToMap(
+      "{"
+      "\"type\": \"classBreaks\","
+      "\"field\": \"POP\","
+      "\"minValue\": 0,"
+      "\"classBreakInfos\": ["
+      "{"
+      "\"classMaxValue\": 1000,"
+      "\"symbol\": "
+      "{\"color\":[255,0,0,255],\"size\":8,\"angle\":0,\"xoffset\":0,\"yoffset\":0,\"type\":\"esriSMS\",\"style\":\"esriSMSCircle\",\"outline\":{\"color\":[0,0,0,255],\"width\":1,\"type\":"
+      "\"esriSLS\",\"style\":\"esriSLSSolid\"}},"
+      "\"label\": \"< 1000\""
+      "}"
+      "],"
+      "\"transparency\": 25"
+      "}"
+    );
+    QgsReadWriteContext rwContext;
+    QgsSymbolConverterContext context( rwContext );
+    const std::unique_ptr<QgsFeatureRenderer> renderer( QgsArcGisRestUtils::convertRenderer( map, context ) );
+    const QgsGraduatedSymbolRenderer *gradRenderer = dynamic_cast<QgsGraduatedSymbolRenderer *>( renderer.get() );
+    QVERIFY( gradRenderer );
+    QVERIFY( !gradRenderer->ranges().isEmpty() );
+    QVERIFY( gradRenderer->ranges().at( 0 ).symbol() );
+    QCOMPARE( gradRenderer->ranges().at( 0 ).symbol()->opacity(), 1.0 );
+  }
 }
 
 void TestQgsArcGisRestUtils::testVisualVariableRotationGeographic()

@@ -1306,6 +1306,7 @@ The development version
       {
       QgisInternal,
       Geos,
+      Sfcgal,
     };
 
     enum class BufferSide /BaseType=IntEnum/
@@ -1760,6 +1761,10 @@ The development version
       DrawUnplacedLabels,
       CollectUnplacedLabels,
       DrawLabelMetrics,
+      IgnoreObstacles,
+      SingleCandidateOnly,
+      IgnoreOverlaps,
+      DisableSearchTree,
     };
 
     typedef QFlags<Qgis::LabelingFlag> LabelingFlags;
@@ -3711,10 +3716,24 @@ The development version
     typedef QFlags<Qgis::RasterBandStatistic> RasterBandStatistics;
 
 
+    enum class InterpolationSourceType /BaseType=IntEnum/
+    {
+      Points,
+      StructureLines,
+      BreakLines,
+    };
+
+    enum class InterpolationValueSource /BaseType=IntEnum/
+    {
+      Attribute,
+      Z,
+      M,
+    };
+
     enum class SensorThingsVersion /BaseType=IntEnum/
     {
-        Version1_1,
-        Version2_0,
+      Version1_1,
+      Version2_0,
     };
 
     enum class SensorThingsExtension /BaseType=IntFlag/
@@ -3908,6 +3927,28 @@ The development version
     };
 
     typedef QFlags<Qgis::PdfRenderFlag> PdfRenderFlags;
+
+
+    enum class RubberBandIconType /BaseType=IntEnum/
+    {
+      NoIcon,
+      CrossPlus,
+      CrossX,
+      Box,
+      Circle,
+      BoxFilled,
+      Diamond,
+      DiamondFilled,
+      SVG
+    };
+
+    enum class RubberBandComponent /BaseType=IntFlag/
+    {
+      Symbol,
+      PreviewItems,
+    };
+
+    typedef QFlags<Qgis::RubberBandComponent> RubberBandComponents;
 
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -4260,6 +4301,8 @@ QFlags<Qgis::Map3DDebugFlag> operator|(Qgis::Map3DDebugFlag f1, QFlags<Qgis::Map
 QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QFlags<Qgis::SensorThingsExtension> f2);
 
 QFlags<Qgis::PdfRenderFlag> operator|(Qgis::PdfRenderFlag f1, QFlags<Qgis::PdfRenderFlag> f2);
+
+QFlags<Qgis::RubberBandComponent> operator|(Qgis::RubberBandComponent f1, QFlags<Qgis::RubberBandComponent> f2);
 
 
 

@@ -34,6 +34,7 @@
 #include "qgsconditionalstyle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdiagramrenderer.h"
 #include "qgsexpressioncontext.h"
@@ -48,6 +49,7 @@
 #include "qgsgeometry.h"
 #include "qgsgeometryoptions.h"
 #include "qgslayermetadataformatter.h"
+#include "qgslayerrenderingsettings.h"
 #include "qgslogger.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsmaplayerlegend.h"
@@ -1674,6 +1676,36 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurve *ring )
   return result;
 }
 
+Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurvePolygon *polygon )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  std::unique_ptr<QgsCurvePolygon> uniquePtrPolygon( polygon );
+
+  if ( !isValid() || !mEditBuffer || !mDataProvider )
+    return Qgis::GeometryOperationResult::LayerNotEditable;
+
+  //number of selected features must be 1
+
+  if ( mSelectedFeatureIds.empty() )
+  {
+    QgsDebugMsgLevel( u"Number of selected features <1"_s, 3 );
+    return Qgis::GeometryOperationResult::SelectionIsEmpty;
+  }
+  else if ( mSelectedFeatureIds.size() > 1 )
+  {
+    QgsDebugMsgLevel( u"Number of selected features >1"_s, 3 );
+    return Qgis::GeometryOperationResult::SelectionIsGreaterThanOne;
+  }
+
+  QgsVectorLayerEditUtils utils( this );
+  Qgis::GeometryOperationResult result = utils.addPart( uniquePtrPolygon.release(), *mSelectedFeatureIds.constBegin() );
+
+  if ( result == Qgis::GeometryOperationResult::Success )
+    updateExtents();
+  return result;
+}
+
 // TODO QGIS 5.0 -- this should return Qgis::GeometryOperationResult, not int
 int QgsVectorLayer::translateFeature( QgsFeatureId featureId, double dx, double dy )
 {
@@ -2123,6 +2155,8 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
       {
         defaultLoadedFlag = true;
         setRenderer( defaultRenderer.release() );
+
+        applyRendererSettings();
       }
     }
 
@@ -2198,6 +2232,9 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
     {
       resultFlag = true;
       setRenderer( defaultRenderer.release() );
+
+      applyRendererSettings();
+
       return QString();
     }
   }
@@ -5329,6 +5366,26 @@ void QgsVectorLayer::clearEditBuffer()
 
   delete mEditBuffer;
   mEditBuffer = nullptr;
+}
+
+void QgsVectorLayer::applyRendererSettings()
+{
+  const QgsLayerRenderingSettings *providerRenderingSettings = mDataProvider->renderingSettings();
+
+  if ( !providerRenderingSettings )
+    return;
+
+  if ( providerRenderingSettings->hasLayerOpacity() )
+    setOpacity( providerRenderingSettings->layerOpacity() );
+  if ( providerRenderingSettings->hasMaximumScale() )
+    setMaximumScale( providerRenderingSettings->maximumScale() );
+  if ( providerRenderingSettings->hasMinimumScale() )
+    setMinimumScale( providerRenderingSettings->minimumScale() );
+  if ( providerRenderingSettings->hasMaximumScale() || providerRenderingSettings->hasMinimumScale() )
+    setScaleBasedVisibility(
+      ( providerRenderingSettings->hasMaximumScale() && providerRenderingSettings->maximumScale() != 0 )
+      || ( providerRenderingSettings->hasMinimumScale() && providerRenderingSettings->minimumScale() != 0 )
+    );
 }
 
 QVariant QgsVectorLayer::aggregate(

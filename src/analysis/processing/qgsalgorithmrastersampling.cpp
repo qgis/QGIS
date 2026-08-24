@@ -37,7 +37,7 @@ QString QgsRasterSamplingAlgorithm::displayName() const
 
 QStringList QgsRasterSamplingAlgorithm::tags() const
 {
-  return QObject::tr( "extract,point,pixel,value" ).split( ',' );
+  return QObject::tr( "extract,point,pixel,sample,value" ).split( ',' );
 }
 
 QString QgsRasterSamplingAlgorithm::group() const

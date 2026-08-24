@@ -1068,7 +1068,12 @@ void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
 
     const QHash< QString, QgsAttributes> &memoryCache = joinIt->joinInfo->cachedAttributes;
     if ( memoryCache.isEmpty() )
+    {
+      if ( joinIt->joinInfo->isUsingMemoryCache() && !joinIt->joinInfo->cacheDirty )
+        continue;
+
       joinIt->addJoinedAttributesDirect( f, targetFieldValue );
+    }
     else
       joinIt->addJoinedAttributesCached( f, targetFieldValue );
   }

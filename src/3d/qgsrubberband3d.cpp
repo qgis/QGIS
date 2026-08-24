@@ -20,6 +20,7 @@
 #include "qgs3dutils.h"
 #include "qgsabstract3dengine.h"
 #include "qgsbillboardgeometry.h"
+#include "qgsframegraph.h"
 #include "qgsgeotransform.h"
 #include "qgslinematerial_p.h"
 #include "qgslinestring.h"
@@ -29,6 +30,7 @@
 #include "qgsmessagelog.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspolygon.h"
+#include "qgsrubberbandrenderview.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgstessellatedpolygongeometry.h"
@@ -49,11 +51,13 @@ using namespace Qt::StringLiterals;
 /// @cond PRIVATE
 
 
-QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, Qt3DCore::QEntity *parentEntity, const Qgis::GeometryType geometryType )
+QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, const Qgis::GeometryType geometryType )
   : mMapSettings( &map )
   , mEngine( engine )
   , mGeometryType( geometryType )
 {
+  Qt3DCore::QEntity *parentEntity = mEngine->frameGraph()->rubberBandRenderView().rubberBandEntity();
+
   switch ( mGeometryType )
   {
     case Qgis::GeometryType::Point:

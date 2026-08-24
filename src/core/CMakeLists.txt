@@ -291,6 +291,8 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingparameterdxflayers.cpp
   processing/qgsprocessingparameterfieldmap.cpp
   processing/qgsprocessingparameterheatmappixelsize.cpp
+  processing/qgsprocessingparameterinterpolationpixelsize.cpp
+  processing/qgsprocessingparameterinterpolationsource.cpp
   processing/qgsprocessingparametermeshdataset.cpp
   processing/qgsprocessingparameters.cpp
   processing/qgsprocessingparameterreliefcolors.cpp
@@ -1269,6 +1271,7 @@ set(QGIS_CORE_HDRS
   qgsinterval.h
   qgsjsonutils.h
   qgslayerdefinition.h
+  qgslayerrenderingsettings.h
   qgslayernotesutils.h
   qgslegendrenderer.h
   qgslegendsettings.h
@@ -1915,6 +1918,8 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingparameterdxflayers.h
   processing/qgsprocessingparameterfieldmap.h
   processing/qgsprocessingparameterheatmappixelsize.h
+  processing/qgsprocessingparameterinterpolationpixelsize.h
+  processing/qgsprocessingparameterinterpolationsource.h
   processing/qgsprocessingparametermeshdataset.h
   processing/qgsprocessingparameterreliefcolors.h
   processing/qgsprocessingparameters.h
@@ -2313,7 +2318,6 @@ set(QGIS_CORE_PRIVATE_HDRS
   proj/qgscoordinatereferencesystem_p.h
   proj/qgscoordinatetransformcontext_p.h
   proj/qgscoordinatetransform_p.h
-  proj/qgscoordinatereferencesystem_legacy_p.h
 
   providers/ogr/qgscplerrorhandler_p.h
 

@@ -539,12 +539,9 @@ QSizeGrip
 QDockWidget
 {
     titlebar-close-icon: url(@theme_path/icons/close.svg);
+    titlebar-normal-icon: none;
 }
 
-QDockWidget::separator
-{
-    border: 1px solid red;
-}
 
 QDockWidget::title
 {
@@ -558,35 +555,28 @@ QDockWidget::close-button, QDockWidget::float-button
 {
     text-align: center;
     spacing: 1px; /* spacing between items in the tool bar */
+    icon-size: 32px; /* maximum icon size */
+    padding: 1px;
+    border: transparent; /* must be transparent for hover effect */
+    background: transparent; /* must be transparent for hover effect */
 }
 
 QDockWidget::close-button:hover, QDockWidget::float-button:hover
 {
-    background: #242424;
+    background: @hover;
 }
 
 QDockWidget::close-button:pressed, QDockWidget::float-button:pressed
 {
-    padding: 1px -1px -1px 1px;
+    padding: 1px 0px 0px 1px;
 }
 
-QMainWindow::separator
-{
-    /*background-color: QLinearGradient(x1:0, y1:0, x2:0, y2:1, stop:0 #161616, stop: 0.5 #151515, stop: 0.6 #212121, stop:1 #343434);*/
-    color: white;
-    padding-left: 0.2em;
-    border: 0px solid #4c4c4c;
-    spacing: 0.1em; /* spacing between items in the tool bar */
+QMainWindow::separator {
+    background: @background; /* styling applies to QDockWidget separators */
 }
 
-QMainWindow::separator:hover
-{
-
-    /*background-color: QLinearGradient(x1:0, y1:0, x2:0, y2:1, stop:0 #d7801a, stop:0.5 #b56c17 stop:1 #ffa02f);*/
-    color: white;
-    padding-left: 0.2em;
-    border: 1px solid #6c6c6c;
-    spacing: 0.1em; /* spacing between items in the tool bar */
+QMainWindow::separator:hover {
+    border: 1px solid @itemdarkbackground; /* styling applies to QDockWidget separators */
 }
 
 QToolBar {

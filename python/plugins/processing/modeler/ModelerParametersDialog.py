@@ -29,14 +29,12 @@ from qgis.core import (
     QgsProcessingModelChildAlgorithm,
     QgsProcessingModelChildParameterSource,
     QgsProcessingModelOutput,
-    QgsProcessingOutputDefinition,
     QgsProcessingParameterDefinition,
     QgsProject,
 )
 from qgis.gui import (
     QgsCollapsibleGroupBox,
     QgsColorButton,
-    QgsFilterLineEdit,
     QgsGui,
     QgsHelp,
     QgsMessageBar,
@@ -45,7 +43,6 @@ from qgis.gui import (
     QgsPanelWidgetStack,
     QgsProcessingContextGenerator,
     QgsProcessingModelConfigWidget,
-    QgsProcessingModelerParameterWidget,
     QgsProcessingParameterWidgetContext,
     QgsScrollArea,
 )
@@ -58,7 +55,6 @@ from qgis.PyQt.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QPushButton,
     QSizePolicy,
     QTabWidget,
     QTextEdit,
@@ -67,11 +63,6 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.utils import iface
 
-from processing.core.exceptions import InvalidParameterValue
-from processing.gui.wrappers import (
-    WidgetWrapper,
-    WidgetWrapperFactory,
-)
 from processing.tools.dataobjects import createContext
 
 
@@ -141,61 +132,6 @@ class ModelerParametersDialog(QDialog):
 
     def switchToCommentTab(self):
         self.widget.switchToCommentTab()
-
-    def getAvailableValuesOfType(self, paramType, outTypes=[], dataTypes=[]):
-        # upgrade paramType to list
-        if paramType is None:
-            paramType = []
-        elif not isinstance(paramType, (tuple, list)):
-            paramType = [paramType]
-        if outTypes is None:
-            outTypes = []
-        elif not isinstance(outTypes, (tuple, list)):
-            outTypes = [outTypes]
-
-        return self.model.availableSourcesForChild(
-            self.childId,
-            [
-                p.typeName()
-                for p in paramType
-                if issubclass(p, QgsProcessingParameterDefinition)
-            ],
-            [
-                o.typeName()
-                for o in outTypes
-                if issubclass(o, QgsProcessingOutputDefinition)
-            ],
-            dataTypes,
-        )
-
-    def resolveValueDescription(self, value):
-        if isinstance(value, QgsProcessingModelChildParameterSource):
-            if value.source() == Qgis.ProcessingModelChildParameterSource.StaticValue:
-                return value.staticValue()
-            elif (
-                value.source()
-                == Qgis.ProcessingModelChildParameterSource.ModelParameter
-            ):
-                return self.model.parameterDefinition(
-                    value.parameterName()
-                ).description()
-            elif value.source() == Qgis.ProcessingModelChildParameterSource.ChildOutput:
-                alg = self.model.childAlgorithm(value.outputChildId())
-
-                output_name = (
-                    alg.algorithm().outputDefinition(value.outputName()).description()
-                )
-                # see if this output has been named by the model designer -- if so, we use that friendly name
-                for name, output in alg.modelOutputs().items():
-                    if output.childOutputName() == value.outputName():
-                        output_name = name
-                        break
-
-                return self.tr("'{0}' from algorithm '{1}'").format(
-                    output_name, alg.description()
-                )
-
-        return value
 
     def setPreviousValues(self):
         self.widget.setPreviousValues()
@@ -322,35 +258,25 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             ):
                 continue
 
-            wrapper = WidgetWrapperFactory.create_wrapper(param, self.dialog)
-            self.wrappers[param.name()] = wrapper
+            widget = QgsGui.processingGuiRegistry().createModelerParameterWidget(
+                self.model, self.childId, param, self.context
+            )
+            widget.setDialog(self.dialog)
+            widget.setWidgetContext(widget_context)
+            widget.registerProcessingContextGenerator(self.context_generator)
+            widget.changed.connect(self.emit_changed_signal)
+            self.wrappers[param.name()] = widget
+            label = widget.createLabel()
 
-            wrapper.setWidgetContext(widget_context)
-            wrapper.registerProcessingContextGenerator(self.context_generator)
-            if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                widget = wrapper
-                wrapper.changed.connect(self.emit_changed_signal)
+            if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
+                self.grpAdvancedVLayout.addWidget(label)
+                self.grpAdvancedVLayout.addWidget(widget)
             else:
-                widget = wrapper.widget
-            if widget is not None:
-                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                    label = wrapper.createLabel()
-                else:
-                    tooltip = param.description()
-                    widget.setToolTip(tooltip)
-                    label = wrapper.label
-
-                if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
-                    self.grpAdvancedVLayout.addWidget(label)
-                    self.grpAdvancedVLayout.addWidget(widget)
-                else:
-                    # Regular parameters
-                    self.verticalLayout.insertWidget(
-                        self.verticalLayout.count() - 1, label
-                    )
-                    self.verticalLayout.insertWidget(
-                        self.verticalLayout.count() - 1, widget
-                    )
+                # Regular parameters
+                self.verticalLayout.insertWidget(self.verticalLayout.count() - 1, label)
+                self.verticalLayout.insertWidget(
+                    self.verticalLayout.count() - 1, widget
+                )
 
         for output in self._alg.destinationParameterDefinitions():
             if output.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
@@ -362,8 +288,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             widget.setDialog(self.dialog)
             widget.setWidgetContext(widget_context)
             widget.registerProcessingContextGenerator(self.context_generator)
-            if isinstance(widget, QgsProcessingModelerParameterWidget):
-                widget.changed.connect(self.emit_changed_signal)
+            widget.changed.connect(self.emit_changed_signal)
 
             self.wrappers[output.name()] = widget
 
@@ -406,22 +331,6 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         if not self.block_changes_signal:
             self.widgetChanged.emit()
 
-    def showAdvancedParametersClicked(self):
-        self.showAdvanced = not self.showAdvanced
-        if self.showAdvanced:
-            self.advancedButton.setText(self.tr("Hide advanced parameters"))
-        else:
-            self.advancedButton.setText(self.tr("Show advanced parameters"))
-        for param in self._alg.parameterDefinitions():
-            if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
-                wrapper = self.wrappers[param.name()]
-                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                    wrapper.setVisible(self.showAdvanced)
-                else:
-                    wrapper.widget.setVisible(self.showAdvanced)
-
-                self.widget_labels[param.name()].setVisible(self.showAdvanced)
-
     def setPreviousValues(self):
         self.block_changes_signal += 1
         if self.childId is not None:
@@ -443,24 +352,12 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                         value = None
 
                 wrapper = self.wrappers[param.name()]
-                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                    if value is None:
-                        value = QgsProcessingModelChildParameterSource.fromStaticValue(
-                            param.defaultValue()
-                        )
+                if value is None:
+                    value = QgsProcessingModelChildParameterSource.fromStaticValue(
+                        param.defaultValue()
+                    )
 
-                    wrapper.setWidgetValue(value)
-                else:
-                    if value is None:
-                        value = param.defaultValue()
-
-                    if (
-                        isinstance(value, QgsProcessingModelChildParameterSource)
-                        and value.source()
-                        == Qgis.ProcessingModelChildParameterSource.StaticValue
-                    ):
-                        value = value.staticValue()
-                    wrapper.setValue(value)
+                wrapper.setWidgetValue(value)
 
             for output in self.algorithm().destinationParameterDefinitions():
                 if output.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
@@ -519,16 +416,9 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 or param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden
             ):
                 continue
-            try:
-                wrapper = self.wrappers[param.name()]
-                if issubclass(wrapper.__class__, WidgetWrapper):
-                    val = wrapper.value()
-                elif issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                    val = wrapper.value()
-                else:
-                    val = wrapper.parameterValue()
-            except InvalidParameterValue:
-                val = None
+
+            wrapper = self.wrappers[param.name()]
+            val = wrapper.value()
 
             if isinstance(val, QgsProcessingModelChildParameterSource):
                 val = [val]
@@ -617,16 +507,6 @@ class ModelerParametersWidget(QgsProcessingModelConfigWidget):
             alg, model, algName, configuration, dialog, context
         )
         self.widget.widgetChanged.connect(self.widgetChanged)
-
-        class ContextGenerator(QgsProcessingContextGenerator):
-            def __init__(self, context):
-                super().__init__()
-                self.processing_context = context
-
-            def processingContext(self):
-                return self.processing_context
-
-        self.context_generator = ContextGenerator(self.context)
 
         self.setupUi()
         self.params = None

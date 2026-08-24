@@ -110,7 +110,7 @@ QgsElevationProfileLayersDialog::QgsElevationProfileLayersDialog( QWidget *paren
   mFilterLineEdit->setShowClearButton( true );
   mFilterLineEdit->setShowSearchIcon( true );
 
-  mModel = new QgsMapLayerProxyModel( listMapLayers );
+  mModel = new QgsMapLayerProxyModel( QgsProject::instance(), listMapLayers );
   listMapLayers->setModel( mModel );
   const QModelIndex firstLayer = mModel->index( 0, 0 );
   listMapLayers->selectionModel()->select( firstLayer, QItemSelectionModel::Select );
@@ -730,7 +730,7 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
 
   mMapPointRubberBand = make_qobject_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Point );
   mMapPointRubberBand->setZValue( 1000 );
-  mMapPointRubberBand->setIcon( QgsRubberBand::ICON_FULL_DIAMOND );
+  mMapPointRubberBand->setIcon( Qgis::RubberBandIconType::DiamondFilled );
   mMapPointRubberBand->setWidth( QgsGuiUtils::scaleIconSize( 8 ) );
   mMapPointRubberBand->setIconSize( QgsGuiUtils::scaleIconSize( 4 ) );
   mMapPointRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
@@ -905,9 +905,9 @@ void QgsElevationProfileWidget::updateCanvasSources()
     else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
-      if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )
+      if ( mLayerTree->findCustomNode( customNode->id() )->isVisible() )
       {
-        if ( QgsAbstractProfileSource *customSource = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() ) )
+        if ( QgsAbstractProfileSource *customSource = QgsApplication::profileSourceRegistry()->findSourceById( customNode->id() ) )
         {
           sources << customSource;
         }

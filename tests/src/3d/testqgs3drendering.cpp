@@ -21,12 +21,6 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
-#include "qgsannotationlayer.h"
-#include "qgsannotationlayer3drenderer.h"
-#include "qgsannotationlinetextitem.h"
-#include "qgsannotationmarkeritem.h"
-#include "qgsannotationpointtextitem.h"
-#include "qgsannotationrectangletextitem.h"
 #include "qgsapplication.h"
 #include "qgsbillboardgeometry.h"
 #include "qgscameracontroller.h"
@@ -38,7 +32,6 @@
 #include "qgsfillsymbollayer.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsflatterrainsettings.h"
-#include "qgsfontutils.h"
 #include "qgsframegraph.h"
 #include "qgsgoochmaterialsettings.h"
 #include "qgsline3dsymbol.h"
@@ -49,6 +42,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsmetalroughmaterialsettings.h"
 #include "qgsmetalroughtexturedmaterialsettings.h"
+#include "qgsnullmaterialsettings.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
@@ -119,20 +113,21 @@ class TestQgs3DRendering : public QgsTest
     void testInstancedRenderingTransform();
     void testModelPointRendering_data();
     void testModelPointRendering();
+    void testModelColorAndTexture_data();
+    void testModelColorAndTexture();
     void testFilteredFlatTerrain();
     void testFilteredDemTerrain();
     void testFilteredExtrudedPolygons();
     void testDepthBuffer();
     void testAmbientOcclusion();
     void testDebugMap();
-    void testAnnotationLayerBillboards();
-    void testAnnotationLayerText();
     void testExtrudedPolygonsHighlighting();
     void testInstancedRenderingHighlighting();
     void testModelPointRenderingHighlighting();
     void testTiledSceneInstanced();
     void testSunLightDawn();
     void testSunLightDusk();
+    void testAntiAliasing();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -1572,7 +1567,6 @@ void TestQgs3DRendering::testModelPointRendering_data()
   QVariantMap basePropertiesMap;
   basePropertiesMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
 
-
   QgsPropertyCollection ddProps;
   QMatrix4x4 uniformScale;
   uniformScale.scale( 100.0f );
@@ -1697,6 +1691,76 @@ void TestQgs3DRendering::testModelPointRendering()
 
   QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( referenceImage, referenceImage, imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testModelColorAndTexture_data()
+{
+  QTest::addColumn<QVariantMap>( "props" );
+  QTest::addColumn<QString>( "referenceImage" );
+
+  QVariantMap objPropertiesMap;
+  const QString objModelPath = QgsApplication::pkgDataPath() + u"/resources/3d/qgis_logo.obj"_s;
+  objPropertiesMap[u"model"_s] = objModelPath;
+  QTest::newRow( "obj color" ) << objPropertiesMap << u"obj_color"_s;
+
+  QVariantMap gltfPropertiesMap;
+  gltfPropertiesMap[u"model"_s] = testDataPath( "/gltf/qgis_logo.gltf" );
+  QTest::newRow( "gltf color" ) << gltfPropertiesMap << u"gltf_color"_s;
+
+  QVariantMap gltfTexturedPropertiesMap;
+  gltfTexturedPropertiesMap[u"model"_s] = testDataPath( "/gltf/BoxTextured.glb" );
+  QTest::newRow( "gltf texture" ) << gltfTexturedPropertiesMap << u"gltf_textured"_s;
+}
+
+void TestQgs3DRendering::testModelColorAndTexture()
+{
+  QFETCH( QVariantMap, props );
+  QFETCH( QString, referenceImage );
+
+  const QgsRectangle fullExtent( 0, 0, 100, 100 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  f1.setGeometry( QgsGeometry( new QgsPoint( 50, 50, 0 ) ) );
+  layerPointsZ->dataProvider()->addFeature( f1 );
+
+  QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
+  symbol->setShape( Qgis::Point3DShape::Model );
+  symbol->setShapeProperties( props );
+  symbol->setMaterialSettings( new QgsNullMaterialSettings() );
+
+  QMatrix4x4 uniformScale;
+  uniformScale.scale( 100.0f );
+  symbol->setTransform( uniformScale );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+  mapSettings->setTerrainRenderingEnabled( false );
+
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 10.0 );
+  defaultLight.setPosition( mapSettings->origin() + QgsVector3D( 0, -200, 100 ) );
+  mapSettings->setLightSources( { defaultLight.clone() } );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 200, 60, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  const QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, imgModel, QString(), 80, QSize( 0, 0 ), 10 );
 }
 
 void TestQgs3DRendering::testBillboardRendering()
@@ -2352,153 +2416,6 @@ void TestQgs3DRendering::testDebugMap()
   mapSettings.setLayers( {} );
 }
 
-void TestQgs3DRendering::testAnnotationLayerBillboards()
-{
-  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
-
-  auto annotationLayer = std::make_unique<QgsAnnotationLayer>( "test", QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
-
-  auto marker1 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 1000, 1000 ) );
-  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  markerSymbol->setColor( QColor( 255, 0, 0 ) );
-  markerSymbol->setSize( 4 );
-  QgsSimpleMarkerSymbolLayer *sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
-  sl->setStrokeColor( QColor( 0, 0, 255 ) );
-  sl->setStrokeWidth( 2 );
-  marker1->setSymbol( markerSymbol );
-  annotationLayer->addItem( marker1.release() );
-
-  auto marker2 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 1000, 2000 ) );
-  markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  markerSymbol->setColor( QColor( 0, 255, 0 ) );
-  markerSymbol->setSize( 20 );
-  sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
-  sl->setStrokeColor( QColor( 255, 0, 255 ) );
-  sl->setStrokeWidth( 2 );
-  marker2->setSymbol( markerSymbol );
-  annotationLayer->addItem( marker2.release() );
-
-  auto marker3 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 2000, 2000 ) );
-  markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  markerSymbol->setColor( QColor( 0, 0, 255 ) );
-  markerSymbol->setSize( 30 );
-  sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
-  sl->setStrokeColor( QColor( 0, 255, 255 ) );
-  sl->setStrokeWidth( 2 );
-  marker3->setSymbol( markerSymbol );
-  annotationLayer->addItem( marker3.release() );
-
-  auto renderer = std::make_unique< QgsAnnotationLayer3DRenderer >();
-
-  annotationLayer->setRenderer3D( renderer->clone() );
-
-  Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->setCrs( mProject->crs() );
-  map->setExtent( fullExtent );
-  map->setLayers( QList<QgsMapLayer *>() << annotationLayer.get() );
-
-  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs(), map->transformContext() );
-  map->setTerrainGenerator( flatTerrain );
-
-  QgsOffscreen3DEngine engine;
-  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
-  engine.setRootEntity( scene );
-
-  // look from the top
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
-
-  // When running the test on Travis, it would initially return empty rendered image.
-  // Capturing the initial image and throwing it away fixes that. Hopefully we will
-  // find a better fix in the future.
-  Qgs3DUtils::captureSceneImage( engine, scene );
-
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "annotation_billboard_rendering_1", "annotation_billboard_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
-
-  // more perspective look, with z offset
-  renderer->setZOffset( 200 );
-  renderer->setShowCalloutLines( true );
-  renderer->setCalloutLineColor( QColor( 255, 255, 255 ) );
-  renderer->setCalloutLineWidth( 8 );
-  annotationLayer->setRenderer3D( renderer->clone() );
-
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
-
-  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
-  delete scene;
-  delete map;
-
-  QGSVERIFYIMAGECHECK( "annotation_billboard_rendering_2", "annotation_billboard_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
-}
-
-void TestQgs3DRendering::testAnnotationLayerText()
-{
-  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
-
-  auto annotationLayer = std::make_unique<QgsAnnotationLayer>( "test", QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
-
-  auto text1 = std::make_unique< QgsAnnotationPointTextItem >( u"POINT"_s, QgsPoint( 1000, 1000 ) );
-  annotationLayer->addItem( text1.release() );
-
-  const QgsGeometry curve = QgsGeometry::fromWkt( u"Linestring( 1000 2000, 1500 2000 )"_s );
-  auto text2 = std::make_unique< QgsAnnotationLineTextItem >( u"LINE"_s, qgsgeometry_cast< const QgsLineString * >( curve.constGet() )->clone() );
-  annotationLayer->addItem( text2.release() );
-
-  auto text3 = std::make_unique< QgsAnnotationRectangleTextItem >( u"RECT"_s, QgsRectangle::fromCenterAndSize( QgsPointXY( 2000, 2000 ), 400, 200 ) );
-  annotationLayer->addItem( text3.release() );
-
-  auto renderer = std::make_unique< QgsAnnotationLayer3DRenderer >();
-
-  QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
-  format.setSize( 48 );
-  format.setSizeUnit( Qgis::RenderUnit::Points );
-  format.setColor( QColor( 0, 0, 255 ) );
-  renderer->setTextFormat( format );
-
-  annotationLayer->setRenderer3D( renderer->clone() );
-
-  Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->setCrs( mProject->crs() );
-  map->setExtent( fullExtent );
-  map->setLayers( QList<QgsMapLayer *>() << annotationLayer.get() );
-
-  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs(), map->transformContext() );
-  map->setTerrainGenerator( flatTerrain );
-
-  QgsOffscreen3DEngine engine;
-  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
-  engine.setRootEntity( scene );
-
-  // look from the top
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
-
-  // When running the test on Travis, it would initially return empty rendered image.
-  // Capturing the initial image and throwing it away fixes that. Hopefully we will
-  // find a better fix in the future.
-  Qgs3DUtils::captureSceneImage( engine, scene );
-
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "annotation_text_rendering_1", "annotation_text_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
-
-  // more perspective look, with z offset
-  renderer->setZOffset( 300 );
-  renderer->setShowCalloutLines( true );
-  renderer->setCalloutLineColor( QColor( 255, 255, 255 ) );
-  renderer->setCalloutLineWidth( 8 );
-  annotationLayer->setRenderer3D( renderer->clone() );
-
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
-
-  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
-  delete scene;
-  delete map;
-
-  QGSVERIFYIMAGECHECK( "annotation_text_rendering_2", "annotation_text_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
-}
-
 void TestQgs3DRendering::testExtrudedPolygonsHighlighting()
 {
   const QgsRectangle fullExtent = mLayerDtm->extent();
@@ -2791,6 +2708,39 @@ void TestQgs3DRendering::testSunLightDusk()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QGSVERIFYIMAGECHECK( "sun_light_dusk", "sun_light_dusk", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testAntiAliasing()
+{
+  const QgsRectangle fullExtent = mLayerBuildings->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setMsaaEnabled( true );
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
+
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 250, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+
+  QGSVERIFYIMAGECHECK( "msaa_on", "msaa_on", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

@@ -23,6 +23,7 @@
 class QgsAnnotationItem;
 class QgsAnnotationLayer;
 class QgsRenderedAnnotationItemDetails;
+class QComboBox;
 
 /**
  * \class QgsAnnotationItemBaseWidget
@@ -63,6 +64,14 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget : public QgsPanelWidget
      * to show the properties of \a item.
      */
     bool setItem( QgsAnnotationItem *item );
+
+    /**
+     * Populates a \a comboBox with the available options for rendering an item
+     * with respect to the rotation of the map (see Qgis::SymbolRotationMode).
+     *
+     * \since QGIS 4.4
+     */
+    static void populateRotationModeComboBox( QComboBox *comboBox );
 
     /**
      * Sets the associated annotation map \a layer.

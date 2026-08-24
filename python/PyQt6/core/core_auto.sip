@@ -92,6 +92,7 @@
 %Include auto_generated/qgsinterval.sip
 %Include auto_generated/qgsjsonutils.sip
 %Include auto_generated/qgslayerdefinition.sip
+%Include auto_generated/qgslayerrenderingsettings.sip
 %Include auto_generated/qgslayernotesutils.sip
 %Include auto_generated/qgslegendrenderer.sip
 %Include auto_generated/qgslegendsettings.sip
@@ -620,6 +621,8 @@
 %Include auto_generated/processing/qgsprocessingparameterdxflayers.sip
 %Include auto_generated/processing/qgsprocessingparameterfieldmap.sip
 %Include auto_generated/processing/qgsprocessingparameterheatmappixelsize.sip
+%Include auto_generated/processing/qgsprocessingparameterinterpolationpixelsize.sip
+%Include auto_generated/processing/qgsprocessingparameterinterpolationsource.sip
 %Include auto_generated/processing/qgsprocessingparametermeshdataset.sip
 %Include auto_generated/processing/qgsprocessingparameterreliefcolors.sip
 %Include auto_generated/processing/qgsprocessingparameters.sip

@@ -471,6 +471,7 @@ void QgsTextRenderer::drawParts(
 
   if ( ( parts & Qgis::TextComponent::Background ) && format.background().enabled() )
   {
+    Component backgroundComponent = component;
     if ( !qgsDoubleNear( rotation, 0.0 ) )
     {
       // get rotated label's center point
@@ -482,11 +483,11 @@ void QgsTextRenderer::drawParts(
       double xd = xc * std::cos( angle ) - yc * std::sin( angle );
       double yd = xc * std::sin( angle ) + yc * std::cos( angle );
 
-      component.center = QPointF( component.origin.x() + xd, component.origin.y() + yd );
+      backgroundComponent.center = QPointF( backgroundComponent.origin.x() + xd, backgroundComponent.origin.y() + yd );
     }
     else
     {
-      component.center = rect.center();
+      backgroundComponent.center = rect.center();
     }
 
     switch ( vAlignment )
@@ -494,14 +495,14 @@ void QgsTextRenderer::drawParts(
       case Qgis::TextVerticalAlignment::Top:
         break;
       case Qgis::TextVerticalAlignment::VerticalCenter:
-        component.origin.ry() += ( rect.height() - metrics.documentSize( mode, format.orientation() ).height() ) / 2;
+        backgroundComponent.origin.ry() += ( rect.height() - metrics.documentSize( mode, format.orientation() ).height() ) / 2;
         break;
       case Qgis::TextVerticalAlignment::Bottom:
-        component.origin.ry() += ( rect.height() - metrics.documentSize( mode, format.orientation() ).height() );
+        backgroundComponent.origin.ry() += ( rect.height() - metrics.documentSize( mode, format.orientation() ).height() );
         break;
     }
 
-    QgsTextRenderer::drawBackground( context, component, format, metrics, Qgis::TextLayoutMode::Rectangle );
+    QgsTextRenderer::drawBackground( context, backgroundComponent, format, metrics, Qgis::TextLayoutMode::Rectangle );
   }
 
   if ( parts == Qgis::TextComponents( Qgis::TextComponent::Buffer ) && !format.buffer().enabled() )

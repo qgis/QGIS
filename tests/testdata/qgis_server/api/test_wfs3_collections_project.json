@@ -45,6 +45,18 @@ Content-Type: application/json
           "rel": "items",
           "title": "A test wfs vector layer èé as FlatGeobuf",
           "type": "application/flatgeobuf"
+        },
+        {
+          "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/queryables.html",
+          "rel": "queryables",
+          "title": "Queryables of A test wfs vector layer èé as HTML",
+          "type": "text/html"
+        },
+        {
+          "href": "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/queryables.json",
+          "rel": "queryables",
+          "title": "Queryables of A test wfs vector layer èé as JSON",
+          "type": "application/json"
         }
       ],
       "title": "A test wfs vector layer èé"
@@ -92,6 +104,18 @@ Content-Type: application/json
           "rel": "items",
           "title": "A Layer1 with a short name as FlatGeobuf",
           "type": "application/flatgeobuf"
+        },
+        {
+          "href": "http://server.qgis.org/wfs3/collections/layer1_with_short_name/queryables.html",
+          "rel": "queryables",
+          "title": "Queryables of A Layer1 with a short name as HTML",
+          "type": "text/html"
+        },
+        {
+          "href": "http://server.qgis.org/wfs3/collections/layer1_with_short_name/queryables.json",
+          "rel": "queryables",
+          "title": "Queryables of A Layer1 with a short name as JSON",
+          "type": "application/json"
         }
       ],
       "title": "A Layer1 with a short name"
@@ -139,6 +163,18 @@ Content-Type: application/json
           "rel": "items",
           "title": "A test vector layer exclude attrs as FlatGeobuf",
           "type": "application/flatgeobuf"
+        },
+        {
+          "href": "http://server.qgis.org/wfs3/collections/exclude_attribute/queryables.html",
+          "rel": "queryables",
+          "title": "Queryables of A test vector layer exclude attrs as HTML",
+          "type": "text/html"
+        },
+        {
+          "href": "http://server.qgis.org/wfs3/collections/exclude_attribute/queryables.json",
+          "rel": "queryables",
+          "title": "Queryables of A test vector layer exclude attrs as JSON",
+          "type": "application/json"
         }
       ],
       "title": "A test vector layer exclude attrs"
@@ -186,6 +222,18 @@ Content-Type: application/json
           "rel": "items",
           "title": "A test vector layer with aliases as FlatGeobuf",
           "type": "application/flatgeobuf"
+        },
+        {
+          "href": "http://server.qgis.org/wfs3/collections/fields_alias/queryables.html",
+          "rel": "queryables",
+          "title": "Queryables of A test vector layer with aliases as HTML",
+          "type": "text/html"
+        },
+        {
+          "href": "http://server.qgis.org/wfs3/collections/fields_alias/queryables.json",
+          "rel": "queryables",
+          "title": "Queryables of A test vector layer with aliases as JSON",
+          "type": "application/json"
         }
       ],
       "title": "A test vector layer with aliases"

@@ -1501,9 +1501,7 @@ void QgsMapToolCapture::validateGeometry()
   if ( geom.isNull() )
     return;
 
-  Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
-    method = Qgis::GeometryValidationEngine::Geos;
+  Qgis::GeometryValidationEngine method = QgsGeometryValidator::defaultValidationEngine();
   mValidator = new QgsGeometryValidator( geom, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
   mValidator->start();

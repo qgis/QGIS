@@ -346,12 +346,15 @@ void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::L
 
     const QList< QgsCalloutPosition > renderedPositions = calloutContext.positions();
 
-    for ( QgsCalloutPosition position : renderedPositions )
+    if ( !mEngine->engineSettings().flags().testFlag( Qgis::LabelingFlag::DisableSearchTree ) )
     {
-      position.layerID = mLayerId;
-      position.featureId = label->getFeaturePart()->featureId();
-      position.providerID = mProviderId;
-      mEngine->results()->mLabelSearchTree->insertCallout( position );
+      for ( QgsCalloutPosition position : renderedPositions )
+      {
+        position.layerID = mLayerId;
+        position.featureId = label->getFeaturePart()->featureId();
+        position.providerID = mProviderId;
+        mEngine->results()->mLabelSearchTree->insertCallout( position );
+      }
     }
   }
 }
@@ -470,8 +473,11 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   drawLabelPrivate( label, context, tmpLyr, Qgis::TextComponent::Text );
 
   // add to the results
-  QString labeltext = label->getFeaturePart()->feature()->labelText();
-  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, dFont, false, lf->hasFixedPosition(), mProviderId );
+  if ( !mEngine->engineSettings().flags().testFlag( Qgis::LabelingFlag::DisableSearchTree ) )
+  {
+    const QString labeltext = label->getFeaturePart()->feature()->labelText();
+    mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, dFont, false, lf->hasFixedPosition(), mProviderId );
+  }
 }
 
 void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, LabelPosition *label ) const
@@ -490,9 +496,12 @@ void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, 
     drawLabelPrivate( label, context, tmpLyr, Qgis::TextComponent::Text );
   }
 
-  // add to the results
-  QString labeltext = label->getFeaturePart()->feature()->labelText();
-  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, format.font(), false, lf->hasFixedPosition(), mProviderId, true );
+  if ( !mEngine->engineSettings().flags().testFlag( Qgis::LabelingFlag::DisableSearchTree ) )
+  {
+    // add to the results
+    const QString labeltext = label->getFeaturePart()->feature()->labelText();
+    mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, format.font(), false, lf->hasFixedPosition(), mProviderId, true );
+  }
 }
 
 void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, QgsRenderContext &context, QgsPalLayerSettings &tmpLyr, Qgis::TextComponent drawType, double dpiRatio ) const

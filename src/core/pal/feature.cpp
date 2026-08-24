@@ -1178,7 +1178,24 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
         // this only applies to non closed linestrings, since the middle of a closed linestring is effectively arbitrary
         // and irrelevant to labeling
         double costLineCenter = 2 * std::fabs( labelTextAnchor - lineAnchorPoint ) / totalLineLength; // 0 -> 1
-        cost += costLineCenter * 0.0005;                                                              // < 0, 0.0005 >
+
+        // add a little tie breaker amount -- otherwise if we are generating an even number of candidates, we may end up with
+        // two with exactly the same cost centered over the mid point of the feature. So add a tiny PLACEMENT_TIEBREAKER amount
+        // so that one of these is always preferred, giving us a stable labeling solution:
+        // eg:
+        //   Line:  ============|============[ Anchor ]==========|==============
+        //                      |  <-same dist-> | <-same dist-> |
+        //              [-- Candidate --]        |       [-- Candidate --]
+        //                      |                |               |
+        //                 Anchor < Mid          |          Anchor > Mid
+        //                                       |     cost += PLACEMENT_TIEBREAKER
+        if ( labelTextAnchor > lineAnchorPoint )
+        {
+          constexpr double PLACEMENT_TIEBREAKER = 0.000001234;
+          cost += PLACEMENT_TIEBREAKER;
+        }
+
+        cost += costLineCenter * 0.0005; // < 0, 0.0005 >
       }
 
       if ( placementIsFlexible )
@@ -2671,6 +2688,22 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
           }
         }
       }
+    }
+  }
+
+  if ( !lPos.empty() && pal->flags().testFlag( Qgis::LabelingFlag::SingleCandidateOnly ) )
+  {
+    // retain only the single least-cost candidate
+    // Note that we didn't handle this flag earlier, as we wanted to generate the full number
+    // of candidates considering the geometry of the feature, and then only NOW cull to the best
+    // one.
+    auto minIt = std::min_element( lPos.begin(), lPos.end(), []( const std::unique_ptr< LabelPosition > &a, const std::unique_ptr< LabelPosition > &b ) { return a->cost() < b->cost(); } );
+
+    if ( minIt != lPos.end() )
+    {
+      std::unique_ptr< LabelPosition > bestCandidate = std::move( *minIt );
+      lPos.clear();
+      lPos.emplace_back( std::move( bestCandidate ) );
     }
   }
 

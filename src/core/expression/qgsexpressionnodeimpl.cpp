@@ -202,6 +202,23 @@ QgsExpressionNode *QgsExpressionNodeUnaryOperator::clone() const
   return copy;
 }
 
+QgsExpressionNode *QgsExpressionNodeUnaryOperator::simplifiedNode() const
+{
+  std::unique_ptr< QgsExpressionNode > simplifiedOperand( mOperand->simplifiedNode() );
+  if ( simplifiedOperand->nodeType() == ntLiteral )
+  {
+    QgsExpressionNodeUnaryOperator tempNode( mOp, simplifiedOperand->clone() );
+    QgsExpression parentExp;
+    QVariant result = tempNode.eval( &parentExp, nullptr );
+    if ( !parentExp.hasEvalError() )
+    {
+      return new QgsExpressionNodeLiteral( result );
+    }
+  }
+
+  return new QgsExpressionNodeUnaryOperator( mOp, simplifiedOperand.release() );
+}
+
 bool QgsExpressionNodeUnaryOperator::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
 {
   return mOperand->isStatic( parent, context );
@@ -1295,6 +1312,26 @@ bool QgsExpressionNodeBinaryOperator::isStatic( QgsExpression *parent, const Qgs
   return false;
 }
 
+QgsExpressionNode *QgsExpressionNodeBinaryOperator::simplifiedNode() const
+{
+  std::unique_ptr< QgsExpressionNode > opLeft( mOpLeft->simplifiedNode() );
+  std::unique_ptr< QgsExpressionNode > opRight( mOpRight->simplifiedNode() );
+
+  // if both operands are literals, evaluate the operation
+  if ( opLeft->nodeType() == ntLiteral && opRight->nodeType() == ntLiteral )
+  {
+    QgsExpressionNodeBinaryOperator tempNode( mOp, opLeft->clone(), opRight->clone() );
+    QgsExpression parentExp;
+    QVariant result = tempNode.eval( &parentExp, nullptr );
+    if ( !parentExp.hasEvalError() )
+    {
+      return new QgsExpressionNodeLiteral( result );
+    }
+  }
+
+  return new QgsExpressionNodeBinaryOperator( mOp, opLeft.release(), opRight.release() );
+}
+
 //
 
 QVariant QgsExpressionNodeInOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
@@ -1394,6 +1431,46 @@ bool QgsExpressionNodeInOperator::isStatic( QgsExpression *parent, const QgsExpr
   }
 
   return true;
+}
+
+QgsExpressionNode *QgsExpressionNodeInOperator::simplifiedNode() const
+{
+  std::unique_ptr< QgsExpressionNode > simplifiedTargetNode( mNode->simplifiedNode() );
+  bool allLiterals = simplifiedTargetNode->nodeType() == ntLiteral;
+
+  auto simplifiedList = std::make_unique< QgsExpressionNode::NodeList >();
+  simplifiedList->reserve( mList->count() );
+  for ( QgsExpressionNode *node : mList->list() )
+  {
+    std::unique_ptr< QgsExpressionNode > simplifiedItem( node->simplifiedNode() );
+    if ( simplifiedItem->nodeType() != ntLiteral )
+    {
+      allLiterals = false;
+    }
+
+    if ( simplifiedTargetNode->nodeType() == ntLiteral
+         && simplifiedItem->nodeType() == ntLiteral
+         && qgis::down_cast< QgsExpressionNodeLiteral *>( simplifiedTargetNode.get() )->value() == qgis::down_cast< QgsExpressionNodeLiteral * >( simplifiedItem.get() )->value() )
+    {
+      return new QgsExpressionNodeLiteral( !mNotIn );
+    }
+
+    simplifiedList->append( simplifiedItem.release() );
+  }
+
+  // if target node and all items in the list are literals, we can just directly evaluate and replace with a literal
+  if ( allLiterals )
+  {
+    QgsExpressionNodeInOperator tempNode( simplifiedTargetNode->clone(), simplifiedList->clone(), mNotIn );
+    QgsExpression parentExp;
+    QVariant result = tempNode.eval( &parentExp, nullptr );
+    if ( !parentExp.hasEvalError() )
+    {
+      return new QgsExpressionNodeLiteral( result );
+    }
+  }
+
+  return new QgsExpressionNodeInOperator( simplifiedTargetNode.release(), simplifiedList.release(), mNotIn );
 }
 
 //
@@ -1617,6 +1694,23 @@ QgsExpressionNode *QgsExpressionNodeFunction::clone() const
 bool QgsExpressionNodeFunction::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
 {
   return QgsExpression::Functions()[mFnIndex]->isStatic( this, parent, context );
+}
+
+QgsExpressionNode *QgsExpressionNodeFunction::simplifiedNode() const
+{
+  auto simplifiedArgs = std::make_unique< QgsExpressionNode::NodeList >();
+  if ( mArgs )
+  {
+    simplifiedArgs->reserve( mArgs->count() );
+    for ( QgsExpressionNode *arg : mArgs->list() )
+    {
+      std::unique_ptr< QgsExpressionNode > simplifiedArg( arg->simplifiedNode() );
+      simplifiedArgs->append( simplifiedArg.release() );
+    }
+
+    return new QgsExpressionNodeFunction( mFnIndex, simplifiedArgs.release() );
+  }
+  return clone();
 }
 
 bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error )
@@ -2112,6 +2206,37 @@ bool QgsExpressionNodeCondition::isStatic( QgsExpression *parent, const QgsExpre
     return mElseExp->isStatic( parent, context );
 
   return true;
+}
+
+QgsExpressionNode *QgsExpressionNodeCondition::simplifiedNode() const
+{
+  auto simplifiedWhenThenList = std::make_unique< QgsExpressionNodeCondition::WhenThenList >();
+  for ( QgsExpressionNodeCondition::WhenThen *clause : mConditions )
+  {
+    std::unique_ptr< QgsExpressionNode > simplifiedWhen( clause->whenExp()->simplifiedNode() );
+    std::unique_ptr< QgsExpressionNode > simplifiedThen( clause->thenExp()->simplifiedNode() );
+
+    // if when condition is literal and TRUE we can just return the simplified THEN node
+    if ( simplifiedWhenThenList->isEmpty() && simplifiedWhen->nodeType() == ntLiteral && simplifiedWhen->eval( nullptr, nullptr ).toBool() )
+    {
+      return simplifiedThen.release();
+    }
+    // if when simplifies to literal and FALSE, skip this condition as it can never be reached
+    else if ( simplifiedWhen->nodeType() == ntLiteral && !simplifiedWhen->eval( nullptr, nullptr ).toBool() )
+    {
+      continue;
+    }
+
+    simplifiedWhenThenList->append( new QgsExpressionNodeCondition::WhenThen( simplifiedWhen.release(), simplifiedThen.release() ) );
+  }
+
+  std::unique_ptr< QgsExpressionNode > simplifiedElse( mElseExp ? mElseExp->simplifiedNode() : nullptr );
+  if ( simplifiedWhenThenList->isEmpty() )
+  {
+    return simplifiedElse ? simplifiedElse.release() : new QgsExpressionNodeLiteral( QVariant() );
+  }
+
+  return new QgsExpressionNodeCondition( simplifiedWhenThenList.release(), simplifiedElse.release() );
 }
 
 QSet<QString> QgsExpressionNodeInOperator::referencedColumns() const

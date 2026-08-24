@@ -1357,7 +1357,9 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ExpressionText:
+              Q_NOWARN_DEPRECATED_PUSH
               parameterValueAsString = u": %1"_s.arg( firstParameterSource.expressionText() );
+              Q_NOWARN_DEPRECATED_POP
               break;
 
             case Qgis::ProcessingModelChildParameterSource::ModelOutput:
@@ -1833,9 +1835,22 @@ bool QgsModelGroupBoxGraphicItem::canDeleteComponent()
 
 void QgsModelGroupBoxGraphicItem::applyEdit( const QgsProcessingModelGroupBox &groupBox )
 {
-  const QString commandId = u"groupbox:%1"_s.arg( groupBox.uuid() );
+  QgsProcessingModelGroupBox newGroupBox = groupBox;
+  const QList<QgsProcessingModelGroupBox> existingGroupBoxes = model()->groupBoxes();
+  for ( const QgsProcessingModelGroupBox &existingGroupBox : existingGroupBoxes )
+  {
+    if ( existingGroupBox.uuid() == newGroupBox.uuid() )
+    {
+      // copy position and size from existing group box
+      newGroupBox.setPosition( existingGroupBox.position() );
+      newGroupBox.setSize( existingGroupBox.size() );
+    }
+  }
+
+  const QString commandId = u"groupbox:%1"_s.arg( newGroupBox.uuid() );
   emit aboutToChange( tr( "Edit Group Box" ), commandId );
-  model()->addGroupBox( groupBox );
+
+  model()->addGroupBox( newGroupBox );
   emit changed();
   emit requestModelRepaint();
 }

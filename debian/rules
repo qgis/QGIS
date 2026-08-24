@@ -149,7 +149,8 @@ CMAKE_OPTS := \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
 	-DWITH_SERVER=TRUE \
 	-DWITH_SERVER_PLUGINS=TRUE \
-	-DWITH_SERVER_LANDINGPAGE_WEBAPP=FALSE \
+	-DWITH_SERVER_LANDINGPAGE_WEBAPP=TRUE \
+	-DYARN_INSTALL_OPT="" \
 	-DWITH_INTERNAL_MESHOPTIMIZER=FALSE \
 	-DWITH_INTERNAL_QWT=TRUE \
 	-DWITH_QUICK=TRUE \
@@ -319,10 +320,6 @@ override_dh_auto_install:
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_bench*
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/test_provider_wcs*
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_quickapp*
-
-	# landing page not packaged
-	$(RM) $(CURDIR)/debian/tmp/usr/lib/qgis*/server/liblandingpage*.so
-	$(RM) -r $(CURDIR)/debian/tmp/usr/share/qgis*/resources/server/src/landingpage
 
 	# Man pages are installed by dh_installman
 	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1

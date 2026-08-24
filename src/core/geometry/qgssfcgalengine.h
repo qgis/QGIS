@@ -406,13 +406,14 @@ class CORE_EXPORT QgsSfcgalEngine
     /**
      * Checks if \a geom is valid.
      *
-     * If the geometry is invalid, \a errorMsg will be filled with the reported geometry error.
+     * If the geometry is invalid, \a reasonMsg will be filled with the reported geometry error.
      *
      * \param geom geometry to perform the operation
-     * \param errorMsg Error message returned by SFGCAL
+     * \param errorMsg Error message returned by SFGCAL if the operation fails
+     * \param reasonMsg If the geometry is invalid, reasonMsg will be filled with the reported geometry error.
      * \param errorLoc if specified, it will be set to the geometry of the error location.
      */
-    static bool isValid( const sfcgal::geometry *geom, QString *errorMsg = nullptr, QgsGeometry *errorLoc = nullptr );
+    static bool isValid( const sfcgal::geometry *geom, QString *errorMsg = nullptr, QString *reasonMsg = nullptr, QgsGeometry *errorLoc = nullptr );
 
     /**
      * Checks if \a geom is simple.

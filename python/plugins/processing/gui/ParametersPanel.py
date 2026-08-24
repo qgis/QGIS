@@ -28,7 +28,6 @@ from qgis.core import (
     QgsProcessingModelAlgorithm,
     QgsProcessingOutputLayerDefinition,
     QgsProcessingParameterDefinition,
-    QgsProcessingParameterExtent,
     QgsProject,
 )
 from qgis.gui import (
@@ -41,11 +40,10 @@ from qgis.gui import (
     QgsProcessingParametersWidget,
     QgsProcessingParameterWidgetContext,
 )
-from qgis.PyQt.QtWidgets import QLabel, QSizePolicy, QVBoxLayout, QWidget
+from qgis.PyQt.QtWidgets import QLabel, QVBoxLayout, QWidget
 from qgis.utils import iface
 
 from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
-from processing.gui.wrappers import WidgetWrapper, WidgetWrapperFactory
 from processing.tools.dataobjects import createContext
 
 
@@ -143,47 +141,25 @@ class ParametersPanel(QgsProcessingParametersWidget):
                     self.wrappers[param.name()].setLinkedVectorLayer(self.active_layer)
                     continue
 
-                wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent())
+                wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(
+                    param, Qgis.ProcessingMode.Standard
+                )
+                wrapper.setDialog(self.parent())
                 wrapper.setWidgetContext(widget_context)
                 wrapper.registerProcessingContextGenerator(self.context_generator)
                 wrapper.registerProcessingParametersGenerator(self)
                 self.wrappers[param.name()] = wrapper
 
-                # For compatibility with 3.x API, we need to check whether the wrapper is
-                # the deprecated WidgetWrapper class. If not, it's the newer
-                # QgsAbstractProcessingParameterWidgetWrapper class
-                # TODO QGIS 5.0 - remove
-                is_python_wrapper = issubclass(wrapper.__class__, WidgetWrapper)
                 stretch = 0
-                if not is_python_wrapper:
-                    widget = wrapper.createWrappedWidget(self.processing_context)
-                    wrapper.widgetValueHasChanged.connect(self.parameterChanged)
-                    stretch = wrapper.stretch()
-                else:
-                    widget = wrapper.widget
+                widget = wrapper.createWrappedWidget(self.processing_context)
+                wrapper.widgetValueHasChanged.connect(self.parameterChanged)
+                stretch = wrapper.stretch()
 
                 if widget is not None:
-                    if is_python_wrapper:
-                        widget.setToolTip(param.toolTip())
-
-                    label = None
-                    if not is_python_wrapper:
-                        label = wrapper.createWrappedLabel()
-                    else:
-                        label = wrapper.label
+                    label = wrapper.createWrappedLabel()
 
                     if label is not None:
                         self.addParameterLabel(param, label)
-                    elif is_python_wrapper:
-                        desc = param.description()
-                        if isinstance(param, QgsProcessingParameterExtent):
-                            desc += self.tr(" (xmin, xmax, ymin, ymax)")
-                        if (
-                            param.flags()
-                            & QgsProcessingParameterDefinition.Flag.FlagOptional
-                        ):
-                            desc += self.tr(" [optional]")
-                        widget.setText(desc)
 
                     self.addParameterWidget(param, widget, stretch)
 
@@ -255,14 +231,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 except KeyError:
                     continue
 
-                # For compatibility with 3.x API, we need to check whether the wrapper is
-                # the deprecated WidgetWrapper class. If not, it's the newer
-                # QgsAbstractProcessingParameterWidgetWrapper class
-                # TODO QGIS 5.0 - remove
-                if issubclass(wrapper.__class__, WidgetWrapper):
-                    widget = wrapper.widget
-                else:
-                    widget = wrapper.wrappedWidget()
+                widget = wrapper.wrappedWidget()
 
                 if (
                     not isinstance(wrapper, QgsProcessingHiddenWidgetWrapper)
