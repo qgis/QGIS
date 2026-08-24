@@ -1224,9 +1224,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! project was read
     void readProject( const QDomDocument & );
 
-    //! Sets app stylesheet from settings
-    void setAppStyleSheet( const QString &stylesheet );
-
     //! request credentials for network manager
     void namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth );
     void namRequestTimedOut( const QgsNetworkRequestParameters &request );
