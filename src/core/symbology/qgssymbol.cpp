@@ -1721,21 +1721,6 @@ void QgsSymbol::renderFeature(
         // no segmentation required
         processedGeometry = part;
       }
-
-      // Simplify the geometry, if needed.
-      if ( context.vectorSimplifyMethod().forceLocalOptimization() )
-      {
-        const int simplifyHints = context.vectorSimplifyMethod().simplifyHints();
-        const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(), context.vectorSimplifyMethod().simplifyAlgorithm() );
-
-        std::unique_ptr< QgsAbstractGeometry > simplified( simplifier.simplify( processedGeometry ) );
-        if ( simplified )
-        {
-          temporaryGeometryContainer.set( simplified.release() );
-          processedGeometry = temporaryGeometryContainer.constGet();
-        }
-      }
-
       // clip geometry to render context clipping regions
       if ( !context.featureClipGeometry().isEmpty() )
       {
@@ -1748,6 +1733,24 @@ void QgsSymbol::renderFeature(
         if ( clippedGeom )
         {
           temporaryGeometryContainer.set( clippedGeom.release() );
+          processedGeometry = temporaryGeometryContainer.constGet();
+        }
+        else
+        {
+          return;
+        }
+      }
+
+      // Simplify the geometry, if needed.
+      if ( context.vectorSimplifyMethod().forceLocalOptimization() )
+      {
+        const int simplifyHints = context.vectorSimplifyMethod().simplifyHints();
+        const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(), context.vectorSimplifyMethod().simplifyAlgorithm() );
+
+        std::unique_ptr< QgsAbstractGeometry > simplified( simplifier.simplify( processedGeometry ) );
+        if ( simplified )
+        {
+          temporaryGeometryContainer.set( simplified.release() );
           processedGeometry = temporaryGeometryContainer.constGet();
         }
       }
@@ -1772,6 +1775,12 @@ void QgsSymbol::renderFeature(
         if ( mType != Qgis::SymbolType::Marker )
         {
           QgsDebugMsgLevel( u"point can be drawn only with marker symbol!"_s, 2 );
+          break;
+        }
+
+        if ( processedGeometry->isEmpty() )
+        {
+          // point was clipped away entirely by the render context's feature clip geometry
           break;
         }
 
