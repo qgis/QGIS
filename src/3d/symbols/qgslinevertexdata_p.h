@@ -27,9 +27,11 @@
 // version without notice, or even be removed.
 //
 
+
 #include "qgis.h"
 #include "qgs3drendercontext.h"
 
+#include <QByteArray>
 #include <QVector>
 #include <QVector3D>
 
@@ -39,32 +41,35 @@ namespace Qt3DCore
 {
   class QNode;
   class QGeometry;
+  class QEntity;
 } // namespace Qt3DCore
 
 class QgsLineString;
-
+class QgsLineMaterial;
+class QgsAbstractMaterialSettings;
+class QgsAbstractMaterial3DHandler;
 
 /**
  * \ingroup qgis_3d
- * \brief Helper class to store vertex buffer and index buffer data that will be used to render
- * lines (either using "line strip" or "line strip with adjacency" primitive.
+ * \brief Helper class to build the reusable per-instance quad geometry used to render
+ * thick 3D lines with GPU instancing (one quad instanced per line segment).
  *
- * Index zero is used for primitive restart (to separate two linestrings).
- *
- * It is expected that client code:
- *
- * - calls init()
- * - calls addLineString() many times
- * - calls createGeometry()
- *
+ * Line strings are stored as independent segments (pointA/pointB pairs).
  */
 struct QgsLineVertexData
 {
-    QVector<QVector3D> vertices;
-    QVector<unsigned int> indexes;
-    QByteArray materialDataDefined;
+    QVector<QVector3D> pointsA;  //!< Start point of each line segment (one entry per instance)
+    QVector<QVector3D> pointsB;  //!< End point of each line segment (one entry per instance)
+    QVector<QVector3D> vertices; //!< Flat list of unique vertices added, e.g. for placing one marker per vertex
 
-    bool withAdjacency = false; //!< Whether line strip with adjacency primitive will be used
+    //! First/middle/next point of each interior line join
+    QVector<QVector3D> joinPointA;
+    QVector<QVector3D> joinPointB;
+    QVector<QVector3D> joinPointC;
+
+    QByteArray materialDataDefined;
+    //! Per-instance data-defined stroke color for joins, kept in sync with joinPointA/B/C
+    QByteArray materialDataDefinedJoins;
 
     // extra info to calculate elevation
     Qgis::AltitudeClamping altClamping = Qgis::AltitudeClamping::Absolute;
@@ -74,16 +79,24 @@ struct QgsLineVertexData
     QgsVector3D origin;                 // all coordinates are relative to this origin (e.g. center of the chunk)
     bool geocentricCoordinates = false; // whether input coordinates are geocentric (i.e. Z can't be interpreted as elevation)
 
-    QgsLineVertexData();
-
     void init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBinding binding, float height, const Qgs3DRenderContext &renderContext, const QgsVector3D &chunkOrigin );
 
-    QByteArray createVertexBuffer();
-    QByteArray createIndexBuffer();
-    Qt3DCore::QGeometry *createGeometry( Qt3DCore::QNode *parent );
-
     void addLineString( const QgsLineString &lineString, float extraHeightOffset = 0, bool closePolygon = false );
+
     void addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset = 0 );
+
+    QByteArray createPointABuffer() const;
+    QByteArray createPointBBuffer() const;
+
+    QByteArray createJoinPointABuffer() const;
+    QByteArray createJoinPointBBuffer() const;
+    QByteArray createJoinPointCBuffer() const;
+
+    Qt3DCore::QGeometry *createGeometry( Qt3DCore::QNode *parent );
+    Qt3DCore::QGeometry *createJoinGeometry( Qt3DCore::QNode *parent );
+    Qt3DCore::QEntity *createJoinEntity(
+      const QgsLineMaterial *segmentMaterial, const QgsAbstractMaterialSettings *materialSettings = nullptr, const QgsAbstractMaterial3DHandler *materialHandler = nullptr
+    );
 };
 
 /// @endcond

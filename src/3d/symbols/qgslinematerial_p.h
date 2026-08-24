@@ -36,22 +36,23 @@
 
 /**
  * \ingroup qgis_3d
- * \brief Implementation of material that renders 3D linestrings.
+ * \brief Implementation of material that renders the straight segments of 3D linestrings.
  *
  * Supports:
  *
  * - arbitrary line width (in pixels)
- * - bevel and miter line joins (including limit for miter join to avoid very long miters on sharp angles)
  * - flat line caps
- * - alpha blending
  *
  * The material needs information about viewport size (to correctly scale line widths) and to camera
  * parameters (to correctly clip lines).
  *
- * It is implemented by using a geometry shader that accepts primitive type Line strip with adjacency
- * (i.e. we have access to points p1-p2 which define line segment's endpoints, and in addition to that,
- * we have access to previous (p0) and next (p3) points). Geometry shader generates two triangles
- * for each segment and possibly another triangle for bevel join.
+ * It is implemented with GPU instancing: a single quad is instanced once per line segment, with
+ * the segment's endpoints (pointA/pointB) provided as per-instance vertex attributes. The vertex
+ * shader expands the quad into a screen-space rectangle of the correct width around the segment.
+ *
+ * Line joins require a separate instanced draw.
+ *
+ * \see QgsLineJoinMaterial
  */
 class _3D_EXPORT QgsLineMaterial : public QgsMaterial
 {
@@ -66,13 +67,41 @@ class _3D_EXPORT QgsLineMaterial : public QgsMaterial
 
     Q_INVOKABLE void setViewportSize( const QSizeF &viewportSize );
 
+    /**
+     * Copies this material's line color, width, viewport size and useVertexColors settings to \a other.
+     *
+     * Used to keep a QgsLineJoinMaterial's appearance in sync with the QgsLineMaterial.
+     */
+    void copyLineParametersTo( QgsLineMaterial *other ) const;
+
+  protected:
+    //! Constructs the material with a specific vertex shader, e.g. for QgsLineJoinMaterial's line_joins.vert
+    explicit QgsLineMaterial( const QString &vertexShaderUrl );
+
   private:
     Qt3DRender::QParameter *mParameterThickness = nullptr;
-    Qt3DRender::QParameter *mParameterMiterLimit = nullptr;
     Qt3DRender::QParameter *mParameterLineColor = nullptr;
     Qt3DRender::QParameter *mParameterUseVertexColors = nullptr;
 
     Qt3DRender::QParameter *mParameterWindowScale = nullptr;
+};
+
+/**
+ * \ingroup qgis_3d
+ * \brief Implementation of material that renders the joins (corners) of 3D linestrings.
+ *
+ * Draws one instanced triangle "wedge" per interior line vertex, filling the gap/overlap that
+ * would otherwise appear between two independently-clipped segment quads drawn by QgsLineMaterial
+ * at a bend.
+ */
+class _3D_EXPORT QgsLineJoinMaterial : public QgsLineMaterial
+{
+    Q_OBJECT
+  public:
+    QgsLineJoinMaterial();
+
+  private:
+    Qt3DRender::QParameter *mParameterMiterLimit = nullptr;
 };
 
 /// @endcond

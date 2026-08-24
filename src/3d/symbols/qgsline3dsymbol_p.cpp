@@ -267,7 +267,7 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
 
   private:
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QgsLineVertexData &lineVertexData, bool selected );
-    void processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsLineVertexData &lineVertexData );
+    void processMaterialDatadefined( uint count, const QgsExpressionContext &context, QByteArray &target );
 
     // input specific for this class
     std::unique_ptr<QgsLine3DSymbol> mSymbol;
@@ -286,8 +286,6 @@ bool QgsThickLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QS
   mChunkOrigin = chunkExtent.center();
   mChunkExtent = chunkExtent;
 
-  mLineDataNormal.withAdjacency = true;
-  mLineDataSelected.withAdjacency = true;
   mLineDataNormal.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context, mChunkOrigin );
   mLineDataSelected.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context, mChunkOrigin );
 
@@ -296,24 +294,18 @@ bool QgsThickLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QS
   attrs = mSymbol->materialSettings()->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
 
-  if ( mSymbol->materialSettings()->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::Ambient ) )
-  {
-    processMaterialDatadefined( mLineDataNormal.vertices.size(), context.expressionContext(), mLineDataNormal );
-    processMaterialDatadefined( mLineDataSelected.vertices.size(), context.expressionContext(), mLineDataSelected );
-  }
-
   return true;
 }
 
 void QgsThickLine3DSymbolHandler::processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context )
 {
-  Q_UNUSED( context )
   if ( feature.geometry().isNull() )
     return;
 
   QgsLineVertexData &lineVertexData = mSelectedIds.contains( feature.id() ) ? mLineDataSelected : mLineDataNormal;
 
-  const int oldVerticesCount = lineVertexData.vertices.size();
+  const int oldSegmentCount = lineVertexData.pointsA.size();
+  const int oldJoinCount = lineVertexData.joinPointA.size();
 
   QgsGeometry geom = feature.geometry();
   ( void ) clipGeometryIfTooLarge( geom );
@@ -344,7 +336,10 @@ void QgsThickLine3DSymbolHandler::processFeature( const QgsFeature &feature, con
   }
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::Ambient ) )
-    processMaterialDatadefined( lineVertexData.vertices.size() - oldVerticesCount, context.expressionContext(), lineVertexData );
+  {
+    processMaterialDatadefined( lineVertexData.pointsA.size() - oldSegmentCount, context.expressionContext(), lineVertexData.materialDataDefined );
+    processMaterialDatadefined( lineVertexData.joinPointA.size() - oldJoinCount, context.expressionContext(), lineVertexData.materialDataDefinedJoins );
+  }
 
   mFeatureCount++;
 }
@@ -362,7 +357,7 @@ void QgsThickLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs
 
 void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QgsLineVertexData &lineVertexData, bool selected )
 {
-  if ( lineVertexData.indexes.isEmpty() )
+  if ( lineVertexData.pointsA.isEmpty() )
     return;
 
   // material (only ambient color is used for the color)
@@ -376,7 +371,8 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
     material = Qgs3D::toMaterial( &defaultMaterial, Qgis::MaterialRenderingTechnique::Lines, materialContext );
   }
 
-  if ( QgsLineMaterial *lineMaterial = dynamic_cast<QgsLineMaterial *>( material ) )
+  QgsLineMaterial *lineMaterial = dynamic_cast<QgsLineMaterial *>( material );
+  if ( lineMaterial )
   {
     float width = mSymbol->width();
     if ( mHighlightingEnabled )
@@ -397,22 +393,21 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
 
   // geometry renderer
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
-  renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
+  renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
   Qt3DCore::QGeometry *geometry = lineVertexData.createGeometry( entity );
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::Ambient ) )
   {
     if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( mSymbol->materialSettings() ) )
     {
-      handler->applyDataDefinedToGeometry( mSymbol->materialSettings(), geometry, lineVertexData.vertices.size(), lineVertexData.materialDataDefined );
+      handler->applyDataDefinedToGeometry( mSymbol->materialSettings(), geometry, lineVertexData.pointsA.size(), lineVertexData.materialDataDefined );
     }
   }
 
   renderer->setGeometry( geometry );
 
-  renderer->setVertexCount( lineVertexData.indexes.count() );
-  renderer->setPrimitiveRestartEnabled( true );
-  renderer->setRestartIndexValue( 0 );
+  renderer->setVertexCount( 6 );
+  renderer->setInstanceCount( lineVertexData.pointsA.size() );
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
   QgsGeoTransform *transform = new QgsGeoTransform;
@@ -423,18 +418,30 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   entity->addComponent( material );
   entity->addComponent( transform );
   entity->setParent( parent );
+
+  if ( lineMaterial )
+  {
+    const bool hasDataDefinedColor = mSymbol->materialSettings()->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::Ambient );
+    const QgsAbstractMaterial3DHandler *handler = hasDataDefinedColor ? Qgs3D::handlerForMaterialSettings( mSymbol->materialSettings() ) : nullptr;
+    if ( Qt3DCore::QEntity *joinEntity = lineVertexData.createJoinEntity( lineMaterial, hasDataDefinedColor ? mSymbol->materialSettings() : nullptr, handler ) )
+    {
+      QgsGeoTransform *joinTransform = new QgsGeoTransform;
+      joinTransform->setGeoTranslation( mChunkOrigin );
+      joinEntity->addComponent( joinTransform );
+      joinEntity->setParent( parent );
+    }
+  }
 }
 
-void QgsThickLine3DSymbolHandler::processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsLineVertexData &lineVertexData )
+void QgsThickLine3DSymbolHandler::processMaterialDatadefined( uint count, const QgsExpressionContext &context, QByteArray &target )
 {
   QByteArray bytes;
   if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( mSymbol->materialSettings() ) )
   {
     bytes = handler->dataDefinedVertexColorsAsByte( mSymbol->materialSettings(), context );
   }
-  lineVertexData.materialDataDefined.append( bytes.repeated( static_cast<int>( verticesCount ) ) );
+  target.append( bytes.repeated( static_cast<int>( count ) ) );
 }
-
 
 // --------------
 

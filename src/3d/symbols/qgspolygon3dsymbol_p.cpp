@@ -36,6 +36,7 @@
 #include "qgstessellatedpolygongeometry.h"
 #include "qgstessellator.h"
 #include "qgsvectorlayer.h"
+#include "qgsvertexid.h"
 
 #include <QString>
 #include <Qt3DCore/QBuffer>
@@ -98,7 +99,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
     PolygonData outNormal;   //!< Features that are not selected
     PolygonData outSelected; //!< Features that are selected
 
-    QgsLineVertexData outEdges; //!< When highlighting edges, this holds data for vertex/index buffer
+    QgsLineVertexData outEdges; //!< When highlighting edges, this holds data for the pointA/pointB instanced quads
 
     //! This is set to TRUE when a feature is clipped to the chunk's extent
     bool mWasClippedToExtent = false;
@@ -111,7 +112,6 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   mChunkOrigin.setZ( 0. ); // set the chunk origin to the bottom of the box, as the tessellator currently always considers origin z to be zero
   mChunkExtent = chunkExtent;
 
-  outEdges.withAdjacency = true;
   outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context, mChunkOrigin );
 
   const QgsAbstractMaterialSettings *materialSettings = mSymbol->materialSettings();
@@ -147,6 +147,13 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   attrs = materialSettings->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
   return true;
+}
+
+static void addClosedRingEdges( QgsLineVertexData &edges, const QgsLineString &ring, float extraHeightOffset )
+{
+  std::unique_ptr<QgsLineString> openRing( ring.clone() );
+  openRing->deleteVertex( QgsVertexId( 0, 0, openRing->numPoints() - 1 ) );
+  edges.addLineString( *openRing, extraHeightOffset, true );
 }
 
 void QgsPolygon3DSymbolHandler::processPolygon(
@@ -197,22 +204,27 @@ void QgsPolygon3DSymbolHandler::processPolygon(
 
     if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( exteriorRing ) )
     {
-      outEdges.addLineString( *line, offset );
+      if ( mWasClippedToExtent )
+        outEdges.addLineString( *line, offset );
+      else
+        addClosedRingEdges( outEdges, *line, offset );
     }
     // if geometry was clipped to the chunk extents, we might now have a multilinestring
     else if ( const QgsMultiLineString *mline = qgsgeometry_cast<const QgsMultiLineString *>( exteriorRing ) )
     {
       for ( int i = 0; i < mline->numGeometries(); ++i )
       {
+        // these are always open arcs left over from clipping to the chunk extent, never closed rings
         const QgsLineString *line = mline->lineStringN( i );
         outEdges.addLineString( *line, offset );
       }
     }
 
     // if geometry was clipped to the chunk extents and the chunk extents intersected an interior ring, then
-    // that ring is now part of the exterior ring. Hence we don't need to treat interior rings any differently
+    // that ring is now part of the exterior ring, so remaining interior rings here are always complete,
+    // unclipped closed rings
     for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
-      outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ), offset );
+      addClosedRingEdges( outEdges, *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ), offset );
 
     if ( extrusionHeight != 0.f )
     {
@@ -220,7 +232,11 @@ void QgsPolygon3DSymbolHandler::processPolygon(
 
       if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( exteriorRing ) )
       {
-        outEdges.addLineString( *line, extrusionHeight + offset );
+        // when clipped to the chunk extent, this may now be an open arc rather than a closed ring
+        if ( mWasClippedToExtent )
+          outEdges.addLineString( *line, extrusionHeight + offset );
+        else
+          addClosedRingEdges( outEdges, *line, extrusionHeight + offset );
         outEdges.addVerticalLines( *line, extrusionHeight, offset );
       }
       // if geometry was clipped to the chunk extents, we might now have a multilinestring
@@ -228,6 +244,7 @@ void QgsPolygon3DSymbolHandler::processPolygon(
       {
         for ( int i = 0; i < mline->numGeometries(); ++i )
         {
+          // these are always open arcs left over from clipping to the chunk extent, never closed rings
           const QgsLineString *line = mline->lineStringN( i );
           outEdges.addLineString( *line, extrusionHeight + offset );
           outEdges.addVerticalLines( *line, extrusionHeight, offset );
@@ -235,11 +252,12 @@ void QgsPolygon3DSymbolHandler::processPolygon(
       }
 
       // if geometry was clipped to the chunk extents and the chunk extents intersected an interior ring, then
-      // that ring is now part of the exterior ring. Hence we don't need to treat interior rings any differently
+      // that ring is now part of the exterior ring, so remaining interior rings here are always complete,
+      // unclipped closed rings
       for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
       {
         const QgsLineString *interior = static_cast<const QgsLineString *>( polyClone->interiorRing( i ) );
-        outEdges.addLineString( *interior, extrusionHeight + offset );
+        addClosedRingEdges( outEdges, *interior, extrusionHeight + offset );
         outEdges.addVerticalLines( *interior, extrusionHeight, offset );
       }
     }
@@ -416,7 +434,7 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
   mZMax = std::max( outNormal.tessellator->zMaximum(), outSelected.tessellator->zMaximum() );
 
   // add entity for edges, but not when doing highlighting
-  if ( mSymbol->edgesEnabled() && !outEdges.indexes.isEmpty() && !mHighlightingEnabled )
+  if ( mSymbol->edgesEnabled() && !outEdges.pointsA.isEmpty() && !mHighlightingEnabled )
   {
     QgsLineMaterial *mat = new QgsLineMaterial;
     mat->setLineColor( mSymbol->edgeColor() );
@@ -427,11 +445,10 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
 
     // geometry renderer
     Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
+    renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
     renderer->setGeometry( outEdges.createGeometry( entity ) );
-    renderer->setVertexCount( outEdges.indexes.count() );
-    renderer->setPrimitiveRestartEnabled( true );
-    renderer->setRestartIndexValue( 0 );
+    renderer->setVertexCount( 6 );
+    renderer->setInstanceCount( outEdges.pointsA.size() );
 
     // add transform (our geometry has coordinates relative to mChunkOrigin)
     QgsGeoTransform *tr = new QgsGeoTransform;
@@ -442,6 +459,15 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
     entity->addComponent( mat );
     entity->addComponent( tr );
     entity->setParent( parent );
+
+    if ( Qt3DCore::QEntity *joinEntity = outEdges.createJoinEntity( mat ) )
+    {
+      joinEntity->setObjectName( parent->objectName() + "_EDGES_JOINS" );
+      QgsGeoTransform *joinTr = new QgsGeoTransform;
+      joinTr->setGeoTranslation( mChunkOrigin );
+      joinEntity->addComponent( joinTr );
+      joinEntity->setParent( parent );
+    }
   }
 }
 

@@ -5,7 +5,7 @@
         <file>shaders/instanced.vert</file>
         <file>shaders/light.inc.frag</file>
         <file>shaders/lines.vert</file>
-        <file>shaders/lines.geom</file>
+        <file>shaders/line_joins.vert</file>
         <file>shaders/lines.frag</file>
         <file>shaders/billboards.frag</file>
         <file>shaders/billboards.vert</file>
