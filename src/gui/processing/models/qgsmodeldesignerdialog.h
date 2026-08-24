@@ -59,7 +59,7 @@ class GUI_EXPORT QgsModelerToolboxModel : public QgsProcessingToolboxProxyModel
  * \warning Not stable API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public QgsProcessingFeedbackGenerator, public Ui::QgsModelDesignerDialogBase
+class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public QgsProcessingFeedbackGenerator, public QgsProcessingWidgetContextGenerator, public Ui::QgsModelDesignerDialogBase
 {
     Q_OBJECT
   public:
@@ -117,6 +117,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public QgsProcessi
     QgsModelGraphicsScene *modelScene();
 
     QgsProcessingFeedback *createFeedback() override SIP_FACTORY;
+    QgsProcessingParameterWidgetContext createWidgetContext() override;
 
     /**
      * Save action.
@@ -150,11 +151,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public QgsProcessi
     virtual bool saveModel( bool saveAs = false ) = 0;
     // cppcheck-suppress pureVirtualCall
     virtual QgsProcessingAlgorithmWidgetBase *createExecutionWidget() = 0 SIP_TRANSFERBACK;
-
-    /**
-     * Creates a new widget context appropriate for the dialog.
-     */
-    virtual QgsProcessingParameterWidgetContext createWidgetContext() = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Registers a Processing context \a generator class that will be used to retrieve
