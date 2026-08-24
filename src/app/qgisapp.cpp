@@ -1069,7 +1069,6 @@ QgisApp::QgisApp(
 
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 
-  QgsDockableWidgetHelper::sAppStylesheetFunction = []() -> QString { return QgisApp::instance()->styleSheet(); };
   QgsDockableWidgetHelper::sOwnerWindow = QgisApp::instance();
 
   //////////
@@ -1109,7 +1108,7 @@ QgisApp::QgisApp(
   startProfile( tr( "Building style sheet" ) );
   // set up stylesheet builder and apply saved or default style options
   mStyleSheetBuilder = new QgisAppStyleSheet( this );
-  connect( mStyleSheetBuilder, &QgisAppStyleSheet::appStyleSheetChanged, this, &QgisApp::setAppStyleSheet );
+  connect( QgsGui::instance(), &QgsGui::applicationStyleSheetChanged, this, &QgisApp::setStyleSheet );
   endProfile();
 
   QWidget *centralWidget = this->centralWidget();
@@ -3430,18 +3429,6 @@ void QgisApp::createActionGroups()
   mActionPreviewProtanope->setActionGroup( mPreviewGroup );
   mActionPreviewDeuteranope->setActionGroup( mPreviewGroup );
   mActionPreviewTritanope->setActionGroup( mPreviewGroup );
-}
-
-void QgisApp::setAppStyleSheet( const QString &stylesheet )
-{
-  setStyleSheet( stylesheet );
-
-  // cascade styles to any current layout designers
-  const auto constMLayoutDesignerDialogs = mLayoutDesignerDialogs;
-  for ( QgsLayoutDesignerDialog *d : constMLayoutDesignerDialogs )
-  {
-    d->setStyleSheet( stylesheet );
-  }
 }
 
 void QgisApp::createMenus()

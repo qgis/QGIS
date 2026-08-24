@@ -458,7 +458,7 @@ void QgsLayoutManagerDialog::duplicateClicked()
 
   // provide feedback, since loading of template into duplicate layout will be hidden
   QDialog *dlg = new QgsBusyIndicatorDialog( tr( "Duplicating layout…" ) );
-  dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
+  dlg->setStyleSheet( QgsGui::applicationStyleSheet() );
   dlg->show();
 
   QgsLayoutDesignerDialog *newDialog = QgisApp::instance()->duplicateLayout( currentLayout, newTitle );
