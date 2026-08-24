@@ -83,8 +83,11 @@
       </item>
       <item row="3" column="0" colspan="2">
        <widget class="QCheckBox" name="mChkSaveStyleToDatabase">
+        <property name="toolTip">
+         <string>The style will be stored as the default style for the output layer</string>
+        </property>
         <property name="text">
-         <string>Save style to database</string>
+         <string>Save current source layer style to database</string>
         </property>
        </widget>
       </item>
