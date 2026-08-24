@@ -534,8 +534,7 @@ void QgsRubberBand::paint( QPainter *p )
           {
             if ( mGeometryType == Qgis::GeometryType::Polygon )
             {
-              // In the case of polygon, we skip the last point of a ring as it's the same as the first point
-              // So it's not rendered twice.
+              // In the case of a closed polygon, we skip the first point of a ring
               if ( it == ring.constBegin() )
                 continue;
             }
