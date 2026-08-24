@@ -41,6 +41,11 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingWidgetContextGenerator.__abstract_methods__ = ['createWidgetContext']
+    QgsProcessingWidgetContextGenerator.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
     QgsProcessingHiddenWidgetWrapper.__overridden_methods__ = ['setWidgetValue', 'widgetValue', 'linkedVectorLayer', 'createWidget', 'createLabel']
     QgsProcessingHiddenWidgetWrapper.__group__ = ['processing']
 except (NameError, AttributeError):
