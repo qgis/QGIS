@@ -742,7 +742,11 @@ void moduleDestroy( void * )
 }
 
 // the expression context used for calling qgis functions
-QgsExpressionContext qgisFunctionExpressionContext;
+// thread_local because a new sqlite3 connection (and thus a call to
+// registerQgisFunctions()) is created per worker thread when virtual layers
+// are opened concurrently -- a single shared QgsExpressionContext would be
+// mutated from multiple threads at once
+thread_local QgsExpressionContext qgisFunctionExpressionContext;
 
 void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args )
 {
@@ -922,9 +926,12 @@ void registerQgisFunctions( sqlite3 *db )
     }
   }
 
-  // initialize the expression context
+  // initialize the expression contextqgisFunctionExpressionContext = QgsExpressionContext();
   qgisFunctionExpressionContext << QgsExpressionContextUtils::globalScope();
-  qgisFunctionExpressionContext << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  // QgsProject lives on the main thread and its accessors are not thread-safe,
+  // so only pull in the project scope when called from there
+  if ( QThread::currentThread() == QCoreApplication::instance()->thread() )
+    qgisFunctionExpressionContext << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 }
 
 int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void *unused /*const sqlite3_api_routines *pApi*/ )
