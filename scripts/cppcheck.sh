@@ -45,6 +45,7 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DQ_NOWARN_UNREACHABLE_POP= \
          -DQ_DECLARE_OPAQUE_POINTER= \
          -DQGIS_PROTECT_QOBJECT_THREAD_ACCESS = \
+         -DQGIS_CHECK_MAIN_THREAD_ACCESS= \
          -DQ_DECLARE_SQLDRIVER_PRIVATE = \
          -DSIP_MONKEYPATCH_SCOPEENUM_UNNEST = \
          -DSIP_ENUM_BASETYPE = \
