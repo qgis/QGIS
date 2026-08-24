@@ -104,7 +104,7 @@ QByteArray QgsSimpleLineMaterial3DHandler::dataDefinedVertexColorsAsByte( const 
   return array;
 }
 
-void QgsSimpleLineMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *, Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const
+void QgsSimpleLineMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstractMaterialSettings *, Qt3DCore::QGeometry *geometry, int instanceCount, const QByteArray &data ) const
 {
   Qt3DCore::QBuffer *dataBuffer = new Qt3DCore::QBuffer( geometry );
 
@@ -116,7 +116,8 @@ void QgsSimpleLineMaterial3DHandler::applyDataDefinedToGeometry( const QgsAbstra
   colorAttribute->setBuffer( dataBuffer );
   colorAttribute->setByteStride( 3 * sizeof( unsigned char ) );
   colorAttribute->setByteOffset( 0 );
-  colorAttribute->setCount( vertexCount );
+  colorAttribute->setCount( instanceCount );
+  colorAttribute->setDivisor( 1 );
   geometry->addAttribute( colorAttribute );
 
   dataBuffer->setData( data );
@@ -134,20 +135,31 @@ Qt3DCore::QEntity *QgsSimpleLineMaterial3DHandler::createPreviewMesh( const QStr
 {
   auto *entity = new Qt3DCore::QEntity( parent );
   auto *renderer = new Qt3DRender::QGeometryRenderer( entity );
-  renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
+  renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
 
   QgsLineVertexData lineVertexData;
-  lineVertexData.withAdjacency = true;
   constexpr double s = 1.0;
   // just a boring old flat square
   lineVertexData.addLineString( QgsLineString( { -s, s, s, -s, -s }, { -s, -s, s, s, -s }, { 0, 0, 0, 0, 0 } ) );
   Qt3DCore::QGeometry *geometry = lineVertexData.createGeometry( entity );
   renderer->setGeometry( geometry );
-  renderer->setVertexCount( static_cast< int >( lineVertexData.indexes.count() ) );
-  renderer->setPrimitiveRestartEnabled( true );
-  renderer->setRestartIndexValue( 0 );
+  renderer->setVertexCount( 6 );
+  renderer->setInstanceCount( lineVertexData.pointsA.size() );
 
   entity->addComponent( renderer );
+
+  if ( !lineVertexData.joinPointA.isEmpty() )
+  {
+    auto *joinEntity = new Qt3DCore::QEntity( entity );
+    auto *joinRenderer = new Qt3DRender::QGeometryRenderer( joinEntity );
+    joinRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
+    joinRenderer->setGeometry( lineVertexData.createJoinGeometry( joinEntity ) );
+    joinRenderer->setVertexCount( 6 );
+    joinRenderer->setInstanceCount( lineVertexData.joinPointA.size() );
+    joinEntity->addComponent( joinRenderer );
+    joinEntity->addComponent( new QgsLineJoinMaterial() );
+  }
+
   return entity;
 }
 
@@ -162,17 +174,28 @@ Qt3DCore::QEntity *QgsSimpleLineMaterial3DHandler::createPreviewScene(
   QgsLineMaterial *lineMaterial = qobject_cast<QgsLineMaterial *>( mat );
   Q_ASSERT( lineMaterial );
   lineMaterial->setLineWidth( 2 );
+
+  mat->setParent( mesh );
+  mesh->addComponent( mat );
+
+  QgsLineJoinMaterial *joinMaterial = mesh->findChild<QgsLineJoinMaterial *>();
+  if ( joinMaterial )
+    lineMaterial->copyLineParametersTo( joinMaterial );
+
   if ( window )
   {
     // ensure viewport size is updated if preview widget window size changes
-    auto updateViewport = [lineMaterial, window]() { lineMaterial->setViewportSize( QSizeF( window->width(), window->height() ) ); };
+    auto updateViewport = [lineMaterial, joinMaterial, window]() {
+      const QSizeF size( window->width(), window->height() );
+      lineMaterial->setViewportSize( size );
+      if ( joinMaterial )
+        joinMaterial->setViewportSize( size );
+    };
     QObject::connect( window, &Qt3DExtras::Qt3DWindow::widthChanged, lineMaterial, updateViewport );
     QObject::connect( window, &Qt3DExtras::Qt3DWindow::heightChanged, lineMaterial, updateViewport );
     updateViewport();
   }
 
-  mat->setParent( mesh );
-  mesh->addComponent( mat );
   return root;
 }
 
@@ -180,8 +203,9 @@ bool QgsSimpleLineMaterial3DHandler::updatePreviewScene( Qt3DCore::QEntity *scen
 {
   const QgsSimpleLineMaterialSettings *lineSettings = qgis::down_cast< const QgsSimpleLineMaterialSettings * >( settings );
 
-  QgsLineMaterial *material = sceneRoot->findChild<QgsLineMaterial *>();
-  material->setLineColor( lineSettings->ambient() );
+  const QList<QgsLineMaterial *> materials = sceneRoot->findChildren<QgsLineMaterial *>();
+  for ( QgsLineMaterial *material : materials )
+    material->setLineColor( lineSettings->ambient() );
 
   return true;
 }

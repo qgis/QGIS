@@ -491,7 +491,6 @@ Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntit
   if ( mFactory->mShowCallouts )
   {
     QgsLineVertexData lineData;
-    lineData.withAdjacency = true;
     lineData.geocentricCoordinates = false; // mMapSettings->sceneMode() == Qgis::SceneMode::Globe;
     lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, mRenderContext, mChunkOrigin );
 
@@ -509,17 +508,22 @@ Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntit
 
     // geometry renderer
     Qt3DRender::QGeometryRenderer *calloutRenderer = new Qt3DRender::QGeometryRenderer;
-    calloutRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
+    calloutRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
     calloutRenderer->setGeometry( lineData.createGeometry( calloutEntity ) );
-    calloutRenderer->setVertexCount( lineData.indexes.count() );
-    calloutRenderer->setPrimitiveRestartEnabled( true );
-    calloutRenderer->setRestartIndexValue( 0 );
+    calloutRenderer->setVertexCount( 6 );
+    calloutRenderer->setInstanceCount( lineData.pointsA.size() );
 
     // make entity
     calloutEntity->addComponent( calloutRenderer );
     calloutEntity->addComponent( mat );
 
     calloutEntity->setParent( entity );
+
+    if ( Qt3DCore::QEntity *calloutJoinEntity = lineData.createJoinEntity( mat ) )
+    {
+      calloutJoinEntity->setObjectName( parent->objectName() + "_CALLOUTS_JOINS" );
+      calloutJoinEntity->setParent( entity );
+    }
   }
 
   // fix the vertical range of the node from the estimated vertical range to the true range

@@ -313,7 +313,6 @@ void TestQgs3DMaterial::clipping()
 
 
   // test line material
-  // It contains a geometry shader
   const QgsSimpleLineMaterialSettings lineMaterialSettings;
   const QgsMaterialContext lineMaterialContext;
   QgsSimpleLineMaterial3DHandler lineHandler;
@@ -333,7 +332,7 @@ void TestQgs3DMaterial::clipping()
   QList<QByteArray> lineShaderCode = getShaderCode( lineMaterialEffect );
   QByteArray lineDefaultGeomCode = lineShaderCode[0];
   QByteArray lineDefaultVertexCode = lineShaderCode[1];
-  QVERIFY( !lineDefaultGeomCode.isEmpty() );
+  QVERIFY( lineDefaultGeomCode.isEmpty() );
   QVERIFY( !lineDefaultVertexCode.isEmpty() );
   QVERIFY( !QString( lineDefaultGeomCode ).contains( defineClippingStr ) );
   QVERIFY( !QString( lineDefaultVertexCode ).contains( defineClippingStr ) );
@@ -345,9 +344,8 @@ void TestQgs3DMaterial::clipping()
   QVERIFY( lineMaxParameterFound );
 
   lineShaderCode = getShaderCode( lineMaterialEffect );
-  QVERIFY( lineShaderCode[0] != lineDefaultVertexCode );
   QVERIFY( lineShaderCode[1] != lineDefaultVertexCode );
-  QVERIFY( QString( lineShaderCode[0] ).contains( defineClippingStr ) );
+  QVERIFY( !QString( lineShaderCode[0] ).contains( defineClippingStr ) );
   QVERIFY( QString( lineShaderCode[1] ).contains( defineClippingStr ) );
 
   // Disable clipping
