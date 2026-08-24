@@ -114,6 +114,7 @@ using namespace Qt::StringLiterals;
 #include "qgsvectortileutils.h"
 #include "qgsscaleutils.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsprocessingwidgetcontext.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -172,6 +173,7 @@ using namespace Qt::StringLiterals;
 #include "qgsflatterraingenerator.h"
 #include "qgslayoutitem3dmap.h"
 #include "processing/qgs3dalgorithms.h"
+#include "qgsprocessingguiregistry.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "layout/qgslayout3dmapwidget.h"
 #include "layout/qgslayoutviewrubberband.h"
@@ -492,6 +494,7 @@ using namespace Qt::StringLiterals;
 #include "devtools/querylogger/qgsappquerylogger.h"
 #include "devtools/querylogger/qgsqueryloggerwidgetfactory.h"
 #include "devtools/profiler/qgsprofilerwidgetfactory.h"
+#include "processing/qgsappprocessingutils.h"
 
 #include "browser/qgsinbuiltdataitemproviders.h"
 
@@ -1575,6 +1578,9 @@ QgisApp::QgisApp(
 
   // Init the editor widget types
   QgsGui::editorWidgetRegistry()->initEditors( mMapCanvas, mInfoBar );
+
+  mProcessingWidgetContextGenerator = std::make_unique< QgsAppProcessingWidgetContextGenerator >( this );
+  QgsGui::processingGuiRegistry()->registerWidgetContextGenerator( mProcessingWidgetContextGenerator.get() );
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, &QgsClipboard::changed, this, &QgisApp::clipboardChanged );

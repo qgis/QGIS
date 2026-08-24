@@ -169,6 +169,7 @@ class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
 class QgsCustomizationDialog;
 class QgsTopocentricWidget;
+class QgsProcessingWidgetContextGenerator;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -2945,6 +2946,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAbout *mAboutDialog = nullptr;
     std::unique_ptr<QgsCustomization> mCustomization;
     QObjectUniquePtr<QgsCustomizationDialog> mCustomizationDialog;
+
+    std::unique_ptr< QgsProcessingWidgetContextGenerator > mProcessingWidgetContextGenerator;
 
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;
