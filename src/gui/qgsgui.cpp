@@ -395,6 +395,20 @@ QgsGui::QgsGui()
   qRegisterMetaType<QgsHistoryEntry>( "QgsHistoryEntry" );
 }
 
+QString QgsGui::applicationStyleSheet()
+{
+  return QgsGui::instance()->mApplicationStyleSheet;
+}
+
+void QgsGui::setApplicationStyleSheet( const QString &styleSheet )
+{
+  if ( styleSheet == mApplicationStyleSheet )
+    return;
+
+  mApplicationStyleSheet = styleSheet;
+  emit applicationStyleSheetChanged( mApplicationStyleSheet );
+}
+
 bool QgsGui::allowExecutionOfEmbeddedScripts( QgsProject *project, QgsMessageBar *messageBar )
 {
   const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();

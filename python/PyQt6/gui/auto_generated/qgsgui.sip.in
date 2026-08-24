@@ -287,6 +287,20 @@ Checks whether QWebEngineView is available to display HTML content.
 %End
 
 
+    static QString applicationStyleSheet();
+%Docstring
+Returns the application style sheet.
+
+This should be applied to all child dialogs.
+
+.. seealso:: :py:func:`applicationStyleSheetChanged`
+
+.. seealso:: :py:func:`setApplicationStyleSheet`
+
+.. versionadded:: 4.4
+%End
+
+
   signals:
 
     void optionsChanged();
@@ -300,6 +314,15 @@ settings are changed. It is designed as a "last resort" fallback only,
 allowing widgets to respond to possible settings changes.
 
 .. versionadded:: 3.16
+%End
+
+    void applicationStyleSheetChanged( const QString &styleSheet );
+%Docstring
+Emitted whenever the application style sheet is changed.
+
+.. seealso:: :py:func:`applicationStyleSheet`
+
+.. versionadded:: 4.4
 %End
 
   private:
