@@ -3,7 +3,12 @@
 in vec2 vertexPosition;
 in vec3 instancePosition;
 
-uniform vec2 BB_SIZE;    // billboard size in pixels
+// billboard size in pixels or world units (for perspective scaled billboards)
+#ifdef PER_INSTANCE_SIZE
+in vec2 instanceSize;
+#else
+uniform vec2 BB_SIZE;
+#endif
 
 #ifdef PERSPECTIVE_SCALE
 uniform mat4 modelView;
@@ -26,18 +31,24 @@ in ivec2 pixelOffset;
 
 void main(void)
 {
+#ifdef PER_INSTANCE_SIZE
+    vec2 bbSize = instanceSize;
+#else
+    vec2 bbSize = BB_SIZE;
+#endif
+
 #ifdef PERSPECTIVE_SCALE
     // transform instance position into view space
     vec4 viewPos = modelView * vec4(instancePosition, 1.0);
 
-    vec2 size = BB_SIZE;
+    vec2 size = bbSize;
 
     // offset quad vertices directly in view space using world units
     viewPos.xy += vertexPosition * size;
 
     gl_Position = projectionMatrix * viewPos;
 #else
-    vec2 spritePixelSize = 2 * BB_SIZE / WIN_SCALE; // multiply by 2 to adjust for -1, 1 range for display coordinates
+    vec2 spritePixelSize = 2 * bbSize / WIN_SCALE; // multiply by 2 to adjust for -1, 1 range for display coordinates
 
     #ifdef TEXTURE_ATLAS
       vec2 textureOffset = atlasOffset;

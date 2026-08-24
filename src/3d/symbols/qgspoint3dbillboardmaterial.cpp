@@ -36,7 +36,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode, Qgis::BillboardScaleMode scaleMode )
+QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( ExtraAttributes attributes, Qgis::BillboardScaleMode scaleMode )
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )
   , mScaleMode( scaleMode )
 {
@@ -78,22 +78,19 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode, Qgis::Billb
   const QUrl urlVert( u"qrc:/shaders/billboards.vert"_s );
   QStringList vertexShaderDefines;
 
-  switch ( mode )
+  if ( attributes.testFlag( ExtraAttribute::TextureData ) )
   {
-    case Mode::SingleTexture:
-      break;
+    vertexShaderDefines << u"TEXTURE_ATLAS"_s;
+  }
 
-    case Mode::AtlasTexture:
-    {
-      vertexShaderDefines << u"TEXTURE_ATLAS"_s;
-      break;
-    }
+  if ( attributes.testFlag( ExtraAttribute::PixelOffsets ) )
+  {
+    vertexShaderDefines << u"TEXTURE_ATLAS_PIXEL_OFFSETS"_s;
+  }
 
-    case Mode::AtlasTextureWithPixelOffsets:
-    {
-      vertexShaderDefines << u"TEXTURE_ATLAS"_s << u"TEXTURE_ATLAS_PIXEL_OFFSETS"_s;
-      break;
-    }
+  if ( attributes.testFlag( ExtraAttribute::Size ) )
+  {
+    vertexShaderDefines << u"PER_INSTANCE_SIZE"_s;
   }
 
   switch ( mScaleMode )
