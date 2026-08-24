@@ -64,7 +64,6 @@ from qgis.gui import (
     QgsGui,
     QgsPanelWidget,
     QgsProcessingContextGenerator,
-    QgsProcessingParameterWidgetContext,
 )
 from qgis.PyQt import uic
 
@@ -90,7 +89,6 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
     QToolButton,
 )
-from qgis.utils import iface
 
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 from processing.gui.MultipleInputDialog import MultipleInputDialog
@@ -834,12 +832,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
     def setCellWrapper(self, row, column, wrapper, context):
         self.wrappers[row - 1][column] = wrapper
 
-        widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setActiveLayer(iface.activeLayer())
-            widget_context.setMapCanvas(iface.mapCanvas())
-
+        widget_context = QgsGui.processingGuiRegistry().createWidgetContext()
         widget_context.setMessageBar(self.parent.messageBar())
 
         if isinstance(self.alg, QgsProcessingModelAlgorithm):
