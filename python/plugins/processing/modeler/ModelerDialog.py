@@ -37,6 +37,7 @@ from qgis.core import (
     QgsSettings,
 )
 from qgis.gui import (
+    QgsGui,
     QgsModelDesignerDialog,
     QgsModelGraphicsScene,
     QgsProcessingAlgorithmWidgetBase,
@@ -94,7 +95,9 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         if iface is not None:
             self.toolbar().setIconSize(iface.iconSize())
-            self.setStyleSheet(iface.mainWindow().styleSheet())
+
+        self.setStyleSheet(QgsGui.applicationStyleSheet())
+        QgsGui.instance().applicationStyleSheetChanged.connect(self.setStyleSheet)
 
         self.actionOpen().triggered.connect(self.openModel)
         self.actionSaveInProject().triggered.connect(self.saveInProject)

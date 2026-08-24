@@ -77,8 +77,8 @@ class ModelerParametersDialog(QDialog):
         super().__init__()
         self.setObjectName("ModelerParametersDialog")
 
-        if iface is not None:
-            self.setStyleSheet(iface.mainWindow().styleSheet())
+        self.setStyleSheet(QgsGui.applicationStyleSheet())
+        QgsGui.instance().applicationStyleSheetChanged.connect(self.setStyleSheet)
 
         # dammit this is SUCH as mess... stupid stable API
         self._alg = alg  # The algorithm to define in this dialog. It is an instance of QgsProcessingAlgorithm
