@@ -216,6 +216,14 @@ results are invalid due to changes elsewhere in the model).
 .. versionadded:: 4.2
 %End
 
+    void registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator );
+%Docstring
+Register a Processing widget context generator class that will be used
+to retrieve a widget context for the scene when required.
+
+.. versionadded:: 4.4
+%End
+
   signals:
 
     void rebuildRequired();

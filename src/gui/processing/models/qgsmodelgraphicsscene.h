@@ -34,6 +34,7 @@ class QgsProcessingModelGroupBox;
 class QgsMessageBar;
 class QgsModelArrowItem;
 class QgsProcessingModelFeedback;
+class QgsProcessingWidgetContextGenerator;
 
 ///@cond NOT_STABLE
 
@@ -229,6 +230,13 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void flagChildrenAsOutdated( const QSet< QString > &children );
 
+    /**
+     * Register a Processing widget context generator class that will be used to retrieve
+     * a widget context for the scene when required.
+     * \since QGIS 4.4
+     */
+    void registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator );
+
   signals:
 
     /**
@@ -333,6 +341,8 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QMap<QString, long long> mLastResultCount;
 
     static constexpr int SCENE_COMPONENT_MARGIN = 500;
+
+    QgsProcessingWidgetContextGenerator *mWidgetContextGenerator = nullptr;
 
     QgsMessageBar *mMessageBar = nullptr;
 };
