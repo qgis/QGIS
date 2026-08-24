@@ -29,9 +29,10 @@ An interface for objects which can create Processing contexts.
 This method needs to be reimplemented in all classes which implement
 this interface and return a Processing context.
 
-Note that ownership of the context is not transferred - it is intended
-that subclasses return a pointer to a context which they have already
-created and own.
+.. note::
+
+   Ownership of the context is not transferred - it is intended that subclasses
+   return a pointer to a context which they have already created and own.
 %End
 
     virtual ~QgsProcessingContextGenerator();
@@ -271,6 +272,28 @@ Sets the associated model designer ``dialog``, if applicable.
 %End
 
 };
+
+class QgsProcessingWidgetContextGenerator
+{
+%Docstring(signature="appended")
+An interface for objects which can create Processing widget contexts.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingwidgetwrapper.h"
+%End
+  public:
+    virtual QgsProcessingParameterWidgetContext createWidgetContext() = 0;
+%Docstring
+This method needs to be reimplemented in all classes which implement
+this interface and return a Processing widget context.
+%End
+
+    virtual ~QgsProcessingWidgetContextGenerator();
+};
+
 
 
 class QgsAbstractProcessingParameterWidgetWrapper : QObject, QgsExpressionContextGenerator
