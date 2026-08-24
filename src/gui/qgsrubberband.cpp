@@ -530,8 +530,16 @@ void QgsRubberBand::paint( QPainter *p )
       {
         for ( const QPolygonF &ring : shape )
         {
-          for ( const QPointF &point : ring )
+          for ( auto it = ring.constBegin(); it != ring.constEnd(); ++it )
           {
+            if ( mGeometryType == Qgis::GeometryType::Polygon )
+            {
+              // In the case of polygon, we skip the last point of a ring as it's the same as the first point
+              // So it's not rendered twice.
+              if ( it == ring.constBegin() )
+                continue;
+            }
+            const QPointF point = *it;
             markerSymbol->renderPoint( point, nullptr, context );
           }
         }
