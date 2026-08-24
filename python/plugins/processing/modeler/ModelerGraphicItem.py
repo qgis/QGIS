@@ -32,10 +32,8 @@ from qgis.gui import (
     QgsModelParameterGraphicItem,
     QgsProcessingContextGenerator,
     QgsProcessingParameterDefinitionDialog,
-    QgsProcessingParameterWidgetContext,
 )
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.utils import iface
 
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
@@ -67,19 +65,6 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
 
         self.context_generator = ContextGenerator(self.processing_context)
 
-    def create_widget_context(self):
-        """
-        Returns a new widget context for use in the model editor
-        """
-        widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setMapCanvas(iface.mapCanvas())
-            widget_context.setActiveLayer(iface.activeLayer())
-
-        widget_context.setModel(self.model())
-        return widget_context
-
     def edit(self, edit_comment=False):
         existing_param = self.model().parameterDefinition(
             self.component().parameterName()
@@ -108,7 +93,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
         else:
             # yay, use new API!
             context = createContext()
-            widget_context = self.create_widget_context()
+            widget_context = self.createWidgetContext()
             dlg = QgsProcessingParameterDefinitionDialog(
                 type=existing_param.type(),
                 context=context,

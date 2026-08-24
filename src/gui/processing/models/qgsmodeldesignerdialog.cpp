@@ -528,6 +528,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   mScene->setLastRunResult( mLastResult, mLayerStore );
   mScene->setModel( mModel.get() );
   mScene->setMessageBar( mMessageBar );
+  mScene->registerWidgetContextGenerator( this );
 
   QgsSettings settings;
   const bool showFeatureCount = settings.value( u"/Processing/Modeler/ShowFeatureCount"_s, true ).toBool();

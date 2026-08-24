@@ -11,7 +11,7 @@
 
 
 
-class QgsModelComponentGraphicItem : QGraphicsObject
+class QgsModelComponentGraphicItem : QGraphicsObject, QgsProcessingWidgetContextGenerator
 {
 %Docstring(signature="appended")
 Base class for graphic items representing model components in the model
@@ -240,6 +240,17 @@ Returns the list of outgoing arrow items originating at this item.
 
 .. versionadded:: 4.2
 %End
+
+    void registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator );
+%Docstring
+Register a Processing widget context generator class that will be used
+to retrieve a widget context for the item when required.
+
+.. versionadded:: 4.4
+%End
+
+    virtual QgsProcessingParameterWidgetContext createWidgetContext();
+
 
   signals:
 
