@@ -255,18 +255,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         scene.createItems(self.model(), context)
         scene.updateBounds()
 
-    def createWidgetContext(self):
-        """
-        Returns a new widget context for use in the model editor
-        """
-        widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setMapCanvas(iface.mapCanvas())
-            widget_context.setActiveLayer(iface.activeLayer())
-        widget_context.setModel(self.model())
-        return widget_context
-
     def autogenerate_parameter_name(self, parameter):
         """
         Automatically generates and sets a new parameter's name, based on the parameter's

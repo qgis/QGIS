@@ -35,6 +35,7 @@
 #include "qgspanelwidget.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingalgorithmwidgetbase.h"
+#include "qgsprocessingguiregistry.h"
 #include "qgsprocessinghelpeditorwidget.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingmodelfeedback.h"
@@ -568,7 +569,15 @@ QgsProcessingFeedback *QgsModelDesignerDialog::createFeedback()
   connect( result.get(), &QgsProcessingModelFeedback::childResultReported, this, [this]( const QString &childId, const QgsProcessingModelChildAlgorithmResult & ) {
     mOutdatedChildResults.remove( childId );
   } );
+
   return result.release();
+}
+
+QgsProcessingParameterWidgetContext QgsModelDesignerDialog::createWidgetContext()
+{
+  QgsProcessingParameterWidgetContext context = QgsGui::processingGuiRegistry()->createWidgetContext();
+  context.setModel( model() );
+  return context;
 }
 
 void QgsModelDesignerDialog::activate()
