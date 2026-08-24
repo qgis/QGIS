@@ -95,7 +95,9 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         if iface is not None:
             self.toolBar.setIconSize(iface.iconSize())
-            self.setStyleSheet(iface.mainWindow().styleSheet())
+
+        self.setStyleSheet(QgsGui.applicationStyleSheet())
+        QgsGui.instance().applicationStyleSheetChanged.connect(self.setStyleSheet)
 
         self.actionOpenScript.setIcon(
             QgsApplication.getThemeIcon("/mActionScriptOpen.svg")
