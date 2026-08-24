@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "qgis.h"
+#include "qgis_app.h"
 #include "qgsguiutils.h"
 #include "qgsoptionsdialogbase.h"
 #include "qgssettingstree.h"
@@ -44,7 +45,7 @@ class QgsSettingsEntryStringList;
 /**
  * \brief Plugin manager for browsing, (un)installing and (un)loading plugins
 */
-class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManagerBase
+class APP_EXPORT QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManagerBase
 {
     Q_OBJECT
   public:

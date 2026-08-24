@@ -59,6 +59,7 @@ set(TESTS
   testqgsmaptoolreverseline.cpp
   testqgsmaptooltrimextendfeature.cpp
   testqgsprojectproperties.cpp
+  testqgspluginmanagervote.cpp
   testqgsapplayoutvaliditychecks.cpp
   testqgsmeshcalculatordialog.cpp
   testqgsgpsintegration.cpp

@@ -169,6 +169,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   voteLabel->hide();
   voteSlider->hide();
   voteSubmit->hide();
+  connect( voteSlider, &QSlider::actionTriggered, voteSubmit, [this] { voteSubmit->setEnabled( true ); } );
   connect( voteSubmit, &QPushButton::clicked, this, &QgsPluginManager::submitVote );
 
   // Init the message bar instance
@@ -686,6 +687,8 @@ void QgsPluginManager::pluginItemChanged( QStandardItem *item )
 
 void QgsPluginManager::showPluginDetails( QStandardItem *item )
 {
+  voteSubmit->setEnabled( false );
+
   const QMap<QString, QString> *metadata = pluginMetadata( item->data( PLUGIN_BASE_NAME_ROLE ).toString() );
 
   if ( !metadata )
@@ -747,8 +750,6 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     voteLabel->show();
     voteSlider->show();
     voteSubmit->show();
-    QgsDebugMsgLevel( u"vote slider:%1"_s.arg( std::round( metadata->value( "average_vote" ).toFloat() ) ), 2 );
-    voteSlider->setValue( std::round( metadata->value( "average_vote" ).toFloat() ) );
     mCurrentPluginId = metadata->value( "plugin_id" ).toInt();
   }
   else
