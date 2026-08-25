@@ -36,6 +36,7 @@
 
 #define SIP_NO_FILE
 
+class Qgs3DMapScene;
 class QgsGeometry;
 class QgsAbstract3DEngine;
 class QgsPoint;
@@ -91,7 +92,7 @@ class _3D_EXPORT QgsRubberBand3D
       Circle
     };
 
-    QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
+    QgsRubberBand3D( Qgs3DMapScene *scene, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
     ~QgsRubberBand3D();
 
     //! Returns the rubber band width in pixels
