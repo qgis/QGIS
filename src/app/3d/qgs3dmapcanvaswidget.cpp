@@ -93,7 +93,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mToolbarMenu->setObjectName( u"mToolbarMenu"_s );
 
   QToolBar *toolBar = new QToolBar( this );
-  toolBar->setIconSize( QgisApp::instance()->iconSize( isDocked ) );
+  toolBar->setIconSize( QgsGui::iconSize( isDocked ? Qgis::UserInterfaceIconType::DockedToolbar :Qgis::UserInterfaceIconType::MainWindowToolbar ) ) );
 
   QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ), tr( "Camera Control" ), this, &Qgs3DMapCanvasWidget::cameraControl );
   actionCameraControl->setCheckable( true );
@@ -489,7 +489,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   QAction *dockAction = mDockableWidgetHelper->createDockUndockAction( tr( "Dock 3D Map View" ), this );
   toolBar->addAction( dockAction );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() { QgisApp::instance()->close3DMapView( canvasName() ); } );
-  connect( dockAction, &QAction::toggled, this, [toolBar]( const bool isSmallSize ) { toolBar->setIconSize( QgisApp::instance()->iconSize( isSmallSize ) ); } );
+  connect( dockAction, &QAction::toggled, this, [toolBar]( const bool isSmallSize ) {
+    toolBar->setIconSize( QgsGui::iconSize( isSmallSize ? Qgis::UserInterfaceIconType::DockedToolbar : Qgis::UserInterfaceIconType::MainWindowToolbar ) );
+  } );
 
   updateLayerRelatedActions( QgisApp::instance()->activeLayer() );
   mEditingToolBar->setVisible( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );

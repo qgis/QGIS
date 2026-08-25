@@ -341,6 +341,13 @@ class GUI_EXPORT QgsGui : public QObject
      */
     static bool hasWebEngine();
 
+    /**
+     * Returns the desired size for user interface icons.
+     *
+     * \since QGIS 4.4
+     */
+    static QSize iconSize( Qgis::UserInterfaceIconType iconType = Qgis::UserInterfaceIconType::MainWindowToolbar );
+
     ///@cond PRIVATE
     void emitOptionsChanged() SIP_SKIP;
     ///@endcond
