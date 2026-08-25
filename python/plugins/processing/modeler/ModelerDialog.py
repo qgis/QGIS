@@ -20,7 +20,6 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
-import re
 import sys
 from pathlib import Path
 
@@ -29,7 +28,6 @@ from qgis.core import (
     QgsApplication,
     QgsFileUtils,
     QgsProcessing,
-    QgsProcessingContext,
     QgsProcessingModelAlgorithm,
     QgsProcessingModelChildAlgorithm,
     QgsProcessingModelParameter,
@@ -40,19 +38,14 @@ from qgis.gui import (
     QgsGui,
     QgsModelDesignerDialog,
     QgsModelGraphicsScene,
-    QgsProcessingAlgorithmWidgetBase,
     QgsProcessingContextGenerator,
     QgsProcessingParameterDefinitionDialog,
-    QgsProcessingParametersGenerator,
-    QgsProcessingParameterWidgetContext,
 )
 from qgis.PyQt.QtCore import (
-    QCoreApplication,
     QDir,
     QFileInfo,
     QPoint,
     QPointF,
-    QRectF,
     QUrl,
     pyqtSignal,
 )
@@ -63,7 +56,6 @@ from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
 )
-from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
