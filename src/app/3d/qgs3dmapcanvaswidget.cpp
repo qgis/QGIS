@@ -1502,7 +1502,7 @@ void Qgs3DMapCanvasWidget::updateProfileCursorPosition( QgsElevationProfile *pro
 
   if ( !data.cursorLineRubberBand )
   {
-    data.cursorLineRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), Qgis::GeometryType::Line );
+    data.cursorLineRubberBand = std::make_unique<QgsRubberBand3D>( mCanvas->scene(), Qgis::GeometryType::Line );
     data.cursorLineRubberBand->setColor( QColor( 0, 0, 0, 200 ) );
     data.cursorLineRubberBand->setWidth( 3 );
     data.cursorLineRubberBand->setMarkersEnabled( false );
@@ -1561,7 +1561,7 @@ void Qgs3DMapCanvasWidget::updateProfileCursorPosition( QgsElevationProfile *pro
 
   if ( !data.cursorPolygonRubberBand )
   {
-    data.cursorPolygonRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), Qgis::GeometryType::Polygon );
+    data.cursorPolygonRubberBand = std::make_unique<QgsRubberBand3D>( mCanvas->scene(), Qgis::GeometryType::Polygon );
     data.cursorPolygonRubberBand->setColor( QColor( 50, 50, 50, 100 ) );
     data.cursorPolygonRubberBand->setWidth( 0 );
     data.cursorPolygonRubberBand->setMarkersEnabled( false );
@@ -1656,7 +1656,7 @@ void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profil
 
   if ( !data.rubberBandZMin )
   {
-    data.rubberBandZMin = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), geomType );
+    data.rubberBandZMin = std::make_unique<QgsRubberBand3D>( mCanvas->scene(), geomType );
     data.rubberBandZMin->setColor( QColor( 200, 200, 200, 200 ) );
     data.rubberBandZMin->setOutlineColor( QColor( 200, 200, 200, 200 ) );
     data.rubberBandZMin->setWidth( 3 );
@@ -1666,7 +1666,7 @@ void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profil
 
   if ( !data.rubberBandZMax )
   {
-    data.rubberBandZMax = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), geomType );
+    data.rubberBandZMax = std::make_unique<QgsRubberBand3D>( mCanvas->scene(), geomType );
     data.rubberBandZMax->setColor( QColor( 200, 200, 200, 200 ) );
     data.rubberBandZMax->setOutlineColor( QColor( 200, 200, 200, 200 ) );
     data.rubberBandZMax->setWidth( 3 );
@@ -1764,7 +1764,7 @@ void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profil
 
     if ( !data.rubberBandSideLines[i] )
     {
-      data.rubberBandSideLines[i] = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), Qgis::GeometryType::Line );
+      data.rubberBandSideLines[i] = std::make_unique<QgsRubberBand3D>( mCanvas->scene(), Qgis::GeometryType::Line );
       data.rubberBandSideLines[i]->setColor( QColor( 200, 200, 200, 150 ) );
       data.rubberBandSideLines[i]->setWidth( 3 );
       data.rubberBandSideLines[i]->setMarkersEnabled( false );
