@@ -44,6 +44,7 @@ from qgis.gui import (
     QgsProcessingContextGenerator,
     QgsProcessingParameterDefinitionDialog,
     QgsProcessingParametersGenerator,
+    QgsProcessingParameterWidgetContext,
 )
 from qgis.PyQt.QtCore import (
     QCoreApplication,
@@ -92,8 +93,9 @@ class ModelerDialog(QgsModelDesignerDialog):
     def __init__(self, model=None, parent=None):
         super().__init__(parent)
 
-        if iface is not None:
-            self.toolbar().setIconSize(iface.iconSize())
+        self.toolbar().setIconSize(
+            QgsGui.iconSize(Qgis.UserInterfaceIconType.DockedToolbar)
+        )
 
         self.setStyleSheet(QgsGui.applicationStyleSheet())
         QgsGui.instance().applicationStyleSheetChanged.connect(self.setStyleSheet)

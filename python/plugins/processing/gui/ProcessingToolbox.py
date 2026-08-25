@@ -24,6 +24,7 @@ import os
 import warnings
 
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsMapLayerType,
     QgsProcessingAlgorithm,
@@ -72,7 +73,9 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.setAllowedAreas(
             Qt.DockWidgetArea.LeftDockWidgetArea | Qt.DockWidgetArea.RightDockWidgetArea
         )
-        self.processingToolbar.setIconSize(iface.iconSize(True))
+        self.processingToolbar.setIconSize(
+            QgsGui.iconSize(Qgis.UserInterfaceIconType.DockedToolbar)
+        )
 
         self.algorithmTree.setRegistry(
             QgsApplication.processingRegistry(),
