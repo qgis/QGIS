@@ -51,7 +51,6 @@ typedef SInt32 SRefCon;
 #include "qgsproviderregistry.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
-#include "qgserror.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -246,21 +245,18 @@ int main( int argc, char *argv[] )
 
   const QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( profilesPath );
   QgsUserProfileManager manager( rootProfileFolder );
-  const QString requestedProfile = profileName.isEmpty() ? manager.defaultProfileName() : profileName;
+  const bool hasNamedProfile = !profileName.isEmpty();
+  const QString requestedProfile = hasNamedProfile ? profileName : manager.defaultProfileName();
 
-  // getProfile() hides creation errors, so create explicitly. A missing folder
-  // is fatal; a failed qgis.db copy is tolerated, as QGIS does elsewhere.
-  if ( !manager.profileExists( requestedProfile ) )
+  // A named profile must already exist -- it carries connections and plugin
+  // preferences that only QGIS Desktop sets up. The default is created on demand.
+  if ( hasNamedProfile && !manager.profileExists( requestedProfile ) )
   {
-    const QgsError error = manager.createUserProfile( requestedProfile );
-    if ( !error.isEmpty() && !manager.profileExists( requestedProfile ) )
-    {
-      std::cerr << "Could not create profile " << requestedProfile.toLocal8Bit().constData() << ": " << error.summary().toLocal8Bit().constData() << "\n";
-      return 1;
-    }
+    std::cerr << "Profile '" << requestedProfile.toLocal8Bit().constData() << "' does not exist in '" << rootProfileFolder.toLocal8Bit().constData() << "'. Create and configure it in QGIS Desktop before using qgis_process.\n";
+    return 1;
   }
 
-  std::unique_ptr<QgsUserProfile> profile = manager.getProfile( requestedProfile, false );
+  std::unique_ptr<QgsUserProfile> profile = manager.getProfile( requestedProfile, !hasNamedProfile );
   QgsApplication::init( profile->folder() );
   QgsApplication::initQgis();
 

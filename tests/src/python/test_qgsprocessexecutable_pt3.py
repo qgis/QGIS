@@ -84,10 +84,18 @@ class TestQgsProcessExecutablePt3(QgisTestCase):
         """Returns a fresh, isolated profiles root under the class temp dir."""
         return tempfile.mkdtemp(dir=self.TMP_DIR)
 
+    def add_existing_profile(self, profiles_root, profile_name):
+        """Adds an existing profile directory under the given profiles root."""
+        profile_dir = os.path.join(profiles_root, "profiles", profile_name)
+        os.makedirs(profile_dir, exist_ok=True)
+        return profile_dir
+
     def add_canary_script(self, profiles_root, profile_name):
         """Writes the canary script into a profile's scripts folder."""
         scripts_dir = os.path.join(
-            profiles_root, "profiles", profile_name, "processing", "scripts"
+            self.add_existing_profile(profiles_root, profile_name),
+            "processing",
+            "scripts",
         )
         os.makedirs(scripts_dir, exist_ok=True)
         with open(os.path.join(scripts_dir, "profile_canary.py"), "w") as f:
@@ -97,6 +105,7 @@ class TestQgsProcessExecutablePt3(QgisTestCase):
         rc, output, err = self.run_process(["--help"])
         self.assertEqual(rc, 0)
         self.assertIn("--profile name", output)
+        self.assertIn("Load an existing named profile", output)
         self.assertIn("--profiles-path", output)
         self.assertIn("-S", output)
 
@@ -105,6 +114,7 @@ class TestQgsProcessExecutablePt3(QgisTestCase):
         # is selected and absent under a different profile in the same root.
         root = self.make_profiles_root()
         self.add_canary_script(root, "alpha")
+        self.add_existing_profile(root, "beta")
 
         rc, output, err = self.run_process(
             ["--profiles-path", root, "--profile", "alpha", "list"]
@@ -124,6 +134,7 @@ class TestQgsProcessExecutablePt3(QgisTestCase):
         root_a = self.make_profiles_root()
         root_b = self.make_profiles_root()
         self.add_canary_script(root_a, "alpha")
+        self.add_existing_profile(root_b, "alpha")
 
         rc, output, err = self.run_process(
             ["--profiles-path", root_a, "--profile", "alpha", "list"]
@@ -153,6 +164,7 @@ class TestQgsProcessExecutablePt3(QgisTestCase):
 
     def testProfileJsonCompatibility(self):
         root = self.make_profiles_root()
+        self.add_existing_profile(root, "alpha")
         rc, output, err = self.run_process(
             ["--profiles-path", root, "--profile", "alpha", "list", "--json"]
         )
@@ -166,6 +178,7 @@ class TestQgsProcessExecutablePt3(QgisTestCase):
         # Global options are parsed before "--"; the parameters after it must be
         # left untouched, so the algorithm still runs with the selected profile.
         root = self.make_profiles_root()
+        self.add_existing_profile(root, "alpha")
         output_file = os.path.join(self.TMP_DIR, "boundary_centroid.shp")
         rc, output, err = self.run_process(
             [
@@ -184,19 +197,18 @@ class TestQgsProcessExecutablePt3(QgisTestCase):
         self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
         self.assertTrue(os.path.exists(output_file))
-        self.assertTrue(os.path.isdir(os.path.join(root, "profiles", "alpha")))
 
     def testProfilesPathWithSpaces(self):
         root = self.make_profiles_root()
         spaced = os.path.join(root, "profiles root with spaces")
         os.makedirs(spaced, exist_ok=True)
+        self.add_existing_profile(spaced, "alpha")
         rc, output, err = self.run_process(
             ["--profiles-path", spaced, "--profile", "alpha", "list", "--json"]
         )
         self.assertEqual(rc, 0)
         res = json.loads(output)
         self.assertIn("providers", res)
-        self.assertTrue(os.path.isdir(os.path.join(spaced, "profiles", "alpha")))
 
     def testVersionAndHelpAfterProfileOptions(self):
         # A profile option with a valid value in front of --version/--help must
@@ -244,7 +256,7 @@ class TestQgsProcessExecutablePt3(QgisTestCase):
     def testEmptyCustomConfigPathFallsBackToStandardLocation(self):
         # A set-but-empty QGIS_CUSTOM_CONFIG_PATH must fall back to the standard
         # data location, not resolve to a "profiles" folder at the filesystem
-        # root. The data location is redirected under a temporary root.
+        # root. qgis_process must report the missing profile without creating it.
         if not sys.platform.startswith("linux"):
             self.skipTest("relies on XDG_DATA_HOME redirecting the data location")
         root = self.make_profiles_root()
@@ -253,24 +265,25 @@ class TestQgsProcessExecutablePt3(QgisTestCase):
             ["--profile", "emptyenvtest", "list"],
             {"QGIS_CUSTOM_CONFIG_PATH": "", "XDG_DATA_HOME": xdg},
         )
-        self.assertEqual(rc, 0)
+        self.assertEqual(rc, 1)
+        self.assertIn("does not exist", err.lower())
+        self.assertIn(os.path.abspath(xdg), err)
         created_under_xdg = any("emptyenvtest" in dirs for _, dirs, _ in os.walk(xdg))
-        self.assertTrue(created_under_xdg)
+        self.assertFalse(created_under_xdg)
 
     def testProfilesPathOverridesCustomConfigPath(self):
         # An explicit --profiles-path takes precedence over the environment.
         env_root = self.make_profiles_root()
         cli_root = self.make_profiles_root()
         self.add_canary_script(env_root, "alpha")
+        self.add_existing_profile(cli_root, "alpha")
         rc, output, err = self.run_process(
             ["--profiles-path", cli_root, "--profile", "alpha", "list"],
             {"QGIS_CUSTOM_CONFIG_PATH": env_root},
         )
         self.assertEqual(rc, 0)
-        # the script lives under the environment root, which must be ignored...
+        # The script lives under the environment root, which must be ignored.
         self.assertNotIn("profileisolationcanary", output.lower())
-        # ...and the profile must have been created under the command line root
-        self.assertTrue(os.path.isdir(os.path.join(cli_root, "profiles", "alpha")))
 
     def testProfilesPathUsesConfiguredDefaultProfile(self):
         # With --profiles-path but no --profile, the default profile recorded in
@@ -301,18 +314,27 @@ class TestQgsProcessExecutablePt3(QgisTestCase):
             self.assertEqual(rc, 1, msg=f"expected failure for {arguments}")
             self.assertIn("requires", err.lower())
 
-    def testProfilesPathPointingAtFileFails(self):
-        # A profiles path that cannot hold a profiles folder must fail cleanly,
-        # reporting the reason, instead of continuing with a half-created profile.
-        blocker = os.path.join(self.TMP_DIR, "not_a_directory")
-        with open(blocker, "w") as f:
-            f.write("")
+    def testMissingProfileFailsWithoutCreatingIt(self):
+        root = self.make_profiles_root()
+        profile_dir = os.path.join(root, "profiles", "missing")
         rc, output, err = self.run_process(
-            ["--profiles-path", blocker, "--profile", "alpha", "list"]
+            ["--profiles-path", root, "--profile", "missing", "list"]
         )
-        # exactly 1, so that a crash is not mistaken for a clean failure
+        # Exactly 1, so that a crash is not mistaken for a clean failure.
         self.assertEqual(rc, 1)
-        self.assertIn("could not create profile", err.lower())
+        self.assertIn("Profile 'missing' does not exist", err)
+        self.assertIn(os.path.join(root, "profiles"), err)
+        self.assertIn("QGIS Desktop", err)
+        self.assertFalse(os.path.exists(profile_dir))
+
+    def testDefaultProfileIsCreatedWhenMissing(self):
+        # No --profile: a fresh profiles root must still work headlessly, with
+        # the default profile created on demand, as it did before this option.
+        root = self.make_profiles_root()
+        rc, output, err = self.run_process(["--profiles-path", root, "list"])
+        self.assertEqual(rc, 0)
+        self.assertIn("available algorithms", output.lower())
+        self.assertTrue(os.path.isdir(os.path.join(root, "profiles", "default")))
 
     def testMalformedProfileOptionIsAnErrorEvenBeforeVersion(self):
         # A malformed profile option is always an error, also when --version or
@@ -349,13 +371,14 @@ class TestQgsProcessExecutablePt3(QgisTestCase):
         self.assertEqual(rc, 0)
         self.assertTrue(os.path.exists(output_file))
         self.assertFalse(os.path.isdir(os.path.join(root, "profiles", "ghost")))
-        self.assertTrue(os.path.isdir(os.path.join(root, "profiles", "default")))
 
     def testProfilePluginStateIsolation(self):
         # Enabling a plugin writes into the active profile's settings; a second
         # profile under the same root must keep its own state. This is the
         # per-profile isolation #44783 is about.
         root = self.make_profiles_root()
+        self.add_existing_profile(root, "alpha")
+        self.add_existing_profile(root, "beta")
 
         def grass_enabled(profile):
             rc, output, err = self.run_process(
