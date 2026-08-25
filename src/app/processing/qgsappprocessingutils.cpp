@@ -18,16 +18,16 @@
 #include "qgisapp.h"
 
 QgsAppProcessingWidgetContextGenerator::QgsAppProcessingWidgetContextGenerator( QgisApp *app )
-  : mApp( app )
+  : mQgisApp( app )
 {}
 
 QgsProcessingParameterWidgetContext QgsAppProcessingWidgetContextGenerator::createWidgetContext()
 {
   QgsProcessingParameterWidgetContext context;
-  context.setActiveLayer( mApp->activeLayer() );
-  context.setBrowserModel( mApp->browserModel() );
-  context.setMapCanvas( mApp->mapCanvas() );
-  context.setMessageBar( mApp->messageBar() );
+  context.setActiveLayer( mQgisApp->activeLayer() );
+  context.setBrowserModel( mQgisApp->browserModel() );
+  context.setMapCanvas( mQgisApp->mapCanvas() );
+  context.setMessageBar( mQgisApp->messageBar() );
   context.setProject( QgsProject::instance() );
   return context;
 }
