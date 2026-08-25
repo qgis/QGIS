@@ -18,6 +18,7 @@
 #include "qgswmsdimensiondialog.h"
 
 #include "qgsfieldcombobox.h"
+#include "qgshelp.h"
 #include "qgsvectorlayer.h"
 
 #include <QPushButton>
@@ -50,6 +51,7 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsWmsDimensionDialog::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsWmsDimensionDialog::reject );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] { QgsHelp::openHelp( u"working_with_vector/vector_properties.html#vectorservermenu"_s ); } );
   connect( mFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsWmsDimensionDialog::fieldChanged );
   connect( mEndFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsWmsDimensionDialog::fieldChanged );
   connect( mNameComboBox, &QComboBox::editTextChanged, this, &QgsWmsDimensionDialog::nameChanged );
