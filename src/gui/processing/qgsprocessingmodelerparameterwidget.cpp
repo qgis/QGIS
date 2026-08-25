@@ -87,7 +87,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
   mStaticWidgetWrapper.reset( QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( mParameterDefinition, Qgis::ProcessingMode::Modeler ) );
   if ( mStaticWidgetWrapper )
   {
-    connect( mStaticWidgetWrapper.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsProcessingModelerParameterWidget::changed );
+    connect( mStaticWidgetWrapper.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsProcessingModelerParameterWidget::emitChangedSignal );
     QWidget *widget = mStaticWidgetWrapper->createWrappedWidget( context );
     if ( widget )
     {
@@ -105,7 +105,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
   mExpressionWidget = new QgsExpressionLineEdit();
   mExpressionWidget->registerExpressionContextGenerator( this );
   mStackedWidget->addWidget( mExpressionWidget );
-  connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsProcessingModelerParameterWidget::changed );
+  connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsProcessingModelerParameterWidget::emitChangedSignal );
 
   mModelInputCombo = new QComboBox();
   mModelInputCombo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
@@ -116,7 +116,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
   QWidget *hWidget2 = new QWidget();
   hWidget2->setLayout( hLayout2 );
   mStackedWidget->addWidget( hWidget2 );
-  connect( mModelInputCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsProcessingModelerParameterWidget::changed );
+  connect( mModelInputCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsProcessingModelerParameterWidget::emitChangedSignal );
 
   mChildOutputCombo = new QComboBox();
   mChildOutputCombo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
@@ -127,7 +127,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
   QWidget *hWidget3 = new QWidget();
   hWidget3->setLayout( hLayout3 );
   mStackedWidget->addWidget( hWidget3 );
-  connect( mChildOutputCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsProcessingModelerParameterWidget::changed );
+  connect( mChildOutputCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsProcessingModelerParameterWidget::emitChangedSignal );
 
   if ( mParameterDefinition->isDestination() )
   {
@@ -139,7 +139,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
     QWidget *hWidget4 = new QWidget();
     hWidget4->setLayout( hLayout4 );
     mStackedWidget->addWidget( hWidget4 );
-    connect( mModelOutputName, &QgsFilterLineEdit::valueChanged, this, &QgsProcessingModelerParameterWidget::changed );
+    connect( mModelOutputName, &QgsFilterLineEdit::valueChanged, this, &QgsProcessingModelerParameterWidget::emitChangedSignal );
   }
 
   hLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -186,9 +186,11 @@ void QgsProcessingModelerParameterWidget::setWidgetValue( const QgsProcessingMod
   mOutputName = value.outputName();
   mExpression = value.expression();
 
+  mBlockChangesSignal++;
   updateUi();
   setSourceType( value.source() );
-  emit changed();
+  mBlockChangesSignal--;
+  emitChangedSignal();
 }
 
 void QgsProcessingModelerParameterWidget::setWidgetValue( const QList<QgsProcessingModelChildParameterSource> &values )
@@ -201,18 +203,22 @@ void QgsProcessingModelerParameterWidget::setWidgetValue( const QList<QgsProcess
     for ( const QgsProcessingModelChildParameterSource &v : values )
       r << QVariant::fromValue( v );
     mStaticValue = r;
+    mBlockChangesSignal++;
     updateUi();
     setSourceType( Qgis::ProcessingModelChildParameterSource::StaticValue );
-    emit changed();
+    mBlockChangesSignal--;
+    emitChangedSignal();
   }
 }
 
 void QgsProcessingModelerParameterWidget::setToModelOutput( const QString &value )
 {
+  mBlockChangesSignal++;
   if ( mModelOutputName )
     mModelOutputName->setText( value );
   setSourceType( Qgis::ProcessingModelChildParameterSource::ModelOutput );
-  emit changed();
+  mBlockChangesSignal--;
+  emitChangedSignal();
 }
 
 bool QgsProcessingModelerParameterWidget::isModelOutput() const
@@ -348,7 +354,17 @@ void QgsProcessingModelerParameterWidget::sourceMenuAboutToShow()
 void QgsProcessingModelerParameterWidget::sourceMenuActionTriggered( QAction *action )
 {
   const Qgis::ProcessingModelChildParameterSource sourceType = action->data().value<Qgis::ProcessingModelChildParameterSource>();
+  mBlockChangesSignal++;
   setSourceType( sourceType );
+  mBlockChangesSignal--;
+  emitChangedSignal();
+}
+
+void QgsProcessingModelerParameterWidget::emitChangedSignal()
+{
+  if ( mBlockChangesSignal )
+    return;
+
   emit changed();
 }
 
