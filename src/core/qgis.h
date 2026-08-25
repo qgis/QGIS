@@ -7048,6 +7048,18 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( RubberBandComponents )
 
     /**
+     * Icon types for icons shown in the user interface.
+     *
+     * \since QGIS 4.4
+     */
+    enum class UserInterfaceIconType : int
+    {
+      MainWindowToolbar, //!< Main window toolbar icons
+      DockedToolbar,     //!< Toolbars for docked windows
+    };
+    Q_ENUM( UserInterfaceIconType );
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;

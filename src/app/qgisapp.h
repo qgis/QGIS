@@ -950,12 +950,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapLayer *activeLayer();
 
     /**
-     * Returns the toolbar icon size. If \a dockedToolbar is TRUE, the icon size
-     * for toolbars contained within docks is returned.
-     */
-    QSize iconSize( bool dockedToolbar = false ) const;
-
-    /**
       * Checks available datum transforms and ask user if several are available and none
       * is chosen. Dialog is shown only if global option is set accordingly.
       * \returns TRUE if a datum transform has been specifically chosen by user or only one is available.

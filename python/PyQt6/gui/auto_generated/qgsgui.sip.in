@@ -286,6 +286,13 @@ Checks whether QWebEngineView is available to display HTML content.
 .. versionadded:: 3.42
 %End
 
+    static QSize iconSize( Qgis::UserInterfaceIconType iconType = Qgis::UserInterfaceIconType::MainWindowToolbar );
+%Docstring
+Returns the desired size for user interface icons.
+
+.. versionadded:: 4.4
+%End
+
 
     static QString applicationStyleSheet();
 %Docstring

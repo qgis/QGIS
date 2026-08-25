@@ -50,6 +50,7 @@ try:
     QgsGui.sampleColor = staticmethod(QgsGui.sampleColor)
     QgsGui.findScreenAt = staticmethod(QgsGui.findScreenAt)
     QgsGui.hasWebEngine = staticmethod(QgsGui.hasWebEngine)
+    QgsGui.iconSize = staticmethod(QgsGui.iconSize)
     QgsGui.applicationStyleSheet = staticmethod(QgsGui.applicationStyleSheet)
     QgsGui.__signal_arguments__ = {'applicationStyleSheetChanged': ['styleSheet: str']}
 except (NameError, AttributeError):

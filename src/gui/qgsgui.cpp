@@ -85,6 +85,7 @@ using namespace Qt::StringLiterals;
 #include "qgssettingsregistrycore.h"
 #include "qgsplotregistry.h"
 #include "qgsplotwidget.h"
+#include "qgsguiutils.h"
 
 #include <QFileInfo>
 #include <QPushButton>
@@ -503,6 +504,18 @@ bool QgsGui::hasWebEngine()
 #else
   return false;
 #endif
+}
+
+QSize QgsGui::iconSize( Qgis::UserInterfaceIconType iconType )
+{
+  switch ( iconType )
+  {
+    case Qgis::UserInterfaceIconType::MainWindowToolbar:
+      return QgsGuiUtils::iconSize( false );
+    case Qgis::UserInterfaceIconType::DockedToolbar:
+      return QgsGuiUtils::iconSize( true );
+  }
+  BUILTIN_UNREACHABLE
 }
 
 ///@cond PRIVATE
