@@ -54,7 +54,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry : public QgsProcessingWidgetContextGen
      * created by QgsGui.
      */
     QgsProcessingGuiRegistry();
-    ~QgsProcessingGuiRegistry();
+    ~QgsProcessingGuiRegistry() override;
 
     /**
      * Add a new configuration widget factory for customized algorithm configuration
