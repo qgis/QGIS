@@ -235,7 +235,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QgsCollapsibleGroupBox" name="groupBox">
      <property name="title">
       <string>Metadata URL</string>
      </property>
@@ -260,6 +260,9 @@
           <property name="text">
            <string notr="true"/>
           </property>
+          <property name="toolTip">
+           <string>Add new metadata URL</string>
+          </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
@@ -270,6 +273,9 @@
          <widget class="QPushButton" name="buttonRemoveMetadataUrl">
           <property name="text">
            <string notr="true"/>
+          </property>
+          <property name="toolTip">
+           <string>Remove selected metadata URL</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
