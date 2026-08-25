@@ -110,12 +110,12 @@
      </item>
      <item>
       <property name="text">
-       <string>Min value</string>
+       <string>Minimum value</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Max value</string>
+       <string>Maximum value</string>
       </property>
      </item>
      <item>
@@ -138,7 +138,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>
