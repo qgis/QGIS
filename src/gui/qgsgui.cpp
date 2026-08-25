@@ -508,12 +508,16 @@ bool QgsGui::hasWebEngine()
 
 QSize QgsGui::iconSize( Qgis::UserInterfaceIconType iconType )
 {
+  const QgsSettings s;
+  const int w = s.value( u"/qgis/toolbarIconSize"_s, 32 ).toInt();
+  QSize size( w, w );
+
   switch ( iconType )
   {
     case Qgis::UserInterfaceIconType::MainWindowToolbar:
-      return QgsGuiUtils::iconSize( false );
+      return size;
     case Qgis::UserInterfaceIconType::DockedToolbar:
-      return QgsGuiUtils::iconSize( true );
+      return QgsGuiUtils::panelIconSize( size );
   }
   BUILTIN_UNREACHABLE
 }

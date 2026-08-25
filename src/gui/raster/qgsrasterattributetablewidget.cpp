@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgscolorbutton.h"
 #include "qgsgradientcolorrampdialog.h"
+#include "qgsgui.h"
 #include "qgsmessagebar.h"
 #include "qgsrasterattributetable.h"
 #include "qgsrasterattributetableaddcolumndialog.h"
@@ -45,7 +46,7 @@ QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, Q
 
   // Create the toolbar
   QToolBar *editToolBar = new QToolBar( this );
-  editToolBar->setIconSize( QgsGuiUtils::iconSize( true ) );
+  editToolBar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
 
   mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( "/mActionEditTable.svg" ), tr( "&Edit Attribute Table" ), editToolBar );
   mActionToggleEditing->setCheckable( true );
@@ -178,7 +179,7 @@ void QgsRasterAttributeTableWidget::updateButtons()
 void QgsRasterAttributeTableWidget::setDockMode( bool dockMode )
 {
   QgsPanelWidget::setDockMode( dockMode );
-  static_cast<QToolBar *>( layout()->menuBar() )->setIconSize( QgsGuiUtils::iconSize( dockMode ) );
+  static_cast<QToolBar *>( layout()->menuBar() )->setIconSize( QgsGui::iconSize( dockMode ? Qgis::UserInterfaceIconType::DockedToolbar : Qgis::UserInterfaceIconType::MainWindowToolbar ) );
 }
 
 void QgsRasterAttributeTableWidget::setMessageBar( QgsMessageBar *bar )

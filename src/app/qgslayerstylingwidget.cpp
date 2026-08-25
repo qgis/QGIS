@@ -20,6 +20,7 @@
 #include "qgsannotationlayer.h"
 #include "qgsapplication.h"
 #include "qgsdiagramwidget.h"
+#include "qgsgui.h"
 #include "qgslabelingwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
