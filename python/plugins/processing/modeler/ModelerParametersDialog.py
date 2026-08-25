@@ -23,39 +23,24 @@ import webbrowser
 from typing import Optional
 
 from qgis.core import (
-    Qgis,
     QgsProcessingAlgorithm,
     QgsProcessingModelAlgorithm,
-    QgsProcessingModelChildAlgorithm,
-    QgsProcessingModelChildParameterSource,
-    QgsProcessingModelOutput,
-    QgsProcessingParameterDefinition,
-    QgsProject,
 )
 from qgis.gui import (
-    QgsCollapsibleGroupBox,
     QgsColorButton,
     QgsGui,
     QgsHelp,
-    QgsMessageBar,
-    QgsModelChildDependenciesWidget,
-    QgsPanelWidget,
     QgsPanelWidgetStack,
-    QgsProcessingContextGenerator,
     QgsProcessingModelConfigWidget,
-    QgsProcessingParameterWidgetContext,
-    QgsScrollArea,
+    QgsProcessingModelerParametersPanelWidget,
 )
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
     QDialog,
     QDialogButtonBox,
-    QFrame,
     QHBoxLayout,
     QLabel,
-    QLineEdit,
-    QSizePolicy,
     QTabWidget,
     QTextEdit,
     QVBoxLayout,
@@ -158,339 +143,6 @@ class ModelerParametersDialog(QDialog):
             webbrowser.open(algHelp)
 
 
-class ModelerParametersPanelWidget(QgsPanelWidget):
-    def __init__(
-        self, alg, model, algName=None, configuration=None, dialog=None, context=None
-    ):
-        super().__init__()
-        self._alg = alg  # The algorithm to define in this dialog. It is an instance of QgsProcessingAlgorithm
-        self.model = model  # The model this algorithm is going to be added to. It is an instance of QgsProcessingModelAlgorithm
-        self.childId = algName  # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
-        self.configuration = configuration
-        self.context = context
-        self.dialog = dialog
-        self.previous_output_definitions = {}
-        self.block_changes_signal = 0
-
-        class ContextGenerator(QgsProcessingContextGenerator):
-            def __init__(self, context):
-                super().__init__()
-                self.processing_context = context
-
-            def processingContext(self):
-                return self.processing_context
-
-        self.context_generator = ContextGenerator(self.context)
-
-        self.setupUi()
-        self.params = None
-
-    def algorithm(self):
-        return self._alg
-
-    def setupUi(self):
-        self.showAdvanced = False
-        self.wrappers = {}
-        self.algorithmItem = None
-
-        self.mainLayout = QVBoxLayout()
-        self.mainLayout.setContentsMargins(0, 0, 0, 0)
-
-        self.verticalLayout = QVBoxLayout()
-
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-        self.verticalLayout.addWidget(self.bar)
-
-        hLayout = QHBoxLayout()
-        hLayout.setContentsMargins(0, 0, 0, 0)
-        descriptionLabel = QLabel(self.tr("Description"))
-        self.descriptionBox = QLineEdit()
-        self.descriptionBox.setText(self._alg.displayName())
-        hLayout.addWidget(descriptionLabel)
-        hLayout.addWidget(self.descriptionBox)
-        self.descriptionBox.textChanged.connect(self.emit_changed_signal)
-
-        self.verticalLayout.addLayout(hLayout)
-        line = QFrame()
-        line.setFrameShape(QFrame.Shape.HLine)
-        line.setFrameShadow(QFrame.Shadow.Sunken)
-        self.verticalLayout.addWidget(line)
-
-        widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setMapCanvas(iface.mapCanvas())
-            widget_context.setActiveLayer(iface.activeLayer())
-
-        widget_context.setModel(self.model)
-        widget_context.setModelChildAlgorithmId(self.childId)
-
-        self.algorithmItem = (
-            QgsGui.instance()
-            .processingGuiRegistry()
-            .algorithmConfigurationWidget(self._alg)
-        )
-        if self.algorithmItem:
-            self.algorithmItem.setWidgetContext(widget_context)
-            self.algorithmItem.registerProcessingContextGenerator(
-                self.context_generator
-            )
-            if self.configuration:
-                self.algorithmItem.setConfiguration(self.configuration)
-            self.verticalLayout.addWidget(self.algorithmItem)
-
-        self.grpAdvanced = QgsCollapsibleGroupBox(self.tr("Advanced Parameters"))
-        self.grpAdvancedVLayout = QVBoxLayout()
-        self.grpAdvanced.setLayout(self.grpAdvancedVLayout)
-        self.grpAdvanced.hide()
-
-        self.verticalLayout.addWidget(self.grpAdvanced)
-
-        for param in self._alg.parameterDefinitions():
-            if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
-                self.grpAdvanced.show()
-                break
-        for param in self._alg.parameterDefinitions():
-            if (
-                param.isDestination()
-                or param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden
-            ):
-                continue
-
-            widget = QgsGui.processingGuiRegistry().createModelerParameterWidget(
-                self.model, self.childId, param, self.context
-            )
-            widget.setDialog(self.dialog)
-            widget.setWidgetContext(widget_context)
-            widget.registerProcessingContextGenerator(self.context_generator)
-            widget.changed.connect(self.emit_changed_signal)
-            self.wrappers[param.name()] = widget
-            label = widget.createLabel()
-
-            if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
-                self.grpAdvancedVLayout.addWidget(label)
-                self.grpAdvancedVLayout.addWidget(widget)
-            else:
-                # Regular parameters
-                self.verticalLayout.insertWidget(self.verticalLayout.count() - 1, label)
-                self.verticalLayout.insertWidget(
-                    self.verticalLayout.count() - 1, widget
-                )
-
-        for output in self._alg.destinationParameterDefinitions():
-            if output.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
-                continue
-
-            widget = QgsGui.processingGuiRegistry().createModelerParameterWidget(
-                self.model, self.childId, output, self.context
-            )
-            widget.setDialog(self.dialog)
-            widget.setWidgetContext(widget_context)
-            widget.registerProcessingContextGenerator(self.context_generator)
-            widget.changed.connect(self.emit_changed_signal)
-
-            self.wrappers[output.name()] = widget
-
-            label = widget.createLabel()
-            if label is not None:
-                self.verticalLayout.addWidget(label)
-
-            self.verticalLayout.addWidget(widget)
-
-        label = QLabel(" ")
-        self.verticalLayout.addWidget(label)
-        label = QLabel(self.tr("Dependencies"))
-        self.dependencies_panel = QgsModelChildDependenciesWidget(
-            self, self.model, self.childId
-        )
-        self.verticalLayout.addWidget(label)
-        self.verticalLayout.addWidget(self.dependencies_panel)
-        self.verticalLayout.addStretch(1000)
-
-        self.setPreviousValues()
-        self.verticalLayout2 = QVBoxLayout()
-        self.verticalLayout2.setSpacing(2)
-        self.verticalLayout2.setMargin(0)
-
-        self.paramPanel = QWidget()
-        self.paramPanel.setLayout(self.verticalLayout)
-        self.scrollArea = QgsScrollArea()
-        self.scrollArea.setWidget(self.paramPanel)
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollArea.setFrameStyle(QFrame.Shape.NoFrame)
-
-        self.verticalLayout2.addWidget(self.scrollArea)
-
-        w = QWidget()
-        w.setLayout(self.verticalLayout2)
-        self.mainLayout.addWidget(w)
-        self.setLayout(self.mainLayout)
-
-    def emit_changed_signal(self):
-        if not self.block_changes_signal:
-            self.widgetChanged.emit()
-
-    def setPreviousValues(self):
-        self.block_changes_signal += 1
-        if self.childId is not None:
-            alg = self.model.childAlgorithm(self.childId)
-
-            self.descriptionBox.setText(alg.description())
-            for param in alg.algorithm().parameterDefinitions():
-                if (
-                    param.isDestination()
-                    or param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden
-                ):
-                    continue
-                value = None
-                if param.name() in alg.parameterSources():
-                    value = alg.parameterSources()[param.name()]
-                    if isinstance(value, list) and len(value) == 1:
-                        value = value[0]
-                    elif isinstance(value, list) and len(value) == 0:
-                        value = None
-
-                wrapper = self.wrappers[param.name()]
-                if value is None:
-                    value = QgsProcessingModelChildParameterSource.fromStaticValue(
-                        param.defaultValue()
-                    )
-
-                wrapper.setWidgetValue(value)
-
-            for output in self.algorithm().destinationParameterDefinitions():
-                if output.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
-                    continue
-
-                model_output_name = None
-                for name, out in alg.modelOutputs().items():
-                    if (
-                        out.childId() == self.childId
-                        and out.childOutputName() == output.name()
-                    ):
-                        # this destination parameter is linked to a model output
-                        model_output_name = out.name()
-                        self.previous_output_definitions[output.name()] = out
-                        break
-
-                value = None
-                if (
-                    model_output_name is None
-                    and output.name() in alg.parameterSources()
-                ):
-                    value = alg.parameterSources()[output.name()]
-                    if isinstance(value, list) and len(value) == 1:
-                        value = value[0]
-                    elif isinstance(value, list) and len(value) == 0:
-                        value = None
-
-                wrapper = self.wrappers[output.name()]
-
-                if model_output_name is not None:
-                    wrapper.setToModelOutput(model_output_name)
-                elif value is not None or output.defaultValue() is not None:
-                    if value is None:
-                        value = QgsProcessingModelChildParameterSource.fromStaticValue(
-                            output.defaultValue()
-                        )
-
-                    wrapper.setWidgetValue(value)
-
-            self.dependencies_panel.setValue(alg.dependencies())
-        self.block_changes_signal -= 1
-
-    def createAlgorithm(self):
-        alg = QgsProcessingModelChildAlgorithm(self._alg.id())
-        if not self.childId:
-            alg.generateChildId(self.model)
-        else:
-            alg.setChildId(self.childId)
-        alg.setDescription(self.descriptionBox.text())
-        if self.algorithmItem:
-            alg.setConfiguration(self.algorithmItem.configuration())
-            self._alg = alg.algorithm().create(self.algorithmItem.configuration())
-        for param in self._alg.parameterDefinitions():
-            if (
-                param.isDestination()
-                or param.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden
-            ):
-                continue
-
-            wrapper = self.wrappers[param.name()]
-            val = wrapper.value()
-
-            if isinstance(val, QgsProcessingModelChildParameterSource):
-                val = [val]
-            elif not (
-                isinstance(val, list)
-                and all(
-                    [
-                        isinstance(subval, QgsProcessingModelChildParameterSource)
-                        for subval in val
-                    ]
-                )
-            ):
-                val = [QgsProcessingModelChildParameterSource.fromStaticValue(val)]
-
-            valid = True
-            for subval in val:
-                if (
-                    isinstance(subval, QgsProcessingModelChildParameterSource)
-                    and subval.source()
-                    == Qgis.ProcessingModelChildParameterSource.StaticValue
-                    and not param.checkValueIsAcceptable(subval.staticValue())
-                ) or (
-                    subval is None
-                    and not param.flags()
-                    & QgsProcessingParameterDefinition.Flag.FlagOptional
-                ):
-                    valid = False
-                    break
-
-            if valid:
-                alg.addParameterSources(param.name(), val)
-
-        outputs = {}
-        for output in self._alg.destinationParameterDefinitions():
-            if not output.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
-                wrapper = self.wrappers[output.name()]
-
-                if wrapper.isModelOutput():
-                    name = wrapper.modelOutputName()
-                    if name:
-                        # if there was a previous output definition already for this output, we start with it,
-                        # otherwise we'll lose any existing output comments, coloring, position, etc
-                        model_output = self.previous_output_definitions.get(
-                            output.name(), QgsProcessingModelOutput(name, name)
-                        )
-                        model_output.setDescription(name)
-                        model_output.setChildId(alg.childId())
-                        model_output.setChildOutputName(output.name())
-                        outputs[name] = model_output
-                else:
-                    val = wrapper.value()
-
-                    if isinstance(val, QgsProcessingModelChildParameterSource):
-                        val = [val]
-
-                    alg.addParameterSources(output.name(), val)
-
-            if output.flags() & QgsProcessingParameterDefinition.Flag.FlagIsModelOutput:
-                if output.name() not in outputs:
-                    model_output = QgsProcessingModelOutput(
-                        output.name(), output.name()
-                    )
-                    model_output.setChildId(alg.childId())
-                    model_output.setChildOutputName(output.name())
-                    outputs[output.name()] = model_output
-
-        alg.setModelOutputs(outputs)
-        alg.setDependencies(self.dependencies_panel.value())
-
-        return alg
-
-
 class ModelerParametersWidget(QgsProcessingModelConfigWidget):
     def __init__(
         self, alg, model, algName=None, configuration=None, dialog=None, context=None
@@ -503,8 +155,14 @@ class ModelerParametersWidget(QgsProcessingModelConfigWidget):
         self.context = context
         self.dialog = dialog
 
-        self.widget = ModelerParametersPanelWidget(
-            alg, model, algName, configuration, dialog, context
+        self.widget = QgsProcessingModelerParametersPanelWidget(
+            self._alg,
+            self.model,
+            self.context,
+            self.childId,
+            self.configuration,
+            self,
+            self.dialog,
         )
         self.widget.widgetChanged.connect(self.widgetChanged)
 
