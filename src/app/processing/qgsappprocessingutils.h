@@ -27,7 +27,7 @@ class QgsAppProcessingWidgetContextGenerator : public QgsProcessingWidgetContext
     QgsProcessingParameterWidgetContext createWidgetContext() final;
 
   private:
-    QgisApp *mApp = nullptr;
+    QgisApp *mQgisApp = nullptr;
 };
 
 #endif // QGSAPPPROCESSINGUTILS_H
