@@ -5049,7 +5049,7 @@ void QgisApp::initLayerTreeView()
   connect( actionCollapseAll, &QAction::triggered, mLayerTreeView, &QgsLayerTreeView::collapseAllNodes );
 
   QToolBar *toolbar = new QToolBar();
-  toolbar->setIconSize( iconSize( true ) );
+  toolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
   toolbar->addAction( mActionStyleDock );
   toolbar->addAction( actionAddGroup );
   toolbar->addWidget( btnVisibilityPresets );
@@ -13301,11 +13301,6 @@ void QgisApp::unregisterMapToolHandler( QgsAbstractMapToolHandler *handler )
 QgsMapLayer *QgisApp::activeLayer()
 {
   return mLayerTreeView ? mLayerTreeView->currentLayer() : nullptr;
-}
-
-QSize QgisApp::iconSize( bool dockedToolbar ) const
-{
-  return QgsGuiUtils::iconSize( dockedToolbar );
 }
 
 bool QgisApp::setActiveLayer( QgsMapLayer *layer )

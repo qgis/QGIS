@@ -177,7 +177,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   const QgsSettings setting;
 
   QToolBar *toolBar = new QToolBar( this );
-  toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
+  toolBar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
 
   mCanvas = new QgsElevationProfileCanvas( this );
   mCanvas->setProject( QgsProject::instance() );
