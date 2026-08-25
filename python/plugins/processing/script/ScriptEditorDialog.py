@@ -19,7 +19,6 @@ __author__ = "Alexander Bruy"
 __date__ = "December 2012"
 __copyright__ = "(C) 2012, Alexander Bruy"
 
-import codecs
 import inspect
 import os
 import traceback
@@ -46,7 +45,7 @@ from qgis.PyQt import sip, uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QPalette
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout
-from qgis.utils import OverrideCursor, iface
+from qgis.utils import OverrideCursor
 
 from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.script import ScriptUtils
