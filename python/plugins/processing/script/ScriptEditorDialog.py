@@ -26,6 +26,7 @@ import traceback
 import warnings
 
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsError,
     QgsFileUtils,
@@ -93,8 +94,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.code_editor_widget = QgsCodeEditorWidget(self.editor)
         vl.addWidget(self.code_editor_widget)
 
-        if iface is not None:
-            self.toolBar.setIconSize(iface.iconSize())
+        self.toolBar.setIconSize(
+            QgsGui.iconSize(Qgis.UserInterfaceIconType.DockedToolbar)
+        )
 
         self.setStyleSheet(QgsGui.applicationStyleSheet())
         QgsGui.instance().applicationStyleSheetChanged.connect(self.setStyleSheet)
