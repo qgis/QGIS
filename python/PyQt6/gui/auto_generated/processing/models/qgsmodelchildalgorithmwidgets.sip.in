@@ -13,6 +13,7 @@
 
 
 
+
 class QgsProcessingModelerParametersWidget : QgsProcessingModelConfigWidget
 {
 %Docstring(signature="appended")
@@ -99,6 +100,96 @@ model.
     std::unique_ptr< QgsProcessingModelChildAlgorithm > createAlgorithm();
 %Docstring
 Creates the child algorithm instance, populated with the current widget
+parameter values and comments.
+%End
+
+};
+
+class QgsProcessingModelerParametersDialog : QDialog
+{
+%Docstring(signature="appended")
+A dialog for configuring parameter settings and comments for a child
+algorithm in a Processing model.
+
+.. note::
+
+   Not stable API.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsmodelchildalgorithmwidgets.h"
+%End
+  public:
+    QgsProcessingModelerParametersDialog(
+      const QgsProcessingAlgorithm *childAlgorithm,
+      QgsProcessingModelAlgorithm *model,
+      QgsProcessingContext &context,
+      const QString &childId = QString(),
+      const QVariantMap &configuration = QVariantMap(),
+      QWidget *parent = 0
+    );
+%Docstring
+Constructor for QgsProcessingModelerParametersDialog.
+%End
+
+    ~QgsProcessingModelerParametersDialog();
+
+    const QgsProcessingAlgorithm *algorithm() const;
+%Docstring
+Returns the algorithm associated with the dialog.
+%End
+
+    void setComments( const QString &comments );
+%Docstring
+Sets the algorithm's ``comments``.
+
+.. seealso:: :py:func:`comments`
+%End
+
+    QString comments() const;
+%Docstring
+Returns the algorithm's comments.
+
+.. seealso:: :py:func:`setComments`
+%End
+
+    void setCommentColor( const QColor &color );
+%Docstring
+Sets the algorithm's comment ``color``.
+
+.. seealso:: :py:func:`commentColor`
+%End
+
+    QColor commentColor() const;
+%Docstring
+Returns the algorithm's comment color.
+
+.. seealso:: :py:func:`setCommentColor`
+%End
+
+    void switchToCommentTab();
+%Docstring
+Focuses the dialog on the comment editing tab.
+%End
+
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the dialog is shown, e.g., the parent
+model algorithm, a linked map canvas, and other relevant information
+which allows the widget to fine-tune its behavior.
+%End
+
+    void setStateFromChildAlgorithm();
+%Docstring
+Sets widget state from the existing child algorithm definition in the
+model.
+%End
+
+    std::unique_ptr< QgsProcessingModelChildAlgorithm > createAlgorithm();
+%Docstring
+Creates the child algorithm instance, populated with the current dialog
 parameter values and comments.
 %End
 

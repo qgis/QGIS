@@ -26,6 +26,8 @@
 #include "qgspanelwidget.h"
 #include "qgsprocessingwidgetwrapper.h"
 
+#include <QDialog>
+
 class QgsProcessingAlgorithm;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingContext;
@@ -41,6 +43,7 @@ class QTabWidget;
 class QgsPanelWidgetStack;
 class QTextEdit;
 class QgsColorButton;
+class QDialogButtonBox;
 
 #ifndef SIP_RUN
 /**
@@ -211,6 +214,95 @@ class GUI_EXPORT QgsProcessingModelerParametersWidget : public QgsProcessingMode
     QgsColorButton *mCommentColorButton = nullptr;
 
     friend class TestQgsProcessingModelGui;
+};
+
+/**
+ * A dialog for configuring parameter settings and comments for a child algorithm in a Processing model.
+ * \ingroup gui
+ * \note Not stable API.
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsProcessingModelerParametersDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+    /**
+   * Constructor for QgsProcessingModelerParametersDialog.
+   */
+    QgsProcessingModelerParametersDialog(
+      const QgsProcessingAlgorithm *childAlgorithm,
+      QgsProcessingModelAlgorithm *model,
+      QgsProcessingContext &context,
+      const QString &childId = QString(),
+      const QVariantMap &configuration = QVariantMap(),
+      QWidget *parent = nullptr
+    );
+
+    ~QgsProcessingModelerParametersDialog() override;
+
+    /**
+   * Returns the algorithm associated with the dialog.
+   */
+    const QgsProcessingAlgorithm *algorithm() const;
+
+    /**
+   * Sets the algorithm's \a comments.
+   *
+   * \see comments()
+   */
+    void setComments( const QString &comments );
+
+    /**
+   * Returns the algorithm's comments.
+   *
+   * \see setComments()
+   */
+    QString comments() const;
+
+    /**
+   * Sets the algorithm's comment \a color.
+   *
+   * \see commentColor()
+   */
+    void setCommentColor( const QColor &color );
+
+    /**
+   * Returns the algorithm's comment color.
+   *
+   * \see setCommentColor()
+   */
+    QColor commentColor() const;
+
+    /**
+   * Focuses the dialog on the comment editing tab.
+   */
+    void switchToCommentTab();
+
+    /**
+     * Sets the \a context in which the dialog is shown, e.g., the
+     * parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+     * to fine-tune its behavior.
+     */
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+
+    /**
+   * Sets widget state from the existing child algorithm definition in the model.
+   */
+    void setStateFromChildAlgorithm();
+
+    /**
+   * Creates the child algorithm instance, populated with the current dialog parameter values and comments.
+   */
+    std::unique_ptr< QgsProcessingModelChildAlgorithm > createAlgorithm();
+
+  private slots:
+    void okPressed();
+    void openHelp();
+
+  private:
+    QgsProcessingModelerParametersWidget *mWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
 };
 
 

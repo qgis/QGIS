@@ -176,7 +176,7 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
             )
             widget.setComments(component.comment().description())
             widget.setCommentColor(component.comment().color())
-
+            widget.setWidgetContext(widgetContext)
             # make sure fake dialog exists for lifetime of widget
             widget.__fake_dialog = fake_dialog
 

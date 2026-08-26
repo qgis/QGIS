@@ -3,3 +3,7 @@ try:
     QgsProcessingModelerParametersWidget.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass
+try:
+    QgsProcessingModelerParametersDialog.__group__ = ['processing', 'models']
+except (NameError, AttributeError):
+    pass
