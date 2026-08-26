@@ -2511,7 +2511,10 @@ QgsSettingsRegistryCore *QgsApplication::settingsRegistryCore()
 
 QgsColorSchemeRegistry *QgsApplication::colorSchemeRegistry()
 {
-  return members()->mColorSchemeRegistry.get();
+  QgsColorSchemeRegistry *registry = members()->mColorSchemeRegistry.get();
+  // TODO QGIS 5.0 - remove the default inclusion of the project instance
+  registry->setProject( QgsProject::instance() ); // skip-keyword-check
+  return registry;
 }
 
 QgsPaintEffectRegistry *QgsApplication::paintEffectRegistry()
