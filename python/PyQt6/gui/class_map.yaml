@@ -3401,8 +3401,8 @@ QgsGroupWmsDataDialog.setHasTimeDimension: src/gui/qgsgroupwmsdatadialog.h#L103
 QgsGroupWmsDataDialog: src/gui/qgsgroupwmsdatadialog.h#L30
 QgsGui.advancedDigitizingToolsRegistry: src/gui/qgsgui.h#L151
 QgsGui.annotationItemGuiRegistry: src/gui/qgsgui.h#L144
-QgsGui.applicationStyleSheet: src/gui/qgsgui.h#L357
-QgsGui.applicationStyleSheetChanged: src/gui/qgsgui.h#L389
+QgsGui.applicationStyleSheet: src/gui/qgsgui.h#L364
+QgsGui.applicationStyleSheetChanged: src/gui/qgsgui.h#L396
 QgsGui.codeEditorColorSchemeRegistry: src/gui/qgsgui.h#L169
 QgsGui.dataItemGuiProviderRegistry: src/gui/qgsgui.h#L188
 QgsGui.editorWidgetRegistry: src/gui/qgsgui.h#L112
@@ -3411,13 +3411,14 @@ QgsGui.findScreenAt: src/gui/qgsgui.h#L308
 QgsGui.hasWebEngine: src/gui/qgsgui.h#L342
 QgsGui.higFlags: src/gui/qgsgui.h#L292
 QgsGui.historyProviderRegistry: src/gui/qgsgui.h#L237
+QgsGui.iconSize: src/gui/qgsgui.h#L349
 QgsGui.inputControllerManager: src/gui/qgsgui.h#L269
 QgsGui.instance: src/gui/qgsgui.h#L94
 QgsGui.layerTreeEmbeddedWidgetRegistry: src/gui/qgsgui.h#L127
 QgsGui.layoutItemGuiRegistry: src/gui/qgsgui.h#L137
 QgsGui.mapLayerActionRegistry: src/gui/qgsgui.h#L132
 QgsGui.numericFormatGuiRegistry: src/gui/qgsgui.h#L163
-QgsGui.optionsChanged: src/gui/qgsgui.h#L381
+QgsGui.optionsChanged: src/gui/qgsgui.h#L388
 QgsGui.processingFavoriteAlgorithmManager: src/gui/qgsgui.h#L181
 QgsGui.processingGuiRegistry: src/gui/qgsgui.h#L157
 QgsGui.processingRecentAlgorithmLog: src/gui/qgsgui.h#L175
