@@ -1587,9 +1587,14 @@ QgsModelChildDependenciesWidget::QgsModelChildDependenciesWidget( QWidget *paren
 
 void QgsModelChildDependenciesWidget::setValue( const QList<QgsProcessingModelChildDependency> &value )
 {
+  const bool hasChanged = value != mValue;
   mValue = value;
 
   updateSummaryText();
+  if ( hasChanged )
+  {
+    emit changed();
+  }
 }
 
 void QgsModelChildDependenciesWidget::showDialog()
