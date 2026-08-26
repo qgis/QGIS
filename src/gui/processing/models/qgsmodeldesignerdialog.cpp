@@ -578,6 +578,7 @@ QgsProcessingParameterWidgetContext QgsModelDesignerDialog::createWidgetContext(
 {
   QgsProcessingParameterWidgetContext context = QgsGui::processingGuiRegistry()->createWidgetContext();
   context.setModel( model() );
+  context.setModelDesignerDialog( this );
   context.registerProcessingContextGenerator( this );
   return context;
 }
