@@ -112,23 +112,27 @@ void QgsProcessingModelerParametersPanelWidget::setupUi()
     }
   }
 
-  auto advancedGroup = new QgsCollapsibleGroupBox( tr( "Advanced Parameters" ) );
-  auto advancedGroupLayout = new QVBoxLayout();
-  advancedGroup->setLayout( advancedGroupLayout );
-  advancedGroup->hide();
-  verticalLayout->addWidget( advancedGroup );
-
   if ( mAlgorithm )
   {
     const QList<const QgsProcessingParameterDefinition *> parameters = mAlgorithm->parameterDefinitions();
-    // only show advanced group when there are SOME advanced parameters:
+    // only create advanced group when there are SOME advanced parameters:
+    bool hasAdvancedParameters = false;
     for ( const QgsProcessingParameterDefinition *parameter : parameters )
     {
       if ( parameter->flags() & Qgis::ProcessingParameterFlag::Advanced )
       {
-        advancedGroup->show();
+        hasAdvancedParameters = true;
         break;
       }
+    }
+    QgsCollapsibleGroupBox *advancedGroup = nullptr;
+    QVBoxLayout *advancedGroupLayout = nullptr;
+    if ( hasAdvancedParameters )
+    {
+      advancedGroup = new QgsCollapsibleGroupBox( tr( "Advanced Parameters" ) );
+      advancedGroupLayout = new QVBoxLayout();
+      advancedGroup->setLayout( advancedGroupLayout );
+      verticalLayout->addWidget( advancedGroup );
     }
 
     for ( const QgsProcessingParameterDefinition *parameter : parameters )
@@ -148,7 +152,7 @@ void QgsProcessingModelerParametersPanelWidget::setupUi()
 
       QLabel *label = widget->createLabel();
       // advanced parameters get inserted to a different layout:
-      if ( parameter->flags() & Qgis::ProcessingParameterFlag::Advanced )
+      if ( advancedGroupLayout && parameter->flags() & Qgis::ProcessingParameterFlag::Advanced )
       {
         if ( label )
           advancedGroupLayout->addWidget( label );
