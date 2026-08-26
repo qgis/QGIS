@@ -676,8 +676,11 @@ Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntit
     pictureGeometryRenderer->setVertexCount( 4 );
     pictureGeometryRenderer->setInstanceCount( static_cast< int >( pictureBillboard.positions.size() ) );
 
-    QgsPoint3DBillboardMaterial *pictureMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::ExtraAttribute::Size, pictureBillboard.scaleMode );
+    QgsPoint3DBillboardMaterial *pictureMaterial
+      = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::ExtraAttribute::Size | QgsPoint3DBillboardMaterial::ExtraAttribute::VerticalOffset, pictureBillboard.scaleMode );
     pictureMaterial->setTexture2DFromImage( pictureBillboard.image );
+    // picture billboards should be vertically anchored to the bottom of the picture
+    pictureMaterial->setVerticalOffset( 0.5 );
 
     Qt3DCore::QEntity *pictureEntity = new Qt3DCore::QEntity;
     pictureEntity->addComponent( pictureMaterial );

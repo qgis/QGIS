@@ -53,6 +53,7 @@ class _3D_EXPORT QgsPoint3DBillboardMaterial : public QgsMaterial
       Size = 1 << 1,
       TextureData = 1 << 2,
       PixelOffsets = 1 << 3,
+      VerticalOffset = 1 << 4,
     };
     Q_DECLARE_FLAGS( ExtraAttributes, ExtraAttribute )
     Q_FLAG( ExtraAttributes )
@@ -67,6 +68,16 @@ class _3D_EXPORT QgsPoint3DBillboardMaterial : public QgsMaterial
     void setSize( const QSizeF size );
     //! Returns the billboard size.
     QSizeF size() const;
+
+    /**
+     * Set the vertical \a offset.
+     *
+     * For example, a vertical offset of 0.5 will anchor the billboard's bottom edge at the vertex z position,
+     * or -0.5 will anchor the billboard's top edge at the vertex z position.
+     *
+     * \note This only applies if the material was constructed with the ExtraAttribute::VerticalOffset flag set.
+     */
+    void setVerticalOffset( float offset );
 
     //! Set the size of the view port.
     void setViewportSize( const QSizeF size );
@@ -96,6 +107,7 @@ class _3D_EXPORT QgsPoint3DBillboardMaterial : public QgsMaterial
     Qt3DRender::QParameter *mSize = nullptr;
     Qt3DRender::QParameter *mViewportSize = nullptr;
     Qt3DRender::QParameter *mTexture2D = nullptr;
+    Qt3DRender::QParameter *mVerticalOffset = nullptr;
 
     Qgis::BillboardScaleMode mScaleMode = Qgis::BillboardScaleMode::ViewIndependent;
 };
