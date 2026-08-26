@@ -506,6 +506,19 @@ void QgsAnnotationLayerChunkLoader::start()
     // picture item billboards, grouped by picture source
     for ( auto it = groupedPictures.constBegin(); it != groupedPictures.constEnd(); ++it )
     {
+      QSizeF maxGroupSize( 0, 0 );
+      for ( auto picIt = it.value().constBegin(); picIt != it.value().constEnd(); ++picIt )
+      {
+        if ( picIt->size.width() > maxGroupSize.width() )
+        {
+          maxGroupSize.setWidth( picIt->size.width() );
+        }
+        if ( picIt->size.height() > maxGroupSize.height() )
+        {
+          maxGroupSize.setHeight( picIt->size.height() );
+        }
+      }
+
       QImage image;
       bool fitsInCache = false;
 
@@ -520,6 +533,10 @@ void QgsAnnotationLayerChunkLoader::start()
         {
           const QSize originalSize = QgsApplication::imageCache()->originalSize( it.key().path, true );
           QSize imageSize = originalSize;
+          if ( imageSize.isEmpty() )
+          {
+            imageSize = maxGroupSize.toSize();
+          }
           if ( imageSize.width() >= imageSize.height() && imageSize.width() > textureSize )
           {
             imageSize = QSize( textureSize, static_cast< int >( std::round( imageSize.height() * textureSize / imageSize.width() ) ) );
@@ -687,7 +704,6 @@ Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntit
     pictureEntity->addComponent( pictureGeometryRenderer );
     pictureEntity->setParent( entity );
   }
-
 
   if ( mFactory->mShowCallouts )
   {
