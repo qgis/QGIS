@@ -22,6 +22,7 @@
 #include "qgscolorscheme.h"
 
 #include <QList>
+#include <QPointer>
 
 class QgsProject;
 
