@@ -20,21 +20,16 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.core import (
-    Qgis,
     QgsProcessingModelAlgorithm,
     QgsProcessingModelOutput,
     QgsProcessingParameterDefinition,
-    QgsProject,
 )
 from qgis.gui import (
-    QgsModelChildAlgorithmGraphicItem,
     QgsModelOutputGraphicItem,
     QgsModelParameterGraphicItem,
     QgsProcessingContextGenerator,
-    QgsProcessingModelerParametersDialog,
     QgsProcessingParameterDefinitionDialog,
 )
-from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
