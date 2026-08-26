@@ -28,6 +28,13 @@ be created directly, or accessed via a
     QgsColorSchemeRegistry();
 %Docstring
 Constructor for an empty color scheme registry
+
+.. note::
+
+   Since QGIS 4.4 the default construction of QgsColorSchemeRegistry
+   no longer includes project colors by default. QgsColorSchemeRegistry
+   with project colors included can be obtained using :py:func:`QgsProject.colorSchemeRegistry()`
+   or by specifically set project using :py:func:`QgsColorSchemeRegistry.setProject()`.
 %End
 
     virtual ~QgsColorSchemeRegistry();
