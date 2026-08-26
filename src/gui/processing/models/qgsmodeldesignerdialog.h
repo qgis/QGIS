@@ -297,6 +297,16 @@ class GUI_EXPORT QgsModelChildDependenciesWidget : public QWidget
     QgsModelChildDependenciesWidget( QWidget *parent, QgsProcessingModelAlgorithm *model, const QString &childId );
     QList<QgsProcessingModelChildDependency> value() const { return mValue; }
     void setValue( const QList<QgsProcessingModelChildDependency> &value );
+
+  signals:
+
+    /**
+     * Emitted when the dependencies are changed in the widget.
+     *
+     * \since QGIS 4.4
+     */
+    void changed();
+
   private slots:
 
     void showDialog();
