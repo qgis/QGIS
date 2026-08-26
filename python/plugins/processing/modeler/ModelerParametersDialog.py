@@ -27,24 +27,15 @@ from qgis.core import (
     QgsProcessingModelAlgorithm,
 )
 from qgis.gui import (
-    QgsColorButton,
     QgsGui,
     QgsHelp,
-    QgsPanelWidgetStack,
-    QgsProcessingModelConfigWidget,
-    QgsProcessingModelerParametersPanelWidget,
+    QgsProcessingModelerParametersWidget,
 )
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtWidgets import (
     QDialog,
     QDialogButtonBox,
-    QHBoxLayout,
-    QLabel,
-    QTabWidget,
-    QTextEdit,
     QVBoxLayout,
-    QWidget,
 )
 from qgis.utils import iface
 
@@ -78,8 +69,8 @@ class ModelerParametersDialog(QDialog):
             else self._alg.displayName()
         )
 
-        self.widget = ModelerParametersWidget(
-            alg, model, algName, configuration, context=self.context, dialog=self
+        self.widget = QgsProcessingModelerParametersWidget(
+            alg, model, self.context, algName, configuration, dialog=self
         )
         QgsGui.enableAutoGeometryRestore(self)
 
@@ -141,100 +132,3 @@ class ModelerParametersDialog(QDialog):
 
         if algHelp not in [None, ""]:
             webbrowser.open(algHelp)
-
-
-class ModelerParametersWidget(QgsProcessingModelConfigWidget):
-    def __init__(
-        self, alg, model, algName=None, configuration=None, dialog=None, context=None
-    ):
-        super().__init__()
-        self._alg = alg  # The algorithm to define in this dialog. It is an instance of QgsProcessingAlgorithm
-        self.model = model  # The model this algorithm is going to be added to. It is an instance of QgsProcessingModelAlgorithm
-        self.childId = algName  # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
-        self.configuration = configuration
-        self.context = context
-        self.dialog = dialog
-
-        self.widget = QgsProcessingModelerParametersPanelWidget(
-            self._alg,
-            self.model,
-            self.context,
-            self.childId,
-            self.configuration,
-            self,
-            self.dialog,
-        )
-        self.widget.widgetChanged.connect(self.widgetChanged)
-
-        self.setupUi()
-        self.params = None
-
-    def algorithm(self):
-        return self._alg
-
-    def switchToCommentTab(self):
-        self.tab.setCurrentIndex(1)
-        self.commentEdit.setFocus()
-        self.commentEdit.selectAll()
-
-    def setupUi(self):
-        self.mainLayout = QVBoxLayout()
-        self.mainLayout.setContentsMargins(0, 0, 0, 0)
-        self.tab = QTabWidget()
-        self.mainLayout.addWidget(self.tab)
-
-        self.param_widget = QgsPanelWidgetStack()
-        self.widget.setDockMode(True)
-        self.param_widget.setMainPanel(self.widget)
-
-        self.tab.addTab(self.param_widget, self.tr("Properties"))
-
-        self.commentLayout = QVBoxLayout()
-        self.commentEdit = QTextEdit()
-        self.commentEdit.setAcceptRichText(False)
-        self.commentLayout.addWidget(self.commentEdit, 1)
-
-        hl = QHBoxLayout()
-        hl.setContentsMargins(0, 0, 0, 0)
-        hl.addWidget(QLabel(self.tr("Color")))
-        self.comment_color_button = QgsColorButton()
-        self.comment_color_button.setAllowOpacity(True)
-        self.comment_color_button.setWindowTitle(self.tr("Comment Color"))
-        self.comment_color_button.setShowNull(True, self.tr("Default"))
-        hl.addWidget(self.comment_color_button)
-        self.commentLayout.addLayout(hl)
-
-        w2 = QWidget()
-        w2.setLayout(self.commentLayout)
-        self.tab.addTab(w2, self.tr("Comments"))
-
-        self.setLayout(self.mainLayout)
-
-    def setComments(self, text):
-        self.commentEdit.setPlainText(text)
-
-    def comments(self):
-        return self.commentEdit.toPlainText()
-
-    def setCommentColor(self, color):
-        if color.isValid():
-            self.comment_color_button.setColor(color)
-        else:
-            self.comment_color_button.setToNull()
-
-    def commentColor(self):
-        return (
-            self.comment_color_button.color()
-            if not self.comment_color_button.isNull()
-            else QColor()
-        )
-
-    def setPreviousValues(self):
-        self.widget.setPreviousValues()
-
-    def createAlgorithm(self):
-        alg = self.widget.createAlgorithm()
-        if alg:
-            alg.comment().setDescription(self.comments())
-            alg.comment().setColor(self.commentColor())
-        return alg

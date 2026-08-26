@@ -19,6 +19,7 @@
 #include "qgsmodelchildalgorithmwidgets.h"
 
 #include "qgscollapsiblegroupbox.h"
+#include "qgscolorbutton.h"
 #include "qgsgui.h"
 #include "qgsmessagebar.h"
 #include "qgsmodeldesignerdialog.h"
@@ -485,4 +486,117 @@ void QgsProcessingModelerParametersPanelWidget::setWidgetContext( const QgsProce
   {
     it.value()->setWidgetContext( context );
   }
+}
+
+
+//
+// QgsProcessingModelerParametersWidget
+//
+
+QgsProcessingModelerParametersWidget::QgsProcessingModelerParametersWidget(
+  const QgsProcessingAlgorithm *childAlgorithm, QgsProcessingModelAlgorithm *model, QgsProcessingContext &context, const QString &childId, const QVariantMap &configuration, QWidget *parent, QWidget *dialog
+)
+  : QgsProcessingModelConfigWidget( parent )
+{
+  mParametersPanel = new QgsProcessingModelerParametersPanelWidget( childAlgorithm, model, context, childId, configuration, this, dialog );
+  connect( mParametersPanel, &QgsProcessingModelerParametersPanelWidget::widgetChanged, this, &QgsProcessingModelConfigWidget::widgetChanged );
+
+  setupUi();
+}
+
+QgsProcessingModelerParametersWidget::~QgsProcessingModelerParametersWidget() = default;
+
+const QgsProcessingAlgorithm *QgsProcessingModelerParametersWidget::algorithm() const
+{
+  return mParametersPanel->algorithm();
+}
+
+void QgsProcessingModelerParametersWidget::switchToCommentTab()
+{
+  mTabWidget->setCurrentIndex( 1 );
+  mCommentEdit->setFocus();
+  mCommentEdit->selectAll();
+}
+
+void QgsProcessingModelerParametersWidget::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  mParametersPanel->setWidgetContext( context );
+}
+
+void QgsProcessingModelerParametersWidget::setupUi()
+{
+  auto mainLayout = new QVBoxLayout();
+  mainLayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mTabWidget = new QTabWidget();
+  mainLayout->addWidget( mTabWidget );
+
+  mPanelWidgetStack = new QgsPanelWidgetStack();
+  mParametersPanel->setDockMode( true );
+  mPanelWidgetStack->setMainPanel( mParametersPanel );
+
+  mTabWidget->addTab( mPanelWidgetStack, tr( "Properties" ) );
+
+  auto commentLayout = new QVBoxLayout();
+  mCommentEdit = new QTextEdit();
+  mCommentEdit->setAcceptRichText( false );
+  commentLayout->addWidget( mCommentEdit, 1 );
+  connect( mCommentEdit, &QTextEdit::textChanged, this, &QgsProcessingModelerParametersWidget::widgetChanged );
+
+  auto hl = new QHBoxLayout();
+  hl->setContentsMargins( 0, 0, 0, 0 );
+  hl->addWidget( new QLabel( tr( "Color" ) ) );
+
+  mCommentColorButton = new QgsColorButton();
+  mCommentColorButton->setAllowOpacity( true );
+  mCommentColorButton->setWindowTitle( tr( "Comment Color" ) );
+  mCommentColorButton->setShowNull( true, tr( "Default" ) );
+  hl->addWidget( mCommentColorButton );
+  commentLayout->addLayout( hl );
+  connect( mCommentColorButton, &QgsColorButton::colorChanged, this, &QgsProcessingModelerParametersWidget::widgetChanged );
+
+  auto commentWidget = new QWidget();
+  commentWidget->setLayout( commentLayout );
+  mTabWidget->addTab( commentWidget, tr( "Comments" ) );
+
+  setLayout( mainLayout );
+}
+
+void QgsProcessingModelerParametersWidget::setComments( const QString &text )
+{
+  mCommentEdit->setPlainText( text );
+}
+
+QString QgsProcessingModelerParametersWidget::comments() const
+{
+  return mCommentEdit->toPlainText();
+}
+
+void QgsProcessingModelerParametersWidget::setCommentColor( const QColor &color )
+{
+  if ( color.isValid() )
+    mCommentColorButton->setColor( color );
+  else
+    mCommentColorButton->setToNull();
+}
+
+QColor QgsProcessingModelerParametersWidget::commentColor() const
+{
+  return !mCommentColorButton->isNull() ? mCommentColorButton->color() : QColor();
+}
+
+void QgsProcessingModelerParametersWidget::setStateFromChildAlgorithm()
+{
+  mParametersPanel->setStateFromChildAlgorithm();
+}
+
+std::unique_ptr< QgsProcessingModelChildAlgorithm > QgsProcessingModelerParametersWidget::createAlgorithm()
+{
+  std::unique_ptr< QgsProcessingModelChildAlgorithm > alg = mParametersPanel->createAlgorithm();
+  if ( alg )
+  {
+    alg->comment()->setDescription( comments() );
+    alg->comment()->setColor( commentColor() );
+  }
+  return alg;
 }

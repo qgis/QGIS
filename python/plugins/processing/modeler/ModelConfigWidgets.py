@@ -24,6 +24,7 @@ from qgis.core import (
 )
 from qgis.gui import (
     QgsProcessingModelConfigWidgetFactory,
+    QgsProcessingModelerParametersWidget,
     QgsProcessingParameterDefinitionPanelWidget,
     QgsProcessingParameterWidgetContext,
 )
@@ -34,7 +35,6 @@ from processing.modeler.ModelerParameterDefinitionDialog import (
 )
 from processing.modeler.ModelerParametersDialog import (
     ModelerParametersDialog,
-    ModelerParametersWidget,
 )
 
 
@@ -166,7 +166,7 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
             )
             fake_dialog.hide()
 
-            widget = ModelerParametersWidget(
+            widget = QgsProcessingModelerParametersWidget(
                 algorithm,
                 model,
                 algName=child_id,
