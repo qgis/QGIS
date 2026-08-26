@@ -304,17 +304,21 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 self.algorithmItem.setConfiguration(self.configuration)
             self.verticalLayout.addWidget(self.algorithmItem)
 
-        self.grpAdvanced = QgsCollapsibleGroupBox(self.tr("Advanced Parameters"))
-        self.grpAdvancedVLayout = QVBoxLayout()
-        self.grpAdvanced.setLayout(self.grpAdvancedVLayout)
-        self.grpAdvanced.hide()
+        self.grpAdvanced = None
+        self.grpAdvancedVLayout = None
 
-        self.verticalLayout.addWidget(self.grpAdvanced)
-
+        has_advanced_params = False
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
-                self.grpAdvanced.show()
+                has_advanced_params = True
                 break
+
+        if has_advanced_params:
+            self.grpAdvanced = QgsCollapsibleGroupBox(self.tr("Advanced Parameters"))
+            self.grpAdvancedVLayout = QVBoxLayout()
+            self.grpAdvanced.setLayout(self.grpAdvancedVLayout)
+            self.verticalLayout.addWidget(self.grpAdvanced)
+
         for param in self._alg.parameterDefinitions():
             if (
                 param.isDestination()
@@ -340,7 +344,9 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                     widget.setToolTip(tooltip)
                     label = wrapper.label
 
-                if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
+                if self.grpAdvancedVLayout is not None and (
+                    param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced
+                ):
                     self.grpAdvancedVLayout.addWidget(label)
                     self.grpAdvancedVLayout.addWidget(widget)
                 else:
