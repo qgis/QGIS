@@ -27,6 +27,7 @@
 #include "qgsattributeeditorcontainer.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsbookmarkmanager.h"
+#include "qgscolorschemeregistry.h"
 #include "qgscolorutils.h"
 #include "qgscombinedstylemodel.h"
 #include "qgsdatasourceuri.h"
@@ -5538,6 +5539,14 @@ void QgsProject::cleanFunctionsFromProject()
   {
     QgsPythonRunner::run( "qgis.utils.clean_project_expression_functions()" );
   }
+}
+
+QgsColorSchemeRegistry *QgsProject::colorSchemeRegistry()
+{
+  QgsColorSchemeRegistry *registry = new QgsColorSchemeRegistry();
+  registry->setProject( this );
+  registry->addDefaultSchemes();
+  return registry;
 }
 
 /// @cond PRIVATE

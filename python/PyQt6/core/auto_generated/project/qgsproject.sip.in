@@ -2500,6 +2500,21 @@ uncommitted edits.
 .. versionadded:: 3.26
 %End
 
+    QgsColorSchemeRegistry *colorSchemeRegistry() /Factory/;
+%Docstring
+Creates a new color scheme registry associated with this project,
+populated with the default color schemes.
+
+Unlike the default-constructed :py:class:`QgsColorSchemeRegistry`, the
+returned registry includes this project's colors (see
+:py:class:`QgsProjectColorScheme`) in addition to the standard schemes.
+
+Ownership of the returned registry is transferred to the caller.
+
+.. versionadded:: 4.4
+%End
+
+
 };
 
 class QgsProjectDirtyBlocker
