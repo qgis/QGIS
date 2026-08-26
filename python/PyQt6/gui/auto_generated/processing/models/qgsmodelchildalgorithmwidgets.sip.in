@@ -12,11 +12,12 @@
 
 
 
-class QgsProcessingModelerParametersPanelWidget : QgsPanelWidget, QgsProcessingContextGenerator
+
+class QgsProcessingModelerParametersWidget : QgsProcessingModelConfigWidget
 {
 %Docstring(signature="appended")
-A panel widget displaying the configuration for a child algorithm in a
-Processing model.
+A panel config widget combining parameter settings and comments for a
+child algorithm in a Processing model.
 
 .. warning::
 
@@ -29,7 +30,7 @@ Processing model.
 #include "qgsmodelchildalgorithmwidgets.h"
 %End
   public:
-    QgsProcessingModelerParametersPanelWidget(
+    QgsProcessingModelerParametersWidget(
       const QgsProcessingAlgorithm *childAlgorithm,
       QgsProcessingModelAlgorithm *model,
       QgsProcessingContext &context,
@@ -39,30 +40,66 @@ Processing model.
       QWidget *dialog = 0
     );
 %Docstring
-Constructor for QgsProcessingModelerParametersPanelWidget.
+Constructor for QgsProcessingModelerParametersWidget.
 %End
 
-    ~QgsProcessingModelerParametersPanelWidget();
+    ~QgsProcessingModelerParametersWidget();
 
     const QgsProcessingAlgorithm *algorithm() const;
 %Docstring
 Returns the algorithm associated with the widget.
 %End
 
-    std::unique_ptr< QgsProcessingModelChildAlgorithm > createAlgorithm();
+    void setComments( const QString &text );
 %Docstring
-Creates the child algorithm instance populated with current widget
-values.
+Sets the comment ``text``.
+
+.. seealso:: :py:func:`comments`
 %End
 
-    virtual QgsProcessingContext *processingContext();
+    QString comments() const;
+%Docstring
+Returns the comment text.
 
+.. seealso:: :py:func:`setComments`
+%End
+
+    void setCommentColor( const QColor &color );
+%Docstring
+Sets the comment's ``color``.
+
+.. seealso:: :py:func:`commentColor`
+%End
+
+    QColor commentColor() const;
+%Docstring
+Returns the comment's color.
+
+.. seealso:: :py:func:`setCommentColor`
+%End
+
+    void switchToCommentTab();
+%Docstring
+Focuses the widget on the comment editing tab.
+%End
 
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
 %Docstring
 Sets the ``context`` in which the panel is shown, e.g., the parent model
 algorithm, a linked map canvas, and other relevant information which
 allows the widget to fine-tune its behavior.
+%End
+
+    void setStateFromChildAlgorithm();
+%Docstring
+Sets widget state from the existing child algorithm definition in the
+model.
+%End
+
+    std::unique_ptr< QgsProcessingModelChildAlgorithm > createAlgorithm();
+%Docstring
+Creates the child algorithm instance, populated with the current widget
+parameter values and comments.
 %End
 
 };

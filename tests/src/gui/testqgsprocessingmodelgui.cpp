@@ -19,6 +19,7 @@
 
 #include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsapplication.h"
+#include "qgscolorbutton.h"
 #include "qgsmodelchildalgorithmwidgets.h"
 #include "qgsmodeldesignerdialog.h"
 #include "qgsnativealgorithms.h"
@@ -58,6 +59,12 @@ class TestQgsProcessingModelGui : public QgsTest
     void testModelerParametersPanelWidgetDependencies();
     void testModelerParametersPanelWidgetSetDependencies();
     void testModelerParametersPanelWidgetParameterSourcesLists();
+
+    void testModelerParametersWidgetConstructAndAlgorithm();
+    void testModelerParametersWidgetCommentsAndColor();
+    void testModelerParametersWidgetCreateAlgorithm();
+    void testModelerParametersWidgetSetStateFromChildAlgorithm();
+    void testModelerParametersWidgetWidgetChangedSignal();
 };
 
 void TestQgsProcessingModelGui::initTestCase()
@@ -336,6 +343,111 @@ void TestQgsProcessingModelGui::testModelerParametersPanelWidgetParameterSources
   QCOMPARE( loadedSources3.at( 1 ).outputName(), u"OUTPUT"_s );
   QCOMPARE( loadedSources3.at( 2 ).source(), Qgis::ProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( loadedSources3.at( 2 ).staticValue().toString(), u"static_layer_path.gpkg"_s );
+}
+
+void TestQgsProcessingModelGui::testModelerParametersWidgetConstructAndAlgorithm()
+{
+  QgsProcessingModelAlgorithm model( u"test_model"_s, u"Test Group"_s );
+  QgsProcessingContext context;
+  const QgsProcessingAlgorithm *bufferAlg = QgsApplication::processingRegistry()->algorithmById( u"native:buffer"_s );
+  QVERIFY( bufferAlg );
+
+  QgsProcessingModelerParametersWidget widget( bufferAlg, &model, context );
+  QCOMPARE( widget.algorithm()->id(), u"native:buffer"_s );
+  QVERIFY( widget.comments().isEmpty() );
+  QVERIFY( !widget.commentColor().isValid() );
+}
+
+void TestQgsProcessingModelGui::testModelerParametersWidgetCommentsAndColor()
+{
+  QgsProcessingModelAlgorithm model( u"test_model"_s, u"Test Group"_s );
+  QgsProcessingContext context;
+  const QgsProcessingAlgorithm *bufferAlg = QgsApplication::processingRegistry()->algorithmById( u"native:buffer"_s );
+  QVERIFY( bufferAlg );
+
+  QgsProcessingModelerParametersWidget widget( bufferAlg, &model, context );
+
+  widget.setComments( u"comment text"_s );
+  QCOMPARE( widget.comments(), u"comment text"_s );
+
+  const QColor redColor( 255, 0, 0 );
+  widget.setCommentColor( redColor );
+  QCOMPARE( widget.commentColor(), redColor );
+
+  widget.setCommentColor( QColor() );
+  QVERIFY( !widget.commentColor().isValid() );
+}
+
+void TestQgsProcessingModelGui::testModelerParametersWidgetCreateAlgorithm()
+{
+  QgsProcessingModelAlgorithm model( u"test_model"_s, u"Test Group"_s );
+  QgsProcessingContext context;
+  const QgsProcessingAlgorithm *bufferAlg = QgsApplication::processingRegistry()->algorithmById( u"native:buffer"_s );
+  QVERIFY( bufferAlg );
+
+  QgsProcessingModelerParametersWidget widget( bufferAlg, &model, context );
+  widget.setComments( u"algorithm comment"_s );
+  const QColor blueColor( 0, 0, 255 );
+  widget.setCommentColor( blueColor );
+
+  std::unique_ptr< QgsProcessingModelChildAlgorithm > childAlg = widget.createAlgorithm();
+  QVERIFY( childAlg );
+  QCOMPARE( childAlg->algorithmId(), u"native:buffer"_s );
+  QCOMPARE( childAlg->comment()->description(), u"algorithm comment"_s );
+  QCOMPARE( childAlg->comment()->color(), blueColor );
+}
+
+void TestQgsProcessingModelGui::testModelerParametersWidgetSetStateFromChildAlgorithm()
+{
+  QgsProcessingModelAlgorithm model( u"test_model"_s, u"Test Group"_s );
+  QgsProcessingContext context;
+
+  const QgsProcessingAlgorithm *bufferAlg = QgsApplication::processingRegistry()->algorithmById( u"native:buffer"_s );
+  QVERIFY( bufferAlg );
+
+  QgsProcessingModelChildAlgorithm child( u"native:buffer"_s );
+  child.setChildId( u"buffer_1"_s );
+  child.setDescription( u"Buffered Layer"_s );
+  child.comment()->setDescription( u"existing comment"_s );
+  const QColor greenColor( 0, 255, 0 );
+  child.comment()->setColor( greenColor );
+  child.addParameterSources( u"DISTANCE"_s, QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromStaticValue( 50.0 ) );
+
+  model.addChildAlgorithm( child );
+
+  QgsProcessingModelerParametersWidget widget( bufferAlg, &model, context, u"buffer_1"_s );
+  widget.setComments( child.comment()->description() );
+  widget.setCommentColor( child.comment()->color() );
+  widget.setStateFromChildAlgorithm();
+
+  QCOMPARE( widget.comments(), u"existing comment"_s );
+  QCOMPARE( widget.commentColor(), greenColor );
+
+  std::unique_ptr< QgsProcessingModelChildAlgorithm > recreatedAlg = widget.createAlgorithm();
+  QVERIFY( recreatedAlg );
+  QCOMPARE( recreatedAlg->childId(), u"buffer_1"_s );
+  QCOMPARE( recreatedAlg->description(), u"Buffered Layer"_s );
+  QCOMPARE( recreatedAlg->comment()->description(), u"existing comment"_s );
+  QCOMPARE( recreatedAlg->comment()->color(), greenColor );
+  QCOMPARE( recreatedAlg->parameterSources().value( u"DISTANCE"_s ).at( 0 ).staticValue().toDouble(), 50.0 );
+}
+
+void TestQgsProcessingModelGui::testModelerParametersWidgetWidgetChangedSignal()
+{
+  QgsProcessingModelAlgorithm model( u"test_model"_s, u"Test Group"_s );
+  QgsProcessingContext context;
+
+  const QgsProcessingAlgorithm *bufferAlg = QgsApplication::processingRegistry()->algorithmById( u"native:buffer"_s );
+  QVERIFY( bufferAlg );
+
+  QgsProcessingModelerParametersWidget widget( bufferAlg, &model, context );
+  QSignalSpy spy( &widget, &QgsProcessingModelerParametersWidget::widgetChanged );
+
+  widget.mCommentEdit->setText( u"Updated Description"_s );
+  QCOMPARE( spy.count(), 1 );
+
+  widget.mCommentColorButton->setColor( QColor( 255, 0, 255 ) );
+  QCOMPARE( spy.count(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingModelGui )
