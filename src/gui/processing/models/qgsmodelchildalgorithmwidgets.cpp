@@ -21,16 +21,20 @@
 #include "qgscollapsiblegroupbox.h"
 #include "qgscolorbutton.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsmessagebar.h"
 #include "qgsmodeldesignerdialog.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
+#include "qgsprocessingcontext.h"
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingmodelerparameterwidget.h"
+#include "qgsprocessingprovider.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsscrollarea.h"
 
+#include <QDesktopServices>
 #include <QLabel>
 #include <QLineEdit>
 #include <QString>
@@ -599,4 +603,108 @@ std::unique_ptr< QgsProcessingModelChildAlgorithm > QgsProcessingModelerParamete
     alg->comment()->setColor( commentColor() );
   }
   return alg;
+}
+
+//
+// QgsProcessingModelerParametersDialog
+//
+
+QgsProcessingModelerParametersDialog::QgsProcessingModelerParametersDialog(
+  const QgsProcessingAlgorithm *childAlgorithm, QgsProcessingModelAlgorithm *model, QgsProcessingContext &context, const QString &childId, const QVariantMap &configuration, QWidget *parent
+)
+  : QDialog( parent )
+{
+  setObjectName( u"QgsProcessingModelerParametersDialog"_s );
+
+  setStyleSheet( QgsGui::applicationStyleSheet() );
+  connect( QgsGui::instance(), &QgsGui::applicationStyleSheetChanged, this, &QgsProcessingModelerParametersDialog::setStyleSheet );
+
+  mWidget = new QgsProcessingModelerParametersWidget( childAlgorithm, model, context, childId, configuration, this, this );
+
+  setWindowTitle( childAlgorithm ? ( childAlgorithm->group().isEmpty() ? childAlgorithm->displayName() : u"%1 - %2"_s.arg( childAlgorithm->group(), childAlgorithm->displayName() ) ) : QString() );
+
+  QgsGui::enableAutoGeometryRestore( this );
+
+  mButtonBox = new QDialogButtonBox();
+  mButtonBox->setOrientation( Qt::Orientation::Horizontal );
+  mButtonBox->setStandardButtons( QDialogButtonBox::StandardButton::Cancel | QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Help );
+
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProcessingModelerParametersDialog::okPressed );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProcessingModelerParametersDialog::openHelp );
+
+  auto mainLayout = new QVBoxLayout();
+  mainLayout->addWidget( mWidget, 1 );
+  mainLayout->addWidget( mButtonBox );
+  setLayout( mainLayout );
+}
+
+QgsProcessingModelerParametersDialog::~QgsProcessingModelerParametersDialog() = default;
+
+const QgsProcessingAlgorithm *QgsProcessingModelerParametersDialog::algorithm() const
+{
+  return mWidget->algorithm();
+}
+
+void QgsProcessingModelerParametersDialog::setComments( const QString &text )
+{
+  mWidget->setComments( text );
+}
+
+QString QgsProcessingModelerParametersDialog::comments() const
+{
+  return mWidget->comments();
+}
+
+void QgsProcessingModelerParametersDialog::setCommentColor( const QColor &color )
+{
+  mWidget->setCommentColor( color );
+}
+
+QColor QgsProcessingModelerParametersDialog::commentColor() const
+{
+  return mWidget->commentColor();
+}
+
+void QgsProcessingModelerParametersDialog::switchToCommentTab()
+{
+  mWidget->switchToCommentTab();
+}
+
+void QgsProcessingModelerParametersDialog::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  mWidget->setWidgetContext( context );
+}
+
+void QgsProcessingModelerParametersDialog::setStateFromChildAlgorithm()
+{
+  mWidget->setStateFromChildAlgorithm();
+}
+
+std::unique_ptr< QgsProcessingModelChildAlgorithm > QgsProcessingModelerParametersDialog::createAlgorithm()
+{
+  return mWidget->createAlgorithm();
+}
+
+void QgsProcessingModelerParametersDialog::okPressed()
+{
+  if ( createAlgorithm() )
+    accept();
+}
+
+void QgsProcessingModelerParametersDialog::openHelp()
+{
+  if ( !algorithm() )
+    return;
+
+  QString algHelp = algorithm()->helpUrl();
+  if ( algHelp.isEmpty() && algorithm()->provider() )
+  {
+    algHelp = QgsHelp::helpUrl( u"processing_algs/%1/%2.html#%3"_s
+                                  .arg( algorithm()->provider()->helpId(), algorithm()->groupId(), u"%1%2"_s.arg( algorithm()->provider()->helpId(), QString( algorithm()->name() ).replace( '_', '-' ) ) ) )
+                .toString();
+  }
+
+  if ( !algHelp.isEmpty() )
+    QDesktopServices::openUrl( QUrl( algHelp ) );
 }

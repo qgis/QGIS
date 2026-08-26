@@ -31,6 +31,7 @@ from qgis.gui import (
     QgsModelOutputGraphicItem,
     QgsModelParameterGraphicItem,
     QgsProcessingContextGenerator,
+    QgsProcessingModelerParametersDialog,
     QgsProcessingParameterDefinitionDialog,
 )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -38,7 +39,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
 )
-from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.tools.dataobjects import createContext
 
 
@@ -174,12 +174,15 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
 
     def edit(self, edit_comment=False):
         elemAlg = self.component().algorithm()
-        dlg = ModelerParametersDialog(
+        context = createContext()
+        dlg = QgsProcessingModelerParametersDialog(
             elemAlg,
             self.model(),
+            context,
             self.component().childId(),
             self.component().configuration(),
         )
+        dlg.setWidgetContext(self.createWidgetContext())
         dlg.setModal(True)
         dlg.setComments(self.component().comment().description())
         dlg.setCommentColor(self.component().comment().color())
