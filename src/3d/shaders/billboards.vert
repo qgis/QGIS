@@ -18,6 +18,10 @@ uniform mat4 modelViewProjection;
 uniform vec2 WIN_SCALE;	 // the size of the viewport in pixels
 #endif
 
+#ifdef VERTICAL_OFFSET
+uniform float VERT_OFFSET;
+#endif
+
 out vec2 UV;
 
 #ifdef TEXTURE_ATLAS
@@ -37,6 +41,11 @@ void main(void)
     vec2 bbSize = BB_SIZE;
 #endif
 
+    vec2 offsetPos = vertexPosition;
+#ifdef VERTICAL_OFFSET
+    offsetPos.y += VERT_OFFSET;
+#endif
+
 #ifdef PERSPECTIVE_SCALE
     // transform instance position into view space
     vec4 viewPos = modelView * vec4(instancePosition, 1.0);
@@ -44,7 +53,7 @@ void main(void)
     vec2 size = bbSize;
 
     // offset quad vertices directly in view space using world units
-    viewPos.xy += vertexPosition * size;
+    viewPos.xy += offsetPos * size;
 
     gl_Position = projectionMatrix * viewPos;
 #else
@@ -59,7 +68,7 @@ void main(void)
 
     vec4 P = modelViewProjection * vec4(instancePosition, 1);
     P /= P.w;
-    P.xy += vertexPosition * spritePixelSize;
+    P.xy += offsetPos * spritePixelSize;
 
     #ifdef TEXTURE_ATLAS_PIXEL_OFFSETS
       // convert the pixel offset to display coordinates, multiplying by 2 to adjust for -1, 1 range for display coordinates

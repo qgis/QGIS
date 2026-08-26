@@ -93,6 +93,13 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( ExtraAttributes attrib
     vertexShaderDefines << u"PER_INSTANCE_SIZE"_s;
   }
 
+  if ( attributes.testFlag( ExtraAttribute::VerticalOffset ) )
+  {
+    vertexShaderDefines << u"VERTICAL_OFFSET"_s;
+    mVerticalOffset = new Qt3DRender::QParameter( "VERT_OFFSET", 0.0, this );
+    addParameter( mVerticalOffset );
+  }
+
   switch ( mScaleMode )
   {
     case Qgis::BillboardScaleMode::ViewIndependent:
@@ -145,6 +152,14 @@ void QgsPoint3DBillboardMaterial::setSize( const QSizeF size )
 QSizeF QgsPoint3DBillboardMaterial::size() const
 {
   return mSize->value().value<QSizeF>();
+}
+
+void QgsPoint3DBillboardMaterial::setVerticalOffset( float offset )
+{
+  if ( mVerticalOffset )
+  {
+    mVerticalOffset->setValue( offset );
+  }
 }
 
 void QgsPoint3DBillboardMaterial::setViewportSize( const QSizeF size )
