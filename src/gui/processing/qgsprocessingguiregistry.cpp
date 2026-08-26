@@ -309,7 +309,10 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
     auto widget = new QgsProcessingModelerParametersWidget( algorithm.get(), widgetContext.model(), context, childId, childAlg->configuration(), nullptr );
     widget->setComments( childAlg->comment()->description() );
     widget->setCommentColor( childAlg->comment()->color() );
-    widget->setWidgetContext( widgetContext );
+
+    QgsProcessingParameterWidgetContext widgetContextCopy = widgetContext;
+    widgetContextCopy.setModelChildAlgorithmId( childId );
+    widget->setWidgetContext( widgetContextCopy );
 
     connect( widget, &QgsProcessingModelConfigWidget::widgetChanged, this, [dialog, childId, widget] {
       QgsModelGraphicsScene *modelScene = dialog->modelScene();

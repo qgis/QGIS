@@ -1712,6 +1712,7 @@ void QgsModelChildAlgorithmGraphicItem::edit( bool editComment )
     return;
 
   QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+  widgetContext.setModelChildAlgorithmId( child->childId() );
   QgsProcessingContext *context = widgetContext.processingContextGenerator()->processingContext();
 
   const QgsProcessingAlgorithm *algorithm = child->algorithm();
