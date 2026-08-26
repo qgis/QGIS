@@ -18,7 +18,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsModelDesignerDialog.__abstract_methods__ = ['repaintModel', 'addAlgorithm', 'addInput', 'exportAsScriptAlgorithm', 'saveModel', 'createExecutionWidget']
-    QgsModelDesignerDialog.__overridden_methods__ = ['closeEvent', 'createFeedback', 'createWidgetContext']
+    QgsModelDesignerDialog.__overridden_methods__ = ['closeEvent', 'createFeedback', 'createWidgetContext', 'processingContext']
     QgsModelDesignerDialog.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass

@@ -12,7 +12,7 @@
 
 
 
-class QgsModelDesignerDialog : QMainWindow, QgsProcessingFeedbackGenerator, QgsProcessingWidgetContextGenerator
+class QgsModelDesignerDialog : QMainWindow, QgsProcessingFeedbackGenerator, QgsProcessingContextGenerator, QgsProcessingWidgetContextGenerator
 {
 %Docstring(signature="appended")
 Model designer dialog base class.
@@ -125,6 +125,8 @@ Raise, unminimize and activate this window.
 Registers a Processing context ``generator`` class that will be used to
 retrieve a Processing context for the dialog when required.
 %End
+    virtual QgsProcessingContext *processingContext() const;
+
 
     QToolBar *toolbar();
     QAction *actionOpen();
