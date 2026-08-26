@@ -40,6 +40,8 @@
 #include <QString>
 #include <QVBoxLayout>
 
+#include "moc_qgsmodelchildalgorithmwidgets.cpp"
+
 using namespace Qt::StringLiterals;
 
 //
