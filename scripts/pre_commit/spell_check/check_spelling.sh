@@ -94,7 +94,7 @@ SPLIT=8
 # running this hook on several file batches in parallel) don't clobber each other's
 # split files, which were previously written under fixed names in the working directory
 TMPDIR_SPELLCHECK=$(mktemp -d)
-trap '${GP}rm -rf "$TMPDIR_SPELLCHECK"' EXIT
+trap 'rm -rf "$TMPDIR_SPELLCHECK"' EXIT
 
 ${GP}split --number=l/$SPLIT --numeric-suffixes --suffix-length=2 --additional-suffix=~ ${DIR}/spelling.dat ${TMPDIR_SPELLCHECK}/spelling
 
