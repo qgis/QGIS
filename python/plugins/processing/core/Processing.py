@@ -52,9 +52,6 @@ from processing.gui.RenderingStyles import RenderingStyles
 from processing.script import ScriptUtils
 from processing.tools import dataobjects
 
-with QgsRuntimeProfiler.profile("Import QGIS Provider"):
-    from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
-
 with QgsRuntimeProfiler.profile("Import GDAL Provider"):
     from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
 
@@ -137,7 +134,6 @@ class Processing:
 
             # Add the basic providers
             basic_providers = [
-                QgisAlgorithmProvider,
                 GdalAlgorithmProvider,
                 ScriptAlgorithmProvider,
             ]

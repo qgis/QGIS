@@ -25,9 +25,9 @@ import unittest
 
 from qgis.core import NULL, QgsVectorLayer
 from qgis.testing import QgisTestCase, start_app
+from qgisprovider import vector
 
 from processing.tests.TestData import points
-from processing.tools import vector
 
 testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
