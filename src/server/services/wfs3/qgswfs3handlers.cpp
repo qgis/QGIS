@@ -863,27 +863,22 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
       fieldsInfo[fieldName]["pattern"] = fInfo.pattern.value();
     if ( fInfo.codelist.has_value() )
     {
-      json codelistJson = json::object();
+      json codelistJson = json::array();
       const CodelistInline &codelistInfo = fInfo.codelist.value();
-      if ( codelistInfo.title.has_value() )
-        codelistJson["title"] = codelistInfo.title.value();
-      if ( codelistInfo.description.has_value() )
-        codelistJson["description"] = codelistInfo.description.value();
-      codelistJson["oneOf"] = json::array();
       const QVariantMap values = codelistInfo.values.value();
       for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
         if ( it.value().isValid() )
         {
-          codelistJson["oneOf"].push_back( { { "title", it.key().toStdString() }, { "const", QgsJsonUtils::jsonFromVariant( it.value() ) } } );
+          codelistJson.push_back( { { "title", it.key().toStdString() }, { "const", QgsJsonUtils::jsonFromVariant( it.value() ) } } );
         }
         else
         {
-          codelistJson["oneOf"].push_back( { { "title", it.key().toStdString() }, { "const", json() } } );
+          codelistJson.push_back( { { "title", it.key().toStdString() }, { "const", json() } } );
           fieldsInfo[fieldName]["x-ogc-nullValues"] = json::array( { json() } );
         }
       }
-      fieldsInfo[fieldName]["x-ogc-codelist"] = codelistJson;
+      fieldsInfo[fieldName]["oneOf"] = codelistJson;
     }
   }
   data["properties"] = fieldsInfo;
