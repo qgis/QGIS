@@ -108,6 +108,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsProcessingModelerParameterWidget::changed );
 
   mModelInputCombo = new QComboBox();
+  mModelInputCombo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
   QHBoxLayout *hLayout2 = new QHBoxLayout();
   hLayout2->setContentsMargins( 0, 0, 0, 0 );
   hLayout2->addWidget( new QLabel( tr( "Using model input" ) ) );
@@ -118,6 +119,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget(
   connect( mModelInputCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsProcessingModelerParameterWidget::changed );
 
   mChildOutputCombo = new QComboBox();
+  mChildOutputCombo->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
   QHBoxLayout *hLayout3 = new QHBoxLayout();
   hLayout3->setContentsMargins( 0, 0, 0, 0 );
   hLayout3->addWidget( new QLabel( tr( "Using algorithm output" ) ) );
