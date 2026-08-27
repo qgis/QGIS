@@ -281,13 +281,10 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             {"map": {"a": "A", "b": "B"}},
             {
                 "type": "string",
-                "x-ogc-codelist": {
-                    "oneOf": [
-                        {"const": "A", "title": "a"},
-                        {"const": "B", "title": "b"},
-                    ],
-                    "title": "field1",
-                },
+                "oneOf": [
+                    {"const": "A", "title": "a"},
+                    {"const": "B", "title": "b"},
+                ],
                 "x-ogc-propertySeq": 2,
             },
             required=True,
