@@ -213,17 +213,14 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
     }
     QVariant dimRefValue;
     const Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = static_cast<Qgis::WmsDimensionDefaultDisplay>( dimElem.attribute( u"defaultDisplayType"_s ).toInt() );
-    if ( dimDefaultDisplayType == Qgis::WmsDimensionDefaultDisplay::ReferenceValue )
+    const QString dimRefValueStr = dimElem.attribute( u"referenceValue"_s );
+    if ( !dimRefValueStr.isEmpty() )
     {
-      const QString dimRefValueStr = dimElem.attribute( u"referenceValue"_s );
-      if ( !dimRefValueStr.isEmpty() )
+      const QgsField dimField = fields.at( dimFieldNameIndex );
+      dimRefValue = QVariant( dimRefValueStr );
+      if ( !dimField.convertCompatible( dimRefValue ) )
       {
-        const QgsField dimField = fields.at( dimFieldNameIndex );
-        dimRefValue = QVariant( dimRefValueStr );
-        if ( !dimField.convertCompatible( dimRefValue ) )
-        {
-          continue;
-        }
+        continue;
       }
     }
     QgsServerWmsDimensionProperties::WmsDimensionInfo
