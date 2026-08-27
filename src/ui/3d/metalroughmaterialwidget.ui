@@ -13,12 +13,53 @@
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="mGridLayout">
    <item row="0" column="1">
     <widget class="QLabel" name="lblSpecular">
      <property name="text">
       <string>Base color</string>
      </property>
+    </widget>
+   </item>
+   <item row="0" column="2" colspan="2">
+    <widget class="QWidget" name="mBaseColorContainer">
+     <layout class="QHBoxLayout" name="mBaseColorLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QgsColorButton" name="mButtonBaseColor">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsPropertyOverrideButton" name="mBaseColorDataDefinedButton">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="9" column="2" colspan="2">
@@ -64,13 +105,6 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mEmissionColorDataDefinedButton">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="2" colspan="2">
     <widget class="QgsPercentageWidget" name="mReflectanceWidget" native="true">
      <property name="focusPolicy">
@@ -85,33 +119,10 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="2">
-    <widget class="QgsColorButton" name="mButtonEmissionColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
    <item row="5" column="1">
     <widget class="QLabel" name="lblRoughness_5">
      <property name="text">
       <string>Anisotropy direction</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mBaseColorDataDefinedButton">
-     <property name="text">
-      <string>...</string>
      </property>
     </widget>
    </item>
@@ -153,6 +164,47 @@
      </property>
     </widget>
    </item>
+   <item row="8" column="2" colspan="2">
+    <widget class="QWidget" name="mEmissionColorContainer">
+     <layout class="QHBoxLayout" name="mEmissionColorLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QgsColorButton" name="mButtonEmissionColor">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsPropertyOverrideButton" name="mEmissionColorDataDefinedButton">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="7" column="1">
     <widget class="QLabel" name="lblSpecular_7">
      <property name="text">
@@ -188,22 +240,6 @@
      </property>
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QgsColorButton" name="mButtonBaseColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
      </property>
     </widget>
    </item>
