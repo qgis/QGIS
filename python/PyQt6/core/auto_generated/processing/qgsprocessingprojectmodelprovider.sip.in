@@ -1,0 +1,88 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingprojectmodelprovider.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProcessingProjectModelProvider : QgsProcessingProvider
+{
+%Docstring(signature="appended")
+A Processing provider based on models embedded in a QGIS project.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingprojectmodelprovider.h"
+%End
+  public:
+    QgsProcessingProjectModelProvider( QgsProject *project, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProcessingProjectModelProvider, storing models in the
+specified ``project``.
+%End
+
+    virtual QString name() const;
+
+    virtual QString longName() const;
+
+    virtual QString id() const;
+
+    virtual QIcon icon() const;
+
+    virtual QString svgIconPath() const;
+
+    virtual bool supportsNonFileBasedOutput() const;
+
+    virtual bool load();
+
+
+    void clear();
+%Docstring
+Clears all models from the provider.
+%End
+
+    void addModel( const QgsProcessingModelAlgorithm &model );
+%Docstring
+Adds a ``model`` to the provider.
+%End
+
+    void removeModel( const QgsProcessingModelAlgorithm *model );
+%Docstring
+Removes a ``model`` from the provider.
+%End
+
+  public slots:
+
+    void readProject( const QDomDocument &document );
+%Docstring
+Reads project model definitions from a project DOM document
+``document``.
+%End
+
+    void writeProject( QDomDocument &document );
+%Docstring
+Writes project model definitions into a project DOM document
+``document``.
+%End
+
+  protected:
+    virtual void loadAlgorithms();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingprojectmodelprovider.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

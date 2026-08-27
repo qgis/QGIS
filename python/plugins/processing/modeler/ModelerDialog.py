@@ -58,7 +58,6 @@ from processing.modeler.ModelerParameterDefinitionDialog import (
 )
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.ModelerUtils import ModelerUtils
-from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools.dataobjects import createContext
 
@@ -129,9 +128,9 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.model().setSourceFilePath(None)
 
         project_provider = QgsApplication.processingRegistry().providerById(
-            PROJECT_PROVIDER_ID
+            QgsProcessing.PROJECT_PROVIDER_ID
         )
-        project_provider.add_model(self.model())
+        project_provider.addModel(self.model())
 
         self.update_model.emit()
         self.messageBar().pushMessage(
