@@ -300,6 +300,7 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingparametertype.cpp
   processing/qgsprocessingparametervectortilewriterlayers.cpp
   processing/qgsprocessingparameteralignrasterlayers.cpp
+  processing/qgsprocessingprojectmodelprovider.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
@@ -1928,6 +1929,7 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingparametertypeimpl.h
   processing/qgsprocessingparametervectortilewriterlayers.h
   processing/qgsprocessingparameteralignrasterlayers.h
+  processing/qgsprocessingprojectmodelprovider.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
   processing/qgsprocessingutils.h

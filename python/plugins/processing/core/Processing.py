@@ -62,7 +62,6 @@ with QgsRuntimeProfiler.profile("Import Script Provider"):
 
 # should be loaded last - ensures that all dependent algorithms are available when loading models
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
-from processing.modeler.ProjectProvider import ProjectProvider  # NOQA
 
 
 class Processing:
@@ -140,7 +139,11 @@ class Processing:
 
             # model providers are deferred for qgis_process startup
             if QgsApplication.platform() != "qgis_process":
-                basic_providers.extend([ModelerAlgorithmProvider, ProjectProvider])
+                basic_providers.extend(
+                    [
+                        ModelerAlgorithmProvider,
+                    ]
+                )
 
             for c in basic_providers:
                 p = c()

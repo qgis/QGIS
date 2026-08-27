@@ -16,6 +16,12 @@
 #include "qgsappprocessingutils.h"
 
 #include "qgisapp.h"
+#include "qgsprocessingprojectmodelprovider.h"
+#include "qgsprocessingregistry.h"
+
+//
+// QgsProcessingParameterWidgetContext
+//
 
 QgsAppProcessingWidgetContextGenerator::QgsAppProcessingWidgetContextGenerator( QgisApp *app )
   : mQgisApp( app )
@@ -30,4 +36,15 @@ QgsProcessingParameterWidgetContext QgsAppProcessingWidgetContextGenerator::crea
   context.setMessageBar( mQgisApp->messageBar() );
   context.setProject( QgsProject::instance() );
   return context;
+}
+
+
+//
+// QgsAppProcessingUtils
+//
+
+void QgsAppProcessingUtils::initProjectModelProvider()
+{
+  auto projectModelProvider = std::make_unique< QgsProcessingProjectModelProvider >( QgsProject::instance() );
+  QgsApplication::processingRegistry()->addProvider( projectModelProvider.release() );
 }

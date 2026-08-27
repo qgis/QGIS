@@ -30,4 +30,10 @@ class QgsAppProcessingWidgetContextGenerator : public QgsProcessingWidgetContext
     QgisApp *mQgisApp = nullptr;
 };
 
+class QgsAppProcessingUtils
+{
+  public:
+    static void initProjectModelProvider();
+};
+
 #endif // QGSAPPPROCESSINGUTILS_H

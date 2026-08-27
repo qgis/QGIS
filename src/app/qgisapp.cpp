@@ -1676,6 +1676,8 @@ QgisApp::QgisApp(
   //..and listen out for new item types
   connect( QgsGui::annotationItemGuiRegistry(), &QgsAnnotationItemGuiRegistry::typeAdded, this, &QgisApp::annotationItemTypeAdded );
 
+  // must come before plugin startup, as processing plugin sets up connections to it
+  QgsAppProcessingUtils::initProjectModelProvider();
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
