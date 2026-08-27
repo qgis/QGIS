@@ -72,12 +72,13 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     from osgeo import ogr
 
-from processing.core.parameters import getParameterFromString
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import getTempFilename, isWindows
 
 from grassprovider.grass_utils import GrassUtils
 from grassprovider.parsed_description import ParsedDescription
+
+from .parameters import getParameterFromString
 
 pluginPath = os.path.normpath(
     os.path.join(os.path.split(os.path.dirname(__file__))[0], os.pardir)
