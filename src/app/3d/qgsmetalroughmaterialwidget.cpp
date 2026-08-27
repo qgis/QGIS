@@ -32,6 +32,9 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   mPreviewWidget->hide();
   mPreviewWidget->setMaterialType( u"metalrough"_s );
 
+  // Ensure the widgets expand without widening the label column.
+  mGridLayout->setColumnStretch( 2, 1 );
+
   QgsMetalRoughMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
 
