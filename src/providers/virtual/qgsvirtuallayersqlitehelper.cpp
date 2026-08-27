@@ -27,12 +27,18 @@ using namespace Qt::StringLiterals;
 
 QgsScopedSqlite::QgsScopedSqlite( const QString &path, bool withExtension )
 {
+  if ( withExtension )
+  {
+    // register a statically-linked function as extension
+    // for all future database connection
+    sqlite3_auto_extension( reinterpret_cast<void ( * )()>( qgsvlayerModuleInit ) );
+  }
   int r;
   r = sqlite3_open( path.toUtf8().constData(), &db_ );
-  if ( withExtension && !r )
+  if ( withExtension )
   {
-    // register the module directly on this connection
-    qgsvlayerModuleInit( db_, nullptr, nullptr );
+    // reset the automatic extensions
+    sqlite3_reset_auto_extension();
   }
 
   if ( r )
