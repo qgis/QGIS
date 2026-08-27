@@ -677,7 +677,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
 
           fInfo.role = "reference";
           fInfo.collectionId = referencedLayerId.toStdString();
-          if ( !referencedLayerTitle.isEmpty() )
+          if ( !fInfo.title.has_value() && !referencedLayerTitle.isEmpty() )
           {
             fInfo.title = referencedLayerTitle.toStdString();
           }
@@ -688,7 +688,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
           const QString referencedLayerId = referencedLayerIdentifier( mapLayer, fieldElement->idx(), context, &referencedLayerTitle );
           fInfo.role = "reference";
           fInfo.collectionId = referencedLayerId.toStdString();
-          if ( !referencedLayerTitle.isEmpty() )
+          if ( !fInfo.title.has_value() && !referencedLayerTitle.isEmpty() )
           {
             fInfo.title = referencedLayerTitle.toStdString();
           }
