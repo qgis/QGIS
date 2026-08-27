@@ -238,6 +238,7 @@
           "name": "gdal",
           "default-features": true,
           "features": [
+            "archive",
             "arrow-adbc",
             "kea",
             "parquet",
