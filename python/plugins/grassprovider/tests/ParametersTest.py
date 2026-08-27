@@ -31,9 +31,11 @@ from qgis.core import (
 )
 from qgis.testing import QgisTestCase, start_app
 
-from processing.core.parameters import getParameterFromString
+from grassprovider.parameters import getParameterFromString
 
-testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
+testDataPath = os.path.join(
+    os.path.dirname(__file__), "../../processing/tests/testdata"
+)
 
 start_app()
 
