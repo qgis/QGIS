@@ -53,6 +53,11 @@ class ProviderTestCase(FeatureSourceTestCase):
 
     """
 
+    # Set to True in a subclass to run testConcurrentLayerAccessThreadSafety.
+    # Disabled by default as this test is currently only meaningful/stable for
+    # the OGR provider.
+    runConcurrentLayerAccessThreadSafetyTest = False
+
     def uncompiledFilters(self):
         """Individual derived provider tests should override this to return a list of expressions which
         cannot be compiled"""
@@ -331,6 +336,11 @@ class ProviderTestCase(FeatureSourceTestCase):
         )
 
     def testConcurrentLayerAccessThreadSafety(self):
+        if not self.runConcurrentLayerAccessThreadSafetyTest:
+            self.skipTest(
+                f"{self.__class__.__name__} does not opt in to "
+                "testConcurrentLayerAccessThreadSafety"
+            )
         self.assertTrue(
             QgsTestUtils.testConcurrentLayerAccess(
                 self.source.dataSourceUri(), self.source.name()
