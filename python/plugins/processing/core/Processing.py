@@ -150,6 +150,14 @@ class Processing:
             if QgsApplication.platform() == "external":
                 # for external applications we must also load the builtin providers stored in separate plugins
                 try:
+                    from qgisprovider.qgis_provider import QgisAlgorithmProvider
+
+                    p = QgisAlgorithmProvider()
+                    if QgsApplication.processingRegistry().addProvider(p):
+                        Processing.BASIC_PROVIDERS.append(p)
+                except ImportError:
+                    pass
+                try:
                     from grassprovider.grass_provider import GrassProvider
 
                     p = GrassProvider()
