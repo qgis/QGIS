@@ -23,6 +23,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
 
+#include <QCoreApplication>
 #include <QCryptographicHash>
 #include <QDir>
 #include <QJsonDocument>
@@ -179,8 +180,8 @@ void QgsO2::setVerificationResponseContent()
   {
     setReplyContent(
       QString::fromUtf8( verhtml.readAll() )
-        .replace( "{{ H2_TITLE }}"_L1, tr( "QGIS OAuth2 verification has finished." ) )
-        .replace( "{{ H3_TITLE }}"_L1, tr( "You can close this window and return to QGIS." ) )
+        .replace( "{{ H2_TITLE }}"_L1, tr( "%1 OAuth2 verification has finished." ).arg( QCoreApplication::applicationName() ) )
+        .replace( "{{ H3_TITLE }}"_L1, tr( "You can close this window and return to %1." ).arg( QCoreApplication::applicationName() ) )
         .toUtf8()
     );
   }
