@@ -54,6 +54,8 @@ void QgsBillboardGeometry::setAttributes( QgsBillboardGeometry::Attributes attri
   if ( mAttributes == attributes )
     return;
 
+  mAttributes = attributes;
+
   // position is always present
   uint stride = 3 * sizeof( float );
   if ( attributes.testFlag( Attribute::Size ) )
