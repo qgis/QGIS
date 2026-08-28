@@ -9,7 +9,7 @@
     <csw type="OGC CSW 2.0.2" name="Italy: Istituto Nazionale di Geofisica e Vulcanologia (INGV)" url="https://ogc.ingv.it/csw/"/>
     <csw type="OGC CSW 2.0.2" name="New Zealand: LINZ Data Service" url="https://data.linz.govt.nz/services/csw/"/>
     <csw type="OGC CSW 2.0.2" name="Netherlands: National CSW (Nationaal Georegister)" url="http://www.nationaalgeoregister.nl/geonetwork/srv/dut/csw"/>
-    <csw type="OGC CSW 2.0.2" name="Norway: National CSW (Geonorge)" url="http://www.geonorge.no/geonetwork/srv/no/csw"/>
+    <csw type="OGC CSW 2.0.2" name="Norway: National CSW (Geonorge)" url="https://www.geonorge.no/geonetwork/srv/nor/csw"/>
     <csw type="OGC CSW 2.0.2" name="Sweden: National CSW" url="https://www.geodata.se/geodataportalen/srv/eng/csw-inspire"/>
     <csw type="OGC CSW 2.0.2" name="UK Location Catalogue Publishing Service" url="https://data.gov.uk/csw"/>
     <csw type="OGC CSW 2.0.2" name="UNEP GRID-Geneva Metadata Catalog" url="https://datacore-gn.unepgrid.ch/geonetwork/srv/eng/csw"/>
