@@ -566,6 +566,7 @@ set(QGIS_CORE_SRCS
   qgsmaskrendersettings.cpp
   qgsmathutils.cpp
   qgsmatrix4x4.cpp
+  qgsmatrixsolver.cpp
   qgsmbtiles.cpp
   qgsmeasureutils.cpp
   qgsmessagelog.cpp
@@ -1315,6 +1316,7 @@ set(QGIS_CORE_HDRS
   qgsmaskrendersettings.h
   qgsmathutils.h
   qgsmatrix4x4.h
+  qgsmatrixsolver.h
   qgsmbtiles.h
   qgsmeasureutils.h
   qgsmessagelog.h
@@ -2777,6 +2779,10 @@ endif()
 if (WITH_EPT)
   target_include_directories(qgis_core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/core/providers/ept)
+endif()
+
+if(HAVE_GSL)
+  target_link_libraries(qgis_core GSL::gsl)
 endif()
 
 if (WITH_COPC)
