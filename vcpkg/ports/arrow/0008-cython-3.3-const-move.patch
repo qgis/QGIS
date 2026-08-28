@@ -1,0 +1,26 @@
+Backport of apache/arrow f9315d4e7 (GH-49565, PR #49567), first released
+in arrow 24.0.0. Cython >= 3.3 emits cython_std::move<T>(x) with an
+explicit template argument, so T no longer deduces to a const reference
+and neither move(T&) nor move(T&&) binds the const parameter:
+
+  _parquet_encryption.cpp: error: no matching function for call to 'move'
+  note: candidate ... 1st argument ('const parquet::encryption::KmsConnectionConfig')
+        would lose const qualifier
+
+Copy into a non-const local first, as upstream does.
+
+diff --git a/python/pyarrow/_parquet_encryption.pyx b/python/pyarrow/_parquet_encryption.pyx
+--- a/python/pyarrow/_parquet_encryption.pyx
++++ b/python/pyarrow/_parquet_encryption.pyx
+@@ -296,7 +296,10 @@
+     @staticmethod
+     cdef wrap(const CKmsConnectionConfig& config):
+         result = KmsConnectionConfig()
+-        result.configuration = make_shared[CKmsConnectionConfig](move(config))
++        # We require a copy of the config because the input is
++        # a const reference owned by C++.
++        cdef CKmsConnectionConfig config_copy = config
++        result.configuration = make_shared[CKmsConnectionConfig](move(config_copy))
+         return result
+ 
+ 
