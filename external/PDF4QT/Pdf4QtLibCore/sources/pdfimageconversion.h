@@ -40,7 +40,9 @@ public:
     enum class ConversionMethod
     {
         Automatic,  ///< The threshold is determined automatically using an algorithm.
-        Manual      ///< The threshold is manually provided by the user.
+        Manual,     ///< The threshold is manually provided by the user.
+        Adaptive,   ///< Adaptive local thresholding.
+        Dither      ///< Error diffusion dither.
     };
 
     /// Sets the image to be converted using the specified conversion method.
@@ -50,8 +52,9 @@ public:
     void setImage(QImage image);
 
     /// Sets the method for image conversion. Multiple methods are available
-    /// for selection. If the manual method is chosen, an appropriate threshold
-    /// must also be set by the user.
+    /// for selection, including adaptive thresholding and dithering. If the
+    /// manual method is chosen, an appropriate threshold must also be set by
+    /// the user.
     /// \param method The conversion method to be used.
     void setConversionMethod(ConversionMethod method);
 
@@ -68,8 +71,9 @@ public:
     /// the automatic threshold calculation is enabled, it executes Otsu's 1D algorithm
     /// to determine the threshold. When the manual conversion method is selected,
     /// the automatic threshold calculation is bypassed, and the predefined manual threshold
-    /// value is utilized instead. This method returns true if the conversion is
-    /// successful, and false otherwise.
+    /// value is utilized instead. Adaptive and dithered conversions use their respective
+    /// algorithms and may ignore the global threshold. This method returns true if the
+    /// conversion is successful, and false otherwise.
     bool convert();
 
     /// Returns the threshold used in image conversion. If the automatic conversion method is
@@ -87,8 +91,12 @@ public:
 
 private:
     int calculateOtsu1DThreshold() const;
+    QImage convertAdaptive() const;
+    QImage convertDithered(int threshold) const;
 
     static constexpr int DEFAULT_THRESHOLD = 128;
+    static constexpr int ADAPTIVE_WINDOW_RADIUS = 8;
+    static constexpr int ADAPTIVE_OFFSET = 8;
 
     QImage m_image;
     QImage m_convertedImage;

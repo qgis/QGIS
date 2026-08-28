@@ -144,6 +144,7 @@ protected:
     virtual void performRestoreGraphicState(ProcessOrder order) override;
     virtual void setWorldMatrix(const QTransform& matrix) override;
     virtual void setCompositionMode(QPainter::CompositionMode mode) override;
+    virtual bool performTextCharacterDrawing(const PDFRealTextDrawInfo& info) override;
 
 private:
     QPainter* m_painter;

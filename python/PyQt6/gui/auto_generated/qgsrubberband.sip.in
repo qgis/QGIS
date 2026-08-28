@@ -14,6 +14,43 @@
 #include <qgsrubberband.h>
 %End
 
+
+class QgsRubberBandPreviewItem
+{
+%Docstring(signature="appended")
+Abstract interface for rendering custom preview overlays attached to a
+:py:class:`QgsRubberBand`.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsrubberband.h"
+%End
+  public:
+    virtual ~QgsRubberBandPreviewItem();
+
+    QgsRubberBand *rubberBand();
+%Docstring
+Returns the rubber band associated with the item.
+%End
+
+    virtual void render( QgsRenderContext &context ) = 0;
+%Docstring
+Renders the custom preview overlay using the specified render
+``context``.
+%End
+
+  protected:
+    QgsRubberBandPreviewItem( QgsRubberBand *rubberBand );
+%Docstring
+Constructor for a QgsRubberBandPreviewItem, attached to the specified
+``rubberBand``.
+%End
+
+};
+
+
 class QgsRubberBand : QgsMapCanvasItem
 {
 %Docstring(signature="appended")
@@ -40,28 +77,6 @@ widget for tracking the mouse while drawing polylines or polygons.
       sipType = nullptr;
 %End
   public:
-
-    enum IconType /BaseType=IntEnum/
-    {
-
-      ICON_NONE,
-
-      ICON_CROSS,
-
-      ICON_X,
-
-      ICON_BOX,
-
-      ICON_CIRCLE,
-
-      ICON_FULL_BOX,
-
-      ICON_DIAMOND,
-
-      ICON_FULL_DIAMOND,
-
-      ICON_SVG
-    };
 
     QgsRubberBand( QgsMapCanvas *mapCanvas /TransferThis/, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
 %Docstring
@@ -136,7 +151,7 @@ Sets the width of the line. Stroke width for polygon.
 Returns the current width of the line or stroke width for polygon.
 %End
 
-    void setIcon( IconType icon );
+    void setIcon( Qgis::RubberBandIconType icon );
 %Docstring
 Sets the icon type to highlight point geometries.
 
@@ -155,7 +170,7 @@ function automatically calls setIcon(ICON_SVG)
 %End
 
 
-    IconType icon() const;
+    Qgis::RubberBandIconType icon() const;
 %Docstring
 Returns the current icon type to highlight point geometries.
 %End
@@ -188,6 +203,26 @@ type according to geometryType.
 :param geometryType: Defines how the data should be drawn onto the
                      screen. (Use :py:class:`Qgis`.Line,
                      :py:class:`Qgis`.Polygon or :py:class:`Qgis`.Point)
+%End
+
+    void addPreviewItem( QgsRubberBandPreviewItem *item /Transfer/ );
+%Docstring
+Adds a custom preview ``item`` decorator to the rubber band.
+
+Ownership of the item is transferred to the rubber band.
+
+.. seealso:: :py:func:`clearPreviewItems`
+
+.. versionadded:: 4.4
+%End
+
+    void clearPreviewItems();
+%Docstring
+Clears all registered preview items.
+
+.. seealso:: :py:func:`addPreviewItem`
+
+.. versionadded:: 4.4
 %End
 
     void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
@@ -403,6 +438,25 @@ Ownership of ``symbol`` is transferred to the rubberband.
 .. seealso:: :py:func:`setSymbol`
 
 .. versionadded:: 3.20
+%End
+
+    Qgis::RubberBandComponents renderedComponents() const;
+%Docstring
+Returns the rubber band components that will be rendered for this band.
+
+.. seealso:: :py:func:`setRenderedComponents`
+
+.. versionadded:: 4.4
+%End
+
+    void setRenderedComponents( Qgis::RubberBandComponents components );
+%Docstring
+Sets the rubber band ``components`` that should be rendered for this
+band.
+
+.. seealso:: :py:func:`renderedComponents`
+
+.. versionadded:: 4.4
 %End
 
   protected:

@@ -75,6 +75,7 @@ class TestQgsSfcgal : public QgsTest
 
     void fromWkt();
     void isEqual();
+    void isValid();
     void boundary();
     void centroid();
     void dropZ();
@@ -491,6 +492,34 @@ void TestQgsSfcgal::isEqual()
   QVERIFY2( *cubeSmallTranslate.get() != *cube.get(), "cubes should not be equals" );
   QVERIFY2( cubeSmallTranslate->fuzzyEqual( *( cube.get() ), 0.01 ), "Cubes Should be fuzzy equals" );
 #endif
+}
+
+void TestQgsSfcgal::isValid()
+{
+  bool isValid = false;
+  QString errorMsg;
+  QString reasonMsg;
+
+  // valid polygon
+  auto sfcgalPolygon3D = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
+  isValid = sfcgalPolygon3D->isValid();
+  QVERIFY( isValid );
+
+  isValid = QgsSfcgalEngine::isValid( sfcgalPolygon3D->sfcgalGeometry().get(), &errorMsg, &reasonMsg );
+  QVERIFY( isValid );
+  QVERIFY( errorMsg.isEmpty() );
+  QVERIFY( reasonMsg.isEmpty() );
+
+  // invalid polygon
+  QString invalid_polygon_wkt = u"POLYGON((0 0, 4 0, 4 4, 0 4, 0 0),(4 2, 5 2, 5 3, 4 3, 4 2))"_s;
+  QgsSfcgalGeometry sfcgalInvalidPolygon( invalid_polygon_wkt );
+  isValid = sfcgalInvalidPolygon.isValid();
+  QVERIFY( !isValid );
+
+  isValid = QgsSfcgalEngine::isValid( sfcgalInvalidPolygon.sfcgalGeometry().get(), &errorMsg, &reasonMsg );
+  QVERIFY( !isValid );
+  QVERIFY( errorMsg.isEmpty() );
+  QCOMPARE( reasonMsg, u"exterior ring and interior ring 0 have the same orientation"_s );
 }
 
 void TestQgsSfcgal::boundary()
@@ -1184,7 +1213,11 @@ void TestQgsSfcgal::primitiveCone()
 
   // check export as SFCGAL geometry
   std::unique_ptr<QgsSfcgalGeometry> poly = cone->primitiveAsPolyhedralSurface();
+#if SFCGAL_VERSION_NUM == SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> expectedCone = openWktFile( "cone_v2.3.0.wkt" );
+#else
   std::unique_ptr<QgsSfcgalGeometry> expectedCone = openWktFile( "cone.wkt" );
+#endif
   QCOMPARE( poly->asWkt( 1 ), expectedCone->asWkt( 1 ) );
   std::unique_ptr<QgsSfcgalGeometry> poly2 = cone2->primitiveAsPolyhedralSurface();
   QCOMPARE( poly2->asWkt( 1 ), expectedCone->asWkt( 1 ) );
@@ -1325,7 +1358,11 @@ void TestQgsSfcgal::primitiveCylinder()
 
   // check export as SFCGAL geometry
   std::unique_ptr<QgsSfcgalGeometry> poly = cylinder->primitiveAsPolyhedralSurface();
+#if SFCGAL_VERSION_NUM == SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> expectedCylinder = openWktFile( "cylinder_v2.3.0.wkt" );
+#else
   std::unique_ptr<QgsSfcgalGeometry> expectedCylinder = openWktFile( "cylinder.wkt" );
+#endif
   QCOMPARE( poly->asWkt( 1 ), expectedCylinder->asWkt( 1 ) );
   std::unique_ptr<QgsSfcgalGeometry> poly2 = cylinder2->primitiveAsPolyhedralSurface();
   QCOMPARE( poly2->asWkt( 1 ), expectedCylinder->asWkt( 1 ) );

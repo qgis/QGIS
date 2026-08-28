@@ -169,7 +169,8 @@ Adds a new part polygon to a multipart feature
 
     Qgis::GeometryOperationResult addPart( QgsCurve *ring /Transfer/, QgsFeatureId featureId ) /PyName=addCurvedPart/;
 %Docstring
-Adds a new part polygon to a multipart feature
+Adds a new polygon part consisting of an exterior ``ring`` only to a
+multipart or geometryless feature
 
 :return: - :py:class:`QgsGeometry`.Success
 
@@ -179,6 +180,22 @@ Adds a new part polygon to a multipart feature
          - :py:class:`QgsGeometry`.InvalidInput
 
 
+%End
+
+    Qgis::GeometryOperationResult addPart( QgsCurvePolygon *polygon /Transfer/, QgsFeatureId featureId ) /PyName=addPolygonPart/;
+%Docstring
+Adds a new polygon part to a multipart or geometryless feature
+
+:return: - :py:class:`QgsGeometry`.Success
+
+         - :py:class:`QgsGeometry`.AddPartSelectedGeometryNotFound
+         - :py:class:`QgsGeometry`.AddPartNotMultiGeometry
+         - :py:class:`QgsGeometry`.InvalidBaseGeometry
+         - :py:class:`QgsGeometry`.InvalidInput
+
+
+
+.. versionadded:: 4.4
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );

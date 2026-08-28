@@ -12,9 +12,16 @@ Item {
   id: welcomeScreen
 
   property bool narrowLayout: height < 350 || width < 480
+  property real layoutSizeFactor: width > 1200 && height > 880 ? 1.25 : 1
 
-  width: 1100
-  height: 720
+  property real titleFontSize: Application.font.pointSize * 1.3 * layoutSizeFactor
+  property real largeFontSize: Application.font.pointSize * 1.1 * layoutSizeFactor
+  property real normalFontSize: Application.font.pointSize * layoutSizeFactor
+  property real smallFontSize: Application.font.pointSize * 0.925 * layoutSizeFactor
+  property real tinyFontSize: Application.font.pointSize * 0.875 * layoutSizeFactor
+
+  width: 2100
+  height: 1420
 
   Material.accent: "#93b023"
   Material.foreground: "#ffffff"
@@ -71,7 +78,7 @@ Item {
           Text {
             width: parent.width
             text: qsTr("Spatial without Compromise")
-            font.pointSize: Application.font.pointSize
+            font.pointSize: normalFontSize
             font.bold: true
             wrapMode: Text.WordWrap
 
@@ -113,7 +120,7 @@ Item {
 
               TabButton {
                 text: qsTr("Recent")
-                font.pointSize: Application.font.pointSize * 1.1
+                font.pointSize: largeFontSize
                 font.bold: true
                 visible: recentProjectsListView.count > 0
                 width: recentProjectsListView.count > 0 ? implicitWidth : 0
@@ -122,7 +129,7 @@ Item {
               TabButton {
                 text: qsTr("Templates")
                 width: implicitWidth
-                font.pointSize: Application.font.pointSize * 1.1
+                font.pointSize: largeFontSize
                 font.bold: true
                 background: null
               }
@@ -370,7 +377,7 @@ Item {
             Text {
               Layout.fillWidth: true
               text: newsSwitch.checked && newsListView.count != 0 ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
-              font.pointSize: Application.font.pointSize * 1.3
+              font.pointSize: titleFontSize
               font.bold: true
               color: "#ffffff"
               elide: Text.ElideRight
@@ -385,7 +392,7 @@ Item {
             Rectangle {
               id: newsSwitchBackground
               Layout.rightMargin: 12
-              width: 70
+              Layout.preferredWidth: newsSwitchText.width + 40
               height: 28
               radius: 14
 
@@ -402,10 +409,11 @@ Item {
               }
 
               Text {
-                x: newsSwitch.checked ? 10 : 30
+                id: newsSwitchText
+                x: newsSwitch.checked ? 10 : parent.width - width - 10
                 anchors.verticalCenter: parent.verticalCenter
                 text: qsTr("News")
-                font.pointSize: Application.font.pointSize * 0.8
+                font.pointSize: tinyFontSize
                 font.bold: true
                 color: newsSwitch.checked ? "#ffffff" : "#666666"
               }
@@ -478,7 +486,7 @@ Item {
                   anchors.fill: parent
                   anchors.margins: 16
                   text: qsTr("The free and open-source geographic information system that empowers users worldwide to create, edit, visualize, analyze, and share geospatial data. Whether you're a beginner or a seasoned GIS expert, QGIS gives you the tools to turn spatial data into impactful maps and insights. Join our vibrant global community and start exploring the world through the power of open-source geospatial technology.")
-                  font.pointSize: Application.font.pointSize * 0.8
+                  font.pointSize: tinyFontSize
                   color: "black"
                   wrapMode: Text.WordWrap
                   lineHeight: 1.3
@@ -500,7 +508,7 @@ Item {
 
                   Text {
                     text: qsTr("Stay up to date!")
-                    font.pointSize: Application.font.pointSize
+                    font.pointSize: normalFontSize
                     font.bold: true
                     color: "black"
                   }
@@ -508,15 +516,15 @@ Item {
                   Text {
                     Layout.fillWidth: true
                     text: qsTr("Would you like to enable the QGIS news feed to stay updated on new features, releases, and community highlights?")
-                    font.pointSize: Application.font.pointSize * 0.8
+                    font.pointSize: tinyFontSize
                     color: "black"
                     wrapMode: Text.WordWrap
                   }
 
                   Rectangle {
                     width: enableNewsText.implicitWidth + 24
-                    height: 24
-                    radius: 12
+                    height: 24 * layoutSizeFactor
+                    radius: height / 2
                     color: "transparent"
                     border.width: 1
                     border.color: "#93b023"
@@ -525,7 +533,7 @@ Item {
                       id: enableNewsText
                       anchors.centerIn: parent
                       text: qsTr("Enable news feed")
-                      font.pointSize: Application.font.pointSize * 0.8
+                      font.pointSize: tinyFontSize
                       color: "black"
                     }
 

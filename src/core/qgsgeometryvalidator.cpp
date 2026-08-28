@@ -22,7 +22,17 @@ email                : jef at norbit dot de
 #include "qgsgeometrycollection.h"
 #include "qgsgeos.h"
 #include "qgslogger.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvertexid.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+#ifdef WITH_SFCGAL
+#include "qgssfcgalgeometry.h"
+#endif
 
 #include "moc_qgsgeometryvalidator.cpp"
 
@@ -390,6 +400,39 @@ void QgsGeometryValidator::run()
       }
       break;
     }
+
+    case Qgis::GeometryValidationEngine::Sfcgal:
+    {
+      // avoid calling SFCGAL for trivial point geometries
+      if ( QgsWkbTypes::geometryType( mGeometry.wkbType() ) == Qgis::GeometryType::Point )
+      {
+        return;
+      }
+
+#ifdef WITH_SFCGAL
+      QString errorMsg;
+      QgsGeometry errorLoc;
+      const QgsSfcgalGeometry sfcgalGeom( mGeometry.constGet() );
+      if ( !QgsSfcgalEngine::isValid( sfcgalGeom.sfcgalGeometry().get(), nullptr, &errorMsg, &errorLoc ) )
+      {
+        if ( errorLoc.isNull() )
+        {
+          emit errorFound( QgsGeometry::Error( errorMsg ) );
+          mErrorCount++;
+        }
+        else
+        {
+          const QgsPointXY point = errorLoc.asPoint();
+          emit errorFound( QgsGeometry::Error( errorMsg, point ) );
+          mErrorCount++;
+        }
+      }
+#else
+      QgsDebugError( u"Cannot use SFCGAL validation method in this QGIS build."_s );
+#endif
+
+      break;
+    }
   }
 }
 
@@ -482,4 +525,18 @@ bool QgsGeometryValidator::ringInRing( const QgsCurve *inside, const QgsCurve *o
   }
 
   return true;
+}
+
+Qgis::GeometryValidationEngine QgsGeometryValidator::defaultValidationEngine()
+{
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
+  {
+    return Qgis::GeometryValidationEngine::Geos;
+  }
+  else if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 3 )
+  {
+    return Qgis::GeometryValidationEngine::Sfcgal;
+  }
+
+  return Qgis::GeometryValidationEngine::QgisInternal;
 }

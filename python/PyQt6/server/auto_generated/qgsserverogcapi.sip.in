@@ -54,10 +54,12 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
       license,
       // In addition the following link relation types are used for which no applicable registered link relation type could be identified:
       items,
+      queryables,
       conformance,
       data,
       schema,
-      profile
+      profile,
+      functions,
     };
 
     enum ContentType /BaseType=IntEnum/
@@ -75,10 +77,8 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
     {
       Unset,
       Rfc7946,
-      // This not supported yet but I am leaving it here because
-      // I am very optimistic that it will be supported soon!
-      //  JsonFg,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
-      //  JsonFgPlus //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
+      JsonFg,
+      JsonFgPlus,
       RelAsLink,
       RelAsKey,
       RelAsUri

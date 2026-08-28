@@ -826,6 +826,7 @@ void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, 
 std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const QVariantMap &rendererData, QgsSymbolConverterContext &context )
 {
   const QString type = rendererData.value( u"type"_s ).toString();
+
   if ( type == "simple"_L1 )
   {
     const QVariantMap symbolProps = rendererData.value( u"symbol"_s ).toMap();
@@ -884,7 +885,6 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     {
       // Apply visual variables (e.g., rotation) to the symbol
       applyVisualVariables( rendererData, defaultSymbol.get(), context );
-
       categoryList.append( QgsRendererCategory( QVariant(), defaultSymbol.release(), rendererData.value( u"defaultLabel"_s ).toString() ) );
     }
 
@@ -915,10 +915,6 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData, context ) );
     if ( !symbol )
       return nullptr;
-
-    const double transparency = rendererData.value( u"transparency"_s ).toDouble();
-    const double opacity = ( 100.0 - transparency ) / 100.0;
-    symbol->setOpacity( opacity );
 
     const QVariantList visualVariablesData = rendererData.value( u"visualVariables"_s ).toList();
 

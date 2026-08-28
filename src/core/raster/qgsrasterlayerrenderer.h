@@ -82,7 +82,7 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     void drawLabeling();
 
     QString mLayerName;
-    QgsRasterViewPort *mRasterViewPort = nullptr;
+    std::unique_ptr<QgsRasterViewPort> mRasterViewPort;
 
     double mLayerOpacity = 1.0;
     std::unique_ptr<QgsRasterPipe> mPipe;
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     Qgis::RasterInterfaceCapabilities mInterfaceCapabilities;
 
     //! feedback class for cancellation and preview generation
-    QgsRasterLayerRendererFeedback *mFeedback = nullptr;
+    std::unique_ptr<QgsRasterLayerRendererFeedback> mFeedback;
 
     QList< QgsMapClippingRegion > mClippingRegions;
 

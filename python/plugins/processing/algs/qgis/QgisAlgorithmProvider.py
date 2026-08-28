@@ -27,11 +27,9 @@ from qgis.PyQt.QtCore import QCoreApplication
 from .BarPlot import BarPlot
 from .BoxPlot import BoxPlot
 from .EliminateSelection import EliminateSelection
-from .ExecuteSQL import ExecuteSQL
 from .FieldPyculator import FieldsPyculator
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
-from .IdwInterpolation import IdwInterpolation
 from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
 from .MeanAndStdDevPlot import MeanAndStdDevPlot
@@ -49,7 +47,6 @@ from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
-from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorLayerHistogram import VectorLayerHistogram
@@ -73,11 +70,9 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             BarPlot(),
             BoxPlot(),
             EliminateSelection(),
-            ExecuteSQL(),
             FieldsPyculator(),
             HubDistanceLines(),
             HubDistancePoints(),
-            IdwInterpolation(),
             KNearestConcaveHull(),
             LinesToPolygons(),
             MeanAndStdDevPlot(),
@@ -95,7 +90,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             SetVectorStyle(),
             StatisticsByCategories(),
             TextToFloat(),
-            TinInterpolation(),
             TopoColor(),
             VariableDistanceBuffer(),
             VectorLayerHistogram(),

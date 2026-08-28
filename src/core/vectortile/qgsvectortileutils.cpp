@@ -431,7 +431,7 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
             break;
         }
 
-        if ( !context.spriteDefinitions().isEmpty() )
+        if ( !context.spriteDefinitions( spritesIterator.key() ).isEmpty() )
           break;
       }
 

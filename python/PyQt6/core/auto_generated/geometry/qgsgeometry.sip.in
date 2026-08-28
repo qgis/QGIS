@@ -1414,7 +1414,7 @@ Replaces a part of this geometry with another line
 %End
 
 
-    QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = 0 ) const;
+ QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = 0 ) const /Deprecated="Since 4.4. Use QgsGeometry.difference()."/;
 %Docstring
 Returns the geometry formed by modifying this geometry such that it does
 not intersect the other geometry.
@@ -1425,6 +1425,10 @@ not intersect the other geometry.
 
 :return: difference geometry, or empty geometry if difference could not
          be calculated
+
+.. deprecated:: 4.4
+
+   Use :py:func:`QgsGeometry.difference()`.
 %End
 
     QgsRectangle boundingBox() const;
@@ -1910,11 +1914,15 @@ geometry.
 .. versionadded:: 3.2
 %End
 
-    QgsGeometry extendLine( double startDistance, double endDistance ) const;
+    QgsGeometry extendLine( double startDistance, double endDistance, double startDeflection = 0, double endDeflection = 0 ) const;
 %Docstring
 Extends a (multi)line geometry by extrapolating out the start or end of
 the line by a specified distance. Lines are extended using the bearing
 of the first or last segment in the line.
+
+Since QGIS 4.4, the ``startDeflection`` and ``endDeflection`` arguments
+can be used to deflect the start and end extensions by the specified
+angles (specified in degrees clockwise).
 %End
 
     QgsGeometry simplify( double tolerance, QgsFeedback* feedback = 0 ) const;
@@ -3248,6 +3256,8 @@ Validates geometry and produces a list of geometry errors. The
 
 The ``flags`` parameter indicates optional flags which control the type
 of validity checking performed.
+
+:raises QgsNotSupportedException: when method is not supported
 %End
 
     void normalize();

@@ -159,7 +159,9 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm(
         }
         case Qgis::ProcessingModelChildParameterSource::ExpressionText:
         {
+          Q_NOWARN_DEPRECATED_PUSH
           expressionText = QgsExpression::replaceExpressionText( source.expressionText(), &expressionContext );
+          Q_NOWARN_DEPRECATED_POP
           break;
         }
 
@@ -566,9 +568,19 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         if ( ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::NoThreading ) && ( QThread::currentThread() != qApp->thread() ) )
         {
           // child algorithm run step must be called on main thread
-          auto runOnMainThread = [modelThread, &context, &childAlgorithmFeedback, &results, &childAlg, &childParams] {
+          bool exceptionFromMainThread = false;
+          auto runOnMainThread = [modelThread, &context, &childAlgorithmFeedback, &results, &childAlg, &childParams, &exceptionFromMainThread, &child, &error, &childResult] {
             Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsProcessingModelAlgorithm::processAlgorithm", "childAlg->runPrepared() must be run on the main thread" );
-            results = childAlg->runPrepared( childParams, context, &childAlgorithmFeedback );
+            try
+            {
+              results = childAlg->runPrepared( childParams, context, &childAlgorithmFeedback );
+            }
+            catch ( QgsProcessingException &e )
+            {
+              error = ( childAlg->flags() & Qgis::ProcessingAlgorithmFlag::CustomException ) ? e.what() : QObject::tr( "Error encountered while running %1: %2" ).arg( child.description(), e.what() );
+              childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Failed );
+              exceptionFromMainThread = true;
+            }
             context.pushToThread( modelThread );
           };
 
@@ -580,14 +592,19 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 #ifndef __clang_analyzer__
           QMetaObject::invokeMethod( qApp, runOnMainThread, Qt::BlockingQueuedConnection );
 #endif
+          if ( !exceptionFromMainThread )
+          {
+            runResult = true;
+            childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
+          }
         }
         else
         {
           // safe to run on model thread
           results = childAlg->runPrepared( childParams, context, &childAlgorithmFeedback );
+          runResult = true;
+          childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
         }
-        runResult = true;
-        childResult.setExecutionStatus( Qgis::ProcessingModelChildAlgorithmExecutionStatus::Success );
       }
       catch ( QgsProcessingException &e )
       {

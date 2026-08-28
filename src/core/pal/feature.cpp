@@ -897,7 +897,7 @@ std::size_t FeaturePart::createCandidatesAlongLine( std::vector< std::unique_ptr
   return candidates;
 }
 
-std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal )
+std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal, double angle )
 {
   const double labelWidth = getLabelWidth();
   const double labelHeight = getLabelHeight();
@@ -940,7 +940,12 @@ std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::u
       break;
   }
 
-  const QgsLabelLineSettings::AnchorTextPoint textPoint = mLF->lineAnchorTextPoint();
+  const Qgis::TextAnchorPoint textPoint = mLF->lineAnchorTextPoint();
+
+  const double cosAngle = std::cos( angle );
+  const double sinAngle = std::sin( angle );
+  const double halfHeightX = ( labelHeight / 2.0 ) * sinAngle;
+  const double halfHeightY = ( labelHeight / 2.0 ) * cosAngle;
 
   double candidateCenterX, candidateCenterY;
   int i = 0;
@@ -958,24 +963,27 @@ std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::u
     cost /= 1000;                                                                                                      // < 0, 0.0005 >
 
     double labelX = 0;
+    double labelY = 0;
     switch ( textPoint )
     {
-      case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
-        labelX = candidateCenterX;
+      case Qgis::TextAnchorPoint::StartOfText:
+        labelX = candidateCenterX + halfHeightX;
+        labelY = candidateCenterY - halfHeightY;
         break;
-      case QgsLabelLineSettings::AnchorTextPoint::CenterOfText:
-        labelX = candidateCenterX - labelWidth / 2;
+      case Qgis::TextAnchorPoint::CenterOfText:
+        labelX = candidateCenterX - ( labelWidth / 2.0 ) * cosAngle + halfHeightX;
+        labelY = candidateCenterY - ( labelWidth / 2.0 ) * sinAngle - halfHeightY;
         break;
-      case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
-        labelX = candidateCenterX - labelWidth;
+      case Qgis::TextAnchorPoint::EndOfText:
+        labelX = candidateCenterX - labelWidth * cosAngle + halfHeightX;
+        labelY = candidateCenterY - labelWidth * sinAngle - halfHeightY;
         break;
-      case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+      case Qgis::TextAnchorPoint::FollowPlacement:
         // not possible here
         break;
     }
     lPos.emplace_back(
-      std::make_unique<
-        LabelPosition >( i, labelX, candidateCenterY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over )
+      std::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over )
     );
 
     currentDistanceAlongLine += lineStepDistance;
@@ -1078,7 +1086,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
     return 0; //createCandidatesAlongLineNearMidpoint will be more appropriate
   }
 
-  const QgsLabelLineSettings::AnchorTextPoint textPoint = mLF->lineAnchorTextPoint();
+  const Qgis::TextAnchorPoint textPoint = mLF->lineAnchorTextPoint();
 
   const std::size_t candidateTargetCount = maximumLineCandidates();
   double lineStepDistance = ( totalLineLength - labelWidth ); // distance to move along line with each candidate
@@ -1141,16 +1149,16 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
       double labelTextAnchor = 0;
       switch ( textPoint )
       {
-        case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
+        case Qgis::TextAnchorPoint::StartOfText:
           labelTextAnchor = currentDistanceAlongLine;
           break;
-        case QgsLabelLineSettings::AnchorTextPoint::CenterOfText:
+        case Qgis::TextAnchorPoint::CenterOfText:
           labelTextAnchor = currentDistanceAlongLine + labelWidth / 2.0;
           break;
-        case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
+        case Qgis::TextAnchorPoint::EndOfText:
           labelTextAnchor = currentDistanceAlongLine + labelWidth;
           break;
-        case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+        case Qgis::TextAnchorPoint::FollowPlacement:
           // not possible here
           break;
       }
@@ -1170,7 +1178,24 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
         // this only applies to non closed linestrings, since the middle of a closed linestring is effectively arbitrary
         // and irrelevant to labeling
         double costLineCenter = 2 * std::fabs( labelTextAnchor - lineAnchorPoint ) / totalLineLength; // 0 -> 1
-        cost += costLineCenter * 0.0005;                                                              // < 0, 0.0005 >
+
+        // add a little tie breaker amount -- otherwise if we are generating an even number of candidates, we may end up with
+        // two with exactly the same cost centered over the mid point of the feature. So add a tiny PLACEMENT_TIEBREAKER amount
+        // so that one of these is always preferred, giving us a stable labeling solution:
+        // eg:
+        //   Line:  ============|============[ Anchor ]==========|==============
+        //                      |  <-same dist-> | <-same dist-> |
+        //              [-- Candidate --]        |       [-- Candidate --]
+        //                      |                |               |
+        //                 Anchor < Mid          |          Anchor > Mid
+        //                                       |     cost += PLACEMENT_TIEBREAKER
+        if ( labelTextAnchor > lineAnchorPoint )
+        {
+          constexpr double PLACEMENT_TIEBREAKER = 0.000001234;
+          cost += PLACEMENT_TIEBREAKER;
+        }
+
+        cost += costLineCenter * 0.0005; // < 0, 0.0005 >
       }
 
       if ( placementIsFlexible )
@@ -1271,6 +1296,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
       }
       else if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal )
       {
+        // TODO: this code is likely dead -- it doesn't look possible to reach here with a Horizontal arrangement
         lPos.emplace_back(
           std::make_unique<
             LabelPosition >( i, candidateStartX - labelWidth / 2, candidateStartY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over )
@@ -1326,7 +1352,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   double lineStepDistance = ( totalLineLength - labelWidth ); // distance to move along line with each candidate
   double currentDistanceAlongLine = 0;
 
-  const QgsLabelLineSettings::AnchorTextPoint textPoint = mLF->lineAnchorTextPoint();
+  const Qgis::TextAnchorPoint textPoint = mLF->lineAnchorTextPoint();
 
   const std::size_t candidateTargetCount = maximumLineCandidates();
 
@@ -1356,16 +1382,16 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
     case QgsLabelLineSettings::AnchorType::Strict:
       switch ( textPoint )
       {
-        case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
+        case Qgis::TextAnchorPoint::StartOfText:
           currentDistanceAlongLine = std::min( lineAnchorPoint, totalLineLength * 0.99 - labelWidth );
           break;
-        case QgsLabelLineSettings::AnchorTextPoint::CenterOfText:
+        case Qgis::TextAnchorPoint::CenterOfText:
           currentDistanceAlongLine = std::min( lineAnchorPoint - labelWidth / 2, totalLineLength * 0.99 - labelWidth );
           break;
-        case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
+        case Qgis::TextAnchorPoint::EndOfText:
           currentDistanceAlongLine = std::min( lineAnchorPoint - labelWidth, totalLineLength * 0.99 - labelWidth );
           break;
-        case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+        case Qgis::TextAnchorPoint::FollowPlacement:
           // not possible here
           break;
       }
@@ -1411,16 +1437,16 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
     double textAnchorPoint = 0;
     switch ( textPoint )
     {
-      case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
+      case Qgis::TextAnchorPoint::StartOfText:
         textAnchorPoint = currentDistanceAlongLine;
         break;
-      case QgsLabelLineSettings::AnchorTextPoint::CenterOfText:
+      case Qgis::TextAnchorPoint::CenterOfText:
         textAnchorPoint = currentDistanceAlongLine + labelWidth / 2;
         break;
-      case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
+      case Qgis::TextAnchorPoint::EndOfText:
         textAnchorPoint = currentDistanceAlongLine + labelWidth;
         break;
-      case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+      case Qgis::TextAnchorPoint::FollowPlacement:
         // not possible here
         break;
     }
@@ -1520,6 +1546,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
     }
     else if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal )
     {
+      // TODO: this code is likely dead -- it doesn't look possible to reach here with a Horizontal arrangement
       lPos.emplace_back(
         std::make_unique<
           LabelPosition >( i, candidateStartX - labelWidth / 2, candidateStartY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over )
@@ -1758,7 +1785,7 @@ std::size_t FeaturePart::createDefaultCurvedCandidatesAlongLine( std::vector<std
     }
   }
 
-  const QgsLabelLineSettings::AnchorTextPoint textPoint = mLF->lineAnchorTextPoint();
+  const Qgis::TextAnchorPoint textPoint = mLF->lineAnchorTextPoint();
 
   std::vector< std::unique_ptr< LabelPosition >> positions;
   std::unique_ptr< LabelPosition > backupPlacement;
@@ -1855,16 +1882,16 @@ std::size_t FeaturePart::createDefaultCurvedCandidatesAlongLine( std::vector<std
         case QgsLabelLineSettings::AnchorType::Strict:
           switch ( textPoint )
           {
-            case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
+            case Qgis::TextAnchorPoint::StartOfText:
               distanceAlongLineToStartCandidate = std::clamp( lineAnchorPoint, 0.0, totalDistance * 0.999 );
               break;
-            case QgsLabelLineSettings::AnchorTextPoint::CenterOfText:
+            case Qgis::TextAnchorPoint::CenterOfText:
               distanceAlongLineToStartCandidate = std::clamp( lineAnchorPoint - getLabelWidth() / 2, 0.0, totalDistance * 0.999 - getLabelWidth() / 2 );
               break;
-            case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
+            case Qgis::TextAnchorPoint::EndOfText:
               distanceAlongLineToStartCandidate = std::clamp( lineAnchorPoint - getLabelWidth(), 0.0, totalDistance * 0.999 - getLabelWidth() );
               break;
-            case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+            case Qgis::TextAnchorPoint::FollowPlacement:
               // not possible here
               break;
           }
@@ -1943,16 +1970,16 @@ std::size_t FeaturePart::createDefaultCurvedCandidatesAlongLine( std::vector<std
         double labelTextAnchor = 0;
         switch ( textPoint )
         {
-          case QgsLabelLineSettings::AnchorTextPoint::StartOfText:
+          case Qgis::TextAnchorPoint::StartOfText:
             labelTextAnchor = distanceAlongLineToStartCandidate;
             break;
-          case QgsLabelLineSettings::AnchorTextPoint::CenterOfText:
+          case Qgis::TextAnchorPoint::CenterOfText:
             labelTextAnchor = distanceAlongLineToStartCandidate + getLabelWidth() / 2;
             break;
-          case QgsLabelLineSettings::AnchorTextPoint::EndOfText:
+          case Qgis::TextAnchorPoint::EndOfText:
             labelTextAnchor = distanceAlongLineToStartCandidate + getLabelWidth();
             break;
-          case QgsLabelLineSettings::AnchorTextPoint::FollowPlacement:
+          case Qgis::TextAnchorPoint::FollowPlacement:
             // not possible here
             break;
         }
@@ -2587,7 +2614,7 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
 
       case GEOS_LINESTRING:
         if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal )
-          createHorizontalCandidatesAlongLine( lPos, this, pal );
+          createHorizontalCandidatesAlongLine( lPos, this, pal, angleInRadians );
         else if ( mLF->layer()->isCurved() )
           createCurvedCandidatesAlongLine( lPos, this, true, pal );
         else
@@ -2661,6 +2688,22 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
           }
         }
       }
+    }
+  }
+
+  if ( !lPos.empty() && pal->flags().testFlag( Qgis::LabelingFlag::SingleCandidateOnly ) )
+  {
+    // retain only the single least-cost candidate
+    // Note that we didn't handle this flag earlier, as we wanted to generate the full number
+    // of candidates considering the geometry of the feature, and then only NOW cull to the best
+    // one.
+    auto minIt = std::min_element( lPos.begin(), lPos.end(), []( const std::unique_ptr< LabelPosition > &a, const std::unique_ptr< LabelPosition > &b ) { return a->cost() < b->cost(); } );
+
+    if ( minIt != lPos.end() )
+    {
+      std::unique_ptr< LabelPosition > bestCandidate = std::move( *minIt );
+      lPos.clear();
+      lPos.emplace_back( std::move( bestCandidate ) );
     }
   }
 

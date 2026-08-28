@@ -452,9 +452,10 @@ Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntit
     billboardGeometry->setBillboardData( mBillboardPositions, true );
 
     Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
-    billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
+    billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
     billboardGeometryRenderer->setGeometry( billboardGeometry );
-    billboardGeometryRenderer->setVertexCount( billboardGeometry->count() );
+    billboardGeometryRenderer->setVertexCount( 4 );
+    billboardGeometryRenderer->setInstanceCount( mBillboardPositions.count() );
 
     QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::Mode::AtlasTextureWithPixelOffsets );
     billboardMaterial->setTexture2DFromImage( mBillboardAtlas );
@@ -472,9 +473,10 @@ Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntit
     textBillboardGeometry->setBillboardData( mTextBillboardPositions, true );
 
     Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
-    billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
+    billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
     billboardGeometryRenderer->setGeometry( textBillboardGeometry );
-    billboardGeometryRenderer->setVertexCount( textBillboardGeometry->count() );
+    billboardGeometryRenderer->setVertexCount( 4 );
+    billboardGeometryRenderer->setInstanceCount( mTextBillboardPositions.count() );
 
     QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::Mode::AtlasTextureWithPixelOffsets );
     billboardMaterial->setTexture2DFromImage( mTextBillboardAtlas );

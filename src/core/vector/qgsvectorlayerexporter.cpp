@@ -133,8 +133,6 @@ QgsVectorLayerExporter::QgsVectorLayerExporter(
   QgsFeatureSink::SinkFlags sinkFlags
 )
 {
-  mProvider = nullptr;
-
   QMap<QString, QVariant> modifiedOptions( options );
 
   if ( providerKey == "ogr"_L1
@@ -208,13 +206,11 @@ QgsVectorLayerExporter::QgsVectorLayerExporter(
   }
 
   const QgsDataProvider::ProviderOptions providerOptions;
-  QgsVectorDataProvider *vectorProvider = qobject_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
+  auto vectorProvider = std::unique_ptr<QgsVectorDataProvider>( qobject_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & Qgis::VectorProviderCapability::AddFeatures ) == 0 )
   {
     mError = Qgis::VectorExportResult::ErrorInvalidLayer;
     mErrorMessage = QObject::tr( "Loading of layer failed" );
-
-    delete vectorProvider;
     return;
   }
 
@@ -234,7 +230,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter(
     }
   }
 
-  mProvider = vectorProvider;
+  mProvider = std::move( vectorProvider );
   mError = Qgis::VectorExportResult::Success;
 }
 
@@ -246,8 +242,6 @@ QgsVectorLayerExporter::~QgsVectorLayerExporter()
   {
     createSpatialIndex();
   }
-
-  delete mProvider;
 }
 
 Qgis::VectorExportResult QgsVectorLayerExporter::errorCode() const

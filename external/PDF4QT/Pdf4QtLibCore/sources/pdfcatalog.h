@@ -72,7 +72,7 @@ enum class PageMode
 };
 
 /// Represents page numbering definition object
-class PDFPageLabel
+class PDF4QTLIBCORESHARED_EXPORT PDFPageLabel
 {
 public:
 
@@ -114,6 +114,11 @@ public:
 
     /// Parses page label object from PDF object, according to PDF Reference 1.7, Table 8.10
     static PDFPageLabel parse(PDFInteger pageIndex, const PDFObjectStorage* storage, const PDFObject& object);
+
+    /// Formats \p number according to the given numbering style, e.g. as decimal
+    /// arabic number, roman numeral, or letter sequence (PDF Reference 1.7, Table 8.10).
+    /// \p number must be greater than zero for all styles except \p None.
+    static QString formatPageNumber(NumberingStyle style, PDFInteger number);
 
 private:
     NumberingStyle m_numberingType;

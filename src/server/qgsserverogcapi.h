@@ -66,11 +66,13 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
       next,         //!< Indicates that the link’s context is a part of a series, and that the next in the series is the link target.
       license,      //!< Refers to a license associated with this context.
       // In addition the following link relation types are used for which no applicable registered link relation type could be identified:
-      items,       //!< Refers to a resource that is comprised of members of the collection represented by the link’s context.
+      items, //!< Refers to a resource that is comprised of members of the collection represented by the link’s context.
+      queryables,
       conformance, //!< The target IRI points to a resource which represents the collection resource for the context IRI.
       data,        //!< The target IRI points to resource data
       schema,      //!< "http://www.opengis.net/def/rel/ogc/0.0/schema"
-      profile      //!< "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/feature-references"
+      profile,     //!< "http://www.opengis.net/spec/ogcapi-features-5/0.0/conf/feature-references"
+      functions,   //!< "http://www.opengis.net/spec/cql2/1.0/conf/functions"
     };
     Q_ENUM( Rel )
     // NOLINTEND(readability-identifier-naming)
@@ -94,15 +96,13 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     //! JSON profile
     enum class Profile
     {
-      Unset,   //!< No profile
-      Rfc7946, //!< GeoJSON profile according to RFC7946
-      // This not supported yet but I am leaving it here because
-      // I am very optimistic that it will be supported soon!
-      //  JsonFg,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
-      //  JsonFgPlus //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
-      RelAsLink, //!< JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link
-      RelAsKey,  //!< JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key
-      RelAsUri   //!< JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
+      Unset,      //!< No profile
+      Rfc7946,    //!< GeoJSON profile according to RFC7946
+      JsonFg,     //!< JSON Feature Geometry profile according to OGC API - Features 1.0
+      JsonFgPlus, //!< JSON Feature Geometry profile with GeoJSON compatibility extensions
+      RelAsLink,  //!< JSON responses that include links for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-link
+      RelAsKey,   //!< JSON responses that include key for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-key
+      RelAsUri    //!< JSON responses that include URI for referenced resources http://www.opengis.net/def/profile/ogc/0/rel-as-uri
     };
     Q_ENUM( Profile )
 

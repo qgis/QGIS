@@ -288,7 +288,9 @@ QDataStream &operator<<( QDataStream &out, const QgsProcessingModelChildParamete
   out << source.outputChildId();
   out << source.outputName();
   out << source.expression();
+  Q_NOWARN_DEPRECATED_PUSH
   out << source.expressionText();
+  Q_NOWARN_DEPRECATED_POP
   return out;
 }
 
@@ -309,7 +311,9 @@ QDataStream &operator>>( QDataStream &in, QgsProcessingModelChildParameterSource
   source.setOutputChildId( outputChildId );
   source.setOutputName( outputName );
   source.setExpression( expression );
+  Q_NOWARN_DEPRECATED_PUSH
   source.setExpressionText( expressionText );
+  Q_NOWARN_DEPRECATED_POP
   source.setSource( static_cast<Qgis::ProcessingModelChildParameterSource>( sourceType ) );
   return in;
 }

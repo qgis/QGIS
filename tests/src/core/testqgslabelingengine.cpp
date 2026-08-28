@@ -135,6 +135,8 @@ class TestQgsLabelingEngine : public QgsTest
     void testRotationBasedOrientationPoint();
     void testRotationBasedOrientationPointHtmlLabel();
     void testRotationBasedOrientationLine();
+    void testHorizontalRotation_data();
+    void testHorizontalRotation();
     void testMapUnitLetterSpacing();
     void testMapUnitWordSpacing();
     void testLineHeightAbsolute();
@@ -352,8 +354,8 @@ void TestQgsLabelingEngine::testBasic()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
@@ -401,8 +403,8 @@ void TestQgsLabelingEngine::testDiagrams()
   vl->loadNamedStyle( QStringLiteral( TEST_DATA_DIR ) + "/points_diagrams.qml", res );
   QVERIFY( res );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( new QgsVectorLayerDiagramProvider( vl ) );
   engine.run( context );
 
@@ -505,7 +507,7 @@ void TestQgsLabelingEngine::testRuleBased()
   context.setPainter( &p );
 
   QgsLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+
   engine.addProvider( new QgsRuleBasedLabelProvider(, vl ) );
   engine.run( context );
 #endif
@@ -549,8 +551,8 @@ void TestQgsLabelingEngine::zOrder()
   pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Size, QgsProperty::fromExpression( u"case when \"Class\"='Jet' then 100 when \"Class\"='B52' then 30 else 50 end"_s ) );
 
   QgsVectorLayerLabelProvider *provider1 = new QgsVectorLayerLabelProvider( vl, QString(), true, &pls1 );
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( provider1 );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
@@ -610,6 +612,7 @@ void TestQgsLabelingEngine::zOrder()
   //flip layer order and re-test
   mapSettings.setLayers( QList<QgsMapLayer *>() << vl2 << vl );
   engine.setMapSettings( mapSettings );
+
   p.begin( &img );
   engine.run( context );
   p.end();
@@ -707,8 +710,8 @@ void TestQgsLabelingEngine::testSubstitutions()
   mapSettings.setOutputDpi( 96 );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   QSet<QString> attributes;
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( provider );
   provider->prepare( context, attributes );
 
@@ -740,8 +743,8 @@ void TestQgsLabelingEngine::testCapitalization()
   mapSettings.setOutputDpi( 96 );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   QSet<QString> attributes;
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
 
   // no change
   QgsPalLayerSettings settings;
@@ -847,8 +850,8 @@ void TestQgsLabelingEngine::testNumberFormat()
   mapSettings.setOutputDpi( 96 );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   QSet<QString> attributes;
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
 
   // no change
   QgsPalLayerSettings settings;
@@ -911,7 +914,8 @@ void TestQgsLabelingEngine::testNumberFormat()
 
 void TestQgsLabelingEngine::testParticipatingLayers()
 {
-  QgsDefaultLabelingEngine engine;
+  QgsMapSettings mapSettings;
+  QgsDefaultLabelingEngine engine( mapSettings );
   QVERIFY( engine.participatingLayers().isEmpty() );
 
   const QgsPalLayerSettings settings1;
@@ -966,8 +970,8 @@ void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
   mapSettings.setOutputDpi( 96 );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   QSet<QString> attributes;
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( provider );
   provider->prepare( context, attributes );
 
@@ -1034,8 +1038,8 @@ void TestQgsLabelingEngine::testRotateHidePartial()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &p );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( provider );
 
   engine.run( context );
@@ -1109,8 +1113,8 @@ void TestQgsLabelingEngine::testParallelLabelSmallFeature()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &p );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( provider );
 
   engine.run( context );
@@ -1178,8 +1182,8 @@ void TestQgsLabelingEngine::testAllowDegradedPlacements()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &p );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( provider );
 
   engine.run( context );
@@ -1273,8 +1277,8 @@ void TestQgsLabelingEngine::testOverlapHandling()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &p );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( provider );
   engine.addProvider( provider2 );
 
@@ -1436,8 +1440,8 @@ void TestQgsLabelingEngine::testAllowOverlapsIgnoresObstacles()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &p );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( provider );
   engine.addProvider( provider2 );
 
@@ -1999,7 +2003,7 @@ void TestQgsLabelingEngine::testCurvedLabelsHtmlSuperSubscript()
   settings.lineSettings().setLineAnchorPercent( 0.5 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -2055,7 +2059,7 @@ void TestQgsLabelingEngine::testCurvedLabelsHtmlWordSpacing()
   settings.lineSettings().setLineAnchorPercent( 0.5 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -2112,7 +2116,7 @@ void TestQgsLabelingEngine::testCurvedLabelsTabs()
   settings.lineSettings().setLineAnchorPercent( 0.5 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -2169,7 +2173,7 @@ void TestQgsLabelingEngine::testCurvedLabelsTabPositions()
   settings.lineSettings().setLineAnchorPercent( 0.5 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -2226,7 +2230,7 @@ void TestQgsLabelingEngine::testCurvedLabelsHtmlFormatting()
   settings.lineSettings().setLineAnchorPercent( 0.5 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -2701,7 +2705,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbove()
   settings.placementSettings().setMultiPartBehavior( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly );
   settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
@@ -2771,7 +2775,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownBelow()
   settings.lineSettings().setLineAnchorPercent( 0.05 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine | Qgis::LabelLinePlacementFlag::MapOrientation );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
@@ -2838,7 +2842,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbovePositiveOffset()
   settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
   settings.dist = 20;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
@@ -2906,7 +2910,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAboveNegativeOffset()
   // large enough negative distance to get label to be placed below line
   settings.dist = -20;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
@@ -2973,7 +2977,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftPositiveOffset()
   settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
   settings.dist = 20;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
@@ -3041,7 +3045,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftNegativeOffset()
   // large enough negative distance to get label to be placed below line
   settings.dist = -20;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
@@ -3108,7 +3112,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightPositiveOffset()
   settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
   settings.dist = 20;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
@@ -3176,7 +3180,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightNegativeOffset()
   // large enough negative distance to get label to be placed below line
   settings.dist = -20;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
@@ -3242,7 +3246,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbove()
   settings.placementSettings().setMultiPartBehavior( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly );
   settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
@@ -3310,7 +3314,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintBelow()
   settings.lineSettings().setLineAnchorPercent( 0.05 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine | Qgis::LabelLinePlacementFlag::MapOrientation );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
@@ -3375,7 +3379,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbovePositiveOffse
   settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
   settings.dist = 10;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
@@ -3443,7 +3447,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAboveNegativeOffse
   // large enough negative distance to get label to be placed below line
   settings.dist = -20;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
 
@@ -3510,7 +3514,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftPositiveOffset
   settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
   settings.dist = 10;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
@@ -3578,7 +3582,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftNegativeOffset
   // large enough negative distance to get label to be placed below line
   settings.dist = -20;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
 
@@ -3645,7 +3649,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightPositiveOffse
   settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
   settings.dist = 10;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
@@ -3713,7 +3717,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightNegativeOffse
   // large enough negative distance to get label to be placed below line
   settings.dist = -20;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
 
@@ -4115,8 +4119,8 @@ void TestQgsLabelingEngine::testLabelRotationUnit()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   engine.run( context );
 
@@ -5336,8 +5340,8 @@ void TestQgsLabelingEngine::testDataDefinedPlacementPositionPoint()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   engine.run( context );
 
@@ -5369,7 +5373,7 @@ void TestQgsLabelingEngine::testDataDefinedLabelTabs()
   settings.lineSettings().setLineAnchorPercent( 0.5 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -5438,8 +5442,8 @@ void TestQgsLabelingEngine::testVerticalOrientation()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
@@ -5488,8 +5492,8 @@ void TestQgsLabelingEngine::testVerticalOrientationLetterLineSpacing()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
@@ -5534,8 +5538,8 @@ void TestQgsLabelingEngine::testRotationBasedOrientationPoint()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
@@ -5583,8 +5587,8 @@ void TestQgsLabelingEngine::testRotationBasedOrientationPointHtmlLabel()
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   engine.run( context );
 
@@ -5635,8 +5639,8 @@ void TestQgsLabelingEngine::testRotationBasedOrientationLine()
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
-  QgsDefaultLabelingEngine engine;
-  engine.setMapSettings( mapSettings );
+  QgsDefaultLabelingEngine engine( mapSettings );
+
   engine.addProvider( new QgsVectorLayerLabelProvider( vl2, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
@@ -5647,6 +5651,76 @@ void TestQgsLabelingEngine::testRotationBasedOrientationLine()
 
   vl2->setLabeling( nullptr );
   QgsProject::instance()->removeMapLayer( vl2 );
+}
+
+void TestQgsLabelingEngine::testHorizontalRotation_data()
+{
+  QTest::addColumn<Qgis::TextAnchorPoint>( "textAnchor" );
+  QTest::addColumn<double>( "angle" );
+  QTest::addColumn<QString>( "referenceImage" );
+
+  QTest::newRow( "center 45 degrees" ) << Qgis::TextAnchorPoint::CenterOfText << 45.0 << "horizontal_angle_center_45";
+  QTest::newRow( "center -45 degrees" ) << Qgis::TextAnchorPoint::CenterOfText << -45.0 << "horizontal_angle_center_neg45";
+  QTest::newRow( "end 45 degrees" ) << Qgis::TextAnchorPoint::EndOfText << 45.0 << "horizontal_angle_end_45";
+  QTest::newRow( "start 45 degrees" ) << Qgis::TextAnchorPoint::StartOfText << 45.0 << "horizontal_angle_start_45";
+}
+
+void TestQgsLabelingEngine::testHorizontalRotation()
+{
+  QFETCH( Qgis::TextAnchorPoint, textAnchor );
+  QFETCH( double, angle );
+  QFETCH( QString, referenceImage );
+
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = u"'XXXXXXXX'"_s;
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Horizontal;
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
+  settings.placementSettings().setMultiPartBehavior( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly );
+  settings.lineSettings().setAnchorTextPoint( textAnchor );
+  settings.angleOffset = angle;
+
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString (190000 5000010, 190200 5000000)"_s ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 10 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  engineSettings.setFlag( Qgis::LabelingFlag::DrawLabelRectOnly, true );
+  // engineSettings.setFlag( Qgis::LabelingFlag::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testMapUnitLetterSpacing()
@@ -6042,7 +6116,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   settings.fieldName = u"'XXXXX'"_s;
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setLineAnchorPercent( 0.20 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job5( mapSettings );
   job5.start();
@@ -6051,7 +6125,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   img = job5.renderedImage();
   QGSVERIFYIMAGECHECK( "parallel_strict_anchor_20_center", "parallel_strict_anchor_20_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job6( mapSettings );
   job6.start();
@@ -6060,7 +6134,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   img = job6.renderedImage();
   QGSVERIFYIMAGECHECK( "parallel_strict_anchor_20_start", "parallel_strict_anchor_20_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job7( mapSettings );
   job7.start();
@@ -6069,7 +6143,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   img = job7.renderedImage();
   QGSVERIFYIMAGECHECK( "parallel_strict_anchor_20_end", "parallel_strict_anchor_20_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job8( mapSettings );
   job8.start();
@@ -6079,7 +6153,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   QGSVERIFYIMAGECHECK( "parallel_strict_anchor_20_start", "parallel_strict_anchor_20_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 0.40 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job9( mapSettings );
   job9.start();
@@ -6088,7 +6162,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   img = job9.renderedImage();
   QGSVERIFYIMAGECHECK( "parallel_strict_anchor_40_center", "parallel_strict_anchor_40_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job10( mapSettings );
   job10.start();
@@ -6097,7 +6171,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   img = job10.renderedImage();
   QGSVERIFYIMAGECHECK( "parallel_strict_anchor_40_start", "parallel_strict_anchor_40_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job11( mapSettings );
   job11.start();
@@ -6106,7 +6180,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   img = job11.renderedImage();
   QGSVERIFYIMAGECHECK( "parallel_strict_anchor_40_end", "parallel_strict_anchor_40_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job12( mapSettings );
   job12.start();
@@ -6116,7 +6190,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   QGSVERIFYIMAGECHECK( "parallel_strict_anchor_40_center", "parallel_strict_anchor_40_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 0.80 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job13( mapSettings );
   job13.start();
@@ -6125,7 +6199,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   img = job13.renderedImage();
   QGSVERIFYIMAGECHECK( "parallel_strict_anchor_80_center", "parallel_strict_anchor_80_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job14( mapSettings );
   job14.start();
@@ -6134,7 +6208,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   img = job14.renderedImage();
   QGSVERIFYIMAGECHECK( "parallel_strict_anchor_80_start", "parallel_strict_anchor_80_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job15( mapSettings );
   job15.start();
@@ -6143,7 +6217,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   img = job15.renderedImage();
   QGSVERIFYIMAGECHECK( "parallel_strict_anchor_80_end", "parallel_strict_anchor_80_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job16( mapSettings );
   job16.start();
@@ -6239,7 +6313,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
   settings.placementSettings().setMultiPartBehavior( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly );
   settings.lineSettings().setLineAnchorPercent( 0.0 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
@@ -6287,7 +6361,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
 
   settings.lineSettings().setLineAnchorPercent( 0.3 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job3( mapSettings );
   job3.start();
@@ -6334,7 +6408,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedStrictOnLine()
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.placementSettings().setMultiPartBehavior( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly );
   settings.lineSettings().setLineAnchorPercent( 0.0 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::StartOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
@@ -6372,7 +6446,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedStrictOnLine()
   QGSVERIFYIMAGECHECK( "curved_anchor_start_on_line", "curved_anchor_start_on_line", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job2( mapSettings );
   job2.start();
@@ -6447,7 +6521,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
 
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setLineAnchorPercent( 0.0 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job3( mapSettings );
   job3.start();
@@ -6457,7 +6531,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_start", "curved_strict_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job4( mapSettings );
   job4.start();
@@ -6469,7 +6543,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   settings.fieldName = u"'XXXXX'"_s;
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setLineAnchorPercent( 0.20 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job5( mapSettings );
   job5.start();
@@ -6478,7 +6552,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   img = job5.renderedImage();
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_20_center", "curved_strict_anchor_20_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job6( mapSettings );
   job6.start();
@@ -6487,7 +6561,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   img = job6.renderedImage();
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_20_start", "curved_strict_anchor_20_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job7( mapSettings );
   job7.start();
@@ -6496,7 +6570,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   img = job7.renderedImage();
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_20_end", "curved_strict_anchor_20_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job8( mapSettings );
   job8.start();
@@ -6506,7 +6580,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_20_start", "curved_strict_anchor_20_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 0.40 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job9( mapSettings );
   job9.start();
@@ -6515,7 +6589,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   img = job9.renderedImage();
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_40_center", "curved_strict_anchor_40_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job10( mapSettings );
   job10.start();
@@ -6524,7 +6598,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   img = job10.renderedImage();
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_40_start", "curved_strict_anchor_40_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job11( mapSettings );
   job11.start();
@@ -6533,7 +6607,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   img = job11.renderedImage();
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_40_end", "curved_strict_anchor_40_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job12( mapSettings );
   job12.start();
@@ -6543,7 +6617,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_40_center", "curved_strict_anchor_40_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 0.80 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job13( mapSettings );
   job13.start();
@@ -6552,7 +6626,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   img = job13.renderedImage();
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_80_center", "curved_strict_anchor_80_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job14( mapSettings );
   job14.start();
@@ -6561,7 +6635,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   img = job14.renderedImage();
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_80_start", "curved_strict_anchor_80_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job15( mapSettings );
   job15.start();
@@ -6570,7 +6644,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   img = job15.renderedImage();
   QGSVERIFYIMAGECHECK( "curved_strict_anchor_80_end", "curved_strict_anchor_80_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job16( mapSettings );
   job16.start();
@@ -6600,7 +6674,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedOverrun()
 
   settings.lineSettings().setLineAnchorPercent( 0.0 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::EndOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
@@ -6639,7 +6713,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedOverrun()
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::StartOfText );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   QgsMapRendererSequentialJob job2( mapSettings );
@@ -6670,7 +6744,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedStrictAllUpsideDown()
 
   settings.lineSettings().setLineAnchorPercent( 0.5 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::StartOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
@@ -6727,7 +6801,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontal()
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
   settings.placementSettings().setMultiPartBehavior( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly );
   settings.lineSettings().setLineAnchorPercent( 0.0 );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
@@ -6792,7 +6866,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontalConstraints()
   settings.placementSettings().setMultiPartBehavior( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly );
   settings.lineSettings().setLineAnchorPercent( 0.0 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::HintOnly );
-  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+  settings.lineSettings().setAnchorTextPoint( Qgis::TextAnchorPoint::CenterOfText );
 
   auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=l:string"_s, u"vl"_s, u"memory"_s );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );

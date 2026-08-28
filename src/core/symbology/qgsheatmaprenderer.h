@@ -69,7 +69,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * \returns color ramp for heatmap
      * \see setColorRamp
      */
-    QgsColorRamp *colorRamp() const { return mGradientRamp; }
+    QgsColorRamp *colorRamp() const { return mGradientRamp.get(); }
 
     /**
      * Sets the color ramp to use for shading the heatmap.
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     int mWeightAttrNum = -1;
     std::unique_ptr<QgsExpression> mWeightExpression;
 
-    QgsColorRamp *mGradientRamp = nullptr;
+    std::unique_ptr<QgsColorRamp> mGradientRamp;
 
     double mExplicitMax = 0.0;
     int mRenderQuality = 3;

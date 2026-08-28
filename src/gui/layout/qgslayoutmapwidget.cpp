@@ -480,7 +480,7 @@ void QgsLayoutMapWidget::aboutToShowLayersMenu()
 
   if ( !mMapLayerModel )
   {
-    mMapLayerModel = new QgsMapLayerProxyModel( this );
+    mMapLayerModel = new QgsMapLayerProxyModel( mMapItem->layout()->project(), this );
     mMapLayerModel->setFilters( Qgis::LayerFilter::SpatialLayer );
   }
 
@@ -2123,7 +2123,14 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
   setupUi( this );
   setPanelTitle( tr( "Clipping Settings" ) );
 
-  mLayerModel = new QgsMapLayerModel( this );
+  if ( map->layout() && map->layout()->project() )
+  {
+    mLayerModel = new QgsMapLayerModel( map->layout()->project(), this );
+  }
+  else
+  {
+    mLayerModel = new QgsMapLayerModel( QgsProject::instance(), this );
+  }
   mLayerModel->setItemsCheckable( true );
   mLayersTreeView->setModel( mLayerModel );
 

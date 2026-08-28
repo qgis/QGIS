@@ -74,11 +74,7 @@ QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *laye
 }
 
 QgsPointCloudLayerExporter::~QgsPointCloudLayerExporter()
-{
-  delete mMemoryLayer;
-  delete mVectorSink;
-  delete mTransform;
-}
+{}
 
 bool QgsPointCloudLayerExporter::setFormat( const ExportFormat format )
 {
@@ -197,8 +193,8 @@ QgsFields QgsPointCloudLayerExporter::outputFields()
 
 void QgsPointCloudLayerExporter::prepareExport()
 {
-  delete mMemoryLayer;
-  mMemoryLayer = nullptr;
+  mMemoryLayer.reset();
+
 
   if ( mFormat == ExportFormat::Memory )
   {
@@ -209,18 +205,18 @@ void QgsPointCloudLayerExporter::prepareExport()
     }
 #endif
 
-    mMemoryLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), Qgis::WkbType::PointZ, mTargetCrs );
+    mMemoryLayer.reset( QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), Qgis::WkbType::PointZ, mTargetCrs ) );
   }
 }
 
 void QgsPointCloudLayerExporter::doExport()
 {
-  mTransform = new QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
+  mTransform = QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
   if ( mExtent.isFinite() )
   {
     try
     {
-      mExtent = mTransform->transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse );
+      mExtent = mTransform.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse );
     }
     catch ( const QgsCsException &cse )
     {
@@ -278,7 +274,7 @@ void QgsPointCloudLayerExporter::doExport()
       saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
       saveOptions.actionOnExistingFile = mActionOnExistingFile;
       saveOptions.feedback = mFeedback;
-      mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), Qgis::WkbType::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
+      mVectorSink.reset( QgsVectorFileWriter::create( mFilename, outputFields(), Qgis::WkbType::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions ) );
       ExporterVector exp( this );
       exp.run();
       return;
@@ -292,9 +288,7 @@ QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
   {
     case ExportFormat::Memory:
     {
-      QgsMapLayer *retVal = mMemoryLayer;
-      mMemoryLayer = nullptr;
-      return retVal;
+      return mMemoryLayer.release();
     }
 
     case ExportFormat::Las:
@@ -403,7 +397,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
 
       try
       {
-        mParent->mTransform->transformInPlace( x, y, z );
+        mParent->mTransform.transformInPlace( x, y, z );
         const QVariantMap attributeMap = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, attributesCollection );
         handlePoint( x, y, z, attributeMap, pointsExported );
         ++pointsExported;
@@ -450,7 +444,7 @@ void QgsPointCloudLayerExporter::ExporterMemory::handlePoint( double x, double y
 
 void QgsPointCloudLayerExporter::ExporterMemory::handleNode()
 {
-  QgsVectorLayer *vl = qgis::down_cast<QgsVectorLayer *>( mParent->mMemoryLayer );
+  QgsVectorLayer *vl = qgis::down_cast<QgsVectorLayer *>( mParent->mMemoryLayer.get() );
   if ( vl )
   {
     if ( !vl->dataProvider()->addFeatures( mFeatures ) )
@@ -475,8 +469,7 @@ QgsPointCloudLayerExporter::ExporterVector::ExporterVector( QgsPointCloudLayerEx
 
 QgsPointCloudLayerExporter::ExporterVector::~ExporterVector()
 {
-  delete mParent->mVectorSink;
-  mParent->mVectorSink = nullptr;
+  mParent->mVectorSink.reset();
 }
 
 void QgsPointCloudLayerExporter::ExporterVector::handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber )
@@ -522,7 +515,7 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
   mOptions.add( "a_srs", mParent->mTargetCrs.toWkt().toStdString() );
   mOptions.add( "minor_version", u"4"_s.toStdString() ); // delault to LAZ 1.4 to properly handle pdrf >= 6
   mOptions.add( "format", QString::number( mPointFormat ).toStdString() );
-  if ( mParent->mTransform->isShortCircuited() )
+  if ( mParent->mTransform.isShortCircuited() )
   {
     mOptions.add( "offset_x", QString::number( mParent->mIndex.offset().x() ).toStdString() );
     mOptions.add( "offset_y", QString::number( mParent->mIndex.offset().y() ).toStdString() );

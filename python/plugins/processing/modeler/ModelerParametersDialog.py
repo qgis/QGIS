@@ -36,7 +36,6 @@ from qgis.core import (
 from qgis.gui import (
     QgsCollapsibleGroupBox,
     QgsColorButton,
-    QgsFilterLineEdit,
     QgsGui,
     QgsHelp,
     QgsMessageBar,
@@ -45,7 +44,6 @@ from qgis.gui import (
     QgsPanelWidgetStack,
     QgsProcessingContextGenerator,
     QgsProcessingModelConfigWidget,
-    QgsProcessingModelerParameterWidget,
     QgsProcessingParameterWidgetContext,
     QgsScrollArea,
 )
@@ -58,7 +56,6 @@ from qgis.PyQt.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QPushButton,
     QSizePolicy,
     QTabWidget,
     QTextEdit,
@@ -68,10 +65,6 @@ from qgis.PyQt.QtWidgets import (
 from qgis.utils import iface
 
 from processing.core.exceptions import InvalidParameterValue
-from processing.gui.wrappers import (
-    WidgetWrapper,
-    WidgetWrapperFactory,
-)
 from processing.tools.dataobjects import createContext
 
 
@@ -322,35 +315,25 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             ):
                 continue
 
-            wrapper = WidgetWrapperFactory.create_wrapper(param, self.dialog)
-            self.wrappers[param.name()] = wrapper
+            widget = QgsGui.processingGuiRegistry().createModelerParameterWidget(
+                self.model, self.childId, param, self.context
+            )
+            widget.setDialog(self.dialog)
+            widget.setWidgetContext(widget_context)
+            widget.registerProcessingContextGenerator(self.context_generator)
+            widget.changed.connect(self.emit_changed_signal)
+            self.wrappers[param.name()] = widget
+            label = widget.createLabel()
 
-            wrapper.setWidgetContext(widget_context)
-            wrapper.registerProcessingContextGenerator(self.context_generator)
-            if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                widget = wrapper
-                wrapper.changed.connect(self.emit_changed_signal)
+            if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
+                self.grpAdvancedVLayout.addWidget(label)
+                self.grpAdvancedVLayout.addWidget(widget)
             else:
-                widget = wrapper.widget
-            if widget is not None:
-                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                    label = wrapper.createLabel()
-                else:
-                    tooltip = param.description()
-                    widget.setToolTip(tooltip)
-                    label = wrapper.label
-
-                if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
-                    self.grpAdvancedVLayout.addWidget(label)
-                    self.grpAdvancedVLayout.addWidget(widget)
-                else:
-                    # Regular parameters
-                    self.verticalLayout.insertWidget(
-                        self.verticalLayout.count() - 1, label
-                    )
-                    self.verticalLayout.insertWidget(
-                        self.verticalLayout.count() - 1, widget
-                    )
+                # Regular parameters
+                self.verticalLayout.insertWidget(self.verticalLayout.count() - 1, label)
+                self.verticalLayout.insertWidget(
+                    self.verticalLayout.count() - 1, widget
+                )
 
         for output in self._alg.destinationParameterDefinitions():
             if output.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
@@ -362,8 +345,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             widget.setDialog(self.dialog)
             widget.setWidgetContext(widget_context)
             widget.registerProcessingContextGenerator(self.context_generator)
-            if isinstance(widget, QgsProcessingModelerParameterWidget):
-                widget.changed.connect(self.emit_changed_signal)
+            widget.changed.connect(self.emit_changed_signal)
 
             self.wrappers[output.name()] = widget
 
@@ -415,10 +397,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced:
                 wrapper = self.wrappers[param.name()]
-                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                    wrapper.setVisible(self.showAdvanced)
-                else:
-                    wrapper.widget.setVisible(self.showAdvanced)
+                wrapper.setVisible(self.showAdvanced)
 
                 self.widget_labels[param.name()].setVisible(self.showAdvanced)
 
@@ -443,24 +422,12 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                         value = None
 
                 wrapper = self.wrappers[param.name()]
-                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                    if value is None:
-                        value = QgsProcessingModelChildParameterSource.fromStaticValue(
-                            param.defaultValue()
-                        )
+                if value is None:
+                    value = QgsProcessingModelChildParameterSource.fromStaticValue(
+                        param.defaultValue()
+                    )
 
-                    wrapper.setWidgetValue(value)
-                else:
-                    if value is None:
-                        value = param.defaultValue()
-
-                    if (
-                        isinstance(value, QgsProcessingModelChildParameterSource)
-                        and value.source()
-                        == Qgis.ProcessingModelChildParameterSource.StaticValue
-                    ):
-                        value = value.staticValue()
-                    wrapper.setValue(value)
+                wrapper.setWidgetValue(value)
 
             for output in self.algorithm().destinationParameterDefinitions():
                 if output.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
@@ -521,12 +488,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 continue
             try:
                 wrapper = self.wrappers[param.name()]
-                if issubclass(wrapper.__class__, WidgetWrapper):
-                    val = wrapper.value()
-                elif issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                    val = wrapper.value()
-                else:
-                    val = wrapper.parameterValue()
+                val = wrapper.value()
             except InvalidParameterValue:
                 val = None
 

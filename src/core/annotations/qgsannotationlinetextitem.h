@@ -18,6 +18,7 @@
 #ifndef QGSANNOTATIONLINETEXTITEM_H
 #define QGSANNOTATIONLINETEXTITEM_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsannotationitem.h"
@@ -155,6 +156,22 @@ class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
      */
     const QgsMapUnitScale &offsetFromLineMapUnitScale() const { return mOffsetFromLineScale; }
 
+    /**
+     * Returns the text anchor, which dictates where the text will be placed on the line.
+     *
+     * \see setTextAnchor()
+     * \since QGIS 4.4
+     */
+    Qgis::TextAnchorPoint textAnchor() const;
+
+    /**
+     * Sets the text \a anchor, which dictates where the text will be placed on the line.
+     *
+     * \see textAnchor()
+     * \since QGIS 4.4
+     */
+    void setTextAnchor( Qgis::TextAnchorPoint anchor );
+
   private:
     QString mText;
     std::unique_ptr< QgsCurve > mCurve;
@@ -163,6 +180,8 @@ class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
     double mOffsetFromLineDistance = 0;
     Qgis::RenderUnit mOffsetFromLineUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetFromLineScale;
+
+    Qgis::TextAnchorPoint mTextAnchor = Qgis::TextAnchorPoint::StartOfText;
 
 #ifdef SIP_RUN
     QgsAnnotationLineTextItem( const QgsAnnotationLineTextItem &other );

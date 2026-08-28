@@ -268,7 +268,7 @@ QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWid
 
   QColor color = digitizingStrokeColor();
   mFeatureBandMarkers = new QgsRubberBand( canvas );
-  mFeatureBandMarkers->setIcon( QgsRubberBand::ICON_CIRCLE );
+  mFeatureBandMarkers->setIcon( Qgis::RubberBandIconType::Circle );
   mFeatureBandMarkers->setColor( color );
   mFeatureBandMarkers->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
   mFeatureBandMarkers->setBrushStyle( Qt::NoBrush );
@@ -276,7 +276,7 @@ QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWid
   mFeatureBandMarkers->setVisible( false );
 
   mVertexBand = new QgsRubberBand( canvas );
-  mVertexBand->setIcon( QgsRubberBand::ICON_CIRCLE );
+  mVertexBand->setIcon( Qgis::RubberBandIconType::Circle );
   mVertexBand->setColor( color );
   mVertexBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
   mVertexBand->setBrushStyle( Qt::NoBrush );
@@ -1421,7 +1421,7 @@ void QgsVertexTool::updateVertexBand( const QgsPointLocator::Match &m )
       isCircular = isCircularVertex( cachedGeometry( m.layer(), m.featureId() ), m.vertexIndex() );
     }
 
-    mVertexBand->setIcon( isCircular ? QgsRubberBand::ICON_FULL_DIAMOND : QgsRubberBand::ICON_CIRCLE );
+    mVertexBand->setIcon( isCircular ? Qgis::RubberBandIconType::DiamondFilled : Qgis::RubberBandIconType::Circle );
   }
   else
   {
@@ -3201,10 +3201,8 @@ void QgsVertexTool::GeometryValidation::start( QgsGeometry &geom, QgsVertexTool 
 {
   tool = t;
   layer = l;
-  Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
-    method = Qgis::GeometryValidationEngine::Geos;
 
+  Qgis::GeometryValidationEngine method = QgsGeometryValidator::defaultValidationEngine();
   validator = new QgsGeometryValidator( geom, nullptr, method );
   connect( validator, &QgsGeometryValidator::errorFound, tool, &QgsVertexTool::validationErrorFound );
   connect( validator, &QThread::finished, tool, &QgsVertexTool::validationFinished );

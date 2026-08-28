@@ -28,6 +28,26 @@
 namespace pdf
 {
 
+static QMarginsF mapCropMarginsToUnrotatedPage(QMarginsF cropMargins, PageRotation visualRotation)
+{
+    switch (visualRotation)
+    {
+        case PageRotation::None:
+            return cropMargins;
+
+        case PageRotation::Rotate90:
+            return QMarginsF(cropMargins.top(), cropMargins.right(), cropMargins.bottom(), cropMargins.left());
+
+        case PageRotation::Rotate180:
+            return QMarginsF(cropMargins.right(), cropMargins.bottom(), cropMargins.left(), cropMargins.top());
+
+        case PageRotation::Rotate270:
+            return QMarginsF(cropMargins.bottom(), cropMargins.left(), cropMargins.top(), cropMargins.right());
+    }
+
+    return cropMargins;
+}
+
 PDFOperationResult PDFDocumentManipulator::assemble(const AssembledPages& pages)
 {
     if (pages.empty())
@@ -132,7 +152,9 @@ PDFDocumentManipulator::AssembledPages PDFDocumentManipulator::createAllDocument
         const pdf::PageRotation originalPageRotation = page->getPageRotation();
 
         assembledPage.pageRotation = originalPageRotation;
+        assembledPage.sourcePageRotation = originalPageRotation;
         assembledPage.pageSize = page->getMediaBox().size();
+        assembledPage.sourcePageSize = assembledPage.pageSize;
 
         assembledPages.emplace_back(assembledPage);
     }
@@ -227,8 +249,28 @@ PDFDocumentManipulator::ProcessedPages PDFDocumentManipulator::processPages(PDFD
 
             if (processedPage.assembledPage.isImagePage())
             {
-                // Just paint the image
-                painter->drawImage(pageRect, image);
+                QSizeF sourcePageSize = processedPage.assembledPage.sourcePageSize;
+                if (sourcePageSize.isEmpty())
+                {
+                    sourcePageSize = processedPage.assembledPage.pageSize;
+                }
+
+                const QMarginsF cropMargins = processedPage.assembledPage.cropMarginsMM;
+                QRectF sourceImageRect(QPointF(0.0, 0.0), QSizeF(image.size()));
+                if (!sourcePageSize.isEmpty())
+                {
+                    const double left = cropMargins.left() / sourcePageSize.width() * image.width();
+                    const double top = cropMargins.top() / sourcePageSize.height() * image.height();
+                    const double right = cropMargins.right() / sourcePageSize.width() * image.width();
+                    const double bottom = cropMargins.bottom() / sourcePageSize.height() * image.height();
+                    sourceImageRect.adjust(left, top, -right, -bottom);
+                    sourceImageRect = sourceImageRect.intersected(QRectF(QPointF(0.0, 0.0), QSizeF(image.size())));
+                }
+                if (!sourceImageRect.isValid())
+                {
+                    sourceImageRect = QRectF(QPointF(0.0, 0.0), QSizeF(image.size()));
+                }
+                painter->drawImage(pageRect, image, sourceImageRect);
             }
 
             contentStreamBuilder.end(painter);
@@ -240,6 +282,27 @@ PDFDocumentManipulator::ProcessedPages PDFDocumentManipulator::processPages(PDFD
         }
 
         documentBuilder.setPageRotation(processedPage.targetPageReference, processedPage.assembledPage.pageRotation);
+        if (processedPage.assembledPage.isDocumentPage() &&
+            (processedPage.assembledPage.cropMarginsMM.left() > 0.0 ||
+             processedPage.assembledPage.cropMarginsMM.top() > 0.0 ||
+             processedPage.assembledPage.cropMarginsMM.right() > 0.0 ||
+             processedPage.assembledPage.cropMarginsMM.bottom() > 0.0))
+        {
+            QSizeF unrotatedSourcePageSize = PDFPage::getRotatedSize(processedPage.assembledPage.sourcePageSize,
+                                                                      processedPage.assembledPage.sourcePageRotation);
+            if (unrotatedSourcePageSize.isEmpty())
+            {
+                unrotatedSourcePageSize = processedPage.assembledPage.pageSize;
+            }
+
+            const QMarginsF cropMargins = mapCropMarginsToUnrotatedPage(processedPage.assembledPage.cropMarginsMM,
+                                                                        processedPage.assembledPage.sourcePageRotation);
+            QRectF cropBox(cropMargins.left() * PDF_MM_TO_POINT,
+                           cropMargins.bottom() * PDF_MM_TO_POINT,
+                           qMax(1.0, unrotatedSourcePageSize.width() - cropMargins.left() - cropMargins.right()) * PDF_MM_TO_POINT,
+                           qMax(1.0, unrotatedSourcePageSize.height() - cropMargins.top() - cropMargins.bottom()) * PDF_MM_TO_POINT);
+            documentBuilder.setPageCropBox(processedPage.targetPageReference, cropBox);
+        }
     }
 
     return processedPages;

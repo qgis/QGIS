@@ -80,6 +80,8 @@
 #include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparameterheatmappixelsize.h"
+#include "qgsprocessingparameterinterpolationpixelsize.h"
+#include "qgsprocessingparameterinterpolationsource.h"
 #include "qgsprocessingparameterreliefcolors.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertininputlayers.h"
@@ -334,6 +336,12 @@ class TestProcessingGui : public QgsTest
     void testMeshDatasetWrapperLayerInProject();
     void testMeshDatasetWrapperLayerOutsideProject();
     void testModelGraphicsView();
+    void testExecuteSqlWidget();
+    void testExecuteSqlWidgetWrapper();
+    void testInterpolationSourceWidget();
+    void testInterpolationSourceWrapper();
+    void testInterpolationPixelSizeWidget();
+    void testInterpolationPixelSizeWrapper();
 
   private:
     QString mTempDir;
@@ -12175,6 +12183,441 @@ void TestProcessingGui::testModelGraphicsView()
   QCOMPARE( algDest.childAlgorithms().size(), 3 );
   QCOMPARE( algDest.childAlgorithms().value( u"native:buffer_2"_s ).modelOutputs().size(), 1 );
   QCOMPARE( algDest.childAlgorithms().value( u"native:buffer_2"_s ).modelOutputs().value( algDest.childAlgorithms().value( u"native:buffer_2"_s ).modelOutputs().keys().at( 0 ) ).comment()->description(), u"output comm"_s );
+}
+
+void TestProcessingGui::testExecuteSqlWidget()
+{
+  QgsExecuteSqlWidget w;
+  QSignalSpy changedSpy( &w, &QgsExecuteSqlWidget::changed );
+  w.setValue( u"test"_s );
+  QCOMPARE( w.value(), u"test"_s );
+  QCOMPARE( changedSpy.size(), 1 );
+  w.setValue( u"test"_s );
+  QCOMPARE( changedSpy.size(), 1 );
+
+  w.setValue( u"test2"_s );
+  QCOMPARE( w.value(), u"test2"_s );
+  QCOMPARE( changedSpy.size(), 2 );
+
+  w.textEdit()->setPlainText( u"test3"_s );
+  QCOMPARE( w.value(), u"test3"_s );
+  QCOMPARE( changedSpy.size(), 3 );
+}
+
+void TestProcessingGui::testExecuteSqlWidgetWrapper()
+{
+  // execute sql works with string parameters
+  QgsProcessingParameterString param( u"sql"_s, u"Enter SQL"_s );
+
+  // standard wrapper
+  QgsProcessingExecuteSqlWidgetWrapper wrapper( &param );
+
+  QgsProcessingContext context;
+  QWidget *w = wrapper.createWrappedWidget( context );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingExecuteSqlWidgetWrapper::widgetValueHasChanged );
+  wrapper.setWidgetValue( u"select * from table"_s, context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toString(), u"select * from table"_s );
+  QCOMPARE( static_cast<QgsExecuteSqlWidget *>( wrapper.wrappedWidget() )->value(), u"select * from table"_s );
+  wrapper.setWidgetValue( QString(), context );
+  QCOMPARE( spy.count(), 2 );
+  QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast<QgsExecuteSqlWidget *>( wrapper.wrappedWidget() )->value().isEmpty() );
+
+  QLabel *l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), u"Enter SQL"_s );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  static_cast<QgsExecuteSqlWidget *>( wrapper.wrappedWidget() )->setValue( u"select * from b"_s );
+  QCOMPARE( spy.count(), 3 );
+  static_cast<QgsExecuteSqlWidget *>( wrapper.wrappedWidget() )->setValue( QString() );
+  QCOMPARE( spy.count(), 4 );
+
+  delete w;
+
+  // batch wrapper
+  QgsProcessingExecuteSqlWidgetWrapper wrapperB( &param, Qgis::ProcessingMode::Batch );
+
+  w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingExecuteSqlWidgetWrapper::widgetValueHasChanged );
+  wrapperB.setWidgetValue( u"a"_s, context );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( wrapperB.widgetValue().toString(), u"a"_s );
+  QCOMPARE( static_cast<QgsExecuteSqlWidget *>( wrapperB.wrappedWidget() )->value(), u"a"_s );
+  wrapperB.setWidgetValue( QString(), context );
+  QCOMPARE( spy2.count(), 2 );
+  QVERIFY( wrapperB.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast<QgsExecuteSqlWidget *>( wrapperB.wrappedWidget() )->value().isEmpty() );
+
+  // check signal
+  static_cast<QgsExecuteSqlWidget *>( w )->setValue( u"x"_s );
+  QCOMPARE( spy2.count(), 3 );
+  static_cast<QgsExecuteSqlWidget *>( w )->setValue( QString() );
+  QCOMPARE( spy2.count(), 4 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingExecuteSqlWidgetWrapper wrapperM( &param, Qgis::ProcessingMode::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingExecuteSqlWidgetWrapper::widgetValueHasChanged );
+  wrapperM.setWidgetValue( u"a"_s, context );
+  QCOMPARE( wrapperM.widgetValue().toString(), u"a"_s );
+  QCOMPARE( spy3.count(), 1 );
+  QCOMPARE( static_cast<QgsExecuteSqlWidget *>( wrapperM.wrappedWidget() )->value(), u"a"_s );
+  wrapperM.setWidgetValue( QString(), context );
+  QVERIFY( wrapperM.widgetValue().toString().isEmpty() );
+  QCOMPARE( spy3.count(), 2 );
+  QVERIFY( static_cast<QgsExecuteSqlWidget *>( wrapperM.wrappedWidget() )->value().isEmpty() );
+
+  // check signal
+  static_cast<QgsExecuteSqlWidget *>( w )->setValue( u"x"_s );
+  QCOMPARE( spy3.count(), 3 );
+  static_cast<QgsExecuteSqlWidget *>( w )->setValue( QString() );
+  QCOMPARE( spy3.count(), 4 );
+
+  // should be a label in modeler mode
+  l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), u"Enter SQL"_s );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
+}
+
+void TestProcessingGui::testInterpolationSourceWidget()
+{
+  QgsInterpolationSourceWidget widget;
+  QVERIFY( !widget.value().isValid() );
+
+  QSignalSpy changedSpy( &widget, &QgsInterpolationSourceWidget::changed );
+
+  QgsProject p;
+  auto pointLayer = new QgsVectorLayer( u"Point?field=val:double"_s, u"points"_s, u"memory"_s );
+  QVERIFY( pointLayer->isValid() );
+
+  auto pointZLayer = new QgsVectorLayer( u"PointZ?field=elevation:double"_s, u"points_z"_s, u"memory"_s );
+  QVERIFY( pointZLayer->isValid() );
+
+  p.addMapLayers( { pointLayer, pointZLayer } );
+
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // test setting values via formatted string
+  const QString testValue = u"%1::~::0::~::val::~::0::|::%2::~::1::~::-1::~::1"_s.arg( pointLayer->source(), pointZLayer->source() );
+  widget.setValue( testValue, context );
+
+  QCOMPARE( changedSpy.count(), 1 );
+  QCOMPARE( widget.value().toString(), testValue );
+
+  // test layer changed behavior for z coordinate capability
+  widget.layerChanged( pointLayer );
+  QCheckBox *chkZ = widget.findChild< QCheckBox * >( u"chkUseZCoordinate"_s );
+  QVERIFY( chkZ );
+  QVERIFY( !chkZ->isEnabled() );
+
+  widget.layerChanged( pointZLayer );
+  QVERIFY( chkZ->isEnabled() );
+
+  // test removing selected layer
+  QTreeWidget *tree = widget.findChild< QTreeWidget * >( u"layersTree"_s );
+  QVERIFY( tree );
+  QCOMPARE( tree->topLevelItemCount(), 2 );
+
+  tree->setCurrentItem( tree->topLevelItem( 0 ) );
+  widget.removeLayer();
+
+  QCOMPARE( changedSpy.count(), 2 );
+  QCOMPARE( tree->topLevelItemCount(), 1 );
+
+  const QString expectedValueAfterRemove = u"%1::~::1::~::-1::~::1"_s.arg( pointZLayer->source() );
+  QCOMPARE( widget.value().toString(), expectedValueAfterRemove );
+}
+
+void TestProcessingGui::testInterpolationSourceWrapper()
+{
+  QgsProcessingParameterInterpolationSource param( u"interpolation"_s, u"Interpolation Source"_s );
+
+  // standard wrapper
+  QgsProcessingInterpolationSourceWidgetWrapper wrapper( &param );
+
+  QgsProject p;
+  auto pointLayer = new QgsVectorLayer( u"Point?field=val:double"_s, u"points"_s, u"memory"_s );
+  QVERIFY( pointLayer->isValid() );
+
+  auto pointZLayer = new QgsVectorLayer( u"PointZ?field=elevation:double"_s, u"points_z"_s, u"memory"_s );
+  QVERIFY( pointZLayer->isValid() );
+
+  p.addMapLayers( { pointLayer, pointZLayer } );
+
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  QWidget *w = wrapper.createWrappedWidget( context );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingInterpolationSourceWidgetWrapper::widgetValueHasChanged );
+  const QString testValue = u"%1::~::0::~::val::~::0::|::%2::~::1::~::-1::~::1"_s.arg( pointLayer->source(), pointZLayer->source() );
+  const QString testValue2 = u"%1::~::1::~::-1::~::1"_s.arg( pointZLayer->source() );
+
+  wrapper.setWidgetValue( testValue, context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toString(), testValue );
+  QCOMPARE( static_cast<QgsInterpolationSourceWidget *>( wrapper.wrappedWidget() )->value(), testValue );
+  wrapper.setWidgetValue( QString(), context );
+  QCOMPARE( spy.count(), 2 );
+  QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+  QVERIFY( !static_cast<QgsInterpolationSourceWidget *>( wrapper.wrappedWidget() )->value().isValid() );
+
+  QLabel *l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), u"Interpolation Source"_s );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  static_cast<QgsInterpolationSourceWidget *>( wrapper.wrappedWidget() )->setValue( testValue2, context );
+  QCOMPARE( spy.count(), 3 );
+  static_cast<QgsInterpolationSourceWidget *>( wrapper.wrappedWidget() )->setValue( QString(), context );
+  QCOMPARE( spy.count(), 4 );
+
+  delete w;
+
+  // batch wrapper
+  QgsProcessingInterpolationSourceWidgetWrapper wrapperB( &param, Qgis::ProcessingMode::Batch );
+
+  w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingInterpolationSourceWidgetWrapper::widgetValueHasChanged );
+  wrapperB.setWidgetValue( testValue2, context );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( wrapperB.widgetValue().toString(), testValue2 );
+  QCOMPARE( static_cast<QgsInterpolationSourceWidget *>( wrapperB.wrappedWidget() )->value(), testValue2 );
+  wrapperB.setWidgetValue( QString(), context );
+  QCOMPARE( spy2.count(), 2 );
+  QVERIFY( wrapperB.widgetValue().toString().isEmpty() );
+  QVERIFY( !static_cast<QgsInterpolationSourceWidget *>( wrapperB.wrappedWidget() )->value().isValid() );
+
+  // check signal
+  static_cast<QgsInterpolationSourceWidget *>( w )->setValue( testValue, context );
+  QCOMPARE( spy2.count(), 3 );
+  static_cast<QgsInterpolationSourceWidget *>( w )->setValue( QString(), context );
+  QCOMPARE( spy2.count(), 4 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingInterpolationSourceWidgetWrapper wrapperM( &param, Qgis::ProcessingMode::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingInterpolationSourceWidgetWrapper::widgetValueHasChanged );
+  wrapperM.setWidgetValue( testValue, context );
+  QCOMPARE( wrapperM.widgetValue().toString(), testValue );
+  QCOMPARE( spy3.count(), 1 );
+  QCOMPARE( static_cast<QgsInterpolationSourceWidget *>( wrapperM.wrappedWidget() )->value(), testValue );
+  wrapperM.setWidgetValue( QString(), context );
+  QVERIFY( wrapperM.widgetValue().toString().isEmpty() );
+  QCOMPARE( spy3.count(), 2 );
+  QVERIFY( !static_cast<QgsInterpolationSourceWidget *>( wrapperM.wrappedWidget() )->value().isValid() );
+
+  // check signal
+  static_cast<QgsInterpolationSourceWidget *>( w )->setValue( testValue2, context );
+  QCOMPARE( spy3.count(), 3 );
+  static_cast<QgsInterpolationSourceWidget *>( w )->setValue( QString(), context );
+  QCOMPARE( spy3.count(), 4 );
+
+  // should be a label in modeler mode
+  l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), u"Interpolation Source"_s );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
+}
+
+void TestProcessingGui::testInterpolationPixelSizeWidget()
+{
+  QgsInterpolationPixelSizeWidget widget;
+  // no source set
+  QSignalSpy changedSpy( &widget, &QgsInterpolationPixelSizeWidget::valueChanged );
+  widget.mCellYSpinBox->setValue( 20 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 20 );
+  QCOMPARE( changedSpy.size(), 1 );
+  widget.mCellXSpinBox->setValue( 30 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 30 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 30 );
+  QCOMPARE( changedSpy.size(), 2 );
+
+  widget.mRowsSpinBox->setValue( 10 );
+  widget.mColumnsSpinBox->setValue( 15 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 10 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 15 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 30 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 30 );
+  QCOMPARE( changedSpy.size(), 2 );
+
+  widget.mCellXSpinBox->setValue( 40 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 10 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 15 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 40 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 20 );
+  QCOMPARE( widget.value(), 40 );
+  QCOMPARE( changedSpy.size(), 3 );
+
+  widget.setValue( 5 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 10 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 15 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 5 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 5 );
+  QCOMPARE( widget.value(), 5 );
+  QCOMPARE( changedSpy.size(), 4 );
+
+  // with source
+  auto pointsLayer = new QgsVectorLayer( testDataPath( u"points.shp"_s ) );
+  QVERIFY( pointsLayer->isValid() );
+
+  QgsProject p;
+  p.addMapLayer( pointsLayer );
+
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  const QString testValue = u"%1::~::1::~::-1::~::1"_s.arg( pointsLayer->source() );
+
+  widget.setSourceData( testValue, context );
+  QCOMPARE( widget.mRowsSpinBox->value(), 6 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 8 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 5 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 5 );
+  QCOMPARE( widget.value(), 5 );
+  // didn't change
+  QCOMPARE( changedSpy.size(), 4 );
+
+  widget.setValue( 10 );
+  QCOMPARE( widget.mRowsSpinBox->value(), 3 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 5 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 10 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 10 );
+  QCOMPARE( widget.value(), 10 );
+
+  widget.setExtent( QgsRectangle( 10, 20, 60, 45 ) );
+  QCOMPARE( widget.mRowsSpinBox->value(), 4 );
+  QCOMPARE( widget.mColumnsSpinBox->value(), 6 );
+  QCOMPARE( widget.mCellXSpinBox->value(), 10 );
+  QCOMPARE( widget.mCellYSpinBox->value(), 10 );
+  QCOMPARE( widget.value(), 10 );
+}
+
+void TestProcessingGui::testInterpolationPixelSizeWrapper()
+{
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterInterpolationPixelSize param( u"num"_s, u"num"_s );
+    QgsProcessingInterpolationPixelSizeWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    if ( !qobject_cast< QgsInterpolationPixelSizeWidget * >( w ) )
+    {
+      QVERIFY( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->expressionsEnabled() );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->decimals(), 6 );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->singleStep(), 1.0 );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->minimum(), 0.0 );
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->maximum(), 99999999999.0 );
+    }
+
+    QSignalSpy spy( &wrapper, &QgsProcessingInterpolationPixelSizeWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( 5, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 5.0 );
+
+    if ( auto widget = qobject_cast< QgsInterpolationPixelSizeWidget * >( w ) )
+    {
+      QCOMPARE( widget->value(), 5.0 );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->value(), 5.0 );
+    }
+    wrapper.setWidgetValue( u"28356"_s, context );
+    QCOMPARE( spy.count(), 2 );
+    if ( auto widget = qobject_cast< QgsInterpolationPixelSizeWidget * >( w ) )
+    {
+      QCOMPARE( widget->value(), 28356.0 );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->value(), 28356.0 );
+    }
+
+    wrapper.setWidgetValue( QVariant(), context ); // not optional, so shouldn't work
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 0.0 );
+    if ( auto widget = qobject_cast< QgsInterpolationPixelSizeWidget * >( w ) )
+    {
+      QCOMPARE( widget->value(), 0.0 );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->value(), 0.0 );
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), u"num"_s );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    if ( auto widget = qobject_cast< QgsInterpolationPixelSizeWidget * >( w ) )
+    {
+      widget->setValue( 37.0 );
+    }
+    else
+    {
+      static_cast<QgsDoubleSpinBox *>( wrapper.wrappedWidget() )->setValue( 37.0 );
+    }
+    QCOMPARE( spy.count(), 4 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 37.0 );
+    delete w;
+
+    // with default value
+    QgsProcessingParameterInterpolationPixelSize paramDefault( u"num"_s, u"num"_s );
+    paramDefault.setDefaultValue( 55 );
+
+    QgsProcessingInterpolationPixelSizeWidgetWrapper wrapperDefault( &paramDefault, type );
+
+    w = wrapperDefault.createWrappedWidget( context );
+    QCOMPARE( wrapperDefault.parameterValue().toDouble(), 55.0 );
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( Qgis::ProcessingMode::Standard );
+
+  // batch wrapper
+  testWrapper( Qgis::ProcessingMode::Batch );
+
+  // modeler wrapper
+  testWrapper( Qgis::ProcessingMode::Modeler );
 }
 
 void TestProcessingGui::cleanupTempDir()

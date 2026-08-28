@@ -44,7 +44,7 @@ void QgsOgrItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu,
   {
     if ( layerItem->providerKey() == "ogr"_L1 && !qobject_cast<QgsGeoPackageAbstractLayerItem *>( item ) )
     {
-      if ( !( layerItem->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
+      if ( !layerItem->capabilities2().testFlag( Qgis::BrowserItemCapability::ReadOnly ) && !layerItem->capabilities2().testFlag( Qgis::BrowserItemCapability::ItemRepresentsFile ) )
       {
         // item is a layer which sits inside a collection.
 
@@ -78,7 +78,7 @@ void QgsOgrItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu,
 
   if ( QgsDataCollectionItem *collectionItem = qobject_cast<QgsDataCollectionItem *>( item ) )
   {
-    if ( collectionItem->providerKey() == "ogr"_L1 && !qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
+    if ( !collectionItem->capabilities2().testFlag( Qgis::BrowserItemCapability::ReadOnly ) && collectionItem->providerKey() == "ogr"_L1 && !qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
     {
       const bool isFolder = QFileInfo( collectionItem->path() ).isDir();
       // Messages are different for files and tables

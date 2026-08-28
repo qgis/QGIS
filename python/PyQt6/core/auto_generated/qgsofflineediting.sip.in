@@ -39,7 +39,23 @@ layer data.
       GPKG
     };
 
-    QgsOfflineEditing();
+    QgsOfflineEditing() /Deprecated/;
+%Docstring
+Default constructor -- uses the :py:class:`QgsProject`
+:py:func:`~QgsOfflineEditing.instance`.
+
+.. note::
+
+   Will be removed in QGIS 5.0. Use the constructor which requires an explicit project instead.
+%End
+
+    QgsOfflineEditing( QgsProject *project );
+%Docstring
+QgsOfflineEditing object based on a QgsProject instance. This allows the
+offline editing plugin to be used with multiple projects.
+
+.. versionadded:: 4.4
+%End
 
     bool convertToOfflineProject(
       const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = QStringLiteral( " (offline)" )

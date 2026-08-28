@@ -851,8 +851,7 @@ bool QgsProperty::loadVariant( const QVariant &property )
   }
 
   //restore transformer if present
-  delete d->transformer;
-  d->transformer = nullptr;
+  d->transformer.reset();
 
 
   const QVariant transform = propertyMap.value( u"transformer"_s );
@@ -867,7 +866,7 @@ bool QgsProperty::loadVariant( const QVariant &property )
     if ( transformer )
     {
       if ( transformer->loadVariant( transformerMap.value( u"d"_s ) ) )
-        d->transformer = transformer.release();
+        d->transformer = std::move( transformer );
     }
   }
 
@@ -878,12 +877,12 @@ bool QgsProperty::loadVariant( const QVariant &property )
 void QgsProperty::setTransformer( QgsPropertyTransformer *transformer )
 {
   d.detach();
-  d->transformer = transformer;
+  d->transformer.reset( transformer );
 }
 
 const QgsPropertyTransformer *QgsProperty::transformer() const
 {
-  return d->transformer;
+  return d->transformer.get();
 }
 
 bool QgsProperty::convertToTransformer()
@@ -901,7 +900,7 @@ bool QgsProperty::convertToTransformer()
     return false;
 
   d.detach();
-  d->transformer = transformer.release();
+  d->transformer = std::move( transformer );
   if ( !fieldName.isEmpty() )
     setField( fieldName );
   else

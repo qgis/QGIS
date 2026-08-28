@@ -152,7 +152,7 @@ class QgsMeshIteratorDataStream : public IDataStream
       readNextEntry();
     }
 
-    ~QgsMeshIteratorDataStream() override { delete mNextData; }
+    ~QgsMeshIteratorDataStream() override {}
 
     //! returns a pointer to the next entry in the stream or 0 at the end of the stream.
     IData *getNext() override
@@ -160,14 +160,13 @@ class QgsMeshIteratorDataStream : public IDataStream
       if ( mFeedback && mFeedback->isCanceled() )
         return nullptr;
 
-      RTree::Data *ret = mNextData;
-      mNextData = nullptr;
+      RTree::Data *ret = mNextData.release();
       readNextEntry();
       return ret;
     }
 
     //! returns true if there are more items in the stream.
-    bool hasNext() override { return nullptr != mNextData; }
+    bool hasNext() override { return nullptr != mNextData.get(); }
 
     //! returns the total number of entries available in the stream.
     uint32_t size() override { return static_cast<uint32_t>( mFeaturesCount ); }
@@ -185,7 +184,7 @@ class QgsMeshIteratorDataStream : public IDataStream
         r = mFeatureToRegionFunction( mMesh, mIterator, ok );
         if ( ok )
         {
-          mNextData = new RTree::Data( 0, nullptr, r, mIterator );
+          mNextData = std::make_unique<RTree::Data>( 0, nullptr, r, mIterator );
           ++mIterator;
           return;
         }
@@ -202,7 +201,7 @@ class QgsMeshIteratorDataStream : public IDataStream
     const QgsMesh &mMesh;
     int mFeaturesCount = 0;
     std::function<Region( const QgsMesh &mesh, int id, bool &ok )> mFeatureToRegionFunction;
-    RTree::Data *mNextData = nullptr;
+    std::unique_ptr<RTree::Data> mNextData;
     QgsFeedback *mFeedback = nullptr;
 };
 

@@ -63,7 +63,8 @@ QString QgsCheckValidityAlgorithm::shortHelpString() const
     "lenient validity check will be performed.\n\n"
     "The GEOS method is faster and performs better on larger geometries, but is limited to only "
     "returning the first error encountered in a geometry. The QGIS method will be slower but "
-    "reports all errors encountered in the geometry, not just the first."
+    "reports all errors encountered in the geometry, not just the first. The SFCGAL method "
+    "performs 3D validity checks, and should be used when validating three-dimensional geometries."
   );
 }
 
@@ -84,7 +85,7 @@ void QgsCheckValidityAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT_LAYER"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
-  const QStringList options = QStringList() << QObject::tr( "The one selected in digitizing settings" ) << u"QGIS"_s << u"GEOS"_s;
+  const QStringList options = QStringList() << QObject::tr( "The one selected in digitizing settings" ) << u"QGIS"_s << u"GEOS"_s << u"SFCGAL"_s;
   auto methodParam = std::make_unique<QgsProcessingParameterEnum>( u"METHOD"_s, QObject::tr( "Method" ), options, false, 2 );
   QVariantMap methodParamMetadata;
   QVariantMap widgetMetadata;
@@ -103,22 +104,33 @@ void QgsCheckValidityAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( u"ERROR_COUNT"_s, QObject::tr( "Count of errors" ) ) );
 }
 
+bool QgsCheckValidityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mValidationMethod = parameterAsEnum( parameters, u"METHOD"_s, context );
+  if ( mValidationMethod == 0 )
+  {
+    const int methodFromSettings = QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() - 1;
+    mValidationMethod = methodFromSettings > 0 ? methodFromSettings : 0;
+  }
+  else
+  {
+    mValidationMethod--;
+  }
+
+  // SFCGAL method selected but SFCGAL support is disabled
+  if ( mValidationMethod == 2 && !Qgis::hasSfcgal() )
+  {
+    throw QgsProcessingException( QObject::tr( "SFCGAL validation method requires a QGIS installation with SFCGAL support enabled. Please use a version of QGIS that includes SFCGAL." ) );
+  }
+
+  return true;
+}
+
 QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT_LAYER"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT_LAYER"_s ) );
-
-  int method = parameterAsEnum( parameters, u"METHOD"_s, context );
-  if ( method == 0 )
-  {
-    const int methodFromSettings = QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() - 1;
-    method = methodFromSettings > 0 ? methodFromSettings : 0;
-  }
-  else
-  {
-    method--;
-  }
 
   const bool ignoreRingSelfIntersection = parameterAsBool( parameters, u"IGNORE_RING_SELF_INTERSECTION"_s, context );
 
@@ -162,7 +174,7 @@ QVariantMap QgsCheckValidityAlgorithm::processAlgorithm( const QVariantMap &para
     if ( !geom.isNull() && !geom.isEmpty() )
     {
       QVector< QgsGeometry::Error > errors;
-      geom.validateGeometry( errors, Qgis::GeometryValidationEngine( method ), flags );
+      geom.validateGeometry( errors, Qgis::GeometryValidationEngine( mValidationMethod ), flags );
       if ( errors.count() > 0 )
       {
         isValid = false;

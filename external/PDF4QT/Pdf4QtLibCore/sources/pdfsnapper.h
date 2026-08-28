@@ -32,6 +32,7 @@
 #include <optional>
 
 class QPainter;
+class QTransform;
 
 namespace pdf
 {
@@ -47,13 +48,14 @@ enum class SnapType
     ImageCenter,       ///< Center of image
     LineCenter,        ///< Center of line
     GeneratedLineProjection,   ///< Generated point to line projections
+    Annotation,        ///< Annotation geometry point
     Custom  ///< Custom snap point
 };
 
 /// Contain informations for snap points in the pdf page. Snap points
 /// can be for example image centers, rectangle corners, line start/end
 /// points, page boundary boxes etc. All coordinates are in page coordinates.
-class PDFSnapInfo
+class PDF4QTLIBCORESHARED_EXPORT PDFSnapInfo
 {
 public:
     explicit inline PDFSnapInfo() = default;
@@ -93,6 +95,19 @@ public:
     /// \param start Start point of line, in page coordinates
     /// \param end End point of line, in page coordinates
     void addLine(const QPointF& start, const QPointF& end);
+
+    /// Adds annotation point.
+    /// \param point Annotation point in page coordinates
+    void addAnnotationPoint(const QPointF& point);
+
+    /// Adds annotation rectangle. Rectangle corners, center and edges are added.
+    /// \param rectangle Annotation rectangle in page coordinates
+    void addAnnotationRectangle(const QRectF& rectangle);
+
+    /// Adds annotation line. Line endpoints and center are added.
+    /// \param start Start point of line, in page coordinates
+    /// \param end End point of line, in page coordinates
+    void addAnnotationLine(const QPointF& start, const QPointF& end);
 
     /// Returns snap points
     const std::vector<SnapPoint>& getSnapPoints() const { return m_snapPoints; }
@@ -163,6 +178,12 @@ public:
     /// \param snapshot Widget snapshot
     void buildSnapImages(const PDFWidgetSnapshot& snapshot);
 
+    /// Adds snap points from external snap info, for example annotations.
+    /// \param pageIndex Page index
+    /// \param pageToDeviceMatrix Page-to-device matrix for the page
+    /// \param info Snap info in page coordinates
+    void addSnapInfo(PDFInteger pageIndex, const QTransform& pageToDeviceMatrix, const PDFSnapInfo& info);
+
     /// Returns current snap point tolerance (while aiming with the mouse cursor,
     /// when mouse cursor is at most tolerance distance from some snap point,
     /// it is snapped.
@@ -215,6 +236,8 @@ private:
     PDFInteger m_currentPage = -1;
     int m_snapPointPixelSize = 0;
     int m_snapPointTolerance = 0;
+
+    void addSnapInfoImpl(PDFInteger pageIndex, const QTransform& pageToDeviceMatrix, const PDFSnapInfo& info, bool includeCustomSnapPoints);
 };
 
 }   // namespace pdf

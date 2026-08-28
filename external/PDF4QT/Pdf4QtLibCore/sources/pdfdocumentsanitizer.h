@@ -29,9 +29,9 @@ namespace pdf
 {
 class PDFAnnotation;
 
-/// Class for sanitizing documents. Can remove sensitive content from the document,
-/// except the content streams. Sanitization is configurable, user can specify,
-/// which content should be removed.
+/// Class for sanitizing documents. Can remove sensitive content from the document
+/// and can also perform selected low-level content stream cleanups.
+/// Sanitization is configurable, user can specify which content should be removed.
 class PDF4QTLIBCORESHARED_EXPORT PDFDocumentSanitizer : public QObject
 {
     Q_OBJECT
@@ -49,6 +49,7 @@ public:
         MarkupAnnotations   = 0x0020, ///< Remove markup annotations from all pages
         PageThumbnails      = 0x0040, ///< Remove page thumbnails
         PageLabels          = 0x0080, ///< Remove page labels
+        InvisibleText       = 0x0100, ///< Remove text-showing operators executed with rendering mode Tr = 3 from page and form content streams
         All                 = 0xFFFF, ///< All sanitization turned on
     };
     Q_DECLARE_FLAGS(SanitizationFlags, SanitizationFlag)
@@ -94,6 +95,9 @@ private:
     void performSanitizeMarkupAnnotations();
     void performSanitizePageThumbnails();
     void performSanitizePageLabels();
+    /// Removes invisible OCR-like text from page and form content streams while
+    /// keeping the remaining content stream structure intact as much as possible.
+    void performSanitizeInvisibleText();
 
     void removeAnnotations(const std::function<bool(const PDFAnnotation*)>& filter, QString message);
 

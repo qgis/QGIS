@@ -221,8 +221,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   mReducedVertexCount = 0;
   int i = 0;
 
-  const auto constMSelectedFeatures = mSelectedFeatures;
-  for ( const QgsFeature &fSel : constMSelectedFeatures )
+  for ( const QgsFeature &fSel : std::as_const( mSelectedFeatures ) )
   {
     const QgsGeometry g = processGeometry( fSel.geometry(), layerTolerance );
     if ( !g.isNull() )
@@ -256,7 +255,7 @@ void QgsMapToolSimplify::createUserInputWidget()
   connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::rejected, this, &QgsMapToolSimplify::clearSelection );
 
   mSimplifyUserWidget->setTargetLayer( currentVectorLayer() );
-  connect( canvas(), &QgsMapCanvas::currentLayerChanged, this, [this]( QgsMapLayer *layer ) { mSimplifyUserWidget->setTargetLayer( layer ); } );
+  connect( canvas(), &QgsMapCanvas::currentLayerChanged, mSimplifyUserWidget, &QgsSimplifyUserInputWidget::setTargetLayer );
 
   QgisApp::instance()->addUserInputWidget( mSimplifyUserWidget );
   mSimplifyUserWidget->setFocus( Qt::TabFocusReason );
@@ -434,13 +433,12 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   // count vertices, prepare rubber bands
   mOriginalVertexCount = 0;
-  const auto constMSelectedFeatures = mSelectedFeatures;
-  for ( const QgsFeature &f : constMSelectedFeatures )
+  for ( const QgsFeature &f : std::as_const( mSelectedFeatures ) )
   {
     if ( f.hasGeometry() )
       mOriginalVertexCount += f.geometry().constGet()->nCoordinates();
 
-    QgsRubberBand *rb = createRubberBand();
+    QgsRubberBand *rb = createRubberBandForLayer( currentVectorLayer(), { f.id() } );
     rb->show();
     mRubberBands << rb;
   }

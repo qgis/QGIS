@@ -24,6 +24,7 @@
 #include <QBrush>
 #include <QObject>
 #include <QPen>
+#include <QPointer>
 #include <QPolygon>
 #include <QSvgRenderer>
 #include <QVector>
@@ -40,6 +41,40 @@ class QgsSymbol;
 #include <qgsrubberband.h>
 //%End
 #endif
+
+class QgsRubberBand;
+
+/**
+ * \ingroup gui
+ * \brief Abstract interface for rendering custom preview overlays attached to a QgsRubberBand.
+ *
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsRubberBandPreviewItem
+{
+  public:
+    virtual ~QgsRubberBandPreviewItem() = default;
+
+    /**
+     * Returns the rubber band associated with the item.
+     */
+    QgsRubberBand *rubberBand();
+
+    /**
+     * Renders the custom preview overlay using the specified render \a context.
+    */
+    virtual void render( QgsRenderContext &context ) = 0;
+
+  protected:
+    /**
+     * Constructor for a QgsRubberBandPreviewItem, attached to the specified \a rubberBand.
+     */
+    QgsRubberBandPreviewItem( QgsRubberBand *rubberBand );
+
+  private:
+    QPointer< QgsRubberBand > mRubberBand;
+};
+
 
 /**
  * \ingroup gui
@@ -77,57 +112,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     Q_PROPERTY( int iconSize READ iconSize WRITE setIconSize )
     Q_PROPERTY( QColor secondaryStrokeColor READ secondaryStrokeColor WRITE setSecondaryStrokeColor )
     Q_PROPERTY( int width READ width WRITE setWidth )
-
-    //! Icons
-    enum IconType
-    {
-
-      /**
-       * No icon is used
-       */
-      ICON_NONE,
-
-      /**
-       * A cross is used to highlight points (+)
-       */
-      ICON_CROSS,
-
-      /**
-       * A cross is used to highlight points (x)
-       */
-      ICON_X,
-
-      /**
-       * A box is used to highlight points (□)
-       */
-      ICON_BOX,
-
-      /**
-       * A circle is used to highlight points (○)
-       */
-      ICON_CIRCLE,
-
-      /**
-       * A full box is used to highlight points (■)
-       */
-      ICON_FULL_BOX,
-
-      /**
-       * A diamond is used to highlight points (◇)
-       */
-      ICON_DIAMOND,
-
-      /**
-       * A diamond is used to highlight points (◆)
-       */
-      ICON_FULL_DIAMOND,
-
-      /**
-       * An svg image is used to highlight points
-       * \since QGIS 3.10
-       */
-      ICON_SVG
-    };
 
     /**
      * Creates a new RubberBand.
@@ -196,7 +180,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * Sets the icon type to highlight point geometries.
      *  \param icon The icon to visualize point geometries
      */
-    void setIcon( IconType icon );
+    void setIcon( Qgis::RubberBandIconType icon );
 
     /**
      * Set the path to the svg file to use to draw points.
@@ -211,7 +195,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Returns the current icon type to highlight point geometries.
      */
-    IconType icon() const { return mIconType; }
+    Qgis::RubberBandIconType icon() const { return mIconType; }
 
     /**
      * Sets the size of the point icons
@@ -239,6 +223,24 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *  \param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
     void reset( Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
+
+    /**
+     * Adds a custom preview \a item decorator to the rubber band.
+     *
+     * Ownership of the item is transferred to the rubber band.
+     *
+     * \see clearPreviewItems()
+     * \since QGIS 4.4
+     */
+    void addPreviewItem( QgsRubberBandPreviewItem *item SIP_TRANSFER );
+
+    /**
+     * Clears all registered preview items.
+     *
+     * \see addPreviewItem()
+     * \since QGIS 4.4
+     */
+    void clearPreviewItems();
 
     /**
      * Adds a vertex to the rubberband and update canvas.
@@ -416,6 +418,22 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      */
     void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Returns the rubber band components that will be rendered for this band.
+     *
+     * \see setRenderedComponents()
+     * \since QGIS 4.4
+     */
+    Qgis::RubberBandComponents renderedComponents() const;
+
+    /**
+     * Sets the rubber band \a components that should be rendered for this band.
+     *
+     * \see renderedComponents()
+     * \since QGIS 4.4
+     */
+    void setRenderedComponents( Qgis::RubberBandComponents components );
+
   protected:
     using QgsMapCanvasItem::paint;
 
@@ -451,7 +469,8 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     double mIconSize = 5;
 
     //! Icon to be shown.
-    IconType mIconType = ICON_CIRCLE;
+    Qgis::RubberBandIconType mIconType = Qgis::RubberBandIconType::Circle;
+    Qgis::RubberBandComponents mComponentsToRender = Qgis::RubberBandComponent::Symbol | Qgis::RubberBandComponent::PreviewItems;
     std::unique_ptr<QSvgRenderer> mSvgRenderer;
     QPoint mSvgOffset;
 
@@ -464,6 +483,8 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Polygon;
     double mTranslationOffsetX = 0.0;
     double mTranslationOffsetY = 0.0;
+
+    std::vector<std::unique_ptr<QgsRubberBandPreviewItem>> mPreviewItems;
 
     QgsRubberBand();
 };

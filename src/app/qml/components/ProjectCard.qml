@@ -7,7 +7,7 @@ import QtQuick.Effects
 Rectangle {
   id: root
   implicitWidth: 280
-  implicitHeight: 120
+  implicitHeight: 120 * layoutSizeFactor
   radius: 6
 
   property color backgroundColor: "#ffffff"
@@ -76,7 +76,7 @@ Rectangle {
       Layout.fillWidth: true
       Layout.rightMargin: 20
       text: root.title
-      font.pointSize: Application.font.pointSize
+      font.pointSize: normalFontSize
       font.bold: true
       color: "#2d3748"
       wrapMode: Text.Wrap
@@ -89,7 +89,7 @@ Rectangle {
       Layout.rightMargin: 40
       visible: root.crs != ""
       text: root.crs
-      font.pointSize: Application.font.pointSize * 0.9
+      font.pointSize: smallFontSize
       color: "#4a5568"
       wrapMode: Text.NoWrap
       elide: Text.ElideRight
@@ -101,7 +101,7 @@ Rectangle {
       Layout.rightMargin: 40
       Layout.fillHeight: true
       text: root.subtitle
-      font.pointSize: Application.font.pointSize * 0.9
+      font.pointSize: smallFontSize
       color: "#4a5568"
       wrapMode: Text.Wrap
       elide: Text.ElideRight

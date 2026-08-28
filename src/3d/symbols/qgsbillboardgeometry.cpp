@@ -28,6 +28,21 @@ QgsBillboardGeometry::QgsBillboardGeometry( Qt3DCore::QNode *parent )
   : QGeometry( parent )
   , mVertexBuffer( new Qt3DCore::QBuffer( this ) )
 {
+  static constexpr float quadVertices[] = { -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
+  Qt3DCore::QBuffer *quadVertexBuffer = new Qt3DCore::QBuffer( this );
+  quadVertexBuffer->setData( QByteArray( reinterpret_cast<const char *>( quadVertices ), sizeof( quadVertices ) ) );
+
+  Qt3DCore::QAttribute *quadVertexAttribute = new Qt3DCore::QAttribute( this );
+  quadVertexAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+  quadVertexAttribute->setBuffer( quadVertexBuffer );
+  quadVertexAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
+  quadVertexAttribute->setVertexSize( 2 );
+  quadVertexAttribute->setByteOffset( 0 );
+  quadVertexAttribute->setByteStride( 2 * sizeof( float ) );
+  quadVertexAttribute->setCount( 4 );
+  quadVertexAttribute->setName( u"vertexPosition"_s );
+  addAttribute( quadVertexAttribute );
+
   setMode( Mode::PositionOnly );
 }
 
@@ -66,7 +81,8 @@ void QgsBillboardGeometry::setMode( Mode mode )
   mPositionAttribute->setVertexSize( 3 );
   mPositionAttribute->setByteOffset( 0 );
   mPositionAttribute->setByteStride( stride );
-  mPositionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setDivisor( 1 );
+  mPositionAttribute->setName( "instancePosition" );
   addAttribute( mPositionAttribute );
 
   switch ( mode )
@@ -110,6 +126,7 @@ void QgsBillboardGeometry::setMode( Mode mode )
       mAtlasOffsetAttribute->setVertexSize( 2 );
       mAtlasOffsetAttribute->setByteOffset( 3 * sizeof( float ) );
       mAtlasOffsetAttribute->setByteStride( stride );
+      mAtlasOffsetAttribute->setDivisor( 1 );
       mAtlasOffsetAttribute->setName( u"atlasOffset"_s );
       addAttribute( mAtlasOffsetAttribute );
 
@@ -120,6 +137,7 @@ void QgsBillboardGeometry::setMode( Mode mode )
       mAtlasSizeAttribute->setVertexSize( 2 );
       mAtlasSizeAttribute->setByteOffset( ( 3 + 2 ) * sizeof( float ) );
       mAtlasSizeAttribute->setByteStride( stride );
+      mAtlasSizeAttribute->setDivisor( 1 );
       mAtlasSizeAttribute->setName( u"atlasSize"_s );
       addAttribute( mAtlasSizeAttribute );
       break;
@@ -134,6 +152,7 @@ void QgsBillboardGeometry::setMode( Mode mode )
       mAtlasOffsetAttribute->setVertexSize( 2 );
       mAtlasOffsetAttribute->setByteOffset( 3 * sizeof( float ) );
       mAtlasOffsetAttribute->setByteStride( stride );
+      mAtlasOffsetAttribute->setDivisor( 1 );
       mAtlasOffsetAttribute->setName( u"atlasOffset"_s );
       addAttribute( mAtlasOffsetAttribute );
 
@@ -144,6 +163,7 @@ void QgsBillboardGeometry::setMode( Mode mode )
       mAtlasSizeAttribute->setVertexSize( 2 );
       mAtlasSizeAttribute->setByteOffset( ( 3 + 2 ) * sizeof( float ) );
       mAtlasSizeAttribute->setByteStride( stride );
+      mAtlasSizeAttribute->setDivisor( 1 );
       mAtlasSizeAttribute->setName( u"atlasSize"_s );
       addAttribute( mAtlasSizeAttribute );
 
@@ -154,6 +174,7 @@ void QgsBillboardGeometry::setMode( Mode mode )
       mAtlasPixelOffsetAttribute->setVertexSize( 2 );
       mAtlasPixelOffsetAttribute->setByteOffset( ( 3 + 2 + 2 ) * sizeof( float ) );
       mAtlasPixelOffsetAttribute->setByteStride( stride );
+      mAtlasPixelOffsetAttribute->setDivisor( 1 );
       mAtlasPixelOffsetAttribute->setName( u"pixelOffset"_s );
       addAttribute( mAtlasPixelOffsetAttribute );
       break;

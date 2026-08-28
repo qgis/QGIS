@@ -56,6 +56,9 @@ bool PDFTextLayoutGenerator::isContentKindSuppressed(ContentKind kind) const
         case ContentKind::Tiling:
             return false; // Tiling can have text
 
+        case ContentKind::Forms:
+            return false; // Forms can have text
+
         default:
         {
             Q_ASSERT(false);

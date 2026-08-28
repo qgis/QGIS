@@ -40,6 +40,9 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QObject>
+#include <QOffscreenSurface>
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
 #include <QPainter>
 #include <QPixmap>
 #include <QPoint>
@@ -64,6 +67,7 @@ using namespace Qt::StringLiterals;
 #endif
 #include <QStatusBar>
 #include <QStringList>
+#include <QSurfaceFormat>
 #include <QSysInfo>
 #include <QTcpSocket>
 #include <QTextStream>
@@ -3539,6 +3543,17 @@ void QgisApp::refreshProfileMenu()
     return;
 
   mConfigMenu->clear();
+
+  QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open Active Profile Folder" ) );
+  openProfileFolderAction->setObjectName( "mActionOpenActiveProfileFolder" );
+  connect( openProfileFolderAction, &QAction::triggered, this, [this]() { QDesktopServices::openUrl( QUrl::fromLocalFile( userProfileManager()->userProfile()->folder() ) ); } );
+
+  QAction *newProfileAction = mConfigMenu->addAction( tr( "New Profile…" ) );
+  newProfileAction->setObjectName( "mActionNewProfile" );
+  connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
+
+  mConfigMenu->addSeparator();
+
   QgsUserProfile *profile = userProfileManager()->userProfile();
   QString activeName = profile->name();
   mConfigMenu->setTitle( tr( "&User Profiles" ) );
@@ -3573,16 +3588,6 @@ void QgisApp::refreshProfileMenu()
       } );
     }
   }
-
-  mConfigMenu->addSeparator();
-
-  QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open Active Profile Folder" ) );
-  openProfileFolderAction->setObjectName( "mActionOpenActiveProfileFolder" );
-  connect( openProfileFolderAction, &QAction::triggered, this, [this]() { QDesktopServices::openUrl( QUrl::fromLocalFile( userProfileManager()->userProfile()->folder() ) ); } );
-
-  QAction *newProfileAction = mConfigMenu->addAction( tr( "New Profile…" ) );
-  newProfileAction->setObjectName( "mActionNewProfile" );
-  connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
 }
 
 void QgisApp::createProfileMenu()
@@ -5555,6 +5560,48 @@ void QgisApp::about()
   mAboutDialog->activateWindow();
 }
 
+QString QgisApp::openGlReportString()
+{
+#if defined( QT_NO_OPENGL )
+  return tr( "No support" );
+#else
+
+  QOpenGLContext context;
+  context.setFormat( QSurfaceFormat::defaultFormat() );
+  if ( !context.create() )
+    return tr( "No support" );
+
+  const QSurfaceFormat format = context.format();
+  QString profile;
+  switch ( format.profile() )
+  {
+    case QSurfaceFormat::CoreProfile:
+      profile = tr( "Core Profile" );
+      break;
+    case QSurfaceFormat::CompatibilityProfile:
+      profile = tr( "Compatibility Profile" );
+      break;
+    case QSurfaceFormat::NoProfile:
+      profile = tr( "No Profile" );
+      break;
+  }
+  QString result = u"%1.%2 (%3)"_s.arg( format.majorVersion() ).arg( format.minorVersion() ).arg( profile );
+
+  QOffscreenSurface surface;
+  surface.setFormat( format );
+  surface.create();
+  if ( context.makeCurrent( &surface ) )
+  {
+    const char *glRenderer = reinterpret_cast<const char *>( context.functions()->glGetString( GL_RENDERER ) );
+    if ( glRenderer )
+      result += u", %1"_s.arg( QString::fromUtf8( glRenderer ) );
+    context.doneCurrent();
+  }
+
+  return result;
+#endif
+}
+
 QString QgisApp::getVersionString()
 {
   QString versionString = u"<table width='100%' align='center'>"_s;
@@ -5732,6 +5779,10 @@ QString QgisApp::getVersionString()
 
   // QScintilla
   versionString += u"<td>%1</td><td>%2</td>"_s.arg( tr( "QScintilla2 version" ), QSCINTILLA_VERSION_STR );
+  versionString += "</tr><tr>"_L1;
+
+  // OpenGL
+  versionString += u"<td>%1</td><td>%2</td>"_s.arg( tr( "OpenGL version" ), openGlReportString() );
   versionString += "</tr><tr>"_L1;
 
   // Operating system

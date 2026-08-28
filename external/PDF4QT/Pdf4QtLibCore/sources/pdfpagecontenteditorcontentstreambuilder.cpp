@@ -28,6 +28,7 @@
 
 #include <exception>
 #include <QBuffer>
+#include <QPainter>
 #include <QStringBuilder>
 #include <QXmlStreamReader>
 #include <QPaintEngine>
@@ -57,8 +58,20 @@ public:
     virtual void drawPolygon(const QPointF* points, int pointCount, PolygonDrawMode mode) override;
 
 private:
+    /// Applies clip operation with the given path. The path is expressed
+    /// in the painter logical coordinates and is mapped to the page space
+    /// by the current transformation matrix.
+    void applyClip(const QPainterPath& path, Qt::ClipOperation operation);
+
+    /// Returns the active clip path in the page coordinate space,
+    /// or an empty path if clipping is not active.
+    QPainterPath getEffectiveClipPath() const;
+
     PDFPageContentProcessorState m_state;
     PDFPageContentEditorContentStreamBuilder* m_builder = nullptr;
+    QPainterPath m_clipPath; ///< Clip path in the page coordinate space
+    bool m_hasClip = false;
+    bool m_isClipEnabled = true;
     bool m_isFillActive = false;
     bool m_isStrokeActive = false;
 };
@@ -104,17 +117,86 @@ void PDFContentEditorPaintEngine::updateState(const QPaintEngineState& newState)
         m_state.setAlphaFilling(newState.opacity());
         m_state.setAlphaStroking(newState.opacity());
     }
+
+    // Clip handling must be performed after the transform handling above,
+    // because the clip path is mapped to the page space by the current
+    // transformation matrix.
+    if (stateFlags.testFlag(QPaintEngine::DirtyClipEnabled))
+    {
+        m_isClipEnabled = newState.isClipEnabled();
+    }
+
+    if (stateFlags.testFlag(QPaintEngine::DirtyClipRegion))
+    {
+        QPainterPath clipPath;
+        for (const QRect& rect : newState.clipRegion())
+        {
+            clipPath.addRect(rect);
+        }
+        applyClip(clipPath, newState.clipOperation());
+    }
+
+    if (stateFlags.testFlag(QPaintEngine::DirtyClipPath))
+    {
+        applyClip(newState.clipPath(), newState.clipOperation());
+    }
+}
+
+void PDFContentEditorPaintEngine::applyClip(const QPainterPath& path, Qt::ClipOperation operation)
+{
+    switch (operation)
+    {
+    case Qt::NoClip:
+        m_hasClip = false;
+        m_clipPath = QPainterPath();
+        break;
+
+    case Qt::ReplaceClip:
+        m_clipPath = m_state.getCurrentTransformationMatrix().map(path);
+        m_hasClip = true;
+        break;
+
+    case Qt::IntersectClip:
+    {
+        QPainterPath mappedPath = m_state.getCurrentTransformationMatrix().map(path);
+        m_clipPath = m_hasClip ? m_clipPath.intersected(mappedPath) : mappedPath;
+        m_hasClip = true;
+
+        if (m_clipPath.isEmpty())
+        {
+            // The intersection has zero area, but an empty path means
+            // "no clipping". Store a degenerate path with zero fill area
+            // instead, which clips away all content.
+            m_clipPath.moveTo(0, 0);
+            m_clipPath.lineTo(1, 0);
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+}
+
+QPainterPath PDFContentEditorPaintEngine::getEffectiveClipPath() const
+{
+    if (m_hasClip && m_isClipEnabled)
+    {
+        return m_clipPath;
+    }
+
+    return QPainterPath();
 }
 
 void PDFContentEditorPaintEngine::drawPixmap(const QRectF& r, const QPixmap& pm, const QRectF& sr)
 {
     QPixmap pixmap = pm.copy(sr.toRect());
-    m_builder->writeImage(pixmap.toImage(), m_state.getCurrentTransformationMatrix(), r);
+    m_builder->writeImage(pixmap.toImage(), m_state.getCurrentTransformationMatrix(), r, getEffectiveClipPath());
 }
 
 void PDFContentEditorPaintEngine::drawPath(const QPainterPath& path)
 {
-    m_builder->writeStyledPath(path, m_state, m_isStrokeActive, m_isFillActive);
+    m_builder->writeStyledPath(path, m_state, m_isStrokeActive, m_isFillActive, getEffectiveClipPath());
 }
 
 void PDFContentEditorPaintEngine::drawPolygon(const QPointF* points,
@@ -150,7 +232,7 @@ void PDFContentEditorPaintEngine::drawPolygon(const QPointF* points,
 
     path.setFillRule(fillRule);
 
-    m_builder->writeStyledPath(path, m_state, isStroking, isFilling);
+    m_builder->writeStyledPath(path, m_state, isStroking, isFilling, getEffectiveClipPath());
 }
 
 PDFContentEditorPaintDevice::PDFContentEditorPaintDevice(PDFPageContentEditorContentStreamBuilder* builder, QRectF mediaRect, QRectF mediaRectMM) :
@@ -184,8 +266,14 @@ int PDFContentEditorPaintDevice::metric(PaintDeviceMetric metric) const
     case QPaintDevice::PdmPhysicalDpiY:
         return m_mediaRect.height() * 25.4 / m_mediaRectMM.height();
     case QPaintDevice::PdmDevicePixelRatio:
+        return 1;
     case QPaintDevice::PdmDevicePixelRatioScaled:
-        return 1.0;
+        return int(1.0 * QPaintDevice::devicePixelRatioFScale());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    case QPaintDevice::PdmDevicePixelRatioF_EncodedA:
+    case QPaintDevice::PdmDevicePixelRatioF_EncodedB:
+        return QPaintDevice::encodeMetricF(metric, 1.0);
+#endif
     default:
         Q_ASSERT(false);
         break;
@@ -282,11 +370,6 @@ void PDFPageContentEditorContentStreamBuilder::writeStateDifference(QTextStream&
         default:
             break;
         }
-    }
-
-    if (stateFlags.testFlag(PDFPageContentProcessorState::StateMitterLimit))
-    {
-        stream << m_currentState.getMitterLimit() << " M" << Qt::endl;
     }
 
     if (stateFlags.testFlag(PDFPageContentProcessorState::StateFlatness))
@@ -460,18 +543,44 @@ void PDFPageContentEditorContentStreamBuilder::writeEditedElement(const PDFEdite
     QTextStream stream(&m_outputContent, QDataStream::WriteOnly | QDataStream::Append);
     writeStateDifference(stream, state);
 
-    bool isNeededToWriteCurrentTransformationMatrix = this->isNeededToWriteCurrentTransformationMatrix();
-    if (isNeededToWriteCurrentTransformationMatrix)
+    const QPainterPath& clipPath = element->getClipPath();
+    const bool isNeededToWriteCurrentTransformationMatrix = this->isNeededToWriteCurrentTransformationMatrix();
+    const bool isNeededGraphicStateSave = isNeededToWriteCurrentTransformationMatrix || !clipPath.isEmpty();
+
+    if (isNeededGraphicStateSave)
     {
         stream << "q" << Qt::endl;
-        writeCurrentTransformationMatrix(stream);
+
+        if (isNeededToWriteCurrentTransformationMatrix)
+        {
+            writeCurrentTransformationMatrix(stream);
+        }
+
+        // The element clip path is expressed in the element coordinate
+        // space, so it must be written after the transformation matrix.
+        if (!clipPath.isEmpty())
+        {
+            writeClipPath(stream, clipPath);
+        }
     }
 
     if (const PDFEditedPageContentElementImage* imageElement = element->asImage())
     {
-        QImage image = imageElement->getImage();
+        const PDFObject imageObject = imageElement->getImageObject();
+        const PDFDictionary* imageDictionary = m_document->getDictionaryFromObject(imageObject);
+        const bool isReusableImageXObject = imageDictionary &&
+                                            imageDictionary->hasKey("Subtype") &&
+                                            m_document->getObject(imageDictionary->get("Subtype")).isName() &&
+                                            m_document->getObject(imageDictionary->get("Subtype")).getString() == "Image";
 
-        writeImage(stream, image);
+        if (isReusableImageXObject)
+        {
+            writeImageObject(stream, imageObject);
+        }
+        else
+        {
+            writeImage(stream, imageElement->getImage());
+        }
     }
 
     if (const PDFEditedPageContentElementPath* pathElement = element->asPath())
@@ -528,7 +637,7 @@ void PDFPageContentEditorContentStreamBuilder::writeEditedElement(const PDFEdite
         }
     }
 
-    if (isNeededToWriteCurrentTransformationMatrix)
+    if (isNeededGraphicStateSave)
     {
         stream << "Q" << Qt::endl;
     }
@@ -539,10 +648,7 @@ const QByteArray& PDFPageContentEditorContentStreamBuilder::getOutputContent() c
     return m_outputContent;
 }
 
-void PDFPageContentEditorContentStreamBuilder::writePainterPath(QTextStream& stream,
-                                                                const QPainterPath& path,
-                                                                bool isStroking,
-                                                                bool isFilling)
+void PDFPageContentEditorContentStreamBuilder::writePathGeometry(QTextStream& stream, const QPainterPath& path)
 {
     const int elementCount = path.elementCount();
 
@@ -590,6 +696,28 @@ void PDFPageContentEditorContentStreamBuilder::writePainterPath(QTextStream& str
             break;
         }
     }
+}
+
+void PDFPageContentEditorContentStreamBuilder::writeClipPath(QTextStream& stream, const QPainterPath& clipPath)
+{
+    writePathGeometry(stream, clipPath);
+
+    if (clipPath.fillRule() == Qt::WindingFill)
+    {
+        stream << "W n" << Qt::endl;
+    }
+    else
+    {
+        stream << "W* n" << Qt::endl;
+    }
+}
+
+void PDFPageContentEditorContentStreamBuilder::writePainterPath(QTextStream& stream,
+                                                                const QPainterPath& path,
+                                                                bool isStroking,
+                                                                bool isFilling)
+{
+    writePathGeometry(stream, path);
 
     if (isStroking && !isFilling)
     {
@@ -638,6 +766,49 @@ void PDFPageContentEditorContentStreamBuilder::writeText(QTextStream& stream, co
     QXmlStreamReader reader(xml);
     m_textFont = m_currentState.getTextFont();
 
+    // Write the initial text state. The text state can be set outside
+    // of the text object (for example, font can be selected before the BT
+    // operator) and then the serialized items contain no corresponding
+    // command. Without an explicit Tf operator, the content stream
+    // would be invalid and the text would not be displayed at all.
+    if (m_textFont)
+    {
+        QByteArray fontKey = selectFont(m_textFont->getFontId());
+        m_currentTextFontKey = fontKey;
+        m_currentTextFontSize = m_currentState.getTextFontSize();
+        stream << "/" << fontKey << " " << m_currentState.getTextFontSize() << " Tf" << Qt::endl;
+    }
+
+    if (!qFuzzyIsNull(m_currentState.getTextCharacterSpacing()))
+    {
+        stream << m_currentState.getTextCharacterSpacing() << " Tc" << Qt::endl;
+    }
+
+    if (!qFuzzyIsNull(m_currentState.getTextWordSpacing()))
+    {
+        stream << m_currentState.getTextWordSpacing() << " Tw" << Qt::endl;
+    }
+
+    if (!qFuzzyCompare(m_currentState.getTextHorizontalScaling(), 100.0))
+    {
+        stream << m_currentState.getTextHorizontalScaling() << " Tz" << Qt::endl;
+    }
+
+    if (!qFuzzyIsNull(m_currentState.getTextLeading()))
+    {
+        stream << m_currentState.getTextLeading() << " TL" << Qt::endl;
+    }
+
+    if (!qFuzzyIsNull(m_currentState.getTextRise()))
+    {
+        stream << m_currentState.getTextRise() << " Ts" << Qt::endl;
+    }
+
+    if (m_currentState.getTextRenderingMode() != TextRenderingMode::Fill)
+    {
+        stream << int(m_currentState.getTextRenderingMode()) << " Tr" << Qt::endl;
+    }
+
     while (!reader.atEnd() && !reader.hasError())
     {
         reader.readNext();
@@ -670,17 +841,7 @@ void PDFPageContentEditorContentStreamBuilder::writeText(QTextStream& stream, co
 
             if (m_textFont)
             {
-                PDFEncodedText encodedText = m_textFont->encodeText(characters);
-
-                if (!encodedText.encodedText.isEmpty())
-                {
-                    stream << "<" << encodedText.encodedText.toHex() << "> Tj" << Qt::endl;
-                }
-
-                if (!encodedText.isValid)
-                {
-                    addError(PDFTranslationContext::tr("Error during converting text to font encoding. Some characters were not converted: '%1'.").arg(encodedText.errorString));
-                }
+                writeTextWithFallback(stream, characters);
             }
             else
             {
@@ -700,7 +861,8 @@ void PDFPageContentEditorContentStreamBuilder::writeText(QTextStream& stream, co
 
 void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& stream, const QXmlStreamReader& reader)
 {
-    QXmlStreamAttributes attributes = reader.attributes();
+    const QXmlStreamAttributes attributes = reader.attributes();
+    const QString tag = reader.name().toString();
 
     auto isCommand = [&reader](const char* tag) -> bool
     {
@@ -709,7 +871,12 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
         return tagString == QLatin1String(tag) && attributes.size() == 1 && attributes.hasAttribute("v");
     };
 
-    if (reader.name().toString() == "doc")
+    auto reportInvalidNumber = [this](const QString& value)
+    {
+        addError(PDFTranslationContext::tr("Cannot convert text '%1' to number.").arg(value));
+    };
+
+    if (tag == "doc")
     {
         return;
     }
@@ -736,7 +903,7 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
 
         if (!ok)
         {
-            addError(PDFTranslationContext::tr("Cannot convert text '%1' to number.").arg(attribute.value().toString()));
+            reportInvalidNumber(attribute.value().toString());
         }
         else
         {
@@ -751,7 +918,7 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
 
         if (!ok)
         {
-            addError(PDFTranslationContext::tr("Cannot convert text '%1' to number.").arg(attribute.value().toString()));
+            reportInvalidNumber(attribute.value().toString());
         }
         else
         {
@@ -766,7 +933,7 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
 
         if (!ok)
         {
-            addError(PDFTranslationContext::tr("Cannot convert text '%1' to number.").arg(attribute.value().toString()));
+            reportInvalidNumber(attribute.value().toString());
         }
         else
         {
@@ -781,7 +948,7 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
 
         if (!ok)
         {
-            addError(PDFTranslationContext::tr("Cannot convert text '%1' to number.").arg(attribute.value().toString()));
+            reportInvalidNumber(attribute.value().toString());
         }
         else
         {
@@ -796,14 +963,94 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
 
         if (!ok)
         {
-            addError(PDFTranslationContext::tr("Cannot convert text '%1' to number.").arg(attribute.value().toString()));
+            reportInvalidNumber(attribute.value().toString());
         }
         else
         {
             stream << textScaling << " Tz" << Qt::endl;
         }
     }
-    else if (reader.name().toString() == "tf")
+    else if (isCommand("tk"))
+    {
+        const QString value = attributes.front().value().toString().trimmed();
+        const bool isTrue = value == "1" || value.compare("true", Qt::CaseInsensitive) == 0;
+        const bool isFalse = value == "0" || value.compare("false", Qt::CaseInsensitive) == 0;
+
+        if (!isTrue && !isFalse)
+        {
+            addError(PDFTranslationContext::tr("Invalid boolean value '%1'. Valid values are 0, 1, true and false.").arg(value));
+        }
+        else
+        {
+            PDFPageContentProcessorState state = m_currentState;
+            state.setTextKnockout(isTrue);
+            writeStateDifference(stream, state);
+        }
+    }
+    else if (tag == "space")
+    {
+        if (attributes.size() == 1 && attributes.hasAttribute("advance"))
+        {
+            bool ok = false;
+            const PDFReal advance = attributes.value("advance").toDouble(&ok);
+
+            if (!ok)
+            {
+                reportInvalidNumber(attributes.value("advance").toString());
+            }
+            else
+            {
+                stream << "[ " << advance << " ] TJ" << Qt::endl;
+            }
+        }
+        else
+        {
+            addError(PDFTranslationContext::tr("Space command requires one attribute - advance."));
+        }
+    }
+    else if (tag == "character")
+    {
+        if (attributes.size() == 1 && attributes.hasAttribute("cid"))
+        {
+            if (!m_textFont)
+            {
+                addError(PDFTranslationContext::tr("Text font not defined!"));
+                return;
+            }
+
+            bool ok = false;
+            const uint cid = attributes.value("cid").toUInt(&ok);
+            if (!ok)
+            {
+                reportInvalidNumber(attributes.value("cid").toString());
+                return;
+            }
+
+            QByteArray encodedText;
+            if (const PDFFontCMap* cmap = m_textFont->getCMap())
+            {
+                encodedText = cmap->encode(cid);
+            }
+            else if (cid <= 0xFFu)
+            {
+                encodedText.append(static_cast<char>(cid));
+            }
+
+            if (encodedText.isEmpty())
+            {
+                addError(PDFTranslationContext::tr("Cannot encode character with cid '%1' using the current font.").arg(cid));
+            }
+            else
+            {
+                writeTextHexString(stream, encodedText);
+            }
+        }
+        else
+        {
+            addError(PDFTranslationContext::tr("Character command requires one attribute - cid."));
+        }
+    }
+    else if (tag == "tf")
     {
         if (attributes.hasAttribute("font") && attributes.hasAttribute("size"))
         {
@@ -813,11 +1060,13 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
 
             if (!ok)
             {
-                addError(PDFTranslationContext::tr("Cannot convert text '%1' to number.").arg(attributes.value("size").toString()));
+                reportInvalidNumber(attributes.value("size").toString());
             }
             else
             {
                 v1 = selectFont(v1);
+                m_currentTextFontKey = v1;
+                m_currentTextFontSize = v2;
                 stream << "/" << v1 << " " << v2 << " Tf" << Qt::endl;
             }
         }
@@ -826,7 +1075,7 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
             addError(PDFTranslationContext::tr("Text font command requires two attributes - font and size."));
         }
     }
-    else if (reader.name().toString() == "tpos")
+    else if (tag == "tpos")
     {
         if (attributes.hasAttribute("x") && attributes.hasAttribute("y"))
         {
@@ -837,15 +1086,18 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
 
             if (!ok1)
             {
-                addError(PDFTranslationContext::tr("Cannot convert text '%1' to number.").arg(attributes.value("x").toString()));
+                reportInvalidNumber(attributes.value("x").toString());
             }
             else if (!ok2)
             {
-                addError(PDFTranslationContext::tr("Cannot convert text '%1' to number.").arg(attributes.value("y").toString()));
+                reportInvalidNumber(attributes.value("y").toString());
             }
             else
             {
-                stream << v1 << " " << v2 << " Td" << Qt::endl;
+                // The recorded position is the absolute text matrix translation.
+                // Operator Td is relative to the current text line matrix, so
+                // the absolute position must be set with the Tm operator.
+                stream << "1 0 0 1 " << v1 << " " << v2 << " Tm" << Qt::endl;
             }
         }
         else
@@ -853,7 +1105,7 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
             addError(PDFTranslationContext::tr("Text translation command requires two attributes - x and y."));
         }
     }
-    else if (reader.name().toString() == "tmatrix")
+    else if (tag == "tmatrix")
     {
         if (attributes.hasAttribute("m11") && attributes.hasAttribute("m12") &&
             attributes.hasAttribute("m21") && attributes.hasAttribute("m22") &&
@@ -872,7 +1124,7 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
             PDFReal x = attributes.value("x").toDouble(&ok5);
             PDFReal y = attributes.value("y").toDouble(&ok6);
 
-            if (!ok1 || !ok2 || !ok3 || !ok4 || !ok5 | !ok6)
+            if (!ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6)
             {
                 addError(PDFTranslationContext::tr("Invalid text matrix parameters."));
             }
@@ -892,6 +1144,83 @@ void PDFPageContentEditorContentStreamBuilder::writeTextCommand(QTextStream& str
     }
 }
 
+void PDFPageContentEditorContentStreamBuilder::writeTextWithFallback(QTextStream& stream, const QString& characters)
+{
+    Q_ASSERT(m_textFont);
+
+    // Split the text into maximal runs of code points encodable by the current
+    // font, and runs of code points which must be written with a fallback font.
+    struct CodePointRun
+    {
+        std::u32string codePoints;
+        bool isEncodable = false;
+    };
+    std::vector<CodePointRun> runs;
+
+    for (qsizetype i = 0, size = characters.size(); i < size; ++i)
+    {
+        const QChar character = characters[i];
+        char32_t codePoint = character.unicode();
+
+        if (character.isHighSurrogate() && i + 1 < size && characters[i + 1].isLowSurrogate())
+        {
+            codePoint = QChar::surrogateToUcs4(character, characters[i + 1]);
+            ++i;
+        }
+
+        const bool isEncodable = !m_textFont->encodeCharacter(codePoint).isEmpty();
+        if (runs.empty() || runs.back().isEncodable != isEncodable)
+        {
+            runs.push_back(CodePointRun{ std::u32string(), isEncodable });
+        }
+        runs.back().codePoints.push_back(codePoint);
+    }
+
+    for (const CodePointRun& run : runs)
+    {
+        if (run.isEncodable)
+        {
+            PDFEncodedText encodedText = m_textFont->encodeText(QString::fromUcs4(run.codePoints.data(), int(run.codePoints.size())));
+
+            if (!encodedText.encodedText.isEmpty())
+            {
+                writeTextHexString(stream, encodedText.encodedText);
+            }
+
+            if (!encodedText.isValid)
+            {
+                // Cannot happen for characters positively checked by encodeCharacter,
+                // this is a safety net only.
+                addError(PDFTranslationContext::tr("Error during converting text to font encoding. Some characters were not converted: '%1'.").arg(encodedText.errorString));
+            }
+        }
+        else
+        {
+            std::vector<PDFEditorFallbackFontManager::Run> fallbackRuns = m_fallbackFontManager.encode(run.codePoints, m_textFont, m_fontDictionary, [this](const QString& error) { addError(error); });
+
+            if (fallbackRuns.empty())
+            {
+                addError(PDFTranslationContext::tr("Error during converting text to font encoding. Some characters were not converted: '%1'.").arg(QString::fromUcs4(run.codePoints.data(), int(run.codePoints.size()))));
+                continue;
+            }
+
+            for (const PDFEditorFallbackFontManager::Run& fallbackRun : fallbackRuns)
+            {
+                stream << "/" << fallbackRun.fontResourceKey << " " << m_currentTextFontSize << " Tf" << Qt::endl;
+                writeTextHexString(stream, fallbackRun.encodedBytes);
+            }
+
+            // Restore the original font
+            stream << "/" << m_currentTextFontKey << " " << m_currentTextFontSize << " Tf" << Qt::endl;
+        }
+    }
+}
+
+void PDFPageContentEditorContentStreamBuilder::writeTextHexString(QTextStream& stream, const QByteArray& encodedText)
+{
+    stream << "<" << encodedText.toHex() << "> Tj" << Qt::endl;
+}
+
 void PDFPageContentEditorContentStreamBuilder::writeImage(QTextStream& stream, const QImage& image)
 {
     QByteArray key;
@@ -906,7 +1235,25 @@ void PDFPageContentEditorContentStreamBuilder::writeImage(QTextStream& stream, c
             array.appendItem(PDFObject::createName("FlateDecode"));
 
             QImage codedImage = image;
-            codedImage = codedImage.convertToFormat(QImage::Format_RGB888);
+            if (codedImage.hasAlphaChannel())
+            {
+                // Direct conversion to RGB888 would discard the alpha channel
+                // and transparent pixels would get arbitrary colors. Compose
+                // the image onto a white background instead (the same way
+                // the editor displays such images on the screen).
+                QImage composedImage(codedImage.size(), QImage::Format_RGB888);
+                composedImage.fill(Qt::white);
+
+                QPainter painter(&composedImage);
+                painter.drawImage(QPoint(0, 0), codedImage);
+                painter.end();
+
+                codedImage = std::move(composedImage);
+            }
+            else
+            {
+                codedImage = codedImage.convertToFormat(QImage::Format_RGB888);
+            }
 
             QByteArray decodedStream;
             QBuffer buffer(&decodedStream);
@@ -946,6 +1293,25 @@ void PDFPageContentEditorContentStreamBuilder::writeImage(QTextStream& stream, c
     stream << "/" << key << " Do" << Qt::endl;
 }
 
+void PDFPageContentEditorContentStreamBuilder::writeImageObject(QTextStream& stream, const PDFObject& imageObject)
+{
+    QByteArray key;
+
+    int i = 0;
+    while (true)
+    {
+        QByteArray currentKey = QString("Im%1").arg(++i).toLatin1();
+        if (!m_xobjectDictionary.hasKey(currentKey))
+        {
+            m_xobjectDictionary.addEntry(PDFInplaceOrMemoryString(currentKey), PDFObject(imageObject));
+            key = currentKey;
+            break;
+        }
+    }
+
+    stream << "/" << key << " Do" << Qt::endl;
+}
+
 QByteArray PDFPageContentEditorContentStreamBuilder::selectFont(const QByteArray& font)
 {
     m_textFont = nullptr;
@@ -968,7 +1334,7 @@ QByteArray PDFPageContentEditorContentStreamBuilder::selectFont(const QByteArray
         }
         catch (const std::exception& exception)
         {
-            addError(QString::fromLatin1("Font '%1' is invalid: %2")
+            addError(PDFTranslationContext::tr("Font '%1' is invalid: %2")
                      .arg(QString::fromLatin1(font))
                      .arg(QString::fromUtf8(exception.what())));
         }
@@ -1017,7 +1383,7 @@ QByteArray PDFPageContentEditorContentStreamBuilder::selectFont(const QByteArray
         }
         catch (const std::exception& exception)
         {
-            addError(QString::fromLatin1("Failed to create fallback font '%1': %2")
+            addError(PDFTranslationContext::tr("Failed to create fallback font '%1': %2")
                      .arg(QString::fromLatin1(defaultFontKey))
                      .arg(QString::fromUtf8(exception.what())));
         }
@@ -1041,6 +1407,16 @@ void PDFPageContentEditorContentStreamBuilder::addError(const QString& error)
 void PDFPageContentEditorContentStreamBuilder::setFontDictionary(const PDFDictionary& newFontDictionary)
 {
     m_fontDictionary = newFontDictionary;
+}
+
+void PDFPageContentEditorContentStreamBuilder::setXObjectDictionary(const PDFDictionary& newXObjectDictionary)
+{
+    m_xobjectDictionary = newXObjectDictionary;
+}
+
+void PDFPageContentEditorContentStreamBuilder::setGraphicStateDictionary(const PDFDictionary& newGraphicStateDictionary)
+{
+    m_graphicStateDictionary = newGraphicStateDictionary;
 }
 
 void PDFPageContentEditorContentStreamBuilder::writeStyledPath(const QPainterPath& path,
@@ -1073,21 +1449,38 @@ void PDFPageContentEditorContentStreamBuilder::writeStyledPath(const QPainterPat
     }
 }
 
-void PDFPageContentEditorContentStreamBuilder::writeStyledPath(const QPainterPath& path, const PDFPageContentProcessorState& state, bool isStroking, bool isFilling)
+void PDFPageContentEditorContentStreamBuilder::writeStyledPath(const QPainterPath& path,
+                                                               const PDFPageContentProcessorState& state,
+                                                               bool isStroking,
+                                                               bool isFilling,
+                                                               const QPainterPath& clipPath)
 {
     QTextStream stream(&m_outputContent, QDataStream::WriteOnly | QDataStream::Append);
     writeStateDifference(stream, state);
 
-    bool isNeededToWriteCurrentTransformationMatrix = this->isNeededToWriteCurrentTransformationMatrix();
-    if (isNeededToWriteCurrentTransformationMatrix)
+    const bool isNeededToWriteCurrentTransformationMatrix = this->isNeededToWriteCurrentTransformationMatrix();
+    const bool isNeededGraphicStateSave = isNeededToWriteCurrentTransformationMatrix || !clipPath.isEmpty();
+
+    if (isNeededGraphicStateSave)
     {
         stream << "q" << Qt::endl;
-        writeCurrentTransformationMatrix(stream);
+
+        // The clip path is expressed in the page coordinate space,
+        // so it must be written before the transformation matrix.
+        if (!clipPath.isEmpty())
+        {
+            writeClipPath(stream, clipPath);
+        }
+
+        if (isNeededToWriteCurrentTransformationMatrix)
+        {
+            writeCurrentTransformationMatrix(stream);
+        }
     }
 
     writePainterPath(stream, path, isStroking, isFilling);
 
-    if (isNeededToWriteCurrentTransformationMatrix)
+    if (isNeededGraphicStateSave)
     {
         stream << "Q" << Qt::endl;
     }
@@ -1124,11 +1517,38 @@ void PDFPageContentEditorContentStreamBuilder::writeImage(const QImage& image,
     stream << "Q" << Qt::endl;
 }
 
-void PDFPageContentEditorContentStreamBuilder::writeImage(const QImage& image, QTransform transform, const QRectF& rectangle)
+void PDFPageContentEditorContentStreamBuilder::writeImage(const QImage& image, QTransform transform, const QRectF& rectangle, const QPainterPath& clipPath)
 {
     QTransform oldTransform = m_currentState.getCurrentTransformationMatrix();
     m_currentState.setCurrentTransformationMatrix(transform);
-    writeImage(image, rectangle);
+
+    QTextStream stream(&m_outputContent, QDataStream::WriteOnly | QDataStream::Append);
+
+    stream << "q" << Qt::endl;
+
+    // The clip path is expressed in the page coordinate space,
+    // so it must be written before the transformation matrix.
+    if (!clipPath.isEmpty())
+    {
+        writeClipPath(stream, clipPath);
+    }
+
+    if (isNeededToWriteCurrentTransformationMatrix())
+    {
+        writeCurrentTransformationMatrix(stream);
+    }
+
+    // This overload is used by the paint engine. The rectangle is expressed
+    // in the painter's logical coordinates, where the y axis points down and
+    // the image should fill the whole rectangle with the first image row at
+    // the rectangle's top edge. The image unit square has the first row at
+    // v = 1, so the y axis must be flipped here.
+    stream << rectangle.width() << " 0 0 " << -rectangle.height() << " " << rectangle.left() << " " << rectangle.bottom() << " cm" << Qt::endl;
+
+    writeImage(stream, image);
+
+    stream << "Q" << Qt::endl;
+
     m_currentState.setCurrentTransformationMatrix(oldTransform);
 }
 

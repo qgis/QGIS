@@ -4018,7 +4018,11 @@ QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBox
 
   if ( category.isEmpty() )
   {
-    spriteImage = context.spriteImage();
+    // Images referenced without a category prefix belong to the sprite source with
+    // the id "default" (if present), otherwise the single unnamed sprite sheet.
+    if ( context.spriteCategories().contains( "default"_L1 ) )
+      category = u"default"_s;
+    spriteImage = context.spriteImage( category );
   }
 
   if ( spriteImage.isNull() )
@@ -4224,35 +4228,60 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64WithProperties(
               break;
           }
 
-          const QImage sprite = retrieveSprite( matchValue.toString(), context, spriteSize );
-          spritePath = prepareBase64( sprite );
+          QString valuePathExpression;
+          QString valueSizeExpression;
+          if ( matchValue.userType() == QMetaType::Type::QVariantList || matchValue.userType() == QMetaType::Type::QStringList )
+          {
+            // nested expression (e.g. a nested "match"/"step"/"case") -- resolve recursively
+            QSize nestedSize;
+            QString nestedProperty;
+            QString nestedSizeProperty;
+            const QString nestedPath = retrieveSpriteAsBase64WithProperties( matchValue, context, nestedSize, nestedProperty, nestedSizeProperty );
+            valuePathExpression = nestedProperty.isEmpty() ? u"'%1'"_s.arg( nestedPath ) : nestedProperty;
+            valueSizeExpression = nestedSizeProperty.isEmpty() ? QString::number( nestedSize.width() ) : nestedSizeProperty;
+            spritePath = nestedPath;
+            spriteSize = nestedSize;
+          }
+          else
+          {
+            const QImage sprite = retrieveSprite( matchValue.toString(), context, spriteSize );
+            spritePath = prepareBase64( sprite );
+            valuePathExpression = u"'%1'"_s.arg( spritePath );
+            valueSizeExpression = QString::number( spriteSize.width() );
+          }
 
-          spriteProperty += QStringLiteral(
-                              " WHEN %1 IN (%2) "
-                              "THEN '%3'"
-          )
-                              .arg( attribute, matchString, spritePath );
-
-          spriteSizeProperty += QStringLiteral(
-                                  " WHEN %1 IN (%2) "
-                                  "THEN %3"
-          )
-                                  .arg( attribute, matchString )
-                                  .arg( spriteSize.width() );
+          spriteProperty += u" WHEN %1 IN (%2) THEN %3"_s.arg( attribute, matchString, valuePathExpression );
+          spriteSizeProperty += u" WHEN %1 IN (%2) THEN %3"_s.arg( attribute, matchString, valueSizeExpression );
         }
 
-        if ( !json.constLast().toString().isEmpty() )
+        const QVariant defaultValue = json.constLast();
+        if ( defaultValue.userType() == QMetaType::Type::QVariantList || defaultValue.userType() == QMetaType::Type::QStringList )
         {
-          const QImage sprite = retrieveSprite( json.constLast().toString(), context, spriteSize );
-          spritePath = prepareBase64( sprite );
+          // default is a nested expression (e.g. a nested "match"/"step"/"case") -- resolve recursively
+          QSize nestedSize;
+          QString nestedProperty;
+          QString nestedSizeProperty;
+          const QString nestedPath = retrieveSpriteAsBase64WithProperties( defaultValue, context, nestedSize, nestedProperty, nestedSizeProperty );
+          spriteProperty += u" ELSE %1 END"_s.arg( nestedProperty.isEmpty() ? u"'%1'"_s.arg( nestedPath ) : nestedProperty );
+          spriteSizeProperty += u" ELSE %1 END"_s.arg( nestedSizeProperty.isEmpty() ? QString::number( nestedSize.width() ) : nestedSizeProperty );
+          spritePath = nestedPath;
+          spriteSize = nestedSize;
         }
         else
         {
-          spritePath = QString();
-        }
+          if ( !defaultValue.toString().isEmpty() )
+          {
+            const QImage sprite = retrieveSprite( defaultValue.toString(), context, spriteSize );
+            spritePath = prepareBase64( sprite );
+          }
+          else
+          {
+            spritePath = QString();
+          }
 
-        spriteProperty += u" ELSE '%1' END"_s.arg( spritePath );
-        spriteSizeProperty += u" ELSE %3 END"_s.arg( spriteSize.width() );
+          spriteProperty += u" ELSE '%1' END"_s.arg( spritePath );
+          spriteSizeProperty += u" ELSE %3 END"_s.arg( spriteSize.width() );
+        }
         break;
       }
       else if ( method == "step"_L1 )

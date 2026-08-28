@@ -708,6 +708,56 @@ class TestQgsLineString(QgisTestCase):
         ls.append(ls2)
         self.assertEqual(ls.numPoints(), 3)
 
+    def test_extension(self):
+        # zero distances means no change
+        line = QgsLineString([QgsPoint(0, 0), QgsPoint(10, 0)])
+
+        line.extend(0.0, 0.0, 45.0, 45.0)
+        self.assertEqual(line.asWkt(), "LineString (0 0, 10 0)")
+
+        # if fewer than 2 vertices we don't want a crash
+        single_point_line = QgsLineString([QgsPoint(5, 5)])
+        single_point_line.extend(5.0, 5.0, 45.0, 45.0)
+        self.assertEqual(single_point_line.asWkt(), "LineString (5 5)")
+
+        # straight extension at the start modifies the point in-place, not adding an extra vertex
+        line = QgsLineString([QgsPoint(0, 0), QgsPoint(10, 0)])
+        line.extend(5.0, 0.0, 0.0, 0.0)
+        self.assertEqual(line.asWkt(), "LineString (-5 0, 10 0)")
+
+        # straight extension at the end modifies the point in-place, no extra vertices
+        line = QgsLineString([QgsPoint(0, 0), QgsPoint(10, 0)])
+        line.extend(0.0, 5.0, 0.0, 0.0)
+        self.assertEqual(line.asWkt(), "LineString (0 0, 15 0)")
+
+        # 90-degree clockwise deflection at the end. This should append a new vertex.
+        line = QgsLineString([QgsPoint(0, 0), QgsPoint(10, 0)])
+        line.extend(0.0, 5.0, 0.0, 90.0)
+        self.assertEqual(line.asWkt(), "LineString (0 0, 10 0, 10 -5)")
+
+        # 90-degree clockwise deflection at the start. Should insert a new vertex.
+        line = QgsLineString([QgsPoint(0, 0), QgsPoint(10, 0)])
+        line.extend(5.0, 0.0, 90.0, 0.0)
+        self.assertEqual(line.asWkt(5), "LineString (0 5, 0 0, 10 0)")
+
+        # non-orthogonal deflection angle
+        line = QgsLineString([QgsPoint(0, 0), QgsPoint(10, 0)])
+        line.extend(0.0, 10.0, 0.0, 45.0)
+        self.assertEqual(line.asWkt(5), "LineString (0 0, 10 0, 17.07107 -7.07107)")
+
+        # both start and end deflected extension
+        line = QgsLineString([QgsPoint(0, 0), QgsPoint(10, 0)])
+        line.extend(5.0, 5.0, 90.0, 90.0)
+        self.assertEqual(line.asWkt(5), "LineString (0 5, 0 0, 10 0, 10 -5)")
+
+        # Z and M values should also be extended when adding vertices
+        line_3d = QgsLineString([0, 10], [0, 0], [1, 2], [10, 20])
+        line_3d.extend(5.0, 5.0, 90.0, 90.0)
+        self.assertEqual(
+            line_3d.asWkt(5),
+            "LineString ZM (0 5 1 10, 0 0 1 10, 10 0 2 20, 10 -5 2 20)",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

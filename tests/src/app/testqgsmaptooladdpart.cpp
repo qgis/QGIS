@@ -48,6 +48,7 @@ class TestQgsMapToolAddPart : public QObject
     void testAddPartClockWise();
     void testAddPartToSingleGeometryLess();
     void testAddPartToMultiLineString();
+    void testAddPartAvoidOverlap();
 
   private:
     QPoint mapToPoint( double x, double y );
@@ -87,7 +88,7 @@ void TestQgsMapToolAddPart::initTestCase()
 
   mLayerMultiPolygon->startEditing();
   QgsFeature f;
-  const QString wkt( "MultiPolygon (((2 2, 4 2, 4 4, 2 4)))" );
+  const QString wkt( "MultiPolygon (((2 2, 4 2, 4 4, 2 4, 2 2)))" );
   f.setGeometry( QgsGeometry::fromWkt( wkt ) );
   mLayerMultiPolygon->dataProvider()->addFeatures( QgsFeatureList() << f );
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 1 );
@@ -140,8 +141,10 @@ void TestQgsMapToolAddPart::testAddPart()
   event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 5, 5 ), Qt::RightButton );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4)),((5 5, 5 5, 6 5, 6 6, 5 6, 5 5)))";
+  const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4, 2 2)),((5 5, 5 5, 6 5, 6 6, 5 6, 5 5)))";
   QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), wkt );
+
+  mLayerMultiPolygon->undoStack()->undo();
 }
 
 void TestQgsMapToolAddPart::testAddPartClockWise()
@@ -164,8 +167,10 @@ void TestQgsMapToolAddPart::testAddPartClockWise()
   event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 15, 15 ), Qt::RightButton );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4)),((5 5, 5 5, 6 5, 6 6, 5 6, 5 5)),((15 15, 16 15, 16 16, 15 16, 15 15)))";
+  const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4, 2 2)),((15 15, 16 15, 16 16, 15 16, 15 15)))";
   QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt(), wkt );
+
+  mLayerMultiPolygon->undoStack()->undo();
 }
 
 void TestQgsMapToolAddPart::testAddPartToSingleGeometryLess()
@@ -245,6 +250,43 @@ void TestQgsMapToolAddPart::testAddPartToMultiLineString()
   // Cleanup
   mCanvas->setCurrentLayer( mLayerMultiPolygon );
   QgsProject::instance()->removeMapLayers( QList<QgsMapLayer *>() << layerMultiLine );
+}
+
+void TestQgsMapToolAddPart::testAddPartAvoidOverlap()
+{
+  QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
+
+  QgsFeature f;
+  const QString wkt( "MultiPolygon (((5 0, 5 5, 6 5, 6 0, 5 0)))" );
+  f.setGeometry( QgsGeometry::fromWkt( wkt ) );
+  mLayerMultiPolygon->dataProvider()->addFeatures( QgsFeatureList() << f );
+  QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 2 );
+  QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), wkt );
+
+  auto event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 1, 1 ), Qt::LeftButton );
+  mCaptureTool->cadCanvasReleaseEvent( event.get() );
+
+  event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 7, 1 ), Qt::LeftButton );
+  mCaptureTool->cadCanvasReleaseEvent( event.get() );
+
+  event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 7, 5 ), Qt::LeftButton );
+  mCaptureTool->cadCanvasReleaseEvent( event.get() );
+
+  event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 1, 5 ), Qt::LeftButton );
+  mCaptureTool->cadCanvasReleaseEvent( event.get() );
+
+  event = std::make_unique<QgsMapMouseEvent>( mCanvas, QEvent::MouseButtonRelease, mapToPoint( 1, 5 ), Qt::RightButton );
+  mCaptureTool->cadCanvasReleaseEvent( event.get() );
+
+  // Added part should have an inner ring (hole)
+  const QString expectedWkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4, 2 2)),((1 1, 5 1, 5 5, 1 5, 1 1),(2 2, 2 4, 4 4, 4 2, 2 2)),((7 5, 6 5, 6 1, 7 1, 7 5)))";
+  QCOMPARE( mLayerMultiPolygon->getFeature( 1 ).geometry().asWkt( 1 ), expectedWkt );
+
+  // Cleanup
+  mLayerMultiPolygon->undoStack()->undo();
+  mLayerMultiPolygon->dataProvider()->deleteFeatures( { 2 } );
+  QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 1 );
+  QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AllowIntersections );
 }
 
 QGSTEST_MAIN( TestQgsMapToolAddPart )

@@ -53,7 +53,7 @@ QgsGeometryCheck::Result QgsGeometryDegeneratePolygonCheck::collectErrors(
         if ( QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing ) < 3 )
         {
           const QgsVertexId vidx( iPart, iRing );
-          errors.append( new QgsGeometryCheckError( this, layerFeature, geom->vertexAt( vidx ), vidx ) );
+          errors.append( new QgsGeometryCheckError( this, layerFeature, geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ), vidx ) );
         }
       }
     }
@@ -77,7 +77,7 @@ void QgsGeometryDegeneratePolygonCheck::fixError(
   const QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists
-  if ( !vidx.isValid( geom ) )
+  if ( !geom->hasVertex( QgsVertexId( vidx.part, vidx.ring, 0 ) ) )
   {
     error->setObsolete();
     return;

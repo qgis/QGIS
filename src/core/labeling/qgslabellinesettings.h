@@ -16,6 +16,7 @@
 #ifndef QGSLABELLINESETTINGS_H
 #define QGSLABELLINESETTINGS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmapunitscale.h"
@@ -72,20 +73,6 @@ class CORE_EXPORT QgsLabelLineSettings
       UseEntireLine,         //!< Entire original feature line geometry is used when calculating the line anchor for labels
     };
     Q_ENUM( AnchorClipping )
-
-    /**
-     * Anchor point of label text.
-     *
-     * \since QGIS 3.26
-     */
-    enum class AnchorTextPoint : int
-    {
-      StartOfText,     //!< Anchor using start of text
-      CenterOfText,    //!< Anchor using center of text
-      EndOfText,       //!< Anchor using end of text
-      FollowPlacement, //!< Automatically set the anchor point based on the lineAnchorPercent() value. Values <25% will use the start of text, values > 75% will use the end of text, and values in between will use the center of the text
-    };
-    Q_ENUM( AnchorTextPoint )
 
     /**
      * Returns the line placement flags, which dictate how line labels can be placed
@@ -351,7 +338,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \since QGIS 3.26
      */
-    AnchorTextPoint anchorTextPoint() const { return mAnchorTextPoint; }
+    Qgis::TextAnchorPoint anchorTextPoint() const { return mAnchorTextPoint; }
 
     /**
      * Sets the line anchor text \a point, which dictates which part of the label text
@@ -361,7 +348,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \since QGIS 3.26
      */
-    void setAnchorTextPoint( AnchorTextPoint point ) { mAnchorTextPoint = point; }
+    void setAnchorTextPoint( Qgis::TextAnchorPoint point ) { mAnchorTextPoint = point; }
 
     /**
      * Returns the mode which determine how curved labels are generated and placed.
@@ -394,7 +381,7 @@ class CORE_EXPORT QgsLabelLineSettings
     double mLineAnchorPercent = 0.5;
     AnchorType mAnchorType = AnchorType::HintOnly;
     AnchorClipping mAnchorClipping = AnchorClipping::UseVisiblePartsOfLine;
-    AnchorTextPoint mAnchorTextPoint = AnchorTextPoint::FollowPlacement;
+    Qgis::TextAnchorPoint mAnchorTextPoint = Qgis::TextAnchorPoint::FollowPlacement;
 
     Qgis::CurvedLabelMode mCurvedLabelMode = Qgis::CurvedLabelMode::Default;
 };

@@ -47,6 +47,12 @@ email                : morb at ozemail dot com dot au
 #include "qgstriangulatedsurface.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+#ifdef WITH_SFCGAL
+#include "qgssfcgalgeometry.h"
+#endif
+
 #include <QCache>
 #include <QString>
 
@@ -1422,7 +1428,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback *f
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.difference( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
   if ( !diffGeom )
   {
     return 1;
@@ -1434,23 +1440,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other, QgsFeedback *f
 
 QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other, QgsFeedback *feedback ) const
 {
-  if ( !d->geometry || other.isNull() )
-  {
-    return QgsGeometry();
-  }
-
-  QgsGeos geos( d->geometry.get() );
-
-  mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError, QgsGeometryParameters(), feedback ) );
-  if ( !diffGeom )
-  {
-    QgsGeometry result;
-    result.mLastError = mLastError;
-    return result;
-  }
-
-  return QgsGeometry( diffGeom.release() );
+  return difference( other, QgsGeometryParameters(), feedback );
 }
 
 QgsRectangle QgsGeometry::boundingBox() const
@@ -2852,7 +2842,7 @@ QgsGeometry QgsGeometry::variableWidthBufferByM( int segments ) const
   return engine.variableWidthBufferByM( segments );
 }
 
-QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) const
+QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance, double startDeflection, double endDeflection ) const
 {
   if ( !d->geometry || type() != Qgis::GeometryType::Line )
   {
@@ -2866,7 +2856,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
     results.reserve( parts.count() );
     for ( const QgsGeometry &part : parts )
     {
-      QgsGeometry result = part.extendLine( startDistance, endDistance );
+      QgsGeometry result = part.extendLine( startDistance, endDistance, startDeflection, endDeflection );
       if ( !result.isNull() )
         results << result;
     }
@@ -2887,7 +2877,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
       return QgsGeometry();
 
     std::unique_ptr< QgsLineString > newLine( line->clone() );
-    newLine->extend( startDistance, endDistance );
+    newLine->extend( startDistance, endDistance, startDeflection, endDeflection );
     return QgsGeometry( std::move( newLine ) );
   }
 }
@@ -3845,6 +3835,30 @@ void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const Q
         }
         return;
       }
+      break;
+    }
+    case Qgis::GeometryValidationEngine::Sfcgal:
+    {
+#ifdef WITH_SFCGAL
+      QString errorMsg;
+      QgsGeometry errorLoc;
+      const QgsSfcgalGeometry sfcgalGeom( d->geometry.get() );
+      if ( !QgsSfcgalEngine::isValid( sfcgalGeom.sfcgalGeometry().get(), nullptr, &errorMsg, &errorLoc ) )
+      {
+        if ( errorLoc.isNull() )
+        {
+          errors.append( QgsGeometry::Error( errorMsg ) );
+        }
+        else
+        {
+          const QgsPointXY point = errorLoc.asPoint();
+          errors.append( QgsGeometry::Error( errorMsg, point ) );
+        }
+        return;
+      }
+#else
+      throw QgsNotSupportedException( u"This operation requires a QGIS installation with SFCGAL support enabled. Please use a version of QGIS that includes SFCGAL."_s );
+#endif
     }
   }
 }

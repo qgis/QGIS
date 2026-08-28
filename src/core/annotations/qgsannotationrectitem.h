@@ -22,6 +22,8 @@
 #include "qgis_sip.h"
 #include "qgsannotationitem.h"
 
+class QgsMapToPixel;
+
 /**
  * \ingroup core
  * \brief Abstract base class for annotation items which render annotations in a rectangular shape.
@@ -123,6 +125,70 @@ class CORE_EXPORT QgsAnnotationRectItem : public QgsAnnotationItem
     void setFixedSizeUnit( Qgis::RenderUnit unit );
 
     /**
+     * Returns the rotation of the item, in degrees clockwise.
+     *
+     * \see setRotation()
+     * \since QGIS 4.4
+     */
+    double rotation() const { return mRotation; }
+
+    /**
+     * Sets the \a rotation of the item, in degrees clockwise.
+     *
+     * \see rotation()
+     * \since QGIS 4.4
+     */
+    void setRotation( double rotation ) { mRotation = rotation; }
+
+    /**
+     * Returns the method used to render the item with respect to the rotation of the map.
+     *
+     * \see setRotationMode()
+     * \since QGIS 4.4
+     */
+    Qgis::SymbolRotationMode rotationMode() const { return mRotationMode; }
+
+    /**
+     * Sets the \a mode used to render the item with respect to the rotation of the map.
+     *
+     * \see rotationMode()
+     * \since QGIS 4.4
+     */
+    void setRotationMode( Qgis::SymbolRotationMode mode ) { mRotationMode = mode; }
+
+    /**
+     * Returns the effective on-screen rotation of the item, in degrees clockwise.
+     *
+     * This is the item's own rotation(), to which \a mapRotation (the current map
+     * rotation, in degrees clockwise) is added when the item's rotationMode() is
+     * Qgis::SymbolRotationMode::RespectMapRotation and its placement mode is not
+     * Qgis::AnnotationPlacementMode::RelativeToMapFrame.
+     *
+     * \see rotation()
+     * \see rotationMode()
+     * \since QGIS 4.4
+     */
+    double appliedRotation( double mapRotation ) const;
+
+    /**
+     * Returns the polygon geometry (in layer coordinates) for the item occupying the given
+     * \a layerBounds, rotated to match how the item is rendered in \a renderContext.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.4
+     */
+    QgsGeometry rotatedBoundsGeometry( const QgsRectangle &layerBounds, const QgsRenderContext &renderContext ) const SIP_SKIP;
+
+    /**
+     * Returns the axis-aligned bounds, in map coordinates, of a rectangle centered on \a centerPixel
+     * with size \a widthPixels by \a heightPixels, using \a mapToPixel for the pixel to map conversion.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.4
+     */
+    static QgsRectangle boundsFromPixelRect( const QgsMapToPixel *mapToPixel, const QPointF &centerPixel, double widthPixels, double heightPixels ) SIP_SKIP;
+
+    /**
      * Returns TRUE if the item's background should be rendered.
      *
      * \see setBackgroundEnabled()
@@ -209,9 +275,10 @@ class CORE_EXPORT QgsAnnotationRectItem : public QgsAnnotationItem
   private:
     Qgis::AnnotationPlacementMode mPlacementMode = Qgis::AnnotationPlacementMode::SpatialBounds;
     QgsRectangle mBounds;
-
     QSizeF mFixedSize;
     Qgis::RenderUnit mFixedSizeUnit = Qgis::RenderUnit::Millimeters;
+    double mRotation = 0;
+    Qgis::SymbolRotationMode mRotationMode = Qgis::SymbolRotationMode::IgnoreMapRotation;
     bool mDrawBackground = false;
     std::unique_ptr< QgsFillSymbol > mBackgroundSymbol;
     bool mDrawFrame = false;

@@ -184,30 +184,99 @@ void QgsAttributesFormLayoutView::setModel( QAbstractItemModel *model )
   QTreeView::setModel( mModel );
 
   const auto *formLayoutModel = static_cast< QgsAttributesFormLayoutModel * >( mModel->sourceModel() );
-  connect( formLayoutModel, &QgsAttributesFormLayoutModel::externalItemDropped, this, &QgsAttributesFormLayoutView::handleExternalDroppedItem );
-  connect( formLayoutModel, &QgsAttributesFormLayoutModel::internalItemDropped, this, &QgsAttributesFormLayoutView::handleInternalDroppedItem );
+  connect( formLayoutModel, &QgsAttributesFormLayoutModel::externalItemsDropped, this, &QgsAttributesFormLayoutView::handleExternalDroppedItems );
+  connect( formLayoutModel, &QgsAttributesFormLayoutModel::internalItemsDropped, this, &QgsAttributesFormLayoutView::handleInternalDroppedItems );
 }
 
 
-void QgsAttributesFormLayoutView::handleExternalDroppedItem( QModelIndex &index )
+void QgsAttributesFormLayoutView::selectDroppedItems( const QModelIndexList &indexes )
 {
-  selectionModel()->setCurrentIndex( mModel->mapFromSource( index ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  if ( indexes.isEmpty() )
+    return;
 
-  const auto itemType = static_cast< QgsAttributesFormData::AttributesFormItemType >( index.data( QgsAttributesFormModel::ItemTypeRole ).toInt() );
-
-  if ( itemType == QgsAttributesFormData::QmlWidget || itemType == QgsAttributesFormData::HtmlWidget || itemType == QgsAttributesFormData::TextWidget || itemType == QgsAttributesFormData::SpacerWidget )
+  QItemSelection selection;
+  for ( const QModelIndex &index : indexes )
   {
-    onItemDoubleClicked( mModel->mapFromSource( index ) );
+    const QModelIndex proxyIndex = mModel->mapFromSource( index );
+    selection.select( proxyIndex, proxyIndex );
+  }
+
+  // Set the current index first without touching the selection, so that the
+  // selection is changed once, keeping all dropped items selected
+  selectionModel()->setCurrentIndex( mModel->mapFromSource( indexes.constLast() ), QItemSelectionModel::NoUpdate );
+  selectionModel()->select( selection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+}
+
+void QgsAttributesFormLayoutView::handleExternalDroppedItems( const QModelIndexList &indexes )
+{
+  selectDroppedItems( indexes );
+
+  for ( const QModelIndex &index : indexes )
+  {
+    const auto itemType = static_cast< QgsAttributesFormData::AttributesFormItemType >( index.data( QgsAttributesFormModel::ItemTypeRole ).toInt() );
+
+    switch ( itemType )
+    {
+      case QgsAttributesFormData::QmlWidget:
+      case QgsAttributesFormData::HtmlWidget:
+      case QgsAttributesFormData::TextWidget:
+      case QgsAttributesFormData::SpacerWidget:
+        // These need to be configured right after being dropped
+        onItemDoubleClicked( mModel->mapFromSource( index ) );
+        break;
+
+      case QgsAttributesFormData::Field:
+      case QgsAttributesFormData::Relation:
+      case QgsAttributesFormData::Container:
+      case QgsAttributesFormData::WidgetType:
+      case QgsAttributesFormData::Action:
+        break;
+    }
   }
 }
 
-void QgsAttributesFormLayoutView::handleInternalDroppedItem( QModelIndex &index )
+void QgsAttributesFormLayoutView::handleInternalDroppedItems( const QModelIndexList &indexes )
 {
-  selectionModel()->clearCurrentIndex();
-  const auto itemType = static_cast< QgsAttributesFormData::AttributesFormItemType >( index.data( QgsAttributesFormModel::ItemTypeRole ).toInt() );
-  if ( itemType == QgsAttributesFormData::Container )
+  selectDroppedItems( indexes );
+
+  // The move resets the model, collapsing the whole tree, so restore the
+  // expanded state captured in dropEvent() before the move took place.
+  const int topLevelRows = mModel->sourceModel()->rowCount( QModelIndex() );
+  for ( int row = 0; row < topLevelRows; ++row )
   {
-    expandRecursively( mModel->mapFromSource( index ) );
+    restoreExpandedState( mModel->sourceModel()->index( row, 0, QModelIndex() ) );
+  }
+  mDraggedExpandedState.clear();
+}
+
+void QgsAttributesFormLayoutView::storeExpandedState( const QModelIndex &sourceIndex )
+{
+  if ( !sourceIndex.isValid() )
+    return;
+
+  if ( auto *item = static_cast< QgsAttributesFormItem * >( sourceIndex.internalPointer() ) )
+    mDraggedExpandedState.insert( item, isExpanded( mModel->mapFromSource( sourceIndex ) ) );
+
+  const int rows = mModel->sourceModel()->rowCount( sourceIndex );
+  for ( int row = 0; row < rows; ++row )
+  {
+    storeExpandedState( mModel->sourceModel()->index( row, 0, sourceIndex ) );
+  }
+}
+
+void QgsAttributesFormLayoutView::restoreExpandedState( const QModelIndex &sourceIndex )
+{
+  if ( !sourceIndex.isValid() )
+    return;
+
+  // Expand parents before children so descendant indexes are correct
+  if ( auto *item = static_cast< QgsAttributesFormItem * >( sourceIndex.internalPointer() ) )
+    setExpanded( mModel->mapFromSource( sourceIndex ), mDraggedExpandedState.value( item, true ) );
+
+  const int rows = mModel->sourceModel()->rowCount( sourceIndex );
+  for ( int row = 0; row < rows; ++row )
+  {
+    restoreExpandedState( mModel->sourceModel()->index( row, 0, sourceIndex ) );
   }
 }
 
@@ -260,12 +329,34 @@ void QgsAttributesFormLayoutView::dropEvent( QDropEvent *event )
   if ( !( event->mimeData()->hasFormat( u"application/x-qgsattributesformavailablewidgetsrelement"_s ) || event->mimeData()->hasFormat( u"application/x-qgsattributesformlayoutelement"_s ) ) )
     return;
 
+  const bool internalMove = event->source() == this && event->mimeData()->hasFormat( u"application/x-qgsattributesformlayoutelement"_s );
+
+  if ( internalMove )
+  {
+    // Capture the expanded state of the whole tree now, before the (deferred)
+    // move resets the model, which collapses everything. It is restored
+    // afterwards in handleInternalDroppedItems().
+    mDraggedExpandedState.clear();
+    const int topLevelRows = mModel->sourceModel()->rowCount( QModelIndex() );
+    for ( int row = 0; row < topLevelRows; ++row )
+    {
+      storeExpandedState( mModel->sourceModel()->index( row, 0, QModelIndex() ) );
+    }
+  }
+
   if ( event->source() == this )
   {
     event->setDropAction( Qt::MoveAction );
   }
 
   QTreeView::dropEvent( event );
+
+  if ( internalMove && event->isAccepted() )
+  {
+    // Reporting a CopyAction makes QAbstractItemView::startDrag() skip its clearOrRemove() step.
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+  }
 }
 
 void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index )
@@ -459,10 +550,20 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       //update preview on text change
       connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [qmlWrapper, qmlCode, previewFeature, errorFeedbackWidget] {
+        QQuickWidget *qmlWidget = dynamic_cast<QQuickWidget *>( qmlWrapper->widget() );
+        if ( qmlCode->text().trimmed().isEmpty() )
+        {
+          errorFeedbackWidget->setText( QObject::tr( "No QML code" ) );
+          if ( qmlWidget )
+          {
+            qmlWidget->setSource( QUrl() );
+          }
+          return;
+        }
         qmlWrapper->setQmlCode( qmlCode->text() );
         qmlWrapper->reinitWidget();
         qmlWrapper->setFeature( previewFeature );
-        if ( QQuickWidget *qmlWidget = dynamic_cast<QQuickWidget *>( qmlWrapper->widget() ) )
+        if ( qmlWidget )
         {
           const QList<QQmlError> errors = qmlWidget->errors();
           if ( !errors.isEmpty() )

@@ -92,6 +92,7 @@
 %Include auto_generated/qgsfloatingwidget.sip
 %Include auto_generated/qgsfocuswatcher.sip
 %Include auto_generated/qgsfontbutton.sip
+%Include auto_generated/qgsfontcombobox.sip
 %Include auto_generated/qgsformannotation.sip
 %Include auto_generated/qgsgeocoderlocatorfilter.sip
 %Include auto_generated/qgsgeometryrubberband.sip

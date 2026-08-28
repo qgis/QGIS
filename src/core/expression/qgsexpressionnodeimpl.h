@@ -84,7 +84,7 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
     QList<const QgsExpressionNode *> nodes() const override SIP_SKIP;
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
-
+    QgsExpressionNode *simplifiedNode() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
     /**
@@ -201,6 +201,7 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    QgsExpressionNode *simplifiedNode() const override SIP_FACTORY;
 
     /**
      * Returns the precedence index for the operator. Higher values have higher precedence.
@@ -414,6 +415,7 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    QgsExpressionNode *simplifiedNode() const override SIP_FACTORY;
 
   private:
     QgsExpressionNodeInOperator( const QgsExpressionNodeInOperator &other ) = delete;
@@ -486,6 +488,7 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    QgsExpressionNode *simplifiedNode() const override SIP_FACTORY;
 
     //! Tests whether the provided argument list is valid for the matching function
     static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
@@ -693,6 +696,7 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    QgsExpressionNode *simplifiedNode() const override SIP_FACTORY;
 
   private:
     QgsExpressionNodeCondition( const QgsExpressionNodeCondition &other ) = delete;

@@ -11113,6 +11113,13 @@ class TestQgsGeometry(QgisTestCase):
             f"Extend multiline: bbox Expected:\n{expbb.toString()}\nGot:\n{bb.toString()}\n",
         )
 
+        # with deflection angle
+        line = QgsGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(10, 0)]))
+        res = line.extendLine(5.0, 10.0, -10.0, 45.0)
+        self.assertEqual(
+            res.asWkt(5), "LineString (-4.92404 -0.86824, 0 0, 10 0, 17.07107 -7.07107)"
+        )
+
     def testRemoveRings(self):
         empty = QgsGeometry()
         self.assertFalse(empty.removeInteriorRings())
@@ -12761,13 +12768,14 @@ class TestQgsGeometry(QgisTestCase):
 
     def testValidateGeometry(self):
         tests = [
-            ["", [], [], []],
-            ["Point (100 100)", [], [], []],
-            ["MultiPoint (100 100, 100 200)", [], [], []],
-            ["LINESTRING (0 0, 0 100, 100 100)", [], [], []],
-            ["POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))", [], [], []],
+            ["", [], [], [], []],
+            ["Point (100 100)", [], [], [], []],
+            ["MultiPoint (100 100, 100 200)", [], [], [], []],
+            ["LINESTRING (0 0, 0 100, 100 100)", [], [], [], []],
+            ["POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))", [], [], [], []],
             [
                 "MULTIPOLYGON(Polygon((-1 -1, 4 0, 4 2, 0 2, -1 -1)),Polygon((100 100, 200 100, 200 200, 100 200, 100 100)))",
+                [],
                 [],
                 [],
                 [],
@@ -12777,6 +12785,7 @@ class TestQgsGeometry(QgisTestCase):
                 [QgsGeometry.Error("Ring self-intersection", QgsPointXY(300, 200))],
                 [],
                 [],
+                [QgsGeometry.Error("ring 0 self intersects")],
             ],
             [
                 "MultiPolygon (((159865.14786298031685874 6768656.31838363595306873, 159858.97975336571107619 6769211.44824895076453686, 160486.07089751763851382 6769211.44824895076453686, 160481.95882444124436006 6768658.37442017439752817, 160163.27316101978067309 6768658.37442017439752817, 160222.89822062765597366 6769116.87056819349527359, 160132.43261294672265649 6769120.98264127038419247, 160163.27316101978067309 6768658.37442017439752817, 159865.14786298031685874 6768656.31838363595306873)))",
@@ -12788,6 +12797,7 @@ class TestQgsGeometry(QgisTestCase):
                 ],
                 [],
                 [],
+                [QgsGeometry.Error("Polygon 0 is invalid: ring 0 self intersects")],
             ],
             [
                 "Polygon((0 3, 3 0, 3 3, 0 0, 0 3))",
@@ -12799,9 +12809,18 @@ class TestQgsGeometry(QgisTestCase):
                         QgsPointXY(1.5, 1.5),
                     )
                 ],
+                [QgsGeometry.Error("ring 0 self intersects")],
+            ],
+            [
+                "POLYGON Z ((0 0 0, 1 0 0, 1 1 0.001, 0 1 0, 0 0 0))",
+                [],
+                [],
+                [],
+                [QgsGeometry.Error("points don't lie in the same plane")],
             ],
         ]
         for t in tests:
+            # Geos
             g1 = QgsGeometry.fromWkt(t[0])
             res = g1.validateGeometry(QgsGeometry.ValidationMethod.ValidatorGeos)
             self.assertEqual(
@@ -12811,6 +12830,8 @@ class TestQgsGeometry(QgisTestCase):
                     t[0], t[1], res[0].where() if res else ""
                 ),
             )
+
+            # Geos - allows self touching holes
             res = g1.validateGeometry(
                 QgsGeometry.ValidationMethod.ValidatorGeos,
                 QgsGeometry.ValidityFlag.FlagAllowSelfTouchingHoles,
@@ -12822,6 +12843,8 @@ class TestQgsGeometry(QgisTestCase):
                     t[0], t[2], res[0].where() if res else ""
                 ),
             )
+
+            # QGIS
             res = g1.validateGeometry(
                 QgsGeometry.ValidationMethod.ValidatorQgisInternal
             )
@@ -12832,6 +12855,17 @@ class TestQgsGeometry(QgisTestCase):
                     t[0], t[3], res[0].where() if res else ""
                 ),
             )
+
+            # SFCGAL
+            if Qgis.hasSfcgal():
+                res = g1.validateGeometry(QgsGeometry.ValidationMethod.Sfcgal)
+                self.assertEqual(
+                    res,
+                    t[4],
+                    "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(
+                        t[0], t[4], res[0].where() if res else ""
+                    ),
+                )
 
     def testCollectDuplicateNodes(self):
         g = QgsGeometry.fromWkt(
