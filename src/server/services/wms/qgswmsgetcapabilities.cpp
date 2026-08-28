@@ -1414,7 +1414,7 @@ namespace QgsWms
               }
               else if ( dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::ReferenceValue )
               {
-                dimElem.setAttribute( u"default"_s, dim.referenceValue.toString() );
+                dimElem.setAttribute( u"default"_s, dim.referenceValue().toString() );
               }
               dimElem.setAttribute( u"multipleValues"_s, u"1"_s );
               dimElem.setAttribute( u"nearestValue"_s, u"0"_s );
