@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 
+#include <gdal_version.h>
+
 #include "editorwidgets/core/qgseditorwidgetregistry.h"
 #include "qgsapplication.h"
 #include "qgsattributeeditorcontainer.h"
@@ -22,6 +24,7 @@
 #include "qgsattributeformeditorwidget.h"
 #include "qgsattributeforminterface.h"
 #include "qgseditorwidgetwrapper.h"
+#include "qgsenumerationwidgetwrapper.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
 #include "qgsgui.h"
@@ -73,6 +76,7 @@ class TestQgsAttributeForm : public QObject
     void testCompositeForeignKeyHidesNonFirstFields();
     void testCustomComments();
     void testFormWithMissingField();
+    void testFieldDomainsUseEnumerationWidget();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -1490,6 +1494,25 @@ void TestQgsAttributeForm::testFormWithMissingField()
   QVERIFY( form.mFormEditorWidgets.contains( 0 ) );
   // No widget is registered for the bogus field index -1
   QVERIFY( !form.mFormEditorWidgets.contains( -1 ) );
+}
+
+void TestQgsAttributeForm::testFieldDomainsUseEnumerationWidget()
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + u"/domains.gpkg|layername=test"_s, u"test"_s, u"ogr"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsAttributeForm form( layer.get() );
+
+  const int fieldIdx = layer->fields().lookupField( u"with_enum_domain"_s );
+  QVERIFY( fieldIdx > -1 );
+
+  QgsWidgetWrapper *ww = form.mWidgets[fieldIdx];
+  QVERIFY( ww );
+
+  QgsEnumerationWidgetWrapper *eww = dynamic_cast<QgsEnumerationWidgetWrapper *>( ww );
+  QVERIFY( eww );
+#endif
 }
 
 QGSTEST_MAIN( TestQgsAttributeForm )
