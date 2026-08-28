@@ -18590,7 +18590,7 @@ Shift+klik lehendik dagoen eraztunean, hura betetzeko.</translation>
     <message>
         <location filename="../src/ui/3d/metalroughtexturedmaterialwidgetbase.ui"/>
         <source>The detail normal used to perturb the surface using bump mapping. Must be set to an OpenGL format normal map (not DirectX).</source>
-        <translation type="unfinished"/>
+        <translation>Koskorren mapatzea erabiliz gainazala moldatzeko erabiliko den xehetasun-normala. OpenGL formatuko mapa normal bat ezarri behar da (ez DirectX).</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/metalroughtexturedmaterialwidgetbase.ui"/>
@@ -18605,7 +18605,7 @@ Shift+klik lehendik dagoen eraztunean, hura betetzeko.</translation>
     <message>
         <location filename="../src/ui/3d/metalroughtexturedmaterialwidgetbase.ui"/>
         <source>Scaling factor for the height displacement effect. If visual artifacts are observed in the displacement, lowering the strength will help.</source>
-        <translation type="unfinished"/>
+        <translation>Altuera-desplazamenduaren efekturako erabilitako eskalatze-faktorea. Ikusizko artefaktuak behatzen badira desplazamenduan, lagungarria izan daiteke faktore hau jaistea.</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/metalroughtexturedmaterialwidgetbase.ui"/>
@@ -18665,7 +18665,7 @@ Shift+klik lehendik dagoen eraztunean, hura betetzeko.</translation>
     <message>
         <location filename="../src/ui/3d/metalroughtexturedmaterialwidgetbase.ui"/>
         <source>Diffuse albedo texture for non-metallic surfaces, and specular color texture for metallic surfaces</source>
-        <translation type="unfinished"/>
+        <translation>Albedo-ehundura barreiatua gainazal ez metalikoetarako, eta ispiluzko kolore-ehundura gainazal metalikoetarak</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/metalroughtexturedmaterialwidgetbase.ui"/>
@@ -20125,7 +20125,7 @@ Shift+klik lehendik dagoen eraztunean, hura betetzeko.</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1911"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1926"/>
         <source>Processing</source>
         <translation>Prozesuak</translation>
     </message>
@@ -20620,7 +20620,7 @@ Horrek espero ez diren emaitzak eman ditzake.</translation>
         <translation>Parametroa mapa-geruza orokor bat da, geruza bektorialak zein rasterrak onartzen dituena.</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1911"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1926"/>
         <source>Could not load parameter %1 of type %2.</source>
         <translation>Ezin izan da %2 motako %1 parametroa kargatu.</translation>
     </message>
@@ -22387,13 +22387,13 @@ Distantzia geruza-unitateetan adierazten dira eta norakoa graduetan, iparraldeti
         <translation>Ezin izan da &apos;%1&apos; DateTime motara bihurtu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2998"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3006"/>
         <location filename="../src/core/expression/qgsexpressionutils.h" line="318"/>
         <source>Cannot convert &apos;%1&apos; to Date</source>
         <translation>Ezin izan da &apos;%1&apos; Date motara bihurtu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3027"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3035"/>
         <location filename="../src/core/expression/qgsexpressionutils.h" line="333"/>
         <source>Cannot convert &apos;%1&apos; to Time</source>
         <translation>Ezin izan da &apos;%1&apos; Time motara bihurtu</translation>
@@ -22568,7 +22568,7 @@ Distantzia geruza-unitateetan adierazten dira eta norakoa graduetan, iparraldeti
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1818"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7934"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7942"/>
         <source>Invalid pair of array, length not identical</source>
         <translation>Matrizeen bikote baliogabea, ez dute luzera bera</translation>
     </message>
@@ -22710,348 +22710,348 @@ Distantzia geruza-unitateetan adierazten dira eta norakoa graduetan, iparraldeti
         <translation>&apos;concat_ws&apos; funtzioak gutxienez bi argumentu behar ditu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2957"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2965"/>
         <source>Function format requires at least 1 argument</source>
         <translation>&apos;format&apos; funtzioak gutxienez argumentu bat behar du</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2981"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2989"/>
         <source>A format is required to convert to Date when the language is specified</source>
         <translation>Formatu bat behar da Date formara bihurtzeko, hizkuntza zehazten denean</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3010"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3018"/>
         <source>A format is required to convert to Time when the language is specified</source>
         <translation>Formatu bat behar da Time formara bihurtzeko, hizkuntza zehazten denean</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3063"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3071"/>
         <source>Invalid formatting parameter: &apos;%1&apos;. It must be empty, or &apos;suffix&apos; or &apos;aligned&apos;.</source>
         <translation>Baliogabeko formatu-parametroa: &apos;%1&apos;. Hutsik egon behar du, edo &apos;suffix&apos; edo &apos;aligned&apos; izan behar du.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3077"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3085"/>
         <source>Invalid axis name: &apos;%1&apos;. It must be either &apos;x&apos; or &apos;y&apos;.</source>
         <translation>Baliogabeko ardatz-izena: &apos;%1&apos;. &apos;x&apos; edo &apos;y&apos; izan behar du.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3278"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3290"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8204"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8215"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8226"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8237"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8248"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8259"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8270"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8281"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3286"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3298"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8212"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8223"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8234"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8245"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8256"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8267"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8278"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8289"/>
         <source>Function `%1` requires a value which represents a possible file path</source>
         <translation> `%1` funtzioak fitxategiaren bide-izen posible bat ordezkatzen duen balio bat behar du</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3318"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3364"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3410"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3479"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3326"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3372"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3418"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3487"/>
         <source>Function `%1` requires a valid date</source>
         <translation>`%1` funtzioak baliozko data bat behar du</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3348"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3353"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3356"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3361"/>
         <source>Cannot evaluate magnetic declination: %1</source>
         <translation>Ezin da deklinazio magnetikoa ebaluatu: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3394"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3399"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3402"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3407"/>
         <source>Cannot evaluate magnetic inclination: %1</source>
         <translation>Ezin da inklinazio magnetikoa ebaluatu: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3457"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3465"/>
         <source>Cannot evaluate magnetic declination rate of change</source>
         <translation>Ezin da deklinazio magnetikoaren aldaketa-tasa ebaluatu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3463"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3468"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3471"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3476"/>
         <source>Cannot evaluate magnetic declination rate of change: %1</source>
         <translation>Ezin da deklinazio magnetikoaren aldaketa-tasa ebaluatu: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3526"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3534"/>
         <source>Cannot evaluate magnetic inclination rate of change</source>
         <translation>Ezin da inklinazio magnetikoaren aldaketa-tasa ebaluatu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3532"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3537"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3540"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3545"/>
         <source>Cannot evaluate magnetic inclination rate of change: %1</source>
         <translation>Ezin da inklinazio magnetikoaren aldaketa-tasa ebaluatu: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3648"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3656"/>
         <source>The make_valid parameters require a newer GEOS library version</source>
         <translation>make_valid parametroek GEOS liburutegiaren bertsio berriagoa behar dute</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3793"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3801"/>
         <source>Point index is out of range</source>
         <translation>Puntuaren indizea barrutitik kanpo dago</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4313"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4321"/>
         <source>Function make_point requires 2-4 arguments</source>
         <translation>make_point funtzioak 2-4 argumentu behar ditu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4391"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4399"/>
         <source>Function make_polygon requires an argument</source>
         <translation>make_polygon funtzioak argumentu bat behar du</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4505"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4541"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4513"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4549"/>
         <source>Segment must be greater than 2</source>
         <translation>Segmentuak 2 baino handiago izan behar du</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4581"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4589"/>
         <source>Number of edges/sides must be greater than 2</source>
         <translation>Ertze/alboen kopuruak 2 baino handiagoa izan behar du</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4588"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4596"/>
         <source>Option can be 0 (inscribed) or 1 (circumscribed)</source>
         <translation>Aukerak bi dira, 0 (inskribatua) edo 1 (zirkunskribatua)</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4669"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4677"/>
         <source>Option can be 0 (distance) or 1 (projected)</source>
         <translation>Aukerak bi dira, 0 (distantzia) edo 1 (proiektatua)</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4690"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4698"/>
         <source>Index is out of range</source>
         <translation>Indizea barrutitik kanpo dago</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4923"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4931"/>
         <source>An error occurred while calculating perimeter</source>
         <translation>Errorea gertatu da perimetroa kalkulatzean</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5193"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5201"/>
         <source>Function `sinuosity` requires a line geometry.</source>
         <translation>`sinuosity` funtzioak lerroen geometria bat behar du.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5206"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5214"/>
         <source>Function `straight_distance_2d` requires a line geometry or a multi line geometry with a single part.</source>
         <translation>`straight_distance_2d` funtzioak atal bakarreko lerroen edo lerroanitzen geometria bat behar du.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5220"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5228"/>
         <source>Function `roundness` requires a polygon geometry or a multi polygon geometry with a single part.</source>
         <translation>`roundness` funtzioak poligonoen edo atal bakarreko poligono anitzen geometria bat behar du.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5544"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5552"/>
         <source>Function `wedge_buffer` requires a point value for the center.</source>
         <translation>`wedge_buffer` funtzioak puntu-balio bat behar du erdigunerako.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5563"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5571"/>
         <source>Function `tapered_buffer` requires a line geometry.</source>
         <translation>`tapered_buffer` funtzioak lerroen geometria bat behar du.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5581"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5589"/>
         <source>Function `buffer_by_m` requires a line geometry.</source>
         <translation>`buffer_by_m` funtzioak lerroen geometria bat behar du.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5680"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5688"/>
         <source>Function &apos;rotate&apos; requires a point value for the center</source>
         <translation>&apos;rotate&apos; funtzioak puntu-balio bat behar du erdigunerako.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5708"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5716"/>
         <source>Function &apos;scale&apos; requires a point value for the center</source>
         <translation>&apos;scale&apos; funtzioak puntu-balio bat behar du erdigunerako.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5809"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5817"/>
         <source>Error caught in concave_hull() function: %1</source>
         <translation>Errorea aurkitu da concave_hull() funtzioan: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5823"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5831"/>
         <source>Parameter can not be negative.</source>
         <translation>Parametroak ezin du negatiboa izan</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5853"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5861"/>
         <source>Error calculating polygon main angle: %1</source>
         <translation>Errorea poligonoaren angelu nagusia kalkulatzean: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6015"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6023"/>
         <source>Function `azimuth` requires exactly two parameters. %n given.</source>
         <translation><numerusform>`azimuth` funtzioak bi parametro behar ditu. %n eman da.</numerusform><numerusform>`azimuth` funtzioak bi parametro behar ditu. %n eman dira.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6048"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6056"/>
         <source>Function `azimuth` requires two points as arguments.</source>
         <translation>`azimuth` funtzioak bi puntu behar ditu argumentu gisa.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6107"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6115"/>
         <source>Function `bearing` requires two valid point geometries.</source>
         <translation>`bearing` funtzioak baliozko bi puntu-geometria behar ditu.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6115"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6123"/>
         <source>Function `bearing` requires point geometries or multi point geometries with a single part.</source>
         <translation>`bearing` fuuntzioak puntu-geometriak edo atal bakarreko puntu anitzeko geometriak behar ditu.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6137"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6145"/>
         <source>Function `bearing` requires a valid source CRS.</source>
         <translation>`bearing` funtzioak baliozko iturburuko CRSa behar du.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6145"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6153"/>
         <source>Function `bearing` requires a valid ellipsoid acronym or ellipsoid authority ID.</source>
         <translation>`bearing` funtzioak elipsoidearen baliozko akronimoa edo autoritatearen IDa behar d.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6159"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6167"/>
         <source>Error caught in bearing() function: %1</source>
         <translation>Errorea bearing() funtzioan: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6379"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6387"/>
         <source>line_substring requires a curve geometry input</source>
         <translation>line_substring parametroak kurben geometria bat behar du sarrera gisa</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6502"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6510"/>
         <source>Number of places must be positive</source>
         <translation>Kokapen kopuruak positiboa izan behar du</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6609"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6617"/>
         <source>Both color arguments must have the same type (string or color object)</source>
         <translation>Kolore-argumentu biek mota bera izan behar dute (katea edo kolore-objektua)</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6624"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6632"/>
         <source>Both color arguments must have compatible color type (CMYK or RGB/HSV/HSL)</source>
         <translation>Kolore-argumentu biek kolore mota bateragarria izan behar dute (CMYK edo RGB/HSV/HSL)</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6664"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6784"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6841"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6672"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6792"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6849"/>
         <source>Cannot convert &apos;%1:%2:%3&apos; to color</source>
         <translation>Ezin da &apos;%1:%2:%3&apos; kolore batean bihurtu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6680"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6734"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6805"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6821"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6862"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6878"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6918"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6688"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6742"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6813"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6829"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6870"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6886"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6926"/>
         <source>Cannot convert &apos;%1:%2:%3:%4&apos; to color</source>
         <translation>Ezin da &apos;%1:%2:%3:%4&apos; kolore batean bihurtu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6755"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6763"/>
         <source>&quot;%1&quot; is not a valid color ramp</source>
         <translation>&quot;%1&quot; ez da baliozko kolore-malda bat</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6896"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6941"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6904"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6949"/>
         <source>Cannot convert &apos;%1:%2:%3:%4:%5&apos; to color</source>
         <translation>Ezin da &apos;%1:%2:%3:%4:%5&apos; kolore batean bihurtu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7005"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7013"/>
         <location filename="../src/core/expression/qgsexpressionutils.cpp" line="55"/>
         <source>Cannot convert &apos;%1&apos; to color</source>
         <translation>Ezin izan da &apos;%1&apos; kolorera bihurtu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7489"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7497"/>
         <source>Function `decode_uri` requires a valid layer.</source>
         <translation>`decode_uri` funtzioak baliozko geruza bat behar du.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7515"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7523"/>
         <source>Invalid band number %1 for layer</source>
         <translation>Banda-zenbaki baliogabea (%1) geruzarako</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6985"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7073"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6993"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7081"/>
         <source>Unknown color component &apos;%1&apos;</source>
         <translation>&apos;%1&apos; kolore-osagai ezezaguna</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6994"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7002"/>
         <source>A minimum of two colors is required to create a ramp</source>
         <translation>Gutxienez bi kolore behar dira malda bat sortzeko</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7145"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7153"/>
         <source>Transform error caught in transform() function: %1</source>
         <translation>Transformazio-errorea atzitu da transform() funtzioan: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7469"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7477"/>
         <source>Layer %1 has invalid data provider</source>
         <translation>%1 geruzak baliogabeko datu-hornitzailea du</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7535"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7543"/>
         <source>Invalid raster statistic: &apos;%1&apos;</source>
         <translation>Baliogabeko raster estatistika: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7565"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7573"/>
         <source>Function `raster_statistic` requires a valid raster layer.</source>
         <translation>`raster_statistic` funtzioak baliozko raster geruza behar du.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7783"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7832"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7791"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7840"/>
         <source>No such option &apos;%1&apos;</source>
         <translation>Ez dago &apos;%1&apos; aukerarik</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7953"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7961"/>
         <source>Function array_replace requires 2 or 3 arguments</source>
         <translation>array_replace funtzioak 2 edo 3 argumentu behar ditu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8360"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8368"/>
         <source>Hash method %1 is not available on this system.</source>
         <translation>%1 hash-metodoa ez dago erabilgarri sistema honetan.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8451"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8459"/>
         <source>Layer &apos;%1&apos; could not be loaded.</source>
         <translation>&apos;%1&apos; geruza ezin izan da kargatu.</translation>
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="437"/>
-        <location filename="../src/core/pal/feature.cpp" line="2756"/>
-        <location filename="../src/core/pal/feature.cpp" line="2797"/>
+        <location filename="../src/core/pal/feature.cpp" line="2773"/>
+        <location filename="../src/core/pal/feature.cpp" line="2814"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="359"/>
         <location filename="../src/core/pal/labelposition.cpp" line="195"/>
         <location filename="../src/core/pal/labelposition.cpp" line="222"/>
@@ -23074,8 +23074,8 @@ Distantzia geruza-unitateetan adierazten dira eta norakoa graduetan, iparraldeti
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="437"/>
-        <location filename="../src/core/pal/feature.cpp" line="2756"/>
-        <location filename="../src/core/pal/feature.cpp" line="2797"/>
+        <location filename="../src/core/pal/feature.cpp" line="2773"/>
+        <location filename="../src/core/pal/feature.cpp" line="2814"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="359"/>
         <location filename="../src/core/pal/labelposition.cpp" line="195"/>
         <location filename="../src/core/pal/labelposition.cpp" line="222"/>
@@ -26091,7 +26091,7 @@ Aukeran, geruzak lehendik dagoen kalkulu-orri bati erantsi dakizkioke, orri gehi
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmheatmap.cpp" line="76"/>
         <source>An optional numeric field from the input layer which specifies a per-feature radius to use instead of the global radius parameter.</source>
-        <translation type="unfinished"/>
+        <translation>Sarrerako geruzako zenbakizko eremu bat, aukerakoa, elementuz elementuko erradioa zehazten duena eta erradio-parametro globalaren ordez erabiliko dena.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmheatmap.cpp" line="79"/>
@@ -29016,7 +29016,7 @@ Atributu gehigarriak eta haien balioak bigarren geruza bektorial batetik hartuko
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1261"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4863"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4871"/>
         <source>An error occurred while calculating area</source>
         <translation>Errorea gertatu da area kalkulatzean</translation>
     </message>
@@ -34497,7 +34497,8 @@ Sarrerako MultiLineString geometriak ez badaude konektatuta, emaitza gisa lortuk
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalbuildvpc.cpp" line="81"/>
         <source>When enabled, all the individual files in the virtual point cloud will also be converted to COPC format to allow rendering of their points in QGIS.
 When disabled, the format of each individual file will be preserved. This is faster, however only the extent will be rendered for files using formats other than COPC and EPT.</source>
-        <translation type="unfinished"/>
+        <translation>Gaituta dagoenean, puntu-hodei birtualeko banakako fitxategi guztiak ere COPC formatura bihurtuko dira, haien puntuak QGISen errendatu ahal izateko.
+Desgaituta dagoenean, banakako fitxategi bakoitzaren formatua mantenduko da. Hori azkarragoa da, baina COPC eta EPT ez diren beste formatu batzuk dituzten fitxategien kasuan, hedadura soilik errendatuko da.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalbuildvpc.cpp" line="89"/>
@@ -35132,22 +35133,22 @@ Note: Only raster pixels whose centroids are located within the boundary of a fe
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmhypsometriccurves.cpp" line="124"/>
         <source>Could not create output directory &apos;%1&apos;.</source>
-        <translation type="unfinished"/>
+        <translation>Ezin izan da irteerako “%1” direktorioa sortu.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmhypsometriccurves.cpp" line="174"/>
         <source>Feature %1 does not intersect the raster extent.</source>
-        <translation type="unfinished"/>
+        <translation>%1 elementua ez da ebakitzen raster hedadurarekin.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmhypsometriccurves.cpp" line="188"/>
         <source>Feature %1 is smaller than the raster cell size.</source>
-        <translation type="unfinished"/>
+        <translation>%1 elementua rasterraren gelaxka-tamaina baino txikiagoa da</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmhypsometriccurves.cpp" line="220"/>
         <source>Feature %1 does not intersect the raster or is entirely in a NODATA area.</source>
-        <translation type="unfinished"/>
+        <translation>%1 elementuak ez du rasterra ebakitzen edo osorik NODATA are batean dago</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmhypsometriccurves.cpp" line="238"/>
@@ -37100,7 +37101,7 @@ Algoritmo honek ez ditu atributuak aldatzen.</translation>
         <location filename="../src/core/layout/qgscompositionconverter.cpp" line="98"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="59"/>
         <location filename="../src/core/qgsdiagramrenderer.cpp" line="58"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3112"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3144"/>
         <source>Position (X)</source>
         <translation>Posizioa (X)</translation>
     </message>
@@ -37109,7 +37110,7 @@ Algoritmo honek ez ditu atributuak aldatzen.</translation>
         <location filename="../src/core/layout/qgscompositionconverter.cpp" line="99"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="60"/>
         <location filename="../src/core/qgsdiagramrenderer.cpp" line="59"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3113"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3145"/>
         <source>Position (Y)</source>
         <translation>Posizioa (Y)</translation>
     </message>
@@ -37267,13 +37268,13 @@ Algoritmo honek ez ditu atributuak aldatzen.</translation>
         <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="341"/>
         <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="540"/>
         <source>%1 metatiles (%2 tiles) will be created for zoom level %3</source>
-        <translation type="unfinished"/>
+        <translation>%1 metalauza (%2 lauza) sortuko dira %3 zoom-mailan</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="345"/>
         <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="544"/>
         <source>A total of %1 metatiles (%2 tiles) will be created</source>
-        <translation type="unfinished"/>
+        <translation>%1 metalauza (%2 lauza) sortuko dira guztira</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="411"/>
@@ -38186,103 +38187,104 @@ Erauzitako etiketa-informazioa honakoa da: posizioa (puntu-geometria modura eman
         <translation>Errorea aurkitu da %1 exekutatzean</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="576"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="586"/>
         <source>Algorithm “%1” cannot be run in a background thread, switching to main thread for this step</source>
         <translation>“%1” algoritmoa ezin da exekutatu atzeko planoko hari gisa, exekuzioa hari nagusira aldatu da urrats honetarako</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="594"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="578"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="609"/>
         <source>Error encountered while running %1: %2</source>
         <translation>Errorea aurkitu da %1 exekutatzean: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="657"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="672"/>
         <source>Results:</source>
         <translation>Emaitzak:</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="768"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="783"/>
         <source>OK. Execution took %1 s (%n output(s)).</source>
         <translation><numerusform>Ongi. Exekuzioak %1 segundo behar izan ditu (irteera %n).</numerusform><numerusform>Ongi. Exekuzioak %1 segundo behar izan ditu (%n irteera).</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="780"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="795"/>
         <source>Failed after %1 s.</source>
         <translation>Huts egin du %1 segundo ondoren.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="808"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="823"/>
         <source>Model processed OK. Executed %n algorithm(s) total in %1 s.</source>
         <translation><numerusform>Eredua ongi prozesatu da. Algoritmo %n exekutatu da %2 segundotan.</numerusform><numerusform>Eredua ongi prozesatu da. %n algoritmo exekutatu dira %2 segundotan.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1263"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1307"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1366"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1278"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1322"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1381"/>
         <source>Output &apos;%1&apos; from algorithm &apos;%2&apos;</source>
         <translation>&apos;%1&apos; irteera &apos;%2&apos; algoritmotik</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1337"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1404"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1352"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1419"/>
         <source>Minimum X of %1</source>
         <translation>%1 elementuaren X minimoa</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1338"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1405"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1353"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1420"/>
         <source>Minimum Y of %1</source>
         <translation>%1 elementuaren Y minimoa</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1339"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1406"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1354"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1421"/>
         <source>Maximum X of %1</source>
         <translation>%1 elementuaren X maximoa</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1340"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1407"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1355"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1422"/>
         <source>Maximum Y of %1</source>
         <translation>%1 elementuaren Y maximoa</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1564"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1579"/>
         <source>Model does not contain any algorithms</source>
         <translation>Ereduak ez du algoritmorik</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2418"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2433"/>
         <source>Algorithm is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Algoritmoa ez dago erabilgarri: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2439"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2454"/>
         <source>Value for &lt;i&gt;%1&lt;/i&gt; is not acceptable for this parameter</source>
         <translation>&lt;i&gt;%1&lt;/i&gt; balioa ez da onargarria parametro honetarako</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2447"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2462"/>
         <source>Model input &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>&lt;i&gt;%2&lt;/i&gt; parametrorako erabilitako &lt;i&gt;%1&lt;/i&gt; eredu-sarrera ez da existitzen</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2455"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2470"/>
         <source>Child algorithm &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>&lt;i&gt;%2&lt;/i&gt; parametrorako erabilitako &lt;i&gt;%1&lt;/i&gt; algoritmo umea ez da existitzen</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2477"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2492"/>
         <source>Parameter &lt;i&gt;%1&lt;/i&gt; is mandatory</source>
         <translation>&lt;i&gt;%1&lt;/i&gt; parametroa derrigorrezkoa da</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2486"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2501"/>
         <source>Invalid child ID: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>ID ume baliogabea: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2501"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2516"/>
         <source>The model you are trying to run contains an algorithm that is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Exekutatu nahi duzun ereduak erabilgarri ez dagoen algoritmo bat du: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
@@ -38725,7 +38727,7 @@ Erauzitako etiketa-informazioa honakoa da: posizioa (puntu-geometria modura eman
     </message>
     <message>
         <location filename="../src/core/qgsdiagramrenderer.cpp" line="64"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3114"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3146"/>
         <source>Show diagram</source>
         <translation>Erakutsi diagrama</translation>
     </message>
@@ -46793,12 +46795,12 @@ Erauzitako ikurrak QGIS estiloen datu-base batean gordetzen dira (XML formatuan)
     </message>
     <message>
         <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="821"/>
-        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="980"/>
+        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="976"/>
         <source>ESRI visualVariable type &apos;%1&apos; is not currently supported</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="1027"/>
+        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="1023"/>
         <source>ESRI classification mode &apos;%1&apos; is not currently supported</source>
         <translation type="unfinished"/>
     </message>
@@ -47010,37 +47012,37 @@ Erauzitako ikurrak QGIS estiloen datu-base batean gordetzen dira (XML formatuan)
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="201"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="340"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="342"/>
         <source>Error creating output file.</source>
         <translation>Errorea irteera-fitxategia sortzean.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="203"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="342"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="344"/>
         <source>Error reading input layer.</source>
         <translation>Errorea sarrera-fitxategia irakurtzean.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="205"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="344"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="346"/>
         <source>Error parsing formula.</source>
         <translation>Errorea formula analizatzean.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="207"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="346"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="348"/>
         <source>Error allocating memory for result.</source>
         <translation>Errorea emaitzarako memoria esleitzean.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="209"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="348"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="350"/>
         <source>Invalid band number for input.</source>
         <translation>Banda-zenbaki baliogabea sarrerarako</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="211"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="350"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="352"/>
         <source>Error occurred while performing calculation.</source>
         <translation>Errorea gertatu da kalkulua gauzatzean.</translation>
     </message>
@@ -49138,7 +49140,7 @@ Kalkulatutako balio estatistikoen irteera HTML fitxategi gisa sortzen da.</trans
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtolayer.cpp" line="186"/>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtopoint.cpp" line="112"/>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtopoint.cpp" line="127"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4898"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4906"/>
         <source>An error occurred while calculating length</source>
         <translation>Errorea gertatu da luzera kalkulatzean</translation>
     </message>
@@ -52873,7 +52875,7 @@ Sortutako puntuen geruza hautatutako raster geruzaren erreferentzia-sistema espa
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="874"/>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1091"/>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1760"/>
-        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1886"/>
+        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1899"/>
         <source>Remove</source>
         <translation>Kendu</translation>
     </message>
@@ -52881,7 +52883,7 @@ Sortutako puntuen geruza hautatutako raster geruzaren erreferentzia-sistema espa
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="876"/>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1093"/>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1762"/>
-        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1888"/>
+        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1901"/>
         <source>Edit…</source>
         <translation>Editatu…</translation>
     </message>
@@ -56168,116 +56170,121 @@ Xehetasun gehiagorako, begiratu honako argitalpenak:
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="452"/>
+        <source>Transverse Mercator Zoned Grid System</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="454"/>
         <source>Two Point Equidistant</source>
         <translation>Bi puntuko distantziakidea</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="454"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="456"/>
         <source>Tilted Perspective</source>
         <translation>Perspektiba lauzatua</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="456"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="458"/>
         <source>Universal Polar Stereographic</source>
         <translation>Unibertsal polar estereografikoa</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="458"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="460"/>
         <source>Urmaev V</source>
         <translation>Urmaev V</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="460"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="462"/>
         <source>Urmaev Flat-Polar Sinusoidal</source>
         <translation>Urmaev lau-polar sinusoidala</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="462"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="464"/>
         <source>Universal Transverse Mercator (UTM)</source>
         <translation>Mercator zeharkako unibertsala (UTM)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="464"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="466"/>
         <source>van der Grinten (I)</source>
         <translation>van der Grinten (I)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="466"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="468"/>
         <source>van der Grinten II</source>
         <translation>van der Grinten II</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="468"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="470"/>
         <source>van der Grinten III</source>
         <translation>van der Grinten III</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="470"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="472"/>
         <source>van der Grinten IV</source>
         <translation>van der Grinten IV</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="472"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="474"/>
         <source>Vitkovsky I</source>
         <translation>Vitkovsky I</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="474"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="476"/>
         <source>Wagner I (Kavraisky VI)</source>
         <translation>Wagner I (Kavraisky VI)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="476"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="478"/>
         <source>Wagner II</source>
         <translation>Wagner II</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="478"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="480"/>
         <source>Wagner III</source>
         <translation>Wagner III</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="480"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="482"/>
         <source>Wagner IV</source>
         <translation>Wagner IV</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="482"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="484"/>
         <source>Wagner V</source>
         <translation>Wagner V</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="484"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="486"/>
         <source>Wagner VI</source>
         <translation>Wagner VI</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="486"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="488"/>
         <source>Wagner VII</source>
         <translation>Wagner VII</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="488"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="490"/>
         <source>Werenskiold I</source>
         <translation>Werenskiold I</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="490"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="492"/>
         <source>Winkel I</source>
         <translation>Winkel I</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="492"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="494"/>
         <source>Winkel II</source>
         <translation>Winkel II</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="494"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="496"/>
         <source>Winkel Tripel</source>
         <translation>Winkel Tripel</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="496"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="498"/>
         <source>Gauss-Schreiber</source>
         <translation>Gauss-Schreiber</translation>
     </message>
@@ -58353,7 +58360,7 @@ Irteerako geruza sarrerako geruzaren kopia bat izango da, baina eremu gehigarria
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconcavehullbyfeature.cpp" line="62"/>
         <source>For point and line layers, a concave hull is a polygon which contains all the vertices of the input geometries, but is a better approximation than the convex hull to the area occupied by the input.</source>
-        <translation type="unfinished"/>
+        <translation>Puntuen eta lerroen geruzetan, kono ahurra sarrerako geometria bateko erpin guztiak dituen poligono bat da, baina sarrerak betetzen duen arearen kono ganbila baino hurbilketa hobea da.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconcavehullbyfeature.cpp" line="64"/>
@@ -58390,7 +58397,7 @@ Irteerako geruza sarrerako geruzaren kopia bat izango da, baina eremu gehigarria
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconcavehullbyfeature.cpp" line="135"/>
         <source>Cannot calculate concave hull for a single point feature (%1) (try &apos;Concave hull (by layer)&apos; algorithm instead).</source>
-        <translation type="unfinished"/>
+        <translation>Ezin da kono ahurra kalkulatu puntu bakarreko elementuetarako (%1) (horren ordez, probatu &apos;Kono ahurra (geruzaren arabera)&apos; algoritmoa).</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconcavehullbyfeature.cpp" line="171"/>
@@ -58548,12 +58555,12 @@ Gainjartzen diren edo zehaztutako tarte-zabalera baino handiagoak diren tarteak 
         <location filename="../src/analysis/processing/qgsalgorithmdistancematrix.cpp" line="36"/>
         <location filename="../src/analysis/processing/qgsalgorithmdistancematrix.cpp" line="122"/>
         <source>Distance matrix</source>
-        <translation type="unfinished"/>
+        <translation>Distantzia-matrizea</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancematrix.cpp" line="41"/>
         <source>point,distance,matrix,nearest,closest,summary</source>
-        <translation type="unfinished"/>
+        <translation>puntua,distantzia,matrizea,hurbilena,hurkoena,laburpena</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancematrix.cpp" line="56"/>
@@ -58639,7 +58646,7 @@ If ellipsoidal calculations are enabled, the algorithm bypasses the spatial inde
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancematrix.cpp" line="114"/>
         <source>Use only the nearest (k) target points</source>
-        <translation type="unfinished"/>
+        <translation>Erabili helburu-puntu hurbilenak soilik (k)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancematrix.cpp" line="115"/>
@@ -58659,22 +58666,22 @@ If ellipsoidal calculations are enabled, the algorithm bypasses the spatial inde
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancematrix.cpp" line="135"/>
         <source>Input point layer is a MultiPoint layer - convert to single points before using this algorithm.</source>
-        <translation type="unfinished"/>
+        <translation>Sarrerako geruza puntu anitzeko geruza da - bihurtu puntu bakarretara algoritmo hau erabili baino lehen.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancematrix.cpp" line="146"/>
         <source>Target point layer is a MultiPoint layer - convert to single points before using this algorithm.</source>
-        <translation type="unfinished"/>
+        <translation>Helburuko geruza puntu anitzekoa da - bihurtu puntu bakarretara algoritmo hau erabili baino lehen.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancematrix.cpp" line="155"/>
         <source>Missing field %1 in source layer</source>
-        <translation type="unfinished"/>
+        <translation>%1 eremua falta da iturburuko geruzan</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdistancematrix.cpp" line="161"/>
         <source>Missing field %1 in target layer</source>
-        <translation type="unfinished"/>
+        <translation>%1 eremua falta da helburuko geruzan</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexportgeometryattributes.cpp" line="37"/>
@@ -58798,12 +58805,12 @@ Hori baino lehen, QGISen eta SpatiaLite datu-basearen arteko konexio bat sortu b
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextrude.cpp" line="41"/>
         <source>Extrude</source>
-        <translation type="unfinished"/>
+        <translation>Estruitu</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextrude.cpp" line="46"/>
         <source>extrude,extrusion,3d,volume</source>
-        <translation type="unfinished"/>
+        <translation>estruitu,estrusioa,3d,bolumena</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextrude.cpp" line="61"/>
@@ -58821,7 +58828,7 @@ Output geometries are of type PolyhedralSurfaceZ, representing the extruded surf
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextrude.cpp" line="77"/>
         <source>Generates a 3D extrusion from 2D polygon features.</source>
-        <translation type="unfinished"/>
+        <translation>3D estrusioa sortzen du 2D poligonoetatik abitatuta.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmextrude.cpp" line="92"/>
@@ -60515,27 +60522,27 @@ Datuen raster pilan banda anitzeko rasterrak erabiltzen badira, algoritmoak anal
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrelief.cpp" line="68"/>
         <source>If checked, relief classes (colors and elevation ranges) will be generated automatically based on the input layer&apos;s statistics.</source>
-        <translation type="unfinished"/>
+        <translation>Markatuta badago, erliebe-klaseak (koloreak eta garaiera-tarteak) automatikoki sortuko dira, sarrerako geruzaren estatistiketan oinarrituta.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrelief.cpp" line="71"/>
         <source>Relief colors</source>
-        <translation type="unfinished"/>
+        <translation>Erliebe-koloreak</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrelief.cpp" line="73"/>
         <source>The color classes to use for the relief. Each class is defined by a minimum elevation, maximum elevation, and a color. Ignored if &apos;Generate relief classes automatically&apos; is checked.</source>
-        <translation type="unfinished"/>
+        <translation>Erlieberako erabilitako kolore-klaseak. Klase bakoitza definitzeko, garaiera minimoa, garaiera maximoa eta kolorea zehazten dira. Ez ikusiarena egingo zaio &apos;Sortu erliebe-klaseak automatikoki&apos; gaituta badago.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrelief.cpp" line="78"/>
         <source>The output shaded relief raster layer.</source>
-        <translation type="unfinished"/>
+        <translation>Erliebe itzaleztatuaren irteerako raster geruza.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrelief.cpp" line="82"/>
         <source>Frequency distribution</source>
-        <translation type="unfinished"/>
+        <translation>Maiztasun-banaketa</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrelief.cpp" line="82"/>
@@ -60545,22 +60552,22 @@ Datuen raster pilan banda anitzeko rasterrak erabiltzen badira, algoritmoak anal
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrelief.cpp" line="83"/>
         <source>An optional CSV file to save the frequency distribution of the relief classes.</source>
-        <translation type="unfinished"/>
+        <translation>Erliebe-klaseen maiztasun-banaketa gordetzeko CSV fitxategi bat, aukerakoa.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrelief.cpp" line="89"/>
         <source>This algorithm creates a shaded relief layer from digital elevation data.</source>
-        <translation type="unfinished"/>
+        <translation>Algoritmo honek erliebe itzaleztatuen geruza bat sortzen du garaieren datu digitaletatik abiatuta.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrelief.cpp" line="94"/>
         <source>Creates a shaded relief layer from digital elevation data.</source>
-        <translation type="unfinished"/>
+        <translation>Erliebe itzaleztatuen geruza bat sortzen du garaieren datu digitaletatik abiatuta.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrelief.cpp" line="133"/>
         <source>Specify relief colors or activate &quot;Generate relief classes automatically&quot; option.</source>
-        <translation type="unfinished"/>
+        <translation>Adierazi erliebe-koloreak edo aktibatu &quot;Sortu erliebe-klaseak automatikoki&quot; aukera.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrelief.cpp" line="149"/>
@@ -61693,32 +61700,32 @@ Irteera honek nodoak baliogabeak zergatik diren azaltzen duen atributu bat du.</
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="377"/>
         <source>Feature Relations</source>
-        <translation type="unfinished"/>
+        <translation>Elementu-erlazioak</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="377"/>
         <source>Feature Relation</source>
-        <translation type="unfinished"/>
+        <translation>Elementu-erlazioa</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="379"/>
         <source>Datastream Relations</source>
-        <translation type="unfinished"/>
+        <translation>Datu-korronteen erlazioak</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="379"/>
         <source>Datastream Relation</source>
-        <translation type="unfinished"/>
+        <translation>Datu-korronteen erlazioa</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="381"/>
         <source>Observation Relations</source>
-        <translation type="unfinished"/>
+        <translation>Behaketa-erlazioak</translation>
     </message>
     <message>
         <location filename="../src/core/providers/sensorthings/qgssensorthingsutils.cpp" line="381"/>
         <source>Observation Relation</source>
-        <translation type="unfinished"/>
+        <translation>Behaketa-erlazioa</translation>
     </message>
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="823"/>
@@ -61870,7 +61877,7 @@ Irteera honek nodoak baliogabeak zergatik diren azaltzen duen atributu bat du.</
         <translation>QgsSettingsTreeNamedListNode::items funtzioaren uneko inplementazioak ezin ditu izendun 5 elementu guraso baino gehiago maneiatu</translation>
     </message>
     <message>
-        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="762"/>
+        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="764"/>
         <location filename="../src/gui/stac/qgsstacsourceselectprovider.cpp" line="36"/>
         <source>STAC</source>
         <translation>STAC</translation>
@@ -62084,22 +62091,22 @@ Irteera honek nodoak baliogabeak zergatik diren azaltzen duen atributu bat du.</
         <translation>Alanbre-bilbea</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="290"/>
+        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="291"/>
         <source>Topological points added by &apos;%1&apos;</source>
         <translation>Puntu topologikoak &apos;%1&apos; arabera gehituta</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="970"/>
+        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="1023"/>
         <source>List of features to merge is empty</source>
         <translation>Fusionatuko den elementuen zerrenda hutsik dago</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="988"/>
+        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="1041"/>
         <source>Could not store value &apos;%1&apos; in field of type %2: %3</source>
         <translation>Ezin da &apos;%1&apos; balioa gorde %2 motako eremuan: %3</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="993"/>
+        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="1046"/>
         <source>Merged features</source>
         <translation>Fusionatutako elementuak</translation>
     </message>
@@ -62375,7 +62382,7 @@ Jarraitu nahi duzu?</translation>
     <message>
         <location filename="../src/gui/vector/qgsattributesformview.cpp" line="556"/>
         <source>No QML code</source>
-        <translation type="unfinished"/>
+        <translation>QML koderik ez</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsattributesformview.cpp" line="580"/>
@@ -65788,12 +65795,12 @@ Utzi bertan behera zeregin horiek eta saiatu berriro.</translation>
     <message>
         <location filename="../src/ui/3d/qgs3dcameracontrolswidget.ui"/>
         <source>Heading</source>
-        <translation type="unfinished"/>
+        <translation>Ukurtzea</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/qgs3dcameracontrolswidget.ui"/>
         <source>Pitch</source>
-        <translation type="unfinished"/>
+        <translation>Kulunka</translation>
     </message>
     <message>
         <location filename="../src/app/3d/qgs3dcameracontrolswidget.cpp" line="94"/>
@@ -68017,40 +68024,40 @@ Ezabatu elementuak?</numerusform></translation>
         <translation>Atzitu objektuen IDak</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="392"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="413"/>
         <source>Error while deleting features: %1</source>
         <translation>Errorea elementuak ezabatzean: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="425"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="446"/>
         <source>Error while adding features: %1</source>
         <translation>Errorea elementuak gehitzean: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="474"/>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="504"/>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="517"/>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="574"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="495"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="525"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="538"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="595"/>
         <source>Error while updating features: %1</source>
         <translation>Errorea elementuak eguneratzean: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="593"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="614"/>
         <source>Error while adding fields: %1</source>
         <translation>Errorea eremuak gehitzean: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="610"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="631"/>
         <source>Error while deleting fields: %1</source>
         <translation>Errorea eremuak ezabatzean: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="632"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="653"/>
         <source>Error while creating attribute index: %1</source>
         <translation>Errorea atributu-indizea sortzean: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="734"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="755"/>
         <source>SQL 92 WHERE clause</source>
         <translation>SQL 92 WHERE sententzia</translation>
     </message>
@@ -69366,7 +69373,7 @@ Ezabatu elementuak?</numerusform></translation>
 <context>
     <name>QgsAppElevationProfileLayerTreeView</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1569"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1571"/>
         <source>Properties…</source>
         <translation>Propietateak…</translation>
     </message>
@@ -72597,7 +72604,7 @@ Ezabatu elementuak?</translation>
     <message>
         <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="85"/>
         <source>clear</source>
-        <translation type="unfinished"/>
+        <translation>garbitu</translation>
     </message>
     <message>
         <location filename="../src/gui/attributeformconfig/qgsattributetypedialog.cpp" line="136"/>
@@ -77180,7 +77187,7 @@ Eragiketa EZIN da desegin!</translation>
     <message>
         <location filename="../src/ui/plot/qgsbarchartplotwidgetbase.ui"/>
         <source>Axis label suffix</source>
-        <translation type="unfinished"/>
+        <translation>Ardatz-etiketaren atzizkia</translation>
     </message>
     <message>
         <location filename="../src/ui/plot/qgsbarchartplotwidgetbase.ui"/>
@@ -81712,7 +81719,7 @@ Ekintza lehenetsiak geruza-propietatearen &apos;Ekintza&apos; atalean aktibatzen
     <message>
         <location filename="../src/gui/proj/qgsprojectionselectiondialog.cpp" line="51"/>
         <source>No CRS (or unknown)</source>
-        <translation type="unfinished"/>
+        <translation>CRSrik ez (edo ezezaguna)</translation>
     </message>
     <message>
         <location filename="../src/gui/proj/qgsprojectionselectiondialog.cpp" line="52"/>
@@ -81733,7 +81740,7 @@ Ekintza lehenetsiak geruza-propietatearen &apos;Ekintza&apos; atalean aktibatzen
         <location filename="../src/gui/proj/qgsprojectionselectiondialog.cpp" line="56"/>
         <location filename="../src/gui/proj/qgsprojectionselectiondialog.cpp" line="264"/>
         <source>Topocentric CRS</source>
-        <translation type="unfinished"/>
+        <translation>CRS topozentrikoa</translation>
     </message>
 </context>
 <context>
@@ -82441,7 +82448,7 @@ Saiatu CRS definizioa WKT formatura aldatuta.</translation>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1903"/>
         <source>This table is open in the current QGIS project and cannot be modified</source>
-        <translation type="unfinished"/>
+        <translation>Taula hau uneko QGIS proiektuan irekita dago eta ezin da aldatu</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1932"/>
@@ -82451,7 +82458,7 @@ Saiatu CRS definizioa WKT formatura aldatuta.</translation>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1935"/>
         <source>A table with this name already exists.</source>
-        <translation type="unfinished"/>
+        <translation>Badago izen hori duen taula bat.</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1951"/>
@@ -82486,7 +82493,7 @@ Saiatu CRS definizioa WKT formatura aldatuta.</translation>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="2085"/>
         <source>, </source>
-        <translation type="unfinished"/>
+        <translation>, </translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="2086"/>
@@ -87616,12 +87623,12 @@ Errorea: %2</translation>
 <context>
     <name>QgsElevationProfileScaleRatioWidgetSettingsAction</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1544"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1546"/>
         <source>Scale Ratio</source>
         <translation>Eskala-erlazioa</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1551"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1553"/>
         <source>Specifies the ratio of distance to elevation units used for the profile&apos;s scale</source>
         <translation>Profilaren eskalan distantziaren eta garaieraren artean erabiliko den erlazioa zehazten du</translation>
     </message>
@@ -87629,7 +87636,7 @@ Errorea: %2</translation>
 <context>
     <name>QgsElevationProfileToleranceWidgetSettingsAction</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1515"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1517"/>
         <source>Tolerance</source>
         <translation>Tolerantzia</translation>
     </message>
@@ -87790,98 +87797,98 @@ Errorea: %2</translation>
         <translation>Atrakatu garaiera-profilaren bista</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1066"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1064"/>
         <source>Export to PDF</source>
         <translation>Esportatu PDF gisa</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1066"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1064"/>
         <source>PDF Format</source>
         <translation>PDF formatua</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1094"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1114"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1092"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1112"/>
         <source>Save as PDF</source>
         <translation>Gorde PDF gisa</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1094"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1092"/>
         <source>Could not create %1</source>
         <translation>Ezin izan da %1 sortu</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1114"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1168"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1223"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1231"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1112"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1166"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1221"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1229"/>
         <source>Successfully saved the profile to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>Profila ondo gorde da hemen: &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1126"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1124"/>
         <source>Save Plot As</source>
         <translation>Gorde diagrama honela</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1145"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1167"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1143"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1165"/>
         <source>Save as Image</source>
         <translation>Gorde irudi gisa</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1145"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1143"/>
         <source>Could not create image</source>
         <translation>Ezin da irudia sortu</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1195"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1193"/>
         <source>Select Output File</source>
         <translation>Hautatu irteera-fitxategia</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1223"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1231"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1221"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1229"/>
         <source>Exported Profile</source>
         <translation>Esportatutako profila</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1241"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1239"/>
         <source>Export Failed</source>
         <translation>Esportazioak huts egin du</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1241"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1239"/>
         <source>The elevation profile could not be exported</source>
         <translation>Garaiera-profila ezin izan da esportatu</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1284"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1282"/>
         <source>Enter a unique elevation profile title</source>
         <translation>Sartu izenburu bakarra garaiera-profilerako</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1295"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1293"/>
         <source>Rename Elevation Profile</source>
         <translation>Berrizendatu garaiera-profila</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1299"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1297"/>
         <source>elevation profile</source>
         <translation>garaiera-profila</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1304"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1302"/>
         <source>An elevation profile with this name already exists.</source>
         <translation>Badago izen hori duen garaiera-profil bat.</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1314"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1312"/>
         <source>Title can not be empty!</source>
         <translation>Izenburuak ezin du hutsik egon!</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1346"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1344"/>
         <source>Subsections Symbol Selector</source>
         <translation>Azpisekzioen ikurren hautatzailea</translation>
     </message>
@@ -90228,10 +90235,6 @@ p, li { white-space: pre-wrap; }
         <translation>Geometria 45 gradu biratu da erlojuaren noranzkoan bere muga-koadroaren erdigunearen inguruan</translation>
     </message>
     <message>
-        <source>Returns a string padded on the right to the specified width, using a fill character. If the target width is smaller than the string&apos;s length, the string is truncated.</source>
-        <translation>Adierazitako zabaleran eskuinetik betetako kate bat itzultzen du, adierazitako betegarri-karakterea erabilita. Helburuko zabalera katearen luzera baino laburragoa bada, katea trunkatu egingo da.</translation>
-    </message>
-    <message>
         <source>rpad(&apos;Hello&apos;, 3, &apos;x&apos;)</source>
         <translation>rpad(&apos;Kaixo&apos;, 3, &apos;x&apos;)</translation>
     </message>
@@ -92254,39 +92257,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>\\ (backslash character)</source>
-        <translation type="unfinished"/>
+        <translation>\\ (alderantzizko barraren karakterea)</translation>
     </message>
     <message>
         <source>&apos;C:\\Users\\Name&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;C:\\Erabiltzaileak\\Izena&apos;</translation>
     </message>
     <message>
         <source>&apos;C:\Users\Name&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;C:\Erabiltzaileak\Izena&apos;</translation>
     </message>
     <message>
         <source>escape,backslash,string</source>
-        <translation type="unfinished"/>
+        <translation>ihesa,alderantzizko barra,katea</translation>
     </message>
     <message>
         <source>Inserts a newline character in a string literal.</source>
-        <translation type="unfinished"/>
+        <translation>Lerro berriaren karakterea txertatzen du kate literal batean.</translation>
     </message>
     <message>
         <source>\n (newline character)</source>
-        <translation type="unfinished"/>
+        <translation>\n (lerro berriaren karaktera)</translation>
     </message>
     <message>
         <source>&apos;Hello\nWorld&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Kaixo\nMundua&apos;</translation>
     </message>
     <message>
         <source>a string with a newline between &apos;Hello&apos; and &apos;World&apos;:&lt;br&gt;Hello&lt;br&gt;World</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Kaixo&apos; eta &apos;Mundua&apos; hitzen artean lerro berria duen kate bat:&lt;br&gt;Kaixo&lt;br&gt;Mundua</translation>
     </message>
     <message>
         <source>escape,newline,line,break,string</source>
-        <translation type="unfinished"/>
+        <translation>ihesa,lerro berria,lerroa,etena,katea</translation>
     </message>
     <message>
         <source>Inserts a literal single quote character in a string.</source>
@@ -95773,10 +95776,6 @@ p, li { white-space: pre-wrap; }
         <translation>&apos;BABC&apos;</translation>
     </message>
     <message>
-        <source>Returns a string padded on the left to the specified width, using a fill character. If the target width is smaller than the string&apos;s length, the string is truncated.</source>
-        <translation>Adierazitako zabaleran ezkerretik betetako kate bat itzultzen du, adierazitako betegarri-karakterea erabilita. Helburuko zabalera katearen luzera baino laburragoa bada, katea trunkatu egingo da.</translation>
-    </message>
-    <message>
         <source>lpad(&apos;Hello&apos;, 3, &apos;x&apos;)</source>
         <translation>lpad(&apos;Kaixo&apos;, 3, &apos;x&apos;)</translation>
     </message>
@@ -97766,23 +97765,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(3, 3), 0))</source>
-        <translation type="unfinished"/>
+        <translation>geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(3, 3), 0))</translation>
     </message>
     <message>
         <source>&apos;Polygon ((0 0, 0 5, 3.60555128 5, 3.60555128 0, 0 0))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((0 0, 0 5, 3.60555128 5, 3.60555128 0, 0 0))&apos;</translation>
     </message>
     <message>
         <source>geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(3, 3), 1))</source>
-        <translation type="unfinished"/>
+        <translation>geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(3, 3), 1))</translation>
     </message>
     <message>
         <source>&apos;Polygon ((0 0, 0 5, 3 5, 3 0, 0 0))&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;Polygon ((0 0, 0 5, 3 5, 3 0, 0 0))&apos;</translation>
     </message>
     <message>
         <source>Optional argument to construct the regular polygon. By default this value is 0. Value can be 0 (inscribed) or 1 (circumscribed).</source>
-        <translation type="unfinished"/>
+        <translation>Aukerako argumentuak poligono erregularra eraikitzeko. Balio lehenetsia 0 da. Balioa 0 izan daiteke (inskribatua) edo 1 (zirkunskribatua).</translation>
     </message>
     <message>
         <source>polygon,regular,inscribed,circumscribed</source>
@@ -98203,6 +98202,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>geom_to_wkt(line_substring(geometry:=geom_from_wkt(&apos;LineString(0 0, 10 0)&apos;),start_distance:=2,end_distance:=6))</source>
         <translation>geom_to_wkt(line_substring(geometry:=geom_from_wkt(&apos;LineString(0 0, 10 0)&apos;),start_distance:=2,end_distance:=6))</translation>
+    </message>
+    <message>
+        <source>Returns a string padded on the left to the specified width, using a fill character. If the target width is smaller than the string&apos;s length, the string is truncated. If the fill parameter is omitted, the function will default to a space character.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>lpad(&apos;Hello&apos;, 10)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&apos;     Hello&apos;</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Returns the m (measure) value of a point geometry.</source>
@@ -101026,15 +101037,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>color_rgbf(0.8, 0.6, 0.4) / 2</source>
-        <translation type="unfinished"/>
+        <translation>color_rgbf(0.8, 0.6, 0.4) / 2</translation>
     </message>
     <message>
         <source>RGBA: 0.40,0.30,0.20,1.00</source>
-        <translation type="unfinished"/>
+        <translation>RGBA: 0.40,0.30,0.20,1.00</translation>
     </message>
     <message>
         <source>division,values,color</source>
-        <translation type="unfinished"/>
+        <translation>zatiketa,balioak,kolorea</translation>
     </message>
     <message>
         <source>Floor division of two values</source>
@@ -101058,15 +101069,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>color_rgbf(0.8, 0.6, 0.4) - 0.1</source>
-        <translation type="unfinished"/>
+        <translation>color_rgbf(0.8, 0.6, 0.4) - 0.1</translation>
     </message>
     <message>
         <source>RGBA: 0.70,0.50,0.30,1.00</source>
-        <translation type="unfinished"/>
+        <translation>RGBA: 0.70,0.50,0.30,1.00</translation>
     </message>
     <message>
         <source>subtraction,null,result,values,color</source>
-        <translation type="unfinished"/>
+        <translation>kenketa,nulua,emaitza,balioak,kolorea</translation>
     </message>
     <message>
         <source>Remainder of division. Takes the sign of the dividend.</source>
@@ -101206,19 +101217,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>overlay_equals_exact</source>
-        <translation type="unfinished"/>
+        <translation>overlay_equals_exact</translation>
     </message>
     <message>
         <source>overlay_equals_exact(&apos;regions&apos;)</source>
-        <translation type="unfinished"/>
+        <translation>overlay_equals_exact(&apos;eskualdeak&apos;)</translation>
     </message>
     <message>
         <source>overlay_equals_exact(&apos;regions&apos;, filter:= population &gt; 10000)</source>
-        <translation type="unfinished"/>
+        <translation>overlay_equals_exact(&apos;eskualdeak&apos;, filter:= biztanleria &gt; 10000)</translation>
     </message>
     <message>
         <source>overlay_equals_exact(&apos;regions&apos;, name, backend:=&apos;GEOS&apos;)</source>
-        <translation type="unfinished"/>
+        <translation>overlay_equals_exact(&apos;eskualdeak&apos;, izena, backend:=&apos;GEOS&apos;)</translation>
     </message>
     <message>
         <source>an array of names, for the regions exactly equal to the current feature (example with &apos;GEOS&apos; backend)</source>
@@ -101242,7 +101253,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>overlay_equals_fuzzy</source>
-        <translation type="unfinished"/>
+        <translation>overlay_equals_fuzzy</translation>
     </message>
     <message>
         <source>maximum difference for coordinates between the vertices.</source>
@@ -101617,6 +101628,18 @@ p, li { white-space: pre-wrap; }
         <translation>Poligono-forma bat zirkulu batekin duen antzekotasuna kalkulatzen du. Funtzioak 1 itzultzen du poligono-forma zirkulu perfektua bada eta 0 erabat laua bada.</translation>
     </message>
     <message>
+        <source>Returns a string padded on the right to the specified width, using a fill character. If the target width is smaller than the string&apos;s length, the string is truncated. If the fill parameter is omitted, the function will default to a space character.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>rpad(&apos;Hello&apos;, 10)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&apos;Hello     &apos;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <source>Removes the longest string containing only the specified characters (a space by default) from the end of string.</source>
         <translation>Zehaztutako karaktereak (modu lehenetsian zuriune bat da) soilik duen katerik luzeena kentzen du katearen amaieratik</translation>
     </message>
@@ -101682,7 +101705,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>50.0</source>
-        <translation type="unfinished"/>
+        <translation>50.0</translation>
     </message>
     <message>
         <source>easing in and out using a symmetrical cubic Bézier curve</source>
@@ -101690,11 +101713,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>scale_cubic_bezier(5, 0, 10, 0, 100, 0.25, 0.1, 0.25, 1.0)</source>
-        <translation type="unfinished"/>
+        <translation>scale_cubic_bezier(5, 0, 10, 0, 100, 0.25, 0.1, 0.25, 1.0)</translation>
     </message>
     <message>
         <source>80.24034</source>
-        <translation type="unfinished"/>
+        <translation>80.24034</translation>
     </message>
     <message>
         <source>a standard ease curve, accelerating quickly before decelerating gradually</source>
@@ -101830,19 +101853,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>geom_to_wkt(square_wave(geom_from_wkt(&apos;LineString(0 0, 5 0)&apos;), 3, 1, false))</source>
-        <translation type="unfinished"/>
+        <translation>geom_to_wkt(square_wave(geom_from_wkt(&apos;LineString(0 0, 5 0)&apos;), 3, 1, false))</translation>
     </message>
     <message>
         <source>&apos;LineString (0 0, 0 1, 1.25 1, 1.25 -1, 2.5 -1, 2.5 1, 3.75 1, 3.75 -1, 5 -1, 5 0)&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;LineString (0 0, 0 1, 1.25 1, 1.25 -1, 2.5 -1, 2.5 1, 3.75 1, 3.75 -1, 5 -1, 5 0)&apos;</translation>
     </message>
     <message>
         <source>geom_to_wkt(square_wave(geom_from_wkt(&apos;LineString(0 0, 5 0)&apos;), 3, 1, true))</source>
-        <translation type="unfinished"/>
+        <translation>geom_to_wkt(square_wave(geom_from_wkt(&apos;LineString(0 0, 5 0)&apos;), 3, 1, true))</translation>
     </message>
     <message>
         <source>&apos;LineString (0 0, 0 1, 1.5 1, 1.5 -1, 3 -1, 3 1, 4.5 1, 5 0)&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;LineString (0 0, 0 1, 1.5 1, 1.5 -1, 3 -1, 3 1, 4.5 1, 5 0)&apos;</translation>
     </message>
     <message>
         <source>Counts the number of occurrences of a substring within a string. By default, the function counts non-overlapping occurrences (like in Python). If the third argument is set to true, the function counts overlapping occurrences (like in QT).</source>
@@ -102014,11 +102037,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Converts a string into a date object. An optional format string can be provided to parse the string; see &lt;a href=&apos;https://doc.qt.io/qt-6/qdate.html#fromString&apos;&gt;QDate::fromString&lt;/a&gt; or the documentation of the format_date function for additional documentation on the format. By default the current QGIS user locale is used.</source>
-        <translation type="unfinished"/>
+        <translation>Kate bat data-objektu bihurtzen du. Aukerako formatu-kate bat eman daiteke katea analizatzeko; ikusi &lt;a href=&apos;https://doc.qt.io/qt-6/qdate.html#fromString&apos;&gt;QDate::fromString&lt;/a&gt; &apos;format_date&apos; funtzioaren dokumentazioa formatuari buruzko informazio gehiagorako. Modu lehenetsian QGISen uneko hizkuntza erabiliko da.</translation>
     </message>
     <message>
         <source>Converts a string into a datetime object. An optional format string can be provided to parse the string; see &lt;a href=&apos;https://doc.qt.io/qt-6/qdate.html#fromString&apos;&gt;QDate::fromString&lt;/a&gt;, &lt;a href=&apos;https://doc.qt.io/qt-6/qtime.html#fromString&apos;&gt;QTime::fromString&lt;/a&gt; or the documentation of the format_date function for additional documentation on the format. By default the current QGIS user locale is used.</source>
-        <translation type="unfinished"/>
+        <translation>Kate bat data-ordu objektu bihurtzen du. Aukerako formatu-kate bat eman daiteke katea analizatzeko; ikusi &lt;a href=&apos;https://doc.qt.io/qt-6/qdate.html#fromString&apos;&gt;QDate::fromString&lt;/a&gt;, &lt;a href=&apos;https://doc.qt.io/qt-6/qtime.html#fromString&apos;&gt;QTime::fromString&lt;/a&gt; edo &apos;format_date&apos; funtzioaren dokumentazioa formatuari buruzko informazio gehiagorako. Modu lehenetsian QGISen uneko hizkuntza erabiliko da.</translation>
     </message>
     <message>
         <source>to_decimal(&apos;6°21\&apos;16.445&apos;)</source>
@@ -102054,7 +102077,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Converts a string into a time object. An optional format string can be provided to parse the string; see &lt;a href=&apos;https://doc.qt.io/qt-6/qtime.html#fromString&apos;&gt;QTime::fromString&lt;/a&gt; for additional documentation on the format.</source>
-        <translation type="unfinished"/>
+        <translation>Kate bat ordu-objektu bihurtzen du. Aukerako formatu-kate bat eman daiteke katea analizatzeko; ikusi &lt;a href=&apos;https://doc.qt.io/qt-6/qtime.html#fromString&apos;&gt;QTime::fromString&lt;/a&gt; formatuari buruzko dokumentazio gehiagorako.</translation>
     </message>
     <message>
         <source>the source CRS definition or CRS object</source>
@@ -102070,19 +102093,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>geom_to_wkt(triangular_wave(geom_from_wkt(&apos;LineString(0 0, 5 0)&apos;), 3, 1, false))</source>
-        <translation type="unfinished"/>
+        <translation>geom_to_wkt(triangular_wave(geom_from_wkt(&apos;LineString(0 0, 5 0)&apos;), 3, 1, false))</translation>
     </message>
     <message>
         <source>&apos;LineString (0 0, 0.625 1, 1.875 -1, 3.125 1, 4.375 -1, 5 0)&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;LineString (0 0, 0.625 1, 1.875 -1, 3.125 1, 4.375 -1, 5 0)&apos;</translation>
     </message>
     <message>
         <source>geom_to_wkt(triangular_wave(geom_from_wkt(&apos;LineString(0 0, 5 0)&apos;), 3, 1, true))</source>
-        <translation type="unfinished"/>
+        <translation>geom_to_wkt(triangular_wave(geom_from_wkt(&apos;LineString(0 0, 5 0)&apos;), 3, 1, true))</translation>
     </message>
     <message>
         <source>&apos;LineString (0 0, 0.75 1, 2.25 -1, 3.75 1, 5 0)&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;LineString (0 0, 0.75 1, 2.25 -1, 3.75 1, 5 0)&apos;</translation>
     </message>
     <message>
         <source>Tries an expression and returns its value if error-free. If the expression returns an error, an alternative value will be returned when provided otherwise the function will return NULL.</source>
@@ -102789,12 +102812,12 @@ p, li { white-space: pre-wrap; }
         <translation>maximum</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="10619"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="10637"/>
         <source>If represent_value is called with 1 parameter, it must be an attribute.</source>
         <translation>represent_value parametro batekin deitzen bada, atributu bat izan behar du.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="10629"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="10647"/>
         <source>represent_value must be called with exactly 1 or 2 parameters.</source>
         <translation>represent_value 1 edo 2 parametrorekin deitu behar da.</translation>
     </message>
@@ -103389,12 +103412,12 @@ Aldatu scriptaren izena eta gorde QGISek abioan automatikoki karga dezan.</trans
     <message>
         <location filename="../src/core/expression/qgsexpressionnodeimpl.cpp" line="509"/>
         <source>Cannot combine a CMYK color with a non-CMYK color</source>
-        <translation type="unfinished"/>
+        <translation>Ezin da CMYK kolore bat CMYK ez den kolore batekin konbintau</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionnodeimpl.cpp" line="531"/>
         <source>Cannot combine a non-CMYK color with a CMYK color</source>
-        <translation type="unfinished"/>
+        <translation>Ezin da CMYK ez den kolore bat CMYK kolore batekin konbinatu</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionnodeimpl.cpp" line="571"/>
@@ -105031,7 +105054,7 @@ Aldatu scriptaren izena eta gorde QGISek abioan automatikoki karga dezan.</trans
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1456"/>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1554"/>
         <source>This table is open in the current QGIS project and cannot be modified</source>
-        <translation type="unfinished"/>
+        <translation>Taula hau irekita dago uneko QGIS proiektuan eta ezin da aldatu</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1466"/>
@@ -105049,7 +105072,7 @@ Aldatu scriptaren izena eta gorde QGISek abioan automatikoki karga dezan.</trans
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1468"/>
         <source>A field with this name already exists.</source>
-        <translation type="unfinished"/>
+        <translation>Badago lehendik izen hori duen eremu bat.</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1482"/>
@@ -105411,22 +105434,22 @@ Eremu hau geometria-zutabe bat da, kentzen bada QGISek agian ezin izango du taul
     <message>
         <location filename="../src/core/network/qgsfileuploader.cpp" line="75"/>
         <source>Error reading file %1</source>
-        <translation type="unfinished"/>
+        <translation>Errorea %1 fitxategia irakurtzean</translation>
     </message>
     <message>
         <location filename="../src/core/network/qgsfileuploader.cpp" line="105"/>
         <source>Network request %1 timed out</source>
-        <translation type="unfinished"/>
+        <translation>%1 sare-eskaria denboraz kanpo</translation>
     </message>
     <message>
         <location filename="../src/core/network/qgsfileuploader.cpp" line="109"/>
         <source>Upload failed, Server returned: %1</source>
-        <translation type="unfinished"/>
+        <translation>Igoerak huts egin du, zerbitzariak %1 itzuli d</translation>
     </message>
     <message>
         <location filename="../src/core/network/qgsfileuploader.cpp" line="113"/>
         <source>Upload failed: %1</source>
-        <translation type="unfinished"/>
+        <translation>Igoerak huts egin du: %1</translation>
     </message>
 </context>
 <context>
@@ -105434,29 +105457,31 @@ Eremu hau geometria-zutabe bat da, kentzen bada QGISek agian ezin izango du taul
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfileuploader.cpp" line="44"/>
         <source>Upload a file via HTTP(S)</source>
-        <translation type="unfinished"/>
+        <translation>Igo fitxategia HTTP(S) bidez</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfileuploader.cpp" line="49"/>
         <source>Uploads a file to the URL via a HTTP(S) request.</source>
-        <translation type="unfinished"/>
+        <translation>Fitxategi bat igotzen du URLra HTTP(S) eskari baten bidez</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfileuploader.cpp" line="54"/>
         <source>file,uploader,internet,url,upload,post,request,https</source>
-        <translation type="unfinished"/>
+        <translation>fitxategia,igotzailea,internet,url,kargatu,post,eskaria,httpa</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfileuploader.cpp" line="59"/>
         <source>File tools</source>
-        <translation type="unfinished"/>
+        <translation>Fitxategi-tresnak</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfileuploader.cpp" line="69"/>
         <source>This algorithm uploads a file to the URL via a HTTP(S) request
 
 The optional form name field parameter emulates a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when the URL endpoint requires a form name key.</source>
-        <translation type="unfinished"/>
+        <translation>Algoritmo honek fitxategi bat igotzen du URLra HTTP(S) eskari baten bidez.
+
+Inprimaki-izenaren eremu-parametroak, aukerakoa denak, betetako inprimaki bat emulatzen du, erabiltzaile batek bidaltzeko botoia sakatu izan balu bezala, Horrek fitxategi bitarrak igotzea ahalbidetzen du URLaren amaiera-puntuak inprimaki-izen baten gakoa behar duenean.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfileuploader.cpp" line="86"/>
@@ -105831,35 +105856,35 @@ The optional form name field parameter emulates a filled-in form in which a user
 <context>
     <name>QgsFontManager</name>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3224"/>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3228"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="339"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="343"/>
         <source>Installing %1</source>
         <translation>%1 instalatzen</translation>
     </message>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3326"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="441"/>
         <source>Could not write font data to a temporary file</source>
         <translation>Ezin dira letra-tipoaren datuak aldi baterako fitxategi batean idatzi</translation>
     </message>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3346"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="461"/>
         <source>Could not find any families in font</source>
         <translation>Ez da familiarik aurkitu letra-tipoan</translation>
     </message>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3358"/>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3407"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="473"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="522"/>
         <source>Could not copy font to %1</source>
         <translation>Ezin da letra-tipoa %1 kokalekura kopiatu</translation>
     </message>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3365"/>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3413"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="480"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="528"/>
         <source>Could not install font from %1</source>
         <translation>Ezin da letra-tipoa %1 kokalekutik instalatu</translation>
     </message>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3431"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="546"/>
         <source>Could not read fonts from data</source>
         <translation>Ezin dira letra-tipoak irakurri datuetatik</translation>
     </message>
@@ -113315,7 +113340,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/ui/qgsgroupwmsdatadialogbase.ui"/>
         <source>Set Group WMS Properties</source>
-        <translation type="unfinished"/>
+        <translation>Ezarri taldearen WMS propietateak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgroupwmsdatadialogbase.ui"/>
@@ -128419,17 +128444,17 @@ Ebaluazio-errorea: %1</translation>
     <message>
         <location filename="../src/ui/3d/qgslightswidget.ui"/>
         <source>Atmospheric pressure (hPa)</source>
-        <translation type="unfinished"/>
+        <translation>Presio atmosferikoa (hPa)</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/qgslightswidget.ui"/>
         <source>Reference elevation</source>
-        <translation type="unfinished"/>
+        <translation>Erreferentziako garaiera</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/qgslightswidget.ui"/>
         <source>Reference time</source>
-        <translation type="unfinished"/>
+        <translation>Erreferentziak ordua</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/qgslightswidget.ui"/>
@@ -128701,7 +128726,7 @@ Ebaluazio-errorea: %1</translation>
     <message>
         <location filename="../src/ui/plot/qgslinechartplotwidgetbase.ui"/>
         <source>Axis label suffix</source>
-        <translation type="unfinished"/>
+        <translation>Ardatz-etiketaren atzizkia</translation>
     </message>
     <message>
         <location filename="../src/ui/plot/qgslinechartplotwidgetbase.ui"/>
@@ -131097,50 +131122,48 @@ Mapa rasterizatzea gomendatzen dugu errendatzea egokia izan dadin.</translation>
 <context>
     <name>QgsMapToolAddPart</name>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="88"/>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="98"/>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="108"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="89"/>
         <source>Part added</source>
         <translation>Atala gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="138"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="151"/>
         <source>New part&apos;s geometry is empty or invalid.</source>
         <translation>Atal berriaren geometria ez da baliozkoa edo hutsik dago.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="146"/>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="206"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="159"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="219"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table.</source>
         <translation>Ez dago elementurik hautatuta. Hautatu elementu bat hautapen-tresnarekin edo atributu-taulan.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="154"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="167"/>
         <source>Selected geometry could not be found.</source>
         <translation>Ezin izan da aurkitu hautatutako geometria.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="158"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="171"/>
         <source>Base geometry is not valid.</source>
         <translation>Oinarri-geometria ez da baliozkoa.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="172"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="185"/>
         <source>Unexpected OperationResult: %1</source>
         <translation>Espero ez zen emaitza eragiketan: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="210"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="223"/>
         <source>Several features are selected. Please select only one feature to which a part should be added.</source>
         <translation>Elementu bat baino gehiago hautatu da. Hautatu elementu bakar bat, atal bat gehitu ahal izateko.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="224"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="237"/>
         <source>This layer does not support multipart geometries.</source>
         <translation>Geruza honek ez du onartzen atal anitzeko geometriarik.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="230"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="243"/>
         <source>Could not add part. %1</source>
         <translation>Ezin izan da atala gehitu: %1</translation>
     </message>
@@ -131150,12 +131173,12 @@ Mapa rasterizatzea gomendatzen dugu errendatzea egokia izan dadin.</translation>
         <translation>Gehitu atala</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="142"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="155"/>
         <source>Selected feature is not multi part.</source>
         <translation>Hautatutako elementua ez da atal anitzekoa.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="150"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="163"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
         <translation>Hainbat elementu hautatu dira. Hautatu elementu bakar bat, uharte bat gehitu ahal izateko.</translation>
     </message>
@@ -136882,7 +136905,7 @@ Lurrazalak ez badu baliorik punturako, garaiera lehenetsia erabiliko da.</transl
 <context>
     <name>QgsModelCommentGraphicItem</name>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1958"/>
+        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1971"/>
         <source>Delete Comment</source>
         <translation>Ezabatu iruzkina</translation>
     </message>
@@ -137743,12 +137766,12 @@ Ikusi egunkaria informazio gehiagorako.</translation>
 <context>
     <name>QgsModelGroupBoxGraphicItem</name>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1847"/>
+        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1860"/>
         <source>Delete Group Box</source>
         <translation>Ezabatu talde-kutxa</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1837"/>
+        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1849"/>
         <source>Edit Group Box</source>
         <translation>Editatu talde-kutxa</translation>
     </message>
@@ -137844,7 +137867,7 @@ Ikusi egunkaria informazio gehiagorako.</translation>
         <translation>Estekatu %1: %2 honekin: %3: %4</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="266"/>
+        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="264"/>
         <source>Unlink %1: %2</source>
         <comment>Unlink Algorithm: Input</comment>
         <translation>Desestekatu %1: %2</translation>
@@ -146457,7 +146480,7 @@ Lehendik dauden klaseak ezabatu behar dira?</translation>
     <message>
         <location filename="../src/ui/layout/qgspdfexportoptions.ui"/>
         <source>Custom configuration</source>
-        <translation type="unfinished"/>
+        <translation>Konfigurazio pertsonalizatua</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgspdfexportoptions.ui"/>
@@ -153132,32 +153155,32 @@ SQL: %3</translation>
         <translation>Emaitzak:</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="165"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="167"/>
         <source>Algorithm %1 canceled…</source>
         <translation>%1 algoritmoak bertan behera utzi da…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="166"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="168"/>
         <source>Execution canceled after %1 seconds</source>
         <translation>Exekuzioa bertan behera geratu da %1 segundoren ondoren</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="172"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="174"/>
         <source>Algorithm %1 failed…</source>
         <translation>%1 algoritmoak huts egin du…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="173"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="175"/>
         <source>Execution failed after %1 seconds</source>
         <translation>Exekuzioak huts egin du %1 segundoren ondoren</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="206"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="210"/>
         <source>Batch execution completed in %1 seconds</source>
         <translation>Sortakako exekuzioa %1 segundotan osatu da</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="209"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="213"/>
         <source>%1 executions failed. See log for further details.</source>
         <translation>%1 exekuziok huts egin dute. Ikusi egunkaria xehetasun gehiagorako.</translation>
     </message>
@@ -164771,44 +164794,44 @@ Ekintza lehenetsiak geruza-propietatearen &apos;Ekintza&apos; atalean aktibatzen
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8908"/>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8919"/>
         <source>Import Colors from XML</source>
-        <translation type="unfinished"/>
+        <translation>Inportatu koloreak XMLtik</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8908"/>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8939"/>
         <source>XML files (*.xml *.XML)</source>
-        <translation type="unfinished"/>
+        <translation>XML fitxategiak (*.xml, *.XML)</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8919"/>
         <source>The XML file could not be loaded</source>
-        <translation type="unfinished"/>
+        <translation>XML fitxategia ezin da kargatu</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8939"/>
         <source>Export Colors as XML</source>
-        <translation type="unfinished"/>
+        <translation>Esportatu koloreak XML gisa</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8987"/>
         <source>Enter lower elevation class bound</source>
-        <translation type="unfinished"/>
+        <translation>Sartu garaiera baxueneko klase-muga</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8987"/>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8996"/>
         <source>Elevation</source>
-        <translation type="unfinished"/>
+        <translation>Garaiera</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="8996"/>
         <source>Enter upper elevation class bound</source>
-        <translation type="unfinished"/>
+        <translation>Sartu garaiera altueneko klase-muga</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="9005"/>
         <source>Select color for relief class</source>
-        <translation type="unfinished"/>
+        <translation>Hautatu kolorea erliebe-klaserako</translation>
     </message>
 </context>
 <context>
@@ -169200,18 +169223,18 @@ mesedez eman beste izen bat:</translation>
 <context>
     <name>QgsStacCatalogItem</name>
     <message>
-        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="559"/>
-        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="672"/>
+        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="561"/>
+        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="674"/>
         <source>Double-click to fetch more (%L1 total items)...</source>
         <translation>Egin klik bikoitza gehiago atzitzeko (guztira %L1 elementu)...</translation>
     </message>
     <message>
-        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="561"/>
+        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="563"/>
         <source>Double-click to fetch more items...</source>
         <translation>Egin klik bikoitza elementu gehiago atzitzeko...</translation>
     </message>
     <message>
-        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="565"/>
+        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="567"/>
         <source>%1 more items</source>
         <translation>%1 elementu gehiago</translation>
     </message>
@@ -173159,7 +173182,7 @@ Hautatu talde bat edo talde adimentsu bat, hura ezabatu ahal izateko.</translati
     <message>
         <location filename="../src/gui/symbology/qgssymbollayerwidget.cpp" line="2510"/>
         <source>This tool is disabled because map canvas interaction is only possible from Layer Styling panel, Layer properties dialog doesn&apos;t allow blank segments creation.</source>
-        <translation type="unfinished"/>
+        <translation>Tresna hau desgaituta dago mapa-oihaleko interakzioa geruzen estiloen paneletik soilik gertatu daitekeelako. Geruzen propietateen elkarrizketa-koadroak ez du segmentu hutsen sorrera onartzen.</translation>
     </message>
 </context>
 <context>
@@ -176823,192 +176846,192 @@ Errorea honakoa da: %2</translation>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4183"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4273"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4215"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4305"/>
         <source>ERROR: no provider</source>
         <translation>ERROREA: Hornitzailerik ez</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4189"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4221"/>
         <source>ERROR: layer not editable</source>
         <translation>ERROREA: geruza ez da editagarria</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4227"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4259"/>
         <source>Commit errors:
   %1</source>
         <translation>Egikaritze-erroreak:
   %1</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6138"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6190"/>
         <source>Geometry type</source>
         <translation>Geometria mota</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6144"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6196"/>
         <source>Geometry column</source>
         <translation>Geometria-zutabea</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6194"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6246"/>
         <source>Primary key attributes</source>
         <translation>Gako nagusiaren atributuak</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2930"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2962"/>
         <source>Symbology</source>
         <translation>Ikurrak</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="1907"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="1934"/>
         <source>%1: Action ’%2’</source>
         <translation>%1: ’%2’ ekintza</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="1963"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="1990"/>
         <source>%1: Attribute form init code</source>
         <translation>%1: Atributu-inprimakiaren hasieratze-kodea</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2128"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2155"/>
         <source>Load layer style</source>
         <translation>Kargatu geruza-estiloa</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2263"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2295"/>
         <source>Create %1 provider</source>
         <translation>Sortu %1 hornitzailea</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2295"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2327"/>
         <source>Read layer metadata</source>
         <translation>Irakurri geruzaren metadatuak</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2343"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2375"/>
         <source>Read layer fields</source>
         <translation>Irakurri geruzaren eremuak</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2530"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2562"/>
         <source>Relations</source>
         <translation>Erlazioak</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2794"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2826"/>
         <source>Forms</source>
         <translation>Inprimakiak</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2896"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2928"/>
         <source>Legend</source>
         <translation>Legenda</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2958"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2990"/>
         <source>Labeling</source>
         <translation>Etiketatzea</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3049"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3081"/>
         <source>Diagrams</source>
         <translation>Diagramak</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5387"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5439"/>
         <source>Layer is invalid</source>
         <translation>Geruza baliogabea da</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6105"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6157"/>
         <source>Information from provider</source>
         <translation>Hornitzailearen informazioa</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6111"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6163"/>
         <source>Storage</source>
         <translation>Biltegiratzea</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6123"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6175"/>
         <source>Encoding</source>
         <translation>Kodeketa</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6151"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6178"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6203"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6230"/>
         <source>Extent</source>
         <translation>Hedadura</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6158"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6210"/>
         <source>Feature count</source>
         <translation>Elementu kopurua</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6160"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6212"/>
         <source>unknown</source>
         <translation>ezezaguna</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6173"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6225"/>
         <source>Identification</source>
         <translation>Identifikazioa</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6183"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6235"/>
         <source>Access</source>
         <translation>Sarbidea</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6188"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6240"/>
         <source>Fields</source>
         <translation>Eremuak</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6206"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6258"/>
         <source>Count</source>
         <translation>Zenbaketa</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6209"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6261"/>
         <source>Field</source>
         <translation>Eremua</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6209"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6261"/>
         <source>Type</source>
         <translation>Mota</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6209"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6261"/>
         <source>Length</source>
         <translation>Luzera</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6209"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6261"/>
         <source>Precision</source>
         <translation>Doitasuna</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6236"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6288"/>
         <source>Contacts</source>
         <translation>Kontaktuak</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6241"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6293"/>
         <source>Links</source>
         <translation>Estekak</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6246"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6298"/>
         <source>History</source>
         <translation>Historia</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6117"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6209"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6169"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6261"/>
         <source>Comment</source>
         <translation>Iruzkina</translation>
     </message>
@@ -179814,12 +179837,12 @@ Zenbaki honetara iritsitakoan, zoom handiagoa egin beharko duzu elementu gehiago
     <message>
         <location filename="../src/app/vertextool/qgsvertexeditor.cpp" line="247"/>
         <source>NURBS Weight</source>
-        <translation type="unfinished"/>
+        <translation>NURBS pisua</translation>
     </message>
     <message>
         <location filename="../src/app/vertextool/qgsvertexeditor.cpp" line="391"/>
         <source>Changed NURBS weight</source>
-        <translation type="unfinished"/>
+        <translation>NURBS pisua aldatu da</translation>
     </message>
 </context>
 <context>
@@ -180189,52 +180212,52 @@ Bereziki, kapsulatutako geruzak dituen geruza birtual bat QLR fitxategia batera 
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="189"/>
         <source>Could not download file: %1</source>
-        <translation type="unfinished"/>
+        <translation>Ezin da fitxategia deskargatu: %1</translation>
     </message>
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="197"/>
         <source>Could not create temporary file: %1</source>
-        <translation type="unfinished"/>
+        <translation>Ezin da aldi baterako fitxategia sortu: %1</translation>
     </message>
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="216"/>
         <source>Could not read file %1</source>
-        <translation type="unfinished"/>
+        <translation>Ezin da %1 fitxategia irakurri</translation>
     </message>
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="226"/>
         <source>JSON parsing error: %1</source>
-        <translation type="unfinished"/>
+        <translation>Errorea JSONa analizatzean: %1</translation>
     </message>
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="232"/>
         <source>Invalid VPC file</source>
-        <translation type="unfinished"/>
+        <translation>VPC fitxategi baliogabea</translation>
     </message>
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="507"/>
         <source>Could not create temporary folder</source>
-        <translation type="unfinished"/>
+        <translation>Ez da aldi baterako karpeta sortu</translation>
     </message>
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="513"/>
         <source>Could not open VPZ file</source>
-        <translation type="unfinished"/>
+        <translation>Ezin da VPZ fitxategia ireki</translation>
     </message>
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="521"/>
         <source>VPZ file does not contain any VPCs</source>
-        <translation type="unfinished"/>
+        <translation>VPZ fitxategiak ez du VPCrik</translation>
     </message>
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="526"/>
         <source>VPZ file contains multiple VPCs</source>
-        <translation type="unfinished"/>
+        <translation>VPZ fitxategiak VPC anitz ditu</translation>
     </message>
     <message>
         <location filename="../src/core/providers/vpc/qgsvirtualpointcloudprovider.cpp" line="540"/>
         <source>Could not open VPC file</source>
-        <translation type="unfinished"/>
+        <translation>Ezin da VPC fitxategia irek</translation>
     </message>
 </context>
 <context>
@@ -184198,7 +184221,7 @@ Raster geruzak banda bakarrekoa izan behar du.</translation>
     <message>
         <location filename="../src/ui/3d/shadowrenderingsettingswidget.ui"/>
         <source>Light source</source>
-        <translation type="unfinished"/>
+        <translation>Argi-iturri</translation>
     </message>
 </context>
 <context>
@@ -184299,22 +184322,22 @@ Raster geruzak banda bakarrekoa izan behar du.</translation>
     <message>
         <location filename="../src/ui/3d/skyboxrenderingsettingswidget.ui"/>
         <source>Convention</source>
-        <translation type="unfinished"/>
+        <translation>Hitzarmena</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/skyboxrenderingsettingswidget.ui"/>
         <source>When checked, the scene&apos;s lighting will reflect the skybox appearance</source>
-        <translation type="unfinished"/>
+        <translation>Markatuta badago, eszenaren argiztapenak zeru-kutxaren itxura islatuko du </translation>
     </message>
     <message>
         <location filename="../src/ui/3d/skyboxrenderingsettingswidget.ui"/>
         <source>Enable environmental lighting effects</source>
-        <translation type="unfinished"/>
+        <translation>Gaitu inguruneko argiztapen-efektuak</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/skyboxrenderingsettingswidget.ui"/>
         <source>Strength</source>
-        <translation type="unfinished"/>
+        <translation>Sendotasuna</translation>
     </message>
 </context>
 <context>
@@ -187662,12 +187685,12 @@ Begiratu prozesatze-euskarriaren egunkaria, erroreak aurkitzeko.</translation>
 <context>
     <name>expression</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7280"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7288"/>
         <source>%1: Field not found %2</source>
         <translation>%1: Eremua ez da aurkitu %2</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7316"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7324"/>
         <source>%1: function cannot be evaluated without a context.</source>
         <translation>%1: funtzioa ezin da ebaluatu testuingururik ez badago.</translation>
     </message>
@@ -187675,47 +187698,47 @@ Begiratu prozesatze-euskarriaren egunkaria, erroreak aurkitzeko.</translation>
 <context>
     <name>expressions</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7411"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7419"/>
         <source>Vector</source>
         <translation>Bektoriala</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7413"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7421"/>
         <source>Raster</source>
         <translation>Rasterra</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7415"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7423"/>
         <source>Mesh</source>
         <translation>Amarauna</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7417"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7425"/>
         <source>Vector Tile</source>
         <translation>Lauza bektoriala</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7419"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7427"/>
         <source>Plugin</source>
         <translation>Plugina</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7421"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7429"/>
         <source>Annotation</source>
         <translation>Oharpena</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7423"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7431"/>
         <source>Point Cloud</source>
         <translation>Puntu-hodeia</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7425"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7433"/>
         <source>Group</source>
         <translation>Taldea</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7427"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7435"/>
         <source>Tiled Scene</source>
         <translation>Lauzadun eszena</translation>
     </message>

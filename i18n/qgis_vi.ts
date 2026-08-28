@@ -20093,7 +20093,7 @@ Shift+click on existing inner ring to fill.</source>
 </translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1911"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1926"/>
         <source>Processing</source>
         <translation>Đang xử lý</translation>
     </message>
@@ -20588,7 +20588,7 @@ This can cause unexpected results.</source>
         <translation>Một tham số lớp bản đồ nói chung, chấp nhận các lớp véc-tơ lẫn raster.</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1911"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1926"/>
         <source>Could not load parameter %1 of type %2.</source>
         <translation>Không thể nạp tham số %1 thuộc kiểu %2.</translation>
     </message>
@@ -22349,13 +22349,13 @@ Khoảng cách được chỉ định theo đơn vị của lớp và hướng t
         <translation>Không thể chuyển đổi &apos;%1&apos; thành kiểu Ngày-giờ</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2998"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3006"/>
         <location filename="../src/core/expression/qgsexpressionutils.h" line="318"/>
         <source>Cannot convert &apos;%1&apos; to Date</source>
         <translation>Không thể chuyển đổi &apos;%1&apos; thành kiểu Ngày</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3027"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3035"/>
         <location filename="../src/core/expression/qgsexpressionutils.h" line="333"/>
         <source>Cannot convert &apos;%1&apos; to Time</source>
         <translation>Không thể chuyển đổi &apos;%1&apos; thành kiểu Giờ</translation>
@@ -22530,7 +22530,7 @@ Khoảng cách được chỉ định theo đơn vị của lớp và hướng t
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="1818"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7934"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7942"/>
         <source>Invalid pair of array, length not identical</source>
         <translation>Cặp mảng không hợp lệ, chiều dài không giống nhau</translation>
     </message>
@@ -22672,348 +22672,348 @@ Khoảng cách được chỉ định theo đơn vị của lớp và hướng t
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2957"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2965"/>
         <source>Function format requires at least 1 argument</source>
         <translation>Định dạng hàm cần ít nhất 1 đối số</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2981"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="2989"/>
         <source>A format is required to convert to Date when the language is specified</source>
         <translation>Cần có một định dạng để chuyển đổi thành kiểu Ngày khi ngôn ngữ được chỉ định</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3010"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3018"/>
         <source>A format is required to convert to Time when the language is specified</source>
         <translation>Cần có một định dạng để chuyển đổi thành kiểu Thời gian khi ngôn ngữ được chỉ định</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3063"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3071"/>
         <source>Invalid formatting parameter: &apos;%1&apos;. It must be empty, or &apos;suffix&apos; or &apos;aligned&apos;.</source>
         <translation>Tham số định dạng không hợp lệ: &apos;%1&apos;. nó phải rỗng, hoặc &apos;hậu tố&apos; hoặc &apos;căn thẳng&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3077"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3085"/>
         <source>Invalid axis name: &apos;%1&apos;. It must be either &apos;x&apos; or &apos;y&apos;.</source>
         <translation>Tên trục không hợp lệ: &apos;%1&apos;. Phải là &apos;x&apos; hoặc &apos;y&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3278"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3290"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8204"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8215"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8226"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8237"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8248"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8259"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8270"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8281"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3286"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3298"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8212"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8223"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8234"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8245"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8256"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8267"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8278"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8289"/>
         <source>Function `%1` requires a value which represents a possible file path</source>
         <translation>Hàm `%1` yêu cầu một giá trị biểu thị một đường dẫn tập tin có thể dùng được</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3318"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3364"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3410"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3479"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3326"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3372"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3418"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3487"/>
         <source>Function `%1` requires a valid date</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3348"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3353"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3356"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3361"/>
         <source>Cannot evaluate magnetic declination: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3394"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3399"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3402"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3407"/>
         <source>Cannot evaluate magnetic inclination: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3457"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3465"/>
         <source>Cannot evaluate magnetic declination rate of change</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3463"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3468"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3471"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3476"/>
         <source>Cannot evaluate magnetic declination rate of change: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3526"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3534"/>
         <source>Cannot evaluate magnetic inclination rate of change</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3532"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3537"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3540"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3545"/>
         <source>Cannot evaluate magnetic inclination rate of change: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3648"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3656"/>
         <source>The make_valid parameters require a newer GEOS library version</source>
         <translation>Các tham số make_valid cần một thư viện phiên bản GEOS mới hơn</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3793"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="3801"/>
         <source>Point index is out of range</source>
         <translation>Chỉ mục điểm nằm ngoài miền</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4313"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4321"/>
         <source>Function make_point requires 2-4 arguments</source>
         <translation>Hàm make_point (tạo điểm) cần có 2 - 4 đối số</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4391"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4399"/>
         <source>Function make_polygon requires an argument</source>
         <translation>Hàm make_polygon (tạo vùng) cần một đối số</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4505"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4541"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4513"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4549"/>
         <source>Segment must be greater than 2</source>
         <translation>Số đoạn phải lớn hơn 2</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4581"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4589"/>
         <source>Number of edges/sides must be greater than 2</source>
         <translation>Số cạnh/mặt phải lớn hơn 2</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4588"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4596"/>
         <source>Option can be 0 (inscribed) or 1 (circumscribed)</source>
         <translation>Tùy chọn có thể là 0 (nội tiếp) hay 1 (ngoại tiếp)</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4669"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4677"/>
         <source>Option can be 0 (distance) or 1 (projected)</source>
         <translation>Tùy chọn có thể là 0 (khoảng cách) hay 1 (quy chiếu)</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4690"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4698"/>
         <source>Index is out of range</source>
         <translation>Chỉ mục nằm ngoài miền</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4923"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4931"/>
         <source>An error occurred while calculating perimeter</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5193"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5201"/>
         <source>Function `sinuosity` requires a line geometry.</source>
         <translation>Hàm `sinuosity`, độ ngoằn ngoèo, cần một hình học kiểu đường.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5206"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5214"/>
         <source>Function `straight_distance_2d` requires a line geometry or a multi line geometry with a single part.</source>
         <translation>Hàm `straight_distance_2d` yêu cầu một hình học kiểu đường hoặc đường đa phần có một phần duy nhất.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5220"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5228"/>
         <source>Function `roundness` requires a polygon geometry or a multi polygon geometry with a single part.</source>
         <translation>Hàm `roundness` yêu cầu một hình học kiểu vùng hoặc vùng đa phần có một phần duy nhất.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5544"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5552"/>
         <source>Function `wedge_buffer` requires a point value for the center.</source>
         <translation>Hàm `wedge_buffer` yêu cầu một giá trị điểm dùng làm tâm.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5563"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5571"/>
         <source>Function `tapered_buffer` requires a line geometry.</source>
         <translation>Hàm `tapered_buffer` yêu cầu một hình học kiểu đường.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5581"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5589"/>
         <source>Function `buffer_by_m` requires a line geometry.</source>
         <translation>Hàm `buffer_by_m` yêu cầu một hình học kiểu đường.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5680"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5688"/>
         <source>Function &apos;rotate&apos; requires a point value for the center</source>
         <translation>Hàm &apos;rotate&apos; yêu cầu một giá trị điểm dùng làm tâm</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5708"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5716"/>
         <source>Function &apos;scale&apos; requires a point value for the center</source>
         <translation>Hàm &apos;scale&apos; yêu cầu một giá trị điểm dùng làm tâm</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5809"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5817"/>
         <source>Error caught in concave_hull() function: %1</source>
         <translation>Bắt gặp lỗi ở hàm concave_hull(): %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5823"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5831"/>
         <source>Parameter can not be negative.</source>
         <translation>Tham số không thể âm</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5853"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="5861"/>
         <source>Error calculating polygon main angle: %1</source>
         <translation>Lỗi tính toán góc chính của vùng: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6015"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6023"/>
         <source>Function `azimuth` requires exactly two parameters. %n given.</source>
         <translation><numerusform>Hàm `azimuth` cần chính xác hai tham số. %n được cung cấp.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6048"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6056"/>
         <source>Function `azimuth` requires two points as arguments.</source>
         <translation>Hàm `azimuth` cần có hai điểm làm các đối số.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6107"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6115"/>
         <source>Function `bearing` requires two valid point geometries.</source>
         <translation>Hàm &apos;bearing&apos; - hướng - yêu cầu có hai hình học điểm hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6115"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6123"/>
         <source>Function `bearing` requires point geometries or multi point geometries with a single part.</source>
         <translation>Hàm &apos;bearing&apos; - hướng - yêu cầu các hình học điểm hoặc hình học điểm đa phần với một thành phần đơn duy nhất.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6137"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6145"/>
         <source>Function `bearing` requires a valid source CRS.</source>
         <translation>Hàm &apos;bearing&apos; - hướng - yêu cầu một HTCTĐ nguồn hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6145"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6153"/>
         <source>Function `bearing` requires a valid ellipsoid acronym or ellipsoid authority ID.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6159"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6167"/>
         <source>Error caught in bearing() function: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6379"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6387"/>
         <source>line_substring requires a curve geometry input</source>
         <translation>line_substring yêu cầu đầu vào hình học kiểu đường cong</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6502"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6510"/>
         <source>Number of places must be positive</source>
         <translation>Số lượng vị trí phải là số dương</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6609"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6617"/>
         <source>Both color arguments must have the same type (string or color object)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6624"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6632"/>
         <source>Both color arguments must have compatible color type (CMYK or RGB/HSV/HSL)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6664"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6784"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6841"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6672"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6792"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6849"/>
         <source>Cannot convert &apos;%1:%2:%3&apos; to color</source>
         <translation>Không thể chuyển đổi &apos;%1:%2:%3&apos; thành màu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6680"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6734"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6805"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6821"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6862"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6878"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6918"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6688"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6742"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6813"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6829"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6870"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6886"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6926"/>
         <source>Cannot convert &apos;%1:%2:%3:%4&apos; to color</source>
         <translation>Không thể chuyển đổi &apos;%1:%2:%3:%4&apos; thành màu sắc</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6755"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6763"/>
         <source>&quot;%1&quot; is not a valid color ramp</source>
         <translation>&quot;%1&quot; không phải là thang màu hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6896"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6941"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6904"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6949"/>
         <source>Cannot convert &apos;%1:%2:%3:%4:%5&apos; to color</source>
         <translation>Không thể chuyển đổi &apos;%1:%2:%3:%4:%5&apos; thành màu sắc</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7005"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7013"/>
         <location filename="../src/core/expression/qgsexpressionutils.cpp" line="55"/>
         <source>Cannot convert &apos;%1&apos; to color</source>
         <translation>Không thể chuyển đổi &apos;%1&apos; thành màu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7489"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7497"/>
         <source>Function `decode_uri` requires a valid layer.</source>
         <translation>Hàm `decode_uri` yêu cầu một lớp hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7515"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7523"/>
         <source>Invalid band number %1 for layer</source>
         <translation>Số hiệu băng %1 không hợp lệ dùng cho lớp</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6985"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7073"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6993"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7081"/>
         <source>Unknown color component &apos;%1&apos;</source>
         <translation>Thành phần màu không rõ &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="6994"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7002"/>
         <source>A minimum of two colors is required to create a ramp</source>
         <translation>Tối thiểu cần có hai màu để tạo thang màu</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7145"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7153"/>
         <source>Transform error caught in transform() function: %1</source>
         <translation>Bắt gặp lỗi chuyển đổi tại hàm transform(): %1</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7469"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7477"/>
         <source>Layer %1 has invalid data provider</source>
         <translation>Lớp %1 có trình cung cấp dữ liệu không hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7535"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7543"/>
         <source>Invalid raster statistic: &apos;%1&apos;</source>
         <translation>Thống kê raster không hợp lệ: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7565"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7573"/>
         <source>Function `raster_statistic` requires a valid raster layer.</source>
         <translation>Hàm `raster_statistics` yêu cầu một lớp raster hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7783"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7832"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7791"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7840"/>
         <source>No such option &apos;%1&apos;</source>
         <translation>Không có tùy chọn như vậy &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7953"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7961"/>
         <source>Function array_replace requires 2 or 3 arguments</source>
         <translation>Hàm array_replace cần 2 hoặc 3 đối số</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8360"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8368"/>
         <source>Hash method %1 is not available on this system.</source>
         <translation>Phương pháp băm %1 không khả dụng trên hệ thống này.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8451"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="8459"/>
         <source>Layer &apos;%1&apos; could not be loaded.</source>
         <translation>Không thể nạp lớp &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="437"/>
-        <location filename="../src/core/pal/feature.cpp" line="2756"/>
-        <location filename="../src/core/pal/feature.cpp" line="2797"/>
+        <location filename="../src/core/pal/feature.cpp" line="2773"/>
+        <location filename="../src/core/pal/feature.cpp" line="2814"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="359"/>
         <location filename="../src/core/pal/labelposition.cpp" line="195"/>
         <location filename="../src/core/pal/labelposition.cpp" line="222"/>
@@ -23036,8 +23036,8 @@ Khoảng cách được chỉ định theo đơn vị của lớp và hướng t
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="437"/>
-        <location filename="../src/core/pal/feature.cpp" line="2756"/>
-        <location filename="../src/core/pal/feature.cpp" line="2797"/>
+        <location filename="../src/core/pal/feature.cpp" line="2773"/>
+        <location filename="../src/core/pal/feature.cpp" line="2814"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="359"/>
         <location filename="../src/core/pal/labelposition.cpp" line="195"/>
         <location filename="../src/core/pal/labelposition.cpp" line="222"/>
@@ -28959,7 +28959,7 @@ Các thuộc tính bổ sung và các giá trị của chúng được lấy t�
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressioncontextutils.cpp" line="1261"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4863"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4871"/>
         <source>An error occurred while calculating area</source>
         <translation type="unfinished"/>
     </message>
@@ -36983,7 +36983,7 @@ Các thuộc tính không bị thay đổi bởi thuật toán này.</translatio
         <location filename="../src/core/layout/qgscompositionconverter.cpp" line="98"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="59"/>
         <location filename="../src/core/qgsdiagramrenderer.cpp" line="58"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3112"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3144"/>
         <source>Position (X)</source>
         <translation>Vị trí (X)</translation>
     </message>
@@ -36992,7 +36992,7 @@ Các thuộc tính không bị thay đổi bởi thuật toán này.</translatio
         <location filename="../src/core/layout/qgscompositionconverter.cpp" line="99"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="60"/>
         <location filename="../src/core/qgsdiagramrenderer.cpp" line="59"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3113"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3145"/>
         <source>Position (Y)</source>
         <translation>Vị trí (Y)</translation>
     </message>
@@ -38069,103 +38069,104 @@ Thông tin nhãn được trích ra bao gồm: vị trí (dưới dạng điểm
         <translation>Lỗi gặp phải khi đang chạy %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="576"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="586"/>
         <source>Algorithm “%1” cannot be run in a background thread, switching to main thread for this step</source>
         <translation>Thuật toán &quot;%1&quot; không thể được chạy nền, chuyển sang luồng chạy chính đối với bước này.</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="594"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="578"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="609"/>
         <source>Error encountered while running %1: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="657"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="672"/>
         <source>Results:</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="768"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="783"/>
         <source>OK. Execution took %1 s (%n output(s)).</source>
         <translation><numerusform>Ổn rồi. Việc thực thi mất %1 giây (%n (số) đầu ra).</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="780"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="795"/>
         <source>Failed after %1 s.</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="808"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="823"/>
         <source>Model processed OK. Executed %n algorithm(s) total in %1 s.</source>
         <translation><numerusform>Mô hình được xử lý ổn. Đã thực thi tổng cộng %n (số) thuật toán trong %1 giây.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1263"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1307"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1366"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1278"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1322"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1381"/>
         <source>Output &apos;%1&apos; from algorithm &apos;%2&apos;</source>
         <translation>Đầu ra &apos;%1&apos; từ thuật toán &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1337"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1404"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1352"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1419"/>
         <source>Minimum X of %1</source>
         <translation>X nhỏ nhất của %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1338"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1405"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1353"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1420"/>
         <source>Minimum Y of %1</source>
         <translation>Y nhỏ nhất của %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1339"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1406"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1354"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1421"/>
         <source>Maximum X of %1</source>
         <translation>X lớn nhất của %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1340"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1407"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1355"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1422"/>
         <source>Maximum Y of %1</source>
         <translation>Y lớn nhất của %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1564"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1579"/>
         <source>Model does not contain any algorithms</source>
         <translation>Mô hình không chứa bất kỳ thuật toán nào</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2418"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2433"/>
         <source>Algorithm is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Thuật toán không khả dụng: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2439"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2454"/>
         <source>Value for &lt;i&gt;%1&lt;/i&gt; is not acceptable for this parameter</source>
         <translation>Giá trị dùng cho &lt;i&gt;%1&lt;/i&gt; không chấp nhận được đối với tham số này</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2447"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2462"/>
         <source>Model input &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>Đầu vào mô hình &lt;i&gt;%1&lt;/i&gt; được dùng cho tham số &lt;i&gt;%2&lt;/i&gt; không tồn tại</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2455"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2470"/>
         <source>Child algorithm &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>Thuật toán con &lt;i&gt;%1&lt;/i&gt; được dùng cho tham số &lt;i&gt;%2&lt;/i&gt; không tồn tại</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2477"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2492"/>
         <source>Parameter &lt;i&gt;%1&lt;/i&gt; is mandatory</source>
         <translation>Tham số &lt;i&gt;%1&lt;/i&gt; là bắt buộc</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2486"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2501"/>
         <source>Invalid child ID: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Nhận diện phần con không hợp lệ: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2501"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2516"/>
         <source>The model you are trying to run contains an algorithm that is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Mô hình bạn đang muốn chạy chứa một thuật toán không khả dụng:: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
@@ -38608,7 +38609,7 @@ Thông tin nhãn được trích ra bao gồm: vị trí (dưới dạng điểm
     </message>
     <message>
         <location filename="../src/core/qgsdiagramrenderer.cpp" line="64"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3114"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3146"/>
         <source>Show diagram</source>
         <translation>Hiển thị biểu đồ</translation>
     </message>
@@ -46623,12 +46624,12 @@ Các biểu tượng được trích ra được lưu vào một csdl kiểu c�
     </message>
     <message>
         <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="821"/>
-        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="980"/>
+        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="976"/>
         <source>ESRI visualVariable type &apos;%1&apos; is not currently supported</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="1027"/>
+        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="1023"/>
         <source>ESRI classification mode &apos;%1&apos; is not currently supported</source>
         <translation type="unfinished"/>
     </message>
@@ -46840,37 +46841,37 @@ Các biểu tượng được trích ra được lưu vào một csdl kiểu c�
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="201"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="340"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="342"/>
         <source>Error creating output file.</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="203"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="342"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="344"/>
         <source>Error reading input layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="205"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="344"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="346"/>
         <source>Error parsing formula.</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="207"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="346"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="348"/>
         <source>Error allocating memory for result.</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="209"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="348"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="350"/>
         <source>Invalid band number for input.</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="211"/>
-        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="350"/>
+        <location filename="../src/analysis/processing/qgsalgorithmrastercalculator.cpp" line="352"/>
         <source>Error occurred while performing calculation.</source>
         <translation type="unfinished"/>
     </message>
@@ -48941,7 +48942,7 @@ Output is generated as an HTML file with the computed statistical values.</sourc
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtolayer.cpp" line="186"/>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtopoint.cpp" line="112"/>
         <location filename="../src/analysis/processing/qgsalgorithmshortestpathpointtopoint.cpp" line="127"/>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4898"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="4906"/>
         <source>An error occurred while calculating length</source>
         <translation type="unfinished"/>
     </message>
@@ -52648,7 +52649,7 @@ The created point layer will be in the same spatial reference system as the sele
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="874"/>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1091"/>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1760"/>
-        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1886"/>
+        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1899"/>
         <source>Remove</source>
         <translation>Loại bỏ</translation>
     </message>
@@ -52656,7 +52657,7 @@ The created point layer will be in the same spatial reference system as the sele
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="876"/>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1093"/>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1762"/>
-        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1888"/>
+        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1901"/>
         <source>Edit…</source>
         <translation>Chỉnh sửa...</translation>
     </message>
@@ -55933,116 +55934,121 @@ For more details, please see the following papers:
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="452"/>
-        <source>Two Point Equidistant</source>
+        <source>Transverse Mercator Zoned Grid System</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="454"/>
-        <source>Tilted Perspective</source>
+        <source>Two Point Equidistant</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="456"/>
-        <source>Universal Polar Stereographic</source>
+        <source>Tilted Perspective</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="458"/>
-        <source>Urmaev V</source>
+        <source>Universal Polar Stereographic</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="460"/>
-        <source>Urmaev Flat-Polar Sinusoidal</source>
+        <source>Urmaev V</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="462"/>
-        <source>Universal Transverse Mercator (UTM)</source>
+        <source>Urmaev Flat-Polar Sinusoidal</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="464"/>
-        <source>van der Grinten (I)</source>
+        <source>Universal Transverse Mercator (UTM)</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="466"/>
-        <source>van der Grinten II</source>
+        <source>van der Grinten (I)</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="468"/>
-        <source>van der Grinten III</source>
+        <source>van der Grinten II</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="470"/>
-        <source>van der Grinten IV</source>
+        <source>van der Grinten III</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="472"/>
-        <source>Vitkovsky I</source>
+        <source>van der Grinten IV</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="474"/>
-        <source>Wagner I (Kavraisky VI)</source>
+        <source>Vitkovsky I</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="476"/>
-        <source>Wagner II</source>
+        <source>Wagner I (Kavraisky VI)</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="478"/>
-        <source>Wagner III</source>
+        <source>Wagner II</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="480"/>
-        <source>Wagner IV</source>
+        <source>Wagner III</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="482"/>
-        <source>Wagner V</source>
+        <source>Wagner IV</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="484"/>
-        <source>Wagner VI</source>
+        <source>Wagner V</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="486"/>
-        <source>Wagner VII</source>
+        <source>Wagner VI</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="488"/>
-        <source>Werenskiold I</source>
+        <source>Wagner VII</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="490"/>
-        <source>Winkel I</source>
+        <source>Werenskiold I</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="492"/>
-        <source>Winkel II</source>
+        <source>Winkel I</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="494"/>
-        <source>Winkel Tripel</source>
+        <source>Winkel II</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="496"/>
+        <source>Winkel Tripel</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="498"/>
         <source>Gauss-Schreiber</source>
         <translation type="unfinished"/>
     </message>
@@ -61485,7 +61491,7 @@ This output includes an attribute explaining why each node is invalid.</source>
         <translation>Việc sử dụng hiện tại của QgsSettingsTreeNamedListNode::items không xử lý được quá 5 mục cha có tên</translation>
     </message>
     <message>
-        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="762"/>
+        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="764"/>
         <location filename="../src/gui/stac/qgsstacsourceselectprovider.cpp" line="36"/>
         <source>STAC</source>
         <translation type="unfinished"/>
@@ -61699,22 +61705,22 @@ This output includes an attribute explaining why each node is invalid.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="290"/>
+        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="291"/>
         <source>Topological points added by &apos;%1&apos;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="970"/>
+        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="1023"/>
         <source>List of features to merge is empty</source>
         <translation>Danh sách các đối tượng cần gộp bị rỗng</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="988"/>
+        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="1041"/>
         <source>Could not store value &apos;%1&apos; in field of type %2: %3</source>
         <translation>Không thể lưu trữ giá trị &apos;%1&apos; trong trường kiểu %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="993"/>
+        <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="1046"/>
         <source>Merged features</source>
         <translation>Các đối được hợp nhất</translation>
     </message>
@@ -67620,40 +67626,40 @@ Delete these features?</source>
         <translation>Lấy các nhận diện đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="392"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="413"/>
         <source>Error while deleting features: %1</source>
         <translation>Lỗi khi đang xóa các đối tượng: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="425"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="446"/>
         <source>Error while adding features: %1</source>
         <translation>Lỗi khi đang thêm các đối tượng: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="474"/>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="504"/>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="517"/>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="574"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="495"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="525"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="538"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="595"/>
         <source>Error while updating features: %1</source>
         <translation>Lỗi khi đang cập nhật các đối tượng: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="593"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="614"/>
         <source>Error while adding fields: %1</source>
         <translation>Lỗi khi đang thêm các trường: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="610"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="631"/>
         <source>Error while deleting fields: %1</source>
         <translation>Lỗi khi đang xóa các trường: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="632"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="653"/>
         <source>Error while creating attribute index: %1</source>
         <translation>Lỗi khi đang tạo chỉ mục thuộc tính: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="734"/>
+        <location filename="../src/providers/arcgisrest/qgsafsprovider.cpp" line="755"/>
         <source>SQL 92 WHERE clause</source>
         <translation type="unfinished"/>
     </message>
@@ -68969,7 +68975,7 @@ Delete these features?</source>
 <context>
     <name>QgsAppElevationProfileLayerTreeView</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1569"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1571"/>
         <source>Properties…</source>
         <translation>Các Tính chất...</translation>
     </message>
@@ -87208,12 +87214,12 @@ Lỗi: %2</translation>
 <context>
     <name>QgsElevationProfileScaleRatioWidgetSettingsAction</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1544"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1546"/>
         <source>Scale Ratio</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1551"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1553"/>
         <source>Specifies the ratio of distance to elevation units used for the profile&apos;s scale</source>
         <translation type="unfinished"/>
     </message>
@@ -87221,7 +87227,7 @@ Lỗi: %2</translation>
 <context>
     <name>QgsElevationProfileToleranceWidgetSettingsAction</name>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1515"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1517"/>
         <source>Tolerance</source>
         <translation type="unfinished"/>
     </message>
@@ -87382,98 +87388,98 @@ Lỗi: %2</translation>
         <translation>Gắn cửa sổ Phép xem Thiết diện Độ cao</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1066"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1064"/>
         <source>Export to PDF</source>
         <translation>Xuất ra PDF</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1066"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1064"/>
         <source>PDF Format</source>
         <translation>Định dạng PDF</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1094"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1114"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1092"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1112"/>
         <source>Save as PDF</source>
         <translation>Lưu thành PDF</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1094"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1092"/>
         <source>Could not create %1</source>
         <translation>Không thể tạo %1</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1114"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1168"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1223"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1231"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1112"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1166"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1221"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1229"/>
         <source>Successfully saved the profile to &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</source>
         <translation>Lưu thành công thiết diện vào &lt;a href=&quot;%1&quot;&gt;%2&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1126"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1124"/>
         <source>Save Plot As</source>
         <translation>Lưu Đồ thị dưới Dạng</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1145"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1167"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1143"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1165"/>
         <source>Save as Image</source>
         <translation>Lưu dưới dạng Ảnh</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1145"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1143"/>
         <source>Could not create image</source>
         <translation>Không thể tạo ảnh</translation>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1195"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1193"/>
         <source>Select Output File</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1223"/>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1231"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1221"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1229"/>
         <source>Exported Profile</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1241"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1239"/>
         <source>Export Failed</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1241"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1239"/>
         <source>The elevation profile could not be exported</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1284"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1282"/>
         <source>Enter a unique elevation profile title</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1295"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1293"/>
         <source>Rename Elevation Profile</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1299"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1297"/>
         <source>elevation profile</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1304"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1302"/>
         <source>An elevation profile with this name already exists.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1314"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1312"/>
         <source>Title can not be empty!</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1346"/>
+        <location filename="../src/app/elevation/qgselevationprofilewidget.cpp" line="1344"/>
         <source>Subsections Symbol Selector</source>
         <translation type="unfinished"/>
     </message>
@@ -89817,10 +89823,6 @@ Chọn tên trường từ danh sách sau đó nhắp chuột phải để truy 
     <message>
         <source>geometry rotated 45 degrees clockwise around the center of its bounding box</source>
         <translation>hình học được xoay 45 độ theo chiều kim đồng hồ quanh tâm ô bao của nó</translation>
-    </message>
-    <message>
-        <source>Returns a string padded on the right to the specified width, using a fill character. If the target width is smaller than the string&apos;s length, the string is truncated.</source>
-        <translation>Trả về một chuỗi được đệm thêm vào phía bên phải với chiều rộng được chỉ định, dùng một ký tự lấp đầy. Nếu chiều rộng đích nhỏ hơn chiều dài chuỗi, chuỗi sẽ bị cắt bớt.</translation>
     </message>
     <message>
         <source>rpad(&apos;Hello&apos;, 3, &apos;x&apos;)</source>
@@ -95365,10 +95367,6 @@ Chọn tên trường từ danh sách sau đó nhắp chuột phải để truy 
         <translation>&apos;BABC&apos;</translation>
     </message>
     <message>
-        <source>Returns a string padded on the left to the specified width, using a fill character. If the target width is smaller than the string&apos;s length, the string is truncated.</source>
-        <translation>Trả về một chuỗi được đệm thêm vào phía bên phải với chiều rộng được chỉ định, dùng một ký tự lấp đầy. Nếu chiều rộng đích nhỏ hơn chiều dài chuỗi, chuỗi sẽ bị cắt bớt.</translation>
-    </message>
-    <message>
         <source>lpad(&apos;Hello&apos;, 3, &apos;x&apos;)</source>
         <translation>lpad(&apos;Hello&apos;, 3, &apos;x&apos;)</translation>
     </message>
@@ -97795,6 +97793,18 @@ Chọn tên trường từ danh sách sau đó nhắp chuột phải để truy 
     <message>
         <source>geom_to_wkt(line_substring(geometry:=geom_from_wkt(&apos;LineString(0 0, 10 0)&apos;),start_distance:=2,end_distance:=6))</source>
         <translation>geom_to_wkt(line_substring(geometry:=geom_from_wkt(&apos;LineString(0 0, 10 0)&apos;),start_distance:=2,end_distance:=6))</translation>
+    </message>
+    <message>
+        <source>Returns a string padded on the left to the specified width, using a fill character. If the target width is smaller than the string&apos;s length, the string is truncated. If the fill parameter is omitted, the function will default to a space character.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>lpad(&apos;Hello&apos;, 10)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&apos;     Hello&apos;</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Returns the m (measure) value of a point geometry.</source>
@@ -101209,6 +101219,18 @@ Chọn tên trường từ danh sách sau đó nhắp chuột phải để truy 
         <translation>Tính toán hình dạng một vùng gần với hình tròn tới mức nào. Hàm số trả về 1 khi hình dạng vùng là một hình tròn hoàn hảo và trả về 0 nếu nó bẹt hoàn toàn.</translation>
     </message>
     <message>
+        <source>Returns a string padded on the right to the specified width, using a fill character. If the target width is smaller than the string&apos;s length, the string is truncated. If the fill parameter is omitted, the function will default to a space character.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>rpad(&apos;Hello&apos;, 10)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&apos;Hello     &apos;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <source>Removes the longest string containing only the specified characters (a space by default) from the end of string.</source>
         <translation>Loại bỏ chuỗi dài nhất chỉ chứa các ký tự được chỉ định (một khoảng trắng theo mặc định) từ cuối chuỗi.</translation>
     </message>
@@ -102381,12 +102403,12 @@ Chọn tên trường từ danh sách sau đó nhắp chuột phải để truy 
         <translation>lớn nhất</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="10619"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="10637"/>
         <source>If represent_value is called with 1 parameter, it must be an attribute.</source>
         <translation>Nếu represent_value được gọi với tham số 1, nó phải là một thuộc tính.</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="10629"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="10647"/>
         <source>represent_value must be called with exactly 1 or 2 parameters.</source>
         <translation>represent_value phải được gọi với các tham số chính xác là 1 hoặc 2.</translation>
     </message>
@@ -105390,35 +105412,35 @@ The optional form name field parameter emulates a filled-in form in which a user
 <context>
     <name>QgsFontManager</name>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3224"/>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3228"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="339"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="343"/>
         <source>Installing %1</source>
         <translation>Đang cài đặt %1</translation>
     </message>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3326"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="441"/>
         <source>Could not write font data to a temporary file</source>
         <translation>Không thể ghi dữ liệu phông chữ vào một tập tin t</translation>
     </message>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3346"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="461"/>
         <source>Could not find any families in font</source>
         <translation>Không tìm thấy họ phông chữ nào trong phông chữ</translation>
     </message>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3358"/>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3407"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="473"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="522"/>
         <source>Could not copy font to %1</source>
         <translation>Không thể sao chép phông chữ vào %1</translation>
     </message>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3365"/>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3413"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="480"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="528"/>
         <source>Could not install font from %1</source>
         <translation>Không thể cài đặt phông chữ từ %1</translation>
     </message>
     <message>
-        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="3431"/>
+        <location filename="../src/core/textrenderer/qgsfontmanager.cpp" line="546"/>
         <source>Could not read fonts from data</source>
         <translation>Không thể đọc các phông chữ từ dữ liệu</translation>
     </message>
@@ -130651,50 +130673,48 @@ Raster hóa bản đồ được khuyến cáo để có thể kết xuất đú
 <context>
     <name>QgsMapToolAddPart</name>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="88"/>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="98"/>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="108"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="89"/>
         <source>Part added</source>
         <translation>Phần được thêm vào</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="138"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="151"/>
         <source>New part&apos;s geometry is empty or invalid.</source>
         <translation>Hình học của phần mới trống hoặc không hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="146"/>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="206"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="159"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="219"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table.</source>
         <translation>Không có đối tượng nào được chọn. Vui lòng chọn một đối tượng bằng công cụ chọn hoặc chọn trong bảng thuộc tính</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="154"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="167"/>
         <source>Selected geometry could not be found.</source>
         <translation>Không tìm thấy hình học được chọn.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="158"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="171"/>
         <source>Base geometry is not valid.</source>
         <translation>Hình học cơ sở không hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="172"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="185"/>
         <source>Unexpected OperationResult: %1</source>
         <translation>OperationResult không mong đợi: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="210"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="223"/>
         <source>Several features are selected. Please select only one feature to which a part should be added.</source>
         <translation>Vài đối tượng được chọn. Vui lòng chỉ chọn một đối tượng cần thêm phần.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="224"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="237"/>
         <source>This layer does not support multipart geometries.</source>
         <translation>Lớp này không hỗ trợ các hình học đa phần.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="230"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="243"/>
         <source>Could not add part. %1</source>
         <translation>Không thể thêm phần %1</translation>
     </message>
@@ -130704,12 +130724,12 @@ Raster hóa bản đồ được khuyến cáo để có thể kết xuất đú
         <translation>Thêm phần</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="142"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="155"/>
         <source>Selected feature is not multi part.</source>
         <translation>Đối tượng đã chọn không phải loại có nhiều phần.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="150"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="163"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
         <translation>Vài đối tượng được chọn. Vui lòng chỉ chọn một đối tượng cần được thêm đảo vào.</translation>
     </message>
@@ -136433,7 +136453,7 @@ If the terrain has no value for the point, the default elevation will be used.</
 <context>
     <name>QgsModelCommentGraphicItem</name>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1958"/>
+        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1971"/>
         <source>Delete Comment</source>
         <translation>Xóa Ghi chú</translation>
     </message>
@@ -137294,12 +137314,12 @@ Xem báo cáo để biết thêm thông tin.</translation>
 <context>
     <name>QgsModelGroupBoxGraphicItem</name>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1847"/>
+        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1860"/>
         <source>Delete Group Box</source>
         <translation>Xóa Hộp Nhóm</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1837"/>
+        <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="1849"/>
         <source>Edit Group Box</source>
         <translation>Chỉnh sửa Hộp Nhóm</translation>
     </message>
@@ -137395,7 +137415,7 @@ Xem báo cáo để biết thêm thông tin.</translation>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="266"/>
+        <location filename="../src/gui/processing/models/qgsmodelviewtoollink.cpp" line="264"/>
         <source>Unlink %1: %2</source>
         <comment>Unlink Algorithm: Input</comment>
         <translation type="unfinished"/>
@@ -152641,32 +152661,32 @@ SQL: %3</translation>
         <translation>Các kết quả:</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="165"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="167"/>
         <source>Algorithm %1 canceled…</source>
         <translation>Thuật toán %1 bị hủy...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="166"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="168"/>
         <source>Execution canceled after %1 seconds</source>
         <translation>Thuật toán bị hủy sau %1 giây</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="172"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="174"/>
         <source>Algorithm %1 failed…</source>
         <translation>Thuật toán %1 thất bại...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="173"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="175"/>
         <source>Execution failed after %1 seconds</source>
         <translation>Việc thực thi thất bại sau %1 giây</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="206"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="210"/>
         <source>Batch execution completed in %1 seconds</source>
         <translation>Việc xử lý theo nhóm hoàn tất sau %1 giây</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="209"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="213"/>
         <source>%1 executions failed. See log for further details.</source>
         <translation>phép thực thi %1 thất bại. Xem bản ghi vết để biết thêm chi tiết.</translation>
     </message>
@@ -168697,18 +168717,18 @@ vui lòng cung cấp tên mới:</translation>
 <context>
     <name>QgsStacCatalogItem</name>
     <message>
-        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="559"/>
-        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="672"/>
+        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="561"/>
+        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="674"/>
         <source>Double-click to fetch more (%L1 total items)...</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="561"/>
+        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="563"/>
         <source>Double-click to fetch more items...</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="565"/>
+        <location filename="../src/core/stac/qgsstacdataitems.cpp" line="567"/>
         <source>%1 more items</source>
         <translation type="unfinished"/>
     </message>
@@ -176305,192 +176325,192 @@ Lỗi là: %2</translation>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4183"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4273"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4215"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4305"/>
         <source>ERROR: no provider</source>
         <translation>LỖI: không có trình cung cấp</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4189"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4221"/>
         <source>ERROR: layer not editable</source>
         <translation>LỖI: lớp không chỉnh sửa được</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4227"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="4259"/>
         <source>Commit errors:
   %1</source>
         <translation>Các lỗi cam kết:
   %1</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6138"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6190"/>
         <source>Geometry type</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6144"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6196"/>
         <source>Geometry column</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6194"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6246"/>
         <source>Primary key attributes</source>
         <translation>Các thuộc tính của khóa chính</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2930"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2962"/>
         <source>Symbology</source>
         <translation>Kiểu biểu tượng</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="1907"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="1934"/>
         <source>%1: Action ’%2’</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="1963"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="1990"/>
         <source>%1: Attribute form init code</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2128"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2155"/>
         <source>Load layer style</source>
         <translation>Nạp kiểu của lớp</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2263"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2295"/>
         <source>Create %1 provider</source>
         <translation>Tạo %1 nhà cung cấp</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2295"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2327"/>
         <source>Read layer metadata</source>
         <translation>Đọc đặc tả dữ liệu lớp</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2343"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2375"/>
         <source>Read layer fields</source>
         <translation>Đọc các trường của lớp</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2530"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2562"/>
         <source>Relations</source>
         <translation>Các quan hệ</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2794"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2826"/>
         <source>Forms</source>
         <translation>Các Biểu mẫu</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2896"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2928"/>
         <source>Legend</source>
         <translation>Chú giải</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2958"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="2990"/>
         <source>Labeling</source>
         <translation>Dán nhãn</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3049"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="3081"/>
         <source>Diagrams</source>
         <translation>Các biểu đồ</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5387"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="5439"/>
         <source>Layer is invalid</source>
         <translation>Lớp không hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6105"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6157"/>
         <source>Information from provider</source>
         <translation>Thông tin từ nhà cung cấp</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6111"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6163"/>
         <source>Storage</source>
         <translation>Lưu trữ</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6123"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6175"/>
         <source>Encoding</source>
         <translation>Mã hóa</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6151"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6178"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6203"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6230"/>
         <source>Extent</source>
         <translation>Phạm vi</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6158"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6210"/>
         <source>Feature count</source>
         <translation>Đếm đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6160"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6212"/>
         <source>unknown</source>
         <translation>không rõ</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6173"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6225"/>
         <source>Identification</source>
         <translation>Nhận diện</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6183"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6235"/>
         <source>Access</source>
         <translation>Truy cập</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6188"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6240"/>
         <source>Fields</source>
         <translation>Các trường</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6206"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6258"/>
         <source>Count</source>
         <translation>Đếm</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6209"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6261"/>
         <source>Field</source>
         <translation>Trường</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6209"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6261"/>
         <source>Type</source>
         <translation>Kiểu</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6209"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6261"/>
         <source>Length</source>
         <translation>Chiều dài</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6209"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6261"/>
         <source>Precision</source>
         <translation>Độ chính xác</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6236"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6288"/>
         <source>Contacts</source>
         <translation>Liên hệ</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6241"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6293"/>
         <source>Links</source>
         <translation>Các liên kết</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6246"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6298"/>
         <source>History</source>
         <translation>Lịch sử</translation>
     </message>
     <message>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6117"/>
-        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6209"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6169"/>
+        <location filename="../src/core/vector/qgsvectorlayer.cpp" line="6261"/>
         <source>Comment</source>
         <translation>Ghi chú</translation>
     </message>
@@ -187125,12 +187145,12 @@ Kiểm tra bản ghi vết khung tiến trình để tìm các lỗi.</translati
 <context>
     <name>expression</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7280"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7288"/>
         <source>%1: Field not found %2</source>
         <translation>%1: Không tìm thấy tập tin %2</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7316"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7324"/>
         <source>%1: function cannot be evaluated without a context.</source>
         <translation>%1: hàm không thể được đáng giá mà không có ngữ cảnh.</translation>
     </message>
@@ -187138,47 +187158,47 @@ Kiểm tra bản ghi vết khung tiến trình để tìm các lỗi.</translati
 <context>
     <name>expressions</name>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7411"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7419"/>
         <source>Vector</source>
         <translation>Vector</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7413"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7421"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7415"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7423"/>
         <source>Mesh</source>
         <translation>Mặt lưới</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7417"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7425"/>
         <source>Vector Tile</source>
         <translation>Tập tin Véc-tơ</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7419"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7427"/>
         <source>Plugin</source>
         <translation>Trình mở rộng</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7421"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7429"/>
         <source>Annotation</source>
         <translation>Chú thích</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7423"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7431"/>
         <source>Point Cloud</source>
         <translation>Đám mây Điểm</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7425"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7433"/>
         <source>Group</source>
         <translation>Nhóm</translation>
     </message>
     <message>
-        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7427"/>
+        <location filename="../src/core/expression/qgsexpressionfunction.cpp" line="7435"/>
         <source>Tiled Scene</source>
         <translation type="unfinished"/>
     </message>
