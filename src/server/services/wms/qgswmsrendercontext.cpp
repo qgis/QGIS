@@ -590,10 +590,6 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
 
 void QgsWmsRenderContext::searchLayersToRenderStyle()
 {
-
-  //
-
-
   // Throw a LayerNotDefined when one of the requested layers or groups is not leading to a result, otherwise return the layers to render
   mAcceptableLayersToRender = acceptableLayers( mParameters.allLayersNickname() );
 
