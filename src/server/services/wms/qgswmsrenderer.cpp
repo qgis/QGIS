@@ -3936,7 +3936,7 @@ namespace QgsWms
         }
         else if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::ReferenceValue )
         {
-          defValue = dim.referenceValue;
+          defValue = dim.referenceValue();
         }
         else
         {

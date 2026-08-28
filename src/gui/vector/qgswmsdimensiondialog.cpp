@@ -105,10 +105,10 @@ void QgsWmsDimensionDialog::setInfo( const QgsMapLayerServerProperties::WmsDimen
   mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( info.defaultDisplayType ) ) );
   if ( info.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::ReferenceValue )
   {
-    const int referenceValueIndex = mReferenceValueComboBox->findData( info.referenceValue );
+    const int referenceValueIndex = mReferenceValueComboBox->findData( info.referenceValue() );
     if ( referenceValueIndex == -1 )
     {
-      mReferenceValueComboBox->setEditText( info.referenceValue.toString() );
+      mReferenceValueComboBox->setEditText( info.referenceValue().toString() );
     }
     else
     {

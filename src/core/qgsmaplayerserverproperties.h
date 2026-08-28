@@ -187,11 +187,26 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
           , units( dimUnits )
           , unitSymbol( dimUnitSymbol )
           , defaultDisplayType( dimDefaultDisplayType )
-          , referenceValue( dimReferenceValue )
+          , mReferenceValue( dimReferenceValue )
         {}
 
         bool operator==( const WmsDimensionInfo &other ) const;
         bool operator!=( const WmsDimensionInfo &other ) const;
+
+        /**
+     * Returns reference value used when default display type is Qgis::WmsDimensionDefaultDisplay::ReferenceValue
+     *
+     * \since QGIS 4.4
+     */
+        QVariant referenceValue() const SIP_PYNAME( _referenceValue ) { return mReferenceValue; }
+
+        /**
+     * Set \a referenceValue used when default display type is Qgis::WmsDimensionDefaultDisplay::ReferenceValue
+     *
+     * \since QGIS 4.4
+     */
+        void setReferenceValue( const QVariant &referenceValue ) { mReferenceValue = referenceValue; }
+
 
         QString name;
         QString fieldName;
@@ -199,7 +214,9 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
         QString units;
         QString unitSymbol;
         int defaultDisplayType;
-        QVariant referenceValue;
+
+      private:
+        QVariant mReferenceValue;
     };
 
     virtual ~QgsServerWmsDimensionProperties() = default;
