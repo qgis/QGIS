@@ -125,13 +125,30 @@ Constructor for WmsDimensionInfo.
         bool operator==( const WmsDimensionInfo &other ) const;
         bool operator!=( const WmsDimensionInfo &other ) const;
 
+        QVariant referenceValue() const /PyName=_referenceValue/;
+%Docstring
+Returns reference value used when default display type is
+:py:class:`Qgis`.WmsDimensionDefaultDisplay.ReferenceValue
+
+.. versionadded:: 4.4
+%End
+
+        void setReferenceValue( const QVariant &referenceValue );
+%Docstring
+Set ``referenceValue`` used when default display type is
+:py:class:`Qgis`.WmsDimensionDefaultDisplay.ReferenceValue
+
+.. versionadded:: 4.4
+%End
+
+
         QString name;
         QString fieldName;
         QString endFieldName;
         QString units;
         QString unitSymbol;
         Qgis::WmsDimensionDefaultDisplay defaultDisplayType;
-        QVariant referenceValue;
+
     };
 
     virtual ~QgsServerWmsDimensionProperties();

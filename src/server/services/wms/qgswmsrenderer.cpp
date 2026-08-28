@@ -3942,7 +3942,7 @@ namespace QgsWms
         }
         else if ( dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::ReferenceValue )
         {
-          defValue = dim.referenceValue;
+          defValue = dim.referenceValue();
         }
         else
         {

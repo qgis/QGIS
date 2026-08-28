@@ -1507,7 +1507,7 @@ void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsMapLaye
 
   QTreeWidgetItem *childWmsDimensionRefValue = new QTreeWidgetItem();
   childWmsDimensionRefValue->setText( 0, tr( "Reference value" ) );
-  childWmsDimensionRefValue->setText( 1, wmsDim.referenceValue.toString() );
+  childWmsDimensionRefValue->setText( 1, wmsDim.referenceValue().toString() );
   childWmsDimensionRefValue->setFlags( Qt::ItemIsEnabled );
   wmsDimensionItem->addChild( childWmsDimensionRefValue );
 
