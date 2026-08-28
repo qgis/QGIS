@@ -32,6 +32,9 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity
   mPreviewWidget->hide();
   mPreviewWidget->setMaterialType( u"phong"_s );
 
+  // Ensure the widgets expand without widening the label column.
+  mGridLayout->setColumnStretch( 2, 1 );
+
   mOpacityWidget->setVisible( mHasOpacity );
   mLblOpacity->setVisible( mHasOpacity );
   spinShininess->setClearValue( 0, tr( "None" ) );

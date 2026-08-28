@@ -13,27 +13,11 @@
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="5" column="2">
+  <layout class="QGridLayout" name="mGridLayout">
+   <item row="5" column="2" colspan="2">
     <widget class="QgsPercentageWidget" name="mSpecularCoefficientWidget" native="true">
      <property name="focusPolicy">
       <enum>Qt::FocusPolicy::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2">
-    <widget class="QgsColorButton" name="btnSpecular">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
      </property>
     </widget>
    </item>
@@ -47,6 +31,50 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="2" colspan="2">
+    <widget class="QWidget" name="mDiffuseColorContainer">
+     <layout class="QHBoxLayout" name="mDiffuseColorLayout">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QgsColorButton" name="btnDiffuse">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsPropertyOverrideButton" name="mDiffuseDataDefinedButton">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="6" column="1">
     <widget class="QLabel" name="lblShininess">
      <property name="toolTip">
@@ -54,20 +82,6 @@
      </property>
      <property name="text">
       <string>Shininess</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mDiffuseDataDefinedButton">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mAmbientDataDefinedButton">
-     <property name="text">
-      <string>...</string>
      </property>
     </widget>
    </item>
@@ -81,26 +95,54 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="2" colspan="2">
+    <widget class="QWidget" name="mSpecularColorContainer">
+     <layout class="QHBoxLayout" name="mSpecularColorLayout">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QgsColorButton" name="btnSpecular">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsPropertyOverrideButton" name="mSpecularDataDefinedButton">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="6" column="2" colspan="2">
     <widget class="QgsDoubleSpinBox" name="spinShininess">
      <property name="maximum">
       <double>1000.000000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QgsColorButton" name="btnAmbient">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
      </property>
     </widget>
    </item>
@@ -111,7 +153,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
+   <item row="1" column="2" colspan="2">
     <widget class="QgsPercentageWidget" name="mDiffuseCoefficientWidget" native="true">
      <property name="focusPolicy">
       <enum>Qt::FocusPolicy::StrongFocus</enum>
@@ -125,17 +167,10 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
+   <item row="3" column="2" colspan="2">
     <widget class="QgsPercentageWidget" name="mAmbientCoefficientWidget" native="true">
      <property name="focusPolicy">
       <enum>Qt::FocusPolicy::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mSpecularDataDefinedButton">
-     <property name="text">
-      <string>...</string>
      </property>
     </widget>
    </item>
@@ -149,20 +184,48 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QgsColorButton" name="btnDiffuse">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
+   <item row="2" column="2" colspan="2">
+    <widget class="QWidget" name="mAmbientColorContainer">
+     <layout class="QHBoxLayout" name="mAmbientColorLayout">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QgsColorButton" name="btnAmbient">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsPropertyOverrideButton" name="mAmbientDataDefinedButton">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="8" column="2">
