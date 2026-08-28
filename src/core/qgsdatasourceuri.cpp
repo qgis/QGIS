@@ -240,20 +240,22 @@ QString QgsDataSourceUri::removePassword( const QString &aUri, bool hide )
   {
     if ( aUri.contains( QLatin1String( " password='" ) ) )
     {
-      regexp.setPattern( QStringLiteral( " password='[^']*' " ) );
+      regexp.setPattern( QStringLiteral( " password='[^']*'" ) );
     }
     else
     {
-      regexp.setPattern( QStringLiteral( " password=.* " ) );
+      // InvertedGreedinessOption doesn't work here, disable it
+      regexp.setPatternOptions( QRegularExpression::NoPatternOption );
+      regexp.setPattern( QStringLiteral( " password=[^ ]*" ) );
     }
 
     if ( hide )
     {
-      safeName.replace( regexp, QStringLiteral( " password=%1 " ).arg( HIDING_TOKEN ) );
+      safeName.replace( regexp, QStringLiteral( " password=%1" ).arg( HIDING_TOKEN ) );
     }
     else
     {
-      safeName.replace( regexp, QStringLiteral( " " ) );
+      safeName.replace( regexp, QString( "" ) );
     }
   }
   else if ( aUri.contains( QLatin1String( ",password=" ) ) )

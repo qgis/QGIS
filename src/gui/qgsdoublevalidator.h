@@ -167,6 +167,11 @@ class GUI_EXPORT QgsDoubleValidator : public QRegularExpressionValidator
      * Top range limit
      */
     double mMaximum;
+
+    /**
+     * Creates the expression with given max \a decimals
+     */
+    static QRegularExpression createExpression( int decimals );
 };
 
 #endif // QGSDOUBLEVALIDATOR_H

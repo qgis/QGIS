@@ -26985,8 +26985,8 @@ please provide a new name:</source>
         <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2992"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="649"/>
         <location filename="../src/gui/proj/qgsinstallgridshiftdialog.cpp" line="55"/>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="791"/>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="819"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="792"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="820"/>
         <location filename="../src/providers/mdal/qgsmdalprovider.cpp" line="597"/>
         <location filename="../src/providers/mdal/qgsmdalprovider.cpp" line="598"/>
         <source>All files</source>
@@ -27048,9 +27048,9 @@ SQL: %1
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="163"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="358"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="460"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2499"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2554"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2722"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2501"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2556"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2724"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="38"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="164"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6030"/>
@@ -27249,7 +27249,7 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5234"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2562"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2564"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>레이어 스타일을 저장할 수 없습니다. 데이터베이스에 대상 테이블을 생성할 수 없습니다. 아마도 테이블 권한 (사용자 = %1) 때문인 것 같습니다. 데이터베이스 관리자에게 문의하십시오</translation>
     </message>
@@ -27287,13 +27287,13 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5246"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2574"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2576"/>
         <source>Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>layer_styles 테이블에 열 유형을 추가할 수 없습니다. 아마도 테이블 권한 (사용자=%1) 때문인 것 같습니다. 데이터베이스 관리자에게 문의하십시오</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5358"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2700"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2702"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>레이어 스타일을 저장할 수 없습니다. 스타일 테이블에 새 레코드를 삽입할 수 없습니다. .아마도 테이블 권한 (사용자 = %1) 때문인 것 같습니다. 데이터베이스 관리자에게 문의하십시오.</translation>
     </message>
@@ -27301,9 +27301,9 @@ Database error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5460"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5546"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5581"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2796"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2886"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2921"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2798"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2888"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2923"/>
         <source>Connection to database failed using username: %1</source>
         <translation>데이터베이스에 사용자 이름 %1 [으]로 연결할 수 없습니다</translation>
     </message>
@@ -27312,10 +27312,10 @@ Database error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5520"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5561"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5597"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2833"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2860"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2901"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2937"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2835"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2862"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2903"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2939"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6085"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6251"/>
         <source>Error executing query: %1</source>
@@ -27323,33 +27323,33 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5494"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2834"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2836"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>관련 스타일에 대한 선택 쿼리를 실행하는 도중 오류가 발생했습니다. 로그에 쿼리를 기록했습니다</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5521"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2861"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2863"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6417"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>관련 없는 스타일에 대한 선택 쿼리를 실행하는 도중 오류가 발생했습니다. 로그에 쿼리를 기록했습니다</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5562"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2902"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2904"/>
         <source>Error executing the delete query. The query was logged</source>
         <translation>삭제 쿼리를 실행하는 도중 오류가 발생했습니다. 쿼리는 로그에 기록되었습니다</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5598"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2938"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2940"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6468"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>선택 쿼리를 실행하는 도중 오류가 발생했습니다. 로그에 쿼리를 기록했습니다</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5593"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2933"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2935"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6462"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>테이블 &apos;%1&apos;에 일관성 오류가 발생했습니다. 스타일 id는 고유해야합니다</translation>
@@ -30136,7 +30136,7 @@ The output raster&apos;s extent and resolution is defined by a reference raster.
         <translation>객체 삭제</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="447"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="471"/>
         <source>Delete Table</source>
         <translation>테이블 삭제</translation>
     </message>
@@ -30155,7 +30155,7 @@ This will delete all data within the table.</source>
 테이블 내부의 데이터를 모두 삭제할 것입니다.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="447"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="471"/>
         <source>Are you sure you want to delete %1.%2?</source>
         <translation>%1.%2 을[를] 정말로 삭제하시겠습니까?</translation>
     </message>
@@ -53421,7 +53421,7 @@ For more details, please see the following papers:
     </message>
     <message>
         <location filename="../src/gui/qgsdataitemguiproviderutils.cpp" line="43"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="325"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="349"/>
         <source>Remove Connection</source>
         <translation>연결 제거</translation>
     </message>
@@ -53478,7 +53478,7 @@ For more details, please see the following papers:
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="325"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="349"/>
         <source>Are you sure you want to remove the connection to %1?</source>
         <translation>%1 에의 연결을 정말로 제거하시겠습니까?</translation>
     </message>
@@ -54572,116 +54572,121 @@ For more details, please see the following papers:
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="447"/>
+        <source>Transverse Mercator Zoned Grid System</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="449"/>
         <source>Two Point Equidistant</source>
         <translation>이중 정거 투영도법(Two Point Equidistant)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="449"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="451"/>
         <source>Tilted Perspective</source>
         <translation>기울어진 투시 투영도법(Tilted Perspective)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="451"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="453"/>
         <source>Universal Polar Stereographic</source>
         <translation>UPS 투영도법(Universal Polar Stereographic)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="453"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="455"/>
         <source>Urmaev V</source>
         <translation>제5 우르마예프 투영도법(Urmaev V)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="455"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="457"/>
         <source>Urmaev Flat-Polar Sinusoidal</source>
         <translation>우르마예프 평극 사인 곡선형 투영도법(Urmaev Flat-Polar Sinusoidal)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="457"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="459"/>
         <source>Universal Transverse Mercator (UTM)</source>
         <translation>UTM 투영도법(Universal Transverse Mercator)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="459"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="461"/>
         <source>van der Grinten (I)</source>
         <translation>제1 판 데어 그린텐 투영도법(van der Grinten I)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="461"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="463"/>
         <source>van der Grinten II</source>
         <translation>제2 판 데어 그린텐 투영도법(van der Grinten II)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="463"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="465"/>
         <source>van der Grinten III</source>
         <translation>제3 판 데어 그린텐 투영도법(van der Grinten III)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="465"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="467"/>
         <source>van der Grinten IV</source>
         <translation>제4 판 데어 그린텐 투영도법(van der Grinten IV)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="467"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="469"/>
         <source>Vitkovsky I</source>
         <translation>제1 빗코프스키 투영도법(Vitkovsky I)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="469"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="471"/>
         <source>Wagner I (Kavraisky VI)</source>
         <translation>제1 바그너 (제6 카프라이스키) 투영도법(Wagner I (Kavraisky VI))</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="471"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="473"/>
         <source>Wagner II</source>
         <translation>제2 바그너 투영도법(Wagner II)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="473"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="475"/>
         <source>Wagner III</source>
         <translation>제3 바그너 투영도법(Wagner III)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="475"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="477"/>
         <source>Wagner IV</source>
         <translation>제4 바그너 투영도법(Wagner IV)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="477"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="479"/>
         <source>Wagner V</source>
         <translation>제5 바그너 투영도법(Wagner V)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="479"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="481"/>
         <source>Wagner VI</source>
         <translation>제6 바그너 투영도법(Wagner VI)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="481"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="483"/>
         <source>Wagner VII</source>
         <translation>제7 바그너 투영도법(Wagner VII)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="483"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="485"/>
         <source>Werenskiold I</source>
         <translation>제1 베렌스키올드 투영도법(Werenskiold I)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="485"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="487"/>
         <source>Winkel I</source>
         <translation>제1 빈켈 투영도법(Winkel I)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="487"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="489"/>
         <source>Winkel II</source>
         <translation>제2 빈켈 투영도법(Winkel II)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="489"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="491"/>
         <source>Winkel Tripel</source>
         <translation>빈켈 3항 투영도법(Winkel Tripel)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="491"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="493"/>
         <source>Gauss-Schreiber</source>
         <translation>가우스-슈라이버 투영도법(Gauss-Schreiber)</translation>
     </message>
@@ -58701,7 +58706,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
         <translation>objectIdFieldName 그리고/또는 objectIds를 확인할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2586"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2588"/>
         <source>Unable to add column r_raster_column to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation type="unfinished"/>
     </message>
@@ -73664,36 +73669,36 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsClipboard</name>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="620"/>
-        <location filename="../src/app/qgsclipboard.cpp" line="627"/>
-        <location filename="../src/app/qgsclipboard.cpp" line="635"/>
-        <location filename="../src/app/qgsclipboard.cpp" line="646"/>
-        <location filename="../src/app/qgsclipboard.cpp" line="654"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="636"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="643"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="651"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="662"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="670"/>
         <source>Paste features</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="620"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="636"/>
         <source>No features in clipboard.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="627"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="643"/>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="635"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="651"/>
         <source>Cannot create new layer.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="646"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="662"/>
         <source>Cannot create field %1 (%2,%3), falling back to string type</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="654"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="670"/>
         <source>Cannot create field %1 (%2,%3)</source>
         <translation type="unfinished"/>
     </message>
@@ -75681,17 +75686,17 @@ Negative rounds to powers of 10</source>
 <context>
     <name>QgsConnectionsApiFetcher</name>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1099"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1100"/>
         <source>Error retrieving schemas: %1</source>
         <translation>스키마를 검색하는 도중 오류가 발생했습니다: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1134"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1135"/>
         <source>Error retrieving tables: %1</source>
         <translation>테이블을 검색하는 도중 오류가 발생했습니다: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1172"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1173"/>
         <source>Error retrieving fields for table %1: %2</source>
         <translation>%1 테이블의 필드를 검색하는 도중 오류가 발생했습니다: %1</translation>
     </message>
@@ -124884,12 +124889,12 @@ Rasterizing map is recommended for proper rendering.</source>
 <context>
     <name>QgsMapToolShapeCircle3Tangents</name>
     <message>
-        <location filename="../src/app/maptools/qgsmaptoolshapecircle3tangents.cpp" line="104"/>
+        <location filename="../src/app/maptools/qgsmaptoolshapecircle3tangents.cpp" line="109"/>
         <source>Error</source>
         <translation>오류</translation>
     </message>
     <message>
-        <location filename="../src/app/maptools/qgsmaptoolshapecircle3tangents.cpp" line="104"/>
+        <location filename="../src/app/maptools/qgsmaptoolshapecircle3tangents.cpp" line="109"/>
         <source>The three segments are parallel</source>
         <translation>3개의 선분이 평행합니다</translation>
     </message>
@@ -132836,17 +132841,17 @@ Always network: always load from network and do not check if the cache has a val
         <translation>항목 다운로드 실패: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="105"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="107"/>
         <source>empty response</source>
         <translation>빈 응답</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="140"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="142"/>
         <source>Loading of items failed</source>
         <translation>항목 불러오기 실패</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="218"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="220"/>
         <source>Cannot decode JSON document: %1</source>
         <translation>JSON 문서를 해독할 수 없습니다: %1</translation>
     </message>
@@ -136360,17 +136365,27 @@ Missing some of the .ui template objects:
         <translation>%1의 테이블 스캔중</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="45"/>
+        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="41"/>
+        <source>Connection failed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="46"/>
         <source>Retrieving tables of %1…</source>
         <translation>%1의 테이블 검색 중…</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="61"/>
+        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="50"/>
+        <source>Failed to retrieve supported layers</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="63"/>
         <source>Scanning column %1.%2.%3…</source>
         <translation>%1.%2.%3 열 스캔 중…</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="81"/>
+        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="83"/>
         <source>Table retrieval finished.</source>
         <translation>테이블 추출을 완료했습니다.</translation>
     </message>
@@ -136554,45 +136569,45 @@ SQL: %2</translation>
 <context>
     <name>QgsOracleConnectionItem</name>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="275"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="299"/>
         <source>Refresh</source>
         <translation>새로고침</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="283"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="307"/>
         <source>Edit Connection…</source>
         <translation>연결 편집…</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="409"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="433"/>
         <source>%1: Not a valid layer!</source>
         <translation>%1: 무결한 레이어가 아닙니다!</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="359"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="383"/>
         <source>%1: Not a vector layer!</source>
         <translation>%1: 벡터 레이어가 아닙니다!</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="287"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="311"/>
         <source>Duplicate Connection</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="291"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="315"/>
         <source>Remove Connection</source>
         <translation>연결 제거</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="383"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="395"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="417"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="407"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="419"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="441"/>
         <source>Import to Oracle database</source>
         <translation>Oracle 데이터베이스로 가져오기</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="396"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="418"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="420"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="442"/>
         <source>Failed to import some layers!
 
 </source>
@@ -136601,7 +136616,7 @@ SQL: %2</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="383"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="407"/>
         <source>Import was successful.</source>
         <translation>가져오는 데 성공했습니다.</translation>
     </message>
@@ -136609,14 +136624,14 @@ SQL: %2</translation>
 <context>
     <name>QgsOracleLayerItem</name>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="438"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="454"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="458"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="462"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="478"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="482"/>
         <source>Delete Table</source>
         <translation>테이블 삭제</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="458"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="482"/>
         <source>Table deleted successfully.</source>
         <translation>테이블을 성공적으로 삭제했습니다.</translation>
     </message>
@@ -136804,12 +136819,12 @@ SQL: %2</translation>
 <context>
     <name>QgsOracleOwnerItem</name>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="507"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="531"/>
         <source>%1 as %2 in %3</source>
         <translation>%1 을[를] %3의 %2 같이</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="525"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="549"/>
         <source>as geometryless table</source>
         <translation>도형 없는 테이블로</translation>
     </message>
@@ -137415,7 +137430,7 @@ Error: %2</source>
 <context>
     <name>QgsOracleRootItem</name>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="561"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="585"/>
         <source>New Connection…</source>
         <translation>새 연결…</translation>
     </message>
@@ -143096,23 +143111,23 @@ PostGIS %2</translation>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="464"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="478"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="502"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="526"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="549"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="559"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="569"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1005"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1719"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1835"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1856"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1862"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2075"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2085"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2113"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2147"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2183"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2204"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2209"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2214"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="528"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="551"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="561"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="571"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1007"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1721"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1837"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1858"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1864"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2077"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2087"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2115"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2149"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2185"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2206"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2211"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2216"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -143198,37 +143213,37 @@ Write accesses will be denied.</source>
         <translation>알 수 없는 식별된 데이터 유형</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1120"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1122"/>
         <source>Band count and NoData items count differ</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1138"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1140"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1405"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1407"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double, default to: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2183"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2185"/>
         <source>Key field &apos;%1&apos; for view/query not found.</source>
         <translation>뷰/쿼리를 위한 키 필드 &apos;%1&apos; 을[를] 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2204"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2206"/>
         <source>Primary key field &apos;%1&apos; for view/query not unique.</source>
         <translation>뷰/쿼리를 위한 기본 키 필드 &apos;%1&apos; 이[가] 유일하지 않습니다.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2209"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2211"/>
         <source>Keys for view/query undefined.</source>
         <translation>뷰/쿼리를 위한 키가 정의되지 않았습니다.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2214"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2216"/>
         <source>No key field for view/query given.</source>
         <translation>지정한 뷰/쿼리를 위한 키 필드가 없습니다.</translation>
     </message>
@@ -143238,259 +143253,259 @@ Write accesses will be denied.</source>
         <translation>%1 에서 나온 타일에 대해 임시 래스터를 생성할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="526"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="528"/>
         <source>Unable to write tile to temporary raster from %1: %2</source>
         <translation>%1 에서 나온 임시 래스터에 타일을 작성할 수 없습니다: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="464"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="549"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="551"/>
         <source>Unable to create destination raster for tiles from %1: %2</source>
         <translation>%1 에서 나온 타일에 대해 대상 래스터를 생성할 수 없습니다: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="559"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="561"/>
         <source>Unable to resample and transform destination raster for tiles from %1: %2</source>
         <translation>%1 에서 나온 타일에 대해 대상 래스터를 리샘플링 및 변환할 수 없습니다: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="478"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="569"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="571"/>
         <source>Unable to write raster to block from %1: %2</source>
         <translation>%1 에서 나온 블록에 래스터를 작성할 수 없습니다: %2</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="749"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="751"/>
         <source>Data type size for band %1 could not be found: num bands is: %2 and the type size map for bands contains: %n item(s)</source>
         <translation><numerusform>%1 밴드에 대한 데이터 유형 크기를 찾을 수 없습니다: 밴드 개수는 %2 이며 밴드에 대한 유형 크기 맵은 항목 %n 개를 담고 있습니다</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="826"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="828"/>
         <source>Is Tiled</source>
         <translation>타일화</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="827"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="829"/>
         <source>Where Clause SQL</source>
         <translation>WHERE 절 SQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="828"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="830"/>
         <source>Pixel Size</source>
         <translation>픽셀 크기</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="829"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="831"/>
         <source>Overviews</source>
         <translation>오버뷰</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="830"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="832"/>
         <source>Primary Keys SQL</source>
         <translation>기본 키 SQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="831"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="833"/>
         <source>Temporal Column</source>
         <translation>시계열 열</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="833"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="835"/>
         <source>Additional information</source>
         <translation>추가 정보</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="877"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="879"/>
         <source>PostgreSQL WHERE clause</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1005"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1007"/>
         <source>PostgreSQL raster layer has no primary key.</source>
         <translation>PostgreSQL 래스터 레이어에 기본 키가 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1099"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1382"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1101"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1384"/>
         <source>Cannot create CRS from EPSG: &apos;%1&apos;</source>
         <translation>EPSG로부터 좌표계를 생성할 수 없습니다: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1107"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1109"/>
         <source>Cannot get band count from value: &apos;%1&apos;</source>
         <translation>값으로부터 밴드 개수를 얻을 수 없습니다: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1129"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1395"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1131"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1397"/>
         <source>Unsupported data type: &apos;%1&apos;</source>
         <translation>지원하지 않는 데이터 유형: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1173"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1320"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1175"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1322"/>
         <source>Cannot get extent from raster</source>
         <translation>래스터에서 범위를 얻을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1184"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1337"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1186"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1339"/>
         <source>Cannot convert width &apos;%1&apos; to int</source>
         <translation>&apos;%1&apos; 너비를 정수로 변환할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1191"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1345"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1193"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1347"/>
         <source>Cannot convert height &apos;%1&apos; to int</source>
         <translation>&apos;%1&apos; 높이를 정수로 변환할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1199"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1353"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1201"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1355"/>
         <source>Cannot convert scale X &apos;%1&apos; to double</source>
         <translation>축척 X &apos;%1&apos; 을[를] 더블형으로 변환할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1206"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1361"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1208"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1363"/>
         <source>Cannot convert scale Y &apos;%1&apos; to double</source>
         <translation>축척 Y &apos;%1&apos; 을[를] 더블형으로 변환할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1221"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1223"/>
         <source>An error occurred while fetching raster metadata for table %1: %2
 SQL: %3</source>
         <translation>%1 테이블에 래스터 메타데이터를 가져오는 도중 오류가 발생했습니다: %2
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1226"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1228"/>
         <source>An error occurred while fetching raster metadata for %1, proceeding with (possibly very slow) raster data analysis: %2
 Please consider adding raster constraints with PostGIS function AddRasterConstraints.</source>
         <translation>%1 에 래스터 메타데이터를 가져오는 도중 오류가 발생해서, (매우 느릴 수 있는) 래스터 데이터 분석을 진행합니다: %2
 PostGIS 함수 AddRasterConstraints로 래스터 제약 조건을 추가하는 것을 고려해보십시오.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1251"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1253"/>
         <source>Multiple raster column detected, using the first one</source>
         <translation>래스터 열 여러 개를 탐지, 첫 번째 열을 사용</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1257"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1259"/>
         <source>An error occurred while fetching raster column</source>
         <translation>래스터 열을 가져오는 도중 오류가 발생했습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1326"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1328"/>
         <source>Cannot get metadata from raster</source>
         <translation>래스터에서 메타데이터를 얻을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1417"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1419"/>
         <source>An error occurred while fetching raster metadata</source>
         <translation>래스터 메타데이터를 가져오는 도중 오류가 발생했습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1429"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1431"/>
         <source>An error occurred while fetching raster fields information</source>
         <translation>래스터 필드 정보를 가져오는 도중 오류가 발생했습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1477"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1479"/>
         <source>Invalid default date in raster temporal capabilities for field %1: %2</source>
         <translation>%1 필드에 대한 래스터 시계열 케이퍼빌리티에 무결하지 않은 기본 날짜: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1499"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1501"/>
         <source>No temporal ranges detected in raster temporal capabilities for field %1: %2</source>
         <translation>%1 필드에 대한 래스터 시계열 케이퍼빌리티에서 시계열 범위를 탐지하지 못했습니다: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1504"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1506"/>
         <source>Invalid temporal range in raster temporal capabilities for field %1: %2 - %3</source>
         <translation>%1 필드에 대한 래스터 시계열 케이퍼빌리티에 무결하지 않은 시계열 범위: %2 - %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1509"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1511"/>
         <source>An error occurred while fetching raster temporal capabilities for field: %1</source>
         <translation>필드에 래스터 시계열 케이퍼빌리티를 가져오는 도중 오류가 발생했습니다: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1514"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1516"/>
         <source>Invalid field index for raster temporal capabilities: %1</source>
         <translation>래스터 시계열 케이퍼빌리티에 무결하지 않은 필드 인덱스: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1719"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1804"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1721"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1806"/>
         <source>Unexpected formatted field type &apos;%1&apos; for field %2</source>
         <translation>%2 필드에 예상 밖의 서식이 적용된 &apos;%1&apos; 필드 유형</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1835"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1856"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1837"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1858"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>지원하지 않는 %2 유형 때문에 %1 필드를 무시합니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1862"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1864"/>
         <source>Duplicate field %1 found
 </source>
         <translation>복제 필드 %1 을[를] 발견했습니다
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2067"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2069"/>
         <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
         <translation>기본 키는 CTID입니다 - 기존 피처의 변경을 비활성화했습니다 (%1; %2)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2075"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2077"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
         <translation>이 테이블은 키로 사용할 만한 열을 보유하고 있지 않습니다. QGIS는 PostgreSQL OID 열 또는 테이블 용 CTID 등의 기본 키를 필요로 합니다.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2085"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2087"/>
         <source>Unexpected relation type.</source>
         <translation>예상하지 못한 관계 유형입니다.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2113"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2115"/>
         <source>Unique column &apos;%1&apos; doesn&apos;t have a NOT NULL constraint.</source>
         <translation>유일한 열 &apos;%1&apos; 에 NOT NULL 제약조건이 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2147"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2149"/>
         <source>Ignoring key candidate because of NULL values or inherited table</source>
         <translation>NULL 값 또는 상속된 테이블 때문에 키 후보를 무시합니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2271"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2273"/>
         <source>Cannot convert overview factor &apos;%1&apos; to int</source>
         <translation>오버뷰 인자 &apos;%1&apos; 을[를] 정수로 변환할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2278"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2280"/>
         <source>Table or schema is empty</source>
         <translation>테이블 또는 스키마가 비어 있습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2286"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2288"/>
         <source>Error fetching overviews information: %1</source>
         <translation>오버뷰 정보를 가져오는 도중 오류 발생: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2290"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2292"/>
         <source>No overviews found, performances may be affected for %1</source>
         <translation>오버뷰를 찾을 수 없습니다, %1 에 대한 성능에 영향을 줄 수도 있습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2332"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2334"/>
         <source>Data type is unknown</source>
         <translation>데이터 유형을 알 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2441"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2443"/>
         <source>Error fetching statistics for %1: %2
 SQL: %3</source>
         <translation>%1 에 대한 통계를 가져오는 도중 오류가 발생했습니다: %2
@@ -143736,57 +143751,57 @@ SQL: %3</translation>
         <translation>파이썬 명령어로써 복사</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="204"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="205"/>
         <source>Copy as qgis_process Command</source>
         <translation>qgis_process 명령어로써 복사</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="219"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="220"/>
         <source>Current settings cannot be specified as arguments to qgis_process (Pipe parameters as JSON to qgis_process instead)</source>
         <translation>현재 설정을 qgis_process 에 들어갈 인자로 지정할 수 없습니다 (대신 qgis_process 에 들어갈 JSON으로 파이프라인 파라미터를 사용하십시오)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="237"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="239"/>
         <source>Copy as JSON</source>
         <translation>JSON으로써 복사</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="262"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="265"/>
         <source>Paste Settings</source>
         <translation>설정 붙여넣기</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="559"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="562"/>
         <source>Complete</source>
         <translation>완료</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="683"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="686"/>
         <source>Text files</source>
         <translation>텍스트 파일</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="684"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="687"/>
         <source>HTML files</source>
         <translation>HTML 파일</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="686"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="689"/>
         <source>Save Log to File</source>
         <translation>로그를 파일로 저장</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="791"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="795"/>
         <source>Warning: This algorithm is a potential security risk if executed with unchecked inputs, and may result in system damage or data leaks.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="795"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="799"/>
         <source>Warning: This algorithm has known issues. The results must be carefully validated by the user.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="934"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="938"/>
         <source>Message log truncated</source>
         <translation>메시지 로그가 잘렸습니다</translation>
     </message>
@@ -144139,45 +144154,45 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingContextOptionsWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="992"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="996"/>
         <source>Algorithm Settings</source>
         <translation>알고리즘 설정</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="994"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="998"/>
         <source>Do not Filter (Better Performance)</source>
         <translation>필터링 안 함 (성능 향상)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="995"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="999"/>
         <source>Skip (Ignore) Features with Invalid Geometries</source>
         <translation>무결하지 않은 도형을 가진 피처 건너뛰기(무시)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="996"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1000"/>
         <source>Stop Algorithm Execution When a Geometry is Invalid</source>
         <translation>도형이 무결하지 않은 경우 알고리즘 실행 중지</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="998"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1002"/>
         <source>Select Temporary Directory</source>
         <translation>임시 디렉터리 선택</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1000"/>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1002"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1004"/>
         <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1006"/>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1034"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1010"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1038"/>
         <source>Default</source>
         <translation>기본값</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1003"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1007"/>
         <source>Verbose</source>
         <translation>술부(verbose)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1004"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1008"/>
         <source>Verbose (Model Debugging)</source>
         <translation>술부 (모델 디버그 작업)</translation>
     </message>
@@ -150406,18 +150421,18 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsQueryResultMainWindow</name>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1274"/>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1283"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1275"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1284"/>
         <source>%1 — Execute SQL</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1276"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1277"/>
         <source>Execute SQL</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1281"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1282"/>
         <source>%1 — %2 — Execute SQL</source>
         <translation type="unfinished"/>
     </message>
@@ -150533,17 +150548,17 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="644"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="645"/>
         <source>Store Query</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="645"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="646"/>
         <source>Name for the stored query</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="647"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="648"/>
         <source>A stored query with this name already exists, it will be overwritten.</source>
         <translation type="unfinished"/>
     </message>
@@ -150639,109 +150654,109 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsQueryResultWidget</name>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="783"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="784"/>
         <source>Unsaved Changes</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="783"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="784"/>
         <source>There are unsaved changes in the query. Continue?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="791"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="792"/>
         <source>Open Query</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="791"/>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="819"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="792"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="820"/>
         <source>SQL queries (*.sql *.SQL)</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="817"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="818"/>
         <source>Save Query</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="861"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="862"/>
         <source>Save Query?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="862"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="863"/>
         <source>There are unsaved changes in this query. Do you want to save those?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="925"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="926"/>
         <source>Store Current Query</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="927"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="928"/>
         <source>In User Profile…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="933"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="934"/>
         <source>In Current Project…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="954"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="955"/>
         <source>User Profile</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="965"/>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="981"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="966"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="982"/>
         <source>No Stored Queries Available</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="970"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="971"/>
         <source>Current Project</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="988"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="989"/>
         <source>Removed Stored Query</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="993"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="994"/>
         <source>%1…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="996"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="997"/>
         <source>Remove Stored Query</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="996"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="997"/>
         <source>Are you sure you want to remove the stored query “%1”?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1019"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1020"/>
         <source>Store Query</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1020"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1021"/>
         <source>Name for the stored query</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1022"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1023"/>
         <source>A stored query with this name already exists, it will be overwritten.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1046"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1047"/>
         <source>SQL History</source>
         <translation type="unfinished"/>
     </message>
@@ -158385,8 +158400,8 @@ p, li { white-space: pre-wrap; }
         <translation>최소/최대값으로 자름</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="235"/>
-        <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="247"/>
+        <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="245"/>
+        <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="257"/>
         <source>Legend Settings</source>
         <translation>범례 설정</translation>
     </message>
@@ -168334,23 +168349,23 @@ Error was: %2</source>
         <translation>자동</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="750"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="778"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="751"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="779"/>
         <source>Modified names</source>
         <translation>수정된 이름</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="865"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="866"/>
         <source>Empty export name</source>
         <translation>비어 있는 내보내기 이름</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="865"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="866"/>
         <source>Empty export name are not allowed.</source>
         <translation>내보내기 이름이 비어 있어선 안 됩니다.</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="1193"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="1194"/>
         <source>No symbology</source>
         <translation>심볼 없음</translation>
     </message>
@@ -168360,53 +168375,53 @@ Error was: %2</source>
         <translation>레이어를 다른 이름으로 저장</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="331"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="365"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="420"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="433"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="332"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="350"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="366"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="421"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="434"/>
         <source>Save Vector Layer As</source>
         <translation>벡터 레이어를 다른 이름으로 저장</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="378"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="379"/>
         <source>The layer already exists. Do you want to overwrite the whole file or overwrite the layer?</source>
         <translation>레이어가 이미 존재합니다. 전체 파일을 덮어쓰시겠습니까 또는 레이어를 덮어쓰시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="366"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="453"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="367"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="454"/>
         <source>Overwrite File</source>
         <translation>파일 덮어쓰기</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="367"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="368"/>
         <source>Overwrite Layer</source>
         <translation>레이어 덮어쓰기</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="384"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="420"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="385"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="421"/>
         <source>The file already exists. Do you want to overwrite it?</source>
         <translation>파일이 이미 있습니다. 덮어쓰시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="389"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="390"/>
         <source>The layer already exists. Do you want to overwrite the whole file, overwrite the layer or append features to the layer?</source>
         <translation>레이어가 이미 존재합니다. 전체 파일을 덮어쓰시겠습니까 또는 레이어를 덮어쓰시겠습니까 아니면 레이어에 피처를 추가하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="368"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="369"/>
         <source>Append to Layer</source>
         <translation>레이어에 추가</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="396"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="397"/>
         <source>The layer already exists. Do you want to overwrite the whole file or append features to the layer?</source>
         <translation>레이어가 이미 존재합니다. 전체 파일을 덮어쓰시겠습니까 또는 레이어에 피처를 추가하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="266"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="267"/>
         <source>&lt;Default&gt;</source>
         <translation>&lt;기본값&gt;</translation>
     </message>
@@ -168426,35 +168441,35 @@ Error was: %2</source>
         <translation>심볼 레이어 심볼</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="331"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="332"/>
         <source>The layer contains at least one 64-bit integer field, which, with the current settings, can only be exported as a Real field. It could be exported as a 64-bit integer field if the TARGET_ARCGIS_VERSION layer option is set to ARCGIS_PRO_3_2_OR_LATER. Do you want to continue and export it as a Real field?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="350"/>
         <source>The layer contains at least one 64-bit integer field, which cannot be exported as such when using this output driver. 64-bit integer fields could be supported by selecting the %1 format and setting its TARGET_ARCGIS_VERSION layer option to ARCGIS_PRO_3_2_OR_LATER. Do you want to continue and export it as a Real field?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="482"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="350"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="483"/>
         <source>ESRI File Geodatabase</source>
         <translation>ESRI 파일 지오데이터베이스</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="433"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="434"/>
         <source>The existing layer has additional fields. Do you want to add the missing fields to the layer?</source>
         <translation>기존 레이어에 추가 필드가 있습니다. 레이어에 누락된 필드를 추가하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="454"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="455"/>
         <source>This file contains %1 layers that will be lost!
 </source>
         <translation>이 파일은 사라질 레이어 %1 개를 담고 있습니다!
 </translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="455"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="456"/>
         <source>The following layers will be permanently lost:
 
 %1</source>
@@ -168463,38 +168478,38 @@ Error was: %2</source>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="554"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="555"/>
         <source>new_layer</source>
         <translation>new_layer</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="563"/>
         <source>Name</source>
         <translation>이름</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="563"/>
         <source>Type</source>
         <translation>유형</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="563"/>
         <source>Replace with displayed values</source>
         <translation>표시된 값으로 대체</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="563"/>
         <source>Export name</source>
         <translation>내보내기 이름</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="607"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="608"/>
         <source>Use %1</source>
         <translation>%1 사용</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="750"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="778"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="751"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="779"/>
         <source>Some names were modified and will be overridden. Do you want to continue?</source>
         <translation>몇몇 이름들이 수정되어 덮어쓸 것입니다. 계속하시겠습니까?</translation>
     </message>

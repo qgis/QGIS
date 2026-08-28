@@ -18,6 +18,7 @@
 
 #include "qgsdoublevalidator.h"
 #include <QLineEdit>
+#include <QString>
 
 class TestQgsDoubleValidator : public QObject
 {
@@ -32,6 +33,8 @@ class TestQgsDoubleValidator : public QObject
     void validate_data();
     void toDouble_data();
     void toDouble();
+
+    void testRegularExpression();
 
   private:
 };
@@ -90,6 +93,10 @@ void TestQgsDoubleValidator::validate_data()
   QTest::newRow( "outside the range + local decimal" ) << QString( "3ld6" ) << int( QValidator::Intermediate ) << false;
   QTest::newRow( "outside the range + c decimal" ) << QString( "3cd6" ) << int( QValidator::Intermediate ) << false;
   QTest::newRow( "string" ) << QString( "string" ) << int( QValidator::Invalid ) << false;
+
+  QTest::newRow( "empty" ) << QString( "" ) << int( QValidator::Intermediate ) << false;
+  QTest::newRow( "only sign" ) << QString( "-" ) << int( QValidator::Intermediate ) << true;
+  QTest::newRow( "only decimal separator" ) << QString( "." ) << int( QValidator::Intermediate ) << false;
 }
 
 void TestQgsDoubleValidator::toDouble_data()
@@ -242,6 +249,28 @@ void TestQgsDoubleValidator::toDouble()
 
     QCOMPARE( QgsDoubleValidator::toDouble( value ), expectedValue );
   }
+}
+
+void TestQgsDoubleValidator::testRegularExpression()
+{
+  // Test that with locales that have '.' as decimal separator and '-' as minus sign the regular expression is correct
+  QLocale::setDefault( QLocale( QLocale::Language::English ) );
+  QgsDoubleValidator validator( nullptr );
+  QString value = QStringLiteral( "1.x23" );
+  QCOMPARE( validator.validate( value ), QValidator::Invalid );
+  value = QStringLiteral( "1.23" );
+  QCOMPARE( validator.validate( value ), QValidator::Acceptable );
+  const QRegularExpression re = validator.regularExpression();
+  QCOMPARE( re.pattern(), "^\\s*[+\\-]?[\\d]{0,1000}([\\.][\\d]{0,1000})?([eE][+\\-]?[\\d]{0,1000})?\\s*$" );
+
+  QLocale::setDefault( QLocale( QLocale::Language::Italian ) );
+  validator.setMaxDecimals( 100 );
+  value = QStringLiteral( "1,x23" );
+  QCOMPARE( validator.validate( value ), QValidator::Invalid );
+  value = QStringLiteral( "1,23" );
+  QCOMPARE( validator.validate( value ), QValidator::Acceptable );
+  const QRegularExpression re2 = validator.regularExpression();
+  QCOMPARE( re2.pattern(), "^\\s*[+\\-]?[\\d]{0,1000}([\\.\\,][\\d]{0,1000})?([eE][+\\-]?[\\d]{0,100})?\\s*$" );
 }
 
 QGSTEST_MAIN( TestQgsDoubleValidator )

@@ -443,6 +443,8 @@ QString QgsCoordinateReferenceSystemUtils::translateProjection( const QString &p
     return QObject::tr( "Tissot" );
   if ( projection == QLatin1String( "tmerc" ) )
     return QObject::tr( "Transverse Mercator" );
+  if ( projection == QLatin1String( "tmerczoned" ) )
+    return QObject::tr( "Transverse Mercator Zoned Grid System" );
   if ( projection == QLatin1String( "tpeqd" ) )
     return QObject::tr( "Two Point Equidistant" );
   if ( projection == QLatin1String( "tpers" ) )

@@ -14147,7 +14147,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     </message>
     <message>
         <source>Could not open GRASS algorithm: {0}</source>
-        <translation type="unfinished"/>
+        <translation>Не удалось открыть алгоритм GRASS: {0}</translation>
     </message>
     <message>
         <source>GRASS region extent</source>
@@ -14159,7 +14159,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     </message>
     <message>
         <source>GRASS folder is not configured. Please configure it before running GRASS algorithms.</source>
-        <translation type="unfinished"/>
+        <translation>Папка GRASS не настроена. Пожалуйста, настройте его перед запуском алгоритмов GRASS.</translation>
     </message>
     <message>
         <source>GRASS execution commands</source>
@@ -27015,8 +27015,8 @@ please provide a new name:</source>
         <location filename="../src/core/providers/gdal/qgsgdalprovider.cpp" line="2992"/>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="649"/>
         <location filename="../src/gui/proj/qgsinstallgridshiftdialog.cpp" line="55"/>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="791"/>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="819"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="792"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="820"/>
         <location filename="../src/providers/mdal/qgsmdalprovider.cpp" line="597"/>
         <location filename="../src/providers/mdal/qgsmdalprovider.cpp" line="598"/>
         <source>All files</source>
@@ -27078,9 +27078,9 @@ SQL: %1
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="163"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="358"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="460"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2499"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2554"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2722"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2501"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2556"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2724"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="38"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="164"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6030"/>
@@ -27279,7 +27279,7 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5234"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2562"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2564"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Не удалось сохранить стиль слоя в таблице. Невозможно создать таблицу в базе данных. Возможно, причина в нехватке прав у пользователя %1. Обратитесь к администратору базы данных.</translation>
     </message>
@@ -27317,13 +27317,13 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5246"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2574"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2576"/>
         <source>Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Не удалось добавить поле типа в таблицу layer_styles. Возможно это связано с правами доступа к таблице (user=%1). Обратитесь к администратору базы данных.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5358"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2700"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2702"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>Не удалось сохранить стиль слоя в таблице. Убедитесь, что у пользователя %1 есть право изменять таблицы.</translation>
     </message>
@@ -27331,9 +27331,9 @@ Database error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5460"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5546"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5581"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2796"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2886"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2921"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2798"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2888"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2923"/>
         <source>Connection to database failed using username: %1</source>
         <translation>Не удалось подключиться к базе данных под пользователем: %1</translation>
     </message>
@@ -27342,10 +27342,10 @@ Database error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5520"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5561"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5597"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2833"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2860"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2901"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2937"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2835"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2862"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2903"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2939"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6085"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6251"/>
         <source>Error executing query: %1</source>
@@ -27353,33 +27353,33 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5494"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2834"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2836"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>Не удалось выполнить запрос SELECT для связанных стилей. Запрос сохранён в журнале</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5521"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2861"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2863"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6417"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>Не удалось выполнить запрос SELECT для несвязанных стилей. Запрос сохранён в журнале</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5562"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2902"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2904"/>
         <source>Error executing the delete query. The query was logged</source>
         <translation>Не удалось выполнить запрос на удаление. Запрос сохранён в журнале</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5598"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2938"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2940"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6468"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>Не удалось выполнить запрос SELECT. Запрос сохранён в журнале</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5593"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2933"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2935"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6462"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>Некорректные данные в таблице «%1». Идентификатор стиля должен быть уникальным</translation>
@@ -30205,7 +30205,7 @@ The output raster&apos;s extent and resolution is defined by a reference raster.
         <translation>Удаление объекта</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="447"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="471"/>
         <source>Delete Table</source>
         <translation>Удалить таблицу</translation>
     </message>
@@ -30224,7 +30224,7 @@ This will delete all data within the table.</source>
 Все данные в таблицы будут безвозвратно удалены.</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="447"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="471"/>
         <source>Are you sure you want to delete %1.%2?</source>
         <translation>Вы уверены, что хотите удалить %1 %2?</translation>
     </message>
@@ -53615,7 +53615,7 @@ For more details, please see the following papers:
     </message>
     <message>
         <location filename="../src/gui/qgsdataitemguiproviderutils.cpp" line="43"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="325"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="349"/>
         <source>Remove Connection</source>
         <translation>Удалить соединение</translation>
     </message>
@@ -53678,7 +53678,7 @@ For more details, please see the following papers:
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="325"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="349"/>
         <source>Are you sure you want to remove the connection to %1?</source>
         <translation>Вы уверены, что хотите удалить подключение к %1?</translation>
     </message>
@@ -54772,116 +54772,121 @@ For more details, please see the following papers:
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="447"/>
+        <source>Transverse Mercator Zoned Grid System</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="449"/>
         <source>Two Point Equidistant</source>
         <translation>Two Point Equidistant</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="449"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="451"/>
         <source>Tilted Perspective</source>
         <translation>Tilted Perspective</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="451"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="453"/>
         <source>Universal Polar Stereographic</source>
         <translation>Universal Polar Stereographic</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="453"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="455"/>
         <source>Urmaev V</source>
         <translation>Urmaev V</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="455"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="457"/>
         <source>Urmaev Flat-Polar Sinusoidal</source>
         <translation>Urmaev Flat-Polar Sinusoidal</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="457"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="459"/>
         <source>Universal Transverse Mercator (UTM)</source>
         <translation>Universal Transverse Mercator (UTM)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="459"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="461"/>
         <source>van der Grinten (I)</source>
         <translation>van der Grinten (I)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="461"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="463"/>
         <source>van der Grinten II</source>
         <translation>van der Grinten II</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="463"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="465"/>
         <source>van der Grinten III</source>
         <translation>van der Grinten III</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="465"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="467"/>
         <source>van der Grinten IV</source>
         <translation>van der Grinten IV</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="467"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="469"/>
         <source>Vitkovsky I</source>
         <translation>Vitkovsky I</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="469"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="471"/>
         <source>Wagner I (Kavraisky VI)</source>
         <translation>Wagner I (Kavraisky VI)</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="471"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="473"/>
         <source>Wagner II</source>
         <translation>Wagner II</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="473"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="475"/>
         <source>Wagner III</source>
         <translation>Wagner III</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="475"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="477"/>
         <source>Wagner IV</source>
         <translation>Wagner IV</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="477"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="479"/>
         <source>Wagner V</source>
         <translation>Wagner V</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="479"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="481"/>
         <source>Wagner VI</source>
         <translation>Wagner VI</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="481"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="483"/>
         <source>Wagner VII</source>
         <translation>Wagner VII</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="483"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="485"/>
         <source>Werenskiold I</source>
         <translation>Werenskiold I</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="485"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="487"/>
         <source>Winkel I</source>
         <translation>Winkel I</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="487"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="489"/>
         <source>Winkel II</source>
         <translation>Winkel II</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="489"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="491"/>
         <source>Winkel Tripel</source>
         <translation>Winkel Tripel</translation>
     </message>
     <message>
-        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="491"/>
+        <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="493"/>
         <source>Gauss-Schreiber</source>
         <translation>Gauss-Schreiber</translation>
     </message>
@@ -58975,7 +58980,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
         <translation>Не удалось определить objectIdFieldName и/или objectIds</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2586"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2588"/>
         <source>Unable to add column r_raster_column to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Не удалось добавить поле r_raster_column в таблицу layer_styles. Возможно это связано с правами доступа к таблице (user=%1). Обратитесь к администратору базы данных.</translation>
     </message>
@@ -73969,36 +73974,36 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsClipboard</name>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="620"/>
-        <location filename="../src/app/qgsclipboard.cpp" line="627"/>
-        <location filename="../src/app/qgsclipboard.cpp" line="635"/>
-        <location filename="../src/app/qgsclipboard.cpp" line="646"/>
-        <location filename="../src/app/qgsclipboard.cpp" line="654"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="636"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="643"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="651"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="662"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="670"/>
         <source>Paste features</source>
         <translation>Вставить объекты</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="620"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="636"/>
         <source>No features in clipboard.</source>
         <translation>В буфере обмена нет объектов.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="627"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="643"/>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
         <translation>Найдено несколько типов геометрии. Объекты с геометрией, отличной от %1, будут созданы без геометрии.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="635"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="651"/>
         <source>Cannot create new layer.</source>
         <translation>Не удалось создать новый слой.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="646"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="662"/>
         <source>Cannot create field %1 (%2,%3), falling back to string type</source>
         <translation>Не удалось создать поле %1 (%2,%3), возврат к строковому типу</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsclipboard.cpp" line="654"/>
+        <location filename="../src/app/qgsclipboard.cpp" line="670"/>
         <source>Cannot create field %1 (%2,%3)</source>
         <translation>Не удалось создать поле: %1 (%2, %3)</translation>
     </message>
@@ -75985,17 +75990,17 @@ Negative rounds to powers of 10</source>
 <context>
     <name>QgsConnectionsApiFetcher</name>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1099"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1100"/>
         <source>Error retrieving schemas: %1</source>
         <translation>Ошибка получения схем: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1134"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1135"/>
         <source>Error retrieving tables: %1</source>
         <translation>Ошибка получения таблиц: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1172"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1173"/>
         <source>Error retrieving fields for table %1: %2</source>
         <translation>Ошибка получения полей таблицы: %1: %2</translation>
     </message>
@@ -125198,12 +125203,12 @@ Rasterizing map is recommended for proper rendering.</source>
 <context>
     <name>QgsMapToolShapeCircle3Tangents</name>
     <message>
-        <location filename="../src/app/maptools/qgsmaptoolshapecircle3tangents.cpp" line="104"/>
+        <location filename="../src/app/maptools/qgsmaptoolshapecircle3tangents.cpp" line="109"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/app/maptools/qgsmaptoolshapecircle3tangents.cpp" line="104"/>
+        <location filename="../src/app/maptools/qgsmaptoolshapecircle3tangents.cpp" line="109"/>
         <source>The three segments are parallel</source>
         <translation>Три сегмента параллельны</translation>
     </message>
@@ -133154,17 +133159,17 @@ Always network: always load from network and do not check if the cache has a val
         <translation>Не удалось загрузить объекты: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="105"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="107"/>
         <source>empty response</source>
         <translation>пустой ответ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="140"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="142"/>
         <source>Loading of items failed</source>
         <translation>Не удалось загрузить объекты</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="218"/>
+        <location filename="../src/providers/wfs/oapif/qgsoapifitemsrequest.cpp" line="220"/>
         <source>Cannot decode JSON document: %1</source>
         <translation>Не удалось декодировать документ JSON: %1</translation>
     </message>
@@ -136681,17 +136686,27 @@ Missing some of the .ui template objects:
         <translation>Сканирование таблиц для %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="45"/>
+        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="41"/>
+        <source>Connection failed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="46"/>
         <source>Retrieving tables of %1…</source>
         <translation>Извлечение таблиц %1…</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="61"/>
+        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="50"/>
+        <source>Failed to retrieve supported layers</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="63"/>
         <source>Scanning column %1.%2.%3…</source>
         <translation>Сканирование столбца %1.%2.%3…</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="81"/>
+        <location filename="../src/providers/oracle/qgsoraclecolumntypetask.cpp" line="83"/>
         <source>Table retrieval finished.</source>
         <translation>Таблицы получены.</translation>
     </message>
@@ -136874,45 +136889,45 @@ SQL: %2</translation>
 <context>
     <name>QgsOracleConnectionItem</name>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="275"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="299"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="283"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="307"/>
         <source>Edit Connection…</source>
         <translation>Изменить подключение...</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="409"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="433"/>
         <source>%1: Not a valid layer!</source>
         <translation>%1: Недействительный слой!</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="359"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="383"/>
         <source>%1: Not a vector layer!</source>
         <translation>%1: Слой не является векторным!</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="287"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="311"/>
         <source>Duplicate Connection</source>
         <translation>Дублировать соединение</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="291"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="315"/>
         <source>Remove Connection</source>
         <translation>Удалить соединение</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="383"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="395"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="417"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="407"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="419"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="441"/>
         <source>Import to Oracle database</source>
         <translation>Импорт данных в Oracle</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="396"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="418"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="420"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="442"/>
         <source>Failed to import some layers!
 
 </source>
@@ -136921,7 +136936,7 @@ SQL: %2</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="383"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="407"/>
         <source>Import was successful.</source>
         <translation>Импорт завершён.</translation>
     </message>
@@ -136929,14 +136944,14 @@ SQL: %2</translation>
 <context>
     <name>QgsOracleLayerItem</name>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="438"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="454"/>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="458"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="462"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="478"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="482"/>
         <source>Delete Table</source>
         <translation>Удалить таблицу</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="458"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="482"/>
         <source>Table deleted successfully.</source>
         <translation>Таблица удалена.</translation>
     </message>
@@ -137125,12 +137140,12 @@ SQL: %2</translation>
 <context>
     <name>QgsOracleOwnerItem</name>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="507"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="531"/>
         <source>%1 as %2 in %3</source>
         <translation>%1 как %2 в %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="525"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="549"/>
         <source>as geometryless table</source>
         <translation>как таблица без геометрии</translation>
     </message>
@@ -137739,7 +137754,7 @@ Error: %2</source>
 <context>
     <name>QgsOracleRootItem</name>
     <message>
-        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="561"/>
+        <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="585"/>
         <source>New Connection…</source>
         <translation>Создать соединение…</translation>
     </message>
@@ -143432,23 +143447,23 @@ PostGIS %2</translation>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="464"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="478"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="502"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="526"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="549"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="559"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="569"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1005"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1719"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1835"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1856"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1862"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2075"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2085"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2113"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2147"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2183"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2204"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2209"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2214"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="528"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="551"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="561"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="571"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1007"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1721"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1837"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1858"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1864"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2077"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2087"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2115"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2149"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2185"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2206"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2211"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2216"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -143534,37 +143549,37 @@ Write accesses will be denied.</source>
         <translation>Неустановленный идентифицированный тип данных</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1120"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1122"/>
         <source>Band count and NoData items count differ</source>
         <translation>Количество каналов и количество элементов NoData различаются</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1138"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1140"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double</source>
         <translation>Не удалось преобразовать значение NoData &apos;%1&apos; в значение с двойной точностью</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1405"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1407"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double, default to: %2</source>
         <translation>Не удалось преобразовать значение NoData &apos;%1&apos; в значение с двойной точностью, по умолчанию: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2183"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2185"/>
         <source>Key field &apos;%1&apos; for view/query not found.</source>
         <translation>Поле ключа &apos;%1&apos; для представления/запроса не найдено.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2204"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2206"/>
         <source>Primary key field &apos;%1&apos; for view/query not unique.</source>
         <translation>Поле первичного ключа &apos;%1&apos; для представления/запроса не уникально.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2209"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2211"/>
         <source>Keys for view/query undefined.</source>
         <translation>Ключи для представления/запроса не определены.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2214"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2216"/>
         <source>No key field for view/query given.</source>
         <translation>Поле ключа для представления/запроса не задано.</translation>
     </message>
@@ -143574,258 +143589,258 @@ Write accesses will be denied.</source>
         <translation>Не удалось создать временный растр для тайлов из %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="526"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="528"/>
         <source>Unable to write tile to temporary raster from %1: %2</source>
         <translation>Не удалось записать тайл во временный растр из %1 : %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="464"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="549"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="551"/>
         <source>Unable to create destination raster for tiles from %1: %2</source>
         <translation>Не удалось создать целевой растр для тайлов из %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="559"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="561"/>
         <source>Unable to resample and transform destination raster for tiles from %1: %2</source>
         <translation>Не удалось передискретизировать и трансформировать целевой растр для тайлов из %1: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="478"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="569"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="571"/>
         <source>Unable to write raster to block from %1: %2</source>
         <translation>Не удалось записать растр в блок из %1: %2</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="749"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="751"/>
         <source>Data type size for band %1 could not be found: num bands is: %2 and the type size map for bands contains: %n item(s)</source>
         <translation><numerusform>Не удалось найти размер типа данных для канала %1: количество каналов — %2, а карта размеров типов для каналов содержит %n элемент</numerusform><numerusform>Не удалось найти размер типа данных для канала %1: количество каналов — %2, а карта размеров типов для каналов содержит %n элемента</numerusform><numerusform>Не удалось найти размер типа данных для канала %1: количество каналов — %2, а карта размеров типов для каналов содержит %n элементов</numerusform><numerusform>Не удалось найти размер типа данных для канала %1: количество каналов — %2, а карта размеров типов для каналов содержит %n элементов</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="826"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="828"/>
         <source>Is Tiled</source>
         <translation>Является тайлированным</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="827"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="829"/>
         <source>Where Clause SQL</source>
         <translation>Предложение SQL where</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="828"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="830"/>
         <source>Pixel Size</source>
         <translation>Размер пикселя</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="829"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="831"/>
         <source>Overviews</source>
         <translation>Обзоры</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="830"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="832"/>
         <source>Primary Keys SQL</source>
         <translation>Первичные ключи SQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="831"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="833"/>
         <source>Temporal Column</source>
         <translation>Временное поле</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="833"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="835"/>
         <source>Additional information</source>
         <translation>Дополнительная информация</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="877"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="879"/>
         <source>PostgreSQL WHERE clause</source>
         <translation>Предложение PostgreSQL WHERE</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1005"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1007"/>
         <source>PostgreSQL raster layer has no primary key.</source>
         <translation>В растровом слое PostgreSQL отсутствует первичный ключ.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1099"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1382"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1101"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1384"/>
         <source>Cannot create CRS from EPSG: &apos;%1&apos;</source>
         <translation>Не удалось создать СК из EPSG: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1107"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1109"/>
         <source>Cannot get band count from value: &apos;%1&apos;</source>
         <translation>Не удалось получить число каналов из значения: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1129"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1395"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1131"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1397"/>
         <source>Unsupported data type: &apos;%1&apos;</source>
         <translation>Неподдерживаемый тип данных: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1173"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1320"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1175"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1322"/>
         <source>Cannot get extent from raster</source>
         <translation>Не удалось получить охват растра</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1184"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1337"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1186"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1339"/>
         <source>Cannot convert width &apos;%1&apos; to int</source>
         <translation>Не удалось преобразовать ширину &apos;%1&apos; в целое число</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1191"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1345"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1193"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1347"/>
         <source>Cannot convert height &apos;%1&apos; to int</source>
         <translation>Не удалось преобразовать высоту &apos;%1&apos; в целое число</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1199"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1353"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1201"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1355"/>
         <source>Cannot convert scale X &apos;%1&apos; to double</source>
         <translation>Не удалось преобразовать масштаб X &apos;%1&apos; в вещественное значение</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1206"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1361"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1208"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1363"/>
         <source>Cannot convert scale Y &apos;%1&apos; to double</source>
         <translation>Не удалось преобразовать масштаб Y &apos;%1&apos; в вещественное значение</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1221"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1223"/>
         <source>An error occurred while fetching raster metadata for table %1: %2
 SQL: %3</source>
         <translation>Возникла ошибка при извлечении метаданных растра для таблицы %1: %2
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1226"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1228"/>
         <source>An error occurred while fetching raster metadata for %1, proceeding with (possibly very slow) raster data analysis: %2
 Please consider adding raster constraints with PostGIS function AddRasterConstraints.</source>
         <translation>Произошла ошибка при извлечении метаданных растра для %1, анализ растровых данных продолжен (возможно, очень медленно): %2
 Подумайте о добавлении ограничений для растра с помощью функции PostGIS AddRasterConstraints.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1251"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1253"/>
         <source>Multiple raster column detected, using the first one</source>
         <translation>Обнаружено несколько колонок растров, для начал выберите одну</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1257"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1259"/>
         <source>An error occurred while fetching raster column</source>
         <translation>Произошла ошибка при извлечении столбца растра</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1326"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1328"/>
         <source>Cannot get metadata from raster</source>
         <translation>Не удалось получить метаданные растра</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1417"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1419"/>
         <source>An error occurred while fetching raster metadata</source>
         <translation>Возникла ошибка при извлечении метаданных растра</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1429"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1431"/>
         <source>An error occurred while fetching raster fields information</source>
         <translation>Возникла ошибка при извлечении информации о полях растра</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1477"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1479"/>
         <source>Invalid default date in raster temporal capabilities for field %1: %2</source>
         <translation>Ошибочная дата по умолчанию в хронологии растра для поля %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1499"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1501"/>
         <source>No temporal ranges detected in raster temporal capabilities for field %1: %2</source>
         <translation>Временные интервалы в хронологии растра для поля %1: %2 не обнаружены</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1504"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1506"/>
         <source>Invalid temporal range in raster temporal capabilities for field %1: %2 - %3</source>
         <translation>Недопустимый временной интервал в хронологии растра для поля %1: %2 - %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1509"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1511"/>
         <source>An error occurred while fetching raster temporal capabilities for field: %1</source>
         <translation>Возникла ошибка при извлечении хронологии растра для поля: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1514"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1516"/>
         <source>Invalid field index for raster temporal capabilities: %1</source>
         <translation>Ошибочный индекс поля для хронологии растра: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1719"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1804"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1721"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1806"/>
         <source>Unexpected formatted field type &apos;%1&apos; for field %2</source>
         <translation>неожиданный формат данных поля %2: «%1»</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1835"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1856"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1837"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1858"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>Неподдерживаемый тип данных %2 в поле %1 — поле проигнорировано</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1862"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1864"/>
         <source>Duplicate field %1 found
 </source>
         <translation>Найдено дублирующееся поле %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2067"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2069"/>
         <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
         <translation>Первичный ключ ctid - изменение существующих объектов отключено (%1; %2)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2075"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2077"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
         <translation>В таблице нет колонок, подходящих в качестве ключевых. Для корректной работы QGIS требуется первичный ключ, поле OID или CTID для таблиц.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2085"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2087"/>
         <source>Unexpected relation type.</source>
         <translation>Неожиданный тип отношения.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2113"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2115"/>
         <source>Unique column &apos;%1&apos; doesn&apos;t have a NOT NULL constraint.</source>
         <translation>Для уникального поля &apos;%1&apos; не установлено ограничение NOT NULL.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2147"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2149"/>
         <source>Ignoring key candidate because of NULL values or inherited table</source>
         <translation>Возможный ключ игнорируется из-за значения NULL или наследования</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2271"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2273"/>
         <source>Cannot convert overview factor &apos;%1&apos; to int</source>
         <translation>Не удалось преобразовать обзорный коэффициент &apos;%1&apos; в целое число</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2278"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2280"/>
         <source>Table or schema is empty</source>
         <translation>Таблица или схема пуста</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2286"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2288"/>
         <source>Error fetching overviews information: %1</source>
         <translation>Ошибка получения обзорной информации: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2290"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2292"/>
         <source>No overviews found, performances may be affected for %1</source>
         <translation>Обзор для %1 не найден, это может сказаться на производительности</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2332"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2334"/>
         <source>Data type is unknown</source>
         <translation>Тип данных неизвестен</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2441"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2443"/>
         <source>Error fetching statistics for %1: %2
 SQL: %3</source>
         <translation>Ошибка получения статистики для %1: %2
@@ -144071,57 +144086,57 @@ SQL: %3</translation>
         <translation>Скопировать как команду Python</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="204"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="205"/>
         <source>Copy as qgis_process Command</source>
         <translation>Скопировать как команду qgis_process</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="219"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="220"/>
         <source>Current settings cannot be specified as arguments to qgis_process (Pipe parameters as JSON to qgis_process instead)</source>
         <translation>Текущие параметры не могут быть указаны в качестве аргументов для qgis_process (вместо этого передавайте параметры в qgis_process в виде JSON)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="237"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="239"/>
         <source>Copy as JSON</source>
         <translation>Копировать как JSON</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="262"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="265"/>
         <source>Paste Settings</source>
         <translation>Параметры вставки</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="559"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="562"/>
         <source>Complete</source>
         <translation>Выполнено</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="683"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="686"/>
         <source>Text files</source>
         <translation>Текстовые файлы</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="684"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="687"/>
         <source>HTML files</source>
         <translation>Файлы HTML</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="686"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="689"/>
         <source>Save Log to File</source>
         <translation>Сохранить журнал в файл</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="791"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="795"/>
         <source>Warning: This algorithm is a potential security risk if executed with unchecked inputs, and may result in system damage or data leaks.</source>
         <translation>Предупреждение: Этот алгоритм представляет риск безопасности в случае выполнения с непроверенными входными данными, и может повлечь повреждение системы или утечку данных.</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="795"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="799"/>
         <source>Warning: This algorithm has known issues. The results must be carefully validated by the user.</source>
         <translation>Предупреждение: Известно о проблемах с этим алгоритмом. Результаты должны быть внимательно проверены пользователем.</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="934"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="938"/>
         <source>Message log truncated</source>
         <translation>Журнал сообщений опустошен</translation>
     </message>
@@ -144474,45 +144489,45 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingContextOptionsWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="992"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="996"/>
         <source>Algorithm Settings</source>
         <translation>Параметры алгоритма</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="994"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="998"/>
         <source>Do not Filter (Better Performance)</source>
         <translation>Не фильтровать (выше скорость выполнения)</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="995"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="999"/>
         <source>Skip (Ignore) Features with Invalid Geometries</source>
         <translation>Пропустить (игнорировать) объекты с некорректными геометриями</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="996"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1000"/>
         <source>Stop Algorithm Execution When a Geometry is Invalid</source>
         <translation>Остановить обработку, если геометрия некорректна</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="998"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1002"/>
         <source>Select Temporary Directory</source>
         <translation>Выбор временного каталога</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1000"/>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1002"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1004"/>
         <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1006"/>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1034"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1010"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1038"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1003"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1007"/>
         <source>Verbose</source>
         <translation>Подробный</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1004"/>
+        <location filename="../src/gui/processing/qgsprocessingalgorithmdialogbase.cpp" line="1008"/>
         <source>Verbose (Model Debugging)</source>
         <translation>Подробный (отладка модели)</translation>
     </message>
@@ -150740,18 +150755,18 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsQueryResultMainWindow</name>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1274"/>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1283"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1275"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1284"/>
         <source>%1 — Execute SQL</source>
         <translation>%1 — выполнить SQL-запрос</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1276"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1277"/>
         <source>Execute SQL</source>
         <translation>Выполнить SQL-запрос</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1281"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1282"/>
         <source>%1 — %2 — Execute SQL</source>
         <translation>%1 — %2 — выполнить SQL-запрос</translation>
     </message>
@@ -150867,17 +150882,17 @@ p, li { white-space: pre-wrap; }
         <translation>При выполнении запроса возникла ошибка</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="644"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="645"/>
         <source>Store Query</source>
         <translation>Сохранить запрос</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="645"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="646"/>
         <source>Name for the stored query</source>
         <translation>Имя сохраняемого запроса</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="647"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="648"/>
         <source>A stored query with this name already exists, it will be overwritten.</source>
         <translation>Сохранённый запрос с таким именем уже существует, он будет перезаписан.</translation>
     </message>
@@ -150973,109 +150988,109 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsQueryResultWidget</name>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="783"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="784"/>
         <source>Unsaved Changes</source>
         <translation>Несохраненные изменения</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="783"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="784"/>
         <source>There are unsaved changes in the query. Continue?</source>
         <translation>В запросе есть несохраненные изменения. Продолжить?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="791"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="792"/>
         <source>Open Query</source>
         <translation>Открыть запрос</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="791"/>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="819"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="792"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="820"/>
         <source>SQL queries (*.sql *.SQL)</source>
         <translation>SQL запросы (*.sql *.SQL)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="817"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="818"/>
         <source>Save Query</source>
         <translation>Сохранить запрос</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="861"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="862"/>
         <source>Save Query?</source>
         <translation>Сохранить запрос?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="862"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="863"/>
         <source>There are unsaved changes in this query. Do you want to save those?</source>
         <translation>В этом запросе есть несохраненные изменения. Хотите ли вы сохранить их?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="925"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="926"/>
         <source>Store Current Query</source>
         <translation>Сохранить текущий запрос </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="927"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="928"/>
         <source>In User Profile…</source>
         <translation>В профиле пользователя...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="933"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="934"/>
         <source>In Current Project…</source>
         <translation>В текущем проекте...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="954"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="955"/>
         <source>User Profile</source>
         <translation>Профиль пользователя</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="965"/>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="981"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="966"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="982"/>
         <source>No Stored Queries Available</source>
         <translation>Нет доступных хранимых запросов</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="970"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="971"/>
         <source>Current Project</source>
         <translation>Текущий проект</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="988"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="989"/>
         <source>Removed Stored Query</source>
         <translation>Удаленный хранимый запрос</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="993"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="994"/>
         <source>%1…</source>
         <translation>%1…</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="996"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="997"/>
         <source>Remove Stored Query</source>
         <translation>Удалить хранимый запрос</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="996"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="997"/>
         <source>Are you sure you want to remove the stored query “%1”?</source>
         <translation>Вы уверены, что хотите удалить хранимый запрос «%1»?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1019"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1020"/>
         <source>Store Query</source>
         <translation>Сохранить запрос</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1020"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1021"/>
         <source>Name for the stored query</source>
         <translation>Имя сохраняемого запроса</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1022"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1023"/>
         <source>A stored query with this name already exists, it will be overwritten.</source>
         <translation>Сохраняемый запрос с таким именем уже существует, он будет перезаписан.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1046"/>
+        <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1047"/>
         <source>SQL History</source>
         <translation>История SQL</translation>
     </message>
@@ -158721,8 +158736,8 @@ p, li { white-space: pre-wrap; }
         <translation>Обрезка по мин/макс</translation>
     </message>
     <message>
-        <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="235"/>
-        <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="247"/>
+        <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="245"/>
+        <location filename="../src/gui/raster/qgssinglebandgrayrendererwidget.cpp" line="257"/>
         <source>Legend Settings</source>
         <translation>Настройки легенды</translation>
     </message>
@@ -168676,23 +168691,23 @@ Error was: %2</source>
         <translation>Автоматически</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="750"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="778"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="751"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="779"/>
         <source>Modified names</source>
         <translation>Изменённые имена</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="865"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="866"/>
         <source>Empty export name</source>
         <translation>Пустое имя экспорта</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="865"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="866"/>
         <source>Empty export name are not allowed.</source>
         <translation>Пустое имя экспорта не допускается.</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="1193"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="1194"/>
         <source>No symbology</source>
         <translation>Не экспортировать</translation>
     </message>
@@ -168702,53 +168717,53 @@ Error was: %2</source>
         <translation>Сохранить Слой Как</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="331"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="365"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="420"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="433"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="332"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="350"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="366"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="421"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="434"/>
         <source>Save Vector Layer As</source>
         <translation>Сохранить векторный слой как</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="378"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="379"/>
         <source>The layer already exists. Do you want to overwrite the whole file or overwrite the layer?</source>
         <translation>Слой уже существует. Хотите перезаписать весь файл или только слой?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="366"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="453"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="367"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="454"/>
         <source>Overwrite File</source>
         <translation>Перезаписать файл</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="367"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="368"/>
         <source>Overwrite Layer</source>
         <translation>Перезаписать слой</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="384"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="420"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="385"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="421"/>
         <source>The file already exists. Do you want to overwrite it?</source>
         <translation>Файл уже существует. Хотите перезаписать?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="389"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="390"/>
         <source>The layer already exists. Do you want to overwrite the whole file, overwrite the layer or append features to the layer?</source>
         <translation>Слой уже существует. Хотите перезаписать весь файл, перезаписать слой или добавить в него новые объекты?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="368"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="369"/>
         <source>Append to Layer</source>
         <translation>Добавить в слой</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="396"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="397"/>
         <source>The layer already exists. Do you want to overwrite the whole file or append features to the layer?</source>
         <translation>Слой уже существует. Хотите перезаписать весь файл или добавить в слой новые объекты?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="266"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="267"/>
         <source>&lt;Default&gt;</source>
         <translation>&lt;По умолчанию&gt;</translation>
     </message>
@@ -168768,34 +168783,34 @@ Error was: %2</source>
         <translation>Объединять объекты по уровням знака</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="331"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="332"/>
         <source>The layer contains at least one 64-bit integer field, which, with the current settings, can only be exported as a Real field. It could be exported as a 64-bit integer field if the TARGET_ARCGIS_VERSION layer option is set to ARCGIS_PRO_3_2_OR_LATER. Do you want to continue and export it as a Real field?</source>
         <translation>Слой содержит по меньшей мере одно поле, содержащее 64-битное целое число, которое при текущих настройках может быть экспортировано только как поле с вещественным числом. Экспорт 64-битного целого числа возможен, если для параметра TARGET_ARCGIS_VERSION слоя установлено значение ARCGIS_PRO_3_2_OR_LATER. Продолжить и экспортировать как поле с вещественным числом?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="350"/>
         <source>The layer contains at least one 64-bit integer field, which cannot be exported as such when using this output driver. 64-bit integer fields could be supported by selecting the %1 format and setting its TARGET_ARCGIS_VERSION layer option to ARCGIS_PRO_3_2_OR_LATER. Do you want to continue and export it as a Real field?</source>
         <translation>По меньшей мере одно поле слоя содержит 64-битное целое число, которое не может быть экспортировано с использованием текущего выходного драйвера. Экспорт 64-битного целого числа поддерживается, если выбрать формат %1 и установить для параметра TARGET_ARCGIS_VERSION слоя значение ARCGIS_PRO_3_2_OR_LATER. Продолжить и экспортировать как поле с вещественным числом?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="349"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="482"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="350"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="483"/>
         <source>ESRI File Geodatabase</source>
         <translation>ESRI File Geodatabase</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="433"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="434"/>
         <source>The existing layer has additional fields. Do you want to add the missing fields to the layer?</source>
         <translation>Структура полей существующего слоя отличается. Хотите добавить к слою недостающие поля?</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="454"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="455"/>
         <source>This file contains %1 layers that will be lost!
 </source>
         <translation>Файл содержит %1 слоев, которые будут утеряны!</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="455"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="456"/>
         <source>The following layers will be permanently lost:
 
 %1</source>
@@ -168804,38 +168819,38 @@ Error was: %2</source>
 %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="554"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="555"/>
         <source>new_layer</source>
         <translation>new_layer</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="563"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="563"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="563"/>
         <source>Replace with displayed values</source>
         <translation>Заменить отображаемыми значениями</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="562"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="563"/>
         <source>Export name</source>
         <translation>Имя экспорта</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="607"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="608"/>
         <source>Use %1</source>
         <translation>Использовать %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="750"/>
-        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="778"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="751"/>
+        <location filename="../src/gui/ogr/qgsvectorlayersaveasdialog.cpp" line="779"/>
         <source>Some names were modified and will be overridden. Do you want to continue?</source>
         <translation>Некоторые имена были изменены и будут переопределены. Продолжить?</translation>
     </message>

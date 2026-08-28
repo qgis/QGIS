@@ -1241,6 +1241,44 @@ which are not wrapped by PyQt:
     %End
 };
 
+%If (MOVABLE_MAPPED_TYPE)
+template <TYPE>
+%MappedType std::unique_ptr<TYPE> /@SIP_MOVABLE_STR@NoRelease,AllowNone,TypeHint="Optional[TYPE]",TypeHintValue="TYPE"/
+{
+%TypeHeaderCode
+#include <memory>
+#include <utility>      // For std::move().
+%End
+
+%ConvertFromTypeCode
+  const sipTypeDef *sip_type = sipFindType("TYPE*");
+  return sipConvertFromNewType(sipCpp->release(), sip_type, NULL);
+%End
+
+%ConvertToTypeCode
+  const sipTypeDef *sip_type = sipFindType("TYPE");
+
+  if (sipIsErr == NULL)
+    return sipCanConvertToType(sipPy, sip_type, 0);
+
+  if (sipPy == Py_None)
+    return 1;
+
+  int state;
+  TYPE *type_ = reinterpret_cast<TYPE *>(sipConvertToType(sipPy, sip_type, sipTransferObj, 0, &state, sipIsErr));
+
+  sipReleaseType(type_, sip_type, state);
+
+  if (*sipIsErr)
+    return 0;
+
+  *sipCppPtr = new std::unique_ptr<TYPE>(type_);
+  return sipGetState(sipTransferObj);
+%End
+};
+%End
+
+%If (!MOVABLE_MAPPED_TYPE)
 template <TYPE>
 %MappedType std::unique_ptr< TYPE > /NoRelease,AllowNone,TypeHint="Optional[TYPE]",TypeHintValue="TYPE"/
 {
@@ -1258,7 +1296,7 @@ template <TYPE>
   return 0;
 %End
 };
-
+%End
 
 template <TYPE>
 %MappedType QVector< QVector<TYPE> >
