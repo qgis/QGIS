@@ -315,6 +315,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
   processing/qgsalgorithmtruncatetable.cpp
+  processing/qgsalgorithmtpsinterpolation.cpp
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalues.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
