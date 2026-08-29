@@ -298,6 +298,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmtininterpolation.h"
 #include "qgsalgorithmtinmeshcreation.h"
 #include "qgsalgorithmtotalcurvature.h"
+#include "qgsalgorithmtpsinterpolation.h"
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransectfixeddistance.h"
 #include "qgsalgorithmtransform.h"
@@ -515,6 +516,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFuzzifyRasterNearMembershipAlgorithm() );
   addAlgorithm( new QgsGenerateElevationProfileAlgorithm() );
   addAlgorithm( new QgsGeometryByExpressionAlgorithm() );
+  addAlgorithm( new QgsGlobalThinPlateSplineAlgorithm() );
   addAlgorithm( new QgsGltfToVectorFeaturesAlgorithm() );
 #if QT_CONFIG( process )
   addAlgorithm( new QgsConvertGpxFeatureTypeAlgorithm() );
@@ -549,6 +551,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsLineIntersectionAlgorithm() );
   addAlgorithm( new QgsLineSubstringAlgorithm() );
   addAlgorithm( new QgsLoadLayerAlgorithm() );
+  addAlgorithm( new QgsLocalThinPlateSplineAlgorithm() );
   addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
   addAlgorithm( new QgsMergeLinesAlgorithm() );
   addAlgorithm( new QgsMergeVectorAlgorithm() );
