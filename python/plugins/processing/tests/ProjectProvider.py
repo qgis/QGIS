@@ -30,12 +30,11 @@ from qgis.core import (
 from qgis.testing import QgisTestCase, start_app
 
 from processing.modeler.ModelerDialog import ModelerDialog
-from processing.modeler.ProjectProvider import ProjectProvider
 
 start_app()
 
 
-class ProjectProviderTest(QgisTestCase):
+class ProjectProviderGuiTest(QgisTestCase):
     def testDialog(self):
         """
         Test saving model to project from dialog
