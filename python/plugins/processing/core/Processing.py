@@ -36,7 +36,9 @@ from qgis.core import (
     QgsProcessingOutputRasterLayer,
     QgsProcessingOutputVectorLayer,
     QgsProcessingParameterDefinition,
+    QgsProcessingProjectModelProvider,
     QgsProcessingProvider,
+    QgsProject,
     QgsRuntimeProfiler,
 )
 from qgis.PyQt.QtCore import QCoreApplication, Qt
@@ -168,6 +170,10 @@ class Processing:
                         Processing.BASIC_PROVIDERS.append(p)
                 except ImportError:
                     pass
+
+                p = QgsProcessingProjectModelProvider(QgsProject.instance())
+                if QgsApplication.processingRegistry().addProvider(p):
+                    Processing.BASIC_PROVIDERS.append(p)
 
             # And initialize
             ProcessingConfig.initialize()
