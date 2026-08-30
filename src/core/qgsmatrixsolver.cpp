@@ -26,6 +26,9 @@
 using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GSL
+#define GSL_RANGE_CHECK_OFF
+#define HAVE_INLINE 1
+
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_linalg.h>
