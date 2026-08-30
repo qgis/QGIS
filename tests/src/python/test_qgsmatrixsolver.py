@@ -89,13 +89,13 @@ class TestQgsMatrixSolver(QgisTestCase):
         """
         solver = QgsMatrixSolver(3)
 
-        with self.assertRaises(QgsInvalidArgumentException):
+        with self.assertRaises(IndexError):
             solver.setValue(3, 0, 1.0)
 
-        with self.assertRaises(QgsInvalidArgumentException):
+        with self.assertRaises(IndexError):
             solver.setValue(0, 3, 1.0)
 
-        with self.assertRaises(QgsInvalidArgumentException):
+        with self.assertRaises(IndexError):
             solver.setRightHandSide(3, 1.0)
 
         with self.assertRaises(QgsInvalidArgumentException):

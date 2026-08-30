@@ -107,13 +107,14 @@ QgsMatrixSolver::~QgsMatrixSolver()
 #endif
 }
 
+int QgsMatrixSolver::maximumDimension() const
+{
+  return mData->maximumDimension;
+}
+
 void QgsMatrixSolver::setValue( int row, int column, double value )
 {
 #ifdef HAVE_GSL
-  if ( row < 0 || row >= mData->maximumDimension || column < 0 || column >= mData->maximumDimension )
-  {
-    throw QgsInvalidArgumentException( u"Invalid value for row or column, must be >= 0 and < %1"_s.arg( mData->maximumDimension ) );
-  }
   gsl_matrix_set( mData->maxMatrix, row, column, value );
 #else
   ( void ) row;
@@ -126,10 +127,6 @@ void QgsMatrixSolver::setValue( int row, int column, double value )
 void QgsMatrixSolver::setRightHandSide( int row, double value )
 {
 #ifdef HAVE_GSL
-  if ( row < 0 || row >= mData->maximumDimension )
-  {
-    throw QgsInvalidArgumentException( u"Invalid value for row, must be >= 0 and < %1"_s.arg( mData->maximumDimension ) );
-  }
   gsl_vector_set( mData->maxVectorB, row, value );
 #else
   ( void ) row;
