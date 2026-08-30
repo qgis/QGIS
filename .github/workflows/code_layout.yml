@@ -47,9 +47,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Install Requirements
         run: |
-          sudo apt install -y \
-              cpanminus
-            cpanm --notest App::Licensecheck
+          sudo apt-get install -y licensecheck
 
       - name: Run License Check
         run: ./tests/code_layout/test_licenses.sh
