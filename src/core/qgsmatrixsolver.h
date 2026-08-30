@@ -64,6 +64,27 @@ class CORE_EXPORT QgsMatrixSolver
 #endif
 
     /**
+     * Returns the maximum dimension supported by this solver.
+     */
+    int maximumDimension() const;
+
+#ifndef SIP_RUN
+    /**
+     * Sets the \a value for \a row, \a column in the preallocated matrix ``A``.
+     *
+     * \param row The row index (0-based)
+     * \param column The column index (0-based)
+     * \param value The value to insert
+     *
+     * \warning The c++ version of this method performs no bounds checking on \a row or \a column, this is the caller's responsibility.
+     *
+     * \throws QgsNotSupportedException for QGIS builds without GSL support.
+     */
+    void setValue( int row, int column, double value );
+#else
+    // clang-format off
+
+    /**
      * Sets the \a value for \a row, \a column in the preallocated matrix ``A``.
      *
      * \param row The row index (0-based)
@@ -71,20 +92,76 @@ class CORE_EXPORT QgsMatrixSolver
      * \param value The value to insert
      *
      * \throws QgsNotSupportedException for QGIS builds without GSL support.
-     * \throws QgsInvalidArgumentException if the row or column index is out of bounds.
+     * \throws IndexError if the row or column index is out of bounds.
      */
-    void setValue( int row, int column, double value ) SIP_THROW( QgsNotSupportedException );
+    void setValue( int row, int column, double value );
+  % MethodCode
+    const int maximumDimension = sipCpp->maximumDimension();
+    if ( !QgsMatrixSolver::isAvailable() )
+    {
+      PyErr_SetString( sipException_QgsNotSupportedException, "QgsMatrixSolver requires a QGIS build with GSL support enabled" );
+      sipIsErr = 1;
+    }
+    else if ( a0 < 0 || a0 >= maximumDimension  )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else if ( a1 < 0 || a1 >= maximumDimension )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a1 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setValue( a0, a1, a2 );
+    }
+    % End
+// clang-format on
+#endif
 
+#ifndef SIP_RUN
     /**
      * Sets a value in the preallocated right-hand-side vector ``b``.
      *
      * \param row The row index (0-based)
      * \param value The value to insert
      *
+     * \warning The c++ version of this method performs no bounds checking on \a row, this is the caller's responsibility.
+     *
      * \throws QgsNotSupportedException for QGIS builds without GSL support.
-     * \throws QgsInvalidArgumentException if the row index is out of bounds.
      */
-    void setRightHandSide( int row, double value ) SIP_THROW( QgsNotSupportedException );
+    void setRightHandSide( int row, double value );
+#else
+      // clang-format off
+
+      /**
+       * Sets a value in the preallocated right-hand-side vector ``b``.
+       * \param row The row index (0-based)
+       * \param value The value to insert
+       * \throws QgsNotSupportedException for QGIS builds without GSL support.
+       * \throws IndexError if the row index is out of bounds.
+       */
+      void setRightHandSide( int row, double value ) SIP_THROW( QgsNotSupportedException );
+      % MethodCode
+      const int maximumDimension = sipCpp->maximumDimension();
+      if ( !QgsMatrixSolver::isAvailable() )
+      {
+        PyErr_SetString( sipException_QgsNotSupportedException, "QgsMatrixSolver requires a QGIS build with GSL support enabled" );
+        sipIsErr = 1;
+      }
+      else if ( a0 < 0 || a0 >= maximumDimension )
+      {
+        PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+        sipIsErr = 1;
+      }
+      else
+      {
+        sipCpp->setRightHandSide( a0, a1 );
+      }
+      % End
+    // clang-format on
+#endif
 
     /**
      * Solves the system ``Ax = b`` for a specific active dimension.
