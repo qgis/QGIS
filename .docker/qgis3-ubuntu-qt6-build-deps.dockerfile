@@ -184,6 +184,8 @@ FROM binary-only
 RUN  apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     bison \
+    build-essential \
+    g++-x86-64-linux-gnu \
     ccache \
     clang-22 \
     cmake \
