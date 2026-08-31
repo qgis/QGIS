@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmfillsinkswangliu.h"
 
+#include "qgsacademicreference.h"
 #include "qgsrasterfilewriter.h"
 
 #include <QString>
@@ -60,11 +61,22 @@ QString QgsFillSinksWangLiuAlgorithm::shortHelpString() const
     "but also to preserve a downward slope along the flow path. If desired, this is accomplished by preserving a minimum slope "
     "gradient (and thus elevation difference) between cells.\n\n"
 
-    "References: Wang, L. & H. Liu (2006): An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling. International "
-    "Journal of Geographical Information Science, Vol. 20, No. 2: 193-213.\n\n"
-
     "This algorithm is a port of the SAGA 'Fill Sinks (Wang & Liu)' tool."
   );
+}
+
+QList<QgsAcademicReference> QgsFillSinksWangLiuAlgorithm::academicReferences() const
+{
+  const QgsAcademicReference ref = QgsAcademicReference::createJournalArticle(
+    { u"Wang, L."_s, u"Liu, H."_s },
+    2006,
+    u"An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling."_s,
+    u"International Journal of Geographical Information Science"_s,
+    u"20"_s,
+    u"No. 2"_s,
+    u"193-213"_s
+  );
+  return { ref };
 }
 
 QString QgsFillSinksWangLiuAlgorithm::shortDescription() const

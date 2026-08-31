@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmrasterfeaturepreservingsmoothing.h"
 
+#include "qgsacademicreference.h"
 #include "qgsrasterfilewriter.h"
 
 #include <QString>
@@ -79,8 +80,15 @@ QString QgsRasterFeaturePreservingSmoothingAlgorithm::shortHelpString() const
     "1. Calculating surface normal 3D vectors for each grid cell.\n"
     "2. Smoothing the normal vector field using a filter that applies more weight to neighbors with similar surface normals (preserving edges).\n"
     "3. Iteratively updating the elevations in the DEM to match the smoothed normal field.\n\n"
-    "References: Lindsay, John et al (2019): LiDAR DEM Smoothing and the Preservation of Drainage Features. Remote Sensing, Vol. 11, Issue 16, https://doi.org/10.3390/rs11161926"
   );
+}
+
+QList<QgsAcademicReference> QgsRasterFeaturePreservingSmoothingAlgorithm::academicReferences() const
+{
+  QgsAcademicReference lindsayReference
+    = QgsAcademicReference::createJournalArticle( { u"Lindsay, J. et al."_s }, 2019, u"LiDAR DEM Smoothing and the Preservation of Drainage Features"_s, u"Remote Sensing"_s, u"11"_s, u"16"_s );
+  lindsayReference.setUrl( u"https://doi.org/10.3390/rs11161926"_s );
+  return { lindsayReference };
 }
 
 QString QgsRasterFeaturePreservingSmoothingAlgorithm::shortDescription() const
