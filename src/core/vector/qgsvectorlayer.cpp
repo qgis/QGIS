@@ -4506,6 +4506,13 @@ bool QgsVectorLayer::supportsEditing() const
   return mDataProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities && !mReadOnly;
 }
 
+bool QgsVectorLayer::supportsSnapping() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return isSpatial();
+}
+
 bool QgsVectorLayer::isModified() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
