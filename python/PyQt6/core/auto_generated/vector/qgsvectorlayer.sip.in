@@ -1809,6 +1809,15 @@ Returns whether the layer supports editing or not
 .. versionadded:: 3.18
 %End
 
+    virtual bool supportsSnapping() const;
+
+%Docstring
+Returns ``True`` if the layer holds geometry
+(:py:func:`~QgsVectorLayer.isSpatial`) and so can be a snap target.
+
+.. versionadded:: 4.4
+%End
+
     bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
 %Docstring
 Changes a feature's ``geometry`` within the layer's edit buffer (but

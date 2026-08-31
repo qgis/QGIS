@@ -21,6 +21,7 @@ class QgsFeatureRenderer;
 class QgsRenderContext;
 class QgsRectangle;
 class QgsVectorLayerFeatureSource;
+class QgsAnnotationLayer;
 
 #include <memory>
 
@@ -124,12 +125,45 @@ class CORE_EXPORT QgsPointLocator : public QObject
       const QgsRectangle *extent = nullptr
     );
 
+    /**
+     * Constructs a point locator for an annotation \a layer, indexing each item's snapGeometry()
+     * \since QGIS 4.4
+     */
+    explicit QgsPointLocator(
+      QgsAnnotationLayer *layer,
+      const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+      const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
+      const QgsRectangle *extent = nullptr
+    );
+
     ~QgsPointLocator() override;
 
     /**
      * Gets associated layer
      */
     QgsVectorLayer *layer() const { return mLayer; }
+
+    /**
+     * Returns the annotation layer this locator was built for, or NULLPTR for a vector-layer locator.
+     *
+     * \since QGIS 4.4
+     */
+    QgsAnnotationLayer *annotationLayer() const { return mAnnotationLayer; }
+
+    /**
+     * Returns the annotation item id mapped to the synthetic feature \a id, or an empty string if
+     * \a id is not an annotation item.
+     *
+     * \since QGIS 4.4
+     */
+    QString annotationItemId( QgsFeatureId id ) const { return mAnnotationItemIds.value( id ); }
+
+    /**
+     * Returns the layer this locator was built for (vector or annotation)
+     *
+     * \since QGIS 4.4
+     */
+    QgsMapLayer *mapLayer() const;
 
     /**
      * Gets destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
@@ -197,6 +231,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
           , mDist( dist )
           , mPoint( pt )
           , mLayer( vl )
+          , mMapLayer( vl )
           , mFid( fid )
           , mVertexIndex( vertexIndex )
         {
@@ -244,15 +279,31 @@ class CORE_EXPORT QgsPointLocator : public QObject
         int vertexIndex() const { return mVertexIndex; }
 
         /**
-         * The vector layer where the snap occurred.
-         * Will be NULLPTR if the snap happened on an intersection.
+         * The vector layer where the snap occurred, or NULLPTR for an intersection or a non-vector
+         * (e.g. annotation) layer; use mapLayer() in that case.
          */
         QgsVectorLayer *layer() const { return mLayer; }
+
+        /**
+         * The map layer where the snap occurred. Unlike layer(), populated for any layer type
+         * (including annotation); NULLPTR for an intersection snap.
+         *
+         * \since QGIS 4.4
+         */
+        QgsMapLayer *mapLayer() const { return mMapLayer; }
 
         /**
          * The id of the feature to which the snapped geometry belongs.
          */
         QgsFeatureId featureId() const { return mFid; }
+
+        /**
+         * The annotation item id the snapped geometry belongs to, for snaps to an annotation layer.
+         * Empty otherwise.
+         *
+         * \since QGIS 4.4
+         */
+        QString itemId() const { return mItemId; }
 
         //! Only for a valid edge match - obtain endpoints of the edge
         void edgePoints( QgsPointXY &pt1 SIP_OUT, QgsPointXY &pt2 SIP_OUT ) const
@@ -327,7 +378,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
                  && mDist == other.mDist
                  && mPoint == other.mPoint
                  && mLayer == other.mLayer
+                 && mMapLayer == other.mMapLayer
                  && mFid == other.mFid
+                 && mItemId == other.mItemId
                  && mVertexIndex == other.mVertexIndex
                  && mEdgePoints[0] == other.mEdgePoints[0]
                  && mEdgePoints[1] == other.mEdgePoints[1]
@@ -340,11 +393,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
         double mDist = 0;
         QgsPointXY mPoint;
         QgsVectorLayer *mLayer = nullptr;
+        QgsMapLayer *mMapLayer = nullptr;
         QgsFeatureId mFid = 0;
+        QString mItemId;
         int mVertexIndex = 0; // e.g. vertex index
         QgsPointXY mEdgePoints[2];
         QgsPointXY mCentroid;
         QgsPointXY mMiddleOfSegment;
+
+        friend class QgsPointLocator;
     };
 
 #ifndef SIP_RUN
@@ -485,6 +542,11 @@ class CORE_EXPORT QgsPointLocator : public QObject
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
 
+    /**
+     * Builds the index from the annotation layer's items.
+     */
+    bool rebuildAnnotationIndex( int maxFeaturesToIndex = -1 );
+
   protected slots:
     void destroyIndex();
   private slots:
@@ -501,6 +563,21 @@ class CORE_EXPORT QgsPointLocator : public QObject
      */
     bool prepare( bool relaxed );
 
+    /**
+     * Returns the geometry type used for queries
+     */
+    Qgis::GeometryType geometryType() const;
+
+    /**
+     * If this locator indexes an annotation layer, stamps the annotation layer and the item id
+     * onto \a match (resolved from its synthetic feature id). No-op for vector locators and
+     * invalid matches.
+     */
+    void stampAnnotationMatch( Match &match ) const;
+
+    //! \overload Stamps every match in \a list
+    void stampAnnotationMatch( MatchList &list ) const;
+
     //! Storage manager
     std::unique_ptr< SpatialIndex::IStorageManager > mStorage;
 
@@ -514,6 +591,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! R-tree containing spatial index
     QgsCoordinateTransform mTransform;
     QgsVectorLayer *mLayer = nullptr;
+    QgsAnnotationLayer *mAnnotationLayer = nullptr;
+    QHash<QgsFeatureId, QString> mAnnotationItemIds;
     std::unique_ptr< QgsRectangle > mExtent;
 
     std::unique_ptr<QgsRenderContext> mContext;

@@ -221,6 +221,11 @@ QgsRectangle QgsAnnotationLineItem::boundingBox() const
   return mCurve->boundingBox();
 }
 
+QgsGeometry QgsAnnotationLineItem::snapGeometry() const
+{
+  return QgsGeometry( mCurve->clone() );
+}
+
 QgsAnnotationLineItem *QgsAnnotationLineItem::clone() const
 {
   auto item = std::make_unique< QgsAnnotationLineItem >( mCurve->clone() );
