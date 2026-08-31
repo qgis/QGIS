@@ -39,6 +39,7 @@ class QgsRasterDtmSlopeBasedFilterAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QList<QgsAcademicReference> academicReferences() const override;
     QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsRasterDtmSlopeBasedFilterAlgorithm *createInstance() const override SIP_FACTORY;
