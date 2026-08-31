@@ -37,6 +37,7 @@ class QgsPoint3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Point3DSymb
     QString symbolType() const final;
     Qgis::MaterialRenderingTechnique renderingTechnique() const final;
     void setDockMode( bool dockMode ) override;
+    void setMode( Qgis::MaterialWidgetMode mode ) override;
 
   private slots:
     void onShapeChanged();
