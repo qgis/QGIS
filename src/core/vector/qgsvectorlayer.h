@@ -1716,6 +1716,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     Q_INVOKABLE bool supportsEditing() const override;
 
     /**
+     * Returns TRUE if the layer holds geometry (isSpatial()) and so can be a snap target.
+     *
+     * \since QGIS 4.4
+     */
+    bool supportsSnapping() const override;
+
+    /**
      * Changes a feature's \a geometry within the layer's edit buffer
      * (but does not immediately commit the changes). The \a fid argument
      * specifies the ID of the feature to be changed.
