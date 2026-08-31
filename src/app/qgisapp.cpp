@@ -162,6 +162,8 @@ using namespace Qt::StringLiterals;
 
 #include "qgspersistentmenu.h"
 
+#include "qgsprocessingguiregistry.h"
+
 #ifdef HAVE_3D
 #include "qgs3d.h"
 #include "qgs3danimationsettings.h"
@@ -173,7 +175,6 @@ using namespace Qt::StringLiterals;
 #include "qgsflatterraingenerator.h"
 #include "qgslayoutitem3dmap.h"
 #include "processing/qgs3dalgorithms.h"
-#include "qgsprocessingguiregistry.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "layout/qgslayout3dmapwidget.h"
 #include "layout/qgslayoutviewrubberband.h"
