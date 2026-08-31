@@ -20,6 +20,7 @@
 #include "processing/qgsprocessingalgorithm.h"
 #include "processing/qgsprocessingalgrunnertask.h"
 #include "processing/qgsprocessingprovider.h"
+#include "qgsacademicreference.h"
 #include "qgsapplication.h"
 #include "qgsdockablewidgethelper.h"
 #include "qgsgui.h"
@@ -800,6 +801,18 @@ QString QgsProcessingAlgorithmWidgetBase::formatHelp( QgsProcessingAlgorithm *al
   else if ( !algorithm->shortDescription().isEmpty() )
   {
     result = u"<h2>%1</h2><p>%2</p>"_s.arg( algorithm->displayName(), algorithm->shortDescription() );
+  }
+
+  const QList< QgsAcademicReference > references = algorithm->academicReferences();
+  if ( !references.empty() )
+  {
+    QStringList referenceStrings;
+    for ( const QgsAcademicReference &reference : references )
+    {
+      referenceStrings << reference.asHtml();
+    }
+    result += u"<h4>References</h4>";
+    result += u"<ul><li>%1</li></ul>"_s.arg( referenceStrings.join( "</li><li>"_L1 ) );
   }
 
   if ( algorithm->documentationFlags() != Qgis::ProcessingAlgorithmDocumentationFlags() )
