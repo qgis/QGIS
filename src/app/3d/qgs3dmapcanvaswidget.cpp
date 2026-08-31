@@ -93,22 +93,29 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mToolbarMenu->setObjectName( u"mToolbarMenu"_s );
 
   QToolBar *toolBar = new QToolBar( this );
+  toolBar->setObjectName( u"m3DMapToolBar"_s );
   toolBar->setIconSize( QgsGui::iconSize( isDocked ? Qgis::UserInterfaceIconType::DockedToolbar : Qgis::UserInterfaceIconType::MainWindowToolbar ) );
 
   QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ), tr( "Camera Control" ), this, &Qgs3DMapCanvasWidget::cameraControl );
+  actionCameraControl->setObjectName( u"m3DActionCameraControl"_s );
   actionCameraControl->setCheckable( true );
 
   QAction *zoomFullAction = toolBar->addAction( QgsApplication::getThemeIcon( u"mActionZoomFullExtent.svg"_s ), tr( "Zoom Full" ), this, &Qgs3DMapCanvasWidget::resetView );
+  zoomFullAction->setObjectName( u"m3DActionZoomFull"_s );
   zoomFullAction->setShortcut( QKeySequence( tr( "Ctrl+0" ) ) );
 
   // Editing toolbar
   mEditingToolBar = new QToolBar( this );
+  mEditingToolBar->setObjectName( u"m3DEditingToolBar"_s );
   mEditingToolBar->setWindowTitle( tr( "Editing Toolbar" ) );
   mEditingToolsMenu = new QMenu( this );
+  mEditingToolsMenu->setObjectName( u"m3DEditingToolsMenu"_s );
 
   mPointCloudEditingToolbar = new QToolBar( this );
+  mPointCloudEditingToolbar->setObjectName( u"m3DPointCloudEditingToolBar"_s );
 
   mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s ), tr( "Toggle editing" ), this );
+  mActionToggleEditing->setObjectName( u"m3DActionToggleEditing"_s );
   mActionToggleEditing->setCheckable( true );
   connect( mActionToggleEditing, &QAction::triggered, this, [this] {
     QgsMapLayer *layer = QgisApp::instance()->activeLayer();
@@ -127,47 +134,62 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mActionUndo = new QAction( QgsApplication::getThemeIcon( u"/mActionUndo.svg"_s ), tr( "Undo" ), this );
   mActionRedo = new QAction( QgsApplication::getThemeIcon( u"/mActionRedo.svg"_s ), tr( "Redo" ), this );
 
+  mActionUndo->setObjectName( u"m3DActionUndo"_s );
+  mActionRedo->setObjectName( u"m3DActionRedo"_s );
+
   mEditingToolBar->addAction( mActionToggleEditing );
   mEditingToolBar->addAction( mActionUndo );
   mEditingToolBar->addAction( mActionRedo );
   mEditingToolBar->addSeparator();
 
   mEditingToolsAction = new QAction( QgsApplication::getThemeIcon( u"mActionSelectPolygon.svg"_s ), tr( "Select Editing Tool" ), this );
+  mEditingToolsAction->setObjectName( u"m3DActionSelectEditingTool"_s );
   mEditingToolsAction->setMenu( mEditingToolsMenu );
   mEditingToolBar->addAction( mEditingToolsAction );
   QToolButton *editingToolsButton = qobject_cast<QToolButton *>( mEditingToolBar->widgetForAction( mEditingToolsAction ) );
   editingToolsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
   QAction *actionPointCloudChangeAttributeTool
     = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectPolygon.svg"_s ) ), tr( "Select by Polygon" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPolygon );
+  actionPointCloudChangeAttributeTool->setObjectName( u"m3DActionSelectByPolygon"_s );
   QAction *actionPaintbrush
     = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"propertyicons/rendering.svg"_s ) ), tr( "Select by Paintbrush" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush );
+  actionPaintbrush->setObjectName( u"m3DActionSelectByPaintbrush"_s );
   QAction *actionAboveLineTool
     = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectAboveLine.svg"_s ) ), tr( "Select Above Line" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByAboveLine );
+  actionAboveLineTool->setObjectName( u"m3DActionSelectAboveLine"_s );
   QAction *actionBelowLineTool
     = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectBelowLine.svg"_s ) ), tr( "Select Below Line" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByBelowLine );
+  actionBelowLineTool->setObjectName( u"m3DActionSelectBelowLine"_s );
 
-  mEditingToolBar->addWidget( mPointCloudEditingToolbar );
+  mEditingToolBar->addWidget( mPointCloudEditingToolbar )->setObjectName( u"m3DActionPointCloudEditingToolBar"_s );
   QAction *actionPointFilter
     = mPointCloudEditingToolbar->addAction( QIcon( QgsApplication::iconPath( "mIconExpressionFilter.svg" ) ), tr( "Filter Points" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributePointFilter );
+  actionPointFilter->setObjectName( u"m3DActionFilterPoints"_s );
   actionPointFilter->setCheckable( true );
   const QString tooltip
     = u"%1\n\n%2\n%3"_s.arg( tr( "Filter Points" ), tr( "Set an expression to filter points that should be edited." ), tr( "Points that do not satisfy the expression will not be modified." ) );
   actionPointFilter->setToolTip( tooltip );
 
-  mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) );
+  mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) )->setObjectName( u"m3DActionAttributeLabel"_s );
   mCboChangeAttribute = new QComboBox();
-  mPointCloudEditingToolbar->addWidget( mCboChangeAttribute );
+  mCboChangeAttribute->setObjectName( u"m3DCboChangeAttribute"_s );
+  mPointCloudEditingToolbar->addWidget( mCboChangeAttribute )->setObjectName( u"m3DActionChangeAttribute"_s );
   mSpinChangeAttributeValue = new QgsDoubleSpinBox();
+  mSpinChangeAttributeValue->setObjectName( u"m3DSpinChangeAttributeValue"_s );
   mSpinChangeAttributeValue->setShowClearButton( false );
-  mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Value" ) ) );
+  mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Value" ) ) )->setObjectName( u"m3DActionValueLabel"_s );
   mSpinChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mSpinChangeAttributeValue );
+  mSpinChangeAttributeValueAction->setObjectName( u"m3DActionChangeAttributeValueSpin"_s );
   mSpinChangeAttributeValueAction->setVisible( false );
   mCboChangeAttributeValue = new QComboBox();
+  mCboChangeAttributeValue->setObjectName( u"m3DCboChangeAttributeValue"_s );
   mCboChangeAttributeValue->setEditable( true );
   mClassValidator = new ClassValidator( this );
   mCboChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mCboChangeAttributeValue );
+  mCboChangeAttributeValueAction->setObjectName( u"m3DActionChangeAttributeValueCombo"_s );
 
   QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ) );
+  actionEditingToolbar->setObjectName( u"m3DActionShowEditingToolbar"_s );
   actionEditingToolbar->setCheckable( true );
   actionEditingToolbar->setChecked( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );
   connect( actionEditingToolbar, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleEditingToolbar );
@@ -191,7 +213,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( mSpinChangeAttributeValue, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { mMapToolChangeAttribute->setNewValue( mSpinChangeAttributeValue->value() ); } );
 
   QAction *toggleOnScreenNavigation = toolBar->addAction( QgsApplication::getThemeIcon( u"mAction3DNavigation.svg"_s ), tr( "Toggle On-Screen Navigation" ) );
-
+  toggleOnScreenNavigation->setObjectName( u"m3DActionToggleOnScreenNavigation"_s );
   toggleOnScreenNavigation->setCheckable( true );
   toggleOnScreenNavigation->setChecked( setting.value( u"/3D/navigationWidget/visibility"_s, true, QgsSettings::Gui ).toBool() );
   QObject::connect( toggleOnScreenNavigation, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleNavigationWidget );
@@ -199,9 +221,11 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   toolBar->addSeparator();
 
   QAction *actionIdentify = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionIdentify.svg" ) ), tr( "Identify" ), this, &Qgs3DMapCanvasWidget::identify );
+  actionIdentify->setObjectName( u"m3DActionIdentify"_s );
   actionIdentify->setCheckable( true );
 
   QAction *actionMeasurementTool = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionMeasure.svg" ) ), tr( "Measurement Line" ), this, &Qgs3DMapCanvasWidget::measureLine );
+  actionMeasurementTool->setObjectName( u"m3DActionMeasurementLine"_s );
   actionMeasurementTool->setCheckable( true );
 
   // Create action group to make the action exclusive
@@ -216,29 +240,34 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionGroup->setExclusive( true );
 
   mActionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ), tr( "Animations" ), this, &Qgs3DMapCanvasWidget::toggleAnimations );
+  mActionAnim->setObjectName( u"m3DActionAnimations"_s );
   mActionAnim->setCheckable( true );
 
   // Export Menu
   mExportMenu = new QMenu( this );
+  mExportMenu->setObjectName( u"m3DExportMenu"_s );
 
   mActionExport = new QAction( QgsApplication::getThemeIcon( u"mActionSharingExport.svg"_s ), tr( "Export" ), this );
+  mActionExport->setObjectName( u"m3DActionExport"_s );
   mActionExport->setMenu( mExportMenu );
   toolBar->addAction( mActionExport );
   QToolButton *exportButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionExport ) );
   exportButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
-  mExportMenu->addAction( QgsApplication::getThemeIcon( u"mActionSaveMapAsImage.svg"_s ), tr( "Save as Image…" ), this, &Qgs3DMapCanvasWidget::saveAsImage );
+  mExportMenu->addAction( QgsApplication::getThemeIcon( u"mActionSaveMapAsImage.svg"_s ), tr( "Save as Image…" ), this, &Qgs3DMapCanvasWidget::saveAsImage )->setObjectName( u"m3DActionSaveAsImage"_s );
 
-  mExportMenu->addAction( QgsApplication::getThemeIcon( u"3d.svg"_s ), tr( "Export 3D Scene" ), this, &Qgs3DMapCanvasWidget::exportScene );
+  mExportMenu->addAction( QgsApplication::getThemeIcon( u"3d.svg"_s ), tr( "Export 3D Scene" ), this, &Qgs3DMapCanvasWidget::exportScene )->setObjectName( u"m3DActionExportScene"_s );
 
   toolBar->addSeparator();
 
   // Map Theme Menu
   mMapThemeMenu = new QMenu( this );
+  mMapThemeMenu->setObjectName( u"m3DMapThemeMenu"_s );
   connect( mMapThemeMenu, &QMenu::aboutToShow, this, &Qgs3DMapCanvasWidget::mapThemeMenuAboutToShow );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &Qgs3DMapCanvasWidget::currentMapThemeRenamed );
 
   mActionMapThemes = new QAction( tr( "Set View Theme" ), this );
+  mActionMapThemes->setObjectName( u"m3DActionSetViewTheme"_s );
   mActionMapThemes->setMenu( mMapThemeMenu );
   mActionMapThemes->setIcon( QgsApplication::getThemeIcon( u"/mActionShowAllLayers.svg"_s ) );
   toolBar->addAction( mActionMapThemes );
@@ -250,14 +279,17 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   // Camera Menu
   mCameraMenu = new QMenu( this );
+  mCameraMenu->setObjectName( u"m3DCameraMenu"_s );
 
   mActionCamera = new QAction( QgsApplication::getThemeIcon( u"mIconCamera.svg"_s ), tr( "Camera" ), this );
+  mActionCamera->setObjectName( u"m3DActionCamera"_s );
   mActionCamera->setMenu( mCameraMenu );
   toolBar->addAction( mActionCamera );
   QToolButton *cameraButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionCamera ) );
   cameraButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
   mActionSync2DNavTo3D = new QAction( tr( "2D Map View Follows 3D Camera" ), this );
+  mActionSync2DNavTo3D->setObjectName( u"m3DActionSync2DNavTo3D"_s );
   mActionSync2DNavTo3D->setCheckable( true );
   connect( mActionSync2DNavTo3D, &QAction::triggered, this, [this]( bool enabled ) {
     Qgis::ViewSyncModeFlags syncMode = mCanvas->mapSettings()->viewSyncMode();
@@ -267,6 +299,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mCameraMenu->addAction( mActionSync2DNavTo3D );
 
   mActionSync3DNavTo2D = new QAction( tr( "3D Camera Follows 2D Map View" ), this );
+  mActionSync3DNavTo2D->setObjectName( u"m3DActionSync3DNavTo2D"_s );
   mActionSync3DNavTo2D->setCheckable( true );
   connect( mActionSync3DNavTo2D, &QAction::triggered, this, [this]( bool enabled ) {
     Qgis::ViewSyncModeFlags syncMode = mCanvas->mapSettings()->viewSyncMode();
@@ -276,16 +309,19 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mCameraMenu->addAction( mActionSync3DNavTo2D );
 
   mShowFrustumPolygon = new QAction( tr( "Show Visible Camera Area in 2D Map View" ), this );
+  mShowFrustumPolygon->setObjectName( u"m3DActionShowFrustumPolygon"_s );
   mShowFrustumPolygon->setCheckable( true );
   connect( mShowFrustumPolygon, &QAction::triggered, this, [this]( bool enabled ) { mCanvas->mapSettings()->setViewFrustumVisualizationEnabled( enabled ); } );
   mCameraMenu->addAction( mShowFrustumPolygon );
 
   mActionShow2DMapOverlay = new QAction( tr( "Show 2D Map Overlay" ), this );
+  mActionShow2DMapOverlay->setObjectName( u"m3DActionShow2DMapOverlay"_s );
   mActionShow2DMapOverlay->setCheckable( true );
   connect( mActionShow2DMapOverlay, &QAction::triggered, this, [this]( bool enabled ) { mCanvas->mapSettings()->setIs2DMapOverlayEnabled( enabled ); } );
   mCameraMenu->addAction( mActionShow2DMapOverlay );
 
   mActionSetSceneExtent = mCameraMenu->addAction( QgsApplication::getThemeIcon( u"extents.svg"_s ), tr( "Set 3D Scene Extent on 2D Map View" ), this, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
+  mActionSetSceneExtent->setObjectName( u"m3DActionSetSceneExtent"_s );
   mActionSetSceneExtent->setCheckable( true );
 
   auto createShortcuts = [this]( const QString &objectName, void ( Qgs3DMapCanvasWidget::*slot )() ) {
@@ -295,11 +331,14 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   createShortcuts( u"m3DSetSceneExtent"_s, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
 
   mActionOpenCameraControlsWidget = new QAction( QgsApplication::getThemeIcon( u"/mIconCamera.svg"_s ), tr( "Camera Controls" ), this );
+  mActionOpenCameraControlsWidget->setObjectName( u"m3DActionOpenCameraControls"_s );
   connect( mActionOpenCameraControlsWidget, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configureCamera );
   mCameraMenu->addAction( mActionOpenCameraControlsWidget );
 
   mCrossSectionMenu = new QMenu( this );
+  mCrossSectionMenu->setObjectName( u"m3DCrossSectionMenu"_s );
   mActionCrossSection = new QAction( QgsApplication::getThemeIcon( u"mActionEditCut.svg"_s ), tr( "Cross Section" ), this );
+  mActionCrossSection->setObjectName( u"m3DActionCrossSection"_s );
   mActionCrossSection->setMenu( mCrossSectionMenu );
   toolBar->addAction( mActionCrossSection );
 
@@ -307,9 +346,11 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   crossSectionButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
   mActionSetClippingPlanes = mCrossSectionMenu->addAction( QgsApplication::getThemeIcon( u"mActionEditCut.svg"_s ), tr( "Cross Section Tool" ), this, &Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas );
+  mActionSetClippingPlanes->setObjectName( u"m3DActionSetClippingPlanes"_s );
   mActionSetClippingPlanes->setCheckable( true );
 
   mClippingToleranceAction = new Qgs3DMapClippingToleranceWidgetSettingsAction( mCrossSectionMenu );
+  mClippingToleranceAction->setObjectName( u"m3DActionClippingTolerance"_s );
   connect( mClippingToleranceAction->toleranceSpinBox(), qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     settingClippingTolerance->setValue( value );
     updateClippingRubberBand();
@@ -323,6 +364,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mActionNudgeLeft = new QAction( QgsApplication::getThemeIcon( u"/mActionArrowLeft.svg"_s ), tr( "Nudge Left" ), this );
   mActionNudgeRight = new QAction( QgsApplication::getThemeIcon( u"/mActionArrowRight.svg"_s ), tr( "Nudge Right" ), this );
+
+  mActionNudgeLeft->setObjectName( u"m3DActionNudgeLeft"_s );
+  mActionNudgeRight->setObjectName( u"m3DActionNudgeRight"_s );
 
   mActionNudgeLeft->setDisabled( true );
   mActionNudgeRight->setDisabled( true );
@@ -339,18 +383,22 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mCrossSectionMenu->addSeparator();
   mActionDisableClippingPlanes
     = mCrossSectionMenu->addAction( QgsApplication::getThemeIcon( u"mActionEditCutDisabled.svg"_s ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableCrossSection );
+  mActionDisableClippingPlanes->setObjectName( u"m3DActionDisableCrossSection"_s );
   mActionDisableClippingPlanes->setDisabled( true );
 
   // Effects Menu
   mEffectsMenu = new QMenu( this );
+  mEffectsMenu->setObjectName( u"m3DEffectsMenu"_s );
 
   mActionEffects = new QAction( QgsApplication::getThemeIcon( u"mIconShadow.svg"_s ), tr( "Effects" ), this );
+  mActionEffects->setObjectName( u"m3DActionEffects"_s );
   mActionEffects->setMenu( mEffectsMenu );
   toolBar->addAction( mActionEffects );
   QToolButton *effectsButton = qobject_cast<QToolButton *>( toolBar->widgetForAction( mActionEffects ) );
   effectsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
 
   mActionEnableShadows = new QAction( tr( "Show Shadows" ), this );
+  mActionEnableShadows->setObjectName( u"m3DActionEnableShadows"_s );
   mActionEnableShadows->setCheckable( true );
   connect( mActionEnableShadows, &QAction::toggled, this, [this]( bool enabled ) {
     QgsShadowSettings settings = mCanvas->mapSettings()->shadowSettings();
@@ -360,11 +408,13 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mEffectsMenu->addAction( mActionEnableShadows );
 
   mActionEnableEyeDome = new QAction( tr( "Show Eye Dome Lighting" ), this );
+  mActionEnableEyeDome->setObjectName( u"m3DActionEnableEyeDome"_s );
   mActionEnableEyeDome->setCheckable( true );
   connect( mActionEnableEyeDome, &QAction::triggered, this, [this]( bool enabled ) { mCanvas->mapSettings()->setEyeDomeLightingEnabled( enabled ); } );
   mEffectsMenu->addAction( mActionEnableEyeDome );
 
   mActionEnableAmbientOcclusion = new QAction( tr( "Show Ambient Occlusion" ), this );
+  mActionEnableAmbientOcclusion->setObjectName( u"m3DActionEnableAmbientOcclusion"_s );
   mActionEnableAmbientOcclusion->setCheckable( true );
   connect( mActionEnableAmbientOcclusion, &QAction::triggered, this, [this]( bool enabled ) {
     QgsAmbientOcclusionSettings ambientOcclusionSettings = mCanvas->mapSettings()->ambientOcclusionSettings();
@@ -374,6 +424,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mEffectsMenu->addAction( mActionEnableAmbientOcclusion );
 
   mActionEnableBloom = new QAction( tr( "Show Bloom Lighting Effect" ), this );
+  mActionEnableBloom->setObjectName( u"m3DActionEnableBloom"_s );
   mActionEnableBloom->setCheckable( true );
   connect( mActionEnableBloom, &QAction::triggered, this, [this]( bool enabled ) {
     QgsBloomSettings bloomSettings = mCanvas->mapSettings()->bloomSettings();
@@ -384,6 +435,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   // Options Menu
   QAction *configureAction = new QAction( QgsApplication::getThemeIcon( u"mActionOptions.svg"_s ), tr( "Configure…" ), this );
+  configureAction->setObjectName( u"m3DActionConfigure"_s );
   connect( configureAction, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configure );
   toolBar->addAction( configureAction );
 
@@ -487,6 +539,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     dialog->resize( initialSize, initialSize );
   }
   QAction *dockAction = mDockableWidgetHelper->createDockUndockAction( tr( "Dock 3D Map View" ), this );
+  dockAction->setObjectName( u"m3DActionDock"_s );
   toolBar->addAction( dockAction );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() { QgisApp::instance()->close3DMapView( canvasName() ); } );
   connect( dockAction, &QAction::toggled, this, [toolBar]( const bool isSmallSize ) {
@@ -1005,6 +1058,7 @@ void Qgs3DMapCanvasWidget::mapThemeMenuAboutToShow()
   const QString currentTheme = mCanvas->mapSettings()->terrainMapTheme();
 
   QAction *actionFollowMain = new QAction( tr( "(none)" ), mMapThemeMenu );
+  actionFollowMain->setObjectName( u"m3DActionMapThemeNone"_s );
   actionFollowMain->setCheckable( true );
   if ( currentTheme.isEmpty() || !QgsProject::instance()->mapThemeCollection()->hasMapTheme( currentTheme ) )
   {
@@ -1017,6 +1071,7 @@ void Qgs3DMapCanvasWidget::mapThemeMenuAboutToShow()
   for ( const QString &grpName : constMapThemes )
   {
     QAction *a = new QAction( grpName, mMapThemeMenu );
+    a->setObjectName( u"m3DActionMapTheme_"_s + grpName );
     a->setCheckable( true );
     if ( grpName == currentTheme )
     {
