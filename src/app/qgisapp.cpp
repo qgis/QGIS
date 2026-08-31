@@ -1574,7 +1574,7 @@ QgisApp::QgisApp(
   QgsGui::editorWidgetRegistry()->initEditors( mMapCanvas, mInfoBar );
 
   mProcessingWidgetContextGenerator = std::make_unique< QgsAppProcessingWidgetContextGenerator >( this );
-  QgsGui::processingGuiRegistry()->registerWidgetContextGenerator( mProcessingWidgetContextGenerator.get() );
+  // QgsGui::processingGuiRegistry()->registerWidgetContextGenerator( mProcessingWidgetContextGenerator.get() );
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, &QgsClipboard::changed, this, &QgisApp::clipboardChanged );
