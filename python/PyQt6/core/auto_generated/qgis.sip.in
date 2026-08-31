@@ -3973,6 +3973,13 @@ The development version
       DockedToolbar,
     };
 
+    enum class LinearMatrixMethod /BaseType=IntEnum/
+    {
+      Lu,
+      Svd,
+      LuWithSvdFallback
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
