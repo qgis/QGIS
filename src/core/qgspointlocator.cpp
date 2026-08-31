@@ -18,6 +18,8 @@
 #include <spatialindex/SpatialIndex.h>
 
 #include "qgis.h"
+#include "qgsannotationitem.h"
+#include "qgsannotationlayer.h"
 #include "qgsapplication.h"
 #include "qgscurvepolygon.h"
 #include "qgsexpressioncontextutils.h"
@@ -888,6 +890,21 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 }
 
 
+QgsPointLocator::QgsPointLocator( QgsAnnotationLayer *layer, const QgsCoordinateReferenceSystem &destCRS, const QgsCoordinateTransformContext &transformContext, const QgsRectangle *extent )
+  : mAnnotationLayer( layer )
+{
+  if ( destCRS.isValid() )
+  {
+    mTransform = QgsCoordinateTransform( layer->crs(), destCRS, transformContext );
+  }
+
+  setExtent( extent );
+
+  mStorage.reset( StorageManager::createNewMemoryStorageManager() );
+  connect( mAnnotationLayer, &QgsAnnotationLayer::itemsChanged, this, &QgsPointLocator::destroyIndex );
+}
+
+
 QgsPointLocator::~QgsPointLocator()
 {
   // don't delete a locator if there is an indexing task running on it
@@ -901,6 +918,45 @@ QgsPointLocator::~QgsPointLocator()
 QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const
 {
   return mTransform.isValid() ? mTransform.destinationCrs() : QgsCoordinateReferenceSystem();
+}
+
+QgsMapLayer *QgsPointLocator::mapLayer() const
+{
+  if ( mLayer )
+  {
+    return mLayer;
+  }
+
+  return mAnnotationLayer;
+}
+
+Qgis::GeometryType QgsPointLocator::geometryType() const
+{
+  if ( mLayer )
+  {
+    return mLayer->geometryType();
+  }
+
+  // annotation layers are not geometry layers, so ret Unknown
+  return Qgis::GeometryType::Unknown;
+}
+
+void QgsPointLocator::stampAnnotationMatch( Match &match ) const
+{
+  if ( !mAnnotationLayer || !match.isValid() )
+    return;
+
+  match.mMapLayer = mAnnotationLayer;
+  match.mItemId = mAnnotationItemIds.value( match.mFid );
+}
+
+void QgsPointLocator::stampAnnotationMatch( MatchList &list ) const
+{
+  if ( !mAnnotationLayer )
+    return;
+
+  for ( Match &match : list )
+    stampAnnotationMatch( match );
 }
 
 void QgsPointLocator::setExtent( const QgsRectangle *extent )
@@ -918,6 +974,10 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 {
   if ( mIsIndexing )
     // already indexing, return!
+    return;
+
+  if ( !mLayer )
+    // render-context based filtering is only supported for vector layers
     return;
 
   disconnect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
@@ -962,6 +1022,19 @@ void QgsPointLocator::onInitTaskFinished()
 
 bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 {
+  if ( mAnnotationLayer )
+  {
+    if ( hasIndex() || mIsIndexing )
+      return true;
+
+    // small item count
+    mIsIndexing = true;
+    const bool ok = rebuildIndex( maxFeaturesToIndex );
+    mIsIndexing = false;
+    emit initFinished( ok );
+    return ok;
+  }
+
   const Qgis::GeometryType geomType = mLayer->geometryType();
   if ( geomType == Qgis::GeometryType::Null // nothing to index
        || hasIndex()
@@ -1039,6 +1112,9 @@ bool QgsPointLocator::prepare( bool relaxed )
 
 bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex, QgsFeedback *feedback )
 {
+  if ( mAnnotationLayer )
+    return rebuildAnnotationIndex( maxFeaturesToIndex );
+
   QElapsedTimer t;
   t.start();
 
@@ -1195,6 +1271,98 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex, QgsFeedback *feedbac
 }
 
 
+bool QgsPointLocator::rebuildAnnotationIndex( int maxFeaturesToIndex )
+{
+  QElapsedTimer t;
+  t.start();
+
+  destroyIndex();
+
+  QVector<RTree::Data *> dataList;
+  const QMap<QString, QgsAnnotationItem *> items = mAnnotationLayer->items();
+
+  QgsFeatureId nextId = 0;
+  int indexedCount = 0;
+
+  for ( auto it = items.constBegin(); it != items.constEnd(); ++it )
+  {
+    QgsAnnotationItem *item = it.value();
+    if ( !item )
+      continue;
+
+    QgsGeometry geom = item->snapGeometry();
+    if ( geom.isNull() || geom.isEmpty() )
+      continue; // item type does not support snapping
+
+    if ( mTransform.isValid() )
+    {
+      try
+      {
+        geom.transform( mTransform );
+      }
+      catch ( const QgsException &e )
+      {
+        Q_UNUSED( e )
+        QgsDebugError( u"could not transform annotation geometry to map, skipping the snap for it (%1)"_s.arg( e.what() ) );
+        continue;
+      }
+    }
+
+    const QgsRectangle bbox = geom.boundingBox();
+    if ( !bbox.isFinite() )
+      continue;
+
+    // geom and mExtent are both in destination CRS now
+    if ( mExtent && !mExtent->intersects( bbox ) )
+      continue;
+
+    const QgsFeatureId fid = nextId++;
+    SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bbox ) );
+    dataList << new RTree::Data( 0, nullptr, r, fid );
+    mGeoms[fid] = new QgsGeometry( geom );
+    mAnnotationItemIds.insert( fid, it.key() );
+    ++indexedCount;
+
+    if ( maxFeaturesToIndex != -1 && indexedCount > maxFeaturesToIndex )
+    {
+      qDeleteAll( dataList );
+      destroyIndex();
+      return false;
+    }
+  }
+
+  if ( dataList.isEmpty() )
+  {
+    mIsEmptyLayer = true;
+    return true; // no snappable items
+  }
+
+  // R-Tree parameters (same as the vector path)
+  const double fillFactor = 0.7;
+  const unsigned long indexCapacity = 10;
+  const unsigned long leafCapacity = 10;
+  const unsigned long dimension = 2;
+  const RTree::RTreeVariant variant = RTree::RV_RSTAR;
+  SpatialIndex::id_type indexId;
+
+  QgsPointLocator_Stream stream( dataList );
+  try
+  {
+    mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity, leafCapacity, dimension, variant, indexId ) );
+  }
+  catch ( const std::exception &e )
+  {
+    QgsDebugError( u"An exception has occurred during the creation of RTree: %1"_s.arg( e.what() ) );
+    destroyIndex();
+    return false;
+  }
+
+  QgsDebugMsgLevel( u"RebuildAnnotationIndex end : %1 ms"_s.arg( t.elapsed() ), 2 );
+
+  return true;
+}
+
+
 void QgsPointLocator::destroyIndex()
 {
   mRTree.reset();
@@ -1204,6 +1372,7 @@ void QgsPointLocator::destroyIndex()
   qDeleteAll( mGeoms );
 
   mGeoms.clear();
+  mAnnotationItemIds.clear();
 }
 
 void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
@@ -1351,6 +1520,7 @@ QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, 
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
+  stampAnnotationMatch( m );
   return m;
 }
 
@@ -1366,6 +1536,7 @@ QgsPointLocator::Match QgsPointLocator::nearestCentroid( const QgsPointXY &point
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
+  stampAnnotationMatch( m );
   return m;
 }
 
@@ -1381,6 +1552,7 @@ QgsPointLocator::Match QgsPointLocator::nearestMiddleOfSegment( const QgsPointXY
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
+  stampAnnotationMatch( m );
   return m;
 }
 
@@ -1396,6 +1568,7 @@ QgsPointLocator::Match QgsPointLocator::nearestLineEndpoints( const QgsPointXY &
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
+  stampAnnotationMatch( m );
   return m;
 }
 
@@ -1404,7 +1577,7 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
   if ( !prepare( relaxed ) )
     return Match();
 
-  const Qgis::GeometryType geomType = mLayer->geometryType();
+  const Qgis::GeometryType geomType = geometryType();
   if ( geomType == Qgis::GeometryType::Point )
     return Match();
 
@@ -1414,6 +1587,7 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
+  stampAnnotationMatch( m );
   return m;
 }
 
@@ -1434,14 +1608,19 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
   }
 
   // discard point and line layers to keep only polygons
-  const Qgis::GeometryType geomType = mLayer->geometryType();
+  const Qgis::GeometryType geomType = geometryType();
   if ( geomType == Qgis::GeometryType::Point || geomType == Qgis::GeometryType::Line )
     return Match();
 
   // use edges for adding tolerance
   const Match m = nearestEdge( point, tolerance, filter );
   if ( m.isValid() )
-    return Match( Area, m.layer(), m.featureId(), m.distance(), m.point() );
+  {
+    // re-stamp, the Match ctor only carries the vector layer
+    Match area( Area, m.layer(), m.featureId(), m.distance(), m.point() );
+    stampAnnotationMatch( area );
+    return area;
+  }
   else
     return Match();
 }
@@ -1452,7 +1631,7 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rec
   if ( !prepare( relaxed ) )
     return MatchList();
 
-  const Qgis::GeometryType geomType = mLayer->geometryType();
+  const Qgis::GeometryType geomType = geometryType();
   if ( geomType == Qgis::GeometryType::Point )
     return MatchList();
 
@@ -1460,6 +1639,7 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rec
   QgsPointLocator_VisitorEdgesInRect visitor( this, lst, rect, filter );
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
 
+  stampAnnotationMatch( lst );
   return lst;
 }
 
@@ -1478,6 +1658,7 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &
   QgsPointLocator_VisitorVerticesInRect visitor( this, lst, rect, filter );
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
 
+  stampAnnotationMatch( lst );
   return lst;
 }
 
@@ -1493,12 +1674,13 @@ QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &po
   if ( !prepare( relaxed ) )
     return MatchList();
 
-  const Qgis::GeometryType geomType = mLayer->geometryType();
+  const Qgis::GeometryType geomType = geometryType();
   if ( geomType == Qgis::GeometryType::Point || geomType == Qgis::GeometryType::Line )
     return MatchList();
 
   MatchList lst;
   QgsPointLocator_VisitorArea visitor( this, point, lst, filter );
   mRTree->intersectsWithQuery( point2point( point ), visitor );
+  stampAnnotationMatch( lst );
   return lst;
 }

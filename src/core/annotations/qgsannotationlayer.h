@@ -173,6 +173,14 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context );
 
     Qgis::MapLayerProperties properties() const override;
+
+    /**
+     * Returns TRUE, as annotation layers can be used as a target for snapping.
+     *
+     * \since QGIS 4.4
+     */
+    bool supportsSnapping() const override;
+
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsRectangle extent() const override;
