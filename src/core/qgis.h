@@ -5183,6 +5183,21 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( MetadataDateType )
 
     /**
+     * Type of academic reference.
+     * \since QGIS 4.4
+     */
+    enum class AcademicReferenceType : int
+    {
+      Unknown,        //!< Unknown or generic reference
+      Book,           //!< Book
+      JournalArticle, //!< Journal or periodical article
+      Presentation,   //!< Conference paper, presentation, or proceeding
+      WebPage,        //!< Web page or online resource
+      Preprint        //!< Preprint or repository paper
+    };
+    Q_ENUM( AcademicReferenceType )
+
+    /**
      * Raster color interpretation.
      *
      * This is a modified copy of the GDAL GDALColorInterp enum.

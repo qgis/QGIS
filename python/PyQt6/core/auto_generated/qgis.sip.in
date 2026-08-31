@@ -2873,6 +2873,16 @@ The development version
       Superseded,
     };
 
+    enum class AcademicReferenceType /BaseType=IntEnum/
+    {
+      Unknown,
+      Book,
+      JournalArticle,
+      Presentation,
+      WebPage,
+      Preprint
+    };
+
 
     enum class RasterColorInterpretation /BaseType=IntEnum/
     {
