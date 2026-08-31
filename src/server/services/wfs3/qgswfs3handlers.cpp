@@ -837,8 +837,9 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
     const std::string fieldName = fInfo.identifier;
     fieldsInfo[fieldName] = json::object();
     fieldsInfo[fieldName]["x-ogc-propertySeq"] = fInfo.seq;
-    fieldsInfo[fieldName]["type"] = fInfo.type;
     // Optional info
+    if ( fInfo.type.has_value() )
+      fieldsInfo[fieldName]["type"] = fInfo.type.value();
     if ( fInfo.title.has_value() )
       fieldsInfo[fieldName]["title"] = fInfo.title.value();
     if ( fInfo.readOnly.has_value() )
