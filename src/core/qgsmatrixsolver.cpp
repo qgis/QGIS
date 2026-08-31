@@ -45,6 +45,11 @@ struct QgsMatrixSolver::GslData
 
     // cached permutations for all possible sizes up to maxSize to avoid allocations
     std::vector<gsl_permutation *> permutations;
+
+    gsl_matrix *matrixA_Copy = nullptr;
+    gsl_matrix *matrixV = nullptr;
+    gsl_vector *vectorS = nullptr;
+    gsl_vector *workSvd = nullptr;
 #endif
 };
 
@@ -75,6 +80,11 @@ QgsMatrixSolver::QgsMatrixSolver( int maximumDimension )
   mData->maxVectorB = gsl_vector_calloc( maximumDimension );
   mData->maxVectorX = gsl_vector_alloc( maximumDimension );
 
+  mData->matrixA_Copy = gsl_matrix_calloc( maximumDimension, maximumDimension );
+  mData->matrixV = gsl_matrix_calloc( maximumDimension, maximumDimension );
+  mData->vectorS = gsl_vector_calloc( maximumDimension );
+  mData->workSvd = gsl_vector_alloc( maximumDimension );
+
   // Preallocate permutation arrays for all possible dynamic sizes 1 to maxSize
   mData->permutations.resize( maximumDimension + 1, nullptr );
   for ( int i = 1; i <= maximumDimension; ++i )
@@ -98,6 +108,22 @@ QgsMatrixSolver::~QgsMatrixSolver()
   if ( mData->maxVectorX )
   {
     gsl_vector_free( mData->maxVectorX );
+  }
+  if ( mData->matrixA_Copy )
+  {
+    gsl_matrix_free( mData->matrixA_Copy );
+  }
+  if ( mData->matrixV )
+  {
+    gsl_matrix_free( mData->matrixV );
+  }
+  if ( mData->vectorS )
+  {
+    gsl_vector_free( mData->vectorS );
+  }
+  if ( mData->workSvd )
+  {
+    gsl_vector_free( mData->workSvd );
   }
 
   for ( auto *p : mData->permutations )
@@ -138,9 +164,8 @@ void QgsMatrixSolver::setRightHandSide( int row, double value )
 #endif
 }
 
-bool QgsMatrixSolver::solve( int dimension, QVector<double> &result )
+bool QgsMatrixSolver::solve( int dimension, QVector<double> &result, Qgis::LinearMatrixMethod method )
 {
-#ifdef HAVE_GSL
   if ( dimension <= 0 )
   {
     throw QgsInvalidArgumentException( u"Invalid value for dimension, must be > 0"_s );
@@ -149,16 +174,48 @@ bool QgsMatrixSolver::solve( int dimension, QVector<double> &result )
   {
     throw QgsInvalidArgumentException( u"Invalid value for dimension, must be < %1"_s.arg( mData->maximumDimension ) );
   }
+  switch ( method )
+  {
+    case Qgis::LinearMatrixMethod::Lu:
+      return solveLu( dimension, result, false );
 
+    case Qgis::LinearMatrixMethod::Svd:
+      return solveSvd( dimension, result, false );
+
+    case Qgis::LinearMatrixMethod::LuWithSvdFallback:
+    {
+      if ( solveLu( dimension, result, true ) )
+      {
+        return true;
+      }
+      return solveSvd( dimension, result, false );
+    }
+  }
+
+  return false;
+}
+
+bool QgsMatrixSolver::solveLu( int dimension, QVector<double> &result, bool retainOriginalMatrices )
+{
+#ifdef HAVE_GSL
   // create views into the preallocated memory block
   gsl_matrix_view A_view = gsl_matrix_submatrix( mData->maxMatrix, 0, 0, dimension, dimension );
+  gsl_matrix_view A_copy = gsl_matrix_submatrix( mData->matrixA_Copy, 0, 0, dimension, dimension );
+
   gsl_vector_view B_view = gsl_vector_subvector( mData->maxVectorB, 0, dimension );
   gsl_vector_view X_view = gsl_vector_subvector( mData->maxVectorX, 0, dimension );
 
+  gsl_matrix *A = &A_view.matrix;
+  if ( retainOriginalMatrices )
+  {
+    gsl_matrix_memcpy( &A_copy.matrix, &A_view.matrix );
+    A = &A_copy.matrix;
+  }
+
   gsl_permutation *p = mData->permutations[dimension];
   int signum = 0;
-  gsl_linalg_LU_decomp( &A_view.matrix, p, &signum );
-  if ( gsl_linalg_LU_solve( &A_view.matrix, p, &B_view.vector, &X_view.vector ) != 0 )
+  gsl_linalg_LU_decomp( A, p, &signum );
+  if ( gsl_linalg_LU_solve( A, p, &B_view.vector, &X_view.vector ) != 0 )
   {
     return false;
   }
@@ -167,6 +224,51 @@ bool QgsMatrixSolver::solve( int dimension, QVector<double> &result )
   for ( int i = 0; i < dimension; ++i )
   {
     result[i] = gsl_vector_get( &X_view.vector, i );
+  }
+
+  return true;
+#else
+  ( void ) dimension;
+  ( void ) result;
+  throw QgsNotSupportedException( u"QgsMatrixSolver requires a QGIS build with GSL support enabled"_s );
+#endif
+}
+
+bool QgsMatrixSolver::solveSvd( int dimension, QVector<double> &result, bool retainOriginalMatrices )
+{
+#ifdef HAVE_GSL
+  gsl_matrix_view A_view = gsl_matrix_submatrix( mData->maxMatrix, 0, 0, dimension, dimension );
+  gsl_matrix_view A_copy = gsl_matrix_submatrix( mData->matrixA_Copy, 0, 0, dimension, dimension );
+  gsl_matrix_view V = gsl_matrix_submatrix( mData->matrixV, 0, 0, dimension, dimension );
+  gsl_vector_view S = gsl_vector_subvector( mData->vectorS, 0, dimension );
+  gsl_vector_view b = gsl_vector_subvector( mData->maxVectorB, 0, dimension );
+  gsl_vector_view x = gsl_vector_subvector( mData->maxVectorX, 0, dimension );
+  gsl_vector_view work = gsl_vector_subvector( mData->workSvd, 0, dimension );
+
+  gsl_matrix *A = &A_view.matrix;
+  if ( retainOriginalMatrices )
+  {
+    gsl_matrix_memcpy( &A_copy.matrix, &A_view.matrix );
+    A = &A_copy.matrix;
+  }
+
+  // Compute SVD: A_copy = U * S * V^T
+  if ( gsl_linalg_SV_decomp( A, &V.matrix, &S.vector, &work.vector ) != 0 )
+  {
+    return false;
+  }
+
+  // Solve SVD: U * S * V^T * x = b with singular value truncation
+  // gsl_linalg_SV_solve automatically uses pseudo-inverse for singular values < tol
+  if ( gsl_linalg_SV_solve( A, &V.matrix, &S.vector, &b.vector, &x.vector ) != 0 )
+  {
+    return false;
+  }
+
+  result.resize( dimension );
+  for ( int i = 0; i < dimension; ++i )
+  {
+    result[i] = gsl_vector_get( &x.vector, i );
   }
 
   return true;

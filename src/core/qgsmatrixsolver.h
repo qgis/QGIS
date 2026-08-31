@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
@@ -168,18 +169,22 @@ class CORE_EXPORT QgsMatrixSolver
      *
      * \param dimension The dimension ``N`` for the ``N × N`` sub-matrix to solve.
      * \param result Solution vector ``x``
+     * \param method Solving strategy to use
      *
      * \returns TRUE on success, FALSE if the matrix is singular and could not be solved.
      *
      * \throws QgsNotSupportedException for QGIS builds without GSL support.
      * \throws QgsInvalidArgumentException for invalid \a dimension values
      */
-    bool solve( int dimension, QVector<double> &result SIP_OUT ) SIP_THROW( QgsNotSupportedException, QgsInvalidArgumentException );
+    bool solve( int dimension, QVector<double> &result SIP_OUT, Qgis::LinearMatrixMethod method = Qgis::LinearMatrixMethod::Lu ) SIP_THROW( QgsNotSupportedException, QgsInvalidArgumentException );
 
   private:
 #ifdef SIP_RUN
     QgsMatrixSolver( const QgsMatrixSolver & );
 #endif
+
+    bool solveLu( int dimension, QVector<double> &result, bool retainOriginalMatrices );
+    bool solveSvd( int dimension, QVector<double> &result, bool retainOriginalMatrices );
 
     struct GslData;
     std::unique_ptr<GslData> mData;

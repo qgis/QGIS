@@ -130,12 +130,13 @@ Sets a value in the preallocated right-hand-side vector ``b``.
       }
 %End
 
-    bool solve( int dimension, QVector<double> &result /Out/ );
+    bool solve( int dimension, QVector<double> &result /Out/, Qgis::LinearMatrixMethod method = Qgis::LinearMatrixMethod::Lu );
 %Docstring
 Solves the system ``Ax = b`` for a specific active dimension.
 
 :param dimension: The dimension ``N`` for the ``N × N`` sub-matrix to
                   solve.
+:param method: Solving strategy to use
 
 :return: - ``True`` on success, ``False`` if the matrix is singular and
            could not be solved.
