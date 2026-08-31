@@ -8952,6 +8952,27 @@ Qgis.MetadataDateType.__doc__ = """Date types for metadata.
 """
 # --
 Qgis.MetadataDateType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.AcademicReferenceType.Unknown.__doc__ = "Unknown or generic reference"
+Qgis.AcademicReferenceType.Book.__doc__ = "Book"
+Qgis.AcademicReferenceType.JournalArticle.__doc__ = "Journal or periodical article"
+Qgis.AcademicReferenceType.Presentation.__doc__ = "Conference paper, presentation, or proceeding"
+Qgis.AcademicReferenceType.WebPage.__doc__ = "Web page or online resource"
+Qgis.AcademicReferenceType.Preprint.__doc__ = "Preprint or repository paper"
+Qgis.AcademicReferenceType.__doc__ = """Type of academic reference.
+
+.. versionadded:: 4.4
+
+* ``Unknown``: Unknown or generic reference
+* ``Book``: Book
+* ``JournalArticle``: Journal or periodical article
+* ``Presentation``: Conference paper, presentation, or proceeding
+* ``WebPage``: Web page or online resource
+* ``Preprint``: Preprint or repository paper
+
+"""
+# --
+Qgis.AcademicReferenceType.baseClass = Qgis
 QgsRaster.ColorInterpretation = Qgis.RasterColorInterpretation
 # monkey patching scoped based enum
 QgsRaster.UndefinedColorInterpretation = Qgis.RasterColorInterpretation.Undefined
