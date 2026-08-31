@@ -56,6 +56,14 @@ Returns associated rendering technique.
 .. versionadded:: 4.2
 %End
 
+    virtual void setStyle( Qgis::MaterialWidgetStyle style ) = 0;
+%Docstring
+Sets the widget ``style``, which controls whether the compact or full
+set of material settings controls are shown.
+
+.. versionadded:: 4.4
+%End
+
   signals:
 
     void changed();

@@ -71,6 +71,14 @@ class GUI_EXPORT Qgs3DSymbolWidget : public QgsPanelWidget
      */
     virtual Qgis::MaterialRenderingTechnique renderingTechnique() const = 0;
 
+    /**
+     * Sets the widget \a style, which controls whether the compact or full
+     * set of material settings controls are shown.
+     *
+     * \since QGIS 4.4
+     */
+    virtual void setStyle( Qgis::MaterialWidgetStyle style ) = 0;
+
   signals:
 
     /**
