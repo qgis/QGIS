@@ -17,6 +17,7 @@
 
 #include "qgsprocess.h"
 
+#include "qgsacademicreference.h"
 #include "qgscommandlineutils.h"
 #include "qgsnativealgorithms.h"
 #include "qgsprocessingalgorithm.h"
@@ -882,6 +883,19 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
         std::cout << alg->shortDescription().toLocal8Bit().constData() << '\n';
       if ( !alg->shortHelpString().isEmpty() && alg->shortHelpString() != alg->shortDescription() )
         std::cout << alg->shortHelpString().toLocal8Bit().constData() << '\n';
+    }
+
+    const QList< QgsAcademicReference > references = alg->academicReferences();
+    if ( !references.empty() )
+    {
+      std::cout << "\n----------------\n";
+      std::cout << "References\n";
+      std::cout << "----------------\n\n";
+      for ( const QgsAcademicReference &reference : references )
+      {
+        const QString referenceString = reference.asPlainText();
+        std::cout << " - " << referenceString.toUtf8().constData() << '\n';
+      }
     }
 
     if ( alg->documentationFlags() != Qgis::ProcessingAlgorithmDocumentationFlags() )

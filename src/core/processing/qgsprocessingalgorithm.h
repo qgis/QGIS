@@ -37,6 +37,7 @@ class QgsProcessingAlgorithmConfigurationWidget;
 class QgsMeshLayer;
 class QgsPointCloudLayer;
 class QMainWindow;
+class QgsAcademicReference;
 
 #ifdef SIP_RUN
 // clang-format off
@@ -194,6 +195,13 @@ class QMainWindow;
      * \since QGIS 3.40
      */
     virtual Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const SIP_HOLDGIL;
+
+    /**
+     * Returns the list of academic references describing the logic and processes used by the algorithm.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QList<QgsAcademicReference> academicReferences() const;
 
     /**
      * Returns an icon for the algorithm.
