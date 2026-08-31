@@ -2,9 +2,9 @@
 ###########################################################################
 #    doxygen_test.py
 #    ---------------------
-#    Date                 : August 2008
-#    Copyright            : (C) 2008 by Juergen E. Fischer
-#    Email                : jef at norbit dot de
+#    Date                 : December 2017
+#    Copyright            : (C) 2017 by Denis Rouzaud
+#    Email                : denis.rouzaud@gmail.com
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
