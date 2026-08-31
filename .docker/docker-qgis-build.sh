@@ -42,7 +42,6 @@ BUILD_TYPE=Release
 
 CMAKE_C_COMPILER=/usr/bin/clang
 CMAKE_CXX_COMPILER=/usr/bin/clang++
-export QMAKE_CXX=/usr/bin/clang++
 
 if [[ "${WITH_CLAZY}" = "ON" ]]; then
   # In release mode, all variables in QgsDebugMsg would be considered unused
