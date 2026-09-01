@@ -175,6 +175,8 @@ bool QgsDetectVectorChangesAlgorithm::prepareAlgorithm( const QVariantMap &param
 
 QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString unchangedDestId;
   std::unique_ptr<QgsFeatureSink> unchangedSink( parameterAsSink( parameters, u"UNCHANGED"_s, context, unchangedDestId, mOriginal->fields(), mOriginal->wkbType(), mOriginal->sourceCrs() ) );
   if ( !unchangedSink && parameters.value( u"UNCHANGED"_s ).isValid() )

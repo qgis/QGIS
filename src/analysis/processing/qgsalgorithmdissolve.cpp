@@ -303,6 +303,8 @@ QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
 
 QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const bool separateDisjoint = parameterAsBool( parameters, u"SEPARATE_DISJOINT"_s, context );
 
   return processCollection(
@@ -376,6 +378,8 @@ QString QgsCollectAlgorithm::groupId() const
 
 QVariantMap QgsCollectAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   return processCollection( parameters, context, feedback, []( const QVector<QgsGeometry> &parts ) -> QgsGeometry { return QgsGeometry::collectGeometry( parts ); }, 0, Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
 }
 
