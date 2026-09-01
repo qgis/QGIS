@@ -205,6 +205,16 @@ class QgsAcademicReference;
     virtual QList<QgsAcademicReference> academicReferences() const;
 
     /**
+     * Returns a URL for the source code location best reflecting the internal algorithm logic.
+     *
+     * Subclasses should return a URL pointing to the source code location best representing this internal logic,
+     * e.g. from the plugin's public code repository.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QString implementationSourceUri() const;
+
+    /**
      * Returns an icon for the algorithm.
      * \see svgIconPath()
     */
