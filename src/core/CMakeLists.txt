@@ -1912,6 +1912,7 @@ set(QGIS_CORE_HDRS
   processing/models/qgsprocessingmodelresult.h
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
+  processing/qgsprocessingalgorithm_p.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingbatch.h
   processing/qgsprocessingcontext.h

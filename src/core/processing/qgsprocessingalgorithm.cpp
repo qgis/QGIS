@@ -42,6 +42,13 @@
 
 using namespace Qt::StringLiterals;
 
+
+std::unordered_map<std::type_index, QString> &algorithmSourceRegistry()
+{
+  static std::unordered_map<std::type_index, QString> registry;
+  return registry;
+}
+
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
   qDeleteAll( mParameters );
