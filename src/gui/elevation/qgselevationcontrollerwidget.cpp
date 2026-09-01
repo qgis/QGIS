@@ -30,7 +30,6 @@
 #include "qgsrange.h"
 #include "qgsrangeslider.h"
 
-#include <QCheckBox>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QKeyEvent>
@@ -65,6 +64,10 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
 
   mSettingsAction = new QgsElevationControllerSettingsAction( mMenu );
   mMenu->addAction( mSettingsAction );
+
+  mInvertDirectionAction = new QAction( tr( "Invert Direction" ), this );
+  mInvertDirectionAction->setCheckable( true );
+  mMenu->addAction( mInvertDirectionAction );
 
   QMenu *limitsMenu = mSettingsAction->limitsMenu();
 
@@ -155,7 +158,7 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
     mSettingsAction->updateRangeSize( range().upper() - range().lower() );
   } );
 
-  connect( mSettingsAction, &QgsElevationControllerSettingsAction::invertedChanged, this, [this]( bool inverted ) {
+  connect( mInvertDirectionAction, &QAction::toggled, this, [this]( bool inverted ) {
     mSlider->setFlippedDirection( !inverted );
     mSliderLabels->setInverted( inverted );
 
@@ -400,7 +403,7 @@ void QgsElevationControllerWidget::setFixedRangeSize( double size )
 
 void QgsElevationControllerWidget::setInverted( bool inverted )
 {
-  mSettingsAction->setInverted( inverted );
+  mInvertDirectionAction->setChecked( inverted );
 }
 
 void QgsElevationControllerWidget::setSignificantElevations( const QList<double> &elevations )
@@ -617,6 +620,9 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
 
   gLayout->addWidget( mLowerSpin, 0, 1 );
 
+  QLabel *toLabel = new QLabel( tr( "to" ) );
+  gLayout->addWidget( toLabel, 0, 2 );
+
   mUpperSpin = new QgsDoubleSpinBox();
   mUpperSpin->setDecimals( 4 );
   mUpperSpin->setMinimum( -999999999.0 );
@@ -625,7 +631,7 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
   mUpperSpin->setKeyboardTracking( false );
   mUpperSpin->setToolTip( tr( "Highest elevation which can be selected" ) );
 
-  gLayout->addWidget( mUpperSpin, 0, 2 );
+  gLayout->addWidget( mUpperSpin, 0, 3 );
 
   mLimitsButton = new QToolButton();
   mLimitsButton->setIcon( QgsApplication::getThemeIcon( u"/mActionRefresh.svg"_s ) );
@@ -634,7 +640,7 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
   mLimitsMenu = new QMenu( mLimitsButton );
   mLimitsButton->setMenu( mLimitsMenu );
 
-  gLayout->addWidget( mLimitsButton, 0, 3 );
+  gLayout->addWidget( mLimitsButton, 0, 4 );
 
   const QString rangeToolTip = tr(
     "Size of the elevation range shown in the map, i.e. the difference between "
@@ -654,19 +660,18 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
   mSizeSpin->setKeyboardTracking( false );
   mSizeSpin->setToolTip( rangeToolTip );
 
-  gLayout->addWidget( mSizeSpin, 1, 1, 1, 2 );
+  gLayout->addWidget( mSizeSpin, 1, 1, 1, 3 );
 
   mLockButton = new QToolButton();
   mLockButton->setIcon( QgsApplication::getThemeIcon( u"/cadtools/lock.svg"_s ) );
   mLockButton->setCheckable( true );
   mLockButton->setToolTip( tr( "Lock the elevation range to a fixed size" ) );
 
-  gLayout->addWidget( mLockButton, 1, 3 );
+  gLayout->addWidget( mLockButton, 1, 4 );
 
-  mInvertCheckBox = new QCheckBox( tr( "Invert direction" ) );
-  mInvertCheckBox->setToolTip( tr( "Invert the direction of the elevation slider" ) );
-
-  gLayout->addWidget( mInvertCheckBox, 2, 0, 1, 4 );
+  // the spin boxes take the extra width, not the labels or the buttons
+  gLayout->setColumnStretch( 1, 1 );
+  gLayout->setColumnStretch( 3, 1 );
 
   const auto emitLimits = [this] { emit limitsChanged( QgsDoubleRange( mLowerSpin->value(), mUpperSpin->value() ) ); };
   connect( mLowerSpin, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, emitLimits );
@@ -684,8 +689,6 @@ QgsElevationControllerSettingsAction::QgsElevationControllerSettingsAction( QWid
     }
   } );
   connect( mLockButton, &QToolButton::toggled, this, [this]( bool locked ) { emit fixedRangeSizeChanged( locked ? mSizeSpin->value() : -1 ); } );
-
-  connect( mInvertCheckBox, &QCheckBox::toggled, this, &QgsElevationControllerSettingsAction::invertedChanged );
 
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
@@ -740,12 +743,6 @@ void QgsElevationControllerSettingsAction::updateRangeSize( double size )
 
   const QSignalBlocker blockSpin( mSizeSpin );
   mSizeSpin->setValue( size );
-}
-
-void QgsElevationControllerSettingsAction::setInverted( bool inverted )
-{
-  // not blocked, the widget follows the checkbox through invertedChanged()
-  mInvertCheckBox->setChecked( inverted );
 }
 
 bool QgsElevationControllerSettingsAction::eventFilter( QObject *watched, QEvent *event )
