@@ -836,6 +836,13 @@ QString QgsProcessingAlgorithmWidgetBase::formatHelp( QgsProcessingAlgorithm *al
     result += u"<p><b>%1</b></p>"_s.arg( tr( "Warning: This algorithm has known issues. The results must be carefully validated by the user." ) );
   }
 
+  const QString implementationSourceUri = algorithm->implementationSourceUri();
+  if ( !implementationSourceUri.isEmpty() )
+  {
+    const QString linkHtml = QStringLiteral( R"(<a href="%1">%1</a>)" ).arg( implementationSourceUri );
+    result += u"<p><i>"_s + tr( "The source for this algorithm is available at %1" ).arg( linkHtml ) + u"</i></p>"_s;
+  }
+
   return result;
 }
 
