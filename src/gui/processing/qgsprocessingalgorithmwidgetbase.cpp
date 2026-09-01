@@ -509,7 +509,7 @@ void QgsProcessingAlgorithmWidgetBase::finished( bool, const QVariantMap &, QgsP
 void QgsProcessingAlgorithmWidgetBase::openHelp()
 {
   QUrl algHelp = mAlgorithm->helpUrl();
-  if ( algHelp.isEmpty() && mAlgorithm->provider() )
+  if ( algHelp.isEmpty() && mAlgorithm->provider() && !mAlgorithm->provider()->helpId().isEmpty() )
   {
     algHelp = QgsHelp::helpUrl(
       u"processing_algs/%1/%2.html#%3"_s.arg( mAlgorithm->provider()->helpId(), mAlgorithm->groupId(), u"%1%2"_s.arg( mAlgorithm->provider()->helpId() ).arg( mAlgorithm->name().replace( "_", "-" ) ) )
@@ -557,6 +557,12 @@ void QgsProcessingAlgorithmWidgetBase::mTabWidget_currentChanged( int )
 
 void QgsProcessingAlgorithmWidgetBase::linkClicked( const QUrl &url )
 {
+  if ( url.toString() == "#help" )
+  {
+    openHelp();
+    return;
+  }
+
   QDesktopServices::openUrl( url.toString() );
 }
 
@@ -811,7 +817,7 @@ QString QgsProcessingAlgorithmWidgetBase::formatHelp( QgsProcessingAlgorithm *al
     {
       referenceStrings << reference.asHtml();
     }
-    result += u"<h4>References</h4>";
+    result += u"<h4>%1</h4>"_s.arg( tr( "References" ) );
     result += u"<ul><li>%1</li></ul>"_s.arg( referenceStrings.join( "</li><li>"_L1 ) );
   }
 
@@ -836,11 +842,26 @@ QString QgsProcessingAlgorithmWidgetBase::formatHelp( QgsProcessingAlgorithm *al
     result += u"<p><b>%1</b></p>"_s.arg( tr( "Warning: This algorithm has known issues. The results must be carefully validated by the user." ) );
   }
 
+  QStringList links;
+  if ( !algorithm->helpUrl().isEmpty() || ( algorithm->provider() && !algorithm->provider()->helpId().isEmpty() ) )
+  {
+    // DO NOT resolve the help url here using QgsHelp::helpUrl -- that is VERY slow as it triggers a network
+    // request. Defer this until the link is actually clicked.
+    const QString linkHtml = QStringLiteral( R"(<a href="#help">%1</a>)" ).arg( tr( "Algorithm documentation" ) );
+    links << linkHtml;
+  }
+
   const QString implementationSourceUri = algorithm->implementationSourceUri();
   if ( !implementationSourceUri.isEmpty() )
   {
-    const QString linkHtml = QStringLiteral( R"(<a href="%1">%1</a>)" ).arg( implementationSourceUri );
-    result += u"<p><i>"_s + tr( "The source for this algorithm is available at %1" ).arg( linkHtml ) + u"</i></p>"_s;
+    const QString linkHtml = QStringLiteral( R"(<a href="%1">%2</a>)" ).arg( implementationSourceUri, tr( "Algorithm source" ) );
+    links << linkHtml;
+  }
+
+  if ( !links.empty() )
+  {
+    result += u"<h4>%1</h4>"_s.arg( tr( "Links" ) );
+    result += u"<ul><li>%1</li></ul>"_s.arg( links.join( "</li><li>"_L1 ) );
   }
 
   return result;
