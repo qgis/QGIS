@@ -668,6 +668,7 @@ if (WITH_SFCGAL)
 endif()
 
 target_compile_definitions(qgis_analysis PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(qgis_analysis PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 # clang-tidy
 if(CLANG_TIDY_EXE)
