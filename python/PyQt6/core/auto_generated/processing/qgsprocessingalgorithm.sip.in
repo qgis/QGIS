@@ -179,6 +179,18 @@ processes used by the algorithm.
 .. versionadded:: 4.4
 %End
 
+    virtual QString implementationSourceUri() const;
+%Docstring
+Returns a URL for the source code location best reflecting the internal
+algorithm logic.
+
+Subclasses should return a URL pointing to the source code location best
+representing this internal logic, e.g. from the plugin's public code
+repository.
+
+.. versionadded:: 4.4
+%End
+
     virtual QIcon icon() const /HoldGIL/;
 %Docstring
 Returns an icon for the algorithm.
