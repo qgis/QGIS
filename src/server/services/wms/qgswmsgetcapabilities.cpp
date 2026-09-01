@@ -1216,13 +1216,6 @@ namespace QgsWms
 
           writeServerProperties( doc, layerElem, project, treeGroupChild->serverProperties(), name, version );
 
-          // There is no style assicated with layer tree group so just use a default one
-          const QString styleName = u"default"_s;
-          QDomElement styleElem = createStyleElement( doc, styleName );
-          writeLegendUrl( doc, styleElem, treeGroupChild->serverProperties()->legendUrl(), treeGroupChild->serverProperties()->legendUrlFormat(), name, styleName, project, request, serverIface->serverSettings() );
-
-          layerElem.appendChild( styleElem );
-
           // Layer tree name
           if ( projectSettings )
           {
