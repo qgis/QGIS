@@ -355,7 +355,7 @@ sfcgal::shared_geom QgsSfcgalEngine::fromWkt( const QString &wkt, QString *error
   sfcgal::geometry *out = sfcgal_io_read_wkt( wkt.toStdString().c_str(), wkt.length() );
   CHECK_SUCCESS( errorMsg, nullptr );
 
-  return sfcgal::unique_geom( out );
+  return sfcgal::make_shared_geom( out );
 }
 
 QByteArray QgsSfcgalEngine::toWkb( const sfcgal::geometry *geom, QString *errorMsg )
