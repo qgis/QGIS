@@ -103,6 +103,41 @@ QList<QgsAcademicReference> QgsProcessingAlgorithm::academicReferences() const
   return {};
 }
 
+QString QgsProcessingAlgorithm::implementationSourceUri() const
+{
+  const auto &registry = algorithmSourceRegistry();
+  auto it = registry.find( std::type_index( typeid( *this ) ) );
+  if ( it == registry.end() )
+    return QString();
+
+  const QString baseSourceLocation = it->second;
+
+  // split file from line number
+  const qsizetype colonPos = baseSourceLocation.lastIndexOf( ':' );
+  if ( colonPos == -1 )
+    return QString();
+
+  const QString filePath = baseSourceLocation.left( colonPos );
+  const QString lineNumber = baseSourceLocation.mid( colonPos + 1 );
+
+  // determine the git branch name corresponding to THIS qgis build
+  QString branch;
+  if ( QStringLiteral( RELEASE_NAME ).compare( u"Master"_s, Qt::CaseInsensitive ) == 0 )
+  {
+    branch = u"master"_s;
+  }
+  else
+  {
+    const int major = _QGIS_VERSION_INT / 10000;
+    const int minor = ( _QGIS_VERSION_INT % 10000 ) / 100;
+    branch = u"release-%1_%2"_s.arg( major ).arg( minor );
+  }
+
+  // construct GitHub blob URL pointing to the source
+  // TODO: not be GitHub ;)
+  return u"https://github.com/qgis/QGIS/blob/%1/%2#L%3"_s.arg( branch, filePath, lineNumber );
+}
+
 QIcon QgsProcessingAlgorithm::icon() const
 {
   return QgsApplication::getThemeIcon( "/processingAlgorithm.svg" );
