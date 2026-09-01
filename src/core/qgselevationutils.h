@@ -43,7 +43,7 @@ class CORE_EXPORT QgsElevationUtils
     /**
      * Calculates the elevation range for the specified \a layers.
      *
-     * This method considers the elevation (or z) range available from each of the \a layers and
+     * This method considers the elevation (or Z) range available from each of the \a layers and
      * returns the maximal combined elevation range of these layers.
      *
      * \since QGIS 4.4
