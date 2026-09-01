@@ -141,6 +141,8 @@ void QgsExecuteSqlAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsExecuteSqlAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"INPUT_DATASOURCES"_s, context );
   const QString query = parameterAsString( parameters, u"INPUT_QUERY"_s, context );
   const QString uniqueIdentifierField = parameterAsString( parameters, u"INPUT_UID_FIELD"_s, context );

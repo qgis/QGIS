@@ -74,6 +74,8 @@ QString QgsBatchNominatimGeocodeAlgorithm::shortDescription() const
 
 bool QgsBatchNominatimGeocodeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   feedback->pushInfo(
     QObject::tr(
       "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors. "

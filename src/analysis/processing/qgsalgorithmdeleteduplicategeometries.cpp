@@ -96,6 +96,8 @@ bool QgsDeleteDuplicateGeometriesAlgorithm::prepareAlgorithm( const QVariantMap 
 
 QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString destId;
   std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, destId, mSource->fields(), mSource->wkbType(), mSource->sourceCrs() ) );
   if ( !sink )

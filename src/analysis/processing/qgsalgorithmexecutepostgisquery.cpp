@@ -75,6 +75,8 @@ void QgsExecutePostgisQueryAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsExecutePostgisQueryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   Q_UNUSED( feedback );
 
   const QString connName = parameterAsConnectionName( parameters, u"DATABASE"_s, context );
