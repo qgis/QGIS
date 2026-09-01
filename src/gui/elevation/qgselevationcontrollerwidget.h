@@ -30,7 +30,6 @@ class QgsMapCanvas;
 class QgsMapLayer;
 class QgsRangeSlider;
 class QgsDoubleSpinBox;
-class QCheckBox;
 class QToolButton;
 class QMenu;
 
@@ -76,9 +75,6 @@ class GUI_EXPORT QgsElevationControllerSettingsAction : public QWidgetAction SIP
     //! Shows the current range \a size, unless a fixed size is locked
     void updateRangeSize( double size );
 
-    //! Shows whether the elevation slider is inverted
-    void setInverted( bool inverted );
-
   signals:
 
     //! Emitted when the limits are edited
@@ -89,9 +85,6 @@ class GUI_EXPORT QgsElevationControllerSettingsAction : public QWidgetAction SIP
 
     //! Emitted when the range size is cleared, asking for the full range to be shown
     void fullRangeRequested();
-
-    //! Emitted when the invert direction checkbox is toggled
-    void invertedChanged( bool inverted );
 
   protected:
     bool eventFilter( QObject *watched, QEvent *event ) override;
@@ -107,7 +100,6 @@ class GUI_EXPORT QgsElevationControllerSettingsAction : public QWidgetAction SIP
     QMenu *mLimitsMenu = nullptr;
     QgsDoubleSpinBox *mSizeSpin = nullptr;
     QToolButton *mLockButton = nullptr;
-    QCheckBox *mInvertCheckBox = nullptr;
 };
 
 
@@ -284,6 +276,7 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     QToolButton *mConfigureButton = nullptr;
     QgsElevationControllerSettingsAction *mSettingsAction = nullptr;
     QMenu *mMenu = nullptr;
+    QAction *mInvertDirectionAction = nullptr;
     QgsRangeSlider *mSlider = nullptr;
     QgsElevationControllerLabels *mSliderLabels = nullptr;
     QPointer<QgsMapCanvas> mMapCanvas;
