@@ -162,6 +162,8 @@ bool QgsRasterDtmSlopeBasedFilterAlgorithm::prepareAlgorithm( const QVariantMap 
 
 QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
   // handle backwards compatibility parameter CREATE_OPTIONS
   const QString optionsString = parameterAsString( parameters, u"CREATE_OPTIONS"_s, context );
