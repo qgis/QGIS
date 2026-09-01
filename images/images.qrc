@@ -107,6 +107,7 @@
         <file>themes/default/algorithms/mAlgorithmDistanceMatrix.svg</file>
         <file>themes/default/algorithms/mAlgorithmExtractVertices.svg</file>
         <file>themes/default/algorithms/mAlgorithmExtractLayerExtent.svg</file>
+        <file>themes/default/algorithms/mAlgorithmInterpolation.svg</file>
         <file>themes/default/algorithms/mAlgorithmIntersect.svg</file>
         <file>themes/default/algorithms/mAlgorithmConcaveHull.svg</file>
         <file>themes/default/algorithms/mAlgorithmLineDensity.svg</file>

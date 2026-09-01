@@ -173,7 +173,7 @@ class QgsDelimitedTextFile : public QObject
 
     /**
      * Set reading field names from the first record
-     * \param useheaders Field names will be read if true
+     * \param useheader Field names will be read if true
      */
     void setUseHeader( bool useheader = true );
 

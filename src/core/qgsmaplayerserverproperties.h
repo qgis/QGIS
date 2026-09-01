@@ -18,6 +18,7 @@
 #ifndef QGSMAPLAYERSERVERPROPERTIES_H
 #define QGSMAPLAYERSERVERPROPERTIES_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
@@ -158,18 +159,6 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
     struct CORE_EXPORT WmsDimensionInfo
     {
         /**
-       * Selection behavior for QGIS Server WMS Dimension default display
-       * \since QGIS 3.10
-       */
-        enum DefaultDisplay
-        {
-          AllValues = 0,      //!< Display all values of the dimension
-          MinValue = 1,       //!< Add selection to current selection
-          MaxValue = 2,       //!< Modify current selection to include only select features which match
-          ReferenceValue = 3, //!< Remove from current selection
-        };
-
-        /**
        * Constructor for WmsDimensionInfo.
        */
         explicit WmsDimensionInfo(
@@ -178,7 +167,7 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
           const QString &dimEndFieldName = QString(),
           const QString &dimUnits = QString(),
           const QString &dimUnitSymbol = QString(),
-          const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
+          Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = Qgis::WmsDimensionDefaultDisplay::AllValues,
           const QVariant &dimReferenceValue = QVariant()
         )
           : name( dimName )
@@ -198,7 +187,7 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
         QString endFieldName;
         QString units;
         QString unitSymbol;
-        int defaultDisplayType;
+        Qgis::WmsDimensionDefaultDisplay defaultDisplayType;
         QVariant referenceValue;
     };
 
@@ -214,6 +203,14 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
      * \since QGIS 3.10
      */
     static QMap<int, QString> wmsDimensionDefaultDisplayLabels();
+
+    /**
+     * Returns WMS Dimension default display descriptions
+     * \note This method returns the same labels as wmsDimensionDefaultDisplayLabels() but keeps keys
+     * as enum instead of int
+     * \since QGIS 4.4
+     */
+    static QMap<Qgis::WmsDimensionDefaultDisplay, QString> wmsDimensionDefaultDisplayDescriptions() SIP_SKIP;
 
     /**
      * Adds a QGIS Server WMS Dimension

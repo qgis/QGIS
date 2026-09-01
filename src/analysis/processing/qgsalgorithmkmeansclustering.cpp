@@ -20,6 +20,8 @@
 #include <random>
 #include <unordered_map>
 
+#include "qgsacademicreference.h"
+
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -76,11 +78,25 @@ QString QgsKMeansClusteringAlgorithm::shortHelpString() const
 {
   return QObject::tr(
     "This algorithm calculates the 2D distance based k-means cluster number for each input feature.\n\n"
-    "If input geometries are lines or polygons, the clustering is based on the centroid of the feature.\n\n"
-    "References:\n"
-    "Arthur, David & Vassilvitskii, Sergei. (2007). K-Means++: The Advantages of Careful Seeding. Proc. of the Annu. ACM-SIAM Symp. on Discrete Algorithms. 8.\n\n"
-    "Bhattacharya, Anup & Eube, Jan & Röglin, Heiko & Schmidt, Melanie. (2019). Noisy, Greedy and Not So Greedy k-means++"
+    "If input geometries are lines or polygons, the clustering is based on the centroid of the feature."
   );
+}
+
+QList<QgsAcademicReference> QgsKMeansClusteringAlgorithm::academicReferences() const
+{
+  const QgsAcademicReference ref1 = QgsAcademicReference::
+    createPresentation( { u"Arthur, D."_s, u"Vassilvitskii, S."_s }, 2007, u"K-Means++: The Advantages of Careful Seeding"_s, u"Proc. of the Annu. ACM-SIAM Symp. on Discrete Algorithms"_s, QString(), u"8"_s );
+
+  const QgsAcademicReference ref2 = QgsAcademicReference::createPresentation(
+    { u"Bhattacharya, A."_s, u"Eube, J."_s, u"Röglin, H."_s, u"Schmidt, M."_s },
+    2019,
+    u"Noisy, Greedy and Not So Greedy k-means++"_s,
+    u"28th Annual European Symposium on Algorithms (ESA 2020)"_s,
+    u"Leibniz International Proceedings in Informatics (LIPIcs)"_s,
+    u"pp. 18:1-18:21"_s
+  );
+
+  return { ref1, ref2 };
 }
 
 QString QgsKMeansClusteringAlgorithm::shortDescription() const

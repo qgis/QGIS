@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingwidgetcontext.h"
 
 #include <QFont>
 #include <QGraphicsObject>
@@ -47,7 +48,7 @@ class QgsModelArrowItem;
  * \warning Not stable API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
+class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public QgsProcessingWidgetContextGenerator
 {
     Q_OBJECT
 
@@ -288,6 +289,15 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     QList< QgsModelArrowItem * > outgoingArrows();
 
+    /**
+     * Register a Processing widget context generator class that will be used to retrieve
+     * a widget context for the item when required.
+     * \since QGIS 4.4
+     */
+    void registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator );
+
+    QgsProcessingParameterWidgetContext createWidgetContext() override;
+
   signals:
 
     // TODO - rework this, should be triggered externally when the model actually changes!
@@ -436,6 +446,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QList< QgsModelDesignerSocketGraphicItem * > mInSockets;
     QList< QgsModelDesignerSocketGraphicItem * > mOutSockets;
 
+    QgsProcessingWidgetContextGenerator *mWidgetContextGenerator = nullptr;
 
     static constexpr double MIN_COMPONENT_WIDTH = 70;
     static constexpr double MIN_COMPONENT_HEIGHT = 30;
@@ -499,10 +510,11 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     QPicture mPicture;
 };
 
+#ifndef SIP_RUN
 /**
  * \ingroup gui
  * \brief A graphic item representing a child algorithm in the model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGraphicItem
@@ -587,6 +599,16 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      */
     int indexForOutput( const QString &output ) const;
 
+    void editComponent() override;
+    void editComment() override;
+
+    /**
+     * Applies edits to the item, using an updated child \a algorithm definition.
+     *
+     * \since QGIS 4.4
+     */
+    void applyEdit( const QgsProcessingModelChildAlgorithm &algorithm );
+
   signals:
 
     /**
@@ -648,6 +670,13 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void activateAlgorithm();
 
   private:
+    /**
+     * Opens the dialog to edit the child algorithm parameters or comments.
+     *
+     * \param editComment set to TRUE to focus the comments tab
+     */
+    void edit( bool editComment = false );
+
     QPicture mPicture;
     QPixmap mPixmap;
     bool mStarted = false;
@@ -656,7 +685,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     double mProgress = -1;
     bool mIsValid = true;
 };
-
+#endif
 
 /**
  * \ingroup gui
@@ -696,7 +725,7 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     QPicture mPicture;
 };
 
-
+#ifndef SIP_RUN
 /**
  * \ingroup gui
  * \brief A graphic item representing a model comment in the model designer.
@@ -744,7 +773,7 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
     std::unique_ptr<QgsProcessingModelComponent> mParentComponent;
     QPointer<QgsModelComponentGraphicItem> mParentItem;
 };
-
+#endif
 
 /**
  * \ingroup gui

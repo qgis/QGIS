@@ -57,9 +57,6 @@ from qgis.PyQt.QtWidgets import (
     QWidget,
 )
 
-from processing.core import parameters
-from processing.modeler.exceptions import UndefinedParameterException
-
 
 class ModelerParameterDefinitionWidget(QgsProcessingModelConfigWidget):
     def __init__(self, alg, paramType=None, param=None):
@@ -251,10 +248,7 @@ class ModelerParameterDefinitionWidget(QgsProcessingModelConfigWidget):
                 QgsApplication.instance().processingRegistry().parameterType(typeId)
             )
             if not paramTypeDef:
-                msg = self.tr(
-                    "The parameter `{}` is not registered, are you missing a required plugin?"
-                ).format(typeId)
-                raise UndefinedParameterException(msg)
+                return None
             new_param = paramTypeDef.create(name)
             new_param.setDescription(description)
             new_param.setMetadata(paramTypeDef.metadata())

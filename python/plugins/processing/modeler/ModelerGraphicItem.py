@@ -20,27 +20,20 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.core import (
-    Qgis,
     QgsProcessingModelAlgorithm,
     QgsProcessingModelOutput,
     QgsProcessingParameterDefinition,
-    QgsProject,
 )
 from qgis.gui import (
-    QgsModelChildAlgorithmGraphicItem,
     QgsModelOutputGraphicItem,
     QgsModelParameterGraphicItem,
     QgsProcessingContextGenerator,
     QgsProcessingParameterDefinitionDialog,
-    QgsProcessingParameterWidgetContext,
 )
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.utils import iface
 
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
 )
-from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.tools.dataobjects import createContext
 
 
@@ -66,19 +59,6 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
                 return self.processing_context
 
         self.context_generator = ContextGenerator(self.processing_context)
-
-    def create_widget_context(self):
-        """
-        Returns a new widget context for use in the model editor
-        """
-        widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setMapCanvas(iface.mapCanvas())
-            widget_context.setActiveLayer(iface.activeLayer())
-
-        widget_context.setModel(self.model())
-        return widget_context
 
     def edit(self, edit_comment=False):
         existing_param = self.model().parameterDefinition(
@@ -108,7 +88,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
         else:
             # yay, use new API!
             context = createContext()
-            widget_context = self.create_widget_context()
+            widget_context = self.createWidgetContext()
             dlg = QgsProcessingParameterDefinitionDialog(
                 type=existing_param.type(),
                 context=context,
@@ -168,60 +148,6 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
         self.requestModelRepaint.emit()
         self.changed.emit()
         return new_param.name()
-
-    def editComponent(self):
-        self.edit()
-
-    def editComment(self):
-        self.edit(edit_comment=True)
-
-
-class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
-    """
-    IMPORTANT! This is intentionally a MINIMAL class, only containing code which HAS TO BE HERE
-    because it contains Python code for compatibility with deprecated methods ONLY.
-
-    Don't add anything here -- edit the c++ base class instead!
-    """
-
-    def __init__(self, element, model):
-        super().__init__(element, model, None)
-
-    def edit(self, edit_comment=False):
-        elemAlg = self.component().algorithm()
-        dlg = ModelerParametersDialog(
-            elemAlg,
-            self.model(),
-            self.component().childId(),
-            self.component().configuration(),
-        )
-        dlg.setModal(True)
-        dlg.setComments(self.component().comment().description())
-        dlg.setCommentColor(self.component().comment().color())
-        if edit_comment:
-            dlg.switchToCommentTab()
-        if dlg.exec():
-            alg = dlg.createAlgorithm()
-            self.apply_new_alg(alg)
-            self.rebuildConfigurationDockWidget.emit()
-
-    def apply_new_alg(self, alg):
-        alg.setChildId(self.component().childId())
-        alg.copyNonDefinitionPropertiesFromModel(self.model())
-        if alg.toVariant() == self.component().toVariant():
-            # nothing changed, treat as cancel was pressed
-            return
-
-        # TODO -- ideally we'd include the changed parameter name in the
-        # command ID, so that we get more granular undo/redo (i.e. per
-        # parameter change, not per child algorithm change)
-        undo_command_id = f"alg:{self.component().childId()}"
-        self.aboutToChange.emit(
-            self.tr("Edit {}").format(alg.description()), undo_command_id
-        )
-        self.model().setChildAlgorithm(alg)
-        self.requestModelRepaint.emit()
-        self.changed.emit()
 
     def editComponent(self):
         self.edit()

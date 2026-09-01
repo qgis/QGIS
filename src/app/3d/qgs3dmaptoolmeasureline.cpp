@@ -52,7 +52,7 @@ Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
 
 void Qgs3DMapToolMeasureLine::activate()
 {
-  mRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine() );
+  mRubberBand = std::make_unique<QgsRubberBand3D>( mCanvas->scene() );
 
   restart();
   updateSettings();

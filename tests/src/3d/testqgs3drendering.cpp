@@ -1902,7 +1902,7 @@ void TestQgs3DRendering::testTexturedBillboardRendering()
   billboardGeometryRenderer->setVertexCount( 4 );
   billboardGeometryRenderer->setInstanceCount( billboardGeometry->count() );
 
-  QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::Mode::AtlasTexture );
+  QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::ExtraAttribute::TextureData );
   billboardMaterial->setTexture2DFromImage( image );
 
   Qt3DCore::QEntity *billboardEntity = new Qt3DCore::QEntity;

@@ -21,95 +21,26 @@ __copyright__ = "(C) 2018, Nyall Dawson"
 
 import unittest
 
-from qgis.core import QgsApplication, QgsProcessingModelAlgorithm, QgsProject
-from qgis.PyQt.QtCore import QTemporaryFile
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingModelAlgorithm,
+    QgsProcessingProjectModelProvider,
+    QgsProject,
+)
 from qgis.testing import QgisTestCase, start_app
 
 from processing.modeler.ModelerDialog import ModelerDialog
-from processing.modeler.ProjectProvider import ProjectProvider
 
 start_app()
 
 
-class ProjectProviderTest(QgisTestCase):
-    def testSaveRestoreFromProject(self):
-        p = QgsProject()
-        provider = ProjectProvider(p)
-
-        # add some algorithms
-        alg = QgsProcessingModelAlgorithm("test name", "test group")
-        provider.add_model(alg)
-        alg2 = QgsProcessingModelAlgorithm("test name2", "test group2")
-        provider.add_model(alg2)
-        self.assertEqual(len(provider.algorithms()), 2)
-
-        tmp_file = QTemporaryFile()
-        tmp_file.open()  # fileName is no available until open
-        temp_path = tmp_file.fileName()
-        tmp_file.close()
-
-        self.assertTrue(p.write(temp_path))
-
-        # restore project
-        p2 = QgsProject()
-        provider2 = ProjectProvider(p2)
-        self.assertTrue(p2.read(temp_path))
-
-        self.assertEqual(len(provider2.model_definitions), 2)
-        self.assertEqual(len(provider2.algorithms()), 2)
-        self.assertEqual(provider2.algorithms()[0].name(), "test name")
-        self.assertEqual(provider2.algorithms()[0].group(), "test group")
-        self.assertEqual(provider2.algorithms()[1].name(), "test name2")
-        self.assertEqual(provider2.algorithms()[1].group(), "test group2")
-
-        # clear project should remove algorithms
-        p2.clear()
-        self.assertFalse(provider2.algorithms())
-
-    def testDelete(self):
-        """
-        Test deleting a model from the project
-        """
-        p = QgsProject()
-        provider = ProjectProvider(p)
-
-        # add some models
-        alg = QgsProcessingModelAlgorithm("test name", "test group")
-        provider.add_model(alg)
-        alg2 = QgsProcessingModelAlgorithm("test name2", "test group2")
-        provider.add_model(alg2)
-        self.assertEqual(len(provider.algorithms()), 2)
-
-        # try to delete
-        provider.remove_model(None)
-        self.assertEqual(len(provider.algorithms()), 2)
-
-        # not in provider!
-        alg3 = QgsProcessingModelAlgorithm("test name3", "test group")
-        provider.remove_model(alg3)
-        self.assertEqual(len(provider.algorithms()), 2)
-
-        # delete model actually in project
-        provider.remove_model(alg)
-        self.assertEqual(len(provider.algorithms()), 1)
-        self.assertEqual(provider.algorithms()[0].name(), "test name2")
-
-        # overwrite model
-        alg2b = QgsProcessingModelAlgorithm("test name2", "test group2")
-        alg2b.setHelpContent({"test": "test"})
-        provider.add_model(alg2b)
-        self.assertEqual(len(provider.algorithms()), 1)
-        self.assertEqual(provider.algorithms()[0].helpContent(), {"test": "test"})
-
-        provider.remove_model(alg2)
-        self.assertEqual(len(provider.algorithms()), 0)
-
+class ProjectProviderGuiTest(QgisTestCase):
     def testDialog(self):
         """
         Test saving model to project from dialog
         """
         p = QgsProject().instance()
-        provider = ProjectProvider()
+        provider = QgsProcessingProjectModelProvider(p)
         QgsApplication.processingRegistry().addProvider(provider)
 
         # make an algorithm
@@ -118,7 +49,6 @@ class ProjectProviderTest(QgisTestCase):
         dialog = ModelerDialog(alg)
         dialog.saveInProject()
 
-        self.assertEqual(len(provider.model_definitions), 1)
         self.assertEqual(len(provider.algorithms()), 1)
         self.assertEqual(provider.algorithms()[0].name(), "test name")
         self.assertEqual(provider.algorithms()[0].group(), "test group")

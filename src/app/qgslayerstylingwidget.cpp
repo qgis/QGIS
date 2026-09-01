@@ -20,6 +20,7 @@
 #include "qgsannotationlayer.h"
 #include "qgsapplication.h"
 #include "qgsdiagramwidget.h"
+#include "qgsgui.h"
 #include "qgslabelingwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -85,7 +86,7 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
   mContext.setMapCanvas( canvas );
   mContext.setMessageBar( messageBar );
 
-  mOptionsListWidget->setIconSize( QgisApp::instance()->iconSize( false ) );
+  mOptionsListWidget->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::MainWindowToolbar ) );
   mOptionsListWidget->setMaximumWidth( static_cast<int>( mOptionsListWidget->iconSize().width() * 1.18 ) );
 
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( QgsMapLayer * )>( &QgsProject::layerWillBeRemoved ), this, &QgsLayerStylingWidget::layerAboutToBeRemoved );

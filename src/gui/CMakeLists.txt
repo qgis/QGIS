@@ -459,10 +459,12 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.cpp
+  processing/qgsprocessingwidgetcontext.cpp
   processing/qgsprocessingwidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
   processing/models/qgsmodelarrowitem.cpp
+  processing/models/qgsmodelchildalgorithmwidgets.cpp
   processing/models/qgsmodelcomponentgraphicitem.cpp
   processing/models/qgsmodeldesignerconfigdockwidget.cpp
   processing/models/qgsmodeldesignerconfigwidget.cpp
@@ -1492,10 +1494,12 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.h
+  processing/qgsprocessingwidgetcontext.h
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 
   processing/models/qgsmodelarrowitem.h
+  processing/models/qgsmodelchildalgorithmwidgets.h
   processing/models/qgsmodelcomponentgraphicitem.h
   processing/models/qgsmodeldesignerconfigdockwidget.h
   processing/models/qgsmodeldesignerconfigwidget.h

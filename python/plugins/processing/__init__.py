@@ -29,8 +29,6 @@ from processing.tools.general import (
     createAlgorithmDialog,
     execAlgorithmDialog,
 )
-from processing.tools.vector import *  # NOQA
-from processing.tools.raster import *  # NOQA
 from processing.tools.system import *  # NOQA
 
 # monkey patch Python specific Processing API into stable qgis.processing module

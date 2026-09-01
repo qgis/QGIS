@@ -11,7 +11,7 @@
 
 
 
-class QgsProcessingGuiRegistry
+class QgsProcessingGuiRegistry : QgsProcessingWidgetContextGenerator
 {
 %Docstring(signature="appended")
 A registry for widgets for use with the Processing framework.
@@ -208,6 +208,43 @@ May return ``None`` if configuring a the component is not supported.
    Not stable API
 
 .. versionadded:: 4.0
+%End
+
+    void registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator );
+%Docstring
+Register a Processing widget context ``generator`` class that will be
+used to retrieve a widget context when required.
+
+.. note::
+
+   This is intended for registration of a "top-level", application widget generator
+   which can return contexts with knowledge of the application map canvas, active project, etc.
+
+.. warning::
+
+   The ``generator`` must live for the lifetime of the application, or this method
+   must explicitly be called with a ``None`` argument to de-register the generator.
+
+.. seealso:: :py:func:`createWidgetContext`
+
+.. versionadded:: 4.4
+%End
+
+    virtual QgsProcessingParameterWidgetContext createWidgetContext();
+
+%Docstring
+Register a Processing widget context.
+
+.. note::
+
+   This returns a "top-level", application widget context
+   with knowledge of the application map canvas, active project, etc. Individual Processing GUI
+   subcomponents may start with this context, then further refine with lower-level specific components
+   (such as individual model-specific properties)
+
+.. seealso:: :py:func:`createWidgetContext`
+
+.. versionadded:: 4.4
 %End
 
   private:
