@@ -183,6 +183,21 @@ class TestQgsElevationControllerWidget(QgisTestCase):
         self.assertAlmostEqual(w.range().lower(), 15, 6)
         self.assertAlmostEqual(w.range().upper(), 25, 6)
 
+    def test_set_range_with_locked_size(self):
+        """
+        A locked size must win over the range passed to setRange
+        """
+        w = QgsElevationControllerWidget()
+        w.setRangeLimits(QgsDoubleRange(0, 1000))
+        w.setFixedRangeSize(10)
+
+        w.setRange(QgsDoubleRange(100, 900))
+        self.assertEqual(w.range(), QgsDoubleRange(100, 110))
+
+        # a range which would reach past the upper limit moves down instead of growing
+        w.setRange(QgsDoubleRange(995, 999))
+        self.assertEqual(w.range(), QgsDoubleRange(990, 1000))
+
     def test_project_interaction(self):
         """
         Test interaction of widget with project

@@ -138,9 +138,10 @@ QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
     if ( mBlockSliderChanges )
       return;
 
-    const QgsDoubleRange snapped = snappedRange( range() );
+    const QgsDoubleRange snapped = snappedRange( sliderRange() );
 
-    // move the handles onto the snapped values
+    // a drag within one snapping interval leaves the snapped range identical to the current
+    // one, but the handles still have to be moved back onto it, hence before the early return
     mBlockSliderChanges++;
     mSlider->setRange( static_cast<int>( std::floor( snapped.lower() * mSliderPrecision ) ), static_cast<int>( std::ceil( snapped.upper() * mSliderPrecision ) ) );
     mBlockSliderChanges--;
@@ -178,26 +179,7 @@ void QgsElevationControllerWidget::resizeEvent( QResizeEvent *event )
 
 QgsDoubleRange QgsElevationControllerWidget::range() const
 {
-  // if the current slider range is just the current range, but snapped to the slider precision, then losslessly return the current range
-  const int snappedLower = static_cast<int>( std::floor( mCurrentRange.lower() * mSliderPrecision ) );
-  const int snappedUpper = static_cast<int>( std::ceil( mCurrentRange.upper() * mSliderPrecision ) );
-  if ( snappedLower == mSlider->lowerValue() && snappedUpper == mSlider->upperValue() )
-    return mCurrentRange;
-
-  const QgsDoubleRange sliderRange( mSlider->lowerValue() / mSliderPrecision, mSlider->upperValue() / mSliderPrecision );
-  if ( mFixedRangeSize >= 0 )
-  {
-    // adjust range so that it has exactly the fixed width (given slider int precision the slider range
-    // will not have the exact fixed width)
-    if ( sliderRange.upper() + mFixedRangeSize <= mRangeLimits.upper() )
-      return QgsDoubleRange( sliderRange.lower(), sliderRange.lower() + mFixedRangeSize );
-    else
-      return QgsDoubleRange( sliderRange.upper() - mFixedRangeSize, sliderRange.upper() );
-  }
-  else
-  {
-    return sliderRange;
-  }
+  return mCurrentRange;
 }
 
 QgsDoubleRange QgsElevationControllerWidget::rangeLimits() const
@@ -255,14 +237,15 @@ void QgsElevationControllerWidget::setLimitsFromRange( const QgsDoubleRange &ran
 
 void QgsElevationControllerWidget::setRange( const QgsDoubleRange &range )
 {
-  if ( range == mCurrentRange )
+  const QgsDoubleRange newRange = mFixedRangeSize >= 0 ? fixedSizeRangeFrom( range.lower() ) : range;
+  if ( newRange == mCurrentRange )
     return;
 
-  mCurrentRange = range;
+  mCurrentRange = newRange;
   mBlockSliderChanges = true;
-  mSlider->setRange( static_cast<int>( std::floor( range.lower() * mSliderPrecision ) ), static_cast<int>( std::ceil( range.upper() * mSliderPrecision ) ) );
+  mSlider->setRange( static_cast<int>( std::floor( mCurrentRange.lower() * mSliderPrecision ) ), static_cast<int>( std::ceil( mCurrentRange.upper() * mSliderPrecision ) ) );
   mBlockSliderChanges = false;
-  emit rangeChanged( range );
+  emit rangeChanged( mCurrentRange );
 
   mSliderLabels->setRange( mCurrentRange );
 }
@@ -298,8 +281,9 @@ void QgsElevationControllerWidget::setRangeLimits( const QgsDoubleRange &limits 
   if ( mFixedRangeSize >= 0 )
   {
     // a locked size is kept, the range moves inside the new limits instead of being clipped
-    newCurrentUpper = std::min( newCurrentLower + mFixedRangeSize, limits.upper() );
-    newCurrentLower = std::max( newCurrentUpper - mFixedRangeSize, limits.lower() );
+    const QgsDoubleRange fitted = fixedSizeRangeFrom( newCurrentLower );
+    newCurrentLower = fitted.lower();
+    newCurrentUpper = fitted.upper();
   }
   const bool rangeHasChanged = newCurrentLower != mCurrentRange.lower() || newCurrentUpper != mCurrentRange.upper();
 
@@ -320,31 +304,20 @@ void QgsElevationControllerWidget::setRangeLimits( const QgsDoubleRange &limits 
 
 QgsDoubleRange QgsElevationControllerWidget::snappedRange( const QgsDoubleRange &range ) const
 {
-  if ( mSnapInterval <= 0 )
-    return range;
+  const double lower = snapValue( range.lower() );
 
-  double lower = snapValue( range.lower() );
-  double upper;
+  // snapping must not alter the locked range size
   if ( mFixedRangeSize >= 0 )
-  {
-    // snapping must not alter the locked range size
-    upper = lower + mFixedRangeSize;
-    if ( upper > mRangeLimits.upper() )
-    {
-      upper = mRangeLimits.upper();
-      lower = upper - mFixedRangeSize;
-    }
-  }
-  else
-  {
-    upper = std::max( snapValue( range.upper() ), lower );
-  }
+    return fixedSizeRangeFrom( lower );
 
-  return QgsDoubleRange( lower, upper );
+  return QgsDoubleRange( lower, std::max( snapValue( range.upper() ), lower ) );
 }
 
 double QgsElevationControllerWidget::snapValue( double value ) const
 {
+  if ( mSnapInterval <= 0 )
+    return std::clamp( value, mRangeLimits.lower(), mRangeLimits.upper() );
+
   double snapped = std::round( value / mSnapInterval ) * mSnapInterval;
   if ( mSnapDecimals > 0 )
   {
@@ -360,6 +333,23 @@ double QgsElevationControllerWidget::snapValue( double value ) const
   }
 
   return std::clamp( snapped, mRangeLimits.lower(), mRangeLimits.upper() );
+}
+
+QgsDoubleRange QgsElevationControllerWidget::sliderRange() const
+{
+  return QgsDoubleRange( mSlider->lowerValue() / mSliderPrecision, mSlider->upperValue() / mSliderPrecision );
+}
+
+QgsDoubleRange QgsElevationControllerWidget::fixedSizeRangeFrom( double lower ) const
+{
+  double upper = lower + mFixedRangeSize;
+  if ( upper > mRangeLimits.upper() )
+  {
+    upper = mRangeLimits.upper();
+    lower = std::max( upper - mFixedRangeSize, mRangeLimits.lower() );
+  }
+
+  return QgsDoubleRange( lower, upper );
 }
 
 void QgsElevationControllerWidget::updateWidgetMask()

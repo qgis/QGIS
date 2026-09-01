@@ -273,6 +273,15 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     //! Snaps a single elevation \a value to the closest snapping target.
     double snapValue( double value ) const;
 
+    //! Returns the elevation range the slider handles currently sit on
+    QgsDoubleRange sliderRange() const;
+
+    /**
+     * Returns the range of the locked fixed size which starts at \a lower, moved down when it
+     * would reach past the upper limit. Only call this with a fixed size locked.
+     */
+    QgsDoubleRange fixedSizeRangeFrom( double lower ) const;
+
     QToolButton *mConfigureButton = nullptr;
     QgsElevationControllerSettingsAction *mSettingsAction = nullptr;
     QMenu *mMenu = nullptr;
