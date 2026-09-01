@@ -150,6 +150,8 @@ bool QgsAggregateAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
 
 QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, mSource.get() );
   mGroupByExpression.prepare( &expressionContext );
 

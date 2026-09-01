@@ -165,6 +165,8 @@ bool QgsCategorizeUsingStyleAlgorithm::prepareAlgorithm( const QVariantMap &para
 
 QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString styleFile = parameterAsFile( parameters, u"STYLE"_s, context );
   const bool caseSensitive = parameterAsBoolean( parameters, u"CASE_SENSITIVE"_s, context );
   const bool tolerant = parameterAsBoolean( parameters, u"TOLERANT"_s, context );

@@ -70,6 +70,8 @@ QgsCalculateExpressionAlgorithm *QgsCalculateExpressionAlgorithm::createInstance
 
 void QgsCalculateExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   // possibly this should be a new dedicated parameter type for "QgsProcessingParameterVariant", as the values specified for the parameter will
   // be whatever the model calculates as the result of the expression. But this works for now...
   auto inputParameter = std::make_unique<QgsProcessingParameterString>( u"INPUT"_s, QObject::tr( "Input" ), QVariant(), false, false );

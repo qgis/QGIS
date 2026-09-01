@@ -122,6 +122,8 @@ QgsFields QgsGeometryCheckAreaAlgorithm::outputFields()
 
 QVariantMap QgsGeometryCheckAreaAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString dest_output;
   QString dest_errors;
   const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );

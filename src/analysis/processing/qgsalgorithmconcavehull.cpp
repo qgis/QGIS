@@ -99,6 +99,8 @@ bool QgsConcaveHullAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString dest;
   std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, QgsFields(), Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
   if ( !sink )

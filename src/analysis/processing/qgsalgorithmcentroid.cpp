@@ -107,6 +107,8 @@ bool QgsCentroidAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsP
 
 QgsFeatureList QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeatureList list;
   QgsFeature feature = f;
   if ( feature.hasGeometry() && !feature.geometry().isEmpty() )

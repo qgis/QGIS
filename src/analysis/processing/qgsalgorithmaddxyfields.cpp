@@ -140,6 +140,8 @@ bool QgsAddXYFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( mTransformNeedsInitialization )
   {
     mTransform = QgsCoordinateTransform( mSourceCrs, mCrs, context.transformContext() );

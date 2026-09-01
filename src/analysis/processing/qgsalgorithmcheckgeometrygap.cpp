@@ -135,6 +135,8 @@ QgsFields QgsGeometryCheckGapAlgorithm::outputFields()
 
 QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString dest_output;
   QString dest_errors;
   QString dest_neighbors;
