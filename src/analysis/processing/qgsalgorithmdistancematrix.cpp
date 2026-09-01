@@ -177,6 +177,8 @@ bool QgsDistanceMatrixAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsDistanceMatrixAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( mUseEllipsoid )
   {
     switch ( mMatrixType )
