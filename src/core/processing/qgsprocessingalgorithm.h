@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgsprocessingalgorithm_p.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameters.h"
