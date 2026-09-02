@@ -105,6 +105,8 @@ bool QgsRandomPointsExtentAlgorithm::prepareAlgorithm( const QVariantMap &parame
 
 QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFields fields = QgsFields();
   fields.append( QgsField( u"id"_s, QMetaType::Type::LongLong ) );
 

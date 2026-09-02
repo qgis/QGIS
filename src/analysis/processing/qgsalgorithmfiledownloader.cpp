@@ -92,6 +92,8 @@ void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mFeedback = feedback;
   QString url = parameterAsString( parameters, u"URL"_s, context );
   if ( url.isEmpty() )

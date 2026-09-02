@@ -105,6 +105,8 @@ bool QgsRasterMinMaxAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
 QVariantMap QgsRasterMinMaxAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString dest;
   std::unique_ptr<QgsFeatureSink> sink;
   if ( parameters.value( u"OUTPUT"_s ).isValid() )

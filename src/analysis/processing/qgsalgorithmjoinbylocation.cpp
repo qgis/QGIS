@@ -119,6 +119,8 @@ QStringList QgsJoinByLocationAlgorithm::translatedPredicates()
 
 QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mBaseSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !mBaseSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );

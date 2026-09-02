@@ -92,6 +92,8 @@ QgsMergeVectorAlgorithm *QgsMergeVectorAlgorithm::createInstance() const
 
 QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
 
   const bool addSourceFields = parameterAsBool( parameters, u"ADD_SOURCE_FIELDS"_s, context );

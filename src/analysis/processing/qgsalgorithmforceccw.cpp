@@ -87,6 +87,8 @@ QgsForceCCWAlgorithm *QgsForceCCWAlgorithm::createInstance() const
 
 QgsFeatureList QgsForceCCWAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !feature.hasGeometry() )
     return QgsFeatureList() << feature;
 

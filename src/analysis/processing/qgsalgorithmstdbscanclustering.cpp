@@ -57,6 +57,8 @@ QString QgsStDbscanClusteringAlgorithm::groupId() const
 
 void QgsStDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
   addParameter( new QgsProcessingParameterField( u"DATETIME_FIELD"_s, QObject::tr( "Date/time field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::DateTime, false, false ) );
 

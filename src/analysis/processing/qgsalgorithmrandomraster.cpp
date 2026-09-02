@@ -335,6 +335,8 @@ Qgis::DataType QgsRandomUniformRasterAlgorithm::getRasterDataType( int typeId )
 
 bool QgsRandomUniformRasterAlgorithm::prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mRandomUpperBound = parameterAsDouble( parameters, u"UPPER_BOUND"_s, context );
   mRandomLowerBound = parameterAsDouble( parameters, u"LOWER_BOUND"_s, context );
 
@@ -560,6 +562,8 @@ Qgis::DataType QgsRandomBinomialRasterAlgorithm::getRasterDataType( int typeId )
 
 bool QgsRandomBinomialRasterAlgorithm::prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const int n = parameterAsInt( parameters, u"N"_s, context );
   const double probability = parameterAsDouble( parameters, u"PROBABILITY"_s, context );
   mRandombinomialDistribution = std::binomial_distribution<long>( n, probability );
@@ -650,6 +654,8 @@ Qgis::DataType QgsRandomExponentialRasterAlgorithm::getRasterDataType( int typeI
 
 bool QgsRandomExponentialRasterAlgorithm::prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const double lambda = parameterAsDouble( parameters, u"LAMBDA"_s, context );
   mRandomExponentialDistribution = std::exponential_distribution<double>( lambda );
   return true;
@@ -743,6 +749,8 @@ Qgis::DataType QgsRandomGammaRasterAlgorithm::getRasterDataType( int typeId )
 
 bool QgsRandomGammaRasterAlgorithm::prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const double alpha = parameterAsDouble( parameters, u"ALPHA"_s, context );
   const double beta = parameterAsDouble( parameters, u"BETA"_s, context );
   mRandomGammaDistribution = std::gamma_distribution<double>( alpha, beta );
@@ -843,6 +851,8 @@ Qgis::DataType QgsRandomGeometricRasterAlgorithm::getRasterDataType( int typeId 
 
 bool QgsRandomGeometricRasterAlgorithm::prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const double probability = parameterAsDouble( parameters, u"PROBABILITY"_s, context );
   mRandomGeometricDistribution = std::geometric_distribution<long>( probability );
   return true;
@@ -947,6 +957,8 @@ Qgis::DataType QgsRandomNegativeBinomialRasterAlgorithm::getRasterDataType( int 
 
 bool QgsRandomNegativeBinomialRasterAlgorithm::prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const int k = parameterAsInt( parameters, u"K_PARAMETER"_s, context );
   const double probability = parameterAsDouble( parameters, u"PROBABILITY"_s, context );
   mRandomNegativeBinomialDistribution = std::negative_binomial_distribution<long>( k, probability );
@@ -1041,6 +1053,8 @@ Qgis::DataType QgsRandomNormalRasterAlgorithm::getRasterDataType( int typeId )
 
 bool QgsRandomNormalRasterAlgorithm::prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const double mean = parameterAsDouble( parameters, u"MEAN"_s, context );
   const double stddev = parameterAsDouble( parameters, u"STDDEV"_s, context );
   mRandomNormalDistribution = std::normal_distribution<double>( mean, stddev );
@@ -1140,6 +1154,8 @@ Qgis::DataType QgsRandomPoissonRasterAlgorithm::getRasterDataType( int typeId )
 
 bool QgsRandomPoissonRasterAlgorithm::prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const double mean = parameterAsDouble( parameters, u"MEAN"_s, context );
   mRandomPoissonDistribution = std::poisson_distribution<long>( mean );
   return true;
