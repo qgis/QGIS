@@ -213,7 +213,7 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
     }
     QVariant dimRefValue;
     const Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = static_cast<Qgis::WmsDimensionDefaultDisplay>( dimElem.attribute( u"defaultDisplayType"_s ).toInt() );
-    if ( dimDefaultDisplayType == Qgis::WmsDimensionDefaultDisplay::AllValues )
+    if ( dimDefaultDisplayType == Qgis::WmsDimensionDefaultDisplay::ReferenceValue )
     {
       const QString dimRefValueStr = dimElem.attribute( u"referenceValue"_s );
       if ( !dimRefValueStr.isEmpty() )
