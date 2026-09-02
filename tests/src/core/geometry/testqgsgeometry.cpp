@@ -2738,9 +2738,9 @@ void TestQgsGeometry::splitGeometry()
   );
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
   // This test was added back in the days for checking that a crash was no longer present.
-  // Now, GEOS 3.15's geometry splitter can actually split the geometry, which is way better.
+  // Now, GEOS 3.15's geometry splitter returns an engine error ("Splitting polygonal geometry failed to preserve area").
   // Note that the base geometry is and has always been valid.
-  Qgis::GeometryOperationResult result = Qgis::GeometryOperationResult::Success;
+  Qgis::GeometryOperationResult result = Qgis::GeometryOperationResult::GeometryEngineError;
 #else
   Qgis::GeometryOperationResult result = Qgis::GeometryOperationResult::InvalidBaseGeometry;
 #endif
