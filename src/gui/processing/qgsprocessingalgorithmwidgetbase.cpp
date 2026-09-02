@@ -854,7 +854,7 @@ QString QgsProcessingAlgorithmWidgetBase::formatHelp( QgsProcessingAlgorithm *al
   const QString implementationSourceUri = algorithm->implementationSourceUri();
   if ( !implementationSourceUri.isEmpty() )
   {
-    const QString linkHtml = QStringLiteral( R"(<a href="%1">%2</a>)" ).arg( implementationSourceUri, tr( "Algorithm source" ) );
+    const QString linkHtml = QStringLiteral( R"(<a href="%1">%2</a>)" ).arg( implementationSourceUri, tr( "Algorithm source code" ) );
     links << linkHtml;
   }
 
