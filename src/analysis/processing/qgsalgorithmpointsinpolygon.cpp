@@ -172,6 +172,8 @@ bool QgsPointsInPolygonAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 QgsFeatureList QgsPointsInPolygonAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature outputFeature = feature;
   if ( !feature.hasGeometry() )
   {

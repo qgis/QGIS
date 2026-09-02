@@ -108,6 +108,8 @@ void QgsExtractNetworkEndpointsAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsExtractNetworkEndpointsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsProcessingMultiStepFeedback multiFeedback( 2, feedback );
   multiFeedback.setStepWeights( { 80, 20 } );
   multiFeedback.setCurrentStep( 0 );

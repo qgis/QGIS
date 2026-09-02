@@ -86,6 +86,8 @@ void QgsRaiseExceptionAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsRaiseExceptionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString expression = parameterAsExpression( parameters, u"CONDITION"_s, context );
   if ( !expression.isEmpty() )
   {

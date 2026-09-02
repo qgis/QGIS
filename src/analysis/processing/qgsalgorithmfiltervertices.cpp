@@ -160,6 +160,8 @@ QString QgsFilterVerticesByM::componentString() const
 
 void QgsFilterVerticesByM::filter( QgsGeometry &geometry, double min, double max ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   geometry.filterVertices( [min, max]( const QgsPoint &point ) -> bool { return ( std::isnan( min ) || point.m() >= min ) && ( std::isnan( max ) || point.m() <= max ); } );
 }
 
@@ -206,6 +208,8 @@ QString QgsFilterVerticesByZ::componentString() const
 
 void QgsFilterVerticesByZ::filter( QgsGeometry &geometry, double min, double max ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   geometry.filterVertices( [min, max]( const QgsPoint &point ) -> bool { return ( std::isnan( min ) || point.z() >= min ) && ( std::isnan( max ) || point.z() <= max ); } );
 }
 

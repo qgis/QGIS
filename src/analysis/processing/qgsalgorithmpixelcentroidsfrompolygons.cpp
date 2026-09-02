@@ -84,6 +84,8 @@ void QgsPixelCentroidsFromPolygonsAlgorithm::initAlgorithm( const QVariantMap & 
 
 QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsRasterLayer *rasterLayer = parameterAsRasterLayer( parameters, u"INPUT_RASTER"_s, context );
 
   if ( !rasterLayer )

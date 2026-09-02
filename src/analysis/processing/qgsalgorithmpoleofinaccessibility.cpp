@@ -148,6 +148,8 @@ bool QgsPoleOfInaccessibilityAlgorithm::prepareAlgorithm( const QVariantMap &par
 
 QgsFeatureList QgsPoleOfInaccessibilityAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature outFeature = feature;
   if ( outFeature.hasGeometry() )
   {

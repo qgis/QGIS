@@ -88,6 +88,8 @@ QgsCombineStylesAlgorithm *QgsCombineStylesAlgorithm::createInstance() const
 
 QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QStringList inputs = parameterAsFileList( parameters, u"INPUT"_s, context );
 
   QList<QgsStyle::StyleEntity> objects;

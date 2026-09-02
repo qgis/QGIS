@@ -195,6 +195,8 @@ void QgsRandomExtractWithinSubsetsAlgorithm::initAlgorithm( const QVariantMap & 
 
 QVariantMap QgsRandomExtractWithinSubsetsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -304,6 +306,8 @@ void QgsRandomSelectionWithinSubsetsAlgorithm::initAlgorithm( const QVariantMap 
 
 QVariantMap QgsRandomSelectionWithinSubsetsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mInput = parameters.value( u"INPUT"_s );
   mTargetLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
 
