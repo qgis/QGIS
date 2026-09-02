@@ -120,6 +120,8 @@ void QgsIdwInterpolationAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsIdwInterpolationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString interpolationData = parameterAsString( parameters, u"INTERPOLATION_DATA"_s, context );
 
   const double coefficient = parameterAsDouble( parameters, u"DISTANCE_COEFFICIENT"_s, context );

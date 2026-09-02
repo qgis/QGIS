@@ -115,6 +115,8 @@ bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPr
 
 QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const bool overwrite = parameterAsBoolean( parameters, u"OVERWRITE"_s, context );
   const bool saveStyles = parameterAsBoolean( parameters, u"SAVE_STYLES"_s, context );
   const bool saveMetadata = parameterAsBoolean( parameters, u"SAVE_METADATA"_s, context );

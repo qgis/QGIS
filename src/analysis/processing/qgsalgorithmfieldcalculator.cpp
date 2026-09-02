@@ -241,6 +241,8 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 QgsFeatureList QgsFieldCalculatorAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsAttributes attributes( mFields.size() );
   const QStringList fieldNames = mFields.names();
   for ( const QString &fieldName : fieldNames )

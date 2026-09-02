@@ -249,6 +249,8 @@ void QgsRandomSelectionAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsRandomSelectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mInput = parameters.value( u"INPUT"_s );
   mTargetLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
 

@@ -111,6 +111,8 @@ void QgsHttpRequestAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsHttpRequestAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString url = parameterAsString( parameters, u"URL"_s, context );
   if ( url.isEmpty() )
     throw QgsProcessingException( tr( "No URL specified" ) );

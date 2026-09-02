@@ -139,6 +139,8 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mIndex = QgsSpatialIndex( QgsSpatialIndex::FlagStoreFeatureGeometries );
 
   const QStringList weightName = QStringList( mWeightField );

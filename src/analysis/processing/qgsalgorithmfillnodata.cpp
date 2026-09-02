@@ -118,6 +118,8 @@ bool QgsFillNoDataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qg
 
 QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   //test if input dataset has NoData
   if ( !mInputRaster->dataProvider()->sourceHasNoDataValue( mBand ) )
     feedback->reportError( QObject::tr( "Input raster has no NoData values. There exist no NoData cells to fill." ), false );
