@@ -9919,6 +9919,37 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     zFunc->setIsStatic( false );
     functions << zFunc;
 
+    const auto overlayReferencedColumns = []( const QgsExpressionNodeFunction *node ) {
+      if ( !node )
+        return QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES;
+
+      if ( !node->args() )
+        return QSet<QString>();
+
+      QSet<QString> referencedColumns;
+      QSet<QString> referencedVariables;
+
+      // Expression and filter are evaluated against the target layer, so only their variables matter
+      if ( node->args()->count() > 1 )
+        referencedVariables.unite( node->args()->at( 1 )->referencedVariables() );
+      if ( node->args()->count() > 2 )
+        referencedVariables.unite( node->args()->at( 2 )->referencedVariables() );
+
+      // Limit is evaluated against the source feature, so keep its columns
+      if ( node->args()->count() > 3 )
+      {
+        QgsExpressionNode *limitNode = node->args()->at( 3 );
+        referencedColumns.unite( limitNode->referencedColumns() );
+        referencedVariables.unite( limitNode->referencedVariables() );
+      }
+
+      // @parent reads the source feature, and an empty name is only known once evaluated
+      if ( referencedVariables.contains( u"parent"_s ) || referencedVariables.contains( QString() ) )
+        return QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES;
+
+      return referencedColumns;
+    };
+
     QMap< QString, QgsExpressionFunction::FcnEval > geometry_overlay_definitions {
       { u"overlay_intersects"_s, fcnGeomOverlayIntersects },
       { u"overlay_contains"_s, fcnGeomOverlayContains },
@@ -9953,8 +9984,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         i.value(),
         u"GeometryGroup"_s,
         QString(),
-        true,
-        QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES,
+        []( const QgsExpressionNodeFunction * ) { return true; },
+        overlayReferencedColumns,
         true
       );
 
@@ -9975,8 +10006,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       fcnGeomOverlayNearest,
       u"GeometryGroup"_s,
       QString(),
-      true,
-      QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES,
+      []( const QgsExpressionNodeFunction * ) { return true; },
+      overlayReferencedColumns,
       true
     );
     // The current feature is accessed for the geometry, so this should not be cached
