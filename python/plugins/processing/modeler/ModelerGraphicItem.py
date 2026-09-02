@@ -69,51 +69,33 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
 
         comment = self.component().comment().description()
         comment_color = self.component().comment().color()
-        new_param = None
-        if ModelerParameterDefinitionDialog.use_legacy_dialog(param=existing_param):
-            # boo, old api
-            dlg = ModelerParameterDefinitionDialog(self.model(), param=existing_param)
-            dlg.setComments(comment)
-            dlg.setCommentColor(comment_color)
-            if edit_comment:
-                dlg.switchToCommentTab()
-            if dlg.exec():
-                new_param = dlg.create_parameter()
-                comment = dlg.comments()
-                comment_color = dlg.commentColor()
-                self.apply_new_param(
-                    new_param, old_description, old_name, comment, comment_color
-                )
+        context = createContext()
+        widget_context = self.createWidgetContext()
+        dlg = QgsProcessingParameterDefinitionDialog(
+            type=existing_param.type(),
+            context=context,
+            widgetContext=widget_context,
+            definition=existing_param,
+            algorithm=self.model(),
+        )
+        dlg.setComments(comment)
+        dlg.setCommentColor(comment_color)
+        dlg.registerProcessingContextGenerator(self.context_generator)
 
-        else:
-            # yay, use new API!
-            context = createContext()
-            widget_context = self.createWidgetContext()
-            dlg = QgsProcessingParameterDefinitionDialog(
-                type=existing_param.type(),
-                context=context,
-                widgetContext=widget_context,
-                definition=existing_param,
-                algorithm=self.model(),
+        if edit_comment:
+            dlg.switchToCommentTab()
+
+        if dlg.exec():
+            new_param = dlg.createParameter(existing_param.name())
+            comment = dlg.comments()
+            comment_color = dlg.commentColor()
+
+            safeName = QgsProcessingModelAlgorithm.safeName(new_param.description())
+            new_param.setName(safeName.lower())
+
+            self.apply_new_param(
+                new_param, old_description, old_name, comment, comment_color
             )
-            dlg.setComments(comment)
-            dlg.setCommentColor(comment_color)
-            dlg.registerProcessingContextGenerator(self.context_generator)
-
-            if edit_comment:
-                dlg.switchToCommentTab()
-
-            if dlg.exec():
-                new_param = dlg.createParameter(existing_param.name())
-                comment = dlg.comments()
-                comment_color = dlg.commentColor()
-
-                safeName = QgsProcessingModelAlgorithm.safeName(new_param.description())
-                new_param.setName(safeName.lower())
-
-                self.apply_new_param(
-                    new_param, old_description, old_name, comment, comment_color
-                )
 
     def apply_new_param(
         self, new_param, old_description, old_name, comment, comment_color
