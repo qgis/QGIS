@@ -33,8 +33,10 @@
 #include "qgsprocessingdxflayerswidgetwrapper.h"
 #include "qgsprocessingfieldmapwidgetwrapper.h"
 #include "qgsprocessingmeshdatasetwidget.h"
+#include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsprocessingmodelgroupbox.h"
+#include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
 #include "qgsprocessingtininputlayerswidget.h"
@@ -276,6 +278,9 @@ bool QgsProcessingGuiInternalModelConfigWidgetFactory::supportsComponent( QgsPro
   if ( dynamic_cast< QgsProcessingModelChildAlgorithm * >( component ) )
     return true;
 
+  if ( dynamic_cast< QgsProcessingModelParameter * >( component ) )
+    return true;
+
   return false;
 }
 
@@ -325,6 +330,51 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
       {
         graphicItem->applyEdit( *updatedAlgorithm );
       }
+    } );
+
+    return widget;
+  }
+  else if ( QgsProcessingModelParameter *modelParam = dynamic_cast< QgsProcessingModelParameter * >( component ) )
+  {
+    QgsModelDesignerDialog *dialog = widgetContext.modelDesignerDialog();
+    QgsProcessingModelAlgorithm *model = widgetContext.model();
+
+    const QString componentName = modelParam->parameterName();
+    const QgsProcessingParameterDefinition *existingParam = model->parameterDefinition( componentName );
+    if ( !existingParam )
+      return nullptr;
+
+    const QString comment = modelParam->comment()->description();
+    const QColor commentColor = modelParam->comment()->color();
+    const QString oldName = existingParam->name();
+    const QString oldDescription = existingParam->description();
+
+    auto widget = new QgsProcessingParameterDefinitionPanelWidget( existingParam->type(), context, widgetContext, existingParam, model );
+    widget->setComments( comment );
+    widget->setCommentColor( commentColor );
+    if ( widgetContext.processingContextGenerator() )
+    {
+      widget->registerProcessingContextGenerator( widgetContext.processingContextGenerator() );
+    }
+
+    auto existingParamName = std::make_shared< QString >( existingParam->name() );
+
+    connect( widget, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged, this, [dialog, componentName, oldDescription, oldName, existingParamName, widget] {
+      QgsModelGraphicsScene *modelScene = dialog->modelScene();
+      if ( !modelScene )
+        return;
+
+      QgsModelParameterGraphicItem *graphicItem = dynamic_cast< QgsModelParameterGraphicItem * >( modelScene->parameterItem( componentName ) );
+      if ( !graphicItem )
+        return; // should not happen
+
+      std::unique_ptr< QgsProcessingParameterDefinition > newParam( widget->createParameter( *existingParamName ) );
+      if ( !newParam )
+        return;
+
+      const QString comment = widget->comments();
+      const QColor commentColor = widget->commentColor();
+      *existingParamName = graphicItem->applyEdit( std::move( newParam ), oldDescription, oldName, comment, commentColor );
     } );
 
     return widget;

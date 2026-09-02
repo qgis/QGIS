@@ -18,12 +18,10 @@
 from qgis.core import (
     QgsProcessingContext,
     QgsProcessingModelOutput,
-    QgsProcessingModelParameter,
     QgsProcessingParameterDefinition,
 )
 from qgis.gui import (
     QgsProcessingModelConfigWidgetFactory,
-    QgsProcessingParameterDefinitionPanelWidget,
     QgsProcessingParameterWidgetContext,
 )
 
@@ -36,10 +34,7 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
     def supportsComponent(self, component):
         return isinstance(
             component,
-            (
-                QgsProcessingModelParameter,
-                QgsProcessingModelOutput,
-            ),
+            (QgsProcessingModelOutput,),
         )
 
     def createWidget(
@@ -54,49 +49,7 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
 
         model_dialog = widgetContext.modelDesignerDialog()
 
-        if isinstance(component, QgsProcessingModelParameter):
-            component_name = component.parameterName()
-            existing_param = model.parameterDefinition(component_name)
-
-            comment = component.comment().description()
-            comment_color = component.comment().color()
-            old_name = existing_param.name()
-            old_description = existing_param.description()
-
-            widget = QgsProcessingParameterDefinitionPanelWidget(
-                type=existing_param.type(),
-                context=context,
-                widgetContext=widgetContext,
-                definition=existing_param,
-                algorithm=model,
-            )
-            widget.setComments(comment)
-            widget.setCommentColor(comment_color)
-            if widgetContext.processingContextGenerator():
-                widget.registerProcessingContextGenerator(
-                    widgetContext.processingContextGenerator()
-                )
-
-            existing_param_name = existing_param.name()
-
-            def on_widget_changed():
-                nonlocal existing_param_name
-                model_scene = model_dialog.modelScene()
-                graphic_item = model_scene.parameterItem(component_name)
-                if not graphic_item:
-                    # should not happen!
-                    return
-
-                new_param = widget.createParameter(existing_param_name)
-                comment = widget.comments()
-                comment_color = widget.commentColor()
-                existing_param_name = graphic_item.apply_new_param(
-                    new_param, old_description, old_name, comment, comment_color
-                )
-
-            widget.widgetChanged.connect(on_widget_changed)
-            return widget
-        elif isinstance(component, QgsProcessingModelOutput):
+        if isinstance(component, QgsProcessingModelOutput):
             child_id = component.childId()
             child_output_name = component.childOutputName()
 
