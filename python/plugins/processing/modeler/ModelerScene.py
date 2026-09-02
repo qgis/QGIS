@@ -22,7 +22,6 @@ __copyright__ = "(C) 2012, Victor Olaya"
 from qgis.gui import QgsModelGraphicsScene
 
 from processing.modeler.ModelerGraphicItem import (
-    ModelerInputGraphicItem,
     ModelerOutputGraphicItem,
 )
 
@@ -37,9 +36,6 @@ class ModelerScene(QgsModelGraphicsScene):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-    def createParameterGraphicItem(self, model, param):
-        return ModelerInputGraphicItem(param.clone(), model)
 
     def createOutputGraphicItem(self, model, output):
         return ModelerOutputGraphicItem(output.clone(), model)
