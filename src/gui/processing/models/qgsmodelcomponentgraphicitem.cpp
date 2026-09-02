@@ -1034,12 +1034,14 @@ QString QgsModelParameterGraphicItem::applyEdit(
   paramComponent->comment()->setDescription( comment );
   paramComponent->comment()->setColor( commentColor );
 
+  const QString description = newParameter->description();
+  const QString name = newParameter->name();
   model()->addModelParameter( newParameter.release(), *paramComponent );
-  setLabel( newParameter->description() );
+  setLabel( description );
   emit requestModelRepaint();
   emit changed();
 
-  return newParameter->name();
+  return name;
 }
 
 void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
