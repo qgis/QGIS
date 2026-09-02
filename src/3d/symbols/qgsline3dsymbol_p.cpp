@@ -389,40 +389,20 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
     lineMaterial->setLineWidth( width );
   }
 
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+  const bool hasDataDefinedColor = mSymbol->materialSettings()->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::Ambient );
+  const QgsAbstractMaterial3DHandler *handler = hasDataDefinedColor ? Qgs3D::handlerForMaterialSettings( mSymbol->materialSettings() ) : nullptr;
 
-  // geometry renderer
-  Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
-  renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
-  Qt3DCore::QGeometry *geometry = lineVertexData.createGeometry( entity );
-
-  if ( mSymbol->materialSettings()->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::Ambient ) )
-  {
-    if ( const QgsAbstractMaterial3DHandler *handler = Qgs3D::handlerForMaterialSettings( mSymbol->materialSettings() ) )
-    {
-      handler->applyDataDefinedToGeometry( mSymbol->materialSettings(), geometry, lineVertexData.pointsA.size(), lineVertexData.materialDataDefined );
-    }
-  }
-
-  renderer->setGeometry( geometry );
-
-  renderer->setVertexCount( 6 );
-  renderer->setInstanceCount( lineVertexData.pointsA.size() );
+  Qt3DCore::QEntity *entity = lineVertexData.createSegmentEntity( material, hasDataDefinedColor ? mSymbol->materialSettings() : nullptr, handler );
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
   QgsGeoTransform *transform = new QgsGeoTransform;
   transform->setGeoTranslation( mChunkOrigin );
 
-  // make entity
-  entity->addComponent( renderer );
-  entity->addComponent( material );
   entity->addComponent( transform );
   entity->setParent( parent );
 
   if ( lineMaterial )
   {
-    const bool hasDataDefinedColor = mSymbol->materialSettings()->dataDefinedProperties().isActive( QgsAbstractMaterialSettings::Property::Ambient );
-    const QgsAbstractMaterial3DHandler *handler = hasDataDefinedColor ? Qgs3D::handlerForMaterialSettings( mSymbol->materialSettings() ) : nullptr;
     if ( Qt3DCore::QEntity *joinEntity = lineVertexData.createJoinEntity( lineMaterial, hasDataDefinedColor ? mSymbol->materialSettings() : nullptr, handler ) )
     {
       QgsGeoTransform *joinTransform = new QgsGeoTransform;

@@ -28,7 +28,6 @@
 #include <Qt3DCore/QGeometry>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QEffect>
-#include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
 
@@ -133,32 +132,16 @@ QList<QgsAbstractMaterial3DHandler::PreviewMeshType> QgsSimpleLineMaterial3DHand
 
 Qt3DCore::QEntity *QgsSimpleLineMaterial3DHandler::createPreviewMesh( const QString &, Qt3DCore::QEntity *parent ) const
 {
-  auto *entity = new Qt3DCore::QEntity( parent );
-  auto *renderer = new Qt3DRender::QGeometryRenderer( entity );
-  renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
-
   QgsLineVertexData lineVertexData;
   constexpr double s = 1.0;
   // just a boring old flat square
   lineVertexData.addLineString( QgsLineString( { -s, s, s, -s, -s }, { -s, -s, s, s, -s }, { 0, 0, 0, 0, 0 } ) );
-  Qt3DCore::QGeometry *geometry = lineVertexData.createGeometry( entity );
-  renderer->setGeometry( geometry );
-  renderer->setVertexCount( 6 );
-  renderer->setInstanceCount( lineVertexData.pointsA.size() );
 
-  entity->addComponent( renderer );
+  Qt3DCore::QEntity *entity = lineVertexData.createSegmentEntity( nullptr );
+  entity->setParent( parent );
 
-  if ( !lineVertexData.joinPointA.isEmpty() )
-  {
-    auto *joinEntity = new Qt3DCore::QEntity( entity );
-    auto *joinRenderer = new Qt3DRender::QGeometryRenderer( joinEntity );
-    joinRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
-    joinRenderer->setGeometry( lineVertexData.createJoinGeometry( joinEntity ) );
-    joinRenderer->setVertexCount( 6 );
-    joinRenderer->setInstanceCount( lineVertexData.joinPointA.size() );
-    joinEntity->addComponent( joinRenderer );
-    joinEntity->addComponent( new QgsLineJoinMaterial() );
-  }
+  if ( Qt3DCore::QEntity *joinEntity = lineVertexData.createJoinEntity( nullptr ) )
+    joinEntity->setParent( entity );
 
   return entity;
 }
@@ -167,7 +150,7 @@ Qt3DCore::QEntity *QgsSimpleLineMaterial3DHandler::createPreviewScene(
   const QgsAbstractMaterialSettings *settings, const QString &type, const QgsMaterialContext &context, QWindow *window, Qt3DCore::QEntity *parent
 ) const
 {
-  auto *root = new Qt3DCore::QEntity( parent );
+  Qt3DCore::QEntity *root = new Qt3DCore::QEntity( parent );
   Qt3DCore::QEntity *mesh = createPreviewMesh( type, root );
 
   QgsMaterial *mat = toMaterial( settings, Qgis::MaterialRenderingTechnique::Lines, context );
@@ -178,7 +161,16 @@ Qt3DCore::QEntity *QgsSimpleLineMaterial3DHandler::createPreviewScene(
   mat->setParent( mesh );
   mesh->addComponent( mat );
 
-  QgsLineJoinMaterial *joinMaterial = mesh->findChild<QgsLineJoinMaterial *>();
+  QgsLineMaterial *joinMaterial = nullptr;
+  const QList<QgsLineMaterial *> childLineMaterials = mesh->findChildren<QgsLineMaterial *>();
+  for ( QgsLineMaterial *candidate : childLineMaterials )
+  {
+    if ( candidate->part() == QgsLineMaterial::LinePart::Join )
+    {
+      joinMaterial = candidate;
+      break;
+    }
+  }
   if ( joinMaterial )
     lineMaterial->copyLineParametersTo( joinMaterial );
 

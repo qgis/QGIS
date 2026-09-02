@@ -26,6 +26,7 @@
 #include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
@@ -39,12 +40,9 @@ using namespace Qt::StringLiterals;
 /// @cond PRIVATE
 
 
-QgsLineMaterial::QgsLineMaterial()
-  : QgsLineMaterial( u"qrc:/shaders/lines.vert"_s )
-{}
-
-QgsLineMaterial::QgsLineMaterial( const QString &vertexShaderUrl )
-  : mParameterThickness( new Qt3DRender::QParameter( "THICKNESS", 10, this ) )
+QgsLineMaterial::QgsLineMaterial( LinePart part )
+  : mPart( part )
+  , mParameterThickness( new Qt3DRender::QParameter( "THICKNESS", 10, this ) )
   , mParameterLineColor( new Qt3DRender::QParameter( "lineColor", QVariant(), this ) )
   , mParameterUseVertexColors( new Qt3DRender::QParameter( "useVertexColors", false, this ) )
   , mParameterWindowScale( new Qt3DRender::QParameter( "WIN_SCALE", QSizeF(), this ) )
@@ -54,18 +52,33 @@ QgsLineMaterial::QgsLineMaterial( const QString &vertexShaderUrl )
   addParameter( mParameterUseVertexColors );
   addParameter( mParameterWindowScale );
 
+  if ( mPart == LinePart::Join )
+  {
+    mParameterMiterLimit = new Qt3DRender::QParameter( "MITER_LIMIT", 0.75, this ); // previous implementation had this value and this always does a bevel, worth discussing/addressing in the future
+    addParameter( mParameterMiterLimit );
+  }
+
   setLineColor( QColor( 0, 255, 0 ) );
 
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( this );
-  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderUrl ) ) );
+  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( mPart == LinePart::Join ? u"qrc:/shaders/line_joins.vert"_s : u"qrc:/shaders/line_segments.vert"_s ) ) );
   shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/lines.frag"_s ) ) );
 
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
   renderPass->setShaderProgram( shaderProgram );
 
-  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace( renderPass );
-  cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
-  renderPass->addRenderState( cullFace );
+  // Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest( renderPass );
+  // depthTest->setDepthFunction( Qt3DRender::QDepthTest::LessOrEqual );
+  // renderPass->addRenderState( depthTest );
+
+  // Qt3DRender::QBlendEquationArguments *blendState = new Qt3DRender::QBlendEquationArguments;
+  // blendState->setSourceRgb( Qt3DRender::QBlendEquationArguments::SourceAlpha );
+  // blendState->setDestinationRgb( Qt3DRender::QBlendEquationArguments::OneMinusSourceAlpha );
+  // renderPass->addRenderState( blendState );
+
+  // Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation;
+  // blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
+  // renderPass->addRenderState( blendEquation );
 
   // without this filter the default forward renderer would not render this
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
@@ -111,13 +124,6 @@ void QgsLineMaterial::setLineWidth( float width )
 void QgsLineMaterial::setViewportSize( const QSizeF &viewportSize )
 {
   mParameterWindowScale->setValue( viewportSize );
-}
-
-QgsLineJoinMaterial::QgsLineJoinMaterial()
-  : QgsLineMaterial( u"qrc:/shaders/line_joins.vert"_s )
-  , mParameterMiterLimit( new Qt3DRender::QParameter( "MITER_LIMIT", -1, this ) ) // previous implementation had this value and this always does a bevel, worth discussing/addressing in the future
-{
-  addParameter( mParameterMiterLimit );
 }
 
 /// @endcond

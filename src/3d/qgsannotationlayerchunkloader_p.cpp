@@ -499,30 +499,21 @@ Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntit
       lineData.addLineString( line, 0, false );
     }
 
-    QgsLineMaterial *mat = new QgsLineMaterial;
-    mat->setLineColor( mFactory->mCalloutLineColor );
-    mat->setLineWidth( mFactory->mCalloutLineWidth );
-
-    Qt3DCore::QEntity *calloutEntity = new Qt3DCore::QEntity;
-    calloutEntity->setObjectName( parent->objectName() + "_CALLOUTS" );
-
-    // geometry renderer
-    Qt3DRender::QGeometryRenderer *calloutRenderer = new Qt3DRender::QGeometryRenderer;
-    calloutRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
-    calloutRenderer->setGeometry( lineData.createGeometry( calloutEntity ) );
-    calloutRenderer->setVertexCount( 6 );
-    calloutRenderer->setInstanceCount( lineData.pointsA.size() );
-
-    // make entity
-    calloutEntity->addComponent( calloutRenderer );
-    calloutEntity->addComponent( mat );
-
-    calloutEntity->setParent( entity );
-
-    if ( Qt3DCore::QEntity *calloutJoinEntity = lineData.createJoinEntity( mat ) )
+    if ( !lineData.pointsA.isEmpty() )
     {
-      calloutJoinEntity->setObjectName( parent->objectName() + "_CALLOUTS_JOINS" );
-      calloutJoinEntity->setParent( entity );
+      QgsLineMaterial *mat = new QgsLineMaterial;
+      mat->setLineColor( mFactory->mCalloutLineColor );
+      mat->setLineWidth( mFactory->mCalloutLineWidth );
+
+      Qt3DCore::QEntity *calloutEntity = lineData.createSegmentEntity( mat );
+      calloutEntity->setObjectName( parent->objectName() + "_CALLOUTS" );
+      calloutEntity->setParent( entity );
+
+      if ( Qt3DCore::QEntity *calloutJoinEntity = lineData.createJoinEntity( mat ) )
+      {
+        calloutJoinEntity->setObjectName( parent->objectName() + "_CALLOUTS_JOINS" );
+        calloutJoinEntity->setParent( entity );
+      }
     }
   }
 

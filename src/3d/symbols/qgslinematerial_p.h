@@ -47,18 +47,29 @@
  * parameters (to correctly clip lines).
  *
  * It is implemented with GPU instancing: a single quad is instanced once per line segment, with
- * the segment's endpoints (pointA/pointB) provided as per-instance vertex attributes. The vertex
- * shader expands the quad into a screen-space rectangle of the correct width around the segment.
+ * the segment's endpoints (pointA/pointB) and its neighboring points (pointPrev/pointNext)
+ * provided as per-instance vertex attributes. The vertex shader expands the quad into a
+ * screen-space rectangle of the correct width around the segment, pulling back the vertex
+ * shared with the neighboring segment so adjacent quads don't overlap under alpha blending.
  *
- * Line joins require a separate instanced draw.
- *
- * \see QgsLineJoinMaterial
+ * Line joins require a separate instanced draw, using the same class with LinePart::Join - it draws
+ * one instanced triangle "wedge" per interior line vertex, filling the gap/overlap that would
+ * otherwise appear between two independently-clipped segment quads drawn by LinePart::Segment at a bend.
  */
 class _3D_EXPORT QgsLineMaterial : public QgsMaterial
 {
     Q_OBJECT
   public:
-    QgsLineMaterial();
+    enum class LinePart
+    {
+      Segment, //!< Straight segments, with flat caps (see class docs)
+      Join,    //!< Joins (corners) between segments (see class docs)
+    };
+
+    explicit QgsLineMaterial( LinePart part = LinePart::Segment );
+
+    //! Returns whether this material renders line segments or their joins.
+    LinePart part() const { return mPart; }
 
     //! Must be an SRGB color
     void setLineColor( const QColor &color );
@@ -70,37 +81,19 @@ class _3D_EXPORT QgsLineMaterial : public QgsMaterial
     /**
      * Copies this material's line color, width, viewport size and useVertexColors settings to \a other.
      *
-     * Used to keep a QgsLineJoinMaterial's appearance in sync with the QgsLineMaterial.
+     * Used to keep a LinePart::Join material's appearance in sync with its LinePart::Segment counterpart.
      */
     void copyLineParametersTo( QgsLineMaterial *other ) const;
 
-  protected:
-    //! Constructs the material with a specific vertex shader, e.g. for QgsLineJoinMaterial's line_joins.vert
-    explicit QgsLineMaterial( const QString &vertexShaderUrl );
-
   private:
+    LinePart mPart;
+
     Qt3DRender::QParameter *mParameterThickness = nullptr;
     Qt3DRender::QParameter *mParameterLineColor = nullptr;
     Qt3DRender::QParameter *mParameterUseVertexColors = nullptr;
-
     Qt3DRender::QParameter *mParameterWindowScale = nullptr;
-};
 
-/**
- * \ingroup qgis_3d
- * \brief Implementation of material that renders the joins (corners) of 3D linestrings.
- *
- * Draws one instanced triangle "wedge" per interior line vertex, filling the gap/overlap that
- * would otherwise appear between two independently-clipped segment quads drawn by QgsLineMaterial
- * at a bend.
- */
-class _3D_EXPORT QgsLineJoinMaterial : public QgsLineMaterial
-{
-    Q_OBJECT
-  public:
-    QgsLineJoinMaterial();
-
-  private:
+    //! Only set for LinePart::Join
     Qt3DRender::QParameter *mParameterMiterLimit = nullptr;
 };
 

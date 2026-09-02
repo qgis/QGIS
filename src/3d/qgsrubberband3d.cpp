@@ -135,12 +135,12 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
   mJoinGeometryRenderer = new Qt3DRender::QGeometryRenderer;
   mJoinGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
   mJoinGeometryRenderer->setGeometry( mJoinGeometry );
-  mJoinGeometryRenderer->setVertexCount( 6 );
+  mJoinGeometryRenderer->setVertexCount( 12 );
   mJoinGeometryRenderer->setInstanceCount( 0 );
 
   mJoinEntity->addComponent( mJoinGeometryRenderer );
 
-  mJoinMaterial = new QgsLineJoinMaterial;
+  mJoinMaterial = new QgsLineMaterial( QgsLineMaterial::LinePart::Join );
   mJoinMaterial->setLineWidth( mWidth );
   mJoinMaterial->setLineColor( mColor );
 
