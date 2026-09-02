@@ -52,6 +52,12 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
 
   previewGeom.transform( canvas->mapSettings().layerTransform( mLayer ), Qgis::TransformDirection::Reverse );
 
+  const double previousReferenceScale = context.symbologyReferenceScale();
+  if ( const QgsFeatureRenderer *renderer = mLayer->renderer() )
+  {
+    context.setSymbologyReferenceScale( renderer->referenceScale() );
+  }
+
   QgsExpressionContextScope *featureScope = new QgsExpressionContextScope();
 
   QgsExpressionContextScopePopper scopePopper( context.expressionContext(), featureScope );
@@ -71,6 +77,7 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
   mapSettings.setFlag( Qgis::MapSettingsFlag::RecordProfile, false );
   QgsLabelingEngineSettings labelSettings = mapSettings.labelingEngineSettings();
   labelSettings.setFlag( Qgis::LabelingFlag::SingleCandidateOnly, true );
+  labelSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, true );
   labelSettings.setFlag( Qgis::LabelingFlag::IgnoreObstacles, true );
   labelSettings.setFlag( Qgis::LabelingFlag::DisableSearchTree, true );
   labelSettings.setFlag( Qgis::LabelingFlag::IgnoreOverlaps, true );
@@ -84,6 +91,7 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
   QSet<QString> attributeNames;
   if ( !provider->prepare( context, attributeNames ) )
   {
+    context.setSymbologyReferenceScale( previousReferenceScale );
     return;
   }
 
@@ -110,4 +118,5 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
 
   // running the engine calculates the placement and does the actual rendering:
   engine.run( context );
+  context.setSymbologyReferenceScale( previousReferenceScale );
 }
