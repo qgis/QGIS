@@ -2004,6 +2004,32 @@ class GUI_EXPORT QgsProcessingMultipleLayerWidgetWrapper : public QgsAbstractPro
     friend class TestProcessingGui;
 };
 
+/**
+ * Generic parameter definition widget for destination parameter types.
+ *
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsProcessingDestinationParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsProcessingDestinationParameterDefinitionWidget(
+      const QString &type,
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingDestinationParameter *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
+
+    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
+
+  private:
+    QString mType;
+    QgsProcessingLayerOutputDestinationWidget *mDestinationWidget = nullptr;
+    std::unique_ptr< QgsProcessingDestinationParameter > mExistingDestinationParameter;
+};
 
 class GUI_EXPORT QgsProcessingOutputWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
 {
@@ -2014,6 +2040,9 @@ class GUI_EXPORT QgsProcessingOutputWidgetWrapper : public QgsAbstractProcessing
 
     // QgsProcessingParameterWidgetWrapper interface
     QWidget *createWidget() override SIP_FACTORY;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
+    ) override;
 
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
