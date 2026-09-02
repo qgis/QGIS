@@ -467,10 +467,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject, public Q
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsModelComponentGraphicItem::Flags )
 
+#ifndef SIP_RUN
 /**
  * \ingroup gui
  * \brief A graphic item representing a model parameter (input) in the model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicItem
@@ -526,7 +527,6 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     QPicture mPicture;
 };
 
-#ifndef SIP_RUN
 /**
  * \ingroup gui
  * \brief A graphic item representing a child algorithm in the model designer.
