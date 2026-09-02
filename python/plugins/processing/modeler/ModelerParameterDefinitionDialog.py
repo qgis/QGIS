@@ -91,19 +91,17 @@ class ModelerParameterDefinitionWidget(QgsProcessingModelConfigWidget):
         self.nameTextBox = QLineEdit()
         self.verticalLayout.addWidget(self.nameTextBox)
 
-        if isinstance(existing_param, QgsProcessingParameterDefinition):
-            self.nameTextBox.setText(existing_param.description())
+        self.nameTextBox.setText(existing_param.description())
 
         self.nameTextBox.textChanged.connect(self.widgetChanged)
 
-        if isinstance(existing_param, QgsProcessingDestinationParameter):
-            self.verticalLayout.addWidget(QLabel(self.tr("Default value")))
-            self.defaultWidget = QgsProcessingLayerOutputDestinationWidget(
-                existing_param, defaultSelection=True
-            )
-            self.verticalLayout.addWidget(self.defaultWidget)
-            # TODO check
-            self.defaultWidget.destinationChanged.connect(self.widgetChanged)
+        self.verticalLayout.addWidget(QLabel(self.tr("Default value")))
+        self.defaultWidget = QgsProcessingLayerOutputDestinationWidget(
+            existing_param, defaultSelection=True
+        )
+        self.verticalLayout.addWidget(self.defaultWidget)
+        # TODO check
+        self.defaultWidget.destinationChanged.connect(self.widgetChanged)
 
         self.verticalLayout.addSpacing(20)
         self.requiredCheck = QCheckBox()
@@ -129,24 +127,19 @@ class ModelerParameterDefinitionWidget(QgsProcessingModelConfigWidget):
         self.advancedCheck.toggled.connect(self.widgetChanged)
 
         # If child algorithm output is mandatory, disable checkbox
-        if isinstance(existing_param, QgsProcessingDestinationParameter):
-            child = self.alg.childAlgorithms()[
-                existing_param.metadata()["_modelChildId"]
-            ]
-            model_output = child.modelOutput(
-                existing_param.metadata()["_modelChildOutputName"]
-            )
-            param_def = child.algorithm().parameterDefinition(
-                model_output.childOutputName()
-            )
-            if not (
-                param_def.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional
-            ):
-                self.requiredCheck.setEnabled(False)
-                self.requiredCheck.setChecked(True)
+        child = self.alg.childAlgorithms()[existing_param.metadata()["_modelChildId"]]
+        model_output = child.modelOutput(
+            existing_param.metadata()["_modelChildOutputName"]
+        )
+        param_def = child.algorithm().parameterDefinition(
+            model_output.childOutputName()
+        )
+        if not (param_def.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional):
+            self.requiredCheck.setEnabled(False)
+            self.requiredCheck.setChecked(True)
 
-            self.advancedCheck.setEnabled(False)
-            self.advancedCheck.setChecked(False)
+        self.advancedCheck.setEnabled(False)
+        self.advancedCheck.setChecked(False)
 
         self.verticalLayout.addStretch()
 
