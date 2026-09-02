@@ -20,7 +20,11 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+
+#define EXCLUDE_CPPCHECK
+#ifdef EXCLUDE_CPPCHECK
 #include "qgsprocessingalgorithm_p.h"
+#endif
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameters.h"
