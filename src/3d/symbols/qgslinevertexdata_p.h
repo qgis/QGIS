@@ -45,6 +45,7 @@ namespace Qt3DCore
 } // namespace Qt3DCore
 
 class QgsLineString;
+class QgsMaterial;
 class QgsLineMaterial;
 class QgsAbstractMaterialSettings;
 class QgsAbstractMaterial3DHandler;
@@ -54,13 +55,18 @@ class QgsAbstractMaterial3DHandler;
  * \brief Helper class to build the reusable per-instance quad geometry used to render
  * thick 3D lines with GPU instancing (one quad instanced per line segment).
  *
- * Line strings are stored as independent segments (pointA/pointB pairs).
+ * Line strings are stored as independent segments (pointA/pointB pairs). Each segment
+ * also carries the point before pointA and after pointB (pointPrev/pointNext) so the
+ * vertex shader can pull back the vertex that would otherwise overlap the neighboring
+ * segment, which matters when lines are rendered with alpha blending.
  */
 struct QgsLineVertexData
 {
-    QVector<QVector3D> pointsA;  //!< Start point of each line segment (one entry per instance)
-    QVector<QVector3D> pointsB;  //!< End point of each line segment (one entry per instance)
-    QVector<QVector3D> vertices; //!< Flat list of unique vertices added, e.g. for placing one marker per vertex
+    QVector<QVector3D> pointsA;    //!< Start point of each line segment (one entry per instance)
+    QVector<QVector3D> pointsB;    //!< End point of each line segment (one entry per instance)
+    QVector<QVector3D> pointsPrev; //!< Point before pointsA on the line strip
+    QVector<QVector3D> pointsNext; //!< Point after pointsB on the line strip
+    QVector<QVector3D> vertices;   //!< Flat list of unique vertices added, e.g. for placing one marker per vertex
 
     //! First/middle/next point of each interior line join
     QVector<QVector3D> joinPointA;
@@ -87,6 +93,8 @@ struct QgsLineVertexData
 
     QByteArray createPointABuffer() const;
     QByteArray createPointBBuffer() const;
+    QByteArray createPointPrevBuffer() const;
+    QByteArray createPointNextBuffer() const;
 
     QByteArray createJoinPointABuffer() const;
     QByteArray createJoinPointBBuffer() const;
@@ -94,6 +102,7 @@ struct QgsLineVertexData
 
     Qt3DCore::QGeometry *createGeometry( Qt3DCore::QNode *parent );
     Qt3DCore::QGeometry *createJoinGeometry( Qt3DCore::QNode *parent );
+    Qt3DCore::QEntity *createSegmentEntity( QgsMaterial *material, const QgsAbstractMaterialSettings *materialSettings = nullptr, const QgsAbstractMaterial3DHandler *materialHandler = nullptr );
     Qt3DCore::QEntity *createJoinEntity(
       const QgsLineMaterial *segmentMaterial, const QgsAbstractMaterialSettings *materialSettings = nullptr, const QgsAbstractMaterial3DHandler *materialHandler = nullptr
     );

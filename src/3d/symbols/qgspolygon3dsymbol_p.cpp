@@ -440,23 +440,13 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
     mat->setLineColor( mSymbol->edgeColor() );
     mat->setLineWidth( mSymbol->edgeWidth() );
 
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
+    Qt3DCore::QEntity *entity = outEdges.createSegmentEntity( mat );
     entity->setObjectName( parent->objectName() + "_EDGES" );
-
-    // geometry renderer
-    Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
-    renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
-    renderer->setGeometry( outEdges.createGeometry( entity ) );
-    renderer->setVertexCount( 6 );
-    renderer->setInstanceCount( outEdges.pointsA.size() );
 
     // add transform (our geometry has coordinates relative to mChunkOrigin)
     QgsGeoTransform *tr = new QgsGeoTransform;
     tr->setGeoTranslation( mChunkOrigin );
 
-    // make entity
-    entity->addComponent( renderer );
-    entity->addComponent( mat );
     entity->addComponent( tr );
     entity->setParent( parent );
 
