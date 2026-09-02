@@ -94,7 +94,7 @@ void QgsProcessingParameterWidgetContext::registerProcessingContextGenerator( Qg
   mProcessingContextGenerator = generator;
 }
 
-const QgsProcessingContextGenerator *QgsProcessingParameterWidgetContext::processingContextGenerator() const
+QgsProcessingContextGenerator *QgsProcessingParameterWidgetContext::processingContextGenerator() const
 {
   return mProcessingContextGenerator;
 }

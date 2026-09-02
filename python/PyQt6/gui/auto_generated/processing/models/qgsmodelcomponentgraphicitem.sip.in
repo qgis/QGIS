@@ -411,9 +411,19 @@ Ownership of ``parameter`` is transferred to the item.
 
     virtual bool canDeleteComponent();
 
+    virtual void editComponent();
+
+    virtual void editComment();
 
     virtual QColor linkColor( Qt::Edge edge, int index ) const;
 
+
+    QString applyEdit( std::unique_ptr< QgsProcessingParameterDefinition > newParameter, const QString &oldDescription, const QString &oldName, const QString &comment, const QColor &commentColor );
+%Docstring
+Applies edits to the item, using an updated ``parameter`` definition.
+
+.. versionadded:: 4.4
+%End
 
   protected:
     virtual QColor fillColor( State state ) const;

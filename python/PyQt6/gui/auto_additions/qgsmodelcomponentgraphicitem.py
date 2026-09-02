@@ -24,7 +24,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsModelParameterGraphicItem.__overridden_methods__ = ['contextMenuEvent', 'canDeleteComponent', 'linkColor', 'fillColor', 'strokeColor', 'textColor', 'iconPicture', 'linkPointCount', 'linkPointText', 'updateStoredComponentPosition', 'deleteComponent']
+    QgsModelParameterGraphicItem.__overridden_methods__ = ['contextMenuEvent', 'canDeleteComponent', 'editComponent', 'editComment', 'linkColor', 'fillColor', 'strokeColor', 'textColor', 'iconPicture', 'linkPointCount', 'linkPointText', 'updateStoredComponentPosition', 'deleteComponent']
     QgsModelParameterGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass
