@@ -28,7 +28,6 @@ from qgis.gui import (
 )
 
 from processing.modeler.ModelerParameterDefinitionDialog import (
-    ModelerParameterDefinitionDialog,
     ModelerParameterDefinitionWidget,
 )
 
@@ -58,9 +57,6 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
         if isinstance(component, QgsProcessingModelParameter):
             component_name = component.parameterName()
             existing_param = model.parameterDefinition(component_name)
-            if ModelerParameterDefinitionDialog.use_legacy_dialog(param=existing_param):
-                # boo, old api, not supported for the dock
-                return None
 
             comment = component.comment().description()
             comment_color = component.comment().color()

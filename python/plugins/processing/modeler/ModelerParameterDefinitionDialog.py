@@ -268,14 +268,6 @@ class ModelerParameterDefinitionWidget(QgsProcessingModelConfigWidget):
 
 
 class ModelerParameterDefinitionDialog(QDialog):
-    @staticmethod
-    def use_legacy_dialog(param=None, paramType=None):
-        if isinstance(param, QgsProcessingDestinationParameter):
-            return True
-
-        # yay, use new API!
-        return False
-
     def __init__(self, alg, paramType=None, param=None):
         QDialog.__init__(self)
 
