@@ -245,7 +245,7 @@
         <item>
          <spacer name="horizontalSpacer_6">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -257,11 +257,11 @@
         </item>
         <item>
          <widget class="QPushButton" name="buttonAddMetadataUrl">
-          <property name="text">
-           <string notr="true"/>
-          </property>
           <property name="toolTip">
            <string>Add new metadata URL</string>
+          </property>
+          <property name="text">
+           <string notr="true"/>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -271,11 +271,11 @@
         </item>
         <item>
          <widget class="QPushButton" name="buttonRemoveMetadataUrl">
-          <property name="text">
-           <string notr="true"/>
-          </property>
           <property name="toolTip">
            <string>Remove selected metadata URL</string>
+          </property>
+          <property name="text">
+           <string notr="true"/>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -361,6 +361,22 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mLayerShortNameLineEdit</tabstop>
+  <tabstop>mLayerTitleLineEdit</tabstop>
+  <tabstop>mLayerOptWfsTitleLineEdit</tabstop>
+  <tabstop>mLayerAbstractTextEdit</tabstop>
+  <tabstop>mLayerKeywordListLineEdit</tabstop>
+  <tabstop>mLayerDataUrlLineEdit</tabstop>
+  <tabstop>mLayerDataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerAttributionLineEdit</tabstop>
+  <tabstop>mLayerAttributionUrlLineEdit</tabstop>
+  <tabstop>buttonAddMetadataUrl</tabstop>
+  <tabstop>buttonRemoveMetadataUrl</tabstop>
+  <tabstop>tableViewMetadataUrl</tabstop>
+  <tabstop>mLayerLegendUrlLineEdit</tabstop>
+  <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
