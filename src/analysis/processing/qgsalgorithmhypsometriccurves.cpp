@@ -112,6 +112,8 @@ bool QgsHypsometricCurvesAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 
 QVariantMap QgsHypsometricCurvesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> source( parameterAsSource( parameters, u"BOUNDARY_LAYER"_s, context ) );
   if ( !source )
   {

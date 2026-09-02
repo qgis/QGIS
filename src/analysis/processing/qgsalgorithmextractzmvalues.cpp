@@ -109,6 +109,8 @@ bool QgsExtractZMValuesAlgorithmBase::prepareAlgorithm( const QVariantMap &param
 
 QgsFeatureList QgsExtractZMValuesAlgorithmBase::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   QgsAttributes attrs = f.attributes();
   attrs.reserve( attrs.count() + mSelectedStats.count() );

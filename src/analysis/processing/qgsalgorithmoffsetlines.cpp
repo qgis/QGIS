@@ -132,6 +132,8 @@ bool QgsOffsetLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QgsFeatureList QgsOffsetLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( feature.hasGeometry() )
   {
     QgsFeature f = feature;

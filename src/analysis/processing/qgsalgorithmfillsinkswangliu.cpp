@@ -201,6 +201,8 @@ typedef std::priority_queue< CFillSinks_WL_Node, nodeVector, CompareGreater > Pr
 
 QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString createOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
 
   const QString filledDemOutputFile = parameterAsOutputLayer( parameters, u"OUTPUT_FILLED_DEM"_s, context );

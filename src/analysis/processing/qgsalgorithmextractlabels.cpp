@@ -338,6 +338,8 @@ class ExtractLabelSink : public QgsLabelSink
 
 QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsRectangle extent = parameterAsExtent( parameters, u"EXTENT"_s, context );
   const double scale = parameterAsDouble( parameters, u"SCALE"_s, context );
   if ( qgsDoubleNear( scale, 0.0 ) )

@@ -303,6 +303,8 @@ class SetEditorWidgetForPhotoAttributePostProcessor : public QgsProcessingLayerP
 
 QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString folder = parameterAsFile( parameters, u"FOLDER"_s, context );
 
   const QDir importDir( folder );

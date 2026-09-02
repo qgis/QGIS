@@ -166,6 +166,8 @@ bool QgsExportToSpreadsheetAlgorithm::prepareAlgorithm( const QVariantMap &param
 
 QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const bool overwrite = parameterAsBoolean( parameters, u"OVERWRITE"_s, context );
   const QString outputPath = parameterAsString( parameters, u"OUTPUT"_s, context );
   if ( outputPath.isEmpty() )

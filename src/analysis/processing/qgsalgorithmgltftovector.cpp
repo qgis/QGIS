@@ -290,6 +290,8 @@ std::unique_ptr<QgsAbstractGeometry> extractLines(
 
 QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString path = parameterAsFile( parameters, u"INPUT"_s, context );
 
   const QgsCoordinateReferenceSystem destCrs( u"EPSG:4326"_s );
