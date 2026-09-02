@@ -20,122 +20,16 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.core import (
-    QgsProcessingModelAlgorithm,
     QgsProcessingModelOutput,
     QgsProcessingParameterDefinition,
 )
 from qgis.gui import (
     QgsModelOutputGraphicItem,
-    QgsModelParameterGraphicItem,
-    QgsProcessingContextGenerator,
-    QgsProcessingParameterDefinitionDialog,
 )
 
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
 )
-from processing.tools.dataobjects import createContext
-
-
-class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
-    """
-    IMPORTANT! This is intentionally a MINIMAL class, only containing code which HAS TO BE HERE
-    because it contains Python code for compatibility with deprecated methods ONLY.
-
-    Don't add anything here -- edit the c++ base class instead!
-    """
-
-    def __init__(self, element, model):
-        super().__init__(element, model, None)
-
-        self.processing_context = createContext()
-
-        class ContextGenerator(QgsProcessingContextGenerator):
-            def __init__(self, context):
-                super().__init__()
-                self.processing_context = context
-
-            def processingContext(self):
-                return self.processing_context
-
-        self.context_generator = ContextGenerator(self.processing_context)
-
-    def edit(self, edit_comment=False):
-        existing_param = self.model().parameterDefinition(
-            self.component().parameterName()
-        )
-        old_name = existing_param.name()
-        old_description = existing_param.description()
-
-        comment = self.component().comment().description()
-        comment_color = self.component().comment().color()
-        context = createContext()
-        widget_context = self.createWidgetContext()
-        dlg = QgsProcessingParameterDefinitionDialog(
-            type=existing_param.type(),
-            context=context,
-            widgetContext=widget_context,
-            definition=existing_param,
-            algorithm=self.model(),
-        )
-        dlg.setComments(comment)
-        dlg.setCommentColor(comment_color)
-        dlg.registerProcessingContextGenerator(self.context_generator)
-
-        if edit_comment:
-            dlg.switchToCommentTab()
-
-        if dlg.exec():
-            new_param = dlg.createParameter(existing_param.name())
-            comment = dlg.comments()
-            comment_color = dlg.commentColor()
-
-            safeName = QgsProcessingModelAlgorithm.safeName(new_param.description())
-            new_param.setName(safeName.lower())
-
-            self.apply_new_param(
-                new_param, old_description, old_name, comment, comment_color
-            )
-
-    def apply_new_param(
-        self, new_param, old_description, old_name, comment, comment_color
-    ):
-        undo_command_id = f"param:{self.component().parameterName()}"
-        self.aboutToChange.emit(
-            self.tr("Edit {}").format(new_param.description()), undo_command_id
-        )
-        self.model().removeModelParameter(self.component().parameterName())
-
-        if new_param.description() != old_description:
-            # only update name if user has changed the description -- we don't force this, as it may cause
-            # unwanted name updates which could potentially break the model's API
-            name = new_param.name()
-
-            base_name = name
-            i = 2
-            while self.model().parameterDefinition(name):
-                name = base_name + str(i)
-                i += 1
-
-            new_param.setName(name)
-
-            self.model().changeParameterName(old_name, new_param.name())
-
-        self.component().setParameterName(new_param.name())
-        self.component().setDescription(new_param.name())
-        self.component().comment().setDescription(comment)
-        self.component().comment().setColor(comment_color)
-        self.model().addModelParameter(new_param, self.component())
-        self.setLabel(new_param.description())
-        self.requestModelRepaint.emit()
-        self.changed.emit()
-        return new_param.name()
-
-    def editComponent(self):
-        self.edit()
-
-    def editComment(self):
-        self.edit(edit_comment=True)
 
 
 class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):

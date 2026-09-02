@@ -39,6 +39,7 @@ class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
 class QgsProcessingModelGroupBox;
 class QgsModelArrowItem;
+class QgsProcessingParameterDefinition;
 
 ///@cond NOT_STABLE
 
@@ -489,8 +490,16 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
 
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
-
+    void editComponent() override;
+    void editComment() override;
     QColor linkColor( Qt::Edge edge, int index ) const override;
+
+    /**
+     * Applies edits to the item, using an updated \a parameter definition.
+     *
+     * \since QGIS 4.4
+     */
+    QString applyEdit( std::unique_ptr< QgsProcessingParameterDefinition > newParameter, const QString &oldDescription, const QString &oldName, const QString &comment, const QColor &commentColor );
 
   protected:
     QColor fillColor( State state ) const override;
@@ -507,6 +516,13 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     void deleteComponent() override;
 
   private:
+    /**
+     * Opens the dialog to edit the parameter definition or comments.
+     *
+     * \param editComment set to TRUE to focus the comments tab
+     */
+    void edit( bool editComment = false );
+
     QPicture mPicture;
 };
 

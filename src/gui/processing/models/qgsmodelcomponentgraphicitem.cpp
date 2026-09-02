@@ -30,6 +30,7 @@
 #include "qgsprocessingmodelgroupbox.h"
 #include "qgsprocessingmodeloutput.h"
 #include "qgsprocessingmodelparameter.h"
+#include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingwidgetwrapper.h"
 
@@ -998,6 +999,49 @@ QColor QgsModelParameterGraphicItem::linkColor( Qt::Edge /* unused in this imple
   return FALLBACK_COLOR;
 }
 
+QString QgsModelParameterGraphicItem::applyEdit(
+  std::unique_ptr< QgsProcessingParameterDefinition > newParameter, const QString &oldDescription, const QString &oldName, const QString &comment, const QColor &commentColor
+)
+{
+  QgsProcessingModelParameter *paramComponent = dynamic_cast< QgsProcessingModelParameter * >( component() );
+  if ( !paramComponent )
+    return QString();
+
+  const QString undoCommandId = u"param:%1"_s.arg( paramComponent->parameterName() );
+  emit aboutToChange( tr( "Edit %1" ).arg( newParameter->description() ), undoCommandId );
+
+  model()->removeModelParameter( paramComponent->parameterName() );
+
+  if ( newParameter->description() != oldDescription )
+  {
+    // only update name if user has changed the description -- we don't force this, as it may cause
+    // unwanted name updates which could potentially break the model's API
+    QString name = newParameter->name();
+    const QString baseName = name;
+    int i = 2;
+    while ( model()->parameterDefinition( name ) )
+    {
+      name = u"%1%2"_s.arg( baseName ).arg( i );
+      i++;
+    }
+
+    newParameter->setName( name );
+    model()->changeParameterName( oldName, newParameter->name() );
+  }
+
+  paramComponent->setParameterName( newParameter->name() );
+  paramComponent->setDescription( newParameter->name() );
+  paramComponent->comment()->setDescription( comment );
+  paramComponent->comment()->setColor( commentColor );
+
+  model()->addModelParameter( newParameter.release(), *paramComponent );
+  setLabel( newParameter->description() );
+  emit requestModelRepaint();
+  emit changed();
+
+  return newParameter->name();
+}
+
 void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
 {
   if ( QgsProcessingModelParameter *param = dynamic_cast<QgsProcessingModelParameter *>( component() ) )
@@ -1025,6 +1069,16 @@ bool QgsModelParameterGraphicItem::canDeleteComponent()
     }
   }
   return false;
+}
+
+void QgsModelParameterGraphicItem::editComponent()
+{
+  edit( false );
+}
+
+void QgsModelParameterGraphicItem::editComment()
+{
+  edit( true );
 }
 
 void QgsModelParameterGraphicItem::deleteComponent()
@@ -1059,6 +1113,52 @@ void QgsModelParameterGraphicItem::deleteComponent()
       model()->removeModelParameter( param->parameterName() );
       emit changed();
       emit requestModelRepaint();
+    }
+  }
+}
+
+void QgsModelParameterGraphicItem::edit( bool editComment )
+{
+  const QgsProcessingModelParameter *paramComponent = dynamic_cast< const QgsProcessingModelParameter * >( component() );
+  if ( !paramComponent )
+    return;
+
+  const QgsProcessingParameterDefinition *existingParam = model()->parameterDefinition( paramComponent->parameterName() );
+  if ( !existingParam )
+    return;
+
+  const QString oldName = existingParam->name();
+  const QString oldDescription = existingParam->description();
+
+  const QString comment = paramComponent->comment()->description();
+  const QColor commentColor = paramComponent->comment()->color();
+
+  QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+  QgsProcessingContext *context = widgetContext.processingContextGenerator()->processingContext();
+
+  QgsProcessingParameterDefinitionDialog dlg( existingParam->type(), *context, widgetContext, existingParam, model(), this->scene()->views().at( 0 ) );
+
+  dlg.setComments( comment );
+  dlg.setCommentColor( commentColor );
+  if ( widgetContext.processingContextGenerator() )
+  {
+    dlg.registerProcessingContextGenerator( widgetContext.processingContextGenerator() );
+  }
+
+  if ( editComment )
+  {
+    dlg.switchToCommentTab();
+  }
+
+  if ( dlg.exec() )
+  {
+    std::unique_ptr< QgsProcessingParameterDefinition > newParam( dlg.createParameter( existingParam->name() ) );
+    if ( newParam )
+    {
+      const QString safeName = QgsProcessingModelAlgorithm::safeName( newParam->description() ).toLower();
+      newParam->setName( safeName );
+
+      applyEdit( std::move( newParam ), oldDescription, oldName, dlg.comments(), dlg.commentColor() );
     }
   }
 }
@@ -1109,7 +1209,7 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
   QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
   connect( editAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::editComponent );
   QAction *editCommentAction = popupmenu->addAction( component()->comment()->description().isEmpty() ? QObject::tr( "Add Comment…" ) : QObject::tr( "Edit Comment…" ) );
-  connect( editCommentAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::editComment );
+  connect( editCommentAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::editComment );
   popupmenu->addSeparator();
 
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
