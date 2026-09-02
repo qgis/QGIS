@@ -32,6 +32,8 @@
 
 using namespace Qt::StringLiterals;
 
+#define EXCLUDE_CPPCHECK
+#ifdef EXCLUDE_CPPCHECK
 
 #ifndef CMAKE_SOURCE_DIR
 #define CMAKE_SOURCE_DIR ""
@@ -74,7 +76,7 @@ namespace QgsProcessingAlgorithmPrivate
 } //namespace QgsProcessingAlgorithmPrivate
 
 #define QGS_MARK_ALGORITHM_SOURCE ( void ) QgsProcessingAlgorithmPrivate::QgsSourceLocationRegistrar<std::remove_pointer_t<decltype( this )>, __LINE__, __FILE__>::registered;
-
+#endif
 ///@endcond PRIVATE
 
 #endif // QGSPROCESSINGALGORITHMP_H

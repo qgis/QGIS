@@ -42,12 +42,14 @@
 
 using namespace Qt::StringLiterals;
 
-
+#define EXCLUDE_CPPCHECK
+#ifdef EXCLUDE_CPPCHECK
 std::unordered_map<std::type_index, QString> &algorithmSourceRegistry()
 {
   static std::unordered_map<std::type_index, QString> registry;
   return registry;
 }
+#endif
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -105,6 +107,7 @@ QList<QgsAcademicReference> QgsProcessingAlgorithm::academicReferences() const
 
 QString QgsProcessingAlgorithm::implementationSourceUri() const
 {
+#ifdef EXCLUDE_CPPCHECK
   const auto &registry = algorithmSourceRegistry();
   auto it = registry.find( std::type_index( typeid( *this ) ) );
   if ( it == registry.end() )
@@ -136,6 +139,7 @@ QString QgsProcessingAlgorithm::implementationSourceUri() const
   // construct GitHub blob URL pointing to the source
   // TODO: not be GitHub ;)
   return u"https://github.com/qgis/QGIS/blob/%1/%2#L%3"_s.arg( branch, filePath, lineNumber );
+#endif
 }
 
 QIcon QgsProcessingAlgorithm::icon() const
