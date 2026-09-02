@@ -25,6 +25,10 @@
 
 using namespace Qt::StringLiterals;
 
+// this file breaks cppcheck ast parsing
+#define EXCLUDE_CPPCHECK
+#ifdef EXCLUDE_CPPCHECK
+
 ///@cond PRIVATE
 
 
@@ -867,5 +871,7 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack( QgsPro
   }
   mOutputRasterDataProvider->setEditable( false );
 }
+
+#endif
 
 ///@endcond
