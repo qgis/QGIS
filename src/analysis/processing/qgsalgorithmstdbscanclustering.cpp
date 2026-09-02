@@ -17,6 +17,8 @@
 
 #include "qgsalgorithmstdbscanclustering.h"
 
+#include "qgsacademicreference.h"
+
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -82,14 +84,27 @@ void QgsStDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsStDbscanClusteringAlgorithm::shortHelpString() const
 {
-  return QObject::tr(
-    "Clusters point features based on a 2D implementation of spatiotemporal density-based clustering of applications with noise (ST-DBSCAN) algorithm.\n\n"
-    "For more details, please see the following papers:\n"
-    "* Ester, M., H. P. Kriegel, J. Sander, and X. Xu, \"A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise\". In: Proceedings of the 2nd International "
-    "Conference on Knowledge Discovery and Data Mining, Portland, OR, AAAI Press, pp. 226-231. 1996\n"
-    "* Birant, Derya, and Alp Kut. \"ST-DBSCAN: An algorithm for clustering spatial–temporal data.\" Data & Knowledge Engineering 60.1 (2007): 208-221.\n"
-    "* Peca, I., Fuchs, G., Vrotsou, K., Andrienko, N. V., & Andrienko, G. L. (2012). Scalable Cluster Analysis of Spatial Events. In EuroVA@ EuroVis."
+  return QObject::tr( "Clusters point features based on a 2D implementation of spatiotemporal density-based clustering of applications with noise (ST-DBSCAN) algorithm." );
+}
+
+QList<QgsAcademicReference> QgsStDbscanClusteringAlgorithm::academicReferences() const
+{
+  const QgsAcademicReference esterReference = QgsAcademicReference::createPresentation(
+    { u"Ester, M."_s, u"Kriegel, H. P."_s, u"Sander, J."_s, u"Xu, X."_s },
+    1996,
+    u"A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise"_s,
+    u"Proceedings of the 2nd International Conference on Knowledge Discovery and Data Mining, Portland, OR"_s,
+    u"AAAI Press"_s,
+    u"226-231"_s
   );
+
+  const QgsAcademicReference birantReference = QgsAcademicReference::
+    createJournalArticle( { u"Birant, D."_s, u"Kut, A."_s }, 2007, u"ST-DBSCAN: An algorithm for clustering spatial–temporal data"_s, u"Data & Knowledge Engineering"_s, u"60"_s, u"1"_s, u"208-221"_s );
+
+  const QgsAcademicReference pecaReference = QgsAcademicReference::
+    createPresentation( { u"Peca, I."_s, u"Fuchs, G."_s, u"Vrotsou, K."_s, u"Andrienko, N. V."_s, u"Andrienko, G. L."_s }, 2012, u"Scalable Cluster Analysis of Spatial Events"_s, u"EuroVA@ EuroVis"_s );
+
+  return { esterReference, birantReference, pecaReference };
 }
 
 QgsStDbscanClusteringAlgorithm *QgsStDbscanClusteringAlgorithm::createInstance() const
