@@ -944,7 +944,7 @@ QHash<const QgsMapLayer *, QStringList> QgsWmsRenderContext::acceptableLayers( c
     auto firstFoundInacceptableLayer = std::find_if( requestedLayerNames.cbegin(), requestedLayerNames.cend(), [&]( const QString &layerName ) {
       //return when the requested layer has not been found as a acceptable layer
       return !std::any_of( acceptableLayersAndRequestNames.cbegin(), acceptableLayersAndRequestNames.cend(), [&]( const QStringList &requestedNames ) {
-        return requestedNames.contains( layerName ) || isExternalLayer( layerName );
+        return requestedNames.contains( layerName ) || layerName.startsWith( "EXTERNAL_WMS:", Qt::CaseInsensitive );
       } );
     } );
     if ( firstFoundInacceptableLayer != requestedLayerNames.cend() )
