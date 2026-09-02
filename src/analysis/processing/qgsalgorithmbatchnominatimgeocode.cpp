@@ -18,10 +18,12 @@
 #include "qgsalgorithmbatchnominatimgeocode.h"
 
 #include "qgsalgorithmbatchgeocode.h"
-#include "qgsgeocoder.h"
-#include "qgsgeocodercontext.h"
-#include "qgsgeocoderresult.h"
-#include "qgsvectorlayer.h"
+
+#include <QString>
+
+// this file breaks cppcheck ast parsing
+#define EXCLUDE_CPPCHECK
+#ifdef EXCLUDE_CPPCHECK
 
 #include <QString>
 
@@ -86,3 +88,5 @@ bool QgsBatchNominatimGeocodeAlgorithm::prepareAlgorithm( const QVariantMap &par
 }
 
 ///@endcond
+
+#endif
