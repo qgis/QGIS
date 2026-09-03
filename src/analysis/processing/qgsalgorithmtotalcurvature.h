@@ -42,6 +42,7 @@ class QgsTotalCurvatureAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    QList<QgsAcademicReference> academicReferences() const override;
     QgsTotalCurvatureAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

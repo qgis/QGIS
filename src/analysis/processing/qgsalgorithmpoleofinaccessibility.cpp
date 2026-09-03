@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmpoleofinaccessibility.h"
 
+#include "qgsacademicreference.h"
 #include "qgsapplication.h"
 
 #include <QString>
@@ -72,6 +73,13 @@ QString QgsPoleOfInaccessibilityAlgorithm::shortDescription() const
     "Creates a point layer with features representing the most "
     "distant internal point from the boundary of the surface for a polygon layer."
   );
+}
+
+QList<QgsAcademicReference> QgsPoleOfInaccessibilityAlgorithm::academicReferences() const
+{
+  const QgsAcademicReference agafonkinReference = QgsAcademicReference::
+    createWebPage( { u"Agafonkin, V."_s }, 2016, u"A new algorithm for finding a visual center of a polygon"_s, u"https://medium.com/mapbox/a-new-algorithm-for-finding-a-visual-center-of-a-polygon-7c77e6492fbc"_s );
+  return { agafonkinReference };
 }
 
 QString QgsPoleOfInaccessibilityAlgorithm::svgIconPath() const
