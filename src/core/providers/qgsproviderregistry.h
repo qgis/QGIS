@@ -90,7 +90,7 @@ class CORE_EXPORT QgsProviderRegistry
     };
 
     //! Means of accessing canonical single instance
-    static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
+    static QgsProviderRegistry *instance( const QString &pluginPath = QString() ) SIP_DISALLOWNONE;
 
     ~QgsProviderRegistry();
 

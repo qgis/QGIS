@@ -159,7 +159,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     // *INDENT-ON*
 
     //! Returns the QgsProject singleton instance
-    static QgsProject *instance();
+    static QgsProject *instance() SIP_DISALLOWNONE;
 
     /**
      * Set the current project singleton instance to \a project

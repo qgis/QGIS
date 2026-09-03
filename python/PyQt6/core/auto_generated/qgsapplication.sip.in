@@ -739,26 +739,26 @@ application settings.
    Use :py:func:`QgsSettings.treeRoot()` instead.
 %End
 
-  static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
+  static QgsColorSchemeRegistry *colorSchemeRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's color scheme registry, used for managing color
 schemes.
 %End
 
-  static QgsPaintEffectRegistry *paintEffectRegistry() /KeepReference/;
+  static QgsPaintEffectRegistry *paintEffectRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's paint effect registry, used for managing paint
 effects.
 %End
 
-  static QgsRendererRegistry *rendererRegistry() /KeepReference/;
+  static QgsRendererRegistry *rendererRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's renderer registry, used for managing vector
 layer renderers.
 %End
 
 
-  static QgsPointCloudRendererRegistry *pointCloudRendererRegistry() /KeepReference/;
+  static QgsPointCloudRendererRegistry *pointCloudRendererRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's point cloud renderer registry, used for
 managing point cloud layer 2D renderers.
@@ -766,7 +766,7 @@ managing point cloud layer 2D renderers.
 .. versionadded:: 3.18
 %End
 
-  static QgsTiledSceneRendererRegistry *tiledSceneRendererRegistry() /KeepReference/;
+  static QgsTiledSceneRendererRegistry *tiledSceneRendererRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's tiled scene renderer registry, used for
 managing tiled scene layer 2D renderers.
@@ -774,13 +774,13 @@ managing tiled scene layer 2D renderers.
 .. versionadded:: 3.34
 %End
 
-  static QgsDataItemProviderRegistry *dataItemProviderRegistry() /KeepReference/;
+  static QgsDataItemProviderRegistry *dataItemProviderRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's data item provider registry, which keeps a
 list of data item providers that may add items to the browser tree.
 %End
 
-  static QgsCoordinateReferenceSystemRegistry *coordinateReferenceSystemRegistry() /KeepReference/;
+  static QgsCoordinateReferenceSystemRegistry *coordinateReferenceSystemRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's coordinate reference system (CRS) registry,
 which handles known CRS definitions (including user-defined CRSes).
@@ -788,7 +788,7 @@ which handles known CRS definitions (including user-defined CRSes).
 .. versionadded:: 3.18
 %End
 
-  static QgsSvgCache *svgCache();
+  static QgsSvgCache *svgCache() /DisallowNone/;
 %Docstring
 Returns the application's SVG cache, used for caching SVG images and
 handling parameter replacement within SVG files.
@@ -796,7 +796,7 @@ handling parameter replacement within SVG files.
 .. seealso:: :py:func:`imageCache`
 %End
 
-  static QgsImageCache *imageCache();
+  static QgsImageCache *imageCache() /DisallowNone/;
 %Docstring
 Returns the application's image cache, used for caching resampled
 versions of raster images.
@@ -806,7 +806,7 @@ versions of raster images.
 .. versionadded:: 3.6
 %End
 
-  static QgsSourceCache *sourceCache();
+  static QgsSourceCache *sourceCache() /DisallowNone/;
 %Docstring
 Returns the application's source cache, used for caching embedded and
 remote source strings as local files
@@ -814,7 +814,7 @@ remote source strings as local files
 .. versionadded:: 3.16
 %End
 
-  static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() /KeepReference/;
+  static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's network content registry used for fetching
 temporary files during QGIS session
@@ -822,7 +822,7 @@ temporary files during QGIS session
 .. versionadded:: 3.2
 %End
 
-  static QgsValidityCheckRegistry *validityCheckRegistry() /KeepReference/;
+  static QgsValidityCheckRegistry *validityCheckRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's validity check registry, used for managing
 validity checks.
@@ -830,13 +830,13 @@ validity checks.
 .. versionadded:: 3.6
 %End
 
-  static QgsSymbolLayerRegistry *symbolLayerRegistry() /KeepReference/;
+  static QgsSymbolLayerRegistry *symbolLayerRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's symbol layer registry, used for managing
 symbol layers.
 %End
 
-  static QgsCalloutRegistry *calloutRegistry() /KeepReference/;
+  static QgsCalloutRegistry *calloutRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's callout registry, used for managing callout
 types.
@@ -844,13 +844,13 @@ types.
 .. versionadded:: 3.10
 %End
 
-  static QgsLayoutItemRegistry *layoutItemRegistry() /KeepReference/;
+  static QgsLayoutItemRegistry *layoutItemRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's layout item registry, used for layout item
 types.
 %End
 
-  static QgsAnnotationItemRegistry *annotationItemRegistry() /KeepReference/;
+  static QgsAnnotationItemRegistry *annotationItemRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's annotation item registry, used for annotation
 item types.
@@ -858,13 +858,13 @@ item types.
 .. versionadded:: 3.16
 %End
 
-  static QgsGpsConnectionRegistry *gpsConnectionRegistry() /KeepReference/;
+  static QgsGpsConnectionRegistry *gpsConnectionRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's GPS connection registry, used for managing GPS
 connections.
 %End
 
-  static QgsBabelFormatRegistry *gpsBabelFormatRegistry() /KeepReference/;
+  static QgsBabelFormatRegistry *gpsBabelFormatRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's GPSBabel format registry, used for managing
 GPSBabel formats.
@@ -872,13 +872,13 @@ GPSBabel formats.
 .. versionadded:: 3.22
 %End
 
-  static QgsPluginLayerRegistry *pluginLayerRegistry() /KeepReference/;
+  static QgsPluginLayerRegistry *pluginLayerRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's plugin layer registry, used for managing
 plugin layer types.
 %End
 
-  static QgsClassificationMethodRegistry *classificationMethodRegistry() /KeepReference/;
+  static QgsClassificationMethodRegistry *classificationMethodRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's classification methods registry, used in
 graduated renderer
@@ -886,7 +886,7 @@ graduated renderer
 .. versionadded:: 3.10
 %End
 
-  static QgsBookmarkManager *bookmarkManager();
+  static QgsBookmarkManager *bookmarkManager() /DisallowNone/;
 %Docstring
 Returns the application's bookmark manager, used for storing
 installation-wide bookmarks.
@@ -895,21 +895,21 @@ installation-wide bookmarks.
 %End
 
 
-  static QgsRecentStyleHandler *recentStyleHandler() /KeepReference/;
+  static QgsRecentStyleHandler *recentStyleHandler() /DisallowNone,KeepReference/;
 %Docstring
 Returns the handler for recently used style items.
 
 .. versionadded:: 3.22
 %End
 
-  static QgsDatabaseQueryLog *databaseQueryLog() /KeepReference/;
+  static QgsDatabaseQueryLog *databaseQueryLog() /DisallowNone,KeepReference/;
 %Docstring
 Returns the database query log.
 
 .. versionadded:: 3.24
 %End
 
-  static QgsStyleModel *defaultStyleModel();
+  static QgsStyleModel *defaultStyleModel() /DisallowNone/;
 %Docstring
 Returns a shared :py:class:`QgsStyleModel` containing the default style
 library (see :py:func:`QgsStyle.defaultStyle()`).
@@ -920,7 +920,7 @@ Using this shared model instead of creating a new
 .. versionadded:: 3.10
 %End
 
-  static QgsFontManager *fontManager() /KeepReference/;
+  static QgsFontManager *fontManager() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application font manager, which manages available fonts and
 font installation for the QGIS instance.
@@ -928,14 +928,14 @@ font installation for the QGIS instance.
 .. versionadded:: 3.28
 %End
 
-  static QgsSensorRegistry *sensorRegistry() /KeepReference/;
+  static QgsSensorRegistry *sensorRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's sensor registry, used for sensor types.
 
 .. versionadded:: 3.32
 %End
 
-  static QgsPlotRegistry *plotRegistry() /KeepReference/;
+  static QgsPlotRegistry *plotRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's plot registry, used for plot types.
 
@@ -965,20 +965,20 @@ Returns the application's authentication configuration storage registry
 .. versionadded:: 3.40
 %End
 
-  static QgsProcessingRegistry *processingRegistry();
+  static QgsProcessingRegistry *processingRegistry() /DisallowNone/;
 %Docstring
 Returns the application's processing registry, used for managing
 processing providers, algorithms, and various parameters and outputs.
 %End
 
-  static QgsPageSizeRegistry *pageSizeRegistry() /KeepReference/;
+  static QgsPageSizeRegistry *pageSizeRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's page size registry, used for managing layout
 page sizes.
 %End
 
 
-  static QgsApplicationThemeRegistry *applicationThemeRegistry() /KeepReference/;
+  static QgsApplicationThemeRegistry *applicationThemeRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the application's theme registry, used for styling the user
 interface.
@@ -986,12 +986,12 @@ interface.
 .. versionadded:: 4.0
 %End
 
-  static QgsActionScopeRegistry *actionScopeRegistry() /KeepReference/;
+  static QgsActionScopeRegistry *actionScopeRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the action scope registry.
 %End
 
-  static QgsConnectionRegistry *connectionRegistry();
+  static QgsConnectionRegistry *connectionRegistry() /DisallowNone/;
 %Docstring
 Returns the application's connection registry, used for managing saved
 data provider connections.
@@ -999,36 +999,36 @@ data provider connections.
 .. versionadded:: 3.14
 %End
 
-  static QgsRuntimeProfiler *profiler();
+  static QgsRuntimeProfiler *profiler() /DisallowNone/;
 %Docstring
 Returns the application runtime profiler.
 %End
 
-  static QgsNumericFormatRegistry *numericFormatRegistry() /KeepReference/;
+  static QgsNumericFormatRegistry *numericFormatRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Gets the registry of available numeric formats.
 
 .. versionadded:: 3.12
 %End
 
-  static QgsFieldFormatterRegistry *fieldFormatterRegistry() /KeepReference/;
+  static QgsFieldFormatterRegistry *fieldFormatterRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Gets the registry of available field formatters.
 %End
 
-  static Qgs3DRendererRegistry *renderer3DRegistry() /KeepReference/;
+  static Qgs3DRendererRegistry *renderer3DRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns registry of available 3D renderers.
 %End
 
-  static Qgs3DSymbolRegistry *symbol3DRegistry() /KeepReference/;
+  static Qgs3DSymbolRegistry *symbol3DRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns registry of available 3D symbols.
 
 .. versionadded:: 3.16
 %End
 
-  static QgsMaterialRegistry *materialRegistry() /KeepReference/;
+  static QgsMaterialRegistry *materialRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns registry of available 3D materials.
 
@@ -1040,56 +1040,56 @@ Returns registry of available 3D materials.
 .. versionadded:: 4.2
 %End
 
-  static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() /KeepReference/;
+  static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Gets the registry of available scalebar renderers.
 
 .. versionadded:: 3.14
 %End
 
-  static QgsLabelingEngineRuleRegistry *labelingEngineRuleRegistry() /KeepReference/;
+  static QgsLabelingEngineRuleRegistry *labelingEngineRuleRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Gets the registry of available labeling engine rules.
 
 .. versionadded:: 3.40
 %End
 
-  static QgsSymbolConverterRegistry *symbolConverterRegistry() /KeepReference/;
+  static QgsSymbolConverterRegistry *symbolConverterRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Gets the registry of available symbol converters.
 
 .. versionadded:: 4.2
 %End
 
-  static QgsProjectStorageRegistry *projectStorageRegistry() /KeepReference/;
+  static QgsProjectStorageRegistry *projectStorageRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns registry of available project storage implementations.
 
 .. versionadded:: 3.2
 %End
 
-  static QgsLayerMetadataProviderRegistry *layerMetadataProviderRegistry() /KeepReference/;
+  static QgsLayerMetadataProviderRegistry *layerMetadataProviderRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns registry of available layer metadata provider implementations.
 
 .. versionadded:: 3.28
 %End
 
-  static QgsExternalStorageRegistry *externalStorageRegistry() /KeepReference/;
+  static QgsExternalStorageRegistry *externalStorageRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns registry of available external storage implementations.
 
 .. versionadded:: 3.20
 %End
 
-  static QgsProfileSourceRegistry *profileSourceRegistry() /KeepReference/;
+  static QgsProfileSourceRegistry *profileSourceRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns registry of available profile source implementations.
 
 .. versionadded:: 3.38
 %End
 
-  static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /KeepReference/;
+  static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the registry of data repositories These are used as paths for
 basemaps, logos, etc. which can be referenced differently across work
