@@ -101,6 +101,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setCanvasName( const QString &name );
     QString canvasName() const { return mCanvasName; }
 
+    void updateUndoRedoActions( bool canUndo, bool canRedo );
+
     void showAnimationWidget() { mActionAnim->trigger(); }
 
     void updateLayerRelatedActions( QgsMapLayer *layer );
