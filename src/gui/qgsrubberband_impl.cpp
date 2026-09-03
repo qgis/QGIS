@@ -16,6 +16,7 @@
 #include "qgsrubberband_impl.h"
 
 #include "qgsexpressioncontextutils.h"
+#include "qgslabelingresults.h"
 #include "qgsmapcanvas.h"
 #include "qgstextrenderer.h"
 #include "qgsvectorlayer.h"
@@ -118,5 +119,33 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
 
   // running the engine calculates the placement and does the actual rendering:
   engine.run( context );
+
+  if ( QgsLabelingResults *results = engine.results() )
+  {
+    mBoundingRect = QRectF();
+    const QList<QgsLabelPosition> labelPosList = results->allLabels();
+    const QgsMapToPixel *m2p = canvas->getCoordinateTransform();
+    const QPointF itemPos = rubberBand->pos();
+
+    for ( const QgsLabelPosition &labelPos : labelPosList )
+    {
+      for ( int i = 0; i < 4; ++i )
+      {
+        // map point -> canvas pixel -> local item coordinates
+        const QPointF canvasPt = m2p->transform( labelPos.cornerPoints[i] ).toQPointF();
+        const QPointF localPt = canvasPt - itemPos;
+        if ( mBoundingRect.isEmpty() )
+          mBoundingRect = QRectF( localPt, QSizeF( 1, 1 ) );
+        else
+          mBoundingRect = mBoundingRect.united( QRectF( localPt, QSizeF( 1, 1 ) ) );
+      }
+    }
+  }
+
   context.setSymbologyReferenceScale( previousReferenceScale );
+}
+
+QRectF QgsVectorLayerLabelRubberBandPreview::boundingRect() const
+{
+  return mBoundingRect;
 }
