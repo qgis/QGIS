@@ -1,3 +1,4 @@
+
 /***************************************************************************
                          qgsalgorithmrasterfeaturepreservingsmoothing.cpp
                          ---------------------
@@ -88,7 +89,10 @@ QList<QgsAcademicReference> QgsRasterFeaturePreservingSmoothingAlgorithm::academ
   QgsAcademicReference lindsayReference
     = QgsAcademicReference::createJournalArticle( { u"Lindsay, J. et al."_s }, 2019, u"LiDAR DEM Smoothing and the Preservation of Drainage Features"_s, u"Remote Sensing"_s, u"11"_s, u"16"_s );
   lindsayReference.setUrl( u"https://doi.org/10.3390/rs11161926"_s );
-  return { lindsayReference };
+  QgsAcademicReference hornReference
+    = QgsAcademicReference::createJournalArticle( { u"Horn, B. K. P."_s }, 1981, u"Hill shading and the reflectance map"_s, u"Proceedings of the IEEE"_s, u"69"_s, u"1"_s, u"14-47"_s );
+  hornReference.setUrl( u"https://doi.org/10.1109/PROC.1981.11918"_s );
+  return { lindsayReference, hornReference };
 }
 
 QString QgsRasterFeaturePreservingSmoothingAlgorithm::shortDescription() const
