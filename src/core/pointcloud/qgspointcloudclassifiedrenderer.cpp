@@ -88,7 +88,7 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
 
   const bool renderElevation = context.renderContext().elevationMap();
   const QgsDoubleRange zRange = context.renderContext().zRange();
-  const bool considerZ = !zRange.isInfinite() || renderElevation;
+  const bool considerZ = !zRange.isInfinite() || renderElevation || context.horizonFilterEnabled();
 
   int rendered = 0;
   double x = 0;
@@ -150,6 +150,9 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
           continue;
         }
       }
+
+      if ( context.isBelowHorizon( x, y, z ) )
+        continue;
 
       if ( renderAsTriangles() )
       {
