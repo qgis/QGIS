@@ -298,7 +298,7 @@ from the source rectangle are within the returned rectangle.
 :raises QgsCsException: if the transformation fails
 %End
 
-    void transformInPlace( double &x, double &y, double &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    void transformInPlace( double &x /In,Out/, double &y /In,Out/, double &z /In,Out/, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 %Docstring
 Transforms an array of x, y and z double coordinates in place, from the
 source CRS to the destination CRS. If the direction is ForwardTransform
