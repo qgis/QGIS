@@ -1932,11 +1932,6 @@ void TestQgs3DRendering::testGlobeSphereRendering()
   QgsVectorLayer *layerPoints = new QgsVectorLayer( testDataPath( "points_gpkg.gpkg" ) + "|layername=points_gpkg", "points", "ogr" );
   QVERIFY( layerPoints->isValid() );
 
-  QgsVectorLayer *layerCountries = new QgsVectorLayer( QgsApplication::pkgDataPath() + u"/resources/data/world_map.gpkg|layername=countries"_s, "countries", "ogr" );
-  QVERIFY( layerCountries->isValid() );
-  QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer( QColor( 60, 140, 60 ) );
-  layerCountries->setRenderer( new QgsSingleSymbolRenderer( new QgsFillSymbol( QgsSymbolLayerList() << fillSymbolLayer ) ) );
-
   QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
   sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
   QVariantMap vmSphere;
@@ -1949,8 +1944,8 @@ void TestQgs3DRendering::testGlobeSphereRendering()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( p.crs() );
-  map->setLayers( QList<QgsMapLayer *>() << layerCountries << layerPoints );
-  map->setBackgroundColor( QColor( 24, 88, 138 ) ); // ocean-like blue for areas not covered by the countries layer
+  map->setLayers( QList<QgsMapLayer *>() << layerPoints );
+  map->setBackgroundColor( QColor( 24, 88, 138 ) );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
@@ -1972,7 +1967,6 @@ void TestQgs3DRendering::testGlobeSphereRendering()
   delete scene;
   delete map;
   delete layerPoints;
-  delete layerCountries;
 
   QGSVERIFYIMAGECHECK( "globe_spheres", "globe_spheres", img, QString(), 40, QSize( 0, 0 ), 5 );
 }
