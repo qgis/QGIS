@@ -277,8 +277,8 @@ void TestQgsArcGisRestUtils::testParseMarkerSymbol()
   QCOMPARE( markerLayer->shape(), Qgis::MarkerShape::Square );
   QCOMPARE( markerLayer->size(), 8.0 );
   QCOMPARE( markerLayer->sizeUnit(), Qgis::RenderUnit::Points );
-  QCOMPARE( markerLayer->angle(), -10.0 ); // opposite direction to esri spec!
-  QCOMPARE( markerLayer->offset(), QPointF( 7, 17 ) );
+  QCOMPARE( markerLayer->angle(), -10.0 );              // opposite direction to esri spec!
+  QCOMPARE( markerLayer->offset(), QPointF( 7, -17 ) ); // y offset is opposite direction to esri spec!
   QCOMPARE( markerLayer->offsetUnit(), Qgis::RenderUnit::Points );
   QCOMPARE( markerLayer->strokeColor(), QColor( 152, 230, 17, 176 ) );
   QCOMPARE( markerLayer->strokeWidth(), 5.0 );
@@ -422,8 +422,8 @@ void TestQgsArcGisRestUtils::testPictureMarkerSymbol()
   QCOMPARE( markerLayer->size(), 20.0 );
   QCOMPARE( markerLayer->fixedAspectRatio(), 1.25 );
   QCOMPARE( markerLayer->sizeUnit(), Qgis::RenderUnit::Points );
-  QCOMPARE( markerLayer->angle(), -10.0 ); // opposite direction to esri spec!
-  QCOMPARE( markerLayer->offset(), QPointF( 7, 17 ) );
+  QCOMPARE( markerLayer->angle(), -10.0 );              // opposite direction to esri spec!
+  QCOMPARE( markerLayer->offset(), QPointF( 7, -17 ) ); // y offset is opposite direction to esri spec!
   QCOMPARE( markerLayer->offsetUnit(), Qgis::RenderUnit::Points );
 
   // invalid json
