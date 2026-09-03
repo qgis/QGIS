@@ -90,10 +90,8 @@ class QgsLabelSorter
 
 QgsLabelingEngine::QgsLabelingEngine( const QgsMapSettings &mapSettings )
 {
-  if ( !mapSettings.labelingEngineSettings().flags().testFlag( Qgis::LabelingFlag::DisableSearchTree ) )
-  {
-    mResults = std::make_unique< QgsLabelingResults >();
-  }
+  const bool enableSearchTree = !mapSettings.labelingEngineSettings().flags().testFlag( Qgis::LabelingFlag::DisableSearchTree );
+  mResults = std::make_unique< QgsLabelingResults >( enableSearchTree );
 
   setMapSettings( mapSettings );
 }
