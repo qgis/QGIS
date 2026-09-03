@@ -287,7 +287,7 @@ QgsExpressionContext QgsProcessingModelerParameterWidget::createExpressionContex
     c << algorithmScope;
     QgsExpressionContextScope *modelScope = QgsExpressionContextUtils::processingModelAlgorithmScope( mModel, QVariantMap(), mContext );
     c << modelScope;
-    QgsExpressionContextScope *childScope = mModel->createExpressionContextScopeForChildAlgorithm( mChildId, mContext, QVariantMap(), QVariantMap() );
+    QgsExpressionContextScope *childScope = mModel->createExpressionContextScopeForChildAlgorithm( mChildId, mContext, QVariantMap(), QVariantMap() ).release();
     c << childScope;
 
     QStringList highlightedVariables = childScope->variableNames();
