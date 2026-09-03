@@ -1052,6 +1052,12 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayerundopassthroughcommand.cpp
   vector/qgsvectorlayerutils.cpp
 
+  vectorfield/qgsvectorfieldarrowsettings.cpp
+  vectorfield/qgsvectorfieldsettings.cpp
+  vectorfield/qgsvectorfieldstreamlinesettings.cpp
+  vectorfield/qgsvectorfieldtracessettings.cpp
+  vectorfield/qgsvectorfieldwindbarbsettings.cpp
+
   vectortile/qgsarcgisvectortileservicedataprovider.cpp
   vectortile/qgsmapboxglstyleconverter.cpp
   vectortile/qgsmbtilesvectortiledataprovider.cpp
@@ -2233,6 +2239,12 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayerundopassthroughcommand.h
   vector/qgsvectorlayerutils.h
 
+  vectorfield/qgsvectorfieldarrowsettings.h
+  vectorfield/qgsvectorfieldsettings.h
+  vectorfield/qgsvectorfieldstreamlinesettings.h
+  vectorfield/qgsvectorfieldtracessettings.h
+  vectorfield/qgsvectorfieldwindbarbsettings.h
+
   vectortile/qgsarcgisvectortileservicedataprovider.h
   vectortile/qgsmapboxglstyleconverter.h
   vectortile/qgsmbtilesvectortiledataprovider.h
@@ -2756,6 +2768,7 @@ target_include_directories(qgis_core PUBLIC
   tiledscene
   validity
   vector
+  vectorfield
   vectortile
   web
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp

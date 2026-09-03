@@ -52,7 +52,7 @@ QgsMeshVectorArrowRenderer::QgsMeshVectorArrowRenderer(
   double datasetMagMaximumValue,
   double datasetMagMinimumValue,
   QgsMeshDatasetGroupMetadata::DataType dataType,
-  const QgsMeshRendererVectorSettings &settings,
+  const QgsVectorFieldSettings &settings,
   QgsRenderContext &context,
   QSize size
 )
@@ -156,7 +156,7 @@ bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
   double yDist = 0.0;
   switch ( mCfg.arrowSettings().shaftLengthMethod() )
   {
-    case QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::MinMax:
+    case QgsVectorFieldArrowSettings::ArrowScalingMethod::MinMax:
     {
       const double minShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().minShaftLength(), Qgis::RenderUnit::Millimeters );
       const double maxShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().maxShaftLength(), Qgis::RenderUnit::Millimeters );
@@ -168,14 +168,14 @@ bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
       yDist = sinAlpha * L;
       break;
     }
-    case QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::Scaled:
+    case QgsVectorFieldArrowSettings::ArrowScalingMethod::Scaled:
     {
       const double scaleFactor = mCfg.arrowSettings().scaleFactor();
       xDist = scaleFactor * xVal;
       yDist = scaleFactor * yVal;
       break;
     }
-    case QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::Fixed:
+    case QgsVectorFieldArrowSettings::ArrowScalingMethod::Fixed:
     {
       // We must be using a fixed length
       const double fixedShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().fixedShaftLength(), Qgis::RenderUnit::Millimeters );
@@ -208,17 +208,17 @@ double QgsMeshVectorArrowRenderer::calcExtentBufferSize() const
   double buffer = 0;
   switch ( mCfg.arrowSettings().shaftLengthMethod() )
   {
-    case QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::MinMax:
+    case QgsVectorFieldArrowSettings::ArrowScalingMethod::MinMax:
     {
       buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().maxShaftLength(), Qgis::RenderUnit::Millimeters );
       break;
     }
-    case QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::Scaled:
+    case QgsVectorFieldArrowSettings::ArrowScalingMethod::Scaled:
     {
       buffer = mCfg.arrowSettings().scaleFactor() * mMaxMag;
       break;
     }
-    case QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::Fixed:
+    case QgsVectorFieldArrowSettings::ArrowScalingMethod::Fixed:
     {
       buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().fixedShaftLength(), Qgis::RenderUnit::Millimeters );
       break;
@@ -425,7 +425,7 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
   double datasetMagMaximumValue,
   double datasetMagMinimumValue,
   QgsMeshDatasetGroupMetadata::DataType dataType,
-  const QgsMeshRendererVectorSettings &settings,
+  const QgsVectorFieldSettings &settings,
   QgsRenderContext &context,
   const QgsRectangle &layerExtent,
   QgsMeshLayerRendererFeedback *feedBack,
@@ -436,18 +436,18 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
 
   switch ( settings.symbology() )
   {
-    case QgsMeshRendererVectorSettings::Arrows:
+    case QgsVectorFieldSettings::Symbology::Arrows:
       renderer = new QgsMeshVectorArrowRenderer( m, datasetVectorValues, datasetValuesMag, datasetMagMaximumValue, datasetMagMinimumValue, dataType, settings, context, size );
       break;
-    case QgsMeshRendererVectorSettings::Streamlines:
+    case QgsVectorFieldSettings::Symbology::Streamlines:
       renderer
         = new QgsMeshVectorStreamlineRenderer( m, datasetVectorValues, scalarActiveFaceFlagValues, datasetValuesMag, dataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices, settings, context, layerExtent, feedBack, datasetMagMaximumValue );
       break;
-    case QgsMeshRendererVectorSettings::Traces:
+    case QgsVectorFieldSettings::Symbology::Traces:
       renderer
         = new QgsMeshVectorTraceRenderer( m, datasetVectorValues, scalarActiveFaceFlagValues, dataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices, settings, context, layerExtent, datasetMagMaximumValue );
       break;
-    case QgsMeshRendererVectorSettings::WindBarbs:
+    case QgsVectorFieldSettings::Symbology::WindBarbs:
       renderer = new QgsMeshVectorWindBarbRenderer( m, datasetVectorValues, datasetValuesMag, datasetMagMaximumValue, datasetMagMinimumValue, dataType, settings, context, size );
       break;
   }
@@ -463,7 +463,7 @@ QgsMeshVectorWindBarbRenderer::QgsMeshVectorWindBarbRenderer(
   double datasetMagMaximumValue,
   double datasetMagMinimumValue,
   QgsMeshDatasetGroupMetadata::DataType dataType,
-  const QgsMeshRendererVectorSettings &settings,
+  const QgsVectorFieldSettings &settings,
   QgsRenderContext &context,
   QSize size
 )

@@ -57,7 +57,7 @@ class QgsMeshVectorRenderer
       double datasetMagMaximumValue,
       double datasetMagMinimumValue,
       QgsMeshDatasetGroupMetadata::DataType dataType,
-      const QgsMeshRendererVectorSettings &settings,
+      const QgsVectorFieldSettings &settings,
       QgsRenderContext &context,
       const QgsRectangle &layerExtent,
       QgsMeshLayerRendererFeedback *feedBack,
@@ -84,7 +84,7 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
       double datasetMagMaximumValue,
       double datasetMagMinimumValue,
       QgsMeshDatasetGroupMetadata::DataType dataType,
-      const QgsMeshRendererVectorSettings &settings,
+      const QgsVectorFieldSettings &settings,
       QgsRenderContext &context,
       QSize size
     );
@@ -139,7 +139,7 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
 
   protected:
     QgsRenderContext &mContext;
-    const QgsMeshRendererVectorSettings mCfg;
+    const QgsVectorFieldSettings mCfg;
     QSize mOutputSize;
     QgsInterpolatedLineColor mVectorColoring;
 };
@@ -163,7 +163,7 @@ class QgsMeshVectorWindBarbRenderer : public QgsMeshVectorArrowRenderer
       double datasetMagMaximumValue,
       double datasetMagMinimumValue,
       QgsMeshDatasetGroupMetadata::DataType dataType,
-      const QgsMeshRendererVectorSettings &settings,
+      const QgsVectorFieldSettings &settings,
       QgsRenderContext &context,
       QSize size
     );

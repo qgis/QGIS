@@ -860,6 +860,11 @@
 %Include auto_generated/vector/qgsvectorlayerundocommand.sip
 %Include auto_generated/vector/qgsvectorlayerundopassthroughcommand.sip
 %Include auto_generated/vector/qgsvectorlayerutils.sip
+%Include auto_generated/vectorfield/qgsvectorfieldarrowsettings.sip
+%Include auto_generated/vectorfield/qgsvectorfieldsettings.sip
+%Include auto_generated/vectorfield/qgsvectorfieldstreamlinesettings.sip
+%Include auto_generated/vectorfield/qgsvectorfieldtracessettings.sip
+%Include auto_generated/vectorfield/qgsvectorfieldwindbarbsettings.sip
 %Include auto_generated/vectortile/qgsmapboxglstyleconverter.sip
 %Include auto_generated/vectortile/qgsvectortilebasiclabeling.sip
 %Include auto_generated/vectortile/qgsvectortilebasicrenderer.sip
