@@ -1242,6 +1242,13 @@ bool QgsMapLayer::supportsEditing() const
   return false;
 }
 
+bool QgsMapLayer::supportsSnapping() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return false;
+}
+
 QgsCoordinateReferenceSystem QgsMapLayer::crs() const
 {
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
