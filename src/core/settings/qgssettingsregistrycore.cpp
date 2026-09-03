@@ -157,6 +157,11 @@ const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowLegend
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsLayerTreeShowIdInLayerTooltips
   = new QgsSettingsEntryBool( u"show-id-in-layer-tooltips"_s, QgsSettingsTree::sTreeLayerTree, false, u"If true, layer IDs will be shown in the layer tooltips."_s );
 
+// NOTE FOR REVIEWERS: this default is the single place to flip if the project prefers
+// the previous ASCII-only behaviour to remain the default.
+const QgsSettingsEntryEnumFlag<Qgis::LayerNameLaunderingMode> *QgsSettingsRegistryCore::settingsLayerNameLaunderingMode = new QgsSettingsEntryEnumFlag<
+  Qgis::LayerNameLaunderingMode>( u"layer-name-laundering-mode"_s, QgsSettingsTree::sTreeCore, Qgis::LayerNameLaunderingMode::PreserveUnicode, u"Determines how layer names suggested in the export dialogs are laundered."_s );
+
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching
   = new QgsSettingsEntryBool( u"enable_wms_tile_prefetch"_s, QgsSettingsTree::sTreeWms, false, u"Whether to include WMS layers when rendering tiles adjacent to the visible map area"_s );
 

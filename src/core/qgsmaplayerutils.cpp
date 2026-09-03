@@ -183,14 +183,49 @@ QList<QgsMapLayer *> QgsMapLayerUtils::sortLayersByType( const QList<QgsMapLayer
   return res;
 }
 
-QString QgsMapLayerUtils::launderLayerName( const QString &name )
+QString QgsMapLayerUtils::launderLayerName( const QString &name, Qgis::LayerNameLaunderingMode mode )
 {
-  QString laundered = name.toLower();
-  const thread_local QRegularExpression sRxSwapChars( u"\\s"_s );
+  // Normalize to NFC first. Otherwise the result would depend on how the source string
+  // happens to be composed: a name derived from a file path on a decomposing file system
+  // arrives in NFD form, and would otherwise launder differently to the same name as typed
+  // by the user. Note that this deliberately applies to the layer name only -- file paths
+  // themselves must never be renormalized, as the file system owns their normalization.
+  QString laundered = name.normalized( QString::NormalizationForm_C );
+
+  if ( mode == Qgis::LayerNameLaunderingMode::Ascii )
+    laundered = laundered.toLower();
+
+  // Unicode aware, so that non-breaking and other non-ASCII spaces are handled as whitespace
+  // and not left in place (or, previously, silently dropped).
+  const thread_local QRegularExpression sRxSwapChars( u"\\s"_s, QRegularExpression::UseUnicodePropertiesOption );
   laundered.replace( sRxSwapChars, u"_"_s );
 
-  const thread_local QRegularExpression sRxRemoveChars( u"[^a-zA-Z0-9_]"_s );
-  laundered.replace( sRxRemoveChars, QString() );
+  switch ( mode )
+  {
+    case Qgis::LayerNameLaunderingMode::PreserveUnicode:
+    {
+      // Replace only the characters which are actually hostile here: control characters,
+      // path separators (for single layer formats the layer name becomes a file name), the
+      // pipe which separates the components of QGIS data source URIs, and the double quote
+      // used to quote SQL identifiers.
+      const thread_local QRegularExpression sRxSwapHostileChars( u"[\\x{0000}-\\x{001F}\\x{007F}-\\x{009F}/\\\\|\"]"_s );
+      laundered.replace( sRxSwapHostileChars, u"_"_s );
+      break;
+    }
+
+    case Qgis::LayerNameLaunderingMode::Ascii:
+    {
+      const thread_local QRegularExpression sRxSwapNonAsciiChars( u"[^a-z0-9_]"_s );
+      laundered.replace( sRxSwapNonAsciiChars, u"_"_s );
+      break;
+    }
+  }
+
+  // Collapse the runs of underscores introduced above, and strip them from the ends.
+  const thread_local QRegularExpression sRxCollapseUnderscores( u"_+"_s );
+  laundered.replace( sRxCollapseUnderscores, u"_"_s );
+  const thread_local QRegularExpression sRxTrimUnderscores( u"^_|_$"_s );
+  laundered.replace( sRxTrimUnderscores, QString() );
 
   return laundered;
 }

@@ -53,6 +53,7 @@ QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::GpsConnectionType>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::GpsInformationComponent>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::JoinStyle>() );
+  addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::LayerNameLaunderingMode>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::MapRecenteringMode>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::MapToolUnit>() );
   addWrapper( new QgsSettingsEnumEditorWidgetWrapper<Qgis::SnappingMode>() );

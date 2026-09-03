@@ -34,6 +34,8 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectordataprovider.h"
 
 #include <QFileDialog>
@@ -70,7 +72,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Q
 
   if ( layer )
   {
-    mDefaultOutputLayerNameFromInputLayerName = QgsMapLayerUtils::launderLayerName( layer->name() );
+    mDefaultOutputLayerNameFromInputLayerName = QgsMapLayerUtils::launderLayerName( layer->name(), QgsSettingsRegistryCore::settingsLayerNameLaunderingMode->value() );
     leLayername->setDefaultValue( mDefaultOutputLayerNameFromInputLayerName );
     leLayername->setClearMode( QgsFilterLineEdit::ClearToDefault );
     if ( leLayername->isEnabled() )
@@ -210,7 +212,9 @@ void QgsVectorLayerSaveAsDialog::setup()
     settings.setValue( u"UI/lastVectorFileFilterDir"_s, tmplFileInfo.absolutePath() );
 
     const QFileInfo fileInfo( filePath );
-    const QString suggestedLayerName = QgsMapLayerUtils::launderLayerName( fileInfo.completeBaseName() );
+    // NOTE: completeBaseName() comes straight from the file system, so on a decomposing
+    // file system it may arrive in NFD form. launderLayerName() normalizes it to NFC.
+    const QString suggestedLayerName = QgsMapLayerUtils::launderLayerName( fileInfo.completeBaseName(), QgsSettingsRegistryCore::settingsLayerNameLaunderingMode->value() );
     if ( mDefaultOutputLayerNameFromInputLayerName.isEmpty() )
       leLayername->setDefaultValue( suggestedLayerName );
 

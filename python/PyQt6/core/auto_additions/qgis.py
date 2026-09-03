@@ -2083,6 +2083,21 @@ Qgis.HttpMethod.__doc__ = """Different methods of HTTP requests
 """
 # --
 Qgis.HttpMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LayerNameLaunderingMode.PreserveUnicode.__doc__ = "Preserve letters and digits of any script, replacing only whitespace and characters which are hostile to data source URIs, file paths or SQL identifier quoting"
+Qgis.LayerNameLaunderingMode.Ascii.__doc__ = "Fold to lowercase ASCII, replacing every character which is not an ASCII alphanumeric or an underscore"
+Qgis.LayerNameLaunderingMode.__doc__ = """Modes for laundering layer names.
+
+.. seealso:: :py:func:`QgsMapLayerUtils.launderLayerName`
+
+.. versionadded:: 4.4
+
+* ``PreserveUnicode``: Preserve letters and digits of any script, replacing only whitespace and characters which are hostile to data source URIs, file paths or SQL identifier quoting
+* ``Ascii``: Fold to lowercase ASCII, replacing every character which is not an ASCII alphanumeric or an underscore
+
+"""
+# --
+Qgis.LayerNameLaunderingMode.baseClass = Qgis
 QgsVectorLayerExporter.ExportError = Qgis.VectorExportResult
 # monkey patching scoped based enum
 QgsVectorLayerExporter.NoError = Qgis.VectorExportResult.Success
