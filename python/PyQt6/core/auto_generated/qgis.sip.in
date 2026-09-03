@@ -2486,6 +2486,12 @@ The development version
     typedef QFlags<Qgis::InstancedMaterialFlag> InstancedMaterialFlags;
 
 
+    enum class BillboardScaleMode /BaseType=IntEnum/
+    {
+      ViewIndependent,
+      Perspective
+    };
+
     enum class TextureFilterQuality /BaseType=IntEnum/
     {
       Trilinear,
@@ -2865,6 +2871,16 @@ The development version
       Published,
       Revised,
       Superseded,
+    };
+
+    enum class AcademicReferenceType /BaseType=IntEnum/
+    {
+      Unknown,
+      Book,
+      JournalArticle,
+      Presentation,
+      WebPage,
+      Preprint
     };
 
 
@@ -3929,6 +3945,15 @@ The development version
     typedef QFlags<Qgis::PdfRenderFlag> PdfRenderFlags;
 
 
+
+    enum class WmsDimensionDefaultDisplay /BaseType=IntEnum/
+    {
+      AllValues,
+      MinValue,
+      MaxValue,
+      ReferenceValue,
+    };
+
     enum class RubberBandIconType /BaseType=IntEnum/
     {
       NoIcon,
@@ -3950,6 +3975,12 @@ The development version
 
     typedef QFlags<Qgis::RubberBandComponent> RubberBandComponents;
 
+
+    enum class UserInterfaceIconType /BaseType=IntEnum/
+    {
+      MainWindowToolbar,
+      DockedToolbar,
+    };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
 

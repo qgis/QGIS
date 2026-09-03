@@ -16,6 +16,7 @@
 #include "qgsrubberband3d.h"
 
 #include "qgs3d.h"
+#include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3dengine.h"
@@ -51,9 +52,9 @@ using namespace Qt::StringLiterals;
 /// @cond PRIVATE
 
 
-QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine, const Qgis::GeometryType geometryType )
-  : mMapSettings( &map )
-  , mEngine( engine )
+QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapScene *scene, const Qgis::GeometryType geometryType )
+  : mMapSettings( scene->mapSettings() )
+  , mEngine( scene->engine() )
   , mGeometryType( geometryType )
 {
   Qt3DCore::QEntity *parentEntity = mEngine->frameGraph()->rubberBandRenderView().rubberBandEntity();

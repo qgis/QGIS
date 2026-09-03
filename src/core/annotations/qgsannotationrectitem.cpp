@@ -422,6 +422,12 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectItem::applyEditV2( QgsA
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
+    {
+      mBounds = qgis::down_cast< QgsAnnotationItemEditOperationSetItemBounds * >( operation )->bounds();
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
+
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
@@ -564,6 +570,12 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
         }
       }
       break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
+    {
+      const QgsRectangle newBounds = qgis::down_cast< QgsAnnotationItemEditOperationSetItemBounds * >( operation )->bounds();
+      return new QgsAnnotationItemEditOperationTransientResults( rotatedBoundsGeometry( newBounds, context.renderContext() ) );
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
@@ -765,8 +777,14 @@ bool QgsAnnotationRectItem::writeCommonProperties( QDomElement &element, QDomDoc
   element.setAttribute( u"fixedWidth"_s, qgsDoubleToString( mFixedSize.width() ) );
   element.setAttribute( u"fixedHeight"_s, qgsDoubleToString( mFixedSize.height() ) );
   element.setAttribute( u"fixedSizeUnit"_s, QgsUnitTypes::encodeUnit( mFixedSizeUnit ) );
-  element.setAttribute( u"rotation"_s, qgsDoubleToString( mRotation ) );
-  element.setAttribute( u"rotationMode"_s, qgsEnumValueToKey( mRotationMode ) );
+  if ( !qgsDoubleNear( mRotation, 0 ) )
+  {
+    element.setAttribute( u"rotation"_s, qgsDoubleToString( mRotation ) );
+  }
+  if ( mRotationMode != Qgis::SymbolRotationMode::IgnoreMapRotation )
+  {
+    element.setAttribute( u"rotationMode"_s, qgsEnumValueToKey( mRotationMode ) );
+  }
 
   element.setAttribute( u"backgroundEnabled"_s, mDrawBackground ? u"1"_s : u"0"_s );
   if ( mBackgroundSymbol )

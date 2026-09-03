@@ -341,9 +341,37 @@ class GUI_EXPORT QgsGui : public QObject
      */
     static bool hasWebEngine();
 
+    /**
+     * Returns the desired size for user interface icons.
+     *
+     * \since QGIS 4.4
+     */
+    static QSize iconSize( Qgis::UserInterfaceIconType iconType = Qgis::UserInterfaceIconType::MainWindowToolbar );
+
     ///@cond PRIVATE
     void emitOptionsChanged() SIP_SKIP;
     ///@endcond
+
+    /**
+     * Returns the application style sheet.
+     *
+     * This should be applied to all child dialogs.
+     *
+     * \see applicationStyleSheetChanged()
+     * \see setApplicationStyleSheet()
+     * \since QGIS 4.4
+     */
+    static QString applicationStyleSheet();
+
+    /**
+     * Sets the application style sheet.
+     *
+     * \note Not available in Python bindings.
+     * \see applicationStyleSheetChanged()
+     * \see applicationStyleSheet()
+     * \since QGIS 4.4
+     */
+    void setApplicationStyleSheet( const QString &styleSheet ) SIP_SKIP;
 
   signals:
 
@@ -358,6 +386,14 @@ class GUI_EXPORT QgsGui : public QObject
      * \since QGIS 3.16
      */
     void optionsChanged();
+
+    /**
+     * Emitted whenever the application style sheet is changed.
+     *
+     * \see applicationStyleSheet()
+     * \since QGIS 4.4
+     */
+    void applicationStyleSheetChanged( const QString &styleSheet );
 
   private:
     QgsGui();
@@ -391,6 +427,8 @@ class GUI_EXPORT QgsGui : public QObject
     std::unique_ptr<QgsInputControllerManager> mInputControllerManager;
     std::unique_ptr<QgsStoredQueryManager> mStoredQueryManager;
     std::unique_ptr<QgsWindowManagerInterface> mWindowManager;
+
+    QString mApplicationStyleSheet;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );

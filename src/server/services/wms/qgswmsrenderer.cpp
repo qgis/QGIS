@@ -3932,11 +3932,11 @@ namespace QgsWms
       {
         // Default value based on type configured by user
         QVariant defValue;
-        if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::AllValues )
+        if ( dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::AllValues )
         {
           continue; // no filter by default for this dimension
         }
-        else if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::ReferenceValue )
+        else if ( dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::ReferenceValue )
         {
           defValue = dim.referenceValue;
         }
@@ -3951,11 +3951,11 @@ namespace QgsWms
           // sort unique values
           QList<QVariant> values = qgis::setToList( uniqueValues );
           std::sort( values.begin(), values.end() );
-          if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::MinValue )
+          if ( dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::MinValue )
           {
             defValue = values.first();
           }
-          else if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::MaxValue )
+          else if ( dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::MaxValue )
           {
             defValue = values.last();
           }

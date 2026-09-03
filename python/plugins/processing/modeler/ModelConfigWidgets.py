@@ -17,7 +17,6 @@
 
 from qgis.core import (
     QgsProcessingContext,
-    QgsProcessingModelChildAlgorithm,
     QgsProcessingModelOutput,
     QgsProcessingModelParameter,
     QgsProcessingParameterDefinition,
@@ -32,10 +31,6 @@ from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
     ModelerParameterDefinitionWidget,
 )
-from processing.modeler.ModelerParametersDialog import (
-    ModelerParametersDialog,
-    ModelerParametersWidget,
-)
 
 
 class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
@@ -45,7 +40,6 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
             (
                 QgsProcessingModelParameter,
                 QgsProcessingModelOutput,
-                QgsProcessingModelChildAlgorithm,
             ),
         )
 
@@ -145,49 +139,6 @@ class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
                     comment_color=widget.commentColor(),
                     child_alg=child_alg,
                 )
-
-            widget.widgetChanged.connect(on_widget_changed)
-            return widget
-        elif isinstance(component, QgsProcessingModelChildAlgorithm):
-            algorithm = component.algorithm().create()
-            context = widgetContext.processingContextGenerator().processingContext()
-            child_id = component.childId()
-
-            # this is unfortunately VERY ugly. The old Python processing GUI api
-            # had the ModelerParametersDialog class so enmeshed in the parameter
-            # GUI classes that there is no way to rip this out without breaking
-            # API. So we HAVE to do a gross hack here and make a dialog, which
-            # we never show, but which allows us to keep the old API intact...
-            fake_dialog = ModelerParametersDialog(
-                algorithm,
-                model,
-                algName=child_id,
-                configuration=component.configuration(),
-            )
-            fake_dialog.hide()
-
-            widget = ModelerParametersWidget(
-                algorithm,
-                model,
-                algName=child_id,
-                configuration=component.configuration(),
-                dialog=fake_dialog,
-                context=context,
-            )
-            widget.setComments(component.comment().description())
-            widget.setCommentColor(component.comment().color())
-
-            # make sure fake dialog exists for lifetime of widget
-            widget.__fake_dialog = fake_dialog
-
-            def on_widget_changed():
-                model_scene = model_dialog.modelScene()
-                graphic_item = model_scene.childAlgorithmItem(child_id)
-                if not graphic_item:
-                    # should not happen!
-                    return
-
-                graphic_item.apply_new_alg(widget.createAlgorithm())
 
             widget.widgetChanged.connect(on_widget_changed)
             return widget

@@ -1,0 +1,13 @@
+{
+"type": "FeatureCollection",
+"name": "overlapping_polys",
+"features": [
+{ "type": "Feature", "properties": { "fid": "overlapping_polys.0", "class": "a" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 0.0, -3.0 ], [ 0.0, -6.0 ], [ 3.0, -6.0 ], [ 3.0, -3.0 ], [ 0.0, -3.0 ] ] ] } },
+{ "type": "Feature", "properties": { "fid": "overlapping_polys.1", "class": "a" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 2.0, -2.0 ], [ 2.0, -5.0 ], [ 5.0, -5.0 ], [ 5.0, -2.0 ], [ 2.0, -2.0 ] ] ] } },
+{ "type": "Feature", "properties": { "fid": "overlapping_polys.2", "class": "a" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 8.0, -4.0 ], [ 8.0, -6.0 ], [ 11.0, -6.0 ], [ 11.0, -4.0 ], [ 8.0, -4.0 ] ] ] } },
+{ "type": "Feature", "properties": { "fid": "overlapping_polys.3", "class": "a" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 9.0, -5.0 ], [ 7.0, -5.0 ], [ 7.0, -7.0 ], [ 9.0, -7.0 ], [ 9.0, -5.0 ] ] ] } },
+{ "type": "Feature", "properties": { "fid": "overlapping_polys.4", "class": "a" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.0, -9.0 ], [ 9.0, -9.0 ], [ 9.0, -10.0 ], [ 7.0, -10.0 ], [ 7.0, -9.0 ] ] ] } },
+{ "type": "Feature", "properties": { "fid": "overlapping_polys.5", "class": "b" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 6.0, -6.0 ], [ 8.0, -6.0 ], [ 8.0, -11.0 ], [ 6.0, -11.0 ], [ 6.0, -6.0 ] ] ] } },
+{ "type": "Feature", "properties": { "fid": "overlapping_polys.6", "class": "b" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 0.0, -8.0 ], [ 3.0, -8.0 ], [ 3.0, -10.0 ], [ 0.0, -10.0 ], [ 0.0, -8.0 ] ] ] } }
+]
+}

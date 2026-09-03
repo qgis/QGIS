@@ -16,7 +16,7 @@ QgsGui.HigFlag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(fla
 QgsGui.HigFlag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsGui.HigFlag.__or__ = lambda flag1, flag2: QgsGui.HigFlag(_force_int(flag1) | _force_int(flag2))
 try:
-    QgsGui.__attribute_docs__ = {'optionsChanged': 'This signal is emitted whenever the application options have been\nchanged.\n\nThis signal is a "blanket" signal, and will be emitted whenever the\noptions dialog has been accepted regardless of whether or not individual\nsettings are changed. It is designed as a "last resort" fallback only,\nallowing widgets to respond to possible settings changes.\n\n.. versionadded:: 3.16\n'}
+    QgsGui.__attribute_docs__ = {'optionsChanged': 'This signal is emitted whenever the application options have been\nchanged.\n\nThis signal is a "blanket" signal, and will be emitted whenever the\noptions dialog has been accepted regardless of whether or not individual\nsettings are changed. It is designed as a "last resort" fallback only,\nallowing widgets to respond to possible settings changes.\n\n.. versionadded:: 3.16\n', 'applicationStyleSheetChanged': 'Emitted whenever the application style sheet is changed.\n\n.. seealso:: :py:func:`applicationStyleSheet`\n\n.. versionadded:: 4.4\n'}
     QgsGui.instance = staticmethod(QgsGui.instance)
     QgsGui.settingsRegistryGui = staticmethod(QgsGui.settingsRegistryGui)
     QgsGui.editorWidgetRegistry = staticmethod(QgsGui.editorWidgetRegistry)
@@ -50,5 +50,8 @@ try:
     QgsGui.sampleColor = staticmethod(QgsGui.sampleColor)
     QgsGui.findScreenAt = staticmethod(QgsGui.findScreenAt)
     QgsGui.hasWebEngine = staticmethod(QgsGui.hasWebEngine)
+    QgsGui.iconSize = staticmethod(QgsGui.iconSize)
+    QgsGui.applicationStyleSheet = staticmethod(QgsGui.applicationStyleSheet)
+    QgsGui.__signal_arguments__ = {'applicationStyleSheetChanged': ['styleSheet: str']}
 except (NameError, AttributeError):
     pass

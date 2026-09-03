@@ -34,7 +34,7 @@
 #include "qgscodeeditorhtml.h"
 #include "qgscodeeditorwidget.h"
 #include "qgscolorbutton.h"
-#include "qgsguiutils.h"
+#include "qgsgui.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -70,7 +70,7 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   sourceLayout->addWidget( codeEditorWidget );
   mPageSourceEdit->setLayout( sourceLayout );
 
-  mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
+  mToolBar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::MainWindowToolbar ) );
 
   connect( mTextEdit, &QTextEdit::currentCharFormatChanged, this, &QgsRichTextEditor::slotCurrentCharFormatChanged );
   connect( mTextEdit, &QTextEdit::cursorPositionChanged, this, &QgsRichTextEditor::slotCursorPositionChanged );

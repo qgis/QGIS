@@ -19,18 +19,21 @@
 
 #include "qgis.h"
 #include "qgslogger.h"
+#include "qgsmodelchildalgorithmwidgets.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodeldesignerconfigwidget.h"
 #include "qgsmodeldesignerdialog.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgroupboxdefinitionwidget.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingalignrasterlayerswidgetwrapper.h"
 #include "qgsprocessingconfigurationwidgets.h"
 #include "qgsprocessingdxflayerswidgetwrapper.h"
 #include "qgsprocessingfieldmapwidgetwrapper.h"
 #include "qgsprocessingmeshdatasetwidget.h"
+#include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsprocessingmodelgroupbox.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
@@ -250,10 +253,27 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiRegistry::createModelConfigWidge
   return nullptr;
 }
 
+void QgsProcessingGuiRegistry::registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator )
+{
+  mWidgetContextGenerator = generator;
+}
+
+QgsProcessingParameterWidgetContext QgsProcessingGuiRegistry::createWidgetContext()
+{
+  if ( mWidgetContextGenerator )
+  {
+    return mWidgetContextGenerator->createWidgetContext();
+  }
+  return QgsProcessingParameterWidgetContext();
+}
+
 /// @cond PRIVATE
 bool QgsProcessingGuiInternalModelConfigWidgetFactory::supportsComponent( QgsProcessingModelComponent *component ) const
 {
   if ( dynamic_cast< QgsProcessingModelGroupBox * >( component ) )
+    return true;
+
+  if ( dynamic_cast< QgsProcessingModelChildAlgorithm * >( component ) )
     return true;
 
   return false;
@@ -263,8 +283,6 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
   QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext
 ) const
 {
-  ( void ) context;
-
   if ( QgsProcessingModelGroupBox *groupBox = dynamic_cast< QgsProcessingModelGroupBox * >( component ) )
   {
     QgsModelDesignerDialog *dialog = widgetContext.modelDesignerDialog();
@@ -278,6 +296,35 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
         return; // should not happen
 
       graphicItem->applyEdit( widget->groupBox() );
+    } );
+
+    return widget;
+  }
+  else if ( QgsProcessingModelChildAlgorithm *childAlg = dynamic_cast< QgsProcessingModelChildAlgorithm * >( component ) )
+  {
+    QgsModelDesignerDialog *dialog = widgetContext.modelDesignerDialog();
+    const QString childId = childAlg->childId();
+
+    std::unique_ptr< QgsProcessingAlgorithm > algorithm( childAlg->algorithm()->create() );
+    auto widget = new QgsProcessingModelerParametersWidget( algorithm.get(), widgetContext.model(), context, childId, childAlg->configuration(), nullptr );
+    widget->setComments( childAlg->comment()->description() );
+    widget->setCommentColor( childAlg->comment()->color() );
+
+    QgsProcessingParameterWidgetContext widgetContextCopy = widgetContext;
+    widgetContextCopy.setModelChildAlgorithmId( childId );
+    widget->setWidgetContext( widgetContextCopy );
+
+    connect( widget, &QgsProcessingModelConfigWidget::widgetChanged, this, [dialog, childId, widget] {
+      QgsModelGraphicsScene *modelScene = dialog->modelScene();
+      QgsModelChildAlgorithmGraphicItem *graphicItem = modelScene->childAlgorithmItem( childId );
+      if ( !graphicItem )
+        return; // should not happen
+
+      std::unique_ptr< QgsProcessingModelChildAlgorithm > updatedAlgorithm = widget->createAlgorithm();
+      if ( updatedAlgorithm )
+      {
+        graphicItem->applyEdit( *updatedAlgorithm );
+      }
     } );
 
     return widget;

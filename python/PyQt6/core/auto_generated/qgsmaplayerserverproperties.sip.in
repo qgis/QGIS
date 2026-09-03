@@ -109,21 +109,13 @@ Manages QGIS Server properties for WMS dimensions.
 
     struct WmsDimensionInfo
     {
-        enum DefaultDisplay /BaseType=IntEnum/
-        {
-          AllValues,
-          MinValue,
-          MaxValue,
-          ReferenceValue,
-        };
-
         explicit WmsDimensionInfo(
           const QString &dimName,
           const QString &dimFieldName,
           const QString &dimEndFieldName = QString(),
           const QString &dimUnits = QString(),
           const QString &dimUnitSymbol = QString(),
-          const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
+          Qgis::WmsDimensionDefaultDisplay dimDefaultDisplayType = Qgis::WmsDimensionDefaultDisplay::AllValues,
           const QVariant &dimReferenceValue = QVariant()
         );
 %Docstring
@@ -138,7 +130,7 @@ Constructor for WmsDimensionInfo.
         QString endFieldName;
         QString units;
         QString unitSymbol;
-        int defaultDisplayType;
+        Qgis::WmsDimensionDefaultDisplay defaultDisplayType;
         QVariant referenceValue;
     };
 
@@ -154,6 +146,7 @@ Returns WMS Dimension default display labels
 
 .. versionadded:: 3.10
 %End
+
 
     bool addWmsDimension( const QgsServerWmsDimensionProperties::WmsDimensionInfo &wmsDimInfo );
 %Docstring

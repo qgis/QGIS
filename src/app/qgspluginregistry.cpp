@@ -572,6 +572,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     corePlugins << u"db_manager"_s;
     corePlugins << u"processing"_s;
     corePlugins << u"MetaSearch"_s;
+    corePlugins << u"qgisprovider"_s;
     corePlugins << u"grassprovider"_s;
 
     // make the required core plugins enabled by default:

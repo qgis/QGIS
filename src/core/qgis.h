@@ -4433,6 +4433,18 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( InstancedMaterialFlags )
 
     /**
+     * 3D billboard scaling modes.
+     *
+     * \since QGIS 4.4
+     */
+    enum class BillboardScaleMode : int
+    {
+      ViewIndependent, //!< Billboard has a fixed pixel size on the screen, regardless of the camera distance
+      Perspective      //!< Billboard size is scaled with perspective distance from camera, using world units
+    };
+    Q_ENUM( BillboardScaleMode )
+
+    /**
      * Texture filtering qualities.
      *
      * \since QGIS 4.2
@@ -5169,6 +5181,21 @@ int QgisEvent = QEvent::User + 1;
       Superseded, //!< Date superseded
     };
     Q_ENUM( MetadataDateType )
+
+    /**
+     * Type of academic reference.
+     * \since QGIS 4.4
+     */
+    enum class AcademicReferenceType : int
+    {
+      Unknown,        //!< Unknown or generic reference
+      Book,           //!< Book
+      JournalArticle, //!< Journal or periodical article
+      Presentation,   //!< Conference paper, presentation, or proceeding
+      WebPage,        //!< Web page or online resource
+      Preprint        //!< Preprint or repository paper
+    };
+    Q_ENUM( AcademicReferenceType )
 
     /**
      * Raster color interpretation.
@@ -7006,6 +7033,23 @@ int QgisEvent = QEvent::User + 1;
     Q_DECLARE_FLAGS( PdfRenderFlags, PdfRenderFlag )
     Q_FLAG( PdfRenderFlags )
 
+
+    /**
+     * QGIS Server WMS Dimension default display types
+     *
+     * \note Prior to QGIS 4.4 this was available as QgsServerWmsDimensionProperties::WmsDimensionInfo::DefaultDisplay
+     *
+     * \since QGIS 4.4
+     */
+    enum class WmsDimensionDefaultDisplay : int
+    {
+      AllValues = 0,      //!< Display all values of the dimension
+      MinValue = 1,       //!< Display minimum value of the dimension
+      MaxValue = 2,       //!< Display maximum value of the dimension
+      ReferenceValue = 3, //!< Display a reference value
+    };
+    Q_ENUM( WmsDimensionDefaultDisplay )
+
     /**
      * Rubber band icon type.
      *
@@ -7044,6 +7088,18 @@ int QgisEvent = QEvent::User + 1;
      */
     Q_DECLARE_FLAGS( RubberBandComponents, RubberBandComponent )
     Q_FLAG( RubberBandComponents )
+
+    /**
+     * Icon types for icons shown in the user interface.
+     *
+     * \since QGIS 4.4
+     */
+    enum class UserInterfaceIconType : int
+    {
+      MainWindowToolbar, //!< Main window toolbar icons
+      DockedToolbar,     //!< Toolbars for docked windows
+    };
+    Q_ENUM( UserInterfaceIconType );
 
     /**
      * Identify search radius in mm

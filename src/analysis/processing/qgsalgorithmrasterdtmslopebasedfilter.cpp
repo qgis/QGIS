@@ -19,6 +19,7 @@
 
 #include <algorithm>
 
+#include "qgsacademicreference.h"
 #include "qgsrasterfilewriter.h"
 
 #include <QString>
@@ -66,9 +67,15 @@ QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortHelpString() const
     "area (<i>dz_max( d ) = d * s</i>).\n\n"
     "A 5 % confidence interval (<i>ci = 1.65 * sqrt( 2 * stddev )</i>) may be used to modify the filter function even further by either "
     "relaxing (<i>dz_max( d ) = d * s + ci</i>) or amplifying (<i>dz_max( d ) = d * s - ci</i>) the filter criterium.\n\n"
-    "References: Vosselman, G. (2000): Slope based filtering of laser altimetry data. IAPRS, Vol. XXXIII, Part B3, Amsterdam, The Netherlands, 935-942\n\n"
     "This algorithm is a port of the SAGA 'DTM Filter (slope-based)' tool."
   );
+}
+
+QList<QgsAcademicReference> QgsRasterDtmSlopeBasedFilterAlgorithm::academicReferences() const
+{
+  const QgsAcademicReference ref
+    = QgsAcademicReference::createJournalArticle( { u"Vosselman, G."_s }, 2000, u"Slope based filtering of laser altimetry data"_s, u"IAPRS"_s, u"Vol. XXXIII"_s, QString(), u"935-942"_s );
+  return { ref };
 }
 
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortDescription() const

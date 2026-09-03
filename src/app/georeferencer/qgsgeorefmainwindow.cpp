@@ -1365,10 +1365,10 @@ void QgsGeoreferencerMainWindow::createMenus()
   mToolbarMenu->addAction( toolBarEdit->toggleViewAction() );
   mToolbarMenu->addAction( toolBarView->toggleViewAction() );
 
-  toolBarFile->setIconSize( QgisApp::instance()->iconSize() );
-  toolBarEdit->setIconSize( QgisApp::instance()->iconSize() );
-  toolBarView->setIconSize( QgisApp::instance()->iconSize() );
-  toolBarHistogramStretch->setIconSize( QgisApp::instance()->iconSize() );
+  toolBarFile->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::MainWindowToolbar ) );
+  toolBarEdit->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::MainWindowToolbar ) );
+  toolBarView->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::MainWindowToolbar ) );
+  toolBarHistogramStretch->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::MainWindowToolbar ) );
 
   // View menu
   if ( layout != QDialogButtonBox::KdeLayout )

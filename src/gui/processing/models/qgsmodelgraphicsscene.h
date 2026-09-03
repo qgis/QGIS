@@ -34,6 +34,7 @@ class QgsProcessingModelGroupBox;
 class QgsMessageBar;
 class QgsModelArrowItem;
 class QgsProcessingModelFeedback;
+class QgsProcessingWidgetContextGenerator;
 
 ///@cond NOT_STABLE
 
@@ -116,19 +117,19 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Returns the topmost component item at a specified \a position.
      */
-    QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
+    SIP_SKIP QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
 
     /**
      * Returns the graphic item corresponding to the specified group box \a uuid.
      */
-    QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
+    SIP_SKIP QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
 
     /**
      * Returns the graphic item corresponding to the specified child algorithm
      *
      * \since QGIS 3.44
      */
-    QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
+    SIP_SKIP QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
 
     /**
      * Resets the status of child algorithm items.
@@ -229,6 +230,13 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void flagChildrenAsOutdated( const QSet< QString > &children );
 
+    /**
+     * Register a Processing widget context generator class that will be used to retrieve
+     * a widget context for the scene when required.
+     * \since QGIS 4.4
+     */
+    void registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator );
+
   signals:
 
     /**
@@ -292,7 +300,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Creates a new graphic item for a model child algorithm.
      */
-    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const SIP_FACTORY;
+    SIP_SKIP QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const SIP_FACTORY;
 
     /**
      * Creates a new graphic item for a model output.
@@ -302,12 +310,12 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Creates a new graphic item for a model comment.
      */
-    virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const SIP_FACTORY;
+    SIP_SKIP QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const SIP_FACTORY;
 
     /**
      * Creates a new graphic item for a model group box.
      */
-    QgsModelComponentGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const SIP_FACTORY;
+    SIP_SKIP QgsModelComponentGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const SIP_FACTORY;
 
   private:
     struct LinkSource
@@ -333,6 +341,8 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QMap<QString, long long> mLastResultCount;
 
     static constexpr int SCENE_COMPONENT_MARGIN = 500;
+
+    QgsProcessingWidgetContextGenerator *mWidgetContextGenerator = nullptr;
 
     QgsMessageBar *mMessageBar = nullptr;
 };

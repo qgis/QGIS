@@ -1,0 +1,16 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>lines_t_shape_snapped</Name>
+    <ElementPath>lines_t_shape_snapped</ElementPath>
+    <!--MULTILINESTRING-->
+    <GeometryType>5</GeometryType>
+    <SRSName>urn:ogc:def:crs:EPSG::4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>3</FeatureCount>
+      <ExtentXMin>0.75573</ExtentXMin>
+      <ExtentXMax>8.21641</ExtentXMax>
+      <ExtentYMin>-2.23951</ExtentYMin>
+      <ExtentYMax>5.12878</ExtentYMax>
+    </DatasetSpecificInfo>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

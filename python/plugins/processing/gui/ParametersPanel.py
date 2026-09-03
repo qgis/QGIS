@@ -38,10 +38,8 @@ from qgis.gui import (
     QgsProcessingHiddenWidgetWrapper,
     QgsProcessingParametersGenerator,
     QgsProcessingParametersWidget,
-    QgsProcessingParameterWidgetContext,
 )
 from qgis.PyQt.QtWidgets import QLabel, QVBoxLayout, QWidget
-from qgis.utils import iface
 
 from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
 from processing.tools.dataobjects import createContext
@@ -85,13 +83,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
     def initWidgets(self):
         super().initWidgets()
 
-        widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setMapCanvas(iface.mapCanvas())
-            widget_context.setBrowserModel(iface.browserModel())
-            widget_context.setActiveLayer(iface.activeLayer())
-
+        widget_context = QgsGui.processingGuiRegistry().createWidgetContext()
         widget_context.setMessageBar(self.parent().messageBar())
         if isinstance(self.algorithm(), QgsProcessingModelAlgorithm):
             widget_context.setModel(self.algorithm())

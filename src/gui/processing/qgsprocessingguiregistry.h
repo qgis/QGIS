@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsmodeldesignerconfigwidget.h"
+#include "qgsprocessingwidgetcontext.h"
 #include "qgsprocessingwidgetwrapper.h"
 
 #include <QList>
@@ -45,7 +46,7 @@ class QgsProcessingGuiInternalModelConfigWidgetFactory;
  * \ingroup gui
  * \since QGIS 3.2
  */
-class GUI_EXPORT QgsProcessingGuiRegistry
+class GUI_EXPORT QgsProcessingGuiRegistry : public QgsProcessingWidgetContextGenerator
 {
   public:
     /**
@@ -53,7 +54,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      * created by QgsGui.
      */
     QgsProcessingGuiRegistry();
-    ~QgsProcessingGuiRegistry();
+    ~QgsProcessingGuiRegistry() override;
 
     /**
      * Add a new configuration widget factory for customized algorithm configuration
@@ -206,6 +207,34 @@ class GUI_EXPORT QgsProcessingGuiRegistry
     QgsProcessingModelConfigWidget *createModelConfigWidgetForComponent( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const
       SIP_FACTORY;
 
+    /**
+     * Register a Processing widget context \a generator class that will be used to retrieve
+     * a widget context when required.
+     *
+     * \note This is intended for registration of a "top-level", application widget generator
+     * which can return contexts with knowledge of the application map canvas, active project, etc.
+     *
+     * \warning The \a generator must live for the lifetime of the application, or this method
+     * must explicitly be called with a NULLPTR argument to de-register the generator.
+     *
+     * \see createWidgetContext()
+     * \since QGIS 4.4
+     */
+    void registerWidgetContextGenerator( QgsProcessingWidgetContextGenerator *generator );
+
+    /**
+     * Register a Processing widget context.
+     *
+     * \note This returns a "top-level", application widget context
+     * with knowledge of the application map canvas, active project, etc. Individual Processing GUI
+     * subcomponents may start with this context, then further refine with lower-level specific components
+     * (such as individual model-specific properties)
+     *
+     * \see createWidgetContext()
+     * \since QGIS 4.4
+     */
+    QgsProcessingParameterWidgetContext createWidgetContext() override;
+
   private:
 #ifdef SIP_RUN
     QgsProcessingGuiRegistry( const QgsProcessingGuiRegistry &other );
@@ -215,6 +244,8 @@ class GUI_EXPORT QgsProcessingGuiRegistry
 
     QList<QPointer<QgsProcessingModelConfigWidgetFactory>> mModelConfigWidgetFactories;
     std::unique_ptr< QgsProcessingGuiInternalModelConfigWidgetFactory > mModelConfigWidgetFactory;
+
+    QgsProcessingWidgetContextGenerator *mWidgetContextGenerator = nullptr;
 };
 
 

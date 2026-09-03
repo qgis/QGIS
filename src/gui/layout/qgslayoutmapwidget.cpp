@@ -20,7 +20,7 @@
 
 #include "qgsbookmarkmodel.h"
 #include "qgsfillsymbol.h"
-#include "qgsguiutils.h"
+#include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayout.h"
 #include "qgslayoutatlas.h"
@@ -114,7 +114,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   setPanelTitle( tr( "Map Properties" ) );
   mMapRotationSpinBox->setClearValue( 0 );
 
-  mDockToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mDockToolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
 
   mLayersMenu = new QMenu( this );
   QToolButton *btnLayers = new QToolButton( this );

@@ -44,6 +44,7 @@ class QgsPdalCompareAlgorithm : public QgsPdalAlgorithmBase
     QString groupId() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QList<QgsAcademicReference> academicReferences() const override;
     QString shortDescription() const override;
     QgsPdalCompareAlgorithm *createInstance() const override SIP_FACTORY;
     bool checkParameterValues( const QVariantMap &parameters, QgsProcessingContext &context, QString *message ) const override;

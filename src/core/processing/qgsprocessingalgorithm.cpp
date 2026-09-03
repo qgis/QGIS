@@ -19,6 +19,7 @@
 
 #include <memory>
 
+#include "qgsacademicreference.h"
 #include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontextutils.h"
@@ -88,6 +89,11 @@ QString QgsProcessingAlgorithm::helpUrl() const
 Qgis::ProcessingAlgorithmDocumentationFlags QgsProcessingAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlags();
+}
+
+QList<QgsAcademicReference> QgsProcessingAlgorithm::academicReferences() const
+{
+  return {};
 }
 
 QIcon QgsProcessingAlgorithm::icon() const

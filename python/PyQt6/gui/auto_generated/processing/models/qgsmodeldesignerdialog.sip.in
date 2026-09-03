@@ -12,7 +12,7 @@
 
 
 
-class QgsModelDesignerDialog : QMainWindow, QgsProcessingFeedbackGenerator
+class QgsModelDesignerDialog : QMainWindow, QgsProcessingFeedbackGenerator, QgsProcessingContextGenerator, QgsProcessingWidgetContextGenerator
 {
 %Docstring(signature="appended")
 Model designer dialog base class.
@@ -89,6 +89,8 @@ Returns the related model scene.
 
     virtual QgsProcessingFeedback *createFeedback() /Factory/;
 
+    virtual QgsProcessingParameterWidgetContext createWidgetContext();
+
 
     enum class SaveAction
     {
@@ -118,16 +120,13 @@ Raise, unminimize and activate this window.
 
     virtual QgsProcessingAlgorithmWidgetBase *createExecutionWidget() = 0 /TransferBack/;
 
-    virtual QgsProcessingParameterWidgetContext createWidgetContext() = 0;
-%Docstring
-Creates a new widget context appropriate for the dialog.
-%End
-
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 %Docstring
 Registers a Processing context ``generator`` class that will be used to
 retrieve a Processing context for the dialog when required.
 %End
+    virtual QgsProcessingContext *processingContext() const;
+
 
     QToolBar *toolbar();
     QAction *actionOpen();
@@ -179,6 +178,16 @@ class QgsModelChildDependenciesWidget : QWidget
     QgsModelChildDependenciesWidget( QWidget *parent, QgsProcessingModelAlgorithm *model, const QString &childId );
     QList<QgsProcessingModelChildDependency> value() const;
     void setValue( const QList<QgsProcessingModelChildDependency> &value );
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the dependencies are changed in the widget.
+
+.. versionadded:: 4.4
+%End
+
 };
 
 /************************************************************************

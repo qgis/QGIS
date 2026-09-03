@@ -19,6 +19,7 @@
 
 #include <memory>
 
+#include "qgsacademicreference.h"
 #include "qgspointcloudlayer.h"
 #include "qgsprocessingutils.h"
 #include "qgsrunprocess.h"
@@ -71,13 +72,14 @@ QString QgsPdalCompareAlgorithm::shortHelpString() const
          + QObject::tr(
            "The approach is highly robust against sensor noise and surface roughness, making it the standard for detecting change in complex natural environments. It also provides a sign (indicating "
            "whether a surface has moved in or out) and a statistically significant level of detection to distinguish real change from measurement error."
-         )
-         + u"\n\n"_s
-         + QObject::tr(
-           "References: Lague, Dimitri, Nicolas Brodu, and Jérôme Leroux. Accurate 3D Comparison of Complex Topography with Terrestrial Laser Scanner: Application to the Rangitikei Canyon (N-Z). "
-           "arXiv, 2013, https://arxiv.org/abs/1302.1183."
          );
-  ;
+}
+
+QList<QgsAcademicReference> QgsPdalCompareAlgorithm::academicReferences() const
+{
+  const QgsAcademicReference ref = QgsAcademicReference::
+    createPreprint( { u"Lague"_s, u"Dimitri"_s, u"Brodu, N."_s, u"Leroux, J."_s }, 2013, u"Accurate 3D Comparison of Complex Topography with Terrestrial Laser Scanner: Application to the Rangitikei Canyon (N-Z)."_s, u"arXiv"_s, u"https://arxiv.org/abs/1302.1183"_s );
+  return { ref };
 }
 
 QString QgsPdalCompareAlgorithm::shortDescription() const
