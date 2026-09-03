@@ -109,7 +109,7 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * \see showPluginManager()
      */
-    virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
+    virtual QgsPluginManagerInterface *pluginManagerInterface() = 0 SIP_DISALLOWNONE;
 
     /**
      * Shows the Plugin Manager window.
@@ -124,12 +124,12 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void showPluginManager( int tabIndex = -1, const QString &searchTerm = QString() ) = 0;
 
-    virtual QgsLayerTreeView *layerTreeView() = 0;
+    virtual QgsLayerTreeView *layerTreeView() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns an interface to allow plugins to use QGIS GPS tools.
      */
-    virtual QgsGpsToolsInterface *gpsTools() = 0;
+    virtual QgsGpsToolsInterface *gpsTools() = 0 SIP_DISALLOWNONE;
 
     /**
      * Adds an \a action to context menu for layers in the layer tree.
@@ -219,7 +219,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsMapLayer *activeLayer() = 0;
 
     //! Returns a pointer to the map canvas
-    virtual QgsMapCanvas *mapCanvas() = 0;
+    virtual QgsMapCanvas *mapCanvas() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a list of the active decorations.
@@ -231,13 +231,13 @@ class GUI_EXPORT QgisInterface : public QObject
      * Returns a pointer to the layer tree canvas bridge
      *
      */
-    virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
+    virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0 SIP_DISALLOWNONE;
 
     //! Returns a pointer to the main window (instance of QgisApp in case of QGIS)
-    virtual QWidget *mainWindow() = 0;
+    virtual QWidget *mainWindow() = 0 SIP_DISALLOWNONE;
 
     //! Returns the message bar of the main app
-    virtual QgsMessageBar *messageBar() = 0;
+    virtual QgsMessageBar *messageBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns all currently open layout designers.
@@ -253,7 +253,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Returns a reference to the app's advanced digitizing dock widget.
      */
-    virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
+    virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0 SIP_DISALLOWNONE;
 
     /*
      * Accessors for inserting items into menus and toolbars.
@@ -263,7 +263,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Returns a reference to the main window "Project" menu.
      */
-    virtual QMenu *projectMenu() = 0;
+    virtual QMenu *projectMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Import/Export" project menu.
@@ -272,7 +272,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see addProjectExportAction
      * \since QGIS 3.30
      */
-    virtual QMenu *projectImportExportMenu() = 0;
+    virtual QMenu *projectImportExportMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Adds an \a action to the QGIS "Import project" menu.
@@ -315,49 +315,49 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * \since QGIS 3.42
      */
-    virtual QMenu *projectModelsMenu() = 0;
+    virtual QMenu *projectModelsMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Creates a new project model submenu in the "Projects" - "Models" submenu.
      *
      * \since QGIS 3.42
      */
-    virtual QMenu *createProjectModelSubMenu( const QString &title ) = 0;
+    virtual QMenu *createProjectModelSubMenu( const QString &title ) = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Edit" menu.
      */
-    virtual QMenu *editMenu() = 0;
+    virtual QMenu *editMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "View" menu.
      */
-    virtual QMenu *viewMenu() = 0;
+    virtual QMenu *viewMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Layer" menu.
      */
-    virtual QMenu *layerMenu() = 0;
+    virtual QMenu *layerMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Create New Layer" menu.
      */
-    virtual QMenu *newLayerMenu() = 0;
+    virtual QMenu *newLayerMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Add Layer" menu.
      */
-    virtual QMenu *addLayerMenu() = 0;
+    virtual QMenu *addLayerMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Settings" menu.
      */
-    virtual QMenu *settingsMenu() = 0;
+    virtual QMenu *settingsMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Plugin" menu.
      */
-    virtual QMenu *pluginMenu() = 0;
+    virtual QMenu *pluginMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Plugin Help" sub-menu.
@@ -367,34 +367,34 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * \since QGIS 3.10
      */
-    virtual QMenu *pluginHelpMenu() = 0;
+    virtual QMenu *pluginHelpMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Raster" menu.
      */
-    virtual QMenu *rasterMenu() = 0;
+    virtual QMenu *rasterMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Database" menu.
      */
-    virtual QMenu *databaseMenu() = 0;
+    virtual QMenu *databaseMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Vector" menu.
      */
-    virtual QMenu *vectorMenu() = 0;
+    virtual QMenu *vectorMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Web" menu.
      */
-    virtual QMenu *webMenu() = 0;
+    virtual QMenu *webMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Mesh" menu.
      *
      * \since QGIS 3.34
      */
-    virtual QMenu *meshMenu() = 0;
+    virtual QMenu *meshMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the right most standard menu, which is
@@ -403,35 +403,35 @@ class GUI_EXPORT QgisInterface : public QObject
      * This can be used to insert additional top-level menus into
      * their correct position BEFORE the help menu.
      */
-    virtual QMenu *firstRightStandardMenu() = 0;
+    virtual QMenu *firstRightStandardMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Window" menu.
      */
-    virtual QMenu *windowMenu() = 0;
+    virtual QMenu *windowMenu() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Help" menu.
      */
-    virtual QMenu *helpMenu() = 0;
+    virtual QMenu *helpMenu() = 0 SIP_DISALLOWNONE;
 
     // ToolBars
 
     /**
      * Returns a reference to the main window "File" toolbar.
      */
-    virtual QToolBar *fileToolBar() = 0;
+    virtual QToolBar *fileToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Layer" toolbar.
      */
-    virtual QToolBar *layerToolBar() = 0;
+    virtual QToolBar *layerToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Data Source Manager" toolbar.
      * \since QGIS 3.4
      */
-    virtual QToolBar *dataSourceManagerToolBar() = 0;
+    virtual QToolBar *dataSourceManagerToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Opens a page in the main window "Data Source Manager" dialog.
@@ -445,127 +445,127 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Returns a reference to the main window "Map Navigation" toolbar.
      */
-    virtual QToolBar *mapNavToolToolBar() = 0;
+    virtual QToolBar *mapNavToolToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Digitize" toolbar.
      */
-    virtual QToolBar *digitizeToolBar() = 0;
+    virtual QToolBar *digitizeToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Advanced Digitizing" toolbar.
      */
-    virtual QToolBar *advancedDigitizeToolBar() = 0;
+    virtual QToolBar *advancedDigitizeToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Shape Digitizing" toolbar.
      */
-    virtual QToolBar *shapeDigitizeToolBar() = 0;
+    virtual QToolBar *shapeDigitizeToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Attributes" toolbar.
      */
-    virtual QToolBar *attributesToolBar() = 0;
+    virtual QToolBar *attributesToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Selection" toolbar.
      * \since QGIS 3.14
      */
-    virtual QToolBar *selectionToolBar() = 0;
+    virtual QToolBar *selectionToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Plugin" toolbar.
      */
-    virtual QToolBar *pluginToolBar() = 0;
+    virtual QToolBar *pluginToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Help" toolbar.
      */
-    virtual QToolBar *helpToolBar() = 0;
+    virtual QToolBar *helpToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Raster" toolbar.
      */
-    virtual QToolBar *rasterToolBar() = 0;
+    virtual QToolBar *rasterToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Vector" toolbar.
      */
-    virtual QToolBar *vectorToolBar() = 0;
+    virtual QToolBar *vectorToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Database" toolbar.
      */
-    virtual QToolBar *databaseToolBar() = 0;
+    virtual QToolBar *databaseToolBar() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns a reference to the main window "Web" toolbar.
      */
-    virtual QToolBar *webToolBar() = 0;
+    virtual QToolBar *webToolBar() = 0 SIP_DISALLOWNONE;
 
     // Project menu actions
     //! Returns the native New Project action.
-    virtual QAction *actionNewProject() = 0;
+    virtual QAction *actionNewProject() = 0 SIP_DISALLOWNONE;
     //! Returns the Open Project action.
-    virtual QAction *actionOpenProject() = 0;
+    virtual QAction *actionOpenProject() = 0 SIP_DISALLOWNONE;
     //! Returns the native Save Project action.
-    virtual QAction *actionSaveProject() = 0;
+    virtual QAction *actionSaveProject() = 0 SIP_DISALLOWNONE;
     //! Returns the native Save Project As action.
-    virtual QAction *actionSaveProjectAs() = 0;
+    virtual QAction *actionSaveProjectAs() = 0 SIP_DISALLOWNONE;
     //! Returns the native Save Map as Image action.
-    virtual QAction *actionSaveMapAsImage() = 0;
+    virtual QAction *actionSaveMapAsImage() = 0 SIP_DISALLOWNONE;
     //! Returns the native Project Properties action.
-    virtual QAction *actionProjectProperties() = 0;
+    virtual QAction *actionProjectProperties() = 0 SIP_DISALLOWNONE;
 
     //! Creates new print layout action
-    virtual QAction *actionCreatePrintLayout() = 0;
+    virtual QAction *actionCreatePrintLayout() = 0 SIP_DISALLOWNONE;
 
     //! Shows layout manager action
-    virtual QAction *actionShowLayoutManager() = 0;
+    virtual QAction *actionShowLayoutManager() = 0 SIP_DISALLOWNONE;
     //! Returns the Exit QGIS action.
-    virtual QAction *actionExit() = 0;
+    virtual QAction *actionExit() = 0 SIP_DISALLOWNONE;
 
     // Edit menu actions
 
     //! Returns the native Cut Features action.
-    virtual QAction *actionCutFeatures() = 0;
+    virtual QAction *actionCutFeatures() = 0 SIP_DISALLOWNONE;
     //! Returns the native Copy Features action.
-    virtual QAction *actionCopyFeatures() = 0;
+    virtual QAction *actionCopyFeatures() = 0 SIP_DISALLOWNONE;
     //! Returns the native Paste Features action.
-    virtual QAction *actionPasteFeatures() = 0;
+    virtual QAction *actionPasteFeatures() = 0 SIP_DISALLOWNONE;
     //! Returns the native Add Feature action.
-    virtual QAction *actionAddFeature() = 0;
+    virtual QAction *actionAddFeature() = 0 SIP_DISALLOWNONE;
     //! Returns the native Delete Selected Features action.
-    virtual QAction *actionDeleteSelected() = 0;
+    virtual QAction *actionDeleteSelected() = 0 SIP_DISALLOWNONE;
     //! Returns the native Move Features action.
-    virtual QAction *actionMoveFeature() = 0;
+    virtual QAction *actionMoveFeature() = 0 SIP_DISALLOWNONE;
     //! Returns the native Split Features action.
-    virtual QAction *actionSplitFeatures() = 0;
+    virtual QAction *actionSplitFeatures() = 0 SIP_DISALLOWNONE;
     //! Returns the native Split Parts action.
-    virtual QAction *actionSplitParts() = 0;
+    virtual QAction *actionSplitParts() = 0 SIP_DISALLOWNONE;
     //! Returns the native Add Ring action.
-    virtual QAction *actionAddRing() = 0;
+    virtual QAction *actionAddRing() = 0 SIP_DISALLOWNONE;
     //! Returns the native Add Part action.
-    virtual QAction *actionAddPart() = 0;
+    virtual QAction *actionAddPart() = 0 SIP_DISALLOWNONE;
     //! Returns the native Simplify/Smooth Features action.
-    virtual QAction *actionSimplifyFeature() = 0;
+    virtual QAction *actionSimplifyFeature() = 0 SIP_DISALLOWNONE;
     //! Returns the native Delete Ring action.
-    virtual QAction *actionDeleteRing() = 0;
+    virtual QAction *actionDeleteRing() = 0 SIP_DISALLOWNONE;
     //! Returns the native Delete Part action.
-    virtual QAction *actionDeletePart() = 0;
+    virtual QAction *actionDeletePart() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native "Vertex Tool for All Layers" action.
      * \see actionVertexToolActiveLayer()
     */
-    virtual QAction *actionVertexTool() = 0;
+    virtual QAction *actionVertexTool() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native "Vertex Tool for Active Layer" action.
      * \see actionVertexTool()
      * \since QGIS 3.6
     */
-    virtual QAction *actionVertexToolActiveLayer() = 0;
+    virtual QAction *actionVertexToolActiveLayer() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the action group for map tools.
@@ -575,7 +575,7 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * \since QGIS 3.16
      */
-    virtual QActionGroup *mapToolActionGroup() = 0;
+    virtual QActionGroup *mapToolActionGroup() = 0 SIP_DISALLOWNONE;
 
     // View menu actions
 
@@ -584,98 +584,98 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * Call trigger() on it to set the default pan map tool.
      */
-    virtual QAction *actionPan() = 0;
+    virtual QAction *actionPan() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native pan to selected action.
      *
      * Call trigger() on it to pan the map canvas to the selection.
      */
-    virtual QAction *actionPanToSelected() = 0;
+    virtual QAction *actionPanToSelected() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native zoom in action.
      *
      * Call trigger() on it to set the default zoom in map tool.
      */
-    virtual QAction *actionZoomIn() = 0;
+    virtual QAction *actionZoomIn() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native zoom out action.
      *
      * Call trigger() on it to set the default zoom out map tool.
      */
-    virtual QAction *actionZoomOut() = 0;
+    virtual QAction *actionZoomOut() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native select action.
      *
      * Call trigger() on it to set the default select map tool.
      */
-    virtual QAction *actionSelect() = 0;
+    virtual QAction *actionSelect() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native select rectangle action.
      *
      * Call trigger() on it to set the default select rectangle map tool.
      */
-    virtual QAction *actionSelectRectangle() = 0;
+    virtual QAction *actionSelectRectangle() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native select polygon action.
      *
      * Call trigger() on it to set the default select polygon map tool.
      */
-    virtual QAction *actionSelectPolygon() = 0;
+    virtual QAction *actionSelectPolygon() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native select freehand action.
      *
      * Call trigger() on it to set the default select freehand map tool.
      */
-    virtual QAction *actionSelectFreehand() = 0;
+    virtual QAction *actionSelectFreehand() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native select radius action.
      *
      * Call trigger() on it to set the default select radius map tool.
      */
-    virtual QAction *actionSelectRadius() = 0;
+    virtual QAction *actionSelectRadius() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native identify action.
      *
      * Call trigger() on it to set the default identify map tool.
      */
-    virtual QAction *actionIdentify() = 0;
+    virtual QAction *actionIdentify() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native run action feature action.
      *
      * Call trigger() on it to set the default run feature action map tool.
      */
-    virtual QAction *actionFeatureAction() = 0;
+    virtual QAction *actionFeatureAction() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native measure action.
      *
      * Call trigger() on it to set the default measure map tool.
      */
-    virtual QAction *actionMeasure() = 0;
+    virtual QAction *actionMeasure() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native measure area action.
      *
      * Call trigger() on it to set the default measure area map tool.
      */
-    virtual QAction *actionMeasureArea() = 0;
+    virtual QAction *actionMeasureArea() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native zoom full extent action.
      *
      * Call trigger() on it to zoom to the full extent.
      */
-    virtual QAction *actionZoomFullExtent() = 0;
+    virtual QAction *actionZoomFullExtent() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native zoom to layer action.
@@ -692,155 +692,155 @@ class GUI_EXPORT QgisInterface : public QObject
      * Call trigger() on it to zoom to the selected layers.
      * \since QGIS 3.18
      */
-    virtual QAction *actionZoomToLayers() = 0;
+    virtual QAction *actionZoomToLayers() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native zoom to selected action.
      *
      * Call trigger() on it to zoom to the current selection.
      */
-    virtual QAction *actionZoomToSelected() = 0;
+    virtual QAction *actionZoomToSelected() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native zoom last action.
      *
      * Call trigger() on it to zoom to last.
      */
-    virtual QAction *actionZoomLast() = 0;
+    virtual QAction *actionZoomLast() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native zoom next action.
      *
      * Call trigger() on it to zoom to next.
      */
-    virtual QAction *actionZoomNext() = 0;
+    virtual QAction *actionZoomNext() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native zoom resolution (100%) action.
      *
      * Call trigger() on it to zoom to actual size.
      */
-    virtual QAction *actionZoomActualSize() = 0;
+    virtual QAction *actionZoomActualSize() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native map tips action.
      *
      * Call trigger() on it to toggle map tips.
      */
-    virtual QAction *actionMapTips() = 0;
+    virtual QAction *actionMapTips() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native new bookmark action.
      *
      * Call trigger() on it to open the new bookmark dialog.
      */
-    virtual QAction *actionNewBookmark() = 0;
+    virtual QAction *actionNewBookmark() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native show bookmarks action.
      *
      * Call trigger() on it to open the bookmarks dialog.
      */
-    virtual QAction *actionShowBookmarks() = 0;
+    virtual QAction *actionShowBookmarks() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native draw action.
      */
-    virtual QAction *actionDraw() = 0;
+    virtual QAction *actionDraw() = 0 SIP_DISALLOWNONE;
 
     // Layer menu actions
-    virtual QAction *actionNewVectorLayer() = 0;
-    virtual QAction *actionAddOgrLayer() = 0;
-    virtual QAction *actionAddRasterLayer() = 0;
-    virtual QAction *actionAddPgLayer() = 0;
-    virtual QAction *actionAddWmsLayer() = 0;
+    virtual QAction *actionNewVectorLayer() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionAddOgrLayer() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionAddRasterLayer() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionAddPgLayer() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionAddWmsLayer() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native Add XYZ Layer action.
      * \since QGIS 3.14
      */
-    virtual QAction *actionAddXyzLayer() = 0;
+    virtual QAction *actionAddXyzLayer() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native Add Vector Tile Layer action.
      * \since QGIS 3.14
      */
-    virtual QAction *actionAddVectorTileLayer() = 0;
+    virtual QAction *actionAddVectorTileLayer() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the native Add Point Cloud Layer action.
      * \since QGIS 3.18
      */
-    virtual QAction *actionAddPointCloudLayer() = 0;
+    virtual QAction *actionAddPointCloudLayer() = 0 SIP_DISALLOWNONE;
 
     //! Returns the native Add ArcGIS REST Server action.
-    virtual QAction *actionAddAfsLayer() = 0;
+    virtual QAction *actionAddAfsLayer() = 0 SIP_DISALLOWNONE;
 
     //! Returns the native Add ArcGIS REST Server action.
-    virtual QAction *actionAddAmsLayer() = 0;
+    virtual QAction *actionAddAmsLayer() = 0 SIP_DISALLOWNONE;
 
-    virtual QAction *actionCopyLayerStyle() = 0;
-    virtual QAction *actionPasteLayerStyle() = 0;
-    virtual QAction *actionOpenTable() = 0;
-    virtual QAction *actionOpenFieldCalculator() = 0;
+    virtual QAction *actionCopyLayerStyle() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionPasteLayerStyle() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionOpenTable() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionOpenFieldCalculator() = 0 SIP_DISALLOWNONE;
 
     /**
      * Statistical summary action.
      */
-    virtual QAction *actionOpenStatisticalSummary() = 0;
+    virtual QAction *actionOpenStatisticalSummary() = 0 SIP_DISALLOWNONE;
 
-    virtual QAction *actionToggleEditing() = 0;
-    virtual QAction *actionSaveActiveLayerEdits() = 0;
-    virtual QAction *actionAllEdits() = 0;
-    virtual QAction *actionSaveEdits() = 0;
-    virtual QAction *actionSaveAllEdits() = 0;
-    virtual QAction *actionRollbackEdits() = 0;
-    virtual QAction *actionRollbackAllEdits() = 0;
-    virtual QAction *actionCancelEdits() = 0;
-    virtual QAction *actionCancelAllEdits() = 0;
-    virtual QAction *actionLayerSaveAs() = 0;
-    virtual QAction *actionDuplicateLayer() = 0;
-    virtual QAction *actionLayerProperties() = 0;
-    virtual QAction *actionAddToOverview() = 0;
-    virtual QAction *actionAddAllToOverview() = 0;
-    virtual QAction *actionRemoveAllFromOverview() = 0;
-    virtual QAction *actionHideAllLayers() = 0;
-    virtual QAction *actionShowAllLayers() = 0;
-    virtual QAction *actionHideSelectedLayers() = 0;
+    virtual QAction *actionToggleEditing() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionSaveActiveLayerEdits() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionAllEdits() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionSaveEdits() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionSaveAllEdits() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionRollbackEdits() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionRollbackAllEdits() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionCancelEdits() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionCancelAllEdits() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionLayerSaveAs() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionDuplicateLayer() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionLayerProperties() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionAddToOverview() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionAddAllToOverview() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionRemoveAllFromOverview() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionHideAllLayers() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionShowAllLayers() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionHideSelectedLayers() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the Toggle Selected Layers action.
      * \since QGIS 3.14
      */
-    virtual QAction *actionToggleSelectedLayers() = 0;
+    virtual QAction *actionToggleSelectedLayers() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the Toggle Selected Layers Independently action.
      * \since QGIS 3.14
      */
-    virtual QAction *actionToggleSelectedLayersIndependently() = 0;
+    virtual QAction *actionToggleSelectedLayersIndependently() = 0 SIP_DISALLOWNONE;
 
     /**
      * Returns the Hide Deselected Layers action.
      */
-    virtual QAction *actionHideDeselectedLayers() = 0;
-    virtual QAction *actionShowSelectedLayers() = 0;
+    virtual QAction *actionHideDeselectedLayers() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionShowSelectedLayers() = 0 SIP_DISALLOWNONE;
 
     // Plugin menu actions
-    virtual QAction *actionManagePlugins() = 0;
-    virtual QAction *actionPluginListSeparator() = 0;
-    virtual QAction *actionShowPythonDialog() = 0;
+    virtual QAction *actionManagePlugins() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionPluginListSeparator() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionShowPythonDialog() = 0 SIP_DISALLOWNONE;
 
     // Settings menu actions
-    virtual QAction *actionToggleFullScreen() = 0;
-    virtual QAction *actionOptions() = 0;
-    virtual QAction *actionCustomProjection() = 0;
+    virtual QAction *actionToggleFullScreen() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionOptions() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionCustomProjection() = 0 SIP_DISALLOWNONE;
 
     // Help menu actions
-    virtual QAction *actionHelpContents() = 0;
-    virtual QAction *actionQgisHomePage() = 0;
-    virtual QAction *actionCheckQgisVersion() = 0;
-    virtual QAction *actionAbout() = 0;
+    virtual QAction *actionHelpContents() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionQgisHomePage() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionCheckQgisVersion() = 0 SIP_DISALLOWNONE;
+    virtual QAction *actionAbout() = 0 SIP_DISALLOWNONE;
 
     // Shape digitize actions
 
@@ -980,7 +980,7 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * \returns An instance of the vector layer tools
      */
-    virtual QgsVectorLayerTools *vectorLayerTools() = 0;
+    virtual QgsVectorLayerTools *vectorLayerTools() = 0 SIP_DISALLOWNONE;
 
     //! Returns the timeout for timed messages: default of 5 seconds
     virtual int messageTimeout() = 0;
@@ -991,7 +991,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * This should be used for interacting and adding widgets and messages to the app's
      * status bar (do not use the native Qt statusBar() method).
      */
-    virtual QgsStatusBar *statusBarIface() = 0;
+    virtual QgsStatusBar *statusBarIface() = 0 SIP_DISALLOWNONE;
 
     /**
      * Take screenshots for user documentation
@@ -1018,7 +1018,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Returns a reference to the user profile manager
      * \since QGIS 3.30
     */
-    virtual QgsUserProfileManager *userProfileManager() = 0;
+    virtual QgsUserProfileManager *userProfileManager() = 0 SIP_DISALLOWNONE;
 
   public slots: // TODO: do these functions really need to be slots?
 
@@ -1710,7 +1710,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * creating a new browser model for every use.
      * \since QGIS 3.4
      */
-    virtual QgsBrowserGuiModel *browserModel() = 0;
+    virtual QgsBrowserGuiModel *browserModel() = 0 SIP_DISALLOWNONE;
 
     /**
      * Sets a GPS \a connection to use within the GPS Panel widget.

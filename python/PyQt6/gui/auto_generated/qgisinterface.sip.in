@@ -37,7 +37,7 @@ could provide their own implementation to be able to use plugins.
   public:
     QgisInterface();
 
-    virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
+    virtual QgsPluginManagerInterface *pluginManagerInterface() = 0 /DisallowNone/;
 %Docstring
 Returns the inbuilt plugin manager interface.
 
@@ -64,9 +64,9 @@ Shows the Plugin Manager window.
 .. versionadded:: 4.2
 %End
 
-    virtual QgsLayerTreeView *layerTreeView() = 0;
+    virtual QgsLayerTreeView *layerTreeView() = 0 /DisallowNone/;
 
-    virtual QgsGpsToolsInterface *gpsTools() = 0;
+    virtual QgsGpsToolsInterface *gpsTools() = 0 /DisallowNone/;
 %Docstring
 Returns an interface to allow plugins to use QGIS GPS tools.
 %End
@@ -179,7 +179,7 @@ Returns vector layers in edit mode.
 Returns a pointer to the active layer (layer selected in the legend)
 %End
 
-    virtual QgsMapCanvas *mapCanvas() = 0;
+    virtual QgsMapCanvas *mapCanvas() = 0 /DisallowNone/;
 %Docstring
 Returns a pointer to the map canvas
 %End
@@ -191,18 +191,18 @@ Returns a list of the active decorations.
 .. versionadded:: 3.22
 %End
 
-    virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
+    virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0 /DisallowNone/;
 %Docstring
 Returns a pointer to the layer tree canvas bridge
 %End
 
-    virtual QWidget *mainWindow() = 0;
+    virtual QWidget *mainWindow() = 0 /DisallowNone/;
 %Docstring
 Returns a pointer to the main window (instance of QgisApp in case of
 QGIS)
 %End
 
-    virtual QgsMessageBar *messageBar() = 0;
+    virtual QgsMessageBar *messageBar() = 0 /DisallowNone/;
 %Docstring
 Returns the message bar of the main app
 %End
@@ -222,18 +222,18 @@ Returns changeable options built from settings and/or defaults
 Returns a reference font for initial qApp (may not be same as QgisApp)
 %End
 
-    virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
+    virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the app's advanced digitizing dock widget.
 %End
 
 
-    virtual QMenu *projectMenu() = 0;
+    virtual QMenu *projectMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Project" menu.
 %End
 
-    virtual QMenu *projectImportExportMenu() = 0;
+    virtual QMenu *projectImportExportMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Import/Export" project menu.
 
@@ -288,14 +288,14 @@ Removes an ``action`` from the the QGIS "Export project" menu.
 .. versionadded:: 3.30
 %End
 
-    virtual QMenu *projectModelsMenu() = 0;
+    virtual QMenu *projectModelsMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Projects" - "Models" submenu.
 
 .. versionadded:: 3.42
 %End
 
-    virtual QMenu *createProjectModelSubMenu( const QString &title ) = 0;
+    virtual QMenu *createProjectModelSubMenu( const QString &title ) = 0 /DisallowNone/;
 %Docstring
 Creates a new project model submenu in the "Projects" - "Models"
 submenu.
@@ -303,42 +303,42 @@ submenu.
 .. versionadded:: 3.42
 %End
 
-    virtual QMenu *editMenu() = 0;
+    virtual QMenu *editMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Edit" menu.
 %End
 
-    virtual QMenu *viewMenu() = 0;
+    virtual QMenu *viewMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "View" menu.
 %End
 
-    virtual QMenu *layerMenu() = 0;
+    virtual QMenu *layerMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Layer" menu.
 %End
 
-    virtual QMenu *newLayerMenu() = 0;
+    virtual QMenu *newLayerMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Create New Layer" menu.
 %End
 
-    virtual QMenu *addLayerMenu() = 0;
+    virtual QMenu *addLayerMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Add Layer" menu.
 %End
 
-    virtual QMenu *settingsMenu() = 0;
+    virtual QMenu *settingsMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Settings" menu.
 %End
 
-    virtual QMenu *pluginMenu() = 0;
+    virtual QMenu *pluginMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Plugin" menu.
 %End
 
-    virtual QMenu *pluginHelpMenu() = 0;
+    virtual QMenu *pluginHelpMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Plugin Help" sub-menu.
 
@@ -350,34 +350,34 @@ or About actions.
 .. versionadded:: 3.10
 %End
 
-    virtual QMenu *rasterMenu() = 0;
+    virtual QMenu *rasterMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Raster" menu.
 %End
 
-    virtual QMenu *databaseMenu() = 0;
+    virtual QMenu *databaseMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Database" menu.
 %End
 
-    virtual QMenu *vectorMenu() = 0;
+    virtual QMenu *vectorMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Vector" menu.
 %End
 
-    virtual QMenu *webMenu() = 0;
+    virtual QMenu *webMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Web" menu.
 %End
 
-    virtual QMenu *meshMenu() = 0;
+    virtual QMenu *meshMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Mesh" menu.
 
 .. versionadded:: 3.34
 %End
 
-    virtual QMenu *firstRightStandardMenu() = 0;
+    virtual QMenu *firstRightStandardMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the right most standard menu, which is usually
 the last menu item before the "Help" menu.
@@ -386,28 +386,28 @@ This can be used to insert additional top-level menus into their correct
 position BEFORE the help menu.
 %End
 
-    virtual QMenu *windowMenu() = 0;
+    virtual QMenu *windowMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Window" menu.
 %End
 
-    virtual QMenu *helpMenu() = 0;
+    virtual QMenu *helpMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Help" menu.
 %End
 
 
-    virtual QToolBar *fileToolBar() = 0;
+    virtual QToolBar *fileToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "File" toolbar.
 %End
 
-    virtual QToolBar *layerToolBar() = 0;
+    virtual QToolBar *layerToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Layer" toolbar.
 %End
 
-    virtual QToolBar *dataSourceManagerToolBar() = 0;
+    virtual QToolBar *dataSourceManagerToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Data Source Manager" toolbar.
 
@@ -423,169 +423,169 @@ This method creates and opens the dialog if it is not already visible.
 .. versionadded:: 3.30
 %End
 
-    virtual QToolBar *mapNavToolToolBar() = 0;
+    virtual QToolBar *mapNavToolToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Map Navigation" toolbar.
 %End
 
-    virtual QToolBar *digitizeToolBar() = 0;
+    virtual QToolBar *digitizeToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Digitize" toolbar.
 %End
 
-    virtual QToolBar *advancedDigitizeToolBar() = 0;
+    virtual QToolBar *advancedDigitizeToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Advanced Digitizing" toolbar.
 %End
 
-    virtual QToolBar *shapeDigitizeToolBar() = 0;
+    virtual QToolBar *shapeDigitizeToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Shape Digitizing" toolbar.
 %End
 
-    virtual QToolBar *attributesToolBar() = 0;
+    virtual QToolBar *attributesToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Attributes" toolbar.
 %End
 
-    virtual QToolBar *selectionToolBar() = 0;
+    virtual QToolBar *selectionToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Selection" toolbar.
 
 .. versionadded:: 3.14
 %End
 
-    virtual QToolBar *pluginToolBar() = 0;
+    virtual QToolBar *pluginToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Plugin" toolbar.
 %End
 
-    virtual QToolBar *helpToolBar() = 0;
+    virtual QToolBar *helpToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Help" toolbar.
 %End
 
-    virtual QToolBar *rasterToolBar() = 0;
+    virtual QToolBar *rasterToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Raster" toolbar.
 %End
 
-    virtual QToolBar *vectorToolBar() = 0;
+    virtual QToolBar *vectorToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Vector" toolbar.
 %End
 
-    virtual QToolBar *databaseToolBar() = 0;
+    virtual QToolBar *databaseToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Database" toolbar.
 %End
 
-    virtual QToolBar *webToolBar() = 0;
+    virtual QToolBar *webToolBar() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the main window "Web" toolbar.
 %End
 
-    virtual QAction *actionNewProject() = 0;
+    virtual QAction *actionNewProject() = 0 /DisallowNone/;
 %Docstring
 Returns the native New Project action.
 %End
-    virtual QAction *actionOpenProject() = 0;
+    virtual QAction *actionOpenProject() = 0 /DisallowNone/;
 %Docstring
 Returns the Open Project action.
 %End
-    virtual QAction *actionSaveProject() = 0;
+    virtual QAction *actionSaveProject() = 0 /DisallowNone/;
 %Docstring
 Returns the native Save Project action.
 %End
-    virtual QAction *actionSaveProjectAs() = 0;
+    virtual QAction *actionSaveProjectAs() = 0 /DisallowNone/;
 %Docstring
 Returns the native Save Project As action.
 %End
-    virtual QAction *actionSaveMapAsImage() = 0;
+    virtual QAction *actionSaveMapAsImage() = 0 /DisallowNone/;
 %Docstring
 Returns the native Save Map as Image action.
 %End
-    virtual QAction *actionProjectProperties() = 0;
+    virtual QAction *actionProjectProperties() = 0 /DisallowNone/;
 %Docstring
 Returns the native Project Properties action.
 %End
 
-    virtual QAction *actionCreatePrintLayout() = 0;
+    virtual QAction *actionCreatePrintLayout() = 0 /DisallowNone/;
 %Docstring
 Creates new print layout action
 %End
 
-    virtual QAction *actionShowLayoutManager() = 0;
+    virtual QAction *actionShowLayoutManager() = 0 /DisallowNone/;
 %Docstring
 Shows layout manager action
 %End
-    virtual QAction *actionExit() = 0;
+    virtual QAction *actionExit() = 0 /DisallowNone/;
 %Docstring
 Returns the Exit QGIS action.
 %End
 
 
-    virtual QAction *actionCutFeatures() = 0;
+    virtual QAction *actionCutFeatures() = 0 /DisallowNone/;
 %Docstring
 Returns the native Cut Features action.
 %End
-    virtual QAction *actionCopyFeatures() = 0;
+    virtual QAction *actionCopyFeatures() = 0 /DisallowNone/;
 %Docstring
 Returns the native Copy Features action.
 %End
-    virtual QAction *actionPasteFeatures() = 0;
+    virtual QAction *actionPasteFeatures() = 0 /DisallowNone/;
 %Docstring
 Returns the native Paste Features action.
 %End
-    virtual QAction *actionAddFeature() = 0;
+    virtual QAction *actionAddFeature() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add Feature action.
 %End
-    virtual QAction *actionDeleteSelected() = 0;
+    virtual QAction *actionDeleteSelected() = 0 /DisallowNone/;
 %Docstring
 Returns the native Delete Selected Features action.
 %End
-    virtual QAction *actionMoveFeature() = 0;
+    virtual QAction *actionMoveFeature() = 0 /DisallowNone/;
 %Docstring
 Returns the native Move Features action.
 %End
-    virtual QAction *actionSplitFeatures() = 0;
+    virtual QAction *actionSplitFeatures() = 0 /DisallowNone/;
 %Docstring
 Returns the native Split Features action.
 %End
-    virtual QAction *actionSplitParts() = 0;
+    virtual QAction *actionSplitParts() = 0 /DisallowNone/;
 %Docstring
 Returns the native Split Parts action.
 %End
-    virtual QAction *actionAddRing() = 0;
+    virtual QAction *actionAddRing() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add Ring action.
 %End
-    virtual QAction *actionAddPart() = 0;
+    virtual QAction *actionAddPart() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add Part action.
 %End
-    virtual QAction *actionSimplifyFeature() = 0;
+    virtual QAction *actionSimplifyFeature() = 0 /DisallowNone/;
 %Docstring
 Returns the native Simplify/Smooth Features action.
 %End
-    virtual QAction *actionDeleteRing() = 0;
+    virtual QAction *actionDeleteRing() = 0 /DisallowNone/;
 %Docstring
 Returns the native Delete Ring action.
 %End
-    virtual QAction *actionDeletePart() = 0;
+    virtual QAction *actionDeletePart() = 0 /DisallowNone/;
 %Docstring
 Returns the native Delete Part action.
 %End
 
-    virtual QAction *actionVertexTool() = 0;
+    virtual QAction *actionVertexTool() = 0 /DisallowNone/;
 %Docstring
 Returns the native "Vertex Tool for All Layers" action.
 
 .. seealso:: :py:func:`actionVertexToolActiveLayer`
 %End
 
-    virtual QAction *actionVertexToolActiveLayer() = 0;
+    virtual QAction *actionVertexToolActiveLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native "Vertex Tool for Active Layer" action.
 
@@ -594,7 +594,7 @@ Returns the native "Vertex Tool for Active Layer" action.
 .. versionadded:: 3.6
 %End
 
-    virtual QActionGroup *mapToolActionGroup() = 0;
+    virtual QActionGroup *mapToolActionGroup() = 0 /DisallowNone/;
 %Docstring
 Returns the action group for map tools.
 
@@ -606,7 +606,7 @@ native, in-built map tool actions.
 %End
 
 
-    virtual QAction *actionPan() = 0;
+    virtual QAction *actionPan() = 0 /DisallowNone/;
 %Docstring
 Returns the native pan action.
 
@@ -614,7 +614,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default pan map
 tool.
 %End
 
-    virtual QAction *actionPanToSelected() = 0;
+    virtual QAction *actionPanToSelected() = 0 /DisallowNone/;
 %Docstring
 Returns the native pan to selected action.
 
@@ -622,7 +622,7 @@ Call :py:func:`~QgisInterface.trigger` on it to pan the map canvas to
 the selection.
 %End
 
-    virtual QAction *actionZoomIn() = 0;
+    virtual QAction *actionZoomIn() = 0 /DisallowNone/;
 %Docstring
 Returns the native zoom in action.
 
@@ -630,7 +630,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default zoom in
 map tool.
 %End
 
-    virtual QAction *actionZoomOut() = 0;
+    virtual QAction *actionZoomOut() = 0 /DisallowNone/;
 %Docstring
 Returns the native zoom out action.
 
@@ -638,7 +638,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default zoom out
 map tool.
 %End
 
-    virtual QAction *actionSelect() = 0;
+    virtual QAction *actionSelect() = 0 /DisallowNone/;
 %Docstring
 Returns the native select action.
 
@@ -646,7 +646,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default select
 map tool.
 %End
 
-    virtual QAction *actionSelectRectangle() = 0;
+    virtual QAction *actionSelectRectangle() = 0 /DisallowNone/;
 %Docstring
 Returns the native select rectangle action.
 
@@ -654,7 +654,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default select
 rectangle map tool.
 %End
 
-    virtual QAction *actionSelectPolygon() = 0;
+    virtual QAction *actionSelectPolygon() = 0 /DisallowNone/;
 %Docstring
 Returns the native select polygon action.
 
@@ -662,7 +662,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default select
 polygon map tool.
 %End
 
-    virtual QAction *actionSelectFreehand() = 0;
+    virtual QAction *actionSelectFreehand() = 0 /DisallowNone/;
 %Docstring
 Returns the native select freehand action.
 
@@ -670,7 +670,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default select
 freehand map tool.
 %End
 
-    virtual QAction *actionSelectRadius() = 0;
+    virtual QAction *actionSelectRadius() = 0 /DisallowNone/;
 %Docstring
 Returns the native select radius action.
 
@@ -678,7 +678,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default select
 radius map tool.
 %End
 
-    virtual QAction *actionIdentify() = 0;
+    virtual QAction *actionIdentify() = 0 /DisallowNone/;
 %Docstring
 Returns the native identify action.
 
@@ -686,7 +686,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default identify
 map tool.
 %End
 
-    virtual QAction *actionFeatureAction() = 0;
+    virtual QAction *actionFeatureAction() = 0 /DisallowNone/;
 %Docstring
 Returns the native run action feature action.
 
@@ -694,7 +694,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default run
 feature action map tool.
 %End
 
-    virtual QAction *actionMeasure() = 0;
+    virtual QAction *actionMeasure() = 0 /DisallowNone/;
 %Docstring
 Returns the native measure action.
 
@@ -702,7 +702,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default measure
 map tool.
 %End
 
-    virtual QAction *actionMeasureArea() = 0;
+    virtual QAction *actionMeasureArea() = 0 /DisallowNone/;
 %Docstring
 Returns the native measure area action.
 
@@ -710,7 +710,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the default measure
 area map tool.
 %End
 
-    virtual QAction *actionZoomFullExtent() = 0;
+    virtual QAction *actionZoomFullExtent() = 0 /DisallowNone/;
 %Docstring
 Returns the native zoom full extent action.
 
@@ -729,7 +729,7 @@ layer.
    Use :py:func:`~QgisInterface.actionZoomToLayers` instead.
 %End
 
-    virtual QAction *actionZoomToLayers() = 0;
+    virtual QAction *actionZoomToLayers() = 0 /DisallowNone/;
 %Docstring
 Returns the native zoom to layers action.
 
@@ -739,7 +739,7 @@ layers.
 .. versionadded:: 3.18
 %End
 
-    virtual QAction *actionZoomToSelected() = 0;
+    virtual QAction *actionZoomToSelected() = 0 /DisallowNone/;
 %Docstring
 Returns the native zoom to selected action.
 
@@ -747,35 +747,35 @@ Call :py:func:`~QgisInterface.trigger` on it to zoom to the current
 selection.
 %End
 
-    virtual QAction *actionZoomLast() = 0;
+    virtual QAction *actionZoomLast() = 0 /DisallowNone/;
 %Docstring
 Returns the native zoom last action.
 
 Call :py:func:`~QgisInterface.trigger` on it to zoom to last.
 %End
 
-    virtual QAction *actionZoomNext() = 0;
+    virtual QAction *actionZoomNext() = 0 /DisallowNone/;
 %Docstring
 Returns the native zoom next action.
 
 Call :py:func:`~QgisInterface.trigger` on it to zoom to next.
 %End
 
-    virtual QAction *actionZoomActualSize() = 0;
+    virtual QAction *actionZoomActualSize() = 0 /DisallowNone/;
 %Docstring
 Returns the native zoom resolution (100%) action.
 
 Call :py:func:`~QgisInterface.trigger` on it to zoom to actual size.
 %End
 
-    virtual QAction *actionMapTips() = 0;
+    virtual QAction *actionMapTips() = 0 /DisallowNone/;
 %Docstring
 Returns the native map tips action.
 
 Call :py:func:`~QgisInterface.trigger` on it to toggle map tips.
 %End
 
-    virtual QAction *actionNewBookmark() = 0;
+    virtual QAction *actionNewBookmark() = 0 /DisallowNone/;
 %Docstring
 Returns the native new bookmark action.
 
@@ -783,7 +783,7 @@ Call :py:func:`~QgisInterface.trigger` on it to open the new bookmark
 dialog.
 %End
 
-    virtual QAction *actionShowBookmarks() = 0;
+    virtual QAction *actionShowBookmarks() = 0 /DisallowNone/;
 %Docstring
 Returns the native show bookmarks action.
 
@@ -791,109 +791,109 @@ Call :py:func:`~QgisInterface.trigger` on it to open the bookmarks
 dialog.
 %End
 
-    virtual QAction *actionDraw() = 0;
+    virtual QAction *actionDraw() = 0 /DisallowNone/;
 %Docstring
 Returns the native draw action.
 %End
 
-    virtual QAction *actionNewVectorLayer() = 0;
-    virtual QAction *actionAddOgrLayer() = 0;
-    virtual QAction *actionAddRasterLayer() = 0;
-    virtual QAction *actionAddPgLayer() = 0;
-    virtual QAction *actionAddWmsLayer() = 0;
+    virtual QAction *actionNewVectorLayer() = 0 /DisallowNone/;
+    virtual QAction *actionAddOgrLayer() = 0 /DisallowNone/;
+    virtual QAction *actionAddRasterLayer() = 0 /DisallowNone/;
+    virtual QAction *actionAddPgLayer() = 0 /DisallowNone/;
+    virtual QAction *actionAddWmsLayer() = 0 /DisallowNone/;
 
-    virtual QAction *actionAddXyzLayer() = 0;
+    virtual QAction *actionAddXyzLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add XYZ Layer action.
 
 .. versionadded:: 3.14
 %End
 
-    virtual QAction *actionAddVectorTileLayer() = 0;
+    virtual QAction *actionAddVectorTileLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add Vector Tile Layer action.
 
 .. versionadded:: 3.14
 %End
 
-    virtual QAction *actionAddPointCloudLayer() = 0;
+    virtual QAction *actionAddPointCloudLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add Point Cloud Layer action.
 
 .. versionadded:: 3.18
 %End
 
-    virtual QAction *actionAddAfsLayer() = 0;
+    virtual QAction *actionAddAfsLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add ArcGIS REST Server action.
 %End
 
-    virtual QAction *actionAddAmsLayer() = 0;
+    virtual QAction *actionAddAmsLayer() = 0 /DisallowNone/;
 %Docstring
 Returns the native Add ArcGIS REST Server action.
 %End
 
-    virtual QAction *actionCopyLayerStyle() = 0;
-    virtual QAction *actionPasteLayerStyle() = 0;
-    virtual QAction *actionOpenTable() = 0;
-    virtual QAction *actionOpenFieldCalculator() = 0;
+    virtual QAction *actionCopyLayerStyle() = 0 /DisallowNone/;
+    virtual QAction *actionPasteLayerStyle() = 0 /DisallowNone/;
+    virtual QAction *actionOpenTable() = 0 /DisallowNone/;
+    virtual QAction *actionOpenFieldCalculator() = 0 /DisallowNone/;
 
-    virtual QAction *actionOpenStatisticalSummary() = 0;
+    virtual QAction *actionOpenStatisticalSummary() = 0 /DisallowNone/;
 %Docstring
 Statistical summary action.
 %End
 
-    virtual QAction *actionToggleEditing() = 0;
-    virtual QAction *actionSaveActiveLayerEdits() = 0;
-    virtual QAction *actionAllEdits() = 0;
-    virtual QAction *actionSaveEdits() = 0;
-    virtual QAction *actionSaveAllEdits() = 0;
-    virtual QAction *actionRollbackEdits() = 0;
-    virtual QAction *actionRollbackAllEdits() = 0;
-    virtual QAction *actionCancelEdits() = 0;
-    virtual QAction *actionCancelAllEdits() = 0;
-    virtual QAction *actionLayerSaveAs() = 0;
-    virtual QAction *actionDuplicateLayer() = 0;
-    virtual QAction *actionLayerProperties() = 0;
-    virtual QAction *actionAddToOverview() = 0;
-    virtual QAction *actionAddAllToOverview() = 0;
-    virtual QAction *actionRemoveAllFromOverview() = 0;
-    virtual QAction *actionHideAllLayers() = 0;
-    virtual QAction *actionShowAllLayers() = 0;
-    virtual QAction *actionHideSelectedLayers() = 0;
+    virtual QAction *actionToggleEditing() = 0 /DisallowNone/;
+    virtual QAction *actionSaveActiveLayerEdits() = 0 /DisallowNone/;
+    virtual QAction *actionAllEdits() = 0 /DisallowNone/;
+    virtual QAction *actionSaveEdits() = 0 /DisallowNone/;
+    virtual QAction *actionSaveAllEdits() = 0 /DisallowNone/;
+    virtual QAction *actionRollbackEdits() = 0 /DisallowNone/;
+    virtual QAction *actionRollbackAllEdits() = 0 /DisallowNone/;
+    virtual QAction *actionCancelEdits() = 0 /DisallowNone/;
+    virtual QAction *actionCancelAllEdits() = 0 /DisallowNone/;
+    virtual QAction *actionLayerSaveAs() = 0 /DisallowNone/;
+    virtual QAction *actionDuplicateLayer() = 0 /DisallowNone/;
+    virtual QAction *actionLayerProperties() = 0 /DisallowNone/;
+    virtual QAction *actionAddToOverview() = 0 /DisallowNone/;
+    virtual QAction *actionAddAllToOverview() = 0 /DisallowNone/;
+    virtual QAction *actionRemoveAllFromOverview() = 0 /DisallowNone/;
+    virtual QAction *actionHideAllLayers() = 0 /DisallowNone/;
+    virtual QAction *actionShowAllLayers() = 0 /DisallowNone/;
+    virtual QAction *actionHideSelectedLayers() = 0 /DisallowNone/;
 
-    virtual QAction *actionToggleSelectedLayers() = 0;
+    virtual QAction *actionToggleSelectedLayers() = 0 /DisallowNone/;
 %Docstring
 Returns the Toggle Selected Layers action.
 
 .. versionadded:: 3.14
 %End
 
-    virtual QAction *actionToggleSelectedLayersIndependently() = 0;
+    virtual QAction *actionToggleSelectedLayersIndependently() = 0 /DisallowNone/;
 %Docstring
 Returns the Toggle Selected Layers Independently action.
 
 .. versionadded:: 3.14
 %End
 
-    virtual QAction *actionHideDeselectedLayers() = 0;
+    virtual QAction *actionHideDeselectedLayers() = 0 /DisallowNone/;
 %Docstring
 Returns the Hide Deselected Layers action.
 %End
-    virtual QAction *actionShowSelectedLayers() = 0;
+    virtual QAction *actionShowSelectedLayers() = 0 /DisallowNone/;
 
-    virtual QAction *actionManagePlugins() = 0;
-    virtual QAction *actionPluginListSeparator() = 0;
-    virtual QAction *actionShowPythonDialog() = 0;
+    virtual QAction *actionManagePlugins() = 0 /DisallowNone/;
+    virtual QAction *actionPluginListSeparator() = 0 /DisallowNone/;
+    virtual QAction *actionShowPythonDialog() = 0 /DisallowNone/;
 
-    virtual QAction *actionToggleFullScreen() = 0;
-    virtual QAction *actionOptions() = 0;
-    virtual QAction *actionCustomProjection() = 0;
+    virtual QAction *actionToggleFullScreen() = 0 /DisallowNone/;
+    virtual QAction *actionOptions() = 0 /DisallowNone/;
+    virtual QAction *actionCustomProjection() = 0 /DisallowNone/;
 
-    virtual QAction *actionHelpContents() = 0;
-    virtual QAction *actionQgisHomePage() = 0;
-    virtual QAction *actionCheckQgisVersion() = 0;
-    virtual QAction *actionAbout() = 0;
+    virtual QAction *actionHelpContents() = 0 /DisallowNone/;
+    virtual QAction *actionQgisHomePage() = 0 /DisallowNone/;
+    virtual QAction *actionCheckQgisVersion() = 0 /DisallowNone/;
+    virtual QAction *actionAbout() = 0 /DisallowNone/;
 
 
  virtual QAction *actionCircle2Points() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
@@ -1074,7 +1074,7 @@ Call :py:func:`~QgisInterface.trigger` on it to set the map tool.
    Shape digitizing is now part of the add feature tool. To enable the shape tool, use :py:func:`QgsMapToolCapture.setCurrentCaptureTechnique()` and then :py:func:`QgsMapToolCapture.setCurrentShapeMapTool()`.
 %End
 
-    virtual QgsVectorLayerTools *vectorLayerTools() = 0;
+    virtual QgsVectorLayerTools *vectorLayerTools() = 0 /DisallowNone/;
 %Docstring
 Access the vector layer tools instance.
 
@@ -1090,7 +1090,7 @@ dialogs.
 Returns the timeout for timed messages: default of 5 seconds
 %End
 
-    virtual QgsStatusBar *statusBarIface() = 0;
+    virtual QgsStatusBar *statusBarIface() = 0 /DisallowNone/;
 %Docstring
 Returns a pointer to the app's status bar interface.
 
@@ -1120,7 +1120,7 @@ map layers should be inserted into.
 .. versionadded:: 3.10
 %End
 
-    virtual QgsUserProfileManager *userProfileManager() = 0;
+    virtual QgsUserProfileManager *userProfileManager() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the user profile manager
 
@@ -1999,7 +1999,7 @@ Dialog is shown only if global option is set accordingly.
          user or only one is available.
 %End
 
-    virtual QgsBrowserGuiModel *browserModel() = 0;
+    virtual QgsBrowserGuiModel *browserModel() = 0 /DisallowNone/;
 %Docstring
 Returns the application browser model.
 
