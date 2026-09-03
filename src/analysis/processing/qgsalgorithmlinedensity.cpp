@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmlinedensity.h"
 
+#include "qgsacademicreference.h"
 #include "qgscircle.h"
 #include "qgsgeometryengine.h"
 #include "qgsrasterfilewriter.h"
@@ -83,6 +84,12 @@ QString QgsLineDensityAlgorithm::shortHelpString() const
     "is multiplied with the lines weight factor. In a second step, all length values are summed and "
     "divided by the area of the circular neighborhood. This process is repeated for all raster cells."
   );
+}
+
+QList<QgsAcademicReference> QgsLineDensityAlgorithm::academicReferences() const
+{
+  const QgsAcademicReference silvermanReference = QgsAcademicReference::createBook( { u"Silverman, B. W."_s }, 1986, u"Density Estimation for Statistics and Data Analysis"_s, u"Chapman and Hall"_s );
+  return { silvermanReference };
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsLineDensityAlgorithm::documentationFlags() const
