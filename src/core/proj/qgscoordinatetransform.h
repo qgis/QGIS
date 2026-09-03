@@ -280,7 +280,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \throws QgsCsException if the transformation fails
      */
-    void transformInPlace( double &x, double &y, double &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_THROW( QgsCsException );
+    void transformInPlace( double &x SIP_INOUT, double &y SIP_INOUT, double &z SIP_INOUT, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_THROW( QgsCsException );
 
     /**
      * Transforms an array of x, y and z float coordinates in place, from the source CRS to the destination CRS.
