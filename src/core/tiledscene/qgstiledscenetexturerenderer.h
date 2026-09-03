@@ -58,7 +58,7 @@ class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
      *
      * \see setFillSymbol()
      */
-    static std::unique_ptr< QgsFillSymbol > createDefaultFillSymbol() SIP_FACTORY;
+    static std::unique_ptr< QgsFillSymbol > createDefaultFillSymbol();
 
     /**
      * Returns the fill symbol used to render triangles without textures.
