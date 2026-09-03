@@ -20,9 +20,11 @@
 #include "qgselevationutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 
-#include <QInputDialog>
+#include <QMenu>
+#include <QPointer>
 
 #include "moc_qgsappcanvasfiltering.cpp"
 
@@ -53,9 +55,8 @@ void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, Qg
 {
   QgsElevationControllerWidget *controller = new QgsElevationControllerWidget();
 
-  QAction *setProjectLimitsAction = new QAction( tr( "Set Elevation Range…" ), controller );
-  controller->menu()->addAction( setProjectLimitsAction );
-  connect( setProjectLimitsAction, &QAction::triggered, QgisApp::instance(), [] { QgisApp::instance()->showProjectProperties( tr( "Elevation" ) ); } );
+  controller->menu()->addSeparator();
+
   QAction *disableAction = new QAction( tr( "Disable Elevation Filter" ), controller );
   controller->menu()->addAction( disableAction );
   connect( disableAction, &QAction::triggered, senderAction, [senderAction] { senderAction->setChecked( false ); } );
@@ -94,6 +95,8 @@ QgsCanvasElevationControllerBridge::QgsCanvasElevationControllerBridge( QgsEleva
 
   connect( mCanvas, &QgsMapCanvas::layersChanged, this, &QgsCanvasElevationControllerBridge::canvasLayersChanged );
 
+  mController->setMapCanvas( mCanvas );
+
   canvasLayersChanged();
 }
 
@@ -103,7 +106,7 @@ void QgsCanvasElevationControllerBridge::canvasLayersChanged()
     return;
 
   // disconnect from old layers
-  for ( QgsMapLayer *layer : std::as_const( mCanvasLayers ) )
+  for ( QgsMapLayer *layer : std::as_const( mElevationLayers ) )
   {
     if ( layer )
     {
@@ -112,12 +115,17 @@ void QgsCanvasElevationControllerBridge::canvasLayersChanged()
   }
 
   // and connect to new
+  QList<QgsMapLayer *> elevationLayers;
   const QList<QgsMapLayer *> layers = mCanvas->layers( true );
   for ( QgsMapLayer *layer : layers )
   {
+    if ( !layer->elevationProperties() )
+      continue;
+
     connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::changed, this, &QgsCanvasElevationControllerBridge::updateSignificantElevations );
+    elevationLayers << layer;
   }
-  mCanvasLayers = _qgis_listRawToQPointer( layers );
+  mElevationLayers = _qgis_listRawToQPointer( elevationLayers );
 
   updateSignificantElevations();
 }
@@ -127,7 +135,7 @@ void QgsCanvasElevationControllerBridge::updateSignificantElevations()
   if ( !mCanvas )
     return;
 
-  mController->setSignificantElevations( QgsElevationUtils::significantZValuesForLayers( _qgis_listQPointerToRaw( mCanvasLayers ) ) );
+  mController->setSignificantElevations( QgsElevationUtils::significantZValuesForLayers( _qgis_listQPointerToRaw( mElevationLayers ) ) );
 }
 
 void QgsCanvasElevationControllerBridge::controllerZRangeChanged( const QgsDoubleRange & )

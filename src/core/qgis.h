@@ -7101,6 +7101,19 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( UserInterfaceIconType );
 
     /**
+     * Mathematical methods to use for solving linear matrix equations.
+     *
+     * \since QGIS 4.4
+     */
+    enum class LinearMatrixMethod : int
+    {
+      Lu = 0,               //!< Fast lower-upper (LU) decomposition (fails on singular/collinear matrices)
+      Svd = 1,              //!< Singular Value Decomposition (handles collinearity and rank deficiency)
+      LuWithSvdFallback = 2 //!< Try LU first; fallback to SVD on singularity
+    };
+    Q_ENUM( LinearMatrixMethod );
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;

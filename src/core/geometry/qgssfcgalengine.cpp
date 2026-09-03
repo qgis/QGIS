@@ -355,7 +355,7 @@ sfcgal::shared_geom QgsSfcgalEngine::fromWkt( const QString &wkt, QString *error
   sfcgal::geometry *out = sfcgal_io_read_wkt( wkt.toStdString().c_str(), wkt.length() );
   CHECK_SUCCESS( errorMsg, nullptr );
 
-  return sfcgal::unique_geom( out );
+  return sfcgal::make_shared_geom( out );
 }
 
 QByteArray QgsSfcgalEngine::toWkb( const sfcgal::geometry *geom, QString *errorMsg )
@@ -1423,7 +1423,7 @@ sfcgal::shared_prim QgsSfcgalEngine::primitiveTranslate( const sfcgal::primitive
   return sfcgal::make_shared_prim( result );
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::primitiveRotate( const sfcgal::primitive *prim, double angle, const QgsVector3D &axisVector, const QgsPoint &center, QString *errorMsg )
+sfcgal::shared_prim QgsSfcgalEngine::primitiveRotate( const sfcgal::primitive *prim, double angle, const QgsVector3D &axisVector, const QgsPoint &center, QString *errorMsg )
 {
   const QgsPoint rotationCenter = center.isEmpty() ? QgsPoint( 0, 0, 0 ) : center;
 
@@ -1433,7 +1433,7 @@ sfcgal::shared_geom QgsSfcgalEngine::primitiveRotate( const sfcgal::primitive *p
   return sfcgal::make_shared_prim( result );
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::primitiveScale( const sfcgal::primitive *prim, const QgsVector3D &scaleFactor, const QgsPoint &center, QString *errorMsg )
+sfcgal::shared_prim QgsSfcgalEngine::primitiveScale( const sfcgal::primitive *prim, const QgsVector3D &scaleFactor, const QgsPoint &center, QString *errorMsg )
 {
   const QgsPoint scaleCenter = center.isEmpty() ? QgsPoint( 0, 0, 0 ) : center;
 
