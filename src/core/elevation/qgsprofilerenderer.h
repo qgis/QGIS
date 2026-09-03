@@ -186,7 +186,7 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
      * \see setSubsectionsSymbol()
      * \since QGIS 3.44
      */
-    static std::unique_ptr<QgsLineSymbol> defaultSubSectionsSymbol() SIP_FACTORY;
+    static std::unique_ptr<QgsLineSymbol> defaultSubSectionsSymbol();
 
     /**
      * Returns the line symbol used to draw the subsections.
