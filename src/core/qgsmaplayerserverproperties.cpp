@@ -201,7 +201,7 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
     }
     QVariant dimRefValue;
     const int dimDefaultDisplayType = dimElem.attribute( u"defaultDisplayType"_s ).toInt();
-    if ( dimDefaultDisplayType == QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues )
+    if ( dimDefaultDisplayType == QgsServerWmsDimensionProperties::WmsDimensionInfo::ReferenceValue )
     {
       const QString dimRefValueStr = dimElem.attribute( u"referenceValue"_s );
       if ( !dimRefValueStr.isEmpty() )
