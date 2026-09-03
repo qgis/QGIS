@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmruggedness.h"
 
+#include "qgsacademicreference.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsruggednessfilter.h"
 
@@ -68,6 +69,13 @@ QString QgsRuggednessAlgorithm::shortHelpString() const
 QString QgsRuggednessAlgorithm::shortDescription() const
 {
   return QObject::tr( "Calculates the quantitative measurement of terrain heterogeneity described by Riley et al. (1999)." );
+}
+
+QList<QgsAcademicReference> QgsRuggednessAlgorithm::academicReferences() const
+{
+  const QgsAcademicReference rileyReference = QgsAcademicReference::
+    createJournalArticle( { u"Riley, S."_s, u"Degloria, S."_s, u"Elliot, S. D."_s }, 1999, u"A Terrain Ruggedness Index that Quantifies Topographic Heterogeneity"_s, u"International Journal of Science"_s, u"5"_s, QString(), u"23-27"_s );
+  return { rileyReference };
 }
 
 QgsRuggednessAlgorithm *QgsRuggednessAlgorithm::createInstance() const
