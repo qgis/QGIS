@@ -716,6 +716,24 @@ void QgsRubberBand::setRenderedComponents( Qgis::RubberBandComponents components
   mComponentsToRender = components;
 }
 
+QRectF QgsRubberBand::boundingRect() const
+{
+  QRectF res = QgsMapCanvasItem::boundingRect();
+
+  if ( mComponentsToRender.testFlag( Qgis::RubberBandComponent::PreviewItems ) )
+  {
+    for ( const std::unique_ptr<QgsRubberBandPreviewItem> &previewItem : mPreviewItems )
+    {
+      const QRectF itemBounds = previewItem->boundingRect();
+      if ( itemBounds.isValid() )
+      {
+        res = res.united( itemBounds );
+      }
+    }
+  }
+  return res;
+}
+
 QgsSymbol *QgsRubberBand::symbol() const
 {
   return mSymbol.get();
@@ -843,4 +861,9 @@ QgsRubberBandPreviewItem::QgsRubberBandPreviewItem( QgsRubberBand *rubberBand )
 QgsRubberBand *QgsRubberBandPreviewItem::rubberBand()
 {
   return mRubberBand.data();
+}
+
+QRectF QgsRubberBandPreviewItem::boundingRect() const
+{
+  return QRectF();
 }
