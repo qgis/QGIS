@@ -31,7 +31,7 @@
 #include "qgsvariantutils.h"
 
 #include <QString>
-#include <QtConcurrent>
+#include <QtConcurrentMap>
 
 using namespace Qt::StringLiterals;
 
@@ -501,8 +501,11 @@ QVariantMap QgsLocalThinPlateSplineAlgorithm::processAlgorithm( const QVariantMa
             solver.setRightHandSide( i, 0.0 );
           }
 
-          solver.dumpMatrices( systemSize );
-          if ( !solver.solve( systemSize, W ) )
+          // NOTE: SAGA's version of this tool uses Lu solving only, but with a bug in the solver
+          // which prevents it correctly flagging singular matrices. Here we use the SVD fallback approach
+          // for a more tolerant solver, so that the results more closely represent SAGA's results (i.e.
+          // avoiding nodata pixels were SAGA's tools output data pixels)
+          if ( !solver.solve( systemSize, W, Qgis::LinearMatrixMethod::LuWithSvdFallback ) )
           {
             rowResult.values[c] = mNoDataValue;
             rowResult.stats.unsolvableCells++;
@@ -770,7 +773,11 @@ QVariantMap QgsGlobalThinPlateSplineAlgorithm::processAlgorithm( const QVariantM
   }
 
   multiStepFeedback.pushInfo( QObject::tr( "Solving global linear system (%1 x %1)…" ).arg( systemSize ) );
-  if ( !globalSolver.solve( systemSize, globalW ) )
+  // NOTE: SAGA's version of this tool uses Lu solving only, but with a bug in the solver
+  // which prevents it correctly flagging singular matrices. Here we use the SVD fallback approach
+  // for a more tolerant solver, so that the results more closely represent SAGA's results (i.e.
+  // avoiding nodata pixels were SAGA's tools output data pixels)
+  if ( !globalSolver.solve( systemSize, globalW, Qgis::LinearMatrixMethod::LuWithSvdFallback ) )
   {
     throw QgsProcessingException( QObject::tr( "Global matrix is singular and could not be solved." ) );
   }

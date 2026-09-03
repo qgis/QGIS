@@ -861,7 +861,7 @@ tests:
       SEARCH_RADIUS: 3.0
     results:
       OUTPUT:
-        hash: 125d20779715bbba1c517a6f1c81c2bba377f4e31677be0691d5560c
+        hash: 19f80002d7e17469f99e561c6868056699adba3fb0f0d2d81bdb481d
         type: rasterhash
 
   - algorithm: native:localtpsinterpolation
@@ -880,5 +880,5 @@ tests:
       SEARCH_RADIUS: 6.0
     results:
       OUTPUT:
-        hash: b5995c651c5cbd08220e500e9f60134a98f020042a56815dc0315512
+        hash: fad9007bff2e9e0f28fb4f5a4e17d09faeb73441916d9f635561c2a9
         type: rasterhash
