@@ -74,6 +74,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSignalSpy>
+#include <QStandardPaths>
 #include <QString>
 #include <Qt3DRender/QGeometryRenderer>
 
@@ -96,6 +97,7 @@ class TestQgs3DRendering : public QgsTest
     void testDemTerrain();
     void testTerrainShading();
     void testEpsg4978LineRendering();
+    void testGlobeSphereRendering();
     void testExtrudedPolygons();
     void testExtrudedPolygonsClipping();
 
@@ -1918,6 +1920,61 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   delete layerLines;
 
   QGSVERIFYIMAGECHECK( "4978_line_rendering_2", "4978_line_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testGlobeSphereRendering()
+{
+  QgsProject p;
+
+  QgsCoordinateReferenceSystem newCrs( u"EPSG:4978"_s );
+  p.setCrs( newCrs );
+
+  QgsVectorLayer *layerPoints = new QgsVectorLayer( testDataPath( "points_gpkg.gpkg" ) + "|layername=points_gpkg", "points", "ogr" );
+  QVERIFY( layerPoints->isValid() );
+
+  QgsVectorLayer *layerCountries = new QgsVectorLayer( QgsApplication::pkgDataPath() + u"/resources/data/world_map.gpkg|layername=countries"_s, "countries", "ogr" );
+  QVERIFY( layerCountries->isValid() );
+  QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer( QColor( 60, 140, 60 ) );
+  layerCountries->setRenderer( new QgsSingleSymbolRenderer( new QgsFillSymbol( QgsSymbolLayerList() << fillSymbolLayer ) ) );
+
+  QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
+  QVariantMap vmSphere;
+  vmSphere[u"radius"_s] = 99999.00f;
+  sphere3DSymbol->setShapeProperties( vmSphere );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::red );
+  sphere3DSymbol->setMaterialSettings( materialSettings.clone() );
+  layerPoints->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( p.crs() );
+  map->setLayers( QList<QgsMapLayer *>() << layerCountries << layerPoints );
+  map->setBackgroundColor( QColor( 24, 88, 138 ) ); // ocean-like blue for areas not covered by the countries layer
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setCameraNavigationMode( Qgis::NavigationMode::GlobeTerrainBased );
+
+  // points are in north america, so we need to adjust the globe to look at them
+  const QgsPointXY center = layerPoints->extent().center();
+  scene->cameraController()->resetGlobe( 9'000'000, center.y(), center.x() );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+  delete layerPoints;
+  delete layerCountries;
+
+  QGSVERIFYIMAGECHECK( "globe_spheres", "globe_spheres", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 void TestQgs3DRendering::testFilteredFlatTerrain()
