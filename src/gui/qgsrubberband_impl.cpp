@@ -59,6 +59,8 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
     context.setSymbologyReferenceScale( renderer->referenceScale() );
   }
 
+  QgsExpressionContextScopePopper layerScopePopper( context.expressionContext(), mLayer->createExpressionContextScope() );
+
   QgsExpressionContextScope *featureScope = new QgsExpressionContextScope();
 
   QgsExpressionContextScopePopper scopePopper( context.expressionContext(), featureScope );
