@@ -45,7 +45,7 @@ reference open within the main QGIS application.
       WMSOnlineResource,
     };
 
-    static QgsProject *instance();
+    static QgsProject *instance() /DisallowNone/;
 %Docstring
 Returns the QgsProject singleton instance
 %End
