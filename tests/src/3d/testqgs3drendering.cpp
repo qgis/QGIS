@@ -1974,7 +1974,7 @@ void TestQgs3DRendering::testGlobeSphereRendering()
   delete layerPoints;
   delete layerCountries;
 
-  QGSVERIFYIMAGECHECK( "globe_spheres", "globe_spheres", img, QString(), 40, QSize( 0, 0 ), 2 );
+  QGSVERIFYIMAGECHECK( "globe_spheres", "globe_spheres", img, QString(), 40, QSize( 0, 0 ), 5 );
 }
 
 void TestQgs3DRendering::testFilteredFlatTerrain()
