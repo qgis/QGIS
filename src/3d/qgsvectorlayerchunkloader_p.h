@@ -30,6 +30,8 @@
 #include "qgs3drendercontext.h"
 #include "qgsabstractfeaturebasedchunkedentity.h"
 #include "qgschunkloader.h"
+#include "qgschunknode.h"
+#include "qgscoordinatetransform.h"
 
 #define SIP_NO_FILE
 
@@ -64,8 +66,18 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QgsChunkNode *createRootNode() const override;
     bool canCreateChildren( QgsChunkNode *node ) override;
     QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+
+    //! Returns the extent of the quadtree node with the given \a id, in a fixed tilling scheme
+    static QgsRectangle nodeIdToLonLatRect( QgsChunkNodeId id );
+    //! Returns the id of the smallest tile that fully contains \a lonLatExtent
+    static QgsChunkNodeId rootTileIdForExtent( const QgsRectangle &lonLatExtent );
+    //! Returns the exact ECEF world-space bounding box of the quadtree tile with the given \a id
+    QgsBox3D tileIdToBox3D( QgsChunkNodeId id ) const;
+    //! Returns the XY bounding rectangle of a 3d bounding box
+    static QgsRectangle box3DTransformedExtent( const QgsBox3D &box3D, const QgsCoordinateTransform &transform, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward );
 
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
@@ -73,6 +85,16 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
     //! Contains loaded nodes and whether they are leaf nodes or not
     mutable QHash< QString, bool > mNodesAreLeafs;
     int mMaxFeatures;
+
+    bool mIsGeocentric = false;
+
+    // below only used for geocentric case
+    QgsChunkNodeId mRootNodeId;
+    QgsCoordinateTransform mCrsToLatLon;
+
+    double mRadiusX = 0;
+    double mRadiusY = 0;
+    double mRadiusZ = 0;
 };
 
 
