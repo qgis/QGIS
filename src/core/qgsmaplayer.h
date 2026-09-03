@@ -442,7 +442,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns QGIS Server Properties for the map layer
      * \since QGIS 3.22
      */
-    QgsMapLayerServerProperties *serverProperties() { return mServerProperties.get(); };
+    QgsMapLayerServerProperties *serverProperties() SIP_DISALLOWNONE { return mServerProperties.get(); };
 
     /**
      * Returns QGIS Server Properties const for the map layer
@@ -1552,12 +1552,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString providerType() const;
 
     //! Returns pointer to layer's undo stack
-    QUndoStack *undoStack();
+    QUndoStack *undoStack() SIP_DISALLOWNONE;
 
     /**
      * Returns pointer to layer's style undo stack
      */
-    QUndoStack *undoStackStyles();
+    QUndoStack *undoStackStyles() SIP_DISALLOWNONE;
 
     /**
      * Sets the URL for the layer's legend.
@@ -1601,7 +1601,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Gets access to the layer's style manager. Style manager allows switching between multiple styles.
      */
-    QgsMapLayerStyleManager *styleManager() const;
+    QgsMapLayerStyleManager *styleManager() const SIP_DISALLOWNONE;
 
     /**
      * Sets 3D renderer for the layer. Takes ownership of the renderer.

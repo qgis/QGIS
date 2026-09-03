@@ -38,50 +38,50 @@ Returns a pointer to the singleton instance.
 %End
 
 
-    static QgsSettingsRegistryGui *settingsRegistryGui() /KeepReference/;
+    static QgsSettingsRegistryGui *settingsRegistryGui() /DisallowNone,KeepReference/;
 %Docstring
 Returns the gui's settings registry, used for managing gui settings.
 
 .. versionadded:: 3.22
 %End
 
-    static QgsEditorWidgetRegistry *editorWidgetRegistry() /KeepReference/;
+    static QgsEditorWidgetRegistry *editorWidgetRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global editor widget registry, used for managing all known
 edit widget factories.
 %End
 
-    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry() /KeepReference/;
+    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global source select provider registry, used for managing
 all known source select widget factories.
 %End
 
-    static QgsShortcutsManager *shortcutsManager();
+    static QgsShortcutsManager *shortcutsManager() /DisallowNone/;
 %Docstring
 Returns the global shortcuts manager, used for managing a QAction and
 QShortcut sequences.
 %End
 
-    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry() /KeepReference/;
+    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global layer tree embedded widget registry, used for
 registering widgets that may be embedded into layer tree view.
 %End
 
-    static QgsMapLayerActionRegistry *mapLayerActionRegistry() /KeepReference/;
+    static QgsMapLayerActionRegistry *mapLayerActionRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global map layer action registry, used for registering map
 layer actions.
 %End
 
-    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry() /KeepReference/;
+    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global layout item GUI registry, used for registering the
 GUI behavior of layout items.
 %End
 
-    static QgsAnnotationItemGuiRegistry *annotationItemGuiRegistry() /KeepReference/;
+    static QgsAnnotationItemGuiRegistry *annotationItemGuiRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global annotation item GUI registry, used for registering
 the GUI behavior of annotation items.
@@ -89,7 +89,7 @@ the GUI behavior of annotation items.
 .. versionadded:: 3.22
 %End
 
-    static QgsAdvancedDigitizingToolsRegistry *advancedDigitizingToolsRegistry() /KeepReference/;
+    static QgsAdvancedDigitizingToolsRegistry *advancedDigitizingToolsRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global advanced digitizing tools registry, used for
 registering advanced digitizing tools.
@@ -97,7 +97,7 @@ registering advanced digitizing tools.
 .. versionadded:: 3.40
 %End
 
-    static QgsProcessingGuiRegistry *processingGuiRegistry() /KeepReference/;
+    static QgsProcessingGuiRegistry *processingGuiRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global processing gui registry, used for registering the GUI
 behavior of processing algorithms.
@@ -105,7 +105,7 @@ behavior of processing algorithms.
 .. versionadded:: 3.2
 %End
 
-    static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() /KeepReference/;
+    static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global numeric format gui registry, used for registering the
 GUI widgets associated with :py:class:`QgsNumericFormats`.
@@ -113,7 +113,7 @@ GUI widgets associated with :py:class:`QgsNumericFormats`.
 .. versionadded:: 3.12
 %End
 
-    static QgsCodeEditorColorSchemeRegistry *codeEditorColorSchemeRegistry() /KeepReference/;
+    static QgsCodeEditorColorSchemeRegistry *codeEditorColorSchemeRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global code editor color scheme registry, used for
 registering the color schemes for :py:class:`QgsCodeEditor` widgets.
@@ -121,7 +121,7 @@ registering the color schemes for :py:class:`QgsCodeEditor` widgets.
 .. versionadded:: 3.16
 %End
 
-    static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
+    static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog() /DisallowNone/;
 %Docstring
 Returns the global processing recent algorithm log, used for tracking
 recently used processing algorithms.
@@ -129,7 +129,7 @@ recently used processing algorithms.
 .. versionadded:: 3.4
 %End
 
-    static QgsProcessingFavoriteAlgorithmManager *processingFavoriteAlgorithmManager();
+    static QgsProcessingFavoriteAlgorithmManager *processingFavoriteAlgorithmManager() /DisallowNone/;
 %Docstring
 Returns the global Processing favorite algorithm manager, used for
 tracking favorite Processing algorithms.
@@ -137,7 +137,7 @@ tracking favorite Processing algorithms.
 .. versionadded:: 3.40
 %End
 
-    static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() /KeepReference/;
+    static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global data item GUI provider registry, used for tracking
 providers which affect the browser GUI.
@@ -145,42 +145,42 @@ providers which affect the browser GUI.
 .. versionadded:: 3.6
 %End
 
-    static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() /KeepReference/;
+    static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global GUI-related project storage registry
 
 .. versionadded:: 3.10
 %End
 
-    static QgsProviderGuiRegistry *providerGuiRegistry() /KeepReference/;
+    static QgsProviderGuiRegistry *providerGuiRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the registry of GUI-related components of data providers
 
 .. versionadded:: 3.10
 %End
 
-    static QgsSensorGuiRegistry *sensorGuiRegistry() /KeepReference/;
+    static QgsSensorGuiRegistry *sensorGuiRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the registry of GUI-related components for sensors
 
 .. versionadded:: 3.32
 %End
 
-    static QgsSubsetStringEditorProviderRegistry *subsetStringEditorProviderRegistry() /KeepReference/;
+    static QgsSubsetStringEditorProviderRegistry *subsetStringEditorProviderRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the registry of subset string editors of data providers
 
 .. versionadded:: 3.18
 %End
 
-    static QgsProviderSourceWidgetProviderRegistry *sourceWidgetProviderRegistry() /KeepReference/;
+    static QgsProviderSourceWidgetProviderRegistry *sourceWidgetProviderRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the registry of provider source widget providers.
 
 .. versionadded:: 3.18
 %End
 
-    static QgsRelationWidgetRegistry *relationWidgetRegistry() /KeepReference/;
+    static QgsRelationWidgetRegistry *relationWidgetRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global relation widget registry, used for managing all known
 relation widget factories.
@@ -189,7 +189,7 @@ relation widget factories.
 %End
 
 
-    static QgsHistoryProviderRegistry *historyProviderRegistry() /KeepReference/;
+    static QgsHistoryProviderRegistry *historyProviderRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global history provider registry, used for tracking history
 providers.
@@ -197,7 +197,7 @@ providers.
 .. versionadded:: 3.24
 %End
 
-    static QgsSettingsEditorWidgetRegistry *settingsEditorWidgetRegistry() /KeepReference/;
+    static QgsSettingsEditorWidgetRegistry *settingsEditorWidgetRegistry() /DisallowNone,KeepReference/;
 %Docstring
 Returns the registry of settings editors.
 
@@ -231,14 +231,14 @@ QgsGui instance.
 .. versionadded:: 3.4
 %End
 
-    static QgsInputControllerManager *inputControllerManager() /KeepReference/;
+    static QgsInputControllerManager *inputControllerManager() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global input controller manager.
 
 .. versionadded:: 3.32
 %End
 
-    static QgsStoredQueryManager *storedQueryManager() /KeepReference/;
+    static QgsStoredQueryManager *storedQueryManager() /DisallowNone,KeepReference/;
 %Docstring
 Returns the global stored SQL query manager.
 
