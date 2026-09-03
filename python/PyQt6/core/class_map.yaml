@@ -3973,9 +3973,10 @@ QgsElevationShadingRenderer.setLightAltitude: src/core/qgselevationshadingrender
 QgsElevationShadingRenderer.setLightAzimuth: src/core/qgselevationshadingrenderer.h#L174
 QgsElevationShadingRenderer.writeXml: src/core/qgselevationshadingrenderer.h#L177
 QgsElevationShadingRenderer: src/core/qgselevationshadingrenderer.h#L47
+QgsElevationUtils.calculateZRangeForLayers: src/core/qgselevationutils.h#L51
 QgsElevationUtils.calculateZRangeForProject: src/core/qgselevationutils.h#L41
-QgsElevationUtils.canEnableElevationForLayer: src/core/qgselevationutils.h#L67
-QgsElevationUtils.enableElevationForLayer: src/core/qgselevationutils.h#L76
+QgsElevationUtils.canEnableElevationForLayer: src/core/qgselevationutils.h#L77
+QgsElevationUtils.enableElevationForLayer: src/core/qgselevationutils.h#L86
 QgsElevationUtils: src/core/qgselevationutils.h#L32
 QgsEllipse.__repr__: src/core/geometry/qgsellipse.h#L246
 QgsEllipse.area: src/core/geometry/qgsellipse.h#L198
@@ -10319,8 +10320,10 @@ QgsMaterialSettingsAbstractMetadata.supportsTechnique: src/core/./3d/materials/q
 QgsMaterialSettingsAbstractMetadata.type: src/core/./3d/materials/qgsmaterialregistry.h#L65
 QgsMaterialSettingsAbstractMetadata.visibleName: src/core/./3d/materials/qgsmaterialregistry.h#L70
 QgsMaterialSettingsAbstractMetadata: src/core/./3d/materials/qgsmaterialregistry.h#L46
-QgsMathUtils.doubleToRational: src/core/qgsmathutils.h#L43
-QgsMathUtils: src/core/qgsmathutils.h#L29
+QgsMathUtils.doubleToRational: src/core/qgsmathutils.h#L44
+QgsMathUtils.roundedRange: src/core/qgsmathutils.h#L67
+QgsMathUtils.roundingInterval: src/core/qgsmathutils.h#L54
+QgsMathUtils: src/core/qgsmathutils.h#L30
 QgsMatrix4x4.__repr__: src/core/qgsmatrix4x4.h#L147
 QgsMatrix4x4.determinant: src/core/qgsmatrix4x4.h#L143
 QgsMatrix4x4.fuzzyEqual: src/core/qgsmatrix4x4.h#L67
