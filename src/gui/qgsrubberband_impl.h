@@ -44,10 +44,12 @@ class GUI_EXPORT QgsVectorLayerLabelRubberBandPreview : public QgsRubberBandPrev
     QgsVectorLayerLabelRubberBandPreview( QgsRubberBand *rubberBand, const QList< QgsFeatureId > &fids, QgsVectorLayer *layer );
 
     void render( QgsRenderContext &context ) final;
+    QRectF boundingRect() const override;
 
   private:
     QList< QgsFeature > mFeatures;
     QPointer< QgsVectorLayer > mLayer;
+    mutable QRectF mBoundingRect;
 };
 
 #endif // QGSRUBBERBANDIMPL_H
