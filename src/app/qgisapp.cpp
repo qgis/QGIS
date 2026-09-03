@@ -16601,6 +16601,11 @@ void QgisApp::updateUndoActions()
   }
   mActionUndo->setEnabled( canUndo );
   mActionRedo->setEnabled( canRedo );
+
+#ifdef HAVE_3D
+  for ( Qgs3DMapCanvasWidget *w : mOpen3DMapViews )
+    w->updateUndoRedoActions( canUndo, canRedo );
+#endif
 }
 
 
