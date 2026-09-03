@@ -185,7 +185,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
       QgsRasterLayer *clone() const override SIP_FACTORY;
 
-    QgsAbstractProfileSource *profileSource() override { return this; }
+    QgsAbstractProfileSource *profileSource() override SIP_DISALLOWNONE { return this; }
     QString profileSourceId() const override { return id(); }
     QString profileSourceName() const override { return name(); }
 
@@ -538,8 +538,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     bool ignoreExtents() const;
 
-    QgsMapLayerTemporalProperties *temporalProperties() override;
-    QgsMapLayerElevationProperties *elevationProperties() override;
+    QgsMapLayerTemporalProperties *temporalProperties() override SIP_DISALLOWNONE;
+    QgsMapLayerElevationProperties *elevationProperties() override SIP_DISALLOWNONE;
 
     /**
      * Compute the \a min \a max values along \a band according to MinMaxOrigin parameters \a mmo
