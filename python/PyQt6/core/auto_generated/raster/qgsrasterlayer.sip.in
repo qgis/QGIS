@@ -100,7 +100,7 @@ for the same data source and renderer is cloned too.
 :return: a new layer instance
 %End
 
-    virtual QgsAbstractProfileSource *profileSource();
+    virtual QgsAbstractProfileSource *profileSource() /DisallowNone/;
     virtual QString profileSourceId() const;
     virtual QString profileSourceName() const;
 
@@ -516,9 +516,9 @@ data extent.
 .. versionadded:: 3.10
 %End
 
-    virtual QgsMapLayerTemporalProperties *temporalProperties();
+    virtual QgsMapLayerTemporalProperties *temporalProperties() /DisallowNone/;
 
-    virtual QgsMapLayerElevationProperties *elevationProperties();
+    virtual QgsMapLayerElevationProperties *elevationProperties() /DisallowNone/;
 
 
 
