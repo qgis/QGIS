@@ -65,6 +65,16 @@ class GUI_EXPORT QgsRubberBandPreviewItem
     */
     virtual void render( QgsRenderContext &context ) = 0;
 
+    /**
+     * Returns the bounding rect required for drawing the preview item.
+     *
+     * If non-empty, these bounds will be combined with the parent rubber band's bounds in order
+     * to avoid graphical artifacts when the band is moved.
+     *
+     * The default implementation returns an empty rect.
+     */
+    virtual QRectF boundingRect() const;
+
   protected:
     /**
      * Constructor for a QgsRubberBandPreviewItem, attached to the specified \a rubberBand.
@@ -433,6 +443,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * \since QGIS 4.4
      */
     void setRenderedComponents( Qgis::RubberBandComponents components );
+    QRectF boundingRect() const override;
 
   protected:
     using QgsMapCanvasItem::paint;

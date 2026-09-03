@@ -41,6 +41,17 @@ Renders the custom preview overlay using the specified render
 ``context``.
 %End
 
+    virtual QRectF boundingRect() const;
+%Docstring
+Returns the bounding rect required for drawing the preview item.
+
+If non-empty, these bounds will be combined with the parent rubber
+band's bounds in order to avoid graphical artifacts when the band is
+moved.
+
+The default implementation returns an empty rect.
+%End
+
   protected:
     QgsRubberBandPreviewItem( QgsRubberBand *rubberBand );
 %Docstring
@@ -458,6 +469,8 @@ band.
 
 .. versionadded:: 4.4
 %End
+    virtual QRectF boundingRect() const;
+
 
   protected:
 
