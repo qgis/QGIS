@@ -128,6 +128,11 @@
 #define SIP_ALLOWNONE
 
 /*
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#function-annotation-DisallowNone
+ */
+#define SIP_DISALLOWNONE
+
+/*
   * discard line
   */
 #define SIP_SKIP

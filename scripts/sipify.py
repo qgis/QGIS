@@ -1626,6 +1626,7 @@ def fix_annotations(line):
         r"\bSIP_ARRAY\b": "/Array/",
         r"\bSIP_ARRAYSIZE\b": "/ArraySize/",
         r"\bSIP_CONSTRAINED\b": "/Constrained/",
+        r"\bSIP_DISALLOWNONE\b": "/DisallowNone/",
         r"\bSIP_EXTERNAL\b": "/External/",
         r"\bSIP_FACTORY\b": "/Factory/",
         r"\bSIP_IN\b": "/In/",
