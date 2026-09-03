@@ -29,7 +29,10 @@ void QgsCustomDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri
 
 bool QgsCustomDropHandler::canHandleMimeData( const QMimeData * )
 {
-  return false;
+  // TODO QGIS 5.0 - make pure virtual and drop this default
+  // returns TRUE for backward compatibility: handlers which predate this method and only
+  // implement a handle*() method would otherwise have their drops refused
+  return true;
 }
 
 void QgsCustomDropHandler::handleMimeData( const QMimeData *data )

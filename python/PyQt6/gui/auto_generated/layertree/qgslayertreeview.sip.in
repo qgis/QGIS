@@ -575,6 +575,24 @@ shown).
 .. versionadded:: 3.38
 %End
 
+    QgsLayerTreeRegistryBridge::InsertionPoint datasetDropInsertionPoint() const;
+%Docstring
+Returns the insertion point corresponding to the position at which the
+last dataset drop event occurred.
+
+The returned insertion point is only valid while a handler connected to
+the :py:func:`~QgsLayerTreeView.datasetsDropped` signal is executing. At
+other times an insertion point with a ``None`` group is returned.
+
+Handlers of the :py:func:`~QgsLayerTreeView.datasetsDropped` signal can
+use this insertion point to add the dropped layers at the exact position
+indicated by the view's drop indicator by passing it to
+:py:func:`QgsLayerTreeRegistryBridge.setLayerInsertionPoint()`.
+
+.. versionadded:: 4.4
+%End
+
+
   public slots:
     void refreshLayerSymbology( const QString &layerId );
 %Docstring
@@ -648,7 +666,14 @@ Allows customization of the menu.
 
     virtual void dragMoveEvent( QDragMoveEvent *event );
 
+    virtual void dragLeaveEvent( QDragLeaveEvent *event );
+
     virtual void dropEvent( QDropEvent *event );
+
+
+    virtual void paintEvent( QPaintEvent *event );
+
+    virtual bool viewportEvent( QEvent *event );
 
 
     virtual void resizeEvent( QResizeEvent *event );
