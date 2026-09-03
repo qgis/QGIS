@@ -17,6 +17,7 @@
 #include "qgsdataitem.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgsdataitemguiproviderregistry.h"
+#include "qgsfieldsitem.h"
 #include "qgsgui.h"
 #include "qgslogger.h"
 #include "qgsmessagebar.h"
