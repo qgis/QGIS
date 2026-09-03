@@ -18,7 +18,9 @@
 #include "feature.h"
 #include "labelposition.h"
 #include "qgslabelsearchtree.h"
+#include "qgslinestring.h"
 #include "qgsmapsettings.h"
+#include "qgspolygon.h"
 
 QgsLabelingResults::QgsLabelingResults( bool enableSearchTree )
   : mLabelSearchTree( enableSearchTree ? std::make_unique< QgsLabelSearchTree >() : nullptr )
@@ -50,7 +52,11 @@ bool QgsLabelingResults::insertLabel(
   }
 
   QVector<QgsPointXY> cornerPoints;
-  cornerPoints.reserve( 4 );
+  QVector< double > cornerPointsX;
+  QVector< double > cornerPointsY;
+  cornerPoints.resize( 4 );
+  cornerPointsX.resize( 5 );
+  cornerPointsY.resize( 5 );
   double xMin = std::numeric_limits< double >::max();
   double yMin = std::numeric_limits< double >::max();
   double xMax = std::numeric_limits< double >::lowest();
@@ -59,12 +65,16 @@ bool QgsLabelingResults::insertLabel(
   {
     // we have to transform the bounding box to convert pre-rotated label positions back to real world locations
     const QPointF res = mTransform.map( QPointF( labelPos->getX( i ), labelPos->getY( i ) ) );
-    cornerPoints.push_back( QgsPointXY( res ) );
+    cornerPoints[i] = QgsPointXY( res );
+    cornerPointsX[i] = res.x();
+    cornerPointsY[i] = res.y();
     xMin = std::min( xMin, res.x() );
     xMax = std::max( xMax, res.x() );
     yMin = std::min( yMin, res.y() );
     yMax = std::max( yMax, res.y() );
   }
+  cornerPointsX[4] = cornerPointsX[0];
+  cornerPointsY[4] = cornerPointsY[0];
 
   pal::LabelPosition *next = labelPos->nextPart();
   long long uniqueLinkedId = 0;
@@ -74,7 +84,7 @@ bool QgsLabelingResults::insertLabel(
     uniqueLinkedId = mNextFeatureId++;
 
   const QgsRectangle bounds( xMin, yMin, xMax, yMax );
-  const QgsGeometry labelGeometry( QgsGeometry::fromPolygonXY( QVector<QgsPolylineXY>() << cornerPoints ) );
+  const QgsGeometry labelGeometry( std::make_unique< QgsPolygon >( new QgsLineString( cornerPointsX, cornerPointsY ) ) );
   auto newEntry = std::make_unique< QgsLabelPosition >(
     featureId,
     -labelPos->getAlpha() * 180 / M_PI + mMapSettings.rotation(),
