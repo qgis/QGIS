@@ -157,7 +157,7 @@ void TestQgisAppWidgetNames::checkWidgetNames( QList<QPair<QString, const QWidge
     const QString path = pathAndwidget.first;
     const QWidget *widget = pathAndwidget.second;
     const QList<QAction *> &actions = widget->actions();
-    for ( const QAction *action : actions )
+    for ( QAction *action : actions )
     {
       if ( QMenu *menu = action->menu() )
       {
@@ -166,11 +166,23 @@ void TestQgisAppWidgetNames::checkWidgetNames( QList<QPair<QString, const QWidge
         if ( menu == mQgisApp->panelMenu() || menu == mQgisApp->toolBarMenu() )
           continue;
 
+        // Dump parent object tree with visual missing label to help in finding the culprite:
+        if ( menu->objectName().isEmpty() && menu->parent() != nullptr )
+        {
+          menu->setObjectName( "===========THIS_OBJECT_HAS_NO_NAME============" );
+          menu->parent()->dumpObjectTree();
+        }
         QVERIFY2( !menu->objectName().isEmpty(), qPrintable( u"'%1' %2 has a QMenu with no objectName"_s.arg( path ).arg( menu->parent()->metaObject()->className() ) ) );
         widgets << QPair<QString, const QWidget *> { path + "/" + menu->objectName(), menu };
       }
       else
       {
+        // Dump parent object tree with visual missing label to help in finding the culprite:
+        if ( !action->isSeparator() && action->objectName().isEmpty() && action->parent() != nullptr )
+        {
+          action->setObjectName( "===========THIS_OBJECT_HAS_NO_NAME============" );
+          action->parent()->dumpObjectTree();
+        }
         QVERIFY2(
           action->isSeparator() || !action->objectName().isEmpty(),
           qPrintable( u"'%1' %2 has a %3 with no objectName"_s.arg( path ).arg( action->parent()->metaObject()->className() ).arg( action->metaObject()->className() ) )
