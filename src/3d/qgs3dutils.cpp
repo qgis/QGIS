@@ -548,9 +548,13 @@ void Qgs3DUtils::extractPointPositions(
     {
       geomZ = pt.z();
     }
-    const float terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator()
+
+    const bool useTerrainHeight = context.crs().type() != Qgis::CrsType::Geocentric && context.terrainRenderingEnabled() && context.terrainGenerator();
+    const float terrainZ = useTerrainHeight
                              ? static_cast<float>( context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * ( context.terrainSettings() ? context.terrainSettings()->verticalScale() : 1 ) )
                              : 0.f;
+    const bool isGeocentric = context.crs().type() == Qgis::CrsType::Geocentric;
+
     float h = 0.0f;
     switch ( altClamp )
     {
@@ -558,7 +562,7 @@ void Qgs3DUtils::extractPointPositions(
         h = geomZ;
         break;
       case Qgis::AltitudeClamping::Terrain:
-        h = terrainZ;
+        h = isGeocentric ? geomZ : terrainZ;
         break;
       case Qgis::AltitudeClamping::Relative:
         h = terrainZ + geomZ;
