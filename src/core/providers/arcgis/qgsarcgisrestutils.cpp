@@ -868,7 +868,9 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     for ( const QVariant &category : categories )
     {
       const QVariantMap categoryData = category.toMap();
-      const QString value = categoryData.value( u"value"_s ).toString();
+      const QString valueString = categoryData.value( u"value"_s ).toString();
+      // Esri uses the literal string "<Null>" to represent a NULL field value in unique value renderers.
+      const QVariant value = valueString == "<Null>"_L1 ? QVariant() : QVariant( valueString );
       const QString label = categoryData.value( u"label"_s ).toString();
       std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( categoryData.value( u"symbol"_s ).toMap(), context ) );
       if ( symbol )
