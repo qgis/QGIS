@@ -75,6 +75,9 @@ namespace QgsProcessingAlgorithmPrivate
   const bool QgsSourceLocationRegistrar<ClassType, LineNum, File>::registered = QgsSourceLocationRegistrar<ClassType, LineNum, File>::doRegister();
 } //namespace QgsProcessingAlgorithmPrivate
 
+// the QGS_MARK_ALGORITHM_SOURCE macro should be placed within each c++ algorithm's implementation, at the location which best
+// represents the source that reflects the internal logic of the algorithm. (Most of the time this will be at the start of the algorithm's
+// processAlgorithm implementation)
 #define QGS_MARK_ALGORITHM_SOURCE ( void ) QgsProcessingAlgorithmPrivate::QgsSourceLocationRegistrar<std::remove_pointer_t<decltype( this )>, __LINE__, __FILE__>::registered;
 #endif
 ///@endcond PRIVATE
