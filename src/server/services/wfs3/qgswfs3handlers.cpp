@@ -677,7 +677,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
 
           fInfo.role = "reference";
           fInfo.collectionId = referencedLayerId.toStdString();
-          if ( !referencedLayerTitle.isEmpty() )
+          if ( !fInfo.title.has_value() && !referencedLayerTitle.isEmpty() )
           {
             fInfo.title = referencedLayerTitle.toStdString();
           }
@@ -688,7 +688,7 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
           const QString referencedLayerId = referencedLayerIdentifier( mapLayer, fieldElement->idx(), context, &referencedLayerTitle );
           fInfo.role = "reference";
           fInfo.collectionId = referencedLayerId.toStdString();
-          if ( !referencedLayerTitle.isEmpty() )
+          if ( !fInfo.title.has_value() && !referencedLayerTitle.isEmpty() )
           {
             fInfo.title = referencedLayerTitle.toStdString();
           }
@@ -837,8 +837,9 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
     const std::string fieldName = fInfo.identifier;
     fieldsInfo[fieldName] = json::object();
     fieldsInfo[fieldName]["x-ogc-propertySeq"] = fInfo.seq;
-    fieldsInfo[fieldName]["type"] = fInfo.type;
     // Optional info
+    if ( fInfo.type.has_value() )
+      fieldsInfo[fieldName]["type"] = fInfo.type.value();
     if ( fInfo.title.has_value() )
       fieldsInfo[fieldName]["title"] = fInfo.title.value();
     if ( fInfo.readOnly.has_value() )
@@ -863,27 +864,22 @@ void QgsWfs3AbstractItemsHandler::gatherLayerFieldsInfo( json &data, const QgsVe
       fieldsInfo[fieldName]["pattern"] = fInfo.pattern.value();
     if ( fInfo.codelist.has_value() )
     {
-      json codelistJson = json::object();
+      json codelistJson = json::array();
       const CodelistInline &codelistInfo = fInfo.codelist.value();
-      if ( codelistInfo.title.has_value() )
-        codelistJson["title"] = codelistInfo.title.value();
-      if ( codelistInfo.description.has_value() )
-        codelistJson["description"] = codelistInfo.description.value();
-      codelistJson["oneOf"] = json::array();
       const QVariantMap values = codelistInfo.values.value();
       for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
         if ( it.value().isValid() )
         {
-          codelistJson["oneOf"].push_back( { { "title", it.key().toStdString() }, { "const", QgsJsonUtils::jsonFromVariant( it.value() ) } } );
+          codelistJson.push_back( { { "title", it.key().toStdString() }, { "const", QgsJsonUtils::jsonFromVariant( it.value() ) } } );
         }
         else
         {
-          codelistJson["oneOf"].push_back( { { "title", it.key().toStdString() }, { "const", json() } } );
+          codelistJson.push_back( { { "title", it.key().toStdString() }, { "const", json() } } );
           fieldsInfo[fieldName]["x-ogc-nullValues"] = json::array( { json() } );
         }
       }
-      fieldsInfo[fieldName]["x-ogc-codelist"] = codelistJson;
+      fieldsInfo[fieldName]["oneOf"] = codelistJson;
     }
   }
   data["properties"] = fieldsInfo;
