@@ -1890,7 +1890,7 @@ QList<QPair<QString, QString>> QgsPostgresProvider::codedValues( int index ) con
   QString typeName = mAttributeFields.at( index ).typeName();
 
   // Remove schema extension from typeName
-  thread_local QRegularExpression rx( "^([^.]+\\.)+" );
+  const thread_local QRegularExpression rx( "^([^.]+\\.)+" );
   typeName.remove( rx );
 
   //is type an enum?
