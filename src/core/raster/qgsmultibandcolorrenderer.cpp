@@ -104,7 +104,7 @@ void QgsMultiBandColorRenderer::setBlueContrastEnhancement( QgsContrastEnhanceme
   mBlueContrastEnhancement.reset( ce );
 }
 
-QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
+std::unique_ptr<QgsRasterRenderer> QgsMultiBandColorRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
   {
@@ -141,7 +141,7 @@ QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, Q
     blueContrastEnhancement->readXml( blueContrastElem );
   }
 
-  QgsRasterRenderer *r = new QgsMultiBandColorRenderer( input, redBand, greenBand, blueBand, redContrastEnhancement, greenContrastEnhancement, blueContrastEnhancement );
+  auto r = std::make_unique<QgsMultiBandColorRenderer>( input, redBand, greenBand, blueBand, redContrastEnhancement, greenContrastEnhancement, blueContrastEnhancement );
   r->readXml( elem );
   return r;
 }

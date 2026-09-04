@@ -438,7 +438,7 @@ Returns the color ramp for an athematic Raster Attribute Table setting
 the labels in ``labels``, optionally generated from ``labelColumn``.
 %End
 
-    QgsRasterRenderer *createRenderer( QgsRasterDataProvider *provider, const int bandNumber, const int classificationColumn = -1 ) /Factory/;
+    std::unique_ptr<QgsRasterRenderer> createRenderer( QgsRasterDataProvider *provider, const int bandNumber, const int classificationColumn = -1 );
 %Docstring
 Creates and returns a (possibly ``None``) raster renderer for the
 specified ``provider`` and ``bandNumber`` and optionally reclassified by
@@ -493,7 +493,7 @@ Returns the translated human readable name of ``fieldUsage``.
 Returns the list of field usages for colors and values.
 %End
 
-    static QgsRasterAttributeTable *createFromRaster( QgsRasterLayer *rasterLayer, int *bandNumber /Out/ = 0 ) /Factory/;
+    static std::unique_ptr<QgsRasterAttributeTable> createFromRaster( QgsRasterLayer *rasterLayer, int *bandNumber /Out/ = 0 );
 %Docstring
 Creates a new Raster Attribute Table from a raster layer, the renderer
 must be Paletted or SingleBandPseudoColor, optionally reporting the
