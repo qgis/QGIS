@@ -2948,6 +2948,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     friend class TestQgisApp;
     friend class TestQgsProjectExpressions;
     friend class TestQgsCustomization;
+    friend class TestQgisAppWidgetNames;
     friend class QgisAppInterface;
     friend class QgsAppScreenShots;
 };
