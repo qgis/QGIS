@@ -54,7 +54,7 @@ QgsLineMaterial::QgsLineMaterial( LinePart part )
 
   if ( mPart == LinePart::Join )
   {
-    mParameterMiterLimit = new Qt3DRender::QParameter( "MITER_LIMIT", 0.75, this ); // previous implementation had this value and this always does a bevel, worth discussing/addressing in the future
+    mParameterMiterLimit = new Qt3DRender::QParameter( "MITER_LIMIT", -1, this ); // previous implementation had this value and this always does a bevel, worth discussing/addressing in the future
     addParameter( mParameterMiterLimit );
   }
 
