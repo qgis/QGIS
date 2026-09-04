@@ -22,9 +22,11 @@ __copyright__ = "(C) 2016, Matthias Kuhn"
 
 import glob
 import hashlib
+import math
 import os
 import re
 import shutil
+import struct
 import tempfile
 from copy import deepcopy
 
@@ -317,7 +319,7 @@ class AlgorithmsTest:
 
             filepath = self.uri_path_join(outdir, basename)
             return filepath
-        elif param["type"] == "rasterhash":
+        elif param["type"] in ("rasterhash", "rasterfile"):
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
             basename = "raster.tif"
@@ -496,6 +498,14 @@ class AlgorithmsTest:
                     self.assertIn(strhash, expected_result["hash"])
                 else:
                     self.assertEqual(strhash, expected_result["hash"])
+            elif expected_result["type"] == "rasterfile":
+                result_filepath = results[id]
+                expected_filepath = self.filepath_from_param(expected_result)
+                abs_tol = expected_result.get("abs_tol", 1e-5)
+                rel_tol = expected_result.get("rel_tol", 1e-5)
+                self.check_raster_equality(
+                    expected_filepath, result_filepath, abs_tol=abs_tol, rel_tol=rel_tol
+                )
             elif "file" == expected_result["type"]:
                 result_filepath = results[id]
                 if isinstance(expected_result.get("name"), list):
@@ -523,6 +533,114 @@ class AlgorithmsTest:
 
                 for rule in expected_result.get("rules", []):
                     self.assertRegex(data, rule)
+
+    def check_raster_equality(
+        self, expected_filepath, result_filepath, abs_tol=1e-5, rel_tol=1e-5
+    ):
+        """
+        Checks that two raster files are pixel-wise equal with detailed mismatch reporting
+        """
+        self.assertTrue(
+            os.path.exists(expected_filepath),
+            f"Expected raster file does not exist: {expected_filepath}",
+        )
+        self.assertTrue(
+            os.path.exists(result_filepath),
+            f"Result raster file does not exist: {result_filepath}",
+        )
+
+        exp_ds = gdal.Open(expected_filepath, GA_ReadOnly)
+        res_ds = gdal.Open(result_filepath, GA_ReadOnly)
+
+        self.assertIsNotNone(
+            exp_ds, f"Failed to open expected raster dataset: {expected_filepath}"
+        )
+        self.assertIsNotNone(
+            res_ds, f"Failed to open result raster dataset: {result_filepath}"
+        )
+
+        width = exp_ds.RasterXSize
+        height = exp_ds.RasterYSize
+        bands = exp_ds.RasterCount
+
+        if (
+            width != res_ds.RasterXSize
+            or height != res_ds.RasterYSize
+            or bands != res_ds.RasterCount
+        ):
+            self.fail(
+                f"Raster dimension mismatch:\n"
+                f"  expected: width={width}, height={height}, bands={bands}\n"
+                f"  actual:   width={res_ds.RasterXSize}, height={res_ds.RasterYSize}, bands={res_ds.RasterCount}"
+            )
+
+        format_map = {
+            gdal.GDT_Byte: "B",
+            gdal.GDT_UInt16: "H",
+            gdal.GDT_Int16: "h",
+            gdal.GDT_UInt32: "I",
+            gdal.GDT_Int32: "i",
+            gdal.GDT_Float32: "f",
+            gdal.GDT_Float64: "d",
+        }
+
+        total_pixels = width * height
+
+        for band_idx in range(1, bands + 1):
+            exp_band = exp_ds.GetRasterBand(band_idx)
+            res_band = res_ds.GetRasterBand(band_idx)
+
+            exp_fmt = format_map.get(exp_band.DataType, "d")
+            res_fmt = format_map.get(res_band.DataType, "d")
+
+            exp_bytes = exp_band.ReadRaster()
+            res_bytes = res_band.ReadRaster()
+
+            exp_vals = struct.unpack(f"{total_pixels}{exp_fmt}", exp_bytes)
+            res_vals = struct.unpack(f"{total_pixels}{res_fmt}", res_bytes)
+
+            mismatch_count = 0
+            max_diff = 0.0
+            samples = []
+
+            # always iterate through ALL pixels, so we can build up a nice summary of the difference
+            # instead of only reporting the first failure
+            for idx in range(total_pixels):
+                val_exp = exp_vals[idx]
+                val_res = res_vals[idx]
+
+                if math.isnan(val_exp) and math.isnan(val_res):
+                    continue
+
+                if math.isnan(val_exp) != math.isnan(val_res):
+                    is_match = False
+                    diff = float("inf")
+                else:
+                    diff = abs(val_exp - val_res)
+                    is_match = math.isclose(
+                        val_exp, val_res, rel_tol=rel_tol, abs_tol=abs_tol
+                    )
+
+                if not is_match:
+                    mismatch_count += 1
+                    if diff > max_diff:
+                        max_diff = diff
+                    if len(samples) < 5:
+                        x = idx % width
+                        y = idx // width
+                        samples.append(
+                            f"    pixel ({x}, {y}): expected {val_exp}, actual {val_res}, diff {diff}"
+                        )
+
+            if mismatch_count > 0:
+                sample_text = "\n".join(samples)
+                percentage = (mismatch_count / total_pixels) * 100
+                self.fail(
+                    f"Raster pixel mismatches found in band {band_idx}:\n"
+                    f"  mismatched pixels: {mismatch_count} / {total_pixels} ({percentage:.2f}%)\n"
+                    f"  maximum absolute difference: {max_diff}\n"
+                    f"  sample differences:\n{sample_text}"
+                )
 
 
 class GenericAlgorithmsTest(QgisTestCase):
