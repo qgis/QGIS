@@ -202,7 +202,7 @@ void QgsFontButton::copyFormat()
   switch ( mMode )
   {
     case ModeTextRenderer:
-      QApplication::clipboard()->setMimeData( mFormat.toMimeData() );
+      QApplication::clipboard()->setMimeData( mFormat.toMimeData().release() );
       break;
 
     case ModeQFont:
@@ -287,7 +287,7 @@ void QgsFontButton::mouseMoveEvent( QMouseEvent *e )
   switch ( mMode )
   {
     case ModeTextRenderer:
-      drag->setMimeData( mFormat.toMimeData() );
+      drag->setMimeData( mFormat.toMimeData().release() );
       break;
 
     case ModeQFont:

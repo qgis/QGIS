@@ -47,7 +47,7 @@ QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::clone() const
   return res.release();
 }
 
-QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsTiledSceneRenderer> QgsTiledSceneTextureRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   auto r = std::make_unique< QgsTiledSceneTextureRenderer >();
   {
@@ -63,7 +63,7 @@ QgsTiledSceneRenderer *QgsTiledSceneTextureRenderer::create( QDomElement &elemen
 
   r->restoreCommonProperties( element, context );
 
-  return r.release();
+  return r;
 }
 
 std::unique_ptr<QgsFillSymbol> QgsTiledSceneTextureRenderer::createDefaultFillSymbol()

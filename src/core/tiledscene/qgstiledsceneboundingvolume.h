@@ -59,7 +59,7 @@ class CORE_EXPORT QgsTiledSceneBoundingVolume
      * The optional \a transform and \a direction arguments should be used whenever the volume needs
      * to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
      */
-    QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_FACTORY;
+    std::unique_ptr<QgsAbstractGeometry> as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 
     /**
      * Applies a \a transform to the bounding volume.
