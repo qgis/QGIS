@@ -59,6 +59,8 @@ import processing
 
 gdal.UseExceptions()
 
+REGENERATE_REFERENCE_RASTERS = False
+
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
     return (maj) * 1000000 + (min) * 10000 + (rev) * 100
@@ -242,7 +244,7 @@ class AlgorithmsTest:
         if expectFailure:
             try:
                 results, ok = alg.run(parameters, context, feedback)
-                self.check_results(results, context, parameters, defs["results"])
+                self.check_results(results, context, parameters, defs)
                 if ok:
                     raise _UnexpectedSuccess
             except Exception:
@@ -250,7 +252,7 @@ class AlgorithmsTest:
         else:
             results, ok = alg.run(parameters, context, feedback)
             self.assertTrue(ok, f"params: {parameters}, results: {results}")
-            self.check_results(results, context, parameters, defs["results"])
+            self.check_results(results, context, parameters, defs)
 
     def load_params(self, params):
         """
@@ -420,10 +422,11 @@ class AlgorithmsTest:
 
         return filepath
 
-    def check_results(self, results, context, params, expected):
+    def check_results(self, results, context, params, defs):
         """
         Checks if result produced by an algorithm matches with the expected specification.
         """
+        expected = defs["results"]
         for id, expected_result in expected.items():
             if expected_result["type"] in ("vector", "table"):
                 if "compare" in expected_result and not expected_result["compare"]:
@@ -498,6 +501,66 @@ class AlgorithmsTest:
                     self.assertIn(strhash, expected_result["hash"])
                 else:
                     self.assertEqual(strhash, expected_result["hash"])
+
+                if REGENERATE_REFERENCE_RASTERS and (
+                    defs
+                    and dataset.RasterCount == 1
+                    and dataset.RasterXSize <= 128
+                    and dataset.RasterYSize <= 128
+                ):
+                    test_name = defs.get("name", "raster_test")
+                    clean_name = re.sub(r"[^\w\-_]", "_", test_name.lower())
+                    asc_filename = f"{clean_name}_{id}.asc"
+                    rel_asc_path = os.path.join("expected", asc_filename)
+                    abs_asc_path = os.path.join(processingTestDataPath(), rel_asc_path)
+
+                    # save current result raster as ascii grid, since that format plays
+                    # nicely with git diffs
+                    grid_driver = gdal.GetDriverByName("AAIGrid")
+                    if grid_driver:
+                        grid_driver.CreateCopy(abs_asc_path, dataset)
+
+                    # update test definition yaml to reference ascii grid file
+                    yaml_path = os.path.join(
+                        processingTestDataPath(), self.definition_file()
+                    )
+                    with open(yaml_path, encoding="utf-8") as stream:
+                        yaml_content = stream.read()
+
+                    # it'd be better to use yaml module to directly re-write these,
+                    # but lets use an approach which minimizes the changes instead
+                    # (yaml rewriting reorders the values, changes whitespace, messes with comments, etc)
+                    # let's opt for the gross code for the moment instead...
+                    yaml_blocks = re.split(r"(\n {2}- )", yaml_content)
+                    was_updated = False
+                    for idx in range(len(yaml_blocks)):
+                        if (
+                            f"name: {test_name}" in yaml_blocks[idx]
+                            or f"name: '{test_name}'" in yaml_blocks[idx]
+                            or f'name: "{test_name}"' in yaml_blocks[idx]
+                        ):
+                            sub_pattern = re.compile(
+                                rf"({re.escape(id)}:\s*\n)([\s\S]*?)(?=\n\s{{4}}\w+|\Z)"
+                            )
+                            sub_match = sub_pattern.search(yaml_blocks[idx])
+                            if sub_match:
+                                indent_match = re.search(r"\n(\s+)", sub_match.group(2))
+                                indent = (
+                                    indent_match.group(1)
+                                    if indent_match
+                                    else "        "
+                                )
+                                new_result = f"{sub_match.group(1)}{indent}name: {rel_asc_path}\n{indent}type: rasterfile\n"
+                                yaml_blocks[idx] = sub_pattern.sub(
+                                    new_result, yaml_blocks[idx], count=1
+                                )
+                                was_updated = True
+                                break
+
+                    if was_updated:
+                        with open(yaml_path, "w", encoding="utf-8") as stream:
+                            stream.write("".join(yaml_blocks))
+
             elif expected_result["type"] == "rasterfile":
                 result_filepath = results[id]
                 expected_filepath = self.filepath_from_param(expected_result)
