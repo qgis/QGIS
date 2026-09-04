@@ -107,10 +107,10 @@ void QgsWmsDimensionDialog::setInfo( const QgsMapLayerServerProperties::WmsDimen
   mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( static_cast<int>( info.defaultDisplayType ) ) ) );
   if ( info.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::ReferenceValue )
   {
-    const int referenceValueIndex = mReferenceValueComboBox->findData( info.referenceValue );
+    const int referenceValueIndex = mReferenceValueComboBox->findData( info.referenceValue() );
     if ( referenceValueIndex == -1 )
     {
-      mReferenceValueComboBox->setEditText( info.referenceValue.toString() );
+      mReferenceValueComboBox->setEditText( info.referenceValue().toString() );
     }
     else
     {
