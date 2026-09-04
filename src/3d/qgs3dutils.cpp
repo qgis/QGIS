@@ -845,8 +845,17 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
   return QgsRay3D( rayOriginWorld, rayDirWorld );
 }
 
-QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
+QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, const QSize &screenSize, Qt3DRender::QCamera *camera, double depth )
 {
+  if ( std::isnan( depth ) )
+  {
+    const QgsRay3D ray = rayFromScreenPoint( screenPoint, screenSize, camera );
+
+    // pick an arbitrary point mid-way between near and far plane
+    const float pointDistance = ( camera->farPlane() + camera->nearPlane() ) / 2;
+    return ray.point( pointDistance );
+  }
+
   // Transform pixel coordinates and [0.0, 1.0]-range sampled depth to [-1.0, 1.0]
   // normalised device coordinates used by projection matrix.
   QVector3D screenPointNdc {

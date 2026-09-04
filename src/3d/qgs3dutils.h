@@ -16,6 +16,7 @@
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
 
+#include <limits>
 #include <memory>
 
 #include "qgs3danimationsettings.h"
@@ -287,13 +288,20 @@ class _3D_EXPORT Qgs3DUtils
 
     /**
      * Converts the clicked mouse position to the corresponding 3D world coordinates
+     *
+     * If \a depth is provided, it is interpreted as a normalized depth buffer
+     * value in the [0.0, 1.0] interval. If \a depth is NaN, an approximate
+     * position is returned by picking the point halfway between the near and
+     * far planes on the ray from the camera.
+     *
      * \param screenPoint point on screen in pixel from top-left corner
-     * \param depth value from depth buffer in [0.0, 1.0] interval
      * \param screenSize size of screen in pixels
      * \param camera camera whose view/projection matrices are used
+     * \param depth value from depth buffer in [0.0, 1.0] interval, or NaN if the value is unknown
+     *
      * \since QGIS 3.24
      */
-    static QVector3D screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera );
+    static QVector3D screenPointToWorldPos( const QPoint &screenPoint, const QSize &screenSize, Qt3DRender::QCamera *camera, double depth = std::numeric_limits<float>::quiet_NaN() );
 
     /**
      * Function used to extract the pitch and yaw (also known as heading) angles in degrees from the view vector of the camera [cameraViewCenter - cameraPosition]
