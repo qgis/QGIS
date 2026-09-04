@@ -485,7 +485,7 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
     std::unique_ptr<QgsColorRamp> colorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
     if ( !colorRamp )
     {
-      colorRamp.reset( QgsStyle::defaultStyle()->colorRamp( u"Blues"_s ) );
+      colorRamp = QgsStyle::defaultStyle()->colorRamp( u"Blues"_s );
     }
     if ( colorRamp )
       mColorRampButton->setColorRamp( colorRamp.get() );

@@ -53,7 +53,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
      * \param context reading context
      * \returns new null symbol renderer
      */
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
      * \param renderer renderer to convert from
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
-    static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    static std::unique_ptr<QgsNullSymbolRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   private:
     //! Symbol to use for rendering selected features

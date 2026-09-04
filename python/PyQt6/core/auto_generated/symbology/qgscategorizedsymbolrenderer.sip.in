@@ -360,7 +360,7 @@ renderer categories.
 .. seealso:: :py:func:`classAttribute`
 %End
 
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a categorized renderer from an XML ``element``.
 %End
@@ -438,7 +438,7 @@ Update the color ramp used and all symbols colors.
 
     virtual QString legendClassificationAttribute() const;
 
-    static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = 0 ) /Factory/;
+    static std::unique_ptr<QgsCategorizedSymbolRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = 0 );
 %Docstring
 Creates a new QgsCategorizedSymbolRenderer from an existing
 ``renderer``.

@@ -811,7 +811,7 @@ void QgsSymbol::setAnimationSettings( const QgsSymbolAnimationSettings &settings
   mAnimationSettings = settings;
 }
 
-QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
+std::unique_ptr<QgsSymbol> QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
 {
   std::unique_ptr< QgsSymbol > s;
 
@@ -873,7 +873,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
     s->setColor( s->color().toRgb() );
   }
 
-  return s.release();
+  return s;
 }
 
 QgsSymbolLayer *QgsSymbol::symbolLayer( int layer )

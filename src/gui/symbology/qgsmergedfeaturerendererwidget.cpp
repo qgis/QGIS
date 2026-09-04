@@ -67,12 +67,12 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
   // (null renderer means "no previous renderer")
   if ( renderer )
   {
-    mRenderer.reset( QgsMergedFeatureRenderer::convertFromRenderer( renderer ) );
+    mRenderer = QgsMergedFeatureRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {
     // use default embedded renderer
-    mRenderer = std::make_unique<QgsMergedFeatureRenderer>( QgsFeatureRenderer::defaultRenderer( type ) );
+    mRenderer = std::make_unique<QgsMergedFeatureRenderer>( QgsFeatureRenderer::defaultRenderer( type ).release() );
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }

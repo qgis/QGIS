@@ -342,7 +342,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     /**
      * Creates a categorized renderer from an XML \a element.
      */
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
@@ -418,7 +418,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      *
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
-    static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = nullptr ) SIP_FACTORY;
+    static std::unique_ptr<QgsCategorizedSymbolRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = nullptr );
 
     /**
      * Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.

@@ -59,11 +59,11 @@ Returns ``True`` if a ``shape`` has a fill.
     QgsEllipseSymbolLayer();
     ~QgsEllipseSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates the symbol layer
 %End
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
 

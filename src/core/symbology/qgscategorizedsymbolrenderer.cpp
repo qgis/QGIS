@@ -659,7 +659,7 @@ bool QgsCategorizedSymbolRenderer::accept( QgsStyleEntityVisitorInterface *visit
   return true;
 }
 
-QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsFeatureRenderer> QgsCategorizedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   QDomElement symbolsElem = element.firstChildElement( u"symbols"_s );
   if ( symbolsElem.isNull() )
@@ -767,7 +767,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
 
   QString attrName = element.attribute( u"attr"_s );
 
-  QgsCategorizedSymbolRenderer *r = new QgsCategorizedSymbolRenderer( attrName, cats );
+  auto r = std::make_unique<QgsCategorizedSymbolRenderer>( attrName, cats );
 
   // delete symbols if there are any more
   QgsSymbolLayerUtils::clearSymbolMap( symbolMap );
@@ -1244,7 +1244,7 @@ void QgsCategorizedSymbolRenderer::checkLegendSymbolItem( const QString &key, bo
   }
 }
 
-QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer )
+std::unique_ptr<QgsCategorizedSymbolRenderer> QgsCategorizedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer )
 {
   std::unique_ptr< QgsCategorizedSymbolRenderer > r;
   if ( renderer->type() == "categorizedSymbol"_L1 )
@@ -1356,13 +1356,13 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
   {
     const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer );
     if ( pointDistanceRenderer )
-      r.reset( convertFromRenderer( pointDistanceRenderer->embeddedRenderer() ) );
+      r = convertFromRenderer( pointDistanceRenderer->embeddedRenderer() );
   }
   else if ( renderer->type() == "invertedPolygonRenderer"_L1 )
   {
     const QgsInvertedPolygonRenderer *invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer );
     if ( invertedPolygonRenderer )
-      r.reset( convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() ) );
+      r = convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
   }
   else if ( renderer->type() == "embeddedSymbol"_L1 && layer )
   {
@@ -1401,7 +1401,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
 
   renderer->copyRendererData( r.get() );
 
-  return r.release();
+  return r;
 }
 
 void QgsCategorizedSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )

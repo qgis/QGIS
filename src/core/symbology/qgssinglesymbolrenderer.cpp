@@ -169,7 +169,7 @@ QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context ) cons
 }
 
 
-QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsFeatureRenderer> QgsSingleSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   QDomElement symbolsElem = element.firstChildElement( u"symbols"_s );
   if ( symbolsElem.isNull() )
@@ -180,7 +180,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const
   if ( !symbolMap.contains( u"0"_s ) )
     return nullptr;
 
-  QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( symbolMap.take( u"0"_s ) );
+  auto r = std::make_unique<QgsSingleSymbolRenderer>( symbolMap.take( u"0"_s ) );
 
   // delete symbols if there are any more
   QgsSymbolLayerUtils::clearSymbolMap( symbolMap );
@@ -207,7 +207,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const
   return r;
 }
 
-QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element, Qgis::GeometryType geomType )
+std::unique_ptr<QgsFeatureRenderer> QgsSingleSymbolRenderer::createFromSld( QDomElement &element, Qgis::GeometryType geomType )
 {
   // XXX this renderer can handle only one Rule!
 
@@ -292,7 +292,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
   }
 
   // and finally return the new renderer
-  return new QgsSingleSymbolRenderer( symbol.release() );
+  return std::make_unique<QgsSingleSymbolRenderer>( symbol.release() );
 }
 
 QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
@@ -369,12 +369,12 @@ void QgsSingleSymbolRenderer::setLegendSymbolItem( const QString &key, QgsSymbol
   setSymbol( symbol );
 }
 
-QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+std::unique_ptr<QgsSingleSymbolRenderer> QgsSingleSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  QgsSingleSymbolRenderer *r = nullptr;
+  std::unique_ptr<QgsSingleSymbolRenderer> r;
   if ( renderer->type() == "singleSymbol"_L1 )
   {
-    r = dynamic_cast<QgsSingleSymbolRenderer *>( renderer->clone() );
+    r = std::unique_ptr<QgsSingleSymbolRenderer>( dynamic_cast<QgsSingleSymbolRenderer *>( renderer->clone() ) );
   }
   else if ( renderer->type() == "pointDisplacement"_L1 || renderer->type() == "pointCluster"_L1 )
   {
@@ -395,13 +395,13 @@ QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::convertFromRenderer( const Qgs
     const QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )
     {
-      r = new QgsSingleSymbolRenderer( symbols.at( 0 )->clone() );
+      r = std::make_unique<QgsSingleSymbolRenderer>( symbols.at( 0 )->clone() );
     }
   }
 
   if ( r )
   {
-    renderer->copyRendererData( r );
+    renderer->copyRendererData( r.get() );
   }
 
   return r;

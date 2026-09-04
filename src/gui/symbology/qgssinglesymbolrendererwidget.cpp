@@ -40,14 +40,14 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
 
   if ( renderer )
   {
-    mRenderer.reset( QgsSingleSymbolRenderer::convertFromRenderer( renderer ) );
+    mRenderer = QgsSingleSymbolRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {
-    QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+    std::unique_ptr<QgsSymbol> symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
     if ( symbol )
-      mRenderer = std::make_unique<QgsSingleSymbolRenderer>( symbol );
+      mRenderer = std::make_unique<QgsSingleSymbolRenderer>( symbol.release() );
 
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );

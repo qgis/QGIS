@@ -290,7 +290,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   // (null renderer means "no previous renderer")
   if ( renderer )
   {
-    mRenderer.reset( QgsCategorizedSymbolRenderer::convertFromRenderer( renderer, layer ) );
+    mRenderer = QgsCategorizedSymbolRenderer::convertFromRenderer( renderer, layer );
   }
   if ( !mRenderer )
   {
@@ -324,7 +324,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
     btnColorRamp->setRandomColorRamp();
   }
 
-  mCategorizedSymbol.reset( QgsSymbol::defaultSymbol( mLayer->geometryType() ) );
+  mCategorizedSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
   if ( mCategorizedSymbol )
   {
     btnChangeCategorizedSymbol->setSymbolType( mCategorizedSymbol->type() );
@@ -521,7 +521,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
   }
   else
   {
-    symbol.reset( QgsSymbol::defaultSymbol( mLayer->geometryType() ) );
+    symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
   }
 
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
@@ -773,8 +773,8 @@ void QgsCategorizedSymbolRendererWidget::addCategory()
 {
   if ( !mModel )
     return;
-  QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
-  const QgsRendererCategory cat( QVariant(), symbol, QString(), true );
+  std::unique_ptr<QgsSymbol> symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+  const QgsRendererCategory cat( QVariant(), symbol.release(), QString(), true );
   mModel->addCategory( cat );
   emit widgetChanged();
 }
