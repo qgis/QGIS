@@ -752,8 +752,8 @@ tests:
       - 4
     results:
       OUTPUT:
-        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
-        type: rasterhash
+        name: expected/reclassify_by_table_OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:reclassifybytable
     name: Reclassify by table min <=
@@ -774,8 +774,8 @@ tests:
       - 4
     results:
       OUTPUT:
-        hash: f055b582e4e5abcfa9cce6a69ceb7fac54791ad0d980003f1a23f4b1
-        type: rasterhash
+        name: expected/reclassify_by_table_min____OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:reclassifybytable
     name: Reclassify by table use original
@@ -793,8 +793,8 @@ tests:
       - 3
     results:
       OUTPUT:
-        hash: 4398ddc5d24b3bf968d9a6e0fbd800344b20880a57915bd50a90e1ba
-        type: rasterhash
+        name: expected/reclassify_by_table_use_original_OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:reclassifybytable
     name: Reclassify by table use nodata
@@ -812,8 +812,8 @@ tests:
       - 3
     results:
       OUTPUT:
-        hash: cea558f7e99a0564fef92a96cd8d6b59707d019f1751cb600ab00850
-        type: rasterhash
+        name: expected/reclassify_by_table_use_nodata_OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:reclassifybytable
     name: Reclassify by table infinite ranges
@@ -835,8 +835,8 @@ tests:
       - 4
     results:
       OUTPUT:
-        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
-        type: rasterhash
+        name: expected/reclassify_by_table_infinite_ranges_OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:reclassifybylayer
     name: Reclassify by layer
@@ -856,8 +856,8 @@ tests:
       VALUE_FIELD: value
     results:
       OUTPUT:
-        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
-        type: rasterhash
+        name: expected/reclassify_by_layer_OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:reclassifybylayer
     name: Reclassify by layer with nulls
@@ -878,8 +878,8 @@ tests:
       VALUE_FIELD: value
     results:
       OUTPUT:
-        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
-        type: rasterhash
+        name: expected/reclassify_by_layer_with_nulls_OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:pixelstopolygons
     name: Pixels to polygons
@@ -2128,8 +2128,8 @@ tests:
         type: raster
     results:
       OUTPUT:
-        hash: eb41f92cb1198f1e4bed71e4a78d4fe2d3b35462a3949588d85cc818
-        type: rasterhash
+        name: expected/boolean_and__reference_layer_OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:rasterlogicalor
     name: Boolean OR
@@ -2243,8 +2243,8 @@ tests:
         type: raster
     results:
       OUTPUT:
-        hash: 4e395a2151aba7558efedd43a33c85bbaae451ebcccef9a6dac86de4
-        type: rasterhash
+        name: expected/boolean_or__reference_layer_OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:addxyfields
     name: Add XY 4326
