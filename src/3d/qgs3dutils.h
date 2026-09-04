@@ -453,14 +453,19 @@ class _3D_EXPORT Qgs3DUtils
 
     /**
      * Transform the given screen point to \a QgsPoint in map coordinates
-     * \note This transformation is not unique as we pick point halfway between near and far plane on the ray from the camera.
+     * \note If \a depth is NaN, an approximate position is returned by picking
+     *       the point halfway between the near and far planes on the ray from the camera.
      * \param size size of canvas
      * \param screenPoint point in screen coordinates
      * \param cameraController camera controller attached to the scene
      * \param mapSettings 3D map settings of the scene
+     * \param depth value from depth buffer in [0.0, 1.0] interval, or NaN if the value is unknown
+     *
      * \since QGIS 3.44
      */
-    static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings );
+    static QgsPoint screenPointToMapCoordinates(
+      const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings, double depth = std::numeric_limits<float>::quiet_NaN()
+    );
 
     /**
      * Calculates an appropriate up vector for a directional light.

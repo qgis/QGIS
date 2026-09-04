@@ -1154,16 +1154,11 @@ QQuaternion Qgs3DUtils::rotationFromPitchHeadingAngles( float pitchAngle, float 
   return QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), headingAngle ) * QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), pitchAngle );
 }
 
-QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, const QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings )
+QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, const QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings, double depth )
 {
-  const QgsRay3D ray = rayFromScreenPoint( screenPoint, size, cameraController->camera() );
-
-  // pick an arbitrary point mid-way between near and far plane
-  const float pointDistance = ( cameraController->camera()->farPlane() + cameraController->camera()->nearPlane() ) / 2;
-  const QVector3D worldPoint = ray.point( pointDistance );
+  const QVector3D worldPoint = screenPointToWorldPos( screenPoint, size, cameraController->camera(), depth );
   const QgsVector3D mapTransform = worldToMapCoordinates( worldPoint, mapSettings->origin() );
-  const QgsPoint mapPoint( mapTransform.x(), mapTransform.y(), mapTransform.z() );
-  return mapPoint;
+  return QgsPoint( mapTransform );
 }
 
 QVector3D Qgs3DUtils::calculateDirectionalLightUpVector( const QVector3D &lightDirection )
