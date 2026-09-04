@@ -71,53 +71,6 @@ QgsMaterialSettingsWidget *QgsPhongMaterialWidget::create()
   return new QgsPhongMaterialWidget();
 }
 
-void QgsPhongMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique technique )
-{
-  switch ( technique )
-  {
-    case Qgis::MaterialRenderingTechnique::Triangles:
-    case Qgis::MaterialRenderingTechnique::TrianglesFromModel:
-    case Qgis::MaterialRenderingTechnique::InstancedPoints:
-    case Qgis::MaterialRenderingTechnique::Points:
-    {
-      lblDiffuse->setVisible( true );
-      btnDiffuse->setVisible( true );
-      mDiffuseCoefficientWidget->setVisible( true );
-      mAmbientDataDefinedButton->setVisible( false );
-      mDiffuseDataDefinedButton->setVisible( false );
-      mSpecularDataDefinedButton->setVisible( false );
-      break;
-    }
-
-    case Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture:
-    {
-      lblDiffuse->setVisible( false );
-      btnDiffuse->setVisible( false );
-      mDiffuseCoefficientWidget->setVisible( false );
-      mAmbientDataDefinedButton->setVisible( false );
-      mDiffuseDataDefinedButton->setVisible( false );
-      mSpecularDataDefinedButton->setVisible( false );
-      break;
-    }
-
-    case Qgis::MaterialRenderingTechnique::TrianglesDataDefined:
-    {
-      lblDiffuse->setVisible( true );
-      btnDiffuse->setVisible( true );
-      mDiffuseCoefficientWidget->setVisible( true );
-      mAmbientDataDefinedButton->setVisible( true );
-      mDiffuseDataDefinedButton->setVisible( true );
-      mSpecularDataDefinedButton->setVisible( true );
-      break;
-    }
-
-    case Qgis::MaterialRenderingTechnique::Lines:
-    case Qgis::MaterialRenderingTechnique::Billboards:
-      // not supported
-      break;
-  }
-}
-
 void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
   const QgsPhongMaterialSettings *phongMaterial = dynamic_cast<const QgsPhongMaterialSettings *>( settings );
@@ -191,6 +144,14 @@ void QgsPhongMaterialWidget::setHasOpacity( const bool opacity )
 void QgsPhongMaterialWidget::setPreviewVisible( bool visible )
 {
   mPreviewWidget->setVisible( visible );
+  if ( !visible )
+  {
+    mVerticalSpacer->changeSize( 0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed );
+  }
+  else
+  {
+    mVerticalSpacer->changeSize( 20, 40, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  }
   updatePreview();
 }
 
@@ -214,4 +175,42 @@ void QgsPhongMaterialWidget::updatePreview()
     return;
   const std::unique_ptr<QgsAbstractMaterialSettings> newSettings( settings() );
   mPreviewWidget->updatePreview( newSettings.get() );
+}
+
+void QgsPhongMaterialWidget::updateWidgetVisibility()
+{
+  const bool hasDiffuse = ( mTechnique != Qgis::MaterialRenderingTechnique::TrianglesWithFixedTexture );
+  const bool hasDataDefined = ( mTechnique == Qgis::MaterialRenderingTechnique::TrianglesDataDefined );
+  const bool fullMode = ( mStyle == QgsMaterialSettingsWidget::WidgetStyle::Full );
+
+  // diffuse
+  lblDiffuse->setVisible( hasDiffuse );
+  btnDiffuse->setVisible( hasDiffuse );
+  mDiffuseDataDefinedButton->setVisible( hasDiffuse && hasDataDefined );
+  mDiffuseCoefficientWidget->setVisible( fullMode && hasDiffuse );
+
+  // ambient
+  lblAmbient->setVisible( fullMode );
+  btnAmbient->setVisible( fullMode );
+  mAmbientDataDefinedButton->setVisible( fullMode && hasDataDefined );
+  mAmbientCoefficientWidget->setVisible( fullMode );
+
+  // specular
+  lblSpecular->setVisible( fullMode );
+  btnSpecular->setVisible( fullMode );
+  mSpecularDataDefinedButton->setVisible( fullMode && hasDataDefined );
+  mSpecularCoefficientWidget->setVisible( fullMode );
+
+  // shininess
+  lblShininess->setVisible( fullMode );
+  spinShininess->setVisible( fullMode );
+
+  if ( fullMode )
+  {
+    gridLayout->setVerticalSpacing( -1 );
+  }
+  else
+  {
+    gridLayout->setVerticalSpacing( 3 );
+  }
 }

@@ -39,6 +39,11 @@ class QgsPolygon3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Polygon3D
 
   private slots:
     void updateGuiState();
+
+  private:
+    bool mEdgesEnabled = false;
+    double mEdgeWidth = 1.0;
+    QColor mEdgeColor;
 };
 
 #endif // QGSPOLYGON3DSYMBOLWIDGET_H

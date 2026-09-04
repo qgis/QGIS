@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Qgs3DAdvancedLineSymbolSettingsWidgetBase</class>
+ <widget class="Qgs3DAdvancedSymbolSettingsWidget" name="Qgs3DAdvancedLineSymbolSettingsWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>406</width>
+    <height>337</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Symbol Options</string>
+  </property>
+  <layout class="QGridLayout" name="mainGridLayout" rowstretch="0,0,0,1">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0" colspan="3">
+    <widget class="QgsCollapsibleGroupBox" name="mGroupShading">
+     <property name="title">
+      <string>Shading</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayoutShading">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QgsMaterialWidget" name="mWidgetMaterial" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+       <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Qgs3DAdvancedSymbolSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>qgs3dadvancedsymbolsettingswidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMaterialWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsmaterialwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+</ui>

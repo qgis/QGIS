@@ -42,7 +42,7 @@
     </widget>
    </item>
    <item row="12" column="1">
-    <widget class="QLabel" name="lblTextureRotation">
+    <widget class="QLabel" name="mLblTextureRotation">
      <property name="text">
       <string>Texture rotation</string>
      </property>
@@ -66,7 +66,7 @@
     </widget>
    </item>
    <item row="14" column="2">
-    <spacer name="verticalSpacer">
+    <spacer name="mVerticalSpacer">
      <property name="orientation">
       <enum>Qt::Orientation::Vertical</enum>
      </property>
@@ -89,21 +89,21 @@
     </widget>
    </item>
    <item row="8" column="1">
-    <widget class="QLabel" name="lblTextureScale_7">
+    <widget class="QLabel" name="mLblEmissionTexture">
      <property name="text">
       <string>Emission texture</string>
      </property>
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QLabel" name="lblTextureScale_5">
+    <widget class="QLabel" name="mLblNormalTexture">
      <property name="text">
       <string>Normal texture</string>
      </property>
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="QLabel" name="lblTextureScale_9">
+    <widget class="QLabel" name="mLblHeightTexture">
      <property name="text">
       <string>Height (displacement) texture</string>
      </property>
@@ -130,7 +130,7 @@
     </widget>
    </item>
    <item row="6" column="1">
-    <widget class="QLabel" name="lblTextureScale_10">
+    <widget class="QLabel" name="mlblParallaxScale">
      <property name="text">
       <string>Height texture strength</string>
      </property>
@@ -159,14 +159,14 @@
     </widget>
    </item>
    <item row="9" column="1">
-    <widget class="QLabel" name="lblTextureScale_8">
+    <widget class="QLabel" name="mLblEmissionStrength">
      <property name="text">
       <string>Emission strength</string>
      </property>
     </widget>
    </item>
    <item row="12" column="2">
-    <widget class="QgsDoubleSpinBox" name="textureRotationSpinBox">
+    <widget class="QgsDoubleSpinBox" name="mTextureRotationSpinBox">
      <property name="suffix">
       <string> °</string>
      </property>
@@ -189,7 +189,7 @@
     </widget>
    </item>
    <item row="11" column="1">
-    <widget class="QLabel" name="lblTextureScale">
+    <widget class="QLabel" name="mLblTextureScale">
      <property name="text">
       <string>Texture scale</string>
      </property>
@@ -235,14 +235,14 @@
     </widget>
    </item>
    <item row="7" column="1">
-    <widget class="QLabel" name="lblTextureScale_6">
+    <widget class="QLabel" name="mLblAmbientOcclusionTexture">
      <property name="text">
       <string>Ambient occlusion texture</string>
      </property>
     </widget>
    </item>
    <item row="11" column="2">
-    <widget class="QgsDoubleSpinBox" name="textureScaleSpinBox">
+    <widget class="QgsDoubleSpinBox" name="mTextureScaleSpinBox">
      <property name="suffix">
       <string> %</string>
      </property>
@@ -292,81 +292,83 @@
     </widget>
    </item>
    <item row="13" column="2">
-    <layout class="QGridLayout" name="gridLayout_2">
-     <property name="leftMargin">
-      <number>0</number>
-     </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>y</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QgsDoubleSpinBox" name="textureOffsetYSpin">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="minimum">
-        <double>-99999999.989999994635582</double>
-       </property>
-       <property name="maximum">
-        <double>99999999.989999994635582</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QgsDoubleSpinBox" name="textureOffsetXSpin">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="minimum">
-        <double>-99999999.989999994635582</double>
-       </property>
-       <property name="maximum">
-        <double>99999999.989999994635582</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>x</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QWidget" name="mTextureOffsetWidget">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>y</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsDoubleSpinBox" name="textureOffsetYSpin">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="decimals">
+         <number>6</number>
+        </property>
+        <property name="minimum">
+         <double>-99999999.989999994635582</double>
+        </property>
+        <property name="maximum">
+         <double>99999999.989999994635582</double>
+        </property>
+        <property name="singleStep">
+         <double>0.200000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsDoubleSpinBox" name="textureOffsetXSpin">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="decimals">
+         <number>6</number>
+        </property>
+        <property name="minimum">
+         <double>-99999999.989999994635582</double>
+        </property>
+        <property name="maximum">
+         <double>99999999.989999994635582</double>
+        </property>
+        <property name="singleStep">
+         <double>0.200000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>x</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item row="13" column="1">
-    <widget class="QLabel" name="lblTextureRotation_2">
+    <widget class="QLabel" name="mLblTextureOffset">
      <property name="text">
       <string>Texture offset</string>
      </property>
@@ -422,9 +424,9 @@
   <tabstop>mEmissionTextureWidget</tabstop>
   <tabstop>mEmissionStrengthSpinBox</tabstop>
   <tabstop>mOpacityWidget</tabstop>
-  <tabstop>textureScaleSpinBox</tabstop>
+  <tabstop>mTextureScaleSpinBox</tabstop>
   <tabstop>mTextureScaleDataDefinedButton</tabstop>
-  <tabstop>textureRotationSpinBox</tabstop>
+  <tabstop>mTextureRotationSpinBox</tabstop>
   <tabstop>mTextureRotationDataDefinedButton</tabstop>
  </tabstops>
  <resources/>
