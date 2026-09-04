@@ -796,7 +796,7 @@ dialog.
 Returns the native draw action.
 %End
 
-    virtual QAction *actionNew3DMapCanvas() = 0 /DisallowNone/;
+    virtual QAction *actionNew3DMapCanvas() = 0;
 %Docstring
 Returns the native action for creating a new 3d map canvas.
 %End
