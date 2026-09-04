@@ -75,6 +75,14 @@ void main(void)
     vec2 p0 = 0.5 * THICKNESS * sigma * abNorm;
     vec2 p2 = 0.5 * THICKNESS * sigma * cbNorm;
 
+    // swap p0 and p2 so that the join always faces camera TODO: check again
+    if (ab.x * cb.y - ab.y * cb.x > 0.0)
+    {
+        vec2 tmp = p0;
+        p0 = p2;
+        p2 = tmp;
+    }
+
     vec3 dir0 = normalize(pointB - pointA);
     vec3 dir1 = normalize(pointC - pointB);
 

@@ -308,20 +308,8 @@ Qt3DCore::QGeometry *QgsLineVertexData::createGeometry( Qt3DCore::QNode *parent 
 Qt3DCore::QGeometry *QgsLineVertexData::createJoinGeometry( Qt3DCore::QNode *parent )
 {
   static constexpr float selectorVertices[] = {
-    // triangle: pointB, p1, p0
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
+    // triangle: p0, p1, p2
     1.0f,
-    0.0f,
-    0.0f,
-    1.0f,
-    0.0f,
-    0.0f,
-    0.0f,
-    // triangle: pointB, p0, p1Inner
     0.0f,
     0.0f,
     0.0f,
@@ -331,12 +319,10 @@ Qt3DCore::QGeometry *QgsLineVertexData::createJoinGeometry( Qt3DCore::QNode *par
     0.0f,
     0.0f,
     0.0f,
-    0.0f,
-    0.0f,
     1.0f,
-    // triangle: pointB, p1Inner, p2
     0.0f,
-    0.0f,
+    // triangle: p0, p2, p1Inner
+    1.0f,
     0.0f,
     0.0f,
     0.0f,
@@ -345,21 +331,9 @@ Qt3DCore::QGeometry *QgsLineVertexData::createJoinGeometry( Qt3DCore::QNode *par
     1.0f,
     0.0f,
     0.0f,
-    1.0f,
-    0.0f,
-    // triangle: pointB, p2, p1
-    0.0f,
-    0.0f,
-    0.0f,
-    0.0f,
     0.0f,
     0.0f,
     1.0f,
-    0.0f,
-    0.0f,
-    1.0f,
-    0.0f,
-    0.0f,
   };
 
   Qt3DCore::QBuffer *selectorBuffer = new Qt3DCore::QBuffer( parent );
@@ -372,7 +346,7 @@ Qt3DCore::QGeometry *QgsLineVertexData::createJoinGeometry( Qt3DCore::QNode *par
   positionAttribute->setVertexSize( 4 );
   positionAttribute->setByteStride( 4 * sizeof( float ) );
   positionAttribute->setByteOffset( 0 );
-  positionAttribute->setCount( 12 );
+  positionAttribute->setCount( 6 );
   positionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
 
   Qt3DCore::QBuffer *pointABuffer = new Qt3DCore::QBuffer( parent );
@@ -468,7 +442,7 @@ Qt3DCore::QEntity *QgsLineVertexData::createJoinEntity( const QgsLineMaterial *s
     materialHandler->applyDataDefinedToGeometry( materialSettings, geometry, joinPointA.size(), materialDataDefinedJoins );
 
   renderer->setGeometry( geometry );
-  renderer->setVertexCount( 12 );
+  renderer->setVertexCount( 6 );
   renderer->setInstanceCount( joinPointA.size() );
 
   QgsLineMaterial *joinMaterial = new QgsLineMaterial( QgsLineMaterial::LinePart::Join );
