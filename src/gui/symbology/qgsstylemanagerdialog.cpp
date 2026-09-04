@@ -747,7 +747,7 @@ void QgsStyleManagerDialog::copyItem()
     case QgsStyle::TextFormatEntity:
     {
       const QgsTextFormat format( mStyle->textFormat( details.name ) );
-      QApplication::clipboard()->setMimeData( format.toMimeData() );
+      QApplication::clipboard()->setMimeData( format.toMimeData().release() );
       break;
     }
 

@@ -868,11 +868,11 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   return textStyleElem;
 }
 
-QMimeData *QgsTextFormat::toMimeData() const
+std::unique_ptr<QMimeData> QgsTextFormat::toMimeData() const
 {
   //set both the mime color data, and the text (format settings).
 
-  QMimeData *mimeData = new QMimeData;
+  auto mimeData = std::make_unique<QMimeData>();
   mimeData->setColorData( QVariant( color() ) );
 
   QgsReadWriteContext rwContext;

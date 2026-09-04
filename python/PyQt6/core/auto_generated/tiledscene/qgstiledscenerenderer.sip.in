@@ -122,7 +122,7 @@ subclasses and generate a proper subclass.
 Returns flags which control how the renderer behaves.
 %End
 
-    static QgsTiledSceneRenderer *load( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsTiledSceneRenderer> load( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a renderer from an XML ``element``.
 
