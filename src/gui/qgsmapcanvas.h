@@ -631,7 +631,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     QString theme() const { return mTheme; }
 
     //! Gets the current coordinate transform
-    const QgsMapToPixel *getCoordinateTransform();
+    const QgsMapToPixel *getCoordinateTransform() SIP_DISALLOWNONE;
 
     //! Find out whether rendering is in progress
     bool isDrawing();
@@ -746,7 +746,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      *
      * Main canvas in QGIS returns an instance which is always up-to-date with the project's snapping configuration.
      */
-    QgsSnappingUtils *snappingUtils() const;
+    QgsSnappingUtils *snappingUtils() const SIP_DISALLOWNONE;
 
     /**
      * Assign an instance of snapping utils to the map canvas.

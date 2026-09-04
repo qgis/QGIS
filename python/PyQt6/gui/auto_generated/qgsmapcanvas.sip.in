@@ -616,7 +616,7 @@ Returns the map's theme shown in the canvas, if set.
 .. seealso:: :py:func:`setTheme`
 %End
 
-    const QgsMapToPixel *getCoordinateTransform();
+    const QgsMapToPixel *getCoordinateTransform() /DisallowNone/;
 %Docstring
 Gets the current coordinate transform
 %End
@@ -752,7 +752,7 @@ has an effect if previewModeEnabled is ``True``.
 .. seealso:: :py:func:`previewModeEnabled`
 %End
 
-    QgsSnappingUtils *snappingUtils() const;
+    QgsSnappingUtils *snappingUtils() const /DisallowNone/;
 %Docstring
 Returns snapping utility class that is associated with map canvas. If no
 snapping utils instance has been associated previously, an internal will
