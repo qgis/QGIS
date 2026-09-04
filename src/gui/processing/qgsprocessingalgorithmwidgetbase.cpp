@@ -557,7 +557,7 @@ void QgsProcessingAlgorithmWidgetBase::mTabWidget_currentChanged( int )
 
 void QgsProcessingAlgorithmWidgetBase::linkClicked( const QUrl &url )
 {
-  if ( url.toString() == "#help" )
+  if ( url.toString() == "#help"_L1 )
   {
     openHelp();
     return;
