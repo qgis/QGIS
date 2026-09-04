@@ -1537,7 +1537,7 @@ void QgsAppLayerTreeViewMenuProvider::toggleLabels( bool enabled )
       if ( enabled && !rasterLayer->labeling() )
       {
         // no labeling setup - create default labeling for layer
-        rasterLayer->setLabeling( QgsAbstractRasterLayerLabeling::defaultLabelingForLayer( rasterLayer ) );
+        rasterLayer->setLabeling( QgsAbstractRasterLayerLabeling::defaultLabelingForLayer( rasterLayer ).release() );
         rasterLayer->setLabelsEnabled( true );
       }
       else

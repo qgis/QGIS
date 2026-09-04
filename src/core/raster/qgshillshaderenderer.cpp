@@ -63,7 +63,7 @@ Qgis::RasterRendererFlags QgsHillshadeRenderer::flags() const
   return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
 }
 
-QgsRasterRenderer *QgsHillshadeRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
+std::unique_ptr<QgsRasterRenderer> QgsHillshadeRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
   {
@@ -75,7 +75,7 @@ QgsRasterRenderer *QgsHillshadeRenderer::create( const QDomElement &elem, QgsRas
   double angle = elem.attribute( u"angle"_s, u"45"_s ).toDouble();
   double zFactor = elem.attribute( u"zfactor"_s, u"1"_s ).toDouble();
   bool multiDirectional = elem.attribute( u"multidirection"_s, u"0"_s ).toInt();
-  QgsHillshadeRenderer *r = new QgsHillshadeRenderer( input, band, azimuth, angle );
+  auto r = std::make_unique<QgsHillshadeRenderer>( input, band, azimuth, angle );
   r->readXml( elem );
 
   r->setZFactor( zFactor );

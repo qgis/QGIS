@@ -324,7 +324,7 @@ void QgsRasterLayer::setRendererForDrawingStyle( Qgis::RasterDrawingStyle drawin
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( drawingStyle, mDataProvider ) );
+  setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( drawingStyle, mDataProvider ).release() );
 }
 
 QgsRasterDataProvider *QgsRasterLayer::dataProvider()
@@ -2094,8 +2094,8 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
       QgsRasterRendererRegistryEntry rendererEntry;
       if ( mDataProvider && QgsApplication::rasterRendererRegistry()->rendererData( rendererType, rendererEntry ) )
       {
-        QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, mDataProvider );
-        mPipe->set( renderer );
+        std::unique_ptr<QgsRasterRenderer> renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, mDataProvider );
+        mPipe->set( renderer.release() );
       }
     }
 
@@ -2174,9 +2174,9 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     QDomElement labelingElement = layer_node.firstChildElement( u"labeling"_s );
     if ( !labelingElement.isNull() )
     {
-      QgsAbstractRasterLayerLabeling *labeling = QgsAbstractRasterLayerLabeling::createFromElement( labelingElement, context );
+      std::unique_ptr<QgsAbstractRasterLayerLabeling> labeling = QgsAbstractRasterLayerLabeling::createFromElement( labelingElement, context );
       mLabelsEnabled = layer_node.toElement().attribute( u"labelsEnabled"_s, u"0"_s ).toInt();
-      setLabeling( labeling );
+      setLabeling( labeling.release() );
     }
   }
 

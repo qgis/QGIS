@@ -134,7 +134,7 @@ void QgsCreateRasterAttributeTableDialog::accept()
 {
   QString errorMessage;
   int bandNumber { 0 };
-  QgsRasterAttributeTable *rat { QgsRasterAttributeTable::createFromRaster( mRasterLayer, &bandNumber ) };
+  std::unique_ptr<QgsRasterAttributeTable> rat { QgsRasterAttributeTable::createFromRaster( mRasterLayer, &bandNumber ) };
   bool success { false };
 
   if ( !rat )
@@ -143,7 +143,7 @@ void QgsCreateRasterAttributeTableDialog::accept()
   }
   else
   {
-    mRasterLayer->dataProvider()->setAttributeTable( bandNumber, rat );
+    mRasterLayer->dataProvider()->setAttributeTable( bandNumber, rat.release() );
 
     // Save it
     const bool storageIsFile { saveToFile() };

@@ -589,8 +589,16 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
           // for interpolated shaders we use a ramp legend node
           if ( !shader.colorRampItemList().isEmpty() )
           {
-            nodes
-              << new QgsColorRampLegendNode( nodeLayer, shader.createColorRamp(), shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(), shader.minimumValue(), shader.maximumValue(), nullptr, u"scalarLegend"_s, scalarNameKey );
+            nodes << new QgsColorRampLegendNode(
+              nodeLayer,
+              shader.createColorRamp().release(),
+              shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(),
+              shader.minimumValue(),
+              shader.maximumValue(),
+              nullptr,
+              u"scalarLegend"_s,
+              scalarNameKey
+            );
           }
           break;
         }
@@ -638,7 +646,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
               {
                 nodes << new QgsColorRampLegendNode(
                   nodeLayer,
-                  shader.createColorRamp(),
+                  shader.createColorRamp().release(),
                   shader.legendSettings() ? *shader.legendSettings() : QgsColorRampLegendNodeSettings(),
                   shader.minimumValue(),
                   shader.maximumValue(),

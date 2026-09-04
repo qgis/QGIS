@@ -309,12 +309,14 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
         {
           if ( rendererName == "singlebandgray"_L1 )
           {
-            whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray, mRasterLayer->dataProvider() ) );
+            whileBlocking( mRasterLayer )
+              ->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::SingleBandGray, mRasterLayer->dataProvider() ).release() );
             whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
           }
           else if ( rendererName == "multibandcolor"_L1 )
           {
-            whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::MultiBandColor, mRasterLayer->dataProvider() ) );
+            whileBlocking( mRasterLayer )
+              ->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle::MultiBandColor, mRasterLayer->dataProvider() ).release() );
             whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
           }
         }

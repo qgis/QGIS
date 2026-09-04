@@ -187,7 +187,7 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
     /**
      * Creates default labeling for a raster \a layer.
      */
-    static QgsAbstractRasterLayerLabeling *defaultLabelingForLayer( QgsRasterLayer *layer ) SIP_FACTORY;
+    static std::unique_ptr<QgsAbstractRasterLayerLabeling> defaultLabelingForLayer( QgsRasterLayer *layer );
 
     //! Unique type string of the labeling configuration implementation
     virtual QString type() const = 0;
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
     /**
      * Tries to create an instance of an implementation based on the XML data.
      */
-    static QgsAbstractRasterLayerLabeling *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsAbstractRasterLayerLabeling> createFromElement( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
     void multiplyOpacity( double opacityFactor ) override;
 
     //! Creates a QgsRasterLayerSimpleLabeling from a DOM element with saved configuration
-    static QgsRasterLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsRasterLayerSimpleLabeling> create( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Returns the text format used for rendering the labels.

@@ -44,7 +44,7 @@ Qgis::RasterRendererFlags QgsRasterSingleColorRenderer::flags() const
   return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
 }
 
-QgsRasterRenderer *QgsRasterSingleColorRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
+std::unique_ptr<QgsRasterRenderer> QgsRasterSingleColorRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
   {
@@ -53,7 +53,7 @@ QgsRasterRenderer *QgsRasterSingleColorRenderer::create( const QDomElement &elem
 
   const QColor color = QgsColorUtils::colorFromString( elem.attribute( u"color"_s, u"0,0,0"_s ) );
   const int band = elem.attribute( u"band"_s, u"1"_s ).toInt();
-  QgsRasterSingleColorRenderer *r = new QgsRasterSingleColorRenderer( input, band, color );
+  auto r = std::make_unique<QgsRasterSingleColorRenderer>( input, band, color );
   r->readXml( elem );
 
   return r;

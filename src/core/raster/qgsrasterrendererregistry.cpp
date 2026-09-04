@@ -131,7 +131,7 @@ Qgis::RasterRendererCapabilities QgsRasterRendererRegistry::rendererCapabilities
   return Qgis::RasterRendererCapabilities();
 }
 
-QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const
+std::unique_ptr<QgsRasterRenderer> QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const
 {
   if ( !provider || provider->bandCount() < 1 )
   {
@@ -192,7 +192,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       QString ratErrorMessage;
       if ( QgsRasterAttributeTable *rat = provider->attributeTable( grayBand ); rat && rat->isValid( &ratErrorMessage ) )
       {
-        renderer.reset( rat->createRenderer( provider, grayBand ) );
+        renderer = rat->createRenderer( provider, grayBand );
       }
 
       if ( !ratErrorMessage.isEmpty() )
@@ -264,7 +264,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     tr->setTransparentThreeValuePixelList( {} );
   }
   renderer->setRasterTransparency( tr.release() );
-  return renderer.release();
+  return renderer;
 }
 
 bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProvider *provider, double &minValue, double &maxValue ) const
