@@ -3543,7 +3543,7 @@ namespace QgsWms
       // create renderer from sld document
       std::unique_ptr<QgsFeatureRenderer> renderer;
       QDomElement el = sldDoc.documentElement();
-      renderer.reset( QgsFeatureRenderer::loadSld( el, param.mGeom.type(), errorMsg ) );
+      renderer = QgsFeatureRenderer::loadSld( el, param.mGeom.type(), errorMsg );
       if ( !renderer )
       {
         QgsMessageLog::logMessage( errorMsg, "Server", Qgis::MessageLevel::Info );

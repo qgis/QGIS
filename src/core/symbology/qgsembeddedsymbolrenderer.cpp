@@ -106,7 +106,7 @@ QgsFeatureRenderer::Capabilities QgsEmbeddedSymbolRenderer::capabilities()
   return SymbolLevels;
 }
 
-QgsFeatureRenderer *QgsEmbeddedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsFeatureRenderer> QgsEmbeddedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   QDomElement symbolsElem = element.firstChildElement( u"symbols"_s );
   if ( symbolsElem.isNull() )
@@ -117,21 +117,21 @@ QgsFeatureRenderer *QgsEmbeddedSymbolRenderer::create( QDomElement &element, con
   if ( !symbolMap.contains( u"0"_s ) )
     return nullptr;
 
-  QgsEmbeddedSymbolRenderer *r = new QgsEmbeddedSymbolRenderer( symbolMap.take( u"0"_s ) );
+  auto r = std::make_unique<QgsEmbeddedSymbolRenderer>( symbolMap.take( u"0"_s ) );
   return r;
 }
 
-QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+std::unique_ptr<QgsEmbeddedSymbolRenderer> QgsEmbeddedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   if ( renderer->type() == "embeddedSymbol"_L1 )
   {
-    return dynamic_cast<QgsEmbeddedSymbolRenderer *>( renderer->clone() );
+    return std::unique_ptr<QgsEmbeddedSymbolRenderer>( dynamic_cast<QgsEmbeddedSymbolRenderer *>( renderer->clone() ) );
   }
   else if ( renderer->type() == "singleSymbol"_L1 )
   {
     auto symbolRenderer = std::make_unique< QgsEmbeddedSymbolRenderer >( static_cast< const QgsSingleSymbolRenderer * >( renderer )->symbol()->clone() );
     renderer->copyRendererData( symbolRenderer.get() );
-    return symbolRenderer.release();
+    return symbolRenderer;
   }
   else
   {

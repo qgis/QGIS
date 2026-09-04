@@ -1276,7 +1276,7 @@ void QgsAppLayerTreeViewMenuProvider::copyVectorSymbol( const QString &layerId )
 
   if ( singleRenderer )
   {
-    QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( singleRenderer->symbol() ) );
+    QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( singleRenderer->symbol() ).release() );
   }
 }
 
@@ -1411,7 +1411,7 @@ void QgsAppLayerTreeViewMenuProvider::copySymbolLegendNodeSymbol( const QString 
   if ( !originalSymbol )
     return;
 
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( originalSymbol ) );
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( originalSymbol ).release() );
 }
 
 void QgsAppLayerTreeViewMenuProvider::pasteSymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey )

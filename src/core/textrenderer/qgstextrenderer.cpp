@@ -1219,8 +1219,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
         }
         renderedSymbol.reset();
 
-        QgsSymbolLayer *symL = QgsSvgMarkerSymbolLayer::create( map );
-        renderedSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList() << symL );
+        std::unique_ptr<QgsSymbolLayer> symL = QgsSvgMarkerSymbolLayer::create( map );
+        renderedSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList() << symL.release() );
       }
       else
       {

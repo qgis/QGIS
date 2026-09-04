@@ -766,7 +766,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * can be paste in places where a color is expected.
      * \see symbolFromMimeData()
      */
-    static QMimeData *symbolToMimeData( const QgsSymbol *symbol ) SIP_FACTORY;
+    static std::unique_ptr<QMimeData> symbolToMimeData( const QgsSymbol *symbol );
 
     /**
      * Attempts to parse \a mime data as a symbol. A new symbol instance will be returned
@@ -830,7 +830,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param color color to encode as mime data
      * \see colorFromMimeData
      */
-    static QMimeData *colorToMimeData( const QColor &color ) SIP_FACTORY;
+    static std::unique_ptr<QMimeData> colorToMimeData( const QColor &color );
 
     /**
      * Attempts to parse mime data as a color
@@ -854,7 +854,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param allFormats set to TRUE to include additional mime formats, include text/plain and application/x-color
      * \returns mime data containing encoded colors
      */
-    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, bool allFormats = true ) SIP_FACTORY;
+    static std::unique_ptr<QMimeData> colorListToMimeData( const QgsNamedColorList &colorList, bool allFormats = true );
 
     /**
      * Exports colors to a gpl GIMP palette file

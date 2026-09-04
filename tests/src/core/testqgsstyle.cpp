@@ -468,13 +468,13 @@ void TestStyle::testCreate3dSymbol()
   QCOMPARE( mStyle->symbol3DCount(), 1 );
   QVERIFY( mStyle->symbol3DCompatibleGeometryTypes( u"blah"_s ).isEmpty() );
   QCOMPARE( mStyle->symbol3DCompatibleGeometryTypes( u"test_settings"_s ), QList<Qgis::GeometryType>() << Qgis::GeometryType::Point << Qgis::GeometryType::Line );
-  std::unique_ptr<Dummy3DSymbol> retrieved( dynamic_cast<Dummy3DSymbol *>( mStyle->symbol3D( u"test_settings"_s ) ) );
+  auto retrieved = qgis::unique_ptr_dynamic_cast<Dummy3DSymbol>( mStyle->symbol3D( u"test_settings"_s ) );
   QCOMPARE( retrieved->id, u"xxx"_s );
   symbol.id = u"yyy"_s;
   QVERIFY( mStyle->addSymbol3D( "test_settings", symbol.clone(), true ) );
   QVERIFY( mStyle->symbol3DNames().contains( u"test_settings"_s ) );
   QCOMPARE( mStyle->symbol3DCount(), 1 );
-  retrieved.reset( dynamic_cast<Dummy3DSymbol *>( mStyle->symbol3D( u"test_settings"_s ) ) );
+  retrieved = qgis::unique_ptr_dynamic_cast<Dummy3DSymbol>( mStyle->symbol3D( u"test_settings"_s ) );
   QCOMPARE( retrieved->id, u"yyy"_s );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( spyChanged.count(), 1 );
@@ -483,9 +483,9 @@ void TestStyle::testCreate3dSymbol()
   QVERIFY( mStyle->addSymbol3D( "test_format2", symbol.clone(), true ) );
   QVERIFY( mStyle->symbol3DNames().contains( u"test_format2"_s ) );
   QCOMPARE( mStyle->symbol3DCount(), 2 );
-  retrieved.reset( dynamic_cast<Dummy3DSymbol *>( mStyle->symbol3D( u"test_settings"_s ) ) );
+  retrieved = qgis::unique_ptr_dynamic_cast<Dummy3DSymbol>( mStyle->symbol3D( u"test_settings"_s ) );
   QCOMPARE( retrieved->id, u"yyy"_s );
-  retrieved.reset( dynamic_cast<Dummy3DSymbol *>( mStyle->symbol3D( u"test_format2"_s ) ) );
+  retrieved = qgis::unique_ptr_dynamic_cast<Dummy3DSymbol>( mStyle->symbol3D( u"test_format2"_s ) );
   QCOMPARE( retrieved->id, u"zzz"_s );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spyChanged.count(), 1 );
@@ -499,9 +499,9 @@ void TestStyle::testCreate3dSymbol()
   QVERIFY( style2.symbol3DNames().contains( u"test_settings"_s ) );
   QVERIFY( style2.symbol3DNames().contains( u"test_format2"_s ) );
   QCOMPARE( style2.symbol3DCount(), 2 );
-  retrieved.reset( dynamic_cast<Dummy3DSymbol *>( style2.symbol3D( u"test_settings"_s ) ) );
+  retrieved = qgis::unique_ptr_dynamic_cast<Dummy3DSymbol>( style2.symbol3D( u"test_settings"_s ) );
   QCOMPARE( retrieved->id, u"yyy"_s );
-  retrieved.reset( dynamic_cast<Dummy3DSymbol *>( style2.symbol3D( u"test_format2"_s ) ) );
+  retrieved = qgis::unique_ptr_dynamic_cast<Dummy3DSymbol>( style2.symbol3D( u"test_format2"_s ) );
   QCOMPARE( retrieved->id, u"zzz"_s );
 
   QCOMPARE( mStyle->allNames( QgsStyle::Symbol3DEntity ), QStringList() << u"test_format2"_s << u"test_settings"_s );
@@ -607,19 +607,17 @@ void TestStyle::testLoadColorRamps()
   {
     QgsDebugMsgLevel( "colorRamp " + name, 1 );
     QVERIFY( colorRamps.contains( name ) );
-    QgsColorRamp *ramp = mStyle->colorRamp( name );
-    QVERIFY( ramp != nullptr );
+    std::unique_ptr<QgsColorRamp> ramp = mStyle->colorRamp( name );
+    QVERIFY( ramp );
     // test colors
     if ( colorTests.contains( name ) )
     {
       const QList<QPair<double, QColor>> values = colorTests.values( name );
       for ( int i = 0; i < values.size(); ++i )
       {
-        QVERIFY( testValidColor( ramp, values.at( i ).first, values.at( i ).second ) );
+        QVERIFY( testValidColor( ramp.get(), values.at( i ).first, values.at( i ).second ) );
       }
     }
-    if ( ramp )
-      delete ramp;
   }
 }
 
@@ -635,10 +633,8 @@ void TestStyle::testSaveLoad()
   {
     QgsDebugMsgLevel( "colorRamp " + name, 1 );
     QVERIFY( colorRamps.contains( name ) );
-    QgsColorRamp *ramp = mStyle->colorRamp( name );
-    QVERIFY( ramp != nullptr );
-    if ( ramp )
-      delete ramp;
+    std::unique_ptr<QgsColorRamp> ramp = mStyle->colorRamp( name );
+    QVERIFY( ramp );
   }
   // test content again
   testLoadColorRamps();
@@ -1660,14 +1656,14 @@ void TestStyle::testVisitor()
   QgsVectorLayer *vl2 = new QgsVectorLayer( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"vl2"_s, u"memory"_s );
   QVERIFY( vl2->isValid() );
   p.addMapLayer( vl2 );
-  QgsSymbol *s1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+  std::unique_ptr<QgsSymbol> s1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
   s1->setColor( QColor( 0, 255, 0 ) );
-  QgsSymbol *s2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+  std::unique_ptr<QgsSymbol> s2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
   s2->setColor( QColor( 0, 255, 255 ) );
   QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
-  QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( s1, 0, 0, u"fld >= 5 and fld <= 20"_s );
+  QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( s1.get(), 0, 0, u"fld >= 5 and fld <= 20"_s );
   rootRule->appendChild( rule2 );
-  QgsRuleBasedRenderer::Rule *rule3 = new QgsRuleBasedRenderer::Rule( s2, 0, 0, u"fld <= 10"_s );
+  QgsRuleBasedRenderer::Rule *rule3 = new QgsRuleBasedRenderer::Rule( s2.get(), 0, 0, u"fld <= 10"_s );
   rule2->appendChild( rule3 );
   vl2->setRenderer( new QgsRuleBasedRenderer( rootRule ) );
 
@@ -1805,12 +1801,12 @@ void TestStyle::testVisitor()
 
   // with annotations
   QgsTextAnnotation *annotation = new QgsTextAnnotation();
-  QgsSymbol *a1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+  std::unique_ptr<QgsSymbol> a1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
   a1->setColor( QColor( 0, 200, 0 ) );
-  annotation->setMarkerSymbol( static_cast<QgsMarkerSymbol *>( a1 ) );
-  QgsSymbol *a2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon );
+  annotation->setMarkerSymbol( static_cast<QgsMarkerSymbol *>( a1.release() ) );
+  std::unique_ptr<QgsSymbol> a2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon );
   a2->setColor( QColor( 200, 200, 0 ) );
-  annotation->setFillSymbol( static_cast<QgsFillSymbol *>( a2 ) );
+  annotation->setFillSymbol( static_cast<QgsFillSymbol *>( a2.release() ) );
   p.annotationManager()->addAnnotation( annotation );
 
   found.clear();

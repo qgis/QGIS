@@ -29,7 +29,7 @@
 # SIP_BUILD_EXTRA_OPTIONS - Extra command line options which should be passed on to
 #     sip-build.
 
-SET(SIP_CONCAT_PARTS 24)
+SET(SIP_CONCAT_PARTS 25)
 SET(SIP_DISABLE_FEATURES)
 SET(SIP_BUILD_EXTRA_OPTIONS)
 

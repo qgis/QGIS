@@ -371,7 +371,7 @@ Creates a new graduated renderer.
 .. deprecated:: 3.10
 %End
 
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 create renderer from XML element
 %End
@@ -490,7 +490,7 @@ Set the ``method`` used for graduation (either size or color).
 
     virtual QString legendClassificationAttribute() const;
 
-    static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static std::unique_ptr<QgsGraduatedSymbolRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 %Docstring
 creates a QgsGraduatedSymbolRenderer from an existing renderer.
 

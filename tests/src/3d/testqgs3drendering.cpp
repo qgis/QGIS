@@ -1785,14 +1785,14 @@ void TestQgs3DRendering::testBillboardRendering()
   featureList << f1 << f2 << f3;
   layerPointsZ->dataProvider()->addFeatures( featureList );
 
-  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  auto markerSymbol = qgis::unique_ptr_static_cast<QgsMarkerSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   markerSymbol->setColor( QColor( 255, 0, 0 ) );
   markerSymbol->setSize( 4 );
   QgsSimpleMarkerSymbolLayer *sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
   sl->setStrokeColor( QColor( 0, 0, 255 ) );
   sl->setStrokeWidth( 2 );
   QgsPoint3DSymbol *point3DSymbol = new QgsPoint3DSymbol();
-  point3DSymbol->setBillboardSymbol( markerSymbol );
+  point3DSymbol->setBillboardSymbol( markerSymbol.release() );
   point3DSymbol->setShape( Qgis::Point3DShape::Billboard );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( point3DSymbol ) );

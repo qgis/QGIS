@@ -278,7 +278,7 @@ Sets if this rule is active
 :param state: Determines if the rule should be activated or deactivated
 %End
 
-        QgsRuleBasedRenderer::Rule *clone() const /Factory/;
+        std::unique_ptr<QgsRuleBasedRenderer::Rule> clone() const;
 %Docstring
 clone this rule, return new instance
 %End
@@ -299,7 +299,7 @@ Saves the rule to SLD.
 .. versionadded:: 3.44
 %End
 
-        static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
+        static std::unique_ptr<QgsRuleBasedRenderer::Rule> createFromSld( QDomElement &element, Qgis::GeometryType geomType );
 %Docstring
 Create a rule from the SLD provided in element and for the specified
 geometry type.
@@ -379,7 +379,7 @@ rule
 :param context: The rendering context
 %End
 
-        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true, const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+        static std::unique_ptr<QgsRuleBasedRenderer::Rule> create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Create a rule from an XML definition
 
@@ -484,7 +484,7 @@ or ``False`` if visiting should be canceled.
     };
 
 
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a new rule-based renderer instance from XML
 %End
@@ -537,7 +537,7 @@ there could be more symbols for a feature
     virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
-    static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> createFromSld( QDomElement &element, Qgis::GeometryType geomType );
 %Docstring
 Creates a new rule based renderer from an SLD XML element.
 %End
@@ -596,7 +596,7 @@ take a rule and create a list of new rules with intervals of scales
 given by the passed scale denominators
 %End
 
-    static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = 0 ) /Factory/;
+    static std::unique_ptr<QgsRuleBasedRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = 0 );
 %Docstring
 Creates a new QgsRuleBasedRenderer from an existing ``renderer``.
 

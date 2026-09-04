@@ -981,7 +981,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 void QgsFontButton::copyColor()
 {
   //copy color
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mFormat.color() ) );
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( mFormat.color() ).release() );
 }
 
 void QgsFontButton::pasteColor()

@@ -29,7 +29,7 @@ using namespace Qt::StringLiterals;
 QgsRasterContourRenderer::QgsRasterContourRenderer( QgsRasterInterface *input )
   : QgsRasterRenderer( input, u"contour"_s )
 {
-  mContourSymbol.reset( static_cast<QgsLineSymbol *>( QgsLineSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
+  mContourSymbol = qgis::unique_ptr_static_cast<QgsLineSymbol>( QgsLineSymbol::defaultSymbol( Qgis::GeometryType::Line ) );
 }
 
 QgsRasterContourRenderer::~QgsRasterContourRenderer() = default;

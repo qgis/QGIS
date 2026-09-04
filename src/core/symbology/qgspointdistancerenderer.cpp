@@ -36,7 +36,7 @@ QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString &rendererName,
   : QgsFeatureRenderer( rendererName )
   , mLabelAttributeName( labelAttributeName )
 {
-  mRenderer.reset( QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType::Point ) );
+  mRenderer = QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType::Point );
 }
 
 void QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
