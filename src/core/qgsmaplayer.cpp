@@ -2154,18 +2154,21 @@ QDomDocument QgsMapLayer::exportSldStyleV3( QgsSldExportContext &exportContext )
     root.appendChild( layerNode );
   }
 
-  // note: Only SLD 1.0 version is generated because seems none is using SE1.1.0 at least for rasters
+  // note: Only SLD 1.0 version is generated, because seems no one is using SE1.1.0 for rasters
   if ( rlayer )
   {
     // Create the root element
     root.setAttribute( u"version"_s, u"1.0.0"_s );
+    root.setAttribute( u"xsi:schemaLocation"_s, u"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd"_s );
     root.setAttribute( u"xmlns:gml"_s, u"http://www.opengis.net/gml"_s );
     root.setAttribute( u"xmlns:ogc"_s, u"http://www.opengis.net/ogc"_s );
-    root.setAttribute( u"xmlns:sld"_s, u"http://www.opengis.net/sld"_s );
+	root.setAttribute( u"xmlns:sld"_s, u"http://www.opengis.net/sld"_s );
+    root.setAttribute( u"xmlns:xlink"_s, u"http://www.w3.org/1999/xlink"_s );
+    root.setAttribute( u"xmlns:xsi"_s, u"http://www.w3.org/2001/XMLSchema-instance"_s );
     myDocument.appendChild( root );
 
     // Create the NamedLayer element
-    layerNode = myDocument.createElement( u"UserLayer"_s );
+    layerNode = myDocument.createElement( u"NamedLayer"_s );
     root.appendChild( layerNode );
   }
 
