@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmeshrenderervectorsettingswidget.h
+    qgsvectorfieldsettingswidget.h
     -------------------------------------
     begin                : June 2018
     copyright            : (C) 2018 by Peter Petrik
@@ -13,33 +13,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMESHRENDERERVECTORSETTINGSWIDGET_H
-#define QGSMESHRENDERERVECTORSETTINGSWIDGET_H
+#ifndef QGSVECTORFIELDSETTINGSWIDGET_H
+#define QGSVECTORFIELDSETTINGSWIDGET_H
 
-#include "ui_qgsmeshrenderervectorsettingswidgetbase.h"
+#include "ui_qgsvectorfieldsettingswidgetbase.h"
 
-#include <memory>
-
-#include "qgis_gui.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsmeshdatasetgrouptreeview.h"
-#include "qgsmeshrenderersettings.h"
+#include "qgsvectorfieldsettings.h"
 
 #include <QWidget>
 
 SIP_NO_FILE
 
 class QgsMeshLayer;
+class QgsDoubleSpinBox;
 
 /**
  * \ingroup gui
- * \class QgsMeshRendererVectorSettingsWidget
+ * \class QgsVectorFieldSettingsWidget
  *
  * \brief A widget for setup of the vector dataset renderer settings of
  * a mesh layer. The layer must be connected and an active dataset
  * must be selected.
+ *
+ * \since QGIS 4.4
  */
-class QgsMeshRendererVectorSettingsWidget : public QWidget, private Ui::QgsMeshRendererVectorSettingsWidgetBase
+class QgsVectorFieldSettingsWidget : public QWidget, private Ui::QgsVectorFieldSettingsWidgetBase
 {
     Q_OBJECT
 
@@ -48,7 +46,7 @@ class QgsMeshRendererVectorSettingsWidget : public QWidget, private Ui::QgsMeshR
      * A widget to hold the renderer Vector settings for a mesh layer.
      * \param parent Parent object
      */
-    QgsMeshRendererVectorSettingsWidget( QWidget *parent = nullptr );
+    QgsVectorFieldSettingsWidget( QWidget *parent = nullptr );
 
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );
@@ -85,4 +83,4 @@ class QgsMeshRendererVectorSettingsWidget : public QWidget, private Ui::QgsMeshR
     int mActiveDatasetGroup = -1;
 };
 
-#endif // QGSMESHRENDERERVECTORSETTINGSWIDGET_H
+#endif // QGSVECTORFIELDSETTINGSWIDGET_H
