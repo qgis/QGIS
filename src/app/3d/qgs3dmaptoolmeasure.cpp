@@ -195,7 +195,7 @@ void Qgs3DMapToolMeasure::mouseMoveEvent( QMouseEvent *event )
   if ( mPoints.isEmpty() || mDone )
     return;
 
-  const QgsPoint pointMap = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings() );
+  const QgsPoint pointMap = Qgs3DUtils::screenPointToMapCoordinates( event->pos(), mCanvas->size(), mCanvas->cameraController(), mCanvas->mapSettings(), mCanvas->scene()->centerDepth() );
   mRubberBand->moveLastPoint( pointMap );
 }
 
