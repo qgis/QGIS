@@ -108,7 +108,7 @@ QList<QgsAcademicReference> QgsProcessingAlgorithm::academicReferences() const
 QString QgsProcessingAlgorithm::implementationSourceUri() const
 {
 #ifdef EXCLUDE_CPPCHECK
-  const auto &registry = algorithmSourceRegistry();
+  const std::unordered_map<std::type_index, QString> &registry = algorithmSourceRegistry();
   auto it = registry.find( std::type_index( typeid( *this ) ) );
   if ( it == registry.end() )
     return QString();
