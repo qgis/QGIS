@@ -15,12 +15,16 @@
 
 #include "qgsvectorlayer3drendererwidget.h"
 
+#include "qgisapp.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgs3dsymbolutils.h"
 #include "qgsapplication.h"
 #include "qgscategorized3drenderer.h"
 #include "qgscategorized3drendererwidget.h"
+#include "qgsmapcanvas.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgsrulebased3drendererwidget.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgssymbol3dwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3dpropertieswidget.h"
@@ -89,9 +93,23 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   }
   if ( !rendererSet )
   {
-    const std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
-    sym->setDefaultPropertiesFromLayer( mLayer );
-    widgetSymbol->setSymbol( sym.get(), mLayer );
+    std::unique_ptr<QgsAbstract3DSymbol> symbol3D;
+    QgsFeatureRenderer *renderer2D = mLayer->renderer();
+    // Initialize the 3D symbol from the 2D single-symbol renderer
+    // to provide a matching default appearance
+    if ( renderer2D && renderer2D->type() == "singleSymbol"_L1 )
+    {
+      QgsSingleSymbolRenderer *singleRenderer2D = dynamic_cast<QgsSingleSymbolRenderer *>( renderer2D );
+      QgsRenderContext context = QgsRenderContext::fromMapSettings( QgisApp::instance()->mapCanvas()->mapSettings() );
+      symbol3D = Qgs3DSymbolUtils::create3DSymbolFrom2D( mLayer, singleRenderer2D->symbol(), context );
+    }
+    else
+    {
+      symbol3D.reset( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
+      symbol3D->setDefaultPropertiesFromLayer( mLayer );
+    }
+
+    widgetSymbol->setSymbol( symbol3D.get(), mLayer );
   }
 }
 
