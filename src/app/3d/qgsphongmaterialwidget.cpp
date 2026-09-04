@@ -32,6 +32,9 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity
   mPreviewWidget->hide();
   mPreviewWidget->setMaterialType( u"phong"_s );
 
+  // Ensure the widgets expand without widening the label column.
+  mGridLayout->setColumnStretch( 2, 1 );
+
   mOpacityWidget->setVisible( mHasOpacity );
   mLblOpacity->setVisible( mHasOpacity );
   spinShininess->setClearValue( 0, tr( "None" ) );
@@ -86,6 +89,9 @@ void QgsPhongMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique tech
       mAmbientDataDefinedButton->setVisible( false );
       mDiffuseDataDefinedButton->setVisible( false );
       mSpecularDataDefinedButton->setVisible( false );
+      mAmbientDataDefinedPlaceholder->setVisible( false );
+      mDiffuseDataDefinedPlaceholder->setVisible( false );
+      mSpecularDataDefinedPlaceholder->setVisible( false );
       break;
     }
 
@@ -97,6 +103,9 @@ void QgsPhongMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique tech
       mAmbientDataDefinedButton->setVisible( false );
       mDiffuseDataDefinedButton->setVisible( false );
       mSpecularDataDefinedButton->setVisible( false );
+      mAmbientDataDefinedPlaceholder->setVisible( false );
+      mDiffuseDataDefinedPlaceholder->setVisible( false );
+      mSpecularDataDefinedPlaceholder->setVisible( false );
       break;
     }
 
@@ -108,6 +117,9 @@ void QgsPhongMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique tech
       mAmbientDataDefinedButton->setVisible( true );
       mDiffuseDataDefinedButton->setVisible( true );
       mSpecularDataDefinedButton->setVisible( true );
+      mAmbientDataDefinedPlaceholder->setVisible( true );
+      mDiffuseDataDefinedPlaceholder->setVisible( true );
+      mSpecularDataDefinedPlaceholder->setVisible( true );
       break;
     }
 
@@ -116,6 +128,12 @@ void QgsPhongMaterialWidget::setTechnique( Qgis::MaterialRenderingTechnique tech
       // not supported
       break;
   }
+
+  // Keep the placeholders the same width as the data defined buttons.
+  // This way, the percentage widgets remain aligned when the buttons are hidden.
+  mAmbientDataDefinedPlaceholder->setFixedWidth( mAmbientDataDefinedButton->sizeHint().width() );
+  mDiffuseDataDefinedPlaceholder->setFixedWidth( mDiffuseDataDefinedButton->sizeHint().width() );
+  mSpecularDataDefinedPlaceholder->setFixedWidth( mSpecularDataDefinedButton->sizeHint().width() );
 }
 
 void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
