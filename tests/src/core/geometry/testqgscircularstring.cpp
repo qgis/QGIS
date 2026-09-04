@@ -1092,14 +1092,8 @@ void TestQgsCircularString::deleteVertex()
   QVERIFY( !cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QVERIFY( cs.isEmpty() );
 
-  //valid line
-  cs.setPoints(
-    QgsPointSequence()
-    << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
-    << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
-    << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 )
-    << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 )
-  );
+  //valid line, deleting any vertex deletes entire geometry
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) );
 
   //out of range vertices
   QVERIFY( !cs.deleteVertex( QgsVertexId( 0, 0, -1 ) ) );
@@ -1108,24 +1102,31 @@ void TestQgsCircularString::deleteVertex()
   //valid vertices
   QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
 
-  QCOMPARE( cs.numPoints(), 2 );
-  QCOMPARE( cs.pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) );
-  QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 ) );
-
-  //removing the next vertex removes all remaining vertices
-  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QCOMPARE( cs.numPoints(), 0 );
   QVERIFY( cs.isEmpty() );
 
   QVERIFY( !cs.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QVERIFY( cs.isEmpty() );
 
-  //removing a vertex from a 3 point circular string should remove the whole line
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  cs.setPoints(
+    QgsPointSequence()
+    << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 0 )
+    << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 )
+    << QgsPoint( Qgis::WkbType::PointZ, 2, 2, 2 )
+    << QgsPoint( Qgis::WkbType::PointZ, 3, 3, 3 )
+    << QgsPoint( Qgis::WkbType::PointZ, 4, 4, 4 )
+  );
+
+  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
   QCOMPARE( cs.numPoints(), 3 );
 
-  cs.deleteVertex( QgsVertexId( 0, 0, 2 ) );
-  QCOMPARE( cs.numPoints(), 0 );
+  QCOMPARE( cs.pointN( 0 ), QgsPoint( Qgis::WkbType::PointZ, 0, 0, 0 ) );
+  QCOMPARE( cs.pointN( 1 ), QgsPoint( Qgis::WkbType::PointZ, 3, 3, 3 ) );
+  QCOMPARE( cs.pointN( 2 ), QgsPoint( Qgis::WkbType::PointZ, 4, 4, 4 ) );
+
+  // invalid geometry, test QGIS doesn't crash when deleteVertex is called
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 0 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 1 ) );
+  QVERIFY( cs.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
 }
 
 void TestQgsCircularString::reversed()
