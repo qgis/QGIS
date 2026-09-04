@@ -390,6 +390,9 @@ class QgsServerTestBase(QgisTestCase):
         max_diff=100,
         max_size_diff=QSize(),
     ):
+        """
+        Returns TRUE if response parameters matches expected test_name pdf
+        """
 
         if self.regenerate_reference:
             reference_path = (
