@@ -26,6 +26,7 @@
 #include "qgsrasterattributetableaddcolumndialog.h"
 #include "qgsrasterattributetableaddrowdialog.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterrenderer.h"
 
 #include <QAction>
 #include <QFileDialog>
@@ -331,9 +332,9 @@ void QgsRasterAttributeTableWidget::classify()
   if ( QMessageBox::question( nullptr, tr( "Apply Style From Attribute Table" ), confirmMessage.append( tr( "The existing symbology for the raster will be replaced by a new symbology from the attribute table and any unsaved changes to the current symbology will be lost, do you want to proceed?" ) ) )
        == QMessageBox::Yes )
   {
-    if ( QgsRasterRenderer *renderer = mAttributeTableBuffer->createRenderer( mRasterLayer->dataProvider(), mCurrentBand, mClassifyComboBox->currentData().toInt() ) )
+    if ( std::unique_ptr<QgsRasterRenderer> renderer = mAttributeTableBuffer->createRenderer( mRasterLayer->dataProvider(), mCurrentBand, mClassifyComboBox->currentData().toInt() ) )
     {
-      mRasterLayer->setRenderer( renderer );
+      mRasterLayer->setRenderer( renderer.release() );
       mRasterLayer->triggerRepaint();
       emit rendererChanged();
     }
