@@ -950,7 +950,30 @@ set(MIN_PYTHON_VERSION "3.11")
 set(Python_FIND_FRAMEWORK "LAST")
 
 if (WITH_BINDINGS)
-  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
+  set(_qgis_use_separate_python_artifacts FALSE)
+  if(CMAKE_CROSSCOMPILING AND POLICY CMP0190)
+    cmake_policy(GET CMP0190 _qgis_cmp0190)
+    if(_qgis_cmp0190 STREQUAL "NEW")
+      set(_qgis_use_separate_python_artifacts TRUE)
+    endif()
+  endif()
+
+  if(_qgis_use_separate_python_artifacts)
+    # CMP0190 requires target development artifacts and the host interpreter
+    # to be found separately when cross-compiling. Build-time scripts use the
+    # host interpreter, while Python::Python continues to represent the target.
+    find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Development)
+    set(_qgis_target_python_version "${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}")
+
+    set(Python_ARTIFACTS_PREFIX "_HOST")
+    find_package(Python ${_qgis_target_python_version} EXACT REQUIRED COMPONENTS Interpreter)
+    unset(Python_ARTIFACTS_PREFIX)
+
+    set(Python_EXECUTABLE "${Python_HOST_EXECUTABLE}")
+    set(Python_SITEARCH "${Python_HOST_SITEARCH}")
+  else()
+    find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
+  endif()
 else()
   find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter)
 endif()
@@ -963,9 +986,18 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   endif()
 endif()
 
-message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
-message("-- Python library: ${Python_LIBRARIES}")
-message("-- Python site-packages: ${Python_SITEARCH}")
+if(_qgis_use_separate_python_artifacts)
+  message("-- Found host Python executable: ${Python_EXECUTABLE} (version ${Python_HOST_VERSION})")
+  message("-- Target Python library: ${Python_LIBRARIES} (version ${Python_VERSION})")
+  message("-- Host Python site-packages: ${Python_SITEARCH}")
+else()
+  message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
+  message("-- Python library: ${Python_LIBRARIES}")
+  message("-- Python site-packages: ${Python_SITEARCH}")
+endif()
+unset(_qgis_cmp0190)
+unset(_qgis_target_python_version)
+unset(_qgis_use_separate_python_artifacts)
 
 #############################################################
 # platform specific stuff
