@@ -22,9 +22,11 @@ __copyright__ = "(C) 2016, Matthias Kuhn"
 
 import glob
 import hashlib
+import math
 import os
 import re
 import shutil
+import struct
 import tempfile
 from copy import deepcopy
 
@@ -56,6 +58,8 @@ from utilities import unitTestDataPath
 import processing
 
 gdal.UseExceptions()
+
+REGENERATE_REFERENCE_RASTERS = False
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -240,7 +244,7 @@ class AlgorithmsTest:
         if expectFailure:
             try:
                 results, ok = alg.run(parameters, context, feedback)
-                self.check_results(results, context, parameters, defs["results"])
+                self.check_results(results, context, parameters, defs)
                 if ok:
                     raise _UnexpectedSuccess
             except Exception:
@@ -248,7 +252,7 @@ class AlgorithmsTest:
         else:
             results, ok = alg.run(parameters, context, feedback)
             self.assertTrue(ok, f"params: {parameters}, results: {results}")
-            self.check_results(results, context, parameters, defs["results"])
+            self.check_results(results, context, parameters, defs)
 
     def load_params(self, params):
         """
@@ -317,7 +321,7 @@ class AlgorithmsTest:
 
             filepath = self.uri_path_join(outdir, basename)
             return filepath
-        elif param["type"] == "rasterhash":
+        elif param["type"] in ("rasterhash", "rasterfile"):
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
             basename = "raster.tif"
@@ -418,10 +422,11 @@ class AlgorithmsTest:
 
         return filepath
 
-    def check_results(self, results, context, params, expected):
+    def check_results(self, results, context, params, defs):
         """
         Checks if result produced by an algorithm matches with the expected specification.
         """
+        expected = defs["results"]
         for id, expected_result in expected.items():
             if expected_result["type"] in ("vector", "table"):
                 if "compare" in expected_result and not expected_result["compare"]:
@@ -496,6 +501,74 @@ class AlgorithmsTest:
                     self.assertIn(strhash, expected_result["hash"])
                 else:
                     self.assertEqual(strhash, expected_result["hash"])
+
+                if REGENERATE_REFERENCE_RASTERS and (
+                    defs
+                    and dataset.RasterCount == 1
+                    and dataset.RasterXSize <= 128
+                    and dataset.RasterYSize <= 128
+                ):
+                    test_name = defs.get("name", "raster_test")
+                    clean_name = re.sub(r"[^\w\-_]", "_", test_name.lower())
+                    asc_filename = f"{clean_name}_{id}.asc"
+                    rel_asc_path = os.path.join("expected", asc_filename)
+                    abs_asc_path = os.path.join(processingTestDataPath(), rel_asc_path)
+
+                    # save current result raster as ascii grid, since that format plays
+                    # nicely with git diffs
+                    grid_driver = gdal.GetDriverByName("AAIGrid")
+                    if grid_driver:
+                        grid_driver.CreateCopy(abs_asc_path, dataset)
+
+                    # update test definition yaml to reference ascii grid file
+                    yaml_path = os.path.join(
+                        processingTestDataPath(), self.definition_file()
+                    )
+                    with open(yaml_path, encoding="utf-8") as stream:
+                        yaml_content = stream.read()
+
+                    # it'd be better to use yaml module to directly re-write these,
+                    # but lets use an approach which minimizes the changes instead
+                    # (yaml rewriting reorders the values, changes whitespace, messes with comments, etc)
+                    # let's opt for the gross code for the moment instead...
+                    yaml_blocks = re.split(r"(\n {2}- )", yaml_content)
+                    was_updated = False
+                    for idx in range(len(yaml_blocks)):
+                        if (
+                            f"name: {test_name}" in yaml_blocks[idx]
+                            or f"name: '{test_name}'" in yaml_blocks[idx]
+                            or f'name: "{test_name}"' in yaml_blocks[idx]
+                        ):
+                            sub_pattern = re.compile(
+                                rf"({re.escape(id)}:\s*\n)([\s\S]*?)(?=\n\s{{4}}\w+|\Z)"
+                            )
+                            sub_match = sub_pattern.search(yaml_blocks[idx])
+                            if sub_match:
+                                indent_match = re.search(r"\n(\s+)", sub_match.group(2))
+                                indent = (
+                                    indent_match.group(1)
+                                    if indent_match
+                                    else "        "
+                                )
+                                new_result = f"{sub_match.group(1)}{indent}name: {rel_asc_path}\n{indent}type: rasterfile\n"
+                                yaml_blocks[idx] = sub_pattern.sub(
+                                    new_result, yaml_blocks[idx], count=1
+                                )
+                                was_updated = True
+                                break
+
+                    if was_updated:
+                        with open(yaml_path, "w", encoding="utf-8") as stream:
+                            stream.write("".join(yaml_blocks))
+
+            elif expected_result["type"] == "rasterfile":
+                result_filepath = results[id]
+                expected_filepath = self.filepath_from_param(expected_result)
+                abs_tol = expected_result.get("abs_tol", 1e-5)
+                rel_tol = expected_result.get("rel_tol", 1e-5)
+                self.check_raster_equality(
+                    expected_filepath, result_filepath, abs_tol=abs_tol, rel_tol=rel_tol
+                )
             elif "file" == expected_result["type"]:
                 result_filepath = results[id]
                 if isinstance(expected_result.get("name"), list):
@@ -523,6 +596,114 @@ class AlgorithmsTest:
 
                 for rule in expected_result.get("rules", []):
                     self.assertRegex(data, rule)
+
+    def check_raster_equality(
+        self, expected_filepath, result_filepath, abs_tol=1e-5, rel_tol=1e-5
+    ):
+        """
+        Checks that two raster files are pixel-wise equal with detailed mismatch reporting
+        """
+        self.assertTrue(
+            os.path.exists(expected_filepath),
+            f"Expected raster file does not exist: {expected_filepath}",
+        )
+        self.assertTrue(
+            os.path.exists(result_filepath),
+            f"Result raster file does not exist: {result_filepath}",
+        )
+
+        exp_ds = gdal.Open(expected_filepath, GA_ReadOnly)
+        res_ds = gdal.Open(result_filepath, GA_ReadOnly)
+
+        self.assertIsNotNone(
+            exp_ds, f"Failed to open expected raster dataset: {expected_filepath}"
+        )
+        self.assertIsNotNone(
+            res_ds, f"Failed to open result raster dataset: {result_filepath}"
+        )
+
+        width = exp_ds.RasterXSize
+        height = exp_ds.RasterYSize
+        bands = exp_ds.RasterCount
+
+        if (
+            width != res_ds.RasterXSize
+            or height != res_ds.RasterYSize
+            or bands != res_ds.RasterCount
+        ):
+            self.fail(
+                f"Raster dimension mismatch:\n"
+                f"  expected: width={width}, height={height}, bands={bands}\n"
+                f"  actual:   width={res_ds.RasterXSize}, height={res_ds.RasterYSize}, bands={res_ds.RasterCount}"
+            )
+
+        format_map = {
+            gdal.GDT_Byte: "B",
+            gdal.GDT_UInt16: "H",
+            gdal.GDT_Int16: "h",
+            gdal.GDT_UInt32: "I",
+            gdal.GDT_Int32: "i",
+            gdal.GDT_Float32: "f",
+            gdal.GDT_Float64: "d",
+        }
+
+        total_pixels = width * height
+
+        for band_idx in range(1, bands + 1):
+            exp_band = exp_ds.GetRasterBand(band_idx)
+            res_band = res_ds.GetRasterBand(band_idx)
+
+            exp_fmt = format_map.get(exp_band.DataType, "d")
+            res_fmt = format_map.get(res_band.DataType, "d")
+
+            exp_bytes = exp_band.ReadRaster()
+            res_bytes = res_band.ReadRaster()
+
+            exp_vals = struct.unpack(f"{total_pixels}{exp_fmt}", exp_bytes)
+            res_vals = struct.unpack(f"{total_pixels}{res_fmt}", res_bytes)
+
+            mismatch_count = 0
+            max_diff = 0.0
+            samples = []
+
+            # always iterate through ALL pixels, so we can build up a nice summary of the difference
+            # instead of only reporting the first failure
+            for idx in range(total_pixels):
+                val_exp = exp_vals[idx]
+                val_res = res_vals[idx]
+
+                if math.isnan(val_exp) and math.isnan(val_res):
+                    continue
+
+                if math.isnan(val_exp) != math.isnan(val_res):
+                    is_match = False
+                    diff = float("inf")
+                else:
+                    diff = abs(val_exp - val_res)
+                    is_match = math.isclose(
+                        val_exp, val_res, rel_tol=rel_tol, abs_tol=abs_tol
+                    )
+
+                if not is_match:
+                    mismatch_count += 1
+                    if diff > max_diff:
+                        max_diff = diff
+                    if len(samples) < 5:
+                        x = idx % width
+                        y = idx // width
+                        samples.append(
+                            f"    pixel ({x}, {y}): expected {val_exp}, actual {val_res}, diff {diff}"
+                        )
+
+            if mismatch_count > 0:
+                sample_text = "\n".join(samples)
+                percentage = (mismatch_count / total_pixels) * 100
+                self.fail(
+                    f"Raster pixel mismatches found in band {band_idx}:\n"
+                    f"  mismatched pixels: {mismatch_count} / {total_pixels} ({percentage:.2f}%)\n"
+                    f"  maximum absolute difference: {max_diff}\n"
+                    f"  sample differences:\n{sample_text}"
+                )
 
 
 class GenericAlgorithmsTest(QgisTestCase):
