@@ -143,6 +143,7 @@ QgsFeatureList QgsApproximateMedialAxisAlgorithm::processFeature( const QgsFeatu
   {
     QgsGeometry outputGeometry;
     QgsSfcgalGeometry inputSfcgalGeometry;
+    bool constructorSuccess = true;
     try
     {
       inputSfcgalGeometry = QgsSfcgalGeometry( modifiedFeature.geometry() );
@@ -151,9 +152,10 @@ QgsFeatureList QgsApproximateMedialAxisAlgorithm::processFeature( const QgsFeatu
     {
       feedback->reportError( QObject::tr( "Cannot calculate approximate medial axis for feature %1: %2" ).arg( feature.id() ).arg( exception.what() ) );
       modifiedFeature.clearGeometry();
+      constructorSuccess = false;
     }
 
-    if ( !inputSfcgalGeometry.isEmpty() )
+    if ( constructorSuccess && !inputSfcgalGeometry.isEmpty() )
     {
       try
       {
