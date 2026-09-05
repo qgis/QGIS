@@ -2138,6 +2138,20 @@
                     </property>
                    </widget>
                   </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="mLayerNameLaunderingLabel">
+                    <property name="text">
+                     <string>Suggested layer name when exporting</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="2">
+                   <widget class="QComboBox" name="mLayerNameLaunderingComboBox">
+                    <property name="toolTip">
+                     <string>Determines how the layer name suggested in the export dialogs is laundered. Restricting to ASCII maximizes interoperability with other software, at the cost of mangling names which are not written in the basic Latin alphabet.</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>

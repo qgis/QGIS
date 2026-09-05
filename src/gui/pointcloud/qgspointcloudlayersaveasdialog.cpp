@@ -25,6 +25,8 @@
 #include "qgspointcloudlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
@@ -158,7 +160,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
 
     const QFileInfo fileInfo( filePath );
     settings.setValue( u"UI/lastPointCloudFileFilterDir"_s, fileInfo.absolutePath() );
-    const QString suggestedLayerName = QgsMapLayerUtils::launderLayerName( fileInfo.completeBaseName() );
+    const QString suggestedLayerName = QgsMapLayerUtils::launderLayerName( fileInfo.completeBaseName(), QgsSettingsRegistryCore::settingsLayerNameLaunderingMode->value() );
     if ( mDefaultOutputLayerNameFromInputLayerName.isEmpty() )
     {
       leLayername->setDefaultValue( suggestedLayerName );
@@ -189,7 +191,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
 
   if ( mLayer )
   {
-    mDefaultOutputLayerNameFromInputLayerName = QgsMapLayerUtils::launderLayerName( mLayer->name() );
+    mDefaultOutputLayerNameFromInputLayerName = QgsMapLayerUtils::launderLayerName( mLayer->name(), QgsSettingsRegistryCore::settingsLayerNameLaunderingMode->value() );
     leLayername->setDefaultValue( mDefaultOutputLayerNameFromInputLayerName );
     leLayername->setClearMode( QgsFilterLineEdit::ClearToDefault );
     if ( leLayername->isEnabled() )
