@@ -828,3 +828,57 @@ tests:
           geometry:
             precision: 5
             normalize: True
+
+  - algorithm: native:globaltpsinterpolation
+    name: TPS interpolation (global)
+    params:
+      EXTENT: -0.333333333,13.000000001,-5.333333333,8.000000001 [EPSG:4326]
+      FIELD: elev
+      INPUT:
+        name: pointsz.gml|layername=pointsz
+        type: vector
+      NODATA: -9999.0
+      PIXEL_SIZE: 0.666667
+      REGULARIZATION: 0.0001
+    results:
+      OUTPUT:
+        hash: fdd60e174697450d108a35bde0450d043793a8a74361b464602aa057
+        type: rasterhash
+
+  - algorithm: native:localtpsinterpolation
+    name: TPS interpolation (local)
+    params:
+      EXTENT: -0.333333333,13.000000001,-5.333333333,8.000000001 [EPSG:4326]
+      FIELD: elev
+      INPUT:
+        name: pointsz.gml|layername=pointsz
+        type: vector
+      NODATA: -9999.0
+      PIXEL_SIZE: 0.666667
+      REGULARIZATION: 0.0001
+      SEARCH_POINTS_MAX: 8
+      SEARCH_POINTS_MIN: 3
+      SEARCH_RADIUS: 3.0
+    results:
+      OUTPUT:
+        hash: 19f80002d7e17469f99e561c6868056699adba3fb0f0d2d81bdb481d
+        type: rasterhash
+
+  - algorithm: native:localtpsinterpolation
+    name: TPS interpolation (local, max distance 6)
+    params:
+      EXTENT: -0.333333333,13.000000001,-5.333333333,8.000000001 [EPSG:4326]
+      FIELD: elev
+      INPUT:
+        name: pointsz.gml|layername=pointsz
+        type: vector
+      NODATA: -9999.0
+      PIXEL_SIZE: 0.666667
+      REGULARIZATION: 0.0001
+      SEARCH_POINTS_MAX: 8
+      SEARCH_POINTS_MIN: 3
+      SEARCH_RADIUS: 6.0
+    results:
+      OUTPUT:
+        hash: fad9007bff2e9e0f28fb4f5a4e17d09faeb73441916d9f635561c2a9
+        type: rasterhash
