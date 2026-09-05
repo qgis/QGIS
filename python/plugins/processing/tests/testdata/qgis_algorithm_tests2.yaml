@@ -801,7 +801,10 @@ tests:
         type: vector
 
   - algorithm: native:splitwithlines
-    name: Split poly with lines
+    name: Split poly with lines (GEOS < 3.15)
+    condition:
+      geos:
+        less_than: 31500
     params:
       INPUT:
         name: polys.gml
@@ -812,6 +815,28 @@ tests:
     results:
       OUTPUT:
         name: expected/split_polys_with_lines.shp
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+
+  - algorithm: native:splitwithlines
+    name: Split poly with lines (GEOS >= 3.15)
+    condition:
+      geos:
+        at_least: 31500
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      LINES:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/geos315/split_polys_with_lines.shp
         type: vector
         compare:
           geometry:

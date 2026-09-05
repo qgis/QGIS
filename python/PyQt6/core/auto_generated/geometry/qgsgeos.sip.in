@@ -347,6 +347,10 @@ This method requires a QGIS build based on GEOS 3.7 or later.
     virtual bool isSimple( QString *errorMsg = 0 ) const;
 
 
+     virtual QgsGeometryEngine::EngineOperationResult splitGeometry(
+      const QgsAbstractGeometry &splitGeom, QVector<QgsGeometry > &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/, QString *errorMsg /Out/ = 0
+    ) const;
+
      virtual EngineOperationResult splitGeometry(
       const QgsLineString &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg = 0, bool skipIntersectionCheck = false
     ) const;
@@ -931,6 +935,7 @@ This method requires a QGIS build based on GEOS 3.14 or later.
 
 .. versionadded:: 4.4
 %End
+
 
 
 

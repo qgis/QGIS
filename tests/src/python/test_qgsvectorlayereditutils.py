@@ -738,18 +738,23 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
 
         layer.commitChanges()
 
+        geom = layer.getFeature(1).geometry()
+        geom.normalize()
         self.assertEqual(
-            layer.getFeature(1).geometry().asWkt(),
-            "MultiPolygon (((2 0, 2 2, 4 2, 4 0, 2 0)),((2 2, 2 0, 0 0, 0 2, 2 2)),((2 2, 2 4, 4 4, 4 2, 2 2)),((2 4, 2 2, 0 2, 0 4, 2 4)),((6 2, 10 2, 10 0, 6 0, 6 2)),((10 2, 6 2, 6 4, 10 4, 10 2)))",
+            geom.asWkt(),
+            "MultiPolygon (((6 2, 6 4, 10 4, 10 2, 6 2)),((6 0, 6 2, 10 2, 10 0, 6 0)),((2 2, 2 4, 4 4, 4 2, 2 2)),((2 0, 2 2, 4 2, 4 0, 2 0)),((0 2, 0 4, 2 4, 2 2, 0 2)),((0 0, 0 2, 2 2, 2 0, 0 0)))",
         )
+        geom = layer.getFeature(2).geometry()
+        geom.normalize()
         self.assertEqual(
-            layer.getFeature(2).geometry().asWkt(),
-            "MultiPolygon (((2 6, 2 10, 4 10, 4 6, 2 6)),((2 10, 2 6, 0 6, 0 10, 2 10)),((6 6, 10 6, 10 10, 6 10, 6 6)))",
+            geom.asWkt(),
+            "MultiPolygon (((6 6, 6 10, 10 10, 10 6, 6 6)),((2 6, 2 10, 4 10, 4 6, 2 6)),((0 6, 0 10, 2 10, 2 6, 0 6)))",
         )
-
+        geom = layer.getFeature(3).geometry()
+        geom.normalize()
         self.assertEqual(
-            layer.getFeature(3).geometry().asWkt(),
-            "MultiPolygon (((2 12, 2 16, 4 16, 4 12, 2 12)),((2 16, 2 12, 0 12, 0 16, 2 16)),((6 12, 10 12, 10 16, 6 16, 6 12)))",
+            geom.asWkt(),
+            "MultiPolygon (((6 12, 6 16, 10 16, 10 12, 6 12)),((2 12, 2 16, 4 16, 4 12, 2 12)),((0 12, 0 16, 2 16, 2 12, 0 12)))",
         )
 
     def testMergeFeatures(self):
@@ -787,9 +792,11 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
 
         self.assertEqual(layer.featureCount(), 1)
         mergedFeature = next(layer.getFeatures())
+        mergedGeom = mergedFeature.geometry()
+        mergedGeom.normalize()
         self.assertEqual(
-            mergedFeature.geometry().asWkt(),
-            "Polygon ((5 0, 0 0, 0 5, 3 5, 3 8, 8 8, 8 3, 5 3, 5 0))",
+            mergedGeom.asWkt(),
+            "Polygon ((0 0, 0 5, 3 5, 3 8, 8 8, 8 3, 5 3, 5 0, 0 0))",
         )
         self.assertEqual(mergedFeature.attribute("name"), "tre")
 
@@ -845,9 +852,11 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
 
         self.assertEqual(layer.featureCount(), 1)
         mergedFeature = layer.getFeature(2)
+        mergedGeom = mergedFeature.geometry()
+        mergedGeom.normalize()
         self.assertEqual(
-            mergedFeature.geometry().asWkt(),
-            "Polygon ((5 0, 0 0, 0 5, 3 5, 3 8, 8 8, 8 3, 5 3, 5 0))",
+            mergedGeom.asWkt(),
+            "Polygon ((0 0, 0 5, 3 5, 3 8, 8 8, 8 3, 5 3, 5 0, 0 0))",
         )
         self.assertEqual(mergedFeature.attribute("name"), "tre")
 

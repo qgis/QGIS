@@ -88,6 +88,9 @@ tests:
       OUTPUT:
         name: expected/buffer_dissolve_keep_disjoint.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:buffer
     name: Buffer, separate disjoint with disjoint results
@@ -214,6 +217,9 @@ tests:
       OUTPUT:
         name: expected/coverage_dissolve.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:coveragesimplify
     name: Simplify coverage
@@ -393,6 +399,9 @@ tests:
       OUTPUT:
         name: expected/concave_hull_by_feature.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:removepartsbylength
     name: Remove line parts by length
