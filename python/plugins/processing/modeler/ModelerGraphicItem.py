@@ -124,7 +124,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
         )
         self.model().removeModelParameter(self.component().parameterName())
 
-        if new_param.description() != old_description:
+        if new_param.description() != old_description or new_param.name() != old_name:
             # only update name if user has changed the description -- we don't force this, as it may cause
             # unwanted name updates which could potentially break the model's API
             name = new_param.name()
