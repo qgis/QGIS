@@ -148,6 +148,17 @@ QVariant QgsSymbolLayerModelNode::data( int role ) const
     font.setBold( true );
     return font;
   }
+  else if ( role == Qt::CheckStateRole && mIsLayer )
+  {
+    if ( mLayer->enabled() )
+    {
+      return Qt::CheckState::Checked;
+    }
+    else
+    {
+      return Qt::CheckState::Unchecked;
+    }
+  }
   return QVariant();
 }
 
@@ -243,6 +254,21 @@ QgsSymbolLayerModel::QgsSymbolLayerModel( QgsVectorLayer *vl, QObject *parent, Q
   , mScreen( screen )
 {}
 
+Qt::ItemFlags QgsSymbolLayerModel::flags( const QModelIndex &index ) const
+{
+  if ( !index.isValid() )
+    return Qt::ItemFlags();
+
+  Qt::ItemFlags f = Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable;
+
+  QgsSymbolLayerModelNode *node = index2node( index );
+  if ( node->isLayer() )
+  {
+    f |= Qt::ItemFlag::ItemIsUserCheckable;
+  }
+
+  return f;
+}
 
 QVariant QgsSymbolLayerModel::data( const QModelIndex &index, int role ) const
 {
@@ -255,6 +281,32 @@ QVariant QgsSymbolLayerModel::data( const QModelIndex &index, int role ) const
 
   return node->data( role );
 };
+
+bool QgsSymbolLayerModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !index.isValid() )
+    return false;
+
+  QgsSymbolLayerModelNode *node = index2node( index );
+  if ( !node )
+    return false;
+
+  if ( role == Qt::CheckStateRole )
+  {
+    if ( !node->isLayer() )
+      return false;
+
+
+    bool checked = value.value<Qt::CheckState>() == Qt::Checked;
+    QgsSymbolLayer *symbolLayer = node->layer();
+    symbolLayer->setEnabled( checked );
+
+    emit dataChanged( index, index, { Qt::CheckStateRole } );
+    updatePreviewIcons( node );
+    return true;
+  }
+  return QAbstractItemModel::setData( index, value, role );
+}
 
 int QgsSymbolLayerModel::rowCount( const QModelIndex &parent ) const
 {
@@ -505,10 +557,10 @@ void QgsSymbolLayerModel::changeLayer( QgsSymbolLayerModelNode *node, QgsSymbolL
     updateNode( newLayer->subSymbol(), node );
   }
 
-  updatePreview( node );
+  updatePreviewIcons( node );
 }
 
-void QgsSymbolLayerModel::updatePreview( QgsSymbolLayerModelNode *node )
+void QgsSymbolLayerModel::updatePreviewIcons( QgsSymbolLayerModelNode *node )
 {
   const QModelIndex index = node2index( node );
   if ( !index.isValid() )
@@ -518,7 +570,7 @@ void QgsSymbolLayerModel::updatePreview( QgsSymbolLayerModelNode *node )
 
   // Recursively update the parent's preview up to the root node.
   if ( QgsSymbolLayerModelNode *lParent = node->parent() )
-    updatePreview( lParent );
+    updatePreviewIcons( lParent );
 }
 
 
@@ -544,7 +596,7 @@ void QgsSymbolLayerModel::setScreen( QScreen *screen )
   {
     QgsSymbolLayerModelNode *node = stack.takeLast();
     node->setScreen( mScreen );
-    updatePreview( node );
+    updatePreviewIcons( node );
 
     for ( int i = 0; i < node->rowCount(); ++i )
     {
