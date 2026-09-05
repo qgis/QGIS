@@ -94,6 +94,9 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
      */
     virtual QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const;
 
+    //! Returns the chunk loader factory
+    QgsChunkLoaderFactory *chunkLoaderFactory() const { return mChunkLoaderFactory; }
+
   protected:
     //! Cancels the background job that is currently in progress
     void cancelActiveJob( QgsChunkQueueJob *job );

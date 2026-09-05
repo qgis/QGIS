@@ -241,12 +241,20 @@ QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity(
 {
   onTerrainElevationOffsetChanged();
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
+  mUpdateJobFactory.reset( new QgsChunkUpdaterFactory( mChunkLoaderFactory ) );
 }
 
 QgsVectorLayerChunkedEntity::~QgsVectorLayerChunkedEntity()
 {
   // cancel / wait for jobs
   cancelActiveJobs();
+}
+
+void QgsVectorLayerChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes )
+{
+  QgsChunkedEntity::updateNodes( nodes, mUpdateJobFactory.get() );
+
+  setNeedsUpdate( true );
 }
 
 // if the AltitudeClamping is `Absolute`, do not apply the offset
