@@ -17,16 +17,21 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsauthoauth2config.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgso2.h"
 #include "qgstest.h"
 
 #include <QApplication>
 #include <QDateTime>
 #include <QDebug>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
 #include <QObject>
 #include <QSignalSpy>
 #include <QString>
 #include <QStringList>
 #include <QTemporaryFile>
+#include <QUrl>
 #include <QtTest/QTest>
 
 using namespace Qt::StringLiterals;
@@ -34,6 +39,19 @@ using namespace Qt::StringLiterals;
 #ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"
 #endif
+
+namespace
+{
+  // Subclass QgsO2 to enable using protected methods in tests
+  class TestableQgsO2 : public QgsO2
+  {
+    public:
+      using QgsO2::onVerificationReceived;
+      using QgsO2::QgsO2;
+      void setTestAuthCode( const QString &value ) { setCode( value ); }
+      void setTestRefreshToken( const QString &value ) { setRefreshToken( value ); }
+  };
+} // namespace
 
 /**
  * \ingroup UnitTests
@@ -55,6 +73,7 @@ class TestQgsAuthOAuth2Method : public QObject
     void testDynamicRegistration();
     void testDynamicRegistrationJwt();
     void testDynamicRegistrationNoEndpoint();
+    void testDoesNotSendEmptyClientSecret();
 
   private:
     QgsAuthOAuth2Config *baseConfig( bool loaded = false );
@@ -298,6 +317,11 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
 
   config3->deleteLater();
 
+  QgsAuthOAuth2Config *config3b = baseConfig( true );
+  config3b->setClientSecret( QString() );
+  QVERIFY( config3b->isValid() );
+  config3b->deleteLater();
+
   qDebug() << "Validate equality";
   QgsAuthOAuth2Config *config4 = baseConfig( true );
   QgsAuthOAuth2Config *config5 = baseConfig( true );
@@ -513,6 +537,58 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationJwt()
 #endif
 }
 
+
+void TestQgsAuthOAuth2Method::testDoesNotSendEmptyClientSecret()
+{
+  QTemporaryFile responseFile;
+  QVERIFY( responseFile.open() );
+  responseFile.write( R"({"access_token":"new_token","refresh_token":"new_refresh","expires_in":3600})" );
+  responseFile.close();
+
+  const QString refreshUrl = u"http://example.invalid/refresh"_s;
+  const QString tokenUrl = u"http://example.invalid/token"_s;
+  QByteArray capturedBody;
+
+  const QString preprocessorId = QgsNetworkAccessManager::setAdvancedRequestPreprocessor( [refreshUrl, tokenUrl, &responseFile, &capturedBody]( QNetworkRequest *request, int &op, QByteArray *data ) {
+    if ( request->url().toString() != refreshUrl && request->url().toString() != tokenUrl )
+      return;
+    capturedBody = *data;
+    request->setUrl( QUrl::fromLocalFile( responseFile.fileName() ) );
+    op = static_cast<int>( QNetworkAccessManager::GetOperation );
+  } );
+
+  TestableQgsO2 o2( u"testauthcfg"_s );
+  o2.setClientId( u"my_client_id"_s );
+  o2.setRefreshTokenUrl( refreshUrl );
+  o2.setTestRefreshToken( u"my_refresh_token"_s );
+
+  // RFC 6749 sec. 2.3.1: an empty client secret should not be sent
+  o2.setClientSecret( QString() );
+  o2.refreshSynchronous();
+  QVERIFY( capturedBody.contains( "refresh_token=my_refresh_token" ) );
+  QVERIFY( !capturedBody.contains( "client_secret" ) );
+
+  // Sanity check when a client_secret is actually set
+  capturedBody.clear();
+  o2.setClientSecret( u"my_secret"_s );
+  o2.refreshSynchronous();
+  QVERIFY( capturedBody.contains( "client_secret=my_secret" ) );
+
+  o2.setTokenUrl( tokenUrl );
+  o2.setClientSecret( QString() );
+  o2.setTestAuthCode( u"my_auth_code"_s );
+  capturedBody.clear();
+  o2.onVerificationReceived( { { u"code"_s, u"my_auth_code"_s } } );
+  QVERIFY( capturedBody.contains( "code=my_auth_code" ) );
+  QVERIFY( !capturedBody.contains( "client_secret" ) );
+
+  o2.setClientSecret( u"my_secret"_s );
+  capturedBody.clear();
+  o2.onVerificationReceived( { { u"code"_s, u"my_auth_code"_s } } );
+  QVERIFY( capturedBody.contains( "client_secret=my_secret" ) );
+
+  QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( preprocessorId );
+}
 
 QGSTEST_MAIN( TestQgsAuthOAuth2Method )
 #include "testqgsauthoauth2method.moc"
