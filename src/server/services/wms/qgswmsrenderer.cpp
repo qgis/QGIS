@@ -1232,8 +1232,12 @@ namespace QgsWms
   std::unique_ptr<QgsMapRendererTask> QgsRenderer::getPdf( const QString &tmpFileName )
   {
     QgsMapSettings ms;
+
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers, &ms );
+
+    ms.setLayers( layers );
     ms.setExtent( mWmsParameters.bboxAsRectangle() );
-    ms.setLayers( mContext.layersToRender() );
     ms.setDestinationCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( mWmsParameters.crs() ) );
     ms.setOutputSize( QSize( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() ) );
     ms.setDpiTarget( mWmsParameters.dpiAsDouble() );
