@@ -6595,8 +6595,7 @@ QgsLabelPointSettings: src/core/labeling/qgslabelpointsettings.h#L40
 QgsLabelPosition.__repr__: src/core/labeling/qgslabelposition.h#L94
 QgsLabelPosition: src/core/labeling/qgslabelposition.h#L35
 QgsLabelSearchTree.clear: src/core/labeling/qgslabelsearchtree.h#L62
-QgsLabelSearchTree.insertLabel: src/core/labeling/qgslabelsearchtree.h#L92
-QgsLabelSearchTree.setMapSettings: src/core/labeling/qgslabelsearchtree.h#L139
+QgsLabelSearchTree.setMapSettings: src/core/labeling/qgslabelsearchtree.h#L98
 QgsLabelSearchTree: src/core/labeling/qgslabelsearchtree.h#L49
 QgsLabelThinningSettings.allowDuplicateRemoval: src/core/labeling/qgslabelthinningsettings.h#L235
 QgsLabelThinningSettings.labelMarginDistance: src/core/labeling/qgslabelthinningsettings.h#L90
@@ -6704,8 +6703,9 @@ QgsLabelingEngineSettings.unplacedLabelColor: src/core/labeling/qgslabelingengin
 QgsLabelingEngineSettings.writeSettingsToProject: src/core/labeling/qgslabelingenginesettings.h#L159
 QgsLabelingEngineSettings.writeXml: src/core/labeling/qgslabelingenginesettings.h#L171
 QgsLabelingEngineSettings: src/core/labeling/qgslabelingenginesettings.h#L34
-QgsLabelingResults.setMapSettings: src/core/labeling/qgslabelingresults.h#L79
-QgsLabelingResults: src/core/labeling/qgslabelingresults.h#L33
+QgsLabelingResults.hasSearchTree: src/core/labeling/qgslabelingresults.h#L63
+QgsLabelingResults.setMapSettings: src/core/labeling/qgslabelingresults.h#L141
+QgsLabelingResults: src/core/labeling/qgslabelingresults.h#L43
 QgsLayerDefinition.DependencySorter.DependencySorter: src/core/qgslayerdefinition.h#L158
 QgsLayerDefinition.DependencySorter.DependencySorter: src/core/qgslayerdefinition.h#L164
 QgsLayerDefinition.DependencySorter.hasCycle: src/core/qgslayerdefinition.h#L173
