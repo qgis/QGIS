@@ -20,7 +20,7 @@
 #include "qgs3danimationwidget.h"
 #include "qgs3dcameracontrolswidget.h"
 #include "qgs3ddebugwidget.h"
-#include "qgs3dmapcanvas.h"
+#include "qgs3deditingtoolbar.h"
 #include "qgs3dmapconfigwidget.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgs3dmapexportwidget.h"
@@ -29,9 +29,8 @@
 #include "qgs3dmaptoolidentify.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dmaptoolpointcloudchangeattribute.h"
-#include "qgs3dmaptoolpointcloudchangeattributepaintbrush.h"
-#include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
 #include "qgs3dnavigationwidget.h"
+#include "qgs3dpointcloudeditingtoolbar.h"
 #include "qgs3dutils.h"
 #include "qgsannotationlayer.h"
 #include "qgsapplication.h"
@@ -46,6 +45,7 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsidentifyresultsdialog.h"
+#include "qgslateralpanelwidget.h"
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapthemecollection.h"
@@ -70,7 +70,9 @@
 #include <QProgressBar>
 #include <QShortcut>
 #include <QString>
+#include <QTabWidget>
 #include <QToolBar>
+#include <QToolBox>
 #include <QWidget>
 
 #include "moc_qgs3dmapcanvaswidget.cpp"
@@ -108,115 +110,32 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mEditingToolBar = new QToolBar( this );
   mEditingToolBar->setObjectName( u"m3DEditingToolBar"_s );
   mEditingToolBar->setWindowTitle( tr( "Editing Toolbar" ) );
-  mEditingToolsMenu = new QMenu( this );
-  mEditingToolsMenu->setObjectName( u"m3DEditingToolsMenu"_s );
 
-  mPointCloudEditingToolbar = new QToolBar( this );
-  mPointCloudEditingToolbar->setObjectName( u"m3DPointCloudEditingToolBar"_s );
-
-  mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s ), tr( "Toggle editing" ), this );
-  mActionToggleEditing->setObjectName( u"m3DActionToggleEditing"_s );
-  mActionToggleEditing->setCheckable( true );
-  connect( mActionToggleEditing, &QAction::triggered, this, [this] {
-    QgsMapLayer *layer = QgisApp::instance()->activeLayer();
-    QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
-    for ( QgsPointCloudSubIndex &subIndex : pcLayer->subIndexes() )
-    {
-      if ( !subIndex.index() || !subIndex.index().isValid() )
-      {
-        mMessageBar->pushMessage( tr( "Virtual Point Cloud editing" ), tr( "Some of the files referenced by the VPC have not yet been loaded, selection of areas of a not yet loaded dataset will not cause any changes to its data. Only actually selected points will be edited." ) );
-        break;
-      }
-    }
-    QgisApp::instance()->toggleEditing( pcLayer );
-    mCanvas->setMapTool( nullptr );
-  } );
   mActionUndo = new QAction( QgsApplication::getThemeIcon( u"/mActionUndo.svg"_s ), tr( "Undo" ), this );
   mActionRedo = new QAction( QgsApplication::getThemeIcon( u"/mActionRedo.svg"_s ), tr( "Redo" ), this );
 
   mActionUndo->setObjectName( u"m3DActionUndo"_s );
   mActionRedo->setObjectName( u"m3DActionRedo"_s );
 
-  mEditingToolBar->addAction( mActionToggleEditing );
   mEditingToolBar->addAction( mActionUndo );
   mEditingToolBar->addAction( mActionRedo );
   mEditingToolBar->addSeparator();
 
-  mEditingToolsAction = new QAction( QgsApplication::getThemeIcon( u"mActionSelectPolygon.svg"_s ), tr( "Select Editing Tool" ), this );
-  mEditingToolsAction->setObjectName( u"m3DActionSelectEditingTool"_s );
-  mEditingToolsAction->setMenu( mEditingToolsMenu );
-  mEditingToolBar->addAction( mEditingToolsAction );
-  QToolButton *editingToolsButton = qobject_cast<QToolButton *>( mEditingToolBar->widgetForAction( mEditingToolsAction ) );
-  editingToolsButton->setPopupMode( QToolButton::ToolButtonPopupMode::InstantPopup );
-  QAction *actionPointCloudChangeAttributeTool
-    = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectPolygon.svg"_s ) ), tr( "Select by Polygon" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPolygon );
-  actionPointCloudChangeAttributeTool->setObjectName( u"m3DActionSelectByPolygon"_s );
-  QAction *actionPaintbrush
-    = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"propertyicons/rendering.svg"_s ) ), tr( "Select by Paintbrush" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush );
-  actionPaintbrush->setObjectName( u"m3DActionSelectByPaintbrush"_s );
-  QAction *actionAboveLineTool
-    = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectAboveLine.svg"_s ) ), tr( "Select Above Line" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByAboveLine );
-  actionAboveLineTool->setObjectName( u"m3DActionSelectAboveLine"_s );
-  QAction *actionBelowLineTool
-    = mEditingToolsMenu->addAction( QIcon( QgsApplication::iconPath( u"mActionSelectBelowLine.svg"_s ) ), tr( "Select Below Line" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributeByBelowLine );
-  actionBelowLineTool->setObjectName( u"m3DActionSelectBelowLine"_s );
+  mPointCloudEditingToolbar = new Qgs3DPointCloudEditingToolBar( this );
+  mEditingToolBar->addWidget( mPointCloudEditingToolbar )->setObjectName( mPointCloudEditingToolbar->objectName() + u"Action"_s );
 
-  mEditingToolBar->addWidget( mPointCloudEditingToolbar )->setObjectName( u"m3DActionPointCloudEditingToolBar"_s );
-  QAction *actionPointFilter
-    = mPointCloudEditingToolbar->addAction( QIcon( QgsApplication::iconPath( "mIconExpressionFilter.svg" ) ), tr( "Filter Points" ), this, &Qgs3DMapCanvasWidget::changePointCloudAttributePointFilter );
-  actionPointFilter->setObjectName( u"m3DActionFilterPoints"_s );
-  actionPointFilter->setCheckable( true );
-  const QString tooltip
-    = u"%1\n\n%2\n%3"_s.arg( tr( "Filter Points" ), tr( "Set an expression to filter points that should be edited." ), tr( "Points that do not satisfy the expression will not be modified." ) );
-  actionPointFilter->setToolTip( tooltip );
-
-  mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Attribute" ) ) )->setObjectName( u"m3DActionAttributeLabel"_s );
-  mCboChangeAttribute = new QComboBox();
-  mCboChangeAttribute->setObjectName( u"m3DCboChangeAttribute"_s );
-  mPointCloudEditingToolbar->addWidget( mCboChangeAttribute )->setObjectName( u"m3DActionChangeAttribute"_s );
-  mSpinChangeAttributeValue = new QgsDoubleSpinBox();
-  mSpinChangeAttributeValue->setObjectName( u"m3DSpinChangeAttributeValue"_s );
-  mSpinChangeAttributeValue->setShowClearButton( false );
-  mPointCloudEditingToolbar->addWidget( new QLabel( tr( "Value" ) ) )->setObjectName( u"m3DActionValueLabel"_s );
-  mSpinChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mSpinChangeAttributeValue );
-  mSpinChangeAttributeValueAction->setObjectName( u"m3DActionChangeAttributeValueSpin"_s );
-  mSpinChangeAttributeValueAction->setVisible( false );
-  mCboChangeAttributeValue = new QComboBox();
-  mCboChangeAttributeValue->setObjectName( u"m3DCboChangeAttributeValue"_s );
-  mCboChangeAttributeValue->setEditable( true );
-  mClassValidator = new ClassValidator( this );
-  mCboChangeAttributeValueAction = mPointCloudEditingToolbar->addWidget( mCboChangeAttributeValue );
-  mCboChangeAttributeValueAction->setObjectName( u"m3DActionChangeAttributeValueCombo"_s );
-
-  QAction *actionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mIconPointCloudLayer.svg" ) ), tr( "Show Editing Toolbar" ) );
-  actionEditingToolbar->setObjectName( u"m3DActionShowEditingToolbar"_s );
-  actionEditingToolbar->setCheckable( true );
-  actionEditingToolbar->setChecked( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );
-  connect( actionEditingToolbar, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleEditingToolbar );
-  connect( mCboChangeAttribute, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { onPointCloudChangeAttributeSettingsChanged(); } );
-  connect( mCboChangeAttributeValue, qOverload<const QString &>( &QComboBox::currentTextChanged ), this, [this]( const QString &text ) {
-    double newValue = 0;
-    if ( mCboChangeAttributeValue->isEditable() )
-    {
-      const QStringList split = text.split( ' ' );
-      if ( !split.isEmpty() )
-      {
-        newValue = split.constFirst().toDouble();
-      }
-    }
-    else
-    {
-      newValue = mCboChangeAttributeValue->currentData().toDouble();
-    }
-    mMapToolChangeAttribute->setNewValue( newValue );
-  } );
-  connect( mSpinChangeAttributeValue, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { mMapToolChangeAttribute->setNewValue( mSpinChangeAttributeValue->value() ); } );
+  mActionEditingToolbar = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionToggleEditing.svg" ) ), tr( "Show Editing Toolbar" ) );
+  mActionEditingToolbar->setObjectName( u"m3DActionShowEditingToolbar"_s );
+  mActionEditingToolbar->setEnabled( false );
+  mActionEditingToolbar->setCheckable( true );
+  mActionEditingToolbar->setChecked( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );
+  connect( mActionEditingToolbar, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleEditingToolbar );
 
   QAction *toggleOnScreenNavigation = toolBar->addAction( QgsApplication::getThemeIcon( u"mAction3DNavigation.svg"_s ), tr( "Toggle On-Screen Navigation" ) );
   toggleOnScreenNavigation->setObjectName( u"m3DActionToggleOnScreenNavigation"_s );
-  toggleOnScreenNavigation->setCheckable( true );
-  toggleOnScreenNavigation->setChecked( setting.value( u"/3D/navigationWidget/visibility"_s, true, QgsSettings::Gui ).toBool() );
-  QObject::connect( toggleOnScreenNavigation, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleNavigationWidget );
+  // this is no more a toggle but a button to show the widget
+  toggleOnScreenNavigation->setCheckable( false );
+  QObject::connect( toggleOnScreenNavigation, &QAction::triggered, this, [this]() { toggleNavigationWidget( true ); } );
 
   toolBar->addSeparator();
 
@@ -229,15 +148,17 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionMeasurementTool->setCheckable( true );
 
   // Create action group to make the action exclusive
-  QActionGroup *actionGroup = new QActionGroup( this );
-  actionGroup->addAction( actionCameraControl );
-  actionGroup->addAction( actionIdentify );
-  actionGroup->addAction( actionMeasurementTool );
-  actionGroup->addAction( actionPaintbrush );
-  actionGroup->addAction( actionPointCloudChangeAttributeTool );
-  actionGroup->addAction( actionAboveLineTool );
-  actionGroup->addAction( actionBelowLineTool );
-  actionGroup->setExclusive( true );
+  mToolActionGroup = new QActionGroup( this );
+  mToolActionGroup->addAction( actionCameraControl );
+  mToolActionGroup->addAction( actionIdentify );
+  mToolActionGroup->addAction( actionMeasurementTool );
+
+  for ( auto toolbar : mEditingToolBar->findChildren<Qgs3DEditingToolBar *>() )
+  {
+    for ( auto action : toolbar->groupActions() )
+      mToolActionGroup->addAction( action );
+  }
+  mToolActionGroup->setExclusive( true );
 
   mActionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ), tr( "Animations" ), this, &Qgs3DMapCanvasWidget::toggleAnimations );
   mActionAnim->setObjectName( u"m3DActionAnimations"_s );
@@ -439,7 +360,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( configureAction, &QAction::triggered, this, &Qgs3DMapCanvasWidget::configure );
   toolBar->addAction( configureAction );
 
-  mCanvas = new Qgs3DMapCanvas;
+  mCanvas = new Qgs3DMapCanvas( this );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
 
   connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, []( const QString &fileName ) {
@@ -462,8 +383,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
 
   mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( this );
-
-  mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttribute( mCanvas );
 
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
@@ -495,6 +414,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     mLabelNavSpeedHideTimeout->stop();
   } );
 
+  // create main vertical layout
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
@@ -506,20 +426,31 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mContainer = QWidget::createWindowContainer( mCanvas );
   mContainer->setMinimumSize( QSize( 200, 200 ) );
   mContainer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+  // create the lateral panel
+  QAction *showHideLateralPanel = new QAction( QgsApplication::getThemeIcon( u"mActionResizeWidest.svg"_s ), tr( "Show/hide right panel" ), this );
+  showHideLateralPanel->setObjectName( u"showHideLateralPanel"_s );
+  mLateralPanel = new QgsLateralPanelWidget( showHideLateralPanel );
+  mLateralPanel->hide();
+
   mNavigationWidget = new Qgs3DNavigationWidget( mCanvas );
   mNavigationWidget->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
   mDebugWidget = new Qgs3DDebugWidget( mCanvas );
 
+  mLateralPanel->addWidget( mNavigationWidget, u"Navigation"_s );
+  mLateralPanel->addWidget( mDebugWidget, u"Debug"_s );
+
+  // create sub horizontal layout
   QHBoxLayout *hLayout = new QHBoxLayout;
   hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->addWidget( mContainer );
-  hLayout->addWidget( mNavigationWidget );
-  hLayout->addWidget( mDebugWidget );
+  hLayout->addWidget( mLateralPanel );
 
   QShortcut *debugPanelShortCut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+d" ) ), this );
   connect( debugPanelShortCut, &QShortcut::activated, this, qOverload<>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
   debugPanelShortCut->setObjectName( u"DebugPanel"_s );
   debugPanelShortCut->setWhatsThis( tr( "Debug panel visibility" ) );
+
   toggleNavigationWidget( setting.value( u"/3D/navigationWidget/visibility"_s, false, QgsSettings::Gui ).toBool() );
 
   layout->addLayout( hLayout );
@@ -545,6 +476,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( dockAction, &QAction::toggled, this, [toolBar]( const bool isSmallSize ) {
     toolBar->setIconSize( QgsGui::iconSize( isSmallSize ? Qgis::UserInterfaceIconType::DockedToolbar : Qgis::UserInterfaceIconType::MainWindowToolbar ) );
   } );
+
+  // add action to show/hide lateral panel
+  toolBar->addSeparator();
+  toolBar->addAction( mLateralPanel->toggleAction() );
 
   updateLayerRelatedActions( QgisApp::instance()->activeLayer() );
   mEditingToolBar->setVisible( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );
@@ -572,6 +507,37 @@ Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()
     mCrossSectionRubberBand.reset();
 
   delete mDockableWidgetHelper;
+}
+
+QList<Qgs3DEditingToolBar *> Qgs3DMapCanvasWidget::editingToolBars() const
+{
+  QList<Qgs3DEditingToolBar *> out;
+  if ( mEditingToolBar )
+    for ( Qgs3DEditingToolBar *tb : mEditingToolBar->findChildren<Qgs3DEditingToolBar *>() )
+    {
+      out.append( tb );
+    }
+
+  return out;
+}
+
+void Qgs3DMapCanvasWidget::addEditingToolBar( Qgs3DEditingToolBar *newToolBar )
+{
+  if ( mEditingToolBar && newToolBar )
+  {
+    mEditingToolBar->addWidget( newToolBar );
+    mToolbarMenu->addAction( newToolBar->toggleViewAction() );
+    for ( auto action : newToolBar->groupActions() )
+      mToolActionGroup->addAction( action );
+
+    // disable toolbar by default
+    newToolBar->deactivate();
+  }
+}
+
+QgsLateralPanelWidget *Qgs3DMapCanvasWidget::lateralPanel() const
+{
+  return mLateralPanel;
 }
 
 void Qgs3DMapCanvasWidget::saveAsImage()
@@ -627,84 +593,6 @@ void Qgs3DMapCanvasWidget::measureLine()
   mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
 }
 
-void Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush()
-{
-  const QAction *action = qobject_cast<QAction *>( sender() );
-  if ( !action )
-    return;
-
-  mCanvas->requestActivate();
-  mMapToolChangeAttribute->deleteLater();
-  mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttributePaintbrush( mCanvas );
-  onPointCloudChangeAttributeSettingsChanged();
-  mCanvas->setMapTool( mMapToolChangeAttribute );
-  mEditingToolsAction->setIcon( action->icon() );
-}
-
-void Qgs3DMapCanvasWidget::changePointCloudAttributeByPolygon()
-{
-  const QAction *action = qobject_cast<QAction *>( sender() );
-  if ( !action )
-    return;
-
-  mMapToolChangeAttribute->deleteLater();
-  mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttributePolygon( mCanvas, Qgs3DMapToolPointCloudChangeAttributePolygon::Polygon );
-  onPointCloudChangeAttributeSettingsChanged();
-  mCanvas->setMapTool( mMapToolChangeAttribute );
-  mEditingToolsAction->setIcon( action->icon() );
-}
-
-void Qgs3DMapCanvasWidget::changePointCloudAttributeByAboveLine()
-{
-  const QAction *action = qobject_cast<QAction *>( sender() );
-  if ( !action )
-    return;
-
-  mMapToolChangeAttribute->deleteLater();
-  mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttributePolygon( mCanvas, Qgs3DMapToolPointCloudChangeAttributePolygon::AboveLine );
-  onPointCloudChangeAttributeSettingsChanged();
-  mCanvas->setMapTool( mMapToolChangeAttribute );
-  mEditingToolsAction->setIcon( action->icon() );
-}
-
-void Qgs3DMapCanvasWidget::changePointCloudAttributeByBelowLine()
-{
-  const QAction *action = qobject_cast<QAction *>( sender() );
-  if ( !action )
-    return;
-
-  mMapToolChangeAttribute->deleteLater();
-  mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttributePolygon( mCanvas, Qgs3DMapToolPointCloudChangeAttributePolygon::BelowLine );
-  onPointCloudChangeAttributeSettingsChanged();
-  mCanvas->setMapTool( mMapToolChangeAttribute );
-  mEditingToolsAction->setIcon( action->icon() );
-}
-
-void Qgs3DMapCanvasWidget::changePointCloudAttributePointFilter()
-{
-  QAction *action = qobject_cast<QAction *>( sender() );
-  if ( !action )
-    return;
-
-  QgsPointCloudLayer *layer = qobject_cast<QgsPointCloudLayer *>( QgisApp::instance()->activeLayer() );
-  if ( !layer )
-    return;
-
-  QgsPointCloudQueryBuilder qb( layer, this );
-  qb.setSubsetString( mChangeAttributePointFilter );
-  if ( qb.exec() )
-  {
-    mChangeAttributePointFilter = qb.subsetString();
-    mMapToolChangeAttribute->setPointFilter( mChangeAttributePointFilter );
-  }
-  action->setChecked( !mChangeAttributePointFilter.isEmpty() );
-  QString tooltip
-    = u"%1\n\n%2\n%3"_s.arg( tr( "Filter Points" ), tr( "Set an expression to filter points that should be edited." ), tr( "Points that do not satisfy the expression will not be modified." ) );
-  if ( !mChangeAttributePointFilter.isEmpty() )
-    tooltip.append( u"\n%1\n%2"_s.arg( tr( "Current filter expression: " ), mChangeAttributePointFilter ) );
-  action->setToolTip( tooltip );
-}
-
 void Qgs3DMapCanvasWidget::setCanvasName( const QString &name )
 {
   mCanvasName = name;
@@ -713,54 +601,70 @@ void Qgs3DMapCanvasWidget::setCanvasName( const QString &name )
 
 void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
 {
+  if ( !layer || layer == mLayer )
+    return;
+
+  qDebug() << __FUNCTION__ << __LINE__ << "for layer:" << layer;
+  // toggle previous layer if editable and not modified
+  if ( mLayer && mLayer->isEditable() && !mLayer->isModified() )
+    QgisApp::instance()->toggleEditing( mLayer );
+
+  // set new working layer
+  mLayer = layer;
+
+  updateEditingToolBar();
+}
+
+void Qgs3DMapCanvasWidget::updateEditingToolBar()
+{
+  if ( !mEditingToolBar )
+    return;
+
   mActionUndo->disconnect();
   mActionRedo->disconnect();
+  disconnect( mUndoConnection );
+  disconnect( mRedoConnection );
 
-  if ( !layer || layer->type() != Qgis::LayerType::PointCloud )
+  bool toolbarFound = false;
+  for ( auto toolbar : mEditingToolBar->findChildren<Qgs3DEditingToolBar *>() )
   {
-    mPointCloudEditingToolbar->setEnabled( false );
-    mActionToggleEditing->setEnabled( false );
-    mActionToggleEditing->setChecked( false );
-    mEditingToolsAction->setEnabled( false );
-    mActionUndo->setEnabled( false );
-    mActionRedo->setEnabled( false );
-
-    if ( mCanvas->mapTool() && mCanvas->mapTool() == mMapToolChangeAttribute )
-      mCanvas->setMapTool( nullptr );
-
-    return;
+    if ( mLayer && toolbar->accept( mLayer ) && mLayer->supportsEditing() )
+    {
+      toolbar->activate( mLayer );
+      toolbarFound = true;
+    }
+    else
+      toolbar->deactivate();
   }
 
-
-  QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
-  const QVector<QgsPointCloudAttribute> attributes = pcLayer->attributes().attributes();
-  const QString previousAttribute = mCboChangeAttribute->currentText();
-  whileBlocking( mCboChangeAttribute )->clear();
-  for ( const QgsPointCloudAttribute &attribute : attributes )
+  if ( toolbarFound && mLayer && mLayer->supportsEditing() )
   {
-    if ( attribute.name() == "X"_L1 || attribute.name() == "Y"_L1 || attribute.name() == "Z"_L1 )
-      continue;
+    // enable mEditingToolBar
+    mActionEditingToolbar->setEnabled( true );
+    QgsSettings setting;
+    mEditingToolBar->setVisible( setting.value( u"/3D/editingToolbar/visibility"_s, false, QgsSettings::Gui ).toBool() );
 
-    whileBlocking( mCboChangeAttribute )->addItem( attribute.name() );
+    // toggle editing if not already editable
+    if ( !mLayer->isEditable() )
+      QgisApp::instance()->toggleEditing( mLayer );
+
+    mDockableWidgetHelper->setWindowTitle( u"%1 - %2"_s.arg( mCanvasName ).arg( mLayer->name() ) );
+
+    connect( mActionUndo, &QAction::triggered, mLayer->undoStack(), &QUndoStack::undo );
+    connect( mActionRedo, &QAction::triggered, mLayer->undoStack(), &QUndoStack::redo );
+    mActionUndo->setEnabled( mLayer->undoStack()->canUndo() );
+    mActionRedo->setEnabled( mLayer->undoStack()->canRedo() );
+    mUndoConnection = connect( mLayer->undoStack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
+    mRedoConnection = connect( mLayer->undoStack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
   }
+  else
+  {
+    // disable mEditingToolBar
+    mActionEditingToolbar->setEnabled( false );
+    mEditingToolBar->setVisible( false );
 
-  int index = mCboChangeAttribute->findText( previousAttribute );
-  if ( index < 0 )
-    index = mCboChangeAttribute->findText( u"Classification"_s );
-  mCboChangeAttribute->setCurrentIndex( std::max( index, 0 ) );
-
-  mActionToggleEditing->setEnabled( pcLayer->supportsEditing() );
-  mActionToggleEditing->setChecked( pcLayer->isEditable() );
-  connect( mActionUndo, &QAction::triggered, pcLayer->undoStack(), &QUndoStack::undo );
-  connect( mActionRedo, &QAction::triggered, pcLayer->undoStack(), &QUndoStack::redo );
-  mActionUndo->setEnabled( pcLayer->undoStack()->canUndo() );
-  mActionRedo->setEnabled( pcLayer->undoStack()->canRedo() );
-  connect( pcLayer->undoStack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
-  connect( pcLayer->undoStack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
-  mPointCloudEditingToolbar->setEnabled( pcLayer->isEditable() );
-  mEditingToolsAction->setEnabled( pcLayer->isEditable() );
-  // Reparse the class values when the renderer changes - renderer3DChanged() is not fired when only the renderer symbol is changed
-  connect( pcLayer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged );
+    mDockableWidgetHelper->setWindowTitle( mCanvasName );
+  }
 }
 
 bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
@@ -785,7 +689,14 @@ bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )
 
 void Qgs3DMapCanvasWidget::toggleNavigationWidget( const bool visibility )
 {
-  mNavigationWidget->setVisible( visibility );
+  if ( visibility )
+  {
+    mLateralPanel->showWidget( u"Navigation"_s );
+  }
+  else
+  {
+    mLateralPanel->hide();
+  }
   QgsSettings setting;
   setting.setValue( u"/3D/navigationWidget/visibility"_s, visibility, QgsSettings::Gui );
 }
@@ -795,6 +706,12 @@ void Qgs3DMapCanvasWidget::toggleEditingToolbar( const bool visibility )
   mEditingToolBar->setVisible( visibility );
   QgsSettings setting;
   setting.setValue( u"/3D/editingToolbar/visibility"_s, visibility, QgsSettings::Gui );
+
+  // toggle editing if not already editable
+  if ( !visibility && mLayer && mLayer->isEditable() && !mLayer->isModified() )
+    QgisApp::instance()->toggleEditing( mLayer );
+
+  updateEditingToolBar();
 }
 
 void Qgs3DMapCanvasWidget::toggleFpsCounter( const bool visibility )
@@ -804,7 +721,14 @@ void Qgs3DMapCanvasWidget::toggleFpsCounter( const bool visibility )
 
 void Qgs3DMapCanvasWidget::toggleDebugWidget( const bool visibility ) const
 {
-  mDebugWidget->setVisible( visibility );
+  if ( visibility )
+  {
+    mLateralPanel->showWidget( u"Debug"_s );
+  }
+  else
+  {
+    mLateralPanel->hideWidget( u"Debug"_s );
+  }
 }
 
 // this is used only for keyboard shortcut, you should supply the visibility value
@@ -813,7 +737,7 @@ void Qgs3DMapCanvasWidget::toggleDebugWidget() const
   Qgis::Map3DDebugFlags debugFlags = mCanvas->mapSettings()->debugFlags();
   debugFlags.setFlag( Qgis::Map3DDebugFlag::ShowDebugPanel, !debugFlags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
   mCanvas->mapSettings()->setDebugFlags( debugFlags );
-  mDebugWidget->setVisible( debugFlags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
+  toggleDebugWidget( debugFlags.testFlag( Qgis::Map3DDebugFlag::ShowDebugPanel ) );
 }
 
 void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
@@ -1171,166 +1095,6 @@ void Qgs3DMapCanvasWidget::onGpuMemoryLimitReached()
     Qgis::MessageLevel::Warning
   );
   mGpuMemoryLimitReachedReported = true;
-}
-
-void Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged()
-{
-  const QString attributeName = mCboChangeAttribute->currentText();
-
-  mSpinChangeAttributeValue->setSuffix( QString() );
-  bool useComboBox = false;
-
-  if ( attributeName == "Intensity"_L1 || attributeName == "PointSourceId"_L1 || attributeName == "Red"_L1 || attributeName == "Green"_L1 || attributeName == "Blue"_L1 || attributeName == "Infrared"_L1 )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 65535 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == "ReturnNumber"_L1 || attributeName == "NumberOfReturns"_L1 )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 15 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == "Synthetic"_L1
-            || attributeName == "KeyPoint"_L1
-            || attributeName == "Withheld"_L1
-            || attributeName == "Overlap"_L1
-            || attributeName == "ScanDirectionFlag"_L1
-            || attributeName == "EdgeOfFlightLine"_L1 )
-  {
-    useComboBox = true;
-    const int oldIndex = mCboChangeAttributeValue->currentIndex();
-    QgsSignalBlocker< QComboBox > blocker( mCboChangeAttributeValue );
-    mCboChangeAttributeValue->clear();
-    mCboChangeAttributeValue->addItem( tr( "False" ), 0 );
-    mCboChangeAttributeValue->addItem( tr( "True" ), 1 );
-    mCboChangeAttributeValue->setEditable( false );
-    mCboChangeAttributeValue->setCurrentIndex( std::min( oldIndex, 1 ) );
-  }
-  else if ( attributeName == "ScannerChannel"_L1 )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 3 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == "Classification"_L1 )
-  {
-    useComboBox = true;
-    const QStringList split = mCboChangeAttributeValue->currentText().split( ' ' );
-    const int oldValue = split.isEmpty() ? 0 : split.constFirst().toInt();
-
-    whileBlocking( mCboChangeAttributeValue )->clear();
-    // We will fill the combobox with all available classes from the Classification renderer (may have changed names) and the layer statistics
-    // Users will be able to manually type in any other class number too.
-    QMap<int, QString> lasCodes = QgsPointCloudDataProvider::translatedLasClassificationCodes();
-    QMap<int, QString> classes;
-
-    QgsPointCloudLayer *layer = qobject_cast<QgsPointCloudLayer *>( QgisApp::instance()->activeLayer() );
-    if ( layer )
-    {
-      QgsAbstract3DRenderer *r = layer->renderer3D();
-      // if there's a classification renderer, let's use the classes labels
-      if ( QgsPointCloudLayer3DRenderer *cr = dynamic_cast<QgsPointCloudLayer3DRenderer *>( r ) )
-      {
-        const QgsPointCloud3DSymbol *s = cr->symbol();
-        if ( const QgsClassificationPointCloud3DSymbol *cs = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( s ) )
-        {
-          if ( cs->attribute() == "Classification"_L1 )
-          {
-            for ( const QgsPointCloudCategory &c : cs->categoriesList() )
-            {
-              classes[c.value()] = c.label();
-            }
-          }
-        }
-      }
-
-      // then add missing classes from the layer stats too
-      const QMap<int, int> statisticsClasses = layer->statistics().availableClasses( u"Classification"_s );
-      for ( auto it = statisticsClasses.constBegin(); it != statisticsClasses.constEnd(); ++it )
-      {
-        if ( !classes.contains( it.key() ) )
-          classes[it.key()] = lasCodes[it.key()];
-      }
-      for ( auto it = classes.constBegin(); it != classes.constEnd(); ++it )
-      {
-        // populate the combobox
-        whileBlocking( mCboChangeAttributeValue )->addItem( u"%1 (%2)"_s.arg( it.key() ).arg( it.value() ), it.key() );
-        // and also update the labels in the full list of classes, which will be used in the editable combobox validator.
-        lasCodes[it.key()] = it.value();
-      }
-    }
-    // new values (manually edited) will be added after a separator
-    mCboChangeAttributeValue->insertSeparator( mCboChangeAttributeValue->count() );
-    mClassValidator->setClasses( lasCodes );
-    mCboChangeAttributeValue->setEditable( true );
-    mCboChangeAttributeValue->setValidator( mClassValidator );
-    mCboChangeAttributeValue->setCompleter( nullptr );
-
-    // Try to reselect last selected value
-    if ( classes.contains( oldValue ) )
-    {
-      for ( int i = 0; i < mCboChangeAttributeValue->count(); ++i )
-      {
-        if ( mCboChangeAttributeValue->itemText( i ).startsWith( u"%1 "_s.arg( oldValue ) ) )
-        {
-          mCboChangeAttributeValue->setCurrentIndex( i );
-          break;
-        }
-      }
-    }
-    else
-    {
-      whileBlocking( mCboChangeAttributeValue )->addItem( u"%1 ()"_s.arg( oldValue ), oldValue );
-      mCboChangeAttributeValue->setCurrentIndex( mCboChangeAttributeValue->count() - 1 );
-    }
-  }
-  else if ( attributeName == "UserData"_L1 )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( 255 );
-    mSpinChangeAttributeValue->setDecimals( 0 );
-  }
-  else if ( attributeName == "ScanAngleRank"_L1 )
-  {
-    mSpinChangeAttributeValue->setMinimum( -180 );
-    mSpinChangeAttributeValue->setMaximum( 180 );
-    mSpinChangeAttributeValue->setDecimals( 3 );
-    mSpinChangeAttributeValue->setSuffix( u" %1"_s.arg( tr( "degrees" ) ) );
-  }
-  else if ( attributeName == "GpsTime"_L1 )
-  {
-    mSpinChangeAttributeValue->setMinimum( 0 );
-    mSpinChangeAttributeValue->setMaximum( std::numeric_limits<double>::max() );
-    mSpinChangeAttributeValue->setDecimals( 42 );
-  }
-
-  mMapToolChangeAttribute->setAttribute( attributeName );
-  double newValue = 0;
-  if ( useComboBox && mCboChangeAttributeValue->isEditable() )
-  {
-    // read class integer
-    const QStringList split = mCboChangeAttributeValue->currentText().split( ' ' );
-    if ( !split.isEmpty() )
-      newValue = split.constFirst().toDouble();
-  }
-  else if ( useComboBox )
-  {
-    // read true/false combo box
-    newValue = mCboChangeAttributeValue->currentData().toDouble();
-  }
-  else
-  {
-    // read the spinbox value
-    newValue = mSpinChangeAttributeValue->value();
-  }
-  mMapToolChangeAttribute->setNewValue( newValue );
-
-  mCboChangeAttributeValueAction->setVisible( useComboBox );
-  mSpinChangeAttributeValueAction->setVisible( !useComboBox );
-
-  mMapToolChangeAttribute->setPointFilter( mChangeAttributePointFilter );
 }
 
 void Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas()

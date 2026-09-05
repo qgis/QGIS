@@ -73,7 +73,7 @@ class QgsRectangle;
 class QgsRubberBand3D;
 class QgsTemporalController;
 class QgsWindow3DEngine;
-
+class Qgs3DMapCanvasWidgetInterface;
 
 /**
  * \ingroup qgis_3d
@@ -89,7 +89,15 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 {
     Q_OBJECT
   public:
+#ifndef SIP_RUN
+    /**
+     * Default constructor.
+     * \param widgetInterface 3d map canvas widget parent
+     */
+    Qgs3DMapCanvas( Qgs3DMapCanvasWidgetInterface *widgetInterface = nullptr );
+#else
     Qgs3DMapCanvas();
+#endif
     ~Qgs3DMapCanvas() override;
 
     //! Returns access to the 3D scene configuration
@@ -100,6 +108,9 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     //! Returns access to the view's camera controller. Returns NULLPTR if the scene has not been initialized yet with setMapSettings()
     QgsCameraController *cameraController();
+
+    //! Returns widget interface to Qgs3DMapCanvasWidget
+    Qgs3DMapCanvasWidgetInterface *canvasWidgetInterface() SIP_SKIP;
 
     /**
      * Sets the active map \a tool that will receive events from the 3D canvas. Does not transfer ownership.
@@ -306,6 +317,8 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     std::unique_ptr<Qgs3DHighlightFeatureHandler> mHighlightsHandler = nullptr;
 
     QgsCrossSection mCrossSection;
+
+    Qgs3DMapCanvasWidgetInterface *mWidgetInterface;
 };
 
 #endif //QGS3DMAPCANVAS_H

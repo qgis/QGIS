@@ -748,6 +748,9 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *actionDraw() = 0 SIP_DISALLOWNONE;
 
+    //! Returns the native action for creating a new 3d map canvas.
+    virtual QAction *actionNew3DMapCanvas() = 0;
+
     // Layer menu actions
     virtual QAction *actionNewVectorLayer() = 0 SIP_DISALLOWNONE;
     virtual QAction *actionAddOgrLayer() = 0 SIP_DISALLOWNONE;
