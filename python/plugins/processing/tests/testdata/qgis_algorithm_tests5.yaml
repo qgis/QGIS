@@ -842,8 +842,8 @@ tests:
       REGULARIZATION: 0.0001
     results:
       OUTPUT:
-        hash: fdd60e174697450d108a35bde0450d043793a8a74361b464602aa057
-        type: rasterhash
+        name: expected/tps_interpolation__global__OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:localtpsinterpolation
     name: TPS interpolation (local)
@@ -861,8 +861,8 @@ tests:
       SEARCH_RADIUS: 3.0
     results:
       OUTPUT:
-        hash: 19f80002d7e17469f99e561c6868056699adba3fb0f0d2d81bdb481d
-        type: rasterhash
+        name: expected/tps_interpolation__local__OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:localtpsinterpolation
     name: TPS interpolation (local, max distance 6)
@@ -880,5 +880,5 @@ tests:
       SEARCH_RADIUS: 6.0
     results:
       OUTPUT:
-        hash: fad9007bff2e9e0f28fb4f5a4e17d09faeb73441916d9f635561c2a9
-        type: rasterhash
+        name: expected/tps_interpolation__local__max_distance_6__OUTPUT.asc
+        type: rasterfile
