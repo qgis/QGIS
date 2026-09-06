@@ -21,7 +21,6 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import math
 import os
-import sys
 import time
 from typing import Optional
 
@@ -42,14 +41,6 @@ def userFolder():
 def defaultOutputFolder():
     folder = os.path.join(QDir.homePath(), "processing")
     return str(QDir.toNativeSeparators(folder))
-
-
-def isWindows():
-    return os.name == "nt"
-
-
-def isMac():
-    return sys.platform == "darwin"
 
 
 def getTempFilename(ext=None, context: Optional[QgsProcessingContext] = None):

@@ -113,6 +113,10 @@ class GdalUtils:
     supportedOutputRasters = None
 
     @staticmethod
+    def is_windows() -> bool:
+        return os.name == "nt"
+
+    @staticmethod
     def runGdal(commands, feedback=None):
         if feedback is None:
             feedback = QgsProcessingFeedback()
