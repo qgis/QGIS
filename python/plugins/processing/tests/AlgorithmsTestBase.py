@@ -564,8 +564,8 @@ class AlgorithmsTest:
             elif expected_result["type"] == "rasterfile":
                 result_filepath = results[id]
                 expected_filepath = self.filepath_from_param(expected_result)
-                abs_tol = expected_result.get("abs_tol", 1e-5)
-                rel_tol = expected_result.get("rel_tol", 1e-5)
+                abs_tol = expected_result.get("abs_tol", 1e-15)
+                rel_tol = expected_result.get("rel_tol", 1e-15)
                 self.check_raster_equality(
                     expected_filepath, result_filepath, abs_tol=abs_tol, rel_tol=rel_tol
                 )
@@ -598,7 +598,7 @@ class AlgorithmsTest:
                     self.assertRegex(data, rule)
 
     def check_raster_equality(
-        self, expected_filepath, result_filepath, abs_tol=1e-5, rel_tol=1e-5
+        self, expected_filepath, result_filepath, abs_tol=1e-15, rel_tol=1e-15
     ):
         """
         Checks that two raster files are pixel-wise equal with detailed mismatch reporting
