@@ -80,7 +80,6 @@ from processing.gui.ResultsDock import ResultsDock
 from processing.modeler.ModelConfigWidgets import ModelConfigWidgetFactory
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools import dataobjects
-from processing.tools.system import tempHelpFolder
 
 pluginPath = os.path.dirname(__file__)
 
@@ -531,11 +530,6 @@ class ProcessingPlugin(QObject):
 
         self.toolbox.deleteLater()
         self.menu.deleteLater()
-
-        # also delete temporary help files
-        folder = tempHelpFolder()
-        if QDir(folder).exists():
-            shutil.rmtree(folder, True)
 
         self.iface.unregisterMainWindowAction(self.toolboxAction)
         self.iface.unregisterMainWindowAction(self.modelerAction)
