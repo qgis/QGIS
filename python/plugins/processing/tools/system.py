@@ -23,7 +23,6 @@ import math
 import os
 import sys
 import time
-import uuid
 from typing import Optional
 
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingUtils
@@ -73,11 +72,3 @@ def getNumExportedLayers():
 
 def mkdir(newdir):
     os.makedirs(newdir.strip("\n\r "), exist_ok=True)
-
-
-def tempHelpFolder():
-    tmp = os.path.join(str(QDir.tempPath()), "processing_help")
-    if not QDir(tmp).exists():
-        QDir().mkpath(tmp)
-
-    return str(os.path.abspath(tmp))
