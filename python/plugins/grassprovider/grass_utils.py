@@ -23,11 +23,12 @@ import os
 import shutil
 import stat
 import subprocess
+import sys
 from pathlib import Path
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import isMac, isWindows, mkdir, userFolder
+from processing.tools.system import mkdir, userFolder
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -69,6 +70,14 @@ class GrassUtils:
     command = None
 
     @staticmethod
+    def is_mac() -> bool:
+        return sys.platform == "darwin"
+
+    @staticmethod
+    def is_windows() -> bool:
+        return os.name == "nt"
+
+    @staticmethod
     def grassBatchJobFilename():
         """
         The Batch file is executed by GRASS binary.
@@ -76,7 +85,7 @@ class GrassUtils:
         On MS-Windows, it will be executed by cmd.exe.
         """
         gisdbase = GrassUtils.grassDataFolder()
-        if isWindows():
+        if GrassUtils.is_windows():
             batchFile = os.path.join(gisdbase, "grass_batch_job.cmd")
         else:
             batchFile = os.path.join(gisdbase, "grass_batch_job.sh")
@@ -108,7 +117,7 @@ class GrassUtils:
 
         # Launch GRASS command with -v parameter
         # For MS-Windows, hide the console
-        if isWindows():
+        if GrassUtils.is_windows():
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             si.wShowWindow = subprocess.SW_HIDE
@@ -119,7 +128,7 @@ class GrassUtils:
             stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            startupinfo=si if isWindows() else None,
+            startupinfo=si if GrassUtils.is_windows() else None,
         ) as proc:
             try:
                 lines = proc.stdout.readlines()
@@ -169,9 +178,9 @@ class GrassUtils:
                     f"grass{major}{minor}{patch}",
                     "grass",
                     "grass{}{}{}.{}".format(
-                        major, minor, patch, "bat" if isWindows() else "sh"
+                        major, minor, patch, "bat" if GrassUtils.is_windows() else "sh"
                     ),
-                    "grass.{}".format("bat" if isWindows() else "sh"),
+                    "grass.{}".format("bat" if GrassUtils.is_windows() else "sh"),
                 ]
         else:
             cmdList = [
@@ -184,11 +193,14 @@ class GrassUtils:
                 "grass",
             ]
             cmdList.extend(
-                ["{}.{}".format(b, "bat" if isWindows() else "sh") for b in cmdList]
+                [
+                    "{}.{}".format(b, "bat" if GrassUtils.is_windows() else "sh")
+                    for b in cmdList
+                ]
             )
 
         # For MS-Windows there is a difference between GRASS Path and GRASS binary
-        if isWindows():
+        if GrassUtils.is_windows():
             # If nothing found, use OSGEO4W or QgsPrefix:
             if "OSGEO4W_ROOT" in os.environ:
                 testFolder = str(os.environ["OSGEO4W_ROOT"])
@@ -196,12 +208,12 @@ class GrassUtils:
                 testFolder = str(QgsApplication.prefixPath())
             testFolder = os.path.join(testFolder, "bin")
             command = searchFolder(testFolder)
-        elif isMac():
+        elif GrassUtils.is_mac():
             # Search in grassPath
             command = searchFolder(path)
 
         # If everything has failed, use shutil (but not for Windows as it'd include .)
-        if not command and not isWindows():
+        if not command and not GrassUtils.is_windows():
             for cmd in cmdList:
                 testBin = shutil.which(cmd)
                 if testBin:
@@ -224,12 +236,12 @@ class GrassUtils:
         if GrassUtils.path is not None:
             return GrassUtils.path
 
-        if not isWindows() and not isMac():
+        if not GrassUtils.is_windows() and not GrassUtils.is_mac():
             return ""
 
         folder = None
         # Under MS-Windows, we use GISBASE or QGIS Path for folder
-        if isWindows():
+        if GrassUtils.is_windows():
             if "GISBASE" in os.environ:
                 folder = os.environ["GISBASE"]
             else:
@@ -251,7 +263,7 @@ class GrassUtils:
                     )
                     if grassfolders:
                         folder = os.path.join(testfolder, grassfolders[0])
-        elif isMac():
+        elif GrassUtils.is_mac():
             # For MacOSX, first check environment
             if "GISBASE" in os.environ:
                 folder = os.environ["GISBASE"]
@@ -314,7 +326,7 @@ class GrassUtils:
     @staticmethod
     def createGrassBatchJobFileFromGrassCommands(commands):
         with open(GrassUtils.grassBatchJobFilename(), "w") as fout:
-            if not isWindows():
+            if not GrassUtils.is_windows():
                 fout.write("#!/bin/sh\n")
             else:
                 fout.write(f"chcp {GrassUtils.getWindowsCodePage()}>NUL\n")
@@ -428,7 +440,7 @@ class GrassUtils:
 
         # For MS-Windows, we need to hide the console window.
         kw = {}
-        if isWindows():
+        if GrassUtils.is_windows():
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             si.wShowWindow = subprocess.SW_HIDE
@@ -508,7 +520,7 @@ class GrassUtils:
             command, grassenv = GrassUtils.prepareGrassExecution(outputCommands)
             # For MS-Windows, we need to hide the console window.
             kw = {}
-            if isWindows():
+            if GrassUtils.is_windows():
                 si = subprocess.STARTUPINFO()
                 si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                 si.wShowWindow = subprocess.SW_HIDE
@@ -584,7 +596,7 @@ class GrassUtils:
         # We check the version of Grass
         if GrassUtils.installedVersion() is not None:
             # For Ms-Windows, we check GRASS binaries
-            if isWindows():
+            if GrassUtils.is_windows():
                 cmdpath = os.path.join(GrassUtils.path, "bin", "r.out.gdal.exe")
                 if not os.path.exists(cmdpath):
                     return GrassUtils.tr(
@@ -597,7 +609,7 @@ class GrassUtils:
         # Return error messages
         else:
             # MS-Windows or MacOSX
-            if isWindows() or isMac():
+            if GrassUtils.is_windows() or GrassUtils.is_mac():
                 if GrassUtils.path is None:
                     return GrassUtils.tr(
                         "Could not locate GRASS folder. Please make "
@@ -609,8 +621,8 @@ class GrassUtils:
                         "GRASS binary {} can't be found on this system from a shell. "
                         "Please install it or configure your PATH {} environment variable."
                     ).format(
-                        "(grass.bat)" if isWindows() else "(grass.sh)",
-                        "or OSGEO4W_ROOT" if isWindows() else "",
+                        "(grass.bat)" if GrassUtils.is_windows() else "(grass.sh)",
+                        "or OSGEO4W_ROOT" if GrassUtils.is_windows() else "",
                     )
             # GNU/Linux
             else:
@@ -637,7 +649,7 @@ class GrassUtils:
         helpPath = ProcessingConfig.getSetting(GrassUtils.GRASS_HELP_URL)
 
         if not helpPath:
-            if isWindows() or isMac():
+            if GrassUtils.is_windows() or GrassUtils.is_mac():
                 if GrassUtils.path is not None:
                     localPath = os.path.join(GrassUtils.path, "docs/html")
                     if os.path.exists(localPath):

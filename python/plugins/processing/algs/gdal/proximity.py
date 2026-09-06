@@ -36,7 +36,6 @@ from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import isWindows
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -306,6 +305,6 @@ class proximity(GdalAlgorithm):
             arguments.extend(input_details.credential_options_as_arguments())
 
         return [
-            self.commandName() + (".bat" if isWindows() else ".py"),
+            self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
             GdalUtils.escapeAndJoin(arguments),
         ]

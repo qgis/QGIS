@@ -33,7 +33,6 @@ from qgis.core import (
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import isWindows
 
 
 class OgrToPostGis(GdalAlgorithm):
@@ -541,7 +540,7 @@ class OgrToPostGis(GdalAlgorithm):
         if len(options) > 0:
             arguments.append(options)
 
-        if isWindows():
+        if GdalUtils.is_windows():
             return ["cmd.exe", "/C ", "ogr2ogr.exe", GdalUtils.escapeAndJoin(arguments)]
         else:
             return ["ogr2ogr", GdalUtils.escapeAndJoin(arguments)]
