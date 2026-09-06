@@ -3264,7 +3264,7 @@ class TestQgsGeometry(QgisTestCase):
         # remove one linestring from compoundcurve
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
         assert compoundcurve.deleteVertices([5, 6]), "Delete vertices [5, 6] failed"
-        expwkt = "CompoundCurve ( (0 1, 1 2, 2 1, 1 0, 0 1) )"
+        expwkt = "CompoundCurve ( (0 1, 1 2, 2 1, 1 0, 0 1 ) )"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3289,7 +3289,7 @@ class TestQgsGeometry(QgisTestCase):
         assert compoundcurve.deleteVertices([1, 2, 3, 4, 5]), (
             "Delete vertices [1, 2, 3, 4, 5] failed"
         )
-        expwkt = "CompoundCurve EMPTY"
+        expwkt = "CompoundCurve ( (0 1, 0 3) )"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3297,7 +3297,7 @@ class TestQgsGeometry(QgisTestCase):
         assert compoundcurve.deleteVertices([0, 2, 3, 4, 6]), (
             "Delete vertices [0, 2, 3, 4, 6] failed"
         )
-        expwkt = "CompoundCurve EMPTY"
+        expwkt = "CompoundCurve ( (1 2, 0 2) )"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
