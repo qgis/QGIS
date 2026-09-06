@@ -19,11 +19,7 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-import os
-import re
-
 from qgis.core import (
-    QgsDataProvider,
     QgsExpressionContext,
     QgsExpressionContextScope,
     QgsExpressionContextUtils,
@@ -31,13 +27,8 @@ from qgis.core import (
     QgsProcessingContext,
     QgsProcessingUtils,
     QgsProject,
-    QgsRasterLayer,
     QgsSettings,
-    QgsVectorLayer,
-    QgsWkbTypes,
 )
-from qgis.gui import QgsSublayersDialog
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
