@@ -31,7 +31,6 @@ from qgis.core import (
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import isWindows
 
 
 class gdal2xyz(GdalAlgorithm):
@@ -169,6 +168,6 @@ class gdal2xyz(GdalAlgorithm):
             arguments.extend(input_details.credential_options_as_arguments())
 
         return [
-            self.commandName() + (".bat" if isWindows() else ".py"),
+            self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
             GdalUtils.escapeAndJoin(arguments),
         ]

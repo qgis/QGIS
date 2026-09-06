@@ -37,7 +37,6 @@ from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import isWindows
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -274,7 +273,7 @@ class merge(GdalAlgorithm):
         """
         Returns the gdal_merge command extension
         """
-        if isWindows():
+        if GdalUtils.is_windows():
             return ".bat"
 
         if GdalUtils.version() < 3090000:
