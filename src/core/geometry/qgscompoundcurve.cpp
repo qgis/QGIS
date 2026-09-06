@@ -968,15 +968,42 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
     }
   }
 
+  QVector< QgsPoint > survivingPoints;
+
+  auto appendSurvivingPoints = [&survivingPoints, this]( const QgsPoint &point, const int curveId ) {
+    QgsPointSequence pts;
+    pts.reserve( 1 + survivingPoints.size() );
+    pts << point;
+
+    for ( size_t i = survivingPoints.size(); i-- > 0; )
+      pts << survivingPoints[i];
+
+    auto newLineString = std::make_unique<QgsLineString>();
+    newLineString->setPoints( pts );
+    mCurves.insert( curveId, newLineString.release() );
+
+    survivingPoints.clear();
+  };
+
   // loop through the curves in reverse order and delete vertices
   QMapIterator<int, QList<QgsVertexId >> curveVerticesIt( curveVertices );
   curveVerticesIt.toBack();
+  int previousCurveId = -1;
   while ( curveVerticesIt.hasPrevious() )
   {
     curveVerticesIt.previous();
     const int curveId = curveVerticesIt.key();
+
+    // append surviving points at the end of a curve that has no vertices scheduled for deletion
+    if ( previousCurveId - 1 > curveId && !survivingPoints.isEmpty() )
+    {
+      QgsCurve *curve = mCurves.at( previousCurveId - 1 );
+      appendSurvivingPoints( curve->endPoint(), previousCurveId );
+    }
+
     QgsCurve *curve = mCurves.at( curveId );
     QList<QgsVertexId> vertices = curveVerticesIt.value();
+    std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex < b.vertex; } );
 
     const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( curve );
     // If the vertex to delete is the middle vertex of a circularstring arc, we transform
@@ -985,11 +1012,8 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
     {
       // we loop through the vertices to see if we need to handle special case
       // of a middle vertex (see deleteVertex)
-      std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex < b.vertex; } );
       QList<QgsVertexId> circularVerticesToDelete;
       circularVerticesToDelete.reserve( vertices.size() );
-
-      QListIterator<QgsVertexId> curveVerticesIt( vertices );
 
       // search for odd vertices (middle vertices of an arc)
       for ( size_t i = vertices.size(); i-- > 0; )
@@ -1066,13 +1090,61 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
       // remove any remaining circular vertices to delete
       if ( !circularVerticesToDelete.isEmpty() )
       {
+        // check if we are deleting a shared vertex and save the end point IF it is not being deleted
+        // we don't want to make assumtions how circularstring deletes its vertices
+        // so we save it, delete the vertices, and if the curve gets deleted as a result
+        // only then we actually append the survivingPoint to the list
+        QgsPoint survivingPoint;
+        if ( curveId > 0 && circularVerticesToDelete.last().vertex == 0 && circularVerticesToDelete.first().vertex != curve->numPoints() - 1 )
+        {
+          survivingPoint = curve->endPoint();
+        }
+        else if ( curveId == 0 && circularVerticesToDelete.first().vertex == curve->numPoints() - 1 && circularVerticesToDelete.last().vertex != 0 )
+        {
+          survivingPoint = curve->startPoint();
+        }
         if ( !curve->deleteVertices( QSet<QgsVertexId>( circularVerticesToDelete.begin(), circularVerticesToDelete.end() ) ) )
         {
           Q_ASSERT( false );
           return false;
         }
+
+        if ( curve->numPoints() == 0 )
+        {
+          removeCurve( curveId );
+          // end point wasn't marked for deletion and the curve was deleted
+          // append it to survivingPoints
+          if ( !survivingPoint.isEmpty() )
+          {
+            survivingPoints.emplace_back( survivingPoint );
+          }
+        }
+        else if ( survivingPoints.size() != 0 )
+        {
+          appendSurvivingPoints( curve->endPoint(), curveId + 1 );
+        }
       }
+      previousCurveId = curveId;
       continue; // circularstring handled, continue to next curve
+    }
+
+    // linestring
+    // check if we are deleting a shared vertex and all but 1 point would be deleted
+    // if that's the case, we add that point to survivingPoints, delete the curve and continue
+    if ( ( curveId > 0 && curve->numPoints() - vertices.size() == 1 && vertices.first().vertex == 0 )
+         || ( curveId == 0 && curve->numPoints() - vertices.size() == 1 && vertices.last().vertex == curve->numPoints() - 1 ) )
+    {
+      int remainingIdx = 0;
+      for ( const QgsVertexId &v : vertices )
+      {
+        if ( v.vertex != remainingIdx )
+          break;
+        remainingIdx++;
+      }
+      survivingPoints.emplace_back( curve->vertexAt( QgsVertexId( 0, 0, remainingIdx ) ) );
+      removeCurve( curveId );
+      previousCurveId = curveId;
+      continue; // curve removed, continue to next one
     }
 
     if ( !curve->deleteVertices( QSet<QgsVertexId>( vertices.begin(), vertices.end() ) ) )
@@ -1080,15 +1152,57 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
       Q_ASSERT( false );
       return false;
     }
-  }
 
-  // remove any empty curves
-  for ( int i = mCurves.size() - 1; i >= 0; i-- )
-  {
-    QgsCurve *curve = mCurves.at( i );
     if ( curve->numPoints() == 0 )
     {
-      removeCurve( i );
+      removeCurve( curveId );
+    }
+    else if ( survivingPoints.size() != 0 )
+    {
+      appendSurvivingPoints( curve->endPoint(), curveId + 1 );
+    }
+
+    previousCurveId = curveId;
+    // linestring handled, this is the end of the loop
+  }
+
+  if ( survivingPoints.size() != 0 )
+  {
+    if ( previousCurveId > 0 )
+    {
+      // (note: we went through the list in reverse order)
+      // we are not at the start of curve list, there are curves further down
+      // so we add those points at the start of the previous curve
+      const QgsCurve *curve = mCurves.at( previousCurveId - 1 );
+      appendSurvivingPoints( curve->endPoint(), previousCurveId );
+    }
+    else
+    {
+      // we reached the end of list, which means we are at the start of the geometry
+      // so we append those points at the start of the first curve in the list
+      // if there are no curves left, but the number of surviving points is 2 or greater
+      // we make a linestring out of them and add it as the only curve
+      QgsPoint startPoint;
+      if ( mCurves.size() != 0 )
+      {
+        const QgsCurve *curve = mCurves.at( 0 );
+        startPoint = curve->startPoint();
+      }
+
+      QgsPointSequence pts;
+      for ( int i = survivingPoints.size() - 1; i >= 0; --i )
+        pts << survivingPoints[i];
+
+      if ( !startPoint.isEmpty() )
+        pts << startPoint;
+
+      if ( pts.size() > 1 )
+      {
+        auto newLineString = std::make_unique<QgsLineString>();
+        newLineString->setPoints( pts );
+
+        mCurves.insert( 0, newLineString.release() );
+      }
     }
   }
 
