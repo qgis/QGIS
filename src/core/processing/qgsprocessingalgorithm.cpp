@@ -120,7 +120,7 @@ QString QgsProcessingAlgorithm::implementationSourceUri() const
   if ( colonPos == -1 )
     return QString();
 
-  const QString filePath = baseSourceLocation.left( colonPos );
+  const QString filePath = baseSourceLocation.left( colonPos ).replace( '\\', '/' );
   const QString lineNumber = baseSourceLocation.mid( colonPos + 1 );
 
   // determine the git branch name corresponding to THIS qgis build
