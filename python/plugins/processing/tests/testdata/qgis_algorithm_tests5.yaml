@@ -828,3 +828,31 @@ tests:
           geometry:
             precision: 5
             normalize: True
+
+  - algorithm: native:rastercellindex
+    name: Raster cell index (ascending)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/unique_float_raster.tif
+        type: raster
+      NODATA: -9999
+      ORDER: 0
+    results:
+      OUTPUT:
+        name: expected/raster_cell_index__ascending__OUTPUT.asc
+        type: rasterfile
+
+  - algorithm: native:rastercellindex
+    name: Raster cell index (descending)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/unique_float_raster.tif
+        type: raster
+      NODATA: -9999
+      ORDER: 1
+    results:
+      OUTPUT:
+        name: expected/raster_cell_index__descending__OUTPUT.asc
+        type: rasterfile
