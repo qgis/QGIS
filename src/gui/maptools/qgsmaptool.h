@@ -124,35 +124,35 @@ class GUI_EXPORT QgsMapTool : public QObject
     ~QgsMapTool() override;
 
     //! Mouse move event for overriding. Default implementation does nothing.
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e SIP_DISALLOWNONE );
 
     //! Mouse double-click event for overriding. Default implementation does nothing.
-    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e );
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e SIP_DISALLOWNONE );
 
     //! Mouse press event for overriding. Default implementation does nothing.
-    virtual void canvasPressEvent( QgsMapMouseEvent *e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e SIP_DISALLOWNONE );
 
     //! Mouse release event for overriding. Default implementation does nothing.
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e SIP_DISALLOWNONE );
 
     //! Mouse wheel event for overriding. Default implementation does nothing.
-    virtual void wheelEvent( QWheelEvent *e );
+    virtual void wheelEvent( QWheelEvent *e SIP_DISALLOWNONE );
 
     //! Key event for overriding. Default implementation does nothing.
-    virtual void keyPressEvent( QKeyEvent *e );
+    virtual void keyPressEvent( QKeyEvent *e SIP_DISALLOWNONE );
 
     //! Key event for overriding. Default implementation does nothing.
-    virtual void keyReleaseEvent( QKeyEvent *e );
+    virtual void keyReleaseEvent( QKeyEvent *e SIP_DISALLOWNONE );
 
     //! gesture event for overriding. Default implementation does nothing.
-    virtual bool gestureEvent( QGestureEvent *e );
+    virtual bool gestureEvent( QGestureEvent *e SIP_DISALLOWNONE );
 
     /**
      * Tooltip event for overriding. Default implementation does nothing.
      * Returns whether the event was handled by the tool and should not be propagated further.
      * \since QGIS 3.22
      */
-    virtual bool canvasToolTipEvent( QHelpEvent *e );
+    virtual bool canvasToolTipEvent( QHelpEvent *e SIP_DISALLOWNONE );
 
     /**
      * Shortcut events coming from the application for overriding. The default
@@ -161,7 +161,7 @@ class GUI_EXPORT QgsMapTool : public QObject
      *
      * \since QGIS 4.0
      */
-    virtual bool shortcutEvent( QKeyEvent *e );
+    virtual bool shortcutEvent( QKeyEvent *e SIP_DISALLOWNONE );
 
     /**
      * Use this to associate a QAction to this maptool. Then when the setMapTool
