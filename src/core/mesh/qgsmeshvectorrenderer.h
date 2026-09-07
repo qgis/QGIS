@@ -18,21 +18,21 @@
 #ifndef QGSMESHVECTORRENDERER_H
 #define QGSMESHVECTORRENDERER_H
 
-
-#include "qgis_core.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsmeshlayer.h"
-#include "qgspointxy.h"
-#include "qgstriangularmesh.h"
+#include "qgsmeshdataset.h"
+#include "qgsmeshutils.h"
+#include "qgsvectorfieldengine.h"
 
 #include <QSize>
 #include <QVector>
 
 #define SIP_NO_FILE
 
-class QgsRenderContext;
-class QgsInterpolatedLineColor;
 class QgsMeshLayerRendererFeedback;
+class QgsPointXY;
+class QgsRenderContext;
+class QgsTriangularMesh;
+class QgsMeshDataBlock;
+
 ///@cond PRIVATE
 
 
@@ -68,16 +68,17 @@ class QgsMeshVectorRenderer
 /**
  * \ingroup core
  *
- * \brief Helper private class for rendering vector datasets (e.g. velocity)
+ * \brief Helper private class for rendering vector datasets (e.g. velocity) with a glyph per
+ * data point, that is with arrows or with wind barbs.
  *
  * \note not available in Python bindings
- * \since QGIS 3.2
+ * \since QGIS 4.4
  */
-class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
+class QgsMeshVectorGlyphRenderer : public QgsMeshVectorRenderer
 {
   public:
     //! Ctor
-    QgsMeshVectorArrowRenderer(
+    QgsMeshVectorGlyphRenderer(
       const QgsTriangularMesh &m,
       const QgsMeshDataBlock &datasetValues,
       const QVector<double> &datasetValuesMag,
@@ -88,10 +89,10 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
       QgsRenderContext &context,
       QSize size
     );
-    ~QgsMeshVectorArrowRenderer() override;
+    ~QgsMeshVectorGlyphRenderer() override;
 
     /**
-     * Draws vector arrows in the context's painter based on settings
+     * Draws vector glyphs in the context's painter based on settings
      */
     void draw() override;
 
@@ -106,19 +107,6 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
     void drawVectorDataOnPoints( const QSet<int> indexesToRender, const QVector<QgsMeshVertex> &points );
     //! Draws data on user-defined grid
     void drawVectorDataOnGrid();
-    //! Draws arrow from start point and vector data
-    virtual void drawVector( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude );
-    //! Calculates the end point of the arrow based on start point and vector data
-    bool calcVectorLineEnd(
-      QgsPointXY &lineEnd,
-      double &vectorLength,
-      double &cosAlpha,
-      double &sinAlpha, //out
-      const QgsPointXY &lineStart,
-      double xVal,
-      double yVal,
-      double magnitude //in
-    );
 
     /**
      * Calculates the buffer size
@@ -135,44 +123,12 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
     double mMaxMag = 0.0;
     QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
     QgsRectangle mBufferedExtent;
-    QPen mPen;
 
-  protected:
     QgsRenderContext &mContext;
     const QgsVectorFieldSettings mCfg;
     QSize mOutputSize;
-    QgsInterpolatedLineColor mVectorColoring;
-};
 
-/**
- * \ingroup core
- *
- * \brief Helper private class for rendering vector datasets using Wind Barbs
- *
- * \note not available in Python bindings
- * \since QGIS 3.38
- */
-class QgsMeshVectorWindBarbRenderer : public QgsMeshVectorArrowRenderer
-{
-  public:
-    //! Ctor
-    QgsMeshVectorWindBarbRenderer(
-      const QgsTriangularMesh &m,
-      const QgsMeshDataBlock &datasetValues,
-      const QVector<double> &datasetValuesMag,
-      double datasetMagMaximumValue,
-      double datasetMagMinimumValue,
-      QgsMeshDatasetGroupMetadata::DataType dataType,
-      const QgsVectorFieldSettings &settings,
-      QgsRenderContext &context,
-      QSize size
-    );
-    ~QgsMeshVectorWindBarbRenderer() override;
-
-  private:
-    void drawVector( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude ) override;
-
-    QgsCoordinateTransform mGeographicTransform;
+    QgsVectorFieldEngine mEngine;
 };
 
 ///@endcond

@@ -1053,6 +1053,7 @@ set(QGIS_CORE_SRCS
   vector/qgsvectorlayerutils.cpp
 
   vectorfield/qgsvectorfieldarrowsettings.cpp
+  vectorfield/qgsvectorfieldengine.cpp
   vectorfield/qgsvectorfieldsettings.cpp
   vectorfield/qgsvectorfieldstreamlinesettings.cpp
   vectorfield/qgsvectorfieldtracessettings.cpp
@@ -2240,6 +2241,7 @@ set(QGIS_CORE_HDRS
   vector/qgsvectorlayerutils.h
 
   vectorfield/qgsvectorfieldarrowsettings.h
+  vectorfield/qgsvectorfieldengine.h
   vectorfield/qgsvectorfieldsettings.h
   vectorfield/qgsvectorfieldstreamlinesettings.h
   vectorfield/qgsvectorfieldtracessettings.h
