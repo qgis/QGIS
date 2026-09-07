@@ -93,7 +93,6 @@ class CORE_EXPORT QgsPolymorphicRelation
      *
      * \param node The dom node containing the relation information
      * \param context to pass project translator
-     * \param relationContext a relation context
      *
      * \returns A relation
      * \deprecated QGIS 4.4. Use createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext ) instead.
