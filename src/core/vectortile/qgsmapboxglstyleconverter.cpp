@@ -4464,14 +4464,14 @@ QString QgsMapBoxGlStyleConverter::processLabelField( const QString &string, boo
   }
 }
 
-QgsVectorTileRenderer *QgsMapBoxGlStyleConverter::renderer() const
+std::unique_ptr<QgsVectorTileRenderer> QgsMapBoxGlStyleConverter::renderer() const
 {
-  return mRenderer ? mRenderer->clone() : nullptr;
+  return mRenderer ? std::unique_ptr<QgsVectorTileRenderer>( mRenderer->clone() ) : nullptr;
 }
 
-QgsVectorTileLabeling *QgsMapBoxGlStyleConverter::labeling() const
+std::unique_ptr<QgsVectorTileLabeling> QgsMapBoxGlStyleConverter::labeling() const
 {
-  return mLabeling ? mLabeling->clone() : nullptr;
+  return mLabeling ? std::unique_ptr<QgsVectorTileLabeling>( mLabeling->clone() ) : nullptr;
 }
 
 QList<QgsMapBoxGlStyleAbstractSource *> QgsMapBoxGlStyleConverter::sources()
