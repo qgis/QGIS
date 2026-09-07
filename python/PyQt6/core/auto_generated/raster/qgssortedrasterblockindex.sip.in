@@ -1,0 +1,106 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgssortedrasterblockindex.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsSortedRasterBlockIndex
+{
+%Docstring(signature="appended")
+Creates a flat index over a :py:class:`QgsRasterBlock`, sorted by cell
+values.
+
+This index allows for efficient retrieval of raster block cells by their
+sorted order. The index is sorted once during initialization, and cell
+values or coordinates can be requested in either ascending or descending
+order on demand.
+
+.. warning::
+
+   Because nodata cells are ignored during index creation, the total number
+   of indexed cells is limited to :py:func:`~sortedCount`. Do not attempt to retrieve ranks
+   outside of this range.
+
+.. warning::
+
+   Raster block data is not stored in this class, and the source :py:class:`QgsRasterBlock` must exist for the lifetime of this object.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgssortedrasterblockindex.h"
+%End
+  public:
+    QgsSortedRasterBlockIndex( const QgsRasterBlock *block );
+%Docstring
+Constructor for QgsSortedRasterBlockIndex, indexing the specified raster
+``block``.
+
+.. warning::
+
+   Raster block data is not stored in this class, and the source :py:class:`QgsRasterBlock` must exist for the lifetime of this object.
+%End
+
+    qgssize sortedCount() const;
+%Docstring
+Returns the number of valid (non-NoData) sorted cells.
+%End
+
+    const QgsRasterBlock *block() const;
+%Docstring
+Returns a pointer to source :py:class:`QgsRasterBlock`.
+%End
+
+    qgssize sortedIndex( qgssize rank, Qt::SortOrder order = Qt::AscendingOrder ) const;
+%Docstring
+Returns the source raster block index corresponding to the specified
+sorted ``rank``.
+
+:param rank: Sorted position (0 to
+             :py:func:`~QgsSortedRasterBlockIndex.sortedCount` - 1).
+             E.g. 0 for the lowest value, when using an ascending order.
+:param order: Sort order to query
+%End
+
+    void sortedColumnRow( qgssize rank, int &column /Out/, int &row /Out/, Qt::SortOrder order = Qt::AscendingOrder ) const;
+%Docstring
+Retrieves the source raster block column and row corresponding to the
+specified sorted ``rank``.
+
+:param rank: Sorted position (0 to
+             :py:func:`~QgsSortedRasterBlockIndex.sortedCount` - 1).
+             E.g. 0 for the lowest value, when using an ascending order.
+:param order: Sort order to query
+
+:return: - column: Output column
+         - row: Output row
+%End
+
+    double sortedValue( qgssize rank, Qt::SortOrder order = Qt::AscendingOrder ) const;
+%Docstring
+Returns the raster block value corresponding to the specified sorted
+``rank``.
+
+:param rank: Sorted position (0 to
+             :py:func:`~QgsSortedRasterBlockIndex.sortedCount` - 1).
+             E.g. 0 for the lowest value, when using an ascending order.
+:param order: Sort order to query
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgssortedrasterblockindex.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
