@@ -36,17 +36,45 @@ namespace
 
   template<typename ValueT, typename IndexT> std::vector<IndexT> createSortedIndices( const QgsRasterBlock *block, qgssize totalCells )
   {
+    const ValueT *rawData = reinterpret_cast<const ValueT *>( block->constBits() );
     const bool hasNoData = block->hasNoData();
-    std::vector<SortPair<ValueT, IndexT>> pairs;
-    // note -- reserve, NOT resize here, because we skip nodata cells and don't know yet
-    // how many non-nodata cells we'll find
-    pairs.reserve( totalCells );
+    const bool hasNoDataValue = block->hasNoDataValue();
+    const ValueT noDataVal = static_cast<ValueT>( block->noDataValue() );
 
-    for ( qgssize i = 0; i < totalCells; ++i )
+    std::vector<SortPair<ValueT, IndexT>> pairs;
+    if ( !hasNoData )
     {
-      if ( !hasNoData || !block->isNoData( i ) )
+      // here we know the total number of valid cells in advance, since there's no no-data cells
+      pairs.resize( totalCells );
+#if defined( __cpp_lib_execution ) && __cpp_lib_execution >= 201603L
+      std::for_each( std::execution::par, pairs.begin(), pairs.end(), [rawData, &pairs]( SortPair<ValueT, IndexT> &pair ) {
+        const IndexT idx = static_cast<IndexT>( &pair - pairs.data() );
+        pair = SortPair<ValueT, IndexT> { rawData[idx], idx };
+      } );
+#else
+      std::for_each( pairs.begin(), pairs.end(), [rawData, &pairs]( SortPair<ValueT, IndexT> &pair ) {
+        const IndexT idx = static_cast<IndexT>( &pair - pairs.data() );
+        pair = SortPair<ValueT, IndexT> { rawData[idx], idx };
+      } );
+#endif
+    }
+    else
+    {
+      // slower path, because we have to test for no-data cells...
+      pairs.reserve( totalCells );
+      for ( qgssize i = 0; i < totalCells; ++i )
       {
-        pairs.push_back( SortPair<ValueT, IndexT> { static_cast< ValueT >( block->value( i ) ), static_cast<IndexT>( i ) } );
+        if ( hasNoDataValue )
+        {
+          const ValueT v = rawData[i];
+          if ( std::isnan( static_cast<double>( v ) ) || v == noDataVal )
+            continue;
+          pairs.push_back( SortPair<ValueT, IndexT> { v, static_cast<IndexT>( i ) } );
+        }
+        else if ( !block->isNoData( i ) )
+        {
+          pairs.push_back( SortPair<ValueT, IndexT> { rawData[i], static_cast<IndexT>( i ) } );
+        }
       }
     }
 
