@@ -119,6 +119,13 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, private Ui::QgsRichTextEdit
     QTextEdit *textEdit() { return mTextEdit; }
 
     /**
+     * Returns the widget's toolbar, e.g. to adjust its icon size or rehost its actions.
+     * \since QGIS 4.2
+     */
+    QToolBar *toolBar() { return mToolBar; }
+
+
+    /**
      * Returns a reference to the QTextDocument shown in the widget.
      */
     QTextDocument *document() { return mTextEdit->document(); }
