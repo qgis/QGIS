@@ -33,10 +33,18 @@ class QgsProject;
 class CORE_EXPORT QgsRelationContext
 {
   public:
+    // TODO QGIS 5.0 -- Remove the deprecated constructor
+    /**
+     * Constructor for QgsRelationContext.
+     *
+     * \deprecated QGIS 4.4. Use QgsRelationContext( QgsProject *project ) instead.
+     */
+    Q_DECL_DEPRECATED QgsRelationContext() SIP_DEPRECATED;
+
     /**
      * Constructor for QgsRelationContext.
      */
-    QgsRelationContext( QgsProject *project = nullptr );
+    QgsRelationContext( QgsProject *project );
 
     /**
      * Gets the associated project
