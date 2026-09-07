@@ -796,6 +796,79 @@ def pluginDirectory(packageName: str) -> str:
     return os.path.dirname(sys.modules[packageName].__file__)
 
 
+def python_executable() -> str:
+    """
+    Returns the path of an executable which runs the Python environment
+    QGIS runs on.
+
+    When Python is embedded, the interpreter reports the host application
+    as ``sys.executable``: ``qgis-bin.exe`` on Windows and the ``QGIS``
+    binary inside the application bundle on macOS. QGIS calls this function
+    at startup to point ``sys.executable`` at something which actually runs
+    Python, so that plugins can spawn it, for instance to install a
+    dependency::
+
+        subprocess.run([sys.executable, "-m", "pip", "install", "shapely"])
+
+    :returns: path of the executable, or an empty string if none could be
+              found
+
+    .. versionadded:: 4.4
+    """
+
+    def looks_like_python(path: str) -> bool:
+        name = os.path.basename(path).lower()
+        return (
+            name.startswith("python")
+            and os.path.isfile(path)
+            and os.access(path, os.X_OK)
+        )
+
+    prefixes = []
+    for prefix in (sys.prefix, sys.base_prefix, sys.exec_prefix):
+        if prefix and prefix not in prefixes:
+            prefixes.append(prefix)
+
+    if sys.executable and looks_like_python(sys.executable):
+        if sys.platform == "darwin":
+            # The macOS bundle ships a "python" wrapper next to the QGIS binary
+            # which sets PYTHONHOME before running the bundled interpreter. The
+            # versioned binary next to it lives outside its prefix and cannot
+            # locate the standard library on its own, so prefer the wrapper.
+            directory = os.path.dirname(sys.executable)
+            wrapper = os.path.join(directory, "python")
+            in_prefix = any(
+                os.path.realpath(directory)
+                == os.path.realpath(os.path.join(prefix, "bin"))
+                for prefix in prefixes
+            )
+            if not in_prefix and looks_like_python(wrapper):
+                return wrapper
+        return sys.executable
+
+    candidates = []
+    if sys.platform == "win32":
+        # OSGeo4W and the standalone installer ship python.exe in PYTHONHOME,
+        # which is sys.prefix
+        for prefix in prefixes:
+            candidates.append(os.path.join(prefix, "python.exe"))
+    else:
+        version = f"python{sys.version_info.major}.{sys.version_info.minor}"
+        for prefix in prefixes:
+            candidates.append(os.path.join(prefix, "bin", version))
+        # the macOS bundle, see above
+        if sys.executable:
+            candidates.append(os.path.join(os.path.dirname(sys.executable), "python"))
+        for prefix in prefixes:
+            candidates.append(os.path.join(prefix, "bin", "python3"))
+
+    for candidate in candidates:
+        if looks_like_python(candidate):
+            return os.path.normpath(candidate)
+
+    return ""
+
+
 def reloadProjectMacros():
     # unload old macros
     unloadProjectMacros()

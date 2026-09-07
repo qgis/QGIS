@@ -13,7 +13,11 @@ __date__ = "31.8.2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 import os
+import subprocess
+import sys
+import tempfile
 import unittest
+from unittest import mock
 
 from qgis import utils
 from qgis.testing import QgisTestCase, start_app
@@ -25,6 +29,81 @@ class TestPythonUtils(QgisTestCase):
     def setUpClass(cls):
         super().setUpClass()
         start_app()
+
+    def test_python_executable(self):
+        exe = utils.python_executable()
+        self.assertTrue(exe)
+        self.assertTrue(os.path.isfile(exe))
+        self.assertTrue(os.path.basename(exe).lower().startswith("python"))
+
+        # the interpreter must run, and be the very one QGIS embeds
+        version = subprocess.check_output(
+            [exe, "-c", "import sys; print(sys.version_info[0], sys.version_info[1])"],
+            text=True,
+            timeout=60,
+        )
+        self.assertEqual(
+            version.split(), [str(sys.version_info[0]), str(sys.version_info[1])]
+        )
+
+    def test_python_executable_embedded_layouts(self):
+        """sys.executable is the host application when QGIS embeds Python"""
+
+        def touch(*parts):
+            path = os.path.join(*parts)
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, "w"):
+                pass
+            os.chmod(path, 0o755)
+            return path
+
+        with tempfile.TemporaryDirectory() as root:
+            # macOS application bundle
+            host = touch(root, "QGIS.app", "Contents", "MacOS", "QGIS")
+            touch(root, "QGIS.app", "Contents", "MacOS", "python3.12")
+            wrapper = touch(root, "QGIS.app", "Contents", "MacOS", "python")
+            prefix = os.path.join(root, "QGIS.app", "Contents", "Frameworks")
+            with mock.patch.multiple(
+                sys,
+                platform="darwin",
+                executable=host,
+                prefix=prefix,
+                base_prefix=prefix,
+                exec_prefix=prefix,
+            ):
+                self.assertEqual(utils.python_executable(), wrapper)
+
+            # the bundled interpreter run through the wrapper, e.g. by ctest
+            with mock.patch.multiple(
+                sys,
+                platform="darwin",
+                executable=os.path.join(
+                    root, "QGIS.app", "Contents", "MacOS", "python3.12"
+                ),
+                prefix=prefix,
+                base_prefix=prefix,
+                exec_prefix=prefix,
+            ):
+                self.assertEqual(utils.python_executable(), wrapper)
+
+            # OSGeo4W and the Windows standalone installer
+            host = touch(root, "OSGeo4W", "bin", "qgis-bin.exe")
+            python = touch(root, "OSGeo4W", "apps", "Python312", "python.exe")
+            prefix = os.path.dirname(python)
+            with mock.patch.multiple(
+                sys,
+                platform="win32",
+                executable=host,
+                prefix=prefix,
+                base_prefix=prefix,
+                exec_prefix=prefix,
+            ):
+                self.assertEqual(utils.python_executable(), python)
+
+            # nothing to repair when sys.executable already is an interpreter
+            python = touch(root, "usr", "bin", "python3")
+            with mock.patch.multiple(sys, platform="linux", executable=python):
+                self.assertEqual(utils.python_executable(), python)
 
     def test_update_available_plugins(self):
         utils.plugin_paths = [os.path.join(unitTestDataPath(), "test_plugin_path")]
