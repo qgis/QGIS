@@ -40,6 +40,7 @@
 
 class QImage;
 class QComboBox;
+class QToolBar;
 class QgsColorButton;
 class QgsCodeEditorHTML;
 
@@ -117,6 +118,16 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, private Ui::QgsRichTextEdit
      * \since QGIS 3.40
      */
     QTextEdit *textEdit() { return mTextEdit; }
+
+    /**
+     * Returns the widget's toolbar.
+     *
+     * Exposed so that embedders can adapt it to the space they have, e.g. by
+     * shrinking its icons or rehosting its actions.
+     *
+     * \since QGIS 4.4
+     */
+    QToolBar *toolBar() { return mToolBar; }
 
     /**
      * Returns a reference to the QTextDocument shown in the widget.
