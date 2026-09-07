@@ -87,6 +87,7 @@ class CORE_EXPORT QgsPolymorphicRelation
     QgsPolymorphicRelation &operator=( const QgsPolymorphicRelation &other );
     QgsPolymorphicRelation &operator=( QgsPolymorphicRelation &&other );
 
+    // TODO QGIS 5.0 -- Remove the deprecated createFromXml method without the relationContext parameter
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.
      *
@@ -95,8 +96,21 @@ class CORE_EXPORT QgsPolymorphicRelation
      * \param relationContext a relation context
      *
      * \returns A relation
+     * \deprecated QGIS 4.4. Use createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext ) instead.
      */
-    static QgsPolymorphicRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext = QgsRelationContext() );
+    Q_DECL_DEPRECATED static QgsPolymorphicRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context ) SIP_DEPRECATED;
+
+    /**
+     * Creates a relation from an XML structure. Used for reading .qgs projects.
+     *
+     * \param node The dom node containing the relation information
+     * \param context to pass project translator
+     * \param relationContext a relation context
+     *
+     * \returns A relation
+     * \since QGIS 4.4
+     */
+    static QgsPolymorphicRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext );
 
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects

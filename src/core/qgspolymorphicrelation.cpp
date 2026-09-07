@@ -68,6 +68,12 @@ QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( QgsPolymorphicRelatio
   return *this;
 }
 
+// TODO QGIS 5.0 -- Remove the deprecated createFromXml method without the relationContext parameter
+QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context )
+{
+  return createFromXml( node, context, QgsRelationContext( QgsProject::instance() ) ); // skip-keyword-check
+}
+
 QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext )
 {
   Q_UNUSED( context );
