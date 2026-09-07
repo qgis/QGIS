@@ -19,7 +19,7 @@
 
 #include <algorithm>
 
-#if __has_include( <execution>)
+#if __has_include( <execution> )
 #include <execution>
 #endif
 
@@ -27,17 +27,17 @@
 
 namespace
 {
-  template<typename T> struct SortPair
+  template<typename ValueT, typename IndexT> struct SortPair
   {
-      double val;
-      T idx;
+      ValueT val;
+      IndexT idx;
       bool operator<( const SortPair &other ) const { return val < other.val; }
   };
 
-  template<typename T> std::vector<T> createSortedIndices( const QgsRasterBlock *block, qgssize totalCells )
+  template<typename ValueT, typename IndexT> std::vector<IndexT> createSortedIndices( const QgsRasterBlock *block, qgssize totalCells )
   {
     const bool hasNoData = block->hasNoData();
-    std::vector<SortPair<T>> pairs;
+    std::vector<SortPair<ValueT, IndexT>> pairs;
     // note -- reserve, NOT resize here, because we skip nodata cells and don't know yet
     // how many non-nodata cells we'll find
     pairs.reserve( totalCells );
@@ -46,7 +46,7 @@ namespace
     {
       if ( !hasNoData || !block->isNoData( i ) )
       {
-        pairs.push_back( SortPair<T> { block->value( i ), static_cast<T>( i ) } );
+        pairs.push_back( SortPair<ValueT, IndexT> { static_cast< ValueT >( block->value( i ) ), static_cast<IndexT>( i ) } );
       }
     }
 
@@ -57,14 +57,45 @@ namespace
 #endif
 
     // copy sorted index array to a more compact structure
-    std::vector<T> sortedIndices( pairs.size() );
+    std::vector<IndexT> sortedIndices( pairs.size() );
     for ( std::size_t i = 0; i < pairs.size(); ++i )
     {
       sortedIndices[i] = pairs[i].idx;
     }
-    sortedIndices.shrink_to_fit();
     return sortedIndices;
   }
+
+  template<typename IndexT> std::vector<IndexT> createSortedIndices( const QgsRasterBlock *block, qgssize totalCells )
+  {
+    switch ( block->dataType() )
+    {
+      case Qgis::DataType::Byte:
+        return createSortedIndices<quint8, IndexT>( block, totalCells );
+      case Qgis::DataType::Int8:
+        return createSortedIndices<qint8, IndexT>( block, totalCells );
+      case Qgis::DataType::UInt16:
+        return createSortedIndices<quint16, IndexT>( block, totalCells );
+      case Qgis::DataType::Int16:
+        return createSortedIndices<qint16, IndexT>( block, totalCells );
+      case Qgis::DataType::UInt32:
+        return createSortedIndices<quint32, IndexT>( block, totalCells );
+      case Qgis::DataType::Int32:
+        return createSortedIndices<qint32, IndexT>( block, totalCells );
+      case Qgis::DataType::Float32:
+        return createSortedIndices<float, IndexT>( block, totalCells );
+      case Qgis::DataType::Float64:
+        return createSortedIndices<double, IndexT>( block, totalCells );
+      case Qgis::DataType::UnknownDataType:
+      case Qgis::DataType::CInt16:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::CFloat32:
+      case Qgis::DataType::CFloat64:
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
+        return std::vector<IndexT>();
+    }
+  }
+
 } //namespace
 
 QgsSortedRasterBlockIndex::QgsSortedRasterBlockIndex( const QgsRasterBlock *block )
