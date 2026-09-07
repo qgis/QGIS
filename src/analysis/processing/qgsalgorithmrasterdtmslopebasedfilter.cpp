@@ -78,6 +78,13 @@ QList<QgsAcademicReference> QgsRasterDtmSlopeBasedFilterAlgorithm::academicRefer
   return { ref };
 }
 
+QList<QgsProcessingAlgorithm::ExternalLink> QgsRasterDtmSlopeBasedFilterAlgorithm::externalLinks() const
+{
+  return {
+    QgsProcessingAlgorithm::ExternalLink { QObject::tr( "SAGA tool source code" ), u"https://sourceforge.net/p/saga-gis/code/ci/master/tree/saga-gis/src/tools/grid/grid_filter/Filter_Terrain_SlopeBased.cpp"_s }
+  };
+}
+
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortDescription() const
 {
   return QObject::tr( "Filters a Digital Elevation Model in order to classify its cells into ground and object (non-ground) cells." );
