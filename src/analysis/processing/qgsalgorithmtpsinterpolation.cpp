@@ -280,6 +280,8 @@ void QgsLocalThinPlateSplineAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsLocalThinPlateSplineAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   processBase( parameters, context, feedback );
 
   const double searchRadius = parameterAsDouble( parameters, u"SEARCH_RADIUS"_s, context );
@@ -658,6 +660,8 @@ namespace
 
 QVariantMap QgsGlobalThinPlateSplineAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   processBase( parameters, context, feedback );
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 2, feedback );
