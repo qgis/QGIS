@@ -96,10 +96,6 @@ Populates the scene by creating items representing the specified
 ``model``.
 %End
 
-    QList<QgsModelComponentGraphicItem *> selectedComponentItems();
-%Docstring
-Returns list of selected component items.
-%End
 
 
 
@@ -114,21 +110,7 @@ items are reset.
 .. versionadded:: 4.2
 %End
 
-    QgsModelComponentGraphicItem *parameterItem( const QString &name );
-%Docstring
-Returns the :py:class:`QgsModelComponentGraphicItem` corresponding to
-the specified parameter name
 
-.. versionadded:: 3.44
-%End
-
-    QgsModelComponentGraphicItem *outputItem( const QString &childId, const QString &childOutputName );
-%Docstring
-Returns the :py:class:`QgsModelComponentGraphicItem` corresponding to
-the specified child algorithm output
-
-.. versionadded:: 4.0
-%End
 
     void selectAll();
 %Docstring
@@ -144,10 +126,6 @@ latter does not correctly emit signals to allow the scene's model to
 update.
 %End
 
-    void setSelectedItem( QgsModelComponentGraphicItem *item );
-%Docstring
-Clears any selected items and sets ``item`` as the current selection.
-%End
 
     void setLastRunResult( const QgsProcessingModelResult &result, QgsProcessingContext &context );
 %Docstring
@@ -230,11 +208,6 @@ associated undo commands.
 Emitted whenever a component of the model is changed.
 %End
 
-    void selectedItemChanged( QgsModelComponentGraphicItem *selected );
-%Docstring
-Emitted whenever the selected item changes. If ``None``, no item is
-selected.
-%End
 
     void runSelected();
 %Docstring

@@ -300,7 +300,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.beginUndoCommand(self.tr("Add Model Input"))
             self.model().addModelParameter(new_param, component)
             self.repaintModel()
-            # self.view().ensureVisible(self.scene.getLastParameterItem())
             self.endUndoCommand()
 
     def getPositionForParameterItem(self):
