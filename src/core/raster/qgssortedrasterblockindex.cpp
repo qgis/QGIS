@@ -86,10 +86,12 @@ namespace
 
     // copy sorted index array to a more compact structure
     std::vector<IndexT> sortedIndices( pairs.size() );
-    for ( std::size_t i = 0; i < pairs.size(); ++i )
-    {
-      sortedIndices[i] = pairs[i].idx;
-    }
+#if defined( __cpp_lib_execution ) && __cpp_lib_execution >= 201603L
+    std::transform( std::execution::par, pairs.begin(), pairs.end(), sortedIndices.begin(), []( const SortPair<ValueT, IndexT> &p ) { return p.idx; } );
+#else
+    std::transform( pairs.begin(), pairs.end(), sortedIndices.begin(), []( const SortPair<ValueT, IndexT> &p ) { return p.idx; } );
+#endif
+
     return sortedIndices;
   }
 
