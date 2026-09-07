@@ -19,10 +19,6 @@
 
 #include <algorithm>
 
-#if __has_include( <execution> )
-#include <execution>
-#endif
-
 #include "qgsrasterblock.h"
 
 namespace
@@ -46,17 +42,10 @@ namespace
     {
       // here we know the total number of valid cells in advance, since there's no no-data cells
       pairs.resize( totalCells );
-#if defined( __cpp_lib_execution ) && __cpp_lib_execution >= 201603L
-      std::for_each( std::execution::par, pairs.begin(), pairs.end(), [rawData, &pairs]( SortPair<ValueT, IndexT> &pair ) {
-        const IndexT idx = static_cast<IndexT>( &pair - pairs.data() );
-        pair = SortPair<ValueT, IndexT> { rawData[idx], idx };
-      } );
-#else
       std::for_each( pairs.begin(), pairs.end(), [rawData, &pairs]( SortPair<ValueT, IndexT> &pair ) {
         const IndexT idx = static_cast<IndexT>( &pair - pairs.data() );
         pair = SortPair<ValueT, IndexT> { rawData[idx], idx };
       } );
-#endif
     }
     else
     {
@@ -78,19 +67,11 @@ namespace
       }
     }
 
-#if defined( __cpp_lib_execution ) && __cpp_lib_execution >= 201603L
-    std::sort( std::execution::par, pairs.begin(), pairs.end() );
-#else
     std::sort( pairs.begin(), pairs.end() );
-#endif
 
     // copy sorted index array to a more compact structure
     std::vector<IndexT> sortedIndices( pairs.size() );
-#if defined( __cpp_lib_execution ) && __cpp_lib_execution >= 201603L
-    std::transform( std::execution::par, pairs.begin(), pairs.end(), sortedIndices.begin(), []( const SortPair<ValueT, IndexT> &p ) { return p.idx; } );
-#else
     std::transform( pairs.begin(), pairs.end(), sortedIndices.begin(), []( const SortPair<ValueT, IndexT> &p ) { return p.idx; } );
-#endif
 
     return sortedIndices;
   }
