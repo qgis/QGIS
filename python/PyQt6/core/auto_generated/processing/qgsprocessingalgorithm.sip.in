@@ -180,6 +180,20 @@ processes used by the algorithm.
 .. versionadded:: 4.4
 %End
 
+    struct ExternalLink
+    {
+      QString description;
+      QString url;
+    };
+
+    virtual QList< QgsProcessingAlgorithm::ExternalLink > externalLinks() const;
+%Docstring
+Returns a list of external links describing the algorithm's behavior or
+source.
+
+.. versionadded:: 4.4
+%End
+
     virtual QString implementationSourceUri() const;
 %Docstring
 Returns a URL for the source code location best reflecting the internal
