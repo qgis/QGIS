@@ -721,7 +721,7 @@ Set maximum concurrent thread count
    must be between 2 and \#cores, -1 means use all available cores
 %End
 
-  static QgsTaskManager *taskManager();
+  static QgsTaskManager *taskManager() /DisallowNone/;
 %Docstring
 Returns the application's task manager, used for managing application
 wide background task handling.
