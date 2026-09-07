@@ -13031,7 +13031,6 @@ QgsProcessingModelAlgorithm.canExecute: src/core/processing/models/qgsprocessing
 QgsProcessingModelAlgorithm.changeParameterName: src/core/processing/models/qgsprocessingmodelalgorithm.h#L227
 QgsProcessingModelAlgorithm.childAlgorithmsDependOnParameter: src/core/processing/models/qgsprocessingmodelalgorithm.h#L234
 QgsProcessingModelAlgorithm.createExpressionContext: src/core/processing/models/qgsprocessingmodelalgorithm.h#L62
-QgsProcessingModelAlgorithm.createExpressionContextScopeForChildAlgorithm: src/core/processing/models/qgsprocessingmodelalgorithm.h#L526
 QgsProcessingModelAlgorithm.createInstance: src/core/processing/models/qgsprocessingmodelalgorithm.h#L607
 QgsProcessingModelAlgorithm.deactivateChildAlgorithm: src/core/processing/models/qgsprocessingmodelalgorithm.h#L149
 QgsProcessingModelAlgorithm.designerParameterValues: src/core/processing/models/qgsprocessingmodelalgorithm.h#L563
