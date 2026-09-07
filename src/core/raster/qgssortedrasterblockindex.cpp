@@ -18,7 +18,10 @@
 #include "qgssortedrasterblockindex.h"
 
 #include <algorithm>
+
+#if __has_include( <execution>)
 #include <execution>
+#endif
 
 #include "qgsrasterblock.h"
 
@@ -47,7 +50,11 @@ namespace
       }
     }
 
+#if defined( __cpp_lib_execution ) && __cpp_lib_execution >= 201603L
     std::sort( std::execution::par, pairs.begin(), pairs.end() );
+#else
+    std::sort( pairs.begin(), pairs.end() );
+#endif
 
     // copy sorted index array to a more compact structure
     std::vector<T> sortedIndices( pairs.size() );
