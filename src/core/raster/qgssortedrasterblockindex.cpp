@@ -124,6 +124,7 @@ namespace
       case Qgis::DataType::ARGB32_Premultiplied:
         return std::vector<IndexT>();
     }
+    BUILTIN_UNREACHABLE
   }
 
 } //namespace
