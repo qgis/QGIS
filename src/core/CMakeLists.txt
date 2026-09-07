@@ -845,6 +845,7 @@ set(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
   raster/qgsrastertransparency.cpp
+  raster/qgssortedrasterblockindex.cpp
 
   raster/qgsbilinearrasterresampler.cpp
   raster/qgsbrightnesscontrastfilter.cpp
@@ -2066,6 +2067,7 @@ set(QGIS_CORE_HDRS
   raster/qgssinglebandgrayrenderer.h
   raster/qgssinglebandpseudocolorrenderer.h
   raster/qgsrastersinglecolorrenderer.h
+  raster/qgssortedrasterblockindex.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgshollowscalebarrenderer.h
