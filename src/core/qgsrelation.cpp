@@ -32,6 +32,7 @@ using namespace Qt::StringLiterals;
 
 QgsRelation::QgsRelation()
   : d( new QgsRelationPrivate() )
+  , mContext( nullptr )
 {}
 
 QgsRelation::QgsRelation( const QgsRelationContext &context )

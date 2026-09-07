@@ -29,6 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsPolymorphicRelation::QgsPolymorphicRelation()
   : d( new QgsPolymorphicRelationPrivate() )
+  , mContext( nullptr )
 {}
 
 QgsPolymorphicRelation::QgsPolymorphicRelation( const QgsRelationContext &context )
