@@ -37,6 +37,7 @@ from typing import Optional
 
 from qgis.core import (
     Qgis,
+    QgsApplication,
     QgsMessageLog,
     QgsMessageOutput,
     QgsSettingsTree,
@@ -867,6 +868,73 @@ def python_executable() -> str:
             return os.path.normpath(candidate)
 
     return ""
+
+
+def subprocess_environment() -> dict:
+    """
+    Returns a copy of the environment suitable for running a Python
+    interpreter as a child process of QGIS.
+
+    The QGIS launchers export variables which tell the embedded interpreter
+    where its standard library and modules are. A child interpreter which
+    inherits them reads the wrong standard library and fails before its
+    first import, typically with "No module named 'encodings'", or, when
+    it is a virtual environment, stops recognising it as one and installs
+    packages next to the base interpreter instead. Those variables are
+    removed here, and the directories of the QGIS installation are taken
+    out of ``PATH`` so that a bare ``python`` resolved by a child process
+    (a package built from source does that) is not the QGIS one.
+
+    Directories shared with the rest of the system, such as ``/usr``, are
+    left in ``PATH``. Use the result as the ``env`` argument of
+    ``subprocess``::
+
+        subprocess.run([sys.executable, "-m", "pip", "install", "shapely"],
+                       env=qgis.utils.subprocess_environment())
+
+    .. versionadded:: 4.4
+    """
+    env = os.environ.copy()
+    for name in (
+        "PYTHONHOME",
+        "PYTHONPATH",
+        "PYTHONEXECUTABLE",
+        "__PYVENV_LAUNCHER__",
+    ):
+        env.pop(name, None)
+
+    shared = {"/", "/usr", "/usr/local", "/opt", "/opt/local", "/opt/homebrew"}
+    roots = []
+    for root in (
+        QgsApplication.prefixPath(),
+        os.environ.get("OSGEO4W_ROOT", ""),
+        sys.prefix,
+    ):
+        if not root:
+            continue
+        root = os.path.normcase(os.path.realpath(root))
+        # a bare drive letter or the filesystem root would match every entry
+        if root.rstrip("\\/") in shared or len(root.rstrip("\\/")) <= 2:
+            continue
+        if root not in roots:
+            roots.append(root)
+
+    def under_qgis(entry: str) -> bool:
+        try:
+            entry = os.path.normcase(os.path.realpath(entry))
+        except (OSError, ValueError):
+            return False
+        return any(entry == root or entry.startswith(root + os.sep) for root in roots)
+
+    path = env.get("PATH", "")
+    if path and roots:
+        kept = [
+            entry for entry in path.split(os.pathsep) if entry and not under_qgis(entry)
+        ]
+        if kept:
+            env["PATH"] = os.pathsep.join(kept)
+
+    return env
 
 
 def reloadProjectMacros():

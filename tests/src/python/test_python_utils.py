@@ -105,6 +105,42 @@ class TestPythonUtils(QgisTestCase):
             with mock.patch.multiple(sys, platform="linux", executable=python):
                 self.assertEqual(utils.python_executable(), python)
 
+    def test_subprocess_environment(self):
+        from qgis.core import QgsApplication
+
+        prefix = QgsApplication.prefixPath()
+        qgis_bin = os.path.join(prefix, "bin")
+        with mock.patch.dict(
+            os.environ,
+            {
+                "PYTHONHOME": prefix,
+                "PYTHONPATH": os.path.join(prefix, "share", "qgis", "python"),
+                "PYTHONEXECUTABLE": sys.executable,
+                "PATH": os.pathsep.join([qgis_bin, "/usr/bin", "/opt/tools/bin"]),
+                "PROJ_DATA": os.path.join(prefix, "share", "proj"),
+            },
+        ):
+            env = utils.subprocess_environment()
+
+        for name in ("PYTHONHOME", "PYTHONPATH", "PYTHONEXECUTABLE"):
+            self.assertNotIn(name, env)
+        # the rest of the environment is passed on untouched
+        self.assertEqual(env["PROJ_DATA"], os.path.join(prefix, "share", "proj"))
+        path = env["PATH"].split(os.pathsep)
+        self.assertIn("/usr/bin", path)
+        self.assertIn("/opt/tools/bin", path)
+        if prefix.rstrip("/") not in ("/usr", "/usr/local", "/opt", "/"):
+            self.assertNotIn(qgis_bin, path)
+
+        # a child interpreter started with it finds its own standard library
+        out = subprocess.check_output(
+            [sys.executable, "-c", "import encodings; print('ok')"],
+            env=env,
+            text=True,
+            timeout=60,
+        )
+        self.assertEqual(out.strip(), "ok")
+
     def test_update_available_plugins(self):
         utils.plugin_paths = [os.path.join(unitTestDataPath(), "test_plugin_path")]
         utils.updateAvailablePlugins(True)
