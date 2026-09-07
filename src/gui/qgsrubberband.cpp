@@ -743,6 +743,15 @@ QRectF QgsRubberBand::boundingRect() const
 {
   QRectF res = QgsMapCanvasItem::boundingRect();
 
+  QgsRenderContext context;
+  if ( mMapCanvas && mSymbol )
+  {
+    res = res.united( asGeometry().boundingBox().toRectF() );
+    context = QgsRenderContext::fromMapSettings( mMapCanvas->mapSettings() );
+    double symbolBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mSymbol.get(), context );
+    res = res.adjusted( -symbolBleed, -symbolBleed, symbolBleed, symbolBleed );
+  }
+
   if ( mComponentsToRender.testFlag( Qgis::RubberBandComponent::PreviewItems ) )
   {
     for ( const std::unique_ptr<QgsRubberBandPreviewItem> &previewItem : mPreviewItems )

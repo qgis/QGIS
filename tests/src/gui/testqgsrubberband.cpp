@@ -267,7 +267,7 @@ void TestQgsRubberband::testBoundingRect()
   mRubberband->addGeometry( geom, mPolygonLayer );
 
   // 20 pixels for the extent + 3 for pen & icon per side + 2 of extra padding from setRect()
-  QCOMPARE( mRubberband->boundingRect(), QRectF( QPointF( -1, -1 ), QSizeF( 28, 28 ) ) );
+  QCOMPARE( mRubberband->boundingRect(), QRectF( QPointF( -1, -1 ), QSizeF( 31, 31 ) ) );
   QCOMPARE(
     mRubberband->pos(),
     QPointF(
