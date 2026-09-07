@@ -209,6 +209,26 @@ class QgsAcademicReference;
     virtual QList<QgsAcademicReference> academicReferences() const;
 
     /**
+     * Encapsulates details of an external link describing an algorithm's behavior or source.
+     *
+     * \since QGIS 4.4
+     */
+    struct ExternalLink
+    {
+      //! Link description text
+      QString description;
+      //! Link URL
+      QString url;
+    };
+
+    /**
+     * Returns a list of external links describing the algorithm's behavior or source.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QList< QgsProcessingAlgorithm::ExternalLink > externalLinks() const;
+
+    /**
      * Returns a URL for the source code location best reflecting the internal algorithm logic.
      *
      * Subclasses should return a URL pointing to the source code location best representing this internal logic,
