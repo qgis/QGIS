@@ -40,6 +40,7 @@ class QgsFillSinksWangLiuAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QList<QgsAcademicReference> academicReferences() const override;
+    QList<QgsProcessingAlgorithm::ExternalLink> externalLinks() const override;
     QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsFillSinksWangLiuAlgorithm *createInstance() const override SIP_FACTORY;
