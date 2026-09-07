@@ -79,6 +79,13 @@ QList<QgsAcademicReference> QgsFillSinksWangLiuAlgorithm::academicReferences() c
   return { ref };
 }
 
+QList<QgsProcessingAlgorithm::ExternalLink> QgsFillSinksWangLiuAlgorithm::externalLinks() const
+{
+  return {
+    QgsProcessingAlgorithm::ExternalLink { QObject::tr( "SAGA tool source code" ), u"https://sourceforge.net/p/saga-gis/code/ci/master/tree/saga-gis/src/tools/terrain_analysis/ta_preprocessor/FillSinks_WL.cpp"_s }
+  };
+}
+
 QString QgsFillSinksWangLiuAlgorithm::shortDescription() const
 {
   return QObject::tr( "Identifies and fills surface depressions in digital elevation models using a method proposed by Wang & Liu." );
