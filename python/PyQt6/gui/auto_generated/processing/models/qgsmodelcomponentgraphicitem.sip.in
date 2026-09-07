@@ -409,6 +409,17 @@ Ownership of ``output`` is transferred to the item.
 
     virtual bool canDeleteComponent();
 
+    virtual void editComponent();
+
+    virtual void editComment();
+
+
+    void applyEdit( const QString &name, const QString &description, const QVariant &defaultValue, bool mandatory, const QString &comment, const QColor &commentColor );
+%Docstring
+Applies edits to the model output item.
+
+.. versionadded:: 4.4
+%End
 
   protected:
     virtual QColor fillColor( State state ) const;

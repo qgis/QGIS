@@ -726,6 +726,14 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     QgsModelOutputGraphicItem( QgsProcessingModelOutput *output SIP_TRANSFER, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent SIP_TRANSFERTHIS );
 
     bool canDeleteComponent() override;
+    void editComponent() override;
+    void editComment() override;
+
+    /**
+     * Applies edits to the model output item.
+     * \since QGIS 4.4
+     */
+    void applyEdit( const QString &name, const QString &description, const QVariant &defaultValue, bool mandatory, const QString &comment, const QColor &commentColor );
 
   protected:
     QColor fillColor( State state ) const override;
@@ -739,6 +747,8 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     void deleteComponent() override;
 
   private:
+    void edit( bool editComment = false );
+
     QPicture mPicture;
 };
 

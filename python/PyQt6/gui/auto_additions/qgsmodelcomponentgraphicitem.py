@@ -24,7 +24,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsModelOutputGraphicItem.__overridden_methods__ = ['canDeleteComponent', 'fillColor', 'strokeColor', 'textColor', 'iconPicture', 'updateStoredComponentPosition', 'deleteComponent']
+    QgsModelOutputGraphicItem.__overridden_methods__ = ['canDeleteComponent', 'editComponent', 'editComment', 'fillColor', 'strokeColor', 'textColor', 'iconPicture', 'updateStoredComponentPosition', 'deleteComponent']
     QgsModelOutputGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass
