@@ -858,6 +858,13 @@ QString QgsProcessingAlgorithmWidgetBase::formatHelp( QgsProcessingAlgorithm *al
     links << linkHtml;
   }
 
+  const QList< QgsProcessingAlgorithm::ExternalLink > externalLinks = algorithm->externalLinks();
+  for ( const QgsProcessingAlgorithm::ExternalLink &link : externalLinks )
+  {
+    const QString linkHtml = QStringLiteral( R"(<a href="%1">%2</a>)" ).arg( link.url, link.description );
+    links << linkHtml;
+  }
+
   if ( !links.empty() )
   {
     result += u"<h4>%1</h4>"_s.arg( tr( "Links" ) );
