@@ -105,6 +105,11 @@ QList<QgsAcademicReference> QgsProcessingAlgorithm::academicReferences() const
   return {};
 }
 
+QList<QgsProcessingAlgorithm::ExternalLink> QgsProcessingAlgorithm::externalLinks() const
+{
+  return {};
+}
+
 QString QgsProcessingAlgorithm::implementationSourceUri() const
 {
 #ifdef EXCLUDE_CPPCHECK
