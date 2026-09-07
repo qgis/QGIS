@@ -747,7 +747,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    * Returns the application's task manager, used for managing application
    * wide background task handling.
    */
-  static QgsTaskManager *taskManager();
+  static QgsTaskManager *taskManager() SIP_DISALLOWNONE;
 
   /**
    * Returns the application's settings registry, used for managing application
