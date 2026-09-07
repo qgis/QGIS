@@ -16,15 +16,15 @@
 
 # Testing the spell test :)
 
-# GNU prefix command for bsd/mac os support (gsed, gsplit)
-GP=
-if [[ "$OSTYPE" == *bsd* ]] || [[ "$OSTYPE" =~ darwin* ]]; then
-  GP=g
-fi
+set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+WORK=$(mktemp -d)
+trap 'rm -rf "$WORK"' EXIT
+cd "$WORK"
 
-echo "As you would'nt
+cat > spelling_error.txt <<'EOF'
+As you would'nt
 Are'nt you dumb?
 You should'nt be there
 welcome to australia
@@ -41,7 +41,7 @@ _ABSOLUT_ has too
 CRITERIAS_
 _Criterias
 _ABSOLUT
-\"MyErrror\"
+"MyErrror"
 VolcanoErrupted
 everytime I get drunk
 TrAditional is not traditional
@@ -53,40 +53,90 @@ abovyour shoulder
 there is no errror # spellok
 it is ABSOLUTE)
 _ABSOLUTE_
-" > spelling_error.dat~
+EOF
 
-echo "spelling_error.dat~  1 would'nt wouldn't
-spelling_error.dat~  2 Are'nt aren't
-spelling_error.dat~  3 should'nt shouldn't
-spelling_error.dat~  4 australia Australia
-spelling_error.dat~  5 abouta about a
-spelling_error.dat~  6 abouta about a
-spelling_error.dat~  6 wont won't
-spelling_error.dat~  7 abbout about
-spelling_error.dat~  8 abotu about
-spelling_error.dat~  9 abov above
-spelling_error.dat~  10 Extint Extinct
-spelling_error.dat~  11 Feeded Fed
-spelling_error.dat~  12 EXLUSIVE EXCLUSIVE
-spelling_error.dat~  13 exept except
-spelling_error.dat~  14 ABSOLUT ABSOLUTE
-spelling_error.dat~  15 CRITERIAS CRITERIA
-spelling_error.dat~  16 Criterias Criteria
-spelling_error.dat~  17 ABSOLUT ABSOLUTE
-spelling_error.dat~  18 Errror Error
-spelling_error.dat~  19 Errupted Erupted
-spelling_error.dat~  20 everytime every time
-spelling_error.dat~  21 Aditional Additional
-spelling_error.dat~  22 Symbo Symbol
-spelling_error.dat~  23 continous continuous" | ${GP}sort -u > spelling_error.expected~
+cat > expected <<'EOF'
+1 would'nt wouldn't
+2 Are'nt aren't
+3 should'nt shouldn't
+4 australia Australia
+5 abouta about a
+6 abouta about a
+6 wont won't
+7 abbout about
+8 abotu about
+9 abov above
+10 Extint Extinct
+11 Feeded Fed
+12 EXLUSIVE EXCLUSIVE
+13 exept except
+14 ABSOLUT ABSOLUTE
+15 CRITERIAS CRITERIA
+16 Criterias Criteria
+17 ABSOLUT ABSOLUTE
+18 Errror Error
+19 Errupted Erupted
+20 everytime every time
+21 Aditional Additional
+22 Symbo Symbol
+23 continous continuous
+EOF
 
-rm -f spelling_error.log~
-${DIR}/check_spelling.sh -r -l spelling_error.log~ spelling_error.dat~
-${GP}sort -u -o spelling_error.log~ spelling_error.log~
-DIFF=$(diff spelling_error.log~ spelling_error.expected~)
+cat > fixed <<'EOF'
+As you wouldn't
+aren't you dumb?
+You shouldn't be there
+welcome to Australia
+it's all about a cat
+about a thse two errors on the same line you won't know anything
+allaboutme
+about a dog
+put that above my head
+MyExtinctIsNotHereYet
+FedCats
+EXCLUSIVE is upper case
+_except has underscore
+_ABSOLUTE_ has too
+CRITERIA_
+_Criteria
+_ABSOLUTE
+"MyError"
+VolcanoErupted
+every time I get drunk
+TrAdditional is not traditional
+graduatedSymbol)
+(continuous)
+# !!! NO ERROR UNDER THIS LINE !!!
+aboutarabbit
+abovyour shoulder
+there is no errror # spellok
+it is ABSOLUTE)
+_ABSOLUTE_
+EOF
 
-if [[ -n $DIFF ]]; then
-  echo "SPELLING TEST FAILED" >&2
-else
+STATUS=0
+
+# the errors are reported, at the right line, with the right correction
+"${DIR}"/check_spelling.py -l found.log spelling_error.txt > /dev/null || true
+cut -d' ' -f2- found.log | LC_ALL=C sort > found
+LC_ALL=C sort expected > want
+if ! diff -u want found; then
+  echo "SPELLING TEST FAILED: unexpected errors reported" >&2
+  STATUS=1
+fi
+
+# --fix corrects them all, and leaves the rest of the file alone
+"${DIR}"/check_spelling.py --fix spelling_error.txt > /dev/null || true
+if ! diff -u fixed spelling_error.txt; then
+  echo "SPELLING TEST FAILED: --fix did not produce the expected file" >&2
+  STATUS=1
+fi
+if ! "${DIR}"/check_spelling.py spelling_error.txt; then
+  echo "SPELLING TEST FAILED: errors remain after --fix" >&2
+  STATUS=1
+fi
+
+if [[ $STATUS -eq 0 ]]; then
   echo "TEST OK"
 fi
+exit $STATUS
