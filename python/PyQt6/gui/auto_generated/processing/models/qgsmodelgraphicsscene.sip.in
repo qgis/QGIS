@@ -270,10 +270,6 @@ algorithm with matching ID.
   protected:
 
 
-    virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const /Factory/;
-%Docstring
-Creates a new graphic item for a model output.
-%End
 
 
 
