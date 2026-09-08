@@ -80,7 +80,8 @@ class CORE_EXPORT QgsLabelingResults
       bool pinned = false,
       const QString &providerId = QString(),
       bool isUnplaced = false,
-      long long linkedId = 0
+      long long linkedId = 0,
+      long long linkedPositionIndex = 0
     );
 #endif
 

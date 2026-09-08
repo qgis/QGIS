@@ -43,7 +43,8 @@ bool QgsLabelingResults::insertLabel(
   bool pinned,
   const QString &providerId,
   bool isUnplaced,
-  long long linkedId
+  long long linkedId,
+  long long linkedPositionIndex
 )
 {
   if ( !labelPos )
@@ -103,6 +104,7 @@ bool QgsLabelingResults::insertLabel(
     isUnplaced
   );
   newEntry->groupedLabelId = uniqueLinkedId;
+  newEntry->groupedPositionIndex = linkedPositionIndex;
 
   if ( uniqueLinkedId != 0 )
   {
@@ -117,7 +119,7 @@ bool QgsLabelingResults::insertLabel(
 
   if ( next )
   {
-    return insertLabel( next, featureId, layerName, labeltext, labelfont, diagram, pinned, providerId, isUnplaced, uniqueLinkedId );
+    return insertLabel( next, featureId, layerName, labeltext, labelfont, diagram, pinned, providerId, isUnplaced, uniqueLinkedId, linkedPositionIndex + 1 );
   }
   return true;
 }
