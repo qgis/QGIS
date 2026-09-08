@@ -103,6 +103,16 @@ void QgsSymbol3DWidget::setDockMode( bool dockMode )
   }
 }
 
+void QgsSymbol3DWidget::setStyle( Qgis::MaterialWidgetStyle style )
+{
+  mStyle = style;
+
+  if ( Qgs3DSymbolWidget *widget = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
+  {
+    widget->setStyle( style );
+  }
+}
+
 void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity entity, const QString &stylePath )
 {
   if ( name.isEmpty() )
@@ -270,6 +280,7 @@ void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol
     if ( Qgs3DSymbolWidget *w = am->createSymbolWidget( mLayer ) )
     {
       w->setSymbol( newSymbol, mLayer );
+      w->setStyle( mStyle );
       widgetStack->addWidget( w );
       widgetStack->setCurrentWidget( w );
       w->setDockMode( dockMode() );
