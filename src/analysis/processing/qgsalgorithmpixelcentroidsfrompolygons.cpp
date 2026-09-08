@@ -139,8 +139,8 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
     double x, y;
     int startRow, startColumn;
     int endRow, endColumn;
-    QgsRasterAnalysisUtils::mapToPixel( xMin, yMax, extent, xPixel, yPixel, startRow, startColumn );
-    QgsRasterAnalysisUtils::mapToPixel( xMax, yMin, extent, xPixel, yPixel, endRow, endColumn );
+    QgsRasterAnalysisUtils::mapToPixel( xMin, yMax, extent, xPixel, yPixel, startColumn, startRow );
+    QgsRasterAnalysisUtils::mapToPixel( xMax, yMin, extent, xPixel, yPixel, endColumn, endRow );
 
     auto engine = std::make_unique<QgsGeos>( f.geometry().constGet() );
     engine->prepareGeometry();
@@ -154,7 +154,7 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
           break;
         }
 
-        QgsRasterAnalysisUtils::pixelToMap( row, col, extent, xPixel, yPixel, x, y );
+        QgsRasterAnalysisUtils::pixelToMap( col, row, extent, xPixel, yPixel, x, y );
         if ( engine->contains( x, y ) )
         {
           feature.setGeometry( std::make_unique<QgsPoint>( x, y ) );
