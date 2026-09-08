@@ -25,6 +25,7 @@
 #include "qgstolerance.h"
 
 class QgsSnappingConfig;
+class QgsMapLayer;
 
 /**
  * \ingroup core
@@ -64,10 +65,10 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     // main actions
 
     /**
-     * Gets a point locator for the given layer. If such locator does not exist, it will be created
-     * \param vl the vector layer
+     * Gets a point locator for the given layer. If such locator does not exist, it will be created.
+     * \param ml the map layer (vector, or since QGIS 4.4 a snappable non-vector layer)
      */
-    QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
+    QgsPointLocator *locatorForLayer( QgsMapLayer *ml );
 
     /**
      * Snap to map according to the current configuration.
@@ -95,9 +96,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QgsMapSettings mapSettings() const { return mMapSettings; }
 
     //! Sets current layer so that if mode is SnapCurrentLayer we know which layer to use
-    void setCurrentLayer( QgsVectorLayer *layer );
+    void setCurrentLayer( QgsMapLayer *layer );
     //! The current layer used if mode is SnapCurrentLayer
-    QgsVectorLayer *currentLayer() const { return mCurrentLayer; }
+    QgsMapLayer *currentLayer() const { return mCurrentLayer; }
 
     // configuration
 
@@ -131,12 +132,12 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
        * snapper.setLayers([snapping_layer1, snapping_layer2])
        * \endcode
        *
-       * \param l   The vector layer for which this configuration is
+       * \param l   The map layer this configuration is for (vector, or since QGIS 4.4 a snappable non-vector layer)
        * \param t   Which parts of the geometry should be snappable
        * \param tol The tolerance radius in which the snapping will trigger
        * \param u   The unit in which the tolerance is specified
        */
-        LayerConfig( QgsVectorLayer *l, QgsPointLocator::Types t, double tol, Qgis::MapToolUnit u )
+        LayerConfig( QgsMapLayer *l, QgsPointLocator::Types t, double tol, Qgis::MapToolUnit u )
           : layer( l )
           , type( t )
           , tolerance( tol )
@@ -148,7 +149,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
         bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const { return !operator==( other ); }
 
         //! The layer to configure.
-        QgsVectorLayer *layer = nullptr;
+        QgsMapLayer *layer = nullptr;
         //! To which geometry properties of this layers a snapping should happen.
         QgsPointLocator::Types type;
         //! The range around snapping targets in which snapping should occur.
@@ -247,16 +248,19 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void onInitFinished( bool ok );
 
   private:
-    void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings );
+    void onIndividualLayerSettingsChanged( const QHash<QgsMapLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings );
     //! Gets destination CRS from map settings, or an invalid CRS if projections are disabled
     QgsCoordinateReferenceSystem destinationCrs() const;
 
-    //! Returns a locator (temporary or not) according to the indexing strategy
-    QgsPointLocator *locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
-    //! Returns a temporary locator with index only for a small area (will be replaced by another one on next request)
-    QgsPointLocator *temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
+    //! Creates a point locator for \a ml (vector or annotation), or NULLPTR if it is not snappable
+    QgsPointLocator *newLocatorForLayer( QgsMapLayer *ml, const QgsRectangle *extent );
 
-    typedef QPair< QgsVectorLayer *, QgsRectangle > LayerAndAreaOfInterest;
+    //! Returns a locator (temporary or not) according to the indexing strategy
+    QgsPointLocator *locatorForLayerUsingStrategy( QgsMapLayer *ml, const QgsPointXY &pointMap, double tolerance );
+    //! Returns a temporary locator with index only for a small area (will be replaced by another one on next request)
+    QgsPointLocator *temporaryLocatorForLayer( QgsMapLayer *ml, const QgsPointXY &pointMap, double tolerance );
+
+    typedef QPair< QgsMapLayer *, QgsRectangle > LayerAndAreaOfInterest;
 
     //! Returns TRUE if \a loc index is ready to be used in the area of interest \a areaOfInterest
     bool isIndexPrepared( QgsPointLocator *loc, const QgsRectangle &areaOfInterest );
@@ -266,7 +270,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
   private:
     // environment
     QgsMapSettings mMapSettings;
-    QgsVectorLayer *mCurrentLayer = nullptr;
+    QgsMapLayer *mCurrentLayer = nullptr;
 
     QgsSnappingConfig mSnappingConfig;
 
@@ -275,7 +279,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QList<LayerConfig> mLayers;
 
     // internal data
-    typedef QMap<QgsVectorLayer *, QgsPointLocator *> LocatorsMap;
+    typedef QMap<QgsMapLayer *, QgsPointLocator *> LocatorsMap;
     //! on-demand locators used (locators are owned)
     LocatorsMap mLocators;
     //! temporary locators (indexing just a part of layers). owned by the instance
