@@ -2241,10 +2241,12 @@ void QgsSymbol::renderFeature(
 
   if ( drawVertexMarker )
   {
+    // vertex markers should ignore symbology reference scale
+    QgsScopedRenderContextReferenceScaleOverride overrideReferenceScale( context, -1 );
+
     if ( !markers.isEmpty() && !context.renderingStopped() )
     {
-      const auto constMarkers = markers;
-      for ( QPointF marker : constMarkers )
+      for ( QPointF marker : std::as_const( markers ) )
       {
         renderVertexMarker( marker, context, currentVertexMarkerType, currentVertexMarkerSize );
       }
