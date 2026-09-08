@@ -32,7 +32,8 @@ using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 QgsProcessingBatchAlgorithmDialogBase::QgsProcessingBatchAlgorithmDialogBase( QMainWindow *parentWindow )
-  : QgsProcessingAlgorithmWidgetBase( parentWindow, QgsProcessingAlgorithmWidgetBase::WidgetMode::Batch )
+  // batch dialogs are always shown via exec(), so are never dockable
+  : QgsProcessingAlgorithmWidgetBase( parentWindow, QgsProcessingAlgorithmWidgetBase::WidgetMode::Batch, QgsProcessingAlgorithmWidgetBase::WidgetFlag::NoDocking )
 {
   mButtonRunSingle = new QPushButton( tr( "Run as Single Process…" ) );
   connect( mButtonRunSingle, &QPushButton::clicked, this, &QgsProcessingBatchAlgorithmDialogBase::runAsSingle );

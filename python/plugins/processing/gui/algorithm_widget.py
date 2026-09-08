@@ -70,7 +70,8 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
         alg: QgsProcessingAlgorithm,
         in_place: bool = False,
         parent: Optional[QMainWindow] = None,
-        flags: QgsProcessingAlgorithmWidgetBase.WidgetFlags = QgsProcessingAlgorithmWidgetBase.WidgetFlags(),
+        # default to non-dockable, since these widgets are usually opened as dialogs via exec()
+        flags: QgsProcessingAlgorithmWidgetBase.WidgetFlags = QgsProcessingAlgorithmWidgetBase.WidgetFlag.NoDocking,
         initialState: Qgis.DockableWidgetInitialState = Qgis.DockableWidgetInitialState.RestorePreviousState,
     ):
         super().__init__(

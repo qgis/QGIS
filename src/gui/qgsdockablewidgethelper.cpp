@@ -100,7 +100,9 @@ QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
   {
     mDialogGeometry = mDialog->geometry();
 
-    if ( !mSettingKeyDockId.isEmpty() )
+    // only save if still visible -- if closed, the finished() handler already saved a valid
+    // geometry, and a hidden dialog would report a bad position and overwrite it
+    if ( !mSettingKeyDockId.isEmpty() && mDialog->isVisible() )
       sSettingsDialogGeometry->setValue( mDialog->saveGeometry(), mSettingKeyDockId );
 
     mDialog->layout()->removeWidget( mWidget );
@@ -311,13 +313,13 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
   }
   else
   {
-    // going from dock -> window
-    // note -- we explicitly DO NOT set the parent for the dialog, as we want these treated as
-    // proper top level windows and have their own taskbar entries. See https://github.com/qgis/QGIS/issues/49286
+    // going from dock -> window.
+    // Use the owner window as parent with the Qt::Window flag: the flag gives the dialog its own
+    // taskbar entry (#49286), while the parent keeps it stacked above the owner window (#66817).
     if ( mOptions.testFlag( Option::PermanentWidget ) )
-      mDialog = new QgsNonRejectableDialog( nullptr, Qt::Window );
+      mDialog = new QgsNonRejectableDialog( mOwnerWindow, Qt::Window );
     else
-      mDialog = new QDialog( nullptr, Qt::Window );
+      mDialog = new QDialog( mOwnerWindow, Qt::Window );
     mDialog->setStyleSheet( QgsGui::applicationStyleSheet() );
     connect( QgsGui::instance(), &QgsGui::applicationStyleSheetChanged, mDialog, &QDialog::setStyleSheet );
 
@@ -330,10 +332,15 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins( 0, 0, 0, 0 );
     vl->addWidget( mWidget );
+    // set the layout before restoring geometry, otherwise the layout resizes the dialog to its
+    // size hint and overrides the restored size
+    mDialog->setLayout( vl );
 
     if ( !mSettingKeyDockId.isEmpty() )
     {
-      mDialog->restoreGeometry( sSettingsDialogGeometry->value( mSettingKeyDockId ).toByteArray() );
+      const QByteArray savedGeometry = sSettingsDialogGeometry->value( mSettingKeyDockId ).toByteArray();
+      if ( !savedGeometry.isEmpty() )
+        mDialog->restoreGeometry( savedGeometry );
     }
     else
     {
@@ -342,12 +349,15 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
       else if ( !mDialogGeometry.isEmpty() )
         mDialog->setGeometry( mDialogGeometry );
     }
-    mDialog->setLayout( vl );
     mDialog->raise();
     mDialog->show();
 
     connect( mDialog, &QDialog::finished, this, [this]() {
       mDialogGeometry = mDialog->geometry();
+      // save geometry now, while the dialog is still visible -- once hidden the frame position
+      // can be lost (collapses to (0,0))
+      if ( !mSettingKeyDockId.isEmpty() )
+        sSettingsDialogGeometry->setValue( mDialog->saveGeometry(), mSettingKeyDockId );
       emit closed();
       emit visibilityChanged( false );
     } );
