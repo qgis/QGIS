@@ -67,8 +67,6 @@ projects.
 :param relationContext: a relation context
 
 :return: A relation
-
-.. versionadded:: 4.4
 %End
 
     void writeXml( QDomNode &node, QDomDocument &doc ) const;

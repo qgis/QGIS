@@ -134,7 +134,6 @@ class CORE_EXPORT QgsRelation
      * \param relationContext a relation context
      *
      * \returns A relation
-     * \since QGIS 4.4
      */
     static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext );
 
