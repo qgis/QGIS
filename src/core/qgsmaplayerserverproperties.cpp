@@ -49,7 +49,7 @@ bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator==( const WmsDim
          && units == other.units
          && unitSymbol == other.unitSymbol
          && defaultDisplayType == other.defaultDisplayType
-         && referenceValue == other.referenceValue;
+         && mReferenceValue == other.mReferenceValue;
 }
 
 bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator!=( const WmsDimensionInfo &other ) const
@@ -238,7 +238,7 @@ void QgsServerWmsDimensionProperties::writeXml( QDomNode &layer_node, QDomDocume
       dimElem.setAttribute( QStringLiteral( "units" ), dim.units );
       dimElem.setAttribute( QStringLiteral( "unitSymbol" ), dim.unitSymbol );
       dimElem.setAttribute( QStringLiteral( "defaultDisplayType" ), dim.defaultDisplayType );
-      dimElem.setAttribute( QStringLiteral( "referenceValue" ), dim.referenceValue.toString() );
+      dimElem.setAttribute( QStringLiteral( "referenceValue" ), dim.referenceValue().toString() );
       wmsDimsElem.appendChild( dimElem );
     }
     layer_node.appendChild( wmsDimsElem );

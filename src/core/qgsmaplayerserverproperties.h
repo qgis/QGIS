@@ -161,47 +161,64 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
     struct CORE_EXPORT WmsDimensionInfo
     {
 
-      /**
-       * Selection behavior for QGIS Server WMS Dimension default display
-       * \since QGIS 3.10
-       */
-      enum DefaultDisplay
-      {
-        AllValues = 0, //!< Display all values of the dimension
-        MinValue = 1, //!< Add selection to current selection
-        MaxValue = 2, //!< Modify current selection to include only select features which match
-        ReferenceValue = 3, //!< Remove from current selection
-      };
+        /**
+         * Selection behavior for QGIS Server WMS Dimension default display
+         * \since QGIS 3.10
+         */
+        enum DefaultDisplay
+        {
+          AllValues = 0, //!< Display all values of the dimension
+          MinValue = 1, //!< Add selection to current selection
+          MaxValue = 2, //!< Modify current selection to include only select features which match
+          ReferenceValue = 3, //!< Remove from current selection
+        };
 
-      /**
-       * Constructor for WmsDimensionInfo.
-       */
-      explicit WmsDimensionInfo( const QString &dimName,
-                                 const QString &dimFieldName,
-                                 const QString &dimEndFieldName = QString(),
-                                 const QString &dimUnits = QString(),
-                                 const QString &dimUnitSymbol = QString(),
-                                 const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
-                                 const QVariant &dimReferenceValue = QVariant() )
-        : name( dimName )
-        , fieldName( dimFieldName )
-        , endFieldName( dimEndFieldName )
-        , units( dimUnits )
-        , unitSymbol( dimUnitSymbol )
-        , defaultDisplayType( dimDefaultDisplayType )
-        , referenceValue( dimReferenceValue )
-      {}
+        /**
+         * Constructor for WmsDimensionInfo.
+         */
+        explicit WmsDimensionInfo( const QString &dimName,
+                                   const QString &dimFieldName,
+                                   const QString &dimEndFieldName = QString(),
+                                   const QString &dimUnits = QString(),
+                                   const QString &dimUnitSymbol = QString(),
+                                   const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
+                                   const QVariant &dimReferenceValue = QVariant() )
+          : name( dimName )
+          , fieldName( dimFieldName )
+          , endFieldName( dimEndFieldName )
+          , units( dimUnits )
+          , unitSymbol( dimUnitSymbol )
+          , defaultDisplayType( dimDefaultDisplayType )
+          , mReferenceValue( dimReferenceValue )
+        {}
 
-      bool operator==( const WmsDimensionInfo &other ) const;
-      bool operator!=( const WmsDimensionInfo &other ) const;
+        bool operator==( const WmsDimensionInfo &other ) const;
+        bool operator!=( const WmsDimensionInfo &other ) const;
 
-      QString name;
-      QString fieldName;
-      QString endFieldName;
-      QString units;
-      QString unitSymbol;
-      int defaultDisplayType;
-      QVariant referenceValue;
+        /**
+         * Returns reference value used when default display type is Qgis::WmsDimensionDefaultDisplay::ReferenceValue
+         *
+         * \since QGIS 4.4
+         */
+        QVariant referenceValue() const SIP_PYNAME( _referenceValue ) { return mReferenceValue; }
+
+        /**
+         * Set \a referenceValue used when default display type is Qgis::WmsDimensionDefaultDisplay::ReferenceValue
+         *
+         * \since QGIS 4.4
+         */
+        void setReferenceValue( const QVariant &referenceValue ) { mReferenceValue = referenceValue; }
+
+
+        QString name;
+        QString fieldName;
+        QString endFieldName;
+        QString units;
+        QString unitSymbol;
+        int defaultDisplayType;
+
+      private:
+        QVariant mReferenceValue;
     };
 
     virtual ~QgsServerWmsDimensionProperties() = default;
