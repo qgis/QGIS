@@ -81,7 +81,7 @@ QList<QgsAcademicReference> QgsRasterDtmSlopeBasedFilterAlgorithm::academicRefer
 QList<QgsProcessingAlgorithm::ExternalLink> QgsRasterDtmSlopeBasedFilterAlgorithm::externalLinks() const
 {
   return {
-    QgsProcessingAlgorithm::ExternalLink { QObject::tr( "SAGA tool source code" ), u"https://sourceforge.net/p/saga-gis/code/ci/master/tree/saga-gis/src/tools/grid/grid_filter/Filter_Terrain_SlopeBased.cpp"_s }
+    QgsProcessingAlgorithm::ExternalLink { QObject::tr( "SAGA tool source code" ), u"https://sourceforge.net/p/saga-gis/code/ci/d0dd586dac6e8bf3644b3012d6fc9466353b2af8/tree/saga-gis/src/tools/grid/grid_filter/Filter_Terrain_SlopeBased.cpp"_s }
   };
 }
 
