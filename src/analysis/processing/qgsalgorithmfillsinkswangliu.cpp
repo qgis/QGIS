@@ -82,7 +82,7 @@ QList<QgsAcademicReference> QgsFillSinksWangLiuAlgorithm::academicReferences() c
 QList<QgsProcessingAlgorithm::ExternalLink> QgsFillSinksWangLiuAlgorithm::externalLinks() const
 {
   return {
-    QgsProcessingAlgorithm::ExternalLink { QObject::tr( "SAGA tool source code" ), u"https://sourceforge.net/p/saga-gis/code/ci/master/tree/saga-gis/src/tools/terrain_analysis/ta_preprocessor/FillSinks_WL.cpp"_s }
+    QgsProcessingAlgorithm::ExternalLink { QObject::tr( "SAGA tool source code" ), u"https://sourceforge.net/p/saga-gis/code/ci/72d9890b130fd446d7ffb7251c44b2e98c8e1e53/tree/saga-gis/src/tools/terrain_analysis/ta_preprocessor/FillSinks_WL.cpp"_s }
   };
 }
 
