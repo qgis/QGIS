@@ -99,6 +99,8 @@ Constructor for QgsLabelPosition.
     long long groupedLabelId;
 
     long long groupedPositionIndex;
+
+    long long subPartId;
 };
 
 /************************************************************************
