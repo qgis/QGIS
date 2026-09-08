@@ -796,7 +796,10 @@ void QgsRichTextEditor::insertImage()
   if ( file.isEmpty() )
     return;
 
-  const QImage image = QImageReader( file ).read();
+  QImageReader reader( file );
+  // Honour any EXIF orientation
+  reader.setAutoTransform( true );
+  const QImage image = reader.read();
 
   mTextEdit->dropImage( image, QFileInfo( file ).suffix().toUpper().toLocal8Bit().data() );
 }
