@@ -83,7 +83,8 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
       endResetModel();
     }
 
-    QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
+    //! Returns the snappable layer (vector or annotation) at \a idx, or NULLPTR.
+    QgsMapLayer *snappableLayer( const QModelIndex &idx ) const;
 
   public slots:
     void setFilterText( const QString &filterText = QString() );
@@ -102,10 +103,10 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     QgsProject *mProject = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QString mFilterText;
-    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> mIndividualLayerSettings;
+    QHash<QgsMapLayer *, QgsSnappingConfig::IndividualLayerSettings> mIndividualLayerSettings;
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
 
-    void hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings );
+    void hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsMapLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings );
 };
 
 class SnappingLayerDelegateTypeMenu : public QMenu

@@ -260,7 +260,7 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
     return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
   }
 
-  QgsVectorLayer *vl = vectorLayer( idx );
+  QgsMapLayer *vl = snappableLayer( idx );
   if ( !vl )
   {
     return Qt::NoItemFlags;
@@ -272,7 +272,9 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
     {
       if ( idx.column() == AvoidIntersectionColumn )
       {
-        if ( vl->geometryType() == Qgis::GeometryType::Polygon )
+        // avoid-overlap, vector polygon layers only
+        QgsVectorLayer *avoidLayer = qobject_cast<QgsVectorLayer *>( vl );
+        if ( avoidLayer && avoidLayer->geometryType() == Qgis::GeometryType::Polygon )
         {
           return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
         }
@@ -322,7 +324,7 @@ QModelIndex QgsSnappingLayerTreeModel::sibling( int row, int column, const QMode
   return index( row, column, parent );
 }
 
-QgsVectorLayer *QgsSnappingLayerTreeModel::vectorLayer( const QModelIndex &idx ) const
+QgsMapLayer *QgsSnappingLayerTreeModel::snappableLayer( const QModelIndex &idx ) const
 {
   QgsLayerTreeNode *node = nullptr;
   if ( idx.column() == LayerColumn )
@@ -337,7 +339,8 @@ QgsVectorLayer *QgsSnappingLayerTreeModel::vectorLayer( const QModelIndex &idx )
   if ( !node || !QgsLayerTree::isLayer( node ) )
     return nullptr;
 
-  return qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
+  QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+  return ( layer && layer->supportsSnapping() ) ? layer : nullptr;
 }
 
 void QgsSnappingLayerTreeModel::setFilterText( const QString &filterText )
@@ -351,7 +354,7 @@ void QgsSnappingLayerTreeModel::setFilterText( const QString &filterText )
 
 void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
 {
-  const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
+  const QHash<QgsMapLayer *, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
 
   for ( auto it = oldSettings.constBegin(); it != oldSettings.constEnd(); ++it )
   {
@@ -364,7 +367,7 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
     }
   }
   const auto constKeys = mProject->snappingConfig().individualLayerSettings().keys();
-  for ( QgsVectorLayer *vl : constKeys )
+  for ( QgsMapLayer *vl : constKeys )
   {
     if ( !oldSettings.contains( vl ) )
     {
@@ -378,7 +381,7 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
   hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings );
 }
 
-void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings )
+void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsMapLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings )
 {
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
@@ -391,7 +394,7 @@ void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHa
   else
   {
     const QModelIndex idx = mapFromSource( mLayerTreeModel->node2index( node ) );
-    QgsVectorLayer *vl = vectorLayer( idx );
+    QgsMapLayer *vl = snappableLayer( idx );
     if ( !vl )
     {
       emit dataChanged( QModelIndex(), idx );
@@ -467,8 +470,8 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode *node ) const
     }
     case QgsLayerTreeNode::NodeLayer:
     {
-      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
-      return layer && layer->isSpatial() && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) );
+      QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+      return layer && layer->supportsSnapping() && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) );
     }
     case QgsLayerTreeNode::NodeCustom:
       return false;
@@ -512,7 +515,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
   {
     if ( role == Qt::CheckStateRole )
     {
-      QgsVectorLayer *vl = vectorLayer( idx );
+      QgsMapLayer *vl = snappableLayer( idx );
       if ( vl && mIndividualLayerSettings.contains( vl ) )
       {
         const QgsSnappingConfig::IndividualLayerSettings ls = mIndividualLayerSettings.value( vl );
@@ -578,7 +581,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
   }
   else
   {
-    QgsVectorLayer *vl = vectorLayer( idx );
+    QgsMapLayer *vl = snappableLayer( idx );
 
     if ( !vl || !mIndividualLayerSettings.contains( vl ) )
     {
@@ -661,12 +664,13 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       }
     }
 
-    // avoid intersection(Overlap)
+    // avoid intersection(Overlap) - vector polygon layers only
     if ( idx.column() == AvoidIntersectionColumn )
     {
-      if ( role == Qt::CheckStateRole && vl->geometryType() == Qgis::GeometryType::Polygon )
+      QgsVectorLayer *avoidLayer = qobject_cast<QgsVectorLayer *>( vl );
+      if ( role == Qt::CheckStateRole && avoidLayer && avoidLayer->geometryType() == Qgis::GeometryType::Polygon )
       {
-        if ( mProject->avoidIntersectionsLayers().contains( vl ) )
+        if ( mProject->avoidIntersectionsLayers().contains( avoidLayer ) )
         {
           return Qt::Checked;
         }
@@ -739,7 +743,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
 
       if ( i == 0 )
       {
-        QgsVectorLayer *vl = vectorLayer( index );
+        QgsMapLayer *vl = snappableLayer( index );
         if ( !vl || !mIndividualLayerSettings.contains( vl ) )
         {
           return false;
@@ -767,7 +771,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
 
   if ( index.column() == TypeColumn && role == Qt::EditRole )
   {
-    QgsVectorLayer *vl = vectorLayer( index );
+    QgsMapLayer *vl = snappableLayer( index );
     if ( vl )
     {
       if ( !mIndividualLayerSettings.contains( vl ) )
@@ -788,7 +792,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
 
   if ( index.column() == ToleranceColumn && role == Qt::EditRole )
   {
-    QgsVectorLayer *vl = vectorLayer( index );
+    QgsMapLayer *vl = snappableLayer( index );
     if ( vl )
     {
       if ( !mIndividualLayerSettings.contains( vl ) )
@@ -809,7 +813,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
 
   if ( index.column() == UnitsColumn && role == Qt::EditRole )
   {
-    QgsVectorLayer *vl = vectorLayer( index );
+    QgsMapLayer *vl = snappableLayer( index );
     if ( vl )
     {
       if ( !mIndividualLayerSettings.contains( vl ) )
@@ -830,7 +834,8 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
 
   if ( index.column() == AvoidIntersectionColumn && role == Qt::CheckStateRole )
   {
-    QgsVectorLayer *vl = vectorLayer( index );
+    // avoid-overlap applies to vector layers only
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( snappableLayer( index ) );
     if ( vl )
     {
       if ( !mIndividualLayerSettings.contains( vl ) )
@@ -851,7 +856,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
 
   if ( index.column() == MinScaleColumn && role == Qt::EditRole )
   {
-    QgsVectorLayer *vl = vectorLayer( index );
+    QgsMapLayer *vl = snappableLayer( index );
     if ( vl )
     {
       if ( !mIndividualLayerSettings.contains( vl ) )
@@ -872,7 +877,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
 
   if ( index.column() == MaxScaleColumn && role == Qt::EditRole )
   {
-    QgsVectorLayer *vl = vectorLayer( index );
+    QgsMapLayer *vl = snappableLayer( index );
     if ( vl )
     {
       if ( !mIndividualLayerSettings.contains( vl ) )
