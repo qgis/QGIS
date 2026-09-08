@@ -25,6 +25,7 @@
 
 class QDomDocument;
 class QgsProject;
+class QgsMapLayer;
 class QgsVectorLayer;
 
 
@@ -330,9 +331,13 @@ class CORE_EXPORT QgsSnappingConfig
      */
     void setSelfSnapping( bool enabled );
 
-    //! Returns individual snapping settings for all layers
+    /**
+     * Returns individual snapping settings for all layers.
+     *
+     * \note Since QGIS 4.4 the hash is keyed by QgsMapLayer, including snappable non-vector layers.
+     */
 #ifndef SIP_RUN
-    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
+    QHash<QgsMapLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
 #else
     // clang-format off
     SIP_PYDICT individualLayerSettings() const;
@@ -342,22 +347,22 @@ class CORE_EXPORT QgsSnappingConfig
     if ( !d )
       return nullptr;
     // Set the dictionary elements.
-    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> container = sipCpp->individualLayerSettings();
-    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings>::const_iterator i = container.constBegin();
+    QHash<QgsMapLayer *, QgsSnappingConfig::IndividualLayerSettings> container = sipCpp->individualLayerSettings();
+    QHash<QgsMapLayer *, QgsSnappingConfig::IndividualLayerSettings>::const_iterator i = container.constBegin();
     while ( i != container.constEnd() )
     {
-      QgsVectorLayer *vl = i.key();
+      QgsMapLayer *ml = i.key();
       QgsSnappingConfig::IndividualLayerSettings *ils = new QgsSnappingConfig::IndividualLayerSettings( i.value() );
 
-      PyObject *vlobj = sipConvertFromType( vl, sipType_QgsVectorLayer, nullptr );
+      PyObject *mlobj = sipConvertFromType( ml, sipType_QgsMapLayer, nullptr );
       PyObject *ilsobj = sipConvertFromType( ils, sipType_QgsSnappingConfig_IndividualLayerSettings, Py_None );
 
-      if ( !vlobj || !ilsobj || PyDict_SetItem( d, vlobj, ilsobj ) < 0 )
+      if ( !mlobj || !ilsobj || PyDict_SetItem( d, mlobj, ilsobj ) < 0 )
       {
         Py_DECREF( d );
-        if ( vlobj )
+        if ( mlobj )
         {
-          Py_DECREF( vlobj );
+          Py_DECREF( mlobj );
         }
         if ( ilsobj )
         {
@@ -369,7 +374,7 @@ class CORE_EXPORT QgsSnappingConfig
         }
         PyErr_SetString( PyExc_StopIteration, "" );
       }
-      Py_DECREF( vlobj );
+      Py_DECREF( mlobj );
       Py_DECREF( ilsobj );
       ++i;
     }
@@ -378,11 +383,19 @@ class CORE_EXPORT QgsSnappingConfig
 // clang-format on
 #endif
 
-    //! Returns individual layer snappings settings (applied if mode is AdvancedConfiguration)
-    QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer *vl ) const;
+    /**
+     * Returns individual layer snappings settings (applied if mode is AdvancedConfiguration).
+     *
+     * \note Since QGIS 4.4 this accepts any QgsMapLayer, not only vector layers.
+     */
+    QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsMapLayer *ml ) const;
 
-    //! Sets individual layer snappings settings (applied if mode is AdvancedConfiguration)
-    void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
+    /**
+     * Sets individual layer snappings settings (applied if mode is AdvancedConfiguration).
+     *
+     * \note Since QGIS 4.4 this accepts any snappable QgsMapLayer, not only vector layers.
+     */
+    void setIndividualLayerSettings( QgsMapLayer *ml, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
 
     /**
      * Removes all individual layer snapping settings
@@ -455,7 +468,7 @@ class CORE_EXPORT QgsSnappingConfig
     bool mIntersectionSnapping = false;
     bool mSelfSnapping = false;
 
-    QHash<QgsVectorLayer *, IndividualLayerSettings> mIndividualLayerSettings;
+    QHash<QgsMapLayer *, IndividualLayerSettings> mIndividualLayerSettings;
 };
 
 #endif // QGSPROJECTSNAPPINGSETTINGS_H

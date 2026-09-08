@@ -223,14 +223,13 @@ void QgsSnappingConfig::reset()
   // set advanced config
   if ( mProject )
   {
-    mIndividualLayerSettings = QHash<QgsVectorLayer *, IndividualLayerSettings>();
+    mIndividualLayerSettings = QHash<QgsMapLayer *, IndividualLayerSettings>();
     const auto constMapLayers = mProject->mapLayers();
     for ( QgsMapLayer *ml : constMapLayers )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-      if ( vl )
+      if ( ml && ml->supportsSnapping() )
       {
-        mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units, 0.0, 0.0 ) );
+        mIndividualLayerSettings.insert( ml, IndividualLayerSettings( enabled, type, tolerance, units, 0.0, 0.0 ) );
       }
     }
   }
@@ -398,16 +397,16 @@ void QgsSnappingConfig::setSelfSnapping( bool enabled )
   mSelfSnapping = enabled;
 }
 
-QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> QgsSnappingConfig::individualLayerSettings() const
+QHash<QgsMapLayer *, QgsSnappingConfig::IndividualLayerSettings> QgsSnappingConfig::individualLayerSettings() const
 {
   return mIndividualLayerSettings;
 }
 
-QgsSnappingConfig::IndividualLayerSettings QgsSnappingConfig::individualLayerSettings( QgsVectorLayer *vl ) const
+QgsSnappingConfig::IndividualLayerSettings QgsSnappingConfig::individualLayerSettings( QgsMapLayer *ml ) const
 {
-  if ( vl && mIndividualLayerSettings.contains( vl ) )
+  if ( ml && mIndividualLayerSettings.contains( ml ) )
   {
-    return mIndividualLayerSettings.value( vl );
+    return mIndividualLayerSettings.value( ml );
   }
   else
   {
@@ -421,13 +420,13 @@ void QgsSnappingConfig::clearIndividualLayerSettings()
   mIndividualLayerSettings.clear();
 }
 
-void QgsSnappingConfig::setIndividualLayerSettings( QgsVectorLayer *vl, const IndividualLayerSettings &individualLayerSettings )
+void QgsSnappingConfig::setIndividualLayerSettings( QgsMapLayer *ml, const IndividualLayerSettings &individualLayerSettings )
 {
-  if ( !vl || !vl->isSpatial() || mIndividualLayerSettings.value( vl ) == individualLayerSettings )
+  if ( !ml || !ml->supportsSnapping() || mIndividualLayerSettings.value( ml ) == individualLayerSettings )
   {
     return;
   }
-  mIndividualLayerSettings.insert( vl, individualLayerSettings );
+  mIndividualLayerSettings.insert( ml, individualLayerSettings );
 }
 
 bool QgsSnappingConfig::operator!=( const QgsSnappingConfig &other ) const
@@ -547,13 +546,11 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
       const double maxScale = settingElement.attribute( u"maxScale"_s ).toDouble();
 
       QgsMapLayer *ml = mProject->mapLayer( layerId );
-      if ( !ml || ml->type() != Qgis::LayerType::Vector )
+      if ( !ml || !ml->supportsSnapping() )
         continue;
 
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-
       const IndividualLayerSettings setting = IndividualLayerSettings( enabled, type, tolerance, units, minScale, maxScale );
-      mIndividualLayerSettings.insert( vl, setting );
+      mIndividualLayerSettings.insert( ml, setting );
     }
   }
 }
@@ -573,9 +570,9 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
   snapSettingsElem.setAttribute( u"maxScale"_s, mMaximumScale );
 
   QDomElement ilsElement = doc.createElement( u"individual-layer-settings"_s );
-  QList<QgsVectorLayer *> sortedLayers = mIndividualLayerSettings.keys();
-  std::sort( sortedLayers.begin(), sortedLayers.end(), []( QgsVectorLayer *a, QgsVectorLayer *b ) { return a->id() < b->id(); } );
-  for ( QgsVectorLayer *layer : std::as_const( sortedLayers ) )
+  QList<QgsMapLayer *> sortedLayers = mIndividualLayerSettings.keys();
+  std::sort( sortedLayers.begin(), sortedLayers.end(), []( QgsMapLayer *a, QgsMapLayer *b ) { return a->id() < b->id(); } );
+  for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )
   {
     const IndividualLayerSettings &setting = mIndividualLayerSettings.value( layer );
 
@@ -605,10 +602,9 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
   const auto constLayers = layers;
   for ( QgsMapLayer *ml : constLayers )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-    if ( vl && vl->isSpatial() )
+    if ( ml && ml->supportsSnapping() )
     {
-      mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units, 0.0, 0.0 ) );
+      mIndividualLayerSettings.insert( ml, IndividualLayerSettings( enabled, type, tolerance, units, 0.0, 0.0 ) );
       changed = true;
     }
   }
@@ -621,10 +617,8 @@ bool QgsSnappingConfig::removeLayers( const QList<QgsMapLayer *> &layers )
   const auto constLayers = layers;
   for ( QgsMapLayer *ml : constLayers )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-    if ( vl )
+    if ( ml && mIndividualLayerSettings.remove( ml ) > 0 )
     {
-      mIndividualLayerSettings.remove( vl );
       changed = true;
     }
   }
@@ -670,8 +664,8 @@ void QgsSnappingConfig::readLegacySettings()
   QStringList::const_iterator enabledIt( enabledList.constBegin() );
   for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mProject->mapLayer( *layerIt ) );
-    if ( !vlayer || !vlayer->isSpatial() )
+    QgsMapLayer *mlayer = mProject->mapLayer( *layerIt );
+    if ( !mlayer || !mlayer->supportsSnapping() )
       continue;
 
     const Qgis::SnappingTypes t(
@@ -679,7 +673,7 @@ void QgsSnappingConfig::readLegacySettings()
                                 : ( *snapIt == "to_segment"_L1 ? Qgis::SnappingType::Segment : static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) )
     );
 
-    mIndividualLayerSettings.insert( vlayer, IndividualLayerSettings( *enabledIt == "enabled"_L1, t, tolIt->toDouble(), static_cast<Qgis::MapToolUnit>( tolUnitIt->toInt() ), 0.0, 0.0 ) );
+    mIndividualLayerSettings.insert( mlayer, IndividualLayerSettings( *enabledIt == "enabled"_L1, t, tolIt->toDouble(), static_cast<Qgis::MapToolUnit>( tolUnitIt->toInt() ), 0.0, 0.0 ) );
   }
 
   const QString snapType = mProject->readEntry( u"Digitizing"_s, u"/DefaultSnapType"_s, u"off"_s );
