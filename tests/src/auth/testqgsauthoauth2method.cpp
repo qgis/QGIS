@@ -23,7 +23,6 @@
 
 #include <QApplication>
 #include <QDateTime>
-#include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QObject>
@@ -64,8 +63,6 @@ class TestQgsAuthOAuth2Method : public QObject
   private slots:
     void initTestCase();
     void cleanupTestCase();
-    void init();
-    void cleanup();
 
     void testOAuth2Config();
     void testOAuth2ConfigIO();
@@ -89,9 +86,7 @@ class TestQgsAuthOAuth2Method : public QObject
 
 QString TestQgsAuthOAuth2Method::sTestDataDir = QStringLiteral( TEST_DATA_DIR ) + "/auth_system/oauth2";
 
-
 QString TestQgsAuthOAuth2Method::smHashes = "#####################";
-//QObject *TestQgsAuthOAuth2Method::smParentObj = new QObject();
 
 void TestQgsAuthOAuth2Method::initTestCase()
 {
@@ -100,23 +95,11 @@ void TestQgsAuthOAuth2Method::initTestCase()
   QgsApplication::initQgis();
   if ( QgsApplication::authManager()->isDisabled() )
     QSKIP( "Auth system is disabled, skipping test case", SkipAll );
-
-  //qDebug() << QgsApplication::showSettings().toUtf8().constData();
 }
 
 void TestQgsAuthOAuth2Method::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-}
-
-void TestQgsAuthOAuth2Method::init()
-{
-  qDebug() << "\n************ Start " << QTest::currentTestFunction() << " ************";
-}
-
-void TestQgsAuthOAuth2Method::cleanup()
-{
-  qDebug() << "\n************ End " << QTest::currentTestFunction() << " ************";
 }
 
 QgsAuthOAuth2Config *TestQgsAuthOAuth2Method::baseConfig( bool loaded )
@@ -273,11 +256,11 @@ QByteArray TestQgsAuthOAuth2Method::baseVariantTxt()
 
 void TestQgsAuthOAuth2Method::testOAuth2Config()
 {
-  qDebug() << "Verify base object config";
+  // Verify base object config
   QgsAuthOAuth2Config *config1 = new QgsAuthOAuth2Config( qApp );
   QVERIFY( !config1->isValid() );
 
-  qDebug() << "Verify base object validity";
+  // Verify base object validity
   QgsAuthOAuth2Config *config2 = baseConfig();
   QVERIFY( !config2->isValid() );
   config2->deleteLater();
@@ -285,7 +268,7 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
   QgsAuthOAuth2Config *config3 = baseConfig( true );
   QVERIFY( config3->isValid() );
 
-  qDebug() << "Verify base object internal signals";
+  // Verify base object internal signals
   const QSignalSpy spy_config( config3, SIGNAL( configChanged() ) );
   QSignalSpy spy_valid( config3, SIGNAL( validityChanged( bool ) ) );
 
@@ -322,7 +305,6 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
   QVERIFY( config3b->isValid() );
   config3b->deleteLater();
 
-  qDebug() << "Validate equality";
   QgsAuthOAuth2Config *config4 = baseConfig( true );
   QgsAuthOAuth2Config *config5 = baseConfig( true );
   QgsAuthOAuth2Config *config6 = baseConfig();
@@ -339,7 +321,7 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
 
 void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
 {
-  qDebug() << "Verify saving config to text";
+  // Verify saving config to text
   QgsAuthOAuth2Config *config1 = baseConfig( true );
   bool ok = false;
   QByteArray cfgtxt = config1->saveConfigTxt( QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok );
@@ -356,8 +338,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   //qDebug() << "baseConfigTxt: \n" << baseConfigTxt( false );
   QCOMPARE( baseConfigTxt( false ), cfgtxt );
 
-  qDebug() << "Verify loading config from text";
-  // from base
+  // Verify loading config from text
   QgsAuthOAuth2Config *config2 = new QgsAuthOAuth2Config( qApp );
   QVERIFY( config2->loadConfigTxt( baseConfigTxt( true ), QgsAuthOAuth2Config::ConfigFormat::JSON ) );
   QVERIFY( *config1 == *config2 );
@@ -376,7 +357,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   //qDebug() << "baseConfigTxt: \n" << baseConfigTxt( true );
   QCOMPARE( baseConfigTxt( true ), cfgtxt );
 
-  qDebug() << "Verify writing config to file";
+  // Verify writing config to file
   const QString rndsuffix = QgsApplication::authManager()->uniqueConfigId();
   const QString dirname = QString( "oauth2_configs_%1" ).arg( rndsuffix );
   const QDir tmpdir = QDir::temp();
@@ -387,15 +368,13 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   config5->setName( "Blah blah" );
   config5->setRedirectPort( 2222 );
 
-  qDebug() << QDir::tempPath() + "/" + dirname;
-
   const QString config4path( QDir::tempPath() + "/" + dirname + "/config4.json" );
   const QString config5path( QDir::tempPath() + "/" + dirname + "/config5.json" );
 
   QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config4path, config4, QgsAuthOAuth2Config::ConfigFormat::JSON, true ) );
   QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config5path, config5, QgsAuthOAuth2Config::ConfigFormat::JSON, true ) );
 
-  qDebug() << "Verify reading config files from directory";
+  // Verify reading config files from directory
   ok = false;
   QList<QgsAuthOAuth2Config *> configs = QgsAuthOAuth2Config::loadOAuth2Configs( QDir::tempPath() + "/" + dirname, qApp, QgsAuthOAuth2Config::ConfigFormat::JSON, &ok );
   QVERIFY( ok );
@@ -423,14 +402,14 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigUtils()
   const QVariantMap basevmap = baseVariantMap();
   bool ok = false;
 
-  qDebug() << "Verify serializeFromVariant";
+  // Verify serializeFromVariant
   const QByteArray vtxt = QgsAuthOAuth2Config::serializeFromVariant( basevmap, QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok );
   QVERIFY( ok );
   //qDebug() << vtxt;
   //qDebug() << baseConfigTxt( true );
   QCOMPARE( vtxt, baseConfigTxt( true ) );
 
-  qDebug() << "Verify variantFromSerialized";
+  // Verify variantFromSerialized
   const QVariantMap vmap = QgsAuthOAuth2Config::variantFromSerialized( baseConfigTxt( true ), QgsAuthOAuth2Config::ConfigFormat::JSON, &ok );
   QVERIFY( ok );
   QCOMPARE( vmap.value( "name" ).toString(), QString( "MyConfig" ) );
