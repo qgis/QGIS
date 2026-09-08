@@ -262,6 +262,14 @@
     <string>Insert image</string>
    </property>
   </action>
+  <action name="mActionInsertImageFromUrl">
+   <property name="text">
+    <string>Insert Image from URL…</string>
+   </property>
+   <property name="toolTip">
+    <string>Download an image and insert it</string>
+   </property>
+  </action>
   <action name="mActionEditSource">
    <property name="checkable">
     <bool>true</bool>

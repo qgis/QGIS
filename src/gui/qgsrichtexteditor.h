@@ -194,6 +194,7 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, private Ui::QgsRichTextEdit
     void increaseIndentation();
     void decreaseIndentation();
     void insertImage();
+    void insertImageFromUrl();
     void editSource( bool enabled );
 
   private:
