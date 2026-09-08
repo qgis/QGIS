@@ -184,6 +184,13 @@ class CORE_EXPORT QgsLabelPosition
      * \since QGIS 4.4
      */
     long long groupedPositionIndex = 0;
+
+    /**
+     * Sub part identifier (for features which register multiple labels).
+     *
+     * \since QGIS 4.4
+     */
+    long long subPartId = 0;
 };
 
 #endif // QGSLABELPOSITION_H

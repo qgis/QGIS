@@ -81,7 +81,8 @@ class CORE_EXPORT QgsLabelingResults
       const QString &providerId = QString(),
       bool isUnplaced = false,
       long long linkedId = 0,
-      long long linkedPositionIndex = 0
+      long long linkedPositionIndex = 0,
+      long long subPartId = 0
     );
 #endif
 
