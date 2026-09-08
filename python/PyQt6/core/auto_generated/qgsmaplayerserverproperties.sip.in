@@ -112,35 +112,52 @@ Manages QGIS Server properties for WMS dimensions.
     struct WmsDimensionInfo
     {
 
-      enum DefaultDisplay /BaseType=IntEnum/
-      {
-        AllValues,
-        MinValue,
-        MaxValue,
-        ReferenceValue,
-      };
+        enum DefaultDisplay /BaseType=IntEnum/
+        {
+          AllValues,
+          MinValue,
+          MaxValue,
+          ReferenceValue,
+        };
 
-      explicit WmsDimensionInfo( const QString &dimName,
-                                 const QString &dimFieldName,
-                                 const QString &dimEndFieldName = QString(),
-                                 const QString &dimUnits = QString(),
-                                 const QString &dimUnitSymbol = QString(),
-                                 const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
-                                 const QVariant &dimReferenceValue = QVariant() );
+        explicit WmsDimensionInfo( const QString &dimName,
+                                   const QString &dimFieldName,
+                                   const QString &dimEndFieldName = QString(),
+                                   const QString &dimUnits = QString(),
+                                   const QString &dimUnitSymbol = QString(),
+                                   const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
+                                   const QVariant &dimReferenceValue = QVariant() );
 %Docstring
 Constructor for WmsDimensionInfo.
 %End
 
-      bool operator==( const WmsDimensionInfo &other ) const;
-      bool operator!=( const WmsDimensionInfo &other ) const;
+        bool operator==( const WmsDimensionInfo &other ) const;
+        bool operator!=( const WmsDimensionInfo &other ) const;
 
-      QString name;
-      QString fieldName;
-      QString endFieldName;
-      QString units;
-      QString unitSymbol;
-      int defaultDisplayType;
-      QVariant referenceValue;
+        QVariant referenceValue() const /PyName=_referenceValue/;
+%Docstring
+Returns reference value used when default display type is
+:py:class:`Qgis`.WmsDimensionDefaultDisplay.ReferenceValue
+
+.. versionadded:: 4.4
+%End
+
+        void setReferenceValue( const QVariant &referenceValue );
+%Docstring
+Set ``referenceValue`` used when default display type is
+:py:class:`Qgis`.WmsDimensionDefaultDisplay.ReferenceValue
+
+.. versionadded:: 4.4
+%End
+
+
+        QString name;
+        QString fieldName;
+        QString endFieldName;
+        QString units;
+        QString unitSymbol;
+        int defaultDisplayType;
+
     };
 
     virtual ~QgsServerWmsDimensionProperties();
