@@ -290,7 +290,7 @@ int QgsGrassNewMapset::nextId() const
   int id = currentId();
   switch ( id )
   {
-    case Location:
+    case Project:
       if ( mSelectLocationRadioButton->isChecked() )
       {
         id = MapSet;
@@ -1170,7 +1170,7 @@ void QgsGrassNewMapset::pageSelected( int index )
 
   switch ( index )
   {
-    case Location:
+    case Project:
       if ( mPreviousPage == Database )
       {
         setLocationPage();
@@ -1202,7 +1202,7 @@ void QgsGrassNewMapset::pageSelected( int index )
           projRadioSwitched();
         }
       }
-      if ( mPreviousPage == Location )
+      if ( mPreviousPage == Project )
       {
         setProjectionPage();
       }
@@ -1223,7 +1223,7 @@ void QgsGrassNewMapset::pageSelected( int index )
       break;
 
     case MapSet:
-      if ( mPreviousPage == Location || mPreviousPage == Region )
+      if ( mPreviousPage == Project || mPreviousPage == Region )
       {
         setMapsets();
         mapsetChanged();
