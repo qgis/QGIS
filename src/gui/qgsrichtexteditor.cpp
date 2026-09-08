@@ -35,6 +35,7 @@
 #include "qgscodeeditorwidget.h"
 #include "qgscolorbutton.h"
 #include "qgsgui.h"
+#include "qgsguiutils.h"
 #include "qgsnetworkaccessmanager.h"
 
 #include <QApplication>
@@ -247,8 +248,6 @@ void QgsRichTextEditor::setMode( Mode mode )
     mToolBar->addAction( mActionIncreaseIndent );
     mToolBar->addSeparator();
     mToolBar->addAction( mActionInsertLink );
-    // Both image sources share one toolbar slot: clicking the button inserts
-    // from a file as before, its arrow offers the URL alternative.
     QToolButton *insertImageButton = new QToolButton( mToolBar );
     insertImageButton->setDefaultAction( mActionInsertImage );
     insertImageButton->setPopupMode( QToolButton::MenuButtonPopup );
@@ -818,10 +817,13 @@ void QgsRichTextEditor::insertImageFromUrl()
     return;
   }
 
+  QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
+
   QNetworkRequest request( url );
   const QgsNetworkReplyContent content = QgsNetworkAccessManager::instance()->blockingGet( request );
   if ( content.error() != QNetworkReply::NoError || content.content().isEmpty() )
   {
+    busyCursor.release();
     QMessageBox::warning( this, tr( "Image from URL" ), tr( "Failed to download the image: %1" ).arg( content.errorString() ) );
     return;
   }
@@ -830,17 +832,16 @@ void QgsRichTextEditor::insertImageFromUrl()
   QBuffer buffer( &data );
   buffer.open( QIODevice::ReadOnly );
   QImageReader reader;
-  // Honour any EXIF orientation, so a photo taken on a phone does not come in
-  // on its side.
+  // Honour any EXIF orientation
   reader.setAutoTransform( true );
   reader.setDevice( &buffer );
-  // Take the format from the payload rather than the URL, which need not carry
-  // a usable extension at all.
+  // Take the format from the payload rather than the URL
   const QByteArray format = reader.format().isEmpty() ? QByteArray( "PNG" ) : reader.format().toUpper();
   const QImage image = reader.read();
+  busyCursor.release();
   if ( image.isNull() )
   {
-    QMessageBox::warning( this, tr( "Image from URL" ), tr( "That URL did not return an image." ) );
+    QMessageBox::warning( this, tr( "Image from URL" ), tr( "The URL did not return an image." ) );
     return;
   }
 
