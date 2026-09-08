@@ -177,6 +177,13 @@ class CORE_EXPORT QgsLabelPosition
      * All other linked positions will share the same groupedLabelId.
      */
     long long groupedLabelId = 0;
+
+    /**
+     * For grouped labels, indicates the character index for this particular position.
+     *
+     * \since QGIS 4.4
+     */
+    long long groupedPositionIndex = 0;
 };
 
 #endif // QGSLABELPOSITION_H
