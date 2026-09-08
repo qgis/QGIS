@@ -25,6 +25,8 @@
 
 using namespace Qt::StringLiterals;
 
+///@cond PRIVATE
+
 QgsRectangle QgsGlobeUtils::nodeIdToLonLatRect( QgsChunkNodeId id )
 {
   if ( id.d == 0 )
@@ -117,3 +119,5 @@ QgsRectangle QgsGlobeUtils::box3DTransformedExtent( const QgsBox3D &box3D, const
 
   return rect;
 }
+
+/// @endcond
