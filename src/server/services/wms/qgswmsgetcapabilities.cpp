@@ -1345,7 +1345,7 @@ namespace QgsWms
               }
               else if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::ReferenceValue )
               {
-                dimElem.setAttribute( QStringLiteral( "default" ), dim.referenceValue.toString() );
+                dimElem.setAttribute( QStringLiteral( "default" ), dim.referenceValue().toString() );
               }
               dimElem.setAttribute( QStringLiteral( "multipleValues" ), QStringLiteral( "1" ) );
               dimElem.setAttribute( QStringLiteral( "nearestValue" ), QStringLiteral( "0" ) );
