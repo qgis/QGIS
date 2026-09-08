@@ -24,13 +24,13 @@ Used to resolve layers from projects.
 #include "qgsrelationcontext.h"
 %End
   public:
- QgsRelationContext() /Deprecated="Since 4.4. Use QgsRelationContext( QgsProject *project ) instead."/;
+    QgsRelationContext() /Deprecated/;
 %Docstring
 Constructor for QgsRelationContext.
 
-.. deprecated:: 4.4
+.. note::
 
-   Use QgsRelationContext( :py:class:`QgsProject` *project ) instead.
+   Will be removed in QGIS 5.0. Use QgsRelationContext( :py:class:`QgsProject` *project ) with explicit project instead.
 %End
 
     QgsRelationContext( QgsProject *project );

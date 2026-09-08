@@ -37,9 +37,9 @@ class CORE_EXPORT QgsRelationContext
     /**
      * Constructor for QgsRelationContext.
      *
-     * \deprecated QGIS 4.4. Use QgsRelationContext( QgsProject *project ) instead.
+     * \note Will be removed in QGIS 5.0. Use QgsRelationContext( QgsProject *project ) with explicit project instead.
      */
-    Q_DECL_DEPRECATED QgsRelationContext() SIP_DEPRECATED;
+    QgsRelationContext() SIP_DEPRECATED;
 
     /**
      * Constructor for QgsRelationContext.
