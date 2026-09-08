@@ -229,11 +229,13 @@ void QgsStyle::clear()
   qDeleteAll( mSymbols );
   qDeleteAll( mColorRamps );
   qDeleteAll( m3dSymbols );
+  qDeleteAll( mMaterialSettings );
 
   mSymbols.clear();
   mColorRamps.clear();
   mTextFormats.clear();
   m3dSymbols.clear();
+  mMaterialSettings.clear();
 
   mCachedTags.clear();
   mCachedFavorites.clear();
