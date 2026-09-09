@@ -236,6 +236,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrandomraster.cpp
   processing/qgsalgorithmrastercalculator.cpp
+  processing/qgsalgorithmrastercellindex.cpp
   processing/qgsalgorithmrasterdtmslopebasedfilter.cpp
   processing/qgsalgorithmrasterfeaturepreservingsmoothing.cpp
   processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp
@@ -318,6 +319,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalues.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
+  processing/qgsalgorithmupslopearea.cpp
   processing/qgsalgorithmurlopener.cpp
   processing/qgsalgorithmhttprequest.cpp
   processing/qgsalgorithmvalidatenetwork.cpp

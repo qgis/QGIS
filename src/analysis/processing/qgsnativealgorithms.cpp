@@ -225,6 +225,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmrandompointsonlines.h"
 #include "qgsalgorithmrandomraster.h"
 #include "qgsalgorithmrastercalculator.h"
+#include "qgsalgorithmrastercellindex.h"
 #include "qgsalgorithmrasterdtmslopebasedfilter.h"
 #include "qgsalgorithmrasterfeaturepreservingsmoothing.h"
 #include "qgsalgorithmrasterfrequencybycomparisonoperator.h"
@@ -306,6 +307,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmunion.h"
 #include "qgsalgorithmuniquevalues.h"
 #include "qgsalgorithmuniquevalueindex.h"
+#include "qgsalgorithmupslopearea.h"
 #include "qgsalgorithmurlopener.h"
 #include "qgsalgorithmhttprequest.h"
 #include "qgsalgorithmvalidatenetwork.h"
@@ -602,6 +604,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRandomUniformRasterAlgorithm() );
   addAlgorithm( new QgsRasterCalculatorAlgorithm() );
   addAlgorithm( new QgsRasterCalculatorModelerAlgorithm() );
+  addAlgorithm( new QgsRasterCellIndexAlgorithm() );
   addAlgorithm( new QgsRasterDtmSlopeBasedFilterAlgorithm() );
   addAlgorithm( new QgsRasterFeaturePreservingSmoothingAlgorithm() );
   addAlgorithm( new QgsRasterFrequencyByEqualOperatorAlgorithm() );
@@ -700,6 +703,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsValidateNetworkAlgorithm() );
   addAlgorithm( new QgsOpenUrlAlgorithm() );
   addAlgorithm( new QgsHttpRequestAlgorithm() );
+  addAlgorithm( new QgsUpslopeAreaPointAlgorithm() );
+  addAlgorithm( new QgsUpslopeAreaLayerAlgorithm() );
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsVirtualRasterCalculatorAlgorithm() );
   addAlgorithm( new QgsVirtualRasterCalculatorModelerAlgorithm() );
