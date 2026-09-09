@@ -438,19 +438,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     template<class SymbolType> static std::unique_ptr< SymbolType > loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
     {
-      std::unique_ptr< QgsSymbol > tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element, context );
-      const bool canCast = dynamic_cast<SymbolType *>( tmpSymbol.get() );
-
-      if ( canCast )
-      {
-        std::unique_ptr< SymbolType > castRes( static_cast<SymbolType *>( tmpSymbol.release() ) );
-        return castRes;
-      }
-      else
-      {
-        //could not cast
-        return nullptr;
-      }
+      return qgis::unique_ptr_dynamic_cast<SymbolType>( QgsSymbolLayerUtils::loadSymbol( element, context ) );
     }
 
     //! Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
