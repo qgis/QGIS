@@ -39,6 +39,7 @@ class ANALYSIS_EXPORT QgsThinPlateSplineAlgorithmBase : public QgsProcessingAlgo
     QString group() const override;
     QString groupId() const override;
     QList<QgsAcademicReference> academicReferences() const override;
+    QList<QgsProcessingAlgorithm::ExternalLink> externalLinks() const override;
 
   protected:
     void addCommonParameters();

@@ -77,6 +77,13 @@ QList<QgsAcademicReference> QgsThinPlateSplineAlgorithmBase::academicReferences(
   return { donatoReference, elonenReference };
 }
 
+QList<QgsProcessingAlgorithm::ExternalLink> QgsThinPlateSplineAlgorithmBase::externalLinks() const
+{
+  return {
+    QgsProcessingAlgorithm::ExternalLink { QObject::tr( "SAGA tool source code" ), u"https://sourceforge.net/p/saga-gis/code/ci/33d1062b7120c696c9dd258378c48d86dc33560c/tree/saga-gis/src/tools/grid/grid_spline/Gridding_Spline_TPS_Local.cpp"_s }
+  };
+}
+
 void QgsThinPlateSplineAlgorithmBase::addCommonParameters()
 {
   auto inputParam = std::make_unique<QgsProcessingParameterFeatureSource>( u"INPUT"_s, QObject::tr( "Point layer" ), QList<int> { static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) } );
