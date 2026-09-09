@@ -1092,3 +1092,16 @@ tests:
       OUTPUT:
         name: expected/text_to_float.gml
         type: vector
+
+  - algorithm: native:flowdirection
+    name: Flow direction
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+    results:
+      OUTPUT:
+        hash: 3e98c57138159539764242f0b131676cf01a8dbcc21af7723c0fb267
+        type: rasterhash
+  
