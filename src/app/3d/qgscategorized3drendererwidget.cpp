@@ -252,6 +252,7 @@ void QgsCategorized3DRendererWidget::changeCategorySymbol()
 
   QgsSymbol3DWidget *widget = new QgsSymbol3DWidget( mLayer, this );
   widget->setSymbol( symbol.get(), mLayer );
+  widget->setMode( Qgis::MaterialWidgetMode::Compact );
   widget->setPanelTitle( category.value().toString() );
   connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
   openPanel( widget );

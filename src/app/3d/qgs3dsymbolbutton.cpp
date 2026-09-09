@@ -108,6 +108,7 @@ void Qgs3DSymbolButton::showSettingsDialog()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   QgsSymbol3DWidget *widget = new QgsSymbol3DWidget( mLayer, this );
   widget->setSymbol( mSymbol.get(), mLayer );
+  widget->setMode( Qgis::MaterialWidgetMode::Compact );
   widget->setPanelTitle( mDialogTitle );
   if ( panel && panel->dockMode() )
   {
