@@ -331,6 +331,7 @@ using namespace Qt::StringLiterals;
 #include "qgsstylealgorithms.h"
 #include "qgsalgorithmflowconnectivity.h"
 #include "qgsalgorithmflowdirection.h"
+#include "qgsalgorithmstrahlerorder.h"
 
 ///@cond PRIVATE
 
@@ -689,6 +690,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSplitVectorLayerAlgorithm() );
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
   addAlgorithm( new QgsStDbscanClusteringAlgorithm() );
+  addAlgorithm( new QgsStrahlerOrderFromDemAlgorithm() );
+  addAlgorithm( new QgsStrahlerOrderFromFlowDirectionAlgorithm() );
   addAlgorithm( new QgsStringConcatenationAlgorithm() );
   addAlgorithm( new QgsStyleFromProjectAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
