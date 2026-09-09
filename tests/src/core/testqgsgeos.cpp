@@ -56,6 +56,11 @@ class TestQgsGeos : public QObject
     void pointGeometryFromGeos();
     void linestringGeometryFromGeos_data();
     void linestringGeometryFromGeos();
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+    void splitGeometry_data();
+    void splitGeometry();
+#endif
 };
 
 void TestQgsGeos::compareGeoms( const QgsAbstractGeometry *inputGeom, const QString expectedWkt )
@@ -520,6 +525,199 @@ void TestQgsGeos::linestringGeometryFromGeos()
     QGSCOMPARENEAR( polylinePt.y(), linePt.y(), 4 * std::numeric_limits<double>::epsilon() );
   }
 }
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+void TestQgsGeos::splitGeometry_data()
+{
+  QTest::addColumn<QString>( "wktA" );
+  QTest::addColumn<QString>( "wktB" );
+  QTest::addColumn<QStringList>( "expectedGeomWkts" );
+  QTest::addColumn<QgsGeometryEngine::EngineOperationResult>( "expectedResult" );
+
+  //Invalid geometries
+  QTest::newRow( "Split an invalid geometry" ) << u"Point (0, 0)"_s << u"LineString (0 0, 1 1)"_s << QStringList() << QgsGeometryEngine::InvalidBaseGeometry;
+  QTest::newRow( "Split with invalid geometry" ) << u"LineString (0 0, 1 1)"_s << u"Point (0, 0)"_s << QStringList() << QgsGeometryEngine::InvalidInput;
+
+  //Points
+  QTest::newRow( "Split point" ) << u"Point (0 0)"_s << u"LineString (0 0, 1 1)"_s << QStringList() << QgsGeometryEngine::SplitCannotSplitPoint;
+
+  //LineStrings
+  QStringList geomWkts;
+  geomWkts << u"LineString (0 0, 1 1)"_s;
+  QTest::newRow( "Split line by point (disjoint)" ) << u"LineString (0 0, 1 1)"_s << u"Point (2 2)"_s << geomWkts << QgsGeometryEngine::Success;
+  QTest::newRow( "Split line by point (lying on endpoint)" ) << u"LineString (0 0, 1 1)"_s << u"Point (1 1)"_s << geomWkts << QgsGeometryEngine::Success;
+
+  geomWkts.clear();
+  geomWkts << u"LineString (0 0, 1 0)"_s;
+  geomWkts << u"LineString (1 0, 2 0)"_s;
+  geomWkts << u"LineString (2 0, 3 0)"_s;
+  geomWkts << u"LineString (3 0, 10 0)"_s;
+  QTest::newRow( "Split LineString with MultiLineString (GEOS #17)" ) << u"LINESTRING(0 0, 10 0)"_s << u"MULTILINESTRING((1 1,1 -1),(2 1,2 -1,3 -1,3 1))"_s << geomWkts << QgsGeometryEngine::Success;
+
+  geomWkts.clear();
+  geomWkts << u"LineString (0 0, 1 0)"_s;
+  geomWkts << u"LineString (1 0, 2 0)"_s;
+  geomWkts << u"LineString (2 0, 3 0)"_s;
+  geomWkts << u"LineString (3 0, 10 0)"_s;
+  QTest::newRow( "Split LineString with Polygon (GEOS #18)" ) << u"LINESTRING(0 0, 10 0)"_s << u"POLYGON((1 -2,1 1,2 1,2 -1,3 -1,3 1,11 1,11 -2,1 -2))"_s << geomWkts << QgsGeometryEngine::Success;
+
+  //Empty geometry, not yet supported
+  // geomWkts.clear();
+  // geomWkts << u"LineString (0 0, 10 0)"_s;
+  // QTest::newRow( "Split LineString with empty Polygon (GEOS #19)" ) << u"LINESTRING(0 0, 10 0)"_s << u"POLYGON EMPTY"_s << geomWkts << QgsGeometryEngine::Success;
+
+  //Empty geometry, not yet supported
+  // geomWkts.clear();
+  // geomWkts << u"LineString EMPTY"_s;
+  // QTest::newRow( "Split empty LineString with Point (GEOS #45)" ) << u"LINESTRING EMPTY"_s << u"POINT(0 1)"_s << geomWkts << QgsGeometryEngine::Success;
+
+  //CircularStrings
+  geomWkts.clear();
+  geomWkts << u"CircularString (2 2, 2.70710678 1.70710678, 3 1)"_s;
+  geomWkts << u"CircularString (3 1, 2.70710678 0.29289322, 2 0)"_s;
+  QTest::newRow( "Split CircularString with Point" ) << u"CircularString (2 2, 3 1, 2 0)"_s << u"Point (3 1)"_s << geomWkts << QgsGeometryEngine::Success;
+
+  //CompoundCurves
+  geomWkts.clear();
+  geomWkts << u"LineString (0 1, 1 1.5)"_s;
+  geomWkts << u"CompoundCurve ((1 1.5, 2 2),CircularString (2 2, 3 1, 2 0),(2 0, 0 1))"_s;
+  QTest::newRow( "Split CompoundCurve with Point" ) << u"CompoundCurve ((0 1, 2 2),CircularString (2 2, 3 1, 2 0),(2 0, 0 1))"_s << u"Point (1 1.5)"_s << geomWkts << QgsGeometryEngine::Success;
+
+  geomWkts.clear();
+  geomWkts << u"LineString (0 1, 1 1.5)"_s;
+  geomWkts << u"CompoundCurve ((1 1.5, 2 2),CircularString (2 2, 3 1, 2 0))"_s;
+  geomWkts << u"LineString (2 0, 0 1)"_s;
+  QTest::newRow( "Split CompoundCurve with MultiPoint" ) << u"CompoundCurve ((0 1, 2 2),CircularString (2 2, 3 1, 2 0),(2 0, 0 1))"_s << u"MultiPoint ((1 1.5), (2 0))"_s << geomWkts << QgsGeometryEngine::Success;
+
+  geomWkts.clear();
+  geomWkts << u"LineString (0 1, 1 1.5)"_s;
+  geomWkts << u"CompoundCurve ((1 1.5, 2 2),CircularString (2 2, 3 1, 2 0),(2 0, 1 0.5))"_s;
+  geomWkts << u"LineString (1 0.5, 0 1)"_s;
+  QTest::newRow( "Split CompoundCurve with LineString" ) << u"CompoundCurve ((0 1, 2 2),CircularString (2 2, 3 1, 2 0),(2 0, 0 1))"_s << u"LineString (1 2, 1 0)"_s << geomWkts << QgsGeometryEngine::Success;
+
+  geomWkts.clear();
+  geomWkts << u"CurvePolygon (CompoundCurve (CircularString (3 19, 0 22, 3 25, 6 28, 9 25),(9 25, 14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 10 4, 0.76393202 4),CircularString (0.76393202 4, 0.26138721 7.22474487, 3 9),(3 9, 8 14, 3 19)))"_s;
+  geomWkts << u"CurvePolygon (CompoundCurve ((10 4, 9 3),CircularString (9 3, 6 0, 3 3, 1.77525513 3.26138721, 0.76393202 4),(0.76393202 4, 10 4)))"_s;
+  QTest::newRow( "Split CompoundCurve (cross shape) with LineString" )
+    << u"CurvePolygon (CompoundCurve (CircularString (3 19, 0 22, 3 25, 6 28, 9 25),( 9 25, 14 20, 19 25 ),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 19) ))"_s
+    << u"LineString (-1 4, 15 4)"_s
+    << geomWkts
+    << QgsGeometryEngine::Success;
+
+  //Polygons
+  geomWkts.clear();
+  geomWkts << u"Polygon Z ((0 5 10, 0 10 20, 1 10 21, 1 5 11, 0 5 10))"_s;
+  geomWkts << u"Polygon Z ((1 10 21, 10 10 30, 10 5 20, 1 5 11, 1 10 21))"_s;
+  QTest::newRow( "Split PolygonZ with LineString (GEOS #73)" ) << u"POLYGONZ ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10))"_s << u"LINESTRING(1 11, 1 5)"_s << geomWkts << QgsGeometryEngine::Success;
+
+  //CurvePolygons
+  geomWkts.clear();
+  geomWkts << u"CurvePolygon (CompoundCurve ((5 0, 0 0, 5 5),CircularString (5 5, 7 1, 5 0)))"_s;
+  geomWkts << u"Polygon ((0 0, 0 5, 5 5, 0 0))"_s;
+  QTest::newRow( "Split CurvePolygon with CurvePolygon" )
+    << u"CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 0 5, 5 5), CIRCULARSTRING(5 5, 7 1, 5 0)))"_s
+    << u"CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 5 5), CIRCULARSTRING(5 5, 7 4, 5 0)))"_s
+    << geomWkts
+    << QgsGeometryEngine::Success;
+  QTest::newRow( "Split CurvePolygon with Polygon" )
+    << u"CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 0 5, 5 5), CIRCULARSTRING(5 5, 7 1, 5 0)))"_s
+    << u"POLYGON ((0 0, 0 5, 5 5, 0 0))"_s
+    << geomWkts
+    << QgsGeometryEngine::Success;
+
+  QTest::newRow( "Split CurvePolygon with Point (Not yet supported)" )
+    << u"CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 0 5, 5 5), CIRCULARSTRING(5 5, 7 1, 5 0)))"_s
+    << u"Point (0 2.5)"_s
+    << QStringList()
+    << QgsGeometryEngine::EngineError;
+
+  //Collections
+
+  //MultiPoints
+  QTest::newRow( "Split MultiPoints" ) << u"MultiPoint ((0 0), (2 2))"_s << u"LineString (0 0, 1 1)"_s << QStringList() << QgsGeometryEngine::SplitCannotSplitPoint;
+
+  //MultiLineStrings
+  geomWkts.clear();
+  //geomWkts << u"MultiLineString ((0 5, 10 5),(10 5, 15 5))"_s;
+  geomWkts << u"LineString (0 5, 10 5)"_s;
+  geomWkts << u"LineString (10 5, 15 5)"_s;
+  QTest::newRow( "Split MultiLineString with disjoint geometry" ) << u"MultiLineString ((0 5, 10 5),(10 5, 15 5))"_s << u"LineString (5 1, 5 -1)"_s << geomWkts << QgsGeometryEngine::Success;
+
+  geomWkts.clear();
+  geomWkts << u"LineString (0 5, 5 5)"_s;
+  geomWkts << u"LineString (5 5, 10 5)"_s;
+  geomWkts << u"LineString (10 5, 15 5)"_s;
+  QTest::newRow( "Split MultiLineString with Point" ) << u"MultiLineString ((0 5, 10 5),(10 5, 15 5))"_s << u"Point (5 5)"_s << geomWkts << QgsGeometryEngine::Success;
+
+  geomWkts.clear();
+  geomWkts << u"LineString (0 5, 10 5)"_s;
+  geomWkts << u"LineString (10 5, 15 5)"_s;
+  QTest::newRow( "Split MultiLineString with LineString" ) << u"MultiLineString ((0 5, 10 5),(10 5, 15 5))"_s << u"LineString (0 0, 10 5)"_s << geomWkts << QgsGeometryEngine::Success;
+
+  //MultiCurves
+  geomWkts.clear();
+  geomWkts << u"LineString (-10 0, -8 0)"_s;
+  geomWkts << u"LineString (-8 0, -5 0)"_s;
+  geomWkts << u"CompoundCurve (CircularString (-5 0, 0 5, 5 0),(5 0, 8 0))"_s;
+  geomWkts << u"LineString (8 0, 10 0)"_s;
+  geomWkts << u"CircularString (10 0, 15 -5, 20 0)"_s;
+  QTest::newRow( "Split MultiCurve containing CompoundCurve (GEOS #69)" )
+    << u"MULTICURVE ((-10 0, -5 0), COMPOUNDCURVE (CIRCULARSTRING (-5 0, 0 5, 5 0), (5 0, 10 0)), CIRCULARSTRING (10 0, 15 -5, 20 0))"_s
+    << u"MULTILINESTRING ((-8 -10, -8 10), (8 -10, 8 10))"_s
+    << geomWkts
+    << QgsGeometryEngine::Success;
+
+  //MultiPolygons
+  geomWkts.clear();
+  //Preserve M, not yet supported
+  //geomWkts << u"Polygon ZM ((1000000 6800000 0 0, 1000000 6800100 1 1, 1000135 6800100 1.675 1.675, 1000135 6800000 0 0, 1000000 6800000 0 0))"_s;
+  //geomWkts << u"Polygon ZM ((1000135 6800100 1.675 1.675, 1000200 6800100 2 2, 1000200 6800000 0 0, 1000135 6800000 0 0, 1000135 6800100 1.675 1.675)))"_s;
+  geomWkts << u"Polygon Z ((1000000 6800000 0, 1000000 6800100 1, 1000135 6800100 1.675, 1000135 6800000 0, 1000000 6800000 0))"_s;
+  geomWkts << u"Polygon Z ((1000135 6800100 1.675, 1000200 6800100 2, 1000200 6800000 0, 1000135 6800000 0, 1000135 6800100 1.675))"_s;
+  QTest::newRow( "Split MultiPolygon with LineString (preserve Z values)" )
+    << u"MultiPolygon ZM (((1000000 6800000 0 0, 1000000 6800100 1 1, 1000200 6800100 2 2, 1000200 6800000 0 0, 1000000 6800000 0 0)))"_s
+    << u"LineString( 1000135 6800130, 1000135 6799975 )"_s
+    << geomWkts
+    << QgsGeometryEngine::Success;
+
+  //MultiSurfaces
+  geomWkts.clear();
+  geomWkts << u"Polygon Z ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 3 5 13, 0 5 10))"_s;
+  QTest::newRow( "Split MultiSurfaceZ with LineString" ) << u"MULTISURFACE Z (POLYGONZ ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10)))"_s << u"LineString(3 6, 3 -1)"_s << geomWkts << QgsGeometryEngine::Success;
+
+  //MultiSurface with curves, not yet supported in GEOS
+  // geomWkts.clear();
+  // geomWkts << u"CurvePolygon (CompoundCurve ((5 0, 0 0, 5 5),CircularString (5 5, 7 1, 5 0)))"_s;
+  // geomWkts << u"Polygon ((0 0, 0 5, 5 5, 0 0))"_s;
+  // QTest::newRow( "Split MultiSurface with CurvePolygon" ) << u"MULTISURFACE(CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 0 5, 5 5), CIRCULARSTRING(5 5, 7 1, 5 0))))"_s << u"CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 5 5), CIRCULARSTRING(5 5, 7 4, 5 0)))"_s << geomWkts << QgsGeometryEngine::Success;
+}
+
+void TestQgsGeos::splitGeometry()
+{
+  QFETCH( QString, wktA );
+  QFETCH( QString, wktB );
+  QFETCH( QStringList, expectedGeomWkts );
+  QFETCH( QgsGeometryEngine::EngineOperationResult, expectedResult );
+
+  bool topological = false;
+  QgsPointSequence topologyTestPoints;
+
+  QgsGeometry geomA = QgsGeometry::fromWkt( wktA );
+  QgsGeometry geomB = QgsGeometry::fromWkt( wktB );
+  QVector< QgsGeometry> newGeoms;
+
+  QString lastError;
+  QgsGeos geos( geomA.constGet() );
+  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *geomB.constGet(), newGeoms, topological, topologyTestPoints, &lastError );
+
+  QCOMPARE( result, expectedResult );
+  QCOMPARE( newGeoms.count(), expectedGeomWkts.count() );
+  for ( const QgsGeometry &geom : std::as_const( newGeoms ) )
+  {
+    QVERIFY( expectedGeomWkts.contains( geom.asWkt( 8 ) ) );
+  }
+}
+#endif
 
 QGSTEST_MAIN( TestQgsGeos )
 #include "testqgsgeos.moc"
