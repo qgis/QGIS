@@ -656,10 +656,31 @@ void QgsWMSSourceSelect::addButtonClicked()
     uri.setParam( u"layers"_s, layers );
     uri.setParam( u"styles"_s, styles );
 
+    // name the layer after the node the user actually selected, so a selected group is named after the group's title
+    QStringList selectedTitles;
+    const QList<QTreeWidgetItem *> selectedItems = lstLayers->selectedItems();
+    selectedTitles.reserve( selectedItems.size() );
+    for ( QTreeWidgetItem *item : selectedItems )
+    {
+      QString itemTitle = item->data( 0, Qt::UserRole + 3 ).toString();
+      if ( itemTitle.isEmpty() )
+        itemTitle = item->text( 2 );
+      if ( !itemTitle.isEmpty() )
+        selectedTitles << itemTitle;
+    }
+
+    // default to the collected sublayer titles when there is no tree selection
+    // and handle WMTS tilesets
+    QString title = selectedTitles.isEmpty() ? titles.join( '/'_L1 ) : selectedTitles.join( '/'_L1 );
+
+    // bound generated name in case it still exceeds max length
+    constexpr int MAX_WMS_LAYER_NAME_LENGTH = 255;
+    title = title.left( MAX_WMS_LAYER_NAME_LENGTH );
+
     Q_NOWARN_DEPRECATED_PUSH
-    emit addRasterLayer( uri.encodedUri(), titles.join( '/'_L1 ), u"wms"_s );
+    emit addRasterLayer( uri.encodedUri(), title, u"wms"_s );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), titles.join( '/'_L1 ), u"wms"_s );
+    emit addLayer( Qgis::LayerType::Raster, uri.encodedUri(), title, u"wms"_s );
   }
 }
 
