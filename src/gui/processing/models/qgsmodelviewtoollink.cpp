@@ -2,8 +2,8 @@
                              qgsmodelviewtoollink.cpp
                              ------------------------------------
     Date                 : January 2024
-    Copyright            : (C) 2024 Valentin Buira
-    Email                : valentin dot buira at gmail dot com
+    Copyright            : (C) 2024 Celia Buira
+    Email                : celia dot buira at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

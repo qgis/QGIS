@@ -2,8 +2,8 @@
                          testqgssymbollayermodel.cpp
                          --------------------------
     begin                : July 2026
-    copyright            : (C) 2026 by Valentin Buira
-    email                : valentin dot buira at gmail dot com
+    copyright            : (C) 2026 by Celia Buira
+    email                : celia dot buira at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
