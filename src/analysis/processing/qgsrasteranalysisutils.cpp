@@ -646,5 +646,73 @@ double QgsRasterAnalysisUtils::interpolatedPercentRankExc( std::vector<double> &
   }
 }
 
+double QgsRasterAnalysisUtils::neighborCellDistance( int direction, double cellSizeX, double cellSizeY )
+{
+  switch ( direction )
+  {
+    case 0: // north
+    case 4: // south
+      return cellSizeY;
+    case 2: // east
+    case 6: // west
+      return cellSizeX;
+    default: // diagonal
+      return std::hypot( cellSizeX, cellSizeY );
+  }
+  BUILTIN_UNREACHABLE
+}
+
+bool QgsRasterAnalysisUtils::neighborCellCoordinates( int direction, int row, int column, int &neighborRow, int &neighborColumn, int rows, int columns )
+{
+  static constexpr std::array<int, 8> COL_DIRECTION_OFFSETS { 0, 1, 1, 1, 0, -1, -1, -1 };
+  static constexpr std::array<int, 8> ROW_DIRECTION_OFFSETS { -1, -1, 0, 1, 1, 1, 0, -1 };
+
+  neighborColumn = column + COL_DIRECTION_OFFSETS[direction];
+  neighborRow = row + ROW_DIRECTION_OFFSETS[direction];
+  return ( neighborColumn >= 0 && neighborColumn < columns && neighborRow >= 0 && neighborRow < rows );
+}
+
+int QgsRasterAnalysisUtils::steepestGradientDirection( const QgsRasterBlock *demBlock, int row, int column, double cellSizeX, double cellSizeY, bool down, bool noEdges )
+{
+  const int rows = demBlock->height();
+  const int columns = demBlock->width();
+
+  bool isCenterNoData = false;
+  const double z = demBlock->valueAndNoData( row, column, isCenterNoData );
+  if ( isCenterNoData )
+    return -1;
+
+  double maxGradient = 0.0;
+  int steepestDir = -1;
+
+  bool isNeighborNodata = false;
+  for ( int dir = 0; dir < 8; ++dir )
+  {
+    int nCol = 0;
+    int nRow = 0;
+    if ( neighborCellCoordinates( dir, row, column, nRow, nCol, rows, columns ) )
+    {
+      const double nZ = demBlock->valueAndNoData( nRow, nCol, isNeighborNodata );
+      if ( !isNeighborNodata )
+      {
+        const double grad = ( z - nZ ) / neighborCellDistance( dir, cellSizeX, cellSizeY );
+        if ( ( !down || grad > 0 ) && ( steepestDir == -1 || grad > maxGradient ) )
+        {
+          maxGradient = grad;
+          steepestDir = dir;
+        }
+      }
+      else if ( noEdges )
+      {
+        return -1;
+      }
+    }
+    else if ( noEdges )
+    {
+      return -1;
+    }
+  }
+  return steepestDir;
+}
 
 ///@endcond PRIVATE

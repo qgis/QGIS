@@ -37,7 +37,7 @@ class QgsRasterDataProvider;
 class QgsFeedback;
 class QgsRasterBlock;
 
-namespace QgsRasterAnalysisUtils
+namespace ANALYSIS_EXPORT QgsRasterAnalysisUtils
 {
 
   /**
@@ -241,7 +241,92 @@ namespace QgsRasterAnalysisUtils
    */
   double interpolatedPercentRankExc( std::vector<double> &cellValues, int stackSize, double value, double noDataValue );
 
-} // namespace QgsRasterAnalysisUtils
+  /**
+   * Calculates the Euclidean distance from a central grid cell to an adjacent neighbor
+   * cell in a specified direction, accounting for rectangular cell dimensions.
+   *
+   * Neighbor directions follow SAGA's 8-neighbor clockwise convention starting at North:
+   *
+   * - 0 = North
+   * - 1 = North-East
+   * - 2 = East
+   * - 3 = South-East
+   * - 4 = South
+   * - 5 = South-West
+   * - 6 = West
+   * - 7 = North-West
+   *
+   * \param direction Neighbor direction index (0 to 7).
+   * \param cellSizeX Cell width in map units.
+   * \param cellSizeY Cell height in map units.
+   *
+   * \returns The distance to the neighbor cell in map units.
+   *
+   * \since QGIS 4.4
+   */
+  double neighborCellDistance( int direction, double cellSizeX, double cellSizeY );
+
+  /**
+   * Computes the column and row indices for an adjacent neighbor cell in a specified direction,
+   * and determines whether the resulting cell falls within valid grid extent boundaries.
+   *
+   * Neighbor directions follow SAGA's 8-neighbor clockwise convention starting at North:
+   *
+   * - 0 = North
+   * - 1 = North-East
+   * - 2 = East
+   * - 3 = South-East
+   * - 4 = South
+   * - 5 = South-West
+   * - 6 = West
+   * - 7 = North-West
+   *
+   * \param direction Direction to the neighbor cell (0 to 7).
+   * \param column Origin cell column index.
+   * \param row Origin cell row index.
+   * \param neighborColumn will be set to the column index of the neighbor cell.
+   * \param neighborRow will be set to the row index of the neighbor cell.
+   * \param columns Total number of columns in the grid.
+   * \param rows Total number of rows in the grid.
+   *
+   * \returns TRUE if the neighbor cell lies strictly within grid boundaries
+   *
+   * \since QGIS 4.4
+   */
+  bool neighborCellCoordinates( int direction, int row, int column, int &neighborRow, int &neighborColumn, int rows, int columns );
+
+  /**
+   * Identifies the neighbor direction corresponding to the maximum surface gradient
+   * from a central cell using the Deterministic 8 (D8) flow routing model.
+   *
+   * Evaluates all 8 adjacent neighbor cells in the raster block to find the direction of steepest
+   * downslope drop (or steepest upslope rise if \a downhill is FALSE).
+   *
+   * - 0 = North
+   * - 1 = North-East
+   * - 2 = East
+   * - 3 = South-East
+   * - 4 = South
+   * - 5 = South-West
+   * - 6 = West
+   * - 7 = North-West
+   *
+   * \param demBlock Raster block containing elevation surface values.
+   * \param rows total number of rows in raster block.
+   * \param row Central cell row index.
+   * \param column Central cell column index.
+   * \param cellSizeX Cell width in map units.
+   * \param cellSizeY Cell height in map units.
+   * \param downhill If TRUE, finds the steepest downslope direction. If FALSE, finds the steepest upslope direction.
+   * \param noEdges If TRUE returns -1 if the central cell or any adjacent neighbor lies on the outer boundary of the raster block or borders a NoData cell.
+   *
+   * \returns the Direction index (0 to 7) corresponding to the steepest gradient, or -1 if no valid gradient
+   *         exists (e.g. flat terrain, sink/pit cell, NoData cell, or edge cell when \a noEdges is TRUE).
+   */
+  int steepestGradientDirection( const QgsRasterBlock *demBlock, int row, int column, double cellSizeX, double cellSizeY, bool downhill = true, bool noEdges = true );
+
+
+} //namespace ANALYSIS_EXPORT QgsRasterAnalysisUtils
 
 
 ///@endcond PRIVATE

@@ -34,10 +34,6 @@ using namespace Qt::StringLiterals;
 static constexpr std::array<int, 8> SAGA_X { 0, 1, 1, 1, 0, -1, -1, -1 };
 static constexpr std::array<int, 8> SAGA_Y { 1, 1, 0, -1, -1, -1, 0, 1 };
 
-// QGIS Raster Block Offsets (col offset, row offset where row 0 is Top/North):
-static constexpr std::array<int, 8> COL_DIRECTION_OFFSETS { 0, 1, 1, 1, 0, -1, -1, -1 };
-static constexpr std::array<int, 8> ROW_DIRECTION_OFFSETS { -1, -1, 0, 1, 1, 1, 0, -1 };
-
 QString QgsUpslopeAreaAlgorithmBase::group() const
 {
   return QObject::tr( "Raster terrain analysis" );
@@ -176,28 +172,6 @@ bool QgsUpslopeAreaAlgorithmBase::prepareBase( const QVariantMap &parameters, Qg
   return true;
 }
 
-double QgsUpslopeAreaAlgorithmBase::neighborLength( int dir, double cellSizeX, double cellSizeY )
-{
-  switch ( dir )
-  {
-    case 0: // north
-    case 4: // south
-      return cellSizeY;
-    case 2: // east
-    case 6: // west
-      return cellSizeX;
-    default: // diagonal
-      return std::hypot( cellSizeX, cellSizeY );
-  }
-}
-
-int QgsUpslopeAreaAlgorithmBase::neighborTo( int dir, int col, int &outCol, int row, int &outRow, int cols, int rows )
-{
-  outCol = col + COL_DIRECTION_OFFSETS[dir];
-  outRow = row + ROW_DIRECTION_OFFSETS[dir];
-  return ( outCol >= 0 && outCol < cols && outRow >= 0 && outRow < rows );
-}
-
 bool QgsUpslopeAreaAlgorithmBase::calculateUpslopeArea( const std::vector<QgsPointXY> &targetPoints, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   const qgssize nCells = static_cast<qgssize>( mCols ) * mRows;
@@ -315,7 +289,7 @@ void QgsUpslopeAreaAlgorithmBase::computeCellValue( const QgsRasterBlock *demBlo
     {
       int neighborCol = 0;
       int neighborRow = 0;
-      if ( neighborTo( routeDir, col, neighborCol, row, neighborRow, cols, rows ) )
+      if ( QgsRasterAnalysisUtils::neighborCellCoordinates( routeDir, row, col, neighborRow, neighborCol, row, cols ) )
       {
         const double routedFlow = mFlowData[static_cast<qgssize>( neighborRow ) * cols + neighborCol];
         if ( routedFlow > 0.0 )
@@ -349,39 +323,13 @@ void QgsUpslopeAreaAlgorithmBase::computeCellValue( const QgsRasterBlock *demBlo
 
 void QgsUpslopeAreaAlgorithmBase::computeD8( const QgsRasterBlock *demBlock, int col, int row, int cols, int rows, double cellSizeX, double cellSizeY )
 {
-  const double z = demBlock->value( row, col );
-  double maxGradient = 0.0;
-  int steepestDir = -1;
-
-  bool isNodata = false;
-  for ( int dir = 0; dir < 8; ++dir )
-  {
-    int nCol = 0;
-    int nRow = 0;
-    if ( neighborTo( dir, col, nCol, row, nRow, cols, rows ) )
-    {
-      const double nZ = demBlock->valueAndNoData( nRow, nCol, isNodata );
-      if ( !isNodata )
-      {
-        const double dz = z - nZ;
-        if ( dz > 0.0 )
-        {
-          const double grad = dz / neighborLength( dir, cellSizeX, cellSizeY );
-          if ( grad > maxGradient )
-          {
-            maxGradient = grad;
-            steepestDir = dir;
-          }
-        }
-      }
-    }
-  }
+  const int steepestDir = QgsRasterAnalysisUtils::steepestGradientDirection( demBlock, row, col, cellSizeX, cellSizeY );
 
   if ( steepestDir >= 0 )
   {
     int neighborCol = 0;
     int neighborRow = 0;
-    neighborTo( steepestDir, col, neighborCol, row, neighborRow, cols, rows );
+    QgsRasterAnalysisUtils::neighborCellCoordinates( steepestDir, row, col, neighborRow, neighborCol, rows, cols );
     const double neighborFlow = mFlowData[static_cast<qgssize>( neighborRow ) * cols + neighborCol];
     if ( neighborFlow > 0.0 )
     {
@@ -415,13 +363,13 @@ void QgsUpslopeAreaAlgorithmBase::computeDInf( const QgsRasterBlock *demBlock, i
     int oppositeNeighborRow = 0;
     bool neighborIsNoData = true;
     double neighborZ = 0;
-    if ( neighborTo( iDir, col, neighborCol, row, neighborRow, cols, rows ) )
+    if ( QgsRasterAnalysisUtils::neighborCellCoordinates( iDir, row, col, neighborRow, neighborCol, rows, cols ) )
     {
       neighborZ = demBlock->valueAndNoData( neighborRow, neighborCol, neighborIsNoData );
     }
     bool oppositeIsNoData = true;
     double oppositeNeighborZ = 0;
-    if ( neighborTo( oppositeDir, col, oppositeNeighborCol, row, oppositeNeighborRow, cols, rows ) )
+    if ( QgsRasterAnalysisUtils::neighborCellCoordinates( oppositeDir, row, col, oppositeNeighborRow, oppositeNeighborCol, rows, cols ) )
     {
       oppositeNeighborZ = demBlock->valueAndNoData( oppositeNeighborRow, oppositeNeighborCol, oppositeIsNoData );
     }
@@ -470,7 +418,7 @@ void QgsUpslopeAreaAlgorithmBase::computeDInf( const QgsRasterBlock *demBlock, i
     int iRow = 0;
     int jCol = 0;
     int jRow = 0;
-    if ( neighborTo( i, col, iCol, row, iRow, cols, rows ) && neighborTo( j, col, jCol, row, jRow, cols, rows ) )
+    if ( QgsRasterAnalysisUtils::neighborCellCoordinates( i, row, col, iRow, iCol, rows, cols ) && QgsRasterAnalysisUtils::neighborCellCoordinates( j, row, col, jRow, jCol, rows, cols ) )
     {
       bool iIsNoData = false;
       const double zi = demBlock->valueAndNoData( iRow, iCol, iIsNoData );
@@ -511,7 +459,7 @@ void QgsUpslopeAreaAlgorithmBase::computeMFD( const QgsRasterBlock *demBlock, in
     dz[dir] = 0.0;
     int neighborCol = 0;
     int neighborRow = 0;
-    if ( neighborTo( dir, col, neighborCol, row, neighborRow, cols, rows ) )
+    if ( QgsRasterAnalysisUtils::neighborCellCoordinates( dir, row, col, neighborRow, neighborCol, rows, cols ) )
     {
       const double nZ = demBlock->valueAndNoData( neighborRow, neighborCol, isNodata );
       if ( !isNodata )
@@ -519,7 +467,7 @@ void QgsUpslopeAreaAlgorithmBase::computeMFD( const QgsRasterBlock *demBlock, in
         const double diff = z - nZ;
         if ( diff > 0.0 )
         {
-          const double length = neighborLength( dir, cellSizeX, cellSizeY );
+          const double length = QgsRasterAnalysisUtils::neighborCellDistance( dir, cellSizeX, cellSizeY );
           const double weight = std::pow( diff / length, converge ) * ( ( contour && ( dir % 2 ) ) ? ( M_SQRT1_2 ) : 1.0 );
           dz[dir] = weight;
           dzSum += weight;
@@ -537,7 +485,7 @@ void QgsUpslopeAreaAlgorithmBase::computeMFD( const QgsRasterBlock *demBlock, in
       {
         int nCol = 0;
         int nRow = 0;
-        neighborTo( dir, col, nCol, row, nRow, cols, rows );
+        QgsRasterAnalysisUtils::neighborCellCoordinates( dir, row, col, nRow, nCol, rows, cols );
         const double nFlow = mFlowData[static_cast<qgssize>( nRow ) * cols + nCol];
         if ( nFlow > 0.0 )
         {
@@ -565,7 +513,7 @@ void QgsUpslopeAreaAlgorithmBase::computeMMDGFD( const QgsRasterBlock *demBlock,
     dz[dir] = 0.0;
     int neighborCol = 0;
     int neighborRow = 0;
-    if ( neighborTo( dir, col, neighborCol, row, neighborRow, cols, rows ) )
+    if ( QgsRasterAnalysisUtils::neighborCellCoordinates( dir, row, col, neighborRow, neighborCol, rows, cols ) )
     {
       const double nZ = demBlock->valueAndNoData( neighborRow, neighborCol, isNodata );
       if ( !isNodata )
@@ -573,7 +521,7 @@ void QgsUpslopeAreaAlgorithmBase::computeMMDGFD( const QgsRasterBlock *demBlock,
         const double diff = z - nZ;
         if ( diff > 0.0 )
         {
-          dz[dir] = diff / neighborLength( dir, cellSizeX, cellSizeY );
+          dz[dir] = diff / QgsRasterAnalysisUtils::neighborCellDistance( dir, cellSizeX, cellSizeY );
           if ( dzMax < dz[dir] )
           {
             dzMax = dz[dir];
@@ -606,7 +554,7 @@ void QgsUpslopeAreaAlgorithmBase::computeMMDGFD( const QgsRasterBlock *demBlock,
         {
           int neighborCol = 0;
           int neighborRow = 0;
-          neighborTo( i, col, neighborCol, row, neighborRow, cols, rows );
+          QgsRasterAnalysisUtils::neighborCellCoordinates( i, row, col, neighborRow, neighborCol, rows, cols );
           const double nFlow = mFlowData[static_cast<qgssize>( neighborRow ) * cols + neighborCol];
           if ( nFlow > 0.0 )
           {
@@ -643,7 +591,7 @@ void QgsUpslopeAreaAlgorithmBase::computeMDInf( const QgsRasterBlock *demBlock, 
     rFacet[i] = -999;
     int neighborCol = 0;
     int neighborRow = 0;
-    if ( neighborTo( i, col, neighborCol, row, neighborRow, cols, rows ) )
+    if ( QgsRasterAnalysisUtils::neighborCellCoordinates( i, row, col, neighborRow, neighborCol, rows, cols ) )
     {
       const double nZ = demBlock->valueAndNoData( neighborRow, neighborCol, isNodata );
       if ( !isNodata )
@@ -692,19 +640,19 @@ void QgsUpslopeAreaAlgorithmBase::computeMDInf( const QgsRasterBlock *demBlock, 
           if ( dz[i] > dz[j] )
           {
             hr = i * ( M_PI / 4.0 );
-            hs = dz[i] / neighborLength( i, cellSizeX, cellSizeY );
+            hs = dz[i] / QgsRasterAnalysisUtils::neighborCellDistance( i, cellSizeX, cellSizeY );
           }
           else
           {
             hr = j * ( M_PI / 4.0 );
-            hs = dz[j] / neighborLength( j, cellSizeX, cellSizeY );
+            hs = dz[j] / QgsRasterAnalysisUtils::neighborCellDistance( j, cellSizeX, cellSizeY );
           }
         }
       }
       else if ( dz[i] > 0.0 )
       {
         hr = i * ( M_PI / 4.0 );
-        hs = dz[i] / neighborLength( i, cellSizeX, cellSizeY );
+        hs = dz[i] / QgsRasterAnalysisUtils::neighborCellDistance( i, cellSizeX, cellSizeY );
       }
 
       sFacet[i] = hs;
@@ -775,7 +723,7 @@ void QgsUpslopeAreaAlgorithmBase::computeMDInf( const QgsRasterBlock *demBlock, 
       if ( portion[i] > 0.0 )
       {
         int nCol = 0, nRow = 0;
-        if ( neighborTo( i, col, nCol, row, nRow, cols, rows ) )
+        if ( QgsRasterAnalysisUtils::neighborCellCoordinates( i, row, col, nRow, nCol, rows, cols ) )
         {
           const double nFlow = mFlowData[static_cast<qgssize>( nRow ) * cols + nCol];
           if ( nFlow > 0.0 )
