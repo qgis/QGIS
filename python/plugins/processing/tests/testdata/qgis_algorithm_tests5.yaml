@@ -1104,4 +1104,61 @@ tests:
       OUTPUT:
         hash: b0ba61e6b3940744eceb1ac03f60b4d84b855a94562670327701737c
         type: rasterhash
-  
+
+  - algorithm: native:strahlerorderfromdem
+    name: Strahler order from DEM, threshold 1
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 1
+    results:
+      OUTPUT:
+        hash: d8ceeb0ca56cb5a0dbd363c98a983bd55990c8286f41f8731e90f783
+        type: rasterhash
+
+  - algorithm: native:strahlerorderfromdem
+    name: Strahler order from DEM, threshold 3
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 3
+    results:
+      OUTPUT:
+        hash: a210382b64cc4139232a63e3bccf34e65c18c0d5d158aec84398b635
+        type: rasterhash
+
+  - algorithm: native:strahlerorderfromflowdirection
+    name: Strahler order from DEM and flow direction, threshold 1
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      INPUT_FLOW_DIRECTION:
+        name: custom/flow_dir.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 1
+    results:
+      OUTPUT:
+        hash: d8ceeb0ca56cb5a0dbd363c98a983bd55990c8286f41f8731e90f783
+        type: rasterhash
+
+  - algorithm: native:strahlerorderfromflowdirection
+    name: Strahler order from DEM and flow direction, threshold 3
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      INPUT_FLOW_DIRECTION:
+        name: custom/flow_dir.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 3
+    results:
+      OUTPUT:
+        hash: a210382b64cc4139232a63e3bccf34e65c18c0d5d158aec84398b635
+        type: rasterhash
