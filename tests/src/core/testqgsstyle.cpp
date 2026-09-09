@@ -530,14 +530,14 @@ void TestStyle::testCreateMaterialSettings()
 
   QVERIFY( mStyle->materialSettingsNames().contains( u"test_settings"_s ) );
   QCOMPARE( mStyle->materialSettingsCount(), 1 );
-  std::unique_ptr<QgsGoochMaterialSettings> retrieved( dynamic_cast<QgsGoochMaterialSettings *>( mStyle->materialSettings( u"test_settings"_s ).release() ) );
+  auto retrieved = qgis::unique_ptr_dynamic_cast<QgsGoochMaterialSettings>( mStyle->materialSettings( u"test_settings"_s ) );
   QCOMPARE( retrieved->warm().name(), u"#0000ff"_s );
 
   settings.setWarm( QColor( 0, 255, 255 ) );
   QVERIFY( mStyle->addMaterialSettings( "test_settings", settings.clone(), true ) );
   QVERIFY( mStyle->materialSettingsNames().contains( u"test_settings"_s ) );
   QCOMPARE( mStyle->materialSettingsCount(), 1 );
-  retrieved.reset( dynamic_cast<QgsGoochMaterialSettings *>( mStyle->materialSettings( u"test_settings"_s ).release() ) );
+  retrieved = qgis::unique_ptr_dynamic_cast<QgsGoochMaterialSettings>( mStyle->materialSettings( u"test_settings"_s ) );
   QCOMPARE( retrieved->warm().name(), u"#00ffff"_s );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( spyChanged.count(), 1 );
@@ -547,9 +547,9 @@ void TestStyle::testCreateMaterialSettings()
   QVERIFY( mStyle->addMaterialSettings( "test_format2", phong.clone(), true ) );
   QVERIFY( mStyle->materialSettingsNames().contains( u"test_format2"_s ) );
   QCOMPARE( mStyle->materialSettingsCount(), 2 );
-  retrieved.reset( dynamic_cast<QgsGoochMaterialSettings *>( mStyle->materialSettings( u"test_settings"_s ).release() ) );
+  retrieved = qgis::unique_ptr_dynamic_cast<QgsGoochMaterialSettings>( mStyle->materialSettings( u"test_settings"_s ) );
   QCOMPARE( retrieved->warm().name(), u"#00ffff"_s );
-  std::unique_ptr<QgsPhongMaterialSettings> retrieved2( dynamic_cast<QgsPhongMaterialSettings *>( mStyle->materialSettings( u"test_format2"_s ).release() ) );
+  auto retrieved2 = qgis::unique_ptr_dynamic_cast<QgsPhongMaterialSettings>( mStyle->materialSettings( u"test_format2"_s ) );
   QCOMPARE( retrieved2->ambient().name(), u"#009bff"_s );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spyChanged.count(), 1 );
@@ -563,9 +563,9 @@ void TestStyle::testCreateMaterialSettings()
   QVERIFY( style2.materialSettingsNames().contains( u"test_settings"_s ) );
   QVERIFY( style2.materialSettingsNames().contains( u"test_format2"_s ) );
   QCOMPARE( style2.materialSettingsCount(), 2 );
-  retrieved.reset( dynamic_cast<QgsGoochMaterialSettings *>( style2.materialSettings( u"test_settings"_s ).release() ) );
+  retrieved = qgis::unique_ptr_dynamic_cast<QgsGoochMaterialSettings>( style2.materialSettings( u"test_settings"_s ) );
   QCOMPARE( retrieved->warm().name(), u"#00ffff"_s );
-  retrieved2.reset( dynamic_cast<QgsPhongMaterialSettings *>( style2.materialSettings( u"test_format2"_s ).release() ) );
+  retrieved2 = qgis::unique_ptr_dynamic_cast<QgsPhongMaterialSettings>( style2.materialSettings( u"test_format2"_s ) );
   QCOMPARE( retrieved2->ambient().name(), u"#009bff"_s );
 
   QCOMPARE( mStyle->allNames( QgsStyle::MaterialSettingsEntity ), QStringList() << u"test_format2"_s << u"test_settings"_s );
