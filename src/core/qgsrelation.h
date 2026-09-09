@@ -114,6 +114,18 @@ class CORE_EXPORT QgsRelation
     QgsRelation &operator=( const QgsRelation &other );
     QgsRelation &operator=( QgsRelation &&other );
 
+    // TODO QGIS 5.0 -- Remove the deprecated createFromXml method without the relationContext parameter
+    /**
+     * Creates a relation from an XML structure. Used for reading .qgs projects.
+     *
+     * \param node The dom node containing the relation information
+     * \param context to pass project translator
+     *
+     * \returns A relation
+     * \deprecated QGIS 4.4. Use createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext ) instead.
+     */
+    Q_DECL_DEPRECATED static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context ) SIP_DEPRECATED;
+
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.
      *
@@ -123,7 +135,7 @@ class CORE_EXPORT QgsRelation
      *
      * \returns A relation
      */
-    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext = QgsRelationContext() );
+    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext );
 
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects

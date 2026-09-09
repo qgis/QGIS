@@ -56,7 +56,22 @@ shared and only duplicated when the copy is changed.
 %End
 
 
-    static QgsPolymorphicRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext = QgsRelationContext() );
+ static QgsPolymorphicRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context ) /Deprecated="Since 4.4. Use createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext ) instead."/;
+%Docstring
+Creates a relation from an XML structure. Used for reading .qgs
+projects.
+
+:param node: The dom node containing the relation information
+:param context: to pass project translator
+
+:return: A relation
+
+.. deprecated:: 4.4
+
+   Use createFromXml( const QDomNode &node, :py:class:`QgsReadWriteContext` &context, const :py:class:`QgsRelationContext` &relationContext ) instead.
+%End
+
+    static QgsPolymorphicRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext );
 %Docstring
 Creates a relation from an XML structure. Used for reading .qgs
 projects.
