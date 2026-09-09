@@ -549,8 +549,6 @@ QgsAbstractProviderConnection.uri: src/core/providers/qgsabstractproviderconnect
 QgsAbstractProviderConnection: src/core/providers/qgsabstractproviderconnection.h#L42
 QgsAbstractRasterLayerLabeling.accept: src/core/raster/qgsrasterlabeling.h#L266
 QgsAbstractRasterLayerLabeling.clone: src/core/raster/qgsrasterlabeling.h#L196
-QgsAbstractRasterLayerLabeling.createFromElement: src/core/raster/qgsrasterlabeling.h#L252
-QgsAbstractRasterLayerLabeling.defaultLabelingForLayer: src/core/raster/qgsrasterlabeling.h#L190
 QgsAbstractRasterLayerLabeling.hasNonDefaultCompositionMode: src/core/raster/qgsrasterlabeling.h#L230
 QgsAbstractRasterLayerLabeling.isInScaleRange: src/core/raster/qgsrasterlabeling.h#L245
 QgsAbstractRasterLayerLabeling.multiplyOpacity: src/core/raster/qgsrasterlabeling.h#L238
@@ -2601,7 +2599,6 @@ QgsColorRampShader.classifyColorRamp: src/core/raster/qgscolorrampshader.h#L184
 QgsColorRampShader.clip: src/core/raster/qgscolorrampshader.h#L229
 QgsColorRampShader.colorRampType: src/core/raster/qgscolorrampshader.h#L123
 QgsColorRampShader.colorRampTypeAsQString: src/core/raster/qgscolorrampshader.h#L126
-QgsColorRampShader.createColorRamp: src/core/raster/qgscolorrampshader.h#L158
 QgsColorRampShader.isEmpty: src/core/raster/qgscolorrampshader.h#L146
 QgsColorRampShader.legendSettings: src/core/raster/qgscolorrampshader.h#L237
 QgsColorRampShader.legendSymbologyItems: src/core/raster/qgscolorrampshader.h#L190
@@ -6202,7 +6199,6 @@ QgsHillshadeRenderer.azimuth: src/core/raster/qgshillshaderenderer.h#L88
 QgsHillshadeRenderer.band: src/core/raster/qgshillshaderenderer.h#L73
 QgsHillshadeRenderer.block: src/core/raster/qgshillshaderenderer.h#L60
 QgsHillshadeRenderer.clone: src/core/raster/qgshillshaderenderer.h#L47
-QgsHillshadeRenderer.create: src/core/raster/qgshillshaderenderer.h#L56
 QgsHillshadeRenderer.flags: src/core/raster/qgshillshaderenderer.h#L48
 QgsHillshadeRenderer.inputBand: src/core/raster/qgshillshaderenderer.h#L63
 QgsHillshadeRenderer.multiDirectional: src/core/raster/qgshillshaderenderer.h#L106
@@ -11085,7 +11081,6 @@ QgsMultiBandColorRenderer.block: src/core/raster/qgsmultibandcolorrenderer.h#L66
 QgsMultiBandColorRenderer.blueBand: src/core/raster/qgsmultibandcolorrenderer.h#L101
 QgsMultiBandColorRenderer.blueContrastEnhancement: src/core/raster/qgsmultibandcolorrenderer.h#L157
 QgsMultiBandColorRenderer.clone: src/core/raster/qgsmultibandcolorrenderer.h#L61
-QgsMultiBandColorRenderer.create: src/core/raster/qgsmultibandcolorrenderer.h#L64
 QgsMultiBandColorRenderer.flags: src/core/raster/qgsmultibandcolorrenderer.h#L62
 QgsMultiBandColorRenderer.greenBand: src/core/raster/qgsmultibandcolorrenderer.h#L87
 QgsMultiBandColorRenderer.greenContrastEnhancement: src/core/raster/qgsmultibandcolorrenderer.h#L137
@@ -11690,7 +11685,6 @@ QgsPalettedRasterRenderer.classDataToString: src/core/raster/qgspalettedrasterre
 QgsPalettedRasterRenderer.classes: src/core/raster/qgspalettedrasterrenderer.h#L115
 QgsPalettedRasterRenderer.clone: src/core/raster/qgspalettedrasterrenderer.h#L102
 QgsPalettedRasterRenderer.colorTableToClassData: src/core/raster/qgspalettedrasterrenderer.h#L174
-QgsPalettedRasterRenderer.create: src/core/raster/qgspalettedrasterrenderer.h#L105
 QgsPalettedRasterRenderer.flags: src/core/raster/qgspalettedrasterrenderer.h#L103
 QgsPalettedRasterRenderer.inputBand: src/core/raster/qgspalettedrasterrenderer.h#L148
 QgsPalettedRasterRenderer.label: src/core/raster/qgspalettedrasterrenderer.h#L134
@@ -15280,8 +15274,6 @@ QgsRasterAttributeTable.appendField: src/core/raster/qgsrasterattributetable.h#L
 QgsRasterAttributeTable.appendRow: src/core/raster/qgsrasterattributetable.h#L316
 QgsRasterAttributeTable.color: src/core/raster/qgsrasterattributetable.h#L203
 QgsRasterAttributeTable.colorRamp: src/core/raster/qgsrasterattributetable.h#L385
-QgsRasterAttributeTable.createFromRaster: src/core/raster/qgsrasterattributetable.h#L443
-QgsRasterAttributeTable.createRenderer: src/core/raster/qgsrasterattributetable.h#L397
 QgsRasterAttributeTable.fieldByName: src/core/raster/qgsrasterattributetable.h#L340
 QgsRasterAttributeTable.filePath: src/core/raster/qgsrasterattributetable.h#L424
 QgsRasterAttributeTable.guessFieldUsage: src/core/raster/qgsrasterattributetable.h#L411
@@ -15390,7 +15382,6 @@ QgsRasterContourRenderer.contourIndexInterval: src/core/raster/qgsrastercontourr
 QgsRasterContourRenderer.contourIndexSymbol: src/core/raster/qgsrastercontourrenderer.h#L73
 QgsRasterContourRenderer.contourInterval: src/core/raster/qgsrastercontourrenderer.h#L58
 QgsRasterContourRenderer.contourSymbol: src/core/raster/qgsrastercontourrenderer.h#L63
-QgsRasterContourRenderer.create: src/core/raster/qgsrastercontourrenderer.h#L46
 QgsRasterContourRenderer.downscale: src/core/raster/qgsrastercontourrenderer.h#L83
 QgsRasterContourRenderer.flags: src/core/raster/qgsrastercontourrenderer.h#L43
 QgsRasterContourRenderer.inputBand: src/core/raster/qgsrastercontourrenderer.h#L54
@@ -15758,7 +15749,6 @@ QgsRasterLayerSimpleLabeling.QgsRasterLayerSimpleLabeling: src/core/raster/qgsra
 QgsRasterLayerSimpleLabeling.accept: src/core/raster/qgsrasterlabeling.h#L291
 QgsRasterLayerSimpleLabeling.band: src/core/raster/qgsrasterlabeling.h#L334
 QgsRasterLayerSimpleLabeling.clone: src/core/raster/qgsrasterlabeling.h#L288
-QgsRasterLayerSimpleLabeling.create: src/core/raster/qgsrasterlabeling.h#L297
 QgsRasterLayerSimpleLabeling.hasNonDefaultCompositionMode: src/core/raster/qgsrasterlabeling.h#L293
 QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility: src/core/raster/qgsrasterlabeling.h#L500
 QgsRasterLayerSimpleLabeling.isInScaleRange: src/core/raster/qgsrasterlabeling.h#L502
@@ -15981,7 +15971,6 @@ QgsRasterRenderer.toSld: src/core/raster/qgsrasterrenderer.h#L213
 QgsRasterRenderer.type: src/core/raster/qgsrasterrenderer.h#L68
 QgsRasterRenderer.usesTransparency: src/core/raster/qgsrasterrenderer.h#L117
 QgsRasterRenderer: src/core/raster/qgsrasterrenderer.h#L41
-QgsRasterRendererRegistry.defaultRendererForDrawingStyle: src/core/raster/qgsrasterrendererregistry.h#L147
 QgsRasterRendererRegistry.rendererCapabilities: src/core/raster/qgsrasterrendererregistry.h#L141
 QgsRasterRendererRegistry.renderersList: src/core/raster/qgsrasterrendererregistry.h#L127
 QgsRasterRendererRegistry: src/core/raster/qgsrasterrendererregistry.h#L90
@@ -16034,7 +16023,6 @@ QgsRasterShaderFunction: src/core/raster/qgsrastershaderfunction.h#L35
 QgsRasterSingleColorRenderer.block: src/core/raster/qgsrastersinglecolorrenderer.h#L51
 QgsRasterSingleColorRenderer.clone: src/core/raster/qgsrastersinglecolorrenderer.h#L45
 QgsRasterSingleColorRenderer.color: src/core/raster/qgsrastersinglecolorrenderer.h#L57
-QgsRasterSingleColorRenderer.create: src/core/raster/qgsrastersinglecolorrenderer.h#L49
 QgsRasterSingleColorRenderer.flags: src/core/raster/qgsrastersinglecolorrenderer.h#L46
 QgsRasterSingleColorRenderer.inputBand: src/core/raster/qgsrastersinglecolorrenderer.h#L67
 QgsRasterSingleColorRenderer.setColor: src/core/raster/qgsrastersinglecolorrenderer.h#L63
@@ -17748,7 +17736,6 @@ QgsSimplifyMethod.tolerance: src/core/qgssimplifymethod.h#L48
 QgsSimplifyMethod: src/core/qgssimplifymethod.h#L27
 QgsSingleBandColorDataRenderer.block: src/core/raster/qgssinglebandcolordatarenderer.h#L50
 QgsSingleBandColorDataRenderer.clone: src/core/raster/qgssinglebandcolordatarenderer.h#L41
-QgsSingleBandColorDataRenderer.create: src/core/raster/qgssinglebandcolordatarenderer.h#L44
 QgsSingleBandColorDataRenderer.flags: src/core/raster/qgssinglebandcolordatarenderer.h#L42
 QgsSingleBandColorDataRenderer.inputBand: src/core/raster/qgssinglebandcolordatarenderer.h#L47
 QgsSingleBandColorDataRenderer.setInput: src/core/raster/qgssinglebandcolordatarenderer.h#L46
@@ -17758,7 +17745,6 @@ QgsSingleBandColorDataRenderer: src/core/raster/qgssinglebandcolordatarenderer.h
 QgsSingleBandGrayRenderer.block: src/core/raster/qgssinglebandgrayrenderer.h#L56
 QgsSingleBandGrayRenderer.clone: src/core/raster/qgssinglebandgrayrenderer.h#L51
 QgsSingleBandGrayRenderer.contrastEnhancement: src/core/raster/qgssinglebandgrayrenderer.h#L71
-QgsSingleBandGrayRenderer.create: src/core/raster/qgssinglebandgrayrenderer.h#L54
 QgsSingleBandGrayRenderer.flags: src/core/raster/qgssinglebandgrayrenderer.h#L52
 QgsSingleBandGrayRenderer.gradient: src/core/raster/qgssinglebandgrayrenderer.h#L76
 QgsSingleBandGrayRenderer.grayBand: src/core/raster/qgssinglebandgrayrenderer.h#L61
@@ -17780,7 +17766,6 @@ QgsSingleBandPseudoColorRenderer.canCreateRasterAttributeTable: src/core/raster/
 QgsSingleBandPseudoColorRenderer.classificationMax: src/core/raster/qgssinglebandpseudocolorrenderer.h#L107
 QgsSingleBandPseudoColorRenderer.classificationMin: src/core/raster/qgssinglebandpseudocolorrenderer.h#L106
 QgsSingleBandPseudoColorRenderer.clone: src/core/raster/qgssinglebandpseudocolorrenderer.h#L45
-QgsSingleBandPseudoColorRenderer.create: src/core/raster/qgssinglebandpseudocolorrenderer.h#L47
 QgsSingleBandPseudoColorRenderer.createShader: src/core/raster/qgssinglebandpseudocolorrenderer.h#L71
 QgsSingleBandPseudoColorRenderer.flags: src/core/raster/qgssinglebandpseudocolorrenderer.h#L46
 QgsSingleBandPseudoColorRenderer.inputBand: src/core/raster/qgssinglebandpseudocolorrenderer.h#L103
