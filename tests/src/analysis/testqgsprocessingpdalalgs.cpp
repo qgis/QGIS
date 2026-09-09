@@ -611,7 +611,7 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
 #if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 6 )
   parameters.insert( u"MAX_EDGE_LENGTH"_s, 25 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << u"to_raster_tin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--max_triangle_edge_length=25"_s );
+  QCOMPARE( args, QStringList() << u"to_raster_tin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--max-triangle-edge-length=25"_s );
   parameters.remove( u"MAX_EDGE_LENGTH"_s );
 #endif
 #endif
