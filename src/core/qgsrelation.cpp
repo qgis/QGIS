@@ -32,6 +32,7 @@ using namespace Qt::StringLiterals;
 
 QgsRelation::QgsRelation()
   : d( new QgsRelationPrivate() )
+  , mContext( nullptr )
 {}
 
 QgsRelation::QgsRelation( const QgsRelationContext &context )
@@ -69,6 +70,12 @@ QgsRelation &QgsRelation::operator=( QgsRelation &&other )
   d = std::move( other.d );
   mContext = std::move( other.mContext );
   return *this;
+}
+
+// TODO QGIS 5.0 -- Remove the deprecated createFromXml method without the relationContext parameter
+QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context )
+{
+  return createFromXml( node, context, QgsRelationContext( QgsProject::instance() ) ); // skip-keyword-check
 }
 
 QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext )
