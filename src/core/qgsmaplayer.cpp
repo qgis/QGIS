@@ -2163,7 +2163,7 @@ QDomDocument QgsMapLayer::exportSldStyleV3( QgsSldExportContext &exportContext )
     root.setAttribute( u"xsi:schemaLocation"_s, u"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd"_s );
     root.setAttribute( u"xmlns:gml"_s, u"http://www.opengis.net/gml"_s );
     root.setAttribute( u"xmlns:ogc"_s, u"http://www.opengis.net/ogc"_s );
-	root.setAttribute( u"xmlns:sld"_s, u"http://www.opengis.net/sld"_s );
+    root.setAttribute( u"xmlns:sld"_s, u"http://www.opengis.net/sld"_s );
     root.setAttribute( u"xmlns:xlink"_s, u"http://www.w3.org/1999/xlink"_s );
     root.setAttribute( u"xmlns:xsi"_s, u"http://www.w3.org/2001/XMLSchema-instance"_s );
     myDocument.appendChild( root );
