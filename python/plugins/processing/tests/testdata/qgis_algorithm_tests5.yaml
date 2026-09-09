@@ -1092,4 +1092,16 @@ tests:
       OUTPUT:
         hash: 3e98c57138159539764242f0b131676cf01a8dbcc21af7723c0fb267
         type: rasterhash
+
+  - algorithm: native:flowconnectivity
+    name: Flow connectivity
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+    results:
+      OUTPUT:
+        hash: b0ba61e6b3940744eceb1ac03f60b4d84b855a94562670327701737c
+        type: rasterhash
   
