@@ -1080,3 +1080,16 @@ tests:
       OUTPUT:
         hash: b3e5e52a5754a8ad57e4672937a0b87ab8a104642c989132f840da75
         type: rasterhash
+
+  - algorithm: native:flowdirection
+    name: Flow direction
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+    results:
+      OUTPUT:
+        hash: 3e98c57138159539764242f0b131676cf01a8dbcc21af7723c0fb267
+        type: rasterhash
+  
