@@ -328,6 +328,7 @@ using namespace Qt::StringLiterals;
 #include "qgsmetadataalgorithms.h"
 #include "qgsprojectstylealgorithms.h"
 #include "qgsstylealgorithms.h"
+#include "qgsalgorithmflowdirection.h"
 
 ///@cond PRIVATE
 
@@ -507,6 +508,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFindProjectionAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsFlattenRelationshipsAlgorithm() );
+  addAlgorithm( new QgsFlowDirectionD8Algorithm() );
   addAlgorithm( new QgsForceCCWAlgorithm() );
   addAlgorithm( new QgsForceCWAlgorithm() );
   addAlgorithm( new QgsForceRHRAlgorithm() );
