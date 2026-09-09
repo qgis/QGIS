@@ -1108,13 +1108,6 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
     return SplitCannotSplitPoint; //cannot split points
   }
 
-  if ( QgsWkbTypes::geometryType( splitGeom.wkbType() ) == Qgis::GeometryType::Point && QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Polygon )
-  {
-    //currently, points cannot split polygons,
-    //but it could change in the future in GEOS
-    return EngineError;
-  }
-
   GEOSContextHandle_t context = QgsGeosContext::get();
   EngineOperationResult returnCode = Success;
 
@@ -1127,6 +1120,13 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
     if ( !splitGeosGeom || !GEOSisValid_r( context, splitGeosGeom.get() ) || !GEOSisSimple_r( context, splitGeosGeom.get() ) )
     {
       return InvalidInput;
+    }
+
+    if ( QgsWkbTypes::geometryType( splitGeom.wkbType() ) == Qgis::GeometryType::Point && QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Polygon )
+    {
+      //currently, points cannot split polygons,
+      //but it could change in the future in GEOS
+      return EngineError;
     }
 
     // if ( topological )
