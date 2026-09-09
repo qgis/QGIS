@@ -29,6 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsPolymorphicRelation::QgsPolymorphicRelation()
   : d( new QgsPolymorphicRelationPrivate() )
+  , mContext( nullptr )
 {}
 
 QgsPolymorphicRelation::QgsPolymorphicRelation( const QgsRelationContext &context )
@@ -66,6 +67,12 @@ QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( QgsPolymorphicRelatio
   d = std::move( other.d );
   mContext = std::move( other.mContext );
   return *this;
+}
+
+// TODO QGIS 5.0 -- Remove the deprecated createFromXml method without the relationContext parameter
+QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context )
+{
+  return createFromXml( node, context, QgsRelationContext( QgsProject::instance() ) ); // skip-keyword-check
 }
 
 QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext )
