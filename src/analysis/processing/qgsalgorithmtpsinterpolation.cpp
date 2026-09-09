@@ -107,14 +107,6 @@ void QgsThinPlateSplineAlgorithmBase::addOutputParameters()
   pixelSizeParam->setHelp( QObject::tr( "Pixel size in layer units used to calculate output grid dimensions." ) );
   addParameter( pixelSizeParam.release() );
 
-  auto colsParam = std::make_unique<QgsProcessingParameterNumber>( u"COLUMNS"_s, QObject::tr( "Number of columns" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 0, 10000000 );
-  colsParam->setFlags( colsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
-  addParameter( colsParam.release() );
-
-  auto rowsParam = std::make_unique<QgsProcessingParameterNumber>( u"ROWS"_s, QObject::tr( "Number of rows" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 0, 10000000 );
-  rowsParam->setFlags( rowsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
-  addParameter( rowsParam.release() );
-
   auto outputNodataParam = std::make_unique<QgsProcessingParameterNumber>( u"NODATA"_s, QObject::tr( "Output NoData value" ), Qgis::ProcessingNumberParameterType::Double, -9999.0 );
   outputNodataParam->setHelp( QObject::tr( "The NODATA value to use in the output raster." ) );
   outputNodataParam->setFlags( outputNodataParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
