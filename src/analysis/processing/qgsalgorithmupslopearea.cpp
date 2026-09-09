@@ -93,7 +93,7 @@ QList<QgsAcademicReference> QgsUpslopeAreaAlgorithmBase::academicReferences() co
 QList<QgsProcessingAlgorithm::ExternalLink> QgsUpslopeAreaAlgorithmBase::externalLinks() const
 {
   return {
-    QgsProcessingAlgorithm::ExternalLink { QObject::tr( "SAGA tool source code" ), u"https://sourceforge.net/p/saga-gis/code/ci/0df4dbfc4122ea022d3d1ca69dce6df882c9e081/tree/saga-gis/src/tools/terrain_analysis/ta_hydrology/Flow_AreaUpslope.cpp"_s }
+    QgsProcessingAlgorithm::ExternalLink { QObject::tr( "SAGA tool source code" ), u"https://sourceforge.net/p/saga-gis/code/ci/f24c137792a79906840f455ce36b1122b83e2f45/tree/saga-gis/src/tools/terrain_analysis/ta_hydrology/Flow_AreaUpslope.cpp"_s }
   };
 }
 
@@ -610,9 +610,6 @@ void QgsUpslopeAreaAlgorithmBase::computeMMDGFD( const QgsRasterBlock *demBlock,
           const double nFlow = mFlowData[static_cast<qgssize>( neighborRow ) * cols + neighborCol];
           if ( nFlow > 0.0 )
           {
-            // NOTE: SAGA's implementation has a bug here -- it does NOT scale by nFlow, which does not match
-            // the original paper (Qin et al 2011). This results in outputs which contain only 1 or 100 cell values.
-            // From Qin et al: "di is the FRACTION of flow into the ith neighboring cell"
             flow += ( dz[i] / dzSum ) * nFlow;
           }
         }
