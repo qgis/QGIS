@@ -6704,7 +6704,7 @@ QgsLabelingEngineSettings.writeSettingsToProject: src/core/labeling/qgslabelinge
 QgsLabelingEngineSettings.writeXml: src/core/labeling/qgslabelingenginesettings.h#L171
 QgsLabelingEngineSettings: src/core/labeling/qgslabelingenginesettings.h#L34
 QgsLabelingResults.hasSearchTree: src/core/labeling/qgslabelingresults.h#L63
-QgsLabelingResults.setMapSettings: src/core/labeling/qgslabelingresults.h#L141
+QgsLabelingResults.setMapSettings: src/core/labeling/qgslabelingresults.h#L143
 QgsLabelingResults: src/core/labeling/qgslabelingresults.h#L43
 QgsLayerDefinition.DependencySorter.DependencySorter: src/core/qgslayerdefinition.h#L158
 QgsLayerDefinition.DependencySorter.DependencySorter: src/core/qgslayerdefinition.h#L164
