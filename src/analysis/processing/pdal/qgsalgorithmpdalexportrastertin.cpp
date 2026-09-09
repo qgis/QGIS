@@ -128,7 +128,7 @@ QStringList QgsPdalExportRasterTinAlgorithm::createArgumentLists( const QVariant
 #if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 6 )
   if ( parameters.value( u"MAX_EDGE_LENGTH"_s ).isValid() )
   {
-    args << u"--max_triangle_edge_length=%1"_s.arg( parameterAsDouble( parameters, u"MAX_EDGE_LENGTH"_s, context ) );
+    args << u"--max-triangle-edge-length=%1"_s.arg( parameterAsDouble( parameters, u"MAX_EDGE_LENGTH"_s, context ) );
   }
 #endif
 #endif
