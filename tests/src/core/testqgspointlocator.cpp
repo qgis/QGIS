@@ -13,8 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsannotationlayer.h"
+#include "qgsannotationlineitem.h"
+#include "qgsannotationmarkeritem.h"
+#include "qgsannotationpointtextitem.h"
+#include "qgsannotationpolygonitem.h"
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
+#include "qgslinestring.h"
 #include "qgspointlocator.h"
 #include "qgspolygon.h"
 #include "qgsproject.h"
@@ -560,6 +566,93 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( pt1, QgsPointXY( 5, 5 ) );
       QCOMPARE( pt2, QgsPointXY( 0, 10 ) );
       QCOMPARE( m2.interpolatedPoint( QgsCoordinateReferenceSystem() ), QgsPoint( 2.5, 7.5, 7.5 ) );
+    }
+
+    // Tests building an annotation layer with one marker, one line and one polygon item
+    std::unique_ptr<QgsAnnotationLayer> buildAnnotationLayer( QString &markerId, QString &lineId, QString &polygonId )
+    {
+      auto layer = std::make_unique<QgsAnnotationLayer>( u"annotations"_s, QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
+
+      markerId = layer->addItem( new QgsAnnotationMarkerItem( QgsPoint( 5, 5 ) ) );
+
+      QVector<QgsPoint> linePoints;
+      linePoints << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 );
+      lineId = layer->addItem( new QgsAnnotationLineItem( new QgsLineString( linePoints ) ) );
+
+      QVector<QgsPoint> ring;
+      ring << QgsPoint( 20, 20 ) << QgsPoint( 30, 20 ) << QgsPoint( 30, 30 ) << QgsPoint( 20, 30 ) << QgsPoint( 20, 20 );
+      auto polygon = std::make_unique<QgsPolygon>();
+      polygon->setExteriorRing( new QgsLineString( ring ) );
+      polygonId = layer->addItem( new QgsAnnotationPolygonItem( polygon.release() ) );
+
+      return layer;
+    }
+
+    void testAnnotationNearestVertex()
+    {
+      QString markerId, lineId, polygonId;
+      std::unique_ptr<QgsAnnotationLayer> layer = buildAnnotationLayer( markerId, lineId, polygonId );
+
+      QgsPointLocator loc( layer.get() );
+
+      // near the marker
+      const QgsPointLocator::Match mMarker = loc.nearestVertex( QgsPointXY( 5.2, 5.0 ), 1.0 );
+      QVERIFY( mMarker.isValid() );
+      QVERIFY( mMarker.hasVertex() );
+      QCOMPARE( mMarker.point(), QgsPointXY( 5, 5 ) );
+      QGSCOMPARENEAR( mMarker.distance(), 0.2, 1e-9 );
+      // a Match on an annotation layer has no vector layer
+      QVERIFY( !mMarker.layer() );
+      // the synthetic feature id maps back to the marker item
+      QCOMPARE( loc.annotationItemId( mMarker.featureId() ), markerId );
+
+      // near the line's start vertex
+      const QgsPointLocator::Match mLine = loc.nearestVertex( QgsPointXY( 0.1, 0.0 ), 1.0 );
+      QVERIFY( mLine.isValid() );
+      QCOMPARE( mLine.point(), QgsPointXY( 0, 0 ) );
+      QCOMPARE( loc.annotationItemId( mLine.featureId() ), lineId );
+
+      // all three items are indexed
+      QCOMPARE( loc.cachedGeometryCount(), 3 );
+    }
+
+    void testAnnotationNearestEdge()
+    {
+      QString markerId, lineId, polygonId;
+      std::unique_ptr<QgsAnnotationLayer> layer = buildAnnotationLayer( markerId, lineId, polygonId );
+
+      QgsPointLocator loc( layer.get() );
+
+      const QgsPointLocator::Match m = loc.nearestEdge( QgsPointXY( 5.0, 0.2 ), 1.0 );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasEdge() );
+      QCOMPARE( m.point(), QgsPointXY( 5, 0 ) );
+      QGSCOMPARENEAR( m.distance(), 0.2, 1e-9 );
+      QCOMPARE( loc.annotationItemId( m.featureId() ), lineId );
+
+      QgsPointXY p1, p2;
+      m.edgePoints( p1, p2 );
+      QCOMPARE( p1, QgsPointXY( 0, 0 ) );
+      QCOMPARE( p2, QgsPointXY( 10, 0 ) );
+    }
+
+    void testAnnotationNearestArea()
+    {
+      QString markerId, lineId, polygonId;
+      std::unique_ptr<QgsAnnotationLayer> layer = buildAnnotationLayer( markerId, lineId, polygonId );
+
+      QgsPointLocator loc( layer.get() );
+
+      // a point inside the polygon
+      const QgsPointLocator::Match mInside = loc.nearestArea( QgsPointXY( 25, 25 ), 0 );
+      QVERIFY( mInside.isValid() );
+      QVERIFY( mInside.hasArea() );
+      QCOMPARE( mInside.point(), QgsPointXY( 25, 25 ) );
+      QCOMPARE( loc.annotationItemId( mInside.featureId() ), polygonId );
+
+      // a point outside every item
+      const QgsPointLocator::Match mOutside = loc.nearestArea( QgsPointXY( 100, 100 ), 0 );
+      QVERIFY( !mOutside.isValid() );
     }
 };
 
