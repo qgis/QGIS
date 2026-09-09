@@ -1732,7 +1732,11 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
       QNetworkRequest request( redirect.toUrl() );
       request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
       QgsSetRequestInitiatorClass( request, u"QgsWcsDownloadHandler"_s );
-      if ( !mAuth.setAuthorization( request ) )
+
+      // only use authcfg if redirecting to same host
+      const bool useAuthCfg( redirect.toUrl().host() == mCacheReply->request().url().host() );
+
+      if ( useAuthCfg && !mAuth.setAuthorization( request ) )
       {
         QgsMessageLog::logMessage( tr( "Network request update failed for authentication config" ), tr( "WCS" ) );
         return;
