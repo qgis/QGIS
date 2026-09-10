@@ -862,7 +862,7 @@ class GenericAlgorithmsTest(QgisTestCase):
 
         # enable when all native algorithms have QGS_MARK_ALGORITHM_SOURCE
         if False:
-            if alg.provider().id() in ("native",):
+            if alg.provider().id() in ("native", "pdal"):
                 self.assertTrue(
                     alg.implementationSourceUri(),
                     f"Algorithm {alg.id()} has no QGS_MARK_ALGORITHM_SOURCE macro inserted!",
