@@ -1009,6 +1009,16 @@ void TestQgis::testDoubleGreaterThanOrNear()
 
 void TestQgis::testUniquePtrCast()
 {
+  // dynamic cast of nullptr
+  {
+    auto widget = std::unique_ptr<QWidget>( nullptr );
+    QVERIFY( !widget );
+
+    auto cb = qgis::unique_ptr_dynamic_cast<QCheckBox>( std::move( widget ) );
+    QVERIFY( !cb );
+    QVERIFY( !widget );
+  }
+
   // dynamic cast to proper type, original unique_ptr is then empty
   {
     auto widget = std::unique_ptr<QWidget>( new QCheckBox( "test" ) );
