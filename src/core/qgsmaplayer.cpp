@@ -1639,9 +1639,9 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   else
   {
     QString projectFileName;
-    if ( project() )
+    if ( QgsProject* lProject = project() )
     {
-      projectFileName = project()->fileName();
+      projectFileName = lProject->fileName();
     }
     // TODO QGIS 5.0 -- Remove the else branch with fallback to current QGIS project, the code will work but if the MapLayer is not associated with project it will not provide result
     else
