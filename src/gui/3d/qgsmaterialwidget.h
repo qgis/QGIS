@@ -171,6 +171,28 @@ class GUI_EXPORT QgsMaterialWidgetDialog : public QDialog
     QgsMaterialWidgetDialog( const QgsAbstractMaterialSettings *settings, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
+     * Sets the required rendering \a technique which the material must support.
+     *
+     * This is used to filter the available material choices in the widget.
+     *
+     * \note This setting is only respected when filterByTechnique() is TRUE.
+     *
+     * \see setFilterByTechnique()
+     *
+     * \since QGIS 4.4
+     */
+    void setTechnique( Qgis::MaterialRenderingTechnique technique );
+
+    /**
+     * Sets whether available materials should be filtered by technique.
+     *
+     * \see setTechnique()
+     *
+     * \since QGIS 4.4
+     */
+    void setFilterByTechnique( bool enabled );
+
+    /**
     * Returns the current settings defined by the dialog.
     */
     std::unique_ptr< QgsAbstractMaterialSettings > settings();
