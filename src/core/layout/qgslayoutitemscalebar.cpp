@@ -728,6 +728,13 @@ void QgsLayoutItemScaleBar::setLabelHorizontalPlacement( Qgis::ScaleBarDistanceL
   emit changed();
 }
 
+void QgsLayoutItemScaleBar::setUnitLabelPlacements( Qgis::ScaleBarUnitLabelPlacements placements )
+{
+  mSettings.setUnitLabelPlacements( placements );
+  refreshItemSize();
+  emit changed();
+}
+
 void QgsLayoutItemScaleBar::setAlignment( Qgis::ScaleBarAlignment a )
 {
   mSettings.setAlignment( a );
@@ -1157,6 +1164,10 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   //label vertical/horizontal placement
   composerScaleBarElem.setAttribute( u"labelVerticalPlacement"_s, QString::number( static_cast< int >( mSettings.labelVerticalPlacement() ) ) );
   composerScaleBarElem.setAttribute( u"labelHorizontalPlacement"_s, QString::number( static_cast< int >( mSettings.labelHorizontalPlacement() ) ) );
+  if ( mSettings.unitLabelPlacements() != Qgis::ScaleBarUnitLabelPlacement::AfterLastDistanceLabel )
+  {
+    composerScaleBarElem.setAttribute( u"unitLabelPlacement"_s, qgsFlagValueToKeys( mSettings.unitLabelPlacements() ) );
+  }
 
   //alignment
   composerScaleBarElem.setAttribute( u"alignment"_s, QString::number( static_cast< int >( mSettings.alignment() ) ) );
@@ -1492,6 +1503,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
   mSettings.setLabelVerticalPlacement( static_cast< Qgis::ScaleBarDistanceLabelVerticalPlacement >( itemElem.attribute( u"labelVerticalPlacement"_s, u"0"_s ).toInt() ) );
   mSettings.setLabelHorizontalPlacement( static_cast< Qgis::ScaleBarDistanceLabelHorizontalPlacement >( itemElem.attribute( u"labelHorizontalPlacement"_s, u"0"_s ).toInt() ) );
+  mSettings.setUnitLabelPlacements( qgsFlagKeysToValue( itemElem.attribute( "unitLabelPlacement" ), Qgis::ScaleBarUnitLabelPlacement::AfterLastDistanceLabel ) );
 
   mSettings.setAlignment( static_cast< Qgis::ScaleBarAlignment >( itemElem.attribute( u"alignment"_s, u"0"_s ).toInt() ) );
 
