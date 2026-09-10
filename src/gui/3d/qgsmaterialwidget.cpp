@@ -255,6 +255,16 @@ QgsMaterialWidgetDialog::QgsMaterialWidgetDialog( const QgsAbstractMaterialSetti
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 }
 
+void QgsMaterialWidgetDialog::setTechnique( Qgis::MaterialRenderingTechnique technique )
+{
+  mWidget->setTechnique( technique );
+}
+
+void QgsMaterialWidgetDialog::setFilterByTechnique( bool enabled )
+{
+  mWidget->setFilterByTechnique( enabled );
+}
+
 std::unique_ptr<QgsAbstractMaterialSettings> QgsMaterialWidgetDialog::settings()
 {
   return mWidget->settings();
