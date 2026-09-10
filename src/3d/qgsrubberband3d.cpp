@@ -104,15 +104,15 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
   QgsLineVertexData dummyLineData;
   mLineGeometry = dummyLineData.createGeometry( mLineEntity );
 
-  Q_ASSERT( mLineGeometry->attributes().count() == 2 );
-  mPositionAttribute = mLineGeometry->attributes().at( 0 );
-  mIndexAttribute = mLineGeometry->attributes().at( 1 );
+  Q_ASSERT( mLineGeometry->attributes().count() == 3 );
+  mPointAAttribute = mLineGeometry->attributes().at( 1 );
+  mPointBAttribute = mLineGeometry->attributes().at( 2 );
 
   mLineGeometryRenderer = new Qt3DRender::QGeometryRenderer;
-  mLineGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
+  mLineGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
   mLineGeometryRenderer->setGeometry( mLineGeometry );
-  mLineGeometryRenderer->setPrimitiveRestartEnabled( true );
-  mLineGeometryRenderer->setRestartIndexValue( 0 );
+  mLineGeometryRenderer->setVertexCount( 6 );
+  mLineGeometryRenderer->setInstanceCount( 0 );
 
   mLineEntity->addComponent( mLineGeometryRenderer );
 
@@ -128,6 +128,35 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
   mLineTransform = new QgsGeoTransform;
   mLineTransform->setOrigin( mMapSettings->origin() );
   mLineEntity->addComponent( mLineTransform );
+
+  mJoinEntity = make_qobject_unique<Qt3DCore::QEntity>( parentEntity );
+
+  mJoinGeometry = dummyLineData.createJoinGeometry( mJoinEntity );
+
+  mJoinPointAAttribute = mJoinGeometry->attributes().at( 1 );
+  mJoinPointBAttribute = mJoinGeometry->attributes().at( 2 );
+  mJoinPointCAttribute = mJoinGeometry->attributes().at( 3 );
+
+  mJoinGeometryRenderer = new Qt3DRender::QGeometryRenderer;
+  mJoinGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
+  mJoinGeometryRenderer->setGeometry( mJoinGeometry );
+  mJoinGeometryRenderer->setVertexCount( 6 );
+  mJoinGeometryRenderer->setInstanceCount( 0 );
+
+  mJoinEntity->addComponent( mJoinGeometryRenderer );
+
+  mJoinMaterial = new QgsLineMaterial( QgsLineMaterial::LinePart::Join );
+  mJoinMaterial->setLineWidth( mWidth );
+  mJoinMaterial->setLineColor( mColor );
+
+  QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mJoinMaterial, [this] { mJoinMaterial->setViewportSize( mEngine->size() ); } );
+  mJoinMaterial->setViewportSize( mEngine->size() );
+
+  mJoinEntity->addComponent( mJoinMaterial );
+
+  mJoinTransform = new QgsGeoTransform;
+  mJoinTransform->setOrigin( mMapSettings->origin() );
+  mJoinEntity->addComponent( mJoinTransform );
 }
 
 void QgsRubberBand3D::setupPolygon( Qt3DCore::QEntity *parentEntity )
@@ -189,6 +218,10 @@ QgsRubberBand3D::~QgsRubberBand3D()
   {
     mLineEntity.reset();
   }
+  if ( mJoinEntity )
+  {
+    mJoinEntity.reset();
+  }
   if ( mMarkerEntity )
   {
     mMarkerEntity.reset();
@@ -210,6 +243,7 @@ void QgsRubberBand3D::setWidth( float width )
   {
     // when highlighting lines, the vertex markers should be wider
     mLineMaterial->setLineWidth( width );
+    mJoinMaterial->setLineWidth( width );
     width *= 3;
   }
 
@@ -230,6 +264,7 @@ void QgsRubberBand3D::setColor( const QColor color )
   if ( mEdgesEnabled && isLineOrPolygon )
   {
     mLineMaterial->setLineColor( color );
+    mJoinMaterial->setLineColor( color );
   }
 
   if ( isLineOrPolygon )
@@ -425,7 +460,6 @@ void QgsRubberBand3D::updateGeometry()
   const QgsVector3D dataOrigin = box.isNull() ? mMapSettings->origin() : box.center();
 
   QgsLineVertexData lineData;
-  lineData.withAdjacency = true;
   lineData.geocentricCoordinates = mMapSettings->sceneMode() == Qgis::SceneMode::Globe;
   lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, Qgs3DRenderContext::fromMapSettings( mMapSettings ), dataOrigin );
   if ( const QgsPolygon *polygon = qgsgeometry_cast<const QgsPolygon *>( mGeometry.constGet() ) )
@@ -443,14 +477,17 @@ void QgsRubberBand3D::updateGeometry()
 
   if ( mEdgesEnabled && ( mGeometryType == Qgis::GeometryType::Line || mGeometryType == Qgis::GeometryType::Polygon ) )
   {
-    mPositionAttribute->buffer()->setData( lineData.createVertexBuffer() );
-    mIndexAttribute->buffer()->setData( lineData.createIndexBuffer() );
-    mLineGeometryRenderer->setVertexCount( static_cast<int>( lineData.indexes.count() ) );
+    mPointAAttribute->buffer()->setData( lineData.createPointABuffer() );
+    mPointBAttribute->buffer()->setData( lineData.createPointBBuffer() );
+    mLineGeometryRenderer->setInstanceCount( lineData.pointsA.size() );
     mLineTransform->setGeoTranslation( dataOrigin );
-  }
 
-  // first entry is empty for primitive restart
-  lineData.vertices.pop_front();
+    mJoinPointAAttribute->buffer()->setData( lineData.createJoinPointABuffer() );
+    mJoinPointBAttribute->buffer()->setData( lineData.createJoinPointBBuffer() );
+    mJoinPointCAttribute->buffer()->setData( lineData.createJoinPointCBuffer() );
+    mJoinGeometryRenderer->setInstanceCount( lineData.joinPointA.size() );
+    mJoinTransform->setGeoTranslation( dataOrigin );
+  }
 
   // we may not want a marker on the last point as it's tracked by the mouse cursor
   if ( mHideLastMarker && !lineData.vertices.isEmpty() )
