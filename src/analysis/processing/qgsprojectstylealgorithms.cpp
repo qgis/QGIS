@@ -201,6 +201,8 @@ bool QgsStyleFromProjectAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
 QVariantMap QgsStyleFromProjectAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !mProjectPath.isEmpty() )
   {
     // load project from path

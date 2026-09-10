@@ -86,6 +86,8 @@ bool QgsSaveSelectedFeatures::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
   if ( !selectLayer )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
