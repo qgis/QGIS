@@ -75,8 +75,10 @@ class GUI_EXPORT Qgs3DSymbolWidget : public QgsPanelWidget
 
     /**
      * Emitted when the symbol is changed.
+     *
+     * \deprecated QGIS 4.4. Use widgetChanged() instead.
      */
-    void changed();
+    Q_DECL_DEPRECATED void changed() SIP_DEPRECATED;
 
     /**
      * Emitted when the rendering technique associated with the symbol is changed.

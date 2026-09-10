@@ -34,10 +34,10 @@ QgsSimpleLineMaterialWidget::QgsSimpleLineMaterialWidget( QWidget *parent )
   QgsSimpleLineMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
 
-  connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsSimpleLineMaterialWidget::changed );
-  connect( mAmbientDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsSimpleLineMaterialWidget::changed );
+  connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsSimpleLineMaterialWidget::widgetChanged );
+  connect( mAmbientDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsSimpleLineMaterialWidget::widgetChanged );
 
-  connect( this, &QgsSimpleLineMaterialWidget::changed, this, &QgsSimpleLineMaterialWidget::updatePreview );
+  connect( this, &QgsSimpleLineMaterialWidget::widgetChanged, this, &QgsSimpleLineMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsSimpleLineMaterialWidget::create()

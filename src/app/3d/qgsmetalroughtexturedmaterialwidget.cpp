@@ -44,23 +44,23 @@ QgsMetalRoughTexturedMaterialWidget::QgsMetalRoughTexturedMaterialWidget( QWidge
   mParallaxScaleSpinBox->setEnabled( false );
   mEmissionStrengthSpinBox->setEnabled( false );
 
-  connect( mBaseColorTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( mMetalnessTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( mRoughnessTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( mNormalTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( mHeightTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( mAmbientOcclusionTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( mEmissionTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
+  connect( mBaseColorTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( mMetalnessTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( mRoughnessTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( mNormalTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( mHeightTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( mAmbientOcclusionTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( mEmissionTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
 
-  connect( mParallaxScaleSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( mEmissionStrengthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( textureScaleSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( textureRotationSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( textureOffsetXSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( textureOffsetYSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMetalRoughTexturedMaterialWidget::changed );
+  connect( mParallaxScaleSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( mEmissionStrengthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( textureScaleSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( textureRotationSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( textureOffsetXSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( textureOffsetYSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
 
-  connect( this, &QgsMetalRoughTexturedMaterialWidget::changed, this, &QgsMetalRoughTexturedMaterialWidget::updatePreview );
+  connect( this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged, this, &QgsMetalRoughTexturedMaterialWidget::updatePreview );
 
   connect( mHeightTextureWidget, &QgsImageSourceLineEdit::sourceChanged, this, [this] { mParallaxScaleSpinBox->setEnabled( !mHeightTextureWidget->source().isEmpty() ); } );
 
@@ -102,9 +102,9 @@ void QgsMetalRoughTexturedMaterialWidget::setSettings( const QgsAbstractMaterial
   mTextureScaleDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::TextureScale ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
   mTextureOffsetDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::TextureOffset ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
 
-  connect( mTextureRotationDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( mTextureScaleDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughTexturedMaterialWidget::changed );
-  connect( mTextureOffsetDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughTexturedMaterialWidget::changed );
+  connect( mTextureRotationDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( mTextureScaleDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
+  connect( mTextureOffsetDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughTexturedMaterialWidget::widgetChanged );
 
   updatePreview();
 }

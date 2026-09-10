@@ -116,13 +116,6 @@ class GUI_EXPORT QgsMaterialWidget : public QgsPanelWidget, private Ui::Material
      */
     void setPreviewVisible( bool visible );
 
-  signals:
-
-    /**
-     * Emitted when the material defined by the widget is changed.
-     */
-    void changed();
-
   private slots:
     void materialTypeChanged();
     void materialWidgetChanged();

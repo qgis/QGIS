@@ -40,20 +40,20 @@ QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent 
   textureOffsetXSpin->setClearValue( 0.0 );
   textureOffsetYSpin->setClearValue( 0.0 );
 
-  connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongTexturedMaterialWidget::changed );
-  connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongTexturedMaterialWidget::changed );
+  connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongTexturedMaterialWidget::widgetChanged );
+  connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongTexturedMaterialWidget::widgetChanged );
   connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
     updateWidgetState();
-    emit changed();
+    emit widgetChanged();
   } );
-  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongTexturedMaterialWidget::changed );
-  connect( textureFile, &QgsImageSourceLineEdit::sourceChanged, this, &QgsPhongTexturedMaterialWidget::changed );
-  connect( textureScaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::changed );
-  connect( textureRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::changed );
-  connect( textureOffsetXSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::changed );
-  connect( textureOffsetYSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::changed );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongTexturedMaterialWidget::widgetChanged );
+  connect( textureFile, &QgsImageSourceLineEdit::sourceChanged, this, &QgsPhongTexturedMaterialWidget::widgetChanged );
+  connect( textureScaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::widgetChanged );
+  connect( textureRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::widgetChanged );
+  connect( textureOffsetXSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::widgetChanged );
+  connect( textureOffsetYSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsPhongTexturedMaterialWidget::widgetChanged );
 
-  connect( this, &QgsPhongTexturedMaterialWidget::changed, this, &QgsPhongTexturedMaterialWidget::updatePreview );
+  connect( this, &QgsPhongTexturedMaterialWidget::widgetChanged, this, &QgsPhongTexturedMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsPhongTexturedMaterialWidget::create()
@@ -82,9 +82,9 @@ void QgsPhongTexturedMaterialWidget::setSettings( const QgsAbstractMaterialSetti
   mTextureScaleDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::TextureScale ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
   mTextureOffsetDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::TextureOffset ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
 
-  connect( mTextureRotationDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongTexturedMaterialWidget::changed );
-  connect( mTextureScaleDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongTexturedMaterialWidget::changed );
-  connect( mTextureOffsetDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongTexturedMaterialWidget::changed );
+  connect( mTextureRotationDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongTexturedMaterialWidget::widgetChanged );
+  connect( mTextureScaleDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongTexturedMaterialWidget::widgetChanged );
+  connect( mTextureOffsetDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongTexturedMaterialWidget::widgetChanged );
 
   updateWidgetState();
   updatePreview();

@@ -58,9 +58,13 @@ Returns associated rendering technique.
 
   signals:
 
-    void changed();
+ void changed() /Deprecated="Since 4.4. Use widgetChanged() instead."/;
 %Docstring
 Emitted when the symbol is changed.
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~Qgs3DSymbolWidget.widgetChanged` instead.
 %End
 
     void renderingTechniqueChanged();

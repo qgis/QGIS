@@ -49,21 +49,21 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   QgsPolygon3DSymbol defaultSymbol;
   setSymbol( &defaultSymbol, nullptr );
 
-  connect( spinOffset, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
-  connect( spinExtrusion, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
-  connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
-  connect( cboCullingMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
-  connect( mComboRenderedFacade, &QgsCheckableComboBox::checkedItemsChanged, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( chkAddBackFaces, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( chkInvertNormals, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsPolygon3DSymbolWidget::changed );
+  connect( spinOffset, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( spinExtrusion, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( cboCullingMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( mComboRenderedFacade, &QgsCheckableComboBox::checkedItemsChanged, this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( chkAddBackFaces, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( chkInvertNormals, &QCheckBox::toggled, this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( widgetMaterial, &QgsMaterialWidget::widgetChanged, this, &QgsPolygon3DSymbolWidget::widgetChanged );
   connect( widgetMaterial, &QgsMaterialWidget::showPanel, this, &QgsPolygon3DSymbolWidget::openPanel );
-  connect( btnHeightDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( btnExtrusionDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( groupEdges, &QGroupBox::toggled, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( btnEdgeColor, &QgsColorButton::colorChanged, this, &QgsPolygon3DSymbolWidget::changed );
-  connect( spinEdgeWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
-  connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
+  connect( btnHeightDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( btnExtrusionDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( groupEdges, &QGroupBox::toggled, this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( btnEdgeColor, &QgsColorButton::colorChanged, this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( spinEdgeWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::widgetChanged );
+  connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::widgetChanged );
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::updateGuiState );
 
   widgetMaterial->setTechnique( renderingTechnique() );

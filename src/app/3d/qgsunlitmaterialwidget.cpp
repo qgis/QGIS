@@ -34,10 +34,10 @@ QgsUnlitMaterialWidget::QgsUnlitMaterialWidget( QWidget *parent )
   QgsUnlitMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
 
-  connect( btnColor, &QgsColorButton::colorChanged, this, &QgsUnlitMaterialWidget::changed );
-  connect( mColorDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsUnlitMaterialWidget::changed );
+  connect( btnColor, &QgsColorButton::colorChanged, this, &QgsUnlitMaterialWidget::widgetChanged );
+  connect( mColorDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsUnlitMaterialWidget::widgetChanged );
 
-  connect( this, &QgsUnlitMaterialWidget::changed, this, &QgsUnlitMaterialWidget::updatePreview );
+  connect( this, &QgsUnlitMaterialWidget::widgetChanged, this, &QgsUnlitMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsUnlitMaterialWidget::create()

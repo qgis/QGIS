@@ -40,17 +40,17 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   QgsLine3DSymbol defaultLine;
   setSymbol( &defaultLine, nullptr );
 
-  connect( spinWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::changed );
-  connect( spinOffset, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::changed );
-  connect( spinExtrusion, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::changed );
-  connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLine3DSymbolWidget::changed );
-  connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLine3DSymbolWidget::changed );
+  connect( spinWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::widgetChanged );
+  connect( spinOffset, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::widgetChanged );
+  connect( spinExtrusion, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::widgetChanged );
+  connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLine3DSymbolWidget::widgetChanged );
+  connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLine3DSymbolWidget::widgetChanged );
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLine3DSymbolWidget::updateGuiState );
-  connect( chkSimpleLines, &QCheckBox::toggled, this, &QgsLine3DSymbolWidget::changed );
+  connect( chkSimpleLines, &QCheckBox::toggled, this, &QgsLine3DSymbolWidget::widgetChanged );
   connect( chkSimpleLines, &QCheckBox::toggled, this, &QgsLine3DSymbolWidget::updateGuiState );
   connect( chkSimpleLines, &QCheckBox::toggled, this, &QgsLine3DSymbolWidget::simple3DLinesToggled );
   connect( chkSimpleLines, &QCheckBox::toggled, this, &QgsLine3DSymbolWidget::renderingTechniqueChanged );
-  connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsLine3DSymbolWidget::changed );
+  connect( widgetMaterial, &QgsMaterialWidget::widgetChanged, this, &QgsLine3DSymbolWidget::widgetChanged );
   connect( widgetMaterial, &QgsMaterialWidget::showPanel, this, &QgsLine3DSymbolWidget::openPanel );
 
   widgetMaterial->setTechnique( renderingTechnique() );

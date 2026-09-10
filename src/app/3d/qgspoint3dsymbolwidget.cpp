@@ -109,18 +109,18 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   setSymbol( &defaultSymbol, nullptr );
   onShapeChanged();
 
-  connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::changed );
+  connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::widgetChanged );
   connect( cboShape, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::onShapeChanged );
   QList<QDoubleSpinBox *> spinWidgets;
   spinWidgets << spinRadius << spinTopRadius << spinBottomRadius << spinMinorRadius << spinSize << spinLength << spinBillboardHeight;
   spinWidgets << spinTX << spinTY << spinTZ << spinSX << spinSY << spinSZ << spinRX << spinRY << spinRZ;
   const auto constSpinWidgets = spinWidgets;
   for ( QDoubleSpinBox *spinBox : constSpinWidgets )
-    connect( spinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPoint3DSymbolWidget::changed );
-  connect( lineEditModel, &QgsAbstractFileContentSourceLineEdit::sourceChanged, this, &QgsPoint3DSymbolWidget::changed );
-  connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsPoint3DSymbolWidget::changed );
+    connect( spinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPoint3DSymbolWidget::widgetChanged );
+  connect( lineEditModel, &QgsAbstractFileContentSourceLineEdit::sourceChanged, this, &QgsPoint3DSymbolWidget::widgetChanged );
+  connect( widgetMaterial, &QgsMaterialWidget::widgetChanged, this, &QgsPoint3DSymbolWidget::widgetChanged );
   connect( widgetMaterial, &QgsMaterialWidget::showPanel, this, &QgsPoint3DSymbolWidget::openPanel );
-  connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )()>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::changed );
+  connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )()>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::widgetChanged );
 
   // Sync between billboard height and TZ
   connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinTZ, &QDoubleSpinBox::setValue );
@@ -136,7 +136,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
       whileBlocking( mComboModelForwardAxis )->setCurrentIndex( mComboModelForwardAxis->findData( resolvedAxisConflict ) );
     }
 
-    emit changed();
+    emit widgetChanged();
   } );
   connect( mComboModelForwardAxis, qOverload< int >( &QComboBox::currentIndexChanged ), this, [this] {
     // ensure up axis is different to forward axis
@@ -147,18 +147,18 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
     {
       whileBlocking( mComboModelUpAxis )->setCurrentIndex( mComboModelUpAxis->findData( resolvedAxisConflict ) );
     }
-    emit changed();
+    emit widgetChanged();
   } );
 
-  connect( mButtonDDScaleX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDScaleY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDScaleZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDTranslationX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDTranslationY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDTranslationZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDRotationX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDRotationY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDRotationZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
+  connect( mButtonDDScaleX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::widgetChanged );
+  connect( mButtonDDScaleY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::widgetChanged );
+  connect( mButtonDDScaleZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::widgetChanged );
+  connect( mButtonDDTranslationX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::widgetChanged );
+  connect( mButtonDDTranslationY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::widgetChanged );
+  connect( mButtonDDTranslationZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::widgetChanged );
+  connect( mButtonDDRotationX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::widgetChanged );
+  connect( mButtonDDRotationY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::widgetChanged );
+  connect( mButtonDDRotationZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::widgetChanged );
 
   widgetMaterial->setDockMode( dockMode() );
 }
@@ -436,5 +436,5 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
     w->setVisible( activeWidgets.contains( w ) );
   }
 
-  emit changed();
+  emit widgetChanged();
 }

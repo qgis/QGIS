@@ -31,7 +31,13 @@ using namespace Qt::StringLiterals;
 
 Qgs3DSymbolWidget::Qgs3DSymbolWidget( QWidget *parent )
   : QgsPanelWidget( parent )
-{}
+{
+  // Forward the widgetChanged signal to the deprecated one, for backwards compatibility.
+  // TODO QGIS 5.0 remove
+  Q_NOWARN_DEPRECATED_PUSH
+  connect( this, &Qgs3DSymbolWidget::widgetChanged, this, &Qgs3DSymbolWidget::changed );
+  Q_NOWARN_DEPRECATED_POP
+}
 
 Qgs3DSymbolDialog::Qgs3DSymbolDialog( const QgsAbstract3DSymbol *symbol, QWidget *parent )
   : QDialog( parent )

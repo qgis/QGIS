@@ -50,21 +50,21 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   mEmissionStrengthSpinBox->setEnabled( false );
   mButtonEmissionColor->setShowNull( true, tr( "No Emission" ) );
 
-  connect( mButtonBaseColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
+  connect( mButtonBaseColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::widgetChanged );
   connect( mMetalnessWidget, &QgsPercentageWidget::valueChanged, this, [this] {
     updateWidgetState();
-    emit changed();
+    emit widgetChanged();
   } );
   connect( mRoughnessWidget, &QgsPercentageWidget::valueChanged, this, [this] {
     updateWidgetState();
-    emit changed();
+    emit widgetChanged();
   } );
-  connect( mReflectanceWidget, &QgsPercentageWidget::valueChanged, this, &QgsMetalRoughMaterialWidget::changed );
-  connect( mAnisotropyWidget, &QgsPercentageWidget::valueChanged, this, &QgsMetalRoughMaterialWidget::changed );
-  connect( mAnisotropyRotationWidget, &QSlider::valueChanged, this, &QgsMetalRoughMaterialWidget::changed );
-  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMetalRoughMaterialWidget::changed );
-  connect( mEmissionStrengthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughMaterialWidget::changed );
-  connect( mButtonEmissionColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
+  connect( mReflectanceWidget, &QgsPercentageWidget::valueChanged, this, &QgsMetalRoughMaterialWidget::widgetChanged );
+  connect( mAnisotropyWidget, &QgsPercentageWidget::valueChanged, this, &QgsMetalRoughMaterialWidget::widgetChanged );
+  connect( mAnisotropyRotationWidget, &QSlider::valueChanged, this, &QgsMetalRoughMaterialWidget::widgetChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMetalRoughMaterialWidget::widgetChanged );
+  connect( mEmissionStrengthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMetalRoughMaterialWidget::widgetChanged );
+  connect( mButtonEmissionColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::widgetChanged );
   connect( mButtonEmissionColor, &QgsColorButton::colorChanged, this, [this] {
     mEmissionStrengthSpinBox->setEnabled( mButtonEmissionColor->color().isValid() || mEmissionColorDataDefinedButton->isActive() );
   } );
@@ -72,14 +72,14 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
     mEmissionStrengthSpinBox->setEnabled( mButtonEmissionColor->color().isValid() || mEmissionColorDataDefinedButton->isActive() );
   } );
 
-  connect( mClearCoatFactorWidget, &QgsPercentageWidget::valueChanged, this, &QgsMetalRoughMaterialWidget::changed );
+  connect( mClearCoatFactorWidget, &QgsPercentageWidget::valueChanged, this, &QgsMetalRoughMaterialWidget::widgetChanged );
   connect( mClearCoatFactorWidget, &QgsPercentageWidget::valueChanged, this, [this] { mClearCoatRoughnessWidget->setEnabled( mClearCoatFactorWidget->value() > 0 ); } );
-  connect( mClearCoatRoughnessWidget, &QgsPercentageWidget::valueChanged, this, &QgsMetalRoughMaterialWidget::changed );
+  connect( mClearCoatRoughnessWidget, &QgsPercentageWidget::valueChanged, this, &QgsMetalRoughMaterialWidget::widgetChanged );
 
-  connect( mBaseColorDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughMaterialWidget::changed );
-  connect( mEmissionColorDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughMaterialWidget::changed );
+  connect( mBaseColorDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughMaterialWidget::widgetChanged );
+  connect( mEmissionColorDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsMetalRoughMaterialWidget::widgetChanged );
 
-  connect( this, &QgsMetalRoughMaterialWidget::changed, this, &QgsMetalRoughMaterialWidget::updatePreview );
+  connect( this, &QgsMetalRoughMaterialWidget::widgetChanged, this, &QgsMetalRoughMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsMetalRoughMaterialWidget::create()

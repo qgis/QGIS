@@ -42,31 +42,31 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity
   QgsPhongMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
 
-  connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
-  connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
-  connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
+  connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::widgetChanged );
+  connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::widgetChanged );
+  connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::widgetChanged );
   connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
     updateWidgetState();
-    emit changed();
+    emit widgetChanged();
   } );
-  connect( mAmbientDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
-  connect( mDiffuseDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
-  connect( mSpecularDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
+  connect( mAmbientDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::widgetChanged );
+  connect( mDiffuseDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::widgetChanged );
+  connect( mSpecularDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::widgetChanged );
 
   mAmbientCoefficientWidget->setToolTip( tr( "Sets the strength of the ambient color contribution" ) );
   mDiffuseCoefficientWidget->setToolTip( tr( "Sets the strength of the diffuse color contribution" ) );
   mSpecularCoefficientWidget->setToolTip( tr( "Sets the strength of the specular color contribution" ) );
 
-  connect( mAmbientCoefficientWidget, &QgsPercentageWidget::valueChanged, this, &QgsPhongMaterialWidget::changed );
-  connect( mDiffuseCoefficientWidget, &QgsPercentageWidget::valueChanged, this, &QgsPhongMaterialWidget::changed );
-  connect( mSpecularCoefficientWidget, &QgsPercentageWidget::valueChanged, this, &QgsPhongMaterialWidget::changed );
+  connect( mAmbientCoefficientWidget, &QgsPercentageWidget::valueChanged, this, &QgsPhongMaterialWidget::widgetChanged );
+  connect( mDiffuseCoefficientWidget, &QgsPercentageWidget::valueChanged, this, &QgsPhongMaterialWidget::widgetChanged );
+  connect( mSpecularCoefficientWidget, &QgsPercentageWidget::valueChanged, this, &QgsPhongMaterialWidget::widgetChanged );
 
   if ( mHasOpacity )
   {
-    connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::changed );
+    connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::widgetChanged );
   }
 
-  connect( this, &QgsPhongMaterialWidget::changed, this, &QgsPhongMaterialWidget::updatePreview );
+  connect( this, &QgsPhongMaterialWidget::widgetChanged, this, &QgsPhongMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsPhongMaterialWidget::create()
@@ -183,11 +183,11 @@ void QgsPhongMaterialWidget::setHasOpacity( const bool opacity )
   mLblOpacity->setVisible( mHasOpacity );
   if ( mHasOpacity )
   {
-    connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::changed );
+    connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::widgetChanged );
   }
   else
   {
-    disconnect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::changed );
+    disconnect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::widgetChanged );
   }
 }
 

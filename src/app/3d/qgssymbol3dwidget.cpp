@@ -260,7 +260,7 @@ void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol
   {
     // stop updating from the original widget
     if ( Qgs3DSymbolWidget *w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
-      disconnect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
+      disconnect( w, &Qgs3DSymbolWidget::widgetChanged, this, &QgsSymbol3DWidget::widgetChanged );
     widgetStack->removeWidget( widgetStack->currentWidget() );
   }
 
@@ -274,7 +274,7 @@ void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol
       widgetStack->setCurrentWidget( w );
       w->setDockMode( dockMode() );
       // start receiving updates from widget
-      connect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
+      connect( w, &Qgs3DSymbolWidget::widgetChanged, this, &QgsSymbol3DWidget::widgetChanged );
       connect( w, &Qgs3DSymbolWidget::showPanel, this, &QgsSymbol3DWidget::openPanel );
 
       connect( w, &Qgs3DSymbolWidget::renderingTechniqueChanged, this, [w, this] {

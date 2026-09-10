@@ -41,19 +41,19 @@ QgsGoochMaterialWidget::QgsGoochMaterialWidget( QWidget *parent )
   btnWarm->setDefaultColor( QColor( 107, 0, 107 ) );
   btnCool->setDefaultColor( QColor( 255, 130, 0 ) );
 
-  connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::changed );
-  connect( btnWarm, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::changed );
-  connect( btnCool, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::changed );
-  connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::changed );
-  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::changed );
-  connect( spinAlpha, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::changed );
-  connect( spinBeta, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::changed );
-  connect( mDiffuseDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::changed );
-  connect( mWarmDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::changed );
-  connect( mCoolDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::changed );
-  connect( mSpecularDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::changed );
+  connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::widgetChanged );
+  connect( btnWarm, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::widgetChanged );
+  connect( btnCool, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::widgetChanged );
+  connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsGoochMaterialWidget::widgetChanged );
+  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::widgetChanged );
+  connect( spinAlpha, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::widgetChanged );
+  connect( spinBeta, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::widgetChanged );
+  connect( mDiffuseDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::widgetChanged );
+  connect( mWarmDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::widgetChanged );
+  connect( mCoolDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::widgetChanged );
+  connect( mSpecularDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::widgetChanged );
 
-  connect( this, &QgsGoochMaterialWidget::changed, this, &QgsGoochMaterialWidget::updatePreview );
+  connect( this, &QgsGoochMaterialWidget::widgetChanged, this, &QgsGoochMaterialWidget::updatePreview );
 }
 
 QgsMaterialSettingsWidget *QgsGoochMaterialWidget::create()
