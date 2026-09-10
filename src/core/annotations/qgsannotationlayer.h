@@ -179,7 +179,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      *
      * \since QGIS 4.4
      */
-    bool supportsSnapping() const override;
+    virtual bool supportsSnapping() const override;
 
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
