@@ -65,6 +65,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
     static const QgsSettingsEntryBool *settingsHistogramShowMean SIP_SKIP;
     static const QgsSettingsEntryBool *settingsHistogramShowStdev SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsHistogramShowBinOutlines SIP_SKIP;
 
     /**
      * Returns the layer currently associated with the widget.
