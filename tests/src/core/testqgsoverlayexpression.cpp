@@ -66,6 +66,9 @@ class TestQgsOverlayExpression : public QObject
     void testOverlayMeasure();
     void testOverlayMeasure_data();
 
+    void testReferencedColumns();
+    void testReferencedColumns_data();
+
     void testOverlayIntersectsDetails();
 };
 
@@ -687,6 +690,49 @@ void TestQgsOverlayExpression::testOverlayExpression_data()
   QTest::newRow( "intersects get ids limit 2 #39068 [cached]" ) << "overlay_intersects('rectangles', id, limit:=2,cache:=true)" << "LINESTRING(-178 52, -133 33, -132 42, -64 46)" << QVariantList { 1, 3 };
 }
 
+
+void TestQgsOverlayExpression::testReferencedColumns()
+{
+  QFETCH( QString, expression );
+  QFETCH( QStringList, expectedColumns );
+
+  QgsExpression exp( expression );
+  QVERIFY2( !exp.hasParserError(), exp.parserErrorString().toUtf8().constData() );
+
+  QSet<QString> expected;
+  for ( const QString &column : expectedColumns )
+    expected.insert( column );
+
+  QCOMPARE( exp.referencedColumns(), expected );
+
+  // Narrowing the dependencies must not drop the geometry requirement
+  QVERIFY( exp.needsGeometry() );
+}
+
+void TestQgsOverlayExpression::testReferencedColumns_data()
+{
+  QTest::addColumn<QString>( "expression" );
+  QTest::addColumn<QStringList>( "expectedColumns" );
+
+  QTest::newRow( "no subexpression" ) << u"overlay_intersects('rectangles')"_s << QStringList();
+  QTest::newRow( "target expression field" ) << u"overlay_intersects('rectangles', id)"_s << QStringList();
+  QTest::newRow( "target filter field" ) << u"overlay_intersects('rectangles', id, id > 1)"_s << QStringList();
+  QTest::newRow( "source layer field" ) << u"overlay_intersects(\"source_layer\")"_s << QStringList { u"source_layer"_s };
+  QTest::newRow( "source limit field" ) << u"overlay_intersects('rectangles', limit:=\"source_limit\")"_s << QStringList { u"source_limit"_s };
+  QTest::newRow( "source cache field" ) << u"overlay_intersects('rectangles', cache:=\"source_cache\")"_s << QStringList { u"source_cache"_s };
+  QTest::newRow( "parent in expression" ) << u"overlay_intersects('rectangles', attribute(@parent, 'source_field'))"_s << QStringList { QgsFeatureRequest::ALL_ATTRIBUTES };
+  QTest::newRow( "parent in filter" ) << u"overlay_intersects('rectangles', id, attribute(@parent, 'source_field') > 1)"_s << QStringList { QgsFeatureRequest::ALL_ATTRIBUTES };
+  QTest::newRow( "dynamic variable in expression" ) << u"overlay_intersects('rectangles', var(\"variable_name\"))"_s << QStringList { QgsFeatureRequest::ALL_ATTRIBUTES };
+  QTest::newRow( "parent in limit" ) << u"overlay_intersects('rectangles', limit:=attribute(@parent, 'source_field'))"_s << QStringList { QgsFeatureRequest::ALL_ATTRIBUTES };
+  QTest::newRow( "parent variable in limit" ) << u"overlay_intersects('rectangles', limit:=@parent)"_s << QStringList { QgsFeatureRequest::ALL_ATTRIBUTES };
+  QTest::newRow( "named arguments" ) << u"overlay_intersects(layer:='rectangles', expression:=id, min_inscribed_circle_radius:=1, sort_by_intersection_size:='desc')"_s << QStringList();
+  QTest::newRow( "source min_overlap field" ) << u"overlay_intersects('rectangles', min_overlap:=\"source_overlap\")"_s << QStringList { u"source_overlap"_s };
+
+  QTest::newRow( "nearest target expression field" ) << u"overlay_nearest('rectangles', id)"_s << QStringList();
+  QTest::newRow( "nearest source limit field" ) << u"overlay_nearest('rectangles', limit:=\"source_limit\")"_s << QStringList { u"source_limit"_s };
+  QTest::newRow( "nearest source max_distance field" ) << u"overlay_nearest('rectangles', max_distance:=\"source_distance\")"_s << QStringList { u"source_distance"_s };
+  QTest::newRow( "nearest parent in expression" ) << u"overlay_nearest('rectangles', attribute(@parent, 'source_field'))"_s << QStringList { QgsFeatureRequest::ALL_ATTRIBUTES };
+}
 
 void TestQgsOverlayExpression::testOverlaySelf()
 {
