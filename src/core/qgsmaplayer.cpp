@@ -1639,7 +1639,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   else
   {
     QString projectFileName;
-    if ( QgsProject* lProject = project() )
+    if ( QgsProject *lProject = project() )
     {
       projectFileName = lProject->fileName();
     }
