@@ -1281,10 +1281,12 @@ bool QgsPointLocator::rebuildAnnotationIndex( int maxFeaturesToIndex )
     if ( !item->enabled() )
       continue;
 
-    QgsGeometry geom = item->snapGeometry();
-    if ( geom.isNull() || geom.isEmpty() )
+    const QgsAbstractGeometry *snapGeom = item->snapGeometry();
+    if ( !snapGeom || snapGeom->isEmpty() )
       continue; // item type does not support snapping
 
+    // the index needs its own copy it can reproject and that survives the item changing
+    QgsGeometry geom( snapGeom->clone() );
     if ( mTransform.isValid() )
     {
       try

@@ -56,7 +56,7 @@ Creates a new polygon annotation item.
 
     virtual QgsRectangle boundingBox() const;
 
-    virtual QgsGeometry snapGeometry() const;
+    virtual const QgsAbstractGeometry *snapGeometry() const;
 
 
     const QgsCurvePolygon *geometry() const;

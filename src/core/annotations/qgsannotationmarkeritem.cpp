@@ -181,9 +181,9 @@ QgsRectangle QgsAnnotationMarkerItem::boundingBox() const
   return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x(), mPoint.y() );
 }
 
-QgsGeometry QgsAnnotationMarkerItem::snapGeometry() const
+const QgsAbstractGeometry *QgsAnnotationMarkerItem::snapGeometry() const
 {
-  return QgsGeometry( mPoint.clone() );
+  return &mPoint;
 }
 
 QgsRectangle QgsAnnotationMarkerItem::boundingBox( QgsRenderContext &context ) const
