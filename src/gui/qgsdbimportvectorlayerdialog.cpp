@@ -136,6 +136,13 @@ QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseP
     mEditComment = nullptr;
   }
 
+  const bool supportsStyles = mConnection->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::StyleStorage );
+  if ( !supportsStyles )
+  {
+    delete mChkSaveStyleToDatabase;
+    mChkSaveStyleToDatabase = nullptr;
+  }
+
   mExtentGroupBox->setTitleBase( tr( "Filter by Extent" ) );
   mExtentGroupBox->setCheckable( true );
   mExtentGroupBox->setChecked( false );
@@ -303,6 +310,21 @@ QString QgsDbImportVectorLayerDialog::tableName() const
 QString QgsDbImportVectorLayerDialog::tableComment() const
 {
   return mEditComment ? mEditComment->toPlainText() : QString();
+}
+
+bool QgsDbImportVectorLayerDialog::saveStyleToDatabase() const
+{
+  return mChkSaveStyleToDatabase && mChkSaveStyleToDatabase->isChecked();
+}
+
+QgsVectorLayer *QgsDbImportVectorLayerDialog::sourceLayer() const
+{
+  return mSourceLayer;
+}
+
+QString QgsDbImportVectorLayerDialog::geometryColumn() const
+{
+  return mEditGeometryColumnName ? mEditGeometryColumnName->text() : QString();
 }
 
 void QgsDbImportVectorLayerDialog::setMapCanvas( QgsMapCanvas *canvas )

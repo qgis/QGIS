@@ -465,6 +465,7 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::SinglePolygon,
   };
   mSqlLayerDefinitionCapabilities = { Qgis::SqlLayerDefinitionCapability::SubsetStringFilter, Qgis::SqlLayerDefinitionCapability::GeometryColumn };
+  mCapabilities2 = { Qgis::DatabaseProviderConnectionCapability2::StyleStorage };
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
