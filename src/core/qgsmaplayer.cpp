@@ -1646,7 +1646,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
     // TODO QGIS 5.0 -- Remove the else branch with fallback to current QGIS project, the code will work but if the MapLayer is not associated with project it will not provide result
     else
     {
-      QgsMessageLog::logMessage( "QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.", "QgsMapLayer", Qgis::Warning );
+      QgsDebugError( "QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0." );
       projectFileName = QgsProject::instance()->fileName(); // skip-keyword-check
     }
 
