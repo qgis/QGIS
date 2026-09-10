@@ -24,6 +24,10 @@
 
 #include <QString>
 
+// this file breaks cppcheck ast parsing
+#define EXCLUDE_CPPCHECK
+#ifdef EXCLUDE_CPPCHECK
+
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
@@ -238,5 +242,7 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   outputs.insert( u"OUTPUT"_s, outputFile );
   return outputs;
 }
+
+#endif
 
 ///@endcond
