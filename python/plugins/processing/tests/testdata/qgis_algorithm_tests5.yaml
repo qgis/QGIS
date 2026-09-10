@@ -1162,3 +1162,22 @@ tests:
       OUTPUT:
         hash: a210382b64cc4139232a63e3bccf34e65c18c0d5d158aec84398b635
         type: rasterhash
+
+  - algorithm: native:channelnetworkfromdem
+    name: Channel network from DEM
+    params:
+      INPUT:
+        name: custom/mini_dem.tif
+        type: raster
+      SUBBASINS: false
+      THRESHOLD: 3
+    results:
+      BASINS:
+        name: expected/basins_from_dem.gml
+        type: vector
+      CHANNELS:
+        name: expected/channels_from_dem.gml
+        type: vector
+      JUNCTIONS:
+        name: expected/junctions_from_dem.gml
+        type: vector

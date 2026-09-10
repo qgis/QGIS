@@ -61,6 +61,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
+  processing/qgsalgorithmchannelnetwork.cpp
   processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmcheckvalidity.cpp

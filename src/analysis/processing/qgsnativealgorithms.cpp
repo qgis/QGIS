@@ -331,6 +331,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmflowconnectivity.h"
 #include "qgsalgorithmflowdirection.h"
 #include "qgsalgorithmstrahlerorder.h"
+#include "qgsalgorithmchannelnetwork.h"
 
 ///@cond PRIVATE
 
@@ -408,6 +409,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCellStatisticsPercentRankFromRasterAlgorithm() );
   addAlgorithm( new QgsCellStatisticsPercentRankFromValueAlgorithm() );
   addAlgorithm( new QgsCentroidAlgorithm() );
+  addAlgorithm( new QgsChannelNetworkFromDemAlgorithm() );
+  addAlgorithm( new QgsChannelNetworkFromFlowDirAndOrderAlgorithm() );
   addAlgorithm( new QgsCheckValidityAlgorithm() );
   addAlgorithm( new QgsGeometryCheckSegmentLengthAlgorithm() );
   addAlgorithm( new QgsGeometryCheckAngleAlgorithm() );
