@@ -139,16 +139,10 @@ class CORE_EXPORT QgsPointLocator : public QObject
     ~QgsPointLocator() override;
 
     /**
-     * Gets associated layer
+     * Returns the associated vector layer, or NULLPTR if this locator was built for a
+     * non-vector layer such as an annotation layer. Use mapLayer() for the generic accessor.
      */
     QgsVectorLayer *layer() const { return mLayer; }
-
-    /**
-     * Returns the annotation layer this locator was built for, or NULLPTR for a vector-layer locator.
-     *
-     * \since QGIS 4.4
-     */
-    QgsAnnotationLayer *annotationLayer() const { return mAnnotationLayer; }
 
     /**
      * Returns the annotation item id mapped to the synthetic feature \a id, or an empty string if

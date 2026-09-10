@@ -1277,6 +1277,10 @@ bool QgsPointLocator::rebuildAnnotationIndex( int maxFeaturesToIndex )
     if ( !item )
       continue;
 
+    // a disabled item is not drawn, so it should not be snappable
+    if ( !item->enabled() )
+      continue;
+
     QgsGeometry geom = item->snapGeometry();
     if ( geom.isNull() || geom.isEmpty() )
       continue; // item type does not support snapping
