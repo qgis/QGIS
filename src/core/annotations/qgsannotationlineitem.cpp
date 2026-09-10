@@ -225,9 +225,9 @@ QgsRectangle QgsAnnotationLineItem::boundingBox() const
   return mCurve->boundingBox();
 }
 
-QgsGeometry QgsAnnotationLineItem::snapGeometry() const
+const QgsAbstractGeometry *QgsAnnotationLineItem::snapGeometry() const
 {
-  return QgsGeometry( mCurve->clone() );
+  return mCurve.get();
 }
 
 QgsAnnotationLineItem *QgsAnnotationLineItem::clone() const

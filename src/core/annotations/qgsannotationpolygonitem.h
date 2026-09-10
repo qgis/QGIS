@@ -57,7 +57,7 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
 
     using QgsAnnotationItem::boundingBox;
     QgsRectangle boundingBox() const override;
-    QgsGeometry snapGeometry() const override;
+    const QgsAbstractGeometry *snapGeometry() const override;
 
     /**
      * Returns the geometry of the item.

@@ -130,13 +130,14 @@ class CORE_EXPORT QgsAnnotationItem
     }
 
     /**
-     * Returns the item geometry used for snapping, in the layer's CRS.
+     * Returns the item geometry used for snapping, in the layer's CRS, or NULLPTR if the item is
+     * not snappable (the default). Marker, line and polygon items override it.
      *
-     * The default is a null geometry (not snappable); marker, line and polygon items override it.
+     * The returned geometry is owned by the item and is only valid until the item is modified.
      *
      * \since QGIS 4.4
      */
-    virtual QgsGeometry snapGeometry() const { return QgsGeometry(); }
+    virtual const QgsAbstractGeometry *snapGeometry() const { return nullptr; }
 
     /**
      * Renders the item to the specified render \a context.
