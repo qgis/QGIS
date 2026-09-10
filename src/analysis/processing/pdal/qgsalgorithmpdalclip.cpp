@@ -80,6 +80,8 @@ void QgsPdalClipAlgorithm::initAlgorithm( const QVariantMap & )
 
 QStringList QgsPdalClipAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
     throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
