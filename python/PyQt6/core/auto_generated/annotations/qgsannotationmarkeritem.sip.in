@@ -55,7 +55,7 @@ Creates a new marker annotation item.
 
     virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
 
-    virtual QgsGeometry snapGeometry() const;
+    virtual const QgsAbstractGeometry *snapGeometry() const;
 
 
     QgsPointXY geometry() const;
