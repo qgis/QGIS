@@ -305,6 +305,8 @@ QgsFilterByLayerTypeAlgorithm *QgsFilterByLayerTypeAlgorithm::createInstance() c
 
 QVariantMap QgsFilterByLayerTypeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Could not load input layer" ) );

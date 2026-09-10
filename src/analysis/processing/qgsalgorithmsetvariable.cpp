@@ -72,6 +72,8 @@ QgsSetProjectVariableAlgorithm *QgsSetProjectVariableAlgorithm::createInstance()
 
 bool QgsSetProjectVariableAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   // this is all nice and quick, we can (and should) do it in the main thread without issue
   const QString name = parameterAsString( parameters, u"NAME"_s, context );
   const QString value = parameterAsString( parameters, u"VALUE"_s, context );

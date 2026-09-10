@@ -319,6 +319,8 @@ void QgsXyzTilesDirectoryAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const bool tms = parameterAsBoolean( parameters, u"TMS_CONVENTION"_s, context );
   const QString title = parameterAsString( parameters, u"HTML_TITLE"_s, context );
   const QString attribution = parameterAsString( parameters, u"HTML_ATTRIBUTION"_s, context );
@@ -511,6 +513,8 @@ void QgsXyzTilesMbtilesAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString outputFile = parameterAsString( parameters, u"OUTPUT_FILE"_s, context );
 
   mMbtilesWriter = std::make_unique<QgsMbTiles>( outputFile );

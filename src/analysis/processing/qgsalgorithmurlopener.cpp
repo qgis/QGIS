@@ -78,6 +78,8 @@ void QgsOpenUrlAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsOpenUrlAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString url = parameterAsString( parameters, u"URL"_s, context );
   if ( url.isEmpty() )
     throw QgsProcessingException( tr( "No URL or file path specified" ) );

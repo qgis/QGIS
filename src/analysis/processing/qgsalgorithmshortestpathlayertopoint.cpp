@@ -89,6 +89,8 @@ void QgsShortestPathLayerToPointAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   loadCommonParams( parameters, context, feedback );
 
   const QgsPointXY endPoint = parameterAsPoint( parameters, u"END_POINT"_s, context, mNetwork->sourceCrs() );

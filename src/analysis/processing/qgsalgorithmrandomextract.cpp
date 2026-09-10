@@ -149,6 +149,8 @@ void QgsRandomExtractAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );

@@ -161,6 +161,8 @@ bool QgsWedgeBuffersAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
 QgsFeatureList QgsWedgeBuffersAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   if ( f.hasGeometry() && QgsWkbTypes::geometryType( f.geometry().wkbType() ) == Qgis::GeometryType::Point )
   {

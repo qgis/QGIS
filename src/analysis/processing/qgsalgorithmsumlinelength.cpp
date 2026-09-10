@@ -197,6 +197,8 @@ bool QgsSumLineLengthAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) c
 
 QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature outputFeature = feature;
   if ( !feature.hasGeometry() )
   {

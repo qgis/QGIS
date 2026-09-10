@@ -162,6 +162,8 @@ bool QgsRectanglesOvalsDiamondsAlgorithm::prepareAlgorithm( const QVariantMap &p
 
 QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature outFeature = feature;
   if ( outFeature.hasGeometry() )
   {

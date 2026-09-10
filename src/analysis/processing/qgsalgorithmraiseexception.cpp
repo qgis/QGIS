@@ -169,6 +169,8 @@ void QgsRaiseWarningAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsRaiseWarningAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString expression = parameterAsExpression( parameters, u"CONDITION"_s, context );
   if ( !expression.isEmpty() )
   {
@@ -251,6 +253,8 @@ void QgsRaiseMessageAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsRaiseMessageAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString expression = parameterAsExpression( parameters, u"CONDITION"_s, context );
   if ( !expression.isEmpty() )
   {
