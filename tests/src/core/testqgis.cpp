@@ -18,6 +18,7 @@
 
 #include <QApplication>
 #include <QCheckBox>
+#include <QLabel>
 #include <QObject>
 #include <QSignalSpy>
 #include <QString>
@@ -83,6 +84,7 @@ class TestQgis : public QgsTest
     void testDoubleLessThanOrNear();
     void testDoubleGreaterThanOrNear_data();
     void testDoubleGreaterThanOrNear();
+    void testUniquePtrCast();
 };
 
 void TestQgis::permissiveToDouble()
@@ -1004,6 +1006,42 @@ void TestQgis::testDoubleGreaterThanOrNear()
   else
     QCOMPARE( qgsDoubleGreaterThanOrNear( a, b, epsilon ), expected );
 }
+
+void TestQgis::testUniquePtrCast()
+{
+  // dynamic cast to proper type, original unique_ptr is then empty
+  {
+    auto widget = std::unique_ptr<QWidget>( new QCheckBox( "test" ) );
+    QVERIFY( widget );
+
+    auto cb = qgis::unique_ptr_dynamic_cast<QCheckBox>( std::move( widget ) );
+    QVERIFY( cb );
+    QVERIFY( !widget );
+  }
+
+  // dynamic cast to wrong type, original unique_ptr stays untouched, cast return nullptr
+  {
+    auto widget = std::unique_ptr<QWidget>( new QCheckBox( "test" ) );
+    QVERIFY( widget );
+
+    auto cb = qgis::unique_ptr_dynamic_cast<QLabel>( std::move( widget ) );
+    QVERIFY( !cb );
+    QVERIFY( widget );
+  }
+
+  // static cast to proper type, original unique_is then empty
+  {
+    auto widget = std::unique_ptr<QWidget>( new QCheckBox( "test" ) );
+    QVERIFY( widget );
+
+    auto cb = qgis::unique_ptr_static_cast<QCheckBox>( std::move( widget ) );
+    QVERIFY( cb );
+    QVERIFY( !widget );
+  }
+
+  // cannot test static_cast to wrong type or it would crash the test
+}
+
 
 QGSTEST_MAIN( TestQgis )
 #include "testqgis.moc"
