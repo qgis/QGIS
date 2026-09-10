@@ -90,7 +90,7 @@ void QgsFillSinksWangLiuAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT"_s ) );
 
-  auto minSlopeParam = std::make_unique<QgsProcessingParameterNumber>( u"MIN_SLOPE"_s, QObject::tr( "Minimum slope (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 0.1, false, 0 );
+  auto minSlopeParam = std::make_unique<QgsProcessingParameterNumber>( u"MIN_SLOPE"_s, QObject::tr( "Minimum slope (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 0.01, false, 0 );
   minSlopeParam->setHelp(
     QObject::tr( "Minimum slope gradient to preserve from cell to cell. With a value of zero sinks are filled up to the spill elevation (which results in flat areas). Units are degrees." )
   );
