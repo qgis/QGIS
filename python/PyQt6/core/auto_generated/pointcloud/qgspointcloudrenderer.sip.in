@@ -158,6 +158,50 @@ Returns the feedback object used to cancel rendering
 .. versionadded:: 3.20
 %End
 
+    void setHorizonFilter( double planeZ, double discRadius );
+%Docstring
+Sets the horizon filter used to discard points which fall below the
+visible horizon of the ellipsoid when rendering point clouds in a
+topocentric CRS.
+
+A point is considered to be below the horizon when its z value is lower
+than ``planeZ`` AND its horizontal distance from the origin is lower
+than ``discRadius``.
+
+.. seealso:: :py:func:`isBelowHorizon`
+
+.. versionadded:: 4.4
+%End
+
+    void setHorizonFilterEnabled( bool enabled );
+%Docstring
+Sets whether or not to filter points based on horizon.
+
+.. seealso:: :py:func:`horizonFilterEnabled`
+
+.. versionadded:: 4.4
+%End
+
+    bool horizonFilterEnabled() const;
+%Docstring
+Returns true if a horizon filter has been set via
+:py:func:`~QgsPointCloudRenderContext.setHorizonFilter` and enabled via
+:py:func:`~QgsPointCloudRenderContext.setHorizonFilterEnabled`.
+
+.. versionadded:: 4.4
+%End
+
+    bool isBelowHorizon( double x, double y, double z ) const;
+%Docstring
+Returns true if the point at the given destination CRS coordinates
+``x``, ``y``, ``z`` falls below the visible horizon and should be
+discarded from rendering.
+
+.. seealso:: :py:func:`setHorizonFilter`
+
+.. versionadded:: 4.4
+%End
+
 
 
   private:
