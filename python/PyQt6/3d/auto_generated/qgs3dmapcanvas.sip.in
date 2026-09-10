@@ -11,7 +11,6 @@
 
 
 
-
 class Qgs3DMapCanvas : QWindow
 {
 %Docstring(signature="appended")
@@ -56,6 +55,7 @@ Returns access to the view's camera controller. Returns ``None`` if the
 scene has not been initialized yet with
 :py:func:`~Qgs3DMapCanvas.setMapSettings`
 %End
+
 
     void setMapTool( Qgs3DMapTool *tool );
 %Docstring
