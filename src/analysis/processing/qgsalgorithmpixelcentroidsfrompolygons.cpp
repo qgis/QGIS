@@ -98,7 +98,6 @@ bool QgsPixelCentroidsFromPolygonsAlgorithm::prepareAlgorithm( const QVariantMap
 
 QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT_VECTOR"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT_VECTOR"_s ) );
