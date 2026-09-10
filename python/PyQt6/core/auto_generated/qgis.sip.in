@@ -3280,6 +3280,25 @@ The development version
       CenteredSegment,
     };
 
+    enum class ScaleBarUnitLabelPlacement /BaseType=IntFlag/
+    {
+      BeforeBar,
+      AfterBar,
+      LeftAbove,
+      CenteredAbove,
+      RightAbove,
+      LeftBelow,
+      CenteredBelow,
+      RightBelow,
+      BeforeFirstDistanceLabel,
+      AfterLastDistanceLabel,
+      OnBarAfterFirstDivision,
+      BeforeEveryDistanceLabel,
+      AfterEveryDistanceLabel,
+    };
+
+    typedef QFlags<Qgis::ScaleBarUnitLabelPlacement> ScaleBarUnitLabelPlacements;
+
 
     enum class MapGridUnit /BaseType=IntEnum/
     {
@@ -4330,6 +4349,8 @@ QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QF
 QFlags<Qgis::PdfRenderFlag> operator|(Qgis::PdfRenderFlag f1, QFlags<Qgis::PdfRenderFlag> f2);
 
 QFlags<Qgis::RubberBandComponent> operator|(Qgis::RubberBandComponent f1, QFlags<Qgis::RubberBandComponent> f2);
+
+QFlags<Qgis::ScaleBarUnitLabelPlacement> operator|(Qgis::ScaleBarUnitLabelPlacement f1, QFlags<Qgis::ScaleBarUnitLabelPlacement> f2);
 
 
 

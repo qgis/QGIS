@@ -11222,6 +11222,46 @@ Qgis.ScaleBarDistanceLabelHorizontalPlacement.__doc__ = """Scale bar distance la
 """
 # --
 Qgis.ScaleBarDistanceLabelHorizontalPlacement.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ScaleBarUnitLabelPlacement.BeforeBar.__doc__ = "Vertically centered on the bar, before the bar begins"
+Qgis.ScaleBarUnitLabelPlacement.AfterBar.__doc__ = "Vertically centered on the bar, after the bar ends"
+Qgis.ScaleBarUnitLabelPlacement.LeftAbove.__doc__ = "Text centered over the left edge of the bar, above the bar"
+Qgis.ScaleBarUnitLabelPlacement.CenteredAbove.__doc__ = "Horizontally centered on the bar, above the bar"
+Qgis.ScaleBarUnitLabelPlacement.RightAbove.__doc__ = "Text centered over the right edge of the bar, above the bar"
+Qgis.ScaleBarUnitLabelPlacement.LeftBelow.__doc__ = "Text centered over the left edge of the bar, below the bar"
+Qgis.ScaleBarUnitLabelPlacement.CenteredBelow.__doc__ = "Horizontally centered on the bar, below the bar"
+Qgis.ScaleBarUnitLabelPlacement.RightBelow.__doc__ = "Text centered over the right edge of the bar, below the bar"
+Qgis.ScaleBarUnitLabelPlacement.BeforeFirstDistanceLabel.__doc__ = "Placed before the first distance label"
+Qgis.ScaleBarUnitLabelPlacement.AfterLastDistanceLabel.__doc__ = "Placed after the last distance label"
+Qgis.ScaleBarUnitLabelPlacement.OnBarAfterFirstDivision.__doc__ = "Placed on top of the bar, after the first bar division"
+Qgis.ScaleBarUnitLabelPlacement.BeforeEveryDistanceLabel.__doc__ = "Placed before every distance label (as part of the distance label text)"
+Qgis.ScaleBarUnitLabelPlacement.AfterEveryDistanceLabel.__doc__ = "Placed after every distance label (as part of the distance label text)"
+Qgis.ScaleBarUnitLabelPlacement.__doc__ = """Available placement options for a scale bar's unit label.
+
+This is exposed as a flag type enum to support multiple placements.
+
+.. versionadded:: 4.4
+
+* ``BeforeBar``: Vertically centered on the bar, before the bar begins
+* ``AfterBar``: Vertically centered on the bar, after the bar ends
+* ``LeftAbove``: Text centered over the left edge of the bar, above the bar
+* ``CenteredAbove``: Horizontally centered on the bar, above the bar
+* ``RightAbove``: Text centered over the right edge of the bar, above the bar
+* ``LeftBelow``: Text centered over the left edge of the bar, below the bar
+* ``CenteredBelow``: Horizontally centered on the bar, below the bar
+* ``RightBelow``: Text centered over the right edge of the bar, below the bar
+* ``BeforeFirstDistanceLabel``: Placed before the first distance label
+* ``AfterLastDistanceLabel``: Placed after the last distance label
+* ``OnBarAfterFirstDivision``: Placed on top of the bar, after the first bar division
+* ``BeforeEveryDistanceLabel``: Placed before every distance label (as part of the distance label text)
+* ``AfterEveryDistanceLabel``: Placed after every distance label (as part of the distance label text)
+
+"""
+# --
+Qgis.ScaleBarUnitLabelPlacement.baseClass = Qgis
+Qgis.ScaleBarUnitLabelPlacements = lambda flags=0: Qgis.ScaleBarUnitLabelPlacement(flags)
+Qgis.ScaleBarUnitLabelPlacements.baseClass = Qgis
+ScaleBarUnitLabelPlacements = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsLayoutItemMapGrid.GridUnit = Qgis.MapGridUnit
 # monkey patching scoped based enum
 QgsLayoutItemMapGrid.MapUnit = Qgis.MapGridUnit.MapUnits
