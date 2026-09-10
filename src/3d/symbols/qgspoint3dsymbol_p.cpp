@@ -22,6 +22,7 @@
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgsbillboardgeometry.h"
+#include "qgsellipsoidutils.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
 #include "qgsgltf3dutils.h"
@@ -106,6 +107,10 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
     // outputs
     PointData outNormal;   //!< Features that are not selected
     PointData outSelected; //!< Features that are selected
+
+    double mGlobeSemiMajorAxis = -1;
+    double mGlobeSemiMinorAxis = -1;
+    bool mOrientToGlobeSurface = false;
 };
 
 
@@ -120,6 +125,18 @@ bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &contex
   attributeNames.unite( attrs );
 
   Qgs3DUtils::decomposeTransformMatrix( mSymbol->transform(), mPointTranslation, mSymbolRotation, mSymbolScale );
+
+  // on a globe, symbols need to be oriented relative to the globe
+  if ( context.crs().type() == Qgis::CrsType::Geocentric )
+  {
+    const QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( context.crs().ellipsoidAcronym() );
+    if ( params.valid )
+    {
+      mGlobeSemiMajorAxis = params.semiMajor;
+      mGlobeSemiMinorAxis = params.semiMinor;
+      mOrientToGlobeSurface = true;
+    }
+  }
 
   return true;
 }
@@ -146,7 +163,8 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
   }
 
   const std::size_t oldSize = out.positions.size();
-  Qgs3DUtils::extractPointPositions( feature, context, mChunkOrigin, mSymbol->altitudeClamping(), out.positions, translation );
+
+  Qgs3DUtils::extractPointPositions( feature, context, mChunkOrigin, mSymbol->altitudeClamping(), out.positions );
 
   const std::size_t added = out.positions.size() - oldSize;
 
@@ -170,11 +188,11 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
   const bool hasDDRotation = ddp.isActive( QgsAbstract3DSymbol::Property::RotationX )
                              || ddp.isActive( QgsAbstract3DSymbol::Property::RotationY )
                              || ddp.isActive( QgsAbstract3DSymbol::Property::RotationZ );
+  const bool needsRotation = hasDDRotation || mOrientToGlobeSurface;
+
+  QQuaternion baseRotation = mSymbolRotation;
   if ( hasDDRotation )
   {
-    out.rotations.resize( out.positions.size() );
-    QVector4D *outRotation = out.rotations.data() + oldSize;
-
     // extract default rotation components from symbol rotation
     const QVector3D baseEuler = mSymbolRotation.toEulerAngles();
 
@@ -183,12 +201,35 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
     const double rotationZ = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::RotationZ, context.expressionContext(), baseEuler.z() );
 
     //... and then re-calculate the rotation vector for this feature
-    const QQuaternion finalQuat = QQuaternion::fromEulerAngles( static_cast< float >( rotationX ), static_cast< float >( rotationY ), static_cast< float >( rotationZ ) );
-    const QVector4D finalVec4 = finalQuat.toVector4D();
+    baseRotation = QQuaternion::fromEulerAngles( static_cast< float >( rotationX ), static_cast< float >( rotationY ), static_cast< float >( rotationZ ) );
+  }
 
+  // rotations and translations
+  // if we are using globe, we first rotate the points and then translate them, so that they are offset relative to the globe
+  if ( needsRotation )
+    out.rotations.resize( out.positions.size() );
+  QVector4D *outRotation = needsRotation ? out.rotations.data() + oldSize : nullptr;
+
+  if ( mOrientToGlobeSurface )
+  {
     for ( std::size_t i = 0; i < added; ++i )
     {
-      ( *outRotation++ ) = finalVec4;
+      const QgsVector3D truePosition = mChunkOrigin + QgsVector3D( out.positions[oldSize + i] );
+      const QQuaternion enuRotation = QgsEllipsoidUtils::ellipsoidEastNorthUpRotation( truePosition, mGlobeSemiMajorAxis, mGlobeSemiMinorAxis );
+      ( *outRotation++ ) = ( enuRotation * baseRotation ).toVector4D();
+
+      // translation is relative to the surface ("up" is always away from the globe)
+      out.positions[oldSize + i] += enuRotation.rotatedVector( translation.toVector3D() );
+    }
+  }
+  else // we are not on globe, but we still have to apply (uncoditionally) translations and if set, rotations as well
+  {
+    const QVector4D r = baseRotation.toVector4D();
+    for ( std::size_t i = 0; i < added; ++i )
+    {
+      if ( needsRotation )
+        ( *outRotation++ ) = r;
+      out.positions[oldSize + i] += translation.toVector3D();
     }
   }
 
@@ -575,6 +616,10 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
     // outputs
     PointData outNormal;   //!< Features that are not selected
     PointData outSelected; //!< Features that are selected
+
+    double mGlobeSemiMajorAxis = -1;
+    double mGlobeSemiMinorAxis = -1;
+    bool mOrientToGlobeSurface = false;
 };
 
 bool QgsModelPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
@@ -589,6 +634,19 @@ bool QgsModelPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, Q
   attributeNames.unite( attrs );
 
   Qgs3DUtils::decomposeTransformMatrix( mSymbol->transform(), mPointTranslation, mSymbolRotation, mSymbolScale );
+
+  // on a globe, symbols need to be oriented to the ellipsoid surface normal at their position
+  if ( context.crs().type() == Qgis::CrsType::Geocentric )
+  {
+    const QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( context.crs().ellipsoidAcronym() );
+    if ( params.valid )
+    {
+      mGlobeSemiMajorAxis = params.semiMajor;
+      mGlobeSemiMinorAxis = params.semiMinor;
+      mOrientToGlobeSurface = true;
+    }
+  }
+
   return true;
 }
 
@@ -614,7 +672,9 @@ void QgsModelPoint3DSymbolHandler::processFeature( const QgsFeature &feature, co
   }
 
   const std::size_t oldSize = out.positions.size();
-  Qgs3DUtils::extractPointPositions( feature, context, mChunkOrigin, mSymbol->altitudeClamping(), out.positions, translation );
+
+  // on a globe, translation is deferred and rotated into the feature's local ENU frame
+  Qgs3DUtils::extractPointPositions( feature, context, mChunkOrigin, mSymbol->altitudeClamping(), out.positions );
   const std::size_t added = out.positions.size() - oldSize;
 
   const bool hasDDScale = ddp.isActive( QgsAbstract3DSymbol::Property::ScaleX ) || ddp.isActive( QgsAbstract3DSymbol::Property::ScaleY ) || ddp.isActive( QgsAbstract3DSymbol::Property::ScaleZ );
@@ -633,17 +693,42 @@ void QgsModelPoint3DSymbolHandler::processFeature( const QgsFeature &feature, co
   const bool hasDDRotation = ddp.isActive( QgsAbstract3DSymbol::Property::RotationX )
                              || ddp.isActive( QgsAbstract3DSymbol::Property::RotationY )
                              || ddp.isActive( QgsAbstract3DSymbol::Property::RotationZ );
+  const bool needsRotation = hasDDRotation || mOrientToGlobeSurface;
+
+  QQuaternion baseRotation = mSymbolRotation;
   if ( hasDDRotation )
   {
-    out.rotations.resize( out.positions.size() );
-    QQuaternion *outRotation = out.rotations.data() + oldSize;
     const QVector3D baseEuler = mSymbolRotation.toEulerAngles();
     const double rotationX = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::RotationX, context.expressionContext(), baseEuler.x() );
     const double rotationY = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::RotationY, context.expressionContext(), baseEuler.y() );
     const double rotationZ = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::RotationZ, context.expressionContext(), baseEuler.z() );
-    const QQuaternion rotation = QQuaternion::fromEulerAngles( static_cast< float >( rotationX ), static_cast< float >( rotationY ), static_cast< float >( rotationZ ) );
+    baseRotation = QQuaternion::fromEulerAngles( static_cast< float >( rotationX ), static_cast< float >( rotationY ), static_cast< float >( rotationZ ) );
+  }
+
+  if ( needsRotation )
+    out.rotations.resize( out.positions.size() );
+  QQuaternion *outRotation = needsRotation ? out.rotations.data() + oldSize : nullptr;
+
+  if ( mOrientToGlobeSurface )
+  {
     for ( std::size_t i = 0; i < added; ++i )
-      ( *outRotation++ ) = rotation;
+    {
+      const QgsVector3D truePosition = mChunkOrigin + QgsVector3D( out.positions[oldSize + i] );
+      const QQuaternion enuRotation = QgsEllipsoidUtils::ellipsoidEastNorthUpRotation( truePosition, mGlobeSemiMajorAxis, mGlobeSemiMinorAxis );
+      ( *outRotation++ ) = enuRotation * baseRotation;
+
+      // translation is relative to the surface ("up" is always away from the globe)
+      out.positions[oldSize + i] += enuRotation.rotatedVector( translation.toVector3D() );
+    }
+  }
+  else
+  {
+    for ( std::size_t i = 0; i < added; ++i )
+    {
+      if ( needsRotation )
+        ( *outRotation++ ) = baseRotation;
+      out.positions[oldSize + i] += translation.toVector3D();
+    }
   }
 
   mFeatureCount++;
