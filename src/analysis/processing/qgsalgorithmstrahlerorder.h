@@ -20,6 +20,7 @@
 
 
 #include "qgis_sip.h"
+#include "qgsalgorithmd8base.h"
 #include "qgsprocessingalgorithm.h"
 
 #define SIP_NO_FILE
@@ -29,28 +30,19 @@
 /**
  * \brief Common base class for Strahler stream order processing algorithms.
  */
-class QgsStrahlerOrderAlgorithmBase : public QgsProcessingAlgorithm
+class QgsStrahlerOrderAlgorithmBase : public QgsD8AnalysisAlgorithmBase
 {
   public:
     QgsStrahlerOrderAlgorithmBase() = default;
 
-    QString group() const override;
-    QString groupId() const override;
     QStringList tags() const override;
-    QList<QgsAcademicReference> academicReferences() const override;
-    QList<QgsProcessingAlgorithm::ExternalLink> externalLinks() const override;
 
   protected:
     void addCommonParameters();
 
     /**
-   * Executes the stack-based Strahler stream ordering algorithm across the channel network using a D8 direction matrix.
-   */
-    void computeStrahlerOrder( const QgsRasterBlock *demBlock, const std::vector<int8_t> &d8Directions, int width, int height, int threshold, int16_t *outOrder, QgsProcessingFeedback *feedback );
-
-    /**
-   * Writes the processed int16 raster block to the destination file.
-   */
+     * Writes the processed int16 raster block to the destination file.
+     */
     QVariantMap writeOutputRaster( QgsRasterBlock *outputBlock, const QString &outputFile, const QString &outputFormat, const QString &creationOptions );
 
     int mLayerWidth = 0;
