@@ -82,13 +82,22 @@ void QgsPixelCentroidsFromPolygonsAlgorithm::initAlgorithm( const QVariantMap & 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Pixel centroids" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
-QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsPixelCentroidsFromPolygonsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsRasterLayer *rasterLayer = parameterAsRasterLayer( parameters, u"INPUT_RASTER"_s, context );
 
   if ( !rasterLayer )
     throw QgsProcessingException( invalidRasterError( parameters, u"INPUT_RASTER"_s ) );
 
+  mCrs = rasterLayer->crs();
+  mRasterUnitsPerPixelX = rasterLayer->rasterUnitsPerPixelX();
+  mRasterUnitsPerPixelY = rasterLayer->rasterUnitsPerPixelY();
+  mExtent = rasterLayer->extent();
+  return true;
+}
+
+QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT_VECTOR"_s, context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT_VECTOR"_s ) );
@@ -99,16 +108,12 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
   fields.append( QgsField( u"point_id"_s, QMetaType::Type::Int ) );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::Point, rasterLayer->crs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::Point, mCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   const double step = source->featureCount() ? 100.0 / source->featureCount() : 1;
-  QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest().setDestinationCrs( rasterLayer->crs(), context.transformContext() ).setSubsetOfAttributes( QList<int>() ) );
-
-  const double xPixel = rasterLayer->rasterUnitsPerPixelX();
-  const double yPixel = rasterLayer->rasterUnitsPerPixelY();
-  const QgsRectangle extent = rasterLayer->extent();
+  QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest().setDestinationCrs( mCrs, context.transformContext() ).setSubsetOfAttributes( QList<int>() ) );
 
   QgsFeature feature;
   feature.setFields( fields );
@@ -139,8 +144,8 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
     double x, y;
     int startRow, startColumn;
     int endRow, endColumn;
-    QgsRasterAnalysisUtils::mapToPixel( xMin, yMax, extent, xPixel, yPixel, startRow, startColumn );
-    QgsRasterAnalysisUtils::mapToPixel( xMax, yMin, extent, xPixel, yPixel, endRow, endColumn );
+    QgsRasterAnalysisUtils::mapToPixel( xMin, yMax, mExtent, mRasterUnitsPerPixelX, mRasterUnitsPerPixelY, startColumn, startRow );
+    QgsRasterAnalysisUtils::mapToPixel( xMax, yMin, mExtent, mRasterUnitsPerPixelX, mRasterUnitsPerPixelY, endColumn, endRow );
 
     auto engine = std::make_unique<QgsGeos>( f.geometry().constGet() );
     engine->prepareGeometry();
@@ -154,7 +159,7 @@ QVariantMap QgsPixelCentroidsFromPolygonsAlgorithm::processAlgorithm( const QVar
           break;
         }
 
-        QgsRasterAnalysisUtils::pixelToMap( row, col, extent, xPixel, yPixel, x, y );
+        QgsRasterAnalysisUtils::pixelToMap( col, row, mExtent, mRasterUnitsPerPixelX, mRasterUnitsPerPixelY, x, y );
         if ( engine->contains( x, y ) )
         {
           feature.setGeometry( std::make_unique<QgsPoint>( x, y ) );
