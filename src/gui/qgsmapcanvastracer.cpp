@@ -134,8 +134,11 @@ void QgsMapCanvasTracer::configure()
       const auto constLayers = mCanvas->snappingUtils()->layers();
       for ( const QgsSnappingUtils::LayerConfig &cfg : constLayers )
       {
-        if ( visibleLayers.contains( cfg.layer ) )
-          layers << cfg.layer;
+        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( cfg.layer ) )
+        {
+          if ( visibleLayers.contains( vl ) )
+            layers << vl;
+        }
       }
     }
     break;

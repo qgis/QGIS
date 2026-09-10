@@ -428,15 +428,19 @@ void QgsSymbolSelectorWidget::layerChanged()
   {
     // then it must be a symbol
     mDataDefineRestorer.reset();
-    Q_NOWARN_DEPRECATED_PUSH
-    node->symbol()->setLayer( mVectorLayer );
-    Q_NOWARN_DEPRECATED_POP
-    // Now populate symbols of that type using the symbols list widget:
-    QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( node->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
-    symbolsList->setContext( mContext );
+    // a new annotation item has no symbol yet
+    if ( node->symbol() )
+    {
+      Q_NOWARN_DEPRECATED_PUSH
+      node->symbol()->setLayer( mVectorLayer );
+      Q_NOWARN_DEPRECATED_POP
+      // Now populate symbols of that type using the symbols list widget:
+      QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( node->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
+      symbolsList->setContext( mContext );
 
-    setWidget( symbolsList );
-    connect( symbolsList, &QgsSymbolsListWidget::changed, this, &QgsSymbolSelectorWidget::symbolChanged );
+      setWidget( symbolsList );
+      connect( symbolsList, &QgsSymbolsListWidget::changed, this, &QgsSymbolSelectorWidget::symbolChanged );
+    }
   }
   updateLockButton();
 }

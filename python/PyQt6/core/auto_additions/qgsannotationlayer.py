@@ -10,7 +10,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsAnnotationLayer.__attribute_docs__ = {'itemsChanged': 'Emitted when items are added, removed or modified in the layer.\n\n.. versionadded:: 4.4\n'}
-    QgsAnnotationLayer.__overridden_methods__ = ['properties', 'clone', 'createMapRenderer', 'extent', 'setTransformContext', 'readXml', 'writeXml', 'writeSymbology', 'readSymbology', 'writeStyle', 'readStyle', 'isEditable', 'supportsEditing', 'dataProvider', 'htmlMetadata', 'resolveReferences']
+    QgsAnnotationLayer.__overridden_methods__ = ['properties', 'supportsSnapping', 'clone', 'createMapRenderer', 'extent', 'setTransformContext', 'readXml', 'writeXml', 'writeSymbology', 'readSymbology', 'writeStyle', 'readStyle', 'isEditable', 'supportsEditing', 'dataProvider', 'htmlMetadata', 'resolveReferences']
     QgsAnnotationLayer.__group__ = ['annotations']
 except (NameError, AttributeError):
     pass
