@@ -68,6 +68,10 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
     void requestRebuildRequired();
 
   private:
+    //! add an algorithm or a parameter to the canvas and try it's best to link it to the existing \a socket
+    void addParameter( const QString &parameterId, const QPointF &pos, const QgsModelDesignerSocketGraphicItem *socket );
+    void addAlgorithm( const QString &algorithmId, const QPointF &pos, const QgsModelDesignerSocketGraphicItem *socket );
+
     std::unique_ptr<QgsModelViewBezierRubberBand> mBezierRubberBand;
     QgsModelDesignerSocketGraphicItem *mFromSocket = nullptr;
     QgsModelDesignerSocketGraphicItem *mToSocket = nullptr;

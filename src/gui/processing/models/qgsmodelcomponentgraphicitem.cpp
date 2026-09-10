@@ -1033,7 +1033,7 @@ QString QgsModelParameterGraphicItem::applyEdit(
 
   model()->removeModelParameter( paramComponent->parameterName() );
 
-  if ( newParameter->description() != oldDescription )
+  if ( newParameter->description() != oldDescription || newParameter->name() != oldName )
   {
     // only update name if user has changed the description -- we don't force this, as it may cause
     // unwanted name updates which could potentially break the model's API

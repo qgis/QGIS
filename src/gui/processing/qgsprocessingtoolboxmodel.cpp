@@ -872,6 +872,23 @@ void QgsProcessingToolboxProxyModel::setFilterString( const QString &filter )
   invalidateFilter();
 }
 
+void QgsProcessingToolboxProxyModel::setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition )
+{
+  mFilterParameterDefinition = parameterDefinition;
+  mFilterOutputDefinition = nullptr;
+
+  invalidateFilter();
+}
+
+void QgsProcessingToolboxProxyModel::setFilterOutput( const QgsProcessingOutputDefinition *outputDefinition )
+{
+  mFilterParameterDefinition = nullptr;
+  mFilterOutputDefinition = outputDefinition;
+
+  invalidateFilter();
+}
+
+
 bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
@@ -938,6 +955,63 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         return false;
       }
     }
+
+    if ( mFilters & Filter::ForSocketInput )
+    {
+      const QgsProcessingAlgorithm *alg = mModel->algorithmForIndex( sourceIndex );
+      if ( mFilterParameterDefinition )
+      {
+        bool found = false;
+        const QList<const QgsProcessingOutputDefinition *> outputs = alg->outputDefinitions();
+        for ( const QgsProcessingOutputDefinition *output : outputs )
+        {
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( output, mFilterParameterDefinition ) )
+          {
+            found = true;
+            break;
+          }
+        }
+        if ( !found )
+          return false;
+      }
+    }
+
+    if ( mFilters & Filter::ForSocketOutput )
+    {
+      const QgsProcessingAlgorithm *alg = mModel->algorithmForIndex( sourceIndex );
+      bool found = false;
+      if ( mFilterOutputDefinition )
+      {
+        for ( const QgsProcessingParameterDefinition *def : alg->parameterDefinitions() )
+        {
+          if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
+            continue;
+
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( mFilterOutputDefinition, def ) )
+          {
+            found = true;
+            break;
+          }
+        }
+      }
+      if ( mFilterParameterDefinition )
+      {
+        for ( const QgsProcessingParameterDefinition *def : alg->parameterDefinitions() )
+        {
+          if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
+            continue;
+
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( mFilterParameterDefinition, def ) )
+          {
+            found = true;
+            break;
+          }
+        }
+      }
+      if ( !found )
+        return false;
+    }
+
     if ( mFilters & Filter::Modeler )
     {
       bool isHiddenFromModeler = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt()
@@ -960,6 +1034,11 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       return false;
     }
 
+    if ( mFilters & Filter::ForSocketOutput )
+    {
+      // Don't show any parameters if your looking for something compatible with output !
+      return false;
+    }
     if ( !mFilterString.trimmed().isEmpty() )
     {
       QStringList partsToSearch;
@@ -981,6 +1060,17 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         }
         if ( !found )
           return false; // couldn't find a match for this word, so hide algorithm
+      }
+    }
+
+    if ( mFilters & Filter::ForSocketInput )
+    {
+      if ( mFilterParameterDefinition )
+      {
+        const QgsProcessingParameterType *paramType = QgsApplication::processingRegistry()->parameterType( mFilterParameterDefinition->type() );
+        const QString paramId = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::ParameterTypeId ) ).toString();
+        if ( !paramType->acceptedParameterTypes().contains( paramId ) )
+          return false;
       }
     }
 
