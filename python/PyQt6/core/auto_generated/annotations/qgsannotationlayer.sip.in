@@ -148,7 +148,6 @@ Returns ``True`` if the operation was successfully applied.
 
 
     virtual bool supportsSnapping() const;
-
 %Docstring
 Returns ``True``, as annotation layers can be used as a target for
 snapping.
