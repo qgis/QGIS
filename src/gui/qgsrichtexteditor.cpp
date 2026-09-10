@@ -791,7 +791,8 @@ void QgsRichTextEditor::insertImage()
 {
   const QSettings s;
   const QString attdir = s.value( u"general/filedialog-path"_s ).toString();
-  const QString file = QFileDialog::getOpenFileName( this, tr( "Select an image" ), attdir, tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
+  const QString file
+    = QFileDialog::getOpenFileName( this, tr( "Select an image" ), attdir, tr( "All images (*.jpg *.jpeg *.png *.bmp *.gif);;JPEG (*.jpg *.jpeg);;PNG (*.png);;BMP (*.bmp);;GIF (*.gif);;All files (*)" ) );
   if ( file.isEmpty() )
     return;
 
