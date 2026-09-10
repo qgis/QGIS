@@ -535,9 +535,7 @@ QColor Qgs3DUtils::srgbToLinear( const QColor &color )
   return QColor::fromRgbF( srgbFloatToLinear( color.redF() ), srgbFloatToLinear( color.greenF() ), srgbFloatToLinear( color.blueF() ), color.alphaF() );
 }
 
-void Qgs3DUtils::extractPointPositions(
-  const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions, const QgsVector3D &translation
-)
+void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions )
 {
   const QgsAbstractGeometry *g = f.geometry().constGet();
   for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
@@ -570,9 +568,9 @@ void Qgs3DUtils::extractPointPositions(
     }
     // clang-format off
     positions.append( QVector3D(
-      static_cast<float>( pt.x() - chunkOrigin.x() + translation.x() ),
-      static_cast<float>( pt.y() - chunkOrigin.y() + translation.y() ),
-      static_cast<float>( h - chunkOrigin.z() + translation.z() )
+      static_cast<float>( pt.x() - chunkOrigin.x() ),
+      static_cast<float>( pt.y() - chunkOrigin.y() ),
+      static_cast<float>( h - chunkOrigin.z() )
     ) );
     // clang-format on
     QgsDebugMsgLevel( u"%1 %2 %3"_s.arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
