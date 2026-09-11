@@ -200,6 +200,17 @@ Crop any transparent border from around an image.
                original image if set to ``True``
 %End
 
+    static bool isBlankImage( const QImage &image );
+%Docstring
+Tests whether an ``image`` is completely blank, i.e. it consists
+entirely of completely transparent pixels.
+
+Only the alpha channel for pixels are tested, and a pixel is considered
+empty if the alpha value is equal to 0.
+
+.. versionadded:: 4.4
+%End
+
     static QImage floodFill( const QImage &image, const QPoint &startPoint, const QColor &newColor, int tolerance = 0, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a flood fill operation on an image, replacing contiguous areas
