@@ -31,6 +31,7 @@ from qgis.core import (
 from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.algs.gdal.GdalUtils import mark_source
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -84,6 +85,7 @@ class ExtractProjection(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return [self.commandName()]
 
+    @mark_source
     def processAlgorithm(self, parameters, context, feedback):
         createPrj = self.parameterAsBoolean(parameters, self.PRJ_FILE_CREATE, context)
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
