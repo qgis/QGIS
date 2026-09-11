@@ -15,6 +15,11 @@
 
 #include "qgssymbol3dwidget.h"
 
+#include <memory>
+
+#include "qgs3dadvancedlinesymbolsettingswidget.h"
+#include "qgs3dadvancedpointsymbolsettingswidget.h"
+#include "qgs3dadvancedpolygonsymbolsettingswidget.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dsymbolwidget.h"
 #include "qgsabstract3dsymbol.h"
@@ -29,6 +34,7 @@
 #include "qgsstylesavedialog.h"
 #include "qgsvectorlayer.h"
 
+#include <QMenu>
 #include <QMessageBox>
 #include <QStackedWidget>
 #include <QString>
@@ -57,6 +63,12 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
   mStyleWidget->setStyle( QgsStyle::defaultStyle() );
   mStyleWidget->setEntityTypes( QList<QgsStyle::StyleEntity>() << QgsStyle::Symbol3DEntity << QgsStyle::MaterialSettingsEntity );
   mStyleWidget->setLayerType( mLayer->geometryType() );
+
+  mAdvancedSymbolSettingsAction = new QAction( tr( "Advanced Symbol Settings…" ), this );
+  connect( mAdvancedSymbolSettingsAction, &QAction::triggered, this, &QgsSymbol3DWidget::showAdvancedSymbolSettings );
+
+  mStyleWidget->advancedMenu()->addAction( mAdvancedSymbolSettingsAction );
+  mStyleWidget->showAdvancedButton( true );
 
   connect( mStyleWidget, &QgsStyleItemsListWidget::selectionChangedWithStylePath, this, &QgsSymbol3DWidget::setSymbolFromStyle );
   connect( mStyleWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsSymbol3DWidget::saveSymbol );
@@ -289,4 +301,63 @@ void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol
   }
   // When anything is not right
   widgetStack->setCurrentWidget( widgetUnsupported );
+}
+
+void QgsSymbol3DWidget::showAdvancedSymbolSettings()
+{
+  Qgis::MaterialRenderingTechnique renderingTechnique = Qgis::MaterialRenderingTechnique::Triangles;
+  if ( Qgs3DSymbolWidget *symbolWidget = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
+  {
+    renderingTechnique = symbolWidget->renderingTechnique();
+  }
+  std::unique_ptr<QgsAbstract3DSymbol> currentSymbol = symbol();
+
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    Qgs3DAdvancedSymbolSettingsWidget *panelWidget = nullptr;
+    const Qgis::GeometryType geomType = mLayer->geometryType();
+    if ( geomType == Qgis::GeometryType::Point )
+    {
+      panelWidget = new Qgs3DAdvancedPointSymbolSettingsWidget( currentSymbol.get(), mLayer, renderingTechnique, this );
+    }
+    else if ( geomType == Qgis::GeometryType::Line )
+    {
+      panelWidget = new Qgs3DAdvancedLineSymbolSettingsWidget( currentSymbol.get(), mLayer, renderingTechnique, this );
+    }
+    else if ( geomType == Qgis::GeometryType::Polygon )
+    {
+      panelWidget = new Qgs3DAdvancedPolygonSymbolSettingsWidget( currentSymbol.get(), mLayer, renderingTechnique, this );
+    }
+    else
+    {
+      QgsDebugError( u"Unexpected geometry type for 3D symbol settings dialog, should not happen"_s );
+    }
+
+    if ( panelWidget )
+    {
+      panelWidget->setPanelTitle( tr( "Advanced Symbol Settings" ) );
+      connect( panelWidget, &QgsPanelWidget::widgetChanged, this, [this, panelWidget]() {
+        if ( Qgs3DSymbolWidget *symbolWidget = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
+        {
+          std::unique_ptr<QgsAbstract3DSymbol> newSymbol = panelWidget->symbol();
+          symbolWidget->setSymbol( newSymbol.get(), mLayer );
+          emit widgetChanged();
+        }
+      } );
+      panel->openPanel( panelWidget );
+    }
+    return;
+  }
+
+  Qgs3DAdvancedSymbolSettingsDialog dialog( currentSymbol.get(), mLayer, renderingTechnique, this );
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    if ( Qgs3DSymbolWidget *symbolWidget = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
+    {
+      std::unique_ptr<QgsAbstract3DSymbol> newSymbol = dialog.symbol();
+      symbolWidget->setSymbol( newSymbol.get(), mLayer );
+      emit widgetChanged();
+    }
+  }
 }

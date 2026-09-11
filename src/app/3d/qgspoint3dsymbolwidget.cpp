@@ -63,15 +63,6 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
 {
   setupUi( this );
 
-  spinTX->setClearValue( 0.0 );
-  spinTY->setClearValue( 0.0 );
-  spinTZ->setClearValue( 0.0 );
-  spinSX->setClearValue( 1.0 );
-  spinSY->setClearValue( 1.0 );
-  spinSZ->setClearValue( 1.0 );
-  spinRX->setClearValue( 0.0 );
-  spinRY->setClearValue( 0.0 );
-  spinRZ->setClearValue( 0.0 );
   spinRadius->setClearValue( 10.0 );
   spinMinorRadius->setClearValue( 5.0 );
   spinTopRadius->setClearValue( 0.0 );
@@ -113,7 +104,6 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   connect( cboShape, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::onShapeChanged );
   QList<QDoubleSpinBox *> spinWidgets;
   spinWidgets << spinRadius << spinTopRadius << spinBottomRadius << spinMinorRadius << spinSize << spinLength << spinBillboardHeight;
-  spinWidgets << spinTX << spinTY << spinTZ << spinSX << spinSY << spinSZ << spinRX << spinRY << spinRZ;
   const auto constSpinWidgets = spinWidgets;
   for ( QDoubleSpinBox *spinBox : constSpinWidgets )
     connect( spinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPoint3DSymbolWidget::changed );
@@ -123,8 +113,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )()>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::changed );
 
   // Sync between billboard height and TZ
-  connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinTZ, &QDoubleSpinBox::setValue );
-  connect( spinTZ, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinBillboardHeight, &QDoubleSpinBox::setValue );
+  connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPoint3DSymbolWidget::onBillboardHeightChanged );
 
   connect( mComboModelUpAxis, qOverload< int >( &QComboBox::currentIndexChanged ), this, [this] {
     // ensure up axis is different to forward axis
@@ -150,17 +139,8 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
     emit changed();
   } );
 
-  connect( mButtonDDScaleX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDScaleY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDScaleZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDTranslationX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDTranslationY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDTranslationZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDRotationX, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDRotationY, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( mButtonDDRotationZ, &QgsPropertyOverrideButton::changed, this, &QgsPoint3DSymbolWidget::changed );
-
   widgetMaterial->setDockMode( dockMode() );
+  widgetMaterial->setStyle( QgsMaterialSettingsWidget::WidgetStyle::Compact );
 }
 
 Qgs3DSymbolWidget *QgsPoint3DSymbolWidget::create( QgsVectorLayer * )
@@ -237,34 +217,11 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
     widgetMaterial->setType( u"null"_s );
   }
 
+  mTransform = pointSymbol->transform();
   QVector3D translation, scale;
   QQuaternion rotation;
-  Qgs3DUtils::decomposeTransformMatrix( pointSymbol->transform(), translation, rotation, scale );
-
-  const QVector3D rot = rotation.toEulerAngles();
-
+  Qgs3DUtils::decomposeTransformMatrix( mTransform, translation, rotation, scale );
   spinBillboardHeight->setValue( translation.z() );
-  spinTX->setValue( translation.x() );
-  spinTY->setValue( translation.y() );
-  spinTZ->setValue( translation.z() );
-  spinSX->setValue( scale.x() );
-  spinSY->setValue( scale.y() );
-  spinSZ->setValue( scale.z() );
-  spinRX->setValue( QgsLayoutUtils::normalizedAngle( rot.x() ) );
-  spinRY->setValue( QgsLayoutUtils::normalizedAngle( rot.y() ) );
-  spinRZ->setValue( QgsLayoutUtils::normalizedAngle( rot.z() ) );
-
-  mButtonDDScaleX->init( static_cast< int >( QgsAbstract3DSymbol::Property::ScaleX ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
-  mButtonDDScaleY->init( static_cast< int >( QgsAbstract3DSymbol::Property::ScaleY ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
-  mButtonDDScaleZ->init( static_cast< int >( QgsAbstract3DSymbol::Property::ScaleZ ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
-
-  mButtonDDTranslationX->init( static_cast< int >( QgsAbstract3DSymbol::Property::TranslationX ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
-  mButtonDDTranslationY->init( static_cast< int >( QgsAbstract3DSymbol::Property::TranslationY ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
-  mButtonDDTranslationZ->init( static_cast< int >( QgsAbstract3DSymbol::Property::TranslationZ ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
-
-  mButtonDDRotationX->init( static_cast< int >( QgsAbstract3DSymbol::Property::RotationX ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
-  mButtonDDRotationY->init( static_cast< int >( QgsAbstract3DSymbol::Property::RotationY ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
-  mButtonDDRotationZ->init( static_cast< int >( QgsAbstract3DSymbol::Property::RotationZ ), pointSymbol->dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
 }
 
 QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
@@ -308,32 +265,11 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
       break;
   }
 
-  const QQuaternion rot( QQuaternion::fromEulerAngles( static_cast<float>( spinRX->value() ), static_cast<float>( spinRY->value() ), static_cast<float>( spinRZ->value() ) ) );
-  const QVector3D sca( static_cast<float>( spinSX->value() ), static_cast<float>( spinSY->value() ), static_cast<float>( spinSZ->value() ) );
-  const QVector3D tra( static_cast<float>( spinTX->value() ), static_cast<float>( spinTY->value() ), static_cast<float>( spinTZ->value() ) );
-
-  QMatrix4x4 tr;
-  tr.translate( tra );
-  tr.scale( sca );
-  tr.rotate( rot );
-
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym->setShape( cboShape->itemData( cboShape->currentIndex() ).value<Qgis::Point3DShape>() );
   sym->setShapeProperties( vm );
   sym->setMaterialSettings( widgetMaterial->settings().release() );
-  sym->setTransform( tr );
-
-  QgsPropertyCollection ddp;
-  ddp.setProperty( QgsAbstract3DSymbol::Property::ScaleX, mButtonDDScaleX->toProperty() );
-  ddp.setProperty( QgsAbstract3DSymbol::Property::ScaleY, mButtonDDScaleY->toProperty() );
-  ddp.setProperty( QgsAbstract3DSymbol::Property::ScaleZ, mButtonDDScaleZ->toProperty() );
-  ddp.setProperty( QgsAbstract3DSymbol::Property::TranslationX, mButtonDDTranslationX->toProperty() );
-  ddp.setProperty( QgsAbstract3DSymbol::Property::TranslationY, mButtonDDTranslationY->toProperty() );
-  ddp.setProperty( QgsAbstract3DSymbol::Property::TranslationZ, mButtonDDTranslationZ->toProperty() );
-  ddp.setProperty( QgsAbstract3DSymbol::Property::RotationX, mButtonDDRotationX->toProperty() );
-  ddp.setProperty( QgsAbstract3DSymbol::Property::RotationY, mButtonDDRotationY->toProperty() );
-  ddp.setProperty( QgsAbstract3DSymbol::Property::RotationZ, mButtonDDRotationZ->toProperty() );
-  sym->setDataDefinedProperties( ddp );
+  sym->setTransform( mTransform );
 
   return sym.release();
 }
@@ -382,7 +318,6 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
     << labelForwardAxis;
 
   materialsGroupBox->show();
-  transformationWidget->show();
   QList<QWidget *> activeWidgets;
   mRenderingTechnique = Qgis::MaterialRenderingTechnique::InstancedPoints;
   switch ( cboShape->currentData().value<Qgis::Point3DShape>() )
@@ -411,9 +346,8 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
       break;
     case Qgis::Point3DShape::Billboard:
       activeWidgets << labelBillboardHeight << spinBillboardHeight << labelBillboardSymbol << btnChangeSymbol;
-      // Always hide material and transformationwidget for billboard
+      // Always hide material for billboard
       materialsGroupBox->hide();
-      transformationWidget->hide();
       mRenderingTechnique = Qgis::MaterialRenderingTechnique::Billboards;
       break;
     case Qgis::Point3DShape::ExtrudedText:
@@ -435,6 +369,23 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
   {
     w->setVisible( activeWidgets.contains( w ) );
   }
+
+  emit changed();
+}
+
+
+void QgsPoint3DSymbolWidget::onBillboardHeightChanged()
+{
+  QVector3D translation, scale;
+  QQuaternion rotation;
+
+  Qgs3DUtils::decomposeTransformMatrix( mTransform, translation, rotation, scale );
+  translation.setZ( spinBillboardHeight->value() );
+
+  mTransform.setToIdentity();
+  mTransform.translate( translation );
+  mTransform.rotate( rotation );
+  mTransform.scale( scale );
 
   emit changed();
 }

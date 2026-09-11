@@ -56,6 +56,7 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   widgetMaterial->setTechnique( renderingTechnique() );
   widgetMaterial->setFilterByTechnique( true );
   widgetMaterial->setDockMode( dockMode() );
+  widgetMaterial->setStyle( QgsMaterialSettingsWidget::WidgetStyle::Compact );
 }
 
 Qgs3DSymbolWidget *QgsLine3DSymbolWidget::create( QgsVectorLayer * )

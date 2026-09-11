@@ -40,6 +40,17 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QgsPanelWidget
 
   public:
     /**
+     * Widget styles
+     *
+     * \since QGIS 4.4
+     */
+    enum WidgetStyle
+    {
+      Compact, //!< Shows only the main material settings
+      Full,    //!< Shows all material settings
+    };
+
+    /**
      * Constructor for QgsMaterialSettingsWidget with the specified \a parent widget.
      */
     QgsMaterialSettingsWidget( QWidget *parent );
@@ -53,7 +64,7 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QgsPanelWidget
      * Sets the rendering technique which will be used for the symbol. Allows the widget to adapt
      * available settings for the specified \a technique.
      */
-    virtual void setTechnique( Qgis::MaterialRenderingTechnique technique );
+    void setTechnique( Qgis::MaterialRenderingTechnique technique );
 
     /**
      * Returns a new instance of the material settings defined by the widget.
@@ -61,6 +72,14 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QgsPanelWidget
      * Caller takes ownership of the returned settings.
      */
     virtual std::unique_ptr< QgsAbstractMaterialSettings > settings() = 0 SIP_FACTORY;
+
+    /**
+     * Sets the widget \a style, which controls whether the compact or full
+     * set of material settings controls are shown.
+     *
+     * \since QGIS 4.4
+     */
+    void setStyle( WidgetStyle style );
 
   public slots:
 
@@ -77,7 +96,18 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QgsPanelWidget
     void changed();
 
   protected:
+    /**
+     * Updates the visibility of widget controls to reflect the current
+     * technique and style.
+     *
+     * \since QGIS 4.4
+     */
+    virtual void updateWidgetVisibility() = 0;
+
+  protected:
     QgsPropertyCollection mPropertyCollection;
+    WidgetStyle mStyle = Full;
+    Qgis::MaterialRenderingTechnique mTechnique = Qgis::MaterialRenderingTechnique::Triangles;
 };
 
 #endif // QGSMATERIALSETTINGSWIDGET_H

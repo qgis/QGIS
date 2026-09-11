@@ -351,6 +351,10 @@ endif()
 if (WITH_3D)
   set(QGIS_APP_SRCS
     ${QGIS_APP_SRCS}
+    3d/qgs3dadvancedlinesymbolsettingswidget.cpp
+    3d/qgs3dadvancedpointsymbolsettingswidget.cpp
+    3d/qgs3dadvancedpolygonsymbolsettingswidget.cpp
+    3d/qgs3dadvancedsymbolsettingswidget.cpp
     3d/qgs3danimationwidget.cpp
     3d/qgs3danimationexportdialog.cpp
     3d/qgs3dapputils.cpp
