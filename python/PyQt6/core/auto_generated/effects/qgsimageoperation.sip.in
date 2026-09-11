@@ -208,6 +208,18 @@ entirely of completely transparent pixels.
 Only the alpha channel for pixels are tested, and a pixel is considered
 empty if the alpha value is equal to 0.
 
+.. seealso:: :py:func:`isSingleColor`
+
+.. versionadded:: 4.4
+%End
+
+    static bool isSingleColor( const QImage &image, const QColor &color );
+%Docstring
+Tests whether an ``image`` is consists only of pixels matching the
+specified ``color``.
+
+.. seealso:: :py:func:`isBlankImage`
+
 .. versionadded:: 4.4
 %End
 

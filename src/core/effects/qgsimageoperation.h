@@ -210,9 +210,18 @@ class CORE_EXPORT QgsImageOperation
      * Only the alpha channel for pixels are tested, and a pixel is considered empty if the alpha value is equal
      * to 0.
      *
+     * \see isSingleColor()
      * \since QGIS 4.4
      */
     static bool isBlankImage( const QImage &image );
+
+    /**
+     * Tests whether an \a image is consists only of pixels matching the specified \a color.
+     *
+     * \see isBlankImage()
+     * \since QGIS 4.4
+     */
+    static bool isSingleColor( const QImage &image, const QColor &color );
 
     /**
      * Performs a flood fill operation on an image, replacing contiguous areas of the same color.
