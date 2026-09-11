@@ -18,6 +18,8 @@
 from qgis.core import QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm
 from qgis.PyQt.QtCore import QCoreApplication
 
+from .qgis_algorithm_utils import get_implementation_source_uri
+
 
 class QgisAlgorithm(QgsProcessingAlgorithm):
     def __init__(self):
@@ -31,6 +33,9 @@ class QgisAlgorithm(QgsProcessingAlgorithm):
     def createInstance(self):
         return type(self)()
 
+    def implementationSourceUri(self):
+        return get_implementation_source_uri(self)
+
 
 class QgisFeatureBasedAlgorithm(QgsProcessingFeatureBasedAlgorithm):
     def __init__(self):
@@ -43,3 +48,6 @@ class QgisFeatureBasedAlgorithm(QgsProcessingFeatureBasedAlgorithm):
 
     def createInstance(self):
         return type(self)()
+
+    def implementationSourceUri(self):
+        return get_implementation_source_uri(self)
