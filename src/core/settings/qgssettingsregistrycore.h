@@ -177,6 +177,12 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
      */
     static const QgsSettingsEntryBool *settingsLayerTreeShowIdInLayerTooltips;
 
+    /**
+     * Settings entry determining how layer names suggested in the export dialogs are laundered.
+     * \since QGIS 4.4
+     */
+    static const QgsSettingsEntryEnumFlag<Qgis::LayerNameLaunderingMode> *settingsLayerNameLaunderingMode;
+
     //! Settings entry enable WMS tile prefetching.
     static const QgsSettingsEntryBool *settingsEnableWMSTilePrefetching;
 

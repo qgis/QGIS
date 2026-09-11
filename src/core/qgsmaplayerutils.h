@@ -100,18 +100,28 @@ class CORE_EXPORT QgsMapLayerUtils
     static QList< QgsMapLayer * > sortLayersByType( const QList< QgsMapLayer * > &layers, const QList< Qgis::LayerType > &order );
 
     /**
-     * Launders a layer's name, converting it into a format which is general suitable for
+     * Launders a layer's name, converting it into a format which is generally suitable for
      * file names or database layer names.
      *
-     * Specifically this method:
+     * Regardless of \a mode, this method normalizes the name to Unicode normalization form C,
+     * replaces whitespace by underscore characters, collapses runs of underscores, and strips
+     * leading and trailing underscores.
      *
-     * - Converts the name to lowercase
-     * - Replaces spaces by underscore characters
-     * - Removes any characters which are not alphanumeric or '_'.
+     * If \a mode is Qgis::LayerNameLaunderingMode::PreserveUnicode, then letters and digits of
+     * any script are retained, and only characters which are hostile in this context are
+     * additionally replaced by underscores: control characters, path separators, the pipe
+     * character used to separate the components of QGIS data source URIs, and the double quote
+     * character used to quote SQL identifiers.
+     *
+     * If \a mode is Qgis::LayerNameLaunderingMode::Ascii, then the name is additionally converted
+     * to lowercase, and every character which is not an ASCII alphanumeric or '_' is replaced by
+     * an underscore. No transliteration is attempted.
+     *
+     * \note The \a mode parameter was added in QGIS 4.4
      *
      * \since QGIS 3.28
      */
-    static QString launderLayerName( const QString &name );
+    static QString launderLayerName( const QString &name, Qgis::LayerNameLaunderingMode mode = Qgis::LayerNameLaunderingMode::PreserveUnicode );
 
     /**
      * Returns TRUE if the \a layer is served by OpenStreetMap server.

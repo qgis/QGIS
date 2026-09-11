@@ -535,6 +535,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbPromptSublayers->addItem( tr( "Load All" ), static_cast<int>( Qgis::SublayerPromptMode::NeverAskLoadAll ) );
   cmbPromptSublayers->setCurrentIndex( cmbPromptSublayers->findData( static_cast<int>( mSettings->enumValue( u"/qgis/promptForSublayers"_s, Qgis::SublayerPromptMode::AlwaysAsk ) ) ) );
 
+  // Laundering of the layer name suggested in the export dialogs
+  mLayerNameLaunderingComboBox->clear();
+  mLayerNameLaunderingComboBox->addItem( tr( "Preserve Unicode Characters" ), static_cast<int>( Qgis::LayerNameLaunderingMode::PreserveUnicode ) );
+  mLayerNameLaunderingComboBox->addItem( tr( "Restrict to ASCII" ), static_cast<int>( Qgis::LayerNameLaunderingMode::Ascii ) );
+  mLayerNameLaunderingComboBox->setCurrentIndex( mLayerNameLaunderingComboBox->findData( static_cast<int>( QgsSettingsRegistryCore::settingsLayerNameLaunderingMode->value() ) ) );
+
   // Scan for valid items in the browser dock
   cmbScanItemsInBrowser->clear();
   cmbScanItemsInBrowser->addItem( tr( "Check File Contents" ), "contents" ); // 0
@@ -1651,6 +1657,7 @@ void QgsOptions::saveOptions()
   QgsFileBasedDataItemProvider::settingsScanItemsInBrowser->setValue( cmbScanItemsInBrowser->currentData().toString() );
   QgsSettingsRegistryCore::settingsScanZipInBrowser->setValue( cmbScanZipInBrowser->currentData().toString() );
   QgsDirectoryItem::settingsMonitorDirectoriesInBrowser->setValue( mCheckMonitorDirectories->isChecked() );
+  QgsSettingsRegistryCore::settingsLayerNameLaunderingMode->setValue( static_cast<Qgis::LayerNameLaunderingMode>( mLayerNameLaunderingComboBox->currentData().toInt() ) );
 
   mSettings->setValue( u"/qgis/mainSnappingWidgetMode"_s, mSnappingMainDialogComboBox->currentData() );
 

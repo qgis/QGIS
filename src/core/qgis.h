@@ -1125,6 +1125,20 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( HttpMethod )
 
     /**
+     * Modes for laundering layer names.
+     *
+     * \see QgsMapLayerUtils::launderLayerName()
+     *
+     * \since QGIS 4.4
+     */
+    enum class LayerNameLaunderingMode : int
+    {
+      PreserveUnicode = 0, //!< Preserve letters and digits of any script, replacing only whitespace and characters which are hostile to data source URIs, file paths or SQL identifier quoting
+      Ascii,               //!< Fold to lowercase ASCII, replacing every character which is not an ASCII alphanumeric or an underscore
+    };
+    Q_ENUM( LayerNameLaunderingMode )
+
+    /**
      * Vector layer export result codes.
      *
      * \since QGIS 3.20
