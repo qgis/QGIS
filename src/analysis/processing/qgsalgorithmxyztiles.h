@@ -115,10 +115,6 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     bool mSkipEmptyTiles = false;
     QString mTileFormat;
     QList<QgsMapLayer *> mLayers;
-    QgsCoordinateReferenceSystem mWgs84Crs;
-    QgsCoordinateReferenceSystem mMercatorCrs;
-    QgsCoordinateTransform mSrc2Wgs;
-    QgsCoordinateTransform mWgs2Mercator;
     QgsRectangle mWgs84Extent;
     QgsProcessingFeedback *mFeedback = nullptr;
     long long mTotalMetaTiles = 0;

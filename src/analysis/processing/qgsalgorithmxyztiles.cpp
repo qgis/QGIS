@@ -150,6 +150,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   QgsRectangle extent = parameterAsExtent( parameters, u"EXTENT"_s, context );
   QgsCoordinateReferenceSystem extentCrs = parameterAsExtentCrs( parameters, u"EXTENT"_s, context );
   QgsCoordinateTransform ct( extentCrs, project->crs(), context.transformContext() );
+  ct.setBallparkTransformsAreAppropriate( true );
   try
   {
     mExtent = ct.transformBoundingBox( extent );
@@ -177,13 +178,11 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mEllipsoid = context.ellipsoid();
   mFeedback = feedback;
 
-  mWgs84Crs = QgsCoordinateReferenceSystem( "EPSG:4326" );
-  mMercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
-  mSrc2Wgs = QgsCoordinateTransform( project->crs(), mWgs84Crs, context.transformContext() );
-  mWgs2Mercator = QgsCoordinateTransform( mWgs84Crs, mMercatorCrs, context.transformContext() );
+  QgsCoordinateTransform src2Wgs = QgsCoordinateTransform( project->crs(), QgsCoordinateReferenceSystem( "EPSG:4326" ), context.transformContext() );
+  src2Wgs.setBallparkTransformsAreAppropriate( true );
   try
   {
-    mWgs84Extent = mSrc2Wgs.transformBoundingBox( mExtent );
+    mWgs84Extent = src2Wgs.transformBoundingBox( mExtent );
   }
   catch ( QgsCsException & )
   {
@@ -234,6 +233,10 @@ void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *fe
 
 void QgsXyzTilesBaseAlgorithm::startJobs()
 {
+  QgsCoordinateReferenceSystem mercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
+  QgsCoordinateTransform wgsToMercator = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4326" ), mercatorCrs, mTransformContext );
+  wgsToMercator.setBallparkTransformsAreAppropriate( true );
+
   while ( mRendererJobs.size() < mThreadsNumber && !mMetaTiles.empty() )
   {
     MetaTile metaTile = mMetaTiles.takeFirst();
@@ -241,7 +244,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     QgsMapSettings settings;
     try
     {
-      settings.setExtent( mWgs2Mercator.transformBoundingBox( metaTile.extent() ) );
+      settings.setExtent( wgsToMercator.transformBoundingBox( metaTile.extent() ) );
     }
     catch ( QgsCsException & )
     {
@@ -251,7 +254,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
     settings.setTransformContext( mTransformContext );
     settings.setEllipsoid( mEllipsoid );
-    settings.setDestinationCrs( mMercatorCrs );
+    settings.setDestinationCrs( mercatorCrs );
     settings.setLayers( mLayers );
     settings.setOutputDpi( mDpi );
     settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
