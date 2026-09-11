@@ -112,6 +112,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     int mThreadsNumber = 1;
     int mTileWidth = 256;
     int mTileHeight = 256;
+    bool mSkipEmptyTiles = false;
     QString mTileFormat;
     QList<QgsMapLayer *> mLayers;
     QgsCoordinateReferenceSystem mWgs84Crs;
@@ -122,6 +123,8 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QgsProcessingFeedback *mFeedback = nullptr;
     long long mTotalMetaTiles = 0;
     long long mProcessedMetaTiles = 0;
+    long long mTilesWritten = 0;
+    long long mEmptyTiles = 0;
     QgsCoordinateTransformContext mTransformContext;
     QString mEllipsoid;
     QPointer<QEventLoop> mEventLoop;
