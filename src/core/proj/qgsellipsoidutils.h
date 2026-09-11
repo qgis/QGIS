@@ -19,8 +19,11 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsvector3d.h"
 
+#include <QQuaternion>
 #include <QStringList>
+#include <QVector3D>
 
 class QgsCelestialBody;
 
@@ -112,6 +115,26 @@ class CORE_EXPORT QgsEllipsoidUtils
     static QList< QgsCelestialBody > celestialBodies();
 
 #ifndef SIP_RUN
+
+    /**
+     * Builds a rotation quaternion from an "up" direction and a "right" direction,
+     * with the remaining basis axis derived as their cross product.
+     *
+     * \since QGIS 4.4
+     */
+    static QQuaternion quaternionFromNormalUpRight( const QVector3D &normalUp, const QVector3D &normalRight );
+
+    /**
+     * Returns a rotation quaternion for the east-north-up (ENU) reference frame at \a position on
+     * the ellipsoid with the given \a semiMajorAxis and \a semiMinorAxis. The local axes are defined as:
+     *
+     * The x axis points in the local east direction.
+     * The y axis points in the local north direction.
+     * The z axis points in the direction of the ellipsoid surface normal which passes through the position.
+     *
+     * \since QGIS 4.4
+     */
+    static QQuaternion ellipsoidEastNorthUpRotation( const QgsVector3D &position, double semiMajorAxis, double semiMinorAxis );
 
     /**
      * Clears the internal cache used.
