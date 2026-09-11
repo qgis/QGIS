@@ -7409,7 +7409,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
       mModelSources = model->availableSourcesForChild(
         modelChildAlgorithmID,
         QStringList() << QgsProcessingParameterPointCloudLayer::typeName() << QgsProcessingParameterMultipleLayers::typeName() << QgsProcessingParameterFile::typeName(),
-        QStringList() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName()
+        QStringList() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputPointCloudLayer::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName()
       );
       break;
     }
@@ -7429,7 +7429,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
       mModelSources = model->availableSourcesForChild(
         modelChildAlgorithmID,
         QStringList() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterMultipleLayers::typeName(),
-        QStringList() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName()
+        QStringList() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputVectorTileLayer::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName()
       );
       break;
     }
@@ -7533,6 +7533,8 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
           << QgsProcessingOutputFile::typeName()
           << QgsProcessingOutputMapLayer::typeName()
           << QgsProcessingOutputVectorLayer::typeName()
+          << QgsProcessingOutputVectorTileLayer::typeName()
+          << QgsProcessingOutputPointCloudLayer::typeName()
           << QgsProcessingOutputRasterLayer::typeName()
           // << QgsProcessingOutputMeshLayer::typeName()
           << QgsProcessingOutputMultipleLayers::typeName()
