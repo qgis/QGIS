@@ -19,7 +19,7 @@
 
 /// @cond private
 
-QgsCombinedFutureHelper::QgsCombinedFutureHelper( QList<QFuture<void>> futures, std::function<void()> allFinishedCallback )
+QgsCombinedFutureHelper::QgsCombinedFutureHelper( QList<QFuture<void>> futures, QFuture<void> cancellationFuture, std::function<void()> allFinishedCallback )
   : mAllFinishedCallback( std::move( allFinishedCallback ) )
 {
   mWatchers.resize( futures.size() );
@@ -29,6 +29,8 @@ QgsCombinedFutureHelper::QgsCombinedFutureHelper( QList<QFuture<void>> futures, 
     connect( mWatchers[i], &QFutureWatcherBase::finished, this, &QgsCombinedFutureHelper::onOneFinished );
     mWatchers[i]->setFuture( futures[i] );
   }
+  connect( &mCancellationWatcher, &QFutureWatcherBase::canceled, this, &QgsCombinedFutureHelper::onCanceled );
+  mCancellationWatcher.setFuture( cancellationFuture );
 }
 
 void QgsCombinedFutureHelper::onOneFinished()
@@ -44,6 +46,14 @@ void QgsCombinedFutureHelper::onOneFinished()
   mFired = true;
   mAllFinishedCallback();
   deleteLater();
+}
+
+void QgsCombinedFutureHelper::onCanceled()
+{
+  for ( auto &watcher : std::as_const( mWatchers ) )
+  {
+    watcher->future().cancelChain();
+  }
 }
 
 /// @endcond
