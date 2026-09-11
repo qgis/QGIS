@@ -960,6 +960,109 @@ QImage QgsImageOperation::cropTransparent( const QImage &image, QSize minSize, b
   return image.copy( QgsImageOperation::nonTransparentImageRect( image, minSize, center ) );
 }
 
+bool QgsImageOperation::isBlankImage( const QImage &image )
+{
+  if ( image.isNull() )
+    return true;
+
+  // if image doesn't have alpha channel, we can shortcut
+  switch ( image.format() )
+  {
+    case QImage::Format_Invalid:
+    case QImage::Format_Mono:
+    case QImage::Format_MonoLSB:
+    case QImage::Format_Indexed8:
+    case QImage::Format_RGB32:
+    case QImage::Format_RGB16:
+    case QImage::Format_RGB666:
+    case QImage::Format_RGB555:
+    case QImage::Format_RGB888:
+    case QImage::Format_RGB444:
+    case QImage::Format_RGBX8888:
+    case QImage::Format_BGR30:
+    case QImage::Format_RGB30:
+    case QImage::Format_Grayscale8:
+    case QImage::Format_RGBX64:
+    case QImage::Format_Grayscale16:
+    case QImage::Format_BGR888:
+    case QImage::Format_RGBX16FPx4:
+    case QImage::Format_RGBX32FPx4:
+    case QImage::Format_CMYK8888:
+    case QImage::NImageFormats:
+      return false;
+
+    case QImage::Format_ARGB32:
+    case QImage::Format_ARGB32_Premultiplied:
+    case QImage::Format_ARGB8565_Premultiplied:
+    case QImage::Format_ARGB6666_Premultiplied:
+    case QImage::Format_ARGB8555_Premultiplied:
+    case QImage::Format_ARGB4444_Premultiplied:
+    case QImage::Format_RGBA8888:
+    case QImage::Format_RGBA8888_Premultiplied:
+    case QImage::Format_A2BGR30_Premultiplied:
+    case QImage::Format_A2RGB30_Premultiplied:
+    case QImage::Format_Alpha8:
+    case QImage::Format_RGBA64:
+    case QImage::Format_RGBA64_Premultiplied:
+    case QImage::Format_RGBA16FPx4:
+    case QImage::Format_RGBA16FPx4_Premultiplied:
+    case QImage::Format_RGBA32FPx4:
+    case QImage::Format_RGBA32FPx4_Premultiplied:
+      break;
+  }
+  const int width = image.width();
+  const int height = image.height();
+  const qsizetype bytesPerLine = image.bytesPerLine();
+  const qsizetype totalPixels = static_cast<qsizetype>( width ) * height;
+
+  constexpr uint32_t ALPHA_MASK_32 = 0xFF000000;
+  constexpr uint64_t ALPHA_MASK_64 = 0xFF000000FF000000ULL;
+
+  // optimized check for ARGB32 types:
+  if ( image.format() == QImage::Format_ARGB32 || image.format() == QImage::Format_ARGB32_Premultiplied )
+  {
+    if ( bytesPerLine == static_cast< qsizetype>( width ) * 4 )
+    {
+      // contiguous memory check - check 2 pixels at a time
+      const uint64_t *ptr64 = reinterpret_cast<const uint64_t *>( image.constBits() );
+      const qsizetype count64 = totalPixels / 2;
+      for ( qsizetype i = 0; i < count64; ++i )
+      {
+        // check only alpha channel
+        if ( ( ptr64[i] & ALPHA_MASK_64 ) != 0 )
+          return false;
+      }
+      // handle remaining odd pixel if totalPixels is odd
+      if ( totalPixels % 2 != 0 )
+      {
+        const uint32_t *ptr32 = reinterpret_cast<const uint32_t *>( image.constBits() );
+        if ( ( ptr32[totalPixels - 1] & ALPHA_MASK_32 ) != 0 )
+          return false;
+      }
+    }
+    else
+    {
+      // line-by-line fallback if stride contains padding
+      for ( int y = 0; y < height; ++y )
+      {
+        const uint32_t *line = reinterpret_cast<const uint32_t *>( image.constScanLine( y ) );
+        for ( int x = 0; x < width; ++x )
+        {
+          // check only alpha channel
+          if ( ( line[x] & ALPHA_MASK_32 ) != 0 )
+            return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  // for other image types just convert to ARGB32 and re-test
+  // TODO (if needed!): add optimized checks for particular formats which are actually in use
+  QgsDebugError( u"QgsImageOperation::isBlankImage called with non-optimized image format: %1"_s.arg( qgsEnumValueToKey( image.format() ) ) );
+  return isBlankImage( image.convertToFormat( QImage::Format_ARGB32 ) );
+}
+
 inline bool colorsMatchFloodFill( QRgb c1, QRgb c2, int tolerance )
 {
   if ( tolerance == 0 )

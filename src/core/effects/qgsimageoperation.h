@@ -205,6 +205,16 @@ class CORE_EXPORT QgsImageOperation
     static QImage cropTransparent( const QImage &image, QSize minSize = QSize(), bool center = false );
 
     /**
+     * Tests whether an \a image is completely blank, i.e. it consists entirely of completely transparent pixels.
+     *
+     * Only the alpha channel for pixels are tested, and a pixel is considered empty if the alpha value is equal
+     * to 0.
+     *
+     * \since QGIS 4.4
+     */
+    static bool isBlankImage( const QImage &image );
+
+    /**
      * Performs a flood fill operation on an image, replacing contiguous areas of the same color.
      *
      * \param image image to process
