@@ -158,6 +158,28 @@ Qt::DropActions QgsGraduatedSymbolRendererModel::supportedDropActions() const
   return Qt::MoveAction;
 }
 
+QString QgsGraduatedSymbolRendererModel::formatRangeValue( double value ) const
+{
+  int decimalPlaces = mRenderer->classificationMethod()->labelPrecision() + 2;
+  if ( decimalPlaces < 0 )
+    decimalPlaces = 0;
+  return QLocale().toString( value, 'f', decimalPlaces );
+}
+
+QString QgsGraduatedSymbolRendererModel::tooltip( const QModelIndex &index ) const
+{
+  if ( !index.isValid() || !mRenderer || ( index.column() != 1 && index.column() != 2 ) )
+    return QString();
+
+  const QgsRendererRange range = mRenderer->ranges().value( index.row() );
+  const bool lowerInclusive = mRenderer->rangeLowerBoundIsInclusive( index.row() );
+  const bool upperInclusive = mRenderer->rangeUpperBoundIsInclusive( index.row() );
+  const QString lowerOperator = lowerInclusive ? u"<="_s : u"<"_s;
+  const QString upperOperator = upperInclusive ? u"<="_s : u"<"_s;
+
+  return QString( formatRangeValue( range.lowerValue() ) + " " + lowerOperator + " " + tr( "Values" ) + " " + upperOperator + " " + formatRangeValue( range.upperValue() ) );
+}
+
 QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() || !mRenderer )
@@ -171,15 +193,13 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
   }
   else if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
   {
+    if ( role == Qt::ToolTipRole )
+      return tooltip( index );
+
     switch ( index.column() )
     {
       case 1:
-      {
-        int decimalPlaces = mRenderer->classificationMethod()->labelPrecision() + 2;
-        if ( decimalPlaces < 0 )
-          decimalPlaces = 0;
-        return QString( QLocale().toString( range.lowerValue(), 'f', decimalPlaces ) + " - " + QLocale().toString( range.upperValue(), 'f', decimalPlaces ) );
-      }
+        return QString( formatRangeValue( range.lowerValue() ) + " - " + formatRangeValue( range.upperValue() ) );
       case 2:
         return range.label();
       default:
