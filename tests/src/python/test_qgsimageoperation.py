@@ -68,6 +68,61 @@ class TestQgsImageOperation(unittest.TestCase):
         rgba64_non_blank.setPixelColor(0, 1, QColor(255, 255, 255, 255))
         self.assertFalse(QgsImageOperation.isBlankImage(rgba64_non_blank))
 
+    def test_is_single_color_image(self):
+        target_color = QColor(255, 128, 64, 200)
+
+        # null image - return value here isn't so important, we just don't
+        # want to crash
+        QgsImageOperation.isSingleColor(QImage(), target_color)
+
+        # ARGB32 format
+        img_argb = QImage(4, 4, QImage.Format.Format_ARGB32)
+        img_argb.fill(target_color)
+        self.assertTrue(QgsImageOperation.isSingleColor(img_argb, target_color))
+        self.assertFalse(
+            QgsImageOperation.isSingleColor(img_argb, QColor(255, 128, 64, 255))
+        )
+
+        # set a single pixel mismatch
+        img_argb_odd = QImage(3, 3, QImage.Format.Format_ARGB32)
+        img_argb_odd.fill(target_color)
+        img_argb_odd.setPixelColor(2, 2, QColor(0, 0, 0, 0))
+        self.assertFalse(QgsImageOperation.isSingleColor(img_argb_odd, target_color))
+
+        # RGB32 format
+        rgb_color = QColor(100, 150, 200)
+        img_rgb = QImage(5, 5, QImage.Format.Format_RGB32)
+        img_rgb.fill(rgb_color)
+        self.assertTrue(QgsImageOperation.isSingleColor(img_rgb, rgb_color))
+
+        img_rgb.fill(rgb_color)
+        img_rgb.setPixelColor(2, 2, QColor(0, 0, 0, 0))
+        self.assertFalse(QgsImageOperation.isSingleColor(img_rgb, rgb_color))
+
+        # ARGB32 Premultiplied format
+        img_premul = QImage(4, 4, QImage.Format.Format_ARGB32_Premultiplied)
+        img_premul.fill(target_color)
+        self.assertTrue(QgsImageOperation.isSingleColor(img_premul, target_color))
+        img_premul.setPixelColor(2, 2, QColor(0, 0, 0, 0))
+        self.assertFalse(QgsImageOperation.isSingleColor(img_premul, target_color))
+        img_premul.fill(QColor(125, 200, 100, 50))
+        self.assertTrue(
+            QgsImageOperation.isSingleColor(img_premul, QColor(125, 200, 100, 50))
+        )
+        img_premul.setPixelColor(2, 2, QColor(125, 200, 100, 150))
+        self.assertFalse(
+            QgsImageOperation.isSingleColor(img_premul, QColor(125, 200, 100, 50))
+        )
+
+        # other formats - should fallback to non-optimized path
+        img_rgba8888 = QImage(6, 6, QImage.Format.Format_RGBA8888)
+        img_rgba8888.fill(target_color)
+        self.assertTrue(QgsImageOperation.isSingleColor(img_rgba8888, target_color))
+
+        img_rgba64 = QImage(2, 2, QImage.Format.Format_RGBA64)
+        img_rgba64.fill(target_color)
+        self.assertTrue(QgsImageOperation.isSingleColor(img_rgba64, target_color))
+
 
 if __name__ == "__main__":
     unittest.main()

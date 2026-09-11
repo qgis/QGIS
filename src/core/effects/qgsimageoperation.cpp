@@ -1063,6 +1063,76 @@ bool QgsImageOperation::isBlankImage( const QImage &image )
   return isBlankImage( image.convertToFormat( QImage::Format_ARGB32 ) );
 }
 
+namespace
+{
+  inline bool check32BitImage( const QImage &image, uint32_t targetPixel )
+  {
+    const int width = image.width();
+    const int height = image.height();
+    const qsizetype bytesPerLine = image.bytesPerLine();
+    const qsizetype totalPixels = static_cast<qsizetype>( width ) * height;
+
+    // check if image data is completely contiguous, if so, we can use an optimized check
+    if ( bytesPerLine == static_cast<qsizetype>( width ) * 4 )
+    {
+      const uint64_t *ptr64 = reinterpret_cast<const uint64_t *>( image.constBits() );
+      const qsizetype count64 = totalPixels / 2;
+      const uint64_t target64 = ( static_cast<uint64_t>( targetPixel ) << 32 ) | targetPixel;
+      for ( qsizetype i = 0; i < count64; ++i )
+      {
+        if ( ptr64[i] != target64 )
+          return false;
+      }
+      // handle remaining odd pixel if totalPixels is odd
+      if ( totalPixels % 2 != 0 )
+      {
+        const uint32_t *ptr32 = reinterpret_cast<const uint32_t *>( image.constBits() );
+        if ( ptr32[totalPixels - 1] != targetPixel )
+          return false;
+      }
+    }
+    else
+    {
+      for ( int y = 0; y < height; ++y )
+      {
+        const uint32_t *line = reinterpret_cast<const uint32_t *>( image.constScanLine( y ) );
+        for ( int x = 0; x < width; ++x )
+        {
+          if ( line[x] != targetPixel )
+            return false;
+        }
+      }
+    }
+    return true;
+  }
+} //namespace
+
+bool QgsImageOperation::isSingleColor( const QImage &image, const QColor &color )
+{
+  if ( image.isNull() )
+    return false;
+
+  switch ( image.format() )
+  {
+    case QImage::Format_ARGB32:
+      return check32BitImage( image, static_cast<uint32_t>( color.rgba() ) );
+
+    case QImage::Format_RGB32:
+      return check32BitImage( image, static_cast<uint32_t>( color.rgb() ) );
+
+    case QImage::Format_ARGB32_Premultiplied:
+      return check32BitImage( image, static_cast<uint32_t>( qPremultiply( color.rgba() ) ) );
+
+    default:
+      break;
+  }
+
+  // for other image types just convert to ARGB32 and re-test
+  // TODO (if needed!): add optimized checks for particular formats which are actually in use
+  QgsDebugError( u"QgsImageOperation::isSingleColor called with non-optimized image format: %1"_s.arg( qgsEnumValueToKey( image.format() ) ) );
+  return isSingleColor( image.convertToFormat( QImage::Format_ARGB32 ), color );
+}
+
 inline bool colorsMatchFloodFill( QRgb c1, QRgb c2, int tolerance )
 {
   if ( tolerance == 0 )
