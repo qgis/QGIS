@@ -229,6 +229,24 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     float mSocketOutlineWidth = 1.5;
 };
 
+/**
+ * \ingroup gui
+ * \brief A button to open the model designer data viewer.
+ * \warning Not stable API
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsModelDesignerDataViewerButtonGraphicItem : public QgsModelDesignerFlatButtonGraphicItem SIP_SKIP
+{
+    Q_OBJECT
+  public:
+    QgsModelDesignerDataViewerButtonGraphicItem( QgsModelArrowItem *link SIP_TRANSFERTHIS );
+
+    /**
+     * Sets the position of the button along the path
+     */
+    void setPosition( QPainterPath path );
+};
+
 
 ///@endcond
 

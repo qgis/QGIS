@@ -37,6 +37,7 @@ class QgsProcessingAlgorithmWidgetBase;
 class QgsModelDesignerConfigDockWidget;
 class QgsProcessingParameterWidgetContext;
 class QgsProcessingContextGenerator;
+class QgsModelDataViewerDockWidget;
 
 ///@cond NOT_STABLE
 
@@ -216,10 +217,12 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void validate();
     void reorderInputs();
     void reorderOutputs();
+    void showDataViewerDock( const QString &childId, const QString &paramName );
     void setPanelVisibility( bool hidden );
     void editHelp();
     void runSelectedSteps();
     void runFromChild( const QString &id );
+    void childAlgorithmDeleted( const QString &id );
     void run( const QSet<QString> &childAlgorithmSubset = QSet<QString>() );
     void showChildAlgorithmOutputs( const QString &childId );
     void showChildAlgorithmLog( const QString &childId );
@@ -264,6 +267,9 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
 
     QgsDockWidget *mConfigWidgetDock = nullptr;
     QgsModelDesignerConfigDockWidget *mConfigWidget = nullptr;
+
+    QList<QgsModelDataViewerDockWidget *> mDataViewerDocks;
+
 
     QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
 
