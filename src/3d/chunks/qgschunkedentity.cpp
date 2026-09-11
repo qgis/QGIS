@@ -465,12 +465,12 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneCont
     {
       node->setCreatingChildren( true );
       mActiveJobs.push_back( std::make_unique<QgsChunkQueueJob>() );
-      auto &jobPtr = mActiveJobs.back();
-      jobPtr->node = node;
-      jobPtr->type = QgsChunkQueueJob::Type::CreateChildren;
+      QgsChunkQueueJob &job = *mActiveJobs.back();
+      job.node = node;
+      job.type = QgsChunkQueueJob::Type::CreateChildren;
       QFuture<QVector<QgsChunkNode *>> origFuture = mChunkLoader->createChildren( node );
-      jobPtr->future = origFuture;
-      origFuture.then( this, [this, &job = *jobPtr, node]( QVector<QgsChunkNode *> res ) {
+      job.future = origFuture; // Stored as QFuture<void>
+      origFuture.then( this, [this, &job, node]( QVector<QgsChunkNode *> res ) {
         node->populateChildren( res );
         eraseJobFromList( job );
         // the new children need to be visited by the next update
@@ -696,32 +696,32 @@ void QgsChunkedEntity::startJobs()
 void QgsChunkedEntity::startJob( QgsChunkNode *node )
 {
   mActiveJobs.push_back( std::make_unique<QgsChunkQueueJob>() );
-  auto &jobPtr = mActiveJobs.back();
-  jobPtr->node = node;
+  QgsChunkQueueJob &job = *mActiveJobs.back();
+  job.node = node;
   QFuture<QgsChunkLoaderResult> origFuture;
 
   if ( node->state() == QgsChunkNode::QueuedForLoad )
   {
     addTileTraceEvent( *this, *node, QgsEventTracing::AsyncBegin, u"Load"_s );
     origFuture = mChunkLoader->loadChunk( node );
-    jobPtr->future = origFuture;
-    jobPtr->type = QgsChunkQueueJob::Type::Load;
-    node->setLoading( *jobPtr );
+    job.future = origFuture; // Stored as QFuture<void>
+    job.type = QgsChunkQueueJob::Type::Load;
+    node->setLoading( job );
   }
   else if ( node->state() == QgsChunkNode::QueuedForUpdate )
   {
     addTileTraceEvent( *this, *node, QgsEventTracing::AsyncBegin, u"Update"_s );
     origFuture = mChunkLoader->updateChunk( node );
-    jobPtr->future = origFuture;
-    jobPtr->type = QgsChunkQueueJob::Type::Update;
-    node->setUpdating( *jobPtr );
+    job.future = origFuture; // Stored as QFuture<void>
+    job.type = QgsChunkQueueJob::Type::Update;
+    node->setUpdating( job );
   }
   else
   {
     Q_ASSERT( false ); // not possible
   }
 
-  origFuture.then( this, [this, &job = *jobPtr]( QgsChunkLoaderResult res ) { onActiveLoadJobFinished( job, res ); } );
+  origFuture.then( this, [this, &job]( QgsChunkLoaderResult res ) { onActiveLoadJobFinished( job, res ); } );
 }
 
 void QgsChunkedEntity::cancelActiveJob( QgsChunkQueueJob &job )
