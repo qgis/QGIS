@@ -104,15 +104,52 @@ Qgis::ProcessingAlgorithmFlags QgsXyzTilesBaseAlgorithm::flags() const
 
 void QgsXyzTilesBaseAlgorithm::createCommonParameters()
 {
-  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Extent" ) ) );
-  addParameter( new QgsProcessingParameterNumber( u"ZOOM_MIN"_s, QObject::tr( "Minimum zoom" ), Qgis::ProcessingNumberParameterType::Integer, 12, false, 0, 25 ) );
-  addParameter( new QgsProcessingParameterNumber( u"ZOOM_MAX"_s, QObject::tr( "Maximum zoom" ), Qgis::ProcessingNumberParameterType::Integer, 12, false, 0, 25 ) );
-  addParameter( new QgsProcessingParameterNumber( u"DPI"_s, QObject::tr( "DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, false, 48, 600 ) );
-  addParameter( new QgsProcessingParameterColor( u"BACKGROUND_COLOR"_s, QObject::tr( "Background color" ), QColor( Qt::transparent ), true, true ) );
-  addParameter( new QgsProcessingParameterBoolean( u"ANTIALIAS"_s, QObject::tr( "Enable antialiasing" ), true ) );
-  addParameter( new QgsProcessingParameterEnum( u"TILE_FORMAT"_s, QObject::tr( "Tile format" ), QStringList() << u"PNG"_s << u"JPG"_s, false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( u"QUALITY"_s, QObject::tr( "Quality (JPG only)" ), Qgis::ProcessingNumberParameterType::Integer, 75, false, 1, 100 ) );
-  addParameter( new QgsProcessingParameterNumber( u"METATILESIZE"_s, QObject::tr( "Metatile size" ), Qgis::ProcessingNumberParameterType::Integer, 4, false, 1, 20 ) );
+  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( u"EXTENT"_s, QObject::tr( "Extent" ) );
+  extentParam->setHelp( QObject::tr( "Spatial extent of the area for tile generation." ) );
+  addParameter( extentParam.release() );
+
+  auto minZoomParam = std::make_unique<QgsProcessingParameterNumber>( u"ZOOM_MIN"_s, QObject::tr( "Minimum zoom" ), Qgis::ProcessingNumberParameterType::Integer, 12, false, 0, 25 );
+  minZoomParam->setHelp(
+    QObject::tr(
+      "Minimum zoom level for generated tiles (0–25). Lower zoom levels cover broader geographic areas "
+      "at lower spatial resolution. Must be less than or equal to the maximum zoom level."
+    )
+  );
+  addParameter( minZoomParam.release() );
+
+  auto maxZoomParam = std::make_unique<QgsProcessingParameterNumber>( u"ZOOM_MAX"_s, QObject::tr( "Maximum zoom" ), Qgis::ProcessingNumberParameterType::Integer, 12, false, 0, 25 );
+  maxZoomParam->setHelp(
+    QObject::tr(
+      "Maximum zoom level for generated tiles (0–25). Higher zoom levels capture finer map details "
+      "and higher resolution, but exponentially increase total tile count, storage requirements, and rendering time. "
+      "Must be greater than or equal to the minimum zoom level."
+    )
+  );
+  addParameter( maxZoomParam.release() );
+
+  auto dpiParam = std::make_unique<QgsProcessingParameterNumber>( u"DPI"_s, QObject::tr( "DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, false, 48, 600 );
+  dpiParam->setHelp( QObject::tr( "Output resolution in DPI for rendered map content." ) );
+  addParameter( dpiParam.release() );
+
+  auto bgColorParam = std::make_unique<QgsProcessingParameterColor>( u"BACKGROUND_COLOR"_s, QObject::tr( "Background color" ), QColor( Qt::transparent ), true, true );
+  bgColorParam->setHelp( QObject::tr( "Background color used when rendering map tiles." ) );
+  addParameter( bgColorParam.release() );
+
+  auto antialiasParam = std::make_unique<QgsProcessingParameterBoolean>( u"ANTIALIAS"_s, QObject::tr( "Enable antialiasing" ), true );
+  antialiasParam->setHelp( QObject::tr( "Controls whether antialiasing is applied during tile rendering." ) );
+  addParameter( antialiasParam.release() );
+
+  auto tileFormatParam = std::make_unique<QgsProcessingParameterEnum>( u"TILE_FORMAT"_s, QObject::tr( "Tile format" ), QStringList() << u"PNG"_s << u"JPG"_s, false, 0 );
+  tileFormatParam->setHelp( QObject::tr( "Output image format for the rendered tiles." ) );
+  addParameter( tileFormatParam.release() );
+
+  auto qualityParam = std::make_unique<QgsProcessingParameterNumber>( u"QUALITY"_s, QObject::tr( "Quality (JPG only)" ), Qgis::ProcessingNumberParameterType::Integer, 75, false, 1, 100 );
+  qualityParam->setHelp( QObject::tr( "Image quality percentage used when tile format is set to JPG (1–100)." ) );
+  addParameter( qualityParam.release() );
+
+  auto metaTileSizeParam = std::make_unique<QgsProcessingParameterNumber>( u"METATILESIZE"_s, QObject::tr( "Metatile size" ), Qgis::ProcessingNumberParameterType::Integer, 4, false, 1, 20 );
+  metaTileSizeParam->setHelp( QObject::tr( "Size of metatiles (in tile units) used during rendering." ) );
+  addParameter( metaTileSizeParam.release() );
 
   auto skipEmptyTilesParam = std::make_unique<QgsProcessingParameterBoolean>( u"SKIP_EMPTY_TILES"_s, QObject::tr( "Skip empty tiles" ), false );
   skipEmptyTilesParam->setHelp( QObject::tr( "If set, completely empty tiles will be skipped." ) );
@@ -311,22 +348,40 @@ QgsXyzTilesDirectoryAlgorithm *QgsXyzTilesDirectoryAlgorithm::createInstance() c
 void QgsXyzTilesDirectoryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   createCommonParameters();
-  addParameter( new QgsProcessingParameterNumber( u"TILE_WIDTH"_s, QObject::tr( "Tile width" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 ) );
-  addParameter( new QgsProcessingParameterNumber( u"TILE_HEIGHT"_s, QObject::tr( "Tile height" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 ) );
-  addParameter( new QgsProcessingParameterBoolean( u"TMS_CONVENTION"_s, QObject::tr( "Use inverted tile Y axis (TMS convention)" ), false ) );
+  auto tileWidthParam = std::make_unique<QgsProcessingParameterNumber>( u"TILE_WIDTH"_s, QObject::tr( "Tile width" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 );
+  tileWidthParam->setHelp( QObject::tr( "Width of each tile image in pixels." ) );
+  addParameter( tileWidthParam.release() );
+
+  auto tileHeightParam = std::make_unique<QgsProcessingParameterNumber>( u"TILE_HEIGHT"_s, QObject::tr( "Tile height" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 );
+  tileHeightParam->setHelp( QObject::tr( "Height of each tile image in pixels." ) );
+  addParameter( tileHeightParam.release() );
+
+  auto tmsParam = std::make_unique<QgsProcessingParameterBoolean>( u"TMS_CONVENTION"_s, QObject::tr( "Use inverted tile Y axis (TMS convention)" ), false );
+  tmsParam->setHelp( QObject::tr( "Inverts the Y tile coordinate naming convention to follow TMS format." ) );
+  addParameter( tmsParam.release() );
 
   auto titleParam = std::make_unique<QgsProcessingParameterString>( u"HTML_TITLE"_s, QObject::tr( "Leaflet HTML output title" ), QVariant(), false, true );
   titleParam->setFlags( titleParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  titleParam->setHelp( QObject::tr( "Title displayed in the generated Leaflet HTML web viewer." ) );
   addParameter( titleParam.release() );
+
   auto attributionParam = std::make_unique<QgsProcessingParameterString>( u"HTML_ATTRIBUTION"_s, QObject::tr( "Leaflet HTML output attribution" ), QVariant(), false, true );
   attributionParam->setFlags( attributionParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  attributionParam->setHelp( QObject::tr( "Attribution text displayed in the generated Leaflet HTML web viewer." ) );
   addParameter( attributionParam.release() );
+
   auto osmParam = std::make_unique<QgsProcessingParameterBoolean>( u"HTML_OSM"_s, QObject::tr( "Include OpenStreetMap basemap in Leaflet HTML output" ), false );
   osmParam->setFlags( osmParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  osmParam->setHelp( QObject::tr( "Includes an OpenStreetMap background layer in the generated Leaflet HTML viewer." ) );
   addParameter( osmParam.release() );
 
-  addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT_DIRECTORY"_s, QObject::tr( "Output directory" ) ) );
-  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML"_s, QObject::tr( "Output html (Leaflet)" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true ) );
+  auto outputDirParam = std::make_unique<QgsProcessingParameterFolderDestination>( u"OUTPUT_DIRECTORY"_s, QObject::tr( "Output directory" ) );
+  outputDirParam->setHelp( QObject::tr( "Destination folder where the generated directory structure and tile files will be stored." ) );
+  addParameter( outputDirParam.release() );
+
+  auto outputHtmlParam = std::make_unique<QgsProcessingParameterFileDestination>( u"OUTPUT_HTML"_s, QObject::tr( "Output HTML (Leaflet)" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true );
+  outputHtmlParam->setHelp( QObject::tr( "Destination file path for the optional Leaflet HTML web map preview." ) );
+  addParameter( outputHtmlParam.release() );
 }
 
 QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
