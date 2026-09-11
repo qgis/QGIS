@@ -37,6 +37,17 @@ class CORE_EXPORT QgsTestUtils
     static bool testProviderIteratorThreadSafety( QgsVectorDataProvider *provider, const QgsFeatureRequest &request = QgsFeatureRequest() );
 
     /**
+     * Runs a concurrent access stress test on the layer \a uri from the provider \a providerKey,
+     * by concurrently opening, reading and closing vector layers and querying the sublayers
+     * of the URI from multiple threads for \a runTimeMs milliseconds.
+     *
+     * Returns FALSE if any of the involved threads failed to finish within \a timeoutMs
+     * milliseconds (i.e. a deadlock occurred), or if the concurrent layer opens and sublayer
+     * queries did not return the same results as when performed from a single thread.
+     */
+    static bool testConcurrentLayerAccess( const QString &uri, const QString &providerKey, int runTimeMs = 2000, int timeoutMs = 60000 );
+
+    /**
      * Compares two DOM elements and returns TRUE if they are equivalent.
      *
      * Dumps useful diff information to the console if the elements differ.

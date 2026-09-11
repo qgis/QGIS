@@ -152,6 +152,7 @@ set(TESTS
  testqgsofflineediting.cpp
  testqgsogcutils.cpp
  testqgsogrprovider.cpp
+ testqgsogrproviderdeadlock.cpp
  testqgsogrutils.cpp
  testqgsoverlayexpression.cpp
  testqgspagesizeregistry.cpp
