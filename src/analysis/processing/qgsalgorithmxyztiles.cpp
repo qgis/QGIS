@@ -129,6 +129,7 @@ void QgsXyzTilesBaseAlgorithm::createCommonParameters()
 
   auto dpiParam = std::make_unique<QgsProcessingParameterNumber>( u"DPI"_s, QObject::tr( "DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, false, 48, 600 );
   dpiParam->setHelp( QObject::tr( "Output resolution in DPI for rendered map content." ) );
+  dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
   auto bgColorParam = std::make_unique<QgsProcessingParameterColor>( u"BACKGROUND_COLOR"_s, QObject::tr( "Background color" ), QColor( Qt::transparent ), true, true );
@@ -137,6 +138,7 @@ void QgsXyzTilesBaseAlgorithm::createCommonParameters()
 
   auto antialiasParam = std::make_unique<QgsProcessingParameterBoolean>( u"ANTIALIAS"_s, QObject::tr( "Enable antialiasing" ), true );
   antialiasParam->setHelp( QObject::tr( "Controls whether antialiasing is applied during tile rendering." ) );
+  antialiasParam->setFlags( antialiasParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( antialiasParam.release() );
 
   auto tileFormatParam = std::make_unique<QgsProcessingParameterEnum>( u"TILE_FORMAT"_s, QObject::tr( "Tile format" ), QStringList() << u"PNG"_s << u"JPG"_s, false, 0 );
@@ -145,10 +147,12 @@ void QgsXyzTilesBaseAlgorithm::createCommonParameters()
 
   auto qualityParam = std::make_unique<QgsProcessingParameterNumber>( u"QUALITY"_s, QObject::tr( "Quality (JPG only)" ), Qgis::ProcessingNumberParameterType::Integer, 75, false, 1, 100 );
   qualityParam->setHelp( QObject::tr( "Image quality percentage used when tile format is set to JPG (1–100)." ) );
+  qualityParam->setFlags( qualityParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( qualityParam.release() );
 
   auto metaTileSizeParam = std::make_unique<QgsProcessingParameterNumber>( u"METATILESIZE"_s, QObject::tr( "Metatile size" ), Qgis::ProcessingNumberParameterType::Integer, 4, false, 1, 20 );
   metaTileSizeParam->setHelp( QObject::tr( "Size of metatiles (in tile units) used during rendering." ) );
+  metaTileSizeParam->setFlags( metaTileSizeParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( metaTileSizeParam.release() );
 
   auto skipEmptyTilesParam = std::make_unique<QgsProcessingParameterBoolean>( u"SKIP_EMPTY_TILES"_s, QObject::tr( "Skip empty tiles" ), false );
