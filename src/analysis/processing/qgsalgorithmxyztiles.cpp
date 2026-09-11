@@ -353,6 +353,11 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
   }
+  if ( mTotalMetaTiles == 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "No metatiles will be created -- please check the extent and zoom limits" ) );
+  }
+
   feedback->pushInfo( QObject::tr( "A total of %1 metatiles (%2 tiles) will be created" ).arg( mTotalMetaTiles ).arg( totalTiles ) );
 
   checkLayersUsagePolicy( feedback );
@@ -583,6 +588,11 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
   }
+  if ( mTotalMetaTiles == 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "No metatiles will be created -- please check the extent and zoom limits" ) );
+  }
+
   feedback->pushInfo( QObject::tr( "A total of %1 metatiles (%2 tiles) will be created" ).arg( mTotalMetaTiles ).arg( totalTiles ) );
 
   checkLayersUsagePolicy( feedback );
