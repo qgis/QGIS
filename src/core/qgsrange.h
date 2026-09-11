@@ -662,6 +662,63 @@ template<typename T> class QgsTemporalRange
       res << prevRange;
       return res;
     }
+
+    /**
+     * Returns \a ranges list minimum date/datetime.
+     * This methods doesn't consider empty range and returns an invalid date/datetime if at least one
+     * range has no valid begin.
+     *
+     * \since QGIS 4.4
+     */
+    static T min( const QList< QgsTemporalRange<T> > &ranges )
+    {
+      T minimum;
+      for ( QgsTemporalRange<T> range : ranges )
+      {
+        if ( range.isEmpty() )
+          continue;
+
+        // range has no begin, so minimum is infinite
+        if ( !range.begin().isValid() )
+          return T();
+
+        if ( minimum.isNull() || range.begin() < minimum )
+        {
+          minimum = range.begin();
+        }
+      }
+
+      return minimum;
+    }
+
+    /**
+     * Returns \a ranges list maximum date/datetime.
+     * This methods doesn't consider empty range and returns an invalid date/datetime if at least one
+     * range has no valid end.
+     *
+     * \since QGIS 4.4
+     */
+    static T max( const QList< QgsTemporalRange<T> > &ranges )
+    {
+      T maximum;
+      for ( QgsTemporalRange<T> range : ranges )
+      {
+        if ( range.isEmpty() )
+          continue;
+
+        // range has no begin, so maximum is infinite
+        if ( !range.end().isValid() )
+          return T();
+
+        if ( maximum.isNull() || range.end() > maximum )
+        {
+          maximum = range.end();
+        }
+      }
+
+      return maximum;
+    }
+
 #endif
 
     bool operator==( const QgsTemporalRange<T> &other ) const

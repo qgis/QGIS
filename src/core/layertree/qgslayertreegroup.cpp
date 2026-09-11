@@ -45,7 +45,6 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup &other )
   , mChangingChildVisibility( other.mChangingChildVisibility )
   , mMutuallyExclusive( other.mMutuallyExclusive )
   , mMutuallyExclusiveChildIndex( other.mMutuallyExclusiveChildIndex )
-  , mWmsHasTimeDimension( other.mWmsHasTimeDimension )
   , mGroupLayer( other.mGroupLayer )
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
   , mWmsGroupRequestMode( other.mWmsGroupRequestMode )
@@ -533,8 +532,6 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const
 
   groupNode->setIsMutuallyExclusive( isMutuallyExclusive, mutuallyExclusiveChildIndex );
 
-  groupNode->mWmsHasTimeDimension = element.attribute( u"wms-has-time-dimension"_s, u"0"_s ) == "1"_L1;
-
   groupNode->mWmsGroupRequestMode = { qgsEnumKeyToValue( element.attribute( u"wms-group-request-mode"_s ), Qgis::WmsGroupRequestMode::Normal ) };
 
   groupNode->mGroupLayer = QgsMapLayerRef( element.attribute( u"groupLayer"_s ) );
@@ -542,6 +539,15 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const
   readLegacyServerProperties( groupNode );
 
   groupNode->serverProperties()->readXml( element );
+
+  // legacy boolean now defined has a WmsDimensionInfo in server properties.
+  // It needs to be done after server properties read because it resets dimensions
+  if ( element.attribute( u"wms-has-time-dimension"_s, u"0"_s ) == "1"_L1 )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    groupNode->setHasWmsTimeDimension( true );
+    Q_NOWARN_DEPRECATED_POP
+  }
 
   return groupNode;
 }
@@ -593,11 +599,6 @@ void QgsLayerTreeGroup::writeXml( QDomElement &parentElement, const QgsReadWrite
   {
     elem.setAttribute( u"mutually-exclusive"_s, u"1"_s );
     elem.setAttribute( u"mutually-exclusive-child"_s, mMutuallyExclusiveChildIndex );
-  }
-
-  if ( mWmsHasTimeDimension )
-  {
-    elem.setAttribute( u"wms-has-time-dimension"_s, u"1"_s );
   }
 
   elem.setAttribute( u"wms-group-request-mode"_s, qgsEnumValueToKey( mWmsGroupRequestMode ) );
@@ -875,14 +876,33 @@ const QgsMapLayerServerProperties *QgsLayerTreeGroup::serverProperties() const
   return mServerProperties.get();
 }
 
-void QgsLayerTreeGroup::setHasWmsTimeDimension( const bool hasWmsTimeDimension )
+void QgsLayerTreeGroup::setHasWmsTimeDimension( const bool hasTimeDimension )
 {
-  mWmsHasTimeDimension = hasWmsTimeDimension;
+  if ( !mServerProperties )
+    return;
+
+  const bool lHasTimeDimension = hasWmsTimeDimension();
+
+  if ( !lHasTimeDimension && hasTimeDimension )
+  {
+    mServerProperties->addWmsDimension( QgsServerWmsDimensionProperties::WmsDimensionInfo( QgsServerWmsDimensionProperties::TIME_DIMENSION_NAME ) );
+  }
+  else if ( lHasTimeDimension && !hasTimeDimension )
+  {
+    mServerProperties->removeWmsDimension( QgsServerWmsDimensionProperties::TIME_DIMENSION_NAME );
+  }
 }
 
 bool QgsLayerTreeGroup::hasWmsTimeDimension() const
 {
-  return mWmsHasTimeDimension;
+  if ( !mServerProperties )
+    return false;
+
+  auto it = std::find_if( mServerProperties->wmsDimensions().constBegin(), mServerProperties->wmsDimensions().constEnd(), []( const QgsMapLayerServerProperties::WmsDimensionInfo &dim ) {
+    return dim.name == QgsServerWmsDimensionProperties::TIME_DIMENSION_NAME;
+  } );
+
+  return it != mServerProperties->wmsDimensions().constEnd();
 }
 
 Qgis::WmsGroupRequestMode QgsLayerTreeGroup::wmsGroupRequestMode() const

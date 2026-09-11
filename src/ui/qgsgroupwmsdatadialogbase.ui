@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>566</width>
-    <height>212</height>
+    <height>222</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,8 +34,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>548</width>
-        <height>162</height>
+        <width>533</width>
+        <height>176</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -73,13 +73,66 @@
         </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="mComputeTimeDimension">
+        <widget class="QgsCollapsibleGroupBox" name="mComputeTimeDimension">
          <property name="toolTip">
           <string>When a GetCapabilities request is sent, QGIS server will return a TIME dimension computed as an union of all time dimension of its children recursively</string>
          </property>
-         <property name="text">
+         <property name="title">
           <string>Compute TIME dimension from children</string>
          </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="0">
+           <widget class="QLabel" name="mReferenceValueLabel">
+            <property name="text">
+             <string>Reference value</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QComboBox" name="mDefaultDisplayComboBox">
+            <item>
+             <property name="text">
+              <string>All values</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Min value</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Max value</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Reference value</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mDefaultDisplayLabel">
+            <property name="text">
+             <string>Default display</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QgsDateTimeEdit" name="mReferenceValueDateTimeEdit">
+            <property name="displayFormat">
+             <string>yyyy-MM-dd HH:mm:ss</string>
+            </property>
+            <property name="timeSpec">
+             <enum>Qt::TimeSpec::UTC</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -121,6 +174,17 @@
    <extends>QWidget</extends>
    <header>qgsmaplayerserverpropertieswidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
