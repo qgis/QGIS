@@ -276,7 +276,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
 
     QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( settings );
     mRendererJobs.insert( job, metaTile );
-    QObject::connect( job, &QgsMapRendererJob::finished, mFeedback, [this, job]() { processMetaTile( job ); } );
+    QObject::connect( job, &QgsMapRendererJob::finished, mJobOwner, [this, job]() { processMetaTile( job ); } );
     job->start();
   }
 }
@@ -369,6 +369,7 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   {
     layer->moveToThread( QThread::currentThread() );
   }
+  mJobOwner.reset( new QObject() );
 
   QEventLoop loop;
   // cppcheck-suppress danglingLifetime
@@ -604,6 +605,7 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   {
     layer->moveToThread( QThread::currentThread() );
   }
+  mJobOwner.reset( new QObject() );
 
   QEventLoop loop;
   // cppcheck-suppress danglingLifetime

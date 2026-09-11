@@ -23,6 +23,7 @@
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmbtiles.h"
 #include "qgsprocessingalgorithm.h"
+#include "qobjectuniqueptr.h"
 
 #define SIP_NO_FILE
 
@@ -116,6 +117,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QString mTileFormat;
     QList<QgsMapLayer *> mLayers;
     QgsRectangle mWgs84Extent;
+    QObjectUniquePtr<QObject> mJobOwner = nullptr;
     QgsProcessingFeedback *mFeedback = nullptr;
     long long mTotalMetaTiles = 0;
     long long mProcessedMetaTiles = 0;
