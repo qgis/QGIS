@@ -38,20 +38,25 @@
  *
  * Will wait until all the futures are finished, then call allFinishedCallback
  * once, then delete itself.
+ *
+ * Also watches cancellationFuture - if it's canceled, cancels all futures in
+ * the list too.
  */
 class CORE_EXPORT QgsCombinedFutureHelper : public QObject
 {
     Q_OBJECT
   public:
-    QgsCombinedFutureHelper( QList<QFuture<void>> futures, std::function<void()> allFinishedCallback );
+    QgsCombinedFutureHelper( QList<QFuture<void>> futures, QFuture<void> cancellationFuture, std::function<void()> allFinishedCallback );
 
   private:
     QList<QFutureWatcher<void> *> mWatchers;
+    QFutureWatcher<void> mCancellationWatcher;
     std::function<void()> mAllFinishedCallback;
     bool mFired = false;
 
   private slots:
     void onOneFinished();
+    void onCanceled();
 };
 
 /// @endcond
@@ -91,7 +96,7 @@ class CORE_EXPORT QgsFutureUtils
     {
       auto combinedPromise = new QPromise<std::tuple<Ts...>>;
       combinedPromise->start();
-      new QgsCombinedFutureHelper( { futures... }, [combinedPromise, futures...]() mutable {
+      new QgsCombinedFutureHelper( { futures... }, combinedPromise->future(), [combinedPromise, futures...]() mutable {
         bool allValid = ( true && ... && futures.isValid() );
         if ( !allValid )
           QgsDebugError( "Part of combined future not valid after finishing!" );
