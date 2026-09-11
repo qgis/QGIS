@@ -21,6 +21,7 @@
 
 #include "qgsapplication.h"
 #include "qgscolorscheme.h"
+#include "qgsproject.h"
 
 #include <QDir>
 #include <QFileInfoList>
@@ -53,7 +54,8 @@ void QgsColorSchemeRegistry::addDefaultSchemes()
   //default color schemes
   addColorScheme( new QgsRecentColorScheme() );
   addColorScheme( new QgsCustomColorScheme() );
-  addColorScheme( new QgsProjectColorScheme() );
+  if ( mProject )
+    addColorScheme( new QgsProjectColorScheme( mProject ) );
   addUserSchemes();
 }
 
@@ -170,6 +172,25 @@ QColor QgsColorSchemeRegistry::fetchRandomStyleColor() const
       mNextRandomStyleColorIndex = 0;
     return res;
   }
+}
+
+void QgsColorSchemeRegistry::setProject( QgsProject *project )
+{
+  if ( project == mProject )
+    return;
+
+  mProject = project;
+
+  QList< QgsProjectColorScheme * > existingSchemes;
+  schemes( existingSchemes );
+  for ( QgsProjectColorScheme *scheme : existingSchemes )
+  {
+    removeColorScheme( scheme );
+    delete scheme;
+  }
+
+  if ( mProject )
+    addColorScheme( new QgsProjectColorScheme( mProject ) );
 }
 
 bool QgsColorSchemeRegistry::removeColorScheme( QgsColorScheme *scheme )
