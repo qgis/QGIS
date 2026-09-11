@@ -620,7 +620,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   if ( indexVector > -1 )
   {
-    const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( indexVector );
+    const QgsVectorFieldSettings settings = rendererSettings.vectorSettings( indexVector );
     const QString vectorNameKey = u"vectorName"_s;
     switch ( settings.coloringMethod() )
     {

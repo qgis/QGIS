@@ -1,0 +1,71 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectorfield/qgsvectorfieldtracessettings.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsVectorFieldTracesSettings
+{
+%Docstring(signature="appended")
+Represents a trace renderer settings for vector datasets displayed by
+particle traces.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvectorfieldtracessettings.h"
+%End
+  public:
+    double maximumTailLength() const;
+%Docstring
+Returns the maximum tail length
+%End
+    void setMaximumTailLength( double maximumTailLength );
+%Docstring
+Sets the maximums tail length
+%End
+    int particlesCount() const;
+%Docstring
+Returns particles count
+%End
+    void setParticlesCount( int value );
+%Docstring
+Sets particles count
+%End
+    Qgis::RenderUnit maximumTailLengthUnit() const;
+%Docstring
+Returns the maximum tail length unit
+%End
+    void setMaximumTailLengthUnit( Qgis::RenderUnit maximumTailLengthUnit );
+%Docstring
+Sets the maximum tail length unit
+%End
+
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectorfield/qgsvectorfieldtracessettings.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

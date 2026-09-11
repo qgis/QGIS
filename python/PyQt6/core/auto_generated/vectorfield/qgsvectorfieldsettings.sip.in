@@ -1,0 +1,201 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectorfield/qgsvectorfieldsettings.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsVectorFieldSettings
+{
+%Docstring(signature="appended")
+Represents a renderer settings for vector datasets.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvectorfieldsettings.h"
+%End
+  public:
+    enum class Symbology
+    {
+      Arrows,
+      Streamlines,
+      Traces,
+      WindBarbs
+    };
+
+    double lineWidth() const;
+%Docstring
+Returns line width of the arrow (in millimeters)
+%End
+    void setLineWidth( double lineWidth );
+%Docstring
+Sets line width of the arrow in pixels (in millimeters)
+%End
+
+    QColor color() const;
+%Docstring
+Returns color used for drawing arrows
+%End
+    void setColor( const QColor &color );
+%Docstring
+Sets color used for drawing arrows
+%End
+
+    double filterMin() const;
+%Docstring
+Returns filter value for vector magnitudes.
+
+If magnitude of the vector is lower than this value, the vector is not
+drawn. -1 represents that filtering is not active.
+%End
+
+    void setFilterMin( double filterMin );
+%Docstring
+Sets filter value for vector magnitudes.
+
+.. seealso:: :py:func:`filterMin`
+%End
+
+    double filterMax() const;
+%Docstring
+Returns filter value for vector magnitudes.
+
+If magnitude of the vector is higher than this value, the vector is not
+drawn. -1 represents that filtering is not active.
+%End
+
+    void setFilterMax( double filterMax );
+%Docstring
+Sets filter value for vector magnitudes.
+
+.. seealso:: :py:func:`filterMax`
+%End
+
+    bool isOnUserDefinedGrid() const;
+%Docstring
+Returns whether vectors are drawn on user-defined grid
+%End
+    void setOnUserDefinedGrid( bool enabled );
+%Docstring
+Toggles drawing of vectors on user defined grid
+%End
+    int userGridCellWidth() const;
+%Docstring
+Returns width in pixels of user grid cell
+%End
+    void setUserGridCellWidth( int width );
+%Docstring
+Sets width of user grid cell (in pixels)
+%End
+    int userGridCellHeight() const;
+%Docstring
+Returns height in pixels of user grid cell
+%End
+    void setUserGridCellHeight( int height );
+%Docstring
+Sets height of user grid cell (in pixels)
+%End
+
+    Symbology symbology() const;
+%Docstring
+Returns the displaying method used to render vector datasets
+%End
+
+    void setSymbology( const Symbology &symbology );
+%Docstring
+Sets the displaying method used to render vector datasets
+%End
+
+    QgsInterpolatedLineColor::ColoringMethod coloringMethod() const;
+%Docstring
+Returns the coloring method used to render vector datasets
+%End
+
+    void setColoringMethod( const QgsInterpolatedLineColor::ColoringMethod &coloringMethod );
+%Docstring
+Sets the coloring method used to render vector datasets
+%End
+
+    QgsColorRampShader colorRampShader() const;
+%Docstring
+Sets the color ramp shader used to render vector datasets
+%End
+
+    void setColorRampShader( const QgsColorRampShader &colorRampShader );
+%Docstring
+Returns the color ramp shader used to render vector datasets
+%End
+
+    QgsInterpolatedLineColor vectorStrokeColoring() const;
+%Docstring
+Returns the stroke coloring used to render vector datasets
+%End
+
+    QgsVectorFieldArrowSettings arrowSettings() const;
+%Docstring
+Returns settings for vector rendered with arrows
+%End
+
+    void setArrowsSettings( const QgsVectorFieldArrowSettings &arrowSettings );
+%Docstring
+Sets settings for vector rendered with arrows
+%End
+
+    QgsVectorFieldStreamlineSettings streamLinesSettings() const;
+%Docstring
+Returns settings for vector rendered with streamlines
+%End
+
+    void setStreamLinesSettings( const QgsVectorFieldStreamlineSettings &streamLinesSettings );
+%Docstring
+Sets settings for vector rendered with streamlines
+%End
+
+    QgsVectorFieldTracesSettings tracesSettings() const;
+%Docstring
+Returns settings for vector rendered with traces
+%End
+
+    void setTracesSettings( const QgsVectorFieldTracesSettings &tracesSettings );
+%Docstring
+Sets settings for vector rendered with traces
+%End
+
+    QgsVectorFieldWindBarbSettings windBarbSettings() const;
+%Docstring
+Returns settings for vector rendered with wind barbs
+%End
+
+    void setWindBarbSettings( const QgsVectorFieldWindBarbSettings &windBarbSettings );
+%Docstring
+Sets settings for vector rendered with wind barbs
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectorfield/qgsvectorfieldsettings.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
