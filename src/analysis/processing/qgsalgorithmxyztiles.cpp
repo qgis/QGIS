@@ -141,7 +141,7 @@ void QgsXyzTilesBaseAlgorithm::createCommonParameters()
   antialiasParam->setFlags( antialiasParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( antialiasParam.release() );
 
-  auto tileFormatParam = std::make_unique<QgsProcessingParameterEnum>( u"TILE_FORMAT"_s, QObject::tr( "Tile format" ), QStringList() << u"PNG"_s << u"JPG"_s, false, 0 );
+  auto tileFormatParam = std::make_unique<QgsProcessingParameterEnum>( u"TILE_FORMAT"_s, QObject::tr( "Tile format" ), QStringList { u"PNG"_s, u"JPG"_s, u"WEBP"_s }, false, 0 );
   tileFormatParam->setHelp( QObject::tr( "Output image format for the rendered tiles." ) );
   addParameter( tileFormatParam.release() );
 
@@ -211,8 +211,23 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mBackgroundColor = parameterAsColor( parameters, u"BACKGROUND_COLOR"_s, context );
   mAntialias = parameterAsBool( parameters, u"ANTIALIAS"_s, context );
   mSkipEmptyTiles = parameterAsBool( parameters, u"SKIP_EMPTY_TILES"_s, context );
-  mTileFormat = parameterAsEnum( parameters, u"TILE_FORMAT"_s, context ) ? u"JPG"_s : u"PNG"_s;
-  mJpgQuality = mTileFormat == "JPG"_L1 ? parameterAsInt( parameters, u"QUALITY"_s, context ) : -1;
+  switch ( parameterAsEnum( parameters, u"TILE_FORMAT"_s, context ) )
+  {
+    case 0:
+      mTileFormat = u"PNG"_s;
+      break;
+    case 1:
+      mTileFormat = u"JPG"_s;
+      break;
+    case 2:
+      mTileFormat = u"WEBP"_s;
+      break;
+    default:
+      mTileFormat = u"PNG"_s;
+      break;
+  }
+
+  mJpgQuality = mTileFormat != "PNG"_L1 ? parameterAsInt( parameters, u"QUALITY"_s, context ) : -1;
   mMetaTileSize = parameterAsInt( parameters, u"METATILESIZE"_s, context );
   mThreadsNumber = context.maximumThreads();
   mTransformContext = context.transformContext();
@@ -240,7 +255,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     mTileHeight = parameterAsInt( parameters, u"TILE_HEIGHT"_s, context );
   }
 
-  if ( mTileFormat != "PNG"_L1 && mBackgroundColor.alpha() != 255 )
+  if ( ( mTileFormat != "PNG"_L1 && mTileFormat != "WEBP"_L1 ) && mBackgroundColor.alpha() != 255 )
   {
     feedback->pushWarning(
       QObject::tr( "A semi-transparent background color was set, but the JPG format only supports fully opaque colors. The background color setting will be ignored. Please use a fully opaque background color instead." )
@@ -302,7 +317,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     settings.setOutputDpi( mDpi );
     settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
     settings.setScaleMethod( mScaleMethod );
-    if ( mTileFormat == "PNG"_L1 || mBackgroundColor.alpha() == 255 )
+    if ( mTileFormat == "PNG"_L1 || mTileFormat == "WEBP"_L1 || mBackgroundColor.alpha() == 255 )
     {
       settings.setBackgroundColor( mBackgroundColor );
     }
