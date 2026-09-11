@@ -280,10 +280,14 @@ void TestQgsMapToolScaleFeature::testAvoidIntersectionsAndTopoEdit()
   utils.mouseMove( 2.1, 0.8 );
   utils.mouseClick( 2.1, 0.8, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  const QString wkt1 = "Polygon ((-4.52 1.52, 1.1 1.52, 1.1 0.8, 1.52 0.8, 1.52 -4.52, -4.52 -4.52, -4.52 1.52))";
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt1 );
+  QgsGeometry geom = mLayerBase->getFeature( 1 ).geometry();
+  geom.normalize();
+  const QString wkt1 = "Polygon ((-4.52 -4.52, -4.52 1.52, 1.1 1.52, 1.1 0.8, 1.52 0.8, 1.52 -4.52, -4.52 -4.52))";
+  QCOMPARE( geom.asWkt( 2 ), wkt1 );
+  geom = mLayerBase->getFeature( 2 ).geometry();
+  geom.normalize();
   const QString wkt2 = "Polygon ((1.1 0.8, 1.1 1.52, 1.1 5, 2.1 5, 2.1 0.8, 1.52 0.8, 1.1 0.8))";
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt2 );
+  QCOMPARE( geom.asWkt( 2 ), wkt2 );
 
   mLayerBase->undoStack()->undo();
 

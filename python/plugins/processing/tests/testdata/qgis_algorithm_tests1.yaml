@@ -356,10 +356,11 @@ tests:
             normalize: True
 
   - algorithm: native:clip
-    name: Clip lines by multipolygon (GEOS > 3.9)
+    name: Clip lines by multipolygon (GEOS >= 3.9 and GEOS < 3.15)
     condition:
       geos:
         at_least: 30900
+        less_than: 31500
     params:
       INPUT:
         name: lines.gml|layername=lines
@@ -370,6 +371,26 @@ tests:
     results:
       OUTPUT:
         name: expected/geos39/clip_lines_by_multipolygon.gml
+        type: vector
+        compare:
+          geometry:
+            normalize: True
+
+  - algorithm: native:clip
+    name: Clip lines by multipolygon (GEOS >= 3.15)
+    condition:
+      geos:
+        at_least: 31500
+    params:
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+      OVERLAY:
+        name: multipolys.gml|layername=multipolys
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/geos315/clip_lines_by_multipolygon.gml
         type: vector
         compare:
           geometry:

@@ -1750,8 +1750,12 @@ void TestQgsVertexTool::testAvoidIntersections()
   mouseClick( 5, 15, Qt::LeftButton );
   mouseClick( 12.5, 15, Qt::LeftButton );
 
-  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo1 ).geometry().asWkt( 1 ), "Polygon ((0 20, 10.7 15.7, 10 15, 10.7 14.3, 0 10, 0 20))" );
-  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo2 ).geometry().asWkt( 1 ), "Polygon ((10 15, 10.7 14.3, 15 10, 15 20, 10.7 15.7, 10 15))" );
+  QgsGeometry geom = mLayerPolygon->getFeature( mFidPolygonF_topo1 ).geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt( 1 ), "Polygon ((0 10, 0 20, 10.7 15.7, 10 15, 10.7 14.3, 0 10))" );
+  geom = mLayerPolygon->getFeature( mFidPolygonF_topo2 ).geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt( 1 ), "Polygon ((10 15, 10.7 15.7, 15 20, 15 10, 10.7 14.3, 10 15))" );
 
   mLayerPolygon->undoStack()->undo(); // undo move and topological points
   mLayerPolygon->undoStack()->undo(); // delete feature polygonF_topo2
@@ -1765,7 +1769,9 @@ void TestQgsVertexTool::testAvoidIntersections()
   mouseClick( 8, 2.75, Qt::LeftButton ); // moves the edge
   mouseClick( 3, 2.75, Qt::LeftButton );
 
-  QCOMPARE( mLayerPolygon->getFeature( fidPoly2 ).geometry().asWkt( 1 ), "Polygon ((9 3, 9 2, 7 2, 7 3, 9 3))" );
+  geom = mLayerPolygon->getFeature( fidPoly2 ).geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt( 1 ), "Polygon ((7 2, 7 3, 9 3, 9 2, 7 2))" );
   mLayerPolygon->undoStack()->undo(); // undo edge move
   mLayerPolygon->undoStack()->undo(); // undo feature addition
 
@@ -1803,8 +1809,13 @@ void TestQgsVertexTool::testAvoidIntersectionsWithMultiPolygons()
   mouseClick( 3.8, 7, Qt::LeftButton );
 
   // The 2 polygons should keep the same wkbType
-  QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry().asWkt(), u"MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))"_s );
-  QCOMPARE( mLayerMultiPolygon->getFeature( multiPolygonF2.id() ).geometry().asWkt(), u"MultiPolygon (((6 7, 6 6, 4 6, 4 6.5, 4 7, 6 7)))"_s );
+  QgsGeometry geom = mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry();
+  geom.normalize();
+  qDebug() << geom.asWkt();
+  QCOMPARE( geom.asWkt(), u"MultiPolygon (((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5)),((1 5, 1 6.5, 1 8, 2 8, 2 6.5, 2 5, 1 5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7),(1.25 5.5, 1.75 5.5, 1.75 6, 1.25 6, 1.25 5.5)))"_s );
+  geom = mLayerMultiPolygon->getFeature( multiPolygonF2.id() ).geometry();
+  geom.normalize();
+  QCOMPARE( geom.asWkt(), u"MultiPolygon (((4 6, 4 6.5, 4 7, 6 7, 6 6, 4 6)))"_s );
   QCOMPARE( mLayerMultiPolygon->wkbType(), Qgis::WkbType::MultiPolygon );
 
   QCOMPARE( mLayerMultiPolygon->featureCount(), 2L );

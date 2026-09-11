@@ -156,10 +156,11 @@ tests:
 #        type: vector
 
   - algorithm: gdal:clipvectorbypolygon
-    name: Clip lines by multipolygons (GEOS >= 3.11)
+    name: Clip lines by multipolygons (GEOS >= 3.11 and GEOS < 3.15)
     condition:
       geos:
         at_least: 31100
+        less_than: 31500
     params:
       INPUT:
         name: lines.gml
@@ -171,6 +172,24 @@ tests:
     results:
       OUTPUT:
         name: expected/gdal/geos311/clip_lines_by_multipolygon.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbypolygon
+    name: Clip lines by multipolygons (GEOS >= 3.15)
+    condition:
+      geos:
+        at_least: 31500
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      MASK:
+        name: multipolys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/geos315/clip_lines_by_multipolygon.gml
         type: vector
 
   - algorithm: gdal:clipvectorbypolygon

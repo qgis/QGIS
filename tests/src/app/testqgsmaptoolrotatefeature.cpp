@@ -256,10 +256,14 @@ void TestQgsMapToolRotateFeature::testAvoidIntersectionsAndTopoEdit()
   utils.mouseMove( 1.6, 0.5 );
   utils.mouseClick( 1.6, 0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  const QString wkt1 = "Polygon ((0.5 1.21, 1.1 0.61, 1.1 0.39, 0.5 -0.21, -0.21 0.5, 0.5 1.21))";
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), wkt1 );
+  QgsGeometry geom = mLayerBase->getFeature( 1 ).geometry();
+  geom.normalize();
+  const QString wkt1 = "Polygon ((-0.21 0.5, 0.5 1.21, 1.1 0.61, 1.1 0.39, 0.5 -0.21, -0.21 0.5))";
+  QCOMPARE( geom.asWkt( 2 ), wkt1 );
+  geom = mLayerBase->getFeature( 2 ).geometry();
+  geom.normalize();
   const QString wkt2 = "Polygon ((1.1 0, 1.1 0.39, 1.1 0.61, 1.1 5, 2.1 5, 2.1 0, 1.1 0))";
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), wkt2 );
+  QCOMPARE( geom.asWkt( 2 ), wkt2 );
 
   mLayerBase->undoStack()->undo();
 
