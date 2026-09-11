@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgis_sip.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsprocessingparametertype.h"
 
 #include <QCoreApplication>
@@ -234,6 +235,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParam
              << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputRasterLayer::typeName()
              << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputPointCloudLayer::typeName()
              << QgsProcessingOutputMapLayer::typeName()
              << QgsProcessingOutputFile::typeName()
              << QgsProcessingOutputVariant::typeName();
@@ -293,6 +295,7 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
              << QgsProcessingParameterRasterLayer::typeName()
              << QgsProcessingParameterVectorLayer::typeName()
              << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
              << QgsProcessingParameterExpression::typeName()
              << QgsProcessingParameterProviderConnection::typeName()
              << QgsProcessingParameterPointCloudLayer::typeName()
@@ -306,6 +309,7 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
              << QgsProcessingOutputFile::typeName()
              << QgsProcessingOutputRasterLayer::typeName()
              << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputPointCloudLayer::typeName()
              << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputVariant::typeName()
              << QgsProcessingOutputBoolean::typeName();
@@ -415,6 +419,7 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
              << QgsProcessingParameterRasterLayer::typeName()
              << QgsProcessingParameterVectorLayer::typeName()
              << QgsProcessingParameterMeshLayer::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
              << QgsProcessingParameterFeatureSource::typeName()
              << QgsProcessingParameterPointCloudLayer::typeName()
              << QgsProcessingParameterAnnotationLayer::typeName();
@@ -425,6 +430,7 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
       return QStringList()
              << QgsProcessingOutputVectorLayer::typeName()
              << QgsProcessingOutputRasterLayer::typeName()
+             << QgsProcessingOutputPointCloudLayer::typeName()
              << QgsProcessingOutputMapLayer::typeName()
              << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputVariant::typeName();
@@ -641,6 +647,7 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
              << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputRasterLayer::typeName()
              << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputPointCloudLayer::typeName()
              << QgsProcessingOutputMapLayer::typeName()
              << QgsProcessingOutputVariant::typeName();
     }
@@ -768,6 +775,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDestination : public QgsProcessingPa
              << QgsProcessingParameterRasterLayer::typeName()
              << QgsProcessingParameterMeshLayer::typeName()
              << QgsProcessingParameterVectorLayer::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
              << QgsProcessingParameterMapLayer::typeName()
              << QgsProcessingParameterString::typeName()
              << QgsProcessingParameterExpression::typeName();
@@ -1079,6 +1087,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
              << QgsProcessingParameterMeshLayer::typeName()
              << QgsProcessingParameterFeatureSource::typeName()
              << QgsProcessingParameterRasterLayer::typeName()
+             << QgsProcessingParameterPointCloudLayer::typeName()
              << QgsProcessingParameterFile::typeName()
              << QgsProcessingParameterString::typeName();
     }
@@ -1088,6 +1097,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
              << QgsProcessingOutputMapLayer::typeName()
              << QgsProcessingOutputRasterLayer::typeName()
              << QgsProcessingOutputVectorLayer::typeName()
+             << QgsProcessingOutputPointCloudLayer::typeName()
              << QgsProcessingOutputMultipleLayers::typeName()
              << QgsProcessingOutputFile::typeName()
              << QgsProcessingOutputString::typeName()
