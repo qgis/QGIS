@@ -1119,7 +1119,7 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   composerScaleBarElem.appendChild( strokeColorElem );
   Q_NOWARN_DEPRECATED_POP
 
-  composerScaleBarElem.setAttribute( u"unitLabel"_s, mSettings.unitLabel() );
+  composerScaleBarElem.setAttribute( u"unitLabelString"_s, mSettings.unitLabel() );
   composerScaleBarElem.setAttribute( u"unitType"_s, QgsUnitTypes::encodeUnit( mSettings.units() ) );
 
   QDomElement numericFormatElem = doc.createElement( u"numericFormat"_s );
@@ -1307,7 +1307,16 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
     mSettings.setSubdivisionLineSymbol( lineSymbol.release() );
   }
 
-  mSettings.setUnitLabel( itemElem.attribute( u"unitLabel"_s ) );
+  if ( itemElem.hasAttribute( u"unitLabelString"_s ) )
+  {
+    mSettings.setUnitLabel( itemElem.attribute( u"unitLabelString"_s ) );
+  }
+  else
+  {
+    // fallback to older attribute, appending the space which was previously always
+    // added by the scalebar renderer
+    mSettings.setUnitLabel( itemElem.attribute( u"unitLabel"_s ) + ' ' );
+  }
 
   const QDomNodeList textFormatNodeList = itemElem.elementsByTagName( u"text-style"_s );
   if ( !textFormatNodeList.isEmpty() )
