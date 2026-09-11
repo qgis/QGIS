@@ -156,8 +156,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   }
   catch ( QgsCsException & )
   {
-    feedback->reportError( QObject::tr( "Could not transform the extent into the project CRS" ), true );
-    return false;
+    throw QgsProcessingException( QObject::tr( "Could not transform the extent into the project CRS" ) );
   }
 
   mMinZoom = parameterAsInt( parameters, u"ZOOM_MIN"_s, context );
@@ -184,8 +183,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   }
   catch ( QgsCsException & )
   {
-    feedback->reportError( QObject::tr( "Could not transform the extent into WGS84" ), true );
-    return false;
+    throw QgsProcessingException( QObject::tr( "Could not transform the extent into WGS84" ) );
   }
 
   if ( parameters.contains( u"TILE_WIDTH"_s ) )
