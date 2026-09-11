@@ -191,6 +191,11 @@ _ssr = StartupScriptRunner()
     return false;
   }
 
+  // when Python is embedded, sys.executable is the host application (qgis-bin.exe on
+  // Windows, the QGIS binary inside the macOS bundle) rather than a Python interpreter,
+  // so anything spawning it starts a second QGIS. Point it at an interpreter instead.
+  runString( u"sys.executable = qgis.utils.python_executable() or sys.executable"_s );
+
   // tell the utils script where to look for the plugins
   runString( u"qgis.utils.plugin_paths = [%1]"_s.arg( pluginpaths.join( ',' ) ) );
   runString( u"qgis.utils.sys_plugin_path = \"%1\""_s.arg( pluginsPath() ) );
