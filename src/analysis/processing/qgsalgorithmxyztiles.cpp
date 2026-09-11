@@ -341,7 +341,11 @@ QStringList QgsXyzTilesDirectoryAlgorithm::tags() const
 
 QString QgsXyzTilesDirectoryAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates XYZ tiles of map canvas content and saves them as individual images in a directory." );
+  return QObject::tr(
+    "This algorithm generates XYZ raster tiles from the current project and saves them as individual image files in a structured directory hierarchy ({z}/{x}/{y}.png or .jpg).\n\n"
+    "All visible map layers from the project will be rendered into tiles across the specified extent and zoom range.\n\n"
+    "Optionally, a standalone Leaflet HTML file can be generated for instant web previewing of the tiles."
+  );
 }
 
 QgsXyzTilesDirectoryAlgorithm *QgsXyzTilesDirectoryAlgorithm::createInstance() const
@@ -603,7 +607,10 @@ QStringList QgsXyzTilesMbtilesAlgorithm::tags() const
 
 QString QgsXyzTilesMbtilesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Generates XYZ tiles of map canvas content and saves them as an MBTiles file." );
+  return QObject::tr(
+    "This algorithm generates XYZ raster tiles from the current project and packages them into a single, portable MBTiles (SQLite) database file.\n\n"
+    "All visible map layers from the project will be rendered into tiles across the specified extent and zoom range."
+  );
 }
 
 QgsXyzTilesMbtilesAlgorithm *QgsXyzTilesMbtilesAlgorithm::createInstance() const
