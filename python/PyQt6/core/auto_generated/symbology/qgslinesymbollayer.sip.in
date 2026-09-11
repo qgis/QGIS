@@ -31,14 +31,14 @@ in the specified ``color``, ``width`` (in millimeters) and ``penStyle``.
     ~QgsSimpleLineSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a new QgsSimpleLineSymbolLayer, using the settings serialized in
 the ``properties`` map (corresponding to the output from
 :py:func:`QgsSimpleLineSymbolLayer.properties()` ).
 %End
 
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 %Docstring
 Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM ``element``.
 %End
@@ -1264,14 +1264,14 @@ symbols should be rotated to match the line segment alignment.
     ~QgsMarkerLineSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a new QgsMarkerLineSymbolLayer, using the settings serialized in
 the ``properties`` map (corresponding to the output from
 :py:func:`QgsMarkerLineSymbolLayer.properties()` ).
 %End
 
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 %Docstring
 Creates a new QgsMarkerLineSymbolLayer from an SLD XML DOM ``element``.
 %End
@@ -1379,7 +1379,7 @@ should be rotated to match the line segment alignment.
 
     ~QgsHashedLineSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a new QgsHashedLineSymbolLayer, using the settings serialized in
 the ``properties`` map (corresponding to the output from
@@ -1592,7 +1592,7 @@ image path.
 %End
     ~QgsRasterLineSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a new QgsRasterLineSymbolLayer, using the settings serialized in
 the ``properties`` map (corresponding to the output from
@@ -1695,7 +1695,7 @@ end gradient colors.
 %End
     ~QgsLineburstSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a new QgsLineburstSymbolLayer, using the settings serialized in
 the ``properties`` map (corresponding to the output from
@@ -1810,7 +1810,7 @@ layer and used to fill the inside of the stroked line. If no
 %End
     ~QgsFilledLineSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a new QgsFilledLineSymbolLayer, using the settings serialized in
 the ``properties`` map (corresponding to the output from

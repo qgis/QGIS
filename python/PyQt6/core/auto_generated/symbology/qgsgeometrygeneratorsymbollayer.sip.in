@@ -22,7 +22,7 @@ use of QGIS expressions.
   public:
     ~QgsGeometryGeneratorSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties );
 %Docstring
 Creates the symbol layer
 %End

@@ -426,7 +426,7 @@ void QgsVectorTileBasicRendererWidget::apply()
 void QgsVectorTileBasicRendererWidget::addStyle( Qgis::GeometryType geomType )
 {
   QgsVectorTileBasicRendererStyle style( QString(), QString(), geomType );
-  style.setSymbol( QgsSymbol::defaultSymbol( geomType ) );
+  style.setSymbol( QgsSymbol::defaultSymbol( geomType ).release() );
 
   switch ( geomType )
   {

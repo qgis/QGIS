@@ -152,7 +152,7 @@ QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &para
       for ( const QString &name : symbolNames )
       {
         const QString newName = makeUniqueName( name, QgsStyle::SymbolEntity );
-        style.addSymbol( newName, sourceStyle.symbol( name ), true );
+        style.addSymbol( newName, sourceStyle.symbol( name ).release(), true );
         style.tagSymbol( QgsStyle::SymbolEntity, newName, sourceStyle.tagsOfSymbol( QgsStyle::SymbolEntity, name ) );
       }
     }
@@ -162,7 +162,7 @@ QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &para
       for ( const QString &name : colorRampNames )
       {
         const QString newName = makeUniqueName( name, QgsStyle::ColorrampEntity );
-        style.addColorRamp( newName, sourceStyle.colorRamp( name ), true );
+        style.addColorRamp( newName, sourceStyle.colorRamp( name ).release(), true );
         style.tagSymbol( QgsStyle::ColorrampEntity, newName, sourceStyle.tagsOfSymbol( QgsStyle::ColorrampEntity, name ) );
       }
     }

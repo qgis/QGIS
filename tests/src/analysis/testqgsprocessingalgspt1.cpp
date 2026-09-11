@@ -1188,7 +1188,7 @@ void TestQgsProcessingAlgsPt1::categorizeByStyle()
   QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( u"b"_s ) ).symbol()->color().name() != "#00ff00"_L1 );
   QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( u"c "_s ) ).symbol()->color().name() != "#0000ff"_L1 );
   // reset renderer
-  layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
+  layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() ) );
 
   // case insensitive
   parameters.insert( u"CASE_SENSITIVE"_s, false );
@@ -1209,7 +1209,7 @@ void TestQgsProcessingAlgsPt1::categorizeByStyle()
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( u"b"_s ) ).symbol()->color().name(), u"#00ff00"_s );
   QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( u"c "_s ) ).symbol()->color().name() != "#0000ff"_L1 );
   // reset renderer
-  layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
+  layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() ) );
 
   // tolerant
   parameters.insert( u"CASE_SENSITIVE"_s, true );
@@ -1232,7 +1232,7 @@ void TestQgsProcessingAlgsPt1::categorizeByStyle()
   QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( u"b"_s ) ).symbol()->color().name() != "#00ff00"_L1 );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( u"c "_s ) ).symbol()->color().name(), u"#0000ff"_s );
   // reset renderer
-  layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
+  layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() ) );
 
   // no optional sinks
   parameters.insert( u"CASE_SENSITIVE"_s, false );
@@ -4436,14 +4436,14 @@ void TestQgsProcessingAlgsPt1::styleFromProject()
   QgsVectorLayer *vl2 = new QgsVectorLayer( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"vl2"_s, u"memory"_s );
   QVERIFY( vl2->isValid() );
   p.addMapLayer( vl2 );
-  QgsSymbol *s1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+  std::unique_ptr<QgsSymbol> s1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
   s1->setColor( QColor( 0, 255, 0 ) );
-  QgsSymbol *s2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+  std::unique_ptr<QgsSymbol> s2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
   s2->setColor( QColor( 0, 255, 255 ) );
   QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
-  QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( s1, 0, 0, u"fld >= 5 and fld <= 20"_s );
+  QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( s1.release(), 0, 0, u"fld >= 5 and fld <= 20"_s );
   rootRule->appendChild( rule2 );
-  QgsRuleBasedRenderer::Rule *rule3 = new QgsRuleBasedRenderer::Rule( s2, 0, 0, u"fld <= 10"_s );
+  QgsRuleBasedRenderer::Rule *rule3 = new QgsRuleBasedRenderer::Rule( s2.release(), 0, 0, u"fld <= 10"_s );
   rule2->appendChild( rule3 );
   vl2->setRenderer( new QgsRuleBasedRenderer( rootRule ) );
   // labeling
@@ -4476,12 +4476,12 @@ void TestQgsProcessingAlgsPt1::styleFromProject()
 
   // with annotations
   QgsTextAnnotation *annotation = new QgsTextAnnotation();
-  QgsSymbol *a1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+  std::unique_ptr<QgsSymbol> a1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
   a1->setColor( QColor( 0, 200, 0 ) );
-  annotation->setMarkerSymbol( static_cast<QgsMarkerSymbol *>( a1 ) );
-  QgsSymbol *a2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon );
+  annotation->setMarkerSymbol( static_cast<QgsMarkerSymbol *>( a1.release() ) );
+  std::unique_ptr<QgsSymbol> a2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon );
   a2->setColor( QColor( 200, 200, 0 ) );
-  annotation->setFillSymbol( static_cast<QgsFillSymbol *>( a2 ) );
+  annotation->setFillSymbol( static_cast<QgsFillSymbol *>( a2.release() ) );
   p.annotationManager()->addAnnotation( annotation );
 
   // ok, run alg
@@ -4553,10 +4553,10 @@ void TestQgsProcessingAlgsPt1::combineStyles()
   s1.addSymbol( u"sym1"_s, markerSymbol, true );
   s1.tagSymbol( QgsStyle::SymbolEntity, u"sym1"_s, QStringList() << u"t1"_s << u"t2"_s );
 
-  QgsSymbol *sym1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
-  s2.addSymbol( u"sym2"_s, sym1, true );
-  QgsSymbol *sym2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
-  s2.addSymbol( u"sym1"_s, sym2, true );
+  std::unique_ptr<QgsSymbol> sym1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+  s2.addSymbol( u"sym2"_s, sym1.release(), true );
+  std::unique_ptr<QgsSymbol> sym2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+  s2.addSymbol( u"sym1"_s, sym2.release(), true );
 
   QgsPalLayerSettings settings;
   settings.fieldName = u"Class"_s;

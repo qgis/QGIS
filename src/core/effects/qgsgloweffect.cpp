@@ -206,11 +206,11 @@ void QgsGlowEffect::readProperties( const QVariantMap &props )
   mRamp.reset();
   if ( props.contains( u"rampType"_s ) && props[u"rampType"_s] == QgsCptCityColorRamp::typeString() )
   {
-    mRamp.reset( QgsCptCityColorRamp::create( props ) );
+    mRamp = QgsCptCityColorRamp::create( props );
   }
   else
   {
-    mRamp.reset( QgsGradientColorRamp::create( props ) );
+    mRamp = QgsGradientColorRamp::create( props );
   }
 }
 

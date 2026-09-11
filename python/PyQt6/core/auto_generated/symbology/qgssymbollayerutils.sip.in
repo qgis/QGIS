@@ -850,7 +850,7 @@ top-level element
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
-    static QMimeData *symbolToMimeData( const QgsSymbol *symbol ) /Factory/;
+    static std::unique_ptr<QMimeData> symbolToMimeData( const QgsSymbol *symbol );
 %Docstring
 Creates new mime data from a ``symbol``. This also sets the mime color
 data to match the symbol's color, so that copied symbols can be paste in
@@ -927,7 +927,7 @@ formats, including hex codes, rgb and rgba strings.
 :return: list of parsed colors
 %End
 
-    static QMimeData *colorToMimeData( const QColor &color ) /Factory/;
+    static std::unique_ptr<QMimeData> colorToMimeData( const QColor &color );
 %Docstring
 Creates mime data from a color. Sets both the mime data's color data,
 and the mime data's text with the color's hex code.
@@ -958,7 +958,7 @@ Attempts to parse mime data as a list of named colors
 :return: list of parsed colors
 %End
 
-    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, bool allFormats = true ) /Factory/;
+    static std::unique_ptr<QMimeData> colorListToMimeData( const QgsNamedColorList &colorList, bool allFormats = true );
 %Docstring
 Creates mime data from a list of named colors
 

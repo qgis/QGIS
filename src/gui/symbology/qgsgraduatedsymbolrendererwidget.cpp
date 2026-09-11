@@ -473,7 +473,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   // (null renderer means "no previous renderer")
   if ( renderer )
   {
-    mRenderer.reset( QgsGraduatedSymbolRenderer::convertFromRenderer( renderer ) );
+    mRenderer = QgsGraduatedSymbolRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {
@@ -533,7 +533,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   viewGraduated->setStyle( new QgsGraduatedSymbolRendererViewStyle( viewGraduated ) );
 
-  mGraduatedSymbol.reset( QgsSymbol::defaultSymbol( mLayer->geometryType() ) );
+  mGraduatedSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
   if ( mGraduatedSymbol )
   {
     btnChangeGraduatedSymbol->setSymbolType( mGraduatedSymbol->type() );

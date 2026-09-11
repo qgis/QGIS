@@ -335,7 +335,7 @@ bool QgsStyle::renameEntity( QgsStyle::StyleEntity type, const QString &oldName,
   return false;
 }
 
-QgsSymbol *QgsStyle::symbol( const QString &name )
+std::unique_ptr<QgsSymbol> QgsStyle::symbol( const QString &name )
 {
   const QgsSymbol *symbol = symbolRef( name );
   if ( !symbol )
@@ -344,7 +344,7 @@ QgsSymbol *QgsStyle::symbol( const QString &name )
   QgsSymbol *newSymbol = symbol->clone();
   QgsSymbolLayerUtils::resetSymbolLayerIds( newSymbol );
 
-  return newSymbol;
+  return std::unique_ptr<QgsSymbol>( newSymbol );
 }
 
 const QgsSymbol *QgsStyle::symbolRef( const QString &name ) const
@@ -534,10 +534,10 @@ bool QgsStyle::removeColorRamp( const QString &name )
   return removeEntityByName( ColorrampEntity, name );
 }
 
-QgsColorRamp *QgsStyle::colorRamp( const QString &name ) const
+std::unique_ptr<QgsColorRamp> QgsStyle::colorRamp( const QString &name ) const
 {
   const QgsColorRamp *ramp = colorRampRef( name );
-  return ramp ? ramp->clone() : nullptr;
+  return std::unique_ptr<QgsColorRamp>( ramp ? ramp->clone() : nullptr );
 }
 
 const QgsColorRamp *QgsStyle::colorRampRef( const QString &name ) const
@@ -2385,11 +2385,11 @@ Qgis::SymbolType QgsStyle::legendPatchShapeSymbolType( const QString &name ) con
   return it.value().symbolType();
 }
 
-QgsAbstract3DSymbol *QgsStyle::symbol3D( const QString &name ) const
+std::unique_ptr<QgsAbstract3DSymbol> QgsStyle::symbol3D( const QString &name ) const
 {
   auto it = m3dSymbols.constFind( name );
   if ( it != m3dSymbols.constEnd() )
-    return it.value()->clone();
+    return std::unique_ptr<QgsAbstract3DSymbol>( it.value()->clone() );
   return nullptr;
 }
 

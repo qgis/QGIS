@@ -233,7 +233,7 @@ void TestQgsVectorLayer::setRenderer()
 {
   const QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::rendererChanged );
 
-  QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
 
   mpPointsLayer->setRenderer( symbolRenderer );
   QCOMPARE( spy.count(), 1 );

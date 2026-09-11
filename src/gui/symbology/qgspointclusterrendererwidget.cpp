@@ -68,7 +68,7 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
 
   if ( renderer )
   {
-    mRenderer.reset( QgsPointClusterRenderer::convertFromRenderer( renderer ) );
+    mRenderer = QgsPointClusterRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {

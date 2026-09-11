@@ -66,7 +66,7 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
 
   if ( renderer )
   {
-    mRenderer.reset( Qgs25DRenderer::convertFromRenderer( renderer ) );
+    mRenderer = Qgs25DRenderer::convertFromRenderer( renderer );
   }
 
   mHeightWidget->setLayer( layer );

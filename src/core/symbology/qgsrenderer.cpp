@@ -82,9 +82,9 @@ const QgsPropertiesDefinition &QgsFeatureRenderer::propertyDefinitions()
   return sPropertyDefinitions;
 }
 
-QgsFeatureRenderer *QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType geomType )
+std::unique_ptr<QgsFeatureRenderer> QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType geomType )
 {
-  return new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( geomType ) );
+  return std::make_unique<QgsSingleSymbolRenderer>( QgsSymbol::defaultSymbol( geomType ).release() );
 }
 
 QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
@@ -172,7 +172,7 @@ QgsSymbolList QgsFeatureRenderer::symbols( QgsRenderContext &context ) const
   return QgsSymbolList();
 }
 
-QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsFeatureRenderer> QgsFeatureRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
 {
   // <renderer-v2 type=""> ... </renderer-v2>
 
@@ -186,7 +186,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element, const QgsRea
   if ( !m )
     return nullptr;
 
-  QgsFeatureRenderer *r = m->createRenderer( element, context );
+  std::unique_ptr<QgsFeatureRenderer> r = std::unique_ptr<QgsFeatureRenderer>( m->createRenderer( element, context ) );
   if ( r )
   {
     r->setUsingSymbolLevels( element.attribute( u"symbollevels"_s, u"0"_s ).toInt() );
@@ -245,7 +245,7 @@ void QgsFeatureRenderer::saveRendererData( QDomDocument &doc, QDomElement &rende
   rendererElem.setAttribute( u"enableorderby"_s, ( mOrderByEnabled ? u"1"_s : u"0"_s ) );
 }
 
-QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage )
+std::unique_ptr<QgsFeatureRenderer> QgsFeatureRenderer::loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage )
 {
   const QDomElement element = node.toElement();
   if ( element.isNull() )
@@ -352,7 +352,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, Qgis::Geo
     return nullptr;
   }
 
-  QgsFeatureRenderer *r = m->createRendererFromSld( mergedFeatTypeStyle, geomType );
+  std::unique_ptr<QgsFeatureRenderer> r = std::unique_ptr<QgsFeatureRenderer>( m->createRendererFromSld( mergedFeatTypeStyle, geomType ) );
   return r;
 }
 
