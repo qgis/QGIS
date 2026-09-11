@@ -161,6 +161,10 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
   mMinZoom = parameterAsInt( parameters, u"ZOOM_MIN"_s, context );
   mMaxZoom = parameterAsInt( parameters, u"ZOOM_MAX"_s, context );
+  if ( mMaxZoom < mMinZoom )
+  {
+    throw QgsProcessingException( QObject::tr( "Maximum zoom (%1) must be ≥ minimum zoom (%2)" ).arg( mMaxZoom ).arg( mMinZoom ) );
+  }
   mDpi = parameterAsInt( parameters, u"DPI"_s, context );
   mBackgroundColor = parameterAsColor( parameters, u"BACKGROUND_COLOR"_s, context );
   mAntialias = parameterAsBool( parameters, u"ANTIALIAS"_s, context );
