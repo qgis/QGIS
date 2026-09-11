@@ -129,6 +129,34 @@ QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value ) const
   return nullptr;
 }
 
+bool QgsGraduatedSymbolRenderer::rangeLowerBoundIsInclusive( int rangeIndex ) const
+{
+  if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
+    return true;
+
+  const double value = mRanges.at( rangeIndex ).lowerValue();
+  for ( int i = 0; i < rangeIndex; ++i )
+  {
+    if ( mRanges.at( i ).lowerValue() <= value && mRanges.at( i ).upperValue() >= value )
+      return false;
+  }
+  return true;
+}
+
+bool QgsGraduatedSymbolRenderer::rangeUpperBoundIsInclusive( int rangeIndex ) const
+{
+  if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
+    return true;
+
+  const double value = mRanges.at( rangeIndex ).upperValue();
+  for ( int i = 0; i < rangeIndex; ++i )
+  {
+    if ( mRanges.at( i ).lowerValue() <= value && mRanges.at( i ).upperValue() >= value )
+      return false;
+  }
+  return true;
+}
+
 QString QgsGraduatedSymbolRenderer::legendKeyForValue( double value ) const
 {
   if ( const QgsRendererRange *matchingRange = rangeForValue( value ) )

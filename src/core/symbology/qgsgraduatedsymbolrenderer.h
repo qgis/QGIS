@@ -122,6 +122,26 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     bool rangesHaveGaps() const;
 
+    /**
+     * Returns TRUE if the lower bound of the range at the specified \a rangeIndex is
+     * inclusive, i.e. a feature value exactly equal to the range's lowerValue() will be
+     * classified into this range.
+     *
+     * \see rangeUpperBoundIsInclusive()
+     * \since QGIS 4.4
+     */
+    bool rangeLowerBoundIsInclusive( int rangeIndex ) const;
+
+    /**
+     * Returns TRUE if the upper bound of the range at the specified \a rangeIndex is
+     * inclusive, i.e. a feature value exactly equal to the range's upperValue() will be
+     * classified into this range.
+     *
+     * \see rangeLowerBoundIsInclusive()
+     * \since QGIS 4.4
+     */
+    bool rangeUpperBoundIsInclusive( int rangeIndex ) const;
+
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
