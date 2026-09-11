@@ -67,6 +67,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
     void rowsMoved();
 
   private:
+    QString formatRangeValue( double value ) const;
+    QString tooltip( const QModelIndex &index ) const;
+
     QgsGraduatedSymbolRenderer *mRenderer = nullptr;
     QString mMimeFormat;
     QPointer<QScreen> mScreen;
