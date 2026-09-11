@@ -860,7 +860,7 @@ class GenericAlgorithmsTest(QgisTestCase):
                     f'Algorithm {alg.id()} shortDescription should not contain any HTML formatting "{alg.shortDescription()}"',
                 )
 
-        if alg.provider().id() in ("pdal", "qgis"):
+        if alg.provider().id() in ("pdal", "qgis", "gdal"):
             self.assertTrue(
                 alg.implementationSourceUri(),
                 f"Algorithm {alg.id()} has no QGS_MARK_ALGORITHM_SOURCE macro inserted!",
