@@ -18,6 +18,7 @@
 #include "qgsalgorithmxyztiles.h"
 
 #include "qgsexpressioncontextutils.h"
+#include "qgsimageoperation.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsmaplayerutils.h"
@@ -112,6 +113,11 @@ void QgsXyzTilesBaseAlgorithm::createCommonParameters()
   addParameter( new QgsProcessingParameterEnum( u"TILE_FORMAT"_s, QObject::tr( "Tile format" ), QStringList() << u"PNG"_s << u"JPG"_s, false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( u"QUALITY"_s, QObject::tr( "Quality (JPG only)" ), Qgis::ProcessingNumberParameterType::Integer, 75, false, 1, 100 ) );
   addParameter( new QgsProcessingParameterNumber( u"METATILESIZE"_s, QObject::tr( "Metatile size" ), Qgis::ProcessingNumberParameterType::Integer, 4, false, 1, 20 ) );
+
+  auto skipEmptyTilesParam = std::make_unique<QgsProcessingParameterBoolean>( u"SKIP_EMPTY_TILES"_s, QObject::tr( "Skip empty tiles" ), false );
+  skipEmptyTilesParam->setHelp( QObject::tr( "If set, completely empty tiles will be skipped." ) );
+  skipEmptyTilesParam->setFlags( skipEmptyTilesParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( skipEmptyTilesParam.release() );
 }
 
 bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -159,6 +165,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mDpi = parameterAsInt( parameters, u"DPI"_s, context );
   mBackgroundColor = parameterAsColor( parameters, u"BACKGROUND_COLOR"_s, context );
   mAntialias = parameterAsBool( parameters, u"ANTIALIAS"_s, context );
+  mSkipEmptyTiles = parameterAsBool( parameters, u"SKIP_EMPTY_TILES"_s, context );
   mTileFormat = parameterAsEnum( parameters, u"TILE_FORMAT"_s, context ) ? u"JPG"_s : u"PNG"_s;
   mJpgQuality = mTileFormat == "JPG"_L1 ? parameterAsInt( parameters, u"QUALITY"_s, context ) : -1;
   mMetaTileSize = parameterAsInt( parameters, u"METATILESIZE"_s, context );
@@ -362,6 +369,11 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   qDeleteAll( mLayers );
   mLayers.clear();
 
+  if ( mSkipEmptyTiles )
+  {
+    feedback->pushInfo( QObject::tr( "Wrote %1 total tiles, skipped %2 empty tiles" ).arg( mTilesWritten ).arg( mEmptyTiles ) );
+  }
+
   QVariantMap results;
   results.insert( u"OUTPUT_DIRECTORY"_s, outputDir );
 
@@ -423,23 +435,47 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
 
 void QgsXyzTilesDirectoryAlgorithm::processMetaTile( QgsMapRendererSequentialJob *job )
 {
-  MetaTile metaTile = mRendererJobs.value( job );
-  QImage img = job->renderedImage();
+  const MetaTile metaTile = mRendererJobs.value( job );
+  const QImage img = job->renderedImage();
+
+  const bool testEmptyTilesUsingAlpha0 = mTileFormat != "JPG"_L1 && mBackgroundColor.alpha() == 0;
 
   QMap<QPair<int, int>, Tile>::const_iterator it = metaTile.tiles.constBegin();
   while ( it != metaTile.tiles.constEnd() )
   {
-    QPair<int, int> tm = it.key();
-    Tile tile = it.value();
-    QImage tileImage = img.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
-    QDir tileDir( u"%1/%2/%3"_s.arg( mOutputDir ).arg( tile.z ).arg( tile.x ) );
-    tileDir.mkpath( tileDir.absolutePath() );
-    int y = tile.y;
-    if ( mTms )
+    const QPair<int, int> tm = it.key();
+    const Tile tile = it.value();
+    const QImage tileImage = img.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
+    bool skipTile = false;
+    if ( mSkipEmptyTiles )
     {
-      y = tile2tms( y, tile.z );
+      if ( testEmptyTilesUsingAlpha0 )
+      {
+        skipTile = QgsImageOperation::isBlankImage( tileImage );
+      }
+      else
+      {
+        skipTile = QgsImageOperation::isSingleColor( tileImage, mBackgroundColor );
+      }
     }
-    tileImage.save( u"%1/%2.%3"_s.arg( tileDir.absolutePath() ).arg( y ).arg( mTileFormat.toLower() ), mTileFormat.toStdString().c_str(), mJpgQuality );
+
+    if ( !skipTile )
+    {
+      const QDir tileDir( u"%1/%2/%3"_s.arg( mOutputDir ).arg( tile.z ).arg( tile.x ) );
+      tileDir.mkpath( tileDir.absolutePath() );
+      int y = tile.y;
+      if ( mTms )
+      {
+        y = tile2tms( y, tile.z );
+      }
+      tileImage.save( u"%1/%2.%3"_s.arg( tileDir.absolutePath() ).arg( y ).arg( mTileFormat.toLower() ), mTileFormat.toStdString().c_str(), mJpgQuality );
+      mTilesWritten++;
+    }
+    else
+    {
+      mEmptyTiles++;
+    }
+
     ++it;
   }
 
@@ -563,6 +599,11 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   qDeleteAll( mLayers );
   mLayers.clear();
 
+  if ( mSkipEmptyTiles )
+  {
+    feedback->pushInfo( QObject::tr( "Wrote %1 total tiles, skipped %2 empty tiles" ).arg( mTilesWritten ).arg( mEmptyTiles ) );
+  }
+
   QVariantMap results;
   results.insert( u"OUTPUT_FILE"_s, outputFile );
   return results;
@@ -570,20 +611,41 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
 
 void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *job )
 {
-  MetaTile metaTile = mRendererJobs.value( job );
-  QImage img = job->renderedImage();
+  const MetaTile metaTile = mRendererJobs.value( job );
+  const QImage img = job->renderedImage();
+  const bool testEmptyTilesUsingAlpha0 = mTileFormat != "JPG"_L1 && mBackgroundColor.alpha() == 0;
 
   QMap<QPair<int, int>, Tile>::const_iterator it = metaTile.tiles.constBegin();
   while ( it != metaTile.tiles.constEnd() )
   {
-    QPair<int, int> tm = it.key();
-    Tile tile = it.value();
-    QImage tileImage = img.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
-    QByteArray ba;
-    QBuffer buffer( &ba );
-    buffer.open( QIODevice::WriteOnly );
-    tileImage.save( &buffer, mTileFormat.toStdString().c_str(), mJpgQuality );
-    mMbtilesWriter->setTileData( tile.z, tile.x, tile2tms( tile.y, tile.z ), ba );
+    const QPair<int, int> tm = it.key();
+    const Tile tile = it.value();
+    const QImage tileImage = img.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
+    bool skipTile = false;
+    if ( mSkipEmptyTiles )
+    {
+      if ( testEmptyTilesUsingAlpha0 )
+      {
+        skipTile = QgsImageOperation::isBlankImage( tileImage );
+      }
+      else
+      {
+        skipTile = QgsImageOperation::isSingleColor( tileImage, mBackgroundColor );
+      }
+    }
+    if ( !skipTile )
+    {
+      QByteArray ba;
+      QBuffer buffer( &ba );
+      buffer.open( QIODevice::WriteOnly );
+      tileImage.save( &buffer, mTileFormat.toStdString().c_str(), mJpgQuality );
+      mMbtilesWriter->setTileData( tile.z, tile.x, tile2tms( tile.y, tile.z ), ba );
+      mTilesWritten++;
+    }
+    else
+    {
+      mEmptyTiles++;
+    }
     ++it;
   }
 
