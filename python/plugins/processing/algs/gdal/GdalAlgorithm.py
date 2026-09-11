@@ -35,7 +35,11 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.algs.gdal.gdal_algorithm_widget import GdalAlgorithmWidget
-from processing.algs.gdal.GdalUtils import GdalConnectionDetails, GdalUtils
+from processing.algs.gdal.GdalUtils import (
+    GdalConnectionDetails,
+    GdalUtils,
+    get_implementation_source_uri,
+)
 
 pluginPath = os.path.normpath(
     os.path.join(os.path.split(os.path.dirname(__file__))[0], os.pardir)
@@ -58,6 +62,9 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
 
     def createInstance(self, config={}):
         return self.__class__()
+
+    def implementationSourceUri(self) -> str:
+        return get_implementation_source_uri(self)
 
     def createCustomParametersWidget(self, parent):
         return GdalAlgorithmWidget(self, parent=parent)

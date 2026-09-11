@@ -37,7 +37,11 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication
 
-from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.GdalUtils import (
+    GdalUtils,
+    get_implementation_source_uri,
+    mark_source,
+)
 
 
 class CreateCloudOptimizedGeoTIFF(QgsProcessingAlgorithm):
@@ -120,6 +124,9 @@ class CreateCloudOptimizedGeoTIFF(QgsProcessingAlgorithm):
     def commandName(self):
         return "gdal_translate"
 
+    def implementationSourceUri(self) -> str:
+        return get_implementation_source_uri(self)
+
     def output_path(self, input_layer: QgsRasterLayer) -> str:
         # if source is a file baseName is used for output, otherwise use layer name
         fileInfo = Path(input_layer.source())
@@ -153,6 +160,7 @@ class CreateCloudOptimizedGeoTIFF(QgsProcessingAlgorithm):
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
+    @mark_source
     def processAlgorithm(self, parameters, context, feedback):
 
         self.extension = ".tif"
