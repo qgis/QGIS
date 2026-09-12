@@ -26,7 +26,7 @@ class QgsStacItem;
 
 /**
  * \ingroup core
- * \brief Class for storing a STAC Item Collections.
+ * \brief Stores data associated with a STAC Item Collection.
  *
  * An Item Collection is typically returned by STAP API endpoints and contains a subset
  * of the STAC Items available in a STAC Catalog or Collection.

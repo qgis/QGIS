@@ -32,6 +32,7 @@ class QgsStacItemCollection;
 
 
 /**
+ * \ingroup core
  * \brief SpatioTemporal Asset Catalog JSON parser.
  *
  * This class parses json data and creates the appropriate

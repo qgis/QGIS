@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * \brief Class for storing a STAC SpatioTemporal extent.
+ * \brief Stores a STAC SpatioTemporal extent.
  *
  *  QgsStacExtent contains one overall spatial extent and one overall temporal extent
  *  It is possible to add further refined sub extents to better describe clustered data.

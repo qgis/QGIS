@@ -12,7 +12,7 @@
 class QgsStacCatalog : QgsStacObject
 {
 %Docstring(signature="appended")
-Class for storing a STAC Catalog's data.
+Stores data associated with a STAC Catalog.
 
 .. versionadded:: 3.44
 %End
