@@ -882,3 +882,302 @@ tests:
       OUTPUT:
         name: expected/tps_interpolation__local__max_distance_6__OUTPUT.asc
         type: rasterfile
+
+  - algorithm: native:rastercellindex
+    name: Raster cell index (ascending)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/unique_float_raster.tif
+        type: raster
+      NODATA: -9999
+      ORDER: 0
+    results:
+      OUTPUT:
+        name: expected/raster_cell_index__ascending__OUTPUT.asc
+        type: rasterfile
+
+  - algorithm: native:rastercellindex
+    name: Raster cell index (descending)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/unique_float_raster.tif
+        type: raster
+      NODATA: -9999
+      ORDER: 1
+    results:
+      OUTPUT:
+        name: expected/raster_cell_index__descending__OUTPUT.asc
+        type: rasterfile
+
+
+  - algorithm: native:upslopeareafrompoint
+    name: Upslope D8
+    params:
+      CONVERGE: 1.1
+      ELEVATION:
+        name: dem.tif
+        type: raster
+      METHOD: 0
+      MFD_CONTOUR: false
+      TARGET_PT: 18.686255,45.788547 [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: 7733e53b55b389f73813e85f8cb5dcc0f683c021ccb6b8911a35793c
+        type: rasterhash
+
+  - algorithm: native:upslopeareafrompoint
+    name: Upslope Dinf
+    params:
+      CONVERGE: 1.1
+      ELEVATION:
+        name: dem.tif
+        type: raster
+      METHOD: 1
+      MFD_CONTOUR: false
+      TARGET_PT: 18.686255,45.788547 [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: 04db77296f8019c3d05321f5b39f7da5ed5d893f317f863adc8d1ab6
+        type: rasterhash
+
+  - algorithm: native:upslopeareafrompoint
+    name: Upslope multiflow
+    params:
+      CONVERGE: 1.1
+      ELEVATION:
+        name: dem.tif
+        type: raster
+      METHOD: 2
+      MFD_CONTOUR: false
+      TARGET_PT: 18.686255,45.788547 [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: 9e8a94e2620b43b1d65e78181021e5506b0e003751277ee92cf6afc6
+        type: rasterhash
+
+  - algorithm: native:upslopeareafrompoint
+    name: Upslope multiflow, with contour length weighting
+    params:
+      CONVERGE: 1.1
+      ELEVATION:
+        name: dem.tif
+        type: raster
+      METHOD: 2
+      MFD_CONTOUR: true
+      TARGET_PT: 18.686255,45.788547 [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: 581521d0f0ff0688d7e6a760c6afa19cc2dc650b7afb7135fc3320c0
+        type: rasterhash
+
+  - algorithm: native:upslopeareafrompoint
+    name: Upslope multiflow, with convergence factor 3
+    params:
+      CONVERGE: 3.0
+      ELEVATION:
+        name: dem.tif
+        type: raster
+      METHOD: 2
+      MFD_CONTOUR: false
+      TARGET_PT: 18.686255,45.788547 [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: 99bd69da90dc35a63612435d9ee4f0a138d100cd80a30706219d91d0
+        type: rasterhash
+
+
+  - algorithm: native:upslopeareafrompoint
+    name: Upslope multiple triangular flow direction
+    params:
+      CONVERGE: 1.1
+      ELEVATION:
+        name: dem.tif
+        type: raster
+      METHOD: 3
+      MFD_CONTOUR: false
+      TARGET_PT: 18.686255,45.788547 [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: 6b941c242a281a92aba07ca816961c0050bf80b968d6d1c4f20c743d
+        type: rasterhash
+
+  - algorithm: native:upslopeareafrompoint
+    name: Upslope multiple triangular flow direction, with convergence 3
+    params:
+      CONVERGE: 3.0
+      ELEVATION:
+        name: dem.tif
+        type: raster
+      METHOD: 3
+      MFD_CONTOUR: false
+      TARGET_PT: 18.686255,45.788547 [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: 3b1a2725307b14ed60d825b4edd8fa2bdf1ecd050de20e38a455b78d
+        type: rasterhash
+
+  - algorithm: native:upslopeareafrompoint
+    name: Upslope multiple triangular flow direction, with contour
+    params:
+      CONVERGE: 1.1
+      ELEVATION:
+        name: dem.tif
+        type: raster
+      METHOD: 3
+      MFD_CONTOUR: true
+      TARGET_PT: 18.686255,45.788547 [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: 6b941c242a281a92aba07ca816961c0050bf80b968d6d1c4f20c743d
+        type: rasterhash
+
+  - algorithm: native:upslopeareafrompoint
+    name: Upslope multiple max downslope gradient
+    params:
+      CONVERGE: 1.1
+      ELEVATION:
+        name: dem.tif
+        type: raster
+      METHOD: 4
+      MFD_CONTOUR: false
+      TARGET_PT: 18.686255,45.788547 [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: d8b9ce030a8474690a9d4287d06a310a9064dd09ba13c763e16ad227
+        type: rasterhash
+
+  - algorithm: native:upslopeareafrompoint
+    name: Upslope multiple max downslope gradient with contour
+    params:
+      CONVERGE: 1.1
+      ELEVATION:
+        name: dem.tif
+        type: raster
+      METHOD: 4
+      MFD_CONTOUR: true
+      TARGET_PT: 18.686255,45.788547 [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: 066f051ed9df71e5914e2ea5fb2c5dc59cbe6e4c8c347d51853d9b8f
+        type: rasterhash
+
+  - algorithm: native:upslopeareafrompoint
+    name: Upslope with sink routes
+    params:
+      CONVERGE: 1.1
+      ELEVATION:
+        name: dem.tif
+        type: raster
+      METHOD: 2
+      MFD_CONTOUR: false
+      SINK_ROUTES:
+        name: custom/sink_routes.tif
+        type: raster
+      TARGET_PT: 18.686255,45.788547 [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: b3e5e52a5754a8ad57e4672937a0b87ab8a104642c989132f840da75
+        type: rasterhash
+
+  - algorithm: native:flowdirection
+    name: Flow direction
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+    results:
+      OUTPUT:
+        hash: 3e98c57138159539764242f0b131676cf01a8dbcc21af7723c0fb267
+        type: rasterhash
+
+  - algorithm: native:flowconnectivity
+    name: Flow connectivity
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+    results:
+      OUTPUT:
+        hash: b0ba61e6b3940744eceb1ac03f60b4d84b855a94562670327701737c
+        type: rasterhash
+
+  - algorithm: native:strahlerorderfromdem
+    name: Strahler order from DEM, threshold 1
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 1
+    results:
+      OUTPUT:
+        hash: d8ceeb0ca56cb5a0dbd363c98a983bd55990c8286f41f8731e90f783
+        type: rasterhash
+
+  - algorithm: native:strahlerorderfromdem
+    name: Strahler order from DEM, threshold 3
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 3
+    results:
+      OUTPUT:
+        hash: a210382b64cc4139232a63e3bccf34e65c18c0d5d158aec84398b635
+        type: rasterhash
+
+  - algorithm: native:strahlerorderfromflowdirection
+    name: Strahler order from DEM and flow direction, threshold 1
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      INPUT_FLOW_DIRECTION:
+        name: custom/flow_dir.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 1
+    results:
+      OUTPUT:
+        hash: d8ceeb0ca56cb5a0dbd363c98a983bd55990c8286f41f8731e90f783
+        type: rasterhash
+
+  - algorithm: native:strahlerorderfromflowdirection
+    name: Strahler order from DEM and flow direction, threshold 3
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      INPUT_FLOW_DIRECTION:
+        name: custom/flow_dir.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 3
+    results:
+      OUTPUT:
+        hash: a210382b64cc4139232a63e3bccf34e65c18c0d5d158aec84398b635
+        type: rasterhash
+
+  - algorithm: native:channelnetworkfromdem
+    name: Channel network from DEM
+    params:
+      INPUT:
+        name: custom/mini_dem.tif
+        type: raster
+      SUBBASINS: false
+      THRESHOLD: 3
+    results:
+      BASINS:
+        name: expected/basins_from_dem.gml
+        type: vector
+      CHANNELS:
+        name: expected/channels_from_dem.gml
+        type: vector
+      JUNCTIONS:
+        name: expected/junctions_from_dem.gml
+        type: vector
