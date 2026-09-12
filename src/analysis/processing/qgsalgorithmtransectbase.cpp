@@ -84,8 +84,6 @@ void QgsTransectAlgorithmBase::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QGS_MARK_ALGORITHM_SOURCE
-
   mOrientation = static_cast<QgsTransectAlgorithmBase::Side>( parameterAsInt( parameters, u"SIDE"_s, context ) );
   mAngle = fabs( parameterAsDouble( parameters, u"ANGLE"_s, context ) );
   mDynamicAngle = QgsProcessingParameters::isDynamic( parameters, u"ANGLE"_s );
