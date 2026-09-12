@@ -1930,6 +1930,49 @@ bool QgsModelOutputGraphicItem::canDeleteComponent()
   return false;
 }
 
+void QgsModelOutputGraphicItem::editComponent()
+{
+  edit( false );
+}
+
+void QgsModelOutputGraphicItem::editComment()
+{
+  edit( true );
+}
+
+void QgsModelOutputGraphicItem::applyEdit( const QString &name, const QString &description, const QVariant &defaultValue, bool mandatory, const QString &comment, const QColor &commentColor )
+{
+  const QgsProcessingModelOutput *outputComponent = dynamic_cast< const QgsProcessingModelOutput * >( component() );
+  if ( !outputComponent )
+    return;
+
+  QgsProcessingModelChildAlgorithm childAlg = model()->childAlgorithm( outputComponent->childId() );
+  QMap< QString, QgsProcessingModelOutput > modelOutputs = childAlg.modelOutputs();
+
+  if ( !modelOutputs.contains( outputComponent->name() ) )
+    return;
+
+  QgsProcessingModelOutput modelOutput = modelOutputs.take( outputComponent->name() );
+
+  modelOutput.setName( name );
+  modelOutput.setDescription( description );
+  modelOutput.setDefaultValue( defaultValue );
+  modelOutput.setMandatory( mandatory );
+  modelOutput.comment()->setDescription( comment );
+  modelOutput.comment()->setColor( commentColor );
+  modelOutputs.insert( modelOutput.name(), modelOutput );
+
+  childAlg.setModelOutputs( modelOutputs );
+  model()->setChildAlgorithm( childAlg );
+
+  const QString undoCommandId = u"output:%1"_s.arg( name );
+  emit aboutToChange( tr( "Edit %1" ).arg( modelOutput.description() ), undoCommandId );
+
+  model()->updateDestinationParameters();
+  emit requestModelRepaint();
+  emit changed();
+}
+
 void QgsModelOutputGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelOutput *output = dynamic_cast<const QgsProcessingModelOutput *>( component() ) )
@@ -1939,6 +1982,47 @@ void QgsModelOutputGraphicItem::deleteComponent()
     model()->updateDestinationParameters();
     emit changed();
     emit requestModelRepaint();
+  }
+}
+
+void QgsModelOutputGraphicItem::edit( bool editComment )
+{
+  const QgsProcessingModelOutput *outputComponent = dynamic_cast< const QgsProcessingModelOutput * >( component() );
+  if ( !outputComponent )
+    return;
+
+  const QgsProcessingParameterDefinition *existingParam = model()->modelParameterFromChildIdAndOutputName( outputComponent->childId(), outputComponent->name() );
+  if ( !existingParam )
+    return;
+
+  const QString comment = outputComponent->comment()->description();
+  const QColor commentColor = outputComponent->comment()->color();
+
+  QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+  widgetContext.setModelChildAlgorithmId( outputComponent->childId() );
+  QgsProcessingContext *context = widgetContext.processingContextGenerator()->processingContext();
+
+  QgsProcessingParameterDefinitionDialog dlg( existingParam->type(), *context, widgetContext, existingParam, model(), scene()->views().at( 0 ) );
+
+  dlg.setComments( comment );
+  dlg.setCommentColor( commentColor );
+  if ( widgetContext.processingContextGenerator() )
+  {
+    dlg.registerProcessingContextGenerator( widgetContext.processingContextGenerator() );
+  }
+
+  if ( editComment )
+  {
+    dlg.switchToCommentTab();
+  }
+
+  if ( dlg.exec() )
+  {
+    std::unique_ptr< QgsProcessingParameterDefinition > newParam( dlg.createParameter( existingParam->name() ) );
+    if ( newParam )
+    {
+      applyEdit( newParam->description(), newParam->description(), newParam->defaultValue(), !newParam->flags().testFlag( Qgis::ProcessingParameterFlag::Optional ), dlg.comments(), dlg.commentColor() );
+    }
   }
 }
 

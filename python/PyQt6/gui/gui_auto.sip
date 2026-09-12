@@ -456,13 +456,9 @@
 %Include auto_generated/processing/qgsprocessingtoolboxtreeview.sip
 %Include auto_generated/processing/qgsprocessingwidgetcontext.sip
 %Include auto_generated/processing/qgsprocessingwidgetwrapper.sip
-%Include auto_generated/processing/models/qgsmodelarrowitem.sip
-%Include auto_generated/processing/models/qgsmodelcomponentgraphicitem.sip
 %Include auto_generated/processing/models/qgsmodeldesignerconfigwidget.sip
 %Include auto_generated/processing/models/qgsmodeldesignerdialog.sip
-%Include auto_generated/processing/models/qgsmodelgraphicitem.sip
 %Include auto_generated/processing/models/qgsmodelgraphicsscene.sip
-%Include auto_generated/processing/models/qgsmodelgraphicsview.sip
 %Include auto_generated/proj/qgscoordinateboundspreviewmapwidget.sip
 %Include auto_generated/proj/qgscoordinateoperationwidget.sip
 %Include auto_generated/proj/qgscoordinatereferencesystemmodel.sip

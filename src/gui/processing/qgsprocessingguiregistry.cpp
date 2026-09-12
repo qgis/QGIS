@@ -281,6 +281,9 @@ bool QgsProcessingGuiInternalModelConfigWidgetFactory::supportsComponent( QgsPro
   if ( dynamic_cast< QgsProcessingModelParameter * >( component ) )
     return true;
 
+  if ( dynamic_cast< QgsProcessingModelOutput * >( component ) )
+    return true;
+
   return false;
 }
 
@@ -375,6 +378,48 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
       const QString comment = widget->comments();
       const QColor commentColor = widget->commentColor();
       *existingParamName = graphicItem->applyEdit( std::move( newParam ), oldDescription, oldName, comment, commentColor );
+    } );
+
+    return widget;
+  }
+  else if ( QgsProcessingModelOutput *modelOutput = dynamic_cast< QgsProcessingModelOutput * >( component ) )
+  {
+    QgsModelDesignerDialog *dialog = widgetContext.modelDesignerDialog();
+    QgsProcessingModelAlgorithm *model = widgetContext.model();
+
+    const QString childId = modelOutput->childId();
+    const QString childOutputName = modelOutput->childOutputName();
+
+    const QgsProcessingParameterDefinition *existingParam = model->modelParameterFromChildIdAndOutputName( childId, modelOutput->name() );
+    if ( !existingParam )
+      return nullptr;
+
+    const QString comment = modelOutput->comment()->description();
+    const QColor commentColor = modelOutput->comment()->color();
+
+    auto widget = new QgsProcessingParameterDefinitionPanelWidget( existingParam->type(), context, widgetContext, existingParam, model );
+    widget->setComments( comment );
+    widget->setCommentColor( commentColor );
+    if ( widgetContext.processingContextGenerator() )
+    {
+      widget->registerProcessingContextGenerator( widgetContext.processingContextGenerator() );
+    }
+
+    connect( widget, &QgsProcessingParameterDefinitionPanelWidget::widgetChanged, this, [dialog, childId, childOutputName, widget] {
+      QgsModelGraphicsScene *modelScene = dialog->modelScene();
+      if ( !modelScene )
+        return;
+
+      QgsModelOutputGraphicItem *graphicItem = dynamic_cast< QgsModelOutputGraphicItem * >( modelScene->outputItem( childId, childOutputName ) );
+      if ( !graphicItem )
+        return; // should not happen
+
+      std::unique_ptr< QgsProcessingParameterDefinition > newParam( widget->createParameter() );
+      if ( !newParam )
+        return;
+
+      graphicItem
+        ->applyEdit( newParam->description(), newParam->description(), newParam->defaultValue(), !newParam->flags().testFlag( Qgis::ProcessingParameterFlag::Optional ), widget->comments(), widget->commentColor() );
     } );
 
     return widget;

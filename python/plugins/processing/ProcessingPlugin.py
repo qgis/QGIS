@@ -77,7 +77,6 @@ from processing.gui.MessageDialog import MessageDialog
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.ResultsDock import ResultsDock
-from processing.modeler.ModelConfigWidgets import ModelConfigWidgetFactory
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools import dataobjects
 
@@ -187,7 +186,6 @@ class ProcessingPlugin(QObject):
         super().__init__()
         self.iface = iface
         self.options_factory = None
-        self.model_config_widget_factory = None
         self.drop_handler = None
         self.item_provider = None
         self.locator_filter = None
@@ -218,10 +216,6 @@ class ProcessingPlugin(QObject):
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr("Processing"))
         iface.registerOptionsWidgetFactory(self.options_factory)
-        self.model_config_widget_factory = ModelConfigWidgetFactory()
-        QgsGui.processingGuiRegistry().registerModelConfigWidgetFactory(
-            self.model_config_widget_factory
-        )
         self.drop_handler = ProcessingDropHandler()
         iface.registerCustomDropHandler(self.drop_handler)
         self.item_provider = ProcessingDataItemProvider()
@@ -537,14 +531,6 @@ class ProcessingPlugin(QObject):
         self.iface.unregisterMainWindowAction(self.resultsAction)
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
-
-        if self.model_config_widget_factory and not sip.isdeleted(
-            self.model_config_widget_factory
-        ):
-            QgsGui.processingGuiRegistry().unregisterModelConfigWidgetFactory(
-                self.model_config_widget_factory
-            )
-            self.model_config_widget_factory = None
 
         self.iface.deregisterLocatorFilter(self.locator_filter)
         self.iface.deregisterLocatorFilter(self.edit_features_locator_filter)

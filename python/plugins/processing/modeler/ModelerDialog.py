@@ -53,7 +53,6 @@ from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.utils import iface
 
 from processing.gui.algorithm_widget import AlgorithmWidget
-from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools.dataobjects import createContext
@@ -231,7 +230,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.loadModel(filename)
 
     def repaintModel(self, showControls=True):
-        scene = ModelerScene(self)
+        scene = QgsModelGraphicsScene(self)
         if not showControls:
             scene.setFlag(QgsModelGraphicsScene.Flag.FlagHideControls)
 
@@ -301,7 +300,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.beginUndoCommand(self.tr("Add Model Input"))
             self.model().addModelParameter(new_param, component)
             self.repaintModel()
-            # self.view().ensureVisible(self.scene.getLastParameterItem())
             self.endUndoCommand()
 
     def getPositionForParameterItem(self):
