@@ -1,0 +1,105 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectorfield/qgsvectorfieldwindbarbsettings.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsVectorFieldWindBarbSettings
+{
+%Docstring(signature="appended")
+Represents a mesh renderer settings for vector datasets displayed with
+wind barbs.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvectorfieldwindbarbsettings.h"
+%End
+  public:
+    enum class WindSpeedUnit
+    {
+      MetersPerSecond,
+      KilometersPerHour,
+      Knots,
+      MilesPerHour,
+      FeetPerSecond,
+      OtherUnit
+    };
+
+    double magnitudeMultiplier() const;
+%Docstring
+Returns the multiplier for the magnitude to convert it to knots,
+according to the units set with
+:py:func:`~QgsVectorFieldWindBarbSettings.setMagnitudeUnits` A custom
+multiplier can be set with
+:py:func:`~QgsVectorFieldWindBarbSettings.setMagnitudeMultiplier` for
+the case when units are set to OtherUnit
+%End
+
+    void setMagnitudeMultiplier( double magnitudeMultiplier );
+%Docstring
+Sets a multiplier for the magnitude to convert it to knots
+%End
+
+    double shaftLength() const;
+%Docstring
+Returns the shaft length (in millimeters)
+%End
+
+    void setShaftLength( double shaftLength );
+%Docstring
+Sets the shaft length (in millimeters)
+%End
+
+    Qgis::RenderUnit shaftLengthUnits() const;
+%Docstring
+Returns the units for the shaft length.
+
+.. seealso:: :py:func:`setShaftLengthUnits`
+%End
+
+    void setShaftLengthUnits( Qgis::RenderUnit shaftLengthUnit );
+%Docstring
+Sets the units for the shaft length.
+
+.. seealso:: :py:func:`shaftLengthUnits`
+%End
+
+    WindSpeedUnit magnitudeUnits() const;
+%Docstring
+Returns the units that the data are in
+%End
+
+    void setMagnitudeUnits( WindSpeedUnit units );
+%Docstring
+Sets the units that the data are in
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectorfield/qgsvectorfieldwindbarbsettings.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

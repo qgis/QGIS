@@ -976,7 +976,7 @@ QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer(
   const QgsMeshDataBlock &dataSetVectorValues,
   const QgsMeshDataBlock &scalarActiveFaceFlagValues,
   bool dataIsOnVertices,
-  const QgsMeshRendererVectorSettings &settings,
+  const QgsVectorFieldSettings &settings,
   QgsRenderContext &rendererContext,
   const QgsRectangle &layerExtent,
   double magMax
@@ -990,7 +990,7 @@ QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer(
   const QgsMeshDataBlock &scalarActiveFaceFlagValues,
   const QVector<double> &datasetMagValues,
   bool dataIsOnVertices,
-  const QgsMeshRendererVectorSettings &settings,
+  const QgsVectorFieldSettings &settings,
   QgsRenderContext &rendererContext,
   const QgsRectangle &layerExtent,
   QgsMeshLayerRendererFeedback *feedBack,
@@ -1012,13 +1012,13 @@ QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer(
 
   switch ( settings.streamLinesSettings().seedingMethod() )
   {
-    case QgsMeshRendererVectorStreamlineSettings::MeshGridded:
+    case QgsVectorFieldStreamlineSettings::SeedingStartPointsMethod::Gridded:
       if ( settings.isOnUserDefinedGrid() )
         mStreamlineField->addGriddedTraces( settings.userGridCellWidth(), settings.userGridCellHeight() );
       else
         mStreamlineField->addTracesOnMesh( triangularMesh, rendererContext.mapExtent() );
       break;
-    case QgsMeshRendererVectorStreamlineSettings::Random:
+    case QgsVectorFieldStreamlineSettings::SeedingStartPointsMethod::Random:
       mStreamlineField->addRandomTraces();
       break;
   }
@@ -1370,7 +1370,7 @@ QgsMeshVectorTraceAnimationGenerator::QgsMeshVectorTraceAnimationGenerator(
   const QgsRenderContext &rendererContext,
   const QgsRectangle &layerExtent,
   double magMax,
-  const QgsMeshRendererVectorSettings &vectorSettings
+  const QgsVectorFieldSettings &vectorSettings
 )
   : mParticleField(
       new QgsMeshParticleTracesField( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, layerExtent, magMax, dataIsOnVertices, rendererContext, vectorSettings.vectorStrokeColoring() )
@@ -1395,7 +1395,7 @@ QgsMeshVectorTraceAnimationGenerator::QgsMeshVectorTraceAnimationGenerator( QgsM
 
   // Find out if we can use cache up to date. If yes, use it and return
   int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
-  const QgsMeshRendererVectorSettings vectorSettings = layer->rendererSettings().vectorSettings( datasetIndex.group() );
+  const QgsVectorFieldSettings vectorSettings = layer->rendererSettings().vectorSettings( datasetIndex.group() );
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
 
   if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) && ( cache->mActiveVectorDatasetIndex == datasetIndex ) )
@@ -1526,7 +1526,7 @@ QgsMeshVectorTraceRenderer::QgsMeshVectorTraceRenderer(
   const QgsMeshDataBlock &dataSetVectorValues,
   const QgsMeshDataBlock &scalarActiveFaceFlagValues,
   bool dataIsOnVertices,
-  const QgsMeshRendererVectorSettings &settings,
+  const QgsVectorFieldSettings &settings,
   QgsRenderContext &rendererContext,
   const QgsRectangle &layerExtent,
   double magMax
