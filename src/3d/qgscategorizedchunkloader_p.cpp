@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgscategorized3drenderer.h"
 #include "qgscategorizedsymbolutils.h"
+#include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
 #include "qgsexpressioncontextutils.h"
@@ -29,10 +30,11 @@
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsthreadingutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerchunkloader_p.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
+#include <QMutex>
 #include <QString>
 #include <Qt3DCore/QTransform>
 #include <QtConcurrentRun>
@@ -43,241 +45,7 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-
-QgsCategorizedChunkLoader::QgsCategorizedChunkLoader( const QgsCategorizedChunkLoaderFactory *factory, QgsChunkNode *node )
-  : QgsChunkLoader( node )
-  , mFactory( factory )
-  , mContext( factory->mRenderContext )
-  , mSource( new QgsVectorLayerFeatureSource( factory->mLayer ) )
-{}
-
-const QSet<QString> QgsCategorizedChunkLoader::prepareHandlers( const QgsBox3D &chunkExtent )
-{
-  const QgsVectorLayer *layer = mFactory->mLayer;
-  const QString attributeName = mFactory->mAttributeName;
-
-  QSet<QString> attributesNames;
-
-  // prepare the expression
-  mAttributeIdx = layer->fields().lookupField( attributeName );
-  if ( mAttributeIdx == -1 )
-  {
-    mExpression.reset( new QgsExpression( attributeName ) );
-    mExpression->prepare( &mContext.expressionContext() );
-  }
-
-  // build features hash
-  mHandlers.clear();
-  mFeaturesHandlerHash.clear();
-
-  for ( const Qgs3DRendererCategory &category : *mFactory->mCategories )
-  {
-    if ( !category.renderState() )
-    {
-      continue;
-    }
-
-    const QVariant value = category.value();
-    std::unique_ptr<QgsFeature3DHandler> handler( QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, category.symbol() ) );
-    mHandlers.push_back( std::move( handler ) );
-    QgsFeature3DHandler *handlerPtr = mHandlers.back().get();
-    if ( value.userType() == QMetaType::Type::QVariantList )
-    {
-      const QVariantList variantList = value.toList();
-      for ( const QVariant &listElt : variantList )
-      {
-        mFeaturesHandlerHash.insert( listElt.toString(), handlerPtr );
-      }
-    }
-    else
-    {
-      mFeaturesHandlerHash.insert( value.toString(), handlerPtr );
-    }
-
-    handlerPtr->prepare( mContext, attributesNames, chunkExtent );
-  }
-
-  attributesNames.insert( attributeName );
-  return attributesNames;
-}
-
-void QgsCategorizedChunkLoader::processFeature( const QgsFeature &feature ) const
-{
-  // Get Value for feature
-  QgsAttributes attributes = feature.attributes();
-  QVariant value;
-  if ( mAttributeIdx == -1 )
-  {
-    Q_ASSERT( mExpression );
-    value = mExpression->evaluate( &mContext.expressionContext() );
-  }
-  else
-  {
-    value = attributes.value( mAttributeIdx );
-  }
-
-  auto handlerIt = mFeaturesHandlerHash.constFind( QgsVariantUtils::isNull( value ) ? QString() : value.toString() );
-  if ( handlerIt == mFeaturesHandlerHash.constEnd() )
-  {
-    if ( mFeaturesHandlerHash.isEmpty() )
-    {
-      QgsDebugError( u"There are no hashed symbols!"_s );
-    }
-    else
-    {
-      QgsDebugMsgLevel( u"Attribute value not found: %1"_s.arg( value.toString() ), 3 );
-    }
-    return;
-  }
-
-  QgsFeature3DHandler *handler = *handlerIt;
-  handler->processFeature( feature, mContext );
-}
-
-QString QgsCategorizedChunkLoader::filter() const
-{
-  const QgsVectorLayer *layer = mFactory->mLayer;
-  return QgsCategorizedSymbolUtils<QgsCategorized3DRenderer>::buildCategorizedFilter( mFactory->mAttributeName, layer->fields(), *mFactory->mCategories );
-}
-
-void QgsCategorizedChunkLoader::start()
-{
-  QgsChunkNode *node = chunk();
-
-  const QgsVectorLayer *layer = mFactory->mLayer;
-
-  QgsExpressionContext exprContext;
-  exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-  exprContext.setFields( layer->fields() );
-  mContext.setExpressionContext( exprContext );
-
-  // build the feature handlers
-  const QSet<QString> attributesNames = prepareHandlers( node->box3D() );
-
-  // build the feature request
-  // only a subset of data to be queried
-  const QgsRectangle rect = node->box3D().toRectangle();
-  QgsFeatureRequest request;
-  request.setDestinationCrs( mContext.crs(), mContext.transformContext() );
-  request.setSubsetOfAttributes( attributesNames, layer->fields() );
-  request.setFilterRect( rect );
-
-  const QString rendererFilter = filter();
-  if ( !rendererFilter.isEmpty() )
-  {
-    request.setFilterExpression( rendererFilter );
-  }
-
-  //
-  // this will be run in a background thread
-  //
-  mFutureWatcher = new QFutureWatcher<void>( this );
-
-  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, [this] {
-    if ( !mCanceled )
-      mFactory->mNodesAreLeafs[mNode->tileId().text()] = mNodeIsLeaf;
-  } );
-
-  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-
-  const QFuture<void> future = QtConcurrent::run( [request, this] {
-    const QgsScopedEvent event( u"3D"_s, u"Categorized chunk load"_s );
-    QgsFeature feature;
-    QgsFeatureIterator featureIt = mSource->getFeatures( request );
-    int featureCount = 0;
-    bool featureLimitReached = false;
-    while ( featureIt.nextFeature( feature ) )
-    {
-      if ( mCanceled )
-      {
-        break;
-      }
-
-      if ( ++featureCount > mFactory->mMaxFeatures )
-      {
-        featureLimitReached = true;
-        break;
-      }
-
-      mContext.expressionContext().setFeature( feature );
-      processFeature( feature );
-    }
-    if ( !featureLimitReached )
-    {
-      QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( mNode->tileId().text() ), 3 );
-
-      if ( featureCount == 0 || std::max<double>( mNode->box3D().width(), mNode->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
-        mNodeIsLeaf = true;
-    }
-  } );
-
-  // emit finished() as soon as the handler is populated with features
-  mFutureWatcher->setFuture( future );
-}
-
-QgsCategorizedChunkLoader::~QgsCategorizedChunkLoader()
-{
-  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
-  {
-    disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-    mFutureWatcher->waitForFinished();
-  }
-}
-
-void QgsCategorizedChunkLoader::cancel()
-{
-  mCanceled = true;
-}
-
-Qt3DCore::QEntity *QgsCategorizedChunkLoader::createEntity( Qt3DCore::QEntity *parent )
-{
-  long long featureCount = 0;
-  for ( const auto &featureHandler : mHandlers )
-  {
-    featureCount += featureHandler->featureCount();
-  }
-  if ( featureCount == 0 )
-  {
-    // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
-    return nullptr;
-  }
-
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
-  float zMin = std::numeric_limits<float>::max();
-  float zMax = std::numeric_limits<float>::lowest();
-  for ( const auto &featureHandler : mHandlers )
-  {
-    featureHandler->finalize( entity, mContext );
-    if ( featureHandler->zMinimum() < zMin )
-    {
-      zMin = featureHandler->zMinimum();
-    }
-    if ( featureHandler->zMaximum() > zMax )
-    {
-      zMax = featureHandler->zMaximum();
-    }
-  }
-
-  // fix the vertical range of the node from the estimated vertical range to the true range
-  if ( zMin != std::numeric_limits<float>::max() && zMax != std::numeric_limits<float>::lowest() )
-  {
-    QgsBox3D box = mNode->box3D();
-    box.setZMinimum( zMin );
-    box.setZMaximum( zMax );
-    mNode->setExactBox3D( box );
-    mNode->updateParentBoundingBoxesRecursively();
-  }
-
-  return entity;
-}
-
-
-///////////////
-
-
-QgsCategorizedChunkLoaderFactory::QgsCategorizedChunkLoaderFactory(
-  const Qgs3DRenderContext &context, QgsVectorLayer *vectorLayer, const QgsCategorized3DRenderer *renderer, double zMin, double zMax, int maxFeatures
-)
+QgsCategorizedChunkLoader::QgsCategorizedChunkLoader( const Qgs3DRenderContext &context, QgsVectorLayer *vectorLayer, const QgsCategorized3DRenderer *renderer, double zMin, double zMax, int maxFeatures )
   : mRenderContext( context )
   , mLayer( vectorLayer )
   , mCategories( &renderer->categories() )
@@ -308,24 +76,215 @@ QgsCategorizedChunkLoaderFactory::QgsCategorizedChunkLoaderFactory(
   setupQuadtree( rootBox3D, rootError );
 }
 
-QgsCategorizedChunkLoaderFactory::~QgsCategorizedChunkLoaderFactory() = default;
+QgsCategorizedChunkLoader::~QgsCategorizedChunkLoader() = default;
 
-QgsChunkLoader *QgsCategorizedChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
+struct ChunkLoadingContext
 {
-  return new QgsCategorizedChunkLoader( this, node );
+    // We need shared_ptr, because we capture this in std::function. We could
+    // get around this with std::move_only_function (C++23 feature) or by
+    // returning a custom allocated object with virtual methods.
+    QgsChunkNode *node;
+    std::shared_ptr<QgsVectorLayerFeatureSource> source;
+    Qgs3DRenderContext renderCtx;
+    std::vector<std::shared_ptr<QgsFeature3DHandler>> handlers;
+    //! hashtable for faster access to symbols
+    QHash<QString, QgsFeature3DHandler *> featuresHandlerHash;
+    std::shared_ptr<QgsExpression> expression;
+    int attributeIdx = -1;
+};
+
+static void processFeature( ChunkLoadingContext &ctx, const QgsFeature &feature )
+{
+  ctx.renderCtx.expressionContext().setFeature( feature );
+
+  // Get Value for feature
+  QgsAttributes attributes = feature.attributes();
+  QVariant value;
+  if ( ctx.attributeIdx == -1 )
+  {
+    value = ctx.expression->evaluate( &ctx.renderCtx.expressionContext() );
+  }
+  else
+  {
+    value = attributes.value( ctx.attributeIdx );
+  }
+
+  auto handlerIt = ctx.featuresHandlerHash.constFind( QgsVariantUtils::isNull( value ) ? QString() : value.toString() );
+  if ( handlerIt == ctx.featuresHandlerHash.constEnd() )
+  {
+    if ( ctx.featuresHandlerHash.isEmpty() )
+    {
+      QgsDebugError( u"There are no hashed symbols!"_s );
+    }
+    else
+    {
+      QgsDebugMsgLevel( u"Attribute value not found: %1"_s.arg( value.toString() ), 3 );
+    }
+    return;
+  }
+
+  QgsFeature3DHandler *handler = *handlerIt;
+  handler->processFeature( feature, ctx.renderCtx );
 }
 
-bool QgsCategorizedChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
+
+QFuture<QgsChunkLoaderResult> QgsCategorizedChunkLoader::loadChunk( QgsChunkNode *node )
 {
-  return mNodesAreLeafs.contains( node->tileId().text() );
+  ChunkLoadingContext ctx;
+  ctx.node = node;
+  ctx.renderCtx = mRenderContext; // Copy since we'll be mutating it
+  ctx.source = std::make_unique<QgsVectorLayerFeatureSource>( mLayer );
+
+  QgsExpressionContext exprContext;
+  exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  exprContext.setFields( mLayer->fields() );
+  ctx.renderCtx.setExpressionContext( exprContext );
+
+  // build the feature handlers
+  QSet<QString> attributesNames;
+
+  // prepare the expression
+  ctx.attributeIdx = mLayer->fields().lookupField( mAttributeName );
+  if ( ctx.attributeIdx == -1 )
+  {
+    ctx.expression.reset( new QgsExpression( mAttributeName ) );
+    ctx.expression->prepare( &ctx.renderCtx.expressionContext() );
+  }
+
+  // build features hash
+  for ( const Qgs3DRendererCategory &category : *mCategories )
+  {
+    if ( !category.renderState() )
+    {
+      continue;
+    }
+
+    const QVariant value = category.value();
+    std::unique_ptr<QgsFeature3DHandler> handler( QgsApplication::symbol3DRegistry()->createHandlerForSymbol( mLayer, category.symbol() ) );
+    ctx.handlers.push_back( std::move( handler ) );
+    QgsFeature3DHandler *handlerPtr = ctx.handlers.back().get();
+    if ( value.userType() == QMetaType::Type::QVariantList )
+    {
+      const QVariantList variantList = value.toList();
+      for ( const QVariant &listElt : variantList )
+      {
+        ctx.featuresHandlerHash.insert( listElt.toString(), handlerPtr );
+      }
+    }
+    else
+    {
+      ctx.featuresHandlerHash.insert( value.toString(), handlerPtr );
+    }
+
+    handlerPtr->prepare( ctx.renderCtx, attributesNames, node->box3D() );
+  }
+  attributesNames.insert( mAttributeName );
+
+  // build the feature request
+  // only a subset of data to be queried
+  const QgsRectangle rect = node->box3D().toRectangle();
+  QgsFeatureRequest request;
+  request.setDestinationCrs( ctx.renderCtx.crs(), ctx.renderCtx.transformContext() );
+  request.setSubsetOfAttributes( attributesNames, mLayer->fields() );
+  request.setFilterRect( rect );
+
+  const QString rendererFilter = QgsCategorizedSymbolUtils<QgsCategorized3DRenderer>::buildCategorizedFilter( mAttributeName, mLayer->fields(), *mCategories );
+  if ( !rendererFilter.isEmpty() )
+  {
+    request.setFilterExpression( rendererFilter );
+  }
+
+  QPointer<QgsCategorizedChunkLoader> weakThis = this;
+  return QtConcurrent::run( [request, weakThis, ctx = std::move( ctx ), maxFeatures = mMaxFeatures]( QPromise<QgsChunkLoaderResult> &promise ) mutable {
+    const QgsScopedEvent event( u"3D"_s, u"Categorized chunk load"_s );
+    QgsFeature feature;
+    QgsFeatureIterator featureIt = ctx.source->getFeatures( request );
+    int featureCount = 0;
+    bool featureLimitReached = false;
+    while ( featureIt.nextFeature( feature ) )
+    {
+      if ( promise.isCanceled() )
+      {
+        break;
+      }
+
+      if ( ++featureCount > maxFeatures )
+      {
+        featureLimitReached = true;
+        break;
+      }
+
+      processFeature( ctx, feature );
+    }
+    bool nodeIsLeaf = false;
+    if ( !featureLimitReached )
+    {
+      QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( ctx.node->tileId().text() ), 3 );
+
+      if ( featureCount == 0 || std::max<double>( ctx.node->box3D().width(), ctx.node->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
+        nodeIsLeaf = true;
+    }
+    QgsThreadingUtils::runOnMainThread( [weakThis, nodeIsLeaf, key = ctx.node->tileId().text()]() {
+      if ( weakThis )
+      {
+        QMutexLocker<QMutex> locker( &weakThis->mNodesAreLeafsMutex );
+        weakThis->mNodesAreLeafs[key] = nodeIsLeaf;
+      }
+    } );
+
+    promise.addResult( QgsChunkLoaderResult { [ctx = std::move( ctx )]( Qt3DCore::QEntity *parent ) -> Qt3DCore::QEntity * {
+      QGIS_CHECK_MAIN_THREAD_ACCESS
+      long long featureCount = 0;
+      for ( const auto &featureHandler : ctx.handlers )
+      {
+        featureCount += featureHandler->featureCount();
+      }
+      if ( featureCount == 0 )
+      {
+        // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
+        return nullptr;
+      }
+
+      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+      float zMin = std::numeric_limits<float>::max();
+      float zMax = std::numeric_limits<float>::lowest();
+      for ( const auto &featureHandler : ctx.handlers )
+      {
+        featureHandler->finalize( entity, ctx.renderCtx );
+        if ( featureHandler->zMinimum() < zMin )
+        {
+          zMin = featureHandler->zMinimum();
+        }
+        if ( featureHandler->zMaximum() > zMax )
+        {
+          zMax = featureHandler->zMaximum();
+        }
+      }
+
+      // fix the vertical range of the node from the estimated vertical range to the true range
+      if ( zMin != std::numeric_limits<float>::max() && zMax != std::numeric_limits<float>::lowest() )
+      {
+        QgsBox3D box = ctx.node->box3D();
+        box.setZMinimum( zMin );
+        box.setZMaximum( zMax );
+        ctx.node->setExactBox3D( box );
+        ctx.node->updateParentBoundingBoxesRecursively();
+      }
+
+      return entity;
+    } } );
+  } );
 }
 
-QVector<QgsChunkNode *> QgsCategorizedChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
+QFuture<QVector<QgsChunkNode *>> QgsCategorizedChunkLoader::createChildren( QgsChunkNode *node )
 {
-  if ( mNodesAreLeafs.value( node->tileId().text(), false ) )
-    return {};
+  {
+    QMutexLocker<QMutex> locker( &mNodesAreLeafsMutex );
+    if ( mNodesAreLeafs.value( node->tileId().text(), false ) )
+      return QtFuture::makeReadyValueFuture( QVector<QgsChunkNode *> {} );
+  }
 
-  return QgsQuadtreeChunkLoaderFactory::createChildren( node );
+  return QgsQuadtreeChunkLoader::createChildren( node );
 }
 
 
@@ -337,7 +296,7 @@ QgsCategorizedChunkedEntity::QgsCategorizedChunkedEntity(
   : QgsAbstractFeatureBasedChunkedEntity(
       mapSettings,
       -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
-      new QgsCategorizedChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( mapSettings ), vectorLayer, renderer, zMin, zMax, tilingSettings.maximumChunkFeatures() ),
+      new QgsCategorizedChunkLoader( Qgs3DRenderContext::fromMapSettings( mapSettings ), vectorLayer, renderer, zMin, zMax, tilingSettings.maximumChunkFeatures() ),
       true
     )
 {
@@ -354,10 +313,10 @@ QgsCategorizedChunkedEntity::~QgsCategorizedChunkedEntity()
 // if the AltitudeClamping is `Absolute`, do not apply the offset
 bool QgsCategorizedChunkedEntity::applyTerrainOffset() const
 {
-  QgsCategorizedChunkLoaderFactory *loaderFactory = static_cast<QgsCategorizedChunkLoaderFactory *>( mChunkLoaderFactory );
-  if ( loaderFactory )
+  QgsCategorizedChunkLoader *loader = static_cast<QgsCategorizedChunkLoader *>( mChunkLoader );
+  if ( loader )
   {
-    for ( const auto &category : *loaderFactory->mCategories )
+    for ( const auto &category : *loader->mCategories )
     {
       const QgsAbstract3DSymbol *symbol = category.symbol();
       if ( category.symbol() )

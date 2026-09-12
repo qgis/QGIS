@@ -18,32 +18,10 @@
 
 #include "qgis_3d.h"
 #include "qgsterraingenerator.h"
-#include "qgsterraintileloader.h"
 
 #include <Qt3DExtras/QPlaneGeometry>
 
 #define SIP_NO_FILE
-
-///@cond PRIVATE
-
-//! Chunk loader for flat terrain implementation
-class FlatTerrainChunkLoader : public QgsTerrainTileLoader
-{
-    Q_OBJECT
-
-  public:
-    //! Construct the loader for a node
-    FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
-
-    void start() override;
-
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
-
-  private:
-    Qt3DExtras::QPlaneGeometry *mTileGeometry = nullptr;
-};
-
-///@endcond
 
 /**
  * \ingroup qgis_3d
@@ -61,7 +39,7 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 
     QgsFlatTerrainGenerator() = default;
 
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
 
     QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;

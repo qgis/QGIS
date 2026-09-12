@@ -19,6 +19,7 @@
 
 #include "qgs3dutils.h"
 #include "qgsbox3d.h"
+#include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
 #include "qgslogger.h"
@@ -32,6 +33,7 @@
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
 #include "qgsraycastingutils.h"
+#include "qgsthreadingutils.h"
 
 #include <QPointSize>
 #include <QString>
@@ -47,107 +49,7 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-
-///////////////
-
 QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader(
-  const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr<QgsPointCloud3DSymbol> symbol, const QgsCoordinateTransform &coordinateTransform, double zValueScale, double zValueOffset
-)
-  : QgsChunkLoader( node )
-  , mFactory( factory )
-  , mContext( factory->mRenderContext, coordinateTransform, std::move( symbol ), zValueScale, zValueOffset )
-{}
-
-void QgsPointCloudLayerChunkLoader::start()
-{
-  QgsChunkNode *node = chunk();
-  QgsPointCloudIndex pc = mFactory->mPointCloudIndex;
-  mContext.setAttributes( pc.attributes() );
-
-  const QgsChunkNodeId nodeId = node->tileId();
-  const QgsPointCloudNodeId pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
-
-  Q_ASSERT( pc.hasNode( pcNode ) );
-
-  QgsDebugMsgLevel( u"loading entity %1"_s.arg( node->tileId().text() ), 2 );
-
-  if ( mContext.symbol()->symbolType() == "single-color"_L1 )
-    mHandler = std::make_unique<QgsSingleColorPointCloud3DSymbolHandler>();
-  else if ( mContext.symbol()->symbolType() == "color-ramp"_L1 )
-    mHandler = std::make_unique<QgsColorRampPointCloud3DSymbolHandler>();
-  else if ( mContext.symbol()->symbolType() == "rgb"_L1 )
-    mHandler = std::make_unique<QgsRGBPointCloud3DSymbolHandler>();
-  else if ( mContext.symbol()->symbolType() == "classification"_L1 )
-  {
-    mHandler = std::make_unique<QgsClassificationPointCloud3DSymbolHandler>();
-    const QgsClassificationPointCloud3DSymbol *classificationSymbol = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( mContext.symbol() );
-    mContext.setFilteredOutCategories( classificationSymbol->getFilteredOutCategories() );
-  }
-
-  //
-  // this will be run in a background thread
-  //
-  mFutureWatcher = new QFutureWatcher<void>( this );
-  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-
-  const QgsBox3D box3D = node->box3D();
-  const QFuture<void> future = QtConcurrent::run( [pc = std::move( pc ), pcNode, box3D, this] {
-    const QgsScopedEvent e( u"3D"_s, u"PC chunk load"_s );
-
-    if ( mContext.isCanceled() )
-    {
-      QgsDebugMsgLevel( u"canceled"_s, 2 );
-      return;
-    }
-
-    QgsPointCloudIndex pc2 = pc; // Copy to discard const
-    mHandler->processNode( pc2, pcNode, mContext );
-
-    if ( mContext.isCanceled() )
-    {
-      QgsDebugMsgLevel( u"canceled"_s, 2 );
-      return;
-    }
-
-    if ( mContext.symbol()->renderAsTriangles() )
-      mHandler->triangulate( pc2, pcNode, mContext, box3D );
-  } );
-
-  // emit finished() as soon as the handler is populated with features
-  mFutureWatcher->setFuture( future );
-}
-
-QgsPointCloudLayerChunkLoader::~QgsPointCloudLayerChunkLoader()
-{
-  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
-  {
-    disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-    mContext.cancelRendering();
-    mFutureWatcher->waitForFinished();
-  }
-}
-
-void QgsPointCloudLayerChunkLoader::cancel()
-{
-  mContext.cancelRendering();
-}
-
-Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntity *parent )
-{
-  QgsPointCloudIndex pc = mFactory->mPointCloudIndex;
-  const QgsChunkNodeId nodeId = mNode->tileId();
-  const QgsPointCloudNodeId pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
-  Q_ASSERT( pc.hasNode( pcNode ) );
-
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
-  mHandler->finalize( entity, mContext );
-  return entity;
-}
-
-///////////////
-
-
-QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory(
   const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int pointBudget
 )
   : mRenderContext( context )
@@ -173,16 +75,77 @@ QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory(
   }
 }
 
-QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
+QFuture<QgsChunkLoaderResult> QgsPointCloudLayerChunkLoader::loadChunk( QgsChunkNode *node )
 {
   const QgsChunkNodeId id = node->tileId();
 
   Q_ASSERT( mPointCloudIndex.hasNode( QgsPointCloudNodeId( id.d, id.x, id.y, id.z ) ) );
   QgsPointCloud3DSymbol *symbol = static_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() );
-  return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr<QgsPointCloud3DSymbol>( symbol ), mCoordinateTransform, mZValueScale, mZValueOffset );
+
+  // Wrapped in shared_ptr to allow copying
+  auto context = std::make_shared<QgsPointCloud3DRenderContext>( mRenderContext, mCoordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol>( symbol ), mZValueScale, mZValueOffset );
+
+  QgsPointCloudIndex pc = mPointCloudIndex;
+  context->setAttributes( pc.attributes() );
+
+  const QgsChunkNodeId nodeId = node->tileId();
+  const QgsPointCloudNodeId pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
+
+  Q_ASSERT( pc.hasNode( pcNode ) );
+
+  QgsDebugMsgLevel( u"loading entity %1"_s.arg( node->tileId().text() ), 2 );
+
+  std::shared_ptr<QgsPointCloud3DSymbolHandler> handler;
+  if ( context->symbol()->symbolType() == "single-color"_L1 )
+    handler = std::make_shared<QgsSingleColorPointCloud3DSymbolHandler>();
+  else if ( context->symbol()->symbolType() == "color-ramp"_L1 )
+    handler = std::make_shared<QgsColorRampPointCloud3DSymbolHandler>();
+  else if ( context->symbol()->symbolType() == "rgb"_L1 )
+    handler = std::make_shared<QgsRGBPointCloud3DSymbolHandler>();
+  else if ( context->symbol()->symbolType() == "classification"_L1 )
+  {
+    handler = std::make_shared<QgsClassificationPointCloud3DSymbolHandler>();
+    const QgsClassificationPointCloud3DSymbol *classificationSymbol = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( context->symbol() );
+    context->setFilteredOutCategories( classificationSymbol->getFilteredOutCategories() );
+  }
+
+  const QgsBox3D box3D = node->box3D();
+  return QtConcurrent::run( [pc = std::move( pc ), node, pcNode, box3D, context, handler]( QPromise<QgsChunkLoaderResult> &promise ) mutable {
+    const QgsScopedEvent e( u"3D"_s, u"PC chunk load"_s );
+
+    if ( promise.isCanceled() )
+    {
+      QgsDebugMsgLevel( u"canceled"_s, 2 );
+      promise.addResult( QgsChunkLoaderResult::sEmpty );
+      return;
+    }
+
+    handler->processNode( pc, pcNode, *context );
+
+    if ( promise.isCanceled() )
+    {
+      QgsDebugMsgLevel( u"canceled"_s, 2 );
+      promise.addResult( QgsChunkLoaderResult::sEmpty );
+      return;
+    }
+
+    if ( context->symbol()->renderAsTriangles() )
+      handler->triangulate( pc, pcNode, *context, box3D );
+
+    promise.addResult( QgsChunkLoaderResult { [node, handler, context, pc]( Qt3DCore::QEntity *parent ) -> Qt3DCore::QEntity * {
+      QGIS_CHECK_MAIN_THREAD_ACCESS
+      const QgsChunkNodeId nodeId = node->tileId();
+      const QgsPointCloudNodeId pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
+      Q_ASSERT( pc.hasNode( pcNode ) );
+
+      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+      handler->finalize( entity, *context );
+      return entity;
+    } } );
+  } );
 }
 
-int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node ) const
+int QgsPointCloudLayerChunkLoader::primitivesCount( QgsChunkNode *node ) const
 {
   const QgsChunkNodeId id = node->tileId();
   const QgsPointCloudNodeId n( id.d, id.x, id.y, id.z );
@@ -190,47 +153,9 @@ int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node ) 
   return mPointCloudIndex.getNode( n ).pointCount();
 }
 
-bool QgsPointCloudLayerChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
+QFuture<void> QgsPointCloudLayerChunkLoader::fetchHierarchyForNode( const QgsPointCloudNodeId &nodeId )
 {
-  const QgsChunkNodeId id = node->tileId();
-  const QgsPointCloudNodeId n( id.d, id.x, id.y, id.z );
-  if ( mFutureHierarchyFetches.contains( n ) || mPendingHierarchyFetches.contains( n ) )
-  {
-    return false;
-  }
-
-  if ( mPointCloudIndex.needsHierarchyFetching( n ) )
-  {
-    mFutureHierarchyFetches.insert( n );
-    return false;
-  }
-
-  return true;
-}
-
-void QgsPointCloudLayerChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
-{
-  const QgsChunkNodeId id = node->tileId();
-  const QgsPointCloudNodeId n( id.d, id.x, id.y, id.z );
-  if ( mFutureHierarchyFetches.contains( n ) )
-  {
-    fetchHierarchyForNode( n, node );
-  }
-}
-
-void QgsPointCloudLayerChunkLoaderFactory::fetchHierarchyForNode( const QgsPointCloudNodeId &nodeId, QgsChunkNode *origNode )
-{
-  Q_ASSERT( !mPendingHierarchyFetches.contains( nodeId ) );
-  mFutureHierarchyFetches.remove( nodeId );
-  mPendingHierarchyFetches.insert( nodeId );
-
-  QFutureWatcher<void> *futureWatcher = new QFutureWatcher<void>( this );
-  connect( futureWatcher, &QFutureWatcher<void>::finished, this, [this, origNode, nodeId, futureWatcher] {
-    mPendingHierarchyFetches.remove( nodeId );
-    emit childrenPrepared( origNode );
-    futureWatcher->deleteLater();
-  } );
-  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId] {
+  return QtConcurrent::run( [this, nodeId] {
     // we need to make sure that hierarchy exists for this node, children and grand children,
     // so that createChildren() will not trigger hierarchy fetching
     // hasNode() will trigger fetching the hierarchy for this node and any missing ancestors
@@ -246,7 +171,7 @@ void QgsPointCloudLayerChunkLoaderFactory::fetchHierarchyForNode( const QgsPoint
         ( void ) mPointCloudIndex.hasNode( grandChild );
       }
     }
-  } ) );
+  } );
 }
 
 
@@ -269,7 +194,7 @@ static QgsBox3D nodeBoundsToBox3D( QgsBox3D nodeBounds, const QgsCoordinateTrans
 }
 
 
-QgsChunkNode *QgsPointCloudLayerChunkLoaderFactory::createRootNode() const
+QgsChunkNode *QgsPointCloudLayerChunkLoader::createRootNode() const
 {
   const QgsPointCloudNode pcNode = mPointCloudIndex.getNode( mPointCloudIndex.root() );
   const QgsBox3D rootNodeBounds = pcNode.bounds();
@@ -281,7 +206,17 @@ QgsChunkNode *QgsPointCloudLayerChunkLoaderFactory::createRootNode() const
   return node;
 }
 
-QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
+QFuture<QVector<QgsChunkNode *>> QgsPointCloudLayerChunkLoader::createChildren( QgsChunkNode *node )
+{
+  const QgsChunkNodeId id = node->tileId();
+  const QgsPointCloudNodeId n( id.d, id.x, id.y, id.z );
+  if ( mPointCloudIndex.needsHierarchyFetching( n ) )
+    return fetchHierarchyForNode( n ).then( this, [this, node]() { return createChildrenInner( node ); } );
+  else
+    return QtFuture::makeReadyValueFuture( createChildrenInner( node ) );
+}
+
+QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoader::createChildrenInner( QgsChunkNode *node )
 {
   QVector<QgsChunkNode *> children;
   const QgsChunkNodeId nodeId = node->tileId();
@@ -360,7 +295,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity(
   double zValueOffset,
   int pointBudget
 )
-  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, resolveIndex( pcl, indexPosition ), symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
+  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoader( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, resolveIndex( pcl, indexPosition ), symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
   , mLayer( pcl )
   , mIndexPosition( indexPosition )
 {
@@ -368,7 +303,6 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity(
 
   if ( pcl->supportsEditing() )
   {
-    mChunkUpdaterFactory = std::make_unique<QgsChunkUpdaterFactory>( mChunkLoaderFactory );
     // when editing starts or stops, we need to update our index to use the editing index (or not)
     if ( ( pcl->isVpc() && indexPosition >= 0 ) || ( !pcl->isVpc() ) )
     {
@@ -381,7 +315,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity(
         QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode.get(), n );
         if ( node )
         {
-          updateNodes( QList<QgsChunkNode *>() << node, mChunkUpdaterFactory.get() );
+          updateNodes( QList<QgsChunkNode *>() << node );
         }
       } );
     }
@@ -414,25 +348,25 @@ void QgsPointCloudLayerChunkedEntity::updateIndex()
   if ( mLayer->isVpc() )
   {
     if ( mIndexPosition >= 0 )
-      static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->subIndexes().at( mIndexPosition ).index();
+      static_cast<QgsPointCloudLayerChunkLoader *>( mChunkLoader )->mPointCloudIndex = mLayer->subIndexes().at( mIndexPosition ).index();
   }
   else
-    static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->index();
+    static_cast<QgsPointCloudLayerChunkLoader *>( mChunkLoader )->mPointCloudIndex = mLayer->index();
 }
 
 QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   QList<QgsRayCastHit> result;
-  QgsPointCloudLayerChunkLoaderFactory *factory = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory );
+  QgsPointCloudLayerChunkLoader *loader = static_cast<QgsPointCloudLayerChunkLoader *>( mChunkLoader );
 
-  const QgsPointCloud3DSymbol *symbol = factory->mSymbol.get();
+  const QgsPointCloud3DSymbol *symbol = loader->mSymbol.get();
   // Symbol can be null in case of no rendering enabled
   if ( !symbol )
     return result;
 
   // transform ray
-  const QgsVector3D rayOriginMapCoords = factory->mRenderContext.worldToMapCoordinates( ray.origin() );
-  const QgsVector3D pointMapCoords = factory->mRenderContext.worldToMapCoordinates( ray.point( ray.origin().length() ) );
+  const QgsVector3D rayOriginMapCoords = loader->mRenderContext.worldToMapCoordinates( ray.origin() );
+  const QgsVector3D pointMapCoords = loader->mRenderContext.worldToMapCoordinates( ray.point( ray.origin().length() ) );
   QgsVector3D rayDirectionMapCoords = pointMapCoords - rayOriginMapCoords;
   rayDirectionMapCoords.normalize();
 
@@ -442,11 +376,11 @@ QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const Qgs
   const double limitAngle = context.angleThreshold() * M_PI / 180.;
 
   // adjust ray to elevation properties
-  const QgsVector3D adjustedRayOrigin = QgsVector3D( rayOriginMapCoords.x(), rayOriginMapCoords.y(), ( rayOriginMapCoords.z() - factory->mZValueOffset ) / factory->mZValueScale );
-  QgsVector3D adjustedRayDirection = QgsVector3D( rayDirectionMapCoords.x(), rayDirectionMapCoords.y(), rayDirectionMapCoords.z() / factory->mZValueScale );
+  const QgsVector3D adjustedRayOrigin = QgsVector3D( rayOriginMapCoords.x(), rayOriginMapCoords.y(), ( rayOriginMapCoords.z() - loader->mZValueOffset ) / loader->mZValueScale );
+  QgsVector3D adjustedRayDirection = QgsVector3D( rayDirectionMapCoords.x(), rayDirectionMapCoords.y(), rayDirectionMapCoords.z() / loader->mZValueScale );
   adjustedRayDirection.normalize();
 
-  QgsPointCloudIndex index = factory->mPointCloudIndex;
+  QgsPointCloudIndex index = loader->mPointCloudIndex;
 
   const QgsPointCloudAttributeCollection attributeCollection = index.attributes();
   QgsPointCloudRequest request;

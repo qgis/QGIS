@@ -49,63 +49,29 @@ namespace Qt3DCore
 
 /**
  * \ingroup qgis_3d
- * \brief This loader factory is responsible for creation of loaders for individual tiles
- * of QgsVectorLayerChunkedEntity whenever a new tile is requested by the entity.
+ * \brief This loader is responsible for creation of individual tiles of
+ * QgsVectorLayerChunkedEntity whenever a new tile is requested by the entity.
  *
  * \since QGIS 3.12
  */
-class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
-{
-    Q_OBJECT
-
-  public:
-    //! Constructs the factory
-    QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures );
-
-    //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
-    bool canCreateChildren( QgsChunkNode *node ) override;
-    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
-
-    Qgs3DRenderContext mRenderContext;
-    QgsVectorLayer *mLayer;
-    std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
-    //! Contains loaded nodes and whether they are leaf nodes or not
-    mutable QHash< QString, bool > mNodesAreLeafs;
-    int mMaxFeatures;
-};
-
-
-/**
- * \ingroup qgis_3d
- * \brief This loader class is responsible for async loading of data for a single tile
- * of QgsVectorLayerChunkedEntity and creation of final 3D entity from the data
- * previously prepared in a worker thread.
- *
- * \since QGIS 3.12
- */
-class QgsVectorLayerChunkLoader : public QgsChunkLoader
+class QgsVectorLayerChunkLoader : public QgsQuadtreeChunkLoader
 {
     Q_OBJECT
 
   public:
     //! Constructs the loader
-    QgsVectorLayerChunkLoader( const QgsVectorLayerChunkLoaderFactory *factory, QgsChunkNode *node );
-    ~QgsVectorLayerChunkLoader() override;
+    QgsVectorLayerChunkLoader( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures );
 
-    void start() override;
-    void cancel() override;
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
+    QFuture<QVector<QgsChunkNode *>> createChildren( QgsChunkNode *node ) override;
 
-  private:
-    const QgsVectorLayerChunkLoaderFactory *mFactory;
-    std::unique_ptr<QgsFeature3DHandler> mHandler;
     Qgs3DRenderContext mRenderContext;
-    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
-    bool mCanceled = false;
-    QFutureWatcher<void> *mFutureWatcher = nullptr;
-    QString mLayerName;
-    bool mNodeIsLeaf = false;
+    QgsVectorLayer *mLayer;
+    std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
+    //! Contains loaded nodes and whether they are leaf nodes or not
+    QHash< QString, bool > mNodesAreLeafs;
+    QMutex mNodesAreLeafsMutex;
+    int mMaxFeatures;
 };
 
 
@@ -113,9 +79,9 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
  * \ingroup qgis_3d
  * \brief 3D entity used for rendering of vector layers with a single 3D symbol for all features.
  *
- * It is implemented using tiling approach with QgsChunkedEntity. Internally it uses
- * QgsVectorLayerChunkLoaderFactory and QgsVectorLayerChunkLoader to do the actual work
- * of loading and creating 3D sub-entities for each tile.
+ * It is implemented using tiling approach with QgsChunkedEntity. Internally it
+ * uses QgsVectorLayerChunkLoader to do the actual work of loading and creating
+ * 3D sub-entities for each tile.
  *
  * \since QGIS 3.12
  */

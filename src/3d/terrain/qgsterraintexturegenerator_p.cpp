@@ -18,6 +18,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgseventtracing.h"
+#include "qgsfutureutils.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmapsettings.h"
 #include "qgsmapthemecollection.h"
@@ -36,7 +37,7 @@ QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &
   , mTextureSize( QSize( mMap.terrainSettings()->mapTileResolution(), mMap.terrainSettings()->mapTileResolution() ) )
 {}
 
-int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNodeId tileId, const QString &debugText )
+QFuture<QImage> QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNodeId tileId, const QString &debugText )
 {
   QgsMapSettings mapSettings( baseMapSettings() );
   mapSettings.setExtent( extent );
@@ -64,74 +65,26 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( mapSettings );
   connect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
 
-  JobData jobData;
-  jobData.jobId = ++mLastJobId;
-  jobData.tileId = tileId;
-  jobData.job = job;
-  jobData.extent = extent;
-  jobData.debugText = debugText;
+  auto jobData = std::make_unique<JobData>();
+  jobData->tileId = tileId;
+  jobData->job = job;
+  jobData->extent = extent;
+  jobData->debugText = debugText;
 
-  mJobs.insert( job, jobData ); //store job data just before launching the job
+  connect( &jobData->watcher, &QFutureWatcher<QImage>::canceled, this, [this, &jobData = *jobData]() {
+    disconnect( jobData.job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
+    connect( jobData.job, &QgsMapRendererJob::finished, jobData.job, &QgsMapRendererSequentialJob::deleteLater );
+    jobData.job->cancelWithoutBlocking();
+    jobData.promise.finish();
+    mJobs.erase( jobData.job );
+  } );
+  jobData->watcher.setFuture( jobData->promise.future() );
+
+  mJobs[job] = std::move( jobData ); //store job data just before launching the job
   job->start();
 
   // QgsDebugMsgLevel( u"added job: %1 .... in queue: %2"_s.arg( jobData.jobId ).arg( jobs.count() ), 2);
-  return jobData.jobId;
-}
-
-void QgsTerrainTextureGenerator::cancelJob( int jobId )
-{
-  for ( const JobData &jd : std::as_const( mJobs ) )
-  {
-    if ( jd.jobId == jobId )
-    {
-      // QgsDebugMsgLevel( u"canceling job %1"_s.arg( jobId ), 2 );
-      disconnect( jd.job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
-      connect( jd.job, &QgsMapRendererJob::finished, jd.job, &QgsMapRendererSequentialJob::deleteLater );
-      jd.job->cancelWithoutBlocking();
-      mJobs.remove( jd.job );
-      return;
-    }
-  }
-  Q_ASSERT( false && "requested job ID does not exist!" );
-}
-
-void QgsTerrainTextureGenerator::waitForFinished()
-{
-  for ( auto it = mJobs.keyBegin(); it != mJobs.keyEnd(); it++ )
-    disconnect( *it, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
-  QVector<QgsMapRendererSequentialJob *> toBeDeleted;
-  for ( auto it = mJobs.constBegin(); it != mJobs.constEnd(); it++ )
-  {
-    QgsMapRendererSequentialJob *mapJob = it.key();
-    mapJob->waitForFinished();
-    JobData jobData = it.value();
-    toBeDeleted.push_back( mapJob );
-
-    QImage img = mapJob->renderedImage();
-
-    if ( mMap.debugFlags().testFlag( Qgis::Map3DDebugFlag::ShowTerrainTileInfo ) )
-    {
-      // extra tile information for debugging
-      QPainter p( &img );
-      p.setPen( Qt::red );
-      p.setBackgroundMode( Qt::OpaqueMode );
-      QFont font = p.font();
-      font.setPixelSize( std::max( 30, mMap.terrainSettings()->mapTileResolution() / 6 ) );
-      p.setFont( font );
-      p.drawRect( 0, 0, img.width() - 1, img.height() - 1 );
-      p.drawText( img.rect(), jobData.debugText, QTextOption( Qt::AlignCenter ) );
-      p.end();
-    }
-
-    // pass QImage further
-    emit tileReady( jobData.jobId, img );
-  }
-
-  for ( QgsMapRendererSequentialJob *mapJob : toBeDeleted )
-  {
-    mJobs.remove( mapJob );
-    mapJob->deleteLater();
-  }
+  return mJobs[job]->promise.future();
 }
 
 void QgsTerrainTextureGenerator::onRenderingFinished()
@@ -139,7 +92,7 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
   QgsMapRendererSequentialJob *mapJob = static_cast<QgsMapRendererSequentialJob *>( sender() );
 
   Q_ASSERT( mJobs.contains( mapJob ) );
-  JobData jobData = mJobs.value( mapJob );
+  JobData &jobData = *mJobs[mapJob];
 
   QImage img = mapJob->renderedImage();
 
@@ -158,14 +111,10 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
   }
 
   mapJob->deleteLater();
-  mJobs.remove( mapJob );
-
-  // QgsDebugMsgLevel( u"finished job %1 ... in queue: %2"_s.arg( jobData.jobId).arg( jobs.count() ), 2 );
-
+  jobData.promise.addResult( img );
+  jobData.promise.finish();
   QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Texture"_s, jobData.tileId.text() );
-
-  // pass QImage further
-  emit tileReady( jobData.jobId, img );
+  mJobs.erase( mapJob );
 }
 
 QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()

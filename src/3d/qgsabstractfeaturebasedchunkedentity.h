@@ -50,7 +50,7 @@ class _3D_EXPORT QgsAbstractFeatureBasedChunkedEntity : public QgsChunkedEntity
   public:
     //! Constructs the entity.
     QgsAbstractFeatureBasedChunkedEntity(
-      Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitivesBudget = std::numeric_limits<int>::max(), Qt3DCore::QNode *parent = nullptr
+      Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoader *loader, bool ownsLoader, int primitivesBudget = std::numeric_limits<int>::max(), Qt3DCore::QNode *parent = nullptr
     );
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
