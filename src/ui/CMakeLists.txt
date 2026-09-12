@@ -21,6 +21,7 @@ file(GLOB SENSOR_UIS "${CMAKE_CURRENT_SOURCE_DIR}/sensor/*.ui")
 file(GLOB TILED_SCENE_UIS "${CMAKE_CURRENT_SOURCE_DIR}/tiledscene/*.ui")
 file(GLOB STAC_UIS "${CMAKE_CURRENT_SOURCE_DIR}/stac/*.ui")
 file(GLOB PLOT_UIS "${CMAKE_CURRENT_SOURCE_DIR}/plot/*.ui")
+file(GLOB VECTORFIELD_UIS "${CMAKE_CURRENT_SOURCE_DIR}/vectorfield/*.ui")
 
 qt_wrap_ui(QGIS_UIS_H
   ${QGIS_UIS}
@@ -45,6 +46,7 @@ qt_wrap_ui(QGIS_UIS_H
   ${TILED_SCENE_UIS}
   ${STAC_UIS}
   ${PLOT_UIS}
+  ${VECTORFIELD_UIS}
 )
 
 # install

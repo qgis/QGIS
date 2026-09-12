@@ -2896,7 +2896,6 @@
     "QgsMeshRendererActiveDatasetWidget",
     "QgsMeshRendererMeshSettingsWidget",
     "QgsMeshRendererScalarSettingsWidget",
-    "QgsMeshRendererVectorSettingsWidget",
     "QgsMeshStaticDatasetWidget",
     "QgsMeshVariableStrokeWidthButton",
     "QgsMeshVariableStrokeWidthWidget",
