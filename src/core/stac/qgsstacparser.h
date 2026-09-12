@@ -45,7 +45,7 @@ class CORE_EXPORT QgsStacParser
     //! Default constructor
     QgsStacParser() = default;
 
-    //! Sets the JSON \data to be parsed
+    //! Sets the JSON \a data to be parsed
     void setData( const QByteArray &data );
 
     /**
