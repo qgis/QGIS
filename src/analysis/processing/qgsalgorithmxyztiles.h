@@ -65,7 +65,7 @@ struct MetaTile
       }
     }
 
-    QgsRectangle extent()
+    QgsRectangle extent() const
     {
       const Tile first = tiles.first();
       const Tile last = tiles.last();
@@ -101,6 +101,8 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
 
     void startJobs();
     virtual void processMetaTile( QgsMapRendererSequentialJob *job ) = 0;
+
+    std::optional<QgsMapSettings> mapSettingsForTile( const MetaTile &metaTile ) const;
 
     QgsRectangle mExtent;
     QColor mBackgroundColor;

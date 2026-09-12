@@ -291,6 +291,48 @@ void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *fe
   }
 }
 
+std::optional< QgsMapSettings > QgsXyzTilesBaseAlgorithm::mapSettingsForTile( const MetaTile &metaTile ) const
+{
+  QgsCoordinateReferenceSystem mercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
+  QgsCoordinateTransform wgsToMercator = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4326" ), mercatorCrs, mTransformContext );
+  wgsToMercator.setBallparkTransformsAreAppropriate( true );
+
+  QgsMapSettings settings;
+  try
+  {
+    settings.setExtent( wgsToMercator.transformBoundingBox( metaTile.extent() ) );
+  }
+  catch ( QgsCsException & )
+  {
+    return {};
+  }
+  settings.setRendererUsage( Qgis::RendererUsage::Export );
+  settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
+  settings.setTransformContext( mTransformContext );
+  settings.setEllipsoid( mEllipsoid );
+  settings.setDestinationCrs( mercatorCrs );
+  settings.setLayers( mLayers );
+  settings.setOutputDpi( mDpi );
+  settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
+  settings.setScaleMethod( mScaleMethod );
+  if ( mTileFormat == "PNG"_L1 || mTileFormat == "WEBP"_L1 || mBackgroundColor.alpha() == 255 )
+  {
+    settings.setBackgroundColor( mBackgroundColor );
+  }
+  QSize size( mTileWidth * metaTile.rows, mTileHeight * metaTile.cols );
+  settings.setOutputSize( size );
+
+  QgsLabelingEngineSettings labelingSettings = settings.labelingEngineSettings();
+  labelingSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  settings.setLabelingEngineSettings( labelingSettings );
+
+  QgsExpressionContext exprContext = mExpressionContext;
+  exprContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( settings ) );
+  settings.setExpressionContext( exprContext );
+
+  return settings;
+}
+
 void QgsXyzTilesBaseAlgorithm::startJobs()
 {
   QgsCoordinateReferenceSystem mercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
@@ -301,40 +343,12 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
   {
     MetaTile metaTile = mMetaTiles.takeFirst();
 
-    QgsMapSettings settings;
-    try
-    {
-      settings.setExtent( wgsToMercator.transformBoundingBox( metaTile.extent() ) );
-    }
-    catch ( QgsCsException & )
-    {
+    const std::optional< QgsMapSettings > settings = mapSettingsForTile( metaTile );
+    if ( !settings.has_value() )
       continue;
     }
-    settings.setRendererUsage( Qgis::RendererUsage::Export );
-    settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
-    settings.setTransformContext( mTransformContext );
-    settings.setEllipsoid( mEllipsoid );
-    settings.setDestinationCrs( mercatorCrs );
-    settings.setLayers( mLayers );
-    settings.setOutputDpi( mDpi );
-    settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
-    settings.setScaleMethod( mScaleMethod );
-    if ( mTileFormat == "PNG"_L1 || mTileFormat == "WEBP"_L1 || mBackgroundColor.alpha() == 255 )
-    {
-      settings.setBackgroundColor( mBackgroundColor );
-    }
-    QSize size( mTileWidth * metaTile.rows, mTileHeight * metaTile.cols );
-    settings.setOutputSize( size );
 
-    QgsLabelingEngineSettings labelingSettings = settings.labelingEngineSettings();
-    labelingSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
-    settings.setLabelingEngineSettings( labelingSettings );
-
-    QgsExpressionContext exprContext = mExpressionContext;
-    exprContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( settings ) );
-    settings.setExpressionContext( exprContext );
-
-    QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( settings );
+    QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( *settings );
     mRendererJobs.insert( job, metaTile );
     QObject::connect( job, &QgsMapRendererJob::finished, mJobOwner, [this, job]() { processMetaTile( job ); } );
     job->start();
