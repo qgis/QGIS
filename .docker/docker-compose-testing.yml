@@ -11,14 +11,18 @@ services:
       - ${QGIS_WORKSPACE}/.docker/webdav/passwords.list:/etc/nginx/.passwords.list
       - /tmp/webdav_tests:/tmp/webdav_tests_root/webdav_tests
 
-  minio:
-    image: minio/minio
+  garage:
+    image: dxflrs/garage
     volumes:
-      - /tmp/minio_tests:/data
+      - /tmp/s3_tests:/data
     environment:
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=adminio€
-    command: server /data
+      - GARAGE_RPC_SECRET=adminio€
+      - GARAGE_DEFAULT_ACCESS_KEY=GK0123456789abcdef01234567
+      - GARAGE_DEFAULT_SECRET_KEY=testsecretkey123456789
+      - GARAGE_DEFAULT_BUCKET=test-bucket
+    command: server --single-node --default-bucket
+    ports:
+      - "3900:3900"
 
   badssl:
     build:
@@ -37,7 +41,7 @@ services:
       - ${QGIS_COMMON_GIT_DIR}:${QGIS_COMMON_GIT_DIR}
     links:
       - webdav
-      - minio
+      - garage
       - httpbin
       - badssl
     env_file:

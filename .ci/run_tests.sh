@@ -133,8 +133,8 @@ else
   COMMAND=bash
 fi
 
-# Create an empty minio folder with appropriate permissions so www user can write inside it
-mkdir -p /tmp/minio_tests/test-bucket && chmod -R 777 /tmp/minio_tests
+# Create an empty s3 folder with appropriate permissions so www user can write inside it
+mkdir -p /tmp/s3_tests/test-bucket && chmod -R 777 /tmp/s3_tests
 
 # Create an empty webdav folder with appropriate permissions so www user can write inside it
 mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
