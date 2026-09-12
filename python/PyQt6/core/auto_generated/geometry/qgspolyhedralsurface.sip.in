@@ -170,8 +170,6 @@ deleted.
 
     virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
 
-    virtual bool deleteVertex( QgsVertexId position );
-
     virtual bool deleteVertices( const QSet<QgsVertexId> &positions );
 
     virtual bool hasVertex( QgsVertexId position ) const;
