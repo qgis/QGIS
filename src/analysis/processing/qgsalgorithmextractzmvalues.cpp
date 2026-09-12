@@ -109,8 +109,6 @@ bool QgsExtractZMValuesAlgorithmBase::prepareAlgorithm( const QVariantMap &param
 
 QgsFeatureList QgsExtractZMValuesAlgorithmBase::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
-  QGS_MARK_ALGORITHM_SOURCE
-
   QgsFeature f = feature;
   QgsAttributes attrs = f.attributes();
   attrs.reserve( attrs.count() + mSelectedStats.count() );
@@ -154,6 +152,8 @@ bool QgsExtractZMValuesAlgorithmBase::supportInPlaceEdit( const QgsMapLayer *lay
 
 QgsExtractZValuesAlgorithm::QgsExtractZValuesAlgorithm()
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mExtractValFunc = []( const QgsPoint &p ) -> double { return p.z(); };
   mTestGeomFunc = []( const QgsGeometry &g ) -> bool { return QgsWkbTypes::hasZ( g.wkbType() ); };
   mDefaultFieldPrefix = u"z_"_s;
@@ -200,6 +200,8 @@ QString QgsExtractZValuesAlgorithm::shortDescription() const
 
 QgsExtractMValuesAlgorithm::QgsExtractMValuesAlgorithm()
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mExtractValFunc = []( const QgsPoint &p ) -> double { return p.m(); };
   mTestGeomFunc = []( const QgsGeometry &g ) -> bool { return QgsWkbTypes::hasM( g.wkbType() ); };
   mDefaultFieldPrefix = u"m_"_s;

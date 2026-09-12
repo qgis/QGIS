@@ -250,6 +250,8 @@ bool QgsReclassifyByLayerAlgorithm::_prepareAlgorithm( const QVariantMap &parame
 
 QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByLayerAlgorithm::createClasses( QgsRasterRange::BoundsType boundsType, const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QVector<QgsReclassifyUtils::RasterClass> classes;
   QgsFeature f;
   while ( mTableIterator.nextFeature( f ) )
@@ -343,6 +345,8 @@ QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByTableAlgorithm::createCl
   QgsReclassifyUtils::RasterClass::BoundsType boundsType, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *
 )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QVariantList table = parameterAsMatrix( parameters, u"TABLE"_s, context );
   if ( table.count() % 3 != 0 )
     throw QgsProcessingException( QObject::tr( "Invalid value for TABLE: list must contain a multiple of 3 elements (found %1)" ).arg( table.count() ) );

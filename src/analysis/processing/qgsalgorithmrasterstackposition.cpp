@@ -288,6 +288,8 @@ QgsRasterStackLowestPositionAlgorithm *QgsRasterStackLowestPositionAlgorithm::cr
 
 int QgsRasterStackLowestPositionAlgorithm::findPosition( std::vector<std::unique_ptr<QgsRasterBlock>> &inputBlocks, int &row, int &col, bool &noDataInRasterBlockStack )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   int lowestPosition = 0;
 
   //auxiliary variables
@@ -401,6 +403,8 @@ QgsRasterStackHighestPositionAlgorithm *QgsRasterStackHighestPositionAlgorithm::
 
 int QgsRasterStackHighestPositionAlgorithm::findPosition( std::vector<std::unique_ptr<QgsRasterBlock>> &inputBlocks, int &row, int &col, bool &noDataInRasterBlockStack )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   int highestPosition = 0;
 
   //auxiliary variables
