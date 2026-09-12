@@ -430,7 +430,7 @@ void TestQgsLayoutScaleBar::doubleBoxLabelCenteredSegment()
 
   scalebar->setLabelVerticalPlacement( Qgis::ScaleBarDistanceLabelVerticalPlacement::BelowSegment );
   scalebar->setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment );
-  scalebar->setUnitLabel( u"units"_s );
+  scalebar->setUnitLabel( u" units"_s );
   qgis::down_cast<QgsBasicNumericFormat *>( const_cast<QgsNumericFormat *>( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   QGSVERIFYLAYOUTCHECK( u"layoutscalebar_doublebox_labelcenteredsegment"_s, &l );

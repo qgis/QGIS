@@ -109,6 +109,7 @@ Sets the item check state to state
 .. seealso:: :py:func:`toggleItemCheckState`
 %End
 
+
     void toggleItemCheckState( int index );
 %Docstring
 Toggles the item check state
