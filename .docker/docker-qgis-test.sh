@@ -217,17 +217,17 @@ EOT
 
 fi
 
-#######################################
-# Wait for Minio container to be ready
-#######################################
+##########################################
+# Wait for garage s3 container to be ready
+##########################################
 
 if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
 
-  echo "::group::Setup Minio"
+  echo "::group::Setup Garage s3 storage"
 
-  echo "Wait for minio to be ready..."
+  echo "Wait for S3 host to be ready..."
   COUNT=0
-  while ! curl http://$QGIS_MINIO_HOST:$QGIS_MINIO_PORT &> /dev/null;
+  while ! curl http://$QGIS_S3_HOST:$QGIS_S3_PORT &> /dev/null;
   do
     printf "."
     sleep 5
@@ -236,7 +236,7 @@ if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
     fi
   done
   if [[ ${COUNT} -eq 41 ]]; then
-    echo "Error: Minio docker timeout!!!"
+    echo "Error: Garage docker timeout!!!"
   else
     echo "done"
   fi

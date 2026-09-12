@@ -35,16 +35,16 @@ class TestPyQgsExternalStorageAwsS3(TestPyQgsExternalStorageBase, unittest.TestC
         bucket_name = "test-bucket"
 
         cls.auth_config = QgsAuthMethodConfig("AWSS3")
-        cls.auth_config.setConfig("username", "minioadmin")
-        cls.auth_config.setConfig("password", "adminio€")
-        cls.auth_config.setConfig("region", "us-east-1")
+        cls.auth_config.setConfig("username", "GK0123456789abcdef01234567")
+        cls.auth_config.setConfig("password", "testsecretkey123456789")
+        cls.auth_config.setConfig("region", "garage")
         cls.auth_config.setName("test_awss3_auth_config")
         assert cls.authm.storeAuthenticationConfig(cls.auth_config)[0]
         assert cls.auth_config.isValid()
 
         cls.url = "http://{}:{}/{}".format(
-            os.environ.get("QGIS_MINIO_HOST", "localhost"),
-            os.environ.get("QGIS_MINIO_PORT", "80"),
+            os.environ.get("QGIS_S3_HOST", "localhost"),
+            os.environ.get("QGIS_S3_PORT", "80"),
             bucket_name,
         )
 
