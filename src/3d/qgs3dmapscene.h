@@ -306,6 +306,16 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      */
     QList<QVector4D> clipPlaneEquations() const { return mClipPlanesEquations; };
 
+    /**
+     * Returns the last valid depth sampled at the center of the screen.
+     *
+     * This value can be used to determine the position in the scene corresponding
+     * to the center of the screen.
+     *
+     * \since QGIS 4.4
+     */
+    double centerDepth() const { return mLastCenterDepth; }
+
 #ifndef SIP_RUN
     //! Static function for returning open 3D map scenes
     static std::function<QMap<QString, Qgs3DMapScene *>()> sOpenScenesFunction;

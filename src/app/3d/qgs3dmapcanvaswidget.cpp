@@ -27,7 +27,7 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolidentify.h"
-#include "qgs3dmaptoolmeasureline.h"
+#include "qgs3dmaptoolmeasure.h"
 #include "qgs3dmaptoolpointcloudchangeattribute.h"
 #include "qgs3dmaptoolpointcloudchangeattributepaintbrush.h"
 #include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
@@ -235,15 +235,64 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionIdentify->setObjectName( u"m3DActionIdentify"_s );
   actionIdentify->setCheckable( true );
 
-  QAction *actionMeasurementTool = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionMeasure.svg" ) ), tr( "Measurement Line" ), this, &Qgs3DMapCanvasWidget::measureLine );
-  actionMeasurementTool->setObjectName( u"m3DActionMeasurementLine"_s );
-  actionMeasurementTool->setCheckable( true );
+  // Measure Menu
+  QMenu *measureMenu = new QMenu( this );
+  measureMenu->setObjectName( u"m3DMeasureMenu"_s );
+  QToolButton *measureButton = new QToolButton( this );
+  measureButton->setObjectName( u"m3DMeasureButton"_s );
+  measureButton->setPopupMode( QToolButton::MenuButtonPopup );
+  measureButton->setMenu( measureMenu );
+
+  QAction *measureButtonAction = toolBar->addWidget( measureButton );
+  measureButtonAction->setObjectName( u"m3DActionMeasureButton"_s );
+
+  QAction *actionMeasureLineTool = new QAction( QgsApplication::getThemeIcon( "mActionMeasure.svg" ), tr( "Measure Line" ), this );
+  connect( actionMeasureLineTool, &QAction::triggered, this, &Qgs3DMapCanvasWidget::measureLine );
+  measureMenu->addAction( actionMeasureLineTool );
+  actionMeasureLineTool->setObjectName( u"m3DActionMeasurementLine"_s );
+  actionMeasureLineTool->setCheckable( true );
+
+  QAction *actionMeasureAreaTool = new QAction( QgsApplication::getThemeIcon( "mActionMeasureArea.svg" ), tr( "Measure Area" ), this );
+  connect( actionMeasureAreaTool, &QAction::triggered, this, &Qgs3DMapCanvasWidget::measureArea );
+  measureMenu->addAction( actionMeasureAreaTool );
+  actionMeasureAreaTool->setObjectName( u"m3DActionMeasurementArea"_s );
+  actionMeasureAreaTool->setCheckable( true );
+
+  QAction *defMeasureAction = actionMeasureLineTool;
+  switch ( setting.value( u"3D/measureTool"_s, 0 ).toInt() )
+  {
+    case 0:
+      defMeasureAction = actionMeasureLineTool;
+      break;
+    case 1:
+      defMeasureAction = actionMeasureAreaTool;
+      break;
+    default:
+      defMeasureAction = actionMeasureLineTool;
+      break;
+  }
+  measureButton->setDefaultAction( defMeasureAction );
+
+  connect( measureButton, &QToolButton::triggered, this, [actionMeasureAreaTool, actionMeasureLineTool, measureButton]( QAction *action ) {
+    QgsSettings settings;
+    if ( action == actionMeasureLineTool )
+    {
+      settings.setValue( u"3D/measureTool"_s, 0 );
+    }
+    else if ( action == actionMeasureAreaTool )
+    {
+      settings.setValue( u"3D/measureTool"_s, 1 );
+    }
+
+    measureButton->setDefaultAction( action );
+  } );
 
   // Create action group to make the action exclusive
   QActionGroup *actionGroup = new QActionGroup( this );
   actionGroup->addAction( actionCameraControl );
   actionGroup->addAction( actionIdentify );
-  actionGroup->addAction( actionMeasurementTool );
+  actionGroup->addAction( actionMeasureAreaTool );
+  actionGroup->addAction( actionMeasureLineTool );
   actionGroup->addAction( actionPaintbrush );
   actionGroup->addAction( actionPointCloudChangeAttributeTool );
   actionGroup->addAction( actionAboveLineTool );
@@ -472,7 +521,9 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
 
-  mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( this );
+  mMapToolMeasureLine = new Qgs3DMapToolMeasure( this, false );
+
+  mMapToolMeasureArea = new Qgs3DMapToolMeasure( this, true );
 
   mMapToolChangeAttribute = new Qgs3DMapToolPointCloudChangeAttribute( mCanvas );
 
@@ -636,6 +687,15 @@ void Qgs3DMapCanvasWidget::measureLine()
     return;
 
   mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
+}
+
+void Qgs3DMapCanvasWidget::measureArea()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureArea : nullptr );
 }
 
 void Qgs3DMapCanvasWidget::changePointCloudAttributeByPaintbrush()

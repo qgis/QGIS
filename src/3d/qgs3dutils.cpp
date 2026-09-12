@@ -817,8 +817,17 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
   return QgsRay3D( QVector3D( rayOriginWorld ), rayDirWorld );
 }
 
-QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
+QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, const QSize &screenSize, Qt3DRender::QCamera *camera, double depth )
 {
+  if ( std::isnan( depth ) )
+  {
+    const QgsRay3D ray = rayFromScreenPoint( screenPoint, screenSize, camera );
+
+    // pick an arbitrary point mid-way between near and far plane
+    const float pointDistance = ( camera->farPlane() + camera->nearPlane() ) / 2;
+    return ray.point( pointDistance );
+  }
+
   // Transform pixel coordinates and [0.0, 1.0]-range sampled depth to [-1.0, 1.0]
   // normalised device coordinates used by projection matrix.
   QVector3D screenPointNdc {
@@ -1117,16 +1126,11 @@ QQuaternion Qgs3DUtils::rotationFromPitchHeadingAngles( float pitchAngle, float 
   return QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), headingAngle ) * QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), pitchAngle );
 }
 
-QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, const QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings )
+QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, const QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings, double depth )
 {
-  const QgsRay3D ray = rayFromScreenPoint( screenPoint, size, cameraController->camera() );
-
-  // pick an arbitrary point mid-way between near and far plane
-  const float pointDistance = ( cameraController->camera()->farPlane() + cameraController->camera()->nearPlane() ) / 2;
-  const QVector3D worldPoint = ray.point( pointDistance );
+  const QVector3D worldPoint = screenPointToWorldPos( screenPoint, size, cameraController->camera(), depth );
   const QgsVector3D mapTransform = worldToMapCoordinates( worldPoint, mapSettings->origin() );
-  const QgsPoint mapPoint( mapTransform.x(), mapTransform.y(), mapTransform.z() );
-  return mapPoint;
+  return QgsPoint( mapTransform );
 }
 
 QVector3D Qgs3DUtils::calculateDirectionalLightUpVector( const QVector3D &lightDirection )
