@@ -242,7 +242,9 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
   if ( mTileFormat != "PNG"_L1 && mBackgroundColor.alpha() != 255 )
   {
-    feedback->pushWarning( QObject::tr( "Background color setting ignored, the JPG format only supports fully opaque colors" ) );
+    feedback->pushWarning(
+      QObject::tr( "A semi-transparent background color was set, but the JPG format only supports fully opaque colors. The background color setting will be ignored. Please use a fully opaque background color instead." )
+    );
   }
 
   mScaleMethod = project->scaleMethod();
