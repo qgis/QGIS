@@ -126,6 +126,30 @@ ranges.
 :return: ``True`` if ranges have gaps
 %End
 
+    bool rangeLowerBoundIsInclusive( int rangeIndex ) const;
+%Docstring
+Returns ``True`` if the lower bound of the range at the specified
+``rangeIndex`` is inclusive, i.e. a feature value exactly equal to the
+range's :py:func:`~QgsGraduatedSymbolRenderer.lowerValue` will be
+classified into this range.
+
+.. seealso:: :py:func:`rangeUpperBoundIsInclusive`
+
+.. versionadded:: 4.4
+%End
+
+    bool rangeUpperBoundIsInclusive( int rangeIndex ) const;
+%Docstring
+Returns ``True`` if the upper bound of the range at the specified
+``rangeIndex`` is inclusive, i.e. a feature value exactly equal to the
+range's :py:func:`~QgsGraduatedSymbolRenderer.upperValue` will be
+classified into this range.
+
+.. seealso:: :py:func:`rangeLowerBoundIsInclusive`
+
+.. versionadded:: 4.4
+%End
+
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
