@@ -12,7 +12,7 @@ services:
       - /tmp/webdav_tests:/tmp/webdav_tests_root/webdav_tests
 
   garage:
-    image: dxflrs/garage
+    image: dxflrs/garage:v2.4.1
     volumes:
       - /tmp/s3_tests:/data
     environment:
