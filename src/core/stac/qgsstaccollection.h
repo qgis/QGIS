@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * \brief Class for storing a STAC Collection's data.
+ * \brief Stores data associated with a STAC Collection.
  *
  * \since QGIS 3.44
  */

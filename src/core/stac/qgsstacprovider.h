@@ -22,7 +22,8 @@
 #include <QStringList>
 
 /**
- * \brief Class for storing a STAC collection's provider data.
+ * \ingroup core
+ * \brief Stores data related to a STAC provider.
  *
  * The object provides information about a provider. A provider is any of the organizations that captures or
  * processes the content of the Collection and therefore influences the data offered by this Collection. May
