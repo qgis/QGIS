@@ -19,11 +19,15 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
 #include "qgs3dsceneexporter.h"
+#include "qgs3dsymbolregistry.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
+#include "qgsdemterraingenerator.h"
 #include "qgsdemterrainsettings.h"
+#include "qgsfeature3dhandler_p.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsflatterrainsettings.h"
+#include "qgsline3dsymbol.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspointlightsettings.h"
@@ -57,11 +61,13 @@ class TestQgs3DExporter : public QgsTest
     void test3DSceneExporterInstanced();
     void test3DSceneExporterInstancedTrs();
     void test3DSceneExporterInstancedDataDefinedTrs();
+    void testChunkedEntityElevationDtm();
 
   private:
     void doObjectExport( const Qgis::Export3DSceneFormat &exportFormat );
     void do3DSceneExport(
       const QString &testName,
+      int maxFeatPerChunkCount,
       int expectedObjectCount,
       int expectedFeatureCount,
       int maxFaceCount,
@@ -69,8 +75,35 @@ class TestQgs3DExporter : public QgsTest
       Qgs3DMapScene *scene,
       QgsVectorLayer *layerPoly,
       QgsOffscreen3DEngine *engine,
-      QgsTerrainEntity *terrainEntity = nullptr
+      QgsTerrainEntity *terrainEntity = nullptr,
+      Qgis::AltitudeClamping altitudeClamping = Qgis::AltitudeClamping::Absolute,
+      Qgis::AltitudeBinding altitudeBinding = Qgis::AltitudeBinding::Centroid
     );
+
+    /**
+     * Checks projet demgenerator has got fine dtm elevation data and checks feature Z coordinates
+     * \param fullExtent
+     * \param crs
+     * \param dataPath data layer path
+     * \param dtmPath dtm layer path
+     * \param dtmHiResPath dtm layer path will be used with no cache
+     * \param featExtent extent to find the feature
+     * \param expectedZ feature Z coordinate values
+     * \param expectedCacheSize
+     */
+    void doCheckElevation(
+      float cameraHeight,
+      const QgsRectangle &fullExtent,
+      const QgsCoordinateReferenceSystem &crs,
+      const QString &dataPath,
+      const QString &dtmPath,
+      const QString &dtmHiResPath,
+      const QgsRectangle &featExtent,
+      const QVector<float> &expectedZ,
+      float expectedCacheSize
+    );
+
+    void doCheckFeatureZ( QgsFeature f, QVector<float> expectedZ, Qgs3DMapSettings *map, QgsAbstract3DSymbol *symbolTerrain, QgsVectorLayer *layerData );
 
     QgsVectorLayer *mLayerBuildings = nullptr;
 };
@@ -271,6 +304,7 @@ void TestQgs3DExporter::testExportObjectToStl()
 
 void TestQgs3DExporter::do3DSceneExport(
   const QString &testName,
+  int maxFeatPerChunkCount,
   int expectedObjectCount,
   int expectedFeatureCount,
   int maxFaceCount,
@@ -278,18 +312,52 @@ void TestQgs3DExporter::do3DSceneExport(
   Qgs3DMapScene *scene,
   QgsVectorLayer *layerPoly,
   QgsOffscreen3DEngine *engine,
-  QgsTerrainEntity *terrainEntity
+  QgsTerrainEntity *terrainEntity,
+  Qgis::AltitudeClamping altitudeClamping,
+  Qgis::AltitudeBinding altitudeBinding
 )
 {
-  // 3d renderer must be replaced to have the tiling updated
-  QgsVectorLayer3DRenderer *renderer3d = dynamic_cast<QgsVectorLayer3DRenderer *>( layerPoly->renderer3D() );
-  QgsVectorLayer3DRenderer *newRenderer3d = new QgsVectorLayer3DRenderer( renderer3d->symbol()->clone() );
-  QgsVectorLayer3DTilingSettings tilingSettings;
-  tilingSettings.setShowBoundingBoxes( true );
-  newRenderer3d->setTilingSettings( tilingSettings );
-  layerPoly->setRenderer3D( newRenderer3d );
+  QgsDebugMsgLevel( u"Will check 3D scene export for %1, maxFeatPerChunk: %2,  type: %3"_s.arg( testName ).arg( maxFeatPerChunkCount ).arg( ( exportFormat == Qgis::Export3DSceneFormat::Obj ? "obj" : "stl" ) ), 1 );
 
+  if ( layerPoly )
+  {
+    // 3d renderer must be replaced to have the tiling updated
+    QVERIFY( layerPoly->renderer3D() != nullptr );
+    QgsVectorLayer3DRenderer *oldRenderer3d = dynamic_cast<QgsVectorLayer3DRenderer *>( layerPoly->renderer3D() );
+
+    QgsVectorLayer3DRenderer *newRenderer3d = nullptr;
+    QVERIFY( oldRenderer3d != nullptr );
+    if ( QgsPolygon3DSymbol *symbol3d = dynamic_cast<QgsPolygon3DSymbol *>( oldRenderer3d->symbol()->clone() ) )
+    {
+      symbol3d->setAltitudeClamping( altitudeClamping );
+      symbol3d->setAltitudeBinding( altitudeBinding );
+      newRenderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+    }
+    else if ( QgsPoint3DSymbol *symbol3d = dynamic_cast<QgsPoint3DSymbol *>( oldRenderer3d->symbol()->clone() ) )
+    {
+      symbol3d->setAltitudeClamping( altitudeClamping );
+      newRenderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+    }
+    else
+      QVERIFY2( false, "layerPoly needs to have a QgsVectorLayer3DRenderer" );
+
+    QgsVectorLayer3DTilingSettings tilingSettings;
+    tilingSettings.setShowBoundingBoxes( true );
+    tilingSettings.setMaximumChunkFeatures( maxFeatPerChunkCount );
+    if ( newRenderer3d ) // useless but needed by clang-tidy
+    {
+      newRenderer3d->setTilingSettings( tilingSettings );
+      layerPoly->setRenderer3D( newRenderer3d );
+    }
+  }
+
+  // Calling captureSceneImage to wait for Qgs3DMapScene::Ready
   Qgs3DUtils::captureSceneImage( *engine, scene );
+  QCOMPARE( scene->sceneState(), Qgs3DMapScene::Ready );
+
+  const QString objFileName = u"%1-%2"_s.arg( testName ).arg( maxFeatPerChunkCount );
+  QImage img = Qgs3DUtils::captureSceneImage( *engine, scene );
+  img.save( QString( QDir::tempPath() + '/' + objFileName + ".png" ) );
 
   Qgs3DSceneExporter exporter;
   exporter.setTerrainResolution( 128 );
@@ -299,11 +367,11 @@ void TestQgs3DExporter::do3DSceneExport(
   exporter.setTerrainTextureResolution( 512 );
   exporter.setScale( 1.0 );
 
-  QVERIFY( exporter.parseVectorLayerEntity( scene->layerEntity( layerPoly ), layerPoly ) );
+  if ( layerPoly )
+    QVERIFY( exporter.parseVectorLayerEntity( scene->layerEntity( layerPoly ), layerPoly ) );
   if ( terrainEntity )
     exporter.parseTerrain( terrainEntity, "DEM_Tile" );
 
-  const QString objFileName = testName;
   const bool saved = exporter.save( objFileName, QDir::tempPath(), exportFormat, 3 );
   QVERIFY( saved );
 
@@ -324,21 +392,26 @@ void TestQgs3DExporter::do3DSceneExport(
   QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
   QTextStream fileStream( &file );
 
-  // check the generated obj file
+  // check the exported file
   QGSCOMPARELONGSTR( testName.toStdString().c_str(), u"%1.%2"_s.arg( objFileName, exportExtension ), fileStream.readAll().toUtf8() );
 }
 
 void TestQgs3DExporter::test3DSceneExporter()
 {
+  // =============================================
+  // =========== creating Qgs3DMapSettings
   QgsVectorLayer *layerPoly = new QgsVectorLayer( testDataPath( u"/3d/polygons.gpkg.gz"_s ), u"polygons"_s, u"ogr"_s );
   QVERIFY( layerPoly->isValid() );
 
   const QgsRectangle fullExtent = layerPoly->extent();
 
+  // =========== create polygon 3D renderer
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol();
-  symbol3d->setExtrusionHeight( 10.f );
+  symbol3d->setExtrusionHeight( 1000.f );
   QgsPhongMaterialSettings materialSettings;
-  materialSettings.setAmbient( Qt::lightGray );
+  materialSettings.setAmbient( QColor( 50, 50, 20 ) );
+  materialSettings.setDiffuse( Qt::lightGray );
+  materialSettings.setSpecular( Qt::darkGray );
   symbol3d->setMaterialSettings( materialSettings.clone() );
 
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
@@ -348,6 +421,7 @@ void TestQgs3DExporter::test3DSceneExporter()
   project.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 3857 ) );
   project.addMapLayer( layerPoly );
 
+  // =========== create scene 3D settings
   Qgs3DMapSettings mapSettings;
   mapSettings.setCrs( project.crs() );
   mapSettings.setExtent( fullExtent );
@@ -358,6 +432,12 @@ void TestQgs3DExporter::test3DSceneExporter()
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
   mapSettings.setOutputDpi( 92 );
 
+  QgsPointLightSettings defaultLight;
+  defaultLight.setPosition( mapSettings.origin() + QgsVector3D( 0, 0, 5000 ) );
+  defaultLight.setIntensity( 0.8 );
+  mapSettings.setLightSources( { defaultLight.clone() } );
+
+  // =========== creating Qgs3DMapScene
   QPoint winSize = QPoint( 640, 480 ); // default window size
 
   QgsOffscreen3DEngine engine;
@@ -372,7 +452,14 @@ void TestQgs3DExporter::test3DSceneExporter()
 
   for ( const Qgis::Export3DSceneFormat &exportFormat : { Qgis::Export3DSceneFormat::Obj, Qgis::Export3DSceneFormat::StlAscii } )
   {
-    do3DSceneExport( u"scene_export"_s, 1, nbFeat, nbFaces, exportFormat, scene, layerPoly, &engine );
+    // =========== check with 1 big tile ==> 1 exported object
+    do3DSceneExport( u"scene_export"_s, 1, 3, nbFeat, nbFaces, exportFormat, scene, layerPoly, &engine );
+    // =========== check with 4 tiles ==> 1 exported objects
+    do3DSceneExport( u"scene_export"_s, 2, 2, nbFeat, nbFaces, exportFormat, scene, layerPoly, &engine );
+    // =========== check with 9 tiles ==> 3 exported objects
+    do3DSceneExport( u"scene_export"_s, 3, 1, nbFeat, nbFaces, exportFormat, scene, layerPoly, &engine );
+    // =========== check with 16 tiles ==> 3 exported objects
+    do3DSceneExport( u"scene_export"_s, 4, 1, nbFeat, nbFaces, exportFormat, scene, layerPoly, &engine );
   }
 
   delete scene;
@@ -381,6 +468,8 @@ void TestQgs3DExporter::test3DSceneExporter()
 
 void TestQgs3DExporter::test3DSceneExporterBig()
 {
+  // =============================================
+  // =========== creating layers and project
   QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( u"/3d/dtm.tif"_s ), u"dtm"_s, u"gdal"_s );
   QVERIFY( layerDtm->isValid() );
 
@@ -389,7 +478,10 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   QgsProject project;
   project.setCrs( layerDtm->crs() );
   project.addMapLayer( layerDtm );
+  project.addMapLayer( mLayerBuildings );
 
+  // =============================================
+  // =========== creating Qgs3DMapSettings
   Qgs3DMapSettings mapSettings;
   mapSettings.setCrs( project.crs() );
   mapSettings.setExtent( fullExtent );
@@ -398,18 +490,19 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   mapSettings.setTransformContext( project.transformContext() );
   mapSettings.setPathResolver( project.pathResolver() );
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
+  mapSettings.setOutputDpi( 92 );
 
   QgsDemTerrainSettings *demTerrainSettings = new QgsDemTerrainSettings;
   demTerrainSettings->setLayer( layerDtm );
   demTerrainSettings->setVerticalScale( 3 );
   mapSettings.setTerrainSettings( demTerrainSettings );
 
-  QgsPointLightSettings defaultPointLight;
-  defaultPointLight.setPosition( mapSettings.origin() + QgsVector3D( 0, 400, 0 ) );
-  defaultPointLight.setConstantAttenuation( 0 );
-  mapSettings.setLightSources( { defaultPointLight.clone() } );
-  mapSettings.setOutputDpi( 92 );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setPosition( mapSettings.origin() + QgsVector3D( 0, 0, 5000 ) );
+  defaultLight.setIntensity( 0.8 );
+  mapSettings.setLightSources( { defaultLight.clone() } );
 
+  // =========== creating Qgs3DMapScene
   QPoint winSize = QPoint( 640, 480 ); // default window size
 
   QgsOffscreen3DEngine engine;
@@ -417,14 +510,22 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
   engine.setRootEntity( scene );
 
-  scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
-
-  const int nbFaces = 19869;
-  const int nbFeat = 401;
+  // =========== set camera position
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 5000, 20.0, -10.0 );
 
   for ( const Qgis::Export3DSceneFormat &exportFormat : { Qgis::Export3DSceneFormat::Obj, Qgis::Export3DSceneFormat::StlAscii } )
   {
-    do3DSceneExport( u"big_scene_export"_s, 1, nbFeat, nbFaces, exportFormat, scene, mLayerBuildings, &engine );
+    // =========== check with 1 big tile ==> 1 exported object
+    do3DSceneExport( u"big_scene_export"_s, 10, 5, 40, 1830, exportFormat, scene, mLayerBuildings, &engine, nullptr, Qgis::AltitudeClamping::Terrain );
+    // =========== check with 4 tiles ==> 4 exported objects
+    do3DSceneExport( u"big_scene_export"_s, 20, 5, 77, 3489, exportFormat, scene, mLayerBuildings, &engine, nullptr, Qgis::AltitudeClamping::Terrain );
+    // =========== check with 9 tiles ==> 14 exported objects
+    do3DSceneExport( u"big_scene_export"_s, 50, 5, 145, 6888, exportFormat, scene, mLayerBuildings, &engine, nullptr, Qgis::AltitudeClamping::Terrain );
+    // =========== check with 16 tiles ==> 32 exported objects
+    do3DSceneExport( u"big_scene_export"_s, 100, 5, 243, 11574, exportFormat, scene, mLayerBuildings, &engine, nullptr, Qgis::AltitudeClamping::Terrain );
+
+    // =========== check with 25 tiles + terrain ==> 70+1 exported objects
+    do3DSceneExport( u"terrain_scene_export"_s, 100, 6, 243, 111420, exportFormat, scene, mLayerBuildings, &engine, scene->terrainEntity(), Qgis::AltitudeClamping::Terrain );
   }
 
   delete scene;
@@ -445,11 +546,12 @@ void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
   Qgs3DMapSettings mapSettings;
   mapSettings.setCrs( project.crs() );
   mapSettings.setExtent( fullExtent );
-  mapSettings.setLayers( { layerRgb, mLayerBuildings } );
+  mapSettings.setLayers( { layerRgb } );
 
   mapSettings.setTransformContext( project.transformContext() );
   mapSettings.setPathResolver( project.pathResolver() );
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
+  mapSettings.setOutputDpi( 92 );
 
   QgsFlatTerrainSettings *flatTerrainSettings = new QgsFlatTerrainSettings;
   mapSettings.setTerrainSettings( flatTerrainSettings );
@@ -458,11 +560,10 @@ void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
   QVERIFY( dynamic_cast<QgsFlatTerrainGenerator *>( generator.get() )->isValid() );
   QCOMPARE( dynamic_cast<QgsFlatTerrainGenerator *>( generator.get() )->crs(), mapSettings.crs() );
 
-  QgsPointLightSettings defaultPointLight;
-  defaultPointLight.setPosition( mapSettings.origin() + QgsVector3D( 0, 400, 0 ) );
-  defaultPointLight.setConstantAttenuation( 0 );
-  mapSettings.setLightSources( { defaultPointLight.clone() } );
-  mapSettings.setOutputDpi( 92 );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setPosition( mapSettings.origin() + QgsVector3D( 0, 0, 5000 ) );
+  defaultLight.setIntensity( 0.8 );
+  mapSettings.setLightSources( { defaultLight.clone() } );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size
 
@@ -471,9 +572,9 @@ void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
   Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
   engine.setRootEntity( scene );
 
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 20.0, -10.0 );
 
-  do3DSceneExport( u"flat_terrain_scene_export"_s, 2, 401, 19875, Qgis::Export3DSceneFormat::Obj, scene, mLayerBuildings, &engine, scene->terrainEntity() );
+  do3DSceneExport( u"flat_terrain_scene_export"_s, 1, 1, 0, 6, Qgis::Export3DSceneFormat::Obj, scene, nullptr, &engine, scene->terrainEntity() );
 
   delete scene;
   mapSettings.setLayers( {} );
@@ -521,10 +622,10 @@ void TestQgs3DExporter::test3DSceneExporterInstanced()
   engine.setSize( QSize( winSize.x(), winSize.y() ) );
   Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
 
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 7000, 20.0, -10.0 );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 20.0, -10.0 );
   engine.setRootEntity( scene );
 
-  do3DSceneExport( u"instanced_export"_s, 2, 0, 12, Qgis::Export3DSceneFormat::Obj, scene, layerPointsZ.get(), &engine );
+  do3DSceneExport( u"instanced_export"_s, 100, 2, 0, 12, Qgis::Export3DSceneFormat::Obj, scene, layerPointsZ.get(), &engine );
 
   delete scene;
   mapSettings.setLayers( {} );
@@ -579,10 +680,10 @@ void TestQgs3DExporter::test3DSceneExporterInstancedTrs()
   engine.setSize( QSize( winSize.x(), winSize.y() ) );
   Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
 
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 7000, 20.0, -10.0 );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 20.0, -10.0 );
   engine.setRootEntity( scene );
 
-  do3DSceneExport( u"instanced_trs_export"_s, 2, 0, 72, Qgis::Export3DSceneFormat::Obj, scene, layerPointsZ.get(), &engine );
+  do3DSceneExport( u"instanced_trs_export"_s, 100, 2, 0, 72, Qgis::Export3DSceneFormat::Obj, scene, layerPointsZ.get(), &engine );
 
   delete scene;
   mapSettings.setLayers( {} );
@@ -655,13 +756,300 @@ void TestQgs3DExporter::test3DSceneExporterInstancedDataDefinedTrs()
   engine.setSize( QSize( winSize.x(), winSize.y() ) );
   Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
 
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 7000, 20.0, -10.0 );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 20.0, -10.0 );
   engine.setRootEntity( scene );
 
-  do3DSceneExport( u"instanced_trs_dd_export"_s, 3, 0, 108, Qgis::Export3DSceneFormat::Obj, scene, layerPointsZ.get(), &engine );
+  do3DSceneExport( u"instanced_trs_dd_export"_s, 100, 3, 0, 108, Qgis::Export3DSceneFormat::Obj, scene, layerPointsZ.get(), &engine );
 
   delete scene;
   mapSettings.setLayers( {} );
+}
+
+void TestQgs3DExporter::doCheckFeatureZ(
+  QgsFeature f,
+  QVector<float> expectedZ,
+  Qgs3DMapSettings *map, //
+  QgsAbstract3DSymbol *symbolTerrain,
+  QgsVectorLayer *layerData
+)
+{
+  std::unique_ptr<Qt3DCore::QEntity> rootEntity;
+  Qgs3DRenderContext renderContext = Qgs3DRenderContext::fromMapSettings( map );
+  renderContext.expressionContext().setFeature( f );
+
+  QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layerData, symbolTerrain );
+  QSet<QString> attributeNames;
+  QVERIFY( handler->prepare( renderContext, attributeNames, layerData->extent3D() ) );
+  handler->processFeature( f, renderContext );
+
+  rootEntity.reset( new Qt3DCore::QEntity() );
+  rootEntity->setObjectName( "ROOT" );
+
+  handler->finalize( rootEntity.get(), renderContext );
+
+  QCOMPARE( rootEntity->children().size(), 1 );
+
+  // search 3d entity
+  for ( QObject *child : rootEntity->children() )
+  {
+    Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>( child );
+    if ( childEntity )
+    {
+      // search geometry renderer
+      for ( QObject *comp : childEntity->children() )
+      {
+        Qt3DRender::QGeometryRenderer *childComp = qobject_cast<Qt3DRender::QGeometryRenderer *>( comp );
+        if ( childComp )
+        {
+          QVERIFY( childComp->geometry() );
+
+          // search position attribute
+          for ( Qt3DCore::QAttribute *attrib : childComp->geometry()->attributes() )
+          {
+            if ( attrib->name() == Qt3DCore::QAttribute::defaultPositionAttributeName() )
+            {
+              QCOMPARE( attrib->count(), expectedZ.size() );
+              Qt3DCore::QBuffer *buff3d = attrib->buffer();
+              QByteArray buff = buff3d->data();
+              const float *ptrFloat = reinterpret_cast<const float *>( buff.constData() );
+              for ( uint i = 0; i < attrib->count(); ++i )
+              {
+                float z = ptrFloat[( static_cast<unsigned long>( i ) * attrib->byteStride() / sizeof( float ) ) + 2];
+                float expZ = expectedZ[static_cast<int>( i )];
+                if ( z != expZ )
+                {
+                  float x = ptrFloat[( static_cast<unsigned long>( i ) * attrib->byteStride() / sizeof( float ) ) + 0];
+                  float y = ptrFloat[( static_cast<unsigned long>( i ) * attrib->byteStride() / sizeof( float ) ) + 1];
+                  qWarning() << "Z not match at:" << x << "," << y << "! Actual[" << i << "]=" << z << "/ expected= " << expZ;
+                  for ( uint j = 0; j < attrib->count(); ++j )
+                    qWarning() << ptrFloat[( static_cast<unsigned long>( j ) * attrib->byteStride() / sizeof( float ) ) + 2] << ",";
+                }
+                QCOMPARE( z, expZ );
+              }
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+}
+
+
+void TestQgs3DExporter::doCheckElevation(
+  float cameraHeight,
+  const QgsRectangle &fullExtent,
+  const QgsCoordinateReferenceSystem &crs,
+  const QString &dataPath,
+  const QString &dtmPath,
+  const QString &hiResDtmPath,
+  const QgsRectangle &featExtent,
+  const QVector<float> &expectedZ,
+  float expectedCacheSize
+)
+{
+  qDebug() << "=============== doCheckElevation for feature within" << featExtent.asWktCoordinates() << "/ height:" << cameraHeight;
+  QgsVectorLayer *layerData = new QgsVectorLayer( dataPath, "data", "ogr" );
+  QgsRasterLayer *layerDtm = new QgsRasterLayer( dtmPath, "dtm", "gdal" );
+
+  QgsProject project;
+  project.setCrs( layerDtm->crs() );
+  project.addMapLayer( layerDtm );
+  project.addMapLayer( layerData );
+
+  // =========== creating Qgs3DMapSettings
+  QgsDemTerrainSettings *demTerrainSettings = new QgsDemTerrainSettings;
+  demTerrainSettings->setLayer( layerDtm );
+  demTerrainSettings->setVerticalScale( 3 );
+  demTerrainSettings->setMapTileResolution( 16 );
+  demTerrainSettings->setMaximumScreenError( 0.5 );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerData << layerDtm );
+  mapSettings->setCrs( crs );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setTransformContext( project.transformContext() );
+  mapSettings->setPathResolver( project.pathResolver() );
+  mapSettings->setMapThemeCollection( project.mapThemeCollection() );
+  mapSettings->setTerrainSettings( demTerrainSettings );
+  mapSettings->setOutputDpi( 92 );
+
+  QgsPointLightSettings defaultLight;
+  defaultLight.setPosition( mapSettings->origin() + QgsVector3D( 0, 0, 5000 ) );
+  defaultLight.setIntensity( 0.8 );
+  mapSettings->setLightSources( { defaultLight.clone() } );
+
+  // if clamping is terrain, offset is applied
+  QgsAbstract3DSymbol *symbolTerrain;
+  if ( layerData->geometryType() == Qgis::GeometryType::Line )
+  {
+    QgsLine3DSymbol *symbol = new QgsLine3DSymbol;
+    symbol->setRenderAsSimpleLines( false );
+    symbol->setAltitudeClamping( Qgis::AltitudeClamping::Terrain );
+    symbol->setAltitudeBinding( Qgis::AltitudeBinding::Vertex );
+    symbol->setWidth( 2.0 );
+    symbol->setExtrusionHeight( 0.0 );
+    symbolTerrain = symbol;
+  }
+  else
+  {
+    QgsPolygon3DSymbol *symbol = new QgsPolygon3DSymbol;
+    symbol->setAltitudeClamping( Qgis::AltitudeClamping::Terrain );
+    symbol->setAltitudeBinding( Qgis::AltitudeBinding::Vertex );
+    symbol->setExtrusionHeight( 100.0 );
+    QgsPhongMaterialSettings materialSettings;
+    materialSettings.setAmbient( QColor( 50, 50, 20 ) );
+    materialSettings.setDiffuse( Qt::lightGray );
+    materialSettings.setSpecular( Qt::darkGray );
+    symbol->setMaterialSettings( materialSettings.clone() );
+    symbolTerrain = symbol;
+  }
+
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbolTerrain );
+  renderer3d->setLayer( layerData );
+  layerData->setRenderer3D( renderer3d );
+
+  // build full res terrain generator
+  QgsRasterLayer *hiResDtmLayer = new QgsRasterLayer( hiResDtmPath, "dtm", "gdal" );
+  QgsDemTerrainGenerator hiResNoCacheDtm;
+  hiResNoCacheDtm.setLayer( hiResDtmLayer );
+  hiResNoCacheDtm.setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
+
+  // =========== creating Qgs3DMapScene
+  QPoint winSize = QPoint( 640, 480 ); // default window size
+
+  QgsOffscreen3DEngine engine;
+  engine.setSize( QSize( winSize.x(), winSize.y() ) );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  QgsFeatureIterator fi = layerData->getFeatures( featExtent );
+  QgsFeature f;
+  QVERIFY( fi.nextFeature( f ) );
+
+  QgsPointXY centroid = f.geometry().centroid().asPoint();
+
+  // =========== set camera position
+  scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), cameraHeight, 0.0, 0.0 );
+
+  // Calling captureSceneImage to wait for Qgs3DMapScene::Ready
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QCOMPARE( scene->sceneState(), Qgs3DMapScene::Ready );
+
+  const QString objFileName = u"%1-%2-%3"_s.arg( "checkElevation" ).arg( f.id() ).arg( cameraHeight );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  img.save( QString( QDir::tempPath() + '/' + objFileName + ".png" ) );
+
+  // lowest Z is computed above terrain
+  float hiResNoCacheZ;
+  int hiResNoCacheQ;
+  const QgsTerrainGeneratorWithCache *demCache = dynamic_cast<const QgsTerrainGeneratorWithCache *>( mapSettings->terrainGenerator() );
+  QVERIFY( demCache );
+
+  for ( int x = -5; x <= 5; x += 1 )
+    for ( int y = -5; y <= 5; y += 1 )
+    {
+      double tx = centroid.x() + x;
+      double ty = centroid.y() + y;
+      if ( fullExtent.contains( tx, ty ) )
+      {
+        hiResNoCacheZ = hiResNoCacheDtm.heightAt( tx, ty, Qgs3DRenderContext() );
+        hiResNoCacheQ = hiResNoCacheDtm.qualityAt( tx, ty, Qgs3DRenderContext() );
+        float z = mapSettings->terrainGenerator()->heightAt( tx, ty, Qgs3DRenderContext() );
+        int q = demCache->qualityAt( tx, ty, Qgs3DRenderContext() );
+        if ( std::abs( hiResNoCacheZ - z ) > 1.0 )
+          qDebug()
+            << "Diff in z will checking elevation at ["
+            << tx
+            << ty
+            << "], nocache z:"
+            << hiResNoCacheZ * demTerrainSettings->verticalScale()
+            << //
+            "(q:"
+            << hiResNoCacheQ
+            << ")"
+            << "vs cache z:"
+            << z * demTerrainSettings->verticalScale()
+            << "(q:"
+            << q
+            << ")";
+        QVERIFY2( hiResNoCacheQ < q, u"fullRezQ:%1 / q:%2"_s.arg( hiResNoCacheQ ).arg( q ).toStdString().c_str() );
+      }
+    }
+
+  QCOMPARE( demCache->heightMapCache()->size(), expectedCacheSize );
+
+  doCheckFeatureZ( f, expectedZ, mapSettings, symbolTerrain, layerData );
+}
+
+
+void TestQgs3DExporter::testChunkedEntityElevationDtm()
+{
+  QgsRectangle fullExtent( 321850, 130109, 321950, 130390 );
+  QgsRectangle featExtent( 321900, 130360, 321930, 130390 );
+
+  doCheckElevation(
+    4000,
+    fullExtent,
+    QgsCoordinateReferenceSystem( "EPSG:27700" ),
+    testDataPath( "/3d/buildings.shp" ),
+    testDataPath( "/3d/dtm.tif" ),
+    testDataPath( "/3d/dtm.tif" ),
+    featExtent,
+    QVector<float> {
+      412.0f, 409.0f, 397.0f, 403.0f, 397.0f, 403.0f, 297.0f, 303.0f, 403.0f, 412.0f, //
+      303.0f, 312.0f, 412.0f, 409.0f, 312.0f, 309.0f, 409.0f, 397.0f, 309.0f, 297.0f,
+    },
+    35
+  );
+
+  doCheckElevation(
+    750,
+    fullExtent,
+    QgsCoordinateReferenceSystem( "EPSG:27700" ),
+    testDataPath( "/3d/buildings.shp" ),
+    testDataPath( "/3d/dtm.tif" ),
+    testDataPath( "/3d/dtm.tif" ),
+    featExtent,
+    QVector<float> {
+      409.0f, 409.0f, 406.0f, 409.0f, 406.0f, 409.0f, 306.0f, 309.0f, 409.0f, 409.0f, //
+      309.0f, 309.0f, 409.0f, 409.0f, 309.0f, 309.0f, 409.0f, 406.0f, 309.0f, 306.0f,
+    },
+    131
+  );
+
+  featExtent = QgsRectangle( 321875, 130109, 321883, 130120 );
+
+  doCheckElevation(
+    4000,
+    fullExtent,
+    QgsCoordinateReferenceSystem( "EPSG:27700" ),
+    testDataPath( "/3d/buildings.shp" ),
+    testDataPath( "/3d/dtm.tif" ),
+    testDataPath( "/3d/dtm.tif" ),
+    featExtent,
+    QVector<float> {
+      337.0f, 334.0f, 328.0f, 340.0f, 328.0f, 340.0f, 228.0f, 240.0f, 340.0f, 337.0f, //
+      240.0f, 237.0f, 337.0f, 334.0f, 237.0f, 234.0f, 334.0f, 328.0f, 234.0f, 228.0f,
+    },
+    35
+  );
+
+  doCheckElevation(
+    750,
+    fullExtent,
+    QgsCoordinateReferenceSystem( "EPSG:27700" ),
+    testDataPath( "/3d/buildings.shp" ),
+    testDataPath( "/3d/dtm.tif" ),
+    testDataPath( "/3d/dtm.tif" ),
+    featExtent,
+    QVector<float> {
+      331.0f, 328.0f, 328.0f, 331.0f, 328.0f, 331.0f, 228.0f, 231.0f, 331.0f, 331.0f, //
+      231.0f, 231.0f, 331.0f, 328.0f, 231.0f, 228.0f, 328.0f, 328.0f, 228.0f, 228.0f,
+    },
+    131
+  );
 }
 
 QGSTEST_MAIN( TestQgs3DExporter )

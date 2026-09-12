@@ -57,6 +57,7 @@ class QgsSkyboxSettings;
 class QgsGradientBackgroundEntity;
 class Qgs3DMapExportSettings;
 class QgsChunkNode;
+struct QgsChunkNodeId;
 class QgsDoubleRange;
 class Qgs3DMapSceneEntity;
 class QgsCameraController;
@@ -373,6 +374,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onShowMapOverlayChanged();
 
     void onOriginChanged();
+    void onNewDemTileReceived( const QgsChunkNodeId &tileId, const QgsRectangle &extent );
 
     bool updateCameraNearFarPlanes();
 
