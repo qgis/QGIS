@@ -94,17 +94,15 @@ namespace
     int maxY = lat2tileY( extent.yMinimum(), zoom );
     tileCount = static_cast<long long>( maxX - minX + 1 ) * static_cast<long long>( maxY - minY + 1 );
 
+    QHash<uint64_t, MetaTile> tiles;
     int i = 0;
-    QMap<QString, MetaTile> tiles;
     for ( int x = minX; x <= maxX; x++ )
     {
       int j = 0;
       for ( int y = minY; y <= maxY; y++ )
       {
-        QString key = u"%1:%2"_s.arg( ( int ) ( i / tileSize ) ).arg( ( int ) ( j / tileSize ) );
-        MetaTile tile = tiles.value( key, MetaTile() );
-        tile.addTile( i % tileSize, j % tileSize, Tile( x, y, zoom ) );
-        tiles.insert( key, tile );
+        const uint64_t key = ( static_cast<uint64_t>( i / tileSize ) << 32 ) | static_cast<uint32_t>( j / tileSize );
+        tiles[key].addTile( i % tileSize, j % tileSize, Tile( x, y, zoom ) );
         j++;
       }
       i++;
