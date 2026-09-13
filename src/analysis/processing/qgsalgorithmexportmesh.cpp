@@ -201,6 +201,8 @@ QgsProcessingAlgorithm *QgsExportMeshVerticesAlgorithm::createInstance() const
 
 QgsGeometry QgsExportMeshVerticesAlgorithm::meshElement( int index ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   return QgsGeometry( new QgsPoint( mNativeMesh.vertex( index ) ) );
 }
 
@@ -420,6 +422,8 @@ QgsProcessingAlgorithm *QgsExportMeshFacesAlgorithm::createInstance() const
 
 QgsGeometry QgsExportMeshFacesAlgorithm::meshElement( int index ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsMeshFace &face = mNativeMesh.face( index );
   QVector<QgsPoint> vertices( face.size() );
   for ( int i = 0; i < face.size(); ++i )
@@ -456,6 +460,8 @@ QgsProcessingAlgorithm *QgsExportMeshEdgesAlgorithm::createInstance() const
 
 QgsGeometry QgsExportMeshEdgesAlgorithm::meshElement( int index ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsMeshEdge &edge = mNativeMesh.edge( index );
   QVector<QgsPoint> vertices( 2 );
   vertices[0] = mNativeMesh.vertex( edge.first );
@@ -1601,7 +1607,6 @@ bool QgsMeshExportTimeSeries::prepareAlgorithm( const QVariantMap &parameters, Q
 
   return true;
 }
-
 
 QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
