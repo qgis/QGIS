@@ -17943,6 +17943,12 @@ QgsSnappingUtils.snapToMap: src/core/qgssnappingutils.h#L78
 QgsSnappingUtils.snapToMap: src/core/qgssnappingutils.h#L86
 QgsSnappingUtils.toggleEnabled: src/core/qgssnappingutils.h#L226
 QgsSnappingUtils: src/core/qgssnappingutils.h#L49
+QgsSortedRasterBlockIndex.block: src/core/raster/qgssortedrasterblockindex.h#L63
+QgsSortedRasterBlockIndex.sortedColumnRow: src/core/raster/qgssortedrasterblockindex.h#L81
+QgsSortedRasterBlockIndex.sortedCount: src/core/raster/qgssortedrasterblockindex.h#L58
+QgsSortedRasterBlockIndex.sortedIndex: src/core/raster/qgssortedrasterblockindex.h#L71
+QgsSortedRasterBlockIndex.sortedValue: src/core/raster/qgssortedrasterblockindex.h#L89
+QgsSortedRasterBlockIndex: src/core/raster/qgssortedrasterblockindex.h#L45
 QgsSourceCache.localFilePath: src/core/qgssourcecache.h#L86
 QgsSourceCache.remoteSourceFetched: src/core/qgssourcecache.h#L93
 QgsSourceCache: src/core/qgssourcecache.h#L67
