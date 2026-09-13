@@ -78,6 +78,25 @@ class CORE_EXPORT QgsMbTiles
      */
     void setTileData( int z, int x, int y, const QByteArray &data ) const;
 
+    /**
+     * Struct representing a raw image tile.
+     * \since QGIS 4.4
+     */
+    struct TileData
+    {
+        int z = 0;
+        int x = 0;
+        int y = 0;
+        QByteArray data;
+    };
+
+    /**
+     * Adds a batch of tile data within a single SQLite transaction.
+     * \note the database has to be opened in read-write mode (currently only when opened with create())
+     * \since QGIS 4.4
+     */
+    void setTileData( const QList<TileData> &tiles ) const;
+
   private:
     QString mFilename;
     sqlite3_database_unique_ptr mDatabase;
