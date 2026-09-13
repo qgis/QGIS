@@ -67,10 +67,18 @@ bool QgsMbTiles::create()
     return false;
   }
 
+  QString errorMessage;
+  // ignore errors from these, they aren't critical
+  // optimise writing speed
+  mDatabase.exec( u"PRAGMA journal_mode = WAL;"_s, errorMessage );
+  mDatabase.exec( u"PRAGMA synchronous = OFF;"_s, errorMessage );
+  mDatabase.exec( u"PRAGMA temp_store = MEMORY;"_s, errorMessage );
+  mDatabase.exec( u"PRAGMA cache_size = -64000;"_s, errorMessage );
+
   const QString sql = "CREATE TABLE metadata (name text, value text);"
                       "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);"
                       "CREATE UNIQUE INDEX tile_index on tiles (zoom_level, tile_column, tile_row);";
-  QString errorMessage;
+
   result = mDatabase.exec( sql, errorMessage );
   if ( result != SQLITE_OK )
   {
