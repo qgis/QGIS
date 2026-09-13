@@ -88,6 +88,7 @@ void QgsRubberBand3D::setupMarker( Qt3DCore::QEntity *parentEntity )
   mMarkerGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
   mMarkerGeometryRenderer->setGeometry( mMarkerGeometry );
   mMarkerGeometryRenderer->setVertexCount( 4 );
+  mMarkerGeometryRenderer->setInstanceCount( 0 );
 
   setMarkerType( mMarkerType );
   mMarkerEntity->addComponent( mMarkerGeometryRenderer );
