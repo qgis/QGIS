@@ -99,6 +99,16 @@ Returns the bounding box of the item's geographic location, in the
 parent layer's coordinate reference system.
 %End
 
+    virtual QgsGeometry snapGeometry() const;
+%Docstring
+Returns the item geometry used for snapping, in the layer's CRS.
+
+The default is a null geometry (not snappable); marker, line and polygon
+items override it.
+
+.. versionadded:: 4.4
+%End
+
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
 %Docstring
 Renders the item to the specified render ``context``.
