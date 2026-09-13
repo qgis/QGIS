@@ -29,12 +29,6 @@
 
 ///@cond PRIVATE
 
-int tile2tms( const int y, const int zoom );
-int lon2tileX( const double lon, const int z );
-int lat2tileY( const double lat, const int z );
-double tileX2lon( const int x, const int z );
-double tileY2lat( const int y, const int z );
-
 struct Tile
 {
     Tile( const int x, const int y, const int z )
@@ -52,32 +46,14 @@ struct MetaTile
 {
     MetaTile() {}
 
-    void addTile( const int row, const int col, Tile tileToAdd )
-    {
-      tiles.insert( QPair<int, int>( row, col ), tileToAdd );
-      if ( row >= rows )
-      {
-        rows = row + 1;
-      }
-      if ( col >= cols )
-      {
-        cols = col + 1;
-      }
-    }
+    void addTile( const int row, const int col, Tile tileToAdd );
 
-    QgsRectangle extent() const
-    {
-      const Tile first = tiles.first();
-      const Tile last = tiles.last();
-      return QgsRectangle( tileX2lon( first.x, first.z ), tileY2lat( last.y + 1, last.z ), tileX2lon( last.x + 1, last.z ), tileY2lat( first.y, first.z ) );
-    }
+    QgsRectangle extent() const;
 
     QMap<QPair<int, int>, Tile> tiles;
     int rows = 0;
     int cols = 0;
 };
-QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, long long &tileCount, const int tileSize = 4 );
-
 
 /**
  * Base class for native XYZ tiles algorithms.

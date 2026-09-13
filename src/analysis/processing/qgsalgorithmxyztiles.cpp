@@ -31,59 +31,88 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-int tile2tms( const int y, const int zoom )
-{
-  double n = std::pow( 2, zoom );
-  return ( int ) std::floor( n - y - 1 );
-}
 
-int lon2tileX( const double lon, const int z )
+namespace
 {
-  return ( int ) ( std::floor( ( lon + 180.0 ) / 360.0 * ( 1 << z ) ) );
-}
-
-int lat2tileY( const double lat, const int z )
-{
-  double latRad = lat * M_PI / 180.0;
-  return ( int ) ( std::floor( ( 1.0 - std::asinh( std::tan( latRad ) ) / M_PI ) / 2.0 * ( 1 << z ) ) );
-}
-
-double tileX2lon( const int x, const int z )
-{
-  return x / ( double ) ( 1 << z ) * 360.0 - 180;
-}
-
-double tileY2lat( const int y, const int z )
-{
-  double n = M_PI - 2.0 * M_PI * y / ( double ) ( 1 << z );
-  return 180.0 / M_PI * std::atan( 0.5 * ( std::exp( n ) - std::exp( -n ) ) );
-}
-
-QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, long long &tileCount, const int tileSize )
-{
-  int minX = lon2tileX( extent.xMinimum(), zoom );
-  int minY = lat2tileY( extent.yMaximum(), zoom );
-  int maxX = lon2tileX( extent.xMaximum(), zoom );
-  int maxY = lat2tileY( extent.yMinimum(), zoom );
-  tileCount = static_cast<long long>( maxX - minX + 1 ) * static_cast<long long>( maxY - minY + 1 );
-
-  int i = 0;
-  QMap<QString, MetaTile> tiles;
-  for ( int x = minX; x <= maxX; x++ )
+  int tile2tms( const int y, const int zoom )
   {
-    int j = 0;
-    for ( int y = minY; y <= maxY; y++ )
-    {
-      QString key = u"%1:%2"_s.arg( ( int ) ( i / tileSize ) ).arg( ( int ) ( j / tileSize ) );
-      MetaTile tile = tiles.value( key, MetaTile() );
-      tile.addTile( i % tileSize, j % tileSize, Tile( x, y, zoom ) );
-      tiles.insert( key, tile );
-      j++;
-    }
-    i++;
+    double n = std::pow( 2, zoom );
+    return ( int ) std::floor( n - y - 1 );
   }
-  return tiles.values();
+
+  int lon2tileX( const double lon, const int z )
+  {
+    return ( int ) ( std::floor( ( lon + 180.0 ) / 360.0 * ( 1 << z ) ) );
+  }
+
+  int lat2tileY( const double lat, const int z )
+  {
+    double latRad = lat * M_PI / 180.0;
+    return ( int ) ( std::floor( ( 1.0 - std::asinh( std::tan( latRad ) ) / M_PI ) / 2.0 * ( 1 << z ) ) );
+  }
+
+  double tileX2lon( const int x, const int z )
+  {
+    return x / ( double ) ( 1 << z ) * 360.0 - 180;
+  }
+
+  double tileY2lat( const int y, const int z )
+  {
+    double n = M_PI - 2.0 * M_PI * y / ( double ) ( 1 << z );
+    return 180.0 / M_PI * std::atan( 0.5 * ( std::exp( n ) - std::exp( -n ) ) );
+  }
+} //namespace
+
+
+void MetaTile::addTile( const int row, const int col, Tile tileToAdd )
+{
+  tiles.insert( QPair<int, int>( row, col ), tileToAdd );
+  if ( row >= rows )
+  {
+    rows = row + 1;
+  }
+  if ( col >= cols )
+  {
+    cols = col + 1;
+  }
 }
+
+QgsRectangle MetaTile::extent() const
+{
+  const Tile first = tiles.first();
+  const Tile last = tiles.last();
+  return QgsRectangle( tileX2lon( first.x, first.z ), tileY2lat( last.y + 1, last.z ), tileX2lon( last.x + 1, last.z ), tileY2lat( first.y, first.z ) );
+}
+
+
+namespace
+{
+  QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, long long &tileCount, const int tileSize )
+  {
+    int minX = lon2tileX( extent.xMinimum(), zoom );
+    int minY = lat2tileY( extent.yMaximum(), zoom );
+    int maxX = lon2tileX( extent.xMaximum(), zoom );
+    int maxY = lat2tileY( extent.yMinimum(), zoom );
+    tileCount = static_cast<long long>( maxX - minX + 1 ) * static_cast<long long>( maxY - minY + 1 );
+
+    int i = 0;
+    QMap<QString, MetaTile> tiles;
+    for ( int x = minX; x <= maxX; x++ )
+    {
+      int j = 0;
+      for ( int y = minY; y <= maxY; y++ )
+      {
+        QString key = u"%1:%2"_s.arg( ( int ) ( i / tileSize ) ).arg( ( int ) ( j / tileSize ) );
+        MetaTile tile = tiles.value( key, MetaTile() );
+        tile.addTile( i % tileSize, j % tileSize, Tile( x, y, zoom ) );
+        tiles.insert( key, tile );
+        j++;
+      }
+      i++;
+    }
+    return tiles.values();
+  }
+} //namespace
 
 ////
 
