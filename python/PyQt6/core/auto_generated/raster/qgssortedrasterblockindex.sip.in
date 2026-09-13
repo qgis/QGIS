@@ -32,7 +32,7 @@ order on demand.
 
    Raster block data is not stored in this class, and the source :py:class:`QgsRasterBlock` must exist for the lifetime of this object.
 
-.. versionadded:: 3.42
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode

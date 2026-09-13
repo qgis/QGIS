@@ -40,7 +40,7 @@ class QgsRasterBlock;
  *
  * \warning Raster block data is not stored in this class, and the source QgsRasterBlock must exist for the lifetime of this object.
  *
- * \since QGIS 3.42
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsSortedRasterBlockIndex
 {
