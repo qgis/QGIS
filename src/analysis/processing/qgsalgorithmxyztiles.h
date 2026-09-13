@@ -18,6 +18,7 @@
 #ifndef QGSALGORITHMXYZTILES_H
 #define QGSALGORITHMXYZTILES_H
 
+#include <atomic>
 
 #include "qgis_sip.h"
 #include "qgsmaprenderersequentialjob.h"
@@ -28,6 +29,8 @@
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
+
+class PendingTilesToWriteQueue;
 
 struct Tile
 {
@@ -75,8 +78,9 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
 
     void checkLayersUsagePolicy( QgsProcessingFeedback *feedback );
 
-    void startJobs();
-    virtual void processMetaTile( QgsMapRendererSequentialJob *job ) = 0;
+    void startJobs( QgsProcessingFeedback *feedback );
+    void checkPipelineFinished( QgsProcessingFeedback *feedback );
+    virtual void processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback ) = 0;
 
     std::optional<QgsMapSettings> mapSettingsForTile( const MetaTile &metaTile ) const;
 
@@ -97,11 +101,13 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QList<QgsMapLayer *> mLayers;
     QgsRectangle mWgs84Extent;
     QObjectUniquePtr<QObject> mJobOwner = nullptr;
-    QgsProcessingFeedback *mFeedback = nullptr;
+    std::unique_ptr<QThreadPool> mPostProcessingPool;
+
     long long mTotalMetaTiles = 0;
-    long long mProcessedMetaTiles = 0;
-    long long mTilesWritten = 0;
-    long long mEmptyTiles = 0;
+    std::atomic<long long> mProcessedMetaTiles { 0 };
+    std::atomic<long long> mTilesWritten { 0 };
+    std::atomic<long long> mEmptyTiles { 0 };
+    std::atomic<int> mActivePostProcessingTasks { 0 };
     QgsCoordinateTransformContext mTransformContext;
     QString mEllipsoid;
     QPointer<QEventLoop> mEventLoop;
@@ -128,11 +134,12 @@ class QgsXyzTilesDirectoryAlgorithm : public QgsXyzTilesBaseAlgorithm
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    void processMetaTile( QgsMapRendererSequentialJob *job ) override;
+    void processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback ) override;
 
   private:
     bool mTms = false;
     QString mOutputDir;
+    void doExport( QgsProcessingFeedback *feedback );
 };
 
 /**
@@ -152,10 +159,12 @@ class QgsXyzTilesMbtilesAlgorithm : public QgsXyzTilesBaseAlgorithm
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    void processMetaTile( QgsMapRendererSequentialJob *job ) override;
+    void processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback ) override;
 
   private:
     std::unique_ptr<QgsMbTiles> mMbtilesWriter;
+    PendingTilesToWriteQueue *mWriteQueue = nullptr;
+    void doExport( QgsProcessingFeedback *feedback );
 };
 
 ///@endcond PRIVATE
