@@ -61,9 +61,11 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
+  processing/qgsalgorithmchannelnetwork.cpp
   processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmcheckvalidity.cpp
+  processing/qgsalgorithmd8base.cpp
   processing/qgsalgorithmexecutesql.cpp
   processing/qgsalgorithmextrude.cpp
   processing/qgsalgorithmfixgeometryduplicatenodes.cpp
@@ -164,6 +166,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfindprojection.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmflattenrelationships.cpp
+  processing/qgsalgorithmflowconnectivity.cpp
+  processing/qgsalgorithmflowdirection.cpp
   processing/qgsalgorithmforceccw.cpp
   processing/qgsalgorithmforcecw.cpp
   processing/qgsalgorithmforcerhr.cpp
@@ -236,6 +240,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrandomraster.cpp
   processing/qgsalgorithmrastercalculator.cpp
+  processing/qgsalgorithmrastercellindex.cpp
   processing/qgsalgorithmrasterdtmslopebasedfilter.cpp
   processing/qgsalgorithmrasterfeaturepreservingsmoothing.cpp
   processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp
@@ -300,6 +305,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsplitvectorlayer.cpp
   processing/qgsalgorithmsplitwithlines.cpp
   processing/qgsalgorithmstdbscanclustering.cpp
+  processing/qgsalgorithmstrahlerorder.cpp
   processing/qgsalgorithmstringconcatenation.cpp
   processing/qgsalgorithmswapxy.cpp
   processing/qgsalgorithmsubdivide.cpp
@@ -319,6 +325,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalues.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
+  processing/qgsalgorithmupslopearea.cpp
   processing/qgsalgorithmurlopener.cpp
   processing/qgsalgorithmhttprequest.cpp
   processing/qgsalgorithmvalidatenetwork.cpp
