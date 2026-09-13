@@ -22,7 +22,6 @@
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsmaplayerutils.h"
-#include "qgsprovidermetadata.h"
 
 #include <QBuffer>
 #include <QString>
@@ -208,7 +207,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     }
   }
 
-  QList<QgsMapLayer *> renderLayers = project->layerTreeRoot()->layerOrder();
+  const QList<QgsMapLayer *> renderLayers = project->layerTreeRoot()->layerOrder();
   for ( QgsMapLayer *layer : renderLayers )
   {
     if ( visibleLayers.contains( layer->id() ) )
@@ -517,45 +516,43 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
 
   if ( !outputHtml.isEmpty() )
   {
-    QString osm = QStringLiteral(
-                    "var osm_layer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',"
-                    "{minZoom: %1, maxZoom: %2, attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'}).addTo(map);"
+    const QString osm = QStringLiteral(
+                          "var osm_layer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',"
+                          "{minZoom: %1, maxZoom: %2, attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'}).addTo(map);"
     )
-                    .arg( mMinZoom )
-                    .arg( mMaxZoom );
+                          .arg( mMinZoom )
+                          .arg( mMaxZoom );
 
-    QString addOsm = useOsm ? osm : QString();
-    QString tmsConvention = tms ? u"true"_s : u"false"_s;
-    QString attr = attribution.isEmpty() ? u"Created by QGIS"_s : attribution;
-    QString tileSource = u"'file:///%1/{z}/{x}/{y}.%2'"_s.arg( outputDir.replace( "\\", "/" ).toHtmlEscaped() ).arg( mTileFormat.toLower() );
+    const QString addOsm = useOsm ? osm : QString();
+    const QString tmsConvention = tms ? u"true"_s : u"false"_s;
+    const QString attr = attribution.isEmpty() ? u"Created by QGIS"_s : attribution;
+    const QString tileSource = u"'file:///%1/{z}/{x}/{y}.%2'"_s.arg( outputDir.replace( "\\", "/" ).toHtmlEscaped(), mTileFormat.toLower() );
 
-    QString html = QStringLiteral(
-                     "<!DOCTYPE html><html><head><title>%1</title><meta charset=\"utf-8\"/>"
-                     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
-                     "<link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.css\""
-                     "integrity=\"sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H\""
-                     "crossorigin=\"\"/>"
-                     "<script src=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.js\""
-                     "integrity=\"sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH\""
-                     "crossorigin=\"\"></script>"
-                     "<style type=\"text/css\">body {margin: 0;padding: 0;} html, body, #map{width: 100%;height: 100%;}</style></head>"
-                     "<body><div id=\"map\"></div><script>"
-                     "var map = L.map('map', {attributionControl: false}).setView([%2, %3], %4);"
-                     "L.control.attribution({prefix: false}).addTo(map);"
-                     "%5"
-                     "var tilesource_layer = L.tileLayer(%6, {minZoom: %7, maxZoom: %8, tms: %9, attribution: '%10'}).addTo(map);"
-                     "</script></body></html>"
+    const QString html = QStringLiteral(
+                           "<!DOCTYPE html><html><head><title>%1</title><meta charset=\"utf-8\"/>"
+                           "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+                           "<link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.css\""
+                           "integrity=\"sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H\""
+                           "crossorigin=\"\"/>"
+                           "<script src=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.js\""
+                           "integrity=\"sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH\""
+                           "crossorigin=\"\"></script>"
+                           "<style type=\"text/css\">body {margin: 0;padding: 0;} html, body, #map{width: 100%;height: 100%;}</style></head>"
+                           "<body><div id=\"map\"></div><script>"
+                           "var map = L.map('map', {attributionControl: false}).setView([%2, %3], %4);"
+                           "L.control.attribution({prefix: false}).addTo(map);"
+                           "%5"
+                           "var tilesource_layer = L.tileLayer(%6, {minZoom: %7, maxZoom: %8, tms: %9, attribution: '%10'}).addTo(map);"
+                           "</script></body></html>"
     )
-                     .arg( title.isEmpty() ? u"Leaflet preview"_s : title )
-                     .arg( mWgs84Extent.center().y() )
-                     .arg( mWgs84Extent.center().x() )
-                     .arg( ( mMaxZoom + mMinZoom ) / 2 )
-                     .arg( addOsm )
-                     .arg( tileSource )
-                     .arg( mMinZoom )
-                     .arg( mMaxZoom )
-                     .arg( tmsConvention )
-                     .arg( attr );
+                           .arg( title.isEmpty() ? u"Leaflet preview"_s : title )
+                           .arg( mWgs84Extent.center().y() )
+                           .arg( mWgs84Extent.center().x() )
+                           .arg( ( mMaxZoom + mMinZoom ) / 2 )
+                           .arg( addOsm, tileSource )
+                           .arg( mMinZoom )
+                           .arg( mMaxZoom )
+                           .arg( tmsConvention, attr );
 
     QFile htmlFile( outputHtml );
     if ( !htmlFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
