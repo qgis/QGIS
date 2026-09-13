@@ -698,15 +698,15 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   {
     throw QgsProcessingException( QObject::tr( "Failed to create MBTiles file %1" ).arg( outputFile ) );
   }
-  mMbtilesWriter->setMetadataValue( "format", mTileFormat.toLower() );
-  mMbtilesWriter->setMetadataValue( "name", QFileInfo( outputFile ).baseName() );
-  mMbtilesWriter->setMetadataValue( "description", QFileInfo( outputFile ).baseName() );
-  mMbtilesWriter->setMetadataValue( "version", u"1.1"_s );
-  mMbtilesWriter->setMetadataValue( "type", u"overlay"_s );
-  mMbtilesWriter->setMetadataValue( "minzoom", QString::number( mMinZoom ) );
-  mMbtilesWriter->setMetadataValue( "maxzoom", QString::number( mMaxZoom ) );
-  QString boundsStr = QString( "%1,%2,%3,%4" ).arg( mWgs84Extent.xMinimum() ).arg( mWgs84Extent.yMinimum() ).arg( mWgs84Extent.xMaximum() ).arg( mWgs84Extent.yMaximum() );
-  mMbtilesWriter->setMetadataValue( "bounds", boundsStr );
+  mMbtilesWriter->setMetadataValue( u"format"_s, mTileFormat.toLower() );
+  mMbtilesWriter->setMetadataValue( u"name"_s, QFileInfo( outputFile ).baseName() );
+  mMbtilesWriter->setMetadataValue( u"description"_s, QFileInfo( outputFile ).baseName() );
+  mMbtilesWriter->setMetadataValue( u"version"_s, u"1.1"_s );
+  mMbtilesWriter->setMetadataValue( u"type"_s, u"overlay"_s );
+  mMbtilesWriter->setMetadataValue( u"minzoom"_s, QString::number( mMinZoom ) );
+  mMbtilesWriter->setMetadataValue( u"maxzoom"_s, QString::number( mMaxZoom ) );
+  QString boundsStr = QString( u"%1,%2,%3,%4"_s ).arg( mWgs84Extent.xMinimum() ).arg( mWgs84Extent.yMinimum() ).arg( mWgs84Extent.xMaximum() ).arg( mWgs84Extent.yMaximum() );
+  mMbtilesWriter->setMetadataValue( u"bounds"_s, boundsStr );
 
   long long totalTiles = 0;
   mTotalMetaTiles = 0;
