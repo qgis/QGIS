@@ -718,7 +718,9 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   }
 
   mMbtilesWriter = std::make_unique<QgsMbTiles>( outputFile );
-  if ( !mMbtilesWriter->create() )
+  // use deferred index creation, as we'll be writing 1000s of tiles and don't want to update
+  // the index after every one
+  if ( !mMbtilesWriter->create( true ) )
   {
     throw QgsProcessingException( QObject::tr( "Failed to create MBTiles file %1" ).arg( outputFile ) );
   }
@@ -768,6 +770,11 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
 
   qDeleteAll( mLayers );
   mLayers.clear();
+
+  if ( !feedback->isCanceled() )
+  {
+    mMbtilesWriter->finalize();
+  }
 
   if ( mSkipEmptyTiles )
   {

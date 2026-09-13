@@ -51,7 +51,21 @@ bool QgsMbTiles::isOpen() const
   return bool( mDatabase );
 }
 
-bool QgsMbTiles::create()
+bool QgsMbTiles::finalize()
+{
+  if ( !mDatabase )
+    return false;
+
+  if ( !mDeferredIndexCreation ) // nothing to do!
+    return true;
+
+  QString errorMessage;
+  const int result = mDatabase.exec( u"CREATE UNIQUE INDEX IF NOT EXISTS tile_index ON tiles (zoom_level, tile_column, tile_row);"_s, errorMessage );
+
+  return result == SQLITE_OK;
+}
+
+bool QgsMbTiles::create( bool deferIndexCreation )
 {
   if ( mDatabase )
     return false;
@@ -75,9 +89,16 @@ bool QgsMbTiles::create()
   mDatabase.exec( u"PRAGMA temp_store = MEMORY;"_s, errorMessage );
   mDatabase.exec( u"PRAGMA cache_size = -64000;"_s, errorMessage );
 
-  const QString sql = "CREATE TABLE metadata (name text, value text);"
-                      "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);"
-                      "CREATE UNIQUE INDEX tile_index on tiles (zoom_level, tile_column, tile_row);";
+  QString sql = "CREATE TABLE metadata (name text, value text);"
+                "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);";
+  if ( !deferIndexCreation )
+  {
+    sql += "CREATE UNIQUE INDEX tile_index on tiles (zoom_level, tile_column, tile_row);";
+  }
+  else
+  {
+    mDeferredIndexCreation = true;
+  }
 
   result = mDatabase.exec( sql, errorMessage );
   if ( result != SQLITE_OK )
