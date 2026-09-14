@@ -15,7 +15,7 @@
 
 
 
-class QgsMeshVectorTraceAnimationGenerator
+class QgsVectorFieldTraceAnimationGenerator
 {
 %Docstring(signature="appended")
 A wrapper for :py:class:`QgsMeshParticuleTracesField` used to render the
@@ -31,14 +31,14 @@ Available for Python binding
 %End
   public:
 
-    QgsMeshVectorTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
+    QgsVectorFieldTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
 %Docstring
 Constructor to use with Python binding
 %End
 
-    QgsMeshVectorTraceAnimationGenerator( const QgsMeshVectorTraceAnimationGenerator &other );
+    QgsVectorFieldTraceAnimationGenerator( const QgsVectorFieldTraceAnimationGenerator &other );
 
-    ~QgsMeshVectorTraceAnimationGenerator();
+    ~QgsVectorFieldTraceAnimationGenerator();
 
     void seedRandomParticles( int count );
 %Docstring
@@ -94,6 +94,35 @@ Sets the visual persistence of the tail
 %End
 
 
+};
+
+class QgsMeshVectorTraceAnimationGenerator : QgsVectorFieldTraceAnimationGenerator /NoDefaultCtors/
+{
+%Docstring(signature="appended")
+A wrapper for :py:class:`QgsMeshParticuleTracesField` used to render the
+particles.
+
+Available for Python binding
+
+.. versionadded:: 3.12
+
+.. deprecated:: 4.4
+
+   Use :py:class:`QgsVectorFieldTraceAnimationGenerator` instead.
+%End
+
+%TypeHeaderCode
+#include "qgsmeshtracerenderer.h"
+%End
+  public:
+ QgsMeshVectorTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext ) /Deprecated="Since 4.4. Use QgsVectorFieldTraceAnimationGenerator.fromMeshLayer() instead."/;
+%Docstring
+Constructor to use with Python binding
+
+.. deprecated:: 4.4
+
+   Use :py:func:`QgsVectorFieldTraceAnimationGenerator.fromMeshLayer()` instead.
+%End
 };
 
 /************************************************************************
