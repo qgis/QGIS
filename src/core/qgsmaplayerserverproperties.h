@@ -183,8 +183,8 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
 
         /**
          * Constructor for layer tree group TIME WmsDimensionInfo which doesn't require field and unit information.
-         * \param dimName dimension name (expected to be "TIME" for time dimension
-         * \param dimDefaultDisplayType dimension default value display type
+         * \param dimName dimension name (expected to be "TIME" for time dimension)
+         * \param dimDefaultDisplayType dimension default value for display type
          * \param dimReferenceValue dimension reference value used if default display type is Qgis::WmsDimensionDefaultDisplay::ReferenceValue
          */
         explicit WmsDimensionInfo(

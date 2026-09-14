@@ -540,7 +540,7 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const
 
   groupNode->serverProperties()->readXml( element );
 
-  // legacy boolean now defined has a WmsDimensionInfo in server properties.
+  // legacy boolean now defined as a WmsDimensionInfo in server properties.
   // It needs to be done after server properties read because it resets dimensions
   if ( element.attribute( u"wms-has-time-dimension"_s, u"0"_s ) == "1"_L1 )
   {
