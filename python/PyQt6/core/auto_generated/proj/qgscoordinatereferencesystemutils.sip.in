@@ -66,7 +66,7 @@ intervals around the horizon.
 Returns null geometry if ``topocentricCrs`` is not a topocentric CRS or
 if the transform fails.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 };
 
