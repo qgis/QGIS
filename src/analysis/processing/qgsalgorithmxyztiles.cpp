@@ -167,6 +167,8 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
   QgsProject *project = context.project();
 
+  mExpressionContext = context.expressionContext();
+
   const QList<QgsLayerTreeLayer *> projectLayers = project->layerTreeRoot()->findLayers();
   QSet<QString> visibleLayers;
   for ( const QgsLayerTreeLayer *layer : projectLayers )
@@ -328,7 +330,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     labelingSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
     settings.setLabelingEngineSettings( labelingSettings );
 
-    QgsExpressionContext exprContext = settings.expressionContext();
+    QgsExpressionContext exprContext = mExpressionContext;
     exprContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( settings ) );
     settings.setExpressionContext( exprContext );
 
