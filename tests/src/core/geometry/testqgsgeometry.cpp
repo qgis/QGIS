@@ -2799,15 +2799,10 @@ void TestQgsGeometry::splitGeometry()
   g1 = QgsGeometry::fromWkt( u"Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))"_s );
   QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 1 );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  // Skip topologicalpoints check in topological editing mode
-  // It's not yet supported for GEOS 3.15
-#else
   QCOMPARE( testPoints.count(), 2 );
   QgsGeometry::convertPointList( testPoints, testPointsXY );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
-#endif
 
   testPointsXY.clear();
   testPoints.clear();
@@ -2815,15 +2810,10 @@ void TestQgsGeometry::splitGeometry()
   g1 = QgsGeometry::fromWkt( u"Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)"_s );
   QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 2 );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  // Skip topologicalpoints check in topological editing mode
-  // It's not yet supported for GEOS 3.15
-#else
   QCOMPARE( testPoints.count(), 2 );
   QgsGeometry::convertPointList( testPoints, testPointsXY );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
-#endif
 
   // Test split parts with topological editing
   testPointsXY.clear();
@@ -2832,15 +2822,10 @@ void TestQgsGeometry::splitGeometry()
   g1 = QgsGeometry::fromWkt( u"Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))"_s );
   QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints, false ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 2 );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  // Skip topologicalpoints check in topological editing mode
-  // It's not yet supported for GEOS 3.15
-#else
   QCOMPARE( testPoints.count(), 2 );
   QgsGeometry::convertPointList( testPoints, testPointsXY );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
-#endif
 
   testPointsXY.clear();
   testPoints.clear();
@@ -2848,15 +2833,10 @@ void TestQgsGeometry::splitGeometry()
   g1 = QgsGeometry::fromWkt( u"Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)"_s );
   QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints, false ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 3 );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  // Skip topologicalpoints check in topological editing mode
-  // It's not yet supported for GEOS 3.15
-#else
   QCOMPARE( testPoints.count(), 2 );
   QgsGeometry::convertPointList( testPoints, testPointsXY );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
-#endif
 
   // Repeat previous tests with QVector<QgsPointXY> instead of QgsPointSequence
   // Those tests are for the deprecated QgsGeometry::splitGeometry() variant and should be removed in QGIS 5.0
@@ -2875,28 +2855,18 @@ void TestQgsGeometry::splitGeometry()
   g1 = QgsGeometry::fromWkt( u"Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))"_s );
   QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 1 );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  // Skip topologicalpoints check in topological editing mode
-  // It's not yet supported for GEOS 3.15
-#else
   QCOMPARE( testPointsXY.count(), 2 );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
-#endif
 
   testPointsXY.clear();
   newGeoms.clear();
   g1 = QgsGeometry::fromWkt( u"Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)"_s );
   QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 2 );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  // Skip topologicalpoints check in topological editing mode
-  // It's not yet supported for GEOS 3.15
-#else
   QCOMPARE( testPointsXY.count(), 2 );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
-#endif
 
   // Test split parts with topological editing
   testPointsXY.clear();
@@ -2904,29 +2874,19 @@ void TestQgsGeometry::splitGeometry()
   g1 = QgsGeometry::fromWkt( u"Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))"_s );
   QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY, false ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 2 );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  // Skip topologicalpoints check in topological editing mode
-  // It's not yet supported for GEOS 3.15
-#else
   QCOMPARE( testPointsXY.count(), 2 );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
-#endif
 
   testPointsXY.clear();
   newGeoms.clear();
   g1 = QgsGeometry::fromWkt( u"Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)"_s );
   QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY, false ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 3 );
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  // Skip topologicalpoints check in topological editing mode
-  // It's not yet supported for GEOS 3.15
-#else
   QCOMPARE( testPointsXY.count(), 2 );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
   QVERIFY( QgsGeometry::fromWkt( u"Linestring (1.0 42.0, 100.0 42.0)"_s ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 1 ) ) ) );
   Q_NOWARN_DEPRECATED_POP
-#endif
 
   // Should not crash - https://github.com/qgis/QGIS/issues/50948
   g2 = QgsGeometry::fromWkt( "LineString ( -63294.10966012725839391 -79156.27234554117603693, -63290.25259721937618451 -79162.78533450335089583, -63290.25259721936890855 -79162.78533450335089583)" );
