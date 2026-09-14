@@ -407,6 +407,8 @@ void QgsXyzTilesDirectoryAlgorithm::initAlgorithm( const QVariantMap & )
   auto outputHtmlParam = std::make_unique<QgsProcessingParameterFileDestination>( u"OUTPUT_HTML"_s, QObject::tr( "Output HTML (Leaflet)" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true );
   outputHtmlParam->setHelp( QObject::tr( "Destination file path for the optional Leaflet HTML web map preview." ) );
   addParameter( outputHtmlParam.release() );
+
+  addOutput( new QgsProcessingOutputRasterLayer( u"OUTPUT_LAYER"_s, QObject::tr( "Output tiles as raster layer" ) ) );
 }
 
 QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -519,6 +521,24 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
     fout << html;
 
     results.insert( u"OUTPUT_HTML"_s, outputHtml );
+  }
+
+  // try to load the result as a raster layer
+  if ( !feedback->isCanceled() )
+  {
+    const QString layerUri
+      = u"type=xyz&url=file:///%1/%7Bz%7D/%7Bx%7D/%7By%7D.%2&zmax=%3&zmin=%4"_s.arg( outputDir.replace( "\\", "/" ).toHtmlEscaped(), mTileFormat.toLower() ).arg( mMaxZoom ).arg( mMinZoom );
+    auto layer = std::make_unique<QgsRasterLayer>( layerUri, "OUTPUT_LAYER", u"wms"_s );
+    if ( !layer->isValid() )
+    {
+      feedback->reportError( QObject::tr( "Failed to open XYZ directory as a raster layer" ) );
+    }
+    const QString layerId = layer->id();
+    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), u"OUTPUT_LAYER"_s, QgsProcessingUtils::LayerHint::Raster );
+    details.setOutputLayerName( layer.get() );
+    context.addLayerToLoadOnCompletion( layerId, details );
+    context.temporaryLayerStore()->addMapLayer( layer.release() );
+    results.insert( u"OUTPUT_LAYER"_s, layerId );
   }
 
   return results;
@@ -639,6 +659,8 @@ void QgsXyzTilesMbtilesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   createCommonParameters();
   addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_FILE"_s, QObject::tr( "Output" ), QObject::tr( "MBTiles files (*.mbtiles *.MBTILES)" ) ) );
+
+  addOutput( new QgsProcessingOutputRasterLayer( u"OUTPUT_LAYER"_s, QObject::tr( "Output MBTiles raster layer" ) ) );
 }
 
 QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -703,9 +725,25 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   {
     feedback->pushInfo( QObject::tr( "Wrote %1 total tiles, skipped %2 empty tiles" ).arg( mTilesWritten ).arg( mEmptyTiles ) );
   }
-
   QVariantMap results;
   results.insert( u"OUTPUT_FILE"_s, outputFile );
+
+  // try to load the result as a raster layer
+  if ( !feedback->isCanceled() )
+  {
+    auto layer = std::make_unique<QgsRasterLayer>( outputFile, "OUTPUT_LAYER", u"gdal"_s );
+    if ( !layer->isValid() )
+    {
+      feedback->reportError( QObject::tr( "Failed to open MBTiles file as a raster layer" ) );
+    }
+    const QString layerId = layer->id();
+    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), u"OUTPUT_LAYER"_s, QgsProcessingUtils::LayerHint::Raster );
+    details.setOutputLayerName( layer.get() );
+    context.addLayerToLoadOnCompletion( layerId, details );
+    context.temporaryLayerStore()->addMapLayer( layer.release() );
+    results.insert( u"OUTPUT_LAYER"_s, layerId );
+  }
+
   return results;
 }
 
