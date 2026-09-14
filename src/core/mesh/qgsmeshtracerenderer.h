@@ -23,7 +23,6 @@
 #include "qgis_core.h"
 #include "qgsmaptopixel.h"
 #include "qgsmeshlayer.h"
-#include "qgsmeshvectorrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
 #include "qgsvectorfieldvaluesource.h"
@@ -468,85 +467,6 @@ class QgsVectorFieldParticleTracesField : public QgsVectorFieldStreamField
     bool mStumpParticleWithLifeTime = true;
 };
 
-/**
- * \ingroup core
- *
- * \brief A class derived from QgsMeshVectorRenderer used to render the particles traces
- *
- * Not available for data defined on edges
- *
- * \note not available in Python bindings
- * \since QGIS 3.12
- */
-class QgsMeshVectorStreamlineRenderer : public QgsMeshVectorRenderer
-{
-  public:
-    //!Constructor
-    Q_DECL_DEPRECATED QgsMeshVectorStreamlineRenderer(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &dataSetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-      bool dataIsOnVertices,
-      const QgsVectorFieldSettings &settings,
-      QgsRenderContext &rendererContext,
-      const QgsRectangle &layerExtent,
-      double magMax
-    );
-
-    QgsMeshVectorStreamlineRenderer(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &dataSetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-      const QVector<double> &datasetMagValues,
-      bool dataIsOnVertices,
-      const QgsVectorFieldSettings &settings,
-      QgsRenderContext &rendererContext,
-      const QgsRectangle &layerExtent,
-      QgsRasterBlockFeedback *feedBack,
-      double magMax
-    );
-
-    void draw() override;
-
-  private:
-    std::unique_ptr<QgsVectorFieldStreamlinesField> mStreamlineField;
-    QgsRenderContext &mRendererContext;
-};
-
-
-/**
- * \ingroup core
- *
- * \brief A class derived from QgsMeshVectorRenderer used to render the particles traces.
- *
- * Not available for data defined on edges
- *
- * \note not available in Python bindings
- * \since QGIS 3.12
- */
-class QgsMeshVectorTraceRenderer : public QgsMeshVectorRenderer
-{
-  public:
-    //!Constructor
-    QgsMeshVectorTraceRenderer(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &dataSetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-      bool dataIsOnVertices,
-      const QgsVectorFieldSettings &settings,
-      QgsRenderContext &rendererContext,
-      const QgsRectangle &layerExtent,
-      double magMax
-    );
-
-    void draw() override;
-
-  private:
-    std::unique_ptr<QgsVectorFieldParticleTracesField> mParticleField;
-    QgsRenderContext &mRendererContext;
-};
-
-
 #endif //SIP_RUN
 
 ///@endcond
@@ -554,35 +474,43 @@ class QgsMeshVectorTraceRenderer : public QgsMeshVectorRenderer
 /**
  * \ingroup core
  *
- * \brief A wrapper for QgsMeshParticuleTracesField used to render the particles.
+ * \brief Renders animated particle traces over a vector field.
  *
- * Available for Python binding
+ * Unlike the trace symbology of a layer renderer, which draws a single static frame, this class
+ * keeps the particles alive between calls so that successive imageRendered() calls produce the
+ * frames of an animation.
+ *
+ * The vector field can come from any source, so the same generator serves mesh layers and any
+ * other layer type able to expose a vector field.
  *
  * \since QGIS 4.4
  */
-class CORE_EXPORT QgsVectorFieldTraceAnimationGenerator
+class CORE_EXPORT QgsVectorFieldTraceAnimationGenerator SIP_NODEFAULTCTORS
 {
   public:
-    //!Constructor to use from QgsMeshVectorRenderer
+    /**
+     * Constructs a generator sampling the vector field from \a source, which is taken ownership of.
+     *
+     * If \a minimizeFieldSize is TRUE the animated field only covers the part of the data which is
+     * currently on the device, otherwise it covers the whole rendered extent.
+     */
     QgsVectorFieldTraceAnimationGenerator(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &dataSetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-      bool dataIsOnVertices,
-      const QgsRenderContext &rendererContext,
-      const QgsRectangle &layerExtent,
-      double magMax,
-      const QgsVectorFieldSettings &vectorSettings
+      std::unique_ptr<QgsVectorFieldValueSource> source, const QgsRenderContext &rendererContext, const QgsVectorFieldSettings &vectorSettings, bool minimizeFieldSize = true
     ) SIP_SKIP;
 
-    //!Constructor to use with Python binding
-    QgsVectorFieldTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
+    /**
+     * Returns a generator for the active vector dataset of \a layer, or NULLPTR if the layer has
+     * no vector dataset to animate.
+     *
+     * The caller takes ownership of the returned generator.
+     */
+    static QgsVectorFieldTraceAnimationGenerator *fromMeshLayer( QgsMeshLayer *layer, const QgsRenderContext &rendererContext ) SIP_FACTORY;
 
     QgsVectorFieldTraceAnimationGenerator( const QgsVectorFieldTraceAnimationGenerator &other );
 
-    ~QgsVectorFieldTraceAnimationGenerator() = default;
+    ~QgsVectorFieldTraceAnimationGenerator();
 
-    //! seeds particles in the vector fields
+    //! Seeds particles in the vector field
     void seedRandomParticles( int count );
 
     //! Moves all the particles using frame per second (fps) to calculate the displacement and return the rendered frame
@@ -622,6 +550,15 @@ class CORE_EXPORT QgsVectorFieldTraceAnimationGenerator
     double mParticleLifeTime = 5;
 
     void updateFieldParameter();
+
+  protected:
+    /**
+     * Constructs a generator for the active vector dataset of \a layer.
+     *
+     * Only call this when QgsVectorFieldTraceAnimationGenerator::fromMeshLayer() would return a
+     * generator for \a layer, that is when the layer actually has a vector dataset to animate.
+     */
+    QgsVectorFieldTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext ) SIP_SKIP;
 };
 
 /**
