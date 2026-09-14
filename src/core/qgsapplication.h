@@ -396,6 +396,28 @@ class CORE_EXPORT QgsApplication : public QApplication
   static QStringList svgPaths();
 
   /**
+   * Sets the paths to project template directories.
+   *
+   * An empty list restores the default template directory of the active user
+   * profile.
+   *
+   * \see projectTemplatePaths()
+   * \since QGIS 4.4
+   */
+  static void setProjectTemplatePaths(const QStringList &projectTemplatePaths);
+
+  /**
+   * Returns the paths to project template directories.
+   *
+   * Defaults to the template directory of the active user profile when no path
+   * is configured.
+   *
+   * \see setProjectTemplatePaths()
+   * \since QGIS 4.4
+   */
+  static QStringList projectTemplatePaths();
+
+  /**
    * Returns the paths to layout template directories.
    */
   static QStringList layoutTemplatePaths();
@@ -1287,6 +1309,8 @@ class CORE_EXPORT QgsApplication : public QApplication
   static const QgsSettingsEntryBool *settingsLocaleShowGroupSeparator;
   //! Settings entry search path for SVG
   static const QgsSettingsEntryStringList *settingsSearchPathsForSVG;
+  //! Settings entry search path for project templates
+  static const QgsSettingsEntryStringList *settingsProjectTemplatePaths;
 
   /**
    * Settings entry to configure the maximum number of concurrent connections

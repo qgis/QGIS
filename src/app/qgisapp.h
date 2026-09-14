@@ -202,6 +202,7 @@ class QgsProcessingWidgetContextGenerator;
 
 #include <QAbstractSocket>
 #include <QDateTime>
+#include <QFileSystemWatcher>
 #include <QGestureEvent>
 #include <QMainWindow>
 #include <QPointer>
@@ -1822,7 +1823,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void fileOpenAfterLaunch();
     //! After project read, set any auto-opened project as successful
     void fileOpenedOKAfterLaunch();
-    void fileNewFromTemplateAction( QAction *qAction );
     void fileNewFromDefaultTemplate();
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
@@ -2940,6 +2940,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QObjectUniquePtr<QgsCustomizationDialog> mCustomizationDialog;
 
     std::unique_ptr< QgsProcessingWidgetContextGenerator > mProcessingWidgetContextGenerator;
+
+    //! Project template directories to watch
+    QFileSystemWatcher mProjectTemplateWatcher;
 
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;
