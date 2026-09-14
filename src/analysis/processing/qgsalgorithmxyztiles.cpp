@@ -841,7 +841,7 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   // the index after every one
   if ( !mMbtilesWriter->create( true ) )
   {
-    throw QgsProcessingException( QObject::tr( "Failed to create MBTiles file %1" ).arg( outputFile ) );
+    throw QgsProcessingException( QObject::tr( "Failed to create MBTiles file %1: %2" ).arg( outputFile, mMbtilesWriter->lastError() ) );
   }
   mMbtilesWriter->setMetadataValue( u"format"_s, mTileFormat.toLower() );
   mMbtilesWriter->setMetadataValue( u"name"_s, QFileInfo( outputFile ).baseName() );
