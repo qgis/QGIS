@@ -15,8 +15,8 @@
 
 #include "qgsvectorfieldengine.h"
 
-#include "qgsmeshtracerenderer.h"
 #include "qgsrendercontext.h"
+#include "qgsvectorfieldstreamfield.h"
 #include "qgsvectorfieldvaluesource.h"
 
 #include <QString>

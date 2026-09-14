@@ -866,6 +866,7 @@
 %Include auto_generated/vectorfield/qgsvectorfieldarrowsettings.sip
 %Include auto_generated/vectorfield/qgsvectorfieldsettings.sip
 %Include auto_generated/vectorfield/qgsvectorfieldstreamlinesettings.sip
+%Include auto_generated/vectorfield/qgsvectorfieldtraceanimationgenerator.sip
 %Include auto_generated/vectorfield/qgsvectorfieldtracessettings.sip
 %Include auto_generated/vectorfield/qgsvectorfieldwindbarbsettings.sip
 %Include auto_generated/vectortile/qgsmapboxglstyleconverter.sip
