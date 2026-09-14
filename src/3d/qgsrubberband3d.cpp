@@ -468,6 +468,7 @@ void QgsRubberBand3D::updateGeometry()
       QgsTessellator tessellator;
       tessellator.setOrigin( mMapSettings->origin() );
       tessellator.setAddNormals( true );
+      tessellator.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
       tessellator.addPolygon( *polygon, 0 );
       if ( !tessellator.error().isEmpty() )
       {
