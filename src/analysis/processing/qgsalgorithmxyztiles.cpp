@@ -646,6 +646,14 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   QGS_MARK_ALGORITHM_SOURCE
 
   const QString outputFile = parameterAsString( parameters, u"OUTPUT_FILE"_s, context );
+  if ( QFile::exists( outputFile ) )
+  {
+    feedback->pushWarning( QObject::tr( "Removing existing file '%1'" ).arg( QDir::toNativeSeparators( outputFile ) ) );
+    if ( !QFile( outputFile ).remove() )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( QDir::toNativeSeparators( outputFile ) ) );
+    }
+  }
 
   mMbtilesWriter = std::make_unique<QgsMbTiles>( outputFile );
   if ( !mMbtilesWriter->create() )
