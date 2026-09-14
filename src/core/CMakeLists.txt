@@ -1062,6 +1062,7 @@ set(QGIS_CORE_SRCS
   vectorfield/qgsvectorfieldsettings.cpp
   vectorfield/qgsvectorfieldstreamlinesettings.cpp
   vectorfield/qgsvectorfieldtracessettings.cpp
+  vectorfield/qgsvectorfieldvaluesource.cpp
   vectorfield/qgsvectorfieldwindbarbsettings.cpp
 
   vectortile/qgsarcgisvectortileservicedataprovider.cpp
@@ -2256,6 +2257,7 @@ set(QGIS_CORE_HDRS
   vectorfield/qgsvectorfieldsettings.h
   vectorfield/qgsvectorfieldstreamlinesettings.h
   vectorfield/qgsvectorfieldtracessettings.h
+  vectorfield/qgsvectorfieldvaluesource.h
   vectorfield/qgsvectorfieldwindbarbsettings.h
 
   vectortile/qgsarcgisvectortileservicedataprovider.h
