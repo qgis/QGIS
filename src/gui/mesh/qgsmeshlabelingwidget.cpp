@@ -197,7 +197,7 @@ void QgsMeshLabelingWidget::labelModeChanged( int index )
       labelingGui->setContext( context );
 
       labelingGui->setDockMode( dockMode() );
-      connect( labelingGui, &QgsLabelingGui::widgetChanged, this, &QgsMeshLabelingWidget::widgetChanged );
+      connect( labelingGui, &QgsLabelingGui::widgetChanged, this, &QgsMeshLabelingWidget::changed );
       connect( labelingGui, &QgsLabelingGui::auxiliaryFieldCreated, this, &QgsMeshLabelingWidget::auxiliaryFieldCreated );
 
       mWidget = labelingGui;
@@ -211,5 +211,5 @@ void QgsMeshLabelingWidget::labelModeChanged( int index )
     case ModeNone:
       break;
   }
-  emit widgetChanged();
+  emit changed();
 }

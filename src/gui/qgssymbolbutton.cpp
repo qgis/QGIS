@@ -187,7 +187,7 @@ void QgsSymbolButton::showSettingsDialog()
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( newSymbol ), QgsStyle::defaultStyle(), mLayer, panel );
     widget->setPanelTitle( mDialogTitle );
     widget->setContext( symbolContext );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] { updateSymbolFromWidget( widget ); } );
     panel->openPanel( widget );
   }
   else

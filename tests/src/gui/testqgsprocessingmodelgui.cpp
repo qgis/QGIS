@@ -176,18 +176,23 @@ void TestQgsProcessingModelGui::testModelerParametersPanelWidgetWidgetChangedSig
   QVERIFY( bufferAlg );
 
   QgsProcessingModelerParametersPanelWidget widget( bufferAlg, &model, context );
-  QSignalSpy spy( &widget, &QgsProcessingModelerParametersPanelWidget::widgetChanged );
+  QSignalSpy spyChanged( &widget, &QgsProcessingModelerParametersPanelWidget::changed );
+  Q_NOWARN_DEPRECATED_PUSH
+  QSignalSpy spyWidgetChanged( &widget, &QgsProcessingModelerParametersPanelWidget::widgetChanged );
+  Q_NOWARN_DEPRECATED_POP
 
   QLineEdit *descriptionBox = widget.findChild< QLineEdit * >( u"mDescriptionBox"_s );
   QVERIFY( descriptionBox );
 
   // test signal emission on description change
   descriptionBox->setText( u"New Description"_s );
-  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spyChanged.count(), 1 );
+  QCOMPARE( spyWidgetChanged.count(), 1 );
 
   // change a parameter value
   widget.mWrappers[u"DISTANCE"_s]->setWidgetValue( QgsProcessingModelChildParameterSource::fromStaticValue( 15.0 ) );
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spyChanged.count(), 2 );
+  QCOMPARE( spyWidgetChanged.count(), 2 );
 }
 
 void TestQgsProcessingModelGui::testModelerParametersPanelWidgetDependencies()
@@ -240,13 +245,17 @@ void TestQgsProcessingModelGui::testModelerParametersPanelWidgetSetDependencies(
   model.addChildAlgorithm( child );
 
   QgsProcessingModelerParametersPanelWidget widget( bufferAlg, &model, context, u"child_alg"_s );
-  QSignalSpy spy( &widget, &QgsProcessingModelerParametersPanelWidget::widgetChanged );
+  QSignalSpy spyChanged( &widget, &QgsProcessingModelerParametersPanelWidget::changed );
+  Q_NOWARN_DEPRECATED_PUSH
+  QSignalSpy spyWidgetChanged( &widget, &QgsProcessingModelerParametersPanelWidget::widgetChanged );
+  Q_NOWARN_DEPRECATED_POP
 
   const QList< QgsProcessingModelChildDependency > newDeps { QgsProcessingModelChildDependency( u"parent_alg_1"_s ), QgsProcessingModelChildDependency( u"parent_alg_2"_s ) };
 
   widget.mDependenciesPanel->setValue( newDeps );
   // make sure changing the dependencies triggers a changed signal
-  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spyChanged.count(), 1 );
+  QCOMPARE( spyWidgetChanged.count(), 1 );
 
   std::unique_ptr< QgsProcessingModelChildAlgorithm > recreatedAlg = widget.createAlgorithm();
   QVERIFY( recreatedAlg );
@@ -255,7 +264,8 @@ void TestQgsProcessingModelGui::testModelerParametersPanelWidgetSetDependencies(
   QCOMPARE( recreatedAlg->dependencies().at( 1 ).childId, u"parent_alg_2"_s );
 
   widget.mDependenciesPanel->setValue( { QgsProcessingModelChildDependency( u"parent_alg_1"_s ) } );
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spyChanged.count(), 2 );
+  QCOMPARE( spyWidgetChanged.count(), 2 );
 
   recreatedAlg = widget.createAlgorithm();
   QVERIFY( recreatedAlg );
@@ -441,13 +451,18 @@ void TestQgsProcessingModelGui::testModelerParametersWidgetWidgetChangedSignal()
   QVERIFY( bufferAlg );
 
   QgsProcessingModelerParametersWidget widget( bufferAlg, &model, context );
-  QSignalSpy spy( &widget, &QgsProcessingModelerParametersWidget::widgetChanged );
+  QSignalSpy spyChanged( &widget, &QgsProcessingModelerParametersWidget::changed );
+  Q_NOWARN_DEPRECATED_PUSH
+  QSignalSpy spyWidgetChanged( &widget, &QgsProcessingModelerParametersWidget::widgetChanged );
+  Q_NOWARN_DEPRECATED_POP
 
   widget.mCommentEdit->setText( u"Updated Description"_s );
-  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spyChanged.count(), 1 );
+  QCOMPARE( spyWidgetChanged.count(), 1 );
 
   widget.mCommentColorButton->setColor( QColor( 255, 0, 255 ) );
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spyChanged.count(), 2 );
+  QCOMPARE( spyWidgetChanged.count(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingModelGui )

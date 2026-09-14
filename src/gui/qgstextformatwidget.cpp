@@ -2518,7 +2518,7 @@ QgsTextFormatPanelWidget::QgsTextFormatPanelWidget( const QgsTextFormat &format,
   mFormatWidget = qobject_cast<QgsTextFormatWidget *>( widget() );
   connect( mFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [this] {
     if ( !mBlockSignals )
-      emit widgetChanged();
+      emit changed();
   } );
 }
 

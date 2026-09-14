@@ -225,7 +225,7 @@ void QgsMeshElevationPropertiesWidget::modeChanged()
 void QgsMeshElevationPropertiesWidget::onChanged()
 {
   if ( !mBlockUpdates )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsMeshElevationPropertiesWidget::calculateRangeByExpression( bool isUpper )

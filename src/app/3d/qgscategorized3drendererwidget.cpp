@@ -139,7 +139,7 @@ QgsCategorized3DRendererWidget::QgsCategorized3DRendererWidget( QWidget *parent 
   connect( mViewCategories->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsCategorized3DRendererWidget::selectionChanged );
 
   connect( mModel, &QgsCategorized3DRendererModel::rowsMoved, this, &QgsCategorized3DRendererWidget::rowsMoved );
-  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::changed );
 
   connect( mExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsCategorized3DRendererWidget::categoryColumnChanged );
 
@@ -223,7 +223,7 @@ void QgsCategorized3DRendererWidget::updateUiFromRenderer()
 void QgsCategorized3DRendererWidget::categoryColumnChanged( const QString &field )
 {
   mRenderer->setClassAttribute( field );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorized3DRendererWidget::categoriesDoubleClicked( const QModelIndex &idx )
@@ -253,7 +253,7 @@ void QgsCategorized3DRendererWidget::changeCategorySymbol()
   QgsSymbol3DWidget *widget = new QgsSymbol3DWidget( mLayer, this );
   widget->setSymbol( symbol.get(), mLayer );
   widget->setPanelTitle( category.value().toString() );
-  connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
+  connect( widget, &QgsPanelWidget::changed, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
   openPanel( widget );
 }
 
@@ -384,7 +384,7 @@ void QgsCategorized3DRendererWidget::addCategories()
     applyColorRamp();
   }
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorized3DRendererWidget::applyColorRamp()
@@ -427,13 +427,13 @@ void QgsCategorized3DRendererWidget::deleteCategories()
 {
   const QList<int> categoryIndexes = selectedCategories();
   mModel->deleteRows( categoryIndexes );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorized3DRendererWidget::deleteAllCategories()
 {
   mModel->removeAllRows();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorized3DRendererWidget::deleteUnusedCategories()
@@ -464,7 +464,7 @@ void QgsCategorized3DRendererWidget::deleteUnusedCategories()
     }
   }
   mModel->deleteRows( unusedIndexes );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorized3DRendererWidget::addCategory()
@@ -478,7 +478,7 @@ void QgsCategorized3DRendererWidget::addCategory()
   symbol->setDefaultPropertiesFromLayer( mLayer );
   const Qgs3DRendererCategory category( QVariant(), symbol->clone(), true );
   mModel->addCategory( category );
-  emit widgetChanged();
+  emit changed();
 }
 
 Qgs3DCategoryList QgsCategorized3DRendererWidget::selectedCategoryList() const
@@ -548,7 +548,7 @@ void QgsCategorized3DRendererWidget::applyChangeToSymbol()
   }
 
   mModel->updateSymbology();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorized3DRendererWidget::keyPressEvent( QKeyEvent *event )
