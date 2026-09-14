@@ -368,8 +368,8 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
 
   syncToLayer( layer );
 
-  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::changed );
+  connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::changed );
 }
 
 void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
@@ -403,9 +403,9 @@ void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
     mProxyModel->setCurrentZoom( zoom );
   }
 
-  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::changed );
 
   mOpacityWidget->setOpacity( mVTLayer->opacity() );
 
@@ -494,7 +494,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( symbol ), QgsStyle::defaultStyle(), vectorLayer, panel );
     widget->setContext( context );
     widget->setPanelTitle( style.styleName() );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
     openPanel( widget );
   }
   else
@@ -508,7 +508,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
 
     style.setSymbol( symbol.release() );
     mRenderer->setStyle( index.row(), style );
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -523,7 +523,7 @@ void QgsVectorTileBasicRendererWidget::updateSymbolsFromWidget( QgsSymbolSelecto
   style.setSymbol( widget->symbol()->clone() );
 
   mRenderer->setStyle( index, style );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsVectorTileBasicRendererWidget::removeStyle()

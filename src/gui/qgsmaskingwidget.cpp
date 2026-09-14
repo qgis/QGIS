@@ -64,7 +64,7 @@ void QgsMaskingWidget::onSelectionChanged()
     mMessageBar->pushItem( mMessageBarItem );
   }
 
-  emit widgetChanged();
+  emit changed();
 }
 
 /**

@@ -677,7 +677,7 @@ void QgsDiagramProperties::updateProperty()
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsDiagramLayerSettings::Property key = static_cast<QgsDiagramLayerSettings::Property>( button->propertyKey() );
   mDataDefinedProperties.setProperty( key, button->toProperty() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
@@ -1282,67 +1282,67 @@ void QgsDiagramProperties::connectValueChanged( const QList<QWidget *> &widgets 
   {
     if ( QgsSymbolButton *w = qobject_cast<QgsSymbolButton *>( widget ) )
     {
-      connect( w, &QgsSymbolButton::changed, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QgsSymbolButton::changed, this, &QgsDiagramProperties::changed );
     }
     else if ( QgsFieldExpressionWidget *w = qobject_cast<QgsFieldExpressionWidget *>( widget ) )
     {
-      connect( w, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsDiagramProperties::widgetChanged );
+      connect( w, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsDiagramProperties::changed );
     }
     else if ( QgsOpacityWidget *w = qobject_cast<QgsOpacityWidget *>( widget ) )
     {
-      connect( w, &QgsOpacityWidget::opacityChanged, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QgsOpacityWidget::opacityChanged, this, &QgsDiagramProperties::changed );
     }
     else if ( QgsUnitSelectionWidget *w = qobject_cast<QgsUnitSelectionWidget *>( widget ) )
     {
-      connect( w, &QgsUnitSelectionWidget::changed, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QgsUnitSelectionWidget::changed, this, &QgsDiagramProperties::changed );
     }
     else if ( QComboBox *w = qobject_cast<QComboBox *>( widget ) )
     {
-      connect( w, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsDiagramProperties::widgetChanged );
+      connect( w, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsDiagramProperties::changed );
     }
     else if ( QSpinBox *w = qobject_cast<QSpinBox *>( widget ) )
     {
-      connect( w, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsDiagramProperties::widgetChanged );
+      connect( w, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsDiagramProperties::changed );
     }
     else if ( QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( widget ) )
     {
-      connect( w, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsDiagramProperties::widgetChanged );
+      connect( w, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsDiagramProperties::changed );
     }
     else if ( QgsColorButton *w = qobject_cast<QgsColorButton *>( widget ) )
     {
-      connect( w, &QgsColorButton::colorChanged, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QgsColorButton::colorChanged, this, &QgsDiagramProperties::changed );
     }
     else if ( QCheckBox *w = qobject_cast<QCheckBox *>( widget ) )
     {
-      connect( w, &QCheckBox::toggled, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QCheckBox::toggled, this, &QgsDiagramProperties::changed );
     }
     else if ( QRadioButton *w = qobject_cast<QRadioButton *>( widget ) )
     {
-      connect( w, &QRadioButton::toggled, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QRadioButton::toggled, this, &QgsDiagramProperties::changed );
     }
     else if ( QSlider *w = qobject_cast<QSlider *>( widget ) )
     {
-      connect( w, &QSlider::valueChanged, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QSlider::valueChanged, this, &QgsDiagramProperties::changed );
     }
     else if ( QGroupBox *w = qobject_cast<QGroupBox *>( widget ) )
     {
-      connect( w, &QGroupBox::toggled, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QGroupBox::toggled, this, &QgsDiagramProperties::changed );
     }
     else if ( QTreeWidget *w = qobject_cast<QTreeWidget *>( widget ) )
     {
-      connect( w, &QTreeWidget::itemChanged, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QTreeWidget::itemChanged, this, &QgsDiagramProperties::changed );
     }
     else if ( QgsScaleRangeWidget *w = qobject_cast<QgsScaleRangeWidget *>( widget ) )
     {
-      connect( w, &QgsScaleRangeWidget::rangeChanged, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QgsScaleRangeWidget::rangeChanged, this, &QgsDiagramProperties::changed );
     }
     else if ( QgsEffectStackCompactWidget *w = qobject_cast<QgsEffectStackCompactWidget *>( widget ) )
     {
-      connect( w, &QgsEffectStackCompactWidget::changed, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QgsEffectStackCompactWidget::changed, this, &QgsDiagramProperties::changed );
     }
     else if ( QgsFontButton *w = qobject_cast<QgsFontButton *>( widget ) )
     {
-      connect( w, &QgsFontButton::changed, this, &QgsDiagramProperties::widgetChanged );
+      connect( w, &QgsFontButton::changed, this, &QgsDiagramProperties::changed );
     }
     else
     {

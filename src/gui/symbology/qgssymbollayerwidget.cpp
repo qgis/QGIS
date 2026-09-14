@@ -539,11 +539,11 @@ void QgsSimpleLineSymbolLayerWidget::mChangePatternButton_clicked()
     QgsDashSpaceWidget *widget = new QgsDashSpaceWidget( mLayer->customDashVector(), panel );
     widget->setPanelTitle( tr( "Custom Dash Pattern" ) );
     widget->setUnit( mDashPatternUnitWidget->unit() );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget]() {
       mLayer->setCustomDashVector( widget->dashDotVector() );
       updatePatternIcon();
     } );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsSymbolLayerWidget::changed );
+    connect( widget, &QgsPanelWidget::changed, this, &QgsSymbolLayerWidget::changed );
     panel->openPanel( widget );
     return;
   }

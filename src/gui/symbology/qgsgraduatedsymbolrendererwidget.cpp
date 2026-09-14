@@ -848,13 +848,13 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   connectUpdateHandlers();
   mBlockUpdates--;
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsGraduatedSymbolRendererWidget::graduatedColumnChanged( const QString &field )
 {
   mRenderer->setClassAttribute( field );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
@@ -980,7 +980,7 @@ void QgsGraduatedSymbolRendererWidget::refreshRanges( bool )
   spinGraduatedClasses->setValue( mRenderer->ranges().count() );
   connectUpdateHandlers();
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsGraduatedSymbolRendererWidget::setSymbolLevels( const QgsLegendSymbolList &levels, bool enabled )
@@ -995,7 +995,7 @@ void QgsGraduatedSymbolRendererWidget::setSymbolLevels( const QgsLegendSymbolLis
   }
   mRenderer->setUsingSymbolLevels( enabled );
   mModel->updateSymbology();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget( QgsSymbolSelectorWidget *widget )
@@ -1038,7 +1038,7 @@ void QgsGraduatedSymbolRendererWidget::applyChangeToSymbol()
   }
 
   refreshSymbolView();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished()
@@ -1243,7 +1243,7 @@ void QgsGraduatedSymbolRendererWidget::changeRangeSymbol( int rangeIdx )
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( newSymbol ), mStyle, mLayer, panel );
     widget->setContext( mContext );
     widget->setPanelTitle( range.label() );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
     openPanel( widget );
   }
   else
@@ -1294,14 +1294,14 @@ void QgsGraduatedSymbolRendererWidget::changeRange( int rangeIdx )
     }
   }
   mHistogramWidget->refresh();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsGraduatedSymbolRendererWidget::addClass()
 {
   mModel->addClass( mGraduatedSymbol.get() );
   mHistogramWidget->refresh();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsGraduatedSymbolRendererWidget::deleteClasses()
@@ -1309,14 +1309,14 @@ void QgsGraduatedSymbolRendererWidget::deleteClasses()
   QList<int> classIndexes = selectedClasses();
   mModel->deleteRows( classIndexes );
   mHistogramWidget->refresh();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsGraduatedSymbolRendererWidget::deleteAllClasses()
 {
   mModel->removeAllRows();
   mHistogramWidget->refresh();
-  emit widgetChanged();
+  emit changed();
 }
 
 bool QgsGraduatedSymbolRendererWidget::rowsOrdered()
@@ -1440,7 +1440,7 @@ void QgsGraduatedSymbolRendererWidget::refreshSymbolView()
     mModel->updateSymbology();
   }
   mHistogramWidget->refresh();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsGraduatedSymbolRendererWidget::showSymbolLevels()
@@ -1455,12 +1455,12 @@ void QgsGraduatedSymbolRendererWidget::rowsMoved()
   {
     cbxLinkBoundaries->setChecked( false );
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsGraduatedSymbolRendererWidget::modelDataChanged()
 {
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsGraduatedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
@@ -1483,7 +1483,7 @@ void QgsGraduatedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
       rIt->mUuid = QUuid::createUuid().toString();
       mModel->addClass( *rIt );
     }
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -1507,9 +1507,9 @@ void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
-    connect( panel, &QgsPanelWidget::widgetChanged, this, [this, panel] {
+    connect( panel, &QgsPanelWidget::changed, this, [this, panel] {
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
-      emit widgetChanged();
+      emit changed();
     } );
     openPanel( panel ); // takes ownership of the panel
   }
@@ -1549,5 +1549,5 @@ void QgsGraduatedSymbolRendererWidget::pasteSymbolToSelection()
 
     mRenderer->updateRangeSymbol( row, newCatSymbol.release() );
   }
-  emit widgetChanged();
+  emit changed();
 }

@@ -318,7 +318,7 @@ void QgsRasterElevationPropertiesWidget::modeChanged()
 void QgsRasterElevationPropertiesWidget::onChanged()
 {
   if ( !mBlockUpdates )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsRasterElevationPropertiesWidget::calculateRangeByExpression( bool isUpper )
