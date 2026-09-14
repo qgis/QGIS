@@ -35,6 +35,22 @@
 #define M_DEG2RAD 0.0174532925
 #endif
 
+//! Returns the device coordinates bounding box of a map \a bbox, as transformed by \a mtp
+static QgsRectangle boundingBoxToScreenRectangle( const QgsMapToPixel &mtp, const QgsRectangle &bbox )
+{
+  const QgsPointXY topLeft = mtp.transform( bbox.xMinimum(), bbox.yMaximum() );
+  const QgsPointXY topRight = mtp.transform( bbox.xMaximum(), bbox.yMaximum() );
+  const QgsPointXY bottomLeft = mtp.transform( bbox.xMinimum(), bbox.yMinimum() );
+  const QgsPointXY bottomRight = mtp.transform( bbox.xMaximum(), bbox.yMinimum() );
+
+  const double xMin = std::min( { topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x() } );
+  const double xMax = std::max( { topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x() } );
+  const double yMin = std::min( { topLeft.y(), topRight.y(), bottomLeft.y(), bottomRight.y() } );
+  const double yMax = std::max( { topLeft.y(), topRight.y(), bottomLeft.y(), bottomRight.y() } );
+
+  return QgsRectangle( xMin, yMin, xMax, yMax );
+}
+
 
 QgsMeshVectorFieldValueSource::QgsMeshVectorFieldValueSource(
   const QgsTriangularMesh &triangularMesh,
@@ -212,26 +228,12 @@ QgsPointXY QgsVectorFieldStreamField::positionToMapCoordinates( const QPoint &pi
   return mapPoint;
 }
 
-QgsVectorFieldStreamField::QgsVectorFieldStreamField(
-  const QgsTriangularMesh &triangularMesh,
-  const QgsMeshDataBlock &dataSetVectorValues,
-  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-  const QgsRectangle &layerExtent,
-  double magnitudeMaximum,
-  bool dataIsOnVertices,
-  const QgsRenderContext &rendererContext,
-  const QgsInterpolatedLineColor &vectorColoring,
-  int resolution
-)
+QgsVectorFieldStreamField::QgsVectorFieldStreamField( std::unique_ptr<QgsVectorFieldValueSource> source, const QgsRenderContext &rendererContext, const QgsInterpolatedLineColor &vectorColoring, int resolution )
   : mFieldResolution( resolution )
   , mVectorColoring( vectorColoring )
   , mRenderContext( rendererContext )
-  , mLayerExtent( layerExtent )
-  , mMaximumMagnitude( magnitudeMaximum )
-{
-  mVectorValueInterpolator = QgsMeshVectorFieldValueSource::
-    create( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, {}, dataIsOnVertices ? QgsMeshDatasetGroupMetadata::DataOnVertices : QgsMeshDatasetGroupMetadata::DataOnFaces, layerExtent, magnitudeMaximum );
-}
+  , mSource( std::move( source ) )
+{}
 
 QgsVectorFieldStreamField::QgsVectorFieldStreamField( const QgsVectorFieldStreamField &other )
   : mFieldSize( other.mFieldSize )
@@ -245,18 +247,16 @@ QgsVectorFieldStreamField::QgsVectorFieldStreamField( const QgsVectorFieldStream
   , mRenderContext( other.mRenderContext )
   , mPixelFillingCount( other.mPixelFillingCount )
   , mMaxPixelFillingCount( other.mMaxPixelFillingCount )
-  , mLayerExtent( other.mLayerExtent )
   , mMapExtent( other.mMapExtent )
   , mFieldTopLeftInDeviceCoordinates( other.mFieldTopLeftInDeviceCoordinates )
   , mValid( other.mValid )
-  , mMaximumMagnitude( other.mMaximumMagnitude )
   , mPixelFillingDensity( other.mPixelFillingDensity )
   , mMinMagFilter( other.mMinMagFilter )
   , mMaxMagFilter( other.mMaxMagFilter )
   , mMinimizeFieldSize( other.mMinimizeFieldSize )
 {
   mPainter = std::make_unique<QPainter>( &mTraceImage );
-  mVectorValueInterpolator = std::unique_ptr<QgsMeshVectorFieldValueSource>( other.mVectorValueInterpolator->clone() );
+  mSource = other.mSource ? std::unique_ptr<QgsVectorFieldValueSource>( other.mSource->clone() ) : nullptr;
 }
 
 QgsVectorFieldStreamField::~QgsVectorFieldStreamField()
@@ -274,7 +274,7 @@ void QgsVectorFieldStreamField::updateSize( const QgsRenderContext &renderContex
   {
     QgsCoordinateTransform extentTransform = renderContext.coordinateTransform();
     extentTransform.setBallparkTransformsAreAppropriate( true );
-    layerExtent = extentTransform.transformBoundingBox( mLayerExtent );
+    layerExtent = extentTransform.transformBoundingBox( mSource->extent() );
   }
   catch ( QgsCsException &cse )
   {
@@ -298,7 +298,7 @@ void QgsVectorFieldStreamField::updateSize( const QgsRenderContext &renderContex
     return;
   }
 
-  QgsRectangle fieldInterestZoneInDeviceCoordinates = QgsMeshLayerUtils::boundingBoxToScreenRectangle( deviceMapToPixel, interestZoneExtent );
+  QgsRectangle fieldInterestZoneInDeviceCoordinates = ::boundingBoxToScreenRectangle( deviceMapToPixel, interestZoneExtent );
   mFieldTopLeftInDeviceCoordinates
     = QPoint( static_cast<int>( std::round( fieldInterestZoneInDeviceCoordinates.xMinimum() ) ), static_cast<int>( std::round( fieldInterestZoneInDeviceCoordinates.yMinimum() ) ) );
   int fieldWidthInDeviceCoordinate = int( fieldInterestZoneInDeviceCoordinates.width() );
@@ -381,7 +381,7 @@ void QgsVectorFieldStreamField::addTrace( QgsPointXY startPoint )
 
 void QgsVectorFieldStreamField::addRandomTraces()
 {
-  if ( mMaximumMagnitude > 0 )
+  if ( mSource && mSource->maximumMagnitude() > 0 )
     while ( ( mPixelFillingCount < mMaxPixelFillingCount ) && ( !mRenderContext.feedback() || !mRenderContext.feedback()->isCanceled() || !mRenderContext.renderingStopped() ) )
       addRandomTrace();
 }
@@ -411,21 +411,14 @@ void QgsVectorFieldStreamField::addGriddedTraces( int dx, int dy )
   }
 }
 
-void QgsVectorFieldStreamField::addTracesOnMesh( const QgsTriangularMesh &mesh, const QgsRectangle &extent )
+void QgsVectorFieldStreamField::addTracesOnDataPoints( const QgsRectangle &extent )
 {
-  QList<int> facesInExtent = mesh.faceIndexesForRectangle( extent );
-  QSet<int> vertices;
-  for ( auto f : std::as_const( facesInExtent ) )
-  {
-    auto face = mesh.triangles().at( f );
-    for ( auto i : std::as_const( face ) )
-      vertices.insert( i );
-  }
+  if ( !mSource )
+    return;
 
-  for ( auto i : std::as_const( vertices ) )
-  {
-    addTrace( mesh.vertices().at( i ) );
-  }
+  const QVector<QgsPointXY> points = mSource->seedPoints( extent );
+  for ( const QgsPointXY &point : points )
+    addTrace( point );
 }
 
 void QgsVectorFieldStreamField::addTrace( QPoint startPixel )
@@ -437,10 +430,11 @@ void QgsVectorFieldStreamField::addTrace( QPoint startPixel )
   if ( isTraceExists( startPixel ) || isTraceOutside( startPixel ) )
     return;
 
-  if ( !mVectorValueInterpolator )
+  if ( !mSource )
     return;
 
-  if ( !( mMaximumMagnitude > 0 ) )
+  const double maximumMagnitude = mSource->maximumMagnitude();
+  if ( !( maximumMagnitude > 0 ) )
     return;
 
   mPainter->setPen( mPen );
@@ -459,7 +453,7 @@ void QgsVectorFieldStreamField::addTrace( QPoint startPixel )
   while ( true )
   {
     QgsPointXY mapPosition = positionToMapCoordinates( currentPixel, QgsPointXY( x1, y1 ) );
-    vector = mVectorValueInterpolator->vectorValue( mapPosition );
+    vector = mSource->vectorValue( mapPosition );
 
     if ( std::isnan( vector.x() ) || std::isnan( vector.y() ) )
     {
@@ -472,12 +466,12 @@ void QgsVectorFieldStreamField::addTrace( QPoint startPixel )
      * The nondimensional size of the side of a pixel is 2
      */
     vector = vector.rotateBy( -mMapToFieldPixel.mapRotation() * M_DEG2RAD );
-    QgsVector vu = vector / mMaximumMagnitude * 2;
+    QgsVector vu = vector / maximumMagnitude * 2;
     data.magnitude = vector.length();
 
     double Vx = vu.x();
     double Vy = vu.y();
-    double Vu = data.magnitude / mMaximumMagnitude * 2; //nondimensional vector magnitude
+    double Vu = data.magnitude / maximumMagnitude * 2; //nondimensional vector magnitude
 
     if ( qgsDoubleNear( Vu, 0 ) )
     {
@@ -658,15 +652,23 @@ void QgsVectorFieldStreamlinesField::initImage()
       QgsRenderContext fieldContext = mRenderContext;
 
       fieldContext.setMapToPixel( mMapToFieldPixel );
-      auto mScalarInterpolator = std::make_unique<QgsMeshLayerInterpolator>( mTriangularMesh, mMagValues, mScalarActiveFaceFlagValues, mDataType, fieldContext, imgSize );
+      // the returned interface keeps a reference on fieldContext, so it must not outlive this scope
+      std::unique_ptr<QgsRasterInterface> magnitudeSource = mSource ? mSource->magnitudeSource( fieldContext, imgSize ) : nullptr;
 
-      QgsRasterShader *sh = new QgsRasterShader();
-      sh->setRasterShaderFunction( new QgsColorRampShader( mVectorColoring.colorRampShader() ) ); // takes ownership of fcn
-      QgsSingleBandPseudoColorRenderer renderer( mScalarInterpolator.get(), 0, sh );              // takes ownership of sh
-      if ( imgSize.isValid() )
+      if ( magnitudeSource && imgSize.isValid() )
       {
+        QgsRasterShader *sh = new QgsRasterShader();
+        sh->setRasterShaderFunction( new QgsColorRampShader( mVectorColoring.colorRampShader() ) ); // takes ownership of fcn
+        QgsSingleBandPseudoColorRenderer renderer( magnitudeSource.get(), 0, sh );                  // takes ownership of sh
         std::unique_ptr<QgsRasterBlock> bl( renderer.block( 0, mOutputExtent, imgSize.width(), imgSize.height(), mFeedBack ) );
         mTraceImage = bl->image();
+      }
+      else
+      {
+        // the source cannot provide a magnitude raster, degrade to a flat single color
+        mTraceImage = QImage( mFieldSize * mFieldResolution, QImage::Format_ARGB32_Premultiplied );
+        if ( !mTraceImage.isNull() )
+          mTraceImage.fill( mVectorColoring.singleColor() );
       }
     }
     break;
@@ -724,36 +726,9 @@ void QgsVectorFieldStreamField::simplifyChunkTrace( std::list<QPair<QPoint, Fiel
 }
 
 QgsVectorFieldStreamlinesField::QgsVectorFieldStreamlinesField(
-  const QgsTriangularMesh &triangularMesh,
-  const QgsMeshDataBlock &datasetVectorValues,
-  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-  const QgsRectangle &layerExtent,
-  double magMax,
-  bool dataIsOnVertices,
-  QgsRenderContext &rendererContext,
-  const QgsInterpolatedLineColor &vectorColoring
+  std::unique_ptr<QgsVectorFieldValueSource> source, QgsRenderContext &rendererContext, const QgsInterpolatedLineColor &vectorColoring, QgsRasterBlockFeedback *feedBack
 )
-  : QgsVectorFieldStreamField( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues, layerExtent, magMax, dataIsOnVertices, rendererContext, vectorColoring )
-  , mMagValues( QgsMeshLayerUtils::calculateMagnitudes( datasetVectorValues ) )
-{}
-
-QgsVectorFieldStreamlinesField::QgsVectorFieldStreamlinesField(
-  const QgsTriangularMesh &triangularMesh,
-  const QgsMeshDataBlock &datasetVectorValues,
-  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-  const QVector<double> &datasetMagValues,
-  const QgsRectangle &layerExtent,
-  QgsMeshLayerRendererFeedback *feedBack,
-  double magMax,
-  bool dataIsOnVertices,
-  QgsRenderContext &rendererContext,
-  const QgsInterpolatedLineColor &vectorColoring
-)
-  : QgsVectorFieldStreamField( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues, layerExtent, magMax, dataIsOnVertices, rendererContext, vectorColoring )
-  , mTriangularMesh( triangularMesh )
-  , mMagValues( datasetMagValues )
-  , mScalarActiveFaceFlagValues( scalarActiveFaceFlagValues )
-  , mDataType( dataIsOnVertices ? QgsMeshDatasetGroupMetadata::DataOnVertices : QgsMeshDatasetGroupMetadata::DataOnFaces )
+  : QgsVectorFieldStreamField( std::move( source ), rendererContext, vectorColoring )
   , mFeedBack( feedBack )
 {}
 
@@ -886,16 +861,14 @@ QgsVectorFieldStreamField &QgsVectorFieldStreamField::operator=( const QgsVector
   mRenderContext = other.mRenderContext;
   mPixelFillingCount = other.mPixelFillingCount;
   mMaxPixelFillingCount = other.mMaxPixelFillingCount;
-  mLayerExtent = other.mLayerExtent;
   mMapExtent = other.mMapExtent;
   mFieldTopLeftInDeviceCoordinates = other.mFieldTopLeftInDeviceCoordinates;
   mValid = other.mValid;
-  mMaximumMagnitude = other.mMaximumMagnitude;
   mPixelFillingDensity = other.mPixelFillingDensity;
   mMinMagFilter = other.mMinMagFilter;
   mMaxMagFilter = other.mMaxMagFilter;
   mMinimizeFieldSize = other.mMinimizeFieldSize;
-  mVectorValueInterpolator = std::unique_ptr<QgsMeshVectorFieldValueSource>( other.mVectorValueInterpolator->clone() );
+  mSource = other.mSource ? std::unique_ptr<QgsVectorFieldValueSource>( other.mSource->clone() ) : nullptr;
 
   mPainter = std::make_unique<QPainter>( &mTraceImage );
 
@@ -970,15 +943,15 @@ QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer(
   const QgsVectorFieldSettings &settings,
   QgsRenderContext &rendererContext,
   const QgsRectangle &layerExtent,
-  QgsMeshLayerRendererFeedback *feedBack,
+  QgsRasterBlockFeedback *feedBack,
   double magMax
 )
   : mRendererContext( rendererContext )
 {
-  mStreamlineField = std::make_unique<QgsVectorFieldStreamlinesField>(
+  std::unique_ptr<QgsVectorFieldValueSource> source = QgsMeshVectorFieldValueSource::
+    create( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, datasetMagValues, dataIsOnVertices ? QgsMeshDatasetGroupMetadata::DataOnVertices : QgsMeshDatasetGroupMetadata::DataOnFaces, layerExtent, magMax );
 
-    triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, datasetMagValues, layerExtent, feedBack, magMax, dataIsOnVertices, rendererContext, settings.vectorStrokeColoring()
-  );
+  mStreamlineField = std::make_unique<QgsVectorFieldStreamlinesField>( std::move( source ), rendererContext, settings.vectorStrokeColoring(), feedBack );
 
   mStreamlineField->updateSize( rendererContext );
   mStreamlineField->setPixelFillingDensity( settings.streamLinesSettings().seedingDensity() );
@@ -993,7 +966,7 @@ QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer(
       if ( settings.isOnUserDefinedGrid() )
         mStreamlineField->addGriddedTraces( settings.userGridCellWidth(), settings.userGridCellHeight() );
       else
-        mStreamlineField->addTracesOnMesh( triangularMesh, rendererContext.mapExtent() );
+        mStreamlineField->addTracesOnDataPoints( rendererContext.mapExtent() );
       break;
     case Qgis::VectorFieldSeedingMethod::Random:
       mStreamlineField->addRandomTraces();
@@ -1009,17 +982,8 @@ void QgsMeshVectorStreamlineRenderer::draw()
   mRendererContext.painter()->drawImage( mStreamlineField->topLeft(), mStreamlineField->image() );
 }
 
-QgsVectorFieldParticleTracesField::QgsVectorFieldParticleTracesField(
-  const QgsTriangularMesh &triangularMesh,
-  const QgsMeshDataBlock &datasetVectorValues,
-  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-  const QgsRectangle &layerExtent,
-  double magMax,
-  bool dataIsOnVertices,
-  const QgsRenderContext &rendererContext,
-  const QgsInterpolatedLineColor &vectorColoring
-)
-  : QgsVectorFieldStreamField( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues, layerExtent, magMax, dataIsOnVertices, rendererContext, vectorColoring )
+QgsVectorFieldParticleTracesField::QgsVectorFieldParticleTracesField( std::unique_ptr<QgsVectorFieldValueSource> source, const QgsRenderContext &rendererContext, const QgsInterpolatedLineColor &vectorColoring )
+  : QgsVectorFieldStreamField( std::move( source ), rendererContext, vectorColoring )
 {
   std::srand( uint( ::time( nullptr ) ) );
   mPen.setCapStyle( Qt::RoundCap );
@@ -1349,9 +1313,12 @@ QgsVectorFieldTraceAnimationGenerator::QgsVectorFieldTraceAnimationGenerator(
   double magMax,
   const QgsVectorFieldSettings &vectorSettings
 )
-  : mParticleField(
-      new QgsVectorFieldParticleTracesField( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, layerExtent, magMax, dataIsOnVertices, rendererContext, vectorSettings.vectorStrokeColoring() )
-    )
+  : mParticleField( new QgsVectorFieldParticleTracesField(
+      QgsMeshVectorFieldValueSource::
+        create( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, {}, dataIsOnVertices ? QgsMeshDatasetGroupMetadata::DataOnVertices : QgsMeshDatasetGroupMetadata::DataOnFaces, layerExtent, magMax ),
+      rendererContext,
+      vectorSettings.vectorStrokeColoring()
+    ) )
   , mRendererContext( rendererContext )
 {
   mParticleField->updateSize( rendererContext );
@@ -1399,8 +1366,19 @@ QgsVectorFieldTraceAnimationGenerator::QgsVectorFieldTraceAnimationGenerator( Qg
     scalarActiveFaceFlagValues = layer->dataProvider()->areFacesActive( datasetIndex, 0, layer->nativeMesh()->faces.count() );
   }
 
-  mParticleField = std::make_unique<
-    QgsVectorFieldParticleTracesField>( ( *layer->triangularMesh() ), vectorDatasetValues, scalarActiveFaceFlagValues, layer->extent(), magMax, vectorDataOnVertices, rendererContext, vectorSettings.vectorStrokeColoring() );
+  mParticleField = std::make_unique<QgsVectorFieldParticleTracesField>(
+    QgsMeshVectorFieldValueSource::create(
+      *layer->triangularMesh(),
+      vectorDatasetValues,
+      scalarActiveFaceFlagValues,
+      {},
+      vectorDataOnVertices ? QgsMeshDatasetGroupMetadata::DataOnVertices : QgsMeshDatasetGroupMetadata::DataOnFaces,
+      layer->extent(),
+      magMax
+    ),
+    rendererContext,
+    vectorSettings.vectorStrokeColoring()
+  );
 
   mParticleField->setMinimizeFieldSize( false );
   mParticleField->updateSize( mRendererContext );
@@ -1508,9 +1486,12 @@ QgsMeshVectorTraceRenderer::QgsMeshVectorTraceRenderer(
   const QgsRectangle &layerExtent,
   double magMax
 )
-  : mParticleField(
-      new QgsVectorFieldParticleTracesField( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, layerExtent, magMax, dataIsOnVertices, rendererContext, settings.vectorStrokeColoring() )
-    )
+  : mParticleField( new QgsVectorFieldParticleTracesField(
+      QgsMeshVectorFieldValueSource::
+        create( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, {}, dataIsOnVertices ? QgsMeshDatasetGroupMetadata::DataOnVertices : QgsMeshDatasetGroupMetadata::DataOnFaces, layerExtent, magMax ),
+      rendererContext,
+      settings.vectorStrokeColoring()
+    ) )
   , mRendererContext( rendererContext )
 {
   mParticleField->updateSize( rendererContext );
