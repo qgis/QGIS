@@ -111,10 +111,18 @@ class CORE_EXPORT QgsMbTiles
      */
     void setTileData( const QList<TileData> &tiles ) const;
 
+    /**
+     * Returns the latest error message obtained from the database.
+     *
+     * \since QGIS 4.4
+     */
+    QString lastError() const { return mLastError; }
+
   private:
     QString mFilename;
     sqlite3_database_unique_ptr mDatabase;
     bool mDeferredIndexCreation = false;
+    mutable QString mLastError;
 };
 
 
