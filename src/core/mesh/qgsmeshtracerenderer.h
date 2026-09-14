@@ -43,23 +43,23 @@ class QgsMeshLayerRendererFeedback;
  * \brief Abstract class used to interpolate the value of the vector for a pixel
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
-class QgsMeshVectorValueInterpolator
+class QgsMeshVectorFieldValueSource
 {
   public:
     //! Constructor
-    QgsMeshVectorValueInterpolator( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
+    QgsMeshVectorFieldValueSource( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
 
     //! Constructor with scalar active face flag values to not interpolate on inactive face
-    QgsMeshVectorValueInterpolator( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
+    QgsMeshVectorFieldValueSource( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
 
-    QgsMeshVectorValueInterpolator( const QgsMeshVectorValueInterpolator &other );
+    QgsMeshVectorFieldValueSource( const QgsMeshVectorFieldValueSource &other );
 
     //! Clone
-    virtual QgsMeshVectorValueInterpolator *clone() = 0;
+    virtual QgsMeshVectorFieldValueSource *clone() = 0;
 
-    virtual ~QgsMeshVectorValueInterpolator() = default;
+    virtual ~QgsMeshVectorFieldValueSource() = default;
 
     /**
      * Returns the interpolated vector
@@ -68,7 +68,7 @@ class QgsMeshVectorValueInterpolator
     virtual QgsVector vectorValue( const QgsPointXY &point ) const;
 
     //! Assignment operator
-    QgsMeshVectorValueInterpolator &operator=( const QgsMeshVectorValueInterpolator &other );
+    QgsMeshVectorFieldValueSource &operator=( const QgsMeshVectorFieldValueSource &other );
 
   protected:
     void updateCacheFaceIndex( const QgsPointXY &point ) const;
@@ -93,23 +93,23 @@ class QgsMeshVectorValueInterpolator
  * \brief Class used to retrieve the value of the vector for a pixel from vertex
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
-class QgsMeshVectorValueInterpolatorFromVertex : public QgsMeshVectorValueInterpolator
+class QgsMeshVectorFieldValueSourceFromVertex : public QgsMeshVectorFieldValueSource
 {
   public:
     //! Constructor
-    QgsMeshVectorValueInterpolatorFromVertex( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
+    QgsMeshVectorFieldValueSourceFromVertex( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
 
     //! Constructor with scalar active face flag value to not interpolate on inactive face
-    QgsMeshVectorValueInterpolatorFromVertex( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
+    QgsMeshVectorFieldValueSourceFromVertex( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
 
-    QgsMeshVectorValueInterpolatorFromVertex( const QgsMeshVectorValueInterpolatorFromVertex &other );
+    QgsMeshVectorFieldValueSourceFromVertex( const QgsMeshVectorFieldValueSourceFromVertex &other );
 
     //! Clone the instance
-    QgsMeshVectorValueInterpolatorFromVertex *clone() override;
+    QgsMeshVectorFieldValueSourceFromVertex *clone() override;
 
-    QgsMeshVectorValueInterpolatorFromVertex &operator=( const QgsMeshVectorValueInterpolatorFromVertex &other );
+    QgsMeshVectorFieldValueSourceFromVertex &operator=( const QgsMeshVectorFieldValueSourceFromVertex &other );
 
   private:
     QgsVector interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const override;
@@ -121,23 +121,23 @@ class QgsMeshVectorValueInterpolatorFromVertex : public QgsMeshVectorValueInterp
  * \brief Class used to retrieve the value of the vector for a pixel from vertex
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
-class QgsMeshVectorValueInterpolatorFromFace : public QgsMeshVectorValueInterpolator
+class QgsMeshVectorFieldValueSourceFromFace : public QgsMeshVectorFieldValueSource
 {
   public:
     //! Constructor
-    QgsMeshVectorValueInterpolatorFromFace( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
+    QgsMeshVectorFieldValueSourceFromFace( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
 
     //! Constructor with scalar active face flag value to not interpolate on inactive face
-    QgsMeshVectorValueInterpolatorFromFace( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
+    QgsMeshVectorFieldValueSourceFromFace( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
 
-    QgsMeshVectorValueInterpolatorFromFace( const QgsMeshVectorValueInterpolatorFromFace &other );
+    QgsMeshVectorFieldValueSourceFromFace( const QgsMeshVectorFieldValueSourceFromFace &other );
 
     //! Clone the instance
-    QgsMeshVectorValueInterpolatorFromFace *clone() override;
+    QgsMeshVectorFieldValueSourceFromFace *clone() override;
 
-    QgsMeshVectorValueInterpolatorFromFace &operator=( const QgsMeshVectorValueInterpolatorFromFace &other );
+    QgsMeshVectorFieldValueSourceFromFace &operator=( const QgsMeshVectorFieldValueSourceFromFace &other );
 
   private:
     QgsVector interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const override;
@@ -149,9 +149,9 @@ class QgsMeshVectorValueInterpolatorFromFace : public QgsMeshVectorValueInterpol
  * \brief Abstract class used to handle information about stream field
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
-class QgsMeshStreamField
+class QgsVectorFieldStreamField
 {
   public:
     struct FieldData
@@ -163,7 +163,7 @@ class QgsMeshStreamField
     };
 
     //! Constructor
-    QgsMeshStreamField(
+    QgsVectorFieldStreamField(
       const QgsTriangularMesh &triangularMesh,
       const QgsMeshDataBlock &dataSetVectorValues,
       const QgsMeshDataBlock &scalarActiveFaceFlagValues,
@@ -175,8 +175,8 @@ class QgsMeshStreamField
       int resolution = 1
     );
 
-    QgsMeshStreamField( const QgsMeshStreamField &other );
-    virtual ~QgsMeshStreamField();
+    QgsVectorFieldStreamField( const QgsVectorFieldStreamField &other );
+    virtual ~QgsVectorFieldStreamField();
 
     /**
     * Updates the size of the field and the QgsMapToPixel instance to retrieve map point
@@ -247,7 +247,7 @@ class QgsMeshStreamField
     void setMinimizeFieldSize( bool minimizeFieldSize );
 
     //! Assignment operator
-    QgsMeshStreamField &operator=( const QgsMeshStreamField &other );
+    QgsVectorFieldStreamField &operator=( const QgsVectorFieldStreamField &other );
 
   protected:
     virtual void initImage();
@@ -257,7 +257,7 @@ class QgsMeshStreamField
 
   private:
     QgsPointXY positionToMapCoordinates( const QPoint &pixelPosition, const QgsPointXY &positionInPixel );
-    bool addPixelToChunkTrace( QPoint &pixel, QgsMeshStreamField::FieldData &data, std::list<QPair<QPoint, QgsMeshStreamField::FieldData> > &chunkTrace );
+    bool addPixelToChunkTrace( QPoint &pixel, QgsVectorFieldStreamField::FieldData &data, std::list<QPair<QPoint, QgsVectorFieldStreamField::FieldData> > &chunkTrace );
     void setChunkTrace( std::list<QPair<QPoint, FieldData>> &chunkTrace );
     virtual void drawTrace( const QPoint & ) const {}
     void clearChunkTrace( std::list<QPair<QPoint, FieldData>> &chunkTrace );
@@ -297,7 +297,7 @@ class QgsMeshStreamField
   private:
     int mPixelFillingCount = 0;
     int mMaxPixelFillingCount = 0;
-    std::unique_ptr<QgsMeshVectorValueInterpolator> mVectorValueInterpolator;
+    std::unique_ptr<QgsMeshVectorFieldValueSource> mVectorValueInterpolator;
     QgsRectangle mLayerExtent;
     QgsRectangle mMapExtent;
     QPoint mFieldTopLeftInDeviceCoordinates;
@@ -315,13 +315,13 @@ class QgsMeshStreamField
  * \brief Class used to draw streamlines from vector field
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
-class QgsMeshStreamlinesField : public QgsMeshStreamField
+class QgsVectorFieldStreamlinesField : public QgsVectorFieldStreamField
 {
   public:
     //! Constructor
-    Q_DECL_DEPRECATED QgsMeshStreamlinesField(
+    Q_DECL_DEPRECATED QgsVectorFieldStreamlinesField(
       const QgsTriangularMesh &triangularMesh,
       const QgsMeshDataBlock &datasetVectorValues,
       const QgsMeshDataBlock &scalarActiveFaceFlagValues,
@@ -332,7 +332,7 @@ class QgsMeshStreamlinesField : public QgsMeshStreamField
       const QgsInterpolatedLineColor &vectorColoring
     );
 
-    QgsMeshStreamlinesField(
+    QgsVectorFieldStreamlinesField(
       const QgsTriangularMesh &triangularMesh,
       const QgsMeshDataBlock &datasetVectorValues,
       const QgsMeshDataBlock &scalarActiveFaceFlagValues,
@@ -366,7 +366,7 @@ class QgsMeshStreamlinesField : public QgsMeshStreamField
     QgsMeshLayerRendererFeedback *mFeedBack = nullptr;
 };
 
-class QgsMeshParticleTracesField;
+class QgsVectorFieldParticleTracesField;
 
 /**
  * \ingroup core
@@ -374,9 +374,9 @@ class QgsMeshParticleTracesField;
  * \brief Used to simulation moving particle
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
-struct QgsMeshTraceParticle
+struct QgsVectorFieldTraceParticle
 {
     double lifeTime = 0;
     QPoint position;
@@ -390,13 +390,13 @@ struct QgsMeshTraceParticle
  * \brief Class used to draw streamlines from vector field
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
-class QgsMeshParticleTracesField : public QgsMeshStreamField
+class QgsVectorFieldParticleTracesField : public QgsVectorFieldStreamField
 {
   public:
     //! Constructor
-    QgsMeshParticleTracesField(
+    QgsVectorFieldParticleTracesField(
       const QgsTriangularMesh &triangularMesh,
       const QgsMeshDataBlock &datasetVectorValues,
       const QgsMeshDataBlock &scalarActiveFaceFlagValues,
@@ -407,7 +407,7 @@ class QgsMeshParticleTracesField : public QgsMeshStreamField
       const QgsInterpolatedLineColor &vectorColoring
     );
 
-    QgsMeshParticleTracesField( const QgsMeshParticleTracesField &other );
+    QgsVectorFieldParticleTracesField( const QgsVectorFieldParticleTracesField &other );
 
     //! Adds a particle in the vector field from a start point (pixel) with a specified life time
     void addParticle( const QPoint &startPoint, double lifeTime );
@@ -458,7 +458,7 @@ class QgsMeshParticleTracesField : public QgsMeshStreamField
     //! Sets the color of the particles, overwrite the color provided by vector settings
     void setParticlesColor( const QColor &c );
 
-    QgsMeshParticleTracesField &operator=( const QgsMeshParticleTracesField &other );
+    QgsVectorFieldParticleTracesField &operator=( const QgsVectorFieldParticleTracesField &other );
 
   private:
     QPoint direction( QPoint position ) const;
@@ -466,7 +466,7 @@ class QgsMeshParticleTracesField : public QgsMeshStreamField
     float time( QPoint position ) const;
     float magnitude( QPoint position ) const;
 
-    void drawParticleTrace( const QgsMeshTraceParticle &particle );
+    void drawParticleTrace( const QgsVectorFieldTraceParticle &particle );
 
     void storeInField( const QPair<QPoint, FieldData> pixelData ) override;
     void initField() override;
@@ -482,7 +482,7 @@ class QgsMeshParticleTracesField : public QgsMeshStreamField
     QVector<float> mTimeField;
     QVector<float> mMagnitudeField;
 
-    QList<QgsMeshTraceParticle> mParticles;
+    QList<QgsVectorFieldTraceParticle> mParticles;
     QImage mStumpImage;
 
     double mTimeStep = 200;
@@ -537,7 +537,7 @@ class QgsMeshVectorStreamlineRenderer : public QgsMeshVectorRenderer
     void draw() override;
 
   private:
-    std::unique_ptr<QgsMeshStreamlinesField> mStreamlineField;
+    std::unique_ptr<QgsVectorFieldStreamlinesField> mStreamlineField;
     QgsRenderContext &mRendererContext;
 };
 
@@ -570,7 +570,7 @@ class QgsMeshVectorTraceRenderer : public QgsMeshVectorRenderer
     void draw() override;
 
   private:
-    std::unique_ptr<QgsMeshParticleTracesField> mParticleField;
+    std::unique_ptr<QgsVectorFieldParticleTracesField> mParticleField;
     QgsRenderContext &mRendererContext;
 };
 
@@ -586,13 +586,13 @@ class QgsMeshVectorTraceRenderer : public QgsMeshVectorRenderer
  *
  * Available for Python binding
  *
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
-class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
+class CORE_EXPORT QgsVectorFieldTraceAnimationGenerator
 {
   public:
     //!Constructor to use from QgsMeshVectorRenderer
-    QgsMeshVectorTraceAnimationGenerator(
+    QgsVectorFieldTraceAnimationGenerator(
       const QgsTriangularMesh &triangularMesh,
       const QgsMeshDataBlock &dataSetVectorValues,
       const QgsMeshDataBlock &scalarActiveFaceFlagValues,
@@ -604,11 +604,11 @@ class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
     ) SIP_SKIP;
 
     //!Constructor to use with Python binding
-    QgsMeshVectorTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
+    QgsVectorFieldTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
 
-    QgsMeshVectorTraceAnimationGenerator( const QgsMeshVectorTraceAnimationGenerator &other );
+    QgsVectorFieldTraceAnimationGenerator( const QgsVectorFieldTraceAnimationGenerator &other );
 
-    ~QgsMeshVectorTraceAnimationGenerator() = default;
+    ~QgsVectorFieldTraceAnimationGenerator() = default;
 
     //! seeds particles in the vector fields
     void seedRandomParticles( int count );
@@ -640,16 +640,37 @@ class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
     //! Sets the visual persistence of the tail
     void setTailPersitence( double p );
 
-    QgsMeshVectorTraceAnimationGenerator &operator=( const QgsMeshVectorTraceAnimationGenerator &other );
+    QgsVectorFieldTraceAnimationGenerator &operator=( const QgsVectorFieldTraceAnimationGenerator &other );
 
   private:
-    std::unique_ptr<QgsMeshParticleTracesField> mParticleField;
+    std::unique_ptr<QgsVectorFieldParticleTracesField> mParticleField;
     const QgsRenderContext &mRendererContext;
     int mFPS = 15;       //frame per second of the output, used to calculate orher parameters of the field
     int mVpixMax = 2000; //is the number of pixels that are going through for 1 s
     double mParticleLifeTime = 5;
 
     void updateFieldParameter();
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief A wrapper for QgsMeshParticuleTracesField used to render the particles.
+ *
+ * Available for Python binding
+ *
+ * \since QGIS 3.12
+ * \deprecated QGIS 4.4. Use QgsVectorFieldTraceAnimationGenerator instead.
+ */
+class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator : public QgsVectorFieldTraceAnimationGenerator SIP_NODEFAULTCTORS
+{
+  public:
+    /**
+     * Constructor to use with Python binding
+     *
+     * \deprecated QGIS 4.4. Use QgsVectorFieldTraceAnimationGenerator::fromMeshLayer() instead.
+     */
+    Q_DECL_DEPRECATED QgsMeshVectorTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext ) SIP_DEPRECATED;
 };
 
 #endif // QGSMESHTRACERENDERER_H
