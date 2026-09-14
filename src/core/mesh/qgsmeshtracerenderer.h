@@ -26,6 +26,7 @@
 #include "qgsmeshvectorrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
+#include "qgsvectorfieldvaluesource.h"
 
 #include <QSize>
 #include <QVector>
@@ -40,57 +41,82 @@ class QgsMeshLayerRendererFeedback;
 /**
  * \ingroup core
  *
- * \brief Abstract class used to interpolate the value of the vector for a pixel
+ * \brief Abstract vector field value source backed by a mesh dataset.
+ *
+ * Interpolates the vector value of a triangular mesh dataset at arbitrary map positions, caching
+ * the last hit face because consecutive lookups of a trace usually land in the same triangle.
  *
  * \note not available in Python bindings
  * \since QGIS 4.4
  */
-class QgsMeshVectorFieldValueSource
+class QgsMeshVectorFieldValueSource : public QgsVectorFieldValueSource
 {
   public:
-    //! Constructor
-    QgsMeshVectorFieldValueSource( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
-
-    //! Constructor with scalar active face flag values to not interpolate on inactive face
-    QgsMeshVectorFieldValueSource( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
-
-    QgsMeshVectorFieldValueSource( const QgsMeshVectorFieldValueSource &other );
-
-    //! Clone
-    virtual QgsMeshVectorFieldValueSource *clone() = 0;
-
-    virtual ~QgsMeshVectorFieldValueSource() = default;
+    /**
+     * Constructs a source for the vector dataset \a datasetVectorValues of \a triangularMesh.
+     *
+     * \a scalarActiveFaceFlagValues may be an invalid data block, in which case all faces are
+     * considered active. \a datasetMagnitudeValues holds the precalculated magnitudes, used to
+     * build the color ramp image, and may be empty. \a maximumMagnitude must be the maximum
+     * magnitude of the whole dataset.
+     */
+    QgsMeshVectorFieldValueSource(
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QVector<double> &datasetMagnitudeValues,
+      QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsRectangle &layerExtent,
+      double maximumMagnitude
+    );
 
     /**
-     * Returns the interpolated vector
-     * \param point point in map coordinates
+     * Returns a source suitable for \a dataType, that is one interpolating from vertices for
+     * QgsMeshDatasetGroupMetadata::DataOnVertices and one from faces otherwise.
      */
-    virtual QgsVector vectorValue( const QgsPointXY &point ) const;
+    static std::unique_ptr<QgsMeshVectorFieldValueSource> create(
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QVector<double> &datasetMagnitudeValues,
+      QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsRectangle &layerExtent,
+      double maximumMagnitude
+    );
 
-    //! Assignment operator
-    QgsMeshVectorFieldValueSource &operator=( const QgsMeshVectorFieldValueSource &other );
+    QgsVector vectorValue( const QgsPointXY &point ) const override;
+    QgsRectangle extent() const override;
+    double maximumMagnitude() const override;
+    QVector<QgsPointXY> seedPoints( const QgsRectangle &extent ) const override;
+
+    /**
+     * \note The returned interface keeps references to \a context, so it must not outlive it.
+     */
+    std::unique_ptr<QgsRasterInterface> magnitudeSource( const QgsRenderContext &context, QSize size ) const override;
 
   protected:
-    void updateCacheFaceIndex( const QgsPointXY &point ) const;
+    virtual QgsVector interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const = 0;
+
+    bool isVectorValid( const QgsVector &v ) const;
 
     QgsTriangularMesh mTriangularMesh;
     QgsMeshDataBlock mDatasetValues;
     QgsMeshDataBlock mActiveFaceFlagValues;
-    mutable QgsMeshFace mFaceCache;
-    mutable int mCacheFaceIndex = -1;
+    QVector<double> mMagnitudeValues;
+    QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataOnVertices;
+    QgsRectangle mExtent;
+    double mMaximumMagnitude = 0;
     bool mUseScalarActiveFaceFlagValues = false;
-    bool isVectorValid( const QgsVector &v ) const;
+    mutable int mCacheFaceIndex = -1;
 
   private:
     void activeFaceFilter( QgsVector &vector, int faceIndex ) const;
-
-    virtual QgsVector interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const = 0;
 };
 
 /**
  * \ingroup core
  *
- * \brief Class used to retrieve the value of the vector for a pixel from vertex
+ * \brief Vector field value source interpolating mesh dataset values defined on vertices.
  *
  * \note not available in Python bindings
  * \since QGIS 4.4
@@ -98,18 +124,9 @@ class QgsMeshVectorFieldValueSource
 class QgsMeshVectorFieldValueSourceFromVertex : public QgsMeshVectorFieldValueSource
 {
   public:
-    //! Constructor
-    QgsMeshVectorFieldValueSourceFromVertex( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
+    using QgsMeshVectorFieldValueSource::QgsMeshVectorFieldValueSource;
 
-    //! Constructor with scalar active face flag value to not interpolate on inactive face
-    QgsMeshVectorFieldValueSourceFromVertex( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
-
-    QgsMeshVectorFieldValueSourceFromVertex( const QgsMeshVectorFieldValueSourceFromVertex &other );
-
-    //! Clone the instance
-    QgsMeshVectorFieldValueSourceFromVertex *clone() override;
-
-    QgsMeshVectorFieldValueSourceFromVertex &operator=( const QgsMeshVectorFieldValueSourceFromVertex &other );
+    QgsMeshVectorFieldValueSourceFromVertex *clone() const override;
 
   private:
     QgsVector interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const override;
@@ -118,7 +135,7 @@ class QgsMeshVectorFieldValueSourceFromVertex : public QgsMeshVectorFieldValueSo
 /**
  * \ingroup core
  *
- * \brief Class used to retrieve the value of the vector for a pixel from vertex
+ * \brief Vector field value source interpolating mesh dataset values defined on faces.
  *
  * \note not available in Python bindings
  * \since QGIS 4.4
@@ -126,18 +143,9 @@ class QgsMeshVectorFieldValueSourceFromVertex : public QgsMeshVectorFieldValueSo
 class QgsMeshVectorFieldValueSourceFromFace : public QgsMeshVectorFieldValueSource
 {
   public:
-    //! Constructor
-    QgsMeshVectorFieldValueSourceFromFace( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
+    using QgsMeshVectorFieldValueSource::QgsMeshVectorFieldValueSource;
 
-    //! Constructor with scalar active face flag value to not interpolate on inactive face
-    QgsMeshVectorFieldValueSourceFromFace( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
-
-    QgsMeshVectorFieldValueSourceFromFace( const QgsMeshVectorFieldValueSourceFromFace &other );
-
-    //! Clone the instance
-    QgsMeshVectorFieldValueSourceFromFace *clone() override;
-
-    QgsMeshVectorFieldValueSourceFromFace &operator=( const QgsMeshVectorFieldValueSourceFromFace &other );
+    QgsMeshVectorFieldValueSourceFromFace *clone() const override;
 
   private:
     QgsVector interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const override;
