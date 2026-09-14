@@ -114,6 +114,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     int mTileWidth = 256;
     int mTileHeight = 256;
     bool mSkipEmptyTiles = false;
+    QgsExpressionContext mExpressionContext;
     QString mTileFormat;
     QList<QgsMapLayer *> mLayers;
     QgsRectangle mWgs84Extent;
