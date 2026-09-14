@@ -51,7 +51,7 @@ class QgsGrassEditRenderer : public QgsFeatureRenderer
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context );
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 
   protected:
     QgsFeatureRenderer *mLineRenderer = nullptr;

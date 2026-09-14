@@ -1661,9 +1661,9 @@ void TestStyle::testVisitor()
   std::unique_ptr<QgsSymbol> s2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
   s2->setColor( QColor( 0, 255, 255 ) );
   QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
-  QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( s1.get(), 0, 0, u"fld >= 5 and fld <= 20"_s );
+  QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( s1.release(), 0, 0, u"fld >= 5 and fld <= 20"_s );
   rootRule->appendChild( rule2 );
-  QgsRuleBasedRenderer::Rule *rule3 = new QgsRuleBasedRenderer::Rule( s2.get(), 0, 0, u"fld <= 10"_s );
+  QgsRuleBasedRenderer::Rule *rule3 = new QgsRuleBasedRenderer::Rule( s2.release(), 0, 0, u"fld <= 10"_s );
   rule2->appendChild( rule3 );
   vl2->setRenderer( new QgsRuleBasedRenderer( rootRule ) );
 
