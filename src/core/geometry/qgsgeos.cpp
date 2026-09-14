@@ -1095,9 +1095,6 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
 ) const
 {
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  Q_UNUSED( topological )
-  Q_UNUSED( topologyTestPoints )
-
   if ( !mGeos || !mGeometry )
   {
     return InvalidBaseGeometry;
@@ -1129,14 +1126,14 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
       return EngineError;
     }
 
-    // if ( topological )
-    // {
-    //   //find out candidate points for topological corrections
-    //   if ( !topologicalTestPointsSplit( splitGeosGeom.get(), topologyTestPoints ) ) // Add support for polygons and curves?
-    //   {
-    //     return InvalidInput; // TODO: is it really an invalid input?
-    //   }
-    // }
+    if ( topological )
+    {
+      //find out candidate points for topological corrections
+      if ( !topologicalTestPointsSplit( splitGeosGeom.get(), topologyTestPoints ) )
+      {
+        return InvalidInput; // TODO: is it really an invalid input?
+      }
+    }
 
     newGeometries.clear();
 
@@ -1273,6 +1270,16 @@ bool QgsGeos::topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPoin
     if ( !intersectionGeom )
       return false;
 
+    // TODO: Remove this if block when this method has curve support (e.g., CircularString or CoumpoundCurve).
+    // That is, when we extract vertices from curve intersections.
+    if ( !( GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_POINT
+            || GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_LINESTRING
+            || GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_MULTIPOINT
+            || GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_MULTILINESTRING ) )
+    {
+      return false;
+    }
+
     bool simple = false;
     int nIntersectGeoms = 1;
     if ( GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_LINESTRING || GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_POINT )
@@ -1298,6 +1305,7 @@ bool QgsGeos::topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPoin
         {
           if ( GEOSCoordSeq_getXYZ_r( context, lineSequence, i, &x, &y, &z ) )
           {
+            qDebug() << x << " " << y << " " << z;
             testPoints.push_back( QgsPoint( x, y, z ) );
           }
         }
