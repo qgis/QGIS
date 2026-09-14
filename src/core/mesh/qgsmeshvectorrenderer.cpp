@@ -48,7 +48,7 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
   const QgsVectorFieldSettings &settings,
   QgsRenderContext &context,
   const QgsRectangle &layerExtent,
-  QgsMeshLayerRendererFeedback *feedBack,
+  QgsRasterBlockFeedback *feedBack,
   const QSize &size
 )
 {
