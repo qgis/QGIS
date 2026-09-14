@@ -517,6 +517,7 @@ set(QGIS_CORE_SRCS
   qgsgeometryoptions.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
+  qgsgpkgtiles.cpp
   qgsgroupedfeaturefilterprovider.cpp
   qgsgrouplayer.cpp
   qgsgrouplayerrenderer.cpp
@@ -1262,6 +1263,7 @@ set(QGIS_CORE_HDRS
   qgsgeometryoptions.h
   qgsgeometrysimplifier.h
   qgsgeometryvalidator.h
+  qgsgpkgtiles.h
   qgsgml.h
   qgsgmlschema.h
   qgsgroupedfeaturefilterprovider.h
