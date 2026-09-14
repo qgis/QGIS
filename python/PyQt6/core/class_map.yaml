@@ -20,8 +20,6 @@ Qgis.versionInt: src/core/qgis.h#L79
 Qgis: src/core/qgis.h#L61
 Qgs25DRenderer.accept: src/core/symbology/qgs25drenderer.h#L52
 Qgs25DRenderer.clone: src/core/symbology/qgs25drenderer.h#L48
-Qgs25DRenderer.convertFromRenderer: src/core/symbology/qgs25drenderer.h#L109
-Qgs25DRenderer.create: src/core/symbology/qgs25drenderer.h#L41
 Qgs25DRenderer.flags: src/core/symbology/qgs25drenderer.h#L43
 Qgs25DRenderer.roofColor: src/core/symbology/qgs25drenderer.h#L57
 Qgs25DRenderer.save: src/core/symbology/qgs25drenderer.h#L42
@@ -777,7 +775,6 @@ QgsAnimatedIcon.setIconPath: src/core/qgsanimatedicon.h#L47
 QgsAnimatedIcon.width: src/core/qgsanimatedicon.h#L113
 QgsAnimatedIcon: src/core/qgsanimatedicon.h#L30
 QgsAnimatedMarkerSymbolLayer.clone: src/core/symbology/qgsmarkersymbollayer.h#L1106
-QgsAnimatedMarkerSymbolLayer.create: src/core/symbology/qgsmarkersymbollayer.h#L1100
 QgsAnimatedMarkerSymbolLayer.frameRate: src/core/symbology/qgsmarkersymbollayer.h#L1120
 QgsAnimatedMarkerSymbolLayer.layerType: src/core/symbology/qgsmarkersymbollayer.h#L1104
 QgsAnimatedMarkerSymbolLayer.properties: src/core/symbology/qgsmarkersymbollayer.h#L1105
@@ -1355,7 +1352,6 @@ QgsArrowSymbolLayer.arrowWidthUnitScale: src/core/symbology/qgsarrowsymbollayer.
 QgsArrowSymbolLayer.canCauseArtifactsBetweenAdjacentTiles: src/core/symbology/qgsarrowsymbollayer.h#L153
 QgsArrowSymbolLayer.clone: src/core/symbology/qgsarrowsymbollayer.h#L48
 QgsArrowSymbolLayer.color: src/core/symbology/qgsarrowsymbollayer.h#L152
-QgsArrowSymbolLayer.create: src/core/symbology/qgsarrowsymbollayer.h#L46
 QgsArrowSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgsarrowsymbollayer.h#L52
 QgsArrowSymbolLayer.headLength: src/core/symbology/qgsarrowsymbollayer.h#L83
 QgsArrowSymbolLayer.headLengthUnit: src/core/symbology/qgsarrowsymbollayer.h#L87
@@ -2246,8 +2242,6 @@ QgsCategorizedSymbolRenderer.categoryIndexForValue: src/core/symbology/qgscatego
 QgsCategorizedSymbolRenderer.checkLegendSymbolItem: src/core/symbology/qgscategorizedsymbolrenderer.h#L411
 QgsCategorizedSymbolRenderer.classAttribute: src/core/symbology/qgscategorizedsymbolrenderer.h#L331
 QgsCategorizedSymbolRenderer.clone: src/core/symbology/qgscategorizedsymbolrenderer.h#L206
-QgsCategorizedSymbolRenderer.convertFromRenderer: src/core/symbology/qgscategorizedsymbolrenderer.h#L421
-QgsCategorizedSymbolRenderer.create: src/core/symbology/qgscategorizedsymbolrenderer.h#L345
 QgsCategorizedSymbolRenderer.createCategories: src/core/symbology/qgscategorizedsymbolrenderer.h#L470
 QgsCategorizedSymbolRenderer.dataDefinedSizeLegend: src/core/symbology/qgscategorizedsymbolrenderer.h#L438
 QgsCategorizedSymbolRenderer.deleteAllCategories: src/core/symbology/qgscategorizedsymbolrenderer.h#L303
@@ -2304,8 +2298,6 @@ QgsCentroidFillSymbolLayer.clipOnCurrentPartOnly: src/core/symbology/qgsfillsymb
 QgsCentroidFillSymbolLayer.clipPoints: src/core/symbology/qgsfillsymbollayer.h#L2565
 QgsCentroidFillSymbolLayer.clone: src/core/symbology/qgsfillsymbollayer.h#L2528
 QgsCentroidFillSymbolLayer.color: src/core/symbology/qgsfillsymbollayer.h#L2532
-QgsCentroidFillSymbolLayer.create: src/core/symbology/qgsfillsymbollayer.h#L2518
-QgsCentroidFillSymbolLayer.createFromSld: src/core/symbology/qgsfillsymbollayer.h#L2519
 QgsCentroidFillSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgsfillsymbollayer.h#L2541
 QgsCentroidFillSymbolLayer.layerType: src/core/symbology/qgsfillsymbollayer.h#L2523
 QgsCentroidFillSymbolLayer.mapUnitScale: src/core/symbology/qgsfillsymbollayer.h#L2539
@@ -3013,7 +3005,6 @@ QgsCptCityColorRamp.cloneGradientRamp: src/core/qgscolorrampimpl.h#L748
 QgsCptCityColorRamp.copy: src/core/qgscolorrampimpl.h#L747
 QgsCptCityColorRamp.copyingFileName: src/core/qgscolorrampimpl.h#L791
 QgsCptCityColorRamp.copyingInfo: src/core/qgscolorrampimpl.h#L793
-QgsCptCityColorRamp.create: src/core/qgscolorrampimpl.h#L733
 QgsCptCityColorRamp.descFileName: src/core/qgscolorrampimpl.h#L792
 QgsCptCityColorRamp.fileLoaded: src/core/qgscolorrampimpl.h#L789
 QgsCptCityColorRamp.fileName: src/core/qgscolorrampimpl.h#L787
@@ -4003,8 +3994,6 @@ QgsEllipse.toString: src/core/geometry/qgsellipse.h#L242
 QgsEllipse: src/core/geometry/qgsellipse.h#L40
 QgsEllipseSymbolLayer.bounds: src/core/symbology/qgsellipsesymbollayer.h#L247
 QgsEllipseSymbolLayer.clone: src/core/symbology/qgsellipsesymbollayer.h#L78
-QgsEllipseSymbolLayer.create: src/core/symbology/qgsellipsesymbollayer.h#L70
-QgsEllipseSymbolLayer.createFromSld: src/core/symbology/qgsellipsesymbollayer.h#L71
 QgsEllipseSymbolLayer.decodeShape: src/core/symbology/qgsellipsesymbollayer.h#L127
 QgsEllipseSymbolLayer.encodeShape: src/core/symbology/qgsellipsesymbollayer.h#L136
 QgsEllipseSymbolLayer.fillColor: src/core/symbology/qgsellipsesymbollayer.h#L183
@@ -4068,8 +4057,6 @@ QgsEmbeddedScriptVisitor.visitEmbeddedScript: src/core/qgsobjectvisitor.h#L120
 QgsEmbeddedScriptVisitor: src/core/qgsobjectvisitor.h#L113
 QgsEmbeddedSymbolRenderer.capabilities: src/core/symbology/qgsembeddedsymbolrenderer.h#L55
 QgsEmbeddedSymbolRenderer.clone: src/core/symbology/qgsembeddedsymbolrenderer.h#L54
-QgsEmbeddedSymbolRenderer.convertFromRenderer: src/core/symbology/qgsembeddedsymbolrenderer.h#L85
-QgsEmbeddedSymbolRenderer.create: src/core/symbology/qgsembeddedsymbolrenderer.h#L79
 QgsEmbeddedSymbolRenderer.defaultSymbol: src/core/symbology/qgsembeddedsymbolrenderer.h#L63
 QgsEmbeddedSymbolRenderer.originalSymbolForFeature: src/core/symbology/qgsembeddedsymbolrenderer.h#L48
 QgsEmbeddedSymbolRenderer.renderFeature: src/core/symbology/qgsembeddedsymbolrenderer.h#L50
@@ -4647,7 +4634,6 @@ QgsFeatureRenderer.clone: src/core/symbology/qgsrenderer.h#L276
 QgsFeatureRenderer.convertSymbolRotation: src/core/symbology/qgsrenderer.h#L752
 QgsFeatureRenderer.convertSymbolSizeScale: src/core/symbology/qgsrenderer.h#L747
 QgsFeatureRenderer.copyRendererData: src/core/symbology/qgsrenderer.h#L684
-QgsFeatureRenderer.defaultRenderer: src/core/symbology/qgsrenderer.h#L168
 QgsFeatureRenderer.dump: src/core/symbology/qgsrenderer.h#L294
 QgsFeatureRenderer.embeddedRenderer: src/core/symbology/qgsrenderer.h#L656
 QgsFeatureRenderer.filter: src/core/symbology/qgsrenderer.h#L245
@@ -4659,8 +4645,6 @@ QgsFeatureRenderer.legendKeyToExpression: src/core/symbology/qgsrenderer.h#L453
 QgsFeatureRenderer.legendSymbolItemChecked: src/core/symbology/qgsrenderer.h#L407
 QgsFeatureRenderer.legendSymbolItems: src/core/symbology/qgsrenderer.h#L461
 QgsFeatureRenderer.legendSymbolItemsCheckable: src/core/symbology/qgsrenderer.h#L398
-QgsFeatureRenderer.load: src/core/symbology/qgsrenderer.h#L341
-QgsFeatureRenderer.loadSld: src/core/symbology/qgsrenderer.h#L367
 QgsFeatureRenderer.maximumExtentBuffer: src/core/symbology/qgsrenderer.h#L692
 QgsFeatureRenderer.modifyRequestExtent: src/core/symbology/qgsrenderer.h#L510
 QgsFeatureRenderer.orderBy: src/core/symbology/qgsrenderer.h#L619
@@ -5028,7 +5012,6 @@ QgsFillSymbolLayer.toTiledPatternImage: src/core/symbology/qgssymbollayer.h#L143
 QgsFillSymbolLayer: src/core/symbology/qgssymbollayer.h#L1396
 QgsFilledLineSymbolLayer.clone: src/core/symbology/qgslinesymbollayer.h#L1575
 QgsFilledLineSymbolLayer.color: src/core/symbology/qgslinesymbollayer.h#L1580
-QgsFilledLineSymbolLayer.create: src/core/symbology/qgslinesymbollayer.h#L1566
 QgsFilledLineSymbolLayer.estimateMaxBleed: src/core/symbology/qgslinesymbollayer.h#L1586
 QgsFilledLineSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgslinesymbollayer.h#L1578
 QgsFilledLineSymbolLayer.layerType: src/core/symbology/qgslinesymbollayer.h#L1568
@@ -5053,7 +5036,6 @@ QgsFilledLineSymbolLayer.usesMapUnits: src/core/symbology/qgslinesymbollayer.h#L
 QgsFilledLineSymbolLayer: src/core/symbology/qgslinesymbollayer.h#L1548
 QgsFilledMarkerSymbolLayer.clone: src/core/symbology/qgsmarkersymbollayer.h#L459
 QgsFilledMarkerSymbolLayer.color: src/core/symbology/qgsmarkersymbollayer.h#L466
-QgsFilledMarkerSymbolLayer.create: src/core/symbology/qgsmarkersymbollayer.h#L451
 QgsFilledMarkerSymbolLayer.draw: src/core/symbology/qgsmarkersymbollayer.h#L476
 QgsFilledMarkerSymbolLayer.estimateMaxBleed: src/core/symbology/qgsmarkersymbollayer.h#L462
 QgsFilledMarkerSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgsmarkersymbollayer.h#L464
@@ -5104,8 +5086,6 @@ QgsFontManager: src/core/textrenderer/qgsfontmanager.h#L133
 QgsFontMarkerSymbolLayer.bounds: src/core/symbology/qgsmarkersymbollayer.h#L1038
 QgsFontMarkerSymbolLayer.character: src/core/symbology/qgsmarkersymbollayer.h#L951
 QgsFontMarkerSymbolLayer.clone: src/core/symbology/qgsmarkersymbollayer.h#L906
-QgsFontMarkerSymbolLayer.create: src/core/symbology/qgsmarkersymbollayer.h#L878
-QgsFontMarkerSymbolLayer.createFromSld: src/core/symbology/qgsmarkersymbollayer.h#L883
 QgsFontMarkerSymbolLayer.flags: src/core/symbology/qgsmarkersymbollayer.h#L896
 QgsFontMarkerSymbolLayer.fontFamily: src/core/symbology/qgsmarkersymbollayer.h#L921
 QgsFontMarkerSymbolLayer.fontStyle: src/core/symbology/qgsmarkersymbollayer.h#L936
@@ -5580,7 +5560,6 @@ QgsGeometryEngine.within: src/core/geometry/qgsgeometryengine.h#L310
 QgsGeometryEngine: src/core/geometry/qgsgeometryengine.h#L79
 QgsGeometryGeneratorSymbolLayer.clone: src/core/symbology/qgsgeometrygeneratorsymbollayer.h#L69
 QgsGeometryGeneratorSymbolLayer.color: src/core/symbology/qgsgeometrygeneratorsymbollayer.h#L63
-QgsGeometryGeneratorSymbolLayer.create: src/core/symbology/qgsgeometrygeneratorsymbollayer.h#L38
 QgsGeometryGeneratorSymbolLayer.drawPreviewIcon: src/core/symbology/qgsgeometrygeneratorsymbollayer.h#L73
 QgsGeometryGeneratorSymbolLayer.geometryExpression: src/core/symbology/qgsgeometrygeneratorsymbollayer.h#L83
 QgsGeometryGeneratorSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgsgeometrygeneratorsymbollayer.h#L112
@@ -5971,7 +5950,6 @@ QgsGradientColorRamp.color: src/core/qgscolorrampimpl.h#L148
 QgsGradientColorRamp.colorSpec: src/core/qgscolorrampimpl.h#L262
 QgsGradientColorRamp.convertToDiscrete: src/core/qgscolorrampimpl.h#L215
 QgsGradientColorRamp.count: src/core/qgscolorrampimpl.h#L146
-QgsGradientColorRamp.create: src/core/qgscolorrampimpl.h#L144
 QgsGradientColorRamp.direction: src/core/qgscolorrampimpl.h#L287
 QgsGradientColorRamp.info: src/core/qgscolorrampimpl.h#L236
 QgsGradientColorRamp.invert: src/core/qgscolorrampimpl.h#L158
@@ -5994,7 +5972,6 @@ QgsGradientFillSymbolLayer.clone: src/core/symbology/qgsfillsymbollayer.h#L244
 QgsGradientFillSymbolLayer.color2: src/core/symbology/qgsfillsymbollayer.h#L298
 QgsGradientFillSymbolLayer.colorRamp: src/core/symbology/qgsfillsymbollayer.h#L282
 QgsGradientFillSymbolLayer.coordinateMode: src/core/symbology/qgsfillsymbollayer.h#L312
-QgsGradientFillSymbolLayer.create: src/core/symbology/qgsfillsymbollayer.h#L234
 QgsGradientFillSymbolLayer.estimateMaxBleed: src/core/symbology/qgsfillsymbollayer.h#L245
 QgsGradientFillSymbolLayer.flags: src/core/symbology/qgsfillsymbollayer.h#L238
 QgsGradientFillSymbolLayer.gradientColorType: src/core/symbology/qgsfillsymbollayer.h#L267
@@ -6047,8 +6024,6 @@ QgsGraduatedSymbolRenderer.checkLegendSymbolItem: src/core/symbology/qgsgraduate
 QgsGraduatedSymbolRenderer.classAttribute: src/core/symbology/qgsgraduatedsymbolrenderer.h#L63
 QgsGraduatedSymbolRenderer.classificationMethod: src/core/symbology/qgsgraduatedsymbolrenderer.h#L132
 QgsGraduatedSymbolRenderer.clone: src/core/symbology/qgsgraduatedsymbolrenderer.h#L51
-QgsGraduatedSymbolRenderer.convertFromRenderer: src/core/symbology/qgsgraduatedsymbolrenderer.h#L418
-QgsGraduatedSymbolRenderer.create: src/core/symbology/qgsgraduatedsymbolrenderer.h#L308
 QgsGraduatedSymbolRenderer.createRenderer: src/core/symbology/qgsgraduatedsymbolrenderer.h#L292
 QgsGraduatedSymbolRenderer.dataDefinedSizeLegend: src/core/symbology/qgsgraduatedsymbolrenderer.h#L435
 QgsGraduatedSymbolRenderer.deleteAllClasses: src/core/symbology/qgsgraduatedsymbolrenderer.h#L108
@@ -6139,7 +6114,6 @@ QgsGroupedFeatureFilterProvider.layerAttributes: src/core/qgsgroupedfeaturefilte
 QgsGroupedFeatureFilterProvider: src/core/qgsgroupedfeaturefilterprovider.h#L32
 QgsHashedLineSymbolLayer.clone: src/core/symbology/qgslinesymbollayer.h#L1218
 QgsHashedLineSymbolLayer.color: src/core/symbology/qgslinesymbollayer.h#L1220
-QgsHashedLineSymbolLayer.create: src/core/symbology/qgslinesymbollayer.h#L1212
 QgsHashedLineSymbolLayer.estimateMaxBleed: src/core/symbology/qgslinesymbollayer.h#L1226
 QgsHashedLineSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgslinesymbollayer.h#L1229
 QgsHashedLineSymbolLayer.hashAngle: src/core/symbology/qgslinesymbollayer.h#L1238
@@ -6171,8 +6145,6 @@ QgsHashedLineSymbolLayer: src/core/symbology/qgslinesymbollayer.h#L1193
 QgsHeatmapRenderer.accept: src/core/symbology/qgsheatmaprenderer.h#L58
 QgsHeatmapRenderer.clone: src/core/symbology/qgsheatmaprenderer.h#L46
 QgsHeatmapRenderer.colorRamp: src/core/symbology/qgsheatmaprenderer.h#L72
-QgsHeatmapRenderer.convertFromRenderer: src/core/symbology/qgsheatmaprenderer.h#L57
-QgsHeatmapRenderer.create: src/core/symbology/qgsheatmaprenderer.h#L55
 QgsHeatmapRenderer.dump: src/core/symbology/qgsheatmaprenderer.h#L52
 QgsHeatmapRenderer.maximumValue: src/core/symbology/qgsheatmaprenderer.h#L157
 QgsHeatmapRenderer.modifyRequestExtent: src/core/symbology/qgsheatmaprenderer.h#L63
@@ -6411,7 +6383,6 @@ QgsInterpolatedLineRenderer: src/core/symbology/qgsinterpolatedlinerenderer.h#L1
 QgsInterpolatedLineSymbolLayer.canCauseArtifactsBetweenAdjacentTiles: src/core/symbology/qgsinterpolatedlinerenderer.h#L303
 QgsInterpolatedLineSymbolLayer.clone: src/core/symbology/qgsinterpolatedlinerenderer.h#L295
 QgsInterpolatedLineSymbolLayer.color: src/core/symbology/qgsinterpolatedlinerenderer.h#L298
-QgsInterpolatedLineSymbolLayer.create: src/core/symbology/qgsinterpolatedlinerenderer.h#L289
 QgsInterpolatedLineSymbolLayer.drawPreviewIcon: src/core/symbology/qgsinterpolatedlinerenderer.h#L297
 QgsInterpolatedLineSymbolLayer.endValueExpressionForColor: src/core/symbology/qgsinterpolatedlinerenderer.h#L375
 QgsInterpolatedLineSymbolLayer.endValueExpressionForWidth: src/core/symbology/qgsinterpolatedlinerenderer.h#L324
@@ -6477,8 +6448,6 @@ QgsInterval.weeks: src/core/qgsinterval.h#L176
 QgsInterval.years: src/core/qgsinterval.h#L127
 QgsInterval: src/core/qgsinterval.h#L51
 QgsInvertedPolygonRenderer.clone: src/core/symbology/qgsinvertedpolygonrenderer.h#L57
-QgsInvertedPolygonRenderer.convertFromRenderer: src/core/symbology/qgsinvertedpolygonrenderer.h#L89
-QgsInvertedPolygonRenderer.create: src/core/symbology/qgsinvertedpolygonrenderer.h#L62
 QgsInvertedPolygonRenderer.dump: src/core/symbology/qgsinvertedpolygonrenderer.h#L59
 QgsInvertedPolygonRenderer.preprocessingEnabled: src/core/symbology/qgsinvertedpolygonrenderer.h#L71
 QgsInvertedPolygonRenderer.save: src/core/symbology/qgsinvertedpolygonrenderer.h#L64
@@ -8995,8 +8964,6 @@ QgsLinePatternFillSymbolLayer.applyDataDefinedSettings: src/core/symbology/qgsfi
 QgsLinePatternFillSymbolLayer.clipMode: src/core/symbology/qgsfillsymbollayer.h#L1699
 QgsLinePatternFillSymbolLayer.clone: src/core/symbology/qgsfillsymbollayer.h#L1509
 QgsLinePatternFillSymbolLayer.color: src/core/symbology/qgsfillsymbollayer.h#L1567
-QgsLinePatternFillSymbolLayer.create: src/core/symbology/qgsfillsymbollayer.h#L1496
-QgsLinePatternFillSymbolLayer.createFromSld: src/core/symbology/qgsfillsymbollayer.h#L1502
 QgsLinePatternFillSymbolLayer.distance: src/core/symbology/qgsfillsymbollayer.h#L1548
 QgsLinePatternFillSymbolLayer.distanceUnit: src/core/symbology/qgsfillsymbollayer.h#L1609
 QgsLinePatternFillSymbolLayer.estimateMaxBleed: src/core/symbology/qgsfillsymbollayer.h#L1513
@@ -9144,7 +9111,6 @@ QgsLinearMinMaxEnhancementWithClip: src/core/raster/qgslinearminmaxenhancementwi
 QgsLinearReferencingSymbolLayer.averageAngleLength: src/core/symbology/qgslinearreferencingsymbollayer.h#L250
 QgsLinearReferencingSymbolLayer.averageAngleUnit: src/core/symbology/qgslinearreferencingsymbollayer.h#L282
 QgsLinearReferencingSymbolLayer.clone: src/core/symbology/qgslinearreferencingsymbollayer.h#L48
-QgsLinearReferencingSymbolLayer.create: src/core/symbology/qgslinearreferencingsymbollayer.h#L46
 QgsLinearReferencingSymbolLayer.flags: src/core/symbology/qgslinearreferencingsymbollayer.h#L51
 QgsLinearReferencingSymbolLayer.interval: src/core/symbology/qgslinearreferencingsymbollayer.h#L95
 QgsLinearReferencingSymbolLayer.labelOffset: src/core/symbology/qgslinearreferencingsymbollayer.h#L152
@@ -9205,7 +9171,6 @@ QgsLinearlyInterpolatedDiagramRenderer: src/core/qgsdiagramrenderer.h#L910
 QgsLineburstSymbolLayer.clone: src/core/symbology/qgslinesymbollayer.h#L1480
 QgsLineburstSymbolLayer.color2: src/core/symbology/qgslinesymbollayer.h#L1524
 QgsLineburstSymbolLayer.colorRamp: src/core/symbology/qgslinesymbollayer.h#L1508
-QgsLineburstSymbolLayer.create: src/core/symbology/qgslinesymbollayer.h#L1472
 QgsLineburstSymbolLayer.estimateMaxBleed: src/core/symbology/qgslinesymbollayer.h#L1486
 QgsLineburstSymbolLayer.flags: src/core/symbology/qgslinesymbollayer.h#L1475
 QgsLineburstSymbolLayer.gradientColorType: src/core/symbology/qgslinesymbollayer.h#L1493
@@ -9460,9 +9425,6 @@ QgsMapInfoSymbolConversionContext.clearWarnings: src/core/symbology/qgsmapinfosy
 QgsMapInfoSymbolConversionContext.pushWarning: src/core/symbology/qgsmapinfosymbolconverter.h#L42
 QgsMapInfoSymbolConversionContext.warnings: src/core/symbology/qgsmapinfosymbolconverter.h#L47
 QgsMapInfoSymbolConversionContext: src/core/symbology/qgsmapinfosymbolconverter.h#L36
-QgsMapInfoSymbolConverter.convertFillSymbol: src/core/symbology/qgsmapinfosymbolconverter.h#L81
-QgsMapInfoSymbolConverter.convertLineSymbol: src/core/symbology/qgsmapinfosymbolconverter.h#L73
-QgsMapInfoSymbolConverter.convertMarkerSymbol: src/core/symbology/qgsmapinfosymbolconverter.h#L90
 QgsMapInfoSymbolConverter: src/core/symbology/qgsmapinfosymbolconverter.h#L64
 QgsMapLayer.__repr__: src/core/qgsmaplayer.h#L1981
 QgsMapLayer.abstract: src/core/qgsmaplayer.h#L367
@@ -10188,8 +10150,6 @@ QgsMargins.top: src/core/qgsmargins.h#L76
 QgsMargins: src/core/qgsmargins.h#L39
 QgsMarkerLineSymbolLayer.clone: src/core/symbology/qgslinesymbollayer.h#L1137
 QgsMarkerLineSymbolLayer.color: src/core/symbology/qgslinesymbollayer.h#L1141
-QgsMarkerLineSymbolLayer.create: src/core/symbology/qgslinesymbollayer.h#L1125
-QgsMarkerLineSymbolLayer.createFromSld: src/core/symbology/qgslinesymbollayer.h#L1130
 QgsMarkerLineSymbolLayer.estimateMaxBleed: src/core/symbology/qgslinesymbollayer.h#L1147
 QgsMarkerLineSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgslinesymbollayer.h#L1151
 QgsMarkerLineSymbolLayer.layerType: src/core/symbology/qgslinesymbollayer.h#L1134
@@ -10280,7 +10240,6 @@ QgsMaskMarkerSymbolLayer.bounds: src/core/symbology/qgsmasksymbollayer.h#L63
 QgsMaskMarkerSymbolLayer.clearMasks: src/core/symbology/qgsmasksymbollayer.h#L87
 QgsMaskMarkerSymbolLayer.clone: src/core/symbology/qgsmasksymbollayer.h#L51
 QgsMaskMarkerSymbolLayer.color: src/core/symbology/qgsmasksymbollayer.h#L66
-QgsMaskMarkerSymbolLayer.create: src/core/symbology/qgsmasksymbollayer.h#L49
 QgsMaskMarkerSymbolLayer.drawPreviewIcon: src/core/symbology/qgsmasksymbollayer.h#L68
 QgsMaskMarkerSymbolLayer.enabled: src/core/symbology/qgsmasksymbollayer.h#L73
 QgsMaskMarkerSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgsmasksymbollayer.h#L55
@@ -10358,8 +10317,6 @@ QgsMergedFeatureRenderer.accept: src/core/symbology/qgsmergedfeaturerenderer.h#L
 QgsMergedFeatureRenderer.capabilities: src/core/symbology/qgsmergedfeaturerenderer.h#L82
 QgsMergedFeatureRenderer.checkLegendSymbolItem: src/core/symbology/qgsmergedfeaturerenderer.h#L98
 QgsMergedFeatureRenderer.clone: src/core/symbology/qgsmergedfeaturerenderer.h#L57
-QgsMergedFeatureRenderer.convertFromRenderer: src/core/symbology/qgsmergedfeaturerenderer.h#L105
-QgsMergedFeatureRenderer.create: src/core/symbology/qgsmergedfeaturerenderer.h#L55
 QgsMergedFeatureRenderer.dump: src/core/symbology/qgsmergedfeaturerenderer.h#L79
 QgsMergedFeatureRenderer.embeddedRenderer: src/core/symbology/qgsmergedfeaturerenderer.h#L94
 QgsMergedFeatureRenderer.filterNeedsGeometry: src/core/symbology/qgsmergedfeaturerenderer.h#L81
@@ -11352,8 +11309,6 @@ QgsNullPaintDevice.setOutputDpi: src/core/painting/qgsnullpainterdevice.h#L83
 QgsNullPaintDevice.setOutputSize: src/core/painting/qgsnullpainterdevice.h#L78
 QgsNullPaintDevice: src/core/painting/qgsnullpainterdevice.h#L65
 QgsNullSymbolRenderer.clone: src/core/symbology/qgsnullsymbolrenderer.h#L47
-QgsNullSymbolRenderer.convertFromRenderer: src/core/symbology/qgsnullsymbolrenderer.h#L65
-QgsNullSymbolRenderer.create: src/core/symbology/qgsnullsymbolrenderer.h#L56
 QgsNullSymbolRenderer.dump: src/core/symbology/qgsnullsymbolrenderer.h#L46
 QgsNullSymbolRenderer.originalSymbolForFeature: src/core/symbology/qgsnullsymbolrenderer.h#L39
 QgsNullSymbolRenderer.renderFeature: src/core/symbology/qgsnullsymbolrenderer.h#L41
@@ -12413,8 +12368,6 @@ QgsPointCloudSubIndex: src/core/pointcloud/qgspointcloudsubindex.h#L38
 QgsPointClusterRenderer.accept: src/core/symbology/qgspointclusterrenderer.h#L41
 QgsPointClusterRenderer.clone: src/core/symbology/qgspointclusterrenderer.h#L36
 QgsPointClusterRenderer.clusterSymbol: src/core/symbology/qgspointclusterrenderer.h#L50
-QgsPointClusterRenderer.convertFromRenderer: src/core/symbology/qgspointclusterrenderer.h#L63
-QgsPointClusterRenderer.create: src/core/symbology/qgspointclusterrenderer.h#L44
 QgsPointClusterRenderer.drawGroup: src/core/symbology/qgspointclusterrenderer.h#L74
 QgsPointClusterRenderer.flags: src/core/symbology/qgspointclusterrenderer.h#L35
 QgsPointClusterRenderer.save: src/core/symbology/qgspointclusterrenderer.h#L39
@@ -12428,8 +12381,6 @@ QgsPointDisplacementRenderer.circleColor: src/core/symbology/qgspointdisplacemen
 QgsPointDisplacementRenderer.circleRadiusAddition: src/core/symbology/qgspointdisplacementrenderer.h#L101
 QgsPointDisplacementRenderer.circleWidth: src/core/symbology/qgspointdisplacementrenderer.h#L73
 QgsPointDisplacementRenderer.clone: src/core/symbology/qgspointdisplacementrenderer.h#L50
-QgsPointDisplacementRenderer.convertFromRenderer: src/core/symbology/qgspointdisplacementrenderer.h#L148
-QgsPointDisplacementRenderer.create: src/core/symbology/qgspointdisplacementrenderer.h#L58
 QgsPointDisplacementRenderer.drawGroup: src/core/symbology/qgspointdisplacementrenderer.h#L171
 QgsPointDisplacementRenderer.flags: src/core/symbology/qgspointdisplacementrenderer.h#L49
 QgsPointDisplacementRenderer.labelDistanceFactor: src/core/symbology/qgspointdisplacementrenderer.h#L116
@@ -12533,8 +12484,6 @@ QgsPointPatternFillSymbolLayer.applyDataDefinedSettings: src/core/symbology/qgsf
 QgsPointPatternFillSymbolLayer.clipMode: src/core/symbology/qgsfillsymbollayer.h#L2119
 QgsPointPatternFillSymbolLayer.clone: src/core/symbology/qgsfillsymbollayer.h#L1782
 QgsPointPatternFillSymbolLayer.color: src/core/symbology/qgsfillsymbollayer.h#L1797
-QgsPointPatternFillSymbolLayer.create: src/core/symbology/qgsfillsymbollayer.h#L1772
-QgsPointPatternFillSymbolLayer.createFromSld: src/core/symbology/qgsfillsymbollayer.h#L1773
 QgsPointPatternFillSymbolLayer.displacementX: src/core/symbology/qgsfillsymbollayer.h#L1914
 QgsPointPatternFillSymbolLayer.displacementXUnit: src/core/symbology/qgsfillsymbollayer.h#L1940
 QgsPointPatternFillSymbolLayer.displacementY: src/core/symbology/qgsfillsymbollayer.h#L1967
@@ -15208,7 +15157,6 @@ QgsRandomMarkerFillSymbolLayer.clipPoints: src/core/symbology/qgsfillsymbollayer
 QgsRandomMarkerFillSymbolLayer.clone: src/core/symbology/qgsfillsymbollayer.h#L2341
 QgsRandomMarkerFillSymbolLayer.color: src/core/symbology/qgsfillsymbollayer.h#L2346
 QgsRandomMarkerFillSymbolLayer.countMethod: src/core/symbology/qgsfillsymbollayer.h#L2410
-QgsRandomMarkerFillSymbolLayer.create: src/core/symbology/qgsfillsymbollayer.h#L2334
 QgsRandomMarkerFillSymbolLayer.densityArea: src/core/symbology/qgsfillsymbollayer.h#L2428
 QgsRandomMarkerFillSymbolLayer.densityAreaUnit: src/core/symbology/qgsfillsymbollayer.h#L2448
 QgsRandomMarkerFillSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgsfillsymbollayer.h#L2359
@@ -15548,8 +15496,6 @@ QgsRasterFillSymbolLayer.applyDataDefinedSettings: src/core/symbology/qgsfillsym
 QgsRasterFillSymbolLayer.clone: src/core/symbology/qgsfillsymbollayer.h#L907
 QgsRasterFillSymbolLayer.color: src/core/symbology/qgsfillsymbollayer.h#L910
 QgsRasterFillSymbolLayer.coordinateMode: src/core/symbology/qgsfillsymbollayer.h#L945
-QgsRasterFillSymbolLayer.create: src/core/symbology/qgsfillsymbollayer.h#L885
-QgsRasterFillSymbolLayer.createFromSld: src/core/symbology/qgsfillsymbollayer.h#L892
 QgsRasterFillSymbolLayer.estimateMaxBleed: src/core/symbology/qgsfillsymbollayer.h#L908
 QgsRasterFillSymbolLayer.flags: src/core/symbology/qgsfillsymbollayer.h#L902
 QgsRasterFillSymbolLayer.height: src/core/symbology/qgsfillsymbollayer.h#L1063
@@ -15806,7 +15752,6 @@ QgsRasterLayerUtils.renderedBandForElevationAndTemporalRange: src/core/raster/qg
 QgsRasterLayerUtils: src/core/raster/qgsrasterlayerutils.h#L93
 QgsRasterLineSymbolLayer.clone: src/core/symbology/qgslinesymbollayer.h#L1431
 QgsRasterLineSymbolLayer.color: src/core/symbology/qgslinesymbollayer.h#L1438
-QgsRasterLineSymbolLayer.create: src/core/symbology/qgslinesymbollayer.h#L1391
 QgsRasterLineSymbolLayer.estimateMaxBleed: src/core/symbology/qgslinesymbollayer.h#L1437
 QgsRasterLineSymbolLayer.flags: src/core/symbology/qgslinesymbollayer.h#L1426
 QgsRasterLineSymbolLayer.layerType: src/core/symbology/qgslinesymbollayer.h#L1425
@@ -15830,8 +15775,6 @@ QgsRasterMarkerSymbolLayer.calculateAspectRatio: src/core/symbology/qgsmarkersym
 QgsRasterMarkerSymbolLayer.clone: src/core/symbology/qgsmarkersymbollayer.h#L715
 QgsRasterMarkerSymbolLayer.color: src/core/symbology/qgsmarkersymbollayer.h#L717
 QgsRasterMarkerSymbolLayer.copyCommonProperties: src/core/symbology/qgsmarkersymbollayer.h#L818
-QgsRasterMarkerSymbolLayer.create: src/core/symbology/qgsmarkersymbollayer.h#L692
-QgsRasterMarkerSymbolLayer.createFromSld: src/core/symbology/qgsmarkersymbollayer.h#L701
 QgsRasterMarkerSymbolLayer.defaultAspectRatio: src/core/symbology/qgsmarkersymbollayer.h#L760
 QgsRasterMarkerSymbolLayer.fixedAspectRatio: src/core/symbology/qgsmarkersymbollayer.h#L789
 QgsRasterMarkerSymbolLayer.flags: src/core/symbology/qgsmarkersymbollayer.h#L712
@@ -16462,9 +16405,9 @@ QgsRendererCategory.toSld: src/core/symbology/qgscategorizedsymbolrenderer.h#L14
 QgsRendererCategory.uuid: src/core/symbology/qgscategorizedsymbolrenderer.h#L66
 QgsRendererCategory.value: src/core/symbology/qgscategorizedsymbolrenderer.h#L75
 QgsRendererCategory: src/core/symbology/qgscategorizedsymbolrenderer.h#L38
-QgsRendererMetadata.compatibleLayerTypes: src/core/symbology/qgsrendererregistry.h#L206
+QgsRendererMetadata.compatibleLayerTypes: src/core/symbology/qgsrendererregistry.h#L209
 QgsRendererMetadata.createRenderer: src/core/symbology/qgsrendererregistry.h#L189
-QgsRendererMetadata.createRendererFromSld: src/core/symbology/qgsrendererregistry.h#L194
+QgsRendererMetadata.createRendererFromSld: src/core/symbology/qgsrendererregistry.h#L197
 QgsRendererMetadata.createRendererWidget: src/core/symbology/qgsrendererregistry.h#L193
 QgsRendererMetadata: src/core/symbology/qgsrendererregistry.h#L152
 QgsRendererRange.__getitem__: src/core/symbology/qgsrendererrange.h#L192
@@ -16496,12 +16439,12 @@ QgsRendererRangeLabelFormat.setPrecision: src/core/symbology/qgsrendererrange.h#
 QgsRendererRangeLabelFormat.setTrimTrailingZeroes: src/core/symbology/qgsrendererrange.h#L249
 QgsRendererRangeLabelFormat.trimTrailingZeroes: src/core/symbology/qgsrendererrange.h#L248
 QgsRendererRangeLabelFormat: src/core/symbology/qgsrendererrange.h#L233
-QgsRendererRegistry.addRenderer: src/core/symbology/qgsrendererregistry.h#L250
-QgsRendererRegistry.removeRenderer: src/core/symbology/qgsrendererregistry.h#L258
-QgsRendererRegistry.rendererMetadata: src/core/symbology/qgsrendererregistry.h#L264
-QgsRendererRegistry.renderersList: src/core/symbology/qgsrendererregistry.h#L270
-QgsRendererRegistry.renderersList: src/core/symbology/qgsrendererregistry.h#L276
-QgsRendererRegistry: src/core/symbology/qgsrendererregistry.h#L235
+QgsRendererRegistry.addRenderer: src/core/symbology/qgsrendererregistry.h#L253
+QgsRendererRegistry.removeRenderer: src/core/symbology/qgsrendererregistry.h#L261
+QgsRendererRegistry.rendererMetadata: src/core/symbology/qgsrendererregistry.h#L267
+QgsRendererRegistry.renderersList: src/core/symbology/qgsrendererregistry.h#L273
+QgsRendererRegistry.renderersList: src/core/symbology/qgsrendererregistry.h#L279
+QgsRendererRegistry: src/core/symbology/qgsrendererregistry.h#L238
 QgsReport.clone: src/core/layout/qgsreport.h#L61
 QgsReport.description: src/core/layout/qgsreport.h#L58
 QgsReport.icon: src/core/layout/qgsreport.h#L59
@@ -16612,9 +16555,6 @@ QgsRuleBasedRenderer.QgsRuleBasedRenderer: src/core/symbology/qgsrulebasedrender
 QgsRuleBasedRenderer.Rule.accept: src/core/symbology/qgsrulebasedrenderer.h#L482
 QgsRuleBasedRenderer.Rule.active: src/core/symbology/qgsrulebasedrenderer.h#L265
 QgsRuleBasedRenderer.Rule.appendChild: src/core/symbology/qgsrulebasedrenderer.h#L437
-QgsRuleBasedRenderer.Rule.clone: src/core/symbology/qgsrulebasedrenderer.h#L320
-QgsRuleBasedRenderer.Rule.create: src/core/symbology/qgsrulebasedrenderer.h#L413
-QgsRuleBasedRenderer.Rule.createFromSld: src/core/symbology/qgsrulebasedrenderer.h#L339
 QgsRuleBasedRenderer.Rule.dependsOnScale: src/core/symbology/qgsrulebasedrenderer.h#L221
 QgsRuleBasedRenderer.Rule.descendants: src/core/symbology/qgsrulebasedrenderer.h#L427
 QgsRuleBasedRenderer.Rule.description: src/core/symbology/qgsrulebasedrenderer.h#L258
@@ -16665,10 +16605,7 @@ QgsRuleBasedRenderer.canSkipRender: src/core/symbology/qgsrulebasedrenderer.h#L5
 QgsRuleBasedRenderer.capabilities: src/core/symbology/qgsrulebasedrenderer.h#L571
 QgsRuleBasedRenderer.checkLegendSymbolItem: src/core/symbology/qgsrulebasedrenderer.h#L560
 QgsRuleBasedRenderer.clone: src/core/symbology/qgsrulebasedrenderer.h#L545
-QgsRuleBasedRenderer.convertFromRenderer: src/core/symbology/qgsrulebasedrenderer.h#L594
 QgsRuleBasedRenderer.convertToDataDefinedSymbology: src/core/symbology/qgsrulebasedrenderer.h#L597
-QgsRuleBasedRenderer.create: src/core/symbology/qgsrulebasedrenderer.h#L520
-QgsRuleBasedRenderer.createFromSld: src/core/symbology/qgsrulebasedrenderer.h#L553
 QgsRuleBasedRenderer.dump: src/core/symbology/qgsrulebasedrenderer.h#L566
 QgsRuleBasedRenderer.filter: src/core/symbology/qgsrulebasedrenderer.h#L539
 QgsRuleBasedRenderer.filterNeedsGeometry: src/core/symbology/qgsrulebasedrenderer.h#L543
@@ -16899,8 +16836,6 @@ QgsSQLStatement: src/core/qgssqlstatement.h#L40
 QgsSQLStatementFragment: src/core/qgssqlstatement.h#L1165
 QgsSVGFillSymbolLayer.applyDataDefinedSettings: src/core/symbology/qgsfillsymbollayer.h#L1434
 QgsSVGFillSymbolLayer.clone: src/core/symbology/qgsfillsymbollayer.h#L1224
-QgsSVGFillSymbolLayer.create: src/core/symbology/qgsfillsymbollayer.h#L1203
-QgsSVGFillSymbolLayer.createFromSld: src/core/symbology/qgsfillsymbollayer.h#L1209
 QgsSVGFillSymbolLayer.dxfColor: src/core/symbology/qgsfillsymbollayer.h#L1231
 QgsSVGFillSymbolLayer.estimateMaxBleed: src/core/symbology/qgsfillsymbollayer.h#L1230
 QgsSVGFillSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgsfillsymbollayer.h#L1233
@@ -17448,7 +17383,6 @@ QgsShapeburstFillSymbolLayer.clone: src/core/symbology/qgsfillsymbollayer.h#L542
 QgsShapeburstFillSymbolLayer.color2: src/core/symbology/qgsfillsymbollayer.h#L668
 QgsShapeburstFillSymbolLayer.colorRamp: src/core/symbology/qgsfillsymbollayer.h#L652
 QgsShapeburstFillSymbolLayer.colorType: src/core/symbology/qgsfillsymbollayer.h#L634
-QgsShapeburstFillSymbolLayer.create: src/core/symbology/qgsfillsymbollayer.h#L532
 QgsShapeburstFillSymbolLayer.distanceUnit: src/core/symbology/qgsfillsymbollayer.h#L609
 QgsShapeburstFillSymbolLayer.estimateMaxBleed: src/core/symbology/qgsfillsymbollayer.h#L543
 QgsShapeburstFillSymbolLayer.flags: src/core/symbology/qgsfillsymbollayer.h#L537
@@ -17524,8 +17458,6 @@ QgsSimpleCurve.zAt: src/core/geometry/qgssimplecurve.h#L389
 QgsSimpleCurve: src/core/geometry/qgssimplecurve.h#L38
 QgsSimpleFillSymbolLayer.brushStyle: src/core/symbology/qgsfillsymbollayer.h#L81
 QgsSimpleFillSymbolLayer.clone: src/core/symbology/qgsfillsymbollayer.h#L76
-QgsSimpleFillSymbolLayer.create: src/core/symbology/qgsfillsymbollayer.h#L65
-QgsSimpleFillSymbolLayer.createFromSld: src/core/symbology/qgsfillsymbollayer.h#L66
 QgsSimpleFillSymbolLayer.dxfAngle: src/core/symbology/qgsfillsymbollayer.h#L174
 QgsSimpleFillSymbolLayer.dxfBrushColor: src/core/symbology/qgsfillsymbollayer.h#L177
 QgsSimpleFillSymbolLayer.dxfBrushStyle: src/core/symbology/qgsfillsymbollayer.h#L178
@@ -17615,8 +17547,6 @@ QgsSimpleLineMaterialSettings: src/core/./3d/materials/qgssimplelinematerialsett
 QgsSimpleLineSymbolLayer.alignDashPattern: src/core/symbology/qgslinesymbollayer.h#L467
 QgsSimpleLineSymbolLayer.canCauseArtifactsBetweenAdjacentTiles: src/core/symbology/qgslinesymbollayer.h#L96
 QgsSimpleLineSymbolLayer.clone: src/core/symbology/qgslinesymbollayer.h#L79
-QgsSimpleLineSymbolLayer.create: src/core/symbology/qgslinesymbollayer.h#L64
-QgsSimpleLineSymbolLayer.createFromSld: src/core/symbology/qgslinesymbollayer.h#L69
 QgsSimpleLineSymbolLayer.customDashPatternUnit: src/core/symbology/qgslinesymbollayer.h#L166
 QgsSimpleLineSymbolLayer.dashPatternOffset: src/core/symbology/qgslinesymbollayer.h#L220
 QgsSimpleLineSymbolLayer.dashPatternOffsetUnit: src/core/symbology/qgslinesymbollayer.h#L256
@@ -17673,8 +17603,6 @@ QgsSimpleLineSymbolLayer: src/core/symbology/qgslinesymbollayer.h#L45
 QgsSimpleMarkerSymbolLayer.bounds: src/core/symbology/qgsmarkersymbollayer.h#L233
 QgsSimpleMarkerSymbolLayer.clone: src/core/symbology/qgsmarkersymbollayer.h#L220
 QgsSimpleMarkerSymbolLayer.color: src/core/symbology/qgsmarkersymbollayer.h#L237
-QgsSimpleMarkerSymbolLayer.create: src/core/symbology/qgsmarkersymbollayer.h#L204
-QgsSimpleMarkerSymbolLayer.createFromSld: src/core/symbology/qgsmarkersymbollayer.h#L211
 QgsSimpleMarkerSymbolLayer.draw: src/core/symbology/qgsmarkersymbollayer.h#L419
 QgsSimpleMarkerSymbolLayer.drawMarker: src/core/symbology/qgsmarkersymbollayer.h#L372
 QgsSimpleMarkerSymbolLayer.fillColor: src/core/symbology/qgsmarkersymbollayer.h#L234
@@ -17811,9 +17739,6 @@ QgsSingleItemModel: src/core/qgssingleitemmodel.h#L32
 QgsSingleSymbolRenderer.accept: src/core/symbology/qgssinglesymbolrenderer.h#L48
 QgsSingleSymbolRenderer.capabilities: src/core/symbology/qgssinglesymbolrenderer.h#L78
 QgsSingleSymbolRenderer.clone: src/core/symbology/qgssinglesymbolrenderer.h#L65
-QgsSingleSymbolRenderer.convertFromRenderer: src/core/symbology/qgssinglesymbolrenderer.h#L98
-QgsSingleSymbolRenderer.create: src/core/symbology/qgssinglesymbolrenderer.h#L86
-QgsSingleSymbolRenderer.createFromSld: src/core/symbology/qgssinglesymbolrenderer.h#L76
 QgsSingleSymbolRenderer.dataDefinedSizeLegend: src/core/symbology/qgssinglesymbolrenderer.h#L115
 QgsSingleSymbolRenderer.dump: src/core/symbology/qgssinglesymbolrenderer.h#L63
 QgsSingleSymbolRenderer.flags: src/core/symbology/qgssinglesymbolrenderer.h#L42
@@ -18269,7 +18194,6 @@ QgsStyle.addTag: src/core/symbology/qgsstyle.h#L369
 QgsStyle.addTextFormat: src/core/symbology/qgsstyle.h#L311
 QgsStyle.allNames: src/core/symbology/qgsstyle.h#L630
 QgsStyle.clear: src/core/symbology/qgsstyle.h#L404
-QgsStyle.colorRamp: src/core/symbology/qgsstyle.h#L410
 QgsStyle.colorRampCount: src/core/symbology/qgsstyle.h#L413
 QgsStyle.colorRampNames: src/core/symbology/qgsstyle.h#L416
 QgsStyle.colorRampRef: src/core/symbology/qgsstyle.h#L419
@@ -18356,10 +18280,8 @@ QgsStyle.smartgroupId: src/core/symbology/qgsstyle.h#L624
 QgsStyle.smartgroupNames: src/core/symbology/qgsstyle.h#L1039
 QgsStyle.smartgroupOperator: src/core/symbology/qgsstyle.h#L1047
 QgsStyle.smartgroupsListMap: src/core/symbology/qgsstyle.h#L1036
-QgsStyle.symbol3D: src/core/symbology/qgsstyle.h#L488
 QgsStyle.symbol3DCount: src/core/symbology/qgsstyle.h#L494
 QgsStyle.symbol3DNames: src/core/symbology/qgsstyle.h#L869
-QgsStyle.symbol: src/core/symbology/qgsstyle.h#L598
 QgsStyle.symbolChanged: src/core/symbology/qgsstyle.h#L1122
 QgsStyle.symbolCount: src/core/symbology/qgsstyle.h#L604
 QgsStyle.symbolHasTag: src/core/symbology/qgsstyle.h#L1030
@@ -18487,8 +18409,6 @@ QgsSvgCache: src/core/symbology/qgssvgcache.h#L124
 QgsSvgMarkerSymbolLayer.bounds: src/core/symbology/qgsmarkersymbollayer.h#L630
 QgsSvgMarkerSymbolLayer.calculateAspectRatio: src/core/symbology/qgsmarkersymbollayer.h#L643
 QgsSvgMarkerSymbolLayer.clone: src/core/symbology/qgsmarkersymbollayer.h#L522
-QgsSvgMarkerSymbolLayer.create: src/core/symbology/qgsmarkersymbollayer.h#L504
-QgsSvgMarkerSymbolLayer.createFromSld: src/core/symbology/qgsmarkersymbollayer.h#L505
 QgsSvgMarkerSymbolLayer.defaultAspectRatio: src/core/symbology/qgsmarkersymbollayer.h#L545
 QgsSvgMarkerSymbolLayer.fillColor: src/core/symbology/qgsmarkersymbollayer.h#L585
 QgsSvgMarkerSymbolLayer.fixedAspectRatio: src/core/symbology/qgsmarkersymbollayer.h#L574
@@ -18546,7 +18466,6 @@ QgsSymbol.clone: src/core/symbology/qgssymbol.h#L606
 QgsSymbol.cloneLayers: src/core/symbology/qgssymbol.h#L1017
 QgsSymbol.color: src/core/symbology/qgssymbol.h#L508
 QgsSymbol.copyCommonProperties: src/core/symbology/qgssymbol.h#L1024
-QgsSymbol.defaultSymbol: src/core/symbology/qgssymbol.h#L291
 QgsSymbol.deleteSymbolLayer: src/core/symbology/qgssymbol.h#L450
 QgsSymbol.drawPreviewIcon: src/core/symbology/qgssymbol.h#L526
 QgsSymbol.dump: src/core/symbology/qgssymbol.h#L584
@@ -18737,11 +18656,9 @@ QgsSymbolLayerUtils.clearSymbolLayerMasks: src/core/symbology/qgssymbollayerutil
 QgsSymbolLayerUtils.clearSymbolMap: src/core/symbology/qgssymbollayerutils.h#L761
 QgsSymbolLayerUtils.colorFromMimeData: src/core/symbology/qgssymbollayerutils.h#L842
 QgsSymbolLayerUtils.colorListFromMimeData: src/core/symbology/qgssymbollayerutils.h#L849
-QgsSymbolLayerUtils.colorListToMimeData: src/core/symbology/qgssymbollayerutils.h#L857
 QgsSymbolLayerUtils.colorRampPreviewIcon: src/core/symbology/qgssymbollayerutils.h#L396
 QgsSymbolLayerUtils.colorRampPreviewPixmap: src/core/symbology/qgssymbollayerutils.h#L410
 QgsSymbolLayerUtils.colorRampToVariant: src/core/symbology/qgssymbollayerutils.h#L802
-QgsSymbolLayerUtils.colorToMimeData: src/core/symbology/qgssymbollayerutils.h#L833
 QgsSymbolLayerUtils.colorToName: src/core/symbology/qgssymbollayerutils.h#L817
 QgsSymbolLayerUtils.condenseFillAndOutline: src/core/symbology/qgssymbollayerutils.h#L923
 QgsSymbolLayerUtils.convertPolygonSymbolizerToPointMarker: src/core/symbology/qgssymbollayerutils.h#L479
@@ -18885,7 +18802,6 @@ QgsSymbolLayerUtils.symbolLayerPreviewPicture: src/core/symbology/qgssymbollayer
 QgsSymbolLayerUtils.symbolPreviewIcon: src/core/symbology/qgssymbollayerutils.h#L328
 QgsSymbolLayerUtils.symbolPreviewPixmap: src/core/symbology/qgssymbollayerutils.h#L342
 QgsSymbolLayerUtils.symbolProperties: src/core/symbology/qgssymbollayerutils.h#L454
-QgsSymbolLayerUtils.symbolToMimeData: src/core/symbology/qgssymbollayerutils.h#L769
 QgsSymbolLayerUtils.tileSize: src/core/symbology/qgssymbollayerutils.h#L1138
 QgsSymbolLayerUtils.toPoint: src/core/symbology/qgssymbollayerutils.h#L238
 QgsSymbolLayerUtils.toSize: src/core/symbology/qgssymbollayerutils.h#L266
@@ -20240,8 +20156,6 @@ QgsVectorFieldSymbolLayer.angleUnits: src/core/symbology/qgsvectorfieldsymbollay
 QgsVectorFieldSymbolLayer.bounds: src/core/symbology/qgsvectorfieldsymbollayer.h#L124
 QgsVectorFieldSymbolLayer.clone: src/core/symbology/qgsvectorfieldsymbollayer.h#L76
 QgsVectorFieldSymbolLayer.color: src/core/symbology/qgsvectorfieldsymbollayer.h#L70
-QgsVectorFieldSymbolLayer.create: src/core/symbology/qgsvectorfieldsymbollayer.h#L61
-QgsVectorFieldSymbolLayer.createFromSld: src/core/symbology/qgsvectorfieldsymbollayer.h#L62
 QgsVectorFieldSymbolLayer.distanceUnit: src/core/symbology/qgsvectorfieldsymbollayer.h#L118
 QgsVectorFieldSymbolLayer.drawPreviewIcon: src/core/symbology/qgsvectorfieldsymbollayer.h#L82
 QgsVectorFieldSymbolLayer.hasDataDefinedProperties: src/core/symbology/qgsvectorfieldsymbollayer.h#L85
