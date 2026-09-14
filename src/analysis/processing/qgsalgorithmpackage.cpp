@@ -131,10 +131,10 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
   // delete existing geopackage if it exists
   if ( overwrite && QFile::exists( packagePath ) )
   {
-    feedback->pushInfo( QObject::tr( "Removing existing file '%1'" ).arg( packagePath ) );
+    feedback->pushWarning( QObject::tr( "Removing existing file '%1'" ).arg( QDir::toNativeSeparators( packagePath ) ) );
     if ( !QFile( packagePath ).remove() )
     {
-      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( packagePath ) );
+      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( QDir::toNativeSeparators( packagePath ) ) );
     }
   }
 

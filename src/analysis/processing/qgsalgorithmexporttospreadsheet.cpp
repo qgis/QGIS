@@ -179,10 +179,10 @@ QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap
   // delete existing spreadsheet if it exists
   if ( overwrite && QFile::exists( outputPath ) )
   {
-    feedback->pushInfo( QObject::tr( "Removing existing file '%1'" ).arg( outputPath ) );
+    feedback->pushWarning( QObject::tr( "Removing existing file '%1'" ).arg( QDir::toNativeSeparators( outputPath ) ) );
     if ( !QFile( outputPath ).remove() )
     {
-      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( outputPath ) );
+      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( QDir::toNativeSeparators( outputPath ) ) );
     }
   }
   else if ( QFile::exists( outputPath ) )
