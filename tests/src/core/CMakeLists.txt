@@ -87,6 +87,7 @@ set(TESTS
  testqgsgeopdfexport.cpp
  testqgsgltfutils.cpp
  testqgsgml.cpp
+ testqgsgpkgtiles.cpp
  testqgsgradients.cpp
  testqgsgraduatedsymbolrenderer.cpp
  testqgshistogram.cpp
