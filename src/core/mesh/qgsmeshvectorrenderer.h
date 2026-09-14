@@ -27,7 +27,7 @@
 
 #define SIP_NO_FILE
 
-class QgsMeshLayerRendererFeedback;
+class QgsRasterBlockFeedback;
 class QgsPointXY;
 class QgsRenderContext;
 class QgsTriangularMesh;
@@ -60,7 +60,7 @@ class QgsMeshVectorRenderer
       const QgsVectorFieldSettings &settings,
       QgsRenderContext &context,
       const QgsRectangle &layerExtent,
-      QgsMeshLayerRendererFeedback *feedBack,
+      QgsRasterBlockFeedback *feedBack,
       const QSize &size
     );
 };

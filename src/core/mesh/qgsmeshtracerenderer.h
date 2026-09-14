@@ -31,8 +31,7 @@
 #include <QSize>
 #include <QVector>
 
-class QgsMeshLayerInterpolator;
-class QgsMeshLayerRendererFeedback;
+class QgsRasterBlockFeedback;
 
 ///@cond PRIVATE
 
@@ -154,7 +153,14 @@ class QgsMeshVectorFieldValueSourceFromFace : public QgsMeshVectorFieldValueSour
 /**
  * \ingroup core
  *
- * \brief Abstract class used to handle information about stream field
+ * \brief Abstract class used to handle information about a stream field.
+ *
+ * The field is a raster of low resolution pixels covering the zone of interest, in which traces
+ * are integrated by walking the vector field cell by cell. Subclasses decide what is stored per
+ * pixel and how the result is drawn.
+ *
+ * This class is data agnostic: everything it knows about the vector field comes from the
+ * QgsVectorFieldValueSource it is given.
  *
  * \note not available in Python bindings
  * \since QGIS 3.12
@@ -171,17 +177,7 @@ class QgsVectorFieldStreamField
     };
 
     //! Constructor
-    QgsVectorFieldStreamField(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &dataSetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-      const QgsRectangle &layerExtent,
-      double magnitudeMaximum,
-      bool dataIsOnVertices,
-      const QgsRenderContext &rendererContext,
-      const QgsInterpolatedLineColor &vectorColoring,
-      int resolution = 1
-    );
+    QgsVectorFieldStreamField( std::unique_ptr<QgsVectorFieldValueSource> source, const QgsRenderContext &rendererContext, const QgsInterpolatedLineColor &vectorColoring, int resolution = 1 );
 
     QgsVectorFieldStreamField( const QgsVectorFieldStreamField &other );
     virtual ~QgsVectorFieldStreamField();
@@ -224,8 +220,13 @@ class QgsVectorFieldStreamField
     //! Adds traces in the field from gridded start points, pixelSpace is the space between points in pixel field
     void addGriddedTraces( int dx, int dy );
 
-    //! Adds traces in the field from vertex on a mesh
-    void addTracesOnMesh( const QgsTriangularMesh &mesh, const QgsRectangle &extent );
+    /**
+     * Adds traces in the field from the natural positions of the data, that is the points returned
+     * by QgsVectorFieldValueSource::seedPoints() for \a extent.
+     *
+     * Adds nothing if the source has no natural seeding positions.
+     */
+    void addTracesOnDataPoints( const QgsRectangle &extent );
 
     //! Sets the resolution of the field
     void setResolution( int width );
@@ -251,7 +252,7 @@ class QgsVectorFieldStreamField
     //! Sets min/max filter
     void setFilter( double min, double max );
 
-    //! Sets if the size of the field has to be minimized of all the mesh is in the device
+    //! Sets if the size of the field has to be minimized of all the data is in the device
     void setMinimizeFieldSize( bool minimizeFieldSize );
 
     //! Assignment operator
@@ -302,15 +303,14 @@ class QgsVectorFieldStreamField
     QVector<unsigned char> mDirectionField;
     QgsRenderContext mRenderContext;
 
+    std::unique_ptr<QgsVectorFieldValueSource> mSource;
+
   private:
     int mPixelFillingCount = 0;
     int mMaxPixelFillingCount = 0;
-    std::unique_ptr<QgsMeshVectorFieldValueSource> mVectorValueInterpolator;
-    QgsRectangle mLayerExtent;
     QgsRectangle mMapExtent;
     QPoint mFieldTopLeftInDeviceCoordinates;
     bool mValid = false;
-    double mMaximumMagnitude = 0;
     double mPixelFillingDensity = 0;
     double mMinMagFilter = -1;
     double mMaxMagFilter = -1;
@@ -320,7 +320,7 @@ class QgsVectorFieldStreamField
 /**
  * \ingroup core
  *
- * \brief Class used to draw streamlines from vector field
+ * \brief Class used to draw streamlines from a vector field
  *
  * \note not available in Python bindings
  * \since QGIS 3.12
@@ -329,28 +329,8 @@ class QgsVectorFieldStreamlinesField : public QgsVectorFieldStreamField
 {
   public:
     //! Constructor
-    Q_DECL_DEPRECATED QgsVectorFieldStreamlinesField(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-      const QgsRectangle &layerExtent,
-      double magMax,
-      bool dataIsOnVertices,
-      QgsRenderContext &rendererContext,
-      const QgsInterpolatedLineColor &vectorColoring
-    );
-
     QgsVectorFieldStreamlinesField(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-      const QVector<double> &datasetMagValues,
-      const QgsRectangle &layerExtent,
-      QgsMeshLayerRendererFeedback *feedBack,
-      double magMax,
-      bool dataIsOnVertices,
-      QgsRenderContext &rendererContext,
-      const QgsInterpolatedLineColor &vectorColoring
+      std::unique_ptr<QgsVectorFieldValueSource> source, QgsRenderContext &rendererContext, const QgsInterpolatedLineColor &vectorColoring, QgsRasterBlockFeedback *feedBack = nullptr
     );
 
     void compose();
@@ -366,20 +346,13 @@ class QgsVectorFieldStreamlinesField : public QgsVectorFieldStreamField
     QImage mDrawingTraceImage;
     std::unique_ptr<QPainter> mDrawingTracePainter;
 
-    //** Needed data
-    QgsTriangularMesh mTriangularMesh;
-    QVector<double> mMagValues;
-    QgsMeshDataBlock mScalarActiveFaceFlagValues;
-    QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataOnVertices;
-    QgsMeshLayerRendererFeedback *mFeedBack = nullptr;
+    QgsRasterBlockFeedback *mFeedBack = nullptr;
 };
-
-class QgsVectorFieldParticleTracesField;
 
 /**
  * \ingroup core
  *
- * \brief Used to simulation moving particle
+ * \brief Used to simulate a moving particle
  *
  * \note not available in Python bindings
  * \since QGIS 3.12
@@ -395,7 +368,7 @@ struct QgsVectorFieldTraceParticle
 /**
  * \ingroup core
  *
- * \brief Class used to draw streamlines from vector field
+ * \brief Class used to draw particle traces from a vector field
  *
  * \note not available in Python bindings
  * \since QGIS 3.12
@@ -404,16 +377,7 @@ class QgsVectorFieldParticleTracesField : public QgsVectorFieldStreamField
 {
   public:
     //! Constructor
-    QgsVectorFieldParticleTracesField(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-      const QgsRectangle &layerExtent,
-      double magMax,
-      bool dataIsOnVertices,
-      const QgsRenderContext &rendererContext,
-      const QgsInterpolatedLineColor &vectorColoring
-    );
+    QgsVectorFieldParticleTracesField( std::unique_ptr<QgsVectorFieldValueSource> source, const QgsRenderContext &rendererContext, const QgsInterpolatedLineColor &vectorColoring );
 
     QgsVectorFieldParticleTracesField( const QgsVectorFieldParticleTracesField &other );
 
@@ -538,7 +502,7 @@ class QgsMeshVectorStreamlineRenderer : public QgsMeshVectorRenderer
       const QgsVectorFieldSettings &settings,
       QgsRenderContext &rendererContext,
       const QgsRectangle &layerExtent,
-      QgsMeshLayerRendererFeedback *feedBack,
+      QgsRasterBlockFeedback *feedBack,
       double magMax
     );
 
