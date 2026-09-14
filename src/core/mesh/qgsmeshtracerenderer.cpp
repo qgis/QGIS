@@ -36,6 +36,43 @@
 #endif
 
 
+QgsMeshVectorFieldValueSource::QgsMeshVectorFieldValueSource(
+  const QgsTriangularMesh &triangularMesh,
+  const QgsMeshDataBlock &datasetVectorValues,
+  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+  const QVector<double> &datasetMagnitudeValues,
+  QgsMeshDatasetGroupMetadata::DataType dataType,
+  const QgsRectangle &layerExtent,
+  double maximumMagnitude
+)
+  : mTriangularMesh( triangularMesh )
+  , mDatasetValues( datasetVectorValues )
+  , mActiveFaceFlagValues( scalarActiveFaceFlagValues )
+  , mMagnitudeValues( datasetMagnitudeValues )
+  , mDataType( dataType )
+  , mExtent( layerExtent )
+  , mMaximumMagnitude( maximumMagnitude )
+  , mUseScalarActiveFaceFlagValues( scalarActiveFaceFlagValues.isValid() )
+{}
+
+std::unique_ptr<QgsMeshVectorFieldValueSource> QgsMeshVectorFieldValueSource::create(
+  const QgsTriangularMesh &triangularMesh,
+  const QgsMeshDataBlock &datasetVectorValues,
+  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+  const QVector<double> &datasetMagnitudeValues,
+  QgsMeshDatasetGroupMetadata::DataType dataType,
+  const QgsRectangle &layerExtent,
+  double maximumMagnitude
+)
+{
+  if ( dataType == QgsMeshDatasetGroupMetadata::DataOnVertices )
+    return std::make_unique<
+      QgsMeshVectorFieldValueSourceFromVertex>( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues, datasetMagnitudeValues, QgsMeshDatasetGroupMetadata::DataOnVertices, layerExtent, maximumMagnitude );
+
+  return std::make_unique<
+    QgsMeshVectorFieldValueSourceFromFace>( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues, datasetMagnitudeValues, QgsMeshDatasetGroupMetadata::DataOnFaces, layerExtent, maximumMagnitude );
+}
+
 QgsVector QgsMeshVectorFieldValueSource::vectorValue( const QgsPointXY &point ) const
 {
   if ( mCacheFaceIndex != -1 && mCacheFaceIndex < mTriangularMesh.triangles().count() )
@@ -66,90 +103,41 @@ QgsVector QgsMeshVectorFieldValueSource::vectorValue( const QgsPointXY &point ) 
   return ( QgsVector( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() ) );
 }
 
-QgsMeshVectorFieldValueSource &QgsMeshVectorFieldValueSource::operator=( const QgsMeshVectorFieldValueSource &other )
+QgsRectangle QgsMeshVectorFieldValueSource::extent() const
 {
-  if ( &other == this )
-    return *this;
-
-  mTriangularMesh = other.mTriangularMesh;
-  mDatasetValues = other.mDatasetValues;
-  mActiveFaceFlagValues = other.mActiveFaceFlagValues;
-  mFaceCache = other.mFaceCache;
-  mCacheFaceIndex = other.mCacheFaceIndex;
-  mUseScalarActiveFaceFlagValues = other.mUseScalarActiveFaceFlagValues;
-
-  return *this;
+  return mExtent;
 }
 
-QgsMeshVectorFieldValueSourceFromVertex::QgsMeshVectorFieldValueSourceFromVertex( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues )
-  : QgsMeshVectorFieldValueSource( triangularMesh, datasetVectorValues )
-{}
-
-QgsMeshVectorFieldValueSourceFromVertex::QgsMeshVectorFieldValueSourceFromVertex(
-  const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues
-)
-  : QgsMeshVectorFieldValueSource( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues )
-{}
-
-QgsMeshVectorFieldValueSourceFromVertex::QgsMeshVectorFieldValueSourceFromVertex( const QgsMeshVectorFieldValueSourceFromVertex &other )
-  : QgsMeshVectorFieldValueSource( other )
-{}
-
-QgsMeshVectorFieldValueSourceFromVertex *QgsMeshVectorFieldValueSourceFromVertex::clone()
+double QgsMeshVectorFieldValueSource::maximumMagnitude() const
 {
-  return new QgsMeshVectorFieldValueSourceFromVertex( *this );
+  return mMaximumMagnitude;
 }
 
-QgsMeshVectorFieldValueSourceFromVertex &QgsMeshVectorFieldValueSourceFromVertex::operator=( const QgsMeshVectorFieldValueSourceFromVertex &other )
+QVector<QgsPointXY> QgsMeshVectorFieldValueSource::seedPoints( const QgsRectangle &extent ) const
 {
-  QgsMeshVectorFieldValueSource::operator=( other );
-  return ( *this );
-}
-
-QgsVector QgsMeshVectorFieldValueSourceFromVertex::interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const
-{
-  QgsMeshFace face = mTriangularMesh.triangles().at( faceIndex );
-
-  QgsPoint p1 = mTriangularMesh.vertices().at( face.at( 0 ) );
-  QgsPoint p2 = mTriangularMesh.vertices().at( face.at( 1 ) );
-  QgsPoint p3 = mTriangularMesh.vertices().at( face.at( 2 ) );
-
-  QgsVector v1 = QgsVector( mDatasetValues.value( face.at( 0 ) ).x(), mDatasetValues.value( face.at( 0 ) ).y() );
-
-  QgsVector v2 = QgsVector( mDatasetValues.value( face.at( 1 ) ).x(), mDatasetValues.value( face.at( 1 ) ).y() );
-
-  QgsVector v3 = QgsVector( mDatasetValues.value( face.at( 2 ) ).x(), mDatasetValues.value( face.at( 2 ) ).y() );
-
-  return QgsMeshLayerUtils::interpolateVectorFromVerticesData( p1, p2, p3, v1, v2, v3, point );
-}
-
-QgsMeshVectorFieldValueSource::QgsMeshVectorFieldValueSource( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues )
-  : mTriangularMesh( triangularMesh )
-  , mDatasetValues( datasetVectorValues )
-{}
-
-QgsMeshVectorFieldValueSource::QgsMeshVectorFieldValueSource( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues )
-  : mTriangularMesh( triangularMesh )
-  , mDatasetValues( datasetVectorValues )
-  , mActiveFaceFlagValues( scalarActiveFaceFlagValues )
-  , mUseScalarActiveFaceFlagValues( true )
-{}
-
-QgsMeshVectorFieldValueSource::QgsMeshVectorFieldValueSource( const QgsMeshVectorFieldValueSource &other )
-  : mTriangularMesh( other.mTriangularMesh )
-  , mDatasetValues( other.mDatasetValues )
-  , mActiveFaceFlagValues( other.mActiveFaceFlagValues )
-  , mFaceCache( other.mFaceCache )
-  , mCacheFaceIndex( other.mCacheFaceIndex )
-  , mUseScalarActiveFaceFlagValues( other.mUseScalarActiveFaceFlagValues )
-{}
-
-void QgsMeshVectorFieldValueSource::updateCacheFaceIndex( const QgsPointXY &point ) const
-{
-  if ( !QgsMeshUtils::isInTriangleFace( point, mFaceCache, mTriangularMesh.vertices() ) )
+  const QList<int> facesInExtent = mTriangularMesh.faceIndexesForRectangle( extent );
+  QSet<int> vertices;
+  for ( const int f : facesInExtent )
   {
-    mCacheFaceIndex = mTriangularMesh.faceIndexForPoint_v2( point );
+    const QgsMeshFace face = mTriangularMesh.triangles().at( f );
+    for ( const int i : face )
+      vertices.insert( i );
   }
+
+  QVector<QgsPointXY> points;
+  points.reserve( vertices.count() );
+  for ( const int i : vertices )
+    points.append( mTriangularMesh.vertices().at( i ) );
+
+  return points;
+}
+
+std::unique_ptr<QgsRasterInterface> QgsMeshVectorFieldValueSource::magnitudeSource( const QgsRenderContext &context, QSize size ) const
+{
+  if ( mMagnitudeValues.isEmpty() )
+    return nullptr;
+
+  return std::make_unique<QgsMeshLayerInterpolator>( mTriangularMesh, mMagnitudeValues, mActiveFaceFlagValues, mDataType, context, size );
 }
 
 bool QgsMeshVectorFieldValueSource::isVectorValid( const QgsVector &v ) const
@@ -161,6 +149,45 @@ void QgsMeshVectorFieldValueSource::activeFaceFilter( QgsVector &vector, int fac
 {
   if ( mUseScalarActiveFaceFlagValues && !mActiveFaceFlagValues.active( mTriangularMesh.trianglesToNativeFaces()[faceIndex] ) )
     vector = QgsVector( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
+}
+
+QgsMeshVectorFieldValueSourceFromVertex *QgsMeshVectorFieldValueSourceFromVertex::clone() const
+{
+  return new QgsMeshVectorFieldValueSourceFromVertex( *this );
+}
+
+QgsVector QgsMeshVectorFieldValueSourceFromVertex::interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const
+{
+  const QgsMeshFace face = mTriangularMesh.triangles().at( faceIndex );
+
+  const QgsPoint p1 = mTriangularMesh.vertices().at( face.at( 0 ) );
+  const QgsPoint p2 = mTriangularMesh.vertices().at( face.at( 1 ) );
+  const QgsPoint p3 = mTriangularMesh.vertices().at( face.at( 2 ) );
+
+  const QgsVector v1 = QgsVector( mDatasetValues.value( face.at( 0 ) ).x(), mDatasetValues.value( face.at( 0 ) ).y() );
+  const QgsVector v2 = QgsVector( mDatasetValues.value( face.at( 1 ) ).x(), mDatasetValues.value( face.at( 1 ) ).y() );
+  const QgsVector v3 = QgsVector( mDatasetValues.value( face.at( 2 ) ).x(), mDatasetValues.value( face.at( 2 ) ).y() );
+
+  return QgsMeshLayerUtils::interpolateVectorFromVerticesData( p1, p2, p3, v1, v2, v3, point );
+}
+
+QgsMeshVectorFieldValueSourceFromFace *QgsMeshVectorFieldValueSourceFromFace::clone() const
+{
+  return new QgsMeshVectorFieldValueSourceFromFace( *this );
+}
+
+QgsVector QgsMeshVectorFieldValueSourceFromFace::interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const
+{
+  const QgsMeshFace face = mTriangularMesh.triangles().at( faceIndex );
+
+  const QgsPoint p1 = mTriangularMesh.vertices().at( face.at( 0 ) );
+  const QgsPoint p2 = mTriangularMesh.vertices().at( face.at( 1 ) );
+  const QgsPoint p3 = mTriangularMesh.vertices().at( face.at( 2 ) );
+
+  const int nativeFaceIndex = mTriangularMesh.trianglesToNativeFaces().at( faceIndex );
+  const QgsVector vect = QgsVector( mDatasetValues.value( nativeFaceIndex ).x(), mDatasetValues.value( nativeFaceIndex ).y() );
+
+  return QgsMeshLayerUtils::interpolateVectorFromFacesData( p1, p2, p3, vect, point );
 }
 
 QSize QgsVectorFieldStreamField::size() const
@@ -202,20 +229,8 @@ QgsVectorFieldStreamField::QgsVectorFieldStreamField(
   , mLayerExtent( layerExtent )
   , mMaximumMagnitude( magnitudeMaximum )
 {
-  if ( dataIsOnVertices )
-  {
-    if ( scalarActiveFaceFlagValues.isValid() )
-      mVectorValueInterpolator = std::make_unique<QgsMeshVectorFieldValueSourceFromVertex>( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues );
-    else
-      mVectorValueInterpolator = std::make_unique<QgsMeshVectorFieldValueSourceFromVertex>( triangularMesh, dataSetVectorValues );
-  }
-  else
-  {
-    if ( scalarActiveFaceFlagValues.isValid() )
-      mVectorValueInterpolator = std::make_unique<QgsMeshVectorFieldValueSourceFromFace>( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues );
-    else
-      mVectorValueInterpolator = std::make_unique<QgsMeshVectorFieldValueSourceFromFace>( triangularMesh, dataSetVectorValues );
-  }
+  mVectorValueInterpolator = QgsMeshVectorFieldValueSource::
+    create( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, {}, dataIsOnVertices ? QgsMeshDatasetGroupMetadata::DataOnVertices : QgsMeshDatasetGroupMetadata::DataOnFaces, layerExtent, magnitudeMaximum );
 }
 
 QgsVectorFieldStreamField::QgsVectorFieldStreamField( const QgsVectorFieldStreamField &other )
@@ -931,44 +946,6 @@ void QgsVectorFieldStreamField::setFilter( double min, double max )
 {
   mMinMagFilter = min;
   mMaxMagFilter = max;
-}
-
-QgsMeshVectorFieldValueSourceFromFace::QgsMeshVectorFieldValueSourceFromFace( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues )
-  : QgsMeshVectorFieldValueSource( triangularMesh, datasetVectorValues )
-{}
-
-QgsMeshVectorFieldValueSourceFromFace::QgsMeshVectorFieldValueSourceFromFace(
-  const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues
-)
-  : QgsMeshVectorFieldValueSource( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues )
-{}
-
-QgsMeshVectorFieldValueSourceFromFace::QgsMeshVectorFieldValueSourceFromFace( const QgsMeshVectorFieldValueSourceFromFace &other )
-  : QgsMeshVectorFieldValueSource( other )
-{}
-
-QgsMeshVectorFieldValueSourceFromFace *QgsMeshVectorFieldValueSourceFromFace::clone()
-{
-  return new QgsMeshVectorFieldValueSourceFromFace( *this );
-}
-
-QgsMeshVectorFieldValueSourceFromFace &QgsMeshVectorFieldValueSourceFromFace::operator=( const QgsMeshVectorFieldValueSourceFromFace &other )
-{
-  QgsMeshVectorFieldValueSource::operator=( other );
-  return ( *this );
-}
-
-QgsVector QgsMeshVectorFieldValueSourceFromFace::interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const
-{
-  QgsMeshFace face = mTriangularMesh.triangles().at( faceIndex );
-
-  QgsPoint p1 = mTriangularMesh.vertices().at( face.at( 0 ) );
-  QgsPoint p2 = mTriangularMesh.vertices().at( face.at( 1 ) );
-  QgsPoint p3 = mTriangularMesh.vertices().at( face.at( 2 ) );
-
-  QgsVector vect = QgsVector( mDatasetValues.value( mTriangularMesh.trianglesToNativeFaces().at( faceIndex ) ).x(), mDatasetValues.value( mTriangularMesh.trianglesToNativeFaces().at( faceIndex ) ).y() );
-
-  return QgsMeshLayerUtils::interpolateVectorFromFacesData( p1, p2, p3, vect, point );
 }
 
 QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer(
