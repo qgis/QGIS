@@ -66,11 +66,6 @@ of material settings controls are shown.
 
   signals:
 
-    void changed();
-%Docstring
-Emitted when the symbol is changed.
-%End
-
     void renderingTechniqueChanged();
 %Docstring
 Emitted when the rendering technique associated with the symbol is

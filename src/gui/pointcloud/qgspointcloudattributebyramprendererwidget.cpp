@@ -84,7 +84,7 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRendererWidget::renderer()
 void QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsPointCloudAttributeByRampRendererWidget::minMaxChanged()

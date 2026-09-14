@@ -125,7 +125,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent, const Q
   if ( mTransformerWidget )
   {
     mOutputWidget->layout()->addWidget( mTransformerWidget );
-    connect( mTransformerWidget, &QgsPropertyAbstractTransformerWidget::widgetChanged, this, &QgsPropertyAssistantWidget::widgetChanged );
+    connect( mTransformerWidget, &QgsPropertyAbstractTransformerWidget::widgetChanged, this, &QgsPropertyAssistantWidget::changed );
 
     mCurveEditor->setMinHistogramValueRange( minValueSpinBox->value() );
     mCurveEditor->setMaxHistogramValueRange( maxValueSpinBox->value() );
@@ -139,12 +139,12 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent, const Q
   }
   mTransformCurveCheckBox->setVisible( mTransformerWidget );
 
-  connect( minValueSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
-  connect( maxValueSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
-  connect( mExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
-  connect( mTransformCurveCheckBox, &QgsCollapsibleGroupBox::toggled, this, &QgsPropertyAssistantWidget::widgetChanged );
-  connect( mCurveEditor, &QgsCurveEditorWidget::changed, this, &QgsPropertyAssistantWidget::widgetChanged );
-  connect( this, &QgsPropertyAssistantWidget::widgetChanged, this, &QgsPropertyAssistantWidget::updatePreview );
+  connect( minValueSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::changed );
+  connect( maxValueSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::changed );
+  connect( mExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsPropertyAssistantWidget::changed );
+  connect( mTransformCurveCheckBox, &QgsCollapsibleGroupBox::toggled, this, &QgsPropertyAssistantWidget::changed );
+  connect( mCurveEditor, &QgsCurveEditorWidget::changed, this, &QgsPropertyAssistantWidget::changed );
+  connect( this, &QgsPropertyAssistantWidget::changed, this, &QgsPropertyAssistantWidget::updatePreview );
   updatePreview();
 }
 
@@ -213,7 +213,7 @@ void QgsPropertyAssistantWidget::computeValuesFromLayer()
   mCurveEditor->setMinHistogramValueRange( minValueSpinBox->value() );
   mCurveEditor->setMaxHistogramValueRange( maxValueSpinBox->value() );
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPropertyAssistantWidget::updatePreview()

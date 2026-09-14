@@ -150,7 +150,7 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase(
             mContextOptionsWidget->setLogLevel( mLogLevel );
             panel->openPanel( mContextOptionsWidget );
 
-            connect( mContextOptionsWidget, &QgsPanelWidget::widgetChanged, this, [this] {
+            connect( mContextOptionsWidget, &QgsPanelWidget::changed, this, [this] {
               mOverrideDefaultContextSettings = true;
               mGeometryCheck = mContextOptionsWidget->invalidGeometryCheck();
               mDistanceUnits = mContextOptionsWidget->distanceUnit();
@@ -1160,12 +1160,12 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
 
   mThreadsSpinBox->setRange( 1, QThread::idealThreadCount() );
 
-  connect( mLogLevelComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mComboInvalidFeatureFiltering, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mDistanceUnitsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mAreaUnitsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mTemporaryFolderWidget, &QgsFileWidget::fileChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mThreadsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mLogLevelComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::changed );
+  connect( mComboInvalidFeatureFiltering, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::changed );
+  connect( mDistanceUnitsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::changed );
+  connect( mAreaUnitsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::changed );
+  connect( mTemporaryFolderWidget, &QgsFileWidget::fileChanged, this, &QgsPanelWidget::changed );
+  connect( mThreadsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::changed );
 }
 
 void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingContext *context )
