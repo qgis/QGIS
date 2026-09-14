@@ -230,6 +230,7 @@ bool QgsMatrixSolver::solveLu( int dimension, QVector<double> &result, bool reta
 #else
   ( void ) dimension;
   ( void ) result;
+  ( void ) retainOriginalMatrices;
   throw QgsNotSupportedException( u"QgsMatrixSolver requires a QGIS build with GSL support enabled"_s );
 #endif
 }
@@ -275,6 +276,7 @@ bool QgsMatrixSolver::solveSvd( int dimension, QVector<double> &result, bool ret
 #else
   ( void ) dimension;
   ( void ) result;
+  ( void ) retainOriginalMatrices;
   throw QgsNotSupportedException( u"QgsMatrixSolver requires a QGIS build with GSL support enabled"_s );
 #endif
 }
