@@ -18,6 +18,8 @@
 #ifndef QGSMESHVECTORRENDERER_H
 #define QGSMESHVECTORRENDERER_H
 
+#include <memory>
+
 #include "qgsmeshdataset.h"
 #include "qgsmeshutils.h"
 #include "qgsvectorfieldengine.h"
@@ -27,8 +29,9 @@
 
 #define SIP_NO_FILE
 
-class QgsRasterBlockFeedback;
+class QgsMeshVectorFieldValueSource;
 class QgsPointXY;
+class QgsRasterBlockFeedback;
 class QgsRenderContext;
 class QgsTriangularMesh;
 class QgsMeshDataBlock;
@@ -128,6 +131,46 @@ class QgsMeshVectorGlyphRenderer : public QgsMeshVectorRenderer
     const QgsVectorFieldSettings mCfg;
     QSize mOutputSize;
 
+    QgsVectorFieldEngine mEngine;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief Helper private class for rendering vector datasets by walking the vector field, that is
+ * with streamlines or with particle traces.
+ *
+ * Not available for data defined on edges.
+ *
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+ */
+class QgsMeshVectorStreamlineRenderer : public QgsMeshVectorRenderer
+{
+  public:
+    //! Ctor
+    QgsMeshVectorStreamlineRenderer(
+      const QgsTriangularMesh &m,
+      const QgsMeshDataBlock &datasetValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QVector<double> &datasetValuesMag,
+      double datasetMagMaximumValue,
+      double datasetMagMinimumValue,
+      QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsVectorFieldSettings &settings,
+      QgsRenderContext &context,
+      const QgsRectangle &layerExtent,
+      QgsRasterBlockFeedback *feedBack,
+      QSize size
+    );
+    ~QgsMeshVectorStreamlineRenderer() override;
+
+    void draw() override;
+
+  private:
+    const QgsVectorFieldSettings mCfg;
+    QgsRasterBlockFeedback *mFeedBack = nullptr;
+    std::unique_ptr<QgsMeshVectorFieldValueSource> mSource;
     QgsVectorFieldEngine mEngine;
 };
 
