@@ -38,6 +38,8 @@ try:
     QgsApplication.srsDatabaseFilePath = staticmethod(QgsApplication.srsDatabaseFilePath)
     QgsApplication.setSvgPaths = staticmethod(QgsApplication.setSvgPaths)
     QgsApplication.svgPaths = staticmethod(QgsApplication.svgPaths)
+    QgsApplication.setProjectTemplatePaths = staticmethod(QgsApplication.setProjectTemplatePaths)
+    QgsApplication.projectTemplatePaths = staticmethod(QgsApplication.projectTemplatePaths)
     QgsApplication.layoutTemplatePaths = staticmethod(QgsApplication.layoutTemplatePaths)
     QgsApplication.systemEnvVars = staticmethod(QgsApplication.systemEnvVars)
     QgsApplication.prefixPath = staticmethod(QgsApplication.prefixPath)

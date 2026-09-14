@@ -39,6 +39,7 @@ class QgsTemplateProjectsModel : public QStandardItemModel
       PreviewImagePathRole,
       WritableRole,
       CanvasColorRole,
+      SectionRole,
     };
     Q_ENUM( CustomRole )
 
@@ -58,14 +59,14 @@ class QgsTemplateProjectsModel : public QStandardItemModel
 
     QHash<int, QByteArray> roleNames() const override;
 
-  private slots:
+    /**
+     * Removes all file templates and refills the model with the templates found in the
+     * directories returned by QgsApplication::projectTemplatePaths()
+     */
+    void reload();
 
   private:
-    void addTemplateDirectory( const QString &path );
-    void scanDirectory( const QString &path );
-
     QFileSystemWatcher mFileSystemWatcher;
-
     QTemporaryDir mTemporaryDir;
 };
 

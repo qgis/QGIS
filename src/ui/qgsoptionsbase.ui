@@ -730,69 +730,106 @@
                     <item>
                      <widget class="QLabel" name="label_31">
                       <property name="text">
-                       <string>Template folder</string>
+                       <string>Template folders</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="leTemplateFolder">
-                      <property name="enabled">
-                       <bool>false</bool>
+                     <spacer name="horizontalSpacer_17">
+                      <property name="orientation">
+                       <enum>Qt::Orientation::Horizontal</enum>
                       </property>
-                     </widget>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
                     </item>
                     <item>
-                     <widget class="QToolButton" name="pbnTemplateFolderBrowse">
+                     <widget class="QToolButton" name="mBtnAddProjectTemplatePath">
                       <property name="toolTip">
-                       <string>Select folder</string>
+                       <string>Add new path</string>
                       </property>
                       <property name="text">
                        <string/>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+                        <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QToolButton" name="pbnTemplateFolderReset">
+                     <widget class="QToolButton" name="mBtnRemoveProjectTemplatePath">
                       <property name="toolTip">
-                       <string>Reset</string>
+                       <string>Remove path</string>
                       </property>
                       <property name="text">
                        <string/>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
+                        <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="mBtnMoveProjectTemplatePathUp">
+                      <property name="toolTip">
+                       <string>Raise selected path priority</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="mBtnMoveProjectTemplatePathDown">
+                      <property name="toolTip">
+                       <string>Lower selected path priority</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
                       </property>
                      </widget>
                     </item>
                    </layout>
                   </item>
                   <item row="4" column="0">
+                   <widget class="QListWidget" name="mListProjectTemplatePaths"/>
+                  </item>
+                  <item row="5" column="0">
                    <widget class="QCheckBox" name="chbAskToSaveProjectChanges">
                     <property name="text">
                      <string>Prompt to save project and data source changes when required</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="0">
+                  <item row="6" column="0">
                    <widget class="QCheckBox" name="mLayerDeleteConfirmationChkBx">
                     <property name="text">
                      <string>Prompt for confirmation when a layer is to be removed</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="0">
+                  <item row="7" column="0">
                    <widget class="QCheckBox" name="chbWarnOldProjectVersion">
                     <property name="text">
                      <string>Warn when opening a project file saved with an older version of QGIS</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="7" column="0">
+                  <item row="8" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <item>
                      <widget class="QLabel" name="mDefaultPathsLabel">
@@ -819,7 +856,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="8" column="0">
+                  <item row="9" column="0">
                    <layout class="QGridLayout" name="gridLayout_31">
                     <item row="0" column="0">
                      <widget class="QLabel" name="label_67">
@@ -5651,9 +5688,11 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <tabstop>cbxProjectDefaultNew</tabstop>
   <tabstop>pbnProjectDefaultSetCurrent</tabstop>
   <tabstop>pbnProjectDefaultReset</tabstop>
-  <tabstop>pbnTemplateFolderBrowse</tabstop>
-  <tabstop>pbnTemplateFolderReset</tabstop>
-  <tabstop>leTemplateFolder</tabstop>
+  <tabstop>mBtnAddProjectTemplatePath</tabstop>
+  <tabstop>mBtnRemoveProjectTemplatePath</tabstop>
+  <tabstop>mBtnMoveProjectTemplatePathUp</tabstop>
+  <tabstop>mBtnMoveProjectTemplatePathDown</tabstop>
+  <tabstop>mListProjectTemplatePaths</tabstop>
   <tabstop>chbAskToSaveProjectChanges</tabstop>
   <tabstop>mLayerDeleteConfirmationChkBx</tabstop>
   <tabstop>chbWarnOldProjectVersion</tabstop>

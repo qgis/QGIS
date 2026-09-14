@@ -67,8 +67,10 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void cbxProjectDefaultNew_toggled( bool checked );
     void setCurrentProjectDefault();
     void resetProjectDefault();
-    void browseTemplateFolder();
-    void resetTemplateFolder();
+    void addProjectTemplatePath();
+    void removeProjectTemplatePath();
+    void moveProjectTemplatePathUp();
+    void moveProjectTemplatePathDown();
     //! Slot called when user chooses to change the default 'on the fly' projection.
     void leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void lstRasterDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column );
