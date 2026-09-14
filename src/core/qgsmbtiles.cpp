@@ -36,11 +36,10 @@ bool QgsMbTiles::open()
   if ( mFilename.isEmpty() )
     return false;
 
-  const sqlite3_database_unique_ptr database;
   const int result = mDatabase.open_v2( mFilename, SQLITE_OPEN_READONLY, nullptr );
   if ( result != SQLITE_OK )
   {
-    QgsDebugError( u"Can't open MBTiles database: %1"_s.arg( database.errorMessage() ) );
+    QgsDebugError( u"Can't open MBTiles database: %1"_s.arg( mDatabase.errorMessage() ) );
     return false;
   }
   return true;
@@ -73,11 +72,10 @@ bool QgsMbTiles::create( bool deferIndexCreation )
   if ( QFile::exists( mFilename ) )
     return false;
 
-  const sqlite3_database_unique_ptr database;
   int result = mDatabase.open_v2( mFilename, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( result != SQLITE_OK )
   {
-    QgsDebugError( u"Can't create MBTiles database: %1"_s.arg( database.errorMessage() ) );
+    QgsDebugError( u"Can't create MBTiles database: %1"_s.arg( mDatabase.errorMessage() ) );
     return false;
   }
 
