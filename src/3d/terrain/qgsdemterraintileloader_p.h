@@ -30,6 +30,7 @@
 
 #include "qgschunknode.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsterraintileloader.h"
 #include "qgstilingscheme.h"
@@ -37,6 +38,7 @@
 #include <QElapsedTimer>
 #include <QFutureWatcher>
 #include <QMutex>
+#include <QtConcurrent/QtConcurrentRun>
 
 #define SIP_NO_FILE
 
@@ -57,12 +59,17 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     //! Constructs loader for the given chunk node
     QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsTerrainGenerator *terrainGenerator );
 
+    virtual ~QgsDemTerrainTileLoader() override { mNode = nullptr; }
+
     void start() override;
 
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
+    //! Returns current height map data
+    QByteArray heightMap() const { return mHeightMap; }
+
   private slots:
-    void onHeightMapReady( int jobId, const QByteArray &heightMap );
+    void onHeightMapReady( int jobId, const QgsChunkNode *node, const QgsRectangle &extent, const QByteArray &heightMap );
 
   private:
     int mHeightMapJobId = -1;
@@ -91,7 +98,7 @@ class QgsDemHeightMapGenerator : public QObject
     ~QgsDemHeightMapGenerator() override;
 
     //! asynchronous terrain read for a tile (array of floats)
-    int render( const QgsChunkNodeId &nodeId );
+    int render( const QgsChunkNode *node );
 
     //! Waits for the tile to finish rendering
     void waitForFinished();
@@ -104,7 +111,7 @@ class QgsDemHeightMapGenerator : public QObject
 
   signals:
     //! emitted when a previously requested heightmap is ready
-    void heightMapReady( int jobId, const QByteArray &heightMap );
+    void heightMapReady( int jobId, const QgsChunkNode *node, const QgsRectangle &extent, const QByteArray &heightMap );
 
   private slots:
     void onFutureFinished();
@@ -126,8 +133,16 @@ class QgsDemHeightMapGenerator : public QObject
 
     struct JobData
     {
+        JobData( const QgsChunkNode *jobNode = nullptr )
+          : jobId( -1 )
+          , node( jobNode )
+          , extent()
+          , future()
+          , timer()
+        {}
+
         int jobId;
-        QgsChunkNodeId tileId;
+        const QgsChunkNode *node;
         QgsRectangle extent;
         QFuture<QByteArray> future;
         QElapsedTimer timer;
