@@ -112,6 +112,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     int mThreadsNumber = 1;
     int mTileWidth = 256;
     int mTileHeight = 256;
+    QgsExpressionContext mExpressionContext;
     QString mTileFormat;
     QList<QgsMapLayer *> mLayers;
     QgsCoordinateReferenceSystem mWgs84Crs;
