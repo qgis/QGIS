@@ -706,7 +706,7 @@ template<typename T> class QgsTemporalRange
         if ( range.isEmpty() )
           continue;
 
-        // range has no begin, so maximum is infinite
+        // range has no end, so maximum is infinite
         if ( !range.end().isValid() )
           return T();
 
