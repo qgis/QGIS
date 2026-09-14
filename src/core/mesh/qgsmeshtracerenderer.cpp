@@ -921,67 +921,6 @@ void QgsVectorFieldStreamField::setFilter( double min, double max )
   mMaxMagFilter = max;
 }
 
-QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer(
-  const QgsTriangularMesh &triangularMesh,
-  const QgsMeshDataBlock &dataSetVectorValues,
-  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-  bool dataIsOnVertices,
-  const QgsVectorFieldSettings &settings,
-  QgsRenderContext &rendererContext,
-  const QgsRectangle &layerExtent,
-  double magMax
-)
-  : QgsMeshVectorStreamlineRenderer( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, QgsMeshLayerUtils::calculateMagnitudes( dataSetVectorValues ), dataIsOnVertices, settings, rendererContext, layerExtent, nullptr, magMax )
-{}
-
-QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer(
-  const QgsTriangularMesh &triangularMesh,
-  const QgsMeshDataBlock &dataSetVectorValues,
-  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-  const QVector<double> &datasetMagValues,
-  bool dataIsOnVertices,
-  const QgsVectorFieldSettings &settings,
-  QgsRenderContext &rendererContext,
-  const QgsRectangle &layerExtent,
-  QgsRasterBlockFeedback *feedBack,
-  double magMax
-)
-  : mRendererContext( rendererContext )
-{
-  std::unique_ptr<QgsVectorFieldValueSource> source = QgsMeshVectorFieldValueSource::
-    create( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, datasetMagValues, dataIsOnVertices ? QgsMeshDatasetGroupMetadata::DataOnVertices : QgsMeshDatasetGroupMetadata::DataOnFaces, layerExtent, magMax );
-
-  mStreamlineField = std::make_unique<QgsVectorFieldStreamlinesField>( std::move( source ), rendererContext, settings.vectorStrokeColoring(), feedBack );
-
-  mStreamlineField->updateSize( rendererContext );
-  mStreamlineField->setPixelFillingDensity( settings.streamLinesSettings().seedingDensity() );
-  mStreamlineField->setLineWidth( rendererContext.convertToPainterUnits( settings.lineWidth(), Qgis::RenderUnit::Millimeters ) );
-  mStreamlineField->setColor( settings.color() );
-
-  mStreamlineField->setFilter( settings.filterMin(), settings.filterMax() );
-
-  switch ( settings.streamLinesSettings().seedingMethod() )
-  {
-    case Qgis::VectorFieldSeedingMethod::Gridded:
-      if ( settings.isOnUserDefinedGrid() )
-        mStreamlineField->addGriddedTraces( settings.userGridCellWidth(), settings.userGridCellHeight() );
-      else
-        mStreamlineField->addTracesOnDataPoints( rendererContext.mapExtent() );
-      break;
-    case Qgis::VectorFieldSeedingMethod::Random:
-      mStreamlineField->addRandomTraces();
-      break;
-  }
-}
-
-void QgsMeshVectorStreamlineRenderer::draw()
-{
-  if ( mRendererContext.renderingStopped() )
-    return;
-  mStreamlineField->compose();
-  mRendererContext.painter()->drawImage( mStreamlineField->topLeft(), mStreamlineField->image() );
-}
-
 QgsVectorFieldParticleTracesField::QgsVectorFieldParticleTracesField( std::unique_ptr<QgsVectorFieldValueSource> source, const QgsRenderContext &rendererContext, const QgsInterpolatedLineColor &vectorColoring )
   : QgsVectorFieldStreamField( std::move( source ), rendererContext, vectorColoring )
 {
@@ -1304,48 +1243,50 @@ void QgsVectorFieldParticleTracesField::setParticlesCount( int particlesCount )
 }
 
 QgsVectorFieldTraceAnimationGenerator::QgsVectorFieldTraceAnimationGenerator(
-  const QgsTriangularMesh &triangularMesh,
-  const QgsMeshDataBlock &dataSetVectorValues,
-  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-  bool dataIsOnVertices,
-  const QgsRenderContext &rendererContext,
-  const QgsRectangle &layerExtent,
-  double magMax,
-  const QgsVectorFieldSettings &vectorSettings
+  std::unique_ptr<QgsVectorFieldValueSource> source, const QgsRenderContext &rendererContext, const QgsVectorFieldSettings &vectorSettings, bool minimizeFieldSize
 )
-  : mParticleField( new QgsVectorFieldParticleTracesField(
-      QgsMeshVectorFieldValueSource::
-        create( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, {}, dataIsOnVertices ? QgsMeshDatasetGroupMetadata::DataOnVertices : QgsMeshDatasetGroupMetadata::DataOnFaces, layerExtent, magMax ),
-      rendererContext,
-      vectorSettings.vectorStrokeColoring()
-    ) )
+  : mParticleField( std::make_unique<QgsVectorFieldParticleTracesField>( std::move( source ), rendererContext, vectorSettings.vectorStrokeColoring() ) )
   , mRendererContext( rendererContext )
 {
-  mParticleField->updateSize( rendererContext );
+  mParticleField->setMinimizeFieldSize( minimizeFieldSize );
+  mParticleField->updateSize( mRendererContext );
+}
+
+QgsVectorFieldTraceAnimationGenerator *QgsVectorFieldTraceAnimationGenerator::fromMeshLayer( QgsMeshLayer *layer, const QgsRenderContext &rendererContext )
+{
+  if ( !layer || !layer->dataProvider() )
+    return nullptr;
+
+  if ( !layer->triangularMesh() )
+    layer->reload();
+
+  if ( !layer->triangularMesh() || !layer->nativeMesh() )
+    return nullptr;
+
+  return new QgsVectorFieldTraceAnimationGenerator( layer, rendererContext );
 }
 
 QgsVectorFieldTraceAnimationGenerator::QgsVectorFieldTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext )
   : mRendererContext( rendererContext )
 {
-  if ( !layer->triangularMesh() )
-    layer->reload();
-
   QgsMeshDataBlock vectorDatasetValues;
   QgsMeshDataBlock scalarActiveFaceFlagValues;
+  QVector<double> magnitudeValues;
   bool vectorDataOnVertices;
   double magMax;
 
-  QgsMeshDatasetIndex datasetIndex = layer->activeVectorDatasetAtTime( rendererContext.temporalRange() );
+  const QgsMeshDatasetIndex datasetIndex = layer->activeVectorDatasetAtTime( rendererContext.temporalRange() );
 
   // Find out if we can use cache up to date. If yes, use it and return
-  int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
+  const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
   const QgsVectorFieldSettings vectorSettings = layer->rendererSettings().vectorSettings( datasetIndex.group() );
-  QgsMeshLayerRendererCache *cache = layer->rendererCache();
+  const QgsMeshLayerRendererCache *cache = layer->rendererCache();
 
-  if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) && ( cache->mActiveVectorDatasetIndex == datasetIndex ) )
+  if ( cache && ( cache->mDatasetGroupsCount == datasetGroupCount ) && ( cache->mActiveVectorDatasetIndex == datasetIndex ) )
   {
     vectorDatasetValues = cache->mVectorDatasetValues;
     scalarActiveFaceFlagValues = cache->mScalarActiveFaceFlagValues;
+    magnitudeValues = cache->mVectorDatasetValuesMag;
     magMax = cache->mVectorDatasetMagMaximum;
     vectorDataOnVertices = cache->mVectorDataType == QgsMeshDatasetGroupMetadata::DataOnVertices;
   }
@@ -1362,8 +1303,8 @@ QgsVectorFieldTraceAnimationGenerator::QgsVectorFieldTraceAnimationGenerator( Qg
       count = layer->nativeMesh()->faces.count();
 
     vectorDatasetValues = QgsMeshLayerUtils::datasetValues( layer, datasetIndex, 0, count );
-
     scalarActiveFaceFlagValues = layer->dataProvider()->areFacesActive( datasetIndex, 0, layer->nativeMesh()->faces.count() );
+    magnitudeValues = QgsMeshLayerUtils::calculateMagnitudes( vectorDatasetValues );
   }
 
   mParticleField = std::make_unique<QgsVectorFieldParticleTracesField>(
@@ -1371,7 +1312,7 @@ QgsVectorFieldTraceAnimationGenerator::QgsVectorFieldTraceAnimationGenerator( Qg
       *layer->triangularMesh(),
       vectorDatasetValues,
       scalarActiveFaceFlagValues,
-      {},
+      magnitudeValues,
       vectorDataOnVertices ? QgsMeshDatasetGroupMetadata::DataOnVertices : QgsMeshDatasetGroupMetadata::DataOnFaces,
       layer->extent(),
       magMax
@@ -1380,12 +1321,15 @@ QgsVectorFieldTraceAnimationGenerator::QgsVectorFieldTraceAnimationGenerator( Qg
     vectorSettings.vectorStrokeColoring()
   );
 
+  // the whole layer is animated, not only the part of it which is currently on the device
   mParticleField->setMinimizeFieldSize( false );
   mParticleField->updateSize( mRendererContext );
 }
 
+QgsVectorFieldTraceAnimationGenerator::~QgsVectorFieldTraceAnimationGenerator() = default;
+
 QgsVectorFieldTraceAnimationGenerator::QgsVectorFieldTraceAnimationGenerator( const QgsVectorFieldTraceAnimationGenerator &other )
-  : mParticleField( new QgsVectorFieldParticleTracesField( *other.mParticleField ) )
+  : mParticleField( std::make_unique<QgsVectorFieldParticleTracesField>( *other.mParticleField ) )
   , mRendererContext( other.mRendererContext )
   , mFPS( other.mFPS )
   , mVpixMax( other.mVpixMax )
@@ -1470,49 +1414,10 @@ QgsVectorFieldTraceAnimationGenerator &QgsVectorFieldTraceAnimationGenerator::op
 
 void QgsVectorFieldTraceAnimationGenerator::updateFieldParameter()
 {
-  double fieldTimeStep = mVpixMax / static_cast<double>( mFPS );
-  double fieldLifeTime = mParticleLifeTime * mFPS * fieldTimeStep;
+  const double fieldTimeStep = mVpixMax / static_cast<double>( mFPS );
+  const double fieldLifeTime = mParticleLifeTime * mFPS * fieldTimeStep;
   mParticleField->setTimeStep( fieldTimeStep );
   mParticleField->setParticlesLifeTime( fieldLifeTime );
-}
-
-QgsMeshVectorTraceRenderer::QgsMeshVectorTraceRenderer(
-  const QgsTriangularMesh &triangularMesh,
-  const QgsMeshDataBlock &dataSetVectorValues,
-  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-  bool dataIsOnVertices,
-  const QgsVectorFieldSettings &settings,
-  QgsRenderContext &rendererContext,
-  const QgsRectangle &layerExtent,
-  double magMax
-)
-  : mParticleField( new QgsVectorFieldParticleTracesField(
-      QgsMeshVectorFieldValueSource::
-        create( triangularMesh, dataSetVectorValues, scalarActiveFaceFlagValues, {}, dataIsOnVertices ? QgsMeshDatasetGroupMetadata::DataOnVertices : QgsMeshDatasetGroupMetadata::DataOnFaces, layerExtent, magMax ),
-      rendererContext,
-      settings.vectorStrokeColoring()
-    ) )
-  , mRendererContext( rendererContext )
-{
-  mParticleField->updateSize( rendererContext );
-
-  mParticleField->setParticleSize( rendererContext.convertToPainterUnits( settings.lineWidth(), Qgis::RenderUnit::Millimeters ) );
-  mParticleField->setParticlesCount( settings.tracesSettings().particlesCount() );
-  mParticleField->setTailFactor( 1 );
-  mParticleField->setStumpParticleWithLifeTime( false );
-  mParticleField->setTimeStep( rendererContext.convertToPainterUnits(
-    settings.tracesSettings().maximumTailLength(),
-    settings.tracesSettings().maximumTailLengthUnit()
-  ) ); //as the particles go through 1 pix for dt=1 and Vmax
-  mParticleField->addRandomParticles();
-  mParticleField->moveParticles();
-}
-
-void QgsMeshVectorTraceRenderer::draw()
-{
-  if ( mRendererContext.renderingStopped() )
-    return;
-  mRendererContext.painter()->drawImage( mParticleField->topLeft(), mParticleField->image() );
 }
 
 ///@endcond

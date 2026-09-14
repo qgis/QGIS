@@ -27,8 +27,10 @@
 
 class QgsCoordinateTransform;
 class QgsPointXY;
+class QgsRasterBlockFeedback;
 class QgsRenderContext;
 class QgsScopedQPainterState;
+class QgsVectorFieldValueSource;
 
 /**
  * \brief Class for rendering vector field data.
@@ -52,19 +54,30 @@ class QgsVectorFieldEngine
      * Draws a single glyph at \a lineStart, in painter coordinates, using the symbology of the
      * settings the engine was constructed with.
      *
-     * Does nothing for the symbologies which are not drawn glyph by glyph
+     * Does nothing for the symbologies which are not drawn glyph by glyph, see drawStreamlines()
+     * and drawTraces().
      */
     void drawGlyph( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude );
 
-  private:
     /**
-     * Draws a single arrow starting at \a lineStart, in painter coordinates.
+     * Integrates and draws streamlines over the whole rendered extent, sampling the vector field
+     * from \a source, which the engine takes ownership of.
+     *
+     * \a feedback is used to interrupt the rendering of the color ramp background image.
      */
-    void drawArrow( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude );
+    void drawStreamlines( std::unique_ptr<QgsVectorFieldValueSource> source, QgsRasterBlockFeedback *feedback = nullptr );
 
     /**
-     * Draws a single wind barb centered on \a lineStart, in painter coordinates.
+     * Seeds particles over the whole rendered extent, moves them one time step and draws their
+     * traces, sampling the vector field from \a source, which the engine takes ownership of.
      */
+    void drawTraces( std::unique_ptr<QgsVectorFieldValueSource> source );
+
+  private:
+    //! Draws a single arrow starting at \a lineStart, in painter coordinates.
+    void drawArrow( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude );
+
+    //! Draws a single wind barb centered on \a lineStart, in painter coordinates.
     void drawWindBarb( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude );
 
     //! Calculates the end point of the arrow based on start point and vector data
