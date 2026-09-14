@@ -515,6 +515,7 @@ QgsGeometry QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry(
     return QgsGeometry();
   }
 
+  // offset a bit so we do not end up diving by zero when doing division with tan( topoLatRad )
   if ( std::abs( topoLat ) < degreeStep )
     topoLat = topoLat >= 0 ? degreeStep : -degreeStep;
 
@@ -522,6 +523,7 @@ QgsGeometry QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry(
   const double topoLatRad = topoLat * M_PI / 180.0;
 
   // add the horizon points, spaced at degreeStep intervals, to build up the clipping geometry
+  // we do this on the sphere, rather than ellipsoid, but it is good enough approximation
   QVector<double> x, y;
   const int pointCount = static_cast< int >( 360.0 / degreeStep ) + 2;
   x.reserve( pointCount );
@@ -534,7 +536,8 @@ QgsGeometry QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry(
     y.append( latRad * 180.0 / M_PI );
   }
 
-  // unless we explicitly add the pole points, we are clipping too much of the world above/below 45/-45 latitude
+  // we close the polygon by adding pole point depending on which hemisphere we are "looking at"
+  // just closing the above geometry would not include all visible parts of the hemishere
   const double pole = topoLat > 0 ? 90.0 : -90.0;
   x.append( 180.0 );
   y.append( pole );

@@ -69,7 +69,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemUtils
      *
      * Returns null geometry if \a topocentricCrs is not a topocentric CRS or if the transform fails.
      *
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     static QgsGeometry topocentricHorizonGeometry(
       const QgsCoordinateReferenceSystem &topocentricCrs, const QgsCoordinateReferenceSystem &outputCrs, const QgsCoordinateTransformContext &transformContext, double degreeStep = 1.0

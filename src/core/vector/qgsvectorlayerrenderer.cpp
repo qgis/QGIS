@@ -526,6 +526,28 @@ static QgsGeometry combinedClipGeometry( const QgsGeometry &geom1, const QgsGeom
   return geom1.intersection( geom2 );
 }
 
+static std::unique_ptr< QgsGeometryEngine > prepareClipGeometry( bool applyClipFilter, const QgsGeometry &clipFilterGeom, const QgsGeometry &horizonGeom )
+{
+  std::unique_ptr< QgsGeometryEngine > clipEngine;
+  if ( applyClipFilter && !horizonGeom.isEmpty() )
+  {
+    const QgsGeometry visibleRegionGeom = clipFilterGeom.intersection( horizonGeom );
+    clipEngine.reset( QgsGeometry::createGeometryEngine( visibleRegionGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+  else if ( applyClipFilter && horizonGeom.isEmpty() )
+  {
+    clipEngine.reset( QgsGeometry::createGeometryEngine( clipFilterGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+  else if ( !applyClipFilter && !horizonGeom.isEmpty() )
+  {
+    clipEngine.reset( QgsGeometry::createGeometryEngine( horizonGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+  return clipEngine;
+}
+
 void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeatureIterator &fit )
 {
   QElapsedTimer timer;
@@ -548,23 +570,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
     horizonGeom = QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry( context.coordinateTransform().destinationCrs(), context.coordinateTransform().sourceCrs(), context.transformContext(), 0.1 );
   }
 
-  std::unique_ptr< QgsGeometryEngine > clipEngine;
-  if ( mApplyClipFilter && !horizonGeom.isEmpty() )
-  {
-    const QgsGeometry visibleRegionGeom = mClipFilterGeom.intersection( horizonGeom );
-    clipEngine.reset( QgsGeometry::createGeometryEngine( visibleRegionGeom.constGet() ) );
-    clipEngine->prepareGeometry();
-  }
-  else if ( mApplyClipFilter && horizonGeom.isEmpty() )
-  {
-    clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
-    clipEngine->prepareGeometry();
-  }
-  else if ( !mApplyClipFilter && !horizonGeom.isEmpty() )
-  {
-    clipEngine.reset( QgsGeometry::createGeometryEngine( horizonGeom.constGet() ) );
-    clipEngine->prepareGeometry();
-  }
+  std::unique_ptr< QgsGeometryEngine > clipEngine = prepareClipGeometry( mApplyClipFilter, mClipFilterGeom, horizonGeom );
 
   const QgsGeometry renderClipGeom = combinedClipGeometry( mApplyClipGeometries ? mClipFeatureGeom : QgsGeometry(), horizonGeom );
   const QgsGeometry labelClipGeom = combinedClipGeometry( mApplyLabelClipGeometries ? mLabelClipFeatureGeom : QgsGeometry(), horizonGeom );
@@ -751,23 +757,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   if ( !labelClipGeom.isEmpty() )
     context.setFeatureClipGeometry( labelClipGeom );
 
-  std::unique_ptr< QgsGeometryEngine > clipEngine;
-  if ( mApplyClipFilter && !horizonGeom.isEmpty() )
-  {
-    const QgsGeometry visibleRegionGeom = mClipFilterGeom.intersection( horizonGeom );
-    clipEngine.reset( QgsGeometry::createGeometryEngine( visibleRegionGeom.constGet() ) );
-    clipEngine->prepareGeometry();
-  }
-  else if ( mApplyClipFilter && horizonGeom.isEmpty() )
-  {
-    clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
-    clipEngine->prepareGeometry();
-  }
-  else if ( !mApplyClipFilter && !horizonGeom.isEmpty() )
-  {
-    clipEngine.reset( QgsGeometry::createGeometryEngine( horizonGeom.constGet() ) );
-    clipEngine->prepareGeometry();
-  }
+  std::unique_ptr< QgsGeometryEngine > clipEngine = prepareClipGeometry( mApplyClipFilter, mClipFilterGeom, horizonGeom );
 
   // 1. fetch features
   QgsFeature fet;
