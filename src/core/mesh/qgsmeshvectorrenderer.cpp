@@ -21,7 +21,7 @@
 
 #include "qgsmaptopixel.h"
 #include "qgsmeshlayerutils.h"
-#include "qgsmeshtracerenderer.h"
+#include "qgsmeshvectorfieldvaluesource.h"
 #include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
 
