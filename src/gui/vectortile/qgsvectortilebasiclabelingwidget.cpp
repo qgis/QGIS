@@ -412,9 +412,9 @@ void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
     mProxyModel->setCurrentZoom( zoom );
   }
 
-  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::changed );
 }
 
 QgsVectorTileBasicLabelingWidget::~QgsVectorTileBasicLabelingWidget() = default;
@@ -428,7 +428,7 @@ void QgsVectorTileBasicLabelingWidget::apply()
 void QgsVectorTileBasicLabelingWidget::labelModeChanged()
 {
   mOptionsStackedWidget->setCurrentIndex( mLabelModeComboBox->currentIndex() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsVectorTileBasicLabelingWidget::addStyle( Qgis::GeometryType geomType )
@@ -500,7 +500,7 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &prox
     QgsLabelingPanelWidget *widget = new QgsLabelingPanelWidget( labelSettings, vectorLayer, mMapCanvas, panel );
     widget->setContext( context );
     widget->setPanelTitle( style.styleName() );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsVectorTileBasicLabelingWidget::updateLabelingFromWidget );
+    connect( widget, &QgsPanelWidget::changed, this, &QgsVectorTileBasicLabelingWidget::updateLabelingFromWidget );
     openPanel( widget );
   }
   else
@@ -511,7 +511,7 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &prox
       QgsVectorTileBasicLabelingStyle style = mLabeling->style( index.row() );
       style.setLabelSettings( dlg.settings() );
       mLabeling->setStyle( index.row(), style );
-      emit widgetChanged();
+      emit changed();
     }
   }
 }
@@ -528,7 +528,7 @@ void QgsVectorTileBasicLabelingWidget::updateLabelingFromWidget()
   style.setLabelSettings( widget->labelSettings() );
 
   mLabeling->setStyle( index, style );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsVectorTileBasicLabelingWidget::removeStyle()
@@ -567,7 +567,7 @@ QgsLabelingPanelWidget::QgsLabelingPanelWidget( const QgsPalLayerSettings &label
   l->addWidget( mLabelingGui );
   setLayout( l );
 
-  connect( mLabelingGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingPanelWidget::widgetChanged );
+  connect( mLabelingGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingPanelWidget::changed );
 }
 
 void QgsLabelingPanelWidget::setDockMode( bool dockMode )

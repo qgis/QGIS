@@ -59,7 +59,7 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
 
   setLayout( scrollLayout );
 
-  connect( widgetSymbol, &QgsSymbol3DWidget::widgetChanged, this, &QgsSingleSymbol3DRendererWidget::widgetChanged );
+  connect( widgetSymbol, &QgsSymbol3DWidget::changed, this, &QgsSingleSymbol3DRendererWidget::changed );
   connect( widgetSymbol, &QgsSymbol3DWidget::showPanel, this, &QgsSingleSymbol3DRendererWidget::openPanel );
 }
 
@@ -141,14 +141,14 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   widgetRendererStack->addWidget( widgetRuleBasedRenderer );
 
   connect( cboRendererType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
-  connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::changed, this, &QgsVectorLayer3DRendererWidget::changed );
   connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
-  connect( widgetCategorizedRenderer, &QgsCategorized3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetCategorizedRenderer, &QgsCategorized3DRendererWidget::changed, this, &QgsVectorLayer3DRendererWidget::changed );
   connect( widgetCategorizedRenderer, &QgsCategorized3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
-  connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::changed, this, &QgsVectorLayer3DRendererWidget::changed );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
-  connect( widgetBaseProperties, &QgsVectorLayer3DPropertiesWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetBaseProperties, &QgsVectorLayer3DPropertiesWidget::changed, this, &QgsVectorLayer3DRendererWidget::changed );
 
   setProperty( "helpPage", u"working_with_vector/vector_properties.html#d-view-properties"_s );
 
@@ -266,7 +266,7 @@ void QgsVectorLayer3DRendererWidget::onRendererTypeChanged( int index )
     default:
       Q_ASSERT( false );
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 

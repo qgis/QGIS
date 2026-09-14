@@ -74,11 +74,6 @@ class GUI_EXPORT Qgs3DSymbolWidget : public QgsPanelWidget
   signals:
 
     /**
-     * Emitted when the symbol is changed.
-     */
-    void changed();
-
-    /**
      * Emitted when the rendering technique associated with the symbol is changed.
      *
      * \warning This is not considered stable API, and may change in future QGIS releases. It is

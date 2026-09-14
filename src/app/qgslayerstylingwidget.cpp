@@ -522,7 +522,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       panel->setDockMode( true );
       panel->setMapLayerConfigWidgetContext( mContext );
-      connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+      connect( panel, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
       mWidgetStack->setMainPanel( panel );
       mBlockAutoApply = false;
       return;
@@ -570,7 +570,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             {
               mLabelingWidget = new QgsLabelingWidget( nullptr, mMapCanvas, mWidgetStack, mMessageBar );
               mLabelingWidget->setDockMode( true );
-              connect( mLabelingWidget, &QgsLabelingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+              connect( mLabelingWidget, &QgsLabelingWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             }
             mLabelingWidget->setLayer( vlayer );
             mWidgetStack->setMainPanel( mLabelingWidget );
@@ -582,7 +582,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             {
               mMaskingWidget = new QgsMaskingWidget( mWidgetStack );
               mMaskingWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
-              connect( mMaskingWidget, &QgsMaskingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+              connect( mMaskingWidget, &QgsMaskingWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             }
             mMaskingWidget->setLayer( vlayer );
             mWidgetStack->setMainPanel( mMaskingWidget );
@@ -595,7 +595,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             {
               mVector3DWidget = new QgsVectorLayer3DRendererWidget( vlayer, mMapCanvas, mWidgetStack );
               mVector3DWidget->setDockMode( true );
-              connect( mVector3DWidget, &QgsVectorLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+              connect( mVector3DWidget, &QgsVectorLayer3DRendererWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             }
             mVector3DWidget->syncToLayer( vlayer );
             mWidgetStack->setMainPanel( mVector3DWidget );
@@ -606,7 +606,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           {
             mDiagramWidget = new QgsDiagramWidget( vlayer, mMapCanvas, mWidgetStack );
             mDiagramWidget->setDockMode( true );
-            connect( mDiagramWidget, &QgsDiagramWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            connect( mDiagramWidget, &QgsDiagramWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             mDiagramWidget->syncToOwnLayer();
             mWidgetStack->setMainPanel( mDiagramWidget );
             break;
@@ -656,7 +656,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
               }
             }
             mRasterStyleWidget->setDockMode( true );
-            connect( mRasterStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            connect( mRasterStyleWidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             mWidgetStack->setMainPanel( mRasterStyleWidget );
             break;
           }
@@ -671,7 +671,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             context.setMessageBar( mMessageBar );
             transwidget->setContext( context );
 
-            connect( transwidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            connect( transwidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             mWidgetStack->setMainPanel( transwidget );
             break;
           }
@@ -682,7 +682,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             {
               mRasterLabelingWidget = new QgsRasterLabelingWidget( rlayer, mMapCanvas, mWidgetStack, mMessageBar );
               mRasterLabelingWidget->setDockMode( true );
-              connect( mRasterLabelingWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+              connect( mRasterLabelingWidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             }
             else
             {
@@ -702,10 +702,10 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
                 mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
                 mRasterStyleWidget->syncToLayer( rlayer );
               }
-              connect( mRasterStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+              connect( mRasterStyleWidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
 
               QgsRasterHistogramWidget *widget = new QgsRasterHistogramWidget( rlayer, mWidgetStack );
-              connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+              connect( widget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
               QString name = mRasterStyleWidget->currentRenderWidget()->renderer()->type();
               widget->setRendererWidget( name, mRasterStyleWidget->currentRenderWidget() );
               widget->setDockMode( true );
@@ -767,7 +767,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             mMeshStyleWidget = new QgsRendererMeshPropertiesWidget( meshLayer, mMapCanvas, mWidgetStack );
 
             mMeshStyleWidget->setDockMode( true );
-            connect( mMeshStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            connect( mMeshStyleWidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             mWidgetStack->setMainPanel( mMeshStyleWidget );
 
             connect( meshLayer, &QgsMeshLayer::reloaded, this, [this] { mMeshStyleWidget->syncToLayer( mCurrentLayer ); } );
@@ -777,7 +777,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           {
             mMeshLabelingWidget = new QgsMeshLabelingWidget( meshLayer, mMapCanvas, mWidgetStack, mMessageBar );
             mMeshLabelingWidget->setDockMode( true );
-            connect( mMeshLabelingWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            connect( mMeshLabelingWidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             mWidgetStack->setMainPanel( mMeshLabelingWidget );
             break;
           }
@@ -788,7 +788,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             {
               mMesh3DWidget = new QgsMeshLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
               mMesh3DWidget->setDockMode( true );
-              connect( mMesh3DWidget, &QgsMeshLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+              connect( mMesh3DWidget, &QgsMeshLayer3DRendererWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             }
             mMesh3DWidget->syncToLayer( meshLayer );
             mWidgetStack->setMainPanel( mMesh3DWidget );
@@ -812,7 +812,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           {
             mVectorTileStyleWidget = new QgsVectorTileBasicRendererWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
             mVectorTileStyleWidget->setDockMode( true );
-            connect( mVectorTileStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            connect( mVectorTileStyleWidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             mWidgetStack->setMainPanel( mVectorTileStyleWidget );
             break;
           }
@@ -820,7 +820,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           {
             mVectorTileLabelingWidget = new QgsVectorTileBasicLabelingWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
             mVectorTileLabelingWidget->setDockMode( true );
-            connect( mVectorTileLabelingWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            connect( mVectorTileLabelingWidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
             mWidgetStack->setMainPanel( mVectorTileLabelingWidget );
             break;
           }

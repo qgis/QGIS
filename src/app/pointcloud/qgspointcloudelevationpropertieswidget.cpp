@@ -200,7 +200,7 @@ void QgsPointCloudElevationPropertiesWidget::apply()
 void QgsPointCloudElevationPropertiesWidget::onChanged()
 {
   if ( !mBlockUpdates )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsPointCloudElevationPropertiesWidget::shiftPointCloudZAxis()

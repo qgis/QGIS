@@ -239,7 +239,7 @@ void QgsPointDisplacementRendererWidget::mLabelFieldComboBox_currentIndexChanged
     {
       mRenderer->setLabelAttributeName( text );
     }
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -254,7 +254,7 @@ void QgsPointDisplacementRendererWidget::mRendererComboBox_currentIndexChanged( 
     QgsRendererWidget *tempRenderWidget = m->createRendererWidget( mLayer, mStyle, oldRenderer.get() );
     mRenderer->setEmbeddedRenderer( tempRenderWidget->renderer()->clone() );
     delete tempRenderWidget;
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -264,7 +264,7 @@ void QgsPointDisplacementRendererWidget::mPlacementComboBox_currentIndexChanged(
     return;
 
   mRenderer->setPlacement( ( QgsPointDisplacementRenderer::Placement ) mPlacementComboBox->itemData( index ).toInt() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointDisplacementRendererWidget::mRendererSettingsButton_clicked()
@@ -289,7 +289,7 @@ void QgsPointDisplacementRendererWidget::mRendererSettingsButton_clicked()
     w->disableSymbolLevels();
     w->setContext( context );
 
-    connect( w, &QgsPanelWidget::widgetChanged, this, &QgsPointDisplacementRendererWidget::updateRendererFromWidget );
+    connect( w, &QgsPanelWidget::changed, this, &QgsPointDisplacementRendererWidget::updateRendererFromWidget );
     openPanel( w );
   }
 }
@@ -302,7 +302,7 @@ void QgsPointDisplacementRendererWidget::labelFontChanged()
   }
 
   mRenderer->setLabelFont( mLabelFontButton->currentFont() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointDisplacementRendererWidget::mCircleWidthSpinBox_valueChanged( double d )
@@ -310,7 +310,7 @@ void QgsPointDisplacementRendererWidget::mCircleWidthSpinBox_valueChanged( doubl
   if ( mRenderer )
   {
     mRenderer->setCircleWidth( d );
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -322,7 +322,7 @@ void QgsPointDisplacementRendererWidget::mCircleColorButton_colorChanged( const 
   }
 
   mRenderer->setCircleColor( newColor );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointDisplacementRendererWidget::mLabelColorButton_colorChanged( const QColor &newColor )
@@ -333,7 +333,7 @@ void QgsPointDisplacementRendererWidget::mLabelColorButton_colorChanged( const Q
   }
 
   mRenderer->setLabelColor( newColor );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointDisplacementRendererWidget::mCircleModificationSpinBox_valueChanged( double d )
@@ -344,7 +344,7 @@ void QgsPointDisplacementRendererWidget::mCircleModificationSpinBox_valueChanged
   }
 
   mRenderer->setCircleRadiusAddition( d );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointDisplacementRendererWidget::mLabelDistanceFactorSpinBox_valueChanged( double d )
@@ -355,7 +355,7 @@ void QgsPointDisplacementRendererWidget::mLabelDistanceFactorSpinBox_valueChange
   }
 
   mRenderer->setLabelDistanceFactor( d );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointDisplacementRendererWidget::mDistanceSpinBox_valueChanged( double d )
@@ -363,7 +363,7 @@ void QgsPointDisplacementRendererWidget::mDistanceSpinBox_valueChanged( double d
   if ( mRenderer )
   {
     mRenderer->setTolerance( d );
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -373,7 +373,7 @@ void QgsPointDisplacementRendererWidget::mDistanceUnitWidget_changed()
   {
     mRenderer->setToleranceUnit( mDistanceUnitWidget->unit() );
     mRenderer->setToleranceMapUnitScale( mDistanceUnitWidget->getMapUnitScale() );
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -398,7 +398,7 @@ void QgsPointDisplacementRendererWidget::minLabelScaleChanged( double scale )
   }
 
   mRenderer->setMinimumLabelScale( scale );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointDisplacementRendererWidget::blockAllSignals( bool block )
@@ -422,7 +422,7 @@ void QgsPointDisplacementRendererWidget::blockAllSignals( bool block )
 void QgsPointDisplacementRendererWidget::centerSymbolChanged()
 {
   mRenderer->setCenterSymbol( mCenterSymbolToolButton->clonedSymbol<QgsMarkerSymbol>() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointDisplacementRendererWidget::updateRendererFromWidget()
@@ -432,7 +432,7 @@ void QgsPointDisplacementRendererWidget::updateRendererFromWidget()
     return;
 
   mRenderer->setEmbeddedRenderer( w->renderer()->clone() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsPointDisplacementRendererWidget::setupBlankUi( const QString &layerName )

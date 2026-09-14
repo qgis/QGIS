@@ -427,7 +427,7 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
       mActiveWidget->setContext( mContext );
     }
 
-    connect( mActiveWidget, &QgsPanelWidget::widgetChanged, this, &QgsPointCloudRendererPropertiesWidget::widgetChanged );
+    connect( mActiveWidget, &QgsPanelWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::changed );
     connect( mActiveWidget, &QgsPanelWidget::showPanel, this, &QgsPointCloudRendererPropertiesWidget::openPanel );
     widget->setDockMode( dockMode() );
   }
@@ -442,7 +442,7 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
 void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsPointCloudRendererPropertiesWidget::updateDataDefinedProperty()

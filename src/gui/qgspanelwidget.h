@@ -16,6 +16,7 @@
 #define QGSPANELWIDGET_H
 
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 #include <QKeyEvent>
 #include <QStack>
@@ -159,8 +160,20 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * Connect to this to pull any changes off the widget when needed.
      * As panels are non blocking "dialogs" you should listen to this signal
      * to give the user feedback when something changes.
+     *
+     * \deprecated QGIS 4.4. Use changed() instead.
      */
-    void widgetChanged();
+    Q_DECL_DEPRECATED void widgetChanged() SIP_DEPRECATED;
+
+    /**
+     * Emitted when the widget state changes.
+     * Connect to this to pull any changes off the widget when needed.
+     * As panels are non blocking "dialogs" you should listen to this signal
+     * to give the user feedback when something changes.
+     *
+     * \since QGIS 4.4
+     */
+    void changed();
 
   public slots:
 

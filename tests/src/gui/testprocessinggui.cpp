@@ -10140,41 +10140,55 @@ void TestProcessingGui::testOutputDefinitionWidgetFileOut()
 void TestProcessingGui::testFeatureSourceOptionsWidget()
 {
   QgsProcessingFeatureSourceOptionsWidget w;
-  QSignalSpy spy( &w, &QgsProcessingFeatureSourceOptionsWidget::widgetChanged );
+  QSignalSpy spyChanged( &w, &QgsProcessingFeatureSourceOptionsWidget::changed );
+  Q_NOWARN_DEPRECATED_PUSH
+  QSignalSpy spyWidgetChanged( &w, &QgsProcessingFeatureSourceOptionsWidget::widgetChanged );
+  Q_NOWARN_DEPRECATED_POP
 
   w.setFeatureLimit( 66 );
-  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spyChanged.count(), 1 );
+  QCOMPARE( spyWidgetChanged.count(), 1 );
   QCOMPARE( w.featureLimit(), 66 );
   w.setFeatureLimit( 66 );
-  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spyChanged.count(), 1 );
+  QCOMPARE( spyWidgetChanged.count(), 1 );
   w.setFeatureLimit( -1 );
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spyChanged.count(), 2 );
+  QCOMPARE( spyWidgetChanged.count(), 2 );
   QCOMPARE( w.featureLimit(), -1 );
 
   w.setGeometryCheckMethod( false, Qgis::InvalidGeometryCheck::SkipInvalid );
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spyChanged.count(), 2 );
+  QCOMPARE( spyWidgetChanged.count(), 2 );
   QVERIFY( !w.isOverridingInvalidGeometryCheck() );
   w.setGeometryCheckMethod( true, Qgis::InvalidGeometryCheck::SkipInvalid );
-  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spyChanged.count(), 3 );
+  QCOMPARE( spyWidgetChanged.count(), 3 );
   QVERIFY( w.isOverridingInvalidGeometryCheck() );
   QCOMPARE( w.geometryCheckMethod(), Qgis::InvalidGeometryCheck::SkipInvalid );
   w.setGeometryCheckMethod( true, Qgis::InvalidGeometryCheck::SkipInvalid );
-  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spyChanged.count(), 3 );
+  QCOMPARE( spyWidgetChanged.count(), 3 );
   w.setGeometryCheckMethod( true, Qgis::InvalidGeometryCheck::AbortOnInvalid );
-  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( spyChanged.count(), 4 );
+  QCOMPARE( spyWidgetChanged.count(), 4 );
   QVERIFY( w.isOverridingInvalidGeometryCheck() );
   QCOMPARE( w.geometryCheckMethod(), Qgis::InvalidGeometryCheck::AbortOnInvalid );
   w.setGeometryCheckMethod( false, Qgis::InvalidGeometryCheck::AbortOnInvalid );
   QVERIFY( !w.isOverridingInvalidGeometryCheck() );
-  QCOMPARE( spy.count(), 5 );
+  QCOMPARE( spyChanged.count(), 5 );
+  QCOMPARE( spyWidgetChanged.count(), 5 );
 
   w.setFilterExpression( u"name='test'"_s );
-  QCOMPARE( spy.count(), 6 );
+  QCOMPARE( spyChanged.count(), 6 );
+  QCOMPARE( spyWidgetChanged.count(), 6 );
   QCOMPARE( w.filterExpression(), u"name='test'"_s );
   w.setFilterExpression( u"name='test'"_s );
-  QCOMPARE( spy.count(), 6 );
+  QCOMPARE( spyChanged.count(), 6 );
+  QCOMPARE( spyWidgetChanged.count(), 6 );
   w.setFilterExpression( QString() );
-  QCOMPARE( spy.count(), 7 );
+  QCOMPARE( spyChanged.count(), 7 );
+  QCOMPARE( spyWidgetChanged.count(), 7 );
   QCOMPARE( w.filterExpression(), QString() );
 }
 
