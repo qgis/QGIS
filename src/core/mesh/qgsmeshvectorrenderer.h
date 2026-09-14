@@ -143,7 +143,7 @@ class QgsMeshVectorGlyphRenderer : public QgsMeshVectorRenderer
  * Not available for data defined on edges.
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
 class QgsMeshVectorStreamRenderer : public QgsMeshVectorRenderer
 {

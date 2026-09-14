@@ -25,7 +25,7 @@ animation.
 The vector field can come from any source, so the same generator serves
 mesh layers and any other layer type able to expose a vector field.
 
-.. versionadded:: 4.2
+.. versionadded:: 4.4
 %End
 
 %TypeHeaderCode

@@ -43,7 +43,7 @@ class QgsVectorFieldValueSource;
  * The vector field can come from any source, so the same generator serves mesh layers and any
  * other layer type able to expose a vector field.
  *
- * \since QGIS 4.2
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsVectorFieldTraceAnimationGenerator SIP_NODEFAULTCTORS
 {

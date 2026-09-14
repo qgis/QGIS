@@ -42,7 +42,7 @@ class QgsRenderContext;
  * raster layers (sampling two bands).
  *
  * \note not available in Python bindings
- * \since QGIS 4.2
+ * \since QGIS 4.4
  */
 class CORE_EXPORT QgsVectorFieldValueSource
 {

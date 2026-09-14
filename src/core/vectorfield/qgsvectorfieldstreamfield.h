@@ -50,7 +50,7 @@ class QgsRasterBlockFeedback;
  * QgsVectorFieldValueSource it is given.
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
 class QgsVectorFieldStreamField
 {
@@ -218,7 +218,7 @@ class QgsVectorFieldStreamField
  * \brief Class used to draw streamlines from a vector field
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
 class QgsVectorFieldStreamlinesField : public QgsVectorFieldStreamField
 {
@@ -250,7 +250,7 @@ class QgsVectorFieldStreamlinesField : public QgsVectorFieldStreamField
  * \brief Used to simulate a moving particle
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
 struct QgsVectorFieldTraceParticle
 {
@@ -266,7 +266,7 @@ struct QgsVectorFieldTraceParticle
  * \brief Class used to draw particle traces from a vector field
  *
  * \note not available in Python bindings
- * \since QGIS 3.12
+ * \since QGIS 4.4
  */
 class QgsVectorFieldParticleTracesField : public QgsVectorFieldStreamField
 {

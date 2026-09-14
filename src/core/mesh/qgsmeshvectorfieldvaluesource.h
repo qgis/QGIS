@@ -35,7 +35,7 @@
  * the last hit face because consecutive lookups of a trace usually land in the same triangle.
  *
  * \note not available in Python bindings
- * \since QGIS 4.2
+ * \since QGIS 4.4
  */
 class QgsMeshVectorFieldValueSource : public QgsVectorFieldValueSource
 {
@@ -107,7 +107,7 @@ class QgsMeshVectorFieldValueSource : public QgsVectorFieldValueSource
  * \brief Vector field value source interpolating mesh dataset values defined on vertices.
  *
  * \note not available in Python bindings
- * \since QGIS 4.2
+ * \since QGIS 4.4
  */
 class QgsMeshVectorFieldValueSourceFromVertex : public QgsMeshVectorFieldValueSource
 {
@@ -126,7 +126,7 @@ class QgsMeshVectorFieldValueSourceFromVertex : public QgsMeshVectorFieldValueSo
  * \brief Vector field value source interpolating mesh dataset values defined on faces.
  *
  * \note not available in Python bindings
- * \since QGIS 4.2
+ * \since QGIS 4.4
  */
 class QgsMeshVectorFieldValueSourceFromFace : public QgsMeshVectorFieldValueSource
 {
