@@ -160,3 +160,8 @@ void QgsPolygon3DSymbolWidget::updateGuiState()
   const bool absoluteClamping = cboAltClamping->currentIndex() == static_cast<int>( Qgis::AltitudeClamping::Absolute );
   cboAltBinding->setEnabled( !absoluteClamping );
 }
+
+void QgsPolygon3DSymbolWidget::setStyle( Qgis::MaterialWidgetStyle style )
+{
+  widgetMaterial->setStyle( style );
+}

@@ -36,6 +36,7 @@ class QgsLine3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Line3DSymbol
     QString symbolType() const override;
     Qgis::MaterialRenderingTechnique renderingTechnique() const override;
     void setDockMode( bool dockMode ) override;
+    void setStyle( Qgis::MaterialWidgetStyle style ) override;
 
   private slots:
     void updateGuiState();

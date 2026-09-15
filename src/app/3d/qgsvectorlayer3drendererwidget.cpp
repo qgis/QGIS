@@ -55,6 +55,7 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
   scrollLayout->addWidget( scrollArea );
 
   widgetSymbol = new QgsSymbol3DWidget( mLayer, this );
+  widgetSymbol->setStyle( Qgis::MaterialWidgetStyle::Compact );
   scrollArea->setWidget( widgetSymbol );
 
   setLayout( scrollLayout );

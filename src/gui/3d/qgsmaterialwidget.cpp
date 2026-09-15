@@ -98,6 +98,7 @@ void QgsMaterialWidget::rebuildAvailableTypes()
   if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
   {
     w->setTechnique( mTechnique );
+    w->setStyle( mStyle );
   }
 
   mMaterialTypeComboBox->blockSignals( false );
@@ -107,6 +108,12 @@ void QgsMaterialWidget::rebuildAvailableTypes()
 void QgsMaterialWidget::setFilterByTechnique( bool enabled )
 {
   mFilterByTechnique = enabled;
+  rebuildAvailableTypes();
+}
+
+void QgsMaterialWidget::setStyle( Qgis::MaterialWidgetStyle style )
+{
+  mStyle = style;
   rebuildAvailableTypes();
 }
 
@@ -203,6 +210,7 @@ void QgsMaterialWidget::updateMaterialWidget()
     {
       w->setSettings( mCurrentSettings.get(), mLayer );
       w->setTechnique( mTechnique );
+      w->setStyle( mStyle );
       w->setPreviewVisible( mPreviewVisible );
       w->setDockMode( dockMode() );
       mStackedWidget->addWidget( w );
@@ -245,6 +253,16 @@ QgsMaterialWidgetDialog::QgsMaterialWidgetDialog( const QgsAbstractMaterialSetti
   setWindowTitle( tr( "Material" ) );
 
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+}
+
+void QgsMaterialWidgetDialog::setTechnique( Qgis::MaterialRenderingTechnique technique )
+{
+  mWidget->setTechnique( technique );
+}
+
+void QgsMaterialWidgetDialog::setFilterByTechnique( bool enabled )
+{
+  mWidget->setFilterByTechnique( enabled );
 }
 
 std::unique_ptr<QgsAbstractMaterialSettings> QgsMaterialWidgetDialog::settings()

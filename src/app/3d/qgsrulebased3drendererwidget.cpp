@@ -583,6 +583,7 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
 
   mSymbolWidget = new QgsSymbol3DWidget( layer, this );
   mSymbolWidget->setSymbol( mSymbol.get(), layer );
+  mSymbolWidget->setStyle( Qgis::MaterialWidgetStyle::Compact );
   QVBoxLayout *l = new QVBoxLayout;
   l->addWidget( mSymbolWidget );
   groupSymbol->setLayout( l );

@@ -109,6 +109,18 @@ class GUI_EXPORT QgsMaterialWidget : public QgsPanelWidget, private Ui::Material
 
     void setDockMode( bool dockMode ) override;
 
+    /**
+     * Sets the widget display \a style.
+     *
+     * The widget style controls the number of material settings exposed for editing:
+     *
+     * - Compact style only exposes the most commonly used settings
+     * - Full style exposes all material settings.
+     *
+     * \since QGIS 4.4
+     */
+    void setStyle( Qgis::MaterialWidgetStyle style );
+
   public slots:
 
     /**
@@ -137,6 +149,7 @@ class GUI_EXPORT QgsMaterialWidget : public QgsPanelWidget, private Ui::Material
 
     bool mFilterByTechnique = false;
     Qgis::MaterialRenderingTechnique mTechnique = Qgis::MaterialRenderingTechnique::Triangles;
+    Qgis::MaterialWidgetStyle mStyle = Qgis::MaterialWidgetStyle::Full;
 };
 
 
@@ -156,6 +169,28 @@ class GUI_EXPORT QgsMaterialWidgetDialog : public QDialog
    * Constructor for QgsMaterialWidgetDialog, initially showing the specified material \a settings.
    */
     QgsMaterialWidgetDialog( const QgsAbstractMaterialSettings *settings, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets the required rendering \a technique which the material must support.
+     *
+     * This is used to filter the available material choices in the widget.
+     *
+     * \note This setting is only respected when filterByTechnique() is TRUE.
+     *
+     * \see setFilterByTechnique()
+     *
+     * \since QGIS 4.4
+     */
+    void setTechnique( Qgis::MaterialRenderingTechnique technique );
+
+    /**
+     * Sets whether available materials should be filtered by technique.
+     *
+     * \see setTechnique()
+     *
+     * \since QGIS 4.4
+     */
+    void setFilterByTechnique( bool enabled );
 
     /**
     * Returns the current settings defined by the dialog.
