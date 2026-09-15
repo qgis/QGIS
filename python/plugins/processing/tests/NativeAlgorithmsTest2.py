@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    QgisAlgorithmTests2.py
+    NativeAlgorithmsTest2.py
     ---------------------
     Date                 : January 2016
     Copyright            : (C) 2016 by Matthias Kuhn
@@ -19,17 +19,21 @@ __author__ = "Matthias Kuhn"
 __date__ = "January 2016"
 __copyright__ = "(C) 2016, Matthias Kuhn"
 
-
 import os
 import shutil
 import unittest
 
 import AlgorithmsTestBase
 import nose2
+from qgis.analysis import QgsNativeAlgorithms
+from qgis.core import QgsApplication, QgsProcessingException
 from qgis.testing import QgisTestCase, start_app
 
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.modeler.ModelerUtils import ModelerUtils
 
-class TestQgisAlgorithms5(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
+
+class TestNativeAlgorithms2(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
     @classmethod
     def setUpClass(cls):
         start_app()
@@ -37,6 +41,8 @@ class TestQgisAlgorithms5(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
 
         Processing.initialize()
         cls.cleanup_paths = []
+        cls.in_place_layers = {}
+        cls.vector_layer_params = {}
 
     @classmethod
     def tearDownClass(cls):
@@ -47,7 +53,7 @@ class TestQgisAlgorithms5(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             shutil.rmtree(path)
 
     def definition_file(self):
-        return "qgis_algorithm_tests5.yaml"
+        return "native_algorithm_tests2.yaml"
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    QgisAlgorithmTests2.py
+    NativeAlgorithmsTest3.py
     ---------------------
     Date                 : January 2016
     Copyright            : (C) 2016 by Matthias Kuhn
@@ -33,7 +33,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.modeler.ModelerUtils import ModelerUtils
 
 
-class TestQgisAlgorithms3(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestNativeAlgorithms3(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
     @classmethod
     def setUpClass(cls):
         start_app()
@@ -53,7 +53,7 @@ class TestQgisAlgorithms3(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             shutil.rmtree(path)
 
     def definition_file(self):
-        return "qgis_algorithm_tests3.yaml"
+        return "native_algorithm_tests3.yaml"
 
 
 if __name__ == "__main__":
