@@ -25,6 +25,7 @@ from osgeo import ogr
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsColorSchemeRegistry,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsDataProvider,
@@ -1894,6 +1895,34 @@ class TestQgsProject(QgisTestCase):
                 [QColor(255, 0, 0), "red"],
                 [QColor(0, 255, 0), "green"],
                 [QColor.fromCmykF(1, 0.9, 0.8, 0.7), "TestCmyk"],
+            ],
+        )
+
+    def testColorSchemeRegistry(self):
+        """Test QgsProject.colorSchemeRegistry()"""
+
+        project = QgsProject()
+        project.setProjectColors(
+            [
+                [QColor(255, 0, 0), "red"],
+                [QColor(0, 255, 0), "green"],
+            ]
+        )
+
+        registry = project.colorSchemeRegistry()
+        self.assertIsInstance(registry, QgsColorSchemeRegistry)
+
+        # should include the default schemes plus a project color scheme bound
+        # to this project
+        project_schemes = [
+            s for s in registry.schemes() if isinstance(s, QgsProjectColorScheme)
+        ]
+        self.assertEqual(len(project_schemes), 1)
+        self.assertEqual(
+            [[c[0], c[1]] for c in project_schemes[0].fetchColors()],
+            [
+                [QColor(255, 0, 0), "red"],
+                [QColor(0, 255, 0), "green"],
             ],
         )
 
