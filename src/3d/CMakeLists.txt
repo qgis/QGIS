@@ -35,6 +35,7 @@ set(QGIS_3D_SRCS
   qgsfonttextureatlasgenerator.cpp
   qgsgeotransform.cpp
   qgsglobechunkedentity.cpp
+  qgsglobeutils_p.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
@@ -309,6 +310,7 @@ set(QGIS_3D_HDRS
 )
 
 set(QGIS_3D_PRIVATE_HDRS
+  qgsglobeutils_p.h
   qgsrulebasedchunkloader_p.h
   qgsvectorlayerchunkloader_p.h
   qgspointcloudlayerchunkloader_p.h
