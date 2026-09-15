@@ -79,10 +79,7 @@ class AssignProjection(GdalAlgorithm):
         return "rasterprojections"
 
     def commandName(self) -> str:
-        return "edit"
-
-    def commandType(self) -> str:
-        return "raster"
+        return "gdal raster edit"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -111,12 +108,7 @@ class AssignProjection(GdalAlgorithm):
 
         self.setOutputValue(self.OUTPUT, fileName)
 
-        return [
-            self.gdalCommand(),
-            self.commandType(),
-            self.commandName(),
-            GdalUtils.escapeAndJoin(arguments),
-        ]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def postProcessAlgorithm(self, context, feedback):
         # get output value

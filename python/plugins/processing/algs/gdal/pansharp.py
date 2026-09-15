@@ -139,10 +139,7 @@ class pansharp(GdalAlgorithm):
         return "rastermiscellaneous"
 
     def commandName(self) -> str:
-        return "pansharpen"
-
-    def commandType(self) -> str:
-        return "raster"
+        return "gdal raster pansharpen"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         spectral = self.parameterAsRasterLayer(parameters, self.SPECTRAL, context)
@@ -197,9 +194,4 @@ class pansharp(GdalAlgorithm):
         arguments.append(spectral_input_details.connection_string)
         arguments.append(out)
 
-        return [
-            self.gdalCommand(),
-            self.commandType(),
-            self.commandName(),
-            GdalUtils.escapeAndJoin(arguments),
-        ]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

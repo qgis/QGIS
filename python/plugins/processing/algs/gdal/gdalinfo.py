@@ -115,10 +115,7 @@ class gdalinfo(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, "images", "gdaltools", "raster-info.png"))
 
     def commandName(self):
-        return "info"
-
-    def commandType(self):
-        return "raster"
+        return "gdal raster info"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
@@ -150,12 +147,7 @@ class gdalinfo(GdalAlgorithm):
 
         arguments.append(input_details.connection_string)
 
-        return [
-            self.gdalCommand(),
-            self.commandType(),
-            self.commandName(),
-            GdalUtils.escapeAndJoin(arguments),
-        ]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def processAlgorithm(self, parameters, context, feedback):
         console_output = GdalUtils.runGdal(

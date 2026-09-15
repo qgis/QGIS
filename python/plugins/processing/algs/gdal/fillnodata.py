@@ -166,10 +166,7 @@ class fillnodata(GdalAlgorithm):
         return "rasteranalysis"
 
     def commandName(self) -> str:
-        return "fill-nodata"
-
-    def commandType(self) -> str:
-        return "raster"
+        return "gdal raster fill-nodata"
 
     def flags(self):
         return super().flags() | QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral
@@ -227,9 +224,4 @@ class fillnodata(GdalAlgorithm):
         arguments.append(input_details.connection_string)
         arguments.append(out)
 
-        return [
-            self.gdalCommand(),
-            self.commandType(),
-            self.commandName(),
-            GdalUtils.escapeAndJoin(arguments),
-        ]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

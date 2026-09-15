@@ -110,10 +110,7 @@ class polygonize(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, "images", "gdaltools", "polygonize.png"))
 
     def commandName(self) -> str:
-        return "polygonize"
-
-    def commandType(self) -> str:
-        return "raster"
+        return "gdal raster polygonize"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
@@ -159,9 +156,4 @@ class polygonize(GdalAlgorithm):
 
         arguments.append(output_details.connection_string)
 
-        return [
-            self.gdalCommand(),
-            self.commandType(),
-            self.commandName(),
-            GdalUtils.escapeAndJoin(arguments),
-        ]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

@@ -226,10 +226,7 @@ class proximity(GdalAlgorithm):
         return "rasteranalysis"
 
     def commandName(self) -> str:
-        return "proximity"
-
-    def commandType(self) -> str:
-        return "raster"
+        return "gdal raster proximity"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -308,9 +305,4 @@ class proximity(GdalAlgorithm):
         arguments.append(input_details.connection_string)
         arguments.append(out)
 
-        return [
-            self.gdalCommand(),
-            self.commandType(),
-            self.commandName(),
-            GdalUtils.escapeAndJoin(arguments),
-        ]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
