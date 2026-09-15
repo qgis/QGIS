@@ -4,6 +4,13 @@ set (ENABLE_HANATEST FALSE CACHE BOOL "Enable HANA provider tests")
 
 include(UsePythonTest)
 
+ADD_PYTHON_TEST(ProcessingGrassAlgorithmsImageryTest test_grass_algorithms_imagery_test.py)
+ADD_PYTHON_TEST(ProcessingGrassAlgorithmsRasterTestPt1 test_grass_algorithms_raster_test_pt1.py)
+ADD_PYTHON_TEST(ProcessingGrassAlgorithmsRasterTestPt2 test_grass_algorithms_raster_test_pt2.py)
+ADD_PYTHON_TEST(ProcessingGrassAlgorithmsRasterTestPt3 test_grass_algorithms_raster_test_pt3.py)
+ADD_PYTHON_TEST(ProcessingGrassAlgorithmsVectorTest test_grass_algorithms_vector_test.py)
+ADD_PYTHON_TEST(ProcessingGrassAlgsPostgreRasterProvider test_grass_algorithm_postgreraster_test.py)
+
 ADD_PYTHON_TEST(PyCoreAdditions test_core_additions.py)
 ADD_PYTHON_TEST(PyPythonRepr test_python_repr.py)
 ADD_PYTHON_TEST(PyPythonUtils test_python_utils.py)
