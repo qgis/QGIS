@@ -328,9 +328,63 @@ class TestQgsMapLayerUtils(QgisTestCase):
             [vl1, rl1, gp1, vl2],
         )
 
-    def test_launder_layer_name(self):
+    def test_launder_layer_name_ascii(self):
+        launder = QgsMapLayerUtils.launderLayerName
+        ascii_mode = Qgis.LayerNameLaunderingMode.Ascii
+
+        self.assertEqual(launder("abc Def4_a.h%", ascii_mode), "abc_def4_a_h")
+
+        # non-conforming characters are replaced, never dropped: dropping them
+        # silently collided distinct names (GH #67248)
+        self.assertEqual(launder("Stra\u00dfe", ascii_mode), "stra_e")
+        self.assertEqual(launder("Strae", ascii_mode), "strae")
+        self.assertNotEqual(
+            launder("Stra\u00dfe", ascii_mode), launder("Strae", ascii_mode)
+        )
+
+        self.assertEqual(launder("Gro\u00df-Umstadt", ascii_mode), "gro_umstadt")
         self.assertEqual(
-            QgsMapLayerUtils.launderLayerName("abc Def4_a.h%"), "abc_def4_ah"
+            launder("Bezirk K\u00f6nigsberg (Pr.)", ascii_mode), "bezirk_k_nigsberg_pr"
+        )
+
+        # runs of underscores are collapsed and trimmed from the ends
+        self.assertEqual(launder("  a %% b  ", ascii_mode), "a_b")
+
+    def test_launder_layer_name_unicode(self):
+        launder = QgsMapLayerUtils.launderLayerName
+
+        # the default mode preserves letters and digits of any script
+        self.assertEqual(launder("Zusammengef\u00fchrt"), "Zusammengef\u00fchrt")
+        self.assertEqual(
+            launder("Haltestellen Ro\u00dfdorf"), "Haltestellen_Ro\u00dfdorf"
+        )
+        self.assertEqual(
+            launder("\u0414\u043e\u0440\u043e\u0433\u0438"),
+            "\u0414\u043e\u0440\u043e\u0433\u0438",
+        )
+        self.assertEqual(
+            launder("Bezirk K\u00f6nigsberg (Pr.)"), "Bezirk_K\u00f6nigsberg_(Pr.)"
+        )
+
+        # ... but replaces characters hostile to data source URIs, paths and SQL quoting
+        self.assertEqual(launder('a/b\\c|d"e'), "a_b_c_d_e")
+        self.assertEqual(launder("a\tb\nc"), "a_b_c")
+
+        # non-ASCII whitespace counts as whitespace and is not left in place
+        self.assertEqual(launder("Nicht\u00a0umbrechend"), "Nicht_umbrechend")
+
+        # names are normalized to NFC, so a decomposed source string launders
+        # identically to its composed equivalent
+        self.assertEqual(launder("O\u0308tzi"), launder("\u00d6tzi"))
+        self.assertEqual(launder("O\u0308tzi"), "\u00d6tzi")
+
+    def test_launder_layer_name_default_mode(self):
+        # the default argument must match the default of the corresponding setting
+        self.assertEqual(
+            QgsMapLayerUtils.launderLayerName("Ro\u00dfdorf"),
+            QgsMapLayerUtils.launderLayerName(
+                "Ro\u00dfdorf", Qgis.LayerNameLaunderingMode.PreserveUnicode
+            ),
         )
 
 

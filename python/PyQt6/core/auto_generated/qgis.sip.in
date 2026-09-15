@@ -681,6 +681,12 @@ The development version
       Delete,
     };
 
+    enum class LayerNameLaunderingMode /BaseType=IntEnum/
+    {
+      PreserveUnicode,
+      Ascii,
+    };
+
     enum class VectorExportResult /BaseType=IntEnum/
     {
       Success,
