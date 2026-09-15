@@ -225,8 +225,11 @@ class proximity(GdalAlgorithm):
     def groupId(self):
         return "rasteranalysis"
 
-    def commandName(self):
-        return "gdal_proximity"
+    def commandName(self) -> str:
+        return "proximity"
+
+    def commandType(self) -> str:
+        return "raster"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -247,29 +250,29 @@ class proximity(GdalAlgorithm):
         self.setOutputValue(self.OUTPUT, out)
 
         arguments = [
-            "-srcband",
+            "--band",
             str(self.parameterAsInt(parameters, self.BAND, context)),
-            "-distunits",
+            "--distance-units",
             self.distanceUnits[self.parameterAsEnum(parameters, self.UNITS, context)][
                 1
-            ],
+            ].lower(),
         ]
 
         values = self.parameterAsString(parameters, self.VALUES, context)
         if values:
-            arguments.append("-values")
+            arguments.append("--target-values")
             arguments.append(values)
 
         if distance:
-            arguments.append("-maxdist")
+            arguments.append("--max-distance")
             arguments.append(str(distance))
 
         if nodata is not None:
-            arguments.append("-nodata")
+            arguments.append("--nodata")
             arguments.append(str(nodata))
 
         if replaceValue:
-            arguments.append("-fixed-buf-val")
+            arguments.append("--fixed-value")
             arguments.append(str(replaceValue))
 
         data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
@@ -278,13 +281,14 @@ class proximity(GdalAlgorithm):
                 self.tr("Int8 data type requires GDAL version 3.7 or later")
             )
 
-        arguments.append("-ot " + self.TYPES[data_type])
+        arguments.append("--ot")
+        arguments.append(self.TYPES[data_type])
 
         output_format = self.outputFormat(parameters, self.OUTPUT, context)
         if not output_format:
             raise QgsProcessingException(self.tr("Output format is invalid"))
 
-        arguments.append("-of")
+        arguments.append("--format")
         arguments.append(output_format)
 
         options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
@@ -292,19 +296,21 @@ class proximity(GdalAlgorithm):
         if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
             options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.extend(GdalUtils.parseCreationOptions(options))
+            arguments.extend(GdalUtils.parseCreationOptions(options, new_api=True))
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        arguments.append(input_details.connection_string)
-        arguments.append(out)
-
         if input_details.credential_options:
             arguments.extend(input_details.credential_options_as_arguments())
 
+        arguments.append(input_details.connection_string)
+        arguments.append(out)
+
         return [
-            self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
+            self.gdalCommand(),
+            self.commandType(),
+            self.commandName(),
             GdalUtils.escapeAndJoin(arguments),
         ]
