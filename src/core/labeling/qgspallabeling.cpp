@@ -2547,6 +2547,14 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
   if ( labelIsHidden )
     return {};
 
+  if ( context.testFlag( Qgis::RenderContextFlag::DrawLabelSelection ) && details.isSelected() )
+  {
+    // when rendering labels in a selected state, we render them using a buffer in the layer's selection color
+    dataDefinedValues.insert( QgsPalLayerSettings::Property::BufferDraw, true );
+    dataDefinedValues.insert( QgsPalLayerSettings::Property::BufferSize, 2 );
+    dataDefinedValues.insert( QgsPalLayerSettings::Property::BufferColor, context.selectionColor() );
+  }
+
   QgsLabelPlacementSettings placementSettings = mPlacementSettings;
   placementSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
 
