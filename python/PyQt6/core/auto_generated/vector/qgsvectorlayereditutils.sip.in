@@ -282,7 +282,8 @@ Splits features cut by the given curve
 
 :return: - :py:class:`QgsGeometry`.OperationResult
          - topologyTestPoints: topological points to be tested against
-           other layers
+           other layers. Points from curve geometries are not yet fully
+           supported.
 
 .. versionadded:: 3.16
 %End

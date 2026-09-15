@@ -1580,7 +1580,7 @@ Splits features cut by the given curve
            - GeometryEngineError
            - SplitCannotSplitPoint
 
-         - topologyTestPoints: topological points to be tested against other layers
+         - topologyTestPoints: topological points to be tested against other layers. Points from curve geometries are not yet fully supported.
 
 .. note::
 
