@@ -177,7 +177,7 @@ QString QgsGraduatedSymbolRendererModel::tooltip( const QModelIndex &index ) con
   const QString lowerOperator = lowerInclusive ? u"<="_s : u"<"_s;
   const QString upperOperator = upperInclusive ? u"<="_s : u"<"_s;
 
-  return QString( formatRangeValue( range.lowerValue() ) + " " + lowerOperator + " " + tr( "Values" ) + " " + upperOperator + " " + formatRangeValue( range.upperValue() ) );
+  return u"%1 %2 %3 %4 %5"_s.arg( formatRangeValue( range.lowerValue() ), lowerOperator, tr( "Values" ), upperOperator, formatRangeValue( range.upperValue() ) );
 }
 
 QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int role ) const
