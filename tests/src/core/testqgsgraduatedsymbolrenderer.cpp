@@ -49,6 +49,7 @@ class TestQgsGraduatedSymbolRenderer : public QObject
     void testMatchingRangeForValue();
     void testRangeBoundInclusivity();
     void testValueCapturedByEarlierRange();
+    void testRangeOverlapsEarlierRange();
 
   private:
 };
@@ -423,6 +424,33 @@ void TestQgsGraduatedSymbolRenderer::testValueCapturedByEarlierRange()
 
   QVERIFY( !renderer.valueCapturedByEarlierRange( 1, 5 ) );
   QVERIFY( renderer.valueCapturedByEarlierRange( 1, 10 ) );
+}
+
+void TestQgsGraduatedSymbolRenderer::testRangeOverlapsEarlierRange()
+{
+  QgsGraduatedSymbolRenderer renderer;
+  QgsMarkerSymbol symbol;
+
+  // contiguous ranges which only touch at their shared boundary are not considered overlapping
+  renderer.addClass( QgsRendererRange( 0, 10, symbol.clone(), u"r1"_s ) );
+  renderer.addClass( QgsRendererRange( 10, 20, symbol.clone(), u"r2"_s ) );
+  renderer.addClass( QgsRendererRange( 20, 30, symbol.clone(), u"r3"_s ) );
+
+  QVERIFY( !renderer.rangeOverlapsEarlierRange( 0 ) );
+  QVERIFY( !renderer.rangeOverlapsEarlierRange( 1 ) );
+  QVERIFY( !renderer.rangeOverlapsEarlierRange( 2 ) );
+
+  // add a overlapping class
+  renderer.addClass( QgsRendererRange( 5, 15, symbol.clone(), u"r4"_s ) );
+  QVERIFY( renderer.rangeOverlapsEarlierRange( 3 ) );
+
+  // add a class which is contained in an earlier range
+  renderer.addClass( QgsRendererRange( 22, 28, symbol.clone(), u"r5"_s ) );
+  QVERIFY( renderer.rangeOverlapsEarlierRange( 4 ) );
+
+  // add a class which does not overlap any earlier range
+  renderer.addClass( QgsRendererRange( 40, 50, symbol.clone(), u"r6"_s ) );
+  QVERIFY( !renderer.rangeOverlapsEarlierRange( 5 ) );
 }
 
 QGSTEST_MAIN( TestQgsGraduatedSymbolRenderer )
