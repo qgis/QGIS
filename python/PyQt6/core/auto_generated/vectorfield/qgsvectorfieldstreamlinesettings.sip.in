@@ -1,0 +1,58 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectorfield/qgsvectorfieldstreamlinesettings.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsVectorFieldStreamlineSettings
+{
+%Docstring(signature="appended")
+Represents a streamline renderer settings for vector datasets displayed
+by streamlines.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvectorfieldstreamlinesettings.h"
+%End
+  public:
+    Qgis::VectorFieldSeedingMethod seedingMethod() const;
+%Docstring
+Returns the method used for seeding start points of strealines
+%End
+    void setSeedingMethod( const Qgis::VectorFieldSeedingMethod &seedingMethod );
+%Docstring
+Sets the method used for seeding start points of strealines
+%End
+    double seedingDensity() const;
+%Docstring
+Returns the density used for seeding start points
+%End
+    void setSeedingDensity( double seedingDensity );
+%Docstring
+Sets the density used for seeding start points
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectorfield/qgsvectorfieldstreamlinesettings.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

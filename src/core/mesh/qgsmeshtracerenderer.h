@@ -515,7 +515,7 @@ class QgsMeshVectorStreamlineRenderer : public QgsMeshVectorRenderer
       const QgsMeshDataBlock &dataSetVectorValues,
       const QgsMeshDataBlock &scalarActiveFaceFlagValues,
       bool dataIsOnVertices,
-      const QgsMeshRendererVectorSettings &settings,
+      const QgsVectorFieldSettings &settings,
       QgsRenderContext &rendererContext,
       const QgsRectangle &layerExtent,
       double magMax
@@ -527,7 +527,7 @@ class QgsMeshVectorStreamlineRenderer : public QgsMeshVectorRenderer
       const QgsMeshDataBlock &scalarActiveFaceFlagValues,
       const QVector<double> &datasetMagValues,
       bool dataIsOnVertices,
-      const QgsMeshRendererVectorSettings &settings,
+      const QgsVectorFieldSettings &settings,
       QgsRenderContext &rendererContext,
       const QgsRectangle &layerExtent,
       QgsMeshLayerRendererFeedback *feedBack,
@@ -561,7 +561,7 @@ class QgsMeshVectorTraceRenderer : public QgsMeshVectorRenderer
       const QgsMeshDataBlock &dataSetVectorValues,
       const QgsMeshDataBlock &scalarActiveFaceFlagValues,
       bool dataIsOnVertices,
-      const QgsMeshRendererVectorSettings &settings,
+      const QgsVectorFieldSettings &settings,
       QgsRenderContext &rendererContext,
       const QgsRectangle &layerExtent,
       double magMax
@@ -600,7 +600,7 @@ class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
       const QgsRenderContext &rendererContext,
       const QgsRectangle &layerExtent,
       double magMax,
-      const QgsMeshRendererVectorSettings &vectorSettings
+      const QgsVectorFieldSettings &vectorSettings
     ) SIP_SKIP;
 
     //!Constructor to use with Python binding

@@ -227,7 +227,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <widget class="QgsMeshRendererVectorSettingsWidget" name="mMeshRendererVectorSettingsWidget" native="true">
+           <widget class="QgsVectorFieldSettingsWidget" name="mVectorFieldSettingsWidget" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -484,9 +484,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsMeshRendererVectorSettingsWidget</class>
+   <class>QgsVectorFieldSettingsWidget</class>
    <extends>QWidget</extends>
-   <header>qgsmeshrenderervectorsettingswidget.h</header>
+   <header>qgsvectorfieldsettingswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
