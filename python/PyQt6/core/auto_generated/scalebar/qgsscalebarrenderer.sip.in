@@ -195,6 +195,14 @@ Returns a list of positions for each segment within the scalebar.
 %Docstring
 Returns a list of widths of each segment of the scalebar.
 %End
+
+    double verticalOffset( QgsRenderContext &context, const QgsScaleBarSettings &settings ) const;
+%Docstring
+Calculates the vertical offset to the top of the bar, accounting for
+text placed above the bar.
+
+.. versionadded:: 4.4
+%End
 };
 
 QFlags<QgsScaleBarRenderer::Flag> operator|(QgsScaleBarRenderer::Flag f1, QFlags<QgsScaleBarRenderer::Flag> f2);

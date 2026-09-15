@@ -196,6 +196,43 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      */
     void setItemCheckState( int index, Qt::CheckState state );
 
+#ifndef SIP_RUN
+    /**
+     * Sets item check state using a QFlags value.
+     *
+     * \note Requires that items have been added with user data corresponding to all enum flag values.
+     *
+     * \since QGIS 4.4
+     */
+    template<class T> void setCheckedItemsFromFlags( const QFlags<T> &value )
+    {
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+      {
+        setItemCheckState( findData( QVariant::fromValue( metaEnum.value( idx ) ) ), value.testFlag( static_cast< T >( metaEnum.value( idx ) ) ) ? Qt::CheckState::Checked : Qt::CheckState::Unchecked );
+      }
+    }
+
+    /**
+     * Returns enum flags corresponding to the checked items.
+     *
+     * \since QGIS 4.4
+     */
+    template<class T> QFlags<T> flagsFromCheckedItems() const
+    {
+      QFlags<T> res;
+      for ( int i = 0; i < count(); ++i )
+      {
+        if ( itemCheckState( i ) == Qt::CheckState::Checked )
+        {
+          res.setFlag( itemData( i ).value< T >(), true );
+        }
+      }
+      return res;
+    }
+
+#endif
+
     /**
      * Toggles the item check state
      * \param index item index
