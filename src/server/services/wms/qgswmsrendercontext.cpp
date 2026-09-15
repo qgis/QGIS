@@ -18,8 +18,11 @@
 #include "qgswmsrendercontext.h"
 
 #include "qgslayertree.h"
+#include "qgslayertreegroup.h"
+#include "qgsmaplayertemporalproperties.h"
 #include "qgsrasterlayer.h"
 #include "qgsserverprojectutils.h"
+#include "qgswmslayerinfos.h"
 #include "qgswmsserviceexception.h"
 #include "qgswmsutils.h"
 
@@ -50,6 +53,7 @@ void QgsWmsRenderContext::setParameters( const QgsWmsParameters &parameters )
   initNicknameLayers();
   searchLayersToRender();
   removeUnwantedLayers();
+  initPerLayerTemporalRange();
 
   std::reverse( mLayersToRender.begin(), mLayersToRender.end() );
 }
@@ -399,6 +403,67 @@ void QgsWmsRenderContext::initLayerGroupsRecursive( const QgsLayerTreeGroup *gro
         name = child->name();
 
       initLayerGroupsRecursive( group, name );
+    }
+  }
+
+  // temporal range could be already defined for a layer contained in a hierarchy of group
+  // with different default values. In that case, we assume here that this is the group higher in the
+  // hierarchy which has the precedence and set the default value.
+  // This is implied here by calling initPerLayerTemporalRange() AFTER initLayerGroupsRecursive()
+  initPerLayerTemporalRange( group, groupName );
+}
+
+void QgsWmsRenderContext::initPerLayerTemporalRange( const QgsLayerTreeGroup *group, const QString &groupName )
+{
+  if ( groupName.isEmpty() )
+    return;
+
+  // TIME parameter override time dimension default value
+  const QString timeString { mParameters.dimensionValues().value( u"TIME"_s, QString() ) };
+  if ( !timeString.isEmpty() )
+    return;
+
+  const QgsMapLayerServerProperties *serverProperties = group->serverProperties();
+  const QList<QgsMapLayerServerProperties::WmsDimensionInfo> wmsDimensions = serverProperties->wmsDimensions();
+  auto it = std::find_if( wmsDimensions.constBegin(), wmsDimensions.constEnd(), []( const QgsMapLayerServerProperties::WmsDimensionInfo &dim ) {
+    return dim.name == QgsServerWmsDimensionProperties::TIME_DIMENSION_NAME;
+  } );
+
+  if ( it != wmsDimensions.constEnd() )
+  {
+    bool wmsLayerInfosInitialized = false;
+    QMap<QString, QgsWmsLayerInfos> wmsLayerInfos;
+    QList<QgsDateTimeRange> childrenDateRanges;
+    QDateTime defaultDateTime;
+    switch ( it->defaultDisplayType )
+    {
+      case Qgis::WmsDimensionDefaultDisplay::MinValue:
+      case Qgis::WmsDimensionDefaultDisplay::MaxValue:
+
+        if ( !wmsLayerInfosInitialized )
+        {
+          wmsLayerInfos = QgsWmsLayerInfos::buildWmsLayerInfos( mInterface, mProject );
+          wmsLayerInfosInitialized = true;
+        }
+
+        QgsWms::getChildrenRanges( group, wmsLayerInfos, mRestrictedLayers, childrenDateRanges );
+
+        defaultDateTime = it->defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::MinValue ? QgsDateTimeRange::min( childrenDateRanges ) : QgsDateTimeRange::max( childrenDateRanges );
+        break;
+
+      case Qgis::WmsDimensionDefaultDisplay::ReferenceValue:
+        defaultDateTime = it->referenceValue().toDateTime();
+        break;
+
+      case Qgis::WmsDimensionDefaultDisplay::AllValues:
+        // no default time
+        break;
+    }
+
+    if ( defaultDateTime.isValid() )
+    {
+      for ( QgsMapLayer *layer : mLayerGroups[groupName] )
+        mPerLayerTemporalRange[layer] = QgsDateTimeRange( defaultDateTime, defaultDateTime );
     }
   }
 }
