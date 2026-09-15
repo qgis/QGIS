@@ -375,7 +375,7 @@ void TestQgsGraduatedSymbolRenderer::testRangeBoundInclusivity()
   dataRenderer.moveClass( 1, 0 );
   dataRenderer.moveClass( 3, 1 );
 
-  // move classes are inclusive
+  // moved classes are inclusive, due to ordering
   QVERIFY( dataRenderer.rangeLowerBoundIsInclusive( 0 ) );
   QVERIFY( dataRenderer.rangeUpperBoundIsInclusive( 0 ) );
   QVERIFY( dataRenderer.rangeLowerBoundIsInclusive( 1 ) );
