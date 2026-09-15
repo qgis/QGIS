@@ -56,15 +56,15 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
 
   switch ( settings.symbology() )
   {
-    case QgsVectorFieldSettings::Symbology::Arrows:
-    case QgsVectorFieldSettings::Symbology::WindBarbs:
+    case Qgis::VectorFieldSymbology::Arrows:
+    case Qgis::VectorFieldSymbology::WindBarbs:
       renderer = new QgsMeshVectorGlyphRenderer( m, datasetVectorValues, datasetValuesMag, datasetMagMaximumValue, datasetMagMinimumValue, dataType, settings, context, size );
       break;
-    case QgsVectorFieldSettings::Symbology::Streamlines:
+    case Qgis::VectorFieldSymbology::Streamlines:
       renderer
         = new QgsMeshVectorStreamlineRenderer( m, datasetVectorValues, scalarActiveFaceFlagValues, datasetValuesMag, dataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices, settings, context, layerExtent, feedBack, datasetMagMaximumValue );
       break;
-    case QgsVectorFieldSettings::Symbology::Traces:
+    case Qgis::VectorFieldSymbology::Traces:
       renderer
         = new QgsMeshVectorTraceRenderer( m, datasetVectorValues, scalarActiveFaceFlagValues, dataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices, settings, context, layerExtent, datasetMagMaximumValue );
       break;

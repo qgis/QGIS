@@ -35,15 +35,15 @@ QgsVectorFieldEngine::QgsVectorFieldEngine( double datasetMagMaximumValue, doubl
 {
   switch ( settings.symbology() )
   {
-    case QgsVectorFieldSettings::Symbology::WindBarbs:
+    case Qgis::VectorFieldSymbology::WindBarbs:
     {
       const QgsCoordinateReferenceSystem mapCrs = mContext.coordinateTransform().destinationCrs();
       mGeographicTransform = std::make_unique<QgsCoordinateTransform>( mapCrs, mapCrs.toGeographicCrs(), mContext.coordinateTransform().context() );
       break;
     }
-    case QgsVectorFieldSettings::Symbology::Arrows:
-    case QgsVectorFieldSettings::Symbology::Streamlines:
-    case QgsVectorFieldSettings::Symbology::Traces:
+    case Qgis::VectorFieldSymbology::Arrows:
+    case Qgis::VectorFieldSymbology::Streamlines:
+    case Qgis::VectorFieldSymbology::Traces:
       break;
   }
 
@@ -68,14 +68,14 @@ void QgsVectorFieldEngine::drawGlyph( const QgsPointXY &lineStart, double xVal, 
 {
   switch ( mCfg.symbology() )
   {
-    case QgsVectorFieldSettings::Symbology::Arrows:
+    case Qgis::VectorFieldSymbology::Arrows:
       drawArrow( lineStart, xVal, yVal, magnitude );
       break;
-    case QgsVectorFieldSettings::Symbology::WindBarbs:
+    case Qgis::VectorFieldSymbology::WindBarbs:
       drawWindBarb( lineStart, xVal, yVal, magnitude );
       break;
-    case QgsVectorFieldSettings::Symbology::Streamlines:
-    case QgsVectorFieldSettings::Symbology::Traces:
+    case Qgis::VectorFieldSymbology::Streamlines:
+    case Qgis::VectorFieldSymbology::Traces:
       // not drawn one glyph at a time, see drawStreamlines() and drawTraces()
       break;
   }
@@ -115,7 +115,7 @@ bool QgsVectorFieldEngine::calcVectorLineEnd(
   double yDist = 0.0;
   switch ( mCfg.arrowSettings().shaftLengthMethod() )
   {
-    case QgsVectorFieldArrowSettings::ArrowScalingMethod::MinMax:
+    case Qgis::VectorFieldArrowScalingMethod::MinMax:
     {
       const double minShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().minShaftLength(), Qgis::RenderUnit::Millimeters );
       const double maxShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().maxShaftLength(), Qgis::RenderUnit::Millimeters );
@@ -127,14 +127,14 @@ bool QgsVectorFieldEngine::calcVectorLineEnd(
       yDist = sinAlpha * L;
       break;
     }
-    case QgsVectorFieldArrowSettings::ArrowScalingMethod::Scaled:
+    case Qgis::VectorFieldArrowScalingMethod::Scaled:
     {
       const double scaleFactor = mCfg.arrowSettings().scaleFactor();
       xDist = scaleFactor * xVal;
       yDist = scaleFactor * yVal;
       break;
     }
-    case QgsVectorFieldArrowSettings::ArrowScalingMethod::Fixed:
+    case Qgis::VectorFieldArrowScalingMethod::Fixed:
     {
       // We must be using a fixed length
       const double fixedShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().fixedShaftLength(), Qgis::RenderUnit::Millimeters );
