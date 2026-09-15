@@ -22,6 +22,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
+#include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
 #include "qgsrenderer.h"
@@ -70,7 +71,7 @@ void QgsPointLocatorVectorSource::releaseIndexingResources()
   mSource.reset();
 }
 
-QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorVectorSource::snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok )
+QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorVectorSource::snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback )
 {
   ok = true;
   QVector<Geometry> geometries;
@@ -119,6 +120,12 @@ QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorVectorSource::snappableG
 
   while ( fi.nextFeature( f ) )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      ok = false;
+      break;
+    }
+
     if ( !f.hasGeometry() )
       continue;
 
@@ -223,7 +230,7 @@ void QgsPointLocatorAnnotationSource::releaseIndexingResources()
   mSnapshot.clear();
 }
 
-QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorAnnotationSource::snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok )
+QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorAnnotationSource::snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback )
 {
   ok = true;
   QVector<Geometry> geometries;
@@ -231,6 +238,12 @@ QVector<QgsPointLocatorSource::Geometry> QgsPointLocatorAnnotationSource::snappa
   int indexedCount = 0;
   for ( auto it = mSnapshot.constBegin(); it != mSnapshot.constEnd(); ++it )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      ok = false;
+      break;
+    }
+
     QgsGeometry geom = it.value();
     if ( transform.isValid() )
     {

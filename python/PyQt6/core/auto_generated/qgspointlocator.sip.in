@@ -416,11 +416,6 @@ The optional ``feedback`` argument allows for early cancellation of the
 rebuild.
 %End
 
-    bool rebuildAnnotationIndex( int maxFeaturesToIndex = -1 );
-%Docstring
-Builds the index from the annotation layer's items.
-%End
-
   protected slots:
     void destroyIndex();
 };
