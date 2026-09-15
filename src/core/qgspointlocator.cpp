@@ -28,6 +28,7 @@
 #include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgspointlocatorinittask.h"
+#include "qgspointlocatorsource.h"
 #include "qgsrendercontext.h"
 #include "qgsrenderer.h"
 #include "qgsspatialindexutils.h"
@@ -126,7 +127,7 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
       if ( sqrDist < 0 )
         return; // probably empty geometry
 
-      const QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, std::sqrt( sqrDist ), pt, vertexIndex );
+      const QgsPointLocator::Match m = mLocator->makeMatch( QgsPointLocator::Vertex, id, std::sqrt( sqrDist ), pt, vertexIndex );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -177,7 +178,7 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
 
       const QgsPointXY pt = geom->centroid().asPoint();
 
-      const QgsPointLocator::Match m( QgsPointLocator::Centroid, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, -1 );
+      const QgsPointLocator::Match m = mLocator->makeMatch( QgsPointLocator::Centroid, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, -1 );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -238,7 +239,7 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment : public IVisitor
       edgePoints[1] = geom->vertexAt( afterVertex );
       pt = QgsPointXY( ( edgePoints[0].x() + edgePoints[1].x() ) / 2.0, ( edgePoints[0].y() + edgePoints[1].y() ) / 2.0 );
 
-      const QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, afterVertex - 1 );
+      const QgsPointLocator::Match m = mLocator->makeMatch( QgsPointLocator::MiddleOfSegment, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, afterVertex - 1 );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -342,7 +343,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
         }
       }
 
-      const QgsPointLocator::Match m( QgsPointLocator::LineEndpoint, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( bestPoint ) ), bestPoint, bestVertexNumber );
+      const QgsPointLocator::Match m = mLocator->makeMatch( QgsPointLocator::LineEndpoint, id, std::sqrt( mSrcPoint.sqrDist( bestPoint ) ), bestPoint, bestVertexNumber );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -394,7 +395,7 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
       QgsPointXY edgePoints[2];
       edgePoints[0] = geom->vertexAt( afterVertex - 1 );
       edgePoints[1] = geom->vertexAt( afterVertex );
-      const QgsPointLocator::Match m( QgsPointLocator::Edge, mLocator->mLayer, id, std::sqrt( sqrDist ), pt, afterVertex - 1, edgePoints );
+      const QgsPointLocator::Match m = mLocator->makeMatch( QgsPointLocator::Edge, id, std::sqrt( sqrDist ), pt, afterVertex - 1, edgePoints );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -441,7 +442,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
 
       if ( g->intersects( mGeomPt ) )
       {
-        const QgsPointLocator::Match m( QgsPointLocator::Area, mLocator->mLayer, id, 0, mGeomPt.asPoint() );
+        const QgsPointLocator::Match m = mLocator->makeMatch( QgsPointLocator::Area, id, 0, mGeomPt.asPoint() );
         if ( mFilter && !mFilter->acceptMatch( m ) )
           return;
         mList << m;
@@ -569,7 +570,7 @@ struct _CohenSutherland
 };
 
 
-static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, const QgsRectangle &rect, QgsVectorLayer *vl, QgsFeatureId fid )
+QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, const QgsRectangle &rect, QgsPointLocator *locator, QgsFeatureId fid )
 {
   // this code is stupidly based on QgsGeometry::closestSegmentWithContext
   // we need iterator for segments...
@@ -611,7 +612,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
         QgsPointXY edgePoints[2];
         edgePoints[0] = prevPoint;
         edgePoints[1] = thisPoint;
-        lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPointXY(), pointIndex - 1, edgePoints );
+        lst << locator->makeMatch( QgsPointLocator::Edge, fid, 0, QgsPointXY(), pointIndex - 1, edgePoints );
       }
       prevPoint = QgsPointXY( *it );
       it++;
@@ -646,7 +647,7 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
       if ( !geom )
         return; // should not happen, but be safe
 
-      const auto segmentsInRect { _geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id ) };
+      const auto segmentsInRect { _geometrySegmentsInRect( geom, mSrcRect, mLocator, id ) };
       for ( const QgsPointLocator::Match &m : segmentsInRect )
       {
         // in range queries the filter may reject some matches
@@ -697,7 +698,7 @@ class QgsPointLocator_VisitorVerticesInRect : public IVisitor
       {
         if ( mSrcRect.contains( *it ) )
         {
-          const QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, 0, *it, geom->vertexNrFromVertexId( it.vertexId() ) );
+          const QgsPointLocator::Match m = mLocator->makeMatch( QgsPointLocator::Vertex, id, 0, *it, geom->vertexNrFromVertexId( it.vertexId() ) );
 
           // in range queries the filter may reject some matches
           if ( mFilter && !mFilter->acceptMatch( m ) )
@@ -745,7 +746,7 @@ class QgsPointLocator_VisitorCentroidsInRect : public IVisitor
       const QgsPointXY centroid = geom->centroid().asPoint();
       if ( mSrcRect.contains( centroid ) )
       {
-        const QgsPointLocator::Match m( QgsPointLocator::Centroid, mLocator->mLayer, id, 0, centroid, -1 );
+        const QgsPointLocator::Match m = mLocator->makeMatch( QgsPointLocator::Centroid, id, 0, centroid, -1 );
 
         // in range queries the filter may reject some matches
         if ( !( mFilter && !mFilter->acceptMatch( m ) ) )
@@ -797,7 +798,7 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
           const QgsPointXY pt( ( ( *itPrevious ).x() + ( *it ).x() ) / 2.0, ( ( *itPrevious ).y() + ( *it ).y() ) / 2.0 );
           if ( mSrcRect.contains( pt ) )
           {
-            const QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, 0, pt, geom->vertexNrFromVertexId( it.vertexId() ) );
+            const QgsPointLocator::Match m = mLocator->makeMatch( QgsPointLocator::MiddleOfSegment, id, 0, pt, geom->vertexNrFromVertexId( it.vertexId() ) );
 
             // in range queries the filter may reject some matches
             if ( mFilter && !mFilter->acceptMatch( m ) )
@@ -882,16 +883,16 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 
   mStorage.reset( StorageManager::createNewMemoryStorageManager() );
 
-  connect( mLayer, &QgsVectorLayer::featureAdded, this, &QgsPointLocator::onFeatureAdded );
-  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsPointLocator::onFeatureDeleted );
-  connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsPointLocator::onGeometryChanged );
-  connect( mLayer, &QgsVectorLayer::attributeValueChanged, this, &QgsPointLocator::onAttributeValueChanged );
-  connect( mLayer, &QgsVectorLayer::dataChanged, this, &QgsPointLocator::destroyIndex );
+  connect( layer, &QgsVectorLayer::featureAdded, this, &QgsPointLocator::onFeatureAdded );
+  connect( layer, &QgsVectorLayer::featureDeleted, this, &QgsPointLocator::onFeatureDeleted );
+  connect( layer, &QgsVectorLayer::geometryChanged, this, &QgsPointLocator::onGeometryChanged );
+  connect( layer, &QgsVectorLayer::attributeValueChanged, this, &QgsPointLocator::onAttributeValueChanged );
+  connect( layer, &QgsVectorLayer::dataChanged, this, &QgsPointLocator::destroyIndex );
 }
 
 
 QgsPointLocator::QgsPointLocator( QgsAnnotationLayer *layer, const QgsCoordinateReferenceSystem &destCRS, const QgsCoordinateTransformContext &transformContext, const QgsRectangle *extent )
-  : mAnnotationLayer( layer )
+  : mLayer( layer )
 {
   if ( destCRS.isValid() )
   {
@@ -901,7 +902,9 @@ QgsPointLocator::QgsPointLocator( QgsAnnotationLayer *layer, const QgsCoordinate
   setExtent( extent );
 
   mStorage.reset( StorageManager::createNewMemoryStorageManager() );
-  connect( mAnnotationLayer, &QgsAnnotationLayer::itemsChanged, this, &QgsPointLocator::destroyIndex );
+  // TODO(follow-up): incremental updates. A single itemsChanged() drops and rebuilds the whole
+  // R-tree. Fine-grained itemAdded/Removed/Changed signals should update the index in place.
+  connect( layer, &QgsAnnotationLayer::itemsChanged, this, &QgsPointLocator::destroyIndex );
 }
 
 
@@ -922,41 +925,34 @@ QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const
 
 QgsMapLayer *QgsPointLocator::mapLayer() const
 {
-  if ( mLayer )
-  {
-    return mLayer;
-  }
+  return mLayer;
+}
 
-  return mAnnotationLayer;
+QString QgsPointLocator::annotationItemId( QgsFeatureId id ) const
+{
+  return mSource ? mSource->itemId( id ) : QString();
 }
 
 Qgis::GeometryType QgsPointLocator::geometryType() const
 {
-  if ( mLayer )
+  if ( QgsVectorLayer *vl = layer() )
   {
-    return mLayer->geometryType();
+    return vl->geometryType();
   }
 
   // annotation layers are not geometry layers, so ret Unknown
   return Qgis::GeometryType::Unknown;
 }
 
-void QgsPointLocator::stampAnnotationMatch( Match &match ) const
+QgsPointLocator::Match QgsPointLocator::makeMatch( Type type, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex, QgsPointXY *edgePoints ) const
 {
-  if ( !mAnnotationLayer || !match.isValid() )
-    return;
-
-  match.mMapLayer = mAnnotationLayer;
-  match.mItemId = mAnnotationItemIds.value( match.mFid );
-}
-
-void QgsPointLocator::stampAnnotationMatch( MatchList &list ) const
-{
-  if ( !mAnnotationLayer )
-    return;
-
-  for ( Match &match : list )
-    stampAnnotationMatch( match );
+  // the Match constructor only carries the vector layer. Resolve the generic map layer and, for
+  // annotation sources, the item id here so the identity is populated before any MatchFilter runs
+  Match m( type, layer(), fid, dist, pt, vertexIndex, edgePoints );
+  m.mMapLayer = mLayer;
+  if ( mSource )
+    m.mItemId = mSource->itemId( fid );
+  return m;
 }
 
 void QgsPointLocator::setExtent( const QgsRectangle *extent )
@@ -976,11 +972,12 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
     // already indexing, return!
     return;
 
-  if ( !mLayer )
+  QgsVectorLayer *vl = layer();
+  if ( !vl )
     // render-context based filtering is only supported for vector layers
     return;
 
-  disconnect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
+  disconnect( vl, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
 
   destroyIndex();
   mContext.reset( nullptr );
@@ -988,7 +985,7 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
   if ( context )
   {
     mContext = std::make_unique<QgsRenderContext>( *context );
-    connect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
+    connect( vl, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
   }
 }
 
@@ -1005,8 +1002,10 @@ void QgsPointLocator::onInitTaskFinished()
     return;
 
   mIsIndexing = false;
-  mRenderer.reset();
-  mSource.reset();
+  // free the heavy indexing resources but keep the lightweight identity data (item id map / layer
+  // handle) alive so matches can still be stamped at query time
+  if ( mSource )
+    mSource->releaseIndexingResources();
 
   // treat added and deleted feature while indexing
   for ( const QgsFeatureId fid : std::as_const( mAddedFeatures ) )
@@ -1022,34 +1021,28 @@ void QgsPointLocator::onInitTaskFinished()
 
 bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 {
-  if ( mAnnotationLayer )
-  {
-    if ( hasIndex() || mIsIndexing )
-      return true;
-
-    // small item count
-    mIsIndexing = true;
-    const bool ok = rebuildIndex( maxFeaturesToIndex );
-    mIsIndexing = false;
-    emit initFinished( ok );
-    return ok;
-  }
-
-  const Qgis::GeometryType geomType = mLayer->geometryType();
-  if ( geomType == Qgis::GeometryType::Null // nothing to index
+  const Qgis::GeometryType geomType = geometryType();
+  if ( geomType == Qgis::GeometryType::Null // vector layer with no geometry: nothing to index
        || hasIndex()
        || mIsIndexing ) // already indexing, return!
     return true;
 
-  if ( !mLayer->dataProvider() || !mLayer->dataProvider()->isValid() )
-    return false;
-
-  mSource = std::make_unique<QgsVectorLayerFeatureSource>( mLayer );
-
-  if ( mContext )
+  // build the geometry source snapshot on the main thread, so a relaxed rebuild can run on a
+  // worker thread without touching the live layer
+  if ( QgsVectorLayer *vl = layer() )
   {
-    mRenderer.reset( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
-    mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+    if ( !vl->dataProvider() || !vl->dataProvider()->isValid() )
+      return false;
+
+    mSource = std::make_unique<QgsPointLocatorVectorSource>( vl, mContext.get() );
+  }
+  else if ( QgsAnnotationLayer *al = qobject_cast<QgsAnnotationLayer *>( mLayer.data() ) )
+  {
+    mSource = std::make_unique<QgsPointLocatorAnnotationSource>( al );
+  }
+  else
+  {
+    return false;
   }
 
   mIsIndexing = true;
@@ -1108,9 +1101,6 @@ bool QgsPointLocator::prepare( bool relaxed )
 
 bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 {
-  if ( mAnnotationLayer )
-    return rebuildAnnotationIndex( maxFeaturesToIndex );
-
   QElapsedTimer t;
   t.start();
 
@@ -1118,106 +1108,29 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
   destroyIndex();
 
+  bool ok = true;
+  const QVector<QgsPointLocatorSource::Geometry> geometries = mSource->snappableGeometries( mExtent.get(), mTransform, maxFeaturesToIndex, ok );
+  if ( !ok )
+  {
+    // too many features to index
+    destroyIndex();
+    return false;
+  }
+
+  if ( geometries.isEmpty() )
+  {
+    mIsEmptyLayer = true;
+    return true; // nothing to index
+  }
+
   QVector<RTree::Data *> dataList;
-  QgsFeature f;
-
-  QgsFeatureRequest request;
-  request.setNoAttributes();
-
-  if ( mExtent )
+  dataList.reserve( geometries.size() );
+  for ( const QgsPointLocatorSource::Geometry &g : geometries )
   {
-    QgsRectangle rect = *mExtent;
-    if ( !mTransform.isShortCircuited() )
-    {
-      QgsCoordinateTransform rectTransform = mTransform;
-      rectTransform.setBallparkTransformsAreAppropriate( true );
-      try
-      {
-        rect = rectTransform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
-      }
-      catch ( const QgsException &e )
-      {
-        Q_UNUSED( e )
-        // See https://github.com/qgis/QGIS/issues/20749
-        QgsDebugError( u"could not transform bounding box to map, skipping the snap filter (%1)"_s.arg( e.what() ) );
-      }
-    }
-    request.setFilterRect( rect );
-  }
-
-  bool filter = false;
-  QgsRenderContext *ctx = nullptr;
-  if ( mContext )
-  {
-    ctx = mContext.get();
-    if ( mRenderer )
-    {
-      // setup scale for scale dependent visibility (rule based)
-      mRenderer->startRender( *ctx, mSource->fields() );
-      filter = mRenderer->capabilities() & QgsFeatureRenderer::Filter;
-      request.setSubsetOfAttributes( mRenderer->usedAttributes( *ctx ), mSource->fields() );
-    }
-  }
-
-  QgsFeatureIterator fi = mSource->getFeatures( request );
-  int indexedCount = 0;
-
-  while ( fi.nextFeature( f ) )
-  {
-    if ( !f.hasGeometry() )
-      continue;
-
-    if ( filter && ctx && mRenderer )
-    {
-      ctx->expressionContext().setFeature( f );
-      if ( !mRenderer->willRenderFeature( f, *ctx ) )
-      {
-        continue;
-      }
-    }
-
-    if ( mTransform.isValid() )
-    {
-      try
-      {
-        QgsGeometry transformedGeometry = f.geometry();
-        transformedGeometry.transform( mTransform );
-        f.setGeometry( transformedGeometry );
-      }
-      catch ( const QgsException &e )
-      {
-        Q_UNUSED( e )
-        // See https://github.com/qgis/QGIS/issues/20749
-        QgsDebugError( u"could not transform geometry to map, skipping the snap for it (%1)"_s.arg( e.what() ) );
-        continue;
-      }
-    }
-
-    const QgsRectangle bbox = f.geometry().boundingBox();
-    if ( bbox.isFinite() )
-    {
-      SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bbox ) );
-      dataList << new RTree::Data( 0, nullptr, r, f.id() );
-
-      auto it = mGeoms.find( f.id() );
-      if ( it != mGeoms.end() )
-      {
-        delete *it;
-        *it = new QgsGeometry( f.geometry() );
-      }
-      else
-      {
-        mGeoms[f.id()] = new QgsGeometry( f.geometry() );
-      }
-      ++indexedCount;
-    }
-
-    if ( maxFeaturesToIndex != -1 && indexedCount > maxFeaturesToIndex )
-    {
-      qDeleteAll( dataList );
-      destroyIndex();
-      return false;
-    }
+    const QgsRectangle bbox = g.geometry.boundingBox();
+    SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bbox ) );
+    dataList << new RTree::Data( 0, nullptr, r, g.id );
+    mGeoms[g.id] = new QgsGeometry( g.geometry );
   }
 
   // R-Tree parameters
@@ -1228,12 +1141,6 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   const RTree::RTreeVariant variant = RTree::RV_RSTAR;
   SpatialIndex::id_type indexId;
 
-  if ( dataList.isEmpty() )
-  {
-    mIsEmptyLayer = true;
-    return true; // no features
-  }
-
   QgsPointLocator_Stream stream( dataList );
   try
   {
@@ -1244,113 +1151,9 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     QgsDebugError( u"An exception has occurred during the creation of RTree: %1"_s.arg( e.what() ) );
     destroyIndex();
     return false;
-  }
-
-
-  if ( ctx && mRenderer )
-  {
-    mRenderer->stopRender( *ctx );
   }
 
   QgsDebugMsgLevel( u"RebuildIndex end : %1 ms (%2)"_s.arg( t.elapsed() ).arg( mSource->id() ), 2 );
-
-  return true;
-}
-
-
-bool QgsPointLocator::rebuildAnnotationIndex( int maxFeaturesToIndex )
-{
-  QElapsedTimer t;
-  t.start();
-
-  destroyIndex();
-
-  QVector<RTree::Data *> dataList;
-  const QMap<QString, QgsAnnotationItem *> items = mAnnotationLayer->items();
-
-  QgsFeatureId nextId = 0;
-  int indexedCount = 0;
-
-  for ( auto it = items.constBegin(); it != items.constEnd(); ++it )
-  {
-    QgsAnnotationItem *item = it.value();
-    if ( !item )
-      continue;
-
-    // a disabled item is not drawn, so it should not be snappable
-    if ( !item->enabled() )
-      continue;
-
-    const QgsAbstractGeometry *snapGeom = item->snapGeometry();
-    if ( !snapGeom || snapGeom->isEmpty() )
-      continue; // item type does not support snapping
-
-    // the index needs its own copy it can reproject and that survives the item changing
-    QgsGeometry geom( snapGeom->clone() );
-    if ( mTransform.isValid() )
-    {
-      try
-      {
-        geom.transform( mTransform );
-      }
-      catch ( const QgsException &e )
-      {
-        Q_UNUSED( e )
-        QgsDebugError( u"could not transform annotation geometry to map, skipping the snap for it (%1)"_s.arg( e.what() ) );
-        continue;
-      }
-    }
-
-    const QgsRectangle bbox = geom.boundingBox();
-    if ( !bbox.isFinite() )
-      continue;
-
-    // geom and mExtent are both in destination CRS now
-    if ( mExtent && !mExtent->intersects( bbox ) )
-      continue;
-
-    const QgsFeatureId fid = nextId++;
-    SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bbox ) );
-    dataList << new RTree::Data( 0, nullptr, r, fid );
-    mGeoms[fid] = new QgsGeometry( geom );
-    mAnnotationItemIds.insert( fid, it.key() );
-    ++indexedCount;
-
-    if ( maxFeaturesToIndex != -1 && indexedCount > maxFeaturesToIndex )
-    {
-      qDeleteAll( dataList );
-      destroyIndex();
-      return false;
-    }
-  }
-
-  if ( dataList.isEmpty() )
-  {
-    mIsEmptyLayer = true;
-    return true; // no snappable items
-  }
-
-  // R-Tree parameters (same as the vector path)
-  const double fillFactor = 0.7;
-  const unsigned long indexCapacity = 10;
-  const unsigned long leafCapacity = 10;
-  const unsigned long dimension = 2;
-  const RTree::RTreeVariant variant = RTree::RV_RSTAR;
-  SpatialIndex::id_type indexId;
-
-  QgsPointLocator_Stream stream( dataList );
-  try
-  {
-    mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity, leafCapacity, dimension, variant, indexId ) );
-  }
-  catch ( const std::exception &e )
-  {
-    QgsDebugError( u"An exception has occurred during the creation of RTree: %1"_s.arg( e.what() ) );
-    destroyIndex();
-    return false;
-  }
-
-  QgsDebugMsgLevel( u"RebuildAnnotationIndex end : %1 ms"_s.arg( t.elapsed() ), 2 );
 
   return true;
 }
@@ -1365,7 +1168,6 @@ void QgsPointLocator::destroyIndex()
   qDeleteAll( mGeoms );
 
   mGeoms.clear();
-  mAnnotationItemIds.clear();
 }
 
 void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
@@ -1388,23 +1190,27 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
     return; // nothing to do if we are not initialized yet
   }
 
+  QgsVectorLayer *vl = layer();
+  if ( !vl )
+    return; // incremental updates are only wired for vector layers
+
   QgsFeature f;
-  if ( mLayer->getFeatures( mContext ? QgsFeatureRequest( fid ) : QgsFeatureRequest( fid ).setNoAttributes() ).nextFeature( f ) )
+  if ( vl->getFeatures( mContext ? QgsFeatureRequest( fid ) : QgsFeatureRequest( fid ).setNoAttributes() ).nextFeature( f ) )
   {
     if ( !f.hasGeometry() )
       return;
 
     if ( mContext )
     {
-      std::unique_ptr< QgsFeatureRenderer > renderer( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
+      std::unique_ptr< QgsFeatureRenderer > renderer( vl->renderer() ? vl->renderer()->clone() : nullptr );
       QgsRenderContext *ctx = nullptr;
 
-      mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+      mContext->expressionContext() << QgsExpressionContextUtils::layerScope( vl );
       ctx = mContext.get();
       if ( renderer && ctx )
       {
         bool pass = false;
-        renderer->startRender( *ctx, mLayer->fields() );
+        renderer->startRender( *ctx, vl->fields() );
 
         ctx->expressionContext().setFeature( f );
         if ( !renderer->willRenderFeature( f, *ctx ) )
@@ -1513,7 +1319,6 @@ QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, 
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
-  stampAnnotationMatch( m );
   return m;
 }
 
@@ -1529,7 +1334,6 @@ QgsPointLocator::Match QgsPointLocator::nearestCentroid( const QgsPointXY &point
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
-  stampAnnotationMatch( m );
   return m;
 }
 
@@ -1545,7 +1349,6 @@ QgsPointLocator::Match QgsPointLocator::nearestMiddleOfSegment( const QgsPointXY
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
-  stampAnnotationMatch( m );
   return m;
 }
 
@@ -1561,7 +1364,6 @@ QgsPointLocator::Match QgsPointLocator::nearestLineEndpoints( const QgsPointXY &
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
-  stampAnnotationMatch( m );
   return m;
 }
 
@@ -1580,7 +1382,6 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )
     return Match(); // make sure that only match strictly within the tolerance is returned
-  stampAnnotationMatch( m );
   return m;
 }
 
@@ -1609,10 +1410,8 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
   const Match m = nearestEdge( point, tolerance, filter );
   if ( m.isValid() )
   {
-    // re-stamp, the Match ctor only carries the vector layer
-    Match area( Area, m.layer(), m.featureId(), m.distance(), m.point() );
-    stampAnnotationMatch( area );
-    return area;
+    // rebuild as an Area match, re-stamping the layer / item id identity
+    return makeMatch( Area, m.featureId(), m.distance(), m.point() );
   }
   else
     return Match();
@@ -1632,7 +1431,6 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rec
   QgsPointLocator_VisitorEdgesInRect visitor( this, lst, rect, filter );
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
 
-  stampAnnotationMatch( lst );
   return lst;
 }
 
@@ -1651,7 +1449,6 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &
   QgsPointLocator_VisitorVerticesInRect visitor( this, lst, rect, filter );
   mRTree->intersectsWithQuery( QgsSpatialIndexUtils::rectangleToRegion( rect ), visitor );
 
-  stampAnnotationMatch( lst );
   return lst;
 }
 
@@ -1674,6 +1471,5 @@ QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &po
   MatchList lst;
   QgsPointLocator_VisitorArea visitor( this, point, lst, filter );
   mRTree->intersectsWithQuery( point2point( point ), visitor );
-  stampAnnotationMatch( lst );
   return lst;
 }

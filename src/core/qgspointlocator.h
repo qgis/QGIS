@@ -22,6 +22,7 @@ class QgsRenderContext;
 class QgsRectangle;
 class QgsVectorLayerFeatureSource;
 class QgsAnnotationLayer;
+class QgsPointLocatorSource;
 
 #include <memory>
 
@@ -142,7 +143,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Returns the associated vector layer, or NULLPTR if this locator was built for a
      * non-vector layer such as an annotation layer. Use mapLayer() for the generic accessor.
      */
-    QgsVectorLayer *layer() const { return mLayer; }
+    QgsVectorLayer *layer() const { return qobject_cast<QgsVectorLayer *>( mLayer.data() ); }
 
     /**
      * Returns the annotation item id mapped to the synthetic feature \a id, or an empty string if
@@ -150,7 +151,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      *
      * \since QGIS 4.4
      */
-    QString annotationItemId( QgsFeatureId id ) const { return mAnnotationItemIds.value( id ); }
+    QString annotationItemId( QgsFeatureId id ) const;
 
     /**
      * Returns the layer this locator was built for (vector or annotation)
@@ -536,11 +537,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
 
-    /**
-     * Builds the index from the annotation layer's items.
-     */
-    bool rebuildAnnotationIndex( int maxFeaturesToIndex = -1 );
-
   protected slots:
     void destroyIndex();
   private slots:
@@ -563,14 +559,14 @@ class CORE_EXPORT QgsPointLocator : public QObject
     Qgis::GeometryType geometryType() const;
 
     /**
-     * If this locator indexes an annotation layer, stamps the annotation layer and the item id
-     * onto \a match (resolved from its synthetic feature id). No-op for vector locators and
-     * invalid matches.
+     * Builds a fully-stamped Match. It resolves the vector layer, map layer and (for annotation
+     * sources) the item id from the source and the synthetic feature \a fid, so that the identity
+     * is populated before any MatchFilter runs.
      */
-    void stampAnnotationMatch( Match &match ) const;
+    Match makeMatch( Type type, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = nullptr ) const;
 
-    //! Stamps every match in \a list, see stampAnnotationMatch( Match & ).
-    void stampAnnotationMatch( MatchList &list ) const;
+    //! Returns the geometry source backing this locator, or NULLPTR before the first init().
+    QgsPointLocatorSource *source() const { return mSource.get(); }
 
     //! Storage manager
     std::unique_ptr< SpatialIndex::IStorageManager > mStorage;
@@ -584,14 +580,13 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     //! R-tree containing spatial index
     QgsCoordinateTransform mTransform;
-    QgsVectorLayer *mLayer = nullptr;
-    QgsAnnotationLayer *mAnnotationLayer = nullptr;
-    QHash<QgsFeatureId, QString> mAnnotationItemIds;
+    //! Layer this locator was built for (vector or annotation). QPointer so it survives layer deletion.
+    QPointer<QgsMapLayer> mLayer;
     std::unique_ptr< QgsRectangle > mExtent;
 
     std::unique_ptr<QgsRenderContext> mContext;
-    std::unique_ptr<QgsFeatureRenderer> mRenderer;
-    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
+    //! Generic geometry source (vector or annotation). Produces the geometries to index.
+    std::unique_ptr<QgsPointLocatorSource> mSource;
     int mMaxFeaturesToIndex = -1;
     bool mIsIndexing = false;
     bool mIsDestroying = false;
@@ -611,6 +606,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     friend class QgsPointLocator_VisitorCentroidsInRect;
     friend class QgsPointLocator_VisitorMiddlesInRect;
     friend class QgsPointLocator_VisitorNearestLineEndpoint;
+    friend MatchList _geometrySegmentsInRect( QgsGeometry *geom, const QgsRectangle &rect, QgsPointLocator *locator, QgsFeatureId fid );
 };
 
 

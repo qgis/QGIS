@@ -410,11 +410,6 @@ Emitted whenever index has been built and initialization is finished
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
 
-    bool rebuildAnnotationIndex( int maxFeaturesToIndex = -1 );
-%Docstring
-Builds the index from the annotation layer's items.
-%End
-
   protected slots:
     void destroyIndex();
 };
