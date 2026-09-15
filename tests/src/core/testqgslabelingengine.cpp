@@ -58,6 +58,7 @@ class TestQgsLabelingEngine : public QgsTest
     void testBasic();
     void testDiagrams();
     void testRuleBased();
+    void testSelectedState();
     void zOrder(); //test that labels are stacked correctly
     void testEncodeDecodePositionOrder();
     void testEncodeDecodeLinePlacement();
@@ -511,6 +512,39 @@ void TestQgsLabelingEngine::testRuleBased()
   engine.addProvider( new QgsRuleBasedLabelProvider(, vl ) );
   engine.run( context );
 #endif
+}
+
+void TestQgsLabelingEngine::testSelectedState()
+{
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setFlag( Qgis::MapSettingsFlag::DrawLabelSelection );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = u"Class"_s;
+  setDefaultLabelParams( settings );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl->setLabelsEnabled( true );
+  vl->selectByExpression( u"Class='B52'"_s );
+  QCOMPARE( vl->selectedFeatureCount(), 4 );
+
+  QgsDefaultLabelingEngine engine( mapSettings );
+
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+
+  job.start();
+  job.waitForFinished();
+  QImage img = job.renderedImage();
+
+  QGSVERIFYIMAGECHECK( "labeling_selection", "labeling_selection", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::zOrder()
