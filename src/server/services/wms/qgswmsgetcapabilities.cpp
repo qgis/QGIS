@@ -50,8 +50,6 @@ namespace QgsWms
   {
     QString dateToString( const QDateTime &dateTime, bool forceToDate );
 
-    void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, const QStringList &restrictedLayers, QList<QgsDateTimeRange> &dateRanges );
-
     void appendLayerProjectSettings( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer );
 
     void appendDrawingOrder( QDomDocument &doc, QDomElement &parentElem, QgsServerInterface *serverIface, const QgsProject *project );
@@ -1122,45 +1120,6 @@ namespace QgsWms
       return dateOnly ? dateTime.date().toString( Qt::DateFormat::ISODate ) : dateTime.toString( Qt::DateFormat::ISODate );
     }
 
-    /**
-     * Update recursively \a dateRanges with all \a layerTreeGroup children date ranges.
-     * Don't return date range for layer not published in \a wmsLayerInfos or group which name appears in \a restrictedLayers
-     */
-    void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, const QStringList &restrictedLayers, QList<QgsDateTimeRange> &dateRanges )
-    {
-      QList<QgsLayerTreeNode *> layerTreeGroupChildren = layerTreeGroup->children();
-      for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
-      {
-        QgsLayerTreeNode *treeNode = layerTreeGroupChildren.at( i );
-
-        if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
-        {
-          QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
-          if ( !restrictedLayers.contains( treeGroupChild->name() ) // skip restricted group
-               && treeGroupChild->hasWmsTimeDimension() )
-          {
-            QList<QgsDateTimeRange> childrenDateRanges;
-            getChildrenRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
-            dateRanges.append( childrenDateRanges );
-          }
-        }
-        else
-        {
-          QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
-          QgsMapLayer *l = treeLayer->layer();
-
-          if ( wmsLayerInfos.contains( treeLayer->layerId() ) // layer need to be published
-               && l->temporalProperties()
-               && l->temporalProperties()->isActive() )
-          {
-            // Add all values
-            const QList<QgsDateTimeRange> allRanges { l->temporalProperties()->allTemporalRanges( l ) };
-            dateRanges.append( allRanges );
-          }
-        }
-      }
-    }
-
     //! Return TRUE if date only have been written, FALSE if there is datetime
     bool writeTimeDimensionNode( QDomDocument &doc, QDomElement &layerElem, const QList<QgsDateTimeRange> &dateRanges, const QDateTime &defaultDateTime = QDateTime() )
     {
@@ -1279,16 +1238,14 @@ namespace QgsWms
           if ( it != wmsDimensions.end() )
           {
             QList<QgsDateTimeRange> childrenDateRanges;
-            getChildrenRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
             QDateTime defaultDateTime;
             switch ( it->defaultDisplayType )
             {
               case Qgis::WmsDimensionDefaultDisplay::MinValue:
-                defaultDateTime = QgsDateTimeRange::min( childrenDateRanges );
-                break;
-
               case Qgis::WmsDimensionDefaultDisplay::MaxValue:
-                defaultDateTime = QgsDateTimeRange::max( childrenDateRanges );
+                QgsWms::getChildrenRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
+
+                defaultDateTime = it->defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::MinValue ? QgsDateTimeRange::min( childrenDateRanges ) : QgsDateTimeRange::max( childrenDateRanges );
                 break;
 
               case Qgis::WmsDimensionDefaultDisplay::ReferenceValue:
