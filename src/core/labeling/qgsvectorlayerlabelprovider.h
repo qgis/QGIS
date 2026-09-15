@@ -80,9 +80,24 @@ class CORE_EXPORT QgsLabelFeatureDetails
      */
     void setSymbol( const QgsSymbol *symbol );
 
+    /**
+     * Returns TRUE if the feature associated with the label is currently selected.
+     *
+     * \see setIsSelected()
+     */
+    bool isSelected() const;
+
+    /**
+     * Sets whether the feature associated with the label is currently selected.
+     *
+     * \see isSelected()
+     */
+    void setIsSelected( bool selected );
+
   private:
     QgsGeometry mObstacleGeometry;
     const QgsSymbol *mSymbol = nullptr;
+    bool mIsSelected = false;
 };
 
 /**

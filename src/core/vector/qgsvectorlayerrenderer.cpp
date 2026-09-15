@@ -638,6 +638,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
         {
           const quint64 startLabelTime = timer.elapsed();
           QgsLabelFeatureDetails details;
+          details.setIsSelected( featureIsSelected );
           QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
           if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
           {
@@ -821,6 +822,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
       const quint64 startLabelTime = timer.elapsed();
 
       QgsLabelFeatureDetails details;
+      details.setIsSelected( context.showSelection() && mSelectedFeatureIds.contains( fet.id() ) );
       QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
       if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
       {

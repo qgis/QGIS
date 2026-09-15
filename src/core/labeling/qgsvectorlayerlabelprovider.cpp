@@ -72,6 +72,16 @@ void QgsLabelFeatureDetails::setSymbol( const QgsSymbol *symbol )
   mSymbol = symbol;
 }
 
+bool QgsLabelFeatureDetails::isSelected() const
+{
+  return mIsSelected;
+}
+
+void QgsLabelFeatureDetails::setIsSelected( bool isSelected )
+{
+  mIsSelected = isSelected;
+}
+
 //
 // QgsVectorLayerLabelProvider
 //
