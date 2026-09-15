@@ -33,8 +33,6 @@
  *
  * \brief Represents a renderer settings for vector datasets.
  *
- * \note The API is considered EXPERIMENTAL and can be changed without a notice
- *
  * \since QGIS 4.4
  */
 class CORE_EXPORT QgsVectorFieldSettings

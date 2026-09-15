@@ -26,8 +26,6 @@
  *
  * \brief Represents a streamline renderer settings for vector datasets displayed by streamlines.
  *
- * \note The API is considered EXPERIMENTAL and can be changed without a notice
- *
  * \since QGIS 4.4
  */
 class CORE_EXPORT QgsVectorFieldStreamlineSettings

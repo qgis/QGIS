@@ -15,10 +15,6 @@ class QgsVectorFieldWindBarbSettings
 Represents a mesh renderer settings for vector datasets displayed with
 wind barbs.
 
-.. note::
-
-   The API is considered EXPERIMENTAL and can be changed without a notice
-
 .. versionadded:: 4.4
 %End
 
