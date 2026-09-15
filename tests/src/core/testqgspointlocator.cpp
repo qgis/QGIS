@@ -654,6 +654,71 @@ class TestQgsPointLocator : public QObject
       const QgsPointLocator::Match mOutside = loc.nearestArea( QgsPointXY( 100, 100 ), 0 );
       QVERIFY( !mOutside.isValid() );
     }
+
+    // Annotation layers must honour the relaxed (background) indexing path, just like vector layers.
+    // The source snapshots the items on the main thread, so the worker-thread rebuild is safe.
+    void testAnnotationRelaxedIndexing()
+    {
+      QString markerId, lineId, polygonId;
+      std::unique_ptr<QgsAnnotationLayer> layer = buildAnnotationLayer( markerId, lineId, polygonId );
+
+      QgsPointLocator loc( layer.get() );
+
+      QEventLoop loop;
+      connect( &loc, &QgsPointLocator::initFinished, &loop, &QEventLoop::quit );
+
+      // the first relaxed query kicks off a background index build and returns an invalid match
+      const QgsPointLocator::Match m0 = loc.nearestVertex( QgsPointXY( 5.2, 5.0 ), 1.0, nullptr, true );
+      QVERIFY( !m0.isValid() );
+      QVERIFY( loc.isIndexing() );
+
+      // block until the background index build finishes
+      loop.exec();
+      QVERIFY( !loc.isIndexing() );
+
+      // now the index is ready: matches are found and the item id survives releasing the source snapshot
+      const QgsPointLocator::Match m = loc.nearestVertex( QgsPointXY( 5.2, 5.0 ), 1.0 );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.point(), QgsPointXY( 5, 5 ) );
+      QCOMPARE( m.mapLayer(), static_cast<QgsMapLayer *>( layer.get() ) );
+      QVERIFY( !m.layer() );
+      QCOMPARE( loc.annotationItemId( m.featureId() ), markerId );
+    }
+
+    // A MatchFilter that inspects the match identity must see the annotation layer / item id already
+    // populated. Before the refactor the identity was stamped only after filtering, so such a filter
+    // would have rejected every candidate.
+    void testAnnotationEarlyMatchStamping()
+    {
+      QString markerId, lineId, polygonId;
+      std::unique_ptr<QgsAnnotationLayer> layer = buildAnnotationLayer( markerId, lineId, polygonId );
+
+      QgsPointLocator loc( layer.get() );
+
+      struct FilterRequireAnnotationIdentity : public QgsPointLocator::MatchFilter
+      {
+          QgsMapLayer *mLayer = nullptr;
+          bool sawIdentity = false;
+          explicit FilterRequireAnnotationIdentity( QgsMapLayer *layer )
+            : mLayer( layer )
+          {}
+          bool acceptMatch( const QgsPointLocator::Match &match ) override
+          {
+            const bool ok = match.mapLayer() == mLayer && !match.itemId().isEmpty();
+            if ( ok )
+              sawIdentity = true;
+            return ok;
+          }
+      } filter( layer.get() );
+
+      const QgsPointLocator::Match m = loc.nearestVertex( QgsPointXY( 5.2, 5.0 ), 1.0, &filter );
+      QVERIFY( m.isValid() );
+      QVERIFY( filter.sawIdentity );
+      QCOMPARE( m.mapLayer(), static_cast<QgsMapLayer *>( layer.get() ) );
+      QCOMPARE( m.itemId(), markerId );
+      QCOMPARE( loc.annotationItemId( m.featureId() ), markerId );
+    }
 };
 
 QGSTEST_MAIN( TestQgsPointLocator )
