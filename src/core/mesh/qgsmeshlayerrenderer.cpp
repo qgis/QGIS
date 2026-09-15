@@ -790,7 +790,7 @@ void QgsMeshLayerRenderer::registerLabelFeatures()
       QgsFeature f( i );
       QgsGeometry geom = QgsMeshUtils::toGeometry( mNativeMesh.face( i ), mNativeMesh.vertices );
       f.setGeometry( geom );
-      mLabelProvider->registerFeature( f, context );
+      mLabelProvider->registerFeature( f, context, QgsLabelFeatureDetails() );
     }
   }
   else
@@ -812,7 +812,7 @@ void QgsMeshLayerRenderer::registerLabelFeatures()
       QgsFeature f( i );
       QgsGeometry geom = QgsGeometry( new QgsPoint( mNativeMesh.vertex( i ) ) );
       f.setGeometry( geom );
-      mLabelProvider->registerFeature( f, context );
+      mLabelProvider->registerFeature( f, context, QgsLabelFeatureDetails() );
     }
   }
 }

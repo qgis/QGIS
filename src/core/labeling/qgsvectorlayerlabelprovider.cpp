@@ -48,6 +48,34 @@ using namespace Qt::StringLiterals;
 
 using namespace pal;
 
+//
+// QgsLabelFeatureDetails
+//
+
+QgsGeometry QgsLabelFeatureDetails::obstacleGeometry() const
+{
+  return mObstacleGeometry;
+}
+
+void QgsLabelFeatureDetails::setObstacleGeometry( const QgsGeometry &geometry )
+{
+  mObstacleGeometry = geometry;
+}
+
+const QgsSymbol *QgsLabelFeatureDetails::symbol() const
+{
+  return mSymbol;
+}
+
+void QgsLabelFeatureDetails::setSymbol( const QgsSymbol *symbol )
+{
+  mSymbol = symbol;
+}
+
+//
+// QgsVectorLayerLabelProvider
+//
+
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings, const QString &layerName )
   : QgsAbstractLabelProvider( layer, providerId )
   , mSettings( settings ? *settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
@@ -167,24 +195,23 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    QgsGeometry obstacleGeometry;
-    const QgsSymbol *symbol = nullptr;
+    QgsLabelFeatureDetails details;
     if ( mRenderer )
     {
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
       if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
       {
         //point feature, use symbol bounds as obstacle
-        obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols );
+        details.setObstacleGeometry( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols ) );
       }
       if ( !symbols.isEmpty() )
       {
-        symbol = symbols.at( 0 );
-        symbolScope = QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
+        details.setSymbol( symbols.at( 0 ) );
+        symbolScope = QgsExpressionContextUtils::updateSymbolScope( details.symbol(), symbolScope );
       }
     }
     ctx.expressionContext().setFeature( fet );
-    registerFeature( fet, ctx, obstacleGeometry, symbol );
+    registerFeature( fet, ctx, details );
   }
 
   if ( ctx.expressionContext().lastScope() == symbolScope )
@@ -196,9 +223,9 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   return mLabels;
 }
 
-QList< QgsLabelFeature * > QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
+QList< QgsLabelFeature * > QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelFeatureDetails &details )
 {
-  std::vector< std::unique_ptr< QgsLabelFeature > > labels = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
+  std::vector< std::unique_ptr< QgsLabelFeature > > labels = mSettings.registerFeatureWithDetails( feature, context, details );
   QList< QgsLabelFeature * > res;
   for ( auto &it : labels )
   {
