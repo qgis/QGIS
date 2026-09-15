@@ -5648,6 +5648,26 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( AngleUnit )
 
     /**
+     * Wind speed units.
+     *
+     * Wind barbs use knots so we use this enum for preset conversion values.
+     *
+     * \note Prior to QGIS 4.4 this was available as QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit.
+     *
+     * \since QGIS 4.4
+     */
+    enum class WindSpeedUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMeshRendererVectorWindBarbSettings, WindSpeedUnit ) : int
+    {
+      MetersPerSecond = 0, //!< Meters per second
+      KilometersPerHour,   //!< Kilometers per hour
+      Knots,               //!< Knots (Nautical miles per hour)
+      MilesPerHour,        //!< Miles per hour
+      FeetPerSecond,       //!< Feet per second
+      OtherUnit            //!< Other unit
+    };
+    Q_ENUM( WindSpeedUnit )
+
+    /**
      * Temporal units.
      *
      * \note Prior to QGIS 3.30 this was available as QgsUnitTypes::TemporalUnit.
@@ -7084,7 +7104,52 @@ int QgisEvent = QEvent::User + 1;
       MainWindowToolbar, //!< Main window toolbar icons
       DockedToolbar,     //!< Toolbars for docked windows
     };
-    Q_ENUM( UserInterfaceIconType );
+    Q_ENUM( UserInterfaceIconType )
+
+    /**
+     * Algorithm to transform vector magnitude to length of arrow on the device in pixels.
+     *
+     * \note Prior to QGIS 4.4 this was available as QgsMeshRendererVectorArrowSettings::ArrowScalingMethod.
+     *
+     * \since QGIS 4.4
+     */
+    enum class VectorFieldArrowScalingMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMeshRendererVectorArrowSettings, ArrowScalingMethod ) : int
+    {
+      MinMax = 0, //!< Scale vector magnitude linearly to fit in range of vectorFilterMin() and vectorFilterMax()
+      Scaled,     //!< Scale vector magnitude by factor scaleFactor()
+      Fixed       //!< Use fixed length fixedShaftLength() regardless of vector's magnitude
+    };
+    Q_ENUM( VectorFieldArrowScalingMethod )
+
+    /**
+     * Defines the symbology of vector field rendering.
+     *
+     * \note Prior to QGIS 4.4 this was available as QgsMeshRendererVectorSettings::Symbology.
+     *
+     * \since QGIS 4.4
+     */
+    enum class VectorFieldSymbology SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMeshRendererVectorSettings, Symbology ) : int
+    {
+      Arrows = 0,  //!< Displaying vector dataset with arrows
+      Streamlines, //!< Displaying vector dataset with streamlines
+      Traces,      //!< Displaying vector dataset with particle traces
+      WindBarbs    //!< Displaying vector dataset with wind barbs
+    };
+    Q_ENUM( VectorFieldSymbology )
+
+    /**
+     * Method used to define start points that are used to draw streamlines.
+     *
+     * \note Prior to QGIS 4.4 this was available as QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod.
+     *
+     * \since QGIS 4.4
+     */
+    enum class VectorFieldSeedingMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMeshRendererVectorStreamlineSettings, SeedingStartPointsMethod ) : int
+    {
+      Gridded SIP_MONKEYPATCH_COMPAT_NAME( MeshGridded ) = 0, //!< Seeds start points on data grid or user regular grid
+      Random                                                  //!< Seeds start points randomly
+    };
+    Q_ENUM( VectorFieldSeedingMethod )
 
     /**
      * Mathematical methods to use for solving linear matrix equations.
@@ -7097,7 +7162,7 @@ int QgisEvent = QEvent::User + 1;
       Svd = 1,              //!< Singular Value Decomposition (handles collinearity and rank deficiency)
       LuWithSvdFallback = 2 //!< Try LU first; fallback to SVD on singularity
     };
-    Q_ENUM( LinearMatrixMethod );
+    Q_ENUM( LinearMatrixMethod )
 
     /**
      * Identify search radius in mm

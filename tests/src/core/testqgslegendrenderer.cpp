@@ -1575,7 +1575,7 @@ void TestQgsLegendRenderer::testDiagramMeshLegend()
 
   vectorIndex = 2;
   rendererSettings.setActiveVectorDatasetGroup( vectorIndex );
-  QgsMeshRendererVectorSettings vectorSettings = rendererSettings.vectorSettings( vectorIndex );
+  QgsVectorFieldSettings vectorSettings = rendererSettings.vectorSettings( vectorIndex );
   vectorSettings.setColor( Qt::red );
   rendererSettings.setVectorSettings( vectorIndex, vectorSettings );
   layer2->setRendererSettings( rendererSettings );
