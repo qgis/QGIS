@@ -839,6 +839,7 @@ class TestQgsProcessing : public QgsTest
     void supportsNonFileBasedOutput();
     void addParameterType();
     void removeParameterType();
+    void isCompatibleDefinition();
     void parameterTypes();
     void parameterType();
     void sourceTypeToString_data();
@@ -13708,6 +13709,37 @@ void TestQgsProcessing::removeParameterType()
   const QSignalSpy spy( &reg, &QgsProcessingRegistry::parameterTypeRemoved );
   reg.removeParameterType( paramType );
   QCOMPARE( spy.count(), 1 );
+}
+
+void TestQgsProcessing::isCompatibleDefinition()
+{
+  QgsProcessingRegistry reg;
+
+  auto boolTestParam = std::make_unique<QgsProcessingParameterBoolean>( "dummyname" );
+  auto vectorLayerTestParam = std::make_unique<QgsProcessingParameterVectorLayer>( "dummyname" );
+
+  auto boolTestOutput = std::make_unique<QgsProcessingOutputBoolean>( "dummyname" );
+  auto stringTestOutput = std::make_unique<QgsProcessingOutputString>( "dummyname" );
+  auto vectorLayerTestOutput = std::make_unique<QgsProcessingOutputVectorLayer>( "dummyname" );
+  auto htmlTestOutput = std::make_unique<QgsProcessingOutputHtml>( "dummyname" );
+
+
+  // Parameter source and parameter target are compatible
+  QVERIFY( reg.isCompatibleDefinition( vectorLayerTestParam.get(), vectorLayerTestParam.get() ) );
+  QVERIFY( reg.isCompatibleDefinition( vectorLayerTestParam.get(), boolTestParam.get() ) );
+
+  // Output source and parameter target are compatible
+  QVERIFY( reg.isCompatibleDefinition( stringTestOutput.get(), vectorLayerTestParam.get() ) );
+  QVERIFY( reg.isCompatibleDefinition( vectorLayerTestOutput.get(), vectorLayerTestParam.get() ) );
+  QVERIFY( reg.isCompatibleDefinition( stringTestOutput.get(), boolTestParam.get() ) );
+  QVERIFY( reg.isCompatibleDefinition( vectorLayerTestOutput.get(), boolTestParam.get() ) );
+
+  // Parameter source and parameter target are incompatible
+  QVERIFY( !reg.isCompatibleDefinition( boolTestParam.get(), vectorLayerTestParam.get() ) );
+
+  // Output source and parameter target are incompatible
+  QVERIFY( !reg.isCompatibleDefinition( boolTestOutput.get(), vectorLayerTestParam.get() ) );
+  QVERIFY( !reg.isCompatibleDefinition( htmlTestOutput.get(), boolTestParam.get() ) );
 }
 
 void TestQgsProcessing::parameterTypes()
