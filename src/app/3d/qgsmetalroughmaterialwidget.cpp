@@ -29,11 +29,8 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   : QgsMaterialSettingsWidget( parent )
 {
   setupUi( this );
-  mPreviewWidget->hide();
+  setPreviewVisible( false );
   mPreviewWidget->setMaterialType( u"metalrough"_s );
-
-  // Ensure the widgets expand without widening the label column.
-  mGridLayout->setColumnStretch( 2, 1 );
 
   QgsMetalRoughMaterialSettings defaultMaterial;
   setSettings( &defaultMaterial, nullptr );
@@ -171,6 +168,8 @@ std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughMaterialWidget::settin
 void QgsMetalRoughMaterialWidget::setPreviewVisible( bool visible )
 {
   mPreviewWidget->setVisible( visible );
+  // Ensure the widgets expand without widening the label column.
+  mGridLayout->setColumnStretch( 0, visible ? 1 : 0 );
   updatePreview();
 }
 
