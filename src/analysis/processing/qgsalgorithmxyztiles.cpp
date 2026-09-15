@@ -118,19 +118,19 @@ namespace
  * that we can minimize the number of database writes we do by writing thousands
  * in a single pass.
  */
-class PendingTilesToWriteQueue
+template<typename T> class PendingTilesToWriteQueue
 {
   public:
     /**
      * Pushes a list of rendered tiles from a metatile to the queue.
      */
-    void push( const QList<QgsMbTiles::TileData> &tiles )
+    void push( const QList<T> &tiles )
     {
       if ( tiles.isEmpty() )
         return;
 
       QMutexLocker locker( &mMutex );
-      for ( const QgsMbTiles::TileData &tile : tiles )
+      for ( const T &tile : tiles )
       {
         mQueue.enqueue( tile );
       }
@@ -144,7 +144,7 @@ class PendingTilesToWriteQueue
      * to setFinished() is made), or if the specified maximum timeout elapses,
      * then a batch smaller then \a maxBatchSize will be returned.
      */
-    bool popBatch( QList<QgsMbTiles::TileData> &batch, int maxBatchSize, unsigned long timeoutMs = 500 )
+    bool popBatch( QList<T> &batch, int maxBatchSize, unsigned long timeoutMs = 500 )
     {
       QMutexLocker locker( &mMutex );
 
@@ -185,7 +185,7 @@ class PendingTilesToWriteQueue
     }
 
   private:
-    QQueue<QgsMbTiles::TileData> mQueue;
+    QQueue<T> mQueue;
     mutable QMutex mMutex;
     QWaitCondition mNotEmpty;
     bool mFinished = false;
@@ -1039,7 +1039,7 @@ void QgsXyzTilesMbtilesAlgorithm::doExport( QgsProcessingFeedback *feedback )
   mPostProcessingPool = std::make_unique<QThreadPool>();
   mPostProcessingPool->setMaxThreadCount( std::max( 1, mThreadsNumber ) );
 
-  PendingTilesToWriteQueue queue;
+  PendingTilesToWriteQueue< QgsMbTiles::TileData > queue;
   mWriteQueue = &queue;
 
   QThread *dbThread = QThread::create( [this, &queue]() {
@@ -1082,5 +1082,241 @@ void QgsXyzTilesMbtilesAlgorithm::doExport( QgsProcessingFeedback *feedback )
   mWriteQueue = nullptr;
   mEventLoop = nullptr;
 }
+
+
+//
+// QgsXyzTilesGpkgAlgorithm
+//
+
+QString QgsXyzTilesGpkgAlgorithm::name() const
+{
+  return u"tilesxyzgpkg"_s;
+}
+
+QString QgsXyzTilesGpkgAlgorithm::displayName() const
+{
+  return QObject::tr( "Generate XYZ tiles (GeoPackage)" );
+}
+
+QStringList QgsXyzTilesGpkgAlgorithm::tags() const
+{
+  return QObject::tr( "tiles,xyz,geopackage,gpkg,raster" ).split( ',' );
+}
+
+QString QgsXyzTilesGpkgAlgorithm::shortHelpString() const
+{
+  return QObject::tr(
+    "This algorithm generates XYZ raster tiles from the current project and saves them into an OGC GeoPackage file.\n\n"
+    "All visible map layers from the project will be rendered into tiles across the specified extent and zoom range."
+  );
+}
+
+QgsXyzTilesGpkgAlgorithm *QgsXyzTilesGpkgAlgorithm::createInstance() const
+{
+  return new QgsXyzTilesGpkgAlgorithm();
+}
+
+void QgsXyzTilesGpkgAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  createCommonParameters();
+  createTileMatrixParameters();
+
+  auto tileWidthParam = std::make_unique<QgsProcessingParameterNumber>( u"TILE_WIDTH"_s, QObject::tr( "Tile width" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 );
+  tileWidthParam->setHelp( QObject::tr( "Width of each tile image in pixels." ) );
+  addParameter( tileWidthParam.release() );
+
+  auto tileHeightParam = std::make_unique<QgsProcessingParameterNumber>( u"TILE_HEIGHT"_s, QObject::tr( "Tile height" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 );
+  tileHeightParam->setHelp( QObject::tr( "Height of each tile image in pixels." ) );
+  addParameter( tileHeightParam.release() );
+
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_FILE"_s, QObject::tr( "Output file" ), QObject::tr( "GeoPackage files (*.gpkg *.GPKG)" ) ) );
+
+  addOutput( new QgsProcessingOutputRasterLayer( u"OUTPUT_LAYER"_s, QObject::tr( "Output tiles as raster layer" ) ) );
+}
+
+QVariantMap QgsXyzTilesGpkgAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QGS_MARK_ALGORITHM_SOURCE
+
+  const QString outputFile = parameterAsString( parameters, u"OUTPUT_FILE"_s, context );
+
+  if ( QFile::exists( outputFile ) )
+  {
+    feedback->pushWarning( QObject::tr( "Removing existing file '%1'" ).arg( QDir::toNativeSeparators( outputFile ) ) );
+    if ( !QFile( outputFile ).remove() )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( QDir::toNativeSeparators( outputFile ) ) );
+    }
+  }
+
+  mGpkgWriter = std::make_unique<QgsGeoPackageTiles>( outputFile );
+  if ( !mGpkgWriter->create( mTargetCrs, mTileMatrixSetExtent, mTileGenerationRegion, mMinZoom, mMaxZoom, mTileWidth, mTileHeight, mZ0MatrixWidth, mZ0MatrixHeight ) )
+  {
+    throw QgsProcessingException( QObject::tr( "Failed to create GeoPackage file %1: %2" ).arg( outputFile, mGpkgWriter->lastError() ) );
+  }
+
+  long long totalTiles = 0;
+  mTotalMetaTiles = 0;
+  for ( int z = mMinZoom; z <= mMaxZoom; z++ )
+  {
+    if ( feedback->isCanceled() )
+      break;
+
+    long long tileCount = 0;
+    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize );
+    feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
+    mTotalMetaTiles = mMetaTiles.size();
+    totalTiles += tileCount;
+  }
+  if ( mTotalMetaTiles == 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "No metatiles will be created -- please check the extent and zoom limits" ) );
+  }
+  feedback->pushInfo( QObject::tr( "A total of %1 metatiles (%2 tiles) will be created" ).arg( mTotalMetaTiles ).arg( totalTiles ) );
+
+  checkLayersUsagePolicy( feedback );
+
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    layer->moveToThread( QThread::currentThread() );
+  }
+  mJobOwner.reset( new QObject() );
+
+  doExport( feedback );
+
+  qDeleteAll( mLayers );
+  mLayers.clear();
+
+  if ( !feedback->isCanceled() )
+  {
+    mGpkgWriter->finalize();
+  }
+
+  mGpkgWriter->close();
+
+  if ( mSkipEmptyTiles )
+  {
+    feedback->pushInfo( QObject::tr( "Wrote %1 total tiles, skipped %2 empty tiles" ).arg( mTilesWritten.load() ).arg( mEmptyTiles.load() ) );
+  }
+
+  QVariantMap results;
+
+  // try to load the result as a raster layer
+  if ( !feedback->isCanceled() )
+  {
+    auto layer = std::make_unique<QgsRasterLayer>( outputFile, "OUTPUT_LAYER", u"gdal"_s );
+    if ( !layer->isValid() )
+    {
+      feedback->reportError( QObject::tr( "Failed to open GeoPackage file as a raster layer" ) );
+    }
+    const QString layerId = layer->id();
+    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), u"OUTPUT_LAYER"_s, QgsProcessingUtils::LayerHint::Raster );
+    details.setOutputLayerName( layer.get() );
+    context.addLayerToLoadOnCompletion( layerId, details );
+    context.temporaryLayerStore()->addMapLayer( layer.release() );
+    results.insert( u"OUTPUT_LAYER"_s, layerId );
+  }
+
+  results.insert( u"OUTPUT_FILE"_s, outputFile );
+  return results;
+}
+
+void QgsXyzTilesGpkgAlgorithm::processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback )
+{
+  mActivePostProcessingTasks++;
+  mPostProcessingPool->start( [this, feedback, metaTile, renderedImg]() {
+    const bool testEmptyTilesUsingAlpha0 = mTileFormat != "JPG"_L1 && mBackgroundColor.alpha() == 0;
+    long long localWritten = 0;
+    long long localEmpty = 0;
+
+    QList<QgsGeoPackageTiles::TileData> metatileTiles;
+    metatileTiles.reserve( metaTile.tiles.size() );
+
+    for ( auto it = metaTile.tiles.constBegin(); it != metaTile.tiles.constEnd(); ++it )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      const QPair<int, int> tm = it.key();
+
+      const QImage tileImage = renderedImg.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
+
+      const bool skipTile = mSkipEmptyTiles && ( testEmptyTilesUsingAlpha0 ? QgsImageOperation::isBlankImage( tileImage ) : QgsImageOperation::isSingleColor( tileImage, mBackgroundColor ) );
+      if ( skipTile )
+      {
+        localEmpty++;
+        continue;
+      }
+
+      QByteArray bytes;
+      QBuffer buffer( &bytes );
+      buffer.open( QIODevice::WriteOnly );
+      tileImage.save( &buffer, mTileFormat.toStdString().c_str(), mJpgQuality );
+
+      const Tile tile = it.value();
+      // GeoPackage uses tile.y directly (Top-Left origin)
+      metatileTiles.append( { tile.z, tile.x, tile.y, bytes } );
+      localWritten++;
+    }
+
+    mWriteQueue->push( metatileTiles );
+
+    mTilesWritten += localWritten;
+    mEmptyTiles += localEmpty;
+
+    mActivePostProcessingTasks--;
+    checkPipelineFinished( feedback );
+  } );
+}
+
+void QgsXyzTilesGpkgAlgorithm::doExport( QgsProcessingFeedback *feedback )
+{
+  mPostProcessingPool = std::make_unique<QThreadPool>();
+  mPostProcessingPool->setMaxThreadCount( std::max( 1, mThreadsNumber ) );
+
+  PendingTilesToWriteQueue<QgsGeoPackageTiles::TileData> queue;
+  mWriteQueue = &queue;
+
+  QThread *dbThread = QThread::create( [this, &queue]() {
+    QList<QgsGeoPackageTiles::TileData> batch;
+    constexpr int BATCH_SIZE = 10000;
+    batch.reserve( BATCH_SIZE );
+    while ( queue.popBatch( batch, BATCH_SIZE ) )
+    {
+      mGpkgWriter->setTileData( batch );
+      batch.clear();
+    }
+  } );
+  dbThread->start();
+
+  QEventLoop loop;
+  mEventLoop = &loop;
+  mJobOwner.reset( new QObject() );
+
+  startJobs( feedback );
+
+  if ( !mMetaTiles.isEmpty() || !mRendererJobs.isEmpty() || mActivePostProcessingTasks.load() > 0 )
+  {
+    loop.exec();
+  }
+
+  for ( auto *j : mRendererJobs.keys() )
+  {
+    j->cancel();
+    j->deleteLater();
+  }
+  mRendererJobs.clear();
+
+  mPostProcessingPool->waitForDone();
+  mPostProcessingPool.reset();
+
+  queue.setFinished();
+  dbThread->wait();
+  delete dbThread;
+
+  mWriteQueue = nullptr;
+  mEventLoop = nullptr;
+}
+
 
 ///@endcond

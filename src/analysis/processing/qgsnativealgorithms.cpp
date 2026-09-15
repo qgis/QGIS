@@ -731,6 +731,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsWriteVectorTilesMbtilesAlgorithm() );
   addAlgorithm( new QgsXyzTilesDirectoryAlgorithm() );
   addAlgorithm( new QgsXyzTilesMbtilesAlgorithm() );
+  addAlgorithm( new QgsXyzTilesGpkgAlgorithm() );
   addAlgorithm( new QgsZonalHistogramAlgorithm() );
   addAlgorithm( new QgsZonalMinimumMaximumPointAlgorithm() );
   addAlgorithm( new QgsZonalStatisticsAlgorithm() );
