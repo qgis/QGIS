@@ -390,7 +390,6 @@ set(QGIS_GUI_SRCS
   mesh/qgsmeshrenderer3daveragingwidget.cpp
   mesh/qgsmeshrenderermeshsettingswidget.cpp
   mesh/qgsmeshrendererscalarsettingswidget.cpp
-  mesh/qgsmeshrenderervectorsettingswidget.cpp
   mesh/qgsmeshrendereractivedatasetwidget.cpp
   mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshstaticdatasetwidget.cpp
@@ -569,6 +568,8 @@ set(QGIS_GUI_SRCS
   tiledscene/qgstiledscenesourceselect.cpp
   tiledscene/qgstiledscenetexturerendererwidget.cpp
   tiledscene/qgstiledscenewireframerendererwidget.cpp
+
+  vectorfield/qgsvectorfieldsettingswidget.cpp
 
   vectortile/qgsarcgisvectortileconnectiondialog.cpp
   vectortile/qgsvectortilebasiclabelingwidget.cpp
@@ -1426,7 +1427,6 @@ set(QGIS_GUI_HDRS
   mesh/qgsmeshrenderer3daveragingwidget.h
   mesh/qgsmeshrenderermeshsettingswidget.h
   mesh/qgsmeshrendererscalarsettingswidget.h
-  mesh/qgsmeshrenderervectorsettingswidget.h
   mesh/qgsmeshrendereractivedatasetwidget.h
   mesh/qgsmeshstaticdatasetwidget.h
   mesh/qgsmeshvariablestrokewidthwidget.h
@@ -1695,6 +1695,8 @@ set(QGIS_GUI_HDRS
   tiledscene/qgstiledscenesourceselect.h
   tiledscene/qgstiledscenetexturerendererwidget.h
   tiledscene/qgstiledscenewireframerendererwidget.h
+
+  vectorfield/qgsvectorfieldsettingswidget.h
 
   vectortile/qgsarcgisvectortileconnectiondialog.h
   vectortile/qgsvectortilebasiclabelingwidget.h
@@ -1993,6 +1995,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
   ${CMAKE_SOURCE_DIR}/src/gui/vector
+  ${CMAKE_SOURCE_DIR}/src/gui/vectorfield
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
 
   ${CMAKE_BINARY_DIR}/src/gui

@@ -3173,6 +3173,16 @@ The development version
       Unknown,
     };
 
+    enum class WindSpeedUnit /BaseType=IntEnum/
+    {
+      MetersPerSecond,
+      KilometersPerHour,
+      Knots,
+      MilesPerHour,
+      FeetPerSecond,
+      OtherUnit
+    };
+
     enum class TemporalUnit /BaseType=IntEnum/
     {
       Milliseconds,
@@ -3971,6 +3981,27 @@ The development version
     {
       MainWindowToolbar,
       DockedToolbar,
+    };
+
+    enum class VectorFieldArrowScalingMethod /BaseType=IntEnum/
+    {
+      MinMax,
+      Scaled,
+      Fixed
+    };
+
+    enum class VectorFieldSymbology /BaseType=IntEnum/
+    {
+      Arrows,
+      Streamlines,
+      Traces,
+      WindBarbs
+    };
+
+    enum class VectorFieldSeedingMethod /BaseType=IntEnum/
+    {
+      Gridded,
+      Random
     };
 
     enum class LinearMatrixMethod /BaseType=IntEnum/

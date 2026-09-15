@@ -1,0 +1,125 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectorfield/qgsvectorfieldarrowsettings.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsVectorFieldArrowSettings
+{
+%Docstring(signature="appended")
+Represents a mesh renderer settings for vector datasets displayed with
+arrows.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsvectorfieldarrowsettings.h"
+%End
+  public:
+    Qgis::VectorFieldArrowScalingMethod shaftLengthMethod() const;
+%Docstring
+Returns method used for drawing arrows
+%End
+    void setShaftLengthMethod( Qgis::VectorFieldArrowScalingMethod shaftLengthMethod );
+%Docstring
+Sets method used for drawing arrows
+%End
+
+    double minShaftLength() const;
+%Docstring
+Returns mininimum shaft length (in millimeters)
+
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.MinMax
+%End
+
+    void setMinShaftLength( double minShaftLength );
+%Docstring
+Sets mininimum shaft length (in millimeters)
+
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.MinMax
+%End
+
+    double maxShaftLength() const;
+%Docstring
+Returns maximum shaft length (in millimeters)
+
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.MinMax
+%End
+
+    void setMaxShaftLength( double maxShaftLength );
+%Docstring
+Sets maximum shaft length (in millimeters)
+
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.MinMax
+%End
+
+    double scaleFactor() const;
+%Docstring
+Returns scale factor
+
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.Scaled
+%End
+
+    void setScaleFactor( double scaleFactor );
+%Docstring
+Sets scale factor
+
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.Scaled
+%End
+
+    double fixedShaftLength() const;
+%Docstring
+Returns fixed arrow length (in millimeters)
+
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.Fixed
+%End
+
+    void setFixedShaftLength( double fixedShaftLength );
+%Docstring
+Sets fixed length (in millimeters)
+
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.Fixed
+%End
+
+    double arrowHeadWidthRatio() const;
+%Docstring
+Returns ratio of the head width of the arrow (range 0-1)
+%End
+    void setArrowHeadWidthRatio( double arrowHeadWidthRatio );
+%Docstring
+Sets ratio of the head width of the arrow (range 0-1)
+%End
+
+    double arrowHeadLengthRatio() const;
+%Docstring
+Returns ratio of the head length of the arrow (range 0-1)
+%End
+    void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
+%Docstring
+Sets ratio of the head length of the arrow (range 0-1)
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectorfield/qgsvectorfieldarrowsettings.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
