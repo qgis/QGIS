@@ -30,6 +30,63 @@ class QgsSymbol;
 
 /**
  * \ingroup core
+ * \brief Encapsulates details for an individual feature to label.
+ *
+ * \note not available in Python bindings
+ * \since QGIS 4.4
+ */
+class CORE_EXPORT QgsLabelFeatureDetails
+{
+  public:
+    /**
+    * Returns the (optional) obstacle geometry for the label.
+    *
+    * This geometry is used when a different geometry to the feature's geometry
+    * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
+    * symbol, the obstacle geometry should represent the bounds of the offset symbol).
+    *
+    * If not set, the feature's original geometry will be used as an obstacle for labels.
+    *
+    * \see setObstacleGeometry()
+    */
+    QgsGeometry obstacleGeometry() const;
+
+    /**
+    * Sets the (optional) obstacle \a geometry for the label.
+    *
+    * This geometry is used when a different geometry to the feature's geometry
+    * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
+    * symbol, the obstacle geometry should represent the bounds of the offset symbol).
+    *
+    * If not set, the feature's original geometry will be used as an obstacle for labels.
+    *
+    * \see obstacleGeometry()
+    */
+    void setObstacleGeometry( const QgsGeometry &geometry );
+
+    /**
+     * Returns the (optional) symbol associated with the feature to label.
+     *
+     * \see setSymbol()
+     */
+    const QgsSymbol *symbol() const;
+
+    /**
+     * Sets the (optional) symbol associated with the feature to label.
+     *
+     * \warning ownership is not transferred - the symbol must exist until after labeling is complete.
+     *
+     * \see setSymbol()
+     */
+    void setSymbol( const QgsSymbol *symbol );
+
+  private:
+    QgsGeometry mObstacleGeometry;
+    const QgsSymbol *mSymbol = nullptr;
+};
+
+/**
+ * \ingroup core
  * \brief Implements a label provider for vector layers.
  *
  * Parameters for the labeling are taken from the layer's
@@ -81,15 +138,11 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * \param feature feature to label
      * \param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
-     * \param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
-     * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
-     * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
-     * the feature's original geometry will be used as an obstacle for labels.
-     * \param symbol feature symbol to label (ownership is not transferred - the symbol must exist until after labeling is complete)
+     * \param details label details
      * \returns a list of the newly generated label features. Ownership of these label features is not transferred
      * (it has already been assigned to the label provider).
      */
-    virtual QList< QgsLabelFeature * > registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr );
+    virtual QList< QgsLabelFeature * > registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelFeatureDetails &details = QgsLabelFeatureDetails() );
 
     /**
      * Returns the geometry for a point feature which should be used as an obstacle for labels. This
