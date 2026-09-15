@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    QgisAlgorithmTests.py
+    NativeAlgorithmsTest1.py
     ---------------------
     Date                 : January 2016
     Copyright            : (C) 2016 by Matthias Kuhn
@@ -60,7 +60,7 @@ class TestAlg(QgsProcessingAlgorithm):
         return {}
 
 
-class TestQgisAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
+class TestNativeAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
     @classmethod
     def setUpClass(cls):
         start_app()
@@ -80,7 +80,7 @@ class TestQgisAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             shutil.rmtree(path)
 
     def definition_file(self):
-        return "qgis_algorithm_tests1.yaml"
+        return "native_algorithm_tests1.yaml"
 
     def testProcessingException(self):
         """
