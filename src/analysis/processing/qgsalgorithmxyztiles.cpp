@@ -433,6 +433,7 @@ std::optional< QgsMapSettings > QgsXyzTilesBaseAlgorithm::mapSettingsForTile( co
   settings.setLayers( mLayers );
   settings.setOutputDpi( mDpi );
   settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
+  settings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, true );
   settings.setScaleMethod( mScaleMethod );
   if ( mTileFormat == "PNG"_L1 || mTileFormat == "WEBP"_L1 || mBackgroundColor.alpha() == 255 )
   {
