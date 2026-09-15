@@ -72,6 +72,14 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return None
 
+    def gdalCommand(self) -> str:
+        """Main GDAL command."""
+        return "gdal" + (".exe" if GdalUtils.is_windows() else "")
+
+    def commandType(self) -> str:
+        """Command type (raster or vector) for the GDAL command."""
+        return ""
+
     def getOgrCompatibleSource(
         self,
         parameter_name: str,
