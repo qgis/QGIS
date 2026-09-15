@@ -23,14 +23,18 @@
 #include "qgsapplication.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
+#include "qgsexception.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeature3dhandler_p.h"
+#include "qgsgeometry.h"
+#include "qgsglobeutils_p.h"
 #include "qgsline3dsymbol.h"
 #include "qgslogger.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgswkbtypes.h"
 
 #include <QString>
 #include <Qt3DCore/QTransform>
@@ -80,11 +84,32 @@ void QgsVectorLayerChunkLoader::start()
 
   // build the feature request
   // only a subset of data to be queried
-  const QgsRectangle rect = node->box3D().toRectangle();
   QgsFeatureRequest req;
-  req.setCoordinateTransform( QgsCoordinateTransform( layer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() ) );
   req.setSubsetOfAttributes( attributeNames, layer->fields() );
-  req.setFilterRect( rect );
+
+  QgsCoordinateTransform layerToRenderCrs;
+  if ( mFactory->mIsGeocentric )
+  {
+    layerToRenderCrs = QgsCoordinateTransform( layer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() );
+    layerToRenderCrs.setBallparkTransformsAreAppropriate( true );
+
+    QgsRectangle filterRect;
+    if ( layer->crs().type() == Qgis::CrsType::Geocentric )
+    {
+      filterRect = QgsGlobeUtils::box3DTransformedExtent( node->box3D(), layerToRenderCrs, Qgis::TransformDirection::Reverse );
+    }
+    else
+    {
+      const QgsRectangle lonLatRect = QgsGlobeUtils::nodeIdToLonLatRect( node->tileId() );
+      filterRect = Qgs3DUtils::tryReprojectExtent2D( lonLatRect, mFactory->mCrsToLatLon.destinationCrs(), layer->crs(), mRenderContext.transformContext() );
+    }
+    req.setFilterRect( filterRect );
+  }
+  else
+  {
+    req.setCoordinateTransform( QgsCoordinateTransform( layer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() ) );
+    req.setFilterRect( node->box3D().toRectangle() );
+  }
 
   //
   // this will be run in a background thread
@@ -98,7 +123,8 @@ void QgsVectorLayerChunkLoader::start()
 
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [req = std::move( req ), this] {
+  const bool isGeocentric = mFactory->mIsGeocentric;
+  const QFuture<void> future = QtConcurrent::run( [req = std::move( req ), layerToRenderCrs, isGeocentric, this] {
     const QgsScopedEvent e( u"3D"_s, u"VL chunk load"_s );
 
     QgsFeature f;
@@ -114,6 +140,24 @@ void QgsVectorLayerChunkLoader::start()
       {
         featureLimitReached = true;
         break;
+      }
+
+      if ( isGeocentric )
+      {
+        QgsGeometry g = f.geometry();
+        if ( !g.constGet()->is3D() )
+          g.get()->addZValue( 0 );
+
+        try
+        {
+          g.transform( layerToRenderCrs, Qgis::TransformDirection::Forward, true );
+        }
+        catch ( QgsCsException &e )
+        {
+          QgsDebugError( u"Error transforming feature %1 geometry to globe CRS: %2"_s.arg( f.id() ).arg( e.what() ) );
+          continue;
+        }
+        f.setGeometry( g );
       }
 
       mRenderContext.expressionContext().setFeature( f );
@@ -187,14 +231,60 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
 {
   if ( context.crs().type() == Qgis::CrsType::Geocentric )
   {
-    // TODO: add support for handling of vector layers
-    // (we're using dummy quadtree here to make sure the empty extent does not break the scene completely)
-    QgsDebugError( u"Vector layers in globe scenes are not supported yet!"_s );
-    setupQuadtree( QgsBox3D( -7e6, -7e6, -7e6, 7e6, 7e6, 7e6 ), -1, 3 );
+    // TODO: add support for handling of vector layers (other than points)
+    if ( QgsWkbTypes::geometryType( mLayer->wkbType() ) != Qgis::GeometryType::Point )
+    {
+      // (we're using dummy quadtree here to make sure the empty extent does not break the scene completely)
+      QgsDebugError( u"Non-point vector layers in globe scenes are not supported yet!"_s );
+      setupQuadtree( QgsBox3D( -7e6, -7e6, -7e6, 7e6, 7e6, 7e6 ), -1, 3 );
+      return;
+    }
+
+    mIsGeocentric = true;
+
+    const QgsCoordinateReferenceSystem geographicCrs = context.crs().toGeographicCrs();
+    mCrsToLatLon = QgsCoordinateTransform( context.crs(), geographicCrs, context.transformContext() );
+    mCrsToLatLon.setBallparkTransformsAreAppropriate( true );
+
+    try
+    {
+      mRadiusX = mCrsToLatLon.transform( QgsVector3D( 0, 0, 0 ), Qgis::TransformDirection::Reverse ).x();
+      mRadiusY = mCrsToLatLon.transform( QgsVector3D( 90, 0, 0 ), Qgis::TransformDirection::Reverse ).y();
+      mRadiusZ = mCrsToLatLon.transform( QgsVector3D( 0, 90, 0 ), Qgis::TransformDirection::Reverse ).z();
+    }
+    catch ( QgsCsException &e )
+    {
+      QgsDebugError( u"Error transforming globe ellipsoid extent: %1"_s.arg( e.what() ) );
+      setupQuadtree( QgsBox3D( -7e6, -7e6, -7e6, 7e6, 7e6, 7e6 ), -1, 3 );
+      return;
+    }
+
+    QgsRectangle layerExtentLonLat;
+    if ( mLayer->crs().type() == Qgis::CrsType::Geocentric )
+    {
+      QgsCoordinateTransform layerToLatLon( mLayer->crs(), geographicCrs, context.transformContext() );
+      layerToLatLon.setBallparkTransformsAreAppropriate( true );
+      layerExtentLonLat = QgsGlobeUtils::box3DTransformedExtent( mLayer->extent3D(), layerToLatLon );
+    }
+    else
+    {
+      layerExtentLonLat = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), geographicCrs, context.transformContext() );
+    }
+
+    if ( layerExtentLonLat.isValid() )
+    {
+      layerExtentLonLat.grow( 0.01 );
+      layerExtentLonLat = layerExtentLonLat.intersect( QgsRectangle( -180, -90, 180, 90 ) );
+    }
+
+    mRootNodeId = QgsGlobeUtils::tileIdForExtent( layerExtentLonLat );
+
+    const QgsBox3D rootBox3D = QgsGlobeUtils::nodeIdToBox3D( mRootNodeId, mCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ );
+    const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) * QgsVectorLayer3DTilingSettings::tileGeometryErrorRatio() );
+    setupQuadtree( rootBox3D, rootError );
     return;
   }
 
-  // choose the smaller root extent between context and mLayer ones:
   QgsRectangle extent = context.extent();
   const QgsRectangle layerExtentInMapCrs = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), context.crs(), context.transformContext() );
   if ( layerExtentInMapCrs.isValid() )
@@ -204,7 +294,6 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
   if ( extent.isValid() )
   {
     QgsBox3D rootBox3D( extent, zMin, zMax );
-    // add small padding to avoid clipping of point features located at the edge of the bounding box
     rootBox3D.grow( 1.0 );
 
     const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) * QgsVectorLayer3DTilingSettings::tileGeometryErrorRatio() );
@@ -217,6 +306,14 @@ QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNod
   return new QgsVectorLayerChunkLoader( this, node );
 }
 
+QgsChunkNode *QgsVectorLayerChunkLoaderFactory::createRootNode() const
+{
+  if ( mIsGeocentric )
+    return new QgsChunkNode( mRootNodeId, mRootBox3D, mRootError );
+
+  return QgsQuadtreeChunkLoaderFactory::createRootNode();
+}
+
 bool QgsVectorLayerChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
 {
   return mNodesAreLeafs.contains( node->tileId().text() );
@@ -227,7 +324,32 @@ QVector<QgsChunkNode *> QgsVectorLayerChunkLoaderFactory::createChildren( QgsChu
   if ( mNodesAreLeafs.value( node->tileId().text(), false ) )
     return {};
 
-  return QgsQuadtreeChunkLoaderFactory::createChildren( node );
+  if ( !mIsGeocentric )
+    return QgsQuadtreeChunkLoaderFactory::createChildren( node );
+
+  QVector<QgsChunkNode *> children;
+  if ( mMaxLevel != -1 && node->level() >= mMaxLevel )
+    return children;
+
+  const QgsChunkNodeId nodeId = node->tileId();
+  const float childError = node->error() / 2;
+
+  if ( nodeId.d == 0 )
+  {
+    const QgsChunkNodeId westId( 1, 0, 0 );
+    const QgsChunkNodeId eastId( 1, 1, 0 );
+    children << new QgsChunkNode( westId, QgsGlobeUtils::nodeIdToBox3D( westId, mCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), childError, node );
+    children << new QgsChunkNode( eastId, QgsGlobeUtils::nodeIdToBox3D( eastId, mCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), childError, node );
+    return children;
+  }
+
+  for ( int i = 0; i < 4; ++i )
+  {
+    const int dx = i & 1, dy = !!( i & 2 );
+    const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy );
+    children << new QgsChunkNode( childId, QgsGlobeUtils::nodeIdToBox3D( childId, mCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), childError, node );
+  }
+  return children;
 }
 
 
