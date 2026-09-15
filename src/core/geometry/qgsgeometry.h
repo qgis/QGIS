@@ -1284,7 +1284,7 @@ class CORE_EXPORT QgsGeometry
     * Splits this geometry according to a given curve.
     * \param curve the curve that splits the geometry
     * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
-    * \param preserveCircular whether if circular strings are preserved after splitting
+    * \param preserveCircular whether if circular strings are reconstructed from segmentized geometries after splitting. From GEOS 3.15 on, this parameter is unused, and circular strings are preserved.
     * \param topological TRUE if topological editing is enabled
     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
