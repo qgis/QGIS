@@ -637,18 +637,18 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
         if ( isMainRenderer && context.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
         {
           const quint64 startLabelTime = timer.elapsed();
-          QgsGeometry obstacleGeometry;
+          QgsLabelFeatureDetails details;
+          details.setIsSelected( featureIsSelected );
           QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
-          QgsSymbol *symbol = nullptr;
           if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
           {
-            obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
+            details.setObstacleGeometry( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols ) );
           }
 
           if ( !symbols.isEmpty() )
           {
-            symbol = symbols.at( 0 );
-            QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
+            details.setSymbol( symbols.at( 0 ) );
+            QgsExpressionContextUtils::updateSymbolScope( details.symbol(), symbolScope );
           }
 
           if ( !labelClipGeom.isEmpty() )
@@ -656,11 +656,11 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
 
           if ( mLabelProvider )
           {
-            mLabelProvider->registerFeature( fet, context, obstacleGeometry, symbol );
+            mLabelProvider->registerFeature( fet, context, details );
           }
           if ( mDiagramProvider )
           {
-            mDiagramProvider->registerFeature( fet, context, obstacleGeometry );
+            mDiagramProvider->registerFeature( fet, context, details.obstacleGeometry() );
           }
 
           if ( !labelClipGeom.isEmpty() )
@@ -821,27 +821,27 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     {
       const quint64 startLabelTime = timer.elapsed();
 
-      QgsGeometry obstacleGeometry;
+      QgsLabelFeatureDetails details;
+      details.setIsSelected( context.showSelection() && mSelectedFeatureIds.contains( fet.id() ) );
       QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
-      QgsSymbol *symbol = nullptr;
       if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
       {
-        obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
+        details.setObstacleGeometry( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols ) );
       }
 
       if ( !symbols.isEmpty() )
       {
-        symbol = symbols.at( 0 );
-        QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
+        details.setSymbol( symbols.at( 0 ) );
+        QgsExpressionContextUtils::updateSymbolScope( details.symbol(), symbolScope );
       }
 
       if ( mLabelProvider )
       {
-        mLabelProvider->registerFeature( fet, context, obstacleGeometry, symbol );
+        mLabelProvider->registerFeature( fet, context, details );
       }
       if ( mDiagramProvider )
       {
-        mDiagramProvider->registerFeature( fet, context, obstacleGeometry );
+        mDiagramProvider->registerFeature( fet, context, details.obstacleGeometry() );
       }
 
       totalLabelTime += ( timer.elapsed() - startLabelTime );
