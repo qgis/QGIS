@@ -566,6 +566,7 @@ set(QGIS_CORE_SRCS
   qgsmaskrendersettings.cpp
   qgsmathutils.cpp
   qgsmatrix4x4.cpp
+  qgsmatrixsolver.cpp
   qgsmbtiles.cpp
   qgsmeasureutils.cpp
   qgsmessagelog.cpp
@@ -844,6 +845,7 @@ set(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
   raster/qgsrastertransparency.cpp
+  raster/qgssortedrasterblockindex.cpp
 
   raster/qgsbilinearrasterresampler.cpp
   raster/qgsbrightnesscontrastfilter.cpp
@@ -1005,6 +1007,7 @@ set(QGIS_CORE_SRCS
   fieldformatter/qgscheckboxfieldformatter.cpp
   fieldformatter/qgsrangefieldformatter.cpp
   fieldformatter/qgsdatetimefieldformatter.cpp
+  fieldformatter/qgsenumerationfieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
   fieldformatter/qgskeyvaluefieldformatter.cpp
   fieldformatter/qgslistfieldformatter.cpp
@@ -1321,6 +1324,7 @@ set(QGIS_CORE_HDRS
   qgsmaskrendersettings.h
   qgsmathutils.h
   qgsmatrix4x4.h
+  qgsmatrixsolver.h
   qgsmbtiles.h
   qgsmeasureutils.h
   qgsmessagelog.h
@@ -1571,6 +1575,7 @@ set(QGIS_CORE_HDRS
 
   fieldformatter/qgscheckboxfieldformatter.h
   fieldformatter/qgsdatetimefieldformatter.h
+  fieldformatter/qgsenumerationfieldformatter.h
   fieldformatter/qgsfallbackfieldformatter.h
   fieldformatter/qgskeyvaluefieldformatter.h
   fieldformatter/qgslistfieldformatter.h
@@ -1918,6 +1923,7 @@ set(QGIS_CORE_HDRS
   processing/models/qgsprocessingmodelresult.h
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
+  processing/qgsprocessingalgorithm_p.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingbatch.h
   processing/qgsprocessingcontext.h
@@ -2067,6 +2073,7 @@ set(QGIS_CORE_HDRS
   raster/qgssinglebandgrayrenderer.h
   raster/qgssinglebandpseudocolorrenderer.h
   raster/qgsrastersinglecolorrenderer.h
+  raster/qgssortedrasterblockindex.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgshollowscalebarrenderer.h
@@ -2790,6 +2797,10 @@ endif()
 if (WITH_EPT)
   target_include_directories(qgis_core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/core/providers/ept)
+endif()
+
+if(HAVE_GSL)
+  target_link_libraries(qgis_core GSL::gsl)
 endif()
 
 if (WITH_COPC)

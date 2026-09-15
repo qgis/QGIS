@@ -67,8 +67,8 @@ class CORE_EXPORT QgsEllipseSymbolLayer : public QgsMarkerSymbolLayer
     ~QgsEllipseSymbolLayer() override;
 
     //! Creates the symbol layer
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QString layerType() const override;

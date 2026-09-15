@@ -137,6 +137,17 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mActionUndo->setObjectName( u"m3DActionUndo"_s );
   mActionRedo->setObjectName( u"m3DActionRedo"_s );
 
+  connect( mActionUndo, &QAction::triggered, this, [] {
+    QgsMapLayer *layer = QgisApp::instance()->activeLayer();
+    if ( layer && layer->isEditable() )
+      layer->undoStack()->undo();
+  } );
+  connect( mActionRedo, &QAction::triggered, this, [] {
+    QgsMapLayer *layer = QgisApp::instance()->activeLayer();
+    if ( layer && layer->isEditable() )
+      layer->undoStack()->redo();
+  } );
+
   mEditingToolBar->addAction( mActionToggleEditing );
   mEditingToolBar->addAction( mActionUndo );
   mEditingToolBar->addAction( mActionRedo );
@@ -713,9 +724,6 @@ void Qgs3DMapCanvasWidget::setCanvasName( const QString &name )
 
 void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
 {
-  mActionUndo->disconnect();
-  mActionRedo->disconnect();
-
   if ( !layer || layer->type() != Qgis::LayerType::PointCloud )
   {
     mPointCloudEditingToolbar->setEnabled( false );
@@ -751,16 +759,17 @@ void Qgs3DMapCanvasWidget::updateLayerRelatedActions( QgsMapLayer *layer )
 
   mActionToggleEditing->setEnabled( pcLayer->supportsEditing() );
   mActionToggleEditing->setChecked( pcLayer->isEditable() );
-  connect( mActionUndo, &QAction::triggered, pcLayer->undoStack(), &QUndoStack::undo );
-  connect( mActionRedo, &QAction::triggered, pcLayer->undoStack(), &QUndoStack::redo );
-  mActionUndo->setEnabled( pcLayer->undoStack()->canUndo() );
-  mActionRedo->setEnabled( pcLayer->undoStack()->canRedo() );
-  connect( pcLayer->undoStack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
-  connect( pcLayer->undoStack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
+  updateUndoRedoActions( pcLayer->undoStack()->canUndo(), pcLayer->undoStack()->canRedo() );
   mPointCloudEditingToolbar->setEnabled( pcLayer->isEditable() );
   mEditingToolsAction->setEnabled( pcLayer->isEditable() );
   // Reparse the class values when the renderer changes - renderer3DChanged() is not fired when only the renderer symbol is changed
   connect( pcLayer, &QgsMapLayer::request3DUpdate, this, &Qgs3DMapCanvasWidget::onPointCloudChangeAttributeSettingsChanged );
+}
+
+void Qgs3DMapCanvasWidget::updateUndoRedoActions( bool canUndo, bool canRedo )
+{
+  mActionUndo->setEnabled( canUndo );
+  mActionRedo->setEnabled( canRedo );
 }
 
 bool Qgs3DMapCanvasWidget::eventFilter( QObject *watched, QEvent *event )

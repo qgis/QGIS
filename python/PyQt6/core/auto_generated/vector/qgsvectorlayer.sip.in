@@ -538,16 +538,16 @@ string. Uses :py:class:`QgsExpression`
     bool hasMapTips() const final;
 
     QgsVectorDataProvider *dataProvider() final;
-    virtual QgsMapLayerSelectionProperties *selectionProperties();
+    virtual QgsMapLayerSelectionProperties *selectionProperties() /DisallowNone/;
 
-    virtual QgsMapLayerTemporalProperties *temporalProperties();
+    virtual QgsMapLayerTemporalProperties *temporalProperties() /DisallowNone/;
 
-    virtual QgsMapLayerElevationProperties *elevationProperties();
+    virtual QgsMapLayerElevationProperties *elevationProperties() /DisallowNone/;
 
-    virtual QgsAbstractProfileSource *profileSource();
+    virtual QgsAbstractProfileSource *profileSource() /DisallowNone/;
     virtual QString profileSourceId() const;
     virtual QString profileSourceName() const;
-    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /DisallowNone,Factory/;
 
 
     void setProviderEncoding( const QString &encoding );
@@ -588,7 +588,7 @@ Removes a vector layer join
 :return: ``True`` if join was found and successfully removed
 %End
 
-    QgsVectorLayerJoinBuffer *joinBuffer();
+    QgsVectorLayerJoinBuffer *joinBuffer() /DisallowNone/;
 %Docstring
 Returns the join buffer object.
 %End
@@ -652,7 +652,7 @@ field
 :param exp: The new expression to set
 %End
 
-    QgsActionManager *actions();
+    QgsActionManager *actions() /DisallowNone/;
 %Docstring
 Returns all layer actions defined on this layer.
 
@@ -2702,7 +2702,7 @@ determines it.
 Tests if an edit command is active
 %End
 
-    QgsGeometryOptions *geometryOptions() const;
+    QgsGeometryOptions *geometryOptions() const /DisallowNone/;
 %Docstring
 Configuration and logic to apply automatically on any edit happening on
 this layer.
@@ -2712,7 +2712,7 @@ this layer.
 
 
 
-    QgsStoredExpressionManager *storedExpressionManager();
+    QgsStoredExpressionManager *storedExpressionManager() /DisallowNone/;
 %Docstring
 Returns the manager of the stored expressions for this layer.
 

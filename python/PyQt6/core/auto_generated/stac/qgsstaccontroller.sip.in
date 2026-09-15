@@ -14,7 +14,7 @@
 class QgsStacController : QObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsStacController` class handles STAC requests.
+Handles STAC requests.
 
 Contains methods to generate STAC objects from local and remote urls.
 

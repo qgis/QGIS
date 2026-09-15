@@ -55,7 +55,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer : public QgsPointDistanceRenderer
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     //! Create a renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &symbologyElem, const QgsReadWriteContext &context );
 
     /**
      * Sets the line width for the displacement group circle.
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer : public QgsPointDistanceRenderer
      * Creates a QgsPointDisplacementRenderer from an existing renderer.
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
-    static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    static std::unique_ptr<QgsPointDisplacementRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   private:
 #ifdef SIP_RUN

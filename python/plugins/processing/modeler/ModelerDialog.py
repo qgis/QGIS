@@ -53,10 +53,6 @@ from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.utils import iface
 
 from processing.gui.algorithm_widget import AlgorithmWidget
-from processing.modeler.ModelerParameterDefinitionDialog import (
-    ModelerParameterDefinitionDialog,
-)
-from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools.dataobjects import createContext
@@ -234,7 +230,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.loadModel(filename)
 
     def repaintModel(self, showControls=True):
-        scene = ModelerScene(self)
+        scene = QgsModelGraphicsScene(self)
         if not showControls:
             scene.setFlag(QgsModelGraphicsScene.Flag.FlagHideControls)
 
@@ -272,26 +268,19 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         new_param = None
         comment = None
-        if ModelerParameterDefinitionDialog.use_legacy_dialog(paramType=paramType):
-            dlg = ModelerParameterDefinitionDialog(self.model(), paramType)
-            if dlg.exec():
-                new_param = dlg.create_parameter()
-                comment = dlg.comments()
-        else:
-            # yay, use new API!
-            context = createContext()
-            widget_context = self.createWidgetContext()
-            dlg = QgsProcessingParameterDefinitionDialog(
-                type=paramType,
-                context=context,
-                widgetContext=widget_context,
-                algorithm=self.model(),
-            )
-            dlg.registerProcessingContextGenerator(self.context_generator)
-            if dlg.exec():
-                new_param = dlg.createParameter()
-                self.autogenerate_parameter_name(new_param)
-                comment = dlg.comments()
+        context = createContext()
+        widget_context = self.createWidgetContext()
+        dlg = QgsProcessingParameterDefinitionDialog(
+            type=paramType,
+            context=context,
+            widgetContext=widget_context,
+            algorithm=self.model(),
+        )
+        dlg.registerProcessingContextGenerator(self.context_generator)
+        if dlg.exec():
+            new_param = dlg.createParameter()
+            self.autogenerate_parameter_name(new_param)
+            comment = dlg.comments()
 
         if new_param is not None:
             if pos is None or not pos:
@@ -311,7 +300,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.beginUndoCommand(self.tr("Add Model Input"))
             self.model().addModelParameter(new_param, component)
             self.repaintModel()
-            # self.view().ensureVisible(self.scene.getLastParameterItem())
             self.endUndoCommand()
 
     def getPositionForParameterItem(self):

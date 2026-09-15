@@ -78,6 +78,13 @@ QList<QgsAcademicReference> QgsRasterDtmSlopeBasedFilterAlgorithm::academicRefer
   return { ref };
 }
 
+QList<QgsProcessingAlgorithm::ExternalLink> QgsRasterDtmSlopeBasedFilterAlgorithm::externalLinks() const
+{
+  return {
+    QgsProcessingAlgorithm::ExternalLink { QObject::tr( "SAGA tool source code" ), u"https://sourceforge.net/p/saga-gis/code/ci/d0dd586dac6e8bf3644b3012d6fc9466353b2af8/tree/saga-gis/src/tools/grid/grid_filter/Filter_Terrain_SlopeBased.cpp"_s }
+  };
+}
+
 QString QgsRasterDtmSlopeBasedFilterAlgorithm::shortDescription() const
 {
   return QObject::tr( "Filters a Digital Elevation Model in order to classify its cells into ground and object (non-ground) cells." );
@@ -162,6 +169,8 @@ bool QgsRasterDtmSlopeBasedFilterAlgorithm::prepareAlgorithm( const QVariantMap 
 
 QVariantMap QgsRasterDtmSlopeBasedFilterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
   // handle backwards compatibility parameter CREATE_OPTIONS
   const QString optionsString = parameterAsString( parameters, u"CREATE_OPTIONS"_s, context );

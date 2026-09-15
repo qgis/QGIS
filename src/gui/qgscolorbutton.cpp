@@ -34,6 +34,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QMenu>
+#include <QMimeData>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPushButton>
@@ -274,7 +275,7 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
 
   //user is dragging color
   QDrag *drag = new QDrag( this );
-  drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( c ) );
+  drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( c ).release() );
   drag->setPixmap( QgsColorWidget::createDragIcon( c ) );
   drag->exec( Qt::CopyAction );
   setDown( false );
@@ -748,7 +749,7 @@ void QgsColorButton::copyColor()
   QColor c = linkedProjectColor();
   if ( !c.isValid() )
     c = mColor;
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( c ) );
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( c ).release() );
 }
 
 void QgsColorButton::pasteColor()

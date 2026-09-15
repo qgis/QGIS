@@ -7104,7 +7104,7 @@ int QgisEvent = QEvent::User + 1;
       MainWindowToolbar, //!< Main window toolbar icons
       DockedToolbar,     //!< Toolbars for docked windows
     };
-    Q_ENUM( UserInterfaceIconType );
+    Q_ENUM( UserInterfaceIconType )
 
     /**
      * Algorithm to transform vector magnitude to length of arrow on the device in pixels.
@@ -7150,6 +7150,19 @@ int QgisEvent = QEvent::User + 1;
       Random                                                  //!< Seeds start points randomly
     };
     Q_ENUM( VectorFieldSeedingMethod )
+
+    /**
+     * Mathematical methods to use for solving linear matrix equations.
+     *
+     * \since QGIS 4.4
+     */
+    enum class LinearMatrixMethod : int
+    {
+      Lu = 0,               //!< Fast lower-upper (LU) decomposition (fails on singular/collinear matrices)
+      Svd = 1,              //!< Singular Value Decomposition (handles collinearity and rank deficiency)
+      LuWithSvdFallback = 2 //!< Try LU first; fallback to SVD on singularity
+    };
+    Q_ENUM( LinearMatrixMethod )
 
     /**
      * Identify search radius in mm
@@ -7799,6 +7812,44 @@ namespace qgis
   {
     return QList<T>( set.begin(), set.end() );
   }
+
+  /**
+   * Use unique_ptr_static_cast to static_cast a std::unique_ptr as equivalent of
+   * static_cast<Derived*>(unique_ptr_to_base.release()) with safe checking in debug
+   * mode.
+   *
+   * \param f std::unique_ptr to a base class
+   * \return std::unique_ptr to a derived class
+   */
+  template<typename To, typename From> inline std::unique_ptr<To> unique_ptr_static_cast( std::unique_ptr<From> f )
+  {
+    static_assert( ( std::is_base_of<From, To>::value ), "target type not derived from source type" );
+    Q_ASSERT( !f || dynamic_cast<To *>( f.get() ) != nullptr );
+    return std::unique_ptr<To>( static_cast<To *>( f.release() ) );
+  }
+
+  /**
+   * dynamic_cast a std::unique_ptr. If cast fails, \a f is unchanged. If cast succeeds, memory
+   * ownership is transferred to returned unique_ptr and \a f is empty
+   *
+   * \param f std::unique_ptr to a base class
+   * \return std::unique_ptr to a derived class
+   */
+  template<typename To, typename From> inline std::unique_ptr<To> unique_ptr_dynamic_cast( std::unique_ptr<From> &&f )
+  {
+    static_assert( ( std::is_base_of<From, To>::value ), "target type not derived from source type" );
+    if ( To *casted = dynamic_cast<To *>( f.get() ) )
+    {
+      return std::unique_ptr< To >( dynamic_cast<To *>( f.release() ) );
+    }
+    else
+    {
+      //could not cast
+      return nullptr;
+    }
+  }
+
+
 } //namespace qgis
 
 ///@endcond

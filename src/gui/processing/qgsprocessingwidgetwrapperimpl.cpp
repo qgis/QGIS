@@ -69,6 +69,7 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingpointcloudexpressionlineedit.h"
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
+#include "qgsprocessingregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectionselectionwidget.h"
 #include "qgsproviderconnectioncombobox.h"
@@ -8275,6 +8276,62 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingPointCloudAttribute
   return new QgsProcessingPointCloudAttributeParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
+//
+// QgsProcessingDestinationParameterDefinitionWidget
+//
+
+QgsProcessingDestinationParameterDefinitionWidget::QgsProcessingDestinationParameterDefinitionWidget(
+  const QString &type,
+  QgsProcessingContext &context,
+  const QgsProcessingParameterWidgetContext &widgetContext,
+  const QgsProcessingDestinationParameter *definition,
+  const QgsProcessingAlgorithm *algorithm,
+  QWidget *parent
+)
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  if ( definition )
+  {
+    mType = definition->type();
+    mExistingDestinationParameter.reset( qgis::down_cast< QgsProcessingDestinationParameter * >( definition->clone() ) );
+  }
+  else
+  {
+    mType = type;
+    const QgsProcessingParameterType *parameterTypeMetadata = QgsApplication::processingRegistry()->parameterType( mType );
+    Q_ASSERT( parameterTypeMetadata );
+    mExistingDestinationParameter.reset( qgis::down_cast< QgsProcessingDestinationParameter * >( parameterTypeMetadata->create( u"OUTPUT"_s ) ) );
+  }
+
+  // TODO this:
+  // # If child algorithm output is mandatory, disable checkbox
+
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDestinationWidget = new QgsProcessingLayerOutputDestinationWidget( mExistingDestinationParameter.get(), true );
+  vlayout->addWidget( mDestinationWidget );
+
+  connect( mDestinationWidget, &QgsProcessingLayerOutputDestinationWidget::destinationChanged, this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingDestinationParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
+{
+  const QString paramName = QgsProcessingModelAlgorithm::safeName( description ).toLower();
+
+  // clone existing definition to retain specific destination properties
+  std::unique_ptr< QgsProcessingParameterDefinition > param( mExistingDestinationParameter->clone() );
+  param->setName( name );
+  param->setDescription( description );
+  param->setFlags( flags );
+  param->setDefaultValue( mDestinationWidget->value() );
+
+  return param.release();
+}
 
 //
 // QgsProcessingOutputWidgetWrapper
@@ -8341,6 +8398,14 @@ QVariantMap QgsProcessingOutputWidgetWrapper::customProperties() const
     res.insert( u"OPEN_AFTER_RUNNING"_s, mOutputWidget->openAfterRunning() );
   return res;
 }
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingOutputWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm
+)
+{
+  return new QgsProcessingDestinationParameterDefinitionWidget( parameterType(), context, widgetContext, qgis::down_cast< const QgsProcessingDestinationParameter * >( definition ), algorithm );
+}
+
 
 //
 // QgsProcessingFeatureSinkWidgetWrapper

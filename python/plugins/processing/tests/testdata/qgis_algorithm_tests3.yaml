@@ -1060,8 +1060,8 @@ tests:
       RADIUS: 0.5
     results:
       OUTPUT:
-        hash: f09384c64f56286ec4146a7b9a679cea7c6711ec4c7d77eec054e364
-        type: rasterhash
+        name: expected/heatmap__kernel_density_estimation__OUTPUT.asc
+        type: rasterfile
 
   - algorithm: native:rasterlayerstatistics
     name: Raster layer statistics

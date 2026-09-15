@@ -25,6 +25,8 @@
 #include <QGraphicsTextItem>
 #include <QPicture>
 
+#define SIP_NO_FILE
+
 class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
 
@@ -34,7 +36,7 @@ class QgsModelViewMouseEvent;
 /**
  * \ingroup gui
  * \brief A flat button graphic item for use in the Processing model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
@@ -47,15 +49,13 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
      * The \a picture argument specifies a QPicture object containing the graphic to render
      * for the button. The button will be rendered at the specified \a position and \a size.
      */
-    QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, const QPicture &picture, const QPointF &position, const QSizeF &size = QSizeF( 16, 16 ) );
+    QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent, const QPicture &picture, const QPointF &position, const QSizeF &size = QSizeF( 16, 16 ) );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
     QRectF boundingRect() const override;
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
-
-#ifndef SIP_RUN
 
     /**
      * Handles a model hover enter \a event.
@@ -71,7 +71,6 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
      * Handles a model mouse press \a event.
      */
     virtual void modelPressEvent( QgsModelViewMouseEvent *event );
-#endif
 
     /**
      * Returns the button's position.
@@ -113,7 +112,7 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
 /**
  * \ingroup gui
  * \brief A button allowing folding or expanding component graphics in the Processing model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesignerFlatButtonGraphicItem
@@ -128,12 +127,10 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
      *
      * The button will be rendered at the specified \a position and \a size.
      */
-    QgsModelDesignerFoldButtonGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, bool folded, const QPointF &position, const QSizeF &size = QSizeF( 11, 11 ) );
+    QgsModelDesignerFoldButtonGraphicItem( QGraphicsItem *parent, bool folded, const QPointF &position, const QSizeF &size = QSizeF( 11, 11 ) );
 
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
-#ifndef SIP_RUN
     void modelPressEvent( QgsModelViewMouseEvent *event ) override;
-#endif
 
   signals:
 
@@ -154,7 +151,7 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
 /**
  * \ingroup gui
  * \brief A socket allowing linking component together.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.44
  */
 class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlatButtonGraphicItem
@@ -170,7 +167,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
      * The sockets will be rendered at the specified \a position
      */
     QgsModelDesignerSocketGraphicItem(
-      QgsModelComponentGraphicItem *parent SIP_TRANSFERTHIS, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size = QSizeF( 11, 11 )
+      QgsModelComponentGraphicItem *parent, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size = QSizeF( 11, 11 )
     );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;

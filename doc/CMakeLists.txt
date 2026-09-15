@@ -96,6 +96,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
       ${CMAKE_SOURCE_DIR}/src/core/sensor
       ${CMAKE_SOURCE_DIR}/src/core/settings
+      ${CMAKE_SOURCE_DIR}/src/core/stac
       ${CMAKE_SOURCE_DIR}/src/core/symbology
       ${CMAKE_SOURCE_DIR}/src/core/symbology/converters
       ${CMAKE_SOURCE_DIR}/src/core/textrenderer

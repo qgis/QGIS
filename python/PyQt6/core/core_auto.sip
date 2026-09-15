@@ -132,6 +132,7 @@
 %Include auto_generated/qgsmaskrendersettings.sip
 %Include auto_generated/qgsmathutils.sip
 %Include auto_generated/qgsmatrix4x4.sip
+%Include auto_generated/qgsmatrixsolver.sip
 %Include auto_generated/qgsmeasureutils.sip
 %Include auto_generated/qgsmessagelog.sip
 %Include auto_generated/qgsmessageoutput.sip
@@ -342,6 +343,7 @@
 %Include auto_generated/expression/qgsexpressionnodeimpl.sip
 %Include auto_generated/fieldformatter/qgscheckboxfieldformatter.sip
 %Include auto_generated/fieldformatter/qgsdatetimefieldformatter.sip
+%Include auto_generated/fieldformatter/qgsenumerationfieldformatter.sip
 %Include auto_generated/fieldformatter/qgsfallbackfieldformatter.sip
 %Include auto_generated/fieldformatter/qgskeyvaluefieldformatter.sip
 %Include auto_generated/fieldformatter/qgslistfieldformatter.sip
@@ -725,6 +727,7 @@
 %Include auto_generated/raster/qgssinglebandgrayrenderer.sip
 %Include auto_generated/raster/qgssinglebandpseudocolorrenderer.sip
 %Include auto_generated/raster/qgsrastersinglecolorrenderer.sip
+%Include auto_generated/raster/qgssortedrasterblockindex.sip
 %Include auto_generated/scalebar/qgsdoubleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgshollowscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsnumericscalebarrenderer.sip

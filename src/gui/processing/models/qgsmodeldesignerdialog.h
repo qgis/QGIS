@@ -168,7 +168,10 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     QAction *actionSaveInProject() { return mActionSaveInProject; }
     QAction *actionRun() { return mActionRun; }
     QgsMessageBar *messageBar() { return mMessageBar; }
+
+#ifndef SIP_RUN
     QgsModelGraphicsView *view() { return mView; }
+#endif
 
     void setDirty( bool dirty );
 

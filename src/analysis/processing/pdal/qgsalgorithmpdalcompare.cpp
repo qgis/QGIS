@@ -163,6 +163,8 @@ bool QgsPdalCompareAlgorithm::checkParameterValues( const QVariantMap &parameter
 
 QStringList QgsPdalCompareAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
 // raise exception if PDAL version is older than 2.10 - can be removed when PDAL 2.10 is minimum requirement
 #ifdef HAVE_PDAL_QGIS
 #if PDAL_VERSION_MAJOR_INT < 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT < 10 )

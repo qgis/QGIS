@@ -13,9 +13,8 @@ tests:
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_using_attribute_OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:tininterpolation
     name: TIN interpolation using Z value
@@ -28,9 +27,8 @@ tests:
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_using_z_value_OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:tininterpolation
     name: TIN interpolation with breaklines
@@ -43,9 +41,8 @@ tests:
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_with_breaklines_OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:tininterpolation
     name: TIN interpolation using attribute (old parameters)
@@ -59,9 +56,8 @@ tests:
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_using_attribute__old_parameters__OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:tininterpolation
     name: TIN interpolation using Z value (old parameters)
@@ -75,9 +71,8 @@ tests:
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_using_z_value__old_parameters__OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:tininterpolation
     name: TIN interpolation with breaklines (old parameters)
@@ -91,9 +86,8 @@ tests:
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_with_breaklines__old_parameters__OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:idwinterpolation
     name: IDW interpolation using attribute
@@ -106,9 +100,8 @@ tests:
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_using_attribute_OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:idwinterpolation
     name: IDW interpolation using Z value
@@ -121,9 +114,8 @@ tests:
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_using_z_value_OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:idwinterpolation
     name: IDW interpolation with breaklines
@@ -136,9 +128,8 @@ tests:
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_with_breaklines_OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:idwinterpolation
     name: IDW interpolation using attribute (old parameters)
@@ -152,9 +143,8 @@ tests:
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_using_attribute__old_parameters__OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:idwinterpolation
     name: IDW interpolation using Z value (old parameters)
@@ -168,9 +158,8 @@ tests:
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_using_z_value__old_parameters__OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:idwinterpolation
     name: IDW interpolation with breaklines (old parameters)
@@ -184,9 +173,8 @@ tests:
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_with_breaklines__old_parameters__OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:removenullgeometries
     name: Remove null geometries (do not remove empty)

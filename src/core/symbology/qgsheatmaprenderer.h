@@ -52,9 +52,9 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     QString dump() const override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     //! Creates a new heatmap renderer instance from XML
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
-    static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    static std::unique_ptr<QgsHeatmapRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
 

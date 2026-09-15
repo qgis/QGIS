@@ -103,17 +103,17 @@ Sets the STAC links included in the object
 
     QString url() const;
 %Docstring
-Return the url stored in the object's "self" link
+Returns the url stored in the object's "self" link
 %End
 
     QString rootUrl() const;
 %Docstring
-Return the url stored in the object's "root" link
+Returns the url stored in the object's "root" link
 %End
 
     QString parentUrl() const;
 %Docstring
-Return the url stored in the object's "parent" link
+Returns the url stored in the object's "parent" link
 %End
 
 

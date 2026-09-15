@@ -5147,7 +5147,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
         }
         partIndex++;
       }
-      finalGeom.reset( dynamic_cast<QgsAbstractGeometry *>( newMultiPoly.release() ) );
+      finalGeom = std::move( newMultiPoly );
     }
     else
     {

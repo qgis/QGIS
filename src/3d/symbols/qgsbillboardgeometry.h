@@ -113,7 +113,6 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
       PixelOffsets = 1 << 3,
     };
     Q_DECLARE_FLAGS( Attributes, Attribute )
-    Q_FLAG( Attributes )
 
     void setAttributes( Attributes attributes );
     Attributes mAttributes;

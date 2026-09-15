@@ -104,124 +104,124 @@ class GUI_EXPORT QgsGui : public QObject
      * Returns the gui's settings registry, used for managing gui settings.
      * \since QGIS 3.22
      */
-    static QgsSettingsRegistryGui *settingsRegistryGui() SIP_KEEPREFERENCE;
+    static QgsSettingsRegistryGui *settingsRegistryGui() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global editor widget registry, used for managing all known edit widget factories.
      */
-    static QgsEditorWidgetRegistry *editorWidgetRegistry() SIP_KEEPREFERENCE;
+    static QgsEditorWidgetRegistry *editorWidgetRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global source select provider registry, used for managing all known source select widget factories.
      */
-    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry() SIP_KEEPREFERENCE;
+    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global shortcuts manager, used for managing a QAction and QShortcut sequences.
      */
-    static QgsShortcutsManager *shortcutsManager();
+    static QgsShortcutsManager *shortcutsManager() SIP_DISALLOWNONE;
 
     /**
      * Returns the global layer tree embedded widget registry, used for registering widgets that may be embedded into layer tree view.
      */
-    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry() SIP_KEEPREFERENCE;
+    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global map layer action registry, used for registering map layer actions.
      */
-    static QgsMapLayerActionRegistry *mapLayerActionRegistry() SIP_KEEPREFERENCE;
+    static QgsMapLayerActionRegistry *mapLayerActionRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global layout item GUI registry, used for registering the GUI behavior of layout items.
      */
-    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry() SIP_KEEPREFERENCE;
+    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global annotation item GUI registry, used for registering the GUI behavior of annotation items.
      *
      * \since QGIS 3.22
      */
-    static QgsAnnotationItemGuiRegistry *annotationItemGuiRegistry() SIP_KEEPREFERENCE;
+    static QgsAnnotationItemGuiRegistry *annotationItemGuiRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global advanced digitizing tools registry, used for registering advanced digitizing tools.
      *
      * \since QGIS 3.40
      */
-    static QgsAdvancedDigitizingToolsRegistry *advancedDigitizingToolsRegistry() SIP_KEEPREFERENCE;
+    static QgsAdvancedDigitizingToolsRegistry *advancedDigitizingToolsRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
      * \since QGIS 3.2
      */
-    static QgsProcessingGuiRegistry *processingGuiRegistry() SIP_KEEPREFERENCE;
+    static QgsProcessingGuiRegistry *processingGuiRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global numeric format gui registry, used for registering the GUI widgets associated with QgsNumericFormats.
      * \since QGIS 3.12
      */
-    static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() SIP_KEEPREFERENCE;
+    static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global code editor color scheme registry, used for registering the color schemes for QgsCodeEditor widgets.
      * \since QGIS 3.16
      */
-    static QgsCodeEditorColorSchemeRegistry *codeEditorColorSchemeRegistry() SIP_KEEPREFERENCE;
+    static QgsCodeEditorColorSchemeRegistry *codeEditorColorSchemeRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
      * \since QGIS 3.4
      */
-    static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
+    static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog() SIP_DISALLOWNONE;
 
     /**
      * Returns the global Processing favorite algorithm manager, used for tracking favorite Processing algorithms.
      * \since QGIS 3.40
      */
-    static QgsProcessingFavoriteAlgorithmManager *processingFavoriteAlgorithmManager();
+    static QgsProcessingFavoriteAlgorithmManager *processingFavoriteAlgorithmManager() SIP_DISALLOWNONE;
 
     /**
      * Returns the global data item GUI provider registry, used for tracking providers which affect the browser
      * GUI.
      * \since QGIS 3.6
      */
-    static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() SIP_KEEPREFERENCE;
+    static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global GUI-related project storage registry
      * \since QGIS 3.10
      */
-    static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() SIP_KEEPREFERENCE;
+    static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the registry of GUI-related components of data providers
      * \since QGIS 3.10
      */
-    static QgsProviderGuiRegistry *providerGuiRegistry() SIP_KEEPREFERENCE;
+    static QgsProviderGuiRegistry *providerGuiRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the registry of GUI-related components for sensors
      * \since QGIS 3.32
      */
-    static QgsSensorGuiRegistry *sensorGuiRegistry() SIP_KEEPREFERENCE;
+    static QgsSensorGuiRegistry *sensorGuiRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the registry of subset string editors of data providers
      * \since QGIS 3.18
      */
-    static QgsSubsetStringEditorProviderRegistry *subsetStringEditorProviderRegistry() SIP_KEEPREFERENCE;
+    static QgsSubsetStringEditorProviderRegistry *subsetStringEditorProviderRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the registry of provider source widget providers.
      * \since QGIS 3.18
      */
-    static QgsProviderSourceWidgetProviderRegistry *sourceWidgetProviderRegistry() SIP_KEEPREFERENCE;
+    static QgsProviderSourceWidgetProviderRegistry *sourceWidgetProviderRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global relation widget registry, used for managing all known relation widget factories.
     * \since QGIS 3.18
      */
-    static QgsRelationWidgetRegistry *relationWidgetRegistry() SIP_KEEPREFERENCE;
+    static QgsRelationWidgetRegistry *relationWidgetRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the registry of shape map tools
@@ -234,13 +234,13 @@ class GUI_EXPORT QgsGui : public QObject
      * Returns the global history provider registry, used for tracking history providers.
      * \since QGIS 3.24
      */
-    static QgsHistoryProviderRegistry *historyProviderRegistry() SIP_KEEPREFERENCE;
+    static QgsHistoryProviderRegistry *historyProviderRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the registry of settings editors.
      * \since QGIS 3.32
      */
-    static QgsSettingsEditorWidgetRegistry *settingsEditorWidgetRegistry() SIP_KEEPREFERENCE;
+    static QgsSettingsEditorWidgetRegistry *settingsEditorWidgetRegistry() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Register the widget to allow its position to be automatically saved and restored when open and closed.
@@ -266,13 +266,13 @@ class GUI_EXPORT QgsGui : public QObject
      * Returns the global input controller manager.
      * \since QGIS 3.32
      */
-    static QgsInputControllerManager *inputControllerManager() SIP_KEEPREFERENCE;
+    static QgsInputControllerManager *inputControllerManager() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * Returns the global stored SQL query manager.
      * \since QGIS 3.44
      */
-    static QgsStoredQueryManager *storedQueryManager() SIP_KEEPREFERENCE;
+    static QgsStoredQueryManager *storedQueryManager() SIP_DISALLOWNONE SIP_KEEPREFERENCE;
 
     /**
      * HIG flags, which indicate the Human Interface Guidelines for the current platform.

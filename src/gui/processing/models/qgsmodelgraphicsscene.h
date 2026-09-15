@@ -112,7 +112,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Returns list of selected component items.
      */
-    QList<QgsModelComponentGraphicItem *> selectedComponentItems();
+    SIP_SKIP QList<QgsModelComponentGraphicItem *> selectedComponentItems();
 
     /**
      * Returns the topmost component item at a specified \a position.
@@ -146,14 +146,14 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      *
      * \since QGIS 3.44
      */
-    QgsModelComponentGraphicItem *parameterItem( const QString &name );
+    SIP_SKIP QgsModelComponentGraphicItem *parameterItem( const QString &name );
 
     /**
      * Returns the QgsModelComponentGraphicItem corresponding to the specified child algorithm output
      *
      * \since QGIS 4.0
      */
-    QgsModelComponentGraphicItem *outputItem( const QString &childId, const QString &childOutputName );
+    SIP_SKIP QgsModelComponentGraphicItem *outputItem( const QString &childId, const QString &childOutputName );
 
     /**
      * Selects all the components in the scene.
@@ -171,7 +171,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Clears any selected items and sets \a item as the current selection.
     */
-    void setSelectedItem( QgsModelComponentGraphicItem *item );
+    SIP_SKIP void setSelectedItem( QgsModelComponentGraphicItem *item );
 
     /**
      * Sets the \a result of the last run of the model through the designer window.
@@ -261,7 +261,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * Emitted whenever the selected item changes.
      * If NULLPTR, no item is selected.
      */
-    void selectedItemChanged( QgsModelComponentGraphicItem *selected );
+    SIP_SKIP void selectedItemChanged( QgsModelComponentGraphicItem *selected );
 
     /**
      * Emitted when the user opts to run selected steps from the model.
@@ -295,27 +295,27 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Creates a new graphic item for a model parameter.
      */
-    virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const SIP_FACTORY;
+    SIP_SKIP QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const;
 
     /**
      * Creates a new graphic item for a model child algorithm.
      */
-    SIP_SKIP QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const SIP_FACTORY;
+    SIP_SKIP QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const;
 
     /**
      * Creates a new graphic item for a model output.
      */
-    virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const SIP_FACTORY;
+    SIP_SKIP QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const;
 
     /**
      * Creates a new graphic item for a model comment.
      */
-    SIP_SKIP QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const SIP_FACTORY;
+    SIP_SKIP QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const;
 
     /**
      * Creates a new graphic item for a model group box.
      */
-    SIP_SKIP QgsModelComponentGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const SIP_FACTORY;
+    SIP_SKIP QgsModelComponentGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const;
 
   private:
     struct LinkSource

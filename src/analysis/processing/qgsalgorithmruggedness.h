@@ -41,6 +41,7 @@ class QgsRuggednessAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    QList<QgsAcademicReference> academicReferences() const override;
     QgsRuggednessAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

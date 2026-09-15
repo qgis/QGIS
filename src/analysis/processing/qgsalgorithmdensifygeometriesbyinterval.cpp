@@ -92,6 +92,8 @@ QString QgsDensifyGeometriesByIntervalAlgorithm::outputName() const
 
 QgsFeatureList QgsDensifyGeometriesByIntervalAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   Q_UNUSED( context )
   Q_UNUSED( feedback )
   QgsFeature modifiedFeature = feature;

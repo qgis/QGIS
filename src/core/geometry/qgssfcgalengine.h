@@ -936,7 +936,7 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \since QGIS 4.2
      */
-    static sfcgal::shared_geom primitiveRotate( const sfcgal::primitive *prim, double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
+    static sfcgal::shared_prim primitiveRotate( const sfcgal::primitive *prim, double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
 
     /**
      * Scale the primitive \a prim by vector \a scaleFactor.
@@ -948,7 +948,7 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \since QGIS 4.2
      */
-    static sfcgal::shared_geom primitiveScale( const sfcgal::primitive *prim, const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
+    static sfcgal::shared_prim primitiveScale( const sfcgal::primitive *prim, const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint(), QString *errorMsg = nullptr );
 #endif
 };
 

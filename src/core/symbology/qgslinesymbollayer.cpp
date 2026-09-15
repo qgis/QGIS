@@ -104,7 +104,7 @@ QgsMapUnitScale QgsSimpleLineSymbolLayer::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QVariantMap &props )
+std::unique_ptr<QgsSymbolLayer> QgsSimpleLineSymbolLayer::create( const QVariantMap &props )
 {
   QColor color = DEFAULT_SIMPLELINE_COLOR;
   double width = DEFAULT_SIMPLELINE_WIDTH;
@@ -149,7 +149,7 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QVariantMap &props )
     penStyle = QgsSymbolLayerUtils::decodePenStyle( props[u"penstyle"_s].toString() );
   }
 
-  QgsSimpleLineSymbolLayer *l = new QgsSimpleLineSymbolLayer( color, width, penStyle );
+  auto l = std::make_unique<QgsSimpleLineSymbolLayer>( color, width, penStyle );
   if ( props.contains( u"line_width_unit"_s ) )
   {
     l->setWidthUnit( QgsUnitTypes::decodeRenderUnit( props[u"line_width_unit"_s].toString() ) );
@@ -651,7 +651,7 @@ QString QgsSimpleLineSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double 
   }
 }
 
-QgsSymbolLayer *QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
+std::unique_ptr<QgsSymbolLayer> QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
 {
   QgsDebugMsgLevel( u"Entered."_s, 4 );
 
@@ -685,7 +685,7 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
   width = width * scaleFactor;
   offset = offset * scaleFactor;
 
-  QgsSimpleLineSymbolLayer *l = new QgsSimpleLineSymbolLayer( color, width, penStyle );
+  auto l = std::make_unique<QgsSimpleLineSymbolLayer>( color, width, penStyle );
   l->setOutputUnit( sldUnitSize );
   l->setOffset( offset );
   l->setPenJoinStyle( penJoinStyle );
@@ -2556,7 +2556,7 @@ QgsMarkerLineSymbolLayer::QgsMarkerLineSymbolLayer( bool rotateMarker, double in
 
 QgsMarkerLineSymbolLayer::~QgsMarkerLineSymbolLayer() = default;
 
-QgsSymbolLayer *QgsMarkerLineSymbolLayer::create( const QVariantMap &props )
+std::unique_ptr<QgsSymbolLayer> QgsMarkerLineSymbolLayer::create( const QVariantMap &props )
 {
   bool rotate = DEFAULT_MARKERLINE_ROTATE;
   double interval = DEFAULT_MARKERLINE_INTERVAL;
@@ -2568,7 +2568,7 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::create( const QVariantMap &props )
 
   auto x = std::make_unique< QgsMarkerLineSymbolLayer >( rotate, interval );
   setCommonProperties( x.get(), props );
-  return x.release();
+  return x;
 }
 
 QString QgsMarkerLineSymbolLayer::layerType() const
@@ -2695,7 +2695,7 @@ bool QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, Q
   return true;
 }
 
-QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
+std::unique_ptr<QgsSymbolLayer> QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
 {
   QgsDebugMsgLevel( u"Entered."_s, 4 );
 
@@ -2770,7 +2770,7 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
   interval = interval * scaleFactor;
   offset = offset * scaleFactor;
 
-  QgsMarkerLineSymbolLayer *x = new QgsMarkerLineSymbolLayer( rotateMarker );
+  auto x = std::make_unique<QgsMarkerLineSymbolLayer>( rotateMarker );
   x->setOutputUnit( sldUnitSize );
   x->setPlacements( placement );
   x->setInterval( interval );
@@ -2893,7 +2893,7 @@ QgsHashedLineSymbolLayer::QgsHashedLineSymbolLayer( bool rotateSymbol, double in
 
 QgsHashedLineSymbolLayer::~QgsHashedLineSymbolLayer() = default;
 
-QgsSymbolLayer *QgsHashedLineSymbolLayer::create( const QVariantMap &props )
+std::unique_ptr<QgsSymbolLayer> QgsHashedLineSymbolLayer::create( const QVariantMap &props )
 {
   bool rotate = DEFAULT_MARKERLINE_ROTATE;
   double interval = DEFAULT_MARKERLINE_INTERVAL;
@@ -2919,7 +2919,7 @@ QgsSymbolLayer *QgsHashedLineSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( u"hash_length_map_unit_scale"_s ) )
     x->setHashLengthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[u"hash_length_map_unit_scale"_s].toString() ) );
 
-  return x.release();
+  return x;
 }
 
 QString QgsHashedLineSymbolLayer::layerType() const
@@ -3470,7 +3470,7 @@ QgsRasterLineSymbolLayer::QgsRasterLineSymbolLayer( const QString &path )
 
 QgsRasterLineSymbolLayer::~QgsRasterLineSymbolLayer() = default;
 
-QgsSymbolLayer *QgsRasterLineSymbolLayer::create( const QVariantMap &properties )
+std::unique_ptr<QgsSymbolLayer> QgsRasterLineSymbolLayer::create( const QVariantMap &properties )
 {
   auto res = std::make_unique<QgsRasterLineSymbolLayer>();
 
@@ -3513,7 +3513,7 @@ QgsSymbolLayer *QgsRasterLineSymbolLayer::create( const QVariantMap &properties 
     res->setOpacity( properties[u"alpha"_s].toDouble() );
   }
 
-  return res.release();
+  return res;
 }
 
 
@@ -3719,7 +3719,7 @@ QgsLineburstSymbolLayer::QgsLineburstSymbolLayer( const QColor &color, const QCo
 
 QgsLineburstSymbolLayer::~QgsLineburstSymbolLayer() = default;
 
-QgsSymbolLayer *QgsLineburstSymbolLayer::create( const QVariantMap &properties )
+std::unique_ptr<QgsSymbolLayer> QgsLineburstSymbolLayer::create( const QVariantMap &properties )
 {
   auto res = std::make_unique<QgsLineburstSymbolLayer>();
 
@@ -3769,14 +3769,14 @@ QgsSymbolLayer *QgsLineburstSymbolLayer::create( const QVariantMap &properties )
   //attempt to create color ramp from props
   if ( properties.contains( u"rampType"_s ) && properties[u"rampType"_s] == QgsCptCityColorRamp::typeString() )
   {
-    res->setColorRamp( QgsCptCityColorRamp::create( properties ) );
+    res->setColorRamp( QgsCptCityColorRamp::create( properties ).release() );
   }
   else
   {
-    res->setColorRamp( QgsGradientColorRamp::create( properties ) );
+    res->setColorRamp( QgsGradientColorRamp::create( properties ).release() );
   }
 
-  return res.release();
+  return res;
 }
 
 QVariantMap QgsLineburstSymbolLayer::properties() const
@@ -3963,7 +3963,7 @@ QgsFilledLineSymbolLayer::QgsFilledLineSymbolLayer( double width, QgsFillSymbol 
 
 QgsFilledLineSymbolLayer::~QgsFilledLineSymbolLayer() = default;
 
-QgsSymbolLayer *QgsFilledLineSymbolLayer::create( const QVariantMap &props )
+std::unique_ptr<QgsSymbolLayer> QgsFilledLineSymbolLayer::create( const QVariantMap &props )
 {
   double width = DEFAULT_SIMPLELINE_WIDTH;
 
@@ -4013,7 +4013,7 @@ QgsSymbolLayer *QgsFilledLineSymbolLayer::create( const QVariantMap &props )
 
   l->restoreOldDataDefinedProperties( props );
 
-  return l.release();
+  return l;
 }
 
 QString QgsFilledLineSymbolLayer::layerType() const
@@ -4191,7 +4191,7 @@ QVariantMap QgsFilledLineSymbolLayer::properties() const
 
 QgsFilledLineSymbolLayer *QgsFilledLineSymbolLayer::clone() const
 {
-  std::unique_ptr< QgsFilledLineSymbolLayer > res( qgis::down_cast< QgsFilledLineSymbolLayer * >( QgsFilledLineSymbolLayer::create( properties() ) ) );
+  auto res = qgis::unique_ptr_static_cast<QgsFilledLineSymbolLayer>( QgsFilledLineSymbolLayer::create( properties() ) );
   copyCommonProperties( res.get() );
   res->setSubSymbol( mFill->clone() );
   return res.release();

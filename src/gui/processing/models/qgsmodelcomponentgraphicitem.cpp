@@ -30,6 +30,7 @@
 #include "qgsprocessingmodelgroupbox.h"
 #include "qgsprocessingmodeloutput.h"
 #include "qgsprocessingmodelparameter.h"
+#include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingwidgetwrapper.h"
 
@@ -462,7 +463,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   {
     h = -( fm.height() * 1.2 );
     h = h - componentSize.height() / 2.0 + 5;
-    pt = QPointF( -componentSize.width() / 2 + 25, h );
+    pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN, h );
     painter->drawText( pt, QObject::tr( "In" ) );
     int i = 1;
     if ( !mComponent->linksCollapsed( Qt::TopEdge ) )
@@ -472,7 +473,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         text = linkPointText( Qt::TopEdge, idx );
         h = -( fm.height() * 1.2 ) * ( i + 1 );
         h = h - componentSize.height() / 2.0 + 5;
-        pt = QPointF( -componentSize.width() / 2 + 33, h );
+        pt = QPointF( -componentSize.width() / 2 + SOCKET_MARGIN + 10, h );
         painter->drawText( pt, text );
         i += 1;
       }
@@ -482,7 +483,8 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   {
     h = fm.height() * 1.1;
     h = h + componentSize.height() / 2.0;
-    pt = QPointF( -componentSize.width() / 2 + 25, h );
+    const double w = fm.boundingRect( "Out" ).width(); // Only to know the width ot the text
+    pt = QPointF( componentSize.width() / 2 - SOCKET_MARGIN - w, h );
     painter->drawText( pt, QObject::tr( "Out" ) );
     if ( !mComponent->linksCollapsed( Qt::BottomEdge ) )
     {
@@ -491,8 +493,11 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         text = linkPointText( Qt::BottomEdge, idx );
         h = fm.height() * 1.2 * ( idx + 2 );
         h = h + componentSize.height() / 2.0;
-        pt = QPointF( -componentSize.width() / 2 + 33, h );
-        painter->drawText( pt, text );
+        double w = fm.boundingRect( text ).width();
+
+        const double x = componentSize.width() / 2.0 - w - SOCKET_MARGIN - 10;
+
+        painter->drawText( QPointF( x, h ), text );
       }
     }
   }
@@ -526,13 +531,13 @@ QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text 
 {
   const QFontMetricsF fm( mFont );
   double width = fm.boundingRect( text ).width();
-  if ( width < itemSize().width() - 25 - mButtonSize.width() )
+  if ( width < itemSize().width() - SOCKET_MARGIN - mButtonSize.width() )
     return text;
 
   QString t = text;
   t = t.left( t.length() - 3 ) + QChar( 0x2026 );
   width = fm.boundingRect( t ).width();
-  while ( width > itemSize().width() - 25 - mButtonSize.width() )
+  while ( width > itemSize().width() - SOCKET_MARGIN - mButtonSize.width() )
   {
     if ( t.length() < 5 )
       break;
@@ -691,19 +696,37 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
     {
       if ( linkPointCount( Qt::BottomEdge ) )
       {
-        double offsetX = 25;
-        if ( mComponent->linksCollapsed( Qt::BottomEdge ) )
-        {
-          offsetX = 17;
-        }
         const int pointIndex = !mComponent->linksCollapsed( Qt::BottomEdge ) ? index : -1;
-        const QString text = truncatedTextForItem( linkPointText( Qt::BottomEdge, index ) );
         const QFontMetricsF fm( mFont );
-        const double w = fm.boundingRect( text ).width();
         const double h = fm.height() * 1.2 * ( pointIndex + 1 ) + fm.height() / 2.0;
         const double y = h + itemSize().height() / 2.0 + 6.4;
-        const double x = !mComponent->linksCollapsed( Qt::BottomEdge ) ? ( -itemSize().width() / 2 + 33 + w + 10 ) : 10.4;
-        return QPointF( incoming ? -itemSize().width() / 2 + offsetX : x, y );
+        double x;
+        if ( !mComponent->linksCollapsed( Qt::BottomEdge ) )
+        {
+          if ( !incoming )
+          {
+            x = itemSize().width() / 2 - SOCKET_MARGIN;
+          }
+          else
+          {
+            const QString text = truncatedTextForItem( linkPointText( Qt::BottomEdge, index ) );
+            const double w = fm.boundingRect( text ).width();
+            x = itemSize().width() / 2 - SOCKET_MARGIN - w - 14;
+          }
+        }
+        else // mComponent->linksCollapsed( Qt::BottomEdge )
+        {
+          if ( !incoming )
+          {
+            x = itemSize().width() / 2 - 17;
+          }
+          else
+          {
+            x = -14;
+          }
+        }
+
+        return QPointF( x, y );
       }
       break;
     }
@@ -712,7 +735,7 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
     {
       if ( linkPointCount( Qt::TopEdge ) )
       {
-        double offsetX = 25;
+        double offsetX = SOCKET_MARGIN;
         int paramIndex = index;
         if ( mComponent->linksCollapsed( Qt::TopEdge ) )
         {
@@ -720,11 +743,10 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
           offsetX = 17;
         }
         const QFontMetricsF fm( mFont );
-        const QString text = truncatedTextForItem( linkPointText( Qt::TopEdge, index ) );
-        const double w = fm.boundingRect( text ).width();
-        double h = -( fm.height() * 1.2 ) * ( paramIndex + 2 ) - fm.height() / 2.0 + 8;
-        h = h - itemSize().height() / 2.0;
-        return QPointF( incoming ? -itemSize().width() / 2 + offsetX : ( !mComponent->linksCollapsed( Qt::TopEdge ) ? ( -itemSize().width() / 2 + 33 + w + 5 ) : 10 ), h );
+        const double h = -( fm.height() * 1.2 ) * ( paramIndex + 2 ) - fm.height() / 2.0 + 8;
+        const double y = h - itemSize().height() / 2.0;
+        const double x = -itemSize().width() / 2 + offsetX;
+        return QPointF( x, y );
       }
       break;
     }
@@ -998,6 +1020,51 @@ QColor QgsModelParameterGraphicItem::linkColor( Qt::Edge /* unused in this imple
   return FALLBACK_COLOR;
 }
 
+QString QgsModelParameterGraphicItem::applyEdit(
+  std::unique_ptr< QgsProcessingParameterDefinition > newParameter, const QString &oldDescription, const QString &oldName, const QString &comment, const QColor &commentColor
+)
+{
+  QgsProcessingModelParameter *paramComponent = dynamic_cast< QgsProcessingModelParameter * >( component() );
+  if ( !paramComponent )
+    return QString();
+
+  const QString undoCommandId = u"param:%1"_s.arg( paramComponent->parameterName() );
+  emit aboutToChange( tr( "Edit %1" ).arg( newParameter->description() ), undoCommandId );
+
+  model()->removeModelParameter( paramComponent->parameterName() );
+
+  if ( newParameter->description() != oldDescription )
+  {
+    // only update name if user has changed the description -- we don't force this, as it may cause
+    // unwanted name updates which could potentially break the model's API
+    QString name = newParameter->name();
+    const QString baseName = name;
+    int i = 2;
+    while ( model()->parameterDefinition( name ) )
+    {
+      name = u"%1%2"_s.arg( baseName ).arg( i );
+      i++;
+    }
+
+    newParameter->setName( name );
+    model()->changeParameterName( oldName, newParameter->name() );
+  }
+
+  paramComponent->setParameterName( newParameter->name() );
+  paramComponent->setDescription( newParameter->name() );
+  paramComponent->comment()->setDescription( comment );
+  paramComponent->comment()->setColor( commentColor );
+
+  const QString description = newParameter->description();
+  const QString name = newParameter->name();
+  model()->addModelParameter( newParameter.release(), *paramComponent );
+  setLabel( description );
+  emit requestModelRepaint();
+  emit changed();
+
+  return name;
+}
+
 void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
 {
   if ( QgsProcessingModelParameter *param = dynamic_cast<QgsProcessingModelParameter *>( component() ) )
@@ -1025,6 +1092,16 @@ bool QgsModelParameterGraphicItem::canDeleteComponent()
     }
   }
   return false;
+}
+
+void QgsModelParameterGraphicItem::editComponent()
+{
+  edit( false );
+}
+
+void QgsModelParameterGraphicItem::editComment()
+{
+  edit( true );
 }
 
 void QgsModelParameterGraphicItem::deleteComponent()
@@ -1059,6 +1136,52 @@ void QgsModelParameterGraphicItem::deleteComponent()
       model()->removeModelParameter( param->parameterName() );
       emit changed();
       emit requestModelRepaint();
+    }
+  }
+}
+
+void QgsModelParameterGraphicItem::edit( bool editComment )
+{
+  const QgsProcessingModelParameter *paramComponent = dynamic_cast< const QgsProcessingModelParameter * >( component() );
+  if ( !paramComponent )
+    return;
+
+  const QgsProcessingParameterDefinition *existingParam = model()->parameterDefinition( paramComponent->parameterName() );
+  if ( !existingParam )
+    return;
+
+  const QString oldName = existingParam->name();
+  const QString oldDescription = existingParam->description();
+
+  const QString comment = paramComponent->comment()->description();
+  const QColor commentColor = paramComponent->comment()->color();
+
+  QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+  QgsProcessingContext *context = widgetContext.processingContextGenerator()->processingContext();
+
+  QgsProcessingParameterDefinitionDialog dlg( existingParam->type(), *context, widgetContext, existingParam, model(), this->scene()->views().at( 0 ) );
+
+  dlg.setComments( comment );
+  dlg.setCommentColor( commentColor );
+  if ( widgetContext.processingContextGenerator() )
+  {
+    dlg.registerProcessingContextGenerator( widgetContext.processingContextGenerator() );
+  }
+
+  if ( editComment )
+  {
+    dlg.switchToCommentTab();
+  }
+
+  if ( dlg.exec() )
+  {
+    std::unique_ptr< QgsProcessingParameterDefinition > newParam( dlg.createParameter( existingParam->name() ) );
+    if ( newParam )
+    {
+      const QString safeName = QgsProcessingModelAlgorithm::safeName( newParam->description() ).toLower();
+      newParam->setName( safeName );
+
+      applyEdit( std::move( newParam ), oldDescription, oldName, dlg.comments(), dlg.commentColor() );
     }
   }
 }
@@ -1109,7 +1232,7 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
   QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
   connect( editAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::editComponent );
   QAction *editCommentAction = popupmenu->addAction( component()->comment()->description().isEmpty() ? QObject::tr( "Add Comment…" ) : QObject::tr( "Edit Comment…" ) );
-  connect( editCommentAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::editComment );
+  connect( editCommentAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::editComment );
   popupmenu->addSeparator();
 
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( component() ) )
@@ -1807,6 +1930,49 @@ bool QgsModelOutputGraphicItem::canDeleteComponent()
   return false;
 }
 
+void QgsModelOutputGraphicItem::editComponent()
+{
+  edit( false );
+}
+
+void QgsModelOutputGraphicItem::editComment()
+{
+  edit( true );
+}
+
+void QgsModelOutputGraphicItem::applyEdit( const QString &name, const QString &description, const QVariant &defaultValue, bool mandatory, const QString &comment, const QColor &commentColor )
+{
+  const QgsProcessingModelOutput *outputComponent = dynamic_cast< const QgsProcessingModelOutput * >( component() );
+  if ( !outputComponent )
+    return;
+
+  QgsProcessingModelChildAlgorithm childAlg = model()->childAlgorithm( outputComponent->childId() );
+  QMap< QString, QgsProcessingModelOutput > modelOutputs = childAlg.modelOutputs();
+
+  if ( !modelOutputs.contains( outputComponent->name() ) )
+    return;
+
+  QgsProcessingModelOutput modelOutput = modelOutputs.take( outputComponent->name() );
+
+  modelOutput.setName( name );
+  modelOutput.setDescription( description );
+  modelOutput.setDefaultValue( defaultValue );
+  modelOutput.setMandatory( mandatory );
+  modelOutput.comment()->setDescription( comment );
+  modelOutput.comment()->setColor( commentColor );
+  modelOutputs.insert( modelOutput.name(), modelOutput );
+
+  childAlg.setModelOutputs( modelOutputs );
+  model()->setChildAlgorithm( childAlg );
+
+  const QString undoCommandId = u"output:%1"_s.arg( name );
+  emit aboutToChange( tr( "Edit %1" ).arg( modelOutput.description() ), undoCommandId );
+
+  model()->updateDestinationParameters();
+  emit requestModelRepaint();
+  emit changed();
+}
+
 void QgsModelOutputGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelOutput *output = dynamic_cast<const QgsProcessingModelOutput *>( component() ) )
@@ -1816,6 +1982,47 @@ void QgsModelOutputGraphicItem::deleteComponent()
     model()->updateDestinationParameters();
     emit changed();
     emit requestModelRepaint();
+  }
+}
+
+void QgsModelOutputGraphicItem::edit( bool editComment )
+{
+  const QgsProcessingModelOutput *outputComponent = dynamic_cast< const QgsProcessingModelOutput * >( component() );
+  if ( !outputComponent )
+    return;
+
+  const QgsProcessingParameterDefinition *existingParam = model()->modelParameterFromChildIdAndOutputName( outputComponent->childId(), outputComponent->name() );
+  if ( !existingParam )
+    return;
+
+  const QString comment = outputComponent->comment()->description();
+  const QColor commentColor = outputComponent->comment()->color();
+
+  QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+  widgetContext.setModelChildAlgorithmId( outputComponent->childId() );
+  QgsProcessingContext *context = widgetContext.processingContextGenerator()->processingContext();
+
+  QgsProcessingParameterDefinitionDialog dlg( existingParam->type(), *context, widgetContext, existingParam, model(), scene()->views().at( 0 ) );
+
+  dlg.setComments( comment );
+  dlg.setCommentColor( commentColor );
+  if ( widgetContext.processingContextGenerator() )
+  {
+    dlg.registerProcessingContextGenerator( widgetContext.processingContextGenerator() );
+  }
+
+  if ( editComment )
+  {
+    dlg.switchToCommentTab();
+  }
+
+  if ( dlg.exec() )
+  {
+    std::unique_ptr< QgsProcessingParameterDefinition > newParam( dlg.createParameter( existingParam->name() ) );
+    if ( newParam )
+    {
+      applyEdit( newParam->description(), newParam->description(), newParam->defaultValue(), !newParam->flags().testFlag( Qgis::ProcessingParameterFlag::Optional ), dlg.comments(), dlg.commentColor() );
+    }
   }
 }
 

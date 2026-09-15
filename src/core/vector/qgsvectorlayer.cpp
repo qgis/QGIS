@@ -2164,7 +2164,7 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
     if ( !defaultLoadedFlag )
     {
       // add single symbol renderer for spatial layers
-      setRenderer( isSpatial() ? QgsFeatureRenderer::defaultRenderer( geometryType() ) : nullptr );
+      setRenderer( isSpatial() ? QgsFeatureRenderer::defaultRenderer( geometryType() ).release() : nullptr );
     }
 
     if ( !mSetLegendFromStyle )
@@ -2939,10 +2939,10 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
       QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
       if ( !rendererElement.isNull() )
       {
-        QgsFeatureRenderer *r = QgsFeatureRenderer::load( rendererElement, context );
+        std::unique_ptr<QgsFeatureRenderer> r = QgsFeatureRenderer::load( rendererElement, context );
         if ( r )
         {
-          setRenderer( r );
+          setRenderer( r.release() );
         }
         else
         {
@@ -2952,7 +2952,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
       // make sure layer has a renderer - if none exists, fallback to a default renderer
       if ( isSpatial() && !renderer() )
       {
-        setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
+        setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ).release() );
       }
 
       if ( mSelectionProperties )
@@ -3521,7 +3521,7 @@ bool QgsVectorLayer::readSld( const QDomNode &node, QString &errorMessage )
 
   if ( isSpatial() )
   {
-    QgsFeatureRenderer *r = QgsFeatureRenderer::loadSld( node, geometryType(), errorMessage );
+    std::unique_ptr<QgsFeatureRenderer> r = QgsFeatureRenderer::loadSld( node, geometryType(), errorMessage );
     if ( !r )
       return false;
 
@@ -3529,7 +3529,7 @@ bool QgsVectorLayer::readSld( const QDomNode &node, QString &errorMessage )
     // we don't want multiple signals!
     ScopedIntIncrementor styleChangedSignalBlocker( &mBlockStyleChangedSignal );
 
-    setRenderer( r );
+    setRenderer( r.release() );
 
     // labeling
     readSldLabeling( node );

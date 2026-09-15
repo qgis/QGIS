@@ -101,7 +101,7 @@ Qgis::RasterRendererFlags QgsPalettedRasterRenderer::flags() const
   return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
 }
 
-QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
+std::unique_ptr<QgsRasterRenderer> QgsPalettedRasterRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
   {
@@ -133,7 +133,7 @@ QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, Q
     }
   }
 
-  QgsPalettedRasterRenderer *r = new QgsPalettedRasterRenderer( input, bandNumber, classData );
+  auto r = std::make_unique<QgsPalettedRasterRenderer>( input, bandNumber, classData );
   r->readXml( elem );
 
   // try to load color ramp (optional)

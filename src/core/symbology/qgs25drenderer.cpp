@@ -77,23 +77,19 @@ Qgs25DRenderer::Qgs25DRenderer()
 
   mSymbol->deleteSymbolLayer( 0 ); // We never asked for the default layer
 
-  QgsSymbolLayer *floor = QgsSimpleFillSymbolLayer::create();
+  std::unique_ptr<QgsSymbolLayer> floor = QgsSimpleFillSymbolLayer::create();
 
   QVariantMap wallProperties;
   wallProperties.insert( u"geometryModifier"_s, WALL_EXPRESSION );
   wallProperties.insert( u"symbolType"_s, u"Fill"_s );
-  QgsSymbolLayer *walls = QgsGeometryGeneratorSymbolLayer::create( wallProperties );
+  std::unique_ptr<QgsSymbolLayer> walls = QgsGeometryGeneratorSymbolLayer::create( wallProperties );
 
   QVariantMap roofProperties;
   roofProperties.insert( u"geometryModifier"_s, ROOF_EXPRESSION );
   roofProperties.insert( u"symbolType"_s, u"Fill"_s );
-  QgsSymbolLayer *roof = QgsGeometryGeneratorSymbolLayer::create( roofProperties );
+  std::unique_ptr<QgsSymbolLayer> roof = QgsGeometryGeneratorSymbolLayer::create( roofProperties );
 
   floor->setLocked( true );
-
-  mSymbol->appendSymbolLayer( floor );
-  mSymbol->appendSymbolLayer( walls );
-  mSymbol->appendSymbolLayer( roof );
 
   QgsEffectStack *effectStack = new QgsEffectStack();
   QgsOuterGlowEffect *glowEffect = new QgsOuterGlowEffect();
@@ -101,6 +97,11 @@ Qgs25DRenderer::Qgs25DRenderer()
   glowEffect->setSpreadUnit( Qgis::RenderUnit::MapUnits );
   effectStack->appendEffect( glowEffect );
   floor->setPaintEffect( effectStack );
+
+  mSymbol->appendSymbolLayer( floor.release() );
+  mSymbol->appendSymbolLayer( walls.release() );
+  mSymbol->appendSymbolLayer( roof.release() );
+
 
   // These methods must only be used after the above initialization!
 
@@ -143,9 +144,9 @@ Qgis::FeatureRendererFlags Qgs25DRenderer::flags() const
   return res;
 }
 
-QgsFeatureRenderer *Qgs25DRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsFeatureRenderer> Qgs25DRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  Qgs25DRenderer *renderer = new Qgs25DRenderer();
+  auto renderer = std::make_unique<Qgs25DRenderer>();
 
   const QDomNodeList symbols = element.elementsByTagName( u"symbol"_s );
   if ( symbols.size() )
@@ -285,16 +286,16 @@ void Qgs25DRenderer::setRoofColor( const QColor &roofColor ) const
   roofLayer()->setStrokeColor( roofColor );
 }
 
-Qgs25DRenderer *Qgs25DRenderer::convertFromRenderer( QgsFeatureRenderer *renderer )
+std::unique_ptr<Qgs25DRenderer> Qgs25DRenderer::convertFromRenderer( QgsFeatureRenderer *renderer )
 {
   if ( renderer->type() == "25dRenderer"_L1 )
   {
-    return static_cast<Qgs25DRenderer *>( renderer->clone() );
+    return std::unique_ptr<Qgs25DRenderer>( static_cast<Qgs25DRenderer *>( renderer->clone() ) );
   }
   else
   {
     auto res = std::make_unique< Qgs25DRenderer >();
     renderer->copyRendererData( res.get() );
-    return res.release();
+    return res;
   }
 }

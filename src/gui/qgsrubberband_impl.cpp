@@ -16,6 +16,7 @@
 #include "qgsrubberband_impl.h"
 
 #include "qgsexpressioncontextutils.h"
+#include "qgslabelingresults.h"
 #include "qgsmapcanvas.h"
 #include "qgstextrenderer.h"
 #include "qgsvectorlayer.h"
@@ -52,6 +53,14 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
 
   previewGeom.transform( canvas->mapSettings().layerTransform( mLayer ), Qgis::TransformDirection::Reverse );
 
+  const double previousReferenceScale = context.symbologyReferenceScale();
+  if ( const QgsFeatureRenderer *renderer = mLayer->renderer() )
+  {
+    context.setSymbologyReferenceScale( renderer->referenceScale() );
+  }
+
+  QgsExpressionContextScopePopper layerScopePopper( context.expressionContext(), mLayer->createExpressionContextScope() );
+
   QgsExpressionContextScope *featureScope = new QgsExpressionContextScope();
 
   QgsExpressionContextScopePopper scopePopper( context.expressionContext(), featureScope );
@@ -71,6 +80,7 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
   mapSettings.setFlag( Qgis::MapSettingsFlag::RecordProfile, false );
   QgsLabelingEngineSettings labelSettings = mapSettings.labelingEngineSettings();
   labelSettings.setFlag( Qgis::LabelingFlag::SingleCandidateOnly, true );
+  labelSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, true );
   labelSettings.setFlag( Qgis::LabelingFlag::IgnoreObstacles, true );
   labelSettings.setFlag( Qgis::LabelingFlag::DisableSearchTree, true );
   labelSettings.setFlag( Qgis::LabelingFlag::IgnoreOverlaps, true );
@@ -84,6 +94,7 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
   QSet<QString> attributeNames;
   if ( !provider->prepare( context, attributeNames ) )
   {
+    context.setSymbologyReferenceScale( previousReferenceScale );
     return;
   }
 
@@ -110,4 +121,33 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
 
   // running the engine calculates the placement and does the actual rendering:
   engine.run( context );
+
+  if ( QgsLabelingResults *results = engine.results() )
+  {
+    mBoundingRect = QRectF();
+    const QList<QgsLabelPosition> labelPosList = results->allLabels();
+    const QgsMapToPixel *m2p = canvas->getCoordinateTransform();
+    const QPointF itemPos = rubberBand->pos();
+
+    for ( const QgsLabelPosition &labelPos : labelPosList )
+    {
+      for ( int i = 0; i < 4; ++i )
+      {
+        // map point -> canvas pixel -> local item coordinates
+        const QPointF canvasPt = m2p->transform( labelPos.cornerPoints[i] ).toQPointF();
+        const QPointF localPt = canvasPt - itemPos;
+        if ( mBoundingRect.isEmpty() )
+          mBoundingRect = QRectF( localPt, QSizeF( 1, 1 ) );
+        else
+          mBoundingRect = mBoundingRect.united( QRectF( localPt, QSizeF( 1, 1 ) ) );
+      }
+    }
+  }
+
+  context.setSymbologyReferenceScale( previousReferenceScale );
+}
+
+QRectF QgsVectorLayerLabelRubberBandPreview::boundingRect() const
+{
+  return mBoundingRect;
 }

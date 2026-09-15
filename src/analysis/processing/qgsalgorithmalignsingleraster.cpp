@@ -106,6 +106,8 @@ void QgsAlignSingleRasterAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsAlignSingleRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsRasterLayer *inputLayer = parameterAsRasterLayer( parameters, u"INPUT"_s, context );
   if ( !inputLayer )
     throw QgsProcessingException( invalidRasterError( parameters, u"INPUT"_s ) );

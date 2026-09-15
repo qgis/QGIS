@@ -828,3 +828,85 @@ tests:
           geometry:
             precision: 5
             normalize: True
+
+  - algorithm: native:globaltpsinterpolation
+    name: TPS interpolation (global)
+    params:
+      EXTENT: -0.333333333,13.000000001,-5.333333333,8.000000001 [EPSG:4326]
+      FIELD: elev
+      INPUT:
+        name: pointsz.gml|layername=pointsz
+        type: vector
+      NODATA: -9999.0
+      PIXEL_SIZE: 0.666667
+      REGULARIZATION: 0.0001
+    results:
+      OUTPUT:
+        name: expected/tps_interpolation__global__OUTPUT.asc
+        type: rasterfile
+
+  - algorithm: native:localtpsinterpolation
+    name: TPS interpolation (local)
+    params:
+      EXTENT: -0.333333333,13.000000001,-5.333333333,8.000000001 [EPSG:4326]
+      FIELD: elev
+      INPUT:
+        name: pointsz.gml|layername=pointsz
+        type: vector
+      NODATA: -9999.0
+      PIXEL_SIZE: 0.666667
+      REGULARIZATION: 0.0001
+      SEARCH_POINTS_MAX: 8
+      SEARCH_POINTS_MIN: 3
+      SEARCH_RADIUS: 3.0
+    results:
+      OUTPUT:
+        name: expected/tps_interpolation__local__OUTPUT.asc
+        type: rasterfile
+
+  - algorithm: native:localtpsinterpolation
+    name: TPS interpolation (local, max distance 6)
+    params:
+      EXTENT: -0.333333333,13.000000001,-5.333333333,8.000000001 [EPSG:4326]
+      FIELD: elev
+      INPUT:
+        name: pointsz.gml|layername=pointsz
+        type: vector
+      NODATA: -9999.0
+      PIXEL_SIZE: 0.666667
+      REGULARIZATION: 0.0001
+      SEARCH_POINTS_MAX: 8
+      SEARCH_POINTS_MIN: 3
+      SEARCH_RADIUS: 6.0
+    results:
+      OUTPUT:
+        name: expected/tps_interpolation__local__max_distance_6__OUTPUT.asc
+        type: rasterfile
+
+  - algorithm: native:rastercellindex
+    name: Raster cell index (ascending)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/unique_float_raster.tif
+        type: raster
+      NODATA: -9999
+      ORDER: 0
+    results:
+      OUTPUT:
+        name: expected/raster_cell_index__ascending__OUTPUT.asc
+        type: rasterfile
+
+  - algorithm: native:rastercellindex
+    name: Raster cell index (descending)
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/unique_float_raster.tif
+        type: raster
+      NODATA: -9999
+      ORDER: 1
+    results:
+      OUTPUT:
+        name: expected/raster_cell_index__descending__OUTPUT.asc
+        type: rasterfile
