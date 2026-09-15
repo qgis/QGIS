@@ -402,6 +402,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( Qgis::RenderContextFlag::SkipSymbolRendering, mapSettings.testFlag( Qgis::MapSettingsFlag::SkipSymbolRendering ) );
   ctx.setFlag( Qgis::RenderContextFlag::RecordProfile, mapSettings.testFlag( Qgis::MapSettingsFlag::RecordProfile ) );
   ctx.setFlag( Qgis::RenderContextFlag::AlwaysUseGlobalMasks, mapSettings.testFlag( Qgis::MapSettingsFlag::AlwaysUseGlobalMasks ) );
+  ctx.setFlag( Qgis::RenderContextFlag::DrawLabelSelection, mapSettings.testFlag( Qgis::MapSettingsFlag::DrawLabelSelection ) );
 
   ctx.setRasterizedRenderingPolicy( mapSettings.rasterizedRenderingPolicy() );
 

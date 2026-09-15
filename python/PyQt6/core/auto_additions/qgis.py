@@ -5247,6 +5247,9 @@ QgsMapSettings.RecordProfile.__doc__ = "Enable run-time profiling while renderin
 QgsMapSettings.AlwaysUseGlobalMasks = Qgis.MapSettingsFlag.AlwaysUseGlobalMasks
 QgsMapSettings.AlwaysUseGlobalMasks.is_monkey_patched = True
 QgsMapSettings.AlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \n.. versionadded:: 3.38"
+QgsMapSettings.DrawLabelSelection = Qgis.MapSettingsFlag.DrawLabelSelection
+QgsMapSettings.DrawLabelSelection.is_monkey_patched = True
+QgsMapSettings.DrawLabelSelection.__doc__ = "Whether vector selections should be change the rendering of associated labels \n.. versionadded:: 4.4"
 Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 
 .. versionadded:: 3.22
@@ -5290,6 +5293,10 @@ Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 * ``AlwaysUseGlobalMasks``: When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports.
 
   .. versionadded:: 3.38
+
+* ``DrawLabelSelection``: Whether vector selections should be change the rendering of associated labels
+
+  .. versionadded:: 4.4
 
 
 """
@@ -5370,6 +5377,9 @@ QgsRenderContext.DisableSymbolClippingToExtent.__doc__ = "Force symbol clipping 
 QgsRenderContext.RenderLayerTree = Qgis.RenderContextFlag.RenderLayerTree
 QgsRenderContext.RenderLayerTree.is_monkey_patched = True
 QgsRenderContext.RenderLayerTree.__doc__ = "The render is for a layer tree display where map based properties are not available and where avoidance of long rendering freeze is crucial \n.. versionadded:: 3.44"
+QgsRenderContext.DrawLabelSelection = Qgis.RenderContextFlag.DrawLabelSelection
+QgsRenderContext.DrawLabelSelection.is_monkey_patched = True
+QgsRenderContext.DrawLabelSelection.__doc__ = "Whether vector selections should be change the rendering of associated labels \n.. versionadded:: 4.4"
 Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 
 .. versionadded:: 3.22
@@ -5423,6 +5433,10 @@ Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 * ``RenderLayerTree``: The render is for a layer tree display where map based properties are not available and where avoidance of long rendering freeze is crucial
 
   .. versionadded:: 3.44
+
+* ``DrawLabelSelection``: Whether vector selections should be change the rendering of associated labels
+
+  .. versionadded:: 4.4
 
 
 """

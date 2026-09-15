@@ -2928,6 +2928,7 @@ int QgisEvent = QEvent::User + 1;
       RecordProfile = 0x20000, //!< Enable run-time profiling while rendering \since QGIS 3.34
       AlwaysUseGlobalMasks
       = 0x40000, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \since QGIS 3.38
+      DrawLabelSelection = 0x80000 //!< Whether vector selections should be change the rendering of associated labels \since QGIS 4.4
     };
     //! Map settings flags
     Q_DECLARE_FLAGS( MapSettingsFlags, MapSettingsFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapSettings, Flags )
@@ -2963,7 +2964,8 @@ int QgisEvent = QEvent::User + 1;
       RecordProfile            = 0x80000, //!< Enable run-time profiling while rendering \since QGIS 3.34
       AlwaysUseGlobalMasks     = 0x100000, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \since QGIS 3.38
       DisableSymbolClippingToExtent = 0x200000, //!< Force symbol clipping to map extent to be disabled in all situations. This will result in slower rendering, and should only be used in situations where the feature clipping is always undesirable. \since QGIS 3.40
-      RenderLayerTree = 0x400000        //!< The render is for a layer tree display where map based properties are not available and where avoidance of long rendering freeze is crucial \since QGIS 3.44
+      RenderLayerTree = 0x400000,        //!< The render is for a layer tree display where map based properties are not available and where avoidance of long rendering freeze is crucial \since QGIS 3.44
+      DrawLabelSelection = 0x800000     //!< Whether vector selections should be change the rendering of associated labels \since QGIS 4.4
     };
     //! Render context flags
     Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
