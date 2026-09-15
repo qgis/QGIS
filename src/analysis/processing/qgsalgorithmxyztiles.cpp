@@ -877,7 +877,6 @@ QString QgsXyzTilesMbtilesAlgorithm::shortDescription() const
   return QObject::tr( "Generates XYZ tiles from the project as a single, portable MBTiles (SQLite) database." );
 }
 
-
 QgsXyzTilesMbtilesAlgorithm *QgsXyzTilesMbtilesAlgorithm::createInstance() const
 {
   return new QgsXyzTilesMbtilesAlgorithm();
@@ -1101,6 +1100,11 @@ QString QgsXyzTilesGpkgAlgorithm::displayName() const
 QStringList QgsXyzTilesGpkgAlgorithm::tags() const
 {
   return QObject::tr( "tiles,xyz,geopackage,gpkg,raster" ).split( ',' );
+}
+
+QString QgsXyzTilesGpkgAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Renders maps to XYZ raster tiles into a GeoPackage raster tile database." );
 }
 
 QString QgsXyzTilesGpkgAlgorithm::shortHelpString() const
