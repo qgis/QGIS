@@ -135,6 +135,7 @@ bool QgsGraduatedSymbolRenderer::rangeLowerBoundIsInclusive( int rangeIndex ) co
     return true;
 
   const double value = mRanges.at( rangeIndex ).lowerValue();
+  // checks if any earlier range contains the value, capturing it before this range
   for ( int i = 0; i < rangeIndex; ++i )
   {
     if ( mRanges.at( i ).lowerValue() <= value && mRanges.at( i ).upperValue() >= value )
