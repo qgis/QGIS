@@ -22,6 +22,7 @@
 #include "qgswmsutils.h"
 
 #include "qgslayertree.h"
+#include "qgsmaplayertemporalproperties.h"
 #include "qgsmediancut.h"
 #include "qgsmodule.h"
 #include "qgsproject.h"
@@ -256,5 +257,41 @@ namespace QgsWms
     //Call function used for recursive collect based on the layer tree root
     _collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, project, requestedLayerNames, project.layerTreeRoot() );
   }
+
+  void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, const QStringList &restrictedLayers, QList<QgsDateTimeRange> &dateRanges )
+  {
+    QList<QgsLayerTreeNode *> layerTreeGroupChildren = layerTreeGroup->children();
+    for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
+    {
+      QgsLayerTreeNode *treeNode = layerTreeGroupChildren.at( i );
+
+      if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
+      {
+        QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
+        if ( !restrictedLayers.contains( treeGroupChild->name() ) // skip restricted group
+             && treeGroupChild->hasWmsTimeDimension() )
+        {
+          QList<QgsDateTimeRange> childrenDateRanges;
+          getChildrenRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
+          dateRanges.append( childrenDateRanges );
+        }
+      }
+      else
+      {
+        QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
+        QgsMapLayer *l = treeLayer->layer();
+
+        if ( wmsLayerInfos.contains( treeLayer->layerId() ) // layer need to be published
+             && l->temporalProperties()
+             && l->temporalProperties()->isActive() )
+        {
+          // Add all values
+          const QList<QgsDateTimeRange> allRanges { l->temporalProperties()->allTemporalRanges( l ) };
+          dateRanges.append( allRanges );
+        }
+      }
+    }
+  }
+
 
 } // namespace QgsWms
