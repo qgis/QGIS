@@ -138,8 +138,8 @@ class pansharp(GdalAlgorithm):
     def groupId(self):
         return "rastermiscellaneous"
 
-    def commandName(self):
-        return "gdal_pansharpen"
+    def commandName(self) -> str:
+        return "gdal raster pansharpen"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         spectral = self.parameterAsRasterLayer(parameters, self.SPECTRAL, context)
@@ -168,12 +168,9 @@ class pansharp(GdalAlgorithm):
             raise QgsProcessingException(self.tr("Output format is invalid"))
 
         arguments = [
-            panchromatic_input_details.connection_string,
-            spectral_input_details.connection_string,
-            out,
             "-r",
             self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1],
-            "-of",
+            "--format",
             output_format,
         ]
 
@@ -187,13 +184,14 @@ class pansharp(GdalAlgorithm):
         if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
             options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.extend(GdalUtils.parseCreationOptions(options))
+            arguments.extend(GdalUtils.parseCreationOptions(options, new_api=True))
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        return [
-            self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
-            GdalUtils.escapeAndJoin(arguments),
-        ]
+        arguments.append(panchromatic_input_details.connection_string)
+        arguments.append(spectral_input_details.connection_string)
+        arguments.append(out)
+
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

@@ -165,8 +165,8 @@ class fillnodata(GdalAlgorithm):
     def groupId(self):
         return "rasteranalysis"
 
-    def commandName(self):
-        return "gdal_fillnodata"
+    def commandName(self) -> str:
+        return "gdal raster fill-nodata"
 
     def flags(self):
         return super().flags() | QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral
@@ -183,15 +183,13 @@ class fillnodata(GdalAlgorithm):
         self.setOutputValue(self.OUTPUT, out)
 
         arguments = [
-            input_details.connection_string,
-            out,
-            "-md",
+            "--max-distance",
             str(self.parameterAsInt(parameters, self.DISTANCE, context)),
         ]
 
         nIterations = self.parameterAsInt(parameters, self.ITERATIONS, context)
         if nIterations:
-            arguments.append("-si")
+            arguments.append("--smoothing-iterations")
             arguments.append(str(nIterations))
 
         arguments.append("-b")
@@ -199,14 +197,14 @@ class fillnodata(GdalAlgorithm):
 
         mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)
         if mask:
-            arguments.append("-mask")
+            arguments.append("--mask")
             arguments.append(mask.source())
 
         output_format = self.outputFormat(parameters, self.OUTPUT, context)
         if not output_format:
             raise QgsProcessingException(self.tr("Output format is invalid"))
 
-        arguments.append("-of")
+        arguments.append("--format")
         arguments.append(output_format)
 
         if input_details.credential_options:
@@ -216,15 +214,14 @@ class fillnodata(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        # Until https://github.com/OSGeo/gdal/issues/7651 is fixed, creation options should be latest argument
         options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
         # handle backwards compatibility parameter OPTIONS
         if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
             options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.extend(GdalUtils.parseCreationOptions(options))
+            arguments.extend(GdalUtils.parseCreationOptions(options, new_api=True))
 
-        return [
-            self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
-            GdalUtils.escapeAndJoin(arguments),
-        ]
+        arguments.append(input_details.connection_string)
+        arguments.append(out)
+
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

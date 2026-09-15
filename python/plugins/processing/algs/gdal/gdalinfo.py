@@ -115,18 +115,18 @@ class gdalinfo(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, "images", "gdaltools", "raster-info.png"))
 
     def commandName(self):
-        return "gdalinfo"
+        return "gdal raster info"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         if self.parameterAsBoolean(parameters, self.MIN_MAX, context):
-            arguments.append("-mm")
+            arguments.append("--min-max")
         if self.parameterAsBoolean(parameters, self.STATS, context):
-            arguments.append("-stats")
+            arguments.append("--stats")
         if self.parameterAsBoolean(parameters, self.NO_GCP, context):
-            arguments.append("-nogcp")
+            arguments.append("--no-gcp")
         if self.parameterAsBoolean(parameters, self.NO_METADATA, context):
-            arguments.append("-nomd")
+            arguments.append("--no-md")
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
@@ -138,13 +138,14 @@ class gdalinfo(GdalAlgorithm):
                 self.invalidRasterError(parameters, self.INPUT)
             )
         input_details = GdalUtils.gdal_connection_details_from_layer(raster)
-        arguments.append(input_details.connection_string)
 
         if input_details.open_options:
-            arguments.extend(input_details.open_options_as_arguments())
+            arguments.extend(input_details.open_options_as_arguments(new_api=True))
 
         if input_details.credential_options:
             arguments.extend(input_details.credential_options_as_arguments())
+
+        arguments.append(input_details.connection_string)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 

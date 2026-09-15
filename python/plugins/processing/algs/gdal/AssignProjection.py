@@ -78,8 +78,8 @@ class AssignProjection(GdalAlgorithm):
     def groupId(self):
         return "rasterprojections"
 
-    def commandName(self):
-        return "gdal_edit"
+    def commandName(self) -> str:
+        return "gdal raster edit"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -94,23 +94,21 @@ class AssignProjection(GdalAlgorithm):
         crs = self.parameterAsCrs(parameters, self.CRS, context)
 
         arguments = [
-            "-a_srs",
+            "--crs",
             GdalUtils.gdal_crs_string(crs),
-            input_details.connection_string,
         ]
 
         if input_details.open_options:
-            arguments.extend(input_details.open_options_as_arguments())
+            arguments.extend(input_details.open_options_as_arguments(new_api=True))
 
         if input_details.credential_options:
             arguments.extend(input_details.credential_options_as_arguments())
 
+        arguments.append(input_details.connection_string)
+
         self.setOutputValue(self.OUTPUT, fileName)
 
-        return [
-            self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
-            GdalUtils.escapeAndJoin(arguments),
-        ]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def postProcessAlgorithm(self, context, feedback):
         # get output value
