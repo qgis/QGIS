@@ -513,6 +513,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     static QgsGraduatedSymbolRenderer::Mode modeFromMethodId( const QString &methodId );
     Q_NOWARN_DEPRECATED_POP
 
+    // ! check if the value is captured by any previous range (by ordering in mRanges) than the rangeIndex specified
+    bool valueCapturedByEarlierRange( const int rangeIndex, const double value ) const;
+
 #ifdef SIP_RUN
     QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer & );
     QgsGraduatedSymbolRenderer &operator=( const QgsGraduatedSymbolRenderer & );

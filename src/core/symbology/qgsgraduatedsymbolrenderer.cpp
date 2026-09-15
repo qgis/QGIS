@@ -134,14 +134,7 @@ bool QgsGraduatedSymbolRenderer::rangeLowerBoundIsInclusive( int rangeIndex ) co
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return true;
 
-  const double value = mRanges.at( rangeIndex ).lowerValue();
-  // checks if any earlier range contains the value, capturing it before this range
-  for ( int i = 0; i < rangeIndex; ++i )
-  {
-    if ( mRanges.at( i ).lowerValue() <= value && mRanges.at( i ).upperValue() >= value )
-      return false;
-  }
-  return true;
+  return !valueCapturedByEarlierRange( rangeIndex, mRanges.at( rangeIndex ).lowerValue() );
 }
 
 bool QgsGraduatedSymbolRenderer::rangeUpperBoundIsInclusive( int rangeIndex ) const
@@ -149,13 +142,7 @@ bool QgsGraduatedSymbolRenderer::rangeUpperBoundIsInclusive( int rangeIndex ) co
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
     return true;
 
-  const double value = mRanges.at( rangeIndex ).upperValue();
-  for ( int i = 0; i < rangeIndex; ++i )
-  {
-    if ( mRanges.at( i ).lowerValue() <= value && mRanges.at( i ).upperValue() >= value )
-      return false;
-  }
-  return true;
+  return !valueCapturedByEarlierRange( rangeIndex, mRanges.at( rangeIndex ).upperValue() );
 }
 
 QString QgsGraduatedSymbolRenderer::legendKeyForValue( double value ) const
@@ -1437,4 +1424,14 @@ QString QgsGraduatedSymbolRenderer::graduatedMethodStr( Qgis::GraduatedMethod me
       return u"GraduatedSize"_s;
   }
   return QString();
+}
+
+bool QgsGraduatedSymbolRenderer::valueCapturedByEarlierRange( const int rangeIndex, const double value ) const
+{
+  for ( int i = 0; i < rangeIndex; ++i )
+  {
+    if ( mRanges.at( i ).lowerValue() <= value && mRanges.at( i ).upperValue() >= value )
+      return true;
+  }
+  return false;
 }

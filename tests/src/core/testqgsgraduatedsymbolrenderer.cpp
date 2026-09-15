@@ -48,6 +48,7 @@ class TestQgsGraduatedSymbolRenderer : public QObject
     void classifySymmetric();
     void testMatchingRangeForValue();
     void testRangeBoundInclusivity();
+    void testValueCapturedByEarlierRange();
 
   private:
 };
@@ -387,6 +388,41 @@ void TestQgsGraduatedSymbolRenderer::testRangeBoundInclusivity()
   // class on index 3 is exclusive for both low and high
   QVERIFY( !dataRenderer.rangeLowerBoundIsInclusive( 3 ) );
   QVERIFY( !dataRenderer.rangeUpperBoundIsInclusive( 3 ) );
+}
+
+void TestQgsGraduatedSymbolRenderer::testValueCapturedByEarlierRange()
+{
+  QgsGraduatedSymbolRenderer renderer;
+  QgsMarkerSymbol ms;
+  ms.setColor( QColor( 255, 0, 0 ) );
+  renderer.addClass( QgsRendererRange( 0, 10, ms.clone(), u"r1"_s ) );
+  renderer.addClass( QgsRendererRange( 10, 20, ms.clone(), u"r2"_s ) );
+  renderer.addClass( QgsRendererRange( 20, 30, ms.clone(), u"r3"_s ) );
+
+  // value in first range
+  QVERIFY( !renderer.valueCapturedByEarlierRange( 0, 5 ) );
+
+  // value in second range captured by first
+  QVERIFY( renderer.valueCapturedByEarlierRange( 1, 5 ) );
+  QVERIFY( renderer.valueCapturedByEarlierRange( 2, 5 ) );
+
+  // value in second range not captured by first
+  QVERIFY( !renderer.valueCapturedByEarlierRange( 1, 15 ) );
+  QVERIFY( renderer.valueCapturedByEarlierRange( 2, 15 ) );
+
+  // value in third range captured not by earlier ranges
+  QVERIFY( !renderer.valueCapturedByEarlierRange( 0, 25 ) );
+  QVERIFY( !renderer.valueCapturedByEarlierRange( 1, 25 ) );
+
+  // values on bounds are captured by earlier ranges
+  QVERIFY( renderer.valueCapturedByEarlierRange( 1, 0 ) );
+  QVERIFY( renderer.valueCapturedByEarlierRange( 1, 10 ) );
+
+  // move range [10,20] to the first position
+  renderer.moveClass( 1, 0 );
+
+  QVERIFY( !renderer.valueCapturedByEarlierRange( 1, 5 ) );
+  QVERIFY( renderer.valueCapturedByEarlierRange( 1, 10 ) );
 }
 
 QGSTEST_MAIN( TestQgsGraduatedSymbolRenderer )
