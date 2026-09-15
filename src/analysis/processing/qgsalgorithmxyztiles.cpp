@@ -589,6 +589,11 @@ QString QgsXyzTilesDirectoryAlgorithm::shortHelpString() const
   );
 }
 
+QString QgsXyzTilesDirectoryAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Renders maps to XYZ raster tiles as individual images files in a directory." );
+}
+
 QgsXyzTilesDirectoryAlgorithm *QgsXyzTilesDirectoryAlgorithm::createInstance() const
 {
   return new QgsXyzTilesDirectoryAlgorithm();
@@ -859,6 +864,11 @@ QStringList QgsXyzTilesMbtilesAlgorithm::tags() const
   return QObject::tr( "tiles,xyz,tms,mbtiles" ).split( ',' );
 }
 
+QString QgsXyzTilesMbtilesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Renders maps to XYZ raster tiles into a MBTiles database." );
+}
+
 QString QgsXyzTilesMbtilesAlgorithm::shortHelpString() const
 {
   return QObject::tr(
@@ -1090,6 +1100,11 @@ QString QgsXyzTilesGpkgAlgorithm::displayName() const
 QStringList QgsXyzTilesGpkgAlgorithm::tags() const
 {
   return QObject::tr( "tiles,xyz,geopackage,gpkg,raster" ).split( ',' );
+}
+
+QString QgsXyzTilesGpkgAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Renders maps to XYZ raster tiles into a GeoPackage raster tile database." );
 }
 
 QString QgsXyzTilesGpkgAlgorithm::shortHelpString() const
