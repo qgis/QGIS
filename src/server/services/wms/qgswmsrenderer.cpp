@@ -3730,7 +3730,7 @@ namespace QgsWms
     mContext.accessControl()->resolveFilterFeatures( mapSettings.layers() );
     filters.addProvider( mContext.accessControl() );
 #endif
-    QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters );
+    QgsMapRendererJobProxy renderJob( mContext.settings().parallelRendering(), mContext.settings().maxThreads(), &filters, mContext.perLayerTemporalRange() );
 
     renderJob.render( mapSettings, image, mContext.socketFeedback() );
     painter = renderJob.takePainter();

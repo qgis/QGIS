@@ -92,6 +92,21 @@ class QgsWmsLayerInfos
     static QMap<QString, QgsWmsLayerInfos> buildWmsLayerInfos( QgsServerInterface *serverIface, const QgsProject *project, const QList<QgsCoordinateReferenceSystem> &outputCrsList );
 
     /**
+     * Returns the WMS layers definition to build WMS capabilities
+     *
+     * The output will only contain the published and available after
+     * access control layers and layers without extent projection exception.
+     *
+     * \param serverIface Interface for plugins
+     * \param project Project
+     *
+     * \returns the WMS layers definition
+     *
+     * \since QGIS 4.4
+     */
+    static QMap<QString, QgsWmsLayerInfos> buildWmsLayerInfos( QgsServerInterface *serverIface, const QgsProject *project );
+
+    /**
      * Returns a map with CRS authid as key and the transformed extent as value
      *
      * \param extent the extent to transform

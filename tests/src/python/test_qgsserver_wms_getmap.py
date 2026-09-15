@@ -35,6 +35,7 @@ from qgis.core import (
     QgsProject,
     QgsRasterLayer,
     QgsServerWmsDimensionProperties,
+    QgsSingleBandGrayRenderer,
     QgsTextFormat,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
@@ -3563,6 +3564,211 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             date_dimension.attrib,
             {"units": "ISO8601", "name": "TIME", "default": "2025-01-12T00:00:00Z"},
         )
+
+    def test_get_map_time_dimension_defaultvalue(self):
+        """Test if get map return correct time dimension default value"""
+
+        rl_range = QgsRasterLayer(
+            self.get_test_data_path("raster/byte_with_nan_nodata.tif").as_posix(),
+            "test_date_range",
+        )
+        rl_range.renderer().setGradient(QgsSingleBandGrayRenderer.Gradient.BlackToWhite)
+
+        rl_instant1 = QgsRasterLayer(
+            self.get_test_data_path("raster/byte_with_nan_nodata.tif").as_posix(),
+            "test_date_instant_1",
+        )
+        rl_instant1.renderer().setGradient(
+            QgsSingleBandGrayRenderer.Gradient.WhiteToBlack
+        )
+
+        rl_notpublished = QgsRasterLayer(
+            self.get_test_data_path("raster/byte_with_nan_nodata.tif").as_posix(),
+            "test_date_notpublished",
+        )
+        rl_notpublished.renderer().setGradient(
+            QgsSingleBandGrayRenderer.Gradient.WhiteToBlack
+        )
+
+        for rl in [
+            rl_range,
+            rl_instant1,
+            rl_notpublished,
+        ]:
+            timeProps = rl.temporalProperties()
+            timeProps.setIsActive(True)
+            timeProps.setMode(Qgis.RasterTemporalMode.FixedTemporalRange)
+
+        rl_range.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-12T12:34:56Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-15T09:12:34Z", Qt.DateFormat.ISODate),
+            )
+        )
+
+        rl_instant1.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-12T00:00:00Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-12T00:00:00Z", Qt.DateFormat.ISODate),
+            )
+        )
+
+        rl_notpublished.temporalProperties().setFixedTemporalRange(
+            QgsDateTimeRange(
+                QDateTime.fromString("2025-01-15T18:00:00Z", Qt.DateFormat.ISODate),
+                QDateTime.fromString("2025-01-15T18:00:00Z", Qt.DateFormat.ISODate),
+            )
+        )
+
+        project = QgsProject()
+
+        # Set a filename to avoid capabilities cache breaking test
+        project.setFileName("test_getmap_time_dimension_defaultvalue")
+
+        project.addMapLayers(
+            [
+                rl_range,
+                rl_instant1,
+                rl_notpublished,
+            ],
+            False,
+        )
+
+        project.writeEntry("WMSRestrictedLayers", "/", ["test_date_notpublished"])
+        groupWithTimeDim = project.layerTreeRoot().addGroup("GroupWithTimeDimension")
+        groupWithTimeDim.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo(
+                "TIME", Qgis.WmsDimensionDefaultDisplay.MinValue
+            )
+        )
+
+        groupWithTimeDim.addLayer(rl_range)
+        group = groupWithTimeDim.addGroup("SubGroupWithTimeDimension")
+        group.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo(
+                "TIME", Qgis.WmsDimensionDefaultDisplay.MaxValue
+            )
+        )
+        group.addLayer(rl_instant1)
+        group.addLayer(rl_notpublished)
+
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "MAP": urllib.parse.quote(self.projectPath),
+                        "SERVICE": "WMS",
+                        "VERSION": "1.3.0",
+                        "REQUEST": "GetMap",
+                        "LAYERS": "GroupWithTimeDimension",
+                        "STYLES": "",
+                        "FORMAT": "image/png",
+                        "BBOX": "440720.0000000000000000,3751260.0000000000000000,440780.0000000000000000,3751320.0000000000000000",
+                        "HEIGHT": "500",
+                        "WIDTH": "500",
+                        "CRS": "EPSG:26711",
+                    }.items()
+                )
+            ]
+        )
+
+        # rl_instant layer temporal range has the min and should be displayed
+        r, h = self._result(self._execute_request_project(qs, project))
+        self._img_diff_error(r, h, "WMS_GetMap_TimeDimension_default_value_min")
+
+        groupWithTimeDim.serverProperties().removeWmsDimension("TIME")
+        groupWithTimeDim.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo(
+                "TIME", Qgis.WmsDimensionDefaultDisplay.MaxValue
+            )
+        )
+
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "MAP": urllib.parse.quote(self.projectPath),
+                        "SERVICE": "WMS",
+                        "VERSION": "1.3.0",
+                        "REQUEST": "GetMap",
+                        "LAYERS": "GroupWithTimeDimension",
+                        "STYLES": "",
+                        "FORMAT": "image/png",
+                        "BBOX": "440720.0000000000000000,3751260.0000000000000000,440780.0000000000000000,3751320.0000000000000000",
+                        "HEIGHT": "500",
+                        "WIDTH": "500",
+                        "CRS": "EPSG:26711",
+                    }.items()
+                )
+            ]
+        )
+
+        # rl_range layer temporal range has the max and should be displayed
+        r, h = self._result(self._execute_request_project(qs, project))
+        self._img_diff_error(r, h, "WMS_GetMap_TimeDimension_default_value_max")
+
+        groupWithTimeDim.serverProperties().removeWmsDimension("TIME")
+        groupWithTimeDim.serverProperties().addWmsDimension(
+            QgsServerWmsDimensionProperties.WmsDimensionInfo(
+                "TIME",
+                Qgis.WmsDimensionDefaultDisplay.ReferenceValue,
+                QDateTime.fromString("2025-01-13T01:20:30Z", Qt.DateFormat.ISODate),
+            )
+        )
+
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "MAP": urllib.parse.quote(self.projectPath),
+                        "SERVICE": "WMS",
+                        "VERSION": "1.3.0",
+                        "REQUEST": "GetMap",
+                        "LAYERS": "GroupWithTimeDimension",
+                        "STYLES": "",
+                        "FORMAT": "image/png",
+                        "BBOX": "440720.0000000000000000,3751260.0000000000000000,440780.0000000000000000,3751320.0000000000000000",
+                        "HEIGHT": "500",
+                        "WIDTH": "500",
+                        "CRS": "EPSG:26711",
+                    }.items()
+                )
+            ]
+        )
+
+        # reference value is "2025-01-13T01:20:30Z" which fits `rl_range` layer temporal range
+        # (between 2025-01-12T12:34:56Z and 2025-01-15T09:12:34Z) and so display rl_range (max) image
+        r, h = self._result(self._execute_request_project(qs, project))
+        self._img_diff_error(r, h, "WMS_GetMap_TimeDimension_default_value_max")
+
+        # Check that TIME parameter overrides default value
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "MAP": urllib.parse.quote(self.projectPath),
+                        "SERVICE": "WMS",
+                        "VERSION": "1.3.0",
+                        "REQUEST": "GetMap",
+                        "LAYERS": "GroupWithTimeDimension",
+                        "TIME": "2025-01-12T00:00:00Z",
+                        "STYLES": "",
+                        "FORMAT": "image/png",
+                        "BBOX": "440720.0000000000000000,3751260.0000000000000000,440780.0000000000000000,3751320.0000000000000000",
+                        "HEIGHT": "500",
+                        "WIDTH": "500",
+                        "CRS": "EPSG:26711",
+                    }.items()
+                )
+            ]
+        )
+
+        r, h = self._result(self._execute_request_project(qs, project))
+        self._img_diff_error(r, h, "WMS_GetMap_TimeDimension_default_value_min")
 
     def test_get_map_labeling_opacities(self):
         """Test if OPACITIES is also applied to labels"""
