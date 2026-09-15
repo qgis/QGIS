@@ -328,6 +328,9 @@ using namespace Qt::StringLiterals;
 #include "qgsmetadataalgorithms.h"
 #include "qgsprojectstylealgorithms.h"
 #include "qgsstylealgorithms.h"
+#include "qgsalgorithmflowconnectivity.h"
+#include "qgsalgorithmflowdirection.h"
+#include "qgsalgorithmstrahlerorder.h"
 
 ///@cond PRIVATE
 
@@ -507,6 +510,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFindProjectionAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsFlattenRelationshipsAlgorithm() );
+  addAlgorithm( new QgsFlowConnectivityD8Algorithm() );
+  addAlgorithm( new QgsFlowDirectionD8Algorithm() );
   addAlgorithm( new QgsForceCCWAlgorithm() );
   addAlgorithm( new QgsForceCWAlgorithm() );
   addAlgorithm( new QgsForceRHRAlgorithm() );
@@ -684,6 +689,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSplitVectorLayerAlgorithm() );
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
   addAlgorithm( new QgsStDbscanClusteringAlgorithm() );
+  addAlgorithm( new QgsStrahlerOrderFromDemAlgorithm() );
+  addAlgorithm( new QgsStrahlerOrderFromFlowDirectionAlgorithm() );
   addAlgorithm( new QgsStringConcatenationAlgorithm() );
   addAlgorithm( new QgsStyleFromProjectAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
