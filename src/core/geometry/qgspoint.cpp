@@ -492,12 +492,6 @@ bool QgsPoint::moveVertex( QgsVertexId position, const QgsPoint &newPos )
   return true;
 }
 
-bool QgsPoint::deleteVertex( QgsVertexId position )
-{
-  Q_UNUSED( position )
-  return false;
-}
-
 bool QgsPoint::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   Q_UNUSED( positions )
