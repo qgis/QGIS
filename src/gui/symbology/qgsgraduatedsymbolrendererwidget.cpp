@@ -191,11 +191,8 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
   {
     return range.renderState() ? Qt::Checked : Qt::Unchecked;
   }
-  else if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
+  else if ( role == Qt::DisplayRole )
   {
-    if ( role == Qt::ToolTipRole )
-      return tooltip( index );
-
     switch ( index.column() )
     {
       case 1:
@@ -205,6 +202,10 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
       default:
         return QVariant();
     }
+  }
+  else if ( role == Qt::ToolTipRole )
+  {
+    return tooltip( index );
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && range.symbol() )
   {
