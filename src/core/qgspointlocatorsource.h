@@ -47,6 +47,7 @@ class QgsRenderContext;
 class QgsFeatureRenderer;
 class QgsVectorLayerFeatureSource;
 class QgsCoordinateTransform;
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -77,12 +78,13 @@ class QgsPointLocatorSource
      * via \a transform, optionally restricted to \a extent (destination CRS) and to at most
      * \a maxFeaturesToIndex geometries (-1 for no limit).
      *
-     * Sets \a ok to FALSE if the maximum feature count was exceeded and indexing must be aborted.
+     * Sets \a ok to FALSE if the maximum feature count was exceeded, or if \a feedback was canceled,
+     * and indexing must be aborted.
      *
      * This may be called on a worker thread, so it MUST NOT read the live layer. It may only use
      * state snapshotted on the main thread at construction.
      */
-    virtual QVector<Geometry> snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok ) = 0;
+    virtual QVector<Geometry> snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback = nullptr ) = 0;
 
     //! The map layer this source indexes.
     virtual QgsMapLayer *layer() const = 0;
@@ -119,7 +121,7 @@ class QgsPointLocatorVectorSource : public QgsPointLocatorSource
     QgsPointLocatorVectorSource( QgsVectorLayer *layer, QgsRenderContext *context );
     ~QgsPointLocatorVectorSource() override;
 
-    QVector<Geometry> snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok ) override;
+    QVector<Geometry> snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback = nullptr ) override;
     QgsMapLayer *layer() const override;
     QgsVectorLayer *vectorLayer() const override { return mLayer; }
     QString id() const override;
@@ -148,7 +150,7 @@ class QgsPointLocatorAnnotationSource : public QgsPointLocatorSource
     //! Snapshots the snappable items of the annotation \a layer on the main thread.
     explicit QgsPointLocatorAnnotationSource( QgsAnnotationLayer *layer );
 
-    QVector<Geometry> snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok ) override;
+    QVector<Geometry> snappableGeometries( const QgsRectangle *extent, const QgsCoordinateTransform &transform, int maxFeaturesToIndex, bool &ok, QgsFeedback *feedback = nullptr ) override;
     QgsMapLayer *layer() const override;
     QString itemId( QgsFeatureId id ) const override { return mItemIds.value( id ); }
     QString id() const override;
