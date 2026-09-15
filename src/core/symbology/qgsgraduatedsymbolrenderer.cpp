@@ -145,6 +145,21 @@ bool QgsGraduatedSymbolRenderer::rangeUpperBoundIsInclusive( int rangeIndex ) co
   return !valueCapturedByEarlierRange( rangeIndex, mRanges.at( rangeIndex ).upperValue() );
 }
 
+bool QgsGraduatedSymbolRenderer::rangeOverlapsEarlierRange( int rangeIndex ) const
+{
+  if ( rangeIndex <= 0 || rangeIndex >= mRanges.size() )
+    return false;
+
+  const QgsRendererRange &target = mRanges.at( rangeIndex );
+  for ( int i = 0; i < rangeIndex; ++i )
+  {
+    // ranges which only touch at a shared boundary value are not considered as overlapping
+    if ( mRanges.at( i ).lowerValue() < target.upperValue() && target.lowerValue() < mRanges.at( i ).upperValue() )
+      return true;
+  }
+  return false;
+}
+
 QString QgsGraduatedSymbolRenderer::legendKeyForValue( double value ) const
 {
   if ( const QgsRendererRange *matchingRange = rangeForValue( value ) )

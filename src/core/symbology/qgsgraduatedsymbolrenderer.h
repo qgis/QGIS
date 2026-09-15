@@ -142,6 +142,14 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     bool rangeUpperBoundIsInclusive( int rangeIndex ) const;
 
+    /**
+     * Returns TRUE if the range at the specified \a rangeIndex overlaps with any range
+     * positioned earlier in the list of ranges().
+     *
+     * \since QGIS 4.4
+     */
+    bool rangeOverlapsEarlierRange( int rangeIndex ) const;
+
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 

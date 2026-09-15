@@ -177,7 +177,12 @@ QString QgsGraduatedSymbolRendererModel::tooltip( const QModelIndex &index ) con
   const QString lowerOperator = lowerInclusive ? u"≤"_s : u"<"_s;
   const QString upperOperator = upperInclusive ? u"≤"_s : u"<"_s;
 
-  return u"%1 %2 %3 %4 %5"_s.arg( formatRangeValue( range.lowerValue() ), lowerOperator, tr( "Values" ), upperOperator, formatRangeValue( range.upperValue() ) );
+  QString result = u"%1 %2 %3 %4 %5"_s.arg( formatRangeValue( range.lowerValue() ), lowerOperator, tr( "Values" ), upperOperator, formatRangeValue( range.upperValue() ) );
+
+  if ( mRenderer->rangeOverlapsEarlierRange( index.row() ) )
+    result += u"\n%1"_s.arg( tr( "This class overlaps with another class." ) );
+
+  return result;
 }
 
 QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int role ) const

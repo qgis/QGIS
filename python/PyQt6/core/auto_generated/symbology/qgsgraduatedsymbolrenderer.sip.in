@@ -150,6 +150,15 @@ classified into this range.
 .. versionadded:: 4.4
 %End
 
+    bool rangeOverlapsEarlierRange( int rangeIndex ) const;
+%Docstring
+Returns ``True`` if the range at the specified ``rangeIndex`` overlaps
+with any range positioned earlier in the list of
+:py:func:`~QgsGraduatedSymbolRenderer.ranges`.
+
+.. versionadded:: 4.4
+%End
+
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
