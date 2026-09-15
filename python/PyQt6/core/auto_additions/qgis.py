@@ -10605,6 +10605,46 @@ Qgis.AngleUnit.__doc__ = """Units of angles.
 """
 # --
 Qgis.AngleUnit.baseClass = Qgis
+QgsMeshRendererVectorWindBarbSettings.WindSpeedUnit = Qgis.WindSpeedUnit
+# monkey patching scoped based enum
+QgsMeshRendererVectorWindBarbSettings.MetersPerSecond = Qgis.WindSpeedUnit.MetersPerSecond
+QgsMeshRendererVectorWindBarbSettings.MetersPerSecond.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.MetersPerSecond.__doc__ = "Meters per second"
+QgsMeshRendererVectorWindBarbSettings.KilometersPerHour = Qgis.WindSpeedUnit.KilometersPerHour
+QgsMeshRendererVectorWindBarbSettings.KilometersPerHour.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.KilometersPerHour.__doc__ = "Kilometers per hour"
+QgsMeshRendererVectorWindBarbSettings.Knots = Qgis.WindSpeedUnit.Knots
+QgsMeshRendererVectorWindBarbSettings.Knots.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.Knots.__doc__ = "Knots (Nautical miles per hour)"
+QgsMeshRendererVectorWindBarbSettings.MilesPerHour = Qgis.WindSpeedUnit.MilesPerHour
+QgsMeshRendererVectorWindBarbSettings.MilesPerHour.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.MilesPerHour.__doc__ = "Miles per hour"
+QgsMeshRendererVectorWindBarbSettings.FeetPerSecond = Qgis.WindSpeedUnit.FeetPerSecond
+QgsMeshRendererVectorWindBarbSettings.FeetPerSecond.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.FeetPerSecond.__doc__ = "Feet per second"
+QgsMeshRendererVectorWindBarbSettings.OtherUnit = Qgis.WindSpeedUnit.OtherUnit
+QgsMeshRendererVectorWindBarbSettings.OtherUnit.is_monkey_patched = True
+QgsMeshRendererVectorWindBarbSettings.OtherUnit.__doc__ = "Other unit"
+Qgis.WindSpeedUnit.__doc__ = """Wind speed units.
+
+Wind barbs use knots so we use this enum for preset conversion values.
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsMeshRendererVectorWindBarbSettings`.WindSpeedUnit.
+
+.. versionadded:: 4.4
+
+* ``MetersPerSecond``: Meters per second
+* ``KilometersPerHour``: Kilometers per hour
+* ``Knots``: Knots (Nautical miles per hour)
+* ``MilesPerHour``: Miles per hour
+* ``FeetPerSecond``: Feet per second
+* ``OtherUnit``: Other unit
+
+"""
+# --
+Qgis.WindSpeedUnit.baseClass = Qgis
 QgsUnitTypes.TemporalUnit = Qgis.TemporalUnit
 # monkey patching scoped based enum
 QgsUnitTypes.TemporalMilliseconds = Qgis.TemporalUnit.Milliseconds
@@ -13223,6 +13263,88 @@ Qgis.UserInterfaceIconType.__doc__ = """Icon types for icons shown in the user i
 """
 # --
 Qgis.UserInterfaceIconType.baseClass = Qgis
+QgsMeshRendererVectorArrowSettings.ArrowScalingMethod = Qgis.VectorFieldArrowScalingMethod
+# monkey patching scoped based enum
+QgsMeshRendererVectorArrowSettings.MinMax = Qgis.VectorFieldArrowScalingMethod.MinMax
+QgsMeshRendererVectorArrowSettings.MinMax.is_monkey_patched = True
+QgsMeshRendererVectorArrowSettings.MinMax.__doc__ = "Scale vector magnitude linearly to fit in range of vectorFilterMin() and vectorFilterMax()"
+QgsMeshRendererVectorArrowSettings.Scaled = Qgis.VectorFieldArrowScalingMethod.Scaled
+QgsMeshRendererVectorArrowSettings.Scaled.is_monkey_patched = True
+QgsMeshRendererVectorArrowSettings.Scaled.__doc__ = "Scale vector magnitude by factor scaleFactor()"
+QgsMeshRendererVectorArrowSettings.Fixed = Qgis.VectorFieldArrowScalingMethod.Fixed
+QgsMeshRendererVectorArrowSettings.Fixed.is_monkey_patched = True
+QgsMeshRendererVectorArrowSettings.Fixed.__doc__ = "Use fixed length fixedShaftLength() regardless of vector's magnitude"
+Qgis.VectorFieldArrowScalingMethod.__doc__ = """Algorithm to transform vector magnitude to length of arrow on the device in pixels.
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsMeshRendererVectorArrowSettings`.ArrowScalingMethod.
+
+.. versionadded:: 4.4
+
+* ``MinMax``: Scale vector magnitude linearly to fit in range of vectorFilterMin() and vectorFilterMax()
+* ``Scaled``: Scale vector magnitude by factor scaleFactor()
+* ``Fixed``: Use fixed length fixedShaftLength() regardless of vector's magnitude
+
+"""
+# --
+Qgis.VectorFieldArrowScalingMethod.baseClass = Qgis
+QgsMeshRendererVectorSettings.Symbology = Qgis.VectorFieldSymbology
+# monkey patching scoped based enum
+QgsMeshRendererVectorSettings.Arrows = Qgis.VectorFieldSymbology.Arrows
+QgsMeshRendererVectorSettings.Arrows.is_monkey_patched = True
+QgsMeshRendererVectorSettings.Arrows.__doc__ = "Displaying vector dataset with arrows"
+QgsMeshRendererVectorSettings.Streamlines = Qgis.VectorFieldSymbology.Streamlines
+QgsMeshRendererVectorSettings.Streamlines.is_monkey_patched = True
+QgsMeshRendererVectorSettings.Streamlines.__doc__ = "Displaying vector dataset with streamlines"
+QgsMeshRendererVectorSettings.Traces = Qgis.VectorFieldSymbology.Traces
+QgsMeshRendererVectorSettings.Traces.is_monkey_patched = True
+QgsMeshRendererVectorSettings.Traces.__doc__ = "Displaying vector dataset with particle traces"
+QgsMeshRendererVectorSettings.WindBarbs = Qgis.VectorFieldSymbology.WindBarbs
+QgsMeshRendererVectorSettings.WindBarbs.is_monkey_patched = True
+QgsMeshRendererVectorSettings.WindBarbs.__doc__ = "Displaying vector dataset with wind barbs"
+Qgis.VectorFieldSymbology.__doc__ = """Defines the symbology of vector field rendering.
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsMeshRendererVectorSettings`.Symbology.
+
+.. versionadded:: 4.4
+
+* ``Arrows``: Displaying vector dataset with arrows
+* ``Streamlines``: Displaying vector dataset with streamlines
+* ``Traces``: Displaying vector dataset with particle traces
+* ``WindBarbs``: Displaying vector dataset with wind barbs
+
+"""
+# --
+Qgis.VectorFieldSymbology.baseClass = Qgis
+QgsMeshRendererVectorStreamlineSettings.SeedingStartPointsMethod = Qgis.VectorFieldSeedingMethod
+# monkey patching scoped based enum
+QgsMeshRendererVectorStreamlineSettings.MeshGridded = Qgis.VectorFieldSeedingMethod.Gridded
+QgsMeshRendererVectorStreamlineSettings.SeedingStartPointsMethod.MeshGridded = Qgis.VectorFieldSeedingMethod.Gridded
+QgsMeshRendererVectorStreamlineSettings.MeshGridded.is_monkey_patched = True
+QgsMeshRendererVectorStreamlineSettings.MeshGridded.__doc__ = "Seeds start points on data grid or user regular grid"
+QgsMeshRendererVectorStreamlineSettings.Random = Qgis.VectorFieldSeedingMethod.Random
+QgsMeshRendererVectorStreamlineSettings.Random.is_monkey_patched = True
+QgsMeshRendererVectorStreamlineSettings.Random.__doc__ = "Seeds start points randomly"
+Qgis.VectorFieldSeedingMethod.__doc__ = """Method used to define start points that are used to draw streamlines.
+
+.. note::
+
+   Prior to QGIS 4.4 this was available as :py:class:`QgsMeshRendererVectorStreamlineSettings`.SeedingStartPointsMethod.
+
+.. versionadded:: 4.4
+
+* ``Gridded``: Seeds start points on data grid or user regular grid
+
+  Available as ``QgsMeshRendererVectorStreamlineSettings.MeshGridded`` in older QGIS releases.
+
+* ``Random``: Seeds start points randomly
+
+"""
+# --
+Qgis.VectorFieldSeedingMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LinearMatrixMethod.Lu.__doc__ = "Fast lower-upper (LU) decomposition (fails on singular/collinear matrices)"
 Qgis.LinearMatrixMethod.Svd.__doc__ = "Singular Value Decomposition (handles collinearity and rank deficiency)"
