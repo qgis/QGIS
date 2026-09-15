@@ -589,6 +589,12 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       continue;
     }
 
+    if ( mPerLayerTemporalRange.contains( ml ) && ml->temporalProperties() && !ml->temporalProperties()->isVisibleInTemporalRange( mPerLayerTemporalRange[ml] ) )
+    {
+      QgsDebugMsgLevel( u"Layer not rendered because it is not visible within the layer's time range"_s, 3 );
+      continue;
+    }
+
     if ( !mSettings.zRange().isInfinite() && ml->elevationProperties() && !ml->elevationProperties()->isVisibleInZRange( mSettings.zRange(), ml ) )
     {
       QgsDebugMsgLevel( u"Layer not rendered because it is not visible within the map's z range"_s, 3 );
@@ -648,6 +654,11 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     if ( mFeatureFilterProvider )
     {
       job.context()->setFeatureFilterProvider( mFeatureFilterProvider );
+    }
+
+    if ( mPerLayerTemporalRange.contains( ml ) )
+    {
+      job.context()->setTemporalRange( mPerLayerTemporalRange.value( ml ) );
     }
 
     QgsMapLayerStyleOverride styleOverride( ml );

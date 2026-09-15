@@ -132,6 +132,7 @@ Returns the feature filter provider used by the
 :py:class:`QgsRenderContext` of each LayerRenderJob.
 %End
 
+
     struct Error
     {
         Error( const QString &lid, const QString &msg );
