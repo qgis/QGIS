@@ -23,6 +23,7 @@
 
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsgpkgtiles.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmbtiles.h"
 #include "qgsprocessingalgorithm.h"
@@ -39,7 +40,7 @@ using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-class PendingTilesToWriteQueue;
+template<typename T> class PendingTilesToWriteQueue;
 
 struct Tile
 {
@@ -178,12 +179,35 @@ class QgsXyzTilesMbtilesAlgorithm : public QgsXyzTilesBaseAlgorithm
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
     void processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback ) override;
 
   private:
     std::unique_ptr<QgsMbTiles> mMbtilesWriter;
-    PendingTilesToWriteQueue *mWriteQueue = nullptr;
+    PendingTilesToWriteQueue<QgsMbTiles::TileData> *mWriteQueue = nullptr;
+    void doExport( QgsProcessingFeedback *feedback );
+};
+
+/**
+ * Native GeoPackage raster tiles algorithm.
+ */
+class QgsXyzTilesGpkgAlgorithm : public QgsXyzTilesBaseAlgorithm
+{
+  public:
+    QgsXyzTilesGpkgAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString shortHelpString() const override;
+    QgsXyzTilesGpkgAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    void processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    std::unique_ptr<QgsGeoPackageTiles> mGpkgWriter;
+    PendingTilesToWriteQueue<QgsGeoPackageTiles::TileData> *mWriteQueue = nullptr;
     void doExport( QgsProcessingFeedback *feedback );
 };
 
