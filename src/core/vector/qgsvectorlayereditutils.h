@@ -240,8 +240,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Splits features cut by the given curve
      * \param curve line that splits the layer features
-     * \param[out] topologyTestPoints topological points to be tested against other layers
-     * \param preserveCircular whether circular strings are preserved after splitting
+     * \param[out] topologyTestPoints topological points to be tested against other layers. Points from curve geometries are not yet fully supported.
+     * \param preserveCircular whether if circular strings are reconstructed from segmentized geometries after splitting. From GEOS 3.15 on, this parameter is unused, and circular strings are preserved.
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns QgsGeometry::OperationResult
      * \since QGIS 3.16
