@@ -91,9 +91,9 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
   mModel = make_qobject_unique<QgsRuleBased3DRendererModel>( mRootRule.get() );
   viewRules->setModel( mModel );
 
-  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBased3DRendererWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsRuleBased3DRendererWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsRuleBased3DRendererWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBased3DRendererWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsRuleBased3DRendererWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsRuleBased3DRendererWidget::changed );
 }
 
 void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
@@ -168,7 +168,7 @@ void QgsRuleBased3DRendererWidget::editRule( const QModelIndex &index )
   Qgs3DRendererRulePropsWidget *widget = new Qgs3DRendererRulePropsWidget( rule, mLayer, this );
   widget->setPanelTitle( tr( "Edit Rule" ) );
   connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBased3DRendererWidget::ruleWidgetPanelAccepted );
-  connect( widget, &Qgs3DRendererRulePropsWidget::widgetChanged, this, &QgsRuleBased3DRendererWidget::liveUpdateRuleFromPanel );
+  connect( widget, &Qgs3DRendererRulePropsWidget::changed, this, &QgsRuleBased3DRendererWidget::liveUpdateRuleFromPanel );
   openPanel( widget );
 }
 
@@ -589,10 +589,10 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
 
   connect( btnExpressionBuilder, &QAbstractButton::clicked, this, &Qgs3DRendererRulePropsWidget::buildExpression );
   connect( btnTestFilter, &QAbstractButton::clicked, this, &Qgs3DRendererRulePropsWidget::testFilter );
-  connect( editFilter, &QLineEdit::textEdited, this, &Qgs3DRendererRulePropsWidget::widgetChanged );
-  connect( editDescription, &QLineEdit::textChanged, this, &Qgs3DRendererRulePropsWidget::widgetChanged );
-  connect( groupSymbol, &QGroupBox::toggled, this, &Qgs3DRendererRulePropsWidget::widgetChanged );
-  connect( mSymbolWidget, &QgsSymbol3DWidget::widgetChanged, this, &Qgs3DRendererRulePropsWidget::widgetChanged );
+  connect( editFilter, &QLineEdit::textEdited, this, &Qgs3DRendererRulePropsWidget::changed );
+  connect( editDescription, &QLineEdit::textChanged, this, &Qgs3DRendererRulePropsWidget::changed );
+  connect( groupSymbol, &QGroupBox::toggled, this, &Qgs3DRendererRulePropsWidget::changed );
+  connect( mSymbolWidget, &QgsSymbol3DWidget::changed, this, &Qgs3DRendererRulePropsWidget::changed );
   connect( mFilterRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
   connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) {
     if ( toggled )

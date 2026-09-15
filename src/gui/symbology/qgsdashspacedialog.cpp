@@ -52,9 +52,9 @@ QgsDashSpaceWidget::QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWi
 
   connect( mAddButton, &QPushButton::clicked, this, &QgsDashSpaceWidget::mAddButton_clicked );
   connect( mRemoveButton, &QPushButton::clicked, this, &QgsDashSpaceWidget::mRemoveButton_clicked );
-  connect( mDashSpaceTreeWidget, &QTreeWidget::itemChanged, this, [this] { emit widgetChanged(); } );
+  connect( mDashSpaceTreeWidget, &QTreeWidget::itemChanged, this, [this] { emit changed(); } );
 
-  connect( this, &QgsPanelWidget::widgetChanged, this, [this] {
+  connect( this, &QgsPanelWidget::changed, this, [this] {
     const QVector<qreal> pattern = dashDotVector();
     double total = 0;
     for ( qreal part : pattern )
@@ -73,7 +73,7 @@ void QgsDashSpaceWidget::mAddButton_clicked()
   entry->setText( 0, u"5"_s );
   entry->setText( 1, u"2"_s );
   mDashSpaceTreeWidget->addTopLevelItem( entry );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsDashSpaceWidget::mRemoveButton_clicked()
@@ -84,7 +84,7 @@ void QgsDashSpaceWidget::mRemoveButton_clicked()
   {
     mDashSpaceTreeWidget->takeTopLevelItem( mDashSpaceTreeWidget->indexOfTopLevelItem( currentItem ) );
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 QVector<qreal> QgsDashSpaceWidget::dashDotVector() const

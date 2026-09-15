@@ -73,7 +73,7 @@ QgsTiledSceneLayer3DRendererWidget::QgsTiledSceneLayer3DRendererWidget( QgsMapLa
   mWidget = new QgsTiledSceneLayer3DPropertiesWidget( this );
   layout->addWidget( mWidget );
 
-  connect( mWidget, &QgsTiledSceneLayer3DPropertiesWidget::widgetChanged, this, &QgsTiledSceneLayer3DRendererWidget::widgetChanged );
+  connect( mWidget, &QgsTiledSceneLayer3DPropertiesWidget::widgetChanged, this, &QgsTiledSceneLayer3DRendererWidget::changed );
 
   syncToLayer( layer );
 }

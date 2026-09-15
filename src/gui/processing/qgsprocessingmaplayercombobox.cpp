@@ -716,7 +716,7 @@ void QgsProcessingMapLayerComboBox::showSourceOptions()
 
     panel->openPanel( widget );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] {
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] {
       bool changed = false;
       changed = changed | ( widget->featureLimit() != mFeatureLimit );
       changed = changed | ( widget->filterExpression() != mFilterExpression );
@@ -748,7 +748,7 @@ void QgsProcessingMapLayerComboBox::showRasterSourceOptions()
 
     panel->openPanel( widget );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] {
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] {
       bool changed = false;
       changed = changed | ( widget->referenceScale() != mRasterReferenceScale );
       changed = changed | ( widget->dpi() != mRasterDpi );
