@@ -174,8 +174,8 @@ QString QgsGraduatedSymbolRendererModel::tooltip( const QModelIndex &index ) con
   const QgsRendererRange range = mRenderer->ranges().value( index.row() );
   const bool lowerInclusive = mRenderer->rangeLowerBoundIsInclusive( index.row() );
   const bool upperInclusive = mRenderer->rangeUpperBoundIsInclusive( index.row() );
-  const QString lowerOperator = lowerInclusive ? u"<="_s : u"<"_s;
-  const QString upperOperator = upperInclusive ? u"<="_s : u"<"_s;
+  const QString lowerOperator = lowerInclusive ? u"≤"_s : u"<"_s;
+  const QString upperOperator = upperInclusive ? u"≤"_s : u"<"_s;
 
   return u"%1 %2 %3 %4 %5"_s.arg( formatRangeValue( range.lowerValue() ), lowerOperator, tr( "Values" ), upperOperator, formatRangeValue( range.upperValue() ) );
 }
