@@ -19,12 +19,12 @@
 
 using namespace Qt::StringLiterals;
 
-QgsVectorFieldStreamlineSettings::SeedingStartPointsMethod QgsVectorFieldStreamlineSettings::seedingMethod() const
+Qgis::VectorFieldSeedingMethod QgsVectorFieldStreamlineSettings::seedingMethod() const
 {
   return mSeedingMethod;
 }
 
-void QgsVectorFieldStreamlineSettings::setSeedingMethod( const SeedingStartPointsMethod &seedingMethod )
+void QgsVectorFieldStreamlineSettings::setSeedingMethod( const Qgis::VectorFieldSeedingMethod &seedingMethod )
 {
   mSeedingMethod = seedingMethod;
 }
@@ -51,6 +51,6 @@ QDomElement QgsVectorFieldStreamlineSettings::writeXml( QDomDocument &doc ) cons
 
 void QgsVectorFieldStreamlineSettings::readXml( const QDomElement &elem )
 {
-  mSeedingMethod = static_cast<QgsVectorFieldStreamlineSettings::SeedingStartPointsMethod>( elem.attribute( u"seeding-method"_s ).toInt() );
+  mSeedingMethod = static_cast<Qgis::VectorFieldSeedingMethod>( elem.attribute( u"seeding-method"_s ).toInt() );
   mSeedingDensity = elem.attribute( u"seeding-density"_s ).toDouble();
 }

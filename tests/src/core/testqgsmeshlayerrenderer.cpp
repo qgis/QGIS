@@ -562,12 +562,12 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_wind_barbs()
   settings.setUserGridCellWidth( 30 );
   settings.setUserGridCellHeight( 30 );
   settings.setLineWidth( 0.5 );
-  settings.setSymbology( QgsVectorFieldSettings::Symbology::WindBarbs );
+  settings.setSymbology( Qgis::VectorFieldSymbology::WindBarbs );
   settings.setColoringMethod( QgsInterpolatedLineColor::SingleColor );
   QgsVectorFieldWindBarbSettings windBarbSettings = settings.windBarbSettings();
   windBarbSettings.setShaftLength( 20 );
   windBarbSettings.setShaftLengthUnits( Qgis::RenderUnit::Pixels );
-  windBarbSettings.setMagnitudeUnits( QgsVectorFieldWindBarbSettings::WindSpeedUnit::OtherUnit );
+  windBarbSettings.setMagnitudeUnits( Qgis::WindSpeedUnit::OtherUnit );
   windBarbSettings.setMagnitudeMultiplier( 2 );
   settings.setWindBarbSettings( windBarbSettings );
   rendererSettings.setVectorSettings( ds.group(), settings );
@@ -596,7 +596,7 @@ void TestQgsMeshRenderer::test_face_vector_on_user_grid()
   settings.setUserGridCellWidth( 30 );
   settings.setUserGridCellHeight( 20 );
   settings.setLineWidth( 0.8 );
-  settings.setSymbology( QgsVectorFieldSettings::Symbology::Arrows );
+  settings.setSymbology( Qgis::VectorFieldSymbology::Arrows );
   rendererSettings.setVectorSettings( ds.group(), settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
@@ -623,7 +623,7 @@ void TestQgsMeshRenderer::test_face_vector_on_user_grid_streamlines()
   settings.setUserGridCellWidth( 30 );
   settings.setUserGridCellHeight( 20 );
   settings.setLineWidth( 0.8 );
-  settings.setSymbology( QgsVectorFieldSettings::Symbology::Streamlines );
+  settings.setSymbology( Qgis::VectorFieldSymbology::Streamlines );
   rendererSettings.setVectorSettings( ds.group(), settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
@@ -650,7 +650,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid()
   settings.setUserGridCellWidth( 60 );
   settings.setUserGridCellHeight( 40 );
   settings.setLineWidth( 0.9 );
-  settings.setSymbology( QgsVectorFieldSettings::Symbology::Arrows );
+  settings.setSymbology( Qgis::VectorFieldSymbology::Arrows );
   settings.setColoringMethod( QgsInterpolatedLineColor::SingleColor );
   rendererSettings.setVectorSettings( ds.group(), settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
@@ -679,7 +679,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines()
   settings.setUserGridCellHeight( 40 );
   settings.setLineWidth( 0.9 );
   settings.setColoringMethod( QgsInterpolatedLineColor::SingleColor );
-  settings.setSymbology( QgsVectorFieldSettings::Symbology::Streamlines );
+  settings.setSymbology( Qgis::VectorFieldSymbology::Streamlines );
   rendererSettings.setVectorSettings( ds.group(), settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
@@ -707,7 +707,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines_colorRamp(
   settings.setUserGridCellHeight( 40 );
   settings.setLineWidth( 0.9 );
   settings.setColoringMethod( QgsInterpolatedLineColor::ColorRamp );
-  settings.setSymbology( QgsVectorFieldSettings::Symbology::Streamlines );
+  settings.setSymbology( Qgis::VectorFieldSymbology::Streamlines );
   rendererSettings.setVectorSettings( ds.group(), settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
@@ -733,7 +733,7 @@ void TestQgsMeshRenderer::test_vertex_vector_traces()
   settings.setLineWidth( 1 );
   settings.setColoringMethod( QgsInterpolatedLineColor::SingleColor );
 
-  settings.setSymbology( QgsVectorFieldSettings::Symbology::Traces );
+  settings.setSymbology( Qgis::VectorFieldSymbology::Traces );
   QgsVectorFieldTracesSettings tracesSetting = settings.tracesSettings();
   tracesSetting.setParticlesCount( -1 );
   tracesSetting.setMaximumTailLength( 40 );
@@ -767,7 +767,7 @@ void TestQgsMeshRenderer::test_vertex_vector_traces_colorRamp()
   settings.setLineWidth( 1 );
   settings.setColoringMethod( QgsInterpolatedLineColor::ColorRamp );
 
-  settings.setSymbology( QgsVectorFieldSettings::Symbology::Traces );
+  settings.setSymbology( Qgis::VectorFieldSymbology::Traces );
   QgsVectorFieldTracesSettings tracesSetting = settings.tracesSettings();
   tracesSetting.setParticlesCount( -1 );
   tracesSetting.setMaximumTailLength( 40 );
@@ -818,7 +818,7 @@ void TestQgsMeshRenderer::test_stacked_3d_mesh_single_level_averaging()
   QVERIFY( metadata.maximumVerticalLevelsCount() == 10 );
   QgsVectorFieldSettings vectorSettings = rendererSettings.vectorSettings( ds.group() );
   QgsVectorFieldArrowSettings arrowSettings = vectorSettings.arrowSettings();
-  arrowSettings.setShaftLengthMethod( QgsVectorFieldArrowSettings::ArrowScalingMethod::Scaled );
+  arrowSettings.setShaftLengthMethod( Qgis::VectorFieldArrowScalingMethod::Scaled );
   vectorSettings.setOnUserDefinedGrid( true );
   vectorSettings.setUserGridCellWidth( 60 );
   vectorSettings.setUserGridCellHeight( 10 );

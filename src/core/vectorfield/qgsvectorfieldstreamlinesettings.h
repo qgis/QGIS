@@ -16,6 +16,7 @@
 #ifndef QGSVECTORFIELDSTREAMLINESETTINGS_H
 #define QGSVECTORFIELDSTREAMLINESETTINGS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 
 #include <QDomElement>
@@ -32,18 +33,10 @@
 class CORE_EXPORT QgsVectorFieldStreamlineSettings
 {
   public:
-    //! Method used to define start points that are used to draw streamlines
-    enum class SeedingStartPointsMethod
-    {
-      Gridded = 0,          //!< Seeds start points on data grid or user regular grid
-      Random,               //!< Seeds start points randomly
-      MeshGridded = Gridded //!< For backwards compatibility \deprecated QGIS 4.4
-    };
-
     //! Returns the method used for seeding start points of strealines
-    SeedingStartPointsMethod seedingMethod() const;
+    Qgis::VectorFieldSeedingMethod seedingMethod() const;
     //! Sets the method used for seeding start points of strealines
-    void setSeedingMethod( const SeedingStartPointsMethod &seedingMethod );
+    void setSeedingMethod( const Qgis::VectorFieldSeedingMethod &seedingMethod );
     //! Returns the density used for seeding start points
     double seedingDensity() const;
     //! Sets the density used for seeding start points
@@ -54,7 +47,7 @@ class CORE_EXPORT QgsVectorFieldStreamlineSettings
     QDomElement writeXml( QDomDocument &doc ) const;
 
   private:
-    QgsVectorFieldStreamlineSettings::SeedingStartPointsMethod mSeedingMethod = SeedingStartPointsMethod::Gridded;
+    Qgis::VectorFieldSeedingMethod mSeedingMethod = Qgis::VectorFieldSeedingMethod::Gridded;
     double mSeedingDensity = 0.15;
 };
 

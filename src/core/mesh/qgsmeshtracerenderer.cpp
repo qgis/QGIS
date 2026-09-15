@@ -1012,13 +1012,13 @@ QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer(
 
   switch ( settings.streamLinesSettings().seedingMethod() )
   {
-    case QgsVectorFieldStreamlineSettings::SeedingStartPointsMethod::Gridded:
+    case Qgis::VectorFieldSeedingMethod::Gridded:
       if ( settings.isOnUserDefinedGrid() )
         mStreamlineField->addGriddedTraces( settings.userGridCellWidth(), settings.userGridCellHeight() );
       else
         mStreamlineField->addTracesOnMesh( triangularMesh, rendererContext.mapExtent() );
       break;
-    case QgsVectorFieldStreamlineSettings::SeedingStartPointsMethod::Random:
+    case Qgis::VectorFieldSeedingMethod::Random:
       mStreamlineField->addRandomTraces();
       break;
   }

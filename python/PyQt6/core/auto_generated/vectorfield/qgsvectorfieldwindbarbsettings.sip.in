@@ -26,16 +26,6 @@ wind barbs.
 #include "qgsvectorfieldwindbarbsettings.h"
 %End
   public:
-    enum class WindSpeedUnit
-    {
-      MetersPerSecond,
-      KilometersPerHour,
-      Knots,
-      MilesPerHour,
-      FeetPerSecond,
-      OtherUnit
-    };
-
     double magnitudeMultiplier() const;
 %Docstring
 Returns the multiplier for the magnitude to convert it to knots,
@@ -75,12 +65,12 @@ Sets the units for the shaft length.
 .. seealso:: :py:func:`shaftLengthUnits`
 %End
 
-    WindSpeedUnit magnitudeUnits() const;
+    Qgis::WindSpeedUnit magnitudeUnits() const;
 %Docstring
 Returns the units that the data are in
 %End
 
-    void setMagnitudeUnits( WindSpeedUnit units );
+    void setMagnitudeUnits( Qgis::WindSpeedUnit units );
 %Docstring
 Sets the units that the data are in
 %End

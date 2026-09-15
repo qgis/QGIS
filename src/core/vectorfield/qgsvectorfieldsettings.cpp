@@ -91,12 +91,12 @@ void QgsVectorFieldSettings::setUserGridCellHeight( int height )
   mUserGridCellHeight = height;
 }
 
-QgsVectorFieldSettings::Symbology QgsVectorFieldSettings::symbology() const
+Qgis::VectorFieldSymbology QgsVectorFieldSettings::symbology() const
 {
   return mDisplayingMethod;
 }
 
-void QgsVectorFieldSettings::setSymbology( const Symbology &displayingMethod )
+void QgsVectorFieldSettings::setSymbology( const Qgis::VectorFieldSymbology &displayingMethod )
 {
   mDisplayingMethod = displayingMethod;
 }
@@ -148,7 +148,7 @@ QDomElement QgsVectorFieldSettings::writeXml( QDomDocument &doc, const QgsReadWr
 
 void QgsVectorFieldSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mDisplayingMethod = static_cast<QgsVectorFieldSettings::Symbology>( elem.attribute( u"symbology"_s ).toInt() );
+  mDisplayingMethod = static_cast<Qgis::VectorFieldSymbology>( elem.attribute( u"symbology"_s ).toInt() );
 
   mLineWidth = elem.attribute( u"line-width"_s ).toDouble();
   mColoringMethod = static_cast<QgsInterpolatedLineColor::ColoringMethod>( elem.attribute( u"coloring-method"_s ).toInt() );

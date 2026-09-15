@@ -25,14 +25,6 @@ Represents a renderer settings for vector datasets.
 #include "qgsvectorfieldsettings.h"
 %End
   public:
-    enum class Symbology
-    {
-      Arrows,
-      Streamlines,
-      Traces,
-      WindBarbs
-    };
-
     double lineWidth() const;
 %Docstring
 Returns line width of the arrow (in millimeters)
@@ -106,12 +98,12 @@ Returns height in pixels of user grid cell
 Sets height of user grid cell (in pixels)
 %End
 
-    Symbology symbology() const;
+    Qgis::VectorFieldSymbology symbology() const;
 %Docstring
 Returns the displaying method used to render vector datasets
 %End
 
-    void setSymbology( const Symbology &symbology );
+    void setSymbology( const Qgis::VectorFieldSymbology &symbology );
 %Docstring
 Sets the displaying method used to render vector datasets
 %End

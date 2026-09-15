@@ -40,18 +40,6 @@
 class CORE_EXPORT QgsVectorFieldSettings
 {
   public:
-    /**
-     * Defines the symbology of vector rendering
-     * \since QGIS 3.12
-     */
-    enum class Symbology
-    {
-      Arrows = 0,  //!< Displaying vector dataset with arrows
-      Streamlines, //!< Displaying vector dataset with streamlines
-      Traces,      //!< Displaying vector dataset with particle traces
-      WindBarbs    //!< Displaying vector dataset with wind barbs
-    };
-
     //! Returns line width of the arrow (in millimeters)
     double lineWidth() const;
     //! Sets line width of the arrow in pixels (in millimeters)
@@ -106,12 +94,12 @@ class CORE_EXPORT QgsVectorFieldSettings
     /**
     * Returns the displaying method used to render vector datasets
     */
-    Symbology symbology() const;
+    Qgis::VectorFieldSymbology symbology() const;
 
     /**
      * Sets the displaying method used to render vector datasets
      */
-    void setSymbology( const Symbology &symbology );
+    void setSymbology( const Qgis::VectorFieldSymbology &symbology );
 
     /**
      * Returns the coloring method used to render vector datasets
@@ -184,7 +172,7 @@ class CORE_EXPORT QgsVectorFieldSettings
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
   private:
-    Symbology mDisplayingMethod = Symbology::Arrows;
+    Qgis::VectorFieldSymbology mDisplayingMethod = Qgis::VectorFieldSymbology::Arrows;
 
     double mLineWidth = Qgis::DEFAULT_LINE_WIDTH; //in millimeters
     QgsColorRampShader mColorRampShader;

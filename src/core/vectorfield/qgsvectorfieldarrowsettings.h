@@ -16,6 +16,7 @@
 #ifndef QGSVECTORFIELDARROWSETTINGS_H
 #define QGSVECTORFIELDARROWSETTINGS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 
 #include <QDomElement>
@@ -32,72 +33,64 @@
 class CORE_EXPORT QgsVectorFieldArrowSettings
 {
   public:
-    //! Algorithm how to transform vector magnitude to length of arrow on the device in pixels
-    enum class ArrowScalingMethod
-    {
-      MinMax = 0, //!< Scale vector magnitude linearly to fit in range of vectorFilterMin() and vectorFilterMax()
-      Scaled,     //!< Scale vector magnitude by factor scaleFactor()
-      Fixed       //!< Use fixed length fixedShaftLength() regardless of vector's magnitude
-    };
-
     //! Returns method used for drawing arrows
-    QgsVectorFieldArrowSettings::ArrowScalingMethod shaftLengthMethod() const;
+    Qgis::VectorFieldArrowScalingMethod shaftLengthMethod() const;
     //! Sets method used for drawing arrows
-    void setShaftLengthMethod( ArrowScalingMethod shaftLengthMethod );
+    void setShaftLengthMethod( Qgis::VectorFieldArrowScalingMethod shaftLengthMethod );
 
     /**
      * Returns mininimum shaft length (in millimeters)
      *
-     * Only for QgsVectorFieldArrowSettings::ArrowScalingMethod::MinMax
+     * Only for Qgis::VectorFieldArrowScalingMethod::MinMax
      */
     double minShaftLength() const;
 
     /**
      * Sets mininimum shaft length (in millimeters)
      *
-     * Only for QgsVectorFieldArrowSettings::ArrowScalingMethod::MinMax
+     * Only for Qgis::VectorFieldArrowScalingMethod::MinMax
      */
     void setMinShaftLength( double minShaftLength );
 
     /**
      * Returns maximum shaft length (in millimeters)
      *
-     * Only for QgsVectorFieldArrowSettings::ArrowScalingMethod::MinMax
+     * Only for Qgis::VectorFieldArrowScalingMethod::MinMax
      */
     double maxShaftLength() const;
 
     /**
      * Sets maximum shaft length (in millimeters)
      *
-     * Only for QgsVectorFieldArrowSettings::ArrowScalingMethod::MinMax
+     * Only for Qgis::VectorFieldArrowScalingMethod::MinMax
      */
     void setMaxShaftLength( double maxShaftLength );
 
     /**
      * Returns scale factor
      *
-     * Only for QgsVectorFieldArrowSettings::ArrowScalingMethod::Scaled
+     * Only for Qgis::VectorFieldArrowScalingMethod::Scaled
      */
     double scaleFactor() const;
 
     /**
      * Sets scale factor
      *
-     * Only for QgsVectorFieldArrowSettings::ArrowScalingMethod::Scaled
+     * Only for Qgis::VectorFieldArrowScalingMethod::Scaled
      */
     void setScaleFactor( double scaleFactor );
 
     /**
      * Returns fixed arrow length (in millimeters)
      *
-     * Only for QgsVectorFieldArrowSettings::ArrowScalingMethod::Fixed
+     * Only for Qgis::VectorFieldArrowScalingMethod::Fixed
      */
     double fixedShaftLength() const;
 
     /**
      * Sets fixed length  (in millimeters)
      *
-     * Only for QgsVectorFieldArrowSettings::ArrowScalingMethod::Fixed
+     * Only for Qgis::VectorFieldArrowScalingMethod::Fixed
      */
     void setFixedShaftLength( double fixedShaftLength );
 
@@ -117,7 +110,7 @@ class CORE_EXPORT QgsVectorFieldArrowSettings
     void readXml( const QDomElement &elem );
 
   private:
-    QgsVectorFieldArrowSettings::ArrowScalingMethod mShaftLengthMethod = QgsVectorFieldArrowSettings::ArrowScalingMethod::MinMax;
+    Qgis::VectorFieldArrowScalingMethod mShaftLengthMethod = Qgis::VectorFieldArrowScalingMethod::MinMax;
     double mMinShaftLength = 0.8; //in millimeters
     double mMaxShaftLength = 10;  //in millimeters
     double mScaleFactor = 10;

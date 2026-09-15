@@ -122,7 +122,7 @@ void QgsMeshRendererVectorSettingsWidget::setLayer( QgsMeshLayer *layer )
 QgsVectorFieldSettings QgsMeshRendererVectorSettingsWidget::settings() const
 {
   QgsVectorFieldSettings settings;
-  settings.setSymbology( static_cast<QgsVectorFieldSettings::Symbology>( mSymbologyVectorComboBox->currentIndex() ) );
+  settings.setSymbology( static_cast<Qgis::VectorFieldSymbology>( mSymbologyVectorComboBox->currentIndex() ) );
 
   //Arrow settings
   QgsVectorFieldArrowSettings arrowSettings;
@@ -154,7 +154,7 @@ QgsVectorFieldSettings QgsMeshRendererVectorSettingsWidget::settings() const
   settings.setUserGridCellHeight( mYSpacingSpinBox->value() );
 
   // shaft length
-  auto method = static_cast<QgsVectorFieldArrowSettings::ArrowScalingMethod>( mShaftLengthComboBox->currentIndex() );
+  auto method = static_cast<Qgis::VectorFieldArrowScalingMethod>( mShaftLengthComboBox->currentIndex() );
   arrowSettings.setShaftLengthMethod( method );
 
   val = filterValue( mMinimumShaftSpinBox, arrowSettings.minShaftLength() );
@@ -173,7 +173,7 @@ QgsVectorFieldSettings QgsMeshRendererVectorSettingsWidget::settings() const
 
   //Streamline setting
   QgsVectorFieldStreamlineSettings streamlineSettings;
-  streamlineSettings.setSeedingMethod( static_cast<QgsVectorFieldStreamlineSettings::SeedingStartPointsMethod>( mStreamlinesSeedingMethodComboBox->currentIndex() ) );
+  streamlineSettings.setSeedingMethod( static_cast<Qgis::VectorFieldSeedingMethod>( mStreamlinesSeedingMethodComboBox->currentIndex() ) );
 
   streamlineSettings.setSeedingDensity( mStreamlinesDensitySpinBox->value() / 100 );
 
@@ -190,7 +190,7 @@ QgsVectorFieldSettings QgsMeshRendererVectorSettingsWidget::settings() const
   QgsVectorFieldWindBarbSettings windBarbSettings;
   windBarbSettings.setShaftLength( mWindBarbLengthSpinBox->value() );
   windBarbSettings.setShaftLengthUnits( mWindBarbLengthMapUnitWidget->unit() );
-  windBarbSettings.setMagnitudeUnits( static_cast<QgsVectorFieldWindBarbSettings::WindSpeedUnit>( mWindBarbUnitsComboBox->currentIndex() ) );
+  windBarbSettings.setMagnitudeUnits( static_cast<Qgis::WindSpeedUnit>( mWindBarbUnitsComboBox->currentIndex() ) );
   windBarbSettings.setMagnitudeMultiplier( mWindBarbMagnitudeMultiplierSpinBox->value() );
   settings.setWindBarbSettings( windBarbSettings );
 
@@ -270,35 +270,35 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer()
   const QgsVectorFieldWindBarbSettings windBarbSettings = settings.windBarbSettings();
   mWindBarbLengthSpinBox->setValue( windBarbSettings.shaftLength() );
   mWindBarbUnitsComboBox->setCurrentIndex( static_cast<int>( windBarbSettings.magnitudeUnits() ) );
-  if ( windBarbSettings.magnitudeUnits() == QgsVectorFieldWindBarbSettings::WindSpeedUnit::OtherUnit )
+  if ( windBarbSettings.magnitudeUnits() == Qgis::WindSpeedUnit::OtherUnit )
     mWindBarbMagnitudeMultiplierSpinBox->setValue( windBarbSettings.magnitudeMultiplier() );
 }
 
 void QgsMeshRendererVectorSettingsWidget::onSymbologyChanged( int currentIndex )
 {
-  mStreamlineWidget->setVisible( currentIndex == static_cast< int >( QgsVectorFieldSettings::Symbology::Streamlines ) );
-  mArrowLengthGroupBox->setVisible( currentIndex == static_cast< int >( QgsVectorFieldSettings::Symbology::Arrows ) );
-  mHeadOptionsGroupBox->setVisible( currentIndex == static_cast< int >( QgsVectorFieldSettings::Symbology::Arrows ) );
-  mTracesGroupBox->setVisible( currentIndex == static_cast< int >( QgsVectorFieldSettings::Symbology::Traces ) );
-  mWindBarbGroupBox->setVisible( currentIndex == static_cast< int >( QgsVectorFieldSettings::Symbology::WindBarbs ) );
+  mStreamlineWidget->setVisible( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Streamlines ) );
+  mArrowLengthGroupBox->setVisible( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Arrows ) );
+  mHeadOptionsGroupBox->setVisible( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Arrows ) );
+  mTracesGroupBox->setVisible( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
+  mWindBarbGroupBox->setVisible( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::WindBarbs ) );
 
-  mDisplayVectorsOnGridGroupBox->setVisible( currentIndex != static_cast< int >( QgsVectorFieldSettings::Symbology::Traces ) );
-  filterByMagnitudeLabel->setVisible( currentIndex != static_cast< int >( QgsVectorFieldSettings::Symbology::Traces ) );
-  minimumMagLabel->setVisible( currentIndex != static_cast< int >( QgsVectorFieldSettings::Symbology::Traces ) );
-  mMinMagSpinBox->setVisible( currentIndex != static_cast< int >( QgsVectorFieldSettings::Symbology::Traces ) );
-  maximumMagLabel->setVisible( currentIndex != static_cast< int >( QgsVectorFieldSettings::Symbology::Traces ) );
-  mMaxMagSpinBox->setVisible( currentIndex != static_cast< int >( QgsVectorFieldSettings::Symbology::Traces ) );
+  mDisplayVectorsOnGridGroupBox->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
+  filterByMagnitudeLabel->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
+  minimumMagLabel->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
+  mMinMagSpinBox->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
+  maximumMagLabel->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
+  mMaxMagSpinBox->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
 
   mDisplayVectorsOnGridGroupBox->setEnabled(
-    currentIndex == static_cast< int >( QgsVectorFieldSettings::Symbology::Arrows )
-    || currentIndex == static_cast< int >( QgsVectorFieldSettings::Symbology::WindBarbs )
-    || ( currentIndex == static_cast< int >( QgsVectorFieldSettings::Symbology::Streamlines ) && mStreamlinesSeedingMethodComboBox->currentIndex() == static_cast< int >( QgsVectorFieldStreamlineSettings::SeedingStartPointsMethod::Gridded ) )
+    currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Arrows )
+    || currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::WindBarbs )
+    || ( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Streamlines ) && mStreamlinesSeedingMethodComboBox->currentIndex() == static_cast< int >( Qgis::VectorFieldSeedingMethod::Gridded ) )
   );
 }
 
 void QgsMeshRendererVectorSettingsWidget::onStreamLineSeedingMethodChanged( int currentIndex )
 {
-  bool enabled = currentIndex == static_cast< int >( QgsVectorFieldStreamlineSettings::SeedingStartPointsMethod::Random );
+  bool enabled = currentIndex == static_cast< int >( Qgis::VectorFieldSeedingMethod::Random );
   mStreamlinesDensityLabel->setEnabled( enabled );
   mStreamlinesDensitySpinBox->setEnabled( enabled );
 
@@ -307,10 +307,10 @@ void QgsMeshRendererVectorSettingsWidget::onStreamLineSeedingMethodChanged( int 
 
 void QgsMeshRendererVectorSettingsWidget::onWindBarbUnitsChanged( int currentIndex )
 {
-  const QgsVectorFieldWindBarbSettings::WindSpeedUnit units = static_cast<QgsVectorFieldWindBarbSettings::WindSpeedUnit>( currentIndex );
+  const Qgis::WindSpeedUnit units = static_cast<Qgis::WindSpeedUnit>( currentIndex );
 
-  mWindBarbMagnitudeMultiplierLabel->setVisible( units == QgsVectorFieldWindBarbSettings::WindSpeedUnit::OtherUnit );
-  mWindBarbMagnitudeMultiplierSpinBox->setVisible( units == QgsVectorFieldWindBarbSettings::WindSpeedUnit::OtherUnit );
+  mWindBarbMagnitudeMultiplierLabel->setVisible( units == Qgis::WindSpeedUnit::OtherUnit );
+  mWindBarbMagnitudeMultiplierSpinBox->setVisible( units == Qgis::WindSpeedUnit::OtherUnit );
 
   emit widgetChanged();
 }

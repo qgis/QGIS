@@ -26,18 +26,11 @@ arrows.
 #include "qgsvectorfieldarrowsettings.h"
 %End
   public:
-    enum class ArrowScalingMethod
-    {
-      MinMax,
-      Scaled,
-      Fixed
-    };
-
-    QgsVectorFieldArrowSettings::ArrowScalingMethod shaftLengthMethod() const;
+    Qgis::VectorFieldArrowScalingMethod shaftLengthMethod() const;
 %Docstring
 Returns method used for drawing arrows
 %End
-    void setShaftLengthMethod( ArrowScalingMethod shaftLengthMethod );
+    void setShaftLengthMethod( Qgis::VectorFieldArrowScalingMethod shaftLengthMethod );
 %Docstring
 Sets method used for drawing arrows
 %End
@@ -46,56 +39,56 @@ Sets method used for drawing arrows
 %Docstring
 Returns mininimum shaft length (in millimeters)
 
-Only for QgsVectorFieldArrowSettings.ArrowScalingMethod.MinMax
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.MinMax
 %End
 
     void setMinShaftLength( double minShaftLength );
 %Docstring
 Sets mininimum shaft length (in millimeters)
 
-Only for QgsVectorFieldArrowSettings.ArrowScalingMethod.MinMax
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.MinMax
 %End
 
     double maxShaftLength() const;
 %Docstring
 Returns maximum shaft length (in millimeters)
 
-Only for QgsVectorFieldArrowSettings.ArrowScalingMethod.MinMax
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.MinMax
 %End
 
     void setMaxShaftLength( double maxShaftLength );
 %Docstring
 Sets maximum shaft length (in millimeters)
 
-Only for QgsVectorFieldArrowSettings.ArrowScalingMethod.MinMax
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.MinMax
 %End
 
     double scaleFactor() const;
 %Docstring
 Returns scale factor
 
-Only for QgsVectorFieldArrowSettings.ArrowScalingMethod.Scaled
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.Scaled
 %End
 
     void setScaleFactor( double scaleFactor );
 %Docstring
 Sets scale factor
 
-Only for QgsVectorFieldArrowSettings.ArrowScalingMethod.Scaled
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.Scaled
 %End
 
     double fixedShaftLength() const;
 %Docstring
 Returns fixed arrow length (in millimeters)
 
-Only for QgsVectorFieldArrowSettings.ArrowScalingMethod.Fixed
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.Fixed
 %End
 
     void setFixedShaftLength( double fixedShaftLength );
 %Docstring
 Sets fixed length (in millimeters)
 
-Only for QgsVectorFieldArrowSettings.ArrowScalingMethod.Fixed
+Only for :py:class:`Qgis`.VectorFieldArrowScalingMethod.Fixed
 %End
 
     double arrowHeadWidthRatio() const;

@@ -26,18 +26,11 @@ by streamlines.
 #include "qgsvectorfieldstreamlinesettings.h"
 %End
   public:
-    enum class SeedingStartPointsMethod
-    {
-      Gridded,
-      Random,
-      MeshGridded
-    };
-
-    SeedingStartPointsMethod seedingMethod() const;
+    Qgis::VectorFieldSeedingMethod seedingMethod() const;
 %Docstring
 Returns the method used for seeding start points of strealines
 %End
-    void setSeedingMethod( const SeedingStartPointsMethod &seedingMethod );
+    void setSeedingMethod( const Qgis::VectorFieldSeedingMethod &seedingMethod );
 %Docstring
 Sets the method used for seeding start points of strealines
 %End

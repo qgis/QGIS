@@ -24,7 +24,7 @@ void QgsVectorFieldWindBarbSettings::readXml( const QDomElement &elem )
   mShaftLength = elem.attribute( u"shaft-length"_s, u"10"_s ).toDouble();
   mShaftLengthUnits = static_cast<Qgis::RenderUnit>( elem.attribute( u"shaft-length-units"_s ).toInt() );
   mMagnitudeMultiplier = elem.attribute( u"magnitude-multiplier"_s, u"1"_s ).toDouble();
-  mMagnitudeUnits = static_cast<WindSpeedUnit>( elem.attribute( u"magnitude-units"_s, u"0"_s ).toInt() );
+  mMagnitudeUnits = static_cast<Qgis::WindSpeedUnit>( elem.attribute( u"magnitude-units"_s, u"0"_s ).toInt() );
 }
 
 QDomElement QgsVectorFieldWindBarbSettings::writeXml( QDomDocument &doc ) const
@@ -41,17 +41,17 @@ double QgsVectorFieldWindBarbSettings::magnitudeMultiplier() const
 {
   switch ( mMagnitudeUnits )
   {
-    case QgsVectorFieldWindBarbSettings::WindSpeedUnit::Knots:
+    case Qgis::WindSpeedUnit::Knots:
       return 1.0;
-    case QgsVectorFieldWindBarbSettings::WindSpeedUnit::MetersPerSecond:
+    case Qgis::WindSpeedUnit::MetersPerSecond:
       return 3600.0 / 1852.0;
-    case QgsVectorFieldWindBarbSettings::WindSpeedUnit::KilometersPerHour:
+    case Qgis::WindSpeedUnit::KilometersPerHour:
       return 1.0 / 1.852;
-    case QgsVectorFieldWindBarbSettings::WindSpeedUnit::MilesPerHour:
+    case Qgis::WindSpeedUnit::MilesPerHour:
       return 1.609344 / 1.852;
-    case QgsVectorFieldWindBarbSettings::WindSpeedUnit::FeetPerSecond:
+    case Qgis::WindSpeedUnit::FeetPerSecond:
       return 3600.0 / 1.852 / 5280.0 * 1.609344;
-    case QgsVectorFieldWindBarbSettings::WindSpeedUnit::OtherUnit:
+    case Qgis::WindSpeedUnit::OtherUnit:
       return mMagnitudeMultiplier;
   }
   return 1.0; // should not reach
@@ -82,12 +82,12 @@ void QgsVectorFieldWindBarbSettings::setShaftLengthUnits( Qgis::RenderUnit shaft
   mShaftLengthUnits = shaftLengthUnit;
 }
 
-QgsVectorFieldWindBarbSettings::WindSpeedUnit QgsVectorFieldWindBarbSettings::magnitudeUnits() const
+Qgis::WindSpeedUnit QgsVectorFieldWindBarbSettings::magnitudeUnits() const
 {
   return mMagnitudeUnits;
 }
 
-void QgsVectorFieldWindBarbSettings::setMagnitudeUnits( WindSpeedUnit units )
+void QgsVectorFieldWindBarbSettings::setMagnitudeUnits( Qgis::WindSpeedUnit units )
 {
   mMagnitudeUnits = units;
 }

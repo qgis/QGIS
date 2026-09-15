@@ -156,7 +156,7 @@ bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
   double yDist = 0.0;
   switch ( mCfg.arrowSettings().shaftLengthMethod() )
   {
-    case QgsVectorFieldArrowSettings::ArrowScalingMethod::MinMax:
+    case Qgis::VectorFieldArrowScalingMethod::MinMax:
     {
       const double minShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().minShaftLength(), Qgis::RenderUnit::Millimeters );
       const double maxShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().maxShaftLength(), Qgis::RenderUnit::Millimeters );
@@ -168,14 +168,14 @@ bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
       yDist = sinAlpha * L;
       break;
     }
-    case QgsVectorFieldArrowSettings::ArrowScalingMethod::Scaled:
+    case Qgis::VectorFieldArrowScalingMethod::Scaled:
     {
       const double scaleFactor = mCfg.arrowSettings().scaleFactor();
       xDist = scaleFactor * xVal;
       yDist = scaleFactor * yVal;
       break;
     }
-    case QgsVectorFieldArrowSettings::ArrowScalingMethod::Fixed:
+    case Qgis::VectorFieldArrowScalingMethod::Fixed:
     {
       // We must be using a fixed length
       const double fixedShaftLength = mContext.convertToPainterUnits( mCfg.arrowSettings().fixedShaftLength(), Qgis::RenderUnit::Millimeters );
@@ -208,17 +208,17 @@ double QgsMeshVectorArrowRenderer::calcExtentBufferSize() const
   double buffer = 0;
   switch ( mCfg.arrowSettings().shaftLengthMethod() )
   {
-    case QgsVectorFieldArrowSettings::ArrowScalingMethod::MinMax:
+    case Qgis::VectorFieldArrowScalingMethod::MinMax:
     {
       buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().maxShaftLength(), Qgis::RenderUnit::Millimeters );
       break;
     }
-    case QgsVectorFieldArrowSettings::ArrowScalingMethod::Scaled:
+    case Qgis::VectorFieldArrowScalingMethod::Scaled:
     {
       buffer = mCfg.arrowSettings().scaleFactor() * mMaxMag;
       break;
     }
-    case QgsVectorFieldArrowSettings::ArrowScalingMethod::Fixed:
+    case Qgis::VectorFieldArrowScalingMethod::Fixed:
     {
       buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().fixedShaftLength(), Qgis::RenderUnit::Millimeters );
       break;
@@ -436,18 +436,18 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
 
   switch ( settings.symbology() )
   {
-    case QgsVectorFieldSettings::Symbology::Arrows:
+    case Qgis::VectorFieldSymbology::Arrows:
       renderer = new QgsMeshVectorArrowRenderer( m, datasetVectorValues, datasetValuesMag, datasetMagMaximumValue, datasetMagMinimumValue, dataType, settings, context, size );
       break;
-    case QgsVectorFieldSettings::Symbology::Streamlines:
+    case Qgis::VectorFieldSymbology::Streamlines:
       renderer
         = new QgsMeshVectorStreamlineRenderer( m, datasetVectorValues, scalarActiveFaceFlagValues, datasetValuesMag, dataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices, settings, context, layerExtent, feedBack, datasetMagMaximumValue );
       break;
-    case QgsVectorFieldSettings::Symbology::Traces:
+    case Qgis::VectorFieldSymbology::Traces:
       renderer
         = new QgsMeshVectorTraceRenderer( m, datasetVectorValues, scalarActiveFaceFlagValues, dataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices, settings, context, layerExtent, datasetMagMaximumValue );
       break;
-    case QgsVectorFieldSettings::Symbology::WindBarbs:
+    case Qgis::VectorFieldSymbology::WindBarbs:
       renderer = new QgsMeshVectorWindBarbRenderer( m, datasetVectorValues, datasetValuesMag, datasetMagMaximumValue, datasetMagMinimumValue, dataType, settings, context, size );
       break;
   }

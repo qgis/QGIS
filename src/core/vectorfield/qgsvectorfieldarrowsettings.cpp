@@ -19,12 +19,12 @@
 
 using namespace Qt::StringLiterals;
 
-QgsVectorFieldArrowSettings::ArrowScalingMethod QgsVectorFieldArrowSettings::shaftLengthMethod() const
+Qgis::VectorFieldArrowScalingMethod QgsVectorFieldArrowSettings::shaftLengthMethod() const
 {
   return mShaftLengthMethod;
 }
 
-void QgsVectorFieldArrowSettings::setShaftLengthMethod( QgsVectorFieldArrowSettings::ArrowScalingMethod shaftLengthMethod )
+void QgsVectorFieldArrowSettings::setShaftLengthMethod( Qgis::VectorFieldArrowScalingMethod shaftLengthMethod )
 {
   mShaftLengthMethod = shaftLengthMethod;
 }
@@ -99,16 +99,16 @@ QDomElement QgsVectorFieldArrowSettings::writeXml( QDomDocument &doc ) const
   QString methodTxt;
   switch ( mShaftLengthMethod )
   {
-    case ArrowScalingMethod::MinMax:
+    case Qgis::VectorFieldArrowScalingMethod::MinMax:
       methodTxt = u"minmax"_s;
       elemShaft.setAttribute( u"min"_s, mMinShaftLength );
       elemShaft.setAttribute( u"max"_s, mMaxShaftLength );
       break;
-    case ArrowScalingMethod::Scaled:
+    case Qgis::VectorFieldArrowScalingMethod::Scaled:
       methodTxt = u"scaled"_s;
       elemShaft.setAttribute( u"scale-factor"_s, mScaleFactor );
       break;
-    case ArrowScalingMethod::Fixed:
+    case Qgis::VectorFieldArrowScalingMethod::Fixed:
       methodTxt = u"fixed"_s;
       elemShaft.setAttribute( u"fixed-length"_s, mFixedShaftLength );
       break;
@@ -127,18 +127,18 @@ void QgsVectorFieldArrowSettings::readXml( const QDomElement &elem )
   const QString methodTxt = elemShaft.attribute( u"method"_s );
   if ( u"minmax"_s == methodTxt )
   {
-    mShaftLengthMethod = ArrowScalingMethod::MinMax;
+    mShaftLengthMethod = Qgis::VectorFieldArrowScalingMethod::MinMax;
     mMinShaftLength = elemShaft.attribute( u"min"_s ).toDouble();
     mMaxShaftLength = elemShaft.attribute( u"max"_s ).toDouble();
   }
   else if ( u"scaled"_s == methodTxt )
   {
-    mShaftLengthMethod = ArrowScalingMethod::Scaled;
+    mShaftLengthMethod = Qgis::VectorFieldArrowScalingMethod::Scaled;
     mScaleFactor = elemShaft.attribute( u"scale-factor"_s ).toDouble();
   }
   else // fixed
   {
-    mShaftLengthMethod = ArrowScalingMethod::Fixed;
+    mShaftLengthMethod = Qgis::VectorFieldArrowScalingMethod::Fixed;
     mFixedShaftLength = elemShaft.attribute( u"fixed-length"_s ).toDouble();
   }
 }
