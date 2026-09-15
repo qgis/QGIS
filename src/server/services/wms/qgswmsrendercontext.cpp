@@ -53,7 +53,6 @@ void QgsWmsRenderContext::setParameters( const QgsWmsParameters &parameters )
   initNicknameLayers();
   searchLayersToRender();
   removeUnwantedLayers();
-  initPerLayerTemporalRange();
 
   std::reverse( mLayersToRender.begin(), mLayersToRender.end() );
 }
