@@ -18,7 +18,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>.</normaloff>.</iconset>
+    <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -93,26 +93,9 @@
           </item>
           <item row="0" column="2">
            <widget class="QComboBox" name="mDefaultDisplayComboBox">
-            <item>
-             <property name="text">
-              <string>All values</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Min value</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Max value</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Reference value</string>
-             </property>
-            </item>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;TIME dimension default value on GetMap request. If &amp;quot;All Values&amp;quot; is selected, no filtering is applied, all group children layers are rendered. Any other item selected would filter the rendering on a given time dimension value (minimum or maximum children layers date time , or a reference value)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
            </widget>
           </item>
           <item row="0" column="0">
@@ -124,6 +107,9 @@
           </item>
           <item row="1" column="2">
            <widget class="QgsDateTimeEdit" name="mReferenceValueDateTimeEdit">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use only when default display is set to &amp;quot;Reference Value&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="displayFormat">
              <string>yyyy-MM-dd HH:mm:ss</string>
             </property>
