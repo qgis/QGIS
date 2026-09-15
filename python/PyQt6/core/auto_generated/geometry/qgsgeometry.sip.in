@@ -1401,7 +1401,8 @@ Splits this geometry according to a given curve.
            interpolation of the z value is performed on the geometry at
            split points, see example.
          - topologyTestPoints: points that need to be tested for
-           topological completeness in the dataset
+           topological completeness in the dataset. Points from curve
+           geometries are not yet fully supported.
 
 .. versionadded:: 3.16
 %End

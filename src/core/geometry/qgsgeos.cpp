@@ -1129,7 +1129,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
     if ( topological )
     {
       //find out candidate points for topological corrections
-      if ( !topologicalTestPointsSplit( splitGeosGeom.get(), topologyTestPoints ) )
+      if ( !topologicalTestPointsSplit( splitGeosGeom.get(), topologyTestPoints, errorMsg ) )
       {
         return InvalidInput; // TODO: is it really an invalid input?
       }
@@ -1225,7 +1225,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
     if ( topological )
     {
       //find out candidate points for topological corrections
-      if ( !topologicalTestPointsSplit( splitLineGeos.get(), topologyTestPoints ) )
+      if ( !topologicalTestPointsSplit( splitLineGeos.get(), topologyTestPoints, errorMsg ) )
       {
         return InvalidInput; // TODO: is it really an invalid input?
       }
@@ -1277,6 +1277,7 @@ bool QgsGeos::topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPoin
             || GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_MULTIPOINT
             || GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_MULTILINESTRING ) )
     {
+      *errorMsg = u"Extracting topological points from curves or polygons is not yet supported."_s;
       return false;
     }
 
