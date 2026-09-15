@@ -37,7 +37,7 @@ class QgsRasterDataProvider;
 class QgsFeedback;
 class QgsRasterBlock;
 
-namespace ANALYSIS_EXPORT QgsRasterAnalysisUtils
+namespace QgsRasterAnalysisUtils
 {
 
   /**
@@ -264,7 +264,7 @@ namespace ANALYSIS_EXPORT QgsRasterAnalysisUtils
    *
    * \since QGIS 4.4
    */
-  double neighborCellDistance( int direction, double cellSizeX, double cellSizeY );
+  ANALYSIS_EXPORT double neighborCellDistance( int direction, double cellSizeX, double cellSizeY );
 
   /**
    * Computes the column and row indices for an adjacent neighbor cell in a specified direction,
@@ -293,7 +293,7 @@ namespace ANALYSIS_EXPORT QgsRasterAnalysisUtils
    *
    * \since QGIS 4.4
    */
-  bool neighborCellCoordinates( int direction, int row, int column, int &neighborRow, int &neighborColumn, int rows, int columns );
+  ANALYSIS_EXPORT bool neighborCellCoordinates( int direction, int row, int column, int &neighborRow, int &neighborColumn, int rows, int columns );
 
   /**
    * Identifies the neighbor direction corresponding to the maximum surface gradient
@@ -323,10 +323,10 @@ namespace ANALYSIS_EXPORT QgsRasterAnalysisUtils
    * \returns the Direction index (0 to 7) corresponding to the steepest gradient, or -1 if no valid gradient
    *         exists (e.g. flat terrain, sink/pit cell, NoData cell, or edge cell when \a noEdges is TRUE).
    */
-  int steepestGradientDirection( const QgsRasterBlock *demBlock, int row, int column, double cellSizeX, double cellSizeY, bool downhill = true, bool noEdges = true );
+  ANALYSIS_EXPORT int steepestGradientDirection( const QgsRasterBlock *demBlock, int row, int column, double cellSizeX, double cellSizeY, bool downhill = true, bool noEdges = true );
 
 
-} //namespace ANALYSIS_EXPORT QgsRasterAnalysisUtils
+} //namespace QgsRasterAnalysisUtils
 
 
 ///@endcond PRIVATE
