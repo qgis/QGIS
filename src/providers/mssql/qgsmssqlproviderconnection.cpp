@@ -113,6 +113,8 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
     Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
   };
+
+  mCapabilities2 = { Qgis::DatabaseProviderConnectionCapability2::StyleStorage };
 }
 
 void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const
