@@ -31,6 +31,7 @@ import tempfile
 from copy import deepcopy
 
 import nose2
+import processing
 import yaml
 from numpy import nan_to_num
 from osgeo import gdal
@@ -54,8 +55,6 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QT_VERSION
 from qgis.testing import QgisTestCase, _UnexpectedSuccess, start_app
 from utilities import unitTestDataPath
-
-import processing
 
 gdal.UseExceptions()
 
