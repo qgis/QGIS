@@ -22,34 +22,37 @@ __copyright__ = "(C) 2018, Nyall Dawson"
 import os
 
 from qgis.core import QgsApplication, QgsSettings
+from qgis.gui import QgsProcessingToolboxAction
 from qgis.PyQt.QtCore import QCoreApplication, QDir, QFileInfo
 from qgis.PyQt.QtWidgets import QFileDialog
-from qgis.utils import iface
 
-from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class OpenModelFromFileAction(ToolboxAction):
+class OpenModelFromFileAction(QgsProcessingToolboxAction):
     def __init__(self):
-        self.name = QCoreApplication.translate(
-            "OpenModelFromFileAction", "Open Existing Model…"
+        super().__init__(
+            QCoreApplication.translate(
+                "OpenModelFromFileAction", "Open Existing Model…"
+            ),
+            QCoreApplication.translate("ToolboxAction", "Tools"),
         )
-        self.group = self.tr("Tools")
 
-    def getIcon(self):
+    def icon(self):
         return QgsApplication.getThemeIcon("/processingModel.svg")
 
-    def execute(self):
+    def trigger(self, context):
         settings = QgsSettings()
         lastDir = settings.value("Processing/lastModelsDir", QDir.homePath())
         filename, selected_filter = QFileDialog.getOpenFileName(
-            self.toolbox,
-            self.tr("Open Model", "AddModelFromFileAction"),
+            context.parentWidget(),
+            QCoreApplication.translate("OpenModelFromFileAction", "Open Model"),
             lastDir,
-            self.tr("Processing models (*.model3 *.MODEL3)", "AddModelFromFileAction"),
+            QCoreApplication.translate(
+                "OpenModelFromFileAction", "Processing models (*.model3 *.MODEL3)"
+            ),
         )
         if filename:
             settings.setValue(

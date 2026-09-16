@@ -23,33 +23,37 @@ import os
 import shutil
 
 from qgis.core import QgsApplication, QgsProcessingModelAlgorithm, QgsSettings
+from qgis.gui import QgsProcessingToolboxAction
 from qgis.PyQt.QtCore import QCoreApplication, QDir, QFileInfo
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 
-from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerUtils import ModelerUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class AddModelFromFileAction(ToolboxAction):
+class AddModelFromFileAction(QgsProcessingToolboxAction):
     def __init__(self):
-        self.name = QCoreApplication.translate(
-            "AddModelFromFileAction", "Add Model to Toolbox…"
+        super().__init__(
+            QCoreApplication.translate(
+                "AddModelFromFileAction", "Add Model to Toolbox…"
+            ),
+            QCoreApplication.translate("ToolboxAction", "Tools"),
         )
-        self.group = self.tr("Tools")
 
-    def getIcon(self):
+    def icon(self):
         return QgsApplication.getThemeIcon("/processingModel.svg")
 
-    def execute(self):
+    def trigger(self, context):
         settings = QgsSettings()
         lastDir = settings.value("Processing/lastModelsDir", QDir.homePath())
         filename, selected_filter = QFileDialog.getOpenFileName(
-            self.toolbox,
-            self.tr("Open Model", "AddModelFromFileAction"),
+            context.parentWidget(),
+            QCoreApplication.translate("AddModelFromFileAction", "Open Model"),
             lastDir,
-            self.tr("Processing models (*.model3 *.MODEL3)", "AddModelFromFileAction"),
+            QCoreApplication.translate(
+                "AddModelFromFileAction", "Processing models (*.model3 *.MODEL3)"
+            ),
         )
         if filename:
             settings.setValue(
@@ -60,11 +64,11 @@ class AddModelFromFileAction(ToolboxAction):
             alg = QgsProcessingModelAlgorithm()
             if not alg.fromFile(filename):
                 QMessageBox.warning(
-                    self.toolbox,
-                    self.tr("Open Model", "AddModelFromFileAction"),
-                    self.tr(
-                        "The selected file does not contain a valid model",
+                    context.parentWidget(),
+                    QCoreApplication.translate("AddModelFromFileAction", "Open Model"),
+                    QCoreApplication.translate(
                         "AddModelFromFileAction",
+                        "The selected file does not contain a valid model",
                     ),
                 )
                 return
@@ -75,11 +79,11 @@ class AddModelFromFileAction(ToolboxAction):
                 .algorithmById(f"model:{alg.id()}")
             ):
                 QMessageBox.warning(
-                    self.toolbox,
-                    self.tr("Open Model", "AddModelFromFileAction"),
-                    self.tr(
-                        "Model with the same name already exists",
+                    context.parentWidget(),
+                    QCoreApplication.translate("AddModelFromFileAction", "Open Model"),
+                    QCoreApplication.translate(
                         "AddModelFromFileAction",
+                        "Model with the same name already exists",
                     ),
                 )
                 return
@@ -89,11 +93,11 @@ class AddModelFromFileAction(ToolboxAction):
             )
             if os.path.exists(destFilename):
                 reply = QMessageBox.question(
-                    self.toolbox,
-                    self.tr("Open Model", "AddModelFromFileAction"),
-                    self.tr(
-                        "There is already a model file with the same name. Overwrite?",
+                    context.parentWidget(),
+                    QCoreApplication.translate("AddModelFromFileAction", "Open Model"),
+                    QCoreApplication.translate(
                         "AddModelFromFileAction",
+                        "There is already a model file with the same name. Overwrite?",
                     ),
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                     QMessageBox.StandardButton.No,
