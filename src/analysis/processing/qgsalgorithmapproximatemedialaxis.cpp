@@ -146,6 +146,21 @@ QgsFeatureList QgsApproximateMedialAxisAlgorithm::processFeature( const QgsFeatu
     QgsGeometry outputGeometry;
     QgsSfcgalGeometry inputSfcgalGeometry;
     bool constructorSuccess = true;
+
+    if ( QgsWkbTypes::isCurvedType( modifiedFeature.geometry().wkbType() ) )
+    {
+      feedback->reportError(
+        QObject::tr(
+          "Cannot calculate approximate medial axis for feature %1 because the geometry contains curved segments. "
+          "A feature without a geometry will be returned. "
+          "Consider segmentizing the geometry if an approximation is acceptable."
+        )
+          .arg( feature.id() )
+      );
+      modifiedFeature.clearGeometry();
+      constructorSuccess = false;
+    }
+
     try
     {
       inputSfcgalGeometry = QgsSfcgalGeometry( modifiedFeature.geometry() );
