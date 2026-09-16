@@ -349,13 +349,10 @@ void QgsHighlight::paint( QPainter *p )
     }
     context.setExtent( mapExtentInLayerCrs );
 
-    // Because lower level outlines must be covered by upper level fill color
-    // we render first with temporary opaque color, which is then replaced
-    // by final transparent fill color.
-    QColor tmpColor( 255, 0, 0, 255 );
-    QColor tmpFillColor( 0, 255, 0, 255 );
+    QColor borderColor( 255, 0, 0, 255 );
+    QColor fillColor( 255, 0, 0, 255/2 );
 
-    std::unique_ptr<QgsFeatureRenderer> renderer = createRenderer( context, tmpColor, tmpFillColor );
+    std::unique_ptr<QgsFeatureRenderer> renderer = createRenderer( context, borderColor, fillColor );
     if ( renderer )
     {
       QSize imageSize( mMapCanvas->mapSettings().outputSize() );
@@ -371,29 +368,6 @@ void QgsHighlight::paint( QPainter *p )
       renderer->stopRender( context );
 
       imagePainter.end();
-
-      // true output color
-      int penRed = mPen.color().red();
-      int penGreen = mPen.color().green();
-      int penBlue = mPen.color().blue();
-      // coefficient to subtract alpha using green (temporary fill)
-      double k = ( 255. - mBrush.color().alpha() ) / 255.;
-      QRgb *line = nullptr;
-      const int height = image.height();
-      const int width = image.width();
-      for ( int r = 0; r < height; r++ )
-      {
-        line = reinterpret_cast<QRgb *>( image.scanLine( r ) );
-        for ( int c = 0; c < width; c++ )
-        {
-          int alpha = qAlpha( line[c] );
-          if ( alpha > 0 )
-          {
-            int green = qGreen( line[c] );
-            line[c] = qRgba( penRed, penGreen, penBlue, std::clamp( static_cast<int>( alpha - ( green * k ) ), 30, 255 ) );
-          }
-        }
-      }
 
       p->drawImage( 0, 0, image );
     }
