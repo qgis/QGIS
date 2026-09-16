@@ -19,22 +19,20 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-import os
-
+from qgis.gui import QgsProcessingToolboxAction
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
-from processing.gui.ToolboxAction import ToolboxAction
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 
 
-class CreateNewScriptAction(ToolboxAction):
+class CreateNewScriptAction(QgsProcessingToolboxAction):
     def __init__(self):
-        self.name = QCoreApplication.translate(
-            "CreateNewScriptAction", "Create New Script…"
+        super().__init__(
+            QCoreApplication.translate("CreateNewScriptAction", "Create New Script…"),
+            QCoreApplication.translate("ToolboxAction", "Tools"),
         )
-        self.group = self.tr("Tools")
 
-    def execute(self):
+    def trigger(self, context):
         dlg = ScriptEditorDialog(parent=iface.mainWindow())
         dlg.show()

@@ -22,26 +22,25 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 
 from qgis.core import QgsApplication
+from qgis.gui import QgsProcessingToolboxAction
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.utils import iface
 
-from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class CreateNewModelAction(ToolboxAction):
+class CreateNewModelAction(QgsProcessingToolboxAction):
     def __init__(self):
-        self.name = QCoreApplication.translate(
-            "CreateNewModelAction", "Create New Model…"
+        super().__init__(
+            QCoreApplication.translate("CreateNewModelAction", "Create New Model…"),
+            QCoreApplication.translate("ToolboxAction", "Tools"),
         )
-        self.group = self.tr("Tools")
 
-    def getIcon(self):
+    def icon(self):
         return QgsApplication.getThemeIcon("/processingModel.svg")
 
-    def execute(self):
+    def trigger(self, context):
         dlg = ModelerDialog.create()
         dlg.update_model.connect(self.updateModel)
         dlg.show()
