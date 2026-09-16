@@ -19310,7 +19310,6 @@ QgsTextFormat.tabStopDistance: src/core/textrenderer/qgstextformat.h#L477
 QgsTextFormat.tabStopDistanceMapUnitScale: src/core/textrenderer/qgstextformat.h#L603
 QgsTextFormat.tabStopDistanceUnit: src/core/textrenderer/qgstextformat.h#L581
 QgsTextFormat.textFormatPreviewPixmap: src/core/textrenderer/qgstextformat.h#L816
-QgsTextFormat.toMimeData: src/core/textrenderer/qgstextformat.h#L715
 QgsTextFormat.toQFont: src/core/textrenderer/qgstextformat.h#L733
 QgsTextFormat.updateDataDefinedProperties: src/core/textrenderer/qgstextformat.h#L805
 QgsTextFormat.writeXml: src/core/textrenderer/qgstextformat.h#L708
@@ -19472,7 +19471,6 @@ QgsTileXYZ.row: src/core/qgstiles.h#L55
 QgsTileXYZ.toString: src/core/qgstiles.h#L60
 QgsTileXYZ.zoomLevel: src/core/qgstiles.h#L57
 QgsTileXYZ: src/core/qgstiles.h#L42
-QgsTiledSceneBoundingVolume.as2DGeometry: src/core/tiledscene/qgstiledsceneboundingvolume.h#L62
 QgsTiledSceneBoundingVolume.bounds: src/core/tiledscene/qgstiledsceneboundingvolume.h#L52
 QgsTiledSceneBoundingVolume.box: src/core/tiledscene/qgstiledsceneboundingvolume.h#L77
 QgsTiledSceneBoundingVolume.intersects: src/core/tiledscene/qgstiledsceneboundingvolume.h#L72
@@ -19534,7 +19532,6 @@ QgsTiledSceneRenderer.copyCommonProperties: src/core/tiledscene/qgstiledsceneren
 QgsTiledSceneRenderer.flags: src/core/tiledscene/qgstiledscenerenderer.h#L158
 QgsTiledSceneRenderer.isTileBorderRenderingEnabled: src/core/tiledscene/qgstiledscenerenderer.h#L227
 QgsTiledSceneRenderer.legendRuleKeys: src/core/tiledscene/qgstiledscenerenderer.h#L260
-QgsTiledSceneRenderer.load: src/core/tiledscene/qgstiledscenerenderer.h#L167
 QgsTiledSceneRenderer.maximumScreenError: src/core/tiledscene/qgstiledscenerenderer.h#L185
 QgsTiledSceneRenderer.maximumScreenErrorUnit: src/core/tiledscene/qgstiledscenerenderer.h#L205
 QgsTiledSceneRenderer.renderLine: src/core/tiledscene/qgstiledscenerenderer.h#L270
@@ -19558,7 +19555,6 @@ QgsTiledSceneRendererAbstractMetadata: src/core/tiledscene/qgstiledscenerenderer
 QgsTiledSceneRendererMetadata.createRenderer: src/core/tiledscene/qgstiledscenerendererregistry.h#L141
 QgsTiledSceneRendererMetadata: src/core/tiledscene/qgstiledscenerendererregistry.h#L128
 QgsTiledSceneRendererRegistry.addRenderer: src/core/tiledscene/qgstiledscenerendererregistry.h#L196
-QgsTiledSceneRendererRegistry.defaultRenderer: src/core/tiledscene/qgstiledscenerendererregistry.h#L222
 QgsTiledSceneRendererRegistry.removeRenderer: src/core/tiledscene/qgstiledscenerendererregistry.h#L204
 QgsTiledSceneRendererRegistry.rendererMetadata: src/core/tiledscene/qgstiledscenerendererregistry.h#L210
 QgsTiledSceneRendererRegistry.renderersList: src/core/tiledscene/qgstiledscenerendererregistry.h#L215
@@ -19574,7 +19570,6 @@ QgsTiledSceneRequest.setParentTileId: src/core/tiledscene/qgstiledscenerequest.h
 QgsTiledSceneRequest.setRequiredGeometricError: src/core/tiledscene/qgstiledscenerequest.h#L92
 QgsTiledSceneRequest: src/core/tiledscene/qgstiledscenerequest.h#L37
 QgsTiledSceneTextureRenderer.clone: src/core/tiledscene/qgstiledscenetexturerenderer.h#L43
-QgsTiledSceneTextureRenderer.create: src/core/tiledscene/qgstiledscenetexturerenderer.h#L54
 QgsTiledSceneTextureRenderer.fillSymbol: src/core/tiledscene/qgstiledscenetexturerenderer.h#L68
 QgsTiledSceneTextureRenderer.flags: src/core/tiledscene/qgstiledscenetexturerenderer.h#L45
 QgsTiledSceneTextureRenderer.renderLine: src/core/tiledscene/qgstiledscenetexturerenderer.h#L47
@@ -19602,7 +19597,6 @@ QgsTiledSceneTile.setTransform: src/core/tiledscene/qgstiledscenetile.h#L106
 QgsTiledSceneTile.transform: src/core/tiledscene/qgstiledscenetile.h#L116
 QgsTiledSceneTile: src/core/tiledscene/qgstiledscenetile.h#L35
 QgsTiledSceneWireframeRenderer.clone: src/core/tiledscene/qgstiledscenewireframerenderer.h#L44
-QgsTiledSceneWireframeRenderer.create: src/core/tiledscene/qgstiledscenewireframerenderer.h#L55
 QgsTiledSceneWireframeRenderer.fillSymbol: src/core/tiledscene/qgstiledscenewireframerenderer.h#L69
 QgsTiledSceneWireframeRenderer.flags: src/core/tiledscene/qgstiledscenewireframerenderer.h#L50
 QgsTiledSceneWireframeRenderer.lineSymbol: src/core/tiledscene/qgstiledscenewireframerenderer.h#L92
