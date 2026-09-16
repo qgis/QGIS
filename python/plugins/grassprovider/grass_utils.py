@@ -26,7 +26,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from processing.algs.gdal.GdalUtils import GdalUtils
+from gdalprovider.gdal_utils import GdalUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import mkdir, userFolder
 from qgis.core import (

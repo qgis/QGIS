@@ -24,10 +24,10 @@ import shutil
 import tempfile
 
 import nose2
-from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.algs.gdal.ogr2ogr import ogr2ogr
-from processing.algs.gdal.OgrToPostGis import OgrToPostGis
+from gdalprovider.gdal_algorithm import GdalAlgorithm
+from gdalprovider.gdal_utils import GdalUtils
+from gdalprovider.ogr2ogr import ogr2ogr
+from gdalprovider.OgrToPostGis import OgrToPostGis
 from qgis.core import (
     QgsApplication,
     QgsCoordinateReferenceSystem,

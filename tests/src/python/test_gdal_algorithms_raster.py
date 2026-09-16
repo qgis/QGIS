@@ -26,50 +26,50 @@ import tempfile
 import AlgorithmsTestBase
 import nose2
 import processing
-from processing.algs.gdal.aspect import aspect
-from processing.algs.gdal.AssignProjection import AssignProjection
-from processing.algs.gdal.buildvrt import buildvrt
-from processing.algs.gdal.ClipRasterByExtent import ClipRasterByExtent
-from processing.algs.gdal.ClipRasterByMask import ClipRasterByMask
-from processing.algs.gdal.ColorRelief import ColorRelief
-from processing.algs.gdal.contour import contour, contour_polygon
-from processing.algs.gdal.CreateCloudOptimizedGeoTiff import CreateCloudOptimizedGeoTIFF
-from processing.algs.gdal.DatasetIdentify import DatasetIdentify
-from processing.algs.gdal.fillnodata import fillnodata
-from processing.algs.gdal.gdal2tiles import gdal2tiles
-from processing.algs.gdal.gdal2xyz import gdal2xyz
-from processing.algs.gdal.gdaladdo import gdaladdo
-from processing.algs.gdal.gdalcalc import gdalcalc
-from processing.algs.gdal.gdalinfo import gdalinfo
-from processing.algs.gdal.gdaltindex import gdaltindex
-from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.algs.gdal.GridAverage import GridAverage
-from processing.algs.gdal.GridDataMetrics import GridDataMetrics
-from processing.algs.gdal.GridInverseDistance import GridInverseDistance
-from processing.algs.gdal.GridInverseDistanceNearestNeighbor import (
+from gdalprovider.aspect import aspect
+from gdalprovider.AssignProjection import AssignProjection
+from gdalprovider.buildvrt import buildvrt
+from gdalprovider.ClipRasterByExtent import ClipRasterByExtent
+from gdalprovider.ClipRasterByMask import ClipRasterByMask
+from gdalprovider.ColorRelief import ColorRelief
+from gdalprovider.contour import contour, contour_polygon
+from gdalprovider.CreateCloudOptimizedGeoTiff import CreateCloudOptimizedGeoTIFF
+from gdalprovider.DatasetIdentify import DatasetIdentify
+from gdalprovider.fillnodata import fillnodata
+from gdalprovider.gdal2tiles import gdal2tiles
+from gdalprovider.gdal2xyz import gdal2xyz
+from gdalprovider.gdal_utils import GdalUtils
+from gdalprovider.gdaladdo import gdaladdo
+from gdalprovider.gdalcalc import gdalcalc
+from gdalprovider.gdalinfo import gdalinfo
+from gdalprovider.gdaltindex import gdaltindex
+from gdalprovider.GridAverage import GridAverage
+from gdalprovider.GridDataMetrics import GridDataMetrics
+from gdalprovider.GridInverseDistance import GridInverseDistance
+from gdalprovider.GridInverseDistanceNearestNeighbor import (
     GridInverseDistanceNearestNeighbor,
 )
-from processing.algs.gdal.GridLinear import GridLinear
-from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
-from processing.algs.gdal.hillshade import hillshade
-from processing.algs.gdal.merge import merge
-from processing.algs.gdal.nearblack import nearblack
-from processing.algs.gdal.pansharp import pansharp
-from processing.algs.gdal.pct2rgb import pct2rgb
-from processing.algs.gdal.polygonize import polygonize
-from processing.algs.gdal.proximity import proximity
-from processing.algs.gdal.rasterize import rasterize
-from processing.algs.gdal.rasterize_over import rasterize_over
-from processing.algs.gdal.rasterize_over_fixed_value import rasterize_over_fixed_value
-from processing.algs.gdal.rearrange_bands import rearrange_bands
-from processing.algs.gdal.retile import retile
-from processing.algs.gdal.rgb2pct import rgb2pct
-from processing.algs.gdal.roughness import roughness
-from processing.algs.gdal.sieve import sieve
-from processing.algs.gdal.slope import slope
-from processing.algs.gdal.translate import translate
-from processing.algs.gdal.viewshed import viewshed
-from processing.algs.gdal.warp import warp
+from gdalprovider.GridLinear import GridLinear
+from gdalprovider.GridNearestNeighbor import GridNearestNeighbor
+from gdalprovider.hillshade import hillshade
+from gdalprovider.merge import merge
+from gdalprovider.nearblack import nearblack
+from gdalprovider.pansharp import pansharp
+from gdalprovider.pct2rgb import pct2rgb
+from gdalprovider.polygonize import polygonize
+from gdalprovider.proximity import proximity
+from gdalprovider.rasterize import rasterize
+from gdalprovider.rasterize_over import rasterize_over
+from gdalprovider.rasterize_over_fixed_value import rasterize_over_fixed_value
+from gdalprovider.rearrange_bands import rearrange_bands
+from gdalprovider.retile import retile
+from gdalprovider.rgb2pct import rgb2pct
+from gdalprovider.roughness import roughness
+from gdalprovider.sieve import sieve
+from gdalprovider.slope import slope
+from gdalprovider.translate import translate
+from gdalprovider.viewshed import viewshed
+from gdalprovider.warp import warp
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsPointXY,

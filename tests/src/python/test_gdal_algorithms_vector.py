@@ -25,14 +25,14 @@ import tempfile
 
 import AlgorithmsTestBase
 import nose2
-from processing.algs.gdal.Buffer import Buffer
-from processing.algs.gdal.Dissolve import Dissolve
-from processing.algs.gdal.OffsetCurve import OffsetCurve
-from processing.algs.gdal.ogr2ogr import ogr2ogr
-from processing.algs.gdal.ogrinfo import ogrinfo, ogrinfojson
-from processing.algs.gdal.OgrToPostGis import OgrToPostGis
-from processing.algs.gdal.OneSideBuffer import OneSideBuffer
-from processing.algs.gdal.PointsAlongLines import PointsAlongLines
+from gdalprovider.Buffer import Buffer
+from gdalprovider.Dissolve import Dissolve
+from gdalprovider.OffsetCurve import OffsetCurve
+from gdalprovider.ogr2ogr import ogr2ogr
+from gdalprovider.ogrinfo import ogrinfo, ogrinfojson
+from gdalprovider.OgrToPostGis import OgrToPostGis
+from gdalprovider.OneSideBuffer import OneSideBuffer
+from gdalprovider.PointsAlongLines import PointsAlongLines
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsProcessingContext,
