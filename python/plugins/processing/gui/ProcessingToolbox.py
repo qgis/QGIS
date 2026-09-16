@@ -21,9 +21,15 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import warnings
+from functools import partial
 
 from qgis.core import Qgis, QgsApplication, QgsMapLayerType, QgsProcessingAlgorithm
-from qgis.gui import QgsDockWidget, QgsGui, QgsProcessingToolboxProxyModel
+from qgis.gui import (
+    QgsDockWidget,
+    QgsGui,
+    QgsProcessingActionContext,
+    QgsProcessingToolboxProxyModel,
+)
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt, pyqtSignal
 from qgis.PyQt.QtWidgets import QAction, QMenu, QToolButton, QWidget
@@ -163,12 +169,17 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             menu.setObjectName(provider.name() + "_menu")
             for action in actions:
                 action.setData(self)
-                act = QAction(action.name, menu)
-                act.setObjectName(action.name)
-                act.triggered.connect(action.execute)
+                act = QAction(action.actionName(), menu)
+                act.setObjectName(action.actionName())
+                act.triggered.connect(partial(self._trigger_action, action))
                 menu.addAction(act)
             toolbarButton.setMenu(menu)
             self.processingToolbar.addWidget(toolbarButton)
+
+    def _trigger_action(self, action):
+        context = QgsProcessingActionContext()
+        context.setParentWidget(self)
+        action.trigger(context)
 
     def addProvider(self, provider_id):
         provider = QgsApplication.processingRegistry().providerById(provider_id)
