@@ -69,12 +69,19 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
     def createCustomParametersWidget(self, parent):
         return GdalAlgorithmWidget(self, parent=parent)
 
+    def useLegacyTool(self) -> bool:
+        """Check for which GDAL versions the legacy tool name and command should be used.
+
+        Overriding this in child classes allows for easier version change.
+        """
+        return GdalUtils.version() < 3110000
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         """Switches between legacy tool (usually a .py script) and GDAL CLI tool based on available GDAL version.
 
         The algorithms can directly override this function, if the only provide single way to be run. Or override both private methods for to allow running either of legacy tool or GDAL CLI.
         """
-        if GdalUtils.version() < 3110000:
+        if self.useLegacyTool():
             return self._getConsoleCommandsLegacy(
                 parameters, context, feedback, executing
             )
@@ -96,7 +103,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
 
         The algorithms can directly override this function, if the only provide single command to run. Or override both private methods for to allow running either of legacy tool or GDAL CLI.
         """
-        if GdalUtils.version() < 3110000:
+        if self.useLegacyTool():
             return self._commandNameLegacy()
         else:
             return self._commandNameGdalCli()
