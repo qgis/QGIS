@@ -25,22 +25,6 @@ import tempfile
 
 import AlgorithmsTestBase
 import nose2
-from qgis.core import (
-    QgsCoordinateReferenceSystem,
-    QgsPointXY,
-    QgsProcessing,
-    QgsProcessingContext,
-    QgsProcessingException,
-    QgsProcessingFeedback,
-    QgsProcessingRasterLayerDefinition,
-    QgsProject,
-    QgsProjUtils,
-    QgsRasterLayer,
-    QgsRectangle,
-    QgsReferencedRectangle,
-)
-from qgis.testing import QgisTestCase, start_app, unittest
-
 import processing
 from processing.algs.gdal.aspect import aspect
 from processing.algs.gdal.AssignProjection import AssignProjection
@@ -87,8 +71,25 @@ from processing.algs.gdal.translate import translate
 from processing.algs.gdal.viewshed import viewshed
 from processing.algs.gdal.warp import warp
 from processing.tests.TestData import wms_layer_1_3_0_frankfurt
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsPointXY,
+    QgsProcessing,
+    QgsProcessingContext,
+    QgsProcessingException,
+    QgsProcessingFeedback,
+    QgsProcessingRasterLayerDefinition,
+    QgsProject,
+    QgsProjUtils,
+    QgsRasterLayer,
+    QgsRectangle,
+    QgsReferencedRectangle,
+)
+from qgis.testing import QgisTestCase, start_app, unittest
+from utilities import unitTestDataPath
 
-testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
+TEST_DATA_DIR = unitTestDataPath()
+testDataPath = os.path.join(TEST_DATA_DIR, "processing")
 
 
 class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):

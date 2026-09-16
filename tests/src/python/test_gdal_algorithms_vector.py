@@ -25,14 +25,6 @@ import tempfile
 
 import AlgorithmsTestBase
 import nose2
-from qgis.core import (
-    QgsCoordinateReferenceSystem,
-    QgsProcessingContext,
-    QgsProcessingFeedback,
-    QgsRectangle,
-)
-from qgis.testing import QgisTestCase, start_app
-
 from processing.algs.gdal.Buffer import Buffer
 from processing.algs.gdal.Dissolve import Dissolve
 from processing.algs.gdal.OffsetCurve import OffsetCurve
@@ -41,8 +33,17 @@ from processing.algs.gdal.ogrinfo import ogrinfo, ogrinfojson
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
 from processing.algs.gdal.OneSideBuffer import OneSideBuffer
 from processing.algs.gdal.PointsAlongLines import PointsAlongLines
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsRectangle,
+)
+from qgis.testing import QgisTestCase, start_app
+from utilities import unitTestDataPath
 
-testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
+TEST_DATA_DIR = unitTestDataPath()
+testDataPath = os.path.join(TEST_DATA_DIR, "processing")
 
 
 class TestGdalVectorAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
