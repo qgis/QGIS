@@ -231,6 +231,22 @@ class proximity(GdalAlgorithm):
     def _commandNameGdalCli(self) -> str:
         return "gdal raster proximity"
 
+    def commandName(self):
+        if GdalUtils.version() < 3120000:
+            return self._commandNameLegacy()
+        else:
+            return self._commandNameGdalCli()
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        if GdalUtils.version() < 3120000:
+            return self._getConsoleCommandsLegacy(
+                parameters, context, feedback, executing
+            )
+        else:
+            return self._getConsoleCommandsGdalCli(
+                parameters, context, feedback, executing
+            )
+
     def _getConsoleCommandsLegacy(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
