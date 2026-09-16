@@ -239,10 +239,13 @@ class rasterize(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, "images", "gdaltools", "rasterize.png"))
 
-    def commandName(self):
+    def _commandNameLegacy(self):
         return "gdal_rasterize"
 
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+    def _commandNameGdalCli(self) -> str:
+        return "gdal vector rasterize"
+
+    def _getConsoleCommandsLegacy(self, parameters, context, feedback, executing=True):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
             raise QgsProcessingException(
@@ -345,6 +348,100 @@ class rasterize(GdalAlgorithm):
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
+
+        arguments.append(input_details.connection_string)
+        arguments.append(out)
+
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+
+    def _getConsoleCommandsGdalCli(self, parameters, context, feedback, executing=True):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
+
+        input_details = self.getOgrCompatibleSource(
+            self.INPUT, parameters, context, feedback, executing
+        )
+        arguments = ["--input-layer", input_details.layer_name]
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        use_z = self.parameterAsBoolean(parameters, self.USE_Z, context)
+        if use_z:
+            arguments.append("--3d")
+        elif fieldName:
+            arguments.append("--attribute-name")
+            arguments.append(fieldName)
+        else:
+            arguments.append("--burn")
+            arguments.append(self.parameterAsDouble(parameters, self.BURN, context))
+
+        units = self.parameterAsEnum(parameters, self.UNITS, context)
+        width = self.parameterAsDouble(parameters, self.WIDTH, context)
+        height = self.parameterAsDouble(parameters, self.HEIGHT, context)
+        if units == 0:
+            arguments.append("--size")
+            arguments.append(f"{int(width)},{int(height)}")
+        else:
+            arguments.append("--resolution")
+            arguments.append(f"{width},{height}")
+
+        if self.INIT in parameters and parameters[self.INIT] is not None:
+            initValue = self.parameterAsDouble(parameters, self.INIT, context)
+            arguments.append("--init")
+            arguments.append(initValue)
+
+        if self.parameterAsBoolean(parameters, self.INVERT, context):
+            arguments.append("--invert")
+
+        if self.parameterAsBoolean(parameters, self.ALL_TOUCH, context):
+            arguments.append("--all-touched")
+
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+            arguments.append("--nodata")
+            arguments.append(nodata)
+
+        extent = self.parameterAsExtent(
+            parameters, self.EXTENT, context, source.sourceCrs()
+        )
+        if not extent.isNull():
+            arguments.append("--extent")
+            arguments.append(
+                f"{extent.xMinimum()},{extent.yMinimum()},{extent.xMaximum()},{extent.yMaximum()}"
+            )
+
+        data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
+
+        arguments.append("--ot")
+        arguments.append(self.TYPES[data_type])
+
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
+
+        output_format = self.outputFormat(parameters, self.OUTPUT, context)
+        if not output_format:
+            raise QgsProcessingException(self.tr("Output format is invalid"))
+
+        arguments.append("--format")
+        arguments.append(output_format)
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments(new_api=True))
+
+        options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
+        # handle backwards compatibility parameter OPTIONS
+        if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options, new_api=True))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
 
         arguments.append(input_details.connection_string)
         arguments.append(out)

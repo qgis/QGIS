@@ -109,10 +109,59 @@ class polygonize(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, "images", "gdaltools", "polygonize.png"))
 
-    def commandName(self) -> str:
+    def _commandNameLegacy(self):
+        return "gdal_polygonize"
+
+    def _commandNameGdalCli(self) -> str:
         return "gdal raster polygonize"
 
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+    def _getConsoleCommandsLegacy(self, parameters, context, feedback, executing=True):
+        arguments = []
+
+        if self.parameterAsBoolean(parameters, self.EIGHT_CONNECTEDNESS, context):
+            arguments.append("-8")
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(
+                self.invalidRasterError(parameters, self.INPUT)
+            )
+        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
+
+        arguments.append(input_details.connection_string)
+
+        arguments.append("-b")
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
+
+        outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
+        output_details = GdalUtils.gdal_connection_details_from_uri(outFile, context)
+
+        if output_details.format:
+            arguments.append(f"-f {output_details.format}")
+
+        arguments.append(output_details.connection_string)
+
+        # Output layer name
+        arguments.append(
+            os.path.basename(os.path.splitext(output_details.connection_string)[0])
+        )
+
+        arguments.append(self.parameterAsString(parameters, self.FIELD, context))
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
+        return [
+            self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
+            GdalUtils.escapeAndJoin(arguments),
+        ]
+
+    def _getConsoleCommandsGdalCli(self, parameters, context, feedback, executing=True):
         arguments = []
 
         if self.parameterAsBoolean(parameters, self.EIGHT_CONNECTEDNESS, context):

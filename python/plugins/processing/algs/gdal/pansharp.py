@@ -138,10 +138,70 @@ class pansharp(GdalAlgorithm):
     def groupId(self):
         return "rastermiscellaneous"
 
-    def commandName(self) -> str:
+    def _commandNameLegacy(self):
+        return "gdal_pansharpen"
+
+    def _commandNameGdalCli(self) -> str:
         return "gdal raster pansharpen"
 
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+    def _getConsoleCommandsLegacy(self, parameters, context, feedback, executing=True):
+        spectral = self.parameterAsRasterLayer(parameters, self.SPECTRAL, context)
+        if spectral is None:
+            raise QgsProcessingException(
+                self.invalidRasterError(parameters, self.SPECTRAL)
+            )
+        spectral_input_details = GdalUtils.gdal_connection_details_from_layer(spectral)
+
+        panchromatic = self.parameterAsRasterLayer(
+            parameters, self.PANCHROMATIC, context
+        )
+        if panchromatic is None:
+            raise QgsProcessingException(
+                self.invalidRasterError(parameters, self.PANCHROMATIC)
+            )
+        panchromatic_input_details = GdalUtils.gdal_connection_details_from_layer(
+            panchromatic
+        )
+
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
+
+        output_format = self.outputFormat(parameters, self.OUTPUT, context)
+        if not output_format:
+            raise QgsProcessingException(self.tr("Output format is invalid"))
+
+        arguments = [
+            panchromatic_input_details.connection_string,
+            spectral_input_details.connection_string,
+            out,
+            "-r",
+            self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1],
+            "-of",
+            output_format,
+        ]
+
+        if panchromatic_input_details.credential_options:
+            arguments.extend(
+                panchromatic_input_details.credential_options_as_arguments()
+            )
+
+        options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
+        # handle backwards compatibility parameter OPTIONS
+        if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        return [
+            self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
+            GdalUtils.escapeAndJoin(arguments),
+        ]
+
+    def _getConsoleCommandsGdalCli(self, parameters, context, feedback, executing=True):
         spectral = self.parameterAsRasterLayer(parameters, self.SPECTRAL, context)
         if spectral is None:
             raise QgsProcessingException(

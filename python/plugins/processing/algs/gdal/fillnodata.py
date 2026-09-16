@@ -165,13 +165,74 @@ class fillnodata(GdalAlgorithm):
     def groupId(self):
         return "rasteranalysis"
 
-    def commandName(self) -> str:
+    def _commandNameLegacy(self):
+        return "gdal_fillnodata"
+
+    def _commandNameGdalCli(self) -> str:
         return "gdal raster fill-nodata"
 
     def flags(self):
         return super().flags() | QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral
 
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+    def _getConsoleCommandsLegacy(self, parameters, context, feedback, executing=True):
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster is None:
+            raise QgsProcessingException(
+                self.invalidRasterError(parameters, self.INPUT)
+            )
+        input_details = GdalUtils.gdal_connection_details_from_layer(raster)
+
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
+
+        arguments = [
+            input_details.connection_string,
+            out,
+            "-md",
+            str(self.parameterAsInt(parameters, self.DISTANCE, context)),
+        ]
+
+        nIterations = self.parameterAsInt(parameters, self.ITERATIONS, context)
+        if nIterations:
+            arguments.append("-si")
+            arguments.append(str(nIterations))
+
+        arguments.append("-b")
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
+
+        mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)
+        if mask:
+            arguments.append("-mask")
+            arguments.append(mask.source())
+
+        output_format = self.outputFormat(parameters, self.OUTPUT, context)
+        if not output_format:
+            raise QgsProcessingException(self.tr("Output format is invalid"))
+
+        arguments.append("-of")
+        arguments.append(output_format)
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        # Until https://github.com/OSGeo/gdal/issues/7651 is fixed, creation options should be latest argument
+        options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
+        # handle backwards compatibility parameter OPTIONS
+        if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
+
+        return [
+            self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
+            GdalUtils.escapeAndJoin(arguments),
+        ]
+
+    def _getConsoleCommandsGdalCli(self, parameters, context, feedback, executing=True):
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if raster is None:
             raise QgsProcessingException(

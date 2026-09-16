@@ -114,10 +114,44 @@ class gdalinfo(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, "images", "gdaltools", "raster-info.png"))
 
-    def commandName(self):
+    def _commandNameLegacy(self):
+        return "gdalinfo"
+
+    def _commandNameGdalCli(self):
         return "gdal raster info"
 
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+    def _getConsoleCommandsLegacy(self, parameters, context, feedback, executing=True):
+        arguments = []
+        if self.parameterAsBoolean(parameters, self.MIN_MAX, context):
+            arguments.append("-mm")
+        if self.parameterAsBoolean(parameters, self.STATS, context):
+            arguments.append("-stats")
+        if self.parameterAsBoolean(parameters, self.NO_GCP, context):
+            arguments.append("-nogcp")
+        if self.parameterAsBoolean(parameters, self.NO_METADATA, context):
+            arguments.append("-nomd")
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster is None:
+            raise QgsProcessingException(
+                self.invalidRasterError(parameters, self.INPUT)
+            )
+        input_details = GdalUtils.gdal_connection_details_from_layer(raster)
+        arguments.append(input_details.connection_string)
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments())
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+
+    def _getConsoleCommandsGdalCli(self, parameters, context, feedback, executing=True):
         arguments = []
         if self.parameterAsBoolean(parameters, self.MIN_MAX, context):
             arguments.append("--min-max")

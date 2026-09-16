@@ -106,10 +106,13 @@ class rasterize_over_fixed_value(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, "images", "gdaltools", "rasterize.png"))
 
-    def commandName(self):
+    def _commandNameLegacy(self):
         return "gdal_rasterize"
 
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+    def _commandNameGdalCli(self) -> str:
+        return "gdal vector rasterize"
+
+    def _getConsoleCommandsLegacy(self, parameters, context, feedback, executing=True):
         input_details = self.getOgrCompatibleSource(
             self.INPUT, parameters, context, feedback, executing
         )
@@ -141,6 +144,45 @@ class rasterize_over_fixed_value(GdalAlgorithm):
                 )
 
             arguments.extend(input_details.open_options_as_arguments())
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
+        if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ""):
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            arguments.append(extra)
+
+        arguments.append(input_details.connection_string)
+        arguments.append(input_raster_details.connection_string)
+
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+
+    def _getConsoleCommandsGdalCli(self, parameters, context, feedback, executing=True):
+        input_details = self.getOgrCompatibleSource(
+            self.INPUT, parameters, context, feedback, executing
+        )
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
+        if inLayer is None:
+            raise QgsProcessingException(
+                self.invalidRasterError(parameters, self.INPUT_RASTER)
+            )
+        input_raster_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
+
+        self.setOutputValue(self.OUTPUT, inLayer.source())
+
+        arguments = [
+            "--input-layer",
+            input_details.layer_name,
+            "--burn",
+            str(self.parameterAsDouble(parameters, self.BURN, context)),
+            "--update",
+        ]
+
+        if self.parameterAsBool(parameters, self.ADD, context):
+            arguments.append("--add")
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments(new_api=True))
 
         if input_details.credential_options:
             arguments.extend(input_details.credential_options_as_arguments())
