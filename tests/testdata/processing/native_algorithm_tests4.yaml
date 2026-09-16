@@ -2516,7 +2516,7 @@ tests:
 
   - name: Generate XYZ tiles (Directory)
     algorithm: qgis:tilesxyzdirectory
-    project: ../../../../../tests/testdata/xyztiles.qgs
+    project: ../xyztiles.qgs
     project_crs: EPSG:3857
     params:
       EXTENT: -12535000,-9883000,3360000,5349000 [EPSG:3857]
@@ -2538,9 +2538,9 @@ tests:
       LAYERS:
         type: vrtlayers
         params:
-        - layer: ../../../../../tests/testdata/lines.shp
-        - layer: ../../../../../tests/testdata/points.shp
-        - layer: ../../../../../tests/testdata/polys.shp
+        - layer: ../lines.shp
+        - layer: ../points.shp
+        - layer: ../polys.shp
       MAX_ZOOM: 3
       MIN_ZOOM: 1
       XYZ_TEMPLATE: '{z}/{x}/{y}.pbf'
