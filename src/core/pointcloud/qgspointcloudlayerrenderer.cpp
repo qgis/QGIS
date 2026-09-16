@@ -149,16 +149,7 @@ bool QgsPointCloudLayerRenderer::render()
       const double zb = b * std::sin( beta );
       const double originRadius = std::sqrt( xa * xa + zb * zb );
 
-      const double geocentricLatRad = std::atan2( b * b * std::sin( latRad ), a * a * std::cos( latRad ) );
-      const double centerOffset = originRadius * std::fabs( std::sin( latRad - geocentricLatRad ) );
-
-      const double horizonDiscRadius = b - centerOffset;
-      if ( horizonDiscRadius > 0 )
-      {
-        mFilterBelowHorizon = true;
-        mHorizonPlaneZ = -originRadius;
-        mHorizonDiscRadius = horizonDiscRadius;
-      }
+      mMapCrsZFilter = QgsDoubleRange( -originRadius, std::numeric_limits< double >::max() );
     }
   }
 
@@ -202,7 +193,7 @@ bool QgsPointCloudLayerRenderer::render()
        || mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::BottomToTop
        || mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::TopToBottom
        || renderContext()->elevationMap()
-       || mFilterBelowHorizon )
+       || !mMapCrsZFilter.isInfinite() )
     mAttributes.push_back( QgsPointCloudAttribute( u"Z"_s, QgsPointCloudAttribute::Int32 ) );
 
   // collect attributes required by renderer
@@ -331,11 +322,7 @@ bool QgsPointCloudLayerRenderer::render()
 bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex &pc )
 {
   QgsPointCloudRenderContext context( *renderContext(), pc.scale(), pc.offset(), mZScale, mZOffset, mFeedback.get() );
-  if ( mFilterBelowHorizon )
-  {
-    context.setHorizonFilter( mHorizonPlaneZ, mHorizonDiscRadius );
-    context.setHorizonFilterEnabled( true );
-  }
+  context.setMapCrsZFilter( mMapCrsZFilter );
 
 #ifdef QGISDEBUG
   QElapsedTimer t;
