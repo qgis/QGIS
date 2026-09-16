@@ -40,8 +40,10 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.testing import QgisTestCase, start_app
+from utilities import unitTestDataPath
 
-testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
+TEST_DATA_DIR = unitTestDataPath()
+testDataPath = os.path.join(TEST_DATA_DIR, "processing")
 
 
 class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):

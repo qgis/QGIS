@@ -29,8 +29,10 @@ from grassprovider.grass_provider import GrassProvider
 from grassprovider.grass_utils import GrassUtils
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.testing import QgisTestCase, start_app
+from utilities import unitTestDataPath
 
-testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
+TEST_DATA_DIR = unitTestDataPath()
+testDataPath = os.path.join(TEST_DATA_DIR, "processing")
 
 
 class TestGrassAlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):

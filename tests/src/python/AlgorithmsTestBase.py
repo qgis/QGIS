@@ -59,13 +59,15 @@ gdal.UseExceptions()
 
 REGENERATE_REFERENCE_RASTERS = False
 
+TEST_DATA_DIR = unitTestDataPath()
+
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
     return (maj) * 1000000 + (min) * 10000 + (rev) * 100
 
 
 def processingTestDataPath():
-    return os.path.join(os.path.dirname(__file__), "testdata")
+    return os.path.join(TEST_DATA_DIR, "processing")
 
 
 class AlgorithmsTest:
