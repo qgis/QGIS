@@ -132,8 +132,6 @@ class GenericAlgorithmsTest(QgisTestCase):
 
             if alg.id() not in (
                 "native:createspatialindex",
-                "native:tilesxyzdirectory",
-                "native:tilesxyzmbtiles",
                 "pdal:assignprojection",
                 "pdal:boundary",
                 "pdal:clip",
@@ -172,7 +170,7 @@ class GenericAlgorithmsTest(QgisTestCase):
             ):
                 self.assertTrue(
                     alg.shortDescription(),
-                    f"Algorithm {alg.id()} has not shortDescription!",
+                    f"Algorithm {alg.id()} has no shortDescription!",
                 )
             if alg.shortDescription():
                 self.assertTrue(
