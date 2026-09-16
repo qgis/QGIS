@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    TestData.py
+    test_gdal_algorithm_utils.py
     ---------------------
     Date                 : March 2013
     Copyright            : (C) 2013 by Victor Olaya
