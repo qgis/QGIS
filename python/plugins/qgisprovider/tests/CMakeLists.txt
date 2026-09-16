@@ -4,6 +4,5 @@ PLUGIN_INSTALL(qgisprovider tests ${PY_FILES})
 
 if(ENABLE_TESTS)
   include(UsePythonTest)
-  ADD_PYTHON_TEST(ProcessingQgisPythonAlgorithmsTest QgisAlgorithmsTest1.py)
-  ADD_PYTHON_TEST(ProcessingToolsTest ToolsTest.py)
+  ADD_PYTHON_TEST(QgisProviderProcessingToolsTest ToolsTest.py)
 endif()

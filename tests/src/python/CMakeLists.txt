@@ -5,6 +5,7 @@ set (ENABLE_HANATEST FALSE CACHE BOOL "Enable HANA provider tests")
 include(UsePythonTest)
 
 ADD_PYTHON_TEST(ProcessingGenericAlgorithmsTest test_processing_algorithms.py)
+ADD_PYTHON_TEST(ProcessingQgisPythonAlgorithmsTest test_qgis_algorithms_pt1.py)
 
 ADD_PYTHON_TEST(ProcessingGdalAlgorithmsGeneralTest test_gdal_algorithms_general.py)
 ADD_PYTHON_TEST(ProcessingGdalAlgorithmsRasterTest test_gdal_algorithms_raster.py)
