@@ -33,6 +33,7 @@ from copy import deepcopy
 import nose2
 import processing
 import yaml
+from grassprovider.grass_utils import GrassUtils
 from numpy import nan_to_num
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
@@ -66,6 +67,11 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
     return (maj) * 1000000 + (min) * 10000 + (rev) * 100
 
 
+def GRASS_VERSION_INT(version: str) -> int:
+    parts = version.split(".")
+    return int(parts[0]) * 1000000 + int(parts[1]) * 10000 + int(parts[2]) * 100
+
+
 def processingTestDataPath():
     return os.path.join(TEST_DATA_DIR, "processing")
 
@@ -84,6 +90,32 @@ class AlgorithmsTest:
             for idx, algtest in enumerate(algorithm_tests["tests"]):
                 condition = algtest.get("condition")
                 if condition:
+                    grass_condition = condition.get("grass")
+                    if grass_condition:
+                        grass_version = GRASS_VERSION_INT(GrassUtils.installedVersion())
+                        less_than_condition = grass_condition.get("less_than")
+                        if less_than_condition:
+                            if grass_version >= less_than_condition:
+                                print(
+                                    "!!! Skipping {}, requires GRASS < {}, have version {}".format(
+                                        algtest["name"],
+                                        less_than_condition,
+                                        grass_version,
+                                    )
+                                )
+                                continue
+                        at_least_condition = grass_condition.get("at_least")
+                        if at_least_condition:
+                            if grass_version < at_least_condition:
+                                print(
+                                    "!!! Skipping {}, requires GRASS >= {}, have version {}".format(
+                                        algtest["name"],
+                                        at_least_condition,
+                                        grass_version,
+                                    )
+                                )
+                                continue
+
                     geos_condition = condition.get("geos")
                     if geos_condition:
                         less_than_condition = geos_condition.get("less_than")
