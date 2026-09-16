@@ -320,7 +320,7 @@ QgsMapToolEditBlankSegmentsBase::QgsMapToolEditBlankSegmentsBase( QgsMapCanvas *
   auto initRubberBand = []( QgsRubberBand *rb ) {
     rb->setWidth( QgsGuiUtils::scaleIconSize( 4 ) );
     rb->setColor( QgsSettingsRegistryCore::settingsDigitizingLineColor->value() );
-    rb->setIcon( QgsRubberBand::IconType::ICON_BOX );
+    rb->setIcon( Qgis::RubberBandIconType::Box );
   };
 
   initRubberBand( mStartRubberBand );

@@ -111,6 +111,8 @@ void QgsServiceAreaFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   loadCommonParams( parameters, context, feedback );
 
   std::unique_ptr<QgsProcessingFeatureSource> startPoints( parameterAsSource( parameters, u"START_POINTS"_s, context ) );

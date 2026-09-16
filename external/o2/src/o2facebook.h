@@ -11,10 +11,10 @@ class O0_EXPORT O2Facebook: public O2 {
 public:
     explicit O2Facebook(QObject *parent = nullptr);
 
-public Q_SLOTS:
+public slots:
     void onVerificationReceived(QMap<QString, QString>) override;
 
-protected Q_SLOTS:
+protected slots:
     void onTokenReplyFinished() override;
 };
 

@@ -75,7 +75,7 @@ void QgsEditFormConfig::setFields( const QgsFields &fields )
     d->mInvisibleRootContainer->clear();
     for ( int i = 0; i < d->mFields.size(); ++i )
     {
-      QgsAttributeEditorField *field = new QgsAttributeEditorField( d->mFields.at( i ).name(), i, d->mInvisibleRootContainer );
+      QgsAttributeEditorField *field = new QgsAttributeEditorField( d->mFields.at( i ).name(), i, d->mInvisibleRootContainer.get() );
       d->mInvisibleRootContainer->addChildElement( field );
     }
   }
@@ -147,7 +147,7 @@ bool QgsEditFormConfig::setWidgetConfig( const QString &widgetName, const QVaria
       u"Deprecation Warning: Trying to set a relation config directly on the relation %1. Relation settings should be done for the specific widget instance instead. Use attributeEditorRelation->setNmRelationId() or attributeEditorRelation->setForceSuppressFormPopup() instead."_s
         .arg( widgetName )
     );
-    legacyUpdateRelationWidgetInTabs( d->mInvisibleRootContainer, widgetName, config );
+    legacyUpdateRelationWidgetInTabs( d->mInvisibleRootContainer.get(), widgetName, config );
   }
 
   d.detach();
@@ -201,7 +201,7 @@ void QgsEditFormConfig::clearTabs()
 
 QgsAttributeEditorContainer *QgsEditFormConfig::invisibleRootContainer()
 {
-  return d->mInvisibleRootContainer;
+  return d->mInvisibleRootContainer.get();
 }
 
 Qgis::AttributeFormLayout QgsEditFormConfig::layout() const

@@ -1,0 +1,42 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfontcombobox.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsFontComboBox : QFontComboBox
+{
+%Docstring(signature="appended")
+A QFontComboBox with improved usability.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgsfontcombobox.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsFontComboBox *>( sipCpp ) )
+      sipType = sipType_QgsFontComboBox;
+    else
+      sipType = NULL;
+%End
+  public:
+    explicit QgsFontComboBox( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFontComboBox, with the specified ``parent`` widget.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfontcombobox.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

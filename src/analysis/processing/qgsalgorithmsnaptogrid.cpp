@@ -133,6 +133,8 @@ bool QgsSnapToGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qg
 
 QgsFeatureList QgsSnapToGridAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {

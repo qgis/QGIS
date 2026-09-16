@@ -52,6 +52,7 @@ class TestQgsValueRelationWidgetWrapper : public QObject
     void cleanup();         // will be called after every testfunction.
 
     void testScrollBarUnlocked();
+    void testUnEvaluableFilterDoesNotFetchWholeTable();
     void testDrillDown();
     void testDrillDownMulti();
     //! Checks that a related value of 0 is not interpreted as a NULL
@@ -136,6 +137,9 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
   w.setConfig( cfg );
   w.widget();
 
+  // the filter uses current_value(), so it can only be evaluated once a form feature is set
+  w.setFeature( f3 );
+
   // when the widget wrapper is enabled, the container should be enabled
   // as well as items
   w.setEnabled( true );
@@ -161,6 +165,58 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
   QCOMPARE( w.widget()->isEnabled(), true );
   itemEnabled = w.mTableWidget->item( 0, 0 )->flags() & Qt::ItemIsEnabled;
   QCOMPARE( itemEnabled, true );
+}
+
+void TestQgsValueRelationWidgetWrapper::testUnEvaluableFilterDoesNotFetchWholeTable()
+{
+  // A filter using current_value() cannot be evaluated until the form feature is set. To avoid
+  // fetching the entire table of unneeded data, the related table is not loaded beforehand.
+  QgsVectorLayer vl1( u"Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string"_s, u"vl1"_s, u"memory"_s );
+  QgsVectorLayer vl2( u"Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int"_s, u"vl2"_s, u"memory"_s );
+  QgsProject::instance()->addMapLayer( &vl1, false, false );
+  QgsProject::instance()->addMapLayer( &vl2, false, false );
+
+  QgsFeature f1( vl1.fields() );
+  f1.setAttribute( u"pk"_s, 1 );
+  f1.setAttribute( u"province"_s, 123 );
+  f1.setAttribute( u"municipality"_s, u"Some Place By The River"_s );
+  QgsFeature f2( vl1.fields() );
+  f2.setAttribute( u"pk"_s, 2 );
+  f2.setAttribute( u"province"_s, 245 );
+  f2.setAttribute( u"municipality"_s, u"Dreamland By The Clouds"_s );
+  QVERIFY( vl1.dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 ) );
+
+  QgsFeature f3( vl2.fields() );
+  f3.setAttribute( u"pk"_s, 1 );
+  f3.setAttribute( u"fk_province"_s, 123 );
+  QVERIFY( vl2.dataProvider()->addFeature( f3 ) );
+
+  QgsValueRelationWidgetWrapper w( &vl2, vl2.fields().indexOf( "fk_municipality"_L1 ), nullptr, nullptr );
+  QVariantMap cfg;
+  cfg.insert( u"Layer"_s, vl1.id() );
+  cfg.insert( u"Key"_s, u"pk"_s );
+  cfg.insert( u"Value"_s, u"municipality"_s );
+  cfg.insert( u"AllowMulti"_s, false );
+  cfg.insert( u"NofColumns"_s, 1 );
+  cfg.insert( u"AllowNull"_s, false );
+  cfg.insert( u"OrderByValue"_s, true );
+  cfg.insert( u"FilterExpression"_s, u"\"province\" = current_value('fk_province')"_s );
+  cfg.insert( u"UseCompleter"_s, false );
+  w.setConfig( cfg );
+  w.widget();
+
+  // no form feature yet, so the filter is not evaluable and nothing is fetched
+  QCOMPARE( w.mCache.size(), 0 );
+  QCOMPARE( w.mComboBox->count(), 0 );
+
+  // once the feature is known the filter applies and only the matching value is fetched
+  w.setFeature( f3 );
+  QCOMPARE( w.mCache.size(), 1 );
+  QCOMPARE( w.mComboBox->count(), 1 );
+  QCOMPARE( w.mComboBox->itemText( 0 ), u"Some Place By The River"_s );
+
+  QgsProject::instance()->removeMapLayer( &vl2 );
+  QgsProject::instance()->removeMapLayer( &vl1 );
 }
 
 void TestQgsValueRelationWidgetWrapper::testDrillDown()
@@ -210,8 +266,9 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   w_municipality.widget();
   w_municipality.setEnabled( true );
 
-  QCOMPARE( w_municipality.mCache.size(), 2 );
-  QCOMPARE( w_municipality.mComboBox->count(), 2 );
+  // the filter needs the form feature, so nothing is fetched yet
+  QCOMPARE( w_municipality.mCache.size(), 0 );
+  QCOMPARE( w_municipality.mComboBox->count(), 0 );
 
   // Set a feature
   w_municipality.setFeature( vl2.getFeature( 1 ) );
@@ -331,8 +388,9 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
   w_municipality.widget();
   w_municipality.setEnabled( true );
 
-  QCOMPARE( w_municipality.mCache.size(), 2 );
-  QCOMPARE( w_municipality.mTableWidget->rowCount(), 2 );
+  // the filter needs the form feature, so nothing is fetched yet
+  QCOMPARE( w_municipality.mCache.size(), 0 );
+  QCOMPARE( w_municipality.mTableWidget->rowCount(), 0 );
   w_municipality.setFeature( f3 );
   QCOMPARE( w_municipality.mCache.size(), 1 );
 

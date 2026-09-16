@@ -135,6 +135,8 @@ bool QgsDownloadVectorTilesAlgorithm::prepareAlgorithm( const QVariantMap &param
 
 QVariantMap QgsDownloadVectorTilesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
 
   // count total number of tiles in the requested extent and zoom levels to see if it exceeds the tile limit

@@ -18,7 +18,6 @@ SOURCES += \
     $$PWD/o2replyserver.cpp \
     $$PWD/o2requestor.cpp \
     $$PWD/o2skydrive.cpp \
-    $$PWD/oxtwitter.cpp \
     $$PWD/o2simplecrypt.cpp \
     $$PWD/o0baseauth.cpp \
     $$PWD/o0settingsstore.cpp \
@@ -36,7 +35,6 @@ HEADERS += \
     $$PWD/o1flickr.h \
     $$PWD/o1requestor.h \
     $$PWD/o1smugmug.h \
-    $$PWD/o1twitter.h \
     $$PWD/o1timedreply.h \
     $$PWD/o1upwork.h \
     $$PWD/o2.h \
@@ -48,7 +46,6 @@ HEADERS += \
     $$PWD/o2replyserver.h \
     $$PWD/o2requestor.h \
     $$PWD/o2skydrive.h \
-    $$PWD/oxtwitter.h \
     $$PWD/o1freshbooks.h \
     $$PWD/o0baseauth.h \
     $$PWD/o0globals.h \
@@ -69,7 +66,6 @@ headers.files += \
     $$PWD/o1flickr.h \
     $$PWD/o1requestor.h \
     $$PWD/o1smugmug.h \
-    $$PWD/o1twitter.h \
     $$PWD/o1timedreply.h \
     $$PWD/o1upwork.h \
     $$PWD/o2.h \
@@ -80,7 +76,6 @@ headers.files += \
     $$PWD/o2replyserver.h \
     $$PWD/o2requestor.h \
     $$PWD/o2skydrive.h \
-    $$PWD/oxtwitter.h \
     $$PWD/o1freshbooks.h \
     $$PWD/o0baseauth.h \
     $$PWD/o0globals.h \

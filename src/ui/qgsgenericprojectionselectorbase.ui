@@ -145,7 +145,7 @@
              <item row="0" column="0">
               <widget class="QLabel" name="mLabelTopoBaseCrs">
                <property name="text">
-                <string>Base CRS:</string>
+                <string>Base CRS</string>
                </property>
               </widget>
              </item>
@@ -155,7 +155,7 @@
              <item row="1" column="0">
               <widget class="QLabel" name="mLabelTopoLat">
                <property name="text">
-                <string>Origin latitude:</string>
+                <string>Origin latitude</string>
                </property>
               </widget>
              </item>
@@ -178,7 +178,7 @@
              <item row="2" column="0">
               <widget class="QLabel" name="mLabelTopoLon">
                <property name="text">
-                <string>Origin longitude:</string>
+                <string>Origin longitude</string>
                </property>
               </widget>
              </item>

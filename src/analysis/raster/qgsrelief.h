@@ -126,6 +126,38 @@ class ANALYSIS_EXPORT QgsRelief
     void setReliefColors( const QList<QgsRasterReliefColor> &c ) { mReliefColors = c; }
 
     /**
+     * Sets a list of data source creation options to use when creating the output raster file.
+     *
+     * \see creationOptions()
+     * \since QGIS 4.4
+     */
+    void setCreationOptions( const QStringList &list ) { mCreationOptions = list; }
+
+    /**
+     * Returns the list of data source creation options which will be used when creating the output raster file.
+     *
+     * \see setCreationOptions()
+     * \since QGIS 4.4
+     */
+    QStringList creationOptions() const { return mCreationOptions; }
+
+    /**
+     * Sets no data value for output file.
+     *
+     * \see outputNodataValue()
+     * \since QGIS 4.4
+     */
+    void setOutputNodataValue( double value ) { mOutputNodataValue = value; }
+
+    /**
+     * Returns no data value used for output file.
+     *
+     * \see setOutputNodataValue()
+     * \since QGIS 4.4
+     */
+    double outputNodataValue() const { return mOutputNodataValue; }
+
+    /**
      * Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression.
      *
      * \returns TRUE in case of success
@@ -147,11 +179,13 @@ class ANALYSIS_EXPORT QgsRelief
     double mCellSizeX = 0.0;
     double mCellSizeY = 0.0;
     //! The nodata value of the input layer
-    float mInputNodataValue = -1;
+    float mInputNodataValue = -9999.0;
     //! The nodata value of the output layer
-    float mOutputNodataValue = -1;
+    float mOutputNodataValue = -9999.0;
 
     double mZFactor = 1;
+
+    QStringList mCreationOptions;
 
     std::unique_ptr<QgsSlopeFilter> mSlopeFilter;
     std::unique_ptr<QgsAspectFilter> mAspectFilter;

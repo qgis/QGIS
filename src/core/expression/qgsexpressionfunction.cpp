@@ -1606,11 +1606,13 @@ static QVariant fcnLower( const QVariantList &values, const QgsExpressionContext
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   return QVariant( str.toLower() );
 }
+
 static QVariant fcnUpper( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   return QVariant( str.toUpper() );
 }
+
 static QVariant fcnTitle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -1929,14 +1931,34 @@ static QVariant fcnRegexpSubstr( const QVariantList &values, const QgsExpression
   }
 }
 
-static QVariant fcnUuid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+static QVariant fcnUuid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString uuid = QUuid::createUuid().toString();
-  if ( values.at( 0 ).toString().compare( u"WithoutBraces"_s, Qt::CaseInsensitive ) == 0 )
-    uuid = QUuid::createUuid().toString( QUuid::StringFormat::WithoutBraces );
-  else if ( values.at( 0 ).toString().compare( u"Id128"_s, Qt::CaseInsensitive ) == 0 )
-    uuid = QUuid::createUuid().toString( QUuid::StringFormat::Id128 );
-  return uuid;
+  const int version = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  QUuid uuid;
+  switch ( version )
+  {
+    case 4:
+      uuid = QUuid::createUuid();
+      break;
+    case 7:
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 9, 0 )
+      uuid = QUuid::createUuidV7();
+#else
+      parent->setEvalErrorString( QObject::tr( "UUid version 7 is not supported on this QGIS build" ) );
+      return QVariant();
+#endif
+      break;
+    default:
+      parent->setEvalErrorString( QObject::tr( "UUid version %1 is not supported" ).arg( version ) );
+      return QVariant();
+  }
+
+  const QString format = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  if ( format.compare( u"WithoutBraces"_s, Qt::CaseInsensitive ) == 0 )
+    return uuid.toString( QUuid::StringFormat::WithoutBraces );
+  else if ( format.compare( u"Id128"_s, Qt::CaseInsensitive ) == 0 )
+    return uuid.toString( QUuid::StringFormat::Id128 );
+  return uuid.toString();
 }
 
 static QVariant fcnSubstr( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -2884,7 +2906,6 @@ static QVariant fcnUnaccent( const QVariantList &values, const QgsExpressionCont
   return QgsStringUtils::unaccent( values[0].toString() );
 }
 
-
 static QVariant fcnRight( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -2936,17 +2957,25 @@ static QVariant fcnLeft( const QVariantList &values, const QgsExpressionContext 
 
 static QVariant fcnRPad( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   QString fill = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  if ( fill.isEmpty() )
+  {
+    fill = u" "_s;
+  }
   return string.leftJustified( length, fill.at( 0 ), true );
 }
 
 static QVariant fcnLPad( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   QString fill = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  if ( fill.isEmpty() )
+  {
+    fill = u" "_s;
+  }
   return string.rightJustified( length, fill.at( 0 ), true );
 }
 
@@ -5627,10 +5656,13 @@ static QVariant fcnSingleSidedBuffer( const QVariantList &values, const QgsExpre
 static QVariant fcnExtend( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  double distStart = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
-  double distEnd = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  const double distStart = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double distEnd = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
 
-  QgsGeometry geom = fGeom.extendLine( distStart, distEnd );
+  const double deflectionStart = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  const double deflectionEnd = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+
+  QgsGeometry geom = fGeom.extendLine( distStart, distEnd, deflectionStart, deflectionEnd );
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
@@ -7292,21 +7324,24 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
         return context->cachedValue( cacheValueKey );
       }
 
-      const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
-      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-
-      const QString cacheKey = u"repvalfcn:%1:%2"_s.arg( layer ? layer->id() : u"[None]"_s, fieldName );
-
-      QVariant cache;
-      if ( !context->hasCachedValue( cacheKey ) )
+      if ( layer )
       {
-        cache = formatter->createCache( layer, fieldIndex, setup.config() );
-        context->setCachedValue( cacheKey, cache );
-      }
-      else
-        cache = context->cachedValue( cacheKey );
+        const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
+        const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
-      result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
+        const QString cacheKey = u"repvalfcn:%1:%2"_s.arg( layer ? layer->id() : u"[None]"_s, fieldName );
+
+        QVariant cache;
+        if ( !context->hasCachedValue( cacheKey ) )
+        {
+          cache = formatter->createCache( layer, fieldIndex, setup.config() );
+          context->setCachedValue( cacheKey, cache );
+        }
+        else
+          cache = context->cachedValue( cacheKey );
+
+        result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
+      }
 
       context->setCachedValue( cacheValueKey, result );
     }
@@ -9611,8 +9646,18 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"strpos"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"haystack"_s ) << QgsExpressionFunction::Parameter( u"needle"_s ), fcnStrpos, u"String"_s )
       << new QgsStaticExpressionFunction( u"left"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnLeft, u"String"_s )
       << new QgsStaticExpressionFunction( u"right"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnRight, u"String"_s )
-      << new QgsStaticExpressionFunction( u"rpad"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s ), fcnRPad, u"String"_s )
-      << new QgsStaticExpressionFunction( u"lpad"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s ), fcnLPad, u"String"_s )
+      << new QgsStaticExpressionFunction(
+           u"rpad"_s,
+           QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s, true, u" "_s ),
+           fcnRPad,
+           u"String"_s
+         )
+      << new QgsStaticExpressionFunction(
+           u"lpad"_s,
+           QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s, true, u" "_s ),
+           fcnLPad,
+           u"String"_s
+         )
       << new QgsStaticExpressionFunction( u"format"_s, -1, fcnFormatString, u"String"_s )
       << new QgsStaticExpressionFunction(
            u"format_number"_s,
@@ -10192,7 +10237,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
          )
       << new QgsStaticExpressionFunction(
            u"extend"_s,
-           QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"start_distance"_s ) << QgsExpressionFunction::Parameter( u"end_distance"_s ),
+           QgsExpressionFunction::ParameterList()
+             << QgsExpressionFunction::Parameter( u"geometry"_s )
+             << QgsExpressionFunction::Parameter( u"start_distance"_s )
+             << QgsExpressionFunction::Parameter( u"end_distance"_s )
+             << QgsExpressionFunction::Parameter( u"start_deflection"_s, true, 0 )
+             << QgsExpressionFunction::Parameter( u"end_deflection"_s, true, 0 ),
            fcnExtend,
            u"GeometryGroup"_s
          )
@@ -10484,7 +10534,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     QgsStaticExpressionFunction *uuidFunc = new QgsStaticExpressionFunction(
       u"uuid"_s,
-      QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"format"_s, true, u"WithBraces"_s ),
+      { QgsExpressionFunction::Parameter( u"format"_s, true, u"WithBraces"_s ), QgsExpressionFunction::Parameter( u"version"_s, true, 4 ) },
       fcnUuid,
       u"Record and Attributes"_s,
       QString(),

@@ -826,6 +826,7 @@ void QgsArcGisRestUtils::applyVisualVariables( const QVariantMap &rendererData, 
 std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const QVariantMap &rendererData, QgsSymbolConverterContext &context )
 {
   const QString type = rendererData.value( u"type"_s ).toString();
+
   if ( type == "simple"_L1 )
   {
     const QVariantMap symbolProps = rendererData.value( u"symbol"_s ).toMap();
@@ -867,7 +868,9 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     for ( const QVariant &category : categories )
     {
       const QVariantMap categoryData = category.toMap();
-      const QString value = categoryData.value( u"value"_s ).toString();
+      const QString valueString = categoryData.value( u"value"_s ).toString();
+      // Esri uses the literal string "<Null>" to represent a NULL field value in unique value renderers.
+      const QVariant value = valueString == "<Null>"_L1 ? QVariant() : QVariant( valueString );
       const QString label = categoryData.value( u"label"_s ).toString();
       std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( categoryData.value( u"symbol"_s ).toMap(), context ) );
       if ( symbol )
@@ -884,7 +887,6 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     {
       // Apply visual variables (e.g., rotation) to the symbol
       applyVisualVariables( rendererData, defaultSymbol.get(), context );
-
       categoryList.append( QgsRendererCategory( QVariant(), defaultSymbol.release(), rendererData.value( u"defaultLabel"_s ).toString() ) );
     }
 
@@ -915,10 +917,6 @@ std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const
     std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData, context ) );
     if ( !symbol )
       return nullptr;
-
-    const double transparency = rendererData.value( u"transparency"_s ).toDouble();
-    const double opacity = ( 100.0 - transparency ) / 100.0;
-    symbol->setOpacity( opacity );
 
     const QVariantList visualVariablesData = rendererData.value( u"visualVariables"_s ).toList();
 

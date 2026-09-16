@@ -353,15 +353,13 @@ if(WITH_CORE)
 
   set (WITH_HANA FALSE CACHE BOOL "Determines whether SAP HANA Spatial support should be built")
   if(WITH_HANA)
-    find_package(ODBC)
-    if(ODBC_FOUND)
-      set(HAVE_HANA TRUE)
+    set (WITH_INTERNAL_ODBCCPP ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether the internal odbccpp library should be used")
+    if(WITH_INTERNAL_ODBCCPP)
       add_subdirectory(external/odbccpp)
-      find_package(odbccpp CONFIG)
-      set_target_properties(odbccpp PROPERTIES AUTOMOC OFF AUTOUIC OFF AUTORCC OFF)
     else()
-      message(STATUS "Couldn't find ODBC library")
+      find_package(odbccpp CONFIG REQUIRED)
     endif()
+    set(HAVE_HANA TRUE)
   endif(WITH_HANA)
 
 
@@ -598,9 +596,10 @@ if(WITH_CORE)
   endif()
 
   # Use QtGamepad optionally for input control
-  set (WITH_QTGAMEPAD FALSE CACHE BOOL "Determines whether QtGamepad should be tried for GPS positioning")
+  set (WITH_QTGAMEPAD FALSE CACHE BOOL "Determines whether QtGamepad support should be enabled")
   if (WITH_QTGAMEPAD)
-      find_package(${QT_VERSION_BASE} COMPONENTS Gamepad REQUIRED)
+      # QtGamepadLegacy from https://github.com/pumphaus/qtgamepadlegacy must be used for Qt6 builds
+      find_package(${QT_VERSION_BASE} COMPONENTS GamepadLegacy REQUIRED)
       # following variable is used in qgsconfig.h
       set (HAVE_QTGAMEPAD TRUE)
   endif()

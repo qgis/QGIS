@@ -35,7 +35,7 @@ from qgis.core import (
 from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.GdalUtils import GdalUtils, mark_source
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -180,6 +180,7 @@ class contour(GdalAlgorithm):
     def commandName(self):
         return "gdal_contour"
 
+    @mark_source
     def _buildArgsList(self, parameters, context, feedback, executing):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:

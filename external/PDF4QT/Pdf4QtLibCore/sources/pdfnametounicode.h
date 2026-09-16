@@ -42,6 +42,12 @@ public:
     /// Returns unicode character for name (for ZapfDingbats). If name is not found, then null character is returned.
     static QChar getUnicodeForNameZapfDingbats(const QByteArray& name);
 
+    /// Returns glyph name for unicode character. If character is not found, then empty byte array is returned.
+    static QByteArray getNameForUnicode(QChar character);
+
+    /// Returns ZapfDingbats glyph name for unicode character. If character is not found, then empty byte array is returned.
+    static QByteArray getNameForUnicodeZapfDingbats(QChar character);
+
     /// Tries to resolve unicode name
     static QChar getUnicodeUsingResolvedName(const QByteArray& name);
 

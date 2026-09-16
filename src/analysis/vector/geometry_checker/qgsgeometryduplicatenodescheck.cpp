@@ -86,7 +86,7 @@ void QgsGeometryDuplicateNodesCheck::fixError(
   const QgsVertexId vidx = error->vidx();
 
   // Check if point still exists
-  if ( !vidx.isValid( geom ) )
+  if ( !geom->hasVertex( vidx ) )
   {
     error->setObsolete();
     return;

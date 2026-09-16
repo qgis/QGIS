@@ -14,8 +14,6 @@
  ***************************************************************************/
 #include "qgslabelsearchtree.h"
 
-#include "labelposition.h"
-
 QgsLabelSearchTree::QgsLabelSearchTree() = default;
 
 QgsLabelSearchTree::~QgsLabelSearchTree() = default;
@@ -44,13 +42,7 @@ void QgsLabelSearchTree::label( const QgsPointXY &point, QList<QgsLabelPosition 
 
 QList<QgsLabelPosition> QgsLabelSearchTree::allLabels() const
 {
-  QList<QgsLabelPosition> res;
-  res.reserve( mOwnedPositions.size() );
-  for ( const std::unique_ptr< QgsLabelPosition > &pos : mOwnedPositions )
-  {
-    res.append( *pos );
-  }
-  return res;
+  return {};
 }
 
 void QgsLabelSearchTree::labelsInRect( const QgsRectangle &r, QList<QgsLabelPosition *> &posList ) const
@@ -72,99 +64,6 @@ void QgsLabelSearchTree::labelsInRect( const QgsRectangle &r, QList<QgsLabelPosi
   }
 }
 
-bool QgsLabelSearchTree::insertLabel(
-  pal::LabelPosition *labelPos,
-  QgsFeatureId featureId,
-  const QString &layerName,
-  const QString &labeltext,
-  const QFont &labelfont,
-  bool diagram,
-  bool pinned,
-  const QString &providerId,
-  bool isUnplaced,
-  long long linkedId
-)
-{
-  if ( !labelPos )
-  {
-    return false;
-  }
-
-  QVector<QgsPointXY> cornerPoints;
-  cornerPoints.reserve( 4 );
-  double xMin = std::numeric_limits< double >::max();
-  double yMin = std::numeric_limits< double >::max();
-  double xMax = std::numeric_limits< double >::lowest();
-  double yMax = std::numeric_limits< double >::lowest();
-  for ( int i = 0; i < 4; ++i )
-  {
-    // we have to transform the bounding box to convert pre-rotated label positions back to real world locations
-    const QPointF res = mTransform.map( QPointF( labelPos->getX( i ), labelPos->getY( i ) ) );
-    cornerPoints.push_back( QgsPointXY( res ) );
-    xMin = std::min( xMin, res.x() );
-    xMax = std::max( xMax, res.x() );
-    yMin = std::min( yMin, res.y() );
-    yMax = std::max( yMax, res.y() );
-  }
-
-  pal::LabelPosition *next = labelPos->nextPart();
-  long long uniqueLinkedId = 0;
-  if ( linkedId != 0 )
-    uniqueLinkedId = linkedId;
-  else if ( next )
-    uniqueLinkedId = mNextFeatureId++;
-
-  const QgsRectangle bounds( xMin, yMin, xMax, yMax );
-  const QgsGeometry labelGeometry( QgsGeometry::fromPolygonXY( QVector<QgsPolylineXY>() << cornerPoints ) );
-  auto newEntry = std::make_unique< QgsLabelPosition >(
-    featureId,
-    -labelPos->getAlpha() * 180 / M_PI + mMapSettings.rotation(),
-    cornerPoints,
-    bounds,
-    labelPos->getWidth(),
-    labelPos->getHeight(),
-    layerName,
-    labeltext,
-    labelfont,
-    labelPos->getUpsideDown(),
-    diagram,
-    pinned,
-    providerId,
-    labelGeometry,
-    isUnplaced
-  );
-  newEntry->groupedLabelId = uniqueLinkedId;
-  mSpatialIndex.insert( newEntry.get(), bounds );
-
-  if ( uniqueLinkedId != 0 )
-  {
-    mLinkedLabelHash[uniqueLinkedId].append( newEntry.get() );
-  }
-
-  mOwnedPositions.emplace_back( std::move( newEntry ) );
-
-  if ( next )
-  {
-    return insertLabel( next, featureId, layerName, labeltext, labelfont, diagram, pinned, providerId, isUnplaced, uniqueLinkedId );
-  }
-  return true;
-}
-
-bool QgsLabelSearchTree::insertCallout( const QgsCalloutPosition &position )
-{
-  const QPointF origin = position.origin();
-  const QPointF destination = position.destination();
-
-  auto newEntry = std::make_unique< QgsCalloutPosition >( position );
-
-  mCalloutIndex.insert( newEntry.get(), QgsRectangle( origin.x(), origin.y(), origin.x(), origin.y() ) );
-  mCalloutIndex.insert( newEntry.get(), QgsRectangle( destination.x(), destination.y(), destination.x(), destination.y() ) );
-
-  mOwnedCalloutPositions.emplace_back( std::move( newEntry ) );
-
-  return true;
-}
-
 QList<const QgsCalloutPosition *> QgsLabelSearchTree::calloutsInRectangle( const QgsRectangle &rectangle ) const
 {
   QList<const QgsCalloutPosition *> searchResults;
@@ -179,29 +78,8 @@ QList<const QgsCalloutPosition *> QgsLabelSearchTree::calloutsInRectangle( const
   return searchResults;
 }
 
-QList<QgsLabelPosition *> QgsLabelSearchTree::groupedLabelPositions( long long groupId ) const
-{
-  return mLinkedLabelHash.value( groupId );
-}
-
-void QgsLabelSearchTree::setMapSettings( const QgsMapSettings &settings )
-{
-  mMapSettings = settings;
-
-  if ( !qgsDoubleNear( mMapSettings.rotation(), 0.0 ) )
-  {
-    // build a transform to convert points from real world to pre-rotated label positions
-    const QgsPointXY center = mMapSettings.visibleExtent().center();
-    mTransform = QTransform::fromTranslate( center.x(), center.y() );
-    mTransform.rotate( mMapSettings.rotation() );
-    mTransform.translate( -center.x(), -center.y() );
-  }
-  else
-  {
-    mTransform = QTransform();
-  }
-}
-
+void QgsLabelSearchTree::setMapSettings( const QgsMapSettings & )
+{}
 
 void QgsLabelSearchTree::clear()
 {}

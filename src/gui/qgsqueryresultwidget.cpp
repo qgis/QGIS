@@ -680,7 +680,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 {
   setupUi( this );
 
-  mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
+  mToolBar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::MainWindowToolbar ) );
 
   mQueryWidget = new QgsQueryResultPanelWidget( nullptr, connection );
   mPanelStack->setMainPanel( mQueryWidget );

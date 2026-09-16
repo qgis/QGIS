@@ -69,7 +69,7 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
 
   if ( renderer )
   {
-    mRenderer.reset( QgsInvertedPolygonRenderer::convertFromRenderer( renderer ) );
+    mRenderer = QgsInvertedPolygonRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {

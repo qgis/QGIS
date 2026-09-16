@@ -396,10 +396,11 @@ void PDFPageContentProcessor::performClipping(const QPainterPath& path, Qt::Fill
     Q_UNUSED(fillRule);
 }
 
-bool PDFPageContentProcessor::performOriginalImagePainting(const PDFImage& image, const PDFStream* stream)
+bool PDFPageContentProcessor::performOriginalImagePainting(const PDFImage& image, const PDFStream* stream, PDFObjectReference reference)
 {
     Q_UNUSED(image);
     Q_UNUSED(stream);
+    Q_UNUSED(reference);
     return false;
 }
 
@@ -692,7 +693,7 @@ void PDFPageContentProcessor::processContent(const QByteArray& content)
 
                         QByteArray buffer = content.mid(startDataPosition, dataLength);
                         PDFStream imageStream(std::move(*dictionary), std::move(buffer));
-                        paintXObjectImage(&imageStream);
+                        paintXObjectImage(&imageStream, PDFObjectReference());
                     }
                     else
                     {
@@ -2264,14 +2265,17 @@ void PDFPageContentProcessor::operatorEndSubpath()
 
 void PDFPageContentProcessor::operatorRectangle(PDFReal x, PDFReal y, PDFReal width, PDFReal height)
 {
-    const PDFReal xMin = qMin(x, x + width);
-    const PDFReal xMax = qMax(x, x + width);
-    const PDFReal yMin = qMin(y, y + height);
-    const PDFReal yMax = qMax(y, y + height);
-    const PDFReal correctedWidth = xMax - xMin;
-    const PDFReal correctedHeight = yMax - yMin;
-
-    m_currentPath.addRect(QRectF(xMin, yMin, correctedWidth, correctedHeight));
+    // Trace the rectangle in the order defined by the PDF specification (8.5.2.1),
+    // instead of normalizing it into a QRectF and using QPainterPath::addRect.
+    // addRect always emits the same winding direction, which would destroy the
+    // orientation encoded by the sign of width/height - orientation that PDF
+    // producers rely on to carve holes out of overlapping rectangles using the
+    // nonzero winding fill rule.
+    m_currentPath.moveTo(x, y);
+    m_currentPath.lineTo(x + width, y);
+    m_currentPath.lineTo(x + width, y + height);
+    m_currentPath.lineTo(x, y + height);
+    m_currentPath.closeSubpath();
 }
 
 void PDFPageContentProcessor::operatorPathStroke()
@@ -2983,7 +2987,7 @@ void PDFPageContentProcessor::operatorShadingPaintShape(PDFPageContentProcessor:
     processPathPainting(boundingRectPath, false, true, false, boundingRectPath.fillRule());
 }
 
-void PDFPageContentProcessor::paintXObjectImage(const PDFStream* stream)
+void PDFPageContentProcessor::paintXObjectImage(const PDFStream* stream, PDFObjectReference reference)
 {
     if (isContentKindSuppressed(ContentKind::Images))
     {
@@ -3009,7 +3013,7 @@ void PDFPageContentProcessor::paintXObjectImage(const PDFStream* stream)
 
     PDFImage pdfImage = PDFImage::createImage(m_document, stream, qMove(colorSpace), false, m_graphicState.getRenderingIntent(), this);
 
-    if (!performOriginalImagePainting(pdfImage, stream))
+    if (!performOriginalImagePainting(pdfImage, stream, reference))
     {
         QImage image = pdfImage.getImage(m_CMS, this, m_operationControl);
 
@@ -3085,7 +3089,14 @@ void PDFPageContentProcessor::operatorPaintXObject(PDFOperandName name)
 
     if (m_xobjectDictionary)
     {
-        const PDFObject& object = m_document->getObject(m_xobjectDictionary->get(name.name));
+        const PDFObject& entry = m_xobjectDictionary->get(name.name);
+        PDFObjectReference reference;
+        if (entry.isReference())
+        {
+            reference = entry.getReference();
+        }
+
+        const PDFObject& object = m_document->getObject(entry);
         if (object.isStream())
         {
             const PDFStream* stream = object.getStream();
@@ -3112,7 +3123,7 @@ void PDFPageContentProcessor::operatorPaintXObject(PDFOperandName name)
             QByteArray subtype = loader.readNameFromDictionary(streamDictionary, "Subtype");
             if (subtype == "Image")
             {
-                paintXObjectImage(stream);
+                paintXObjectImage(stream, reference);
             }
             else if (subtype == "Form")
             {
@@ -3271,7 +3282,19 @@ void PDFPageContentProcessor::drawText(const TextSequence& textSequence)
                         if (!glyphPath.isEmpty())
                         {
                             QPainterPath transformedGlyph = textRenderingMatrix.map(glyphPath);
-                            processPathPainting(transformedGlyph, stroke, fill, true, transformedGlyph.fillRule());
+
+                            bool handledAsRealText = false;
+                            if (fill && !stroke && isHorizontalWritingSystem && !item.character.isNull() &&
+                                !getGraphicState()->getFillColorSpace()->asPatternColorSpace())
+                            {
+                                PDFRealTextDrawInfo realTextDrawInfo{ item.character, m_graphicState.getTextFont(), fontSize, textRenderingMatrix };
+                                handledAsRealText = performTextCharacterDrawing(realTextDrawInfo);
+                            }
+
+                            if (!handledAsRealText)
+                            {
+                                processPathPainting(transformedGlyph, stroke, fill, true, transformedGlyph.fillRule());
+                            }
 
                             if (clipped)
                             {

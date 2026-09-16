@@ -1097,17 +1097,14 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QCheckBox" name="mShowMapOverlayCheckBox">
+                    <property name="text">
+                     <string>Show 2D map overlay</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="mShowMapOverlayCheckBox">
-                 <property name="styleSheet">
-                  <string notr="true">font-weight: bold</string>
-                 </property>
-                 <property name="text">
-                  <string>Show 2D map overlay</string>
-                 </property>
                 </widget>
                </item>
                <item>

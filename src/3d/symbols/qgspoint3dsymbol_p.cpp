@@ -961,9 +961,10 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
   // Billboard Geometry Renderer
   Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
-  billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
+  billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
   billboardGeometryRenderer->setGeometry( billboardGeometry );
-  billboardGeometryRenderer->setVertexCount( billboardGeometry->count() );
+  billboardGeometryRenderer->setVertexCount( 4 );
+  billboardGeometryRenderer->setInstanceCount( out.positions.count() );
 
   // Billboard Material
   QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial();

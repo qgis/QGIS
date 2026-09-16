@@ -54,7 +54,7 @@ bool QgsNullSymbolRenderer::renderFeature( const QgsFeature &feature, QgsRenderC
   if ( !mSymbol )
   {
     //create default symbol
-    mSymbol.reset( QgsSymbol::defaultSymbol( feature.geometry().type() ) );
+    mSymbol = QgsSymbol::defaultSymbol( feature.geometry().type() );
     mSymbol->startRender( context );
   }
 
@@ -101,11 +101,11 @@ QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext & ) const
   return QgsSymbolList();
 }
 
-QgsFeatureRenderer *QgsNullSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsFeatureRenderer> QgsNullSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( element )
   Q_UNUSED( context )
-  QgsNullSymbolRenderer *r = new QgsNullSymbolRenderer();
+  auto r = std::make_unique<QgsNullSymbolRenderer>();
   return r;
 }
 
@@ -120,9 +120,9 @@ QDomElement QgsNullSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteCo
   return rendererElem;
 }
 
-QgsNullSymbolRenderer *QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+std::unique_ptr<QgsNullSymbolRenderer> QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   auto res = std::make_unique< QgsNullSymbolRenderer >();
   renderer->copyRendererData( res.get() );
-  return res.release();
+  return res;
 }

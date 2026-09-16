@@ -102,7 +102,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         mSourceFeature = fet;
         mCtrlHeldOnFirstClick = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
         prepareGeometry( match, fet );
-        mRubberBand = createRubberBand();
+        mRubberBand = createRubberBandForLayer( lLayer, { fet.id() } );
         if ( mRubberBand )
         {
           mRubberBand->setToGeometry( mManipulatedGeometry, lLayer );

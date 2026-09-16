@@ -21,9 +21,7 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import math
 import os
-import sys
 import time
-import uuid
 from typing import Optional
 
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingUtils
@@ -43,14 +41,6 @@ def userFolder():
 def defaultOutputFolder():
     folder = os.path.join(QDir.homePath(), "processing")
     return str(QDir.toNativeSeparators(folder))
-
-
-def isWindows():
-    return os.name == "nt"
-
-
-def isMac():
-    return sys.platform == "darwin"
 
 
 def getTempFilename(ext=None, context: Optional[QgsProcessingContext] = None):
@@ -73,34 +63,3 @@ def getNumExportedLayers():
 
 def mkdir(newdir):
     os.makedirs(newdir.strip("\n\r "), exist_ok=True)
-
-
-def tempHelpFolder():
-    tmp = os.path.join(str(QDir.tempPath()), "processing_help")
-    if not QDir(tmp).exists():
-        QDir().mkpath(tmp)
-
-    return str(os.path.abspath(tmp))
-
-
-def escapeAndJoin(strList):
-    """
-    .. deprecated:: 3.0
-    Do not use, will be removed in QGIS 5.0
-    """
-
-    from warnings import warn
-
-    warn(
-        "processing.escapeAndJoin is deprecated and will be removed in QGIS 5.0",
-        DeprecationWarning,
-    )
-
-    joined = ""
-    for s in strList:
-        if s[0] != "-" and " " in s:
-            escaped = '"' + s.replace("\\", "\\\\").replace('"', '\\"') + '"'
-        else:
-            escaped = s
-        joined += escaped + " "
-    return joined.strip()

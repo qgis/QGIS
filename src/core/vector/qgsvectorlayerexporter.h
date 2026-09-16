@@ -356,7 +356,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
 
     int mErrorCount = 0;
 
-    QgsVectorDataProvider *mProvider = nullptr;
+    std::unique_ptr<QgsVectorDataProvider> mProvider;
 
     //! Map attribute indexes to new field indexes
     QMap<int, int> mOldToNewAttrIdx;

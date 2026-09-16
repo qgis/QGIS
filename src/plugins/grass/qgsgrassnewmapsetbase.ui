@@ -96,7 +96,7 @@
   </widget>
   <widget class="QWizardPage" name="WizardPage2">
    <property name="title">
-    <string>GRASS Location</string>
+    <string>GRASS Project</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -110,7 +110,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Select location</string>
+         <string>Select project</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -140,7 +140,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Create new location</string>
+         <string>Create new project</string>
         </property>
        </widget>
       </item>
@@ -162,7 +162,7 @@
        </sizepolicy>
       </property>
       <property name="text">
-       <string>Location Error</string>
+       <string>Project Error</string>
       </property>
      </widget>
     </item>
@@ -176,7 +176,7 @@
     <item>
      <widget class="QLabel" name="mLocationHelpLabel">
       <property name="text">
-       <string>The GRASS location is a collection of maps for a particular territory or project.</string>
+       <string>The GRASS project is a collection of maps for a particular territory or topic.</string>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -369,7 +369,7 @@
        </sizepolicy>
       </property>
       <property name="text">
-       <string>The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. It is possible to change the default location region later.</string>
+       <string>The GRASS region defines a workspace for raster modules. The default region is valid for one project. It is possible to set a different region in each mapset. It is possible to change the default project region later.</string>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -472,7 +472,7 @@
     <item>
      <widget class="QLabel" name="mMapsetHelpLabel">
       <property name="text">
-       <string>The GRASS mapset is a collection of maps used by one user. A user can read maps from all mapsets in the location but he can open for writing only his mapset (owned by user).</string>
+       <string>The GRASS mapset is a collection of maps used by one user. A user can read maps from all mapsets in the project but he can open for writing only his mapset (owned by user).</string>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -533,7 +533,7 @@
        </size>
       </property>
       <property name="text">
-       <string>Location</string>
+       <string>Project</string>
       </property>
      </widget>
     </item>

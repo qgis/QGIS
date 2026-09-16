@@ -190,9 +190,11 @@ class CORE_EXPORT QgsTextRenderer
      * \param text text to draw
      * \param context render context
      * \param format text format
-     * \param offsetAlongLine offset along the line (in painter units) to start text at
+     * \param offsetAlongLine offset along the line (in painter units) to start text at. Only applies when \a textAnchor is Qgis::TextAnchorPoint::StartOfText.
      * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
      * \param flags curved text behavior flags (since QGIS 4.0)
+     * \param textAnchor dictates where on the line the text should be anchored to. If the anchor point is the start of the text, the text will always start at the start of the line (and potential extend past the end of the line).
+     * If the anchor point is the end of the text, then the text will always end at the end of the line and potential extend past the start of the line. (since QGIS 4.4)
      *
      * \since QGIS 3.32
      */
@@ -203,7 +205,8 @@ class CORE_EXPORT QgsTextRenderer
       const QgsTextFormat &format,
       double offsetAlongLine = 0,
       double offsetFromLine = 0,
-      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort
+      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort,
+      Qgis::TextAnchorPoint textAnchor = Qgis::TextAnchorPoint::StartOfText
     );
 
     /**
@@ -213,9 +216,11 @@ class CORE_EXPORT QgsTextRenderer
      * \param format text format
      * \param document text document to draw
      * \param context render context
-     * \param offsetAlongLine offset along the line (in painter units) to start text at
+     * \param offsetAlongLine offset along the line (in painter units) to start text at. Only applies when \a textAnchor is Qgis::TextAnchorPoint::StartOfText.
      * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
      * \param flags curved text behavior flags (since QGIS 4.0)
+     * \param textAnchor dictates where on the line the text should be anchored to. If the anchor point is the start of the text, the text will always start at the start of the line (and potential extend past the end of the line).
+     * If the anchor point is the end of the text, then the text will always end at the end of the line and potential extend past the start of the line. (since QGIS 4.4)
      *
      * \since QGIS 3.32
      */
@@ -226,7 +231,8 @@ class CORE_EXPORT QgsTextRenderer
       QgsRenderContext &context,
       double offsetAlongLine = 0,
       double offsetFromLine = 0,
-      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort
+      Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort,
+      Qgis::TextAnchorPoint textAnchor = Qgis::TextAnchorPoint::StartOfText
     );
 
     /**

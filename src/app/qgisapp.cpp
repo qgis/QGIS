@@ -40,6 +40,9 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QObject>
+#include <QOffscreenSurface>
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
 #include <QPainter>
 #include <QPixmap>
 #include <QPoint>
@@ -64,6 +67,7 @@ using namespace Qt::StringLiterals;
 #endif
 #include <QStatusBar>
 #include <QStringList>
+#include <QSurfaceFormat>
 #include <QSysInfo>
 #include <QTcpSocket>
 #include <QTextStream>
@@ -110,6 +114,7 @@ using namespace Qt::StringLiterals;
 #include "qgsvectortileutils.h"
 #include "qgsscaleutils.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsprocessingwidgetcontext.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -156,6 +161,8 @@ using namespace Qt::StringLiterals;
 #include "qgsdockablewidgethelper.h"
 
 #include "qgspersistentmenu.h"
+
+#include "qgsprocessingguiregistry.h"
 
 #ifdef HAVE_3D
 #include "qgs3d.h"
@@ -487,6 +494,7 @@ using namespace Qt::StringLiterals;
 #include "devtools/querylogger/qgsappquerylogger.h"
 #include "devtools/querylogger/qgsqueryloggerwidgetfactory.h"
 #include "devtools/profiler/qgsprofilerwidgetfactory.h"
+#include "processing/qgsappprocessingutils.h"
 
 #include "browser/qgsinbuiltdataitemproviders.h"
 
@@ -1065,7 +1073,6 @@ QgisApp::QgisApp(
 
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 
-  QgsDockableWidgetHelper::sAppStylesheetFunction = []() -> QString { return QgisApp::instance()->styleSheet(); };
   QgsDockableWidgetHelper::sOwnerWindow = QgisApp::instance();
 
   //////////
@@ -1105,7 +1112,7 @@ QgisApp::QgisApp(
   startProfile( tr( "Building style sheet" ) );
   // set up stylesheet builder and apply saved or default style options
   mStyleSheetBuilder = new QgisAppStyleSheet( this );
-  connect( mStyleSheetBuilder, &QgisAppStyleSheet::appStyleSheetChanged, this, &QgisApp::setAppStyleSheet );
+  connect( QgsGui::instance(), &QgsGui::applicationStyleSheetChanged, this, &QgisApp::setStyleSheet );
   endProfile();
 
   QWidget *centralWidget = this->centralWidget();
@@ -1567,6 +1574,9 @@ QgisApp::QgisApp(
   // Init the editor widget types
   QgsGui::editorWidgetRegistry()->initEditors( mMapCanvas, mInfoBar );
 
+  mProcessingWidgetContextGenerator = std::make_unique< QgsAppProcessingWidgetContextGenerator >( this );
+  QgsGui::processingGuiRegistry()->registerWidgetContextGenerator( mProcessingWidgetContextGenerator.get() );
+
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, &QgsClipboard::changed, this, &QgisApp::clipboardChanged );
   mQgisInterface = new QgisAppInterface( this ); // create the interface
@@ -1574,6 +1584,7 @@ QgisApp::QgisApp(
 #ifdef Q_OS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
   mWindowAction = new QAction( this );
+  mWindowAction->setObjectName( u"mWindowAction"_s );
   connect( mWindowAction, &QAction::triggered, this, &QgisApp::activate );
 
   // add this window to Window menu
@@ -1667,6 +1678,8 @@ QgisApp::QgisApp(
   //..and listen out for new item types
   connect( QgsGui::annotationItemGuiRegistry(), &QgsAnnotationItemGuiRegistry::typeAdded, this, &QgisApp::annotationItemTypeAdded );
 
+  // must come before plugin startup, as processing plugin sets up connections to it
+  QgsAppProcessingUtils::initProjectModelProvider();
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
@@ -3192,15 +3205,18 @@ void QgisApp::createActions()
   // Window Menu Items
 
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
+  mActionWindowMinimize->setObjectName( u"mActionWindowMinimize"_s );
   mActionWindowMinimize->setShortcut( tr( "Ctrl+M", "Minimize Window" ) );
   mActionWindowMinimize->setStatusTip( tr( "Minimizes the active window to the dock" ) );
   connect( mActionWindowMinimize, &QAction::triggered, this, &QgisApp::showActiveWindowMinimized );
 
   mActionWindowZoom = new QAction( tr( "Zoom" ), this );
+  mActionWindowZoom->setObjectName( u"mActionWindowZoom"_s );
   mActionWindowZoom->setStatusTip( tr( "Toggles between a predefined size and the window size set by the user" ) );
   connect( mActionWindowZoom, &QAction::triggered, this, &QgisApp::toggleActiveWindowMaximized );
 
   mActionWindowAllToFront = new QAction( tr( "Bring All to Front" ), this );
+  mActionWindowAllToFront->setObjectName( u"mActionWindowAllToFront"_s );
   mActionWindowAllToFront->setStatusTip( tr( "Bring forward all open windows" ) );
   connect( mActionWindowAllToFront, &QAction::triggered, this, &QgisApp::bringAllToFront );
 
@@ -3428,18 +3444,6 @@ void QgisApp::createActionGroups()
   mActionPreviewTritanope->setActionGroup( mPreviewGroup );
 }
 
-void QgisApp::setAppStyleSheet( const QString &stylesheet )
-{
-  setStyleSheet( stylesheet );
-
-  // cascade styles to any current layout designers
-  const auto constMLayoutDesignerDialogs = mLayoutDesignerDialogs;
-  for ( QgsLayoutDesignerDialog *d : constMLayoutDesignerDialogs )
-  {
-    d->setStyleSheet( stylesheet );
-  }
-}
-
 void QgisApp::createMenus()
 {
   /*
@@ -3502,6 +3506,7 @@ void QgisApp::createMenus()
   // these duplicate actions will be moved to application menus by Qt
   mProjectMenu->addAction( mActionAbout );
   QAction *actionPrefs = new QAction( tr( "Preferences…" ), this );
+  actionPrefs->setObjectName( u"mActionPreferences"_s );
   actionPrefs->setMenuRole( QAction::PreferencesRole );
   actionPrefs->setIcon( mActionOptions->icon() );
   connect( actionPrefs, &QAction::triggered, this, &QgisApp::options );
@@ -3510,6 +3515,7 @@ void QgisApp::createMenus()
   // Window Menu
 
   mWindowMenu = new QMenu( tr( "Window" ), this );
+  mWindowMenu->setObjectName( u"mWindowMenu"_s );
 
   mWindowMenu->addAction( mActionWindowMinimize );
   mWindowMenu->addAction( mActionWindowZoom );
@@ -3539,6 +3545,17 @@ void QgisApp::refreshProfileMenu()
     return;
 
   mConfigMenu->clear();
+
+  QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open Active Profile Folder" ) );
+  openProfileFolderAction->setObjectName( "mActionOpenActiveProfileFolder" );
+  connect( openProfileFolderAction, &QAction::triggered, this, [this]() { QDesktopServices::openUrl( QUrl::fromLocalFile( userProfileManager()->userProfile()->folder() ) ); } );
+
+  QAction *newProfileAction = mConfigMenu->addAction( tr( "New Profile…" ) );
+  newProfileAction->setObjectName( "mActionNewProfile" );
+  connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
+
+  mConfigMenu->addSeparator();
+
   QgsUserProfile *profile = userProfileManager()->userProfile();
   QString activeName = profile->name();
   mConfigMenu->setTitle( tr( "&User Profiles" ) );
@@ -3573,16 +3590,6 @@ void QgisApp::refreshProfileMenu()
       } );
     }
   }
-
-  mConfigMenu->addSeparator();
-
-  QAction *openProfileFolderAction = mConfigMenu->addAction( tr( "Open Active Profile Folder" ) );
-  openProfileFolderAction->setObjectName( "mActionOpenActiveProfileFolder" );
-  connect( openProfileFolderAction, &QAction::triggered, this, [this]() { QDesktopServices::openUrl( QUrl::fromLocalFile( userProfileManager()->userProfile()->folder() ) ); } );
-
-  QAction *newProfileAction = mConfigMenu->addAction( tr( "New Profile…" ) );
-  newProfileAction->setObjectName( "mActionNewProfile" );
-  connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
 }
 
 void QgisApp::createProfileMenu()
@@ -5046,7 +5053,7 @@ void QgisApp::initLayerTreeView()
   connect( actionCollapseAll, &QAction::triggered, mLayerTreeView, &QgsLayerTreeView::collapseAllNodes );
 
   QToolBar *toolbar = new QToolBar();
-  toolbar->setIconSize( iconSize( true ) );
+  toolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
   toolbar->addAction( mActionStyleDock );
   toolbar->addAction( actionAddGroup );
   toolbar->addWidget( btnVisibilityPresets );
@@ -5555,6 +5562,48 @@ void QgisApp::about()
   mAboutDialog->activateWindow();
 }
 
+QString QgisApp::openGlReportString()
+{
+#if defined( QT_NO_OPENGL )
+  return tr( "No support" );
+#else
+
+  QOpenGLContext context;
+  context.setFormat( QSurfaceFormat::defaultFormat() );
+  if ( !context.create() )
+    return tr( "No support" );
+
+  const QSurfaceFormat format = context.format();
+  QString profile;
+  switch ( format.profile() )
+  {
+    case QSurfaceFormat::CoreProfile:
+      profile = tr( "Core Profile" );
+      break;
+    case QSurfaceFormat::CompatibilityProfile:
+      profile = tr( "Compatibility Profile" );
+      break;
+    case QSurfaceFormat::NoProfile:
+      profile = tr( "No Profile" );
+      break;
+  }
+  QString result = u"%1.%2 (%3)"_s.arg( format.majorVersion() ).arg( format.minorVersion() ).arg( profile );
+
+  QOffscreenSurface surface;
+  surface.setFormat( format );
+  surface.create();
+  if ( context.makeCurrent( &surface ) )
+  {
+    const char *glRenderer = reinterpret_cast<const char *>( context.functions()->glGetString( GL_RENDERER ) );
+    if ( glRenderer )
+      result += u", %1"_s.arg( QString::fromUtf8( glRenderer ) );
+    context.doneCurrent();
+  }
+
+  return result;
+#endif
+}
+
 QString QgisApp::getVersionString()
 {
   QString versionString = u"<table width='100%' align='center'>"_s;
@@ -5732,6 +5781,10 @@ QString QgisApp::getVersionString()
 
   // QScintilla
   versionString += u"<td>%1</td><td>%2</td>"_s.arg( tr( "QScintilla2 version" ), QSCINTILLA_VERSION_STR );
+  versionString += "</tr><tr>"_L1;
+
+  // OpenGL
+  versionString += u"<td>%1</td><td>%2</td>"_s.arg( tr( "OpenGL version" ), openGlReportString() );
   versionString += "</tr><tr>"_L1;
 
   // Operating system
@@ -13254,11 +13307,6 @@ QgsMapLayer *QgisApp::activeLayer()
   return mLayerTreeView ? mLayerTreeView->currentLayer() : nullptr;
 }
 
-QSize QgisApp::iconSize( bool dockedToolbar ) const
-{
-  return QgsGuiUtils::iconSize( dockedToolbar );
-}
-
 bool QgisApp::setActiveLayer( QgsMapLayer *layer )
 {
   if ( !layer )
@@ -16553,6 +16601,11 @@ void QgisApp::updateUndoActions()
   }
   mActionUndo->setEnabled( canUndo );
   mActionRedo->setEnabled( canRedo );
+
+#ifdef HAVE_3D
+  for ( Qgs3DMapCanvasWidget *w : mOpen3DMapViews )
+    w->updateUndoRedoActions( canUndo, canRedo );
+#endif
 }
 
 

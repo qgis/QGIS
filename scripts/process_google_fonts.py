@@ -1,3 +1,4 @@
+import json
 import re
 from pathlib import Path
 
@@ -1445,7 +1446,6 @@ fonts = [
     "Tilt Prism",
     "Tilt Warp",
     "Timmana",
-    "Tinos",
     "Tiro Bangla",
     "Tiro Devanagari Hindi",
     "Tiro Devanagari Marathi",
@@ -1605,16 +1605,20 @@ def process_font(family: str):
     assert family in font_details, family
     assert font_details[family]["license_path"], family
 
-    filenames = ", ".join(
-        [f'QStringLiteral( "{f}" )' for f in font_details[family]["filenames"]]
-    )
-
-    print(
-        'GoogleFontDetails( QStringLiteral( "{}" ), {{ {} }}, QStringLiteral( "{}" ) ),'.format(
-            family, filenames, font_details[family]["license_path"]
-        )
-    )
+    return {
+        "family": family,
+        "paths": font_details[family]["filenames"],
+        "license": font_details[family]["license_path"],
+    }
 
 
+font_data = []
 for f in fonts:
-    process_font(f)
+    font_data.append(process_font(f))
+
+with open(
+    Path(__file__).parent.parent / "resources" / "data" / "google_fonts.json",
+    "w",
+    encoding="utf8",
+) as f_out:
+    f_out.write(json.dumps(font_data, indent=2))

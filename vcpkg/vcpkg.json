@@ -2,13 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "a0400024711b283056538ac19ced80b91a83c24c",
+      "baseline": "30ef65cad98f08e7197c9a1656fbd871bcb72f2d",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "b2f7537dda5bce38b0f43e6391a308b8a52ca920",
+        "baseline": "269dafd954dcd210530007d26af098368dc18c0b",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -239,6 +239,7 @@
           "name": "gdal",
           "default-features": true,
           "features": [
+            "archive",
             "arrow-adbc",
             "kea",
             "parquet",
@@ -261,7 +262,6 @@
           ]
         },
         "qtimageformats",
-        "qtquickcontrols2",
         "qttools",
         "qtpositioning"
       ]
@@ -282,6 +282,12 @@
       "dependencies": [
         "qscintilla",
         "qwt"
+      ]
+    },
+    "hana": {
+      "description": "Build with SAP HANA Spatial support",
+      "dependencies": [
+        "odbccpp"
       ]
     },
     "opencl": {

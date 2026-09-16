@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::3857" } },
+"features": [
+{ "type": "Feature", "properties": { "id_b": "B1" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 2.0, 1.0 ], [ 4.0, 1.0 ], [ 4.0, 2.0 ], [ 3.0, 2.0 ], [ 3.0, 3.0 ], [ 2.0, 3.0 ], [ 2.0, 1.0 ] ] ] } },
+{ "type": "Feature", "properties": { "id_b": "B2" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 1.0, 3.0 ], [ 2.0, 3.0 ], [ 2.0, 4.0 ], [ 1.0, 4.0 ], [ 1.0, 3.0 ] ] ] } },
+{ "type": "Feature", "properties": { "id_b": "B3" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 7.0, 1.0 ], [ 8.0, 1.0 ], [ 8.0, 4.0 ], [ 7.0, 4.0 ], [ 7.0, 1.0 ] ] ] } },
+{ "type": "Feature", "properties": { "id_b": "B4" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 5.0, 2.0 ], [ 6.0, 2.0 ], [ 6.0, 5.0 ], [ 4.0, 5.0 ], [ 4.0, 3.0 ], [ 5.0, 4.0 ], [ 5.0, 2.0 ] ] ] } }
+]
+}

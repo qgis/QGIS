@@ -77,7 +77,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mAvailableWidgetsView->setItemDelegate( new QgsAttributesFormTreeViewItemDelegate( mAvailableWidgetsView ) );
   mAvailableWidgetsView->setStyle( new QgsAttributesFormTreeViewProxyStyle( mAvailableWidgetsView ) );
 
-  mAvailableWidgetsModel = new QgsAttributesAvailableWidgetsModel( mLayer, QgsProject().instance(), this );
+  mAvailableWidgetsModel = new QgsAttributesAvailableWidgetsModel( mLayer, QgsProject::instance(), this );
   mAvailableWidgetsProxyModel = new QgsAttributesFormProxyModel( this );
   mAvailableWidgetsProxyModel->setAttributesFormSourceModel( mAvailableWidgetsModel );
   mAvailableWidgetsProxyModel->setRecursiveFilteringEnabled( true );
@@ -101,7 +101,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mFormLayoutView->setItemDelegate( new QgsAttributesFormTreeViewItemDelegate( mFormLayoutView ) );
   mFormLayoutView->setStyle( new QgsAttributesFormTreeViewProxyStyle( mFormLayoutView ) );
 
-  mFormLayoutModel = new QgsAttributesFormLayoutModel( mLayer, QgsProject().instance(), this );
+  mFormLayoutModel = new QgsAttributesFormLayoutModel( mLayer, QgsProject::instance(), this );
   mFormLayoutProxyModel = new QgsAttributesFormProxyModel( this );
   mFormLayoutProxyModel->setAttributesFormSourceModel( mFormLayoutModel );
   mFormLayoutProxyModel->setRecursiveFilteringEnabled( true );
@@ -512,9 +512,18 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
   mAttributeTypeFrame->layout()->addWidget( mAttributeContainerEdit );
 }
 
-void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelection &, const QItemSelection & )
+void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
+  if ( selected.isEmpty() && deselected.isEmpty() )
+  {
+    // No-op notification, emitted e.g. by QItemSelectionModel when rows are inserted
+    return;
+  }
+
+  // when the selection changes in the main tree, sync the DnD layout
+  // block both selection handlers while syncing
   disconnect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
+  disconnect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 
   QModelIndex index;
   if ( mFormLayoutView->selectionModel()->selectedRows( 0 ).count() == 1 )
@@ -526,12 +535,22 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged( const QItemSelect
 
   loadAttributeSpecificEditor( mAvailableWidgetsView, mFormLayoutView, index );
   connect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
+  connect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 }
 
-void QgsAttributesFormProperties::onFormLayoutSelectionChanged( const QItemSelection &, const QItemSelection &deselected )
+void QgsAttributesFormProperties::onFormLayoutSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
+  if ( selected.isEmpty() && deselected.isEmpty() )
+  {
+    // No-op notification, emitted e.g. by QItemSelectionModel when rows are inserted
+    return;
+  }
+
   // when the selection changes in the DnD layout, sync the main tree
+  // block both selection handlers while syncing
+  disconnect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
   disconnect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
+
   QModelIndex index;
   if ( deselected.indexes().count() == 1 )
   {
@@ -544,6 +563,7 @@ void QgsAttributesFormProperties::onFormLayoutSelectionChanged( const QItemSelec
   }
 
   loadAttributeSpecificEditor( mFormLayoutView, mAvailableWidgetsView, index );
+  connect( mFormLayoutView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
   connect( mAvailableWidgetsView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 }
 
@@ -702,16 +722,22 @@ void QgsAttributesFormProperties::addContainer()
 
 void QgsAttributesFormProperties::removeTabOrGroupButton()
 {
-  // deleting an item may delete any number of nested child items -- so we delete
-  // them one at a time and then see if there's any selection left
-  while ( true )
-  {
-    const QModelIndexList items = mFormLayoutView->selectionModel()->selectedRows();
-    if ( items.empty() )
-      break;
+  // Take a snapshot of the selected rows in the proxy model, and map them to the source model.
+  // This is necessary because removing rows from the source model will invalidate the proxy model's indexes.
+  const QModelIndexList selectedRows = mFormLayoutView->selectionModel()->selectedRows();
 
-    const QModelIndex item = mFormLayoutProxyModel->mapToSource( items.at( 0 ) );
-    mFormLayoutModel->removeRow( item.row(), item.parent() );
+  QList< QPersistentModelIndex > sourceIndexes;
+  sourceIndexes.reserve( selectedRows.size() );
+  for ( const QModelIndex &proxyIndex : selectedRows )
+    sourceIndexes << QPersistentModelIndex( mFormLayoutProxyModel->mapToSource( proxyIndex ) );
+
+  // Clear the selection up front so that no selection handler fires while rows are being removed
+  mFormLayoutView->selectionModel()->clearSelection();
+
+  for ( const QPersistentModelIndex &sourceIndex : std::as_const( sourceIndexes ) )
+  {
+    if ( sourceIndex.isValid() )
+      mFormLayoutModel->removeRow( sourceIndex.row(), sourceIndex.parent() );
   }
 }
 

@@ -1,0 +1,26 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>stats_by_cat_no_value</Name>
+    <ElementPath>stats_by_cat_no_value</ElementPath>
+    <GeometryType>100</GeometryType>
+    <DatasetSpecificInfo>
+      <FeatureCount>6</FeatureCount>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>intval</Name>
+      <ElementPath>intval</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>name</Name>
+      <ElementPath>name</ElementPath>
+      <Type>String</Type>
+      <Width>2</Width>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>count</Name>
+      <ElementPath>count</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

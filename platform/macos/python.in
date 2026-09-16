@@ -3,4 +3,4 @@
 # to make it relocatable.
 BASEDIR="$(cd "$(dirname "$0")" && pwd)"
 export PYTHONHOME="${BASEDIR}/../Frameworks"
-exec ${BASEDIR}/@PYTHON_EXECUTABLE@ "$@"
+exec "${BASEDIR}/@PYTHON_EXECUTABLE@" "$@"

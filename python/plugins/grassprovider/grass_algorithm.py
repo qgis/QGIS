@@ -72,12 +72,13 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     from osgeo import ogr
 
-from processing.core.parameters import getParameterFromString
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import getTempFilename, isWindows
+from processing.tools.system import getTempFilename
 
 from grassprovider.grass_utils import GrassUtils
 from grassprovider.parsed_description import ParsedDescription
+
+from .parameters import getParameterFromString
 
 pluginPath = os.path.normpath(
     os.path.join(os.path.split(os.path.dirname(__file__))[0], os.pardir)
@@ -487,7 +488,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, original_parameters, context, feedback):
-        if isWindows():
+        if GrassUtils.is_windows():
             path = GrassUtils.grassPath()
             if path == "":
                 raise QgsProcessingException(
@@ -1039,7 +1040,7 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
         # Add a loop export from the basename
         for cmd in [self.commands, self.outputCommands]:
             # TODO Format/options support
-            if isWindows():
+            if GrassUtils.is_windows():
                 cmd.append(f"if not exist {outDir} mkdir {outDir}")
                 cmd.append(
                     "for /F %%r IN ('g.list type^=rast pattern^=\"{}*\"') do r.out.gdal -m{} input=%%r output={}/%%r.tif {}".format(

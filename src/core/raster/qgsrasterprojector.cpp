@@ -221,8 +221,8 @@ ProjectorData::ProjectorData(
 #endif
 
   // init helper points
-  pHelperTop = new QgsPointXY[mDestCols];
-  pHelperBottom = new QgsPointXY[mDestCols];
+  pHelperTop.resize( mDestCols );
+  pHelperBottom.resize( mDestCols );
   calcHelper( 0, pHelperTop );
   calcHelper( 1, pHelperBottom );
   mHelperTopRow = 0;
@@ -235,10 +235,7 @@ ProjectorData::ProjectorData(
 }
 
 ProjectorData::~ProjectorData()
-{
-  delete[] pHelperTop;
-  delete[] pHelperBottom;
-}
+{}
 
 
 void ProjectorData::calcSrcExtent()
@@ -441,7 +438,7 @@ inline int ProjectorData::matrixCol( int destCol ) const
   return static_cast< int >( std::floor( ( destCol + 0.5 ) / mDestColsPerMatrixCol ) );
 }
 
-void ProjectorData::calcHelper( int matrixRow, QgsPointXY *points )
+void ProjectorData::calcHelper( int matrixRow, std::vector<QgsPointXY> &points )
 {
   // TODO?: should we also precalc dest cell center coordinates for x and y?
   for ( int myDestCol = 0; myDestCol < mDestCols; myDestCol++ )
@@ -470,10 +467,7 @@ void ProjectorData::calcHelper( int matrixRow, QgsPointXY *points )
 void ProjectorData::nextHelper()
 {
   // We just switch pHelperTop and pHelperBottom, memory is not lost
-  QgsPointXY *tmp = nullptr;
-  tmp = pHelperTop;
-  pHelperTop = pHelperBottom;
-  pHelperBottom = tmp;
+  swap( pHelperTop, pHelperBottom );
   calcHelper( mHelperTopRow + 2, pHelperBottom );
   mHelperTopRow++;
 }

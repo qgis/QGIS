@@ -2516,7 +2516,6 @@ void PDFHighlightAnnotation::draw(AnnotationDrawParameters& parameters) const
     {
         case AnnotationType::Highlight:
         {
-            painter.setCompositionMode(QPainter::CompositionMode_Multiply);
             painter.fillPath(m_highlightArea.getPath(), QBrush(getStrokeColor(), Qt::SolidPattern));
             break;
         }
@@ -2783,6 +2782,7 @@ void PDFFreeTextAnnotation::draw(AnnotationDrawParameters& parameters) const
 
     QFont font(defaultAppearance.getFontName());
     font.setPixelSize(defaultAppearance.getFontSize());
+    painter.setFont(font);
     painter.setPen(defaultAppearance.getFontColor());
 
     Qt::Alignment alignment = Qt::AlignTop;

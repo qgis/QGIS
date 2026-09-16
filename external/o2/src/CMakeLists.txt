@@ -54,18 +54,6 @@ if(o2_WITH_OAUTH1)
     )
 endif(o2_WITH_OAUTH1)
 
-if(o2_WITH_TWITTER)
-    set( o2_SRCS
-        ${o2_SRCS}
-        oxtwitter.cpp
-    )
-    set( o2_HDRS
-        ${o2_HDRS}
-        o1twitter.h
-        oxtwitter.h
-    )
-endif(o2_WITH_TWITTER)
-
 if(o2_WITH_DROPBOX)
     set( o2_HDRS
         ${o2_HDRS}
@@ -196,11 +184,6 @@ if(o2_WITH_KEYCHAIN)
             )
 
 endif(o2_WITH_KEYCHAIN)
-
-if(BUILD_SHARED_LIBS AND APPLE AND POLICY CMP0042) # in CMake >= 2.8.12
-    cmake_policy(SET CMP0042 OLD)
-    set(CMAKE_MACOSX_RPATH OFF) # don't embed @rpath in install name
-endif(BUILD_SHARED_LIBS AND APPLE AND POLICY CMP0042)
 
 add_library( o2 ${o2_SRCS} ${o2_HDRS} )
 

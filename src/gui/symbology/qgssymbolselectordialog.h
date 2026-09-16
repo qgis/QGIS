@@ -38,11 +38,12 @@ class QgsVectorLayer;
 class QMenu;
 class QWidget;
 
-class SymbolLayerItem;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsMarkerSymbolLayer;
 class QgsLineSymbolLayer;
+class QgsSymbolLayerModel;
+class QgsSymbolLayerModelNode;
 
 class QgsMapCanvas;
 
@@ -140,10 +141,9 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
     /**
      * Loads the given symbol into the widget.
      * \param symbol The symbol to load.
-     * \param parent The parent symbol layer item. If the parent parameter is null, the whole symbol and model will be reset.
      * \note The ownership of the symbol is not transferred and must exist for the lifetime of the widget.
      */
-    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent = nullptr ) SIP_SKIP;
+    void loadSymbol( QgsSymbol *symbol ) SIP_SKIP;
 
   public slots:
 
@@ -245,13 +245,19 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
 
     void updateLockButtonIcon();
 
-    SymbolLayerItem *currentLayerItem();
+    QgsSymbolLayerModelNode *currentLayerNode();
 
     /**
      * The current symbol layer that is active in the interface.
      * \returns The active symbol layer.
      */
     QgsSymbolLayer *currentLayer();
+
+    /**
+     * The node which is current in the symbol layers tree, or NULLPTR if there
+     * is none. Both a symbol node and a symbol layer node can be current.
+     */
+    QgsSymbolLayerModelNode *currentNode();
 
     /**
      * Move the current active layer by a set offset in the list.
@@ -273,7 +279,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
     QAction *mLockSelectionColorAction = nullptr;
     QPointer<QgsVectorLayer> mVectorLayer;
 
-    QStandardItemModel *mSymbolLayersModel = nullptr;
+    QgsSymbolLayerModel *mSymbolLayersModel = nullptr;
     QWidget *mPresentWidget = nullptr;
 
     std::unique_ptr<DataDefinedRestorer> mDataDefineRestorer;
@@ -329,9 +335,8 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     /**
      * Loads the given symbol into the widget.
      * \param symbol The symbol to load.
-     * \param parent The parent symbol layer item. If the parent parameter is null, the whole symbol and model will be reset.
      */
-    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent = nullptr ) SIP_SKIP;
+    void loadSymbol( QgsSymbol *symbol ) SIP_SKIP;
 
     /**
      * Returns a reference to the dialog's button box.
@@ -391,7 +396,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 
     void updateLockButton();
 
-    SymbolLayerItem *currentLayerItem();
+    QgsSymbolLayerModelNode *currentLayerNode();
 
     QgsSymbolLayer *currentLayer();
 

@@ -30,7 +30,12 @@ runs:
     - name: Run vcpkg install (HEAD)
       shell: bash
       run: |
-        vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=${{ inputs.vcpkg-manifest-dir }} $(awk -v FS=',' '{for(i=1; i<=NF; i++) printf "--x-feature=%s ", $i}' <<< "${{ inputs.features }}") --allow-unsupported > /tmp/vcpkg-head-output.txt
+        head_out=/tmp/vcpkg-head-output.txt
+        if ! vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=${{ inputs.vcpkg-manifest-dir }} $(awk -v FS=',' '{for(i=1; i<=NF; i++) printf "--x-feature=%s ", $i}' <<< "${{ inputs.features }}") --allow-unsupported > "${head_out}"; then
+          echo "::error title=Vcpkg update report::vcpkg install (HEAD) failed:"
+          cat "${head_out}"
+          exit 1
+        fi
 
     # Run vcpkg install --dry-run on the base ref
     - name: Run vcpkg install (BASE)
@@ -44,7 +49,11 @@ runs:
         # the base commit. Fetch just that commit explicitly before using it.
         git fetch --no-tags --depth=1 origin "${base_sha}" 2>/dev/null || true
         if git worktree add .base-ref "${base_sha}" 2>/dev/null; then
-          vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=.base-ref/${{ inputs.vcpkg-manifest-dir }} $(awk -v FS=',' '{for(i=1; i<=NF; i++) printf "--x-feature=%s ", $i}' <<< "${{ inputs.features }}") --allow-unsupported > "${base_out}"
+          if ! vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=.base-ref/${{ inputs.vcpkg-manifest-dir }} $(awk -v FS=',' '{for(i=1; i<=NF; i++) printf "--x-feature=%s ", $i}' <<< "${{ inputs.features }}") --allow-unsupported > "${base_out}"; then
+            echo "::error title=Vcpkg update report::vcpkg install (BASE) failed:"
+            cat "${base_out}"
+            exit 1
+          fi
         else
           echo "::warning title=Vcpkg update report::Base ref ${base_sha} is unavailable (shallow or conflicted history); reporting the HEAD install list without a base comparison."
         fi

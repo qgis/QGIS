@@ -40,9 +40,7 @@ QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
 }
 
 QgsGlowEffect::~QgsGlowEffect()
-{
-  delete mRamp;
-}
+{}
 
 Qgis::PaintEffectFlags QgsGlowEffect::flags() const
 {
@@ -67,7 +65,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   std::unique_ptr< QgsGradientColorRamp > tempRamp;
   if ( mColorType == ColorRamp && mRamp )
   {
-    ramp = mRamp;
+    ramp = mRamp.get();
   }
   else
   {
@@ -205,7 +203,7 @@ void QgsGlowEffect::readProperties( const QVariantMap &props )
   }
 
   //attempt to create color ramp from props
-  delete mRamp;
+  mRamp.reset();
   if ( props.contains( u"rampType"_s ) && props[u"rampType"_s] == QgsCptCityColorRamp::typeString() )
   {
     mRamp = QgsCptCityColorRamp::create( props );
@@ -218,8 +216,7 @@ void QgsGlowEffect::readProperties( const QVariantMap &props )
 
 void QgsGlowEffect::setRamp( QgsColorRamp *ramp )
 {
-  delete mRamp;
-  mRamp = ramp;
+  mRamp.reset( ramp );
 }
 
 QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect &rhs )
@@ -227,12 +224,12 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect &rhs )
   if ( &rhs == this )
     return *this;
 
-  delete mRamp;
+  mRamp.reset( rhs.ramp() ? rhs.ramp()->clone() : nullptr );
 
   mSpread = rhs.spread();
   mSpreadUnit = rhs.spreadUnit();
   mSpreadMapUnitScale = rhs.spreadMapUnitScale();
-  mRamp = rhs.ramp() ? rhs.ramp()->clone() : nullptr;
+
   mBlurLevel = rhs.blurLevel();
   mBlurUnit = rhs.mBlurUnit;
   mBlurMapUnitScale = rhs.mBlurMapUnitScale;

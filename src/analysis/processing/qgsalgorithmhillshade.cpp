@@ -106,6 +106,8 @@ bool QgsHillshadeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
 
 QVariantMap QgsHillshadeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const double zFactor = parameterAsDouble( parameters, u"Z_FACTOR"_s, context );
   const double azimuth = parameterAsDouble( parameters, u"AZIMUTH"_s, context );
   const double vAngle = parameterAsDouble( parameters, u"V_ANGLE"_s, context );

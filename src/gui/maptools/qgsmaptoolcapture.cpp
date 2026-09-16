@@ -296,11 +296,11 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
       tempCurve->close();
       auto curvePolygon = std::make_unique< QgsCurvePolygon >();
       curvePolygon->setExteriorRing( tempCurve.release() );
-      emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+      onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
     }
     else
     {
-      emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+      onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
     }
   }
   catch ( QgsCsException &e )
@@ -442,14 +442,24 @@ void QgsMapToolCapture::setCurrentShapeMapToolIsActivated( bool activated )
 {
   if ( activated )
   {
-    connect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolCapture::onTransientGeometryChanged );
+    connect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolCapture::onShapeToolTransientGeometryChanged );
     mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
   }
   else
   {
-    disconnect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolCapture::onTransientGeometryChanged );
+    disconnect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolCapture::onShapeToolTransientGeometryChanged );
     mCurrentShapeMapTool->deactivate();
   }
+}
+
+void QgsMapToolCapture::onTransientGeometryChanged( const QgsReferencedGeometry &geometry )
+{
+  if ( mLayerPreviewRubberBand )
+  {
+    mLayerPreviewRubberBand->setToGeometry( geometry, geometry.crs() );
+  }
+
+  emit transientGeometryChanged( geometry );
 }
 
 QgsRubberBand *QgsMapToolCapture::takeRubberBand()
@@ -729,11 +739,11 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
           auto curvePolygon = std::make_unique<QgsCurvePolygon>();
           lineString->close();
           curvePolygon->setExteriorRing( lineString.release() );
-          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+          onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
         }
         else
         {
-          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( lineString ) ), targetCrs ) );
+          onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( lineString ) ), targetCrs ) );
         }
       }
     }
@@ -773,11 +783,11 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
           auto curvePolygon = std::make_unique< QgsCurvePolygon >();
           tempCurve->close();
           curvePolygon->setExteriorRing( tempCurve.release() );
-          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+          onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
         }
         else
         {
-          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+          onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
         }
       }
       else if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
@@ -840,11 +850,11 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
             auto curvePolygon = std::make_unique< QgsCurvePolygon >();
             tempCurve->close();
             curvePolygon->setExteriorRing( tempCurve.release() );
-            emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+            onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
           }
           else
           {
-            emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+            onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
           }
         }
         else if ( mTempRubberBand )
@@ -1003,7 +1013,14 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     }
 
     if ( !mRubberBand )
+    {
       mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line ) );
+    }
+    if ( !mLayerPreviewRubberBand )
+    {
+      mLayerPreviewRubberBand.reset( createRubberBandForLayer( currentVectorLayer(), { -1 } ) );
+      mLayerPreviewRubberBand->setRenderedComponents( Qgis::RubberBandComponent::PreviewItems );
+    }
 
     if ( !mTempRubberBand )
     {
@@ -1087,6 +1104,11 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   if ( !mRubberBand )
   {
     mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line ) );
+  }
+  if ( !mLayerPreviewRubberBand )
+  {
+    mLayerPreviewRubberBand.reset( createRubberBandForLayer( currentVectorLayer(), { -1 } ) );
+    mLayerPreviewRubberBand->setRenderedComponents( Qgis::RubberBandComponent::PreviewItems );
   }
 
   if ( mTempRubberBand )
@@ -1263,6 +1285,30 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
 
     mCadDockWidget->removePreviousPoint();
     validateGeometry();
+
+    // Determine target CRS
+    QgsCoordinateReferenceSystem targetCrs = layer() ? layer()->crs() : mCanvas->mapSettings().destinationCrs();
+
+    // Emit updated transient geometry
+    if ( mCaptureCurve.numPoints() > 0 )
+    {
+      std::unique_ptr< QgsCompoundCurve > tempCurve( mCaptureCurve.clone() );
+      if ( mCaptureMode == CapturePolygon )
+      {
+        auto curvePolygon = std::make_unique< QgsCurvePolygon >();
+        tempCurve->close();
+        curvePolygon->setExteriorRing( tempCurve.release() );
+        onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+      }
+      else
+      {
+        onTransientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+      }
+    }
+    else
+    {
+      onTransientGeometryChanged( QgsReferencedGeometry() );
+    }
   }
 }
 
@@ -1396,6 +1442,7 @@ bool QgsMapToolCapture::isCapturing() const
 void QgsMapToolCapture::stopCapturing()
 {
   mRubberBand.reset();
+  mLayerPreviewRubberBand.reset();
 
   deleteTempRubberBand();
 
@@ -1435,7 +1482,7 @@ void QgsMapToolCapture::stopCapturing()
   if ( auto *lCurrentVectorLayer = currentVectorLayer() )
     lCurrentVectorLayer->triggerRepaint();
 
-  emit transientGeometryChanged( QgsReferencedGeometry() );
+  onTransientGeometryChanged( QgsReferencedGeometry() );
 }
 
 void QgsMapToolCapture::deleteTempRubberBand()
@@ -1501,9 +1548,7 @@ void QgsMapToolCapture::validateGeometry()
   if ( geom.isNull() )
     return;
 
-  Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() == 2 )
-    method = Qgis::GeometryValidationEngine::Geos;
+  Qgis::GeometryValidationEngine method = QgsGeometryValidator::defaultValidationEngine();
   mValidator = new QgsGeometryValidator( geom, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
   mValidator->start();
@@ -1742,7 +1787,7 @@ void QgsMapToolCapture::updateExtraSnapLayer()
   }
 }
 
-void QgsMapToolCapture::onTransientGeometryChanged( const QgsReferencedGeometry &geometry )
+void QgsMapToolCapture::onShapeToolTransientGeometryChanged( const QgsReferencedGeometry &geometry )
 {
   QgsReferencedGeometry correctedGeometry = geometry;
 
@@ -1765,7 +1810,7 @@ void QgsMapToolCapture::onTransientGeometryChanged( const QgsReferencedGeometry 
     }
   }
 
-  emit transientGeometryChanged( correctedGeometry );
+  onTransientGeometryChanged( correctedGeometry );
 }
 
 void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )

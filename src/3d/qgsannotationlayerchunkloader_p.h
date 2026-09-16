@@ -121,6 +121,16 @@ class QgsAnnotationLayerChunkLoader : public QgsChunkLoader
 
     QVector< QgsBillboardGeometry::BillboardAtlasData > mBillboardPositions;
     QVector< QgsBillboardGeometry::BillboardAtlasData > mTextBillboardPositions;
+
+    struct PictureBillboards
+    {
+        QImage image;
+        QVector< QVector3D > positions;
+        QVector< QSizeF > sizes;
+        Qgis::BillboardScaleMode scaleMode = Qgis::BillboardScaleMode::ViewIndependent;
+    };
+    QVector< PictureBillboards > mPictureBillboards;
+
     QVector< QgsLineString > mCalloutLines;
     QImage mBillboardAtlas;
     QImage mTextBillboardAtlas;

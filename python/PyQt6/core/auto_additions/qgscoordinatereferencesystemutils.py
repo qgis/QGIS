@@ -4,6 +4,7 @@ try:
     QgsCoordinateReferenceSystemUtils.axisDirectionToAbbreviatedString = staticmethod(QgsCoordinateReferenceSystemUtils.axisDirectionToAbbreviatedString)
     QgsCoordinateReferenceSystemUtils.crsTypeToString = staticmethod(QgsCoordinateReferenceSystemUtils.crsTypeToString)
     QgsCoordinateReferenceSystemUtils.translateProjection = staticmethod(QgsCoordinateReferenceSystemUtils.translateProjection)
+    QgsCoordinateReferenceSystemUtils.topocentricHorizonGeometry = staticmethod(QgsCoordinateReferenceSystemUtils.topocentricHorizonGeometry)
     QgsCoordinateReferenceSystemUtils.__group__ = ['proj']
 except (NameError, AttributeError):
     pass

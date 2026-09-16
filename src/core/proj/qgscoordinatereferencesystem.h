@@ -1277,6 +1277,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static QString projFromSrsId( int srsId );
 
+    static const QMap<QString, QString> &authIdToQgisSrsIdMap();
+
     /**
      * Set the Proj string.
      * \param projString Proj format specifies
@@ -1362,7 +1364,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     static CUSTOM_CRS_VALIDATION sCustomSrsValidation;
 
     // cache
-
     static bool sDisableSrIdCache;
     static bool sDisableOgcCache;
     static bool sDisableProjCache;

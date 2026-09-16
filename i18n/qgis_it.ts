@@ -140353,13 +140353,13 @@ Messaggio errore: %1</translation>
     <name>QgsO2</name>
     <message>
         <location filename="../src/auth/oauth2/core/qgso2.cpp" line="182"/>
-        <source>QGIS OAuth2 verification has finished.</source>
+        <source>%1 OAuth2 verification has finished.</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/auth/oauth2/core/qgso2.cpp" line="183"/>
-        <source>You can close this window and return to QGIS.</source>
-        <translation>Puoi chiudere questa finestra e tornare a QGIS.</translation>
+        <source>You can close this window and return to %1.</source>
+        <translation>Puoi chiudere questa finestra e tornare a %1.</translation>
     </message>
 </context>
 <context>

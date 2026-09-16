@@ -49,6 +49,14 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
      */
     static void validateGeometry( const QgsGeometry &geometry, QVector<QgsGeometry::Error> &errors SIP_OUT, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal );
 
+    /**
+     * Returns the geometry validation engine configured in the application settings.
+     *
+     * \returns The geometry validation engine to use.
+     * \since QGIS 4.4
+     */
+    static Qgis::GeometryValidationEngine defaultValidationEngine();
+
   signals:
 
     /**

@@ -55,7 +55,7 @@ class QgsPropertyPrivate : public QSharedData
       , expressionReferencedCols( other.expressionReferencedCols )
     {}
 
-    ~QgsPropertyPrivate() { delete transformer; }
+    ~QgsPropertyPrivate() {}
 
     Qgis::PropertyType type = Qgis::PropertyType::Invalid;
 
@@ -63,7 +63,7 @@ class QgsPropertyPrivate : public QSharedData
     bool active = true;
 
     //! Optional transformer
-    QgsPropertyTransformer *transformer = nullptr;
+    std::unique_ptr<QgsPropertyTransformer> transformer;
 
     // StaticData
     QVariant staticValue;

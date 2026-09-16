@@ -124,6 +124,8 @@ QgsFields QgsGeometryCheckLineLayerIntersectionAlgorithm::outputFields()
 
 QVariantMap QgsGeometryCheckLineLayerIntersectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString dest_output;
   QString dest_errors;
   const std::unique_ptr<QgsFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );

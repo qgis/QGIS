@@ -24,6 +24,10 @@
 
 #include <QString>
 
+// this file breaks cppcheck ast parsing
+#define EXCLUDE_CPPCHECK
+#ifdef EXCLUDE_CPPCHECK
+
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
@@ -148,6 +152,8 @@ bool QgsRescaleRasterAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 
 QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   feedback->pushInfo( QObject::tr( "Calculating raster minimum and maximum values…" ) );
   const QgsRasterBandStats stats = mInterface->bandStatistics( mBand, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max, QgsRectangle(), 0 );
 
@@ -236,5 +242,7 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   outputs.insert( u"OUTPUT"_s, outputFile );
   return outputs;
 }
+
+#endif
 
 ///@endcond

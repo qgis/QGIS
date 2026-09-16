@@ -203,7 +203,7 @@ class ProjectorData
     bool checkRows( const QgsCoordinateTransform &ct ) const;
 
     //! Calculate array of src helper points
-    void calcHelper( int matrixRow, QgsPointXY *points );
+    void calcHelper( int matrixRow, std::vector<QgsPointXY> &points );
 
     //! Calc / switch helper
     void nextHelper();
@@ -268,11 +268,11 @@ class ProjectorData
 
     //! Array of source points for each destination column on top of current CPMatrix grid row
     /* Warning: using QList is slow on access */
-    QgsPointXY *pHelperTop = nullptr;
+    std::vector<QgsPointXY> pHelperTop;
 
     //! Array of source points for each destination column on bottom of current CPMatrix grid row
     /* Warning: using QList is slow on access */
-    QgsPointXY *pHelperBottom = nullptr;
+    std::vector<QgsPointXY> pHelperBottom;
 
     //! Current mHelperTop matrix row
     int mHelperTopRow = 0;

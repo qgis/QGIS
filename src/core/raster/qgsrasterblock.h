@@ -43,6 +43,9 @@ class CORE_EXPORT QgsRasterBlock
   public:
     QgsRasterBlock();
 
+    QgsRasterBlock( const QgsRasterBlock &rh ) = delete;
+    QgsRasterBlock &operator=( const QgsRasterBlock &rh ) = delete;
+
     /**
      * \brief Constructor which allocates data block in memory
      *  \param dataType raster data type
@@ -810,6 +813,11 @@ class CORE_EXPORT QgsRasterBlock
     bool minimumMaximum( double &minimum SIP_OUT, int &minimumRow SIP_OUT, int &minimumColumn SIP_OUT, double &maximum SIP_OUT, int &maximumRow SIP_OUT, int &maximumColumn SIP_OUT ) const;
 
   private:
+
+#ifdef SIP_RUN
+  QgsRasterBlock( const QgsRasterBlock &rh );
+#endif
+
     static QImage::Format imageFormat( Qgis::DataType dataType );
     static Qgis::DataType dataType( QImage::Format format );
 
@@ -880,7 +888,7 @@ class CORE_EXPORT QgsRasterBlock
     void *mData = nullptr;
 
     // Image for image data types, not used with numerical data types
-    QImage *mImage = nullptr;
+    std::unique_ptr<QImage> mImage;
 
     // Bitmap of no data. One bit for each pixel. Bit is 1 if a pixels is no data.
     // Each row is represented by whole number of bytes (last bits may be unused)
@@ -1035,5 +1043,3 @@ inline bool QgsRasterBlock::isNoDataValue( double value ) const SIP_SKIP
 }
 
 #endif
-
-

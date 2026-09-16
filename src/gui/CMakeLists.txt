@@ -92,6 +92,7 @@ set(QGIS_GUI_SRCS
   symbology/qgsextentbufferdialog.cpp
   symbology/qgssymbolslistwidget.cpp
   symbology/qgssymbolselectordialog.cpp
+  symbology/qgssymbollayermodel.cpp
   symbology/qgssymbolwidgetcontext.cpp
   symbology/qgsvectorfieldsymbollayerwidget.cpp
 
@@ -458,10 +459,12 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.cpp
+  processing/qgsprocessingwidgetcontext.cpp
   processing/qgsprocessingwidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
   processing/models/qgsmodelarrowitem.cpp
+  processing/models/qgsmodelchildalgorithmwidgets.cpp
   processing/models/qgsmodelcomponentgraphicitem.cpp
   processing/models/qgsmodeldesignerconfigdockwidget.cpp
   processing/models/qgsmodeldesignerconfigwidget.cpp
@@ -676,6 +679,7 @@ set(QGIS_GUI_SRCS
   qgsfocuswatcher.cpp
   qgsformlabelformatwidget.cpp
   qgsfontbutton.cpp
+  qgsfontcombobox.cpp
   qgsformannotation.cpp
   qgsgeocoderlocatorfilter.cpp
   qgsgeometryrubberband.cpp
@@ -793,6 +797,7 @@ set(QGIS_GUI_SRCS
   qgsrelationwidgetregistry.cpp
   qgsrichtexteditor.cpp
   qgsrubberband.cpp
+  qgsrubberband_impl.cpp
   qgsscalecombobox.cpp
   qgsscalemethodwidget.cpp
   qgsscalerangewidget.cpp
@@ -949,6 +954,7 @@ set(QGIS_GUI_HDRS
   qgsfocuskeeper.h
   qgsfocuswatcher.h
   qgsfontbutton.h
+  qgsfontcombobox.h
   qgsformannotation.h
   qgsformlabelformatwidget.h
   qgsgeocoderlocatorfilter.h
@@ -1070,6 +1076,7 @@ set(QGIS_GUI_HDRS
   qgsrelationwidgetregistry.h
   qgsrichtexteditor.h
   qgsrubberband.h
+  qgsrubberband_impl.h
   qgsscalecombobox.h
   qgsscalemethodwidget.h
   qgsscalerangewidget.h
@@ -1487,10 +1494,12 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.h
+  processing/qgsprocessingwidgetcontext.h
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 
   processing/models/qgsmodelarrowitem.h
+  processing/models/qgsmodelchildalgorithmwidgets.h
   processing/models/qgsmodelcomponentgraphicitem.h
   processing/models/qgsmodeldesignerconfigdockwidget.h
   processing/models/qgsmodeldesignerconfigwidget.h
@@ -1647,6 +1656,7 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbollevelsdialog.h
   symbology/qgsextentbufferdialog.h
   symbology/qgssymbolselectordialog.h
+  symbology/qgssymbollayermodel.h
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
   symbology/qgstemplatedcategorizedrendererwidget_p.h
@@ -2054,8 +2064,9 @@ if (WITH_QTWEBENGINE)
 endif()
 
 if (WITH_QTGAMEPAD)
+    # QtGamepadLegacy from https://github.com/pumphaus/qtgamepadlegacy must be used for Qt6 builds
     target_link_libraries(qgis_gui
-      Qt::Gamepad
+      Qt::GamepadLegacy
     )
 endif()
 

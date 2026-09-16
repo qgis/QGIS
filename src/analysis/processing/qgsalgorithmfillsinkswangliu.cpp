@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmfillsinkswangliu.h"
 
+#include "qgsacademicreference.h"
 #include "qgsrasterfilewriter.h"
 
 #include <QString>
@@ -60,11 +61,29 @@ QString QgsFillSinksWangLiuAlgorithm::shortHelpString() const
     "but also to preserve a downward slope along the flow path. If desired, this is accomplished by preserving a minimum slope "
     "gradient (and thus elevation difference) between cells.\n\n"
 
-    "References: Wang, L. & H. Liu (2006): An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling. International "
-    "Journal of Geographical Information Science, Vol. 20, No. 2: 193-213.\n\n"
-
     "This algorithm is a port of the SAGA 'Fill Sinks (Wang & Liu)' tool."
   );
+}
+
+QList<QgsAcademicReference> QgsFillSinksWangLiuAlgorithm::academicReferences() const
+{
+  const QgsAcademicReference ref = QgsAcademicReference::createJournalArticle(
+    { u"Wang, L."_s, u"Liu, H."_s },
+    2006,
+    u"An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling."_s,
+    u"International Journal of Geographical Information Science"_s,
+    u"20"_s,
+    u"No. 2"_s,
+    u"193-213"_s
+  );
+  return { ref };
+}
+
+QList<QgsProcessingAlgorithm::ExternalLink> QgsFillSinksWangLiuAlgorithm::externalLinks() const
+{
+  return {
+    QgsProcessingAlgorithm::ExternalLink { QObject::tr( "SAGA tool source code" ), u"https://sourceforge.net/p/saga-gis/code/ci/72d9890b130fd446d7ffb7251c44b2e98c8e1e53/tree/saga-gis/src/tools/terrain_analysis/ta_preprocessor/FillSinks_WL.cpp"_s }
+  };
 }
 
 QString QgsFillSinksWangLiuAlgorithm::shortDescription() const
@@ -78,7 +97,7 @@ void QgsFillSinksWangLiuAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT"_s ) );
 
-  auto minSlopeParam = std::make_unique<QgsProcessingParameterNumber>( u"MIN_SLOPE"_s, QObject::tr( "Minimum slope (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 0.1, false, 0 );
+  auto minSlopeParam = std::make_unique<QgsProcessingParameterNumber>( u"MIN_SLOPE"_s, QObject::tr( "Minimum slope (degrees)" ), Qgis::ProcessingNumberParameterType::Double, 0.01, false, 0 );
   minSlopeParam->setHelp(
     QObject::tr( "Minimum slope gradient to preserve from cell to cell. With a value of zero sinks are filled up to the spill elevation (which results in flat areas). Units are degrees." )
   );
@@ -189,6 +208,8 @@ typedef std::priority_queue< CFillSinks_WL_Node, nodeVector, CompareGreater > Pr
 
 QVariantMap QgsFillSinksWangLiuAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString createOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
 
   const QString filledDemOutputFile = parameterAsOutputLayer( parameters, u"OUTPUT_FILLED_DEM"_s, context );

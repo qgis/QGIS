@@ -14,6 +14,7 @@ set(PYQT_COMPAT_FILES
   QtWebEngineCore.py
   QtWebEngineQuick.py
   QtWebEngineWidgets.py
+  QtWebSockets.py
   QtMultimedia.py
   QtNetwork.py
   QtXml.py

@@ -19,13 +19,13 @@ __author__ = "Alexander Bruy"
 __date__ = "December 2012"
 __copyright__ = "(C) 2012, Alexander Bruy"
 
-import codecs
 import inspect
 import os
 import traceback
 import warnings
 
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsError,
     QgsFileUtils,
@@ -45,7 +45,7 @@ from qgis.PyQt import sip, uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QPalette
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout
-from qgis.utils import OverrideCursor, iface
+from qgis.utils import OverrideCursor
 
 from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.script import ScriptUtils
@@ -93,9 +93,12 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.code_editor_widget = QgsCodeEditorWidget(self.editor)
         vl.addWidget(self.code_editor_widget)
 
-        if iface is not None:
-            self.toolBar.setIconSize(iface.iconSize())
-            self.setStyleSheet(iface.mainWindow().styleSheet())
+        self.toolBar.setIconSize(
+            QgsGui.iconSize(Qgis.UserInterfaceIconType.DockedToolbar)
+        )
+
+        self.setStyleSheet(QgsGui.applicationStyleSheet())
+        QgsGui.instance().applicationStyleSheetChanged.connect(self.setStyleSheet)
 
         self.actionOpenScript.setIcon(
             QgsApplication.getThemeIcon("/mActionScriptOpen.svg")

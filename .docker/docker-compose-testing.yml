@@ -12,7 +12,7 @@ services:
       - /tmp/webdav_tests:/tmp/webdav_tests_root/webdav_tests
 
   minio:
-    image: minio/minio
+    image: alpine/minio:latest-release
     volumes:
       - /tmp/minio_tests:/data
     environment:

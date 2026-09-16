@@ -73,6 +73,13 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! transformation from map coordinates to screen coordinates
     QPointF toCanvasCoordinates( const QgsPointXY &point ) const;
 
+    /**
+     * Returns the item's associated canvas.
+     *
+     * \since QGIS 4.4
+     */
+    QgsMapCanvas *canvas() const { return mMapCanvas; }
+
   protected:
     //! pointer to map canvas
     QgsMapCanvas *mMapCanvas = nullptr;

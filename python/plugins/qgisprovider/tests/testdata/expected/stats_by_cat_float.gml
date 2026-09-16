@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ogr:FeatureCollection
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation=""
+     xmlns:ogr="http://ogr.maptools.org/"
+     xmlns:gml="http://www.opengis.net/gml">
+  <gml:boundedBy><gml:null>missing</gml:null></gml:boundedBy>
+                                                                                                                                                                                                                                                                                                
+  <gml:featureMember>
+    <ogr:stats_by_cat_float fid="stats_by_cat_float.0">
+      <ogr:name>aa</ogr:name>
+      <ogr:count>2</ogr:count>
+      <ogr:unique>2</ogr:unique>
+      <ogr:min>3.33</ogr:min>
+      <ogr:max>44.123456</ogr:max>
+      <ogr:range>40.793456</ogr:range>
+      <ogr:sum>47.453456</ogr:sum>
+      <ogr:mean>23.726728</ogr:mean>
+      <ogr:median>23.726728</ogr:median>
+      <ogr:stddev>20.396728</ogr:stddev>
+      <ogr:minority>3.33</ogr:minority>
+      <ogr:majority>3.33</ogr:majority>
+      <ogr:q1>3.33</ogr:q1>
+      <ogr:q3>44.123456</ogr:q3>
+      <ogr:iqr>40.793456</ogr:iqr>
+    </ogr:stats_by_cat_float>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:stats_by_cat_float fid="stats_by_cat_float.1">
+      <ogr:name>dd</ogr:name>
+      <ogr:count>1</ogr:count>
+      <ogr:unique>1</ogr:unique>
+      <ogr:min>0</ogr:min>
+      <ogr:max>0</ogr:max>
+      <ogr:range>0</ogr:range>
+      <ogr:sum>0</ogr:sum>
+      <ogr:mean>0</ogr:mean>
+      <ogr:median>0</ogr:median>
+      <ogr:stddev>0</ogr:stddev>
+      <ogr:minority>0</ogr:minority>
+      <ogr:majority>0</ogr:majority>
+      <ogr:q1>0</ogr:q1>
+      <ogr:q3>0</ogr:q3>
+      <ogr:iqr>0</ogr:iqr>
+    </ogr:stats_by_cat_float>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:stats_by_cat_float fid="stats_by_cat_float.2">
+      <ogr:name>bb</ogr:name>
+      <ogr:count>4</ogr:count>
+      <ogr:unique>1</ogr:unique>
+      <ogr:min>0.123</ogr:min>
+      <ogr:max>0.123</ogr:max>
+      <ogr:range>0</ogr:range>
+      <ogr:sum>0.492</ogr:sum>
+      <ogr:mean>0.123</ogr:mean>
+      <ogr:median>0.123</ogr:median>
+      <ogr:stddev>0</ogr:stddev>
+      <ogr:minority>0.123</ogr:minority>
+      <ogr:majority>0.123</ogr:majority>
+      <ogr:q1>0.123</ogr:q1>
+      <ogr:q3>0.123</ogr:q3>
+      <ogr:iqr>0</ogr:iqr>
+    </ogr:stats_by_cat_float>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:stats_by_cat_float fid="stats_by_cat_float.3">
+      <ogr:count>1</ogr:count>
+      <ogr:unique>1</ogr:unique>
+      <ogr:min>-100291.43213</ogr:min>
+      <ogr:max>-100291.43213</ogr:max>
+      <ogr:range>0</ogr:range>
+      <ogr:sum>-100291.43213</ogr:sum>
+      <ogr:mean>-100291.43213</ogr:mean>
+      <ogr:median>-100291.43213</ogr:median>
+      <ogr:stddev>0</ogr:stddev>
+      <ogr:minority>-100291.43213</ogr:minority>
+      <ogr:majority>-100291.43213</ogr:majority>
+      <ogr:q1>-100291.43213</ogr:q1>
+      <ogr:q3>-100291.43213</ogr:q3>
+      <ogr:iqr>0</ogr:iqr>
+    </ogr:stats_by_cat_float>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:stats_by_cat_float fid="stats_by_cat_float.4">
+      <ogr:name>cc</ogr:name>
+      <ogr:count>1</ogr:count>
+      <ogr:unique>1</ogr:unique>
+      <ogr:min>0.123</ogr:min>
+      <ogr:max>0.123</ogr:max>
+      <ogr:range>0</ogr:range>
+      <ogr:sum>0.123</ogr:sum>
+      <ogr:mean>0.123</ogr:mean>
+      <ogr:median>0.123</ogr:median>
+      <ogr:stddev>0</ogr:stddev>
+      <ogr:minority>0.123</ogr:minority>
+      <ogr:majority>0.123</ogr:majority>
+      <ogr:q1>0.123</ogr:q1>
+      <ogr:q3>0.123</ogr:q3>
+      <ogr:iqr>0</ogr:iqr>
+    </ogr:stats_by_cat_float>
+  </gml:featureMember>
+</ogr:FeatureCollection>

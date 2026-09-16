@@ -1081,7 +1081,7 @@ void TestQgsMapRendererJob::testMapShading()
   vectorLayer->addFeature( ft0 );
   vectorLayer->commitChanges();
   QVERIFY( vectorLayer->featureCount() == 1 );
-  std::unique_ptr<QgsFillSymbol> fill( static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) ) );
+  auto fill = qgis::unique_ptr_static_cast<QgsFillSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 255 ) );
   vectorLayer->setRenderer( new QgsSingleSymbolRenderer( fill.release() ) );
 

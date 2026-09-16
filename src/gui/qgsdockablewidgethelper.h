@@ -154,8 +154,6 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
-    static std::function<QString()> sAppStylesheetFunction;
-
     static QMainWindow *sOwnerWindow;
 
   signals:

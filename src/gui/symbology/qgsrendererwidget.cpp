@@ -312,7 +312,7 @@ void QgsRendererWidget::copySymbol()
     return;
   }
 
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( symbolList.at( 0 ) ) );
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( symbolList.at( 0 ) ).release() );
 }
 
 void QgsRendererWidget::updateDataDefinedProperty()

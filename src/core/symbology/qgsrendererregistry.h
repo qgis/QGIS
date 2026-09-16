@@ -141,9 +141,9 @@ class CORE_EXPORT QgsRendererAbstractMetadata
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRendererAbstractMetadata::LayerTypes )
 
 
-typedef QgsFeatureRenderer *( *QgsRendererCreateFunc )( QDomElement &, const QgsReadWriteContext & ) SIP_SKIP;
+typedef std::unique_ptr<QgsFeatureRenderer> ( *QgsRendererCreateFunc )( QDomElement &, const QgsReadWriteContext & ) SIP_SKIP;
 typedef QgsRendererWidget *( *QgsRendererWidgetFunc )( QgsVectorLayer *, QgsStyle *, QgsFeatureRenderer * ) SIP_SKIP;
-typedef QgsFeatureRenderer *( *QgsRendererCreateFromSldFunc )( QDomElement &, Qgis::GeometryType geomType ) SIP_SKIP;
+typedef std::unique_ptr<QgsFeatureRenderer> ( *QgsRendererCreateFromSldFunc )( QDomElement &, Qgis::GeometryType geomType ) SIP_SKIP;
 
 /**
  * \ingroup core
@@ -186,12 +186,15 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
                  mLayerTypes( layerTypes )
     {}
 
-    QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( elem, context ) : nullptr; }
+    QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( elem, context ).release() : nullptr; }
     QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) override SIP_FACTORY
     {
       return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr;
     }
-    QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, Qgis::GeometryType geomType ) override SIP_FACTORY { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
+    QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, Qgis::GeometryType geomType ) override SIP_FACTORY
+    {
+      return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ).release() : nullptr;
+    }
 
     //! \note not available in Python bindings
     QgsRendererCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }

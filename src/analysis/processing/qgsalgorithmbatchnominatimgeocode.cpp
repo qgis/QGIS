@@ -18,10 +18,12 @@
 #include "qgsalgorithmbatchnominatimgeocode.h"
 
 #include "qgsalgorithmbatchgeocode.h"
-#include "qgsgeocoder.h"
-#include "qgsgeocodercontext.h"
-#include "qgsgeocoderresult.h"
-#include "qgsvectorlayer.h"
+
+#include <QString>
+
+// this file breaks cppcheck ast parsing
+#define EXCLUDE_CPPCHECK
+#ifdef EXCLUDE_CPPCHECK
 
 #include <QString>
 
@@ -74,6 +76,8 @@ QString QgsBatchNominatimGeocodeAlgorithm::shortDescription() const
 
 bool QgsBatchNominatimGeocodeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   feedback->pushInfo(
     QObject::tr(
       "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors. "
@@ -84,3 +88,5 @@ bool QgsBatchNominatimGeocodeAlgorithm::prepareAlgorithm( const QVariantMap &par
 }
 
 ///@endcond
+
+#endif

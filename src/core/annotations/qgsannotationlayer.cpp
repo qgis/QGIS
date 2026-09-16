@@ -131,6 +131,7 @@ QString QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
   else
     mSpatialIndex->insert( uuid, item->boundingBox() );
 
+  emit itemsChanged();
   triggerRepaint();
 
   return uuid;
@@ -161,6 +162,7 @@ void QgsAnnotationLayer::replaceItem( const QString &id, QgsAnnotationItem *item
   else
     mSpatialIndex->insert( id, item->boundingBox() );
 
+  emit itemsChanged();
   triggerRepaint();
 }
 
@@ -185,6 +187,7 @@ bool QgsAnnotationLayer::removeItem( const QString &id )
 
   item.reset();
 
+  emit itemsChanged();
   triggerRepaint();
 
   return true;
@@ -199,6 +202,7 @@ void QgsAnnotationLayer::clear()
   mSpatialIndex = std::make_unique< QgsAnnotationLayerSpatialIndex >();
   mNonIndexedItems.clear();
 
+  emit itemsChanged();
   triggerRepaint();
 }
 
@@ -285,7 +289,10 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLayer::applyEditV2( QgsAbst
   }
 
   if ( res != Qgis::AnnotationItemEditOperationResult::Invalid )
+  {
+    emit itemsChanged();
     triggerRepaint();
+  }
 
   return res;
 }
@@ -381,6 +388,7 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
     mLinkedLayer = QgsMapLayerRef( layerId, layerName, layerSource, layerProvider );
   }
 
+  emit itemsChanged();
   triggerRepaint();
 
   return mValid;

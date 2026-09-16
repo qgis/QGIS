@@ -45,7 +45,3 @@ try:
     QgsProcessingHiddenWidgetWrapper.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
-try:
-    QgsProcessingParameterWidgetContext.__group__ = ['processing']
-except (NameError, AttributeError):
-    pass

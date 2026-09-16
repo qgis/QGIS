@@ -66,14 +66,14 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   if ( renderer )
   {
-    mRenderer.reset( QgsRuleBasedRenderer::convertFromRenderer( renderer, layer ) );
+    mRenderer = QgsRuleBasedRenderer::convertFromRenderer( renderer, layer );
   }
   if ( !mRenderer )
   {
     // some default options
-    QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+    std::unique_ptr<QgsSymbol> symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
-    mRenderer = std::make_unique<QgsRuleBasedRenderer>( symbol );
+    mRenderer = std::make_unique<QgsRuleBasedRenderer>( symbol.release() );
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }
@@ -161,8 +161,8 @@ void QgsRuleBasedRendererWidget::setDockMode( bool dockMode )
 
 void QgsRuleBasedRendererWidget::addRule()
 {
-  QgsSymbol *s = QgsSymbol::defaultSymbol( mLayer->geometryType() );
-  QgsRuleBasedRenderer::Rule *newrule = new QgsRuleBasedRenderer::Rule( s );
+  std::unique_ptr<QgsSymbol> s = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+  QgsRuleBasedRenderer::Rule *newrule = new QgsRuleBasedRenderer::Rule( s.release() );
 
   QgsRuleBasedRenderer::Rule *current = currentRule();
   if ( current )
@@ -406,7 +406,7 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRendererWidget::selectedRules()
     const QgsRuleBasedRenderer::RuleList &children = parentRule->children();
     for ( int row = range.top(); row <= range.bottom(); row++ )
     {
-      rl.append( children.at( row )->clone() );
+      rl.append( children.at( row )->clone().release() );
     }
   }
   return rl;
@@ -443,7 +443,7 @@ void QgsRuleBasedRendererWidget::keyPressEvent( QKeyEvent *event )
     for ( ; rIt != mCopyBuffer.constEnd(); ++rIt )
     {
       int rows = mModel->rowCount();
-      mModel->insertRule( QModelIndex(), rows, ( *rIt )->clone() );
+      mModel->insertRule( QModelIndex(), rows, ( *rIt )->clone().release() );
     }
   }
 }
@@ -748,7 +748,7 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   else
   {
     groupSymbol->setChecked( false );
-    mSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+    mSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() ).release();
   }
 
   mSymbolSelector = new QgsSymbolSelectorWidget( mSymbol, style, mLayer, this );
@@ -1176,7 +1176,7 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
 
     // we use a clone of the existing rule because it has a new unique rule key
     // non-unique rule keys would confuse other components using them (e.g. legend)
-    QgsRuleBasedRenderer::Rule *rule = ruleForIndex( index )->clone();
+    std::unique_ptr<QgsRuleBasedRenderer::Rule> rule = ruleForIndex( index )->clone();
     QDomDocument doc;
     QgsSymbolMap symbols;
 
@@ -1187,8 +1187,6 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
     QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, u"symbols"_s, doc, QgsReadWriteContext() );
     rootElem.appendChild( symbolsElem );
     doc.appendChild( rootElem );
-
-    delete rule;
 
     stream << doc.toString( -1 );
   }
@@ -1258,9 +1256,9 @@ bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data, Qt::DropAct
     QDomElement ruleElem = rootElem.firstChildElement( u"rule"_s );
     if ( rootElem.attribute( u"type"_s ) == "labeling"_L1 )
       _labeling2rendererRules( ruleElem );
-    QgsRuleBasedRenderer::Rule *rule = QgsRuleBasedRenderer::Rule::create( ruleElem, symbolMap, false );
+    std::unique_ptr<QgsRuleBasedRenderer::Rule> rule = QgsRuleBasedRenderer::Rule::create( ruleElem, symbolMap, false );
 
-    insertRule( parent, row + rows, rule );
+    insertRule( parent, row + rows, rule.release() );
 
     ++rows;
   }

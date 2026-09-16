@@ -51,7 +51,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer : public QgsRasterRenderer
     QgsSingleBandGrayRenderer *clone() const override SIP_FACTORY;
     Qgis::RasterRendererFlags flags() const override;
 
-    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
+    static std::unique_ptr<QgsRasterRenderer> create( const QDomElement &elem, QgsRasterInterface *input );
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 

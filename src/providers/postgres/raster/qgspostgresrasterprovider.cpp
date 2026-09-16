@@ -889,14 +889,20 @@ bool QgsPostgresRasterProvider::setSubsetString( const QString &subset, bool upd
     return false;
   }
 
-  mStatistics.clear();
-  mShared->invalidateCache();
-
   // Update datasource uri too
   mUri.setSql( subset );
   setDataSourceUri( mUri.uri( false ) );
 
   return true;
+}
+
+void QgsPostgresRasterProvider::reloadProviderData()
+{
+  mValid = init();
+  if ( !mValid )
+  {
+    QgsMessageLog::logMessage( tr( "Unable to reload the PostgreSQL raster layer, the data source may no longer be available." ), tr( "PostGIS" ) );
+  }
 }
 
 QString QgsPostgresRasterProvider::subsetStringWithTemporalRange() const
@@ -969,6 +975,13 @@ bool QgsPostgresRasterProvider::init()
   // WARNING: multiple failure and return points!
 
   mOverViews.clear();
+  mDataTypes.clear();
+  mDataSizes.clear();
+  mSrcNoDataValue.clear();
+  mSrcHasNoDataValue.clear();
+  mUseSrcNoDataValue.clear();
+  mStatistics.clear();
+  mShared->invalidateCache();
 
   if ( !determinePrimaryKey() )
   {
@@ -1284,6 +1297,8 @@ bool QgsPostgresRasterProvider::init()
   if ( PGRES_TUPLES_OK == result.PQresultStatus() && result.PQntuples() > 0 )
   {
     // These may have been filled with defaults in the fast track
+    mDataTypes.clear();
+    mDataSizes.clear();
     mSrcNoDataValue.clear();
     mSrcHasNoDataValue.clear();
     mUseSrcNoDataValue.clear();

@@ -1,0 +1,19 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>multipointsz</Name>
+    <ElementPath>multipointsz</ElementPath>
+    <SRSName>EPSG:4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>5</FeatureCount>
+      <ExtentXMin>0.00000</ExtentXMin>
+      <ExtentXMax>8.00000</ExtentXMax>
+      <ExtentYMin>-5.00000</ExtentYMin>
+      <ExtentYMax>3.00000</ExtentYMax>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>d</Name>
+      <ElementPath>d</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

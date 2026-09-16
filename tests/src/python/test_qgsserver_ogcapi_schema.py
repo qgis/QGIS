@@ -15,57 +15,39 @@ __copyright__ = "Copyright 2026, The QGIS Project"
 
 import json
 import os
-import re
-import shutil
 
-from osgeo import gdal, ogr
+from osgeo import ogr
 from provider_python import PyProvider
 
 # Deterministic XML
 os.environ["QT_HASH_SEED"] = "1"
 
-from contextlib import contextmanager
 from urllib import parse
 
 from qgis.core import (
-    Qgis,
     QgsApplication,
-    QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsEditorWidgetSetup,
     QgsExpression,
     QgsFeature,
-    QgsFeatureRequest,
     QgsField,
     QgsFieldConstraints,
-    QgsFields,
     QgsGeometry,
-    QgsMemoryProviderUtils,
     QgsProject,
     QgsProviderMetadata,
     QgsProviderRegistry,
     QgsRelation,
     QgsRelationContext,
+    QgsServerWmsDimensionProperties,
     QgsVectorLayer,
-    QgsVectorLayerServerProperties,
 )
 from qgis.PyQt import QtCore
 from qgis.server import (
-    QgsAccessControlFilter,
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
-    QgsServerApi,
-    QgsServerApiBadRequestException,
-    QgsServerApiContext,
-    QgsServerApiUtils,
-    QgsServerOgcApi,
-    QgsServerOgcApiHandler,
-    QgsServerQueryStringParameter,
-    QgsServiceRegistry,
 )
 from qgis.testing import unittest
-from test_qgsserver import QgsServerTestBase
 from test_qgsserver_api import QgsServerAPITestBase
 from utilities import compareWkt, unitTestDataPath
 
@@ -80,9 +62,9 @@ class EnumProvider(PyProvider):
     def createProvider(cls, uri, providerOptions, flags=QgsDataProvider.ReadFlags()):
         return EnumProvider(uri, providerOptions, flags)
 
-    def enumValues(self, fieldIdx):
+    def codedValues(self, fieldIdx):
         if self.fields()[fieldIdx].name().startswith("enum"):
-            return ["value1", "value2", "value3"]
+            return [("value1", "value1"), ("value2", "value2"), ("value3", "value3")]
         return []
 
 
@@ -299,13 +281,10 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             {"map": {"a": "A", "b": "B"}},
             {
                 "type": "string",
-                "x-ogc-codelist": {
-                    "oneOf": [
-                        {"const": "A", "title": "a"},
-                        {"const": "B", "title": "b"},
-                    ],
-                    "title": "field1",
-                },
+                "oneOf": [
+                    {"const": "A", "title": "a"},
+                    {"const": "B", "title": "b"},
+                ],
                 "x-ogc-propertySeq": 2,
             },
             required=True,
@@ -718,9 +697,67 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             )
         )
 
-        self.assertAlmostEqual(j["geometry"]["coordinates"][0], 111319, delta=0.1)
-        self.assertAlmostEqual(
-            j["geometry"]["coordinates"][1], 110579.823312, delta=0.1
+        self.assertAlmostEqual(j["geometry"]["coordinates"][0], 111319.0, delta=0.1)
+        self.assertAlmostEqual(j["geometry"]["coordinates"][1], 110579.8, delta=0.1)
+
+    def test_time(self):
+
+        layer = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=time:datetime&field=time_start:datetime&field=time_end:datetime&key=pk",
+            "layer1",
+            "memory",
+        )
+
+        # Set time dimension on the layer
+        info = QgsServerWmsDimensionProperties.WmsDimensionInfo("time", "time")
+        layer.serverProperties().setWmsDimensions([info])
+
+        project = QgsProject()
+        project.addMapLayer(layer)
+        # Expose to WFS
+        project.writeEntry("WFSLayers", "/", [layer.id()])
+
+        j = self._getJsonResponse(
+            "http://server.qgis.org/wfs3/collections/layer1/schema.json", project
+        )
+
+        self.assertEqual(
+            j["properties"]["time"],
+            {
+                "format": "date-time",
+                "type": "string",
+                "x-ogc-propertySeq": 2,
+                "x-ogc-role": "primary-instant",
+            },
+        )
+
+        # Check interval fields are correctly exposed as date-time
+        info = QgsServerWmsDimensionProperties.WmsDimensionInfo(
+            "time", "time_start", "time_end"
+        )
+        layer.serverProperties().setWmsDimensions([info])
+
+        j = self._getJsonResponse(
+            "http://server.qgis.org/wfs3/collections/layer1/schema.json", project
+        )
+
+        self.assertEqual(
+            j["properties"]["time_start"],
+            {
+                "format": "date-time",
+                "type": "string",
+                "x-ogc-propertySeq": 3,
+                "x-ogc-role": "primary-interval-start",
+            },
+        )
+        self.assertEqual(
+            j["properties"]["time_end"],
+            {
+                "format": "date-time",
+                "type": "string",
+                "x-ogc-propertySeq": 4,
+                "x-ogc-role": "primary-interval-end",
+            },
         )
 
 

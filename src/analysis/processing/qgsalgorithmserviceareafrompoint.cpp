@@ -103,6 +103,8 @@ void QgsServiceAreaFromPointAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   loadCommonParams( parameters, context, feedback );
 
   const QgsPointXY startPoint = parameterAsPoint( parameters, u"START_POINT"_s, context, mNetwork->sourceCrs() );

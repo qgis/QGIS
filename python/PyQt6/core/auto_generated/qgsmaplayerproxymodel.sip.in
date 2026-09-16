@@ -21,12 +21,17 @@ layers in widgets.
 #include "qgsmaplayerproxymodel.h"
 %End
   public:
-    explicit QgsMapLayerProxyModel( QObject *parent /TransferThis/ = 0 );
+    explicit QgsMapLayerProxyModel( QObject *parent /TransferThis/ = 0 ) /Deprecated/;
 %Docstring
 :py:class:`QgsMapLayerProxModel` creates a proxy model with a
 :py:class:`QgsMapLayerModel` as source model. It can be used to filter
 the layers list in a widget.
+
+.. note::
+
+   Will be removed in QGIS 5.0. Use the constructor with the :py:class:`QgsProject` argument instead.
 %End
+
 
     QgsMapLayerModel *sourceLayerModel() const;
 %Docstring

@@ -830,7 +830,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
     Qt3DCore::QGeometry *geometry = qobject_cast<QgsBillboardGeometry *>( renderer->geometry() );
     if ( !geometry )
       continue;
-    Qt3DCore::QAttribute *positionAttribute = findAttribute( geometry, Qt3DCore::QAttribute::defaultPositionAttributeName(), Qt3DCore::QAttribute::VertexAttribute );
+    Qt3DCore::QAttribute *positionAttribute = findAttribute( geometry, "instancePosition", Qt3DCore::QAttribute::VertexAttribute );
     if ( !positionAttribute )
     {
       QgsDebugError( QString( "Cannot export '%1' - geometry has no position attribute!" ).arg( objectNamePrefix ) );

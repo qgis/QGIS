@@ -30,6 +30,7 @@
 #include "pdfstreamfilters.h"
 
 #include <QBuffer>
+#include <QFontMetricsF>
 #include <QPainter>
 #include <QPdfWriter>
 
@@ -39,6 +40,307 @@
 
 namespace pdf
 {
+
+QByteArray PDFDocumentBuilder::formatPDFReal(PDFReal value)
+{
+    QByteArray text = QByteArray::number(value, 'f', 6);
+
+    while (text.endsWith('0'))
+    {
+        text.chop(1);
+    }
+
+    if (text.endsWith('.'))
+    {
+        text.chop(1);
+    }
+
+    if (text.isEmpty() || text == "-0")
+    {
+        text = "0";
+    }
+
+    return text;
+}
+
+void PDFDocumentBuilder::appendPDFPoint(QByteArray& data, const QPointF& point)
+{
+    data.append(formatPDFReal(point.x()));
+    data.append(' ');
+    data.append(formatPDFReal(point.y()));
+}
+
+QColor PDFDocumentBuilder::getAnnotationDrawColor(const std::vector<PDFReal>& color, PDFReal opacity)
+{
+    switch (color.size())
+    {
+        case 1:
+        {
+            const PDFReal gray = color.front();
+            return QColor::fromRgbF(gray, gray, gray, opacity);
+        }
+
+        case 3:
+        {
+            return QColor::fromRgbF(color[0], color[1], color[2], opacity);
+        }
+
+        case 4:
+        {
+            return QColor::fromCmykF(color[0], color[1], color[2], color[3], opacity);
+        }
+
+        default:
+            break;
+    }
+
+    QColor black(Qt::black);
+    black.setAlphaF(opacity);
+    return black;
+}
+
+QByteArray PDFDocumentBuilder::getBlendModeNameForAppearance(BlendMode blendMode)
+{
+    const QString blendModeName = PDFBlendModeInfo::getBlendModeName(blendMode);
+    if (blendModeName.isEmpty() || blendModeName == "Unknown")
+    {
+        return "Multiply";
+    }
+
+    return blendModeName.toLatin1();
+}
+
+void PDFDocumentBuilder::appendHighlightQuadrilateralPath(QByteArray& data, const PDFAnnotationQuadrilaterals::Quadrilateral& quadrilateral)
+{
+    appendPDFPoint(data, quadrilateral[0]);
+    data.append(" m ");
+    appendPDFPoint(data, quadrilateral[1]);
+    data.append(" l ");
+    appendPDFPoint(data, quadrilateral[3]);
+    data.append(" l ");
+    appendPDFPoint(data, quadrilateral[2]);
+    data.append(" l h f\n");
+}
+
+PDFFreeTextStyle PDFDocumentBuilder::createDefaultFreeTextStyle(TextAlignment alignment) const
+{
+    PDFFreeTextStyle style;
+    style.textAlignment = alignment;
+    return style;
+}
+
+QByteArray PDFDocumentBuilder::normalizeFreeTextFontName(QString fontName)
+{
+    fontName = fontName.simplified();
+    if (fontName.isEmpty())
+    {
+        return "Helvetica";
+    }
+
+    const QByteArray utf8 = fontName.toUtf8();
+    QByteArray result;
+    result.reserve(utf8.size() * 3);
+
+    for (const unsigned char c : utf8)
+    {
+        const bool allowed = (c >= 'a' && c <= 'z') ||
+                             (c >= 'A' && c <= 'Z') ||
+                             (c >= '0' && c <= '9') ||
+                             c == '-' ||
+                             c == '_';
+        if (allowed)
+        {
+            result.append(char(c));
+        }
+        else
+        {
+            result.append('#');
+            const char* hex = "0123456789ABCDEF";
+            result.append(hex[(c >> 4) & 0x0F]);
+            result.append(hex[c & 0x0F]);
+        }
+    }
+
+    return result.isEmpty() ? QByteArray("Helvetica") : result;
+}
+
+QString PDFDocumentBuilder::decodeFreeTextFontName(QByteArray fontName)
+{
+    if (fontName.startsWith('/'))
+    {
+        fontName.remove(0, 1);
+    }
+
+    QByteArray decoded;
+    decoded.reserve(fontName.size());
+
+    auto fromHex = [](char c) -> int
+    {
+        if (c >= '0' && c <= '9') return c - '0';
+        if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+        if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+        return -1;
+    };
+
+    for (int i = 0; i < fontName.size(); ++i)
+    {
+        if (fontName[i] == '#' && i + 2 < fontName.size())
+        {
+            const int h1 = fromHex(fontName[i + 1]);
+            const int h2 = fromHex(fontName[i + 2]);
+            if (h1 >= 0 && h2 >= 0)
+            {
+                decoded.append(char((h1 << 4) | h2));
+                i += 2;
+                continue;
+            }
+        }
+
+        decoded.append(fontName[i]);
+    }
+
+    const QString result = QString::fromUtf8(decoded);
+    return result.isEmpty() ? QStringLiteral("Helvetica") : result;
+}
+
+QByteArray PDFDocumentBuilder::createFreeTextDefaultAppearance(const PDFFreeTextStyle& style)
+{
+    const QByteArray fontName = normalizeFreeTextFontName(style.fontFamily);
+    const PDFReal fontSize = qMax(style.fontSize, PDFReal(1.0));
+
+    QByteArray defaultAppearance;
+    defaultAppearance.append('/');
+    defaultAppearance.append(fontName);
+    defaultAppearance.append(' ');
+    defaultAppearance.append(QByteArray::number(fontSize, 'f', 3));
+    defaultAppearance.append(" Tf ");
+
+    const QColor color = style.textColor.isValid() ? style.textColor : QColor(Qt::black);
+    defaultAppearance.append(QByteArray::number(color.redF(), 'f', 6));
+    defaultAppearance.append(' ');
+    defaultAppearance.append(QByteArray::number(color.greenF(), 'f', 6));
+    defaultAppearance.append(' ');
+    defaultAppearance.append(QByteArray::number(color.blueF(), 'f', 6));
+    defaultAppearance.append(" rg");
+
+    return defaultAppearance;
+}
+
+QRectF PDFDocumentBuilder::resizeFreeTextRectangleToContents(QRectF rectangle,
+                                                              const QString& contents,
+                                                              const PDFFreeTextStyle& style,
+                                                              PDFReal padding) const
+{
+    rectangle = rectangle.normalized();
+    if (!rectangle.isValid())
+    {
+        return rectangle;
+    }
+
+    const QString text = contents.isEmpty() ? QStringLiteral(" ") : contents;
+
+    QFont font(style.fontFamily);
+    font.setPixelSize(qMax(int(std::ceil(style.fontSize)), 1));
+    QFontMetricsF metrics(font);
+
+    PDFReal maxLineWidth = 0.0;
+    const QStringList lines = text.split('\n');
+    for (const QString& line : lines)
+    {
+        maxLineWidth = qMax(maxLineWidth, metrics.horizontalAdvance(line.isEmpty() ? QStringLiteral(" ") : line));
+    }
+
+    const PDFReal paddedWidth = qMax<PDFReal>(rectangle.width(), maxLineWidth + 2.0 * padding);
+    const PDFReal wrappedWidth = qMax<PDFReal>(paddedWidth - 2.0 * padding, 1.0);
+    const QRectF constrainedRect(0.0, 0.0, wrappedWidth, 1000000.0);
+    const QRectF textRect = metrics.boundingRect(constrainedRect, int(Qt::TextWordWrap | Qt::AlignLeft | Qt::AlignTop), text);
+    const PDFReal paddedHeight = qMax<PDFReal>(rectangle.height(), textRect.height() + 2.0 * padding);
+
+    rectangle.setSize(QSizeF(paddedWidth, paddedHeight));
+    return rectangle;
+}
+
+PDFAnnotationDefaultAppearance PDFDocumentBuilder::getDefaultFreeTextAppearance(const PDFDictionary* dictionary)
+{
+    if (!dictionary)
+    {
+        return PDFAnnotationDefaultAppearance();
+    }
+
+    QByteArray appearanceString;
+    const PDFObject& appearanceObject = dictionary->get("DA");
+    if (appearanceObject.isString())
+    {
+        appearanceString = appearanceObject.getString();
+    }
+
+    return PDFAnnotationDefaultAppearance::parse(appearanceString);
+}
+
+QColor PDFDocumentBuilder::readColorFromPDFObject(const PDFObjectStorage* storage, PDFObject object, QColor defaultColor)
+{
+    if (object.isArray())
+    {
+        const PDFArray* array = object.getArray();
+        std::vector<PDFReal> components;
+        components.reserve(array->getCount());
+        for (size_t i = 0; i < array->getCount(); ++i)
+        {
+            const PDFObject& item = array->getItem(i);
+            if (item.isReal())
+            {
+                components.push_back(item.getReal());
+            }
+            else if (item.isInt())
+            {
+                components.push_back(item.getInteger());
+            }
+            else
+            {
+                return defaultColor;
+            }
+        }
+
+        if (components.size() == 3)
+        {
+            return QColor::fromRgbF(qBound(0.0, components[0], 1.0),
+                                    qBound(0.0, components[1], 1.0),
+                                    qBound(0.0, components[2], 1.0));
+        }
+        if (components.size() == 1)
+        {
+            const PDFReal gray = qBound(0.0, components[0], 1.0);
+            return QColor::fromRgbF(gray, gray, gray);
+        }
+    }
+
+    if (storage)
+    {
+        PDFDocumentDataLoaderDecorator loader(storage);
+        const std::vector<PDFReal> components = loader.readNumberArray(object, { });
+        if (components.size() == 3)
+        {
+            return QColor::fromRgbF(qBound(0.0, components[0], 1.0),
+                                    qBound(0.0, components[1], 1.0),
+                                    qBound(0.0, components[2], 1.0));
+        }
+        if (components.size() == 1)
+        {
+            const PDFReal gray = qBound(0.0, components[0], 1.0);
+            return QColor::fromRgbF(gray, gray, gray);
+        }
+    }
+
+    return defaultColor;
+}
+
+PDFObject PDFDocumentBuilder::createPDFColor(const QColor& color)
+{
+    const QColor effectiveColor = color.isValid() ? color : QColor(Qt::black);
+    PDFObjectFactory factory;
+    factory << std::initializer_list<PDFReal>{ effectiveColor.redF(), effectiveColor.greenF(), effectiveColor.blueF() };
+    return factory.takeObject();
+}
 
 void PDFObjectFactory::beginArray()
 {
@@ -776,8 +1078,64 @@ void PDFDocumentBuilder::replaceObjectsByReferences(PDFDictionary& dictionary)
         if (!object.isReference())
         {
             auto key = dictionary.getKey(i);
-            dictionary.setEntry(key, PDFObject::createReference(addObject(object)));
+            dictionary.setEntry(key, PDFObject::createReference(addObject(replaceNestedStreamsByReferences(object))));
         }
+    }
+}
+
+PDFObject PDFDocumentBuilder::replaceNestedStreamsByReferences(const PDFObject& object)
+{
+    auto processChild = [this](const PDFObject& child) -> PDFObject
+    {
+        if (child.isStream())
+        {
+            return PDFObject::createReference(addObject(replaceNestedStreamsByReferences(child)));
+        }
+
+        if (child.isDictionary() || child.isArray())
+        {
+            return replaceNestedStreamsByReferences(child);
+        }
+
+        return child;
+    };
+
+    switch (object.getType())
+    {
+        case PDFObject::Type::Dictionary:
+        {
+            const PDFDictionary* dictionary = object.getDictionary();
+            std::vector<PDFDictionary::DictionaryEntry> entries;
+            entries.reserve(dictionary->getCount());
+            for (size_t i = 0; i < dictionary->getCount(); ++i)
+            {
+                entries.emplace_back(dictionary->getKey(i), processChild(dictionary->getValue(i)));
+            }
+            return PDFObject::createDictionary(std::make_shared<PDFDictionary>(qMove(entries)));
+        }
+
+        case PDFObject::Type::Array:
+        {
+            const PDFArray* array = object.getArray();
+            std::vector<PDFObject> items;
+            items.reserve(array->getCount());
+            for (size_t i = 0; i < array->getCount(); ++i)
+            {
+                items.emplace_back(processChild(array->getItem(i)));
+            }
+            return PDFObject::createArray(std::make_shared<PDFArray>(qMove(items)));
+        }
+
+        case PDFObject::Type::Stream:
+        {
+            const PDFStream* stream = object.getStream();
+            PDFObject processedDictionary = replaceNestedStreamsByReferences(PDFObject::createDictionary(std::make_shared<PDFDictionary>(*stream->getDictionary())));
+            Q_ASSERT(processedDictionary.isDictionary());
+            return PDFObject::createStream(std::make_shared<PDFStream>(PDFDictionary(*processedDictionary.getDictionary()), QByteArray(*stream->getContent())));
+        }
+
+        default:
+            return object;
     }
 }
 
@@ -1114,6 +1472,16 @@ void PDFDocumentBuilder::updateAnnotationAppearanceStreams(PDFObjectReference an
         return;
     }
 
+    if (const PDFHighlightAnnotation* highlightAnnotation = dynamic_cast<const PDFHighlightAnnotation*>(annotation.data()))
+    {
+        // Generate highlight appearance stream manually, so BM/opacity is explicit
+        // and consistent in external viewers.
+        if (updateHighlightAnnotationAppearanceStream(annotationReference, highlightAnnotation))
+        {
+            return;
+        }
+    }
+
     const PDFDictionary* pageDictionary = m_storage.getDictionaryFromObject(m_storage.getObject(annotation->getPageReference()));
     if (!pageDictionary)
     {
@@ -1257,6 +1625,150 @@ void PDFDocumentBuilder::updateAnnotationAppearanceStreams(PDFObjectReference an
 
         mergeTo(annotationReference, annotationFactory.takeObject());
     }
+}
+
+bool PDFDocumentBuilder::updateHighlightAnnotationAppearanceStream(PDFObjectReference annotationReference,
+                                                                   const PDFHighlightAnnotation* annotation)
+{
+    if (!annotation || annotation->getType() != AnnotationType::Highlight)
+    {
+        return false;
+    }
+
+    const PDFAnnotationQuadrilaterals& highlightArea = annotation->getHiglightArea();
+    const PDFAnnotationQuadrilaterals::Quadrilaterals& quadrilaterals = highlightArea.getQuadrilaterals();
+    if (quadrilaterals.empty())
+    {
+        return false;
+    }
+
+    QRectF boundingRectangle = highlightArea.getPath().boundingRect();
+    if (!boundingRectangle.isValid() || boundingRectangle.isEmpty())
+    {
+        boundingRectangle = annotation->getRectangle();
+    }
+
+    if (!boundingRectangle.isValid() || boundingRectangle.isEmpty())
+    {
+        return false;
+    }
+
+    QColor color = getAnnotationDrawColor(annotation->getColor(), annotation->getStrokeOpacity());
+    if (!color.isValid())
+    {
+        color = QColor(Qt::yellow);
+    }
+
+    const PDFReal strokeOpacity = qBound<PDFReal>(0.0, annotation->getStrokeOpacity(), 1.0);
+    const PDFReal fillOpacity = qBound<PDFReal>(0.0, annotation->getFillOpacity(), 1.0);
+
+    BlendMode blendMode = annotation->getBlendMode();
+    const PDFDictionary* annotationDictionary = getDictionaryFromObject(getObjectByReference(annotationReference));
+    const bool hasExplicitBlendMode = annotationDictionary && annotationDictionary->hasKey("BM");
+    if (!hasExplicitBlendMode &&
+        (blendMode == BlendMode::Normal || blendMode == BlendMode::Compatible || blendMode == BlendMode::Invalid))
+    {
+        blendMode = BlendMode::Multiply;
+    }
+
+    const QByteArray blendModeName = getBlendModeNameForAppearance(blendMode);
+
+    QByteArray content;
+    content.reserve(int(quadrilaterals.size()) * 96 + 64);
+    content.append("q\n");
+    content.append("/GS0 gs\n");
+    content.append(formatPDFReal(color.redF()));
+    content.append(' ');
+    content.append(formatPDFReal(color.greenF()));
+    content.append(' ');
+    content.append(formatPDFReal(color.blueF()));
+    content.append(" rg\n");
+    for (const PDFAnnotationQuadrilaterals::Quadrilateral& quadrilateral : quadrilaterals)
+    {
+        appendHighlightQuadrilateralPath(content, quadrilateral);
+    }
+    content.append("Q\n");
+
+    PDFObjectFactory extGStateFactory;
+    extGStateFactory.beginDictionary();
+    extGStateFactory.beginDictionaryItem("Type");
+    extGStateFactory << WrapName("ExtGState");
+    extGStateFactory.endDictionaryItem();
+    extGStateFactory.beginDictionaryItem("CA");
+    extGStateFactory << strokeOpacity;
+    extGStateFactory.endDictionaryItem();
+    extGStateFactory.beginDictionaryItem("ca");
+    extGStateFactory << fillOpacity;
+    extGStateFactory.endDictionaryItem();
+    extGStateFactory.beginDictionaryItem("BM");
+    extGStateFactory << WrapName(blendModeName);
+    extGStateFactory.endDictionaryItem();
+    extGStateFactory.endDictionary();
+    const PDFObjectReference extGStateReference = addObject(extGStateFactory.takeObject());
+
+    PDFObjectFactory resourcesFactory;
+    resourcesFactory.beginDictionary();
+    resourcesFactory.beginDictionaryItem("ExtGState");
+    resourcesFactory.beginDictionary();
+    resourcesFactory.beginDictionaryItem("GS0");
+    resourcesFactory << extGStateReference;
+    resourcesFactory.endDictionaryItem();
+    resourcesFactory.endDictionary();
+    resourcesFactory.endDictionaryItem();
+    resourcesFactory.endDictionary();
+    PDFObject resourcesObject = resourcesFactory.takeObject();
+
+    PDFObjectFactory formDictionaryFactory;
+    formDictionaryFactory.beginDictionary();
+    formDictionaryFactory.beginDictionaryItem("Type");
+    formDictionaryFactory << WrapName("XObject");
+    formDictionaryFactory.endDictionaryItem();
+    formDictionaryFactory.beginDictionaryItem("Subtype");
+    formDictionaryFactory << WrapName("Form");
+    formDictionaryFactory.endDictionaryItem();
+    formDictionaryFactory.beginDictionaryItem("BBox");
+    formDictionaryFactory << boundingRectangle;
+    formDictionaryFactory.endDictionaryItem();
+    formDictionaryFactory.beginDictionaryItem("Resources");
+    formDictionaryFactory << resourcesObject;
+    formDictionaryFactory.endDictionaryItem();
+    formDictionaryFactory.endDictionary();
+
+    PDFObject formDictionaryObject = formDictionaryFactory.takeObject();
+    const PDFDictionary* formDictionary = formDictionaryObject.getDictionary();
+    if (!formDictionary)
+    {
+        return false;
+    }
+
+    PDFObject formObject = PDFObject::createStream(std::make_shared<PDFStream>(PDFDictionary(*formDictionary), qMove(content)));
+    const PDFObjectReference formReference = addObject(qMove(formObject));
+
+    PDFObjectFactory annotationFactory;
+    annotationFactory.beginDictionary();
+    annotationFactory.beginDictionaryItem("BM");
+    annotationFactory << WrapName(blendModeName);
+    annotationFactory.endDictionaryItem();
+    annotationFactory.beginDictionaryItem("CA");
+    annotationFactory << strokeOpacity;
+    annotationFactory.endDictionaryItem();
+    annotationFactory.beginDictionaryItem("ca");
+    annotationFactory << fillOpacity;
+    annotationFactory.endDictionaryItem();
+    annotationFactory.beginDictionaryItem("Rect");
+    annotationFactory << boundingRectangle;
+    annotationFactory.endDictionaryItem();
+    annotationFactory.beginDictionaryItem("AP");
+    annotationFactory.beginDictionary();
+    annotationFactory.beginDictionaryItem("N");
+    annotationFactory << formReference;
+    annotationFactory.endDictionaryItem();
+    annotationFactory.endDictionary();
+    annotationFactory.endDictionaryItem();
+    annotationFactory.endDictionary();
+
+    mergeTo(annotationReference, annotationFactory.takeObject());
+    return true;
 }
 
 PDFObjectReference PDFDocumentBuilder::addObject(PDFObject object)
@@ -2932,7 +3444,7 @@ PDFObjectReference PDFDocumentBuilder::createAnnotationFreeText(PDFObjectReferen
     objectBuilder << WrapFreeTextAlignment(textAlignment);
     objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("DA");
-    objectBuilder << WrapString("/Arial 10 Tf");
+    objectBuilder << WrapString(createFreeTextDefaultAppearance(createDefaultFreeTextStyle(textAlignment)));
     objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("RD");
     objectBuilder << getAnnotationReductionRectangle(boundingRectangle, textRectangle);
@@ -2973,7 +3485,21 @@ PDFObjectReference PDFDocumentBuilder::createAnnotationFreeText(PDFObjectReferen
                                                                 QString contents,
                                                                 TextAlignment textAlignment)
 {
+    return createAnnotationFreeText(page, rectangle, title, subject, contents, createDefaultFreeTextStyle(textAlignment), false);
+}
+
+
+PDFObjectReference PDFDocumentBuilder::createAnnotationFreeText(PDFObjectReference page,
+                                                                QRectF rectangle,
+                                                                QString title,
+                                                                QString subject,
+                                                                QString contents,
+                                                                const PDFFreeTextStyle& style,
+                                                                bool autoResizeToContents,
+                                                                PDFReal padding)
+{
     PDFObjectFactory objectBuilder;
+    const QRectF finalRectangle = autoResizeToContents ? resizeFreeTextRectangleToContents(rectangle, contents, style, padding) : rectangle;
 
     objectBuilder.beginDictionary();
     objectBuilder.beginDictionaryItem("Type");
@@ -2983,7 +3509,7 @@ PDFObjectReference PDFDocumentBuilder::createAnnotationFreeText(PDFObjectReferen
     objectBuilder << WrapName("FreeText");
     objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("Rect");
-    objectBuilder << rectangle;
+    objectBuilder << finalRectangle;
     objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("F");
     objectBuilder << 4;
@@ -3007,10 +3533,10 @@ PDFObjectReference PDFDocumentBuilder::createAnnotationFreeText(PDFObjectReferen
     objectBuilder << subject;
     objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("Q");
-    objectBuilder << WrapFreeTextAlignment(textAlignment);
+    objectBuilder << WrapFreeTextAlignment(style.textAlignment);
     objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("DA");
-    objectBuilder << WrapString("/Arial 10 Tf");
+    objectBuilder << WrapString(createFreeTextDefaultAppearance(style));
     objectBuilder.endDictionaryItem();
     objectBuilder.endDictionary();
     PDFObjectReference annotationObject = addObject(objectBuilder.takeObject());
@@ -3077,7 +3603,7 @@ PDFObjectReference PDFDocumentBuilder::createAnnotationFreeText(PDFObjectReferen
     objectBuilder << WrapFreeTextAlignment(textAlignment);
     objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("DA");
-    objectBuilder << WrapString("/Arial 10 Tf");
+    objectBuilder << WrapString(createFreeTextDefaultAppearance(createDefaultFreeTextStyle(textAlignment)));
     objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("RD");
     objectBuilder << getAnnotationReductionRectangle(boundingRectangle, textRectangle);
@@ -3141,6 +3667,9 @@ PDFObjectReference PDFDocumentBuilder::createAnnotationHighlight(PDFObjectRefere
     objectBuilder.beginDictionaryItem("C");
     objectBuilder << color;
     objectBuilder.endDictionaryItem();
+    objectBuilder.beginDictionaryItem("BM");
+    objectBuilder << WrapName("Multiply");
+    objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("T");
     objectBuilder << title;
     objectBuilder.endDictionaryItem();
@@ -3199,6 +3728,9 @@ PDFObjectReference PDFDocumentBuilder::createAnnotationHighlight(PDFObjectRefere
     objectBuilder.beginDictionaryItem("C");
     objectBuilder << color;
     objectBuilder.endDictionaryItem();
+    objectBuilder.beginDictionaryItem("BM");
+    objectBuilder << WrapName("Multiply");
+    objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("QuadPoints");
     objectBuilder.beginArray();
     objectBuilder << rectangle.bottomLeft();
@@ -3244,6 +3776,9 @@ PDFObjectReference PDFDocumentBuilder::createAnnotationHighlight(PDFObjectRefere
     objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("C");
     objectBuilder << color;
+    objectBuilder.endDictionaryItem();
+    objectBuilder.beginDictionaryItem("BM");
+    objectBuilder << WrapName("Multiply");
     objectBuilder.endDictionaryItem();
     objectBuilder.beginDictionaryItem("QuadPoints");
     objectBuilder << quadrilaterals;
@@ -5149,6 +5684,59 @@ void PDFDocumentBuilder::setAnnotationTitle(PDFObjectReference annotation,
     objectBuilder.endDictionary();
     PDFObject annotationObject = objectBuilder.takeObject();
     mergeTo(annotation, annotationObject);
+}
+
+
+void PDFDocumentBuilder::setFreeTextAnnotationStyle(PDFObjectReference annotation,
+                                                    const PDFFreeTextStyle& style)
+{
+    PDFObjectFactory objectBuilder;
+
+    objectBuilder.beginDictionary();
+    objectBuilder.beginDictionaryItem("Q");
+    objectBuilder << WrapFreeTextAlignment(style.textAlignment);
+    objectBuilder.endDictionaryItem();
+    objectBuilder.beginDictionaryItem("DA");
+    objectBuilder << WrapString(createFreeTextDefaultAppearance(style));
+    objectBuilder.endDictionaryItem();
+    objectBuilder.endDictionary();
+
+    PDFObject annotationObject = objectBuilder.takeObject();
+    mergeTo(annotation, annotationObject);
+    updateAnnotationAppearanceStreams(annotation);
+}
+
+
+void PDFDocumentBuilder::resizeFreeTextAnnotationToContents(PDFObjectReference annotation,
+                                                            const PDFFreeTextStyle& style,
+                                                            PDFReal padding)
+{
+    const PDFObject& annotationObject = getObjectByReference(annotation);
+    const PDFDictionary* annotationDictionary = getDictionaryFromObject(annotationObject);
+    if (!annotationDictionary)
+    {
+        return;
+    }
+
+    PDFDocumentDataLoaderDecorator loader(&m_storage);
+    const QRectF currentRect = loader.readRectangle(annotationDictionary->get("Rect"), QRectF());
+    if (!currentRect.isValid())
+    {
+        return;
+    }
+
+    const QString contents = loader.readTextString(annotationDictionary->get("Contents"), QString());
+    const QRectF resizedRect = resizeFreeTextRectangleToContents(currentRect, contents, style, padding);
+
+    PDFObjectFactory objectBuilder;
+    objectBuilder.beginDictionary();
+    objectBuilder.beginDictionaryItem("Rect");
+    objectBuilder << resizedRect;
+    objectBuilder.endDictionaryItem();
+    objectBuilder.endDictionary();
+
+    mergeTo(annotation, objectBuilder.takeObject());
+    updateAnnotationAppearanceStreams(annotation);
 }
 
 

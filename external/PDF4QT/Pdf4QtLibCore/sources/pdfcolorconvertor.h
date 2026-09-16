@@ -114,6 +114,32 @@ public:
     QBrush convert(const QBrush& brush, bool background = false, bool foreground = true) const;
 
 private:
+    /// Applies the opacity of the original source color to an already converted color.
+    /// This is used by color conversion modes that replace RGB components with a
+    /// predefined color, such as custom foreground/background colors. The predefined
+    /// color can have its own alpha value, but it must still respect the transparency
+    /// of the original PDF paint color; otherwise transparent fills or masks can become
+    /// fully opaque after conversion.
+    /// \param color Converted color whose RGB components and own alpha should be kept.
+    /// \param sourceColor Original color before conversion; its alpha is multiplied into
+    /// the converted color alpha.
+    /// \return Converted color with alpha adjusted by the source color transparency.
+    static QColor applySourceAlpha(QColor color, QColor sourceColor);
+
+    /// Converts a source color into the custom foreground/background color scale.
+    /// The conversion preserves the source lightness relationship by treating dark
+    /// source colors as foreground and light source colors as background. This keeps
+    /// vector graphics and raster images consistent in custom color mode.
+    ///
+    /// The returned alpha is also blended from the configured foreground/background
+    /// alpha values and then multiplied by the source alpha. This preserves both the
+    /// custom color opacity settings and the original PDF transparency.
+    /// \param sourceColor Original color before conversion.
+    /// \param foregroundColor Custom foreground color used for dark source colors.
+    /// \param backgroundColor Custom background color used for light source colors.
+    /// \return Custom color equivalent of the source color.
+    static QColor mixCustomColors(QColor sourceColor, QColor foregroundColor, QColor backgroundColor);
+
     /// Correct lightness using sigmoid function
     /// \return Adjusted lightness normalized in range [0.0, 1.0]
     /// \param lightness Lightness in range [0.0, 1.0]

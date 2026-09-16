@@ -47,9 +47,9 @@ bool QgsMaskMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
   return false;
 }
 
-QgsSymbolLayer *QgsMaskMarkerSymbolLayer::create( const QVariantMap &props )
+std::unique_ptr<QgsSymbolLayer> QgsMaskMarkerSymbolLayer::create( const QVariantMap &props )
 {
-  QgsMaskMarkerSymbolLayer *l = new QgsMaskMarkerSymbolLayer();
+  auto l = std::make_unique<QgsMaskMarkerSymbolLayer>();
 
   l->setSubSymbol( QgsMarkerSymbol::createSimple( props ).release() );
 
@@ -62,11 +62,11 @@ QgsSymbolLayer *QgsMaskMarkerSymbolLayer::create( const QVariantMap &props )
 
 QgsMaskMarkerSymbolLayer *QgsMaskMarkerSymbolLayer::clone() const
 {
-  QgsMaskMarkerSymbolLayer *l = static_cast<QgsMaskMarkerSymbolLayer *>( create( properties() ) );
+  auto l = qgis::unique_ptr_static_cast<QgsMaskMarkerSymbolLayer>( create( properties() ) );
   l->setSubSymbol( mSymbol->clone() );
   l->setMasks( mMaskedSymbolLayers );
-  copyCommonProperties( l );
-  return l;
+  copyCommonProperties( l.get() );
+  return l.release();
 }
 
 QgsSymbol *QgsMaskMarkerSymbolLayer::subSymbol()

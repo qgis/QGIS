@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QFile>
 #include <QCoreApplication>
+#include <QIcon>
 #include <QTextStream>
 
 #include "pdfdbgheap.h"
@@ -34,6 +35,12 @@ namespace pdf
 
 void PDFIconTheme::registerAction(QAction* action, QString iconFileName)
 {
+    if (!action)
+    {
+        return;
+    }
+
+    action->setIcon(QIcon(iconFileName));
     m_actionInfos.emplace_back(action, std::move(iconFileName));
 }
 
