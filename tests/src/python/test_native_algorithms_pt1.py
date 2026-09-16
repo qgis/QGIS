@@ -25,6 +25,9 @@ import unittest
 
 import AlgorithmsTestBase
 import nose2
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.modeler.ModelerUtils import ModelerUtils
+from processing.tools.dataobjects import createContext
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
@@ -33,10 +36,6 @@ from qgis.core import (
     QgsProcessingFeedback,
 )
 from qgis.testing import QgisTestCase, start_app
-
-from processing.core.ProcessingConfig import ProcessingConfig
-from processing.modeler.ModelerUtils import ModelerUtils
-from processing.tools.dataobjects import createContext
 
 
 class TestAlg(QgsProcessingAlgorithm):
