@@ -93,6 +93,7 @@ bool QgsTextToFloatAlgorithm::supportInPlaceEdit( const QgsMapLayer * ) const
 void QgsTextToFloatAlgorithm::initParameters( const QVariantMap & )
 {
   auto fieldParam = std::make_unique<QgsProcessingParameterField>( u"FIELD"_s, QObject::tr( "Text attribute to convert to float" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::String );
+  fieldParam->setHelp( QObject::tr( "Text/string field containing numeric values to convert. Supports standard numeric strings as well as formatted percentage strings." ) );
   addParameter( fieldParam.release() );
 }
 
