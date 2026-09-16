@@ -1,8 +1,6 @@
 file(GLOB PY_FILES *.py)
-file(GLOB TEST_DATA_FILES testdata/points.* testdata/table.dbf)
 
 PLUGIN_INSTALL(processing tests ${PY_FILES})
-PLUGIN_INSTALL(processing tests/testdata ${TEST_DATA_FILES})
 
 if(ENABLE_TESTS)
   include(UsePythonTest)
