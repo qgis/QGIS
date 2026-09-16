@@ -1,0 +1,145 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingprovideractions.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingActionContext
+{
+%Docstring(signature="appended")
+Encapsulates the context in which a Processing action is executed.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingprovideractions.h"
+%End
+  public:
+    QWidget *parentWidget() const;
+%Docstring
+Returns the parent widget to use for dialogs constructed when triggering
+the action.
+
+.. seealso:: :py:func:`setParentWidget`
+%End
+
+    void setParentWidget( QWidget *widget );
+%Docstring
+Sets the parent ``widget`` to use for dialogs constructed when
+triggering the action.
+
+.. seealso:: :py:func:`parentWidget`
+%End
+
+};
+
+class QgsProcessingToolboxAction
+{
+%Docstring(signature="appended")
+A custom action to show in the Processing toolbox.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingprovideractions.h"
+%End
+  public:
+    QgsProcessingToolboxAction( const QString &name = QString(), const QString &group = QString() );
+%Docstring
+Constructor for QgsProcessingToolboxAction.
+%End
+
+    virtual ~QgsProcessingToolboxAction();
+
+    QString actionName() const;
+%Docstring
+Returns the action's (translated, user visible) name.
+%End
+
+ void setActionName( const QString &name ) /Deprecated="Since 4.4. Use the constructor setter instead."/;
+%Docstring
+Sets the action's (translated, user visible) name.
+
+.. deprecated:: 4.4
+
+   Use the constructor setter instead.
+%End
+
+    QString groupName() const;
+%Docstring
+Returns the action's (translated, user visible) group name.
+%End
+
+ void setGroupName( const QString &group ) /Deprecated="Since 4.4. Use the constructor setter instead."/;
+%Docstring
+Sets the action's (translated, user visible) group name.
+
+.. deprecated:: 4.4
+
+   Use the constructor setter instead.
+%End
+
+%Property( name = group, get = groupName, set = setGroupName )
+
+    virtual QIcon icon() const;
+%Docstring
+Returns the icon to use for the action.
+%End
+
+ virtual QIcon getIcon() const /Deprecated="Since 4.4. Use icon() instead."/;
+%Docstring
+Returns the icon to use for the action.
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsProcessingToolboxAction.icon` instead.
+%End
+
+ void setData( QgsDockWidget *widget ) /Deprecated="Since 4.4. "/;
+%Docstring
+Sets the parent toolbox widget the action will be shown in.
+
+.. deprecated:: 4.4
+%End
+
+ QgsDockWidget *data() const /Deprecated="Since 4.4. "/;
+%Docstring
+Returns the parent toolbox widget the action will be shown in.
+
+.. deprecated:: 4.4
+%End
+
+%Property( name = toolbox, get = data, set = setData )
+
+ virtual void execute() /Deprecated="Since 4.4. Use trigger() instead."/;
+%Docstring
+Executes the action.
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsProcessingToolboxAction.trigger` instead.
+%End
+
+    virtual void trigger( const QgsProcessingActionContext &context );
+%Docstring
+Triggers the action.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingprovideractions.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -450,6 +450,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingparameterdefinitionwidget.cpp
   processing/qgsprocessingparameterswidget.cpp
   processing/qgsprocessingpointcloudexpressionlineedit.cpp
+  processing/qgsprocessingprovideractions.cpp
   processing/qgsprocessingrastercalculatorexpressionlineedit.cpp
   processing/qgsprocessingrasteroptionswidgetwrapper.cpp
   processing/qgsprocessingrastersourceoptionswidget.cpp
@@ -1486,6 +1487,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingparameterdefinitionwidget.h
   processing/qgsprocessingparameterswidget.h
   processing/qgsprocessingpointcloudexpressionlineedit.h
+  processing/qgsprocessingprovideractions.h
   processing/qgsprocessingrastercalculatorexpressionlineedit.h
   processing/qgsprocessingrasteroptionswidgetwrapper.h
   processing/qgsprocessingrastersourceoptionswidget.h
