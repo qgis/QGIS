@@ -1811,7 +1811,6 @@ void TestQgsVertexTool::testAvoidIntersectionsWithMultiPolygons()
   // The 2 polygons should keep the same wkbType
   QgsGeometry geom = mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry();
   geom.normalize();
-  qDebug() << geom.asWkt();
   QCOMPARE( geom.asWkt(), u"MultiPolygon (((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5)),((1 5, 1 6.5, 1 8, 2 8, 2 6.5, 2 5, 1 5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7),(1.25 5.5, 1.75 5.5, 1.75 6, 1.25 6, 1.25 5.5)))"_s );
   geom = mLayerMultiPolygon->getFeature( multiPolygonF2.id() ).geometry();
   geom.normalize();

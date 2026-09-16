@@ -267,8 +267,15 @@ void TestQgsMapToolSplitFeatures::testSplitPolygonSnapToSegment()
   QCOMPARE( mPolygonLayer->undoStack()->index(), 1 );
   QCOMPARE( mPolygonLayer->featureCount(), 12 );
 
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  // In GEOS 3.15, polygon boundaries are split by points that lie on them
+  // or by lines that touch them. In this test, the snapped line vertices
+  // touch the other polygon, so it gets new vertices in the bottom boundary edge.
+  QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon Z ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 5 5 15, 4 5 14, 3 5 13, 2 5 12, 1 5 11, 0 5 10))"_s );
+#else
   // No change to the other feature in the layer
   QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt( 2 ), u"Polygon Z ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10))"_s );
+#endif
 
   // No change to other layers
   QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 0 );
