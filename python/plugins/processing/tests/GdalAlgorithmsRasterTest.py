@@ -3797,8 +3797,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -a id -ts 0 0 -ot Float32 -of JPEG "
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --size 0,0 --ot Float32 --format JPEG "
                     + source
                     + " "
                     + outdir
@@ -3818,8 +3818,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -a id -ts 0 0 -a_nodata 9999.0 -ot Float32 -of JPEG "
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --size 0,0 --nodata 9999.0 --ot Float32 --format JPEG "
                     + source
                     + " "
                     + outdir
@@ -3839,8 +3839,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -a id -ts 0 0 -init 0.0 -ot Float32 -of JPEG "
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --size 0,0 --init 0.0 --ot Float32 --format JPEG "
                     + source
                     + " "
                     + outdir
@@ -3860,8 +3860,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -a id -ts 0 0 -a_nodata 0.0 -ot Float32 -of JPEG "
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --size 0,0 --nodata 0.0 --ot Float32 --format JPEG "
                     + source
                     + " "
                     + outdir
@@ -3881,8 +3881,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -a id -ts 0 0 -ot Float32 -of JPEG -at -add "
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --size 0,0 --ot Float32 --format JPEG -at -add "
                     + source
                     + " "
                     + outdir
@@ -3898,8 +3898,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l pointsz -3d -ts 0 0 -ot Float32 -of JPEG "
+                    "gdal vector rasterize",
+                    "--input-layer pointsz --3d --size 0,0 --ot Float32 --format JPEG "
                     + sourceZ
                     + " "
                     + outdir
@@ -3920,8 +3920,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l pointsz -3d -ts 0 0 -ot Float32 -of JPEG "
+                    "gdal vector rasterize",
+                    "--input-layer pointsz --3d --size 0,0 --ot Float32 --format JPEG "
                     + sourceZ
                     + " "
                     + outdir
@@ -3942,8 +3942,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -a id -ts 0 0 -te -1.0 -3.0 10.0 6.0 -ot Float32 -of JPEG "
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --size 0,0 --extent -1.0,-3.0,10.0,6.0 --ot Float32 --format JPEG "
                     + source
                     + " "
                     + outdir
@@ -3963,8 +3963,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -a id -ts 0 0 -te -1.000000001857055 -2.9999999963940835 10.000000000604246 5.999999999604708 -ot Float32 -of JPEG "
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --size 0,0 --extent -1.000000001857055,-2.9999999963940835,10.000000000604246,5.999999999604708 --ot Float32 --format JPEG "
                     + source
                     + " "
                     + outdir
@@ -3987,8 +3987,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -a id -ts 100 200 -ot Float32 -of JPEG "
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --size 100,200 --ot Float32 --format JPEG "
                     + source
                     + " "
                     + outdir
@@ -4009,8 +4009,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                         feedback,
                     ),
                     [
-                        "gdal_rasterize",
-                        "-l polys2 -a id -ts 0 0 -ot Float32 -of JPEG -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y "
+                        "gdal vector rasterize",
+                        "--input-layer polys2 --attribute-name id --size 0,0 --ot Float32 --format JPEG --oo X_POSSIBLE_NAMES=geom_x --oo Y_POSSIBLE_NAMES=geom_y "
                         + source
                         + " "
                         + outdir
@@ -4029,8 +4029,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -a id -ts 0 0 -ot Float32 -of JPEG --config X Y --config Z A "
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --size 0,0 --ot Float32 --format JPEG --config X Y --config Z A "
                     + source
                     + " "
                     + outdir
@@ -4053,7 +4053,13 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     context,
                     feedback,
                 ),
-                ["gdal_rasterize", "-l polys2 -a id " + vector + " " + raster],
+                [
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --update "
+                    + vector
+                    + " "
+                    + raster,
+                ],
             )
 
             self.assertEqual(
@@ -4067,7 +4073,13 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     context,
                     feedback,
                 ),
-                ["gdal_rasterize", "-l polys2 -a id -add " + vector + " " + raster],
+                [
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --update --add "
+                    + vector
+                    + " "
+                    + raster,
+                ],
             )
 
             self.assertEqual(
@@ -4081,7 +4093,13 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     context,
                     feedback,
                 ),
-                ["gdal_rasterize", "-l polys2 -a id -i " + vector + " " + raster],
+                [
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --update -i "
+                    + vector
+                    + " "
+                    + raster,
+                ],
             )
 
             if GdalUtils.version() >= 3070000:
@@ -4097,8 +4115,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                         feedback,
                     ),
                     [
-                        "gdal_rasterize",
-                        "-l polys2 -a id -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y "
+                        "gdal vector rasterize",
+                        "--input-layer polys2 --attribute-name id --update --oo X_POSSIBLE_NAMES=geom_x --oo Y_POSSIBLE_NAMES=geom_y "
                         + vector
                         + " "
                         + raster,
@@ -4116,8 +4134,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -a id --config X Y --config Z A "
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --attribute-name id --update --config X Y --config Z A "
                     + vector
                     + " "
                     + raster,
@@ -4139,7 +4157,13 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     context,
                     feedback,
                 ),
-                ["gdal_rasterize", "-l polys2 -burn 100.0 " + vector + " " + raster],
+                [
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --burn 100.0 --update "
+                    + vector
+                    + " "
+                    + raster,
+                ],
             )
 
             self.assertEqual(
@@ -4149,8 +4173,11 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -burn 100.0 -add " + vector + " " + raster,
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --burn 100.0 --update --add "
+                    + vector
+                    + " "
+                    + raster,
                 ],
             )
 
@@ -4165,7 +4192,13 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     context,
                     feedback,
                 ),
-                ["gdal_rasterize", "-l polys2 -burn 100.0 -i " + vector + " " + raster],
+                [
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --burn 100.0 --update -i "
+                    + vector
+                    + " "
+                    + raster,
+                ],
             )
 
             if GdalUtils.version() >= 3070000:
@@ -4181,8 +4214,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                         feedback,
                     ),
                     [
-                        "gdal_rasterize",
-                        "-l polys2 -burn 100.0 -oo X_POSSIBLE_NAMES=geom_x -oo Y_POSSIBLE_NAMES=geom_y "
+                        "gdal vector rasterize",
+                        "--input-layer polys2 --burn 100.0 --update --oo X_POSSIBLE_NAMES=geom_x --oo Y_POSSIBLE_NAMES=geom_y "
                         + vector
                         + " "
                         + raster,
@@ -4200,8 +4233,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     feedback,
                 ),
                 [
-                    "gdal_rasterize",
-                    "-l polys2 -burn 100.0 --config X Y --config Z A "
+                    "gdal vector rasterize",
+                    "--input-layer polys2 --burn 100.0 --update --config X Y --config Z A "
                     + vector
                     + " "
                     + raster,
