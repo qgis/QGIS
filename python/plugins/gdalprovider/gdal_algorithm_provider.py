@@ -22,7 +22,6 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 
 from osgeo import gdal
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from qgis.core import QgsApplication, QgsProcessingProvider, QgsRuntimeProfiler
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -104,22 +103,8 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
 
     def load(self):
         with QgsRuntimeProfiler.profile("GDAL Provider"):
-            ProcessingConfig.settingIcons[self.name()] = self.icon()
-            ProcessingConfig.addSetting(
-                Setting(self.name(), "ACTIVATE_GDAL", self.tr("Activate"), True)
-            )
-            ProcessingConfig.readSettings()
             self.refreshAlgorithms()
         return True
-
-    def unload(self):
-        ProcessingConfig.removeSetting("ACTIVATE_GDAL")
-
-    def isActive(self):
-        return ProcessingConfig.getSetting("ACTIVATE_GDAL")
-
-    def setActive(self, active):
-        ProcessingConfig.setSettingValue("ACTIVATE_GDAL", active)
 
     def name(self):
         return "GDAL"
