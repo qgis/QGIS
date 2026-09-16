@@ -18,6 +18,7 @@
 #ifndef QGSALGORITHMXYZTILES_H
 #define QGSALGORITHMXYZTILES_H
 
+#include <atomic>
 
 #include "qgis_sip.h"
 #include "qgsmaprenderersequentialjob.h"
@@ -29,11 +30,7 @@
 
 ///@cond PRIVATE
 
-int tile2tms( const int y, const int zoom );
-int lon2tileX( const double lon, const int z );
-int lat2tileY( const double lat, const int z );
-double tileX2lon( const int x, const int z );
-double tileY2lat( const int y, const int z );
+class PendingTilesToWriteQueue;
 
 struct Tile
 {
@@ -52,32 +49,14 @@ struct MetaTile
 {
     MetaTile() {}
 
-    void addTile( const int row, const int col, Tile tileToAdd )
-    {
-      tiles.insert( QPair<int, int>( row, col ), tileToAdd );
-      if ( row >= rows )
-      {
-        rows = row + 1;
-      }
-      if ( col >= cols )
-      {
-        cols = col + 1;
-      }
-    }
+    void addTile( const int row, const int col, Tile tileToAdd );
 
-    QgsRectangle extent()
-    {
-      const Tile first = tiles.first();
-      const Tile last = tiles.last();
-      return QgsRectangle( tileX2lon( first.x, first.z ), tileY2lat( last.y + 1, last.z ), tileX2lon( last.x + 1, last.z ), tileY2lat( first.y, first.z ) );
-    }
+    QgsRectangle extent() const;
 
     QMap<QPair<int, int>, Tile> tiles;
     int rows = 0;
     int cols = 0;
 };
-QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, long long &tileCount, const int tileSize = 4 );
-
 
 /**
  * Base class for native XYZ tiles algorithms.
@@ -99,8 +78,11 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
 
     void checkLayersUsagePolicy( QgsProcessingFeedback *feedback );
 
-    void startJobs();
-    virtual void processMetaTile( QgsMapRendererSequentialJob *job ) = 0;
+    void startJobs( QgsProcessingFeedback *feedback );
+    void checkPipelineFinished( QgsProcessingFeedback *feedback );
+    virtual void processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback ) = 0;
+
+    std::optional<QgsMapSettings> mapSettingsForTile( const MetaTile &metaTile ) const;
 
     QgsRectangle mExtent;
     QColor mBackgroundColor;
@@ -119,11 +101,13 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QList<QgsMapLayer *> mLayers;
     QgsRectangle mWgs84Extent;
     QObjectUniquePtr<QObject> mJobOwner = nullptr;
-    QgsProcessingFeedback *mFeedback = nullptr;
+    std::unique_ptr<QThreadPool> mPostProcessingPool;
+
     long long mTotalMetaTiles = 0;
-    long long mProcessedMetaTiles = 0;
-    long long mTilesWritten = 0;
-    long long mEmptyTiles = 0;
+    std::atomic<long long> mProcessedMetaTiles { 0 };
+    std::atomic<long long> mTilesWritten { 0 };
+    std::atomic<long long> mEmptyTiles { 0 };
+    std::atomic<int> mActivePostProcessingTasks { 0 };
     QgsCoordinateTransformContext mTransformContext;
     QString mEllipsoid;
     QPointer<QEventLoop> mEventLoop;
@@ -150,11 +134,12 @@ class QgsXyzTilesDirectoryAlgorithm : public QgsXyzTilesBaseAlgorithm
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    void processMetaTile( QgsMapRendererSequentialJob *job ) override;
+    void processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback ) override;
 
   private:
     bool mTms = false;
     QString mOutputDir;
+    void doExport( QgsProcessingFeedback *feedback );
 };
 
 /**
@@ -174,10 +159,12 @@ class QgsXyzTilesMbtilesAlgorithm : public QgsXyzTilesBaseAlgorithm
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    void processMetaTile( QgsMapRendererSequentialJob *job ) override;
+    void processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback ) override;
 
   private:
     std::unique_ptr<QgsMbTiles> mMbtilesWriter;
+    PendingTilesToWriteQueue *mWriteQueue = nullptr;
+    void doExport( QgsProcessingFeedback *feedback );
 };
 
 ///@endcond PRIVATE

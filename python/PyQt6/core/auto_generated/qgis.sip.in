@@ -1691,6 +1691,7 @@ The development version
       ForceRasterMasks,
       RecordProfile,
       AlwaysUseGlobalMasks,
+      DrawLabelSelection
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -1719,7 +1720,8 @@ The development version
       RecordProfile,
       AlwaysUseGlobalMasks,
       DisableSymbolClippingToExtent,
-      RenderLayerTree
+      RenderLayerTree,
+      DrawLabelSelection
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 

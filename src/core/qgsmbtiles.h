@@ -48,11 +48,25 @@ class CORE_EXPORT QgsMbTiles
     bool isOpen() const;
 
     /**
+     * Finalizes the database after writing all tiles.
+     *
+     * This must be called if the database was created using a deferred index.
+     *
+     * \since QGIS 4.4
+     */
+    bool finalize();
+
+    /**
      * Creates a new MBTiles file and initializes it with metadata and tiles tables.
      * It is up to the caller to set appropriate metadata entries and add tiles afterwards.
-     * Returns TRUE on success. If the file exists already, returns FALSE.
+     *
+     * \param deferIndexCreation can be set to TRUE to defer creation of the tile_index. This results
+     * in much faster tile writes, as the index will not be updated after every tile write. If set to
+     * TRUE, a call to finalize() must be made before closing the database. (Since QGIS 4.4)
+     *
+     * \returns TRUE on success. If the file exists already, returns FALSE.
      */
-    bool create();
+    bool create( bool deferIndexCreation = false );
 
     //! Requests metadata value for the given key
     QString metadataValue( const QString &key ) const;
@@ -78,9 +92,29 @@ class CORE_EXPORT QgsMbTiles
      */
     void setTileData( int z, int x, int y, const QByteArray &data ) const;
 
+    /**
+     * Struct representing a raw image tile.
+     * \since QGIS 4.4
+     */
+    struct TileData
+    {
+        int z = 0;
+        int x = 0;
+        int y = 0;
+        QByteArray data;
+    };
+
+    /**
+     * Adds a batch of tile data within a single SQLite transaction.
+     * \note the database has to be opened in read-write mode (currently only when opened with create())
+     * \since QGIS 4.4
+     */
+    void setTileData( const QList<TileData> &tiles ) const;
+
   private:
     QString mFilename;
     sqlite3_database_unique_ptr mDatabase;
+    bool mDeferredIndexCreation = false;
 };
 
 

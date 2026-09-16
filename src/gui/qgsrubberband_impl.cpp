@@ -112,7 +112,7 @@ void QgsVectorLayerLabelRubberBandPreview::render( QgsRenderContext &context )
 
     featureScope->setFeature( tempFeature );
     featureScope->setFields( tempFeature.fields() );
-    provider->registerFeature( tempFeature, context );
+    provider->registerFeature( tempFeature, context, QgsLabelFeatureDetails() );
     index++;
   }
 

@@ -1590,9 +1590,15 @@ namespace QgsWms
         return options;
       }
 
-    private:
+      /**
+       * Returns true if the layer is an external layer, false otherwise.
+       * \param name the layer name
+       * \returns true if the layer is an external layer
+       * \since QGIS 4.42
+       */
       static bool isExternalLayer( const QString &name );
 
+    private:
       bool loadParameter( const QString &name, const QString &value ) override;
 
       void save( const QgsWmsParameter &parameter, bool multi = false );
