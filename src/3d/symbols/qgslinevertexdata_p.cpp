@@ -56,9 +56,9 @@ void QgsLineVertexData::init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBin
   origin = chunkOrigin;
 }
 
-void QgsLineVertexData::addLineString( const QgsLineString &lineStringIn, float extraHeightOffset, bool closePolygon )
+void QgsLineVertexData::addLineString( const QgsLineString &lineString, float extraHeightOffset, bool closePolygon )
 {
-  std::unique_ptr<QgsLineString> line( lineStringIn.clone() );
+  std::unique_ptr<QgsLineString> line( lineString.clone() );
   line->removeDuplicateNodes();
 
   const int vertexCount = line->vertexCount();

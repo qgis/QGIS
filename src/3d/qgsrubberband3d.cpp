@@ -105,7 +105,7 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
   QgsLineVertexData dummyLineData;
   mLineGeometry = dummyLineData.createGeometry( mLineEntity );
 
-  Q_ASSERT( mLineGeometry->attributes().count() == 3 );
+  Q_ASSERT( mLineGeometry->attributes().count() == 5 );
   mPointAAttribute = mLineGeometry->attributes().at( 1 );
   mPointBAttribute = mLineGeometry->attributes().at( 2 );
 
