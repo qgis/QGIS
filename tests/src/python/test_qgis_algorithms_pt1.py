@@ -25,7 +25,6 @@ import AlgorithmsTestBase
 import nose2
 from qgis.core import QgsApplication
 from qgis.testing import QgisTestCase, start_app
-
 from qgisprovider.qgis_provider import QgisAlgorithmProvider
 
 
