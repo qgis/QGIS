@@ -70,7 +70,6 @@ from processing.algs.gdal.slope import slope
 from processing.algs.gdal.translate import translate
 from processing.algs.gdal.viewshed import viewshed
 from processing.algs.gdal.warp import warp
-from processing.tests.TestData import wms_layer_1_3_0_frankfurt
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsPointXY,
@@ -87,6 +86,8 @@ from qgis.core import (
 )
 from qgis.testing import QgisTestCase, start_app, unittest
 from utilities import unitTestDataPath
+
+from .test_gdal_algorithm_utils import wms_layer_1_3_0_frankfurt
 
 TEST_DATA_DIR = unitTestDataPath()
 testDataPath = os.path.join(TEST_DATA_DIR, "processing")
