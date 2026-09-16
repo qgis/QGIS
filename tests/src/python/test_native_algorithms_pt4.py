@@ -30,6 +30,9 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import QgsApplication, QgsProcessingException
 from qgis.testing import QgisTestCase, start_app
+from utilities import unitTestDataPath
+
+TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestNativeAlgorithms4(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
@@ -43,7 +46,7 @@ class TestNativeAlgorithms4(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         # change the model provider folder so that it looks in the test directory for models
         ProcessingConfig.setSettingValue(
             ModelerUtils.MODELS_FOLDER,
-            os.path.join(os.path.dirname(__file__), "models"),
+            os.path.join(TEST_DATA_DIR, "processing", "models"),
         )
         for p in QgsApplication.processingRegistry().providers():
             if p.id() == "model":
