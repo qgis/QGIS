@@ -70,6 +70,43 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         return GdalAlgorithmWidget(self, parent=parent)
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        """Switches between legacy tool (usually a .py script) and GDAL CLI tool based on available GDAL version.
+
+        The algorithms can directly override this function, if the only provide single way to be run. Or override both private methods for to allow running either of legacy tool or GDAL CLI.
+        """
+        if GdalUtils.version() < 3110000:
+            return self._getConsoleCommandsLegacy(
+                parameters, context, feedback, executing
+            )
+        else:
+            return self._getConsoleCommandsGdalCli(
+                parameters, context, feedback, executing
+            )
+
+    def _getConsoleCommandsLegacy(self, parameters, context, feedback, executing=True):
+        """Implementation of command for legacy GDAL python scripts."""
+        return None
+
+    def _getConsoleCommandsGdalCli(self, parameters, context, feedback, executing=True):
+        """Implementation of command for GDAL CLI."""
+        return None
+
+    def commandName(self):
+        """Switches based on GDAL version between legacy tool name and GDAL CLI command.
+
+        The algorithms can directly override this function, if the only provide single command to run. Or override both private methods for to allow running either of legacy tool or GDAL CLI.
+        """
+        if GdalUtils.version() < 3110000:
+            return self._commandNameLegacy()
+        else:
+            return self._commandNameGdalCli()
+
+    def _commandNameLegacy(self):
+        """Name of the legacy GDAL tool."""
+        return None
+
+    def _commandNameGdalCli(self):
+        """Name of the GDAL CLI tool."""
         return None
 
     def getOgrCompatibleSource(
