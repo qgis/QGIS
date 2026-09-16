@@ -38,6 +38,34 @@ triggering the action.
 .. seealso:: :py:func:`parentWidget`
 %End
 
+    QString algorithmName() const;
+%Docstring
+Returns the name of the algorithm associated with the action.
+
+.. seealso:: :py:func:`setAlgorithmName`
+%End
+
+    void setAlgorithmName( const QString &name );
+%Docstring
+Sets the name of the algorithm associated with the action.
+
+.. seealso:: :py:func:`algorithmName`
+%End
+
+    QString providerId() const;
+%Docstring
+Returns the ID of the provider associated with the action.
+
+.. seealso:: :py:func:`setProviderId`
+%End
+
+    void setProviderId( const QString &id );
+%Docstring
+Sets the ID of the provider associated with the action.
+
+.. seealso:: :py:func:`providerId`
+%End
+
 };
 
 class QgsProcessingToolboxAction
@@ -132,6 +160,129 @@ Executes the action.
 %Docstring
 Triggers the action.
 %End
+
+};
+
+
+class QgsProcessingToolboxContextAction
+{
+%Docstring(signature="appended")
+A custom action to show in the context menu for the Processing toolbox.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingprovideractions.h"
+%End
+  public:
+    QgsProcessingToolboxContextAction( const QString &name = QString() );
+%Docstring
+Constructor for QgsProcessingToolboxContextAction.
+%End
+
+    virtual ~QgsProcessingToolboxContextAction();
+
+    QString actionName() const;
+%Docstring
+Returns the action's (translated, user visible) name.
+%End
+
+ void setActionName( const QString &name ) /Deprecated="Since 4.4. Use the constructor setter instead."/;
+%Docstring
+Sets the action's (translated, user visible) name.
+
+.. deprecated:: 4.4
+
+   Use the constructor setter instead.
+%End
+
+    virtual QIcon icon() const;
+%Docstring
+Returns the icon to use for the action.
+%End
+
+ virtual bool isEnabled() const /Deprecated="Since 4.4. "/;
+%Docstring
+Returns ``True`` if the action is enabled.
+
+.. deprecated:: 4.4
+%End
+
+    virtual bool isCompatibleWithAlgorithm( const QString &providerId, const QString &algorithmName );
+%Docstring
+Returns ``True`` if the action is compatible with the specified provider
+and algorithm.
+%End
+
+ QgsDockWidget *getToolbox() /Deprecated="Since 4.4. "/;
+%Docstring
+Returns the parent toolbox the action will be shown in.
+
+.. deprecated:: 4.4
+%End
+
+ void setToolbox( QgsDockWidget *toolbox ) /Deprecated="Since 4.4. "/;
+%Docstring
+Sets the parent toolbox the action will be shown in.
+
+.. deprecated:: 4.4
+%End
+
+%Property( name = toolbox, get = getToolbox, set = setToolbox )
+
+ QgsProcessingAlgorithm *getItemData() /Deprecated="Since 4.4. "/;
+%Docstring
+Returns the associated algorithm the action will be shown for.
+
+.. deprecated:: 4.4
+%End
+
+ void setItemData( QgsProcessingAlgorithm *data ) /Deprecated="Since 4.4. "/;
+%Docstring
+Sets the associated algorithm the action will be shown for.
+
+.. deprecated:: 4.4
+%End
+
+%Property( name = itemData, get = getItemData, set = setItemData )
+
+ void setData( QgsProcessingAlgorithm *data, QgsDockWidget *toolbox ) /Deprecated="Since 4.4. "/;
+%Docstring
+Sets the associated algorithm and toolbox the action will be shown for.
+
+.. deprecated:: 4.4
+%End
+
+ virtual void execute() /Deprecated="Since 4.4. Use trigger() instead."/;
+%Docstring
+Executes the action.
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsProcessingToolboxContextAction.trigger` instead.
+%End
+
+    virtual void trigger( const QgsProcessingActionContext &context );
+%Docstring
+Triggers the action.
+%End
+
+    bool isSeparator() const;
+%Docstring
+Returns ``True`` if the action is a separator action.
+
+.. seealso:: :py:func:`setIsSeparator`
+%End
+
+    void setIsSeparator( bool isSeparator );
+%Docstring
+Sets whether the action is a separator action.
+
+.. seealso:: :py:func:`isSeparator`
+%End
+
+%Property( name = is_separator, get = isSeparator, set = setIsSeparator )
 
 };
 

@@ -23,6 +23,7 @@
 #include <QPointer>
 
 class QgsDockWidget;
+class QgsProcessingAlgorithm;
 
 /**
  * \ingroup gui
@@ -47,8 +48,39 @@ class GUI_EXPORT QgsProcessingActionContext
    */
     void setParentWidget( QWidget *widget );
 
+    /**
+     * Returns the name of the algorithm associated with the action.
+     *
+     * \see setAlgorithmName()
+     */
+    QString algorithmName() const;
+
+    /**
+     * Sets the name of the algorithm associated with the action.
+     *
+     * \see algorithmName()
+     */
+    void setAlgorithmName( const QString &name );
+
+    /**
+     * Returns the ID of the provider associated with the action.
+     *
+     * \see setProviderId()
+     */
+    QString providerId() const;
+
+    /**
+     * Sets the ID of the provider associated with the action.
+     *
+     * \see providerId()
+     */
+    void setProviderId( const QString &id );
+
   private:
     QWidget *mParentWidget = nullptr;
+
+    QString mAlgorithmName;
+    QString mProviderId;
 };
 
 /**
@@ -145,6 +177,136 @@ class GUI_EXPORT QgsProcessingToolboxAction
     mutable bool mUseDeprecatedLoopBreak = false;
 
     QPointer< QgsDockWidget > mToolboxDockWidget;
+};
+
+
+/**
+ * \ingroup gui
+ * \brief A custom action to show in the context menu for the Processing toolbox.
+ *
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsProcessingToolboxContextAction
+{
+  public:
+    //TODO QGIS 5.0 -- name should be mandatory
+    /**
+   * Constructor for QgsProcessingToolboxContextAction.
+   */
+    QgsProcessingToolboxContextAction( const QString &name = QString() );
+
+    virtual ~QgsProcessingToolboxContextAction();
+
+    /**
+   * Returns the action's (translated, user visible) name.
+   */
+    QString actionName() const { return mName; }
+
+    /**
+   * Sets the action's (translated, user visible) name.
+   * \deprecated QGIS 4.4. Use the constructor setter instead.
+   */
+    Q_DECL_DEPRECATED void setActionName( const QString &name ) SIP_DEPRECATED { mName = name; }
+
+    /**
+   * Returns the icon to use for the action.
+   */
+    virtual QIcon icon() const;
+
+    /**
+   * Returns TRUE if the action is enabled.
+   *
+   * \deprecated QGIS 4.4
+   */
+    Q_DECL_DEPRECATED virtual bool isEnabled() const SIP_DEPRECATED;
+
+    /**
+     * Returns TRUE if the action is compatible with the specified provider and algorithm.
+     */
+    virtual bool isCompatibleWithAlgorithm( const QString &providerId, const QString &algorithmName );
+
+    /**
+   * Returns the parent toolbox the action will be shown in.
+   *
+   * \deprecated QGIS 4.4
+   */
+    Q_DECL_DEPRECATED QgsDockWidget *getToolbox() SIP_DEPRECATED;
+
+    /**
+   * Sets the parent toolbox the action will be shown in.
+   *
+   * \deprecated QGIS 4.4
+   */
+    Q_DECL_DEPRECATED void setToolbox( QgsDockWidget *toolbox ) SIP_DEPRECATED;
+
+#ifdef SIP_RUN
+    SIP_PROPERTY( name = toolbox, get = getToolbox, set = setToolbox )
+#endif
+
+    /**
+   * Returns the associated algorithm the action will be shown for.
+   *
+   * \deprecated QGIS 4.4
+   */
+    Q_DECL_DEPRECATED QgsProcessingAlgorithm *getItemData() SIP_DEPRECATED;
+
+    /**
+   * Sets the associated algorithm the action will be shown for.
+   *
+   * \deprecated QGIS 4.4
+   */
+    Q_DECL_DEPRECATED void setItemData( QgsProcessingAlgorithm *data ) SIP_DEPRECATED;
+
+#ifdef SIP_RUN
+    SIP_PROPERTY( name = itemData, get = getItemData, set = setItemData )
+#endif
+
+    /**
+   * Sets the associated algorithm and toolbox the action will be shown for.
+   *
+   * \deprecated QGIS 4.4
+   */
+    Q_DECL_DEPRECATED void setData( QgsProcessingAlgorithm *data, QgsDockWidget *toolbox ) SIP_DEPRECATED;
+
+    /**
+   * Executes the action.
+   *
+   * \deprecated QGIS 4.4. Use trigger() instead.
+   */
+    Q_DECL_DEPRECATED virtual void execute() SIP_DEPRECATED;
+
+    /**
+   * Triggers the action.
+   */
+    virtual void trigger( const QgsProcessingActionContext &context );
+
+    /**
+     * Returns TRUE if the action is a separator action.
+     *
+     * \see setIsSeparator()
+     */
+    bool isSeparator() const;
+
+    /**
+     * Sets whether the action is a separator action.
+     *
+     * \see isSeparator()
+     */
+    void setIsSeparator( bool isSeparator );
+
+#ifdef SIP_RUN
+    SIP_PROPERTY( name = is_separator, get = isSeparator, set = setIsSeparator )
+#endif
+
+  private:
+    QString mName;
+
+    mutable bool mUseDeprecatedLoopBreak = false;
+
+    QPointer< QgsDockWidget > mToolboxDockWidget;
+    QgsProcessingAlgorithm *mAlgorithm = nullptr;
+
+    bool mIsSeparator = false;
 };
 
 
