@@ -8321,8 +8321,6 @@ QgsProcessingDestinationParameterDefinitionWidget::QgsProcessingDestinationParam
 
 QgsProcessingParameterDefinition *QgsProcessingDestinationParameterDefinitionWidget::createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const
 {
-  const QString paramName = QgsProcessingModelAlgorithm::safeName( description ).toLower();
-
   // clone existing definition to retain specific destination properties
   std::unique_ptr< QgsProcessingParameterDefinition > param( mExistingDestinationParameter->clone() );
   param->setName( name );
