@@ -379,7 +379,11 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
 
       QNetworkRequest request( redirect.toUrl() );
       QgsSetRequestInitiatorClass( request, u"QgsWcsCapabilities"_s );
-      if ( !setAuthorization( request ) )
+
+      // only use authcfg if redirecting to same host
+      const bool useAuthCfg( redirect.toUrl().host() == mCapabilitiesReply->request().url().host() );
+
+      if ( useAuthCfg && !setAuthorization( request ) )
       {
         mCapabilitiesResponse.clear();
         mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
