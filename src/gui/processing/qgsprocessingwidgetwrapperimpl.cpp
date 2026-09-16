@@ -9831,4 +9831,340 @@ void QgsProcessingInterpolationPixelSizeWidgetWrapper::extentChanged( QgsAbstrac
 }
 
 
+//
+// QgsTileExtentMaxZoomWidget
+//
+
+QgsTileExtentMaxZoomWidget::QgsTileExtentMaxZoomWidget( const QgsProcessingParameterTileExtentMaxZoomList *param )
+  : QgsPanelWidget()
+  , mParam( param )
+{
+  setupUi( this );
+
+  QFontMetrics fm( font() );
+  mRegionsWidget->setColumnWidth( 0, fm.horizontalAdvance( 'X' ) * 20 );
+  mRegionsWidget->header()->setStretchLastSection( true );
+
+  connect( mButtonAdd, &QToolButton::clicked, this, &QgsTileExtentMaxZoomWidget::addClicked );
+  connect( mButtonRemove, &QToolButton::clicked, this, &QgsTileExtentMaxZoomWidget::removeClicked );
+  connect( mRegionsWidget, &QTreeWidget::itemDoubleClicked, this, &QgsTileExtentMaxZoomWidget::itemDoubleClicked );
+}
+
+void QgsTileExtentMaxZoomWidget::addClicked()
+{
+  if ( mMapCanvas )
+  {
+    mMapToolPrevious = mMapCanvas->mapTool();
+    if ( !mMapToolExtent )
+    {
+      mMapToolExtent = std::make_unique<QgsMapToolExtent>( mMapCanvas );
+      connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &QgsTileExtentMaxZoomWidget::extentDrawn );
+      connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, &QgsTileExtentMaxZoomWidget::mapToolDeactivated );
+    }
+    mMapCanvas->setMapTool( mMapToolExtent.get() );
+
+    emit toggleDialogVisibility( false );
+  }
+}
+
+void QgsTileExtentMaxZoomWidget::extentDrawn( const QgsRectangle &extent )
+{
+  const QgsReferencedRectangle newExtent( extent, mMapCanvas->mapSettings().destinationCrs() );
+
+  mMapCanvas->setMapTool( mMapToolPrevious );
+  emit toggleDialogVisibility( true );
+  mMapToolPrevious = nullptr;
+
+  auto item = new QTreeWidgetItem();
+  item->setText( 0, u"15"_s );
+  item->setText( 1, regionToString( newExtent ) );
+  mRegionsWidget->addTopLevelItem( item );
+  emit valueChanged();
+}
+
+void QgsTileExtentMaxZoomWidget::mapToolDeactivated()
+{
+  emit toggleDialogVisibility( true );
+  mMapToolPrevious = nullptr;
+}
+
+QString QgsTileExtentMaxZoomWidget::regionToString( const QgsReferencedRectangle &region )
+{
+  return u"%1,%3,%2,%4 [%5]"_s
+    .arg( qgsDoubleToString( region.xMinimum() ), qgsDoubleToString( region.yMinimum() ), qgsDoubleToString( region.xMaximum() ), qgsDoubleToString( region.yMaximum() ), region.crs().authid() );
+}
+
+void QgsTileExtentMaxZoomWidget::removeClicked()
+{
+  const QList<QTreeWidgetItem *> selectedItems = mRegionsWidget->selectedItems();
+  for ( QTreeWidgetItem *item : std::as_const( selectedItems ) )
+  {
+    delete item;
+  }
+  emit valueChanged();
+}
+
+void QgsTileExtentMaxZoomWidget::itemDoubleClicked( QTreeWidgetItem *item, int column )
+{
+  if ( !item )
+    return;
+
+  bool ok = false;
+  if ( column == 0 )
+  {
+    const int d = QInputDialog::getInt( this, tr( "Maximum Zoom Level" ), tr( "Enter maximum zoom level for region" ), item->text( 0 ).toInt(), 0, 20, 1, &ok );
+    if ( ok )
+    {
+      item->setText( 0, QString::number( d ) );
+      emit valueChanged();
+    }
+  }
+}
+
+QList<QgsTileExtentMaxZoomRegion> QgsTileExtentMaxZoomWidget::regions() const
+{
+  QList<QgsTileExtentMaxZoomRegion> regions;
+  QgsProcessingContext context;
+  for ( int i = 0; i < mRegionsWidget->topLevelItemCount(); ++i )
+  {
+    if ( QTreeWidgetItem *item = mRegionsWidget->topLevelItem( i ) )
+    {
+      const QgsTileExtentMaxZoomRegion region = mParam->regionFromVariant( u"%1:%2"_s.arg( item->text( 0 ), item->text( 1 ) ), context );
+      if ( region.extent.isNull() )
+        continue;
+
+      regions.append( region );
+    }
+  }
+  return regions;
+}
+
+void QgsTileExtentMaxZoomWidget::setRegions( const QList<QgsTileExtentMaxZoomRegion> &regions )
+{
+  mRegionsWidget->clear();
+  for ( const QgsTileExtentMaxZoomRegion &r : regions )
+  {
+    auto item = new QTreeWidgetItem();
+    item->setText( 0, QString::number( r.maxZoom ) );
+    item->setText( 1, regionToString( r.extent ) );
+    mRegionsWidget->addTopLevelItem( item );
+  }
+  emit valueChanged();
+}
+
+void QgsTileExtentMaxZoomWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+}
+
+
+//
+// QgsProcessingTileExtentMaxZoomParameterPanel
+//
+
+QgsProcessingTileExtentMaxZoomParameterPanel::QgsProcessingTileExtentMaxZoomParameterPanel( const QgsProcessingParameterTileExtentMaxZoomList *param )
+  : QWidget( nullptr )
+  , mParam( param )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  mLineEdit->setText( tr( "No regions defined" ) );
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingTileExtentMaxZoomParameterPanel::showDialog );
+}
+
+QVariant QgsProcessingTileExtentMaxZoomParameterPanel::value() const
+{
+  // if editing widget is still open, use the value currently shown in that widget
+  if ( mPanelWidget )
+    return QgsProcessingParameterTileExtentMaxZoomList::toVariant( mPanelWidget->regions() );
+
+  return QgsProcessingParameterTileExtentMaxZoomList::toVariant( mRegions );
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::setValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QList<QgsTileExtentMaxZoomRegion> regions = mParam->parameterAsRegionList( value, context );
+  setRegions( regions );
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::setRegions( const QList<QgsTileExtentMaxZoomRegion> &regions )
+{
+  mRegions = regions;
+  if ( mPanelWidget )
+  {
+    mPanelWidget->setRegions( regions );
+  }
+
+  updateSummaryText();
+  emit changed();
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+  if ( mPanelWidget )
+  {
+    mPanelWidget->setMapCanvas( mMapCanvas );
+  }
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::showDialog()
+{
+  if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
+  {
+    mPanelWidget = new QgsTileExtentMaxZoomWidget( mParam );
+
+    mPanelWidget->setPanelTitle( mParam->description() );
+    mPanelWidget->setRegions( mRegions );
+    mPanelWidget->setMapCanvas( mMapCanvas );
+
+    panel->openPanel( mPanelWidget );
+
+    connect( mPanelWidget, &QgsTileExtentMaxZoomWidget::toggleDialogVisibility, this, &QgsProcessingTileExtentMaxZoomParameterPanel::toggleDialogVisibility );
+
+    connect( mPanelWidget, &QgsTileExtentMaxZoomWidget::valueChanged, this, [this] {
+      mRegions = mPanelWidget->regions();
+      updateSummaryText();
+      emit changed();
+    } );
+  }
+}
+
+void QgsProcessingTileExtentMaxZoomParameterPanel::updateSummaryText()
+{
+  mLineEdit->setText( tr( "%1 regions defined" ).arg( mRegions.count() ) );
+}
+
+
+//
+// QgsProcessingTileExtentMaxZoomWidgetWrapper
+//
+
+QgsProcessingTileExtentMaxZoomWidgetWrapper::QgsProcessingTileExtentMaxZoomWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
+QString QgsProcessingTileExtentMaxZoomWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterTileExtentMaxZoomList::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingTileExtentMaxZoomWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
+{
+  return new QgsProcessingTileExtentMaxZoomWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingTileExtentMaxZoomWidgetWrapper::createParameterDefinitionWidget(
+  QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *
+)
+{
+  return nullptr;
+}
+
+QWidget *QgsProcessingTileExtentMaxZoomWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case Qgis::ProcessingMode::Standard:
+    {
+      auto param = dynamic_cast<const QgsProcessingParameterTileExtentMaxZoomList *>( parameterDefinition() );
+      mWidget = new QgsProcessingTileExtentMaxZoomParameterPanel( param );
+
+      if ( widgetContext().mapCanvas() )
+        mWidget->setMapCanvas( widgetContext().mapCanvas() );
+
+      connect( mWidget, &QgsProcessingTileExtentMaxZoomParameterPanel::changed, this, [this] { emit widgetValueHasChanged( this ); } );
+
+      if ( mDialog && type() != Qgis::ProcessingMode::Modeler )
+        setDialog( mDialog ); // setup connections to panel - dialog was previously set before the widget was created
+
+      return mWidget;
+    }
+
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
+    {
+      mFallbackLineEdit = new QLineEdit();
+      mFallbackLineEdit->setPlaceholderText( tr( "Tile extent max zoom level definition" ) );
+      connect( mFallbackLineEdit, &QLineEdit::textChanged, this, [this] { emit widgetValueHasChanged( this ); } );
+      return mFallbackLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingTileExtentMaxZoomWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+  if ( mWidget && context.mapCanvas() && type() != Qgis::ProcessingMode::Modeler )
+    mWidget->setMapCanvas( context.mapCanvas() );
+}
+
+void QgsProcessingTileExtentMaxZoomWidgetWrapper::setDialog( QWidget *dialog )
+{
+  mDialog = dialog;
+  if ( mWidget && mDialog && type() != Qgis::ProcessingMode::Modeler )
+  {
+    connect( mWidget, &QgsProcessingTileExtentMaxZoomParameterPanel::toggleDialogVisibility, mDialog, [this]( bool visible ) {
+      if ( !visible )
+      {
+        mDialog->showMinimized();
+      }
+      else
+      {
+        mDialog->showNormal();
+        mDialog->raise();
+        mDialog->activateWindow();
+      }
+    } );
+  }
+  QgsAbstractProcessingParameterWidgetWrapper::setDialog( dialog );
+}
+
+void QgsProcessingTileExtentMaxZoomWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  auto param = dynamic_cast<const QgsProcessingParameterTileExtentMaxZoomList *>( parameterDefinition() );
+
+  if ( mWidget && param )
+  {
+    mWidget->setValue( value, context );
+  }
+  else if ( mFallbackLineEdit )
+  {
+    bool ok = false;
+    mFallbackLineEdit->setText( param->valueAsString( value, context, ok ) );
+  }
+}
+
+QVariant QgsProcessingTileExtentMaxZoomWidgetWrapper::widgetValue() const
+{
+  if ( mWidget )
+  {
+    return mWidget->value();
+  }
+  else if ( mFallbackLineEdit )
+  {
+    return mFallbackLineEdit->text();
+  }
+  return QVariant();
+}
+
+QString QgsProcessingTileExtentMaxZoomWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string of the format 'min,max,red,green,blue' for each relief color, joined by a ; delimiter" );
+}
+
+
 ///@endcond PRIVATE
