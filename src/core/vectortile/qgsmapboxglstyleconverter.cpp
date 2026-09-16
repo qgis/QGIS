@@ -2080,6 +2080,8 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
     }
   }
 
+#if 0
+  // TODO: re-enable when the cost of label duplicate removal within distance is more reasonable
   if ( jsonLayout.contains( u"symbol-spacing"_s ) )
   {
     double spacing;
@@ -2125,6 +2127,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
     spacingProp.setActive( true );
     ddLabelProperties.setProperty( QgsPalLayerSettings::Property::RemoveDuplicateLabelDistance, spacingProp );
   }
+#endif
 
   if ( textSize >= 0 )
   {
