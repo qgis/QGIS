@@ -21,53 +21,55 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
-from qgis.core import QgsApplication, QgsProcessing, QgsProcessingAlgorithm, QgsProject
+from qgis.core import QgsApplication, QgsProcessing, QgsProject
+from qgis.gui import QgsProcessingToolboxContextAction
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox
 
-from processing.gui.ContextAction import ContextAction
 
-
-class DeleteModelAction(ContextAction):
+class DeleteModelAction(QgsProcessingToolboxContextAction):
     def __init__(self):
-        super().__init__()
-        self.name = QCoreApplication.translate("DeleteModelAction", "Delete Model…")
+        super().__init__(
+            QCoreApplication.translate("DeleteModelAction", "Delete Model…")
+        )
 
-    def isEnabled(self):
-        return isinstance(
-            self.itemData, QgsProcessingAlgorithm
-        ) and self.itemData.provider().id() in ("model", "project")
+    def isCompatibleWithAlgorithm(self, provider_id: str, algorithm_name: str):
+        return provider_id in ("model", "project")
 
-    def execute(self):
-        model = self.itemData
+    def trigger(self, context):
+        algorithm_name = context.algorithmName()
+
+        is_project_provider = context.providerId() == QgsProcessing.PROJECT_PROVIDER_ID
+        provider = QgsApplication.processingRegistry().providerById(
+            context.providerId()
+        )
+        if provider is None:
+            return
+
+        model = provider.algorithm(algorithm_name)
         if model is None:
             return  # shouldn't happen, but let's be safe
 
-        project_provider = model.provider().id() == QgsProcessing.PROJECT_PROVIDER_ID
-
-        if project_provider:
-            msg = self.tr(
-                "Are you sure you want to delete this model from the current project?",
+        if is_project_provider:
+            msg = QCoreApplication.translate(
                 "DeleteModelAction",
+                "Are you sure you want to delete this model from the current project?",
             )
         else:
-            msg = self.tr(
-                "Are you sure you want to delete this model?", "DeleteModelAction"
+            msg = QCoreApplication.translate(
+                "DeleteModelAction", "Are you sure you want to delete this model?"
             )
 
         reply = QMessageBox.question(
             None,
-            self.tr("Delete Model", "DeleteModelAction"),
+            QCoreApplication.translate("DeleteModelAction", "Delete Model"),
             msg,
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No,
         )
 
         if reply == QMessageBox.StandardButton.Yes:
-            if project_provider:
-                provider = QgsApplication.processingRegistry().providerById(
-                    QgsProcessing.PROJECT_PROVIDER_ID
-                )
+            if is_project_provider:
                 provider.removeModel(model)
                 QgsProject.instance().setDirty(True)
             else:

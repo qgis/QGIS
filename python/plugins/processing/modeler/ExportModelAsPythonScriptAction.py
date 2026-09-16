@@ -19,36 +19,39 @@ __author__ = "Nyall Dawson"
 __date__ = "February 2019"
 __copyright__ = "(C) 2019, Nyall Dawson"
 
-from qgis.core import QgsApplication, QgsProcessing, QgsProcessingAlgorithm
+from qgis.core import QgsApplication, QgsProcessing
+from qgis.gui import QgsProcessingToolboxContextAction
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
-from processing.gui.ContextAction import ContextAction
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 
 
-class ExportModelAsPythonScriptAction(ContextAction):
+class ExportModelAsPythonScriptAction(QgsProcessingToolboxContextAction):
     def __init__(self):
-        super().__init__()
-        self.name = QCoreApplication.translate(
-            "ExportModelAsPythonScriptAction", "Export Model as Python Algorithm…"
+        super().__init__(
+            QCoreApplication.translate(
+                "ExportModelAsPythonScriptAction", "Export Model as Python Algorithm…"
+            )
         )
 
-    def isEnabled(self):
-        return isinstance(
-            self.itemData, QgsProcessingAlgorithm
-        ) and self.itemData.provider().id() in ("model", "project")
+    def isCompatibleWithAlgorithm(self, provider_id: str, algorithm_name: str):
+        return provider_id in ("model", "project")
 
     def icon(self):
         return QgsApplication.getThemeIcon("/mActionSaveAsPython.svg")
 
-    def execute(self):
-        alg = self.itemData
+    def trigger(self, context):
+        provider = QgsApplication.processingRegistry().providerById(
+            context.providerId()
+        )
+        model = provider.algorithm(context.algorithmName())
+
         dlg = ScriptEditorDialog(parent=iface.mainWindow())
 
         dlg.editor.setText(
             "\n".join(
-                alg.asPythonCode(
+                model.asPythonCode(
                     QgsProcessing.PythonOutputType.PythonQgsProcessingAlgorithmSubclass,
                     4,
                 )

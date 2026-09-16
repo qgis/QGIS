@@ -19,27 +19,26 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-from qgis.core import Qgis, QgsApplication, QgsProcessingAlgorithm
+from qgis.core import QgsApplication
+from qgis.gui import QgsProcessingToolboxContextAction
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.utils import iface
 
-from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerDialog import ModelerDialog
 
 
-class EditModelAction(ContextAction):
+class EditModelAction(QgsProcessingToolboxContextAction):
     def __init__(self):
-        super().__init__()
-        self.name = QCoreApplication.translate("EditModelAction", "Edit Model…")
+        super().__init__(QCoreApplication.translate("EditModelAction", "Edit Model…"))
 
-    def isEnabled(self):
-        return isinstance(
-            self.itemData, QgsProcessingAlgorithm
-        ) and self.itemData.provider().id() in ("model", "project")
+    def isCompatibleWithAlgorithm(self, provider_id: str, algorithm_name: str):
+        return provider_id in ("model", "project")
 
-    def execute(self):
-        alg = self.itemData
-        dlg = ModelerDialog.create(alg)
+    def trigger(self, context):
+        provider = QgsApplication.processingRegistry().providerById(
+            context.providerId()
+        )
+        model = provider.algorithm(context.algorithmName())
+        dlg = ModelerDialog.create(model)
         dlg.update_model.connect(self.updateModel)
         dlg.show()
         dlg.activate()

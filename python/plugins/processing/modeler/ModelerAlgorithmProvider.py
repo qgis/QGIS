@@ -29,9 +29,9 @@ from qgis.core import (
     QgsProcessingProvider,
     QgsRuntimeProfiler,
 )
+from qgis.gui import QgsProcessingToolboxContextAction
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.gui.ContextAction import ContextAction
 from processing.gui.ProviderActions import ProviderActions, ProviderContextMenuActions
 from processing.modeler.AddModelFromFileAction import AddModelFromFileAction
 from processing.modeler.CreateNewModelAction import CreateNewModelAction
@@ -54,8 +54,8 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
             OpenModelFromFileAction(),
             AddModelFromFileAction(),
         ]
-        sep_action = ContextAction()
-        sep_action.is_separator = True
+        sep_action = QgsProcessingToolboxContextAction("")
+        sep_action.setIsSeparator(True)
         self.contextMenuActions = [
             EditModelAction(),
             DeleteModelAction(),
