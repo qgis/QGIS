@@ -24,8 +24,10 @@ import tempfile
 
 from qgis.core import QgsRasterLayer
 from qgis.testing import QgisTestCase
+from utilities import unitTestDataPath
 
-testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
+TEST_DATA_DIR = unitTestDataPath()
+testDataPath = os.path.join(TEST_DATA_DIR, "processing")
 
 
 def table():
