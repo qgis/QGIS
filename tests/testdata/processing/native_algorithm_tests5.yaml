@@ -1080,3 +1080,15 @@ tests:
       OUTPUT:
         hash: b3e5e52a5754a8ad57e4672937a0b87ab8a104642c989132f840da75
         type: rasterhash
+
+  - algorithm: native:texttofloat
+    name: Text to float
+    params:
+      FIELD: 'text_float'
+      INPUT:
+        name: custom/text_to_float.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/text_to_float.gml
+        type: vector
