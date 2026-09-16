@@ -29,8 +29,6 @@ from qgis.testing import QgisTestCase, start_app
 
 from qgisprovider import vector
 
-testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
-
 start_app()
 
 
