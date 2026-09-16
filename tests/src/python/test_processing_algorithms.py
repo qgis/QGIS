@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    AlgorithmsTest.py
+    test_processing_algorithms.py
     ---------------------
     Date                 : January 2016
     Copyright            : (C) 2016 by Matthias Kuhn
