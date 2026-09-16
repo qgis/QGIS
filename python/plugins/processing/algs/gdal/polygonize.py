@@ -138,7 +138,7 @@ class polygonize(GdalAlgorithm):
 
         if output_details.format:
             arguments.append("--format")
-            arguments.append(output_details.format)
+            arguments.append(output_details.format.strip('"'))
 
         # Output layer name
         arguments.append("--output-layer")
