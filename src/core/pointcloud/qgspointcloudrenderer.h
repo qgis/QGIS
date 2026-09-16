@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgspointcloudattribute.h"
 #include "qgspropertycollection.h"
+#include "qgsrange.h"
 #include "qgsrendercontext.h"
 #include "qgsstyle.h"
 #include "qgsvector3d.h"
@@ -177,45 +178,23 @@ class CORE_EXPORT QgsPointCloudRenderContext
     QgsFeedback *feedback() const { return mFeedback; }
 
     /**
-     * Sets the horizon filter used to discard points which fall below the visible horizon of the
-     * ellipsoid when rendering point clouds in a topocentric CRS.
+     * Sets the allowed range of Z values.
      *
-     * A point is considered to be below the horizon when its z value is
-     * lower than \a planeZ AND its horizontal distance from the origin is lower than \a discRadius.
+     * Points which Z value is not in \a range after transformation will be discarded from rendering.
+     * If both bounds are set to infinite, no filtering is applied.
      *
-     * \see isBelowHorizon()
+     * \see mapCrsZFilter()
      * \since QGIS 4.4
      */
-    void setHorizonFilter( double planeZ, double discRadius )
-    {
-      mHorizonPlaneZ = planeZ;
-      mHorizonDiscRadiusSquared = discRadius * discRadius;
-    }
+    void setMapCrsZFilter( const QgsDoubleRange &range ) { mMapCrsZFilter = range; }
 
     /**
-     * Sets whether or not to filter points based on horizon.
+     * Returns the allowable range of z values in the map (destination) CRS.
      *
-     * \see horizonFilterEnabled()
+     * \see setMapCrsZFilter()
      * \since QGIS 4.4
      */
-    void setHorizonFilterEnabled( bool enabled ) { mFilterBelowHorizon = enabled; }
-
-    /**
-     * Returns true if a horizon filter has been set via setHorizonFilter() and enabled via
-     * setHorizonFilterEnabled().
-     *
-     * \since QGIS 4.4
-     */
-    bool horizonFilterEnabled() const { return mFilterBelowHorizon; }
-
-    /**
-     * Returns true if the point at the given destination CRS coordinates \a x, \a y, \a z falls
-     * below the visible horizon and should be discarded from rendering.
-     *
-     * \see setHorizonFilter()
-     * \since QGIS 4.4
-     */
-    bool isBelowHorizon( double x, double y, double z ) const { return mFilterBelowHorizon && z < mHorizonPlaneZ && ( x * x + y * y ) < mHorizonDiscRadiusSquared; }
+    QgsDoubleRange mapCrsZFilter() const { return mMapCrsZFilter; }
 
 #ifndef SIP_RUN
 
@@ -306,9 +285,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
 
-    bool mFilterBelowHorizon = false;
-    double mHorizonPlaneZ = 0;
-    double mHorizonDiscRadiusSquared = 0;
+    QgsDoubleRange mMapCrsZFilter;
 
     QgsFeedback *mFeedback = nullptr;
 
