@@ -5,6 +5,11 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingToolboxContextAction.__virtual_methods__ = ['icon', 'isEnabled', 'isCompatibleWithAlgorithm', 'execute', 'trigger']
+    QgsProcessingToolboxContextAction.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
     QgsProcessingActionContext.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
