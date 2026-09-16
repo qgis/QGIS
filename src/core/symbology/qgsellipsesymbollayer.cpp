@@ -49,9 +49,9 @@ QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
 
 QgsEllipseSymbolLayer::~QgsEllipseSymbolLayer() = default;
 
-QgsSymbolLayer *QgsEllipseSymbolLayer::create( const QVariantMap &properties )
+std::unique_ptr<QgsSymbolLayer> QgsEllipseSymbolLayer::create( const QVariantMap &properties )
 {
-  QgsEllipseSymbolLayer *layer = new QgsEllipseSymbolLayer();
+  auto layer = std::make_unique<QgsEllipseSymbolLayer>();
   if ( properties.contains( u"symbol_name"_s ) )
   {
     layer->setShape( decodeShape( properties[u"symbol_name"_s].toString() ) );
@@ -504,7 +504,7 @@ bool QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   return true;
 }
 
-QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
+std::unique_ptr<QgsSymbolLayer> QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
 {
   QgsDebugMsgLevel( u"Entered."_s, 4 );
 
@@ -549,7 +549,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
       angle = d;
   }
 
-  QgsEllipseSymbolLayer *m = new QgsEllipseSymbolLayer();
+  auto m = std::make_unique<QgsEllipseSymbolLayer>();
   m->setOutputUnit( sldUnitSize );
   m->setShape( decodeShape( name ) );
   m->setFillColor( fillColor );

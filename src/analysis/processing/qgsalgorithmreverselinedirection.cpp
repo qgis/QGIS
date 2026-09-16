@@ -89,6 +89,8 @@ Qgis::ProcessingFeatureSourceFlags QgsReverseLineDirectionAlgorithm ::sourceFlag
 
 QgsFeatureList QgsReverseLineDirectionAlgorithm ::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature feature = f;
   if ( feature.hasGeometry() )
   {

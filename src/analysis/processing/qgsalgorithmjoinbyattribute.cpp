@@ -112,6 +112,8 @@ QgsJoinByAttributeAlgorithm *QgsJoinByAttributeAlgorithm::createInstance() const
 
 QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const int joinMethod = parameterAsEnum( parameters, u"METHOD"_s, context );
   const bool discardNonMatching = parameterAsBoolean( parameters, u"DISCARD_NONMATCHING"_s, context );
 

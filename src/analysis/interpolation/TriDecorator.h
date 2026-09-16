@@ -17,6 +17,7 @@
 #ifndef TRIDECORATOR_H
 #define TRIDECORATOR_H
 
+#include "qgis.h"
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
 #include "qgstriangulation.h"
@@ -34,7 +35,7 @@ class ANALYSIS_EXPORT TriDecorator : public QgsTriangulation
     TriDecorator() = default;
     //! Constructor for TriDecorator with an existing triangulation
     explicit TriDecorator( QgsTriangulation *t );
-    void addLine( const QVector<QgsPoint> &points, QgsInterpolator::SourceType lineType ) override;
+    void addLine( const QVector<QgsPoint> &points, Qgis::InterpolationSourceType lineType ) override;
     int addPoint( const QgsPoint &p ) override;
     //! Adds an association to a triangulation
     virtual void addTriangulation( QgsTriangulation *t );

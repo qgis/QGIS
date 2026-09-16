@@ -45,7 +45,7 @@ class QgsCanvasElevationControllerBridge : public QObject
     QTimer *mUpdateCanvasTimer = nullptr;
     QgsElevationControllerWidget *mController = nullptr;
     QPointer<QgsMapCanvas> mCanvas;
-    QgsWeakMapLayerPointerList mCanvasLayers;
+    QgsWeakMapLayerPointerList mElevationLayers;
 };
 
 class QgsAppCanvasFiltering : public QObject

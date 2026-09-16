@@ -19,6 +19,7 @@ try:
     QgsStringUtils.containsByWord = staticmethod(QgsStringUtils.containsByWord)
     QgsStringUtils.createUnaccentMap = staticmethod(QgsStringUtils.createUnaccentMap)
     QgsStringUtils.unaccent = staticmethod(QgsStringUtils.unaccent)
+    QgsStringUtils.createUniqueId = staticmethod(QgsStringUtils.createUniqueId)
 except (NameError, AttributeError):
     pass
 try:

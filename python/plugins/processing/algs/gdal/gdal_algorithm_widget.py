@@ -45,8 +45,6 @@ from qgis.PyQt.QtWidgets import (
 
 from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
 from processing.gui.algorithm_widget import AlgorithmWidget
-from processing.gui.MultipleInputPanel import MultipleInputPanel
-from processing.gui.NumberInputPanel import NumberInputPanel
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.tools.dataobjects import createContext
 
@@ -104,10 +102,6 @@ class GdalParametersPanel(ParametersPanel):
             w.crsChanged.connect(self.parametersHaveChanged)
         elif isinstance(w, QCheckBox):
             w.stateChanged.connect(self.parametersHaveChanged)
-        elif isinstance(w, MultipleInputPanel):
-            w.selectionChanged.connect(self.parametersHaveChanged)
-        elif isinstance(w, NumberInputPanel):
-            w.hasChanged.connect(self.parametersHaveChanged)
         elif isinstance(w, QgsProcessingLayerOutputDestinationWidget):
             w.destinationChanged.connect(self.parametersHaveChanged)
 

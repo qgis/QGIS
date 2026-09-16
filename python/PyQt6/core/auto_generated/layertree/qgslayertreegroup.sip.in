@@ -53,6 +53,8 @@ Returns the group's name.
 Sets the group's name.
 %End
 
+    virtual QString id() const;
+
     QgsLayerTreeGroup *insertGroup( int index, const QString &name );
 %Docstring
 Insert a new group node with given name at specified position. The newly
@@ -449,6 +451,7 @@ Sets the request mode of the group.
 %Docstring
 Set check state of children - if mutually exclusive
 %End
+
 
 
 

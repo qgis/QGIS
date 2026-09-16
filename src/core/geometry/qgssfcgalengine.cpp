@@ -355,7 +355,7 @@ sfcgal::shared_geom QgsSfcgalEngine::fromWkt( const QString &wkt, QString *error
   sfcgal::geometry *out = sfcgal_io_read_wkt( wkt.toStdString().c_str(), wkt.length() );
   CHECK_SUCCESS( errorMsg, nullptr );
 
-  return sfcgal::unique_geom( out );
+  return sfcgal::make_shared_geom( out );
 }
 
 QByteArray QgsSfcgalEngine::toWkb( const sfcgal::geometry *geom, QString *errorMsg )
@@ -592,21 +592,24 @@ bool QgsSfcgalEngine::isEmpty( const sfcgal::geometry *geom, QString *errorMsg )
   return static_cast<bool>( res );
 }
 
-bool QgsSfcgalEngine::isValid( const sfcgal::geometry *geom, QString *errorMsg, QgsGeometry *errorLoc )
+bool QgsSfcgalEngine::isValid( const sfcgal::geometry *geom, QString *errorMsg, QString *reasonMsg, QgsGeometry *errorLoc )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, false );
 
   bool result = false;
-  char *reason;
-  sfcgal::geometry *location;
+  char *reason = nullptr;
+  sfcgal::geometry *location = nullptr;
   result = sfcgal_geometry_is_valid_detail( geom, &reason, &location );
 
   CHECK_SUCCESS( errorMsg, false );
 
   if ( reason && strlen( reason ) )
   {
-    sfcgal::errorHandler()->addText( QString( reason ) );
+    if ( reasonMsg )
+    {
+      *reasonMsg = QString( reason );
+    }
     free( reason );
   }
 
@@ -1420,7 +1423,7 @@ sfcgal::shared_prim QgsSfcgalEngine::primitiveTranslate( const sfcgal::primitive
   return sfcgal::make_shared_prim( result );
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::primitiveRotate( const sfcgal::primitive *prim, double angle, const QgsVector3D &axisVector, const QgsPoint &center, QString *errorMsg )
+sfcgal::shared_prim QgsSfcgalEngine::primitiveRotate( const sfcgal::primitive *prim, double angle, const QgsVector3D &axisVector, const QgsPoint &center, QString *errorMsg )
 {
   const QgsPoint rotationCenter = center.isEmpty() ? QgsPoint( 0, 0, 0 ) : center;
 
@@ -1430,7 +1433,7 @@ sfcgal::shared_geom QgsSfcgalEngine::primitiveRotate( const sfcgal::primitive *p
   return sfcgal::make_shared_prim( result );
 }
 
-sfcgal::shared_geom QgsSfcgalEngine::primitiveScale( const sfcgal::primitive *prim, const QgsVector3D &scaleFactor, const QgsPoint &center, QString *errorMsg )
+sfcgal::shared_prim QgsSfcgalEngine::primitiveScale( const sfcgal::primitive *prim, const QgsVector3D &scaleFactor, const QgsPoint &center, QString *errorMsg )
 {
   const QgsPoint scaleCenter = center.isEmpty() ? QgsPoint( 0, 0, 0 ) : center;
 

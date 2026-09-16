@@ -122,6 +122,15 @@ QgsDateTimeRange(QgsDateTimeRange)
 Copy constructor.
 """
 
+# MonkeyPatch old QgsServerWmsDimensionProperties.WmsDimensionInfo.DefaultDisplay enum manually
+# because sipify doesn't know how to deal with inner class unnest
+
+QgsServerWmsDimensionProperties.WmsDimensionInfo.DefaultDisplay = Qgis.WmsDimensionDefaultDisplay
+QgsServerWmsDimensionProperties.WmsDimensionInfo.AllValues = Qgis.WmsDimensionDefaultDisplay.AllValues
+QgsServerWmsDimensionProperties.WmsDimensionInfo.MinValue = Qgis.WmsDimensionDefaultDisplay.MinValue
+QgsServerWmsDimensionProperties.WmsDimensionInfo.MaxValue = Qgis.WmsDimensionDefaultDisplay.MaxValue
+QgsServerWmsDimensionProperties.WmsDimensionInfo.ReferenceValue = Qgis.WmsDimensionDefaultDisplay.ReferenceValue
+
 
 QgsProperty.__bool__ = lambda self: self.propertyType() != Qgis.PropertyType.Invalid
 QgsOptionalExpression.__bool__ = lambda self: self.enabled()
@@ -667,6 +676,8 @@ QgsPalLayerSettings.displayAll = QgsPalLayerSettings.displayAll.setter(_set_disp
 QgsLocatorResult.userData = property(QgsLocatorResult._userData)
 QgsLocatorResult.userData = QgsLocatorResult.userData.setter(QgsLocatorResult.setUserData)
 
+QgsServerWmsDimensionProperties.WmsDimensionInfo.referenceValue = property(QgsServerWmsDimensionProperties.WmsDimensionInfo._referenceValue)
+QgsServerWmsDimensionProperties.WmsDimensionInfo.referenceValue = QgsServerWmsDimensionProperties.WmsDimensionInfo.referenceValue.setter(QgsServerWmsDimensionProperties.WmsDimensionInfo.setReferenceValue)
 
 def _get_pixel_transparency(self):
     return (1.0 - self.opacity) * 100

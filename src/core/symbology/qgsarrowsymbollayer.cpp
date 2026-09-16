@@ -49,9 +49,9 @@ bool QgsArrowSymbolLayer::setSubSymbol( QgsSymbol *symbol )
   return false;
 }
 
-QgsSymbolLayer *QgsArrowSymbolLayer::create( const QVariantMap &props )
+std::unique_ptr<QgsSymbolLayer> QgsArrowSymbolLayer::create( const QVariantMap &props )
 {
-  QgsArrowSymbolLayer *l = new QgsArrowSymbolLayer();
+  auto l = std::make_unique<QgsArrowSymbolLayer>();
 
   if ( props.contains( u"arrow_width"_s ) )
     l->setArrowWidth( props[u"arrow_width"_s].toDouble() );
@@ -122,7 +122,7 @@ QgsSymbolLayer *QgsArrowSymbolLayer::create( const QVariantMap &props )
 
 QgsArrowSymbolLayer *QgsArrowSymbolLayer::clone() const
 {
-  QgsArrowSymbolLayer *l = static_cast<QgsArrowSymbolLayer *>( create( properties() ) );
+  QgsArrowSymbolLayer *l = static_cast<QgsArrowSymbolLayer *>( create( properties() ).release() );
   l->setSubSymbol( mSymbol->clone() );
   copyCommonProperties( l );
   return l;

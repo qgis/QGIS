@@ -61,6 +61,11 @@ void QgsExpressionNode::setCachedStaticValue( const QVariant &value ) const
   mCachedStaticValue = value;
 }
 
+QgsExpressionNode *QgsExpressionNode::simplifiedNode() const
+{
+  return clone();
+}
+
 QgsExpressionNode::QgsExpressionNode( const QgsExpressionNode &other )
   : parserFirstLine( other.parserFirstLine )
   , parserFirstColumn( other.parserFirstColumn )

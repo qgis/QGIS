@@ -20,6 +20,11 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+
+#define EXCLUDE_CPPCHECK
+#ifdef EXCLUDE_CPPCHECK
+#include "qgsprocessingalgorithm_p.h"
+#endif
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameters.h"
@@ -37,6 +42,7 @@ class QgsProcessingAlgorithmConfigurationWidget;
 class QgsMeshLayer;
 class QgsPointCloudLayer;
 class QMainWindow;
+class QgsAcademicReference;
 
 #ifdef SIP_RUN
 // clang-format off
@@ -194,6 +200,43 @@ class QMainWindow;
      * \since QGIS 3.40
      */
     virtual Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const SIP_HOLDGIL;
+
+    /**
+     * Returns the list of academic references describing the logic and processes used by the algorithm.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QList<QgsAcademicReference> academicReferences() const;
+
+    /**
+     * Encapsulates details of an external link describing an algorithm's behavior or source.
+     *
+     * \since QGIS 4.4
+     */
+    struct ExternalLink
+    {
+      //! Link description text
+      QString description;
+      //! Link URL
+      QString url;
+    };
+
+    /**
+     * Returns a list of external links describing the algorithm's behavior or source.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QList< QgsProcessingAlgorithm::ExternalLink > externalLinks() const;
+
+    /**
+     * Returns a URL for the source code location best reflecting the internal algorithm logic.
+     *
+     * Subclasses should return a URL pointing to the source code location best representing this internal logic,
+     * e.g. from the plugin's public code repository.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QString implementationSourceUri() const;
 
     /**
      * Returns an icon for the algorithm.

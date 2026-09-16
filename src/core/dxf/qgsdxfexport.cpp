@@ -899,8 +899,7 @@ void QgsDxfExport::prepareRenderers()
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
   mRenderContext.expressionContext().appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapSettings ) );
 
-  mLabelingEngine = std::make_unique<QgsDefaultLabelingEngine>();
-  mLabelingEngine->setMapSettings( mMapSettings );
+  mLabelingEngine = std::make_unique<QgsDefaultLabelingEngine>( mMapSettings );
   mRenderContext.setLabelingEngine( mLabelingEngine.get() );
 
   const QList< QgsMapLayer * > layers = mMapSettings.layers();

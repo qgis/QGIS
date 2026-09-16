@@ -51,6 +51,7 @@ from qgis.core import (
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterVectorDestination,
     QgsProcessingParameterVectorLayer,
+    QgsProcessingRasterLayerDefinition,  # NOQA - must be here for saved file evaluation
     QgsProcessingUtils,
     QgsProject,
     QgsProperty,  # NOQA - must be here for saved file evaluation
@@ -61,9 +62,9 @@ from qgis.gui import (
     QgsAbstractProcessingParameterWidgetWrapper,
     QgsExpressionBuilderDialog,
     QgsFindFilesByPatternDialog,
+    QgsGui,
     QgsPanelWidget,
     QgsProcessingContextGenerator,
-    QgsProcessingParameterWidgetContext,
 )
 from qgis.PyQt import uic
 
@@ -89,11 +90,9 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
     QToolButton,
 )
-from qgis.utils import iface
 
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 from processing.gui.MultipleInputDialog import MultipleInputDialog
-from processing.gui.wrappers import WidgetWrapper, WidgetWrapperFactory
 from processing.tools import dataobjects
 from processing.tools.dataobjects import createContext
 
@@ -834,12 +833,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
     def setCellWrapper(self, row, column, wrapper, context):
         self.wrappers[row - 1][column] = wrapper
 
-        widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setActiveLayer(iface.activeLayer())
-            widget_context.setMapCanvas(iface.mapCanvas())
-
+        widget_context = QgsGui.processingGuiRegistry().createWidgetContext()
         widget_context.setMessageBar(self.parent.messageBar())
 
         if isinstance(self.alg, QgsProcessingModelAlgorithm):
@@ -847,16 +841,8 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         wrapper.setWidgetContext(widget_context)
         wrapper.registerProcessingContextGenerator(self.context_generator)
 
-        # For compatibility with 3.x API, we need to check whether the wrapper is
-        # the deprecated WidgetWrapper class. If not, it's the newer
-        # QgsAbstractProcessingParameterWidgetWrapper class
-        # TODO QGIS 5.0 - remove
-        is_cpp_wrapper = not issubclass(wrapper.__class__, WidgetWrapper)
-        if is_cpp_wrapper:
-            widget = wrapper.createWrappedWidget(context)
-            wrapper.widgetValueHasChanged.connect(self.parameterChanged)
-        else:
-            widget = wrapper.widget
+        widget = wrapper.createWrappedWidget(context)
+        wrapper.widgetValueHasChanged.connect(self.parameterChanged)
 
         self.tblParameters.setCellWidget(row, column, widget)
 
@@ -895,9 +881,13 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                     continue
 
                 column = self.parameter_to_column[param.name()]
-                wrapper = WidgetWrapperFactory.create_wrapper(
-                    param, self.parent, row, column
+
+                wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(
+                    param, Qgis.ProcessingMode.Batch
                 )
+
+                wrapper.setDialog(self.parent)
+
                 wrappers[param.name()] = wrapper
                 self.setCellWrapper(row, column, wrapper, context)
 

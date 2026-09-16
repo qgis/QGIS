@@ -1606,11 +1606,13 @@ static QVariant fcnLower( const QVariantList &values, const QgsExpressionContext
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   return QVariant( str.toLower() );
 }
+
 static QVariant fcnUpper( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   return QVariant( str.toUpper() );
 }
+
 static QVariant fcnTitle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -2904,7 +2906,6 @@ static QVariant fcnUnaccent( const QVariantList &values, const QgsExpressionCont
   return QgsStringUtils::unaccent( values[0].toString() );
 }
 
-
 static QVariant fcnRight( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -2956,17 +2957,25 @@ static QVariant fcnLeft( const QVariantList &values, const QgsExpressionContext 
 
 static QVariant fcnRPad( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   QString fill = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  if ( fill.isEmpty() )
+  {
+    fill = u" "_s;
+  }
   return string.leftJustified( length, fill.at( 0 ), true );
 }
 
 static QVariant fcnLPad( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const int length = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   QString fill = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
+  if ( fill.isEmpty() )
+  {
+    fill = u" "_s;
+  }
   return string.rightJustified( length, fill.at( 0 ), true );
 }
 
@@ -7315,21 +7324,24 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
         return context->cachedValue( cacheValueKey );
       }
 
-      const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
-      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-
-      const QString cacheKey = u"repvalfcn:%1:%2"_s.arg( layer ? layer->id() : u"[None]"_s, fieldName );
-
-      QVariant cache;
-      if ( !context->hasCachedValue( cacheKey ) )
+      if ( layer )
       {
-        cache = formatter->createCache( layer, fieldIndex, setup.config() );
-        context->setCachedValue( cacheKey, cache );
-      }
-      else
-        cache = context->cachedValue( cacheKey );
+        const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
+        const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
-      result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
+        const QString cacheKey = u"repvalfcn:%1:%2"_s.arg( layer ? layer->id() : u"[None]"_s, fieldName );
+
+        QVariant cache;
+        if ( !context->hasCachedValue( cacheKey ) )
+        {
+          cache = formatter->createCache( layer, fieldIndex, setup.config() );
+          context->setCachedValue( cacheKey, cache );
+        }
+        else
+          cache = context->cachedValue( cacheKey );
+
+        result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
+      }
 
       context->setCachedValue( cacheValueKey, result );
     }
@@ -9634,8 +9646,18 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       << new QgsStaticExpressionFunction( u"strpos"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"haystack"_s ) << QgsExpressionFunction::Parameter( u"needle"_s ), fcnStrpos, u"String"_s )
       << new QgsStaticExpressionFunction( u"left"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnLeft, u"String"_s )
       << new QgsStaticExpressionFunction( u"right"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnRight, u"String"_s )
-      << new QgsStaticExpressionFunction( u"rpad"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s ), fcnRPad, u"String"_s )
-      << new QgsStaticExpressionFunction( u"lpad"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s ), fcnLPad, u"String"_s )
+      << new QgsStaticExpressionFunction(
+           u"rpad"_s,
+           QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s, true, u" "_s ),
+           fcnRPad,
+           u"String"_s
+         )
+      << new QgsStaticExpressionFunction(
+           u"lpad"_s,
+           QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s, true, u" "_s ),
+           fcnLPad,
+           u"String"_s
+         )
       << new QgsStaticExpressionFunction( u"format"_s, -1, fcnFormatString, u"String"_s )
       << new QgsStaticExpressionFunction(
            u"format_number"_s,

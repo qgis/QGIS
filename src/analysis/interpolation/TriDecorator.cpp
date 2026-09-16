@@ -22,7 +22,7 @@
 
 using namespace Qt::StringLiterals;
 
-void TriDecorator::addLine( const QVector<QgsPoint> &points, QgsInterpolator::SourceType lineType )
+void TriDecorator::addLine( const QVector<QgsPoint> &points, Qgis::InterpolationSourceType lineType )
 {
   if ( mTIN )
   {

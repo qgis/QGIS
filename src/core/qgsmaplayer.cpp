@@ -69,7 +69,6 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QUrl>
-#include <QUuid>
 #include <QXmlStreamReader>
 
 #include "moc_qgsmaplayer.cpp"
@@ -157,7 +156,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setCustomProperties( mCustomProperties );
   layer->setOpacity( mLayerOpacity );
   layer->setMetadata( mMetadata );
-  layer->serverProperties()->copyTo( mServerProperties.get() );
+  mServerProperties->copyTo( layer->serverProperties() );
 }
 
 Qgis::LayerType QgsMapLayer::type() const
@@ -1639,7 +1638,19 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   }
   else
   {
-    const QFileInfo project( QgsProject::instance()->fileName() ); // skip-keyword-check
+    QString projectFileName;
+    if ( QgsProject *lProject = project() )
+    {
+      projectFileName = lProject->fileName();
+    }
+    // TODO QGIS 5.0 -- Remove the else branch with fallback to current QGIS project, the code will work but if the MapLayer is not associated with project it will not provide result
+    else
+    {
+      QgsDebugError( "QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0." );
+      projectFileName = QgsProject::instance()->fileName(); // skip-keyword-check
+    }
+
+    const QFileInfo project( projectFileName );
     QgsDebugMsgLevel( u"project fileName: %1"_s.arg( project.absoluteFilePath() ), 4 );
 
     QString xml;
@@ -2936,19 +2947,7 @@ void QgsMapLayer::setOriginalXmlProperties( const QString &originalXmlProperties
 
 QString QgsMapLayer::generateId( const QString &layerName )
 {
-  // Generate the unique ID of this layer
-  const QString uuid = QUuid::createUuid().toString();
-  // trim { } from uuid
-  QString id = layerName + '_' + uuid.mid( 1, uuid.length() - 2 );
-  // Tidy the ID up to avoid characters that may cause problems
-  // elsewhere (e.g in some parts of XML). Replaces every non-word
-  // character (word characters are the alphabet, numbers and
-  // underscore) with an underscore.
-  // Note that the first backslash in the regular expression is
-  // there for the compiler, so the pattern is actually \W
-  const thread_local QRegularExpression idRx( u"[\\W]"_s );
-  id.replace( idRx, u"_"_s );
-  return id;
+  return QgsStringUtils::createUniqueId( layerName );
 }
 
 bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const

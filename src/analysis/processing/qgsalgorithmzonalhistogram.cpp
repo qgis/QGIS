@@ -121,6 +121,8 @@ bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> zones( parameterAsSource( parameters, u"INPUT_VECTOR"_s, context ) );
   if ( !zones )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT_VECTOR"_s ) );

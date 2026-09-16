@@ -1,0 +1,67 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparameterinterpolationpixelsize.h   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProcessingParameterInterpolationPixelSize : QgsProcessingParameterNumber
+{
+%Docstring(signature="appended")
+A parameter for the interpolation algorithm pixel size parameter.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameterinterpolationpixelsize.h"
+%End
+  public:
+    QgsProcessingParameterInterpolationPixelSize(
+      const QString &name,
+      const QString &description = QString(),
+      const QString &interpolationSourceParameter = QString(),
+      const QString &extentParameter = QString(),
+      const QVariant &defaultValue = QVariant()
+    );
+%Docstring
+Constructor for QgsProcessingParameterInterpolationPixelSize.
+%End
+
+    virtual QgsProcessingParameterInterpolationPixelSize *clone() const;
+
+    virtual QString type() const;
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    QString interpolationSourceParameter() const;
+%Docstring
+Returns the linked interpolation source parameter name.
+%End
+
+    QString extentParameter() const;
+%Docstring
+Returns the linked extent parameter name.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingparameterinterpolationpixelsize.h   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

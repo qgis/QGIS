@@ -2,8 +2,8 @@
                          qgsalgorithmfileuploader.cpp
                          ---------------------
   Date                 : August 2025
-  Copyright            : (C) 2025 by Valentin Buira
-  Email                : valentin dot buira at gmail dot com
+  Copyright            : (C) 2025 by Celia Buira
+  Email                : celia dot buira at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -94,6 +94,8 @@ void QgsFileUploaderAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mFeedback = feedback;
   QString url = parameterAsString( parameters, u"URL"_s, context );
   if ( url.isEmpty() )

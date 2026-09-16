@@ -30,7 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
-  mColorRampShader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ) );
+  mColorRampShader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ).release() );
   mColorRampShader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
 }
 

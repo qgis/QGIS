@@ -1607,9 +1607,9 @@ void QgsMeshLayer::setMeshSimplificationSettings( const QgsMeshSimplificationSet
   mSimplificationSettings = simplifySettings;
 }
 
-static QgsColorRamp *_createDefaultColorRamp()
+static std::unique_ptr<QgsColorRamp> _createDefaultColorRamp()
 {
-  QgsColorRamp *ramp = QgsStyle::defaultStyle()->colorRamp( u"Plasma"_s );
+  std::unique_ptr<QgsColorRamp> ramp = QgsStyle::defaultStyle()->colorRamp( u"Plasma"_s );
   if ( ramp )
     return ramp;
 
@@ -1638,7 +1638,7 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
   const double groupMin = metadata.minimum();
   const double groupMax = metadata.maximum();
 
-  QgsColorRampShader fcn( groupMin, groupMax, _createDefaultColorRamp() );
+  QgsColorRampShader fcn( groupMin, groupMax, _createDefaultColorRamp().release() );
   fcn.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
 
   QgsMeshRendererScalarSettings scalarSettings;

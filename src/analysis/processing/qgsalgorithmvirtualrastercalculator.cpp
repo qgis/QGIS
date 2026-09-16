@@ -90,6 +90,8 @@ void QgsVirtualRasterCalculatorAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsVirtualRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   Q_UNUSED( feedback );
 
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
@@ -227,6 +229,8 @@ QgsVirtualRasterCalculatorModelerAlgorithm *QgsVirtualRasterCalculatorModelerAlg
 
 QVariantMap QgsVirtualRasterCalculatorModelerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   Q_UNUSED( feedback );
 
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"INPUT"_s, context );

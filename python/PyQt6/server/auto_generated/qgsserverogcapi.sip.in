@@ -54,10 +54,12 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
       license,
       // In addition the following link relation types are used for which no applicable registered link relation type could be identified:
       items,
+      queryables,
       conformance,
       data,
       schema,
-      profile
+      profile,
+      functions,
     };
 
     enum ContentType /BaseType=IntEnum/

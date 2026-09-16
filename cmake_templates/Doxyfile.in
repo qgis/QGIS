@@ -2400,6 +2400,7 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_CONSTRAINED" \
                          "SIP_CONVERT_TO_SUBCLASS_CODE" \
                          "SIP_DEPRECATED" \
+                         "SIP_DISALLOWNONE" \
                          "SIP_DOC_TEMPLATE" \
                          "SIP_END" \
                          "SIP_ENUM_BASETYPE" \

@@ -34,14 +34,14 @@ using namespace Qt::StringLiterals;
 
 QgsGeometryGeneratorSymbolLayer::~QgsGeometryGeneratorSymbolLayer() = default;
 
-QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &properties )
+std::unique_ptr<QgsSymbolLayer> QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &properties )
 {
   QString expression = properties.value( u"geometryModifier"_s ).toString();
   if ( expression.isEmpty() )
   {
     expression = u"@geometry"_s;
   }
-  QgsGeometryGeneratorSymbolLayer *symbolLayer = new QgsGeometryGeneratorSymbolLayer( expression );
+  auto symbolLayer = std::unique_ptr<QgsGeometryGeneratorSymbolLayer>( new QgsGeometryGeneratorSymbolLayer( expression ) );
 
   if ( properties.value( u"SymbolType"_s ) == "Marker"_L1 )
   {

@@ -120,6 +120,8 @@ bool QgsExtendLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QgsFeatureList QgsExtendLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {

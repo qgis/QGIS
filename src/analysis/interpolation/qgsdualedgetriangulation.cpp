@@ -79,7 +79,7 @@ void QgsDualEdgeTriangulation::performConsistencyTest()
   QgsDebugMsgLevel( u"consistency test finished"_s, 2 );
 }
 
-void QgsDualEdgeTriangulation::addLine( const QVector<QgsPoint> &points, QgsInterpolator::SourceType lineType )
+void QgsDualEdgeTriangulation::addLine( const QVector<QgsPoint> &points, Qgis::InterpolationSourceType lineType )
 {
   int actpoint = -10;     //number of the last point, which has been inserted from the line
   int currentpoint = -10; //number of the point, which is currently inserted from the line
@@ -1338,7 +1338,7 @@ static bool altitudeTriangleIsSmall( const QgsPoint &pointBase1, const QgsPoint 
   return pt3.distance( projectedPoint ) < tolerance;
 }
 
-int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolator::SourceType segmentType )
+int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, Qgis::InterpolationSourceType segmentType )
 {
   if ( p1 == p2 )
   {
@@ -1386,9 +1386,9 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
     if ( mHalfEdge[actEdge]->getPoint() == p2 )
     {
       mHalfEdge[actEdge]->setForced( true );
-      mHalfEdge[actEdge]->setBreak( segmentType == QgsInterpolator::SourceType::BreakLines );
+      mHalfEdge[actEdge]->setBreak( segmentType == Qgis::InterpolationSourceType::BreakLines );
       mHalfEdge[mHalfEdge[actEdge]->getDual()]->setForced( true );
-      mHalfEdge[mHalfEdge[actEdge]->getDual()]->setBreak( segmentType == QgsInterpolator::SourceType::BreakLines );
+      mHalfEdge[mHalfEdge[actEdge]->getDual()]->setBreak( segmentType == Qgis::InterpolationSourceType::BreakLines );
       return actEdge;
     }
 
@@ -1400,9 +1400,9 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
     {
       //mark actedge and Dual(actedge) as forced, reset p1 and start the method from the beginning
       mHalfEdge[actEdge]->setForced( true );
-      mHalfEdge[actEdge]->setBreak( segmentType == QgsInterpolator::SourceType::BreakLines );
+      mHalfEdge[actEdge]->setBreak( segmentType == Qgis::InterpolationSourceType::BreakLines );
       mHalfEdge[mHalfEdge[actEdge]->getDual()]->setForced( true );
-      mHalfEdge[mHalfEdge[actEdge]->getDual()]->setBreak( segmentType == QgsInterpolator::SourceType::BreakLines );
+      mHalfEdge[mHalfEdge[actEdge]->getDual()]->setBreak( segmentType == Qgis::InterpolationSourceType::BreakLines );
       const int a = insertForcedSegment( mHalfEdge[actEdge]->getPoint(), p2, segmentType );
       return a;
     }
@@ -1469,9 +1469,9 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
           {
             //mark actEdge and Dual(actEdge) as forced, reset p1 and start the method from the beginning
             mHalfEdge[actEdge]->setForced( true );
-            mHalfEdge[actEdge]->setBreak( segmentType == QgsInterpolator::SourceType::BreakLines );
+            mHalfEdge[actEdge]->setBreak( segmentType == Qgis::InterpolationSourceType::BreakLines );
             mHalfEdge[mHalfEdge[actEdge]->getDual()]->setForced( true );
-            mHalfEdge[mHalfEdge[actEdge]->getDual()]->setBreak( segmentType == QgsInterpolator::SourceType::BreakLines );
+            mHalfEdge[mHalfEdge[actEdge]->getDual()]->setBreak( segmentType == Qgis::InterpolationSourceType::BreakLines );
             const int a = insertForcedSegment( p4, p2, segmentType );
             return a;
           }
@@ -1479,9 +1479,9 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
           {
             //mark actEdge and Dual(actEdge) as forced, reset p1 and start the method from the beginning
             mHalfEdge[actEdge]->setForced( true );
-            mHalfEdge[actEdge]->setBreak( segmentType == QgsInterpolator::SourceType::BreakLines );
+            mHalfEdge[actEdge]->setBreak( segmentType == Qgis::InterpolationSourceType::BreakLines );
             mHalfEdge[mHalfEdge[actEdge]->getDual()]->setForced( true );
-            mHalfEdge[mHalfEdge[actEdge]->getDual()]->setBreak( segmentType == QgsInterpolator::SourceType::BreakLines );
+            mHalfEdge[mHalfEdge[actEdge]->getDual()]->setBreak( segmentType == Qgis::InterpolationSourceType::BreakLines );
             if ( p3 != p2 )
             {
               const int a = insertForcedSegment( p3, p2, segmentType );
@@ -1654,11 +1654,11 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
   //insert the forced edge and enter the corresponding halfedges as the first edges in the left and right polygons. The nexts and points are set later because of the algorithm to build two polygons from 'crossedEdges'
   const int firstedge = freelist.first(); //edge pointing from p1 to p2
   mHalfEdge[firstedge]->setForced( true );
-  mHalfEdge[firstedge]->setBreak( segmentType == QgsInterpolator::SourceType::BreakLines );
+  mHalfEdge[firstedge]->setBreak( segmentType == Qgis::InterpolationSourceType::BreakLines );
   leftPolygon.append( firstedge );
   const int dualfirstedge = mHalfEdge[freelist.first()]->getDual(); //edge pointing from p2 to p1
   mHalfEdge[dualfirstedge]->setForced( true );
-  mHalfEdge[dualfirstedge]->setBreak( segmentType == QgsInterpolator::SourceType::BreakLines );
+  mHalfEdge[dualfirstedge]->setBreak( segmentType == Qgis::InterpolationSourceType::BreakLines );
   rightPolygon.append( dualfirstedge );
   freelist.pop_front(); //delete the first entry from the freelist
 

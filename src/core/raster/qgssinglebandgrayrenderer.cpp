@@ -61,7 +61,7 @@ Qgis::RasterRendererFlags QgsSingleBandGrayRenderer::flags() const
   return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
 }
 
-QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
+std::unique_ptr<QgsRasterRenderer> QgsSingleBandGrayRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
   {
@@ -69,7 +69,7 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
   }
 
   const int grayBand = elem.attribute( u"grayBand"_s, u"-1"_s ).toInt();
-  QgsSingleBandGrayRenderer *r = new QgsSingleBandGrayRenderer( input, grayBand );
+  auto r = std::make_unique<QgsSingleBandGrayRenderer>( input, grayBand );
   r->readXml( elem );
 
   if ( elem.attribute( u"gradient"_s ) == "WhiteToBlack"_L1 )

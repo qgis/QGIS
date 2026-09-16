@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * \brief Class for storing data associated with a STAC link.
+ * \brief Stores data associated with a STAC link.
  *
  * \since QGIS 3.40
  */

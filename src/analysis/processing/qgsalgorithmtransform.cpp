@@ -122,6 +122,8 @@ bool QgsTransformAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
 
 QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature feature = f;
   if ( !mCreatedTransform )
   {

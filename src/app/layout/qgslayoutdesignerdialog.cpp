@@ -321,7 +321,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   QgsSettings settings;
   int size = settings.value( u"/qgis/toolbarIconSize"_s, QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
-  setStyleSheet( QgisApp::instance()->styleSheet() );
+  setStyleSheet( QgsGui::applicationStyleSheet() );
+  connect( QgsGui::instance(), &QgsGui::applicationStyleSheetChanged, this, &QgsLayoutDesignerDialog::setStyleSheet );
 
   setupUi( this );
   setWindowTitle( tr( "QGIS Layout Designer" ) );
@@ -1988,7 +1989,7 @@ void QgsLayoutDesignerDialog::duplicate()
 
   // provide feedback, since loading of template into duplicate layout will be hidden
   QDialog *dlg = new QgsBusyIndicatorDialog( tr( "Duplicating layout…" ) );
-  dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
+  dlg->setStyleSheet( QgsGui::applicationStyleSheet() );
   dlg->show();
 
   QgsLayoutDesignerDialog *newDialog = QgisApp::instance()->duplicateLayout( mMasterLayout, newTitle );

@@ -20,7 +20,6 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
-import re
 import sys
 from pathlib import Path
 
@@ -29,7 +28,6 @@ from qgis.core import (
     QgsApplication,
     QgsFileUtils,
     QgsProcessing,
-    QgsProcessingContext,
     QgsProcessingModelAlgorithm,
     QgsProcessingModelChildAlgorithm,
     QgsProcessingModelParameter,
@@ -37,21 +35,17 @@ from qgis.core import (
     QgsSettings,
 )
 from qgis.gui import (
+    QgsGui,
     QgsModelDesignerDialog,
     QgsModelGraphicsScene,
-    QgsProcessingAlgorithmWidgetBase,
     QgsProcessingContextGenerator,
     QgsProcessingParameterDefinitionDialog,
-    QgsProcessingParametersGenerator,
-    QgsProcessingParameterWidgetContext,
 )
 from qgis.PyQt.QtCore import (
-    QCoreApplication,
     QDir,
     QFileInfo,
     QPoint,
     QPointF,
-    QRectF,
     QUrl,
     pyqtSignal,
 )
@@ -59,13 +53,7 @@ from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.utils import iface
 
 from processing.gui.algorithm_widget import AlgorithmWidget
-from processing.modeler.ModelerParameterDefinitionDialog import (
-    ModelerParameterDefinitionDialog,
-)
-from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
-from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.ModelerUtils import ModelerUtils
-from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools.dataobjects import createContext
 
@@ -92,9 +80,12 @@ class ModelerDialog(QgsModelDesignerDialog):
     def __init__(self, model=None, parent=None):
         super().__init__(parent)
 
-        if iface is not None:
-            self.toolbar().setIconSize(iface.iconSize())
-            self.setStyleSheet(iface.mainWindow().styleSheet())
+        self.toolbar().setIconSize(
+            QgsGui.iconSize(Qgis.UserInterfaceIconType.DockedToolbar)
+        )
+
+        self.setStyleSheet(QgsGui.applicationStyleSheet())
+        QgsGui.instance().applicationStyleSheetChanged.connect(self.setStyleSheet)
 
         self.actionOpen().triggered.connect(self.openModel)
         self.actionSaveInProject().triggered.connect(self.saveInProject)
@@ -133,9 +124,9 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.model().setSourceFilePath(None)
 
         project_provider = QgsApplication.processingRegistry().providerById(
-            PROJECT_PROVIDER_ID
+            QgsProcessing.PROJECT_PROVIDER_ID
         )
-        project_provider.add_model(self.model())
+        project_provider.addModel(self.model())
 
         self.update_model.emit()
         self.messageBar().pushMessage(
@@ -239,7 +230,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.loadModel(filename)
 
     def repaintModel(self, showControls=True):
-        scene = ModelerScene(self)
+        scene = QgsModelGraphicsScene(self)
         if not showControls:
             scene.setFlag(QgsModelGraphicsScene.Flag.FlagHideControls)
 
@@ -254,18 +245,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         # create items later that setModelScene to setup link to messageBar to the scene
         scene.createItems(self.model(), context)
         scene.updateBounds()
-
-    def createWidgetContext(self):
-        """
-        Returns a new widget context for use in the model editor
-        """
-        widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setProject(QgsProject.instance())
-        if iface is not None:
-            widget_context.setMapCanvas(iface.mapCanvas())
-            widget_context.setActiveLayer(iface.activeLayer())
-        widget_context.setModel(self.model())
-        return widget_context
 
     def autogenerate_parameter_name(self, parameter):
         """
@@ -289,26 +268,19 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         new_param = None
         comment = None
-        if ModelerParameterDefinitionDialog.use_legacy_dialog(paramType=paramType):
-            dlg = ModelerParameterDefinitionDialog(self.model(), paramType)
-            if dlg.exec():
-                new_param = dlg.create_parameter()
-                comment = dlg.comments()
-        else:
-            # yay, use new API!
-            context = createContext()
-            widget_context = self.createWidgetContext()
-            dlg = QgsProcessingParameterDefinitionDialog(
-                type=paramType,
-                context=context,
-                widgetContext=widget_context,
-                algorithm=self.model(),
-            )
-            dlg.registerProcessingContextGenerator(self.context_generator)
-            if dlg.exec():
-                new_param = dlg.createParameter()
-                self.autogenerate_parameter_name(new_param)
-                comment = dlg.comments()
+        context = createContext()
+        widget_context = self.createWidgetContext()
+        dlg = QgsProcessingParameterDefinitionDialog(
+            type=paramType,
+            context=context,
+            widgetContext=widget_context,
+            algorithm=self.model(),
+        )
+        dlg.registerProcessingContextGenerator(self.context_generator)
+        if dlg.exec():
+            new_param = dlg.createParameter()
+            self.autogenerate_parameter_name(new_param)
+            comment = dlg.comments()
 
         if new_param is not None:
             if pos is None or not pos:
@@ -328,7 +300,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.beginUndoCommand(self.tr("Add Model Input"))
             self.model().addModelParameter(new_param, component)
             self.repaintModel()
-            # self.view().ensureVisible(self.scene.getLastParameterItem())
             self.endUndoCommand()
 
     def getPositionForParameterItem(self):

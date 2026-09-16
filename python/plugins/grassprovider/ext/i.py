@@ -21,7 +21,7 @@ __copyright__ = "(C) 2016, Médéric Ribreux"
 
 import os
 
-from processing.tools.system import getTempFilename, isWindows
+from processing.tools.system import getTempFilename
 from qgis.core import QgsMessageLog, QgsProcessingParameterString
 from qgis.PyQt.QtCore import QDir
 
@@ -225,7 +225,7 @@ def createDestDir(alg, toFile):
     """Generates an mkdir command for GRASS script"""
     # Creates the destination directory
     command = '{} "{}"'.format(
-        "MD" if isWindows() else "mkdir -p",
+        "MD" if GrassUtils.is_windows() else "mkdir -p",
         QDir.toNativeSeparators(os.path.dirname(toFile)),
     )
     alg.commands.append(command)
@@ -235,7 +235,7 @@ def moveFile(alg, fromFile, toFile):
     """Generates a move command for GRASS script"""
     createDestDir(alg, toFile)
     command = '{} "{}" "{}"'.format(
-        "MOVE /Y" if isWindows() else "mv -f",
+        "MOVE /Y" if GrassUtils.is_windows() else "mv -f",
         QDir.toNativeSeparators(fromFile),
         QDir.toNativeSeparators(toFile),
     )
@@ -246,7 +246,7 @@ def copyFile(alg, fromFile, toFile):
     """Generates a copy command for GRASS script"""
     createDestDir(alg, toFile)
     command = '{} "{}" "{}"'.format(
-        "COPY /Y" if isWindows() else "cp -f",
+        "COPY /Y" if GrassUtils.is_windows() else "cp -f",
         QDir.toNativeSeparators(fromFile),
         QDir.toNativeSeparators(toFile),
     )

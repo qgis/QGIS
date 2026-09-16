@@ -45,7 +45,7 @@ gdal|ogr|postgres it will load only providers gdal, ogr and postgres.
       Manager,
     };
 
-    static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
+    static QgsProviderRegistry *instance( const QString &pluginPath = QString() ) /DisallowNone/;
 %Docstring
 Means of accessing canonical single instance
 %End

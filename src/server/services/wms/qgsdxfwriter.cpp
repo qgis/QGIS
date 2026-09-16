@@ -33,6 +33,7 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::UseOpacity );
     context.setFlag( QgsWmsRenderContext::UseFilter );
     context.setFlag( QgsWmsRenderContext::SetAccessControl );
+    context.setFlag( QgsWmsRenderContext::AddHighlightLayers );
     context.setParameters( request.wmsParameters() );
     context.setSocketFeedback( response.feedback() );
 

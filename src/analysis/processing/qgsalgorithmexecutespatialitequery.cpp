@@ -76,6 +76,8 @@ void QgsExecuteSpatialiteQueryAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsExecuteSpatialiteQueryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   Q_UNUSED( feedback );
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"DATABASE"_s, context );
   QString databaseUri = layer->dataProvider()->dataSourceUri();

@@ -26,7 +26,7 @@
 EXCLUDE_SCRIPT_LIST='(\.(xml|sip|pl|sh|badquote|cmake(\.in)?)|^(debian/copyright|cmake_templates/.*|tests/testdata/labeling/README.rst|tests/testdata/font/QGIS-Vera/COPYRIGHT.TXT|doc/debian/build/))$'
 
 # always exclude these files
-EXCLUDE_EXTERNAL_LIST='((\.(svg|qgs|laz|las|png|lock|sip\.in))|resources/data/.*|resources/cpt-city-qgis-min/.*|resources/server/src/.*|resources/server/api/ogc/static/landingpage/js/.*|tests/testdata/.*|scripts/pre_commit/spell_check/spelling.dat|doc/api_break.dox|NEWS.md|python/PyQt6/.*/class_map.yaml|python/.*/auto_(additions|generated)/.*)$'
+EXCLUDE_EXTERNAL_LIST='((\.(svg|qgs|laz|las|png|lock|sip\.in))|resources/data/.*|resources/cpt-city-qgis-min/.*|resources/server/src/.*|src/server/services/landingpage/webapp/.*|tests/testdata/.*|scripts/pre_commit/spell_check/spelling.dat|doc/api_break.dox|NEWS.md|python/PyQt6/.*/class_map.yaml|python/.*/auto_(additions|generated)/.*)$'
 
 DIR=$(git rev-parse --show-toplevel)/scripts/pre_commit/spell_check
 
@@ -90,7 +90,13 @@ SPELLOKRX='(#\s*spellok|<!--\s*#\s*spellok\s*-->)'
 # split into several files to avoid too long regexes
 SPLIT=8
 
-${GP}split --number=l/$SPLIT --numeric-suffixes --suffix-length=2 --additional-suffix=~ ${DIR}/spelling.dat spelling
+# use a private temp dir so concurrent invocations of this script (e.g. pre-commit
+# running this hook on several file batches in parallel) don't clobber each other's
+# split files, which were previously written under fixed names in the working directory
+TMPDIR_SPELLCHECK=$(mktemp -d)
+trap 'rm -rf "$TMPDIR_SPELLCHECK"' EXIT
+
+${GP}split --number=l/$SPLIT --numeric-suffixes --suffix-length=2 --additional-suffix=~ ${DIR}/spelling.dat ${TMPDIR_SPELLCHECK}/spelling
 
 # global replace variables (dictionary)
 declare -A GLOBREP_ALLFILES=()
@@ -101,7 +107,7 @@ ERRORFOUND=NO
 
 for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
   { [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]]; } && printf "Progress: %d/%d\r" $(( I + 1 )) $SPLIT
-  SPELLFILE=spelling$I~
+  SPELLFILE=${TMPDIR_SPELLCHECK}/spelling$I~
   ${GP}sed -i '/^#/d' $SPELLFILE
 
   # if correction contains an uppercase letter and is the same as the error character wise, this means that the error is searched as a full word and case sensitive (not incorporated in a bigger one)

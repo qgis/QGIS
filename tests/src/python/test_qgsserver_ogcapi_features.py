@@ -20,7 +20,6 @@ import os
 os.environ["QT_HASH_SEED"] = "1"
 
 from qgis.core import (
-    Qgis,
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsEditorWidgetSetup,
@@ -37,11 +36,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.PyQt import QtCore
-from qgis.server import (
-    QgsBufferServerRequest,
-    QgsBufferServerResponse,
-    QgsServer,
-)
+from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse
 from qgis.testing import unittest
 from test_qgsserver_api import QgsServerAPITestBase
 
@@ -69,8 +64,7 @@ class QgsServerOgcApiFeaturesTest(QgsServerAPITestBase):
     def _getJsonResponse(self, url, project, expected_error=None):
         request = QgsBufferServerRequest(url)
         response = QgsBufferServerResponse()
-        server = QgsServer()
-        server.handleRequest(request, response, project)
+        self.server.handleRequest(request, response, project)
         if expected_error is None:
             self.assertEqual(
                 response.statusCode(),
@@ -99,7 +93,7 @@ class QgsServerOgcApiFeaturesTest(QgsServerAPITestBase):
             project,
         )
 
-        links = [l["href"] for l in j["links"]]
+        links = [link["href"] for link in j["links"]]
 
         # No default
         if not profile:

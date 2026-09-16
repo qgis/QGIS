@@ -126,6 +126,8 @@ QgsFields QgsSplitLinesByLengthAlgorithm::outputFields( const QgsFields &inputFi
 
 QgsFeatureList QgsSplitLinesByLengthAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !f.hasGeometry() )
   {
     return QgsFeatureList() << f;

@@ -20,7 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsappquerylogger.h"
 #include "qgsdatabasequeryloggernode.h"
-#include "qgsguiutils.h"
+#include "qgsgui.h"
 #include "qgsjsonutils.h"
 #include "qgssettings.h"
 
@@ -178,7 +178,7 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
   mTreeView->sortByColumn( 0, Qt::SortOrder::AscendingOrder );
 
   verticalLayout->addWidget( mTreeView );
-  mToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mToolbar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::DockedToolbar ) );
 
   mFilterLineEdit->setShowClearButton( true );
   mFilterLineEdit->setShowSearchIcon( true );

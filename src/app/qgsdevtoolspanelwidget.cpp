@@ -20,6 +20,7 @@
 #include "qgsdevtoolwidget.h"
 #include "qgsdevtoolwidgetfactory.h"
 #include "qgsdockwidget.h"
+#include "qgsgui.h"
 #include "qgspanelwidgetstack.h"
 #include "qgssettingsentryimpl.h"
 
@@ -38,7 +39,7 @@ QgsDevToolsPanelWidget::QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFact
 {
   setupUi( this );
 
-  mOptionsListWidget->setIconSize( QgisApp::instance()->iconSize( false ) );
+  mOptionsListWidget->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::MainWindowToolbar ) );
   mOptionsListWidget->setMaximumWidth( static_cast<int>( mOptionsListWidget->iconSize().width() * 1.18 ) );
 
 

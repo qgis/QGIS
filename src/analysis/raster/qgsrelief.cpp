@@ -96,6 +96,7 @@ QgsRelief::Result QgsRelief::processRaster( QgsFeedback *feedback )
   //output driver
   QgsRasterFileWriter writer( mOutputFile );
   writer.setOutputFormat( mOutputFormat );
+  writer.setCreationOptions( mCreationOptions );
   std::unique_ptr<QgsRasterDataProvider> outputProvider( writer.createMultiBandRaster( Qgis::DataType::Byte, xSize, ySize, inputProvider->extent(), inputProvider->crs(), 3 ) );
   if ( !outputProvider )
   {
@@ -123,10 +124,6 @@ QgsRelief::Result QgsRelief::processRaster( QgsFeedback *feedback )
   {
     mInputNodataValue = inputProvider->sourceNoDataValue( 1 );
   }
-  else
-  {
-    mInputNodataValue = -9999;
-  }
 
   mSlopeFilter->setInputNodataValue( mInputNodataValue );
   mAspectFilter->setInputNodataValue( mInputNodataValue );
@@ -134,7 +131,6 @@ QgsRelief::Result QgsRelief::processRaster( QgsFeedback *feedback )
   mHillshadeFilter300->setInputNodataValue( mInputNodataValue );
   mHillshadeFilter315->setInputNodataValue( mInputNodataValue );
 
-  mOutputNodataValue = -9999;
   outputProvider->setNoDataValue( 1, mOutputNodataValue );
   outputProvider->setNoDataValue( 2, mOutputNodataValue );
   outputProvider->setNoDataValue( 3, mOutputNodataValue );

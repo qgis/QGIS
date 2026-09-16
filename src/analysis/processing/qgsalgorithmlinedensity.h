@@ -35,11 +35,6 @@ using namespace Qt::StringLiterals;
 
 /**
  * Line Density Algorithm as implemented in ESRI ArcGIS Spatial Analyst
- *
- * Literature:
- * Silverman, B.w. Density Estimation for Statistics and Data Analsis.
- * New York: Chapman and Hall, 1986
- *
  */
 class QgsLineDensityAlgorithm : public QgsProcessingAlgorithm
 {
@@ -55,6 +50,7 @@ class QgsLineDensityAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortDescription() const override;
     QString shortHelpString() const override;
+    QList<QgsAcademicReference> academicReferences() const override;
     Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsLineDensityAlgorithm *createInstance() const override SIP_FACTORY;
 

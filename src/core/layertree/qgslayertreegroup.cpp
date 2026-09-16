@@ -19,6 +19,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
+#include "qgsstringutils.h"
 
 #include <QDomElement>
 #include <QString>
@@ -31,6 +32,7 @@ using namespace Qt::StringLiterals;
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
   : QgsLayerTreeNode( NodeGroup, checked )
   , mName( name )
+  , mId( QgsStringUtils::createUniqueId( u"group"_s ) )
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
 {
   init();
@@ -39,6 +41,7 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup &other )
   : QgsLayerTreeNode( other )
   , mName( other.mName )
+  , mId( other.mId )
   , mChangingChildVisibility( other.mChangingChildVisibility )
   , mMutuallyExclusive( other.mMutuallyExclusive )
   , mMutuallyExclusiveChildIndex( other.mMutuallyExclusiveChildIndex )
@@ -72,6 +75,11 @@ void QgsLayerTreeGroup::setName( const QString &n )
 
   mName = n;
   emit nameChanged( this, n );
+}
+
+void QgsLayerTreeGroup::setId( const QString &id )
+{
+  mId = id;
 }
 
 
@@ -130,12 +138,12 @@ QgsLayerTreeCustomNode *QgsLayerTreeGroup::insertCustomNode( int index, const QS
 
 QgsLayerTreeCustomNode *QgsLayerTreeGroup::insertCustomNode( int index, QgsLayerTreeCustomNode *node SIP_TRANSFER )
 {
-  if ( node->nodeId().trimmed().isEmpty() )
+  if ( node->id().trimmed().isEmpty() )
     return nullptr;
 
   // Avoid registering two custom nodes with the same id
   const QStringList customNodeIds = findCustomNodeIds();
-  if ( customNodeIds.contains( node->nodeId() ) )
+  if ( customNodeIds.contains( node->id() ) )
     return nullptr;
 
   insertChildNode( index, node );
@@ -235,7 +243,7 @@ void QgsLayerTreeGroup::removeCustomNode( QgsLayerTreeCustomNode *customNode )
     if ( QgsLayerTree::isCustomNode( child ) )
     {
       QgsLayerTreeCustomNode *childCustom = QgsLayerTree::toCustomNode( child );
-      if ( childCustom->nodeId() == customNode->nodeId() )
+      if ( childCustom->id() == customNode->id() )
       {
         removeChildren( mChildren.indexOf( child ), 1 );
         break;
@@ -338,7 +346,7 @@ QgsLayerTreeCustomNode *QgsLayerTreeGroup::findCustomNode( const QString &id ) c
     if ( QgsLayerTree::isCustomNode( child ) )
     {
       QgsLayerTreeCustomNode *childCustom = QgsLayerTree::toCustomNode( child );
-      if ( childCustom->nodeId() == id )
+      if ( childCustom->id() == id )
         return childCustom;
     }
     else if ( QgsLayerTree::isGroup( child ) )
@@ -513,6 +521,10 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( const QDomElement &element, const
   int mutuallyExclusiveChildIndex = element.attribute( u"mutually-exclusive-child"_s, u"-1"_s ).toInt();
 
   QgsLayerTreeGroup *groupNode = new QgsLayerTreeGroup( name, checked );
+  // maintains backwards compatibility
+  const QString id = element.attribute( u"id"_s );
+  if ( !id.isEmpty() )
+    groupNode->mId = id;
   groupNode->setExpanded( isExpanded );
 
   groupNode->readCommonXml( element );
@@ -574,6 +586,7 @@ void QgsLayerTreeGroup::writeXml( QDomElement &parentElement, const QgsReadWrite
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( u"layer-tree-group"_s );
   elem.setAttribute( u"name"_s, mName );
+  elem.setAttribute( u"id"_s, mId );
   elem.setAttribute( u"expanded"_s, mExpanded ? u"1"_s : u"0"_s );
   elem.setAttribute( u"checked"_s, mChecked ? u"Qt::Checked"_s : u"Qt::Unchecked"_s );
   if ( mMutuallyExclusive )
@@ -745,7 +758,7 @@ QStringList QgsLayerTreeGroup::findCustomNodeIds() const
     if ( QgsLayerTree::isGroup( child ) )
       lst << QgsLayerTree::toGroup( child )->findCustomNodeIds();
     else if ( QgsLayerTree::isCustomNode( child ) )
-      lst << QgsLayerTree::toCustomNode( child )->nodeId();
+      lst << QgsLayerTree::toCustomNode( child )->id();
   }
   return lst;
 }

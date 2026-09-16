@@ -1,8 +1,10 @@
 { "components" : {
     "schemas" : {
       "anyObject" : {
+        "required": [],
         "type" : "object",
-        "description" : "any JSON object"
+        "description" : "any JSON object",
+        "properties": {}
       },
       "exception" : {
         "required" : [ "code" ],
@@ -42,6 +44,11 @@
               "rel" : "data",
               "type" : "application/json",
               "title" : "Metadata about the feature collections"
+            }, {
+              "href" : "http://data.example.org/functions",
+              "rel" : "data",
+              "type" : "application/json",
+              "title" : "Custom functions implemented by this server"
             } ],
             "items" : {
               "$ref" : "#/components/schemas/link"
@@ -427,6 +434,43 @@
         "name" : "bbox-crs",
         "in" : "query",
         "description" : "The coordinate reference system of the bbox parameter. Default is WGS84 longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84).",
+        "required" : false,
+        "style" : "form",
+        "explode" : false,
+        "schema" : {
+          "type" : "string",
+          "enum" : [ "http://www.opengis.net/def/crs/EPSG/0/25832", "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/3034", "http://www.opengis.net/def/crs/EPSG/0/3035", "http://www.opengis.net/def/crs/EPSG/0/3043", "http://www.opengis.net/def/crs/EPSG/0/3044", "http://www.opengis.net/def/crs/EPSG/0/3045", "http://www.opengis.net/def/crs/EPSG/0/3857", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/EPSG/0/4326", "http://www.opengis.net/def/crs/EPSG/0/4647", "http://www.opengis.net/def/crs/EPSG/0/5649", "http://www.opengis.net/def/crs/EPSG/0/5650", "http://www.opengis.net/def/crs/EPSG/0/5651", "http://www.opengis.net/def/crs/EPSG/0/5652", "http://www.opengis.net/def/crs/EPSG/0/5653", "http://www.opengis.net/def/crs/EPSG/0/28992", "http://www.opengis.net/def/crs/EPSG/0/25831", "http://www.opengis.net/def/crs/EPSG/0/25833" ],
+          "default" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        }
+      },
+      "filter": {
+        "name" : "filter",
+        "in" : "query",
+        "description" : "A filter expression.",
+        "required" : false,
+        "style" : "form",
+        "explode" : false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "filter-lang": {
+        "name" : "filter-lang",
+        "in" : "query",
+        "description" : "The language of the filter parameter. Default is \"qgis\". Alternatively cql2-text is supported.",
+        "required" : false,
+        "style" : "form",
+        "explode" : false,
+        "schema" : {
+          "type" : "string",
+          "enum" : [ "qgis", "cql2-text" ],
+          "default" : "qgis"
+        }
+      },
+      "filter-crs": {
+        "name" : "filter-crs",
+        "in" : "query",
+        "description" : "The coordinate reference system of the filter parameter. Default is WGS84 longitude/latitude (http://www.opengis.net/def/crs/OGC/1.3/CRS84).",
         "required" : false,
         "style" : "form",
         "explode" : false,

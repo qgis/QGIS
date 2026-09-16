@@ -225,6 +225,15 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      */
     void setLinkedVisibilityLayer( QgsMapLayer *layer );
 
+  signals:
+
+    /**
+     * Emitted when items are added, removed or modified in the layer.
+     *
+     * \since QGIS 4.4
+     */
+    void itemsChanged();
+
   private:
     QStringList queryIndex( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
     bool writeItems( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;

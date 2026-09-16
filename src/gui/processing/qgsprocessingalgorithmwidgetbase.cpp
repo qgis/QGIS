@@ -20,6 +20,7 @@
 #include "processing/qgsprocessingalgorithm.h"
 #include "processing/qgsprocessingalgrunnertask.h"
 #include "processing/qgsprocessingprovider.h"
+#include "qgsacademicreference.h"
 #include "qgsapplication.h"
 #include "qgsdockablewidgethelper.h"
 #include "qgsgui.h"
@@ -508,7 +509,7 @@ void QgsProcessingAlgorithmWidgetBase::finished( bool, const QVariantMap &, QgsP
 void QgsProcessingAlgorithmWidgetBase::openHelp()
 {
   QUrl algHelp = mAlgorithm->helpUrl();
-  if ( algHelp.isEmpty() && mAlgorithm->provider() )
+  if ( algHelp.isEmpty() && mAlgorithm->provider() && !mAlgorithm->provider()->helpId().isEmpty() )
   {
     algHelp = QgsHelp::helpUrl(
       u"processing_algs/%1/%2.html#%3"_s.arg( mAlgorithm->provider()->helpId(), mAlgorithm->groupId(), u"%1%2"_s.arg( mAlgorithm->provider()->helpId() ).arg( mAlgorithm->name().replace( "_", "-" ) ) )
@@ -556,6 +557,12 @@ void QgsProcessingAlgorithmWidgetBase::mTabWidget_currentChanged( int )
 
 void QgsProcessingAlgorithmWidgetBase::linkClicked( const QUrl &url )
 {
+  if ( url.toString() == "#help"_L1 )
+  {
+    openHelp();
+    return;
+  }
+
   QDesktopServices::openUrl( url.toString() );
 }
 
@@ -802,6 +809,18 @@ QString QgsProcessingAlgorithmWidgetBase::formatHelp( QgsProcessingAlgorithm *al
     result = u"<h2>%1</h2><p>%2</p>"_s.arg( algorithm->displayName(), algorithm->shortDescription() );
   }
 
+  const QList< QgsAcademicReference > references = algorithm->academicReferences();
+  if ( !references.empty() )
+  {
+    QStringList referenceStrings;
+    for ( const QgsAcademicReference &reference : references )
+    {
+      referenceStrings << reference.asHtml();
+    }
+    result += u"<h4>%1</h4>"_s.arg( tr( "References" ) );
+    result += u"<ul><li>%1</li></ul>"_s.arg( referenceStrings.join( "</li><li>"_L1 ) );
+  }
+
   if ( algorithm->documentationFlags() != Qgis::ProcessingAlgorithmDocumentationFlags() )
   {
     QStringList flags;
@@ -821,6 +840,35 @@ QString QgsProcessingAlgorithmWidgetBase::formatHelp( QgsProcessingAlgorithm *al
   if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues )
   {
     result += u"<p><b>%1</b></p>"_s.arg( tr( "Warning: This algorithm has known issues. The results must be carefully validated by the user." ) );
+  }
+
+  QStringList links;
+  if ( !algorithm->helpUrl().isEmpty() || ( algorithm->provider() && !algorithm->provider()->helpId().isEmpty() ) )
+  {
+    // DO NOT resolve the help url here using QgsHelp::helpUrl -- that is VERY slow as it triggers a network
+    // request. Defer this until the link is actually clicked.
+    const QString linkHtml = QStringLiteral( R"(<a href="#help">%1</a>)" ).arg( tr( "Algorithm documentation" ) );
+    links << linkHtml;
+  }
+
+  const QString implementationSourceUri = algorithm->implementationSourceUri();
+  if ( !implementationSourceUri.isEmpty() )
+  {
+    const QString linkHtml = QStringLiteral( R"(<a href="%1">%2</a>)" ).arg( implementationSourceUri, tr( "Algorithm source code" ) );
+    links << linkHtml;
+  }
+
+  const QList< QgsProcessingAlgorithm::ExternalLink > externalLinks = algorithm->externalLinks();
+  for ( const QgsProcessingAlgorithm::ExternalLink &link : externalLinks )
+  {
+    const QString linkHtml = QStringLiteral( R"(<a href="%1">%2</a>)" ).arg( link.url, link.description );
+    links << linkHtml;
+  }
+
+  if ( !links.empty() )
+  {
+    result += u"<h4>%1</h4>"_s.arg( tr( "Links" ) );
+    result += u"<ul><li>%1</li></ul>"_s.arg( links.join( "</li><li>"_L1 ) );
   }
 
   return result;

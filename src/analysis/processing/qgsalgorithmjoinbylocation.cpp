@@ -28,6 +28,10 @@
 
 using namespace Qt::StringLiterals;
 
+// this file breaks cppcheck ast parsing
+#define EXCLUDE_CPPCHECK
+#ifdef EXCLUDE_CPPCHECK
+
 ///@cond PRIVATE
 
 
@@ -119,6 +123,8 @@ QStringList QgsJoinByLocationAlgorithm::translatedPredicates()
 
 QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mBaseSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !mBaseSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
@@ -659,5 +665,5 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
   return ok;
 }
 
-
+#endif
 ///@endcond

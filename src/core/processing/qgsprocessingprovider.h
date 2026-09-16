@@ -24,7 +24,15 @@
 
 #include <QIcon>
 
-/**
+#ifdef SIP_RUN
+// clang-format off
+% ModuleHeaderCode
+#include <qgsprocessingprojectmodelprovider.h>
+    % End
+// clang-format on
+#endif
+
+  /**
  * \class QgsProcessingProvider
  * \ingroup core
  * \brief Abstract base class for processing providers.
@@ -32,8 +40,17 @@
  * An algorithm provider is a set of related algorithms, typically from the same external application or related
  * to a common area of analysis.
  */
-class CORE_EXPORT QgsProcessingProvider : public QObject
+  class CORE_EXPORT QgsProcessingProvider : public QObject
 {
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsProcessingProjectModelProvider *>( sipCpp ) )
+      sipType = sipType_QgsProcessingProjectModelProvider;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:

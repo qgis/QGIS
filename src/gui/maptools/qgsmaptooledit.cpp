@@ -19,6 +19,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgsrubberband_impl.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
@@ -81,6 +82,32 @@ QgsRubberBand *QgsMapToolEdit::createRubberBand( Qgis::GeometryType geometryType
 
   rb->show();
   return rb;
+}
+
+QgsRubberBand *QgsMapToolEdit::createRubberBandForLayer( QgsVectorLayer *layer, const QList< QgsFeatureId > &fids, bool alternativeBand )
+{
+  QgsVectorLayer *vlayer = layer ? layer : currentVectorLayer();
+  Qgis::GeometryType geomType = vlayer ? vlayer->geometryType() : Qgis::GeometryType::Line;
+
+  QgsRubberBand *rb = createRubberBand( geomType, alternativeBand );
+  prepareRubberBandForLayer( rb, vlayer, fids );
+
+  return rb;
+}
+
+void QgsMapToolEdit::prepareRubberBandForLayer( QgsRubberBand *rubberBand, QgsVectorLayer *layer, const QList< QgsFeatureId > &fids )
+{
+  if ( !rubberBand )
+    return;
+
+  if ( QgsVectorLayer *vlayer = layer ? layer : currentVectorLayer() )
+  {
+    // attach label preview decorator if the layer has labeling enabled and a valid feature was provided
+    if ( !fids.isEmpty() && vlayer->labelsEnabled() && vlayer->labeling() )
+    {
+      rubberBand->addPreviewItem( new QgsVectorLayerLabelRubberBandPreview( rubberBand, fids, vlayer ) );
+    }
+  }
 }
 
 QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()

@@ -80,6 +80,8 @@ void QgsSaveLogToFileAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsSaveLogToFileAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString file = parameterAsFile( parameters, u"OUTPUT"_s, context );
   const bool useHtml = parameterAsBool( parameters, u"USE_HTML"_s, context );
   if ( !file.isEmpty() )

@@ -16,14 +16,18 @@
 
 #include "qgsapplication.h"
 #include "qgsfillsymbol.h"
+#include "qgsfontutils.h"
 #include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgspallabeling.h"
 #include "qgsrenderchecker.h"
 #include "qgsrubberband.h"
+#include "qgsrubberband_impl.h"
 #include "qgssymbol.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QCoreApplication>
 #include <QObject>
@@ -32,12 +36,48 @@
 
 using namespace Qt::StringLiterals;
 
+class MockRubberBandPreviewItem : public QgsRubberBandPreviewItem
+{
+  public:
+    MockRubberBandPreviewItem( QgsRubberBand *band )
+      : QgsRubberBandPreviewItem( band )
+    {}
+
+    void render( QgsRenderContext &context ) override
+    {
+      QPainter *p = context.painter();
+      if ( !p || !rubberBand() )
+        return;
+
+      const QgsGeometry geom = rubberBand()->asGeometry();
+      if ( geom.isEmpty() )
+        return;
+
+      QgsPointXY centerMapPt;
+      if ( geom.type() == Qgis::GeometryType::Point )
+      {
+        centerMapPt = geom.asPoint();
+      }
+      else
+      {
+        centerMapPt = geom.centroid().asPoint();
+      }
+
+      const QPointF pt = rubberBand()->toCanvasCoordinates( centerMapPt ) - rubberBand()->pos();
+
+      QgsScopedQPainterState painterState( p );
+      p->setPen( Qt::NoPen );
+      p->setBrush( QColor( 255, 0, 0 ) );
+      p->drawRect( QRectF( pt.x() - 10, pt.y() - 10, 20, 20 ) );
+    }
+};
+
 class TestQgsRubberband : public QgsTest
 {
     Q_OBJECT
   public:
     TestQgsRubberband()
-      : QgsTest( u"Rubberband Tests"_s )
+      : QgsTest( u"Rubberband Tests"_s, u"rubberband"_s )
     {}
 
   private slots:
@@ -56,6 +96,13 @@ class TestQgsRubberband : public QgsTest
     void testClose();        //test closing geometry
     void testLineSymbolRender();
     void testFillSymbolRender();
+    void testPreviewItems();
+    void testPreviewItemsFillSymbol();
+    void testRenderComponentsPreviewItemOnly();
+    void testRenderComponentsSymbolOnly();
+    void testLabelPreview();
+    void testLabelPreviewCurved();
+    void testLabelPreviewReferenceScale();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -324,20 +371,11 @@ void TestQgsRubberband::testLineSymbolRender()
   std::unique_ptr<QgsLineSymbol> lineSymbol( QgsLineSymbol::createSimple( { { u"line_color"_s, u"#0000ff"_s }, { u"line_width"_s, u"3"_s }, { u"capstyle"_s, u"round"_s } } ) );
   r.setSymbol( lineSymbol.release() );
 
-  QPixmap pixmap( canvas->size() );
-  QPainter painter( &pixmap );
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  QPainter painter( &image );
   canvas->render( &painter );
   painter.end();
-  const QString destFile = QDir::tempPath() + u"/rubberband_line_symbol.png"_s;
-  pixmap.save( destFile );
-
-  QgsRenderChecker checker;
-  checker.setControlPathPrefix( u"rubberband"_s );
-  checker.setControlName( u"expected_line_symbol"_s );
-  checker.setRenderedImage( destFile );
-  const bool result = checker.compareImages( u"expected_line_symbol"_s );
-  mReport += checker.report();
-  QVERIFY( result );
+  QGSVERIFYIMAGECHECK( u"line_symbol"_s, u"line_symbol"_s, image );
 }
 
 void TestQgsRubberband::testFillSymbolRender()
@@ -357,22 +395,274 @@ void TestQgsRubberband::testFillSymbolRender()
   );
   r.setSymbol( fillSymbol.release() );
 
-  QPixmap pixmap( canvas->size() );
-  QPainter painter( &pixmap );
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  QPainter painter( &image );
   canvas->render( &painter );
   painter.end();
-  const QString destFile = QDir::tempPath() + u"/rubberband_fill_symbol.png"_s;
-  pixmap.save( destFile );
-
-  QgsRenderChecker checker;
-  checker.setControlPathPrefix( u"rubberband"_s );
-  checker.setControlName( u"expected_fill_symbol"_s );
-  checker.setRenderedImage( destFile );
-  const bool result = checker.compareImages( u"expected_fill_symbol"_s );
-  mReport += checker.report();
-  QVERIFY( result );
+  QGSVERIFYIMAGECHECK( u"fill_symbol"_s, u"fill_symbol"_s, image );
 }
 
+void TestQgsRubberband::testPreviewItems()
+{
+  // test rendering preview items, with basic style
+  auto canvas = std::make_unique<QgsMapCanvas>();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 0, 0, 200, 200 ) );
+  canvas->show();
+
+  QgsRubberBand r( canvas.get(), Qgis::GeometryType::Polygon );
+  r.addGeometry( QgsGeometry::fromWkt( u"POLYGON((50 50, 50 150, 150 150, 150 50, 50 50))"_s ) );
+
+  auto mockItem = new MockRubberBandPreviewItem( &r );
+  r.addPreviewItem( mockItem );
+
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::white );
+  QPainter painter( &image );
+  canvas->render( &painter );
+  painter.end();
+
+  QGSVERIFYIMAGECHECK( u"preview_item"_s, u"preview_item"_s, image );
+
+  r.clearPreviewItems();
+
+  image.fill( Qt::white );
+  QPainter painter2( &image );
+  canvas->render( &painter2 );
+  painter2.end();
+
+  QGSVERIFYIMAGECHECK( u"preview_item_cleared"_s, u"preview_item_cleared"_s, image );
+}
+
+void TestQgsRubberband::testPreviewItemsFillSymbol()
+{
+  // test rendering preview items, with fill symbol
+  auto canvas = std::make_unique<QgsMapCanvas>();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 0, 0, 200, 200 ) );
+  canvas->show();
+
+  QgsRubberBand r( canvas.get(), Qgis::GeometryType::Polygon );
+  r.addGeometry( QgsGeometry::fromWkt( u"POLYGON((50 50, 50 150, 150 150, 150 50, 50 50))"_s ) );
+
+  std::unique_ptr<QgsFillSymbol> fillSymbol(
+    QgsFillSymbol::createSimple( { { u"color"_s, u"#ff88ff"_s }, { u"line_color"_s, u"#0000ff"_s }, { u"line_width"_s, u"3"_s }, { u"joinstyle"_s, u"round"_s } } )
+  );
+  r.setSymbol( fillSymbol.release() );
+
+  auto mockItem = new MockRubberBandPreviewItem( &r );
+  r.addPreviewItem( mockItem );
+
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::white );
+  QPainter painter( &image );
+  canvas->render( &painter );
+  painter.end();
+
+  QGSVERIFYIMAGECHECK( u"preview_item_fill_symbol"_s, u"preview_item_fill_symbol"_s, image );
+
+  r.clearPreviewItems();
+}
+
+void TestQgsRubberband::testRenderComponentsPreviewItemOnly()
+{
+  // test rendering preview items, without symbol
+  auto canvas = std::make_unique<QgsMapCanvas>();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 0, 0, 200, 200 ) );
+  canvas->show();
+
+  QgsRubberBand r( canvas.get(), Qgis::GeometryType::Polygon );
+  r.addGeometry( QgsGeometry::fromWkt( u"POLYGON((50 50, 50 150, 150 150, 150 50, 50 50))"_s ) );
+  r.setRenderedComponents( Qgis::RubberBandComponent::PreviewItems );
+  QCOMPARE( r.renderedComponents(), Qgis::RubberBandComponent::PreviewItems );
+
+  auto mockItem = new MockRubberBandPreviewItem( &r );
+  r.addPreviewItem( mockItem );
+
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::white );
+  QPainter painter( &image );
+  canvas->render( &painter );
+  painter.end();
+
+  QGSVERIFYIMAGECHECK( u"preview_item_no_symbol"_s, u"preview_item_no_symbol"_s, image );
+}
+
+void TestQgsRubberband::testRenderComponentsSymbolOnly()
+{
+  // test rendering preview items, without symbol
+  auto canvas = std::make_unique<QgsMapCanvas>();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 0, 0, 200, 200 ) );
+  canvas->show();
+
+  QgsRubberBand r( canvas.get(), Qgis::GeometryType::Polygon );
+  r.addGeometry( QgsGeometry::fromWkt( u"POLYGON((50 50, 50 150, 150 150, 150 50, 50 50))"_s ) );
+  r.setRenderedComponents( Qgis::RubberBandComponent::Symbol );
+  QCOMPARE( r.renderedComponents(), Qgis::RubberBandComponent::Symbol );
+
+  auto mockItem = new MockRubberBandPreviewItem( &r );
+  r.addPreviewItem( mockItem );
+
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::white );
+  QPainter painter( &image );
+  canvas->render( &painter );
+  painter.end();
+
+  QGSVERIFYIMAGECHECK( u"symbol_only"_s, u"symbol_only"_s, image );
+}
+
+void TestQgsRubberband::testLabelPreview()
+{
+  auto canvas = std::make_unique<QgsMapCanvas>();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 0, 0, 200, 200 ) );
+  canvas->show();
+
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=name:string"_s, u"test_layer"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = u"name"_s;
+  settings.isExpression = false;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
+  format.setSize( 16 );
+  format.setColor( QColor( 255, 0, 0 ) );
+  settings.setFormat( format );
+
+  layer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  layer->setLabelsEnabled( true );
+
+  QgsFeature feature( layer->fields() );
+  feature.setAttribute( u"name"_s, u"Preview Label"_s );
+  feature.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 100, 100 ) ) );
+
+  QVERIFY( layer->dataProvider()->addFeature( feature ) );
+
+  QgsRubberBand r( canvas.get(), Qgis::GeometryType::Point );
+  r.setColor( QColor( 0, 255, 255 ) );
+  r.setToGeometry( feature.geometry(), layer.get() );
+
+  r.addPreviewItem( new QgsVectorLayerLabelRubberBandPreview( &r, { feature.id() }, layer.get() ) );
+
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::white );
+  QPainter painter( &image );
+  canvas->render( &painter );
+  painter.end();
+
+  QGSVERIFYIMAGECHECK( u"label_preview_item"_s, u"label_preview_item"_s, image );
+}
+
+void TestQgsRubberband::testLabelPreviewCurved()
+{
+  auto canvas = std::make_unique<QgsMapCanvas>();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 0, 0, 200, 200 ) );
+  canvas->show();
+
+  // Create line vector layer with curved labeling enabled
+  auto layer = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:4326&field=name:string"_s, u"test_line_layer"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = u"name"_s;
+  settings.isExpression = false;
+  settings.placement = Qgis::LabelPlacement::Curved;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
+  format.setSize( 16 );
+  format.setColor( QColor( 0, 0, 255 ) );
+  settings.setFormat( format );
+
+  layer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  layer->setLabelsEnabled( true );
+
+  QgsFeature feature( layer->fields() );
+  feature.setAttribute( u"name"_s, u"Curved Label Preview"_s );
+  feature.setGeometry( QgsGeometry::fromWkt( u"LineString( 20 110, 100 120, 150 100 )"_s ) );
+  QVERIFY( layer->dataProvider()->addFeature( feature ) );
+
+  QgsRubberBand r( canvas.get(), Qgis::GeometryType::Line );
+  r.setToGeometry( feature.geometry(), layer.get() );
+  r.setColor( QColor( 0, 255, 255 ) );
+  r.setWidth( 2 );
+
+  // Attach label preview item
+  r.addPreviewItem( new QgsVectorLayerLabelRubberBandPreview( &r, { feature.id() }, layer.get() ) );
+
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::white );
+  QPainter painter( &image );
+  canvas->render( &painter );
+  painter.end();
+
+  QGSVERIFYIMAGECHECK( u"label_preview_curved"_s, u"label_preview_curved"_s, image );
+}
+
+void TestQgsRubberband::testLabelPreviewReferenceScale()
+{
+  auto canvas = std::make_unique<QgsMapCanvas>();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 0, 0, 200, 200 ) );
+  canvas->show();
+
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=name:string"_s, u"test_layer"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+  layer->renderer()->setReferenceScale( canvas->scale() * 2 );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = u"name"_s;
+  settings.isExpression = false;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
+  format.setSize( 16 );
+  format.setColor( QColor( 255, 0, 0 ) );
+  settings.setFormat( format );
+
+  layer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  layer->setLabelsEnabled( true );
+
+  QgsFeature feature( layer->fields() );
+  feature.setAttribute( u"name"_s, u"Preview Label"_s );
+  feature.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 100, 100 ) ) );
+
+  QVERIFY( layer->dataProvider()->addFeature( feature ) );
+
+  QgsRubberBand r( canvas.get(), Qgis::GeometryType::Point );
+  r.setColor( QColor( 0, 255, 255 ) );
+  r.setToGeometry( feature.geometry(), layer.get() );
+
+  r.addPreviewItem( new QgsVectorLayerLabelRubberBandPreview( &r, { feature.id() }, layer.get() ) );
+
+  QImage image( canvas->size(), QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::white );
+  QPainter painter( &image );
+  canvas->render( &painter );
+  painter.end();
+
+  QGSVERIFYIMAGECHECK( u"label_preview_item_reference_scale"_s, u"label_preview_item_reference_scale"_s, image );
+}
 
 QGSTEST_MAIN( TestQgsRubberband )
 #include "testqgsrubberband.moc"

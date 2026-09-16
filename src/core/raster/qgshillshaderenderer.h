@@ -53,7 +53,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      * \param input The raster input interface.
      * \returns A new QgsHillshadeRenderer.
      */
-    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
+    static std::unique_ptr<QgsRasterRenderer> create( const QDomElement &elem, QgsRasterInterface *input );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 

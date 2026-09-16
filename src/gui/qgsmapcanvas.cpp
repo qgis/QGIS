@@ -2312,7 +2312,7 @@ void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const 
     rb->setSecondaryStrokeColor( QColor( 255, 255, 255 ) );
   }
   if ( geomType == Qgis::GeometryType::Point )
-    rb->setIcon( QgsRubberBand::ICON_CIRCLE );
+    rb->setIcon( Qgis::RubberBandIconType::Circle );
 
   QColor startColor = color1;
   if ( !startColor.isValid() )

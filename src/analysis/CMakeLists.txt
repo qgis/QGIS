@@ -64,6 +64,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmcheckvalidity.cpp
+  processing/qgsalgorithmexecutesql.cpp
   processing/qgsalgorithmextrude.cpp
   processing/qgsalgorithmfixgeometryduplicatenodes.cpp
   processing/qgsalgorithmfixgeometrymultipart.cpp
@@ -176,6 +177,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmhillshade.cpp
   processing/qgsalgorithmhubdistance.cpp
   processing/qgsalgorithmhypsometriccurves.cpp
+  processing/qgsalgorithmidwinterpolation.cpp
   processing/qgsalgorithmimportphotos.cpp
   processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp
@@ -234,6 +236,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrandomraster.cpp
   processing/qgsalgorithmrastercalculator.cpp
+  processing/qgsalgorithmrastercellindex.cpp
   processing/qgsalgorithmrasterdtmslopebasedfilter.cpp
   processing/qgsalgorithmrasterfeaturepreservingsmoothing.cpp
   processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp
@@ -304,6 +307,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsumlinelength.cpp
   processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtaperedbuffer.cpp
+  processing/qgsalgorithmtininterpolation.cpp
   processing/qgsalgorithmtinmeshcreation.cpp
   processing/qgsalgorithmtotalcurvature.cpp
   processing/qgsalgorithmtransect.cpp
@@ -312,6 +316,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
   processing/qgsalgorithmtruncatetable.cpp
+  processing/qgsalgorithmtpsinterpolation.cpp
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalues.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
@@ -665,6 +670,7 @@ if (WITH_SFCGAL)
 endif()
 
 target_compile_definitions(qgis_analysis PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(qgis_analysis PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 # clang-tidy
 if(CLANG_TIDY_EXE)

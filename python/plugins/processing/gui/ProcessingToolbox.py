@@ -19,16 +19,10 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-import operator
 import os
 import warnings
 
-from qgis.core import (
-    QgsApplication,
-    QgsMapLayerType,
-    QgsProcessingAlgorithm,
-    QgsWkbTypes,
-)
+from qgis.core import Qgis, QgsApplication, QgsMapLayerType, QgsProcessingAlgorithm
 from qgis.gui import QgsDockWidget, QgsGui, QgsProcessingToolboxProxyModel
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt, pyqtSignal
@@ -37,11 +31,7 @@ from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
-from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.MessageDialog import MessageDialog
-from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.ProviderActions import ProviderActions, ProviderContextMenuActions
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -72,7 +62,9 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.setAllowedAreas(
             Qt.DockWidgetArea.LeftDockWidgetArea | Qt.DockWidgetArea.RightDockWidgetArea
         )
-        self.processingToolbar.setIconSize(iface.iconSize(True))
+        self.processingToolbar.setIconSize(
+            QgsGui.iconSize(Qgis.UserInterfaceIconType.DockedToolbar)
+        )
 
         self.algorithmTree.setRegistry(
             QgsApplication.processingRegistry(),

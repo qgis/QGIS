@@ -10,7 +10,11 @@
 
 
 
-class QgsProcessingProvider : QObject
+%ModuleHeaderCode
+#include <qgsprocessingprojectmodelprovider.h>
+%End
+
+  class QgsProcessingProvider : QObject
 {
 %Docstring(signature="appended")
 Abstract base class for processing providers.
@@ -21,6 +25,12 @@ same external application or related to a common area of analysis.
 
 %TypeHeaderCode
 #include "qgsprocessingprovider.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsProcessingProjectModelProvider *>( sipCpp ) )
+      sipType = sipType_QgsProcessingProjectModelProvider;
+    else
+      sipType = nullptr;
 %End
   public:
     QgsProcessingProvider( QObject *parent /TransferThis/ = 0 );

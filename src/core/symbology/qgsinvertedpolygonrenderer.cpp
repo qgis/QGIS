@@ -37,7 +37,7 @@ QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer *subR
 {
   if ( !subRenderer )
   {
-    mSubRenderer.reset( QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType::Polygon ) );
+    mSubRenderer = QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType::Polygon );
   }
   mOperation = InvertOnly;
 }
@@ -67,15 +67,15 @@ QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::clone() const
   return newRenderer;
 }
 
-QgsFeatureRenderer *QgsInvertedPolygonRenderer::create( QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsFeatureRenderer> QgsInvertedPolygonRenderer::create( QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
-  QgsInvertedPolygonRenderer *r = new QgsInvertedPolygonRenderer();
+  auto r = std::make_unique<QgsInvertedPolygonRenderer>();
   //look for an embedded renderer <renderer-v2>
   QDomElement embeddedRendererElem = element.firstChildElement( u"renderer-v2"_s );
   if ( !embeddedRendererElem.isNull() )
   {
-    QgsFeatureRenderer *renderer = QgsFeatureRenderer::load( embeddedRendererElem, context );
-    r->setEmbeddedRenderer( renderer );
+    std::unique_ptr<QgsFeatureRenderer> renderer = QgsFeatureRenderer::load( embeddedRendererElem, context );
+    r->setEmbeddedRenderer( renderer.release() );
   }
   r->setPreprocessingEnabled( element.attribute( u"preprocessing"_s, u"0"_s ).toInt() == 1 );
   return r;
@@ -100,23 +100,23 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc, const QgsReadWr
   return rendererElem;
 }
 
-QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsInvertedPolygonRenderer> QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer ) // cppcheck-suppress duplInheritedMember
 {
   if ( renderer->type() == "invertedPolygonRenderer"_L1 )
   {
-    return dynamic_cast<QgsInvertedPolygonRenderer *>( renderer->clone() );
+    return std::unique_ptr<QgsInvertedPolygonRenderer>( dynamic_cast<QgsInvertedPolygonRenderer *>( renderer->clone() ) );
   }
   else if ( renderer->type() == "singleSymbol"_L1 || renderer->type() == "categorizedSymbol"_L1 || renderer->type() == "graduatedSymbol"_L1 || renderer->type() == "RuleRenderer"_L1 )
   {
     auto res = std::make_unique< QgsInvertedPolygonRenderer >( renderer->clone() );
     renderer->copyRendererData( res.get() );
-    return res.release();
+    return res;
   }
   else if ( renderer->type() == "mergedFeatureRenderer"_L1 )
   {
     auto res = std::make_unique< QgsInvertedPolygonRenderer >( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
     renderer->copyRendererData( res.get() );
-    return res.release();
+    return res;
   }
   return nullptr;
 }

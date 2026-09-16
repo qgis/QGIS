@@ -29,6 +29,7 @@ set(TESTS
  testqgszonalstatistics.cpp
  testqgsrastercalculator.cpp
  testqgsreclassifyutils.cpp
+ testqgsrelief.cpp
  testqgsalignraster.cpp
  testqgsnetworkanalysis.cpp
  testqgsninecellfilters.cpp

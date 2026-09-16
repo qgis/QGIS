@@ -31,6 +31,12 @@ Content-Type: application/json
       "rel": "service-desc",
       "title": "API description",
       "type": "application/vnd.oai.openapi+json;version=3.0"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/functions",
+      "rel": "functions",
+      "title": "Custom functions",
+      "type": "application/vnd.oai.openapi+json;version=3.0"
     }
   ],
   "timeStamp": "2019-07-05T12:27:07Z"
