@@ -25,7 +25,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsmaplayerutils.h"
-#include "qgsmaprenderercustompainterjob.h"
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
 
 #include <QBuffer>
 #include <QDir>
@@ -68,7 +68,17 @@ void MetaTile::addTile( const int row, const int col, Tile tileToAdd, const QgsR
 
 namespace
 {
-  QList<MetaTile> getMetatiles( const QgsRectangle &tileMatrixSetExtent, const QgsRectangle &contentsExtent, int zoom, int z0MatrixWidth, int z0MatrixHeight, long long &tileCount, int tileSize )
+  QList<MetaTile> getMetatiles(
+    const QgsRectangle &tileMatrixSetExtent,
+    const QgsRectangle &contentsExtent,
+    int zoom,
+    int z0MatrixWidth,
+    int z0MatrixHeight,
+    long long &tileCount,
+    int metaTileSize,
+    const QList<QgsTileExtentMaxZoomRegion> &maxZoomRegions,
+    int defaultMaxZoom
+  )
   {
     const long long matrixWidth = static_cast<long long>( z0MatrixWidth ) * ( 1LL << zoom );
     const long long matrixHeight = static_cast<long long>( z0MatrixHeight ) * ( 1LL << zoom );
@@ -86,26 +96,69 @@ namespace
     minY = std::clamp<int>( minY, 0, static_cast<int>( matrixHeight - 1 ) );
     maxY = std::clamp<int>( maxY, 0, static_cast<int>( matrixHeight - 1 ) );
 
-    tileCount = static_cast<long long>( maxX - minX + 1 ) * static_cast<long long>( maxY - minY + 1 );
-
-    QHash<uint64_t, MetaTile> tiles;
-    for ( int x = minX, i = 0; x <= maxX; x++, i++ )
+    // IMPORTANT - we have to snap the target extent out to multiples of the metatile!
+    const int totalMetaColumns = static_cast<int>( std::ceil( static_cast<double>( maxX - minX + 1 ) / metaTileSize ) );
+    const int totalMetaRows = static_cast<int>( std::ceil( static_cast<double>( maxY - minY + 1 ) / metaTileSize ) );
+    tileCount = 0;
+    QList<MetaTile> metaTiles;
+    for ( int metaTileColumn = 0; metaTileColumn < totalMetaColumns; ++metaTileColumn )
     {
-      for ( int y = minY, j = 0; y <= maxY; y++, j++ )
+      const int startI = metaTileColumn * metaTileSize;
+      const int endI = std::min( startI + metaTileSize - 1, maxX - minX );
+      const int startX = minX + startI;
+      const int endX = minX + endI;
+
+      for ( int metaTileRow = 0; metaTileRow < totalMetaRows; ++metaTileRow )
       {
-        const uint64_t key = ( static_cast<uint64_t>( i / tileSize ) << 32 ) | static_cast<uint32_t>( j / tileSize );
+        const int startJ = metaTileRow * metaTileSize;
+        const int endJ = std::min( startJ + metaTileSize - 1, maxY - minY );
+        const int startY = minY + startJ;
+        const int endY = minY + endJ;
 
-        const double tileMinX = tileMatrixSetExtent.xMinimum() + x * tileWidthUnits;
-        const double tileMaxX = tileMinX + tileWidthUnits;
-        const double tileMaxY = tileMatrixSetExtent.yMaximum() - y * tileHeightUnits;
-        const double tileMinY = tileMaxY - tileHeightUnits;
+        const double metaTileMinX = tileMatrixSetExtent.xMinimum() + startX * tileWidthUnits;
+        const double metaTileMaxX = tileMatrixSetExtent.xMinimum() + ( endX + 1 ) * tileWidthUnits;
+        const double metaTileMaxY = tileMatrixSetExtent.yMaximum() - startY * tileHeightUnits;
+        const double metaTileMinY = tileMatrixSetExtent.yMaximum() - ( endY + 1 ) * tileHeightUnits;
+        const QgsRectangle metaTileExtent( metaTileMinX, metaTileMaxY, metaTileMaxX, metaTileMinY );
 
-        const QgsRectangle tileExtent( tileMinX, tileMinY, tileMaxX, tileMaxY );
+        // check if there's any zoom overrides in place for this metatile
+        if ( !maxZoomRegions.isEmpty() )
+        {
+          const int metaTileMaxZoom = QgsProcessingParameterTileExtentMaxZoomList::maxZoomForTile( metaTileExtent, maxZoomRegions, defaultMaxZoom );
 
-        tiles[key].addTile( i % tileSize, j % tileSize, Tile( x, y, zoom ), tileExtent );
+          if ( metaTileMaxZoom < zoom )
+          {
+            // don't need this zoom level for this metatile
+            continue;
+          }
+        }
+
+        // build the actual metatile
+        MetaTile metaTile;
+        for ( int x = startX, i = startI; x <= endX; ++x, ++i )
+        {
+          for ( int y = startY, j = startJ; y <= endY; ++y, ++j )
+          {
+            const double tileMinX = tileMatrixSetExtent.xMinimum() + x * tileWidthUnits;
+            const double tileMaxX = tileMinX + tileWidthUnits;
+            const double tileMaxY = tileMatrixSetExtent.yMaximum() - y * tileHeightUnits;
+            const double tileMinY = tileMaxY - tileHeightUnits;
+
+            const QgsRectangle tileExtent( tileMinX, tileMinY, tileMaxX, tileMaxY );
+
+            metaTile.addTile( i % metaTileSize, j % metaTileSize, Tile( x, y, zoom ), tileExtent );
+            tileCount++;
+          }
+        }
+
+        if ( !metaTile.tiles.isEmpty() )
+        {
+          metaTiles.append( metaTile );
+        }
       }
     }
-    return tiles.values();
+
+    return metaTiles;
   }
 } //namespace
 
@@ -267,6 +320,11 @@ void QgsXyzTilesBaseAlgorithm::createCommonParameters()
   skipEmptyTilesParam->setHelp( QObject::tr( "If set, completely empty tiles will be skipped." ) );
   skipEmptyTilesParam->setFlags( skipEmptyTilesParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( skipEmptyTilesParam.release() );
+
+  auto tileExtentMaxZoomParam = std::make_unique<QgsProcessingParameterTileExtentMaxZoomList>( u"TILE_MAX_ZOOM_EXTENTS"_s, QObject::tr( "Maximum zoom extents" ), QVariant(), true );
+  tileExtentMaxZoomParam->setHelp( QObject::tr( "Allows overriding the maximum zoom level for specific geographic regions, so that more detailed tiles can be created for important areas." ) );
+  tileExtentMaxZoomParam->setFlags( tileExtentMaxZoomParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( tileExtentMaxZoomParam.release() );
 }
 
 void QgsXyzTilesBaseAlgorithm::createTileMatrixParameters()
@@ -403,6 +461,31 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   {
     throw QgsProcessingException( QObject::tr( "Maximum zoom (%1) must be ≥ minimum zoom (%2)" ).arg( mMaxZoom ).arg( mMinZoom ) );
   }
+
+  mMaxZoomLimitIncludingOverrides = mMaxZoom;
+  const QList<QgsTileExtentMaxZoomRegion> rawRegions
+    = qgis::down_cast< const QgsProcessingParameterTileExtentMaxZoomList *>( parameterDefinition( u"TILE_MAX_ZOOM_EXTENTS"_s ) )->parameterAsRegionList( parameters.value( u"TILE_MAX_ZOOM_EXTENTS"_s ), context );
+  if ( !rawRegions.isEmpty() )
+  {
+    // convert all override regions to target crs once in advance
+    for ( const QgsTileExtentMaxZoomRegion &region : rawRegions )
+    {
+      QgsTileExtentMaxZoomRegion targetRegion = region;
+      try
+      {
+        QgsCoordinateTransform ct( region.extent.crs(), mTargetCrs, context.transformContext() );
+        ct.setBallparkTransformsAreAppropriate( true );
+        targetRegion.extent = QgsReferencedRectangle( ct.transformBoundingBox( region.extent ), mTargetCrs );
+        mMaxZoomRegions.append( targetRegion );
+        mMaxZoomLimitIncludingOverrides = std::max( mMaxZoomLimitIncludingOverrides, region.maxZoom );
+      }
+      catch ( QgsCsException & )
+      {
+        continue;
+      }
+    }
+  }
+
   mDpi = parameterAsInt( parameters, u"DPI"_s, context );
   mBackgroundColor = parameterAsColor( parameters, u"BACKGROUND_COLOR"_s, context );
   mAntialias = parameterAsBool( parameters, u"ANTIALIAS"_s, context );
@@ -658,13 +741,13 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
 
   long long totalTiles = 0;
   mTotalMetaTiles = 0;
-  for ( int z = mMinZoom; z <= mMaxZoom; z++ )
+  for ( int z = mMinZoom; z <= mMaxZoomLimitIncludingOverrides; z++ )
   {
     if ( feedback->isCanceled() )
       break;
 
     long long tileCount = 0;
-    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize );
+    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom );
     feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
@@ -703,7 +786,7 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
                           "{minZoom: %1, maxZoom: %2, attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'}).addTo(map);"
     )
                           .arg( mMinZoom )
-                          .arg( mMaxZoom );
+                          .arg( mMaxZoomLimitIncludingOverrides );
 
     const QString addOsm = useOsm ? osm : QString();
     const QString tmsConvention = tms ? u"true"_s : u"false"_s;
@@ -733,7 +816,7 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
                            .arg( ( mMaxZoom + mMinZoom ) / 2 )
                            .arg( addOsm, tileSource )
                            .arg( mMinZoom )
-                           .arg( mMaxZoom )
+                           .arg( mMaxZoomLimitIncludingOverrides )
                            .arg( tmsConvention, attr );
 
     QFile htmlFile( outputHtml );
@@ -917,19 +1000,19 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   mMbtilesWriter->setMetadataValue( u"version"_s, u"1.1"_s );
   mMbtilesWriter->setMetadataValue( u"type"_s, u"overlay"_s );
   mMbtilesWriter->setMetadataValue( u"minzoom"_s, QString::number( mMinZoom ) );
-  mMbtilesWriter->setMetadataValue( u"maxzoom"_s, QString::number( mMaxZoom ) );
+  mMbtilesWriter->setMetadataValue( u"maxzoom"_s, QString::number( mMaxZoomLimitIncludingOverrides ) );
   QString boundsStr = QString( u"%1,%2,%3,%4"_s ).arg( mWgs84Extent.xMinimum() ).arg( mWgs84Extent.yMinimum() ).arg( mWgs84Extent.xMaximum() ).arg( mWgs84Extent.yMaximum() );
   mMbtilesWriter->setMetadataValue( u"bounds"_s, boundsStr );
 
   long long totalTiles = 0;
   mTotalMetaTiles = 0;
-  for ( int z = mMinZoom; z <= mMaxZoom; z++ )
+  for ( int z = mMinZoom; z <= mMaxZoomLimitIncludingOverrides; z++ )
   {
     if ( feedback->isCanceled() )
       break;
 
     long long tileCount = 0;
-    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize );
+    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom );
     feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
@@ -1154,20 +1237,20 @@ QVariantMap QgsXyzTilesGpkgAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   mGpkgWriter = std::make_unique<QgsGeoPackageTiles>( outputFile );
-  if ( !mGpkgWriter->create( mTargetCrs, mTileMatrixSetExtent, mTileGenerationRegion, mMinZoom, mMaxZoom, mTileWidth, mTileHeight, mZ0MatrixWidth, mZ0MatrixHeight ) )
+  if ( !mGpkgWriter->create( mTargetCrs, mTileMatrixSetExtent, mTileGenerationRegion, mMinZoom, mMaxZoomLimitIncludingOverrides, mTileWidth, mTileHeight, mZ0MatrixWidth, mZ0MatrixHeight ) )
   {
     throw QgsProcessingException( QObject::tr( "Failed to create GeoPackage file %1: %2" ).arg( outputFile, mGpkgWriter->lastError() ) );
   }
 
   long long totalTiles = 0;
   mTotalMetaTiles = 0;
-  for ( int z = mMinZoom; z <= mMaxZoom; z++ )
+  for ( int z = mMinZoom; z <= mMaxZoomLimitIncludingOverrides; z++ )
   {
     if ( feedback->isCanceled() )
       break;
 
     long long tileCount = 0;
-    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize );
+    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom );
     feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
