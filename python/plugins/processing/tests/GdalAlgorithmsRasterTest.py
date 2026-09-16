@@ -3765,11 +3765,11 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal raster proximity",
-                    "--band 1 --distance-units pixel --ot Float32 --format JPEG "
+                    "--band 1 --distance-units pixel --ot Float32 --format JPEG --config X Y --config Z A "
                     + source
                     + " "
                     + outdir
-                    + "/check.jpg --config X Y --config Z A",
+                    + "/check.jpg",
                 ],
             )
 
