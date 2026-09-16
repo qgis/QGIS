@@ -239,17 +239,6 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
 
         return results
 
-    def commandName(self):
-        parameters = {param.name(): "1" for param in self.parameterDefinitions()}
-        context = QgsProcessingContext()
-        feedback = QgsProcessingFeedback()
-        name = self.getConsoleCommands(parameters, context, feedback, executing=False)[
-            0
-        ]
-        if name.endswith(".py"):
-            name = name[:-3]
-        return name
-
     def tr(self, string, context=""):
         if context == "":
             context = self.__class__.__name__
