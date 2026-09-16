@@ -2,18 +2,6 @@
 
 tests:
 
-  - algorithm: qgis:texttofloat
-    name: Text to float
-    params:
-      FIELD: 'text_float'
-      INPUT:
-        name: custom/text_to_float.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/text_to_float.gml
-        type: vector
-
   - algorithm: qgis:variabledistancebuffer
     name: variable buffer on points
     params:

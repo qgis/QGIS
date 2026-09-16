@@ -114,7 +114,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 "qgis:scatter3dplot",
                 "qgis:setstyleforrasterlayer",
                 "qgis:setstyleforvectorlayer",
-                "qgis:texttofloat",
                 "qgis:variabledistancebuffer",
                 "qgis:vectorlayerhistogram",
                 "qgis:vectorlayerscatterplot",
