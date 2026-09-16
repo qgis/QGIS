@@ -24,6 +24,15 @@ import shutil
 import tempfile
 
 import nose2
+from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.ogr2ogr import ogr2ogr
+from processing.algs.gdal.OgrToPostGis import OgrToPostGis
+from processing.tests.TestData import (
+    wms_layer_1_1_1,
+    wms_layer_1_3_0,
+    wms_layer_1_3_0_frankfurt,
+)
 from qgis.core import (
     QgsApplication,
     QgsCoordinateReferenceSystem,
@@ -45,18 +54,10 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QFile, QIODevice
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import QgisTestCase, start_app
+from utilities import unitTestDataPath
 
-from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.algs.gdal.ogr2ogr import ogr2ogr
-from processing.algs.gdal.OgrToPostGis import OgrToPostGis
-from processing.tests.TestData import (
-    wms_layer_1_1_1,
-    wms_layer_1_3_0,
-    wms_layer_1_3_0_frankfurt,
-)
-
-testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
+TEST_DATA_DIR = unitTestDataPath()
+testDataPath = os.path.join(TEST_DATA_DIR, "processing")
 
 
 class TestGdalAlgorithms(QgisTestCase):
