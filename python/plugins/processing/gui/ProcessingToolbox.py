@@ -243,15 +243,30 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 popupmenu.addSeparator()
             for action in actions:
                 action.setData(alg, self)
-                if action.is_separator:
+                provider_id = alg.provider().id() if alg.provider() else None
+                if action.isSeparator():
                     popupmenu.addSeparator()
-                elif action.isEnabled():
-                    contextMenuAction = QAction(action.name, popupmenu)
+                elif action.isCompatibleWithAlgorithm(provider_id, alg.name()):
+                    contextMenuAction = QAction(action.actionName(), popupmenu)
                     contextMenuAction.setIcon(action.icon())
-                    contextMenuAction.triggered.connect(action.execute)
+                    contextMenuAction.triggered.connect(
+                        partial(
+                            self._trigger_context_action,
+                            action,
+                            provider_id,
+                            alg.name(),
+                        )
+                    )
                     popupmenu.addAction(contextMenuAction)
 
             popupmenu.exec(self.algorithmTree.mapToGlobal(point))
+
+    def _trigger_context_action(self, action, provider_id: str, algorithm_name: str):
+        context = QgsProcessingActionContext()
+        context.setParentWidget(self)
+        context.setAlgorithmName(algorithm_name)
+        context.setProviderId(provider_id)
+        action.trigger(context)
 
     def editRenderingStyles(self):
         alg = (
