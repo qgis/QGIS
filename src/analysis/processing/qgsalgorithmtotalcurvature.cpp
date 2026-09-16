@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmtotalcurvature.h"
 
+#include "qgsacademicreference.h"
 #include "qgsrasterfilewriter.h"
 #include "qgstotalcurvaturefilter.h"
 
@@ -61,6 +62,13 @@ QString QgsTotalCurvatureAlgorithm::shortDescription() const
   return QObject::tr( "Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis." );
 }
 
+QList<QgsAcademicReference> QgsTotalCurvatureAlgorithm::academicReferences() const
+{
+  const QgsAcademicReference wilsonReference = QgsAcademicReference::
+    createJournalArticle( { u"Wilson, J."_s, u"Gallant, J."_s }, 2000, u"Digital Terrain Analysis in Terrain Analysis: Principles and Applications"_s, u"Terrain analysis: principles and applications"_s, u"479"_s, QString(), u"1-27"_s );
+  return { wilsonReference };
+}
+
 QgsTotalCurvatureAlgorithm *QgsTotalCurvatureAlgorithm::createInstance() const
 {
   return new QgsTotalCurvatureAlgorithm();
@@ -101,6 +109,8 @@ bool QgsTotalCurvatureAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsTotalCurvatureAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const double zFactor = parameterAsDouble( parameters, u"Z_FACTOR"_s, context );
   const QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
   const double outputNodata = parameterAsDouble( parameters, u"NODATA"_s, context );

@@ -107,7 +107,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
 
   if ( renderer )
   {
-    mRenderer.reset( QgsHeatmapRenderer::convertFromRenderer( renderer ) );
+    mRenderer = QgsHeatmapRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {

@@ -58,8 +58,8 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer : public QgsMarkerSymbolLayer
     ~QgsVectorFieldSymbolLayer() override;
 
     //! Creates the symbol layer
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     QString layerType() const override { return u"VectorField"_s; }
 

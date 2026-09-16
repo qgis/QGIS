@@ -89,6 +89,8 @@ QgsMergeLinesAlgorithm *QgsMergeLinesAlgorithm::createInstance() const
 
 QgsFeatureList QgsMergeLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !feature.hasGeometry() )
     return QgsFeatureList() << feature;
 

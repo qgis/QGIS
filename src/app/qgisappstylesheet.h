@@ -41,8 +41,9 @@ class APP_EXPORT QgisAppStyleSheet : public QObject
     /**
      * Build and apply a stylesheet.
      *
+     * The stylesheet will be set as the application stylesheet via QgsGui::setApplicationStyleSheet().
+     *
      * \param opts generated default option values, or a changed copy of them
-     * \note on success emits appStyleSheetChanged
      */
     void applyStyleSheet( const QMap<QString, QVariant> &opts );
 
@@ -88,14 +89,6 @@ class APP_EXPORT QgisAppStyleSheet : public QObject
      * has set a custom font, or the defaultFont() family otherwise.
      */
     QString fontFamily() const { return !mUserFontFamily.isEmpty() ? mUserFontFamily : mDefaultFont.family(); }
-
-  signals:
-
-    /**
-     * Signal the successful stylesheet build results
-     * \note connect to (app|widget)->setStyleSheet or similar custom slot
-     */
-    void appStyleSheetChanged( const QString &appStyleSheet );
 
   private:
     //! Sets active configuration values

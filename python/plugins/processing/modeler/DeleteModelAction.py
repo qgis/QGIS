@@ -21,12 +21,11 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
-from qgis.core import QgsApplication, QgsProcessingAlgorithm, QgsProject
+from qgis.core import QgsApplication, QgsProcessing, QgsProcessingAlgorithm, QgsProject
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox
 
 from processing.gui.ContextAction import ContextAction
-from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
 
 
 class DeleteModelAction(ContextAction):
@@ -44,7 +43,7 @@ class DeleteModelAction(ContextAction):
         if model is None:
             return  # shouldn't happen, but let's be safe
 
-        project_provider = model.provider().id() == PROJECT_PROVIDER_ID
+        project_provider = model.provider().id() == QgsProcessing.PROJECT_PROVIDER_ID
 
         if project_provider:
             msg = self.tr(
@@ -67,9 +66,9 @@ class DeleteModelAction(ContextAction):
         if reply == QMessageBox.StandardButton.Yes:
             if project_provider:
                 provider = QgsApplication.processingRegistry().providerById(
-                    PROJECT_PROVIDER_ID
+                    QgsProcessing.PROJECT_PROVIDER_ID
                 )
-                provider.remove_model(model)
+                provider.removeModel(model)
                 QgsProject.instance().setDirty(True)
             else:
                 os.remove(model.sourceFilePath())

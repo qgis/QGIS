@@ -34,6 +34,7 @@
 #include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerlabelprovider.h"
 
+#include <QMimeData>
 #include <QSignalSpy>
 #include <QString>
 
@@ -79,6 +80,9 @@ class TestQgsLayerTree : public QObject
     void testLayersEditable();
     void testInsertLayerBelow();
     void testGroupReadWriteXMlServerProperties();
+    void testGroupIdReadWriteXml();
+    void testGroupIdCopyVsMove();
+    void testGroupIdCreateCloneRemove();
 
   private:
     QgsLayerTreeGroup *mRoot = nullptr;
@@ -331,9 +335,9 @@ void TestQgsLayerTree::testRestrictedSymbolSize()
   QgsProject project;
   project.addMapLayer( vl );
 
-  QgsMarkerSymbol *symbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  symbol->setSize( 500.0 );
-  symbol->setSizeUnit( Qgis::RenderUnit::MapUnits );
+  std::unique_ptr<QgsSymbol> symbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+  static_cast<QgsMarkerSymbol *>( symbol.get() )->setSize( 500.0 );
+  static_cast<QgsMarkerSymbol *>( symbol.get() )->setSizeUnit( Qgis::RenderUnit::MapUnits );
 
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
@@ -391,12 +395,12 @@ void TestQgsLayerTree::testRestrictedSymbolSizeWithGeometryGenerator()
   QVariantMap ggProps;
   ggProps.insert( u"SymbolType"_s, u"Fill"_s );
   ggProps.insert( u"geometryModifier"_s, u"buffer( $geometry, 200 )"_s );
-  QgsSymbolLayer *ggSymbolLayer = QgsGeometryGeneratorSymbolLayer::create( ggProps );
+  std::unique_ptr<QgsSymbolLayer> ggSymbolLayer = QgsGeometryGeneratorSymbolLayer::create( ggProps );
   QgsSymbolLayerList fillSymbolLayerList;
   fillSymbolLayerList << new QgsSimpleFillSymbolLayer();
   ggSymbolLayer->setSubSymbol( new QgsFillSymbol( fillSymbolLayerList ) );
   QgsSymbolLayerList slList;
-  slList << ggSymbolLayer;
+  slList << ggSymbolLayer.release();
   QgsMarkerSymbol *symbol = new QgsMarkerSymbol( slList );
 
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
@@ -434,10 +438,10 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"a"_s ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"b"_s ) );
-  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"c"_s ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"a"_s ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"b"_s ) );
+  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"c"_s ) );
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -484,10 +488,10 @@ void TestQgsLayerTree::testFindLegendNode()
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"a"_s ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"b"_s ) );
-  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"c"_s ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"a"_s ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"b"_s ) );
+  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"c"_s ) );
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -519,7 +523,7 @@ void TestQgsLayerTree::testLegendSymbolCategorized()
   //test retrieving/setting a categorized renderer's symbol through the legend node
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
   QVariantMap props;
   props.insert( u"color"_s, u"#ff0000"_s );
   props.insert( u"outline_color"_s, u"#000000"_s );
@@ -536,7 +540,7 @@ void TestQgsLayerTree::testLegendSymbolGraduated()
   //test retrieving/setting a graduated renderer's symbol through the legend node
   QgsGraduatedSymbolRenderer *renderer = new QgsGraduatedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
   QVariantMap props;
   props.insert( u"color"_s, u"#ff0000"_s );
   props.insert( u"outline_color"_s, u"#000000"_s );
@@ -825,19 +829,19 @@ void TestQgsLayerTree::testCustomNodes()
 {
   auto custom = std::make_unique< QgsLayerTreeCustomNode >( u"custom-id"_s );
   QVERIFY( QgsLayerTree::isCustomNode( custom.get() ) );
-  QCOMPARE( custom->nodeId(), u"custom-id"_s );
+  QCOMPARE( custom->id(), u"custom-id"_s );
   QCOMPARE( custom->name(), u"custom-id"_s );
   custom->setName( u"Custom Name"_s );
   QCOMPARE( custom->name(), u"Custom Name"_s );
 
   QgsLayerTreeCustomNode *custom2 = custom->clone();
-  QCOMPARE( custom2->nodeId(), u"custom-id"_s );
+  QCOMPARE( custom2->id(), u"custom-id"_s );
   QCOMPARE( custom2->name(), u"Custom Name"_s );
 
   QgsLayerTree root;
   QgsLayerTreeCustomNode *custom3 = root.insertCustomNode( -1, u"custom-id-3"_s, u"Custom Name 3"_s );
   QVERIFY( custom3 );
-  QCOMPARE( custom3->nodeId(), u"custom-id-3"_s );
+  QCOMPARE( custom3->id(), u"custom-id-3"_s );
   QCOMPARE( custom3->name(), u"Custom Name 3"_s );
   QCOMPARE( root.children().count(), 1 );
 
@@ -848,7 +852,7 @@ void TestQgsLayerTree::testCustomNodes()
     if ( QgsLayerTree::isCustomNode( node ) )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
-      QCOMPARE( customNode->nodeId(), u"custom-id-3"_s );
+      QCOMPARE( customNode->id(), u"custom-id-3"_s );
       QCOMPARE( customNode->name(), u"Custom Name 3"_s );
       count++;
     }
@@ -1025,10 +1029,10 @@ void TestQgsLayerTree::testSymbolText()
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"a [% 1 + 2 %]"_s ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"b,c"_s ) );
-  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"c"_s ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"a [% 1 + 2 %]"_s ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"b,c"_s ) );
+  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"c"_s ) );
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -1219,9 +1223,9 @@ void TestQgsLayerTree::testSymbolLegendNodeSetData()
 
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"a"_s ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"b"_s ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"a"_s ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"b"_s ) );
   vl->setRenderer( renderer );
 
   QgsLayerTree *root = new QgsLayerTree();
@@ -1259,6 +1263,134 @@ void TestQgsLayerTree::testSymbolLegendNodeSetData()
   delete m;
   delete root;
   delete vl;
+}
+
+void TestQgsLayerTree::testGroupIdReadWriteXml()
+{
+  // A group's id is its stable identity so it must survive a project save/load
+  // (XML write then read back) round-trip, for the group and its subgroups.
+  QgsLayerTreeGroup root;
+  QgsLayerTreeGroup *group = root.addGroup( u"grp"_s );
+  QgsLayerTreeGroup *childGroup = group->addGroup( u"child"_s );
+
+  const QString groupId = group->id();
+  const QString childId = childGroup->id();
+  QVERIFY( !groupId.isEmpty() );
+  QVERIFY( !childId.isEmpty() );
+  QVERIFY( groupId != childId );
+
+  QDomDocument doc( u"test-layer-tree-group-id"_s );
+  QDomElement parentElem = doc.createElement( u"root"_s );
+  QgsReadWriteContext context;
+  group->writeXml( parentElem, context );
+
+  std::unique_ptr<QgsLayerTreeGroup> restored( QgsLayerTreeGroup::readXml( parentElem.firstChildElement(), context ) );
+  QVERIFY( restored );
+  QCOMPARE( restored->id(), groupId );
+
+  QCOMPARE( restored->children().size(), 1 );
+  QgsLayerTreeGroup *restoredChild = QgsLayerTree::toGroup( restored->children().at( 0 ) );
+  QVERIFY( restoredChild );
+  QCOMPARE( restoredChild->id(), childId );
+}
+
+void TestQgsLayerTree::testGroupIdCopyVsMove()
+{
+  // Drag/drop id semantics (see QgsLayerTreeModel::dropMimeData): a copy
+  // (Qt::CopyAction) must give the dropped group and its subgroups fresh ids,
+  // while a move (Qt::MoveAction) must preserve them.
+  QgsLayerTree root;
+  QgsLayerTreeGroup *group = root.addGroup( u"grp"_s );
+  QgsLayerTreeGroup *childGroup = group->addGroup( u"child"_s );
+  const QString groupId = group->id();
+  const QString childId = childGroup->id();
+
+  QgsLayerTreeModel model( &root );
+
+  // testing copy
+  {
+    const QModelIndex groupIndex = model.node2index( group );
+    QVERIFY( groupIndex.isValid() );
+    std::unique_ptr<QMimeData> mime( model.mimeData( QModelIndexList() << groupIndex ) );
+    QVERIFY( mime );
+
+    const int before = root.children().size();
+    // drop onto the root (invalid parent), appended at the end (row -1)
+    QVERIFY( model.dropMimeData( mime.get(), Qt::CopyAction, -1, 0, QModelIndex() ) );
+    QCOMPARE( root.children().size(), before + 1 );
+
+    QgsLayerTreeGroup *copy = QgsLayerTree::toGroup( root.children().constLast() );
+    QVERIFY( copy );
+    QCOMPARE( copy->name(), u"grp"_s );
+    QCOMPARE( copy->children().size(), 1 );
+    QgsLayerTreeGroup *copyChild = QgsLayerTree::toGroup( copy->children().at( 0 ) );
+    QVERIFY( copyChild );
+
+    // ids of the copy differ from the originals and are each unique
+    QVERIFY( copy->id() != groupId );
+    QVERIFY( copyChild->id() != childId );
+    QVERIFY( copy->id() != copyChild->id() );
+  }
+
+  // testing move
+  {
+    const QModelIndex groupIndex = model.node2index( group );
+    QVERIFY( groupIndex.isValid() );
+    std::unique_ptr<QMimeData> mime( model.mimeData( QModelIndexList() << groupIndex ) );
+    QVERIFY( mime );
+
+    QVERIFY( model.dropMimeData( mime.get(), Qt::MoveAction, -1, 0, QModelIndex() ) );
+
+    // the freshly inserted node preserves the original ids
+    QgsLayerTreeGroup *moved = QgsLayerTree::toGroup( root.children().constLast() );
+    QVERIFY( moved );
+    QCOMPARE( moved->name(), u"grp"_s );
+    QCOMPARE( moved->id(), groupId );
+    QCOMPARE( moved->children().size(), 1 );
+    QCOMPARE( QgsLayerTree::toGroup( moved->children().at( 0 ) )->id(), childId );
+  }
+}
+
+void TestQgsLayerTree::testGroupIdCreateCloneRemove()
+{
+  // Covers the id invariants behind the remaining tree transformations that
+  // are driven from gui/app code (add group, Group Selected, remove):
+  //  - creation (addGroup/insertGroup) always yields a fresh, unique id with
+  //    the static "group_" prefix;
+  //  - clone() PRESERVES the id (QgsLayerTreeViewDefaultActions::groupSelected
+  //    clones nodes into the new group then removes the originals, so a grouped
+  //    subgroup keeps its id -> net move semantics, no duplicate);
+  //  - regenerateGroupIds() REGENERATES ids recursively (the copy primitive);
+  //  - removing a group does not disturb its siblings' ids.
+  QgsLayerTreeGroup root;
+  QgsLayerTreeGroup *a = root.addGroup( u"a"_s );
+  QgsLayerTreeGroup *b = root.insertGroup( 0, u"b"_s );
+  QgsLayerTreeGroup *aChild = a->addGroup( u"a-child"_s );
+
+  // creation: non-empty, statically prefixed, and unique across siblings/nesting
+  for ( QgsLayerTreeGroup *g : { a, b, aChild } )
+  {
+    QVERIFY( !g->id().isEmpty() );
+    QVERIFY( g->id().startsWith( "group_"_L1 ) );
+  }
+  QVERIFY( a->id() != b->id() );
+  QVERIFY( a->id() != aChild->id() );
+  QVERIFY( b->id() != aChild->id() );
+
+  // clone() preserves ids (the primitive Group Selected relies on)
+  std::unique_ptr<QgsLayerTreeGroup> clone( a->clone() );
+  QCOMPARE( clone->id(), a->id() );
+  QCOMPARE( QgsLayerTree::toGroup( clone->children().at( 0 ) )->id(), aChild->id() );
+
+  // regenerateGroupIds() gives the clone (and its subgroup) fresh ids
+  QgsLayerTreeUtils::regenerateGroupIds( clone.get() );
+  QVERIFY( clone->id() != a->id() );
+  QVERIFY( QgsLayerTree::toGroup( clone->children().at( 0 ) )->id() != aChild->id() );
+
+  // remove: deleting one sibling leaves the other's id untouched
+  const QString bId = b->id();
+  root.removeChildNode( a );
+  QCOMPARE( b->id(), bId );
 }
 
 QGSTEST_MAIN( TestQgsLayerTree )

@@ -1232,8 +1232,12 @@ namespace QgsWms
   std::unique_ptr<QgsMapRendererTask> QgsRenderer::getPdf( const QString &tmpFileName )
   {
     QgsMapSettings ms;
+
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers, &ms );
+
+    ms.setLayers( layers );
     ms.setExtent( mWmsParameters.bboxAsRectangle() );
-    ms.setLayers( mContext.layersToRender() );
     ms.setDestinationCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( mWmsParameters.crs() ) );
     ms.setOutputSize( QSize( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() ) );
     ms.setDpiTarget( mWmsParameters.dpiAsDouble() );
@@ -3539,7 +3543,7 @@ namespace QgsWms
       // create renderer from sld document
       std::unique_ptr<QgsFeatureRenderer> renderer;
       QDomElement el = sldDoc.documentElement();
-      renderer.reset( QgsFeatureRenderer::loadSld( el, param.mGeom.type(), errorMsg ) );
+      renderer = QgsFeatureRenderer::loadSld( el, param.mGeom.type(), errorMsg );
       if ( !renderer )
       {
         QgsMessageLog::logMessage( errorMsg, "Server", Qgis::MessageLevel::Info );
@@ -3932,13 +3936,13 @@ namespace QgsWms
       {
         // Default value based on type configured by user
         QVariant defValue;
-        if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::AllValues )
+        if ( dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::AllValues )
         {
           continue; // no filter by default for this dimension
         }
-        else if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::ReferenceValue )
+        else if ( dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::ReferenceValue )
         {
-          defValue = dim.referenceValue;
+          defValue = dim.referenceValue();
         }
         else
         {
@@ -3951,11 +3955,11 @@ namespace QgsWms
           // sort unique values
           QList<QVariant> values = qgis::setToList( uniqueValues );
           std::sort( values.begin(), values.end() );
-          if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::MinValue )
+          if ( dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::MinValue )
           {
             defValue = values.first();
           }
-          else if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::MaxValue )
+          else if ( dim.defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::MaxValue )
           {
             defValue = values.last();
           }

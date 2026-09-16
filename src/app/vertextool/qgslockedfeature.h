@@ -39,7 +39,7 @@ class APP_EXPORT QgsLockedFeature : public QObject
   public:
     /**
      * Creates a locked feature
-     * \param featureId id of feature which was selected
+     * \param id id of feature which was selected
      * \param layer vector layer in which feature is selected
      * \param canvas mapCanvas on which we are working
      */

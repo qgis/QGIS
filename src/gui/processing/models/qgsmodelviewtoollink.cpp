@@ -2,8 +2,8 @@
                              qgsmodelviewtoollink.cpp
                              ------------------------------------
     Date                 : January 2024
-    Copyright            : (C) 2024 Valentin Buira
-    Email                : valentin dot buira at gmail dot com
+    Copyright            : (C) 2024 Celia Buira
+    Email                : celia dot buira at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -246,10 +246,8 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
     if ( !childFrom )
       return;
 
-    mPreviousInputSocketNumber = mFromSocket->index();
-    const QgsProcessingParameterDefinition *param = childFrom->algorithm()->parameterDefinitions().at( mPreviousInputSocketNumber );
+    const QgsProcessingParameterDefinition *param = childFrom->algorithm()->parameterDefinitions().at( mFromSocket->index() );
     const QList<QgsProcessingModelChildParameterSource> currentSources = childFrom->parameterSources().value( param->name() );
-    mPreviousInputChildId = childFrom->childId();
 
     for ( const QgsProcessingModelChildParameterSource &source : currentSources )
     {
@@ -319,6 +317,8 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
             return;
           }
 
+          mPreviousInputChildId = childFrom->childId();
+          mPreviousInputSocketNumber = mFromSocket->index();
           mFromSocket = item->outSocketAt( socketIndex );
         }
         break;

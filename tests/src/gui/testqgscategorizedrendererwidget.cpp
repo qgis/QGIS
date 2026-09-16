@@ -100,8 +100,8 @@ void TestQgsCategorizedRendererWidget::testAddMissingCategories()
   // test with a value list category
   widget.reset();
   renderer = new QgsCategorizedSymbolRenderer( u"name"_s );
-  renderer->addCategory( QgsRendererCategory( u"b"_s, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QString() ) );
-  renderer->addCategory( QgsRendererCategory( QVariantList() << u"a"_s << u"c"_s, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), QString() ) );
+  renderer->addCategory( QgsRendererCategory( u"b"_s, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), QString() ) );
+  renderer->addCategory( QgsRendererCategory( QVariantList() << u"a"_s << u"c"_s, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), QString() ) );
 
   vl->setRenderer( renderer );
 
@@ -284,9 +284,9 @@ void TestQgsCategorizedRendererWidget::model()
 
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer( u"name"_s );
   renderer = new QgsCategorizedSymbolRenderer( u"name"_s );
-  renderer->addCategory( QgsRendererCategory( u"b"_s, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"aa"_s ) );
-  renderer->addCategory( QgsRendererCategory( QVariantList() << u"a"_s << u"c"_s, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"list"_s ) );
-  renderer->addCategory( QgsRendererCategory( u"d"_s, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"dd"_s, false ) );
+  renderer->addCategory( QgsRendererCategory( u"b"_s, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"aa"_s ) );
+  renderer->addCategory( QgsRendererCategory( QVariantList() << u"a"_s << u"c"_s, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"list"_s ) );
+  renderer->addCategory( QgsRendererCategory( u"d"_s, QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"dd"_s, false ) );
 
   vl->setRenderer( renderer );
 

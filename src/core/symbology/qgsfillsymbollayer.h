@@ -62,8 +62,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
      *
      * Caller takes ownership of the returned symbol layer.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
      *
      * Caller takes ownership of the returned symbol layer.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     // implemented from base classes
 
@@ -529,7 +529,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
      *
      * Caller takes ownership of the returned symbol layer.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     // implemented from base classes
 
@@ -882,14 +882,14 @@ class CORE_EXPORT QgsRasterFillSymbolLayer : public QgsImageFillSymbolLayer
      * Creates a new QgsRasterFillSymbolLayer from a \a properties map. The caller takes
      * ownership of the returned object.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     /**
      * Creates a new QgsRasterFillSymbolLayer from a SLD \a element. The caller takes
      * ownership of the returned object.
      * \since QGIS 3.30
      */
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
@@ -1200,13 +1200,13 @@ class CORE_EXPORT QgsSVGFillSymbolLayer : public QgsImageFillSymbolLayer
      * Creates a new QgsSVGFillSymbolLayer from a \a properties map. The caller takes
      * ownership of the returned object.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     /**
      * Creates a new QgsSVGFillSymbolLayer from a SLD \a element. The caller takes
      * ownership of the returned object.
      */
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
@@ -1493,13 +1493,13 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer : public QgsImageFillSymbolLayer
      * Creates a new QgsLinePatternFillSymbolLayer from a \a properties map. The caller takes
      * ownership of the returned object.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     /**
      * Creates a new QgsLinePatternFillSymbolLayer from a SLD \a element. The caller takes
      * ownership of the returned object.
      */
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -1769,8 +1769,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer : public QgsImageFillSymbolLaye
      *
      * Caller takes ownership of the returned symbol layer.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -2331,7 +2331,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
      *
      * Caller takes ownership of the returned symbol layer.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -2515,8 +2515,8 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
      *
      * Caller takes ownership of the returned symbol layer.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     // implemented from base classes
 

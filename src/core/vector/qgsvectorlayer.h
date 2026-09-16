@@ -55,6 +55,7 @@ class QgsAbstractGeometrySimplifier;
 class QgsActionManager;
 class QgsConditionalLayerStyles;
 class QgsCurve;
+class QgsCurvePolygon;
 class QgsDiagramLayerSettings;
 class QgsDiagramRenderer;
 class QgsEditorWidgetWrapper;
@@ -675,13 +676,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
 
     QgsVectorDataProvider *dataProvider() final;
     const QgsVectorDataProvider *dataProvider() const final SIP_SKIP;
-    QgsMapLayerSelectionProperties *selectionProperties() override;
-    QgsMapLayerTemporalProperties *temporalProperties() override;
-    QgsMapLayerElevationProperties *elevationProperties() override;
-    QgsAbstractProfileSource *profileSource() override { return this; }
+    QgsMapLayerSelectionProperties *selectionProperties() override SIP_DISALLOWNONE;
+    QgsMapLayerTemporalProperties *temporalProperties() override SIP_DISALLOWNONE;
+    QgsMapLayerElevationProperties *elevationProperties() override SIP_DISALLOWNONE;
+    QgsAbstractProfileSource *profileSource() override SIP_DISALLOWNONE { return this; }
     QString profileSourceId() const override { return id(); }
     QString profileSourceName() const override { return name(); }
-    QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
+    QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_DISALLOWNONE SIP_FACTORY;
 
     /**
      * Sets the text \a encoding of the data provider.
@@ -714,7 +715,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     /**
      * Returns the join buffer object.
      */
-    QgsVectorLayerJoinBuffer *joinBuffer() { return mJoinBuffer; }
+    QgsVectorLayerJoinBuffer *joinBuffer() SIP_DISALLOWNONE { return mJoinBuffer; }
 
     /**
      * Returns a const pointer on join buffer object.
@@ -787,7 +788,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * The pointer which is returned directly points to the actions object
      * which is used by the layer, so any changes are immediately applied.
      */
-    QgsActionManager *actions() { return mActions; }
+    QgsActionManager *actions() SIP_DISALLOWNONE { return mActions; }
 
     /**
      * Returns all layer actions defined on this layer.
@@ -1419,6 +1420,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      * \note available in Python as addCurvedPart
      */
     Q_INVOKABLE Qgis::GeometryOperationResult addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
+
+    /**
+     * Adds a new polygon part to a multipart feature.
+     *
+     * \note Calls to addPart() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     *
+     * \note available in Python as addPolygonPart
+     * \since QGIS 4.4
+     */
+    Q_INVOKABLE Qgis::GeometryOperationResult addPart( QgsCurvePolygon *polygon SIP_TRANSFER ) SIP_PYNAME( addPolygonPart );
 
     /**
      * Translates feature by dx, dy
@@ -2474,7 +2488,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      *
      * \since QGIS 3.4
      */
-    QgsGeometryOptions *geometryOptions() const;
+    QgsGeometryOptions *geometryOptions() const SIP_DISALLOWNONE;
 
     /**
      * Controls, if the layer is allowed to commit changes. If this is set to FALSE
@@ -2519,7 +2533,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      *
      * \since QGIS 3.10
      */
-    QgsStoredExpressionManager *storedExpressionManager() { return mStoredExpressionManager; }
+    QgsStoredExpressionManager *storedExpressionManager() SIP_DISALLOWNONE { return mStoredExpressionManager; }
 
   public slots:
 
@@ -2931,6 +2945,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
 
     void createEditBuffer();
     void clearEditBuffer();
+
+    //! Apply render settings from data provider
+    void applyRendererSettings();
 
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
     QgsVectorDataProvider *mDataProvider = nullptr;

@@ -38,7 +38,9 @@ void QgsMapInfoSymbolConversionContext::pushWarning( const QString &warning )
 }
 
 
-QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved )
+std::unique_ptr<QgsLineSymbol> QgsMapInfoSymbolConverter::convertLineSymbol(
+  int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved
+)
 {
   auto simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, size );
   simpleLine->setWidthUnit( sizeUnit );
@@ -1102,10 +1104,10 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
     symbol->appendSymbolLayer( simpleLine2.release() );
   }
 
-  return symbol.release();
+  return symbol;
 }
 
-QgsFillSymbol *QgsMapInfoSymbolConverter::convertFillSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, const QColor &backColor )
+std::unique_ptr<QgsFillSymbol> QgsMapInfoSymbolConverter::convertFillSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, const QColor &backColor )
 {
   Qt::BrushStyle style = Qt::SolidPattern;
 
@@ -1393,10 +1395,10 @@ QgsFillSymbol *QgsMapInfoSymbolConverter::convertFillSymbol( int identifier, Qgs
 
     layers << lineFill.release();
   }
-  return new QgsFillSymbol( layers );
+  return std::make_unique<QgsFillSymbol>( layers );
 }
 
-QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, Qgis::RenderUnit sizeUnit )
+std::unique_ptr<QgsMarkerSymbol> QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, Qgis::RenderUnit sizeUnit )
 {
   Qgis::MarkerShape shape;
   bool isFilled = true;
@@ -1564,5 +1566,5 @@ QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier,
     symbols << simpleMarker.release();
   }
 
-  return new QgsMarkerSymbol( symbols );
+  return std::make_unique<QgsMarkerSymbol>( symbols );
 }

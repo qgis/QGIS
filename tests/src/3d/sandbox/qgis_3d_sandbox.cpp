@@ -288,7 +288,7 @@ int main( int argc, char *argv[] )
   QWidget *windowWidget = new QWidget;
 
   QToolBar *toolBar = new QToolBar( windowWidget );
-  toolBar->setIconSize( QgsGuiUtils::iconSize() );
+  toolBar->setIconSize( QgsGui::iconSize( Qgis::UserInterfaceIconType::MainWindowToolbar ) );
   toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionZoomFullExtent.svg" ) ), u"Reset camera to default position"_s, windowWidget, [canvas] { canvas->resetView(); } );
   QAction *toggleDebugPanel = toolBar->addAction( QgsApplication::getThemeIcon( u"/propertyicons/general.svg"_s ), u"Toggle on-screen Debug panel"_s );
   toggleDebugPanel->setCheckable( true );

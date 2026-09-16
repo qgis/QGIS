@@ -33,7 +33,6 @@ from qgis.core import (
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import isWindows
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -195,6 +194,6 @@ class pansharp(GdalAlgorithm):
             arguments.append(extra)
 
         return [
-            self.commandName() + (".bat" if isWindows() else ".py"),
+            self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
             GdalUtils.escapeAndJoin(arguments),
         ]

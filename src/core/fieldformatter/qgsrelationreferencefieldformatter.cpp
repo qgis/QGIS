@@ -129,6 +129,11 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
   Q_UNUSED( fieldIndex )
   QMap<QVariant, QString> cache;
 
+  if ( !layer )
+  {
+    return QVariant();
+  }
+
   const QString fieldName = fieldIndex < layer->fields().size() ? layer->fields().at( fieldIndex ).name() : QObject::tr( "<unknown>" );
 
   // Some sanity checks

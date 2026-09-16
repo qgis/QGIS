@@ -106,7 +106,7 @@ Returns the symbol property definitions.
 %End
 
 
-    static QgsFeatureRenderer *defaultRenderer( Qgis::GeometryType geomType ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> defaultRenderer( Qgis::GeometryType geomType );
 %Docstring
 Returns a new renderer - used by default in vector layers
 %End
@@ -298,7 +298,7 @@ Returns list of symbols used by the renderer.
     bool usingSymbolLevels() const;
     void setUsingSymbolLevels( bool usingSymbolLevels );
 
-    static QgsFeatureRenderer *load( QDomElement &symbologyElem, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> load( QDomElement &symbologyElem, const QgsReadWriteContext &context );
 %Docstring
 create a renderer from XML element
 %End
@@ -319,7 +319,7 @@ create the SLD UserStyle element following the SLD v1.1 specs with the
 given name
 %End
 
-    static QgsFeatureRenderer *loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage );
 %Docstring
 Create a new renderer according to the information contained in the
 UserStyle element of a SLD style document

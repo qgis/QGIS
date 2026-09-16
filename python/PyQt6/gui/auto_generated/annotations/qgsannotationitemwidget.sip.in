@@ -47,6 +47,15 @@ If ``False`` is returned, then the widget could not be successfully
 updated to show the properties of ``item``.
 %End
 
+    static void populateRotationModeComboBox( QComboBox *comboBox );
+%Docstring
+Populates a ``comboBox`` with the available options for rendering an
+item with respect to the rotation of the map (see
+:py:class:`Qgis`.SymbolRotationMode).
+
+.. versionadded:: 4.4
+%End
+
     virtual void setLayer( QgsAnnotationLayer *layer );
 %Docstring
 Sets the associated annotation map ``layer``.

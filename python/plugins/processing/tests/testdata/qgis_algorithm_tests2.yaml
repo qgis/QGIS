@@ -2,7 +2,7 @@
 
 tests:
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation using attribute
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
@@ -13,11 +13,10 @@ tests:
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_using_attribute_OUTPUT.asc
+          type: rasterfile
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation using Z value
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
@@ -28,26 +27,24 @@ tests:
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_using_z_value_OUTPUT.asc
+          type: rasterfile
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation with breaklines
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
-        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        name: pointsz.gml::~::1::~::-1::~::0::|::custom/breaklines.gml::~::0::~::1::~::2
         type: interpolation
       METHOD: 0
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_with_breaklines_OUTPUT.asc
+          type: rasterfile
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation using attribute (old parameters)
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
@@ -59,11 +56,10 @@ tests:
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_using_attribute__old_parameters__OUTPUT.asc
+          type: rasterfile
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation using Z value (old parameters)
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
@@ -75,27 +71,25 @@ tests:
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_using_z_value__old_parameters__OUTPUT.asc
+          type: rasterfile
 
-  - algorithm: qgis:tininterpolation
+  - algorithm: native:tininterpolation
     name: TIN interpolation with breaklines (old parameters)
     params:
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
-        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        name: pointsz.gml::~::1::~::-1::~::0::|::custom/breaklines.gml::~::0::~::1::~::2
         type: interpolation
       METHOD: 0
       COLUMNS: 80
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - e277a6774c489ee965421fe102780275163229b9407d5e33d3e268e5
-        type: rasterhash
+          name: expected/tin_interpolation_with_breaklines__old_parameters__OUTPUT.asc
+          type: rasterfile
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation using attribute
     params:
       DISTANCE_COEFFICIENT: 2.0
@@ -106,11 +100,10 @@ tests:
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_using_attribute_OUTPUT.asc
+          type: rasterfile
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation using Z value
     params:
       DISTANCE_COEFFICIENT: 2.0
@@ -121,26 +114,24 @@ tests:
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_using_z_value_OUTPUT.asc
+          type: rasterfile
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation with breaklines
     params:
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
-        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        name: pointsz.gml::~::1::~::-1::~::0::|::custom/breaklines.gml::~::0::~::1::~::2
         type: interpolation
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_with_breaklines_OUTPUT.asc
+          type: rasterfile
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation using attribute (old parameters)
     params:
       DISTANCE_COEFFICIENT: 2.0
@@ -152,11 +143,10 @@ tests:
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_using_attribute__old_parameters__OUTPUT.asc
+          type: rasterfile
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation using Z value (old parameters)
     params:
       DISTANCE_COEFFICIENT: 2.0
@@ -168,25 +158,23 @@ tests:
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_using_z_value__old_parameters__OUTPUT.asc
+          type: rasterfile
 
-  - algorithm: qgis:idwinterpolation
+  - algorithm: native:idwinterpolation
     name: IDW interpolation with breaklines (old parameters)
     params:
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
-        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        name: pointsz.gml::~::1::~::-1::~::0::|::custom/breaklines.gml::~::0::~::1::~::2
         type: interpolation
       COLUMNS: 80
       ROWS: 80
     results:
       OUTPUT:
-        hash:
-          - 7836f01a89afbfdd865aaae9b57c602c96d629184adf1b6ea66ca127
-        type: rasterhash
+          name: expected/idw_interpolation_with_breaklines__old_parameters__OUTPUT.asc
+          type: rasterfile
 
   - algorithm: native:removenullgeometries
     name: Remove null geometries (do not remove empty)
@@ -1389,46 +1377,6 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:variabledistancebuffer
-    name: variable buffer on points
-    params:
-      DISSOLVE: false
-      FIELD: buffer
-      INPUT:
-        name: custom/variable_buffer.gml
-        type: vector
-      SEGMENTS: 5
-    results:
-      OUTPUT:
-        name: expected/variable_buffer_points.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 5
-
-  - algorithm: qgis:variabledistancebuffer
-    name: variable buffer on points with dissolve option
-    params:
-      DISSOLVE: true
-      FIELD: buffer
-      INPUT:
-        name: custom/variable_buffer.gml
-        type: vector
-      SEGMENTS: 5
-    results:
-      OUTPUT:
-        name: expected/variable_buffer_points_dissolved.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 5
-            normalize: True
-          fields:
-            id: skip
-            id2: skip
-            fid: skip
-
-
   - algorithm: native:adduniquevalueindexfield
     name: add unique field based on another field
     params:
@@ -1458,17 +1406,6 @@ tests:
             fid: skip
         pk:
           - id2
-
-  - algorithm: qgis:linestopolygons
-    name: convert lines to polygon
-    params:
-      INPUT:
-        name: lines.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/lines_to_polygon.gml
-        type: vector
 
   - algorithm: native:snappointstogrid
     name: Gridify polys

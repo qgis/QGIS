@@ -65,8 +65,7 @@ void QgsMapRendererParallelJob::startPrivate()
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
-    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>();
-    mLabelingEngineV2->setMapSettings( mSettings );
+    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( mSettings );
   }
 
   const bool canUseLabelCache = prepareLabelCache();

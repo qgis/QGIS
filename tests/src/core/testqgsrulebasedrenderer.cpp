@@ -67,10 +67,9 @@ class TestQgsRuleBasedRenderer : public QgsTest
       xml2domElement( u"rulebasedrenderer_simple.xml"_s, doc );
       QDomElement elem = doc.documentElement();
 
-      QgsRuleBasedRenderer *r = static_cast<QgsRuleBasedRenderer *>( QgsRuleBasedRenderer::create( elem, QgsReadWriteContext() ) );
+      auto r = qgis::unique_ptr_static_cast<QgsRuleBasedRenderer>( QgsRuleBasedRenderer::create( elem, QgsReadWriteContext() ) );
       QVERIFY( r );
       check_tree_valid( r->rootRule() );
-      delete r;
     }
 
     void test_load_invalid_xml()
@@ -79,7 +78,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       xml2domElement( u"rulebasedrenderer_invalid.xml"_s, doc );
       QDomElement elem = doc.documentElement();
 
-      const std::shared_ptr<QgsRuleBasedRenderer> r( static_cast<QgsRuleBasedRenderer *>( QgsRuleBasedRenderer::create( elem, QgsReadWriteContext() ) ) );
+      auto r = qgis::unique_ptr_static_cast<QgsRuleBasedRenderer>( QgsRuleBasedRenderer::create( elem, QgsReadWriteContext() ) );
       QVERIFY( !r );
     }
 
@@ -100,11 +99,11 @@ class TestQgsRuleBasedRenderer : public QgsTest
       f3.setAttribute( idx, QVariant( 100 ) );
 
       // prepare renderer
-      QgsSymbol *s1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
-      QgsSymbol *s2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+      std::unique_ptr<QgsSymbol> s1 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+      std::unique_ptr<QgsSymbol> s2 = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
       RRule *rootRule = new RRule( nullptr );
-      rootRule->appendChild( new RRule( s1, 0, 0, u"fld >= 5 and fld <= 20"_s ) );
-      rootRule->appendChild( new RRule( s2, 0, 0, u"fld <= 10"_s ) );
+      rootRule->appendChild( new RRule( s1.release(), 0, 0, u"fld >= 5 and fld <= 20"_s ) );
+      rootRule->appendChild( new RRule( s2.release(), 0, 0, u"fld <= 10"_s ) );
       QgsRuleBasedRenderer r( rootRule );
 
       QVERIFY( r.capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature );
@@ -847,7 +846,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       cats.append( QgsRendererCategory( QVariantList( { 3, 4 } ), new QgsMarkerSymbol(), "result 3/4" ) );
       c = std::make_unique<QgsCategorizedSymbolRenderer>( "id + 1", cats );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() );
       QCOMPARE( r->rootRule()->children().size(), 3 );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "id + 1 = 1" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "id + 1 = 2" );
@@ -860,7 +859,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       cats.append( QgsRendererCategory( QVariantList( { 3, 4 } ), new QgsMarkerSymbol(), "result 3/4" ) );
       c = std::make_unique<QgsCategorizedSymbolRenderer>( "\"id\"", cats );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" = 1" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" = 2" );
       QCOMPARE( r->rootRule()->children()[2]->filterExpression(), "\"id\" IN (3,4)" );
@@ -871,7 +870,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       cats.append( QgsRendererCategory( 2, new QgsMarkerSymbol(), "fa_cy-fie+ld 2" ) );
       c = std::make_unique<QgsCategorizedSymbolRenderer>( "fa_cy-fie+ld", cats );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"fa_cy-fie+ld\" = 1" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"fa_cy-fie+ld\" = 2" );
     }
@@ -923,7 +922,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       cats.append( QgsRendererCategory( QVariantList( { 3, 4 } ), new QgsMarkerSymbol(), "result 3/4" ) );
       c = std::make_unique<QgsCategorizedSymbolRenderer>( "id + 1", cats );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get() );
       QCOMPARE( r->rootRule()->children().size(), 3 );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "id + 1 = 1" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "id + 1 = 2" );
@@ -936,7 +935,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       cats.append( QgsRendererCategory( QVariantList( { 3, 4 } ), new QgsMarkerSymbol(), "result 3/4" ) );
       c = std::make_unique<QgsCategorizedSymbolRenderer>( "\"id\"", cats );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get() );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" = 1" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" = 2" );
       QCOMPARE( r->rootRule()->children()[2]->filterExpression(), "\"id\" IN (3,4)" );
@@ -948,7 +947,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       cats.append( QgsRendererCategory( 2, new QgsMarkerSymbol(), "fa_cy-fie+ld 2" ) );
       c = std::make_unique<QgsCategorizedSymbolRenderer>( "fa_cy-fie+ld", cats );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get() );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "fa_cy-fie+ld = 1" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "fa_cy-fie+ld = 2" );
     }
@@ -997,7 +996,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       ranges.append( QgsRendererRange( 0, 1, new QgsMarkerSymbol(), "0-1" ) );
       c = std::make_unique<QgsGraduatedSymbolRenderer>( "id", ranges );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() );
       QCOMPARE( r->rootRule()->children().size(), 3 );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" > 2.0000000000000000" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.0000000000000000 AND \"id\" <= 2.0000000000000000" );
@@ -1009,7 +1008,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       ranges.append( QgsRendererRange( 1, 2, new QgsMarkerSymbol(), "1-2" ) );
       c = std::make_unique<QgsGraduatedSymbolRenderer>( "id / 2", ranges );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() );
       QCOMPARE( r->rootRule()->children().size(), 2 );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "(id / 2) <= 1.0000000000000000" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "(id / 2) > 1.0000000000000000" );
@@ -1020,7 +1019,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       ranges.append( QgsRendererRange( 1, 2, new QgsMarkerSymbol(), "1-2" ) );
       c = std::make_unique<QgsGraduatedSymbolRenderer>( "\"id\"", ranges );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() );
       QCOMPARE( r->rootRule()->children().size(), 2 );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" <= 1.0000000000000000" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.0000000000000000" );
@@ -1031,7 +1030,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       ranges.append( QgsRendererRange( 1, 2, new QgsMarkerSymbol(), "1-2" ) );
       c = std::make_unique<QgsGraduatedSymbolRenderer>( "fa_cy-fie+ld", ranges );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get(), layer.get() );
       QCOMPARE( r->rootRule()->children().size(), 2 );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"fa_cy-fie+ld\" <= 1.0000000000000000" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"fa_cy-fie+ld\" > 1.0000000000000000" );
@@ -1072,7 +1071,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       ranges.append( QgsRendererRange( 1, 2, new QgsMarkerSymbol(), "1-2" ) );
       c = std::make_unique<QgsGraduatedSymbolRenderer>( "id / 2", ranges );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get() );
       QCOMPARE( r->rootRule()->children().size(), 2 );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "(id / 2) <= 1.0000000000000000" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "(id / 2) > 1.0000000000000000" );
@@ -1083,7 +1082,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       ranges.append( QgsRendererRange( 1, 2, new QgsMarkerSymbol(), "1-2" ) );
       c = std::make_unique<QgsGraduatedSymbolRenderer>( "\"id\"", ranges );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get() );
       QCOMPARE( r->rootRule()->children().size(), 2 );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "\"id\" <= 1.0000000000000000" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "\"id\" > 1.0000000000000000" );
@@ -1095,7 +1094,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       ranges.append( QgsRendererRange( 1, 2, new QgsMarkerSymbol(), "1-2" ) );
       c = std::make_unique<QgsGraduatedSymbolRenderer>( "fa_cy-fie+ld", ranges );
 
-      r.reset( QgsRuleBasedRenderer::convertFromRenderer( c.get() ) );
+      r = QgsRuleBasedRenderer::convertFromRenderer( c.get() );
       QCOMPARE( r->rootRule()->children().size(), 2 );
       QCOMPARE( r->rootRule()->children()[0]->filterExpression(), "(fa_cy-fie+ld) <= 1.0000000000000000" );
       QCOMPARE( r->rootRule()->children()[1]->filterExpression(), "(fa_cy-fie+ld) > 1.0000000000000000" );
@@ -1380,10 +1379,10 @@ class TestQgsRuleBasedRenderer : public QgsTest
       QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
       auto renderer = std::make_unique<QgsRuleBasedRenderer>( rootRule );
 
-      QgsRuleBasedRenderer::Rule *rule1 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "\"field_name\" = 1" );
-      QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "\"field_name\" = 6" );
-      QgsRuleBasedRenderer::Rule *ruleElse = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "ELSE" );
-      QgsRuleBasedRenderer::Rule *ruleElse2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), 0, 0, "ELSE" );
+      QgsRuleBasedRenderer::Rule *rule1 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), 0, 0, "\"field_name\" = 1" );
+      QgsRuleBasedRenderer::Rule *rule2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), 0, 0, "\"field_name\" = 6" );
+      QgsRuleBasedRenderer::Rule *ruleElse = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), 0, 0, "ELSE" );
+      QgsRuleBasedRenderer::Rule *ruleElse2 = new QgsRuleBasedRenderer::Rule( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), 0, 0, "ELSE" );
 
       Q_ASSERT( ruleElse->isElse() );
 

@@ -265,7 +265,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
                 QgsQueryResultDialog dialog( conn2.release() );
                 dialog.setObjectName( u"SqlUpdateDialog"_s );
-                dialog.setStyleSheet( QgisApp::instance()->styleSheet() );
+                dialog.setStyleSheet( QgsGui::applicationStyleSheet() );
 
                 const QString layerName = layer->name();
                 dialog.setWindowTitle( tr( "%1 — Update SQL" ).arg( layerName ) );
@@ -345,7 +345,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
                   QgsQueryResultMainWindow *dialog = new QgsQueryResultMainWindow( conn2.release(), layerName );
                   dialog->setAttribute( Qt::WA_DeleteOnClose );
-                  dialog->setStyleSheet( QgisApp::instance()->styleSheet() );
+                  dialog->setStyleSheet( QgsGui::applicationStyleSheet() );
                   dialog->resultWidget()->setSqlVectorLayerOptions( options );
 
                   connect( dialog->resultWidget(), &QgsQueryResultWidget::requestDialogTitleUpdate, dialog, [dialog]( const QString &fileName ) {
@@ -1276,7 +1276,7 @@ void QgsAppLayerTreeViewMenuProvider::copyVectorSymbol( const QString &layerId )
 
   if ( singleRenderer )
   {
-    QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( singleRenderer->symbol() ) );
+    QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( singleRenderer->symbol() ).release() );
   }
 }
 
@@ -1411,7 +1411,7 @@ void QgsAppLayerTreeViewMenuProvider::copySymbolLegendNodeSymbol( const QString 
   if ( !originalSymbol )
     return;
 
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( originalSymbol ) );
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( originalSymbol ).release() );
 }
 
 void QgsAppLayerTreeViewMenuProvider::pasteSymbolLegendNodeSymbol( const QString &layerId, const QString &ruleKey )
@@ -1537,7 +1537,7 @@ void QgsAppLayerTreeViewMenuProvider::toggleLabels( bool enabled )
       if ( enabled && !rasterLayer->labeling() )
       {
         // no labeling setup - create default labeling for layer
-        rasterLayer->setLabeling( QgsAbstractRasterLayerLabeling::defaultLabelingForLayer( rasterLayer ) );
+        rasterLayer->setLabeling( QgsAbstractRasterLayerLabeling::defaultLabelingForLayer( rasterLayer ).release() );
         rasterLayer->setLabelsEnabled( true );
       }
       else

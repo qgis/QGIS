@@ -19,7 +19,8 @@
 #ifndef QGSPROCESSINGWIDGETWRAPPERIMPL_H
 #define QGSPROCESSINGWIDGETWRAPPERIMPL_H
 
-#include "ui_qgsheatmappixelsizewidgetbase.h"
+#include "ui_qgsinterpolationsourcewidgetbase.h"
+#include "ui_qgsprocessingpixelsizewidgetbase.h"
 #include "ui_qgsprocessingreliefcolorswidgetbase.h"
 
 #include "qgshighlightablelineedit.h"
@@ -2003,6 +2004,32 @@ class GUI_EXPORT QgsProcessingMultipleLayerWidgetWrapper : public QgsAbstractPro
     friend class TestProcessingGui;
 };
 
+/**
+ * Generic parameter definition widget for destination parameter types.
+ *
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsProcessingDestinationParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsProcessingDestinationParameterDefinitionWidget(
+      const QString &type,
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingDestinationParameter *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
+
+    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
+
+  private:
+    QString mType;
+    QgsProcessingLayerOutputDestinationWidget *mDestinationWidget = nullptr;
+    std::unique_ptr< QgsProcessingDestinationParameter > mExistingDestinationParameter;
+};
 
 class GUI_EXPORT QgsProcessingOutputWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
 {
@@ -2013,6 +2040,9 @@ class GUI_EXPORT QgsProcessingOutputWidgetWrapper : public QgsAbstractProcessing
 
     // QgsProcessingParameterWidgetWrapper interface
     QWidget *createWidget() override SIP_FACTORY;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
+    ) override;
 
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
@@ -2279,7 +2309,7 @@ class GUI_EXPORT QgsProcessingVectorTileDestinationWidgetWrapper : public QgsPro
 };
 
 
-class GUI_EXPORT QgsHeatmapPixelSizeWidget : public QgsPanelWidget, private Ui::QgsHeatmapPixelSizeWidgetBase
+class GUI_EXPORT QgsHeatmapPixelSizeWidget : public QgsPanelWidget, private Ui::QgsProcessingPixelSizeWidgetBase
 {
     Q_OBJECT
   public:
@@ -2420,6 +2450,163 @@ class GUI_EXPORT QgsProcessingReliefColorsWidgetWrapper : public QgsAbstractProc
     friend class TestProcessingGui;
 };
 
+class GUI_EXPORT QgsExecuteSqlWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsExecuteSqlWidget( QWidget *parent = nullptr );
+    void setValue( const QString &text );
+    QString value() const;
+    QgsFieldExpressionWidget *expressionWidget() const { return mExpressionWidget; }
+    QPlainTextEdit *textEdit() const { return mTextEdit; }
+
+  signals:
+
+    void changed();
+
+  private slots:
+
+    void insertExpression();
+
+  private:
+    QPlainTextEdit *mTextEdit = nullptr;
+    QgsFieldExpressionWidget *mExpressionWidget = nullptr;
+    QPushButton *mInsertButton = nullptr;
+};
+
+class GUI_EXPORT QgsProcessingExecuteSqlWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+    QgsProcessingExecuteSqlWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override SIP_FACTORY;
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+  private:
+    QgsExecuteSqlWidget *mExecuteSqlWidget = nullptr;
+
+    friend class TestProcessingGui;
+};
+
+class GUI_EXPORT QgsInterpolationSourceWidget : public QWidget, private Ui::QgsInterpolationSourceWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsInterpolationSourceWidget( QWidget *parent = nullptr );
+
+    void setValue( const QVariant &value, QgsProcessingContext &context );
+    QVariant value() const;
+
+  signals:
+
+    void changed();
+
+  private slots:
+    void addLayer();
+    void removeLayer();
+    void layerChanged( QgsVectorLayer *layer );
+
+  private:
+    void addLayerData( QgsVectorLayer *layer, const QString &attribute );
+
+    friend class TestProcessingGui;
+};
+
+class GUI_EXPORT QgsProcessingInterpolationSourceWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+    QgsProcessingInterpolationSourceWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent = nullptr );
+
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
+    ) override;
+
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+  private:
+    QgsInterpolationSourceWidget *mWidget = nullptr;
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsInterpolationPixelSizeWidget : public QgsPanelWidget, private Ui::QgsProcessingPixelSizeWidgetBase
+{
+    Q_OBJECT
+  public:
+    QgsInterpolationPixelSizeWidget( QWidget *parent = nullptr );
+
+    void setSourceData( const QString &sourceData, QgsProcessingContext &context );
+    void setExtent( const QgsRectangle &extent );
+
+    double value() const;
+    void setValue( double value );
+
+  signals:
+    void valueChanged();
+
+  private slots:
+    void pixelSizeChanged();
+    void rowsChanged();
+    void columnsChanged();
+
+  private:
+    QgsRectangle mExtent;
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsProcessingInterpolationPixelSizeWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+  public:
+    QgsProcessingInterpolationPixelSizeWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
+    ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override;
+    void postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers ) override;
+
+  protected:
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+  private slots:
+    void sourceChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
+    void extentChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
+
+  private:
+    QgsInterpolationPixelSizeWidget *mWidget = nullptr;
+    QgsDoubleSpinBox *mFallbackSpinBox = nullptr;
+
+    friend class TestProcessingGui;
+};
 
 ///@endcond PRIVATE
 

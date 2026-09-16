@@ -113,7 +113,7 @@ QgsLinearReferencingSymbolLayer::QgsLinearReferencingSymbolLayer()
 
 QgsLinearReferencingSymbolLayer::~QgsLinearReferencingSymbolLayer() = default;
 
-QgsSymbolLayer *QgsLinearReferencingSymbolLayer::create( const QVariantMap &properties )
+std::unique_ptr<QgsSymbolLayer> QgsLinearReferencingSymbolLayer::create( const QVariantMap &properties )
 {
   auto res = std::make_unique< QgsLinearReferencingSymbolLayer >();
   res->setPlacement( qgsEnumKeyToValue( properties.value( u"placement"_s ).toString(), Qgis::LinearReferencingPlacement::IntervalCartesian2D ) );
@@ -179,7 +179,7 @@ QgsSymbolLayer *QgsLinearReferencingSymbolLayer::create( const QVariantMap &prop
     res->setAverageAngleMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[u"average_angle_map_unit_scale"_s].toString() ) );
   }
 
-  return res.release();
+  return res;
 }
 
 QgsLinearReferencingSymbolLayer *QgsLinearReferencingSymbolLayer::clone() const

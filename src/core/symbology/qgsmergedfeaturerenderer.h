@@ -52,7 +52,7 @@ class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
     QgsMergedFeatureRenderer &operator=( const QgsMergedFeatureRenderer & ) = delete;
 
     //! Creates a renderer out of an XML, for loading
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 
     QgsMergedFeatureRenderer *clone() const override SIP_FACTORY;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
      * Creates a QgsMergedFeatureRenderer by a conversion from an existing renderer.
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
-    static QgsMergedFeatureRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    static std::unique_ptr<QgsMergedFeatureRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   protected:
     /**

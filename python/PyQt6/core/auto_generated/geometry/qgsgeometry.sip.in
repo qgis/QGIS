@@ -1414,7 +1414,7 @@ Replaces a part of this geometry with another line
 %End
 
 
-    QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = 0 ) const;
+ QgsGeometry makeDifference( const QgsGeometry &other, QgsFeedback* feedback = 0 ) const /Deprecated="Since 4.4. Use QgsGeometry.difference()."/;
 %Docstring
 Returns the geometry formed by modifying this geometry such that it does
 not intersect the other geometry.
@@ -1425,6 +1425,10 @@ not intersect the other geometry.
 
 :return: difference geometry, or empty geometry if difference could not
          be calculated
+
+.. deprecated:: 4.4
+
+   Use :py:func:`QgsGeometry.difference()`.
 %End
 
     QgsRectangle boundingBox() const;
@@ -3252,6 +3256,8 @@ Validates geometry and produces a list of geometry errors. The
 
 The ``flags`` parameter indicates optional flags which control the type
 of validity checking performed.
+
+:raises QgsNotSupportedException: when method is not supported
 %End
 
     void normalize();

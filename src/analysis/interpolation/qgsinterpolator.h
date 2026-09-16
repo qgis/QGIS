@@ -18,6 +18,7 @@
 #ifndef QGSINTERPOLATOR_H
 #define QGSINTERPOLATOR_H
 
+#include "qgis.h"
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
 #include "qgscoordinatetransformcontext.h"
@@ -71,22 +72,6 @@ struct ANALYSIS_EXPORT QgsInterpolatorVertexData
 class ANALYSIS_EXPORT QgsInterpolator
 {
   public:
-    //! Describes the type of input data
-    enum class SourceType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsInterpolator, SourceType ) : int
-    {
-      Points SIP_MONKEYPATCH_COMPAT_NAME( SourcePoints ),                 //!< Point source
-      StructureLines SIP_MONKEYPATCH_COMPAT_NAME( SourceStructureLines ), //!< Structure lines
-      BreakLines SIP_MONKEYPATCH_COMPAT_NAME( SourceBreakLines ),         //!< Break lines
-    };
-
-    //! Source for interpolated values from features
-    enum class ValueSource SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsInterpolator, ValueSource ) : int
-    {
-      Attribute SIP_MONKEYPATCH_COMPAT_NAME( ValueAttribute ), //!< Take value from feature's attribute
-      Z SIP_MONKEYPATCH_COMPAT_NAME( ValueZ ),                 //!< Use feature's geometry Z values for interpolation
-      M SIP_MONKEYPATCH_COMPAT_NAME( ValueM ),                 //!< Use feature's geometry M values for interpolation
-    };
-
     //! Result of an interpolation operation
     enum class Result : int
     {
@@ -102,11 +87,11 @@ class ANALYSIS_EXPORT QgsInterpolator
         //! Feature source
         QgsFeatureSource *source = nullptr;
         //! Source for feature values to interpolate
-        QgsInterpolator::ValueSource valueSource = QgsInterpolator::ValueSource::Attribute;
+        Qgis::InterpolationValueSource valueSource = Qgis::InterpolationValueSource::Attribute;
         //! Index of feature attribute to use for interpolation
         int interpolationAttribute = -1;
         //! Source type
-        QgsInterpolator::SourceType sourceType = QgsInterpolator::SourceType::Points;
+        Qgis::InterpolationSourceType sourceType = Qgis::InterpolationSourceType::Points;
 
         /**
        * Coordinate transform context.
@@ -164,7 +149,7 @@ class ANALYSIS_EXPORT QgsInterpolator
      * \param attributeValue the attribute value for interpolation (if interpolating from attribute value)
      *\returns 0 in case of success
     */
-    bool addVerticesToCache( const QgsGeometry &geom, ValueSource source, double attributeValue );
+    bool addVerticesToCache( const QgsGeometry &geom, Qgis::InterpolationValueSource source, double attributeValue );
 };
 
 #endif

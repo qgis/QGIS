@@ -62,18 +62,65 @@ Returns fill color for rubber bands (from global settings)
 
     QgsRubberBand *createRubberBand( Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool alternativeBand = false ) /Factory/;
 %Docstring
-Creates a rubber band with the color/line width from the QGIS settings.
-The caller takes ownership of the returned object
+Creates a rubber band with the color/line width respecting the user's
+settings.
+
+The caller takes ownership of the returned object.
 
 :param geometryType: 
-:param alternativeBand: if ``True``, rubber band will be set with more
-                        transparency and a dash pattern. default is
-                        ``False``.
+:param alternativeBand: if ``True``, the rubber band will be set to have
+                        an alternate appearance, with higher
+                        transparency and a dashed line style
+
+.. seealso:: :py:func:`createRubberBandForLayer`
+
+.. seealso:: :py:func:`prepareRubberBandForLayer`
+%End
+
+    QgsRubberBand *createRubberBandForLayer( QgsVectorLayer *layer = 0, const QList< QgsFeatureId > &fids = QList< QgsFeatureId >(), bool alternativeBand = false ) /Factory/;
+%Docstring
+Creates and prepares a rubber band for a ``layer`` and optional set of
+feature IDs.
+
+Applies the default digitizing styling, attaches appropriate
+layer/feature preview items, and shows the rubber band.
+
+The caller takes ownership of the returned object.
+
+:param layer: vector layer containing configuration (defaults to
+              :py:func:`~QgsMapToolEdit.currentVectorLayer`)
+:param fids: IDs of feature being manipulated (optional)
+:param alternativeBand: if ``True``, the rubber band will be set to have
+                        an alternate appearance, with higher
+                        transparency and a dashed line style
+
+.. seealso:: :py:func:`prepareRubberBandForLayer`
+
+.. versionadded:: 4.4
+%End
+
+    void prepareRubberBandForLayer( QgsRubberBand *rubberBand, QgsVectorLayer *layer = 0, const QList< QgsFeatureId > &fids = QList< QgsFeatureId >() );
+%Docstring
+Configures a ``rubberBand`` for a specific ``layer`` and optional list
+of feature IDs.
+
+Automatically attaches layer-level preview items (such as feature label
+previews if labeling is enabled and a valid feature is supplied).
+
+:param rubberBand: target rubber band to prepare
+:param layer: vector layer containing configuration (defaults to
+              :py:func:`~QgsMapToolEdit.currentVectorLayer`)
+:param fids: IDs of feature being manipulated (optional)
+
+.. seealso:: :py:func:`createRubberBandForLayer`
+
+.. versionadded:: 4.4
 %End
 
     QgsVectorLayer *currentVectorLayer();
 %Docstring
-Returns the current vector layer of the map canvas or 0
+Returns the current vector layer for the map canvas or ``None`` if none
+is set.
 %End
 
     enum TopologicalResult /BaseType=IntEnum/

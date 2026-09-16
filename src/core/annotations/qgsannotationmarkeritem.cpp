@@ -118,6 +118,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( Qg
       break;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
   }
@@ -142,6 +143,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transie
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;

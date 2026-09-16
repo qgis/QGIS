@@ -160,7 +160,7 @@ void QgsMapToolPinLabels::highlightCallout( bool isOrigin, const QgsCalloutPosit
   rb->setWidth( 2 );
   rb->setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
   rb->setColor( color );
-  rb->setIcon( QgsRubberBand::ICON_X );
+  rb->setIcon( Qgis::RubberBandIconType::CrossX );
   rb->setIconSize( scaleFactor );
   rb->addPoint( isOrigin ? calloutPosition.origin() : calloutPosition.destination() );
   mHighlights.insert( id, rb );

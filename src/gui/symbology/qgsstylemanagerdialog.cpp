@@ -740,7 +740,7 @@ void QgsStyleManagerDialog::copyItem()
       std::unique_ptr<QgsSymbol> symbol( mStyle->symbol( details.name ) );
       if ( !symbol )
         return;
-      QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( symbol.get() ) );
+      QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::symbolToMimeData( symbol.get() ).release() );
       break;
     }
 

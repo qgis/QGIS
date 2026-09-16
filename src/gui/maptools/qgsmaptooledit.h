@@ -80,15 +80,53 @@ class GUI_EXPORT QgsMapToolEdit : public QgsMapTool
     static QColor digitizingFillColor();
 
     /**
-     * Creates a rubber band with the color/line width from
-     *   the QGIS settings. The caller takes ownership of the
-     *   returned object
-     *   \param geometryType
-     *   \param alternativeBand if TRUE, rubber band will be set with more transparency and a dash pattern. default is FALSE.
+     * Creates a rubber band with the color/line width respecting the user's settings.
+     *
+     * The caller takes ownership of the returned object.
+     *
+     * \param geometryType
+     * \param alternativeBand if TRUE, the rubber band will be set to have an alternate appearance, with higher transparency and a dashed line style
+     *
+     * \see createRubberBandForLayer()
+     * \see prepareRubberBandForLayer()
      */
     QgsRubberBand *createRubberBand( Qgis::GeometryType geometryType = Qgis::GeometryType::Line, bool alternativeBand = false ) SIP_FACTORY;
 
-    //! Returns the current vector layer of the map canvas or 0
+    /**
+     * Creates and prepares a rubber band for a \a layer and optional set of feature IDs.
+     *
+     * Applies the default digitizing styling, attaches appropriate layer/feature preview items,
+     * and shows the rubber band.
+     *
+     * The caller takes ownership of the returned object.
+     *
+     * \param layer vector layer containing configuration (defaults to currentVectorLayer())
+     * \param fids IDs of feature being manipulated (optional)
+     * \param alternativeBand if TRUE, the rubber band will be set to have an alternate appearance, with higher transparency and a dashed line style
+     *
+     * \see prepareRubberBandForLayer()
+     * \since QGIS 4.4
+     */
+    QgsRubberBand *createRubberBandForLayer( QgsVectorLayer *layer = nullptr, const QList< QgsFeatureId > &fids = QList< QgsFeatureId >(), bool alternativeBand = false ) SIP_FACTORY;
+
+    /**
+     * Configures a \a rubberBand for a specific \a layer and optional list of feature IDs.
+     *
+     * Automatically attaches layer-level preview items (such as feature label previews if
+     * labeling is enabled and a valid feature is supplied).
+     *
+     * \param rubberBand target rubber band to prepare
+     * \param layer vector layer containing configuration (defaults to currentVectorLayer())
+     * \param fids IDs of feature being manipulated (optional)
+     *
+     * \see createRubberBandForLayer()
+     * \since QGIS 4.4
+     */
+    void prepareRubberBandForLayer( QgsRubberBand *rubberBand, QgsVectorLayer *layer = nullptr, const QList< QgsFeatureId > &fids = QList< QgsFeatureId >() );
+
+    /**
+     * Returns the current vector layer for the map canvas or NULLPTR if none is set.
+     */
     QgsVectorLayer *currentVectorLayer();
 
     //! Result of addTopologicalPoints

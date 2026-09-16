@@ -158,7 +158,9 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
     mResults.append( QVariantMap( { { u"parameters"_s, mCurrentParameters }, { u"results"_s, results } } ) );
 
     handleAlgorithmResults( algorithm(), *mTaskContext, mBatchFeedback.get(), mCurrentParameters );
-    executeNext();
+
+    // must not start the next step from within QgsTaskManager::taskStatusChanged() (fix #53806)
+    QMetaObject::invokeMethod( this, &QgsProcessingBatchAlgorithmDialogBase::executeNext, Qt::QueuedConnection );
   }
   else if ( mBatchFeedback->isCanceled() )
   {
@@ -173,7 +175,9 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
     reportError( tr( "Execution failed after %1 seconds" ).arg( mCurrentStepTimer.elapsed() / 1000.0, 2 ), false );
 
     mErrors.append( QVariantMap( { { u"parameters"_s, mCurrentParameters }, { u"errors"_s, taskErrors } } ) );
-    executeNext();
+
+    // must not start the next step from within QgsTaskManager::taskStatusChanged() (fix #53806)
+    QMetaObject::invokeMethod( this, &QgsProcessingBatchAlgorithmDialogBase::executeNext, Qt::QueuedConnection );
   }
 }
 

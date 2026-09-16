@@ -1102,7 +1102,11 @@ QString QgsApplication::resolvePkgPath()
     prefixPath = dir.absolutePath();
 #else
 
-#if defined( Q_OS_MACOS )
+#if defined( Q_OS_MACOS ) && defined( QGIS_MAC_BUNDLE )
+    // Go from QGIS.app/Contents/MacOS to the bundle root, like QgsApplication::init() does
+    QDir dir( appPath + "/../.."_L1 );
+    prefixPath = dir.absolutePath();
+#elif defined( Q_OS_MACOS )
     prefixPath = appPath;
 #elif defined( Q_OS_WIN )
     prefixPath = appPath;
@@ -1310,11 +1314,11 @@ QString QgsApplication::srsDatabaseFilePath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
-    QString tempCopy = QDir::tempPath() + "/srs6.db";
+    QString tempCopy = QDir::tempPath() + "/srs.db";
 
     if ( !QFile( tempCopy ).exists() )
     {
-      QFile f( buildSourcePath() + "/resources/srs6.db" );
+      QFile f( buildSourcePath() + "/resources/srs.db" );
       if ( !f.copy( tempCopy ) )
       {
         qFatal( "Could not create temporary copy" );

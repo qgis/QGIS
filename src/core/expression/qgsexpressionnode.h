@@ -354,9 +354,23 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      *
      * Returns a reference to the current object if no optimizations were applied.
      *
+     * \see simplifiedNode()
      * \since QGIS 3.20
      */
     const QgsExpressionNode *effectiveNode() const { return mCompiledSimplifiedNode ? mCompiledSimplifiedNode.get() : this; }
+
+    /**
+     * Returns a new node, which is the simplest node which represents this node
+     * before any compilation optimizations have been applied.
+     *
+     * Eg. a node like ``1 + 2`` can be effectively replaced by a literal ``3`` node, or a nested function node like
+     * ``coalesce(coalesce("field_a", "field_b"), "field_c")`` could be replaced by a single ``coalesce("field_a", "field_b", "field_c")``
+     * function node.
+     *
+     * \see effectiveNode()
+     * \since QGIS 4.4
+     */
+    virtual QgsExpressionNode *simplifiedNode() const SIP_FACTORY;
 
   protected:
     QgsExpressionNode() = default;

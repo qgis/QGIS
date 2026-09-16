@@ -109,7 +109,7 @@ class CORE_EXPORT QgsMeshCalcNode
 
     /**
      * Constructs a Type::tDatasetGroupRef node with values from dataset group
-     * \param datasetName dataset group to fetch data and populate node data
+     * \param datasetGroupName dataset group to fetch data and populate node data
      */
     QgsMeshCalcNode( const QString &datasetGroupName );
 

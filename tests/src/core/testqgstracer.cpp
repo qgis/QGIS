@@ -197,8 +197,8 @@ void TestQgsTracer::testInvisible()
 
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( u"fld"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) );
-  renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ), u"2"_s ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ).release() );
+  renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ).release(), u"2"_s ) );
   mVL->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer

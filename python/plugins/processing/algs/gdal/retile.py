@@ -35,7 +35,6 @@ from qgis.core import (
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import isWindows
 
 
 class retile(GdalAlgorithm):
@@ -320,6 +319,6 @@ class retile(GdalAlgorithm):
         arguments.extend(credential_options)
 
         return [
-            self.commandName() + (".bat" if isWindows() else ".py"),
+            self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
             GdalUtils.escapeAndJoin(arguments),
         ]

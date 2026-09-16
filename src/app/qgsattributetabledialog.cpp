@@ -194,7 +194,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog(
   mAddFeatureButton->setDefaultAction( ( method == QgsAttributeTableConfig::AddFeatureMethod::Form ) ? mActionAddFeatureViaAttributeForm : mActionAddFeature );
 
   // Fix selection color on losing focus (Windows)
-  setStyleSheet( QgisApp::instance()->styleSheet() );
+  setStyleSheet( QgsGui::applicationStyleSheet() );
 
   setAttribute( Qt::WA_DeleteOnClose );
 

@@ -34,6 +34,7 @@
 #include "qgsconditionalstyle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdiagramrenderer.h"
 #include "qgsexpressioncontext.h"
@@ -48,6 +49,7 @@
 #include "qgsgeometry.h"
 #include "qgsgeometryoptions.h"
 #include "qgslayermetadataformatter.h"
+#include "qgslayerrenderingsettings.h"
 #include "qgslogger.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsmaplayerlegend.h"
@@ -1474,17 +1476,7 @@ bool QgsVectorLayer::moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, in
 
 Qgis::VectorEditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId, int vertex )
 {
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( !isValid() || !mEditBuffer || !mDataProvider )
-    return Qgis::VectorEditResult::InvalidLayer;
-
-  QgsVectorLayerEditUtils utils( this );
-  Qgis::VectorEditResult result = utils.deleteVertex( featureId, vertex );
-
-  if ( result == Qgis::VectorEditResult::Success )
-    updateExtents();
-  return result;
+  return deleteVertices( featureId, { vertex } );
 }
 
 Qgis::VectorEditResult QgsVectorLayer::deleteVertices( QgsFeatureId featureId, const QSet<int> &vertices )
@@ -1584,22 +1576,16 @@ Qgis::GeometryOperationResult QgsVectorLayer::addRing( QgsCurve *ring, QgsFeatur
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  std::unique_ptr<QgsCurve> uniquePtrRing( ring );
+
   if ( !isValid() || !mEditBuffer || !mDataProvider )
-  {
-    delete ring;
     return Qgis::GeometryOperationResult::LayerNotEditable;
-  }
 
-  if ( !ring )
-  {
+  if ( !uniquePtrRing )
     return Qgis::GeometryOperationResult::InvalidInputGeometryType;
-  }
 
-  if ( !ring->isClosed() )
-  {
-    delete ring;
+  if ( !uniquePtrRing->isClosed() )
     return Qgis::GeometryOperationResult::AddRingNotClosed;
-  }
 
   QgsVectorLayerEditUtils utils( this );
   Qgis::GeometryOperationResult result = Qgis::GeometryOperationResult::AddRingNotInExistingFeature;
@@ -1607,16 +1593,15 @@ Qgis::GeometryOperationResult QgsVectorLayer::addRing( QgsCurve *ring, QgsFeatur
   //first try with selected features
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    result = utils.addRing( static_cast< QgsCurve * >( ring->clone() ), mSelectedFeatureIds, featureId );
+    result = utils.addRing( static_cast< QgsCurve * >( uniquePtrRing->clone() ), mSelectedFeatureIds, featureId );
   }
 
   if ( result != Qgis::GeometryOperationResult::Success )
   {
     //try with all intersecting features
-    result = utils.addRing( static_cast< QgsCurve * >( ring->clone() ), QgsFeatureIds(), featureId );
+    result = utils.addRing( static_cast< QgsCurve * >( uniquePtrRing.release() ), QgsFeatureIds(), featureId );
   }
 
-  delete ring;
   return result;
 }
 
@@ -1665,6 +1650,8 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurve *ring )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  std::unique_ptr<QgsCurve> uniquePtrRing( ring );
+
   if ( !isValid() || !mEditBuffer || !mDataProvider )
     return Qgis::GeometryOperationResult::LayerNotEditable;
 
@@ -1682,7 +1669,37 @@ Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurve *ring )
   }
 
   QgsVectorLayerEditUtils utils( this );
-  Qgis::GeometryOperationResult result = utils.addPart( ring, *mSelectedFeatureIds.constBegin() );
+  Qgis::GeometryOperationResult result = utils.addPart( uniquePtrRing.release(), *mSelectedFeatureIds.constBegin() );
+
+  if ( result == Qgis::GeometryOperationResult::Success )
+    updateExtents();
+  return result;
+}
+
+Qgis::GeometryOperationResult QgsVectorLayer::addPart( QgsCurvePolygon *polygon )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  std::unique_ptr<QgsCurvePolygon> uniquePtrPolygon( polygon );
+
+  if ( !isValid() || !mEditBuffer || !mDataProvider )
+    return Qgis::GeometryOperationResult::LayerNotEditable;
+
+  //number of selected features must be 1
+
+  if ( mSelectedFeatureIds.empty() )
+  {
+    QgsDebugMsgLevel( u"Number of selected features <1"_s, 3 );
+    return Qgis::GeometryOperationResult::SelectionIsEmpty;
+  }
+  else if ( mSelectedFeatureIds.size() > 1 )
+  {
+    QgsDebugMsgLevel( u"Number of selected features >1"_s, 3 );
+    return Qgis::GeometryOperationResult::SelectionIsGreaterThanOne;
+  }
+
+  QgsVectorLayerEditUtils utils( this );
+  Qgis::GeometryOperationResult result = utils.addPart( uniquePtrPolygon.release(), *mSelectedFeatureIds.constBegin() );
 
   if ( result == Qgis::GeometryOperationResult::Success )
     updateExtents();
@@ -2138,6 +2155,8 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
       {
         defaultLoadedFlag = true;
         setRenderer( defaultRenderer.release() );
+
+        applyRendererSettings();
       }
     }
 
@@ -2145,7 +2164,7 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
     if ( !defaultLoadedFlag )
     {
       // add single symbol renderer for spatial layers
-      setRenderer( isSpatial() ? QgsFeatureRenderer::defaultRenderer( geometryType() ) : nullptr );
+      setRenderer( isSpatial() ? QgsFeatureRenderer::defaultRenderer( geometryType() ).release() : nullptr );
     }
 
     if ( !mSetLegendFromStyle )
@@ -2213,6 +2232,9 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
     {
       resultFlag = true;
       setRenderer( defaultRenderer.release() );
+
+      applyRendererSettings();
+
       return QString();
     }
   }
@@ -2917,10 +2939,10 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
       QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
       if ( !rendererElement.isNull() )
       {
-        QgsFeatureRenderer *r = QgsFeatureRenderer::load( rendererElement, context );
+        std::unique_ptr<QgsFeatureRenderer> r = QgsFeatureRenderer::load( rendererElement, context );
         if ( r )
         {
-          setRenderer( r );
+          setRenderer( r.release() );
         }
         else
         {
@@ -2930,7 +2952,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
       // make sure layer has a renderer - if none exists, fallback to a default renderer
       if ( isSpatial() && !renderer() )
       {
-        setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
+        setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ).release() );
       }
 
       if ( mSelectionProperties )
@@ -3499,7 +3521,7 @@ bool QgsVectorLayer::readSld( const QDomNode &node, QString &errorMessage )
 
   if ( isSpatial() )
   {
-    QgsFeatureRenderer *r = QgsFeatureRenderer::loadSld( node, geometryType(), errorMessage );
+    std::unique_ptr<QgsFeatureRenderer> r = QgsFeatureRenderer::loadSld( node, geometryType(), errorMessage );
     if ( !r )
       return false;
 
@@ -3507,7 +3529,7 @@ bool QgsVectorLayer::readSld( const QDomNode &node, QString &errorMessage )
     // we don't want multiple signals!
     ScopedIntIncrementor styleChangedSignalBlocker( &mBlockStyleChangedSignal );
 
-    setRenderer( r );
+    setRenderer( r.release() );
 
     // labeling
     readSldLabeling( node );
@@ -5344,6 +5366,26 @@ void QgsVectorLayer::clearEditBuffer()
 
   delete mEditBuffer;
   mEditBuffer = nullptr;
+}
+
+void QgsVectorLayer::applyRendererSettings()
+{
+  const QgsLayerRenderingSettings *providerRenderingSettings = mDataProvider->renderingSettings();
+
+  if ( !providerRenderingSettings )
+    return;
+
+  if ( providerRenderingSettings->hasLayerOpacity() )
+    setOpacity( providerRenderingSettings->layerOpacity() );
+  if ( providerRenderingSettings->hasMaximumScale() )
+    setMaximumScale( providerRenderingSettings->maximumScale() );
+  if ( providerRenderingSettings->hasMinimumScale() )
+    setMinimumScale( providerRenderingSettings->minimumScale() );
+  if ( providerRenderingSettings->hasMaximumScale() || providerRenderingSettings->hasMinimumScale() )
+    setScaleBasedVisibility(
+      ( providerRenderingSettings->hasMaximumScale() && providerRenderingSettings->maximumScale() != 0 )
+      || ( providerRenderingSettings->hasMinimumScale() && providerRenderingSettings->minimumScale() != 0 )
+    );
 }
 
 QVariant QgsVectorLayer::aggregate(

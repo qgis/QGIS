@@ -291,6 +291,8 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingparameterdxflayers.cpp
   processing/qgsprocessingparameterfieldmap.cpp
   processing/qgsprocessingparameterheatmappixelsize.cpp
+  processing/qgsprocessingparameterinterpolationpixelsize.cpp
+  processing/qgsprocessingparameterinterpolationsource.cpp
   processing/qgsprocessingparametermeshdataset.cpp
   processing/qgsprocessingparameters.cpp
   processing/qgsprocessingparameterreliefcolors.cpp
@@ -298,6 +300,7 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingparametertype.cpp
   processing/qgsprocessingparametervectortilewriterlayers.cpp
   processing/qgsprocessingparameteralignrasterlayers.cpp
+  processing/qgsprocessingprojectmodelprovider.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
@@ -437,6 +440,7 @@ set(QGIS_CORE_SRCS
   qgis.cpp
   qgsabstractcontentcache.cpp
   qgsabstractgeopdfexporter.cpp
+  qgsacademicreference.cpp
   qgsapplication.cpp
   qgsapplicationthemeregistry.cpp
   qgsaggregatecalculator.cpp
@@ -562,6 +566,7 @@ set(QGIS_CORE_SRCS
   qgsmaskrendersettings.cpp
   qgsmathutils.cpp
   qgsmatrix4x4.cpp
+  qgsmatrixsolver.cpp
   qgsmbtiles.cpp
   qgsmeasureutils.cpp
   qgsmessagelog.cpp
@@ -840,6 +845,7 @@ set(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
   raster/qgsrastertransparency.cpp
+  raster/qgssortedrasterblockindex.cpp
 
   raster/qgsbilinearrasterresampler.cpp
   raster/qgsbrightnesscontrastfilter.cpp
@@ -1001,6 +1007,7 @@ set(QGIS_CORE_SRCS
   fieldformatter/qgscheckboxfieldformatter.cpp
   fieldformatter/qgsrangefieldformatter.cpp
   fieldformatter/qgsdatetimefieldformatter.cpp
+  fieldformatter/qgsenumerationfieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
   fieldformatter/qgskeyvaluefieldformatter.cpp
   fieldformatter/qgslistfieldformatter.cpp
@@ -1170,6 +1177,7 @@ set(QGIS_CORE_HDRS
   qgis_sip.h
   qgsabstractcontentcache.h
   qgsabstractgeopdfexporter.h
+  qgsacademicreference.h
   qgsaggregatecalculator.h
   qgsalignrasterdata.h
   qgsanimatedicon.h
@@ -1269,6 +1277,7 @@ set(QGIS_CORE_HDRS
   qgsinterval.h
   qgsjsonutils.h
   qgslayerdefinition.h
+  qgslayerrenderingsettings.h
   qgslayernotesutils.h
   qgslegendrenderer.h
   qgslegendsettings.h
@@ -1309,6 +1318,7 @@ set(QGIS_CORE_HDRS
   qgsmaskrendersettings.h
   qgsmathutils.h
   qgsmatrix4x4.h
+  qgsmatrixsolver.h
   qgsmbtiles.h
   qgsmeasureutils.h
   qgsmessagelog.h
@@ -1559,6 +1569,7 @@ set(QGIS_CORE_HDRS
 
   fieldformatter/qgscheckboxfieldformatter.h
   fieldformatter/qgsdatetimefieldformatter.h
+  fieldformatter/qgsenumerationfieldformatter.h
   fieldformatter/qgsfallbackfieldformatter.h
   fieldformatter/qgskeyvaluefieldformatter.h
   fieldformatter/qgslistfieldformatter.h
@@ -1906,6 +1917,7 @@ set(QGIS_CORE_HDRS
   processing/models/qgsprocessingmodelresult.h
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
+  processing/qgsprocessingalgorithm_p.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingbatch.h
   processing/qgsprocessingcontext.h
@@ -1915,6 +1927,8 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingparameterdxflayers.h
   processing/qgsprocessingparameterfieldmap.h
   processing/qgsprocessingparameterheatmappixelsize.h
+  processing/qgsprocessingparameterinterpolationpixelsize.h
+  processing/qgsprocessingparameterinterpolationsource.h
   processing/qgsprocessingparametermeshdataset.h
   processing/qgsprocessingparameterreliefcolors.h
   processing/qgsprocessingparameters.h
@@ -1923,6 +1937,7 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingparametertypeimpl.h
   processing/qgsprocessingparametervectortilewriterlayers.h
   processing/qgsprocessingparameteralignrasterlayers.h
+  processing/qgsprocessingprojectmodelprovider.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
   processing/qgsprocessingutils.h
@@ -2052,6 +2067,7 @@ set(QGIS_CORE_HDRS
   raster/qgssinglebandgrayrenderer.h
   raster/qgssinglebandpseudocolorrenderer.h
   raster/qgsrastersinglecolorrenderer.h
+  raster/qgssortedrasterblockindex.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
   scalebar/qgshollowscalebarrenderer.h
@@ -2313,7 +2329,6 @@ set(QGIS_CORE_PRIVATE_HDRS
   proj/qgscoordinatereferencesystem_p.h
   proj/qgscoordinatetransformcontext_p.h
   proj/qgscoordinatetransform_p.h
-  proj/qgscoordinatereferencesystem_legacy_p.h
 
   providers/ogr/qgscplerrorhandler_p.h
 
@@ -2769,6 +2784,10 @@ endif()
 if (WITH_EPT)
   target_include_directories(qgis_core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/core/providers/ept)
+endif()
+
+if(HAVE_GSL)
+  target_link_libraries(qgis_core GSL::gsl)
 endif()
 
 if (WITH_COPC)

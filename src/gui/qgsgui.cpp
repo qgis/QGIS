@@ -85,6 +85,7 @@ using namespace Qt::StringLiterals;
 #include "qgssettingsregistrycore.h"
 #include "qgsplotregistry.h"
 #include "qgsplotwidget.h"
+#include "qgsguiutils.h"
 
 #include <QFileInfo>
 #include <QPushButton>
@@ -395,6 +396,20 @@ QgsGui::QgsGui()
   qRegisterMetaType<QgsHistoryEntry>( "QgsHistoryEntry" );
 }
 
+QString QgsGui::applicationStyleSheet()
+{
+  return QgsGui::instance()->mApplicationStyleSheet;
+}
+
+void QgsGui::setApplicationStyleSheet( const QString &styleSheet )
+{
+  if ( styleSheet == mApplicationStyleSheet )
+    return;
+
+  mApplicationStyleSheet = styleSheet;
+  emit applicationStyleSheetChanged( mApplicationStyleSheet );
+}
+
 bool QgsGui::allowExecutionOfEmbeddedScripts( QgsProject *project, QgsMessageBar *messageBar )
 {
   const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
@@ -489,6 +504,22 @@ bool QgsGui::hasWebEngine()
 #else
   return false;
 #endif
+}
+
+QSize QgsGui::iconSize( Qgis::UserInterfaceIconType iconType )
+{
+  const QgsSettings s;
+  const int w = s.value( u"/qgis/toolbarIconSize"_s, 32 ).toInt();
+  QSize size( w, w );
+
+  switch ( iconType )
+  {
+    case Qgis::UserInterfaceIconType::MainWindowToolbar:
+      return size;
+    case Qgis::UserInterfaceIconType::DockedToolbar:
+      return QgsGuiUtils::panelIconSize( size );
+  }
+  BUILTIN_UNREACHABLE
 }
 
 ///@cond PRIVATE

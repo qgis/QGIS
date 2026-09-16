@@ -2571,7 +2571,7 @@ void QgsDatabaseItemGuiProvider::openSqlDialog( const QString &connectionUri, co
 
   QgsQueryResultMainWindow *dialog = new QgsQueryResultMainWindow( conn.release(), identifierName );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
-  dialog->setStyleSheet( QgisApp::instance()->styleSheet() );
+  dialog->setStyleSheet( QgsGui::applicationStyleSheet() );
 
   dialog->resultWidget()->setQuery( query );
 

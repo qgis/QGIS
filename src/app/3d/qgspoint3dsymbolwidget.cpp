@@ -271,7 +271,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
 {
   QVariantMap vm;
   auto sym = std::make_unique<QgsPoint3DSymbol>();
-  sym->setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
+  sym->setBillboardSymbol( qgis::unique_ptr_static_cast<QgsMarkerSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ).release() );
   switch ( cboShape->currentData().value<Qgis::Point3DShape>() )
   {
     case Qgis::Point3DShape::Sphere:

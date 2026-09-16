@@ -76,13 +76,13 @@ class CORE_EXPORT QgsEmbeddedSymbolRenderer : public QgsFeatureRenderer
      *
      * The caller takes ownership of the returned renderer.
      */
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Creates a QgsEmbeddedSymbolRenderer from an existing \a renderer.
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
-    static QgsEmbeddedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    static std::unique_ptr<QgsEmbeddedSymbolRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   private:
 #ifdef SIP_RUN

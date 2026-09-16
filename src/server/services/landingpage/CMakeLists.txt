@@ -1,6 +1,10 @@
 ########################################################
 # Files
 
+if(WITH_SERVER_LANDINGPAGE_WEBAPP)
+add_subdirectory(webapp)
+endif()
+
 set (LANDINGPAGE_SRCS
   ${CMAKE_SOURCE_DIR}/external/inja/inja/inja.hpp
   qgslandingpage.cpp
@@ -31,7 +35,6 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-
 target_link_libraries(landingpage
   qgis_core
   qgis_server
@@ -45,4 +48,3 @@ install(TARGETS landingpage
     RUNTIME DESTINATION ${QGIS_SERVER_MODULE_DIR}
     LIBRARY DESTINATION ${QGIS_SERVER_MODULE_DIR}
 )
-

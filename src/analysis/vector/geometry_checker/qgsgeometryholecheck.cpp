@@ -88,7 +88,7 @@ void QgsGeometryHoleCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
   const QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists
-  if ( !vidx.isValid( geom ) )
+  if ( !geom->hasVertex( QgsVertexId( vidx.part, vidx.ring, 0 ) ) )
   {
     error->setObsolete();
     return;

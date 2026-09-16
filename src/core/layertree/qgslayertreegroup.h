@@ -74,6 +74,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      */
     void setName( const QString &n ) override;
 
+    QString id() const override { return mId; }
+
     /**
      * Insert a new group node with given name at specified position. The newly created node is owned by this group.
      */
@@ -431,6 +433,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
     QString mName;
 
+    QString mId;
+
     bool mChangingChildVisibility = false;
 
     //! Whether the group is mutually exclusive (i.e. only one child can be checked at a time)
@@ -457,6 +461,10 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 #endif
 
     QgsLayerTreeGroup &operator=( const QgsLayerTreeGroup & ) = delete;
+
+    // only QgsLayerTreeUtils::regenerateGroupIds may assign a new id
+    friend class QgsLayerTreeUtils;
+    void setId( const QString &id );
 
     /**
      * Helper method to migrate project before 3.44 where shortName, title and abstract were

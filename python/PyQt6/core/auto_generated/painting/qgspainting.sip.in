@@ -143,6 +143,18 @@ avoid issues with incorrect scaling.
 
 .. versionadded:: 3.40
 %End
+
+    static void rotatePainterAroundPoint( QPainter *painter, const QPointF &point, double angle );
+%Docstring
+Rotates a ``painter`` by ``angle`` degrees clockwise around ``point``.
+
+.. note::
+
+   This is a low-level method, which alters the ``painter`` state and relies on the
+   caller saving/restoring painter state accordingly.
+
+.. versionadded:: 4.4
+%End
 };
 
 /************************************************************************

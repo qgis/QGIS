@@ -4,18 +4,18 @@
 <modules>
 
 <section label="GRASS MODULES">
-    <section label="Create new GRASS location and transfer data into it">
-        <section label="Create new GRASS location from metadata file">
+    <section label="Create new GRASS project and transfer data into it">
+        <section label="Create new GRASS project from metadata file">
             <grass name="g.proj.wkt"/>
         </section>
-        <section label="Create new GRASS location from raster data">
+        <section label="Create new GRASS project from raster data">
             <grass name="r.in.gdal.qgis.loc"/>
             <grass name="r.in.gdal.qgis"/>
         </section>
-        <section label="Create new GRASS location from vector data">
+        <section label="Create new GRASS project from vector data">
             <grass name="v.in.ogr.qgis.loc"/>
         </section>
-        <section label="Print projection information from a georeferenced file and create a new location based on it">
+        <section label="Print projection information from a georeferenced file and create a new project based on it">
             <grass name="g.proj.geo.new"/>
             <grass name="g.proj.ascii.new"/>
             <grass name="g.proj.proj.new"/>
@@ -132,7 +132,7 @@
         <grass name="g.region.multiple.vector"/>
     </section>
     <section label="Projection management">
-        <section label="Print projection information of the current location">
+        <section label="Print projection information of the current project">
             <grass name="g.proj.print"/>
         </section>
         <section label="Print projection information from a georeferenced file">
@@ -169,7 +169,7 @@
                 <grass name="r.support"/>
                 <grass name="r.support.stats"/>
             </section>
-            <section label="Reproject raster from another Location">
+            <section label="Reproject raster from another Project">
                 <grass name="r.proj"/>
             </section>
         </section>
@@ -362,7 +362,7 @@
                 <grass name="v.extrude.fixed"/>
                 <grass name="v.extrude.attr"/>
             </section>
-            <section label="Transform or reproject vector from another Location">
+            <section label="Transform or reproject vector from another Project">
                 <grass name="v.transform"/>
                 <grass name="v.proj"/>
             </section>

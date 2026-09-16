@@ -326,7 +326,6 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
       event->accept();
       return true;
     }
-    return false;
   }
 
   if ( !mMapTool )

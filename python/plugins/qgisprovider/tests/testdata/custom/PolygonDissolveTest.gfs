@@ -1,0 +1,14 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>PolygonDissolveTest</Name>
+    <ElementPath>PolygonDissolveTest</ElementPath>
+    <SRSName>EPSG:3003</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>5</FeatureCount>
+      <ExtentXMin>1754260.45566</ExtentXMin>
+      <ExtentXMax>1757508.42502</ExtentXMax>
+      <ExtentYMin>5078929.55554</ExtentYMin>
+      <ExtentYMax>5080666.09361</ExtentYMax>
+    </DatasetSpecificInfo>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

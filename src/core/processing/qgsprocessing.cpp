@@ -38,6 +38,7 @@ const QgsSettingsEntryVariant *QgsProcessing::settingsDefaultGuiParam
   = new QgsSettingsEntryVariant( u"default-gui-param/%1/%2"_s, QgsSettingsTree::sTreeProcessing, QVariant(), u"Default GUI parameter value, keyed by algorithm id and parameter name. When set, overrides the default value shown in the algorithm dialog."_s );
 
 const QString QgsProcessing::TEMPORARY_OUTPUT = u"TEMPORARY_OUTPUT"_s;
+const QString QgsProcessing::PROJECT_PROVIDER_ID = u"project"_s;
 
 QString QgsProcessing::documentationFlagToString( Qgis::ProcessingAlgorithmDocumentationFlag flag )
 {

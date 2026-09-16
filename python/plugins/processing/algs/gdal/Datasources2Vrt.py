@@ -34,7 +34,7 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.GdalUtils import GdalUtils, mark_source
 
 
 class Datasources2Vrt(GdalAlgorithm):
@@ -119,6 +119,7 @@ class Datasources2Vrt(GdalAlgorithm):
             QgsProcessingOutputString(self.VRT_STRING, self.tr("Virtual string"))
         )
 
+    @mark_source
     def processAlgorithm(self, parameters, context, feedback):
         input_layers = self.parameterAsLayerList(parameters, self.INPUT, context)
         unioned = self.parameterAsBoolean(parameters, self.UNIONED, context)

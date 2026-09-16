@@ -879,6 +879,13 @@ QgsAbstractVectorLayerLabeling *QgsVectorDataProvider::createLabeling( const QVa
   return nullptr;
 }
 
+const QgsLayerRenderingSettings *QgsVectorDataProvider::renderingSettings( const QVariantMap & ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return nullptr;
+}
+
 void QgsVectorDataProvider::pushError( const QString &msg ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

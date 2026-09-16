@@ -264,6 +264,16 @@ void TestQgsMapToolCapture::testTransientGeometrySignalSegmentDigitizing()
 
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000))"_s );
+
+  // undo last
+  utils.keyClick( Qt::Key_Backspace );
+
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spy.at( 2 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CompoundCurve ((0 0))"_s );
+
+  utils.mouseMove( 2, 2 );
+  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( spy.at( 3 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CompoundCurve ((0 0),(0 0, 223000 223000))"_s );
 }
 
 void TestQgsMapToolCapture::testTransientGeometrySignalSegmentDigitizingPolygon()
@@ -303,6 +313,12 @@ void TestQgsMapToolCapture::testTransientGeometrySignalSegmentDigitizingPolygon(
 
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CurvePolygon (CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000, 0 0)))"_s );
+
+  // undo last
+  utils.keyClick( Qt::Key_Backspace );
+
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spy.at( 2 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CurvePolygon (CompoundCurve ((0 0)))"_s );
 }
 
 void TestQgsMapToolCapture::testTransientGeometrySignalStreamDigitizing()
@@ -346,6 +362,12 @@ void TestQgsMapToolCapture::testTransientGeometrySignalStreamDigitizing()
   utils.mouseMove( 2, 3 );
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( spy.at( 2 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000),(223000 223000, 223000 334000))"_s );
+
+  // undo
+  utils.keyClick( Qt::Key_Backspace );
+
+  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( spy.at( 3 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000))"_s );
 }
 
 void TestQgsMapToolCapture::testTransientGeometrySignalStreamDigitizingPolygon()
@@ -389,6 +411,12 @@ void TestQgsMapToolCapture::testTransientGeometrySignalStreamDigitizingPolygon()
   utils.mouseMove( 2, 3 );
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( spy.at( 2 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CurvePolygon (CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000),(223000 223000, 223000 334000, 0 0)))"_s );
+
+  // undo last
+  utils.keyClick( Qt::Key_Backspace );
+
+  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( spy.at( 3 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( -3 ), u"CurvePolygon (CompoundCurve ((0 0, 223000 111000),(223000 111000, 223000 223000, 0 0)))"_s );
 }
 
 void TestQgsMapToolCapture::testTransientGeometrySignalTracing()

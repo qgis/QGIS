@@ -1,0 +1,404 @@
+# See ../README.md for a description of the file format
+
+tests:
+
+  - algorithm: qgis:texttofloat
+    name: Text to float
+    params:
+      FIELD: 'text_float'
+      INPUT:
+        name: custom/text_to_float.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/text_to_float.gml
+        type: vector
+
+  - algorithm: qgis:variabledistancebuffer
+    name: variable buffer on points
+    params:
+      DISSOLVE: false
+      FIELD: buffer
+      INPUT:
+        name: custom/variable_buffer.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/variable_buffer_points.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+
+  - algorithm: qgis:variabledistancebuffer
+    name: variable buffer on points with dissolve option
+    params:
+      DISSOLVE: true
+      FIELD: buffer
+      INPUT:
+        name: custom/variable_buffer.gml
+        type: vector
+      SEGMENTS: 5
+    results:
+      OUTPUT:
+        name: expected/variable_buffer_points_dissolved.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+            normalize: True
+          fields:
+            id: skip
+            id2: skip
+            fid: skip
+
+  - algorithm: qgis:linestopolygons
+    name: convert lines to polygon
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_to_polygon.gml
+        type: vector
+
+  - algorithm: qgis:statisticsbycategories
+    name: stats by category
+    params:
+      VALUES_FIELD_NAME: id
+      CATEGORIES_FIELD_NAME: id2
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/stats_by_category.gml
+        type: vector
+        pk: id2
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:topologicalcoloring
+    name: Topological coloring
+    params:
+      BALANCE: 0
+      INPUT:
+        name: custom/adjacent_polys.gml
+        type: vector
+      MIN_COLORS: 4
+    results:
+      OUTPUT:
+        type: vector
+        name:
+        - expected/topocolor_polys.gml
+        - expected/topocolor_polys2.gml
+
+  - algorithm: qgis:topologicalcoloring
+    name: Topological coloring w/ min distance
+    params:
+      BALANCE: 0
+      INPUT:
+        name: custom/adjacent_polys.gml
+        type: vector
+      MIN_COLORS: 4
+      MIN_DISTANCE: 4.0
+    results:
+      OUTPUT:
+        name: expected/topocolor_polys_min_dist.gml
+        type: vector
+
+  - algorithm: qgis:regularpoints
+    name: Regular point with standard extent
+    params:
+      EXTENT: -0.9182432432432436,10.208108108108108,-3.1266891891891904,5.480067567567567
+      INSET: 0.0
+      IS_SPACING: false
+      RANDOMIZE: false
+      SPACING: 100
+      CRS: EPSG:4326
+    results:
+      OUTPUT:
+        name: expected/regular_points.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+          fields:
+            fid: skip
+
+  - algorithm: qgis:rectanglesovalsdiamondsvariable
+    name: Rectangular buffer shape
+    params:
+      HEIGHT: id
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      SEGMENTS: 36
+      SHAPE: '0'
+      WIDTH: id
+    results:
+      OUTPUT:
+        name: expected/buffer_rect.gml
+        type: vector
+
+  - algorithm: qgis:rectanglesovalsdiamondsvariable
+    name: Diamond buffer shape
+    params:
+      HEIGHT: id
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      SEGMENTS: 36
+      SHAPE: '1'
+      WIDTH: id
+    results:
+      OUTPUT:
+        name: expected/buffer_diamond.gml
+        type: vector
+
+  - algorithm: qgis:rectanglesovalsdiamondsvariable
+    name: Oval buffer shape
+    params:
+      HEIGHT: id
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      SEGMENTS: 36
+      SHAPE: '2'
+      WIDTH: id
+    results:
+      OUTPUT:
+        name: expected/buffer_ovals.gml
+        type: vector
+
+  - algorithm: qgis:pointsdisplacement
+    name: Point displacement
+    params:
+      DISTANCE: 1.0
+      HORIZONTAL: false
+      INPUT:
+        name: custom/displace_points.gml
+        type: vector
+      PROXIMITY: 2.0
+    results:
+      OUTPUT:
+        name: expected/displaced_points.gml
+        type: vector
+        pk: id
+
+
+  - algorithm: qgis:generatepointspixelcentroidsalongline
+    name: Pixel centroids along line
+    params:
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/pixel_lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/pixel_centroids_lines.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:advancedpythonfieldcalculator
+    name: Test advanced python calculator
+    params:
+      FIELD_LENGTH: 10
+      FIELD_NAME: new_field
+      FIELD_PRECISION: 3
+      FIELD_TYPE: 0
+      FORMULA: value = __attr[2]*2
+      GLOBAL: ''
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/pycalculator_points.gml
+        type: vector
+
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (float field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: floatval
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_float.gml
+        type: vector
+        pk: name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (string field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: name
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_string.gml
+        type: vector
+        pk: intval
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (two category fields)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: floatval
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_two_fields.gml
+        type: vector
+        pk:
+          - intval
+          - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (no value field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_no_value.gml
+        type: vector
+        pk:
+          - intval
+          - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (date field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - date
+      INPUT:
+        name: custom/datetimes.tab
+        type: vector
+      VALUES_FIELD_NAME: date
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_date.gml
+        type: vector
+        pk: date
+        compare:
+          fields:
+            fid: skip
+            date:
+              cast: str
+            min:
+              cast: str
+            max:
+              cast: str
+
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Points (k=7)
+    params:
+      KNEIGHBORS: 7
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_points_7.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Group by field
+    params:
+      FIELD: id2
+      INPUT:
+        name: points.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_points_id2.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Polys (k=3)
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_polys.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - MultiPoints (k=3)
+    params:
+      INPUT:
+        name: multipoints.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_multipoints.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Duplicate Points
+    params:
+      INPUT:
+        name: custom/points_duplicate.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/failure.gml
+        type: vector
+    expectedException: true
+
+# See ../README.md for a description of the file format

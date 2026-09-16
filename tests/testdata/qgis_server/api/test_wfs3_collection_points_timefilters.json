@@ -71,6 +71,18 @@ Content-Type: application/json
       "rel": "http://www.opengis.net/def/rel/ogc/1.0/schema",
       "title": "Schema of features in 'points' as HTML",
       "type": "text/html"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/points/queryables.json",
+      "rel": "queryables",
+      "title": "points queryables as JSON",
+      "type": "application/json"
+    },
+    {
+      "href": "http://server.qgis.org/wfs3/collections/points/queryables.html",
+      "rel": "queryables",
+      "title": "points queryables as HTML",
+      "type": "text/html"
     }
   ],
   "storageCrs": "http://www.opengis.net/def/crs/EPSG/0/4326",

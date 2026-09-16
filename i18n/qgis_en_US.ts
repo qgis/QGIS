@@ -140605,13 +140605,13 @@ Error message: %1</translation>
     <name>QgsO2</name>
     <message>
         <location filename="../src/auth/oauth2/core/qgso2.cpp" line="182"/>
-        <source>QGIS OAuth2 verification has finished.</source>
-        <translation>QGIS OAuth2 verification has finished.</translation>
+        <source>%1 OAuth2 verification has finished.</source>
+        <translation>%1 OAuth2 verification has finished.</translation>
     </message>
     <message>
         <location filename="../src/auth/oauth2/core/qgso2.cpp" line="183"/>
-        <source>You can close this window and return to QGIS.</source>
-        <translation>You can close this window and return to QGIS.</translation>
+        <source>You can close this window and return to %1.</source>
+        <translation>You can close this window and return to %1.</translation>
     </message>
 </context>
 <context>

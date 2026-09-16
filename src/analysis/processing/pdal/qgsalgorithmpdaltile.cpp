@@ -83,6 +83,8 @@ void QgsPdalTileAlgorithm::initAlgorithm( const QVariantMap & )
 
 QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   Q_UNUSED( feedback );
 
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );

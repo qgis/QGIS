@@ -48,6 +48,7 @@ class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget, public
 
     void onChanged();
     void onLayerPropertyChanged();
+    void onLayerItemsChanged();
 
   private:
     void setItemId( const QString &itemId );
@@ -57,6 +58,7 @@ class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget, public
     QPointer<QgsAnnotationItemBaseWidget> mItemWidget;
     QWidget *mPageNoItem = nullptr;
     bool mBlockLayerUpdates = false;
+    bool mBlockItemUpdates = false;
 
     std::unique_ptr<QgsPaintEffect> mPaintEffect;
 };

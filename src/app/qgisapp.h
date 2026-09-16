@@ -169,6 +169,7 @@ class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
 class QgsCustomizationDialog;
 class QgsTopocentricWidget;
+class QgsProcessingWidgetContextGenerator;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -949,12 +950,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapLayer *activeLayer();
 
     /**
-     * Returns the toolbar icon size. If \a dockedToolbar is TRUE, the icon size
-     * for toolbars contained within docks is returned.
-     */
-    QSize iconSize( bool dockedToolbar = false ) const;
-
-    /**
       * Checks available datum transforms and ask user if several are available and none
       * is chosen. Dialog is shown only if global option is set accordingly.
       * \returns TRUE if a datum transform has been specifically chosen by user or only one is available.
@@ -1222,9 +1217,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! project was read
     void readProject( const QDomDocument & );
-
-    //! Sets app stylesheet from settings
-    void setAppStyleSheet( const QString &stylesheet );
 
     //! request credentials for network manager
     void namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth );
@@ -2945,6 +2937,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAbout *mAboutDialog = nullptr;
     std::unique_ptr<QgsCustomization> mCustomization;
     QObjectUniquePtr<QgsCustomizationDialog> mCustomizationDialog;
+
+    std::unique_ptr< QgsProcessingWidgetContextGenerator > mProcessingWidgetContextGenerator;
 
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;

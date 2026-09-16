@@ -102,6 +102,8 @@ Qgis::WkbType QgsExplodeAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) c
 
 QgsFeatureList QgsExplodeAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !f.hasGeometry() )
   {
     return QgsFeatureList() << f;
