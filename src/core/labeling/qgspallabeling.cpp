@@ -2101,7 +2101,7 @@ void QgsPalLayerSettings::calculateLabelMetrics(
 
 void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext &context )
 {
-  registerFeatureWithDetails( f, context, QgsGeometry(), nullptr );
+  registerFeatureWithDetails( f, context, QgsLabelFeatureDetails() );
 }
 
 bool QgsPalLayerSettings::isLabelVisible( QgsRenderContext &context ) const
@@ -2486,7 +2486,7 @@ QgsGeometry QgsPalLayerSettings::evaluateLabelGeometry( const QgsFeature &featur
   return geom;
 }
 
-std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
+std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, const QgsLabelFeatureDetails &details )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
   mCurFeat = &f;
@@ -2497,6 +2497,8 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
     isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::IsObstacle, context.expressionContext(), isObstacle ); // default to layer default
 
   std::vector<std::unique_ptr<QgsLabelFeature> > res;
+
+  QgsGeometry obstacleGeometry = details.obstacleGeometry();
 
   // possibly an obstacle-only feature
   if ( !drawLabels )
@@ -2544,6 +2546,14 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
   QgsTextFormat evaluatedFormat = evaluateTextFormat( context, labelIsHidden );
   if ( labelIsHidden )
     return {};
+
+  if ( context.testFlag( Qgis::RenderContextFlag::DrawLabelSelection ) && details.isSelected() )
+  {
+    // when rendering labels in a selected state, we render them using a buffer in the layer's selection color
+    dataDefinedValues.insert( QgsPalLayerSettings::Property::BufferDraw, true );
+    dataDefinedValues.insert( QgsPalLayerSettings::Property::BufferSize, 2 );
+    dataDefinedValues.insert( QgsPalLayerSettings::Property::BufferColor, context.selectionColor() );
+  }
 
   QgsLabelPlacementSettings placementSettings = mPlacementSettings;
   placementSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
@@ -2647,7 +2657,7 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
     case Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel:
     {
       std::unique_ptr< QgsTextLabelFeature > label
-        = generateLabelFeature( context, feature, 0, geom, obstacleGeometry, doc, labelText, evaluatedFormat, symbol, lineSettings, pointSettings, placementSettings, isObstacle, doClip );
+        = generateLabelFeature( context, feature, 0, geom, obstacleGeometry, doc, labelText, evaluatedFormat, details.symbol(), lineSettings, pointSettings, placementSettings, isObstacle, doClip );
       if ( label )
         res.emplace_back( std::move( label ) );
       break;
@@ -2662,7 +2672,7 @@ std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeat
       for ( std::size_t i = 0; i < partCount; ++i )
       {
         std::unique_ptr< QgsTextLabelFeature > label
-          = generateLabelFeature( context, feature, static_cast< int >( i ), geometryParts[i], obstacleGeometry, documentParts[i], labelText, evaluatedFormat, symbol, lineSettings, pointSettings, placementSettings, isObstacle, doClip );
+          = generateLabelFeature( context, feature, static_cast< int >( i ), geometryParts[i], obstacleGeometry, documentParts[i], labelText, evaluatedFormat, details.symbol(), lineSettings, pointSettings, placementSettings, isObstacle, doClip );
         if ( label )
           res.emplace_back( std::move( label ) );
       }

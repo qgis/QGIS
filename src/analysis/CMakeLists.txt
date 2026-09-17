@@ -307,6 +307,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsumlinelength.cpp
   processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtaperedbuffer.cpp
+  processing/qgsalgorithmtexttofloat.cpp
   processing/qgsalgorithmtininterpolation.cpp
   processing/qgsalgorithmtinmeshcreation.cpp
   processing/qgsalgorithmtotalcurvature.cpp
@@ -320,6 +321,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalues.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
+  processing/qgsalgorithmupslopearea.cpp
   processing/qgsalgorithmurlopener.cpp
   processing/qgsalgorithmhttprequest.cpp
   processing/qgsalgorithmvalidatenetwork.cpp

@@ -17,75 +17,195 @@
 
 #include "qgsalgorithmxyztiles.h"
 
+#include <atomic>
+
 #include "qgsexpressioncontextutils.h"
 #include "qgsimageoperation.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsmaplayerutils.h"
-#include "qgsprovidermetadata.h"
+#include "qgsmaprenderercustompainterjob.h"
 
 #include <QBuffer>
+#include <QDir>
+#include <QQueue>
+#include <QSemaphore>
+#include <QSet>
 #include <QString>
+#include <QThread>
+#include <QThreadPool>
+#include <QWaitCondition>
 
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-int tile2tms( const int y, const int zoom )
-{
-  double n = std::pow( 2, zoom );
-  return ( int ) std::floor( n - y - 1 );
-}
 
-int lon2tileX( const double lon, const int z )
+namespace
 {
-  return ( int ) ( std::floor( ( lon + 180.0 ) / 360.0 * ( 1 << z ) ) );
-}
-
-int lat2tileY( const double lat, const int z )
-{
-  double latRad = lat * M_PI / 180.0;
-  return ( int ) ( std::floor( ( 1.0 - std::asinh( std::tan( latRad ) ) / M_PI ) / 2.0 * ( 1 << z ) ) );
-}
-
-double tileX2lon( const int x, const int z )
-{
-  return x / ( double ) ( 1 << z ) * 360.0 - 180;
-}
-
-double tileY2lat( const int y, const int z )
-{
-  double n = M_PI - 2.0 * M_PI * y / ( double ) ( 1 << z );
-  return 180.0 / M_PI * std::atan( 0.5 * ( std::exp( n ) - std::exp( -n ) ) );
-}
-
-QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, long long &tileCount, const int tileSize )
-{
-  int minX = lon2tileX( extent.xMinimum(), zoom );
-  int minY = lat2tileY( extent.yMaximum(), zoom );
-  int maxX = lon2tileX( extent.xMaximum(), zoom );
-  int maxY = lat2tileY( extent.yMinimum(), zoom );
-  tileCount = static_cast<long long>( maxX - minX + 1 ) * static_cast<long long>( maxY - minY + 1 );
-
-  int i = 0;
-  QMap<QString, MetaTile> tiles;
-  for ( int x = minX; x <= maxX; x++ )
+  int tile2tms( const int y, const int zoom )
   {
-    int j = 0;
-    for ( int y = minY; y <= maxY; y++ )
-    {
-      QString key = u"%1:%2"_s.arg( ( int ) ( i / tileSize ) ).arg( ( int ) ( j / tileSize ) );
-      MetaTile tile = tiles.value( key, MetaTile() );
-      tile.addTile( i % tileSize, j % tileSize, Tile( x, y, zoom ) );
-      tiles.insert( key, tile );
-      j++;
-    }
-    i++;
+    double n = std::pow( 2, zoom );
+    return ( int ) std::floor( n - y - 1 );
   }
-  return tiles.values();
+
+  int lon2tileX( const double lon, const int z )
+  {
+    return ( int ) ( std::floor( ( lon + 180.0 ) / 360.0 * ( 1 << z ) ) );
+  }
+
+  int lat2tileY( const double lat, const int z )
+  {
+    double latRad = lat * M_PI / 180.0;
+    return ( int ) ( std::floor( ( 1.0 - std::asinh( std::tan( latRad ) ) / M_PI ) / 2.0 * ( 1 << z ) ) );
+  }
+
+  double tileX2lon( const int x, const int z )
+  {
+    return x / ( double ) ( 1 << z ) * 360.0 - 180;
+  }
+
+  double tileY2lat( const int y, const int z )
+  {
+    double n = M_PI - 2.0 * M_PI * y / ( double ) ( 1 << z );
+    return 180.0 / M_PI * std::atan( 0.5 * ( std::exp( n ) - std::exp( -n ) ) );
+  }
+} //namespace
+
+
+void MetaTile::addTile( const int row, const int col, Tile tileToAdd )
+{
+  tiles.insert( QPair<int, int>( row, col ), tileToAdd );
+  if ( row >= rows )
+  {
+    rows = row + 1;
+  }
+  if ( col >= cols )
+  {
+    cols = col + 1;
+  }
 }
 
-////
+QgsRectangle MetaTile::extent() const
+{
+  const Tile first = tiles.first();
+  const Tile last = tiles.last();
+  return QgsRectangle( tileX2lon( first.x, first.z ), tileY2lat( last.y + 1, last.z ), tileX2lon( last.x + 1, last.z ), tileY2lat( first.y, first.z ) );
+}
+
+
+namespace
+{
+  QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, long long &tileCount, const int tileSize )
+  {
+    int minX = lon2tileX( extent.xMinimum(), zoom );
+    int minY = lat2tileY( extent.yMaximum(), zoom );
+    int maxX = lon2tileX( extent.xMaximum(), zoom );
+    int maxY = lat2tileY( extent.yMinimum(), zoom );
+    tileCount = static_cast<long long>( maxX - minX + 1 ) * static_cast<long long>( maxY - minY + 1 );
+
+    QHash<uint64_t, MetaTile> tiles;
+    int i = 0;
+    for ( int x = minX; x <= maxX; x++ )
+    {
+      int j = 0;
+      for ( int y = minY; y <= maxY; y++ )
+      {
+        const uint64_t key = ( static_cast<uint64_t>( i / tileSize ) << 32 ) | static_cast<uint32_t>( j / tileSize );
+        tiles[key].addTile( i % tileSize, j % tileSize, Tile( x, y, zoom ) );
+        j++;
+      }
+      i++;
+    }
+    return tiles.values();
+  }
+} //namespace
+
+/**
+ * Queue for rendered tiles to write to a database.
+ *
+ * (This acts effectively the "consumer" from the producer/consumer pattern.)
+ *
+ * Rendered tiles can be consumed from the queue in batches via popBatch(), meaning
+ * that we can minimize the number of database writes we do by writing thousands
+ * in a single pass.
+ */
+class PendingTilesToWriteQueue
+{
+  public:
+    /**
+     * Pushes a list of rendered tiles from a metatile to the queue.
+     */
+    void push( const QList<QgsMbTiles::TileData> &tiles )
+    {
+      if ( tiles.isEmpty() )
+        return;
+
+      QMutexLocker locker( &mMutex );
+      for ( const QgsMbTiles::TileData &tile : tiles )
+      {
+        mQueue.enqueue( tile );
+      }
+      mNotEmpty.wakeOne();
+    }
+
+    /**
+     * Pops a batch of rendered tiles of the specified maximum batch size.
+     *
+     * If rendering finishes before the batch size is reached (i.e. a call
+     * to setFinished() is made), or if the specified maximum timeout elapses,
+     * then a batch smaller then \a maxBatchSize will be returned.
+     */
+    bool popBatch( QList<QgsMbTiles::TileData> &batch, int maxBatchSize, unsigned long timeoutMs = 500 )
+    {
+      QMutexLocker locker( &mMutex );
+
+      // wait until there is at least one item or all rendering is finished
+      while ( mQueue.isEmpty() && !mFinished )
+      {
+        mNotEmpty.wait( &mMutex );
+      }
+
+      if ( mQueue.isEmpty() )
+        return false;
+
+      // collect up to to maxBatchSize, unless we finish rendering or timeout before that happens
+      while ( mQueue.size() < maxBatchSize && !mFinished )
+      {
+        if ( !mNotEmpty.wait( &mMutex, timeoutMs ) )
+        {
+          // timeout exceeded
+          break;
+        }
+      }
+
+      while ( !mQueue.isEmpty() && batch.size() < maxBatchSize )
+      {
+        batch.append( mQueue.dequeue() );
+      }
+      return true;
+    }
+
+    /**
+     * Sets the queue as finished.
+     */
+    void setFinished()
+    {
+      QMutexLocker locker( &mMutex );
+      mFinished = true;
+      mNotEmpty.wakeAll();
+    }
+
+  private:
+    QQueue<QgsMbTiles::TileData> mQueue;
+    mutable QMutex mMutex;
+    QWaitCondition mNotEmpty;
+    bool mFinished = false;
+};
+
+//
+// QgsXyzTilesBaseAlgorithm
+//
 
 QString QgsXyzTilesBaseAlgorithm::group() const
 {
@@ -179,7 +299,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     }
   }
 
-  QList<QgsMapLayer *> renderLayers = project->layerTreeRoot()->layerOrder();
+  const QList<QgsMapLayer *> renderLayers = project->layerTreeRoot()->layerOrder();
   for ( QgsMapLayer *layer : renderLayers )
   {
     if ( visibleLayers.contains( layer->id() ) )
@@ -234,7 +354,6 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mThreadsNumber = context.maximumThreads();
   mTransformContext = context.transformContext();
   mEllipsoid = context.ellipsoid();
-  mFeedback = feedback;
 
   QgsCoordinateTransform src2Wgs = QgsCoordinateTransform( project->crs(), QgsCoordinateReferenceSystem( "EPSG:4326" ), context.transformContext() );
   src2Wgs.setBallparkTransformsAreAppropriate( true );
@@ -291,57 +410,108 @@ void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *fe
   }
 }
 
-void QgsXyzTilesBaseAlgorithm::startJobs()
+std::optional< QgsMapSettings > QgsXyzTilesBaseAlgorithm::mapSettingsForTile( const MetaTile &metaTile ) const
 {
   QgsCoordinateReferenceSystem mercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
   QgsCoordinateTransform wgsToMercator = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4326" ), mercatorCrs, mTransformContext );
   wgsToMercator.setBallparkTransformsAreAppropriate( true );
 
+  QgsMapSettings settings;
+  try
+  {
+    settings.setExtent( wgsToMercator.transformBoundingBox( metaTile.extent() ) );
+  }
+  catch ( QgsCsException & )
+  {
+    return {};
+  }
+  settings.setRendererUsage( Qgis::RendererUsage::Export );
+  settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
+  settings.setTransformContext( mTransformContext );
+  settings.setEllipsoid( mEllipsoid );
+  settings.setDestinationCrs( mercatorCrs );
+  settings.setLayers( mLayers );
+  settings.setOutputDpi( mDpi );
+  settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
+  settings.setFlag( Qgis::MapSettingsFlag::RenderMapTile, true );
+  settings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, true );
+  settings.setFlag( Qgis::MapSettingsFlag::HighQualityImageTransforms, true );
+  settings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
+  settings.setScaleMethod( mScaleMethod );
+  if ( mTileFormat == "PNG"_L1 || mTileFormat == "WEBP"_L1 || mBackgroundColor.alpha() == 255 )
+  {
+    settings.setBackgroundColor( mBackgroundColor );
+  }
+  QSize size( mTileWidth * metaTile.rows, mTileHeight * metaTile.cols );
+  settings.setOutputSize( size );
+
+  QgsLabelingEngineSettings labelingSettings = settings.labelingEngineSettings();
+  labelingSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  settings.setLabelingEngineSettings( labelingSettings );
+
+  QgsExpressionContext exprContext = mExpressionContext;
+  exprContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( settings ) );
+  settings.setExpressionContext( exprContext );
+
+  return settings;
+}
+
+void QgsXyzTilesBaseAlgorithm::startJobs( QgsProcessingFeedback *feedback )
+{
   while ( mRendererJobs.size() < mThreadsNumber && !mMetaTiles.empty() )
   {
-    MetaTile metaTile = mMetaTiles.takeFirst();
+    if ( feedback->isCanceled() )
+      break;
 
-    QgsMapSettings settings;
-    try
+    MetaTile metaTile = mMetaTiles.takeFirst();
+    const std::optional<QgsMapSettings> settings = mapSettingsForTile( metaTile );
+    if ( !settings.has_value() )
     {
-      settings.setExtent( wgsToMercator.transformBoundingBox( metaTile.extent() ) );
-    }
-    catch ( QgsCsException & )
-    {
+      mProcessedMetaTiles++;
+      feedback->setProgress( 100.0 * mProcessedMetaTiles / mTotalMetaTiles );
       continue;
     }
-    settings.setRendererUsage( Qgis::RendererUsage::Export );
-    settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
-    settings.setTransformContext( mTransformContext );
-    settings.setEllipsoid( mEllipsoid );
-    settings.setDestinationCrs( mercatorCrs );
-    settings.setLayers( mLayers );
-    settings.setOutputDpi( mDpi );
-    settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
-    settings.setScaleMethod( mScaleMethod );
-    if ( mTileFormat == "PNG"_L1 || mTileFormat == "WEBP"_L1 || mBackgroundColor.alpha() == 255 )
-    {
-      settings.setBackgroundColor( mBackgroundColor );
-    }
-    QSize size( mTileWidth * metaTile.rows, mTileHeight * metaTile.cols );
-    settings.setOutputSize( size );
 
-    QgsLabelingEngineSettings labelingSettings = settings.labelingEngineSettings();
-    labelingSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
-    settings.setLabelingEngineSettings( labelingSettings );
-
-    QgsExpressionContext exprContext = mExpressionContext;
-    exprContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( settings ) );
-    settings.setExpressionContext( exprContext );
-
-    QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( settings );
+    QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( *settings );
     mRendererJobs.insert( job, metaTile );
-    QObject::connect( job, &QgsMapRendererJob::finished, mJobOwner, [this, job]() { processMetaTile( job ); } );
+
+    QObject::connect( job, &QgsMapRendererJob::finished, mJobOwner, [this, feedback, job]() {
+      const MetaTile tile = mRendererJobs.take( job );
+      const QImage renderedImage = job->renderedImage();
+      job->deleteLater();
+
+      mProcessedMetaTiles++;
+      feedback->setProgress( 100.0 * mProcessedMetaTiles / mTotalMetaTiles );
+
+      processMetaTile( tile, renderedImage, feedback );
+
+      if ( !feedback->isCanceled() )
+      {
+        startJobs( feedback );
+      }
+      checkPipelineFinished( feedback );
+    } );
+
     job->start();
+  }
+
+  checkPipelineFinished( feedback );
+}
+
+void QgsXyzTilesBaseAlgorithm::checkPipelineFinished( QgsProcessingFeedback *feedback )
+{
+  if ( feedback->isCanceled() || ( mMetaTiles.isEmpty() && mRendererJobs.isEmpty() && mActivePostProcessingTasks == 0 ) )
+  {
+    if ( mEventLoop )
+    {
+      mEventLoop->exit();
+    }
   }
 }
 
-// Native XYZ tiles (directory) algorithm
+//
+// QgsXyzTilesDirectoryAlgorithm
+//
 
 QString QgsXyzTilesDirectoryAlgorithm::name() const
 {
@@ -453,20 +623,15 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   {
     layer->moveToThread( QThread::currentThread() );
   }
-  mJobOwner.reset( new QObject() );
 
-  QEventLoop loop;
-  // cppcheck-suppress danglingLifetime
-  mEventLoop = &loop;
-  startJobs();
-  loop.exec();
+  doExport( feedback );
 
   qDeleteAll( mLayers );
   mLayers.clear();
 
   if ( mSkipEmptyTiles )
   {
-    feedback->pushInfo( QObject::tr( "Wrote %1 total tiles, skipped %2 empty tiles" ).arg( mTilesWritten ).arg( mEmptyTiles ) );
+    feedback->pushInfo( QObject::tr( "Wrote %1 total tiles, skipped %2 empty tiles" ).arg( mTilesWritten.load() ).arg( mEmptyTiles.load() ) );
   }
 
   QVariantMap results;
@@ -474,45 +639,43 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
 
   if ( !outputHtml.isEmpty() )
   {
-    QString osm = QStringLiteral(
-                    "var osm_layer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',"
-                    "{minZoom: %1, maxZoom: %2, attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'}).addTo(map);"
+    const QString osm = QStringLiteral(
+                          "var osm_layer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',"
+                          "{minZoom: %1, maxZoom: %2, attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'}).addTo(map);"
     )
-                    .arg( mMinZoom )
-                    .arg( mMaxZoom );
+                          .arg( mMinZoom )
+                          .arg( mMaxZoom );
 
-    QString addOsm = useOsm ? osm : QString();
-    QString tmsConvention = tms ? u"true"_s : u"false"_s;
-    QString attr = attribution.isEmpty() ? u"Created by QGIS"_s : attribution;
-    QString tileSource = u"'file:///%1/{z}/{x}/{y}.%2'"_s.arg( outputDir.replace( "\\", "/" ).toHtmlEscaped() ).arg( mTileFormat.toLower() );
+    const QString addOsm = useOsm ? osm : QString();
+    const QString tmsConvention = tms ? u"true"_s : u"false"_s;
+    const QString attr = attribution.isEmpty() ? u"Created by QGIS"_s : attribution;
+    const QString tileSource = u"'file:///%1/{z}/{x}/{y}.%2'"_s.arg( outputDir.replace( "\\", "/" ).toHtmlEscaped(), mTileFormat.toLower() );
 
-    QString html = QStringLiteral(
-                     "<!DOCTYPE html><html><head><title>%1</title><meta charset=\"utf-8\"/>"
-                     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
-                     "<link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.css\""
-                     "integrity=\"sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H\""
-                     "crossorigin=\"\"/>"
-                     "<script src=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.js\""
-                     "integrity=\"sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH\""
-                     "crossorigin=\"\"></script>"
-                     "<style type=\"text/css\">body {margin: 0;padding: 0;} html, body, #map{width: 100%;height: 100%;}</style></head>"
-                     "<body><div id=\"map\"></div><script>"
-                     "var map = L.map('map', {attributionControl: false}).setView([%2, %3], %4);"
-                     "L.control.attribution({prefix: false}).addTo(map);"
-                     "%5"
-                     "var tilesource_layer = L.tileLayer(%6, {minZoom: %7, maxZoom: %8, tms: %9, attribution: '%10'}).addTo(map);"
-                     "</script></body></html>"
+    const QString html = QStringLiteral(
+                           "<!DOCTYPE html><html><head><title>%1</title><meta charset=\"utf-8\"/>"
+                           "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+                           "<link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.css\""
+                           "integrity=\"sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H\""
+                           "crossorigin=\"\"/>"
+                           "<script src=\"https://unpkg.com/leaflet@1.9.4/dist/leaflet.js\""
+                           "integrity=\"sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH\""
+                           "crossorigin=\"\"></script>"
+                           "<style type=\"text/css\">body {margin: 0;padding: 0;} html, body, #map{width: 100%;height: 100%;}</style></head>"
+                           "<body><div id=\"map\"></div><script>"
+                           "var map = L.map('map', {attributionControl: false}).setView([%2, %3], %4);"
+                           "L.control.attribution({prefix: false}).addTo(map);"
+                           "%5"
+                           "var tilesource_layer = L.tileLayer(%6, {minZoom: %7, maxZoom: %8, tms: %9, attribution: '%10'}).addTo(map);"
+                           "</script></body></html>"
     )
-                     .arg( title.isEmpty() ? u"Leaflet preview"_s : title )
-                     .arg( mWgs84Extent.center().y() )
-                     .arg( mWgs84Extent.center().x() )
-                     .arg( ( mMaxZoom + mMinZoom ) / 2 )
-                     .arg( addOsm )
-                     .arg( tileSource )
-                     .arg( mMinZoom )
-                     .arg( mMaxZoom )
-                     .arg( tmsConvention )
-                     .arg( attr );
+                           .arg( title.isEmpty() ? u"Leaflet preview"_s : title )
+                           .arg( mWgs84Extent.center().y() )
+                           .arg( mWgs84Extent.center().x() )
+                           .arg( ( mMaxZoom + mMinZoom ) / 2 )
+                           .arg( addOsm, tileSource )
+                           .arg( mMinZoom )
+                           .arg( mMaxZoom )
+                           .arg( tmsConvention, attr );
 
     QFile htmlFile( outputHtml );
     if ( !htmlFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -546,88 +709,86 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   return results;
 }
 
-void QgsXyzTilesDirectoryAlgorithm::processMetaTile( QgsMapRendererSequentialJob *job )
+void QgsXyzTilesDirectoryAlgorithm::processMetaTile( const MetaTile &metaTile, const QImage &renderedImage, QgsProcessingFeedback *feedback )
 {
-  const MetaTile metaTile = mRendererJobs.value( job );
-  const QImage img = job->renderedImage();
+  mActivePostProcessingTasks++;
 
-  const bool testEmptyTilesUsingAlpha0 = mTileFormat != "JPG"_L1 && mBackgroundColor.alpha() == 0;
+  mPostProcessingPool->start( [this, metaTile, renderedImage, feedback]() {
+    const bool testEmptyTilesUsingAlpha0 = mTileFormat != "JPG"_L1 && mBackgroundColor.alpha() == 0;
+    long long localWritten = 0;
+    long long localEmpty = 0;
 
-  QMap<QPair<int, int>, Tile>::const_iterator it = metaTile.tiles.constBegin();
-  while ( it != metaTile.tiles.constEnd() )
-  {
-    const QPair<int, int> tm = it.key();
-    const Tile tile = it.value();
-    const QImage tileImage = img.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
-    bool skipTile = false;
-    if ( mSkipEmptyTiles )
+    QSet<QString> createdDirs;
+
+    for ( auto it = metaTile.tiles.constBegin(); it != metaTile.tiles.constEnd(); ++it )
     {
-      if ( testEmptyTilesUsingAlpha0 )
+      if ( feedback->isCanceled() )
+        break;
+
+      const QPair<int, int> tm = it.key();
+      const QImage tileImage = renderedImage.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
+      const bool skipTile = mSkipEmptyTiles && ( testEmptyTilesUsingAlpha0 ? QgsImageOperation::isBlankImage( tileImage ) : QgsImageOperation::isSingleColor( tileImage, mBackgroundColor ) );
+      if ( skipTile )
       {
-        skipTile = QgsImageOperation::isBlankImage( tileImage );
+        localEmpty++;
+        continue;
       }
-      else
+
+      const Tile tile = it.value();
+      const QString dirPath = u"%1/%2/%3"_s.arg( mOutputDir ).arg( tile.z ).arg( tile.x );
+      if ( !createdDirs.contains( dirPath ) )
       {
-        skipTile = QgsImageOperation::isSingleColor( tileImage, mBackgroundColor );
+        QDir().mkpath( dirPath );
+        createdDirs.insert( dirPath );
       }
+
+      const int y = mTms ? tile2tms( tile.y, tile.z ) : tile.y;
+      const QString filePath = u"%1/%2.%3"_s.arg( dirPath ).arg( y ).arg( mTileFormat.toLower() );
+      tileImage.save( filePath, mTileFormat.toStdString().c_str(), mJpgQuality );
+
+      localWritten++;
     }
 
-    if ( !skipTile )
-    {
-      const QDir tileDir( u"%1/%2/%3"_s.arg( mOutputDir ).arg( tile.z ).arg( tile.x ) );
-      tileDir.mkpath( tileDir.absolutePath() );
-      int y = tile.y;
-      if ( mTms )
-      {
-        y = tile2tms( y, tile.z );
-      }
-      tileImage.save( u"%1/%2.%3"_s.arg( tileDir.absolutePath() ).arg( y ).arg( mTileFormat.toLower() ), mTileFormat.toStdString().c_str(), mJpgQuality );
-      mTilesWritten++;
-    }
-    else
-    {
-      mEmptyTiles++;
-    }
+    mTilesWritten += localWritten;
+    mEmptyTiles += localEmpty;
 
-    ++it;
-  }
-
-  mRendererJobs.remove( job );
-  job->deleteLater();
-
-  mFeedback->setProgress( 100.0 * ( mProcessedMetaTiles++ ) / mTotalMetaTiles );
-
-  if ( mFeedback->isCanceled() )
-  {
-    while ( mRendererJobs.size() > 0 )
-    {
-      QgsMapRendererSequentialJob *j = mRendererJobs.firstKey();
-      j->cancel();
-      mRendererJobs.remove( j );
-      j->deleteLater();
-    }
-    mRendererJobs.clear();
-    if ( mEventLoop )
-    {
-      mEventLoop->exit();
-    }
-    return;
-  }
-
-  if ( mMetaTiles.size() > 0 )
-  {
-    startJobs();
-  }
-  else if ( mMetaTiles.size() == 0 && mRendererJobs.size() == 0 )
-  {
-    if ( mEventLoop )
-    {
-      mEventLoop->exit();
-    }
-  }
+    mActivePostProcessingTasks--;
+    checkPipelineFinished( feedback );
+  } );
 }
 
-// Native XYZ tiles (MBTiles) algorithm
+void QgsXyzTilesDirectoryAlgorithm::doExport( QgsProcessingFeedback *feedback )
+{
+  mPostProcessingPool = std::make_unique<QThreadPool>();
+  mPostProcessingPool->setMaxThreadCount( std::max( 1, mThreadsNumber ) );
+
+  QEventLoop loop;
+  mEventLoop = &loop;
+  mJobOwner.reset( new QObject() );
+
+  startJobs( feedback );
+
+  if ( !mMetaTiles.isEmpty() || !mRendererJobs.isEmpty() || mActivePostProcessingTasks.load() > 0 )
+  {
+    loop.exec();
+  }
+
+  for ( auto it = mRendererJobs.constBegin(); it != mRendererJobs.constEnd(); it++ )
+  {
+    it.key()->cancel();
+    it.key()->deleteLater();
+  }
+  mRendererJobs.clear();
+
+  mPostProcessingPool->waitForDone();
+  mPostProcessingPool.reset();
+  mEventLoop = nullptr;
+}
+
+
+//
+// QgsXyzTilesMbtilesAlgorithm
+//
 
 QString QgsXyzTilesMbtilesAlgorithm::name() const
 {
@@ -680,19 +841,21 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   }
 
   mMbtilesWriter = std::make_unique<QgsMbTiles>( outputFile );
-  if ( !mMbtilesWriter->create() )
+  // use deferred index creation, as we'll be writing 1000s of tiles and don't want to update
+  // the index after every one
+  if ( !mMbtilesWriter->create( true ) )
   {
     throw QgsProcessingException( QObject::tr( "Failed to create MBTiles file %1" ).arg( outputFile ) );
   }
-  mMbtilesWriter->setMetadataValue( "format", mTileFormat.toLower() );
-  mMbtilesWriter->setMetadataValue( "name", QFileInfo( outputFile ).baseName() );
-  mMbtilesWriter->setMetadataValue( "description", QFileInfo( outputFile ).baseName() );
-  mMbtilesWriter->setMetadataValue( "version", u"1.1"_s );
-  mMbtilesWriter->setMetadataValue( "type", u"overlay"_s );
-  mMbtilesWriter->setMetadataValue( "minzoom", QString::number( mMinZoom ) );
-  mMbtilesWriter->setMetadataValue( "maxzoom", QString::number( mMaxZoom ) );
-  QString boundsStr = QString( "%1,%2,%3,%4" ).arg( mWgs84Extent.xMinimum() ).arg( mWgs84Extent.yMinimum() ).arg( mWgs84Extent.xMaximum() ).arg( mWgs84Extent.yMaximum() );
-  mMbtilesWriter->setMetadataValue( "bounds", boundsStr );
+  mMbtilesWriter->setMetadataValue( u"format"_s, mTileFormat.toLower() );
+  mMbtilesWriter->setMetadataValue( u"name"_s, QFileInfo( outputFile ).baseName() );
+  mMbtilesWriter->setMetadataValue( u"description"_s, QFileInfo( outputFile ).baseName() );
+  mMbtilesWriter->setMetadataValue( u"version"_s, u"1.1"_s );
+  mMbtilesWriter->setMetadataValue( u"type"_s, u"overlay"_s );
+  mMbtilesWriter->setMetadataValue( u"minzoom"_s, QString::number( mMinZoom ) );
+  mMbtilesWriter->setMetadataValue( u"maxzoom"_s, QString::number( mMaxZoom ) );
+  QString boundsStr = QString( u"%1,%2,%3,%4"_s ).arg( mWgs84Extent.xMinimum() ).arg( mWgs84Extent.yMinimum() ).arg( mWgs84Extent.xMaximum() ).arg( mWgs84Extent.yMaximum() );
+  mMbtilesWriter->setMetadataValue( u"bounds"_s, boundsStr );
 
   long long totalTiles = 0;
   mTotalMetaTiles = 0;
@@ -720,20 +883,20 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   {
     layer->moveToThread( QThread::currentThread() );
   }
-  mJobOwner.reset( new QObject() );
 
-  QEventLoop loop;
-  // cppcheck-suppress danglingLifetime
-  mEventLoop = &loop;
-  startJobs();
-  loop.exec();
+  doExport( feedback );
 
   qDeleteAll( mLayers );
   mLayers.clear();
 
+  if ( !feedback->isCanceled() )
+  {
+    mMbtilesWriter->finalize();
+  }
+
   if ( mSkipEmptyTiles )
   {
-    feedback->pushInfo( QObject::tr( "Wrote %1 total tiles, skipped %2 empty tiles" ).arg( mTilesWritten ).arg( mEmptyTiles ) );
+    feedback->pushInfo( QObject::tr( "Wrote %1 total tiles, skipped %2 empty tiles" ).arg( mTilesWritten.load() ).arg( mEmptyTiles.load() ) );
   }
   QVariantMap results;
   results.insert( u"OUTPUT_FILE"_s, outputFile );
@@ -757,79 +920,102 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   return results;
 }
 
-void QgsXyzTilesMbtilesAlgorithm::processMetaTile( QgsMapRendererSequentialJob *job )
+void QgsXyzTilesMbtilesAlgorithm::processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback )
 {
-  const MetaTile metaTile = mRendererJobs.value( job );
-  const QImage img = job->renderedImage();
-  const bool testEmptyTilesUsingAlpha0 = mTileFormat != "JPG"_L1 && mBackgroundColor.alpha() == 0;
+  mActivePostProcessingTasks++;
 
-  QMap<QPair<int, int>, Tile>::const_iterator it = metaTile.tiles.constBegin();
-  while ( it != metaTile.tiles.constEnd() )
-  {
-    const QPair<int, int> tm = it.key();
-    const Tile tile = it.value();
-    const QImage tileImage = img.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
-    bool skipTile = false;
-    if ( mSkipEmptyTiles )
+  mPostProcessingPool->start( [this, feedback, metaTile, renderedImg]() {
+    const bool testEmptyTilesUsingAlpha0 = mTileFormat != "JPG"_L1 && mBackgroundColor.alpha() == 0;
+    long long localWritten = 0;
+    long long localEmpty = 0;
+
+    QList<QgsMbTiles::TileData> metatileTiles;
+    metatileTiles.reserve( metaTile.tiles.size() );
+
+    for ( auto it = metaTile.tiles.constBegin(); it != metaTile.tiles.constEnd(); ++it )
     {
-      if ( testEmptyTilesUsingAlpha0 )
+      if ( feedback->isCanceled() )
+        break;
+
+      const QPair<int, int> tm = it.key();
+
+      const QImage tileImage = renderedImg.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
+
+      const bool skipTile = mSkipEmptyTiles && ( testEmptyTilesUsingAlpha0 ? QgsImageOperation::isBlankImage( tileImage ) : QgsImageOperation::isSingleColor( tileImage, mBackgroundColor ) );
+      if ( skipTile )
       {
-        skipTile = QgsImageOperation::isBlankImage( tileImage );
+        localEmpty++;
+        continue;
       }
-      else
-      {
-        skipTile = QgsImageOperation::isSingleColor( tileImage, mBackgroundColor );
-      }
-    }
-    if ( !skipTile )
-    {
-      QByteArray ba;
-      QBuffer buffer( &ba );
+
+      QByteArray bytes;
+      QBuffer buffer( &bytes );
       buffer.open( QIODevice::WriteOnly );
       tileImage.save( &buffer, mTileFormat.toStdString().c_str(), mJpgQuality );
-      mMbtilesWriter->setTileData( tile.z, tile.x, tile2tms( tile.y, tile.z ), ba );
-      mTilesWritten++;
+
+      const Tile tile = it.value();
+      const int tileY = tile2tms( tile.y, tile.z );
+      metatileTiles.append( { tile.z, tile.x, tileY, bytes } );
+      localWritten++;
     }
-    else
+
+    mWriteQueue->push( metatileTiles );
+
+    mTilesWritten += localWritten;
+    mEmptyTiles += localEmpty;
+
+    mActivePostProcessingTasks--;
+    checkPipelineFinished( feedback );
+  } );
+}
+
+void QgsXyzTilesMbtilesAlgorithm::doExport( QgsProcessingFeedback *feedback )
+{
+  mPostProcessingPool = std::make_unique<QThreadPool>();
+  mPostProcessingPool->setMaxThreadCount( std::max( 1, mThreadsNumber ) );
+
+  PendingTilesToWriteQueue queue;
+  mWriteQueue = &queue;
+
+  QThread *dbThread = QThread::create( [this, &queue]() {
+    QList<QgsMbTiles::TileData> batch;
+    constexpr int BATCH_SIZE = 10000;
+    batch.reserve( BATCH_SIZE );
+    while ( queue.popBatch( batch, BATCH_SIZE ) )
     {
-      mEmptyTiles++;
+      mMbtilesWriter->setTileData( batch );
+      batch.clear();
     }
-    ++it;
-  }
+  } );
+  dbThread->start();
 
-  mRendererJobs.remove( job );
-  job->deleteLater();
+  QEventLoop loop;
+  mEventLoop = &loop;
+  mJobOwner.reset( new QObject() );
 
-  mFeedback->setProgress( 100.0 * ( mProcessedMetaTiles++ ) / mTotalMetaTiles );
+  startJobs( feedback );
 
-  if ( mFeedback->isCanceled() )
+  if ( !mMetaTiles.isEmpty() || !mRendererJobs.isEmpty() || mActivePostProcessingTasks.load() > 0 )
   {
-    while ( mRendererJobs.size() > 0 )
-    {
-      QgsMapRendererSequentialJob *j = mRendererJobs.firstKey();
-      j->cancel();
-      mRendererJobs.remove( j );
-      j->deleteLater();
-    }
-    mRendererJobs.clear();
-    if ( mEventLoop )
-    {
-      mEventLoop->exit();
-    }
-    return;
+    loop.exec();
   }
 
-  if ( mMetaTiles.size() > 0 )
+  for ( auto it = mRendererJobs.constBegin(); it != mRendererJobs.constEnd(); it++ )
   {
-    startJobs();
+    it.key()->cancel();
+    it.key()->deleteLater();
   }
-  else if ( mMetaTiles.size() == 0 && mRendererJobs.size() == 0 )
-  {
-    if ( mEventLoop )
-    {
-      mEventLoop->exit();
-    }
-  }
+  mRendererJobs.clear();
+
+  mPostProcessingPool->waitForDone();
+  mPostProcessingPool.reset();
+
+  queue.setFinished();
+  dbThread->wait();
+  delete dbThread;
+
+  mWriteQueue = nullptr;
+  mEventLoop = nullptr;
 }
 
 ///@endcond

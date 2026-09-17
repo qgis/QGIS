@@ -1691,6 +1691,7 @@ The development version
       ForceRasterMasks,
       RecordProfile,
       AlwaysUseGlobalMasks,
+      DrawLabelSelection
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -1719,7 +1720,8 @@ The development version
       RecordProfile,
       AlwaysUseGlobalMasks,
       DisableSymbolClippingToExtent,
-      RenderLayerTree
+      RenderLayerTree,
+      DrawLabelSelection
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
@@ -3173,6 +3175,16 @@ The development version
       Unknown,
     };
 
+    enum class WindSpeedUnit /BaseType=IntEnum/
+    {
+      MetersPerSecond,
+      KilometersPerHour,
+      Knots,
+      MilesPerHour,
+      FeetPerSecond,
+      OtherUnit
+    };
+
     enum class TemporalUnit /BaseType=IntEnum/
     {
       Milliseconds,
@@ -3971,6 +3983,27 @@ The development version
     {
       MainWindowToolbar,
       DockedToolbar,
+    };
+
+    enum class VectorFieldArrowScalingMethod /BaseType=IntEnum/
+    {
+      MinMax,
+      Scaled,
+      Fixed
+    };
+
+    enum class VectorFieldSymbology /BaseType=IntEnum/
+    {
+      Arrows,
+      Streamlines,
+      Traces,
+      WindBarbs
+    };
+
+    enum class VectorFieldSeedingMethod /BaseType=IntEnum/
+    {
+      Gridded,
+      Random
     };
 
     enum class LinearMatrixMethod /BaseType=IntEnum/

@@ -54,9 +54,6 @@ from processing.gui.RenderingStyles import RenderingStyles
 from processing.script import ScriptUtils
 from processing.tools import dataobjects
 
-with QgsRuntimeProfiler.profile("Import GDAL Provider"):
-    from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
-
 with QgsRuntimeProfiler.profile("Import Script Provider"):
     from processing.script.ScriptAlgorithmProvider import (
         ScriptAlgorithmProvider,
@@ -135,7 +132,6 @@ class Processing:
 
             # Add the basic providers
             basic_providers = [
-                GdalAlgorithmProvider,
                 ScriptAlgorithmProvider,
             ]
 
@@ -152,7 +148,7 @@ class Processing:
                 if QgsApplication.processingRegistry().addProvider(p):
                     Processing.BASIC_PROVIDERS.append(p)
 
-            if QgsApplication.platform() == "external":
+            if QgsApplication.platform() in ("external", "qgis_process"):
                 # for external applications we must also load the builtin providers stored in separate plugins
                 try:
                     from qgisprovider.qgis_provider import QgisAlgorithmProvider
@@ -162,6 +158,17 @@ class Processing:
                         Processing.BASIC_PROVIDERS.append(p)
                 except ImportError:
                     pass
+                try:
+                    from gdalprovider.gdal_algorithm_provider import (
+                        GdalAlgorithmProvider,
+                    )
+
+                    p = GdalAlgorithmProvider()
+                    if QgsApplication.processingRegistry().addProvider(p):
+                        Processing.BASIC_PROVIDERS.append(p)
+                except ImportError:
+                    pass
+            if QgsApplication.platform() == "external":
                 try:
                     from grassprovider.grass_provider import GrassProvider
 

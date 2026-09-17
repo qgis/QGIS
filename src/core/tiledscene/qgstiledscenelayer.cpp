@@ -287,7 +287,7 @@ bool QgsTiledSceneLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     // make sure layer has a renderer - if none exists, fallback to a default renderer
     if ( !mRenderer )
     {
-      setRenderer( QgsTiledSceneRendererRegistry::defaultRenderer( this ) );
+      setRenderer( QgsTiledSceneRendererRegistry::defaultRenderer( this ).release() );
     }
   }
 
@@ -450,7 +450,7 @@ void QgsTiledSceneLayer::setDataSourcePrivate( const QString &dataSource, const 
     if ( !defaultLoadedFlag )
     {
       // all else failed, create default renderer
-      setRenderer( QgsTiledSceneRendererRegistry::defaultRenderer( this ) );
+      setRenderer( QgsTiledSceneRendererRegistry::defaultRenderer( this ).release() );
     }
   }
 }

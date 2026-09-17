@@ -1418,7 +1418,7 @@ QgsMeshRendererSettings QgsMeshLayer::accordSymbologyWithGroupName( const QgsMes
       consistentSettings.setScalarSettings( globalIndex, scalarSettings );
       if ( settings.hasVectorSettings( it.value() ) && mDatasetGroupStore->datasetGroupMetadata( globalIndex ).isVector() )
       {
-        QgsMeshRendererVectorSettings vectorSettings = settings.vectorSettings( index );
+        QgsVectorFieldSettings vectorSettings = settings.vectorSettings( index );
         consistentSettings.setVectorSettings( globalIndex, vectorSettings );
       }
     }
@@ -1654,7 +1654,7 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
 
   if ( metadata.isVector() )
   {
-    QgsMeshRendererVectorSettings vectorSettings;
+    QgsVectorFieldSettings vectorSettings;
     vectorSettings.setColorRampShader( fcn );
     mRendererSettings.setVectorSettings( groupIndex, vectorSettings );
   }

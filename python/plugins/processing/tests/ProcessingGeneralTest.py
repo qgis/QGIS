@@ -20,6 +20,7 @@ __date__ = "January 2019"
 __copyright__ = "(C) 2019, Nyall Dawson"
 
 import gc
+import os
 import shutil
 import unittest
 
@@ -34,9 +35,16 @@ from qgis.core import (
 )
 from qgis.PyQt import sip
 from qgis.testing import QgisTestCase, start_app
+from utilities import unitTestDataPath
 
 import processing
-from processing.tests.TestData import points
+
+TEST_DATA_DIR = unitTestDataPath()
+testDataPath = os.path.join(TEST_DATA_DIR, "processing")
+
+
+def points():
+    return os.path.join(testDataPath, "points.gml")
 
 
 class TestProcessingGeneral(QgisTestCase):
