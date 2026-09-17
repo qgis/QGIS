@@ -37,7 +37,6 @@ from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
-from processing.gui.ProviderActions import ProviderActions, ProviderContextMenuActions
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -157,14 +156,17 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         return False
 
     def addProviderActions(self, provider):
-        if provider.id() in ProviderActions.actions:
+        actions = QgsGui.processingGuiRegistry().toolboxActionsForProvider(
+            provider.id()
+        )
+
+        if actions:
             toolbarButton = QToolButton()
             toolbarButton.setObjectName("provideraction_" + provider.id())
             toolbarButton.setIcon(provider.icon())
             toolbarButton.setToolTip(provider.name())
             toolbarButton.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
 
-            actions = ProviderActions.actions[provider.id()]
             menu = QMenu(provider.name(), self)
             menu.setObjectName(provider.name() + "_menu")
             for action in actions:
@@ -238,7 +240,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             favoriteAction.triggered.connect(self.toggleFavorite)
             popupmenu.addAction(favoriteAction)
 
-            actions = ProviderContextMenuActions.actions
+            actions = QgsGui.processingGuiRegistry().toolboxContextActions()
             if len(actions) > 0:
                 popupmenu.addSeparator()
             for action in actions:
