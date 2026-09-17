@@ -36,58 +36,61 @@ QgsTerrainGenerator *QgsFlatTerrainGenerator::create()
 QFuture<QgsChunkLoaderResult> QgsFlatTerrainGenerator::loadChunk( QgsChunkNode *node )
 {
   return loadTextureResources( node ).then( this, [this, node]( QgsTerrainGenerator::TerrainTextureResources resources ) {
-    return QgsChunkLoaderResult { [this, node, resources]( Qt3DCore::QEntity *parent ) -> Qt3DCore::QEntity * {
-      QGIS_CHECK_MAIN_THREAD_ACCESS
-      QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( node->tileId() );
-
-      // make geometry renderer
-
-      // simple quad geometry shared by all tiles
-      // QPlaneGeometry by default is 1x1 with mesh resolution QSize(2,2), centered at 0
-      // TODO: the geometry could be shared inside Terrain instance (within terrain-generator specific data?)
-      Qt3DExtras::QPlaneGeometry *tileGeometry = new Qt3DExtras::QPlaneGeometry;
-
-      Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-      mesh->setGeometry( tileGeometry ); // takes ownership if the component has no parent
-      entity->addComponent( mesh );      // takes ownership if the component has no parent
-
-      // create material
-
-      const Qgs3DMapSettings *map = mTerrain->mapSettings();
-
-      // create transform
-
-      QgsGeoTransform *transform = nullptr;
-      transform = new QgsGeoTransform();
-      entity->addComponent( transform );
-
-      // set up transform according to the extent covered by the quad geometry
-      const QgsBox3D box3D = node->box3D();
-      const QgsBox3D mapFullBox3D( map->extent(), box3D.zMinimum(), box3D.zMaximum() );
-
-      const QgsBox3D commonExtent(
-        std::max( box3D.xMinimum(), mapFullBox3D.xMinimum() ),
-        std::max( box3D.yMinimum(), mapFullBox3D.yMinimum() ),
-        box3D.zMinimum(),
-        std::min( box3D.xMaximum(), mapFullBox3D.xMaximum() ),
-        std::min( box3D.yMaximum(), mapFullBox3D.yMaximum() ),
-        box3D.zMaximum()
-      );
-      const double xSide = commonExtent.width();
-      const double ySide = commonExtent.height();
-      const double xMin = commonExtent.xMinimum();
-      const double yMin = commonExtent.yMinimum();
-
-      transform->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) ); // QPlaneGeometry uses XZ as the base plane
-      transform->setScale3D( QVector3D( static_cast<float>( xSide ), 1, static_cast<float>( ySide ) ) );
-      transform->setGeoTranslation( QgsVector3D( xMin + xSide / 2, yMin + ySide / 2, 0 ) );
-
-      createTextureComponent( resources, entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty(), Qgs3DRenderContext::fromMapSettings( map ) );
-
-      entity->setParent( parent );
-      return entity;
-    } };
+    return QgsChunkLoaderResult { std::bind_front( &QgsFlatTerrainGenerator::createEntity, this, node, resources ) };
   } );
+}
+
+Qt3DCore::QEntity *QgsFlatTerrainGenerator::createEntity( QgsChunkNode *node, QgsTerrainGenerator::TerrainTextureResources resources, Qt3DCore::QEntity *parent )
+{
+  QGIS_CHECK_MAIN_THREAD_ACCESS
+  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( node->tileId() );
+
+  // make geometry renderer
+
+  // simple quad geometry shared by all tiles
+  // QPlaneGeometry by default is 1x1 with mesh resolution QSize(2,2), centered at 0
+  // TODO: the geometry could be shared inside Terrain instance (within terrain-generator specific data?)
+  Qt3DExtras::QPlaneGeometry *tileGeometry = new Qt3DExtras::QPlaneGeometry;
+
+  Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
+  mesh->setGeometry( tileGeometry ); // takes ownership if the component has no parent
+  entity->addComponent( mesh );      // takes ownership if the component has no parent
+
+  // create material
+
+  const Qgs3DMapSettings *map = mTerrain->mapSettings();
+
+  // create transform
+
+  QgsGeoTransform *transform = nullptr;
+  transform = new QgsGeoTransform();
+  entity->addComponent( transform );
+
+  // set up transform according to the extent covered by the quad geometry
+  const QgsBox3D box3D = node->box3D();
+  const QgsBox3D mapFullBox3D( map->extent(), box3D.zMinimum(), box3D.zMaximum() );
+
+  const QgsBox3D commonExtent(
+    std::max( box3D.xMinimum(), mapFullBox3D.xMinimum() ),
+    std::max( box3D.yMinimum(), mapFullBox3D.yMinimum() ),
+    box3D.zMinimum(),
+    std::min( box3D.xMaximum(), mapFullBox3D.xMaximum() ),
+    std::min( box3D.yMaximum(), mapFullBox3D.yMaximum() ),
+    box3D.zMaximum()
+  );
+  const double xSide = commonExtent.width();
+  const double ySide = commonExtent.height();
+  const double xMin = commonExtent.xMinimum();
+  const double yMin = commonExtent.yMinimum();
+
+  transform->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) ); // QPlaneGeometry uses XZ as the base plane
+  transform->setScale3D( QVector3D( static_cast<float>( xSide ), 1, static_cast<float>( ySide ) ) );
+  transform->setGeoTranslation( QgsVector3D( xMin + xSide / 2, yMin + ySide / 2, 0 ) );
+
+  applyMaterial( resources, entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty(), Qgs3DRenderContext::fromMapSettings( map ) );
+
+  entity->setParent( parent );
+  return entity;
 }
 
 QgsTerrainGenerator *QgsFlatTerrainGenerator::clone() const

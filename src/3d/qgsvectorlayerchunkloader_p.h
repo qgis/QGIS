@@ -30,6 +30,7 @@
 #include "qgs3drendercontext.h"
 #include "qgsabstractfeaturebasedchunkedentity.h"
 #include "qgschunkloader.h"
+#include "qgsfeaturerequest.h"
 
 #define SIP_NO_FILE
 
@@ -45,6 +46,7 @@ namespace Qt3DCore
 }
 
 #include <QFutureWatcher>
+#include <QMutex>
 
 
 /**
@@ -65,13 +67,39 @@ class QgsVectorLayerChunkLoader : public QgsQuadtreeChunkLoader
     QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
     QFuture<QVector<QgsChunkNode *>> createChildren( QgsChunkNode *node ) override;
 
+  private:
+    struct NodeIsLeafMap
+    {
+        QHash< QString, bool > map;
+        QMutex mutex;
+    };
+
+    struct ChunkData
+    {
+        std::shared_ptr<QgsFeature3DHandler> handler;
+        Qgs3DRenderContext renderCtx;
+    };
+
+    static void loadChunkInWorker(
+      QPromise<ChunkData> &promise,
+      std::shared_ptr<QgsFeature3DHandler> handler,
+      Qgs3DRenderContext renderCtx,
+      const std::unique_ptr<QgsVectorLayerFeatureSource> &source,
+      const QgsFeatureRequest &req,
+      QgsChunkNode *node,
+      int maxFeatures,
+      const std::shared_ptr<NodeIsLeafMap> &nodesAreLeafs
+    );
+
+    Qt3DCore::QEntity *createEntity( QgsChunkNode *node, ChunkData data, Qt3DCore::QEntity *parent );
+
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
-    //! Contains loaded nodes and whether they are leaf nodes or not
-    QHash< QString, bool > mNodesAreLeafs;
-    QMutex mNodesAreLeafsMutex;
+    std::shared_ptr<NodeIsLeafMap> mNodesAreLeafs;
     int mMaxFeatures;
+
+    friend class QgsVectorLayerChunkedEntity;
 };
 
 

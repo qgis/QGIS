@@ -124,12 +124,12 @@ QFuture<QgsTerrainGenerator::TerrainTextureResources> QgsTerrainGenerator::loadT
   } );
 }
 
-void QgsTerrainGenerator::createTextureComponent(
+void QgsTerrainGenerator::applyMaterial(
   const TerrainTextureResources &resources, QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture, const Qgs3DRenderContext &context
 )
 {
   QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( context );
-  Qt3DRender::QTexture2D *texture = useTexture || !isShadingEnabled ? createTexture( entity, materialContext, resources ) : nullptr;
+  Qt3DRender::QTexture2D *texture = useTexture || !isShadingEnabled ? applyTexture( entity, materialContext, resources ) : nullptr;
 
   QgsMaterial *material = nullptr;
   if ( texture )
@@ -173,7 +173,7 @@ void QgsTerrainGenerator::createTextureComponent(
   entity->addComponent( material ); // takes ownership if the component has no parent
 }
 
-Qt3DRender::QTexture2D *QgsTerrainGenerator::createTexture( QgsTerrainTileEntity *entity, const QgsMaterialContext &context, const QgsTerrainGenerator::TerrainTextureResources &resources ) const
+Qt3DRender::QTexture2D *QgsTerrainGenerator::applyTexture( QgsTerrainTileEntity *entity, const QgsMaterialContext &context, const QgsTerrainGenerator::TerrainTextureResources &resources ) const
 {
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
   QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( resources.image, resources.extentMapCrs, resources.tileDebugText );

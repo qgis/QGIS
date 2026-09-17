@@ -58,6 +58,7 @@ void QgsChunkNode::populateChildren( const QVector<QgsChunkNode *> &children )
   Q_ASSERT( !mChildrenPopulated );
   mChildrenPopulated = true;
   mChildren = children;
+  mCreatingChildren = false;
 }
 
 int QgsChunkNode::level() const

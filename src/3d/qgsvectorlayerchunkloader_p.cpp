@@ -15,6 +15,8 @@
 
 #include "qgsvectorlayerchunkloader_p.h"
 
+#include <functional>
+
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3dsymbol.h"
@@ -52,6 +54,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const Qgs3DRenderContext &
   : mRenderContext( context )
   , mLayer( vl )
   , mSymbol( symbol->clone() )
+  , mNodesAreLeafs( std::make_shared<NodeIsLeafMap>() )
   , mMaxFeatures( maxFeatures )
 {
   if ( context.crs().type() == Qgis::CrsType::Geocentric )
@@ -117,83 +120,93 @@ QFuture<QgsChunkLoaderResult> QgsVectorLayerChunkLoader::loadChunk( QgsChunkNode
 
   auto source = std::make_unique<QgsVectorLayerFeatureSource>( mLayer );
 
-  QPointer<QgsVectorLayerChunkLoader> weakThis = this;
-  return QtConcurrent::run( [req = std::move( req ), source = std::move( source ), handler = std::move( handler ), this, renderCtx, node, maxFeatures = mMaxFeatures, weakThis](
-                              QPromise<QgsChunkLoaderResult> &promise
-                            ) mutable {
-    const QgsScopedEvent e( u"3D"_s, u"VL chunk load"_s );
+  return QtConcurrent::run( &QgsVectorLayerChunkLoader::loadChunkInWorker, std::move( handler ), std::move( renderCtx ), std::move( source ), std::move( req ), node, mMaxFeatures, mNodesAreLeafs )
+    .then( this, [this, node]( ChunkData data ) { return QgsChunkLoaderResult { std::bind_front( &QgsVectorLayerChunkLoader::createEntity, this, node, data ) }; } );
+}
 
-    QgsFeature f;
-    QgsFeatureIterator fi = source->getFeatures( req );
-    int featureCount = 0;
-    bool featureLimitReached = false;
-    while ( fi.nextFeature( f ) )
+void QgsVectorLayerChunkLoader::loadChunkInWorker(
+  QPromise<ChunkData> &promise,
+  std::shared_ptr<QgsFeature3DHandler> handler,
+  Qgs3DRenderContext renderCtx,
+  const std::unique_ptr<QgsVectorLayerFeatureSource> &source,
+  const QgsFeatureRequest &req,
+  QgsChunkNode *node,
+  int maxFeatures,
+  const std::shared_ptr<NodeIsLeafMap> &nodesAreLeafs
+)
+{
+  const QgsScopedEvent e( u"3D"_s, u"VL chunk load"_s );
+
+  QgsFeature f;
+  QgsFeatureIterator fi = source->getFeatures( req );
+  int featureCount = 0;
+  bool featureLimitReached = false;
+  while ( fi.nextFeature( f ) )
+  {
+    if ( promise.isCanceled() )
+      return;
+
+    if ( ++featureCount > maxFeatures )
     {
-      if ( promise.isCanceled() )
-        return;
-
-      if ( ++featureCount > maxFeatures )
-      {
-        featureLimitReached = true;
-        break;
-      }
-
-      renderCtx.expressionContext().setFeature( f );
-      handler->processFeature( f, renderCtx );
+      featureLimitReached = true;
+      break;
     }
 
-    bool nodeIsLeaf = false;
-    if ( !featureLimitReached )
-    {
-      QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( node->tileId().text() ), 3 );
+    renderCtx.expressionContext().setFeature( f );
+    handler->processFeature( f, renderCtx );
+  }
 
-      if ( featureCount == 0 || std::max<double>( node->box3D().width(), node->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
-        nodeIsLeaf = true;
-    }
+  bool nodeIsLeaf = false;
+  if ( !featureLimitReached )
+  {
+    QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( node->tileId().text() ), 3 );
 
-    QgsThreadingUtils::runOnMainThread( [weakThis, nodeIsLeaf, key = node->tileId().text()]() {
-      if ( weakThis )
-      {
-        QMutexLocker<QMutex> locker( &weakThis->mNodesAreLeafsMutex );
-        weakThis->mNodesAreLeafs[key] = nodeIsLeaf;
-      }
-    } );
+    if ( featureCount == 0 || std::max<double>( node->box3D().width(), node->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
+      nodeIsLeaf = true;
+  }
 
-    promise.addResult( QgsChunkLoaderResult { [this, handler, node, renderCtx]( Qt3DCore::QEntity *parent ) -> Qt3DCore::QEntity * {
-      QGIS_CHECK_MAIN_THREAD_ACCESS
-      if ( handler->featureCount() == 0 )
-      {
-        // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
-        // we just make sure first that its initial estimated vertical range does not affect its parents' bboxes calculation
-        node->setExactBox3D( QgsBox3D() );
-        node->updateParentBoundingBoxesRecursively();
-        return nullptr;
-      }
+  {
+    QMutexLocker<QMutex> locker( &nodesAreLeafs->mutex );
+    nodesAreLeafs->map[node->tileId().text()] = nodeIsLeaf;
+  }
 
-      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
-      entity->setObjectName( mLayer->name() + "_" + node->tileId().text() );
-      handler->finalize( entity, renderCtx );
+  promise.addResult( ChunkData { .handler = std::move( handler ), .renderCtx = std::move( renderCtx ) } );
+}
 
-      // fix the vertical range of the node from the estimated vertical range to the true range
-      if ( handler->zMinimum() != std::numeric_limits<float>::max() && handler->zMaximum() != std::numeric_limits<float>::lowest() )
-      {
-        QgsBox3D box = node->box3D();
-        box.setZMinimum( handler->zMinimum() );
-        box.setZMaximum( handler->zMaximum() );
-        node->setExactBox3D( box );
-        node->updateParentBoundingBoxesRecursively();
-      }
+Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( QgsChunkNode *node, ChunkData data, Qt3DCore::QEntity *parent )
+{
+  QGIS_CHECK_MAIN_THREAD_ACCESS
+  if ( data.handler->featureCount() == 0 )
+  {
+    // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
+    // we just make sure first that its initial estimated vertical range does not affect its parents' bboxes calculation
+    node->setExactBox3D( QgsBox3D() );
+    node->updateParentBoundingBoxesRecursively();
+    return nullptr;
+  }
 
-      return entity;
-    } } );
-  } );
+  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+  entity->setObjectName( mLayer->name() + "_" + node->tileId().text() );
+  data.handler->finalize( entity, data.renderCtx );
+
+  // fix the vertical range of the node from the estimated vertical range to the true range
+  if ( data.handler->zMinimum() != std::numeric_limits<float>::max() && data.handler->zMaximum() != std::numeric_limits<float>::lowest() )
+  {
+    QgsBox3D box = node->box3D();
+    box.setZMinimum( data.handler->zMinimum() );
+    box.setZMaximum( data.handler->zMaximum() );
+    node->setExactBox3D( box );
+    node->updateParentBoundingBoxesRecursively();
+  }
+
+  return entity;
 }
 
 QFuture<QVector<QgsChunkNode *>> QgsVectorLayerChunkLoader::createChildren( QgsChunkNode *node )
 {
   {
-    QMutexLocker locker( &mNodesAreLeafsMutex );
-    if ( mNodesAreLeafs.value( node->tileId().text(), false ) )
+    QMutexLocker locker( &mNodesAreLeafs->mutex );
+    if ( mNodesAreLeafs->map.value( node->tileId().text(), false ) )
       return QtFuture::makeReadyValueFuture( QVector<QgsChunkNode *> {} );
   }
 

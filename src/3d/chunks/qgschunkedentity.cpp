@@ -663,8 +663,11 @@ void QgsChunkedEntity::onActiveLoadJobFinished( QgsChunkQueueJob &job, QgsChunkL
     Q_ASSERT( node->state() == QgsChunkNode::Updating );
 
     Qt3DCore::QEntity *newEntity = result.createEntity( this );
-    node->replaceEntity( newEntity );
-    emit newEntityCreated( newEntity );
+    if ( newEntity != node->entity() )
+    {
+      node->replaceEntity( newEntity );
+      emit newEntityCreated( newEntity );
+    }
 
     addTileTraceEvent( *this, *node, QgsEventTracing::AsyncEnd, u"Update"_s );
     node->setUpdated();
@@ -728,23 +731,31 @@ void QgsChunkedEntity::cancelActiveJob( QgsChunkQueueJob &job )
 {
   QgsChunkNode *node = job.node;
 
-  if ( node->state() == QgsChunkNode::Loading )
+  switch ( job.type )
   {
-    // return node back to skeleton
-    node->cancelLoading();
+    case QgsChunkQueueJob::Type::Load:
+    {
+      Q_ASSERT( node->state() == QgsChunkNode::Loading );
+      // return node back to skeleton
+      node->cancelLoading();
 
-    addTileTraceEvent( *this, *node, QgsEventTracing::AsyncEnd, u"Load"_s );
-  }
-  else if ( node->state() == QgsChunkNode::Updating )
-  {
-    // return node back to loaded state
-    node->cancelUpdating();
+      addTileTraceEvent( *this, *node, QgsEventTracing::AsyncEnd, u"Load"_s );
+      break;
+    }
+    case QgsChunkQueueJob::Type::Update:
+    {
+      Q_ASSERT( node->state() == QgsChunkNode::Updating );
+      // return node back to loaded state
+      node->cancelUpdating();
 
-    addTileTraceEvent( *this, *node, QgsEventTracing::AsyncEnd, u"Update"_s );
-  }
-  else
-  {
-    Q_ASSERT( false );
+      addTileTraceEvent( *this, *node, QgsEventTracing::AsyncEnd, u"Update"_s );
+      break;
+    }
+    case QgsChunkQueueJob::Type::CreateChildren:
+    {
+      node->setCreatingChildren( false );
+      break;
+    }
   }
 
   job.future.cancelChain();

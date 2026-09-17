@@ -155,20 +155,20 @@ int QgsPointCloudLayerChunkLoader::primitivesCount( QgsChunkNode *node ) const
 
 QFuture<void> QgsPointCloudLayerChunkLoader::fetchHierarchyForNode( const QgsPointCloudNodeId &nodeId )
 {
-  return QtConcurrent::run( [this, nodeId] {
+  return QtConcurrent::run( [index = mPointCloudIndex, nodeId] {
     // we need to make sure that hierarchy exists for this node, children and grand children,
     // so that createChildren() will not trigger hierarchy fetching
     // hasNode() will trigger fetching the hierarchy for this node and any missing ancestors
-    ( void ) mPointCloudIndex.hasNode( nodeId );
+    ( void ) index.hasNode( nodeId );
     const QVector<QgsPointCloudNodeId> children = nodeId.childrenNodes();
     for ( const QgsPointCloudNodeId &child : children )
     {
-      ( void ) mPointCloudIndex.hasNode( child );
+      ( void ) index.hasNode( child );
 
       const QVector<QgsPointCloudNodeId> grandchildren = child.childrenNodes();
       for ( const QgsPointCloudNodeId &grandChild : grandchildren )
       {
-        ( void ) mPointCloudIndex.hasNode( grandChild );
+        ( void ) index.hasNode( grandChild );
       }
     }
   } );
