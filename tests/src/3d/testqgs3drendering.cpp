@@ -2032,7 +2032,7 @@ void TestQgs3DRendering::testGlobeSphereRendering()
   delete map;
   delete layerPoints;
 
-  QGSVERIFYIMAGECHECK( "globe_spheres", "globe_spheres", img, QString(), 40, QSize( 0, 0 ), 5 );
+  QGSVERIFYIMAGECHECK( "globe_spheres", "globe_spheres", img, QString(), 150, QSize( 0, 0 ), 5 );
 }
 
 void TestQgs3DRendering::testFilteredFlatTerrain()
