@@ -120,7 +120,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 )
 
             if alg.id() not in (
-                "native:createspatialindex",
                 "native:tilesxyzdirectory",
                 "native:tilesxyzmbtiles",
                 "pdal:assignprojection",
