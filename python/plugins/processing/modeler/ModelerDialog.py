@@ -83,7 +83,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         QgsGui.instance().applicationStyleSheetChanged.connect(self.setStyleSheet)
 
         self.actionOpen().triggered.connect(self.openModel)
-        self.actionSaveInProject().triggered.connect(self.saveInProject)
 
         if model is not None:
             _model = model.create()
@@ -111,28 +110,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         )
         widget.registerProcessingFeedbackGenerator(self)
         return widget
-
-    def saveInProject(self):
-        if not self.validateSave(QgsModelDesignerDialog.SaveAction.SaveInProject):
-            return
-
-        self.model().setSourceFilePath(None)
-
-        project_provider = QgsApplication.processingRegistry().providerById(
-            QgsProcessing.PROJECT_PROVIDER_ID
-        )
-        project_provider.addModel(self.model())
-
-        self.modelUpdated.emit()
-        self.messageBar().pushMessage(
-            "",
-            self.tr("Model was saved inside current project"),
-            level=Qgis.MessageLevel.Success,
-            duration=5,
-        )
-
-        self.setDirty(False)
-        QgsProject.instance().setDirty(True)
 
     def saveModel(self, saveAs) -> bool:
         if not self.validateSave(QgsModelDesignerDialog.SaveAction.SaveAsFile):
