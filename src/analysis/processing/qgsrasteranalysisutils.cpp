@@ -680,12 +680,13 @@ int QgsRasterAnalysisUtils::steepestGradientDirection( const QgsRasterBlock *dem
   bool isCenterNoData = false;
   const double z = demBlock->valueAndNoData( row, column, isCenterNoData );
   if ( isCenterNoData )
-    return -1;
+    return -3;
 
   double maxGradient = 0.0;
   int steepestDir = -1;
 
   bool isNeighborNodata = false;
+  bool isFlat = true;
   for ( int dir = 0; dir < 8; ++dir )
   {
     int nCol = 0;
@@ -696,6 +697,7 @@ int QgsRasterAnalysisUtils::steepestGradientDirection( const QgsRasterBlock *dem
       if ( !isNeighborNodata )
       {
         const double grad = ( z - nZ ) / neighborCellDistance( dir, cellSizeX, cellSizeY );
+        isFlat &= qgsDoubleNear( grad, 0 );
         if ( ( !down || grad > 0 ) && ( steepestDir == -1 || grad > maxGradient ) )
         {
           maxGradient = grad;
@@ -704,15 +706,15 @@ int QgsRasterAnalysisUtils::steepestGradientDirection( const QgsRasterBlock *dem
       }
       else if ( noEdges )
       {
-        return -1;
+        return -3;
       }
     }
     else if ( noEdges )
     {
-      return -1;
+      return -3;
     }
   }
-  return steepestDir;
+  return isFlat ? -2 : steepestDir;
 }
 
 ///@endcond PRIVATE
