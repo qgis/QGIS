@@ -702,11 +702,13 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   btnChangeColorFill->setContext( u"symbology"_s );
   btnChangeColorFill->setShowNoColor( true );
   btnChangeColorFill->setNoColorString( tr( "Transparent Fill" ) );
+  btnChangeColorFill->setOpaqueColorString( tr( "Opaque Fill" ) );
   btnChangeColorStroke->setAllowOpacity( true );
   btnChangeColorStroke->setColorDialogTitle( tr( "Select Stroke Color" ) );
   btnChangeColorStroke->setContext( u"symbology"_s );
   btnChangeColorStroke->setShowNoColor( true );
   btnChangeColorStroke->setNoColorString( tr( "Transparent Stroke" ) );
+  btnChangeColorStroke->setOpaqueColorString( tr( "Opaque Stroke" ) );
 
   mFillColorDDBtn->registerLinkedWidget( btnChangeColorFill );
   mStrokeColorDDBtn->registerLinkedWidget( btnChangeColorStroke );
@@ -1006,11 +1008,13 @@ QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( QgsVectorLayer *
   btnChangeColor->setContext( u"symbology"_s );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent Fill" ) );
+  btnChangeColor->setOpaqueColorString( tr( "Opaque Fill" ) );
   btnChangeStrokeColor->setAllowOpacity( true );
   btnChangeStrokeColor->setColorDialogTitle( tr( "Select Stroke Color" ) );
   btnChangeStrokeColor->setContext( u"symbology"_s );
   btnChangeStrokeColor->setShowNoColor( true );
   btnChangeStrokeColor->setNoColorString( tr( "Transparent Stroke" ) );
+  btnChangeStrokeColor->setOpaqueColorString( tr( "Opaque Stroke" ) );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
@@ -1360,11 +1364,13 @@ QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( QgsVectorLay
   btnChangeColor->setContext( u"symbology"_s );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent" ) );
+  btnChangeColor->setOpaqueColorString( tr( "Opaque" ) );
   btnChangeColor2->setAllowOpacity( true );
   btnChangeColor2->setColorDialogTitle( tr( "Select Gradient Color" ) );
   btnChangeColor2->setContext( u"symbology"_s );
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
+  btnChangeColor2->setOpaqueColorString( tr( "Opaque" ) );
 
   mStartColorDDBtn->registerLinkedWidget( btnChangeColor );
   mEndColorDDBtn->registerLinkedWidget( btnChangeColor2 );
@@ -1706,11 +1712,13 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( QgsVecto
   btnChangeColor->setContext( u"symbology"_s );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent" ) );
+  btnChangeColor->setOpaqueColorString( tr( "Opaque" ) );
   btnChangeColor2->setAllowOpacity( true );
   btnChangeColor2->setColorDialogTitle( tr( "Select Gradient Color" ) );
   btnChangeColor2->setContext( u"symbology"_s );
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
+  btnChangeColor2->setOpaqueColorString( tr( "Opaque" ) );
 
   mStartColorDDBtn->registerLinkedWidget( btnChangeColor );
   mEndColorDDBtn->registerLinkedWidget( btnChangeColor2 );
@@ -5383,11 +5391,13 @@ QgsLineburstSymbolLayerWidget::QgsLineburstSymbolLayerWidget( QgsVectorLayer *vl
   btnChangeColor->setContext( u"symbology"_s );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent" ) );
+  btnChangeColor->setOpaqueColorString( tr( "Opaque" ) );
   btnChangeColor2->setAllowOpacity( true );
   btnChangeColor2->setColorDialogTitle( tr( "Select Gradient Color" ) );
   btnChangeColor2->setContext( u"symbology"_s );
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
+  btnChangeColor2->setOpaqueColorString( tr( "Opaque" ) );
 
   mStartColorDDBtn->registerLinkedWidget( btnChangeColor );
   mEndColorDDBtn->registerLinkedWidget( btnChangeColor2 );

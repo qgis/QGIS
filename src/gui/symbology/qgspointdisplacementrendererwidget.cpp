@@ -130,6 +130,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mCircleColorButton->setAllowOpacity( true );
   mCircleColorButton->setShowNoColor( true );
   mCircleColorButton->setNoColorString( tr( "Transparent Stroke" ) );
+  mCircleColorButton->setOpaqueColorString( tr( "Opaque Stroke" ) );
   mLabelColorButton->setContext( u"symbology"_s );
   mLabelColorButton->setColorDialogTitle( tr( "Select Color" ) );
   mLabelColorButton->setAllowOpacity( true );

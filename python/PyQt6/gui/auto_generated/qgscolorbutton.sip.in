@@ -206,10 +206,33 @@ drop-down menu.
 
 .. seealso:: :py:func:`setShowNoColor`
 
+.. seealso:: :py:func:`setOpaqueColorString`
+
 .. note::
 
    The "no color" option is only shown if the color button is set to show an alpha channel in the color
    dialog
+%End
+
+    void setOpaqueColorString( const QString &opaqueColorString );
+%Docstring
+Sets the string to use for the "opaque color" option in the button's
+drop-down menu.
+
+This option replaces the "no color" one whenever the button's current
+color is totally transparent, so that the color can be made opaque
+again.
+
+:param opaqueColorString: string to use for the "opaque color" menu
+                          option
+
+.. seealso:: :py:func:`opaqueColorString`
+
+.. seealso:: :py:func:`setNoColorString`
+
+.. seealso:: :py:func:`setShowNoColor`
+
+.. versionadded:: 4.4
 %End
 
     void setShowNull( bool showNull, const QString &nullString = QString() );
@@ -260,6 +283,20 @@ drop-down menu.
 
    The "no color" option is only shown if the color button is set to show an alpha channel in the color
    dialog
+%End
+
+    QString opaqueColorString() const;
+%Docstring
+Returns the string used for the "opaque color" option in the button's
+drop-down menu.
+
+:return: string used for the "opaque color" menu option
+
+.. seealso:: :py:func:`setOpaqueColorString`
+
+.. seealso:: :py:func:`noColorString`
+
+.. versionadded:: 4.4
 %End
 
     void setContext( const QString &context );
@@ -400,7 +437,21 @@ Sets color to a totally transparent color.
    If the color button is not set to show an opacity channel in the color
    dialog  then the color will not be changed.
 
+.. seealso:: :py:func:`setToOpaqueColor`
+
 .. seealso:: :py:func:`setToNull`
+%End
+
+    void setToOpaqueColor();
+%Docstring
+Sets the color to a totally opaque one, leaving the other color
+components untouched.
+
+.. seealso:: :py:func:`setToNoColor`
+
+.. seealso:: :py:func:`setToNull`
+
+.. versionadded:: 4.4
 %End
 
     void setToDefaultColor();
