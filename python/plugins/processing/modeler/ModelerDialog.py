@@ -75,13 +75,6 @@ class ModelerDialog(QgsModelDesignerDialog):
     def __init__(self, model=None, parent=None):
         super().__init__(parent)
 
-        self.toolbar().setIconSize(
-            QgsGui.iconSize(Qgis.UserInterfaceIconType.DockedToolbar)
-        )
-
-        self.setStyleSheet(QgsGui.applicationStyleSheet())
-        QgsGui.instance().applicationStyleSheetChanged.connect(self.setStyleSheet)
-
         if model is not None:
             _model = model.create()
             _model.setSourceFilePath(model.sourceFilePath())
