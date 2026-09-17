@@ -148,8 +148,13 @@ QVariant QgsSymbolLayerModelNode::data( int role ) const
     font.setBold( true );
     return font;
   }
-  else if ( role == Qt::CheckStateRole && mIsLayer )
+  else if ( role == Qt::CheckStateRole )
   {
+    if ( !mIsLayer )
+    {
+      return Qt::CheckState::PartiallyChecked;
+    }
+
     if ( mLayer->enabled() )
     {
       return Qt::CheckState::Checked;
@@ -265,6 +270,10 @@ Qt::ItemFlags QgsSymbolLayerModel::flags( const QModelIndex &index ) const
   if ( node->isLayer() )
   {
     f |= Qt::ItemFlag::ItemIsUserCheckable;
+  }
+  else
+  {
+    f &= ~Qt::ItemFlag::ItemIsUserCheckable;
   }
 
   return f;
