@@ -1013,7 +1013,7 @@ QString QgsMeshContoursAlgorithm::displayName() const
 
 QStringList QgsMeshContoursAlgorithm::tags() const
 {
-  return QObject::tr( "mesh,contours,isolines,lines, polygons,scalar,elevation,vector" ).split( ',' );
+  return QObject::tr( "mesh,contours,isolines,lines,polygons,scalar,elevation,vector" ).split( ',' );
 }
 
 QString QgsMeshContoursAlgorithm::group() const
@@ -1504,7 +1504,7 @@ QString QgsMeshExportTimeSeries::displayName() const
 
 QStringList QgsMeshExportTimeSeries::tags() const
 {
-  return QObject::tr( "mesh, time series,temporal,points,extract,csv,table,sample" ).split( ',' );
+  return QObject::tr( "mesh,time series,temporal,points,extract,csv,table,sample" ).split( ',' );
 }
 
 QString QgsMeshExportTimeSeries::group() const

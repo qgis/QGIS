@@ -539,7 +539,7 @@ QString QgsXyzTilesDirectoryAlgorithm::shortHelpString() const
 
 QString QgsXyzTilesDirectoryAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Generates XYZ tiles from the project as a structured directory hierarchy ({z}/{x}/{y}.png/jpg." );
+  return QObject::tr( "Generates XYZ tiles from the project as a structured directory hierarchy ({z}/{x}/{y}.png/jpg)." );
 }
 
 QgsXyzTilesDirectoryAlgorithm *QgsXyzTilesDirectoryAlgorithm::createInstance() const
