@@ -82,8 +82,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.setStyleSheet(QgsGui.applicationStyleSheet())
         QgsGui.instance().applicationStyleSheetChanged.connect(self.setStyleSheet)
 
-        self.actionOpen().triggered.connect(self.openModel)
-
         if model is not None:
             _model = model.create()
             _model.setSourceFilePath(model.sourceFilePath())
@@ -110,25 +108,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         )
         widget.registerProcessingFeedbackGenerator(self)
         return widget
-
-    def openModel(self):
-        if not self.checkForUnsavedChanges():
-            return
-
-        settings = QgsSettings()
-        last_dir = settings.value("Processing/lastModelsDir", QDir.homePath())
-        filename, selected_filter = QFileDialog.getOpenFileName(
-            self,
-            self.tr("Open Model"),
-            last_dir,
-            self.tr("Processing models (*.model3 *.MODEL3)"),
-        )
-        if filename:
-            settings.setValue(
-                "Processing/lastModelsDir",
-                QFileInfo(filename).absoluteDir().absolutePath(),
-            )
-            self.loadModel(filename)
 
     def repaintModel(self, showControls=True):
         scene = QgsModelGraphicsScene(self)

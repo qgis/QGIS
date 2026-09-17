@@ -178,7 +178,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     QgsProcessingContext *processingContext() const override;
 
     QToolBar *toolbar() { return mToolbar; }
-    QAction *actionOpen() { return mActionOpen; }
     QAction *actionRun() { return mActionRun; }
     QgsMessageBar *messageBar() { return mMessageBar; }
 
@@ -220,6 +219,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void zoomActual();
     void zoomFull();
     void newModel();
+    void openModel();
     void exportToImage();
     void exportToPdf();
     void exportToSvg();
