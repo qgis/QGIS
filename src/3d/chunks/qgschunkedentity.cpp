@@ -758,7 +758,7 @@ void QgsChunkedEntity::cancelActiveJob( QgsChunkQueueJob &job )
     }
   }
 
-  job.future.cancelChain();
+  QgsFutureUtils::cancelChain( job.future );
   eraseJobFromList( job );
 }
 
