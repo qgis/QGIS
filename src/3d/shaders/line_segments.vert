@@ -23,6 +23,16 @@ bool isBehindNearPlane(vec4 clipPos)
     return clipPos.z + clipPos.w < 0.0;
 }
 
+// This implements rejection of lines from Cohen-Sutherland line clipping algorithm.
+// Thanks to that we filter out majority of lines that may otherwise cause issues.
+// Lines that can't be trivially rejected, should be further clipped
+int outcode(vec4 p)
+{
+    return int(p.w + p.x < 0.0) << 0 | int(p.w - p.x < 0.0) << 1
+         | int(p.w + p.y < 0.0) << 2 | int(p.w - p.y < 0.0) << 3
+         | int(p.w + p.z < 0.0) << 4 | int(p.w - p.z < 0.0) << 5;
+}
+
 #ifdef CLIPPING
     uniform mat4 inverseViewProjectionMatrix;
     #pragma include clipplane.shaderinc
@@ -68,7 +78,7 @@ void main(void)
     VertexOut.mTexCoord = vec2(vertexPosition.x, vertexPosition.y + 0.5);
     VertexOut.mColor = dataDefinedColor;
 
-    if (!clipNearPlane(clipA, clipB))
+    if ((outcode(clipA) & outcode(clipB)) != 0 || !clipNearPlane(clipA, clipB))
     {
         gl_Position = vec4(0.0, 0.0, 0.0, -1.0);
         return;
