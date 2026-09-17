@@ -80,15 +80,7 @@ class GenericAlgorithmsTest(QgisTestCase):
 
         if alg.provider().id() in ("qgis", "native", "3d", "pdal"):
             if alg.id() not in (
-                "native:exportmeshedges",
-                "native:exportmeshfaces",
-                "native:exportmeshongrid",
-                "native:exportmeshvertices",
                 "native:intersection",
-                "native:meshcontours",
-                "native:meshexportcrosssection",
-                "native:meshexporttimeseries",
-                "native:meshrasterize",
                 "native:surfacetopolygon",
                 "qgis:advancedpythonfieldcalculator",
                 "qgis:barplot",
