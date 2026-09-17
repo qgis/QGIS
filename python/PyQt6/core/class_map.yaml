@@ -9342,7 +9342,6 @@ QgsMapBoxGlStyleConverter.convert: src/core/vectortile/qgsmapboxglstyleconverter
 QgsMapBoxGlStyleConverter.convert: src/core/vectortile/qgsmapboxglstyleconverter.h#L414
 QgsMapBoxGlStyleConverter.errorMessage: src/core/vectortile/qgsmapboxglstyleconverter.h#L422
 QgsMapBoxGlStyleConverter.interpolateExpression: src/core/vectortile/qgsmapboxglstyleconverter.h#L827
-QgsMapBoxGlStyleConverter.labeling: src/core/vectortile/qgsmapboxglstyleconverter.h#L442
 QgsMapBoxGlStyleConverter.parseArrayStops: src/core/vectortile/qgsmapboxglstyleconverter.h#L674
 QgsMapBoxGlStyleConverter.parseCapStyle: src/core/vectortile/qgsmapboxglstyleconverter.h#L847
 QgsMapBoxGlStyleConverter.parseCircleLayer: src/core/vectortile/qgsmapboxglstyleconverter.h#L525
@@ -9371,7 +9370,6 @@ QgsMapBoxGlStyleConverter.parseStringStops: src/core/vectortile/qgsmapboxglstyle
 QgsMapBoxGlStyleConverter.parseSymbolLayer: src/core/vectortile/qgsmapboxglstyleconverter.h#L539
 QgsMapBoxGlStyleConverter.parseSymbolLayerAsRenderer: src/core/vectortile/qgsmapboxglstyleconverter.h#L559
 QgsMapBoxGlStyleConverter.parseValueList: src/core/vectortile/qgsmapboxglstyleconverter.h#L729
-QgsMapBoxGlStyleConverter.renderer: src/core/vectortile/qgsmapboxglstyleconverter.h#L436
 QgsMapBoxGlStyleConverter.retrieveSprite: src/core/vectortile/qgsmapboxglstyleconverter.h#L869
 QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64: src/core/vectortile/qgsmapboxglstyleconverter.h#L883
 QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties: src/core/vectortile/qgsmapboxglstyleconverter.h#L893
