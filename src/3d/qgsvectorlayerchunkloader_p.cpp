@@ -264,6 +264,7 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
       return;
     }
 
+    // choose the smaller root extent between context and mLayer ones
     QgsRectangle layerExtentLonLat;
     if ( mLayer->crs().type() == Qgis::CrsType::Geocentric )
     {
@@ -285,6 +286,7 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
 
     if ( layerExtentLonLat.isValid() )
     {
+      // add small padding to avoid clipping of point features located at the edge of the bounding box
       layerExtentLonLat.grow( 0.01 );
       layerExtentLonLat = layerExtentLonLat.intersect( QgsRectangle( -180, -90, 180, 90 ) );
     }
