@@ -291,7 +291,7 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
       layerExtentLonLat = layerExtentLonLat.intersect( QgsRectangle( -180, -90, 180, 90 ) );
     }
 
-    mRootNodeId = QgsGlobeUtils::findSamllestIdContainingExtent( layerExtentLonLat );
+    mRootNodeId = QgsGlobeUtils::findSmallestIdContainingExtent( layerExtentLonLat );
 
     QgsBox3D rootBox3D;
     if ( mRootNodeId.d == 0 )

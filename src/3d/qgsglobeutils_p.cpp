@@ -37,7 +37,7 @@ QgsRectangle QgsGlobeUtils::nodeIdToLonLatRect( QgsChunkNodeId id )
   return QgsRectangle( lonMin, latMin, lonMin + tileSize, latMin + tileSize );
 }
 
-QgsChunkNodeId QgsGlobeUtils::findSamllestIdContainingExtent( const QgsRectangle &lonLatExtent )
+QgsChunkNodeId QgsGlobeUtils::findSmallestIdContainingExtent( const QgsRectangle &lonLatExtent )
 {
   QgsChunkNodeId id( 0, 0, 0 );
   if ( !lonLatExtent.isValid() )
