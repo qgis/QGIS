@@ -143,6 +143,13 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
      */
     void activate();
 
+    /**
+     * Saves the model to the current project.
+     *
+     * \since QGIS 4.4
+     */
+    void saveInProject();
+
   signals:
 
     /**
@@ -174,7 +181,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
 
     QToolBar *toolbar() { return mToolbar; }
     QAction *actionOpen() { return mActionOpen; }
-    QAction *actionSaveInProject() { return mActionSaveInProject; }
     QAction *actionRun() { return mActionRun; }
     QgsMessageBar *messageBar() { return mMessageBar; }
 

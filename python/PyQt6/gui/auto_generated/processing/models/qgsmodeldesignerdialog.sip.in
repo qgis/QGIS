@@ -107,6 +107,13 @@ Raise, unminimize and activate this window.
 .. versionadded:: 3.24
 %End
 
+    void saveInProject();
+%Docstring
+Saves the model to the current project.
+
+.. versionadded:: 4.4
+%End
+
   signals:
 
     void modelUpdated();
@@ -141,7 +148,6 @@ retrieve a Processing context for the dialog when required.
 
     QToolBar *toolbar();
     QAction *actionOpen();
-    QAction *actionSaveInProject();
     QAction *actionRun();
     QgsMessageBar *messageBar();
 
