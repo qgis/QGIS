@@ -15,8 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgsbox3d.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsellipsoidutils.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -36,6 +38,7 @@ class TestQgsCoordinateTransform : public QObject
     void initTestCase();
     void cleanupTestCase();
     void transformBoundingBox();
+    void transformBox3D();
     void copy();
     void assignment();
     void equality();
@@ -748,6 +751,53 @@ void TestQgsCoordinateTransform::transformBoundingBox()
     errorObtained = true;
   }
   QVERIFY( errorObtained );
+}
+
+void TestQgsCoordinateTransform::transformBox3D()
+{
+  const QgsCoordinateReferenceSystem geographic3D = QgsCoordinateReferenceSystem::fromEpsgId( 4979 );
+  const QgsCoordinateReferenceSystem geocentric = QgsCoordinateReferenceSystem::fromEpsgId( 4978 );
+
+  const QgsCoordinateTransform tr( geographic3D, geocentric, QgsCoordinateTransformContext() );
+
+  const QgsEllipsoidUtils::EllipsoidParameters ellipsoidParams = QgsEllipsoidUtils::ellipsoidParameters( geographic3D.ellipsoidAcronym() );
+  const double semiMajorAxis = ellipsoidParams.semiMajor;
+  const double semiMinorAxis = ellipsoidParams.semiMinor;
+
+  QgsBox3D box( 0, 0, 90, 0, 0, 90 );
+  QgsBox3D result = tr.transformBox3D( box );
+  QGSCOMPARENEAR( result.xMinimum(), semiMajorAxis + 90, 0.001 );
+  QGSCOMPARENEAR( result.xMaximum(), semiMajorAxis + 90, 0.001 );
+  QGSCOMPARENEAR( result.yMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.yMaximum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.zMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.zMaximum(), 0, 0.001 );
+
+  box = QgsBox3D( 0, 90, 0, 0, 90, 0 );
+  result = tr.transformBox3D( box );
+  QGSCOMPARENEAR( result.xMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.xMaximum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.yMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.yMaximum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.zMinimum(), semiMinorAxis, 0.001 );
+  QGSCOMPARENEAR( result.zMaximum(), semiMinorAxis, 0.001 );
+
+  box = QgsBox3D( 90, 0, 0, 90, 0, 0 );
+  result = tr.transformBox3D( box );
+  QGSCOMPARENEAR( result.xMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.xMaximum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.yMinimum(), semiMajorAxis, 0.001 );
+  QGSCOMPARENEAR( result.yMaximum(), semiMajorAxis, 0.001 );
+  QGSCOMPARENEAR( result.zMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.zMaximum(), 0, 0.001 );
+
+  const QgsBox3D reversed = tr.transformBox3D( result, Qgis::TransformDirection::Reverse );
+  QGSCOMPARENEAR( reversed.xMinimum(), 90, 0.001 );
+  QGSCOMPARENEAR( reversed.xMaximum(), 90, 0.001 );
+  QGSCOMPARENEAR( reversed.yMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( reversed.yMaximum(), 0, 0.001 );
+  QGSCOMPARENEAR( reversed.zMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( reversed.zMaximum(), 0, 0.001 );
 }
 
 void TestQgsCoordinateTransform::transformLKS()
