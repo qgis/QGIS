@@ -39,7 +39,7 @@ class EditModelAction(QgsProcessingToolboxContextAction):
         )
         model = provider.algorithm(context.algorithmName())
         dlg = ModelerDialog.create(model)
-        dlg.update_model.connect(self.updateModel)
+        dlg.modelUpdated.connect(self.updateModel)
         dlg.show()
         dlg.activate()
 

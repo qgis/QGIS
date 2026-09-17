@@ -42,7 +42,7 @@ class CreateNewModelAction(QgsProcessingToolboxAction):
 
     def trigger(self, context):
         dlg = ModelerDialog.create()
-        dlg.update_model.connect(self.updateModel)
+        dlg.modelUpdated.connect(self.updateModel)
         dlg.show()
 
     def updateModel(self):

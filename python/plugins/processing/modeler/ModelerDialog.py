@@ -19,7 +19,6 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-import os
 import sys
 from pathlib import Path
 
@@ -57,12 +56,8 @@ from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools.dataobjects import createContext
 
-pluginPath = os.path.split(os.path.dirname(__file__))[0]
-
 
 class ModelerDialog(QgsModelDesignerDialog):
-    update_model = pyqtSignal()
-
     dlgs = []
 
     @staticmethod
@@ -128,7 +123,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         )
         project_provider.addModel(self.model())
 
-        self.update_model.emit()
+        self.modelUpdated.emit()
         self.messageBar().pushMessage(
             "",
             self.tr("Model was saved inside current project"),
@@ -195,7 +190,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                 )
             return False
 
-        self.update_model.emit()
+        self.modelUpdated.emit()
         if saveAs:
             self.messageBar().pushMessage(
                 "",
