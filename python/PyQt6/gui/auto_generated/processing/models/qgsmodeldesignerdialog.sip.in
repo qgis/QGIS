@@ -107,6 +107,17 @@ Raise, unminimize and activate this window.
 .. versionadded:: 3.24
 %End
 
+  signals:
+
+    void modelUpdated();
+%Docstring
+Emitted when the model is updated.
+
+.. warning::
+
+   DO NOT USE -- this is bad API, here for compatibility with Python code only.
+%End
+
   protected:
 
     virtual void repaintModel( bool showControls = true ) = 0;

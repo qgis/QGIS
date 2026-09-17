@@ -143,6 +143,15 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
      */
     void activate();
 
+  signals:
+
+    /**
+     * Emitted when the model is updated.
+     *
+     * \warning DO NOT USE -- this is bad API, here for compatibility with Python code only.
+     */
+    void modelUpdated();
+
   protected:
     // cppcheck-suppress pureVirtualCall
     virtual void repaintModel( bool showControls = true ) = 0;
