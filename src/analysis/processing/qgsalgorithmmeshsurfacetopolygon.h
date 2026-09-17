@@ -35,6 +35,7 @@ class QgsMeshSurfaceToPolygonAlgorithm : public QgsProcessingAlgorithm
     QString shortHelpString() const override;
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
