@@ -52,7 +52,7 @@ void QgsCombinedFutureHelper::onCanceled()
 {
   for ( auto &watcher : std::as_const( mWatchers ) )
   {
-    watcher->future().cancelChain();
+    QgsFutureUtils::cancelChain( watcher->future() );
   }
 }
 
@@ -96,4 +96,13 @@ QFuture<void> QgsFutureUtils::clone( QFuture<void> base )
   watcher->setFuture( base );
 
   return cloned;
+}
+
+void QgsFutureUtils::cancelChain( QFuture<void> future )
+{
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 10, 0 )
+  future.cancelChain();
+#else
+  future.cancel();
+#endif
 }
