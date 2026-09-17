@@ -85,9 +85,8 @@ from qgis.core import (
     QgsReferencedRectangle,
 )
 from qgis.testing import QgisTestCase, start_app, unittest
+from test_gdal_algorithm_utils import wms_layer_1_3_0_frankfurt
 from utilities import unitTestDataPath
-
-from .test_gdal_algorithm_utils import wms_layer_1_3_0_frankfurt
 
 TEST_DATA_DIR = unitTestDataPath()
 testDataPath = os.path.join(TEST_DATA_DIR, "processing")

@@ -49,13 +49,12 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QFile, QIODevice
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import QgisTestCase, start_app
-from utilities import unitTestDataPath
-
-from .test_gdal_algorithm_utils import (
+from test_gdal_algorithm_utils import (
     wms_layer_1_1_1,
     wms_layer_1_3_0,
     wms_layer_1_3_0_frankfurt,
 )
+from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 testDataPath = os.path.join(TEST_DATA_DIR, "processing")
