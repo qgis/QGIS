@@ -27,6 +27,7 @@ from qgis.core import (
     QgsMessageLog,
     QgsProcessingModelAlgorithm,
     QgsProcessingProvider,
+    QgsProcessingUtils,
     QgsRuntimeProfiler,
 )
 from qgis.gui import QgsGui, QgsProcessingToolboxContextAction
@@ -39,7 +40,6 @@ from processing.modeler.EditModelAction import EditModelAction
 from processing.modeler.ExportModelAsPythonScriptAction import (
     ExportModelAsPythonScriptAction,
 )
-from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.OpenModelFromFileAction import OpenModelFromFileAction
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -80,9 +80,9 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
             ProcessingConfig.addSetting(
                 Setting(
                     self.name(),
-                    ModelerUtils.MODELS_FOLDER,
+                    "MODELS_FOLDER",
                     self.tr("Models folder", "ModelerAlgorithmProvider"),
-                    ModelerUtils.defaultModelsFolder(),
+                    QgsProcessingUtils.defaultModelFolder(),
                     valuetype=Setting.MULTIPLE_FOLDERS,
                 )
             )
@@ -106,7 +106,7 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         )
 
     def modelsFolder(self):
-        return ModelerUtils.modelsFolders()[0]
+        return QgsProcessingUtils.modelFolders()[0]
 
     def name(self):
         return self.tr("Models", "ModelerAlgorithmProvider")
@@ -129,7 +129,7 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
                 return
             self.isLoading = True
             self.algs = []
-            folders = ModelerUtils.modelsFolders()
+            folders = QgsProcessingUtils.modelFolders()
             for f in folders:
                 self.loadFromFolder(f)
             for a in self.algs:

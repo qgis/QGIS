@@ -31,6 +31,7 @@ from qgis.core import (
     QgsProcessingModelAlgorithm,
     QgsProcessingModelChildAlgorithm,
     QgsProcessingModelParameter,
+    QgsProcessingUtils,
     QgsProject,
     QgsSettings,
 )
@@ -53,7 +54,6 @@ from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.utils import iface
 
 from processing.gui.algorithm_widget import AlgorithmWidget
-from processing.modeler.ModelerUtils import ModelerUtils
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools.dataobjects import createContext
 
@@ -150,11 +150,11 @@ class ModelerDialog(QgsModelDesignerDialog):
             if self.model().sourceFilePath():
                 initial_path = Path(self.model().sourceFilePath())
             elif self.model().name():
-                initial_path = Path(ModelerUtils.modelsFolders()[0]) / (
+                initial_path = Path(QgsProcessingUtils.modelFolders()[0]) / (
                     self.model().name() + ".model3"
                 )
             else:
-                initial_path = Path(ModelerUtils.modelsFolders()[0])
+                initial_path = Path(QgsProcessingUtils.modelFolders()[0])
 
             filename, _ = QFileDialog.getSaveFileName(
                 self,
