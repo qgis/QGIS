@@ -38,7 +38,6 @@ from processing.script.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.DeleteScriptAction import DeleteScriptAction
 from processing.script.EditScriptAction import EditScriptAction
 from processing.script.OpenScriptFromFileAction import OpenScriptFromFileAction
-from processing.tools.system import userFolder
 
 
 class ScriptAlgorithmProvider(QgsProcessingProvider):
