@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsbox3d.h"
 #include "qgscoordinatetransform_p.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
@@ -926,6 +927,152 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 #endif
 #if PROJ_VERSION_MAJOR < 9 || ( PROJ_VERSION_MAJOR == 9 && PROJ_VERSION_MINOR < 7 )
   return legacyImplementation();
+#endif
+}
+
+QgsBox3D QgsCoordinateTransform::transformBox3D( const QgsBox3D &box, Qgis::TransformDirection direction ) const
+{
+  if ( !d->mIsValid || d->mShortCircuit || box.isNull() )
+    return box;
+
+#ifdef QGISDEBUG
+  if ( !mHasContext )
+  {
+    QgsDebugMsgLevel( u"No QgsCoordinateTransformContext context set for transform"_s, 4 );
+  }
+#endif
+
+  const double zMin = std::isnan( box.zMinimum() ) ? 0.0 : box.zMinimum();
+  const double zMax = std::isnan( box.zMaximum() ) ? 0.0 : box.zMaximum();
+
+  QgsScopedProjSilentLogger errorLogger;
+
+  // our implementation that should go away after PROJ version upgrade to at least 9.6
+  const auto legacy = [this, &box, zMin, zMax, direction]() {
+    constexpr int POINTS_PER_AXIS = 31;
+    const int nX = box.width() > 0 ? POINTS_PER_AXIS : 1;
+    const int nY = box.height() > 0 ? POINTS_PER_AXIS : 1;
+    const int nZ = zMax > zMin ? POINTS_PER_AXIS : 1;
+
+    std::vector< double > x;
+    std::vector< double > y;
+    std::vector< double > z;
+    const std::size_t pointCount = static_cast< std::size_t >( nX ) * static_cast< std::size_t >( nY ) * static_cast< std::size_t >( nZ );
+    x.reserve( pointCount );
+    y.reserve( pointCount );
+    z.reserve( pointCount );
+
+    for ( int i = 0; i < nX; ++i )
+    {
+      const double pointX = nX == 1 ? box.xMinimum() : box.xMinimum() + box.width() * i / ( nX - 1 );
+      for ( int j = 0; j < nY; ++j )
+      {
+        const double pointY = nY == 1 ? box.yMinimum() : box.yMinimum() + box.height() * j / ( nY - 1 );
+        for ( int k = 0; k < nZ; ++k )
+        {
+          const double pointZ = nZ == 1 ? zMin : zMin + ( zMax - zMin ) * k / ( nZ - 1 );
+          x.push_back( pointX );
+          y.push_back( pointY );
+          z.push_back( pointZ );
+        }
+      }
+    }
+
+    transformCoords( static_cast< int >( pointCount ), x.data(), y.data(), z.data(), direction );
+
+    QgsBox3D result;
+    result.setNull();
+    for ( std::size_t i = 0; i < pointCount; ++i )
+    {
+      if ( !std::isfinite( x[i] ) || !std::isfinite( y[i] ) || !std::isfinite( z[i] ) )
+        continue;
+
+      result.combineWith( x[i], y[i], z[i] );
+    }
+
+    if ( result.isNull() )
+    {
+      throw QgsCsException( QObject::tr( "Could not transform box to target CRS" ) );
+    }
+
+    QgsDebugMsgLevel( "Projected box: " + result.toString(), 4 );
+
+    return result;
+  };
+
+#if PROJ_VERSION_MAJOR < 9 || ( PROJ_VERSION_MAJOR == 9 && PROJ_VERSION_MINOR < 6 )
+  return legacy();
+#else
+
+  ProjData projData = d->threadLocalProjData();
+  PJ_CONTEXT *projContext = QgsProjContext::get();
+
+  double outXMin = 0;
+  double outYMin = 0;
+  double outZMin = 0;
+  double outXMax = 0;
+  double outYMax = 0;
+  double outZMax = 0;
+
+  constexpr int DENSIFY_POINTS = 30;
+
+  proj_errno_reset( projData );
+  int projResult = proj_trans_bounds_3D(
+    projContext,
+    projData,
+    ( direction == Qgis::TransformDirection::Forward && !d->mIsReversed ) || ( direction == Qgis::TransformDirection::Reverse && d->mIsReversed ) ? PJ_FWD : PJ_INV,
+    box.xMinimum(),
+    box.yMinimum(),
+    zMin,
+    box.xMaximum(),
+    box.yMaximum(),
+    zMax,
+    &outXMin,
+    &outYMin,
+    &outZMin,
+    &outXMax,
+    &outYMax,
+    &outZMax,
+    DENSIFY_POINTS
+  );
+
+  if (
+    ( projResult != 1 || !std::isfinite( outXMin ) || !std::isfinite( outXMax ) || !std::isfinite( outYMin ) || !std::isfinite( outYMax ) || !std::isfinite( outZMin ) || !std::isfinite( outZMax ) )
+    && ( d->mAvailableOpCount > 1 || d->mAvailableOpCount == -1 ) // only use fallbacks if more than one operation is possible -- otherwise we've already tried it and it failed
+  )
+  {
+    // fail #1 -- try with getting proj to auto-pick an appropriate coordinate operation for the points
+    if ( PJ *transform = d->threadLocalFallbackProjData() )
+    {
+      projResult = proj_trans_bounds_3D(
+        projContext,
+        transform,
+        ( direction == Qgis::TransformDirection::Forward && !d->mIsReversed ) || ( direction == Qgis::TransformDirection::Reverse && d->mIsReversed ) ? PJ_FWD : PJ_INV,
+        box.xMinimum(),
+        box.yMinimum(),
+        zMin,
+        box.xMaximum(),
+        box.yMaximum(),
+        zMax,
+        &outXMin,
+        &outYMin,
+        &outZMin,
+        &outXMax,
+        &outYMax,
+        &outZMax,
+        DENSIFY_POINTS
+      );
+    }
+  }
+
+  if ( projResult != 1 || !std::isfinite( outXMin ) || !std::isfinite( outXMax ) || !std::isfinite( outYMin ) || !std::isfinite( outYMax ) || !std::isfinite( outZMin ) || !std::isfinite( outZMax ) )
+  {
+    return legacy();
+  }
+
+  const QgsBox3D result( outXMin, outYMin, outZMin, outXMax, outYMax, outZMax );
+  QgsDebugMsgLevel( "Projected box: " + result.toString(), 4 );
+  return result;
 #endif
 }
 

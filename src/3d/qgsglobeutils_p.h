@@ -31,6 +31,7 @@
 #include "qgsbox3d.h"
 #include "qgschunknode.h"
 #include "qgsrectangle.h"
+#include "qgsvector3d.h"
 
 #define SIP_NO_FILE
 
@@ -39,6 +40,10 @@ class QgsCoordinateTransform;
 /**
  * \ingroup qgis_3d
  * \brief Utility functions for the quadtree fixed tilling scheme for globe.
+ *
+ * Level 0 covers the whole globe, level 1 splits it into east and west
+ * hemispheres, and from level 2 onwards a traditional quadtree tiling
+ * scheme is used (each tile is split into 4 subdivisions).
  */
 class QgsGlobeUtils
 {
@@ -47,13 +52,13 @@ class QgsGlobeUtils
     static QgsRectangle nodeIdToLonLatRect( QgsChunkNodeId id );
 
     //! Returns the id of the smallest tile that fully contains \a lonLatExtent
-    static QgsChunkNodeId tileIdForExtent( const QgsRectangle &lonLatExtent );
+    static QgsChunkNodeId findSamllestIdContainingExtent( const QgsRectangle &lonLatExtent );
 
-    //! Returns the ECEF world-space bounding box of the given tile
-    static QgsBox3D nodeIdToBox3D( QgsChunkNodeId id, const QgsCoordinateTransform &crsToLatLon, double radiusX, double radiusY, double radiusZ );
+    //! Returns the semi-axes of the ellipsoid of the globe CRS.
+    static QgsVector3D ellipsoidRadius( const QgsCoordinateTransform &globeCrsToLatLon );
 
-    //! Returns the XY bounding rectangle resulting from transforming the corners of \a box3D through \a transform
-    static QgsRectangle box3DTransformedExtent( const QgsBox3D &box3D, const QgsCoordinateTransform &transform, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward );
+    //! Returns the ECEF world-space bounding box of the tile with the given \a id.
+    static QgsBox3D nodeIdToBox3D( QgsChunkNodeId id, const QgsCoordinateTransform &globeCrsToLatLon );
 };
 
 /// @endcond

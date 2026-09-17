@@ -96,7 +96,14 @@ void QgsVectorLayerChunkLoader::start()
     QgsRectangle filterRect;
     if ( layer->crs().type() == Qgis::CrsType::Geocentric )
     {
-      filterRect = QgsGlobeUtils::box3DTransformedExtent( node->box3D(), layerToRenderCrs, Qgis::TransformDirection::Reverse );
+      try
+      {
+        filterRect = layerToRenderCrs.transformBox3D( node->box3D(), Qgis::TransformDirection::Reverse ).toRectangle();
+      }
+      catch ( const QgsCsException & )
+      {
+        QgsDebugError( u"Error transforming node box3D to layer CRS"_s );
+      }
     }
     else
     {
@@ -248,9 +255,7 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
 
     try
     {
-      mRadiusX = mCrsToLatLon.transform( QgsVector3D( 0, 0, 0 ), Qgis::TransformDirection::Reverse ).x();
-      mRadiusY = mCrsToLatLon.transform( QgsVector3D( 90, 0, 0 ), Qgis::TransformDirection::Reverse ).y();
-      mRadiusZ = mCrsToLatLon.transform( QgsVector3D( 0, 90, 0 ), Qgis::TransformDirection::Reverse ).z();
+      mRadius = QgsGlobeUtils::ellipsoidRadius( mCrsToLatLon );
     }
     catch ( QgsCsException &e )
     {
@@ -264,7 +269,14 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
     {
       QgsCoordinateTransform layerToLatLon( mLayer->crs(), geographicCrs, context.transformContext() );
       layerToLatLon.setBallparkTransformsAreAppropriate( true );
-      layerExtentLonLat = QgsGlobeUtils::box3DTransformedExtent( mLayer->extent3D(), layerToLatLon );
+      try
+      {
+        layerExtentLonLat = layerToLatLon.transformBox3D( mLayer->extent3D() ).toRectangle();
+      }
+      catch ( const QgsCsException &e )
+      {
+        QgsDebugError( u"Error transforming layer extent to lat/lon: %1"_s.arg( e.what() ) );
+      }
     }
     else
     {
@@ -277,9 +289,17 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
       layerExtentLonLat = layerExtentLonLat.intersect( QgsRectangle( -180, -90, 180, 90 ) );
     }
 
-    mRootNodeId = QgsGlobeUtils::tileIdForExtent( layerExtentLonLat );
+    mRootNodeId = QgsGlobeUtils::findSamllestIdContainingExtent( layerExtentLonLat );
 
-    const QgsBox3D rootBox3D = QgsGlobeUtils::nodeIdToBox3D( mRootNodeId, mCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ );
+    QgsBox3D rootBox3D;
+    if ( mRootNodeId.d == 0 )
+      rootBox3D = QgsBox3D( -mRadius.x(), -mRadius.y(), -mRadius.z(), mRadius.x(), mRadius.y(), mRadius.z() );
+    else if ( mRootNodeId.d == 1 )
+      rootBox3D = mRootNodeId.x == 1 ? QgsBox3D( -mRadius.x(), 0, -mRadius.z(), mRadius.x(), mRadius.y(), mRadius.z() )
+                                     : QgsBox3D( -mRadius.x(), -mRadius.y(), -mRadius.z(), mRadius.x(), 0, mRadius.z() );
+    else
+      rootBox3D = QgsGlobeUtils::nodeIdToBox3D( mRootNodeId, mCrsToLatLon );
+
     const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) * QgsVectorLayer3DTilingSettings::tileGeometryErrorRatio() );
     setupQuadtree( rootBox3D, rootError );
     return;
@@ -338,8 +358,8 @@ QVector<QgsChunkNode *> QgsVectorLayerChunkLoaderFactory::createChildren( QgsChu
   {
     const QgsChunkNodeId westId( 1, 0, 0 );
     const QgsChunkNodeId eastId( 1, 1, 0 );
-    children << new QgsChunkNode( westId, QgsGlobeUtils::nodeIdToBox3D( westId, mCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), childError, node );
-    children << new QgsChunkNode( eastId, QgsGlobeUtils::nodeIdToBox3D( eastId, mCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), childError, node );
+    children << new QgsChunkNode( westId, QgsBox3D( -mRadius.x(), -mRadius.y(), -mRadius.z(), mRadius.x(), 0, mRadius.z() ), childError, node );
+    children << new QgsChunkNode( eastId, QgsBox3D( -mRadius.x(), 0, -mRadius.z(), mRadius.x(), mRadius.y(), mRadius.z() ), childError, node );
     return children;
   }
 
@@ -347,7 +367,7 @@ QVector<QgsChunkNode *> QgsVectorLayerChunkLoaderFactory::createChildren( QgsChu
   {
     const int dx = i & 1, dy = !!( i & 2 );
     const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy );
-    children << new QgsChunkNode( childId, QgsGlobeUtils::nodeIdToBox3D( childId, mCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), childError, node );
+    children << new QgsChunkNode( childId, QgsGlobeUtils::nodeIdToBox3D( childId, mCrsToLatLon ), childError, node );
   }
   return children;
 }

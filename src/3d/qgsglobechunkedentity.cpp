@@ -286,9 +286,7 @@ QgsGlobeChunkLoaderFactory::QgsGlobeChunkLoaderFactory( Qgs3DMapSettings *mapSet
 
   mGlobeCrsToLatLon = QgsCoordinateTransform( mapSettings->crs(), mapSettings->crs().toGeographicCrs(), mapSettings->transformContext() );
 
-  mRadiusX = mGlobeCrsToLatLon.transform( QgsVector3D( 0, 0, 0 ), Qgis::TransformDirection::Reverse ).x();
-  mRadiusY = mGlobeCrsToLatLon.transform( QgsVector3D( 90, 0, 0 ), Qgis::TransformDirection::Reverse ).y();
-  mRadiusZ = mGlobeCrsToLatLon.transform( QgsVector3D( 0, 90, 0 ), Qgis::TransformDirection::Reverse ).z();
+  mRadius = QgsGlobeUtils::ellipsoidRadius( mGlobeCrsToLatLon );
 }
 
 QgsGlobeChunkLoaderFactory::~QgsGlobeChunkLoaderFactory()
@@ -302,7 +300,7 @@ QgsChunkLoader *QgsGlobeChunkLoaderFactory::createChunkLoader( QgsChunkNode *nod
 QgsChunkNode *QgsGlobeChunkLoaderFactory::createRootNode() const
 {
   const QgsChunkNodeId rootId( 0, 0, 0, 0 );
-  const QgsBox3D rootNodeBox3D = QgsGlobeUtils::nodeIdToBox3D( rootId, mGlobeCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ );
+  const QgsBox3D rootNodeBox3D( -mRadius.x(), -mRadius.y(), -mRadius.z(), mRadius.x(), mRadius.y(), mRadius.z() );
   // use very high error to force immediate switch to level 1 (two hemispheres)
   QgsChunkNode *node = new QgsChunkNode( rootId, rootNodeBox3D, 999'999 );
   return node;
@@ -321,8 +319,8 @@ QVector<QgsChunkNode *> QgsGlobeChunkLoaderFactory::createChildren( QgsChunkNode
     const QgsChunkNodeId eastId( 1, 1, 0, 0 );
 
     // two children: western and eastern hemisphere
-    QgsChunkNode *west = new QgsChunkNode( westId, QgsGlobeUtils::nodeIdToBox3D( westId, mGlobeCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), error, node );
-    QgsChunkNode *east = new QgsChunkNode( eastId, QgsGlobeUtils::nodeIdToBox3D( eastId, mGlobeCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), error, node );
+    QgsChunkNode *west = new QgsChunkNode( westId, QgsBox3D( -mRadius.x(), -mRadius.y(), -mRadius.z(), mRadius.x(), 0, mRadius.z() ), error, node );
+    QgsChunkNode *east = new QgsChunkNode( eastId, QgsBox3D( -mRadius.x(), 0, -mRadius.z(), mRadius.x(), mRadius.y(), mRadius.z() ), error, node );
     children << west << east;
   }
   else if ( node->error() > mMapSettings->terrainSettings()->maximumGroundError() )
@@ -342,10 +340,10 @@ QVector<QgsChunkNode *> QgsGlobeChunkLoaderFactory::createChildren( QgsChunkNode
     float error = static_cast<float>( std::max( d1, d2 ) ) / static_cast<float>( mMapSettings->terrainSettings()->mapTileResolution() );
 
     children
-      << new QgsChunkNode( cid1, QgsGlobeUtils::nodeIdToBox3D( cid1, mGlobeCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), error, node )
-      << new QgsChunkNode( cid2, QgsGlobeUtils::nodeIdToBox3D( cid2, mGlobeCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), error, node )
-      << new QgsChunkNode( cid3, QgsGlobeUtils::nodeIdToBox3D( cid3, mGlobeCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), error, node )
-      << new QgsChunkNode( cid4, QgsGlobeUtils::nodeIdToBox3D( cid4, mGlobeCrsToLatLon, mRadiusX, mRadiusY, mRadiusZ ), error, node );
+      << new QgsChunkNode( cid1, QgsGlobeUtils::nodeIdToBox3D( cid1, mGlobeCrsToLatLon ), error, node )
+      << new QgsChunkNode( cid2, QgsGlobeUtils::nodeIdToBox3D( cid2, mGlobeCrsToLatLon ), error, node )
+      << new QgsChunkNode( cid3, QgsGlobeUtils::nodeIdToBox3D( cid3, mGlobeCrsToLatLon ), error, node )
+      << new QgsChunkNode( cid4, QgsGlobeUtils::nodeIdToBox3D( cid4, mGlobeCrsToLatLon ), error, node );
   }
 
   return children;
