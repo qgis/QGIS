@@ -656,7 +656,25 @@ layer's renderer will be used.
 .. versionadded:: 3.14
 %End
 
+    void setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex );
+%Docstring
+Sets the static scalar dataset index that is rendered if the temporal
+properties is not active
 
+:param staticScalarDatasetIndex: the scalar data set index
+
+.. versionadded:: 3.14
+%End
+
+    void setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex );
+%Docstring
+Sets the static vector dataset index that is rendered if the temporal
+properties is not active
+
+:param staticVectorDatasetIndex: the vector data set index
+
+.. versionadded:: 3.14
+%End
 
     QgsMeshDatasetIndex staticScalarDatasetIndex( int group = -1 ) const;
 %Docstring
