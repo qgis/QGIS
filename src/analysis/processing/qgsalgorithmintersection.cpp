@@ -36,6 +36,11 @@ QString QgsIntersectionAlgorithm::displayName() const
   return QObject::tr( "Intersection" );
 }
 
+QStringList QgsIntersectionAlgorithm::tags() const
+{
+  return QObject::tr( "intersect,intersection,overlap" ).split( ',' );
+}
+
 QString QgsIntersectionAlgorithm::group() const
 {
   return QObject::tr( "Vector overlay" );

@@ -36,6 +36,7 @@ class QgsIntersectionAlgorithm : public QgsProcessingAlgorithm
     QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmIntersect.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
+    QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
