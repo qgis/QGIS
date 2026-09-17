@@ -52,7 +52,7 @@ class QgsGlobeUtils
     static QgsRectangle nodeIdToLonLatRect( QgsChunkNodeId id );
 
     //! Returns the id of the smallest tile that fully contains \a lonLatExtent
-    static QgsChunkNodeId findSamllestIdContainingExtent( const QgsRectangle &lonLatExtent );
+    static QgsChunkNodeId findSmallestIdContainingExtent( const QgsRectangle &lonLatExtent );
 
     //! Returns the semi-axes of the ellipsoid of the globe CRS.
     static QgsVector3D ellipsoidRadius( const QgsCoordinateTransform &globeCrsToLatLon );
