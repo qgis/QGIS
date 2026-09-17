@@ -941,7 +941,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   config.setIntersectionSnapping( false ); // only snap to layers
   config.clearIndividualLayerSettings();
 
-  typedef QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> SettingsHashMap;
+  typedef QHash<QgsMapLayer *, QgsSnappingConfig::IndividualLayerSettings> SettingsHashMap;
   SettingsHashMap oldLayerSettings = oldConfig.individualLayerSettings();
 
   // if there is a current layer, it should have priority over other layers

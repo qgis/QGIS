@@ -64,10 +64,10 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     }
     else if ( match.hasVertex() )
     {
-      if ( match.layer() )
-        iconType = QgsVertexMarker::ICON_BOX; // vertex snap
+      if ( match.mapLayer() )
+        iconType = QgsVertexMarker::ICON_BOX; // vertex snap (any snappable layer, incl. annotation)
       else
-        iconType = QgsVertexMarker::ICON_X; // intersection snap
+        iconType = QgsVertexMarker::ICON_X; // intersection snap (no layer)
     }
     else if ( match.hasMiddleSegment() )
     {
@@ -96,7 +96,7 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
       const QPoint ptCanvas = mSnappingMarker->toCanvasCoordinates( match.point() ).toPoint();
       const QPoint ptGlobal = mCanvas->mapToGlobal( ptCanvas );
       const QRect rect( ptCanvas.x(), ptCanvas.y(), 1, 1 ); // area where is the tooltip valid
-      const QString layerName = match.layer() ? match.layer()->name() : QString();
+      const QString layerName = match.mapLayer() ? match.mapLayer()->name() : QString();
       QToolTip::showText( ptGlobal, layerName, mCanvas, rect );
     }
   }
