@@ -289,6 +289,7 @@ using namespace Qt::StringLiterals;
 #include "qgsalgorithmsplitlinesbylength.h"
 #include "qgsalgorithmsplitvectorlayer.h"
 #include "qgsalgorithmsplitwithlines.h"
+#include "qgsalgorithmstatisticsbycategories.h"
 #include "qgsalgorithmstdbscanclustering.h"
 #include "qgsalgorithmstringconcatenation.h"
 #include "qgsalgorithmsubdivide.h"
@@ -692,6 +693,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSplitLinesByLengthAlgorithm() );
   addAlgorithm( new QgsSplitVectorLayerAlgorithm() );
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
+  addAlgorithm( new QgsStatisticsByCategoriesAlgorithm() );
   addAlgorithm( new QgsStDbscanClusteringAlgorithm() );
   addAlgorithm( new QgsStrahlerOrderFromDemAlgorithm() );
   addAlgorithm( new QgsStrahlerOrderFromFlowDirectionAlgorithm() );

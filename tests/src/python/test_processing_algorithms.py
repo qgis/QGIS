@@ -153,7 +153,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 "qgis:relief",
                 "qgis:setstyleforrasterlayer",
                 "qgis:setstyleforvectorlayer",
-                "qgis:statisticsbycategories",
                 "qgis:variabledistancebuffer",
             ):
                 self.assertTrue(
