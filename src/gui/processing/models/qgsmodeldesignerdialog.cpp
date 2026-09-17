@@ -97,6 +97,10 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 {
   setupUi( this );
 
+  mToolbar->setIconSize( QgsGui::iconSize() );
+  setStyleSheet( QgsGui::applicationStyleSheet() );
+  connect( QgsGui::instance(), &QgsGui::applicationStyleSheetChanged, this, &QgsLayoutDesignerDialog::setStyleSheet );
+
   mLayerStore.setProject( QgsProject::instance() );
 
   mScreenHelper = new QgsScreenHelper( this );
