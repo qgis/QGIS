@@ -22,12 +22,15 @@ __copyright__ = "(C) 201, Victor Olaya"
 import os
 import shutil
 
-from qgis.core import QgsApplication, QgsProcessingModelAlgorithm, QgsSettings
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingModelAlgorithm,
+    QgsProcessingUtils,
+    QgsSettings,
+)
 from qgis.gui import QgsProcessingToolboxAction
 from qgis.PyQt.QtCore import QCoreApplication, QDir, QFileInfo
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-
-from processing.modeler.ModelerUtils import ModelerUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -89,7 +92,7 @@ class AddModelFromFileAction(QgsProcessingToolboxAction):
                 return
 
             destFilename = os.path.join(
-                ModelerUtils.modelsFolders()[0], os.path.basename(filename)
+                QgsProcessingUtils.modelFolders()[0], os.path.basename(filename)
             )
             if os.path.exists(destFilename):
                 reply = QMessageBox.question(
