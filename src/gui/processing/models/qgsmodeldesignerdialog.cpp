@@ -41,6 +41,7 @@
 #include "qgsprocessingmodelfeedback.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingparametertype.h"
+#include "qgsprocessingprojectmodelprovider.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsproject.h"
@@ -168,6 +169,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionExportPython, &QAction::triggered, this, &QgsModelDesignerDialog::exportAsPython );
   connect( mActionSave, &QAction::triggered, this, [this] { saveModel( false ); } );
   connect( mActionSaveAs, &QAction::triggered, this, [this] { saveModel( true ); } );
+  connect( mActionSaveInProject, &QAction::triggered, this, &QgsModelDesignerDialog::saveInProject );
   connect( mActionDeleteComponents, &QAction::triggered, this, &QgsModelDesignerDialog::deleteSelected );
   connect( mActionSnapSelected, &QAction::triggered, mView, &QgsModelGraphicsView::snapSelected );
   connect( mActionValidate, &QAction::triggered, this, &QgsModelDesignerDialog::validate );
@@ -718,6 +720,27 @@ void QgsModelDesignerDialog::setLastRunResult( const QgsProcessingModelResult &r
 void QgsModelDesignerDialog::setModelName( const QString &name )
 {
   mNameEdit->setText( name );
+}
+
+void QgsModelDesignerDialog::saveInProject()
+{
+  if ( !validateSave( SaveAction::SaveInProject ) )
+    return;
+
+  mModel->setSourceFilePath( QString() );
+
+  auto projectProvider = qobject_cast< QgsProcessingProjectModelProvider * >( QgsApplication::processingRegistry()->providerById( QgsProcessing::PROJECT_PROVIDER_ID ) );
+  if ( !projectProvider )
+    return; // should not happen
+
+  projectProvider->addModel( *mModel );
+
+  emit modelUpdated();
+
+  mMessageBar->pushMessage( QString(), tr( "Model was saved inside current project" ), Qgis::MessageLevel::Success, 5 );
+
+  setDirty( false );
+  QgsProject::instance()->setDirty( true );
 }
 
 void QgsModelDesignerDialog::zoomIn()
