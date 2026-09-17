@@ -145,7 +145,6 @@ retrieve a Processing context for the dialog when required.
 
 
     QToolBar *toolbar();
-    QAction *actionOpen();
     QAction *actionRun();
     QgsMessageBar *messageBar();
 

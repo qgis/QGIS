@@ -167,6 +167,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionExportPdf, &QAction::triggered, this, &QgsModelDesignerDialog::exportToPdf );
   connect( mActionExportSvg, &QAction::triggered, this, &QgsModelDesignerDialog::exportToSvg );
   connect( mActionExportPython, &QAction::triggered, this, &QgsModelDesignerDialog::exportAsPython );
+  connect( mActionOpen, &QAction::triggered, this, &QgsModelDesignerDialog::openModel );
   connect( mActionSave, &QAction::triggered, this, [this] { saveModel( false ); } );
   connect( mActionSaveAs, &QAction::triggered, this, [this] { saveModel( true ); } );
   connect( mActionSaveInProject, &QAction::triggered, this, &QgsModelDesignerDialog::saveInProject );
@@ -864,6 +865,21 @@ void QgsModelDesignerDialog::newModel()
   auto alg = std::make_unique<QgsProcessingModelAlgorithm>();
   alg->setProvider( QgsApplication::processingRegistry()->providerById( u"model"_s ) );
   setModel( alg.release() );
+}
+
+void QgsModelDesignerDialog::openModel()
+{
+  if ( !checkForUnsavedChanges() )
+    return;
+
+  QgsSettings settings;
+  const QString lastModelDir = settings.value( u"Processing/lastModelsDir"_s, QDir::homePath() ).toString();
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Open Model" ), lastModelDir, tr( "Processing models (*.model3 *.MODEL3)" ) );
+  if ( !fileName.isEmpty() )
+  {
+    settings.setValue( u"Processing/lastModelsDir"_s, QFileInfo( fileName ).absoluteDir().absolutePath() );
+    loadModel( fileName );
+  }
 }
 
 void QgsModelDesignerDialog::exportToImage()
