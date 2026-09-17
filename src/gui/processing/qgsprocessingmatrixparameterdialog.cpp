@@ -57,7 +57,7 @@ QgsProcessingMatrixParameterPanelWidget::QgsProcessingMatrixParameterPanelWidget
     mTblView->setCurrentIndex( QModelIndex() );
 
     if ( !mWasCanceled )
-      emit widgetChanged();
+      emit changed();
   } );
 
   connect( mButtonAdd, &QPushButton::clicked, this, &QgsProcessingMatrixParameterPanelWidget::addRow );
@@ -208,7 +208,7 @@ void QgsProcessingMatrixParameterPanel::showDialog()
 
     panel->openPanel( mPanelWidget );
 
-    connect( mPanelWidget, &QgsPanelWidget::widgetChanged, this, [this] { setValue( mPanelWidget->table() ); } );
+    connect( mPanelWidget, &QgsPanelWidget::changed, this, [this] { setValue( mPanelWidget->table() ); } );
   }
 }
 

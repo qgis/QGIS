@@ -58,11 +58,6 @@ class GUI_EXPORT QgsLimitedRandomColorRampWidget : public QgsPanelWidget, privat
      */
     void setRamp( const QgsLimitedRandomColorRamp &ramp );
 
-  signals:
-
-    //! Emitted when the dialog settings change
-    void changed();
-
   public slots:
 
     //! Sets the number of colors to create in the ramp

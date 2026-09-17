@@ -226,7 +226,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
     emit symbolModified();
   } );
   connect( btnDuplicate, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::duplicateLayer );
-  connect( this, &QgsSymbolSelectorWidget::symbolModified, this, &QgsPanelWidget::widgetChanged );
+  connect( this, &QgsSymbolSelectorWidget::symbolModified, this, &QgsPanelWidget::changed );
 
   updateLockButtonIcon();
 

@@ -105,7 +105,7 @@ void QgsElevationShadingRendererSettingsWidget::onChanged()
   mDirectionalLightWidget->setEnableAzimuth( !mHillshadingMultidirCheckBox->isChecked() );
 
   if ( !mBlockUpdates )
-    emit widgetChanged();
+    emit changed();
 }
 
 QgsElevationShadingRendererSettingsWidgetFactory::QgsElevationShadingRendererSettingsWidgetFactory( QObject *parent )

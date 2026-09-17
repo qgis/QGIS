@@ -58,11 +58,6 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
      */
     void setRamp( const QgsPresetSchemeColorRamp &ramp );
 
-  signals:
-
-    //! Emitted when the dialog settings change
-    void changed();
-
   private slots:
     void setColors();
 
