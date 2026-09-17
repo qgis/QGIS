@@ -138,9 +138,6 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoader
     //! Returns whether the terrain generator is valid
     bool isValid() const;
 
-    //! Returns pointer to the generator of textures for terrain tiles
-    QgsTerrainTextureGenerator *textureGenerator() { return mTextureGenerator.get(); }
-
     QFuture<QgsChunkLoaderResult> updateChunk( QgsChunkNode *node ) override;
 
   signals:
@@ -160,13 +157,11 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoader
     //! Asynchronously loads resources for creating texture
     QFuture<TerrainTextureResources> loadTextureResources( QgsChunkNode *node );
     //! Creates a new texture that is linked to the entity
-    Qt3DRender::QTexture2D *createTexture( QgsTerrainTileEntity *entity, const QgsMaterialContext &context, const TerrainTextureResources &resources ) const;
+    Qt3DRender::QTexture2D *applyTexture( QgsTerrainTileEntity *entity, const QgsMaterialContext &context, const TerrainTextureResources &resources ) const;
     //! Creates material component for the entity with the rendered map as a texture
-    void createTextureComponent(
+    void applyMaterial(
       const TerrainTextureResources &resources, QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial, bool useTexture, const Qgs3DRenderContext &context
     );
-
-    std::unique_ptr<QgsTerrainTextureGenerator> mTextureGenerator;
 
     QgsTilingScheme mTerrainTilingScheme; //!< Tiling scheme of the terrain
     QgsTerrainEntity *mTerrain = nullptr;

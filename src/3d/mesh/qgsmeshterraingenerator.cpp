@@ -47,7 +47,7 @@ QFuture<QgsChunkLoaderResult> QgsMeshTerrainGenerator::loadChunk( QgsChunkNode *
       Qgs3DRenderContext context = Qgs3DRenderContext::fromMapSettings( mTerrain->mapSettings() );
       QgsMesh3DTerrainTileEntity *entity = new QgsMesh3DTerrainTileEntity( context, mTriangularMesh, mSymbol.get(), node->tileId(), parent );
       entity->build();
-      createTexture( entity, QgsMaterialContext::fromRenderContext( context ), resources );
+      applyTexture( entity, QgsMaterialContext::fromRenderContext( context ), resources );
 
       return entity;
     } };

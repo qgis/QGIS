@@ -32,6 +32,7 @@
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeaturerequest.h"
 #include "qgsvector3d.h"
 
 #define SIP_NO_FILE
@@ -48,6 +49,7 @@ namespace Qt3DCore
 }
 
 #include <QFutureWatcher>
+#include <QMutex>
 
 
 /**
@@ -69,21 +71,38 @@ class QgsVectorLayerChunkLoader : public QgsQuadtreeChunkLoader
     QgsChunkNode *createRootNode() const override;
     QFuture<QVector<QgsChunkNode *>> createChildren( QgsChunkNode *node ) override;
 
-    //! Returns the extent of the quadtree node with the given \a id, in a fixed tilling scheme
-    static QgsRectangle nodeIdToLonLatRect( QgsChunkNodeId id );
-    //! Returns the id of the smallest tile that fully contains \a lonLatExtent
-    static QgsChunkNodeId rootTileIdForExtent( const QgsRectangle &lonLatExtent );
-    //! Returns the exact ECEF world-space bounding box of the quadtree tile with the given \a id
-    QgsBox3D tileIdToBox3D( QgsChunkNodeId id ) const;
-    //! Returns the XY bounding rectangle of a 3d bounding box
-    static QgsRectangle box3DTransformedExtent( const QgsBox3D &box3D, const QgsCoordinateTransform &transform, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward );
+  private:
+    struct NodeIsLeafMap
+    {
+        QHash< QString, bool > map;
+        QMutex mutex;
+    };
+
+    struct ChunkData
+    {
+        std::shared_ptr<QgsFeature3DHandler> handler;
+        Qgs3DRenderContext renderCtx;
+    };
+
+    static void loadChunkInWorker(
+      QPromise<ChunkData> &promise,
+      std::shared_ptr<QgsFeature3DHandler> handler,
+      Qgs3DRenderContext renderCtx,
+      const std::unique_ptr<QgsVectorLayerFeatureSource> &source,
+      const QgsFeatureRequest &req,
+      QgsChunkNode *node,
+      int maxFeatures,
+      const std::shared_ptr<NodeIsLeafMap> &nodesAreLeafs,
+      QgsCoordinateTransform layerToRenderCrs,
+      bool isGeocentric
+    );
+
+    Qt3DCore::QEntity *createEntity( QgsChunkNode *node, ChunkData data, Qt3DCore::QEntity *parent );
 
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
-    //! Contains loaded nodes and whether they are leaf nodes or not
-    QHash< QString, bool > mNodesAreLeafs;
-    QMutex mNodesAreLeafsMutex;
+    std::shared_ptr<NodeIsLeafMap> mNodesAreLeafs;
     int mMaxFeatures;
 
     bool mIsGeocentric = false;
@@ -93,6 +112,8 @@ class QgsVectorLayerChunkLoader : public QgsQuadtreeChunkLoader
     QgsCoordinateTransform mCrsToLatLon;
 
     QgsVector3D mRadius;
+
+    friend class QgsVectorLayerChunkedEntity;
 };
 
 
