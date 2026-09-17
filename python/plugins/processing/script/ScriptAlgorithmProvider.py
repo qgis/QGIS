@@ -28,9 +28,9 @@ from qgis.core import (
     QgsProcessingProvider,
     QgsRuntimeProfiler,
 )
+from qgis.gui import QgsGui
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.gui.ProviderActions import ProviderActions, ProviderContextMenuActions
 from processing.script import ScriptUtils
 from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
 from processing.script.AddScriptFromTemplateAction import AddScriptFromTemplateAction
@@ -67,10 +67,15 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
                 )
             )
 
-            ProviderActions.registerProviderActions(self, self.actions)
-            ProviderContextMenuActions.registerProviderContextMenuActions(
-                self.contextMenuActions
-            )
+            for action in self.actions:
+                QgsGui.processingGuiRegistry().registerProviderToolboxAction(
+                    self.id(), action
+                )
+
+            for action in self.contextMenuActions:
+                QgsGui.processingGuiRegistry().registerProviderToolboxContextAction(
+                    self.id(), action
+                )
 
             ProcessingConfig.readSettings()
             self.refreshAlgorithms()
@@ -80,9 +85,9 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
     def unload(self):
         ProcessingConfig.removeSetting(ScriptUtils.SCRIPTS_FOLDERS)
 
-        ProviderActions.deregisterProviderActions(self)
-        ProviderContextMenuActions.deregisterProviderContextMenuActions(
-            self.contextMenuActions
+        QgsGui.processingGuiRegistry().deregisterProviderToolboxActions(self.id())
+        QgsGui.processingGuiRegistry().deregisterProviderToolboxContextActions(
+            self.id()
         )
 
     def icon(self):
