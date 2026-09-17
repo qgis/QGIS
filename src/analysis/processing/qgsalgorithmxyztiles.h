@@ -19,18 +19,29 @@
 #define QGSALGORITHMXYZTILES_H
 
 #include <atomic>
+#include <memory>
 
 #include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgpkgtiles.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmbtiles.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
+#include "qgsrectangle.h"
 #include "qobjectuniqueptr.h"
+
+#include <QString>
+#include <QThreadPool>
 
 #define SIP_NO_FILE
 
+using namespace Qt::StringLiterals;
+
+
 ///@cond PRIVATE
 
-class PendingTilesToWriteQueue;
+template<typename T> class PendingTilesToWriteQueue;
 
 struct Tile
 {
@@ -47,15 +58,14 @@ struct Tile
 
 struct MetaTile
 {
-    MetaTile() {}
+    MetaTile() = default;
 
-    void addTile( const int row, const int col, Tile tileToAdd );
-
-    QgsRectangle extent() const;
+    void addTile( const int row, const int col, Tile tileToAdd, const QgsRectangle &extent );
 
     QMap<QPair<int, int>, Tile> tiles;
     int rows = 0;
     int cols = 0;
+    QgsRectangle mExtent;
 };
 
 /**
@@ -74,6 +84,11 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
      */
     void createCommonParameters();
 
+    /**
+     * Creates tile matrix and CRS parameters (target CRS, zoom 0 extent, zoom 0 matrix width/height)
+     */
+    void createTileMatrixParameters();
+
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     void checkLayersUsagePolicy( QgsProcessingFeedback *feedback );
@@ -84,10 +99,14 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
 
     std::optional<QgsMapSettings> mapSettingsForTile( const MetaTile &metaTile ) const;
 
-    QgsRectangle mExtent;
+    static constexpr double MERC_MAX = 20037508.342789244;
+
     QColor mBackgroundColor;
     int mMinZoom = 12;
     int mMaxZoom = 12;
+    QList<QgsTileExtentMaxZoomRegion> mMaxZoomRegions;
+    int mMaxZoomLimitIncludingOverrides = 0;
+
     int mDpi = 96;
     bool mAntialias = true;
     int mJpgQuality = 75;
@@ -101,7 +120,12 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QList<QgsMapLayer *> mLayers;
     QgsRectangle mWgs84Extent;
     QObjectUniquePtr<QObject> mJobOwner = nullptr;
-    std::unique_ptr<QThreadPool> mPostProcessingPool;
+
+    QgsCoordinateReferenceSystem mTargetCrs = QgsCoordinateReferenceSystem( u"EPSG:3857"_s );
+    QgsRectangle mTileMatrixSetExtent;
+    QgsRectangle mTileGenerationRegion;
+    int mZ0MatrixWidth = 1;
+    int mZ0MatrixHeight = 1;
 
     long long mTotalMetaTiles = 0;
     std::atomic<long long> mProcessedMetaTiles { 0 };
@@ -114,6 +138,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QList<MetaTile> mMetaTiles;
     QMap<QgsMapRendererSequentialJob *, MetaTile> mRendererJobs;
     Qgis::ScaleCalculationMethod mScaleMethod = Qgis::ScaleCalculationMethod::HorizontalMiddle;
+    std::unique_ptr<QThreadPool> mPostProcessingPool;
 };
 
 
@@ -129,6 +154,7 @@ class QgsXyzTilesDirectoryAlgorithm : public QgsXyzTilesBaseAlgorithm
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsXyzTilesDirectoryAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -153,17 +179,42 @@ class QgsXyzTilesMbtilesAlgorithm : public QgsXyzTilesBaseAlgorithm
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
+    QString shortDescription() const override;
     QString shortHelpString() const override;
     QgsXyzTilesMbtilesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
     void processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback ) override;
 
   private:
     std::unique_ptr<QgsMbTiles> mMbtilesWriter;
-    PendingTilesToWriteQueue *mWriteQueue = nullptr;
+    PendingTilesToWriteQueue<QgsMbTiles::TileData> *mWriteQueue = nullptr;
+    void doExport( QgsProcessingFeedback *feedback );
+};
+
+/**
+ * Native GeoPackage raster tiles algorithm.
+ */
+class QgsXyzTilesGpkgAlgorithm : public QgsXyzTilesBaseAlgorithm
+{
+  public:
+    QgsXyzTilesGpkgAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString shortDescription() const override;
+    QString shortHelpString() const override;
+    QgsXyzTilesGpkgAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    void processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    std::unique_ptr<QgsGeoPackageTiles> mGpkgWriter;
+    PendingTilesToWriteQueue<QgsGeoPackageTiles::TileData> *mWriteQueue = nullptr;
     void doExport( QgsProcessingFeedback *feedback );
 };
 

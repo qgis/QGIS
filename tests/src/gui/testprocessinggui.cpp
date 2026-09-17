@@ -342,6 +342,8 @@ class TestProcessingGui : public QgsTest
     void testInterpolationSourceWrapper();
     void testInterpolationPixelSizeWidget();
     void testInterpolationPixelSizeWrapper();
+    void testTileExtentMaxZoomWidget();
+    void testTileExtentMaxZoomWrapper();
 
   private:
     QString mTempDir;
@@ -12607,6 +12609,164 @@ void TestProcessingGui::testInterpolationPixelSizeWrapper()
 
     w = wrapperDefault.createWrappedWidget( context );
     QCOMPARE( wrapperDefault.parameterValue().toDouble(), 55.0 );
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( Qgis::ProcessingMode::Standard );
+
+  // batch wrapper
+  testWrapper( Qgis::ProcessingMode::Batch );
+
+  // modeler wrapper
+  testWrapper( Qgis::ProcessingMode::Modeler );
+}
+
+void TestProcessingGui::testTileExtentMaxZoomWidget()
+{
+  QgsProcessingParameterTileExtentMaxZoomList param( u"name"_s );
+  QgsTileExtentMaxZoomWidget widget( &param );
+  QSignalSpy changedSpy( &widget, &QgsTileExtentMaxZoomWidget::valueChanged );
+
+  QgsTileExtentMaxZoomRegion region1;
+  region1.extent = QgsReferencedRectangle( QgsRectangle( 1, 2, 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  region1.maxZoom = 12;
+  QgsTileExtentMaxZoomRegion region2;
+  region2.extent = QgsReferencedRectangle( QgsRectangle( 10, 20, 30, 40 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
+  region2.maxZoom = 14;
+
+  widget.setRegions( { region1, region2 } );
+  QCOMPARE( changedSpy.size(), 1 );
+
+  QCOMPARE( widget.regions().size(), 2 );
+  QCOMPARE( widget.regions().at( 0 ).extent, region1.extent );
+  QCOMPARE( widget.regions().at( 0 ).maxZoom, region1.maxZoom );
+  QCOMPARE( widget.regions().at( 1 ).extent, region2.extent );
+  QCOMPARE( widget.regions().at( 1 ).maxZoom, region2.maxZoom );
+
+  widget.setRegions( { region2 } );
+  QCOMPARE( changedSpy.size(), 2 );
+
+  QCOMPARE( widget.regions().size(), 1 );
+  QCOMPARE( widget.regions().at( 0 ).extent, region2.extent );
+  QCOMPARE( widget.regions().at( 0 ).maxZoom, region2.maxZoom );
+
+  widget.setRegions( {} );
+  QCOMPARE( changedSpy.size(), 3 );
+  QCOMPARE( widget.regions().size(), 0 );
+}
+
+void TestProcessingGui::testTileExtentMaxZoomWrapper()
+{
+  auto testWrapper = []( Qgis::ProcessingMode type ) {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterTileExtentMaxZoomList param( u"num"_s, u"num"_s );
+    QgsProcessingTileExtentMaxZoomWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QgsTileExtentMaxZoomRegion region1;
+    region1.extent = QgsReferencedRectangle( QgsRectangle( 1, 2, 3, 4 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+    region1.maxZoom = 12;
+    QgsTileExtentMaxZoomRegion region2;
+    region2.extent = QgsReferencedRectangle( QgsRectangle( 10, 20, 30, 40 ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
+    region2.maxZoom = 14;
+
+    QSignalSpy spy( &wrapper, &QgsProcessingTileExtentMaxZoomWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( param.toVariant( { region1, region2 } ), context );
+    QCOMPARE( spy.count(), 1 );
+
+    QList<QgsTileExtentMaxZoomRegion > regions = param.parameterAsRegionList( wrapper.widgetValue(), context );
+    QCOMPARE( regions.size(), 2 );
+    QCOMPARE( regions.at( 0 ).extent, region1.extent );
+    QCOMPARE( regions.at( 0 ).maxZoom, region1.maxZoom );
+    QCOMPARE( regions.at( 1 ).extent, region2.extent );
+    QCOMPARE( regions.at( 1 ).maxZoom, region2.maxZoom );
+
+    if ( auto widget = qobject_cast< QgsProcessingTileExtentMaxZoomParameterPanel * >( w ) )
+    {
+      regions = param.parameterAsRegionList( widget->value(), context );
+      QCOMPARE( regions.size(), 2 );
+      QCOMPARE( regions.at( 0 ).extent, region1.extent );
+      QCOMPARE( regions.at( 0 ).maxZoom, region1.maxZoom );
+      QCOMPARE( regions.at( 1 ).extent, region2.extent );
+      QCOMPARE( regions.at( 1 ).maxZoom, region2.maxZoom );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text(), u"12:1,3,2,4 [EPSG:4326]::|::14:10,30,20,40 [EPSG:3857]"_s );
+    }
+
+    wrapper.setWidgetValue( u"2:1,3,2,4 [EPSG:4326]::|::4:10,30,20,40 [EPSG:3857]"_s, context );
+    QCOMPARE( spy.count(), 2 );
+    if ( auto widget = qobject_cast< QgsProcessingTileExtentMaxZoomParameterPanel * >( w ) )
+    {
+      regions = param.parameterAsRegionList( widget->value(), context );
+      QCOMPARE( regions.size(), 2 );
+      QCOMPARE( regions.at( 0 ).extent, region1.extent );
+      QCOMPARE( regions.at( 0 ).maxZoom, 2 );
+      QCOMPARE( regions.at( 1 ).extent, region2.extent );
+      QCOMPARE( regions.at( 1 ).maxZoom, 4 );
+    }
+    else
+    {
+      QCOMPARE( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text(), u"2:1,3,2,4 [EPSG:4326]::|::4:10,30,20,40 [EPSG:3857]"_s );
+    }
+
+    wrapper.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy.count(), 3 );
+    if ( auto widget = qobject_cast< QgsProcessingTileExtentMaxZoomParameterPanel * >( w ) )
+    {
+      regions = param.parameterAsRegionList( widget->value(), context );
+      QCOMPARE( regions.size(), 0 );
+    }
+    else
+    {
+      QVERIFY( static_cast<QLineEdit *>( wrapper.wrappedWidget() )->text().isEmpty() );
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != Qgis::ProcessingMode::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), u"num"_s );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+    // check signal
+    if ( auto widget = qobject_cast< QgsProcessingTileExtentMaxZoomParameterPanel * >( w ) )
+    {
+      widget->setValue( param.toVariant( { region1 } ), context );
+    }
+    else
+    {
+      static_cast<QLineEdit *>( wrapper.wrappedWidget() )->setText( u"12:1,3,2,4 [EPSG:4326]"_s );
+    }
+    QCOMPARE( spy.count(), 4 );
+
+    regions = param.parameterAsRegionList( wrapper.widgetValue(), context );
+    QCOMPARE( regions.size(), 1 );
+    QCOMPARE( regions.at( 0 ).extent, region1.extent );
+    QCOMPARE( regions.at( 0 ).maxZoom, 12 );
+
+    delete w;
+
+    // with default value
+    QgsProcessingParameterTileExtentMaxZoomList paramDefault( u"num"_s, u"num"_s );
+    paramDefault.setDefaultValue( param.toVariant( { region2 } ) );
+
+    QgsProcessingTileExtentMaxZoomWidgetWrapper wrapperDefault( &paramDefault, type );
+
+    w = wrapperDefault.createWrappedWidget( context );
+    regions = param.parameterAsRegionList( wrapperDefault.parameterValue(), context );
+    QCOMPARE( regions.size(), 1 );
+    QCOMPARE( regions.at( 0 ).extent, region2.extent );
+    QCOMPARE( regions.at( 0 ).maxZoom, region2.maxZoom );
     delete w;
   };
 

@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmxyztiles.h"
 
+#include <algorithm>
 #include <atomic>
 
 #include "qgsexpressioncontextutils.h"
@@ -24,7 +25,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsmaplayerutils.h"
-#include "qgsmaprenderercustompainterjob.h"
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
 
 #include <QBuffer>
 #include <QDir>
@@ -48,32 +49,9 @@ namespace
     double n = std::pow( 2, zoom );
     return ( int ) std::floor( n - y - 1 );
   }
-
-  int lon2tileX( const double lon, const int z )
-  {
-    return ( int ) ( std::floor( ( lon + 180.0 ) / 360.0 * ( 1 << z ) ) );
-  }
-
-  int lat2tileY( const double lat, const int z )
-  {
-    double latRad = lat * M_PI / 180.0;
-    return ( int ) ( std::floor( ( 1.0 - std::asinh( std::tan( latRad ) ) / M_PI ) / 2.0 * ( 1 << z ) ) );
-  }
-
-  double tileX2lon( const int x, const int z )
-  {
-    return x / ( double ) ( 1 << z ) * 360.0 - 180;
-  }
-
-  double tileY2lat( const int y, const int z )
-  {
-    double n = M_PI - 2.0 * M_PI * y / ( double ) ( 1 << z );
-    return 180.0 / M_PI * std::atan( 0.5 * ( std::exp( n ) - std::exp( -n ) ) );
-  }
 } //namespace
 
-
-void MetaTile::addTile( const int row, const int col, Tile tileToAdd )
+void MetaTile::addTile( const int row, const int col, Tile tileToAdd, const QgsRectangle &extent )
 {
   tiles.insert( QPair<int, int>( row, col ), tileToAdd );
   if ( row >= rows )
@@ -84,40 +62,103 @@ void MetaTile::addTile( const int row, const int col, Tile tileToAdd )
   {
     cols = col + 1;
   }
-}
-
-QgsRectangle MetaTile::extent() const
-{
-  const Tile first = tiles.first();
-  const Tile last = tiles.last();
-  return QgsRectangle( tileX2lon( first.x, first.z ), tileY2lat( last.y + 1, last.z ), tileX2lon( last.x + 1, last.z ), tileY2lat( first.y, first.z ) );
+  mExtent.combineExtentWith( extent );
 }
 
 
 namespace
 {
-  QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, long long &tileCount, const int tileSize )
+  QList<MetaTile> getMetatiles(
+    const QgsRectangle &tileMatrixSetExtent,
+    const QgsRectangle &contentsExtent,
+    int zoom,
+    int z0MatrixWidth,
+    int z0MatrixHeight,
+    long long &tileCount,
+    int metaTileSize,
+    const QList<QgsTileExtentMaxZoomRegion> &maxZoomRegions,
+    int defaultMaxZoom
+  )
   {
-    int minX = lon2tileX( extent.xMinimum(), zoom );
-    int minY = lat2tileY( extent.yMaximum(), zoom );
-    int maxX = lon2tileX( extent.xMaximum(), zoom );
-    int maxY = lat2tileY( extent.yMinimum(), zoom );
-    tileCount = static_cast<long long>( maxX - minX + 1 ) * static_cast<long long>( maxY - minY + 1 );
+    const long long matrixWidth = static_cast<long long>( z0MatrixWidth ) * ( 1LL << zoom );
+    const long long matrixHeight = static_cast<long long>( z0MatrixHeight ) * ( 1LL << zoom );
 
-    QHash<uint64_t, MetaTile> tiles;
-    int i = 0;
-    for ( int x = minX; x <= maxX; x++ )
+    const double tileWidthUnits = tileMatrixSetExtent.width() / matrixWidth;
+    const double tileHeightUnits = tileMatrixSetExtent.height() / matrixHeight;
+
+    int minX = static_cast<int>( std::floor( ( contentsExtent.xMinimum() - tileMatrixSetExtent.xMinimum() ) / tileWidthUnits ) );
+    int maxX = static_cast<int>( std::ceil( ( contentsExtent.xMaximum() - tileMatrixSetExtent.xMinimum() ) / tileWidthUnits ) - 1 );
+    int minY = static_cast<int>( std::floor( ( tileMatrixSetExtent.yMaximum() - contentsExtent.yMaximum() ) / tileHeightUnits ) );
+    int maxY = static_cast<int>( std::ceil( ( tileMatrixSetExtent.yMaximum() - contentsExtent.yMinimum() ) / tileHeightUnits ) - 1 );
+
+    minX = std::clamp<int>( minX, 0, static_cast<int>( matrixWidth - 1 ) );
+    maxX = std::clamp<int>( maxX, 0, static_cast<int>( matrixWidth - 1 ) );
+    minY = std::clamp<int>( minY, 0, static_cast<int>( matrixHeight - 1 ) );
+    maxY = std::clamp<int>( maxY, 0, static_cast<int>( matrixHeight - 1 ) );
+
+    // IMPORTANT - we have to snap the target extent out to multiples of the metatile!
+    const int totalMetaColumns = static_cast<int>( std::ceil( static_cast<double>( maxX - minX + 1 ) / metaTileSize ) );
+    const int totalMetaRows = static_cast<int>( std::ceil( static_cast<double>( maxY - minY + 1 ) / metaTileSize ) );
+    tileCount = 0;
+    QList<MetaTile> metaTiles;
+    for ( int metaTileColumn = 0; metaTileColumn < totalMetaColumns; ++metaTileColumn )
     {
-      int j = 0;
-      for ( int y = minY; y <= maxY; y++ )
+      const int startI = metaTileColumn * metaTileSize;
+      const int endI = std::min( startI + metaTileSize - 1, maxX - minX );
+      const int startX = minX + startI;
+      const int endX = minX + endI;
+
+      for ( int metaTileRow = 0; metaTileRow < totalMetaRows; ++metaTileRow )
       {
-        const uint64_t key = ( static_cast<uint64_t>( i / tileSize ) << 32 ) | static_cast<uint32_t>( j / tileSize );
-        tiles[key].addTile( i % tileSize, j % tileSize, Tile( x, y, zoom ) );
-        j++;
+        const int startJ = metaTileRow * metaTileSize;
+        const int endJ = std::min( startJ + metaTileSize - 1, maxY - minY );
+        const int startY = minY + startJ;
+        const int endY = minY + endJ;
+
+        const double metaTileMinX = tileMatrixSetExtent.xMinimum() + startX * tileWidthUnits;
+        const double metaTileMaxX = tileMatrixSetExtent.xMinimum() + ( endX + 1 ) * tileWidthUnits;
+        const double metaTileMaxY = tileMatrixSetExtent.yMaximum() - startY * tileHeightUnits;
+        const double metaTileMinY = tileMatrixSetExtent.yMaximum() - ( endY + 1 ) * tileHeightUnits;
+        const QgsRectangle metaTileExtent( metaTileMinX, metaTileMaxY, metaTileMaxX, metaTileMinY );
+
+        // check if there's any zoom overrides in place for this metatile
+        if ( !maxZoomRegions.isEmpty() )
+        {
+          const int metaTileMaxZoom = QgsProcessingParameterTileExtentMaxZoomList::maxZoomForTile( metaTileExtent, maxZoomRegions, defaultMaxZoom );
+
+          if ( metaTileMaxZoom < zoom )
+          {
+            // don't need this zoom level for this metatile
+            continue;
+          }
+        }
+
+        // build the actual metatile
+        MetaTile metaTile;
+        for ( int x = startX, i = startI; x <= endX; ++x, ++i )
+        {
+          for ( int y = startY, j = startJ; y <= endY; ++y, ++j )
+          {
+            const double tileMinX = tileMatrixSetExtent.xMinimum() + x * tileWidthUnits;
+            const double tileMaxX = tileMinX + tileWidthUnits;
+            const double tileMaxY = tileMatrixSetExtent.yMaximum() - y * tileHeightUnits;
+            const double tileMinY = tileMaxY - tileHeightUnits;
+
+            const QgsRectangle tileExtent( tileMinX, tileMinY, tileMaxX, tileMaxY );
+
+            metaTile.addTile( i % metaTileSize, j % metaTileSize, Tile( x, y, zoom ), tileExtent );
+            tileCount++;
+          }
+        }
+
+        if ( !metaTile.tiles.isEmpty() )
+        {
+          metaTiles.append( metaTile );
+        }
       }
-      i++;
     }
-    return tiles.values();
+
+    return metaTiles;
   }
 } //namespace
 
@@ -130,19 +171,19 @@ namespace
  * that we can minimize the number of database writes we do by writing thousands
  * in a single pass.
  */
-class PendingTilesToWriteQueue
+template<typename T> class PendingTilesToWriteQueue
 {
   public:
     /**
      * Pushes a list of rendered tiles from a metatile to the queue.
      */
-    void push( const QList<QgsMbTiles::TileData> &tiles )
+    void push( const QList<T> &tiles )
     {
       if ( tiles.isEmpty() )
         return;
 
       QMutexLocker locker( &mMutex );
-      for ( const QgsMbTiles::TileData &tile : tiles )
+      for ( const T &tile : tiles )
       {
         mQueue.enqueue( tile );
       }
@@ -156,7 +197,7 @@ class PendingTilesToWriteQueue
      * to setFinished() is made), or if the specified maximum timeout elapses,
      * then a batch smaller then \a maxBatchSize will be returned.
      */
-    bool popBatch( QList<QgsMbTiles::TileData> &batch, int maxBatchSize, unsigned long timeoutMs = 500 )
+    bool popBatch( QList<T> &batch, int maxBatchSize, unsigned long timeoutMs = 500 )
     {
       QMutexLocker locker( &mMutex );
 
@@ -197,7 +238,7 @@ class PendingTilesToWriteQueue
     }
 
   private:
-    QQueue<QgsMbTiles::TileData> mQueue;
+    QQueue<T> mQueue;
     mutable QMutex mMutex;
     QWaitCondition mNotEmpty;
     bool mFinished = false;
@@ -279,6 +320,39 @@ void QgsXyzTilesBaseAlgorithm::createCommonParameters()
   skipEmptyTilesParam->setHelp( QObject::tr( "If set, completely empty tiles will be skipped." ) );
   skipEmptyTilesParam->setFlags( skipEmptyTilesParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( skipEmptyTilesParam.release() );
+
+  auto tileExtentMaxZoomParam = std::make_unique<QgsProcessingParameterTileExtentMaxZoomList>( u"TILE_MAX_ZOOM_EXTENTS"_s, QObject::tr( "Maximum zoom extents" ), QVariant(), true );
+  tileExtentMaxZoomParam->setHelp( QObject::tr( "Allows overriding the maximum zoom level for specific geographic regions, so that more detailed tiles can be created for important areas." ) );
+  tileExtentMaxZoomParam->setFlags( tileExtentMaxZoomParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( tileExtentMaxZoomParam.release() );
+}
+
+void QgsXyzTilesBaseAlgorithm::createTileMatrixParameters()
+{
+  auto crsParam = std::make_unique<QgsProcessingParameterCrs>( u"TARGET_CRS"_s, QObject::tr( "Target CRS" ), QVariant( u"EPSG:3857"_s ) );
+  crsParam->setFlags( crsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  crsParam->setHelp( QObject::tr( "Coordinate reference system used for the output tile matrix set." ) );
+  addParameter( crsParam.release() );
+
+  auto z0ExtentParam = std::make_unique<QgsProcessingParameterExtent>( u"Z0_EXTENT"_s, QObject::tr( "Zoom 0 extent" ) );
+  z0ExtentParam->setFlags( z0ExtentParam->flags() | Qgis::ProcessingParameterFlag::Advanced | Qgis::ProcessingParameterFlag::Optional );
+  z0ExtentParam->setHelp(
+    QObject::tr(
+      "Extent of zoom level 0 in target CRS coordinates. Required when target CRS is not EPSG:3857. If the target CRS is EPSG:3857 then this parameter will be ignored and a standard Web Mercator "
+      "tile matrix will be used instead."
+    )
+  );
+  addParameter( z0ExtentParam.release() );
+
+  auto z0WidthParam = std::make_unique<QgsProcessingParameterNumber>( u"Z0_MATRIX_WIDTH"_s, QObject::tr( "Zoom 0 matrix width" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 );
+  z0WidthParam->setFlags( z0WidthParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  z0WidthParam->setHelp( QObject::tr( "Number of tile columns at zoom level 0 (matrix width)." ) );
+  addParameter( z0WidthParam.release() );
+
+  auto z0HeightParam = std::make_unique<QgsProcessingParameterNumber>( u"Z0_MATRIX_HEIGHT"_s, QObject::tr( "Zoom 0 matrix height" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 );
+  z0HeightParam->setFlags( z0HeightParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  z0HeightParam->setHelp( QObject::tr( "Number of tile rows at zoom level 0 (matrix height)." ) );
+  addParameter( z0HeightParam.release() );
 }
 
 bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -310,17 +384,75 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     }
   }
 
-  QgsRectangle extent = parameterAsExtent( parameters, u"EXTENT"_s, context );
-  QgsCoordinateReferenceSystem extentCrs = parameterAsExtentCrs( parameters, u"EXTENT"_s, context );
-  QgsCoordinateTransform ct( extentCrs, project->crs(), context.transformContext() );
-  ct.setBallparkTransformsAreAppropriate( true );
+  if ( parameters.contains( u"TARGET_CRS"_s ) )
+  {
+    mTargetCrs = parameterAsCrs( parameters, u"TARGET_CRS"_s, context );
+  }
+  else
+  {
+    mTargetCrs = QgsCoordinateReferenceSystem( u"EPSG:3857"_s );
+  }
+
+  if ( parameters.contains( u"Z0_MATRIX_WIDTH"_s ) )
+  {
+    mZ0MatrixWidth = parameterAsInt( parameters, u"Z0_MATRIX_WIDTH"_s, context );
+  }
+  else
+  {
+    mZ0MatrixWidth = 1;
+  }
+
+  if ( parameters.contains( u"Z0_MATRIX_HEIGHT"_s ) )
+  {
+    mZ0MatrixHeight = parameterAsInt( parameters, u"Z0_MATRIX_HEIGHT"_s, context );
+  }
+  else
+  {
+    mZ0MatrixHeight = 1;
+  }
+
+  mTileGenerationRegion = parameterAsExtent( parameters, u"EXTENT"_s, context, mTargetCrs );
+
+  const QgsRectangle userZ0Extent = parameterAsExtent( parameters, u"Z0_EXTENT"_s, context, mTargetCrs );
+  if ( mTargetCrs.authid() == "EPSG:3857"_L1 )
+  {
+    if ( !userZ0Extent.isEmpty() )
+    {
+      feedback->pushWarning( QObject::tr( "Tiles are being generated in EPSG:3857, so a standard Web Mercator tile matrix will be used. The manual zoom 0 extent will be ignored." ) );
+    }
+    mTileMatrixSetExtent = QgsRectangle( -MERC_MAX, -MERC_MAX, MERC_MAX, MERC_MAX );
+  }
+  else
+  {
+    if ( userZ0Extent.isEmpty() )
+    {
+      throw QgsProcessingException( QObject::tr( "Zoom 0 extent must be specified when using a custom target CRS (%1)" ).arg( mTargetCrs.userFriendlyIdentifier() ) );
+    }
+    mTileMatrixSetExtent = userZ0Extent;
+    const double rawPixelXSize = mTileMatrixSetExtent.width() / ( static_cast<double>( mZ0MatrixWidth ) * mTileWidth );
+    const double rawPixelYSize = mTileMatrixSetExtent.height() / ( static_cast<double>( mZ0MatrixHeight ) * mTileHeight );
+
+    // tile matrix extents MUST be square! Expanding the tile matrix set extent around its center to force this.
+    if ( !qgsDoubleNear( rawPixelXSize, rawPixelYSize, 1e-9 ) )
+    {
+      const double isotropicPixelSize = std::max( rawPixelXSize, rawPixelYSize );
+      const double requiredWidth = isotropicPixelSize * mZ0MatrixWidth * mTileWidth;
+      const double requiredHeight = isotropicPixelSize * mZ0MatrixHeight * mTileHeight;
+
+      const QgsPointXY center = mTileMatrixSetExtent.center();
+      mTileMatrixSetExtent = QgsRectangle( center.x() - requiredWidth / 2.0, center.y() - requiredHeight / 2.0, center.x() + requiredWidth / 2.0, center.y() + requiredHeight / 2.0 );
+    }
+  }
+
+  QgsCoordinateTransform src2Wgs = QgsCoordinateTransform( mTargetCrs, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), context.transformContext() );
+  src2Wgs.setBallparkTransformsAreAppropriate( true );
   try
   {
-    mExtent = ct.transformBoundingBox( extent );
+    mWgs84Extent = src2Wgs.transformBoundingBox( mTileGenerationRegion );
   }
   catch ( QgsCsException & )
   {
-    throw QgsProcessingException( QObject::tr( "Could not transform the extent into the project CRS" ) );
+    throw QgsProcessingException( QObject::tr( "Could not transform the extent into WGS84" ) );
   }
 
   mMinZoom = parameterAsInt( parameters, u"ZOOM_MIN"_s, context );
@@ -329,6 +461,31 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   {
     throw QgsProcessingException( QObject::tr( "Maximum zoom (%1) must be ≥ minimum zoom (%2)" ).arg( mMaxZoom ).arg( mMinZoom ) );
   }
+
+  mMaxZoomLimitIncludingOverrides = mMaxZoom;
+  const QList<QgsTileExtentMaxZoomRegion> rawRegions
+    = qgis::down_cast< const QgsProcessingParameterTileExtentMaxZoomList *>( parameterDefinition( u"TILE_MAX_ZOOM_EXTENTS"_s ) )->parameterAsRegionList( parameters.value( u"TILE_MAX_ZOOM_EXTENTS"_s ), context );
+  if ( !rawRegions.isEmpty() )
+  {
+    // convert all override regions to target crs once in advance
+    for ( const QgsTileExtentMaxZoomRegion &region : rawRegions )
+    {
+      QgsTileExtentMaxZoomRegion targetRegion = region;
+      try
+      {
+        QgsCoordinateTransform ct( region.extent.crs(), mTargetCrs, context.transformContext() );
+        ct.setBallparkTransformsAreAppropriate( true );
+        targetRegion.extent = QgsReferencedRectangle( ct.transformBoundingBox( region.extent ), mTargetCrs );
+        mMaxZoomRegions.append( targetRegion );
+        mMaxZoomLimitIncludingOverrides = std::max( mMaxZoomLimitIncludingOverrides, region.maxZoom );
+      }
+      catch ( QgsCsException & )
+      {
+        continue;
+      }
+    }
+  }
+
   mDpi = parameterAsInt( parameters, u"DPI"_s, context );
   mBackgroundColor = parameterAsColor( parameters, u"BACKGROUND_COLOR"_s, context );
   mAntialias = parameterAsBool( parameters, u"ANTIALIAS"_s, context );
@@ -354,17 +511,6 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mThreadsNumber = context.maximumThreads();
   mTransformContext = context.transformContext();
   mEllipsoid = context.ellipsoid();
-
-  QgsCoordinateTransform src2Wgs = QgsCoordinateTransform( project->crs(), QgsCoordinateReferenceSystem( "EPSG:4326" ), context.transformContext() );
-  src2Wgs.setBallparkTransformsAreAppropriate( true );
-  try
-  {
-    mWgs84Extent = src2Wgs.transformBoundingBox( mExtent );
-  }
-  catch ( QgsCsException & )
-  {
-    throw QgsProcessingException( QObject::tr( "Could not transform the extent into WGS84" ) );
-  }
 
   if ( parameters.contains( u"TILE_WIDTH"_s ) )
   {
@@ -412,24 +558,13 @@ void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *fe
 
 std::optional< QgsMapSettings > QgsXyzTilesBaseAlgorithm::mapSettingsForTile( const MetaTile &metaTile ) const
 {
-  QgsCoordinateReferenceSystem mercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
-  QgsCoordinateTransform wgsToMercator = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:4326" ), mercatorCrs, mTransformContext );
-  wgsToMercator.setBallparkTransformsAreAppropriate( true );
-
   QgsMapSettings settings;
-  try
-  {
-    settings.setExtent( wgsToMercator.transformBoundingBox( metaTile.extent() ) );
-  }
-  catch ( QgsCsException & )
-  {
-    return {};
-  }
+  settings.setExtent( metaTile.mExtent );
+  settings.setDestinationCrs( mTargetCrs );
   settings.setRendererUsage( Qgis::RendererUsage::Export );
   settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
   settings.setTransformContext( mTransformContext );
   settings.setEllipsoid( mEllipsoid );
-  settings.setDestinationCrs( mercatorCrs );
   settings.setLayers( mLayers );
   settings.setOutputDpi( mDpi );
   settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
@@ -537,6 +672,11 @@ QString QgsXyzTilesDirectoryAlgorithm::shortHelpString() const
   );
 }
 
+QString QgsXyzTilesDirectoryAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Renders maps to XYZ raster tiles as individual images files in a directory." );
+}
+
 QgsXyzTilesDirectoryAlgorithm *QgsXyzTilesDirectoryAlgorithm::createInstance() const
 {
   return new QgsXyzTilesDirectoryAlgorithm();
@@ -545,6 +685,8 @@ QgsXyzTilesDirectoryAlgorithm *QgsXyzTilesDirectoryAlgorithm::createInstance() c
 void QgsXyzTilesDirectoryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   createCommonParameters();
+  createTileMatrixParameters();
+
   auto tileWidthParam = std::make_unique<QgsProcessingParameterNumber>( u"TILE_WIDTH"_s, QObject::tr( "Tile width" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 );
   tileWidthParam->setHelp( QObject::tr( "Width of each tile image in pixels." ) );
   addParameter( tileWidthParam.release() );
@@ -599,13 +741,13 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
 
   long long totalTiles = 0;
   mTotalMetaTiles = 0;
-  for ( int z = mMinZoom; z <= mMaxZoom; z++ )
+  for ( int z = mMinZoom; z <= mMaxZoomLimitIncludingOverrides; z++ )
   {
     if ( feedback->isCanceled() )
       break;
 
     long long tileCount = 0;
-    mMetaTiles += getMetatiles( mWgs84Extent, z, tileCount, mMetaTileSize );
+    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom );
     feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
@@ -644,7 +786,7 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
                           "{minZoom: %1, maxZoom: %2, attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'}).addTo(map);"
     )
                           .arg( mMinZoom )
-                          .arg( mMaxZoom );
+                          .arg( mMaxZoomLimitIncludingOverrides );
 
     const QString addOsm = useOsm ? osm : QString();
     const QString tmsConvention = tms ? u"true"_s : u"false"_s;
@@ -674,7 +816,7 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
                            .arg( ( mMaxZoom + mMinZoom ) / 2 )
                            .arg( addOsm, tileSource )
                            .arg( mMinZoom )
-                           .arg( mMaxZoom )
+                           .arg( mMaxZoomLimitIncludingOverrides )
                            .arg( tmsConvention, attr );
 
     QFile htmlFile( outputHtml );
@@ -805,6 +947,11 @@ QStringList QgsXyzTilesMbtilesAlgorithm::tags() const
   return QObject::tr( "tiles,xyz,tms,mbtiles" ).split( ',' );
 }
 
+QString QgsXyzTilesMbtilesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Renders maps to XYZ raster tiles into a MBTiles database." );
+}
+
 QString QgsXyzTilesMbtilesAlgorithm::shortHelpString() const
 {
   return QObject::tr(
@@ -845,7 +992,7 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   // the index after every one
   if ( !mMbtilesWriter->create( true ) )
   {
-    throw QgsProcessingException( QObject::tr( "Failed to create MBTiles file %1" ).arg( outputFile ) );
+    throw QgsProcessingException( QObject::tr( "Failed to create MBTiles file %1: %2" ).arg( outputFile, mMbtilesWriter->lastError() ) );
   }
   mMbtilesWriter->setMetadataValue( u"format"_s, mTileFormat.toLower() );
   mMbtilesWriter->setMetadataValue( u"name"_s, QFileInfo( outputFile ).baseName() );
@@ -853,19 +1000,19 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   mMbtilesWriter->setMetadataValue( u"version"_s, u"1.1"_s );
   mMbtilesWriter->setMetadataValue( u"type"_s, u"overlay"_s );
   mMbtilesWriter->setMetadataValue( u"minzoom"_s, QString::number( mMinZoom ) );
-  mMbtilesWriter->setMetadataValue( u"maxzoom"_s, QString::number( mMaxZoom ) );
+  mMbtilesWriter->setMetadataValue( u"maxzoom"_s, QString::number( mMaxZoomLimitIncludingOverrides ) );
   QString boundsStr = QString( u"%1,%2,%3,%4"_s ).arg( mWgs84Extent.xMinimum() ).arg( mWgs84Extent.yMinimum() ).arg( mWgs84Extent.xMaximum() ).arg( mWgs84Extent.yMaximum() );
   mMbtilesWriter->setMetadataValue( u"bounds"_s, boundsStr );
 
   long long totalTiles = 0;
   mTotalMetaTiles = 0;
-  for ( int z = mMinZoom; z <= mMaxZoom; z++ )
+  for ( int z = mMinZoom; z <= mMaxZoomLimitIncludingOverrides; z++ )
   {
     if ( feedback->isCanceled() )
       break;
 
     long long tileCount = 0;
-    mMetaTiles += getMetatiles( mWgs84Extent, z, tileCount, mMetaTileSize );
+    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom );
     feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
@@ -974,7 +1121,7 @@ void QgsXyzTilesMbtilesAlgorithm::doExport( QgsProcessingFeedback *feedback )
   mPostProcessingPool = std::make_unique<QThreadPool>();
   mPostProcessingPool->setMaxThreadCount( std::max( 1, mThreadsNumber ) );
 
-  PendingTilesToWriteQueue queue;
+  PendingTilesToWriteQueue< QgsMbTiles::TileData > queue;
   mWriteQueue = &queue;
 
   QThread *dbThread = QThread::create( [this, &queue]() {
@@ -1017,5 +1164,246 @@ void QgsXyzTilesMbtilesAlgorithm::doExport( QgsProcessingFeedback *feedback )
   mWriteQueue = nullptr;
   mEventLoop = nullptr;
 }
+
+
+//
+// QgsXyzTilesGpkgAlgorithm
+//
+
+QString QgsXyzTilesGpkgAlgorithm::name() const
+{
+  return u"tilesxyzgpkg"_s;
+}
+
+QString QgsXyzTilesGpkgAlgorithm::displayName() const
+{
+  return QObject::tr( "Generate XYZ tiles (GeoPackage)" );
+}
+
+QStringList QgsXyzTilesGpkgAlgorithm::tags() const
+{
+  return QObject::tr( "tiles,xyz,geopackage,gpkg,raster" ).split( ',' );
+}
+
+QString QgsXyzTilesGpkgAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Renders maps to XYZ raster tiles into a GeoPackage raster tile database." );
+}
+
+QString QgsXyzTilesGpkgAlgorithm::shortHelpString() const
+{
+  return QObject::tr(
+    "This algorithm generates XYZ raster tiles from the current project and saves them into an OGC GeoPackage file.\n\n"
+    "All visible map layers from the project will be rendered into tiles across the specified extent and zoom range."
+  );
+}
+
+QgsXyzTilesGpkgAlgorithm *QgsXyzTilesGpkgAlgorithm::createInstance() const
+{
+  return new QgsXyzTilesGpkgAlgorithm();
+}
+
+void QgsXyzTilesGpkgAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  createCommonParameters();
+  createTileMatrixParameters();
+
+  auto tileWidthParam = std::make_unique<QgsProcessingParameterNumber>( u"TILE_WIDTH"_s, QObject::tr( "Tile width" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 );
+  tileWidthParam->setHelp( QObject::tr( "Width of each tile image in pixels." ) );
+  addParameter( tileWidthParam.release() );
+
+  auto tileHeightParam = std::make_unique<QgsProcessingParameterNumber>( u"TILE_HEIGHT"_s, QObject::tr( "Tile height" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 );
+  tileHeightParam->setHelp( QObject::tr( "Height of each tile image in pixels." ) );
+  addParameter( tileHeightParam.release() );
+
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_FILE"_s, QObject::tr( "Output file" ), QObject::tr( "GeoPackage files (*.gpkg *.GPKG)" ) ) );
+
+  addOutput( new QgsProcessingOutputRasterLayer( u"OUTPUT_LAYER"_s, QObject::tr( "Output tiles as raster layer" ) ) );
+}
+
+QVariantMap QgsXyzTilesGpkgAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QGS_MARK_ALGORITHM_SOURCE
+
+  const QString outputFile = parameterAsString( parameters, u"OUTPUT_FILE"_s, context );
+
+  if ( QFile::exists( outputFile ) )
+  {
+    feedback->pushWarning( QObject::tr( "Removing existing file '%1'" ).arg( QDir::toNativeSeparators( outputFile ) ) );
+    if ( !QFile( outputFile ).remove() )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( QDir::toNativeSeparators( outputFile ) ) );
+    }
+  }
+
+  mGpkgWriter = std::make_unique<QgsGeoPackageTiles>( outputFile );
+  if ( !mGpkgWriter->create( mTargetCrs, mTileMatrixSetExtent, mTileGenerationRegion, mMinZoom, mMaxZoomLimitIncludingOverrides, mTileWidth, mTileHeight, mZ0MatrixWidth, mZ0MatrixHeight ) )
+  {
+    throw QgsProcessingException( QObject::tr( "Failed to create GeoPackage file %1: %2" ).arg( outputFile, mGpkgWriter->lastError() ) );
+  }
+
+  long long totalTiles = 0;
+  mTotalMetaTiles = 0;
+  for ( int z = mMinZoom; z <= mMaxZoomLimitIncludingOverrides; z++ )
+  {
+    if ( feedback->isCanceled() )
+      break;
+
+    long long tileCount = 0;
+    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize, mMaxZoomRegions, mMaxZoom );
+    feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
+    mTotalMetaTiles = mMetaTiles.size();
+    totalTiles += tileCount;
+  }
+  if ( mTotalMetaTiles == 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "No metatiles will be created -- please check the extent and zoom limits" ) );
+  }
+  feedback->pushInfo( QObject::tr( "A total of %1 metatiles (%2 tiles) will be created" ).arg( mTotalMetaTiles ).arg( totalTiles ) );
+
+  checkLayersUsagePolicy( feedback );
+
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    layer->moveToThread( QThread::currentThread() );
+  }
+  mJobOwner.reset( new QObject() );
+
+  doExport( feedback );
+
+  qDeleteAll( mLayers );
+  mLayers.clear();
+
+  if ( !feedback->isCanceled() )
+  {
+    mGpkgWriter->finalize();
+  }
+
+  mGpkgWriter->close();
+
+  if ( mSkipEmptyTiles )
+  {
+    feedback->pushInfo( QObject::tr( "Wrote %1 total tiles, skipped %2 empty tiles" ).arg( mTilesWritten.load() ).arg( mEmptyTiles.load() ) );
+  }
+
+  QVariantMap results;
+
+  // try to load the result as a raster layer
+  if ( !feedback->isCanceled() )
+  {
+    auto layer = std::make_unique<QgsRasterLayer>( outputFile, "OUTPUT_LAYER", u"gdal"_s );
+    if ( !layer->isValid() )
+    {
+      feedback->reportError( QObject::tr( "Failed to open GeoPackage file as a raster layer" ) );
+    }
+    const QString layerId = layer->id();
+    const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), u"OUTPUT_LAYER"_s, QgsProcessingUtils::LayerHint::Raster );
+    details.setOutputLayerName( layer.get() );
+    context.addLayerToLoadOnCompletion( layerId, details );
+    context.temporaryLayerStore()->addMapLayer( layer.release() );
+    results.insert( u"OUTPUT_LAYER"_s, layerId );
+  }
+
+  results.insert( u"OUTPUT_FILE"_s, outputFile );
+  return results;
+}
+
+void QgsXyzTilesGpkgAlgorithm::processMetaTile( const MetaTile &metaTile, const QImage &renderedImg, QgsProcessingFeedback *feedback )
+{
+  mActivePostProcessingTasks++;
+  mPostProcessingPool->start( [this, feedback, metaTile, renderedImg]() {
+    const bool testEmptyTilesUsingAlpha0 = mTileFormat != "JPG"_L1 && mBackgroundColor.alpha() == 0;
+    long long localWritten = 0;
+    long long localEmpty = 0;
+
+    QList<QgsGeoPackageTiles::TileData> metatileTiles;
+    metatileTiles.reserve( metaTile.tiles.size() );
+
+    for ( auto it = metaTile.tiles.constBegin(); it != metaTile.tiles.constEnd(); ++it )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      const QPair<int, int> tm = it.key();
+
+      const QImage tileImage = renderedImg.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
+
+      const bool skipTile = mSkipEmptyTiles && ( testEmptyTilesUsingAlpha0 ? QgsImageOperation::isBlankImage( tileImage ) : QgsImageOperation::isSingleColor( tileImage, mBackgroundColor ) );
+      if ( skipTile )
+      {
+        localEmpty++;
+        continue;
+      }
+
+      QByteArray bytes;
+      QBuffer buffer( &bytes );
+      buffer.open( QIODevice::WriteOnly );
+      tileImage.save( &buffer, mTileFormat.toStdString().c_str(), mJpgQuality );
+
+      const Tile tile = it.value();
+      // GeoPackage uses tile.y directly (Top-Left origin)
+      metatileTiles.append( { tile.z, tile.x, tile.y, bytes } );
+      localWritten++;
+    }
+
+    mWriteQueue->push( metatileTiles );
+
+    mTilesWritten += localWritten;
+    mEmptyTiles += localEmpty;
+
+    mActivePostProcessingTasks--;
+    checkPipelineFinished( feedback );
+  } );
+}
+
+void QgsXyzTilesGpkgAlgorithm::doExport( QgsProcessingFeedback *feedback )
+{
+  mPostProcessingPool = std::make_unique<QThreadPool>();
+  mPostProcessingPool->setMaxThreadCount( std::max( 1, mThreadsNumber ) );
+
+  PendingTilesToWriteQueue<QgsGeoPackageTiles::TileData> queue;
+  mWriteQueue = &queue;
+
+  QThread *dbThread = QThread::create( [this, &queue]() {
+    QList<QgsGeoPackageTiles::TileData> batch;
+    constexpr int BATCH_SIZE = 10000;
+    batch.reserve( BATCH_SIZE );
+    while ( queue.popBatch( batch, BATCH_SIZE ) )
+    {
+      mGpkgWriter->setTileData( batch );
+      batch.clear();
+    }
+  } );
+  dbThread->start();
+
+  QEventLoop loop;
+  mEventLoop = &loop;
+  mJobOwner.reset( new QObject() );
+
+  startJobs( feedback );
+
+  if ( !mMetaTiles.isEmpty() || !mRendererJobs.isEmpty() || mActivePostProcessingTasks.load() > 0 )
+  {
+    loop.exec();
+  }
+
+  for ( auto *j : mRendererJobs.keys() )
+  {
+    j->cancel();
+    j->deleteLater();
+  }
+  mRendererJobs.clear();
+
+  mPostProcessingPool->waitForDone();
+  mPostProcessingPool.reset();
+
+  queue.setFinished();
+  dbThread->wait();
+  delete dbThread;
+
+  mWriteQueue = nullptr;
+  mEventLoop = nullptr;
+}
+
 
 ///@endcond

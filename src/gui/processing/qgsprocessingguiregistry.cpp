@@ -113,6 +113,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingExecuteSqlWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingInterpolationPixelSizeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingInterpolationSourceWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingTileExtentMaxZoomWidgetWrapper() );
 
   mModelConfigWidgetFactory = std::make_unique< QgsProcessingGuiInternalModelConfigWidgetFactory >();
   registerModelConfigWidgetFactory( mModelConfigWidgetFactory.get() );

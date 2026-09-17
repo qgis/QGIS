@@ -26,6 +26,7 @@
 #include "qgsprocessingparameterinterpolationsource.h"
 #include "qgsprocessingparametermeshdataset.h"
 #include "qgsprocessingparameterreliefcolors.h"
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametertypeimpl.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
@@ -97,6 +98,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeReliefColors() );
   addParameterType( new QgsProcessingParameterTypeInterpolationSource() );
   addParameterType( new QgsProcessingParameterTypeInterpolationPixelSize() );
+  addParameterType( new QgsProcessingParameterTypeTileExtentMaxZoomList() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()

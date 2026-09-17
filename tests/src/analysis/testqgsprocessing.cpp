@@ -49,6 +49,7 @@
 #include "qgsprocessingparameterinterpolationsource.h"
 #include "qgsprocessingparametermeshdataset.h"
 #include "qgsprocessingparameterreliefcolors.h"
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingprovider.h"
@@ -813,6 +814,7 @@ class TestQgsProcessing : public QgsTest
     void parameterVectorTileOut();
     void parameterInterpolationSource();
     void parameterInterpolationPixelSize();
+    void parameterTileExtentMaxZoomList();
     void checkParamValues();
     void runAlgorithm();
     void combineLayerExtent();
@@ -9562,6 +9564,149 @@ void TestQgsProcessing::parameterInterpolationPixelSize()
   QCOMPARE( fromMap.dataType(), def->dataType() );
   def.reset( dynamic_cast<QgsProcessingParameterInterpolationPixelSize *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast<QgsProcessingParameterInterpolationPixelSize *>( def.get() ) );
+}
+
+void TestQgsProcessing::parameterTileExtentMaxZoomList()
+{
+  QgsProcessingContext context;
+
+  // not optional, with default value
+
+  QVariantList defaultValue;
+  defaultValue << QVariantMap { { "extent", "1.1,2,3,4.4 [EPSG:4326]" }, { "max_zoom", 5 } };
+  defaultValue << QVariantMap { { "extent", "121774.38859446358,948723.6921024882,-264546.200347173,492749.6672022904 [EPSG:3785]" }, { "max_zoom", 8 } };
+
+  auto def = std::make_unique<QgsProcessingParameterTileExtentMaxZoomList>( "non_optional", QString(), defaultValue, false );
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1,2,3,4" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList {} ) );
+  QVERIFY( def->checkValueIsAcceptable( defaultValue ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:-1.1,2,-3,-4" ) );
+  QVERIFY( def->checkValueIsAcceptable( "7:-1.1,2,-3,-4", &context ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:-1.1,-2.2,-3.3,-4.4" ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:-1.1,-2.2,-3.3,-4.4", &context ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:1.1,2,3,4.4[EPSG:4326]" ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:1.1,2,3,4.4[EPSG:4326]", &context ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:1.1,2,3,4.4 [EPSG:4326]" ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:1.1,2,3,4.4 [EPSG:4326]::|::7:11.1,2,3,4.4 [EPSG:4326]", &context ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:  -1.1,   -2,    -3,   -4.4   [EPSG:4326]    " ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:  -1.1,   -2,    -3,   -4.4   [EPSG:4326]    ", &context ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:121774.38859446358,948723.6921024882,-264546.200347173,492749.6672022904 [EPSG:3785]" ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:121774.38859446358,948723.6921024882,-264546.200347173,492749.6672022904 [EPSG:3785]", &context ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  // acceptable, will fallback to default value
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  // parameterAsRegionList
+  QVariantMap params;
+  QList<QgsTileExtentMaxZoomRegion> regions;
+  // string values
+  params.insert( "non_optional", QString( "5:1.1,2.2,3.3,4.4" ) );
+  regions = def->parameterAsRegionList( params.value( "non_optional" ), context );
+  QCOMPARE( regions.size(), 1 );
+  QCOMPARE( regions.at( 0 ).maxZoom, 5 );
+  QgsReferencedRectangle ext = regions.at( 0 ).extent;
+  QGSCOMPARENEAR( ext.xMinimum(), 1.1, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 2.2, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(), 3.3, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 4.4, 0.001 );
+
+  params.insert( "non_optional", QString( "5:1.1,2.2,3.3,4.4[EPSG:4326]::|::5:121774.38859446358,948723.6921024882,-264546.200347173,492749.6672022904 [EPSG:3857]" ) );
+  regions = def->parameterAsRegionList( params.value( "non_optional" ), context );
+  QCOMPARE( regions.size(), 2 );
+  QCOMPARE( regions.at( 0 ).maxZoom, 5 );
+  QCOMPARE( regions.at( 0 ).extent.crs().authid(), u"EPSG:4326"_s );
+  ext = regions.at( 0 ).extent;
+  QGSCOMPARENEAR( ext.xMinimum(), 1.1, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 2.2, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(), 3.3, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 4.4, 0.001 );
+
+  QCOMPARE( regions.at( 1 ).maxZoom, 5 );
+  QCOMPARE( regions.at( 1 ).extent.crs().authid(), u"EPSG:3857"_s );
+  ext = regions.at( 1 ).extent;
+  QGSCOMPARENEAR( ext.xMinimum(), 121774, 1 );
+  QGSCOMPARENEAR( ext.xMaximum(), 948723, 1 );
+  QGSCOMPARENEAR( ext.yMinimum(), -264546, 1 );
+  QGSCOMPARENEAR( ext.yMaximum(), 492749, 1 );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a crs, and nothing you can do will make me one" ) );
+  regions = def->parameterAsRegionList( params.value( "non_optional" ), context );
+  QVERIFY( regions.isEmpty() );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), u"None"_s );
+  QCOMPARE( def->valueAsPythonString( "5:1,2,3,4", context ), u"[{'extent': '1, 2, 3, 4 []', 'max_zoom': 5}]"_s );
+  QCOMPARE( def->valueAsPythonString( "5:1,2,3,4 [EPSG:4326]", context ), u"[{'extent': '1, 2, 3, 4 [EPSG:4326]', 'max_zoom': 5}]"_s );
+  QCOMPARE( def->valueAsPythonString( "5:1,2,3,4[EPSG:4326]::|::5:121774,948723,-264546,492749 [EPSG:3857]", context ), u"[{'extent': '1, 2, 3, 4 [EPSG:4326]', 'max_zoom': 5}, {'extent': '121774, 948723, -264546, 492749 [EPSG:3857]', 'max_zoom': 5}]"_s );
+
+  QVariantList variantValue;
+  variantValue << QVariantMap { { "extent", "1,2,3,4 [EPSG:4326]" }, { "max_zoom", 5 } };
+  variantValue << QVariantMap { { "extent", "121774,948723,-264546,492749 [EPSG:3785]" }, { "max_zoom", 8 } };
+  QCOMPARE( def->valueAsPythonString( variantValue, context ), u"[{'extent': '1, 2, 3, 4 [EPSG:4326]', 'max_zoom': 5}, {'extent': '121774, 948723, -264546, 492749 [EPSG:3785]', 'max_zoom': 8}]"_s );
+
+  QCOMPARE( def->valueAsJsonObject( QVariant(), context ), QVariant() );
+  QVariantMap json { { "max_zoom", 5 }, { u"extent"_s, u"'1,2,3,4 [EPSG:4326]'"_s } };
+  QCOMPARE( def->valueAsJsonObject( "5:1,2,3,4 [EPSG:4326]", context ), QVariantList() << json );
+
+  bool ok = false;
+  QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "5:1,2,3,4", context, ok ), u"5:1,2,3,4 []"_s );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "5:1,2,3,4 [EPSG:4326]", context, ok ), u"5:1,2,3,4 [EPSG:4326]"_s );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( "5:1,2,3,4[EPSG:4326]::|::5:121774,948723,-264546,492749 [EPSG:3857]", context, ok ), u"5:1,2,3,4 [EPSG:4326]::|::5:121774,948723,-264546,492749 [EPSG:3857]"_s );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( variantValue, context, ok ), u"5:1,2,3,4 [EPSG:4326]::|::8:121774,948723,-264546,492749 [EPSG:3785]"_s );
+  QVERIFY( ok );
+
+  def->setDefaultValue( variantValue );
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, u"QgsProcessingParameterTileExtentMaxZoomList('non_optional', '', defaultValue=[{'extent': '1, 2, 3, 4 [EPSG:4326]', 'max_zoom': 5}, {'extent': '121774, 948723, -264546, 492749 [EPSG:3785]', 'max_zoom': 8}])"_s );
+
+  const QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterTileExtentMaxZoomList fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  def.reset( dynamic_cast<QgsProcessingParameterTileExtentMaxZoomList *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast<QgsProcessingParameterTileExtentMaxZoomList *>( def.get() ) );
+
+  // not optional, no default value
+  def = std::make_unique<QgsProcessingParameterTileExtentMaxZoomList>( "non_optional", QString(), QVariant(), false );
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( def->checkValueIsAcceptable( defaultValue ) );
+  QVERIFY( def->checkValueIsAcceptable( "5:-1.1,2,-3,-4" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  // optional
+  def = std::make_unique<QgsProcessingParameterTileExtentMaxZoomList>( "optional", QString(), QString( "5:-1,2,-3,-4" ), true );
+  QVERIFY( def->checkValueIsAcceptable( "5:-1.1,2,-3,-4" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, u"QgsProcessingParameterTileExtentMaxZoomList('optional', '', optional=True, defaultValue=[{'extent': '-1, 2, -4, -3 []', 'max_zoom': 5}])"_s );
+
+  QgsTileExtentMaxZoomRegion region1;
+  region1.maxZoom = 3;
+  region1.extent = QgsReferencedRectangle( QgsRectangle( 1, 2, 3, 4 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QgsTileExtentMaxZoomRegion region2;
+  region2.maxZoom = 4;
+  region2.extent = QgsReferencedRectangle( QgsRectangle( 121774, 948723, -264546, 492749 ), QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+  const QVariant var = QgsProcessingParameterTileExtentMaxZoomList::toVariant( { region1, region2 } );
+  QCOMPARE( var.toList().size(), 2 );
+  QCOMPARE( var.toList().at( 0 ).toMap()["max_zoom"].toInt(), 3 );
+  QCOMPARE( var.toList().at( 0 ).toMap()["extent"].toString(), u"1,3,2,4 [EPSG:4326]"_s );
+  QCOMPARE( var.toList().at( 1 ).toMap()["max_zoom"].toInt(), 4 );
+  QCOMPARE( var.toList().at( 1 ).toMap()["extent"].toString(), u"-264546,121774,492749,948723 [EPSG:3857]"_s );
 }
 
 void TestQgsProcessing::parameterBand()
