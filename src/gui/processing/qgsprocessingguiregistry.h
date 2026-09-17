@@ -36,6 +36,8 @@ class QgsProcessingModelConfigWidgetFactory;
 class QgsProcessingModelConfigWidget;
 class QgsProcessingModelComponent;
 class QgsProcessingGuiInternalModelConfigWidgetFactory;
+class QgsProcessingToolboxAction;
+class QgsProcessingToolboxContextAction;
 
 /**
  * A registry for widgets for use with the Processing framework.
@@ -235,6 +237,82 @@ class GUI_EXPORT QgsProcessingGuiRegistry : public QgsProcessingWidgetContextGen
      */
     QgsProcessingParameterWidgetContext createWidgetContext() override;
 
+    /**
+     * Registers a toolbox \a action for a provider.
+     *
+     * Ownership of \a action is transferred to the registry.
+     *
+     * \see toolboxActionsForProvider()
+     * \see deregisterProviderToolboxActions()
+     * \since QGIS 4.4
+     */
+    void registerProviderToolboxAction( const QString &providerId, QgsProcessingToolboxAction *action SIP_TRANSFER );
+
+    /**
+     * Deregisters all toolbox actions for a provider.
+     *
+     * Any previously registered actions for this provider will be deleted.
+     *
+     * \see registerProviderToolboxAction()
+     * \since QGIS 4.4
+     */
+    void deregisterProviderToolboxActions( const QString &providerId );
+
+    /**
+     * Returns a list of all toolbox actions registered for a provider.
+     *
+     * \see registerProviderToolboxAction()
+     * \since QGIS 4.4
+     */
+    QList< QgsProcessingToolboxAction * > toolboxActionsForProvider( const QString &providerId ) const;
+
+    /**
+     * Registers a toolbox context menu \a action for a provider.
+     *
+     * Ownership of \a action is transferred to the registry.
+     *
+     * \see toolboxContextActionsForProvider()
+     * \see deregisterProviderToolboxContextActions()
+     * \since QGIS 4.4
+     */
+    void registerProviderToolboxContextAction( const QString &providerId, QgsProcessingToolboxContextAction *action SIP_TRANSFER );
+
+    /**
+     * Deregisters all toolbox context menu actions for a provider.
+     *
+     * Any previously registered actions for this provider will be deleted.
+     *
+     * \see registerProviderToolboxContextAction()
+     * \since QGIS 4.4
+     */
+    void deregisterProviderToolboxContextActions( const QString &providerId );
+
+    /**
+     * Deregisters a context menu \a action.
+     *
+     * The action will not be deleted, ownership will be returned to Python.
+     *
+     * \deprecated QGIS 4.4. Use deregisterProviderToolboxContextActions() instead.
+     */
+    Q_DECL_DEPRECATED void deregisterProviderToolboxContextAction( QgsProcessingToolboxContextAction *action SIP_TRANSFERBACK ) SIP_DEPRECATED;
+
+    /**
+     * Returns a list of all toolbox context menu actions registered for a provider.
+     *
+     * \see toolboxContextActions()
+     * \see registerProviderToolboxContextAction()
+     * \since QGIS 4.4
+     */
+    QList< QgsProcessingToolboxContextAction * > toolboxContextActionsForProvider( const QString &providerId ) const;
+
+    /**
+     * Returns a list of all toolbox context menu actions registered.
+     *
+     * \see toolboxContextActionsForProvider()
+     * \since QGIS 4.4
+     */
+    QList< QgsProcessingToolboxContextAction * > toolboxContextActions() const;
+
   private:
 #ifdef SIP_RUN
     QgsProcessingGuiRegistry( const QgsProcessingGuiRegistry &other );
@@ -246,6 +324,9 @@ class GUI_EXPORT QgsProcessingGuiRegistry : public QgsProcessingWidgetContextGen
     std::unique_ptr< QgsProcessingGuiInternalModelConfigWidgetFactory > mModelConfigWidgetFactory;
 
     QgsProcessingWidgetContextGenerator *mWidgetContextGenerator = nullptr;
+
+    QMap< QString, QList< QgsProcessingToolboxAction * > > mProviderToolboxActions;
+    QMap< QString, QList< QgsProcessingToolboxContextAction * > > mProviderToolboxContextActions;
 };
 
 

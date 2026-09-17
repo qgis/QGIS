@@ -38,6 +38,7 @@
 #include "qgsprocessingmodelgroupbox.h"
 #include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingprovideractions.h"
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
 #include "qgsprocessingtininputlayerswidget.h"
 #include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
@@ -120,6 +121,18 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
 {
+  for ( auto it = mProviderToolboxActions.constBegin(); it != mProviderToolboxActions.constEnd(); ++it )
+  {
+    qDeleteAll( it.value() );
+  }
+  mProviderToolboxActions.clear();
+
+  for ( auto it = mProviderToolboxContextActions.constBegin(); it != mProviderToolboxContextActions.constEnd(); ++it )
+  {
+    qDeleteAll( it.value() );
+  }
+  mProviderToolboxContextActions.clear();
+
   const QList<QgsProcessingAlgorithmConfigurationWidgetFactory *> factories = mAlgorithmConfigurationWidgetFactories;
   for ( QgsProcessingAlgorithmConfigurationWidgetFactory *factory : factories )
     removeAlgorithmConfigurationWidgetFactory( factory );
@@ -267,6 +280,62 @@ QgsProcessingParameterWidgetContext QgsProcessingGuiRegistry::createWidgetContex
     return mWidgetContextGenerator->createWidgetContext();
   }
   return QgsProcessingParameterWidgetContext();
+}
+
+void QgsProcessingGuiRegistry::registerProviderToolboxAction( const QString &providerId, QgsProcessingToolboxAction *action )
+{
+  mProviderToolboxActions[providerId].append( action );
+}
+
+void QgsProcessingGuiRegistry::deregisterProviderToolboxActions( const QString &providerId )
+{
+  QList< QgsProcessingToolboxAction * > actions = mProviderToolboxActions.take( providerId );
+  qDeleteAll( actions );
+}
+
+QList<QgsProcessingToolboxAction *> QgsProcessingGuiRegistry::toolboxActionsForProvider( const QString &providerId ) const
+{
+  return mProviderToolboxActions.value( providerId );
+}
+
+void QgsProcessingGuiRegistry::registerProviderToolboxContextAction( const QString &providerId, QgsProcessingToolboxContextAction *action )
+{
+  mProviderToolboxContextActions[providerId].append( action );
+}
+
+void QgsProcessingGuiRegistry::deregisterProviderToolboxContextActions( const QString &providerId )
+{
+  QList< QgsProcessingToolboxContextAction * > actions = mProviderToolboxContextActions.take( providerId );
+  qDeleteAll( actions );
+}
+
+void QgsProcessingGuiRegistry::deregisterProviderToolboxContextAction( QgsProcessingToolboxContextAction *action )
+{
+  for ( auto it = mProviderToolboxContextActions.begin(); it != mProviderToolboxContextActions.end(); ++it )
+  {
+    if ( it.value().contains( action ) )
+    {
+      QList< QgsProcessingToolboxContextAction * > actions = it.value();
+      actions.removeAll( action );
+      mProviderToolboxContextActions.insert( it.key(), actions );
+      break;
+    }
+  }
+}
+
+QList<QgsProcessingToolboxContextAction *> QgsProcessingGuiRegistry::toolboxContextActions() const
+{
+  QList<QgsProcessingToolboxContextAction *> res;
+  for ( auto it = mProviderToolboxContextActions.constBegin(); it != mProviderToolboxContextActions.constEnd(); ++it )
+  {
+    res.append( it.value() );
+  }
+  return res;
+}
+
+QList<QgsProcessingToolboxContextAction *> QgsProcessingGuiRegistry::toolboxContextActionsForProvider( const QString &providerId ) const
+{
+  return mProviderToolboxContextActions.value( providerId );
 }
 
 /// @cond PRIVATE
