@@ -29,10 +29,9 @@ from qgis.core import (
     QgsProcessingProvider,
     QgsRuntimeProfiler,
 )
-from qgis.gui import QgsProcessingToolboxContextAction
+from qgis.gui import QgsGui, QgsProcessingToolboxContextAction
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.gui.ProviderActions import ProviderActions, ProviderContextMenuActions
 from processing.modeler.AddModelFromFileAction import AddModelFromFileAction
 from processing.modeler.CreateNewModelAction import CreateNewModelAction
 from processing.modeler.DeleteModelAction import DeleteModelAction
@@ -87,19 +86,23 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
                     valuetype=Setting.MULTIPLE_FOLDERS,
                 )
             )
-            ProviderActions.registerProviderActions(self, self.actions)
-            ProviderContextMenuActions.registerProviderContextMenuActions(
-                self.contextMenuActions
-            )
+            for action in self.actions:
+                QgsGui.processingGuiRegistry().registerProviderToolboxAction(
+                    self.id(), action
+                )
+            for action in self.contextMenuActions:
+                QgsGui.processingGuiRegistry().registerProviderToolboxContextAction(
+                    self.id(), action
+                )
             ProcessingConfig.readSettings()
             self.refreshAlgorithms()
 
         return True
 
     def unload(self):
-        ProviderActions.deregisterProviderActions(self)
-        ProviderContextMenuActions.deregisterProviderContextMenuActions(
-            self.contextMenuActions
+        QgsGui.processingGuiRegistry().deregisterProviderToolboxActions(self.id())
+        QgsGui.processingGuiRegistry().deregisterProviderToolboxContextActions(
+            self.id()
         )
 
     def modelsFolder(self):
