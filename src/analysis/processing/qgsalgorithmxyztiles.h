@@ -129,6 +129,7 @@ class QgsXyzTilesDirectoryAlgorithm : public QgsXyzTilesBaseAlgorithm
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsXyzTilesDirectoryAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -154,6 +155,7 @@ class QgsXyzTilesMbtilesAlgorithm : public QgsXyzTilesBaseAlgorithm
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsXyzTilesMbtilesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
