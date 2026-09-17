@@ -55,7 +55,7 @@ QString QgsMeshSurfaceToPolygonAlgorithm::displayName() const
 
 QStringList QgsMeshSurfaceToPolygonAlgorithm::tags() const
 {
-  return QObject::tr( "mesh,export,polygon,vector,boundary,bounds" ).split( ',' );
+  return QObject::tr( "mesh,export,polygon,vector,boundary,bounds,surface" ).split( ',' );
 }
 
 QString QgsMeshSurfaceToPolygonAlgorithm::group() const
