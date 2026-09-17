@@ -63,6 +63,7 @@ QString QgsFlowDirectionD8Algorithm::shortHelpString() const
     "This algorithm calculates deterministic 8 (D8) flow directions for each cell in an input elevation raster (DEM).\n\n"
     "Flow direction values are output as 8-neighbor directional indices numbered clockwise starting from North:\n"
     "0 = North, 1 = North-East, 2 = East, 3 = South-East, 4 = South, 5 = South-West, 6 = West, 7 = North-West.\n\n"
+    "Sink/pit cells are assigned a value of -1 in the output, and flat areas are assigned -2.\n\n"
     "Cells with no downslope neighbor or NoData elevation values are assigned nodata in the output.\n\n"
     "This algorithm is a port of the flow direction calculation from SAGA 'Channel Network and Drainage Basins' tool."
   );
@@ -153,7 +154,7 @@ QVariantMap QgsFlowDirectionD8Algorithm::processAlgorithm( const QVariantMap &pa
     for ( int col = 0; col < mLayerWidth; ++col )
     {
       const int dir = QgsRasterAnalysisUtils::steepestGradientDirection( inputBlock.get(), row, col, mCellSizeX, mCellSizeY, true, true );
-      outData[rowOffset + col] = dir == -1 ? outputNoData : static_cast<int16_t>( dir );
+      outData[rowOffset + col] = dir == -3 ? outputNoData : static_cast<int16_t>( dir );
     }
   }
 

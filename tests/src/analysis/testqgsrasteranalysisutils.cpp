@@ -165,19 +165,19 @@ void TestQgsRasterAnalysisUtils::testSteepestGradientDirection()
   QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 1, 1, 10.0, 10.0, true, false ), 2 );
   QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 1, 1, 10.0, 10.0, true, true ), 2 );
 
-  // center cell is NoData -> returns -1
+  // center cell is NoData -> returns -3
   block.setValue( 1, 1, nodata );
-  QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 1, 1, 10.0, 10.0, true, false ), -1 );
+  QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 1, 1, 10.0, 10.0, true, false ), -3 );
   block.setValue( 1, 1, 10.0 );
 
   // Neighbor cell is NoData with noEdges = true vs false
   block.setValue( 0, 1, nodata );                                                                            // Set North neighbor to NoData
-  QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 1, 1, 10.0, 10.0, true, true ), -1 ); // noEdges = true fails
+  QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 1, 1, 10.0, 10.0, true, true ), -3 ); // noEdges = true fails
   QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 1, 1, 10.0, 10.0, true, false ), 2 ); // noEdges = false ignores North, finds East
   block.setValue( 0, 1, 10.0 );                                                                              // Restore North neighbor
 
   // Edge cell (0, 0) with noEdges = true vs false
-  QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 0, 0, 10.0, 10.0, true, true ), -1 ); // Edge cell fails when noEdges = true
+  QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 0, 0, 10.0, 10.0, true, true ), -3 ); // Edge cell fails when noEdges = true
   block.setValue( 0, 1, 5.0 );                                                                               // East of (0, 0)
   QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 0, 0, 10.0, 10.0, true, false ), 2 ); // Finds East on edge when noEdges = false
 
@@ -198,6 +198,11 @@ void TestQgsRasterAnalysisUtils::testSteepestGradientDirection()
 
   // With down = false -> finds neighbor with maximum gradient (smallest uphill rise = North, Dir 0)
   QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 1, 1, 10.0, 10.0, false, false ), 0 );
+
+  // flat cell
+  block.setValue( 1, 1, 20.0 );
+  block.setValue( 0, 1, 20.0 );
+  QCOMPARE( QgsRasterAnalysisUtils::steepestGradientDirection( &block, 1, 1, 10.0, 10.0, false, false ), -2 );
 }
 
 QGSTEST_MAIN( TestQgsRasterAnalysisUtils )

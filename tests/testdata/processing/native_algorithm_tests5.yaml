@@ -1102,7 +1102,7 @@ tests:
       NODATA: -9999
     results:
       OUTPUT:
-        hash: 3e98c57138159539764242f0b131676cf01a8dbcc21af7723c0fb267
+        hash: 32d180a9491d529081a31cfd20070ea5b3f931ec680941ac9ed7afb6
         type: rasterhash
 
   - algorithm: native:flowconnectivity
