@@ -80,7 +80,6 @@ class GenericAlgorithmsTest(QgisTestCase):
 
         if alg.provider().id() in ("qgis", "native", "3d", "pdal"):
             if alg.id() not in (
-                "native:intersection",
                 "native:surfacetopolygon",
                 "qgis:advancedpythonfieldcalculator",
                 "qgis:barplot",
