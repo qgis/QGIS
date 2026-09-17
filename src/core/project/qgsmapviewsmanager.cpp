@@ -33,7 +33,12 @@ bool QgsMapViewsManager::readXml( const QDomElement &element, const QDomDocument
   clear();
 
   QgsReadWriteContext readWriteContext;
-  readWriteContext.setPathResolver( qobject_cast<QgsProject *>( parent() )->pathResolver() );
+
+  if ( QgsProject *project = qobject_cast<QgsProject *>( parent() ) )
+  {
+    readWriteContext.setPathResolver( project->pathResolver() );
+  }
+
   QDomElement elem3DMaps = element.firstChildElement( u"mapViewDocks3D"_s );
   if ( !elem3DMaps.isNull() )
   {
