@@ -537,6 +537,11 @@ QString QgsXyzTilesDirectoryAlgorithm::shortHelpString() const
   );
 }
 
+QString QgsXyzTilesDirectoryAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates XYZ tiles from the project as a structured directory hierarchy ({z}/{x}/{y}.png/jpg." );
+}
+
 QgsXyzTilesDirectoryAlgorithm *QgsXyzTilesDirectoryAlgorithm::createInstance() const
 {
   return new QgsXyzTilesDirectoryAlgorithm();
@@ -812,6 +817,12 @@ QString QgsXyzTilesMbtilesAlgorithm::shortHelpString() const
     "All visible map layers from the project will be rendered into tiles across the specified extent and zoom range."
   );
 }
+
+QString QgsXyzTilesMbtilesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates XYZ tiles from the project as a single, portable MBTiles (SQLite) database." );
+}
+
 
 QgsXyzTilesMbtilesAlgorithm *QgsXyzTilesMbtilesAlgorithm::createInstance() const
 {
