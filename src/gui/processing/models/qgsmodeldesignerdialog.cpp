@@ -743,6 +743,84 @@ void QgsModelDesignerDialog::saveInProject()
   QgsProject::instance()->setDirty( true );
 }
 
+bool QgsModelDesignerDialog::saveModel( bool saveAs )
+{
+  if ( !validateSave( SaveAction::SaveAsFile ) )
+    return false;
+
+  const bool modelNameMatchedFileName = mModel->modelNameMatchesFilePath();
+  QString fileName;
+  if ( !mModel->sourceFilePath().isEmpty() && !saveAs )
+  {
+    fileName = mModel->sourceFilePath();
+  }
+  else
+  {
+    QString initialPath;
+    if ( !mModel->sourceFilePath().isEmpty() )
+    {
+      initialPath = mModel->sourceFilePath();
+    }
+    else if ( !mModel->name().isEmpty() )
+    {
+      initialPath = u"%1/%2.model3"_s.arg( QgsProcessingUtils::modelFolders()[0], mModel->name() );
+    }
+    else
+    {
+      initialPath = QgsProcessingUtils::modelFolders()[0];
+    }
+
+    fileName = QFileDialog::getSaveFileName( this, tr( "Save Model" ), initialPath, tr( "Processing models (*.model3 *.MODEL3)" ) );
+    if ( fileName.isEmpty() )
+    {
+      return false;
+    }
+
+    fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { "model3" } );
+    mModel->setSourceFilePath( fileName );
+
+    if ( mModel->name().isEmpty() || mModel->name() == tr( "model" ) )
+    {
+      setModelName( QFileInfo( fileName ).baseName() );
+    }
+    else if ( saveAs && modelNameMatchedFileName )
+    {
+      // if saving as, and the model name used to match the filename, then automatically update the
+      // model name to match the new file name
+      setModelName( QFileInfo( fileName ).baseName() );
+    }
+  }
+
+  if ( !mModel->toFile( fileName ) )
+  {
+    if ( saveAs )
+    {
+      QMessageBox::warning( this, tr( "Save Model" ), tr( "Unable to save edits (probably you do not have permission to write to this location)." ) );
+    }
+    else
+    {
+      QMessageBox::warning(
+        this,
+        tr( "Save Model" ),
+        tr(
+          "This model can't be saved in its original location (probably you do not "
+          "have permission to do it). Please, use the 'Save as…' option."
+        )
+      );
+    }
+    return false;
+  }
+
+  emit modelUpdated();
+  if ( saveAs )
+  {
+    mMessageBar->pushMessage( QString(), tr( "Model was saved to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ), Qgis::MessageLevel::Success, 5 );
+  }
+
+  setDirty( false );
+  return true;
+}
+
 void QgsModelDesignerDialog::zoomIn()
 {
   mView->setTransformationAnchor( QGraphicsView::NoAnchor );
