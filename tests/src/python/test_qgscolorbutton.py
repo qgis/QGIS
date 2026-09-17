@@ -38,6 +38,39 @@ class TestQgsColorButton(QgisTestCase):
         # ensure that only the alpha channel has changed - not the other color components
         self.assertEqual(button.color(), QColor(255, 100, 200, 0))
 
+        # and back to opaque
+        button.setToOpaqueColor()
+        self.assertEqual(button.color(), QColor(255, 100, 200, 255))
+
+    def testNoColorMenuAction(self):
+        """
+        Test that the "no color" menu action flips to "opaque color" when the color
+        is totally transparent
+        """
+        button = QgsColorButton()
+        button.setAllowOpacity(True)
+        button.setShowNoColor(True)
+        button.setNoColorString("Transparent Fill")
+        button.setOpaqueColorString("Opaque Fill")
+        self.assertEqual(button.noColorString(), "Transparent Fill")
+        self.assertEqual(button.opaqueColorString(), "Opaque Fill")
+
+        def menu_texts():
+            button.menu().aboutToShow.emit()
+            return [a.text() for a in button.menu().actions()]
+
+        button.setColor(QColor(255, 100, 200, 255))
+        self.assertIn("Transparent Fill", menu_texts())
+        self.assertNotIn("Opaque Fill", menu_texts())
+
+        button.setColor(QColor(255, 100, 200, 0))
+        self.assertIn("Opaque Fill", menu_texts())
+        self.assertNotIn("Transparent Fill", menu_texts())
+
+        # a null color is not "totally transparent" - it has no color at all
+        button.setToNull()
+        self.assertIn("Transparent Fill", menu_texts())
+
     def testNulling(self):
         """
         Test clearing colors to null

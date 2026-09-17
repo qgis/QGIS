@@ -126,11 +126,13 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mBackgroundColorButton->setContext( u"symbology"_s );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "Transparent Background" ) );
+  mBackgroundColorButton->setOpaqueColorString( tr( "Opaque Background" ) );
   mDiagramPenColorButton->setColorDialogTitle( tr( "Select Pen Color" ) );
   mDiagramPenColorButton->setAllowOpacity( true );
   mDiagramPenColorButton->setContext( u"symbology"_s );
   mDiagramPenColorButton->setShowNoColor( true );
   mDiagramPenColorButton->setNoColorString( tr( "Transparent Stroke" ) );
+  mDiagramPenColorButton->setOpaqueColorString( tr( "Opaque Stroke" ) );
 
   mMaxValueSpinBox->setShowClearButton( false );
   mSizeSpinBox->setClearValue( 5 );

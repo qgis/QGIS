@@ -468,6 +468,7 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   mNullColorButton->setColorDialogTitle( tr( "Color For Null Values" ) );
   mNullColorButton->setContext( u"symbology"_s );
   mNullColorButton->setNoColorString( tr( "Transparent" ) );
+  mNullColorButton->setOpaqueColorString( tr( "Opaque" ) );
 
   if ( const QgsColorRampTransformer *colorTransform = dynamic_cast<const QgsColorRampTransformer *>( initialState.transformer() ) )
   {
