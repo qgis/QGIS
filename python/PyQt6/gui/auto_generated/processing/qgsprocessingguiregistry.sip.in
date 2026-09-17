@@ -247,6 +247,95 @@ Register a Processing widget context.
 .. versionadded:: 4.4
 %End
 
+    void registerProviderToolboxAction( const QString &providerId, QgsProcessingToolboxAction *action /Transfer/ );
+%Docstring
+Registers a toolbox ``action`` for a provider.
+
+Ownership of ``action`` is transferred to the registry.
+
+.. seealso:: :py:func:`toolboxActionsForProvider`
+
+.. seealso:: :py:func:`deregisterProviderToolboxActions`
+
+.. versionadded:: 4.4
+%End
+
+    void deregisterProviderToolboxActions( const QString &providerId );
+%Docstring
+Deregisters all toolbox actions for a provider.
+
+Any previously registered actions for this provider will be deleted.
+
+.. seealso:: :py:func:`registerProviderToolboxAction`
+
+.. versionadded:: 4.4
+%End
+
+    QList< QgsProcessingToolboxAction * > toolboxActionsForProvider( const QString &providerId ) const;
+%Docstring
+Returns a list of all toolbox actions registered for a provider.
+
+.. seealso:: :py:func:`registerProviderToolboxAction`
+
+.. versionadded:: 4.4
+%End
+
+    void registerProviderToolboxContextAction( const QString &providerId, QgsProcessingToolboxContextAction *action /Transfer/ );
+%Docstring
+Registers a toolbox context menu ``action`` for a provider.
+
+Ownership of ``action`` is transferred to the registry.
+
+.. seealso:: :py:func:`toolboxContextActionsForProvider`
+
+.. seealso:: :py:func:`deregisterProviderToolboxContextActions`
+
+.. versionadded:: 4.4
+%End
+
+    void deregisterProviderToolboxContextActions( const QString &providerId );
+%Docstring
+Deregisters all toolbox context menu actions for a provider.
+
+Any previously registered actions for this provider will be deleted.
+
+.. seealso:: :py:func:`registerProviderToolboxContextAction`
+
+.. versionadded:: 4.4
+%End
+
+ void deregisterProviderToolboxContextAction( QgsProcessingToolboxContextAction *action /TransferBack/ ) /Deprecated="Since 4.4. Use deregisterProviderToolboxContextActions() instead."/;
+%Docstring
+Deregisters a context menu ``action``.
+
+The action will not be deleted, ownership will be returned to Python.
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsProcessingGuiRegistry.deregisterProviderToolboxContextActions` instead.
+%End
+
+    QList< QgsProcessingToolboxContextAction * > toolboxContextActionsForProvider( const QString &providerId ) const;
+%Docstring
+Returns a list of all toolbox context menu actions registered for a
+provider.
+
+.. seealso:: :py:func:`toolboxContextActions`
+
+.. seealso:: :py:func:`registerProviderToolboxContextAction`
+
+.. versionadded:: 4.4
+%End
+
+    QList< QgsProcessingToolboxContextAction * > toolboxContextActions() const;
+%Docstring
+Returns a list of all toolbox context menu actions registered.
+
+.. seealso:: :py:func:`toolboxContextActionsForProvider`
+
+.. versionadded:: 4.4
+%End
+
   private:
     QgsProcessingGuiRegistry( const QgsProcessingGuiRegistry &other );
 };
