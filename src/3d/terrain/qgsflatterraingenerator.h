@@ -53,6 +53,7 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 
   private:
     void updateTilingScheme();
+    Qt3DCore::QEntity *createEntity( QgsChunkNode *node, QgsTerrainGenerator::TerrainTextureResources resources, Qt3DCore::QEntity *parent );
 
     QgsCoordinateReferenceSystem mCrs;
 };

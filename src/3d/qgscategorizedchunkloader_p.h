@@ -68,13 +68,40 @@ class QgsCategorizedChunkLoader : public QgsQuadtreeChunkLoader
     QFuture<QVector<QgsChunkNode *>> createChildren( QgsChunkNode *node ) override;
 
   private:
+    //! Contains loaded nodes and whether they are leaf nodes or not
+    struct NodeIsLeafMap
+    {
+        QHash< QString, bool > map;
+        QMutex mutex;
+    };
+
+    //! Data used in loading a single chunk
+    struct ChunkLoadingContext
+    {
+        // We need shared_ptr, because we capture this in std::function. We could
+        // get around this with std::move_only_function (C++23 feature) or by
+        // returning a custom allocated object with virtual methods.
+        QgsChunkNode *node;
+        std::shared_ptr<QgsVectorLayerFeatureSource> source;
+        Qgs3DRenderContext renderCtx;
+        std::vector<std::shared_ptr<QgsFeature3DHandler>> handlers;
+        //! hashtable for faster access to symbols
+        QHash<QString, QgsFeature3DHandler *> featuresHandlerHash;
+        std::shared_ptr<QgsExpression> expression;
+        int attributeIdx = -1;
+        int maxFeatures;
+        std::shared_ptr<NodeIsLeafMap> nodesAreLeafs;
+    };
+
+    static void loadChunkInWorker( QPromise<ChunkLoadingContext> &promise, ChunkLoadingContext ctx, QgsFeatureRequest request );
+    Qt3DCore::QEntity *createEntity( ChunkLoadingContext ctx, Qt3DCore::QEntity *parent );
+    static void processFeature( ChunkLoadingContext &ctx, const QgsFeature &feature );
+
     Qgs3DRenderContext mRenderContext;
     const QgsVectorLayer *mLayer = nullptr;
     const Qgs3DCategoryList *mCategories = nullptr;
     QString mAttributeName;
-    //! Contains loaded nodes and whether they are leaf nodes or not
-    QHash< QString, bool > mNodesAreLeafs;
-    QMutex mNodesAreLeafsMutex;
+    std::shared_ptr<NodeIsLeafMap> mNodesAreLeafs;
     int mMaxFeatures = 0;
 
     friend class QgsCategorizedChunkedEntity;

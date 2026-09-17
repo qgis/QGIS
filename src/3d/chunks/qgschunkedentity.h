@@ -46,6 +46,10 @@ class QgsRayCastContext;
 struct QgsChunkLoaderResult;
 
 
+/**
+ * \ingroup qgis_3d
+ * \brief Utility wrapper for currently running job started by QgsChunkedEntity.
+ */
 struct QgsChunkQueueJob
 {
     enum class Type

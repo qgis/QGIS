@@ -27,12 +27,24 @@
 // version without notice, or even be removed.
 //
 
+#include <functional>
+#include <limits>
+#include <memory>
+#include <vector>
+
 #include "qgs3drendercontext.h"
 #include "qgsabstractfeaturebasedchunkedentity.h"
+#include "qgsbillboardgeometry.h"
 #include "qgschunkloader.h"
+#include "qgscoordinatetransform.h"
+#include "qgslinestring.h"
 #include "qgstextformat.h"
+#include "qgsvector3d.h"
 
 #include <QImage>
+#include <QPromise>
+#include <QSize>
+#include <QVector3D>
 
 #define SIP_NO_FILE
 
@@ -79,8 +91,8 @@ class QgsAnnotationLayerChunkLoader : public QgsQuadtreeChunkLoader
     QgsAnnotationLayer *mLayer = nullptr;
     int mLeafLevel = 0;
 
-    // Each worker thread loading a chunk copies this data.
-    struct
+    //! Settings for the loader, copied by each worker thread loading a chunk.
+    struct LoaderData
     {
         Qgis::AltitudeClamping mClamping = Qgis::AltitudeClamping::Relative;
         double mZOffset = 0;
@@ -88,7 +100,51 @@ class QgsAnnotationLayerChunkLoader : public QgsQuadtreeChunkLoader
         QColor mCalloutLineColor;
         double mCalloutLineWidth = 2;
         QgsTextFormat mTextFormat;
-    } mData;
+    };
+
+    // Each worker thread loading a chunk copies this data.
+    LoaderData mData;
+
+  private:
+    //! A set of picture billboards sharing the same texture.
+    struct PictureBillboards
+    {
+        QImage image;
+        QVector< QVector3D > positions;
+        QVector< QSizeF > sizes;
+        Qgis::BillboardScaleMode scaleMode = Qgis::BillboardScaleMode::ViewIndependent;
+    };
+
+    //! Everything a worker thread loads for a chunk and is later used for entity creation.
+    struct ChunkData
+    {
+        QgsChunkNode *node = nullptr;
+        QString layerName;
+        QgsVector3D chunkOrigin;
+        Qgs3DRenderContext renderContext;
+        QVector< QgsBillboardGeometry::BillboardAtlasData > billboardPositions;
+        QVector< QgsBillboardGeometry::BillboardAtlasData > textBillboardPositions;
+        QImage billboardAtlas;
+        QImage textBillboardAtlas;
+        QVector< PictureBillboards > pictureBillboards;
+        QVector< QgsLineString > calloutLines;
+        double zMin = std::numeric_limits< double >::max();
+        double zMax = std::numeric_limits< double >::lowest();
+    };
+
+    static void loadChunkInWorker(
+      QPromise<ChunkData> &promise,
+      QgsChunkNode *node,
+      const QgsRectangle &rect,
+      const QgsCoordinateTransform &layerToMapTransform,
+      const QString &layerName,
+      const std::vector< std::unique_ptr< QgsAnnotationItem > > &itemsToRender,
+      const QgsVector3D &chunkOrigin,
+      const Qgs3DRenderContext &renderCtx,
+      const LoaderData &data
+    );
+
+    Qt3DCore::QEntity *createEntity( const ChunkData &chunkData, Qt3DCore::QEntity *parent );
 };
 
 /**

@@ -97,6 +97,9 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     int mResolution = 16;
     //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks
     float mSkirtHeight = 10.f;
+
+  private:
+    Qt3DCore::QEntity *createEntity( QByteArray heightMap, TerrainTextureResources textureResources, QgsChunkNode *node, Qt3DCore::QEntity *parent );
 };
 
 

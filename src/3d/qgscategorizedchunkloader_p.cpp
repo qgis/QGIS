@@ -15,6 +15,8 @@
 
 #include "qgscategorizedchunkloader_p.h"
 
+#include <functional>
+
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
@@ -50,6 +52,7 @@ QgsCategorizedChunkLoader::QgsCategorizedChunkLoader( const Qgs3DRenderContext &
   , mLayer( vectorLayer )
   , mCategories( &renderer->categories() )
   , mAttributeName( renderer->classAttribute() )
+  , mNodesAreLeafs( std::make_shared<NodeIsLeafMap>() )
   , mMaxFeatures( maxFeatures )
 {
   if ( context.crs().type() == Qgis::CrsType::Geocentric )
@@ -78,22 +81,7 @@ QgsCategorizedChunkLoader::QgsCategorizedChunkLoader( const Qgs3DRenderContext &
 
 QgsCategorizedChunkLoader::~QgsCategorizedChunkLoader() = default;
 
-struct ChunkLoadingContext
-{
-    // We need shared_ptr, because we capture this in std::function. We could
-    // get around this with std::move_only_function (C++23 feature) or by
-    // returning a custom allocated object with virtual methods.
-    QgsChunkNode *node;
-    std::shared_ptr<QgsVectorLayerFeatureSource> source;
-    Qgs3DRenderContext renderCtx;
-    std::vector<std::shared_ptr<QgsFeature3DHandler>> handlers;
-    //! hashtable for faster access to symbols
-    QHash<QString, QgsFeature3DHandler *> featuresHandlerHash;
-    std::shared_ptr<QgsExpression> expression;
-    int attributeIdx = -1;
-};
-
-static void processFeature( ChunkLoadingContext &ctx, const QgsFeature &feature )
+void QgsCategorizedChunkLoader::processFeature( ChunkLoadingContext &ctx, const QgsFeature &feature )
 {
   ctx.renderCtx.expressionContext().setFeature( feature );
 
@@ -134,6 +122,8 @@ QFuture<QgsChunkLoaderResult> QgsCategorizedChunkLoader::loadChunk( QgsChunkNode
   ctx.node = node;
   ctx.renderCtx = mRenderContext; // Copy since we'll be mutating it
   ctx.source = std::make_unique<QgsVectorLayerFeatureSource>( mLayer );
+  ctx.nodesAreLeafs = mNodesAreLeafs;
+  ctx.maxFeatures = mMaxFeatures;
 
   QgsExpressionContext exprContext;
   exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
@@ -194,93 +184,98 @@ QFuture<QgsChunkLoaderResult> QgsCategorizedChunkLoader::loadChunk( QgsChunkNode
     request.setFilterExpression( rendererFilter );
   }
 
-  QPointer<QgsCategorizedChunkLoader> weakThis = this;
-  return QtConcurrent::run( [request, weakThis, ctx = std::move( ctx ), maxFeatures = mMaxFeatures]( QPromise<QgsChunkLoaderResult> &promise ) mutable {
-    const QgsScopedEvent event( u"3D"_s, u"Categorized chunk load"_s );
-    QgsFeature feature;
-    QgsFeatureIterator featureIt = ctx.source->getFeatures( request );
-    int featureCount = 0;
-    bool featureLimitReached = false;
-    while ( featureIt.nextFeature( feature ) )
-    {
-      if ( promise.isCanceled() )
-      {
-        break;
-      }
-
-      if ( ++featureCount > maxFeatures )
-      {
-        featureLimitReached = true;
-        break;
-      }
-
-      processFeature( ctx, feature );
-    }
-    bool nodeIsLeaf = false;
-    if ( !featureLimitReached )
-    {
-      QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( ctx.node->tileId().text() ), 3 );
-
-      if ( featureCount == 0 || std::max<double>( ctx.node->box3D().width(), ctx.node->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
-        nodeIsLeaf = true;
-    }
-    QgsThreadingUtils::runOnMainThread( [weakThis, nodeIsLeaf, key = ctx.node->tileId().text()]() {
-      if ( weakThis )
-      {
-        QMutexLocker<QMutex> locker( &weakThis->mNodesAreLeafsMutex );
-        weakThis->mNodesAreLeafs[key] = nodeIsLeaf;
-      }
-    } );
-
-    promise.addResult( QgsChunkLoaderResult { [ctx = std::move( ctx )]( Qt3DCore::QEntity *parent ) -> Qt3DCore::QEntity * {
-      QGIS_CHECK_MAIN_THREAD_ACCESS
-      long long featureCount = 0;
-      for ( const auto &featureHandler : ctx.handlers )
-      {
-        featureCount += featureHandler->featureCount();
-      }
-      if ( featureCount == 0 )
-      {
-        // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
-        return nullptr;
-      }
-
-      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
-      float zMin = std::numeric_limits<float>::max();
-      float zMax = std::numeric_limits<float>::lowest();
-      for ( const auto &featureHandler : ctx.handlers )
-      {
-        featureHandler->finalize( entity, ctx.renderCtx );
-        if ( featureHandler->zMinimum() < zMin )
-        {
-          zMin = featureHandler->zMinimum();
-        }
-        if ( featureHandler->zMaximum() > zMax )
-        {
-          zMax = featureHandler->zMaximum();
-        }
-      }
-
-      // fix the vertical range of the node from the estimated vertical range to the true range
-      if ( zMin != std::numeric_limits<float>::max() && zMax != std::numeric_limits<float>::lowest() )
-      {
-        QgsBox3D box = ctx.node->box3D();
-        box.setZMinimum( zMin );
-        box.setZMaximum( zMax );
-        ctx.node->setExactBox3D( box );
-        ctx.node->updateParentBoundingBoxesRecursively();
-      }
-
-      return entity;
-    } } );
+  return QtConcurrent::run( &QgsCategorizedChunkLoader::loadChunkInWorker, std::move( ctx ), request ).then( this, [this]( ChunkLoadingContext ctx ) {
+    return QgsChunkLoaderResult { std::bind_front( &QgsCategorizedChunkLoader::createEntity, this, ctx ) };
   } );
+}
+
+void QgsCategorizedChunkLoader::loadChunkInWorker( QPromise<ChunkLoadingContext> &promise, ChunkLoadingContext ctx, QgsFeatureRequest request )
+{
+  const QgsScopedEvent event( u"3D"_s, u"Categorized chunk load"_s );
+  QgsFeature feature;
+  QgsFeatureIterator featureIt = ctx.source->getFeatures( request );
+  int featureCount = 0;
+  bool featureLimitReached = false;
+  while ( featureIt.nextFeature( feature ) )
+  {
+    if ( promise.isCanceled() )
+    {
+      break;
+    }
+
+    if ( ++featureCount > ctx.maxFeatures )
+    {
+      featureLimitReached = true;
+      break;
+    }
+
+    processFeature( ctx, feature );
+  }
+  bool nodeIsLeaf = false;
+  if ( !featureLimitReached )
+  {
+    QgsDebugMsgLevel( u"All features fetched for node: %1"_s.arg( ctx.node->tileId().text() ), 3 );
+
+    if ( featureCount == 0 || std::max<double>( ctx.node->box3D().width(), ctx.node->box3D().height() ) < QgsVectorLayer3DTilingSettings::maximumLeafExtent() )
+      nodeIsLeaf = true;
+  }
+
+  {
+    QMutexLocker<QMutex> locker( &ctx.nodesAreLeafs->mutex );
+    ctx.nodesAreLeafs->map[ctx.node->tileId().text()] = nodeIsLeaf;
+  }
+
+  promise.addResult( std::move( ctx ) );
+}
+
+Qt3DCore::QEntity *QgsCategorizedChunkLoader::createEntity( ChunkLoadingContext ctx, Qt3DCore::QEntity *parent )
+{
+  QGIS_CHECK_MAIN_THREAD_ACCESS
+  long long featureCount = 0;
+  for ( const auto &featureHandler : ctx.handlers )
+  {
+    featureCount += featureHandler->featureCount();
+  }
+  if ( featureCount == 0 )
+  {
+    // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
+    return nullptr;
+  }
+
+  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+  float zMin = std::numeric_limits<float>::max();
+  float zMax = std::numeric_limits<float>::lowest();
+  for ( const auto &featureHandler : ctx.handlers )
+  {
+    featureHandler->finalize( entity, ctx.renderCtx );
+    if ( featureHandler->zMinimum() < zMin )
+    {
+      zMin = featureHandler->zMinimum();
+    }
+    if ( featureHandler->zMaximum() > zMax )
+    {
+      zMax = featureHandler->zMaximum();
+    }
+  }
+
+  // fix the vertical range of the node from the estimated vertical range to the true range
+  if ( zMin != std::numeric_limits<float>::max() && zMax != std::numeric_limits<float>::lowest() )
+  {
+    QgsBox3D box = ctx.node->box3D();
+    box.setZMinimum( zMin );
+    box.setZMaximum( zMax );
+    ctx.node->setExactBox3D( box );
+    ctx.node->updateParentBoundingBoxesRecursively();
+  }
+
+  return entity;
 }
 
 QFuture<QVector<QgsChunkNode *>> QgsCategorizedChunkLoader::createChildren( QgsChunkNode *node )
 {
   {
-    QMutexLocker<QMutex> locker( &mNodesAreLeafsMutex );
-    if ( mNodesAreLeafs.value( node->tileId().text(), false ) )
+    QMutexLocker<QMutex> locker( &mNodesAreLeafs->mutex );
+    if ( mNodesAreLeafs->map.value( node->tileId().text(), false ) )
       return QtFuture::makeReadyValueFuture( QVector<QgsChunkNode *> {} );
   }
 

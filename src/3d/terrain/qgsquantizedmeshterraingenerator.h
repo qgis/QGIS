@@ -15,6 +15,7 @@
 
 #pragma once
 
+#include "qgs3drendercontext.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
 #include "qgsquantizedmeshdataprovider.h"
@@ -76,4 +77,8 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     QgsTiledSceneIndex mIndex;
     QgsRectangle mMapExtent;
     QgsTileXYZ nodeIdToTile( QgsChunkNodeId nodeId ) const;
+    static QgsTerrainTileEntity *loadEntityInWorker(
+      QgsChunkNode *node, Qgs3DRenderContext renderCtx, QgsTiledSceneIndex index, QgsCoordinateTransform tileCrsToMapCrs, double vertScale, bool shadingEnabled, long long tileId, QgsVector3D chunkOrigin
+    );
+    Qt3DCore::QEntity *finishEntity( QgsTerrainTileEntity *entity, QgsTerrainGenerator::TerrainTextureResources textureResources, Qt3DCore::QEntity *parent );
 };
