@@ -87,6 +87,14 @@ class CORE_EXPORT QgsFutureUtils
     static QFuture<void> clone( QFuture<void> base );
 
     /**
+     * Runs future.cancelChain() if supported by Qt version, future.cancel()
+     * otherwise.
+     *
+     * \since QGIS 4.4
+     */
+    static void cancelChain( QFuture<void> future );
+
+    /**
      * Converts multiple futures into a single future that will finish when all
      * its parts have finished. Like QtFuture::whenAll, but more ergonomic.
      *
