@@ -1193,3 +1193,121 @@ tests:
       JUNCTIONS:
         name: expected/junctions_from_dem.gml
         type: vector
+
+  - algorithm: native:statisticsbycategories
+    name: stats by category
+    params:
+      VALUES_FIELD_NAME: id
+      CATEGORIES_FIELD_NAME: id2
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/stats_by_category.gml
+        type: vector
+        pk: id2
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:statisticsbycategories
+    name: Stats by cat (float field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: floatval
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_float.gml
+        type: vector
+        pk: name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:statisticsbycategories
+    name: Stats by cat (string field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: name
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_string.gml
+        type: vector
+        pk: intval
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:statisticsbycategories
+    name: Stats by cat (two category fields)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: floatval
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_two_fields.gml
+        type: vector
+        pk:
+          - intval
+          - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:statisticsbycategories
+    name: Stats by cat (no value field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_no_value.gml
+        type: vector
+        pk:
+          - intval
+          - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:statisticsbycategories
+    name: Stats by cat (date field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - date
+      INPUT:
+        name: custom/datetimes.tab
+        type: vector
+      VALUES_FIELD_NAME: date
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_date.gml
+        type: vector
+        pk: date
+        compare:
+          fields:
+            fid: skip
+            date:
+              cast: str
+            min:
+              cast: str
+            max:
+              cast: str

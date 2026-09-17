@@ -304,6 +304,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsplitlinesbylength.cpp
   processing/qgsalgorithmsplitvectorlayer.cpp
   processing/qgsalgorithmsplitwithlines.cpp
+  processing/qgsalgorithmstatisticsbycategories.cpp
   processing/qgsalgorithmstdbscanclustering.cpp
   processing/qgsalgorithmstrahlerorder.cpp
   processing/qgsalgorithmstringconcatenation.cpp
