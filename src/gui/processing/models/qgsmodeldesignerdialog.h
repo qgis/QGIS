@@ -168,8 +168,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     // cppcheck-suppress pureVirtualCall
     virtual void exportAsScriptAlgorithm() = 0;
     // cppcheck-suppress pureVirtualCall
-    virtual bool saveModel( bool saveAs = false ) = 0;
-    // cppcheck-suppress pureVirtualCall
     virtual QgsProcessingAlgorithmWidgetBase *createExecutionWidget() = 0 SIP_TRANSFERBACK;
 
     /**
@@ -246,6 +244,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void cancelRunningModel();
 
   private:
+    bool saveModel( bool saveAs = false );
+
     std::unique_ptr<QgsProcessingModelAlgorithm> mModel;
 
     QgsScreenHelper *mScreenHelper = nullptr;

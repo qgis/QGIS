@@ -134,8 +134,6 @@ Emitted when the model is updated.
 
     virtual void exportAsScriptAlgorithm() = 0;
 
-    virtual bool saveModel( bool saveAs = false ) = 0;
-
     virtual QgsProcessingAlgorithmWidgetBase *createExecutionWidget() = 0 /TransferBack/;
 
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
