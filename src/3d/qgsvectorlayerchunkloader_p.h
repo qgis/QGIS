@@ -32,6 +32,7 @@
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
+#include "qgsvector3d.h"
 
 #define SIP_NO_FILE
 
@@ -83,9 +84,7 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
     QgsChunkNodeId mRootNodeId;
     QgsCoordinateTransform mCrsToLatLon;
 
-    double mRadiusX = 0;
-    double mRadiusY = 0;
-    double mRadiusZ = 0;
+    QgsVector3D mRadius;
 };
 
 

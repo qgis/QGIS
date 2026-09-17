@@ -18,7 +18,6 @@
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
-#include "qgsorientedbox3d.h"
 #include "qgsvector3d.h"
 
 #include <QString>
@@ -38,7 +37,7 @@ QgsRectangle QgsGlobeUtils::nodeIdToLonLatRect( QgsChunkNodeId id )
   return QgsRectangle( lonMin, latMin, lonMin + tileSize, latMin + tileSize );
 }
 
-QgsChunkNodeId QgsGlobeUtils::tileIdForExtent( const QgsRectangle &lonLatExtent )
+QgsChunkNodeId QgsGlobeUtils::findSamllestIdContainingExtent( const QgsRectangle &lonLatExtent )
 {
   QgsChunkNodeId id( 0, 0, 0 );
   if ( !lonLatExtent.isValid() )
@@ -64,13 +63,18 @@ QgsChunkNodeId QgsGlobeUtils::tileIdForExtent( const QgsRectangle &lonLatExtent 
   return id;
 }
 
-QgsBox3D QgsGlobeUtils::nodeIdToBox3D( QgsChunkNodeId id, const QgsCoordinateTransform &crsToLatLon, double radiusX, double radiusY, double radiusZ )
+QgsVector3D QgsGlobeUtils::ellipsoidRadius( const QgsCoordinateTransform &globeCrsToLatLon )
 {
-  if ( id.d == 0 )
-    return QgsBox3D( -radiusX, -radiusY, -radiusZ, radiusX, radiusY, radiusZ );
+  return QgsVector3D(
+    globeCrsToLatLon.transform( QgsVector3D( 0, 0, 0 ), Qgis::TransformDirection::Reverse ).x(),
+    globeCrsToLatLon.transform( QgsVector3D( 90, 0, 0 ), Qgis::TransformDirection::Reverse ).y(),
+    globeCrsToLatLon.transform( QgsVector3D( 0, 90, 0 ), Qgis::TransformDirection::Reverse ).z()
+  );
+}
 
-  if ( id.d == 1 )
-    return id.x == 0 ? QgsBox3D( -radiusX, -radiusY, -radiusZ, radiusX, 0, radiusZ ) : QgsBox3D( -radiusX, 0, -radiusZ, radiusX, radiusY, radiusZ );
+QgsBox3D QgsGlobeUtils::nodeIdToBox3D( QgsChunkNodeId id, const QgsCoordinateTransform &globeCrsToLatLon )
+{
+  Q_ASSERT( id.d >= 2 );
 
   const QgsRectangle rect = nodeIdToLonLatRect( id );
   const QVector<QgsVector3D> corners = {
@@ -85,7 +89,7 @@ QgsBox3D QgsGlobeUtils::nodeIdToBox3D( QgsChunkNodeId id, const QgsCoordinateTra
   {
     try
     {
-      const QgsVector3D transformed = crsToLatLon.transform( corner, Qgis::TransformDirection::Reverse );
+      const QgsVector3D transformed = globeCrsToLatLon.transform( corner, Qgis::TransformDirection::Reverse );
       box3D.combineWith( transformed.x(), transformed.y(), transformed.z() );
     }
     catch ( const QgsCsException & )
@@ -95,29 +99,6 @@ QgsBox3D QgsGlobeUtils::nodeIdToBox3D( QgsChunkNodeId id, const QgsCoordinateTra
   }
 
   return box3D;
-}
-
-QgsRectangle QgsGlobeUtils::box3DTransformedExtent( const QgsBox3D &box3D, const QgsCoordinateTransform &transform, Qgis::TransformDirection direction )
-{
-  QgsRectangle rect;
-  const QVector<QgsVector3D> corners = QgsOrientedBox3D::fromBox3D( box3D ).corners();
-  for ( const QgsVector3D &corner : corners )
-  {
-    try
-    {
-      const QgsVector3D transformed = transform.transform( corner, direction );
-      if ( rect.isNull() )
-        rect = QgsRectangle( transformed.x(), transformed.y(), transformed.x(), transformed.y() );
-      else
-        rect.combineExtentWith( transformed.x(), transformed.y() );
-    }
-    catch ( const QgsCsException & )
-    {
-      QgsDebugError( u"Failed to transform box3D corner while computing extent"_s );
-    }
-  }
-
-  return rect;
 }
 
 /// @endcond
