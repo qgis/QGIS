@@ -73,22 +73,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void closeEvent( QCloseEvent *event ) override;
 
     /**
-     * Starts an undo command. This should be called before any changes are made to the model.
-     */
-    void beginUndoCommand( const QString &text, const QString &id = QString(), QgsModelUndoCommand::CommandOperation operation SIP_PYARGREMOVE = QgsModelUndoCommand::CommandOperation::Unknown );
-
-    /**
-     * Ends the current undo command. This should be called after changes are made to the model.
-     */
-    void endUndoCommand();
-
-    /**
-     * Aborts pending undo command, turning last call to beginUndoCommand obsolete
-     * \since QGIS 4.0
-     */
-    void abortUndoCommand();
-
-    /**
      * Returns the model shown in the dialog.
      */
     QgsProcessingModelAlgorithm *model();
@@ -105,6 +89,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
      */
     void loadModel( const QString &path );
 
+#ifndef SIP_RUN
     /**
      * Sets the related \a scene.
      *
@@ -119,20 +104,10 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
      * \since QGIS 4.0
      */
     QgsModelGraphicsScene *modelScene();
+#endif
 
     QgsProcessingFeedback *createFeedback() override SIP_FACTORY;
     QgsProcessingParameterWidgetContext createWidgetContext() override;
-
-    /**
-     * Save action.
-     *
-     * \since QGIS 3.24
-     */
-    enum class SaveAction
-    {
-      SaveAsFile,    //!< Save model as a file
-      SaveInProject, //!< Save model into project
-    };
 
   public slots:
 
@@ -160,8 +135,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void modelUpdated();
 
   protected:
-    void repaintModel( bool showControls = true );
-
     // cppcheck-suppress pureVirtualCall
     virtual void exportAsScriptAlgorithm() = 0;
     // cppcheck-suppress pureVirtualCall
@@ -172,43 +145,10 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
      * a Processing context for the dialog when required.
      */
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
-    QgsProcessingContext *processingContext() const override;
-
-    QToolBar *toolbar() { return mToolbar; }
-    QAction *actionRun() { return mActionRun; }
-    QgsMessageBar *messageBar() { return mMessageBar; }
 
 #ifndef SIP_RUN
-    QgsModelGraphicsView *view() { return mView; }
+    QgsProcessingContext *processingContext() const override;
 #endif
-
-    void setDirty( bool dirty );
-
-    /**
-     * Checks if the model can current be saved, and returns TRUE if it can.
-     */
-    bool validateSave( SaveAction action );
-
-    /**
-     * Checks if there are unsaved changes in the model, and if so, prompts the user to save them.
-     *
-     * Returns FALSE if the cancel option was selected
-     */
-    bool checkForUnsavedChanges();
-
-    /**
-     * Sets the \a result of the last run of the model through the designer window.
-     */
-    void setLastRunResult( const QgsProcessingModelResult &result );
-
-    /**
-     * Sets the model \a name.
-     *
-     * Updates both the name text edit and the model name itself.
-     *
-     * \since QGIS 3.24
-     */
-    void setModelName( const QString &name );
 
   private slots:
     void zoomIn();
@@ -241,6 +181,63 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void cancelRunningModel();
 
   private:
+    /**
+     * Save action.
+     *
+     * \since QGIS 3.24
+     */
+    enum class SaveAction
+    {
+      SaveAsFile,    //!< Save model as a file
+      SaveInProject, //!< Save model into project
+    };
+
+    /**
+     * Starts an undo command. This should be called before any changes are made to the model.
+     */
+    void beginUndoCommand( const QString &text, const QString &id = QString(), QgsModelUndoCommand::CommandOperation operation SIP_PYARGREMOVE = QgsModelUndoCommand::CommandOperation::Unknown );
+
+    /**
+     * Ends the current undo command. This should be called after changes are made to the model.
+     */
+    void endUndoCommand();
+
+    /**
+     * Aborts pending undo command, turning last call to beginUndoCommand obsolete
+     * \since QGIS 4.0
+     */
+    void abortUndoCommand();
+
+    void repaintModel( bool showControls = true );
+
+    void setDirty( bool dirty );
+
+    /**
+     * Checks if the model can current be saved, and returns TRUE if it can.
+     */
+    bool validateSave( SaveAction action );
+
+    /**
+     * Checks if there are unsaved changes in the model, and if so, prompts the user to save them.
+     *
+     * Returns FALSE if the cancel option was selected
+     */
+    bool checkForUnsavedChanges();
+
+    /**
+     * Sets the \a result of the last run of the model through the designer window.
+     */
+    void setLastRunResult( const QgsProcessingModelResult &result );
+
+    /**
+     * Sets the model \a name.
+     *
+     * Updates both the name text edit and the model name itself.
+     *
+     * \since QGIS 3.24
+     */
+    void setModelName( const QString &name );
+
     bool saveModel( bool saveAs = false );
 
     QPointF getPositionForParameterItem() const;
