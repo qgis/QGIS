@@ -1244,7 +1244,7 @@ class CORE_EXPORT QgsGeometry
      * \param splitLine the line that splits the geometry
      * \param[out] newGeometries list of new geometries that have been created with the split
      * \param topological TRUE if topological editing is enabled
-     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
      * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
@@ -1256,7 +1256,7 @@ class CORE_EXPORT QgsGeometry
      * \param splitLine the line that splits the geometry
      * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
      * \param topological TRUE if topological editing is enabled
-     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \param skipIntersectionTest set to TRUE to skip the potentially expensive initial intersection check. Only set this flag if an intersection
      * test has already been performed by the caller! Not available in Python bindings.
@@ -1373,9 +1373,9 @@ class CORE_EXPORT QgsGeometry
     * Splits this geometry according to a given curve.
     * \param curve the curve that splits the geometry
     * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
-    * \param preserveCircular whether if circular strings are preserved after splitting
+    * \param preserveCircular whether if circular strings are reconstructed from segmentized geometries after splitting. From GEOS 3.15 on, this parameter is unused, and circular strings are preserved.
     * \param topological TRUE if topological editing is enabled
-    * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+    * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset. Points from curve geometries are not yet fully supported.
     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
     * \returns OperationResult a result code: success or reason of failure
     * \since QGIS 3.16
