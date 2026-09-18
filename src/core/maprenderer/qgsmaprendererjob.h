@@ -21,6 +21,7 @@
 #include "qgslabelsink.h"
 #include "qgsmapsettings.h"
 #include "qgsmaskidprovider.h"
+#include "qgsrange.h"
 #include "qgsrendercontext.h"
 
 #include <QElapsedTimer>
@@ -372,6 +373,15 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      */
     const QgsFeatureFilterProvider *featureFilterProvider() const { return mFeatureFilterProvider; }
 
+    /**
+     * Set a temporal range used by the QgsRenderContext of each LayerRenderJob
+     * If set this temporal range overrides the one define in map settings
+     * \param perLayerTemporalRange temporal ranges to be used when rendering map layers
+     * \note unstable API (will likely change)
+     * \since QGIS 4.4
+     */
+    void setPerLayerTemporalRange( QHash<QgsMapLayer *, QgsDateTimeRange> perLayerTemporalRange ) SIP_SKIP { mPerLayerTemporalRange = perLayerTemporalRange; }
+
     struct Error
     {
         Error( const QString &lid, const QString &msg )
@@ -673,6 +683,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 );
 
     const QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
+
+    QHash<QgsMapLayer *, QgsDateTimeRange> mPerLayerTemporalRange;
 
     //! Convenient method to allocate a new image and stack an error if not enough memory is available
     QImage *allocateImage( QString layerId );
