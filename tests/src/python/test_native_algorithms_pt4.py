@@ -21,14 +21,10 @@ __copyright__ = "(C) 2016, Matthias Kuhn"
 
 import os
 import shutil
-import unittest
 
 import AlgorithmsTestBase
 import nose2
-from processing.core.ProcessingConfig import ProcessingConfig
-from processing.modeler.ModelerUtils import ModelerUtils
-from qgis.analysis import QgsNativeAlgorithms
-from qgis.core import QgsApplication, QgsProcessingException
+from qgis.core import QgsApplication, QgsSettings
 from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
@@ -44,8 +40,12 @@ class TestNativeAlgorithms4(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         Processing.initialize()
 
         # change the model provider folder so that it looks in the test directory for models
-        ProcessingConfig.setSettingValue(
-            ModelerUtils.MODELS_FOLDER,
+        cls._original_models_folder = QgsSettings().value(
+            "Processing/Configuration/MODELS_FOLDER"
+        )
+
+        QgsSettings().setValue(
+            "Processing/Configuration/MODELS_FOLDER",
             os.path.join(TEST_DATA_DIR, "processing", "models"),
         )
         for p in QgsApplication.processingRegistry().providers():
@@ -55,9 +55,6 @@ class TestNativeAlgorithms4(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         cls.cleanup_paths = []
         cls.in_place_layers = {}
         cls.vector_layer_params = {}
-        cls._original_models_folder = ProcessingConfig.getSetting(
-            ModelerUtils.MODELS_FOLDER
-        )
 
     @classmethod
     def tearDownClass(cls):
@@ -66,8 +63,9 @@ class TestNativeAlgorithms4(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
-        ProcessingConfig.setSettingValue(
-            ModelerUtils.MODELS_FOLDER, cls._original_models_folder
+
+        QgsSettings().setValue(
+            "Processing/Configuration/MODELS_FOLDER", cls._original_models_folder
         )
 
     def definition_file(self):
