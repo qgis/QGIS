@@ -6069,6 +6069,18 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( MapGridAnnotationType )
 
     /**
+     * Elevation profile range calculation methods.
+     *
+     * \since QGIS 4.4
+     */
+    enum class ElevationProfileRangeMethod : int
+    {
+      ManualRange = 0, //!< Distance/elevation ranges are manually set
+      FixedScale       //!< Distance and elevation ranges are calculated from fixed scales.
+    };
+    Q_ENUM( ElevationProfileRangeMethod )
+
+    /**
      * Input controller types.
      *
      * \since QGIS 3.34
