@@ -58,11 +58,8 @@ void QgsLineVertexData::init( Qgis::AltitudeClamping clamping, Qgis::AltitudeBin
 
 void QgsLineVertexData::addLineString( const QgsLineString &lineString, float extraHeightOffset, bool closePolygon )
 {
-  std::unique_ptr<QgsLineString> line( lineString.clone() );
-  line->removeDuplicateNodes();
-
-  const int vertexCount = line->vertexCount();
-  if ( vertexCount == 0 )
+  const int inVertexCount = lineString.vertexCount();
+  if ( inVertexCount == 0 )
     return;
 
   QgsPoint centroid;
@@ -71,43 +68,66 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
     case Qgis::AltitudeBinding::Vertex:
       break;
     case Qgis::AltitudeBinding::Centroid:
-      centroid = line->centroid();
+      centroid = lineString.centroid();
       break;
   }
 
-  const auto pointAt = [&]( int i ) -> QVector3D {
-    const QgsPoint p = line->pointN( i );
+  QVector<double> xs( inVertexCount );
+  QVector<double> ys( inVertexCount );
+  QVector<double> zs( inVertexCount );
+  for ( int i = 0; i < inVertexCount; ++i )
+  {
+    const QgsPoint p = lineString.pointN( i );
+    double z;
     if ( geocentricCoordinates )
     {
       // TODO: implement altitude clamping when dealing with geocentric coordinates
       // where Z coordinate is not altitude and can't be used directly...
-      return QVector3D( static_cast<float>( p.x() - origin.x() ), static_cast<float>( p.y() - origin.y() ), static_cast<float>( p.z() - origin.z() ) );
+      z = p.z();
     }
-    const float z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight + extraHeightOffset, centroid, renderContext );
-    return QVector3D( static_cast<float>( p.x() - origin.x() ), static_cast<float>( p.y() - origin.y() ), static_cast<float>( z - origin.z() ) );
-  };
+    else
+    {
+      z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight + extraHeightOffset, centroid, renderContext );
+    }
 
-  const QVector3D first = pointAt( 0 );
+    xs[i] = p.x() - origin.x();
+    ys[i] = p.y() - origin.y();
+    zs[i] = z - origin.z();
+  }
+
+  QgsLineString line( xs, ys, zs );
+  line.removeDuplicateNodes( 4 * std::numeric_limits<double>::epsilon(), true );
+
+  int vertexCount = line.vertexCount();
+  if ( vertexCount == 0 )
+    return;
+
+  QVector<QVector3D> points;
+  points.reserve( vertexCount );
+  for ( int i = 0; i < vertexCount; ++i )
+    points << QVector3D( static_cast<float>( line.xAt( i ) ), static_cast<float>( line.yAt( i ) ), static_cast<float>( line.zAt( i ) ) );
+
+  const QVector3D first = points.constFirst();
   vertices << first;
   QVector3D prevPrev = first;
   QVector3D prev = first;
   bool havePrevPrev = false;
   for ( int i = 1; i < vertexCount; ++i )
   {
-    const QVector3D curr = pointAt( i );
+    const QVector3D curr = points.at( i );
     pointsA << prev;
     pointsB << curr;
     vertices << curr;
 
     if ( i == 1 )
-      pointsPrev << ( closePolygon ? pointAt( vertexCount - 1 ) : prev + ( prev - curr ) );
+      pointsPrev << ( closePolygon ? points.constLast() : prev + ( prev - curr ) );
     else
       pointsPrev << prevPrev;
 
     if ( i == vertexCount - 1 )
       pointsNext << ( closePolygon ? first : curr + ( curr - prev ) );
     else
-      pointsNext << pointAt( i + 1 );
+      pointsNext << points.at( i + 1 );
 
     if ( havePrevPrev )
     {
@@ -126,7 +146,7 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
     pointsA << prev;
     pointsB << first;
     pointsPrev << prevPrev;
-    pointsNext << pointAt( 1 );
+    pointsNext << points.at( 1 );
 
     if ( vertexCount >= 3 )
     {
@@ -136,7 +156,7 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
 
       joinPointA << prev;
       joinPointB << first;
-      joinPointC << pointAt( 1 );
+      joinPointC << points.at( 1 );
     }
   }
 }
