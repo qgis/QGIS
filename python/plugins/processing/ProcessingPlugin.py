@@ -40,8 +40,8 @@ from qgis.gui import (
     QgsCustomDropHandler,
     QgsGui,
     QgsOptionsWidgetFactory,
-    QgsProcessingAlgorithmExecutionWidgetFactory,
     QgsProcessingAlgorithmWidgetBase,
+    QgsProcessingDialogFactory,
     QgsProcessingHistoryDialog,
 )
 from qgis.PyQt import sip
@@ -81,12 +81,13 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.ResultsDock import ResultsDock
 from processing.modeler.ModelerDialog import ModelerDialog
+from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools import dataobjects
 
 pluginPath = os.path.dirname(__file__)
 
 
-class ProcessingAlgorithmExecutionFactory(QgsProcessingAlgorithmExecutionWidgetFactory):
+class DialogFactory(QgsProcessingDialogFactory):
     def __init__(self):
         super().__init__()
 
@@ -99,6 +100,9 @@ class ProcessingAlgorithmExecutionFactory(QgsProcessingAlgorithmExecutionWidgetF
         initialState=Qgis.DockableWidgetInitialState.RestorePreviousState,
     ):
         return AlgorithmWidget(algorithm, inPlace, parent, flags, initialState)
+
+    def createScriptEditorDialog(self, file_path=None, parent=None):
+        return ScriptEditorDialog(file_path, parent)
 
 
 class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
@@ -232,7 +236,7 @@ class ProcessingPlugin(QObject):
                 processing_history_provider.portOldLog()
                 settings.setValue("/Processing/hasPortedOldLog", True)
 
-        self.execution_widget_factory = ProcessingAlgorithmExecutionFactory()
+        self.execution_widget_factory = DialogFactory()
         QgsGui.processingGuiRegistry().setAlgorithmExecutionWidgetFactory(
             self.execution_widget_factory
         )

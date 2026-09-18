@@ -1,8 +1,8 @@
 # The following has been generated automatically from src/gui/processing/qgsprocessingguiregistry.h
 try:
-    QgsProcessingAlgorithmExecutionWidgetFactory.__virtual_methods__ = ['createWidget']
-    QgsProcessingAlgorithmExecutionWidgetFactory.__abstract_methods__ = ['createWidget']
-    QgsProcessingAlgorithmExecutionWidgetFactory.__group__ = ['processing']
+    QgsProcessingDialogFactory.__virtual_methods__ = ['createWidget']
+    QgsProcessingDialogFactory.__abstract_methods__ = ['createWidget', 'createScriptEditorDialog']
+    QgsProcessingDialogFactory.__group__ = ['processing']
 except (NameError, AttributeError):
     pass
 try:
