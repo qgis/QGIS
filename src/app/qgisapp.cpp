@@ -115,6 +115,7 @@ using namespace Qt::StringLiterals;
 #include "qgsscaleutils.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsprocessingwidgetcontext.h"
+#include "qgsprocessingmodelprovider.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -1576,6 +1577,7 @@ QgisApp::QgisApp(
 
   mProcessingWidgetContextGenerator = std::make_unique< QgsAppProcessingWidgetContextGenerator >( this );
   QgsGui::processingGuiRegistry()->registerWidgetContextGenerator( mProcessingWidgetContextGenerator.get() );
+  QgsGui::processingGuiRegistry()->setContextFactory( new QgsAppProcessingContextFactory( this ) );
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, &QgsClipboard::changed, this, &QgisApp::clipboardChanged );
@@ -1680,6 +1682,9 @@ QgisApp::QgisApp(
 
   // must come before plugin startup, as processing plugin sets up connections to it
   QgsAppProcessingUtils::initProjectModelProvider();
+
+  mAppProcessingUtils = std::make_unique< QgsAppProcessingUtils >();
+  mAppProcessingUtils->registerActions();
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
@@ -13456,6 +13461,7 @@ void QgisApp::initNativeProcessing()
 #endif
 
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
+  QgsApplication::processingRegistry()->addProvider( new QgsProcessingModelProvider( QgsApplication::processingRegistry() ) );
 }
 
 void QgisApp::initLayouts()

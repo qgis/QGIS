@@ -50,6 +50,22 @@
 
 using namespace Qt::StringLiterals;
 
+//
+// QgsProcessingDialogFactory
+//
+
+QgsProcessingDialogFactory::~QgsProcessingDialogFactory() = default;
+
+//
+// QgsProcessingContextFactory
+//
+
+QgsProcessingContextFactory::~QgsProcessingContextFactory() = default;
+
+//
+// QgsProcessingGuiRegistry
+//
+
 QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 {
   addAlgorithmConfigurationWidgetFactory( new QgsFilterAlgorithmConfigurationWidgetFactory() );
@@ -333,6 +349,26 @@ QList<QgsProcessingToolboxContextAction *> QgsProcessingGuiRegistry::toolboxCont
   return res;
 }
 
+void QgsProcessingGuiRegistry::setDialogFactory( QgsProcessingDialogFactory *factory )
+{
+  mProcessingDialogFactory.reset( factory );
+}
+
+QgsProcessingDialogFactory *QgsProcessingGuiRegistry::dialogFactory()
+{
+  return mProcessingDialogFactory.get();
+}
+
+void QgsProcessingGuiRegistry::setContextFactory( QgsProcessingContextFactory *factory )
+{
+  mContextFactory.reset( factory );
+}
+
+QgsProcessingContextFactory *QgsProcessingGuiRegistry::contextFactory()
+{
+  return mContextFactory.get();
+}
+
 QList<QgsProcessingToolboxContextAction *> QgsProcessingGuiRegistry::toolboxContextActionsForProvider( const QString &providerId ) const
 {
   return mProviderToolboxContextActions.value( providerId );
@@ -496,4 +532,6 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
 
   return nullptr;
 }
+
+
 /// @endcond PRIVATE

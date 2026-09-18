@@ -24,6 +24,7 @@ import shutil
 from functools import partial
 
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsDataItem,
     QgsDataItemProvider,
@@ -38,7 +39,10 @@ from qgis.core import (
 from qgis.gui import (
     QgsCustomDropHandler,
     QgsGui,
+    QgsModelDesignerDialog,
     QgsOptionsWidgetFactory,
+    QgsProcessingAlgorithmWidgetBase,
+    QgsProcessingDialogFactory,
     QgsProcessingHistoryDialog,
 )
 from qgis.PyQt import sip
@@ -56,6 +60,7 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QWidget
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui import TestTools
 from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.AlgorithmExecutor import execute, execute_in_place
@@ -77,10 +82,30 @@ from processing.gui.MessageDialog import MessageDialog
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.ResultsDock import ResultsDock
-from processing.modeler.ModelerDialog import ModelerDialog
+from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools import dataobjects
 
 pluginPath = os.path.dirname(__file__)
+
+
+class DialogFactory(QgsProcessingDialogFactory):
+    def __init__(self):
+        super().__init__()
+
+    def createWidget(
+        self,
+        algorithm,
+        inPlace=False,
+        parent=None,
+        flags=QgsProcessingAlgorithmWidgetBase.WidgetFlags(),
+        initialState=Qgis.DockableWidgetInitialState.RestorePreviousState,
+    ):
+        return AlgorithmWidget(algorithm, inPlace, parent, flags, initialState)
+
+    def createScriptEditorDialog(self, file_path=None, parent=None):
+        if not parent:
+            parent = iface.mainWindow()
+        return ScriptEditorDialog(file_path, parent)
 
 
 class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
@@ -92,6 +117,22 @@ class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
 
     def createWidget(self, parent):
         return ConfigOptionsPage(parent)
+
+
+class ModelerDialogHack:
+    dlgs = []
+
+    @staticmethod
+    def create_model_designer_dialog():
+        """
+        Workaround crappy sip handling of QMainWindow. It doesn't know that we are using the deleteonclose
+        flag, so happily just deletes dialogs as soon as they go out of scope. The only workaround possible
+        while we still have to drag around this Python code is to store a reference to the sip wrapper so that
+        sip doesn't get confused. The underlying object will still be deleted by the deleteonclose flag though!
+        """
+        dlg = QgsModelDesignerDialog()
+        ModelerDialogHack.dlgs.append(dlg)
+        return dlg
 
 
 class ProcessingDropHandler(QgsCustomDropHandler):
@@ -145,7 +186,7 @@ class ProcessingModelItem(QgsDataItem):
         ProcessingDropHandler.runAlg(self.path())
 
     def editModel(self):
-        dlg = ModelerDialog.create()
+        dlg = ModelerDialogHack.create_model_designer_dialog()
         dlg.loadModel(self.path())
         dlg.show()
 
@@ -186,6 +227,7 @@ class ProcessingPlugin(QObject):
         super().__init__()
         self.iface = iface
         self.options_factory = None
+        self.dialog_factory = None
         self.drop_handler = None
         self.item_provider = None
         self.locator_filter = None
@@ -200,7 +242,7 @@ class ProcessingPlugin(QObject):
             Processing.initialize()
 
     def finalizeStartup(self):
-        Processing.perform_deferred_model_initialization()
+        pass
 
     def initGui(self):
         # port old log, ONCE ONLY!
@@ -213,6 +255,8 @@ class ProcessingPlugin(QObject):
                 processing_history_provider.portOldLog()
                 settings.setValue("/Processing/hasPortedOldLog", True)
 
+        self.dialog_factory = DialogFactory()
+        QgsGui.processingGuiRegistry().setDialogFactory(self.dialog_factory)
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr("Processing"))
         iface.registerOptionsWidgetFactory(self.options_factory)
@@ -343,6 +387,21 @@ class ProcessingPlugin(QObject):
         menuBar.insertMenu(self.iface.firstRightStandardMenu().menuAction(), self.menu)
 
         self.menu.addSeparator()
+
+        # provider specific settings -- here till we have a proper c++ API to port these too
+        ProcessingConfig.settingIcons[
+            QCoreApplication.tr("Models", "ModelerAlgorithmProvider")
+        ] = QgsApplication.getThemeIcon("/processingModel.svg")
+        ProcessingConfig.addSetting(
+            Setting(
+                QCoreApplication.tr("Models", "ModelerAlgorithmProvider"),
+                "MODELS_FOLDER",
+                QCoreApplication.tr("Models folder", "ModelerAlgorithmProvider"),
+                QgsProcessingUtils.defaultModelFolder(),
+                valuetype=Setting.MULTIPLE_FOLDERS,
+            )
+        )
+        ProcessingConfig.readSettings()
 
         initializeMenus()
         createMenus()
@@ -547,6 +606,8 @@ class ProcessingPlugin(QObject):
             "processing"
         ).createTest.disconnect(self.create_test)
 
+        QgsGui.processingGuiRegistry().setDialogFactory(None)
+
         Processing.deinitialize()
 
     def openToolbox(self, show):
@@ -556,8 +617,8 @@ class ProcessingPlugin(QObject):
         self.toolboxAction.setChecked(visible)
 
     def openModeler(self):
-        dlg = ModelerDialog.create()
-        dlg.update_model.connect(self.updateModel)
+        dlg = ModelerDialogHack.create_model_designer_dialog()
+        dlg.modelUpdated.connect(self.updateModel)
         dlg.show()
 
     def updateModel(self):

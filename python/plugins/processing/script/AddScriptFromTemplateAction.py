@@ -45,6 +45,6 @@ class AddScriptFromTemplateAction(QgsProcessingToolboxAction):
 
         with open(templatePath, encoding="utf-8") as f:
             templateTxt = f.read()
-            dlg.editor.setText(templateTxt)
+            dlg.codeEditor().setText(templateTxt)
 
         dlg.show()

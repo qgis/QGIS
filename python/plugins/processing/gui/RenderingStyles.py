@@ -21,7 +21,7 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
-from processing.tools.system import userFolder
+from qgis.core import QgsProcessingUtils
 
 
 class RenderingStyles:
@@ -34,7 +34,9 @@ class RenderingStyles:
 
     @staticmethod
     def configFile():
-        return os.path.join(userFolder(), "processing_qgis_styles.conf")
+        return os.path.join(
+            QgsProcessingUtils.userFolder(), "processing_qgis_styles.conf"
+        )
 
     @staticmethod
     def loadStyles():

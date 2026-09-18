@@ -15,7 +15,10 @@
 #ifndef QGSAPPPROCESSINGUTILS_H
 #define QGSAPPPROCESSINGUTILS_H
 
+#include "qgsprocessingguiregistry.h"
 #include "qgsprocessingwidgetcontext.h"
+
+#include <QObject>
 
 class QgisApp;
 
@@ -30,9 +33,25 @@ class QgsAppProcessingWidgetContextGenerator : public QgsProcessingWidgetContext
     QgisApp *mQgisApp = nullptr;
 };
 
-class QgsAppProcessingUtils
+class QgsAppProcessingContextFactory : public QgsProcessingContextFactory
 {
   public:
+    QgsAppProcessingContextFactory( QgisApp *app );
+
+    QgsProcessingContext *createContext( QgsProcessingFeedback *feedback = nullptr ) final;
+
+    QgsExpressionContext createExpressionContext() const;
+
+  private:
+    QgisApp *mQgisApp = nullptr;
+};
+
+class QgsAppProcessingUtils : public QObject
+{
+    Q_OBJECT
+  public:
+    void registerActions();
+
     static void initProjectModelProvider();
 };
 

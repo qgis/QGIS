@@ -30,6 +30,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingFeedback,
+    QgsProcessingModelProvider,
     QgsProcessingOutputMapLayer,
     QgsProcessingOutputMultipleLayers,
     QgsProcessingOutputPointCloudLayer,
@@ -58,9 +59,6 @@ with QgsRuntimeProfiler.profile("Import Script Provider"):
     from processing.script.ScriptAlgorithmProvider import (
         ScriptAlgorithmProvider,
     )  # NOQA
-
-# should be loaded last - ensures that all dependent algorithms are available when loading models
-from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
 
 
 class Processing:
@@ -135,14 +133,6 @@ class Processing:
                 ScriptAlgorithmProvider,
             ]
 
-            # model providers are deferred for qgis_process startup
-            if QgsApplication.platform() != "qgis_process":
-                basic_providers.extend(
-                    [
-                        ModelerAlgorithmProvider,
-                    ]
-                )
-
             for c in basic_providers:
                 p = c()
                 if QgsApplication.processingRegistry().addProvider(p):
@@ -182,25 +172,16 @@ class Processing:
                 if QgsApplication.processingRegistry().addProvider(p):
                     Processing.BASIC_PROVIDERS.append(p)
 
+            # model providers are deferred for qgis_process startup
+            if QgsApplication.platform() == "external":
+                QgsApplication.processingRegistry().addProvider(
+                    QgsProcessingModelProvider(QgsApplication.processingRegistry())
+                )
+
             # And initialize
             ProcessingConfig.initialize()
             ProcessingConfig.readSettings()
             RenderingStyles.loadStyles()
-
-    @staticmethod
-    def perform_deferred_model_initialization():
-        if "model" in [p.id() for p in QgsApplication.processingRegistry().providers()]:
-            return
-
-        # Add the model providers
-        # note that we don't add the Project Provider, as this cannot be called
-        # from qgis_process
-        model_providers = [ModelerAlgorithmProvider]
-
-        for c in model_providers:
-            p = c()
-            if QgsApplication.processingRegistry().addProvider(p):
-                Processing.BASIC_PROVIDERS.append(p)
 
     @staticmethod
     def deinitialize():

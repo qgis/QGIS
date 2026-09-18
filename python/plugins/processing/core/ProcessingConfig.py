@@ -34,9 +34,6 @@ from qgis.core import (
 )
 from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
 
-import processing.tools.dataobjects
-from processing.tools.system import defaultOutputFolder
-
 
 class SettingsWatcher(QObject):
     settingsChanged = pyqtSignal()
@@ -104,7 +101,7 @@ class ProcessingConfig:
                 ProcessingConfig.tr("General"),
                 ProcessingConfig.OUTPUT_FOLDER,
                 ProcessingConfig.tr("Output folder"),
-                defaultOutputFolder(),
+                QgsProcessingUtils.defaultOutputFolder(),
                 valuetype=Setting.FOLDER,
             )
         )

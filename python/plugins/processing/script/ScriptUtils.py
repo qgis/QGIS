@@ -29,12 +29,13 @@ from qgis.core import (
     QgsMessageLog,
     QgsProcessingAlgorithm,
     QgsProcessingFeatureBasedAlgorithm,
+    QgsProcessingUtils,
 )
 from qgis.processing import alg as algfactory
 from qgis.PyQt.QtCore import QCoreApplication, QDir
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import mkdir, userFolder
+from processing.tools.system import mkdir
 
 scriptsRegistry = {}
 
@@ -42,7 +43,7 @@ SCRIPTS_FOLDERS = "SCRIPTS_FOLDERS"
 
 
 def defaultScriptsFolder():
-    folder = str(os.path.join(userFolder(), "scripts"))
+    folder = str(os.path.join(QgsProcessingUtils.userFolder(), "scripts"))
     mkdir(folder)
     return os.path.abspath(folder)
 
