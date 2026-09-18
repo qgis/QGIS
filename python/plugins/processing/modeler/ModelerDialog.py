@@ -19,37 +19,14 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-import sys
-from pathlib import Path
-
 from qgis.core import (
     Qgis,
-    QgsApplication,
-    QgsFileUtils,
     QgsProcessing,
-    QgsProcessingModelAlgorithm,
-    QgsProcessingModelChildAlgorithm,
-    QgsProcessingModelParameter,
-    QgsProcessingUtils,
-    QgsProject,
-    QgsSettings,
 )
 from qgis.gui import (
-    QgsGui,
     QgsModelDesignerDialog,
-    QgsModelGraphicsScene,
     QgsProcessingContextGenerator,
-    QgsProcessingParameterDefinitionDialog,
 )
-from qgis.PyQt.QtCore import (
-    QDir,
-    QFileInfo,
-    QPoint,
-    QPointF,
-    QUrl,
-    pyqtSignal,
-)
-from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.utils import iface
 
 from processing.gui.algorithm_widget import AlgorithmWidget
@@ -101,133 +78,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         )
         widget.registerProcessingFeedbackGenerator(self)
         return widget
-
-    def autogenerate_parameter_name(self, parameter):
-        """
-        Automatically generates and sets a new parameter's name, based on the parameter's
-        description and ensuring that it is unique for the model.
-        """
-        safeName = QgsProcessingModelAlgorithm.safeName(parameter.description())
-        name = safeName.lower()
-        i = 2
-        while self.model().parameterDefinition(name):
-            name = safeName.lower() + str(i)
-            i += 1
-        parameter.setName(name)
-
-    def addInput(self, paramType, pos=None):
-        if paramType not in [
-            param.id()
-            for param in QgsApplication.instance().processingRegistry().parameterTypes()
-        ]:
-            return
-
-        new_param = None
-        comment = None
-        context = createContext()
-        widget_context = self.createWidgetContext()
-        dlg = QgsProcessingParameterDefinitionDialog(
-            type=paramType,
-            context=context,
-            widgetContext=widget_context,
-            algorithm=self.model(),
-        )
-        dlg.registerProcessingContextGenerator(self.context_generator)
-        if dlg.exec():
-            new_param = dlg.createParameter()
-            self.autogenerate_parameter_name(new_param)
-            comment = dlg.comments()
-
-        if new_param is not None:
-            if pos is None or not pos:
-                pos = self.getPositionForParameterItem()
-            if isinstance(pos, QPoint):
-                pos = QPointF(pos)
-            component = QgsProcessingModelParameter(new_param.name())
-            component.setDescription(new_param.name())
-            component.setPosition(pos)
-
-            component.comment().setDescription(comment)
-            component.comment().setPosition(
-                component.position()
-                + QPointF(component.size().width(), -1.5 * component.size().height())
-            )
-
-            self.beginUndoCommand(self.tr("Add Model Input"))
-            self.model().addModelParameter(new_param, component)
-            self.repaintModel()
-            self.endUndoCommand()
-
-    def getPositionForParameterItem(self):
-        MARGIN = 20
-        BOX_WIDTH = 200
-        BOX_HEIGHT = 80
-        if len(self.model().parameterComponents()) > 0:
-            maxX = max(
-                [
-                    i.position().x()
-                    for i in list(self.model().parameterComponents().values())
-                ]
-            )
-            newX = MARGIN + BOX_WIDTH + maxX
-        else:
-            newX = MARGIN + BOX_WIDTH / 2
-        return QPointF(newX, MARGIN + BOX_HEIGHT / 2)
-
-    def addAlgorithm(self, alg_id, pos=None):
-        alg = QgsApplication.processingRegistry().createAlgorithmById(alg_id)
-        if not alg:
-            return
-
-        child_alg = QgsProcessingModelChildAlgorithm(alg_id)
-        child_alg.setDescription(alg.displayName())
-
-        if pos is None or not pos:
-            child_alg.setPosition(self.getPositionForAlgorithmItem())
-        else:
-            child_alg.setPosition(pos)
-
-        child_alg.comment().setPosition(
-            child_alg.position()
-            + QPointF(child_alg.size().width(), -1.5 * child_alg.size().height())
-        )
-
-        output_offset_x = child_alg.size().width()
-        output_offset_y = 1.5 * child_alg.size().height()
-        for out in child_alg.modelOutputs():
-            child_alg.modelOutput(out).setPosition(
-                child_alg.position() + QPointF(output_offset_x, output_offset_y)
-            )
-            output_offset_y += 1.5 * child_alg.modelOutput(out).size().height()
-
-        self.beginUndoCommand(self.tr("Add Algorithm"))
-        self.model().addChildAlgorithm(child_alg)
-        self.repaintModel()
-        self.endUndoCommand()
-
-    def getPositionForAlgorithmItem(self):
-        MARGIN = 20
-        BOX_WIDTH = 200
-        BOX_HEIGHT = 80
-        if self.model().childAlgorithms():
-            maxX = max(
-                [
-                    alg.position().x()
-                    for alg in list(self.model().childAlgorithms().values())
-                ]
-            )
-            maxY = max(
-                [
-                    alg.position().y()
-                    for alg in list(self.model().childAlgorithms().values())
-                ]
-            )
-            newX = MARGIN + BOX_WIDTH + maxX
-            newY = MARGIN + BOX_HEIGHT + maxY
-        else:
-            newX = MARGIN + BOX_WIDTH / 2
-            newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
-        return QPointF(newX, newY)
 
     def exportAsScriptAlgorithm(self):
         dlg = ScriptEditorDialog(parent=iface.mainWindow())
