@@ -226,7 +226,7 @@ class ProcessingPlugin(QObject):
             Processing.initialize()
 
     def finalizeStartup(self):
-        Processing.perform_deferred_model_initialization()
+        pass
 
     def initGui(self):
         # port old log, ONCE ONLY!

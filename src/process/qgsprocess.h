@@ -83,6 +83,7 @@ class QgsProcessingExec
 
   private:
     void loadPlugins();
+    void addModelProvider();
     void listAlgorithms();
     void listPlugins( bool useJson, bool showLoaded );
     int enablePlugin( const QString &name, bool enabled );
