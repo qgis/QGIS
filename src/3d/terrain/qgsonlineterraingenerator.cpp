@@ -30,6 +30,18 @@ QgsTerrainGenerator::Type QgsOnlineTerrainGenerator::type() const
   return QgsTerrainGenerator::Online;
 }
 
+QgsTerrainGenerator *QgsOnlineTerrainGenerator::clone() const
+{
+  QgsOnlineTerrainGenerator *cloned = new QgsOnlineTerrainGenerator;
+  cloned->setTerrain( mTerrain );
+  cloned->mCrs = mCrs;
+  cloned->mResolution = mResolution;
+  cloned->mSkirtHeight = mSkirtHeight;
+  cloned->mExtent = mExtent;
+  cloned->updateGenerator();
+  return cloned;
+}
+
 // cppcheck-suppress duplInheritedMember
 QgsTerrainGenerator *QgsOnlineTerrainGenerator::create()
 {
