@@ -11,6 +11,7 @@
 
 
 %ModuleHeaderCode
+#include <qgsprocessingmodelprovider.h>
 #include <qgsprocessingprojectmodelprovider.h>
 %End
 
@@ -29,6 +30,8 @@ same external application or related to a common area of analysis.
 %ConvertToSubClassCode
     if ( qobject_cast<QgsProcessingProjectModelProvider *>( sipCpp ) )
       sipType = sipType_QgsProcessingProjectModelProvider;
+    else if ( qobject_cast<QgsProcessingModelProvider *>( sipCpp ) )
+      sipType = sipType_QgsProcessingModelProvider;
     else
       sipType = nullptr;
 %End
