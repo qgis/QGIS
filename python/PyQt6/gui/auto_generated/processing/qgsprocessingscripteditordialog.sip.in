@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingscripteditordialog.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProcessingScriptEditorDialog : QMainWindow
+{
+%Docstring(signature="appended")
+Processing script editor dialog base class.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingscripteditordialog.h"
+%End
+  public:
+    QgsProcessingScriptEditorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+    ~QgsProcessingScriptEditorDialog();
+
+    virtual QgsCodeEditorPython *codeEditor() = 0;
+%Docstring
+Returns the code editor shown in the dialog.
+%End
+
+    QWidget *editorContainer();
+    QAction *actionToggleComment();
+    QAction *actionOpenScript();
+    QAction *actionSaveScript();
+    QAction *actionSaveScriptAs();
+    QAction *actionRunScript();
+    QAction *actionCut();
+    QAction *actionCopy();
+    QAction *actionPaste();
+    QAction *actionUndo();
+    QAction *actionRedo();
+    QAction *actionFindReplace();
+    QAction *actionIncreaseFontSize();
+    QAction *actionDecreaseFontSize();
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingscripteditordialog.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
