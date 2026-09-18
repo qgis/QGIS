@@ -318,7 +318,7 @@ namespace QgsRasterAnalysisUtils
    * \param cellSizeX Cell width in map units.
    * \param cellSizeY Cell height in map units.
    * \param downhill If TRUE, finds the steepest downslope direction. If FALSE, finds the steepest upslope direction.
-   * \param noEdges If TRUE returns -1 if the central cell or any adjacent neighbor lies on the outer boundary of the raster block or borders a NoData cell.
+   * \param noEdges If TRUE returns -3 if the central cell or any adjacent neighbor lies on the outer boundary of the raster block or borders a NoData cell.
    *
    * \returns the Direction index (0 to 7) corresponding to the steepest gradient, or -1 for sink/pit cells, -2 if no valid gradient
    *         exists (e.g. flat terrain), or -3 for NoData cell, or edge cell when \a noEdges is TRUE.
