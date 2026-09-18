@@ -51,6 +51,7 @@ using namespace Qt::StringLiterals;
 #include "qgsfileutils.h"
 #include "qgsdbimportvectorlayerdialog.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgsproject.h"
 
 void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
@@ -513,7 +514,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
       if ( dropUri.layerType == "vector"_L1 )
       {
         // open the source layer
-        srcLayer = dropUri.vectorLayer( owner, error );
+        srcLayer = dropUri.vectorLayer( owner, error, QgsProject::instance() );
         isVector = true;
       }
       else if ( dropUri.layerType == "mesh"_L1 )
