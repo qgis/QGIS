@@ -99,26 +99,6 @@ retrieve a Processing context for the dialog when required.
 
 };
 
-class QgsModelChildDependenciesWidget : QWidget
-{
-%TypeHeaderCode
-#include "qgsmodeldesignerdialog.h"
-%End
-  public:
-    QgsModelChildDependenciesWidget( QWidget *parent, QgsProcessingModelAlgorithm *model, const QString &childId );
-    QList<QgsProcessingModelChildDependency> value() const;
-    void setValue( const QList<QgsProcessingModelChildDependency> &value );
-
-  signals:
-
-    void changed();
-%Docstring
-Emitted when the dependencies are changed in the widget.
-
-.. versionadded:: 4.4
-%End
-
-};
 
 /************************************************************************
  * This file has been generated automatically from                      *
