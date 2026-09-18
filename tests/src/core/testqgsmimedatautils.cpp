@@ -76,7 +76,7 @@ void TestQgsMimeDataUtils::testEncodeDecode()
   uri.wkbType = Qgis::WkbType::PointZ;
   uri.filePath = u"/home/me/my data.jpg"_s;
 
-  QVERIFY( !uri.mapLayer() );
+  QVERIFY( !uri.mapLayer( QgsProject::instance() ) );
 
   QgsMimeDataUtils::UriList uriList;
   uriList << uri;
