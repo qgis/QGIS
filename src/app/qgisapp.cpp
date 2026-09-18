@@ -267,6 +267,7 @@ using namespace Qt::StringLiterals;
 #include "qgsbookmarkeditordialog.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgsclipboard.h"
+#include "qgscolorschemeregistry.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"
@@ -1146,6 +1147,10 @@ QgisApp::QgisApp(
   // set project linked to main canvas
   mMapCanvas->setProject( QgsProject::instance() );
   endProfile();
+
+  QgsApplication::colorSchemeRegistry()->setProject( QgsProject::instance() );
+  connect( this, &QgisApp::newProject, this, [] { QgsApplication::colorSchemeRegistry()->setProject( QgsProject::instance() ); } );
+  connect( this, &QgisApp::projectRead, this, [] { QgsApplication::colorSchemeRegistry()->setProject( QgsProject::instance() ); } );
 
   // what type of project to auto-open
   mProjOpen = settingsProjOpenAtLaunch->value();
