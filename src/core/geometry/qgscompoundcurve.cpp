@@ -1036,25 +1036,36 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
     else
     {
       // we reached the end of list, which means we are at the start of the geometry
-      // so we append those points at the start of the first curve in the list
+      // so we append those points at the start of the first curve in the list (if it is not a circularstring, otherwise we make a linestring connecting to it)
       // if there are no curves left, but the number of surviving points is 2 or greater
       // we make a linestring out of them and add it as the only curve
-      QgsPoint startPoint;
       if ( mCurves.size() != 0 )
       {
-        const QgsCurve *curve = mCurves.at( 0 );
-        startPoint = curve->startPoint();
+        QgsCurve *curve = mCurves.at( 0 );
+        if ( QgsWkbTypes::flatType( curve->wkbType() ) == Qgis::WkbType::LineString )
+        {
+          for ( int i = 0; i < survivingPoints.size(); ++i )
+            curve->insertVertex( QgsVertexId( 0, 0, 0 ), survivingPoints[i] );
+        }
+        else // circularstring, should not add to it, just make a linestring connecting to it
+        {
+          QgsPointSequence pts;
+          for ( int i = survivingPoints.size() - 1; i >= 0; --i )
+            pts << survivingPoints[i];
+          pts << curve->startPoint();
+
+          auto newLineString = std::make_unique<QgsLineString>();
+          newLineString->setPoints( pts );
+          mCurves.insert( 0, newLineString.release() );
+        }
       }
-
-      QgsPointSequence pts;
-      for ( int i = survivingPoints.size() - 1; i >= 0; --i )
-        pts << survivingPoints[i];
-
-      if ( !startPoint.isEmpty() )
-        pts << startPoint;
-
-      if ( pts.size() > 1 )
+      else if ( survivingPoints.size() >= 2 ) // there are no curves left, add points into a linestring and add it as only geometry
       {
+        QgsPointSequence pts;
+        for ( int i = survivingPoints.size() - 1; i >= 0; --i )
+          pts << survivingPoints[i];
+
+
         auto newLineString = std::make_unique<QgsLineString>();
         newLineString->setPoints( pts );
 
@@ -1070,20 +1081,37 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
   }
 
   // ensure all curves are connected
+  // if the curves are circularstring, make a linestring connecting them
+  // otherwise, replace the first/last point of a linestring with the one prior
   for ( size_t i = mCurves.size() - 1; i > 0; i-- )
   {
     QgsCurve *curve = mCurves.at( i );
     QgsCurve *previousCurve = mCurves.at( i - 1 );
     if ( previousCurve->endPoint() != curve->startPoint() )
     {
-      QgsLineString *line = new QgsLineString();
-      line->insertVertex( QgsVertexId( 0, 0, 0 ), previousCurve->endPoint() );
-      line->insertVertex( QgsVertexId( 0, 0, 1 ), curve->startPoint() );
-      mCurves.insert( i, line );
+      if ( QgsWkbTypes::flatType( curve->wkbType() ) == Qgis::WkbType::CircularString && QgsWkbTypes::flatType( previousCurve->wkbType() ) == Qgis::WkbType::CircularString )
+      {
+        QgsLineString *line = new QgsLineString();
+        line->insertVertex( QgsVertexId( 0, 0, 0 ), previousCurve->endPoint() );
+        line->insertVertex( QgsVertexId( 0, 0, 1 ), curve->startPoint() );
+        mCurves.insert( i, line );
+      }
+      else // we shouldn't move the vertex of a circularstring because that changes geometry, linestring doesn't have that issue
+      {
+        if ( QgsWkbTypes::flatType( curve->wkbType() ) == Qgis::WkbType::CircularString )
+        {
+          const QgsPoint p = curve->startPoint();
+          previousCurve->moveVertex( QgsVertexId( 0, 0, previousCurve->numPoints() - 1 ), p );
+        }
+        else
+        {
+          const QgsPoint p = previousCurve->endPoint();
+          curve->moveVertex( QgsVertexId( 0, 0, 0 ), p );
+        }
+      }
     }
   }
 
-  condenseCurves(); // merge consecutive LineStrings and CircularStrings
   clearCache();
   return true;
 }
