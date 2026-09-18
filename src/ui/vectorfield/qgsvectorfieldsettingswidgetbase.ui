@@ -203,28 +203,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QComboBox" name="mSymbologyVectorComboBox">
-     <item>
-      <property name="text">
-       <string>Arrows</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Streamlines</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Traces</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Wind Barbs</string>
-      </property>
-     </item>
-    </widget>
+    <widget class="QComboBox" name="mSymbologyVectorComboBox"/>
    </item>
    <item row="1" column="0">
     <widget class="QWidget" name="widget" native="true">
@@ -302,7 +281,7 @@
     </widget>
    </item>
    <item row="4" column="0">
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="mColoringMethodLabel">
      <property name="text">
       <string>Coloring Method</string>
      </property>
@@ -318,7 +297,7 @@
        <widget class="QComboBox" name="mStreamlinesSeedingMethodComboBox">
         <item>
          <property name="text">
-          <string>On Mesh/Grid</string>
+          <string>On Data Points</string>
          </property>
         </item>
         <item>

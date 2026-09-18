@@ -484,6 +484,7 @@
 %Include auto_generated/raster/qgsrasterminmaxwidget.sip
 %Include auto_generated/raster/qgsrasterrendererwidget.sip
 %Include auto_generated/raster/qgsrastertransparencywidget.sip
+%Include auto_generated/raster/qgsrastervectorfieldrendererwidget.sip
 %Include auto_generated/raster/qgsrendererrasterpropertieswidget.sip
 %Include auto_generated/raster/qgssinglebandgrayrendererwidget.sip
 %Include auto_generated/raster/qgssinglebandpseudocolorrendererwidget.sip
