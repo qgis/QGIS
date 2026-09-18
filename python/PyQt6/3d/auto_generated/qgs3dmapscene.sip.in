@@ -217,6 +217,16 @@ empty list.
 
 .. versionadded:: 3.44
 %End
+    double centerDepth() const;
+%Docstring
+Returns the last valid depth sampled at the center of the screen.
+
+This value can be used to determine the position in the scene
+corresponding to the center of the screen.
+
+.. versionadded:: 4.4
+%End
+
 
   signals:
     void terrainEntityChanged();
