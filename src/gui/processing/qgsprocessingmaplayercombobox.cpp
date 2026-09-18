@@ -27,6 +27,7 @@
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingrastersourceoptionswidget.h"
 #include "qgsprocessingwidgetwrapper.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
@@ -470,7 +471,7 @@ QgsMapLayer *QgsProcessingMapLayerComboBox::compatibleMapLayerFromMimeData( cons
   for ( const QgsMimeDataUtils::Uri &u : uriList )
   {
     // is this uri from the current project?
-    if ( QgsMapLayer *layer = u.mapLayer() )
+    if ( QgsMapLayer *layer = u.mapLayer( QgsProject::instance() ) )
     {
       if ( mCombo->mProxyModel->acceptsLayer( layer ) )
         return layer;
