@@ -56,6 +56,11 @@ using namespace Qt::StringLiterals;
 
 QgsProcessingDialogFactory::~QgsProcessingDialogFactory() = default;
 
+//
+// QgsProcessingContextFactory
+//
+
+QgsProcessingContextFactory::~QgsProcessingContextFactory() = default;
 
 //
 // QgsProcessingGuiRegistry
@@ -354,6 +359,16 @@ QgsProcessingDialogFactory *QgsProcessingGuiRegistry::dialogFactory()
   return mProcessingDialogFactory.get();
 }
 
+void QgsProcessingGuiRegistry::setContextFactory( QgsProcessingContextFactory *factory )
+{
+  mContextFactory.reset( factory );
+}
+
+QgsProcessingContextFactory *QgsProcessingGuiRegistry::contextFactory()
+{
+  return mContextFactory.get();
+}
+
 QList<QgsProcessingToolboxContextAction *> QgsProcessingGuiRegistry::toolboxContextActionsForProvider( const QString &providerId ) const
 {
   return mProviderToolboxContextActions.value( providerId );
@@ -517,4 +532,6 @@ QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory
 
   return nullptr;
 }
+
+
 /// @endcond PRIVATE
