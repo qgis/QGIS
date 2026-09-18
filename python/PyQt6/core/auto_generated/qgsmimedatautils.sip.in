@@ -73,13 +73,29 @@ error is set
 .. versionadded:: 4.6
 %End
 
-        QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
+ QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const /Deprecated="Since 4.6. Use rasterLayer() with explicit project parameter instead."/;
 %Docstring
 Gets raster layer from uri if possible, otherwise returns ``None`` and
 error is set
 
 :param owner: set to ``True`` if caller becomes owner
 :param error: set to error message if cannot get raster
+
+.. deprecated:: 4.6
+
+   Use :py:func:`~QgsMimeDataUtils.rasterLayer` with explicit project parameter instead.
+%End
+
+        QgsRasterLayer *rasterLayer( bool &owner, QString &error, QgsProject *project ) const;
+%Docstring
+Gets raster layer from uri if possible, otherwise returns ``None`` and
+error is set
+
+:param owner: set to ``True`` if caller becomes owner
+:param error: set to error message if cannot get raster
+:param project: project is used to obtain the layer
+
+.. versionadded:: 4.6
 %End
 
         QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;

@@ -138,6 +138,11 @@ QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error,
 
 QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error ) const
 {
+  return rasterLayer( owner, error, QgsProject::instance() ); // skip-keyword-check
+}
+
+QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error, QgsProject *project ) const
+{
   owner = false;
   error.clear();
   if ( layerType != "raster"_L1 )
@@ -148,7 +153,7 @@ QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error 
 
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    if ( QgsRasterLayer *rasterLayer = QgsProject::instance()->mapLayer<QgsRasterLayer *>( layerId ) ) // skip-keyword-check
+    if ( QgsRasterLayer *rasterLayer = project->mapLayer<QgsRasterLayer *>( layerId ) )
     {
       return rasterLayer;
     }
