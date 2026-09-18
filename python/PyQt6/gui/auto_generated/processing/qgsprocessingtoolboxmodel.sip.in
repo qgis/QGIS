@@ -502,6 +502,8 @@ supports filtering the results.
       Modeler,
       InPlace,
       ShowKnownIssues,
+      // The naming could be improved, and it would be nice to be able to set them both at the same time
+      // so for now don't expose these flags to Python. see https://github.com/qgis/QGIS/pull/67117#discussion_r3826016642 SIP_SKIP ForSocketOutput = 1 << 5, //!< Only show algorithms compatible with a certain socket output, use with setFilterOutput() \since QGIS 4.4 SIP_SKIP ForSocketInput = 1 << 6,  //!< Only show algorithms compatible with a certain input socket, use with setFilterOutput() xor setFilterParameter() \since QGIS 4.4
     };
     typedef QFlags<QgsProcessingToolboxProxyModel::Filter> Filters;
 
@@ -565,6 +567,8 @@ against the algorithm name, short description, tags, etc.
 
 .. seealso:: :py:func:`filterString`
 %End
+
+
 
     QString filterString() const;
 %Docstring
