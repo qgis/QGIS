@@ -974,12 +974,11 @@ void QgsModelDesignerDialog::addInput( const QString &parameterType, const QPoin
 
 QgsProcessingAlgorithmWidgetBase *QgsModelDesignerDialog::createExecutionWidget()
 {
-  QgsProcessingAlgorithmExecutionWidgetFactory *executionWidgetFactory = QgsGui::processingGuiRegistry()->algorithmExecutionWidgetFactory();
-  if ( !executionWidgetFactory )
+  QgsProcessingDialogFactory *dialogFactory = QgsGui::processingGuiRegistry()->dialogFactory();
+  if ( !dialogFactory )
     return nullptr; // should never happen
 
-  QgsProcessingAlgorithmWidgetBase *widget
-    = executionWidgetFactory->createWidget( mModel->create(), false, this, QgsProcessingAlgorithmWidgetBase::WidgetFlags(), Qgis::DockableWidgetInitialState::ForceDocked );
+  QgsProcessingAlgorithmWidgetBase *widget = dialogFactory->createWidget( mModel->create(), false, this, QgsProcessingAlgorithmWidgetBase::WidgetFlags(), Qgis::DockableWidgetInitialState::ForceDocked );
   if ( !widget )
     return nullptr; // should never happen
 
