@@ -59,6 +59,7 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QWidget
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui import TestTools
 from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.AlgorithmExecutor import execute, execute_in_place
@@ -370,6 +371,21 @@ class ProcessingPlugin(QObject):
         menuBar.insertMenu(self.iface.firstRightStandardMenu().menuAction(), self.menu)
 
         self.menu.addSeparator()
+
+        # provider specific settings -- here till we have a proper c++ API to port these too
+        ProcessingConfig.settingIcons[
+            QCoreApplication.tr("Models", "ModelerAlgorithmProvider")
+        ] = QgsApplication.getThemeIcon("/processingModel.svg")
+        ProcessingConfig.addSetting(
+            Setting(
+                QCoreApplication.tr("Models", "ModelerAlgorithmProvider"),
+                "MODELS_FOLDER",
+                QCoreApplication.tr("Models folder", "ModelerAlgorithmProvider"),
+                QgsProcessingUtils.defaultModelFolder(),
+                valuetype=Setting.MULTIPLE_FOLDERS,
+            )
+        )
+        ProcessingConfig.readSettings()
 
         initializeMenus()
         createMenus()
