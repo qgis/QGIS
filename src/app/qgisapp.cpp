@@ -115,6 +115,7 @@ using namespace Qt::StringLiterals;
 #include "qgsscaleutils.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsprocessingwidgetcontext.h"
+#include "qgsprocessingmodelprovider.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -13460,6 +13461,7 @@ void QgisApp::initNativeProcessing()
 #endif
 
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
+  QgsApplication::processingRegistry()->addProvider( new QgsProcessingModelProvider( QgsApplication::processingRegistry() ) );
 }
 
 void QgisApp::initLayouts()
