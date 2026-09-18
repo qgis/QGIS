@@ -6,8 +6,3 @@ try:
     QgsModelDesignerDialog.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass
-try:
-    QgsModelChildDependenciesWidget.__attribute_docs__ = {'changed': 'Emitted when the dependencies are changed in the widget.\n\n.. versionadded:: 4.4\n'}
-    QgsModelChildDependenciesWidget.__group__ = ['processing', 'models']
-except (NameError, AttributeError):
-    pass

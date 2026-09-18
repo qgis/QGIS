@@ -317,6 +317,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     QgsProcessingContext mLayerStore;
 };
 
+#ifndef SIP_RUN
+
 class GUI_EXPORT QgsModelChildDependenciesWidget : public QWidget
 {
     Q_OBJECT
@@ -352,6 +354,7 @@ class GUI_EXPORT QgsModelChildDependenciesWidget : public QWidget
 
     friend class TestProcessingGui;
 };
+#endif
 ///@endcond
 
 #endif // QGSMODELDESIGNERDIALOG_H
