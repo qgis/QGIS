@@ -505,11 +505,6 @@ QgsRectangle Qgs3DMapSettings::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( sceneMode() == Qgis::SceneMode::Globe )
-  {
-    QgsDebugError( u"extent() should not be used with globe!"_s );
-  }
-
   return mExtent;
 }
 

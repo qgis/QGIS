@@ -30,6 +30,8 @@
 #include "qgs3drendercontext.h"
 #include "qgsabstractfeaturebasedchunkedentity.h"
 #include "qgschunkloader.h"
+#include "qgschunknode.h"
+#include "qgscoordinatetransform.h"
 
 #define SIP_NO_FILE
 
@@ -64,6 +66,7 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QgsChunkNode *createRootNode() const override;
     bool canCreateChildren( QgsChunkNode *node ) override;
     QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
@@ -73,6 +76,16 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
     //! Contains loaded nodes and whether they are leaf nodes or not
     mutable QHash< QString, bool > mNodesAreLeafs;
     int mMaxFeatures;
+
+    bool mIsGeocentric = false;
+
+    // below only used for geocentric case
+    QgsChunkNodeId mRootNodeId;
+    QgsCoordinateTransform mCrsToLatLon;
+
+    double mRadiusX = 0;
+    double mRadiusY = 0;
+    double mRadiusZ = 0;
 };
 
 
