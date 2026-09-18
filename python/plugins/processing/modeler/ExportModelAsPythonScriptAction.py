@@ -49,7 +49,7 @@ class ExportModelAsPythonScriptAction(QgsProcessingToolboxContextAction):
 
         dlg = ScriptEditorDialog(parent=iface.mainWindow())
 
-        dlg.editor.setText(
+        dlg.codeEditor().setText(
             "\n".join(
                 model.asPythonCode(
                     QgsProcessing.PythonOutputType.PythonQgsProcessingAlgorithmSubclass,
