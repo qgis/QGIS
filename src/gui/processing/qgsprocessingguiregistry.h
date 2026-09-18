@@ -75,6 +75,25 @@ class GUI_EXPORT QgsProcessingDialogFactory
 };
 
 /**
+ * A factory for creating Processing contexts, aware of the GUI components which may influence this.
+ *
+ * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+ *
+ * \ingroup gui
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsProcessingContextFactory
+{
+  public:
+    virtual ~QgsProcessingContextFactory();
+
+    /**
+    * Creates a new Processing context.
+    */
+    virtual QgsProcessingContext *createContext( QgsProcessingFeedback *feedback = nullptr ) = 0 SIP_TRANSFERBACK;
+};
+
+/**
  * A registry for widgets for use with the Processing framework.
  *
  * QgsProcessingGuiRegistry is not usually directly created, but rather accessed through
@@ -370,6 +389,28 @@ class GUI_EXPORT QgsProcessingGuiRegistry : public QgsProcessingWidgetContextGen
      */
     QgsProcessingDialogFactory *dialogFactory();
 
+    /**
+     * Sets the application's Processing context \a factory.
+     *
+     * Ownership of \a factory is transferred.
+     *
+     * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+     *
+     * \see contextFactory()
+     * \since QGIS 4.4
+     */
+    void setContextFactory( QgsProcessingContextFactory *factory SIP_TRANSFER );
+
+    /**
+     * Returns the application's Processing context factory, if set.
+     *
+     * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+     *
+     * \see setContextFactory()
+     * \since QGIS 4.4
+     */
+    QgsProcessingContextFactory *contextFactory();
+
   private:
 #ifdef SIP_RUN
     QgsProcessingGuiRegistry( const QgsProcessingGuiRegistry &other );
@@ -385,6 +426,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry : public QgsProcessingWidgetContextGen
     QMap< QString, QList< QgsProcessingToolboxAction * > > mProviderToolboxActions;
     QMap< QString, QList< QgsProcessingToolboxContextAction * > > mProviderToolboxContextActions;
     std::unique_ptr< QgsProcessingDialogFactory > mProcessingDialogFactory;
+    std::unique_ptr< QgsProcessingContextFactory > mContextFactory;
 };
 
 
