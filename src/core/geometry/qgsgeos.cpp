@@ -34,6 +34,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
 #include "qgspolyhedralsurface.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 #include <QString>
 
@@ -132,13 +134,17 @@ QgsGeosContext::QgsGeosContext()
   // any curve geometry input if needed, and will also convert any linear output
   // to a curved type, if the inputs were converted to curves.
   GEOSCurveToLineParams *curveToLineParams = GEOSCurveToLineParams_create();
-  //GEOSLineToCurveParams *lineToCurveParams = GEOSLineToCurveParams_create(); // Disable for testing purposes
-
   GEOSContext_setCurveToLineParams_r( mContext, curveToLineParams );
-  //GEOSContext_setLineToCurveParams_r( mContext, lineToCurveParams );
-
   GEOSCurveToLineParams_destroy( curveToLineParams );
-  //GEOSLineToCurveParams_destroy( lineToCurveParams );
+
+  // The second part of the conversion is managed by a hidden setting, so that
+  // we can enable/disable it at will to spot missing curve support in GEOS.
+  if ( QgsGeos::settingLineToCurveParam->value() )
+  {
+    GEOSLineToCurveParams *lineToCurveParams = GEOSLineToCurveParams_create();
+    GEOSContext_setLineToCurveParams_r( mContext, lineToCurveParams );
+    GEOSLineToCurveParams_destroy( lineToCurveParams );
+  }
 #endif
 }
 
@@ -192,6 +198,9 @@ void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence ) const
 
 ///@endcond
 
+
+const QgsSettingsEntryBool *QgsGeos::settingLineToCurveParam
+  = new QgsSettingsEntryBool( u"line-to-curve-param"_s, QgsSettingsTree::sTreeGeos, false, u"Whether to convert any linear output of a GEOS method to a curved type, if the inputs were converted to curves."_s );
 
 QgsGeos::QgsGeos( const QgsAbstractGeometry *geometry, double precision, Qgis::GeosCreationFlags flags )
   : QgsGeometryEngine( geometry )
