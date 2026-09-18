@@ -130,7 +130,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   QMimeData *mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << QgsMimeDataUtils::Uri( vl1 ) << QgsMimeDataUtils::Uri( vl2 ) );
 
   const QgsMimeDataUtils::Uri uriDecoded( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
-  QCOMPARE( uriDecoded.mapLayer(), vl1 );
+  QCOMPARE( uriDecoded.mapLayer( project ), vl1 );
   QCOMPARE( uriDecoded.wkbType, Qgis::WkbType::LineString );
   bool owner = false;
   QString error;
@@ -138,7 +138,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   QVERIFY( !owner );
   QVERIFY( error.isEmpty() );
   const QgsMimeDataUtils::Uri uriDecoded2( QgsMimeDataUtils::decodeUriList( mimeData ).at( 1 ) );
-  QCOMPARE( uriDecoded2.mapLayer(), vl2 );
+  QCOMPARE( uriDecoded2.mapLayer( project ), vl2 );
   QCOMPARE( uriDecoded2.vectorLayer( owner, error, project ), vl2 );
   QVERIFY( !owner );
   QVERIFY( error.isEmpty() );
@@ -149,7 +149,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   uri.pId = u"1"_s;
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri );
   const QgsMimeDataUtils::Uri uriDecoded3( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
-  QVERIFY( !uriDecoded3.mapLayer() );
+  QVERIFY( !uriDecoded3.mapLayer( project ) );
   QVERIFY( !uriDecoded3.vectorLayer( owner, error, project ) );
   QVERIFY( !owner );
   QVERIFY( !error.isEmpty() );
@@ -159,7 +159,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   uri2.layerId = u"xcxxcv"_s;
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri2 );
   const QgsMimeDataUtils::Uri uriDecoded4( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
-  QVERIFY( !uriDecoded4.mapLayer() );
+  QVERIFY( !uriDecoded4.mapLayer( project ) );
   QVERIFY( !uriDecoded4.vectorLayer( owner, error, project ) );
   QVERIFY( !owner );
   QVERIFY( !error.isEmpty() );
@@ -175,7 +175,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   uri3.layerId = u"xcxxcv"_s;
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri3 );
   const QgsMimeDataUtils::Uri uriDecoded5( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
-  QVERIFY( !uriDecoded5.mapLayer() );
+  QVERIFY( !uriDecoded5.mapLayer( project ) );
   QCOMPARE( uriDecoded5.wkbType, Qgis::WkbType::Point );
   QgsVectorLayer *res = uriDecoded5.vectorLayer( owner, error, project );
   QVERIFY( res );
