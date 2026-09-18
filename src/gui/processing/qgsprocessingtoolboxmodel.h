@@ -528,8 +528,10 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
       Modeler SIP_MONKEYPATCH_COMPAT_NAME( FilterModeler ) = 1 << 2,                 //!< Filters out any algorithms and content which should not be shown in the modeler
       InPlace SIP_MONKEYPATCH_COMPAT_NAME( FilterInPlace ) = 1 << 3,                 //!< Only show algorithms which support in-place edits
       ShowKnownIssues SIP_MONKEYPATCH_COMPAT_NAME( FilterShowKnownIssues ) = 1 << 4, //!< Show algorithms with known issues (hidden by default)
-      ForSocketOutput SIP_MONKEYPATCH_COMPAT_NAME( FilterForSocketOutput ) = 1 << 5, //!< Only show algorithms compatible with a certain socket output, use with setFilterOutput() \since QGIS 4.4
-      ForSocketInput SIP_MONKEYPATCH_COMPAT_NAME( FilterForSocketInput ) = 1 << 6, //!< Only show algorithms compatible with a certain input socket, use with setFilterOutput() xor setFilterParameter() \since QGIS 4.4
+      // The naming could be improved, and it would be nice to be able to set them both at the same time
+      // so for now don't expose these flags to Python. see https://github.com/qgis/QGIS/pull/67117#discussion_r3826016642
+      SIP_SKIP ForSocketOutput = 1 << 5, //!< Only show algorithms compatible with a certain socket output, use with setFilterOutput() \since QGIS 4.4
+      SIP_SKIP ForSocketInput = 1 << 6,  //!< Only show algorithms compatible with a certain input socket, use with setFilterOutput() xor setFilterParameter() \since QGIS 4.4
     };
     Q_ENUM( Filter )
     Q_DECLARE_FLAGS( Filters, Filter )
