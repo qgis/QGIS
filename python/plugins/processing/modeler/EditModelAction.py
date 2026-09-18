@@ -38,7 +38,12 @@ class EditModelAction(QgsProcessingToolboxContextAction):
             context.providerId()
         )
         model = provider.algorithm(context.algorithmName())
-        dlg = ModelerDialog.create(model)
+        dlg = ModelerDialog.create()
+
+        _model = model.create()
+        _model.setSourceFilePath(model.sourceFilePath())
+        dlg.setModel(_model)
+
         dlg.modelUpdated.connect(self.updateModel)
         dlg.show()
         dlg.activate()
