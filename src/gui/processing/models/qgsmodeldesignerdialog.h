@@ -246,6 +246,9 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
   private:
     bool saveModel( bool saveAs = false );
 
+    QPointF getPositionForParameterItem() const;
+    QPointF getPositionForAlgorithmItem() const;
+
     std::unique_ptr<QgsProcessingModelAlgorithm> mModel;
 
     QgsScreenHelper *mScreenHelper = nullptr;

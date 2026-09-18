@@ -99,7 +99,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   mToolbar->setIconSize( QgsGui::iconSize() );
   setStyleSheet( QgsGui::applicationStyleSheet() );
-  connect( QgsGui::instance(), &QgsGui::applicationStyleSheetChanged, this, &QgsLayoutDesignerDialog::setStyleSheet );
+  connect( QgsGui::instance(), &QgsGui::applicationStyleSheetChanged, this, &QgsModelDesignerDialog::setStyleSheet );
 
   mLayerStore.setProject( QgsProject::instance() );
 
@@ -824,6 +824,60 @@ bool QgsModelDesignerDialog::saveModel( bool saveAs )
 
   setDirty( false );
   return true;
+}
+
+QPointF QgsModelDesignerDialog::getPositionForParameterItem() const
+{
+  constexpr double MARGIN = 20;
+  constexpr double BOX_WIDTH = 200;
+  constexpr double BOX_HEIGHT = 80;
+
+  double newX = 0;
+  const QMap<QString, QgsProcessingModelParameter> components = mModel->parameterComponents();
+  if ( !components.isEmpty() )
+  {
+    double maxX = 0;
+    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    {
+      maxX = std::max( maxX, it->position().x() );
+    }
+    newX = MARGIN + BOX_WIDTH + maxX;
+  }
+  else
+  {
+    newX = MARGIN + BOX_WIDTH / 2.0;
+  }
+  return QPointF( newX, MARGIN + BOX_HEIGHT / 2.0 );
+}
+
+QPointF QgsModelDesignerDialog::getPositionForAlgorithmItem() const
+{
+  constexpr double MARGIN = 20;
+  constexpr double BOX_WIDTH = 200;
+  constexpr double BOX_HEIGHT = 80;
+
+  const QMap<QString, QgsProcessingModelChildAlgorithm> algorithms = mModel->childAlgorithms();
+
+  double newX = 0;
+  double newY = 0;
+  if ( !algorithms.isEmpty() )
+  {
+    double maxX = 0;
+    double maxY = 0;
+    for ( auto it = algorithms.constBegin(); it != algorithms.constEnd(); ++it )
+    {
+      maxX = std::max( maxX, it->position().x() );
+      maxY = std::max( maxY, it->position().y() );
+    }
+    newX = MARGIN + BOX_WIDTH + maxX;
+    newY = MARGIN + BOX_HEIGHT + maxY;
+  }
+  else
+  {
+    newX = MARGIN + BOX_WIDTH / 2.0;
+    newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2.0;
+  }
+  return QPointF( newX, newY );
 }
 
 void QgsModelDesignerDialog::zoomIn()
