@@ -85,10 +85,6 @@ Emitted when the model is updated.
 %End
 
   protected:
-
-    virtual void exportAsScriptAlgorithm() = 0;
-
-
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 %Docstring
 Registers a Processing context ``generator`` class that will be used to
