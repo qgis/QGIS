@@ -40,6 +40,7 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingmodelfeedback.h"
 #include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingprojectmodelprovider.h"
 #include "qgsprocessingregistry.h"
@@ -878,6 +879,97 @@ QPointF QgsModelDesignerDialog::getPositionForAlgorithmItem() const
     newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2.0;
   }
   return QPointF( newX, newY );
+}
+
+void QgsModelDesignerDialog::autoGenerateParameterName( QgsProcessingParameterDefinition *parameter ) const
+{
+  const QString safeName = QgsProcessingModelAlgorithm::safeName( parameter->description() );
+  QString name = safeName.toLower();
+  int i = 2;
+  while ( mModel->parameterDefinition( name ) )
+  {
+    name = safeName.toLower() + QString::number( i );
+    i += 1;
+  }
+  parameter->setName( name );
+}
+
+void QgsModelDesignerDialog::addAlgorithm( const QString &algorithmId, const QPointF &pos )
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( algorithmId ) );
+  if ( !alg )
+    return;
+
+  QgsProcessingModelChildAlgorithm childAlg = QgsProcessingModelChildAlgorithm( algorithmId );
+  childAlg.setDescription( alg->displayName() );
+
+  if ( pos.isNull() )
+  {
+    childAlg.setPosition( getPositionForAlgorithmItem() );
+  }
+  else
+  {
+    childAlg.setPosition( pos );
+  }
+
+  childAlg.comment()->setPosition( childAlg.position() + QPointF( childAlg.size().width(), -1.5 * childAlg.size().height() ) );
+
+  const double outputOffsetX = childAlg.size().width();
+  double outputOffsetY = 1.5 * childAlg.size().height();
+
+  const QMap<QString, QgsProcessingModelOutput> childOutputs = childAlg.modelOutputs();
+  for ( auto out = childOutputs.constBegin(); out != childOutputs.constEnd(); ++out )
+  {
+    childAlg.modelOutput( out.key() ).setPosition( childAlg.position() + QPointF( outputOffsetX, outputOffsetY ) );
+    outputOffsetY += 1.5 * childAlg.modelOutput( out.key() ).size().height();
+  }
+
+  beginUndoCommand( tr( "Add Algorithm" ) );
+  mModel->addChildAlgorithm( childAlg );
+  repaintModel();
+  endUndoCommand();
+}
+
+void QgsModelDesignerDialog::addInput( const QString &parameterType, const QPointF &position )
+{
+  QPointF pos = position;
+  if ( !QgsApplication::processingRegistry()->parameterType( parameterType ) )
+    return;
+
+  std::unique_ptr< QgsProcessingParameterDefinition > newParam;
+  QString comment;
+
+  QgsProcessingContext *context = mProcessingContextGenerator->processingContext();
+  QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+  QgsProcessingParameterDefinitionDialog dlg( parameterType, *context, widgetContext, nullptr, mModel.get() );
+  dlg.registerProcessingContextGenerator( mProcessingContextGenerator );
+  if ( !dlg.exec() )
+    return;
+
+  newParam.reset( dlg.createParameter() );
+  if ( !newParam )
+    return;
+
+  autoGenerateParameterName( newParam.get() );
+  dlg.comments();
+  comment = dlg.comments();
+
+  if ( pos.isNull() )
+  {
+    pos = getPositionForParameterItem();
+  }
+
+  QgsProcessingModelParameter component = QgsProcessingModelParameter( newParam->name() );
+  component.setDescription( newParam->name() );
+  component.setPosition( pos );
+
+  component.comment()->setDescription( comment );
+  component.comment()->setPosition( component.position() + QPointF( component.size().width(), -1.5 * component.size().height() ) );
+
+  beginUndoCommand( tr( "Add Model Input" ) );
+  mModel->addModelParameter( newParam.release(), component );
+  repaintModel();
+  endUndoCommand();
 }
 
 void QgsModelDesignerDialog::zoomIn()

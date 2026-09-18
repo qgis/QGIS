@@ -162,9 +162,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
   protected:
     void repaintModel( bool showControls = true );
 
-    virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
-    // cppcheck-suppress pureVirtualCall
-    virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
     // cppcheck-suppress pureVirtualCall
     virtual void exportAsScriptAlgorithm() = 0;
     // cppcheck-suppress pureVirtualCall
@@ -248,6 +245,15 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
 
     QPointF getPositionForParameterItem() const;
     QPointF getPositionForAlgorithmItem() const;
+
+    /**
+     * Automatically generates and sets a new parameter's name, based on the parameter's
+     * description and ensuring that it is unique for the model.
+     */
+    void autoGenerateParameterName( QgsProcessingParameterDefinition *parameter ) const;
+
+    void addAlgorithm( const QString &algorithmId, const QPointF &pos );
+    void addInput( const QString &parameterType, const QPointF &pos );
 
     std::unique_ptr<QgsProcessingModelAlgorithm> mModel;
 
