@@ -56,6 +56,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     Q_PROPERTY( QColor defaultColor READ defaultColor WRITE setDefaultColor )
     Q_PROPERTY( bool showNoColor READ showNoColor WRITE setShowNoColor )
     Q_PROPERTY( QString noColorString READ noColorString WRITE setNoColorString )
+    Q_PROPERTY( QString opaqueColorString READ opaqueColorString WRITE setOpaqueColorString )
     Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
@@ -193,10 +194,25 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \param noColorString string to use for the "no color" menu option
      * \see noColorString
      * \see setShowNoColor
+     * \see setOpaqueColorString
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
      * dialog
      */
     void setNoColorString( const QString &noColorString ) { mNoColorString = noColorString; }
+
+    /**
+     * Sets the string to use for the "opaque color" option in the button's drop-down menu.
+     *
+     * This option replaces the "no color" one whenever the button's current color is totally transparent,
+     * so that the color can be made opaque again.
+     *
+     * \param opaqueColorString string to use for the "opaque color" menu option
+     * \see opaqueColorString
+     * \see setNoColorString
+     * \see setShowNoColor
+     * \since QGIS 4.4
+     */
+    void setOpaqueColorString( const QString &opaqueColorString ) { mOpaqueColorString = opaqueColorString; }
 
     /**
      * Sets whether a set to null (clear) option is shown in the button's drop-down menu.
@@ -230,6 +246,15 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * dialog
      */
     QString noColorString() const { return mNoColorString; }
+
+    /**
+     * Returns the string used for the "opaque color" option in the button's drop-down menu.
+     * \returns string used for the "opaque color" menu option
+     * \see setOpaqueColorString
+     * \see noColorString
+     * \since QGIS 4.4
+     */
+    QString opaqueColorString() const { return mOpaqueColorString; }
 
     /**
      * Sets the context string for the color button. The context string is passed to all color swatch
@@ -343,9 +368,18 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * Sets color to a totally transparent color.
      * \note If the color button is not set to show an opacity channel in the color
      * dialog  then the color will not be changed.
+     * \see setToOpaqueColor()
      * \see setToNull()
      */
     void setToNoColor();
+
+    /**
+     * Sets the color to a totally opaque one, leaving the other color components untouched.
+     * \see setToNoColor()
+     * \see setToNull()
+     * \since QGIS 4.4
+     */
+    void setToOpaqueColor();
 
     /**
      * Sets color to the button's default color, if set.
@@ -476,6 +510,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     bool mShowNoColorOption = false;
     QString mNoColorString;
+    QString mOpaqueColorString;
     bool mShowNull = false;
     QString mNullColorString;
 
