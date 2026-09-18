@@ -156,6 +156,7 @@ set(QGIS_APP_SRCS
   qgsrelationmanagerdialog.cpp
   qgsrelationadddlg.cpp
   qgsrelationaddpolymorphicdialog.cpp
+  qgssaveprojecttemplatedialog.cpp
   qgsselectbyformdialog.cpp
   qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp

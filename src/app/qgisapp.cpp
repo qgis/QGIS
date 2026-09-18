@@ -31,6 +31,8 @@
 #include <QEvent>
 #include <QFile>
 #include <QFileInfo>
+#include <QFontMetrics>
+#include <QHash>
 #include <QImageWriter>
 #include <QInputDialog>
 #include <QKeyEvent>
@@ -394,6 +396,7 @@ using namespace Qt::StringLiterals;
 #include "qgspointxy.h"
 #include "qgspuzzlewidget.h"
 #include "qgsruntimeprofiler.h"
+#include "qgssaveprojecttemplatedialog.h"
 #include "qgshandlebadlayers.h"
 #include "qgsprintlayout.h"
 #include "qgsprocessingregistry.h"
@@ -1314,20 +1317,6 @@ QgisApp::QgisApp(
 
   mSaveRollbackInProgress = false;
 
-  QString templateDirName = settings.value( u"qgis/projectTemplateDir"_s, QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
-  if ( !QFileInfo::exists( templateDirName ) )
-  {
-    // create default template directory
-    if ( !QDir().mkdir( QgsApplication::qgisSettingsDirPath() + "project_templates" ) )
-      templateDirName.clear();
-  }
-  if ( !templateDirName.isEmpty() ) // template directory exists, so watch it!
-  {
-    QFileSystemWatcher *projectsTemplateWatcher = new QFileSystemWatcher( this );
-    projectsTemplateWatcher->addPath( templateDirName );
-    connect( projectsTemplateWatcher, &QFileSystemWatcher::directoryChanged, this, [this] { updateProjectFromTemplates(); } );
-  }
-
   // initialize the plugin manager
   startProfile( tr( "Plugin manager" ) );
   mPluginManager = new QgsPluginManager( this, options.testFlag( AppOption::RestorePlugins ) );
@@ -2119,6 +2108,7 @@ QgisApp::QgisApp(
 
   QgsRecentProjectsMenuEventFilter *recentsProjectMenuEventFilter = new QgsRecentProjectsMenuEventFilter( mWelcomeScreen, mRecentProjectsMenu );
   mRecentProjectsMenu->installEventFilter( recentsProjectMenuEventFilter );
+  connect( &mProjectTemplateWatcher, &QFileSystemWatcher::directoryChanged, this, [this] { updateProjectFromTemplates(); } );
 
   updateRecentProjectPaths();
   mWelcomeScreen->setRecentProjects( mRecentProjects );
@@ -3475,7 +3465,6 @@ void QgisApp::createMenus()
 
   // Connect once for the entire submenu.
   connect( mRecentProjectsMenu, &QMenu::triggered, this, static_cast<void ( QgisApp::* )( QAction *action )>( &QgisApp::openProject ) );
-  connect( mProjectFromTemplateMenu, &QMenu::triggered, this, &QgisApp::fileNewFromTemplateAction );
 
   // View Menu
 
@@ -3817,6 +3806,10 @@ void QgisApp::createToolBars()
   // vector layer edits tool buttons
   QToolButton *tbAllEdits = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionAllEdits ) );
   tbAllEdits->setPopupMode( QToolButton::InstantPopup );
+
+  // new project from template tool button
+  QToolButton *tbNewProjectFromTemplate = qobject_cast<QToolButton *>( mFileToolBar->widgetForAction( mProjectFromTemplateMenu->menuAction() ) );
+  tbNewProjectFromTemplate->setPopupMode( QToolButton::InstantPopup );
 
   // new layer tool button
 
@@ -4274,6 +4267,7 @@ void QgisApp::setTheme( const QString &themeName )
   mStyleSheetBuilder->updateStyleSheet();
 
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( u"/mActionFileNew.svg"_s ) );
+  mProjectFromTemplateMenu->setIcon( QgsApplication::getThemeIcon( u"/mActionFileNewFromTemplate.svg"_s ) );
   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( u"/mActionFileOpen.svg"_s ) );
   mActionSaveProject->setIcon( QgsApplication::getThemeIcon( u"/mActionFileSave.svg"_s ) );
   mActionSaveProjectAs->setIcon( QgsApplication::getThemeIcon( u"/mActionFileSaveAs.svg"_s ) );
@@ -5356,11 +5350,14 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   // Get canonical absolute path
   QgsRecentProjectItemsModel::RecentProjectData projectData;
   projectData.path = QgsProject::instance()->absoluteFilePath();
-  QString templateDirName = QgsSettings().value( u"qgis/projectTemplateDir"_s, QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
 
-  // We don't want the template path to appear in the recent projects list. Never.
-  if ( projectData.path.startsWith( templateDirName ) )
-    return;
+  // We don't want the template paths to appear in the recent projects list. Never.
+  const QStringList templatePaths = QgsApplication::projectTemplatePaths();
+  for ( const QString &templatePath : templatePaths )
+  {
+    if ( projectData.path.startsWith( templatePath ) )
+      return;
+  }
 
   if ( projectData.path.isEmpty() ) // in case of custom project storage
     projectData.path = !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath();
@@ -5463,31 +5460,57 @@ void QgisApp::saveRecentProjects()
   }
 }
 
-// Update project menu with the project templates
+// Update project menu and welcome screen with the project templates
 void QgisApp::updateProjectFromTemplates()
 {
-  // get list of project files in template dir
-  QgsSettings settings;
-  QString templateDirName = settings.value( u"qgis/projectTemplateDir"_s, QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
-  QDir templateDir( templateDirName );
-  QStringList filters( u"*.qgs"_s );
-  filters << u"*.qgz"_s;
-  templateDir.setNameFilters( filters );
-  QStringList templateFiles = templateDir.entryList( filters );
-
   // Remove existing entries
   mProjectFromTemplateMenu->clear();
+  mProjectTemplateWatcher.removePaths( mProjectTemplateWatcher.directories() );
 
-  // Add entries
-  const auto constTemplateFiles = templateFiles;
-  for ( const QString &templateFile : constTemplateFiles )
+  const QStringList templatePaths = QgsApplication::projectTemplatePaths();
+  mProjectTemplateWatcher.addPaths( templatePaths );
+
+  QHash<QString, int> directoryNameCount;
+  for ( const QString &templatePath : templatePaths )
   {
-    mProjectFromTemplateMenu->addAction( templateFile );
+    directoryNameCount[QDir( templatePath ).dirName()]++;
+  }
+
+  const QFontMetrics fontMetrics = mProjectFromTemplateMenu->fontMetrics();
+  const int maxLabelWidth = Qgis::UI_SCALE_FACTOR * fontMetrics.horizontalAdvance( 'X' ) * 35;
+
+  // get list of project files in template dirs
+  for ( const QString &templateDirName : templatePaths )
+  {
+    QDir templateDir( templateDirName );
+    if ( !templateDir.exists() )
+      continue;
+
+    QStringList filters { u"*.qgs"_s, u"*.qgz"_s };
+    templateDir.setNameFilters( filters );
+    QStringList templateFiles = templateDir.entryList( filters );
+
+    // Add entries
+    if ( templateFiles.count() > 0 )
+    {
+      const QString label = directoryNameCount.value( templateDir.dirName() ) > 1 ? QDir::toNativeSeparators( templateDirName ) : templateDir.dirName();
+      QMenu *dirMenu = mProjectFromTemplateMenu->addMenu( fontMetrics.elidedText( label, Qt::ElideLeft, maxLabelWidth ) );
+      for ( const QString &templateFile : templateFiles )
+      {
+        dirMenu->addAction( templateFile, [this, templateDirName, templateFile]() { fileNewFromTemplate( templateDirName + QDir::separator() + templateFile ); } );
+      }
+    }
   }
 
   // add <blank> entry, which loads a blank template (regardless of "default template")
   if ( settingsNewProjectDefault->value() )
-    mProjectFromTemplateMenu->addAction( tr( "< Blank >" ) );
+    mProjectFromTemplateMenu->addAction( tr( "< Blank >" ), [this]() { fileNewBlank(); } );
+
+  mProjectFromTemplateMenu->menuAction()->setVisible( !mProjectFromTemplateMenu->isEmpty() );
+
+  // Reload welcome screen
+  if ( mWelcomeScreen )
+    mWelcomeScreen->templateProjectsModel()->reload();
 }
 
 QgsAppDbUtils *QgisApp::dbUtils()
@@ -6229,24 +6252,6 @@ void QgisApp::fileOpenedOKAfterLaunch()
 {
   settingsProjOpenedOKAtLaunch->setValue( true );
 }
-
-void QgisApp::fileNewFromTemplateAction( QAction *qAction )
-{
-  if ( !qAction )
-    return;
-
-  if ( qAction->text() == tr( "< Blank >" ) )
-  {
-    fileNewBlank();
-  }
-  else
-  {
-    QgsSettings settings;
-    QString templateDirName = settings.value( u"qgis/projectTemplateDir"_s, QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
-    fileNewFromTemplate( templateDirName + QDir::separator() + qAction->text() );
-  }
-}
-
 
 void QgisApp::newVectorLayer()
 {
@@ -17615,24 +17620,15 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, const bool saving )
   {
     QAction *action = menu->addAction( tr( "Templates" ) + QChar( 0x2026 ) ); // 0x2026 = ellipsis character
     connect( action, &QAction::triggered, this, [this] {
-      QgsSettings settings;
-      QString templateDirName = settings.value( u"qgis/projectTemplateDir"_s, QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
-
       const QString originalFilename = QgsProject::instance()->fileName();
-      QString templateName = QFileInfo( originalFilename ).baseName();
 
-      if ( templateName.isEmpty() )
-      {
-        bool ok;
-        templateName = QInputDialog::getText( this, tr( "Template Name" ), tr( "Name for the template" ), QLineEdit::Normal, QString(), &ok );
+      QgsSaveProjectTemplateDialog dialog( QgsApplication::projectTemplatePaths(), QFileInfo( originalFilename ).baseName(), this );
+      if ( dialog.exec() != QDialog::Accepted )
+        return;
 
-        if ( !ok )
-          return;
-        if ( templateName.isEmpty() )
-        {
-          messageBar()->pushInfo( tr( "Template not saved" ), tr( "The template can not have an empty name." ) );
-        }
-      }
+      const QString templateName = dialog.templateName();
+      const QString templateDirName = dialog.templateDirectory();
+
       const QString filePath = templateDirName + QDir::separator() + templateName + u".qgz"_s;
       if ( QFileInfo::exists( filePath ) )
       {
