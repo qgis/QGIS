@@ -1,20 +1,8 @@
 # The following has been generated automatically from src/gui/processing/models/qgsmodeldesignerdialog.h
-# monkey patching scoped based enum
-QgsModelDesignerDialog.SaveAction.SaveAsFile.__doc__ = "Save model as a file"
-QgsModelDesignerDialog.SaveAction.SaveInProject.__doc__ = "Save model into project"
-QgsModelDesignerDialog.SaveAction.__doc__ = """Save action.
-
-.. versionadded:: 3.24
-
-* ``SaveAsFile``: Save model as a file
-* ``SaveInProject``: Save model into project
-
-"""
-# --
 try:
     QgsModelDesignerDialog.__attribute_docs__ = {'modelUpdated': 'Emitted when the model is updated.\n\n.. warning::\n\n   DO NOT USE -- this is bad API, here for compatibility with Python code only.\n'}
     QgsModelDesignerDialog.__abstract_methods__ = ['exportAsScriptAlgorithm', 'createExecutionWidget']
-    QgsModelDesignerDialog.__overridden_methods__ = ['closeEvent', 'createFeedback', 'createWidgetContext', 'processingContext']
+    QgsModelDesignerDialog.__overridden_methods__ = ['closeEvent', 'createFeedback', 'createWidgetContext']
     QgsModelDesignerDialog.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass
