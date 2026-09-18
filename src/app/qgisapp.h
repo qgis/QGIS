@@ -170,6 +170,7 @@ class QgsAppCanvasFiltering;
 class QgsCustomizationDialog;
 class QgsTopocentricWidget;
 class QgsProcessingWidgetContextGenerator;
+class QgsAppProcessingUtils;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -2918,6 +2919,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     std::vector<QgsScopedOptionsWidgetFactory> mOptionWidgetFactories;
     std::unique_ptr< QgsAppDbUtils > mAppDbUtils;
+    std::unique_ptr< QgsAppProcessingUtils > mAppProcessingUtils;
 
     QMap<QString, QToolButton *> mAnnotationItemGroupToolButtons;
     QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
