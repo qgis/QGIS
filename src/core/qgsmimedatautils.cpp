@@ -192,9 +192,14 @@ QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error, Qgs
 
 QgsMapLayer *QgsMimeDataUtils::Uri::mapLayer() const
 {
+  return mapLayer( QgsProject::instance() ); // skip-keyword-check
+}
+
+QgsMapLayer *QgsMimeDataUtils::Uri::mapLayer( QgsProject *project ) const
+{
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    return QgsProject::instance()->mapLayer( layerId ); // skip-keyword-check
+    return project->mapLayer( layerId );
   }
   return nullptr;
 }

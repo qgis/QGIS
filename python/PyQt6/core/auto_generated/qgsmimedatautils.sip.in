@@ -123,7 +123,7 @@ error is set
 .. versionadded:: 4.6
 %End
 
-        QgsMapLayer *mapLayer() const;
+ QgsMapLayer *mapLayer() const /Deprecated="Since 4.6. Use mapLayer() with explicit project parameter instead."/;
 %Docstring
 Returns the layer from the active project corresponding to this uri (if
 possible), otherwise returns ``None``.
@@ -134,6 +134,25 @@ Unlike :py:func:`~QgsMimeDataUtils.vectorLayer`,
 create a new layer corresponding to the URI.
 
 .. versionadded:: 3.8
+
+.. deprecated:: 4.6
+
+   Use :py:func:`~QgsMimeDataUtils.mapLayer` with explicit project parameter instead.
+%End
+
+        QgsMapLayer *mapLayer( QgsProject *project ) const;
+%Docstring
+Returns the layer from ``project`` corresponding to this uri (if
+possible), otherwise returns ``None``.
+
+Unlike :py:func:`~QgsMimeDataUtils.vectorLayer`,
+:py:func:`~QgsMimeDataUtils.rasterLayer`, or
+:py:func:`~QgsMimeDataUtils.meshLayer`, this method will not attempt to
+create a new layer corresponding to the URI.
+
+:param project: used to obtain the layer
+
+.. versionadded:: 4.6
 %End
 
         QString layerType;
