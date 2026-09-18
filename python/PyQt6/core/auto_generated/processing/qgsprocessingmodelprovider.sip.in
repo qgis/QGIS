@@ -1,0 +1,56 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingmodelprovider.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProcessingModelProvider : QgsProcessingProvider
+{
+%Docstring(signature="appended")
+A Processing provider for Processing models.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingmodelprovider.h"
+%End
+  public:
+    QgsProcessingModelProvider( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProcessingModelProvider.
+%End
+
+    virtual QString name() const;
+
+    virtual QString id() const;
+
+    virtual QIcon icon() const;
+
+    virtual QString svgIconPath() const;
+
+    virtual bool supportsNonFileBasedOutput() const;
+
+    virtual bool load();
+
+
+  protected:
+    virtual void loadAlgorithms();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingmodelprovider.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

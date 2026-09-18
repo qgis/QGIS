@@ -55,6 +55,7 @@ Converts a documentation ``flag`` to a translated string.
 
     static const QString TEMPORARY_OUTPUT;
 
+    static const QString MODEL_PROVIDER_ID;
 
     static const QString PROJECT_PROVIDER_ID;
 

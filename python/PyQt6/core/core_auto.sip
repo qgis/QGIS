@@ -620,6 +620,7 @@
 %Include auto_generated/processing/qgsprocessingcontext.sip
 %Include auto_generated/processing/qgsprocessingfeedback.sip
 %Include auto_generated/processing/qgsprocessingoutputs.sip
+%Include auto_generated/processing/qgsprocessingmodelprovider.sip
 %Include auto_generated/processing/qgsprocessingparameteraggregate.sip
 %Include auto_generated/processing/qgsprocessingparameterdxflayers.sip
 %Include auto_generated/processing/qgsprocessingparameterfieldmap.sip

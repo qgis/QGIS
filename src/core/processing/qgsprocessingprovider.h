@@ -27,6 +27,7 @@
 #ifdef SIP_RUN
 // clang-format off
 % ModuleHeaderCode
+#include <qgsprocessingmodelprovider.h>
 #include <qgsprocessingprojectmodelprovider.h>
     % End
 // clang-format on
@@ -46,6 +47,8 @@
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsProcessingProjectModelProvider *>( sipCpp ) )
       sipType = sipType_QgsProcessingProjectModelProvider;
+    else if ( qobject_cast<QgsProcessingModelProvider *>( sipCpp ) )
+      sipType = sipType_QgsProcessingModelProvider;
     else
       sipType = nullptr;
     SIP_END
