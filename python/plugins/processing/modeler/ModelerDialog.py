@@ -52,11 +52,6 @@ class ModelerDialog(QgsModelDesignerDialog):
     def __init__(self, model=None, parent=None):
         super().__init__(parent)
 
-        if model is not None:
-            _model = model.create()
-            _model.setSourceFilePath(model.sourceFilePath())
-            self.setModel(_model)
-
         self.processing_context = createContext()
 
         class ContextGenerator(QgsProcessingContextGenerator):
@@ -69,6 +64,11 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         self.context_generator = ContextGenerator(self.processing_context)
         self.registerProcessingContextGenerator(self.context_generator)
+
+        if model is not None:
+            _model = model.create()
+            _model.setSourceFilePath(model.sourceFilePath())
+            self.setModel(_model)
 
     def createExecutionWidget(self):
         widget = AlgorithmWidget(
