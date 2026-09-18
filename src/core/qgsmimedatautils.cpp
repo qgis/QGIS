@@ -105,6 +105,11 @@ QString QgsMimeDataUtils::Uri::data() const
 
 QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error ) const
 {
+  return vectorLayer( owner, error, QgsProject::instance() ); // skip-keyword-check
+}
+
+QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error, QgsProject *project ) const
+{
   owner = false;
   error.clear();
   if ( layerType != "vector"_L1 )
@@ -115,7 +120,7 @@ QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error 
 
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    if ( QgsVectorLayer *vectorLayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId ) ) // skip-keyword-check
+    if ( QgsVectorLayer *vectorLayer = project->mapLayer<QgsVectorLayer *>( layerId ) )
     {
       return vectorLayer;
     }
@@ -127,7 +132,7 @@ QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error 
   }
 
   owner = true;
-  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() }; // skip-keyword-check
+  const QgsVectorLayer::LayerOptions options { project->transformContext() };
   return new QgsVectorLayer( uri, name, providerKey, options );
 }
 
