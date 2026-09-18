@@ -103,12 +103,25 @@ class CORE_EXPORT QgsMimeDataUtils
        */
         QgsRasterLayer *rasterLayer( bool &owner, QString &error, QgsProject *project ) const;
 
+        // TODO QGIS 5.0 -- remove this version of function in favor of the one with explicit project parameter
         /**
        * Gets mesh layer from uri if possible, otherwise returns NULLPTR and error is set
        * \param owner set to TRUE if caller becomes owner
        * \param error set to error message if cannot get raster
+       *
+       * \deprecated QGIS 4.6. Use meshLayer() with explicit project parameter instead.
        */
-        QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;
+        Q_DECL_DEPRECATED QgsMeshLayer *meshLayer( bool &owner, QString &error ) const SIP_DEPRECATED;
+
+        /**
+       * Gets mesh layer from uri if possible, otherwise returns NULLPTR and error is set
+       * \param owner set to TRUE if caller becomes owner
+       * \param error set to error message if cannot get raster
+       * \param project project is used to obtain the layer
+       *
+       * \since QGIS 4.6
+       */
+        QgsMeshLayer *meshLayer( bool &owner, QString &error, QgsProject *project ) const;
 
         /**
        * Returns the layer from the active project corresponding to this uri (if possible),

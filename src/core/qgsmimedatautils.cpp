@@ -165,6 +165,11 @@ QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error,
 
 QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error ) const
 {
+  return meshLayer( owner, error, QgsProject::instance() ); // skip-keyword-check
+}
+
+QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error, QgsProject *project ) const
+{
   owner = false;
   error.clear();
   if ( layerType != "mesh"_L1 )
@@ -175,7 +180,7 @@ QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error ) co
 
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    if ( QgsMeshLayer *meshLayer = QgsProject::instance()->mapLayer<QgsMeshLayer *>( layerId ) ) // skip-keyword-check
+    if ( QgsMeshLayer *meshLayer = project->mapLayer<QgsMeshLayer *>( layerId ) )
     {
       return meshLayer;
     }
