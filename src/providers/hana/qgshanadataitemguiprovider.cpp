@@ -393,7 +393,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
       // open the source layer
       bool owner;
       QString error;
-      QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+      QgsVectorLayer *srcLayer = u.vectorLayer( owner, error, QgsProject::instance() );
       if ( !srcLayer )
       {
         importResults.append( u"%1: %2"_s.arg( u.name, error ) );
