@@ -128,9 +128,6 @@ Emitted when the model is updated.
   protected:
     void repaintModel( bool showControls = true );
 
-    virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
-
-    virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
 
     virtual void exportAsScriptAlgorithm() = 0;
 
