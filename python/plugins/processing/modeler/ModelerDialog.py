@@ -102,23 +102,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         widget.registerProcessingFeedbackGenerator(self)
         return widget
 
-    def repaintModel(self, showControls=True):
-        scene = QgsModelGraphicsScene(self)
-        if not showControls:
-            scene.setFlag(QgsModelGraphicsScene.Flag.FlagHideControls)
-
-        showComments = QgsSettings().value(
-            "/Processing/Modeler/ShowComments", True, bool
-        )
-        if not showComments:
-            scene.setFlag(QgsModelGraphicsScene.Flag.FlagHideComments)
-
-        context = createContext()
-        self.setModelScene(scene)
-        # create items later that setModelScene to setup link to messageBar to the scene
-        scene.createItems(self.model(), context)
-        scene.updateBounds()
-
     def autogenerate_parameter_name(self, parameter):
         """
         Automatically generates and sets a new parameter's name, based on the parameter's

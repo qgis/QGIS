@@ -13,7 +13,7 @@ QgsModelDesignerDialog.SaveAction.__doc__ = """Save action.
 # --
 try:
     QgsModelDesignerDialog.__attribute_docs__ = {'modelUpdated': 'Emitted when the model is updated.\n\n.. warning::\n\n   DO NOT USE -- this is bad API, here for compatibility with Python code only.\n'}
-    QgsModelDesignerDialog.__abstract_methods__ = ['repaintModel', 'addAlgorithm', 'addInput', 'exportAsScriptAlgorithm', 'createExecutionWidget']
+    QgsModelDesignerDialog.__abstract_methods__ = ['addAlgorithm', 'addInput', 'exportAsScriptAlgorithm', 'createExecutionWidget']
     QgsModelDesignerDialog.__overridden_methods__ = ['closeEvent', 'createFeedback', 'createWidgetContext', 'processingContext']
     QgsModelDesignerDialog.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
