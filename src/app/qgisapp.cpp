@@ -1682,6 +1682,9 @@ QgisApp::QgisApp(
   // must come before plugin startup, as processing plugin sets up connections to it
   QgsAppProcessingUtils::initProjectModelProvider();
 
+  mAppProcessingUtils = std::make_unique< QgsAppProcessingUtils >();
+  mAppProcessingUtils->registerActions();
+
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
   mSplash->showMessage( tr( "Restoring loaded plugins" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );

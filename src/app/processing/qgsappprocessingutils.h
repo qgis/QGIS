@@ -18,6 +18,8 @@
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingwidgetcontext.h"
 
+#include <QObject>
+
 class QgisApp;
 
 class QgsAppProcessingWidgetContextGenerator : public QgsProcessingWidgetContextGenerator
@@ -44,9 +46,12 @@ class QgsAppProcessingContextFactory : public QgsProcessingContextFactory
     QgisApp *mQgisApp = nullptr;
 };
 
-class QgsAppProcessingUtils
+class QgsAppProcessingUtils : public QObject
 {
+    Q_OBJECT
   public:
+    void registerActions();
+
     static void initProjectModelProvider();
 };
 
