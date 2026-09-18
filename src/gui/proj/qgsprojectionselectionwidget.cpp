@@ -901,7 +901,7 @@ QgsMapLayer *QgsProjectionSelectionWidget::mapLayerFromMimeData( const QMimeData
   for ( const QgsMimeDataUtils::Uri &u : uriList )
   {
     // is this uri from the current project?
-    if ( QgsMapLayer *layer = u.mapLayer() )
+    if ( QgsMapLayer *layer = u.mapLayer( QgsProject::instance() ) )
     {
       return layer;
     }
