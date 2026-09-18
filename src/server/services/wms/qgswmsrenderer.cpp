@@ -3911,7 +3911,7 @@ namespace QgsWms
     for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
     {
       // Skip temporal properties for this layer, give precedence to the dimensions implementation
-      if ( mIsTemporal && dim.name.toUpper() == "TIME"_L1 && layer->temporalProperties()->isActive() )
+      if ( mIsTemporal && dim.name.toUpper() == QgsServerWmsDimensionProperties::TIME_DIMENSION_NAME && layer->temporalProperties()->isActive() )
       {
         layer->temporalProperties()->setIsActive( false );
       }
