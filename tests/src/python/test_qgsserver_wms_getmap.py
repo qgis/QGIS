@@ -3566,7 +3566,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         )
 
     def test_get_map_time_dimension_defaultvalue(self):
-        """Test if get capabilities return correct time dimension default value"""
+        """Test if get map return correct time dimension default value"""
 
         rl_range = QgsRasterLayer(
             self.get_test_data_path("raster/byte.tif").as_posix(), "test_date_range"
@@ -3591,9 +3591,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         for rl in [
             rl_range,
             rl_instant1,
-            # rl_instant_2,
             rl_notpublished,
-            # rl_child_of_restricted_group,
         ]:
             timeProps = rl.temporalProperties()
             timeProps.setIsActive(True)
@@ -3629,7 +3627,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             [
                 rl_range,
                 rl_instant1,
-                rl_notpublished,  # , rl_instant_2, rl_nodate,
+                rl_notpublished,
             ],
             False,
         )
@@ -3673,6 +3671,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             ]
         )
 
+        # rl_instant layer temporal range has the min and should be displayed
         r, h = self._result(self._execute_request_project(qs, project))
         self._img_diff_error(r, h, "WMS_GetMap_TimeDimension_default_value_min")
 
@@ -3704,6 +3703,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             ]
         )
 
+        # rl_range layer temporal range has the max and should be displayed
         r, h = self._result(self._execute_request_project(qs, project))
         self._img_diff_error(r, h, "WMS_GetMap_TimeDimension_default_value_max")
 
@@ -3737,6 +3737,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             ]
         )
 
+        # reference value is "2025-01-13T01:20:30Z" which fits `rl_range` layer temporal range
+        # (between 2025-01-12T12:34:56Z and 2025-01-15T09:12:34Z) and so display rl_range (max) image
         r, h = self._result(self._execute_request_project(qs, project))
         self._img_diff_error(r, h, "WMS_GetMap_TimeDimension_default_value_max")
 
