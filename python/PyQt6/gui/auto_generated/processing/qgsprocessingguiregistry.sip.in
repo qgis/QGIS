@@ -47,6 +47,31 @@ Creates a new script editor dialog.
 %End
 };
 
+class QgsProcessingContextFactory
+{
+%Docstring(signature="appended")
+A factory for creating Processing contexts, aware of the GUI components
+which may influence this.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingguiregistry.h"
+%End
+  public:
+    virtual ~QgsProcessingContextFactory();
+
+    virtual QgsProcessingContext *createContext( QgsProcessingFeedback *feedback = 0 ) = 0 /TransferBack/;
+%Docstring
+Creates a new Processing context.
+%End
+};
+
 class QgsProcessingGuiRegistry : QgsProcessingWidgetContextGenerator
 {
 %Docstring(signature="appended")
@@ -396,6 +421,34 @@ Returns the application's processing dialog factory, if set.
    This is not stable API, it is in place for temporary compatibility with Python code only.
 
 .. seealso:: :py:func:`setDialogFactory`
+
+.. versionadded:: 4.4
+%End
+
+    void setContextFactory( QgsProcessingContextFactory *factory /Transfer/ );
+%Docstring
+Sets the application's Processing context ``factory``.
+
+Ownership of ``factory`` is transferred.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. seealso:: :py:func:`contextFactory`
+
+.. versionadded:: 4.4
+%End
+
+    QgsProcessingContextFactory *contextFactory();
+%Docstring
+Returns the application's Processing context factory, if set.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. seealso:: :py:func:`setContextFactory`
 
 .. versionadded:: 4.4
 %End

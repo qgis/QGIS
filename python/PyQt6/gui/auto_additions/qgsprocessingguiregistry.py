@@ -6,6 +6,11 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingContextFactory.__abstract_methods__ = ['createContext']
+    QgsProcessingContextFactory.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
     QgsProcessingGuiRegistry.__overridden_methods__ = ['createWidgetContext']
     QgsProcessingGuiRegistry.__group__ = ['processing']
 except (NameError, AttributeError):
