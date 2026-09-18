@@ -19,6 +19,7 @@
 #include "processing/models/qgsmodeloutputreorderwidget.h"
 #include "processing/models/qgsprocessingmodelgroupbox.h"
 #include "qgsapplication.h"
+#include "qgscodeeditorpython.h"
 #include "qgsfileutils.h"
 #include "qgsgui.h"
 #include "qgsmessagebar.h"
@@ -44,6 +45,7 @@
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingprojectmodelprovider.h"
 #include "qgsprocessingregistry.h"
+#include "qgsprocessingscripteditordialog.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsproject.h"
 #include "qgsscreenhelper.h"
@@ -984,6 +986,23 @@ QgsProcessingAlgorithmWidgetBase *QgsModelDesignerDialog::createExecutionWidget(
 
   widget->registerProcessingFeedbackGenerator( this );
   return widget;
+}
+
+void QgsModelDesignerDialog::exportAsScriptAlgorithm()
+{
+  QgsProcessingDialogFactory *dialogFactory = QgsGui::processingGuiRegistry()->dialogFactory();
+  if ( !dialogFactory )
+    return; // should never happen
+
+  QgsProcessingScriptEditorDialog *dialog = dialogFactory->createScriptEditorDialog();
+  if ( !dialog )
+    return; // should never happen
+
+  const QStringList codeLines = mModel->asPythonCode( QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass, 4 );
+
+  dialog->codeEditor()->setText( codeLines.join( '\n' ) );
+
+  dialog->show();
 }
 
 void QgsModelDesignerDialog::zoomIn()

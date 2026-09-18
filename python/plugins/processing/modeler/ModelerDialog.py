@@ -19,16 +19,11 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-from qgis.core import (
-    QgsProcessing,
-)
 from qgis.gui import (
     QgsModelDesignerDialog,
     QgsProcessingContextGenerator,
 )
-from qgis.utils import iface
 
-from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools.dataobjects import createContext
 
 
@@ -67,16 +62,3 @@ class ModelerDialog(QgsModelDesignerDialog):
             _model = model.create()
             _model.setSourceFilePath(model.sourceFilePath())
             self.setModel(_model)
-
-    def exportAsScriptAlgorithm(self):
-        dlg = ScriptEditorDialog(parent=iface.mainWindow())
-
-        dlg.editor.setText(
-            "\n".join(
-                self.model().asPythonCode(
-                    QgsProcessing.PythonOutputType.PythonQgsProcessingAlgorithmSubclass,
-                    4,
-                )
-            )
-        )
-        dlg.show()
