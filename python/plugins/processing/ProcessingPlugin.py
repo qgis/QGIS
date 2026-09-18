@@ -39,6 +39,7 @@ from qgis.core import (
 from qgis.gui import (
     QgsCustomDropHandler,
     QgsGui,
+    QgsModelDesignerDialog,
     QgsOptionsWidgetFactory,
     QgsProcessingAlgorithmWidgetBase,
     QgsProcessingDialogFactory,
@@ -81,7 +82,6 @@ from processing.gui.MessageDialog import MessageDialog
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.ResultsDock import ResultsDock
-from processing.modeler.ModelerDialog import ModelerDialog
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools import dataobjects
 
@@ -117,6 +117,22 @@ class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
 
     def createWidget(self, parent):
         return ConfigOptionsPage(parent)
+
+
+class ModelerDialogHack:
+    dlgs = []
+
+    @staticmethod
+    def create_model_designer_dialog():
+        """
+        Workaround crappy sip handling of QMainWindow. It doesn't know that we are using the deleteonclose
+        flag, so happily just deletes dialogs as soon as they go out of scope. The only workaround possible
+        while we still have to drag around this Python code is to store a reference to the sip wrapper so that
+        sip doesn't get confused. The underlying object will still be deleted by the deleteonclose flag though!
+        """
+        dlg = QgsModelDesignerDialog()
+        ModelerDialogHack.dlgs.append(dlg)
+        return dlg
 
 
 class ProcessingDropHandler(QgsCustomDropHandler):
@@ -170,7 +186,7 @@ class ProcessingModelItem(QgsDataItem):
         ProcessingDropHandler.runAlg(self.path())
 
     def editModel(self):
-        dlg = ModelerDialog.create()
+        dlg = ModelerDialogHack.create_model_designer_dialog()
         dlg.loadModel(self.path())
         dlg.show()
 
@@ -601,7 +617,7 @@ class ProcessingPlugin(QObject):
         self.toolboxAction.setChecked(visible)
 
     def openModeler(self):
-        dlg = ModelerDialog.create()
+        dlg = ModelerDialogHack.create_model_designer_dialog()
         dlg.modelUpdated.connect(self.updateModel)
         dlg.show()
 
