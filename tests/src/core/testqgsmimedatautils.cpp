@@ -117,13 +117,15 @@ void TestQgsMimeDataUtils::testEncodeDecode()
 
 void TestQgsMimeDataUtils::testLayerFromProject()
 {
+  QgsProject *project = QgsProject::instance();
+
   QgsVectorLayer *vl1 = new QgsVectorLayer( u"LineString?crs=epsg:3111&field=id:int"_s, u"vl1"_s, u"memory"_s );
   QVERIFY( vl1->isValid() );
-  QgsProject::instance()->addMapLayer( vl1 );
+  project->addMapLayer( vl1 );
 
   QgsVectorLayer *vl2 = new QgsVectorLayer( u"LineString?crs=epsg:3111&field=id:int"_s, u"vl1"_s, u"memory"_s );
   QVERIFY( vl2->isValid() );
-  QgsProject::instance()->addMapLayer( vl2 );
+  project->addMapLayer( vl2 );
 
   QMimeData *mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << QgsMimeDataUtils::Uri( vl1 ) << QgsMimeDataUtils::Uri( vl2 ) );
 
@@ -132,12 +134,12 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   QCOMPARE( uriDecoded.wkbType, Qgis::WkbType::LineString );
   bool owner = false;
   QString error;
-  QCOMPARE( uriDecoded.vectorLayer( owner, error ), vl1 );
+  QCOMPARE( uriDecoded.vectorLayer( owner, error, project ), vl1 );
   QVERIFY( !owner );
   QVERIFY( error.isEmpty() );
   const QgsMimeDataUtils::Uri uriDecoded2( QgsMimeDataUtils::decodeUriList( mimeData ).at( 1 ) );
   QCOMPARE( uriDecoded2.mapLayer(), vl2 );
-  QCOMPARE( uriDecoded2.vectorLayer( owner, error ), vl2 );
+  QCOMPARE( uriDecoded2.vectorLayer( owner, error, project ), vl2 );
   QVERIFY( !owner );
   QVERIFY( error.isEmpty() );
   delete mimeData;
@@ -148,7 +150,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri );
   const QgsMimeDataUtils::Uri uriDecoded3( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
   QVERIFY( !uriDecoded3.mapLayer() );
-  QVERIFY( !uriDecoded3.vectorLayer( owner, error ) );
+  QVERIFY( !uriDecoded3.vectorLayer( owner, error, project ) );
   QVERIFY( !owner );
   QVERIFY( !error.isEmpty() );
 
@@ -158,7 +160,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri2 );
   const QgsMimeDataUtils::Uri uriDecoded4( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
   QVERIFY( !uriDecoded4.mapLayer() );
-  QVERIFY( !uriDecoded4.vectorLayer( owner, error ) );
+  QVERIFY( !uriDecoded4.vectorLayer( owner, error, project ) );
   QVERIFY( !owner );
   QVERIFY( !error.isEmpty() );
 
@@ -166,7 +168,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
   const QString pointsFileName = testDataDir + "points.shp";
   QgsVectorLayer *points = new QgsVectorLayer( pointsFileName, u"points"_s, u"ogr"_s );
-  QgsProject::instance()->addMapLayer( points );
+  project->addMapLayer( points );
 
   // bad layerId, but valid data source (i.e. not a memory layer)
   QgsMimeDataUtils::Uri uri3( points );
@@ -175,7 +177,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   const QgsMimeDataUtils::Uri uriDecoded5( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
   QVERIFY( !uriDecoded5.mapLayer() );
   QCOMPARE( uriDecoded5.wkbType, Qgis::WkbType::Point );
-  QgsVectorLayer *res = uriDecoded5.vectorLayer( owner, error );
+  QgsVectorLayer *res = uriDecoded5.vectorLayer( owner, error, project );
   QVERIFY( res );
   QVERIFY( res->isValid() );
   QVERIFY( owner );
