@@ -47,4 +47,6 @@ class QgsD8AnalysisAlgorithmBase : public QgsProcessingAlgorithm
     );
 };
 
+///@endcond PRIVATE
+
 #endif // QGSALGORITHMD8BASE_H
