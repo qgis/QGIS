@@ -525,7 +525,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
       }
       else
       {
-        srcLayer = dropUri.rasterLayer( owner, error );
+        srcLayer = dropUri.rasterLayer( owner, error, QgsProject::instance() );
       }
       if ( !srcLayer )
       {
