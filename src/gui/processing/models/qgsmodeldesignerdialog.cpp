@@ -972,6 +972,21 @@ void QgsModelDesignerDialog::addInput( const QString &parameterType, const QPoin
   endUndoCommand();
 }
 
+QgsProcessingAlgorithmWidgetBase *QgsModelDesignerDialog::createExecutionWidget()
+{
+  QgsProcessingAlgorithmExecutionWidgetFactory *executionWidgetFactory = QgsGui::processingGuiRegistry()->algorithmExecutionWidgetFactory();
+  if ( !executionWidgetFactory )
+    return nullptr; // should never happen
+
+  QgsProcessingAlgorithmWidgetBase *widget
+    = executionWidgetFactory->createWidget( mModel->create(), false, this, QgsProcessingAlgorithmWidgetBase::WidgetFlags(), Qgis::DockableWidgetInitialState::ForceDocked );
+  if ( !widget )
+    return nullptr; // should never happen
+
+  widget->registerProcessingFeedbackGenerator( this );
+  return widget;
+}
+
 void QgsModelDesignerDialog::zoomIn()
 {
   mView->setTransformationAnchor( QGraphicsView::NoAnchor );
@@ -1560,6 +1575,9 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
   if ( !mAlgorithmWidget )
   {
     mAlgorithmWidget = createExecutionWidget();
+    if ( !mAlgorithmWidget )
+      return; // should not happen
+
     mAlgorithmWidget->hideShortHelp();
     mAlgorithmWidget->setTitle( tr( "Run Model" ) );
 

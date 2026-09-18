@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsmodeldesignerconfigwidget.h"
+#include "qgsprocessingalgorithmwidgetbase.h"
 #include "qgsprocessingwidgetcontext.h"
 #include "qgsprocessingwidgetwrapper.h"
 
@@ -38,6 +39,33 @@ class QgsProcessingModelComponent;
 class QgsProcessingGuiInternalModelConfigWidgetFactory;
 class QgsProcessingToolboxAction;
 class QgsProcessingToolboxContextAction;
+class QgsProcessingAlgorithmWidgetBase;
+class QMainWindow;
+
+/**
+ * A factory for creating widgets for executing Processing algorithms.
+ *
+ * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+ *
+ * \ingroup gui
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsProcessingAlgorithmExecutionWidgetFactory
+{
+  public:
+    virtual ~QgsProcessingAlgorithmExecutionWidgetFactory();
+
+    /**
+   * Creates a new widget for executing the specified algorithm.
+   */
+    virtual QgsProcessingAlgorithmWidgetBase *createWidget(
+      QgsProcessingAlgorithm *algorithm SIP_TRANSFER,
+      bool inPlace = false,
+      QMainWindow *parent = nullptr,
+      QgsProcessingAlgorithmWidgetBase::WidgetFlags flags = QgsProcessingAlgorithmWidgetBase::WidgetFlags(),
+      Qgis::DockableWidgetInitialState initialState = Qgis::DockableWidgetInitialState::RestorePreviousState
+    ) = 0 SIP_TRANSFERBACK;
+};
 
 /**
  * A registry for widgets for use with the Processing framework.
@@ -313,6 +341,28 @@ class GUI_EXPORT QgsProcessingGuiRegistry : public QgsProcessingWidgetContextGen
      */
     QList< QgsProcessingToolboxContextAction * > toolboxContextActions() const;
 
+    /**
+     * Sets the application's algorithm execution widget \a factory.
+     *
+     * Ownership of \a factory is transferred.
+     *
+     * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+     *
+     * \see algorithmExecutionWidgetFactory()
+     * \since QGIS 4.4
+     */
+    void setAlgorithmExecutionWidgetFactory( QgsProcessingAlgorithmExecutionWidgetFactory *factory SIP_TRANSFER );
+
+    /**
+     * Returns the application's algorithm execution widget factory, if set.
+     *
+     * \warning This is not stable API, it is in place for temporary compatibility with Python code only.
+     *
+     * \see setAlgorithmExecutionWidgetFactory()
+     * \since QGIS 4.4
+     */
+    QgsProcessingAlgorithmExecutionWidgetFactory *algorithmExecutionWidgetFactory();
+
   private:
 #ifdef SIP_RUN
     QgsProcessingGuiRegistry( const QgsProcessingGuiRegistry &other );
@@ -327,6 +377,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry : public QgsProcessingWidgetContextGen
 
     QMap< QString, QList< QgsProcessingToolboxAction * > > mProviderToolboxActions;
     QMap< QString, QList< QgsProcessingToolboxContextAction * > > mProviderToolboxContextActions;
+    std::unique_ptr< QgsProcessingAlgorithmExecutionWidgetFactory > mProcessingAlgorithmExecutionWidgetFactory;
 };
 
 

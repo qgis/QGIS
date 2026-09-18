@@ -11,6 +11,36 @@
 
 
 
+class QgsProcessingAlgorithmExecutionWidgetFactory
+{
+%Docstring(signature="appended")
+A factory for creating widgets for executing Processing algorithms.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingguiregistry.h"
+%End
+  public:
+    virtual ~QgsProcessingAlgorithmExecutionWidgetFactory();
+
+    virtual QgsProcessingAlgorithmWidgetBase *createWidget(
+      QgsProcessingAlgorithm *algorithm /Transfer/,
+      bool inPlace = false,
+      QMainWindow *parent = 0,
+      QgsProcessingAlgorithmWidgetBase::WidgetFlags flags = QgsProcessingAlgorithmWidgetBase::WidgetFlags(),
+      Qgis::DockableWidgetInitialState initialState = Qgis::DockableWidgetInitialState::RestorePreviousState
+    ) = 0 /TransferBack/;
+%Docstring
+Creates a new widget for executing the specified algorithm.
+%End
+};
+
 class QgsProcessingGuiRegistry : QgsProcessingWidgetContextGenerator
 {
 %Docstring(signature="appended")
@@ -332,6 +362,34 @@ provider.
 Returns a list of all toolbox context menu actions registered.
 
 .. seealso:: :py:func:`toolboxContextActionsForProvider`
+
+.. versionadded:: 4.4
+%End
+
+    void setAlgorithmExecutionWidgetFactory( QgsProcessingAlgorithmExecutionWidgetFactory *factory /Transfer/ );
+%Docstring
+Sets the application's algorithm execution widget ``factory``.
+
+Ownership of ``factory`` is transferred.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. seealso:: :py:func:`algorithmExecutionWidgetFactory`
+
+.. versionadded:: 4.4
+%End
+
+    QgsProcessingAlgorithmExecutionWidgetFactory *algorithmExecutionWidgetFactory();
+%Docstring
+Returns the application's algorithm execution widget factory, if set.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. seealso:: :py:func:`setAlgorithmExecutionWidgetFactory`
 
 .. versionadded:: 4.4
 %End
