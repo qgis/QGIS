@@ -48,6 +48,7 @@ TYPE_TABLE = 5
 # python/processing/__init__.py too!
 # Docstring for this function is in python/processing/__init__.py
 def createContext(feedback=None):
+    # WARNING -- this logic has all been replaced by QgsAppProcessingContextFactory -- use that instead!
     context = QgsProcessingContext()
     context.setProject(QgsProject.instance())
     context.setFeedback(feedback)
@@ -81,6 +82,7 @@ def createContext(feedback=None):
 
 
 def createExpressionContext():
+    # WARNING -- this logic has all been replaced by QgsAppProcessingContextFactory -- use that instead!
     context = QgsExpressionContext()
     context.appendScope(QgsExpressionContextUtils.globalScope())
     context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
