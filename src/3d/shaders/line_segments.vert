@@ -136,7 +136,10 @@ void main(void)
         screenPos = flatPos;
     }
 
-    float z = mix(clipA.z / clipA.w, clipB.z / clipB.w, vertexPosition.x);
+    // depth must be derived from where screenPos actually ended up (it may have been pulled back towards a join)
+    vec2 ab = screenB - screenA;
+    float t = clamp(dot(screenPos - screenA, ab) / max(dot(ab, ab), 1e-8), 0.0, 1.0);
+    float z = mix(clipA.z / clipA.w, clipB.z / clipB.w, t);
 
     gl_Position = vec4(screenPos / (WIN_SCALE * 0.5), z, 1.0);
 

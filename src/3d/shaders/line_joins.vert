@@ -107,8 +107,15 @@ void main(void)
 
     vec2 screenPos = screenB + vertexPosition.x * p0 + vertexPosition.y * p1 + vertexPosition.z * p2 + vertexPosition.w * p1Inner;
 
+    // depth must follow screenPos along whichever adjoining segment it is closest to, not just clipB's depth
+    vec2 bc = screenC - screenB;
+    float tAB = clamp(dot(screenPos - screenA, ab) / max(dot(ab, ab), 1e-8), 0.0, 1.0);
+    float tBC = clamp(dot(screenPos - screenB, bc) / max(dot(bc, bc), 1e-8), 0.0, 1.0);
+    float zAB = mix(clipA.z / clipA.w, clipB.z / clipB.w, tAB);
+    float zBC = mix(clipB.z / clipB.w, clipC.z / clipC.w, tBC);
+    float z = min(zAB, zBC);
 
-    gl_Position = vec4(screenPos / ( WIN_SCALE * 0.5 ), clipB.z / clipB.w, 1.0);
+    gl_Position = vec4(screenPos / ( WIN_SCALE * 0.5 ), z, 1.0);
 
 #ifdef CLIPPING
     vec4 worldPosition = inverseViewProjectionMatrix * gl_Position;
