@@ -85,6 +85,8 @@ Emitted when the model is updated.
 %End
 
   protected:
+    virtual QgsProcessingContext *processingContext() const;
+
 
 };
 

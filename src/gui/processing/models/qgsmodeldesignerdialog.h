@@ -135,9 +135,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void modelUpdated();
 
   protected:
-#ifndef SIP_RUN
     QgsProcessingContext *processingContext() const override;
-#endif
 
   private slots:
     void zoomIn();
