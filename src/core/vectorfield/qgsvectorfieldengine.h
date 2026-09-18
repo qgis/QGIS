@@ -53,6 +53,14 @@ class QgsVectorFieldEngine
     QgsVectorFieldEngine &operator=( const QgsVectorFieldEngine & ) = delete;
 
     /**
+     * Returns the distance, in painter units, by which the rendered extent must be grown so that
+     * glyphs centered just outside of it are still drawn.
+     *
+     * Returns 0 for the symbologies which are not drawn glyph by glyph.
+     */
+    double glyphExtentBuffer() const;
+
+    /**
      * Draws a single glyph at \a lineStart, in painter coordinates, using the symbology of the
      * settings the engine was constructed with.
      *

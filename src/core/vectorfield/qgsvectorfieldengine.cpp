@@ -15,6 +15,8 @@
 
 #include "qgsvectorfieldengine.h"
 
+#include <algorithm>
+
 #include "qgsrendercontext.h"
 #include "qgsvectorfieldstreamfield.h"
 #include "qgsvectorfieldvaluesource.h"
@@ -65,6 +67,45 @@ QgsVectorFieldEngine::QgsVectorFieldEngine( double datasetMagMaximumValue, doubl
 }
 
 QgsVectorFieldEngine::~QgsVectorFieldEngine() = default;
+
+double QgsVectorFieldEngine::glyphExtentBuffer() const
+{
+  double buffer = 0;
+  switch ( mCfg.symbology() )
+  {
+    case Qgis::VectorFieldSymbology::WindBarbs:
+      buffer = mContext.convertToPainterUnits( mCfg.windBarbSettings().shaftLength(), mCfg.windBarbSettings().shaftLengthUnits() );
+      break;
+
+    case Qgis::VectorFieldSymbology::Arrows:
+      switch ( mCfg.arrowSettings().shaftLengthMethod() )
+      {
+        case Qgis::VectorFieldArrowScalingMethod::MinMax:
+          buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().maxShaftLength(), Qgis::RenderUnit::Millimeters );
+          break;
+
+        case Qgis::VectorFieldArrowScalingMethod::Scaled:
+        {
+          // the shaft length follows the magnitude, so the longest shaft which is actually drawn is
+          // the one of the largest magnitude which passes the filter
+          const double magnitude = mCfg.filterMax() >= 0 ? std::min( mMaxMag, mCfg.filterMax() ) : mMaxMag;
+          buffer = mCfg.arrowSettings().scaleFactor() * magnitude;
+          break;
+        }
+
+        case Qgis::VectorFieldArrowScalingMethod::Fixed:
+          buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().fixedShaftLength(), Qgis::RenderUnit::Millimeters );
+          break;
+      }
+      break;
+
+    case Qgis::VectorFieldSymbology::Streamlines:
+    case Qgis::VectorFieldSymbology::Traces:
+      break;
+  }
+
+  return std::max( 0.0, buffer );
+}
 
 void QgsVectorFieldEngine::drawGlyph( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude )
 {
