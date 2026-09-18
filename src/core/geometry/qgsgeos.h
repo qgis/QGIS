@@ -31,6 +31,7 @@ class QgsLineString;
 class QgsPolygon;
 class QgsGeometry;
 class QgsGeometryCollection;
+class QgsSettingsEntryBool;
 
 #if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
 #include <QThreadStorage>
@@ -176,6 +177,13 @@ namespace geos
 class CORE_EXPORT QgsGeos : public QgsGeometryEngine
 {
   public:
+    /**
+     * Settings entry - Whether to convert any linear output of a GEOS
+     * method to a curved type, if the inputs were converted to curves.
+     * \since QGIS 4.4
+     */
+    static const QgsSettingsEntryBool *settingLineToCurveParam SIP_SKIP;
+
     /**
      * GEOS geometry engine constructor
      * \param geometry The geometry

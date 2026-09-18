@@ -28,6 +28,7 @@ and exception handling.
 #include "qgsgeos.h"
 %End
   public:
+
     QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings );
 %Docstring
 GEOS geometry engine constructor
