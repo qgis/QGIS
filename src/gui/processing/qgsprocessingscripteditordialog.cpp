@@ -24,8 +24,6 @@ using namespace Qt::StringLiterals;
 ///@cond NOT_STABLE
 
 
-///@endcond
-
 QgsProcessingScriptEditorDialog::QgsProcessingScriptEditorDialog( QWidget *parent, Qt::WindowFlags flags )
   : QMainWindow( parent, flags )
 {
@@ -111,3 +109,6 @@ QAction *QgsProcessingScriptEditorDialog::actionDecreaseFontSize()
 {
   return mActionDecreaseFontSize;
 }
+
+
+///@endcond
