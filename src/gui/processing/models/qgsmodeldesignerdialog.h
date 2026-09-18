@@ -135,12 +135,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void modelUpdated();
 
   protected:
-    /**
-     * Registers a Processing context \a generator class that will be used to retrieve
-     * a Processing context for the dialog when required.
-     */
-    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
-
 #ifndef SIP_RUN
     QgsProcessingContext *processingContext() const override;
 #endif
@@ -251,6 +245,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
 
     void exportAsScriptAlgorithm();
 
+    std::unique_ptr< QgsProcessingContext > mContext;
+
     std::unique_ptr<QgsProcessingModelAlgorithm> mModel;
 
     QgsScreenHelper *mScreenHelper = nullptr;
@@ -287,8 +283,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
 
     QgsDockWidget *mConfigWidgetDock = nullptr;
     QgsModelDesignerConfigDockWidget *mConfigWidget = nullptr;
-
-    QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
 
     QString mTitle;
 

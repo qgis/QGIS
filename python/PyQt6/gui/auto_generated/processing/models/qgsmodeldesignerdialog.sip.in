@@ -85,12 +85,6 @@ Emitted when the model is updated.
 %End
 
   protected:
-    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
-%Docstring
-Registers a Processing context ``generator`` class that will be used to
-retrieve a Processing context for the dialog when required.
-%End
-
 
 };
 

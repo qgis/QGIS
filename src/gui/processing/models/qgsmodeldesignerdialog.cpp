@@ -96,6 +96,7 @@ Qt::DropActions QgsModelerToolboxModel::supportedDragActions() const
 
 QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
   : QMainWindow( parent, flags )
+  , mContext( QgsGui::processingGuiRegistry()->contextFactory() ? QgsGui::processingGuiRegistry()->contextFactory()->createContext() : new QgsProcessingContext() )
   , mToolsActionGroup( new QActionGroup( this ) )
 {
   setupUi( this );
@@ -601,18 +602,9 @@ void QgsModelDesignerDialog::activate()
   activateWindow();
 }
 
-void QgsModelDesignerDialog::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
-{
-  mProcessingContextGenerator = generator;
-}
-
 QgsProcessingContext *QgsModelDesignerDialog::processingContext() const
 {
-  if ( mProcessingContextGenerator )
-  {
-    return mProcessingContextGenerator->processingContext();
-  }
-  return nullptr;
+  return mContext.get();
 }
 
 void QgsModelDesignerDialog::updateVariablesGui()
@@ -941,10 +933,9 @@ void QgsModelDesignerDialog::addInput( const QString &parameterType, const QPoin
   std::unique_ptr< QgsProcessingParameterDefinition > newParam;
   QString comment;
 
-  QgsProcessingContext *context = mProcessingContextGenerator->processingContext();
   QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
-  QgsProcessingParameterDefinitionDialog dlg( parameterType, *context, widgetContext, nullptr, mModel.get() );
-  dlg.registerProcessingContextGenerator( mProcessingContextGenerator );
+  QgsProcessingParameterDefinitionDialog dlg( parameterType, *mContext, widgetContext, nullptr, mModel.get() );
+  dlg.registerProcessingContextGenerator( this );
   if ( !dlg.exec() )
     return;
 
@@ -1227,10 +1218,8 @@ void QgsModelDesignerDialog::repaintModel( bool showControls )
     scene->setFlag( QgsModelGraphicsScene::Flag::FlagHideComments );
   }
 
-  QgsProcessingContext *context = mProcessingContextGenerator->processingContext();
-
   setModelScene( scene );
-  scene->createItems( mModel.get(), *context );
+  scene->createItems( mModel.get(), *mContext );
   scene->updateBounds();
 }
 
@@ -1777,26 +1766,24 @@ void QgsModelDesignerDialog::showChildAlgorithmLog( const QString &childId )
 void QgsModelDesignerDialog::onItemFocused( QgsModelComponentGraphicItem *item )
 {
   QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
-  widgetContext.registerProcessingContextGenerator( mProcessingContextGenerator );
+  widgetContext.registerProcessingContextGenerator( this );
   widgetContext.setModelDesignerDialog( this );
-  QgsProcessingContext *context = mProcessingContextGenerator->processingContext();
 
   if ( !item || !item->component() )
   {
-    mConfigWidget->showComponentConfig( nullptr, *context, widgetContext );
+    mConfigWidget->showComponentConfig( nullptr, *mContext, widgetContext );
   }
   else
   {
-    mConfigWidget->showComponentConfig( item->component(), *context, widgetContext );
+    mConfigWidget->showComponentConfig( item->component(), *mContext, widgetContext );
 
     if ( auto childAlgorithmItem = qobject_cast< QgsModelChildAlgorithmGraphicItem * >( item ) )
     {
       connect( childAlgorithmItem, &QgsModelChildAlgorithmGraphicItem::rebuildConfigurationDockWidget, childAlgorithmItem, [this] {
         QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
-        widgetContext.registerProcessingContextGenerator( mProcessingContextGenerator );
+        widgetContext.registerProcessingContextGenerator( this );
         widgetContext.setModelDesignerDialog( this );
-        QgsProcessingContext *context = mProcessingContextGenerator->processingContext();
-        mConfigWidget->showComponentConfig( nullptr, *context, widgetContext );
+        mConfigWidget->showComponentConfig( nullptr, *mContext, widgetContext );
       } );
     }
   }
