@@ -30,9 +30,6 @@ from qgis.core import (
     QgsProcessingUtils,
     QgsRuntimeProfiler,
 )
-from qgis.gui import QgsGui
-
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -56,17 +53,6 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
 
     def load(self):
         with QgsRuntimeProfiler.profile("Model Provider"):
-            ProcessingConfig.settingIcons[self.name()] = self.icon()
-            ProcessingConfig.addSetting(
-                Setting(
-                    self.name(),
-                    "MODELS_FOLDER",
-                    self.tr("Models folder", "ModelerAlgorithmProvider"),
-                    QgsProcessingUtils.defaultModelFolder(),
-                    valuetype=Setting.MULTIPLE_FOLDERS,
-                )
-            )
-            ProcessingConfig.readSettings()
             self.refreshAlgorithms()
 
         return True
