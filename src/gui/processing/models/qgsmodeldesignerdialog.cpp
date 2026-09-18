@@ -1034,6 +1034,27 @@ void QgsModelDesignerDialog::exportAsPython()
     ->pushMessage( QString(), tr( "Successfully exported model as Python script to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::MessageLevel::Success, 0 );
 }
 
+void QgsModelDesignerDialog::repaintModel( bool showControls )
+{
+  auto scene = new QgsModelGraphicsScene( this );
+  if ( !showControls )
+  {
+    scene->setFlag( QgsModelGraphicsScene::Flag::FlagHideControls );
+  }
+
+  const bool showComments = QgsSettings().value( "/Processing/Modeler/ShowComments", true ).toBool();
+  if ( !showComments )
+  {
+    scene->setFlag( QgsModelGraphicsScene::Flag::FlagHideComments );
+  }
+
+  QgsProcessingContext *context = mProcessingContextGenerator->processingContext();
+
+  setModelScene( scene );
+  scene->createItems( mModel.get(), *context );
+  scene->updateBounds();
+}
+
 void QgsModelDesignerDialog::toggleComments( bool show )
 {
   QgsSettings().setValue( u"/Processing/Modeler/ShowComments"_s, show );
