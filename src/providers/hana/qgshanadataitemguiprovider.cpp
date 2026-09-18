@@ -27,6 +27,7 @@
 #include "qgshanautils.h"
 #include "qgsmessageoutput.h"
 #include "qgsnewnamedialog.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgstaskmanager.h"
 #include "qgsvectorlayer.h"
