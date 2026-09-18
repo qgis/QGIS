@@ -116,7 +116,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   QgsGui::enableAutoGeometryRestore( this );
 
   mModel = std::make_unique<QgsProcessingModelAlgorithm>();
-  mModel->setProvider( QgsApplication::processingRegistry()->providerById( u"model"_s ) );
+  mModel->setProvider( QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) );
 
   mUndoStack = new QUndoStack( this );
   connect( mUndoStack, &QUndoStack::indexChanged, this, [this] {
@@ -512,7 +512,7 @@ void QgsModelDesignerDialog::loadModel( const QString &path )
   auto alg = std::make_unique<QgsProcessingModelAlgorithm>();
   if ( alg->fromFile( path ) )
   {
-    alg->setProvider( QgsApplication::processingRegistry()->providerById( u"model"_s ) );
+    alg->setProvider( QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) );
     alg->setSourceFilePath( path );
     setModel( alg.release() );
   }
@@ -1037,7 +1037,7 @@ void QgsModelDesignerDialog::newModel()
     return;
 
   auto alg = std::make_unique<QgsProcessingModelAlgorithm>();
-  alg->setProvider( QgsApplication::processingRegistry()->providerById( u"model"_s ) );
+  alg->setProvider( QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) );
   setModel( alg.release() );
 }
 

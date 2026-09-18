@@ -149,7 +149,7 @@ class CreateNewModelAction : public QgsProcessingToolboxAction
     void trigger( const QgsProcessingActionContext & ) override
     {
       auto dlg = new QgsModelDesignerDialog();
-      QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( "model" )->refreshAlgorithms(); } );
+      QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
       dlg->show();
     }
 };
@@ -232,7 +232,7 @@ class AddModelFromFileAction : public QgsProcessingToolboxAction
         return;
       }
 
-      QgsApplication::processingRegistry()->providerById( u"model"_s )->refreshAlgorithms();
+      QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms();
     };
 };
 
@@ -246,7 +246,7 @@ class EditModelContextAction : public QgsProcessingToolboxContextAction
 
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/processingModel.svg"_s ); }
 
-    bool isCompatibleWithAlgorithm( const QString &providerId, const QString & ) override { return providerId == "model"_L1 || providerId == QgsProcessing::PROJECT_PROVIDER_ID; }
+    bool isCompatibleWithAlgorithm( const QString &providerId, const QString & ) override { return providerId == QgsProcessing::MODEL_PROVIDER_ID || providerId == QgsProcessing::PROJECT_PROVIDER_ID; }
 
     void trigger( const QgsProcessingActionContext &context ) override
     {
@@ -265,7 +265,7 @@ class EditModelContextAction : public QgsProcessingToolboxContextAction
       auto dlg = new QgsModelDesignerDialog();
       dlg->setModel( newModel.release() );
 
-      QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( "model" )->refreshAlgorithms(); } );
+      QObject::connect( dlg, &QgsModelDesignerDialog::modelUpdated, dlg, [] { QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID )->refreshAlgorithms(); } );
       dlg->show();
       dlg->activate();
     }
@@ -281,7 +281,7 @@ class DeleteModelContextAction : public QgsProcessingToolboxContextAction
 
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/processingModel.svg"_s ); }
 
-    bool isCompatibleWithAlgorithm( const QString &providerId, const QString & ) override { return providerId == "model"_L1 || providerId == QgsProcessing::PROJECT_PROVIDER_ID; }
+    bool isCompatibleWithAlgorithm( const QString &providerId, const QString & ) override { return providerId == QgsProcessing::MODEL_PROVIDER_ID || providerId == QgsProcessing::PROJECT_PROVIDER_ID; }
 
     void trigger( const QgsProcessingActionContext &context ) override
     {
@@ -335,7 +335,7 @@ class ExportModelAsPythonScriptAction : public QgsProcessingToolboxContextAction
 
     QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionSaveAsPython.svg"_s ); }
 
-    bool isCompatibleWithAlgorithm( const QString &providerId, const QString & ) override { return providerId == "model"_L1 || providerId == QgsProcessing::PROJECT_PROVIDER_ID; }
+    bool isCompatibleWithAlgorithm( const QString &providerId, const QString & ) override { return providerId == QgsProcessing::MODEL_PROVIDER_ID || providerId == QgsProcessing::PROJECT_PROVIDER_ID; }
 
     void trigger( const QgsProcessingActionContext &context ) override
     {
@@ -370,16 +370,16 @@ class ExportModelAsPythonScriptAction : public QgsProcessingToolboxContextAction
 
 void QgsAppProcessingUtils::registerActions()
 {
-  QgsGui::processingGuiRegistry()->registerProviderToolboxAction( "model", new CreateNewModelAction() );
-  QgsGui::processingGuiRegistry()->registerProviderToolboxAction( "model", new OpenModelFromFileAction() );
-  QgsGui::processingGuiRegistry()->registerProviderToolboxAction( "model", new AddModelFromFileAction() );
+  QgsGui::processingGuiRegistry()->registerProviderToolboxAction( QgsProcessing::MODEL_PROVIDER_ID, new CreateNewModelAction() );
+  QgsGui::processingGuiRegistry()->registerProviderToolboxAction( QgsProcessing::MODEL_PROVIDER_ID, new OpenModelFromFileAction() );
+  QgsGui::processingGuiRegistry()->registerProviderToolboxAction( QgsProcessing::MODEL_PROVIDER_ID, new AddModelFromFileAction() );
 
-  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( "model", new EditModelContextAction() );
-  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( "model", new DeleteModelContextAction() );
+  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, new EditModelContextAction() );
+  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, new DeleteModelContextAction() );
   auto separatorAction = new QgsProcessingToolboxContextAction( QString() );
   separatorAction->setIsSeparator( true );
-  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( "model", separatorAction );
-  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( "model", new ExportModelAsPythonScriptAction() );
+  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, separatorAction );
+  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, new ExportModelAsPythonScriptAction() );
 }
 
 void QgsAppProcessingUtils::initProjectModelProvider()
