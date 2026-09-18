@@ -135,10 +135,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void modelUpdated();
 
   protected:
-    // cppcheck-suppress pureVirtualCall
-    virtual void exportAsScriptAlgorithm() = 0;
-    // cppcheck-suppress pureVirtualCall
-
     /**
      * Registers a Processing context \a generator class that will be used to retrieve
      * a Processing context for the dialog when required.
@@ -252,6 +248,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     void addInput( const QString &parameterType, const QPointF &pos );
 
     QgsProcessingAlgorithmWidgetBase *createExecutionWidget();
+
+    void exportAsScriptAlgorithm();
 
     std::unique_ptr<QgsProcessingModelAlgorithm> mModel;
 

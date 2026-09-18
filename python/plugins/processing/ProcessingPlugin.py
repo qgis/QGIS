@@ -102,6 +102,8 @@ class DialogFactory(QgsProcessingDialogFactory):
         return AlgorithmWidget(algorithm, inPlace, parent, flags, initialState)
 
     def createScriptEditorDialog(self, file_path=None, parent=None):
+        if not parent:
+            parent = iface.mainWindow()
         return ScriptEditorDialog(file_path, parent)
 
 
@@ -208,7 +210,7 @@ class ProcessingPlugin(QObject):
         super().__init__()
         self.iface = iface
         self.options_factory = None
-        self.execution_widget_factory = None
+        self.dialog_factory = None
         self.drop_handler = None
         self.item_provider = None
         self.locator_filter = None
@@ -236,10 +238,8 @@ class ProcessingPlugin(QObject):
                 processing_history_provider.portOldLog()
                 settings.setValue("/Processing/hasPortedOldLog", True)
 
-        self.execution_widget_factory = DialogFactory()
-        QgsGui.processingGuiRegistry().setAlgorithmExecutionWidgetFactory(
-            self.execution_widget_factory
-        )
+        self.dialog_factory = DialogFactory()
+        QgsGui.processingGuiRegistry().setDialogFactory(self.dialog_factory)
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr("Processing"))
         iface.registerOptionsWidgetFactory(self.options_factory)
@@ -574,7 +574,7 @@ class ProcessingPlugin(QObject):
             "processing"
         ).createTest.disconnect(self.create_test)
 
-        QgsGui.processingGuiRegistry().setAlgorithmExecutionWidgetFactory(None)
+        QgsGui.processingGuiRegistry().setDialogFactory(None)
 
         Processing.deinitialize()
 
