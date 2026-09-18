@@ -123,6 +123,7 @@ class CORE_EXPORT QgsMimeDataUtils
        */
         QgsMeshLayer *meshLayer( bool &owner, QString &error, QgsProject *project ) const;
 
+        // TODO QGIS 5.0 -- remove this version of function in favor of the one with explicit project parameter
         /**
        * Returns the layer from the active project corresponding to this uri (if possible),
        * otherwise returns NULLPTR.
@@ -131,8 +132,22 @@ class CORE_EXPORT QgsMimeDataUtils
        * to create a new layer corresponding to the URI.
        *
        * \since QGIS 3.8
+       * \deprecated QGIS 4.6. Use mapLayer() with explicit project parameter instead.
        */
-        QgsMapLayer *mapLayer() const;
+        Q_DECL_DEPRECATED QgsMapLayer *mapLayer() const SIP_DEPRECATED;
+
+        /**
+       * Returns the layer from \a project corresponding to this uri (if possible),
+       * otherwise returns NULLPTR.
+       *
+       * Unlike vectorLayer(), rasterLayer(), or meshLayer(), this method will not attempt
+       * to create a new layer corresponding to the URI.
+       *
+       * \param project used to obtain the layer
+       *
+       * \since QGIS 4.6
+       */
+        QgsMapLayer *mapLayer( QgsProject *project ) const;
 
         /**
        * Type of URI.
