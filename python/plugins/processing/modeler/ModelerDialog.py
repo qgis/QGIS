@@ -20,7 +20,6 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.core import (
-    Qgis,
     QgsProcessing,
 )
 from qgis.gui import (
@@ -29,7 +28,6 @@ from qgis.gui import (
 )
 from qgis.utils import iface
 
-from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools.dataobjects import createContext
 
@@ -69,15 +67,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             _model = model.create()
             _model.setSourceFilePath(model.sourceFilePath())
             self.setModel(_model)
-
-    def createExecutionWidget(self):
-        widget = AlgorithmWidget(
-            self.model().create(),
-            parent=self,
-            initialState=Qgis.DockableWidgetInitialState.ForceDocked,
-        )
-        widget.registerProcessingFeedbackGenerator(self)
-        return widget
 
     def exportAsScriptAlgorithm(self):
         dlg = ScriptEditorDialog(parent=iface.mainWindow())

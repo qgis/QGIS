@@ -24,6 +24,7 @@ import shutil
 from functools import partial
 
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsDataItem,
     QgsDataItemProvider,
@@ -39,6 +40,8 @@ from qgis.gui import (
     QgsCustomDropHandler,
     QgsGui,
     QgsOptionsWidgetFactory,
+    QgsProcessingAlgorithmExecutionWidgetFactory,
+    QgsProcessingAlgorithmWidgetBase,
     QgsProcessingHistoryDialog,
 )
 from qgis.PyQt import sip
@@ -81,6 +84,21 @@ from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools import dataobjects
 
 pluginPath = os.path.dirname(__file__)
+
+
+class ProcessingAlgorithmExecutionFactory(QgsProcessingAlgorithmExecutionWidgetFactory):
+    def __init__(self):
+        super().__init__()
+
+    def createWidget(
+        self,
+        algorithm,
+        inPlace=False,
+        parent=None,
+        flags=QgsProcessingAlgorithmWidgetBase.WidgetFlags(),
+        initialState=Qgis.DockableWidgetInitialState.RestorePreviousState,
+    ):
+        return AlgorithmWidget(algorithm, inPlace, parent, flags, initialState)
 
 
 class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
@@ -186,6 +204,7 @@ class ProcessingPlugin(QObject):
         super().__init__()
         self.iface = iface
         self.options_factory = None
+        self.execution_widget_factory = None
         self.drop_handler = None
         self.item_provider = None
         self.locator_filter = None
@@ -213,6 +232,10 @@ class ProcessingPlugin(QObject):
                 processing_history_provider.portOldLog()
                 settings.setValue("/Processing/hasPortedOldLog", True)
 
+        self.execution_widget_factory = ProcessingAlgorithmExecutionFactory()
+        QgsGui.processingGuiRegistry().setAlgorithmExecutionWidgetFactory(
+            self.execution_widget_factory
+        )
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr("Processing"))
         iface.registerOptionsWidgetFactory(self.options_factory)
@@ -546,6 +569,8 @@ class ProcessingPlugin(QObject):
         QgsGui.historyProviderRegistry().providerById(
             "processing"
         ).createTest.disconnect(self.create_test)
+
+        QgsGui.processingGuiRegistry().setAlgorithmExecutionWidgetFactory(None)
 
         Processing.deinitialize()
 
