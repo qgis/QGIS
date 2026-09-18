@@ -85,7 +85,8 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase(
   handleLayout->addStretch();
   splitterHandle->setLayout( handleLayout );
 
-  QgsGui::enableAutoGeometryRestore( this );
+  // don't restore geometry here -- the widget is reparented into a dialog/dock by
+  // mDockableWidgetHelper, which handles the window geometry itself
 
   txtLog->setOpenLinks( false );
   connect( txtLog, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmWidgetBase::urlClicked );
@@ -112,14 +113,16 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase(
 
   bool defaultIsDocked = false;
   QString dockId = u"ProcessingAlgorithm"_s;
-  if ( flags.testFlags( QgsProcessingAlgorithmWidgetBase::WidgetFlag::NoDocking ) )
-  {
-    initialState = Qgis::DockableWidgetInitialState::ForceDialog;
-    dockId = u"ProcessingAlgorithmNonDockable"_s;
-  }
-  else if ( initialState == Qgis::DockableWidgetInitialState::ForceDocked )
+  // check ForceDocked before NoDocking, so an explicit docked request wins (e.g. model designer)
+  if ( initialState == Qgis::DockableWidgetInitialState::ForceDocked )
   {
     dockId = u"ProcessingAlgorithmForceDocked"_s;
+  }
+  else if ( flags.testFlags( QgsProcessingAlgorithmWidgetBase::WidgetFlag::NoDocking ) )
+  {
+    // force dialog mode with a separate key so the dockable widget state isn't overwritten
+    initialState = Qgis::DockableWidgetInitialState::ForceDialog;
+    dockId = u"ProcessingAlgorithmNonDockable"_s;
   }
 
   mDockableWidgetHelper
@@ -319,12 +322,13 @@ void QgsProcessingAlgorithmWidgetBase::setTitle( const QString &title )
 
 void QgsProcessingAlgorithmWidgetBase::exec()
 {
-  // when forcing the widget to show as a dialog, we use a distinct setting key
-  // to prevent the setting for freely dockable algorithm widgets from getting
-  // overridden, which would otherwise reset that setting so that the widgets
-  // are ALWAYS opened as dialogs
-  mDockableWidgetHelper->setSettingKeyDockId( u"ProcessingAlgorithmNonDockable"_s );
-  mDockableWidgetHelper->toggleDockMode( false );
+  // the widget is normally already in dialog mode (constructed with the NoDocking flag). Only
+  // switch it here if a caller opened a dockable widget and then called exec().
+  if ( !mDockableWidgetHelper->dialog() )
+  {
+    mDockableWidgetHelper->setSettingKeyDockId( u"ProcessingAlgorithmNonDockable"_s );
+    mDockableWidgetHelper->toggleDockMode( false );
+  }
   mDockableWidgetHelper->dialog()->exec();
 }
 
