@@ -16,6 +16,7 @@
 #include "qgschunkloader.h"
 
 #include "qgschunknode.h"
+#include "qgsthreadingutils.h"
 
 #include <QVector>
 
@@ -23,11 +24,21 @@
 
 ///@cond PRIVATE
 
-QgsQuadtreeChunkLoaderFactory::QgsQuadtreeChunkLoaderFactory() = default;
+const QgsChunkLoaderResult QgsChunkLoaderResult::sEmpty = QgsChunkLoaderResult( []( Qt3DCore::QEntity * ) {
+  QGIS_CHECK_MAIN_THREAD_ACCESS
+  return nullptr;
+} );
 
-QgsQuadtreeChunkLoaderFactory::~QgsQuadtreeChunkLoaderFactory() = default;
+QFuture<QgsChunkLoaderResult> QgsChunkLoader::updateChunk( QgsChunkNode *node )
+{
+  return loadChunk( node );
+}
 
-void QgsQuadtreeChunkLoaderFactory::setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel, const QgsBox3D &clippingBox3D )
+QgsQuadtreeChunkLoader::QgsQuadtreeChunkLoader() = default;
+
+QgsQuadtreeChunkLoader::~QgsQuadtreeChunkLoader() = default;
+
+void QgsQuadtreeChunkLoader::setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel, const QgsBox3D &clippingBox3D )
 {
   mRootBox3D = rootBox3D;
   mRootError = rootError;
@@ -35,24 +46,24 @@ void QgsQuadtreeChunkLoaderFactory::setupQuadtree( const QgsBox3D &rootBox3D, fl
   mClippingBox3D = clippingBox3D;
 }
 
-QgsChunkNode *QgsQuadtreeChunkLoaderFactory::createRootNode() const
+QgsChunkNode *QgsQuadtreeChunkLoader::createRootNode() const
 {
   return new QgsChunkNode( QgsChunkNodeId( 0, 0, 0 ), mRootBox3D, mRootError );
 }
 
-QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
+QFuture<QVector<QgsChunkNode *>> QgsQuadtreeChunkLoader::createChildren( QgsChunkNode *node )
 {
   QVector<QgsChunkNode *> children;
 
   // If there is a max level set, we should respect that
   if ( mMaxLevel != -1 && node->level() >= mMaxLevel )
-    return children;
+    return QtFuture::makeReadyValueFuture( children );
 
   const QgsBox3D box3D = node->box3D();
 
   // Nodes without extent cannot have children
   if ( box3D.isNull() )
-    return children;
+    return QtFuture::makeReadyValueFuture( children );
 
   const QgsChunkNodeId nodeId = node->tileId();
   const float childError = node->error() / 2;
@@ -85,7 +96,7 @@ QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkN
     if ( mClippingBox3D.isNull() || childBox3D.intersects( mClippingBox3D ) )
       children << new QgsChunkNode( childId, childBox3D, childError, node );
   }
-  return children;
+  return QtFuture::makeReadyValueFuture( children );
 }
 
 /// @endcond
