@@ -1238,13 +1238,12 @@ namespace QgsWms
           if ( it != wmsDimensions.end() )
           {
             QList<QgsDateTimeRange> childrenDateRanges;
+            QgsWms::getChildrenRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
             QDateTime defaultDateTime;
             switch ( it->defaultDisplayType )
             {
               case Qgis::WmsDimensionDefaultDisplay::MinValue:
               case Qgis::WmsDimensionDefaultDisplay::MaxValue:
-                QgsWms::getChildrenRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
-
                 defaultDateTime = it->defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::MinValue ? QgsDateTimeRange::min( childrenDateRanges ) : QgsDateTimeRange::max( childrenDateRanges );
                 break;
 
