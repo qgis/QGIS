@@ -138,7 +138,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     // cppcheck-suppress pureVirtualCall
     virtual void exportAsScriptAlgorithm() = 0;
     // cppcheck-suppress pureVirtualCall
-    virtual QgsProcessingAlgorithmWidgetBase *createExecutionWidget() = 0 SIP_TRANSFERBACK;
 
     /**
      * Registers a Processing context \a generator class that will be used to retrieve
@@ -251,6 +250,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
 
     void addAlgorithm( const QString &algorithmId, const QPointF &pos );
     void addInput( const QString &parameterType, const QPointF &pos );
+
+    QgsProcessingAlgorithmWidgetBase *createExecutionWidget();
 
     std::unique_ptr<QgsProcessingModelAlgorithm> mModel;
 

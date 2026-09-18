@@ -50,6 +50,17 @@
 
 using namespace Qt::StringLiterals;
 
+//
+// QgsProcessingAlgorithmExecutionWidgetFactory
+//
+
+QgsProcessingAlgorithmExecutionWidgetFactory::~QgsProcessingAlgorithmExecutionWidgetFactory() = default;
+
+
+//
+// QgsProcessingGuiRegistry
+//
+
 QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 {
   addAlgorithmConfigurationWidgetFactory( new QgsFilterAlgorithmConfigurationWidgetFactory() );
@@ -331,6 +342,16 @@ QList<QgsProcessingToolboxContextAction *> QgsProcessingGuiRegistry::toolboxCont
     res.append( it.value() );
   }
   return res;
+}
+
+void QgsProcessingGuiRegistry::setAlgorithmExecutionWidgetFactory( QgsProcessingAlgorithmExecutionWidgetFactory *factory )
+{
+  mProcessingAlgorithmExecutionWidgetFactory.reset( factory );
+}
+
+QgsProcessingAlgorithmExecutionWidgetFactory *QgsProcessingGuiRegistry::algorithmExecutionWidgetFactory()
+{
+  return mProcessingAlgorithmExecutionWidgetFactory.get();
 }
 
 QList<QgsProcessingToolboxContextAction *> QgsProcessingGuiRegistry::toolboxContextActionsForProvider( const QString &providerId ) const
