@@ -15,7 +15,13 @@
 
 #include "qgsvectorfieldengine.h"
 
+#include <algorithm>
+#include <cmath>
+
+#include "qgsfeedback.h"
 #include "qgsrendercontext.h"
+#include "qgsvectorfieldstreamfield.h"
+#include "qgsvectorfieldvaluesource.h"
 
 #include <QString>
 
@@ -24,6 +30,9 @@ using namespace Qt::StringLiterals;
 #ifndef M_DEG2RAD
 #define M_DEG2RAD 0.0174532925
 #endif
+
+//! Upper bound on the number of glyphs drawn in a single render
+constexpr qint64 VECTOR_FIELD_MAXIMUM_GLYPHS = 100'000;
 
 QgsVectorFieldEngine::QgsVectorFieldEngine( double datasetMagMaximumValue, double datasetMagMinimumValue, const QgsVectorFieldSettings &settings, QgsRenderContext &context, QSize size )
   : mMinMag( datasetMagMinimumValue )
@@ -64,6 +73,45 @@ QgsVectorFieldEngine::QgsVectorFieldEngine( double datasetMagMaximumValue, doubl
 
 QgsVectorFieldEngine::~QgsVectorFieldEngine() = default;
 
+double QgsVectorFieldEngine::glyphExtentBuffer() const
+{
+  double buffer = 0;
+  switch ( mCfg.symbology() )
+  {
+    case Qgis::VectorFieldSymbology::WindBarbs:
+      buffer = mContext.convertToPainterUnits( mCfg.windBarbSettings().shaftLength(), mCfg.windBarbSettings().shaftLengthUnits() );
+      break;
+
+    case Qgis::VectorFieldSymbology::Arrows:
+      switch ( mCfg.arrowSettings().shaftLengthMethod() )
+      {
+        case Qgis::VectorFieldArrowScalingMethod::MinMax:
+          buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().maxShaftLength(), Qgis::RenderUnit::Millimeters );
+          break;
+
+        case Qgis::VectorFieldArrowScalingMethod::Scaled:
+        {
+          // the shaft length follows the magnitude, so the longest shaft which is actually drawn is
+          // the one of the largest magnitude which passes the filter
+          const double magnitude = mCfg.filterMax() >= 0 ? std::min( mMaxMag, mCfg.filterMax() ) : mMaxMag;
+          buffer = mCfg.arrowSettings().scaleFactor() * magnitude;
+          break;
+        }
+
+        case Qgis::VectorFieldArrowScalingMethod::Fixed:
+          buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().fixedShaftLength(), Qgis::RenderUnit::Millimeters );
+          break;
+      }
+      break;
+
+    case Qgis::VectorFieldSymbology::Streamlines:
+    case Qgis::VectorFieldSymbology::Traces:
+      break;
+  }
+
+  return std::max( 0.0, buffer );
+}
+
 void QgsVectorFieldEngine::drawGlyph( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude )
 {
   switch ( mCfg.symbology() )
@@ -79,6 +127,156 @@ void QgsVectorFieldEngine::drawGlyph( const QgsPointXY &lineStart, double xVal, 
       // not drawn one glyph at a time, see drawStreamlines() and drawTraces()
       break;
   }
+}
+
+QgsVectorFieldEngine::GlyphLayout QgsVectorFieldEngine::glyphLayout( const QgsPointXY &anchor, const QgsVectorFieldValueSource &source ) const
+{
+  const QgsRectangle extent = mContext.mapExtent();
+  if ( extent.isEmpty() || mOutputSize.width() <= 0 || mOutputSize.height() <= 0 )
+    return GlyphLayout();
+
+  const double mapUnitsPerPixelX = extent.width() / mOutputSize.width();
+  const double mapUnitsPerPixelY = extent.height() / mOutputSize.height();
+
+  GlyphLayout layout;
+  if ( mCfg.isOnUserDefinedGrid() )
+  {
+    layout.origin = anchor;
+    layout.spacingX = mCfg.userGridCellWidth() * mapUnitsPerPixelX;
+    layout.spacingY = mCfg.userGridCellHeight() * mapUnitsPerPixelY;
+  }
+  else if ( !source.nativeLayout( layout.origin, layout.spacingX, layout.spacingY ) )
+  {
+    // one glyph per data position was asked for, but the data has no regular layout to place them on
+    return GlyphLayout();
+  }
+
+  if ( !layout.isValid() )
+    return GlyphLayout();
+
+  // safety belt to avoid rendering huge amount of overlapping glyphs
+  const double minimumSpacing = std::max( 1.0, std::sqrt( static_cast<double>( mOutputSize.width() ) * mOutputSize.height() / VECTOR_FIELD_MAXIMUM_GLYPHS ) );
+  layout.spacingX = std::max( layout.spacingX, minimumSpacing * mapUnitsPerPixelX );
+  layout.spacingY = std::max( layout.spacingY, minimumSpacing * mapUnitsPerPixelY );
+
+  return layout;
+}
+
+void QgsVectorFieldEngine::drawGlyphs( std::unique_ptr<QgsVectorFieldValueSource> source, const QgsPointXY &anchor, QgsFeedback *feedback )
+{
+  if ( !source )
+    return;
+
+  switch ( mCfg.symbology() )
+  {
+    case Qgis::VectorFieldSymbology::Streamlines:
+    case Qgis::VectorFieldSymbology::Traces:
+      // not drawn one glyph at a time, see drawStreamlines() and drawTraces()
+      return;
+
+    case Qgis::VectorFieldSymbology::Arrows:
+    case Qgis::VectorFieldSymbology::WindBarbs:
+      break;
+  }
+
+  const GlyphLayout layout = glyphLayout( anchor, *source );
+  if ( !layout.isValid() )
+    return;
+
+  source->setSamplingWindow( layout.spacingX, layout.spacingY );
+
+  const QgsRectangle extent = mContext.mapExtent();
+  const double mapUnitsPerPixelX = extent.width() / mOutputSize.width();
+  const double mapUnitsPerPixelY = extent.height() / mOutputSize.height();
+
+  // grown so that glyphs centered just outside of the extent are still drawn
+  const double buffer = glyphExtentBuffer();
+  const QgsRectangle
+    bufferedExtent( extent.xMinimum() - buffer * mapUnitsPerPixelX, extent.yMinimum() - buffer * mapUnitsPerPixelY, extent.xMaximum() + buffer * mapUnitsPerPixelX, extent.yMaximum() + buffer * mapUnitsPerPixelY );
+
+  const QgsPointXY origin = layout.origin;
+  const double spacingX = layout.spacingX;
+  const double spacingY = layout.spacingY;
+
+  const long long firstColumn = static_cast<long long>( std::ceil( ( bufferedExtent.xMinimum() - origin.x() ) / spacingX ) );
+  const long long lastColumn = static_cast<long long>( std::floor( ( bufferedExtent.xMaximum() - origin.x() ) / spacingX ) );
+  const long long firstRow = static_cast<long long>( std::ceil( ( origin.y() - bufferedExtent.yMaximum() ) / spacingY ) );
+  const long long lastRow = static_cast<long long>( std::floor( ( origin.y() - bufferedExtent.yMinimum() ) / spacingY ) );
+
+  for ( long long row = firstRow; row <= lastRow; ++row )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
+    const double y = origin.y() - row * spacingY;
+    for ( long long column = firstColumn; column <= lastColumn; ++column )
+    {
+      const QgsPointXY point( origin.x() + column * spacingX, y );
+      const QgsVector value = source->vectorValue( point );
+      if ( std::isnan( value.x() ) || std::isnan( value.y() ) )
+        continue;
+
+      drawGlyph( mContext.mapToPixel().transform( point ), value.x(), value.y(), value.length() );
+    }
+  }
+}
+
+void QgsVectorFieldEngine::drawStreamlines( std::unique_ptr<QgsVectorFieldValueSource> source, QgsRasterBlockFeedback *feedback )
+{
+  if ( !source )
+    return;
+
+  auto field = std::make_unique<QgsVectorFieldStreamlinesField>( std::move( source ), mContext, mVectorColoring, feedback );
+
+  field->updateSize( mContext );
+  field->setPixelFillingDensity( mCfg.streamLinesSettings().seedingDensity() );
+  field->setLineWidth( mContext.convertToPainterUnits( mCfg.lineWidth(), Qgis::RenderUnit::Millimeters ) );
+  field->setColor( mCfg.color() );
+  field->setFilter( mCfg.filterMin(), mCfg.filterMax() );
+
+  switch ( mCfg.streamLinesSettings().seedingMethod() )
+  {
+    case Qgis::VectorFieldSeedingMethod::Gridded:
+      if ( mCfg.isOnUserDefinedGrid() )
+        field->addGriddedTraces( mCfg.userGridCellWidth(), mCfg.userGridCellHeight() );
+      else
+        field->addTracesOnDataPoints( mContext.mapExtent() );
+      break;
+    case Qgis::VectorFieldSeedingMethod::Random:
+      field->addRandomTraces();
+      break;
+  }
+
+  if ( mContext.renderingStopped() )
+    return;
+
+  field->compose();
+  mContext.painter()->drawImage( field->topLeft(), field->image() );
+}
+
+void QgsVectorFieldEngine::drawTraces( std::unique_ptr<QgsVectorFieldValueSource> source )
+{
+  if ( !source )
+    return;
+
+  auto field = std::make_unique<QgsVectorFieldParticleTracesField>( std::move( source ), mContext, mVectorColoring );
+
+  field->updateSize( mContext );
+  field->setParticleSize( mContext.convertToPainterUnits( mCfg.lineWidth(), Qgis::RenderUnit::Millimeters ) );
+  field->setParticlesCount( mCfg.tracesSettings().particlesCount() );
+  field->setTailFactor( 1 );
+  field->setStumpParticleWithLifeTime( false );
+
+  // as the particles go through 1 pixel for dt=1 and Vmax, the maximum tail length is the time step
+  field->setTimeStep( mContext.convertToPainterUnits( mCfg.tracesSettings().maximumTailLength(), mCfg.tracesSettings().maximumTailLengthUnit() ) );
+
+  field->addRandomParticles();
+  field->moveParticles();
+
+  if ( mContext.renderingStopped() )
+    return;
+
+  mContext.painter()->drawImage( field->topLeft(), field->image() );
 }
 
 bool QgsVectorFieldEngine::calcVectorLineEnd(

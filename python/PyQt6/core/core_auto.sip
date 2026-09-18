@@ -722,6 +722,7 @@
 %Include auto_generated/raster/qgsrastershader.sip
 %Include auto_generated/raster/qgsrastershaderfunction.sip
 %Include auto_generated/raster/qgsrastertransparency.sip
+%Include auto_generated/raster/qgsrastervectorfieldrenderer.sip
 %Include auto_generated/raster/qgsrasterviewport.sip
 %Include auto_generated/raster/qgssinglebandcolordatarenderer.sip
 %Include auto_generated/raster/qgssinglebandgrayrenderer.sip
@@ -866,6 +867,7 @@
 %Include auto_generated/vectorfield/qgsvectorfieldarrowsettings.sip
 %Include auto_generated/vectorfield/qgsvectorfieldsettings.sip
 %Include auto_generated/vectorfield/qgsvectorfieldstreamlinesettings.sip
+%Include auto_generated/vectorfield/qgsvectorfieldtraceanimationgenerator.sip
 %Include auto_generated/vectorfield/qgsvectorfieldtracessettings.sip
 %Include auto_generated/vectorfield/qgsvectorfieldwindbarbsettings.sip
 %Include auto_generated/vectortile/qgsmapboxglstyleconverter.sip

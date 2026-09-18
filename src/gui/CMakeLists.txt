@@ -31,6 +31,7 @@ set(QGIS_GUI_SRCS
   raster/qgsrastersinglecolorrendererwidget.cpp
   raster/qgsrendererrasterpropertieswidget.cpp
   raster/qgsrastertransparencywidget.cpp
+  raster/qgsrastervectorfieldrendererwidget.cpp
   raster/qgshillshaderendererwidget.cpp
   raster/qgsresamplingutils.cpp
 
@@ -1593,6 +1594,7 @@ set(QGIS_GUI_HDRS
   raster/qgsrasterminmaxwidget.h
   raster/qgsrasterrendererwidget.h
   raster/qgsrastertransparencywidget.h
+  raster/qgsrastervectorfieldrendererwidget.h
   raster/qgsrendererrasterpropertieswidget.h
   raster/qgssinglebandgrayrendererwidget.h
   raster/qgssinglebandpseudocolorrendererwidget.h

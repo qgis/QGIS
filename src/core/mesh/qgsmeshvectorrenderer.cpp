@@ -21,7 +21,7 @@
 
 #include "qgsmaptopixel.h"
 #include "qgsmeshlayerutils.h"
-#include "qgsmeshtracerenderer.h"
+#include "qgsmeshvectorfieldvaluesource.h"
 #include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
 
@@ -48,7 +48,7 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
   const QgsVectorFieldSettings &settings,
   QgsRenderContext &context,
   const QgsRectangle &layerExtent,
-  QgsMeshLayerRendererFeedback *feedBack,
+  QgsRasterBlockFeedback *feedBack,
   const QSize &size
 )
 {
@@ -61,12 +61,9 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
       renderer = new QgsMeshVectorGlyphRenderer( m, datasetVectorValues, datasetValuesMag, datasetMagMaximumValue, datasetMagMinimumValue, dataType, settings, context, size );
       break;
     case Qgis::VectorFieldSymbology::Streamlines:
-      renderer
-        = new QgsMeshVectorStreamlineRenderer( m, datasetVectorValues, scalarActiveFaceFlagValues, datasetValuesMag, dataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices, settings, context, layerExtent, feedBack, datasetMagMaximumValue );
-      break;
     case Qgis::VectorFieldSymbology::Traces:
       renderer
-        = new QgsMeshVectorTraceRenderer( m, datasetVectorValues, scalarActiveFaceFlagValues, dataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices, settings, context, layerExtent, datasetMagMaximumValue );
+        = new QgsMeshVectorStreamlineRenderer( m, datasetVectorValues, scalarActiveFaceFlagValues, datasetValuesMag, datasetMagMaximumValue, datasetMagMinimumValue, dataType, settings, context, layerExtent, feedBack, size );
       break;
   }
 
@@ -106,7 +103,7 @@ QgsMeshVectorGlyphRenderer::QgsMeshVectorGlyphRenderer(
   // we need to expand out the extent so that it includes
   // arrows which start or end up outside of the
   // actual visible extent
-  const double extension = context.convertToMapUnits( calcExtentBufferSize(), Qgis::RenderUnit::Pixels );
+  const double extension = context.convertToMapUnits( mEngine.glyphExtentBuffer(), Qgis::RenderUnit::Pixels );
   mBufferedExtent.setXMinimum( mBufferedExtent.xMinimum() - extension );
   mBufferedExtent.setXMaximum( mBufferedExtent.xMaximum() + extension );
   mBufferedExtent.setYMinimum( mBufferedExtent.yMinimum() - extension );
@@ -133,37 +130,6 @@ void QgsMeshVectorGlyphRenderer::draw()
   {
     drawVectorDataOnEdges();
   }
-}
-
-double QgsMeshVectorGlyphRenderer::calcExtentBufferSize() const
-{
-  double buffer = 0;
-  switch ( mCfg.arrowSettings().shaftLengthMethod() )
-  {
-    case Qgis::VectorFieldArrowScalingMethod::MinMax:
-    {
-      buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().maxShaftLength(), Qgis::RenderUnit::Millimeters );
-      break;
-    }
-    case Qgis::VectorFieldArrowScalingMethod::Scaled:
-    {
-      buffer = mCfg.arrowSettings().scaleFactor() * mMaxMag;
-      break;
-    }
-    case Qgis::VectorFieldArrowScalingMethod::Fixed:
-    {
-      buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().fixedShaftLength(), Qgis::RenderUnit::Millimeters );
-      break;
-    }
-  }
-
-  if ( mCfg.filterMax() >= 0 && buffer > mCfg.filterMax() )
-    buffer = mCfg.filterMax();
-
-  if ( buffer < 0.0 )
-    buffer = 0.0;
-
-  return buffer;
 }
 
 void QgsMeshVectorGlyphRenderer::drawVectorDataOnVertices()
@@ -299,6 +265,45 @@ void QgsMeshVectorGlyphRenderer::drawVectorDataOnGrid()
         mEngine.drawGlyph( lineStart, val.x(), val.y(), val.scalar() );
       }
     }
+  }
+}
+
+QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer(
+  const QgsTriangularMesh &m,
+  const QgsMeshDataBlock &datasetValues,
+  const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+  const QVector<double> &datasetValuesMag,
+  double datasetMagMaximumValue,
+  double datasetMagMinimumValue,
+  QgsMeshDatasetGroupMetadata::DataType dataType,
+  const QgsVectorFieldSettings &settings,
+  QgsRenderContext &context,
+  const QgsRectangle &layerExtent,
+  QgsRasterBlockFeedback *feedBack,
+  QSize size
+)
+  : mCfg( settings )
+  , mFeedBack( feedBack )
+  , mSource( QgsMeshVectorFieldValueSource::create( m, datasetValues, scalarActiveFaceFlagValues, datasetValuesMag, dataType, layerExtent, datasetMagMaximumValue ) )
+  , mEngine( datasetMagMaximumValue, datasetMagMinimumValue, settings, context, size )
+{}
+
+QgsMeshVectorStreamlineRenderer::~QgsMeshVectorStreamlineRenderer() = default;
+
+void QgsMeshVectorStreamlineRenderer::draw()
+{
+  switch ( mCfg.symbology() )
+  {
+    case Qgis::VectorFieldSymbology::Streamlines:
+      mEngine.drawStreamlines( std::move( mSource ), mFeedBack );
+      break;
+    case Qgis::VectorFieldSymbology::Traces:
+      mEngine.drawTraces( std::move( mSource ) );
+      break;
+    case Qgis::VectorFieldSymbology::Arrows:
+    case Qgis::VectorFieldSymbology::WindBarbs:
+      // drawn glyph by glyph, see QgsMeshVectorGlyphRenderer
+      break;
   }
 }
 
