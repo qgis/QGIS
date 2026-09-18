@@ -51,10 +51,10 @@
 using namespace Qt::StringLiterals;
 
 //
-// QgsProcessingAlgorithmExecutionWidgetFactory
+// QgsProcessingDialogFactory
 //
 
-QgsProcessingAlgorithmExecutionWidgetFactory::~QgsProcessingAlgorithmExecutionWidgetFactory() = default;
+QgsProcessingDialogFactory::~QgsProcessingDialogFactory() = default;
 
 
 //
@@ -344,14 +344,14 @@ QList<QgsProcessingToolboxContextAction *> QgsProcessingGuiRegistry::toolboxCont
   return res;
 }
 
-void QgsProcessingGuiRegistry::setAlgorithmExecutionWidgetFactory( QgsProcessingAlgorithmExecutionWidgetFactory *factory )
+void QgsProcessingGuiRegistry::setDialogFactory( QgsProcessingDialogFactory *factory )
 {
-  mProcessingAlgorithmExecutionWidgetFactory.reset( factory );
+  mProcessingDialogFactory.reset( factory );
 }
 
-QgsProcessingAlgorithmExecutionWidgetFactory *QgsProcessingGuiRegistry::algorithmExecutionWidgetFactory()
+QgsProcessingDialogFactory *QgsProcessingGuiRegistry::dialogFactory()
 {
-  return mProcessingAlgorithmExecutionWidgetFactory.get();
+  return mProcessingDialogFactory.get();
 }
 
 QList<QgsProcessingToolboxContextAction *> QgsProcessingGuiRegistry::toolboxContextActionsForProvider( const QString &providerId ) const

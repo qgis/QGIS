@@ -11,10 +11,10 @@
 
 
 
-class QgsProcessingAlgorithmExecutionWidgetFactory
+class QgsProcessingDialogFactory
 {
 %Docstring(signature="appended")
-A factory for creating widgets for executing Processing algorithms.
+A factory for creating widgets and dialogs for Processing components.
 
 .. warning::
 
@@ -27,7 +27,7 @@ A factory for creating widgets for executing Processing algorithms.
 #include "qgsprocessingguiregistry.h"
 %End
   public:
-    virtual ~QgsProcessingAlgorithmExecutionWidgetFactory();
+    virtual ~QgsProcessingDialogFactory();
 
     virtual QgsProcessingAlgorithmWidgetBase *createWidget(
       QgsProcessingAlgorithm *algorithm /Transfer/,
@@ -38,6 +38,12 @@ A factory for creating widgets for executing Processing algorithms.
     ) = 0 /TransferBack/;
 %Docstring
 Creates a new widget for executing the specified algorithm.
+%End
+
+
+    virtual QgsProcessingScriptEditorDialog *createScriptEditorDialog( const QString &filePath = QString(), QWidget *parent = 0 ) = 0 /TransferBack/;
+%Docstring
+Creates a new script editor dialog.
 %End
 };
 
@@ -366,9 +372,9 @@ Returns a list of all toolbox context menu actions registered.
 .. versionadded:: 4.4
 %End
 
-    void setAlgorithmExecutionWidgetFactory( QgsProcessingAlgorithmExecutionWidgetFactory *factory /Transfer/ );
+    void setDialogFactory( QgsProcessingDialogFactory *factory /Transfer/ );
 %Docstring
-Sets the application's algorithm execution widget ``factory``.
+Sets the application's processing dialog ``factory``.
 
 Ownership of ``factory`` is transferred.
 
@@ -376,20 +382,20 @@ Ownership of ``factory`` is transferred.
 
    This is not stable API, it is in place for temporary compatibility with Python code only.
 
-.. seealso:: :py:func:`algorithmExecutionWidgetFactory`
+.. seealso:: :py:func:`dialogFactory`
 
 .. versionadded:: 4.4
 %End
 
-    QgsProcessingAlgorithmExecutionWidgetFactory *algorithmExecutionWidgetFactory();
+    QgsProcessingDialogFactory *dialogFactory();
 %Docstring
-Returns the application's algorithm execution widget factory, if set.
+Returns the application's processing dialog factory, if set.
 
 .. warning::
 
    This is not stable API, it is in place for temporary compatibility with Python code only.
 
-.. seealso:: :py:func:`setAlgorithmExecutionWidgetFactory`
+.. seealso:: :py:func:`setDialogFactory`
 
 .. versionadded:: 4.4
 %End
