@@ -52,6 +52,7 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsDemTerrainGenerator
     ~QgsOnlineTerrainGenerator() override;
 
     Type type() const override;
+    QgsTerrainGenerator *clone() const override SIP_FACTORY;
 
   protected:
     void updateGenerator() override;
