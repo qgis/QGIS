@@ -28,21 +28,9 @@ from qgis.core import (
     QgsProcessingFeedback,
     QgsProcessingParameterDefinition,
 )
-from qgis.gui import (
-    QgsMessageBar,
-    QgsProcessingLayerOutputDestinationWidget,
-    QgsProjectionSelectionWidget,
-)
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (
-    QCheckBox,
-    QComboBox,
-    QDialogButtonBox,
     QLabel,
-    QLineEdit,
     QPlainTextEdit,
-    QPushButton,
-    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
@@ -85,24 +73,6 @@ class GdalParametersPanel(ParametersPanel):
     def connectParameterSignals(self):
         for wrapper in list(self.wrappers.values()):
             wrapper.widgetValueHasChanged.connect(self.parametersHaveChanged)
-
-            # TODO - remove when all wrappers correctly emit widgetValueHasChanged!
-            w = wrapper.wrappedWidget()
-            self.connectWidgetChangedSignals(w)
-            for c in w.findChildren(QWidget):
-                self.connectWidgetChangedSignals(c)
-
-    def connectWidgetChangedSignals(self, w):
-        if isinstance(w, QLineEdit):
-            w.textChanged.connect(self.parametersHaveChanged)
-        elif isinstance(w, QComboBox):
-            w.currentIndexChanged.connect(self.parametersHaveChanged)
-        elif isinstance(w, QgsProjectionSelectionWidget):
-            w.crsChanged.connect(self.parametersHaveChanged)
-        elif isinstance(w, QCheckBox):
-            w.stateChanged.connect(self.parametersHaveChanged)
-        elif isinstance(w, QgsProcessingLayerOutputDestinationWidget):
-            w.destinationChanged.connect(self.parametersHaveChanged)
 
     def parametersHaveChanged(self):
         context = createContext()
