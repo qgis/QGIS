@@ -32,6 +32,8 @@
 #include <QMessageBox>
 #include <QString>
 
+#include "moc_qgsappprocessingutils.cpp"
+
 using namespace Qt::StringLiterals;
 
 //
