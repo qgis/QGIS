@@ -539,6 +539,8 @@ void Qgs3DUtils::extractPointPositions(
   const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions, const QgsVector3D &translation
 )
 {
+  const bool isGeocentric = context.crs().type() == Qgis::CrsType::Geocentric;
+  const bool useTerrainHeight = !isGeocentric && context.terrainRenderingEnabled() && context.terrainGenerator();
   const QgsAbstractGeometry *g = f.geometry().constGet();
   for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
   {
@@ -548,22 +550,33 @@ void Qgs3DUtils::extractPointPositions(
     {
       geomZ = pt.z();
     }
-    const float terrainZ = context.terrainRenderingEnabled() && context.terrainGenerator()
-                             ? static_cast<float>( context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * ( context.terrainSettings() ? context.terrainSettings()->verticalScale() : 1 ) )
-                             : 0.f;
+
     float h = 0.0f;
-    switch ( altClamp )
+    if ( isGeocentric )
     {
-      case Qgis::AltitudeClamping::Absolute:
-        h = geomZ;
-        break;
-      case Qgis::AltitudeClamping::Terrain:
-        h = terrainZ;
-        break;
-      case Qgis::AltitudeClamping::Relative:
-        h = terrainZ + geomZ;
-        break;
+      // keep the original Z from geocentric coordinates
+      // (we do not support terrains in globe mode yet)
+      h = geomZ;
     }
+    else
+    {
+      const float terrainZ = useTerrainHeight
+                               ? static_cast<float>( context.terrainGenerator()->heightAt( pt.x(), pt.y(), context ) * ( context.terrainSettings() ? context.terrainSettings()->verticalScale() : 1 ) )
+                               : 0.f;
+      switch ( altClamp )
+      {
+        case Qgis::AltitudeClamping::Absolute:
+          h = geomZ;
+          break;
+        case Qgis::AltitudeClamping::Terrain:
+          h = terrainZ;
+          break;
+        case Qgis::AltitudeClamping::Relative:
+          h = terrainZ + geomZ;
+          break;
+      }
+    }
+
     // clang-format off
     positions.append( QVector3D(
       static_cast<float>( pt.x() - chunkOrigin.x() + translation.x() ),
