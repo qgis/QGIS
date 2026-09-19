@@ -37,6 +37,7 @@ from qgis.gui import (
     QgsProcessingAlgorithmWidgetBase,
     QgsProcessingContextGenerator,
     QgsProcessingParametersGenerator,
+    QgsProcessingParametersWidget,
 )
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QCoreApplication
@@ -55,7 +56,6 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import resultsList
 from processing.gui.AlgorithmExecutor import execute, execute_in_place, executeIterating
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
-from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 
@@ -131,7 +131,9 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
         )
 
     def getParametersPanel(self, alg, parent):
-        panel = ParametersPanel(parent, alg, self.in_place, self.active_layer)
+        panel = QgsProcessingParametersWidget(
+            alg, self.in_place, self.active_layer, self.messageBar()
+        )
         return panel
 
     def runAsBatch(self):
