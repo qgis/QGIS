@@ -1044,6 +1044,12 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
         QgsCurve *curve = mCurves.at( 0 );
         if ( QgsWkbTypes::flatType( curve->wkbType() ) == Qgis::WkbType::LineString )
         {
+          // only the first one could be equal to the start point, in which case, just remove it
+          // so we do not duplicate points when adding them
+          if ( survivingPoints[0] == curve->startPoint() )
+          {
+            survivingPoints.removeAt( 0 );
+          }
           for ( int i = 0; i < survivingPoints.size(); ++i )
             curve->insertVertex( QgsVertexId( 0, 0, 0 ), survivingPoints[i] );
         }
