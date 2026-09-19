@@ -12,7 +12,7 @@
 
 
 
-class QgsProcessingParametersWidget : QgsPanelWidget, QgsProcessingParametersGenerator
+class QgsProcessingParametersWidget : QgsPanelWidget, QgsProcessingParametersGenerator, QgsProcessingContextGenerator
 {
 %Docstring(signature="appended")
 A widget which allows users to select the value for the parameters for
@@ -29,16 +29,25 @@ an algorithm.
 #include "qgsprocessingparameterswidget.h"
 %End
   public:
-    QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, QWidget *parent /TransferThis/ = 0 );
+    QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, bool inPlace, QgsMapLayer *activeLayer, QgsMessageBar *messageBar, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingParametersWidget, for the specified
 ``algorithm``.
 %End
-
+    ~QgsProcessingParametersWidget();
     const QgsProcessingAlgorithm *algorithm() const;
+    virtual QgsProcessingContext *processingContext() const;
+
+    virtual QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() );
+
+
+    void setParameters( const QVariantMap &parameters );
+%Docstring
+Sets parameter values to show in the panel.
+%End
 
   protected:
-    virtual void initWidgets();
+    void initWidgets();
 
     void addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget /Transfer/, int stretch = 0 );
     void addParameterLabel( const QgsProcessingParameterDefinition *parameter, QWidget *label /Transfer/ );

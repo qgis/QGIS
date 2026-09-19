@@ -20,8 +20,10 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsprocessingcontext.h"
 #include "qgsprocessingwidgetwrapper.h"
 
+#include <QPointer>
 #include <QWidget>
 
 class QgsProcessingAlgorithm;
@@ -35,7 +37,7 @@ class QgsProcessingParameterDefinition;
  * \note Not stable API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public QgsProcessingParametersGenerator, private Ui::QgsProcessingParametersWidgetBase
+class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public QgsProcessingParametersGenerator, public QgsProcessingContextGenerator, private Ui::QgsProcessingParametersWidgetBase
 {
     Q_OBJECT
 
@@ -43,12 +45,19 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
     /**
      * Constructor for QgsProcessingParametersWidget, for the specified \a algorithm.
      */
-    QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, QWidget *parent SIP_TRANSFERTHIS = nullptr );
-
+    QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, bool inPlace, QgsMapLayer *activeLayer, QgsMessageBar *messageBar, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsProcessingParametersWidget() override;
     const QgsProcessingAlgorithm *algorithm() const;
+    QgsProcessingContext *processingContext() const override;
+    QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) override;
+
+    /**
+     * Sets parameter values to show in the panel.
+     */
+    void setParameters( const QVariantMap &parameters );
 
   protected:
-    virtual void initWidgets();
+    void initWidgets();
 
     void addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget SIP_TRANSFER, int stretch = 0 );
     void addParameterLabel( const QgsProcessingParameterDefinition *parameter, QWidget *label SIP_TRANSFER );
@@ -58,8 +67,21 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
 
     void addExtraWidget( QWidget *widget SIP_TRANSFER );
 
+  private slots:
+
+    void parameterChanged();
+
   private:
+    std::unique_ptr< QgsProcessingContext > mContext;
+
     const QgsProcessingAlgorithm *mAlgorithm = nullptr;
+    bool mInPlace = false;
+    QPointer< QgsMapLayer > mActiveLayer;
+    QgsMessageBar *mMessageBar = nullptr;
+
+    QVariantMap mExtraParameters;
+
+    QMap< QString, QgsAbstractProcessingParameterWidgetWrapper * > mWrappers;
 
     friend class TestProcessingGui;
 };
