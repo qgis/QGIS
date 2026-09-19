@@ -170,26 +170,6 @@ class ParametersPanel(QgsProcessingParametersWidget):
             widget = wrapper.createWrappedWidget(self.processing_context)
             self.addOutputWidget(widget, wrapper.stretch())
 
-            #    def skipOutputChanged(widget, checkbox, skipped):
-            # TODO
-            #        enabled = not skipped
-            #
-            #        # Do not try to open formats that are write-only.
-            #        value = widget.value()
-            #        if value and isinstance(value, QgsProcessingOutputLayerDefinition) and isinstance(output, (
-            #                QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
-            #            filename = value.sink.staticValue()
-            #            if filename not in ('memory:', ''):
-            #                path, ext = os.path.splitext(filename)
-            #                format = QgsVectorFileWriter.driverForExtension(ext)
-            #                drv = gdal.GetDriverByName(format)
-            #                if drv:
-            #                    if drv.GetMetadataItem(gdal.DCAP_OPEN) is None:
-            #                        enabled = False
-            #
-            #        checkbox.setEnabled(enabled)
-            #        checkbox.setChecked(enabled)
-
         for wrapper in list(self.wrappers.values()):
             wrapper.postInitialize(list(self.wrappers.values()))
 
