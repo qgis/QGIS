@@ -256,12 +256,6 @@ void QgsTriangle::addInteriorRing( QgsCurve *ring )
   delete ring;
 }
 
-bool QgsTriangle::deleteVertex( QgsVertexId position )
-{
-  Q_UNUSED( position )
-  return false;
-}
-
 bool QgsTriangle::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   Q_UNUSED( positions )
