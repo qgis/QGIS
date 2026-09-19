@@ -70,16 +70,6 @@ class ParametersPanel(QgsProcessingParametersWidget):
 
         self.initWidgets()
 
-        QgsProject.instance().layerWasAdded.connect(self.layerRegistryChanged)
-        QgsProject.instance().layersWillBeRemoved.connect(self.layerRegistryChanged)
-
-    def layerRegistryChanged(self, layers):
-        for wrapper in list(self.wrappers.values()):
-            try:
-                wrapper.refresh()
-            except AttributeError:
-                pass
-
     def initWidgets(self):
         super().initWidgets()
 
