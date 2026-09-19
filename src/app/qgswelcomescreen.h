@@ -140,6 +140,8 @@ class QgsWelcomeScreen : public QQuickWidget
 
     int mOriginalWidth = 0;
     int mOriginalHeight = 0;
+
+    friend class TestQgisAppWidgetNames;
 };
 
 #endif // QGSWELCOMESCREEN_H
