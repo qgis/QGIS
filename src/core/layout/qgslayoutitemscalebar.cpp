@@ -1315,7 +1315,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   {
     // fallback to older attribute, appending the space which was previously always
     // added by the scalebar renderer
-    mSettings.setUnitLabel( itemElem.attribute( u"unitLabel"_s ) + ' ' );
+    mSettings.setUnitLabel( ' ' + itemElem.attribute( u"unitLabel"_s ) );
   }
 
   const QDomNodeList textFormatNodeList = itemElem.elementsByTagName( u"text-style"_s );
