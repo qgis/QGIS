@@ -64,9 +64,6 @@ class CustomStringParameterWidgetFactory(QgsProcessingParameterWidgetFactoryInte
         CustomStringParameterWidgetFactory.CREATED_WIDGET_WRAPPERS += 1
         return w
 
-    def clone(self):
-        return CustomStringParameterWidgetFactory()
-
     def parameterType(self):
         return self.NAME
 
@@ -91,7 +88,7 @@ class TestQgsProcessingParameters(QgisTestCase):
     def tearDownClass(cls):
         QgsGui.processingGuiRegistry().removeParameterWidgetFactory(cls._factory)
 
-    def test_qgsprocessinggometry(self):  # spellok
+    def test_qgsprocessinggeometry(self):  # spellok
         """Test QgsProcessingParameterGeometry initialization"""
         geomtypes = [
             QgsWkbTypes.GeometryType.PointGeometry,
@@ -131,10 +128,6 @@ class TestQgsProcessingParameters(QgisTestCase):
         wrapper2 = reg.createParameterWidgetWrapper(param, wrapper_type)
         self.assertEqual(CustomStringParameterWidgetFactory.CREATED_WIDGET_WRAPPERS, 2)
         self.assertEqual(wrapper2.objectName(), "CustomWrapper")
-        self.assertIsInstance(wrapper2, QgsAbstractProcessingParameterWidgetWrapper)
-
-        # this fails, because QgsProcessingGuiRegistry returns the base class
-        # QgsAbstractProcessingParameterWidgetWrapper only
         self.assertIsInstance(wrapper2, CustomStringParameterWidgetWrapper)
 
 

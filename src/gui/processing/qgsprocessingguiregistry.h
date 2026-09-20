@@ -113,7 +113,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 3.4
      */
-    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) SIP_FACTORY;
+    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) SIP_TRANSFERBACK;
 
     /**
      * Creates a new modeler parameter widget for the given \a parameter. This widget allows
