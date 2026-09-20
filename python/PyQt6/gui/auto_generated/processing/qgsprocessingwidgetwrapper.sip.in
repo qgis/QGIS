@@ -333,7 +333,7 @@ relevant information which allows the widget to fine-tune its behavior.
 .. seealso:: :py:func:`setWidgetContext`
 %End
 
-    QWidget *createWrappedWidget( QgsProcessingContext &context ) /Factory/;
+    QWidget *createWrappedWidget( QgsProcessingContext &context ) /TransferBack/;
 %Docstring
 Creates and return a new wrapped widget which allows customization of
 the parameter's value.
@@ -577,7 +577,7 @@ must last for the lifetime of the widget.
 
     virtual QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
       QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = 0, const QgsProcessingAlgorithm *algorithm = 0
-    ) /Factory/;
+    ) /TransferBack/;
 %Docstring
 Creates a new parameter definition widget allowing for configuration of
 an instance of the parameter type handled by this factory.
