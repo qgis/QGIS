@@ -312,7 +312,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      *
      * \see createWrappedLabel()
      */
-    QWidget *createWrappedWidget( QgsProcessingContext &context ) SIP_FACTORY;
+    QWidget *createWrappedWidget( QgsProcessingContext &context ) SIP_TRANSFERBACK;
 
     /**
      * Creates and returns a new label to accompany widgets created by the wrapper.
@@ -575,7 +575,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
       const QgsProcessingParameterWidgetContext &widgetContext,
       const QgsProcessingParameterDefinition *definition = nullptr,
       const QgsProcessingAlgorithm *algorithm = nullptr
-    ) SIP_FACTORY;
+    ) SIP_TRANSFERBACK;
 
   protected:
     /**
