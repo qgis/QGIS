@@ -23,7 +23,7 @@
 #define SIP_NO_FILE
 
 class QgsCoordinateReferenceSystem;
-
+class QgsTileMatrix;
 
 /**
  * \ingroup core
@@ -42,31 +42,18 @@ class CORE_EXPORT QgsGeoPackageTiles
     /**
      * Creates a new GeoPackage database and initializes it with metadata and tiles tables.
      *
-     * \param crs target CRS for the tile layer and matrix set.
-     * \param tileMatrixSetExtent spatial extent of the full tile matrix set (pyramid bounds), specified in coordinates of the target \a crs.
+     * \param z0matrix zoom level 0 tile matrix
      * \param contentsExtent actual bounding box of data stored in gpkg_contents, specified in coordinates of the target \a crs.
      * \param minZoom minimum zoom level.
      * \param maxZoom maximum zoom level.
      * \param tileWidth pixel width of individual tiles.
      * \param tileHeight pixel height of individual tiles.
-     * \param z0MatrixWidth number of tile columns at zoom level 0.
-     * \param z0MatrixHeight number of tile rows at zoom level 0.
      *
      * \returns TRUE on success. If the file exists already, returns FALSE.
      *
      * \note finalize() must be called after creating the database.
      */
-    bool create(
-      const QgsCoordinateReferenceSystem &crs,
-      const QgsRectangle &tileMatrixSetExtent,
-      const QgsRectangle &contentsExtent,
-      int minZoom,
-      int maxZoom,
-      int tileWidth = 256,
-      int tileHeight = 256,
-      int z0MatrixWidth = 1,
-      int z0MatrixHeight = 1
-    );
+    bool create( const QgsTileMatrix &z0matrix, const QgsRectangle &contentsExtent, int minZoom, int maxZoom, int tileWidth = 256, int tileHeight = 256 );
 
     /**
      * Finalizes the database after writing all tiles.

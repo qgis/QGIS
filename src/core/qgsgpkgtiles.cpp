@@ -20,6 +20,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsrectangle.h"
+#include "qgstiles.h"
 
 #include <QFile>
 #include <QString>
@@ -50,9 +51,7 @@ bool QgsGeoPackageTiles::finalize()
   return true;
 }
 
-bool QgsGeoPackageTiles::create(
-  const QgsCoordinateReferenceSystem &crs, const QgsRectangle &tileMatrixSetExtent, const QgsRectangle &contentsExtent, int minZoom, int maxZoom, int tileWidth, int tileHeight, int z0MatrixWidth, int z0MatrixHeight
-)
+bool QgsGeoPackageTiles::create( const QgsTileMatrix &z0matrix, const QgsRectangle &contentsExtent, int minZoom, int maxZoom, int tileWidth, int tileHeight )
 {
   if ( mFilename.isEmpty() )
     return false;
@@ -133,6 +132,7 @@ bool QgsGeoPackageTiles::create(
     return false;
   }
 
+  const QgsCoordinateReferenceSystem crs = z0matrix.crs();
   long srsId = crs.postgisSrid();
   if ( srsId <= 0 )
     srsId = crs.srsid();
@@ -180,6 +180,7 @@ bool QgsGeoPackageTiles::create(
     return false;
   }
 
+  const QgsRectangle tileMatrixSetExtent = z0matrix.extent();
   const QString tmsSql = QString( "INSERT INTO gpkg_tile_matrix_set VALUES ('tiles', %1, %2, %3, %4, %5);" )
                            .arg( srsId )
                            .arg( tileMatrixSetExtent.xMinimum(), 0, 'g', 17 )
@@ -201,8 +202,8 @@ bool QgsGeoPackageTiles::create(
   for ( int z = minZoom; z <= maxZoom; ++z )
   {
     const long long zoomFactor = 1LL << z;
-    const long long matrixWidth = z0MatrixWidth * zoomFactor;
-    const long long matrixHeight = z0MatrixHeight * zoomFactor;
+    const long long matrixWidth = z0matrix.matrixWidth() * zoomFactor;
+    const long long matrixHeight = z0matrix.matrixHeight() * zoomFactor;
 
     const double pixelXSize = tmsWidth / ( matrixWidth * tileWidth );
     const double pixelYSize = tmsHeight / ( matrixHeight * tileHeight );
