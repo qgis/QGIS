@@ -17,6 +17,7 @@
 
 #include "qgsprocessingregistry.h"
 
+#include "qgsprocessingdefaultstyleregistry.h"
 #include "qgsprocessingparameteraggregate.h"
 #include "qgsprocessingparameteralignrasterlayers.h"
 #include "qgsprocessingparameterdxflayers.h"
@@ -39,6 +40,7 @@ using namespace Qt::StringLiterals;
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
+  , mDefaultStyleRegistry( new QgsProcessingDefaultStyleRegistry( this ) )
 {
   addParameterType( new QgsProcessingParameterTypeRasterLayer() );
   addParameterType( new QgsProcessingParameterTypeVectorLayer() );
@@ -305,4 +307,9 @@ QgsProcessingParameterType *QgsProcessingRegistry::parameterType( const QString 
 QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() const
 {
   return mParameterTypes.values();
+}
+
+QgsProcessingDefaultStyleRegistry *QgsProcessingRegistry::defaultStyleRegistry() const
+{
+  return mDefaultStyleRegistry;
 }
