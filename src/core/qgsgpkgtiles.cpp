@@ -201,9 +201,9 @@ bool QgsGeoPackageTiles::create( const QgsTileMatrix &z0matrix, const QgsRectang
 
   for ( int z = minZoom; z <= maxZoom; ++z )
   {
-    const long long zoomFactor = 1LL << z;
-    const long long matrixWidth = z0matrix.matrixWidth() * zoomFactor;
-    const long long matrixHeight = z0matrix.matrixHeight() * zoomFactor;
+    const long long matrixWidth = z0matrix.derivedMatrixWidthAtZoomLevel( z );
+    ;
+    const long long matrixHeight = z0matrix.derivedMatrixHeightAtZoomLevel( z );
 
     const double pixelXSize = tmsWidth / ( matrixWidth * tileWidth );
     const double pixelYSize = tmsHeight / ( matrixHeight * tileHeight );

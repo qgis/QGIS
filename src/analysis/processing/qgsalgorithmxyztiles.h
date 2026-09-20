@@ -177,7 +177,6 @@ class QgsXyzTilesMbtilesAlgorithm : public QgsXyzTilesBaseAlgorithm
     QStringList tags() const override;
     QString shortDescription() const override;
     QString shortHelpString() const override;
-    QString shortDescription() const override;
     QgsXyzTilesMbtilesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
