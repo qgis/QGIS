@@ -119,23 +119,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 )
 
             if alg.id() not in (
-                "pdal:assignprojection",
-                "pdal:boundary",
-                "pdal:clip",
-                "pdal:convertformat",
-                "pdal:createcopc",
-                "pdal:density",
-                "pdal:exportraster",
-                "pdal:exportrastertin",
-                "pdal:exportvector",
-                "pdal:filter",
-                "pdal:info",
-                "pdal:merge",
-                "pdal:reproject",
-                "pdal:thinbydecimate",
-                "pdal:thinbyradius",
-                "pdal:tile",
-                "pdal:virtualpointcloud",
                 "qgis:advancedpythonfieldcalculator",
                 "qgis:distancetonearesthublinetohub",
                 "qgis:distancetonearesthubpoints",
