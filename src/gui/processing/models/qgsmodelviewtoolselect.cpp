@@ -85,6 +85,15 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
 
   if ( !selectedItem )
   {
+    // We may have hit a button outside of a QgsModelComponentGraphicItem, let's double check and pass the event in this case
+    QGraphicsItem *item = scene()->itemAt( event->modelPoint(), QTransform() );
+    if ( QgsModelDesignerFlatButtonGraphicItem *button = dynamic_cast<QgsModelDesignerFlatButtonGraphicItem *>( item ) )
+    {
+      button->modelPressEvent( event );
+      event->accept();
+      return;
+    }
+
     //not clicking over an item, so start marquee selection
     mIsSelecting = true;
     mMousePressStartPos = event->pos();

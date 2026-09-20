@@ -1560,6 +1560,7 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QgsProcessingModelChil
     for ( QgsModelArrowItem *arrow : arrows )
     {
       arrow->setShowBadge( false );
+      arrow->removeDataViewerButton();
     }
   }
   else
@@ -1793,6 +1794,7 @@ void QgsModelChildAlgorithmGraphicItem::deleteComponent()
     {
       emit changed();
       emit requestModelRepaint();
+      emit childAlgorithmDeleted( child->childId() );
     }
   }
 }
