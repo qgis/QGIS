@@ -618,6 +618,7 @@
 %Include auto_generated/processing/qgsprocessingalgrunnertask.sip
 %Include auto_generated/processing/qgsprocessingbatch.sip
 %Include auto_generated/processing/qgsprocessingcontext.sip
+%Include auto_generated/processing/qgsprocessingdefaultstyleregistry.sip
 %Include auto_generated/processing/qgsprocessingfeedback.sip
 %Include auto_generated/processing/qgsprocessingoutputs.sip
 %Include auto_generated/processing/qgsprocessingmodelprovider.sip
