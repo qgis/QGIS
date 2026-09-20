@@ -326,6 +326,16 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     }
   }
 
+  if ( parameters.contains( u"TILE_WIDTH"_s ) )
+  {
+    mTileWidth = parameterAsInt( parameters, u"TILE_WIDTH"_s, context );
+  }
+
+  if ( parameters.contains( u"TILE_HEIGHT"_s ) )
+  {
+    mTileHeight = parameterAsInt( parameters, u"TILE_HEIGHT"_s, context );
+  }
+
   if ( parameters.contains( u"TARGET_CRS"_s ) )
   {
     mTargetCrs = parameterAsCrs( parameters, u"TARGET_CRS"_s, context );
@@ -428,16 +438,6 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mThreadsNumber = context.maximumThreads();
   mTransformContext = context.transformContext();
   mEllipsoid = context.ellipsoid();
-
-  if ( parameters.contains( u"TILE_WIDTH"_s ) )
-  {
-    mTileWidth = parameterAsInt( parameters, u"TILE_WIDTH"_s, context );
-  }
-
-  if ( parameters.contains( u"TILE_HEIGHT"_s ) )
-  {
-    mTileHeight = parameterAsInt( parameters, u"TILE_HEIGHT"_s, context );
-  }
 
   if ( ( mTileFormat != "PNG"_L1 && mTileFormat != "WEBP"_L1 ) && mBackgroundColor.alpha() != 255 )
   {
