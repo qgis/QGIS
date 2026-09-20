@@ -24,7 +24,7 @@ using namespace Qt::StringLiterals;
 #include "qgsapplication.h"
 #include "qgsgpkgtiles.h"
 #include "qgsrasterlayer.h"
-
+#include "qgstiles.h"
 #include <sqlite3.h>
 #include <QBuffer>
 
@@ -77,9 +77,10 @@ void TestQgsGeoPackageTiles::testCreateValidation()
   // no filenname
   QgsGeoPackageTiles emptyTiles { QString() };
 
-  const QgsCoordinateReferenceSystem crs( u"EPSG:3857"_s );
   const QgsRectangle extent( -100, -100, 100, 100 );
-  QVERIFY( !emptyTiles.create( crs, extent, extent, 0, 2 ) );
+
+  QgsTileMatrix z0matrix = QgsTileMatrix::fromWebMercator( 0 );
+  QVERIFY( !emptyTiles.create( z0matrix, extent, 0, 2 ) );
 
   // writing over an existing file should fail
   const QString existingFilePath = mTmpDir.filePath( u"existing.gpkg"_s );
@@ -89,7 +90,7 @@ void TestQgsGeoPackageTiles::testCreateValidation()
   file.close();
 
   QgsGeoPackageTiles existingTiles( existingFilePath );
-  QVERIFY( !existingTiles.create( crs, extent, extent, 0, 2 ) );
+  QVERIFY( !existingTiles.create( z0matrix, extent, 0, 2 ) );
 }
 
 void TestQgsGeoPackageTiles::testCreateAndWriteTiles()
@@ -97,9 +98,9 @@ void TestQgsGeoPackageTiles::testCreateAndWriteTiles()
   const QString filePath = mTmpDir.filePath( u"test_tiles.gpkg"_s );
   QgsGeoPackageTiles gpkgTiles( filePath );
 
-  const QgsCoordinateReferenceSystem crs( u"EPSG:3857"_s );
   const QgsRectangle extent( -20037508.34, -20037508.34, 20037508.34, 20037508.34 );
-  QVERIFY( gpkgTiles.create( crs, extent, extent, 0, 2, 256, 256 ) );
+  const QgsTileMatrix z0matrix = QgsTileMatrix::fromWebMercator( 0 );
+  QVERIFY( gpkgTiles.create( z0matrix, extent, 0, 2, 256, 256 ) );
 
   QgsGeoPackageTiles::TileData tile1;
   tile1.z = 0;
@@ -141,9 +142,9 @@ void TestQgsGeoPackageTiles::testBatchWriteTiles()
   const QString filePath = mTmpDir.filePath( u"test_batch_tiles.gpkg"_s );
   QgsGeoPackageTiles gpkgTiles( filePath );
 
-  const QgsCoordinateReferenceSystem crs( u"EPSG:3857"_s );
   const QgsRectangle extent( -20037508.34, -20037508.34, 20037508.34, 20037508.34 );
-  QVERIFY( gpkgTiles.create( crs, extent, extent, 1, 2, 256, 256 ) );
+  const QgsTileMatrix z0matrix = QgsTileMatrix::fromWebMercator( 0 );
+  QVERIFY( gpkgTiles.create( z0matrix, extent, 1, 2, 256, 256 ) );
 
   QList<QgsGeoPackageTiles::TileData> batch;
   for ( int x = 0; x < 5; ++x )
@@ -179,7 +180,9 @@ void TestQgsGeoPackageTiles::testCustomCrsAndTileMatrix()
   const QgsRectangle tmsExtent( -180.0, -90.0, 180.0, 90.0 );
   const QgsRectangle contentsExtent( -100.0, -40.0, 100.0, 40.0 );
 
-  QVERIFY( gpkgTiles.create( crs, tmsExtent, contentsExtent, 0, 1, 256, 256, 2, 1 ) );
+  const QgsTileMatrix z0Matrix = QgsTileMatrix::fromCustomDef( 0, crs, QgsPointXY( -180, 90 ), 180, 2, 1 );
+
+  QVERIFY( gpkgTiles.create( z0Matrix, contentsExtent, 0, 1, 256, 256 ) );
   QVERIFY( gpkgTiles.finalize() );
   QVERIFY( gpkgTiles.close() );
 
@@ -214,9 +217,9 @@ void TestQgsGeoPackageTiles::testGdalRasterLayerOpen()
   const QString filePath = mTmpDir.filePath( u"test_gdal_open.gpkg"_s );
   QgsGeoPackageTiles gpkgTiles( filePath );
 
-  const QgsCoordinateReferenceSystem crs( u"EPSG:3857"_s );
   const QgsRectangle extent( -20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244 );
-  QVERIFY( gpkgTiles.create( crs, extent, extent, 0, 0, 256, 256 ) );
+  const QgsTileMatrix z0matrix = QgsTileMatrix::fromWebMercator( 0 );
+  QVERIFY( gpkgTiles.create( z0matrix, extent, 0, 0, 256, 256 ) );
 
   // a valid 256x256 PNG image tile
   QImage img( 256, 256, QImage::Format_ARGB32 );
@@ -257,7 +260,9 @@ void TestQgsGeoPackageTiles::testGdalRasterLayerOpenCustomCrs()
   const QgsRectangle tmsExtent( -180.0, -90.0, 180.0, 90.0 );
   const QgsRectangle contentsExtent( -180.0, 0.0, 180.0, 90.0 );
 
-  QVERIFY( gpkgTiles.create( crs, tmsExtent, contentsExtent, 0, 0, 256, 256, 2, 1 ) );
+  const QgsTileMatrix z0Matrix = QgsTileMatrix::fromCustomDef( 0, crs, QgsPointXY( -180, 90 ), 180, 2, 1 );
+
+  QVERIFY( gpkgTiles.create( z0Matrix, contentsExtent, 0, 0, 256, 256 ) );
 
   // a valid 256x256 PNG image tile
   QImage img( 256, 256, QImage::Format_ARGB32 );

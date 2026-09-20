@@ -25,7 +25,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsmaplayerutils.h"
-#include "qgsmaprenderercustompainterjob.h"
+#include "qgstiles.h"
 
 #include <QBuffer>
 #include <QDir>
@@ -1154,7 +1154,10 @@ QVariantMap QgsXyzTilesGpkgAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   mGpkgWriter = std::make_unique<QgsGeoPackageTiles>( outputFile );
-  if ( !mGpkgWriter->create( mTargetCrs, mTileMatrixSetExtent, mTileGenerationRegion, mMinZoom, mMaxZoom, mTileWidth, mTileHeight, mZ0MatrixWidth, mZ0MatrixHeight ) )
+
+  const QgsTileMatrix z0Matrix
+    = QgsTileMatrix::fromCustomDef( 0, mTargetCrs, QgsPointXY( mTileMatrixSetExtent.xMinimum(), mTileMatrixSetExtent.yMaximum() ), mTileMatrixSetExtent.width() / mZ0MatrixWidth, mZ0MatrixWidth, mZ0MatrixHeight );
+  if ( !mGpkgWriter->create( z0Matrix, mTileGenerationRegion, mMinZoom, mMaxZoom, mTileWidth, mTileHeight ) )
   {
     throw QgsProcessingException( QObject::tr( "Failed to create GeoPackage file %1: %2" ).arg( outputFile, mGpkgWriter->lastError() ) );
   }
