@@ -109,12 +109,14 @@ void QgsTemporalControllerDockWidget::exportAnimation()
       decorations = QgisApp::instance()->activeDecorations();
 
     QgsTemporalUtils::AnimationExportSettings animationSettings;
+    animationSettings.animationMode = dlg->mode();
     animationSettings.frameDuration = frameDuration;
     animationSettings.temporalRangeCumulative = temporalRangeCumulative;
     animationSettings.animationRange = animationRange;
     animationSettings.outputDirectory = outputDir;
     animationSettings.fileNameTemplate = fileNameExpression;
     animationSettings.decorations = decorations;
+    animationSettings.totalMovieFrames = dlg->totalMovieFrames();
     if ( frameDuration.originalUnit() == Qgis::TemporalUnit::IrregularStep )
       animationSettings.availableTemporalRanges = QgsTemporalUtils::usedTemporalRangesForProject( QgsProject::instance() );
 
