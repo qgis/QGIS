@@ -5470,6 +5470,7 @@ void QgisApp::updateProjectFromTemplates()
   const QStringList templatePaths = QgsApplication::projectTemplatePaths();
   mProjectTemplateWatcher.addPaths( templatePaths );
 
+  // Find directories with the same name (they will be displayed differently)
   QHash<QString, int> directoryNameCount;
   for ( const QString &templatePath : templatePaths )
   {
@@ -5486,13 +5487,14 @@ void QgisApp::updateProjectFromTemplates()
     if ( !templateDir.exists() )
       continue;
 
-    QStringList filters { u"*.qgs"_s, u"*.qgz"_s };
+    const QStringList filters { u"*.qgs"_s, u"*.qgz"_s };
     templateDir.setNameFilters( filters );
-    QStringList templateFiles = templateDir.entryList( filters );
+    const QStringList templateFiles = templateDir.entryList( filters );
 
     // Add entries
     if ( templateFiles.count() > 0 )
     {
+      // For directories with the same name, use their full path to tell them apart
       const QString label = directoryNameCount.value( templateDir.dirName() ) > 1 ? QDir::toNativeSeparators( templateDirName ) : templateDir.dirName();
       QMenu *dirMenu = mProjectFromTemplateMenu->addMenu( fontMetrics.elidedText( label, Qt::ElideLeft, maxLabelWidth ) );
       for ( const QString &templateFile : templateFiles )
