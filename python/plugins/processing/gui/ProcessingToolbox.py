@@ -28,6 +28,7 @@ from qgis.gui import (
     QgsDockWidget,
     QgsGui,
     QgsProcessingActionContext,
+    QgsProcessingDefaultStyleDialog,
     QgsProcessingToolboxProxyModel,
 )
 from qgis.PyQt import uic
@@ -36,7 +37,6 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QToolButton, QWidget
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -277,7 +277,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             else None
         )
         if alg is not None:
-            dlg = EditRenderingStylesDialog(alg)
+            dlg = QgsProcessingDefaultStyleDialog(alg)
             dlg.exec()
 
     def activateCurrent(self):
