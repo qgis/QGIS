@@ -250,6 +250,8 @@ class _3D_EXPORT QgsRubberBand3D
     Qt3DCore::QGeometry *mLineGeometry = nullptr;
     Qt3DCore::QAttribute *mPointAAttribute = nullptr;
     Qt3DCore::QAttribute *mPointBAttribute = nullptr;
+    Qt3DCore::QAttribute *mPointPrevAttribute = nullptr;
+    Qt3DCore::QAttribute *mPointNextAttribute = nullptr;
     QgsLineMaterial *mLineMaterial = nullptr;
 
     // all these are owned by mJoinEntity
