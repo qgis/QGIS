@@ -695,6 +695,18 @@ void TestQgsGeos::splitGeometry_data()
   // geomWkts << u"CurvePolygon (CompoundCurve ((5 0, 0 0, 5 5),CircularString (5 5, 7 1, 5 0)))"_s;
   // geomWkts << u"Polygon ((0 0, 0 5, 5 5, 0 0))"_s;
   // QTest::newRow( "Split MultiSurface with CurvePolygon" ) << u"MULTISURFACE(CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 0 5, 5 5), CIRCULARSTRING(5 5, 7 1, 5 0))))"_s << u"CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 5 5), CIRCULARSTRING(5 5, 7 4, 5 0)))"_s << geomWkts << QgsGeometryEngine::Success;
+
+  //GeometryCollections
+  geomWkts.clear();
+  geomWkts << u"GeometryCollection EMPTY"_s;
+  QTest::newRow( "Split empty geometry collection" ) << u"GeometryCollection EMPTY"_s << u"LineString(3 6, 3 -1)"_s << geomWkts << QgsGeometryEngine::Success;
+
+  geomWkts.clear();
+  geomWkts << u"LineString (5 0, 5 5)"_s;
+  geomWkts << u"LineString (5 5, 5 15)"_s;
+  geomWkts << u"Polygon ((10 5, 10 0, 0 0, 0 5, 10 5))"_s;
+  geomWkts << u"Polygon ((0 5, 0 10, 10 10, 10 5, 0 5))"_s;
+  QTest::newRow( "Split geometry collection" ) << u"GEOMETRYCOLLECTION (POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING(5 0, 5 15))"_s << u"LineString(0 5, 10 5)"_s << geomWkts << QgsGeometryEngine::Success;
 }
 
 void TestQgsGeos::splitGeometry()
