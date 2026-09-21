@@ -62,7 +62,6 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled );
   appendRow( emptyProjectItem );
 
-  connect( &mFileSystemWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsTemplateProjectsModel::reload );
   reload();
 }
 
@@ -92,10 +91,6 @@ void QgsTemplateProjectsModel::reload()
     }
   }
 
-  const QStringList watchedDirectories = mFileSystemWatcher.directories();
-  if ( !watchedDirectories.isEmpty() )
-    mFileSystemWatcher.removePaths( watchedDirectories );
-
   const QStringList templatePaths = QgsApplication::projectTemplatePaths();
 
   // Count how many directories have the same name (homonyms)
@@ -117,11 +112,7 @@ void QgsTemplateProjectsModel::reload()
 
     // Section title is the directory name, unless several directories share the same name, in which case the full path is used
     const QString section = directoryNameCount.value( dir.dirName() ) > 1 ? QDir::toNativeSeparators( templatePath ) : dir.dirName();
-
-    mFileSystemWatcher.addPath( templatePath );
-
     const QFileInfoList files = dir.entryInfoList( QStringList() << u"*.qgs"_s << u"*.qgz"_s );
-
     for ( const QFileInfo &file : files )
     {
       auto item = std::make_unique<QStandardItem>( file.fileName() );
