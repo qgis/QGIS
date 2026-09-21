@@ -798,6 +798,38 @@ void TestQgsCoordinateTransform::transformBox3D()
   QGSCOMPARENEAR( reversed.yMaximum(), 0, 0.001 );
   QGSCOMPARENEAR( reversed.zMinimum(), 0, 0.001 );
   QGSCOMPARENEAR( reversed.zMaximum(), 0, 0.001 );
+
+  box = QgsBox3D( 18.75111, 45.24111, 80, 18.85111, 45.34111, 120 );
+  result = tr.transformBox3D( box );
+  QGSCOMPARENEAR( result.xMinimum(), 4249883.435, 0.001 );
+  QGSCOMPARENEAR( result.xMaximum(), 4259915.429, 0.001 );
+  QGSCOMPARENEAR( result.yMinimum(), 1443590.375, 0.001 );
+  QGSCOMPARENEAR( result.yMaximum(), 1453571.222, 0.001 );
+  QGSCOMPARENEAR( result.zMinimum(), 4506312.608, 0.001 );
+  QGSCOMPARENEAR( result.zMaximum(), 4514159.733, 0.001 );
+
+  box = QgsBox3D( 86.875278, 27.938056, 5000, 86.975278, 28.038056, 8848.86 );
+  result = tr.transformBox3D( box );
+  QGSCOMPARENEAR( result.xMinimum(), 297507.462, 0.001 );
+  QGSCOMPARENEAR( result.xMaximum(), 307802.781, 0.001 );
+  QGSCOMPARENEAR( result.yMinimum(), 5629769.353, 0.001 );
+  QGSCOMPARENEAR( result.yMaximum(), 5638890.186, 0.001 );
+  QGSCOMPARENEAR( result.zMinimum(), 2972785.065, 0.001 );
+  QGSCOMPARENEAR( result.zMaximum(), 2984387.801, 0.001 );
+
+  // test transforming a box, resulting in an invalid transform - exception must be thrown
+  const QgsCoordinateTransform invalidTr( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), QgsProject::instance() );
+  const QgsBox3D invalidBox( -99999999999, 99999999999, -99999999999, -99999999998, 99999999998, 99999999998 );
+  bool errorObtained = false;
+  try
+  {
+    result = invalidTr.transformBox3D( invalidBox );
+  }
+  catch ( QgsCsException & )
+  {
+    errorObtained = true;
+  }
+  QVERIFY( errorObtained );
 }
 
 void TestQgsCoordinateTransform::transformLKS()
