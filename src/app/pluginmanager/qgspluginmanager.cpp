@@ -166,10 +166,6 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   mOptionsListWidget->item( static_cast<int>( Tabs::InstallFromZip ) )->setHidden( true );
 
   voteRating->hide();
-  voteLabel->hide();
-  voteSlider->hide();
-  voteSubmit->hide();
-  connect( voteSubmit, &QPushButton::clicked, this, &QgsPluginManager::submitVote );
 
   // Init the message bar instance
   msgBar = new QgsMessageBar( this );
@@ -209,34 +205,29 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   // Add context menu to the plugins list view
   QAction *actionSortByName = new QAction( tr( "Sort by Name" ), vwPlugins );
   QAction *actionSortByDownloads = new QAction( tr( "Sort by Downloads" ), vwPlugins );
-  QAction *actionSortByVote = new QAction( tr( "Sort by Vote" ), vwPlugins );
   QAction *actionSortByStatus = new QAction( tr( "Sort by Status" ), vwPlugins );
   QAction *actionSortByDateCreated = new QAction( tr( "Sort by Date Created" ), vwPlugins );
   QAction *actionSortByDateUpdated = new QAction( tr( "Sort by Date Updated" ), vwPlugins );
   actionSortByName->setCheckable( true );
   actionSortByDownloads->setCheckable( true );
-  actionSortByVote->setCheckable( true );
   actionSortByStatus->setCheckable( true );
   actionSortByDateCreated->setCheckable( true );
   actionSortByDateUpdated->setCheckable( true );
   QActionGroup *group = new QActionGroup( vwPlugins );
   actionSortByName->setActionGroup( group );
   actionSortByDownloads->setActionGroup( group );
-  actionSortByVote->setActionGroup( group );
   actionSortByStatus->setActionGroup( group );
   actionSortByDateCreated->setActionGroup( group );
   actionSortByDateUpdated->setActionGroup( group );
   actionSortByName->setChecked( true );
   vwPlugins->addAction( actionSortByName );
   vwPlugins->addAction( actionSortByDownloads );
-  vwPlugins->addAction( actionSortByVote );
   vwPlugins->addAction( actionSortByStatus );
   vwPlugins->addAction( actionSortByDateCreated );
   vwPlugins->addAction( actionSortByDateUpdated );
   vwPlugins->setContextMenuPolicy( Qt::ActionsContextMenu );
   connect( actionSortByName, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByName );
   connect( actionSortByDownloads, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDownloads );
-  connect( actionSortByVote, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByVote );
   connect( actionSortByStatus, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByStatus );
   connect( actionSortByDateCreated, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDateCreated );
   connect( actionSortByDateUpdated, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDateUpdated );
@@ -587,7 +578,6 @@ void QgsPluginManager::reloadModelData()
       mypDetailItem->setData( updateDate, PLUGIN_UPDATE_DATE );
       mypDetailItem->setData( it->value( u"tags"_s ), PLUGIN_TAGS_ROLE );
       mypDetailItem->setData( it->value( u"downloads"_s ).rightJustified( 10, '0' ), PLUGIN_DOWNLOADS_ROLE );
-      mypDetailItem->setData( it->value( u"average_vote"_s ), PLUGIN_VOTE_ROLE );
       mypDetailItem->setData( it->value( u"deprecated"_s ), PLUGIN_ISDEPRECATED_ROLE );
 
       if ( QFileInfo( iconPath ).isFile() )
@@ -744,19 +734,11 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   if ( !metadata->value( u"plugin_id"_s ).isEmpty() )
   {
     voteRating->show();
-    voteLabel->show();
-    voteSlider->show();
-    voteSubmit->show();
-    QgsDebugMsgLevel( u"vote slider:%1"_s.arg( std::round( metadata->value( "average_vote" ).toFloat() ) ), 2 );
-    voteSlider->setValue( std::round( metadata->value( "average_vote" ).toFloat() ) );
     mCurrentPluginId = metadata->value( "plugin_id" ).toInt();
   }
   else
   {
     voteRating->hide();
-    voteLabel->hide();
-    voteSlider->hide();
-    voteSubmit->hide();
     mCurrentPluginId = -1;
   }
 
@@ -895,21 +877,9 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += "<br/><br/>"_L1;
   }
 
+  // Number of times a plugin has been downloaded.
   QString votes;
-  votes += tr( "Average rating %1" ).arg( metadata->value( "average_vote" ).toFloat(), 0, 'f', 1 );
-  if ( !metadata->value( u"rating_votes"_s ).isEmpty() )
-  {
-    if ( !votes.isEmpty() )
-      votes += ", "_L1;
-    votes += tr( "%1 rating vote(s)" ).arg( metadata->value( u"rating_votes"_s ) );
-  }
-  if ( !metadata->value( u"downloads"_s ).isEmpty() )
-  {
-    if ( !votes.isEmpty() )
-      votes += ", "_L1;
-    votes += tr( "%1 downloads" ).arg( metadata->value( u"downloads"_s ) );
-  }
-
+  votes += tr( "%1 downloads" ).arg( metadata->value( u"downloads"_s ) );
   voteRating->setText( votes );
 
   html += "</td></tr>"_L1;
@@ -1400,38 +1370,11 @@ void QgsPluginManager::vwPlugins_doubleClicked( const QModelIndex &index )
   }
 }
 
-void QgsPluginManager::submitVote()
-{
-  if ( mCurrentPluginId < 0 )
-    return;
-
-  sendVote( mCurrentPluginId, voteSlider->value() );
-}
-
-void QgsPluginManager::sendVote( int pluginId, int vote )
-{
-  QString response;
-  QgsPythonRunner::eval( u"pyplugin_installer.instance().sendVote('%1', '%2')"_s.arg( pluginId ).arg( vote ), response );
-  if ( response == "True"_L1 )
-  {
-    pushMessage( tr( "Vote sent successfully" ), Qgis::MessageLevel::Info );
-  }
-  else
-  {
-    pushMessage( tr( "Sending vote to the plugin repository failed." ), Qgis::MessageLevel::Warning );
-  }
-}
-
 void QgsPluginManager::wvDetails_linkClicked( const QUrl &url )
 {
   if ( url.scheme() == "rpc2"_L1 )
   {
-    if ( url.host() == "plugin.vote"_L1 )
-    {
-      QStringList params = url.path().split( '/' );
-      sendVote( params[1].toInt(), params[2].toInt() );
-    }
-    else if ( url.host() == "search.tag"_L1 )
+    if ( url.host() == "search.tag"_L1 )
     {
       QStringList params = url.path().split( '/' );
       leFilter->setText( u"tag:%1"_s.arg( params[1] ) );
