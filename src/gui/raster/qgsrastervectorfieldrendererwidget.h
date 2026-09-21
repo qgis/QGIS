@@ -27,6 +27,8 @@
 #include "qgis_sip.h"
 #include "qgsrasterrendererwidget.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * \brief Configuration widget for QgsRasterVectorFieldRenderer.
