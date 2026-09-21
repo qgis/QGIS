@@ -33,7 +33,21 @@ QgsProcessingDefaultStyleRegistry::QgsProcessingDefaultStyleRegistry( QObject *p
 
 void QgsProcessingDefaultStyleRegistry::setDefaultStyleForOutput( const QString &algorithmId, const QString &outputName, const QString &qmlPath )
 {
-  mStyles[algorithmId][outputName] = qmlPath;
+  if ( qmlPath.isEmpty() )
+  {
+    if ( mStyles[algorithmId].contains( outputName ) )
+    {
+      mStyles[algorithmId].remove( outputName );
+      if ( mStyles[algorithmId].isEmpty() )
+      {
+        mStyles.remove( algorithmId );
+      }
+    }
+  }
+  else
+  {
+    mStyles[algorithmId][outputName] = qmlPath;
+  }
 }
 
 QString QgsProcessingDefaultStyleRegistry::defaultStyleForOutput( const QString &algorithmId, const QString &outputName ) const
