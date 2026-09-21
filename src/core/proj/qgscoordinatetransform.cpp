@@ -1067,7 +1067,7 @@ QgsBox3D QgsCoordinateTransform::transformBox3D( const QgsBox3D &box, Qgis::Tran
 
   if ( projResult != 1 || !std::isfinite( outXMin ) || !std::isfinite( outXMax ) || !std::isfinite( outYMin ) || !std::isfinite( outYMax ) || !std::isfinite( outZMin ) || !std::isfinite( outZMax ) )
   {
-    return legacy();
+    throw QgsCsException( QObject::tr( "Could not transform box to target CRS" ) );
   }
 
   const QgsBox3D result( outXMin, outYMin, outZMin, outXMax, outYMax, outZMax );
