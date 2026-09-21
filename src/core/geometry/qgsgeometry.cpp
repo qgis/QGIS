@@ -1254,7 +1254,7 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   {
     return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
-  if ( splitLine.size() == 0 )
+  if ( splitLine.isEmpty() )
   {
     return Qgis::GeometryOperationResult::InvalidInputGeometryType;
   }
@@ -1324,7 +1324,7 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
         removeDuplicateAdjacentPointsAt( geom, addedTopologicalPoints );
       }
     }
-    if ( splitFeature )
+    if ( splitFeature && !newGeoms.isEmpty() )
       *this = newGeoms.takeAt( 0 );
     newGeometries = newGeoms;
   }
@@ -1368,7 +1368,7 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
 
   if ( result == QgsGeometryEngine::Success )
   {
-    if ( splitFeature )
+    if ( splitFeature && !newGeoms.isEmpty() )
       *this = newGeoms.takeAt( 0 );
     newGeometries = newGeoms;
   }

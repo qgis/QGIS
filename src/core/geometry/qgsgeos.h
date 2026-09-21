@@ -1125,7 +1125,12 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
 
     static geos::unique_ptr createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
     static geos::unique_ptr createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
+
+    /**
+     * \note For GEOS 3.15+, use createGeosSimpleCurve() instead.
+     */
     static geos::unique_ptr createGeosLinestring( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
+
     static geos::unique_ptr createGeosPolygon( const QgsAbstractGeometry *poly, double precision, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
 
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )

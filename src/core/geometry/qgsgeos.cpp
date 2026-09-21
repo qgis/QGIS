@@ -1315,7 +1315,6 @@ bool QgsGeos::topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPoin
         {
           if ( GEOSCoordSeq_getXYZ_r( context, lineSequence, i, &x, &y, &z ) )
           {
-            qDebug() << x << " " << y << " " << z;
             testPoints.push_back( QgsPoint( x, y, z ) );
           }
         }
@@ -3147,7 +3146,6 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
   return geosPoint;
 }
 
-// TODO: Deprecate in favor of createGeosSimpleCurve
 geos::unique_ptr QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve, double precision, Qgis::GeosCreationFlags )
 {
   const QgsCurve *c = qgsgeometry_cast<const QgsCurve *>( curve );
@@ -3219,7 +3217,6 @@ geos::unique_ptr QgsGeos::createGeosCompoundCurve( const QgsAbstractGeometry *cu
       {
         curves[i] = createGeosSimpleCurve( c->curveAt( i ), precision, flags ).release();
       }
-      // TODO: What should we do if we get nested compound curves (which is invalid, btw)?
     }
     geosCurve.reset( GEOSGeom_createCompoundCurve_r( context, curves, nCurves ) );
     delete[] curves;
