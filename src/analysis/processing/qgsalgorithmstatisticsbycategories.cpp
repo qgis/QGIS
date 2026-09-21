@@ -59,7 +59,8 @@ QString QgsStatisticsByCategoriesAlgorithm::shortHelpString() const
 {
   return QObject::tr(
     "This algorithm calculates statistics of fields depending on a parent class. Numeric, date, time and string fields are supported. The statistics "
-    "returned will depend on the field type."
+    "returned will depend on the field type.\n\n"
+    "NOTE that numeric NULL values are ignored when calculating statistics."
   );
 }
 
@@ -108,6 +109,10 @@ QVariantMap QgsStatisticsByCategoriesAlgorithm::processAlgorithm( const QVariant
 
   const QString valueFieldName = parameterAsString( parameters, u"VALUES_FIELD_NAME"_s, context );
   const int valueFieldIndex = source->fields().lookupField( valueFieldName );
+  if ( !valueFieldName.isEmpty() && valueFieldIndex < 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Field “%1” does not exist." ).arg( valueFieldName ) );
+  }
   const QgsField valueField = valueFieldIndex >= 0 ? source->fields().at( valueFieldIndex ) : QgsField();
 
   const QStringList categoryFieldNames = parameterAsStrings( parameters, u"CATEGORIES_FIELD_NAME"_s, context );
