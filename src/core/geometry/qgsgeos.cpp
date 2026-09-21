@@ -1109,7 +1109,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
     return InvalidBaseGeometry;
   }
 
-  if ( mGeometry->dimension() == 0 )
+  if ( mGeometry->dimension() == 0 && QgsWkbTypes::flatType( mGeometry->wkbType() ) != Qgis::WkbType::GeometryCollection )
   {
     return SplitCannotSplitPoint; //cannot split points
   }
@@ -1286,7 +1286,10 @@ bool QgsGeos::topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPoin
             || GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_MULTIPOINT
             || GEOSGeomTypeId_r( context, intersectionGeom.get() ) == GEOS_MULTILINESTRING ) )
     {
-      *errorMsg = u"Extracting topological points from curves or polygons is not yet supported."_s;
+      if ( errorMsg )
+      {
+        *errorMsg = u"Extracting topological points from curves or polygons is not yet supported."_s;
+      }
       return false;
     }
 
