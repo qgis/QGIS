@@ -1128,10 +1128,10 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry(
       return InvalidInput;
     }
 
+    // TODO: Currently, points cannot split polygons, but it could change in the
+    // future in GEOS. Remove this block when that happens. (See GEOS issue #1481)
     if ( QgsWkbTypes::geometryType( splitGeom.wkbType() ) == Qgis::GeometryType::Point && QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Polygon )
     {
-      //currently, points cannot split polygons,
-      //but it could change in the future in GEOS
       return EngineError;
     }
 
