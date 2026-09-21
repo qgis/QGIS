@@ -66,7 +66,6 @@ class QgsTemplateProjectsModel : public QStandardItemModel
     void reload();
 
   private:
-    QFileSystemWatcher mFileSystemWatcher;
     QTemporaryDir mTemporaryDir;
 };
 
