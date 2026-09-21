@@ -5534,7 +5534,7 @@ void QgisApp::updateProjectFromTemplates()
   if ( settingsNewProjectDefault->value() )
     mProjectFromTemplateMenu->addAction( tr( "< Blank >" ), [this]() { fileNewBlank(); } );
 
-  mProjectFromTemplateMenu->menuAction()->setVisible( !mProjectFromTemplateMenu->isEmpty() );
+  mProjectFromTemplateMenu->menuAction()->setEnabled( !mProjectFromTemplateMenu->isEmpty() );
 
   // Reload welcome screen
   if ( mWelcomeScreen )
