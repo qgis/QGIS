@@ -15,6 +15,8 @@
 
 #include "qgsannotationlayerchunkloader_p.h"
 
+#include <functional>
+
 #include "qgs3dutils.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgsabstractterrainsettings.h"
@@ -27,6 +29,7 @@
 #include "qgsannotationrectangletextitem.h"
 #include "qgsapplication.h"
 #include "qgsbillboardgeometry.h"
+#include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
 #include "qgsexpressioncontextutils.h"
@@ -44,6 +47,7 @@
 #include "qgstessellatedpolygongeometry.h"
 #include "qgstextdocument.h"
 #include "qgstextureatlasgenerator.h"
+#include "qgsthreadingutils.h"
 
 #include <QString>
 #include <QTimer>
@@ -56,13 +60,6 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-
-
-QgsAnnotationLayerChunkLoader::QgsAnnotationLayerChunkLoader( const QgsAnnotationLayerChunkLoaderFactory *factory, QgsChunkNode *node )
-  : QgsChunkLoader( node )
-  , mFactory( factory )
-  , mRenderContext( factory->mRenderContext )
-{}
 
 namespace
 {
@@ -101,661 +98,10 @@ namespace
       QVector3D position;
       QSizeF size;
   };
+
 } //namespace
 
-void QgsAnnotationLayerChunkLoader::start()
-{
-  QgsChunkNode *node = chunk();
-  if ( node->level() < mFactory->mLeafLevel )
-  {
-    QTimer::singleShot( 0, this, &QgsAnnotationLayerChunkLoader::finished );
-    return;
-  }
-
-  QgsAnnotationLayer *layer = mFactory->mLayer;
-  mLayerName = mFactory->mLayer->name();
-
-  // only a subset of data to be queried
-  const QgsRectangle rect = node->box3D().toRectangle();
-  // origin for coordinates of the chunk - it is kind of arbitrary, but it should be
-  // picked so that the coordinates are relatively small to avoid numerical precision issues
-  mChunkOrigin = QgsVector3D( rect.center().x(), rect.center().y(), 0 );
-
-  QgsExpressionContext exprContext;
-  exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-  mRenderContext.setExpressionContext( exprContext );
-
-  QgsCoordinateTransform layerToMapTransform( layer->crs(), mRenderContext.crs(), mRenderContext.transformContext() );
-
-  QgsRectangle layerExtent;
-  try
-  {
-    layerExtent = layerToMapTransform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
-  }
-  catch ( QgsCsException &e )
-  {
-    QgsDebugError( u"Error transforming annotation layer extent to 3d map extent: %1"_s.arg( e.what() ) );
-    return;
-  }
-
-  const double zOffset = mFactory->mZOffset;
-  const Qgis::AltitudeClamping altitudeClamping = mFactory->mClamping;
-  bool showCallouts = mFactory->mShowCallouts;
-  const QgsTextFormat textFormat = mFactory->mTextFormat;
-
-  // see logic from QgsAnnotationLayerRenderer
-  const QStringList itemsList = layer->queryIndex( layerExtent );
-  QSet< QString > itemIds( itemsList.begin(), itemsList.end() );
-
-  // we also have NO choice but to clone ALL non-indexed items (i.e. those with a scale-dependent bounding box)
-  // since these won't be in the layer's spatial index, and it's too expensive to determine their actual bounding box
-  // upfront (we are blocking the main thread right now!)
-
-  // TODO -- come up with some brilliant way to avoid this and also index scale-dependent items ;)
-  itemIds.unite( layer->mNonIndexedItems );
-
-  mItemsToRender.reserve( itemIds.size() );
-  std::transform( itemIds.begin(), itemIds.end(), std::back_inserter( mItemsToRender ), [layer]( const QString &id ) -> std::unique_ptr< QgsAnnotationItem > {
-    return std::unique_ptr< QgsAnnotationItem >( layer->item( id )->clone() );
-  } );
-
-  //
-  // this will be run in a background thread
-  //
-  mFutureWatcher = new QFutureWatcher<void>( this );
-  connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-
-  const QFuture<void> future = QtConcurrent::run( [this, rect, layerToMapTransform, zOffset, altitudeClamping, showCallouts, textFormat] {
-    const QgsScopedEvent e( u"3D"_s, u"Annotation layer chunk load"_s );
-
-    std::vector< Billboard > billboards;
-    billboards.reserve( mItemsToRender.size() );
-    QVector< QImage > textures;
-    textures.reserve( static_cast< qsizetype >( mItemsToRender.size() ) );
-
-    std::vector< TextBillboard > textBillboards;
-    textBillboards.reserve( mItemsToRender.size() );
-    QStringList textBillboardTexts;
-    textBillboardTexts.reserve( static_cast< qsizetype >( mItemsToRender.size() ) );
-
-    QMap< PictureBillboardGroup, QVector< PictureBillboard > > groupedPictures;
-    mPictureBillboards.reserve( static_cast< qsizetype >( mItemsToRender.size() ) );
-
-    auto addTextBillboard = [layerToMapTransform,
-                             showCallouts,
-                             rect,
-                             zOffset,
-                             altitudeClamping,
-                             this,
-                             &textBillboards,
-                             &textBillboardTexts]( const QgsPointXY &p, const QString &annotationText, const QgsTextFormat &annotationTextFormat ) {
-      QString text = annotationText;
-      if ( annotationTextFormat.allowHtmlFormatting() )
-      {
-        // strip HTML characters, we don't support those in 3D
-        const QgsTextDocument document = QgsTextDocument::fromTextAndFormat( { text }, annotationTextFormat );
-        text = document.toPlainText().join( ' ' );
-      }
-      if ( !text.isEmpty() )
-      {
-        try
-        {
-          const QgsPointXY mapPoint = layerToMapTransform.transform( p );
-          if ( !rect.contains( mapPoint ) )
-            return;
-
-          double z = 0;
-          const float terrainZ = ( altitudeClamping == Qgis::AltitudeClamping::Absolute && !showCallouts ) ? 0
-                                 : mRenderContext.terrainRenderingEnabled() && mRenderContext.terrainGenerator()
-                                   ? static_cast<float>( mRenderContext.terrainGenerator()->heightAt( mapPoint.x(), mapPoint.y(), mRenderContext ) * mRenderContext.terrainSettings()->verticalScale() )
-                                   : 0.f;
-
-          switch ( altitudeClamping )
-          {
-            case Qgis::AltitudeClamping::Absolute:
-              z = zOffset;
-              break;
-            case Qgis::AltitudeClamping::Terrain:
-              z = terrainZ;
-              break;
-            case Qgis::AltitudeClamping::Relative:
-              z = terrainZ + zOffset;
-              break;
-          }
-
-          TextBillboard billboard;
-          billboard.position = ( QgsVector3D( mapPoint.x(), mapPoint.y(), z ) - mChunkOrigin ).toVector3D();
-          billboard.text = text;
-          textBillboards.emplace_back( std::move( billboard ) );
-          textBillboardTexts.append( text );
-
-          if ( showCallouts )
-          {
-            mCalloutLines << QgsLineString( { mapPoint.x(), mapPoint.x() }, { mapPoint.y(), mapPoint.y() }, { terrainZ, z } );
-          }
-
-          mZMax = std::max( mZMax, showCallouts ? std::max( 0.0, z ) : z );
-          mZMin = std::min( mZMin, showCallouts ? std::min( 0.0, z ) : z );
-        }
-        catch ( QgsCsException &e )
-        {
-          QgsDebugError( e.what() );
-        }
-      }
-    };
-
-    for ( const std::unique_ptr< QgsAnnotationItem > &item : std::as_const( mItemsToRender ) )
-    {
-      if ( mCanceled )
-        break;
-
-      QgsAnnotationItem *annotation = item.get();
-
-      if ( !annotation->enabled() )
-        continue;
-
-      if ( QgsAnnotationMarkerItem *marker = dynamic_cast< QgsAnnotationMarkerItem * >( annotation ) )
-      {
-        if ( marker->symbol() )
-        {
-          QgsPointXY p = marker->geometry();
-          try
-          {
-            const QgsPointXY mapPoint = layerToMapTransform.transform( p );
-            if ( !rect.contains( mapPoint ) )
-              continue;
-
-            double z = 0;
-            const float terrainZ = ( altitudeClamping == Qgis::AltitudeClamping::Absolute && !showCallouts ) ? 0
-                                   : mRenderContext.terrainRenderingEnabled() && mRenderContext.terrainGenerator()
-                                     ? static_cast<float>( mRenderContext.terrainGenerator()->heightAt( mapPoint.x(), mapPoint.y(), mRenderContext ) * mRenderContext.terrainSettings()->verticalScale() )
-                                     : 0.f;
-
-            switch ( altitudeClamping )
-            {
-              case Qgis::AltitudeClamping::Absolute:
-                z = zOffset;
-                break;
-              case Qgis::AltitudeClamping::Terrain:
-                z = terrainZ;
-                break;
-              case Qgis::AltitudeClamping::Relative:
-                z = terrainZ + zOffset;
-                break;
-            }
-
-            Billboard billboard;
-            billboard.position = ( QgsVector3D( mapPoint.x(), mapPoint.y(), z ) - mChunkOrigin ).toVector3D();
-            billboard.textureId = -1;
-
-            for ( const Billboard &existingBillboard : billboards )
-            {
-              if ( existingBillboard.markerSymbol && marker->symbol()->rendersIdenticallyTo( existingBillboard.markerSymbol ) )
-              {
-                // marker symbol has been reused => reuse existing texture to minimize size of texture atlas
-                billboard.textureId = existingBillboard.textureId;
-                break;
-              }
-            }
-
-            if ( billboard.textureId < 0 )
-            {
-              // could not match to previously considered marker, have to render and add to texture atlas
-              billboard.markerSymbol = marker->symbol();
-              billboard.textureId = textures.size();
-              textures.append( QgsPoint3DBillboardMaterial::renderSymbolToImage( marker->symbol(), mRenderContext ) );
-            }
-            billboards.emplace_back( std::move( billboard ) );
-
-            if ( showCallouts )
-            {
-              mCalloutLines << QgsLineString( { mapPoint.x(), mapPoint.x() }, { mapPoint.y(), mapPoint.y() }, { terrainZ, z } );
-            }
-
-            mZMax = std::max( mZMax, showCallouts ? std::max( 0.0, z ) : z );
-            mZMin = std::min( mZMin, showCallouts ? std::min( 0.0, z ) : z );
-          }
-          catch ( QgsCsException &e )
-          {
-            QgsDebugError( e.what() );
-          }
-        }
-      }
-      else if ( QgsAnnotationPointTextItem *pointText = dynamic_cast< QgsAnnotationPointTextItem * >( annotation ) )
-      {
-        addTextBillboard( pointText->point(), pointText->text(), pointText->format() );
-      }
-      else if ( QgsAnnotationLineTextItem *lineText = dynamic_cast< QgsAnnotationLineTextItem * >( annotation ) )
-      {
-        QgsGeos geos( lineText->geometry() );
-        std::unique_ptr< QgsPoint > point( geos.pointOnSurface() );
-        if ( point )
-        {
-          addTextBillboard( *point, lineText->text(), lineText->format() );
-        }
-      }
-      else if ( QgsAnnotationRectangleTextItem *rectText = dynamic_cast< QgsAnnotationRectangleTextItem * >( annotation ) )
-      {
-        switch ( rectText->placementMode() )
-        {
-          case Qgis::AnnotationPlacementMode::SpatialBounds:
-          case Qgis::AnnotationPlacementMode::FixedSize:
-          {
-            addTextBillboard( rectText->bounds().center(), rectText->text(), rectText->format() );
-            break;
-          }
-          case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
-            // ignore these annotations, they don't have a fix map position
-            break;
-        }
-      }
-      else if ( auto pictureItem = dynamic_cast< QgsAnnotationPictureItem * >( annotation ) )
-      {
-        if ( pictureItem->path().isEmpty() )
-          continue;
-
-        if ( pictureItem->placementMode() == Qgis::AnnotationPlacementMode::RelativeToMapFrame )
-        {
-          // annotations relative to the map frame have no geographic position => ignore
-          continue;
-        }
-
-        const QgsPointXY p = pictureItem->bounds().center();
-        QgsPointXY mapPoint;
-        try
-        {
-          mapPoint = layerToMapTransform.transform( p );
-        }
-        catch ( QgsCsException &e )
-        {
-          QgsDebugError( e.what() );
-          continue;
-        }
-
-        if ( !rect.contains( mapPoint ) )
-          continue;
-
-        double z = 0;
-        const float terrainZ = ( altitudeClamping == Qgis::AltitudeClamping::Absolute && !showCallouts ) ? 0
-                               : mRenderContext.terrainRenderingEnabled() && mRenderContext.terrainGenerator()
-                                 ? static_cast<float>( mRenderContext.terrainGenerator()->heightAt( mapPoint.x(), mapPoint.y(), mRenderContext ) * mRenderContext.terrainSettings()->verticalScale() )
-                                 : 0.f;
-
-        switch ( altitudeClamping )
-        {
-          case Qgis::AltitudeClamping::Absolute:
-            z = zOffset;
-            break;
-          case Qgis::AltitudeClamping::Terrain:
-            z = terrainZ;
-            break;
-          case Qgis::AltitudeClamping::Relative:
-            z = terrainZ + zOffset;
-            break;
-        }
-
-        PictureBillboardGroup billboardGroup;
-        billboardGroup.path = pictureItem->path();
-        billboardGroup.pictureFormat = pictureItem->format();
-        billboardGroup.scaleMode = pictureItem->billboard3DScaleMode();
-
-        PictureBillboard billboardItem;
-        billboardItem.position = ( QgsVector3D( mapPoint.x(), mapPoint.y(), z ) - mChunkOrigin ).toVector3D();
-        billboardItem.size = pictureItem->billboard3DSize();
-        if ( billboardItem.size.isEmpty() )
-        {
-          constexpr QSizeF DEFAULT_FIXED_SIZE = QSizeF( 128, 128 );
-          constexpr QSizeF DEFAULT_WORLD_SIZE = QSizeF( 20, 20 );
-          billboardItem.size = billboardGroup.scaleMode == Qgis::BillboardScaleMode::ViewIndependent ? DEFAULT_FIXED_SIZE : DEFAULT_WORLD_SIZE;
-        }
-
-        groupedPictures[billboardGroup].append( billboardItem );
-
-        if ( showCallouts )
-        {
-          mCalloutLines << QgsLineString( { mapPoint.x(), mapPoint.x() }, { mapPoint.y(), mapPoint.y() }, { terrainZ, z } );
-        }
-
-        mZMax = std::max( mZMax, showCallouts ? std::max( 0.0, z ) : z );
-        mZMin = std::min( mZMin, showCallouts ? std::min( 0.0, z ) : z );
-      }
-    }
-    // free memory
-    mItemsToRender.clear();
-
-    if ( !textures.isEmpty() )
-    {
-      const QgsTextureAtlas atlas = QgsTextureAtlasGenerator::createFromImages( textures, 2048 );
-      if ( atlas.isValid() )
-      {
-        mBillboardAtlas = atlas.renderAtlasTexture();
-        mBillboardPositions.reserve( static_cast< int >( billboards.size() ) );
-        for ( Billboard &billboard : billboards )
-        {
-          const QRect textureRect = atlas.rect( billboard.textureId );
-          QgsBillboardGeometry::BillboardAtlasData geometry;
-          geometry.position = billboard.position;
-          geometry.textureAtlasOffset = QVector2D(
-            static_cast< float >( textureRect.left() ) / static_cast< float>( mBillboardAtlas.width() ),
-            1 - ( static_cast< float >( textureRect.bottom() ) / static_cast< float>( mBillboardAtlas.height() ) )
-          );
-          geometry.textureAtlasSize = QVector2D(
-            static_cast< float >( textureRect.width() ) / static_cast< float>( mBillboardAtlas.width() ), static_cast< float>( textureRect.height() ) / static_cast< float>( mBillboardAtlas.height() )
-          );
-          geometry.pixelOffset = QPoint( 0, textureRect.height() / 2 );
-          mBillboardPositions.append( geometry );
-        }
-      }
-      else
-      {
-        QgsDebugError( u"Error encountered building texture atlas"_s );
-        mBillboardAtlas = QImage();
-      }
-    }
-    else
-    {
-      mBillboardAtlas = QImage();
-      mBillboardPositions.clear();
-    }
-
-    if ( !textBillboardTexts.isEmpty() )
-    {
-      const QgsFontTextureAtlas atlas = QgsFontTextureAtlasGenerator::create( textFormat, textBillboardTexts );
-      if ( atlas.isValid() )
-      {
-        mTextBillboardAtlas = atlas.renderAtlasTexture();
-        mTextBillboardPositions.reserve( static_cast< int >( textBillboards.size() ) );
-        for ( TextBillboard &billboard : textBillboards )
-        {
-          int graphemeIndex = 0;
-          const int graphemeCount = atlas.graphemeCount( billboard.text );
-          // horizontally center text over point
-          const double xOffset = atlas.totalWidth( billboard.text ) / 2.0;
-          for ( ; graphemeIndex < graphemeCount; ++graphemeIndex )
-          {
-            const QRect textureRect = atlas.textureRectForGrapheme( billboard.text, graphemeIndex );
-            QgsBillboardGeometry::BillboardAtlasData geometry;
-            geometry.position = billboard.position;
-            geometry.textureAtlasOffset = QVector2D(
-              static_cast< float >( textureRect.left() ) / static_cast< float>( mTextBillboardAtlas.width() ),
-              1 - ( static_cast< float >( textureRect.bottom() ) / static_cast< float>( mTextBillboardAtlas.height() ) )
-            );
-            geometry.textureAtlasSize = QVector2D(
-              static_cast< float >( textureRect.width() ) / static_cast< float>( mTextBillboardAtlas.width() ),
-              static_cast< float>( textureRect.height() ) / static_cast< float>( mTextBillboardAtlas.height() )
-            );
-            const QPointF pixelOffset = atlas.pixelOffsetForGrapheme( billboard.text, graphemeIndex );
-            geometry.pixelOffset
-              = QPoint( static_cast< int >( std::round( -xOffset + pixelOffset.x() + 0.5 * textureRect.width() ) ), static_cast< int >( std::round( pixelOffset.y() + 0.5 * textureRect.height() ) ) );
-            mTextBillboardPositions.append( geometry );
-          }
-        }
-      }
-      else
-      {
-        QgsDebugError( u"Error encountered building font texture atlas"_s );
-        mTextBillboardAtlas = QImage();
-      }
-    }
-    else
-    {
-      mTextBillboardAtlas = QImage();
-      mTextBillboardPositions.clear();
-    }
-
-    // picture item billboards, grouped by picture source
-    for ( auto it = groupedPictures.constBegin(); it != groupedPictures.constEnd(); ++it )
-    {
-      QSizeF maxGroupSize( 0, 0 );
-      for ( auto picIt = it.value().constBegin(); picIt != it.value().constEnd(); ++picIt )
-      {
-        if ( picIt->size.width() > maxGroupSize.width() )
-        {
-          maxGroupSize.setWidth( picIt->size.width() );
-        }
-        if ( picIt->size.height() > maxGroupSize.height() )
-        {
-          maxGroupSize.setHeight( picIt->size.height() );
-        }
-      }
-
-      QImage image;
-      bool fitsInCache = false;
-
-      // can't zoom into these billboards, so we can use a fairly conservative texture size
-      constexpr int MAXIMUM_PICTURE_TEXTURE_SIZE_FIXED_SIZE = 256;
-      // can zoom into these, so we need a larger texture
-      constexpr int MAXIMUM_PICTURE_TEXTURE_SIZE_PERSPECTIVE = 1024;
-      const int textureSize = it.key().scaleMode == Qgis::BillboardScaleMode::Perspective ? MAXIMUM_PICTURE_TEXTURE_SIZE_PERSPECTIVE : MAXIMUM_PICTURE_TEXTURE_SIZE_FIXED_SIZE;
-      switch ( it.key().pictureFormat )
-      {
-        case Qgis::PictureFormat::Raster:
-        {
-          const QSize originalSize = QgsApplication::imageCache()->originalSize( it.key().path, true );
-          QSize imageSize = originalSize;
-          if ( imageSize.isEmpty() )
-          {
-            imageSize = maxGroupSize.toSize();
-          }
-          if ( imageSize.width() >= imageSize.height() && imageSize.width() > textureSize )
-          {
-            imageSize = QSize( textureSize, static_cast< int >( std::round( imageSize.height() * textureSize / imageSize.width() ) ) );
-          }
-          else if ( imageSize.height() > textureSize )
-          {
-            imageSize = QSize( static_cast< int >( std::round( imageSize.width() * textureSize / imageSize.height() ) ), textureSize );
-          }
-          image = QgsApplication::imageCache()->pathAsImage( it.key().path, imageSize, false, 1.0, fitsInCache, true );
-          break;
-        }
-
-        case Qgis::PictureFormat::SVG:
-        {
-          const QPicture picture = QgsApplication::svgCache()->svgAsPicture( it.key().path, textureSize, QColor(), QColor(), 1.0, 1.0, false, 0, true );
-          if ( !picture.isNull() && picture.boundingRect().width() > 0 && picture.boundingRect().height() > 0 )
-          {
-            const QRectF picRect = picture.boundingRect();
-            QSize imageSize = picRect.size().toSize();
-            if ( imageSize.width() >= imageSize.height() )
-            {
-              imageSize = QSize( textureSize, static_cast< int >( std::round( picRect.height() * static_cast< double >( textureSize ) / picRect.width() ) ) );
-            }
-            else
-            {
-              imageSize = QSize( static_cast< int >( std::round( picRect.width() * static_cast< double >( textureSize ) / picRect.height() ) ), textureSize );
-            }
-
-            image = QImage( imageSize, QImage::Format_ARGB32_Premultiplied );
-            image.fill( Qt::transparent );
-
-            const double scale = static_cast< double >( imageSize.width() ) / picRect.width();
-
-            QPainter painter( &image );
-            painter.setRenderHint( QPainter::Antialiasing );
-            painter.scale( scale, scale );
-
-            QgsPainting::drawPicture( &painter, QPointF( picRect.width() / 2.0, picRect.height() / 2.0 ), picture );
-            painter.end();
-          }
-          break;
-        }
-
-        case Qgis::PictureFormat::Unknown:
-          continue;
-      }
-
-      PictureBillboards billboard;
-      billboard.scaleMode = it.key().scaleMode;
-      billboard.image = image;
-      billboard.positions.reserve( it.value().size() );
-      billboard.sizes.reserve( it.value().size() );
-      for ( const PictureBillboard &item : it.value() )
-      {
-        billboard.positions.append( item.position );
-        billboard.sizes.append( item.size );
-      }
-
-      mPictureBillboards.append( billboard );
-    }
-  } );
-
-  // emit finished() as soon as the handler is populated with features
-  mFutureWatcher->setFuture( future );
-}
-
-QgsAnnotationLayerChunkLoader::~QgsAnnotationLayerChunkLoader()
-{
-  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
-  {
-    disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-    mFutureWatcher->waitForFinished();
-  }
-}
-
-void QgsAnnotationLayerChunkLoader::cancel()
-{
-  mCanceled = true;
-}
-
-Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntity *parent )
-{
-  if ( mNode->level() < mFactory->mLeafLevel )
-  {
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent ); // dummy entity
-    entity->setObjectName( mLayerName + "_CONTAINER_" + mNode->tileId().text() );
-    return entity;
-  }
-
-  if ( mBillboardPositions.empty() && mTextBillboardPositions.empty() && mPictureBillboards.empty() )
-  {
-    // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
-    // we just make sure first that its initial estimated vertical range does not affect its parents' bboxes calculation
-    mNode->setExactBox3D( QgsBox3D() );
-    mNode->updateParentBoundingBoxesRecursively();
-    return nullptr;
-  }
-
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
-  entity->setObjectName( mLayerName + "_" + mNode->tileId().text() );
-
-  QgsGeoTransform *billboardTransform = new QgsGeoTransform;
-  billboardTransform->setGeoTranslation( mChunkOrigin );
-  entity->addComponent( billboardTransform );
-
-  if ( !mBillboardPositions.empty() )
-  {
-    QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
-    billboardGeometry->setBillboardData( mBillboardPositions, true );
-
-    Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
-    billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
-    billboardGeometryRenderer->setGeometry( billboardGeometry );
-    billboardGeometryRenderer->setVertexCount( 4 );
-    billboardGeometryRenderer->setInstanceCount( mBillboardPositions.count() );
-
-    QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::ExtraAttribute::TextureData | QgsPoint3DBillboardMaterial::ExtraAttribute::PixelOffsets );
-    billboardMaterial->setTexture2DFromImage( mBillboardAtlas );
-
-    Qt3DCore::QEntity *billboardEntity = new Qt3DCore::QEntity;
-    billboardEntity->addComponent( billboardMaterial );
-    billboardEntity->addComponent( billboardGeometryRenderer );
-    billboardEntity->setParent( entity );
-  }
-
-  if ( !mTextBillboardPositions.empty() )
-  {
-    QgsBillboardGeometry *textBillboardGeometry = new QgsBillboardGeometry();
-    textBillboardGeometry->setBillboardData( mTextBillboardPositions, true );
-
-    Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
-    billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
-    billboardGeometryRenderer->setGeometry( textBillboardGeometry );
-    billboardGeometryRenderer->setVertexCount( 4 );
-    billboardGeometryRenderer->setInstanceCount( mTextBillboardPositions.count() );
-
-    QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::ExtraAttribute::TextureData | QgsPoint3DBillboardMaterial::ExtraAttribute::PixelOffsets );
-    billboardMaterial->setTexture2DFromImage( mTextBillboardAtlas );
-
-    Qt3DCore::QEntity *billboardEntity = new Qt3DCore::QEntity;
-    billboardEntity->addComponent( billboardMaterial );
-    billboardEntity->addComponent( billboardGeometryRenderer );
-    billboardEntity->setParent( entity );
-  }
-
-  for ( const PictureBillboards &pictureBillboard : mPictureBillboards )
-  {
-    QgsBillboardGeometry *pictureGeometry = new QgsBillboardGeometry();
-    pictureGeometry->setPositionsAndSizes( pictureBillboard.positions, pictureBillboard.sizes );
-
-    Qt3DRender::QGeometryRenderer *pictureGeometryRenderer = new Qt3DRender::QGeometryRenderer;
-    pictureGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
-    pictureGeometryRenderer->setGeometry( pictureGeometry );
-    pictureGeometryRenderer->setVertexCount( 4 );
-    pictureGeometryRenderer->setInstanceCount( static_cast< int >( pictureBillboard.positions.size() ) );
-
-    QgsPoint3DBillboardMaterial *pictureMaterial
-      = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::ExtraAttribute::Size | QgsPoint3DBillboardMaterial::ExtraAttribute::VerticalOffset, pictureBillboard.scaleMode );
-    pictureMaterial->setTexture2DFromImage( pictureBillboard.image );
-    // picture billboards should be vertically anchored to the bottom of the picture
-    pictureMaterial->setVerticalOffset( 0.5 );
-
-    Qt3DCore::QEntity *pictureEntity = new Qt3DCore::QEntity;
-    pictureEntity->addComponent( pictureMaterial );
-    pictureEntity->addComponent( pictureGeometryRenderer );
-    pictureEntity->setParent( entity );
-  }
-
-  if ( mFactory->mShowCallouts )
-  {
-    QgsLineVertexData lineData;
-    lineData.withAdjacency = true;
-    lineData.geocentricCoordinates = false; // mMapSettings->sceneMode() == Qgis::SceneMode::Globe;
-    lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, mRenderContext, mChunkOrigin );
-
-    for ( const QgsLineString &line : mCalloutLines )
-    {
-      lineData.addLineString( line, 0, false );
-    }
-
-    QgsLineMaterial *mat = new QgsLineMaterial;
-    mat->setLineColor( mFactory->mCalloutLineColor );
-    mat->setLineWidth( mFactory->mCalloutLineWidth );
-
-    Qt3DCore::QEntity *calloutEntity = new Qt3DCore::QEntity;
-    calloutEntity->setObjectName( parent->objectName() + "_CALLOUTS" );
-
-    // geometry renderer
-    Qt3DRender::QGeometryRenderer *calloutRenderer = new Qt3DRender::QGeometryRenderer;
-    calloutRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
-    calloutRenderer->setGeometry( lineData.createGeometry( calloutEntity ) );
-    calloutRenderer->setVertexCount( lineData.indexes.count() );
-    calloutRenderer->setPrimitiveRestartEnabled( true );
-    calloutRenderer->setRestartIndexValue( 0 );
-
-    // make entity
-    calloutEntity->addComponent( calloutRenderer );
-    calloutEntity->addComponent( mat );
-
-    calloutEntity->setParent( entity );
-  }
-
-  // fix the vertical range of the node from the estimated vertical range to the true range
-  if ( mZMin != std::numeric_limits<float>::max() && mZMax != std::numeric_limits<float>::lowest() )
-  {
-    QgsBox3D box = mNode->box3D();
-    box.setZMinimum( mZMin );
-    box.setZMaximum( mZMax );
-    mNode->setExactBox3D( box );
-    mNode->updateParentBoundingBoxesRecursively();
-  }
-  return entity;
-}
-
-
-///////////////
-
-
-QgsAnnotationLayerChunkLoaderFactory::QgsAnnotationLayerChunkLoaderFactory(
+QgsAnnotationLayerChunkLoader::QgsAnnotationLayerChunkLoader(
   const Qgs3DRenderContext &context,
   QgsAnnotationLayer *layer,
   int leafLevel,
@@ -771,12 +117,14 @@ QgsAnnotationLayerChunkLoaderFactory::QgsAnnotationLayerChunkLoaderFactory(
   : mRenderContext( context )
   , mLayer( layer )
   , mLeafLevel( leafLevel )
-  , mClamping( clamping )
-  , mZOffset( zOffset )
-  , mShowCallouts( showCallouts )
-  , mCalloutLineColor( calloutLineColor )
-  , mCalloutLineWidth( calloutLineWidth )
-  , mTextFormat( textFormat )
+  , mData {
+      .mClamping = clamping,
+      .mZOffset = zOffset,
+      .mShowCallouts = showCallouts,
+      .mCalloutLineColor = calloutLineColor,
+      .mCalloutLineWidth = calloutLineWidth,
+      .mTextFormat = textFormat,
+    }
 {
   if ( context.crs().type() == Qgis::CrsType::Geocentric )
   {
@@ -804,14 +152,670 @@ QgsAnnotationLayerChunkLoaderFactory::QgsAnnotationLayerChunkLoaderFactory(
   }
 }
 
-QgsChunkLoader *QgsAnnotationLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
+QFuture<QgsChunkLoaderResult> QgsAnnotationLayerChunkLoader::loadChunk( QgsChunkNode *node )
 {
-  return new QgsAnnotationLayerChunkLoader( this, node );
+  if ( node->level() < mLeafLevel )
+  {
+    return QtFuture::makeReadyValueFuture<QgsChunkLoaderResult>( { [this, node]( Qt3DCore::QEntity *parent ) {
+      QGIS_CHECK_MAIN_THREAD_ACCESS
+      Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent ); // dummy entity
+      entity->setObjectName( mLayer->name() + "_CONTAINER_" + node->tileId().text() );
+      return entity;
+    } } );
+  }
+
+  auto renderCtx = mRenderContext; // Copy, since we mutate it locally
+
+  // only a subset of data to be queried
+  const QgsRectangle rect = node->box3D().toRectangle();
+  // origin for coordinates of the chunk - it is kind of arbitrary, but it should be
+  // picked so that the coordinates are relatively small to avoid numerical precision issues
+  QgsVector3D chunkOrigin = QgsVector3D( rect.center().x(), rect.center().y(), 0 );
+
+  QgsExpressionContext exprContext;
+  exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  renderCtx.setExpressionContext( exprContext );
+
+  QgsCoordinateTransform layerToMapTransform( mLayer->crs(), renderCtx.crs(), renderCtx.transformContext() );
+
+  QgsRectangle layerExtent;
+  try
+  {
+    layerExtent = layerToMapTransform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
+  }
+  catch ( QgsCsException &e )
+  {
+    QgsDebugError( u"Error transforming annotation layer extent to 3d map extent: %1"_s.arg( e.what() ) );
+    return QtFuture::makeReadyValueFuture( QgsChunkLoaderResult::sEmpty );
+  }
+
+  // see logic from QgsAnnotationLayerRenderer
+  const QStringList itemsList = mLayer->queryIndex( layerExtent );
+  QSet< QString > itemIds( itemsList.begin(), itemsList.end() );
+
+  // we also have NO choice but to clone ALL non-indexed items (i.e. those with a scale-dependent bounding box)
+  // since these won't be in the layer's spatial index, and it's too expensive to determine their actual bounding box
+  // upfront (we are blocking the main thread right now!)
+
+  // TODO -- come up with some brilliant way to avoid this and also index scale-dependent items ;)
+  itemIds.unite( mLayer->mNonIndexedItems );
+
+  std::vector< std::unique_ptr< QgsAnnotationItem > > itemsToRender;
+  itemsToRender.reserve( itemIds.size() );
+  std::transform( itemIds.begin(), itemIds.end(), std::back_inserter( itemsToRender ), [this]( const QString &id ) -> std::unique_ptr< QgsAnnotationItem > {
+    return std::unique_ptr< QgsAnnotationItem >( mLayer->item( id )->clone() );
+  } );
+
+  QString layerName = mLayer->name();
+
+  //
+  // this will be run in a background thread
+  //
+  return QtConcurrent::run( &QgsAnnotationLayerChunkLoader::loadChunkInWorker, node, rect, layerToMapTransform, layerName, std::move( itemsToRender ), chunkOrigin, renderCtx, mData )
+    .then( this, [this]( ChunkData chunkData ) {
+      QGIS_CHECK_MAIN_THREAD_ACCESS
+      return QgsChunkLoaderResult { std::bind_front( &QgsAnnotationLayerChunkLoader::createEntity, this, std::move( chunkData ) ) };
+    } );
+}
+
+void QgsAnnotationLayerChunkLoader::loadChunkInWorker(
+  QPromise<ChunkData> &promise,
+  QgsChunkNode *node,
+  const QgsRectangle &rect,
+  const QgsCoordinateTransform &layerToMapTransform,
+  const QString &layerName,
+  const std::vector< std::unique_ptr< QgsAnnotationItem > > &itemsToRender,
+  const QgsVector3D &chunkOrigin,
+  const Qgs3DRenderContext &renderCtx,
+  const QgsAnnotationLayerChunkLoader::LoaderData &data
+)
+{
+  const QgsScopedEvent e( u"3D"_s, u"Annotation layer chunk load"_s );
+
+  QVector< QgsLineString > calloutLines;
+  double zMin = std::numeric_limits< double >::max();
+  double zMax = std::numeric_limits< double >::lowest();
+
+  std::vector< Billboard > billboards;
+  billboards.reserve( itemsToRender.size() );
+  QVector< QImage > textures;
+  textures.reserve( static_cast< qsizetype >( itemsToRender.size() ) );
+
+  std::vector< TextBillboard > textBillboards;
+  textBillboards.reserve( itemsToRender.size() );
+  QStringList textBillboardTexts;
+  textBillboardTexts.reserve( static_cast< qsizetype >( itemsToRender.size() ) );
+
+  QMap< PictureBillboardGroup, QVector< PictureBillboard > > groupedPictures;
+
+  QVector< PictureBillboards > pictureBillboards;
+  pictureBillboards.reserve( static_cast< qsizetype >( itemsToRender.size() ) );
+
+  auto addTextBillboard = [layerToMapTransform,
+                           rect,
+                           &data,
+                           &textBillboards,
+                           &textBillboardTexts,
+                           &chunkOrigin,
+                           &calloutLines,
+                           &zMax,
+                           &zMin,
+                           &renderCtx]( const QgsPointXY &p, const QString &annotationText, const QgsTextFormat &annotationTextFormat ) {
+    QString text = annotationText;
+    if ( annotationTextFormat.allowHtmlFormatting() )
+    {
+      // strip HTML characters, we don't support those in 3D
+      const QgsTextDocument document = QgsTextDocument::fromTextAndFormat( { text }, annotationTextFormat );
+      text = document.toPlainText().join( ' ' );
+    }
+    if ( !text.isEmpty() )
+    {
+      try
+      {
+        const QgsPointXY mapPoint = layerToMapTransform.transform( p );
+        if ( !rect.contains( mapPoint ) )
+          return;
+
+        double z = 0;
+        const float terrainZ = ( data.mClamping == Qgis::AltitudeClamping::Absolute && !data.mShowCallouts ) ? 0
+                               : renderCtx.terrainRenderingEnabled() && renderCtx.terrainGenerator()
+                                 ? static_cast<float>( renderCtx.terrainGenerator()->heightAt( mapPoint.x(), mapPoint.y(), renderCtx ) * renderCtx.terrainSettings()->verticalScale() )
+                                 : 0.f;
+
+        switch ( data.mClamping )
+        {
+          case Qgis::AltitudeClamping::Absolute:
+            z = data.mZOffset;
+            break;
+          case Qgis::AltitudeClamping::Terrain:
+            z = terrainZ;
+            break;
+          case Qgis::AltitudeClamping::Relative:
+            z = terrainZ + data.mZOffset;
+            break;
+        }
+
+        TextBillboard billboard;
+        billboard.position = ( QgsVector3D( mapPoint.x(), mapPoint.y(), z ) - chunkOrigin ).toVector3D();
+        billboard.text = text;
+        textBillboards.emplace_back( std::move( billboard ) );
+        textBillboardTexts.append( text );
+
+        if ( data.mShowCallouts )
+        {
+          calloutLines << QgsLineString( { mapPoint.x(), mapPoint.x() }, { mapPoint.y(), mapPoint.y() }, { terrainZ, z } );
+        }
+
+        zMax = std::max( zMax, data.mShowCallouts ? std::max( 0.0, z ) : z );
+        zMin = std::min( zMin, data.mShowCallouts ? std::min( 0.0, z ) : z );
+      }
+      catch ( QgsCsException &e )
+      {
+        QgsDebugError( e.what() );
+      }
+    }
+  };
+
+  for ( const std::unique_ptr< QgsAnnotationItem > &item : std::as_const( itemsToRender ) )
+  {
+    if ( promise.isCanceled() )
+      break;
+
+    QgsAnnotationItem *annotation = item.get();
+
+    if ( !annotation->enabled() )
+      continue;
+
+    if ( QgsAnnotationMarkerItem *marker = dynamic_cast< QgsAnnotationMarkerItem * >( annotation ) )
+    {
+      if ( marker->symbol() )
+      {
+        QgsPointXY p = marker->geometry();
+        try
+        {
+          const QgsPointXY mapPoint = layerToMapTransform.transform( p );
+          if ( !rect.contains( mapPoint ) )
+            continue;
+
+          double z = 0;
+          const float terrainZ = ( data.mClamping == Qgis::AltitudeClamping::Absolute && !data.mShowCallouts ) ? 0
+                                 : renderCtx.terrainRenderingEnabled() && renderCtx.terrainGenerator()
+                                   ? static_cast<float>( renderCtx.terrainGenerator()->heightAt( mapPoint.x(), mapPoint.y(), renderCtx ) * renderCtx.terrainSettings()->verticalScale() )
+                                   : 0.f;
+
+          switch ( data.mClamping )
+          {
+            case Qgis::AltitudeClamping::Absolute:
+              z = data.mZOffset;
+              break;
+            case Qgis::AltitudeClamping::Terrain:
+              z = terrainZ;
+              break;
+            case Qgis::AltitudeClamping::Relative:
+              z = terrainZ + data.mZOffset;
+              break;
+          }
+
+          Billboard billboard;
+          billboard.position = ( QgsVector3D( mapPoint.x(), mapPoint.y(), z ) - chunkOrigin ).toVector3D();
+          billboard.textureId = -1;
+
+          for ( const Billboard &existingBillboard : billboards )
+          {
+            if ( existingBillboard.markerSymbol && marker->symbol()->rendersIdenticallyTo( existingBillboard.markerSymbol ) )
+            {
+              // marker symbol has been reused => reuse existing texture to minimize size of texture atlas
+              billboard.textureId = existingBillboard.textureId;
+              break;
+            }
+          }
+
+          if ( billboard.textureId < 0 )
+          {
+            // could not match to previously considered marker, have to render and add to texture atlas
+            billboard.markerSymbol = marker->symbol();
+            billboard.textureId = textures.size();
+            textures.append( QgsPoint3DBillboardMaterial::renderSymbolToImage( marker->symbol(), renderCtx ) );
+          }
+          billboards.emplace_back( std::move( billboard ) );
+
+          if ( data.mShowCallouts )
+          {
+            calloutLines << QgsLineString( { mapPoint.x(), mapPoint.x() }, { mapPoint.y(), mapPoint.y() }, { terrainZ, z } );
+          }
+
+          zMax = std::max( zMax, data.mShowCallouts ? std::max( 0.0, z ) : z );
+          zMin = std::min( zMin, data.mShowCallouts ? std::min( 0.0, z ) : z );
+        }
+        catch ( QgsCsException &e )
+        {
+          QgsDebugError( e.what() );
+        }
+      }
+    }
+    else if ( QgsAnnotationPointTextItem *pointText = dynamic_cast< QgsAnnotationPointTextItem * >( annotation ) )
+    {
+      addTextBillboard( pointText->point(), pointText->text(), pointText->format() );
+    }
+    else if ( QgsAnnotationLineTextItem *lineText = dynamic_cast< QgsAnnotationLineTextItem * >( annotation ) )
+    {
+      QgsGeos geos( lineText->geometry() );
+      std::unique_ptr< QgsPoint > point( geos.pointOnSurface() );
+      if ( point )
+      {
+        addTextBillboard( *point, lineText->text(), lineText->format() );
+      }
+    }
+    else if ( QgsAnnotationRectangleTextItem *rectText = dynamic_cast< QgsAnnotationRectangleTextItem * >( annotation ) )
+    {
+      switch ( rectText->placementMode() )
+      {
+        case Qgis::AnnotationPlacementMode::SpatialBounds:
+        case Qgis::AnnotationPlacementMode::FixedSize:
+        {
+          addTextBillboard( rectText->bounds().center(), rectText->text(), rectText->format() );
+          break;
+        }
+        case Qgis::AnnotationPlacementMode::RelativeToMapFrame:
+          // ignore these annotations, they don't have a fix map position
+          break;
+      }
+    }
+    else if ( auto pictureItem = dynamic_cast< QgsAnnotationPictureItem * >( annotation ) )
+    {
+      if ( pictureItem->path().isEmpty() )
+        continue;
+
+      if ( pictureItem->placementMode() == Qgis::AnnotationPlacementMode::RelativeToMapFrame )
+      {
+        // annotations relative to the map frame have no geographic position => ignore
+        continue;
+      }
+
+      const QgsPointXY p = pictureItem->bounds().center();
+      QgsPointXY mapPoint;
+      try
+      {
+        mapPoint = layerToMapTransform.transform( p );
+      }
+      catch ( QgsCsException &e )
+      {
+        QgsDebugError( e.what() );
+        continue;
+      }
+
+      if ( !rect.contains( mapPoint ) )
+        continue;
+
+      double z = 0;
+      const float terrainZ = ( data.mClamping == Qgis::AltitudeClamping::Absolute && !data.mShowCallouts ) ? 0
+                             : renderCtx.terrainRenderingEnabled() && renderCtx.terrainGenerator()
+                               ? static_cast<float>( renderCtx.terrainGenerator()->heightAt( mapPoint.x(), mapPoint.y(), renderCtx ) * renderCtx.terrainSettings()->verticalScale() )
+                               : 0.f;
+
+      switch ( data.mClamping )
+      {
+        case Qgis::AltitudeClamping::Absolute:
+          z = data.mZOffset;
+          break;
+        case Qgis::AltitudeClamping::Terrain:
+          z = terrainZ;
+          break;
+        case Qgis::AltitudeClamping::Relative:
+          z = terrainZ + data.mZOffset;
+          break;
+      }
+
+      PictureBillboardGroup billboardGroup;
+      billboardGroup.path = pictureItem->path();
+      billboardGroup.pictureFormat = pictureItem->format();
+      billboardGroup.scaleMode = pictureItem->billboard3DScaleMode();
+
+      PictureBillboard billboardItem;
+      billboardItem.position = ( QgsVector3D( mapPoint.x(), mapPoint.y(), z ) - chunkOrigin ).toVector3D();
+      billboardItem.size = pictureItem->billboard3DSize();
+      if ( billboardItem.size.isEmpty() )
+      {
+        constexpr QSizeF DEFAULT_FIXED_SIZE = QSizeF( 128, 128 );
+        constexpr QSizeF DEFAULT_WORLD_SIZE = QSizeF( 20, 20 );
+        billboardItem.size = billboardGroup.scaleMode == Qgis::BillboardScaleMode::ViewIndependent ? DEFAULT_FIXED_SIZE : DEFAULT_WORLD_SIZE;
+      }
+
+      groupedPictures[billboardGroup].append( billboardItem );
+
+      if ( data.mShowCallouts )
+      {
+        calloutLines << QgsLineString( { mapPoint.x(), mapPoint.x() }, { mapPoint.y(), mapPoint.y() }, { terrainZ, z } );
+      }
+
+      zMax = std::max( zMax, data.mShowCallouts ? std::max( 0.0, z ) : z );
+      zMin = std::min( zMin, data.mShowCallouts ? std::min( 0.0, z ) : z );
+    }
+  }
+
+  QImage billboardAtlas;
+  QVector< QgsBillboardGeometry::BillboardAtlasData > billboardPositions;
+  if ( !textures.isEmpty() )
+  {
+    const QgsTextureAtlas atlas = QgsTextureAtlasGenerator::createFromImages( textures, 2048 );
+    if ( atlas.isValid() )
+    {
+      billboardAtlas = atlas.renderAtlasTexture();
+      billboardPositions.reserve( static_cast< int >( billboards.size() ) );
+      for ( Billboard &billboard : billboards )
+      {
+        const QRect textureRect = atlas.rect( billboard.textureId );
+        QgsBillboardGeometry::BillboardAtlasData geometry;
+        geometry.position = billboard.position;
+        geometry.textureAtlasOffset = QVector2D(
+          static_cast< float >( textureRect.left() ) / static_cast< float>( billboardAtlas.width() ), 1 - ( static_cast< float >( textureRect.bottom() ) / static_cast< float>( billboardAtlas.height() ) )
+        );
+        geometry.textureAtlasSize
+          = QVector2D( static_cast< float >( textureRect.width() ) / static_cast< float>( billboardAtlas.width() ), static_cast< float>( textureRect.height() ) / static_cast< float>( billboardAtlas.height() ) );
+        geometry.pixelOffset = QPoint( 0, textureRect.height() / 2 );
+        billboardPositions.append( geometry );
+      }
+    }
+    else
+    {
+      QgsDebugError( u"Error encountered building texture atlas"_s );
+      billboardAtlas = QImage();
+    }
+  }
+  else
+  {
+    billboardAtlas = QImage();
+    billboardPositions.clear();
+  }
+
+  QImage textBillboardAtlas;
+  QVector< QgsBillboardGeometry::BillboardAtlasData > textBillboardPositions;
+  if ( !textBillboardTexts.isEmpty() )
+  {
+    const QgsFontTextureAtlas atlas = QgsFontTextureAtlasGenerator::create( data.mTextFormat, textBillboardTexts );
+    if ( atlas.isValid() )
+    {
+      textBillboardAtlas = atlas.renderAtlasTexture();
+      textBillboardPositions.reserve( static_cast< int >( textBillboards.size() ) );
+      for ( TextBillboard &billboard : textBillboards )
+      {
+        int graphemeIndex = 0;
+        const int graphemeCount = atlas.graphemeCount( billboard.text );
+        // horizontally center text over point
+        const double xOffset = atlas.totalWidth( billboard.text ) / 2.0;
+        for ( ; graphemeIndex < graphemeCount; ++graphemeIndex )
+        {
+          const QRect textureRect = atlas.textureRectForGrapheme( billboard.text, graphemeIndex );
+          QgsBillboardGeometry::BillboardAtlasData geometry;
+          geometry.position = billboard.position;
+          geometry.textureAtlasOffset = QVector2D(
+            static_cast< float >( textureRect.left() ) / static_cast< float>( textBillboardAtlas.width() ),
+            1 - ( static_cast< float >( textureRect.bottom() ) / static_cast< float>( textBillboardAtlas.height() ) )
+          );
+          geometry.textureAtlasSize = QVector2D(
+            static_cast< float >( textureRect.width() ) / static_cast< float>( textBillboardAtlas.width() ),
+            static_cast< float>( textureRect.height() ) / static_cast< float>( textBillboardAtlas.height() )
+          );
+          const QPointF pixelOffset = atlas.pixelOffsetForGrapheme( billboard.text, graphemeIndex );
+          geometry.pixelOffset
+            = QPoint( static_cast< int >( std::round( -xOffset + pixelOffset.x() + 0.5 * textureRect.width() ) ), static_cast< int >( std::round( pixelOffset.y() + 0.5 * textureRect.height() ) ) );
+          textBillboardPositions.append( geometry );
+        }
+      }
+    }
+    else
+    {
+      QgsDebugError( u"Error encountered building font texture atlas"_s );
+      textBillboardAtlas = QImage();
+    }
+  }
+  else
+  {
+    textBillboardAtlas = QImage();
+    textBillboardPositions.clear();
+  }
+
+  // picture item billboards, grouped by picture source
+  for ( auto it = groupedPictures.constBegin(); it != groupedPictures.constEnd(); ++it )
+  {
+    QSizeF maxGroupSize( 0, 0 );
+    for ( auto picIt = it.value().constBegin(); picIt != it.value().constEnd(); ++picIt )
+    {
+      if ( picIt->size.width() > maxGroupSize.width() )
+      {
+        maxGroupSize.setWidth( picIt->size.width() );
+      }
+      if ( picIt->size.height() > maxGroupSize.height() )
+      {
+        maxGroupSize.setHeight( picIt->size.height() );
+      }
+    }
+
+    QImage image;
+    bool fitsInCache = false;
+
+    // can't zoom into these billboards, so we can use a fairly conservative texture size
+    constexpr int MAXIMUM_PICTURE_TEXTURE_SIZE_FIXED_SIZE = 256;
+    // can zoom into these, so we need a larger texture
+    constexpr int MAXIMUM_PICTURE_TEXTURE_SIZE_PERSPECTIVE = 1024;
+    const int textureSize = it.key().scaleMode == Qgis::BillboardScaleMode::Perspective ? MAXIMUM_PICTURE_TEXTURE_SIZE_PERSPECTIVE : MAXIMUM_PICTURE_TEXTURE_SIZE_FIXED_SIZE;
+    switch ( it.key().pictureFormat )
+    {
+      case Qgis::PictureFormat::Raster:
+      {
+        const QSize originalSize = QgsApplication::imageCache()->originalSize( it.key().path, true );
+        QSize imageSize = originalSize;
+        if ( imageSize.isEmpty() )
+        {
+          imageSize = maxGroupSize.toSize();
+        }
+        if ( imageSize.width() >= imageSize.height() && imageSize.width() > textureSize )
+        {
+          imageSize = QSize( textureSize, static_cast< int >( std::round( imageSize.height() * textureSize / imageSize.width() ) ) );
+        }
+        else if ( imageSize.height() > textureSize )
+        {
+          imageSize = QSize( static_cast< int >( std::round( imageSize.width() * textureSize / imageSize.height() ) ), textureSize );
+        }
+        image = QgsApplication::imageCache()->pathAsImage( it.key().path, imageSize, false, 1.0, fitsInCache, true );
+        break;
+      }
+
+      case Qgis::PictureFormat::SVG:
+      {
+        const QPicture picture = QgsApplication::svgCache()->svgAsPicture( it.key().path, textureSize, QColor(), QColor(), 1.0, 1.0, false, 0, true );
+        if ( !picture.isNull() && picture.boundingRect().width() > 0 && picture.boundingRect().height() > 0 )
+        {
+          const QRectF picRect = picture.boundingRect();
+          QSize imageSize = picRect.size().toSize();
+          if ( imageSize.width() >= imageSize.height() )
+          {
+            imageSize = QSize( textureSize, static_cast< int >( std::round( picRect.height() * static_cast< double >( textureSize ) / picRect.width() ) ) );
+          }
+          else
+          {
+            imageSize = QSize( static_cast< int >( std::round( picRect.width() * static_cast< double >( textureSize ) / picRect.height() ) ), textureSize );
+          }
+
+          image = QImage( imageSize, QImage::Format_ARGB32_Premultiplied );
+          image.fill( Qt::transparent );
+
+          const double scale = static_cast< double >( imageSize.width() ) / picRect.width();
+
+          QPainter painter( &image );
+          painter.setRenderHint( QPainter::Antialiasing );
+          painter.scale( scale, scale );
+
+          QgsPainting::drawPicture( &painter, QPointF( picRect.width() / 2.0, picRect.height() / 2.0 ), picture );
+          painter.end();
+        }
+        break;
+      }
+
+      case Qgis::PictureFormat::Unknown:
+        continue;
+    }
+
+    PictureBillboards billboard;
+    billboard.scaleMode = it.key().scaleMode;
+    billboard.image = image;
+    billboard.positions.reserve( it.value().size() );
+    billboard.sizes.reserve( it.value().size() );
+    for ( const PictureBillboard &item : it.value() )
+    {
+      billboard.positions.append( item.position );
+      billboard.sizes.append( item.size );
+    }
+
+    pictureBillboards.append( billboard );
+  }
+
+  promise.addResult(
+    ChunkData {
+      .node = node,
+      .layerName = layerName,
+      .chunkOrigin = chunkOrigin,
+      .renderContext = renderCtx,
+      .billboardPositions = std::move( billboardPositions ),
+      .textBillboardPositions = std::move( textBillboardPositions ),
+      .billboardAtlas = std::move( billboardAtlas ),
+      .textBillboardAtlas = std::move( textBillboardAtlas ),
+      .pictureBillboards = std::move( pictureBillboards ),
+      .calloutLines = std::move( calloutLines ),
+      .zMin = zMin,
+      .zMax = zMax,
+    }
+  );
+}
+
+Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( const QgsAnnotationLayerChunkLoader::ChunkData &chunkData, Qt3DCore::QEntity *parent )
+{
+  QGIS_CHECK_MAIN_THREAD_ACCESS
+  if ( chunkData.billboardPositions.empty() && chunkData.textBillboardPositions.empty() && chunkData.pictureBillboards.empty() )
+  {
+    // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
+    // we just make sure first that its initial estimated vertical range does not affect its parents' bboxes calculation
+    chunkData.node->setExactBox3D( QgsBox3D() );
+    chunkData.node->updateParentBoundingBoxesRecursively();
+    return nullptr;
+  }
+
+  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+  entity->setObjectName( chunkData.layerName + "_" + chunkData.node->tileId().text() );
+
+  QgsGeoTransform *billboardTransform = new QgsGeoTransform;
+  billboardTransform->setGeoTranslation( chunkData.chunkOrigin );
+  entity->addComponent( billboardTransform );
+
+  if ( !chunkData.billboardPositions.empty() )
+  {
+    QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
+    billboardGeometry->setBillboardData( chunkData.billboardPositions, true );
+
+    Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
+    billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
+    billboardGeometryRenderer->setGeometry( billboardGeometry );
+    billboardGeometryRenderer->setVertexCount( 4 );
+    billboardGeometryRenderer->setInstanceCount( billboardGeometry->count() );
+
+    QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::ExtraAttribute::TextureData | QgsPoint3DBillboardMaterial::ExtraAttribute::PixelOffsets );
+    billboardMaterial->setTexture2DFromImage( chunkData.billboardAtlas );
+
+
+    Qt3DCore::QEntity *billboardEntity = new Qt3DCore::QEntity;
+    billboardEntity->addComponent( billboardMaterial );
+    billboardEntity->addComponent( billboardGeometryRenderer );
+    billboardEntity->setParent( entity );
+  }
+
+  if ( !chunkData.textBillboardPositions.empty() )
+  {
+    QgsBillboardGeometry *textBillboardGeometry = new QgsBillboardGeometry();
+    textBillboardGeometry->setBillboardData( chunkData.textBillboardPositions, true );
+
+    Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
+    billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
+    billboardGeometryRenderer->setGeometry( textBillboardGeometry );
+    billboardGeometryRenderer->setVertexCount( 4 );
+    billboardGeometryRenderer->setInstanceCount( textBillboardGeometry->count() );
+
+    QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::ExtraAttribute::TextureData | QgsPoint3DBillboardMaterial::ExtraAttribute::PixelOffsets );
+    billboardMaterial->setTexture2DFromImage( chunkData.textBillboardAtlas );
+
+    Qt3DCore::QEntity *billboardEntity = new Qt3DCore::QEntity;
+    billboardEntity->addComponent( billboardMaterial );
+    billboardEntity->addComponent( billboardGeometryRenderer );
+    billboardEntity->setParent( entity );
+  }
+
+  for ( const PictureBillboards &pictureBillboard : chunkData.pictureBillboards )
+  {
+    QgsBillboardGeometry *pictureGeometry = new QgsBillboardGeometry();
+    pictureGeometry->setPositionsAndSizes( pictureBillboard.positions, pictureBillboard.sizes );
+    Qt3DRender::QGeometryRenderer *pictureGeometryRenderer = new Qt3DRender::QGeometryRenderer;
+    pictureGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::TriangleStrip );
+    pictureGeometryRenderer->setGeometry( pictureGeometry );
+    pictureGeometryRenderer->setVertexCount( 4 );
+    pictureGeometryRenderer->setInstanceCount( static_cast< int >( pictureBillboard.positions.size() ) );
+    QgsPoint3DBillboardMaterial *pictureMaterial
+      = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::ExtraAttribute::Size | QgsPoint3DBillboardMaterial::ExtraAttribute::VerticalOffset, pictureBillboard.scaleMode );
+    pictureMaterial->setTexture2DFromImage( pictureBillboard.image );
+    // picture billboards should be vertically anchored to the bottom of the picture
+    pictureMaterial->setVerticalOffset( 0.5 );
+    Qt3DCore::QEntity *pictureEntity = new Qt3DCore::QEntity;
+    pictureEntity->addComponent( pictureMaterial );
+    pictureEntity->addComponent( pictureGeometryRenderer );
+    pictureEntity->setParent( entity );
+  }
+
+  if ( mData.mShowCallouts )
+  {
+    QgsLineVertexData lineData;
+    lineData.withAdjacency = true;
+    lineData.geocentricCoordinates = false; // mMapSettings->sceneMode() == Qgis::SceneMode::Globe;
+    lineData.init( Qgis::AltitudeClamping::Absolute, Qgis::AltitudeBinding::Vertex, 0, chunkData.renderContext, chunkData.chunkOrigin );
+
+    for ( const QgsLineString &line : chunkData.calloutLines )
+    {
+      lineData.addLineString( line, 0, false );
+    }
+
+    QgsLineMaterial *mat = new QgsLineMaterial;
+    mat->setLineColor( mData.mCalloutLineColor );
+    mat->setLineWidth( mData.mCalloutLineWidth );
+
+    Qt3DCore::QEntity *calloutEntity = new Qt3DCore::QEntity;
+    calloutEntity->setObjectName( parent->objectName() + "_CALLOUTS" );
+
+    // geometry renderer
+    Qt3DRender::QGeometryRenderer *calloutRenderer = new Qt3DRender::QGeometryRenderer;
+    calloutRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStripAdjacency );
+    calloutRenderer->setGeometry( lineData.createGeometry( calloutEntity ) );
+    calloutRenderer->setVertexCount( lineData.indexes.count() );
+    calloutRenderer->setPrimitiveRestartEnabled( true );
+    calloutRenderer->setRestartIndexValue( 0 );
+
+    // make entity
+    calloutEntity->addComponent( calloutRenderer );
+    calloutEntity->addComponent( mat );
+
+    calloutEntity->setParent( entity );
+  }
+
+  // fix the vertical range of the node from the estimated vertical range to the true range
+  if ( chunkData.zMin != std::numeric_limits<double>::max() && chunkData.zMax != std::numeric_limits<double>::lowest() )
+  {
+    QgsBox3D box = chunkData.node->box3D();
+    box.setZMinimum( chunkData.zMin );
+    box.setZMaximum( chunkData.zMax );
+    chunkData.node->setExactBox3D( box );
+    chunkData.node->updateParentBoundingBoxesRecursively();
+  }
+  return entity;
 }
 
 
 ///////////////
-
 
 QgsAnnotationLayerChunkedEntity::QgsAnnotationLayerChunkedEntity(
   Qgs3DMapSettings *map,
@@ -828,7 +832,7 @@ QgsAnnotationLayerChunkedEntity::QgsAnnotationLayerChunkedEntity(
   : QgsAbstractFeatureBasedChunkedEntity(
       map,
       -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
-      new QgsAnnotationLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), layer, 3, clamping, zOffset, showCallouts, calloutLineColor, calloutLineWidth, textFormat, zMin, zMax ),
+      new QgsAnnotationLayerChunkLoader( Qgs3DRenderContext::fromMapSettings( map ), layer, 3, clamping, zOffset, showCallouts, calloutLineColor, calloutLineWidth, textFormat, zMin, zMax ),
       true
     )
 {
@@ -844,9 +848,9 @@ QgsAnnotationLayerChunkedEntity::~QgsAnnotationLayerChunkedEntity()
 // if the AltitudeClamping is `Absolute`, do not apply the offset
 bool QgsAnnotationLayerChunkedEntity::applyTerrainOffset() const
 {
-  if ( auto loaderFactory = static_cast<QgsAnnotationLayerChunkLoaderFactory *>( mChunkLoaderFactory ) )
+  if ( auto loader = static_cast<QgsAnnotationLayerChunkLoader *>( mChunkLoader ) )
   {
-    return loaderFactory->mClamping != Qgis::AltitudeClamping::Absolute;
+    return loader->mData.mClamping != Qgis::AltitudeClamping::Absolute;
   }
   return true;
 }
@@ -857,6 +861,5 @@ QList<QgsRayCastHit> QgsAnnotationLayerChunkedEntity::rayIntersection( const Qgs
   Q_UNUSED( context )
   return {};
 }
-
 
 /// @endcond

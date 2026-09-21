@@ -109,8 +109,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   mAspectEngine->setRootEntity( Qt3DCore::QEntityPtr( mRoot ) );
 }
 
-QgsOffscreen3DEngine::~QgsOffscreen3DEngine()
-{}
+QgsOffscreen3DEngine::~QgsOffscreen3DEngine() = default;
 
 void QgsOffscreen3DEngine::setSize( QSize s )
 {
