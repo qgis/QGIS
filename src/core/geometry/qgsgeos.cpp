@@ -2476,6 +2476,48 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::cleanCoverage( const QgsCoverage
 #endif
 }
 
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::extractCoverageEdges( Qgis::CoverageEdgeType edgeType, QString *errorMsg, QgsFeedback *feedback ) const
+{
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 15
+  ( void ) parameters;
+  ( void ) errorMsg;
+  ( void ) feedback;
+  throw QgsNotSupportedException( QObject::tr( "Extracting coverage edges requires a QGIS build based on GEOS 3.15 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    if ( errorMsg )
+      *errorMsg = u"Input geometry was not set"_s;
+    return nullptr;
+  }
+
+  int geosEdgeType = 0;
+  switch ( edgeType )
+  {
+    case Qgis::CoverageEdgeType::AllEdges:
+      geosEdgeType = 0;
+      break;
+    case Qgis::CoverageEdgeType::Exterior:
+      geosEdgeType = 1;
+      break;
+    case Qgis::CoverageEdgeType::Interior:
+      geosEdgeType = 2;
+      break;
+  }
+
+  try
+  {
+    QgsScopedGeosContextRegisterFeedback interrupt( feedback );
+    geos::unique_ptr edges( GEOSCoverageEdges_r( QgsGeosContext::get(), mGeos.get(), geosEdgeType ) );
+
+    std::unique_ptr< QgsAbstractGeometry> result = fromGeos( edges.get() );
+
+    return result;
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+#endif
+}
+
 bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, QgsGeometry *errorLoc, QgsFeedback *feedback ) const
 {
   if ( !mGeos )

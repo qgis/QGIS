@@ -2336,6 +2336,19 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( CoverageValidityResult )
 
     /**
+     * Coverage edge types.
+     *
+     * \since QGIS 4.4
+     */
+    enum class CoverageEdgeType : int
+    {
+      AllEdges = 0, //!< All edges (both exterior and interior)
+      Exterior = 1, //!< Exterior (non-shared) edges
+      Interior = 2, //!< Interior (shared) edges
+    };
+    Q_ENUM( CoverageEdgeType )
+
+    /**
      * Algorithms to use when repairing invalid geometries.
      *
      * \since QGIS 3.28
@@ -2346,6 +2359,7 @@ int QgisEvent = QEvent::User + 1;
       Structure = 1, //!< Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+.
     };
     Q_ENUM( MakeValidMethod )
+
 
     /**
      * Flags for controlling feature requests.

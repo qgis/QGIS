@@ -1009,6 +1009,25 @@ class CORE_EXPORT QgsGeos : public QgsGeometryEngine
     );
 
     /**
+     * Operates on a coverage (represented as a list of polygonal geometry with exactly matching edge geometry) to extract unique edges.
+     *
+     * \param edgeType Edge types to extract.
+     * \param errorMsg will be set to descriptive error string if the operation fails
+     * \param feedback optional feedback object for early cancellation.
+     *
+     * \returns a multiline string of unique edges
+     *
+     * This method requires a QGIS build based on GEOS 3.15 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.14 or earlier.
+     * \see validateCoverage()
+     * \since QGIS 4.4
+     */
+    std::unique_ptr< QgsAbstractGeometry > extractCoverageEdges(
+      Qgis::CoverageEdgeType edgeType = Qgis::CoverageEdgeType::AllEdges, QString *errorMsg SIP_OUT = nullptr, QgsFeedback *feedback = nullptr
+    ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Create a geometry from a GEOSGeometry
      * \param geos GEOSGeometry. Ownership is NOT transferred.
      * \note Not available in Python bindings

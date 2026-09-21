@@ -4224,6 +4224,21 @@ Qgis.CoverageValidityResult.__doc__ = """Coverage validity results.
 # --
 Qgis.CoverageValidityResult.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.CoverageEdgeType.AllEdges.__doc__ = "All edges (both exterior and interior)"
+Qgis.CoverageEdgeType.Exterior.__doc__ = "Exterior (non-shared) edges"
+Qgis.CoverageEdgeType.Interior.__doc__ = "Interior (shared) edges"
+Qgis.CoverageEdgeType.__doc__ = """Coverage edge types.
+
+.. versionadded:: 4.4
+
+* ``AllEdges``: All edges (both exterior and interior)
+* ``Exterior``: Exterior (non-shared) edges
+* ``Interior``: Interior (shared) edges
+
+"""
+# --
+Qgis.CoverageEdgeType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.MakeValidMethod.Linework.__doc__ = "Combines all rings into a set of noded lines and then extracts valid polygons from that linework."
 Qgis.MakeValidMethod.Structure.__doc__ = "Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+."
 Qgis.MakeValidMethod.__doc__ = """Algorithms to use when repairing invalid geometries.
