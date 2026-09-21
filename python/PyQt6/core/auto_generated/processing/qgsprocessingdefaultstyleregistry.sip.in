@@ -35,6 +35,41 @@ QgsProcessingDefaultStyleRegistry is not usually directly created, but
 rather accessed through
 :py:func:`QgsApplication.processingRegistry()`->:py:func:`~QgsProcessingDefaultStyleRegistry.defaultStyleRegistry`.
 %End
+
+    void setDefaultStyleForOutput( const QString &algorithmId, const QString &outputName, const QString &qmlPath );
+%Docstring
+Sets the default style for an output from an algorithm.
+
+.. note::
+
+   Calling this method does not automatically update the configuration file on disk. A separate call to :py:func:`~QgsProcessingDefaultStyleRegistry.saveStyles` must be made.
+
+.. seealso:: :py:func:`defaultStyleForOutput`
+%End
+
+    QString defaultStyleForOutput( const QString &algorithmId, const QString &outputName ) const;
+%Docstring
+Returns the QML path to the default style to use for the specified
+output from an algorithm, or an empty string if no default style should
+be loaded for the output.
+
+.. seealso:: :py:func:`setDefaultStyleForOutput`
+%End
+
+    void loadStyles();
+%Docstring
+Loads all saved styles from the configuration file.
+
+.. seealso:: :py:func:`saveStyles`
+%End
+
+    void saveStyles();
+%Docstring
+Saves registered styles to the configuration file.
+
+.. seealso:: :py:func:`loadStyles`
+%End
+
 };
 
 
