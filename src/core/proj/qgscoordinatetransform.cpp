@@ -947,6 +947,7 @@ QgsBox3D QgsCoordinateTransform::transformBox3D( const QgsBox3D &box, Qgis::Tran
 
   QgsScopedProjSilentLogger errorLogger;
 
+#if PROJ_VERSION_MAJOR < 9 || ( PROJ_VERSION_MAJOR == 9 && PROJ_VERSION_MINOR < 6 )
   // our implementation that should go away after PROJ version upgrade to at least 9.6
   const auto legacy = [this, &box, zMin, zMax, direction]() {
     constexpr int POINTS_PER_AXIS = 31;
@@ -1000,7 +1001,6 @@ QgsBox3D QgsCoordinateTransform::transformBox3D( const QgsBox3D &box, Qgis::Tran
     return result;
   };
 
-#if PROJ_VERSION_MAJOR < 9 || ( PROJ_VERSION_MAJOR == 9 && PROJ_VERSION_MINOR < 6 )
   return legacy();
 #else
 
