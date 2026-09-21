@@ -96,7 +96,7 @@ Registers a new symbol type. Takes ownership of the ``metadata``
 instance.
 %End
 
-    QgsAbstract3DSymbol *createSymbol( const QString &type ) const /Factory/;
+    std::unique_ptr<QgsAbstract3DSymbol> createSymbol( const QString &type ) const;
 %Docstring
 Creates a new instance of a symbol of the specified ``type``.
 
@@ -105,7 +105,7 @@ The caller takes ownership of the returned symbol.
 Returns ``None`` if the specified type is not found in the registry.
 %End
 
-    QgsAbstract3DSymbol *defaultSymbolForGeometryType( Qgis::GeometryType type ) /Factory/;
+    std::unique_ptr<QgsAbstract3DSymbol> defaultSymbolForGeometryType( Qgis::GeometryType type );
 %Docstring
 Creates a new instance of the default 3D symbol for the specified
 geometry ``type``.

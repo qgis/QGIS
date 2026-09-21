@@ -577,7 +577,7 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   else
   {
     groupSymbol->setChecked( false );
-    mSymbol.reset( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
+    mSymbol = QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() );
     mSymbol->setDefaultPropertiesFromLayer( layer );
   }
 

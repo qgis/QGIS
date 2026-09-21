@@ -46,9 +46,9 @@ bool QgsUnlitMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTechniq
   return false;
 }
 
-QgsAbstractMaterialSettings *QgsUnlitMaterialSettings::create()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsUnlitMaterialSettings::create()
 {
-  return new QgsUnlitMaterialSettings();
+  return std::make_unique<QgsUnlitMaterialSettings>();
 }
 
 QgsUnlitMaterialSettings *QgsUnlitMaterialSettings::clone() const

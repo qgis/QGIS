@@ -181,9 +181,9 @@ void QgsCategorized3DRendererWidget::setLayer( QgsVectorLayer *layer )
   {
     // Create a default renderer
     mRenderer.reset( new QgsCategorized3DRenderer() );
-    QgsAbstract3DSymbol *symbol = QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() );
+    std::unique_ptr<QgsAbstract3DSymbol> symbol = QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() );
     symbol->setDefaultPropertiesFromLayer( mLayer );
-    mCategorizedSymbol.reset( symbol );
+    mCategorizedSymbol = std::move( symbol );
     mRenderer->setSourceSymbol( mCategorizedSymbol->clone() );
     mModel->setRenderer( mRenderer.get() );
   }
@@ -245,9 +245,9 @@ void QgsCategorized3DRendererWidget::changeCategorySymbol()
   }
   else
   {
-    QgsAbstract3DSymbol *defaultSymbol = QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() );
+    std::unique_ptr<QgsAbstract3DSymbol> defaultSymbol = QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() );
     defaultSymbol->setDefaultPropertiesFromLayer( mLayer );
-    symbol.reset( defaultSymbol );
+    symbol = std::move( defaultSymbol );
   }
 
   QgsSymbol3DWidget *widget = new QgsSymbol3DWidget( mLayer, this );
