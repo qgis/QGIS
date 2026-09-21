@@ -151,7 +151,7 @@ const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = ne
 
 // The default template directory depends on the active profile, which is not known now, so we use an empty default,
 // and it will be handled later on by the getter QgsApplication::projectTemplatePaths.
-const QgsSettingsEntryStringList *QgsApplication::settingsProjectTemplatePaths = new QgsSettingsEntryStringList( u"projectTemplatePaths"_s, QgsSettingsTree::sTreeQgis, QStringList() );
+const QgsSettingsEntryStringList *QgsApplication::settingsProjectTemplatePaths = new QgsSettingsEntryStringList( u"projectTemplatePaths"_s, QgsSettingsTree::sTreeProject, QStringList() );
 
 const QgsSettingsEntryString *QgsApplication::settingsNullRepresentation = new QgsSettingsEntryString( u"null-value"_s, QgsSettingsTree::sTreeQgis, u"NULL"_s );
 
