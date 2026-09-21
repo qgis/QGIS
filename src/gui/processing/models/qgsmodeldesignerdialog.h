@@ -182,7 +182,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow,
     /**
      * Starts an undo command. This should be called before any changes are made to the model.
      */
-    void beginUndoCommand( const QString &text, const QString &id = QString(), QgsModelUndoCommand::CommandOperation operation SIP_PYARGREMOVE = QgsModelUndoCommand::CommandOperation::Unknown );
+    void beginUndoCommand( const QString &text, const QString &id = QString(), QgsModelUndoCommand::CommandOperation operation = QgsModelUndoCommand::CommandOperation::Unknown );
 
     /**
      * Ends the current undo command. This should be called after changes are made to the model.
