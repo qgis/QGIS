@@ -1,0 +1,51 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingdefaultstyledialog.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsProcessingDefaultStyleDialog : QDialog
+{
+%Docstring(signature="appended")
+A dialog for configuring default styles for Processing outputs.
+
+.. note::
+
+   Not stable API
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingdefaultstyledialog.h"
+%End
+  public:
+    QgsProcessingDefaultStyleDialog( const QgsProcessingAlgorithm *algorithm, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProcessingDefaultStyleDialog.
+%End
+
+    virtual void accept();
+
+
+  protected:
+    virtual void showEvent( QShowEvent *event );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingdefaultstyledialog.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
