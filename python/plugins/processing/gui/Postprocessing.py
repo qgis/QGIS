@@ -24,6 +24,7 @@ from typing import Optional
 
 from qgis.core import (
     Qgis,
+    QgsApplication,
     QgsMapLayer,
     QgsMessageLog,
     QgsProcessingAlgorithm,
@@ -37,7 +38,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.gui.RenderingStyles import RenderingStyles
 
 
 def determine_output_name(
@@ -77,9 +77,13 @@ def post_process_layer(
     """
     style = None
     if output_name:
-        style = RenderingStyles.getStyle(alg.id(), output_name)
+        style = (
+            QgsApplication.processingRegistry()
+            .defaultStyleRegistry()
+            .defaultStyleForOutput(alg.id(), output_name)
+        )
 
-    if style is None:
+    if not style:
         if layer.type() == Qgis.LayerType.Raster:
             style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
         elif layer.type() == Qgis.LayerType.Vector:

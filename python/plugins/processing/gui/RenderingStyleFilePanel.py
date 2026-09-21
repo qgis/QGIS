@@ -56,5 +56,5 @@ class RenderingStyleFilePanel(BASE, WIDGET):
         self.leText.setText(text)
 
     def getValue(self):
-        path = Path(self.le.text())
+        path = Path(self.leText.text())
         return path.as_posix()

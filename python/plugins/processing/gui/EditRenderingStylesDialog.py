@@ -22,13 +22,16 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 import warnings
 
-from qgis.core import QgsProcessingOutputRasterLayer, QgsProcessingOutputVectorLayer
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingOutputRasterLayer,
+    QgsProcessingOutputVectorLayer,
+)
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QHeaderView, QTableWidgetItem
 
 from processing.gui.RenderingStyleFilePanel import RenderingStyleFilePanel
-from processing.gui.RenderingStyles import RenderingStyles
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -65,6 +68,9 @@ class EditRenderingStylesDialog(BASE, WIDGET):
         self.tblStyles.setRowCount(numOutputs)
 
         i = 0
+        default_style_registry = (
+            QgsApplication.processingRegistry().defaultStyleRegistry()
+        )
         for output in self.alg.outputDefinitions():
             if isinstance(
                 output, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer)
@@ -75,7 +81,9 @@ class EditRenderingStylesDialog(BASE, WIDGET):
                 item.setFlags(Qt.ItemFlag.ItemIsEnabled)
                 self.tblStyles.setItem(i, 0, item)
                 item = RenderingStyleFilePanel()
-                style = RenderingStyles.getStyle(self.alg.id(), output.name())
+                style = default_style_registry.defaultStyleForOutput(
+                    self.alg.id(), output.name()
+                )
                 if style:
                     item.setText(str(style))
                 self.valueItems[output.name()] = item
@@ -84,11 +92,13 @@ class EditRenderingStylesDialog(BASE, WIDGET):
             i += 1
 
     def accept(self):
-        styles = {}
-        for key in list(self.valueItems.keys()):
-            styles[key] = str(self.valueItems[key].getValue())
-        RenderingStyles.addAlgStylesAndSave(self.alg.id(), styles)
+        registry = QgsApplication.processingRegistry().defaultStyleRegistry()
+        for output_name, item in self.valueItems.items():
+            registry.setDefaultStyleForOutput(
+                self.alg.id(), output_name, item.getValue()
+            )
 
+        registry.saveStyles()
         QDialog.accept(self)
 
     def reject(self):
