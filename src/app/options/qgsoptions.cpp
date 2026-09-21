@@ -2258,13 +2258,10 @@ void QgsOptions::addProjectTemplatePath()
 
   if ( !myDir.isEmpty() )
   {
-    for ( int i = 0; i < mListProjectTemplatePaths->count(); ++i )
+    if ( mListProjectTemplatePaths->findItems( myDir, Qt::MatchExactly ).count() > 0 )
     {
-      if ( mListProjectTemplatePaths->item( i )->text() == myDir )
-      {
-        QMessageBox::warning( this, tr( "Add project template path" ), tr( "This directory is already in the template paths list" ) );
-        return;
-      }
+      QMessageBox::warning( this, tr( "Add project template path" ), tr( "This directory is already in the template paths list" ) );
+      return;
     }
 
     QListWidgetItem *newItem = new QListWidgetItem( mListProjectTemplatePaths );
@@ -2284,8 +2281,7 @@ void QgsOptions::removeProjectTemplatePath()
 void QgsOptions::moveProjectTemplatePathUp()
 {
   QList<QListWidgetItem *> selectedItems = mListProjectTemplatePaths->selectedItems();
-  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
-  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  for ( auto itemIt = selectedItems.begin(); itemIt != selectedItems.end(); ++itemIt )
   {
     int row = mListProjectTemplatePaths->row( *itemIt );
     mListProjectTemplatePaths->takeItem( row );
@@ -2297,8 +2293,7 @@ void QgsOptions::moveProjectTemplatePathUp()
 void QgsOptions::moveProjectTemplatePathDown()
 {
   QList<QListWidgetItem *> selectedItems = mListProjectTemplatePaths->selectedItems();
-  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
-  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  for ( auto itemIt = selectedItems.begin(); itemIt != selectedItems.end(); ++itemIt )
   {
     int row = mListProjectTemplatePaths->row( *itemIt );
     mListProjectTemplatePaths->takeItem( row );
