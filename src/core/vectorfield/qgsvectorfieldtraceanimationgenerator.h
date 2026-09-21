@@ -77,10 +77,10 @@ class CORE_EXPORT QgsVectorFieldTraceAnimationGenerator SIP_NODEFAULTCTORS
     QImage imageRendered();
 
     //! Sets the number of frames per seconds that will be rendered
-    void setFPS( int FPS );
+    void setFramesPerSecond( int frames );
 
     //! Sets the max number of pixels that can be go through by the particles in 1 second
-    void setMaxSpeedPixel( int max );
+    void setMaximumSpeedPixel( int pixels );
 
     //! Sets maximum life time of particles in seconds
     void setParticlesLifeTime( double particleLifeTime );
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsVectorFieldTraceAnimationGenerator SIP_NODEFAULTCTORS
   private:
     std::unique_ptr<QgsVectorFieldParticleTracesField> mParticleField;
     const QgsRenderContext &mRendererContext;
-    int mFPS = 15;       //frame per second of the output, used to calculate orher parameters of the field
+    int mFps = 15;       //frame per second of the output, used to calculate orher parameters of the field
     int mVpixMax = 2000; //is the number of pixels that are going through for 1 s
     double mParticleLifeTime = 5;
 
