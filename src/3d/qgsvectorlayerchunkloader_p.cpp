@@ -58,13 +58,13 @@ void QgsVectorLayerChunkLoader::start()
   QgsVectorLayer *layer = mFactory->mLayer;
   mLayerName = mFactory->mLayer->name();
 
-  QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mFactory->mSymbol.get() );
+  std::unique_ptr<QgsFeature3DHandler> handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mFactory->mSymbol.get() );
   if ( !handler )
   {
     QgsDebugError( u"Unknown 3D symbol type for vector layer: "_s + mFactory->mSymbol->type() );
     return;
   }
-  mHandler.reset( handler );
+  mHandler = std::move( handler );
 
   QgsExpressionContext exprContext;
   exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );

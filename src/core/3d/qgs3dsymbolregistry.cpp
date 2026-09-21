@@ -16,6 +16,7 @@
 #include "qgs3dsymbolregistry.h"
 
 #include "qgsabstract3dsymbol.h"
+#include "qgsfeature3dhandler_p.h"
 
 #include <QString>
 
@@ -38,15 +39,15 @@ bool Qgs3DSymbolRegistry::addSymbolType( Qgs3DSymbolAbstractMetadata *metadata )
   return true;
 }
 
-QgsAbstract3DSymbol *Qgs3DSymbolRegistry::createSymbol( const QString &type ) const
+std::unique_ptr<QgsAbstract3DSymbol> Qgs3DSymbolRegistry::createSymbol( const QString &type ) const
 {
   if ( !mMetadata.contains( type ) )
     return nullptr;
 
-  return mMetadata[type]->create();
+  return std::unique_ptr<QgsAbstract3DSymbol>( mMetadata[type]->create() );
 }
 
-QgsAbstract3DSymbol *Qgs3DSymbolRegistry::defaultSymbolForGeometryType( Qgis::GeometryType type )
+std::unique_ptr<QgsAbstract3DSymbol> Qgs3DSymbolRegistry::defaultSymbolForGeometryType( Qgis::GeometryType type )
 {
   switch ( type )
   {
@@ -61,7 +62,7 @@ QgsAbstract3DSymbol *Qgs3DSymbolRegistry::defaultSymbolForGeometryType( Qgis::Ge
   }
 }
 
-QgsFeature3DHandler *Qgs3DSymbolRegistry::createHandlerForSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
+std::unique_ptr<QgsFeature3DHandler> Qgs3DSymbolRegistry::createHandlerForSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
 {
   if ( !symbol )
     return nullptr;
@@ -70,7 +71,7 @@ QgsFeature3DHandler *Qgs3DSymbolRegistry::createHandlerForSymbol( const QgsVecto
   if ( it == mMetadata.constEnd() )
     return nullptr;
 
-  return it.value()->createFeatureHandler( layer, symbol );
+  return std::unique_ptr<QgsFeature3DHandler>( it.value()->createFeatureHandler( layer, symbol ) );
 }
 
 Qgs3DSymbolAbstractMetadata *Qgs3DSymbolRegistry::symbolMetadata( const QString &type ) const

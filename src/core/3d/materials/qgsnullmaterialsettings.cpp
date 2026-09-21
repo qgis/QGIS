@@ -44,9 +44,9 @@ bool QgsNullMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTechniqu
   return false;
 }
 
-QgsAbstractMaterialSettings *QgsNullMaterialSettings::create()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsNullMaterialSettings::create()
 {
-  return new QgsNullMaterialSettings();
+  return std::make_unique<QgsNullMaterialSettings>();
 }
 
 QgsNullMaterialSettings *QgsNullMaterialSettings::clone() const

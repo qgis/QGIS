@@ -209,14 +209,14 @@ class CORE_EXPORT Qgs3DSymbolRegistry
      *
      * Returns NULLPTR if the specified type is not found in the registry.
      */
-    QgsAbstract3DSymbol *createSymbol( const QString &type ) const SIP_FACTORY;
+    std::unique_ptr<QgsAbstract3DSymbol> createSymbol( const QString &type ) const;
 
     /**
      * Creates a new instance of the default 3D symbol for the specified geometry \a type.
      *
      * The caller takes ownership of the returned symbol.
      */
-    QgsAbstract3DSymbol *defaultSymbolForGeometryType( Qgis::GeometryType type ) SIP_FACTORY;
+    std::unique_ptr<QgsAbstract3DSymbol> defaultSymbolForGeometryType( Qgis::GeometryType type );
 
 #ifndef SIP_RUN
 
@@ -227,7 +227,7 @@ class CORE_EXPORT Qgs3DSymbolRegistry
      *
      * \note Not available in Python bindings
      */
-    QgsFeature3DHandler *createHandlerForSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) SIP_FACTORY;
+    std::unique_ptr<QgsFeature3DHandler> createHandlerForSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol );
 #endif
 
   private:

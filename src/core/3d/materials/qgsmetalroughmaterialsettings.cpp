@@ -50,9 +50,9 @@ bool QgsMetalRoughMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTe
   return false;
 }
 
-QgsAbstractMaterialSettings *QgsMetalRoughMaterialSettings::create()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughMaterialSettings::create()
 {
-  return new QgsMetalRoughMaterialSettings();
+  return std::make_unique<QgsMetalRoughMaterialSettings>();
 }
 
 QgsMetalRoughMaterialSettings *QgsMetalRoughMaterialSettings::clone() const
