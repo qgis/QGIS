@@ -108,6 +108,8 @@ void QgsRubberBand3D::setupLine( Qt3DCore::QEntity *parentEntity )
   Q_ASSERT( mLineGeometry->attributes().count() == 5 );
   mPointAAttribute = mLineGeometry->attributes().at( 1 );
   mPointBAttribute = mLineGeometry->attributes().at( 2 );
+  mPointPrevAttribute = mLineGeometry->attributes().at( 3 );
+  mPointNextAttribute = mLineGeometry->attributes().at( 4 );
 
   mLineGeometryRenderer = new Qt3DRender::QGeometryRenderer;
   mLineGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Triangles );
@@ -480,6 +482,8 @@ void QgsRubberBand3D::updateGeometry()
   {
     mPointAAttribute->buffer()->setData( lineData.createPointABuffer() );
     mPointBAttribute->buffer()->setData( lineData.createPointBBuffer() );
+    mPointPrevAttribute->buffer()->setData( lineData.createPointPrevBuffer() );
+    mPointNextAttribute->buffer()->setData( lineData.createPointNextBuffer() );
     mLineGeometryRenderer->setInstanceCount( lineData.pointsA.size() );
     mLineTransform->setGeoTranslation( dataOrigin );
 

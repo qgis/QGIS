@@ -75,7 +75,7 @@ void main(void)
     vec2 p0 = 0.5 * THICKNESS * sigma * abNorm;
     vec2 p2 = 0.5 * THICKNESS * sigma * cbNorm;
 
-    // swap p0 and p2 so that the join always faces camera TODO: check again
+    // swap p0 and p2 so that the join always faces camera
     if (ab.x * cb.y - ab.y * cb.x > 0.0)
     {
         vec2 tmp = p0;

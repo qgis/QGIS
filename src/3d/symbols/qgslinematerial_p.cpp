@@ -67,19 +67,6 @@ QgsLineMaterial::QgsLineMaterial( LinePart part )
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
   renderPass->setShaderProgram( shaderProgram );
 
-  // Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest( renderPass );
-  // depthTest->setDepthFunction( Qt3DRender::QDepthTest::LessOrEqual );
-  // renderPass->addRenderState( depthTest );
-
-  // Qt3DRender::QBlendEquationArguments *blendState = new Qt3DRender::QBlendEquationArguments;
-  // blendState->setSourceRgb( Qt3DRender::QBlendEquationArguments::SourceAlpha );
-  // blendState->setDestinationRgb( Qt3DRender::QBlendEquationArguments::OneMinusSourceAlpha );
-  // renderPass->addRenderState( blendState );
-
-  // Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation;
-  // blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
-  // renderPass->addRenderState( blendEquation );
-
   // without this filter the default forward renderer would not render this
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
   filterKey->setName( u"renderingStyle"_s );
