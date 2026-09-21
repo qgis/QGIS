@@ -111,7 +111,7 @@ QgsVectorFieldTraceAnimationGenerator::QgsVectorFieldTraceAnimationGenerator( Qg
 QgsVectorFieldTraceAnimationGenerator::QgsVectorFieldTraceAnimationGenerator( const QgsVectorFieldTraceAnimationGenerator &other )
   : mParticleField( std::make_unique<QgsVectorFieldParticleTracesField>( *other.mParticleField ) )
   , mRendererContext( other.mRendererContext )
-  , mFPS( other.mFPS )
+  , mFps( other.mFps )
   , mVpixMax( other.mVpixMax )
   , mParticleLifeTime( other.mParticleLifeTime )
 {}
@@ -130,19 +130,19 @@ QImage QgsVectorFieldTraceAnimationGenerator::imageRendered()
   return mParticleField->image();
 }
 
-void QgsVectorFieldTraceAnimationGenerator::setFPS( int FPS )
+void QgsVectorFieldTraceAnimationGenerator::setFramesPerSecond( int frames )
 {
-  if ( FPS > 0 )
-    mFPS = FPS;
+  if ( frames > 0 )
+    mFps = frames;
   else
-    mFPS = 1;
+    mFps = 1;
 
   updateFieldParameter();
 }
 
-void QgsVectorFieldTraceAnimationGenerator::setMaxSpeedPixel( int max )
+void QgsVectorFieldTraceAnimationGenerator::setMaximumSpeedPixel( int pixels )
 {
-  mVpixMax = max;
+  mVpixMax = pixels;
   updateFieldParameter();
 }
 
@@ -185,7 +185,7 @@ QgsVectorFieldTraceAnimationGenerator &QgsVectorFieldTraceAnimationGenerator::op
 {
   mParticleField = std::make_unique<QgsVectorFieldParticleTracesField>( *( other.mParticleField ) );
   const_cast<QgsRenderContext &>( mRendererContext ) = other.mRendererContext;
-  mFPS = other.mFPS;
+  mFps = other.mFps;
   mVpixMax = other.mVpixMax;
   mParticleLifeTime = other.mParticleLifeTime;
 
@@ -194,8 +194,8 @@ QgsVectorFieldTraceAnimationGenerator &QgsVectorFieldTraceAnimationGenerator::op
 
 void QgsVectorFieldTraceAnimationGenerator::updateFieldParameter()
 {
-  const double fieldTimeStep = mVpixMax / static_cast<double>( mFPS );
-  const double fieldLifeTime = mParticleLifeTime * mFPS * fieldTimeStep;
+  const double fieldTimeStep = mVpixMax / static_cast<double>( mFps );
+  const double fieldLifeTime = mParticleLifeTime * mFps * fieldTimeStep;
   mParticleField->setTimeStep( fieldTimeStep );
   mParticleField->setParticlesLifeTime( fieldLifeTime );
 }
