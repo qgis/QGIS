@@ -45,6 +45,43 @@ class CORE_EXPORT QgsProcessingDefaultStyleRegistry : public QObject
      * QgsApplication::processingRegistry()->defaultStyleRegistry().
      */
     QgsProcessingDefaultStyleRegistry( QObject *parent = nullptr );
+
+    /**
+     * Sets the default style for an output from an algorithm.
+     *
+     * \note Calling this method does not automatically update the configuration file on disk. A separate call to saveStyles() must be made.
+     *
+     * \see defaultStyleForOutput()
+     */
+    void setDefaultStyleForOutput( const QString &algorithmId, const QString &outputName, const QString &qmlPath );
+
+    /**
+     * Returns the QML path to the default style to use for the specified output from an algorithm, or an empty string if no
+     * default style should be loaded for the output.
+     *
+     * \see setDefaultStyleForOutput()
+     */
+    QString defaultStyleForOutput( const QString &algorithmId, const QString &outputName ) const;
+
+    /**
+     * Loads all saved styles from the configuration file.
+     *
+     * \see saveStyles()
+     */
+    void loadStyles();
+
+    /**
+     * Saves registered styles to the configuration file.
+     *
+     * \see loadStyles()
+     */
+    void saveStyles();
+
+  private:
+    static QString configFilePath();
+
+    // map of algorithm ID to map of output name to QML file path
+    QMap< QString, QMap< QString, QString > > mStyles;
 };
 
 
