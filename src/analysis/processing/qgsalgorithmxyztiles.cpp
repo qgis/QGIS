@@ -68,11 +68,14 @@ void MetaTile::addTile( const int row, const int col, Tile tileToAdd, const QgsR
 
 namespace
 {
-  QList<MetaTile> getMetatiles( const QgsRectangle &tileMatrixSetExtent, const QgsRectangle &contentsExtent, int zoom, int z0MatrixWidth, int z0MatrixHeight, long long &tileCount, int tileSize )
+  QList<MetaTile> getMetatiles( const QgsTileMatrix &z0Matrix, const QgsRectangle &contentsExtent, int zoom, long long &tileCount, int tileSize )
   {
-    const long long matrixWidth = static_cast<long long>( z0MatrixWidth ) * ( 1LL << zoom );
-    const long long matrixHeight = static_cast<long long>( z0MatrixHeight ) * ( 1LL << zoom );
+    const QgsTileMatrix targetZoomMatrix = QgsTileMatrix::fromTileMatrix( zoom, z0Matrix );
 
+    const long long matrixWidth = targetZoomMatrix.matrixWidth();
+    const long long matrixHeight = targetZoomMatrix.matrixHeight();
+
+    const QgsRectangle tileMatrixSetExtent = targetZoomMatrix.extent();
     const double tileWidthUnits = tileMatrixSetExtent.width() / matrixWidth;
     const double tileHeightUnits = tileMatrixSetExtent.height() / matrixHeight;
 
@@ -94,14 +97,7 @@ namespace
       for ( int y = minY, j = 0; y <= maxY; y++, j++ )
       {
         const uint64_t key = ( static_cast<uint64_t>( i / tileSize ) << 32 ) | static_cast<uint32_t>( j / tileSize );
-
-        const double tileMinX = tileMatrixSetExtent.xMinimum() + x * tileWidthUnits;
-        const double tileMaxX = tileMinX + tileWidthUnits;
-        const double tileMaxY = tileMatrixSetExtent.yMaximum() - y * tileHeightUnits;
-        const double tileMinY = tileMaxY - tileHeightUnits;
-
-        const QgsRectangle tileExtent( tileMinX, tileMinY, tileMaxX, tileMaxY );
-
+        const QgsRectangle tileExtent = targetZoomMatrix.tileExtent( QgsTileXYZ( x, y, zoom ) );
         tiles[key].addTile( i % tileSize, j % tileSize, Tile( x, y, zoom ), tileExtent );
       }
     }
@@ -345,34 +341,29 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     mTargetCrs = QgsCoordinateReferenceSystem( u"EPSG:3857"_s );
   }
 
+  int z0MatrixWidth = 1;
   if ( parameters.contains( u"Z0_MATRIX_WIDTH"_s ) )
   {
-    mZ0MatrixWidth = parameterAsInt( parameters, u"Z0_MATRIX_WIDTH"_s, context );
-  }
-  else
-  {
-    mZ0MatrixWidth = 1;
+    z0MatrixWidth = parameterAsInt( parameters, u"Z0_MATRIX_WIDTH"_s, context );
   }
 
+  int z0MatrixHeight = 1;
   if ( parameters.contains( u"Z0_MATRIX_HEIGHT"_s ) )
   {
-    mZ0MatrixHeight = parameterAsInt( parameters, u"Z0_MATRIX_HEIGHT"_s, context );
-  }
-  else
-  {
-    mZ0MatrixHeight = 1;
+    z0MatrixHeight = parameterAsInt( parameters, u"Z0_MATRIX_HEIGHT"_s, context );
   }
 
   mTileGenerationRegion = parameterAsExtent( parameters, u"EXTENT"_s, context, mTargetCrs );
 
   const QgsRectangle userZ0Extent = parameterAsExtent( parameters, u"Z0_EXTENT"_s, context, mTargetCrs );
+  QgsRectangle z0Extent;
   if ( mTargetCrs.authid() == "EPSG:3857"_L1 )
   {
     if ( !userZ0Extent.isEmpty() )
     {
       feedback->pushWarning( QObject::tr( "Tiles are being generated in EPSG:3857, so a standard Web Mercator tile matrix will be used. The manual zoom 0 extent will be ignored." ) );
     }
-    mTileMatrixSetExtent = QgsRectangle( -MERC_MAX, -MERC_MAX, MERC_MAX, MERC_MAX );
+    z0Extent = QgsRectangle( -MERC_MAX, -MERC_MAX, MERC_MAX, MERC_MAX );
   }
   else
   {
@@ -380,21 +371,23 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     {
       throw QgsProcessingException( QObject::tr( "Zoom 0 extent must be specified when using a custom target CRS (%1)" ).arg( mTargetCrs.userFriendlyIdentifier() ) );
     }
-    mTileMatrixSetExtent = userZ0Extent;
-    const double rawPixelXSize = mTileMatrixSetExtent.width() / ( static_cast<double>( mZ0MatrixWidth ) * mTileWidth );
-    const double rawPixelYSize = mTileMatrixSetExtent.height() / ( static_cast<double>( mZ0MatrixHeight ) * mTileHeight );
+    z0Extent = userZ0Extent;
+    const double rawPixelXSize = z0Extent.width() / ( static_cast<double>( z0MatrixWidth ) * mTileWidth );
+    const double rawPixelYSize = z0Extent.height() / ( static_cast<double>( z0MatrixHeight ) * mTileHeight );
 
     // tile matrix extents MUST be square! Expanding the tile matrix set extent around its center to force this.
     if ( !qgsDoubleNear( rawPixelXSize, rawPixelYSize, 1e-9 ) )
     {
       const double isotropicPixelSize = std::max( rawPixelXSize, rawPixelYSize );
-      const double requiredWidth = isotropicPixelSize * mZ0MatrixWidth * mTileWidth;
-      const double requiredHeight = isotropicPixelSize * mZ0MatrixHeight * mTileHeight;
+      const double requiredWidth = isotropicPixelSize * z0MatrixWidth * mTileWidth;
+      const double requiredHeight = isotropicPixelSize * z0MatrixHeight * mTileHeight;
 
-      const QgsPointXY center = mTileMatrixSetExtent.center();
-      mTileMatrixSetExtent = QgsRectangle( center.x() - requiredWidth / 2.0, center.y() - requiredHeight / 2.0, center.x() + requiredWidth / 2.0, center.y() + requiredHeight / 2.0 );
+      const QgsPointXY center = z0Extent.center();
+      z0Extent = QgsRectangle( center.x() - requiredWidth / 2.0, center.y() - requiredHeight / 2.0, center.x() + requiredWidth / 2.0, center.y() + requiredHeight / 2.0 );
     }
   }
+
+  mZ0matrix = QgsTileMatrix::fromCustomDef( 0, mTargetCrs, QgsPointXY( z0Extent.xMinimum(), z0Extent.yMaximum() ), z0Extent.width() / z0MatrixWidth, z0MatrixWidth, z0MatrixHeight );
 
   QgsCoordinateTransform src2Wgs = QgsCoordinateTransform( mTargetCrs, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), context.transformContext() );
   src2Wgs.setBallparkTransformsAreAppropriate( true );
@@ -664,7 +657,7 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
       break;
 
     long long tileCount = 0;
-    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize );
+    mMetaTiles += getMetatiles( mZ0matrix, mTileGenerationRegion, z, tileCount, mMetaTileSize );
     feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
@@ -929,7 +922,7 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
       break;
 
     long long tileCount = 0;
-    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize );
+    mMetaTiles += getMetatiles( mZ0matrix, mTileGenerationRegion, z, tileCount, mMetaTileSize );
     feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;
@@ -1155,9 +1148,7 @@ QVariantMap QgsXyzTilesGpkgAlgorithm::processAlgorithm( const QVariantMap &param
 
   mGpkgWriter = std::make_unique<QgsGeoPackageTiles>( outputFile );
 
-  const QgsTileMatrix z0Matrix
-    = QgsTileMatrix::fromCustomDef( 0, mTargetCrs, QgsPointXY( mTileMatrixSetExtent.xMinimum(), mTileMatrixSetExtent.yMaximum() ), mTileMatrixSetExtent.width() / mZ0MatrixWidth, mZ0MatrixWidth, mZ0MatrixHeight );
-  if ( !mGpkgWriter->create( z0Matrix, mTileGenerationRegion, mMinZoom, mMaxZoom, mTileWidth, mTileHeight ) )
+  if ( !mGpkgWriter->create( mZ0matrix, mTileGenerationRegion, mMinZoom, mMaxZoom, mTileWidth, mTileHeight ) )
   {
     throw QgsProcessingException( QObject::tr( "Failed to create GeoPackage file %1: %2" ).arg( outputFile, mGpkgWriter->lastError() ) );
   }
@@ -1170,7 +1161,7 @@ QVariantMap QgsXyzTilesGpkgAlgorithm::processAlgorithm( const QVariantMap &param
       break;
 
     long long tileCount = 0;
-    mMetaTiles += getMetatiles( mTileMatrixSetExtent, mTileGenerationRegion, z, mZ0MatrixWidth, mZ0MatrixHeight, tileCount, mMetaTileSize );
+    mMetaTiles += getMetatiles( mZ0matrix, mTileGenerationRegion, z, tileCount, mMetaTileSize );
     feedback->pushInfo( QObject::tr( "%1 metatiles (%2 tiles) will be created for zoom level %3" ).arg( mMetaTiles.size() - mTotalMetaTiles ).arg( tileCount ).arg( z ) );
     mTotalMetaTiles = mMetaTiles.size();
     totalTiles += tileCount;

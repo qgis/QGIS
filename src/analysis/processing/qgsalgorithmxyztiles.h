@@ -28,6 +28,7 @@
 #include "qgsmbtiles.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsrectangle.h"
+#include "qgstiles.h"
 #include "qobjectuniqueptr.h"
 
 #include <QString>
@@ -118,10 +119,8 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QObjectUniquePtr<QObject> mJobOwner = nullptr;
 
     QgsCoordinateReferenceSystem mTargetCrs = QgsCoordinateReferenceSystem( u"EPSG:3857"_s );
-    QgsRectangle mTileMatrixSetExtent;
+    QgsTileMatrix mZ0matrix;
     QgsRectangle mTileGenerationRegion;
-    int mZ0MatrixWidth = 1;
-    int mZ0MatrixHeight = 1;
 
     long long mTotalMetaTiles = 0;
     std::atomic<long long> mProcessedMetaTiles { 0 };
