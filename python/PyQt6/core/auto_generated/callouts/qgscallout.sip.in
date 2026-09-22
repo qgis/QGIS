@@ -509,7 +509,7 @@ A simple direct line callout style.
     ~QgsSimpleLineCallout();
 
 
-    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+    static std::unique_ptr<QgsCallout> create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Creates a new QgsSimpleLineCallout, using the settings serialized in the
 ``properties`` map (corresponding to the output from
@@ -784,7 +784,7 @@ Draws straight (right angled) lines as callouts.
     QgsManhattanLineCallout();
 
 
-    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+    static std::unique_ptr<QgsCallout> create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Creates a new QgsManhattanLineCallout, using the settings serialized in
 the ``properties`` map (corresponding to the output from
@@ -829,7 +829,7 @@ Draws curved lines as callouts.
     QgsCurvedLineCallout();
 
 
-    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+    static std::unique_ptr<QgsCallout> create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Creates a new QgsCurvedLineCallout, using the settings serialized in the
 ``properties`` map (corresponding to the output from
@@ -904,7 +904,7 @@ A cartoon talking bubble callout style.
     ~QgsBalloonCallout();
 
 
-    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
+    static std::unique_ptr<QgsCallout> create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Creates a new QgsBalloonCallout, using the settings serialized in the
 ``properties`` map (corresponding to the output from

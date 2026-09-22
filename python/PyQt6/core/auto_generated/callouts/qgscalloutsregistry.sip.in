@@ -148,7 +148,7 @@ Registers a new callout type.
 Ownership of ``metadata`` is transferred to the registry.
 %End
 
-    QgsCallout *createCallout( const QString &type, const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) const /Factory/;
+    std::unique_ptr<QgsCallout> createCallout( const QString &type, const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Creates a new instance of a callout, given the callout ``type`` and
 ``properties``.
@@ -156,7 +156,7 @@ Creates a new instance of a callout, given the callout ``type`` and
 The caller takes ownership of the callout.
 %End
 
-    QgsCallout *createCallout( const QString &type, const QDomElement &element, const QgsReadWriteContext &context ) const /Factory/;
+    std::unique_ptr<QgsCallout> createCallout( const QString &type, const QDomElement &element, const QgsReadWriteContext &context ) const;
 %Docstring
 Creates a new instance of a callout of the specified ``type``, using the
 properties from a DOM ``element``.
@@ -169,7 +169,7 @@ The caller takes ownership of the callout.
 Returns a list of all available callout types.
 %End
 
-    static QgsCallout *defaultCallout() /Factory/;
+    static std::unique_ptr<QgsCallout> defaultCallout();
 %Docstring
 Create a new instance of a callout with default settings.
 

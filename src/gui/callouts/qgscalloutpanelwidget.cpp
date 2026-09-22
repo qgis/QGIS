@@ -78,7 +78,7 @@ QgsCallout *QgsCalloutPanelWidget::callout()
     callout.reset( pew->callout()->clone() );
   }
   if ( !callout )
-    callout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType ) );
+    callout = QgsApplication::calloutRegistry()->createCallout( calloutType );
 
   callout->setEnabled( true );
   return callout.release();
