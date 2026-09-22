@@ -1426,12 +1426,12 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   // TODO - replace with registry when multiple callout styles exist
   const QString calloutType = elem.attribute( u"calloutType"_s );
   if ( calloutType.isEmpty() )
-    mCallout.reset( QgsCalloutRegistry::defaultCallout() );
+    mCallout = QgsCalloutRegistry::defaultCallout();
   else
   {
-    mCallout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType, elem.firstChildElement( u"callout"_s ), context ) );
+    mCallout = QgsApplication::calloutRegistry()->createCallout( calloutType, elem.firstChildElement( u"callout"_s ), context );
     if ( !mCallout )
-      mCallout.reset( QgsCalloutRegistry::defaultCallout() );
+      mCallout = QgsCalloutRegistry::defaultCallout();
   }
 }
 

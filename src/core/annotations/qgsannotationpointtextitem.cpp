@@ -251,7 +251,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEditV2(
         setCalloutAnchor( QgsGeometry::fromPoint( moveOperation->after() ) );
         if ( !callout() )
         {
-          setCallout( QgsApplication::calloutRegistry()->defaultCallout() );
+          setCallout( QgsApplication::calloutRegistry()->defaultCallout().release() );
         }
       }
       return Qgis::AnnotationItemEditOperationResult::Success;

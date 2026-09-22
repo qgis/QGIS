@@ -149,9 +149,9 @@ bool QgsAnnotationItem::readCommonProperties( const QDomElement &element, const 
   }
   else
   {
-    mCallout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType, element.firstChildElement( u"callout"_s ), context ) );
+    mCallout = QgsApplication::calloutRegistry()->createCallout( calloutType, element.firstChildElement( u"callout"_s ), context );
     if ( !mCallout )
-      mCallout.reset( QgsCalloutRegistry::defaultCallout() );
+      mCallout = QgsCalloutRegistry::defaultCallout();
   }
 
   const QString calloutAnchorWkt = element.attribute( u"calloutAnchor"_s );

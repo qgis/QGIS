@@ -363,7 +363,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectItem::applyEditV2( QgsA
         setCalloutAnchor( QgsGeometry::fromPoint( moveOperation->after() ) );
         if ( !callout() )
         {
-          setCallout( QgsApplication::calloutRegistry()->defaultCallout() );
+          setCallout( QgsApplication::calloutRegistry()->defaultCallout().release() );
         }
         return Qgis::AnnotationItemEditOperationResult::Success;
       }
