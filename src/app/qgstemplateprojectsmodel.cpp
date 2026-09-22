@@ -80,6 +80,24 @@ QHash<int, QByteArray> QgsTemplateProjectsModel::roleNames() const
   return roles;
 }
 
+QList<std::pair<QString, QString>> QgsTemplateProjectsModel::labelledTemplatePaths()
+{
+  const QStringList templatePaths = QgsApplication::projectTemplatePaths();
+
+  QHash<QString, int> directoryNameCount;
+  for ( const QString &templatePath : templatePaths )
+    directoryNameCount[QDir( templatePath ).dirName()]++;
+
+  QList<std::pair<QString, QString>> result;
+  result.reserve( templatePaths.size() );
+  for ( const QString &templatePath : templatePaths )
+  {
+    const QString dirName = QDir( templatePath ).dirName();
+    result.append( { directoryNameCount.value( dirName ) > 1 ? QDir::toNativeSeparators( templatePath ) : dirName, templatePath } );
+  }
+  return result;
+}
+
 void QgsTemplateProjectsModel::reload()
 {
   // Remove file templates only
@@ -91,27 +109,16 @@ void QgsTemplateProjectsModel::reload()
     }
   }
 
-  const QStringList templatePaths = QgsApplication::projectTemplatePaths();
-
-  // Count how many directories have the same name (homonyms)
-  QHash<QString, int> directoryNameCount;
-  for ( const QString &templatePath : templatePaths )
-  {
-    directoryNameCount[QDir( templatePath ).dirName()]++;
-  }
-
   // Use default canvas color when preview image is missing
   const QColor canvasColor = QgsSettingsRegistryCore::settingsDefaultCanvasColor->value();
 
   int row = 0;
-  for ( const QString &templatePath : templatePaths )
+  for ( const auto &[section, templatePath] : labelledTemplatePaths() )
   {
     const QDir dir( templatePath );
     if ( !dir.exists() )
       continue;
 
-    // Section title is the directory name, unless several directories share the same name, in which case the full path is used
-    const QString section = directoryNameCount.value( dir.dirName() ) > 1 ? QDir::toNativeSeparators( templatePath ) : dir.dirName();
     const QFileInfoList files = dir.entryInfoList( QStringList() << u"*.qgs"_s << u"*.qgz"_s );
     for ( const QFileInfo &file : files )
     {

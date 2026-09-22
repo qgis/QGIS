@@ -32,7 +32,6 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFontMetrics>
-#include <QHash>
 #include <QImageWriter>
 #include <QInputDialog>
 #include <QKeyEvent>
@@ -5466,22 +5465,13 @@ void QgisApp::updateProjectFromTemplates()
   // Remove existing entries
   mProjectFromTemplateMenu->clear();
   mProjectTemplateWatcher.removePaths( mProjectTemplateWatcher.directories() );
-
-  const QStringList templatePaths = QgsApplication::projectTemplatePaths();
-  mProjectTemplateWatcher.addPaths( templatePaths );
-
-  // Find directories with the same name (they will be displayed differently)
-  QHash<QString, int> directoryNameCount;
-  for ( const QString &templatePath : templatePaths )
-  {
-    directoryNameCount[QDir( templatePath ).dirName()]++;
-  }
+  mProjectTemplateWatcher.addPaths( QgsApplication::projectTemplatePaths() );
 
   const QFontMetrics fontMetrics = mProjectFromTemplateMenu->fontMetrics();
   const int maxLabelWidth = Qgis::UI_SCALE_FACTOR * fontMetrics.horizontalAdvance( 'X' ) * 35;
 
-  // get list of project files in template dirs
-  for ( const QString &templateDirName : templatePaths )
+  // get list of project files in template dirs with their labelled name
+  for ( const auto &[label, templateDirName] : QgsTemplateProjectsModel::labelledTemplatePaths() )
   {
     QDir templateDir( templateDirName );
     if ( !templateDir.exists() )
@@ -5494,8 +5484,6 @@ void QgisApp::updateProjectFromTemplates()
     // Add entries
     if ( templateFiles.count() > 0 )
     {
-      // For directories with the same name, use their full path to tell them apart
-      const QString label = directoryNameCount.value( templateDir.dirName() ) > 1 ? QDir::toNativeSeparators( templateDirName ) : templateDir.dirName();
       QMenu *dirMenu = mProjectFromTemplateMenu->addMenu( fontMetrics.elidedText( label, Qt::ElideLeft, maxLabelWidth ) );
       for ( const QString &templateFile : templateFiles )
       {
