@@ -22,6 +22,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmodeldesignerdialog.h"
 #include "qgsprocessingdefaultstyledialog.h"
+#include "qgsprocessingfavoritealgorithmmanager.h"
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingprojectmodelprovider.h"
@@ -138,6 +139,41 @@ QgsExpressionContext QgsAppProcessingContextFactory::createExpressionContext() c
 
   return context;
 }
+
+
+class AddToFavoritesContextAction : public QgsProcessingToolboxContextAction
+{
+  public:
+    AddToFavoritesContextAction()
+      : QgsProcessingToolboxContextAction( QObject::tr( "Add to Favorites" ) )
+    {}
+
+    QIcon icon() const override { return QIcon(); }
+
+    bool isCompatibleWithAlgorithm( const QString &providerId, const QString &algorithmId ) override
+    {
+      return !QgsGui::processingFavoriteAlgorithmManager()->isFavorite( u"%1:%2"_s.arg( providerId, algorithmId ) );
+    }
+
+    void trigger( const QgsProcessingActionContext &context ) override { QgsGui::processingFavoriteAlgorithmManager()->add( u"%1:%2"_s.arg( context.providerId(), context.algorithmName() ) ); }
+};
+
+class RemoveFromFavoritesContextAction : public QgsProcessingToolboxContextAction
+{
+  public:
+    RemoveFromFavoritesContextAction()
+      : QgsProcessingToolboxContextAction( QObject::tr( "Remove from Favorites" ) )
+    {}
+
+    QIcon icon() const override { return QIcon(); }
+
+    bool isCompatibleWithAlgorithm( const QString &providerId, const QString &algorithmId ) override
+    {
+      return QgsGui::processingFavoriteAlgorithmManager()->isFavorite( u"%1:%2"_s.arg( providerId, algorithmId ) );
+    }
+
+    void trigger( const QgsProcessingActionContext &context ) override { QgsGui::processingFavoriteAlgorithmManager()->remove( u"%1:%2"_s.arg( context.providerId(), context.algorithmName() ) ); }
+};
 
 
 class EditDefaultOutputStyleContextAction : public QgsProcessingToolboxContextAction
@@ -422,10 +458,15 @@ void QgsAppProcessingUtils::registerActions()
 
   // toolbox context actions
   QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QString(), new EditDefaultOutputStyleContextAction() );
+  auto separatorAction = new QgsProcessingToolboxContextAction( QString() );
+  separatorAction->setIsSeparator( true );
+  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QString(), separatorAction );
+  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QString(), new AddToFavoritesContextAction() );
+  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QString(), new RemoveFromFavoritesContextAction() );
 
   QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, new EditModelContextAction() );
   QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, new DeleteModelContextAction() );
-  auto separatorAction = new QgsProcessingToolboxContextAction( QString() );
+  separatorAction = new QgsProcessingToolboxContextAction( QString() );
   separatorAction->setIsSeparator( true );
   QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, separatorAction );
   QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, new ExportModelAsPythonScriptAction() );

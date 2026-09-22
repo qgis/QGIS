@@ -215,21 +215,6 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 popupmenu.addAction(executeBatchAction)
             popupmenu.addSeparator()
 
-            actionText = QCoreApplication.translate(
-                "ProcessingToolbox", "Add to Favorites"
-            )
-            if (
-                QgsGui.instance()
-                .processingFavoriteAlgorithmManager()
-                .isFavorite(alg.id())
-            ):
-                actionText = QCoreApplication.translate(
-                    "ProcessingToolbox", "Remove from Favorites"
-                )
-            favoriteAction = QAction(actionText, popupmenu)
-            favoriteAction.triggered.connect(self.toggleFavorite)
-            popupmenu.addAction(favoriteAction)
-
             actions = QgsGui.processingGuiRegistry().toolboxContextActions()
             if len(actions) > 0:
                 popupmenu.addSeparator()
@@ -272,15 +257,3 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         alg = self.algorithmTree.selectedAlgorithm()
         if alg is not None:
             self.executeWithGui.emit(alg.id(), self, self.in_place_mode, False)
-
-    def toggleFavorite(self):
-        alg = self.algorithmTree.selectedAlgorithm()
-        if alg is not None:
-            if (
-                QgsGui.instance()
-                .processingFavoriteAlgorithmManager()
-                .isFavorite(alg.id())
-            ):
-                QgsGui.instance().processingFavoriteAlgorithmManager().remove(alg.id())
-            else:
-                QgsGui.instance().processingFavoriteAlgorithmManager().add(alg.id())
