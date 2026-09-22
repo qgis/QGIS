@@ -2617,6 +2617,7 @@ class GUI_EXPORT QgsTileExtentMaxZoomWidget : public QgsPanelWidget, private Ui:
     Q_OBJECT
   public:
     QgsTileExtentMaxZoomWidget( const QgsProcessingParameterTileExtentMaxZoomList *param );
+    ~QgsTileExtentMaxZoomWidget() override;
 
     QList< QgsTileExtentMaxZoomRegion > regions() const;
 
