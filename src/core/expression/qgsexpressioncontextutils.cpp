@@ -421,13 +421,24 @@ QList<QgsExpressionContextScope *> QgsExpressionContextUtils::globalProjectLayer
   QList<QgsExpressionContextScope *> scopes;
   scopes << globalScope();
 
-  QgsProject *project = layer && layer->project() ? layer->project() : QgsProject::instance(); // skip-keyword-check
+  QgsProject *project = projectForLayer( layer );
   if ( project )
     scopes << projectScope( project );
 
   if ( layer )
     scopes << layerScope( layer );
   return scopes;
+}
+
+QgsProject *QgsExpressionContextUtils::projectForLayer( const QgsMapLayer *layer )
+{
+  // TODO QGIS 5.0 -- remove the fallback to the current project, once layers are strictly required to be associated with project
+  return layer && layer->project() ? layer->project() : QgsProject::instance(); // skip-keyword-check
+}
+
+QgsExpressionContext QgsExpressionContextUtils::layerContext( const QgsMapLayer *layer )
+{
+  return QgsExpressionContext( projectForLayer( layer ), globalProjectLayerScopes( layer ) );
 }
 
 

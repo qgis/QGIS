@@ -155,6 +155,22 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QList<QgsExpressionContextScope *> globalProjectLayerScopes( const QgsMapLayer *layer ) SIP_FACTORY;
 
     /**
+     * Returns the project associated with \a layer, if set, otherwise falls back to
+     * QgsProject.instance().
+     *
+     * \since QGIS 4.6
+     */
+    static QgsProject *projectForLayer( const QgsMapLayer *layer );
+
+    /**
+     * Creates a new expression context containing global, layer's project and layer scopes for \a layer,
+     * with the associated project (see projectForLayer()) already set on the context.
+     *
+     * \since QGIS 4.6
+     */
+    static QgsExpressionContext layerContext( const QgsMapLayer *layer );
+
+    /**
       * Sets a layer context variable. This variable will be contained within scopes retrieved via
       * layerScope().
       * \param layer map layer

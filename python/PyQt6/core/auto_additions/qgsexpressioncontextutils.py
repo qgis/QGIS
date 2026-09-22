@@ -12,6 +12,8 @@ try:
     QgsExpressionContextUtils.removeProjectVariable = staticmethod(QgsExpressionContextUtils.removeProjectVariable)
     QgsExpressionContextUtils.layerScope = staticmethod(QgsExpressionContextUtils.layerScope)
     QgsExpressionContextUtils.globalProjectLayerScopes = staticmethod(QgsExpressionContextUtils.globalProjectLayerScopes)
+    QgsExpressionContextUtils.projectForLayer = staticmethod(QgsExpressionContextUtils.projectForLayer)
+    QgsExpressionContextUtils.layerContext = staticmethod(QgsExpressionContextUtils.layerContext)
     QgsExpressionContextUtils.setLayerVariable = staticmethod(QgsExpressionContextUtils.setLayerVariable)
     QgsExpressionContextUtils.setLayerVariables = staticmethod(QgsExpressionContextUtils.setLayerVariables)
     QgsExpressionContextUtils.mapSettingsScope = staticmethod(QgsExpressionContextUtils.mapSettingsScope)
