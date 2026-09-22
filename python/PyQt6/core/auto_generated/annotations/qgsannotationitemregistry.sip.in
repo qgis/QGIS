@@ -119,7 +119,7 @@ Registers a new annotation item type. Takes ownership of the metadata
 instance.
 %End
 
-    QgsAnnotationItem *createItem( const QString &type ) const /Factory/;
+    std::unique_ptr<QgsAnnotationItem> createItem( const QString &type ) const;
 %Docstring
 Creates a new instance of a annotation item given the item ``type``.
 %End

@@ -127,9 +127,9 @@ bool QgsAnnotationPictureItem::writeXml( QDomElement &element, QDomDocument &doc
   return true;
 }
 
-QgsAnnotationPictureItem *QgsAnnotationPictureItem::create()
+std::unique_ptr<QgsAnnotationPictureItem> QgsAnnotationPictureItem::create()
 {
-  return new QgsAnnotationPictureItem( Qgis::PictureFormat::Unknown, QString(), QgsRectangle() );
+  return std::make_unique<QgsAnnotationPictureItem>( Qgis::PictureFormat::Unknown, QString(), QgsRectangle() );
 }
 
 bool QgsAnnotationPictureItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )

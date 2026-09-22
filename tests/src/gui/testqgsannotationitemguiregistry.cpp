@@ -133,7 +133,9 @@ void TestQgsAnnotationItemGuiRegistry::guiRegistry()
   //creating item
   QgsAnnotationItem *item = registry.createItem( uuid );
   QVERIFY( !item );
-  QgsApplication::annotationItemRegistry()->addItemType( new QgsAnnotationItemMetadata( u"mytype"_s, u"My Type"_s, u"My Types"_s, []() -> QgsAnnotationItem * { return new TestItem(); } ) );
+  QgsApplication::annotationItemRegistry()->addItemType( new QgsAnnotationItemMetadata( u"mytype"_s, u"My Type"_s, u"My Types"_s, []() -> std::unique_ptr<QgsAnnotationItem> {
+    return std::make_unique<TestItem>();
+  } ) );
 
   item = registry.createItem( uuid );
   QVERIFY( item );
@@ -143,8 +145,8 @@ void TestQgsAnnotationItemGuiRegistry::guiRegistry()
 
   // override create func
   metadata = new QgsAnnotationItemGuiMetadata( u"mytype"_s, u"mytype"_s, QIcon(), createWidget );
-  metadata->setItemCreationFunction( []() -> QgsAnnotationItem * {
-    TestItem *item = new TestItem();
+  metadata->setItemCreationFunction( []() -> std::unique_ptr<QgsAnnotationItem> {
+    auto item = std::make_unique<TestItem>();
     item->mFlag = 2;
     return item;
   } );

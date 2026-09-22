@@ -37,7 +37,7 @@ Constructor for QgsAnnotationPointTextItem, containing the specified
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 
-    static QgsAnnotationPointTextItem *create() /Factory/;
+    static std::unique_ptr<QgsAnnotationPointTextItem> create();
 %Docstring
 Creates a new text at point annotation item.
 %End

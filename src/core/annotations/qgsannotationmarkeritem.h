@@ -49,7 +49,7 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     /**
      * Creates a new marker annotation item.
      */
-    static QgsAnnotationMarkerItem *create() SIP_FACTORY;
+    static std::unique_ptr<QgsAnnotationMarkerItem> create();
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsAnnotationMarkerItem *clone() const override SIP_FACTORY;
