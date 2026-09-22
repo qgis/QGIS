@@ -49,6 +49,7 @@
 #include "qgsmaplayercombobox.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmapthemecollection.h"
+#include "qgsmaptoolextent.h"
 #include "qgsmessagebar.h"
 #include "qgspointcloudattributecombobox.h"
 #include "qgspointcloudlayer.h"
@@ -9847,6 +9848,8 @@ QgsTileExtentMaxZoomWidget::QgsTileExtentMaxZoomWidget( const QgsProcessingParam
   connect( mButtonRemove, &QToolButton::clicked, this, &QgsTileExtentMaxZoomWidget::removeClicked );
   connect( mRegionsWidget, &QTreeWidget::itemDoubleClicked, this, &QgsTileExtentMaxZoomWidget::itemDoubleClicked );
 }
+
+QgsTileExtentMaxZoomWidget::~QgsTileExtentMaxZoomWidget() = default;
 
 void QgsTileExtentMaxZoomWidget::addClicked()
 {
