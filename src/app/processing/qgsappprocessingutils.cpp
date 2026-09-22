@@ -21,6 +21,7 @@
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsmodeldesignerdialog.h"
+#include "qgsprocessingdefaultstyledialog.h"
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingprojectmodelprovider.h"
@@ -137,6 +138,49 @@ QgsExpressionContext QgsAppProcessingContextFactory::createExpressionContext() c
 
   return context;
 }
+
+
+class EditDefaultOutputStyleContextAction : public QgsProcessingToolboxContextAction
+{
+  public:
+    EditDefaultOutputStyleContextAction()
+      : QgsProcessingToolboxContextAction( QObject::tr( "Edit Default Styles for Outputs…" ) )
+    {}
+
+    QIcon icon() const override { return QIcon(); }
+
+    bool isCompatibleWithAlgorithm( const QString &providerId, const QString &algorithmId ) override
+    {
+      const QgsProcessingAlgorithm *algorithm = QgsApplication::processingRegistry()->algorithmById( u"%1:%2"_s.arg( providerId, algorithmId ) );
+      if ( !algorithm )
+        return false;
+
+      // this action only makes sense for algorithms that output map layers
+      const QgsProcessingOutputDefinitions outputDefs = algorithm->outputDefinitions();
+      for ( const QgsProcessingOutputDefinition *output : outputDefs )
+      {
+        if ( dynamic_cast<const QgsProcessingOutputVectorLayer *>( output )
+             || dynamic_cast<const QgsProcessingOutputRasterLayer *>( output )
+             || dynamic_cast<const QgsProcessingOutputVectorTileLayer *>( output )
+             || dynamic_cast<const QgsProcessingOutputPointCloudLayer *>( output ) )
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    void trigger( const QgsProcessingActionContext &context ) override
+    {
+      QgsProcessingProvider *provider = QgsApplication::processingRegistry()->providerById( context.providerId() );
+      const QgsProcessingAlgorithm *algorithm = provider->algorithm( context.algorithmName() );
+      if ( !algorithm )
+        return;
+
+      QgsProcessingDefaultStyleDialog dialog( algorithm, context.parentWidget() );
+      dialog.exec();
+    }
+};
 
 
 class CreateNewModelAction : public QgsProcessingToolboxAction
@@ -375,6 +419,9 @@ void QgsAppProcessingUtils::registerActions()
   QgsGui::processingGuiRegistry()->registerProviderToolboxAction( QgsProcessing::MODEL_PROVIDER_ID, new CreateNewModelAction() );
   QgsGui::processingGuiRegistry()->registerProviderToolboxAction( QgsProcessing::MODEL_PROVIDER_ID, new OpenModelFromFileAction() );
   QgsGui::processingGuiRegistry()->registerProviderToolboxAction( QgsProcessing::MODEL_PROVIDER_ID, new AddModelFromFileAction() );
+
+  // toolbox context actions
+  QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QString(), new EditDefaultOutputStyleContextAction() );
 
   QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, new EditModelContextAction() );
   QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, new DeleteModelContextAction() );

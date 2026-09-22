@@ -28,7 +28,6 @@ from qgis.gui import (
     QgsDockWidget,
     QgsGui,
     QgsProcessingActionContext,
-    QgsProcessingDefaultStyleDialog,
     QgsProcessingToolboxProxyModel,
 )
 from qgis.PyQt import uic
@@ -215,16 +214,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 )
                 popupmenu.addAction(executeBatchAction)
             popupmenu.addSeparator()
-            editRenderingStylesAction = QAction(
-                QCoreApplication.translate(
-                    "ProcessingToolbox", "Edit Rendering Styles for Outputs…"
-                ),
-                popupmenu,
-            )
-            editRenderingStylesAction.triggered.connect(self.editRenderingStyles)
-            popupmenu.addAction(editRenderingStylesAction)
 
-            popupmenu.addSeparator()
             actionText = QCoreApplication.translate(
                 "ProcessingToolbox", "Add to Favorites"
             )
@@ -269,16 +259,6 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         context.setAlgorithmName(algorithm_name)
         context.setProviderId(provider_id)
         action.trigger(context)
-
-    def editRenderingStyles(self):
-        alg = (
-            self.algorithmTree.selectedAlgorithm().create()
-            if self.algorithmTree.selectedAlgorithm() is not None
-            else None
-        )
-        if alg is not None:
-            dlg = QgsProcessingDefaultStyleDialog(alg)
-            dlg.exec()
 
     def activateCurrent(self):
         self.executeAlgorithm()
