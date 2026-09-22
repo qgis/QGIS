@@ -39,6 +39,7 @@ from qgis.core import (
 from qgis.gui import (
     QgsCustomDropHandler,
     QgsGui,
+    QgsMessageViewer,
     QgsModelDesignerDialog,
     QgsOptionsWidgetFactory,
     QgsProcessingAlgorithmWidgetBase,
@@ -78,7 +79,6 @@ from processing.gui.menus import (
     removeMenus,
 )
 from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.MessageDialog import MessageDialog
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.ResultsDock import ResultsDock
@@ -496,10 +496,11 @@ class ProcessingPlugin(QObject):
 
         ok, message = alg.canExecute()
         if not ok:
-            dlg = MessageDialog()
-            dlg.setTitle(self.tr("Error executing algorithm"))
+            dlg = QgsMessageViewer()
+            dlg.setTitle(self.tr("Error Executing Algorithm"))
             dlg.setMessage(
-                self.tr("<h3>This algorithm cannot be run</h3>\n{0}").format(message)
+                self.tr("<h3>This algorithm cannot be run</h3>\n{0}").format(message),
+                Qgis.StringFormat.Html,
             )
             dlg.exec()
             return
