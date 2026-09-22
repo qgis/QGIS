@@ -35,7 +35,7 @@ Constructor for QgsAnnotationRectangleTextItem, containing the specified
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 
-    static QgsAnnotationRectangleTextItem *create() /Factory/;
+    static std::unique_ptr<QgsAnnotationRectangleTextItem> create();
 %Docstring
 Creates a new rectangle text annotation item.
 %End

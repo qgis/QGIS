@@ -227,9 +227,9 @@ Qgis::AnnotationItemFlags QgsAnnotationPolygonItem::flags() const
   return Qgis::AnnotationItemFlag::SupportsReferenceScale;
 }
 
-QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()
+std::unique_ptr<QgsAnnotationPolygonItem> QgsAnnotationPolygonItem::create()
 {
-  return new QgsAnnotationPolygonItem( new QgsPolygon() );
+  return std::make_unique<QgsAnnotationPolygonItem>( new QgsPolygon() );
 }
 
 bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
