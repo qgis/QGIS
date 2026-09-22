@@ -124,7 +124,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      *
      * \since QGIS 3.18
      */
-    static QgsAttributeEditorElement *create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = nullptr ) SIP_FACTORY;
+    static std::unique_ptr<QgsAttributeEditorElement> create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = nullptr );
     // clang-format on
 
     /**
