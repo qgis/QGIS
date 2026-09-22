@@ -19002,9 +19002,9 @@ QgsTemporalRangeObject.setIsTemporal: src/core/qgstemporalrangeobject.h#L51
 QgsTemporalRangeObject.setTemporalRange: src/core/qgstemporalrangeobject.h#L72
 QgsTemporalRangeObject: src/core/qgstemporalrangeobject.h#L33
 QgsTemporalUtils.QgsTemporalUtils: src/core/qgstemporalutils.h#L135
-QgsTemporalUtils.calculateFrameTime: src/core/qgstemporalutils.h#L226
+QgsTemporalUtils.calculateFrameTime: src/core/qgstemporalutils.h#L240
 QgsTemporalUtils.calculateTemporalRangeForProject: src/core/qgstemporalutils.h#L119
-QgsTemporalUtils.exportAnimation: src/core/qgstemporalutils.h#L203
+QgsTemporalUtils.exportAnimation: src/core/qgstemporalutils.h#L217
 QgsTemporalUtils: src/core/qgstemporalutils.h#L110
 QgsTessellator.QgsTessellator: src/core/qgstessellator.h#L297
 QgsTessellator.addPolygon: src/core/qgstessellator.h#L231
