@@ -25,8 +25,8 @@
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsmaplayerutils.h"
-#include "qgstiles.h"
 #include "qgsprocessingparametertileextentmaxzoomlist.h"
+#include "qgstiles.h"
 
 #include <QBuffer>
 #include <QDir>
@@ -69,10 +69,9 @@ void MetaTile::addTile( const int row, const int col, Tile tileToAdd, const QgsR
 
 namespace
 {
-  QList<MetaTile> getMetatiles( const QgsTileMatrix &z0Matrix, const QgsRectangle &contentsExtent, int zoom, long long &tileCount,
-    int metaTileSize,
-    const QList<QgsTileExtentMaxZoomRegion> &maxZoomRegions,
-    int defaultMaxZoom )
+  QList<MetaTile> getMetatiles(
+    const QgsTileMatrix &z0Matrix, const QgsRectangle &contentsExtent, int zoom, long long &tileCount, int metaTileSize, const QList<QgsTileExtentMaxZoomRegion> &maxZoomRegions, int defaultMaxZoom
+  )
   {
     const QgsTileMatrix targetZoomMatrix = QgsTileMatrix::fromTileMatrix( zoom, z0Matrix );
 
