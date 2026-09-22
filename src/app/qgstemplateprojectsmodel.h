@@ -16,6 +16,8 @@
 #ifndef QGSTEMPLATEPROJECTSMODEL_H
 #define QGSTEMPLATEPROJECTSMODEL_H
 
+#include <utility>
+
 #include <QFileSystemWatcher>
 #include <QStandardItemModel>
 #include <QTemporaryDir>
@@ -64,6 +66,12 @@ class QgsTemplateProjectsModel : public QStandardItemModel
      * directories returned by QgsApplication::projectTemplatePaths()
      */
     void reload();
+
+    /**
+     * Returns the configured template directories as (label, path) pairs, in configuration order.
+     * The label is the directory name, or the full native path when several directories share the same name.
+     */
+    static QList<std::pair<QString, QString>> labelledTemplatePaths();
 
   private:
     QTemporaryDir mTemporaryDir;
