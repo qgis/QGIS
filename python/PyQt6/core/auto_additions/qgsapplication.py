@@ -40,6 +40,7 @@ try:
     QgsApplication.svgPaths = staticmethod(QgsApplication.svgPaths)
     QgsApplication.setProjectTemplatePaths = staticmethod(QgsApplication.setProjectTemplatePaths)
     QgsApplication.projectTemplatePaths = staticmethod(QgsApplication.projectTemplatePaths)
+    QgsApplication.defaultProjectTemplatePaths = staticmethod(QgsApplication.defaultProjectTemplatePaths)
     QgsApplication.layoutTemplatePaths = staticmethod(QgsApplication.layoutTemplatePaths)
     QgsApplication.systemEnvVars = staticmethod(QgsApplication.systemEnvVars)
     QgsApplication.prefixPath = staticmethod(QgsApplication.prefixPath)

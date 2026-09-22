@@ -1348,10 +1348,6 @@ void QgsApplication::setProjectTemplatePaths( const QStringList &projectTemplate
 QStringList QgsApplication::projectTemplatePaths()
 {
   QStringList configuredPaths = settingsProjectTemplatePaths->value();
-  if ( configuredPaths.isEmpty() )
-  {
-    configuredPaths << qgisSettingsDirPath() + u"project_templates"_s;
-  }
 
   // Normalize the paths and avoid duplicates
   QStringList paths;
@@ -1362,6 +1358,14 @@ QStringList QgsApplication::projectTemplatePaths()
       paths.append( path );
   }
   return paths;
+}
+
+QStringList QgsApplication::defaultProjectTemplatePaths()
+{
+  // QStringList paths;
+  // paths << ;
+  return { qgisSettingsDirPath() + u"/project_templates"_s };
+  // return paths;
 }
 
 void QgsApplication::setSvgPaths( const QStringList &svgPaths )
