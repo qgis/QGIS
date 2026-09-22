@@ -165,7 +165,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   frameSettings->setHidden( true );
   mOptionsListWidget->item( static_cast<int>( Tabs::InstallFromZip ) )->setHidden( true );
 
-  voteRating->hide();
+  downloadCount->hide();
 
   // Init the message bar instance
   msgBar = new QgsMessageBar( this );
@@ -733,12 +733,12 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
   if ( !metadata->value( u"plugin_id"_s ).isEmpty() )
   {
-    voteRating->show();
+    downloadCount->show();
     mCurrentPluginId = metadata->value( "plugin_id" ).toInt();
   }
   else
   {
-    voteRating->hide();
+    downloadCount->hide();
     mCurrentPluginId = -1;
   }
 
@@ -878,9 +878,9 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   }
 
   // Number of times a plugin has been downloaded.
-  QString votes;
-  votes += tr( "%1 downloads" ).arg( metadata->value( u"downloads"_s ) );
-  voteRating->setText( votes );
+  QString downloads;
+  downloads += tr( "%1 downloads" ).arg( metadata->value( u"downloads"_s ) );
+  downloadCount->setText( downloads );
 
   html += "</td></tr>"_L1;
   html += "<tr><td width='1%'> </td><td width='99%'> </td></tr>"_L1;

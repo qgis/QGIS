@@ -409,9 +409,9 @@
                   <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
                  </property>
                  <item row="0" column="0" colspan="2">
-                  <widget class="QLabel" name="voteRating">
+                  <widget class="QLabel" name="downloadCount">
                    <property name="text">
-                    <string>Current vote</string>
+                    <string>Current downloads</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
