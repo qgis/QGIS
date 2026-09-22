@@ -24,9 +24,10 @@
 #include <QDialog>
 #include <QStyledItemDelegate>
 
+#define SIP_NO_FILE
+
 class QgsProcessingAlgorithm;
 
-#ifndef SIP_RUN
 ///@cond PRIVATE
 
 class QgsProcessingDefaultStyleDelegate : public QStyledItemDelegate
@@ -80,12 +81,11 @@ class QgsProcessingDefaultStylesModel : public QAbstractTableModel
     QVector<OutputItem> mItems;
 };
 ///@endcond
-#endif
 
 /**
  * \ingroup gui
  * \brief A dialog for configuring default styles for Processing outputs.
- * \note Not stable API
+ * \note Not available in Python bindings.
  * \since QGIS 4.4
  */
 class GUI_EXPORT QgsProcessingDefaultStyleDialog : public QDialog, private Ui::QgsProcessingDefaultStylesDialogBase
