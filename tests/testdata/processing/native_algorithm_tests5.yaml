@@ -1314,6 +1314,9 @@ tests:
 
   - algorithm: native:coverageedges
     name: Coverage edges all
+    condition:
+      geos:
+        at_least: 31500
     params:
       EDGE_TYPE: 0
       INPUT:
@@ -1326,6 +1329,9 @@ tests:
 
   - algorithm: native:coverageedges
     name: Coverage edges interior
+    condition:
+      geos:
+        at_least: 31500
     params:
       EDGE_TYPE: 2
       INPUT:
@@ -1338,6 +1344,9 @@ tests:
 
   - algorithm: native:coverageedges
     name: Coverage edges exterior
+    condition:
+      geos:
+        at_least: 31500
     params:
       EDGE_TYPE: 1
       INPUT:
