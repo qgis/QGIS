@@ -428,36 +428,44 @@ QgsRasterBlock *QgsRasterVectorFieldRenderer::block( int bandNo, const QgsRectan
     // the feedback carries a copy of the map render context, which is where the scale factor, the
     // reference scale and the render flags come from. It is missing when the renderer is used
     // outside of a map render, by the file writer or by the layer preview.
-    const bool hasMapContext = feedback && feedback->renderContext().mapToPixel().isValid();
-    QgsRenderContext context = hasMapContext ? feedback->renderContext() : QgsRenderContext::fromQPainter( &painter );
+    const QgsRenderContext mapContext = feedback ? feedback->renderContext() : QgsRenderContext();
+    const bool hasMapContext = mapContext.mapToPixel().isValid();
 
-    const double blockScale = hasMapContext ? calculateBlockScale( context, extent, width ) : 1.0;
+    const double blockScale = hasMapContext ? calculateBlockScale( mapContext, extent, width ) : 1.0;
 
-    // the copied context still points at the map painter and describes the map coordinate space,
-    // everything which positions or sizes the symbology has to be replaced by its block equivalent
-    context.setPainter( &painter );
-    context.setPreviewRenderPainter( nullptr );
-    context.setMaskPainter( nullptr );
-    context.setElevationMap( nullptr );
-    context.setScaleFactor( context.scaleFactor() * blockScale );
-    context.setDevicePixelRatio( 1 );
-    context.setDpiTarget( -1.0 );
+    // the context is built from the block painter instead of being copied from the map context, so that
+    // nothing describing the map render can leak into a block which is drawn in the coordinates of the
+    // raster. Only the values taken over here are shared with the map render
+    QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+    if ( hasMapContext )
+    {
+      context.setFlags( mapContext.flags() );
+      context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
+      // the block may be drawn at a different resolution than the map painter, so everything which
+      // sizes the symbology in physical units has to be scaled along with it
+      context.setScaleFactor( mapContext.scaleFactor() * blockScale );
+      context.setSymbologyReferenceScale( mapContext.symbologyReferenceScale() );
+      context.setRendererScale( mapContext.rendererScale() );
+      context.setTransformContext( mapContext.transformContext() );
+    }
+
     // the block image is axis aligned, the drawer rotates it once it is complete
     context.setMapToPixel( QgsMapToPixel( extent.width() / width, extent.center().x(), extent.center().y(), width, height, 0 ) );
     context.setMapExtent( extent );
     context.setExtent( extent );
-    context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
 
     // the symbology is drawn in the coordinates of the raster itself, and reprojected afterwards
-    // along with the image, so the context must not transform anything. A valid transform is still
-    // needed for the wind barbs to tell which hemisphere they are in.
+    // along with the image, so the context must not transform anything.
+    context.setCoordinateTransform( QgsCoordinateTransform() );
+
+    // the distance area declares which CRS the block is drawn in: the wind barbs use it to tell which
+    // hemisphere they are in, and meters-at-scale sizes are measured against it
     if ( layerCrs.isValid() )
     {
-      context.setCoordinateTransform( QgsCoordinateTransform( layerCrs, layerCrs, context.transformContext() ) );
-      QgsDistanceArea distanceArea;
-      distanceArea.setSourceCrs( layerCrs, context.transformContext() );
-      distanceArea.setEllipsoid( layerCrs.ellipsoidAcronym() );
-      context.setDistanceArea( distanceArea );
+      QgsDistanceArea da;
+      da.setSourceCrs( layerCrs, context.transformContext() );
+      da.setEllipsoid( layerCrs.ellipsoidAcronym() );
+      context.setDistanceArea( da );
     }
 
     context.setFeedback( effectiveFeedback );

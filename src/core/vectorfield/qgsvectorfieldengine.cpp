@@ -46,8 +46,8 @@ QgsVectorFieldEngine::QgsVectorFieldEngine( double datasetMagMaximumValue, doubl
   {
     case Qgis::VectorFieldSymbology::WindBarbs:
     {
-      const QgsCoordinateReferenceSystem mapCrs = mContext.coordinateTransform().destinationCrs();
-      mGeographicTransform = std::make_unique<QgsCoordinateTransform>( mapCrs, mapCrs.toGeographicCrs(), mContext.coordinateTransform().context() );
+      const QgsCoordinateReferenceSystem mapCrs = mContext.distanceArea().sourceCrs();
+      mGeographicTransform = std::make_unique<QgsCoordinateTransform>( mapCrs, mapCrs.toGeographicCrs(), mContext.transformContext() );
       break;
     }
     case Qgis::VectorFieldSymbology::Arrows:
