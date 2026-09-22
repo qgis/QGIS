@@ -513,25 +513,22 @@ void QgsColorButton::prepareMenu()
       connect( defaultColorAction, &QAction::triggered, this, &QgsColorButton::setToDefaultColor );
     }
 
-    if ( mShowNoColorOption )
+    if ( mShowNoColorOption && mColor.alpha() > 0 )
     {
-      // if the color is already totally transparent, offer the reverse operation instead
-      if ( mColor.isValid() && mColor.alpha() == 0 )
-      {
-        QColor opaqueColor = QColor( mColor );
-        opaqueColor.setAlpha( 255 );
-        QAction *opaqueColorAction = new QAction( mOpaqueColorString, this );
-        opaqueColorAction->setIcon( createMenuIcon( opaqueColor ) );
-        mMenu->addAction( opaqueColorAction );
-        connect( opaqueColorAction, &QAction::triggered, this, &QgsColorButton::setToOpaqueColor );
-      }
-      else
-      {
-        QAction *noColorAction = new QAction( mNoColorString, this );
-        noColorAction->setIcon( createMenuIcon( Qt::transparent, false ) );
-        mMenu->addAction( noColorAction );
-        connect( noColorAction, &QAction::triggered, this, &QgsColorButton::setToNoColor );
-      }
+      QAction *noColorAction = new QAction( mNoColorString, this );
+      noColorAction->setIcon( createMenuIcon( Qt::transparent, false ) );
+      mMenu->addAction( noColorAction );
+      connect( noColorAction, &QAction::triggered, this, &QgsColorButton::setToNoColor );
+    }
+
+    if ( ( mAllowOpacity || mShowNoColorOption ) && mColor.isValid() && mColor.alpha() < 255 )
+    {
+      QColor opaqueColor = QColor( mColor );
+      opaqueColor.setAlpha( 255 );
+      QAction *opaqueColorAction = new QAction( mOpaqueColorString, this );
+      opaqueColorAction->setIcon( createMenuIcon( opaqueColor ) );
+      mMenu->addAction( opaqueColorAction );
+      connect( opaqueColorAction, &QAction::triggered, this, &QgsColorButton::setToOpaqueColor );
     }
 
     mMenu->addSeparator();
