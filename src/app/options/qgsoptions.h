@@ -69,8 +69,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void resetProjectDefault();
     void addProjectTemplatePath();
     void removeProjectTemplatePath();
-    void moveProjectTemplatePathUp();
-    void moveProjectTemplatePathDown();
     void resetProjectTemplatePath();
     //! Slot called when user chooses to change the default 'on the fly' projection.
     void leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
@@ -237,8 +235,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
   private slots:
     void removeLocalizedDataPath();
     void addLocalizedDataPath();
-    void moveLocalizedDataPathUp();
-    void moveLocalizedDataPathDown();
     void alwaysUseDecimalPointChanged( bool checked );
     void addTrustedProject();
     void removeTrustedProject();

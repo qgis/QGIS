@@ -91,6 +91,7 @@ using namespace Qt::StringLiterals;
 #include <QStandardPaths>
 #include <QRegularExpression>
 
+#include <algorithm>
 #include <limits>
 #include <sqlite3.h>
 #include "qgslogger.h"
@@ -101,6 +102,38 @@ using namespace Qt::StringLiterals;
 #include <cpl_conv.h> // for setting gdal options
 
 #include "qgsconfig.h"
+
+namespace
+{
+  // Move the selected items by moveNb positions (negative to move up, positive to move down)
+  void moveSelectedListWidgetItems( QListWidget *listWidget, int moveNb )
+  {
+    QList<int> rows;
+    const QList<QListWidgetItem *> selectedItems = listWidget->selectedItems();
+    for ( QListWidgetItem *item : selectedItems )
+      rows << listWidget->row( item );
+
+    if ( rows.isEmpty() )
+      return;
+
+    std::sort( rows.begin(), rows.end() );
+    if ( rows.first() + moveNb < 0 || rows.last() + moveNb >= listWidget->count() )
+      return;
+
+    // Process from the far end so that moved items do not shift the remaining rows
+    if ( moveNb > 0 )
+      std::reverse( rows.begin(), rows.end() );
+
+    for ( int row : rows )
+    {
+      QListWidgetItem *item = listWidget->takeItem( row );
+      listWidget->insertItem( row + moveNb, item );
+      item->setSelected( true );
+    }
+  }
+
+} //namespace
+
 
 /**
  * \class QgsOptions - Set user options and preferences
@@ -402,8 +435,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // localized data paths
   connect( mLocalizedDataPathAddButton, &QAbstractButton::clicked, this, &QgsOptions::addLocalizedDataPath );
   connect( mLocalizedDataPathRemoveButton, &QAbstractButton::clicked, this, &QgsOptions::removeLocalizedDataPath );
-  connect( mLocalizedDataPathUpButton, &QAbstractButton::clicked, this, &QgsOptions::moveLocalizedDataPathUp );
-  connect( mLocalizedDataPathDownButton, &QAbstractButton::clicked, this, &QgsOptions::moveLocalizedDataPathDown );
+  connect( mLocalizedDataPathUpButton, &QAbstractButton::clicked, this, [this]() { moveSelectedListWidgetItems( mLocalizedDataPathListWidget, -1 ); } );
+  connect( mLocalizedDataPathDownButton, &QAbstractButton::clicked, this, [this]() { moveSelectedListWidgetItems( mLocalizedDataPathListWidget, 1 ); } );
 
   const QStringList localizedPaths = QgsApplication::localizedDataPathRegistry()->paths();
   for ( const QString &path : localizedPaths )
@@ -874,8 +907,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   connect( mBtnAddProjectTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::addProjectTemplatePath );
   connect( mBtnRemoveProjectTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::removeProjectTemplatePath );
-  connect( mBtnMoveProjectTemplatePathUp, &QAbstractButton::clicked, this, &QgsOptions::moveProjectTemplatePathUp );
-  connect( mBtnMoveProjectTemplatePathDown, &QAbstractButton::clicked, this, &QgsOptions::moveProjectTemplatePathDown );
+  connect( mBtnMoveProjectTemplatePathUp, &QAbstractButton::clicked, this, [this]() { moveSelectedListWidgetItems( mListProjectTemplatePaths, -1 ); } );
+  connect( mBtnMoveProjectTemplatePathDown, &QAbstractButton::clicked, this, [this]() { moveSelectedListWidgetItems( mListProjectTemplatePaths, 1 ); } );
   connect( mBtnResetProjectTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::resetProjectTemplatePath );
   connect( pbnProjectDefaultSetCurrent, &QAbstractButton::clicked, this, &QgsOptions::setCurrentProjectDefault );
   connect( pbnProjectDefaultReset, &QAbstractButton::clicked, this, &QgsOptions::resetProjectDefault );
@@ -2250,7 +2283,6 @@ void QgsOptions::addProjectTemplatePath()
   // Dialog that shows QGIS projects inside the current directory, but only directories are selectable.
   QFileDialog dialog( this, tr( "Choose a directory" ), QDir::toNativeSeparators( QDir::homePath() ) );
   dialog.setFileMode( QFileDialog::Directory );
-  dialog.setOption( QFileDialog::DontUseNativeDialog ); // to have the desired behavior on most platforms
   dialog.setNameFilter( tr( "QGIS project files (*.qgs *.qgz)" ) );
   if ( dialog.exec() != QDialog::Accepted || dialog.selectedFiles().isEmpty() )
     return;
@@ -2277,30 +2309,6 @@ void QgsOptions::removeProjectTemplatePath()
   int currentRow = mListProjectTemplatePaths->currentRow();
   QListWidgetItem *itemToRemove = mListProjectTemplatePaths->takeItem( currentRow );
   delete itemToRemove;
-}
-
-void QgsOptions::moveProjectTemplatePathUp()
-{
-  QList<QListWidgetItem *> selectedItems = mListProjectTemplatePaths->selectedItems();
-  for ( auto itemIt = selectedItems.begin(); itemIt != selectedItems.end(); ++itemIt )
-  {
-    int row = mListProjectTemplatePaths->row( *itemIt );
-    mListProjectTemplatePaths->takeItem( row );
-    mListProjectTemplatePaths->insertItem( row - 1, *itemIt );
-    mListProjectTemplatePaths->setCurrentItem( *itemIt );
-  }
-}
-
-void QgsOptions::moveProjectTemplatePathDown()
-{
-  QList<QListWidgetItem *> selectedItems = mListProjectTemplatePaths->selectedItems();
-  for ( auto itemIt = selectedItems.begin(); itemIt != selectedItems.end(); ++itemIt )
-  {
-    int row = mListProjectTemplatePaths->row( *itemIt );
-    mListProjectTemplatePaths->takeItem( row );
-    mListProjectTemplatePaths->insertItem( row + 1, *itemIt );
-    mListProjectTemplatePaths->setCurrentItem( *itemIt );
-  }
 }
 
 void QgsOptions::resetProjectTemplatePath()
@@ -2741,30 +2749,6 @@ void QgsOptions::addLocalizedDataPath()
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mLocalizedDataPathListWidget->addItem( newItem );
     mLocalizedDataPathListWidget->setCurrentItem( newItem );
-  }
-}
-
-void QgsOptions::moveLocalizedDataPathUp()
-{
-  QList<QListWidgetItem *> selectedItems = mLocalizedDataPathListWidget->selectedItems();
-  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
-  for ( ; itemIt != selectedItems.end(); ++itemIt )
-  {
-    int row = mLocalizedDataPathListWidget->row( *itemIt );
-    mLocalizedDataPathListWidget->takeItem( row );
-    mLocalizedDataPathListWidget->insertItem( row - 1, *itemIt );
-  }
-}
-
-void QgsOptions::moveLocalizedDataPathDown()
-{
-  QList<QListWidgetItem *> selectedItems = mLocalizedDataPathListWidget->selectedItems();
-  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
-  for ( ; itemIt != selectedItems.end(); ++itemIt )
-  {
-    int row = mLocalizedDataPathListWidget->row( *itemIt );
-    mLocalizedDataPathListWidget->takeItem( row );
-    mLocalizedDataPathListWidget->insertItem( row + 1, *itemIt );
   }
 }
 
