@@ -303,7 +303,7 @@ A paint effect which draws an offset and optionally blurred drop shadow.
 #include "qgsshadoweffect.h"
 %End
   public:
-    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 %Docstring
 Creates a new QgsDropShadowEffect effect from a properties string map.
 
@@ -335,7 +335,7 @@ within a picture.
 #include "qgsshadoweffect.h"
 %End
   public:
-    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 %Docstring
 Creates a new QgsInnerShadowEffect effect from a properties string map.
 

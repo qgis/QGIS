@@ -26,9 +26,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPaintEffect *QgsBlurEffect::create( const QVariantMap &map )
+std::unique_ptr<QgsPaintEffect> QgsBlurEffect::create( const QVariantMap &map )
 {
-  QgsBlurEffect *newEffect = new QgsBlurEffect();
+  auto newEffect = std::make_unique<QgsBlurEffect>();
   newEffect->readProperties( map );
   return newEffect;
 }
@@ -75,10 +75,9 @@ void QgsBlurEffect::drawGaussianBlur( QgsRenderContext &context )
   const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale, Qgis::RenderSubcomponentProperty::BlurSize ) );
 
   QImage source = sourceAsImage( context ).copy();
-  QImage *im = QgsImageOperation::gaussianBlur( source, blurLevel, context.feedback() );
+  std::unique_ptr<QImage> im = QgsImageOperation::gaussianBlur( source, blurLevel, context.feedback() );
   if ( !im->isNull() )
     drawBlurredImage( context, *im );
-  delete im;
 }
 
 void QgsBlurEffect::drawBlurredImage( QgsRenderContext &context, QImage &image )

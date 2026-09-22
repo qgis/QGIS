@@ -93,10 +93,9 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   }
   else
   {
-    QImage *imb = QgsImageOperation::gaussianBlur( im, blurLevel, context.feedback() );
+    std::unique_ptr<QImage> imb = QgsImageOperation::gaussianBlur( im, blurLevel, context.feedback() );
     if ( !imb->isNull() )
       im = QImage( *imb );
-    delete imb;
   }
 
   if ( context.feedback() && context.feedback()->isCanceled() )
@@ -261,9 +260,9 @@ QgsOuterGlowEffect::QgsOuterGlowEffect()
   : QgsGlowEffect()
 {}
 
-QgsPaintEffect *QgsOuterGlowEffect::create( const QVariantMap &map )
+std::unique_ptr<QgsPaintEffect> QgsOuterGlowEffect::create( const QVariantMap &map )
 {
-  QgsOuterGlowEffect *effect = new QgsOuterGlowEffect();
+  auto effect = std::make_unique<QgsOuterGlowEffect>();
   effect->readProperties( map );
   return effect;
 }
@@ -283,9 +282,9 @@ QgsInnerGlowEffect::QgsInnerGlowEffect()
   : QgsGlowEffect()
 {}
 
-QgsPaintEffect *QgsInnerGlowEffect::create( const QVariantMap &map )
+std::unique_ptr<QgsPaintEffect> QgsInnerGlowEffect::create( const QVariantMap &map )
 {
-  QgsInnerGlowEffect *effect = new QgsInnerGlowEffect();
+  auto effect = std::make_unique<QgsInnerGlowEffect>();
   effect->readProperties( map );
   return effect;
 }

@@ -37,7 +37,7 @@ QgsLayerTreeGroupPropertiesWidget::QgsLayerTreeGroupPropertiesWidget( QgsMapCanv
 {
   setupUi( this );
 
-  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
   mEffectWidget->setPaintEffect( mPaintEffect.get() );
 

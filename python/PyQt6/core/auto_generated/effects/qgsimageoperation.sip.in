@@ -148,7 +148,7 @@ between speed and blur quality.
    alphaOnly is set to ``False``, or ARGB32 if alphaOnly is ``True``
 %End
 
-    static QImage *gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = 0 ) /Factory/;
+    static std::unique_ptr<QImage> gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = 0 );
 %Docstring
 Performs a gaussian blur on an image. Gaussian blur is slower but
 results in a high quality blur.

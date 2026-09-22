@@ -91,9 +91,9 @@ QgsEffectStack &QgsEffectStack::operator=( QgsEffectStack &&other )
   return *this;
 }
 
-QgsPaintEffect *QgsEffectStack::create( const QVariantMap &map )
+std::unique_ptr<QgsPaintEffect> QgsEffectStack::create( const QVariantMap &map )
 {
-  QgsEffectStack *effect = new QgsEffectStack();
+  auto effect = std::make_unique<QgsEffectStack>();
   effect->readProperties( map );
   return effect;
 }
@@ -227,9 +227,9 @@ bool QgsEffectStack::readProperties( const QDomElement &element )
   for ( int i = 0; i < childNodes.size(); ++i )
   {
     const QDomElement childElement = childNodes.at( i ).toElement();
-    QgsPaintEffect *effect = QgsApplication::paintEffectRegistry()->createEffect( childElement );
+    std::unique_ptr<QgsPaintEffect> effect = QgsApplication::paintEffectRegistry()->createEffect( childElement );
     if ( effect )
-      mEffectList << effect;
+      mEffectList << effect.release();
   }
   return true;
 }

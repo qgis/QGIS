@@ -35,7 +35,7 @@ version.
 #include "qgseffectstack.h"
 %End
   public:
-    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 %Docstring
 Creates a new QgsEffectStack effect. This method ignores the map
 parameter, and always returns an empty effect stack.

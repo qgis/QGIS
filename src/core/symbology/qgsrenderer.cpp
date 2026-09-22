@@ -69,7 +69,7 @@ void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer *destRenderer ) co
 QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
   : mType( type )
 {
-  mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
+  mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
 }
 
@@ -197,7 +197,7 @@ std::unique_ptr<QgsFeatureRenderer> QgsFeatureRenderer::load( QDomElement &eleme
     const QDomElement effectElem = element.firstChildElement( u"effect"_s );
     if ( !effectElem.isNull() )
     {
-      r->setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+      r->setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ).release() );
     }
 
     // restore order by
