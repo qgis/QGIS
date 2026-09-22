@@ -651,7 +651,7 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
 
 //gaussian blur
 
-QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFeedback *feedback )
+std::unique_ptr<QImage> QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFeedback *feedback )
 {
   int width = image.width();
   int height = image.height();
@@ -659,13 +659,13 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFee
   if ( radius <= 0 )
   {
     //just make an unchanged copy
-    QImage *copy = new QImage( image.copy() );
+    auto copy = std::make_unique<QImage>( image.copy() );
     return copy;
   }
 
   std::unique_ptr<double[]> kernel( createGaussianKernel( radius ) );
   if ( feedback && feedback->isCanceled() )
-    return new QImage();
+    return std::make_unique<QImage>();
 
   //ensure correct source format.
   QImage::Format originalFormat = image.format();
@@ -681,7 +681,7 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFee
     image.detach();
   }
   if ( feedback && feedback->isCanceled() )
-    return new QImage();
+    return std::make_unique<QImage>();
 
   //blur along rows
   QImage xBlurImage = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
@@ -689,7 +689,7 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFee
   runRectOperation( *pImage, rowBlur );
 
   if ( feedback && feedback->isCanceled() )
-    return new QImage();
+    return std::make_unique<QImage>();
 
   //blur along columns
   auto yBlurImage = std::make_unique< QImage >( width, height, QImage::Format_ARGB32_Premultiplied );
@@ -697,16 +697,16 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFee
   runRectOperation( xBlurImage, colBlur );
 
   if ( feedback && feedback->isCanceled() )
-    return new QImage();
+    return std::make_unique<QImage>();
 
   kernel.reset();
 
   if ( originalFormat != QImage::Format_ARGB32_Premultiplied )
   {
-    return new QImage( yBlurImage->convertToFormat( originalFormat ) );
+    return std::make_unique<QImage>( yBlurImage->convertToFormat( originalFormat ) );
   }
 
-  return yBlurImage.release();
+  return yBlurImage;
 }
 
 void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::ImageBlock &block )

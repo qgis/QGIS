@@ -338,7 +338,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \param map encoded properties string map
      * \returns new QgsDrawSourceEffect
      */
-    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
+    static std::unique_ptr<QgsPaintEffect> create( const QVariantMap &map );
 
     Qgis::PaintEffectFlags flags() const override;
     QString type() const override { return u"drawSource"_s; }

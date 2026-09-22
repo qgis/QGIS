@@ -114,7 +114,7 @@ Registers a new effect type.
 :return: ``True`` if add was successful.
 %End
 
-    QgsPaintEffect *createEffect( const QString &name, const QVariantMap &properties = QVariantMap() ) const /Factory/;
+    std::unique_ptr<QgsPaintEffect> createEffect( const QString &name, const QVariantMap &properties = QVariantMap() ) const;
 %Docstring
 Creates a new paint effect given the effect name and properties map.
 
@@ -125,7 +125,7 @@ Creates a new paint effect given the effect name and properties map.
          paint effect could not be created
 %End
 
-    QgsPaintEffect *createEffect( const QDomElement &element ) const /Factory/;
+    std::unique_ptr<QgsPaintEffect> createEffect( const QDomElement &element ) const;
 %Docstring
 Creates a new paint effect given a DOM element storing paint effect
 properties.
@@ -143,7 +143,7 @@ Returns a list of known paint effects.
 :return: list of paint effect names
 %End
 
-    static QgsPaintEffect *defaultStack() /Factory/;
+    static std::unique_ptr<QgsPaintEffect> defaultStack();
 %Docstring
 Returns a new effect stack consisting of a sensible selection of default
 effects. All effects except the standard draw source effect are

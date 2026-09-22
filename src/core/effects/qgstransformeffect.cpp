@@ -26,9 +26,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPaintEffect *QgsTransformEffect::create( const QVariantMap &map )
+std::unique_ptr<QgsPaintEffect> QgsTransformEffect::create( const QVariantMap &map )
 {
-  QgsTransformEffect *newEffect = new QgsTransformEffect();
+  auto newEffect = std::make_unique<QgsTransformEffect>();
   newEffect->readProperties( map );
   return newEffect;
 }

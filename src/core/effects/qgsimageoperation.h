@@ -174,7 +174,7 @@ class CORE_EXPORT QgsImageOperation
      * \returns blurred image
      * \note for fastest operation, ensure the source image is ARGB32_Premultiplied
      */
-    static QImage *gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = nullptr ) SIP_FACTORY;
+    static std::unique_ptr<QImage> gaussianBlur( QImage &image, int radius, QgsFeedback *feedback = nullptr );
 
     /**
      * Flips an image horizontally or vertically

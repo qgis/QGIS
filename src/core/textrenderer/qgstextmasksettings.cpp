@@ -246,7 +246,7 @@ void QgsTextMaskSettings::readXml( const QDomElement &elem )
   d->opacity = textMaskElem.attribute( u"maskOpacity"_s, u"1.0"_s ).toDouble();
   const QDomElement effectElem = textMaskElem.firstChildElement( u"effect"_s );
   if ( !effectElem.isNull() )
-    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ) );
+    setPaintEffect( QgsApplication::paintEffectRegistry()->createEffect( effectElem ).release() );
   else
     setPaintEffect( nullptr );
   d->maskedSymbolLayers = stringToSymbolLayerReferenceList( textMaskElem.attribute( u"maskedSymbolLayers"_s ) );

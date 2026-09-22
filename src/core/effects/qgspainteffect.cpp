@@ -187,9 +187,9 @@ QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) cons
 // QgsDrawSourceEffect
 //
 
-QgsPaintEffect *QgsDrawSourceEffect::create( const QVariantMap &map )
+std::unique_ptr<QgsPaintEffect> QgsDrawSourceEffect::create( const QVariantMap &map )
 {
-  QgsDrawSourceEffect *effect = new QgsDrawSourceEffect();
+  auto effect = std::make_unique<QgsDrawSourceEffect>();
   effect->readProperties( map );
   return effect;
 }
