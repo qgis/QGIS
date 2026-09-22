@@ -2479,7 +2479,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeos::cleanCoverage( const QgsCoverage
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::extractCoverageEdges( Qgis::CoverageEdgeType edgeType, QString *errorMsg, QgsFeedback *feedback ) const
 {
 #if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 15
-  ( void ) parameters;
+  ( void ) edgeType;
   ( void ) errorMsg;
   ( void ) feedback;
   throw QgsNotSupportedException( QObject::tr( "Extracting coverage edges requires a QGIS build based on GEOS 3.15 or later" ) );
