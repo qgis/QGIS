@@ -29,6 +29,7 @@
 
 class QgsReadWriteContext;
 class QgsMapLayerStore;
+class QgsProject;
 class LoadLayerFunction;
 
 /**
@@ -495,8 +496,23 @@ class CORE_EXPORT QgsExpressionContext
     /**
      * Initializes the context with given list of scopes.
      * Ownership of the scopes is transferred to the stack.
+     *
+     * \deprecated QGIS 4.6. Use the constructor accepting a QgsProject instead.
      */
-    explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
+    Q_DECL_DEPRECATED explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER ) SIP_DEPRECATED;
+
+    /**
+     * Initializes the context with the given \a project and list of \a scopes.
+     *
+     * Ownership of the \a scopes is transferred to the stack.
+     *
+     * The \a project is not transferred, and the caller must ensure that it exists
+     * for the lifetime of the expression context.
+     *
+     * \see project()
+     * \since QGIS 4.6
+     */
+    explicit QgsExpressionContext( QgsProject *project, const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER = QList<QgsExpressionContextScope *>() );
 
     QgsExpressionContext( const QgsExpressionContext &other );
     SIP_SKIP QgsExpressionContext( QgsExpressionContext &&other );
@@ -874,6 +890,22 @@ class CORE_EXPORT QgsExpressionContext
     QgsMapLayerStore *loadedLayerStore() const;
 
     /**
+     * Sets the \a project associated with the context.
+     *
+     * \see project()
+     * \since QGIS 4.6
+     */
+    void setProject( QgsProject *project );
+
+    /**
+     * Returns the project associated with the context, if set.
+     *
+     * \see setProject()
+     * \since QGIS 4.6
+     */
+    QgsProject *project() const;
+
+    /**
      * Attach a \a feedback object that can be queried regularly by the expression engine to check
      * if expression evaluation should be canceled.
      *
@@ -944,6 +976,7 @@ class CORE_EXPORT QgsExpressionContext
 
     std::unique_ptr< LoadLayerFunction > mLoadLayerFunction;
     QPointer< QgsMapLayerStore > mDestinationStore;
+    QPointer< QgsProject > mProject;
 
     // Cache is mutable because we want to be able to add cached values to const contexts
     mutable QMap< QString, QVariant > mCachedValues;

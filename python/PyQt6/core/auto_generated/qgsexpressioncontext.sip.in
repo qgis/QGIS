@@ -503,10 +503,29 @@ with :py:class:`QgsExpressionContext` objects.
   public:
     QgsExpressionContext();
 
-    explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes /Transfer/ );
+ explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes /Transfer/ ) /Deprecated="Since 4.6. Use the constructor accepting a QgsProject instead."/;
 %Docstring
 Initializes the context with given list of scopes. Ownership of the
 scopes is transferred to the stack.
+
+.. deprecated:: 4.6
+
+   Use the constructor accepting a :py:class:`QgsProject` instead.
+%End
+
+    explicit QgsExpressionContext( QgsProject *project, const QList<QgsExpressionContextScope *> &scopes /Transfer/ = QList<QgsExpressionContextScope *>() );
+%Docstring
+Initializes the context with the given ``project`` and list of
+``scopes``.
+
+Ownership of the ``scopes`` is transferred to the stack.
+
+The ``project`` is not transferred, and the caller must ensure that it
+exists for the lifetime of the expression context.
+
+.. seealso:: :py:func:`project`
+
+.. versionadded:: 4.6
 %End
 
     QgsExpressionContext( const QgsExpressionContext &other );
@@ -950,6 +969,24 @@ expression evaluation.
 .. seealso:: :py:func:`setLoadedLayerStore`
 
 .. versionadded:: 3.30
+%End
+
+    void setProject( QgsProject *project );
+%Docstring
+Sets the ``project`` associated with the context.
+
+.. seealso:: :py:func:`project`
+
+.. versionadded:: 4.6
+%End
+
+    QgsProject *project() const;
+%Docstring
+Returns the project associated with the context, if set.
+
+.. seealso:: :py:func:`setProject`
+
+.. versionadded:: 4.6
 %End
 
     void setFeedback( QgsFeedback *feedback );
