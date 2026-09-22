@@ -344,6 +344,12 @@ QgsExpressionContext::QgsExpressionContext( const QList<QgsExpressionContextScop
   : QgsExpressionContext( nullptr, scopes )
 {}
 
+QgsExpressionContext::QgsExpressionContext( QgsProject *project )
+  : mProject( project )
+{
+  mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
+}
+
 QgsExpressionContext::QgsExpressionContext( QgsProject *project, const QList<QgsExpressionContextScope *> &scopes )
   : mStack( scopes )
   , mProject( project )

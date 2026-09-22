@@ -513,7 +513,14 @@ scopes is transferred to the stack.
    Use the constructor accepting a :py:class:`QgsProject` instead.
 %End
 
-    explicit QgsExpressionContext( QgsProject *project, const QList<QgsExpressionContextScope *> &scopes /Transfer/ = QList<QgsExpressionContextScope *>() );
+    explicit QgsExpressionContext( QgsProject *project );
+%Docstring
+Initializes the context with the given ``project``.
+
+.. versionadded:: 4.6
+%End
+
+    explicit QgsExpressionContext( QgsProject *project, const QList<QgsExpressionContextScope *> &scopes /Transfer/ );
 %Docstring
 Initializes the context with the given ``project`` and list of
 ``scopes``.
@@ -522,8 +529,6 @@ Ownership of the ``scopes`` is transferred to the stack.
 
 The ``project`` is not transferred, and the caller must ensure that it
 exists for the lifetime of the expression context.
-
-.. seealso:: :py:func:`project`
 
 .. versionadded:: 4.6
 %End
