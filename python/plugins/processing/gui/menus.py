@@ -22,12 +22,13 @@ __copyright__ = "(C) 2016, Victor Olaya"
 import os
 
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsMessageLog,
     QgsProcessingAlgorithm,
     QgsStringUtils,
 )
-from qgis.gui import QgsGui
+from qgis.gui import QgsGui, QgsMessageViewer
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMenu, QToolButton
@@ -38,7 +39,6 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.MessageDialog import MessageDialog
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 
@@ -355,7 +355,7 @@ def removeAlgorithmEntry(alg, menuName, submenuName, delButton=True):
 def _executeAlgorithm(alg_id):
     alg = QgsApplication.processingRegistry().createAlgorithmById(alg_id)
     if alg is None:
-        dlg = MessageDialog()
+        dlg = QgsMessageViewer()
         dlg.setTitle(
             QCoreApplication.translate("ProcessingPlugin", "Missing Algorithm")
         )
@@ -363,14 +363,15 @@ def _executeAlgorithm(alg_id):
             QCoreApplication.translate(
                 "ProcessingPlugin",
                 'The algorithm "{}" is no longer available. (Perhaps a plugin was uninstalled?)',
-            ).format(alg_id)
+            ).format(alg_id),
+            Qgis.StringFormat.PlainText,
         )
         dlg.exec()
         return
 
     ok, message = alg.canExecute()
     if not ok:
-        dlg = MessageDialog()
+        dlg = QgsMessageViewer()
         dlg.setTitle(
             QCoreApplication.translate("ProcessingPlugin", "Missing Dependency")
         )
@@ -378,7 +379,8 @@ def _executeAlgorithm(alg_id):
             QCoreApplication.translate(
                 "ProcessingPlugin",
                 "<h3>Missing dependency. This algorithm cannot be run </h3>\n{0}",
-            ).format(message)
+            ).format(message),
+            Qgis.StringFormat.Html,
         )
         dlg.exec()
         return
