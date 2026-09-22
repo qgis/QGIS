@@ -396,26 +396,31 @@ class CORE_EXPORT QgsApplication : public QApplication
   static QStringList svgPaths();
 
   /**
-   * Sets the paths to project template directories.
-   *
-   * An empty list restores the default template directory of the active user
-   * profile.
+   * Sets the paths to project templates.
    *
    * \see projectTemplatePaths()
+   * \see defaultProjectTemplatePaths()
    * \since QGIS 4.4
    */
   static void setProjectTemplatePaths(const QStringList &projectTemplatePaths);
 
   /**
-   * Returns the paths to project template directories.
-   *
-   * Defaults to the template directory of the active user profile when no path
-   * is configured.
+   * Returns the paths to project templates.
    *
    * \see setProjectTemplatePaths()
+   * \see defaultProjectTemplatePaths()
    * \since QGIS 4.4
    */
   static QStringList projectTemplatePaths();
+
+  /**
+   * Returns the default project template paths.
+   *
+   * \see setProjectTemplatePaths()
+   * \see projectTemplatePaths()
+   * \since QGIS 4.4
+   */
+  static QStringList defaultProjectTemplatePaths();
 
   /**
    * Returns the paths to layout template directories.

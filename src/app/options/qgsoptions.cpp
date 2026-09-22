@@ -876,6 +876,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mBtnRemoveProjectTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::removeProjectTemplatePath );
   connect( mBtnMoveProjectTemplatePathUp, &QAbstractButton::clicked, this, &QgsOptions::moveProjectTemplatePathUp );
   connect( mBtnMoveProjectTemplatePathDown, &QAbstractButton::clicked, this, &QgsOptions::moveProjectTemplatePathDown );
+  connect( mBtnResetProjectTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::resetProjectTemplatePath );
   connect( pbnProjectDefaultSetCurrent, &QAbstractButton::clicked, this, &QgsOptions::setCurrentProjectDefault );
   connect( pbnProjectDefaultReset, &QAbstractButton::clicked, this, &QgsOptions::resetProjectDefault );
 
@@ -2299,6 +2300,15 @@ void QgsOptions::moveProjectTemplatePathDown()
     mListProjectTemplatePaths->takeItem( row );
     mListProjectTemplatePaths->insertItem( row + 1, *itemIt );
     mListProjectTemplatePaths->setCurrentItem( *itemIt );
+  }
+}
+
+void QgsOptions::resetProjectTemplatePath()
+{
+  mListProjectTemplatePaths->clear();
+  for ( QString path : QgsApplication::defaultProjectTemplatePaths() )
+  {
+    mListProjectTemplatePaths->addItem( path );
   }
 }
 

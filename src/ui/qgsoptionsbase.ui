@@ -778,7 +778,7 @@
                     <item>
                      <widget class="QToolButton" name="mBtnMoveProjectTemplatePathUp">
                       <property name="toolTip">
-                       <string>Raise selected path priority</string>
+                       <string>Move selected path up</string>
                       </property>
                       <property name="text">
                        <string/>
@@ -792,7 +792,7 @@
                     <item>
                      <widget class="QToolButton" name="mBtnMoveProjectTemplatePathDown">
                       <property name="toolTip">
-                       <string>Lower selected path priority</string>
+                       <string>Move selected path down</string>
                       </property>
                       <property name="text">
                        <string/>
@@ -800,6 +800,20 @@
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="mBtnResetProjectTemplatePath">
+                      <property name="toolTip">
+                       <string>Reset to default</string>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
                       </property>
                      </widget>
                     </item>
@@ -5692,6 +5706,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <tabstop>mBtnRemoveProjectTemplatePath</tabstop>
   <tabstop>mBtnMoveProjectTemplatePathUp</tabstop>
   <tabstop>mBtnMoveProjectTemplatePathDown</tabstop>
+  <tabstop>mBtnResetProjectTemplatePath</tabstop>
   <tabstop>mListProjectTemplatePaths</tabstop>
   <tabstop>chbAskToSaveProjectChanges</tabstop>
   <tabstop>mLayerDeleteConfirmationChkBx</tabstop>
