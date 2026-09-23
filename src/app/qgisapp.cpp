@@ -85,6 +85,7 @@ using namespace Qt::StringLiterals;
 #include <QActionGroup>
 
 #include "qgsmaplayerutils.h"
+#include "qgsappmenuutils.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsentryenumflag.h"
@@ -7290,12 +7291,6 @@ QList<QgsMapDecoration *> QgisApp::activeDecorations()
   return decorations;
 }
 
-QString QgisApp::normalizedMenuName( const QString &name )
-{
-  const thread_local QRegularExpression sNonAlphaChars( u"[^a-zA-Z]"_s );
-  return name.normalized( QString::NormalizationForm_KD ).remove( sNonAlphaChars );
-}
-
 void QgisApp::saveMapAsImage()
 {
   QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, activeDecorations(), QgsProject::instance()->annotationManager()->annotations() );
@@ -14239,7 +14234,7 @@ QMenu *QgisApp::getPluginMenu( const QString &menuName )
   }
   // It doesn't exist, so create
   QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
+  menu->setObjectName( QgsAppMenuUtils::normalizedMenuName( cleanedMenuName ) );
   // Where to put it? - we worked that out above...
   mPluginMenu->insertMenu( before, menu );
 
@@ -14268,50 +14263,6 @@ void QgisApp::removePluginMenu( const QString &name, QAction *action )
     mPluginMenu->removeAction( mActionPluginSeparator1 );
     mActionPluginSeparator1 = nullptr;
   }
-}
-
-QMenu *QgisApp::getDatabaseMenu( const QString &menuName )
-{
-  if ( menuName.isEmpty() )
-    return mDatabaseMenu;
-
-  QString cleanedMenuName = menuName;
-#ifdef Q_OS_MAC
-  // Mac doesn't have '&' keyboard shortcuts.
-  cleanedMenuName.remove( QChar( '&' ) );
-#endif
-  QString dst = cleanedMenuName;
-  dst.remove( QChar( '&' ) );
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = mDatabaseMenu->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    QString src = actions.at( i )->text();
-    src.remove( QChar( '&' ) );
-
-    int comp = dst.localeAwareCompare( src );
-    if ( comp < 0 )
-    {
-      // Add item before this one
-      before = actions.at( i );
-      break;
-    }
-    else if ( comp == 0 )
-    {
-      // Plugin menu item already exists
-      return actions.at( i )->menu();
-    }
-  }
-  // It doesn't exist, so create
-  QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
-  if ( before )
-    mDatabaseMenu->insertMenu( before, menu );
-  else
-    mDatabaseMenu->addMenu( menu );
-
-  return menu;
 }
 
 QMenu *QgisApp::getRasterMenu( const QString &menuName )
@@ -14359,7 +14310,7 @@ QMenu *QgisApp::getRasterMenu( const QString &menuName )
 
   // It doesn't exist, so create
   QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
+  menu->setObjectName( QgsAppMenuUtils::normalizedMenuName( cleanedMenuName ) );
   if ( before )
     mRasterMenu->insertMenu( before, menu );
   else
@@ -14368,191 +14319,15 @@ QMenu *QgisApp::getRasterMenu( const QString &menuName )
   return menu;
 }
 
-QMenu *QgisApp::getVectorMenu( const QString &menuName )
-{
-  if ( menuName.isEmpty() )
-    return mVectorMenu;
-
-  QString cleanedMenuName = menuName;
-#ifdef Q_OS_MAC
-  // Mac doesn't have '&' keyboard shortcuts.
-  cleanedMenuName.remove( QChar( '&' ) );
-#endif
-  QString dst = cleanedMenuName;
-  dst.remove( QChar( '&' ) );
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = mVectorMenu->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    QString src = actions.at( i )->text();
-    src.remove( QChar( '&' ) );
-
-    int comp = dst.localeAwareCompare( src );
-    if ( comp < 0 )
-    {
-      // Add item before this one
-      before = actions.at( i );
-      break;
-    }
-    else if ( comp == 0 )
-    {
-      // Plugin menu item already exists
-      return actions.at( i )->menu();
-    }
-  }
-  // It doesn't exist, so create
-  QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
-  if ( before )
-    mVectorMenu->insertMenu( before, menu );
-  else
-    mVectorMenu->addMenu( menu );
-
-  return menu;
-}
-
-QMenu *QgisApp::getWebMenu( const QString &menuName )
-{
-  if ( menuName.isEmpty() )
-    return mWebMenu;
-
-  QString cleanedMenuName = menuName;
-#ifdef Q_OS_MAC
-  // Mac doesn't have '&' keyboard shortcuts.
-  cleanedMenuName.remove( QChar( '&' ) );
-#endif
-  QString dst = cleanedMenuName;
-  dst.remove( QChar( '&' ) );
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = mWebMenu->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    QString src = actions.at( i )->text();
-    src.remove( QChar( '&' ) );
-
-    int comp = dst.localeAwareCompare( src );
-    if ( comp < 0 )
-    {
-      // Add item before this one
-      before = actions.at( i );
-      break;
-    }
-    else if ( comp == 0 )
-    {
-      // Plugin menu item already exists
-      return actions.at( i )->menu();
-    }
-  }
-  // It doesn't exist, so create
-  QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
-  if ( before )
-    mWebMenu->insertMenu( before, menu );
-  else
-    mWebMenu->addMenu( menu );
-
-  return menu;
-}
-
-QMenu *QgisApp::getMeshMenu( const QString &menuName )
-{
-  if ( menuName.isEmpty() )
-    return mMeshMenu;
-
-  QString cleanedMenuName = menuName;
-#ifdef Q_OS_MAC
-  // Mac doesn't have '&' keyboard shortcuts.
-  cleanedMenuName.remove( QChar( '&' ) );
-#endif
-  QString dst = cleanedMenuName;
-  dst.remove( QChar( '&' ) );
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = mMeshMenu->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    QString src = actions.at( i )->text();
-    src.remove( QChar( '&' ) );
-
-    int comp = dst.localeAwareCompare( src );
-    if ( comp < 0 )
-    {
-      // Add item before this one
-      before = actions.at( i );
-      break;
-    }
-    else if ( comp == 0 )
-    {
-      // Plugin menu item already exists
-      return actions.at( i )->menu();
-    }
-  }
-  // It doesn't exist, so create
-  QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
-  if ( before )
-    mMeshMenu->insertMenu( before, menu );
-  else
-    mMeshMenu->addMenu( menu );
-
-  return menu;
-}
-
-QMenu *QgisApp::getProcessingMenu( const QString &menuName )
-{
-  if ( menuName.isEmpty() )
-    return mMeshMenu;
-
-  QString cleanedMenuName = menuName;
-#ifdef Q_OS_MAC
-  // Mac doesn't have '&' keyboard shortcuts.
-  cleanedMenuName.remove( QChar( '&' ) );
-#endif
-  QString dst = cleanedMenuName;
-  dst.remove( QChar( '&' ) );
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = mProcessingMenu->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    QString src = actions.at( i )->text();
-    src.remove( QChar( '&' ) );
-
-    int comp = dst.localeAwareCompare( src );
-    if ( comp < 0 )
-    {
-      // Add item before this one
-      before = actions.at( i );
-      break;
-    }
-    else if ( comp == 0 )
-    {
-      // Plugin menu item already exists
-      return actions.at( i )->menu();
-    }
-  }
-  // It doesn't exist, so create
-  QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
-  if ( before )
-    mProcessingMenu->insertMenu( before, menu );
-  else
-    mProcessingMenu->addMenu( menu );
-
-  return menu;
-}
-
 void QgisApp::addPluginToProcessingMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getProcessingMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mProcessingMenu, name );
   menu->addAction( action );
 }
 
 void QgisApp::removePluginProcessingMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getProcessingMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mProcessingMenu, name );
   menu->removeAction( action );
   if ( menu->actions().isEmpty() )
   {
@@ -14586,7 +14361,7 @@ void QgisApp::removeAddLayerAction( QAction *action )
 
 void QgisApp::addPluginToDatabaseMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getDatabaseMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mDatabaseMenu, name );
   menu->addAction( action );
 
   // add the Database menu to the menuBar if not added yet
@@ -14634,13 +14409,13 @@ void QgisApp::addPluginToRasterMenu( const QString &name, QAction *action )
 
 void QgisApp::addPluginToVectorMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getVectorMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mVectorMenu, name );
   menu->addAction( action );
 }
 
 void QgisApp::addPluginToWebMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getWebMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mWebMenu, name );
   menu->addAction( action );
 
   // add the Web menu to the menuBar if not added yet
@@ -14683,13 +14458,13 @@ void QgisApp::addPluginToWebMenu( const QString &name, QAction *action )
 
 void QgisApp::addPluginToMeshMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getMeshMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mMeshMenu, name );
   menu->addAction( action );
 }
 
 void QgisApp::removePluginDatabaseMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getDatabaseMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mDatabaseMenu, name );
   menu->removeAction( action );
   if ( menu->actions().isEmpty() )
   {
@@ -14731,7 +14506,7 @@ void QgisApp::removePluginRasterMenu( const QString &name, QAction *action )
 
 void QgisApp::removePluginVectorMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getVectorMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mVectorMenu, name );
   menu->removeAction( action );
   if ( menu->actions().isEmpty() )
   {
@@ -14755,7 +14530,7 @@ void QgisApp::removePluginVectorMenu( const QString &name, QAction *action )
 
 void QgisApp::removePluginWebMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getWebMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mWebMenu, name );
   menu->removeAction( action );
   if ( menu->actions().isEmpty() )
   {
@@ -14779,7 +14554,7 @@ void QgisApp::removePluginWebMenu( const QString &name, QAction *action )
 
 void QgisApp::removePluginMeshMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getMeshMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mMeshMenu, name );
   menu->removeAction( action );
   if ( menu->actions().isEmpty() )
   {
