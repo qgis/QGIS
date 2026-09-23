@@ -407,38 +407,3 @@ def findAction(actions, alg):
             return action
     return None
 
-
-def addToolBarButton(index, algId, icon=None, tooltip=None):
-    alg = QgsApplication.processingRegistry().algorithmById(algId)
-    if alg is None or alg.id() != algId:
-        assert False, algId
-
-    if tooltip is None:
-        if (QgsGui.higFlags() & QgsGui.HigFlag.HigMenuTextIsTitleCase) and not (
-            alg.flags() & QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral
-        ):
-            tooltip = QgsStringUtils.capitalize(
-                alg.displayName(), QgsStringUtils.Capitalization.TitleCase
-            )
-        else:
-            tooltip = alg.displayName()
-
-    action = QAction(icon or alg.icon(), tooltip, iface.mainWindow())
-    algId = alg.id()
-    action.setData(algId)
-    action.triggered.connect(lambda: _executeAlgorithm(algId))
-    action.setObjectName("mProcessingAlg_%s" % algId)
-
-    toolButton.addAction(action)
-    if index == 0:
-        toolButton.setDefaultAction(action)
-
-
-def createButtons():
-    toolbar = iface.selectionToolBar()
-    for index, algId in enumerate(toolBarButtons):
-        addToolBarButton(index, algId)
-
-
-def removeButtons():
-    iface.selectionToolBar().removeAction(toolButtonAction)

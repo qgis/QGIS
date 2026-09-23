@@ -77,11 +77,18 @@ class QgsAppProcessingUtils : public QObject
      */
     QList< QAction * > createAlgorithmActions();
 
+    /**
+     * Adds some predefined actions to default toolbars, such as the "select by..." algorithms to the selection toolbar.
+     */
+    void addAlgorithmsToDefaultToolbars();
+
   private slots:
 
     void updateModels();
 
   private:
+    QAction *createActionForAlgorithm( const QgsProcessingAlgorithm *algorithm, const QString &iconPath = QString() );
+
     /**
      *  Returns the menu title to use for a Processing menu. This is not a "stable" string, and is used for
      *  GUI display only.

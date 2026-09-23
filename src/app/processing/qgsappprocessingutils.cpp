@@ -713,18 +713,7 @@ QList<QAction *> QgsAppProcessingUtils::createAlgorithmActions()
 
     if ( menu || addToToolbar )
     {
-      auto algorithmAction = new QAction( algorithmActionText( algorithm ), this );
-      QIcon icon;
-      if ( !iconPathSetting.isEmpty() )
-      {
-        icon = QIcon( iconPathSetting );
-      }
-      algorithmAction->setIcon( !icon.isNull() ? icon : algorithm->icon() );
-      algorithmAction->setData( algorithm->id() );
-      algorithmAction->setObjectName( u"mProcessingUserMenu_%1"_s.arg( algorithm->id() ) );
-
-      connect( algorithmAction, &QAction::triggered, this, [id] { QgsGui::instance()->emitExecuteAlgorithm( id ); } );
-
+      QAction *algorithmAction = createActionForAlgorithm( algorithm );
       if ( menu )
       {
         QgsAppMenuUtils::insertActionAlphabeticallyToMenu( menu, algorithmAction );
@@ -739,10 +728,58 @@ QList<QAction *> QgsAppProcessingUtils::createAlgorithmActions()
   return mAlgorithmActions;
 }
 
+void QgsAppProcessingUtils::addAlgorithmsToDefaultToolbars()
+{
+  QToolBar *selectionToolBar = mQgisApp->selectionToolBar();
+  auto toolbutton = new QToolButton( selectionToolBar );
+  toolbutton->setPopupMode( QToolButton::ToolButtonPopupMode::MenuButtonPopup );
+  QAction *toolButtonAction = selectionToolBar->addWidget( toolbutton );
+  toolButtonAction->setObjectName( "selectByToolButton" );
+
+  auto addToolBarButton = [this]( QToolButton *toolButton, int index, const QString &algorithmId ) {
+    const QgsProcessingAlgorithm *algorithm = QgsApplication::processingRegistry()->algorithmById( algorithmId );
+    if ( !algorithm )
+      return;
+
+    QAction *action = createActionForAlgorithm( algorithm );
+    toolButton->addAction( action );
+    if ( index == 0 )
+    {
+      toolButton->setDefaultAction( action );
+    }
+  };
+
+  int index = 0;
+  for ( const QString &algorithmId : { u"native:selectbylocation"_s, u"native:selectwithindistance"_s } )
+  {
+    addToolBarButton( toolbutton, index, algorithmId );
+    index++;
+  }
+}
+
 void QgsAppProcessingUtils::updateModels()
 {
   if ( QgsProcessingProvider *modelProvider = QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) )
   {
     modelProvider->refreshAlgorithms();
   }
+}
+
+QAction *QgsAppProcessingUtils::createActionForAlgorithm( const QgsProcessingAlgorithm *algorithm, const QString &iconPath )
+{
+  const QString id = algorithm->id();
+  auto algorithmAction = new QAction( algorithmActionText( algorithm ), this );
+  QIcon icon;
+  if ( !iconPath.isEmpty() )
+  {
+    icon = QIcon( iconPath );
+  }
+  algorithmAction->setToolTip( algorithmActionText( algorithm ) );
+  algorithmAction->setIcon( !icon.isNull() ? icon : algorithm->icon() );
+  algorithmAction->setData( id );
+  algorithmAction->setObjectName( u"mProcessingUserMenu_%1"_s.arg( id ) );
+
+  connect( algorithmAction, &QAction::triggered, this, [id] { QgsGui::instance()->emitExecuteAlgorithm( id ); } );
+
+  return algorithmAction;
 }
