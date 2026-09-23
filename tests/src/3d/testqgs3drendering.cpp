@@ -94,6 +94,8 @@ class TestQgs3DRendering : public QgsTest
     void testGlobeSphereRendering();
     void testGlobePointsTRS_data();
     void testGlobePointsTRS();
+    void testGlobeModels_data();
+    void testGlobeModels();
     void testExtrudedPolygons();
     void testExtrudedPolygonsClipping();
 
@@ -2083,6 +2085,80 @@ void TestQgs3DRendering::testGlobePointsTRS()
   QVERIFY( layerPoints->isValid() );
 
   layerPoints->setRenderer3D( new QgsVectorLayer3DRenderer( coneSymbol ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( p.crs() );
+  map->setLayers( QList<QgsMapLayer *>() << layerPoints );
+  map->setBackgroundColor( QColor( 24, 88, 138 ) );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setCameraNavigationMode( Qgis::NavigationMode::GlobeTerrainBased );
+
+  // points are in north america, so we need to adjust the globe to look at them
+  const QgsPointXY center = layerPoints->extent().center();
+  scene->cameraController()->resetGlobe( 9'000'000, center.y(), center.x() );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  const QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+  delete layerPoints;
+
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, img, QString(), 150, QSize( 0, 0 ), 5 );
+}
+
+void TestQgs3DRendering::testGlobeModels_data()
+{
+  QTest::addColumn<QVariantMap>( "props" );
+  QTest::addColumn<QString>( "referenceImage" );
+  QTest::addColumn<float>( "scale" );
+
+  QVariantMap objPropertiesMap;
+  const QString objModelPath = QgsApplication::pkgDataPath() + u"/resources/3d/qgis_logo.obj"_s;
+  objPropertiesMap[u"model"_s] = objModelPath;
+  QTest::newRow( "globe qgis logo" ) << objPropertiesMap << u"globe_qgis_logo"_s << 1000000.0f;
+
+  QVariantMap gltfTexturedPropertiesMap;
+  gltfTexturedPropertiesMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
+  QTest::newRow( "globe tree" ) << gltfTexturedPropertiesMap << u"globe_tree"_s << 100000.0f;
+}
+
+void TestQgs3DRendering::testGlobeModels()
+{
+  QFETCH( QVariantMap, props );
+  QFETCH( QString, referenceImage );
+  QFETCH( float, scale );
+
+  const QgsRectangle fullExtent( 0, 0, 100, 100 );
+
+  QgsProject p;
+
+  QgsCoordinateReferenceSystem newCrs( u"EPSG:4978"_s );
+  p.setCrs( newCrs );
+
+  QgsVectorLayer *layerPoints = new QgsVectorLayer( testDataPath( "points_gpkg.gpkg" ) + "|layername=points_gpkg", "points", "ogr" );
+  QVERIFY( layerPoints->isValid() );
+
+  p.addMapLayer( layerPoints );
+
+  QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
+  symbol->setShape( Qgis::Point3DShape::Model );
+  symbol->setShapeProperties( props );
+  symbol->setMaterialSettings( new QgsNullMaterialSettings() );
+
+  QMatrix4x4 uniformScale;
+  uniformScale.scale( scale );
+  symbol->setTransform( uniformScale );
+
+  layerPoints->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( p.crs() );
