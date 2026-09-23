@@ -29,6 +29,7 @@
 #include "qgsprocessingprovideractions.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingscripteditordialog.h"
+#include "qgsappmenuutils.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -450,6 +451,12 @@ class ExportModelAsPythonScriptAction : public QgsProcessingToolboxContextAction
 // QgsAppProcessingUtils
 //
 
+QgsAppProcessingUtils::QgsAppProcessingUtils(QgisApp* app)
+  : mQgisApp( app )
+{
+
+}
+
 void QgsAppProcessingUtils::registerActions()
 {
   QgsGui::processingGuiRegistry()->registerProviderToolboxAction( QgsProcessing::MODEL_PROVIDER_ID, new CreateNewModelAction() );
@@ -484,6 +491,143 @@ void QgsAppProcessingUtils::initProjectModelProvider()
 {
   auto projectModelProvider = std::make_unique< QgsProcessingProjectModelProvider >( QgsProject::instance() );
   QgsApplication::processingRegistry()->addProvider( projectModelProvider.release() );
+}
+
+QString QgsAppProcessingUtils::menuTitle( Qgis::ProcessingMenu menu )
+{
+  switch ( menu )
+  {
+    case Qgis::ProcessingMenu::VectorAnalysis:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Analysis Tools" );
+    case Qgis::ProcessingMenu::VectorResearch:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Research Tools" );
+    case Qgis::ProcessingMenu::VectorGeoprocessing:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Geoprocessing Tools" );
+    case Qgis::ProcessingMenu::VectorGeometry:
+      return QCoreApplication::translate( "ProcessingPlugin", "G&eometry Tools" );
+    case Qgis::ProcessingMenu::VectorDataManagement:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Data Management Tools" );
+
+    case Qgis::ProcessingMenu::VectorGeneral:
+      return mQgisApp->vectorMenu()->title();
+
+    case Qgis::ProcessingMenu::RasterProjections:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Projection Tools" );
+    case Qgis::ProcessingMenu::RasterConversion:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Conversion Tools" );
+    case Qgis::ProcessingMenu::RasterExtraction:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Extraction Tools" );
+    case Qgis::ProcessingMenu::RasterAnalysis:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Analysis Tools" );
+    case Qgis::ProcessingMenu::RasterMiscellaneous:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Miscellaneous" );
+
+    case Qgis::ProcessingMenu::RasterGeneral:
+      return mQgisApp->rasterMenu()->title();
+  }
+  BUILTIN_UNREACHABLE
+}
+
+QString QgsAppProcessingUtils::legacyMenuTitle( Qgis::ProcessingMenu menu )
+{
+  // NOTE -- do not change these, see doxygen description for this method!
+  switch ( menu )
+  {
+    case Qgis::ProcessingMenu::VectorAnalysis:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Analysis Tools" );
+    case Qgis::ProcessingMenu::VectorResearch:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Research Tools" );
+    case Qgis::ProcessingMenu::VectorGeoprocessing:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Geoprocessing Tools" );
+    case Qgis::ProcessingMenu::VectorGeometry:
+      return QCoreApplication::translate( "ProcessingPlugin", "G&eometry Tools" );
+    case Qgis::ProcessingMenu::VectorDataManagement:
+      return QCoreApplication::translate( "ProcessingPlugin", "&Data Management Tools" );
+
+    case Qgis::ProcessingMenu::RasterProjections:
+      return QCoreApplication::translate( "ProcessingPlugin", "Projections" );
+    case Qgis::ProcessingMenu::RasterConversion:
+      return QCoreApplication::translate( "ProcessingPlugin", "Conversion" );
+    case Qgis::ProcessingMenu::RasterExtraction:
+      return QCoreApplication::translate( "ProcessingPlugin", "Extraction" );
+    case Qgis::ProcessingMenu::RasterAnalysis:
+      return QCoreApplication::translate( "ProcessingPlugin", "Analysis" );
+    case Qgis::ProcessingMenu::RasterMiscellaneous:
+      return QCoreApplication::translate( "ProcessingPlugin", "Miscellaneous" );
+
+    case Qgis::ProcessingMenu::VectorGeneral:
+      return mQgisApp->vectorMenu()->title();
+
+    case Qgis::ProcessingMenu::RasterGeneral:
+      return mQgisApp->rasterMenu()->title();
+  }
+  BUILTIN_UNREACHABLE
+}
+
+QMenu *QgsAppProcessingUtils::parentMenu( Qgis::ProcessingMenu menu )
+{
+  switch ( menu )
+  {
+    case Qgis::ProcessingMenu::VectorAnalysis:
+    case Qgis::ProcessingMenu::VectorResearch:
+    case Qgis::ProcessingMenu::VectorGeoprocessing:
+    case Qgis::ProcessingMenu::VectorGeometry:
+    case Qgis::ProcessingMenu::VectorDataManagement:
+    case Qgis::ProcessingMenu::VectorGeneral:
+      return mQgisApp->vectorMenu();
+    case Qgis::ProcessingMenu::RasterProjections:
+    case Qgis::ProcessingMenu::RasterConversion:
+    case Qgis::ProcessingMenu::RasterExtraction:
+    case Qgis::ProcessingMenu::RasterAnalysis:
+    case Qgis::ProcessingMenu::RasterMiscellaneous:
+    case Qgis::ProcessingMenu::RasterGeneral:
+      return mQgisApp->rasterMenu();
+  }
+  BUILTIN_UNREACHABLE
+}
+
+QMenu *QgsAppProcessingUtils::processingToolMenu( Qgis::ProcessingMenu menu )
+{
+  QMenu *parentMenu = QgsAppProcessingUtils::parentMenu( menu );
+  switch ( menu )
+  {
+    case Qgis::ProcessingMenu::RasterGeneral:
+    case Qgis::ProcessingMenu::VectorGeneral:
+      // these are top-level menus, so we return them directly
+      return parentMenu;
+
+    case Qgis::ProcessingMenu::VectorAnalysis:
+    case Qgis::ProcessingMenu::VectorResearch:
+    case Qgis::ProcessingMenu::VectorGeoprocessing:
+    case Qgis::ProcessingMenu::VectorGeometry:
+    case Qgis::ProcessingMenu::VectorDataManagement:
+    case Qgis::ProcessingMenu::RasterProjections:
+    case Qgis::ProcessingMenu::RasterConversion:
+    case Qgis::ProcessingMenu::RasterExtraction:
+    case Qgis::ProcessingMenu::RasterAnalysis:
+    case Qgis::ProcessingMenu::RasterMiscellaneous:
+      break;
+  }
+
+  const QString menuName = menuTitle( menu );
+  // identify menus by a stable, static, non-translated string:
+  const QString menuId = qgsEnumValueToKey( menu );
+  const QList< QAction * > menuActions = parentMenu->actions();
+  for ( QAction *action : menuActions )
+  {
+    if ( QMenu *subMenu = action->menu() )
+    {
+      if ( subMenu->objectName() == menuId )
+      {
+        return subMenu;
+      }
+    }
+  }
+
+  auto subMenu = new QMenu( menuName, parentMenu );
+  subMenu->setObjectName( menuId );
+  QgsAppMenuUtils::insertSubmenuAlphabeticallyToMenu( parentMenu, subMenu );
+  return subMenu;
 }
 
 void QgsAppProcessingUtils::updateModels()

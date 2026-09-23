@@ -50,6 +50,8 @@ class QgsAppProcessingUtils : public QObject
 {
     Q_OBJECT
   public:
+    QgsAppProcessingUtils( QgisApp *app );
+
     void registerActions();
 
     void openModelDesigner();
@@ -59,6 +61,21 @@ class QgsAppProcessingUtils : public QObject
   private slots:
 
     void updateModels();
+
+  private:
+
+    /**
+     * Returns the older menu titles used in processing settings for menu configuration.
+     * This is a quasi-stable string, as changing it would break user menu configuration.
+     */
+    QString legacyMenuTitle( Qgis::ProcessingMenu menu );
+
+    QMenu *parentMenu( Qgis::ProcessingMenu menu );
+
+    //! Finds the matching Processing menu, creating it if required.
+    QMenu *processingToolMenu( Qgis::ProcessingMenu menu );
+
+    QgisApp *mQgisApp = nullptr;
 };
 
 #endif // QGSAPPPROCESSINGUTILS_H
