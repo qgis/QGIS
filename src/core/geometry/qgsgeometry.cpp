@@ -1293,13 +1293,13 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   std::unique_ptr< QgsAbstractGeometry > splitGeom;
   if ( splitLine.size() > 1 )
   {
-    splitGeom.reset( new QgsLineString( splitLine ) );
+    splitGeom = std::make_unique< QgsLineString >( splitLine );
     splitGeom->dropZValue();
     splitGeom->dropMValue();
   }
   else if ( splitLine.size() == 1 )
   {
-    splitGeom.reset( new QgsPoint( splitLine[0].x(), splitLine[0].y() ) );
+    splitGeom = std::make_unique< QgsPoint >( splitLine[0].x(), splitLine[0].y() );
   }
   QgsGeos geos( tmpGeom.get() );
   mLastError.clear();
