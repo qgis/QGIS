@@ -34,6 +34,7 @@
 
 #include <QImage>
 #include <QPainter>
+#include <QSizeF>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -253,38 +254,51 @@ static QgsRasterVectorFieldSampleGrid calculateSampleGrid( QgsRasterInterface *i
 }
 
 /**
- * Returns the ratio between the resolution the block is drawn at and the resolution of the map
- * painter, or 1 when \a context does not describe a map render.
+ * Returns how many pixels of the block cover one pixel of the map painter, horizontally as the width
+ * and vertically as the height of the returned size, or 1 when \a context does not describe a map render.
  *
  * The block is requested at a higher resolution on high DPI displays, and both the resample filter
  * and the projector may request it at a resolution of their own, so it is measured rather than
- * derived from the DPI settings.
+ * derived from the DPI settings. It is measured locally at the center of the block, because the
+ * bounding box of a reprojected extent is wider than the extent itself wherever the two CRSs are
+ * rotated against each other.
  */
-static double calculateBlockScale( const QgsRenderContext &context, const QgsRectangle &extent, int width )
+static QSizeF calculateBlockPixelsPerMapPixel( const QgsRenderContext &context, const QgsRectangle &extent, int width, int height )
 {
-  if ( !context.mapToPixel().isValid() )
-    return 1.0;
+  if ( !context.mapToPixel().isValid() || width <= 0 || height <= 0 )
+    return QSizeF( 1.0, 1.0 );
 
-  QgsRectangle extentInMapCrs = extent;
+  const double mapUnitsPerPixel = context.mapToPixel().mapUnitsPerPixel();
+  if ( mapUnitsPerPixel <= 0 )
+    return QSizeF( 1.0, 1.0 );
+
+  QgsPointXY center = extent.center();
+  QgsPointXY nextColumn( center.x() + extent.width() / width, center.y() );
+  QgsPointXY nextRow( center.x(), center.y() - extent.height() / height );
   try
   {
     QgsCoordinateTransform transform = context.coordinateTransform();
     if ( transform.isValid() )
     {
       transform.setBallparkTransformsAreAppropriate( true );
-      extentInMapCrs = transform.transformBoundingBox( extent );
+      center = transform.transform( center );
+      nextColumn = transform.transform( nextColumn );
+      nextRow = transform.transform( nextRow );
     }
   }
   catch ( QgsCsException & )
   {
     QgsDebugError( u"Could not transform the block extent to the map CRS"_s );
+    return QSizeF( 1.0, 1.0 );
   }
 
-  const double mapUnitsPerPixel = context.mapToPixel().mapUnitsPerPixel();
-  if ( mapUnitsPerPixel <= 0 || extentInMapCrs.width() <= 0 )
-    return 1.0;
+  const auto ratio = [mapUnitsPerPixel]( double blockPixelSizeInMapUnits ) {
+    if ( !std::isfinite( blockPixelSizeInMapUnits ) || blockPixelSizeInMapUnits <= 0 )
+      return 1.0;
+    return std::clamp( mapUnitsPerPixel / blockPixelSizeInMapUnits, 0.05, 20.0 );
+  };
 
-  return std::clamp( width / ( extentInMapCrs.width() / mapUnitsPerPixel ), 0.05, 20.0 );
+  return QSizeF( ratio( center.distance( nextColumn ) ), ratio( center.distance( nextRow ) ) );
 }
 
 /**
@@ -431,7 +445,7 @@ QgsRasterBlock *QgsRasterVectorFieldRenderer::block( int bandNo, const QgsRectan
     const QgsRenderContext mapContext = feedback ? feedback->renderContext() : QgsRenderContext();
     const bool hasMapContext = mapContext.mapToPixel().isValid();
 
-    const double blockScale = hasMapContext ? calculateBlockScale( mapContext, extent, width ) : 1.0;
+    const QSizeF blockPixelsPerMapPixel = hasMapContext ? calculateBlockPixelsPerMapPixel( mapContext, extent, width, height ) : QSizeF( 1.0, 1.0 );
 
     // the context is built from the block painter instead of being copied from the map context, so that
     // nothing describing the map render can leak into a block which is drawn in the coordinates of the
@@ -441,9 +455,9 @@ QgsRasterBlock *QgsRasterVectorFieldRenderer::block( int bandNo, const QgsRectan
     {
       context.setFlags( mapContext.flags() );
       context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
-      // the block may be drawn at a different resolution than the map painter, so everything which
-      // sizes the symbology in physical units has to be scaled along with it
-      context.setScaleFactor( mapContext.scaleFactor() * blockScale );
+      // the block may be drawn at a different resolution than the map painter, so everything which sizes the
+      // symbology in physical units has to be scaled along with it. The two axes are averaged to provide a single scale
+      context.setScaleFactor( mapContext.scaleFactor() * std::sqrt( blockPixelsPerMapPixel.width() * blockPixelsPerMapPixel.height() ) );
       context.setSymbologyReferenceScale( mapContext.symbologyReferenceScale() );
       context.setRendererScale( mapContext.rendererScale() );
       context.setTransformContext( mapContext.transformContext() );
@@ -473,8 +487,8 @@ QgsRasterBlock *QgsRasterVectorFieldRenderer::block( int bandNo, const QgsRectan
     // the grid cell size is expressed in canvas pixels, which the block pixels only match at a
     // device pixel ratio of one
     QgsVectorFieldSettings settings = mSettings;
-    settings.setUserGridCellWidth( std::max( 1, static_cast<int>( std::round( settings.userGridCellWidth() * blockScale ) ) ) );
-    settings.setUserGridCellHeight( std::max( 1, static_cast<int>( std::round( settings.userGridCellHeight() * blockScale ) ) ) );
+    settings.setUserGridCellWidth( std::max( 1, static_cast<int>( std::round( settings.userGridCellWidth() * blockPixelsPerMapPixel.width() ) ) ) );
+    settings.setUserGridCellHeight( std::max( 1, static_cast<int>( std::round( settings.userGridCellHeight() * blockPixelsPerMapPixel.height() ) ) ) );
 
     const QgsRectangle dataExtent = extent.intersect( layerExtent );
 
