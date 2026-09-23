@@ -16,20 +16,22 @@
 #include "qgsappprocessingutils.h"
 
 #include "qgisapp.h"
+#include "qgsappmenuutils.h"
 #include "qgscodeeditorpython.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsmodeldesignerdialog.h"
+#include "qgsprocessingdefaultmenus.h"
 #include "qgsprocessingdefaultstyledialog.h"
 #include "qgsprocessingfavoritealgorithmmanager.h"
 #include "qgsprocessingguiregistry.h"
+#include "qgsprocessingguiutils.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingprojectmodelprovider.h"
 #include "qgsprocessingprovideractions.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingscripteditordialog.h"
-#include "qgsappmenuutils.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -451,11 +453,9 @@ class ExportModelAsPythonScriptAction : public QgsProcessingToolboxContextAction
 // QgsAppProcessingUtils
 //
 
-QgsAppProcessingUtils::QgsAppProcessingUtils(QgisApp* app)
+QgsAppProcessingUtils::QgsAppProcessingUtils( QgisApp *app )
   : mQgisApp( app )
-{
-
-}
+{}
 
 void QgsAppProcessingUtils::registerActions()
 {
@@ -491,6 +491,23 @@ void QgsAppProcessingUtils::initProjectModelProvider()
 {
   auto projectModelProvider = std::make_unique< QgsProcessingProjectModelProvider >( QgsProject::instance() );
   QgsApplication::processingRegistry()->addProvider( projectModelProvider.release() );
+}
+
+void QgsAppProcessingUtils::validateDefaultAlgorithmActions()
+{
+  const QMap<Qgis::ProcessingMenu, QStringList> entries = QgsProcessingDefaultMenus::defaultProcessingMenuEntries();
+  for ( auto it = entries.constBegin(); it != entries.constEnd(); ++it )
+  {
+    const QStringList algorithms = it.value();
+    for ( const QString &algorithmId : algorithms )
+    {
+      const QgsProcessingAlgorithm *algorithm = QgsApplication::processingRegistry()->algorithmById( algorithmId );
+      if ( !algorithm || algorithm->id() != algorithmId )
+      {
+        QgsMessageLog::logMessage( u"Invalid algorithm ID for menu: %1"_s.arg( algorithmId ), tr( "Processing" ) );
+      }
+    }
+  }
 }
 
 QString QgsAppProcessingUtils::menuTitle( Qgis::ProcessingMenu menu )

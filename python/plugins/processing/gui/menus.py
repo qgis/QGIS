@@ -229,16 +229,6 @@ if iface is not None:
 
 
 def initializeMenus():
-    for m in defaultMenuEntries.keys():
-        alg = QgsApplication.processingRegistry().algorithmById(m)
-        if alg is None or alg.id() != m:
-            QgsMessageLog.logMessage(
-                QCoreApplication.translate(
-                    "ProcessingPlugin", "Invalid algorithm ID for menu: {}"
-                ).format(m),
-                QCoreApplication.translate("ProcessingPlugin", "Processing"),
-            )
-
     for provider in QgsApplication.processingRegistry().providers():
         for alg in provider.algorithms():
             d = defaultMenuEntries.get(alg.id(), "")

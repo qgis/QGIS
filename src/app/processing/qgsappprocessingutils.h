@@ -58,11 +58,21 @@ class QgsAppProcessingUtils : public QObject
 
     static void initProjectModelProvider();
 
+    /**
+     * Checks the definitions of the default menus, pushing message log warnings when they are invalid
+     */
+    void validateDefaultAlgorithmActions();
+
   private slots:
 
     void updateModels();
 
   private:
+    /**
+     *  Returns the menu title to use for a Processing menu. This is not a "stable" string, and is used for
+     *  GUI display only.
+     */
+    QString menuTitle( Qgis::ProcessingMenu menu );
 
     /**
      * Returns the older menu titles used in processing settings for menu configuration.

@@ -303,6 +303,7 @@ set(QGIS_APP_SRCS
   mesh/qgsmeshselectbyexpressiondialog.cpp
 
   processing/qgsappprocessingutils.cpp
+  processing/qgsprocessingdefaultmenus.cpp
 
   vector/qgsvectorelevationpropertieswidget.cpp
 )
