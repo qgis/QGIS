@@ -72,10 +72,8 @@ from processing.gui.AlgorithmLocatorFilter import (
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.menus import (
-    createButtons,
     createMenus,
     initializeMenus,
-    removeButtons,
     removeMenus,
 )
 from processing.gui.MessageBarProgress import MessageBarProgress
@@ -388,7 +386,6 @@ class ProcessingPlugin(QObject):
 
         initializeMenus()
         createMenus()
-        createButtons()
         QgsGui.instance().executeAlgorithm.connect(self._execute_algorithm)
 
         # In-place editing button state sync
@@ -589,7 +586,6 @@ class ProcessingPlugin(QObject):
         self.iface.unregisterCustomDropHandler(self.drop_handler)
         QgsApplication.dataItemProviderRegistry().removeProvider(self.item_provider)
 
-        removeButtons()
         removeMenus()
 
         QgsGui.historyProviderRegistry().providerById(
