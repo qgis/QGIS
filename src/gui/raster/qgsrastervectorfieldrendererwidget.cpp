@@ -39,10 +39,10 @@ QgsRasterVectorFieldRendererWidget::QgsRasterVectorFieldRendererWidget( QgsRaste
   mSourceModeComboBox->addItem( tr( "Component Bands" ), QVariant::fromValue( Qgis::RasterVectorFieldSourceMode::CartesianComponents ) );
   mSourceModeComboBox->addItem( tr( "Encoded Direction" ), QVariant::fromValue( Qgis::RasterVectorFieldSourceMode::EncodedDirection ) );
 
-  mDirectionEncodingComboBox->addItem( tr( "Esri (1 = E, 2 = SE, 4 = S, …)" ), QVariant::fromValue( Qgis::RasterDirectionEncoding::Esri ) );
-  mDirectionEncodingComboBox->addItem( tr( "GRASS (1 = NE, 2 = N, 3 = NW, …)" ), QVariant::fromValue( Qgis::RasterDirectionEncoding::Grass ) );
-  mDirectionEncodingComboBox->addItem( tr( "SAGA (0 = N, 1 = NE, 2 = E, …)" ), QVariant::fromValue( Qgis::RasterDirectionEncoding::Saga ) );
-  mDirectionEncodingComboBox->addItem( tr( "PCRaster LDD (8 = N, 9 = NE, 6 = E, …)" ), QVariant::fromValue( Qgis::RasterDirectionEncoding::PcRaster ) );
+  mDirectionEncodingComboBox->addItem( tr( "Esri (1 = E, 2 = SE, 4 = S, 8 = SW, 16 = W, 32 = NW, 64 = N, 128 = NE)" ), QVariant::fromValue( Qgis::RasterDirectionEncoding::Esri ) );
+  mDirectionEncodingComboBox->addItem( tr( "GRASS (1 = NE, 2 = N, 3 = NW, 4 = W, 5 = SW, 6 = S, 7 = SE, 8 = E)" ), QVariant::fromValue( Qgis::RasterDirectionEncoding::Grass ) );
+  mDirectionEncodingComboBox->addItem( tr( "SAGA (0 = N, 1 = NE, 2 = E, 3 = SE, 4 = S, 5 = SW, 6 = W, 7 = NW)" ), QVariant::fromValue( Qgis::RasterDirectionEncoding::Saga ) );
+  mDirectionEncodingComboBox->addItem( tr( "PCRaster LDD (1 = SW, 2 = S, 3 = SE, 4 = W, 6 = E, 7 = NW, 8 = N, 9 = NE)" ), QVariant::fromValue( Qgis::RasterDirectionEncoding::PcRaster ) );
 
   const int bandCount = mRasterLayer && mRasterLayer->dataProvider() ? mRasterLayer->dataProvider()->bandCount() : 0;
 

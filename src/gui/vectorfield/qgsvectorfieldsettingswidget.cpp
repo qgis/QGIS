@@ -285,11 +285,7 @@ void QgsVectorFieldSettingsWidget::applyMagnitudeSupport()
   // or rejects everything, so it is hidden and cleared rather than left to confuse
   const bool isTraces = currentSymbology() == Qgis::VectorFieldSymbology::Traces;
   const bool showMagnitudeFilter = mHasMagnitude && !isTraces;
-  filterByMagnitudeLabel->setVisible( showMagnitudeFilter );
-  minimumMagLabel->setVisible( showMagnitudeFilter );
-  mMinMagSpinBox->setVisible( showMagnitudeFilter );
-  maximumMagLabel->setVisible( showMagnitudeFilter );
-  mMaxMagSpinBox->setVisible( showMagnitudeFilter );
+  mMagnitudeFilterGroupBox->setVisible( showMagnitudeFilter );
 
   // the color ramp classifies the magnitude, and only a fixed shaft length can draw vectors which
   // all have the same one
