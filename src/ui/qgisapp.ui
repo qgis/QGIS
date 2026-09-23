@@ -431,6 +431,11 @@
     </property>
     <addaction name="mActionQueryHistory"/>
    </widget>
+   <widget class="QMenu" name="mProcessingMenu">
+    <property name="title">
+     <string>Pro&amp;cessing</string>
+    </property>
+   </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
@@ -439,8 +444,9 @@
    <addaction name="mPluginMenu"/>
    <addaction name="mVectorMenu"/>
    <addaction name="mRasterMenu"/>
-   <addaction name="mDatabaseMenu"/>
    <addaction name="mMeshMenu"/>
+   <addaction name="mProcessingMenu"/>
+   <addaction name="mDatabaseMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -921,7 +927,7 @@
     <string>Ctrl+Q</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::QuitRole</enum>
+    <enum>QAction::MenuRole::QuitRole</enum>
    </property>
   </action>
   <action name="mActionUndo">
@@ -1912,7 +1918,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>&amp;Options…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="mActionCustomProjection">
@@ -1933,7 +1939,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>Keyboard Shortcuts…</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="mActionLocalHistogramStretch">
@@ -2003,7 +2009,7 @@ Shift+O to turn segments into straight or curve lines.</string>
     <string>About</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::AboutRole</enum>
+    <enum>QAction::MenuRole::AboutRole</enum>
    </property>
   </action>
   <action name="mActionSponsors">
@@ -3486,7 +3492,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Database Query History</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::NoRole</enum>
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
   <action name="mActionManageElevationProfiles">

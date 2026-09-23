@@ -291,6 +291,16 @@ void QgisAppInterface::removePluginMeshMenu( const QString &name, QAction *actio
   qgis->removePluginMeshMenu( name, action );
 }
 
+void QgisAppInterface::addPluginToProcessingMenu( const QString &name, QAction *action )
+{
+  qgis->addPluginToProcessingMenu( name, action );
+}
+
+void QgisAppInterface::removePluginProcessingMenu( const QString &name, QAction *action )
+{
+  qgis->removePluginProcessingMenu( name, action );
+}
+
 int QgisAppInterface::addToolBarIcon( QAction *qAction )
 {
   return qgis->addPluginToolBarIcon( qAction );
@@ -818,6 +828,10 @@ QMenu *QgisAppInterface::webMenu()
 QMenu *QgisAppInterface::meshMenu()
 {
   return qgis->meshMenu();
+}
+QMenu *QgisAppInterface::processingMenu()
+{
+  return qgis->processingMenu();
 }
 QMenu *QgisAppInterface::firstRightStandardMenu()
 {

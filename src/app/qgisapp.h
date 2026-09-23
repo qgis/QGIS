@@ -757,6 +757,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *rasterMenu() { return mRasterMenu; }
     QMenu *vectorMenu() { return mVectorMenu; }
     QMenu *meshMenu() { return mMeshMenu; }
+    QMenu *processingMenu() { return mProcessingMenu; }
     QMenu *webMenu() { return mWebMenu; }
 #ifdef Q_OS_MAC
     QMenu *firstRightStandardMenu() { return mWindowMenu; }
@@ -1707,6 +1708,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addPluginToMeshMenu( const QString &name, QAction *action );
     //! Remove the action to the submenu with the given name under the Mesh menu
     void removePluginMeshMenu( const QString &name, QAction *action );
+    //! Find the QMenu with the given name within the Processing menu (ie the user visible text on the menu item)
+    QMenu *getProcessingMenu( const QString &menuName );
+    //! Add the action to the submenu with the given name under the Processing menu
+    void addPluginToProcessingMenu( const QString &name, QAction *action );
+    //! Remove the action to the submenu with the given name under the Processing menu
+    void removePluginProcessingMenu( const QString &name, QAction *action );
     //! Add "add layer" action to layer menu
     void insertAddLayerAction( QAction *action );
     //! Remove "add layer" action to layer menu
