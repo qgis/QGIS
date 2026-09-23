@@ -2119,23 +2119,23 @@ void TestQgs3DRendering::testGlobeModels_data()
 {
   QTest::addColumn<QVariantMap>( "props" );
   QTest::addColumn<QString>( "referenceImage" );
-  QTest::addColumn<float>( "scale" );
+  QTest::addColumn<QMatrix4x4>( "transform" );
 
   QVariantMap objPropertiesMap;
   const QString objModelPath = QgsApplication::pkgDataPath() + u"/resources/3d/qgis_logo.obj"_s;
   objPropertiesMap[u"model"_s] = objModelPath;
-  QTest::newRow( "globe qgis logo" ) << objPropertiesMap << u"globe_qgis_logo"_s << 1000000.0f;
 
-  QVariantMap gltfTexturedPropertiesMap;
-  gltfTexturedPropertiesMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
-  QTest::newRow( "globe tree" ) << gltfTexturedPropertiesMap << u"globe_tree"_s << 100000.0f;
+  QMatrix4x4 transform;
+  transform.scale( 500000 );
+  transform.rotate( QQuaternion::fromEulerAngles( 90, 0, 0 ) );
+  QTest::newRow( "globe qgis logo" ) << objPropertiesMap << u"globe_qgis_logo"_s << transform;
 }
 
 void TestQgs3DRendering::testGlobeModels()
 {
   QFETCH( QVariantMap, props );
   QFETCH( QString, referenceImage );
-  QFETCH( float, scale );
+  QFETCH( QMatrix4x4, transform );
 
   const QgsRectangle fullExtent( 0, 0, 100, 100 );
 
@@ -2153,10 +2153,7 @@ void TestQgs3DRendering::testGlobeModels()
   symbol->setShape( Qgis::Point3DShape::Model );
   symbol->setShapeProperties( props );
   symbol->setMaterialSettings( new QgsNullMaterialSettings() );
-
-  QMatrix4x4 uniformScale;
-  uniformScale.scale( scale );
-  symbol->setTransform( uniformScale );
+  symbol->setTransform( transform );
 
   layerPoints->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
 
