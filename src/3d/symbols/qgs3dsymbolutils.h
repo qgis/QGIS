@@ -25,6 +25,8 @@
 #define SIP_NO_FILE
 
 class QgsAbstract3DSymbol;
+class QgsVectorLayer;
+class QgsSymbol;
 
 /**
  * \ingroup qgis_3d
@@ -77,6 +79,25 @@ class _3D_EXPORT Qgs3DSymbolUtils
      * \returns TRUE if the material properties were successfully copied, FALSE otherwise.
      */
     static bool copyVectorSymbolMaterial( const QgsAbstract3DSymbol *fromSymbol, QgsAbstract3DSymbol *toSymbol );
+
+    /**
+     * Creates a 3D symbol from a 2D symbol.
+     *
+     * The generated 3D symbol attempts to preserve the common visual
+     * properties of the input 2D symbol:
+     *
+     * - base color
+     * - opacity
+     * - marker size and basic marker shapes for point layers
+     * - line width for line layers
+     * - polygon edge settings for polygon layers
+     *
+     * \param vLayer the vector layer
+     * \param symbol2D the input 2D symbol
+     * \param context the rendering context
+     * \returns a 3D symbol, or nullptr if creation failed
+     */
+    static std::unique_ptr<QgsAbstract3DSymbol> create3DSymbolFrom2D( const QgsVectorLayer *vLayer, const QgsSymbol *symbol2D, const QgsRenderContext &context );
 };
 
 #endif // QGS3DSYMBOLUTILS_H

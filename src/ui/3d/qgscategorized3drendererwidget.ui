@@ -140,6 +140,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="mBtnUpdateCategoriesFrom2D">
+       <property name="text">
+        <string>Update from 2D</string>
+       </property>
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="mBtnAddCategory">
        <property name="toolTip">
         <string>Add</string>
