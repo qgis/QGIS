@@ -73,7 +73,7 @@ from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.menus import (
     createMenus,
-    initializeMenus,
+    initialize_menu_settings_for_provider,
     removeMenus,
 )
 from processing.gui.MessageBarProgress import MessageBarProgress
@@ -384,7 +384,10 @@ class ProcessingPlugin(QObject):
         )
         ProcessingConfig.readSettings()
 
-        initializeMenus()
+        for provider in QgsApplication.processingRegistry().providers():
+            initialize_menu_settings_for_provider(provider)
+        QgsApplication.processingRegistry().providerAdded.connect(self._provider_added)
+
         createMenus()
         QgsGui.instance().executeAlgorithm.connect(self._execute_algorithm)
 
@@ -414,6 +417,11 @@ class ProcessingPlugin(QObject):
         self._gui_connections.append(
             self.projectProvider.algorithmsLoaded.connect(self.updateProjectModelMenu)
         )
+
+    def _provider_added(self, provider_id: str):
+        provider = QgsApplication.processingRegistry().providerById(provider_id)
+        if provider is not None:
+            initialize_menu_settings_for_provider(provider)
 
     def _execute_algorithm(self, algorithm_id: str):
         from processing.gui.menus import _executeAlgorithm
