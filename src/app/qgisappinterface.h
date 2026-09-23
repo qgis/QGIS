@@ -139,6 +139,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removePluginWebMenu( const QString &name, QAction *action ) override;
     void addPluginToMeshMenu( const QString &name, QAction *action ) override;
     void removePluginMeshMenu( const QString &name, QAction *action ) override;
+    void addPluginToProcessingMenu( const QString &name, QAction *action ) override;
+    void removePluginProcessingMenu( const QString &name, QAction *action ) override;
     void insertAddLayerAction( QAction *action ) override;
     void removeAddLayerAction( QAction *action ) override;
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) override;
@@ -191,6 +193,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QMenu *databaseMenu() override;
     QMenu *webMenu() override;
     QMenu *meshMenu() override;
+    QMenu *processingMenu() override;
     QMenu *firstRightStandardMenu() override;
     QMenu *windowMenu() override;
     QMenu *helpMenu() override;

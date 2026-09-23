@@ -14500,6 +14500,80 @@ QMenu *QgisApp::getMeshMenu( const QString &menuName )
   return menu;
 }
 
+QMenu *QgisApp::getProcessingMenu( const QString &menuName )
+{
+  if ( menuName.isEmpty() )
+    return mMeshMenu;
+
+  QString cleanedMenuName = menuName;
+#ifdef Q_OS_MAC
+  // Mac doesn't have '&' keyboard shortcuts.
+  cleanedMenuName.remove( QChar( '&' ) );
+#endif
+  QString dst = cleanedMenuName;
+  dst.remove( QChar( '&' ) );
+
+  QAction *before = nullptr;
+  QList<QAction *> actions = mProcessingMenu->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    QString src = actions.at( i )->text();
+    src.remove( QChar( '&' ) );
+
+    int comp = dst.localeAwareCompare( src );
+    if ( comp < 0 )
+    {
+      // Add item before this one
+      before = actions.at( i );
+      break;
+    }
+    else if ( comp == 0 )
+    {
+      // Plugin menu item already exists
+      return actions.at( i )->menu();
+    }
+  }
+  // It doesn't exist, so create
+  QMenu *menu = new QMenu( cleanedMenuName, this );
+  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
+  if ( before )
+    mProcessingMenu->insertMenu( before, menu );
+  else
+    mProcessingMenu->addMenu( menu );
+
+  return menu;
+}
+
+void QgisApp::addPluginToProcessingMenu( const QString &name, QAction *action )
+{
+  QMenu *menu = getProcessingMenu( name );
+  menu->addAction( action );
+}
+
+void QgisApp::removePluginProcessingMenu( const QString &name, QAction *action )
+{
+  QMenu *menu = getProcessingMenu( name );
+  menu->removeAction( action );
+  if ( menu->actions().isEmpty() )
+  {
+    mProcessingMenu->removeAction( menu->menuAction() );
+  }
+
+  // remove the Processing menu from the menuBar if there are no more actions
+  if ( !mProcessingMenu->actions().isEmpty() )
+    return;
+
+  QList<QAction *> actions = menuBar()->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    if ( actions.at( i )->menu() == mProcessingMenu )
+    {
+      menuBar()->removeAction( actions.at( i ) );
+      return;
+    }
+  }
+}
+
 void QgisApp::insertAddLayerAction( QAction *action )
 {
   mAddLayerMenu->insertAction( mActionAddLayerSeparator, action );

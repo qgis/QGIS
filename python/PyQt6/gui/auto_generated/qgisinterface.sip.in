@@ -377,6 +377,13 @@ Returns a reference to the main window "Mesh" menu.
 .. versionadded:: 3.34
 %End
 
+    virtual QMenu *processingMenu() = 0 /DisallowNone/;
+%Docstring
+Returns a reference to the main window "Processing" menu.
+
+.. versionadded:: 4.4
+%End
+
     virtual QMenu *firstRightStandardMenu() = 0 /DisallowNone/;
 %Docstring
 Returns a reference to the right most standard menu, which is usually
@@ -1528,6 +1535,20 @@ Adds an ``action`` to the Mesh menu
 Removes ``action`` from the Mesh menu
 
 .. versionadded:: 3.24
+%End
+
+    virtual void addPluginToProcessingMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Adds an ``action`` to the Processing menu.
+
+.. versionadded:: 4.4
+%End
+
+    virtual void removePluginProcessingMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Removes ``action`` from the Processing menu.
+
+.. versionadded:: 4.4
 %End
 
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
