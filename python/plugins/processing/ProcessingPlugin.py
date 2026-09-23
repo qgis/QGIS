@@ -389,6 +389,7 @@ class ProcessingPlugin(QObject):
         initializeMenus()
         createMenus()
         createButtons()
+        QgsGui.instance().executeAlgorithm.connect(self._execute_algorithm)
 
         # In-place editing button state sync
 
@@ -416,6 +417,11 @@ class ProcessingPlugin(QObject):
         self._gui_connections.append(
             self.projectProvider.algorithmsLoaded.connect(self.updateProjectModelMenu)
         )
+
+    def _execute_algorithm(self, algorithm_id: str):
+        from processing.gui.menus import _executeAlgorithm
+
+        _executeAlgorithm(algorithm_id)
 
     def updateProjectModelMenu(self):
         """Add projects models to menu"""

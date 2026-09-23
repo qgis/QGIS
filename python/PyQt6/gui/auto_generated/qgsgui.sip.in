@@ -308,6 +308,7 @@ This should be applied to all child dialogs.
 %End
 
 
+
   signals:
 
     void optionsChanged();
@@ -330,6 +331,15 @@ Emitted whenever the application style sheet is changed.
 .. seealso:: :py:func:`applicationStyleSheet`
 
 .. versionadded:: 4.4
+%End
+
+    void executeAlgorithm( const QString &algorithmId );
+%Docstring
+Emitted when a Processing algorithm should be executed through the GUI.
+
+.. warning::
+
+   This is private API, exposed for use in the Processing plugin only.
 %End
 
   private:
