@@ -410,6 +410,11 @@ void QgsGui::setApplicationStyleSheet( const QString &styleSheet )
   emit applicationStyleSheetChanged( mApplicationStyleSheet );
 }
 
+void QgsGui::emitExecuteAlgorithm( const QString &algorithmId )
+{
+  emit executeAlgorithm( algorithmId );
+}
+
 bool QgsGui::allowExecutionOfEmbeddedScripts( QgsProject *project, QgsMessageBar *messageBar )
 {
   const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();

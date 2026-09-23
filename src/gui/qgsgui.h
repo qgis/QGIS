@@ -373,6 +373,13 @@ class GUI_EXPORT QgsGui : public QObject
      */
     void setApplicationStyleSheet( const QString &styleSheet ) SIP_SKIP;
 
+    /**
+     * Triggers executeAlgorithm signal, for when a Processing algorithm should be executed through the GUI.
+     *
+     * \warning This is private API, to be removed after Processing GUI has been fully ported to c++.
+     */
+    void emitExecuteAlgorithm( const QString &algorithmId ) SIP_SKIP;
+
   signals:
 
     /**
@@ -394,6 +401,13 @@ class GUI_EXPORT QgsGui : public QObject
      * \since QGIS 4.4
      */
     void applicationStyleSheetChanged( const QString &styleSheet );
+
+    /**
+     * Emitted when a Processing algorithm should be executed through the GUI.
+     *
+     * \warning This is private API, exposed for use in the Processing plugin only.
+     */
+    void executeAlgorithm( const QString &algorithmId );
 
   private:
     QgsGui();
