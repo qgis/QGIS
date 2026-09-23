@@ -14333,20 +14333,6 @@ void QgisApp::removePluginProcessingMenu( const QString &name, QAction *action )
   {
     mProcessingMenu->removeAction( menu->menuAction() );
   }
-
-  // remove the Processing menu from the menuBar if there are no more actions
-  if ( !mProcessingMenu->actions().isEmpty() )
-    return;
-
-  QList<QAction *> actions = menuBar()->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    if ( actions.at( i )->menu() == mProcessingMenu )
-    {
-      menuBar()->removeAction( actions.at( i ) );
-      return;
-    }
-  }
 }
 
 void QgisApp::insertAddLayerAction( QAction *action )
@@ -14363,42 +14349,6 @@ void QgisApp::addPluginToDatabaseMenu( const QString &name, QAction *action )
 {
   QMenu *menu = QgsAppMenuUtils::getSubMenu( mDatabaseMenu, name );
   menu->addAction( action );
-
-  // add the Database menu to the menuBar if not added yet
-  if ( mDatabaseMenu->actions().count() != 1 )
-    return;
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = menuBar()->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    if ( actions.at( i )->menu() == mDatabaseMenu )
-      return;
-
-    // goes before Web menu, if present
-    if ( actions.at( i )->menu() == mWebMenu )
-    {
-      before = actions.at( i );
-      break;
-    }
-  }
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    // defaults to after Raster menu, which is already in qgisapp.ui
-    if ( actions.at( i )->menu() == mRasterMenu )
-    {
-      if ( !before )
-      {
-        before = actions.at( i += 1 );
-        break;
-      }
-    }
-  }
-  if ( before )
-    menuBar()->insertMenu( before, mDatabaseMenu );
-  else
-    // fallback insert
-    menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mDatabaseMenu );
 }
 
 void QgisApp::addPluginToRasterMenu( const QString &name, QAction *action )
@@ -14469,20 +14419,6 @@ void QgisApp::removePluginDatabaseMenu( const QString &name, QAction *action )
   if ( menu->actions().isEmpty() )
   {
     mDatabaseMenu->removeAction( menu->menuAction() );
-  }
-
-  // remove the Database menu from the menuBar if there are no more actions
-  if ( !mDatabaseMenu->actions().isEmpty() )
-    return;
-
-  QList<QAction *> actions = menuBar()->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    if ( actions.at( i )->menu() == mDatabaseMenu )
-    {
-      menuBar()->removeAction( actions.at( i ) );
-      return;
-    }
   }
 }
 
@@ -14559,20 +14495,6 @@ void QgisApp::removePluginMeshMenu( const QString &name, QAction *action )
   if ( menu->actions().isEmpty() )
   {
     mMeshMenu->removeAction( menu->menuAction() );
-  }
-
-  // remove the Mesh menu from the menuBar if there are no more actions
-  if ( !mMeshMenu->actions().isEmpty() )
-    return;
-
-  QList<QAction *> actions = menuBar()->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    if ( actions.at( i )->menu() == mMeshMenu )
-    {
-      menuBar()->removeAction( actions.at( i ) );
-      return;
-    }
   }
 }
 
