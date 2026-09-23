@@ -27,6 +27,79 @@ QString QgsAppMenuUtils::normalizedMenuName( const QString &name )
   return name.normalized( QString::NormalizationForm_KD ).remove( sNonAlphaChars );
 }
 
+void QgsAppMenuUtils::insertActionAlphabeticallyToMenu( QMenu *menu, QAction *action )
+{
+  if ( menu->isEmpty() )
+  {
+    menu->addAction( action );
+  }
+  else
+  {
+    // insert into alphabetical position
+    QAction *before = nullptr;
+    QString normalizedActionText = action->text();
+    normalizedActionText.remove( QChar( '&' ) );
+
+    const QList< QAction * > menuActions = menu->actions();
+    for ( QAction *action : menuActions )
+    {
+      QString otherActionText = action->text();
+      otherActionText.remove( QChar( '&' ) );
+      if ( QString::localeAwareCompare( otherActionText, normalizedActionText ) > 0 )
+      {
+        before = action;
+        break;
+      }
+    }
+    if ( before )
+    {
+      menu->insertAction( before, action );
+    }
+    else
+    {
+      menu->addAction( action );
+    }
+  }
+}
+
+void QgsAppMenuUtils::insertSubmenuAlphabeticallyToMenu( QMenu *menu, QMenu *subMenu )
+{
+  if ( menu->isEmpty() )
+  {
+    menu->addMenu( subMenu );
+  }
+  else
+  {
+    // insert into alphabetical position
+    QAction *before = nullptr;
+    QString normalizedMenuName = subMenu->title();
+    normalizedMenuName.remove( QChar( '&' ) );
+
+    const QList< QAction * > menuActions = menu->actions();
+    for ( QAction *action : menuActions )
+    {
+      if ( QMenu *otherSubMenu = action->menu() )
+      {
+        QString otherSubMenuTitle = otherSubMenu->title();
+        otherSubMenuTitle.remove( QChar( '&' ) );
+        if ( QString::localeAwareCompare( otherSubMenuTitle, normalizedMenuName ) > 0 )
+        {
+          before = action;
+          break;
+        }
+      }
+    }
+    if ( before )
+    {
+      menu->insertMenu( before, subMenu );
+    }
+    else
+    {
+      menu->addMenu( subMenu );
+    }
+  }
+}
+
 QMenu *QgsAppMenuUtils::getSubMenu( QMenu *parentMenu, const QString &menuName )
 {
   if ( menuName.isEmpty() )

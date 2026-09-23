@@ -19,6 +19,7 @@
 #include "qgis.h"
 
 class QMenu;
+class QAction;
 
 class QgsAppMenuUtils
 {
@@ -27,6 +28,9 @@ class QgsAppMenuUtils
     static QMenu *getSubMenu( QMenu *parentMenu, const QString &menuName );
 
     static QString normalizedMenuName( const QString &name );
+
+    static void insertActionAlphabeticallyToMenu( QMenu *menu, QAction *action );
+    static void insertSubmenuAlphabeticallyToMenu( QMenu *menu, QMenu *subMenu );
 };
 
 #endif // QGSAPPMENUUTILS_H
