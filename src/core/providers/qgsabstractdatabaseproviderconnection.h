@@ -613,6 +613,20 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QString tableUri( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
+     * Returns the URI string to use when saving a layer style to the database for the given \a schema and \a tableName.
+     *
+     * The base class implementation appends the \a geometryColumn and \a wkbType to the URI returned
+     * by tableUri(). Providers for which the plain table URI is sufficient and necessary (e.g. OGR based
+     * ones) override this method accordingly.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 4.2
+     */
+    virtual QString styleStorageUri( const QString &schema, const QString &tableName, const QString &geometryColumn = QString(), Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) const SIP_THROW(
+      QgsProviderConnectionException
+    );
+
+    /**
      * Creates an empty table with \a name in the given \a schema (schema is ignored if not supported by the backend).
      *
      * \throws QgsProviderConnectionException if any errors are encountered.
