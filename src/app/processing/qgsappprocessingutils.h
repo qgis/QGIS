@@ -87,6 +87,8 @@ class QgsAppProcessingUtils : public QObject
     void updateModels();
 
   private:
+    QList< QAction * > createAlgorithmActionsForProvider( const QgsProcessingProvider *provider );
+
     QAction *createActionForAlgorithm( const QgsProcessingAlgorithm *algorithm, const QString &iconPath = QString() );
 
     /**

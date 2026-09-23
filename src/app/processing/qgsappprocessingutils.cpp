@@ -678,8 +678,28 @@ QList<QAction *> QgsAppProcessingUtils::createAlgorithmActions()
   qDeleteAll( mAlgorithmActions );
   mAlgorithmActions.clear();
 
+  const QList<QgsProcessingProvider *> providers = QgsApplication::processingRegistry()->providers();
+  for ( QgsProcessingProvider *provider : providers )
+  {
+    createAlgorithmActionsForProvider( provider );
+  }
+
+  // when providers are added after startup (eg via installing/loading a plugin), also create actions for that
+  // provider
+  connect( QgsApplication::processingRegistry(), &QgsProcessingRegistry::providerAdded, this, [this]( const QString &id ) {
+    if ( QgsProcessingProvider *provider = QgsApplication::processingRegistry()->providerById( id ) )
+    {
+      createAlgorithmActionsForProvider( provider );
+    }
+  } );
+
+  return mAlgorithmActions;
+}
+
+QList< QAction * > QgsAppProcessingUtils::createAlgorithmActionsForProvider( const QgsProcessingProvider *provider )
+{
   QgsSettings settings;
-  const QList< const QgsProcessingAlgorithm * > allAlgorithms = QgsApplication::processingRegistry()->algorithms();
+  const QList< const QgsProcessingAlgorithm * > allAlgorithms = provider->algorithms();
   const QMap< Qgis::ProcessingMenu, QStringList > defaultProcessingMenuEntries = QgsProcessingDefaultMenus::defaultProcessingMenuEntries();
 
   QList< QAction * > actions;
