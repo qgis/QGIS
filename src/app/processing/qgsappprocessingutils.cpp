@@ -693,6 +693,21 @@ QList<QAction *> QgsAppProcessingUtils::createAlgorithmActions()
     }
   } );
 
+  // when providers are removed, clean up their actions
+  connect( QgsApplication::processingRegistry(), &QgsProcessingRegistry::providerRemoved, this, [this]( const QString &id ) {
+    for ( int i = mAlgorithmActions.size() - 1; i >= 0; --i )
+    {
+      QAction *action = mAlgorithmActions.at( i );
+      const QString algorithmId = action->data().toString();
+      const QString providerId = algorithmId.split( ':' ).value( 0 );
+      if ( providerId == id )
+      {
+        delete action;
+        mAlgorithmActions.remove( i );
+      }
+    }
+  } );
+
   return mAlgorithmActions;
 }
 

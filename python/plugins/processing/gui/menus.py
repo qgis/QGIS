@@ -25,8 +25,8 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsMessageLog,
-    QgsProcessingProvider,
     QgsProcessingAlgorithm,
+    QgsProcessingProvider,
     QgsStringUtils,
 )
 from qgis.gui import QgsGui, QgsMessageViewer, QgsProcessingGuiUtils
@@ -295,14 +295,6 @@ def createMenus():
             )
 
 
-def removeMenus():
-    for alg in QgsApplication.processingRegistry().algorithms():
-        menuPath = ProcessingConfig.getSetting("MENU_" + alg.id())
-        if menuPath:
-            paths = menuPath.split("/")
-            removeAlgorithmEntry(alg, paths[0], paths[-1])
-
-
 def addAlgorithmEntry(
     alg, menuName, submenuName, actionText=None, icon=None, addButton=False
 ):
@@ -343,25 +335,6 @@ def addAlgorithmEntry(
                 )
             )
         algorithmsToolbar.addAction(action)
-
-
-def removeAlgorithmEntry(alg, menuName, submenuName, delButton=True):
-    if menuName:
-        menu = getMenu(menuName, iface.mainWindow().menuBar())
-        subMenu = getMenu(submenuName, menu)
-        action = findAction(subMenu.actions(), alg)
-        if action is not None:
-            subMenu.removeAction(action)
-
-        if len(subMenu.actions()) == 0:
-            subMenu.deleteLater()
-
-    if delButton:
-        global algorithmsToolbar
-        if algorithmsToolbar is not None:
-            action = findAction(algorithmsToolbar.actions(), alg)
-            if action is not None:
-                algorithmsToolbar.removeAction(action)
 
 
 def _executeAlgorithm(alg_id):
@@ -419,13 +392,4 @@ def getMenu(name, parent):
         menu = parent.addMenu(name)
         menu.setObjectName(name)
         return menu
-
-
-def findAction(actions, alg):
-    for action in actions:
-        if (isinstance(alg, str) and action.data() == alg) or (
-            isinstance(alg, QgsProcessingAlgorithm) and action.data() == alg.id()
-        ):
-            return action
-    return None
 

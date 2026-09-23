@@ -71,11 +71,7 @@ from processing.gui.AlgorithmLocatorFilter import (
 )
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
-from processing.gui.menus import (
-    createMenus,
-    initialize_menu_settings_for_provider,
-    removeMenus,
-)
+from processing.gui.menus import createMenus, initialize_menu_settings_for_provider
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.ProcessingToolbox import ProcessingToolbox
@@ -593,8 +589,6 @@ class ProcessingPlugin(QObject):
         self.iface.deregisterLocatorFilter(self.edit_features_locator_filter)
         self.iface.unregisterCustomDropHandler(self.drop_handler)
         QgsApplication.dataItemProviderRegistry().removeProvider(self.item_provider)
-
-        removeMenus()
 
         QgsGui.historyProviderRegistry().providerById(
             "processing"
