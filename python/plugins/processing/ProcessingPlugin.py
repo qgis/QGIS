@@ -295,9 +295,7 @@ class ProcessingPlugin(QObject):
         )
         self.resultsDock.hide()
 
-        self.menu = QMenu(self.iface.mainWindow().menuBar())
-        self.menu.setObjectName("processing")
-        self.menu.setTitle(self.tr("Pro&cessing"))
+        processing_menu = self.iface.processingMenu()
 
         self.toolboxAction = QAction(self.tr("&Toolbox"), self.iface.mainWindow())
         self.toolboxAction.setCheckable(True)
@@ -313,7 +311,7 @@ class ProcessingPlugin(QObject):
         self.iface.attributesToolBar().insertAction(
             self.iface.actionOpenStatisticalSummary(), self.toolboxAction
         )
-        self.menu.addAction(self.toolboxAction)
+        processing_menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(
             QgsApplication.getThemeIcon("/processingModel.svg"),
@@ -326,7 +324,7 @@ class ProcessingPlugin(QObject):
             self.modelerAction,
             QKeySequence("Ctrl+Alt+G").toString(QKeySequence.SequenceFormat.NativeText),
         )
-        self.menu.addAction(self.modelerAction)
+        processing_menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(
             QgsApplication.getThemeIcon("/mIconHistory.svg"),
@@ -339,7 +337,7 @@ class ProcessingPlugin(QObject):
             self.historyAction,
             QKeySequence("Ctrl+Alt+H").toString(QKeySequence.SequenceFormat.NativeText),
         )
-        self.menu.addAction(self.historyAction)
+        processing_menu.addAction(self.historyAction)
         self.toolbox.processingToolbar.addAction(self.historyAction)
 
         self.resultsAction = QAction(
@@ -354,7 +352,7 @@ class ProcessingPlugin(QObject):
             QKeySequence("Ctrl+Alt+R").toString(QKeySequence.SequenceFormat.NativeText),
         )
 
-        self.menu.addAction(self.resultsAction)
+        processing_menu.addAction(self.resultsAction)
         self.toolbox.processingToolbar.addAction(self.resultsAction)
         self.resultsDock.visibilityChanged.connect(self.resultsAction.setChecked)
         self.resultsAction.toggled.connect(self.resultsDock.setUserVisible)
@@ -369,7 +367,7 @@ class ProcessingPlugin(QObject):
         self.editInPlaceAction.setObjectName("editInPlaceFeatures")
         self.editInPlaceAction.setCheckable(True)
         self.editInPlaceAction.toggled.connect(self.editSelected)
-        self.menu.addAction(self.editInPlaceAction)
+        processing_menu.addAction(self.editInPlaceAction)
         self.toolbox.processingToolbar.addAction(self.editInPlaceAction)
 
         self.toolbox.processingToolbar.addSeparator()
@@ -383,10 +381,7 @@ class ProcessingPlugin(QObject):
         self.optionsAction.triggered.connect(self.openProcessingOptions)
         self.toolbox.processingToolbar.addAction(self.optionsAction)
 
-        menuBar = self.iface.mainWindow().menuBar()
-        menuBar.insertMenu(self.iface.firstRightStandardMenu().menuAction(), self.menu)
-
-        self.menu.addSeparator()
+        processing_menu.addSeparator()
 
         # provider specific settings -- here till we have a proper c++ API to port these too
         ProcessingConfig.settingIcons[
@@ -583,12 +578,17 @@ class ProcessingPlugin(QObject):
         self.iface.removeDockWidget(self.resultsDock)
 
         self.toolbox.deleteLater()
-        self.menu.deleteLater()
 
         self.iface.unregisterMainWindowAction(self.toolboxAction)
         self.iface.unregisterMainWindowAction(self.modelerAction)
         self.iface.unregisterMainWindowAction(self.historyAction)
         self.iface.unregisterMainWindowAction(self.resultsAction)
+
+        self.toolboxAction.deleteLater()
+        self.historyAction.deleteLater()
+        self.resultsAction.deleteLater()
+        self.modelerAction.deleteLater()
+        self.editInPlaceAction.deleteLater()
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
 
