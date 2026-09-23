@@ -1790,6 +1790,9 @@ QgisApp::QgisApp(
   QgsStyle::defaultStyle();
   endProfile();
 
+  // must happen after plugin load!
+  mAppProcessingUtils->validateDefaultAlgorithmActions();
+
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
 
   QgsMessageLog::logMessage( QgsApplication::showSettings(), QString(), Qgis::MessageLevel::Info );
