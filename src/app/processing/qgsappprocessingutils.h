@@ -21,6 +21,7 @@
 #include <QObject>
 
 class QgisApp;
+class QToolBar;
 
 class QgsAppProcessingWidgetContextGenerator : public QgsProcessingWidgetContextGenerator
 {
@@ -59,9 +60,22 @@ class QgsAppProcessingUtils : public QObject
     static void initProjectModelProvider();
 
     /**
+     * Returns the toolbar for algorithms, creating it if it does not yet exist.
+     */
+    QToolBar *algorithmsToolBar();
+
+    /**
      * Checks the definitions of the default menus, pushing message log warnings when they are invalid
      */
     void validateDefaultAlgorithmActions();
+
+    /**
+     * Creates algorithm actions for all algorithms shown in menus and toolbars, and populates those menus
+     * and toolbars accordingly.
+     *
+     * Any existing algorithm actions will be deleted.
+     */
+    QList< QAction * > createAlgorithmActions();
 
   private slots:
 
@@ -85,7 +99,11 @@ class QgsAppProcessingUtils : public QObject
     //! Finds the matching Processing menu, creating it if required.
     QMenu *processingToolMenu( Qgis::ProcessingMenu menu );
 
+    static QString algorithmActionText( const QgsProcessingAlgorithm *algorithm );
+
     QgisApp *mQgisApp = nullptr;
+    QList< QAction * > mAlgorithmActions;
+    QToolBar *mAlgorithmsToolbar = nullptr;
 };
 
 #endif // QGSAPPPROCESSINGUTILS_H

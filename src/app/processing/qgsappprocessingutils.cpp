@@ -493,6 +493,17 @@ void QgsAppProcessingUtils::initProjectModelProvider()
   QgsApplication::processingRegistry()->addProvider( projectModelProvider.release() );
 }
 
+QToolBar *QgsAppProcessingUtils::algorithmsToolBar()
+{
+  if ( mAlgorithmsToolbar )
+    return mAlgorithmsToolbar;
+
+  mAlgorithmsToolbar = mQgisApp->addToolBar( tr( "Processing Algorithms" ) );
+  mAlgorithmsToolbar->setObjectName( "ProcessingAlgorithms" );
+  mAlgorithmsToolbar->setToolTip( tr( "Processing Algorithms Toolbar" ) );
+  return mAlgorithmsToolbar;
+}
+
 void QgsAppProcessingUtils::validateDefaultAlgorithmActions()
 {
   const QMap<Qgis::ProcessingMenu, QStringList> entries = QgsProcessingDefaultMenus::defaultProcessingMenuEntries();
@@ -645,6 +656,87 @@ QMenu *QgsAppProcessingUtils::processingToolMenu( Qgis::ProcessingMenu menu )
   subMenu->setObjectName( menuId );
   QgsAppMenuUtils::insertSubmenuAlphabeticallyToMenu( parentMenu, subMenu );
   return subMenu;
+}
+
+QString QgsAppProcessingUtils::algorithmActionText( const QgsProcessingAlgorithm *algorithm )
+{
+  QString algTitle;
+  if ( QgsGui::higFlags().testFlag( QgsGui::HigFlag::HigMenuTextIsTitleCase ) && !( algorithm->flags().testFlag( Qgis::ProcessingAlgorithmFlag::DisplayNameIsLiteral ) ) )
+  {
+    algTitle = QgsStringUtils::capitalize( algorithm->displayName(), Qgis::Capitalization::TitleCase );
+  }
+  else
+  {
+    algTitle = algorithm->displayName();
+  }
+  return algTitle + QCoreApplication::translate( "Processing", "…" );
+}
+
+QList<QAction *> QgsAppProcessingUtils::createAlgorithmActions()
+{
+  // remove any existing actions first, and then recreate all
+  qDeleteAll( mAlgorithmActions );
+  mAlgorithmActions.clear();
+
+  QgsSettings settings;
+  const QList< const QgsProcessingAlgorithm * > allAlgorithms = QgsApplication::processingRegistry()->algorithms();
+  const QMap< Qgis::ProcessingMenu, QStringList > defaultProcessingMenuEntries = QgsProcessingDefaultMenus::defaultProcessingMenuEntries();
+
+  QList< QAction * > actions;
+  for ( const QgsProcessingAlgorithm *algorithm : allAlgorithms )
+  {
+    const QString id = algorithm->id();
+    const QString menuSetting = u"Processing/Configuration/MENU_%1"_s.arg( id );
+    const bool hasSetting = settings.contains( menuSetting );
+    QString algMenu;
+    QMenu *menu = nullptr;
+    if ( !hasSetting )
+    {
+      // when no setting exists, we use the default menu configuration for this algorithm
+      for ( auto it = defaultProcessingMenuEntries.constBegin(); it != defaultProcessingMenuEntries.constEnd(); ++it )
+      {
+        if ( it.value().contains( id ) )
+        {
+          menu = processingToolMenu( it.key() );
+          break;
+        }
+      }
+    }
+    else
+    {
+      algMenu = settings.value( menuSetting ).toString();
+      // TODO -- respect user settings
+    }
+
+    const bool addToToolbar = settings.value( u"Processing/Configuration/BUTTON_%1"_s.arg( id ) ).toBool();
+    const QString iconPathSetting = settings.value( u"Processing/Configuration/ICON_%1"_s.arg( id ) ).toString();
+
+    if ( menu || addToToolbar )
+    {
+      auto algorithmAction = new QAction( algorithmActionText( algorithm ), this );
+      QIcon icon;
+      if ( !iconPathSetting.isEmpty() )
+      {
+        icon = QIcon( iconPathSetting );
+      }
+      algorithmAction->setIcon( !icon.isNull() ? icon : algorithm->icon() );
+      algorithmAction->setData( algorithm->id() );
+      algorithmAction->setObjectName( u"mProcessingUserMenu_%1"_s.arg( algorithm->id() ) );
+
+      connect( algorithmAction, &QAction::triggered, this, [id] { QgsGui::instance()->emitExecuteAlgorithm( id ); } );
+
+      if ( menu )
+      {
+        QgsAppMenuUtils::insertActionAlphabeticallyToMenu( menu, algorithmAction );
+      }
+      if ( addToToolbar )
+      {
+        algorithmsToolBar()->addAction( algorithmAction );
+      }
+      mAlgorithmActions.append( algorithmAction );
+    }
+  }
+  return mAlgorithmActions;
 }
 
 void QgsAppProcessingUtils::updateModels()

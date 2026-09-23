@@ -1792,6 +1792,7 @@ QgisApp::QgisApp(
 
   // must happen after plugin load!
   mAppProcessingUtils->validateDefaultAlgorithmActions();
+  mAppProcessingUtils->createAlgorithmActions();
 
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
 
