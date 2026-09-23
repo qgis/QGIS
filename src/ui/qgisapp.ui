@@ -435,6 +435,7 @@
     <property name="title">
      <string>Pro&amp;cessing</string>
     </property>
+    <addaction name="mActionModelDesigner"/>
    </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
@@ -3512,6 +3513,18 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Copies a feature and distributes the copies at regular intervals along a reference line</string>
+   </property>
+  </action>
+  <action name="mActionModelDesigner">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/processingModel.svg</normaloff>:/images/themes/default/processingModel.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Model Designer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+G</string>
    </property>
   </action>
  </widget>

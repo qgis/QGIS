@@ -311,20 +311,8 @@ class ProcessingPlugin(QObject):
         self.iface.attributesToolBar().insertAction(
             self.iface.actionOpenStatisticalSummary(), self.toolboxAction
         )
-        processing_menu.addAction(self.toolboxAction)
-
-        self.modelerAction = QAction(
-            QgsApplication.getThemeIcon("/processingModel.svg"),
-            QCoreApplication.translate("ProcessingPlugin", "&Model Designer…"),
-            self.iface.mainWindow(),
-        )
-        self.modelerAction.setObjectName("modelerAction")
-        self.modelerAction.triggered.connect(self.openModeler)
-        self.iface.registerMainWindowAction(
-            self.modelerAction,
-            QKeySequence("Ctrl+Alt+G").toString(QKeySequence.SequenceFormat.NativeText),
-        )
-        processing_menu.addAction(self.modelerAction)
+        # the toolbox should be the first action in the menu:
+        processing_menu.insertAction(processing_menu.actions()[0], self.toolboxAction)
 
         self.historyAction = QAction(
             QgsApplication.getThemeIcon("/mIconHistory.svg"),
@@ -579,14 +567,12 @@ class ProcessingPlugin(QObject):
         self.toolbox.deleteLater()
 
         self.iface.unregisterMainWindowAction(self.toolboxAction)
-        self.iface.unregisterMainWindowAction(self.modelerAction)
         self.iface.unregisterMainWindowAction(self.historyAction)
         self.iface.unregisterMainWindowAction(self.resultsAction)
 
         self.toolboxAction.deleteLater()
         self.historyAction.deleteLater()
         self.resultsAction.deleteLater()
-        self.modelerAction.deleteLater()
         self.editInPlaceAction.deleteLater()
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
@@ -615,15 +601,6 @@ class ProcessingPlugin(QObject):
 
     def toolboxVisibilityChanged(self, visible):
         self.toolboxAction.setChecked(visible)
-
-    def openModeler(self):
-        dlg = ModelerDialogHack.create_model_designer_dialog()
-        dlg.modelUpdated.connect(self.updateModel)
-        dlg.show()
-
-    def updateModel(self):
-        model_provider = QgsApplication.processingRegistry().providerById("model")
-        model_provider.refreshAlgorithms()
 
     def openResults(self):
         if self.resultsDock.isVisible():

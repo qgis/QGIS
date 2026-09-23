@@ -384,8 +384,24 @@ void QgsAppProcessingUtils::registerActions()
   QgsGui::processingGuiRegistry()->registerProviderToolboxContextAction( QgsProcessing::MODEL_PROVIDER_ID, new ExportModelAsPythonScriptAction() );
 }
 
+void QgsAppProcessingUtils::openModelDesigner()
+{
+  // QgsModelDesignerDialog has delete on close set:
+  auto dlg = new QgsModelDesignerDialog();
+  connect( dlg, &QgsModelDesignerDialog::modelUpdated, this, &QgsAppProcessingUtils::updateModels );
+  dlg->show();
+}
+
 void QgsAppProcessingUtils::initProjectModelProvider()
 {
   auto projectModelProvider = std::make_unique< QgsProcessingProjectModelProvider >( QgsProject::instance() );
   QgsApplication::processingRegistry()->addProvider( projectModelProvider.release() );
+}
+
+void QgsAppProcessingUtils::updateModels()
+{
+  if ( QgsProcessingProvider *modelProvider = QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) )
+  {
+    modelProvider->refreshAlgorithms();
+  }
 }
