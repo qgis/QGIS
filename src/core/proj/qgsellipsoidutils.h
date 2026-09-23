@@ -19,7 +19,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvector3d.h"
 
 #include <QQuaternion>
 #include <QStringList>
@@ -114,8 +113,6 @@ class CORE_EXPORT QgsEllipsoidUtils
      */
     static QList< QgsCelestialBody > celestialBodies();
 
-#ifndef SIP_RUN
-
     /**
      * Builds a rotation quaternion from an "up" direction and a "right" direction,
      * with the remaining basis axis derived as their cross product.
@@ -136,6 +133,7 @@ class CORE_EXPORT QgsEllipsoidUtils
      */
     static QQuaternion ellipsoidEastNorthUpRotation( const QgsVector3D &position, double semiMajorAxis, double semiMinorAxis );
 
+#ifndef SIP_RUN
     /**
      * Clears the internal cache used.
      *
