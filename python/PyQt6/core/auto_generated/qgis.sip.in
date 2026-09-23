@@ -2214,6 +2214,22 @@ The development version
       Modeler,
     };
 
+    enum class ProcessingMenu
+    {
+      VectorAnalysis,
+      VectorResearch,
+      VectorGeoprocessing,
+      VectorGeometry,
+      VectorDataManagement,
+      VectorGeneral,
+      RasterProjections,
+      RasterConversion,
+      RasterExtraction,
+      RasterAnalysis,
+      RasterMiscellaneous,
+      RasterGeneral,
+    };
+
     enum class ProcessingFeatureSourceDefinitionFlag /BaseType=IntFlag/
     {
       OverrideDefaultGeometryCheck,
