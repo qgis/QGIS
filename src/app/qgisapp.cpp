@@ -1684,7 +1684,7 @@ QgisApp::QgisApp(
   // must come before plugin startup, as processing plugin sets up connections to it
   QgsAppProcessingUtils::initProjectModelProvider();
 
-  mAppProcessingUtils = std::make_unique< QgsAppProcessingUtils >();
+  mAppProcessingUtils = std::make_unique< QgsAppProcessingUtils >( this );
   mAppProcessingUtils->registerActions();
 
   // Create the plugin registry and load plugins
