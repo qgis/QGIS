@@ -3895,6 +3895,28 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( ProcessingMode )
 
     /**
+     * Standard menu groups for Processing tools
+     *
+     * \since QGIS 4.4
+     */
+    enum class ProcessingMenu
+    {
+      VectorAnalysis,       //!< Vector Analysis menu
+      VectorResearch,       //!< Vector Research menu
+      VectorGeoprocessing,  //!< Vector Geoprocessing menu
+      VectorGeometry,       //!< Vector Geometry menu
+      VectorDataManagement, //!< Vector Data Management menu
+      VectorGeneral,        //!< Vector (top-level) menu
+      RasterProjections,    //!< Raster Projections menu
+      RasterConversion,     //!< Raster Conversion menu
+      RasterExtraction,     //!< Raster Extraction menu
+      RasterAnalysis,       //!< Raster Analysis menu
+      RasterMiscellaneous,  //!< Raster Miscellaneous menu
+      RasterGeneral,        //!< Raster (top-level) menu
+    };
+    Q_ENUM( ProcessingMenu )
+
+    /**
      * Flags which control behavior for a Processing feature source.
      *
      * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSourceDefinition::Flag

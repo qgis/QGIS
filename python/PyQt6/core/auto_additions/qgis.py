@@ -7202,6 +7202,39 @@ Qgis.ProcessingMode.__doc__ = """Types of modes which Processing widgets can be 
 """
 # --
 Qgis.ProcessingMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProcessingMenu.VectorAnalysis.__doc__ = "Vector Analysis menu"
+Qgis.ProcessingMenu.VectorResearch.__doc__ = "Vector Research menu"
+Qgis.ProcessingMenu.VectorGeoprocessing.__doc__ = "Vector Geoprocessing menu"
+Qgis.ProcessingMenu.VectorGeometry.__doc__ = "Vector Geometry menu"
+Qgis.ProcessingMenu.VectorDataManagement.__doc__ = "Vector Data Management menu"
+Qgis.ProcessingMenu.VectorGeneral.__doc__ = "Vector (top-level) menu"
+Qgis.ProcessingMenu.RasterProjections.__doc__ = "Raster Projections menu"
+Qgis.ProcessingMenu.RasterConversion.__doc__ = "Raster Conversion menu"
+Qgis.ProcessingMenu.RasterExtraction.__doc__ = "Raster Extraction menu"
+Qgis.ProcessingMenu.RasterAnalysis.__doc__ = "Raster Analysis menu"
+Qgis.ProcessingMenu.RasterMiscellaneous.__doc__ = "Raster Miscellaneous menu"
+Qgis.ProcessingMenu.RasterGeneral.__doc__ = "Raster (top-level) menu"
+Qgis.ProcessingMenu.__doc__ = """Standard menu groups for Processing tools
+
+.. versionadded:: 4.4
+
+* ``VectorAnalysis``: Vector Analysis menu
+* ``VectorResearch``: Vector Research menu
+* ``VectorGeoprocessing``: Vector Geoprocessing menu
+* ``VectorGeometry``: Vector Geometry menu
+* ``VectorDataManagement``: Vector Data Management menu
+* ``VectorGeneral``: Vector (top-level) menu
+* ``RasterProjections``: Raster Projections menu
+* ``RasterConversion``: Raster Conversion menu
+* ``RasterExtraction``: Raster Extraction menu
+* ``RasterAnalysis``: Raster Analysis menu
+* ``RasterMiscellaneous``: Raster Miscellaneous menu
+* ``RasterGeneral``: Raster (top-level) menu
+
+"""
+# --
+Qgis.ProcessingMenu.baseClass = Qgis
 QgsProcessingFeatureSourceDefinition.Flag = Qgis.ProcessingFeatureSourceDefinitionFlag
 # monkey patching scoped based enum
 QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck = Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck
