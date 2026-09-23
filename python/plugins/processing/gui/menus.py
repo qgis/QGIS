@@ -25,10 +25,11 @@ from qgis.core import (
     Qgis,
     QgsApplication,
     QgsMessageLog,
+    QgsProcessingProvider,
     QgsProcessingAlgorithm,
     QgsStringUtils,
 )
-from qgis.gui import QgsGui, QgsMessageViewer
+from qgis.gui import QgsGui, QgsMessageViewer, QgsProcessingGuiUtils
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMenu, QToolButton
@@ -254,6 +255,27 @@ def updateMenus():
     removeMenus()
     QCoreApplication.processEvents()
     createMenus()
+
+
+def initialize_menu_settings_for_provider(provider: QgsProcessingProvider):
+    for alg in provider.algorithms():
+        d = defaultMenuEntries.get(alg.id(), "")
+        setting = Setting(menusSettingsGroup, "MENU_" + alg.id(), "Menu path", d)
+        ProcessingConfig.addSetting(setting)
+        setting = Setting(
+            menusSettingsGroup, "BUTTON_" + alg.id(), "Add button", False
+        )
+        ProcessingConfig.addSetting(setting)
+        setting = Setting(
+            menusSettingsGroup,
+            "ICON_" + alg.id(),
+            "Icon",
+            "",
+            valuetype=Setting.FILE,
+        )
+        ProcessingConfig.addSetting(setting)
+
+    ProcessingConfig.readSettings()
 
 
 def createMenus():
