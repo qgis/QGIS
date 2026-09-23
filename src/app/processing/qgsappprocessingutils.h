@@ -52,7 +52,13 @@ class QgsAppProcessingUtils : public QObject
   public:
     void registerActions();
 
+    void openModelDesigner();
+
     static void initProjectModelProvider();
+
+  private slots:
+
+    void updateModels();
 };
 
 #endif // QGSAPPPROCESSINGUTILS_H

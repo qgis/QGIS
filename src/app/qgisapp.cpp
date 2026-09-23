@@ -1803,6 +1803,8 @@ QgisApp::QgisApp(
     toggleMapTips( true );
   }
 
+  connect( mActionModelDesigner, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openModelDesigner );
+
   mPythonMacrosEnabled = false;
 
   // setup drag drop
