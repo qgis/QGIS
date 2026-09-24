@@ -27,7 +27,7 @@ QString QgsAppMenuUtils::normalizedMenuName( const QString &name )
   return name.normalized( QString::NormalizationForm_KD ).remove( sNonAlphaChars );
 }
 
-void QgsAppMenuUtils::insertActionAlphabeticallyToMenu( QMenu *menu, QAction *action )
+void QgsAppMenuUtils::insertActionAlphabeticallyToMenu( QMenu *menu, QAction *action, bool insertAfterSubMenus )
 {
   if ( menu->isEmpty() )
   {
@@ -43,6 +43,11 @@ void QgsAppMenuUtils::insertActionAlphabeticallyToMenu( QMenu *menu, QAction *ac
     const QList< QAction * > menuActions = menu->actions();
     for ( QAction *action : menuActions )
     {
+      if ( insertAfterSubMenus && action->menu() )
+      {
+        continue;
+      }
+
       QString otherActionText = action->text();
       otherActionText.remove( QChar( '&' ) );
       if ( QString::localeAwareCompare( otherActionText, normalizedActionText ) > 0 )
@@ -62,7 +67,7 @@ void QgsAppMenuUtils::insertActionAlphabeticallyToMenu( QMenu *menu, QAction *ac
   }
 }
 
-void QgsAppMenuUtils::insertSubmenuAlphabeticallyToMenu( QMenu *menu, QMenu *subMenu )
+void QgsAppMenuUtils::insertSubmenuAlphabeticallyToMenu( QMenu *menu, QMenu *subMenu, bool insertMenusOnTop )
 {
   if ( menu->isEmpty() )
   {
@@ -87,6 +92,11 @@ void QgsAppMenuUtils::insertSubmenuAlphabeticallyToMenu( QMenu *menu, QMenu *sub
           before = action;
           break;
         }
+      }
+      else if ( insertMenusOnTop )
+      {
+        before = action;
+        break;
       }
     }
     if ( before )

@@ -654,7 +654,7 @@ QMenu *QgsAppProcessingUtils::processingToolMenu( Qgis::ProcessingMenu menu )
 
   auto subMenu = new QMenu( menuName, parentMenu );
   subMenu->setObjectName( menuId );
-  QgsAppMenuUtils::insertSubmenuAlphabeticallyToMenu( parentMenu, subMenu );
+  QgsAppMenuUtils::insertSubmenuAlphabeticallyToMenu( parentMenu, subMenu, true );
   return subMenu;
 }
 
@@ -751,7 +751,7 @@ QList< QAction * > QgsAppProcessingUtils::createAlgorithmActionsForProvider( con
       QAction *algorithmAction = createActionForAlgorithm( algorithm );
       if ( menu )
       {
-        QgsAppMenuUtils::insertActionAlphabeticallyToMenu( menu, algorithmAction );
+        QgsAppMenuUtils::insertActionAlphabeticallyToMenu( menu, algorithmAction, true );
       }
       if ( addToToolbar )
       {
