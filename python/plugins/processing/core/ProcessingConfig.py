@@ -45,17 +45,18 @@ DEFAULT_MENU_ENTRIES = {}
 try:
     from qgis.gui import QgsProcessingGuiUtils
 
-    for (
-        key,
-        algorithm_list,
-    ) in QgsProcessingGuiUtils.defaultProcessingMenuEntries().items():
-        processing_menu = Qgis.ProcessingMenu(key)
+    if QgsApplication.instance() is not None:
+        for (
+            key,
+            algorithm_list,
+        ) in QgsProcessingGuiUtils.defaultProcessingMenuEntries().items():
+            processing_menu = Qgis.ProcessingMenu(key)
 
-        default_key = QgsApplication.instance().property(
-            f"_processing_legacy_menu_key_{key}"
-        )
-        for algorithm_id in algorithm_list:
-            DEFAULT_MENU_ENTRIES[algorithm_id] = default_key
+            default_key = QgsApplication.instance().property(
+                f"_processing_legacy_menu_key_{key}"
+            )
+            for algorithm_id in algorithm_list:
+                DEFAULT_MENU_ENTRIES[algorithm_id] = default_key
 
 except ImportError:
     pass
