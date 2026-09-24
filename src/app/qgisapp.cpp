@@ -5471,8 +5471,10 @@ void QgisApp::updateProjectFromTemplates()
   const int maxLabelWidth = Qgis::UI_SCALE_FACTOR * fontMetrics.horizontalAdvance( 'X' ) * 35;
 
   // get list of project files in template dirs with their labelled name
-  for ( const auto &[label, templateDirName] : QgsTemplateProjectsModel::labelledTemplatePaths() )
+  for ( const std::pair<QString, QString> &labelsPaths : QgsTemplateProjectsModel::labelledTemplatePaths() )
   {
+    QString label = labelsPaths.first;
+    QString templateDirName = labelsPaths.second;
     QDir templateDir( templateDirName );
     if ( !templateDir.exists() )
       continue;
