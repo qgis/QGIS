@@ -10662,6 +10662,8 @@ QgsMeshLayer.setLabeling: src/core/mesh/qgsmeshlayer.h#L988
 QgsMeshLayer.setLabelsEnabled: src/core/mesh/qgsmeshlayer.h#L964
 QgsMeshLayer.setReferenceTime: src/core/mesh/qgsmeshlayer.h#L703
 QgsMeshLayer.setRendererSettings: src/core/mesh/qgsmeshlayer.h#L322
+QgsMeshLayer.setStaticScalarDatasetIndex: src/core/mesh/qgsmeshlayer.h#L665
+QgsMeshLayer.setStaticVectorDatasetIndex: src/core/mesh/qgsmeshlayer.h#L674
 QgsMeshLayer.setTemporalMatchingMethod: src/core/mesh/qgsmeshlayer.h#L712
 QgsMeshLayer.setTimeSettings: src/core/mesh/qgsmeshlayer.h#L344
 QgsMeshLayer.setTransformContext: src/core/mesh/qgsmeshlayer.h#L1038
