@@ -84,7 +84,7 @@ QList<std::pair<QString, QString>> QgsTemplateProjectsModel::labelledTemplatePat
 {
   const QStringList templatePaths = QgsApplication::projectTemplatePaths();
 
-  QStringList directoryNames;
+  QSet<QString> directoryNames;
   bool duplicateFound = false;
   for ( const QString &templatePath : templatePaths )
   {
