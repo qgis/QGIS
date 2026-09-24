@@ -86,6 +86,8 @@ class TestQgsOgrUtils : public QObject
     void testConvertToGdalRelationship();
 #endif
 
+    void testListStylesSortingByDate();
+
   private:
     QString mTestDataDir;
     QString mTestFile;
@@ -1449,6 +1451,49 @@ void TestQgsOgrUtils::testConvertToGdalRelationship()
 }
 #endif
 
+void TestQgsOgrUtils::testListStylesSortingByDate()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QString testFile = tempDir.path() + "/test.gpkg";
+  QString error;
+
+  QVERIFY( QgsOgrProviderUtils::createEmptyDataSource( testFile, QStringLiteral( "GPKG" ), QStringLiteral( "UTF-8" ), Qgis::WkbType::Point, QList<QPair<QString, QString>>(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), error ) );
+
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( testFile.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+
+  QVERIFY( QgsOgrUtils::saveStyle( hDS.get(), QStringLiteral( "test" ), QStringLiteral( "geom" ), QString(), QString(), QStringLiteral( "Newer" ), QStringLiteral( "Newer" ), QString(), false, error ) );
+  QVERIFY( QgsOgrUtils::saveStyle( hDS.get(), QStringLiteral( "test" ), QStringLiteral( "geom" ), QString(), QString(), QStringLiteral( "Older" ), QStringLiteral( "Older" ), QString(), false, error ) );
+
+  auto updateStyleTime = [&hDS]( const int id, const QString &dateTime ) {
+    QString sql = QStringLiteral( "UPDATE layer_styles SET update_time = '%1' WHERE id = %2" ).arg( dateTime ).arg( id );
+    OGRLayerH hRes = GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr );
+    if ( hRes )
+      GDALDatasetReleaseResultSet( hDS.get(), hRes );
+  };
+
+  // Newer style
+  updateStyleTime( 1, QStringLiteral( "2023-12-31T23:59:59Z" ) );
+  // Older style. Calculated timestamp representation without timezone makes
+  // this earlier than previous, while in fact this should be older as
+  // 2024-01-01 00:00:00 +02:00 == 2023-12-31 22:00:00 UTC
+  updateStyleTime( 2, QStringLiteral( "2024-01-01T00:00:00+02:00" ) );
+
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS.get(), "layer_styles" );
+  if ( hLayer )
+  {
+    OGR_L_SetAttributeFilter( hLayer, nullptr );
+    OGR_L_SetSpatialFilter( hLayer, nullptr );
+    OGR_L_ResetReading( hLayer );
+  }
+
+  QStringList ids, names, descriptions;
+  const int relatedCount = QgsOgrUtils::listStyles( hDS.get(), QStringLiteral( "target" ), QStringLiteral( "geom" ), ids, names, descriptions, error );
+  QCOMPARE( relatedCount, 0 );
+  QCOMPARE( names.size(), 2 );
+  QCOMPARE( names.at( 0 ), QStringLiteral( "Newer" ) );
+  QCOMPARE( names.at( 1 ), QStringLiteral( "Older" ) );
+}
 
 QGSTEST_MAIN( TestQgsOgrUtils )
 #include "testqgsogrutils.moc"
