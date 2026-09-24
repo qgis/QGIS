@@ -69,7 +69,7 @@ class QgsTemplateProjectsModel : public QStandardItemModel
 
     /**
      * Returns the configured template directories as (label, path) pairs, in configuration order.
-     * The label is the directory name, or the full native path when several directories share the same name.
+     * All the labels are the directory name, or the full native path when several directories share the same name.
      */
     static QList<std::pair<QString, QString>> labelledTemplatePaths();
 
