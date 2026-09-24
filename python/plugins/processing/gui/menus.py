@@ -22,41 +22,16 @@ __copyright__ = "(C) 2016, Victor Olaya"
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsProcessingProvider,
 )
 from qgis.gui import QgsMessageViewer
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
-
-algorithmsToolbar = None
-menusSettingsGroup = "Menus"
-defaultMenuEntries = {}
-
-
-def initialize_menu_settings_for_provider(provider: QgsProcessingProvider):
-    for alg in provider.algorithms():
-        d = defaultMenuEntries.get(alg.id(), "")
-        setting = Setting(menusSettingsGroup, "MENU_" + alg.id(), "Menu path", d)
-        ProcessingConfig.addSetting(setting)
-        setting = Setting(menusSettingsGroup, "BUTTON_" + alg.id(), "Add button", False)
-        ProcessingConfig.addSetting(setting)
-        setting = Setting(
-            menusSettingsGroup,
-            "ICON_" + alg.id(),
-            "Icon",
-            "",
-            valuetype=Setting.FILE,
-        )
-        ProcessingConfig.addSetting(setting)
-
-    ProcessingConfig.readSettings()
 
 
 def _executeAlgorithm(alg_id):
