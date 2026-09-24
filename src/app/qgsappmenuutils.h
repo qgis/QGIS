@@ -36,7 +36,7 @@ class QgsAppMenuUtils
      *
      * If no matching menu exists, a new one will be created.
      */
-    static QMenu *getMenu( QMenuBar *menuBar, const QString &menuName );
+    static QMenu *getMenu( QgisApp *app, const QString &menuName );
 
     /**
      * Find the QMenu with the given name within the a parent menu (ie the user visible text on the menu item).

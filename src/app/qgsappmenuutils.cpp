@@ -15,6 +15,8 @@
 
 #include "qgsappmenuutils.h"
 
+#include "qgisapp.h"
+
 #include <QMenu>
 #include <QMenuBar>
 #include <QRegularExpression>
@@ -111,7 +113,7 @@ void QgsAppMenuUtils::insertSubmenuAlphabeticallyToMenu( QMenu *menu, QMenu *sub
   }
 }
 
-QMenu *QgsAppMenuUtils::getMenu( QMenuBar *menuBar, const QString &menuName )
+QMenu *QgsAppMenuUtils::getMenu( QgisApp *app, const QString &menuName )
 {
   if ( menuName.isEmpty() )
     return nullptr;
@@ -124,7 +126,7 @@ QMenu *QgsAppMenuUtils::getMenu( QMenuBar *menuBar, const QString &menuName )
   QString targetName = cleanedMenuName;
   targetName.remove( QChar( '&' ) );
 
-  const QList<QAction *> actions = menuBar->actions();
+  const QList<QAction *> actions = app->menuBar()->actions();
   for ( QAction *action : actions )
   {
     if ( QMenu *otherSubMenu = action->menu() )
@@ -139,9 +141,9 @@ QMenu *QgsAppMenuUtils::getMenu( QMenuBar *menuBar, const QString &menuName )
   }
 
   // It doesn't exist, so create it
-  QMenu *menu = new QMenu( cleanedMenuName, menuBar->parentWidget() );
+  QMenu *menu = new QMenu( cleanedMenuName, app->parentWidget() );
   menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
-  menuBar->addMenu( menu );
+  app->menuBar()->insertMenu( app->firstRightStandardMenu()->menuAction(), menu );
   return menu;
 }
 

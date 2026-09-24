@@ -748,11 +748,11 @@ QList< QAction * > QgsAppProcessingUtils::createAlgorithmActionsForProvider( con
         const QString subMenu = menuPath.mid( 1 ).join( '/' );
         if ( subMenu.isEmpty() )
         {
-          menu = QgsAppMenuUtils::getMenu( mQgisApp->menuBar(), mainMenu );
+          menu = QgsAppMenuUtils::getMenu( mQgisApp, mainMenu );
         }
         else
         {
-          QMenu *targetMainMenu = QgsAppMenuUtils::getMenu( mQgisApp->menuBar(), mainMenu );
+          QMenu *targetMainMenu = QgsAppMenuUtils::getMenu( mQgisApp, mainMenu );
           menu = QgsAppMenuUtils::getSubMenu( targetMainMenu, subMenu );
         }
       }
