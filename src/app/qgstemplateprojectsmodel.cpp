@@ -113,8 +113,10 @@ void QgsTemplateProjectsModel::reload()
   const QColor canvasColor = QgsSettingsRegistryCore::settingsDefaultCanvasColor->value();
 
   int row = 0;
-  for ( const auto &[section, templatePath] : labelledTemplatePaths() )
+  for ( const std::pair<QString, QString> &labelsPaths : QgsTemplateProjectsModel::labelledTemplatePaths() )
   {
+    QString section = labelsPaths.first;
+    QString templatePath = labelsPaths.second;
     const QDir dir( templatePath );
     if ( !dir.exists() )
       continue;
