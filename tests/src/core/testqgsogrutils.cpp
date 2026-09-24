@@ -93,6 +93,7 @@ class TestQgsOgrUtils : public QObject
 #endif
 
     void testListStylesSortingByDate();
+    testListStylesNoDuplicates();
 
   private:
     QString mTestDataDir;
@@ -1772,6 +1773,52 @@ void TestQgsOgrUtils::testListStylesSortingByDate()
   QCOMPARE( names.size(), 2 );
   QCOMPARE( names.at( 0 ), u"Newer"_s );
   QCOMPARE( names.at( 1 ), u"Older"_s );
+}
+
+
+void TestQgsOgrUtils::testListStylesNoDuplicates()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QString tempDirPath = tempDir.path();
+  QString testFile = tempDirPath + "/test.gpkg";
+  QString error;
+  QVERIFY( QgsOgrProviderUtils::createEmptyDataSource( testFile, u"GPKG"_s, u"UTF-8"_s, Qgis::WkbType::Point, QList<QPair<QString, QString>>(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), error ) );
+
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( testFile.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+
+  QVERIFY( QgsOgrUtils::saveStyle( hDS.get(), u"test"_s, u"geom"_s, QString(), QString(), u"Style A"_s, u"Style A"_s, QString(), false, error ) );
+  QVERIFY( QgsOgrUtils::saveStyle( hDS.get(), u"test"_s, u"geom"_s, QString(), QString(), u"Style B"_s, u"Style B"_s, QString(), false, error ) );
+
+  // update timestamps
+  auto updateStyle = [&hDS]( const int id, const QString dateTime ) {
+    QString sql = u"UPDATE layer_styles SET update_time = '%1' WHERE id = %2"_s.arg( dateTime ).arg( id );
+
+    OGRLayerH hRes = GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr );
+    if ( hRes )
+    {
+      GDALDatasetReleaseResultSet( hDS.get(), hRes );
+    }
+  };
+
+  // set identical timestamps
+  updateStyle( 1, u"2024-06-01T10:00:00Z"_s );
+  updateStyle( 2, u"2024-06-01T10:00:00Z"_s );
+
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS.get(), "layer_styles" );
+  if ( hLayer )
+  {
+    OGR_L_SetAttributeFilter( hLayer, nullptr );
+    OGR_L_SetSpatialFilter( hLayer, nullptr );
+    OGR_L_ResetReading( hLayer );
+  }
+
+  QStringList ids, names, descriptions;
+  const int relatedCount = QgsOgrUtils::listStyles( hDS.get(), u"target"_s, u"geom"_s, ids, names, descriptions, error );
+  QCOMPARE( relatedCount, 0 );
+  QCOMPARE( ids.size(), 2 );
+  QCOMPARE( names.size(), 2 );
+  QCOMPARE( descriptions.size(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsOgrUtils )
