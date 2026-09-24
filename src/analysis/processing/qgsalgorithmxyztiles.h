@@ -27,6 +27,7 @@
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmbtiles.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
 #include "qgsrectangle.h"
 #include "qgstiles.h"
 #include "qobjectuniqueptr.h"
@@ -104,6 +105,9 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     QColor mBackgroundColor;
     int mMinZoom = 12;
     int mMaxZoom = 12;
+    QList<QgsTileExtentMaxZoomRegion> mMaxZoomRegions;
+    int mMaxZoomLimitIncludingOverrides = 0;
+
     int mDpi = 96;
     bool mAntialias = true;
     int mJpgQuality = 75;

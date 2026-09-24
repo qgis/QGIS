@@ -300,6 +300,7 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingparameterreliefcolors.cpp
   processing/qgsprocessingparametertininputlayers.cpp
   processing/qgsprocessingparametertype.cpp
+  processing/qgsprocessingparametertileextentmaxzoomlist.cpp
   processing/qgsprocessingparametervectortilewriterlayers.cpp
   processing/qgsprocessingparameteralignrasterlayers.cpp
   processing/qgsprocessingprojectmodelprovider.cpp
@@ -1950,6 +1951,7 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingparametermeshdataset.h
   processing/qgsprocessingparameterreliefcolors.h
   processing/qgsprocessingparameters.h
+  processing/qgsprocessingparametertileextentmaxzoomlist.h
   processing/qgsprocessingparametertininputlayers.h
   processing/qgsprocessingparametertype.h
   processing/qgsprocessingparametertypeimpl.h
