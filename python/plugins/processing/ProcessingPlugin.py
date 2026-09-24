@@ -422,9 +422,7 @@ class ProcessingPlugin(QObject):
             initialize_menu_settings_for_provider(provider)
 
     def _execute_algorithm(self, algorithm_id: str):
-        from processing.gui.menus import _executeAlgorithm
-
-        _executeAlgorithm(algorithm_id)
+        self.executeAlgorithm(algorithm_id, self.iface.mainWindow())
 
     def updateProjectModelMenu(self):
         """Add projects models to menu"""
