@@ -71,7 +71,7 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * \deprecated QGIS 4.6. Use vectorLayer() with explicit project parameter instead.
        */
-        Q_DECL_DEPRECATED QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const SIP_DEPRECATED;
+        Q_DECL_DEPRECATED QgsVectorLayer *vectorLayer( bool &owner SIP_OUT, QString &error SIP_OUT ) const SIP_DEPRECATED;
 
         /**
        * Gets vector layer from uri if possible, otherwise returns NULLPTR and error is set
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * \since QGIS 4.6
        */
-        QgsVectorLayer *vectorLayer( bool &owner, QString &error, QgsProject *project ) const;
+        QgsVectorLayer *vectorLayer( bool &owner SIP_OUT, QString &error SIP_OUT, QgsProject *project ) const;
 
         // TODO QGIS 5.0 -- remove this version of function in favor of the one with explicit project parameter
         /**
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * \deprecated QGIS 4.6. Use rasterLayer() with explicit project parameter instead.
        */
-        Q_DECL_DEPRECATED QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const SIP_DEPRECATED;
+        Q_DECL_DEPRECATED QgsRasterLayer *rasterLayer( bool &owner SIP_OUT, QString &error SIP_OUT ) const SIP_DEPRECATED;
 
         /**
        * Gets raster layer from uri if possible, otherwise returns NULLPTR and error is set
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * \since QGIS 4.6
        */
-        QgsRasterLayer *rasterLayer( bool &owner, QString &error, QgsProject *project ) const;
+        QgsRasterLayer *rasterLayer( bool &owner SIP_OUT, QString &error SIP_OUT, QgsProject *project ) const;
 
         // TODO QGIS 5.0 -- remove this version of function in favor of the one with explicit project parameter
         /**
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * \deprecated QGIS 4.6. Use meshLayer() with explicit project parameter instead.
        */
-        Q_DECL_DEPRECATED QgsMeshLayer *meshLayer( bool &owner, QString &error ) const SIP_DEPRECATED;
+        Q_DECL_DEPRECATED QgsMeshLayer *meshLayer( bool &owner SIP_OUT, QString &error SIP_OUT ) const SIP_DEPRECATED;
 
         /**
        * Gets mesh layer from uri if possible, otherwise returns NULLPTR and error is set
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * \since QGIS 4.6
        */
-        QgsMeshLayer *meshLayer( bool &owner, QString &error, QgsProject *project ) const;
+        QgsMeshLayer *meshLayer( bool &owner SIP_OUT, QString &error SIP_OUT, QgsProject *project ) const;
 
         // TODO QGIS 5.0 -- remove this version of function in favor of the one with explicit project parameter
         /**
