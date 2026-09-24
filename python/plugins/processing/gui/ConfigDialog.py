@@ -49,10 +49,10 @@ from qgis.utils import OverrideCursor
 
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import (
+    DEFAULT_MENU_ENTRIES,
     MENU_SETTINGS_GROUP,
     ProcessingConfig,
     Setting,
-    defaultMenuEntries,
     settingsWatcher,
 )
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
@@ -307,7 +307,7 @@ class ConfigDialog(BASE, WIDGET):
     def resetMenusToDefaults(self):
         for provider in QgsApplication.processingRegistry().providers():
             for alg in provider.algorithms():
-                d = defaultMenuEntries.get(alg.id(), "")
+                d = DEFAULT_MENU_ENTRIES.get(alg.id(), "")
                 setting = ProcessingConfig.settings["MENU_" + alg.id()]
                 item = self.items[setting]
                 item.setData(d, Qt.ItemDataRole.EditRole)
