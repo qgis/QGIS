@@ -1362,10 +1362,7 @@ QStringList QgsApplication::projectTemplatePaths()
 
 QStringList QgsApplication::defaultProjectTemplatePaths()
 {
-  // QStringList paths;
-  // paths << ;
   return { qgisSettingsDirPath() + u"/project_templates"_s };
-  // return paths;
 }
 
 void QgsApplication::setSvgPaths( const QStringList &svgPaths )
