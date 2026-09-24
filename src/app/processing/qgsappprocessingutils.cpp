@@ -562,26 +562,26 @@ QString QgsAppProcessingUtils::legacyMenuTitle( Qgis::ProcessingMenu menu )
   switch ( menu )
   {
     case Qgis::ProcessingMenu::VectorAnalysis:
-      return QCoreApplication::translate( "ProcessingPlugin", "&Analysis Tools" );
+      return mQgisApp->vectorMenu()->title() + '/' + QCoreApplication::translate( "ProcessingPlugin", "&Analysis Tools" );
     case Qgis::ProcessingMenu::VectorResearch:
-      return QCoreApplication::translate( "ProcessingPlugin", "&Research Tools" );
+      return mQgisApp->vectorMenu()->title() + '/' + QCoreApplication::translate( "ProcessingPlugin", "&Research Tools" );
     case Qgis::ProcessingMenu::VectorGeoprocessing:
-      return QCoreApplication::translate( "ProcessingPlugin", "&Geoprocessing Tools" );
+      return mQgisApp->vectorMenu()->title() + '/' + QCoreApplication::translate( "ProcessingPlugin", "&Geoprocessing Tools" );
     case Qgis::ProcessingMenu::VectorGeometry:
-      return QCoreApplication::translate( "ProcessingPlugin", "G&eometry Tools" );
+      return mQgisApp->vectorMenu()->title() + '/' + QCoreApplication::translate( "ProcessingPlugin", "G&eometry Tools" );
     case Qgis::ProcessingMenu::VectorDataManagement:
-      return QCoreApplication::translate( "ProcessingPlugin", "&Data Management Tools" );
+      return mQgisApp->vectorMenu()->title() + '/' + QCoreApplication::translate( "ProcessingPlugin", "&Data Management Tools" );
 
     case Qgis::ProcessingMenu::RasterProjections:
-      return QCoreApplication::translate( "ProcessingPlugin", "Projections" );
+      return mQgisApp->rasterMenu()->title() + '/' + QCoreApplication::translate( "ProcessingPlugin", "Projections" );
     case Qgis::ProcessingMenu::RasterConversion:
-      return QCoreApplication::translate( "ProcessingPlugin", "Conversion" );
+      return mQgisApp->rasterMenu()->title() + '/' + QCoreApplication::translate( "ProcessingPlugin", "Conversion" );
     case Qgis::ProcessingMenu::RasterExtraction:
-      return QCoreApplication::translate( "ProcessingPlugin", "Extraction" );
+      return mQgisApp->rasterMenu()->title() + '/' + QCoreApplication::translate( "ProcessingPlugin", "Extraction" );
     case Qgis::ProcessingMenu::RasterAnalysis:
-      return QCoreApplication::translate( "ProcessingPlugin", "Analysis" );
+      return mQgisApp->rasterMenu()->title() + '/' + QCoreApplication::translate( "ProcessingPlugin", "Analysis" );
     case Qgis::ProcessingMenu::RasterMiscellaneous:
-      return QCoreApplication::translate( "ProcessingPlugin", "Miscellaneous" );
+      return mQgisApp->rasterMenu()->title() + '/' + QCoreApplication::translate( "ProcessingPlugin", "Miscellaneous" );
 
     case Qgis::ProcessingMenu::VectorGeneral:
       return mQgisApp->vectorMenu()->title();
@@ -590,6 +590,24 @@ QString QgsAppProcessingUtils::legacyMenuTitle( Qgis::ProcessingMenu menu )
       return mQgisApp->rasterMenu()->title();
   }
   BUILTIN_UNREACHABLE
+}
+
+std::optional<Qgis::ProcessingMenu> QgsAppProcessingUtils::menuForLegacySettingValue( const QString &settingValue )
+{
+  QString targetValue = settingValue.toLower();
+  targetValue.remove( '&' );
+  const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::ProcessingMenu>();
+  for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+  {
+    const Qgis::ProcessingMenu menu = static_cast< Qgis::ProcessingMenu >( metaEnum.value( idx ) );
+    QString legacyTitle = legacyMenuTitle( menu ).toLower();
+    legacyTitle.remove( '&' );
+    if ( legacyTitle == targetValue )
+    {
+      return menu;
+    }
+  }
+  return {};
 }
 
 QMenu *QgsAppProcessingUtils::parentMenu( Qgis::ProcessingMenu menu )
@@ -741,19 +759,27 @@ QList< QAction * > QgsAppProcessingUtils::createAlgorithmActionsForProvider( con
     {
       // respect user menu settings
       algMenu = settings.value( menuSetting ).toString();
-      const QStringList menuPath = algMenu.split( '/' );
-      if ( !menuPath.isEmpty() )
+      std::optional< Qgis::ProcessingMenu > standardMenu = menuForLegacySettingValue( algMenu );
+      if ( standardMenu.has_value() )
       {
-        const QString mainMenu = menuPath.at( 0 );
-        const QString subMenu = menuPath.mid( 1 ).join( '/' );
-        if ( subMenu.isEmpty() )
+        menu = processingToolMenu( *standardMenu );
+      }
+      else
+      {
+        const QStringList menuPath = algMenu.split( '/' );
+        if ( !menuPath.isEmpty() )
         {
-          menu = QgsAppMenuUtils::getMenu( mQgisApp, mainMenu );
-        }
-        else
-        {
-          QMenu *targetMainMenu = QgsAppMenuUtils::getMenu( mQgisApp, mainMenu );
-          menu = QgsAppMenuUtils::getSubMenu( targetMainMenu, subMenu );
+          const QString mainMenu = menuPath.at( 0 );
+          const QString subMenu = menuPath.mid( 1 ).join( '/' );
+          if ( subMenu.isEmpty() )
+          {
+            menu = QgsAppMenuUtils::getMenu( mQgisApp, mainMenu );
+          }
+          else
+          {
+            QMenu *targetMainMenu = QgsAppMenuUtils::getMenu( mQgisApp, mainMenu );
+            menu = QgsAppMenuUtils::getSubMenu( targetMainMenu, subMenu );
+          }
         }
       }
     }

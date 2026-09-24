@@ -103,6 +103,8 @@ class QgsAppProcessingUtils : public QObject
      */
     QString legacyMenuTitle( Qgis::ProcessingMenu menu );
 
+    std::optional< Qgis::ProcessingMenu > menuForLegacySettingValue( const QString &settingValue );
+
     QMenu *parentMenu( Qgis::ProcessingMenu menu );
 
     //! Finds the matching Processing menu, creating it if required.
