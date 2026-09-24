@@ -26,6 +26,7 @@ from pathlib import Path
 
 from qgis.core import (
     NULL,
+    Qgis,
     QgsApplication,
     QgsProcessingProvider,
     QgsProcessingUtils,
@@ -40,7 +41,24 @@ class SettingsWatcher(QObject):
     settingsChanged = pyqtSignal()
 
 
-defaultMenuEntries = {}
+DEFAULT_MENU_ENTRIES = {}
+try:
+    from qgis.gui import QgsProcessingGuiUtils
+
+    for (
+        key,
+        algorithm_list,
+    ) in QgsProcessingGuiUtils.defaultProcessingMenuEntries().items():
+        processing_menu = Qgis.ProcessingMenu(key)
+
+        default_key = QgsApplication.instance().property(
+            f"_processing_legacy_menu_key_{key}"
+        )
+        for algorithm_id in algorithm_list:
+            DEFAULT_MENU_ENTRIES[algorithm_id] = default_key
+
+except ImportError:
+    pass
 
 settingsWatcher = SettingsWatcher()
 
@@ -532,7 +550,7 @@ MENU_SETTINGS_GROUP = "Menus"
 
 def initialize_menu_settings_for_provider(provider: QgsProcessingProvider):
     for alg in provider.algorithms():
-        d = defaultMenuEntries.get(alg.id(), "")
+        d = DEFAULT_MENU_ENTRIES.get(alg.id(), "")
         setting = Setting(MENU_SETTINGS_GROUP, "MENU_" + alg.id(), "Menu path", d)
         ProcessingConfig.addSetting(setting)
         setting = Setting(

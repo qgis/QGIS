@@ -22,7 +22,6 @@
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsmodeldesignerdialog.h"
-#include "qgsprocessingdefaultmenus.h"
 #include "qgsprocessingdefaultstyledialog.h"
 #include "qgsprocessingfavoritealgorithmmanager.h"
 #include "qgsprocessingguiregistry.h"
@@ -455,7 +454,18 @@ class ExportModelAsPythonScriptAction : public QgsProcessingToolboxContextAction
 
 QgsAppProcessingUtils::QgsAppProcessingUtils( QgisApp *app )
   : mQgisApp( app )
-{}
+{
+  const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::ProcessingMenu>();
+  for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+  {
+    const Qgis::ProcessingMenu menu = static_cast< Qgis::ProcessingMenu >( metaEnum.value( idx ) );
+    QString legacyTitle = legacyMenuTitle( menu ).toLower();
+    legacyTitle.remove( '&' );
+    // a ***temporary*** hack to inject legacy menu keys back up to processing, without cluttering api with a method for this
+    // when the remainder of processing is ported to c++ this can be replaced
+    QgsApplication::instance()->setProperty( u"_processing_legacy_menu_key_%1"_s.arg( idx ).toLatin1().constData(), legacyTitle );
+  }
+}
 
 void QgsAppProcessingUtils::registerActions()
 {
@@ -506,7 +516,7 @@ QToolBar *QgsAppProcessingUtils::algorithmsToolBar()
 
 void QgsAppProcessingUtils::validateDefaultAlgorithmActions()
 {
-  const QMap<Qgis::ProcessingMenu, QStringList> entries = QgsProcessingDefaultMenus::defaultProcessingMenuEntries();
+  const QMap<int, QStringList> entries = QgsProcessingGuiUtils::defaultProcessingMenuEntries();
   for ( auto it = entries.constBegin(); it != entries.constEnd(); ++it )
   {
     const QStringList algorithms = it.value();
@@ -733,7 +743,7 @@ QList< QAction * > QgsAppProcessingUtils::createAlgorithmActionsForProvider( con
 {
   QgsSettings settings;
   const QList< const QgsProcessingAlgorithm * > allAlgorithms = provider->algorithms();
-  const QMap< Qgis::ProcessingMenu, QStringList > defaultProcessingMenuEntries = QgsProcessingDefaultMenus::defaultProcessingMenuEntries();
+  const QMap< int, QStringList > defaultProcessingMenuEntries = QgsProcessingGuiUtils::defaultProcessingMenuEntries();
 
   QList< QAction * > actions;
   for ( const QgsProcessingAlgorithm *algorithm : allAlgorithms )
@@ -750,7 +760,7 @@ QList< QAction * > QgsAppProcessingUtils::createAlgorithmActionsForProvider( con
       {
         if ( it.value().contains( id ) )
         {
-          menu = processingToolMenu( it.key() );
+          menu = processingToolMenu( static_cast< Qgis::ProcessingMenu>( it.key() ) );
           break;
         }
       }

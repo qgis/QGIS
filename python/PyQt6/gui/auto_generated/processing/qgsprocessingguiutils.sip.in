@@ -68,6 +68,16 @@ the layer.
 Responsible for adding layers created by an algorithm to a project and
 the project's layer tree in the correct location.
 %End
+
+    static QMap< int, QStringList > defaultProcessingMenuEntries();
+%Docstring
+Returns the map of Processing menus to a list of algorithm IDs to
+include by default in that menu.
+
+Map keys correspond to :py:class:`Qgis`.ProcessingMenu values.
+
+.. versionadded:: 4.4
+%End
 };
 
 
