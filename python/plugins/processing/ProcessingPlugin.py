@@ -61,7 +61,11 @@ from qgis.PyQt.QtWidgets import QAction, QMenu, QWidget
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
+from processing.core.ProcessingConfig import (
+    ProcessingConfig,
+    Setting,
+    initialize_menu_settings_for_provider,
+)
 from processing.gui import TestTools
 from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.AlgorithmExecutor import execute, execute_in_place
@@ -71,7 +75,6 @@ from processing.gui.AlgorithmLocatorFilter import (
 )
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
-from processing.gui.menus import initialize_menu_settings_for_provider
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.ProcessingToolbox import ProcessingToolbox

@@ -27,6 +27,7 @@ from pathlib import Path
 from qgis.core import (
     NULL,
     QgsApplication,
+    QgsProcessingProvider,
     QgsProcessingUtils,
     QgsRasterFileWriter,
     QgsSettings,
@@ -38,6 +39,8 @@ from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
 class SettingsWatcher(QObject):
     settingsChanged = pyqtSignal()
 
+
+defaultMenuEntries = {}
 
 settingsWatcher = SettingsWatcher()
 
@@ -522,3 +525,27 @@ class Setting:
         if context == "":
             context = "ProcessingConfig"
         return QCoreApplication.translate(context, string)
+
+
+MENU_SETTINGS_GROUP = "Menus"
+
+
+def initialize_menu_settings_for_provider(provider: QgsProcessingProvider):
+    for alg in provider.algorithms():
+        d = defaultMenuEntries.get(alg.id(), "")
+        setting = Setting(MENU_SETTINGS_GROUP, "MENU_" + alg.id(), "Menu path", d)
+        ProcessingConfig.addSetting(setting)
+        setting = Setting(
+            MENU_SETTINGS_GROUP, "BUTTON_" + alg.id(), "Add button", False
+        )
+        ProcessingConfig.addSetting(setting)
+        setting = Setting(
+            MENU_SETTINGS_GROUP,
+            "ICON_" + alg.id(),
+            "Icon",
+            "",
+            valuetype=Setting.FILE,
+        )
+        ProcessingConfig.addSetting(setting)
+
+    ProcessingConfig.readSettings()
