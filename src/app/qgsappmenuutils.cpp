@@ -16,6 +16,7 @@
 #include "qgsappmenuutils.h"
 
 #include <QMenu>
+#include <QMenuBar>
 #include <QRegularExpression>
 #include <QString>
 
@@ -110,27 +111,61 @@ void QgsAppMenuUtils::insertSubmenuAlphabeticallyToMenu( QMenu *menu, QMenu *sub
   }
 }
 
+QMenu *QgsAppMenuUtils::getMenu( QMenuBar *menuBar, const QString &menuName )
+{
+  if ( menuName.isEmpty() )
+    return nullptr;
+
+  QString cleanedMenuName = menuName.toLower();
+#ifdef Q_OS_MAC
+  // Mac doesn't have '&' keyboard shortcuts.
+  cleanedMenuName.remove( QChar( '&' ) );
+#endif
+  QString targetName = cleanedMenuName;
+  targetName.remove( QChar( '&' ) );
+
+  const QList<QAction *> actions = menuBar->actions();
+  for ( QAction *action : actions )
+  {
+    if ( QMenu *otherSubMenu = action->menu() )
+    {
+      QString candidateName = otherSubMenu->title().toLower();
+      candidateName.remove( QChar( '&' ) );
+      if ( candidateName == targetName )
+      {
+        return otherSubMenu;
+      }
+    }
+  }
+
+  // It doesn't exist, so create it
+  QMenu *menu = new QMenu( cleanedMenuName, menuBar->parentWidget() );
+  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
+  menuBar->addMenu( menu );
+  return menu;
+}
+
 QMenu *QgsAppMenuUtils::getSubMenu( QMenu *parentMenu, const QString &menuName )
 {
   if ( menuName.isEmpty() )
     return parentMenu;
 
-  QString cleanedMenuName = menuName;
+  QString cleanedMenuName = menuName.toLower();
 #ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   cleanedMenuName.remove( QChar( '&' ) );
 #endif
-  QString dst = cleanedMenuName;
-  dst.remove( QChar( '&' ) );
+  QString targetName = cleanedMenuName;
+  targetName.remove( QChar( '&' ) );
 
   QAction *before = nullptr;
   QList<QAction *> actions = parentMenu->actions();
   for ( int i = 0; i < actions.count(); i++ )
   {
-    QString src = actions.at( i )->text();
-    src.remove( QChar( '&' ) );
+    QString candidateName = actions.at( i )->text().toLower();
+    candidateName.remove( QChar( '&' ) );
 
-    int comp = dst.localeAwareCompare( src );
+    int comp = targetName.localeAwareCompare( candidateName );
     if ( comp < 0 )
     {
       // Add item before this one

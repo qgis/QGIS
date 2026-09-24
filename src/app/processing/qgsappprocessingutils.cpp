@@ -739,8 +739,23 @@ QList< QAction * > QgsAppProcessingUtils::createAlgorithmActionsForProvider( con
     }
     else
     {
+      // respect user menu settings
       algMenu = settings.value( menuSetting ).toString();
-      // TODO -- respect user settings
+      const QStringList menuPath = algMenu.split( '/' );
+      if ( !menuPath.isEmpty() )
+      {
+        const QString mainMenu = menuPath.at( 0 );
+        const QString subMenu = menuPath.mid( 1 ).join( '/' );
+        if ( subMenu.isEmpty() )
+        {
+          menu = QgsAppMenuUtils::getMenu( mQgisApp->menuBar(), mainMenu );
+        }
+        else
+        {
+          QMenu *targetMainMenu = QgsAppMenuUtils::getMenu( mQgisApp->menuBar(), mainMenu );
+          menu = QgsAppMenuUtils::getSubMenu( targetMainMenu, subMenu );
+        }
+      }
     }
 
     const bool addToToolbar = settings.value( u"Processing/Configuration/BUTTON_%1"_s.arg( id ) ).toBool();
