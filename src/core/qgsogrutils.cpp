@@ -2912,9 +2912,19 @@ int QgsOgrUtils::listStyles( GDALDatasetH hDS, const QString &layerName, const Q
     }
     else
     {
-      int year, month, day, hour, minute, second, TZ;
-      OGR_F_GetFieldAsDateTime( hFeature.get(), OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ), &year, &month, &day, &hour, &minute, &second, &TZ );
-      const qlonglong ts = second + minute * 60 + hour * 3600 + day * 24 * 3600 + static_cast<qlonglong>( month ) * 31 * 24 * 3600 + static_cast<qlonglong>( year ) * 12 * 31 * 24 * 3600;
+      int year, month, day, hour, minute, second, tzFlag;
+      OGR_F_GetFieldAsDateTime( hFeature.get(), OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ), &year, &month, &day, &hour, &minute, &second, &tzFlag );
+      QDateTime dt( QDate( year, month, day ), QTime( hour, minute, second ) );
+      if ( tzFlag > 1 )
+      {
+        const int offsetSeconds = ( tzFlag - 100 ) * 15 * 60;
+        dt.setTimeZone( QTimeZone::fromSecondsAheadOfUtc( offsetSeconds ) );
+      }
+      else
+      {
+        dt.setTimeZone( QTimeZone::UTC );
+      }
+      const qint64 ts = dt.toMSecsSinceEpoch();
 
       listTimestamp.append( ts );
       mapIdToStyleName[fid] = styleName;
