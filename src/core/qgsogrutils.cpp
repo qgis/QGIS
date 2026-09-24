@@ -2961,6 +2961,7 @@ bool QgsOgrUtils::styleExists( GDALDatasetH hDS, const QString &layerName, const
   OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
   OGR_L_ResetReading( hLayer );
   gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+  OGR_L_SetAttributeFilter( hLayer, nullptr );
   OGR_L_ResetReading( hLayer );
 
   if ( hFeature )
@@ -3214,6 +3215,7 @@ bool QgsOgrUtils::saveStyle(
   OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
   OGR_L_ResetReading( hLayer );
   gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
+  OGR_L_SetAttributeFilter( hLayer, nullptr );
   OGR_L_ResetReading( hLayer );
   bool bNew = true;
 
