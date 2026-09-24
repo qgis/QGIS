@@ -117659,6 +117659,11 @@ CTRL + click per aprire il collegamento</translation>
         <translation>&amp;Sposta al livello più alto</translation>
     </message>
     <message>
+        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
+        <source>&amp;Ungroup</source>
+        <translation>&amp;Separa</translation>
+    </message>
+    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Sposta in Cima</translation>

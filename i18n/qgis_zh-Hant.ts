@@ -116673,6 +116673,11 @@ CTRL + click to follow link</source>
         <translation>&amp;移至頂層</translation>
     </message>
     <message>
+        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
+        <source>&amp;Ungroup</source>
+        <translation>&amp;取消群組</translation>
+    </message>
+    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>移至&amp;頂部</translation>

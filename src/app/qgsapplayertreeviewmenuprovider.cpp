@@ -132,6 +132,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( QAction *unCheckAll = actions->actionUncheckAndAllChildren( menu ) )
         menu->addAction( unCheckAll );
 
+      menu->addAction( actions->actionUngroup( mCanvas, menu ));
+
       if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
       {
         menu->addAction( actions->actionMoveToTop( menu ) );

@@ -117924,6 +117924,11 @@ CTRL + spauskite, kad sektumėte nuorodą</translation>
         <translation>Perkelti į &amp;aukščiausią lygį</translation>
     </message>
     <message>
+        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
+        <source>&amp;Ungroup</source>
+        <translation>&amp;Išgrupuoti</translation>
+    </message>
+    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Perkelti į &amp;viršų</translation>

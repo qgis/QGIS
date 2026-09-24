@@ -117941,6 +117941,11 @@ CTRL + klik om link te openen</translation>
         <translation>Verplaats naar hoogste niveau</translation>
     </message>
     <message>
+        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
+        <source>&amp;Ungroup</source>
+        <translation>&amp;Groepering opheffen</translation>
+    </message>
+    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Verplaats naar &amp;bovenste</translation>

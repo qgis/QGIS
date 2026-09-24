@@ -116998,6 +116998,11 @@ Ctrl + smella til að fylgja tengli</translation>
         <translation>Færa á &amp;efsta stig</translation>
     </message>
     <message>
+        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
+        <source>&amp;Ungroup</source>
+        <translation>&amp;Afhópa</translation>
+    </message>
+    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Færa efs&amp;t</translation>

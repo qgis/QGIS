@@ -534,3 +534,36 @@ void QgsLayerTreeViewDefaultActions::mutuallyExclusiveGroup()
 
   QgsLayerTree::toGroup( node )->setIsMutuallyExclusive( !QgsLayerTree::toGroup( node )->isMutuallyExclusive() );
 }
+
+void QgsLayerTreeViewDefaultActions::ungroupSelected()
+{
+  QgsLayerTreeNode *currentNode = mView->currentNode();
+  if ( !currentNode || !QgsLayerTree::isGroup( currentNode ) )
+    return;
+  
+  QgsLayerTreeNode *parentNode = currentNode->parent();
+  if ( !parentNode )
+    return;
+
+  int insertIdx = parentNode->children().indexOf( currentNode );
+  QgsLayerTreeGroup *parentGroup = QgsLayerTree::toGroup( parentNode );
+
+  const QList<QgsLayerTreeNode *> nodes = currentNode->children();
+  
+  for (QgsLayerTreeNode* node : nodes)
+    parentGroup->insertChildNode(insertIdx++, node->clone());
+  
+  for (QgsLayerTreeNode* node : nodes)
+    parentGroup->removeChildNode( node );
+  
+  parentGroup->removeChildNode(currentNode);
+}
+
+QAction *QgsLayerTreeViewDefaultActions::actionUngroup( QgsMapCanvas *canvas, QObject *parent )
+{
+  QAction *a = new QAction( tr( "&Ungroup" ), parent );
+  a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
+  connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::ungroupSelected ) );
+  return a;
+}
+

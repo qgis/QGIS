@@ -117916,6 +117916,11 @@ CTRL + 单击 追踪链接</translation>
         <translation>移到最高层级(&amp;M)</translation>
     </message>
     <message>
+        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
+        <source>&amp;Ungroup</source>
+        <translation>&amp;取消组合</translation>
+    </message>
+    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>移到顶层(&amp;T)</translation>

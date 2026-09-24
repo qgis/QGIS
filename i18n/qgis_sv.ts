@@ -117919,6 +117919,11 @@ CTRL + klick för att följa länk</translation>
         <translation>&amp;Flytta överst i lagerstrukturen</translation>
     </message>
     <message>
+        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
+        <source>&amp;Ungroup</source>
+        <translation>&amp;Dela upp grupp</translation>
+    </message>
+    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Flytta överst i &amp;lagerlistan</translation>

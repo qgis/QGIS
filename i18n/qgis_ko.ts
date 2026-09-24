@@ -117450,6 +117450,11 @@ CTRL + click to follow link</source>
         <translation>최상위 수준으로 이동(&amp;M)</translation>
     </message>
     <message>
+        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
+        <source>&amp;Ungroup</source>
+        <translation>&amp;그룹 해제</translation>
+    </message>
+    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>가장 위로 이동(&amp;T)</translation>
