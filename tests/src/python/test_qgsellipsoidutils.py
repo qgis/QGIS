@@ -302,7 +302,7 @@ class TestQgsEllipsoidUtils(QgisTestCase):
         )
 
     def testENURotation(self):
-        params = QgsEllipsoidUtils.ellipsoidParameters("EPSG:4326")
+        params = QgsEllipsoidUtils.ellipsoidParameters("WGS84")
 
         ct = QgsCoordinateTransform(
             QgsCoordinateReferenceSystem("EPSG:4979"),
@@ -314,13 +314,13 @@ class TestQgsEllipsoidUtils(QgisTestCase):
         q = QgsEllipsoidUtils.ellipsoidEastNorthUpRotation(
             pos, params.semiMajor, params.semiMinor
         )
-        self.assertEqual(q, QQuaternion(1.0, 0.0, 1.5411253277673437e-17, 0.0))
+        self.assertEqual(q, QQuaternion(1.0, 0.0, 1.5308085657314598e-17, 0.0))
 
         pos = ct.transform(QgsVector3D(0, -90, 0.0))
         q = QgsEllipsoidUtils.ellipsoidEastNorthUpRotation(
             pos, params.semiMajor, params.semiMinor
         )
-        self.assertEqual(q, QQuaternion(0.0, 1.0, 0.0, 1.5411253277673437e-17))
+        self.assertEqual(q, QQuaternion(0.0, 1.0, 0.0, 1.5308085657314598e-17))
 
         pos = ct.transform(QgsVector3D(0, 0, 0.0))
         q = QgsEllipsoidUtils.ellipsoidEastNorthUpRotation(
@@ -347,10 +347,10 @@ class TestQgsEllipsoidUtils(QgisTestCase):
         self.assertEqual(
             q,
             QQuaternion(
-                0.5379658341407776,
-                0.22230668365955353,
-                0.31054216623306274,
-                0.7514892220497131,
+                0.5383383631706238,
+                0.22140301764011383,
+                0.30927982926368713,
+                0.7520096302032471,
             ),
         )
 
