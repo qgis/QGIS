@@ -15080,7 +15080,7 @@ class TestQgsGeometry(QgisTestCase):
         Test QgsGeometry.extractCoverageEdges
         """
         g1 = QgsGeometry()
-        res = g1.unionCoverage()
+        res = g1.extractCoverageEdges()
         self.assertTrue(res.isNull())
 
         g1 = QgsGeometry.fromWkt("Point(1 2)")
