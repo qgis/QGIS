@@ -2869,6 +2869,7 @@ QString QgsOgrUtils::loadStoredStyle( GDALDatasetH hDS, const QString &layerName
                     OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ) ) );
     }
   }
+  OGR_L_SetAttributeFilter( hLayer, nullptr );
   OGR_L_ResetReading( hLayer );
 
   return styleQML;
