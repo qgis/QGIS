@@ -20,6 +20,7 @@
 
 #include "qgsgeometrycollection.h"
 #include "qgsgeos.h"
+#include "qgsvectorlayer.h"
 
 #include <QString>
 
@@ -217,5 +218,23 @@ QVariantMap QgsCoverageSimplifyAlgorithm::processAlgorithm( const QVariantMap &p
   outputs.insert( u"OUTPUT"_s, sinkId );
   return outputs;
 }
+
+bool QgsCoverageSimplifyAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
+{
+  const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( layer );
+
+  if ( !vlayer )
+    return false;
+
+  return vlayer->geometryType() == Qgis::GeometryType::Polygon;
+}
+
+Qgis::ProcessingAlgorithmFlags QgsCoverageSimplifyAlgorithm::flags() const
+{
+  Qgis::ProcessingAlgorithmFlags f = QgsProcessingAlgorithm::flags();
+  f |= Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits;
+  return f;
+}
+
 
 ///@endcond
