@@ -1206,6 +1206,8 @@ Qgis::GeometryOperationResult QgsGeometry::rotate( double rotation, const QgsPoi
   return Qgis::GeometryOperationResult::Success;
 }
 
+// TODO: Remove this method when reshape() no longer calls it.
+// i.e., when adapted to GEOS 3.15, since GEOS does the right thing.
 static void removeDuplicateAdjacentPointsAt( QgsAbstractGeometry *geom, const QgsPointSequence &points )
 {
   // this is a workaround for removing duplicated points introduced by GEOS when splitting 3d geometries
@@ -1250,6 +1252,9 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature, bool skipIntersectionTest
 )
 {
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  Q_UNUSED( skipIntersectionTest )
+#endif
   if ( !d->geometry )
   {
     return Qgis::GeometryOperationResult::InvalidBaseGeometry;
@@ -1262,6 +1267,32 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   // We're trying adding the split line's vertices to the geometry so that
   // snap to segment always produces a valid split (see https://github.com/qgis/QGIS/issues/29270)
   QgsGeometry tmpGeom( *this );
+  QVector<QgsGeometry > newGeoms;
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  for ( const QgsPoint &v : splitLine )
+  {
+    tmpGeom.addTopologicalPoint( v );
+  }
+
+  std::unique_ptr< QgsAbstractGeometry > splitGeom;
+  if ( splitLine.size() > 1 )
+  {
+    splitGeom = std::make_unique< QgsLineString >( splitLine );
+    splitGeom->dropZValue();
+    splitGeom->dropMValue();
+  }
+  else if ( splitLine.size() == 1 )
+  {
+    splitGeom = std::make_unique< QgsPoint >( splitLine[0].x(), splitLine[0].y() );
+  }
+  QgsGeos geos( tmpGeom.get() );
+  mLastError.clear();
+  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *splitGeom.get(), newGeoms, topological, topologyTestPoints, &mLastError );
+
+  if ( result == QgsGeometryEngine::Success )
+  {
+#else
   QgsPointSequence addedTopologicalPoints;
   for ( const QgsPoint &v : splitLine )
   {
@@ -1286,25 +1317,6 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
     }
   }
 
-  QVector<QgsGeometry > newGeoms;
-#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
-  Q_UNUSED( skipIntersectionTest )
-
-  std::unique_ptr< QgsAbstractGeometry > splitGeom;
-  if ( splitLine.size() > 1 )
-  {
-    splitGeom = std::make_unique< QgsLineString >( splitLine );
-    splitGeom->dropZValue();
-    splitGeom->dropMValue();
-  }
-  else if ( splitLine.size() == 1 )
-  {
-    splitGeom = std::make_unique< QgsPoint >( splitLine[0].x(), splitLine[0].y() );
-  }
-  QgsGeos geos( tmpGeom.get() );
-  mLastError.clear();
-  QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *splitGeom.get(), newGeoms, topological, topologyTestPoints, &mLastError );
-#else
   QgsLineString splitLineString( splitLine );
   splitLineString.dropZValue();
   splitLineString.dropMValue();
@@ -1312,7 +1324,6 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   QgsGeos geos( tmpGeom.get() );
   mLastError.clear();
   QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( splitLineString, newGeoms, topological, topologyTestPoints, &mLastError, skipIntersectionTest );
-#endif
 
   if ( result == QgsGeometryEngine::Success )
   {
@@ -1324,6 +1335,7 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
         removeDuplicateAdjacentPointsAt( geom, addedTopologicalPoints );
       }
     }
+#endif
     if ( splitFeature && !newGeoms.isEmpty() )
       *this = newGeoms.takeAt( 0 );
     newGeometries = newGeoms;
@@ -1424,6 +1436,8 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   QgsPointSequence addedTopologicalPoints;
   for ( const QgsPoint &v : std::as_const( reshapePoints ) )
   {
+    // TODO: Remove this if block when reshape gets curve support, i.e.,
+    // when adapted to GEOS 3.15, since GEOS does the right thing.
     if ( tmpGeom.addTopologicalPoint( v ) )
     {
       // When reshaping 3D lines or polygons we want to make sure that any topological points added
@@ -1445,6 +1459,8 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   std::unique_ptr< QgsAbstractGeometry > geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
   if ( errorCode == QgsGeometryEngine::Success && geom )
   {
+    // TODO: Remove this inner if block when reshape gets curve support,
+    // i.e., when adapted to GEOS 3.15, since GEOS does the right thing.
     if ( !addedTopologicalPoints.isEmpty() )
     {
       removeDuplicateAdjacentPointsAt( geom.get(), addedTopologicalPoints );
