@@ -69,7 +69,7 @@ class CORE_EXPORT QgsMimeDataUtils
        * \param owner set to TRUE if caller becomes owner
        * \param error set to error message if cannot get vector
        *
-       * \deprecated QGIS 4.6. Use vectorLayer() with explicit project parameter instead.
+       * \deprecated QGIS 4.4. Use vectorLayer() with explicit project parameter instead.
        */
         Q_DECL_DEPRECATED QgsVectorLayer *vectorLayer( bool &owner SIP_OUT, QString &error SIP_OUT ) const SIP_DEPRECATED;
 
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsMimeDataUtils
        * \param error set to error message if cannot get vector
        * \param project project is used to obtain the layer
        *
-       * \since QGIS 4.6
+       * \since QGIS 4.4
        */
         QgsVectorLayer *vectorLayer( bool &owner SIP_OUT, QString &error SIP_OUT, QgsProject *project ) const;
 
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsMimeDataUtils
        * \param owner set to TRUE if caller becomes owner
        * \param error set to error message if cannot get raster
        *
-       * \deprecated QGIS 4.6. Use rasterLayer() with explicit project parameter instead.
+       * \deprecated QGIS 4.4. Use rasterLayer() with explicit project parameter instead.
        */
         Q_DECL_DEPRECATED QgsRasterLayer *rasterLayer( bool &owner SIP_OUT, QString &error SIP_OUT ) const SIP_DEPRECATED;
 
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsMimeDataUtils
        * \param error set to error message if cannot get raster
        * \param project project is used to obtain the layer
        *
-       * \since QGIS 4.6
+       * \since QGIS 4.4
        */
         QgsRasterLayer *rasterLayer( bool &owner SIP_OUT, QString &error SIP_OUT, QgsProject *project ) const;
 
@@ -107,19 +107,19 @@ class CORE_EXPORT QgsMimeDataUtils
         /**
        * Gets mesh layer from uri if possible, otherwise returns NULLPTR and error is set
        * \param owner set to TRUE if caller becomes owner
-       * \param error set to error message if cannot get raster
+       * \param error set to error message if cannot get mesh
        *
-       * \deprecated QGIS 4.6. Use meshLayer() with explicit project parameter instead.
+       * \deprecated QGIS 4.4. Use meshLayer() with explicit project parameter instead.
        */
         Q_DECL_DEPRECATED QgsMeshLayer *meshLayer( bool &owner SIP_OUT, QString &error SIP_OUT ) const SIP_DEPRECATED;
 
         /**
        * Gets mesh layer from uri if possible, otherwise returns NULLPTR and error is set
        * \param owner set to TRUE if caller becomes owner
-       * \param error set to error message if cannot get raster
+       * \param error set to error message if cannot get mesh
        * \param project project is used to obtain the layer
        *
-       * \since QGIS 4.6
+       * \since QGIS 4.4
        */
         QgsMeshLayer *meshLayer( bool &owner SIP_OUT, QString &error SIP_OUT, QgsProject *project ) const;
 
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsMimeDataUtils
        * to create a new layer corresponding to the URI.
        *
        * \since QGIS 3.8
-       * \deprecated QGIS 4.6. Use mapLayer() with explicit project parameter instead.
+       * \deprecated QGIS 4.4. Use mapLayer() with explicit project parameter instead.
        */
         Q_DECL_DEPRECATED QgsMapLayer *mapLayer() const SIP_DEPRECATED;
 
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * \param project used to obtain the layer
        *
-       * \since QGIS 4.6
+       * \since QGIS 4.4
        */
         QgsMapLayer *mapLayer( QgsProject *project ) const;
 
