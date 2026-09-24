@@ -76,6 +76,11 @@ Returns the supported formats
 Returns comments of the layer
 %End
 
+    virtual bool canAddComments() const;
+%Docstring
+Returns true if comments can be added to this layer item.
+%End
+
     static QString layerTypeAsString( Qgis::BrowserLayerType layerType );
 %Docstring
 Returns the string representation of the given ``layerType``

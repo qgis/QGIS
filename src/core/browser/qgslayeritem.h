@@ -119,6 +119,11 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     virtual QString comments() const { return QString(); }
 
     /**
+     * Returns true if comments can be added to this layer item.
+     */
+    virtual bool canAddComments() const { return true; }
+
+    /**
      * Returns the string representation of the given \a layerType
      * \since QGIS 3
      */
