@@ -2280,8 +2280,7 @@ void QgsOptions::moveHelpPathDown()
 
 void QgsOptions::addProjectTemplatePath()
 {
-  // Dialog that shows QGIS projects inside the current directory, but only directories are selectable.
-  QFileDialog dialog( this, tr( "Choose a directory" ), QDir::toNativeSeparators( QDir::homePath() ) );
+  QFileDialog dialog( this, tr( "Choose a Directory" ), QDir::toNativeSeparators( QDir::homePath() ) );
   dialog.setFileMode( QFileDialog::Directory );
   dialog.setNameFilter( tr( "QGIS project files (*.qgs *.qgz)" ) );
   if ( dialog.exec() != QDialog::Accepted || dialog.selectedFiles().isEmpty() )
@@ -2293,7 +2292,7 @@ void QgsOptions::addProjectTemplatePath()
   {
     if ( mListProjectTemplatePaths->findItems( myDir, Qt::MatchExactly ).count() > 0 )
     {
-      QMessageBox::warning( this, tr( "Add project template path" ), tr( "This directory is already in the template paths list" ) );
+      QMessageBox::warning( this, tr( "Add Project Template Path" ), tr( "This directory is already in the template paths list" ) );
       return;
     }
 
