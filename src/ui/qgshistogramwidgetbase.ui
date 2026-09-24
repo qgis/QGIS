@@ -76,6 +76,13 @@
      </property>
     </widget>
    </item>
+   <item row="5" column="2">
+    <widget class="QCheckBox" name="mShowBinOutlinesCheckBox">
+     <property name="text">
+      <string>Show bin outlines</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
