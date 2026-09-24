@@ -183,6 +183,11 @@ QgsRectangle QgsAnnotationMarkerItem::boundingBox() const
   return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x(), mPoint.y() );
 }
 
+QgsGeometry QgsAnnotationMarkerItem::snapGeometry() const
+{
+  return QgsGeometry( mPoint.clone() );
+}
+
 QgsRectangle QgsAnnotationMarkerItem::boundingBox( QgsRenderContext &context ) const
 {
   QPointF pt;

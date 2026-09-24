@@ -146,6 +146,16 @@ Returns ``True`` if the operation was successfully applied.
 
     virtual Qgis::MapLayerProperties properties() const;
 
+
+    virtual bool supportsSnapping() const;
+
+%Docstring
+Returns ``True``, as annotation layers can be used as a target for
+snapping.
+
+.. versionadded:: 4.4
+%End
+
     virtual QgsAnnotationLayer *clone() const /Factory/;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;

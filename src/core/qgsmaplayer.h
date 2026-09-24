@@ -632,6 +632,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual bool supportsEditing() const;
 
+    /**
+     * Returns TRUE if the layer can be a snap target (indexable by QgsPointLocator).
+     *
+     * The default is FALSE and vector and annotation layers override it.
+     *
+     * \since QGIS 4.4
+     */
+    virtual bool supportsSnapping() const;
+
     //! Returns TRUE if the layer can be edited.
     virtual bool isEditable() const;
 
