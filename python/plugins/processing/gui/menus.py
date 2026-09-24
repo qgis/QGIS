@@ -19,23 +19,15 @@ __author__ = "Victor Olaya"
 __date__ = "February 2016"
 __copyright__ = "(C) 2016, Victor Olaya"
 
-import os
-
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsMessageLog,
-    QgsProcessingAlgorithm,
     QgsProcessingProvider,
-    QgsStringUtils,
 )
-from qgis.gui import QgsGui, QgsMessageViewer, QgsProcessingGuiUtils
+from qgis.gui import QgsMessageViewer
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QApplication, QMenu, QToolButton
 from qgis.utils import iface
 
-from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.algorithm_widget import AlgorithmWidget
 from processing.gui.AlgorithmExecutor import execute
@@ -46,215 +38,6 @@ from processing.tools import dataobjects
 algorithmsToolbar = None
 menusSettingsGroup = "Menus"
 defaultMenuEntries = {}
-toolBarButtons = []
-toolButton = None
-toolButtonAction = None
-
-
-def initMenusAndToolbars():
-    global defaultMenuEntries, toolBarButtons, toolButton, toolButtonAction
-    vectorMenu = iface.vectorMenu().title()
-    analysisToolsMenu = (
-        vectorMenu
-        + "/"
-        + QCoreApplication.translate("ProcessingPlugin", "&Analysis Tools")
-    )
-    defaultMenuEntries.update(
-        {
-            "native:distancematrix": analysisToolsMenu,
-            "native:sumlinelengths": analysisToolsMenu,
-            "native:countpointsinpolygon": analysisToolsMenu,
-            "native:listuniquevalues": analysisToolsMenu,
-            "native:basicstatisticsforfields": analysisToolsMenu,
-            "native:nearestneighbouranalysis": analysisToolsMenu,
-            "native:meancoordinates": analysisToolsMenu,
-            "native:lineintersections": analysisToolsMenu,
-        }
-    )
-    researchToolsMenu = (
-        vectorMenu
-        + "/"
-        + QCoreApplication.translate("ProcessingPlugin", "&Research Tools")
-    )
-    defaultMenuEntries.update(
-        {
-            "native:creategrid": researchToolsMenu,
-            "native:randomselection": researchToolsMenu,
-            "native:randomselectionwithinsubsets": researchToolsMenu,
-            "native:randompointsinextent": researchToolsMenu,
-            "qgis:randompointsinlayerbounds": researchToolsMenu,
-            "native:randompointsinpolygons": researchToolsMenu,
-            "qgis:randompointsinsidepolygons": researchToolsMenu,
-            "native:randompointsonlines": researchToolsMenu,
-            "qgis:regularpoints": researchToolsMenu,
-            "native:selectbylocation": researchToolsMenu,
-            "native:selectwithindistance": researchToolsMenu,
-            "native:polygonfromlayerextent": researchToolsMenu,
-        }
-    )
-    geoprocessingToolsMenu = (
-        vectorMenu
-        + "/"
-        + QCoreApplication.translate("ProcessingPlugin", "&Geoprocessing Tools")
-    )
-    defaultMenuEntries.update(
-        {
-            "native:buffer": geoprocessingToolsMenu,
-            "native:convexhull": geoprocessingToolsMenu,
-            "native:intersection": geoprocessingToolsMenu,
-            "native:union": geoprocessingToolsMenu,
-            "native:symmetricaldifference": geoprocessingToolsMenu,
-            "native:clip": geoprocessingToolsMenu,
-            "native:difference": geoprocessingToolsMenu,
-            "native:dissolve": geoprocessingToolsMenu,
-            "qgis:eliminateselectedpolygons": geoprocessingToolsMenu,
-        }
-    )
-    geometryToolsMenu = (
-        vectorMenu
-        + "/"
-        + QCoreApplication.translate("ProcessingPlugin", "G&eometry Tools")
-    )
-    defaultMenuEntries.update(
-        {
-            "native:checkvalidity": geometryToolsMenu,
-            "native:exportaddgeometrycolumns": geometryToolsMenu,
-            "native:centroids": geometryToolsMenu,
-            "native:delaunaytriangulation": geometryToolsMenu,
-            "native:voronoipolygons": geometryToolsMenu,
-            "native:simplifygeometries": geometryToolsMenu,
-            "native:densifygeometries": geometryToolsMenu,
-            "native:multiparttosingleparts": geometryToolsMenu,
-            "native:collect": geometryToolsMenu,
-            "native:polygonstolines": geometryToolsMenu,
-            "qgis:linestopolygons": geometryToolsMenu,
-            "native:extractvertices": geometryToolsMenu,
-        }
-    )
-    managementToolsMenu = (
-        vectorMenu
-        + "/"
-        + QCoreApplication.translate("ProcessingPlugin", "&Data Management Tools")
-    )
-    defaultMenuEntries.update(
-        {
-            "native:reprojectlayer": managementToolsMenu,
-            "native:joinattributesbylocation": managementToolsMenu,
-            "native:splitvectorlayer": managementToolsMenu,
-            "native:mergevectorlayers": managementToolsMenu,
-            "native:createspatialindex": managementToolsMenu,
-        }
-    )
-
-    rasterMenu = iface.rasterMenu().title()
-    defaultMenuEntries.update({"native:alignrasters": rasterMenu})
-    projectionsMenu = (
-        rasterMenu + "/" + QCoreApplication.translate("ProcessingPlugin", "Projections")
-    )
-    defaultMenuEntries.update(
-        {
-            "gdal:warpreproject": projectionsMenu,
-            "gdal:extractprojection": projectionsMenu,
-            "gdal:assignprojection": projectionsMenu,
-        }
-    )
-    conversionMenu = (
-        rasterMenu + "/" + QCoreApplication.translate("ProcessingPlugin", "Conversion")
-    )
-    defaultMenuEntries.update(
-        {
-            "gdal:rasterize": conversionMenu,
-            "gdal:polygonize": conversionMenu,
-            "gdal:translate": conversionMenu,
-            "gdal:rgbtopct": conversionMenu,
-            "gdal:pcttorgb": conversionMenu,
-        }
-    )
-    extractionMenu = (
-        rasterMenu + "/" + QCoreApplication.translate("ProcessingPlugin", "Extraction")
-    )
-    defaultMenuEntries.update(
-        {
-            "gdal:contour": extractionMenu,
-            "gdal:cliprasterbyextent": extractionMenu,
-            "gdal:cliprasterbymasklayer": extractionMenu,
-        }
-    )
-    analysisMenu = (
-        rasterMenu + "/" + QCoreApplication.translate("ProcessingPlugin", "Analysis")
-    )
-    defaultMenuEntries.update(
-        {
-            "gdal:sieve": analysisMenu,
-            "gdal:nearblack": analysisMenu,
-            "gdal:fillnodata": analysisMenu,
-            "gdal:proximity": analysisMenu,
-            "gdal:griddatametrics": analysisMenu,
-            "gdal:gridaverage": analysisMenu,
-            "gdal:gridinversedistance": analysisMenu,
-            "gdal:gridnearestneighbor": analysisMenu,
-            "gdal:aspect": analysisMenu,
-            "gdal:hillshade": analysisMenu,
-            "gdal:roughness": analysisMenu,
-            "gdal:slope": analysisMenu,
-            "gdal:tpitopographicpositionindex": analysisMenu,
-            "gdal:triterrainruggednessindex": analysisMenu,
-        }
-    )
-    miscMenu = (
-        rasterMenu
-        + "/"
-        + QCoreApplication.translate("ProcessingPlugin", "Miscellaneous")
-    )
-    defaultMenuEntries.update(
-        {
-            "gdal:buildvirtualraster": miscMenu,
-            "gdal:merge": miscMenu,
-            "gdal:gdalinfo": miscMenu,
-            "gdal:overviews": miscMenu,
-            "gdal:tileindex": miscMenu,
-        }
-    )
-
-    toolBarButtons = ["native:selectbylocation", "native:selectwithindistance"]
-
-    toolbar = iface.selectionToolBar()
-    toolButton = QToolButton(toolbar)
-    toolButton.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
-    toolButtonAction = toolbar.addWidget(toolButton)
-    toolButtonAction.setObjectName("selectByToolButton")
-
-
-if iface is not None:
-    initMenusAndToolbars()
-
-
-def initializeMenus():
-    for provider in QgsApplication.processingRegistry().providers():
-        for alg in provider.algorithms():
-            d = defaultMenuEntries.get(alg.id(), "")
-            setting = Setting(menusSettingsGroup, "MENU_" + alg.id(), "Menu path", d)
-            ProcessingConfig.addSetting(setting)
-            setting = Setting(
-                menusSettingsGroup, "BUTTON_" + alg.id(), "Add button", False
-            )
-            ProcessingConfig.addSetting(setting)
-            setting = Setting(
-                menusSettingsGroup,
-                "ICON_" + alg.id(),
-                "Icon",
-                "",
-                valuetype=Setting.FILE,
-            )
-            ProcessingConfig.addSetting(setting)
-
-    ProcessingConfig.readSettings()
-
-
-def updateMenus():
-    removeMenus()
-    QCoreApplication.processEvents()
-    createMenus()
 
 
 def initialize_menu_settings_for_provider(provider: QgsProcessingProvider):
@@ -262,9 +45,7 @@ def initialize_menu_settings_for_provider(provider: QgsProcessingProvider):
         d = defaultMenuEntries.get(alg.id(), "")
         setting = Setting(menusSettingsGroup, "MENU_" + alg.id(), "Menu path", d)
         ProcessingConfig.addSetting(setting)
-        setting = Setting(
-            menusSettingsGroup, "BUTTON_" + alg.id(), "Add button", False
-        )
+        setting = Setting(menusSettingsGroup, "BUTTON_" + alg.id(), "Add button", False)
         ProcessingConfig.addSetting(setting)
         setting = Setting(
             menusSettingsGroup,
@@ -276,65 +57,6 @@ def initialize_menu_settings_for_provider(provider: QgsProcessingProvider):
         ProcessingConfig.addSetting(setting)
 
     ProcessingConfig.readSettings()
-
-
-def createMenus():
-    for alg in QgsApplication.processingRegistry().algorithms():
-        menuPath = ProcessingConfig.getSetting("MENU_" + alg.id())
-        addButton = ProcessingConfig.getSetting("BUTTON_" + alg.id())
-        icon = ProcessingConfig.getSetting("ICON_" + alg.id())
-        if icon and os.path.exists(icon):
-            icon = QIcon(icon)
-        else:
-            icon = None
-        if menuPath:
-            paths = menuPath.split("/")
-            subMenuName = paths[-1] if len(paths) > 1 else ""
-            addAlgorithmEntry(
-                alg, paths[0], subMenuName, addButton=addButton, icon=icon
-            )
-
-
-def addAlgorithmEntry(
-    alg, menuName, submenuName, actionText=None, icon=None, addButton=False
-):
-    if actionText is None:
-        if (QgsGui.higFlags() & QgsGui.HigFlag.HigMenuTextIsTitleCase) and not (
-            alg.flags() & QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral
-        ):
-            alg_title = QgsStringUtils.capitalize(
-                alg.displayName(), QgsStringUtils.Capitalization.TitleCase
-            )
-        else:
-            alg_title = alg.displayName()
-        actionText = alg_title + QCoreApplication.translate("Processing", "…")
-    action = QAction(icon or alg.icon(), actionText, iface.mainWindow())
-    alg_id = alg.id()
-    action.setData(alg_id)
-    action.triggered.connect(lambda: _executeAlgorithm(alg_id))
-    action.setObjectName("mProcessingUserMenu_%s" % alg_id)
-
-    if menuName:
-        menu = getMenu(menuName, iface.mainWindow().menuBar())
-        if submenuName:
-            submenu = getMenu(submenuName, menu)
-            submenu.addAction(action)
-        else:
-            menu.addAction(action)
-
-    if addButton:
-        global algorithmsToolbar
-        if algorithmsToolbar is None:
-            algorithmsToolbar = iface.addToolBar(
-                QCoreApplication.translate("MainWindow", "Processing Algorithms")
-            )
-            algorithmsToolbar.setObjectName("ProcessingAlgorithms")
-            algorithmsToolbar.setToolTip(
-                QCoreApplication.translate(
-                    "MainWindow", "Processing Algorithms Toolbar"
-                )
-            )
-        algorithmsToolbar.addAction(action)
 
 
 def _executeAlgorithm(alg_id):
@@ -382,14 +104,3 @@ def _executeAlgorithm(alg_id):
         ret, results = execute(alg, parameters, context, feedback)
         handleAlgorithmResults(alg, context, feedback)
         feedback.close()
-
-
-def getMenu(name, parent):
-    menus = [c for c in parent.children() if isinstance(c, QMenu) and c.title() == name]
-    if menus:
-        return menus[0]
-    else:
-        menu = parent.addMenu(name)
-        menu.setObjectName(name)
-        return menu
-

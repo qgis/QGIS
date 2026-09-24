@@ -71,7 +71,7 @@ from processing.gui.AlgorithmLocatorFilter import (
 )
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
-from processing.gui.menus import createMenus, initialize_menu_settings_for_provider
+from processing.gui.menus import initialize_menu_settings_for_provider
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.ProcessingToolbox import ProcessingToolbox
@@ -384,7 +384,6 @@ class ProcessingPlugin(QObject):
             initialize_menu_settings_for_provider(provider)
         QgsApplication.processingRegistry().providerAdded.connect(self._provider_added)
 
-        createMenus()
         QgsGui.instance().executeAlgorithm.connect(self._execute_algorithm)
 
         # In-place editing button state sync
