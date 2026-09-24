@@ -1891,9 +1891,9 @@ void TestQgsOgrUtils::testLoadStoredStyleCleanupsFilter()
   QStringList descriptions;
   const int count = QgsOgrUtils::listStyles( hDS.get(), u"layer_b"_s, geomColumnB, ids, names, descriptions, error );
   QCOMPARE( count, 1 );
-  QCOMPARE( ids.size(), 3 );
-  QCOMPARE( names.size(), 3 );
-  QCOMPARE( descriptions.size(), 3 );
+  QCOMPARE( ids.size(), 5 );
+  QCOMPARE( names.size(), 5 );
+  QCOMPARE( descriptions.size(), 5 );
   QCOMPARE( names.at( 0 ), u"styleB1"_s );
 }
 
