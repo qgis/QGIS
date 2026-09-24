@@ -87,7 +87,7 @@ class TestQgsOgrUtils : public QObject
 #endif
 
     void testListStylesSortingByDate();
-    testListStylesNoDuplicates();
+    void testListStylesNoDuplicates();
 
   private:
     QString mTestDataDir;
@@ -1495,7 +1495,6 @@ void TestQgsOgrUtils::testListStylesSortingByDate()
   QCOMPARE( names.at( 0 ), QStringLiteral( "Newer" ) );
   QCOMPARE( names.at( 1 ), QStringLiteral( "Older" ) );
 }
-
 
 void TestQgsOgrUtils::testListStylesNoDuplicates()
 {
