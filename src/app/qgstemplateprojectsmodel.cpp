@@ -84,16 +84,24 @@ QList<std::pair<QString, QString>> QgsTemplateProjectsModel::labelledTemplatePat
 {
   const QStringList templatePaths = QgsApplication::projectTemplatePaths();
 
-  QHash<QString, int> directoryNameCount;
+  QStringList directoryNames;
+  bool duplicateFound = false;
   for ( const QString &templatePath : templatePaths )
-    directoryNameCount[QDir( templatePath ).dirName()]++;
+  {
+    const QString dirName = QDir( templatePath ).dirName();
+    if ( directoryNames.contains( dirName ) )
+    {
+      duplicateFound = true;
+      break;
+    }
+    directoryNames << dirName;
+  }
 
   QList<std::pair<QString, QString>> result;
   result.reserve( templatePaths.size() );
   for ( const QString &templatePath : templatePaths )
   {
-    const QString dirName = QDir( templatePath ).dirName();
-    result.append( { directoryNameCount.value( dirName ) > 1 ? QDir::toNativeSeparators( templatePath ) : dirName, templatePath } );
+    result.append( { duplicateFound ? QDir::toNativeSeparators( templatePath ) : QDir( templatePath ).dirName(), templatePath } );
   }
   return result;
 }
