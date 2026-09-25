@@ -1372,9 +1372,29 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
   Q_UNUSED( preserveCircular );
 
+  if ( !d->geometry )
+  {
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
+  }
+  if ( curve->isEmpty() )
+  {
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+  }
+
+  // We're trying adding the split line's vertices to the geometry so that
+  // snap to segment always produces a valid split (see https://github.com/qgis/QGIS/issues/29270)
+  QgsGeometry tmpGeom( *this );
+  QgsPointSequence curvePoints;
+  curve->points( curvePoints );
+
+  for ( const QgsPoint &v : std::as_const( curvePoints ) )
+  {
+    tmpGeom.addTopologicalPoint( v );
+  }
+
   QVector< QgsGeometry> newGeoms;
 
-  QgsGeos geos( this->constGet() );
+  QgsGeos geos( tmpGeom.get() );
   mLastError.clear();
   QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *curve, newGeoms, topological, topologyTestPoints, &mLastError );
 

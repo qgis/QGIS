@@ -165,6 +165,7 @@ class TestQgsGeometry : public QgsTest
     void boundingBox3D();
     void minimalEnclosingCircle();
     void splitGeometry();
+    void splitGeometryByCurve();
     void snappedToGrid();
 
     void convertGeometryCollectionToSubclass();
@@ -2970,6 +2971,52 @@ void TestQgsGeometry::splitGeometry()
   testPoints.clear();
   newGeoms.clear();
   QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 1, 11, 42 ) << QgsPoint( 1, 5, 42 ), newGeoms, false, testPoints, false ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 2 );
+  geom = newGeoms[0];
+  geom.normalize();
+  QCOMPARE( geom.asWkt( 0 ), u"Polygon Z ((0 5 10, 0 10 20, 1 10 21, 1 5 11, 0 5 10))"_s );
+  geom = newGeoms[1];
+  geom.normalize();
+  QCOMPARE( geom.asWkt( 0 ), u"Polygon Z ((1 5 11, 1 10 21, 10 10 30, 10 5 20, 1 5 11))"_s );
+}
+
+void TestQgsGeometry::splitGeometryByCurve()
+{
+  QVector<QgsGeometry> newGeoms;
+  QgsPointSequence testPoints;
+  QgsGeometry g2;
+
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  // Splitting 2d polygon with 2d circular string should return curved geometries
+  g2 = QgsGeometry::fromWkt( "Polygon ((0 5, 0 10, 10 10, 10 5, 0 5))" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( new QgsCircularString( QgsPoint( 1, 10 ), QgsPoint( 3, 7 ), QgsPoint( 1, 5 ) ), newGeoms, false, false, testPoints, false ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 2 );
+  QgsGeometry geom = newGeoms[0];
+  QCOMPARE( geom.asWkt(), u"CurvePolygon (CompoundCurve ((0 5, 0 10, 1 10),CircularString (1 10, 3 7, 1 5),(1 5, 0 5)))"_s );
+  geom = newGeoms[1];
+  QCOMPARE( geom.asWkt(), u"CurvePolygon (CompoundCurve ((1 10, 10 10, 10 5, 1 5),CircularString (1 5, 3 7, 1 10)))"_s );
+#endif
+
+  // Splitting 3d polygon with 2d line should interpolate Z values
+  g2 = QgsGeometry::fromWkt( "PolygonZ ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10))" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( new QgsLineString( QgsPoint( 1, 11 ), QgsPoint( 1, 5 ) ), newGeoms, false, false, testPoints, false ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 2 );
+  geom = newGeoms[0];
+  geom.normalize();
+  QCOMPARE( geom.asWkt( 0 ), u"Polygon Z ((0 5 10, 0 10 20, 1 10 21, 1 5 11, 0 5 10))"_s );
+  geom = newGeoms[1];
+  geom.normalize();
+  QCOMPARE( geom.asWkt( 0 ), u"Polygon Z ((1 5 11, 1 10 21, 10 10 30, 10 5 20, 1 5 11))"_s );
+
+  // Splitting 3d polygon with 3d line should interpolate Z values from geometry and ignore ones from split line
+  g2 = QgsGeometry::fromWkt( "PolygonZ ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10))" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( new QgsLineString( QgsPoint( 1, 11, 42 ), QgsPoint( 1, 5, 42 ) ), newGeoms, false, false, testPoints, false ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 2 );
   geom = newGeoms[0];
   geom.normalize();
