@@ -55,7 +55,8 @@ error is set
 
 
 
-:return: - owner: set to ``True`` if caller becomes owner
+:return: - vector layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
          - error: set to error message if cannot get vector
 
 .. deprecated:: 4.4
@@ -70,7 +71,8 @@ error is set
 
 :param project: project is used to obtain the layer
 
-:return: - owner: set to ``True`` if caller becomes owner
+:return: - vector layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
          - error: set to error message if cannot get vector
 
 .. versionadded:: 4.4
@@ -83,7 +85,8 @@ error is set
 
 
 
-:return: - owner: set to ``True`` if caller becomes owner
+:return: - raster layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
          - error: set to error message if cannot get raster
 
 .. deprecated:: 4.4
@@ -98,7 +101,8 @@ error is set
 
 :param project: project is used to obtain the layer
 
-:return: - owner: set to ``True`` if caller becomes owner
+:return: - raster layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
          - error: set to error message if cannot get raster
 
 .. versionadded:: 4.4
@@ -111,7 +115,8 @@ error is set
 
 
 
-:return: - owner: set to ``True`` if caller becomes owner
+:return: - mesh layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
          - error: set to error message if cannot get mesh
 
 .. deprecated:: 4.4
@@ -126,7 +131,8 @@ error is set
 
 :param project: project is used to obtain the layer
 
-:return: - owner: set to ``True`` if caller becomes owner
+:return: - mesh layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
          - error: set to error message if cannot get mesh
 
 .. versionadded:: 4.4
@@ -141,6 +147,8 @@ Unlike :py:func:`~QgsMimeDataUtils.vectorLayer`,
 :py:func:`~QgsMimeDataUtils.rasterLayer`, or
 :py:func:`~QgsMimeDataUtils.meshLayer`, this method will not attempt to
 create a new layer corresponding to the URI.
+
+:return: map layer if found in the active project, otherwise ``None``
 
 .. versionadded:: 3.8
 
@@ -160,6 +168,8 @@ Unlike :py:func:`~QgsMimeDataUtils.vectorLayer`,
 create a new layer corresponding to the URI.
 
 :param project: used to obtain the layer
+
+:return: map layer if found in the project, otherwise ``None``
 
 .. versionadded:: 4.4
 %End
