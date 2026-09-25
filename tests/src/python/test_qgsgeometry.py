@@ -3245,19 +3245,19 @@ class TestQgsGeometry(QgisTestCase):
 
         # test single vertex deletion
         assert compoundcurve.deleteVertices([6]), "Delete vertices [6] failed"
-        expwkt = "CompoundCurve ( (0 1, 1 2, 2 1, 1 0, 0 1, 0 2) )"
+        expwkt = "CompoundCurve ((0 1, 1 2, 2 1, 1 0, 0 1), (0 1, 0 2))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         assert compoundcurve.deleteVertices([1]), "Delete vertices [1] failed"
-        expwkt = "CompoundCurve ((0 1, 2 1, 1 0, 0 1, 0 2))"
+        expwkt = "CompoundCurve ((0 1, 2 1, 1 0, 0 1), (0 1, 0 2))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         # test single vertex belonging to both strings
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
-        assert compoundcurve.deleteVertices([4]), "Delete vertices [5, 6] failed"
-        expwkt = "CompoundCurve ( (0 1, 1 2, 2 1, 1 0, 0 2, 0 3) )"
+        assert compoundcurve.deleteVertices([4]), "Delete vertices [4] failed"
+        expwkt = "CompoundCurve ((0 1, 1 2, 2 1, 1 0), (1 0, 0 3))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3320,19 +3320,19 @@ class TestQgsGeometry(QgisTestCase):
 
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
         assert compoundcurve.deleteVertices([0]), "Delete vertices [0] failed"
-        expwkt = "CompoundCurve ( CircularString( -2 0, -1 1, 0 0, 1 1, 2 0, 1.5 -0.5, 1 -1) )"
+        expwkt = "CompoundCurve (CircularString (-2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0, 1.5 -0.5, 1 -1))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
         assert compoundcurve.deleteVertices([0, 1]), "Delete vertices [0, 1] failed"
-        expwkt = "CompoundCurve ( CircularString(-2 0, -1 1, 0 0, 1 1, 2 0, 1.5 -0.5, 1 -1) )"
+        expwkt = "CompoundCurve (CircularString (-2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0, 1.5 -0.5, 1 -1))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         compoundcurve = QgsGeometry.fromWkt(compoundcurvewkt)
         assert compoundcurve.deleteVertices([7, 8]), "Delete vertices [7, 8] failed"
-        expwkt = "CompoundCurve (CircularString(-1 -1, -1.5 -0.5, -2 0, -1 1, 0 0, 1 1, 2 0) )"
+        expwkt = "CompoundCurve (CircularString (-1 -1, -1.5 -0.5, -2 0, -1 1, 0 0), CircularString (0 0, 1 1, 2 0))"
         wkt = compoundcurve.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -3436,7 +3436,8 @@ class TestQgsGeometry(QgisTestCase):
         assert curvepolygon.deleteVertices([0, 1, 2, 3, 4, 12, 13, 14, 15, 16]), (
             "Delete vertices [0, 1, 2, 3, 4, 12, 13, 14, 15, 16] failed"
         )
-        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 20)))"
+        # deleteVertices no longer condenses adjacent LineStrings into a single curve
+        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14),(20 14, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 14 20)))"
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
@@ -10621,7 +10622,7 @@ class TestQgsGeometry(QgisTestCase):
         )
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CurvePolygon (CompoundCurve (CircularString(0 0,1 1,2 0,1.5 -0.5,1 -1),(1 -1,0 0)))"
+        wkt = "CurvePolygon (CompoundCurve (CircularString(0 0, 1 1, 2 0, 1.5 -0.5, 1 -1),(1 -1, 0 0)))"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(3)
         expected_wkt = "CurvePolygon (CompoundCurve (CircularString (0 0, 1 1, 2 0),(2 0, 1 -1),(1 -1, 0 0)))"
