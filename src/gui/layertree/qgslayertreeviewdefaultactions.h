@@ -115,6 +115,11 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     QAction *actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
 
     /**
+     * Action to ungroup an existing group
+     */
+    QAction *actionUngroup ( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
      * \deprecated QGIS 3.2. Use actionMoveOutOfGroup().
      */
     Q_DECL_DEPRECATED QAction *actionMakeTopLevel( QObject *parent = nullptr ) SIP_FACTORY;
@@ -225,6 +230,11 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
      */
     void moveToBottom();
     void groupSelected();
+
+    /**
+     * Ungroupes selected group's layers
+     */
+    void ungroupSelected();
 
     /**
      * Slot to enable/disable mutually exclusive group flag
