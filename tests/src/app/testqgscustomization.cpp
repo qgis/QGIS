@@ -55,6 +55,7 @@ class TestQgsCustomization : public QgsTest
     void testModelProcessing();
     void testModelUserAction_data();
     void testModelUserAction();
+    void testModelLoad();
     void testToolBarPosition();
     void testMenuOrder();
 
@@ -1181,6 +1182,63 @@ void TestQgsCustomization::testMenuOrder()
   QCOMPARE( menu->actions().at( 1 )->text(), "My sub menu" );
   QVERIFY( !menu->actions().at( 2 )->menu() );
   QCOMPARE( menu->actions().at( 2 )->text(), "&Undo" );
+}
+
+void TestQgsCustomization::testModelLoad()
+{
+  // copy customization and modify exit action visibility
+  auto customization = std::make_unique<QgsCustomization>( *mQgisApp->customization() );
+
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mProjectMenu/mActionExit" ) );
+  QVERIFY( getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mProjectMenu/mActionExit" )->isVisible() );
+  getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mProjectMenu/mActionExit" )->setVisible( false );
+  QVERIFY( !getItem<QgsCustomization::QgsActionItem>( customization.get(), "Menus/mProjectMenu/mActionExit" )->isVisible() );
+
+  mCustomizationFile = std::make_unique<QTemporaryFile>();
+  QVERIFY( mCustomizationFile->open() ); // fileName is not available until open
+
+  customization->writeFile( mCustomizationFile->fileName() );
+
+  QgsCustomizationDialog::QgsCustomizationModel model( mQgisApp.get(), QgsCustomizationDialog::QgsCustomizationModel::Mode::ItemVisibility );
+  QAbstractItemModelTester modelTester( &model, QAbstractItemModelTester::FailureReportingMode::Fatal );
+
+  // initially action exit is checked
+  {
+    QCOMPARE( model.rowCount(), 5 );
+
+    const QModelIndex menusIndex = model.index( 2, 0 );
+    QCOMPARE( model.data( menusIndex, Qt::ItemDataRole::DisplayRole ), u"Menus"_s );
+
+    QModelIndexList items = model.match( model.index( 0, 0, menusIndex ), Qt::DisplayRole, "mProjectMenu", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex projectMenuIndex = items.first();
+
+    items = model.match( model.index( 0, 0, projectMenuIndex ), Qt::DisplayRole, "mActionExit", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex exitActionIndex = items.first();
+
+    QCOMPARE( model.data( exitActionIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Checked );
+  }
+
+  model.readFile( mCustomizationFile->fileName() );
+
+  // action exit is now unchecked
+  {
+    QCOMPARE( model.rowCount(), 5 );
+
+    const QModelIndex menusIndex = model.index( 2, 0 );
+    QCOMPARE( model.data( menusIndex, Qt::ItemDataRole::DisplayRole ), u"Menus"_s );
+
+    QModelIndexList items = model.match( model.index( 0, 0, menusIndex ), Qt::DisplayRole, "mProjectMenu", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex projectMenuIndex = items.first();
+
+    items = model.match( model.index( 0, 0, projectMenuIndex ), Qt::DisplayRole, "mActionExit", 1 );
+    QCOMPARE( items.count(), 1 );
+    QModelIndex exitActionIndex = items.first();
+
+    QCOMPARE( model.data( exitActionIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );
+  }
 }
 
 QGSTEST_MAIN( TestQgsCustomization )

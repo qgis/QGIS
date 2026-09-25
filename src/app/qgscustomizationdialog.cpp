@@ -58,7 +58,7 @@ QgsCustomizationDialog::QgsCustomizationModel::QgsCustomizationModel( QgisApp *q
   , mMode( mode )
   , mQgisApp( qgisApp )
 {
-  init();
+  initFromQgisApp();
 }
 
 QVariant QgsCustomizationDialog::QgsCustomizationModel::data( const QModelIndex &index, int role ) const
@@ -220,10 +220,15 @@ int QgsCustomizationDialog::QgsCustomizationModel::columnCount( const QModelInde
   return 2;
 }
 
-void QgsCustomizationDialog::QgsCustomizationModel::init()
+void QgsCustomizationDialog::QgsCustomizationModel::initFromQgisApp()
 {
   mCustomization = std::make_unique<QgsCustomization>( *mQgisApp->customization() );
   mCustomization->load();
+  initRootItems();
+}
+
+void QgsCustomizationDialog::QgsCustomizationModel::initRootItems()
+{
   mRootItems.clear();
   switch ( mMode )
   {
@@ -242,7 +247,7 @@ void QgsCustomizationDialog::QgsCustomizationModel::reset()
 {
   // restore application state
   beginResetModel();
-  init();
+  initFromQgisApp();
   endResetModel();
 }
 
@@ -261,6 +266,7 @@ QString QgsCustomizationDialog::QgsCustomizationModel::readFile( const QString &
 {
   beginResetModel();
   QString error = mCustomization->readFile( filePath );
+  initRootItems();
   endResetModel();
 
   return error;
