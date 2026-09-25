@@ -42,6 +42,8 @@ class QgsCoverageCleanAlgorithm : public QgsProcessingAlgorithm
     QString shortDescription() const override;
     QString shortHelpString() const override;
     QgsCoverageCleanAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
+    Qgis::ProcessingAlgorithmFlags flags() const override;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
