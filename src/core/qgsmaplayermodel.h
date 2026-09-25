@@ -115,6 +115,13 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setProject( QgsProject *project );
 
     /**
+     * Returns the project associated with this map layer model.
+     *
+     * \since QGIS 4.4
+     */
+    QgsProject *project();
+
+    /**
      * Sets whether items in the model can be reordered via drag and drop.
      *
      * \see itemsCanBeReordered()
