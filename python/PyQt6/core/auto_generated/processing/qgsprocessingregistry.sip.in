@@ -99,6 +99,56 @@ Returns a list of all available algorithms from registered providers.
 .. seealso:: :py:func:`algorithmById`
 %End
 
+    bool isCompatibleDefinition(const QgsProcessingParameterDefinition* parameterDefinitionSource, const QgsProcessingParameterDefinition* parameterDefinitionTarget);
+%Docstring
+Returns ``True`` if the ``parameterDefinitionTarget`` accepts
+``parameterDefinitionSource`` as compatible Processing parameter types
+for parameter type of ``parameterDefinitionTarget``.
+
+Example
+-------------------------------------
+
+.. code-block:: python
+
+       vectorLayerParam = QgsProcessingParameterVectorLayer( "dummyname" )
+       boolParam = QgsProcessingParameterBoolean( "dummyname" )
+
+       # Parameter source and parameter target are compatible
+       QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, vectorLayerParam ) # -> return True
+       QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, boolParam ) # -> return True
+
+       # Parameter source and parameter target are incompatible
+       QgsApplication.processingRegistry().isCompatibleDefinition( boolParam, vectorLayerParam ) # -> return False
+
+.. versionadded:: 4.4
+%End
+
+    bool isCompatibleDefinition(const QgsProcessingOutputDefinition* outputDefinitionSource, const QgsProcessingParameterDefinition* parameterDefinitionTarget);
+%Docstring
+Returns ``True`` if the ``parameterDefinitionTarget`` accepts
+``outputDefinitionSource`` as compatible Processing output types for
+parameter type of ``parameterDefinitionTarget``.
+
+- ### Example
+
+.. code-block:: python
+
+       vectorLayerParam = QgsProcessingParameterVectorLayer( "dummyname" )
+
+       boolOutput = QgsProcessingOutputBoolean( "dummyname" )
+       stringOutput = QgsProcessingOutputString( "dummyname" )
+       vectorLayerOutput = QgsProcessingOutputVectorLayer( "dummyname" )
+
+       # Output source and parameter target are compatible
+       QgsApplication.processingRegistry().isCompatibleDefinition( stringOutput, vectorLayerParam ) # -> return True
+       QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerOutput, vectorLayerParam ) # -> return True
+
+       # Output source and parameter target are incompatible
+       QgsApplication.processingRegistry().isCompatibleDefinition( boolOutput, vectorLayerParam ) # -> return False
+
+.. versionadded:: 4.4
+%End
+
     QgsProcessingAlgorithmInformation algorithmInformation( const QString &id ) const;
 %Docstring
 Returns basic algorithm information for the algorithm with matching ID.
