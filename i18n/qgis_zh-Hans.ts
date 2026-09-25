@@ -2059,7 +2059,7 @@ Query:
     </message>
     <message>
         <source>The DB Manager plugin will be removed in a future QGIS release. Please install the &quot;DB Manager (community)&quot; replacement plugin instead.</source>
-        <translation>数据库管理器插件将在未来QGIS版本中被移除。请安装 &quot;DB Manager (community)&quot; 替换插件代替。</translation>
+        <translation>数据库管理器插件将在未来QGIS版本中被移除，请安装 &quot;DB Manager (community)&quot; 插件。</translation>
     </message>
     <message>
         <source>&lt;warning&gt; Not connected</source>
@@ -3711,7 +3711,7 @@ Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons tha
     </message>
     <message>
         <source>Empty SQL. Please enter valid SQL expression and try again.</source>
-        <translation>SQL 语句为空。请输入有效的 SQL 语句，然后重试。</translation>
+        <translation>SQL为空。请输入有效的SQL表达式，然后重试。</translation>
     </message>
     <message>
         <source>Cannot find geometry field</source>
@@ -3735,7 +3735,7 @@ Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons tha
     </message>
     <message>
         <source>MultiLineString</source>
-        <translation>线集</translation>
+        <translation>线串集</translation>
     </message>
     <message>
         <source>MultiPolygon</source>
@@ -3802,7 +3802,7 @@ The result of the query will be added as a new layer.</source>
     </message>
     <message>
         <source>Empty SQL. Please enter valid SQL expression and try again.</source>
-        <translation>SQL 语句为空。请输入有效的 SQL 语句，然后重试。</translation>
+        <translation>SQL为空。请输入有效的SQL表达式，然后重试。</translation>
     </message>
 </context>
 <context>
@@ -4096,7 +4096,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <location filename="../python/plugins/processing/algs/qgis/ui/interpolationdatawidgetbase.ui"/>
         <source>Use Z-coordinate for interpolation</source>
-        <translation>使用 Z 坐标插值</translation>
+        <translation>使用Z-坐标进行插值</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/widgetBatchPanel.ui"/>
@@ -12461,7 +12461,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Power coefficient for IDW interpolation</source>
         <extracomment>r.fill.stats</extracomment>
-        <translation>IDW 插值的幂系数</translation>
+        <translation>IDW插值的幂系数</translation>
     </message>
     <message>
         <source>Name of input file containing coordinate pairs</source>
@@ -15061,7 +15061,7 @@ The resulting layer contains origin features center point with an additional fie
     </message>
     <message>
         <source>IDW interpolation</source>
-        <translation>反距离加权法插值</translation>
+        <translation>IDW插值</translation>
     </message>
     <message>
         <source>You need to specify at least one input layer.</source>
@@ -27260,9 +27260,9 @@ SQL： %1
         <location filename="../src/providers/postgres/qgspostgresprovidermetadatautils.cpp" line="169"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="366"/>
         <location filename="../src/providers/postgres/qgspostgresutils.cpp" line="464"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2495"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2556"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2736"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2510"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2571"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2751"/>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="44"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="179"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6102"/>
@@ -27462,7 +27462,7 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5368"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2564"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2579"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>无法保存图层样式。因为无法在数据库中创建目标表，这可能是表权限的问题 (用户=%1)。请联系您的数据库管理员</translation>
     </message>
@@ -27500,13 +27500,13 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5383"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2579"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2594"/>
         <source>Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>无法将列类型添加到 layer_styles 表，可能是由于表权限 (user=%1) 导致的，请联系您的数据库管理员</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5503"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2713"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2728"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>无法保存图层样式，因为无法在样式表中插入新的记录。这可能是表权限的原因（用户=%1）。请联系您的数据库管理员。</translation>
     </message>
@@ -27514,9 +27514,9 @@ Database error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5610"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5700"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5730"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2814"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2908"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2938"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2829"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2923"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2953"/>
         <source>Connection to database failed using username: %1</source>
         <translation>使用用户名%1连接数据库失败</translation>
     </message>
@@ -27525,10 +27525,10 @@ Database error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5674"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5710"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5746"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2853"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2882"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2918"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2954"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2868"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2897"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2933"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2969"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6159"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6338"/>
         <source>Error executing query: %1</source>
@@ -27536,33 +27536,33 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5646"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2854"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2869"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>执行相关样式查询时出错。查询已被记录</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5675"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2883"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2898"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6510"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>执行不相关样式查询时出错。查询已被记录</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5711"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2919"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2934"/>
         <source>Error executing the delete query. The query was logged</source>
         <translation>执行删除查询时出错。查询已被记录</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5747"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2955"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2970"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6561"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>执行选择查询时出错。查询已被记录</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="5742"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2950"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2965"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="6555"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>表“%1”包含一致性错误。样式 ID 应该是唯一的</translation>
@@ -28961,7 +28961,7 @@ The additional attributes and their values are taken from a second vector layer.
         <location filename="../src/analysis/processing/qgsmetadataalgorithms.cpp" line="325"/>
         <location filename="../src/analysis/processing/qgsmetadataalgorithms.cpp" line="488"/>
         <source>Invalid input layer</source>
-        <translation>无效的输入图层</translation>
+        <translation>无效输入图层</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmloadlayer.cpp" line="87"/>
@@ -34932,7 +34932,7 @@ For help with QGIS expression functions, see the inbuilt help for specific funct
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalinformation.cpp" line="72"/>
         <location filename="../src/analysis/processing/qgsalgorithmrasterlayeruniquevalues.cpp" line="59"/>
         <location filename="../src/analysis/processing/qgsalgorithmrastersurfacevolume.cpp" line="66"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="317"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="319"/>
         <source>HTML files (*.html)</source>
         <translation>HTML文件(*.html)</translation>
     </message>
@@ -37147,7 +37147,7 @@ Attributes are not modified by this algorithm.</source>
     <message>
         <location filename="../src/core/layout/qgscompositionconverter.cpp" line="105"/>
         <location filename="../src/core/layout/qgslayoutobject.cpp" line="65"/>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2320"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2322"/>
         <location filename="../src/core/symbology/qgssymbollayer.cpp" line="105"/>
         <source>Opacity</source>
         <translation>不透明度</translation>
@@ -37209,104 +37209,104 @@ Attributes are not modified by this algorithm.</source>
         <translation>元切片大小</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="153"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="155"/>
         <source>Could not transform the extent into the project CRS</source>
         <translation>无法将范围转换为工程CRS</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="180"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="182"/>
         <source>Could not transform the extent into WGS84</source>
         <translation>无法将范围转换为WGS84</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="196"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="198"/>
         <source>Background color setting ignored, the JPG format only supports fully opaque colors</source>
         <translation>忽略背景色设置，JPG格式仅支持完全不透明的颜色</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="281"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="283"/>
         <source>Generate XYZ tiles (Directory)</source>
         <translation>生成XYZ切片 (目录)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="286"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="288"/>
         <source>tiles,xyz,tms,directory</source>
         <translation>切片,XYZ,TMS,目录</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="291"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="293"/>
         <source>Generates XYZ tiles of map canvas content and saves them as individual images in a directory.</source>
         <translation>生成地图画布内容的XYZ切片，并将其作为独立图像保存在目录中。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="302"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="304"/>
         <source>Tile width</source>
         <translation>切片宽度</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="303"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="305"/>
         <source>Tile height</source>
         <translation>切片高度</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="304"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="306"/>
         <source>Use inverted tile Y axis (TMS convention)</source>
         <translation>使用反转的切片Y轴（TMS约定）</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="306"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="308"/>
         <source>Leaflet HTML output title</source>
         <translation>Leaflet HTML 输出标题</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="309"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="311"/>
         <source>Leaflet HTML output attribution</source>
         <translation>Leaflet HTML 输出属性</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="312"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="314"/>
         <source>Include OpenStreetMap basemap in Leaflet HTML output</source>
         <translation>在 Leaflet HTML 输出中包含OpenStreetMap底图</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="317"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="319"/>
         <source>Output html (Leaflet)</source>
         <translation>输出HTML (Leaflet)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="341"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="540"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="343"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="542"/>
         <source>%1 metatiles (%2 tiles) will be created for zoom level %3</source>
         <translation>将为缩放级别%3创建%1元切片 (%2切片)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="345"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="544"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="347"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="546"/>
         <source>A total of %1 metatiles (%2 tiles) will be created</source>
         <translation>将共创建%1元切片 (%2切片)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="411"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="413"/>
         <source>Could not open html file %1</source>
         <translation>无法打开HTML文件 %1</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="488"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="490"/>
         <source>Generate XYZ tiles (MBTiles)</source>
         <translation>生成XYZ切片 (MBTiles)</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="493"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="495"/>
         <source>tiles,xyz,tms,mbtiles</source>
         <translation>切片,XYZ,TMS,MBTile</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="498"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="500"/>
         <source>Generates XYZ tiles of map canvas content and saves them as an MBTiles file.</source>
         <translation>生成地图画布内容的XYZ切片，并将其另存为MBTiles文件。</translation>
     </message>
     <message>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="509"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="511"/>
         <source>MBTiles files (*.mbtiles *.MBTILES)</source>
         <translation>MBTiles文件 (*.mbtiles *.MBTILES)</translation>
     </message>
@@ -46806,12 +46806,12 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     </message>
     <message>
         <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="821"/>
-        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="976"/>
+        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="978"/>
         <source>ESRI visualVariable type &apos;%1&apos; is not currently supported</source>
         <translation>ESRI视觉变量类型 &apos;%1&apos; 当前不支持</translation>
     </message>
     <message>
-        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="1023"/>
+        <location filename="../src/core/providers/arcgis/qgsarcgisrestutils.cpp" line="1025"/>
         <source>ESRI classification mode &apos;%1&apos; is not currently supported</source>
         <translation>ESRI分类模式 &apos;%1&apos; 当前不支持</translation>
     </message>
@@ -47125,7 +47125,7 @@ Additional layer details - CRS, provider name, file path, layer name, subset fil
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="281"/>
         <location filename="../src/analysis/processing/qgsalgorithmgpsbabeltools.cpp" line="475"/>
         <location filename="../src/analysis/processing/qgsalgorithmrasterminmax.cpp" line="59"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="509"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="511"/>
         <location filename="../src/analysis/processing/qgsbookmarkalgorithms.cpp" line="43"/>
         <location filename="../src/analysis/processing/qgsmetadataalgorithms.cpp" line="247"/>
         <source>Output</source>
@@ -47148,7 +47148,7 @@ Additional layer details - CRS, provider name, file path, layer name, subset fil
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdownloadvectortiles.cpp" line="160"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="519"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="521"/>
         <source>Failed to create MBTiles file %1</source>
         <translation>无法创建MBTiles文件 %1</translation>
     </message>
@@ -47297,12 +47297,12 @@ An attribute or expression can be selected to group points having the same value
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="186"/>
         <source>Order by field %1 does not exist in input layer.</source>
-        <translation>输入图层不存在排序字段%1。</translation>
+        <translation>排序按字段%1在输入图层中不存在。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="211"/>
         <source>Group field %1 does not exist in input layer.</source>
-        <translation>输入图层不存在分组字段%1。</translation>
+        <translation>组字段%1在输入图层中不存在。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="241"/>
@@ -47799,7 +47799,7 @@ The name and characteristics of the attribute are defined as parameters. The new
         <location filename="../src/analysis/processing/qgsalgorithmsetlayerencoding.cpp" line="86"/>
         <location filename="../src/analysis/processing/qgsalgorithmspatialindex.cpp" line="87"/>
         <source>Could not load source layer for %1.</source>
-        <translation>无法从%1加载源图层。</translation>
+        <translation>无法为%1加载源图层。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmattributeindex.cpp" line="101"/>
@@ -50143,8 +50143,8 @@ The minimum extent entered will internally be extended to a multiple of the tile
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="183"/>
         <location filename="../src/analysis/processing/qgsalgorithmrasterize.cpp" line="185"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="214"/>
         <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="216"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="218"/>
         <source>Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3</source>
         <translation>将跳过图层%1，该算法会导致批量下载行为，而这是%2OpenStreetMap基金会切片使用策略%3所禁止的</translation>
     </message>
@@ -51219,7 +51219,7 @@ Prior to this a connection between QGIS and the PostgreSQL database has to be cr
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdaltile.cpp" line="81"/>
         <location filename="../src/analysis/processing/qgsalgorithmsplitvectorlayer.cpp" line="92"/>
         <location filename="../src/analysis/processing/qgsalgorithmwritevectortiles.cpp" line="124"/>
-        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="316"/>
+        <location filename="../src/analysis/processing/qgsalgorithmxyztiles.cpp" line="318"/>
         <source>Output directory</source>
         <translation>输出目录</translation>
     </message>
@@ -52540,7 +52540,7 @@ The created point layer will be in the same spatial reference system as the sele
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1152"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2154"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2157"/>
         <source>%1: Style layer has no layout property, skipping</source>
         <translation>%1: 样式图层没有布局属性，正在跳过</translation>
     </message>
@@ -52567,10 +52567,10 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1368"/>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="1377"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2982"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2991"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3042"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3050"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2985"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2994"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3045"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3053"/>
         <source>%1: Expressions in interpolation function are not supported, skipping.</source>
         <translation>%1: 不支持插值函数中的表达式，正在跳过。</translation>
     </message>
@@ -52638,132 +52638,132 @@ The created point layer will be in the same spatial reference system as the sele
         <translation>%1: 跳过不支持的文本锚类型 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2121"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2185"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2123"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2188"/>
         <source>%1: Skipping unsupported symbol-spacing type (%2)</source>
         <translation>%1: 跳过不支持的符号间距类型 type (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2232"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2415"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2235"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2418"/>
         <source>%1: Skipping unsupported icon-rotate type (%2)</source>
         <translation>%1: 跳过不支持的图标旋转类型 (%2)</translation>
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2041"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2291"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2373"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2294"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2376"/>
         <source>%1: Skipping non-implemented icon-size type (%2)</source>
         <translation>%1: 跳过未实现的图标大小类型 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2444"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2447"/>
         <source>%1: Skipping unsupported icon-opacity type (%2)</source>
         <translation>%1: 跳过不支持的图标不透明度类型 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2902"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2911"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2905"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="2914"/>
         <source>%1: Skipping unsupported offset interpolation type (%2).</source>
         <translation>%1: 跳过不支持的偏移插值类型 (%2)。</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3077"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3085"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3106"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3080"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3088"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3109"/>
         <source>%1: Lists in label interpolation function are not supported, skipping.</source>
         <translation>%1: 跳过不支持标注插值函数中的列表。</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3163"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4189"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3166"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4192"/>
         <source>%1: Could not interpret match list</source>
         <translation>%1: 无法解释匹配列表</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3369"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3912"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4292"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3372"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3915"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4295"/>
         <source>%1: Could not interpret step list</source>
         <translation>%1: 无法解释步长列表</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3473"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3476"/>
         <source>%1: Could not interpret value list</source>
         <translation>%1: 无法解释值列表</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3503"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3506"/>
         <source>%1: Skipping not implemented interpolation method %2</source>
         <translation>%1: 跳过未实现的插值方法 %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3509"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3512"/>
         <source>%1: Skipping not implemented interpolation input %2</source>
         <translation>%1: 跳过未实现的插值输入 %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3538"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3541"/>
         <source>%1: Skipping unsupported numeric array in interpolate</source>
         <translation>%1: 在插值中跳过不支持的数值数组</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3557"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3560"/>
         <source>%1: Could not parse non-string color %2, skipping</source>
         <translation>%1: 无法解析非字符串颜色%2，正在跳过</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3668"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3671"/>
         <source>%1: Operator %2 requires exactly two operands, skipping extra operands</source>
         <translation>%1: 运算符 %2 必须且仅需两个操作数，其余的操作数将跳过</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3702"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3760"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3818"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3705"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3763"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3821"/>
         <source>%1: Skipping unsupported expression</source>
         <translation>%1: 跳过不支持的表达式</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3945"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3948"/>
         <source>%1: Could not interpret slice list</source>
         <translation>%1: 无法解析切面列表</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3988"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="3991"/>
         <source>%1: Skipping unsupported expression &quot;%2&quot;</source>
         <translation>%1: 跳过不支持的表达式 &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4030"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4037"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4045"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4033"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4040"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4048"/>
         <source>%1: Could not retrieve sprite &apos;%2&apos;</source>
         <translation>%1: 无法检索精灵图 &apos;%1&apos; &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4341"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4344"/>
         <source>%1: Could not interpret sprite value list with method %2</source>
         <translation>%1: 无法使用解释精灵图值列表法 %2</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4227"/>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4347"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4230"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4350"/>
         <source>%1: Skipping unsupported sprite type (%2).</source>
         <translation>%1: 跳过不支持的精灵图类型 (%2)。</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4385"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4388"/>
         <source>%1: Skipping unsupported expression part</source>
         <translation>%1: 跳过不支持的表达式部件</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4536"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4539"/>
         <source>Invalid source type &quot;%1&quot; for source &quot;%2&quot;</source>
         <translation>源 &quot;%2&quot; 的源类型 &quot;%1&quot; 无效</translation>
     </message>
     <message>
-        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4694"/>
+        <location filename="../src/core/vectortile/qgsmapboxglstyleconverter.cpp" line="4697"/>
         <source>%1 scheme is not supported for raster source %2</source>
         <translation>栅格源 %2 不支持 %1 方案</translation>
     </message>
@@ -54996,7 +54996,7 @@ For more details, please see the following papers:
         <translation>混合模式</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgssymbol.cpp" line="2321"/>
+        <location filename="../src/core/symbology/qgssymbol.cpp" line="2323"/>
         <source>Extent buffer</source>
         <translation>范围缓冲区</translation>
     </message>
@@ -56039,7 +56039,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="400"/>
         <source>Perspective Conic</source>
-        <translation>Perspective Conic</translation>
+        <translation>透视圆锥</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="402"/>
@@ -58897,7 +58897,7 @@ Output geometries are of type PolyhedralSurfaceZ, representing the extruded surf
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="36"/>
         <source>Fill sinks (Wang &amp; Liu)</source>
-        <translation>填充汇 (Wang &amp; Liu)</translation>
+        <translation>填充汇 (Wang和Liu)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="41"/>
@@ -58913,13 +58913,13 @@ The method was enhanced to allow the creation of hydrologically sound elevation 
 References: Wang, L. &amp; H. Liu (2006): An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling. International Journal of Geographical Information Science, Vol. 20, No. 2: 193-213.
 
 This algorithm is a port of the SAGA &apos;Fill Sinks (Wang &amp; Liu)&apos; tool.</source>
-        <translation>该算法使用 Wang 和 Liu 提出的方法来识别和填充数字高程模型中的地表洼地。
+        <translation>该算法采用Wang和Liu提出的方法，用于识别和填充数字高程模型中的地表洼地。
 
-此方法得到了增强，可以创建水文学上稳定的高程模型，即不仅可以填充洼地，还可以沿流路径保持向下的坡度。如果需要，可以通过在像素之间保持最小坡度（从而保持高程差）来实现。
+此方法得到了改进，可以创建水文上稳定的高程模型，即不仅填充洼地，也可以沿流路径保持向下的坡度。如果需要，可通过在像素之间保持最小坡度 (从而保持高程差) 来实现。
 
-参考文献: Wang, L. &amp; H. Liu (2006): An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling. International Journal of Geographical Information Science, Vol. 20, No. 2: 193-213.
+参考文献: Wang, L. &amp; H. Liu (2006): 一种用于水文分析和建模的数字高程模型中识别和填充地表洼地的有效方法。《国际地理信息科学杂志》，第20卷，第2期: 193-213。
 
-该算法是 SAGA“填充汇（Wang &amp; Liu）”工具的移植版。</translation>
+该算法是 SAGA &quot;填充汇 (Wang和Liu)&quot; 工具的移植版。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="72"/>
@@ -59168,7 +59168,7 @@ When deletion of a vertex results in a duplicate vertex (when a spike vertex is 
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="128"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="129"/>
         <source>Field %1 does not exist in input layer.</source>
-        <translation>输入图层的字段%1不存在。</translation>
+        <translation>字段%1在输入图层中不存在。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="137"/>
@@ -62427,7 +62427,7 @@ Do you want to continue?</source>
         <translation>无法确定objectIdFieldName和/或objectIds</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2591"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2606"/>
         <source>Unable to add column r_raster_column to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>无法将列 r_raster_column 添加到 layer_styles 表中。这可能是由于表权限 (user=%1) 导致的。请联系您的数据库管理员</translation>
     </message>
@@ -70334,7 +70334,7 @@ Errors: %2
         <translation>加载书签</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="1688"/>
+        <location filename="../src/core/qgsapplication.cpp" line="1692"/>
         <source>QgsApplication state:
  - QGIS_PREFIX_PATH env var:   %1
  - Prefix:                     %2
@@ -70361,7 +70361,7 @@ Errors: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="1701"/>
+        <location filename="../src/core/qgsapplication.cpp" line="1705"/>
         <source>
                                </source>
         <comment>match indentation of application state</comment>
@@ -70369,271 +70369,271 @@ Errors: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2255"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2259"/>
         <source>[ERROR] Can not make qgis.db private copy</source>
         <translation>[错误] 无法为qgis.db创建私有副本</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2267"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2271"/>
         <source>Can not make &apos;%1&apos; user writable</source>
         <translation>无法使“%1”用户可写</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2281"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2285"/>
         <source>Could not open qgis.db</source>
         <translation>无法打开qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2317"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2321"/>
         <source>Creation of missing tbl_srs in the private qgis.db failed.
 %1</source>
         <translation>在私有qgis.db中创建丢失的tbl_srs失败。
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2360"/>
-        <location filename="../src/core/qgsapplication.cpp" line="2430"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2364"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2434"/>
         <source>Migration of private qgis.db failed.
 %1</source>
         <translation>私有qgis.db迁移失败。
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2390"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2394"/>
         <source>Creation of missing tbl_projection in the private qgis.db failed.
 %1</source>
         <translation>在私有qgis.db中创建丢失的tbl_projection失败。
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2469"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2473"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
         <translation>在私有的qgis.db中更新视图失败。
 %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2777"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2781"/>
         <source>Create query logger</source>
         <translation>创建查询记录器</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2782"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2786"/>
         <source>Setup coordinate reference system registry</source>
         <translation>设置坐标参照系注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2787"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2791"/>
         <source>Create connection registry</source>
         <translation>创建连接注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2792"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2796"/>
         <source>Create project storage registry</source>
         <translation>创建工程存储注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2797"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2801"/>
         <source>Create layer metadata provider registry</source>
         <translation>创建图层元数据提供程序注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2802"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2806"/>
         <source>Create font manager</source>
         <translation>创建字体管理器</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2807"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2811"/>
         <source>Setup task manager</source>
         <translation>设置任务管理器</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2812"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2816"/>
         <source>Setup action scope registry</source>
         <translation>设置动作域注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2817"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2821"/>
         <source>Setup numeric formats</source>
         <translation>设置数字格式</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2822"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2826"/>
         <source>Setup field formats</source>
         <translation>设置字段格式</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2827"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2831"/>
         <source>Setup SVG cache</source>
         <translation>设置SVG缓存</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2832"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2836"/>
         <source>Setup image cache</source>
         <translation>设置图像缓存</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2837"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2841"/>
         <source>Setup source cache</source>
         <translation>设置源缓存</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2842"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2846"/>
         <source>Setup color scheme registry</source>
         <translation>设置配色方案注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2847"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2851"/>
         <source>Setup paint effect</source>
         <translation>设置绘图效果</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2852"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2856"/>
         <source>Setup symbol layer registry</source>
         <translation>设置符号图层注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2857"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2861"/>
         <source>Recent style handler</source>
         <translation>最近样式处理程序</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2862"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2866"/>
         <source>Setup callout registry</source>
         <translation>设置牵引线注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2867"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2871"/>
         <source>Setup renderer registry</source>
         <translation>设置渲染器注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2872"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2876"/>
         <source>Setup raster renderer registry</source>
         <translation>设置栅格渲染器注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2877"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2881"/>
         <source>Setup point cloud renderer registry</source>
         <translation>设置点云渲染器注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2882"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2886"/>
         <source>Setup tiled scene renderer registry</source>
         <translation>设置切片场景渲染器注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2887"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2891"/>
         <source>Setup GPS registry</source>
         <translation>设置GPS注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2892"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2896"/>
         <source>Setup GPSBabel format registry</source>
         <translation>设置GPSBabel格式注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2897"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2901"/>
         <source>Setup plugin layer registry</source>
         <translation>设置插件图层注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2902"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2906"/>
         <source>Setup Processing registry</source>
         <translation>设置处理工具箱注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2908"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2912"/>
         <source>Setup layout item registry</source>
         <translation>设置布局项注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2914"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2918"/>
         <source>Setup annotation registry</source>
         <translation>设置注记注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2919"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2923"/>
         <source>Setup application theme registry</source>
         <translation>设置应用程序主题注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2924"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2928"/>
         <source>Setup annotation item registry</source>
         <translation>设置注记项注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2930"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2934"/>
         <source>Setup labeling engine rule registry</source>
         <translation>设置标注引擎规则注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2935"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2939"/>
         <source>Setup symbol converter registry</source>
         <translation>设置符号转换器注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2941"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2945"/>
         <source>Setup sensor registry</source>
         <translation>设置传感器注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2947"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2951"/>
         <source>Setup plot registry</source>
         <translation>设置绘图注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2953"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2957"/>
         <source>Setup 3D material registry</source>
         <translation>设置3D材质注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2959"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2963"/>
         <source>Setup 3D symbol registry</source>
         <translation>设置3D符号注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2964"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2968"/>
         <source>Setup 3D renderer registry</source>
         <translation>设置3D渲染器注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2969"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2973"/>
         <source>Setup external storage registry</source>
         <translation>设置外部存储注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2974"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2978"/>
         <source>Setup profile source registry</source>
         <translation>设置配置文件源注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2979"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2983"/>
         <source>Setup network content cache</source>
         <translation>设置网络内容缓存</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2984"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2988"/>
         <source>Setup layout check registry</source>
         <translation>设置布局检查注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2989"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2993"/>
         <source>Setup classification registry</source>
         <translation>设置分类注册表</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2994"/>
+        <location filename="../src/core/qgsapplication.cpp" line="2998"/>
         <source>Setup bookmark manager</source>
         <translation>设置书签管理器</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="2999"/>
+        <location filename="../src/core/qgsapplication.cpp" line="3003"/>
         <source>Setup tile download manager</source>
         <translation>设置切片下载管理器</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="3004"/>
+        <location filename="../src/core/qgsapplication.cpp" line="3008"/>
         <source>Setup scalebar registry</source>
         <translation>设置比例尺注册表</translation>
     </message>
@@ -74406,15 +74406,15 @@ Error: %2</source>
         <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="1733"/>
         <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="1781"/>
         <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="1822"/>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="1935"/>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="1995"/>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2044"/>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2078"/>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2117"/>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2147"/>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2183"/>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2217"/>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2247"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="1934"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="1994"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2043"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2077"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2116"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2146"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2182"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2216"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2246"/>
         <source>Auth db could not be opened</source>
         <translation>无法打开身份验证数据库</translation>
     </message>
@@ -74591,73 +74591,73 @@ Error: %2</source>
         <translation>将凭据储存在 %1 数据库</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="1973"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="1972"/>
         <source>Authentication database contains more than one configuration IDs for &apos;%1&apos;</source>
         <translation>认证数据库包含多个配置ID为 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2001"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2000"/>
         <source>Store config: FAILED because config string is empty</source>
         <translation>储存配置：失败，因为配置字符串为空</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2007"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2006"/>
         <source>Store config: FAILED because config is invalid</source>
         <translation>储存配置：失败，因配置无效</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2027"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2026"/>
         <source>Failed to store config &apos;%1&apos;</source>
         <translation>储存配置 &apos;%1&apos; 失败</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2055"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2054"/>
         <source>Failed to remove config &apos;%1&apos;</source>
         <translation>移除配置 &apos;%1&apos; 失败</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2061"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2060"/>
         <source>Config &apos;%1&apos; does not exist</source>
         <translation>配置 &apos;%1&apos; 不存在</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2089"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2088"/>
         <source>Failed to query for config &apos;%1&apos;</source>
         <translation>查询配置 &apos;%1&apos; 失败</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2129"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2128"/>
         <source>Failed to set setting &apos;%1&apos;</source>
         <translation>设置设置 &apos;%1&apos; 失败</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2158"/>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2228"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2157"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2227"/>
         <source>Failed to query for setting &apos;%1&apos;</source>
         <translation>查询设置 &apos;%1&apos; 失败</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2194"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2193"/>
         <source>Failed to remove setting &apos;%1&apos;</source>
         <translation>移除设置 &apos;%1&apos; 失败</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2200"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2199"/>
         <source>Setting &apos;%1&apos; does not exist</source>
         <translation>设置 &apos;%1&apos; 不存在</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2258"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2257"/>
         <source>Failed to empty table &apos;%1&apos;: table does not exist</source>
         <translation>清空表 &apos;%1&apos; 失败：表不存在</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2294"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2293"/>
         <source>Failed to empty table &apos;%1&apos;: unsupported table</source>
         <translation>清空表 &apos;%1&apos; 失败：不支持的表</translation>
     </message>
     <message>
-        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2301"/>
+        <location filename="../src/core/auth/qgsauthconfigurationstoragedb.cpp" line="2300"/>
         <source>Failed to empty table &apos;%1&apos;</source>
         <translation>清空表 &apos;%1&apos; 失败</translation>
     </message>
@@ -92010,7 +92010,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>dash,stroked,multilinestring,input,ring,specified,applies,line,pattern,returning</source>
-        <translation>虚线，轻触，多线串，输入，环，特指，应用，线，图案，返回</translation>
+        <translation>虚线,轻触,线串集,输入,环,特指,应用,线,图案,返回</translation>
     </message>
     <message>
         <source>area(@geometry)</source>
@@ -112508,7 +112508,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui"/>
         <source>The GRASS mapset is a collection of maps used by one user. A user can read maps from all mapsets in the location but he can open for writing only his mapset (owned by user).</source>
-        <translation>GRASS地图集是一个用户使用的地图集合。用户可以从该位置的所有地图集中读取地图，但只能打开并写入其地图集 (由用户所有 - 仅能以读写方式打开属于自己的地图集，其他用户的地图集只能读不能写)。</translation>
+        <translation>GRASS地图集是一个用户使用的地图集合。用户可以读取该位置中所有地图集的地图，但只能打开自己的地图集 (归用户所有) 进行写入操作。</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui"/>
@@ -131056,7 +131056,7 @@ Rasterizing map is recommended for proper rendering.</source>
     <name>QgsMapThemes</name>
     <message>
         <location filename="../src/app/qgsmapthemes.cpp" line="54"/>
-        <location filename="../src/app/qgsmapthemes.cpp" line="130"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="132"/>
         <source>Replace Theme</source>
         <translation>更换主题</translation>
     </message>
@@ -131076,59 +131076,59 @@ Rasterizing map is recommended for proper rendering.</source>
         <translation>移除当前主题</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="100"/>
-        <location filename="../src/app/qgsmapthemes.cpp" line="158"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="102"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="160"/>
         <source>theme</source>
         <translation>主题</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="100"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="102"/>
         <source>Theme</source>
         <translation>主题</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="101"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="103"/>
         <source>Map Themes</source>
         <translation>地图主题</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="102"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="104"/>
         <source>Name of the new theme</source>
         <translation>新主题名称</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="104"/>
-        <location filename="../src/app/qgsmapthemes.cpp" line="163"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="106"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="165"/>
         <source>A theme with this name already exists.</source>
         <translation>当前主题名称已经存在。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="130"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="132"/>
         <source>Are you sure you want to replace the existing theme “%1”?</source>
         <translation>是否更换当前主题 “%1”?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="158"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="160"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="160"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="162"/>
         <source>Rename Map Theme</source>
         <translation>重命名地图主题</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="161"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="163"/>
         <source>Enter the new name of the map theme</source>
         <translation>输出新地图主题名称</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="181"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="184"/>
         <source>Remove Theme</source>
         <translation>移除主题</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmapthemes.cpp" line="181"/>
+        <location filename="../src/app/qgsmapthemes.cpp" line="184"/>
         <source>Are you sure you want to remove the existing theme “%1”?</source>
         <translation>您确定要删除现有主题“%1”吗？</translation>
     </message>
@@ -150665,50 +150665,50 @@ enhancement</source>
 <context>
     <name>QgsPostgresConn</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="352"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="355"/>
         <source>Connection to database failed</source>
         <translation>数据库连接失败</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="289"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="298"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="352"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="402"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="520"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="816"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="926"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1040"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1057"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1158"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1173"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1471"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1487"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1500"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1510"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1518"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1525"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1533"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1538"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1612"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1616"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2865"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2874"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2892"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="355"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="405"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="523"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="819"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="929"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1043"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1060"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1161"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1176"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1474"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1490"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1503"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1513"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1521"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1528"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1536"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1541"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1615"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1619"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2868"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2877"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2895"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="402"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="405"/>
         <source>Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation>您安装的PostGIS不支持GEOS，要素选择和识别将无法正常工作。请安装支持GEOS的PostGIS (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1040"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1043"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
         <translation>数据库连接成功，但无法确定可访问的表。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="816"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="819"/>
         <source>Database connection was successful, but the accessible tables could not be determined. The error message from the database was:
 %1
 </source>
@@ -150733,8 +150733,8 @@ enhancement</source>
         <translation>无法删除证书：%0</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="520"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2892"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="523"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2895"/>
         <source>SQL: %1
 result: %2
 error: %3
@@ -150745,12 +150745,12 @@ error: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="603"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="606"/>
         <source>Unsupported spatial column type %1</source>
         <translation>不支持的空间列类型%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="926"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="929"/>
         <source>Database connection was successful, but the accessible tables could not be determined.
 The error message from the database was:
 %1</source>
@@ -150759,104 +150759,104 @@ The error message from the database was:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1057"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1060"/>
         <source>Unable to get list of spatially enabled tables from the database</source>
         <translation>无法从数据库获取空间化表的列表</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1158"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1161"/>
         <source>No PostGIS support in the database.</source>
         <translation>数据库中没有PostGIS支持。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1173"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1176"/>
         <source>Could not parse postgis version string &apos;%1&apos;</source>
         <translation>无法解析POSTGIS版本字串“%1”</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1483"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1486"/>
         <source>Connection error: %1 returned %2 [%3]</source>
         <translation>连接错误：%1返回%2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1928"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1931"/>
         <source>Whole Number (smallint - 16bit)</source>
         <translation>非负整数 (短整型 - 16位)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1927"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1930"/>
         <source>Whole Number (integer - 32bit)</source>
         <translation>非负整数 (整数 - 32位)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1926"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1929"/>
         <source>Whole Number (integer - 64bit)</source>
         <translation>非负整数 (整数 - 64位)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1929"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1932"/>
         <source>Decimal Number (numeric)</source>
         <translation>小数 (数字)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1930"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1933"/>
         <source>Decimal Number (decimal)</source>
         <translation>小数 (小数)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1934"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1937"/>
         <source>Decimal Number (real)</source>
         <translation>小数 (实数)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1933"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1936"/>
         <source>Decimal Number (double)</source>
         <translation>小数 (双精度)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1949"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1952"/>
         <source>Array of Number (integer - 32bit)</source>
         <translation>数组 (整数 - 32位)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1950"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1953"/>
         <source>Array of Number (integer - 64bit)</source>
         <translation>数组 (整数 - 64位)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1951"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1954"/>
         <source>Array of Number (double)</source>
         <translation>数组 (双精度)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1952"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1955"/>
         <source>Array of Text</source>
         <translation>文本数组</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1958"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1961"/>
         <source>Binary Object (bytea)</source>
         <translation>二进制对象 (bytea)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1466"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1469"/>
         <source>Erroneous query: %1 returned %2 [%3]</source>
         <translation>错误的查询：%1返回%2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1496"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1499"/>
         <source>Query failed: %1
 Error: no result buffer</source>
         <translation>查询失败：%1
 错误：无结果缓冲</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1612"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1615"/>
         <source>Query: %1 returned %2 [%3]</source>
         <translation>查询：%1返回%2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1616"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1619"/>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
@@ -150865,103 +150865,103 @@ SQL：%2
 结果：%3（%4）</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1510"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1513"/>
         <source>resetting bad connection.</source>
         <translation>正在重置错误连接。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1518"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1521"/>
         <source>retry after reset succeeded.</source>
         <translation>重置后重试成功。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1523"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1526"/>
         <source>retry after reset failed again.</source>
         <translation>重置后重试又失败。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1531"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1534"/>
         <source>connection still bad after reset.</source>
         <translation>重置后仍然连接不上。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1538"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1541"/>
         <source>bad connection, not retrying.</source>
         <translation>连接不上，不再重试。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1938"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1941"/>
         <source>Text, fixed length (char)</source>
         <translation>文本，固定长度（char）</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1937"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1940"/>
         <source>Text, limited variable length (varchar)</source>
         <translation>文本，有限可变长度（varchar）</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1939"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1942"/>
         <source>Text, unlimited length (text)</source>
         <translation>文本，长度不限（text）</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1940"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1943"/>
         <source>Text, case-insensitive unlimited length (citext)</source>
         <translation>文本，不区分大小写，无限长度（citext）</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1948"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1951"/>
         <source>Map (hstore)</source>
         <translation>地图（hstore）</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1962"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1965"/>
         <source>JSON (json)</source>
         <translation>JSON (json)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1966"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1969"/>
         <source>JSON (jsonb)</source>
         <translation>JSON (jsonb)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2617"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2620"/>
         <source>None</source>
         <translation>无</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2619"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2622"/>
         <source>Geometry</source>
         <translation>几何图形</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2621"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2624"/>
         <source>Geography</source>
         <translation>地理</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2623"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2626"/>
         <source>TopoGeometry</source>
         <translation>拓扑几何图形</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2625"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2628"/>
         <source>PcPatch</source>
         <translation>Pc补丁</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2627"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2630"/>
         <source>Raster</source>
         <translation>栅格</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2865"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2874"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2868"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2877"/>
         <source>Query could not be canceled [%1]</source>
         <translation>无法撤销查询 [%1]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2865"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="2868"/>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancel执行失败</translation>
     </message>
@@ -152281,19 +152281,20 @@ PostGIS %2</translation>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="561"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="571"/>
         <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="581"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="975"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1708"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1829"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1850"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1856"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2068"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2077"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2107"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2141"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2177"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2198"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2203"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2208"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="904"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="988"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1723"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1844"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1865"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1871"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2083"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2092"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2122"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2156"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2192"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2213"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2218"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2223"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -152377,37 +152378,37 @@ Write accesses will be denied.</source>
         <translation>识别到的数据类型未知</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1092"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1105"/>
         <source>Band count and NoData items count differ</source>
         <translation>波段计数和无数据项计数不同</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1110"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1123"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double</source>
         <translation>无法将无数据值 &apos;%1&apos; t转换为双精度</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1388"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1403"/>
         <source>Cannot convert NoData value &apos;%1&apos; to double, default to: %2</source>
         <translation>无法将无数据值 &apos;%1&apos; 转为双精度，默认转为: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2177"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2192"/>
         <source>Key field &apos;%1&apos; for view/query not found.</source>
         <translation>未找到视图/查询的关键字段 &apos;%1&apos;。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2198"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2213"/>
         <source>Primary key field &apos;%1&apos; for view/query not unique.</source>
         <translation>视图/查询的主键字段 &apos;%1&apos; 不唯一。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2203"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2218"/>
         <source>Keys for view/query undefined.</source>
         <translation>未定义视图/查询的键。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2208"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2223"/>
         <source>No key field for view/query given.</source>
         <translation>未给定视图/查询的关键字段。</translation>
     </message>
@@ -152484,192 +152485,197 @@ Write accesses will be denied.</source>
         <translation>PostgreSQL WHERE 子句</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="975"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="904"/>
+        <source>Unable to reload the PostgreSQL raster layer, the data source may no longer be available.</source>
+        <translation>无法重新加载PostgreSQL栅格图层，数据源可能不再可用。</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="988"/>
         <source>PostgreSQL raster layer has no primary key.</source>
         <translation>PostgreSQL栅格图层不含主键。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1071"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1364"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1084"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1379"/>
         <source>Cannot create CRS from EPSG: &apos;%1&apos;</source>
         <translation>无法从EPSG创建CRS：“%1”</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1079"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1092"/>
         <source>Cannot get band count from value: &apos;%1&apos;</source>
         <translation>无法从值 &apos;%1&apos; 获取波段计数</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1101"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1377"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1114"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1392"/>
         <source>Unsupported data type: &apos;%1&apos;</source>
         <translation>不支持的数据类型：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1147"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1302"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1160"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1317"/>
         <source>Cannot get extent from raster</source>
         <translation>无法从栅格获取范围</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1158"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1319"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1171"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1334"/>
         <source>Cannot convert width &apos;%1&apos; to int</source>
         <translation>无法将宽度“%1”转为整型</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1165"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1327"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1178"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1342"/>
         <source>Cannot convert height &apos;%1&apos; to int</source>
         <translation>无法将高%1转为整型</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1173"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1335"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1186"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1350"/>
         <source>Cannot convert scale X &apos;%1&apos; to double</source>
         <translation>无法将比例 X &apos;%1&apos; &apos;转换为双精度型</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1180"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1343"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1193"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1358"/>
         <source>Cannot convert scale Y &apos;%1&apos; to double</source>
         <translation>无法将比例 Y &apos;%1&apos; &apos;转换为双精度型</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1196"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1209"/>
         <source>An error occurred while fetching raster metadata for table %1: %2
 SQL: %3</source>
         <translation>从表 %1 获取栅格元数据时出错：%2
 SQL：%3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1202"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1215"/>
         <source>An error occurred while fetching raster metadata for %1, proceeding with (possibly very slow) raster data analysis: %2
 Please consider adding raster constraints with PostGIS function AddRasterConstraints.</source>
         <translation>获取用于 %1 的栅格元数据时出错，继续栅格数据分析（可能很慢）：%2
 请考虑用 PostGIS 的 AddRasterConstraints 函数添加栅格约束。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1233"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1246"/>
         <source>Multiple raster column detected, using the first one</source>
         <translation>检测到多重栅格列，将使用首列</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1239"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1252"/>
         <source>An error occurred while fetching raster column</source>
         <translation>获取栅格列时出错</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1308"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1323"/>
         <source>Cannot get metadata from raster</source>
         <translation>无法从栅格获取元数据</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1400"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1415"/>
         <source>An error occurred while fetching raster metadata</source>
         <translation>获取栅格元数据时发生了一个错误</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1412"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1427"/>
         <source>An error occurred while fetching raster fields information</source>
         <translation>获取栅格字段信息发生一个错误。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1463"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1478"/>
         <source>Invalid default date in raster temporal capabilities for field %1: %2</source>
         <translation>字段%1的栅格时态功能中的默认日期无效: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1488"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1503"/>
         <source>No temporal ranges detected in raster temporal capabilities for field %1: %2</source>
         <translation>在字段%1的栅格时态功能中未检测到时态范围：%2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1494"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1509"/>
         <source>Invalid temporal range in raster temporal capabilities for field %1: %2 - %3</source>
         <translation>字段%1的栅格时态功能的时态范围无效：%2 - %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1499"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1514"/>
         <source>An error occurred while fetching raster temporal capabilities for field: %1</source>
         <translation>获取字段的栅格时态功能时发生错误: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1504"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1519"/>
         <source>Invalid field index for raster temporal capabilities: %1</source>
         <translation>栅格时态功能的字段索引无效：%1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1708"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1800"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1723"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1815"/>
         <source>Unexpected formatted field type &apos;%1&apos; for field %2</source>
         <translation>字段%2出现意想不到的格式化字段类型 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1829"/>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1850"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1844"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1865"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>忽略了字段%1，因为类型%2不受支持</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1856"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="1871"/>
         <source>Duplicate field %1 found
 </source>
         <translation>找到重复字段%1
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2060"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2075"/>
         <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
         <translation>主键为ctid-已禁用更改现有要素（%1；%2）</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2068"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2083"/>
         <source>The table has no column suitable for use as a key. QGIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
         <translation>该表中没有适合用作键的列。QGIS要求表具有一个主键，一个PostgreSQL的oid列，或者一个ctid。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2077"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2092"/>
         <source>Unexpected relation type.</source>
         <translation>意外的关系类型。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2107"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2122"/>
         <source>Unique column &apos;%1&apos; doesn&apos;t have a NOT NULL constraint.</source>
         <translation>唯一值列“%1”没有非空约束。</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2141"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2156"/>
         <source>Ignoring key candidate because of NULL values or inherited table</source>
         <translation>由于空值或是继承表，忽略键候选项</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2267"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2282"/>
         <source>Cannot convert overview factor &apos;%1&apos; to int</source>
         <translation>无法将概览图因子 &apos;%1&apos; 转换为整型</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2274"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2289"/>
         <source>Table or schema is empty</source>
         <translation>表或架构为空</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2282"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2297"/>
         <source>Error fetching overviews information: %1</source>
         <translation>获取概览图信息时出错: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2286"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2301"/>
         <source>No overviews found, performances may be affected for %1</source>
         <translation>未找到概览图，可能会影响 %1 的性能</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2328"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2343"/>
         <source>Data type is unknown</source>
         <translation>数据类型未知</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2437"/>
+        <location filename="../src/providers/postgres/raster/qgspostgresrasterprovider.cpp" line="2452"/>
         <source>Error fetching statistics for %1: %2
 SQL: %3</source>
         <translation>获取%1的统计信息时出错：%2
@@ -154967,52 +154973,52 @@ SQL: %3</translation>
 <context>
     <name>QgsProcessingModelerParameterWidget</name>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="113"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="114"/>
         <source>Using model input</source>
         <translation>正在使用模型输入</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="123"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="125"/>
         <source>Using algorithm output</source>
         <translation>使用算法输出</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="133"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="135"/>
         <source>[Enter name if this is a final result]</source>
         <translation>[如果这是最终结果，请输入名称]</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="305"/>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="401"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="307"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="403"/>
         <source>Model Output</source>
         <translation>模型输出</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="313"/>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="372"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="315"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="374"/>
         <source>Value</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="321"/>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="378"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="323"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="380"/>
         <source>Pre-calculated Value</source>
         <translation>预计算值</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="329"/>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="385"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="331"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="387"/>
         <source>Model Input</source>
         <translation>模型输入</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="337"/>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="393"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="339"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="395"/>
         <source>Algorithm Output</source>
         <translation>算法输出</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="451"/>
+        <location filename="../src/gui/processing/qgsprocessingmodelerparameterwidget.cpp" line="453"/>
         <source>“%1” from algorithm “%2”</source>
         <translation>来自算法“%2”的“%1”</translation>
     </message>
@@ -162179,219 +162185,219 @@ Click on help button to get valid creation options for this format.</source>
         <translation>未设置</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="431"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="440"/>
         <source>Information from provider</source>
         <translation>来自提供程序的信息</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="437"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="529"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="446"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="538"/>
         <source>Extent</source>
         <translation>范围</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="444"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="453"/>
         <source>Width</source>
         <translation>宽度</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="448"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="458"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="578"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="588"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="457"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="467"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="587"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="597"/>
         <source>n/a</source>
         <translation>n/a</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="453"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="462"/>
         <source>Height</source>
         <translation>高度</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="463"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="472"/>
         <source>Data type</source>
         <translation>数据类型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="521"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="530"/>
         <source>Identification</source>
         <translation>识别</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="537"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="546"/>
         <source>Access</source>
         <translation>访问</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="545"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="554"/>
         <source>Bands</source>
         <translation>波段</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="550"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="559"/>
         <source>Band count</source>
         <translation>波段计数</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="555"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="564"/>
         <source>Number</source>
         <translation>数字</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="561"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="570"/>
         <source>Min</source>
         <translation>最小值</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="563"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="572"/>
         <source>Max</source>
         <translation>最大值</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="600"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="609"/>
         <source>Contacts</source>
         <translation>联系人</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="608"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="617"/>
         <source>References</source>
         <translation>参照</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="615"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="624"/>
         <source>History</source>
         <translation>历史记录</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="780"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="789"/>
         <source>Create %1 provider</source>
         <translation>创建 %1 提供程序</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="799"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="808"/>
         <source>Could not insert provider into layer pipe (provider: %1, URI: %2)</source>
         <translation>无法将提供程序插入图层管道 (提供程序: %1, URI: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="806"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="815"/>
         <source>Provider is not valid (provider: %1, URI: %2)</source>
         <translation>提供程序无效 (提供程序: %1, URI: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1215"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1222"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1230"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2493"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1224"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1231"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1239"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2502"/>
         <source>Raster</source>
         <translation>栅格</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="504"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="513"/>
         <source>Could not determine raster data type.</source>
         <translation>无法确定栅格数据的类型.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="468"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="477"/>
         <source>Byte - Eight bit unsigned integer</source>
         <translation>Byte - 8位无符号整型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="471"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="480"/>
         <source>Int8 - Eight bit signed integer</source>
         <translation> Int8 - 8位有符号整型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="474"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="483"/>
         <source>UInt16 - Sixteen bit unsigned integer </source>
         <translation>UInt16 - 16位无符号整型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="477"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="486"/>
         <source>Int16 - Sixteen bit signed integer </source>
         <translation>Int16 - 16位有符号整型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="480"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="489"/>
         <source>UInt32 - Thirty two bit unsigned integer </source>
         <translation>UInt32 - 32位无符号整型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="483"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="492"/>
         <source>Int32 - Thirty two bit signed integer </source>
         <translation>Int32 - 32位有符号整型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="486"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="495"/>
         <source>Float32 - Thirty two bit floating point </source>
         <translation>Float32 - 32位浮点型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="489"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="498"/>
         <source>Float64 - Sixty four bit floating point </source>
         <translation>Float64 - 64位浮点型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="492"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="501"/>
         <source>CInt16 - Complex Int16 </source>
         <translation>CInt16 - 复数Int16 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="495"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="504"/>
         <source>CInt32 - Complex Int32 </source>
         <translation>CInt32 - 复数Int32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="498"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="507"/>
         <source>CFloat32 - Complex Float32 </source>
         <translation>CFloat32 - 复数Float32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="501"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="510"/>
         <source>CFloat64 - Complex Float64 </source>
         <translation>CFloat64 - 复数Float64 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="557"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="566"/>
         <source>Band</source>
         <translation>波段</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="559"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="568"/>
         <source>NoData</source>
         <translation>无数据</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="788"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="797"/>
         <source>Cannot instantiate the &apos;%1&apos; data provider</source>
         <translation>无法实例化 &apos;%1&apos; 数据提供程序</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1215"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1224"/>
         <source>Error reading raster attribute table: invalid band %1.</source>
         <translation>读取栅格属性表时出错: 无效波段 %1。</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1222"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1231"/>
         <source>Error loading raster attribute table, file not found: %1.</source>
         <translation>加载栅格属性表时出错，未找到文件: %1。</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1230"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1239"/>
         <source>Error loading raster attribute table from path %1: %2</source>
         <translation>从路径 %1 加载栅格属性表时出错: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2163"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2172"/>
         <source>Labeling</source>
         <translation>标注</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2189"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2198"/>
         <source>Legend</source>
         <translation>图例</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2493"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2502"/>
         <source>&lt;maplayer&gt; not found.</source>
         <translation>&lt;maplayer&gt;未找到。</translation>
     </message>
@@ -165405,7 +165411,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/layout/qgsreportorganizerwidgetbase.ui"/>
         <source>Remove selected section</source>
-        <translation>删除选定的段落</translation>
+        <translation>移除选中的截面</translation>
     </message>
 </context>
 <context>
@@ -170098,37 +170104,37 @@ please provide a new name:</source>
         <translation>初始化默认样式数据库</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="803"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="805"/>
         <source>Load symbols</source>
         <translation>加载符号</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="828"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="830"/>
         <source>Load color ramps</source>
         <translation>加载颜色渐变</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="850"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="852"/>
         <source>Load text formats</source>
         <translation>加载文本格式</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="872"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="874"/>
         <source>Load label settings</source>
         <translation>加载标签设置</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="894"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="896"/>
         <source>Load legend patch shapes</source>
         <translation>加载图例图斑形状</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="916"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="918"/>
         <source>Load 3D symbols</source>
         <translation>加载3D符号</translation>
     </message>
     <message>
-        <location filename="../src/core/symbology/qgsstyle.cpp" line="958"/>
+        <location filename="../src/core/symbology/qgsstyle.cpp" line="960"/>
         <source>Load material settings</source>
         <translation>加载材质设置</translation>
     </message>
@@ -173137,7 +173143,7 @@ Kindly select a group or smart group you might want to delete.</source>
 <context>
     <name>QgsTemplatedCategorizedRendererModel</name>
     <message>
-        <location filename="../src/gui/symbology/qgstemplatedcategorizedrendererwidget_p.h" line="134"/>
+        <location filename="../src/gui/symbology/qgstemplatedcategorizedrendererwidget_p.h" line="137"/>
         <source>all other values</source>
         <translation>全部其他值</translation>
     </message>
@@ -184713,7 +184719,7 @@ The raster layer must have a single band.</source>
     </message>
     <message>
         <source>TIN interpolation</source>
-        <translation>不规则三角网插值</translation>
+        <translation>TIN插值</translation>
     </message>
     <message>
         <source>You need to specify at least one input layer.</source>
@@ -189917,7 +189923,7 @@ Check the processing framework log to look for errors.</source>
     </message>
     <message>
         <source>Print projection information from a georeferenced file and create a new location based on it</source>
-        <translation>从已配准的文件打印投影信息并基于它创建一个新的地点</translation>
+        <translation>从地理配准文件打印投影信息并基于此创建新位置</translation>
     </message>
     <message>
         <source>Print projection information of the current location</source>
@@ -190129,7 +190135,7 @@ Check the processing framework log to look for errors.</source>
     </message>
     <message>
         <source>Reproject raster from another Location</source>
-        <translation>重投影来自其他地点的栅格</translation>
+        <translation>从另一位置重投影栅格</translation>
     </message>
     <message>
         <source>Resample raster using aggregation</source>
