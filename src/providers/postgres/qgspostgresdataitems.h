@@ -118,7 +118,7 @@ class QgsPGLayerItem : public QgsLayerItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    bool canAddComments() const override;
+    Qgis::LayerItemCapabilities capabilities() const override;
 
   private:
     QgsPostgresLayerProperty mLayerProperty;

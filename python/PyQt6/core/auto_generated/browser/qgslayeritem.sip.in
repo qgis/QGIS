@@ -76,9 +76,11 @@ Returns the supported formats
 Returns comments of the layer
 %End
 
-    virtual bool canAddComments() const;
+    virtual Qgis::LayerItemCapabilities capabilities() const;
 %Docstring
-Returns true if comments can be added to this layer item.
+Returns the layer item capabilities
+
+.. versionadded:: 4.40
 %End
 
     static QString layerTypeAsString( Qgis::BrowserLayerType layerType );
