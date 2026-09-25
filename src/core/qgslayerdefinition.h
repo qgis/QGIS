@@ -85,6 +85,7 @@ class CORE_EXPORT QgsLayerDefinition
       const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr
     );
 
+    // TODO QGIS 5.0 -- remove this in favour of the version with explicit Qgis::FilePathType parameter
     /**
      * Exports the selected layer tree nodes to a QLR file.
      *
@@ -97,8 +98,10 @@ class CORE_EXPORT QgsLayerDefinition
      * \param errorMessage will be set to any error messages generated during the export
      *
      * \returns TRUE if the export was successful
+     *
+     * \deprecated QGIS 4.4. Use the variant with explicit Qgis::FilePathType parameter instead.
      */
-    static bool exportLayerDefinition( const QString &path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage SIP_OUT );
+    Q_DECL_DEPRECATED static bool exportLayerDefinition( const QString &path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage SIP_OUT ) SIP_DEPRECATED;
 
     /**
      * Exports the selected layer tree nodes to a QLR file.
