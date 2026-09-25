@@ -396,9 +396,16 @@ QVector<QgsDataItem *> QgsPGLayerItem::createChildren()
   return children;
 }
 
-bool QgsPGLayerItem::canAddComments() const
+Qgis::LayerItemCapabilities QgsPGLayerItem::capabilities() const
 {
-  return mLayerProperty.relKind == Qgis::PostgresRelKind::OrdinaryTable;
+  if ( mLayerProperty.relKind == Qgis::PostgresRelKind::OrdinaryTable )
+  {
+    return Qgis::LayerItemCapability::AddComments;
+  }
+  else
+  {
+    return Qgis::LayerItemCapabilities();
+  }
 }
 
 // ---------------------------------------------------------------------------
