@@ -112,7 +112,7 @@ class CORE_EXPORT QgsMaterialSettingsAbstractMetadata
 };
 
 //! Material settings creation function
-typedef QgsAbstractMaterialSettings *( *QgsMaterialSettingsCreateFunc )() SIP_SKIP;
+typedef std::unique_ptr<QgsAbstractMaterialSettings> ( *QgsMaterialSettingsCreateFunc )() SIP_SKIP;
 
 //! Material settings widget creation function
 typedef QgsMaterialSettingsWidget *( *QgsMaterialSettingsWidgetFunc )() SIP_SKIP;
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstra
      */
     void setHandler( QgsAbstractMaterial3DHandler *handler ) { mHandler = handler; }
 
-    QgsAbstractMaterialSettings *create() override SIP_FACTORY { return mCreateFunc ? mCreateFunc() : nullptr; }
+    QgsAbstractMaterialSettings *create() override SIP_FACTORY;
     bool supportsTechnique( Qgis::MaterialRenderingTechnique technique ) const override { return mSupportsTechniqueFunc ? mSupportsTechniqueFunc( technique ) : true; }
     QgsMaterialSettingsWidget *createWidget() override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc() : nullptr; }
 
