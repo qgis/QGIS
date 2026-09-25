@@ -48,34 +48,97 @@ Returns whether the object contains valid data
 Returns encoded representation of the object
 %End
 
-        QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
+ QgsVectorLayer *vectorLayer( bool &owner /Out/, QString &error /Out/ ) const /Deprecated="Since 4.4. Use vectorLayer() with explicit project parameter instead."/;
 %Docstring
 Gets vector layer from uri if possible, otherwise returns ``None`` and
 error is set
 
-:param owner: set to ``True`` if caller becomes owner
-:param error: set to error message if cannot get vector
+
+
+:return: - vector layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
+         - error: set to error message if cannot get vector
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsMimeDataUtils.vectorLayer` with explicit project parameter instead.
 %End
 
-        QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
+        QgsVectorLayer *vectorLayer( bool &owner /Out/, QString &error /Out/, QgsProject *project ) const;
+%Docstring
+Gets vector layer from uri if possible, otherwise returns ``None`` and
+error is set
+
+:param project: project is used to obtain the layer
+
+:return: - vector layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
+         - error: set to error message if cannot get vector
+
+.. versionadded:: 4.4
+%End
+
+ QgsRasterLayer *rasterLayer( bool &owner /Out/, QString &error /Out/ ) const /Deprecated="Since 4.4. Use rasterLayer() with explicit project parameter instead."/;
 %Docstring
 Gets raster layer from uri if possible, otherwise returns ``None`` and
 error is set
 
-:param owner: set to ``True`` if caller becomes owner
-:param error: set to error message if cannot get raster
+
+
+:return: - raster layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
+         - error: set to error message if cannot get raster
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsMimeDataUtils.rasterLayer` with explicit project parameter instead.
 %End
 
-        QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;
+        QgsRasterLayer *rasterLayer( bool &owner /Out/, QString &error /Out/, QgsProject *project ) const;
+%Docstring
+Gets raster layer from uri if possible, otherwise returns ``None`` and
+error is set
+
+:param project: project is used to obtain the layer
+
+:return: - raster layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
+         - error: set to error message if cannot get raster
+
+.. versionadded:: 4.4
+%End
+
+ QgsMeshLayer *meshLayer( bool &owner /Out/, QString &error /Out/ ) const /Deprecated="Since 4.4. Use meshLayer() with explicit project parameter instead."/;
 %Docstring
 Gets mesh layer from uri if possible, otherwise returns ``None`` and
 error is set
 
-:param owner: set to ``True`` if caller becomes owner
-:param error: set to error message if cannot get raster
+
+
+:return: - mesh layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
+         - error: set to error message if cannot get mesh
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsMimeDataUtils.meshLayer` with explicit project parameter instead.
 %End
 
-        QgsMapLayer *mapLayer() const;
+        QgsMeshLayer *meshLayer( bool &owner /Out/, QString &error /Out/, QgsProject *project ) const;
+%Docstring
+Gets mesh layer from uri if possible, otherwise returns ``None`` and
+error is set
+
+:param project: project is used to obtain the layer
+
+:return: - mesh layer if successful, otherwise ``None``
+         - owner: set to ``True`` if caller becomes owner
+         - error: set to error message if cannot get mesh
+
+.. versionadded:: 4.4
+%End
+
+ QgsMapLayer *mapLayer() const /Deprecated="Since 4.4. Use mapLayer() with explicit project parameter instead."/;
 %Docstring
 Returns the layer from the active project corresponding to this uri (if
 possible), otherwise returns ``None``.
@@ -85,7 +148,30 @@ Unlike :py:func:`~QgsMimeDataUtils.vectorLayer`,
 :py:func:`~QgsMimeDataUtils.meshLayer`, this method will not attempt to
 create a new layer corresponding to the URI.
 
+:return: map layer if found in the active project, otherwise ``None``
+
 .. versionadded:: 3.8
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsMimeDataUtils.mapLayer` with explicit project parameter instead.
+%End
+
+        QgsMapLayer *mapLayer( QgsProject *project ) const;
+%Docstring
+Returns the layer from ``project`` corresponding to this uri (if
+possible), otherwise returns ``None``.
+
+Unlike :py:func:`~QgsMimeDataUtils.vectorLayer`,
+:py:func:`~QgsMimeDataUtils.rasterLayer`, or
+:py:func:`~QgsMimeDataUtils.meshLayer`, this method will not attempt to
+create a new layer corresponding to the URI.
+
+:param project: used to obtain the layer
+
+:return: map layer if found in the project, otherwise ``None``
+
+.. versionadded:: 4.4
 %End
 
         QString layerType;

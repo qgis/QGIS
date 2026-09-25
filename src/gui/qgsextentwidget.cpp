@@ -510,7 +510,7 @@ QgsMapLayer *QgsExtentWidget::mapLayerFromMimeData( const QMimeData *data ) cons
   for ( const QgsMimeDataUtils::Uri &u : uriList )
   {
     // is this uri from the current project?
-    if ( QgsMapLayer *layer = u.mapLayer() )
+    if ( QgsMapLayer *layer = u.mapLayer( QgsProject::instance() ) )
     {
       return layer;
     }
