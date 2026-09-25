@@ -41,6 +41,10 @@
      <property name="title">
       <string>New from Template</string>
      </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/mActionFileNewFromTemplate.svg</normaloff>:/images/themes/default/mActionFileNewFromTemplate.svg</iconset>
+     </property>
     </widget>
     <widget class="QMenu" name="mProjectToStorageMenu">
      <property name="title">
@@ -469,6 +473,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionNewProject"/>
+   <addaction name="mProjectFromTemplateMenu"/>
    <addaction name="mActionOpenProject"/>
    <addaction name="mActionSaveProject"/>
    <addaction name="mActionNewPrintLayout"/>

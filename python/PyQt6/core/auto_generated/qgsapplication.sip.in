@@ -317,6 +317,39 @@ cache.
 Returns the paths to svg directories.
 %End
 
+  static void setProjectTemplatePaths(const QStringList &projectTemplatePaths);
+%Docstring
+Sets the paths to project templates.
+
+.. seealso:: :py:func:`projectTemplatePaths`
+
+.. seealso:: :py:func:`defaultProjectTemplatePaths`
+
+.. versionadded:: 4.4
+%End
+
+  static QStringList projectTemplatePaths();
+%Docstring
+Returns the paths to project templates.
+
+.. seealso:: :py:func:`setProjectTemplatePaths`
+
+.. seealso:: :py:func:`defaultProjectTemplatePaths`
+
+.. versionadded:: 4.4
+%End
+
+  static QStringList defaultProjectTemplatePaths();
+%Docstring
+Returns the default project template paths.
+
+.. seealso:: :py:func:`setProjectTemplatePaths`
+
+.. seealso:: :py:func:`projectTemplatePaths`
+
+.. versionadded:: 4.4
+%End
+
   static QStringList layoutTemplatePaths();
 %Docstring
 Returns the paths to layout template directories.
