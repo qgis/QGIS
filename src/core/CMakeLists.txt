@@ -993,7 +993,6 @@ set(QGIS_CORE_SRCS
   3d/qgs3dsymbolregistry.cpp
   3d/qgsabstract3dsymbol.cpp
   3d/qgsabstract3drenderer.cpp
-  3d/qgsfeature3dhandler_p.cpp
   3d/materials/qgsabstractmaterialsettings.cpp
   3d/materials/qgsgoochmaterialsettings.cpp
   3d/materials/qgsmaterialregistry.cpp
@@ -1445,7 +1444,6 @@ set(QGIS_CORE_HDRS
   3d/qgs3dsymbolregistry.h
   3d/qgsabstract3dsymbol.h
   3d/qgsabstract3drenderer.h
-  3d/qgsfeature3dhandler_p.h
   3d/qgsabstractpointcloud3drenderer.h
   3d/materials/qgsabstractmaterialsettings.h
   3d/materials/qgsgoochmaterialsettings.h

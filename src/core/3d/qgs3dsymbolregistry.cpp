@@ -16,7 +16,6 @@
 #include "qgs3dsymbolregistry.h"
 
 #include "qgsabstract3dsymbol.h"
-#include "qgsfeature3dhandler_p.h"
 
 #include <QString>
 
@@ -62,7 +61,7 @@ std::unique_ptr<QgsAbstract3DSymbol> Qgs3DSymbolRegistry::defaultSymbolForGeomet
   }
 }
 
-std::unique_ptr<QgsFeature3DHandler> Qgs3DSymbolRegistry::createHandlerForSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
+QgsFeature3DHandler *Qgs3DSymbolRegistry::createHandlerForSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
 {
   if ( !symbol )
     return nullptr;
@@ -71,7 +70,7 @@ std::unique_ptr<QgsFeature3DHandler> Qgs3DSymbolRegistry::createHandlerForSymbol
   if ( it == mMetadata.constEnd() )
     return nullptr;
 
-  return std::unique_ptr<QgsFeature3DHandler>( it.value()->createFeatureHandler( layer, symbol ) );
+  return it.value()->createFeatureHandler( layer, symbol );
 }
 
 Qgs3DSymbolAbstractMetadata *Qgs3DSymbolRegistry::symbolMetadata( const QString &type ) const

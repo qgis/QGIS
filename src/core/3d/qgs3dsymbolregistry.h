@@ -227,7 +227,7 @@ class CORE_EXPORT Qgs3DSymbolRegistry
      *
      * \note Not available in Python bindings
      */
-    std::unique_ptr<QgsFeature3DHandler> createHandlerForSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol );
+    QgsFeature3DHandler *createHandlerForSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol );
 #endif
 
   private:
