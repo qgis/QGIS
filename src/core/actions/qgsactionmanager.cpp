@@ -231,7 +231,17 @@ void QgsActionManager::runAction( const QgsAction &action )
 QgsExpressionContext QgsActionManager::createExpressionContext() const
 {
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
+
+  if ( mLayer && mLayer->project() )
+  {
+    context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( mLayer->project() );
+  }
+  // TODO QGIS 5.0 -- remove this fallback for layers without an associated project
+  else
+  {
+    context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() ); // skip-keyword-check
+  }
+
   if ( mLayer )
     context << QgsExpressionContextUtils::layerScope( mLayer );
 
