@@ -232,9 +232,9 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
 {
   QgsExpressionContext context;
 
-  if ( QgsProject *project = mLayer->project() )
+  if ( mLayer && mLayer->project() )
   {
-    context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( project ); // skip-keyword-check
+    context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( mLayer->project() );
   }
   // TODO QGIS 5.0 -- remove this fallback for layers without an associated project
   else
