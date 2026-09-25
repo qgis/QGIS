@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsprocessingparametertype.h"
 
 #include <QAbstractItemModel>
@@ -527,6 +528,8 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
       Modeler SIP_MONKEYPATCH_COMPAT_NAME( FilterModeler ) = 1 << 2,                 //!< Filters out any algorithms and content which should not be shown in the modeler
       InPlace SIP_MONKEYPATCH_COMPAT_NAME( FilterInPlace ) = 1 << 3,                 //!< Only show algorithms which support in-place edits
       ShowKnownIssues SIP_MONKEYPATCH_COMPAT_NAME( FilterShowKnownIssues ) = 1 << 4, //!< Show algorithms with known issues (hidden by default)
+      ForSocketOutput SIP_MONKEYPATCH_COMPAT_NAME( FilterForSocketOutput ) = 1 << 5, //!< Only show algorithms compatible with a certain socket output, use with setFilterOutput() \since QGIS 4.4
+      ForSocketInput SIP_MONKEYPATCH_COMPAT_NAME( FilterForSocketInput ) = 1 << 6, //!< Only show algorithms compatible with a certain input socket, use with setFilterOutput() xor setFilterParameter() \since QGIS 4.4
     };
     Q_ENUM( Filter )
     Q_DECLARE_FLAGS( Filters, Filter )
@@ -594,6 +597,30 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
     void setFilterString( const QString &filter );
 
     /**
+     * Sets the \a parameterDefinition, such that only algorithms or parameters which are compatible
+     * with the specified parameter definition will be shown.
+     *
+     * Ownership is not transferred.
+     *
+     * \note Mutually exclusive with setFilterOutput()
+     *
+     * \since QGIS 4.4
+     */
+    void setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition ) SIP_SKIP;
+
+    /**
+     * Sets the \a outputDefinition, such that only algorithms which are compatible
+     * with the specified output definition will be shown.
+     *
+     * Ownership is not transferred.
+     *
+     * \note Mutually exclusive with setFilterParameter()
+     *
+     * \since QGIS 4.4
+     */
+    void setFilterOutput( const QgsProcessingOutputDefinition *outputDefinition ) SIP_SKIP;
+
+    /**
      * Returns the current filter string, if set.
      *
      * \see setFilterString()
@@ -609,6 +636,23 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
     Filters mFilters = Filters();
     QString mFilterString;
     QPointer<QgsVectorLayer> mInPlaceLayer;
+
+    /**
+     * The parameter definition is used for filtering.
+     *
+     * Mutually exclusive with mFilterOutputDefinition.
+     *
+     * \note ownership is not transferred, and can outlive the model.
+     */
+    const QgsProcessingOutputDefinition *mFilterOutputDefinition = nullptr;
+    /**
+     * The output definition is used for filtering.
+     *
+     * Mutually exclusive with mFilterParameterDefinition.
+     *
+     * \note ownership is not transferred, and can outlive the model.
+     */
+    const QgsProcessingParameterDefinition *mFilterParameterDefinition = nullptr;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingToolboxProxyModel::Filters )
 
