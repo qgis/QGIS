@@ -309,6 +309,23 @@ QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() cons
   return mParameterTypes.values();
 }
 
+bool QgsProcessingRegistry::isCompatibleDefinition( const QgsProcessingParameterDefinition *parameterDefinitionSource, const QgsProcessingParameterDefinition *parameterDefinitionTarget )
+{
+  const QgsProcessingParameterType *paramTargetType = parameterType( parameterDefinitionTarget->type() );
+  if ( paramTargetType )
+    return paramTargetType->acceptedParameterTypes().contains( parameterDefinitionSource->type() );
+  return false;
+}
+
+bool QgsProcessingRegistry::isCompatibleDefinition( const QgsProcessingOutputDefinition *outputDefinitionSource, const QgsProcessingParameterDefinition *parameterDefinitionTarget )
+{
+  const QgsProcessingParameterType *paramTargetType = parameterType( parameterDefinitionTarget->type() );
+
+  if ( paramTargetType )
+    return paramTargetType->acceptedOutputTypes().contains( outputDefinitionSource->type() );
+  return false;
+}
+
 QgsProcessingDefaultStyleRegistry *QgsProcessingRegistry::defaultStyleRegistry() const
 {
   return mDefaultStyleRegistry;
