@@ -3599,7 +3599,7 @@ columns</source>
     </message>
     <message>
         <source>Empty SQL. Please enter valid SQL expression and try again.</source>
-        <translation>空的SQL语句。请输入有效的SQL表达式，然后重试。</translation>
+        <translation>SQL为空。请输入有效的SQL表达式，然后重试。</translation>
     </message>
     <message>
         <source>Cannot find geometry field</source>
@@ -3678,7 +3678,7 @@ columns</source>
     </message>
     <message>
         <source>Empty SQL. Please enter valid SQL expression and try again.</source>
-        <translation>空的SQL语句。请输入有效的SQL表达式，然后重试。</translation>
+        <translation>SQL为空。请输入有效的SQL表达式，然后重试。</translation>
     </message>
 </context>
 <context>
@@ -3964,7 +3964,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <location filename="../python/plugins/processing/algs/qgis/ui/interpolationdatawidgetbase.ui"/>
         <source>Use Z-coordinate for interpolation</source>
-        <translation>使用Z坐标插值</translation>
+        <translation>使用Z-坐标进行插值</translation>
     </message>
     <message>
         <location filename="../python/plugins/processing/ui/widgetBatchPanel.ui"/>
@@ -10152,7 +10152,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Power coefficient for IDW interpolation</source>
         <extracomment>r.fill.stats</extracomment>
-        <translation>IDW插值的功率系数</translation>
+        <translation>IDW插值的幂系数</translation>
     </message>
     <message>
         <source>Shannon</source>
@@ -15105,7 +15105,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>IDW interpolation</source>
-        <translation>反距离加权法插值</translation>
+        <translation>IDW插值</translation>
     </message>
     <message>
         <source>You need to specify at least one input layer.</source>
@@ -20015,7 +20015,7 @@ Shift+单击在现有内环进行填充。</translation>
         <translation>错误：找不到算法{0}</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Processing</source>
         <translation>数据处理</translation>
     </message>
@@ -20510,7 +20510,7 @@ This can cause unexpected results.</source>
         <translation>通用地图图层参数，可接受矢量图层或栅格图层。</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Could not load parameter %1 of type %2.</source>
         <translation>无法加载类型为%2的参数%1</translation>
     </message>
@@ -23226,8 +23226,8 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23250,8 +23250,8 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -28451,8 +28451,8 @@ The additional attributes and their values are taken from a second vector layer.
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="213"/>
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="233"/>
         <location filename="../src/plugins/topology/dockModel.cpp" line="27"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="795"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1114"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="799"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1118"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="42"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="48"/>
         <source>Error</source>
@@ -28772,7 +28772,7 @@ The additional attributes and their values are taken from a second vector layer.
         <location filename="../src/analysis/processing/qgsmetadataalgorithms.cpp" line="321"/>
         <location filename="../src/analysis/processing/qgsmetadataalgorithms.cpp" line="484"/>
         <source>Invalid input layer</source>
-        <translation>无效的输入图层</translation>
+        <translation>无效输入图层</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmloadlayer.cpp" line="83"/>
@@ -37521,103 +37521,103 @@ Extracted label information include: position (served as point geometries), the 
         <translation>运行%1过程中遇到错误</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="519"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="528"/>
         <source>Algorithm “%1” cannot be run in a background thread, switching to main thread for this step</source>
         <translation>算法 “%1” 无法在后台线程中运行，为此步骤将切换到主线程</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="537"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="551"/>
         <source>Error encountered while running %1: %2</source>
         <translation>运行 %1 时遇到错误: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="590"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="604"/>
         <source>Results:</source>
         <translation>结果：</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="694"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="708"/>
         <source>OK. Execution took %1 s (%n output(s)).</source>
         <translation><numerusform>很好，执行耗时%1秒 (输出%n个)。</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="705"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="719"/>
         <source>Failed after %1 s.</source>
         <translation>在 %1 秒后失败。</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="723"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="737"/>
         <source>Model processed OK. Executed %n algorithm(s) total in %1 s.</source>
         <translation><numerusform>模型处理完毕，在%1秒内总共执行了%n个算法。</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1177"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1224"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1287"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1191"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1238"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1301"/>
         <source>Output &apos;%1&apos; from algorithm &apos;%2&apos;</source>
         <translation>算法“%2”的输出“%1”</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1256"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1327"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1270"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1341"/>
         <source>Minimum X of %1</source>
         <translation>%1的X最小值</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1257"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1328"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1271"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1342"/>
         <source>Minimum Y of %1</source>
         <translation>%1的Y最小值</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1258"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1329"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1272"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1343"/>
         <source>Maximum X of %1</source>
         <translation>%1的X最大值</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1259"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1330"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1273"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1344"/>
         <source>Maximum Y of %1</source>
         <translation>%1的Y最大值</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1478"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1492"/>
         <source>Model does not contain any algorithms</source>
         <translation>模型不包含任何算法</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2337"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2351"/>
         <source>Algorithm is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>算法不可用：&lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2358"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2372"/>
         <source>Value for &lt;i&gt;%1&lt;/i&gt; is not acceptable for this parameter</source>
         <translation>此参数不接受&lt;i&gt;%1&lt;/i&gt;的值</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2366"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2380"/>
         <source>Model input &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>用于参数&lt;i&gt;%2&lt;/i&gt;的模型输入&lt;i&gt;%1&lt;/i&gt;不存在</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2374"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2388"/>
         <source>Child algorithm &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>用于参数&lt;i&gt;%2&lt;/i&gt;的子算法&lt;i&gt;%1&lt;/i&gt;不存在</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2396"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2410"/>
         <source>Parameter &lt;i&gt;%1&lt;/i&gt; is mandatory</source>
         <translation>参数 &lt;i&gt;%1&lt;/i&gt; 是必需的</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2405"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2419"/>
         <source>Invalid child ID: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>子标识符无效：&lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2420"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2434"/>
         <source>The model you are trying to run contains an algorithm that is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>尝试执行的模型中包含一个无效算法：&lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
@@ -44230,8 +44230,8 @@ If desired, tables can also be output containing lists of the categories which c
     </message>
     <message>
         <location filename="../src/core/providers/arcgis/qgsarcgisrestquery.cpp" line="238"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="805"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1124"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="809"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1128"/>
         <source>Error %1</source>
         <translation>%1错误</translation>
     </message>
@@ -46345,12 +46345,12 @@ An attribute or expression can be selected to group points having the same value
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="174"/>
         <source>Order by field %1 does not exist in input layer.</source>
-        <translation>输入图层不存在排序字段%1。</translation>
+        <translation>排序按字段%1在输入图层中不存在。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="199"/>
         <source>Group field %1 does not exist in input layer.</source>
-        <translation>输入图层不存在分组字段%1。</translation>
+        <translation>组字段%1在输入图层中不存在。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpointstopaths.cpp" line="229"/>
@@ -46788,7 +46788,7 @@ The name and characteristics of the attribute are defined as parameters. The new
         <location filename="../src/analysis/processing/qgsalgorithmsetlayerencoding.cpp" line="79"/>
         <location filename="../src/analysis/processing/qgsalgorithmspatialindex.cpp" line="80"/>
         <source>Could not load source layer for %1.</source>
-        <translation>无法从%1加载源图层。</translation>
+        <translation>无法为%1加载源图层。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmattributeindex.cpp" line="94"/>
@@ -54639,7 +54639,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="395"/>
         <source>Perspective Conic</source>
-        <translation>Perspective Conic</translation>
+        <translation>透视圆锥</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="397"/>
@@ -56786,7 +56786,7 @@ Depending on the geometry type of the vector layer, the attributes added to the 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="31"/>
         <source>Fill sinks (Wang &amp; Liu)</source>
-        <translation>填充汇 (Wang &amp; Liu)</translation>
+        <translation>填充汇 (Wang和Liu)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="36"/>
@@ -56802,13 +56802,13 @@ The method was enhanced to allow the creation of hydrologically sound elevation 
 References: Wang, L. &amp; H. Liu (2006): An efficient method for identifying and filling surface depressions in digital elevation models for hydrologic analysis and modelling. International Journal of Geographical Information Science, Vol. 20, No. 2: 193-213.
 
 This algorithm is a port of the SAGA &apos;Fill Sinks (Wang &amp; Liu)&apos; tool.</source>
-        <translation>该算法使用Wang和Liu提出的方法来识别和填充数字高程模型中的地表洼地。
+        <translation>该算法采用Wang和Liu提出的方法，用于识别和填充数字高程模型中的地表洼地。
 
-此方法得到了增强，可以创建水文声音高程模型，即不仅可以填充洼地，还可以沿流路径保持向下的坡度。如果需要，可以通过在像元之间保持最小坡度 (从而保持高程差) 来实现。
+此方法得到了改进，可以创建水文上稳定的高程模型，即不仅填充洼地，也可以沿流路径保持向下的坡度。如果需要，可通过在像素之间保持最小坡度 (从而保持高程差) 来实现。
 
 参考文献: Wang, L. &amp; H. Liu (2006): 一种用于水文分析和建模的数字高程模型中识别和填充地表洼地的有效方法。《国际地理信息科学杂志》，第20卷，第2期: 193-213。
 
-该算法是 SAGA &apos;填充汇 (Wang &amp; Liu)&apos; 工具的端口。</translation>
+该算法是 SAGA &quot;填充汇 (Wang和Liu)&quot; 工具的移植版。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfillsinkswangliu.cpp" line="64"/>
@@ -57057,7 +57057,7 @@ When deletion of a vertex results in a duplicate vertex (when a spike vertex is 
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryhole.cpp" line="142"/>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymissingvertex.cpp" line="143"/>
         <source>Field %1 does not exist in input layer.</source>
-        <translation>输入图层的字段%1不存在。</translation>
+        <translation>字段%1在输入图层中不存在。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryangle.cpp" line="149"/>
@@ -64317,7 +64317,7 @@ Delete these features?</source>
         <translation>图层信息</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="940"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="944"/>
         <source>Unexpected image size for block. Expected %1x%2, got %3x%4</source>
         <translation>块的图像大小异常。期望是 %1x%2, 得到的是%3x%4</translation>
     </message>
@@ -64325,31 +64325,31 @@ Delete these features?</source>
 <context>
     <name>QgsAmsTiledImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="987"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1065"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1250"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="991"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1069"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1254"/>
         <source>network request update failed for authentication config</source>
         <translation>认证配置的网络请求更新失败</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="989"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1067"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1252"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="993"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1071"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1256"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)</source>
         <translation>切片请求错误（状态：%1；内容类型：%2；长度：%3；URL：%4）</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1177"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1181"/>
         <source>Returned image is flawed [Content-Type: %1; URL: %2]</source>
         <translation>返回的图像有缺陷 [内容类型：%1；URL：%2]</translation>
     </message>
@@ -86731,7 +86731,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>dash,stroked,multilinestring,input,ring,specified,applies,line,pattern,returning</source>
-        <translation>虚线，轻触，多线串，输入，环，特指，应用，线，图案，返回</translation>
+        <translation>虚线,轻触,线串集,输入,环,特指,应用,线,图案,返回</translation>
     </message>
     <message>
         <source>planimetric,polygon,spatial,reference,system,calculations,area,project,settings,surface,ellipsoid,units</source>
@@ -105640,7 +105640,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui"/>
         <source>The GRASS mapset is a collection of maps used by one user. A user can read maps from all mapsets in the location but he can open for writing only his mapset (owned by user).</source>
-        <translation>GRASS地图集是一个用户使用的地图集合。用户可以从该位置的所有地图集中读取地图，但只能打开并写入其地图集 (由用户所有 - 仅能以读写方式打开属于自己的地图集，其他用户的地图集只能读不能写)。</translation>
+        <translation>GRASS地图集是一个用户使用的地图集合。用户可以读取该位置中所有地图集的地图，但只能打开自己的地图集 (归用户所有) 进行写入操作。</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui"/>
@@ -144368,32 +144368,32 @@ SQL: %3</translation>
         <translation>结果：</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="162"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
         <source>Algorithm %1 canceled…</source>
         <translation>算法 %1 已取消…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="164"/>
         <source>Execution canceled after %1 seconds</source>
         <translation>执行在 %1 秒后取消</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="169"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
         <source>Algorithm %1 failed…</source>
         <translation>算法 %1 已失败…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="171"/>
         <source>Execution failed after %1 seconds</source>
         <translation>执行失败，用时%1秒</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="207"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="209"/>
         <source>Batch execution completed in %1 seconds</source>
         <translation>批处理执行完成，用时 %1 秒</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="210"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="212"/>
         <source>%1 executions failed. See log for further details.</source>
         <translation>%1 执行失败。有关更多详细信息，请参阅日志。</translation>
     </message>
@@ -156230,7 +156230,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/layout/qgsreportorganizerwidgetbase.ui"/>
         <source>Remove selected section</source>
-        <translation>删除选定的段落</translation>
+        <translation>移除选中的截面</translation>
     </message>
 </context>
 <context>
@@ -175263,7 +175263,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>TIN interpolation</source>
-        <translation>不规则三角网插值</translation>
+        <translation>TIN插值</translation>
     </message>
     <message>
         <source>You need to specify at least one input layer.</source>
@@ -180474,7 +180474,7 @@ Check the processing framework log to look for errors.</source>
     </message>
     <message>
         <source>Print projection information from a georeferenced file and create a new location based on it</source>
-        <translation>从已配准的文件打印投影信息并基于它创建一个新的地点</translation>
+        <translation>从地理配准文件打印投影信息并基于此创建新位置</translation>
     </message>
     <message>
         <source>Print projection information of the current location</source>
@@ -180686,7 +180686,7 @@ Check the processing framework log to look for errors.</source>
     </message>
     <message>
         <source>Reproject raster from another Location</source>
-        <translation>重投影来自其他地点的栅格</translation>
+        <translation>从另一位置重投影栅格</translation>
     </message>
     <message>
         <source>Resample raster using aggregation</source>

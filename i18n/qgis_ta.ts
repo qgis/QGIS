@@ -20012,7 +20012,7 @@ Shift+click on existing inner ring to fill.</source>
 </translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Processing</source>
         <translation>செயலாக்கம்</translation>
     </message>
@@ -20507,7 +20507,7 @@ This can cause unexpected results.</source>
         <translation>ஒரு பொதுவான வரைபட அடுக்கு அளவுரு, இது திசையன் அல்லது ராச்டர் அடுக்குகளை ஏற்றுக்கொள்கிறது.</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Could not load parameter %1 of type %2.</source>
         <translation>% 2 வகையின்% 1 அளவுருவை ஏற்ற முடியவில்லை.</translation>
     </message>
@@ -23225,8 +23225,8 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23249,8 +23249,8 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -28448,8 +28448,8 @@ The additional attributes and their values are taken from a second vector layer.
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="213"/>
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="233"/>
         <location filename="../src/plugins/topology/dockModel.cpp" line="27"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="795"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1114"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="799"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1118"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="42"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="48"/>
         <source>Error</source>
@@ -37523,103 +37523,103 @@ Extracted label information include: position (served as point geometries), the 
         <translation>% 1ஐ இயக்கும்போது பிழை ஏற்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="519"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="528"/>
         <source>Algorithm “%1” cannot be run in a background thread, switching to main thread for this step</source>
         <translation>அல்காரிதம் “% 1” ஐ பின்னணி இழையில் இயக்க முடியாது, இந்த படிநிலைக்கு முக்கிய தொடருக்கு மாறுகிறது</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="537"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="551"/>
         <source>Error encountered while running %1: %2</source>
         <translation>% 1:% 2ஐ இயக்கும் போது பிழை ஏற்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="590"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="604"/>
         <source>Results:</source>
         <translation>முடிவுகள்:</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="694"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="708"/>
         <source>OK. Execution took %1 s (%n output(s)).</source>
         <translation><numerusform>சரி. செயல்படுத்தல் % 1 s (%n வெளியீடு(கள்)) எடுத்தது.</numerusform><numerusform>சரி. செயல்படுத்தல் % 1 s (%n வெளியீடு(கள்)) எடுத்தது.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="705"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="719"/>
         <source>Failed after %1 s.</source>
         <translation>% 1 sக்குப் பிறகு தோல்வியடைந்தது.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="723"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="737"/>
         <source>Model processed OK. Executed %n algorithm(s) total in %1 s.</source>
         <translation><numerusform>மாதிரி செயலாக்கப்பட்டது சரி. %1 s இல் %n அல்காரிதம்(கள்) மொத்தம் செயல்படுத்தப்பட்டது.</numerusform><numerusform>மாதிரி செயலாக்கப்பட்டது சரி. %1 s இல் %n அல்காரிதம்(கள்) மொத்தம் செயல்படுத்தப்பட்டது.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1177"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1224"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1287"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1191"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1238"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1301"/>
         <source>Output &apos;%1&apos; from algorithm &apos;%2&apos;</source>
         <translation>&apos;%2&apos; அல்காரிதத்திலிருந்து &apos;% 1&apos; வெளியீடு</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1256"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1327"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1270"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1341"/>
         <source>Minimum X of %1</source>
         <translation>% 1 இன் குறைந்தபட்ச ஃச்</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1257"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1328"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1271"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1342"/>
         <source>Minimum Y of %1</source>
         <translation>% 1 இன் குறைந்தபட்ச ஒய்</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1258"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1329"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1272"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1343"/>
         <source>Maximum X of %1</source>
         <translation>% 1 இன் அதிகபட்ச ஃச்</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1259"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1330"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1273"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1344"/>
         <source>Maximum Y of %1</source>
         <translation>% 1 இன் அதிகபட்ச ஒய்</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1478"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1492"/>
         <source>Model does not contain any algorithms</source>
         <translation>மாதிரியில் எந்த அல்காரிதம்களும் இல்லை</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2337"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2351"/>
         <source>Algorithm is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>அல்காரிதம் கிடைக்கவில்லை: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2358"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2372"/>
         <source>Value for &lt;i&gt;%1&lt;/i&gt; is not acceptable for this parameter</source>
         <translation>இந்த அளவுருவுக்கு &lt;i&gt;%1&lt;/i&gt;க்கான மதிப்பு ஏற்கப்படவில்லை</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2366"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2380"/>
         <source>Model input &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>&lt;i&gt;%2&lt;/i&gt; அளவுருவுக்குப் பயன்படுத்தப்பட்ட மாதிரி உள்ளீடு &lt;i&gt;%1&lt;/i&gt; இல்லை</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2374"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2388"/>
         <source>Child algorithm &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>&lt;i&gt;%2&lt;/i&gt; அளவுருவிற்குப் பயன்படுத்தப்படும் குழந்தை அல்காரிதம் &lt;i&gt;%1&lt;/i&gt; இல்லை</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2396"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2410"/>
         <source>Parameter &lt;i&gt;%1&lt;/i&gt; is mandatory</source>
         <translation>அளவுரு &lt;i&gt;%1&lt;/i&gt; கட்டாயம்</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2405"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2419"/>
         <source>Invalid child ID: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>தவறான குழந்தை ஐடி: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2420"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2434"/>
         <source>The model you are trying to run contains an algorithm that is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>நீங்கள் இயக்க முயற்சிக்கும் மாதிரியில் கிடைக்காத அல்காரிதம் உள்ளது: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
@@ -44234,8 +44234,8 @@ If desired, tables can also be output containing lists of the categories which c
     </message>
     <message>
         <location filename="../src/core/providers/arcgis/qgsarcgisrestquery.cpp" line="238"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="805"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1124"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="809"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1128"/>
         <source>Error %1</source>
         <translation>பிழை% 1</translation>
     </message>
@@ -64329,7 +64329,7 @@ Delete these features?</source>
         <translation>அடுக்கு செய்தி</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="940"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="944"/>
         <source>Unexpected image size for block. Expected %1x%2, got %3x%4</source>
         <translation>தடுப்பிற்கான எதிர்பாராத பட அளவு. %1x%2 எதிர்பார்க்கப்பட்டது, %3x%4 கிடைத்தது</translation>
     </message>
@@ -64337,31 +64337,31 @@ Delete these features?</source>
 <context>
     <name>QgsAmsTiledImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="987"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1065"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1250"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="991"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1069"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1254"/>
         <source>network request update failed for authentication config</source>
         <translation>அங்கீகார கட்டமைப்பிற்கான பிணைய கோரிக்கை புதுப்பிப்பு தோல்வியடைந்தது</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="989"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1067"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1252"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="993"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1071"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1256"/>
         <source>Network</source>
         <translation>பிணையம்</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)</source>
         <translation>ஓடு கோரிக்கை பிழை (நிலை: %1; உள்ளடக்க வகை: %2; நீளம்: %3; URL: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1177"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1181"/>
         <source>Returned image is flawed [Content-Type: %1; URL: %2]</source>
         <translation>திரும்பிய படம் குறைபாடுடையது [உள்ளடக்கம்-வகை:% 1; URL: %2]</translation>
     </message>
@@ -144372,32 +144372,32 @@ SQL:% 3</translation>
         <translation>முடிவுகள்:</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="162"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
         <source>Algorithm %1 canceled…</source>
         <translation>அல்காரிதம் % 1 ரத்துசெய்யப்பட்டது…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="164"/>
         <source>Execution canceled after %1 seconds</source>
         <translation>% 1 வினாடிகளுக்குப் பிறகு செயல்படுத்தல் ரத்து செய்யப்பட்டது</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="169"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
         <source>Algorithm %1 failed…</source>
         <translation>அல்காரிதம்% 1 தோல்வியடைந்தது…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="171"/>
         <source>Execution failed after %1 seconds</source>
         <translation>% 1 வினாடிகளுக்குப் பிறகு செயல்படுத்தல் தோல்வியடைந்தது</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="207"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="209"/>
         <source>Batch execution completed in %1 seconds</source>
         <translation>தொகுதி செயலாக்கம் % 1 வினாடிகளில் முடிந்தது</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="210"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="212"/>
         <source>%1 executions failed. See log for further details.</source>
         <translation>% 1 செயல்படுத்தல் தோல்வியடைந்தது. மேலும் விவரங்களுக்கு பதிவைப் பார்க்கவும்.</translation>
     </message>

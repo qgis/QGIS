@@ -20014,7 +20014,7 @@ Sjekk PostGIS-loggen for feilmeldinger.</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Processing</source>
         <translation>Prosessering</translation>
     </message>
@@ -20509,7 +20509,7 @@ Dette kan føre til uventede resultat.</translation>
         <translation>Denne parameteren kan henvise til både vektor- og rasterlag.</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Could not load parameter %1 of type %2.</source>
         <translation>Klarte ikke å laste parameter %1 med type %2.</translation>
     </message>
@@ -23220,8 +23220,8 @@ Avstand angis i lagenheter, og retningsvinkel i grader med klokka fra nord.</tra
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23244,8 +23244,8 @@ Avstand angis i lagenheter, og retningsvinkel i grader med klokka fra nord.</tra
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -28442,8 +28442,8 @@ Sammenføyningskriteriet er ett eller flere geometriske predikat som for hvert o
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="213"/>
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="233"/>
         <location filename="../src/plugins/topology/dockModel.cpp" line="27"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="795"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1114"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="799"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1118"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="42"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="48"/>
         <source>Error</source>
@@ -37516,103 +37516,103 @@ Følgende informasjon om påskrifter trekkes ut: Posisjon (punktgeometri), tilkn
         <translation>Det oppstod feil under kjøring av %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="519"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="528"/>
         <source>Algorithm “%1” cannot be run in a background thread, switching to main thread for this step</source>
         <translation>Algoritmen «%1» kan ikke kjøres i en bakgrunnstråd – kjører nå midlertidig i hovedtråden</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="537"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="551"/>
         <source>Error encountered while running %1: %2</source>
         <translation>Det oppstod feil under kjøring av %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="590"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="604"/>
         <source>Results:</source>
         <translation>Resultater:</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="694"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="708"/>
         <source>OK. Execution took %1 s (%n output(s)).</source>
         <translation><numerusform>OK. Utførelsen tok %1 s (%n resultat).</numerusform><numerusform>OK. Utførelsen tok %1 s (%n resultater).</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="705"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="719"/>
         <source>Failed after %1 s.</source>
         <translation>Mislyktes etter %1 s.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="723"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="737"/>
         <source>Model processed OK. Executed %n algorithm(s) total in %1 s.</source>
         <translation><numerusform>Modell ferdigkjørt. Utførte totalt %n algoritme på %1 s.</numerusform><numerusform>Modell ferdigkjørt. Utførte totalt %n algoritmer på %1 s.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1177"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1224"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1287"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1191"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1238"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1301"/>
         <source>Output &apos;%1&apos; from algorithm &apos;%2&apos;</source>
         <translation>Utdata «%1» fra algoritme «%2»</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1256"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1327"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1270"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1341"/>
         <source>Minimum X of %1</source>
         <translation>Minste X til %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1257"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1328"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1271"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1342"/>
         <source>Minimum Y of %1</source>
         <translation>Minste Y til %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1258"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1329"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1272"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1343"/>
         <source>Maximum X of %1</source>
         <translation>Største X til %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1259"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1330"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1273"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1344"/>
         <source>Maximum Y of %1</source>
         <translation>Største Y til %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1478"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1492"/>
         <source>Model does not contain any algorithms</source>
         <translation>Modellen inneholder ingen algoritmer</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2337"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2351"/>
         <source>Algorithm is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Algoritmen er ikke tilgjengelig: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2358"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2372"/>
         <source>Value for &lt;i&gt;%1&lt;/i&gt; is not acceptable for this parameter</source>
         <translation>Denne parameteren kan ikke lagre verdien for &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2366"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2380"/>
         <source>Model input &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>Modellinndata &lt;i&gt;%1&lt;/i&gt; som brukes for parameteren &lt;i&gt;%2&lt;/i&gt; finnes ikke</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2374"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2388"/>
         <source>Child algorithm &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>Underalgoritmen &lt;i&gt;%1&lt;/i&gt; som brukes for parameteren &lt;i&gt;%2&lt;/i&gt; finnes ikke </translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2396"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2410"/>
         <source>Parameter &lt;i&gt;%1&lt;/i&gt; is mandatory</source>
         <translation>Parameteren &lt;i&gt;%1&lt;/i&gt; er påkrevd</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2405"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2419"/>
         <source>Invalid child ID: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Ugyldig under-ID: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2420"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2434"/>
         <source>The model you are trying to run contains an algorithm that is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Modellen du forsøker å kjøre inneholder en algoritme som ikke er tilgjengelig: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
@@ -44227,8 +44227,8 @@ Klarte ikke å tilpasse %n symboler i stil:</numerusform></translation>
     </message>
     <message>
         <location filename="../src/core/providers/arcgis/qgsarcgisrestquery.cpp" line="238"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="805"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1124"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="809"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1128"/>
         <source>Error %1</source>
         <translation>Feil %1</translation>
     </message>
@@ -64322,7 +64322,7 @@ Vil du slette alle disse objektene?</numerusform></translation>
         <translation>Laginfo</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="940"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="944"/>
         <source>Unexpected image size for block. Expected %1x%2, got %3x%4</source>
         <translation>Uventet bildestørrelse for blokk. Forventet %1×%2, fikk %3×%4</translation>
     </message>
@@ -64330,31 +64330,31 @@ Vil du slette alle disse objektene?</numerusform></translation>
 <context>
     <name>QgsAmsTiledImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="987"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1065"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1250"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="991"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1069"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1254"/>
         <source>network request update failed for authentication config</source>
         <translation>klarte ikke oppdatere nettverksforespørsel for autentiseringsoppsett</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="989"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1067"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1252"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="993"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1071"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1256"/>
         <source>Network</source>
         <translation>Nettverk</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)</source>
         <translation>Feil under fliseforespørsel (Status: %1; Content-Type: %2; Lengde: %3; URL: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1177"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1181"/>
         <source>Returned image is flawed [Content-Type: %1; URL: %2]</source>
         <translation>Returnert bilde er misdannet [Content-Type: %1; URL: %2]</translation>
     </message>
@@ -144370,32 +144370,32 @@ SQL: %3</translation>
         <translation>Resultater:</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="162"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
         <source>Algorithm %1 canceled…</source>
         <translation>Algoritmen %1 ble avbrutt …</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="164"/>
         <source>Execution canceled after %1 seconds</source>
         <translation>Kjøringen ble avbrutt etter %1 sekunder</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="169"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
         <source>Algorithm %1 failed…</source>
         <translation>Algoritmen %1 mislyktes …</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="171"/>
         <source>Execution failed after %1 seconds</source>
         <translation>Kjøringen mislyktes etter %1 sekunder</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="207"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="209"/>
         <source>Batch execution completed in %1 seconds</source>
         <translation>Den satsvise kjøringen brukte %1 sekunder</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="210"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="212"/>
         <source>%1 executions failed. See log for further details.</source>
         <translation>%1 kjøringer mislyktes. Se loggen for flere detaljer.</translation>
     </message>

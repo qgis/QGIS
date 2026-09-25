@@ -20016,7 +20016,7 @@ Shift+spauskite esamą vidinį žiedą, kad jį užpildytumėte.</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Processing</source>
         <translation>Apdorojimas</translation>
     </message>
@@ -20511,7 +20511,7 @@ Tai gali būti netikėtų rezultatų priežastis.</translation>
         <translation>Bendras žemėlapio sluoksnio parametras, priimantis tiek vektorinius, tiek rastro sluoksnius.</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Could not load parameter %1 of type %2.</source>
         <translation>Nepavyko įkelti parametro %1, tipas %2.</translation>
     </message>
@@ -23222,8 +23222,8 @@ Atstumas nurodomas sluoksnio vienetais, o kryptis - laipsniais pagal rodyklę nu
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23246,8 +23246,8 @@ Atstumas nurodomas sluoksnio vienetais, o kryptis - laipsniais pagal rodyklę nu
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -28446,8 +28446,8 @@ Papildomi atributai ir jų reikšmės imami iš antro vektorinio sluoksnio. Iš 
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="213"/>
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="233"/>
         <location filename="../src/plugins/topology/dockModel.cpp" line="27"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="795"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1114"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="799"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1118"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="42"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="48"/>
         <source>Error</source>
@@ -37521,103 +37521,103 @@ Ištraukiama užrašų informacija: pozicija (kaip taškų geometrija), susieto 
         <translation>Vykdant %1 įvyko klaida</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="519"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="528"/>
         <source>Algorithm “%1” cannot be run in a background thread, switching to main thread for this step</source>
         <translation>Algoritmo „%1“ negalima vykdyti foninėje gijoje, šiam žingsniui persijungiama į pagrindinę giją</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="537"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="551"/>
         <source>Error encountered while running %1: %2</source>
         <translation>Vykdant %1 įvyko klaida: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="590"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="604"/>
         <source>Results:</source>
         <translation>Rezultatai:</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="694"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="708"/>
         <source>OK. Execution took %1 s (%n output(s)).</source>
         <translation><numerusform>Tvarka. Vykdymas užtruko %1 s (%2 išvestis).</numerusform><numerusform>Tvarka. Vykdymas užtruko %1 s (%2 išvestys).</numerusform><numerusform>Tvarka. Vykdymas užtruko %1 s (%2 išvesčių).</numerusform><numerusform>Tvarka. Vykdymas užtruko %1 s (%2 išvestys).</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="705"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="719"/>
         <source>Failed after %1 s.</source>
         <translation>Nepavyko po %1 s.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="723"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="737"/>
         <source>Model processed OK. Executed %n algorithm(s) total in %1 s.</source>
         <translation><numerusform>Modelis sėkmingai apdorotas. Įvykdytas %1 algoritmas per %2 s.</numerusform><numerusform>Modelis sėkmingai apdorotas. Įvykdyti %1 algoritmai per %2 s.</numerusform><numerusform>Modelis sėkmingai apdorotas. Įvykdyta %1 algoritmų per %2 s.</numerusform><numerusform>Modelis sėkmingai apdorotas. Įvykdyti %1 algoritmai per %2 s.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1177"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1224"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1287"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1191"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1238"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1301"/>
         <source>Output &apos;%1&apos; from algorithm &apos;%2&apos;</source>
         <translation>Išvestis „%1“ iš algoritmo „%2“</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1256"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1327"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1270"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1341"/>
         <source>Minimum X of %1</source>
         <translation>Minimalus X iš %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1257"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1328"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1271"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1342"/>
         <source>Minimum Y of %1</source>
         <translation>Minimalus Y iš %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1258"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1329"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1272"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1343"/>
         <source>Maximum X of %1</source>
         <translation>Maksimalus X iš %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1259"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1330"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1273"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1344"/>
         <source>Maximum Y of %1</source>
         <translation>Maksimalus Y iš %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1478"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1492"/>
         <source>Model does not contain any algorithms</source>
         <translation>Modelyje nėra jokių algoritmų</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2337"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2351"/>
         <source>Algorithm is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Algoritmas nepasiekiamas: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2358"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2372"/>
         <source>Value for &lt;i&gt;%1&lt;/i&gt; is not acceptable for this parameter</source>
         <translation>&lt;i&gt;%1&lt;/i&gt; reikšmė netinkama šiam parametrui</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2366"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2380"/>
         <source>Model input &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>Modelio įvestis &lt;i&gt;%1&lt;/i&gt; naudojama parametrui &lt;i&gt;%2&lt;/i&gt; neegzistuoja</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2374"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2388"/>
         <source>Child algorithm &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>Vaikinis algoritmas &lt;i&gt;%1&lt;/i&gt; naudojamas parametrui &lt;i&gt;%2&lt;/i&gt; neegzistuoja</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2396"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2410"/>
         <source>Parameter &lt;i&gt;%1&lt;/i&gt; is mandatory</source>
         <translation>Parametras &lt;i&gt;%1&lt;/i&gt; yra privalomas</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2405"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2419"/>
         <source>Invalid child ID: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Netinkamas vaiko ID: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2420"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2434"/>
         <source>The model you are trying to run contains an algorithm that is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Modelyje, kurį bandote paleisti, yra neprieinamas algoritmas: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
@@ -44237,8 +44237,8 @@ Prireikus taipogi galima kurti lenteles su sąrašu kategorijų, kurių nepavyko
     </message>
     <message>
         <location filename="../src/core/providers/arcgis/qgsarcgisrestquery.cpp" line="238"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="805"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1124"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="809"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1128"/>
         <source>Error %1</source>
         <translation>Klaida %1</translation>
     </message>
@@ -54782,7 +54782,7 @@ Daugiau informacijos rasite šiuose straipsniuose:
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="447"/>
         <source>Transverse Mercator Zoned Grid System</source>
-        <translation type="unfinished"/>
+        <translation>Skersinės Merkatoriaus projekcijos zoninė tinklo sistema</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="449"/>
@@ -64337,7 +64337,7 @@ Trinti šiuos geoobjektus?</numerusform></translation>
         <translation>Sluoksnio info</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="940"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="944"/>
         <source>Unexpected image size for block. Expected %1x%2, got %3x%4</source>
         <translation>Netikėtas bloko piešinio dydis. Tikėtasi %1x%2, gauta %3x%4</translation>
     </message>
@@ -64345,31 +64345,31 @@ Trinti šiuos geoobjektus?</numerusform></translation>
 <context>
     <name>QgsAmsTiledImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="987"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1065"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1250"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="991"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1069"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1254"/>
         <source>network request update failed for authentication config</source>
         <translation>autentifikavimo konfigūracijos tinklo užklausos atnaujinimas nepavyko</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="989"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1067"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1252"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="993"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1071"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1256"/>
         <source>Network</source>
         <translation>Tinklas</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)</source>
         <translation>Kaladėlės užklausos klaida (Būsena: %1; Turinio-tipas: %2; Ilgis: %3; URL: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1177"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1181"/>
         <source>Returned image is flawed [Content-Type: %1; URL: %2]</source>
         <translation>Grąžinta sugadinta nuotrauka [Turinio-tipas: %1; URL: %2]</translation>
     </message>
@@ -144380,32 +144380,32 @@ SQL: %3</translation>
         <translation>Rezultatai:</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="162"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
         <source>Algorithm %1 canceled…</source>
         <translation>Algoritmas %1 nutrauktas…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="164"/>
         <source>Execution canceled after %1 seconds</source>
         <translation>Vykdymas nutrauktas po %1 sekundžių</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="169"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
         <source>Algorithm %1 failed…</source>
         <translation>Algoritmas %1 nepavyko…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="171"/>
         <source>Execution failed after %1 seconds</source>
         <translation>Vykdymas nepavyko po %1 sekundžių</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="207"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="209"/>
         <source>Batch execution completed in %1 seconds</source>
         <translation>Paketinis vykdymas baigtas per %1 sekundžių</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="210"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="212"/>
         <source>%1 executions failed. See log for further details.</source>
         <translation>%1 vykdymai nepavyko. Daugiau informacijos rasite žurnale.</translation>
     </message>

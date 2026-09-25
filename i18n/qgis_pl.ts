@@ -11801,7 +11801,7 @@ Blok kodu dla pola nie zwraca zmiennej &apos;{0}&apos;! Proszę nadać wartość
     <message>
         <source>Maximum number of features to download</source>
         <extracomment>v.in.wfs</extracomment>
-        <translation type="unfinished"/>
+        <translation>Maksymalna liczba obiektów do pobrania</translation>
     </message>
     <message>
         <source>Name for output vector path map</source>
@@ -20003,7 +20003,7 @@ Shift+click on existing inner ring to fill.</source>
 </translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Processing</source>
         <translation>Przetwarzanie</translation>
     </message>
@@ -20498,7 +20498,7 @@ Może to skutkować nieoczekiwanymi rezultatami.</translation>
         <translation>Ogólny parametr warstwy mapy, który akceptuje zarówno warstwy wektorowe jak i rastrowe.</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Could not load parameter %1 of type %2.</source>
         <translation>Nie można wczytać parametru %1 typu %2.</translation>
     </message>
@@ -23191,8 +23191,8 @@ Odległość jest określona w jednostkach warstwy, a orientacja w stopniach lic
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23215,8 +23215,8 @@ Odległość jest określona w jednostkach warstwy, a orientacja w stopniach lic
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -26291,7 +26291,7 @@ Optionally the layers can be appended to an existing spreadsheet as additional s
         <location filename="../src/gui/raster/qgsrasterlabelsettingswidget.cpp" line="68"/>
         <location filename="../src/gui/raster/qgsresamplingutils.cpp" line="229"/>
         <source>Mode</source>
-        <translation>Tryb</translation>
+        <translation>Dominanta</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterdtmslopebasedfilter.cpp" line="31"/>
@@ -28386,8 +28386,8 @@ Dodatkowe atrybuty i ich wartości pobierane są z drugiej warstwy wektorowej. K
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="213"/>
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="233"/>
         <location filename="../src/plugins/topology/dockModel.cpp" line="27"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="795"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1114"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="799"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1118"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="42"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="48"/>
         <source>Error</source>
@@ -37426,103 +37426,103 @@ Wyodrębnione informacje obejmują: położenie (obsługiwane jako geometrie pun
         <translation>Wystąpił błąd podczas wykonywania %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="519"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="528"/>
         <source>Algorithm “%1” cannot be run in a background thread, switching to main thread for this step</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="537"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="551"/>
         <source>Error encountered while running %1: %2</source>
         <translation>Wystąpił błąd podczas wykonywania %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="590"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="604"/>
         <source>Results:</source>
         <translation>Wynik:</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="694"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="708"/>
         <source>OK. Execution took %1 s (%n output(s)).</source>
         <translation><numerusform>OK. Wykonanie zajęło %1 s (%n wynik).</numerusform><numerusform>OK. Wykonanie zajęło %1 s (%n wyniki).</numerusform><numerusform>OK. Wykonanie zajęło %1 s (%n wyników).</numerusform><numerusform>OK. Wykonanie zajęło %1 s (%n wyników).</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="705"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="719"/>
         <source>Failed after %1 s.</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="723"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="737"/>
         <source>Model processed OK. Executed %n algorithm(s) total in %1 s.</source>
         <translation><numerusform>Model przetworzony prawidłowo. Wykonano %n algorytm w czasie %1 s.</numerusform><numerusform>Model przetworzony prawidłowo. Wykonano %n algorytmy w czasie %1 s.</numerusform><numerusform>Model przetworzony prawidłowo. Wykonano %n algorytmów w czasie %1 s.</numerusform><numerusform>Model przetworzony prawidłowo. Wykonano %n algorytmów w czasie %1 s.</numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1177"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1224"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1287"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1191"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1238"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1301"/>
         <source>Output &apos;%1&apos; from algorithm &apos;%2&apos;</source>
         <translation>Wynik &apos;%1&apos; z algorytmu &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1256"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1327"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1270"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1341"/>
         <source>Minimum X of %1</source>
         <translation>Minimalne X z %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1257"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1328"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1271"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1342"/>
         <source>Minimum Y of %1</source>
         <translation>Minimalne Y z %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1258"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1329"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1272"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1343"/>
         <source>Maximum X of %1</source>
         <translation>Maksymalne X z %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1259"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1330"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1273"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1344"/>
         <source>Maximum Y of %1</source>
         <translation>Maksymalne Y z %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1478"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1492"/>
         <source>Model does not contain any algorithms</source>
         <translation>Model nie zawiera żadnych algorytmów</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2337"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2351"/>
         <source>Algorithm is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Algorytm jest niedostępny: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2358"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2372"/>
         <source>Value for &lt;i&gt;%1&lt;/i&gt; is not acceptable for this parameter</source>
         <translation>Wartość dla &lt;i&gt;%1&lt;/i&gt; jest niedozwolona dla tego parametru</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2366"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2380"/>
         <source>Model input &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>Dane wejściowe modelu &lt;i&gt;%1&lt;/i&gt; użyte dla parametru &lt;i&gt;%2&lt;/i&gt; nie istnieją</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2374"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2388"/>
         <source>Child algorithm &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation>Algorytm potomny &lt;i&gt;%1&lt;/i&gt; użyty dla parametru &lt;i&gt;%2&lt;/i&gt; nie istnieje</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2396"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2410"/>
         <source>Parameter &lt;i&gt;%1&lt;/i&gt; is mandatory</source>
         <translation>Parametr &lt;i&gt;%1&lt;/i&gt; jest obowiązkowy</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2405"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2419"/>
         <source>Invalid child ID: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Nieprawidłowy identyfikator obiektu potomnego: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2420"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2434"/>
         <source>The model you are trying to run contains an algorithm that is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>Model, który próbujesz uruchomić zawiera niedostępny algorytm: &lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
@@ -44107,8 +44107,8 @@ If desired, tables can also be output containing lists of the categories which c
     </message>
     <message>
         <location filename="../src/core/providers/arcgis/qgsarcgisrestquery.cpp" line="238"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="805"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1124"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="809"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1128"/>
         <source>Error %1</source>
         <translation>Błąd %1</translation>
     </message>
@@ -64067,7 +64067,7 @@ Delete these features?</source>
         <translation>Informacje o warstwie</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="940"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="944"/>
         <source>Unexpected image size for block. Expected %1x%2, got %3x%4</source>
         <translation>Nieoczekiwany rozmiar obrazu dla bloku. Oczekiwano%1x%2, otrzymano%3x%4</translation>
     </message>
@@ -64075,31 +64075,31 @@ Delete these features?</source>
 <context>
     <name>QgsAmsTiledImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="987"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1065"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1250"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="991"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1069"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1254"/>
         <source>network request update failed for authentication config</source>
         <translation>uaktualnienie żądania sieciowego nie powiodło się z powodu konfiguracji uwierzytelniania</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="989"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1067"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1252"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="993"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1071"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1256"/>
         <source>Network</source>
         <translation>Sieć</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)</source>
         <translation>Błąd pobierania kafla (Status: %1; Typ zawartości: %2; Długość: %3; URL: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1177"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1181"/>
         <source>Returned image is flawed [Content-Type: %1; URL: %2]</source>
         <translation>Obraz jest uszkodzony [typ zawartości: %1; URL: %2]</translation>
     </message>
@@ -143835,7 +143835,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/gui/processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp" line="60"/>
         <source>Mode</source>
-        <translation>Tryb</translation>
+        <translation>Dominanta</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp" line="61"/>
@@ -144010,32 +144010,32 @@ SQL: %3</translation>
         <translation>Wyniki:</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="162"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
         <source>Algorithm %1 canceled…</source>
         <translation>Algorytm %1 został anulowany…</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="164"/>
         <source>Execution canceled after %1 seconds</source>
         <translation>Wykonanie anulowano po %1 sekundach</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="169"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
         <source>Algorithm %1 failed…</source>
         <translation>Uruchomienie algorytmu %1 zakończyło się niepowodzeniem...</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="171"/>
         <source>Execution failed after %1 seconds</source>
         <translation>Wykonanie nie powiodło się po %1 sekundach</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="207"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="209"/>
         <source>Batch execution completed in %1 seconds</source>
         <translation>Przetwarzanie wsadowe wykonano w %1 sekund</translation>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="210"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="212"/>
         <source>%1 executions failed. See log for further details.</source>
         <translation>%1 uruchomień zakończyło się niepowodzeniem. Więcej informacji znajdziesz w dzienniku.</translation>
     </message>
@@ -153958,27 +153958,27 @@ danych o maksymalnej szerokości i wysokości podanej poniżej.</translation>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="38"/>
         <source>Whole Raster</source>
-        <translation type="unfinished"/>
+        <translation>Cały raster</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="39"/>
         <source>Current Canvas</source>
-        <translation type="unfinished"/>
+        <translation>Bieżący obszar mapy</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="40"/>
         <source>Updated Canvas</source>
-        <translation type="unfinished"/>
+        <translation>Odświeżony obszar mapy</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="42"/>
         <source>Estimate (faster)</source>
-        <translation type="unfinished"/>
+        <translation>Oszacowane (szybciej)</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrasterminmaxwidget.cpp" line="43"/>
         <source>Actual (slower)</source>
-        <translation type="unfinished"/>
+        <translation>Rzeczywiste (wolniej)</translation>
     </message>
 </context>
 <context>
@@ -154461,7 +154461,7 @@ odchylenie standardowe ×</translation>
         <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="732"/>
         <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="743"/>
         <source>Opacity [%]</source>
-        <translation type="unfinished"/>
+        <translation>Krycie [%]</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsrastertransparencywidget.cpp" line="741"/>
@@ -154537,12 +154537,12 @@ odchylenie standardowe ×</translation>
     <message>
         <location filename="../src/app/qgsrecentprojectsmenueventfilter.cpp" line="79"/>
         <source>Unpin from List</source>
-        <translation type="unfinished"/>
+        <translation>Odepnij z listy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrecentprojectsmenueventfilter.cpp" line="84"/>
         <source>Pin to List</source>
-        <translation type="unfinished"/>
+        <translation>Przypnij do listy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrecentprojectsmenueventfilter.cpp" line="90"/>
@@ -177554,19 +177554,19 @@ Przyczyna: %2</translation>
     </message>
     <message>
         <source>Bilinear (2x2 Kernel)</source>
-        <translation type="unfinished"/>
+        <translation>Dwuliniowa (jądro 2x2)</translation>
     </message>
     <message>
         <source>Cubic (4x4 Kernel)</source>
-        <translation type="unfinished"/>
+        <translation>Sześcienna (jądro 4x4)</translation>
     </message>
     <message>
         <source>Cubic B-Spline (4x4 Kernel)</source>
-        <translation type="unfinished"/>
+        <translation>Sześcienna funkcją B-sklejaną (jądro 4x4)</translation>
     </message>
     <message>
         <source>Lanczos (6x6 Kernel)</source>
-        <translation type="unfinished"/>
+        <translation>Lanczosa (jądro 6x6)</translation>
     </message>
     <message>
         <source>Average</source>
@@ -177594,7 +177594,7 @@ Przyczyna: %2</translation>
     </message>
     <message>
         <source>Place each input file into a separate band</source>
-        <translation type="unfinished"/>
+        <translation>Umieść każdy plik wejściowy w odrębnym kanale</translation>
     </message>
     <message>
         <source>Allow projection difference</source>
@@ -177602,7 +177602,7 @@ Przyczyna: %2</translation>
     </message>
     <message>
         <source>Add alpha mask band to VRT when source raster has none</source>
-        <translation type="unfinished"/>
+        <translation>Dodaj kanał alfa maski do VRT, gdy raster źródłowy nie ma żadnego</translation>
     </message>
     <message>
         <source>Override projection for the output file</source>

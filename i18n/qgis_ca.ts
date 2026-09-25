@@ -4416,7 +4416,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Output format</source>
         <extracomment>v.out.ascii</extracomment>
-        <translation type="unfinished"/>
+        <translation>Format de sortida</translation>
     </message>
     <message>
         <source>Input lines layer</source>
@@ -4481,7 +4481,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Vectorized</source>
         <extracomment>r.to.vect</extracomment>
-        <translation type="unfinished"/>
+        <translation>Vectoritzat</translation>
     </message>
     <message>
         <source>The calculation time in seconds</source>
@@ -4511,7 +4511,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Input layers</source>
         <extracomment>v.patch</extracomment>
-        <translation type="unfinished"/>
+        <translation>Capes d&apos;entrada</translation>
     </message>
     <message>
         <source>Name of cover raster map</source>
@@ -4626,7 +4626,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>month</source>
         <extracomment>r.sunmask.datetime</extracomment>
-        <translation type="unfinished"/>
+        <translation>mes</translation>
     </message>
     <message>
         <source>Threshold for double pulse in region growing</source>
@@ -4736,7 +4736,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Blue</source>
         <extracomment>r.rgb</extracomment>
-        <translation type="unfinished"/>
+        <translation>Blau</translation>
     </message>
     <message>
         <source>Day of Year of satellite overpass [0-366]</source>
@@ -4761,7 +4761,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Calculated</source>
         <extracomment>r.mapcalc.simple</extracomment>
-        <translation type="unfinished"/>
+        <translation>Calculat</translation>
     </message>
     <message>
         <source>Depressionless DEM</source>
@@ -4771,7 +4771,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Day</source>
         <extracomment>r.sunhours</extracomment>
-        <translation type="unfinished"/>
+        <translation>Dia</translation>
     </message>
     <message>
         <source>Vector map to be queried</source>
@@ -4781,7 +4781,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Vertical scale</source>
         <extracomment>r.surf.area</extracomment>
-        <translation type="unfinished"/>
+        <translation>Escala vertical</translation>
     </message>
     <message>
         <source>X-part of the hydraulic conductivity tensor in [m/s]</source>
@@ -5026,7 +5026,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Intensity</source>
         <extracomment>r.his</extracomment>
-        <translation type="unfinished"/>
+        <translation>Intensitat</translation>
     </message>
     <message>
         <source>Scale output to input and copy color rules</source>
@@ -5061,7 +5061,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Slope</source>
         <extracomment>v.surf.rst</extracomment>
-        <translation type="unfinished"/>
+        <translation>Pendent</translation>
     </message>
     <message>
         <source>Number of walkers</source>
@@ -5126,7 +5126,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Dominance</source>
         <extracomment>r.li.dominance</extracomment>
-        <translation type="unfinished"/>
+        <translation>Dominància</translation>
     </message>
     <message>
         <source>Morphometric parameter in &apos;size&apos; window to calculate</source>
@@ -5291,7 +5291,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Number of iterations</source>
         <extracomment>v.generalize</extracomment>
-        <translation type="unfinished"/>
+        <translation>Nombre d&apos;iteracions</translation>
     </message>
     <message>
         <source>r.li.richness.ascii - Calculates richness index on a raster map</source>
@@ -5366,7 +5366,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Coordinates</source>
         <extracomment>v.net.visibility</extracomment>
-        <translation type="unfinished"/>
+        <translation>Coordenades</translation>
     </message>
     <message>
         <source>Reclass rules text (if rule file not used)</source>
@@ -5596,7 +5596,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Standard deviation</source>
         <extracomment>r.surf.gauss</extracomment>
-        <translation type="unfinished"/>
+        <translation>Desviació estàndard</translation>
     </message>
     <message>
         <source>v.kernel.vector - Generates a vector density map from vector points on a vector network.</source>
@@ -5621,7 +5621,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Method</source>
         <extracomment>i.pansharpen</extracomment>
-        <translation type="unfinished"/>
+        <translation>Mètode</translation>
     </message>
     <message>
         <source>y_input</source>
@@ -5641,7 +5641,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Delaunay triangulation</source>
         <extracomment>v.delaunay</extracomment>
-        <translation type="unfinished"/>
+        <translation>Triangulació de Delaunay</translation>
     </message>
     <message>
         <source>Maximum distance of spatial correlation (value(s) &gt;= 0.0)</source>
@@ -5681,7 +5681,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Overlay</source>
         <extracomment>v.overlay</extracomment>
-        <translation type="unfinished"/>
+        <translation>Superposa</translation>
     </message>
     <message>
         <source>Lake</source>
@@ -5751,7 +5751,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Information</source>
         <extracomment>v.info</extracomment>
-        <translation type="unfinished"/>
+        <translation>Informació</translation>
     </message>
     <message>
         <source>Minimum distance between points (to remove almost identical points)</source>
@@ -5816,7 +5816,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Converts LAS LiDAR point clouds to a GRASS vector map with libLAS.</source>
         <extracomment>v.in.lidar</extracomment>
-        <translation type="unfinished"/>
+        <translation>Converteix núvols de punts LIDAR LAS a un mapa de vectors GRASS amb libLAS.</translation>
     </message>
     <message>
         <source>NullRaster</source>
@@ -6401,7 +6401,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Profile</source>
         <extracomment>r.profile</extracomment>
-        <translation type="unfinished"/>
+        <translation>Perfil</translation>
     </message>
     <message>
         <source>Only do the work if the map is integer</source>
@@ -6436,7 +6436,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Aggregated</source>
         <extracomment>r.series</extracomment>
-        <translation type="unfinished"/>
+        <translation>Agregats</translation>
     </message>
     <message>
         <source>Name of the elevation raster map [m]</source>
@@ -6446,7 +6446,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Rasterized</source>
         <extracomment>v.to.rast</extracomment>
-        <translation type="unfinished"/>
+        <translation>Rasteritzat</translation>
     </message>
     <message>
         <source>Exports a vector map to SVG file.</source>
@@ -6511,7 +6511,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Operation</source>
         <extracomment>g.extension.manage</extracomment>
-        <translation type="unfinished"/>
+        <translation>Operació</translation>
     </message>
     <message>
         <source>Image acquisition date (yyyy-mm-dd)</source>
@@ -6621,7 +6621,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Edited</source>
         <extracomment>v.edit</extracomment>
-        <translation type="unfinished"/>
+        <translation>S&apos;ha editat</translation>
     </message>
     <message>
         <source>Column for Z values</source>
@@ -6736,7 +6736,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>second</source>
         <extracomment>r.sunmask.datetime</extracomment>
-        <translation type="unfinished"/>
+        <translation>segon</translation>
     </message>
     <message>
         <source>Anisotropy angle (in degrees counterclockwise from East)</source>
@@ -6891,7 +6891,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Mode</source>
         <extracomment>r.mode</extracomment>
-        <translation type="unfinished"/>
+        <translation>Mode</translation>
     </message>
     <message>
         <source>Creates a raster map containing concentric rings around a given point.</source>
@@ -6936,7 +6936,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Points along lines</source>
         <extracomment>v.to.points</extracomment>
-        <translation type="unfinished"/>
+        <translation>Punts al llarg de línies</translation>
     </message>
     <message>
         <source>Most common geomorphic forms</source>
@@ -6981,7 +6981,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Vertical exaggeration</source>
         <extracomment>r.out.vrml</extracomment>
-        <translation type="unfinished"/>
+        <translation>Accentuació vertical</translation>
     </message>
     <message>
         <source>Temporal integration</source>
@@ -7071,7 +7071,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Year</source>
         <extracomment>r.sunhours</extracomment>
-        <translation type="unfinished"/>
+        <translation>Any</translation>
     </message>
     <message>
         <source>Generates statistics for i.smap from raster map.</source>
@@ -7196,7 +7196,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Hour</source>
         <extracomment>r.sunhours</extracomment>
-        <translation type="unfinished"/>
+        <translation>Hora</translation>
     </message>
     <message>
         <source>Three (x,y,z) raster maps to create vector values</source>
@@ -7306,7 +7306,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Page width</source>
         <extracomment>r.report</extracomment>
-        <translation type="unfinished"/>
+        <translation>Amplada de pàgina</translation>
     </message>
     <message>
         <source>Stream segments</source>
@@ -7366,7 +7366,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Network</source>
         <extracomment>v.net</extracomment>
-        <translation type="unfinished"/>
+        <translation>Xarxa</translation>
     </message>
     <message>
         <source>Find unresolved areas only</source>
@@ -7556,7 +7556,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Feature type</source>
         <extracomment>v.net.bridge</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tipus d&apos;objecte</translation>
     </message>
     <message>
         <source>Color using standard deviation bands</source>
@@ -7586,7 +7586,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Statistics</source>
         <extracomment>v.univar</extracomment>
-        <translation type="unfinished"/>
+        <translation>Estadístiques</translation>
     </message>
     <message>
         <source>Name of input soil heat flux raster map [W/m2]</source>
@@ -7666,7 +7666,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Red</source>
         <extracomment>r.rgb</extracomment>
-        <translation type="unfinished"/>
+        <translation>Vermell</translation>
     </message>
     <message>
         <source>Calculates contrast weighted edge density index on a raster map</source>
@@ -7726,7 +7726,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Bounding boxes</source>
         <extracomment>v.patch</extracomment>
-        <translation type="unfinished"/>
+        <translation>Caixetins delimitadors</translation>
     </message>
     <message>
         <source>Maximum length of segment on network</source>
@@ -7876,12 +7876,12 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Units</source>
         <extracomment>r.surf.area</extracomment>
-        <translation type="unfinished"/>
+        <translation>Unitats</translation>
     </message>
     <message>
         <source>Output type</source>
         <extracomment>v.out.svg</extracomment>
-        <translation type="unfinished"/>
+        <translation>Nivells de sortida</translation>
     </message>
     <message>
         <source>Color layer</source>
@@ -7961,7 +7961,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Shaded</source>
         <extracomment>r.shade</extracomment>
-        <translation type="unfinished"/>
+        <translation>Ombrejat</translation>
     </message>
     <message>
         <source>Interpolate points between line vertices</source>
@@ -8131,7 +8131,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Image fusion algorithms to sharpen multispectral with high-res panchromatic channels</source>
         <extracomment>i.pansharpen</extracomment>
-        <translation type="unfinished"/>
+        <translation>Algoritmes de fusió d’imatges per aguditzar la multiespectral amb canals pancromàtics d’alta resolució</translation>
     </message>
     <message>
         <source>Name of output vector</source>
@@ -8166,7 +8166,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>method</source>
         <extracomment>r.statistics</extracomment>
-        <translation type="unfinished"/>
+        <translation>mètode</translation>
     </message>
     <message>
         <source>Clustered</source>
@@ -8196,7 +8196,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Shadows</source>
         <extracomment>r.sunmask.position</extracomment>
-        <translation type="unfinished"/>
+        <translation>Ombres</translation>
     </message>
     <message>
         <source>The x-part of the hydraulic conductivity tensor in [m/s]</source>
@@ -8366,7 +8366,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Voronoi</source>
         <extracomment>v.voronoi</extracomment>
-        <translation type="unfinished"/>
+        <translation>Voronoi</translation>
     </message>
     <message>
         <source>Extracts terrain parameters from a DEM.</source>
@@ -8441,7 +8441,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Seconds</source>
         <extracomment>r.sunhours</extracomment>
-        <translation type="unfinished"/>
+        <translation>Segons</translation>
     </message>
     <message>
         <source>Value to calculate</source>
@@ -8826,7 +8826,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Category</source>
         <extracomment>r.category</extracomment>
-        <translation type="unfinished"/>
+        <translation>Categoria</translation>
     </message>
     <message>
         <source>Calculates patch density index on a raster map, using a 4 neighbour algorithm</source>
@@ -8911,7 +8911,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>hour</source>
         <extracomment>r.sunmask.datetime</extracomment>
-        <translation type="unfinished"/>
+        <translation>hora</translation>
     </message>
     <message>
         <source>This method will be applied to compute the accumulative values from the input maps</source>
@@ -8961,7 +8961,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Dissolved</source>
         <extracomment>v.dissolve</extracomment>
-        <translation type="unfinished"/>
+        <translation>Dissolt</translation>
     </message>
     <message>
         <source>&apos;from&apos; vector map</source>
@@ -8971,7 +8971,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>List</source>
         <extracomment>g.extension.list</extracomment>
-        <translation type="unfinished"/>
+        <translation>Llista</translation>
     </message>
     <message>
         <source>Automatic wet/dry pixel (careful!)</source>
@@ -9116,7 +9116,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Month</source>
         <extracomment>r.sunhours</extracomment>
-        <translation type="unfinished"/>
+        <translation>Mes</translation>
     </message>
     <message>
         <source>Nearest</source>
@@ -9161,7 +9161,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Contours</source>
         <extracomment>r.contour</extracomment>
-        <translation type="unfinished"/>
+        <translation>Contorns</translation>
     </message>
     <message>
         <source>Interpolated RST</source>
@@ -9276,7 +9276,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Errors</source>
         <extracomment>v.generalize</extracomment>
-        <translation type="unfinished"/>
+        <translation>Errors</translation>
     </message>
     <message>
         <source>Interpolates raster maps located (temporal or spatial) in between input raster maps at specific sampling positions.</source>
@@ -9366,7 +9366,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Saturation</source>
         <extracomment>r.his</extracomment>
-        <translation type="unfinished"/>
+        <translation>Saturació</translation>
     </message>
     <message>
         <source>Interpolation spline step value in east direction</source>
@@ -9496,7 +9496,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Hue</source>
         <extracomment>r.his</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tonalitat</translation>
     </message>
     <message>
         <source>Print info for additional libraries</source>
@@ -9551,7 +9551,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Transformed</source>
         <extracomment>v.transform</extracomment>
-        <translation type="unfinished"/>
+        <translation>Transformat</translation>
     </message>
     <message>
         <source>Name of input file with control points</source>
@@ -9576,7 +9576,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Grid</source>
         <extracomment>v.mkgrid</extracomment>
-        <translation type="unfinished"/>
+        <translation>Malla</translation>
     </message>
     <message>
         <source>Number of quantization steps</source>
@@ -9626,7 +9626,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Vector layer</source>
         <extracomment>v.extract</extracomment>
-        <translation type="unfinished"/>
+        <translation>Capa vectorial</translation>
     </message>
     <message>
         <source>Print minimal region extent of selected vector features instead of attributes</source>
@@ -9926,7 +9926,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Filtered</source>
         <extracomment>r.mfilter</extracomment>
-        <translation type="unfinished"/>
+        <translation>Filtrat</translation>
     </message>
     <message>
         <source>Write SURFER (Golden Software) ASCII grid</source>
@@ -10051,7 +10051,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Invert colors</source>
         <extracomment>r.colors</extracomment>
-        <translation type="unfinished"/>
+        <translation>Inverteix els colors</translation>
     </message>
     <message>
         <source>Value of the slope of the soil line (MSAVI2 only)</source>
@@ -10226,7 +10226,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Field separator</source>
         <extracomment>v.out.ascii</extracomment>
-        <translation type="unfinished"/>
+        <translation>Separador de camps</translation>
     </message>
     <message>
         <source>Only do the work if the map is floating-point</source>
@@ -10256,7 +10256,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Polylines</source>
         <extracomment>v.build.polylines</extracomment>
-        <translation type="unfinished"/>
+        <translation>Polilínies</translation>
     </message>
     <message>
         <source>Character representing no data cell value</source>
@@ -10331,7 +10331,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Output file</source>
         <extracomment>g.version</extracomment>
-        <translation type="unfinished"/>
+        <translation>Fitxer de sortida</translation>
     </message>
     <message>
         <source>Raster layer B</source>
@@ -10481,7 +10481,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>LiDAR input files in LAS format (*.las or *.laz)</source>
         <extracomment>v.in.lidar</extracomment>
-        <translation type="unfinished"/>
+        <translation>Fitxers d&apos;entrada LIDAR en format LAS (*.las o *.laz)</translation>
     </message>
     <message>
         <source>Statistic for interpolated cell values</source>
@@ -10561,7 +10561,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Kernel</source>
         <extracomment>v.kernel.vect</extracomment>
-        <translation type="unfinished"/>
+        <translation>Kernel (nucli)</translation>
     </message>
     <message>
         <source>Surface area estimation for rasters.</source>
@@ -10646,7 +10646,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Distance</source>
         <extracomment>v.distance</extracomment>
-        <translation type="unfinished"/>
+        <translation>Distància</translation>
     </message>
     <message>
         <source>r.path.coordinate.txt - Traces paths from starting points following input directions.</source>
@@ -10661,12 +10661,12 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Horizon</source>
         <extracomment>r.horizon.height</extracomment>
-        <translation type="unfinished"/>
+        <translation>Horitzó</translation>
     </message>
     <message>
         <source>X scale</source>
         <extracomment>v.transform</extracomment>
-        <translation type="unfinished"/>
+        <translation>Escala X</translation>
     </message>
     <message>
         <source>Transforms raster maps from RGB (Red-Green-Blue) color space to HIS (Hue-Intensity-Saturation) color space.</source>
@@ -10851,12 +10851,12 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Convex hull</source>
         <extracomment>v.hull</extracomment>
-        <translation type="unfinished"/>
+        <translation>Envolupant convexa</translation>
     </message>
     <message>
         <source>PPM</source>
         <extracomment>r.out.ppm</extracomment>
-        <translation type="unfinished"/>
+        <translation>PPM</translation>
     </message>
     <message>
         <source>Coordinates of stopping point(s) (E,N)</source>
@@ -10881,7 +10881,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Column name</source>
         <extracomment>v.univar</extracomment>
-        <translation type="unfinished"/>
+        <translation>Nom de la columna</translation>
     </message>
     <message>
         <source>Create points along input lines</source>
@@ -10896,7 +10896,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Formula</source>
         <extracomment>r.mapcalc.simple</extracomment>
-        <translation type="unfinished"/>
+        <translation>Fórmula</translation>
     </message>
     <message>
         <source>Input thinned ridge network raster layer</source>
@@ -11041,7 +11041,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Attributes</source>
         <extracomment>v.db.select</extracomment>
-        <translation type="unfinished"/>
+        <translation>Atributs</translation>
     </message>
     <message>
         <source>Centers point layer (nodes)</source>
@@ -11101,7 +11101,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>3D</source>
         <extracomment>v.to.3d</extracomment>
-        <translation type="unfinished"/>
+        <translation>3D</translation>
     </message>
     <message>
         <source>Name of instantaneous soil heat flux raster map [W/m2]</source>
@@ -11186,7 +11186,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Input raster layer</source>
         <extracomment>r.to.vect</extracomment>
-        <translation type="unfinished"/>
+        <translation>Capa ràster d&apos;entrada</translation>
     </message>
     <message>
         <source>Flatness threshold (degrees)</source>
@@ -11221,7 +11221,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Combined</source>
         <extracomment>v.patch</extracomment>
-        <translation type="unfinished"/>
+        <translation>Combinat</translation>
     </message>
     <message>
         <source>Ground truth training map</source>
@@ -11231,7 +11231,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Outliers</source>
         <extracomment>v.outlier</extracomment>
-        <translation type="unfinished"/>
+        <translation>Valors atípics</translation>
     </message>
     <message>
         <source>Truncate floating point data</source>
@@ -11281,7 +11281,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Raster layer</source>
         <extracomment>r.resamp.rst</extracomment>
-        <translation type="unfinished"/>
+        <translation>Capa ràster</translation>
     </message>
     <message>
         <source>r.stats.quantile.rast - Compute category quantiles using two passes and output rasters.</source>
@@ -11291,7 +11291,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Signature File</source>
         <extracomment>i.gensigset</extracomment>
-        <translation type="unfinished"/>
+        <translation>Fitxer de signatura</translation>
     </message>
     <message>
         <source>3-D lengths instead of 2-D</source>
@@ -11311,7 +11311,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Color Table</source>
         <extracomment>r.colors.out</extracomment>
-        <translation type="unfinished"/>
+        <translation>Taula de colors</translation>
     </message>
     <message>
         <source>Column name to upload points count (integer, created if doesn&apos;t exists)</source>
@@ -11401,12 +11401,12 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Bridge</source>
         <extracomment>v.net.bridge</extracomment>
-        <translation type="unfinished"/>
+        <translation>Pont</translation>
     </message>
     <message>
         <source>ASCII</source>
         <extracomment>v.in.ascii</extracomment>
-        <translation type="unfinished"/>
+        <translation>ASCII</translation>
     </message>
     <message>
         <source>Minimum deviation in map units</source>
@@ -11436,7 +11436,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Input vector layer</source>
         <extracomment>v.transform</extracomment>
-        <translation type="unfinished"/>
+        <translation>Capa vectorial d&apos;entrada</translation>
     </message>
     <message>
         <source>Name of input bounding/constraining raster map</source>
@@ -11451,7 +11451,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Lines</source>
         <extracomment>v.to.lines</extracomment>
-        <translation type="unfinished"/>
+        <translation>Línies</translation>
     </message>
     <message>
         <source>For horizon rasters, read from the DEM an extra buffer northward the present region</source>
@@ -11466,7 +11466,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Updated</source>
         <extracomment>v.what.vect</extracomment>
-        <translation type="unfinished"/>
+        <translation>Actualitzat</translation>
     </message>
     <message>
         <source>Maximum distance to the network</source>
@@ -11691,7 +11691,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Tileset</source>
         <extracomment>r.tileset</extracomment>
-        <translation type="unfinished"/>
+        <translation>Directori de tessel·les</translation>
     </message>
     <message>
         <source>Column value of the wet pixel</source>
@@ -11796,7 +11796,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Buildings</source>
         <extracomment>v.lidar.growing</extracomment>
-        <translation type="unfinished"/>
+        <translation>Edificis</translation>
     </message>
     <message>
         <source>Maximum number of features to download</source>
@@ -11836,7 +11836,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Input layer</source>
         <extracomment>v.report</extracomment>
-        <translation type="unfinished"/>
+        <translation>Capa d&apos;entrada</translation>
     </message>
     <message>
         <source>Combines red, green and blue raster maps into a single composite raster map.</source>
@@ -11851,7 +11851,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Area</source>
         <extracomment>r.surf.area</extracomment>
-        <translation type="unfinished"/>
+        <translation>Àrea</translation>
     </message>
     <message>
         <source>Closeness threshold in network generalization</source>
@@ -12116,7 +12116,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Y scale</source>
         <extracomment>v.transform</extracomment>
-        <translation type="unfinished"/>
+        <translation>Escala Y</translation>
     </message>
     <message>
         <source>Visualization and animation tool for GRASS data.</source>
@@ -12236,7 +12236,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Filled</source>
         <extracomment>r.fillnulls</extracomment>
-        <translation type="unfinished"/>
+        <translation>Omplert</translation>
     </message>
     <message>
         <source>Name of the x-derivatives raster map [m/m]</source>
@@ -12411,7 +12411,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Classified</source>
         <extracomment>v.lidar.correction</extracomment>
-        <translation type="unfinished"/>
+        <translation>Classificat</translation>
     </message>
     <message>
         <source>Print citation options</source>
@@ -12491,7 +12491,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Composite</source>
         <extracomment>r.composite</extracomment>
-        <translation type="unfinished"/>
+        <translation>Composat</translation>
     </message>
     <message>
         <source>Name of input vector map with training points</source>
@@ -12566,7 +12566,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Selected</source>
         <extracomment>v.select</extracomment>
-        <translation type="unfinished"/>
+        <translation>Seleccionat</translation>
     </message>
     <message>
         <source>Ignore the map extent of DXF file</source>
@@ -12711,7 +12711,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Partition</source>
         <extracomment>v.kcv</extracomment>
-        <translation type="unfinished"/>
+        <translation>Partició</translation>
     </message>
     <message>
         <source>Fills lake at given point to given level.</source>
@@ -12836,7 +12836,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Maximum number of iterations</source>
         <extracomment>r.thin</extracomment>
-        <translation type="unfinished"/>
+        <translation>Nombre màxim d&apos;iteracions</translation>
     </message>
     <message>
         <source>Horizon angle computation from a digital elevation model.</source>
@@ -12891,7 +12891,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Coordinate precision</source>
         <extracomment>v.out.svg</extracomment>
-        <translation type="unfinished"/>
+        <translation>Precisió de la coordenada</translation>
     </message>
     <message>
         <source>Y-part of the hydraulic conductivity tensor in [m/s]</source>
@@ -12956,7 +12956,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>SVG File</source>
         <extracomment>v.out.svg</extracomment>
-        <translation type="unfinished"/>
+        <translation>Fitxer SVG</translation>
     </message>
     <message>
         <source>Makes each output cell value an accumulation function of the values assigned to the corresponding cells in the input raster map layers.</source>
@@ -13156,7 +13156,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Report</source>
         <extracomment>v.report</extracomment>
-        <translation type="unfinished"/>
+        <translation>Informe</translation>
     </message>
     <message>
         <source>Create 3D vector map</source>
@@ -13221,7 +13221,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Identifies segments (objects) from imagery data.</source>
         <extracomment>i.segment</extracomment>
-        <translation type="unfinished"/>
+        <translation>Identifica segments (objectes) a partir de dades d&apos;imatges.</translation>
     </message>
     <message>
         <source>Lower and upper accumulation limits (lower,upper)</source>
@@ -13391,7 +13391,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Input raster layers</source>
         <extracomment>r.cross</extracomment>
-        <translation type="unfinished"/>
+        <translation>Capes ràster d&apos;entrada</translation>
     </message>
     <message>
         <source>Produces a raster layer of uniform random deviates whose range can be expressed by the user.</source>
@@ -13496,7 +13496,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Text delimiter</source>
         <extracomment>v.in.ascii</extracomment>
-        <translation type="unfinished"/>
+        <translation>Delimitador de text</translation>
     </message>
     <message>
         <source>Rectifies a vector by computing a coordinate transformation for each object in the vector based on the control points.</source>
@@ -13611,7 +13611,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Cleaned</source>
         <extracomment>v.clean</extracomment>
-        <translation type="unfinished"/>
+        <translation>Netejat</translation>
     </message>
     <message>
         <source>Solar Elevation Angle</source>
@@ -13916,7 +13916,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Elevation layer</source>
         <extracomment>r.out.vrml</extracomment>
-        <translation type="unfinished"/>
+        <translation>Capa d&apos;elevacions</translation>
     </message>
     <message>
         <source>Apply post-processing filter to remove small holes</source>
@@ -14136,7 +14136,7 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <message>
         <source>Random</source>
         <extracomment>v.random</extracomment>
-        <translation type="unfinished"/>
+        <translation>Aleatori</translation>
     </message>
     <message>
         <source>Perform orthogonal 3D transformation</source>
@@ -14325,11 +14325,11 @@ El bloc de codi del camp no retorna la variable &apos;{0}&apos;! Declari aquesta
     <name>GrassUtils</name>
     <message>
         <source>WARNING</source>
-        <translation type="unfinished"/>
+        <translation>AVÍS</translation>
     </message>
     <message>
         <source>ERROR</source>
-        <translation type="unfinished"/>
+        <translation>ERROR</translation>
     </message>
     <message>
         <source>GRASS command crashed :( Try a different set of input parameters and consult the GRASS algorithm manual for more information.</source>
@@ -14433,7 +14433,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation type="unfinished"/>
+        <translation>El tipus de dades Int8 requereix la versió 3.7 de GDAL o una de posterior</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -14528,7 +14528,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation type="unfinished"/>
+        <translation>El tipus de dades Int8 requereix la versió 3.7 de GDAL o una de posterior</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -14607,7 +14607,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation type="unfinished"/>
+        <translation>El tipus de dades Int8 requereix la versió 3.7 de GDAL o una de posterior</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -14678,7 +14678,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation type="unfinished"/>
+        <translation>El tipus de dades Int8 requereix la versió 3.7 de GDAL o una de posterior</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -14733,7 +14733,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation type="unfinished"/>
+        <translation>El tipus de dades Int8 requereix la versió 3.7 de GDAL o una de posterior</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -14796,7 +14796,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
-        <translation type="unfinished"/>
+        <translation>El tipus de dades Int8 requereix la versió 3.7 de GDAL o una de posterior</translation>
     </message>
     <message>
         <source>Output format is invalid</source>
@@ -15203,7 +15203,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     </message>
     <message>
         <source>Edit Features In-Place</source>
-        <translation type="unfinished"/>
+        <translation>Edita objectes in situ</translation>
     </message>
 </context>
 <context>
@@ -15351,7 +15351,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     <message>
         <location filename="../src/ui/3d/line3dsymbolwidget.ui"/>
         <source>Offset</source>
-        <translation type="unfinished"/>
+        <translation>Desplaçament</translation>
     </message>
 </context>
 <context>
@@ -17437,7 +17437,7 @@ Mostra marcadors de posició per a les etiquetes que no s&apos;han pogut col·lo
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>PyQGIS API Documentation</source>
-        <translation type="unfinished"/>
+        <translation>Documentació de l&apos;API de PyQGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
@@ -17452,12 +17452,12 @@ Mostra marcadors de posició per a les etiquetes que no s&apos;han pogut col·lo
     <message>
         <location filename="../python/plugins/processing/ui/DlgScriptEditor.ui"/>
         <source>Toggle Comment</source>
-        <translation type="unfinished"/>
+        <translation>Commuta el comentari</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>Models</source>
-        <translation type="unfinished"/>
+        <translation>Models</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
@@ -17467,7 +17467,7 @@ Mostra marcadors de posició per a les etiquetes que no s&apos;han pogut col·lo
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>&amp;Database</source>
-        <translation type="unfinished"/>
+        <translation>Base de &amp;dades</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
@@ -17813,7 +17813,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
         <source>Show Eye Dome Lighting</source>
-        <translation type="unfinished"/>
+        <translation>Mostra la il·luminació Eye Dome Lighting</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
@@ -17828,7 +17828,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
         <source>Offset</source>
-        <translation type="unfinished"/>
+        <translation>Desplaçament</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
@@ -17843,12 +17843,12 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
         <source>Horizontal position</source>
-        <translation type="unfinished"/>
+        <translation>Posició horitzontal</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
         <source>Vertical position</source>
-        <translation type="unfinished"/>
+        <translation>Posició vertical</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
@@ -17858,17 +17858,17 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
         <source>General</source>
-        <translation type="unfinished"/>
+        <translation>General</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
         <source>General settings</source>
-        <translation type="unfinished"/>
+        <translation>Configuració general</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
         <source>Effects</source>
-        <translation type="unfinished"/>
+        <translation>Efectes</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
@@ -17878,7 +17878,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
         <source>Extent</source>
-        <translation type="unfinished"/>
+        <translation>Extensió</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/map3dconfigwidget.ui"/>
@@ -17906,7 +17906,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/map3dexportwidget.ui"/>
         <source>Smooth edges</source>
-        <translation type="unfinished"/>
+        <translation>Suavitza les vores</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/map3dexportwidget.ui"/>
@@ -17975,7 +17975,7 @@ Shift+click on existing inner ring to fill.</source>
     </message>
     <message>
         <source>Plot</source>
-        <translation type="unfinished"/>
+        <translation>Dibuixa</translation>
     </message>
     <message>
         <source>HTML files (*.html)</source>
@@ -17991,7 +17991,7 @@ Shift+click on existing inner ring to fill.</source>
     </message>
     <message>
         <source>Plots</source>
-        <translation type="unfinished"/>
+        <translation>Diagrames</translation>
     </message>
     <message>
         <source>Creates a box plot with mean and standard deviation values.</source>
@@ -18381,12 +18381,12 @@ Shift+click on existing inner ring to fill.</source>
     </message>
     <message>
         <source>Loading Connections</source>
-        <translation type="unfinished"/>
+        <translation>S&apos;estan carregant les connexions</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui"/>
         <source>Debugging</source>
-        <translation type="unfinished"/>
+        <translation>Depuració</translation>
     </message>
     <message>
         <location filename="../python/plugins/MetaSearch/ui/maindialog.ui"/>
@@ -18399,7 +18399,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/metalroughmaterialwidget.ui"/>
         <source>Base color</source>
-        <translation type="unfinished"/>
+        <translation>Color base</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/metalroughmaterialwidget.ui"/>
@@ -18409,7 +18409,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/metalroughmaterialwidget.ui"/>
         <source>Roughness</source>
-        <translation type="unfinished"/>
+        <translation>Rugositat</translation>
     </message>
 </context>
 <context>
@@ -18508,15 +18508,15 @@ Shift+click on existing inner ring to fill.</source>
     </message>
     <message>
         <source>Save Model</source>
-        <translation type="unfinished"/>
+        <translation>Desa el model</translation>
     </message>
     <message>
         <source>Processing models (*.model3 *.MODEL3)</source>
-        <translation type="unfinished"/>
+        <translation>S&apos;estan processant els models (*.model3 *.MODEL3)</translation>
     </message>
     <message>
         <source>model</source>
-        <translation type="unfinished"/>
+        <translation>model</translation>
     </message>
     <message>
         <source>I/O error</source>
@@ -18542,7 +18542,7 @@ Shift+click on existing inner ring to fill.</source>
     </message>
     <message>
         <source>Open Model</source>
-        <translation type="unfinished"/>
+        <translation>Obre un model</translation>
     </message>
     <message>
         <source>Add Model Input</source>
@@ -18572,7 +18572,7 @@ Shift+click on existing inner ring to fill.</source>
     <name>ModelerInputGraphicItem</name>
     <message>
         <source>Edit {}</source>
-        <translation type="unfinished"/>
+        <translation>Edita {}</translation>
     </message>
 </context>
 <context>
@@ -18655,7 +18655,7 @@ Shift+click on existing inner ring to fill.</source>
     <name>ModelerParametersPanelWidget</name>
     <message>
         <source>Description</source>
-        <translation type="unfinished"/>
+        <translation>Descripció</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
@@ -18667,7 +18667,7 @@ Shift+click on existing inner ring to fill.</source>
     </message>
     <message>
         <source>Dependencies</source>
-        <translation type="unfinished"/>
+        <translation>Dependències</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
@@ -18678,11 +18678,11 @@ Shift+click on existing inner ring to fill.</source>
     <name>ModelerParametersWidget</name>
     <message>
         <source>Properties</source>
-        <translation type="unfinished"/>
+        <translation>Propietats</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished"/>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Comment Color</source>
@@ -18690,11 +18690,11 @@ Shift+click on existing inner ring to fill.</source>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Per defecte</translation>
     </message>
     <message>
         <source>Comments</source>
-        <translation type="unfinished"/>
+        <translation>Comentaris</translation>
     </message>
 </context>
 <context>
@@ -19370,37 +19370,37 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/phongmaterialwidget.ui"/>
         <source>Diffuse</source>
-        <translation type="unfinished"/>
+        <translation>Difús</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongmaterialwidget.ui"/>
         <source>Ambient</source>
-        <translation type="unfinished"/>
+        <translation>Ambient</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongmaterialwidget.ui"/>
         <source>Specular</source>
-        <translation type="unfinished"/>
+        <translation>Especular</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongmaterialwidget.ui"/>
         <source>Shininess</source>
-        <translation type="unfinished"/>
+        <translation>Brillantor</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongmaterialwidget.ui"/>
         <source>How shiny smooth surfaces are.</source>
-        <translation type="unfinished"/>
+        <translation>Com de brillants són les superfícies llises.</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongmaterialwidget.ui"/>
         <source>Color of light reflecting from smooth surfaces.</source>
-        <translation type="unfinished"/>
+        <translation>Color de la llum reflectida per superfícies llises.</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongmaterialwidget.ui"/>
         <source>Color of light reflected from rough surfaces.</source>
-        <translation type="unfinished"/>
+        <translation>Color de la llum reflectida per superfícies rugoses.</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongmaterialwidget.ui"/>
@@ -19415,7 +19415,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/phongmaterialwidget.ui"/>
         <source>Opacity</source>
-        <translation type="unfinished"/>
+        <translation>Opacitat</translation>
     </message>
 </context>
 <context>
@@ -19428,12 +19428,12 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
         <source>Specular</source>
-        <translation type="unfinished"/>
+        <translation>Especular</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
         <source>Texture scale</source>
-        <translation type="unfinished"/>
+        <translation>Escala de la textura</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
@@ -19443,17 +19443,17 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
         <source>Ambient</source>
-        <translation type="unfinished"/>
+        <translation>Ambient</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
         <source>Texture rotation</source>
-        <translation type="unfinished"/>
+        <translation>Rotació de la textura</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
         <source>Shininess</source>
-        <translation type="unfinished"/>
+        <translation>Brillantor</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
@@ -19463,7 +19463,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
         <source>Color of light reflecting from smooth surfaces.</source>
-        <translation type="unfinished"/>
+        <translation>Color de la llum reflectida per superfícies llises.</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
@@ -19473,12 +19473,12 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
         <source>How shiny smooth surfaces are.</source>
-        <translation type="unfinished"/>
+        <translation>Com de brillants són les superfícies llises.</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/phongtexturedmaterialwidgetbase.ui"/>
         <source>Opacity</source>
-        <translation type="unfinished"/>
+        <translation>Opacitat</translation>
     </message>
 </context>
 <context>
@@ -19533,7 +19533,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/point3dsymbolwidget.ui"/>
         <source>Altitude clamping</source>
-        <translation type="unfinished"/>
+        <translation>Restricció d&apos;alçada</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/point3dsymbolwidget.ui"/>
@@ -19548,7 +19548,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/point3dsymbolwidget.ui"/>
         <source>Terrain</source>
-        <translation type="unfinished"/>
+        <translation>Terreny</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/point3dsymbolwidget.ui"/>
@@ -19593,12 +19593,12 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/point3dsymbolwidget.ui"/>
         <source>Transformation</source>
-        <translation type="unfinished"/>
+        <translation>Transformació</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/point3dsymbolwidget.ui"/>
         <source>Shading</source>
-        <translation type="unfinished"/>
+        <translation>Ombrejat</translation>
     </message>
 </context>
 <context>
@@ -19769,7 +19769,7 @@ Shift+click on existing inner ring to fill.</source>
     </message>
     <message>
         <source>Plots</source>
-        <translation type="unfinished"/>
+        <translation>Diagrames</translation>
     </message>
     <message>
         <source>Generates a polar plot based on the value of an input vector layer.</source>
@@ -19796,7 +19796,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/polygon3dsymbolwidget.ui"/>
         <source>Altitude binding</source>
-        <translation type="unfinished"/>
+        <translation>Fixació d&apos;alçada</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/polygon3dsymbolwidget.ui"/>
@@ -19806,12 +19806,12 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/polygon3dsymbolwidget.ui"/>
         <source>Terrain</source>
-        <translation type="unfinished"/>
+        <translation>Terreny</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/polygon3dsymbolwidget.ui"/>
         <source>Altitude clamping</source>
-        <translation type="unfinished"/>
+        <translation>Restricció d&apos;alçada</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/polygon3dsymbolwidget.ui"/>
@@ -19861,7 +19861,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/polygon3dsymbolwidget.ui"/>
         <source>Shading</source>
-        <translation type="unfinished"/>
+        <translation>Ombrejat</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/polygon3dsymbolwidget.ui"/>
@@ -19891,7 +19891,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/3d/polygon3dsymbolwidget.ui"/>
         <source>Offset</source>
-        <translation type="unfinished"/>
+        <translation>Desplaçament</translation>
     </message>
 </context>
 <context>
@@ -19993,7 +19993,7 @@ Shift+click on existing inner ring to fill.</source>
 </translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Processing</source>
         <translation>Processament</translation>
     </message>
@@ -20224,7 +20224,7 @@ This can cause unexpected results.</source>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="807"/>
         <source>Enum</source>
-        <translation type="unfinished"/>
+        <translation>Enumeració</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="876"/>
@@ -20299,7 +20299,7 @@ This can cause unexpected results.</source>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="1887"/>
         <source>Area</source>
-        <translation type="unfinished"/>
+        <translation>Àrea</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="1937"/>
@@ -20309,7 +20309,7 @@ This can cause unexpected results.</source>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="1942"/>
         <source>Volume</source>
-        <translation type="unfinished"/>
+        <translation>Volum</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="1993"/>
@@ -20319,7 +20319,7 @@ This can cause unexpected results.</source>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="1998"/>
         <source>Duration</source>
-        <translation type="unfinished"/>
+        <translation>Durada</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="2047"/>
@@ -20429,7 +20429,7 @@ This can cause unexpected results.</source>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="2760"/>
         <source>Database Table</source>
-        <translation type="unfinished"/>
+        <translation>Taula de base de dades</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="2821"/>
@@ -20487,7 +20487,7 @@ This can cause unexpected results.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1827"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1841"/>
         <source>Could not load parameter %1 of type %2.</source>
         <translation>No s&apos;ha pogut carregar el paràmetre %1 de tipus %2.</translation>
     </message>
@@ -20759,19 +20759,19 @@ This can cause unexpected results.</source>
     </message>
     <message>
         <source>Conversion</source>
-        <translation type="unfinished"/>
+        <translation>Conversió</translation>
     </message>
     <message>
         <source>Extraction</source>
-        <translation type="unfinished"/>
+        <translation>Extracció</translation>
     </message>
     <message>
         <source>Analysis</source>
-        <translation type="unfinished"/>
+        <translation>Anàlisi</translation>
     </message>
     <message>
         <source>Miscellaneous</source>
-        <translation type="unfinished"/>
+        <translation>Miscel·lània</translation>
     </message>
     <message>
         <source>Invalid algorithm ID for menu: {}</source>
@@ -20787,7 +20787,7 @@ This can cause unexpected results.</source>
     </message>
     <message>
         <source>Missing Dependency</source>
-        <translation type="unfinished"/>
+        <translation>Falta la dependència</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Missing dependency. This algorithm cannot be run :-( &lt;/h3&gt;
@@ -20830,11 +20830,11 @@ This can cause unexpected results.</source>
     </message>
     <message>
         <source>Add to Favorites</source>
-        <translation type="unfinished"/>
+        <translation>Afegeix a Preferits</translation>
     </message>
     <message>
         <source>Remove from Favorites</source>
-        <translation type="unfinished"/>
+        <translation>Elimina de Preferits</translation>
     </message>
 </context>
 <context>
@@ -21206,7 +21206,7 @@ This can cause unexpected results.</source>
     </message>
     <message>
         <source>Run Command</source>
-        <translation type="unfinished"/>
+        <translation>Executa l&apos;ordre</translation>
     </message>
     <message>
         <source>Object Inspector</source>
@@ -21262,7 +21262,7 @@ This can cause unexpected results.</source>
     </message>
     <message>
         <source>Python</source>
-        <translation type="unfinished"/>
+        <translation>Python</translation>
     </message>
     <message>
         <source>Toggle Comment</source>
@@ -21274,7 +21274,7 @@ This can cause unexpected results.</source>
     </message>
     <message>
         <source>Context Help</source>
-        <translation type="unfinished"/>
+        <translation>Ajuda contextual</translation>
     </message>
     <message>
         <source>Untitled-0</source>
@@ -21338,7 +21338,7 @@ From the console, you can type the following special commands:
     <message>
         <location filename="../src/ui/3d/3ddebugwidget.ui"/>
         <source>Show bounding boxes</source>
-        <translation type="unfinished"/>
+        <translation>Mostra els caixetins delimitadors</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/3ddebugwidget.ui"/>
@@ -21378,12 +21378,12 @@ From the console, you can type the following special commands:
     <message>
         <location filename="../src/ui/3d/3ddebugwidget.ui"/>
         <source>Corner</source>
-        <translation type="unfinished"/>
+        <translation>Cantó</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/3ddebugwidget.ui"/>
         <source>Size</source>
-        <translation type="unfinished"/>
+        <translation>Mida</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/3ddebugwidget.ui"/>
@@ -21441,12 +21441,12 @@ From the console, you can type the following special commands:
     <message>
         <location filename="../src/ui/3d/3dnavigationwidget.ui"/>
         <source>Move up</source>
-        <translation type="unfinished"/>
+        <translation>Mou amunt</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/3dnavigationwidget.ui"/>
         <source>Zoom In</source>
-        <translation type="unfinished"/>
+        <translation>Apropa</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/3dnavigationwidget.ui"/>
@@ -21456,7 +21456,7 @@ From the console, you can type the following special commands:
     <message>
         <location filename="../src/ui/3d/3dnavigationwidget.ui"/>
         <source>Move left</source>
-        <translation type="unfinished"/>
+        <translation>Mou a l&apos;esquerra</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/3dnavigationwidget.ui"/>
@@ -21466,17 +21466,17 @@ From the console, you can type the following special commands:
     <message>
         <location filename="../src/ui/3d/3dnavigationwidget.ui"/>
         <source>Move right</source>
-        <translation type="unfinished"/>
+        <translation>Mou a la dreta</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/3dnavigationwidget.ui"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"/>
+        <translation>Allunya</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/3dnavigationwidget.ui"/>
         <source>Move down</source>
-        <translation type="unfinished"/>
+        <translation>Mou avall</translation>
     </message>
     <message>
         <location filename="../src/ui/3d/3dnavigationwidget.ui"/>
@@ -21529,7 +21529,7 @@ From the console, you can type the following special commands:
     <message>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="413"/>
         <source>Stdev</source>
-        <translation type="unfinished"/>
+        <translation>Desviació tipus</translation>
     </message>
     <message>
         <location filename="../src/core/qgsaggregatecalculator.cpp" line="424"/>
@@ -21594,12 +21594,12 @@ From the console, you can type the following special commands:
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="132"/>
         <source>Locator</source>
-        <translation type="unfinished"/>
+        <translation>Localitzador</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="133"/>
         <source>GPU acceleration</source>
-        <translation type="unfinished"/>
+        <translation>Acceleració amb GPU</translation>
     </message>
 </context>
 <context>
@@ -22284,7 +22284,7 @@ If the input layer is a shapefile, the .prj file will be overwritten — or crea
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdefineprojection.cpp" line="71"/>
         <source>Layer with projection</source>
-        <translation type="unfinished"/>
+        <translation>Capa amb projecció</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdefineprojection.cpp" line="106"/>
@@ -23092,8 +23092,8 @@ La distància s&apos;especifica en unitats de capa i el rumb en graus des del no
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -23116,8 +23116,8 @@ La distància s&apos;especifica en unitats de capa i el rumb en graus des del no
     </message>
     <message>
         <location filename="../src/core/pal/feature.cpp" line="430"/>
-        <location filename="../src/core/pal/feature.cpp" line="2434"/>
-        <location filename="../src/core/pal/feature.cpp" line="2475"/>
+        <location filename="../src/core/pal/feature.cpp" line="2451"/>
+        <location filename="../src/core/pal/feature.cpp" line="2492"/>
         <location filename="../src/core/pal/geomfunction.cpp" line="343"/>
         <location filename="../src/core/pal/labelposition.cpp" line="196"/>
         <location filename="../src/core/pal/labelposition.cpp" line="223"/>
@@ -24133,7 +24133,7 @@ La distància s&apos;especifica en unitats de capa i el rumb en graus des del no
         <location filename="../src/core/providers/qgsproviderregistry.cpp" line="512"/>
         <location filename="../src/core/providers/qgsproviderregistry.cpp" line="519"/>
         <source>All Files</source>
-        <translation type="unfinished"/>
+        <translation>Tots els fitxers</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsproviderregistry.cpp" line="578"/>
@@ -25280,7 +25280,7 @@ If set to YES:  RFC 8142 standard: GeoJSON Text Sequences  (geojsons).</source>
     <message>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="66"/>
         <source>Single color</source>
-        <translation type="unfinished"/>
+        <translation>Color únic</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrendererregistry.cpp" line="70"/>
@@ -25333,7 +25333,7 @@ If set to YES:  RFC 8142 standard: GeoJSON Text Sequences  (geojsons).</source>
     <message>
         <location filename="../src/core/symbology/qgsrendererregistry.cpp" line="37"/>
         <source>No Symbols</source>
-        <translation type="unfinished"/>
+        <translation>Sense símbols</translation>
     </message>
     <message>
         <location filename="../src/core/symbology/qgsrendererregistry.cpp" line="41"/>
@@ -28270,8 +28270,8 @@ The additional attributes and their values are taken from a second vector layer.
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="213"/>
         <location filename="../src/app/devtools/querylogger/qgsdatabasequeryloggernode.cpp" line="233"/>
         <location filename="../src/plugins/topology/dockModel.cpp" line="27"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="795"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1114"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="799"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1118"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="42"/>
         <location filename="../src/providers/wfs/qgswfsguiutils.cpp" line="48"/>
         <source>Error</source>
@@ -30879,7 +30879,11 @@ La operació NO es pot desfer!</translation>
 Operation can NOT be undone!
 
 (Current database will be backed up and new one created.)</source>
-        <translation type="unfinished"/>
+        <translation>Esteu segur que voleu ESBORRAR tota la base de dades d&apos;autenticació?
+
+L&apos;operació no es pot desfer!
+
+(La base de dades actual es farà una còpia de seguretat i se&apos;n crearà una de nova).</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="320"/>
@@ -37181,103 +37185,103 @@ Extracted label information include: position (served as point geometries), the 
         <translation>S&apos;ha produït un error en executar %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="519"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="528"/>
         <source>Algorithm “%1” cannot be run in a background thread, switching to main thread for this step</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="537"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="551"/>
         <source>Error encountered while running %1: %2</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="590"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="604"/>
         <source>Results:</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="694"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="708"/>
         <source>OK. Execution took %1 s (%n output(s)).</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="705"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="719"/>
         <source>Failed after %1 s.</source>
         <translation type="unfinished"/>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="723"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="737"/>
         <source>Model processed OK. Executed %n algorithm(s) total in %1 s.</source>
         <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1177"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1224"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1287"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1191"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1238"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1301"/>
         <source>Output &apos;%1&apos; from algorithm &apos;%2&apos;</source>
         <translation>Sortida &apos;%1&apos; de l&apos;algoritme &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1256"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1327"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1270"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1341"/>
         <source>Minimum X of %1</source>
         <translation>X mínima de %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1257"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1328"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1271"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1342"/>
         <source>Minimum Y of %1</source>
         <translation>Y mínima de %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1258"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1329"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1272"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1343"/>
         <source>Maximum X of %1</source>
         <translation>X màxima de %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1259"/>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1330"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1273"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1344"/>
         <source>Maximum Y of %1</source>
         <translation>Y màxima de %1</translation>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1478"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="1492"/>
         <source>Model does not contain any algorithms</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2337"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2351"/>
         <source>Algorithm is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2358"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2372"/>
         <source>Value for &lt;i&gt;%1&lt;/i&gt; is not acceptable for this parameter</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2366"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2380"/>
         <source>Model input &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2374"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2388"/>
         <source>Child algorithm &lt;i&gt;%1&lt;/i&gt; used for parameter &lt;i&gt;%2&lt;/i&gt; does not exist</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2396"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2410"/>
         <source>Parameter &lt;i&gt;%1&lt;/i&gt; is mandatory</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2405"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2419"/>
         <source>Invalid child ID: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2420"/>
+        <location filename="../src/core/processing/models/qgsprocessingmodelalgorithm.cpp" line="2434"/>
         <source>The model you are trying to run contains an algorithm that is not available: &lt;i&gt;%1&lt;/i&gt;</source>
         <translation>El model que estàs intentant executar conté un algoritme no disponible:
 &lt;i&gt;%1&lt;/i&gt;</translation>
@@ -38917,7 +38921,7 @@ Extracted label information include: position (served as point geometries), the 
         <location filename="../src/core/qgsunittypes.cpp" line="666"/>
         <source>f</source>
         <comment>distance</comment>
-        <translation type="unfinished"/>
+        <translation>f</translation>
     </message>
     <message>
         <location filename="../src/core/qgsunittypes.cpp" line="669"/>
@@ -43817,8 +43821,8 @@ If desired, tables can also be output containing lists of the categories which c
     </message>
     <message>
         <location filename="../src/core/providers/arcgis/qgsarcgisrestquery.cpp" line="238"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="805"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1124"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="809"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1128"/>
         <source>Error %1</source>
         <translation>Error %1</translation>
     </message>
@@ -44897,7 +44901,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
         <location filename="../src/core/providers/ogr/qgsgeopackagedataitems.cpp" line="447"/>
         <location filename="../src/core/providers/ogr/qgsgeopackagedataitems.cpp" line="474"/>
         <source>There was an error deleting &apos;%1&apos; on &apos;%2&apos;!</source>
-        <translation type="unfinished"/>
+        <translation>S&apos;ha produït un error en suprimir «%1» a «%2».</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderconnection.cpp" line="340"/>
@@ -53269,7 +53273,7 @@ For more details, please see the following papers:
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="92"/>
         <source>N</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>N</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="94"/>
@@ -53287,7 +53291,7 @@ For more details, please see the following papers:
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="98"/>
         <source>S</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>S</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="100"/>
@@ -53305,7 +53309,7 @@ For more details, please see the following papers:
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="104"/>
         <source>Y</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>Y</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="106"/>
@@ -53335,7 +53339,7 @@ For more details, please see the following papers:
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="114"/>
         <source>E</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="116"/>
@@ -53365,7 +53369,7 @@ For more details, please see the following papers:
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="124"/>
         <source>W</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>O</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="126"/>
@@ -53383,7 +53387,7 @@ For more details, please see the following papers:
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="130"/>
         <source>X</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>X</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="132"/>
@@ -53401,39 +53405,39 @@ For more details, please see the following papers:
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="136"/>
         <source>Z</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>Z</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="138"/>
         <source>U</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>U</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="140"/>
         <source>D</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="142"/>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="162"/>
         <source>F</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="144"/>
         <source>A</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="146"/>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="164"/>
         <source>P</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>P</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="148"/>
@@ -53481,7 +53485,7 @@ For more details, please see the following papers:
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="166"/>
         <source>T</source>
         <comment>axis</comment>
-        <translation type="unfinished"/>
+        <translation>T</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemutils.cpp" line="168"/>
@@ -54532,7 +54536,7 @@ Only the first 999 classes have been generated.</source>
         <location filename="../src/app/options/qgsfontoptions.cpp" line="83"/>
         <location filename="../src/providers/mssql/qgsmssqlproviderconnection.cpp" line="808"/>
         <source>, </source>
-        <translation type="unfinished"/>
+        <translation>, </translation>
     </message>
     <message>
         <location filename="../src/core/pointcloud/qgspointcloudlayerexporter.cpp" line="389"/>
@@ -55875,7 +55879,7 @@ The output layer is a copy of the input layer with additional fields that contai
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="285"/>
         <source>Failed to compute concave hull: Dissolve algorithm not found!</source>
-        <translation type="unfinished"/>
+        <translation>No s&apos;ha pogut calcular el casc còncau: no s&apos;ha trobat l&apos;algorisme Dissolve.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconcavehull.cpp" line="292"/>
@@ -57338,7 +57342,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmvoronoipolygons.cpp" line="68"/>
         <source>Buffer region (% of extent)</source>
-        <translation type="unfinished"/>
+        <translation>Regió de la memòria intermèdia (% d&apos;extensió)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmvoronoipolygons.cpp" line="70"/>
@@ -63159,12 +63163,12 @@ Delete these features?</source>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="2349"/>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="2356"/>
         <source> °</source>
-        <translation type="unfinished"/>
+        <translation> °</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingdockwidget.cpp" line="2430"/>
         <source>°</source>
-        <translation type="unfinished"/>
+        <translation>°</translation>
     </message>
 </context>
 <context>
@@ -63240,7 +63244,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/gui/qgsadvanceddigitizingfloater.cpp" line="267"/>
         <source> °</source>
-        <translation type="unfinished"/>
+        <translation> °</translation>
     </message>
 </context>
 <context>
@@ -63283,12 +63287,12 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/qgsadvanceddigitizingfloaterbase.ui"/>
         <source>∠</source>
-        <translation type="unfinished"/>
+        <translation>∠</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsadvanceddigitizingfloaterbase.ui"/>
         <source>↻</source>
-        <translation type="unfinished"/>
+        <translation>↻</translation>
     </message>
 </context>
 <context>
@@ -63534,7 +63538,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/3d/ambientocclusionsettingswidget.ui"/>
         <source>%</source>
-        <translation type="unfinished"/>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/app/3d/qgsambientocclusionsettingswidget.cpp" line="24"/>
@@ -63575,7 +63579,7 @@ Delete these features?</source>
         <translation>Informació de la capa</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="940"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="944"/>
         <source>Unexpected image size for block. Expected %1x%2, got %3x%4</source>
         <translation type="unfinished"/>
     </message>
@@ -63583,31 +63587,31 @@ Delete these features?</source>
 <context>
     <name>QgsAmsTiledImageDownloadHandler</name>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="987"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1065"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1250"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="991"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1069"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1254"/>
         <source>network request update failed for authentication config</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="989"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1067"/>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1252"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="993"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1071"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1256"/>
         <source>Network</source>
         <translation>Xarxa</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)</source>
         <translation>Error en la petició de tessel·les (Status: %1; Content-Type: %2; Length: %3; URL: %4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1133"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1137"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1177"/>
+        <location filename="../src/providers/arcgisrest/qgsamsprovider.cpp" line="1181"/>
         <source>Returned image is flawed [Content-Type: %1; URL: %2]</source>
         <translation type="unfinished"/>
     </message>
@@ -64179,7 +64183,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/ui/annotations/qgsannotationpointtextwidgetbase.ui"/>
         <source> °</source>
-        <translation type="unfinished"/>
+        <translation> °</translation>
     </message>
     <message>
         <location filename="../src/ui/annotations/qgsannotationpointtextwidgetbase.ui"/>
@@ -70950,7 +70954,7 @@ Description: %3</source>
     <message>
         <location filename="../src/auth/oauth2/gui/qgsauthoauth2edit.ui"/>
         <source>:</source>
-        <translation type="unfinished"/>
+        <translation>:</translation>
     </message>
     <message>
         <location filename="../src/auth/oauth2/gui/qgsauthoauth2edit.ui"/>
@@ -72199,7 +72203,7 @@ Server response: %1</source>
     <message>
         <location filename="../src/ui/qgsbookmarkeditordialog.ui"/>
         <source> °</source>
-        <translation type="unfinished"/>
+        <translation> °</translation>
     </message>
 </context>
 <context>
@@ -73258,7 +73262,7 @@ Cal suprimir ls classes existents abans de classificar?</translation>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditor.cpp" line="547"/>
         <source>R</source>
-        <translation type="unfinished"/>
+        <translation>R</translation>
     </message>
     <message>
         <location filename="../src/gui/codeeditors/qgscodeeditor.cpp" line="549"/>
@@ -73423,7 +73427,7 @@ Cal suprimir ls classes existents abans de classificar?</translation>
     <message>
         <location filename="../src/app/options/qgscodeeditoroptions.cpp" line="178"/>
         <source>R</source>
-        <translation type="unfinished"/>
+        <translation>R</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgscodeeditoroptions.cpp" line="179"/>
@@ -73807,7 +73811,7 @@ Cal suprimir ls classes existents abans de classificar?</translation>
     <message>
         <location filename="../src/ui/qgscodedvaluedomainwidgetbase.ui"/>
         <source>…</source>
-        <translation type="unfinished"/>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscodedvaluedomainwidgetbase.ui"/>
@@ -74928,22 +74932,22 @@ Un de negatiu s&apos;arrodoneix en potències de 10</translation>
     <message>
         <location filename="../src/ui/qgscompoundcolorwidget.ui"/>
         <source>C</source>
-        <translation type="unfinished"/>
+        <translation>C</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompoundcolorwidget.ui"/>
         <source>M</source>
-        <translation type="unfinished"/>
+        <translation>M</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompoundcolorwidget.ui"/>
         <source>Y</source>
-        <translation type="unfinished"/>
+        <translation>Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompoundcolorwidget.ui"/>
         <source>K</source>
-        <translation type="unfinished"/>
+        <translation>K</translation>
     </message>
 </context>
 <context>
@@ -76197,7 +76201,7 @@ The default actions are activated in the Action section of the layer properties.
     <message>
         <location filename="../src/ui/numericformats/qgscurrencynumericformatwidgetbase.ui"/>
         <source>$</source>
-        <translation type="unfinished"/>
+        <translation>$</translation>
     </message>
 </context>
 <context>
@@ -76848,7 +76852,7 @@ Proveu de canviar la definició de l&apos;SRC a un format WKT.</translation>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="2022"/>
         <source>You cannot import layer %1 over itself!</source>
-        <translation type="unfinished"/>
+        <translation>No pots importar la capa %1 sobre ella mateixa.</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="2044"/>
@@ -76896,7 +76900,9 @@ Proveu de canviar la definició de l&apos;SRC a un format WKT.</translation>
         <source>Failed to import some layers!
 
 </source>
-        <translation type="unfinished"/>
+        <translation>No s&apos;han pogut importar algunes capes.
+
+</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="2144"/>
@@ -81055,7 +81061,7 @@ Error: %2</source>
     <message>
         <location filename="../src/app/qgsdxfexportdialog.cpp" line="931"/>
         <source>DXF Export settings loaded!</source>
-        <translation type="unfinished"/>
+        <translation>S&apos;ha carregat la configuració d&apos;exportació DXF.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdxfexportdialog.cpp" line="942"/>
@@ -98425,7 +98431,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/ui/qgsformlabelformatwidget.ui"/>
         <source>B</source>
-        <translation type="unfinished"/>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsformlabelformatwidget.ui"/>
@@ -98436,7 +98442,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/ui/qgsformlabelformatwidget.ui"/>
         <source>I</source>
-        <translation type="unfinished"/>
+        <translation>I</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsformlabelformatwidget.ui"/>
@@ -98446,7 +98452,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/ui/qgsformlabelformatwidget.ui"/>
         <source>U</source>
-        <translation type="unfinished"/>
+        <translation>U</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsformlabelformatwidget.ui"/>
@@ -98456,7 +98462,7 @@ This field is a geometry column, its removal may make the table unusable by QGIS
     <message>
         <location filename="../src/ui/qgsformlabelformatwidget.ui"/>
         <source>S</source>
-        <translation type="unfinished"/>
+        <translation>S</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsformlabelformatwidget.cpp" line="49"/>
@@ -102565,7 +102571,7 @@ gray = no data
     <message>
         <location filename="../src/ui/qgsgpsoptionswidgetbase.ui"/>
         <source>…</source>
-        <translation type="unfinished"/>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsoptionswidgetbase.ui"/>
@@ -102690,7 +102696,7 @@ gray = no data
     <message>
         <location filename="../src/ui/qgsgpsoptionswidgetbase.ui"/>
         <source> s</source>
-        <translation type="unfinished"/>
+        <translation> s</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsoptionswidgetbase.ui"/>
@@ -106095,7 +106101,7 @@ Segur que vols suprimir l&apos;esquema i tots aquests objectes?</translation>
     <message>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="434"/>
         <source>%1: Not a vector layer!</source>
-        <translation type="unfinished"/>
+        <translation>%1: No és una capa vectorial.</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="476"/>
@@ -106117,7 +106123,9 @@ Segur que vols suprimir l&apos;esquema i tots aquests objectes?</translation>
         <source>Failed to import some layers!
 
 </source>
-        <translation type="unfinished"/>
+        <translation>No s&apos;han pogut importar algunes capes.
+
+</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="498"/>
@@ -107034,7 +107042,7 @@ Importa totes les capes no disponibles sense modificar-les (pots corregir-les m�
     <message>
         <location filename="../src/ui/symbollayer/qgsheatmaprendererwidgetbase.ui"/>
         <source>…</source>
-        <translation type="unfinished"/>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgsheatmaprendererwidgetbase.ui"/>
@@ -108755,7 +108763,7 @@ CTRL + click to follow link</source>
     <message>
         <location filename="../src/ui/qgslabelremoveduplicatesettingswidgetbase.ui"/>
         <source>…</source>
-        <translation type="unfinished"/>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelremoveduplicatesettingswidgetbase.ui"/>
@@ -113702,7 +113710,7 @@ Error d&apos;avaluació: %1</translation>
     <message>
         <location filename="../src/ui/layout/qgslayoutelevationprofilewidgetbase.ui"/>
         <source>…</source>
-        <translation type="unfinished"/>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutelevationprofilewidgetbase.ui"/>
@@ -114273,7 +114281,7 @@ Error d&apos;avaluació: %1</translation>
     <message>
         <location filename="../src/ui/layout/qgslayoutimageexportoptions.ui"/>
         <source>%</source>
-        <translation type="unfinished"/>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/layout/qgslayoutimageexportoptions.ui"/>
@@ -120419,12 +120427,12 @@ Error d&apos;avaluació: %1</translation>
     <message>
         <location filename="../src/ui/symbollayer/qgslinearreferencingsymbollayerwidgetbase.ui"/>
         <source>x</source>
-        <translation type="unfinished"/>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgslinearreferencingsymbollayerwidgetbase.ui"/>
         <source>y</source>
-        <translation type="unfinished"/>
+        <translation>y</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgslinearreferencingsymbollayerwidgetbase.ui"/>
@@ -120449,7 +120457,7 @@ Error d&apos;avaluació: %1</translation>
     <message>
         <location filename="../src/ui/symbollayer/qgslinearreferencingsymbollayerwidgetbase.ui"/>
         <source>…</source>
-        <translation type="unfinished"/>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/qgslinearreferencingsymbollayerwidgetbase.ui"/>
@@ -123469,7 +123477,7 @@ Rasterizing map is recommended for proper rendering.</source>
     <message>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="1071"/>
         <source>M</source>
-        <translation type="unfinished"/>
+        <translation>M</translation>
     </message>
     <message>
         <location filename="../src/gui/maptools/qgsmaptoolidentify.cpp" line="1264"/>
@@ -124483,7 +124491,7 @@ Rasterizing map is recommended for proper rendering.</source>
         <location filename="../src/app/maptools/qgsmaptoolsdigitizingtechniquemanager.cpp" line="76"/>
         <source>R</source>
         <comment>Keyboard shortcut: toggle stream digitizing</comment>
-        <translation type="unfinished"/>
+        <translation>R</translation>
     </message>
 </context>
 <context>
@@ -124726,12 +124734,12 @@ Rasterizing map is recommended for proper rendering.</source>
     <message>
         <location filename="../src/ui/qgsmeasurebase.ui"/>
         <source>x</source>
-        <translation type="unfinished"/>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmeasurebase.ui"/>
         <source>y</source>
-        <translation type="unfinished"/>
+        <translation>y</translation>
     </message>
 </context>
 <context>
@@ -129227,7 +129235,7 @@ See the log for more information.</source>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitemguiprovider.cpp" line="311"/>
         <source>%1: Not a vector layer!</source>
-        <translation type="unfinished"/>
+        <translation>%1: No és una capa vectorial.</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitemguiprovider.cpp" line="342"/>
@@ -129247,7 +129255,9 @@ See the log for more information.</source>
         <source>Failed to import some layers!
 
 </source>
-        <translation type="unfinished"/>
+        <translation>No s&apos;han pogut importar algunes capes.
+
+</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitemguiprovider.cpp" line="374"/>
@@ -137532,7 +137542,7 @@ Cal esborrar les classes existents ?</translation>
     <message>
         <location filename="../src/gui/qgspercentagewidget.cpp" line="47"/>
         <source> %</source>
-        <translation type="unfinished"/>
+        <translation> %</translation>
     </message>
 </context>
 <context>
@@ -140561,17 +140571,17 @@ Raising this value may allow missing chunks to be rendered while lowering it may
     <message>
         <location filename="../src/ui/pointcloud/qgspointcloudquerybuilderbase.ui"/>
         <source>&lt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/pointcloud/qgspointcloudquerybuilderbase.ui"/>
         <source>&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/pointcloud/qgspointcloudquerybuilderbase.ui"/>
         <source>=</source>
-        <translation type="unfinished"/>
+        <translation>=</translation>
     </message>
     <message>
         <location filename="../src/ui/pointcloud/qgspointcloudquerybuilderbase.ui"/>
@@ -141838,7 +141848,9 @@ Resultats: %3 (%4)</translation>
         <source>Failed to import some layers!
 
 </source>
-        <translation type="unfinished"/>
+        <translation>No s&apos;han pogut importar algunes capes.
+
+</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="694"/>
@@ -143342,32 +143354,32 @@ SQL: %3</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="162"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
         <source>Algorithm %1 canceled…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="163"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="164"/>
         <source>Execution canceled after %1 seconds</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="169"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
         <source>Algorithm %1 failed…</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="170"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="171"/>
         <source>Execution failed after %1 seconds</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="207"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="209"/>
         <source>Batch execution completed in %1 seconds</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="210"/>
+        <location filename="../src/gui/processing/qgsprocessingbatchalgorithmdialogbase.cpp" line="212"/>
         <source>%1 executions failed. See log for further details.</source>
         <translation type="unfinished"/>
     </message>
@@ -143918,7 +143930,7 @@ SQL: %3</source>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3107"/>
         <source>,</source>
-        <translation type="unfinished"/>
+        <translation>,</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="3111"/>
@@ -144306,7 +144318,7 @@ SQL: %3</source>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="4788"/>
         <source>,</source>
-        <translation type="unfinished"/>
+        <translation>,</translation>
     </message>
 </context>
 <context>
@@ -145401,7 +145413,7 @@ SQL: %3</source>
     <message>
         <location filename="../src/gui/processing/qgsprocessingwidgetwrapperimpl.cpp" line="7745"/>
         <source>,</source>
-        <translation type="unfinished"/>
+        <translation>,</translation>
     </message>
 </context>
 <context>
@@ -145537,12 +145549,12 @@ SQL: %3</source>
     <message>
         <location filename="../src/ui/processing/qgsprocessingpointcloudexpressiondialogbase.ui"/>
         <source>=</source>
-        <translation type="unfinished"/>
+        <translation>=</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingpointcloudexpressiondialogbase.ui"/>
         <source>&lt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingpointcloudexpressiondialogbase.ui"/>
@@ -145552,7 +145564,7 @@ SQL: %3</source>
     <message>
         <location filename="../src/ui/processing/qgsprocessingpointcloudexpressiondialogbase.ui"/>
         <source>&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingpointcloudexpressiondialogbase.ui"/>
@@ -145754,7 +145766,7 @@ SQL: %3</source>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
         <source>(</source>
-        <translation type="unfinished"/>
+        <translation>(</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
@@ -145789,7 +145801,7 @@ SQL: %3</source>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
         <source>&lt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
@@ -145799,17 +145811,17 @@ SQL: %3</source>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
         <source>^</source>
-        <translation type="unfinished"/>
+        <translation>^</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
         <source>-</source>
-        <translation type="unfinished"/>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
         <source>+</source>
-        <translation type="unfinished"/>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
@@ -145829,7 +145841,7 @@ SQL: %3</source>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
         <source>*</source>
-        <translation type="unfinished"/>
+        <translation>*</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
@@ -145844,7 +145856,7 @@ SQL: %3</source>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
         <source>&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
@@ -145854,17 +145866,17 @@ SQL: %3</source>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
         <source>=</source>
-        <translation type="unfinished"/>
+        <translation>=</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
         <source>/</source>
-        <translation type="unfinished"/>
+        <translation>/</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
         <source>)</source>
-        <translation type="unfinished"/>
+        <translation>)</translation>
     </message>
     <message>
         <location filename="../src/ui/processing/qgsprocessingrastercalculatorexpressiondialogbase.ui"/>
@@ -153550,7 +153562,7 @@ standard de&amp;viation ×</source>
     <message>
         <location filename="../src/ui/qgsrasterrenderingoptionsbase.ui"/>
         <source>%</source>
-        <translation type="unfinished"/>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterrenderingoptionsbase.ui"/>
@@ -153570,7 +153582,7 @@ standard de&amp;viation ×</source>
     <message>
         <location filename="../src/ui/qgsrasterrenderingoptionsbase.ui"/>
         <source>-</source>
-        <translation type="unfinished"/>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterrenderingoptionsbase.ui"/>
@@ -161033,7 +161045,7 @@ Selecciona altre grup que vulguis suprimir.</translation>
     <message>
         <location filename="../src/ui/qgsstylemanagerdialogbase.ui"/>
         <source>…</source>
-        <translation type="unfinished"/>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylemanagerdialogbase.ui"/>
@@ -166008,7 +166020,7 @@ Error: %2</translation>
     <message>
         <location filename="../src/ui/qgsvectorelevationpropertieswidgetbase.ui"/>
         <source>…</source>
-        <translation type="unfinished"/>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorelevationpropertieswidgetbase.ui"/>
@@ -169382,7 +169394,7 @@ En particular, si es desa una capa virtual amb capes incrustades en un fitxer QL
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayersourceselect.cpp" line="557"/>
         <source>…</source>
-        <translation type="unfinished"/>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/providers/virtual/qgsvirtuallayersourceselect.cpp" line="558"/>
@@ -174599,12 +174611,12 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_animatedmarker.ui"/>
         <source>x</source>
-        <translation type="unfinished"/>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_animatedmarker.ui"/>
         <source>y</source>
-        <translation type="unfinished"/>
+        <translation>y</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_animatedmarker.ui"/>
@@ -174614,7 +174626,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_animatedmarker.ui"/>
         <source>…</source>
-        <translation type="unfinished"/>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_animatedmarker.ui"/>
@@ -174654,7 +174666,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_animatedmarker.ui"/>
         <source> °</source>
-        <translation type="unfinished"/>
+        <translation> °</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_animatedmarker.ui"/>
@@ -175068,7 +175080,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_filledline.ui"/>
         <source>…</source>
-        <translation type="unfinished"/>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_filledline.ui"/>
