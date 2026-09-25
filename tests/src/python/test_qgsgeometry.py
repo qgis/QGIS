@@ -15074,6 +15074,38 @@ class TestQgsGeometry(QgisTestCase):
             "GeometryCollection (Polygon ((1 1, 1 3, 4 3, 7 3, 9 3, 9 1, 1 1)),Polygon ((7 3, 7 9, 9 9, 9 3, 7 3)),Polygon ((4 3, 4 9, 7 9, 7 3, 4 3)),Polygon ((1 3, 1 9, 4 9, 4 3, 1 3)))",
         )
 
+    @unittest.skipIf(Qgis.geosVersionInt() < 31500, "GEOS 3.15 required")
+    def testCoverageEdges(self):
+        """
+        Test QgsGeometry.extractCoverageEdges
+        """
+        g1 = QgsGeometry()
+        res = g1.extractCoverageEdges()
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt("Point(1 2)")
+        res = g1.extractCoverageEdges()
+        self.assertTrue(res.isNull())
+
+        g1 = QgsGeometry.fromWkt(
+            "MULTIPOLYGON(((0 0,10 0,10.1 5,10 10,0 10,0 0)), ((10 0,20 0,20 10,10 10,10.1 5,10 0)))"
+        )
+        res = g1.extractCoverageEdges()
+        self.assertEqual(
+            res.asWkt(0),
+            "MultiLineString ((10 0, 10 5, 10 10),(10 10, 0 10, 0 0, 10 0),(10 0, 20 0, 20 10, 10 10))",
+        )
+        res = g1.extractCoverageEdges(Qgis.CoverageEdgeType.Exterior)
+        self.assertEqual(
+            res.asWkt(0),
+            "MultiLineString ((10 10, 0 10, 0 0, 10 0),(10 0, 20 0, 20 10, 10 10))",
+        )
+        res = g1.extractCoverageEdges(Qgis.CoverageEdgeType.Interior)
+        self.assertEqual(
+            res.asWkt(0),
+            "MultiLineString ((10 0, 10 5, 10 10))",
+        )
+
     def testPolygonOrientation(self):
         """
         Test QgsGeometry.polygonOrientation, QgsGeometry.isPolygonClockwise and QgsGeometry.isPolygonCounterClockwise

@@ -107,6 +107,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmconverttocurves.cpp
   processing/qgsalgorithmconvertgeometrytype.cpp
   processing/qgsalgorithmconvexhull.cpp
+  processing/qgsalgorithmcoverageedges.cpp
   processing/qgsalgorithmcoveragesimplify.cpp
   processing/qgsalgorithmcoverageunion.cpp
   processing/qgsalgorithmcoveragevalidate.cpp

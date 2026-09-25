@@ -1358,11 +1358,19 @@ The development version
       Error,
     };
 
+    enum class CoverageEdgeType /BaseType=IntEnum/
+    {
+      AllEdges,
+      Exterior,
+      Interior,
+    };
+
     enum class MakeValidMethod /BaseType=IntEnum/
     {
       Linework,
       Structure,
     };
+
 
     enum class FeatureRequestFlag /BaseType=IntFlag/
     {
