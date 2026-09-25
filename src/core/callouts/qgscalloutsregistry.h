@@ -99,7 +99,7 @@ class CORE_EXPORT QgsCalloutAbstractMetadata
     QIcon mIcon;
 };
 
-typedef QgsCallout *( *QgsCalloutCreateFunc )( const QVariantMap &, const QgsReadWriteContext & ) SIP_SKIP;
+typedef std::unique_ptr<QgsCallout> ( *QgsCalloutCreateFunc )( const QVariantMap &, const QgsReadWriteContext & ) SIP_SKIP;
 typedef QgsCalloutWidget *( *QgsCalloutWidgetFunc )( QgsMapLayer * ) SIP_SKIP;
 
 /**
@@ -176,14 +176,14 @@ class CORE_EXPORT QgsCalloutRegistry
      *
      * The caller takes ownership of the callout.
      */
-    QgsCallout *createCallout( const QString &type, const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) const SIP_FACTORY;
+    std::unique_ptr<QgsCallout> createCallout( const QString &type, const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 
     /**
      * Creates a new instance of a callout of the specified \a type, using the properties from a DOM \a element.
      *
      * The caller takes ownership of the callout.
      */
-    QgsCallout *createCallout( const QString &type, const QDomElement &element, const QgsReadWriteContext &context ) const SIP_FACTORY;
+    std::unique_ptr<QgsCallout> createCallout( const QString &type, const QDomElement &element, const QgsReadWriteContext &context ) const;
 
     /**
      * Returns a list of all available callout types.
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsCalloutRegistry
      *
      * The caller takes ownership of the callout.
      */
-    static QgsCallout *defaultCallout() SIP_FACTORY;
+    static std::unique_ptr<QgsCallout> defaultCallout();
 
   private:
 #ifdef SIP_RUN
