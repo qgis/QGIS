@@ -53,12 +53,18 @@ class CORE_EXPORT QgsCoordinateUtils
      * having enough decimal places to show the difference in position between adjacent
      * pixels.
      *
-     * \note  Since QGIS 3.6 a new \a project parameter is available. Using the method without this
-     *        a \a project parameter is deprecated and will be removed with QGIS 5.
-     *        For backward compatibility, QgsProject.instance() will be used if the \a project
-     *        parameter is not specified.
+     * \note  Since QGIS 3.6 a new \a project parameter is available.
      */
-    Q_INVOKABLE static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project = nullptr );
+    Q_INVOKABLE static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project );
+
+    // TODO QGIS 5.0 -- remove this deprecated method
+    /**
+     * Returns the precision to use for displaying coordinates in \a mapCrs to the user,
+     * using the project settings of QgsProject.instance().
+     *
+     * \deprecated QGIS 4.4. Use the overload with an explicit \a project argument instead.
+     */
+    Q_DECL_DEPRECATED Q_INVOKABLE static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs );
 
     /**
      * Calculates coordinate precision for a \a crs and \a project.
@@ -67,12 +73,23 @@ class CORE_EXPORT QgsCoordinateUtils
      * calculates a precision based on CRS units.
      *
      * \param crs Coordinate system
-     * \param project QGIS project. Takes QgsProject.instance() if NULL
+     * \param project QGIS project.
      *
      * \returns number of decimal places behind the dot
      * \since QGIS 3.18
      */
-    Q_INVOKABLE static int calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs, QgsProject *project = nullptr );
+    Q_INVOKABLE static int calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs, QgsProject *project );
+
+    // TODO QGIS 5.0 -- remove this deprecated method
+    /**
+     * Calculates coordinate precision for a \a crs, using the project settings of QgsProject.instance().
+     *
+     * \param crs Coordinate system
+     *
+     * \returns number of decimal places behind the dot
+     * \deprecated QGIS 4.4. Use the overload with an explicit \a project argument instead.
+     */
+    Q_DECL_DEPRECATED Q_INVOKABLE static int calculateCoordinatePrecisionForCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Calculates a reasonable coordinate precision for a \a crs.
