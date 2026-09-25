@@ -117933,11 +117933,6 @@ CTRL + kattintással lehet hivatkozást megnyitni</translation>
         <translation>&amp;Mozgatás a felső szintre</translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
-        <source>&amp;Ungroup</source>
-        <translation>&amp;Csoportbontás</translation>
-    </message>
-    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Mozgatás &amp;felülre</translation>

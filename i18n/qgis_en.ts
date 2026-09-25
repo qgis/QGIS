@@ -87521,11 +87521,6 @@ CTRL + click to follow link</translation>
         <translation>&amp;Move to Top-level</translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
-        <source>&amp;Ungroup</source>
-        <translation>&amp;Ungroup</translation>
-    </message>
-    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="147"/>
         <source>Move to &amp;Top</source>
         <translation>Move to &amp;Top</translation>

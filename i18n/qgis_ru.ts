@@ -117915,11 +117915,6 @@ CTRL + щелчок для перехода по ссылке</translation>
         <translation>Сделать элементом верхнего уровня</translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
-        <source>&amp;Ungroup</source>
-        <translation>&amp;Разгруппировать</translation>
-    </message>
-    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Переместить в начало</translation>

@@ -116728,11 +116728,6 @@ CTRL + click to follow link</source>
         <translation>&amp;Presun na najvyššiu úroveň</translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
-        <source>&amp;Ungroup</source>
-        <translation>&amp;Oddeliť</translation>
-    </message>
-    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Presun na stránku &amp;Top</translation>

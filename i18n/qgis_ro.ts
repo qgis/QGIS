@@ -117812,11 +117812,6 @@ CTRL + click pentru a accesa adresa</translation>
         <translation>&amp;Mută în vârf</translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
-        <source>&amp;Ungroup</source>
-        <translation>&amp;Anulare grupare</translation>
-    </message>
-    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Mu&amp;tă în Vârf</translation>

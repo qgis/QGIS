@@ -117797,11 +117797,6 @@ Ctrl + klikk følger lenke</translation>
         <translation>&amp;Flytt til toppnivå</translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
-        <source>&amp;Ungroup</source>
-        <translation>&amp;Del opp gruppe</translation>
-    </message>
-    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Flytt til &amp;topps</translation>

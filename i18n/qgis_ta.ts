@@ -117905,11 +117905,6 @@ CTRL + click to follow link</source>
         <translation>மேல் நிலைக்கு நகர்த்தவும்</translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
-        <source>&amp;Ungroup</source>
-        <translation>&amp;குழுநீக்கு</translation>
-    </message>
-    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>&amp;மேலே செல்லவும்</translation>

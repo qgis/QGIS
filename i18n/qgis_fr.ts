@@ -117549,11 +117549,6 @@ CTRL + clic pour suivre le lien</translation>
         <translation>&amp;Monter au premier-plan</translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
-        <source>&amp;Ungroup</source>
-        <translation>&amp;Dissocier</translation>
-    </message>
-    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Dépl&amp;acer au-dessus</translation>

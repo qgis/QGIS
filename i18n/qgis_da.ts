@@ -117163,11 +117163,6 @@ CTRL + klik for at følge linket</translation>
         <translation>Flyt lag ud af gruppe</translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
-        <source>&amp;Ungroup</source>
-        <translation>&amp;Opdel gruppe</translation>
-    </message>
-    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Flyt til &amp;Top</translation>

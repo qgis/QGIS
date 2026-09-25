@@ -116726,11 +116726,6 @@ CTRL + click to follow link</source>
         <translation>&amp;Movi a su Livellu prus artu</translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
-        <source>&amp;Ungroup</source>
-        <translation>&amp;Disagrupa</translation>
-    </message>
-    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Movi in &amp;Pitzus</translation>

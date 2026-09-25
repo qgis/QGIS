@@ -117428,11 +117428,6 @@ CTRL + nhắp chuột để mở liên kết</translation>
         <translation>&amp;Di chuyển lên cấp trên cùng</translation>
     </message>
     <message>
-        <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="564"/>
-        <source>&amp;Ungroup</source>
-        <translation>&amp;Rã nhóm</translation>
-    </message>
-    <message>
         <location filename="../src/gui/layertree/qgslayertreeviewdefaultactions.cpp" line="155"/>
         <source>Move to &amp;Top</source>
         <translation>Di chuyển lên &amp;Trên cùng</translation>
