@@ -254,9 +254,9 @@ void QgsRuleBased3DRenderer::Rule::createHandlers( QgsVectorLayer *layer, QgsRul
   {
     // add handler!
     Q_ASSERT( !handlers.value( this ) );
-    std::unique_ptr<QgsFeature3DHandler> handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mSymbol.get() );
+    QgsFeature3DHandler *handler = QgsApplication::symbol3DRegistry()->createHandlerForSymbol( layer, mSymbol.get() );
     if ( handler )
-      handlers[this] = handler.release();
+      handlers[this] = handler;
   }
 
   // call recursively

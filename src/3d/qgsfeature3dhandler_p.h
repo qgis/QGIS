@@ -47,10 +47,10 @@ class QgsGeometry;
 
 
 /**
- * \ingroup core
+ * \ingroup qgis_3d
  * \brief Interface to be implemented by 3D symbol implementations in order to generate 3D entities.
  */
-class CORE_EXPORT QgsFeature3DHandler
+class QgsFeature3DHandler
 {
   public:
     virtual ~QgsFeature3DHandler() = default;

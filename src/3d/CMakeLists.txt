@@ -31,6 +31,7 @@ set(QGIS_3D_SRCS
   qgscategorized3drenderer.cpp
   qgscategorizedchunkloader_p.cpp
   qgsenvironmentlight.cpp
+  qgsfeature3dhandler_p.cpp
   qgsfonttextureatlasgenerator.cpp
   qgsgeotransform.cpp
   qgsglobechunkedentity.cpp
