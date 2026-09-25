@@ -153,6 +153,14 @@ QgsProcessingToolboxProxyModel.FilterShowKnownIssues = QgsProcessingToolboxProxy
 QgsProcessingToolboxProxyModel.Filter.FilterShowKnownIssues = QgsProcessingToolboxProxyModel.Filter.ShowKnownIssues
 QgsProcessingToolboxProxyModel.FilterShowKnownIssues.is_monkey_patched = True
 QgsProcessingToolboxProxyModel.FilterShowKnownIssues.__doc__ = "Show algorithms with known issues (hidden by default)"
+QgsProcessingToolboxProxyModel.FilterForSocketOutput = QgsProcessingToolboxProxyModel.Filter.ForSocketOutput
+QgsProcessingToolboxProxyModel.Filter.FilterForSocketOutput = QgsProcessingToolboxProxyModel.Filter.ForSocketOutput
+QgsProcessingToolboxProxyModel.FilterForSocketOutput.is_monkey_patched = True
+QgsProcessingToolboxProxyModel.FilterForSocketOutput.__doc__ = "Only show algorithms compatible with a certain socket output, use with setFilterOutput() \n.. versionadded:: 4.4"
+QgsProcessingToolboxProxyModel.FilterForSocketInput = QgsProcessingToolboxProxyModel.Filter.ForSocketInput
+QgsProcessingToolboxProxyModel.Filter.FilterForSocketInput = QgsProcessingToolboxProxyModel.Filter.ForSocketInput
+QgsProcessingToolboxProxyModel.FilterForSocketInput.is_monkey_patched = True
+QgsProcessingToolboxProxyModel.FilterForSocketInput.__doc__ = "Only show algorithms compatible with a certain input socket, use with setFilterOutput() xor setFilterParameter() \n.. versionadded:: 4.4"
 QgsProcessingToolboxProxyModel.Filter.__doc__ = """Available filter flags for filtering the model
 
 * ``Toolbox``: Filters out any algorithms and content which should not be shown in the toolbox
@@ -170,6 +178,20 @@ QgsProcessingToolboxProxyModel.Filter.__doc__ = """Available filter flags for fi
 * ``ShowKnownIssues``: Show algorithms with known issues (hidden by default)
 
   Available as ``QgsProcessingToolboxProxyModel.FilterShowKnownIssues`` in older QGIS releases.
+
+* ``ForSocketOutput``: Only show algorithms compatible with a certain socket output, use with setFilterOutput()
+
+  .. versionadded:: 4.4
+
+
+  Available as ``QgsProcessingToolboxProxyModel.FilterForSocketOutput`` in older QGIS releases.
+
+* ``ForSocketInput``: Only show algorithms compatible with a certain input socket, use with setFilterOutput() xor setFilterParameter()
+
+  .. versionadded:: 4.4
+
+
+  Available as ``QgsProcessingToolboxProxyModel.FilterForSocketInput`` in older QGIS releases.
 
 
 """
