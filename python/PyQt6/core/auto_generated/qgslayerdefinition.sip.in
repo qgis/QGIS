@@ -75,7 +75,7 @@ project into layer tree specified by rootGroup
          - errorMessage: the returned error message
 %End
 
-    static bool exportLayerDefinition( const QString &path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage /Out/ );
+ static bool exportLayerDefinition( const QString &path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage /Out/ ) /Deprecated="Since 4.4. Use the variant with explicit Qgis.FilePathType parameter instead."/;
 %Docstring
 Exports the selected layer tree nodes to a QLR file.
 
@@ -89,6 +89,10 @@ over this setting.
 
 :return: - ``True`` if the export was successful
          - errorMessage: any error messages generated during the export
+
+.. deprecated:: 4.4
+
+   Use the variant with explicit :py:class:`Qgis`.FilePathType parameter instead.
 %End
 
     static bool exportLayerDefinition( const QString &path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, Qgis::FilePathType pathType, QString &errorMessage /Out/ );
