@@ -11761,6 +11761,19 @@ Qgis.MapGridAnnotationType.__doc__ = """Annotation coordinate type.
 # --
 Qgis.MapGridAnnotationType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.ElevationProfileRangeMethod.ManualRange.__doc__ = "Distance/elevation ranges are manually set"
+Qgis.ElevationProfileRangeMethod.FixedScale.__doc__ = "Distance and elevation ranges are calculated from fixed scales."
+Qgis.ElevationProfileRangeMethod.__doc__ = """Elevation profile range calculation methods.
+
+.. versionadded:: 4.4
+
+* ``ManualRange``: Distance/elevation ranges are manually set
+* ``FixedScale``: Distance and elevation ranges are calculated from fixed scales.
+
+"""
+# --
+Qgis.ElevationProfileRangeMethod.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.InputControllerType.Map2D.__doc__ = "2D map controller"
 Qgis.InputControllerType.Map3D.__doc__ = "3D map controller"
 Qgis.InputControllerType.__doc__ = """Input controller types.

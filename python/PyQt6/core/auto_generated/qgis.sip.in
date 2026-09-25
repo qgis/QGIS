@@ -3432,6 +3432,12 @@ The development version
       Latitude
     };
 
+    enum class ElevationProfileRangeMethod /BaseType=IntEnum/
+    {
+      ManualRange,
+      FixedScale
+    };
+
     enum class InputControllerType /BaseType=IntEnum/
     {
       Map2D,
