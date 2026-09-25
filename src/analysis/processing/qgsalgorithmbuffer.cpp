@@ -303,8 +303,11 @@ bool QgsBufferAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
   const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( layer );
   if ( !vlayer )
     return false;
-  //Only Polygons
-  return vlayer->wkbType() == Qgis::WkbType::Polygon || vlayer->wkbType() == Qgis::WkbType::MultiPolygon;
+
+  return vlayer->wkbType() == Qgis::WkbType::Polygon
+         || vlayer->wkbType() == Qgis::WkbType::MultiPolygon
+         || vlayer->wkbType() == Qgis::WkbType::PolyhedralSurface
+         || vlayer->wkbType() == Qgis::WkbType::MultiSurface;
 }
 
 ///@endcond
