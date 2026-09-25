@@ -905,7 +905,6 @@ QgsAnnotationItemNode.setType: src/core/annotations/qgsannotationitemnode.h#L101
 QgsAnnotationItemNode.type: src/core/annotations/qgsannotationitemnode.h#L94
 QgsAnnotationItemNode: src/core/annotations/qgsannotationitemnode.h#L35
 QgsAnnotationItemRegistry.addItemType: src/core/annotations/qgsannotationitemregistry.h#L174
-QgsAnnotationItemRegistry.createItem: src/core/annotations/qgsannotationitemregistry.h#L179
 QgsAnnotationItemRegistry.itemMetadata: src/core/annotations/qgsannotationitemregistry.h#L169
 QgsAnnotationItemRegistry.populate: src/core/annotations/qgsannotationitemregistry.h#L160
 QgsAnnotationItemRegistry.typeAdded: src/core/annotations/qgsannotationitemregistry.h#L192
@@ -948,7 +947,6 @@ QgsAnnotationLayer: src/core/annotations/qgsannotationlayer.h#L51
 QgsAnnotationLineItem.applyEditV2: src/core/annotations/qgsannotationlineitem.h#L46
 QgsAnnotationLineItem.boundingBox: src/core/annotations/qgsannotationlineitem.h#L58
 QgsAnnotationLineItem.clone: src/core/annotations/qgsannotationlineitem.h#L60
-QgsAnnotationLineItem.create: src/core/annotations/qgsannotationlineitem.h#L53
 QgsAnnotationLineItem.flags: src/core/annotations/qgsannotationlineitem.h#L48
 QgsAnnotationLineItem.geometry: src/core/annotations/qgsannotationlineitem.h#L69
 QgsAnnotationLineItem.readXml: src/core/annotations/qgsannotationlineitem.h#L55
@@ -964,7 +962,6 @@ QgsAnnotationLineTextItem.applyEditV2: src/core/annotations/qgsannotationlinetex
 QgsAnnotationLineTextItem.boundingBox: src/core/annotations/qgsannotationlinetextitem.h#L58
 QgsAnnotationLineTextItem.boundingBox: src/core/annotations/qgsannotationlinetextitem.h#L59
 QgsAnnotationLineTextItem.clone: src/core/annotations/qgsannotationlinetextitem.h#L61
-QgsAnnotationLineTextItem.create: src/core/annotations/qgsannotationlinetextitem.h#L55
 QgsAnnotationLineTextItem.flags: src/core/annotations/qgsannotationlinetextitem.h#L44
 QgsAnnotationLineTextItem.format: src/core/annotations/qgsannotationlinetextitem.h#L100
 QgsAnnotationLineTextItem.geometry: src/core/annotations/qgsannotationlinetextitem.h#L70
@@ -1000,7 +997,6 @@ QgsAnnotationMarkerItem.applyEditV2: src/core/annotations/qgsannotationmarkerite
 QgsAnnotationMarkerItem.boundingBox: src/core/annotations/qgsannotationmarkeritem.h#L56
 QgsAnnotationMarkerItem.boundingBox: src/core/annotations/qgsannotationmarkeritem.h#L57
 QgsAnnotationMarkerItem.clone: src/core/annotations/qgsannotationmarkeritem.h#L55
-QgsAnnotationMarkerItem.create: src/core/annotations/qgsannotationmarkeritem.h#L52
 QgsAnnotationMarkerItem.flags: src/core/annotations/qgsannotationmarkeritem.h#L44
 QgsAnnotationMarkerItem.geometry: src/core/annotations/qgsannotationmarkeritem.h#L66
 QgsAnnotationMarkerItem.readXml: src/core/annotations/qgsannotationmarkeritem.h#L54
@@ -1015,7 +1011,6 @@ QgsAnnotationMarkerItem: src/core/annotations/qgsannotationmarkeritem.h#L32
 QgsAnnotationPictureItem.billboard3DScaleMode: src/core/annotations/qgsannotationpictureitem.h#L91
 QgsAnnotationPictureItem.billboard3DSize: src/core/annotations/qgsannotationpictureitem.h#L107
 QgsAnnotationPictureItem.clone: src/core/annotations/qgsannotationpictureitem.h#L44
-QgsAnnotationPictureItem.create: src/core/annotations/qgsannotationpictureitem.h#L49
 QgsAnnotationPictureItem.format: src/core/annotations/qgsannotationpictureitem.h#L61
 QgsAnnotationPictureItem.lockAspectRatio: src/core/annotations/qgsannotationpictureitem.h#L76
 QgsAnnotationPictureItem.path: src/core/annotations/qgsannotationpictureitem.h#L56
@@ -1034,7 +1029,6 @@ QgsAnnotationPointTextItem.applyEditV2: src/core/annotations/qgsannotationpointt
 QgsAnnotationPointTextItem.boundingBox: src/core/annotations/qgsannotationpointtextitem.h#L54
 QgsAnnotationPointTextItem.boundingBox: src/core/annotations/qgsannotationpointtextitem.h#L55
 QgsAnnotationPointTextItem.clone: src/core/annotations/qgsannotationpointtextitem.h#L53
-QgsAnnotationPointTextItem.create: src/core/annotations/qgsannotationpointtextitem.h#L50
 QgsAnnotationPointTextItem.flags: src/core/annotations/qgsannotationpointtextitem.h#L42
 QgsAnnotationPointTextItem.format: src/core/annotations/qgsannotationpointtextitem.h#L97
 QgsAnnotationPointTextItem.point: src/core/annotations/qgsannotationpointtextitem.h#L67
@@ -1055,7 +1049,6 @@ QgsAnnotationPointTextItem: src/core/annotations/qgsannotationpointtextitem.h#L3
 QgsAnnotationPolygonItem.applyEditV2: src/core/annotations/qgsannotationpolygonitem.h#L46
 QgsAnnotationPolygonItem.boundingBox: src/core/annotations/qgsannotationpolygonitem.h#L59
 QgsAnnotationPolygonItem.clone: src/core/annotations/qgsannotationpolygonitem.h#L56
-QgsAnnotationPolygonItem.create: src/core/annotations/qgsannotationpolygonitem.h#L53
 QgsAnnotationPolygonItem.flags: src/core/annotations/qgsannotationpolygonitem.h#L48
 QgsAnnotationPolygonItem.geometry: src/core/annotations/qgsannotationpolygonitem.h#L68
 QgsAnnotationPolygonItem.readXml: src/core/annotations/qgsannotationpolygonitem.h#L55
@@ -1101,7 +1094,6 @@ QgsAnnotationRectItem.writeCommonProperties: src/core/annotations/qgsannotationr
 QgsAnnotationRectItem: src/core/annotations/qgsannotationrectitem.h#L35
 QgsAnnotationRectangleTextItem.alignment: src/core/annotations/qgsannotationrectangletextitem.h#L88
 QgsAnnotationRectangleTextItem.clone: src/core/annotations/qgsannotationrectangletextitem.h#L53
-QgsAnnotationRectangleTextItem.create: src/core/annotations/qgsannotationrectangletextitem.h#L50
 QgsAnnotationRectangleTextItem.flags: src/core/annotations/qgsannotationrectangletextitem.h#L44
 QgsAnnotationRectangleTextItem.format: src/core/annotations/qgsannotationrectangletextitem.h#L74
 QgsAnnotationRectangleTextItem.marginsUnit: src/core/annotations/qgsannotationrectangletextitem.h#L131
