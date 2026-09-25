@@ -396,6 +396,18 @@ QVector<QgsDataItem *> QgsPGLayerItem::createChildren()
   return children;
 }
 
+Qgis::LayerItemCapabilities QgsPGLayerItem::capabilities() const
+{
+  if ( mLayerProperty.relKind == Qgis::PostgresRelKind::OrdinaryTable )
+  {
+    return Qgis::LayerItemCapability::AddComments;
+  }
+  else
+  {
+    return Qgis::LayerItemCapabilities();
+  }
+}
+
 // ---------------------------------------------------------------------------
 QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsConnectionsRootItem( parent, name, path, u"PostGIS"_s )
