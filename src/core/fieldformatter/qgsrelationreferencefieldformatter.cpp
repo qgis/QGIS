@@ -71,7 +71,18 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *laye
   }
 
   const QString relationName = config[u"Relation"_s].toString();
-  const QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationName ); // skip-keyword-check
+
+  QgsRelation relation;
+  if ( QgsProject *project = layer->project() )
+  {
+    relation = project->relationManager()->relation( relationName );
+  }
+  // TODO QGIS 5.0 -- remove this fallback for layers without an associated project
+  else
+  {
+    relation = QgsProject::instance()->relationManager()->relation( relationName ); // skip-keyword-check
+  }
+
   if ( !relation.isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Invalid relation %3" ).arg( layer->name(), fieldName, relationName ) );
@@ -143,7 +154,19 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
     return QVariant();
   }
   const QString relationName = config[u"Relation"_s].toString();
-  const QgsRelation relation = QgsProject::instance()->relationManager()->relation( config[u"Relation"_s].toString() ); // skip-keyword-check
+
+  QgsRelation relation;
+  if ( QgsProject *project = layer->project() )
+  {
+    relation = project->relationManager()->relation( config[u"Relation"_s].toString() ); // skip-keyword-check
+  }
+  // TODO QGIS 5.0 -- remove this fallback for layers without an associated project
+  else
+  {
+    relation = QgsProject::instance()->relationManager()->relation( relationName ); // skip-keyword-check
+  }
+
+
   if ( !relation.isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Invalid relation %3" ).arg( layer->name(), fieldName, relationName ) );
