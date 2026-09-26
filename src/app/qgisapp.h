@@ -79,6 +79,7 @@ class QgsPluginLayer;
 class QgsPointCloudLayer;
 class QgsPointXY;
 class QgsPrintLayout;
+class QgsProcessingToolboxDockWidget;
 class QgsProviderRegistry;
 class QgsProviderSublayerDetails;
 class QgsPythonUtils;
@@ -2770,6 +2771,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsStatisticalSummaryDockWidget *mStatisticalSummaryDockWidget = nullptr;
     QgsBookmarks *mBookMarksDockWidget = nullptr;
+    QgsProcessingToolboxDockWidget *mProcessingToolboxDockWidget = nullptr;
 
     //! Data Source Manager
     QgsDataSourceManagerDialog *mDataSourceManagerDialog = nullptr;

@@ -117,6 +117,7 @@ using namespace Qt::StringLiterals;
 #include "qgsmaplayerfactory.h"
 #include "qgsprocessingwidgetcontext.h"
 #include "qgsprocessingmodelprovider.h"
+#include "processing/qgsprocessingtoolboxdock.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -1213,6 +1214,14 @@ QgisApp::QgisApp(
   connect( showAdvancedDigitizingDock, &QShortcut::activated, mAdvancedDigitizingDockWidget, &QgsDockWidget::toggleUserVisible );
   showAdvancedDigitizingDock->setObjectName( u"ShowAdvancedDigitizingPanel"_s );
   showAdvancedDigitizingDock->setWhatsThis( tr( "Show Advanced Digitizing Panel" ) );
+
+  endProfile();
+
+  // Processing toolbox dock
+  startProfile( tr( "Processing toolbox dock" ) );
+  mProcessingToolboxDockWidget = new QgsProcessingToolboxDockWidget( this );
+  mProcessingToolboxDockWidget->setObjectName( u"ProcessingToolboxDockWidget"_s );
+  mProcessingToolboxDockWidget->setToggleVisibilityAction( mActionShowProcessingToolbox );
 
   endProfile();
 
