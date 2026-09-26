@@ -25,6 +25,20 @@ QVector<QgsPointXY> QgsVectorFieldValueSource::seedPoints( const QgsRectangle &e
   return {};
 }
 
+bool QgsVectorFieldValueSource::nativeLayout( QgsPointXY &origin, double &spacingX, double &spacingY ) const
+{
+  Q_UNUSED( origin )
+  Q_UNUSED( spacingX )
+  Q_UNUSED( spacingY )
+  return false;
+}
+
+void QgsVectorFieldValueSource::setSamplingWindow( double width, double height )
+{
+  Q_UNUSED( width )
+  Q_UNUSED( height )
+}
+
 std::unique_ptr<QgsRasterInterface> QgsVectorFieldValueSource::magnitudeSource( const QgsRenderContext &context, QSize size ) const
 {
   Q_UNUSED( context )

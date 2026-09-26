@@ -16,7 +16,6 @@
 #include "qgsvectorfieldsettingswidget.h"
 
 #include "qgis.h"
-#include "qgsmeshlayer.h"
 
 #include "moc_qgsvectorfieldsettingswidget.cpp"
 
@@ -87,8 +86,10 @@ QgsVectorFieldSettingsWidget::QgsVectorFieldSettingsWidget( QWidget *parent )
   connect( mXSpacingSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsVectorFieldSettingsWidget::widgetChanged );
   connect( mYSpacingSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsVectorFieldSettingsWidget::widgetChanged );
 
+  populateSymbologies();
+
   connect( mSymbologyVectorComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorFieldSettingsWidget::onSymbologyChanged );
-  onSymbologyChanged( 0 );
+  onSymbologyChanged();
 
   connect( mSymbologyVectorComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorFieldSettingsWidget::widgetChanged );
 
@@ -114,15 +115,10 @@ QgsVectorFieldSettingsWidget::QgsVectorFieldSettingsWidget( QWidget *parent )
   onWindBarbUnitsChanged( 0 );
 }
 
-void QgsVectorFieldSettingsWidget::setLayer( QgsMeshLayer *layer )
-{
-  mMeshLayer = layer;
-}
-
 QgsVectorFieldSettings QgsVectorFieldSettingsWidget::settings() const
 {
   QgsVectorFieldSettings settings;
-  settings.setSymbology( static_cast<Qgis::VectorFieldSymbology>( mSymbologyVectorComboBox->currentIndex() ) );
+  settings.setSymbology( currentSymbology() );
 
   //Arrow settings
   QgsVectorFieldArrowSettings arrowSettings;
@@ -197,22 +193,29 @@ QgsVectorFieldSettings QgsVectorFieldSettingsWidget::settings() const
   return settings;
 }
 
-void QgsVectorFieldSettingsWidget::syncToLayer()
+void QgsVectorFieldSettingsWidget::setSupportsInterpolation( bool supported )
 {
-  if ( !mMeshLayer || !mMeshLayer->dataProvider() )
-    return;
+  mSupportsInterpolation = supported;
+  populateSymbologies();
+}
 
-  if ( mActiveDatasetGroup < 0 )
-    return;
+void QgsVectorFieldSettingsWidget::setHasMagnitude( bool hasMagnitude )
+{
+  mHasMagnitude = hasMagnitude;
+}
 
-  bool hasFaces = ( mMeshLayer->dataProvider() && mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) );
+void QgsVectorFieldSettingsWidget::setMagnitudeRange( double minimum, double maximum )
+{
+  mMagnitudeMinimum = minimum;
+  mMagnitudeMaximum = maximum;
+  mHasMagnitudeRange = true;
+}
 
-  const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
-  const QgsVectorFieldSettings settings = rendererSettings.vectorSettings( mActiveDatasetGroup );
-
-  symbologyLabel->setVisible( hasFaces );
-  mSymbologyVectorComboBox->setVisible( hasFaces );
-  mSymbologyVectorComboBox->setCurrentIndex( hasFaces ? static_cast< int >( settings.symbology() ) : 0 );
+void QgsVectorFieldSettingsWidget::setSettings( const QgsVectorFieldSettings &settings )
+{
+  const int symbologyIndex = mSymbologyVectorComboBox->findData( static_cast< int >( settings.symbology() ) );
+  // a symbology the data cannot be drawn with is not offered, fall back to arrows
+  mSymbologyVectorComboBox->setCurrentIndex( symbologyIndex >= 0 ? symbologyIndex : mSymbologyVectorComboBox->findData( static_cast< int >( Qgis::VectorFieldSymbology::Arrows ) ) );
 
   // Arrow settings
   const QgsVectorFieldArrowSettings arrowSettings = settings.arrowSettings();
@@ -240,8 +243,8 @@ void QgsVectorFieldSettingsWidget::syncToLayer()
   mHeadLengthSpinBox->setValue( arrowSettings.arrowHeadLengthRatio() * 100.0 );
 
   // user grid
-  mDisplayVectorsOnGridGroupBox->setVisible( hasFaces );
-  mDisplayVectorsOnGridGroupBox->setChecked( settings.isOnUserDefinedGrid() && hasFaces );
+  mDisplayVectorsOnGridGroupBox->setVisible( mSupportsInterpolation );
+  mDisplayVectorsOnGridGroupBox->setChecked( settings.isOnUserDefinedGrid() && mSupportsInterpolation );
   mXSpacingSpinBox->setValue( settings.userGridCellWidth() );
   mYSpacingSpinBox->setValue( settings.userGridCellHeight() );
 
@@ -272,28 +275,78 @@ void QgsVectorFieldSettingsWidget::syncToLayer()
   mWindBarbUnitsComboBox->setCurrentIndex( static_cast<int>( windBarbSettings.magnitudeUnits() ) );
   if ( windBarbSettings.magnitudeUnits() == Qgis::WindSpeedUnit::OtherUnit )
     mWindBarbMagnitudeMultiplierSpinBox->setValue( windBarbSettings.magnitudeMultiplier() );
+
+  applyMagnitudeSupport();
 }
 
-void QgsVectorFieldSettingsWidget::onSymbologyChanged( int currentIndex )
+void QgsVectorFieldSettingsWidget::applyMagnitudeSupport()
 {
-  mStreamlineWidget->setVisible( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Streamlines ) );
-  mArrowLengthGroupBox->setVisible( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Arrows ) );
-  mHeadOptionsGroupBox->setVisible( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Arrows ) );
-  mTracesGroupBox->setVisible( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
-  mWindBarbGroupBox->setVisible( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::WindBarbs ) );
+  // a filter on the magnitude of vectors which all have a magnitude of one either passes everything
+  // or rejects everything, so it is hidden and cleared rather than left to confuse
+  const bool isTraces = currentSymbology() == Qgis::VectorFieldSymbology::Traces;
+  const bool showMagnitudeFilter = mHasMagnitude && !isTraces;
+  mMagnitudeFilterGroupBox->setVisible( showMagnitudeFilter );
 
-  mDisplayVectorsOnGridGroupBox->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
-  filterByMagnitudeLabel->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
-  minimumMagLabel->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
-  mMinMagSpinBox->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
-  maximumMagLabel->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
-  mMaxMagSpinBox->setVisible( currentIndex != static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
+  // the color ramp classifies the magnitude, and only a fixed shaft length can draw vectors which
+  // all have the same one
+  mColoringMethodLabel->setVisible( mHasMagnitude );
+  mColoringMethodComboBox->setVisible( mHasMagnitude );
+  mShaftLengthComboBox->setEnabled( mHasMagnitude );
+
+  if ( !mHasMagnitude )
+  {
+    mMinMagSpinBox->clear();
+    mMaxMagSpinBox->clear();
+    mColoringMethodComboBox->setCurrentIndex( mColoringMethodComboBox->findData( QgsInterpolatedLineColor::SingleColor ) );
+    mShaftLengthComboBox->setCurrentIndex( static_cast< int >( Qgis::VectorFieldArrowScalingMethod::Fixed ) );
+  }
+}
+
+void QgsVectorFieldSettingsWidget::onSymbologyChanged()
+{
+  const Qgis::VectorFieldSymbology symbology = currentSymbology();
+
+  mStreamlineWidget->setVisible( symbology == Qgis::VectorFieldSymbology::Streamlines );
+  mArrowLengthGroupBox->setVisible( symbology == Qgis::VectorFieldSymbology::Arrows );
+  mHeadOptionsGroupBox->setVisible( symbology == Qgis::VectorFieldSymbology::Arrows );
+  mTracesGroupBox->setVisible( symbology == Qgis::VectorFieldSymbology::Traces );
+  mWindBarbGroupBox->setVisible( symbology == Qgis::VectorFieldSymbology::WindBarbs );
+
+  // the grid places vectors between the data points, which needs a field which can be interpolated
+  mDisplayVectorsOnGridGroupBox->setVisible( mSupportsInterpolation && symbology != Qgis::VectorFieldSymbology::Traces );
+  applyMagnitudeSupport();
 
   mDisplayVectorsOnGridGroupBox->setEnabled(
-    currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Arrows )
-    || currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::WindBarbs )
-    || ( currentIndex == static_cast< int >( Qgis::VectorFieldSymbology::Streamlines ) && mStreamlinesSeedingMethodComboBox->currentIndex() == static_cast< int >( Qgis::VectorFieldSeedingMethod::Gridded ) )
+    symbology == Qgis::VectorFieldSymbology::Arrows
+    || symbology == Qgis::VectorFieldSymbology::WindBarbs
+    || ( symbology == Qgis::VectorFieldSymbology::Streamlines && mStreamlinesSeedingMethodComboBox->currentIndex() == static_cast< int >( Qgis::VectorFieldSeedingMethod::Gridded ) )
   );
+}
+
+void QgsVectorFieldSettingsWidget::populateSymbologies()
+{
+  const QVariant previous = mSymbologyVectorComboBox->currentData();
+
+  const QSignalBlocker blocker( mSymbologyVectorComboBox );
+  mSymbologyVectorComboBox->clear();
+
+  // one glyph per data point, which any vector field can place
+  mSymbologyVectorComboBox->addItem( tr( "Arrows" ), static_cast< int >( Qgis::VectorFieldSymbology::Arrows ) );
+  if ( mSupportsInterpolation )
+  {
+    // both walk the field between its data points
+    mSymbologyVectorComboBox->addItem( tr( "Streamlines" ), static_cast< int >( Qgis::VectorFieldSymbology::Streamlines ) );
+    mSymbologyVectorComboBox->addItem( tr( "Traces" ), static_cast< int >( Qgis::VectorFieldSymbology::Traces ) );
+  }
+  mSymbologyVectorComboBox->addItem( tr( "Wind Barbs" ), static_cast< int >( Qgis::VectorFieldSymbology::WindBarbs ) );
+
+  const int previousIndex = previous.isValid() ? mSymbologyVectorComboBox->findData( previous ) : -1;
+  mSymbologyVectorComboBox->setCurrentIndex( previousIndex >= 0 ? previousIndex : 0 );
+}
+
+Qgis::VectorFieldSymbology QgsVectorFieldSettingsWidget::currentSymbology() const
+{
+  return static_cast< Qgis::VectorFieldSymbology >( mSymbologyVectorComboBox->currentData().toInt() );
 }
 
 void QgsVectorFieldSettingsWidget::onStreamLineSeedingMethodChanged( int currentIndex )
@@ -334,20 +387,12 @@ void QgsVectorFieldSettingsWidget::onColorRampMinMaxChanged()
 
 void QgsVectorFieldSettingsWidget::loadColorRampShader()
 {
-  if ( !mMeshLayer )
+  if ( !mHasMagnitudeRange )
     return;
 
-  int currentVectorDataSetGroupIndex = mMeshLayer->rendererSettings().activeVectorDatasetGroup();
-  if ( currentVectorDataSetGroupIndex < 0 || !mMeshLayer->datasetGroupMetadata( currentVectorDataSetGroupIndex ).isVector() )
-    return;
-
-  const QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( currentVectorDataSetGroupIndex );
-  double min = meta.minimum();
-  double max = meta.maximum();
-
-  mColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
-  whileBlocking( mColorRampShaderMinimumSpinBox )->setValue( min );
-  whileBlocking( mColorRampShaderMaximumSpinBox )->setValue( max );
+  mColorRampShaderWidget->setMinimumMaximumAndClassify( mMagnitudeMinimum, mMagnitudeMaximum );
+  whileBlocking( mColorRampShaderMinimumSpinBox )->setValue( mMagnitudeMinimum );
+  whileBlocking( mColorRampShaderMaximumSpinBox )->setValue( mMagnitudeMaximum );
 }
 
 double QgsVectorFieldSettingsWidget::filterValue( const QgsDoubleSpinBox *spinBox, double errVal ) const

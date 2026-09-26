@@ -103,7 +103,7 @@ QgsMeshVectorGlyphRenderer::QgsMeshVectorGlyphRenderer(
   // we need to expand out the extent so that it includes
   // arrows which start or end up outside of the
   // actual visible extent
-  const double extension = context.convertToMapUnits( calcExtentBufferSize(), Qgis::RenderUnit::Pixels );
+  const double extension = context.convertToMapUnits( mEngine.glyphExtentBuffer(), Qgis::RenderUnit::Pixels );
   mBufferedExtent.setXMinimum( mBufferedExtent.xMinimum() - extension );
   mBufferedExtent.setXMaximum( mBufferedExtent.xMaximum() + extension );
   mBufferedExtent.setYMinimum( mBufferedExtent.yMinimum() - extension );
@@ -130,37 +130,6 @@ void QgsMeshVectorGlyphRenderer::draw()
   {
     drawVectorDataOnEdges();
   }
-}
-
-double QgsMeshVectorGlyphRenderer::calcExtentBufferSize() const
-{
-  double buffer = 0;
-  switch ( mCfg.arrowSettings().shaftLengthMethod() )
-  {
-    case Qgis::VectorFieldArrowScalingMethod::MinMax:
-    {
-      buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().maxShaftLength(), Qgis::RenderUnit::Millimeters );
-      break;
-    }
-    case Qgis::VectorFieldArrowScalingMethod::Scaled:
-    {
-      buffer = mCfg.arrowSettings().scaleFactor() * mMaxMag;
-      break;
-    }
-    case Qgis::VectorFieldArrowScalingMethod::Fixed:
-    {
-      buffer = mContext.convertToPainterUnits( mCfg.arrowSettings().fixedShaftLength(), Qgis::RenderUnit::Millimeters );
-      break;
-    }
-  }
-
-  if ( mCfg.filterMax() >= 0 && buffer > mCfg.filterMax() )
-    buffer = mCfg.filterMax();
-
-  if ( buffer < 0.0 )
-    buffer = 0.0;
-
-  return buffer;
 }
 
 void QgsMeshVectorGlyphRenderer::drawVectorDataOnVertices()

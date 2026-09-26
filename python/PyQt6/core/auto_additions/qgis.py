@@ -13446,6 +13446,38 @@ Qgis.VectorFieldSeedingMethod.__doc__ = """Method used to define start points th
 # --
 Qgis.VectorFieldSeedingMethod.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.RasterVectorFieldSourceMode.CartesianComponents.__doc__ = "Two bands holding the x and y components of the vectors"
+Qgis.RasterVectorFieldSourceMode.EncodedDirection.__doc__ = "A single band holding integer coded compass directions, see Qgis.RasterDirectionEncoding"
+Qgis.RasterVectorFieldSourceMode.__doc__ = """Defines how a raster vector field renderer reads the vectors from the raster bands.
+
+.. versionadded:: 4.4
+
+* ``CartesianComponents``: Two bands holding the x and y components of the vectors
+* ``EncodedDirection``: A single band holding integer coded compass directions, see Qgis.RasterDirectionEncoding
+
+"""
+# --
+Qgis.RasterVectorFieldSourceMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RasterDirectionEncoding.Esri.__doc__ = "Esri: 1=E, 2=SE, 4=S, 8=SW, 16=W, 32=NW, 64=N, 128=NE"
+Qgis.RasterDirectionEncoding.Grass.__doc__ = "GRASS: 1=NE, 2=N, 3=NW, 4=W, 5=SW, 6=S, 7=SE, 8=E"
+Qgis.RasterDirectionEncoding.Saga.__doc__ = "SAGA: 0=N, 1=NE, 2=E, 3=SE, 4=S, 5=SW, 6=W, 7=NW"
+Qgis.RasterDirectionEncoding.PcRaster.__doc__ = "PCRaster: 1=SW, 2=S, 3=SE, 4=W, 6=E, 7=NW, 8=N, 9=NE"
+Qgis.RasterDirectionEncoding.__doc__ = """Schemes used to encode a compass direction as an integer raster value.
+
+These are the conventions of the D8 flow direction rasters produced by different software
+
+.. versionadded:: 4.4
+
+* ``Esri``: Esri: 1=E, 2=SE, 4=S, 8=SW, 16=W, 32=NW, 64=N, 128=NE
+* ``Grass``: GRASS: 1=NE, 2=N, 3=NW, 4=W, 5=SW, 6=S, 7=SE, 8=E
+* ``Saga``: SAGA: 0=N, 1=NE, 2=E, 3=SE, 4=S, 5=SW, 6=W, 7=NW
+* ``PcRaster``: PCRaster: 1=SW, 2=S, 3=SE, 4=W, 6=E, 7=NW, 8=N, 9=NE
+
+"""
+# --
+Qgis.RasterDirectionEncoding.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LinearMatrixMethod.Lu.__doc__ = "Fast lower-upper (LU) decomposition (fails on singular/collinear matrices)"
 Qgis.LinearMatrixMethod.Svd.__doc__ = "Singular Value Decomposition (handles collinearity and rank deficiency)"
 Qgis.LinearMatrixMethod.LuWithSvdFallback.__doc__ = "Try LU first; fallback to SVD on singularity"

@@ -724,6 +724,7 @@
 %Include auto_generated/raster/qgsrastershader.sip
 %Include auto_generated/raster/qgsrastershaderfunction.sip
 %Include auto_generated/raster/qgsrastertransparency.sip
+%Include auto_generated/raster/qgsrastervectorfieldrenderer.sip
 %Include auto_generated/raster/qgsrasterviewport.sip
 %Include auto_generated/raster/qgssinglebandcolordatarenderer.sip
 %Include auto_generated/raster/qgssinglebandgrayrenderer.sip

@@ -848,6 +848,8 @@ set(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
   raster/qgsrastertransparency.cpp
+  raster/qgsrastervectorfieldrenderer.cpp
+  raster/qgsrastervectorfieldvaluesource.cpp
   raster/qgssortedrasterblockindex.cpp
 
   raster/qgsbilinearrasterresampler.cpp
@@ -2080,6 +2082,8 @@ set(QGIS_CORE_HDRS
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrastertransparency.h
+  raster/qgsrastervectorfieldrenderer.h
+  raster/qgsrastervectorfieldvaluesource.h
   raster/qgsrasterviewport.h
   raster/qgssinglebandcolordatarenderer.h
   raster/qgssinglebandgrayrenderer.h

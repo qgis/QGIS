@@ -4047,6 +4047,20 @@ The development version
       Random
     };
 
+    enum class RasterVectorFieldSourceMode /BaseType=IntEnum/
+    {
+      CartesianComponents,
+      EncodedDirection,
+    };
+
+    enum class RasterDirectionEncoding /BaseType=IntEnum/
+    {
+      Esri,
+      Grass,
+      Saga,
+      PcRaster,
+    };
+
     enum class LinearMatrixMethod /BaseType=IntEnum/
     {
       Lu,

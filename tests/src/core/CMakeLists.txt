@@ -176,6 +176,7 @@ set(TESTS
  testqgsrange.cpp
  testqgsrasterblock.cpp
  testqgsrastercontourrenderer.cpp
+ testqgsrastervectorfieldrenderer.cpp
  testqgsrasterdataprovidertemporalcapabilities.cpp
  testqgsrasterfilewriter.cpp
  testqgsrasterfill.cpp
