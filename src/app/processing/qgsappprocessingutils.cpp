@@ -31,6 +31,7 @@
 #include "qgsprocessingprovideractions.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingscripteditordialog.h"
+#include "qgsprocessingtoolboxdock.h"
 
 #include <QFileDialog>
 #include <QMessageBox>

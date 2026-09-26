@@ -435,6 +435,7 @@
     <property name="title">
      <string>Pro&amp;cessing</string>
     </property>
+    <addaction name="mActionShowProcessingToolbox"/>
     <addaction name="mActionModelDesigner"/>
    </widget>
    <addaction name="mProjectMenu"/>
@@ -601,6 +602,7 @@
    <addaction name="mActionIdentify"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
+   <addaction name="mActionShowProcessingToolbox"/>
    <addaction name="mActionMapTips"/>
   </widget>
   <widget class="QToolBar" name="mPluginToolBar">
@@ -3525,6 +3527,21 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+G</string>
+   </property>
+  </action>
+  <action name="mActionShowProcessingToolbox">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/processingAlgorithm.svg</normaloff>:/images/themes/default/processingAlgorithm.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Toolbox</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+T</string>
    </property>
   </action>
  </widget>
