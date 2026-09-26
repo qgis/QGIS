@@ -183,6 +183,8 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   // Set the symbol
   layersTree->setModel( mSymbolLayersModel );
   layersTree->setHeaderHidden( true );
+  // Hide partially checked checkbox, see thread https://github.com/qgis/QGIS/pull/67099#issuecomment-5729627430
+  layersTree->setStyleSheet( u"QTreeView::indicator:indeterminate {background: transparent; border: none; }"_s );
 
   //get first feature from layer for previews
   if ( mVectorLayer )
