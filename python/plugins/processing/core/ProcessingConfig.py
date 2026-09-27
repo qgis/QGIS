@@ -73,8 +73,6 @@ class ProcessingConfig:
     FILTER_INVALID_GEOMETRIES = "FILTER_INVALID_GEOMETRIES"
     PREFER_FILENAME_AS_LAYER_NAME = "prefer-filename-as-layer-name"
     KEEP_DIALOG_OPEN = "KEEP_DIALOG_OPEN"
-    PRE_EXECUTION_SCRIPT = "PRE_EXECUTION_SCRIPT"
-    POST_EXECUTION_SCRIPT = "POST_EXECUTION_SCRIPT"
     SHOW_CRS_DEF = "SHOW_CRS_DEF"
     WARN_UNMATCHING_CRS = "WARN_UNMATCHING_CRS"
     SHOW_PROVIDERS_TOOLTIP = "SHOW_PROVIDERS_TOOLTIP"
@@ -185,24 +183,6 @@ class ProcessingConfig:
                 ProcessingConfig.tr("General"),
                 ProcessingConfig.VECTOR_POLYGON_STYLE,
                 ProcessingConfig.tr("Style for polygon layers"),
-                "",
-                valuetype=Setting.FILE,
-            )
-        )
-        ProcessingConfig.addSetting(
-            Setting(
-                ProcessingConfig.tr("General"),
-                ProcessingConfig.PRE_EXECUTION_SCRIPT,
-                ProcessingConfig.tr("Pre-execution script"),
-                "",
-                valuetype=Setting.FILE,
-            )
-        )
-        ProcessingConfig.addSetting(
-            Setting(
-                ProcessingConfig.tr("General"),
-                ProcessingConfig.POST_EXECUTION_SCRIPT,
-                ProcessingConfig.tr("Post-execution script"),
                 "",
                 valuetype=Setting.FILE,
             )
