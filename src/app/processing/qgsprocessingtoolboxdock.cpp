@@ -29,6 +29,7 @@
 #include <QMenu>
 #include <QString>
 #include <QToolButton>
+#include <QWidgetAction>
 
 #include "moc_qgsprocessingtoolboxdock.cpp"
 
@@ -73,6 +74,18 @@ QgsProcessingToolboxDockWidget::QgsProcessingToolboxDockWidget( QWidget *parent 
 
 void QgsProcessingToolboxDockWidget::initializeActions()
 {
+  mProcessingToolbar->addAction( QgisApp::instance()->actionProcessingHistory() );
+  mProcessingToolbar->addSeparator();
+  mProcessingToolbar->addAction( QgisApp::instance()->actionEditFeaturesInPlace() );
+  mProcessingToolbar->addSeparator();
+  auto optionsAction = new QAction( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ), tr( "Options" ), this );
+  optionsAction->setObjectName( "optionsAction" );
+  connect( optionsAction, &QAction::triggered, this, [this] {
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), u"processingOptions"_s );
+    mTxtTip->setVisible( hasDisabledProviders() );
+  } );
+  mProcessingToolbar->addAction( optionsAction );
+
   const QList<QgsProcessingProvider *> providers = QgsApplication::processingRegistry()->providers();
   for ( QgsProcessingProvider *provider : providers )
   {
@@ -81,15 +94,6 @@ void QgsProcessingToolboxDockWidget::initializeActions()
       addProviderActions( provider );
     }
   }
-
-  auto optionsAction = new QAction( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ), tr( "Options" ), this );
-  optionsAction->setObjectName( "optionsAction" );
-  connect( optionsAction, &QAction::triggered, this, [this] {
-    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), u"processingOptions"_s );
-    mTxtTip->setVisible( hasDisabledProviders() );
-  } );
-  mProcessingToolbar->addSeparator();
-  mProcessingToolbar->addAction( optionsAction );
 }
 
 void QgsProcessingToolboxDockWidget::setInPlaceEditMode( bool enabled )
@@ -299,5 +303,67 @@ void QgsProcessingToolboxDockWidget::addProviderActions( QgsProcessingProvider *
     menu->addAction( action );
   }
   toolbarButton->setMenu( menu );
-  mProcessingToolbar->addWidget( toolbarButton );
+
+  // provider action toolbuttons should come FIRST in the toolbar
+  const QList< QAction * > existingActions = mProcessingToolbar->actions();
+
+  QAction *insertBeforeAction = nullptr;
+  bool foundProviderActions = false;
+  for ( QAction *action : existingActions )
+  {
+    if ( action->isSeparator() )
+    {
+      if ( foundProviderActions )
+      {
+        // this is the separator after the last existing provider action, so we need to insert before this one
+        insertBeforeAction = action;
+        break;
+      }
+      else
+      {
+        continue;
+      }
+    }
+
+    if ( auto widgetAction = qobject_cast< QWidgetAction * >( action ) )
+    {
+      if ( auto toolbutton = qobject_cast< QToolButton * >( widgetAction->defaultWidget() ) )
+      {
+        if ( toolbutton->objectName().startsWith( "provideraction"_L1 ) )
+        {
+          foundProviderActions = true;
+          if ( toolbutton->toolTip().toLower().localeAwareCompare( provider->name().toLower() ) > 0 )
+          {
+            // found an existing provider action which is alphabetically after this provider, so we know where to
+            // insert it now...
+            insertBeforeAction = action;
+            break;
+          }
+          else
+          {
+            // a provider action which comes before this one alphabetically, so move to next
+            continue;
+          }
+        }
+      }
+    }
+    insertBeforeAction = action;
+    break;
+  }
+
+  if ( insertBeforeAction && foundProviderActions )
+  {
+    mProcessingToolbar->insertWidget( insertBeforeAction, toolbarButton );
+  }
+  else if ( insertBeforeAction )
+  {
+    auto separatorAction = new QAction();
+    separatorAction->setSeparator( true );
+    mProcessingToolbar->insertAction( insertBeforeAction, separatorAction );
+    mProcessingToolbar->insertWidget( separatorAction, toolbarButton );
+  }
+  else
+  {
+    mProcessingToolbar->addWidget( toolbarButton );
+  }
 }
