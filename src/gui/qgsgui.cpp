@@ -410,9 +410,9 @@ void QgsGui::setApplicationStyleSheet( const QString &styleSheet )
   emit applicationStyleSheetChanged( mApplicationStyleSheet );
 }
 
-void QgsGui::emitExecuteAlgorithm( const QString &algorithmId )
+void QgsGui::emitExecuteAlgorithm( const QString &algorithmId, bool useInPlaceMode, bool useBatchMode )
 {
-  emit executeAlgorithm( algorithmId );
+  emit executeAlgorithm( algorithmId, useInPlaceMode, useBatchMode );
 }
 
 bool QgsGui::allowExecutionOfEmbeddedScripts( QgsProject *project, QgsMessageBar *messageBar )
