@@ -67,7 +67,12 @@ QString QgsStacAsset::formatName() const
     return u"COPC"_s;
   else if ( mHref.endsWith( "/ept.json"_L1 ) )
     return u"EPT"_s;
-  else if ( mMediaType == "application/vnd+zarr"_L1 )
+  // Support zarr store media legacy type plus type with version information and/or profile parameter
+  else if ( mMediaType == "application/vnd+zarr"_L1
+            || mMediaType == "application/vnd.zarr; version=2"_L1
+            || mMediaType == "application/vnd.zarr; version=2; profile=multiscales"_L1
+            || mMediaType == "application/vnd.zarr; version=3"_L1
+            || mMediaType == "application/vnd.zarr; version=3; profile=multiscales"_L1 )
     return u"Zarr"_s;
   else if ( mMediaType == "application/vnd.apache.parquet"_L1 )
     return u"Parquet"_s;
