@@ -859,6 +859,14 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionCheckQgisVersion() = 0 SIP_DISALLOWNONE;
     virtual QAction *actionAbout() = 0 SIP_DISALLOWNONE;
 
+    // Processing actions
+    /**
+     * Returns the Processing "Edit Features in Place" action.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QAction *actionEditFeaturesInPlace() = 0 SIP_DISALLOWNONE;
+
     // Shape digitize actions
 
     /**
