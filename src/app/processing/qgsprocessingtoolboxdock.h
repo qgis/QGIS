@@ -20,11 +20,37 @@
 
 #include "qgsdockwidget.h"
 
+class QgsProcessingProvider;
+
 class QgsProcessingToolboxDockWidget : public QgsDockWidget, private Ui::QgsProcessingToolboxDockWidgetBase
 {
     Q_OBJECT
   public:
     QgsProcessingToolboxDockWidget( QWidget *parent );
+
+    void initializeActions();
+
+    void setInPlaceEditMode( bool enabled );
+
+  private slots:
+
+    void setFilterString( const QString &string );
+    void showPopupMenu( const QPoint &pos );
+    void executeCurrentAlgorithm();
+    void executeCurrentAlgorithmAsBatchProcess();
+    void openSettings( const QString &url );
+
+    void providerAdded( const QString &id );
+    void providerRemoved( const QString &id );
+
+    void activeLayerChanged( QgsMapLayer *layer );
+
+  private:
+    bool hasDisabledProviders();
+    void addProviderActions( QgsProcessingProvider *provider );
+
+    bool mTipWasClosed = false;
+    bool mInPlaceMode = false;
 };
 
 #endif // QGSPROCESSINGTOOLBOXDOCK_H
