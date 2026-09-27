@@ -77,7 +77,6 @@ from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.ResultsDock import ResultsDock
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools import dataobjects
@@ -279,13 +278,6 @@ class ProcessingPlugin(QObject):
             self.create_test
         )
 
-        self.toolbox = ProcessingToolbox()
-        self.iface.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.toolbox)
-        self.toolbox.hide()
-        self.toolbox.visibilityChanged.connect(self.toolboxVisibilityChanged)
-
-        self.toolbox.executeWithGui.connect(self.executeAlgorithm)
-
         self.resultsDock = ResultsDock()
         self.iface.addDockWidget(
             Qt.DockWidgetArea.RightDockWidgetArea, self.resultsDock
@@ -293,37 +285,6 @@ class ProcessingPlugin(QObject):
         self.resultsDock.hide()
 
         processing_menu = self.iface.processingMenu()
-
-        self.toolboxAction = QAction(self.tr("&Toolbox"), self.iface.mainWindow())
-        self.toolboxAction.setCheckable(True)
-        self.toolboxAction.setObjectName("toolboxAction")
-        self.toolboxAction.setIcon(
-            QgsApplication.getThemeIcon("/processingAlgorithm.svg")
-        )
-        self.iface.registerMainWindowAction(
-            self.toolboxAction,
-            QKeySequence("Ctrl+Alt+T").toString(QKeySequence.SequenceFormat.NativeText),
-        )
-        self.toolboxAction.toggled.connect(self.openToolbox)
-        self.iface.attributesToolBar().insertAction(
-            self.iface.actionOpenStatisticalSummary(), self.toolboxAction
-        )
-        # the toolbox should be the first action in the menu:
-        processing_menu.insertAction(processing_menu.actions()[0], self.toolboxAction)
-
-        self.historyAction = QAction(
-            QgsApplication.getThemeIcon("/mIconHistory.svg"),
-            QCoreApplication.translate("ProcessingPlugin", "&History…"),
-            self.iface.mainWindow(),
-        )
-        self.historyAction.setObjectName("historyAction")
-        self.historyAction.triggered.connect(self.openHistory)
-        self.iface.registerMainWindowAction(
-            self.historyAction,
-            QKeySequence("Ctrl+Alt+H").toString(QKeySequence.SequenceFormat.NativeText),
-        )
-        processing_menu.addAction(self.historyAction)
-        self.toolbox.processingToolbar.addAction(self.historyAction)
 
         self.resultsAction = QAction(
             QgsApplication.getThemeIcon("/processingResult.svg"),
@@ -341,21 +302,6 @@ class ProcessingPlugin(QObject):
         self.iface.processingToolboxToolBar().addAction(self.resultsAction)
         self.resultsDock.visibilityChanged.connect(self.resultsAction.setChecked)
         self.resultsAction.toggled.connect(self.resultsDock.setUserVisible)
-
-        self.toolbox.processingToolbar.addSeparator()
-
-        self.editInPlaceAction = QAction(
-            QgsApplication.getThemeIcon("/mActionProcessSelected.svg"),
-            self.tr("Edit Features In-Place"),
-            self.iface.mainWindow(),
-        )
-        self.editInPlaceAction.setObjectName("editInPlaceFeatures")
-        self.editInPlaceAction.setCheckable(True)
-        self.editInPlaceAction.toggled.connect(self.editSelected)
-        processing_menu.addAction(self.editInPlaceAction)
-        self.toolbox.processingToolbar.addAction(self.editInPlaceAction)
-
-        self.toolbox.processingToolbar.addSeparator()
 
         processing_menu.addSeparator()
 
@@ -379,26 +325,6 @@ class ProcessingPlugin(QObject):
         QgsApplication.processingRegistry().providerAdded.connect(self._provider_added)
 
         QgsGui.instance().executeAlgorithm.connect(self._execute_algorithm)
-
-        # In-place editing button state sync
-
-        # we need to explicitly store and disconnect these connections
-        # on plugin unload -- they aren't cleaned up automatically (see
-        # https://github.com/qgis/QGIS/issues/53455)
-        self._gui_connections.append(
-            self.iface.currentLayerChanged.connect(self.sync_in_place_button_state)
-        )
-        self._gui_connections.append(
-            self.iface.mapCanvas().selectionChanged.connect(
-                self.sync_in_place_button_state
-            )
-        )
-        self._gui_connections.append(
-            self.iface.actionToggleEditing().triggered.connect(
-                partial(self.sync_in_place_button_state, None)
-            )
-        )
-        self.sync_in_place_button_state()
 
         self.projectProvider = (
             QgsApplication.instance().processingRegistry().providerById("project")
@@ -531,50 +457,16 @@ class ProcessingPlugin(QObject):
             handleAlgorithmResults(alg, context, feedback)
             feedback.close()
 
-    def sync_in_place_button_state(self, layer=None):
-        """Synchronise the button state with layer state"""
-
-        if layer is None:
-            layer = self.iface.activeLayer()
-
-        old_enabled_state = self.editInPlaceAction.isEnabled()
-
-        new_enabled_state = (
-            layer is not None and layer.type() == QgsMapLayerType.VectorLayer
-        )
-        self.editInPlaceAction.setEnabled(new_enabled_state)
-
-        if new_enabled_state != old_enabled_state:
-            self.toolbox.set_in_place_edit_mode(
-                new_enabled_state and self.editInPlaceAction.isChecked()
-            )
-
-    def openProcessingOptions(self):
-        self.iface.showOptionsDialog(
-            self.iface.mainWindow(), currentPage="processingOptions"
-        )
-
     def unload(self):
         for connection in self._gui_connections:
             self.disconnect(connection)
         self._gui_connections = []
-        self.toolbox.setVisible(False)
-        self.iface.removeDockWidget(self.toolbox)
-        self.iface.attributesToolBar().removeAction(self.toolboxAction)
 
         self.resultsDock.setVisible(False)
         self.iface.removeDockWidget(self.resultsDock)
 
-        self.toolbox.deleteLater()
-
-        self.iface.unregisterMainWindowAction(self.toolboxAction)
-        self.iface.unregisterMainWindowAction(self.historyAction)
         self.iface.unregisterMainWindowAction(self.resultsAction)
-
-        self.toolboxAction.deleteLater()
-        self.historyAction.deleteLater()
         self.resultsAction.deleteLater()
-        self.editInPlaceAction.deleteLater()
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
 
@@ -594,12 +486,6 @@ class ProcessingPlugin(QObject):
 
         Processing.deinitialize()
 
-    def openToolbox(self, show):
-        self.toolbox.setUserVisible(show)
-
-    def toolboxVisibilityChanged(self, visible):
-        self.toolboxAction.setChecked(visible)
-
     def openResults(self):
         if self.resultsDock.isVisible():
             self.resultsDock.hide()
@@ -610,9 +496,6 @@ class ProcessingPlugin(QObject):
         return QCoreApplication.translate(
             "ProcessingPlugin", message, disambiguation=disambiguation, n=n
         )
-
-    def editSelected(self, enabled):
-        self.toolbox.set_in_place_edit_mode(enabled)
 
     def _execute_history_commands(self, commands: str):
         """
