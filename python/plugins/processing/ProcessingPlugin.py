@@ -421,8 +421,10 @@ class ProcessingPlugin(QObject):
         if provider is not None:
             initialize_menu_settings_for_provider(provider)
 
-    def _execute_algorithm(self, algorithm_id: str):
-        self.executeAlgorithm(algorithm_id, self.iface.mainWindow())
+    def _execute_algorithm(self, algorithm_id: str, in_place: bool, batch_mode: bool):
+        self.executeAlgorithm(
+            algorithm_id, self.iface.mainWindow(), in_place, batch_mode
+        )
 
     def updateProjectModelMenu(self):
         """Add projects models to menu"""

@@ -333,7 +333,7 @@ Emitted whenever the application style sheet is changed.
 .. versionadded:: 4.4
 %End
 
-    void executeAlgorithm( const QString &algorithmId );
+    void executeAlgorithm( const QString &algorithmId, bool useInPlaceMode, bool useBatchMode );
 %Docstring
 Emitted when a Processing algorithm should be executed through the GUI.
 
