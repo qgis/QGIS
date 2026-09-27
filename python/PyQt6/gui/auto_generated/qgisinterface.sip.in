@@ -492,6 +492,13 @@ Returns a reference to the main window "Database" toolbar.
 Returns a reference to the main window "Web" toolbar.
 %End
 
+    virtual QToolBar *processingToolboxToolBar() = 0 /DisallowNone/;
+%Docstring
+Returns a reference to the Processing toolbox dock widget toolbar.
+
+.. versionadded:: 4.4
+%End
+
     virtual QAction *actionNewProject() = 0 /DisallowNone/;
 %Docstring
 Returns the native New Project action.

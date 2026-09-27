@@ -7058,6 +7058,11 @@ void QgisApp::dwgImport()
   d.exec();
 }
 
+QToolBar *QgisApp::processingToolboxToolBar()
+{
+  return mProcessingToolboxDockWidget->toolBar();
+}
+
 void QgisApp::openTemplate( const QString &fileName )
 {
   QFile templateFile;
