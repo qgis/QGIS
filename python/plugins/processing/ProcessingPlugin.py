@@ -299,7 +299,15 @@ class ProcessingPlugin(QObject):
         )
 
         processing_menu.addAction(self.resultsAction)
-        self.iface.processingToolboxToolBar().addAction(self.resultsAction)
+
+        processing_toolbox_toolbar = self.iface.processingToolboxToolBar()
+        # results action should come after the history action
+        for idx, _action in enumerate(processing_toolbox_toolbar.actions()):
+            if _action.objectName() == "mProcessingHistoryAction":
+                processing_toolbox_toolbar.insertAction(
+                    processing_toolbox_toolbar.actions()[idx + 1], self.resultsAction
+                )
+
         self.resultsDock.visibilityChanged.connect(self.resultsAction.setChecked)
         self.resultsAction.toggled.connect(self.resultsDock.setUserVisible)
 

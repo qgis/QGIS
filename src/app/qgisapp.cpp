@@ -1697,8 +1697,6 @@ QgisApp::QgisApp(
   mAppProcessingUtils = std::make_unique< QgsAppProcessingUtils >( this );
   mAppProcessingUtils->initProjectModelProvider();
   mAppProcessingUtils->registerActions();
-  mProcessingToolboxDockWidget->toolBar()->addAction( mProcessingHistoryAction );
-  mProcessingToolboxDockWidget->toolBar()->addAction( mActionEditFeaturesInPlace );
   mProcessingToolboxDockWidget->initializeActions();
 
   // Create the plugin registry and load plugins

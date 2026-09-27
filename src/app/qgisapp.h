@@ -740,6 +740,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAbout() { return mActionAbout; }
     QAction *actionSponsors() { return mActionSponsors; }
     QAction *actionEditFeaturesInPlace() { return mActionEditFeaturesInPlace; }
+    QAction *actionProcessingHistory() { return mProcessingHistoryAction; }
 
     QAction *actionShowPinnedLabels() { return mActionShowPinnedLabels; }
 
