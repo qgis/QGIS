@@ -338,7 +338,7 @@ class ProcessingPlugin(QObject):
         )
 
         processing_menu.addAction(self.resultsAction)
-        self.toolbox.processingToolbar.addAction(self.resultsAction)
+        self.iface.processingToolboxToolBar().addAction(self.resultsAction)
         self.resultsDock.visibilityChanged.connect(self.resultsAction.setChecked)
         self.resultsAction.toggled.connect(self.resultsDock.setUserVisible)
 
