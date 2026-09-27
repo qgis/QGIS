@@ -624,7 +624,16 @@ void QgsProcessingAlgorithmWidgetBase::urlClicked( const QUrl &url )
 {
   const QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
-    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  {
+    if ( file.suffix().compare( "html"_L1, Qt::CaseInsensitive ) == 0 )
+    {
+      QDesktopServices::openUrl( url );
+    }
+    else
+    {
+      QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+    }
+  }
   else
     QDesktopServices::openUrl( url );
 }
