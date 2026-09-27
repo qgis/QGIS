@@ -1852,7 +1852,6 @@ QgsBabelSimpleImportFormat: src/core/gps/qgsbabelformat.h#L100
 QgsBalloonCallout.clone: src/core/callouts/qgscallout.h#L897
 QgsBalloonCallout.cornerRadius: src/core/callouts/qgscallout.h#L1094
 QgsBalloonCallout.cornerRadiusUnit: src/core/callouts/qgscallout.h#L1120
-QgsBalloonCallout.create: src/core/callouts/qgscallout.h#L894
 QgsBalloonCallout.draw: src/core/callouts/qgscallout.h#L1142
 QgsBalloonCallout.fillSymbol: src/core/callouts/qgscallout.h#L911
 QgsBalloonCallout.marginsUnit: src/core/callouts/qgscallout.h#L1030
@@ -2222,9 +2221,6 @@ QgsCalloutPosition: src/core/labeling/qgscalloutposition.h#L31
 QgsCalloutRegistry.addCalloutType: src/core/callouts/qgscalloutsregistry.h#L172
 QgsCalloutRegistry.calloutMetadata: src/core/callouts/qgscalloutsregistry.h#L165
 QgsCalloutRegistry.calloutTypes: src/core/callouts/qgscalloutsregistry.h#L191
-QgsCalloutRegistry.createCallout: src/core/callouts/qgscalloutsregistry.h#L179
-QgsCalloutRegistry.createCallout: src/core/callouts/qgscalloutsregistry.h#L186
-QgsCalloutRegistry.defaultCallout: src/core/callouts/qgscalloutsregistry.h#L198
 QgsCalloutRegistry: src/core/callouts/qgscalloutsregistry.h#L153
 QgsCategorizedSymbolRenderer.accept: src/core/symbology/qgscategorizedsymbolrenderer.h#L212
 QgsCategorizedSymbolRenderer.addCategory: src/core/symbology/qgscategorizedsymbolrenderer.h#L289
@@ -3239,7 +3235,6 @@ QgsCurveTransform.writeXml: src/core/qgspropertytransformer.h#L132
 QgsCurveTransform.y: src/core/qgspropertytransformer.h#L109
 QgsCurveTransform: src/core/qgspropertytransformer.h#L57
 QgsCurvedLineCallout.clone: src/core/callouts/qgscallout.h#L810
-QgsCurvedLineCallout.create: src/core/callouts/qgscallout.h#L807
 QgsCurvedLineCallout.createCalloutLine: src/core/callouts/qgscallout.h#L846
 QgsCurvedLineCallout.curvature: src/core/callouts/qgscallout.h#L820
 QgsCurvedLineCallout.orientation: src/core/callouts/qgscallout.h#L836
@@ -9314,7 +9309,6 @@ QgsMagneticModel.name: src/core/qgsmagneticmodel.h#L133
 QgsMagneticModel.order: src/core/qgsmagneticmodel.h#L186
 QgsMagneticModel: src/core/qgsmagneticmodel.h#L50
 QgsManhattanLineCallout.clone: src/core/callouts/qgscallout.h#L761
-QgsManhattanLineCallout.create: src/core/callouts/qgscallout.h#L758
 QgsManhattanLineCallout.createCalloutLine: src/core/callouts/qgscallout.h#L764
 QgsManhattanLineCallout.type: src/core/callouts/qgscallout.h#L760
 QgsManhattanLineCallout: src/core/callouts/qgscallout.h#L743
@@ -17446,7 +17440,6 @@ QgsSimpleLegendNode.__repr__: src/core/layertree/qgslayertreemodellegendnode.h#L
 QgsSimpleLegendNode.data: src/core/layertree/qgslayertreemodellegendnode.h#L632
 QgsSimpleLegendNode: src/core/layertree/qgslayertreemodellegendnode.h#L617
 QgsSimpleLineCallout.clone: src/core/callouts/qgscallout.h#L529
-QgsSimpleLineCallout.create: src/core/callouts/qgscallout.h#L526
 QgsSimpleLineCallout.createCalloutLine: src/core/callouts/qgscallout.h#L710
 QgsSimpleLineCallout.draw: src/core/callouts/qgscallout.h#L701
 QgsSimpleLineCallout.drawCalloutToAllParts: src/core/callouts/qgscallout.h#L691
