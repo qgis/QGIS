@@ -1694,9 +1694,8 @@ QgisApp::QgisApp(
   connect( QgsGui::annotationItemGuiRegistry(), &QgsAnnotationItemGuiRegistry::typeAdded, this, &QgisApp::annotationItemTypeAdded );
 
   // must come before plugin startup, as processing plugin sets up connections to it
-  QgsAppProcessingUtils::initProjectModelProvider();
-
   mAppProcessingUtils = std::make_unique< QgsAppProcessingUtils >( this );
+  mAppProcessingUtils->initProjectModelProvider();
   mAppProcessingUtils->registerActions();
   mProcessingToolboxDockWidget->toolBar()->addAction( mProcessingHistoryAction );
   mProcessingToolboxDockWidget->toolBar()->addAction( mActionEditFeaturesInPlace );

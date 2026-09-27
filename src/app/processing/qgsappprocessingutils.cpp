@@ -509,6 +509,7 @@ void QgsAppProcessingUtils::openHistory()
 void QgsAppProcessingUtils::initProjectModelProvider()
 {
   auto projectModelProvider = std::make_unique< QgsProcessingProjectModelProvider >( QgsProject::instance() );
+  connect( projectModelProvider.get(), &QgsProcessingProvider::algorithmsLoaded, this, &QgsAppProcessingUtils::updateProjectModelMenu );
   QgsApplication::processingRegistry()->addProvider( projectModelProvider.release() );
 }
 
@@ -857,6 +858,39 @@ void QgsAppProcessingUtils::updateModels()
   if ( QgsProcessingProvider *modelProvider = QgsApplication::processingRegistry()->providerById( QgsProcessing::MODEL_PROVIDER_ID ) )
   {
     modelProvider->refreshAlgorithms();
+  }
+}
+
+void QgsAppProcessingUtils::updateProjectModelMenu()
+{
+  QMenu *projectModelsMenu = mQgisApp->projectModelsMenu();
+
+  projectModelsMenu->clear();
+
+  QgsProcessingProvider *projectModelProvider = QgsApplication::processingRegistry()->providerById( QgsProcessing::PROJECT_PROVIDER_ID );
+  if ( !projectModelProvider )
+    return;
+
+  const QList< const QgsProcessingAlgorithm * > algorithms = projectModelProvider->algorithms();
+  for ( const QgsProcessingAlgorithm *algorithm : algorithms )
+  {
+    auto modelAlgorithm = dynamic_cast< const QgsProcessingModelAlgorithm * >( algorithm );
+    if ( !modelAlgorithm )
+      continue;
+
+    auto modelSubMenu = new QMenu( modelAlgorithm->name(), projectModelsMenu );
+    projectModelsMenu->addMenu( modelSubMenu );
+    auto action = new QAction( tr( "Execute…" ), modelSubMenu );
+    const QString modelId = modelAlgorithm->id();
+    connect( action, &QAction::triggered, this, [modelId, this] { QgsGui::instance()->emitExecuteAlgorithm( modelId, mQgisApp->actionEditFeaturesInPlace()->isChecked() ); } );
+    modelSubMenu->addAction( action );
+
+    if ( modelAlgorithm->flags().testFlag( Qgis::ProcessingAlgorithmFlag::SupportsBatch ) )
+    {
+      auto actionBatch = new QAction( tr( "Execute as Batch Process…" ), modelSubMenu );
+      modelSubMenu->addAction( actionBatch );
+      connect( actionBatch, &QAction::triggered, this, [modelId, this] { QgsGui::instance()->emitExecuteAlgorithm( modelId, mQgisApp->actionEditFeaturesInPlace()->isChecked(), true ); } );
+    }
   }
 }
 
