@@ -89,6 +89,11 @@ void QgsProcessingToolboxDockWidget::setInPlaceEditMode( bool enabled )
   mInPlaceMode = enabled;
 }
 
+QToolBar *QgsProcessingToolboxDockWidget::toolBar()
+{
+  return mProcessingToolbar;
+}
+
 void QgsProcessingToolboxDockWidget::setFilterString( const QString &string )
 {
   QgsProcessingToolboxProxyModel::Filters filters = mAlgorithmTree->filters();

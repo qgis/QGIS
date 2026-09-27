@@ -32,6 +32,8 @@ class QgsProcessingToolboxDockWidget : public QgsDockWidget, private Ui::QgsProc
 
     void setInPlaceEditMode( bool enabled );
 
+    QToolBar *toolBar();
+
   private slots:
 
     void setFilterString( const QString &string );

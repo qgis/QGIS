@@ -26,6 +26,7 @@
 #include "qgsprocessingfavoritealgorithmmanager.h"
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingguiutils.h"
+#include "qgsprocessinghistorywidget.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingprojectmodelprovider.h"
 #include "qgsprocessingprovideractions.h"
@@ -495,6 +496,13 @@ void QgsAppProcessingUtils::openModelDesigner()
   // QgsModelDesignerDialog has delete on close set:
   auto dlg = new QgsModelDesignerDialog();
   connect( dlg, &QgsModelDesignerDialog::modelUpdated, this, &QgsAppProcessingUtils::updateModels );
+  dlg->show();
+}
+
+void QgsAppProcessingUtils::openHistory()
+{
+  auto dlg = new QgsProcessingHistoryDialog( QgisApp::instance() );
+  dlg->setAttribute( Qt::WidgetAttribute::WA_DeleteOnClose );
   dlg->show();
 }
 
