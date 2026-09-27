@@ -30,9 +30,13 @@ class QgsProcessingToolboxDockWidget : public QgsDockWidget, private Ui::QgsProc
 
     void initializeActions();
 
-    void setInPlaceEditMode( bool enabled );
-
     QToolBar *toolBar();
+
+    void syncInPlaceEditState( QgsMapLayer *layer = nullptr );
+
+  public slots:
+
+    void setInPlaceEditMode( bool enabled );
 
   private slots:
 
