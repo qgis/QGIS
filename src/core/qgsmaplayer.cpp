@@ -2788,11 +2788,18 @@ bool QgsMapLayer::isTemporary() const
   if ( path.isEmpty() )
     return false;
 
+  const QFileInfo fileInfo( path );
+  const QString cleanedPath = QDir::cleanPath( fileInfo.canonicalFilePath() );
+
   // check if layer path is inside one of the standard temporary file locations for this platform
   const QStringList tempPaths = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
-  for ( const QString &tempPath : tempPaths )
+  for ( const QString &tempPath : std::as_const( tempPaths ) )
   {
-    if ( path.startsWith( tempPath ) )
+#if defined( Q_OS_WIN )
+    if ( cleanedPath.startsWith( tempPath, Qt::CaseSensitivity::CaseInsensitive ) )
+#else
+    if ( cleanedPath.startsWith( tempPath, Qt::CaseSensitivity::CaseSensitive ) )
+#endif
       return true;
   }
 
