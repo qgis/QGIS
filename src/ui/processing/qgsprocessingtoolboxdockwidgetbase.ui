@@ -31,7 +31,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QToolBar" name="processingToolbar">
+     <widget class="QToolBar" name="mProcessingToolbar">
       <property name="iconSize">
        <size>
         <width>16</width>
@@ -44,14 +44,14 @@
      </widget>
     </item>
     <item>
-     <widget class="QgsFilterLineEdit" name="searchBox">
+     <widget class="QgsFilterLineEdit" name="mSearchBox">
       <property name="toolTip">
        <string>Enter algorithm name to filter list</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QgsProcessingToolboxTreeView" name="algorithmTree">
+     <widget class="QgsProcessingToolboxTreeView" name="mAlgorithmTree">
       <property name="contextMenuPolicy">
        <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
       </property>
@@ -61,7 +61,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="txtTip">
+     <widget class="QLabel" name="mTxtTip">
       <property name="styleSheet">
        <string notr="true">background-color: rgb(85, 170, 255);
 color: rgb(255, 255, 255);</string>

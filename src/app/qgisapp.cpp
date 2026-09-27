@@ -1503,6 +1503,9 @@ QgisApp::QgisApp(
   connect( mBrowserWidget2, &QgsBrowserDockWidget::openFile, this, [this]( const QString &file ) { openFile( file ); } );
   connect( mBrowserWidget2, &QgsBrowserDockWidget::handleDropUriList, this, [this]( const QgsMimeDataUtils::UriList &list ) { handleDropUriList( list ); } );
 
+  addDockWidget( Qt::RightDockWidgetArea, mProcessingToolboxDockWidget );
+  mProcessingToolboxDockWidget->hide();
+
   addDockWidget( Qt::LeftDockWidgetArea, mAdvancedDigitizingDockWidget );
   mAdvancedDigitizingDockWidget->hide();
 
@@ -1695,6 +1698,7 @@ QgisApp::QgisApp(
 
   mAppProcessingUtils = std::make_unique< QgsAppProcessingUtils >( this );
   mAppProcessingUtils->registerActions();
+  mProcessingToolboxDockWidget->initializeActions();
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
