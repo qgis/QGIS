@@ -437,6 +437,7 @@
     </property>
     <addaction name="mActionShowProcessingToolbox"/>
     <addaction name="mActionModelDesigner"/>
+    <addaction name="mProcessingHistoryAction"/>
    </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
@@ -3542,6 +3543,21 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+T</string>
+   </property>
+  </action>
+  <action name="mProcessingHistoryAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconHistory.svg</normaloff>:/images/themes/default/mIconHistory.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;History…</string>
+   </property>
+   <property name="toolTip">
+    <string>Processing history</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+H</string>
    </property>
   </action>
  </widget>

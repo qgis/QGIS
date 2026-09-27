@@ -1699,6 +1699,7 @@ QgisApp::QgisApp(
   mAppProcessingUtils = std::make_unique< QgsAppProcessingUtils >( this );
   mAppProcessingUtils->registerActions();
   mProcessingToolboxDockWidget->initializeActions();
+  mProcessingToolboxDockWidget->toolBar()->addAction( mProcessingHistoryAction );
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
@@ -1822,6 +1823,7 @@ QgisApp::QgisApp(
   }
 
   connect( mActionModelDesigner, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openModelDesigner );
+  connect( mProcessingHistoryAction, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openHistory );
 
   mPythonMacrosEnabled = false;
 

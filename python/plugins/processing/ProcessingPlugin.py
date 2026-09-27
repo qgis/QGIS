@@ -615,11 +615,6 @@ class ProcessingPlugin(QObject):
         else:
             self.resultsDock.show()
 
-    def openHistory(self):
-        dlg = QgsProcessingHistoryDialog(self.iface.mainWindow())
-        dlg.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
-        dlg.show()
-
     def tr(self, message, disambiguation=None, n=-1):
         return QCoreApplication.translate(
             "ProcessingPlugin", message, disambiguation=disambiguation, n=n

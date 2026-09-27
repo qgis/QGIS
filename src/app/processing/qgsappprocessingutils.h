@@ -57,6 +57,8 @@ class QgsAppProcessingUtils : public QObject
 
     void openModelDesigner();
 
+    void openHistory();
+
     static void initProjectModelProvider();
 
     /**
