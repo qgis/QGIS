@@ -63,6 +63,12 @@ QgsProcessingToolboxDockWidget::QgsProcessingToolboxDockWidget( QWidget *parent 
   connect( QgsApplication::processingRegistry(), &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxDockWidget::providerRemoved );
 
   connect( QgisApp::instance(), &QgisApp::activeLayerChanged, this, &QgsProcessingToolboxDockWidget::activeLayerChanged );
+
+  connect( QgisApp::instance()->actionEditFeaturesInPlace(), &QAction::toggled, this, &QgsProcessingToolboxDockWidget::setInPlaceEditMode );
+
+  connect( QgisApp::instance(), &QgisApp::activeLayerChanged, this, &QgsProcessingToolboxDockWidget::syncInPlaceEditState );
+
+  syncInPlaceEditState();
 }
 
 void QgsProcessingToolboxDockWidget::initializeActions()
@@ -103,6 +109,25 @@ QToolBar *QgsProcessingToolboxDockWidget::toolBar()
   return mProcessingToolbar;
 }
 
+void QgsProcessingToolboxDockWidget::syncInPlaceEditState( QgsMapLayer *layer )
+{
+  if ( !layer )
+  {
+    layer = QgisApp::instance()->activeLayer();
+  }
+
+  QAction *editInPlaceAction = QgisApp::instance()->actionEditFeaturesInPlace();
+  const bool oldEnabledState = editInPlaceAction->isEnabled();
+
+  const bool newEnabledState = qobject_cast< QgsVectorLayer * >( layer );
+  editInPlaceAction->setEnabled( newEnabledState );
+
+  if ( newEnabledState != oldEnabledState )
+  {
+    setInPlaceEditMode( newEnabledState && editInPlaceAction->isChecked() );
+  }
+}
+
 void QgsProcessingToolboxDockWidget::setFilterString( const QString &string )
 {
   QgsProcessingToolboxProxyModel::Filters filters = mAlgorithmTree->filters();
@@ -114,13 +139,13 @@ void QgsProcessingToolboxDockWidget::setFilterString( const QString &string )
 void QgsProcessingToolboxDockWidget::showPopupMenu( const QPoint &pos )
 {
   const QModelIndex index = mAlgorithmTree->indexAt( pos );
-  auto menu = new QMenu();
   const QgsProcessingAlgorithm *algorithm = mAlgorithmTree->algorithmForIndex( index );
   if ( !algorithm )
   {
     return;
   }
 
+  auto menu = new QMenu();
   auto executeAction = new QAction( tr( "Execute…" ), menu );
   connect( executeAction, &QAction::triggered, this, &QgsProcessingToolboxDockWidget::executeCurrentAlgorithm );
   menu->addAction( executeAction );
