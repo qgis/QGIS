@@ -75,6 +75,15 @@ void QgsProcessingToolboxDockWidget::initializeActions()
       addProviderActions( provider );
     }
   }
+
+  auto optionsAction = new QAction( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ), tr( "Options" ), this );
+  optionsAction->setObjectName( "optionsAction" );
+  connect( optionsAction, &QAction::triggered, this, [this] {
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), u"processingOptions"_s );
+    mTxtTip->setVisible( hasDisabledProviders() );
+  } );
+  mProcessingToolbar->addSeparator();
+  mProcessingToolbar->addAction( optionsAction );
 }
 
 void QgsProcessingToolboxDockWidget::setInPlaceEditMode( bool enabled )

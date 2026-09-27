@@ -1698,8 +1698,8 @@ QgisApp::QgisApp(
 
   mAppProcessingUtils = std::make_unique< QgsAppProcessingUtils >( this );
   mAppProcessingUtils->registerActions();
-  mProcessingToolboxDockWidget->initializeActions();
   mProcessingToolboxDockWidget->toolBar()->addAction( mProcessingHistoryAction );
+  mProcessingToolboxDockWidget->initializeActions();
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session

@@ -357,15 +357,6 @@ class ProcessingPlugin(QObject):
 
         self.toolbox.processingToolbar.addSeparator()
 
-        self.optionsAction = QAction(
-            QgsApplication.getThemeIcon("/mActionOptions.svg"),
-            self.tr("Options"),
-            self.iface.mainWindow(),
-        )
-        self.optionsAction.setObjectName("optionsAction")
-        self.optionsAction.triggered.connect(self.openProcessingOptions)
-        self.toolbox.processingToolbar.addAction(self.optionsAction)
-
         processing_menu.addSeparator()
 
         # provider specific settings -- here till we have a proper c++ API to port these too
