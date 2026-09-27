@@ -914,6 +914,13 @@ Returns the Hide Deselected Layers action.
     virtual QAction *actionCheckQgisVersion() = 0 /DisallowNone/;
     virtual QAction *actionAbout() = 0 /DisallowNone/;
 
+    virtual QAction *actionEditFeaturesInPlace() = 0 /DisallowNone/;
+%Docstring
+Returns the Processing "Edit Features in Place" action.
+
+.. versionadded:: 4.4
+%End
+
 
  virtual QAction *actionCircle2Points() /Deprecated="Since 3.26. Shape digitizing is now part of the add feature tool. To enable the shape tool, use QgsMapToolCapture.setCurrentCaptureTechnique() and then QgsMapToolCapture.setCurrentShapeMapTool()."/;
 %Docstring

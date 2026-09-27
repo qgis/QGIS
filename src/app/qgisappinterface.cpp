@@ -1310,6 +1310,10 @@ QAction *QgisAppInterface::actionAbout()
 {
   return qgis->actionAbout();
 }
+QAction *QgisAppInterface::actionEditFeaturesInPlace()
+{
+  return qgis->actionEditFeaturesInPlace();
+}
 
 bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly, bool showModal )
 {

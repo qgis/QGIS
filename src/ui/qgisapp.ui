@@ -438,6 +438,7 @@
     <addaction name="mActionShowProcessingToolbox"/>
     <addaction name="mActionModelDesigner"/>
     <addaction name="mProcessingHistoryAction"/>
+    <addaction name="mActionEditFeaturesInPlace"/>
    </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
@@ -3558,6 +3559,18 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+H</string>
+   </property>
+  </action>
+  <action name="mActionEditFeaturesInPlace">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionProcessSelected.svg</normaloff>:/images/themes/default/mActionProcessSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Features In-Place</string>
    </property>
   </action>
  </widget>
