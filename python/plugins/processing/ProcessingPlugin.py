@@ -329,9 +329,6 @@ class ProcessingPlugin(QObject):
         self.projectProvider = (
             QgsApplication.instance().processingRegistry().providerById("project")
         )
-        self._gui_connections.append(
-            self.projectProvider.algorithmsLoaded.connect(self.updateProjectModelMenu)
-        )
 
     def _provider_added(self, provider_id: str):
         provider = QgsApplication.processingRegistry().providerById(provider_id)
@@ -342,39 +339,6 @@ class ProcessingPlugin(QObject):
         self.executeAlgorithm(
             algorithm_id, self.iface.mainWindow(), in_place, batch_mode
         )
-
-    def updateProjectModelMenu(self):
-        """Add projects models to menu"""
-        self.iface.projectModelsMenu().clear()
-
-        for model in self.projectProvider.algorithms():
-            model_sub_menu = self.iface.createProjectModelSubMenu(model.name())
-
-            action = QAction(self.tr("Execute…"))
-            action.setParent(model_sub_menu)
-            action.triggered.connect(
-                partial(
-                    self.executeAlgorithm,
-                    model.id(),
-                    self.iface.projectModelsMenu(),
-                    self.toolbox.in_place_mode,
-                )
-            )
-            model_sub_menu.addAction(action)
-            if model.flags() & QgsProcessingAlgorithm.Flag.FlagSupportsBatch:
-                action_batch = QAction(
-                    self.tr("Execute as Batch Process…"), model_sub_menu
-                )
-                model_sub_menu.addAction(action_batch)
-                action_batch.triggered.connect(
-                    partial(
-                        self.executeAlgorithm,
-                        model.id(),
-                        self.iface.projectModelsMenu(),
-                        self.toolbox.in_place_mode,
-                        True,
-                    )
-                )
 
     @pyqtSlot(str, QWidget, bool, bool)
     def executeAlgorithm(self, alg_id, parent, in_place=False, as_batch=False):
