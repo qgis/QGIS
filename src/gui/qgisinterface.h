@@ -510,6 +510,13 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QToolBar *webToolBar() = 0 SIP_DISALLOWNONE;
 
+    /**
+     * Returns a reference to the Processing toolbox dock widget toolbar.
+     *
+     * \since QGIS 4.4
+     */
+    virtual QToolBar *processingToolboxToolBar() = 0 SIP_DISALLOWNONE;
+
     // Project menu actions
     //! Returns the native New Project action.
     virtual QAction *actionNewProject() = 0 SIP_DISALLOWNONE;

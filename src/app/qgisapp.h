@@ -1790,6 +1790,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Import layers in dwg format
     void dwgImport();
 
+    QToolBar *processingToolboxToolBar();
+
     /**
      * Open the project file corresponding to the
      * text)= of the given action.

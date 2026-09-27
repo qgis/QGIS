@@ -912,6 +912,10 @@ QToolBar *QgisAppInterface::webToolBar()
 {
   return qgis->webToolBar();
 }
+QToolBar *QgisAppInterface::processingToolboxToolBar()
+{
+  return qgis->processingToolboxToolBar();
+}
 QActionGroup *QgisAppInterface::mapToolActionGroup()
 {
   return qgis->mMapToolGroup;
