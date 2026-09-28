@@ -9633,7 +9633,7 @@ void TestQgsProcessing::parameterTileExtentMaxZoomList()
   QGSCOMPARENEAR( ext.yMaximum(), 492749, 1 );
 
   // nonsense string
-  params.insert( "non_optional", QString( "i'm not a crs, and nothing you can do will make me one" ) );
+  params.insert( "non_optional", QString( "i'm not a region list, and nothing you can do will make me one" ) );
   regions = def->parameterAsRegionList( params.value( "non_optional" ), context );
   QVERIFY( regions.isEmpty() );
 
