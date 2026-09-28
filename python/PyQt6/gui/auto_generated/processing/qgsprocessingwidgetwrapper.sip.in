@@ -69,6 +69,29 @@ the behavior of the parameter generation.
 %End
 
     virtual ~QgsProcessingParametersGenerator();
+
+    enum class ValidationResult
+    {
+      Valid,
+      InvalidOutputExtension,
+      InvalidValue,
+    };
+
+    class ParameterValidationResult
+    {
+%Docstring(signature="appended")
+Encapsulates the result of validating parameters shown in the generator.
+
+.. versionadded:: 4.4
+%End
+
+      public:
+        QString parameterName;
+
+        QgsProcessingParametersGenerator::ValidationResult result;
+
+        QString message;
+    };
 };
 
 QFlags<QgsProcessingParametersGenerator::Flag> operator|(QgsProcessingParametersGenerator::Flag f1, QFlags<QgsProcessingParametersGenerator::Flag> f2);

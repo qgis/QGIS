@@ -65,6 +65,21 @@ QgsProcessingContext *QgsProcessingParametersWidget::processingContext() const
 
 QVariantMap QgsProcessingParametersWidget::createProcessingParameters( Flags flags )
 {
+  QList< QgsProcessingParametersGenerator::ParameterValidationResult > validationResults;
+  return createAndValidateParameters( flags, validationResults );
+}
+
+QList<QgsProcessingParametersGenerator::ParameterValidationResult> QgsProcessingParametersWidget::validate() const
+{
+  QList< QgsProcessingParametersGenerator::ParameterValidationResult > validationResults;
+  createAndValidateParameters( QgsProcessingParametersGenerator::Flags(), validationResults );
+  return validationResults;
+}
+
+QVariantMap QgsProcessingParametersWidget::createAndValidateParameters(
+  QgsProcessingParametersGenerator::Flags flags, QList< QgsProcessingParametersGenerator::ParameterValidationResult > &validationResults
+) const
+{
   const bool includeDefault = !flags.testFlag( Flag::SkipDefaultValueParameters );
   const bool validate = !flags.testFlag( Flag::SkipValidation );
 
@@ -98,7 +113,10 @@ QVariantMap QgsProcessingParametersWidget::createProcessingParameters( Flags fla
 
       if ( validate && !definition->checkValueIsAcceptable( value ) )
       {
-        //   raise InvalidParameterValue(param, widget)
+        QgsProcessingParametersGenerator::ParameterValidationResult result;
+        result.parameterName = definition->name();
+        result.result = QgsProcessingParametersGenerator::ValidationResult::InvalidValue;
+        validationResults.append( result );
       }
     }
     else
@@ -113,7 +131,6 @@ QVariantMap QgsProcessingParametersWidget::createProcessingParameters( Flags fla
       if ( !wrapper )
         continue;
 
-      QWidget *widget = wrapper->wrappedWidget();
       QVariant value = wrapper->parameterValue();
 
       QgsProject *destinationProject = nullptr;
@@ -141,7 +158,11 @@ QVariantMap QgsProcessingParametersWidget::createProcessingParameters( Flags fla
             const bool ok = destinationParam->isSupportedOutputValue( value, *mContext, error );
             if ( !ok )
             {
-              // raise InvalidOutputExtension(widget, error)
+              QgsProcessingParametersGenerator::ParameterValidationResult result;
+              result.parameterName = definition->name();
+              result.result = QgsProcessingParametersGenerator::ValidationResult::InvalidOutputExtension;
+              result.message = error;
+              validationResults.append( result );
             }
           }
         }
@@ -181,6 +202,16 @@ void QgsProcessingParametersWidget::setParameters( const QVariantMap &parameters
       wrapperIt.value()->setParameterValue( value, *mContext );
     }
   }
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingParametersWidget::wrapper( const QString &name ) const
+{
+  return mWrappers.value( name );
+}
+
+QList<QgsAbstractProcessingParameterWidgetWrapper *> QgsProcessingParametersWidget::wrappers() const
+{
+  return mWrappers.values();
 }
 
 void QgsProcessingParametersWidget::parameterChanged()

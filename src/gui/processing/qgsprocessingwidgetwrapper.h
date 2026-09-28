@@ -45,6 +45,7 @@ class QgsMessageBar;
 class QgsBrowserGuiModel;
 class QgsModelGraphicsScene;
 class QgsModelDesignerDialog;
+class QgsAbstractProcessingParameterWidgetWrapper;
 
 /**
  * \class QgsProcessingContextGenerator
@@ -101,6 +102,36 @@ class GUI_EXPORT QgsProcessingParametersGenerator
     virtual QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) = 0;
 
     virtual ~QgsProcessingParametersGenerator() = default;
+
+    /**
+     * Results of validating a parameter.
+     *
+     * \since QGIS 4.4
+     */
+    enum class ValidationResult
+    {
+      Valid,                  //!< Parameter value is valid
+      InvalidOutputExtension, //!< Output parameter extension is invalid
+      InvalidValue,           //!< Generic result for invalid parameter values
+    };
+
+    /**
+     * Encapsulates the result of validating parameters shown in the generator.
+     *
+     * \since QGIS 4.4
+     */
+    class ParameterValidationResult
+    {
+      public:
+        //! Associated parameter name
+        QString parameterName;
+
+        //! Validation result
+        QgsProcessingParametersGenerator::ValidationResult result = QgsProcessingParametersGenerator::ValidationResult::Valid;
+
+        //! Validation message
+        QString message;
+    };
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParametersGenerator::Flags )
