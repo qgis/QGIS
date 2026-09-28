@@ -208,11 +208,6 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
         void deleteUserItems( const QModelIndexList &indexes );
 
         /**
-       * Initialize (or reinitialize if already initialized) model
-       */
-        void init();
-
-        /**
        * Reset all current modifications
        */
         void reset();
@@ -245,6 +240,17 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
          * \a parent at \a row position
          */
         bool dropMimeDataProcessingAlgorithms( const QMimeData *data, int row, const QModelIndex &parent );
+
+        /**
+         * Initialize (or reinitialize if already initialized) model using QgisApp
+         * customization object
+         */
+        void initFromQgisApp();
+
+        /**
+         * Initialize model root items from current customization object
+         */
+        void initRootItems();
 
         Mode mMode = Mode::ActionSelector;
         QgisApp *mQgisApp = nullptr;
