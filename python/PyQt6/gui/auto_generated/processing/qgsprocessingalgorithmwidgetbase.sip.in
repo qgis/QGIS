@@ -563,10 +563,27 @@ Constructor for QgsProcessingAlgorithmWidget.
 Returns ``True`` if the widget is running in the "in-place edits" mode.
 %End
 
+    virtual void setParameters( const QVariantMap &values );
+
+    virtual QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() );
+
+
   protected:
     virtual QgsProcessingParametersWidget *createParametersPanel( bool inPlaceMode, QgsVectorLayer *activeLayer, QgsMessageBar *messageBar );
 %Docstring
 Creates the parameters panel to show in the widget.
+%End
+
+    QgsProcessingParametersWidget *parametersWidget();
+%Docstring
+Returns the child parameters widget.
+%End
+
+    bool handleValidationResults( const QList< QgsProcessingParametersGenerator::ParameterValidationResult > &results );
+%Docstring
+Handles the results of validating parameter values.
+
+Returns ``True`` if all parameter values are valid.
 %End
 
 };

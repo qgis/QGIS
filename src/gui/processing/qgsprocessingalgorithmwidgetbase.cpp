@@ -1233,6 +1233,14 @@ QgsProcessingAlgorithmWidget::QgsProcessingAlgorithmWidget( QgsProcessingAlgorit
   , mInPlace( inPlace )
 {
   setAlgorithm( algorithm );
+
+  connect( buttonBox(), &QDialogButtonBox::accepted, this, [this] {
+    for ( QWidget *widget : std::as_const( mWidgetsToResetPalette ) )
+    {
+      widget->setPalette( QPalette() );
+    }
+    mWidgetsToResetPalette.clear();
+  } );
 }
 
 QgsProcessingParametersWidget *QgsProcessingAlgorithmWidget::createParametersPanel( bool inPlaceMode, QgsVectorLayer *activeLayer, QgsMessageBar *messageBar )
@@ -1240,9 +1248,92 @@ QgsProcessingParametersWidget *QgsProcessingAlgorithmWidget::createParametersPan
   return new QgsProcessingParametersWidget( algorithm(), inPlaceMode, activeLayer, messageBar );
 }
 
+QgsProcessingParametersWidget *QgsProcessingAlgorithmWidget::parametersWidget()
+{
+  return qobject_cast< QgsProcessingParametersWidget * >( mainWidget() );
+}
+
+void QgsProcessingAlgorithmWidget::flagInvalidParameterValue( const QString &message, QWidget *widget )
+{
+  if ( !widget )
+    return;
+
+  QPalette palette = widget->palette();
+  palette.setColor( QPalette::ColorRole::Base, QColor( 255, 255, 0 ) );
+  widget->setPalette( palette );
+  mWidgetsToResetPalette.append( widget );
+
+  messageBar()->clearWidgets();
+  messageBar()->pushMessage( QString(), tr( "Wrong or missing parameter value: %1" ).arg( message ), Qgis::MessageLevel::Warning, 5 );
+}
+
+void QgsProcessingAlgorithmWidget::flagInvalidOutputExtension( const QString &message, QWidget *widget )
+{
+  if ( !widget )
+    return;
+
+  QPalette palette = widget->palette();
+  palette.setColor( QPalette::ColorRole::Base, QColor( 255, 255, 0 ) );
+  widget->setPalette( palette );
+  mWidgetsToResetPalette.append( widget );
+
+  messageBar()->clearWidgets();
+  messageBar()->pushMessage( QString(), message, Qgis::MessageLevel::Warning, 5 );
+}
+
+bool QgsProcessingAlgorithmWidget::handleValidationResults( const QList<ParameterValidationResult> &results )
+{
+  bool allValid = true;
+  QgsProcessingParametersWidget *widget = parametersWidget();
+  for ( const ParameterValidationResult &result : results )
+  {
+    QgsAbstractProcessingParameterWidgetWrapper *wrapper = widget ? widget->wrapper( result.parameterName ) : nullptr;
+    QWidget *widget = wrapper ? wrapper->wrappedWidget() : nullptr;
+
+    const QgsProcessingParameterDefinition *parameter = algorithm()->parameterDefinition( result.parameterName );
+    switch ( result.result )
+    {
+      case QgsProcessingParametersGenerator::ValidationResult::Valid:
+        break;
+      case QgsProcessingParametersGenerator::ValidationResult::InvalidOutputExtension:
+        flagInvalidOutputExtension( result.message, widget );
+        allValid = false;
+        break;
+      case QgsProcessingParametersGenerator::ValidationResult::InvalidValue:
+        flagInvalidParameterValue( parameter ? parameter->description() : QString(), widget );
+        allValid = false;
+        break;
+    }
+  }
+
+  return allValid;
+}
+
 bool QgsProcessingAlgorithmWidget::inPlace() const
 {
   return mInPlace;
+}
+
+void QgsProcessingAlgorithmWidget::setParameters( const QVariantMap &values )
+{
+  if ( QgsProcessingParametersWidget *widget = parametersWidget() )
+  {
+    widget->setParameters( values );
+  }
+}
+
+QVariantMap QgsProcessingAlgorithmWidget::createProcessingParameters( Flags flags )
+{
+  QgsProcessingParametersWidget *widget = parametersWidget();
+  if ( !widget )
+    return {};
+
+  QList<ParameterValidationResult> validationResults;
+  const QVariantMap parameters = widget->createAndValidateParameters( flags, validationResults );
+
+  const bool allValid = handleValidationResults( validationResults );
+
+  return allValid ? parameters : QVariantMap();
 }
 
 

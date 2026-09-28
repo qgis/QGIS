@@ -623,14 +623,40 @@ class GUI_EXPORT QgsProcessingAlgorithmWidget : public QgsProcessingAlgorithmWid
      */
     bool inPlace() const;
 
+    void setParameters( const QVariantMap &values ) override;
+    QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) override;
+
   protected:
     /**
    * Creates the parameters panel to show in the widget.
    */
     virtual QgsProcessingParametersWidget *createParametersPanel( bool inPlaceMode, QgsVectorLayer *activeLayer, QgsMessageBar *messageBar );
 
+    /**
+     * Returns the child parameters widget.
+     */
+    QgsProcessingParametersWidget *parametersWidget();
+
+    /**
+     * Handles the results of validating parameter values.
+     *
+     * Returns TRUE if all parameter values are valid.
+     */
+    bool handleValidationResults( const QList< QgsProcessingParametersGenerator::ParameterValidationResult > &results );
+
   private:
+    /**
+     * Highlights a parameter with an invalid value.
+     */
+    void flagInvalidParameterValue( const QString &message, QWidget *widget );
+
+    /**
+     * Highlights a parameter with an invalid output extension.
+     */
+    void flagInvalidOutputExtension( const QString &message, QWidget *widget );
+
     bool mInPlace = false;
+    QList< QWidget * > mWidgetsToResetPalette;
 };
 
 #ifndef SIP_RUN
