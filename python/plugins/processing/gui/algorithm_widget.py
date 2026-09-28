@@ -147,86 +147,6 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidget):
         if not self.inPlace():
             self.runAsBatchButton.setEnabled(False)
 
-    def setParameters(self, parameters):
-        self.mainWidget().setParameters(parameters)
-
-    def flag_invalid_parameter_value(self, message: str, widget: QWidget):
-        """
-        Highlights a parameter with an invalid value
-        """
-        try:
-            self.buttonBox().accepted.connect(lambda w=widget: w.setPalette(QPalette()))
-            palette = widget.palette()
-            palette.setColor(QPalette.ColorRole.Base, QColor(255, 255, 0))
-            widget.setPalette(palette)
-        except:
-            pass
-        self.messageBar().clearWidgets()
-        self.messageBar().pushMessage(
-            "",
-            self.tr("Wrong or missing parameter value: {0}").format(message),
-            level=Qgis.MessageLevel.Warning,
-            duration=5,
-        )
-
-    def flag_invalid_output_extension(self, message: str, widget: QWidget):
-        """
-        Highlights a parameter with an invalid output extension
-        """
-        try:
-            self.buttonBox().accepted.connect(lambda w=widget: w.setPalette(QPalette()))
-            palette = widget.palette()
-            palette.setColor(QPalette.ColorRole.Base, QColor(255, 255, 0))
-            widget.setPalette(palette)
-        except:
-            pass
-        self.messageBar().clearWidgets()
-        self.messageBar().pushMessage(
-            "", message, level=Qgis.MessageLevel.Warning, duration=5
-        )
-
-    def createProcessingParameters(
-        self, flags=QgsProcessingParametersGenerator.Flags()
-    ):
-        if self.mainWidget() is None:
-            return {}
-
-        res, validation_results = self.mainWidget().createAndValidateParameters(flags)
-
-        all_valid = self.handle_validation_results(validation_results)
-
-        return res if all_valid else {}
-
-    def handle_validation_results(
-        self,
-        validation_results: list[
-            QgsProcessingParametersGenerator.ParameterValidationResult
-        ],
-    ) -> bool:
-        """
-        Returns False if validation failures were found
-        """
-        all_valid = True
-        for result in validation_results:
-            wrapper = self.mainWidget().wrapper(result.parameterName)
-            widget = wrapper.wrappedWidget() if wrapper else None
-            parameter = self.algorithm().parameterDefinition(result.parameterName)
-
-            if (
-                result.result
-                == QgsProcessingParametersGenerator.ValidationResult.InvalidValue
-            ):
-                self.flag_invalid_parameter_value(parameter.description(), widget)
-                all_valid = False
-            elif (
-                result.result
-                == QgsProcessingParametersGenerator.ValidationResult.InvalidOutputExtension
-            ):
-                self.flag_invalid_output_extension(result.message, widget)
-                all_valid = False
-
-        return all_valid
-
     def processingContext(self):
         if self.context is None:
             self.feedback = self.createFeedback()
@@ -255,7 +175,7 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidget):
                 )
             )
 
-        all_valid = self.handle_validation_results(validation_result)
+        all_valid = self.handleValidationResults(validation_result)
         if not all_valid:
             return
 
