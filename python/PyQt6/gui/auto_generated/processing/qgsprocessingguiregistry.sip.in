@@ -29,7 +29,7 @@ A factory for creating widgets and dialogs for Processing components.
   public:
     virtual ~QgsProcessingDialogFactory();
 
-    virtual QgsProcessingAlgorithmWidgetBase *createWidget(
+    virtual QgsProcessingAlgorithmWidget *createWidget(
       QgsProcessingAlgorithm *algorithm /Transfer/,
       bool inPlace = false,
       QMainWindow *parent = 0,

@@ -530,6 +530,47 @@ Called when an algorithm task has completed.
 
 };
 
+class QgsProcessingAlgorithmWidget : QgsProcessingAlgorithmWidgetBase
+{
+%Docstring(signature="appended")
+A widget for setting the parameters and executing single Processing
+algorithms.
+
+.. note::
+
+   This is not considered stable API and may change in future QGIS versions.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingalgorithmwidgetbase.h"
+%End
+  public:
+    QgsProcessingAlgorithmWidget(
+      QgsProcessingAlgorithm *algorithm /Transfer/,
+      bool inPlace = false,
+      QMainWindow *parentWindow /TransferThis/ = 0,
+      QgsProcessingAlgorithmWidgetBase::WidgetFlags flags = QgsProcessingAlgorithmWidgetBase::WidgetFlags(),
+      Qgis::DockableWidgetInitialState initialState = Qgis::DockableWidgetInitialState::RestorePreviousState
+    );
+%Docstring
+Constructor for QgsProcessingAlgorithmWidget.
+%End
+
+    bool inPlace() const;
+%Docstring
+Returns ``True`` if the widget is running in the "in-place edits" mode.
+%End
+
+  protected:
+    virtual QgsProcessingParametersWidget *createParametersPanel( bool inPlaceMode, QgsVectorLayer *activeLayer, QgsMessageBar *messageBar );
+%Docstring
+Creates the parameters panel to show in the widget.
+%End
+
+};
+
 
 
 /************************************************************************

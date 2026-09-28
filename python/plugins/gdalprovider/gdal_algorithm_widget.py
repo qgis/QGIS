@@ -44,17 +44,16 @@ class GdalAlgorithmWidget(AlgorithmWidget):
         super().__init__(alg, parent=parent)
         self.mainWidget().parametersHaveChanged()
 
-    def getParametersPanel(self, alg, parent):
-        return GdalParametersPanel(parent, alg)
+    def createParametersPanel(self, in_place_mode: bool, active_layer, message_bar):
+        return GdalParametersPanel(
+            self.algorithm(), in_place_mode, active_layer, message_bar
+        )
 
 
 class GdalParametersPanel(QgsProcessingParametersWidget):
-    def __init__(
-        self, parent, alg, in_place=False, active_layer=None, message_bar=None
-    ):
-        super().__init__(alg, in_place, active_layer, message_bar, parent)
+    def __init__(self, alg, in_place=False, active_layer=None, message_bar=None):
+        super().__init__(alg, in_place, active_layer, message_bar)
 
-        self.dialog = parent
         w = QWidget()
         layout = QVBoxLayout()
         layout.setMargin(0)
