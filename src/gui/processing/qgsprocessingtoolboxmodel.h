@@ -606,8 +606,10 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
      *
      * Ownership is not transferred.
      *
-     * \note Mutually exclusive with setFilterOutput()
+     * \note Use in conjunction with Filter::ForSocketOutput or Filter::ForSocketInput.
+     * \warning This option is mutually exclusive with setFilterOutput() -- if both are specified, only the last will be applied
      *
+     * \see setFilterOutput()
      * \since QGIS 4.4
      */
     void setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition ) SIP_SKIP;
@@ -618,8 +620,10 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
      *
      * Ownership is not transferred.
      *
-     * \note Mutually exclusive with setFilterParameter()
+     * \note Use in conjunction with Filter::ForSocketOutput, useless with Filter::ForSocketInput.
+     * \warning This option is mutually exclusive with setFilterParameter() -- if both are specified, only the last will be applied
      *
+     * \see setFilterParameter()
      * \since QGIS 4.4
      */
     void setFilterOutput( const QgsProcessingOutputDefinition *outputDefinition ) SIP_SKIP;
@@ -646,7 +650,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
      *
      * Mutually exclusive with mFilterOutputDefinition.
      *
-     * \note ownership is not transferred, and can outlive the model.
+     * \note ownership is not transferred, and MUST outlive the model.
      */
     const QgsProcessingOutputDefinition *mFilterOutputDefinition = nullptr;
     /**
@@ -654,7 +658,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
      *
      * Mutually exclusive with mFilterParameterDefinition.
      *
-     * \note ownership is not transferred, and can outlive the model.
+     * \note ownership is not transferred, and MUST outlive the model.
      */
     const QgsProcessingParameterDefinition *mFilterParameterDefinition = nullptr;
 };
