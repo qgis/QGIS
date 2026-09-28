@@ -52,9 +52,44 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
     QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) override;
 
     /**
+     * Validates the parameter values currently shown in the widget.
+     *
+     * \since QGIS 4.4
+     */
+    QList< QgsProcessingParametersGenerator::ParameterValidationResult > validate() const;
+
+    /**
+     * Validates and returns the parameter values representing the current state of the widget.
+     *
+     * \param flags flags controlling how parameter values are generated
+     * \param validationResults will be set to results of the validation
+     *
+     * \returns map of current parameter values
+     *
+     * \since QGIS 4.4
+     */
+    QVariantMap createAndValidateParameters( QgsProcessingParametersGenerator::Flags flags, QList< QgsProcessingParametersGenerator::ParameterValidationResult > &validationResults SIP_OUT ) const;
+
+    /**
      * Sets parameter values to show in the panel.
+     *
+     * \since QGIS 4.4
      */
     void setParameters( const QVariantMap &parameters );
+
+    /**
+     * Returns the wrapper for the parameter with matching \a name, or NULLPTR if none exists.
+     *
+     * \since QGIS 4.4
+     */
+    QgsAbstractProcessingParameterWidgetWrapper *wrapper( const QString &name ) const;
+
+    /**
+     * Returns a list of all widget wrappers contained by the panel widget.
+     *
+     * \since QGIS 4.4
+     */
+    QList< QgsAbstractProcessingParameterWidgetWrapper * > wrappers() const;
 
   protected:
     void initWidgets();
