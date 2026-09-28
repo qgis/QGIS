@@ -29,6 +29,7 @@
 #include "qgsmessagebar.h"
 #include "qgsnative.h"
 #include "qgspanelwidget.h"
+#include "qgsprocessingparameterswidget.h"
 #include "qgssettings.h"
 #include "qgsstringutils.h"
 #include "qgstaskmanager.h"
@@ -1212,5 +1213,28 @@ Qgis::ProcessingLogLevel QgsProcessingContextOptionsWidget::logLevel() const
 {
   return static_cast<Qgis::ProcessingLogLevel>( mLogLevelComboBox->currentData().toInt() );
 }
+
+
+//
+// QgsProcessingAlgorithmWidget
+//
+
+QgsProcessingAlgorithmWidget::QgsProcessingAlgorithmWidget( QgsProcessingAlgorithm *algorithm, bool inPlace, QMainWindow *parentWindow, WidgetFlags flags, Qgis::DockableWidgetInitialState initialState )
+  : QgsProcessingAlgorithmWidgetBase( parentWindow, WidgetMode::Single, flags, initialState )
+  , mInPlace( inPlace )
+{
+  setAlgorithm( algorithm );
+}
+
+QgsProcessingParametersWidget *QgsProcessingAlgorithmWidget::createParametersPanel( bool inPlaceMode, QgsVectorLayer *activeLayer, QgsMessageBar *messageBar )
+{
+  return new QgsProcessingParametersWidget( algorithm(), inPlaceMode, activeLayer, messageBar );
+}
+
+bool QgsProcessingAlgorithmWidget::inPlace() const
+{
+  return mInPlace;
+}
+
 
 ///@endcond

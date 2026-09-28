@@ -47,6 +47,11 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingAlgorithmWidget.__virtual_methods__ = ['createParametersPanel']
+    QgsProcessingAlgorithmWidget.__group__ = ['processing']
+except (NameError, AttributeError):
+    pass
+try:
     QgsProcessingFeedbackGenerator.__abstract_methods__ = ['createFeedback']
     QgsProcessingFeedbackGenerator.__group__ = ['processing']
 except (NameError, AttributeError):

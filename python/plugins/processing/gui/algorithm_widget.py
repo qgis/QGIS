@@ -34,6 +34,7 @@ from qgis.core import (
 )
 from qgis.gui import (
     QgsGui,
+    QgsProcessingAlgorithmWidget,
     QgsProcessingAlgorithmWidgetBase,
     QgsProcessingContextGenerator,
     QgsProcessingParametersGenerator,
@@ -59,7 +60,7 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 
 
-class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
+class AlgorithmWidget(QgsProcessingAlgorithmWidget):
     """
     QgsProcessingAlgorithmWidgetBase with python specific logic
     """
@@ -73,14 +74,15 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
         initialState: Qgis.DockableWidgetInitialState = Qgis.DockableWidgetInitialState.RestorePreviousState,
     ):
         super().__init__(
+            alg,
+            in_place,
             parent or (iface and iface.mainWindow()),
             flags=flags,
             initialState=initialState,
         )
 
         self.feedback_dialog = None
-        self.in_place = in_place
-        self.active_layer = iface.activeLayer() if self.in_place else None
+        self.active_layer = iface.activeLayer() if self.inPlace() else None
 
         self.context = None
         self.feedback = None
@@ -89,10 +91,13 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
 
         self._is_running = False
 
-        self.setAlgorithm(alg)
-        self.setMainWidget(self.getParametersPanel(alg, self))
+        self.setMainWidget(
+            self.createParametersPanel(
+                self.inPlace(), self.active_layer, self.messageBar()
+            )
+        )
 
-        if not self.in_place:
+        if not self.inPlace():
             self.runAsBatchButton = QPushButton(
                 QCoreApplication.translate("AlgorithmDialog", "Run as Batch Process…")
             )
@@ -129,23 +134,17 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
             else QCoreApplication.translate("AlgorithmDialog", "Modify All Features")
         )
 
-    def getParametersPanel(self, alg, parent):
-        panel = QgsProcessingParametersWidget(
-            alg, self.in_place, self.active_layer, self.messageBar()
-        )
-        return panel
-
     def runAsBatch(self):
         self.reject()
         dlg = BatchAlgorithmDialog(self.algorithm().create())
         dlg.exec()
 
     def resetAdditionalGui(self):
-        if not self.in_place:
+        if not self.inPlace():
             self.runAsBatchButton.setEnabled(True)
 
     def blockAdditionalControlsWhileRunning(self):
-        if not self.in_place:
+        if not self.inPlace():
             self.runAsBatchButton.setEnabled(False)
 
     def setParameters(self, parameters):
@@ -440,13 +439,13 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
                 self.cancelButton().setEnabled(False)
 
                 self.finish(
-                    ok, results, self.context, self.feedback, in_place=self.in_place
+                    ok, results, self.context, self.feedback, in_place=self.inPlace()
                 )
 
                 self.feedback = None
                 self.context = None
 
-            if not self.in_place and not (
+            if not self.inPlace() and not (
                 self.algorithm().flags() & QgsProcessingAlgorithm.Flag.FlagNoThreading
             ):
                 # Make sure the Log tab is visible before executing the algorithm
@@ -472,7 +471,7 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidgetBase):
                 )
                 self.feedback_dialog = self.createProgressDialog()
                 self.feedback_dialog.show()
-                if self.in_place:
+                if self.inPlace():
                     ok, results = execute_in_place(
                         self.algorithm(), parameters, self.context, self.feedback
                     )
