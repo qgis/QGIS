@@ -35,11 +35,27 @@ Constructor for QgsProcessingParametersWidget, for the specified
 ``algorithm``.
 %End
     ~QgsProcessingParametersWidget();
+
+    void initWidgets();
+%Docstring
+Creates all parameter widgets. Must be called manually AFTER fully
+setting up the widget properties, e.g.
+:py:func:`~QgsProcessingParametersWidget.registerProcessingContextGenerator`
+%End
+
     const QgsProcessingAlgorithm *algorithm() const;
     virtual QgsProcessingContext *processingContext() const;
 
     virtual QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() );
 
+
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Registers a Processing context ``generator`` class that will be used to
+retrieve a Processing context for the widget when required.
+
+.. versionadded:: 4.4
+%End
 
     QList< QgsProcessingParametersGenerator::ParameterValidationResult > validate() const;
 %Docstring
@@ -84,8 +100,6 @@ Returns a list of all widget wrappers contained by the panel widget.
 %End
 
   protected:
-    void initWidgets();
-
     void addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget /Transfer/, int stretch = 0 );
     void addParameterLabel( const QgsProcessingParameterDefinition *parameter, QWidget *label /Transfer/ );
 

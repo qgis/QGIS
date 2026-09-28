@@ -32,7 +32,6 @@ using namespace Qt::StringLiterals;
 
 QgsProcessingParametersWidget::QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, bool inPlace, QgsMapLayer *activeLayer, QgsMessageBar *messageBar, QWidget *parent )
   : QgsPanelWidget( parent )
-  , mContext( QgsGui::processingGuiRegistry()->contextFactory() ? QgsGui::processingGuiRegistry()->contextFactory()->createContext() : new QgsProcessingContext() )
   , mAlgorithm( algorithm )
   , mInPlace( inPlace )
   , mActiveLayer( activeLayer )
@@ -44,8 +43,6 @@ QgsProcessingParametersWidget::QgsProcessingParametersWidget( const QgsProcessin
 
   grpAdvanced->hide();
   scrollAreaWidgetContents->setContentsMargins( 4, 4, 4, 4 );
-
-  initWidgets();
 }
 
 QgsProcessingParametersWidget::~QgsProcessingParametersWidget()
@@ -60,13 +57,18 @@ const QgsProcessingAlgorithm *QgsProcessingParametersWidget::algorithm() const
 
 QgsProcessingContext *QgsProcessingParametersWidget::processingContext() const
 {
-  return mContext.get();
+  return mContextGenerator ? mContextGenerator->processingContext() : nullptr;
 }
 
 QVariantMap QgsProcessingParametersWidget::createProcessingParameters( Flags flags )
 {
   QList< QgsProcessingParametersGenerator::ParameterValidationResult > validationResults;
   return createAndValidateParameters( flags, validationResults );
+}
+
+void QgsProcessingParametersWidget::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  mContextGenerator = generator;
 }
 
 QList<QgsProcessingParametersGenerator::ParameterValidationResult> QgsProcessingParametersWidget::validate() const
@@ -80,6 +82,8 @@ QVariantMap QgsProcessingParametersWidget::createAndValidateParameters(
   QgsProcessingParametersGenerator::Flags flags, QList< QgsProcessingParametersGenerator::ParameterValidationResult > &validationResults
 ) const
 {
+  QgsProcessingContext *context = processingContext();
+
   const bool includeDefault = !flags.testFlag( Flag::SkipDefaultValueParameters );
   const bool validate = !flags.testFlag( Flag::SkipValidation );
 
@@ -155,7 +159,7 @@ QVariantMap QgsProcessingParametersWidget::createAndValidateParameters(
           if ( destinationParam )
           {
             QString error;
-            const bool ok = destinationParam->isSupportedOutputValue( value, *mContext, error );
+            const bool ok = destinationParam->isSupportedOutputValue( value, *context, error );
             if ( !ok )
             {
               QgsProcessingParametersGenerator::ParameterValidationResult result;
@@ -175,6 +179,8 @@ QVariantMap QgsProcessingParametersWidget::createAndValidateParameters(
 
 void QgsProcessingParametersWidget::setParameters( const QVariantMap &parameters )
 {
+  QgsProcessingContext *context = processingContext();
+
   mExtraParameters.clear();
   const QgsProcessingParameterDefinitions defs = mAlgorithm->parameterDefinitions();
   for ( const QgsProcessingParameterDefinition *definition : defs )
@@ -199,7 +205,7 @@ void QgsProcessingParametersWidget::setParameters( const QVariantMap &parameters
     auto wrapperIt = mWrappers.constFind( definition->name() );
     if ( wrapperIt != mWrappers.constEnd() )
     {
-      wrapperIt.value()->setParameterValue( value, *mContext );
+      wrapperIt.value()->setParameterValue( value, *context );
     }
   }
 }

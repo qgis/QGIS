@@ -45,9 +45,12 @@ class GdalAlgorithmWidget(AlgorithmWidget):
         self.mainWidget().parametersHaveChanged()
 
     def createParametersPanel(self, in_place_mode: bool, active_layer, message_bar):
-        return GdalParametersPanel(
+        widget = GdalParametersPanel(
             self.algorithm(), in_place_mode, active_layer, message_bar
         )
+        widget.registerProcessingContextGenerator(self)
+        widget.finalize()
+        return widget
 
 
 class GdalParametersPanel(QgsProcessingParametersWidget):
@@ -67,6 +70,8 @@ class GdalParametersPanel(QgsProcessingParametersWidget):
         w.setLayout(layout)
         self.addExtraWidget(w)
 
+    def finalize(self):
+        self.initWidgets()
         self.connectParameterSignals()
         self.parametersHaveChanged()
 
