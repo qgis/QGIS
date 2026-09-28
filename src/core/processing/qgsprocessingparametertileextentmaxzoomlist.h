@@ -115,7 +115,7 @@ class CORE_EXPORT QgsProcessingParameterTypeTileExtentMaxZoomList : public QgsPr
 
     QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "An input for specifying defining a list of spatial extents, each with an associated maximum zoom level override." );
+      return QCoreApplication::translate( "Processing", "An input for defining a list of spatial extents, each with an associated maximum zoom level override." );
     }
     QString name() const override { return QCoreApplication::translate( "Processing", "Tile Extent Maximum Zoom List" ); }
     QString id() const override { return QgsProcessingParameterTileExtentMaxZoomList::typeName(); }
