@@ -61,6 +61,8 @@ class PopupToolboxWidget : public QWidget
       mToolboxTreeView = new QgsProcessingToolboxTreeView( this );
       mToolboxTreeView->header()->setVisible( false );
       mToolboxTreeView->setAlternatingRowColors( true );
+      const QFontMetrics fm( font() );
+      mToolboxTreeView->setFixedSize( fm.horizontalAdvance( 'X' ) * 40, fm.height() * 10 );
 
       connect( mLineEdit, &QgsFilterLineEdit::textChanged, mToolboxTreeView, &QgsProcessingToolboxTreeView::setFilterString );
 
