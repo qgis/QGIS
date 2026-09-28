@@ -48,7 +48,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingAlgorithmWidget.__virtual_methods__ = ['createParametersPanel']
-    QgsProcessingAlgorithmWidget.__overridden_methods__ = ['setParameters', 'createProcessingParameters']
+    QgsProcessingAlgorithmWidget.__overridden_methods__ = ['setParameters', 'createProcessingParameters', 'processingContext']
     QgsProcessingAlgorithmWidget.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

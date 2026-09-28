@@ -147,14 +147,6 @@ class AlgorithmWidget(QgsProcessingAlgorithmWidget):
         if not self.inPlace():
             self.runAsBatchButton.setEnabled(False)
 
-    def processingContext(self):
-        if self.context is None:
-            self.feedback = self.createFeedback()
-            self.context = dataobjects.createContext(self.feedback)
-
-        self.applyContextOverrides(self.context)
-        return self.context
-
     def runAlgorithm(self):
         self.feedback = self.createFeedback()
         self.context = dataobjects.createContext(self.feedback)

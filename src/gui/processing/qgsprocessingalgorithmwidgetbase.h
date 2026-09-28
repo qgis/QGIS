@@ -625,6 +625,7 @@ class GUI_EXPORT QgsProcessingAlgorithmWidget : public QgsProcessingAlgorithmWid
 
     void setParameters( const QVariantMap &values ) override;
     QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) override;
+    QgsProcessingContext *processingContext() const override;
 
   protected:
     /**
@@ -654,6 +655,9 @@ class GUI_EXPORT QgsProcessingAlgorithmWidget : public QgsProcessingAlgorithmWid
      * Highlights a parameter with an invalid output extension.
      */
     void flagInvalidOutputExtension( const QString &message, QWidget *widget );
+
+    mutable std::unique_ptr< QgsProcessingContext > mContext;
+    mutable std::unique_ptr< QgsProcessingFeedback > mFeedback;
 
     bool mInPlace = false;
     QList< QWidget * > mWidgetsToResetPalette;

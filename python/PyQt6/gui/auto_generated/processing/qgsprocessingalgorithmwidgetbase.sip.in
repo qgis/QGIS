@@ -567,6 +567,8 @@ Returns ``True`` if the widget is running in the "in-place edits" mode.
 
     virtual QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() );
 
+    virtual QgsProcessingContext *processingContext() const;
+
 
   protected:
     virtual QgsProcessingParametersWidget *createParametersPanel( bool inPlaceMode, QgsVectorLayer *activeLayer, QgsMessageBar *messageBar );
