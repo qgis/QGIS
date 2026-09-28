@@ -68,7 +68,7 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
     void requestRebuildRequired();
 
   private:
-    //! add an algorithm or a parameter to the canvas and try it's best to link it to the existing \a socket
+    //! add an algorithm or a parameter to the canvas and try to link it to an existing \a socket
     void addParameter( const QString &parameterId, const QPointF &pos, const QgsModelDesignerSocketGraphicItem *socket );
     void addAlgorithm( const QString &algorithmId, const QPointF &pos, const QgsModelDesignerSocketGraphicItem *socket );
 

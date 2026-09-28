@@ -1036,7 +1036,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
 
     if ( mFilters & Filter::ForSocketOutput )
     {
-      // Don't show any parameters if your looking for something compatible with output !
+      // Parameter items aren't compatible with outputs
       return false;
     }
     if ( !mFilterString.trimmed().isEmpty() )

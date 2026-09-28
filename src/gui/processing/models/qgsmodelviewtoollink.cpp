@@ -474,7 +474,7 @@ void QgsModelViewToolLink::addAlgorithm( const QString &algorithmId, const QPoin
 
   QgsProcessingModelComponent *outputComponent = socket->component();
 
-  // If connect from an output socket the newly added algorithm needs to have a source.
+  // If connected from an output socket the newly added algorithm needs to have a source.
   if ( !socket->isInput() )
   {
     if ( QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent ) )

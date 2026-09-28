@@ -601,7 +601,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
     void setFilterString( const QString &filter );
 
     /**
-     * Sets the \a parameterDefinition, such that only algorithms or parameters which are compatible
+     * Sets a \a parameterDefinition, such that only algorithms or parameters which are compatible
      * with the specified parameter definition will be shown.
      *
      * Ownership is not transferred.
@@ -613,7 +613,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
     void setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition ) SIP_SKIP;
 
     /**
-     * Sets the \a outputDefinition, such that only algorithms which are compatible
+     * Sets an \a outputDefinition, such that only algorithms which are compatible
      * with the specified output definition will be shown.
      *
      * Ownership is not transferred.
