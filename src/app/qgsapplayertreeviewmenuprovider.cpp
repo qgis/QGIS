@@ -132,7 +132,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( QAction *unCheckAll = actions->actionUncheckAndAllChildren( menu ) )
         menu->addAction( unCheckAll );
 
-      menu->addAction( actions->actionUngroup( mCanvas, menu ));
+      menu->addAction( actions->actionUngroup( mCanvas, menu ) );
 
       if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
       {

@@ -117,7 +117,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     /**
      * Action to ungroup an existing group
      */
-    QAction *actionUngroup ( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
+    QAction *actionUngroup( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
 
     /**
      * \deprecated QGIS 3.2. Use actionMoveOutOfGroup().
