@@ -2704,15 +2704,7 @@ int QgsOgrUtils::listStyles( GDALDatasetH hDS, const QString &layerName, const Q
       OGR_F_GetFieldAsDateTime( hFeature.get(), OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ),
                                 &year, &month, &day, &hour, &minute, &second, &tzFlag );
       QDateTime dt( QDate( year, month, day ), QTime( hour, minute, second ) );
-      if ( tzFlag > 1 )
-      {
-        const int offsetSeconds = ( tzFlag - 100 ) * 15 * 60;
-        dt.setTimeZone( QTimeZone::fromSecondsAheadOfUtc( offsetSeconds ) );
-      }
-      else
-      {
-        dt.setTimeZone( QTimeZone::UTC );
-      }
+      setQTTimeZoneFromOGRTZFlag( dt, tzFlag );
       const qint64 ts = dt.toMSecsSinceEpoch();
 
       listTimestamp.append( ts );
