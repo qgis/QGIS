@@ -183,7 +183,7 @@ void QgsProcessingParametersWidget::setParameters( const QVariantMap &parameters
 
   mExtraParameters.clear();
   const QgsProcessingParameterDefinitions defs = mAlgorithm->parameterDefinitions();
-  for ( const QgsProcessingParameterDefinition *definition : defs )
+  for ( const QgsProcessingParameterDefinition *definition : std::as_const( defs ) )
   {
     auto paramIt = parameters.constFind( definition->name() );
     if ( definition->flags().testFlag( Qgis::ProcessingParameterFlag::Hidden ) )
@@ -270,7 +270,7 @@ void QgsProcessingParametersWidget::initWidgets()
   }
 
   bool hasNonInputParams = false;
-  for ( const QgsProcessingParameterDefinition *definition : defs )
+  for ( const QgsProcessingParameterDefinition *definition : std::as_const( defs ) )
   {
     if ( definition->name() != inPlaceInputParameterName && definition->name() != "OUTPUT"_L1 )
     {
