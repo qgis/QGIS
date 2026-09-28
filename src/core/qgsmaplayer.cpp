@@ -2948,7 +2948,14 @@ void QgsMapLayer::setOriginalXmlProperties( const QString &originalXmlProperties
 
 QString QgsMapLayer::generateId( const QString &layerName )
 {
-  return QgsStringUtils::createUniqueId( layerName );
+  constexpr int UUID_SUFFIX_LENGTH = 36 + 1;
+  constexpr int MAX_ID_LENGTH = 100;
+  constexpr int MAX_PREFIX_LENGTH = MAX_ID_LENGTH - UUID_SUFFIX_LENGTH;
+
+  // cap length of layer name to avoid potentially huge names
+  const QString prefix = layerName.left( MAX_PREFIX_LENGTH );
+
+  return QgsStringUtils::createUniqueId( prefix );
 }
 
 bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const
