@@ -10164,7 +10164,7 @@ QVariant QgsProcessingTileExtentMaxZoomWidgetWrapper::widgetValue() const
 
 QString QgsProcessingTileExtentMaxZoomWidgetWrapper::modelerExpressionFormatString() const
 {
-  return tr( "string of the format 'min,max,red,green,blue' for each relief color, joined by a ; delimiter" );
+  return tr( "string of the format 'zoom:xmin,ymin,xmax,ymax [crs]', joined by a '::|::' delimiter" );
 }
 
 
