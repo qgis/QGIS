@@ -236,7 +236,7 @@ void QgsRasterCalcDialog::insertAvailableOutputFormats()
           // close it in raster calculator and reopen the dataset again in raster layer)
           continue;
         }
-        else if ( driverShortName == "VRT"_L1 )
+        else if ( driverShortName == QLatin1String( "VRT" ) )
         {
           // skip GDAL vrt driver, since it makes no sense to write a pixel per pixel VRT file
           continue;
