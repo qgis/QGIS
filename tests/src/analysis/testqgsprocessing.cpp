@@ -13871,20 +13871,20 @@ void TestQgsProcessing::isCompatibleDefinition()
 
   // Parameter source and parameter target are compatible
   QVERIFY( reg.isCompatibleDefinition( vectorLayerTestParam.get(), vectorLayerTestParam.get() ) );
-  QVERIFY( reg.isCompatibleDefinition( vectorLayerTestParam.get(), boolTestParam.get() ) );
+  QVERIFY( reg.isCompatibleDefinition( boolTestParam.get(), vectorLayerTestParam.get() ) );
 
   // Output source and parameter target are compatible
-  QVERIFY( reg.isCompatibleDefinition( stringTestOutput.get(), vectorLayerTestParam.get() ) );
-  QVERIFY( reg.isCompatibleDefinition( vectorLayerTestOutput.get(), vectorLayerTestParam.get() ) );
-  QVERIFY( reg.isCompatibleDefinition( stringTestOutput.get(), boolTestParam.get() ) );
-  QVERIFY( reg.isCompatibleDefinition( vectorLayerTestOutput.get(), boolTestParam.get() ) );
+  QVERIFY( reg.isCompatibleDefinition( vectorLayerTestParam.get(), stringTestOutput.get() ) );
+  QVERIFY( reg.isCompatibleDefinition( vectorLayerTestParam.get(), vectorLayerTestOutput.get() ) );
+  QVERIFY( reg.isCompatibleDefinition( boolTestParam.get(), stringTestOutput.get() ) );
+  QVERIFY( reg.isCompatibleDefinition( boolTestParam.get(), vectorLayerTestOutput.get() ) );
 
   // Parameter source and parameter target are incompatible
-  QVERIFY( !reg.isCompatibleDefinition( boolTestParam.get(), vectorLayerTestParam.get() ) );
+  QVERIFY( !reg.isCompatibleDefinition( vectorLayerTestParam.get(), boolTestParam.get() ) );
 
   // Output source and parameter target are incompatible
-  QVERIFY( !reg.isCompatibleDefinition( boolTestOutput.get(), vectorLayerTestParam.get() ) );
-  QVERIFY( !reg.isCompatibleDefinition( htmlTestOutput.get(), boolTestParam.get() ) );
+  QVERIFY( !reg.isCompatibleDefinition( vectorLayerTestParam.get(), boolTestOutput.get() ) );
+  QVERIFY( !reg.isCompatibleDefinition( boolTestParam.get(), htmlTestOutput.get() ) );
 }
 
 void TestQgsProcessing::parameterTypes()
