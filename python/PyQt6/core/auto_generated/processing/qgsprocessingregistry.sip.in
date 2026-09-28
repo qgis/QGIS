@@ -99,11 +99,11 @@ Returns a list of all available algorithms from registered providers.
 .. seealso:: :py:func:`algorithmById`
 %End
 
-    bool isCompatibleDefinition(const QgsProcessingParameterDefinition* parameterDefinitionSource, const QgsProcessingParameterDefinition* parameterDefinitionTarget);
+    bool isCompatibleDefinition( const QgsProcessingParameterDefinition* targetDefinition, const QgsProcessingParameterDefinition* candidateDefinition );
 %Docstring
-Returns ``True`` if the ``parameterDefinitionTarget`` accepts
-``parameterDefinitionSource`` as compatible Processing parameter types
-for parameter type of ``parameterDefinitionTarget``.
+Returns ``True`` if the ``targetDefinition`` accepts
+``candidateDefinition`` as compatible Processing parameter types for
+parameter type of ``targetDefinition``.
 
 Example
 -------------------------------------
@@ -115,21 +115,23 @@ Example
 
        # Parameter source and parameter target are compatible
        QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, vectorLayerParam ) # -> return True
-       QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, boolParam ) # -> return True
+       QgsApplication.processingRegistry().isCompatibleDefinition( boolParam, vectorLayerParam ) # -> return True
 
        # Parameter source and parameter target are incompatible
-       QgsApplication.processingRegistry().isCompatibleDefinition( boolParam, vectorLayerParam ) # -> return False
+       QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, boolParam ) # -> return False
 
 .. versionadded:: 4.4
 %End
 
-    bool isCompatibleDefinition(const QgsProcessingOutputDefinition* outputDefinitionSource, const QgsProcessingParameterDefinition* parameterDefinitionTarget);
+    bool isCompatibleDefinition(const QgsProcessingParameterDefinition* targetDefinition, const QgsProcessingOutputDefinition* candidateOutput);
 %Docstring
-Returns ``True`` if the ``parameterDefinitionTarget`` accepts
-``outputDefinitionSource`` as compatible Processing output types for
-parameter type of ``parameterDefinitionTarget``.
+Returns ``True`` if the ``targetDefinition`` accepts ``candidateOutput``
+as compatible Processing output types for parameter type of
+``targetDefinition``.
 
 - ### Example
+
+,
 
 .. code-block:: python
 
@@ -140,11 +142,11 @@ parameter type of ``parameterDefinitionTarget``.
        vectorLayerOutput = QgsProcessingOutputVectorLayer( "dummyname" )
 
        # Output source and parameter target are compatible
-       QgsApplication.processingRegistry().isCompatibleDefinition( stringOutput, vectorLayerParam ) # -> return True
-       QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerOutput, vectorLayerParam ) # -> return True
+       QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, stringOutput ) # -> return True
+       QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, vectorLayerOutput ) # -> return True
 
        # Output source and parameter target are incompatible
-       QgsApplication.processingRegistry().isCompatibleDefinition( boolOutput, vectorLayerParam ) # -> return False
+       QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, boolOutput ) # -> return False
 
 .. versionadded:: 4.4
 %End

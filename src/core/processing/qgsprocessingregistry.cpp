@@ -311,20 +311,20 @@ QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() cons
   return mParameterTypes.values();
 }
 
-bool QgsProcessingRegistry::isCompatibleDefinition( const QgsProcessingParameterDefinition *parameterDefinitionSource, const QgsProcessingParameterDefinition *parameterDefinitionTarget )
+bool QgsProcessingRegistry::isCompatibleDefinition( const QgsProcessingParameterDefinition *targetDefinition, const QgsProcessingParameterDefinition *candidateDefinition )
 {
-  const QgsProcessingParameterType *paramTargetType = parameterType( parameterDefinitionTarget->type() );
+  const QgsProcessingParameterType *paramTargetType = parameterType( targetDefinition->type() );
   if ( paramTargetType )
-    return paramTargetType->acceptedParameterTypes().contains( parameterDefinitionSource->type() );
+    return paramTargetType->acceptedParameterTypes().contains( candidateDefinition->type() );
   return false;
 }
 
-bool QgsProcessingRegistry::isCompatibleDefinition( const QgsProcessingOutputDefinition *outputDefinitionSource, const QgsProcessingParameterDefinition *parameterDefinitionTarget )
+bool QgsProcessingRegistry::isCompatibleDefinition( const QgsProcessingParameterDefinition *targetDefinition, const QgsProcessingOutputDefinition *candidateOutput )
 {
-  const QgsProcessingParameterType *paramTargetType = parameterType( parameterDefinitionTarget->type() );
+  const QgsProcessingParameterType *paramTargetType = parameterType( targetDefinition->type() );
 
   if ( paramTargetType )
-    return paramTargetType->acceptedOutputTypes().contains( outputDefinitionSource->type() );
+    return paramTargetType->acceptedOutputTypes().contains( candidateOutput->type() );
   return false;
 }
 

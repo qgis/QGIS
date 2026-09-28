@@ -491,7 +491,7 @@ void QgsModelViewToolLink::addAlgorithm( const QString &algorithmId, const QPoin
         {
           continue;
         }
-        if ( QgsApplication::processingRegistry()->isCompatibleDefinition( outputDef, paramDef ) )
+        if ( QgsApplication::processingRegistry()->isCompatibleDefinition( paramDef, outputDef ) )
         {
           QgsProcessingModelChildParameterSource newInputParamSource = QgsProcessingModelChildParameterSource::fromChildOutput( outputChildAlgorithm->childId(), outputName );
           childAlg.addParameterSources( paramDef->name(), { newInputParamSource } );
@@ -510,7 +510,7 @@ void QgsModelViewToolLink::addAlgorithm( const QString &algorithmId, const QPoin
         {
           continue;
         }
-        if ( QgsApplication::processingRegistry()->isCompatibleDefinition( outputParamDef, paramDef ) )
+        if ( QgsApplication::processingRegistry()->isCompatibleDefinition( paramDef, outputParamDef ) )
         {
           QgsProcessingModelChildParameterSource newInputParamSource = QgsProcessingModelChildParameterSource::fromModelParameter( outputParam->parameterName() );
           childAlg.addParameterSources( paramDef->name(), { newInputParamSource } );
@@ -537,7 +537,7 @@ void QgsModelViewToolLink::addAlgorithm( const QString &algorithmId, const QPoin
     const QList<const QgsProcessingOutputDefinition *> definitions = childAlg.algorithm()->outputDefinitions();
     for ( const QgsProcessingOutputDefinition *outputDef : definitions )
     {
-      if ( QgsApplication::processingRegistry()->isCompatibleDefinition( outputDef, parameter ) )
+      if ( QgsApplication::processingRegistry()->isCompatibleDefinition( parameter, outputDef ) )
       {
         QgsProcessingModelChildParameterSource newInputParamSource = QgsProcessingModelChildParameterSource::fromChildOutput( childAlgorithmId, outputDef->name() );
         outputChildAlgorithm->addParameterSources( parameterName, { newInputParamSource } );
