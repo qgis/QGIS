@@ -528,6 +528,9 @@ void QgsModelViewToolLink::addAlgorithm( const QString &algorithmId, const QPoin
   if ( socket->isInput() )
   {
     QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent );
+    if ( !outputChildAlgorithm || !outputChildAlgorithm->algorithm() )
+      return;
+
     const QgsProcessingParameterDefinition *parameter = outputChildAlgorithm->algorithm()->parameterDefinitions().at( socket->index() );
     const QString parameterName = parameter->name();
 
@@ -551,7 +554,8 @@ void QgsModelViewToolLink::addParameter( const QString &parameterId, const QPoin
 {
   QgsProcessingModelComponent *outputComponent = socket->component();
   QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent );
-
+  if ( !outputChildAlgorithm || !outputChildAlgorithm->algorithm() )
+    return;
 
   const QgsProcessingParameterDefinition *socketParameter = outputChildAlgorithm->algorithm()->parameterDefinitions().at( socket->index() );
 
