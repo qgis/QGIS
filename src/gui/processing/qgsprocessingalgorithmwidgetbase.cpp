@@ -1237,7 +1237,10 @@ QgsProcessingAlgorithmWidget::QgsProcessingAlgorithmWidget( QgsProcessingAlgorit
 
 QgsProcessingParametersWidget *QgsProcessingAlgorithmWidget::createParametersPanel( bool inPlaceMode, QgsVectorLayer *activeLayer, QgsMessageBar *messageBar )
 {
-  return new QgsProcessingParametersWidget( algorithm(), inPlaceMode, activeLayer, messageBar );
+  auto widget = new QgsProcessingParametersWidget( algorithm(), inPlaceMode, activeLayer, messageBar );
+  widget->registerProcessingContextGenerator( this );
+  widget->initWidgets();
+  return widget;
 }
 
 QgsProcessingParametersWidget *QgsProcessingAlgorithmWidget::parametersWidget()

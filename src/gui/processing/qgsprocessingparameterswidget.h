@@ -47,9 +47,23 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
      */
     QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, bool inPlace, QgsMapLayer *activeLayer, QgsMessageBar *messageBar, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsProcessingParametersWidget() override;
+
+    /**
+     * Creates all parameter widgets. Must be called manually AFTER fully setting up the widget properties, e.g. registerProcessingContextGenerator()
+     */
+    void initWidgets();
+
     const QgsProcessingAlgorithm *algorithm() const;
     QgsProcessingContext *processingContext() const override;
     QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) override;
+
+    /**
+     * Registers a Processing context \a generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     *
+     * \since QGIS 4.4
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 
     /**
      * Validates the parameter values currently shown in the widget.
@@ -92,8 +106,6 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
     QList< QgsAbstractProcessingParameterWidgetWrapper * > wrappers() const;
 
   protected:
-    void initWidgets();
-
     void addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget SIP_TRANSFER, int stretch = 0 );
     void addParameterLabel( const QgsProcessingParameterDefinition *parameter, QWidget *label SIP_TRANSFER );
 
@@ -107,7 +119,7 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
     void parameterChanged();
 
   private:
-    std::unique_ptr< QgsProcessingContext > mContext;
+    QgsProcessingContextGenerator *mContextGenerator = nullptr;
 
     const QgsProcessingAlgorithm *mAlgorithm = nullptr;
     bool mInPlace = false;

@@ -36,19 +36,15 @@ from qgis.gui import (
     QgsGui,
     QgsProcessingAlgorithmWidget,
     QgsProcessingAlgorithmWidgetBase,
-    QgsProcessingContextGenerator,
     QgsProcessingParametersGenerator,
-    QgsProcessingParametersWidget,
 )
 from qgis.PyQt import sip
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QColor, QPalette
 from qgis.PyQt.QtWidgets import (
     QDialogButtonBox,
     QMainWindow,
     QMessageBox,
     QPushButton,
-    QWidget,
 )
 from qgis.utils import iface
 
