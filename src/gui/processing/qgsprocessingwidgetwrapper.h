@@ -118,6 +118,7 @@ class GUI_EXPORT QgsProcessingParametersGenerator
     /**
      * Encapsulates the result of validating parameters shown in the generator.
      *
+     * \ingroup gui
      * \since QGIS 4.4
      */
     class ParameterValidationResult
