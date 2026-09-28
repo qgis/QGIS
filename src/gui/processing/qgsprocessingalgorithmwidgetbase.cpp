@@ -29,6 +29,7 @@
 #include "qgsmessagebar.h"
 #include "qgsnative.h"
 #include "qgspanelwidget.h"
+#include "qgsprocessingguiregistry.h"
 #include "qgsprocessingparameterswidget.h"
 #include "qgssettings.h"
 #include "qgsstringutils.h"
@@ -1325,6 +1326,23 @@ QVariantMap QgsProcessingAlgorithmWidget::createProcessingParameters( Flags flag
   const bool allValid = handleValidationResults( validationResults );
 
   return allValid ? parameters : QVariantMap();
+}
+
+QgsProcessingContext *QgsProcessingAlgorithmWidget::processingContext() const
+{
+  if ( !mContext )
+  {
+    mContext.reset( QgsGui::processingGuiRegistry()->contextFactory() ? QgsGui::processingGuiRegistry()->contextFactory()->createContext() : new QgsProcessingContext() );
+  }
+
+  if ( !mFeedback )
+  {
+    mFeedback.reset( const_cast< QgsProcessingAlgorithmWidget * >( this )->createFeedback() );
+  }
+  mContext->setFeedback( mFeedback.get() );
+
+  const_cast< QgsProcessingAlgorithmWidget * >( this )->applyContextOverrides( mContext.get() );
+  return mContext.get();
 }
 
 
