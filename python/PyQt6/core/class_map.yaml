@@ -86,8 +86,6 @@ Qgs3DSymbolAbstractMetadata.type: src/core/./3d/qgs3dsymbolregistry.h#L57
 Qgs3DSymbolAbstractMetadata.visibleName: src/core/./3d/qgs3dsymbolregistry.h#L62
 Qgs3DSymbolAbstractMetadata: src/core/./3d/qgs3dsymbolregistry.h#L41
 Qgs3DSymbolRegistry.addSymbolType: src/core/./3d/qgs3dsymbolregistry.h#L203
-Qgs3DSymbolRegistry.createSymbol: src/core/./3d/qgs3dsymbolregistry.h#L212
-Qgs3DSymbolRegistry.defaultSymbolForGeometryType: src/core/./3d/qgs3dsymbolregistry.h#L219
 Qgs3DSymbolRegistry.symbolMetadata: src/core/./3d/qgs3dsymbolregistry.h#L195
 Qgs3DSymbolRegistry.symbolTypes: src/core/./3d/qgs3dsymbolregistry.h#L200
 Qgs3DSymbolRegistry: src/core/./3d/qgs3dsymbolregistry.h#L185
@@ -5840,7 +5838,6 @@ QgsGoochMaterialSettings.averageColor: src/core/./3d/materials/qgsgoochmaterials
 QgsGoochMaterialSettings.beta: src/core/./3d/materials/qgsgoochmaterialsettings.h#L75
 QgsGoochMaterialSettings.clone: src/core/./3d/materials/qgsgoochmaterialsettings.h#L54
 QgsGoochMaterialSettings.cool: src/core/./3d/materials/qgsgoochmaterialsettings.h#L62
-QgsGoochMaterialSettings.create: src/core/./3d/materials/qgsgoochmaterialsettings.h#L47
 QgsGoochMaterialSettings.diffuse: src/core/./3d/materials/qgsgoochmaterialsettings.h#L65
 QgsGoochMaterialSettings.equals: src/core/./3d/materials/qgsgoochmaterialsettings.h#L55
 QgsGoochMaterialSettings.readXml: src/core/./3d/materials/qgsgoochmaterialsettings.h#L150
@@ -10871,7 +10868,6 @@ QgsMetalRoughMaterialSettings.baseColor: src/core/./3d/materials/qgsmetalroughma
 QgsMetalRoughMaterialSettings.clearCoatFactor: src/core/./3d/materials/qgsmetalroughmaterialsettings.h#L240
 QgsMetalRoughMaterialSettings.clearCoatRoughness: src/core/./3d/materials/qgsmetalroughmaterialsettings.h#L258
 QgsMetalRoughMaterialSettings.clone: src/core/./3d/materials/qgsmetalroughmaterialsettings.h#L53
-QgsMetalRoughMaterialSettings.create: src/core/./3d/materials/qgsmetalroughmaterialsettings.h#L51
 QgsMetalRoughMaterialSettings.emissionColor: src/core/./3d/materials/qgsmetalroughmaterialsettings.h#L116
 QgsMetalRoughMaterialSettings.emissionFactor: src/core/./3d/materials/qgsmetalroughmaterialsettings.h#L129
 QgsMetalRoughMaterialSettings.equals: src/core/./3d/materials/qgsmetalroughmaterialsettings.h#L54
@@ -10901,7 +10897,6 @@ QgsMetalRoughTexturedMaterialSettings.ambientOcclusionTexturePath: src/core/./3d
 QgsMetalRoughTexturedMaterialSettings.averageColor: src/core/./3d/materials/qgsmetalroughtexturedmaterialsettings.h#L273
 QgsMetalRoughTexturedMaterialSettings.baseColorTexturePath: src/core/./3d/materials/qgsmetalroughtexturedmaterialsettings.h#L61
 QgsMetalRoughTexturedMaterialSettings.clone: src/core/./3d/materials/qgsmetalroughtexturedmaterialsettings.h#L52
-QgsMetalRoughTexturedMaterialSettings.create: src/core/./3d/materials/qgsmetalroughtexturedmaterialsettings.h#L50
 QgsMetalRoughTexturedMaterialSettings.emissionFactor: src/core/./3d/materials/qgsmetalroughtexturedmaterialsettings.h#L116
 QgsMetalRoughTexturedMaterialSettings.emissionTexturePath: src/core/./3d/materials/qgsmetalroughtexturedmaterialsettings.h#L105
 QgsMetalRoughTexturedMaterialSettings.equals: src/core/./3d/materials/qgsmetalroughtexturedmaterialsettings.h#L53
@@ -11211,7 +11206,6 @@ QgsNominatimGeocoder.wkbType: src/core/geocoding/qgsnominatimgeocoder.h#L51
 QgsNominatimGeocoder: src/core/geocoding/qgsnominatimgeocoder.h#L36
 QgsNullMaterialSettings.averageColor: src/core/./3d/materials/qgsnullmaterialsettings.h#L56
 QgsNullMaterialSettings.clone: src/core/./3d/materials/qgsnullmaterialsettings.h#L53
-QgsNullMaterialSettings.create: src/core/./3d/materials/qgsnullmaterialsettings.h#L51
 QgsNullMaterialSettings.equals: src/core/./3d/materials/qgsnullmaterialsettings.h#L54
 QgsNullMaterialSettings.setColorsFromBase: src/core/./3d/materials/qgsnullmaterialsettings.h#L58
 QgsNullMaterialSettings.supportsTechnique: src/core/./3d/materials/qgsnullmaterialsettings.h#L46
@@ -11600,7 +11594,6 @@ QgsPhongMaterialSettings.ambient: src/core/./3d/materials/qgsphongmaterialsettin
 QgsPhongMaterialSettings.ambientCoefficient: src/core/./3d/materials/qgsphongmaterialsettings.h#L82
 QgsPhongMaterialSettings.averageColor: src/core/./3d/materials/qgsphongmaterialsettings.h#L166
 QgsPhongMaterialSettings.clone: src/core/./3d/materials/qgsphongmaterialsettings.h#L54
-QgsPhongMaterialSettings.create: src/core/./3d/materials/qgsphongmaterialsettings.h#L52
 QgsPhongMaterialSettings.diffuse: src/core/./3d/materials/qgsphongmaterialsettings.h#L61
 QgsPhongMaterialSettings.diffuseCoefficient: src/core/./3d/materials/qgsphongmaterialsettings.h#L93
 QgsPhongMaterialSettings.equals: src/core/./3d/materials/qgsphongmaterialsettings.h#L55
@@ -11626,7 +11619,6 @@ QgsPhongMaterialSettings: src/core/./3d/materials/qgsphongmaterialsettings.h#L37
 QgsPhongTexturedMaterialSettings.ambient: src/core/./3d/materials/qgsphongtexturedmaterialsettings.h#L60
 QgsPhongTexturedMaterialSettings.averageColor: src/core/./3d/materials/qgsphongtexturedmaterialsettings.h#L161
 QgsPhongTexturedMaterialSettings.clone: src/core/./3d/materials/qgsphongtexturedmaterialsettings.h#L55
-QgsPhongTexturedMaterialSettings.create: src/core/./3d/materials/qgsphongtexturedmaterialsettings.h#L53
 QgsPhongTexturedMaterialSettings.diffuseTexturePath: src/core/./3d/materials/qgsphongtexturedmaterialsettings.h#L71
 QgsPhongTexturedMaterialSettings.equals: src/core/./3d/materials/qgsphongtexturedmaterialsettings.h#L56
 QgsPhongTexturedMaterialSettings.opacity: src/core/./3d/materials/qgsphongtexturedmaterialsettings.h#L105
@@ -17470,7 +17462,6 @@ QgsSimpleLineCallout: src/core/callouts/qgscallout.h#L510
 QgsSimpleLineMaterialSettings.ambient: src/core/./3d/materials/qgssimplelinematerialsettings.h#L63
 QgsSimpleLineMaterialSettings.averageColor: src/core/./3d/materials/qgssimplelinematerialsettings.h#L82
 QgsSimpleLineMaterialSettings.clone: src/core/./3d/materials/qgssimplelinematerialsettings.h#L54
-QgsSimpleLineMaterialSettings.create: src/core/./3d/materials/qgssimplelinematerialsettings.h#L52
 QgsSimpleLineMaterialSettings.equals: src/core/./3d/materials/qgssimplelinematerialsettings.h#L55
 QgsSimpleLineMaterialSettings.readXml: src/core/./3d/materials/qgssimplelinematerialsettings.h#L98
 QgsSimpleLineMaterialSettings.setAmbient: src/core/./3d/materials/qgssimplelinematerialsettings.h#L70
@@ -19883,7 +19874,6 @@ QgsUnitTypes: src/core/qgsunittypes.h#L39
 QgsUnlitMaterialSettings.averageColor: src/core/./3d/materials/qgsunlitmaterialsettings.h#L73
 QgsUnlitMaterialSettings.clone: src/core/./3d/materials/qgsunlitmaterialsettings.h#L55
 QgsUnlitMaterialSettings.color: src/core/./3d/materials/qgsunlitmaterialsettings.h#L64
-QgsUnlitMaterialSettings.create: src/core/./3d/materials/qgsunlitmaterialsettings.h#L53
 QgsUnlitMaterialSettings.equals: src/core/./3d/materials/qgsunlitmaterialsettings.h#L56
 QgsUnlitMaterialSettings.readXml: src/core/./3d/materials/qgsunlitmaterialsettings.h#L76
 QgsUnlitMaterialSettings.setColor: src/core/./3d/materials/qgsunlitmaterialsettings.h#L71
