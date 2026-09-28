@@ -275,9 +275,11 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   QString outParamDescription;
   if ( const QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent ) )
   {
-    const QString outParamName = outputChildAlgorithm->algorithm()->outputDefinitions().at( mFromSocket->index() )->name();
+    const QgsProcessingOutputDefinition *outputDef = outputChildAlgorithm->algorithm()->outputDefinitions().at( mFromSocket->index() );
+
+    const QString outParamName = outputDef->name();
     newInputParamSource = QgsProcessingModelChildParameterSource::fromChildOutput( outputChildAlgorithm->childId(), outParamName );
-    outParamDescription = outputChildAlgorithm->algorithm()->outputDefinitions().at( mFromSocket->index() )->description();
+    outParamDescription = outputDef->description();
   }
   else if ( const QgsProcessingModelParameter *paramFrom = dynamic_cast<QgsProcessingModelParameter *>( outputComponent ) )
   {
@@ -480,7 +482,7 @@ void QgsModelViewToolLink::addAlgorithm( const QString &algorithmId, const QPoin
     if ( QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent ) )
     {
       const QgsProcessingOutputDefinition *outputDef = outputChildAlgorithm->algorithm()->outputDefinitions().at( socket->index() );
-      const QString outputName = outputChildAlgorithm->algorithm()->outputDefinitions().at( socket->index() )->name();
+      const QString outputName = outputDef->name();
 
       const QList<const QgsProcessingParameterDefinition *> definitions = alg->parameterDefinitions();
       for ( const QgsProcessingParameterDefinition *paramDef : definitions )
@@ -526,8 +528,8 @@ void QgsModelViewToolLink::addAlgorithm( const QString &algorithmId, const QPoin
   if ( socket->isInput() )
   {
     QgsProcessingModelChildAlgorithm *outputChildAlgorithm = dynamic_cast<QgsProcessingModelChildAlgorithm *>( outputComponent );
-    const QString parameterName = outputChildAlgorithm->algorithm()->parameterDefinitions().at( socket->index() )->name();
     const QgsProcessingParameterDefinition *parameter = outputChildAlgorithm->algorithm()->parameterDefinitions().at( socket->index() );
+    const QString parameterName = parameter->name();
 
     const QList<const QgsProcessingOutputDefinition *> definitions = childAlg.algorithm()->outputDefinitions();
     for ( const QgsProcessingOutputDefinition *outputDef : definitions )
