@@ -8,6 +8,7 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDI
 
 add_subdirectory(topology)
 add_subdirectory(geometry_checker)
+add_subdirectory(qgis_agent)
 
 if (WITH_SPATIALITE)
   add_subdirectory(offline_editing)
