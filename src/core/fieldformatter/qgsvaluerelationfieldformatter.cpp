@@ -113,7 +113,15 @@ QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )
-  return QVariant::fromValue<ValueRelationCache>( createCache( config ) );
+  QgsProject *project = layer->project();
+
+  // TODO QGIS 5.0 -- remove the fallback to QgsProject.instance() when no project is associated, return empty QVariant instead
+  if ( !project )
+  {
+    project = QgsProject::instance(); // skip-keyword-check
+  }
+
+  return QVariant::fromValue<ValueRelationCache>( createCache( config, project ) );
 }
 
 QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap &config, const QgsFeature &formFeature, const QgsFeature &parentFormFeature )
