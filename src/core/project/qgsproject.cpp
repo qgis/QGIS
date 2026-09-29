@@ -5541,14 +5541,6 @@ void QgsProject::cleanFunctionsFromProject()
   }
 }
 
-QgsColorSchemeRegistry *QgsProject::colorSchemeRegistry()
-{
-  QgsColorSchemeRegistry *registry = new QgsColorSchemeRegistry();
-  registry->setProject( this );
-  registry->addDefaultSchemes();
-  return registry;
-}
-
 /// @cond PRIVATE
 
 QHash< QString, QColor > loadColorsFromProject( const QgsProject *project )

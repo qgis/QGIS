@@ -2423,20 +2423,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool rollBack( QStringList &rollbackErrors SIP_OUT, bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
 
-    /**
-     * Creates a new color scheme registry associated with this project,
-     * populated with the default color schemes.
-     *
-     * Unlike the default-constructed QgsColorSchemeRegistry, the returned
-     * registry includes this project's colors (see QgsProjectColorScheme) in
-     * addition to the standard schemes.
-     *
-     * Ownership of the returned registry is transferred to the caller.
-     *
-     * \since QGIS 4.4
-     */
-    QgsColorSchemeRegistry *colorSchemeRegistry() SIP_FACTORY;
-
 
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
