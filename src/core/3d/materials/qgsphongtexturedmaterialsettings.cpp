@@ -51,9 +51,9 @@ bool QgsPhongTexturedMaterialSettings::supportsTechnique( Qgis::MaterialRenderin
   return false;
 }
 
-QgsAbstractMaterialSettings *QgsPhongTexturedMaterialSettings::create()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsPhongTexturedMaterialSettings::create()
 {
-  return new QgsPhongTexturedMaterialSettings();
+  return std::make_unique<QgsPhongTexturedMaterialSettings>();
 }
 
 QgsPhongTexturedMaterialSettings *QgsPhongTexturedMaterialSettings::clone() const

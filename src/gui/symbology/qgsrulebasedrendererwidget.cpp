@@ -120,9 +120,9 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   connect( btnRenderingOrder, &QAbstractButton::clicked, this, &QgsRuleBasedRendererWidget::setRenderingOrder );
 
-  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::changed );
 
   currentRuleChanged();
   selectedRulesChanged();
@@ -211,7 +211,7 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
     QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext ); //panel?
     widget->setPanelTitle( tr( "Edit Rule" ) );
     connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
+    connect( widget, &QgsPanelWidget::changed, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
     openPanel( widget );
     return;
   }
@@ -221,7 +221,7 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
   {
     mModel->updateRule( index.parent(), index.row() );
     mModel->clearFeatureCounts();
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -366,7 +366,7 @@ void QgsRuleBasedRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolIte
     }
   }
 
-  emit widgetChanged();
+  emit changed();
 }
 
 QList<QgsSymbol *> QgsRuleBasedRendererWidget::selectedSymbols()
@@ -421,7 +421,7 @@ void QgsRuleBasedRendererWidget::refreshSymbolView()
     treeRules->populateRules();
   }
   */
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRuleBasedRendererWidget::keyPressEvent( QKeyEvent *event )
@@ -458,7 +458,7 @@ void QgsRuleBasedRendererWidget::setRenderingOrder()
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer.get(), true, panel );
     widget->setForceOrderingEnabled( true );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() { setSymbolLevels( widget->symbolLevels(), widget->usingLevels() ); } );
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget]() { setSymbolLevels( widget->symbolLevels(), widget->usingLevels() ); } );
     panel->openPanel( widget );
   }
   else
@@ -540,7 +540,7 @@ void QgsRuleBasedRendererWidget::pasteSymbolToSelection()
       mModel->setSymbol( index, tempSymbol->clone() );
     }
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRuleBasedRendererWidget::refineRuleCategoriesAccepted( QgsPanelWidget *panel )
@@ -753,7 +753,7 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
 
   mSymbolSelector = new QgsSymbolSelectorWidget( mSymbol, style, mLayer, this );
   mSymbolSelector->setContext( mContext );
-  connect( mSymbolSelector, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mSymbolSelector, &QgsPanelWidget::changed, this, &QgsPanelWidget::changed );
   connect( mSymbolSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
   QVBoxLayout *l = new QVBoxLayout;
@@ -762,12 +762,12 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
 
   connect( btnExpressionBuilder, &QAbstractButton::clicked, this, &QgsRendererRulePropsWidget::buildExpression );
   connect( btnTestFilter, &QAbstractButton::clicked, this, &QgsRendererRulePropsWidget::testFilter );
-  connect( editFilter, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( editLabel, &QLineEdit::editingFinished, this, &QgsPanelWidget::widgetChanged );
-  connect( editDescription, &QLineEdit::editingFinished, this, &QgsPanelWidget::widgetChanged );
-  connect( groupSymbol, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
-  connect( groupScale, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
-  connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( editFilter, &QLineEdit::textChanged, this, &QgsPanelWidget::changed );
+  connect( editLabel, &QLineEdit::editingFinished, this, &QgsPanelWidget::changed );
+  connect( editDescription, &QLineEdit::editingFinished, this, &QgsPanelWidget::changed );
+  connect( groupSymbol, &QGroupBox::toggled, this, &QgsPanelWidget::changed );
+  connect( groupScale, &QGroupBox::toggled, this, &QgsPanelWidget::changed );
+  connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::changed );
   connect( mFilterRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
   connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) {
     if ( toggled )

@@ -898,7 +898,7 @@ void QgsColorRampShaderWidget::showLegendSettings()
     QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget();
     legendPanel->setPanelTitle( tr( "Legend Settings" ) );
     legendPanel->setSettings( mLegendSettings );
-    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [this, legendPanel] {
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::changed, this, [this, legendPanel] {
       mLegendSettings = legendPanel->settings();
       emit widgetChanged();
     } );

@@ -124,7 +124,7 @@ void QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged()
   if ( mBlockLayerUpdates )
     return;
 
-  emit widgetChanged();
+  emit changed();
 }
 
 

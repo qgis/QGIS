@@ -1092,3 +1092,222 @@ tests:
       OUTPUT:
         name: expected/text_to_float.gml
         type: vector
+
+  - algorithm: native:flowdirection
+    name: Flow direction
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+    results:
+      OUTPUT:
+        hash: 32d180a9491d529081a31cfd20070ea5b3f931ec680941ac9ed7afb6
+        type: rasterhash
+
+  - algorithm: native:flowconnectivity
+    name: Flow connectivity
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+    results:
+      OUTPUT:
+        hash: b0ba61e6b3940744eceb1ac03f60b4d84b855a94562670327701737c
+        type: rasterhash
+
+  - algorithm: native:strahlerorderfromdem
+    name: Strahler order from DEM, threshold 1
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 1
+    results:
+      OUTPUT:
+        hash: d8ceeb0ca56cb5a0dbd363c98a983bd55990c8286f41f8731e90f783
+        type: rasterhash
+
+  - algorithm: native:strahlerorderfromdem
+    name: Strahler order from DEM, threshold 3
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 3
+    results:
+      OUTPUT:
+        hash: a210382b64cc4139232a63e3bccf34e65c18c0d5d158aec84398b635
+        type: rasterhash
+
+  - algorithm: native:strahlerorderfromflowdirection
+    name: Strahler order from DEM and flow direction, threshold 1
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      INPUT_FLOW_DIRECTION:
+        name: custom/flow_dir.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 1
+    results:
+      OUTPUT:
+        hash: d8ceeb0ca56cb5a0dbd363c98a983bd55990c8286f41f8731e90f783
+        type: rasterhash
+
+  - algorithm: native:strahlerorderfromflowdirection
+    name: Strahler order from DEM and flow direction, threshold 3
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      INPUT_FLOW_DIRECTION:
+        name: custom/flow_dir.tif
+        type: raster
+      NODATA: -9999
+      THRESHOLD: 3
+    results:
+      OUTPUT:
+        hash: a210382b64cc4139232a63e3bccf34e65c18c0d5d158aec84398b635
+        type: rasterhash
+
+  - algorithm: native:channelnetworkfromdem
+    name: Channel network from DEM
+    params:
+      INPUT:
+        name: custom/mini_dem.tif
+        type: raster
+      SUBBASINS: false
+      THRESHOLD: 3
+    results:
+      BASINS:
+        name: expected/basins_from_dem.gml
+        type: vector
+      CHANNELS:
+        name: expected/channels_from_dem.gml
+        type: vector
+      JUNCTIONS:
+        name: expected/junctions_from_dem.gml
+        type: vector
+
+  - algorithm: native:statisticsbycategories
+    name: stats by category
+    params:
+      VALUES_FIELD_NAME: id
+      CATEGORIES_FIELD_NAME: id2
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/stats_by_category.gml
+        type: vector
+        pk: id2
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:statisticsbycategories
+    name: Stats by cat (float field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: floatval
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_float.gml
+        type: vector
+        pk: name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:statisticsbycategories
+    name: Stats by cat (string field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: name
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_string.gml
+        type: vector
+        pk: intval
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:statisticsbycategories
+    name: Stats by cat (two category fields)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: floatval
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_two_fields.gml
+        type: vector
+        pk:
+          - intval
+          - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:statisticsbycategories
+    name: Stats by cat (no value field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_no_value.gml
+        type: vector
+        pk:
+          - intval
+          - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:statisticsbycategories
+    name: Stats by cat (date field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - date
+      INPUT:
+        name: custom/datetimes.tab
+        type: vector
+      VALUES_FIELD_NAME: date
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_date.gml
+        type: vector
+        pk: date
+        compare:
+          fields:
+            fid: skip
+            date:
+              cast: str
+            min:
+              cast: str
+            max:
+              cast: str

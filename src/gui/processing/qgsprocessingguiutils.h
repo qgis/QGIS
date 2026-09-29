@@ -89,6 +89,15 @@ class GUI_EXPORT QgsProcessingGuiUtils
      * Responsible for adding layers created by an algorithm to a project and the project's layer tree in the correct location.
      */
     static void addResultLayers( const QVector< QgsProcessingGuiUtils::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeView *view = nullptr );
+
+    /**
+     * Returns the map of Processing menus to a list of algorithm IDs to include by default in that menu.
+     *
+     * Map keys correspond to Qgis::ProcessingMenu values.
+     *
+     * \since QGIS 4.4
+     */
+    static QMap< int, QStringList > defaultProcessingMenuEntries();
 };
 
 

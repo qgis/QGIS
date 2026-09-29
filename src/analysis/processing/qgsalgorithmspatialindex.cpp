@@ -67,6 +67,11 @@ QString QgsSpatialIndexAlgorithm::shortHelpString() const
   );
 }
 
+QString QgsSpatialIndexAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates an index to speed up access to the features in a layer." );
+}
+
 QgsSpatialIndexAlgorithm *QgsSpatialIndexAlgorithm::createInstance() const
 {
   return new QgsSpatialIndexAlgorithm();

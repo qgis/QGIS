@@ -15,8 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgsbox3d.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsellipsoidutils.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -36,6 +38,7 @@ class TestQgsCoordinateTransform : public QObject
     void initTestCase();
     void cleanupTestCase();
     void transformBoundingBox();
+    void transformBox3D();
     void copy();
     void assignment();
     void equality();
@@ -742,6 +745,85 @@ void TestQgsCoordinateTransform::transformBoundingBox()
   try
   {
     resultRect = tr.transformBoundingBox( rect );
+  }
+  catch ( QgsCsException & )
+  {
+    errorObtained = true;
+  }
+  QVERIFY( errorObtained );
+}
+
+void TestQgsCoordinateTransform::transformBox3D()
+{
+  const QgsCoordinateReferenceSystem geographic3D = QgsCoordinateReferenceSystem::fromEpsgId( 4979 );
+  const QgsCoordinateReferenceSystem geocentric = QgsCoordinateReferenceSystem::fromEpsgId( 4978 );
+
+  const QgsCoordinateTransform tr( geographic3D, geocentric, QgsCoordinateTransformContext() );
+
+  const QgsEllipsoidUtils::EllipsoidParameters ellipsoidParams = QgsEllipsoidUtils::ellipsoidParameters( geographic3D.ellipsoidAcronym() );
+  const double semiMajorAxis = ellipsoidParams.semiMajor;
+  const double semiMinorAxis = ellipsoidParams.semiMinor;
+
+  QgsBox3D box( 0, 0, 90, 0, 0, 90 );
+  QgsBox3D result = tr.transformBox3D( box );
+  QGSCOMPARENEAR( result.xMinimum(), semiMajorAxis + 90, 0.001 );
+  QGSCOMPARENEAR( result.xMaximum(), semiMajorAxis + 90, 0.001 );
+  QGSCOMPARENEAR( result.yMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.yMaximum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.zMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.zMaximum(), 0, 0.001 );
+
+  box = QgsBox3D( 0, 90, 0, 0, 90, 0 );
+  result = tr.transformBox3D( box );
+  QGSCOMPARENEAR( result.xMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.xMaximum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.yMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.yMaximum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.zMinimum(), semiMinorAxis, 0.001 );
+  QGSCOMPARENEAR( result.zMaximum(), semiMinorAxis, 0.001 );
+
+  box = QgsBox3D( 90, 0, 0, 90, 0, 0 );
+  result = tr.transformBox3D( box );
+  QGSCOMPARENEAR( result.xMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.xMaximum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.yMinimum(), semiMajorAxis, 0.001 );
+  QGSCOMPARENEAR( result.yMaximum(), semiMajorAxis, 0.001 );
+  QGSCOMPARENEAR( result.zMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( result.zMaximum(), 0, 0.001 );
+
+  const QgsBox3D reversed = tr.transformBox3D( result, Qgis::TransformDirection::Reverse );
+  QGSCOMPARENEAR( reversed.xMinimum(), 90, 0.001 );
+  QGSCOMPARENEAR( reversed.xMaximum(), 90, 0.001 );
+  QGSCOMPARENEAR( reversed.yMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( reversed.yMaximum(), 0, 0.001 );
+  QGSCOMPARENEAR( reversed.zMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( reversed.zMaximum(), 0, 0.001 );
+
+  box = QgsBox3D( 18.75111, 45.24111, 80, 18.85111, 45.34111, 120 );
+  result = tr.transformBox3D( box );
+  QGSCOMPARENEAR( result.xMinimum(), 4249883.435, 0.001 );
+  QGSCOMPARENEAR( result.xMaximum(), 4259915.429, 0.001 );
+  QGSCOMPARENEAR( result.yMinimum(), 1443590.375, 0.001 );
+  QGSCOMPARENEAR( result.yMaximum(), 1453571.222, 0.001 );
+  QGSCOMPARENEAR( result.zMinimum(), 4506312.608, 0.001 );
+  QGSCOMPARENEAR( result.zMaximum(), 4514159.733, 0.001 );
+
+  box = QgsBox3D( 86.875278, 27.938056, 5000, 86.975278, 28.038056, 8848.86 );
+  result = tr.transformBox3D( box );
+  QGSCOMPARENEAR( result.xMinimum(), 297507.462, 0.001 );
+  QGSCOMPARENEAR( result.xMaximum(), 307802.781, 0.001 );
+  QGSCOMPARENEAR( result.yMinimum(), 5629769.353, 0.001 );
+  QGSCOMPARENEAR( result.yMaximum(), 5638890.186, 0.001 );
+  QGSCOMPARENEAR( result.zMinimum(), 2972785.065, 0.001 );
+  QGSCOMPARENEAR( result.zMaximum(), 2984387.801, 0.001 );
+
+  // test transforming a box, resulting in an invalid transform - exception must be thrown
+  const QgsCoordinateTransform invalidTr( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( u"EPSG:28356"_s ), QgsProject::instance() );
+  const QgsBox3D invalidBox( -99999999999, 99999999999, -99999999999, -99999999998, 99999999998, 99999999998 );
+  bool errorObtained = false;
+  try
+  {
+    result = invalidTr.transformBox3D( invalidBox );
   }
   catch ( QgsCsException & )
   {

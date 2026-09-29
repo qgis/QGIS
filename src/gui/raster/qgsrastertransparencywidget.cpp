@@ -59,12 +59,12 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
   mNodataColorButton->setColorDialogTitle( tr( "Select NoData Color" ) );
   syncToLayer();
 
-  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( cboxTransparencyBand, &QgsRasterBandComboBox::bandChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mSrcNoDataValueCheckBox, &QCheckBox::stateChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( leNoDataValue, &QLineEdit::textEdited, this, &QgsPanelWidget::widgetChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::changed );
+  connect( cboxTransparencyBand, &QgsRasterBandComboBox::bandChanged, this, &QgsPanelWidget::changed );
+  connect( mSrcNoDataValueCheckBox, &QCheckBox::stateChanged, this, &QgsPanelWidget::changed );
+  connect( leNoDataValue, &QLineEdit::textEdited, this, &QgsPanelWidget::changed );
   leNoDataValue->setValidator( new QgsDoubleValidator( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), this ) );
-  connect( mNodataColorButton, &QgsColorButton::colorChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mNodataColorButton, &QgsColorButton::colorChanged, this, &QgsPanelWidget::changed );
 
   mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
@@ -237,7 +237,7 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
       break;
   }
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRasterTransparencyWidget::pbnAddValuesFromDisplay_clicked()
@@ -459,7 +459,7 @@ void QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked()
   }
   //tableTransparency->resizeColumnsToContents();
   //tableTransparency->resizeRowsToContents();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRasterTransparencyWidget::pbnRemoveSelectedRow_clicked()
@@ -468,7 +468,7 @@ void QgsRasterTransparencyWidget::pbnRemoveSelectedRow_clicked()
   {
     tableTransparency->removeRow( tableTransparency->currentRow() );
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRasterTransparencyWidget::apply()
@@ -598,7 +598,7 @@ void QgsRasterTransparencyWidget::updateProperty()
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsRasterPipe::Property key = static_cast<QgsRasterPipe::Property>( button->propertyKey() );
   mPropertyCollection.setProperty( key, button->toProperty() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
@@ -782,7 +782,7 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
     // Who needs transparency as floating point?
     lineEdit->setValidator( new QIntValidator( nullptr ) );
     lineEdit->setText( QString::number( static_cast<int>( value ) ) );
-    connect( lineEdit, &QLineEdit::textEdited, this, &QgsPanelWidget::widgetChanged );
+    connect( lineEdit, &QLineEdit::textEdited, this, &QgsPanelWidget::changed );
   }
   else
   {
@@ -808,7 +808,7 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
         break;
     }
     lineEdit->setText( valueString );
-    connect( lineEdit, &QLineEdit::textEdited, this, &QgsPanelWidget::widgetChanged );
+    connect( lineEdit, &QLineEdit::textEdited, this, &QgsPanelWidget::changed );
   }
   tableTransparency->setCellWidget( row, column, lineEdit );
 
@@ -817,7 +817,7 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
     connect( lineEdit, &QLineEdit::textEdited, this, &QgsRasterTransparencyWidget::transparencyCellTextEdited );
   }
   //tableTransparency->resizeColumnsToContents();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRasterTransparencyWidget::adjustTransparencyCellWidth( int row, int column )

@@ -68,7 +68,7 @@ void Qgs3DExportObject::setupLine( const QVector<float> &positionsBuffer )
   // setup indexes
   mIndexes.clear();
   for ( int i = 0; i < mVertexPosition.size(); i += 3 )
-    mIndexes << i / 3 + 1;
+    mIndexes << i / 3;
 }
 
 void Qgs3DExportObject::setupPoint( const QVector<float> &positionsBuffer )
@@ -238,10 +238,8 @@ void Qgs3DExportObject::saveToObj( QTextStream &out, float scale, const QVector3
   }
   else if ( mType == LineStrip )
   {
-    out << "l";
-    for ( const unsigned int i : std::as_const( mIndexes ) )
-      out << " " << getVertexIndex( i );
-    out << "\n";
+    for ( int i = 0; i + 1 < mIndexes.size(); i += 2 )
+      out << "l " << getVertexIndex( i ) << " " << getVertexIndex( i + 1 ) << "\n";
   }
   else if ( mType == Points )
   {

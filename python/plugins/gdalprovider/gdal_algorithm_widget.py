@@ -19,30 +19,17 @@ __author__ = "Victor Olaya"
 __date__ = "May 2015"
 __copyright__ = "(C) 2015, Victor Olaya"
 
-from processing.core.exceptions import InvalidOutputExtension, InvalidParameterValue
 from processing.gui.algorithm_widget import AlgorithmWidget
-from processing.gui.ParametersPanel import ParametersPanel
 from processing.tools.dataobjects import createContext
 from qgis.core import (
     QgsProcessingException,
     QgsProcessingFeedback,
     QgsProcessingParameterDefinition,
 )
-from qgis.gui import (
-    QgsMessageBar,
-    QgsProcessingLayerOutputDestinationWidget,
-    QgsProjectionSelectionWidget,
-)
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.gui import QgsProcessingParametersGenerator, QgsProcessingParametersWidget
 from qgis.PyQt.QtWidgets import (
-    QCheckBox,
-    QComboBox,
-    QDialogButtonBox,
     QLabel,
-    QLineEdit,
     QPlainTextEdit,
-    QPushButton,
-    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
@@ -57,15 +44,19 @@ class GdalAlgorithmWidget(AlgorithmWidget):
         super().__init__(alg, parent=parent)
         self.mainWidget().parametersHaveChanged()
 
-    def getParametersPanel(self, alg, parent):
-        return GdalParametersPanel(parent, alg)
+    def createParametersPanel(self, in_place_mode: bool, active_layer, message_bar):
+        widget = GdalParametersPanel(
+            self.algorithm(), in_place_mode, active_layer, message_bar
+        )
+        widget.registerProcessingContextGenerator(self)
+        widget.finalize()
+        return widget
 
 
-class GdalParametersPanel(ParametersPanel):
-    def __init__(self, parent, alg):
-        super().__init__(parent, alg)
+class GdalParametersPanel(QgsProcessingParametersWidget):
+    def __init__(self, alg, in_place=False, active_layer=None, message_bar=None):
+        super().__init__(alg, in_place, active_layer, message_bar)
 
-        self.dialog = parent
         w = QWidget()
         layout = QVBoxLayout()
         layout.setMargin(0)
@@ -79,80 +70,76 @@ class GdalParametersPanel(ParametersPanel):
         w.setLayout(layout)
         self.addExtraWidget(w)
 
+    def finalize(self):
+        self.initWidgets()
         self.connectParameterSignals()
         self.parametersHaveChanged()
 
     def connectParameterSignals(self):
-        for wrapper in list(self.wrappers.values()):
+        for wrapper in self.wrappers():
             wrapper.widgetValueHasChanged.connect(self.parametersHaveChanged)
-
-            # TODO - remove when all wrappers correctly emit widgetValueHasChanged!
-            w = wrapper.wrappedWidget()
-            self.connectWidgetChangedSignals(w)
-            for c in w.findChildren(QWidget):
-                self.connectWidgetChangedSignals(c)
-
-    def connectWidgetChangedSignals(self, w):
-        if isinstance(w, QLineEdit):
-            w.textChanged.connect(self.parametersHaveChanged)
-        elif isinstance(w, QComboBox):
-            w.currentIndexChanged.connect(self.parametersHaveChanged)
-        elif isinstance(w, QgsProjectionSelectionWidget):
-            w.crsChanged.connect(self.parametersHaveChanged)
-        elif isinstance(w, QCheckBox):
-            w.stateChanged.connect(self.parametersHaveChanged)
-        elif isinstance(w, QgsProcessingLayerOutputDestinationWidget):
-            w.destinationChanged.connect(self.parametersHaveChanged)
 
     def parametersHaveChanged(self):
         context = createContext()
         feedback = QgsProcessingFeedback()
-        try:
-            # messy as all heck, but we don't want to call the dialog's implementation of
-            # createProcessingParameters as we want to catch the exceptions raised by the
-            # parameter panel instead...
-            parameters = (
-                {}
-                if self.dialog.mainWidget() is None
-                else self.dialog.mainWidget().createProcessingParameters()
-            )
-            for output in self.algorithm().destinationParameterDefinitions():
-                if not output.name() in parameters or parameters[output.name()] is None:
-                    if (
-                        not output.flags()
-                        & QgsProcessingParameterDefinition.Flag.FlagOptional
-                    ):
-                        parameters[output.name()] = self.tr("[temporary file]")
-            for p in self.algorithm().parameterDefinitions():
-                if p.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
-                    continue
 
+        parameters, validation_results = self.createAndValidateParameters(
+            QgsProcessingParametersGenerator.Flags()
+        )
+
+        all_valid = True
+        for result in validation_results:
+            parameter = self.algorithm().parameterDefinition(result.parameterName)
+
+            if (
+                result.result
+                == QgsProcessingParametersGenerator.ValidationResult.InvalidValue
+            ):
+                self.text.setPlainText(
+                    self.tr("Invalid value for parameter '{0}'").format(
+                        parameter.description()
+                    )
+                )
+                all_valid = False
+            elif (
+                result.result
+                == QgsProcessingParametersGenerator.ValidationResult.InvalidOutputExtension
+            ):
+                self.text.setPlainText(result.message)
+                all_valid = False
+
+        if not all_valid:
+            return
+
+        for output in self.algorithm().destinationParameterDefinitions():
+            if not output.name() in parameters or parameters[output.name()] is None:
                 if (
-                    p.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional
-                    and p.name() not in parameters
+                    not output.flags()
+                    & QgsProcessingParameterDefinition.Flag.FlagOptional
                 ):
-                    continue
+                    parameters[output.name()] = self.tr("[temporary file]")
+        for p in self.algorithm().parameterDefinitions():
+            if p.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
+                continue
 
-                if p.name() not in parameters or not p.checkValueIsAcceptable(
-                    parameters[p.name()]
-                ):
-                    # not ready yet
-                    self.text.setPlainText("")
-                    return
+            if (
+                p.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional
+                and p.name() not in parameters
+            ):
+                continue
 
-            try:
-                commands = self.algorithm().getConsoleCommands(
-                    parameters, context, feedback, executing=False
-                )
-                commands = [c for c in commands if c not in ["cmd.exe", "/C "]]
-                self.text.setPlainText(" ".join(commands))
-            except QgsProcessingException as e:
-                self.text.setPlainText(str(e))
-        except InvalidParameterValue as e:
-            self.text.setPlainText(
-                self.tr("Invalid value for parameter '{0}'").format(
-                    e.parameter.description()
-                )
+            if p.name() not in parameters or not p.checkValueIsAcceptable(
+                parameters[p.name()]
+            ):
+                # not ready yet
+                self.text.setPlainText("")
+                return
+
+        try:
+            commands = self.algorithm().getConsoleCommands(
+                parameters, context, feedback, executing=False
             )
-        except InvalidOutputExtension as e:
-            self.text.setPlainText(e.message)
+            commands = [c for c in commands if c not in ["cmd.exe", "/C "]]
+            self.text.setPlainText(" ".join(commands))
+        except QgsProcessingException as e:
+            self.text.setPlainText(str(e))

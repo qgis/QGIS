@@ -20,6 +20,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
@@ -172,7 +173,7 @@ void QgsDbImportVectorLayerDialog::setSourceUri( const QgsMimeDataUtils::Uri &ur
 
   bool owner = false;
   QString error;
-  QgsVectorLayer *vl = uri.vectorLayer( owner, error );
+  QgsVectorLayer *vl = uri.vectorLayer( owner, error, QgsProject::instance() );
   if ( owner )
   {
     mOwnedSource.reset( vl );

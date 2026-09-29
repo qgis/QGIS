@@ -30,6 +30,11 @@
 
 using namespace Qt::StringLiterals;
 
+QgsAbstractMaterialSettings *QgsMaterialSettingsMetadata::create()
+{
+  return mCreateFunc ? mCreateFunc().release() : nullptr;
+}
+
 QgsMaterialRegistry::QgsMaterialRegistry()
 {}
 

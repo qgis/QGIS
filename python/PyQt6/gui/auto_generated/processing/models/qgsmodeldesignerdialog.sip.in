@@ -34,26 +34,6 @@ Model designer dialog base class.
     virtual void closeEvent( QCloseEvent *event );
 
 
-    void beginUndoCommand( const QString &text, const QString &id = QString() );
-%Docstring
-Starts an undo command. This should be called before any changes are
-made to the model.
-%End
-
-    void endUndoCommand();
-%Docstring
-Ends the current undo command. This should be called after changes are
-made to the model.
-%End
-
-    void abortUndoCommand();
-%Docstring
-Aborts pending undo command, turning last call to beginUndoCommand
-obsolete
-
-.. versionadded:: 4.0
-%End
-
     QgsProcessingModelAlgorithm *model();
 %Docstring
 Returns the model shown in the dialog.
@@ -71,32 +51,11 @@ Ownership of ``model`` is transferred to the dialog.
 Loads a model into the designer from the specified file ``path``.
 %End
 
-    void setModelScene( QgsModelGraphicsScene *scene /Transfer/ );
-%Docstring
-Sets the related ``scene``.
-
-.. seealso:: :py:func:`modelScene`
-%End
-
-    QgsModelGraphicsScene *modelScene();
-%Docstring
-Returns the related model scene.
-
-.. seealso:: :py:func:`setModelScene`
-
-.. versionadded:: 4.0
-%End
 
     virtual QgsProcessingFeedback *createFeedback() /Factory/;
 
     virtual QgsProcessingParameterWidgetContext createWidgetContext();
 
-
-    enum class SaveAction
-    {
-      SaveAsFile,
-      SaveInProject,
-    };
 
   public slots:
 
@@ -107,88 +66,30 @@ Raise, unminimize and activate this window.
 .. versionadded:: 3.24
 %End
 
-  protected:
-
-    virtual void repaintModel( bool showControls = true ) = 0;
-    virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
-
-    virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
-
-    virtual void exportAsScriptAlgorithm() = 0;
-
-    virtual bool saveModel( bool saveAs = false ) = 0;
-
-    virtual QgsProcessingAlgorithmWidgetBase *createExecutionWidget() = 0 /TransferBack/;
-
-    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+    void saveInProject();
 %Docstring
-Registers a Processing context ``generator`` class that will be used to
-retrieve a Processing context for the dialog when required.
-%End
-    virtual QgsProcessingContext *processingContext() const;
-
-
-    QToolBar *toolbar();
-    QAction *actionOpen();
-    QAction *actionSaveInProject();
-    QAction *actionRun();
-    QgsMessageBar *messageBar();
-
-
-    void setDirty( bool dirty );
-
-    bool validateSave( SaveAction action );
-%Docstring
-Checks if the model can current be saved, and returns ``True`` if it
-can.
-%End
-
-    bool checkForUnsavedChanges();
-%Docstring
-Checks if there are unsaved changes in the model, and if so, prompts the
-user to save them.
-
-Returns ``False`` if the cancel option was selected
-%End
-
-    void setLastRunResult( const QgsProcessingModelResult &result );
-%Docstring
-Sets the ``result`` of the last run of the model through the designer
-window.
-%End
-
-    void setModelName( const QString &name );
-%Docstring
-Sets the model ``name``.
-
-Updates both the name text edit and the model name itself.
-
-.. versionadded:: 3.24
-%End
-
-};
-
-
-class QgsModelChildDependenciesWidget : QWidget
-{
-%TypeHeaderCode
-#include "qgsmodeldesignerdialog.h"
-%End
-  public:
-    QgsModelChildDependenciesWidget( QWidget *parent, QgsProcessingModelAlgorithm *model, const QString &childId );
-    QList<QgsProcessingModelChildDependency> value() const;
-    void setValue( const QList<QgsProcessingModelChildDependency> &value );
-
-  signals:
-
-    void changed();
-%Docstring
-Emitted when the dependencies are changed in the widget.
+Saves the model to the current project.
 
 .. versionadded:: 4.4
 %End
 
+  signals:
+
+    void modelUpdated();
+%Docstring
+Emitted when the model is updated.
+
+.. warning::
+
+   DO NOT USE -- this is bad API, here for compatibility with Python code only.
+%End
+
+  protected:
+    virtual QgsProcessingContext *processingContext() const;
+
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

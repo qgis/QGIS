@@ -451,7 +451,9 @@
 %Include auto_generated/processing/qgsprocessingoutputdestinationwidget.sip
 %Include auto_generated/processing/qgsprocessingparameterdefinitionwidget.sip
 %Include auto_generated/processing/qgsprocessingparameterswidget.sip
+%Include auto_generated/processing/qgsprocessingprovideractions.sip
 %Include auto_generated/processing/qgsprocessingrecentalgorithmlog.sip
+%Include auto_generated/processing/qgsprocessingscripteditordialog.sip
 %Include auto_generated/processing/qgsprocessingtoolboxmodel.sip
 %Include auto_generated/processing/qgsprocessingtoolboxtreeview.sip
 %Include auto_generated/processing/qgsprocessingwidgetcontext.sip

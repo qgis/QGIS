@@ -348,6 +348,7 @@ parameters, their acceptable ranges, defaults, etc.
 #include "qgsprocessingparametervectortilewriterlayers.h"
 #include "qgsprocessingparametermeshdataset.h"
 #include "qgsprocessingparameterinterpolationpixelsize.h"
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
 %End
 %ConvertToSubClassCode
     if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )
@@ -454,6 +455,8 @@ parameters, their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterVectorTileDestination;
     else if ( sipCpp->type() == QgsProcessingParameterInterpolationPixelSize::typeName() )
       sipType = sipType_QgsProcessingParameterInterpolationPixelSize;
+    else if ( sipCpp->type() == QgsProcessingParameterTileExtentMaxZoomList::typeName() )
+      sipType = sipType_QgsProcessingParameterTileExtentMaxZoomList;
     else
       sipType = nullptr;
 %End

@@ -154,7 +154,7 @@ void QgsRasterLabelingWidget::labelModeChanged( int index )
     settingsWidget->setContext( context );
 
     settingsWidget->setDockMode( dockMode() );
-    connect( settingsWidget, &QgsLabelingGui::widgetChanged, this, &QgsRasterLabelingWidget::widgetChanged );
+    connect( settingsWidget, &QgsLabelingGui::widgetChanged, this, &QgsRasterLabelingWidget::changed );
 
     mWidget = settingsWidget;
     if ( !dynamic_cast<QgsRasterLayerSimpleLabeling *>( mLayer->labeling() ) )
@@ -172,7 +172,7 @@ void QgsRasterLabelingWidget::labelModeChanged( int index )
     mStackedWidget->setCurrentWidget( mWidget );
   }
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRasterLabelingWidget::showLabelingEngineRulesPrivate()

@@ -38,6 +38,7 @@ class QgsProcessingAlgRunnerTask;
 class QgsTask;
 class QgsDockableWidgetHelper;
 class QMainWindow;
+class QgsProcessingParametersWidget;
 
 /**
  * \ingroup gui
@@ -591,6 +592,75 @@ class GUI_EXPORT QgsProcessingAlgorithmWidgetBase : public QWidget, public QgsPr
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
     void scrollToBottomOfLog();
     void processEvents();
+};
+
+/**
+ * \ingroup gui
+ * \brief A widget for setting the parameters and executing single Processing algorithms.
+ *
+ * \note This is not considered stable API and may change in future QGIS versions.
+ *
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsProcessingAlgorithmWidget : public QgsProcessingAlgorithmWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    /**
+   * Constructor for QgsProcessingAlgorithmWidget.
+   */
+    QgsProcessingAlgorithmWidget(
+      QgsProcessingAlgorithm *algorithm SIP_TRANSFER,
+      bool inPlace = false,
+      QMainWindow *parentWindow SIP_TRANSFERTHIS = nullptr,
+      QgsProcessingAlgorithmWidgetBase::WidgetFlags flags = QgsProcessingAlgorithmWidgetBase::WidgetFlags(),
+      Qgis::DockableWidgetInitialState initialState = Qgis::DockableWidgetInitialState::RestorePreviousState
+    );
+
+    /**
+     * Returns TRUE if the widget is running in the "in-place edits" mode.
+     */
+    bool inPlace() const;
+
+    void setParameters( const QVariantMap &values ) override;
+    QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) override;
+    QgsProcessingContext *processingContext() const override;
+
+  protected:
+    /**
+   * Creates the parameters panel to show in the widget.
+   */
+    virtual QgsProcessingParametersWidget *createParametersPanel( bool inPlaceMode, QgsVectorLayer *activeLayer, QgsMessageBar *messageBar );
+
+    /**
+     * Returns the child parameters widget.
+     */
+    QgsProcessingParametersWidget *parametersWidget();
+
+    /**
+     * Handles the results of validating parameter values.
+     *
+     * Returns TRUE if all parameter values are valid.
+     */
+    bool handleValidationResults( const QList< QgsProcessingParametersGenerator::ParameterValidationResult > &results );
+
+  private:
+    /**
+     * Highlights a parameter with an invalid value.
+     */
+    void flagInvalidParameterValue( const QString &message, QWidget *widget );
+
+    /**
+     * Highlights a parameter with an invalid output extension.
+     */
+    void flagInvalidOutputExtension( const QString &message, QWidget *widget );
+
+    mutable std::unique_ptr< QgsProcessingContext > mContext;
+    mutable std::unique_ptr< QgsProcessingFeedback > mFeedback;
+
+    bool mInPlace = false;
+    QList< QWidget * > mWidgetsToResetPalette;
 };
 
 #ifndef SIP_RUN

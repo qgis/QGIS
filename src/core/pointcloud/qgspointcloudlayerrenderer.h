@@ -25,6 +25,7 @@
 #include "qgsmapclippingregion.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgspointcloudindex.h"
+#include "qgsrange.h"
 
 #include <QDomElement>
 #include <QElapsedTimer>
@@ -85,6 +86,8 @@ class CORE_EXPORT QgsPointCloudLayerRenderer : public QgsMapLayerRenderer
     QgsVector3D mOffset;
     double mZOffset = 0;
     double mZScale = 1.0;
+
+    QgsDoubleRange mMapCrsZFilter;
 
     QgsPointCloudAttributeCollection mLayerAttributes;
     QgsPointCloudAttributeCollection mAttributes;

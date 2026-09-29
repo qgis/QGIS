@@ -3895,6 +3895,28 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( ProcessingMode )
 
     /**
+     * Standard menu groups for Processing tools
+     *
+     * \since QGIS 4.4
+     */
+    enum class ProcessingMenu
+    {
+      VectorAnalysis,       //!< Vector Analysis menu
+      VectorResearch,       //!< Vector Research menu
+      VectorGeoprocessing,  //!< Vector Geoprocessing menu
+      VectorGeometry,       //!< Vector Geometry menu
+      VectorDataManagement, //!< Vector Data Management menu
+      VectorGeneral,        //!< Vector (top-level) menu
+      RasterProjections,    //!< Raster Projections menu
+      RasterConversion,     //!< Raster Conversion menu
+      RasterExtraction,     //!< Raster Extraction menu
+      RasterAnalysis,       //!< Raster Analysis menu
+      RasterMiscellaneous,  //!< Raster Miscellaneous menu
+      RasterGeneral,        //!< Raster (top-level) menu
+    };
+    Q_ENUM( ProcessingMenu )
+
+    /**
      * Flags which control behavior for a Processing feature source.
      *
      * \note Prior to QGIS 3.36 this was available as QgsProcessingFeatureSourceDefinition::Flag
@@ -4419,6 +4441,18 @@ int QgisEvent = QEvent::User + 1;
       Billboards,                //!< Flat billboard rendering
     };
     Q_ENUM( MaterialRenderingTechnique )
+
+    /**
+     * Modes for material settings widgets.
+     *
+     * \since QGIS 4.4
+     */
+    enum class MaterialWidgetMode : int
+    {
+      Compact, //!< Shows only the main material settings
+      Full,    //!< Shows all material settings
+    };
+    Q_ENUM( MaterialWidgetMode )
 
     /**
      * Optional per-instance properties of instanced materials.
@@ -5874,6 +5908,40 @@ int QgisEvent = QEvent::User + 1;
     };
     Q_ENUM( ScaleBarDistanceLabelHorizontalPlacement )
 
+    /**
+     * Available placement options for a scale bar's unit label.
+     *
+     * This is exposed as a flag type enum to support multiple placements.
+     *
+     * \since QGIS 4.4
+     */
+    enum class ScaleBarUnitLabelPlacement : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      BeforeBar = 1 << 1,                 //!< Vertically centered on the bar, before the bar begins
+      AfterBar = 1 << 2,                  //!< Vertically centered on the bar, after the bar ends
+      LeftAbove = 1 << 3,                 //!< Text centered over the left edge of the bar, above the bar
+      CenteredAbove = 1 << 4,             //!< Horizontally centered on the bar, above the bar
+      RightAbove = 1 << 5,                //!< Text centered over the right edge of the bar, above the bar
+      LeftBelow = 1 << 6,                 //!< Text centered over the left edge of the bar, below the bar
+      CenteredBelow = 1 << 7,             //!< Horizontally centered on the bar, below the bar
+      RightBelow = 1 << 8,                //!< Text centered over the right edge of the bar, below the bar
+      BeforeFirstDistanceLabel = 1 << 9,  //!< Placed before the first distance label
+      AfterLastDistanceLabel = 1 << 10,   //!< Placed after the last distance label
+      OnBarAfterFirstDivision = 1 << 11,  //!< Placed on top of the bar, after the first bar division
+      BeforeEveryDistanceLabel = 1 << 12, //!< Placed before every distance label (as part of the distance label text)
+      AfterEveryDistanceLabel = 1 << 13,  //!< Placed after every distance label (as part of the distance label text)
+    };
+    Q_ENUM( ScaleBarUnitLabelPlacement )
+
+    /**
+     * Available placement options for a scale bar's unit label.
+     *
+     * This is exposed as a flag type enum to support multiple placements.
+     *
+     * \since QGIS 4.4
+     */
+    Q_DECLARE_FLAGS( ScaleBarUnitLabelPlacements, ScaleBarUnitLabelPlacement )
+    Q_FLAG( ScaleBarUnitLabelPlacements )
 
     /**
      * Units for map grid values.
@@ -6067,6 +6135,18 @@ int QgisEvent = QEvent::User + 1;
       Latitude //!< Coordinate is a latitude value
     };
     Q_ENUM( MapGridAnnotationType )
+
+    /**
+     * Elevation profile range calculation methods.
+     *
+     * \since QGIS 4.4
+     */
+    enum class ElevationProfileRangeMethod : int
+    {
+      ManualRange = 0, //!< Distance/elevation ranges are manually set
+      FixedScale       //!< Distance and elevation ranges are calculated from fixed scales.
+    };
+    Q_ENUM( ElevationProfileRangeMethod )
 
     /**
      * Input controller types.
@@ -7462,6 +7542,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::Map3DDebugFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SensorThingsExtensions )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PdfRenderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RubberBandComponents )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ScaleBarUnitLabelPlacements )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 

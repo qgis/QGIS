@@ -468,8 +468,8 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QS
       return false;
     }
 
-    setRenderer( converter.renderer() );
-    setLabeling( converter.labeling() );
+    setRenderer( converter.renderer().release() );
+    setLabeling( converter.labeling().release() );
     warnings = converter.warnings();
 
     if ( subLayers )

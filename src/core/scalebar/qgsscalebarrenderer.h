@@ -201,6 +201,14 @@ class CORE_EXPORT QgsScaleBarRenderer
      * Returns a list of widths of each segment of the scalebar.
      */
     QList<double> segmentWidths( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
+
+    /**
+     * Calculates the vertical offset to the top of the bar, accounting for
+     * text placed above the bar.
+     *
+     * \since QGIS 4.4
+     */
+    double verticalOffset( QgsRenderContext &context, const QgsScaleBarSettings &settings ) const;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsScaleBarRenderer::Flags )

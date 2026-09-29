@@ -47,9 +47,9 @@ bool QgsMetalRoughTexturedMaterialSettings::supportsTechnique( Qgis::MaterialRen
   return false;
 }
 
-QgsAbstractMaterialSettings *QgsMetalRoughTexturedMaterialSettings::create()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsMetalRoughTexturedMaterialSettings::create()
 {
-  return new QgsMetalRoughTexturedMaterialSettings();
+  return std::make_unique<QgsMetalRoughTexturedMaterialSettings>();
 }
 
 QgsMetalRoughTexturedMaterialSettings *QgsMetalRoughTexturedMaterialSettings::clone() const

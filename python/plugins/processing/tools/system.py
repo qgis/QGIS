@@ -24,23 +24,9 @@ import os
 import time
 from typing import Optional
 
-from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingUtils
-from qgis.PyQt.QtCore import QDir
+from qgis.core import QgsProcessingContext, QgsProcessingUtils
 
 numExported = 1
-
-
-def userFolder():
-    userDir = os.path.join(QgsApplication.qgisSettingsDirPath(), "processing")
-    if not QDir(userDir).exists():
-        QDir().mkpath(userDir)
-
-    return str(QDir.toNativeSeparators(userDir))
-
-
-def defaultOutputFolder():
-    folder = os.path.join(QDir.homePath(), "processing")
-    return str(QDir.toNativeSeparators(folder))
 
 
 def getTempFilename(ext=None, context: Optional[QgsProcessingContext] = None):

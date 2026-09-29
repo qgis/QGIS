@@ -66,7 +66,7 @@ QgsPointCloudRenderer *QgsPointCloudExtentRendererWidget::renderer()
 void QgsPointCloudExtentRendererWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsPointCloudExtentRendererWidget::setFromRenderer( const QgsPointCloudRenderer *r )

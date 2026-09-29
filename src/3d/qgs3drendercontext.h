@@ -73,6 +73,8 @@ class _3D_EXPORT Qgs3DRenderContext
     /**
      * Returns the 3D scene's 2D extent in the 3D scene's CRS
      *
+     * In globe it returns invalid extent.
+     *
      * \see crs()
      */
     QgsRectangle extent() const { return mExtent; }

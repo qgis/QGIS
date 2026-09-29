@@ -21,6 +21,7 @@
 #include "qgscommandlineutils.h"
 #include "qgsnativealgorithms.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsprocessingmodelprovider.h"
 #include "qgsprocessingregistry.h"
 
 #include <QString>
@@ -301,6 +302,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
       {
         loadPlugins();
       }
+
       listPlugins( mFlags & Flag::UseJson, !( mFlags & Flag::SkipLoadingPlugins ) );
       return 0;
     }
@@ -321,6 +323,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
     {
       loadPlugins();
     }
+    addModelProvider();
     listAlgorithms();
     return 0;
   }
@@ -336,6 +339,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
     {
       loadPlugins();
     }
+    addModelProvider();
     const QString algId = args.at( 2 );
     return showAlgorithmHelp( algId );
   }
@@ -351,6 +355,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
     {
       loadPlugins();
     }
+    addModelProvider();
 
     const QString algId = args.at( 2 );
 
@@ -605,6 +610,12 @@ void QgsProcessingExec::loadPlugins()
   }
 
 #endif
+}
+
+void QgsProcessingExec::addModelProvider()
+{
+  // model provider is deferred for qgis_process startup, so we only load when required
+  QgsApplication::processingRegistry()->addProvider( new QgsProcessingModelProvider( QgsApplication::processingRegistry() ) );
 }
 
 void QgsProcessingExec::listAlgorithms()

@@ -338,7 +338,7 @@ void QgsCategorized3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
         const QVariant value = QgsXmlUtils::readVariant( catElem.firstChildElement( u"Option"_s ) );
         const bool render = static_cast<bool>( catElem.attribute( u"render"_s, u"0"_s ).toInt() );
 
-        QgsAbstract3DSymbol *symbol = nullptr;
+        std::unique_ptr<QgsAbstract3DSymbol> symbol;
         QDomElement symbolElem = catElem.firstChildElement( u"symbol"_s );
         if ( !symbolElem.isNull() )
         {
@@ -350,7 +350,7 @@ void QgsCategorized3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
           }
         }
 
-        mCategories.append( Qgs3DRendererCategory( value, symbol, render ) );
+        mCategories.append( Qgs3DRendererCategory( value, symbol.release(), render ) );
       }
       catElem = catElem.nextSiblingElement();
     }
@@ -361,11 +361,11 @@ void QgsCategorized3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
   if ( !sourceSymbolElem.isNull() )
   {
     QString symbolType = sourceSymbolElem.attribute( u"type"_s );
-    QgsAbstract3DSymbol *sourceSymbol = QgsApplication::symbol3DRegistry()->createSymbol( symbolType );
+    std::unique_ptr<QgsAbstract3DSymbol> sourceSymbol = QgsApplication::symbol3DRegistry()->createSymbol( symbolType );
     if ( sourceSymbol )
     {
       sourceSymbol->readXml( sourceSymbolElem, context );
-      mSourceSymbol.reset( sourceSymbol );
+      mSourceSymbol = std::move( sourceSymbol );
     }
   }
 

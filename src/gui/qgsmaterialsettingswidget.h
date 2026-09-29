@@ -53,7 +53,7 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QgsPanelWidget
      * Sets the rendering technique which will be used for the symbol. Allows the widget to adapt
      * available settings for the specified \a technique.
      */
-    virtual void setTechnique( Qgis::MaterialRenderingTechnique technique );
+    void setTechnique( Qgis::MaterialRenderingTechnique technique );
 
     /**
      * Returns a new instance of the material settings defined by the widget.
@@ -62,6 +62,14 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QgsPanelWidget
      */
     virtual std::unique_ptr< QgsAbstractMaterialSettings > settings() = 0 SIP_FACTORY;
 
+    /**
+     * Sets the widget \a mode, which controls whether the compact or full
+     * set of material settings controls are shown.
+     *
+     * \since QGIS 4.4
+     */
+    void setMode( Qgis::MaterialWidgetMode mode );
+
   public slots:
 
     /**
@@ -69,15 +77,19 @@ class GUI_EXPORT QgsMaterialSettingsWidget : public QgsPanelWidget
      */
     virtual void setPreviewVisible( bool visible ) = 0;
 
-  signals:
-
+  protected:
     /**
-     * Emitted when the material definition is changed.
+     * Updates the visibility of widget controls to reflect the current
+     * technique and style.
+     *
+     * \since QGIS 4.4
      */
-    void changed();
+    virtual void updateWidgetVisibility() = 0;
 
   protected:
     QgsPropertyCollection mPropertyCollection;
+    Qgis::MaterialWidgetMode mMode = Qgis::MaterialWidgetMode::Full;
+    Qgis::MaterialRenderingTechnique mTechnique = Qgis::MaterialRenderingTechnique::Triangles;
 };
 
 #endif // QGSMATERIALSETTINGSWIDGET_H

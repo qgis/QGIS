@@ -44,7 +44,7 @@ and ``text``.
     virtual QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) /Factory/;
 
 
-    static QgsAnnotationLineTextItem *create() /Factory/;
+    static std::unique_ptr<QgsAnnotationLineTextItem> create();
 %Docstring
 Creates a new linestring annotation item.
 %End

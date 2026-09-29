@@ -80,16 +80,6 @@ class GenericAlgorithmsTest(QgisTestCase):
 
         if alg.provider().id() in ("qgis", "native", "3d", "pdal"):
             if alg.id() not in (
-                "native:exportmeshedges",
-                "native:exportmeshfaces",
-                "native:exportmeshongrid",
-                "native:exportmeshvertices",
-                "native:intersection",
-                "native:meshcontours",
-                "native:meshexportcrosssection",
-                "native:meshexporttimeseries",
-                "native:meshrasterize",
-                "native:surfacetopolygon",
                 "qgis:advancedpythonfieldcalculator",
                 "qgis:barplot",
                 "qgis:boxplot",
@@ -110,7 +100,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 "qgis:rasterlayerhistogram",
                 "qgis:rectanglesovalsdiamondsvariable",
                 "qgis:regularpoints",
-                "qgis:relief",
                 "qgis:scatter3dplot",
                 "qgis:setstyleforrasterlayer",
                 "qgis:setstyleforvectorlayer",
@@ -130,26 +119,6 @@ class GenericAlgorithmsTest(QgisTestCase):
                 )
 
             if alg.id() not in (
-                "native:createspatialindex",
-                "native:tilesxyzdirectory",
-                "native:tilesxyzmbtiles",
-                "pdal:assignprojection",
-                "pdal:boundary",
-                "pdal:clip",
-                "pdal:convertformat",
-                "pdal:createcopc",
-                "pdal:density",
-                "pdal:exportraster",
-                "pdal:exportrastertin",
-                "pdal:exportvector",
-                "pdal:filter",
-                "pdal:info",
-                "pdal:merge",
-                "pdal:reproject",
-                "pdal:thinbydecimate",
-                "pdal:thinbyradius",
-                "pdal:tile",
-                "pdal:virtualpointcloud",
                 "qgis:advancedpythonfieldcalculator",
                 "qgis:distancetonearesthublinetohub",
                 "qgis:distancetonearesthubpoints",
@@ -163,10 +132,8 @@ class GenericAlgorithmsTest(QgisTestCase):
                 "qgis:rastercalculator",
                 "qgis:rectanglesovalsdiamondsvariable",
                 "qgis:regularpoints",
-                "qgis:relief",
                 "qgis:setstyleforrasterlayer",
                 "qgis:setstyleforvectorlayer",
-                "qgis:statisticsbycategories",
                 "qgis:variabledistancebuffer",
             ):
                 self.assertTrue(

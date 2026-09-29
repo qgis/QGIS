@@ -136,6 +136,9 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
 
     void hypsometricCurves();
 
+    void xyzTilesGpkgWebMercator();
+    void xyzTilesGpkgCustomCrs();
+
   private:
     QString mPointLayerPath;
     QgsVectorLayer *mPointsLayer = nullptr;
@@ -2626,6 +2629,91 @@ void TestQgsProcessingAlgsPt2::hypsometricCurves()
   QCOMPARE( f.attribute( u"polygon_id"_s ), 4 );
   QGSCOMPARENEAR( f.attribute( u"area"_s ).toDouble(), 1.9999999999997158e-08, 1e-3 );
   QGSCOMPARENEAR( f.attribute( u"elevation"_s ).toDouble(), 179.39601, 1e-3 );
+}
+
+void TestQgsProcessingAlgsPt2::xyzTilesGpkgWebMercator()
+{
+  QTemporaryDir tmpPath;
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:tilesxyzgpkg"_s ) );
+  QVERIFY( alg );
+
+  auto polygonLayer = new QgsVectorLayer( testDataPath( u"/polys.shp"_s ), u"polygons"_s, u"ogr"_s );
+  QVERIFY( polygonLayer->isValid() );
+  QgsProject p;
+  p.addMapLayer( polygonLayer );
+
+  const QString outputFile = tmpPath.filePath( u"tiles_3857.gpkg"_s );
+
+  QVariantMap parameters;
+  parameters.insert( u"EXTENT"_s, QVariant::fromValue( QgsReferencedRectangle( polygonLayer->extent(), polygonLayer->crs() ) ) );
+  parameters.insert( u"ZOOM_MIN"_s, 0 );
+  parameters.insert( u"ZOOM_MAX"_s, 1 );
+  parameters.insert( u"TARGET_CRS"_s, QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
+  parameters.insert( u"OUTPUT_FILE"_s, outputFile );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( QFile::exists( outputFile ) );
+
+  auto layer = std::make_unique<QgsRasterLayer>( outputFile, u"gpkg_raster_3857"_s, u"gdal"_s );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->crs().authid(), u"EPSG:3857"_s );
+  QCOMPARE( layer->width(), 50 );
+  QCOMPARE( layer->height(), 39 );
+  QGSCOMPARENEAR( layer->extent().xMinimum(), -13238432, 10 );
+  QGSCOMPARENEAR( layer->extent().yMinimum(), 2844903, 10 );
+  QGSCOMPARENEAR( layer->extent().xMaximum(), -9324856, 10 );
+  QGSCOMPARENEAR( layer->extent().yMaximum(), 5897492, 10 );
+}
+
+void TestQgsProcessingAlgsPt2::xyzTilesGpkgCustomCrs()
+{
+  QTemporaryDir tmpPath;
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:tilesxyzgpkg"_s ) );
+  QVERIFY( alg );
+
+  const QString outputFile = tmpPath.filePath( u"tiles_4326.gpkg"_s );
+
+  auto polygonLayer = new QgsVectorLayer( testDataPath( u"/polys.shp"_s ), u"polygons"_s, u"ogr"_s );
+  QVERIFY( polygonLayer->isValid() );
+  QgsProject p;
+  p.addMapLayer( polygonLayer );
+
+  QVariantMap parameters;
+  parameters.insert( u"EXTENT"_s, QVariant::fromValue( QgsReferencedRectangle( polygonLayer->extent(), polygonLayer->crs() ) ) );
+  parameters.insert( u"ZOOM_MIN"_s, 0 );
+  parameters.insert( u"ZOOM_MAX"_s, 1 );
+  parameters.insert( u"TARGET_CRS"_s, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  parameters.insert( u"Z0_EXTENT"_s, QVariant::fromValue( QgsReferencedRectangle( QgsRectangle( -180, -90, 180, 90 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) ) ) );
+  parameters.insert( u"Z0_MATRIX_WIDTH"_s, 2 );
+  parameters.insert( u"Z0_MATRIX_HEIGHT"_s, 1 );
+  parameters.insert( u"OUTPUT_FILE"_s, outputFile );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( QFile::exists( outputFile ) );
+
+  auto layer = std::make_unique<QgsRasterLayer>( outputFile, u"gpkg_raster_4326"_s, u"gdal"_s );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->crs().authid(), u"EPSG:4326"_s );
+  QCOMPARE( layer->width(), 100 );
+  QCOMPARE( layer->height(), 63 );
+  QGSCOMPARENEAR( layer->extent().xMinimum(), -118.9228623, 2 );
+  QGSCOMPARENEAR( layer->extent().yMinimum(), 24.577735, 2 );
+  QGSCOMPARENEAR( layer->extent().xMaximum(), -83.766612, 2 );
+  QGSCOMPARENEAR( layer->extent().yMaximum(), 46.7261726, 2 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

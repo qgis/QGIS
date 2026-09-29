@@ -7202,6 +7202,39 @@ Qgis.ProcessingMode.__doc__ = """Types of modes which Processing widgets can be 
 """
 # --
 Qgis.ProcessingMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProcessingMenu.VectorAnalysis.__doc__ = "Vector Analysis menu"
+Qgis.ProcessingMenu.VectorResearch.__doc__ = "Vector Research menu"
+Qgis.ProcessingMenu.VectorGeoprocessing.__doc__ = "Vector Geoprocessing menu"
+Qgis.ProcessingMenu.VectorGeometry.__doc__ = "Vector Geometry menu"
+Qgis.ProcessingMenu.VectorDataManagement.__doc__ = "Vector Data Management menu"
+Qgis.ProcessingMenu.VectorGeneral.__doc__ = "Vector (top-level) menu"
+Qgis.ProcessingMenu.RasterProjections.__doc__ = "Raster Projections menu"
+Qgis.ProcessingMenu.RasterConversion.__doc__ = "Raster Conversion menu"
+Qgis.ProcessingMenu.RasterExtraction.__doc__ = "Raster Extraction menu"
+Qgis.ProcessingMenu.RasterAnalysis.__doc__ = "Raster Analysis menu"
+Qgis.ProcessingMenu.RasterMiscellaneous.__doc__ = "Raster Miscellaneous menu"
+Qgis.ProcessingMenu.RasterGeneral.__doc__ = "Raster (top-level) menu"
+Qgis.ProcessingMenu.__doc__ = """Standard menu groups for Processing tools
+
+.. versionadded:: 4.4
+
+* ``VectorAnalysis``: Vector Analysis menu
+* ``VectorResearch``: Vector Research menu
+* ``VectorGeoprocessing``: Vector Geoprocessing menu
+* ``VectorGeometry``: Vector Geometry menu
+* ``VectorDataManagement``: Vector Data Management menu
+* ``VectorGeneral``: Vector (top-level) menu
+* ``RasterProjections``: Raster Projections menu
+* ``RasterConversion``: Raster Conversion menu
+* ``RasterExtraction``: Raster Extraction menu
+* ``RasterAnalysis``: Raster Analysis menu
+* ``RasterMiscellaneous``: Raster Miscellaneous menu
+* ``RasterGeneral``: Raster (top-level) menu
+
+"""
+# --
+Qgis.ProcessingMenu.baseClass = Qgis
 QgsProcessingFeatureSourceDefinition.Flag = Qgis.ProcessingFeatureSourceDefinitionFlag
 # monkey patching scoped based enum
 QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck = Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck
@@ -7942,6 +7975,19 @@ Qgis.MaterialRenderingTechnique.__doc__ = """Material rendering techniques.
 """
 # --
 Qgis.MaterialRenderingTechnique.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MaterialWidgetMode.Compact.__doc__ = "Shows only the main material settings"
+Qgis.MaterialWidgetMode.Full.__doc__ = "Shows all material settings"
+Qgis.MaterialWidgetMode.__doc__ = """Modes for material settings widgets.
+
+.. versionadded:: 4.4
+
+* ``Compact``: Shows only the main material settings
+* ``Full``: Shows all material settings
+
+"""
+# --
+Qgis.MaterialWidgetMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.InstancedMaterialFlag.DataDefinedScale.__doc__ = "Per-instance data-defined scale"
 Qgis.InstancedMaterialFlag.DataDefinedRotation.__doc__ = "Per-instance data-defined rotation"
@@ -11276,6 +11322,46 @@ Qgis.ScaleBarDistanceLabelHorizontalPlacement.__doc__ = """Scale bar distance la
 """
 # --
 Qgis.ScaleBarDistanceLabelHorizontalPlacement.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ScaleBarUnitLabelPlacement.BeforeBar.__doc__ = "Vertically centered on the bar, before the bar begins"
+Qgis.ScaleBarUnitLabelPlacement.AfterBar.__doc__ = "Vertically centered on the bar, after the bar ends"
+Qgis.ScaleBarUnitLabelPlacement.LeftAbove.__doc__ = "Text centered over the left edge of the bar, above the bar"
+Qgis.ScaleBarUnitLabelPlacement.CenteredAbove.__doc__ = "Horizontally centered on the bar, above the bar"
+Qgis.ScaleBarUnitLabelPlacement.RightAbove.__doc__ = "Text centered over the right edge of the bar, above the bar"
+Qgis.ScaleBarUnitLabelPlacement.LeftBelow.__doc__ = "Text centered over the left edge of the bar, below the bar"
+Qgis.ScaleBarUnitLabelPlacement.CenteredBelow.__doc__ = "Horizontally centered on the bar, below the bar"
+Qgis.ScaleBarUnitLabelPlacement.RightBelow.__doc__ = "Text centered over the right edge of the bar, below the bar"
+Qgis.ScaleBarUnitLabelPlacement.BeforeFirstDistanceLabel.__doc__ = "Placed before the first distance label"
+Qgis.ScaleBarUnitLabelPlacement.AfterLastDistanceLabel.__doc__ = "Placed after the last distance label"
+Qgis.ScaleBarUnitLabelPlacement.OnBarAfterFirstDivision.__doc__ = "Placed on top of the bar, after the first bar division"
+Qgis.ScaleBarUnitLabelPlacement.BeforeEveryDistanceLabel.__doc__ = "Placed before every distance label (as part of the distance label text)"
+Qgis.ScaleBarUnitLabelPlacement.AfterEveryDistanceLabel.__doc__ = "Placed after every distance label (as part of the distance label text)"
+Qgis.ScaleBarUnitLabelPlacement.__doc__ = """Available placement options for a scale bar's unit label.
+
+This is exposed as a flag type enum to support multiple placements.
+
+.. versionadded:: 4.4
+
+* ``BeforeBar``: Vertically centered on the bar, before the bar begins
+* ``AfterBar``: Vertically centered on the bar, after the bar ends
+* ``LeftAbove``: Text centered over the left edge of the bar, above the bar
+* ``CenteredAbove``: Horizontally centered on the bar, above the bar
+* ``RightAbove``: Text centered over the right edge of the bar, above the bar
+* ``LeftBelow``: Text centered over the left edge of the bar, below the bar
+* ``CenteredBelow``: Horizontally centered on the bar, below the bar
+* ``RightBelow``: Text centered over the right edge of the bar, below the bar
+* ``BeforeFirstDistanceLabel``: Placed before the first distance label
+* ``AfterLastDistanceLabel``: Placed after the last distance label
+* ``OnBarAfterFirstDivision``: Placed on top of the bar, after the first bar division
+* ``BeforeEveryDistanceLabel``: Placed before every distance label (as part of the distance label text)
+* ``AfterEveryDistanceLabel``: Placed after every distance label (as part of the distance label text)
+
+"""
+# --
+Qgis.ScaleBarUnitLabelPlacement.baseClass = Qgis
+Qgis.ScaleBarUnitLabelPlacements = lambda flags=0: Qgis.ScaleBarUnitLabelPlacement(flags)
+Qgis.ScaleBarUnitLabelPlacements.baseClass = Qgis
+ScaleBarUnitLabelPlacements = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsLayoutItemMapGrid.GridUnit = Qgis.MapGridUnit
 # monkey patching scoped based enum
 QgsLayoutItemMapGrid.MapUnit = Qgis.MapGridUnit.MapUnits
@@ -11674,6 +11760,19 @@ Qgis.MapGridAnnotationType.__doc__ = """Annotation coordinate type.
 """
 # --
 Qgis.MapGridAnnotationType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ElevationProfileRangeMethod.ManualRange.__doc__ = "Distance/elevation ranges are manually set"
+Qgis.ElevationProfileRangeMethod.FixedScale.__doc__ = "Distance and elevation ranges are calculated from fixed scales."
+Qgis.ElevationProfileRangeMethod.__doc__ = """Elevation profile range calculation methods.
+
+.. versionadded:: 4.4
+
+* ``ManualRange``: Distance/elevation ranges are manually set
+* ``FixedScale``: Distance and elevation ranges are calculated from fixed scales.
+
+"""
+# --
+Qgis.ElevationProfileRangeMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.InputControllerType.Map2D.__doc__ = "2D map controller"
 Qgis.InputControllerType.Map3D.__doc__ = "3D map controller"

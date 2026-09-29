@@ -61,9 +61,11 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
+  processing/qgsalgorithmchannelnetwork.cpp
   processing/qgsalgorithmcheckgeometrysegmentlength.cpp
   processing/qgsalgorithmcheckgeometryangle.cpp
   processing/qgsalgorithmcheckvalidity.cpp
+  processing/qgsalgorithmd8base.cpp
   processing/qgsalgorithmexecutesql.cpp
   processing/qgsalgorithmextrude.cpp
   processing/qgsalgorithmfixgeometryduplicatenodes.cpp
@@ -164,6 +166,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfindprojection.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmflattenrelationships.cpp
+  processing/qgsalgorithmflowconnectivity.cpp
+  processing/qgsalgorithmflowdirection.cpp
   processing/qgsalgorithmforceccw.cpp
   processing/qgsalgorithmforcecw.cpp
   processing/qgsalgorithmforcerhr.cpp
@@ -300,7 +304,9 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsplitlinesbylength.cpp
   processing/qgsalgorithmsplitvectorlayer.cpp
   processing/qgsalgorithmsplitwithlines.cpp
+  processing/qgsalgorithmstatisticsbycategories.cpp
   processing/qgsalgorithmstdbscanclustering.cpp
+  processing/qgsalgorithmstrahlerorder.cpp
   processing/qgsalgorithmstringconcatenation.cpp
   processing/qgsalgorithmswapxy.cpp
   processing/qgsalgorithmsubdivide.cpp

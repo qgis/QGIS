@@ -555,11 +555,11 @@ QgsSimpleLineCallout::QgsSimpleLineCallout( const QgsSimpleLineCallout &other )
   , mDrawCalloutToAllParts( other.mDrawCalloutToAllParts )
 {}
 
-QgsCallout *QgsSimpleLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
+std::unique_ptr<QgsCallout> QgsSimpleLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
   auto callout = std::make_unique< QgsSimpleLineCallout >();
   callout->readProperties( properties, context );
-  return callout.release();
+  return callout;
 }
 
 QString QgsSimpleLineCallout::type() const
@@ -761,11 +761,11 @@ QgsManhattanLineCallout::QgsManhattanLineCallout( const QgsManhattanLineCallout 
 {}
 
 
-QgsCallout *QgsManhattanLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsCallout> QgsManhattanLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   auto callout = std::make_unique< QgsManhattanLineCallout >();
   callout->readProperties( properties, context );
-  return callout.release();
+  return callout;
 }
 
 QString QgsManhattanLineCallout::type() const
@@ -798,7 +798,7 @@ QgsCurvedLineCallout::QgsCurvedLineCallout( const QgsCurvedLineCallout &other )
   , mCurvature( other.mCurvature )
 {}
 
-QgsCallout *QgsCurvedLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr<QgsCallout> QgsCurvedLineCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   auto callout = std::make_unique< QgsCurvedLineCallout >();
   callout->readProperties( properties, context );
@@ -806,7 +806,7 @@ QgsCallout *QgsCurvedLineCallout::create( const QVariantMap &properties, const Q
   callout->setCurvature( properties.value( u"curvature"_s, 0.1 ).toDouble() );
   callout->setOrientation( decodeOrientation( properties.value( u"orientation"_s, u"auto"_s ).toString() ) );
 
-  return callout.release();
+  return callout;
 }
 
 QString QgsCurvedLineCallout::type() const
@@ -1054,11 +1054,11 @@ QgsBalloonCallout::QgsBalloonCallout( const QgsBalloonCallout &other )
   , mCornerRadiusScale( other.mCornerRadiusScale )
 {}
 
-QgsCallout *QgsBalloonCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
+std::unique_ptr<QgsCallout> QgsBalloonCallout::create( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
   auto callout = std::make_unique< QgsBalloonCallout >();
   callout->readProperties( properties, context );
-  return callout.release();
+  return callout;
 }
 
 QString QgsBalloonCallout::type() const

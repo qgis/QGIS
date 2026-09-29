@@ -81,6 +81,18 @@ QgsTileMatrix QgsTileMatrix::fromTileMatrix( const int zoomLevel, const QgsTileM
   return tm;
 }
 
+long long QgsTileMatrix::derivedMatrixWidthAtZoomLevel( int zoomLevel ) const
+{
+  const long long zoomFactor = 1LL << ( zoomLevel - mZoomLevel );
+  return mMatrixWidth * zoomFactor;
+}
+
+long long QgsTileMatrix::derivedMatrixHeightAtZoomLevel( int zoomLevel ) const
+{
+  const long long zoomFactor = 1LL << ( zoomLevel - mZoomLevel );
+  return mMatrixHeight * zoomFactor;
+}
+
 QgsRectangle QgsTileMatrix::tileExtent( QgsTileXYZ id ) const
 {
   double xMin = mExtent.xMinimum() + mTileXSpan * id.column();

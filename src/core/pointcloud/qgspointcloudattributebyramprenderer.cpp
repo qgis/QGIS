@@ -75,7 +75,7 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 
   const bool renderElevation = context.renderContext().elevationMap();
   const QgsDoubleRange zRange = context.renderContext().zRange();
-  const bool considerZ = !zRange.isInfinite() || renderElevation;
+  const bool considerZ = !zRange.isInfinite() || renderElevation || !context.mapCrsZFilter().isInfinite();
 
   const bool applyZOffset = attribute->name() == "Z"_L1;
   const bool applyXOffset = attribute->name() == "X"_L1;
@@ -123,6 +123,9 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
           continue;
         }
       }
+
+      if ( !context.mapCrsZFilter().contains( z ) )
+        continue;
 
       double attributeValue = 0;
       context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, attributeValue );

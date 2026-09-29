@@ -27,9 +27,9 @@ QString QgsGoochMaterialSettings::type() const
   return u"gooch"_s;
 }
 
-QgsAbstractMaterialSettings *QgsGoochMaterialSettings::create()
+std::unique_ptr<QgsAbstractMaterialSettings> QgsGoochMaterialSettings::create()
 {
-  return new QgsGoochMaterialSettings();
+  return std::make_unique<QgsGoochMaterialSettings>();
 }
 
 bool QgsGoochMaterialSettings::supportsTechnique( Qgis::MaterialRenderingTechnique technique )

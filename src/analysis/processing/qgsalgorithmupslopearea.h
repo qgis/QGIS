@@ -59,9 +59,6 @@ class QgsUpslopeAreaAlgorithmBase : public QgsProcessingAlgorithm
     // Core flow accumulation engine
     bool calculateUpslopeArea( const std::vector<QgsPointXY> &targetPoints, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
-    static double neighborLength( int dir, double cellSizeX, double cellSizeY );
-    static int neighborTo( int dir, int col, int &outCol, int row, int &outRow, int cols, int rows );
-
     void computeCellValue( const QgsRasterBlock *demBlock, int col, int row, int cols, int rows, double cellSizeX, double cellSizeY, Method method, double converge, bool contour );
     void computeD8( const QgsRasterBlock *demBlock, int col, int row, int cols, int rows, double cellSizeX, double cellSizeY );
     void computeDInf( const QgsRasterBlock *demBlock, int col, int row, int cols, int rows, double cellSizeX, double cellSizeY );

@@ -29,7 +29,32 @@ using namespace Qt::StringLiterals;
 
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )
   : QWidget( parent )
-{}
+{
+  // Forward the changed signal to the deprecated one, for backwards compatibility.
+  // TODO QGIS 5.0 remove
+  Q_NOWARN_DEPRECATED_PUSH
+  connect( this, &QgsPanelWidget::changed, this, [this] {
+    if ( mForwardChangedSignal )
+    {
+      return;
+    }
+    mForwardChangedSignal = true;
+    emit widgetChanged();
+    mForwardChangedSignal = false;
+  } );
+
+  // Forward the deprecated signal to the new one for subclasses which still use the deprecated one
+  connect( this, &QgsPanelWidget::widgetChanged, this, [this] {
+    if ( mForwardChangedSignal )
+    {
+      return;
+    }
+    mForwardChangedSignal = true;
+    emit changed();
+    mForwardChangedSignal = false;
+  } );
+  Q_NOWARN_DEPRECATED_POP
+}
 
 void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *> &panels )
 {
@@ -43,7 +68,7 @@ void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *> &panels )
 void QgsPanelWidget::connectChildPanel( QgsPanelWidget *panel )
 {
   connect( panel, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
-  connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( panel, &QgsPanelWidget::changed, this, &QgsPanelWidget::changed );
 }
 
 void QgsPanelWidget::setDockMode( bool dockMode )

@@ -68,6 +68,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSignalSpy>
+#include <QStandardPaths>
 #include <QString>
 #include <Qt3DRender/QGeometryRenderer>
 
@@ -90,6 +91,11 @@ class TestQgs3DRendering : public QgsTest
     void testDemTerrain();
     void testTerrainShading();
     void testEpsg4978LineRendering();
+    void testGlobeSphereRendering();
+    void testGlobePointsTRS_data();
+    void testGlobePointsTRS();
+    void testGlobeModels_data();
+    void testGlobeModels();
     void testExtrudedPolygons();
     void testExtrudedPolygonsClipping();
 
@@ -1982,6 +1988,202 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   delete layerLines;
 
   QGSVERIFYIMAGECHECK( "4978_line_rendering_2", "4978_line_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testGlobeSphereRendering()
+{
+  QgsProject p;
+
+  QgsCoordinateReferenceSystem newCrs( u"EPSG:4978"_s );
+  p.setCrs( newCrs );
+
+  QgsVectorLayer *layerPoints = new QgsVectorLayer( testDataPath( "points_gpkg.gpkg" ) + "|layername=points_gpkg", "points", "ogr" );
+  QVERIFY( layerPoints->isValid() );
+
+  QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
+  QVariantMap vmSphere;
+  vmSphere[u"radius"_s] = 99999.00f;
+  sphere3DSymbol->setShapeProperties( vmSphere );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::red );
+  sphere3DSymbol->setMaterialSettings( materialSettings.clone() );
+  layerPoints->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( p.crs() );
+  map->setLayers( QList<QgsMapLayer *>() << layerPoints );
+  map->setBackgroundColor( QColor( 24, 88, 138 ) );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setCameraNavigationMode( Qgis::NavigationMode::GlobeTerrainBased );
+
+  // points are in north america, so we need to adjust the globe to look at them
+  const QgsPointXY center = layerPoints->extent().center();
+  scene->cameraController()->resetGlobe( 9'000'000, center.y(), center.x() );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+  delete layerPoints;
+
+  QGSVERIFYIMAGECHECK( "globe_spheres", "globe_spheres", img, QString(), 150, QSize( 0, 0 ), 5 );
+}
+
+void TestQgs3DRendering::testGlobePointsTRS_data()
+{
+  QTest::addColumn<QMatrix4x4>( "transform" );
+  QTest::addColumn<QString>( "referenceImage" );
+
+  QMatrix4x4 translateTransform;
+  translateTransform.translate( 150000.0f, 0.0f, 250000.0f );
+  QTest::newRow( "translate" ) << translateTransform << u"globe_translate"_s;
+
+  QMatrix4x4 rotateTransform;
+  rotateTransform.rotate( QQuaternion::fromEulerAngles( 70.0f, 0.0f, 0.0f ) );
+  QTest::newRow( "rotate" ) << rotateTransform << u"globe_rotate"_s;
+
+  QMatrix4x4 trsTransform;
+  trsTransform.translate( 150000.0f, 0.0f, 250000.0f );
+  trsTransform.scale( 1.0f, 1.0f, 2.5f );
+  trsTransform.rotate( QQuaternion::fromEulerAngles( 45.0f, 30.0f, 0.0f ) );
+  QTest::newRow( "trs" ) << trsTransform << u"globe_trs"_s;
+}
+
+void TestQgs3DRendering::testGlobePointsTRS()
+{
+  QFETCH( QMatrix4x4, transform );
+  QFETCH( QString, referenceImage );
+
+  QgsPoint3DSymbol *coneSymbol = new QgsPoint3DSymbol();
+  coneSymbol->setShape( Qgis::Point3DShape::Cone );
+  QVariantMap vmCone;
+  vmCone[u"length"_s] = 300000.0f;
+  vmCone[u"bottomRadius"_s] = 80000.0f;
+  vmCone[u"topRadius"_s] = 0.0f;
+  coneSymbol->setShapeProperties( vmCone );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::yellow );
+  coneSymbol->setMaterialSettings( materialSettings.clone() );
+  coneSymbol->setTransform( transform );
+
+  QgsProject p;
+
+  QgsCoordinateReferenceSystem newCrs( u"EPSG:4978"_s );
+  p.setCrs( newCrs );
+
+  QgsVectorLayer *layerPoints = new QgsVectorLayer( testDataPath( "points_gpkg.gpkg" ) + "|layername=points_gpkg", "points", "ogr" );
+  QVERIFY( layerPoints->isValid() );
+
+  layerPoints->setRenderer3D( new QgsVectorLayer3DRenderer( coneSymbol ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( p.crs() );
+  map->setLayers( QList<QgsMapLayer *>() << layerPoints );
+  map->setBackgroundColor( QColor( 24, 88, 138 ) );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setCameraNavigationMode( Qgis::NavigationMode::GlobeTerrainBased );
+
+  // points are in north america, so we need to adjust the globe to look at them
+  const QgsPointXY center = layerPoints->extent().center();
+  scene->cameraController()->resetGlobe( 9'000'000, center.y(), center.x() );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  const QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+  delete layerPoints;
+
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, img, QString(), 150, QSize( 0, 0 ), 5 );
+}
+
+void TestQgs3DRendering::testGlobeModels_data()
+{
+  QTest::addColumn<QVariantMap>( "props" );
+  QTest::addColumn<QString>( "referenceImage" );
+  QTest::addColumn<QMatrix4x4>( "transform" );
+
+  QVariantMap objPropertiesMap;
+  const QString objModelPath = QgsApplication::pkgDataPath() + u"/resources/3d/qgis_logo.obj"_s;
+  objPropertiesMap[u"model"_s] = objModelPath;
+
+  QMatrix4x4 transform;
+  transform.scale( 500000 );
+  transform.rotate( QQuaternion::fromEulerAngles( 90, 0, 0 ) );
+  QTest::newRow( "globe qgis logo" ) << objPropertiesMap << u"globe_qgis_logo"_s << transform;
+}
+
+void TestQgs3DRendering::testGlobeModels()
+{
+  QFETCH( QVariantMap, props );
+  QFETCH( QString, referenceImage );
+  QFETCH( QMatrix4x4, transform );
+
+  const QgsRectangle fullExtent( 0, 0, 100, 100 );
+
+  QgsProject p;
+
+  QgsCoordinateReferenceSystem newCrs( u"EPSG:4978"_s );
+  p.setCrs( newCrs );
+
+  QgsVectorLayer *layerPoints = new QgsVectorLayer( testDataPath( "points_gpkg.gpkg" ) + "|layername=points_gpkg", "points", "ogr" );
+  QVERIFY( layerPoints->isValid() );
+
+  p.addMapLayer( layerPoints );
+
+  QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
+  symbol->setShape( Qgis::Point3DShape::Model );
+  symbol->setShapeProperties( props );
+  symbol->setMaterialSettings( new QgsNullMaterialSettings() );
+  symbol->setTransform( transform );
+
+  layerPoints->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( p.crs() );
+  map->setLayers( QList<QgsMapLayer *>() << layerPoints );
+  map->setBackgroundColor( QColor( 24, 88, 138 ) );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setCameraNavigationMode( Qgis::NavigationMode::GlobeTerrainBased );
+
+  // points are in north america, so we need to adjust the globe to look at them
+  const QgsPointXY center = layerPoints->extent().center();
+  scene->cameraController()->resetGlobe( 9'000'000, center.y(), center.x() );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  const QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+  delete layerPoints;
+
+  QGSVERIFYIMAGECHECK( referenceImage, referenceImage, img, QString(), 150, QSize( 0, 0 ), 5 );
 }
 
 void TestQgs3DRendering::testFilteredFlatTerrain()

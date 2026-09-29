@@ -226,7 +226,7 @@ void QgsProcessingModelerParametersPanelWidget::setupUi()
 void QgsProcessingModelerParametersPanelWidget::emitChangedSignal()
 {
   if ( !mBlockChangesSignal )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsProcessingModelerParametersPanelWidget::setStateFromChildAlgorithm()
@@ -509,7 +509,7 @@ QgsProcessingModelerParametersWidget::QgsProcessingModelerParametersWidget(
   : QgsProcessingModelConfigWidget( parent )
 {
   mParametersPanel = new QgsProcessingModelerParametersPanelWidget( childAlgorithm, model, context, childId, configuration, this, dialog );
-  connect( mParametersPanel, &QgsProcessingModelerParametersPanelWidget::widgetChanged, this, &QgsProcessingModelConfigWidget::widgetChanged );
+  connect( mParametersPanel, &QgsProcessingModelerParametersPanelWidget::changed, this, &QgsProcessingModelConfigWidget::changed );
 
   setupUi();
 }
@@ -551,7 +551,7 @@ void QgsProcessingModelerParametersWidget::setupUi()
   mCommentEdit = new QTextEdit();
   mCommentEdit->setAcceptRichText( false );
   commentLayout->addWidget( mCommentEdit, 1 );
-  connect( mCommentEdit, &QTextEdit::textChanged, this, &QgsProcessingModelerParametersWidget::widgetChanged );
+  connect( mCommentEdit, &QTextEdit::textChanged, this, &QgsProcessingModelerParametersWidget::changed );
 
   auto hl = new QHBoxLayout();
   hl->setContentsMargins( 0, 0, 0, 0 );
@@ -563,7 +563,7 @@ void QgsProcessingModelerParametersWidget::setupUi()
   mCommentColorButton->setShowNull( true, tr( "Default" ) );
   hl->addWidget( mCommentColorButton );
   commentLayout->addLayout( hl );
-  connect( mCommentColorButton, &QgsColorButton::colorChanged, this, &QgsProcessingModelerParametersWidget::widgetChanged );
+  connect( mCommentColorButton, &QgsColorButton::colorChanged, this, &QgsProcessingModelerParametersWidget::changed );
 
   auto commentWidget = new QWidget();
   commentWidget->setLayout( commentLayout );

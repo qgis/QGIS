@@ -149,7 +149,7 @@ void QgsInvertedPolygonRendererWidget::mRendererComboBox_currentIndexChanged( in
   {
     const std::unique_ptr<QgsFeatureRenderer> oldRenderer( mRenderer->embeddedRenderer()->clone() );
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, oldRenderer.get() ) );
-    connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::widgetChanged, this, &QgsInvertedPolygonRendererWidget::widgetChanged );
+    connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::changed, this, &QgsInvertedPolygonRendererWidget::changed );
     mEmbeddedRendererWidget->setContext( mContext );
     mEmbeddedRendererWidget->disableSymbolLevels();
     mEmbeddedRendererWidget->setDockMode( this->dockMode() );
@@ -167,5 +167,5 @@ void QgsInvertedPolygonRendererWidget::mRendererComboBox_currentIndexChanged( in
 void QgsInvertedPolygonRendererWidget::mMergePolygonsCheckBox_stateChanged( int state )
 {
   mRenderer->setPreprocessingEnabled( state == Qt::Checked );
-  emit widgetChanged();
+  emit changed();
 }

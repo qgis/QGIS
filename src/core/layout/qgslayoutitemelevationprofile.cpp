@@ -643,9 +643,11 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
   if ( qgsDoubleNear( thisPaintRect.width(), 0.0 ) || qgsDoubleNear( thisPaintRect.height(), 0 ) )
     return;
 
+  QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+  calculateAxisRanges( rc );
+
   if ( mLayout->renderContext().isPreviewRender() )
   {
-    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
     rc.setExpressionContext( createExpressionContext() );
 
     QgsScopedQPainterState painterState( painter );
@@ -855,6 +857,7 @@ void QgsLayoutItemElevationProfile::refresh()
       }
     }
   }
+
   QgsLayoutItem::refresh();
   invalidateCache();
 }
@@ -877,6 +880,19 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
     QDomElement plotElement = doc.createElement( u"plot"_s );
     mPlot->writeXml( plotElement, doc, rwContext );
     layoutProfileElem.appendChild( plotElement );
+  }
+
+  if ( mRangeMethod != Qgis::ElevationProfileRangeMethod::ManualRange )
+  {
+    layoutProfileElem.setAttribute( u"rangeMethod"_s, qgsEnumValueToKey( mRangeMethod ) );
+  }
+  if ( !qgsDoubleNear( mDistanceScale, 1000 ) )
+  {
+    layoutProfileElem.setAttribute( u"distanceScale"_s, qgsDoubleToString( mDistanceScale ) );
+  }
+  if ( !qgsDoubleNear( mElevationScale, 10 ) )
+  {
+    layoutProfileElem.setAttribute( u"elevationScale"_s, qgsDoubleToString( mElevationScale ) );
   }
 
   layoutProfileElem.setAttribute( u"distanceUnit"_s, qgsEnumValueToKey( mDistanceUnit ) );
@@ -961,6 +977,10 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
     crs.readXml( crsElem );
   }
   mCrs = crs;
+
+  mRangeMethod = qgsEnumKeyToValue( itemElem.attribute( u"rangeMethod"_s ), Qgis::ElevationProfileRangeMethod::ManualRange );
+  mDistanceScale = itemElem.attribute( u"distanceScale"_s ).toDouble();
+  mElevationScale = itemElem.attribute( u"elevationScale"_s ).toDouble();
 
   setDistanceUnit( qgsEnumKeyToValue( itemElem.attribute( u"distanceUnit"_s ), mCrs.mapUnits() ) );
 
@@ -1231,4 +1251,107 @@ void QgsLayoutItemElevationProfile::setSourcesPrivate()
   mSources.reserve( QgsApplication::profileSourceRegistry()->profileSources().count() );
   for ( QgsAbstractProfileSource *source : QgsApplication::profileSourceRegistry()->profileSources() )
     mSources << source;
+}
+
+void QgsLayoutItemElevationProfile::calculateAxisRanges( QgsRenderContext &context )
+{
+  if ( !mLayout )
+    return;
+
+  switch ( mRangeMethod )
+  {
+    case Qgis::ElevationProfileRangeMethod::ManualRange:
+      return; // nothing to do - axis range can't change!
+
+    case Qgis::ElevationProfileRangeMethod::FixedScale:
+      break;
+  }
+
+  const double mmToPainterUnits = context.convertToPainterUnits( 1.0, Qgis::RenderUnit::Millimeters );
+  if ( qgsDoubleNear( mmToPainterUnits, 0.0 ) )
+    return;
+
+  const QSizeF layoutSize = mLayout->convertToLayoutUnits( sizeWithUnits() );
+  QgsLayoutSize layoutSizeMm = mLayout->convertFromLayoutUnits( layoutSize, Qgis::LayoutUnit::Millimeters );
+
+  mPlot->setSize( layoutSizeMm.toQSizeF() * mmToPainterUnits );
+
+  QgsPlotRenderContext plotContext;
+
+  // We need to do an iterative approach here. First we set a rough range based on the total size of the item.
+  // But this is NOT correct, because that total size also includes the area outside of the plot itself (ie axis labels etc).
+  // So then we set that range, and grab the interiorPlotArea corresponding to the plot with those initial guess set of axis labels.
+  // From there we iterate, using the interiorPlotArea each time until we converge on the desired scale.
+
+  // first guess - assuming the whole item is the interior (incorrect!)
+  if ( mDistanceScale > 0 )
+  {
+    const double widthMeters = layoutSizeMm.width() / 1000;
+    const double distanceRange = QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mDistanceUnit ) * widthMeters * mDistanceScale;
+    mPlot->setXMinimum( 0 );
+    mPlot->setXMaximum( distanceRange );
+  }
+  if ( mElevationScale > 0 )
+  {
+    const double heightMeters = layoutSizeMm.height() / 1000;
+    const double elevationRange = heightMeters * mElevationScale;
+    mPlot->setYMaximum( mPlot->yMinimum() + elevationRange );
+  }
+
+  // now we start the iteration
+  QRectF previousPlotArea;
+  for ( int iteration = 0; iteration < 5; ++iteration )
+  {
+    const QRectF currentPlotArea = mPlot->interiorPlotArea( context, plotContext );
+    if ( qgsDoubleNear( currentPlotArea.width(), previousPlotArea.width(), 1 ) && qgsDoubleNear( currentPlotArea.height(), previousPlotArea.height(), 1 ) )
+      break;
+
+    previousPlotArea = currentPlotArea;
+
+    if ( mDistanceScale > 0 )
+    {
+      const double widthMm = currentPlotArea.width() / mmToPainterUnits;
+      const double widthMeters = widthMm / 1000.0;
+      const double distanceRange = QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, mDistanceUnit ) * widthMeters * mDistanceScale;
+      mPlot->setXMaximum( distanceRange );
+    }
+
+    if ( mElevationScale > 0 )
+    {
+      const double heightMm = currentPlotArea.height() / mmToPainterUnits;
+      const double heightMeters = heightMm / 1000.0;
+      const double elevationRange = heightMeters * mElevationScale;
+      mPlot->setYMaximum( mPlot->yMinimum() + elevationRange );
+    }
+  }
+}
+
+double QgsLayoutItemElevationProfile::elevationScale() const
+{
+  return mElevationScale;
+}
+
+void QgsLayoutItemElevationProfile::setElevationScale( double scale )
+{
+  mElevationScale = scale;
+}
+
+double QgsLayoutItemElevationProfile::distanceScale() const
+{
+  return mDistanceScale;
+}
+
+void QgsLayoutItemElevationProfile::setDistanceScale( double scale )
+{
+  mDistanceScale = scale;
+}
+
+Qgis::ElevationProfileRangeMethod QgsLayoutItemElevationProfile::rangeMethod() const
+{
+  return mRangeMethod;
+}
+
+void QgsLayoutItemElevationProfile::setRangeMethod( Qgis::ElevationProfileRangeMethod method )
+{
+  mRangeMethod = method;
 }

@@ -29,6 +29,7 @@
 #include "qgsruntimeprofiler.h"
 
 #include <QCollator>
+#include <QMatrix3x3>
 #include <QString>
 
 using namespace Qt::StringLiterals;
@@ -354,4 +355,37 @@ void QgsEllipsoidUtils::invalidateCache( bool disableCache )
     sEllipsoidCache()->clear();
     sDefinitionCache()->clear();
   }
+}
+
+QQuaternion QgsEllipsoidUtils::quaternionFromNormalUpRight( const QVector3D &normalUp, const QVector3D &normalRight )
+{
+  const QVector3D right = normalRight.normalized();
+  const QVector3D up = normalUp.normalized();
+  // In a right-handed coordinate system with X=right, Z=up:
+  // Y = cross(up, right) = forward (pointing North for ENU)
+  const QVector3D forward = QVector3D::crossProduct( up, right ).normalized();
+
+  // Build rotation matrix with columns [right, forward, up]
+  // QGenericMatrix constructor takes row-major input
+  const float matData[9] = { right.x(), forward.x(), up.x(), right.y(), forward.y(), up.y(), right.z(), forward.z(), up.z() };
+  const QMatrix3x3 rotMatrix( matData );
+  return QQuaternion::fromRotationMatrix( rotMatrix );
+}
+
+QQuaternion QgsEllipsoidUtils::ellipsoidEastNorthUpRotation( const QgsVector3D &position, double semiMajorAxis, double semiMinorAxis )
+{
+  QgsVector3D up( position.x() / ( semiMajorAxis * semiMajorAxis ), position.y() / ( semiMajorAxis * semiMajorAxis ), position.z() / ( semiMinorAxis * semiMinorAxis ) );
+  up.normalize();
+
+  QgsVector3D east( -position.y(), position.x(), 0.0 );
+  if ( east.length() < 1e-6 )
+  {
+    east = QgsVector3D( 1.0, 0.0, 0.0 );
+  }
+  else
+  {
+    east.normalize();
+  }
+
+  return quaternionFromNormalUpRight( up.toVector3D(), east.toVector3D() );
 }

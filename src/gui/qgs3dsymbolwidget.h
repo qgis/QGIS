@@ -71,12 +71,15 @@ class GUI_EXPORT Qgs3DSymbolWidget : public QgsPanelWidget
      */
     virtual Qgis::MaterialRenderingTechnique renderingTechnique() const = 0;
 
-  signals:
-
     /**
-     * Emitted when the symbol is changed.
+     * Sets the widget \a mode, which controls whether the compact or full
+     * set of material settings controls are shown.
+     *
+     * \since QGIS 4.4
      */
-    void changed();
+    virtual void setMode( Qgis::MaterialWidgetMode mode ) = 0;
+
+  signals:
 
     /**
      * Emitted when the rendering technique associated with the symbol is changed.

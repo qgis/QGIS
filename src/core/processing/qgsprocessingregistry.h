@@ -26,6 +26,7 @@
 
 class QgsProcessingParameterType;
 class QgsProcessingAlgorithmConfigurationWidgetFactory;
+class QgsProcessingDefaultStyleRegistry;
 
 /**
  * \class QgsProcessingAlgorithmInformation
@@ -208,6 +209,14 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
     QList<QgsProcessingParameterType *> parameterTypes() const;
 
+    /**
+     * Returns the default style registry, responsible for styling layers generated
+     * by Processing tools.
+     *
+     * \since QGIS 4.4
+     */
+    QgsProcessingDefaultStyleRegistry* defaultStyleRegistry() const;
+
   signals:
 
     //! Emitted when a provider has been added to the registry.
@@ -242,6 +251,8 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QMap< QString, QString > mAlgorithmAliases;
 
     mutable QMap< QString, QgsProcessingAlgorithmInformation > mCachedInformation;
+
+    QgsProcessingDefaultStyleRegistry* mDefaultStyleRegistry = nullptr;
 
 #ifdef SIP_RUN
     QgsProcessingRegistry( const QgsProcessingRegistry &other );

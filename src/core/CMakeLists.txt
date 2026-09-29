@@ -285,8 +285,10 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingalgrunnertask.cpp
   processing/qgsprocessingbatch.cpp
   processing/qgsprocessingcontext.cpp
+  processing/qgsprocessingdefaultstyleregistry.cpp
   processing/qgsprocessingfeedback.cpp
   processing/qgsprocessingoutputs.cpp
+  processing/qgsprocessingmodelprovider.cpp
   processing/qgsprocessingparameteraggregate.cpp
   processing/qgsprocessingparameterdxflayers.cpp
   processing/qgsprocessingparameterfieldmap.cpp
@@ -298,6 +300,7 @@ set(QGIS_CORE_SRCS
   processing/qgsprocessingparameterreliefcolors.cpp
   processing/qgsprocessingparametertininputlayers.cpp
   processing/qgsprocessingparametertype.cpp
+  processing/qgsprocessingparametertileextentmaxzoomlist.cpp
   processing/qgsprocessingparametervectortilewriterlayers.cpp
   processing/qgsprocessingparameteralignrasterlayers.cpp
   processing/qgsprocessingprojectmodelprovider.cpp
@@ -517,6 +520,7 @@ set(QGIS_CORE_SRCS
   qgsgeometryoptions.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
+  qgsgpkgtiles.cpp
   qgsgroupedfeaturefilterprovider.cpp
   qgsgrouplayer.cpp
   qgsgrouplayerrenderer.cpp
@@ -883,6 +887,7 @@ set(QGIS_CORE_SRCS
   mesh/qgsmeshspatialindex.cpp
   mesh/qgsmeshtimesettings.cpp
   mesh/qgsmeshtracerenderer.cpp
+  mesh/qgsmeshvectorfieldvaluesource.cpp
   mesh/qgsmeshvectorrenderer.cpp
   mesh/qgstriangularmesh.cpp
   mesh/qgsmeshcalcnode.cpp
@@ -1058,8 +1063,11 @@ set(QGIS_CORE_SRCS
   vectorfield/qgsvectorfieldarrowsettings.cpp
   vectorfield/qgsvectorfieldengine.cpp
   vectorfield/qgsvectorfieldsettings.cpp
+  vectorfield/qgsvectorfieldstreamfield.cpp
   vectorfield/qgsvectorfieldstreamlinesettings.cpp
+  vectorfield/qgsvectorfieldtraceanimationgenerator.cpp
   vectorfield/qgsvectorfieldtracessettings.cpp
+  vectorfield/qgsvectorfieldvaluesource.cpp
   vectorfield/qgsvectorfieldwindbarbsettings.cpp
 
   vectortile/qgsarcgisvectortileservicedataprovider.cpp
@@ -1269,6 +1277,7 @@ set(QGIS_CORE_HDRS
   qgsgeometryoptions.h
   qgsgeometrysimplifier.h
   qgsgeometryvalidator.h
+  qgsgpkgtiles.h
   qgsgml.h
   qgsgmlschema.h
   qgsgroupedfeaturefilterprovider.h
@@ -1786,6 +1795,7 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshspatialindex.h
   mesh/qgsmeshtimesettings.h
   mesh/qgsmeshtracerenderer.h
+  mesh/qgsmeshvectorfieldvaluesource.h
   mesh/qgsmeshvectorrenderer.h
   mesh/qgstriangularmesh.h
   mesh/qgsmeshcalcnode.h
@@ -1928,8 +1938,10 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingbatch.h
   processing/qgsprocessingcontext.h
+  processing/qgsprocessingdefaultstyleregistry.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingoutputs.h
+  processing/qgsprocessingmodelprovider.h
   processing/qgsprocessingparameteraggregate.h
   processing/qgsprocessingparameterdxflayers.h
   processing/qgsprocessingparameterfieldmap.h
@@ -1939,6 +1951,7 @@ set(QGIS_CORE_HDRS
   processing/qgsprocessingparametermeshdataset.h
   processing/qgsprocessingparameterreliefcolors.h
   processing/qgsprocessingparameters.h
+  processing/qgsprocessingparametertileextentmaxzoomlist.h
   processing/qgsprocessingparametertininputlayers.h
   processing/qgsprocessingparametertype.h
   processing/qgsprocessingparametertypeimpl.h
@@ -2250,8 +2263,11 @@ set(QGIS_CORE_HDRS
   vectorfield/qgsvectorfieldarrowsettings.h
   vectorfield/qgsvectorfieldengine.h
   vectorfield/qgsvectorfieldsettings.h
+  vectorfield/qgsvectorfieldstreamfield.h
   vectorfield/qgsvectorfieldstreamlinesettings.h
+  vectorfield/qgsvectorfieldtraceanimationgenerator.h
   vectorfield/qgsvectorfieldtracessettings.h
+  vectorfield/qgsvectorfieldvaluesource.h
   vectorfield/qgsvectorfieldwindbarbsettings.h
 
   vectortile/qgsarcgisvectortileservicedataprovider.h

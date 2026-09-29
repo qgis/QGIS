@@ -2409,7 +2409,7 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
       if ( dropUri.layerType == "vector"_L1 )
       {
         // open the source layer
-        srcLayer = dropUri.vectorLayer( owner, error );
+        srcLayer = dropUri.vectorLayer( owner, error, QgsProject::instance() );
       }
       else
       {

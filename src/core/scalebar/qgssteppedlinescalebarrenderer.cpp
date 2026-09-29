@@ -70,11 +70,7 @@ void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsS
   std::unique_ptr< QgsLineSymbol > sym( settings.lineSymbol()->clone() );
   sym->startRender( context );
 
-  const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), Qgis::RenderUnit::Millimeters );
-  const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), Qgis::RenderUnit::Millimeters );
-  const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
-  const double barTopPosition = scaledBoxContentSpace
-                                + ( settings.labelVerticalPlacement() == Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
+  const double barTopPosition = verticalOffset( context, settings );
   const double barBottomPosition = barTopPosition + context.convertToPainterUnits( settings.height(), Qgis::RenderUnit::Millimeters );
 
   painter->save();

@@ -27,6 +27,7 @@
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingrastersourceoptionswidget.h"
 #include "qgsprocessingwidgetwrapper.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
@@ -470,7 +471,7 @@ QgsMapLayer *QgsProcessingMapLayerComboBox::compatibleMapLayerFromMimeData( cons
   for ( const QgsMimeDataUtils::Uri &u : uriList )
   {
     // is this uri from the current project?
-    if ( QgsMapLayer *layer = u.mapLayer() )
+    if ( QgsMapLayer *layer = u.mapLayer( QgsProject::instance() ) )
     {
       if ( mCombo->mProxyModel->acceptsLayer( layer ) )
         return layer;
@@ -716,7 +717,7 @@ void QgsProcessingMapLayerComboBox::showSourceOptions()
 
     panel->openPanel( widget );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] {
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] {
       bool changed = false;
       changed = changed | ( widget->featureLimit() != mFeatureLimit );
       changed = changed | ( widget->filterExpression() != mFilterExpression );
@@ -748,7 +749,7 @@ void QgsProcessingMapLayerComboBox::showRasterSourceOptions()
 
     panel->openPanel( widget );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] {
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] {
       bool changed = false;
       changed = changed | ( widget->referenceScale() != mRasterReferenceScale );
       changed = changed | ( widget->dpi() != mRasterDpi );

@@ -618,8 +618,10 @@
 %Include auto_generated/processing/qgsprocessingalgrunnertask.sip
 %Include auto_generated/processing/qgsprocessingbatch.sip
 %Include auto_generated/processing/qgsprocessingcontext.sip
+%Include auto_generated/processing/qgsprocessingdefaultstyleregistry.sip
 %Include auto_generated/processing/qgsprocessingfeedback.sip
 %Include auto_generated/processing/qgsprocessingoutputs.sip
+%Include auto_generated/processing/qgsprocessingmodelprovider.sip
 %Include auto_generated/processing/qgsprocessingparameteraggregate.sip
 %Include auto_generated/processing/qgsprocessingparameterdxflayers.sip
 %Include auto_generated/processing/qgsprocessingparameterfieldmap.sip
@@ -629,6 +631,7 @@
 %Include auto_generated/processing/qgsprocessingparametermeshdataset.sip
 %Include auto_generated/processing/qgsprocessingparameterreliefcolors.sip
 %Include auto_generated/processing/qgsprocessingparameters.sip
+%Include auto_generated/processing/qgsprocessingparametertileextentmaxzoomlist.sip
 %Include auto_generated/processing/qgsprocessingparametertininputlayers.sip
 %Include auto_generated/processing/qgsprocessingparametertype.sip
 %Include auto_generated/processing/qgsprocessingparametervectortilewriterlayers.sip
@@ -866,6 +869,7 @@
 %Include auto_generated/vectorfield/qgsvectorfieldarrowsettings.sip
 %Include auto_generated/vectorfield/qgsvectorfieldsettings.sip
 %Include auto_generated/vectorfield/qgsvectorfieldstreamlinesettings.sip
+%Include auto_generated/vectorfield/qgsvectorfieldtraceanimationgenerator.sip
 %Include auto_generated/vectorfield/qgsvectorfieldtracessettings.sip
 %Include auto_generated/vectorfield/qgsvectorfieldwindbarbsettings.sip
 %Include auto_generated/vectortile/qgsmapboxglstyleconverter.sip

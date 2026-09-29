@@ -347,7 +347,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   connect( viewCategories->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsCategorizedSymbolRendererWidget::selectionChanged );
 
   connect( mModel, &QgsCategorizedSymbolRendererModel::rowsMoved, this, &QgsCategorizedSymbolRendererWidget::rowsMoved );
-  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::changed );
 
   connect( mExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsCategorizedSymbolRendererWidget::categoryColumnChanged );
 
@@ -476,7 +476,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
   {
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( newSymbol ), mStyle, mLayer, panel );
     widget->setContext( mContext );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
     openPanel( widget );
   }
   else
@@ -500,7 +500,7 @@ void QgsCategorizedSymbolRendererWidget::populateCategories()
 void QgsCategorizedSymbolRendererWidget::categoryColumnChanged( const QString &field )
 {
   mRenderer->setClassAttribute( field );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorizedSymbolRendererWidget::categoriesDoubleClicked( const QModelIndex &idx )
@@ -530,7 +530,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( symbol ), mStyle, mLayer, panel );
     widget->setContext( mContext );
     widget->setPanelTitle( category.label() );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget] { updateSymbolsFromWidget( widget ); } );
     openPanel( widget );
   }
   else
@@ -681,7 +681,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   mRenderer = std::move( r );
   if ( !keepExistingColors && ramp )
     applyColorRamp();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorizedSymbolRendererWidget::applyColorRamp()
@@ -721,13 +721,13 @@ void QgsCategorizedSymbolRendererWidget::deleteCategories()
 {
   const QList<int> categoryIndexes = selectedCategories();
   mModel->deleteRows( categoryIndexes );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorizedSymbolRendererWidget::deleteAllCategories()
 {
   mModel->removeAllRows();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
@@ -755,7 +755,7 @@ void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
     }
   }
   mModel->deleteRows( unusedIndexes );
-  emit widgetChanged();
+  emit changed();
 }
 
 QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( const QString &attrName )
@@ -776,7 +776,7 @@ void QgsCategorizedSymbolRendererWidget::addCategory()
   std::unique_ptr<QgsSymbol> symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
   const QgsRendererCategory cat( QVariant(), symbol.release(), QString(), true );
   mModel->addCategory( cat );
-  emit widgetChanged();
+  emit changed();
 }
 
 QList<QgsSymbol *> QgsCategorizedSymbolRendererWidget::selectedSymbols()
@@ -824,7 +824,7 @@ QgsCategoryList QgsCategorizedSymbolRendererWidget::selectedCategoryList()
 void QgsCategorizedSymbolRendererWidget::refreshSymbolView()
 {
   populateCategories();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorizedSymbolRendererWidget::showSymbolLevels()
@@ -911,7 +911,7 @@ void QgsCategorizedSymbolRendererWidget::setSymbolLevels( const QgsLegendSymbolL
   }
   mRenderer->setUsingSymbolLevels( enabled );
   mModel->updateSymbology();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorizedSymbolRendererWidget::pasteSymbolToSelection()
@@ -936,7 +936,7 @@ void QgsCategorizedSymbolRendererWidget::pasteSymbolToSelection()
       }
       mRenderer->updateCategorySymbol( idx, newCatSymbol.release() );
     }
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -985,7 +985,7 @@ void QgsCategorizedSymbolRendererWidget::applyChangeToSymbol()
   }
 
   mModel->updateSymbology();
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorizedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
@@ -1046,9 +1046,9 @@ void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
-    connect( panel, &QgsPanelWidget::widgetChanged, this, [this, panel] {
+    connect( panel, &QgsPanelWidget::changed, this, [this, panel] {
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
-      emit widgetChanged();
+      emit changed();
     } );
     openPanel( panel ); // takes ownership of the panel
   }
@@ -1102,7 +1102,7 @@ void QgsCategorizedSymbolRendererWidget::mergeSelectedCategories()
   categoryIndexes.pop_front();
   mModel->deleteRows( categoryIndexes );
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorizedSymbolRendererWidget::unmergeSelectedCategories()
@@ -1127,7 +1127,7 @@ void QgsCategorizedSymbolRendererWidget::unmergeSelectedCategories()
     mRenderer->updateCategoryLabel( i, list.at( 0 ).toString() );
   }
 
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsCategorizedSymbolRendererWidget::showContextMenu( QPoint )

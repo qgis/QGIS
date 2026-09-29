@@ -45,6 +45,7 @@ class QgsMessageBar;
 class QgsBrowserGuiModel;
 class QgsModelGraphicsScene;
 class QgsModelDesignerDialog;
+class QgsAbstractProcessingParameterWidgetWrapper;
 
 /**
  * \class QgsProcessingContextGenerator
@@ -101,6 +102,37 @@ class GUI_EXPORT QgsProcessingParametersGenerator
     virtual QVariantMap createProcessingParameters( QgsProcessingParametersGenerator::Flags flags = QgsProcessingParametersGenerator::Flags() ) = 0;
 
     virtual ~QgsProcessingParametersGenerator() = default;
+
+    /**
+     * Results of validating a parameter.
+     *
+     * \since QGIS 4.4
+     */
+    enum class ValidationResult
+    {
+      Valid,                  //!< Parameter value is valid
+      InvalidOutputExtension, //!< Output parameter extension is invalid
+      InvalidValue,           //!< Generic result for invalid parameter values
+    };
+
+    /**
+     * Encapsulates the result of validating parameters shown in the generator.
+     *
+     * \ingroup gui
+     * \since QGIS 4.4
+     */
+    class ParameterValidationResult
+    {
+      public:
+        //! Associated parameter name
+        QString parameterName;
+
+        //! Validation result
+        QgsProcessingParametersGenerator::ValidationResult result = QgsProcessingParametersGenerator::ValidationResult::Valid;
+
+        //! Validation message
+        QString message;
+    };
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParametersGenerator::Flags )
@@ -188,7 +220,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      *
      * \see createWrappedLabel()
      */
-    QWidget *createWrappedWidget( QgsProcessingContext &context ) SIP_FACTORY;
+    QWidget *createWrappedWidget( QgsProcessingContext &context ) SIP_TRANSFERBACK;
 
     /**
      * Creates and returns a new label to accompany widgets created by the wrapper.
@@ -450,7 +482,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      */
     virtual QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
       QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
-    ) SIP_FACTORY;
+    ) SIP_TRANSFERBACK;
 
   protected:
     /**

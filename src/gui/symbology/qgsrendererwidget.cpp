@@ -320,7 +320,7 @@ void QgsRendererWidget::updateDataDefinedProperty()
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   const QgsFeatureRenderer::Property key = static_cast<QgsFeatureRenderer::Property>( button->propertyKey() );
   renderer()->setDataDefinedProperty( key, button->toProperty() );
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
@@ -330,7 +330,7 @@ void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
   {
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r->legendSymbolItems(), r->usingSymbolLevels(), panel );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() { setSymbolLevels( widget->symbolLevels(), widget->usingLevels() ); } );
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget]() { setSymbolLevels( widget->symbolLevels(), widget->usingLevels() ); } );
     panel->openPanel( widget );
   }
   else
@@ -384,7 +384,7 @@ QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWi
   }
 
   QgsDataDefinedSizeLegendWidget *panel = new QgsDataDefinedSizeLegendWidget( ddsLegend, ddSize, symbol->clone(), mContext.mapCanvas() );
-  connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( panel, &QgsPanelWidget::changed, this, &QgsPanelWidget::changed );
   return panel;
 }
 
