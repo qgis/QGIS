@@ -229,7 +229,7 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
   }
   else if ( project )
   {
-    setCoordinateAxisOrder( qgsEnumKeyToValue( QgsProject::instance()->readEntry( u"PositionPrecision"_s, u"/CoordinateOrder"_s ), Qgis::CoordinateOrder::Default ) ); // skip-keyword-check
+    setCoordinateAxisOrder( qgsEnumKeyToValue( project->readEntry( u"PositionPrecision"_s, u"/CoordinateOrder"_s ), Qgis::CoordinateOrder::Default ) ); // skip-keyword-check
   }
 
   return true;
