@@ -118,9 +118,16 @@ QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int
 
 QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap &config, const QgsFeature &formFeature, const QgsFeature &parentFormFeature )
 {
+  return createCache( config, QgsProject::instance(), formFeature, parentFormFeature ); // skip-keyword-check
+}
+
+QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache(
+  const QVariantMap &config, const QgsProject *project, const QgsFeature &formFeature, const QgsFeature &parentFormFeature
+)
+{
   ValueRelationCache cache;
 
-  const QgsVectorLayer *layer = resolveLayer( config, QgsProject::instance() ); // skip-keyword-check
+  const QgsVectorLayer *layer = resolveLayer( config, project );
 
   if ( !layer )
     return cache;
