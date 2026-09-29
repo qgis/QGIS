@@ -1521,7 +1521,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           connect( setCommentAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, comment, context] {
             bool ok = false;
 
-            const QString newComment = QInputDialog::getMultiLineText( QgisApp::instance(), tr( "Set Comment For %1" ).arg( itemName ), tr( "Comment" ), comment, &ok );
+            const QString newComment = QgsDialog::getMultiLineText( QgisApp::instance(), tr( "Set Comment For %1" ).arg( itemName ), tr( "Comment" ), comment, &ok );
             if ( ok && comment != newComment )
             {
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
@@ -2253,6 +2253,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         else
           fullName = u"%1.%2"_s.arg( schemaName, tableName );
 
+        bool ok = false;
+
         if ( conn2 )
         {
           QString comment;
@@ -2267,10 +2269,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             errCause = ex.what();
           }
 
-          bool ok = false;
-
           if ( errCause.isEmpty() )
-            newComment = QInputDialog::getMultiLineText( QgisApp::instance(), tr( "Table Comment" ), tr( "Comment" ), comment, &ok );
+            newComment = QgsDialog::getMultiLineText( QgisApp::instance(), tr( "Table Comment" ), tr( "Comment" ), comment, &ok );
 
           if ( ok && comment != newComment )
           {
@@ -2295,7 +2295,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           notify( tr( "Cannot edit comment on %1" ).arg( fullName ), errCause, context, Qgis::MessageLevel::Critical );
           return;
         }
-        else if ( context.messageBar() )
+        else if ( ok && context.messageBar() )
         {
           if ( item->parent() )
             item->parent()->refresh();
