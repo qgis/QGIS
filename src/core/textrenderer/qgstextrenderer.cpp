@@ -578,9 +578,9 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   Qgis::TextOrientation orientation = format.orientation();
   if ( format.orientation() == Qgis::TextOrientation::RotationBased )
   {
-    constexpr double DEGREES_315_TO_RADIANS = 315 * ( M_PI / 180 ) ;
-    constexpr double DEGREES_90_TO_RADIANS = 90 * ( M_PI / 180 ) ;
-    constexpr double DEGREES_45_TO_RADIANS = 45 * ( M_PI / 180 ) ;
+    constexpr double DEGREES_315_TO_RADIANS = 315 * ( M_PI / 180 );
+    constexpr double DEGREES_90_TO_RADIANS = 90 * ( M_PI / 180 );
+    constexpr double DEGREES_45_TO_RADIANS = 45 * ( M_PI / 180 );
     if ( component.rotationRadians >= -DEGREES_315_TO_RADIANS && component.rotationRadians < -DEGREES_90_TO_RADIANS )
     {
       orientation = Qgis::TextOrientation::Vertical;
