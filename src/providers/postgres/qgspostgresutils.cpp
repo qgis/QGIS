@@ -838,3 +838,28 @@ QStringList QgsPostgresUtils::projectNamesInSchema( QgsPostgresConn *conn, const
 
   return projects;
 }
+
+QList<QgsPostgresRasterOverviewLayerProperty> QgsPostgresUtils::rasterOverviews( QgsPostgresConn *conn, const QString &schema, const QString &table )
+{
+  if ( !tableExists( conn, QString(), u"raster_overviews"_s ) )
+    return {};
+
+  const QString sql = u"SELECT o_table_schema, o_table_name, o_raster_column, overview_factor, r_raster_column FROM raster_overviews WHERE r_table_schema = %1 AND r_table_name = %2"_s
+                        .arg( QgsPostgresConn::quotedValue( schema ), QgsPostgresConn::quotedValue( table ) );
+  QgsPostgresResult res( conn->LoggedPQexec( u"rasterOverviews"_s, sql ) );
+  if ( res.PQresultStatus() != PGRES_TUPLES_OK )
+    return {};
+
+  QList<QgsPostgresRasterOverviewLayerProperty> overviews;
+  for ( int i = 0; i < res.PQntuples(); i++ )
+  {
+    QgsPostgresRasterOverviewLayerProperty overview;
+    overview.schemaName = res.PQgetvalue( i, 0 );
+    overview.tableName = res.PQgetvalue( i, 1 );
+    overview.rasterColumn = res.PQgetvalue( i, 2 );
+    overview.overviewFactor = res.PQgetvalue( i, 3 );
+    overview.refRasterColumn = res.PQgetvalue( i, 4 );
+    overviews.append( overview );
+  }
+  return overviews;
+}

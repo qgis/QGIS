@@ -76,6 +76,9 @@ struct QgsPostgresRasterOverviewLayerProperty
 {
     QString schemaName;
     QString tableName;
+    QString rasterColumn;
+    QString overviewFactor;
+    QString refRasterColumn;
 };
 
 //! Layer Property structure
