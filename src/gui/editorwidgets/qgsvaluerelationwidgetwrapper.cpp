@@ -627,17 +627,17 @@ void QgsValueRelationWidgetWrapper::populate()
     {
       if ( context().parentFormFeature().isValid() )
       {
-        mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature(), context().parentFormFeature() );
+        mCache = QgsValueRelationFieldFormatter::createCache( config(), QgsProject::instance(), formFeature(), context().parentFormFeature() );
       }
       else
       {
-        mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature() );
+        mCache = QgsValueRelationFieldFormatter::createCache( config(), QgsProject::instance(), formFeature() );
       }
     }
   }
   else if ( mCache.isEmpty() )
   {
-    mCache = QgsValueRelationFieldFormatter::createCache( config() );
+    mCache = QgsValueRelationFieldFormatter::createCache( config(), QgsProject::instance() );
   }
 
   if ( mComboBox )
