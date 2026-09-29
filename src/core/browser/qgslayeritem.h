@@ -119,10 +119,10 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     virtual QString comments() const { return QString(); }
 
     /**
-     * Returns the layer item capabilities
+     * Returns the layer item cpabilities
      * \since QGIS 4.40
      */
-    virtual Qgis::LayerItemCapabilities capabilities() const { return Qgis::LayerItemCapability::AddComments; }
+    virtual Qgis::LayerItemCapabilities layerCapabilities() const { return Qgis::LayerItemCapability::AddComments; }
 
     /**
      * Returns the string representation of the given \a layerType
