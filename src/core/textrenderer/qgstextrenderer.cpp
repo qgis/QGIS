@@ -578,11 +578,14 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   Qgis::TextOrientation orientation = format.orientation();
   if ( format.orientation() == Qgis::TextOrientation::RotationBased )
   {
-    if ( component.rotation >= -315 && component.rotation < -90 )
+    constexpr double DEGREES_315_TO_RADIANS = 315 / 180 * M_PI;
+    constexpr double DEGREES_90_TO_RADIANS = 90 / 180 * M_PI;
+    constexpr double DEGREES_45_TO_RADIANS = 45 / 180 * M_PI;
+    if ( component.rotationRadians >= -DEGREES_315_TO_RADIANS && component.rotationRadians < -DEGREES_90_TO_RADIANS )
     {
       orientation = Qgis::TextOrientation::Vertical;
     }
-    else if ( component.rotation >= -90 && component.rotation < -45 )
+    else if ( component.rotationRadians >= -DEGREES_90_TO_RADIANS && component.rotationRadians < -DEGREES_45_TO_RADIANS )
     {
       orientation = Qgis::TextOrientation::Vertical;
     }
@@ -1022,16 +1025,16 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
   // shared calculations between shapes and SVG
 
   // configure angles, set component rotation and rotationOffset
-  const double originAdjustRotationRadians = -component.rotation;
+  const double originAdjustRotationRadians = -component.rotationRadians;
   if ( background.rotationType() != QgsTextBackgroundSettings::RotationFixed )
   {
-    component.rotation = -( component.rotation * 180 / M_PI ); // RotationSync
-    component.rotationOffset = background.rotationType() == QgsTextBackgroundSettings::RotationOffset ? background.rotation() : 0.0;
+    component.rotationRadians = -( component.rotationRadians ); // RotationSync
+    component.rotationOffsetRadians = background.rotationType() == QgsTextBackgroundSettings::RotationOffset ? ( background.rotation() * M_PI / 180 ) : 0.0;
   }
   else // RotationFixed
   {
-    component.rotation = 0.0; // don't use label's rotation
-    component.rotationOffset = background.rotation();
+    component.rotationRadians = 0.0; // don't use label's rotation
+    component.rotationOffsetRadians = background.rotation() * M_PI / 180;
   }
 
   const double scaleFactor = calculateScaleFactorForFormat( context, format );
@@ -1208,11 +1211,11 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
           context.setPainterFlagsUsingContext( p );
 
           p->translate( component.center.x(), component.center.y() );
-          p->rotate( component.rotation );
+          p->rotate( component.rotationRadians * 180 / M_PI );
           double xoff = context.convertToPainterUnits( background.offset().x(), background.offsetUnit(), background.offsetMapUnitScale() );
           double yoff = context.convertToPainterUnits( background.offset().y(), background.offsetUnit(), background.offsetMapUnitScale() );
           p->translate( QPointF( xoff, yoff ) );
-          p->rotate( component.rotationOffset );
+          p->rotate( component.rotationOffsetRadians * 180 / M_PI );
           p->translate( -sizeOut / 2, sizeOut / 2 );
 
           drawShadow( context, component, format );
@@ -1240,11 +1243,11 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
         p->setCompositionMode( background.blendMode() );
       }
       p->translate( component.center.x(), component.center.y() );
-      p->rotate( component.rotation );
+      p->rotate( component.rotationRadians * 180 / M_PI );
       double xoff = context.convertToPainterUnits( background.offset().x(), background.offsetUnit(), background.offsetMapUnitScale() );
       double yoff = context.convertToPainterUnits( background.offset().y(), background.offsetUnit(), background.offsetMapUnitScale() );
       p->translate( QPointF( xoff, yoff ) );
-      p->rotate( component.rotationOffset );
+      p->rotate( component.rotationOffsetRadians * 180 / M_PI );
 
       const QgsFeature f = context.expressionContext().feature();
       renderedSymbol->startRender( context, context.expressionContext().fields() );
@@ -1307,11 +1310,11 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
       context.setPainterFlagsUsingContext( p );
 
       p->translate( QPointF( component.center.x(), component.center.y() ) );
-      p->rotate( component.rotation );
+      p->rotate( component.rotationRadians * 180 / M_PI );
       double xoff = context.convertToPainterUnits( background.offset().x(), background.offsetUnit(), background.offsetMapUnitScale() );
       double yoff = context.convertToPainterUnits( background.offset().y(), background.offsetUnit(), background.offsetMapUnitScale() );
       p->translate( QPointF( xoff, yoff ) );
-      p->rotate( component.rotationOffset );
+      p->rotate( component.rotationOffsetRadians * 180 / M_PI );
 
       QPainterPath path;
 
@@ -1470,7 +1473,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
 
     // it's 0-->cw-->360 for labels
     //QgsDebugMsgLevel( u"Shadow aggregated label rotation (degrees): %1"_s.arg( component.rotation() + component.rotationOffset() ), 4 );
-    angleRad -= ( component.rotation * M_PI / 180 + component.rotationOffset * M_PI / 180 );
+    angleRad -= ( component.rotationRadians + component.rotationOffsetRadians );
   }
 
   QPointF transPt( -offsetDist * std::cos( angleRad + M_PI_2 ), -offsetDist * std::sin( angleRad + M_PI_2 ) );
@@ -2135,8 +2138,8 @@ void QgsTextRenderer::drawTextInternalHorizontal(
       subComponent.blockIndex = blockIndex;
       subComponent.size = QSizeF( thisBlockMetrics.width, blockHeight );
       subComponent.offset = QPointF( 0.0, -metrics.ascentOffset() );
-      subComponent.rotation = -component.rotation * 180 / M_PI;
-      subComponent.rotationOffset = 0.0;
+      subComponent.rotationRadians = -component.rotationRadians;
+      subComponent.rotationOffsetRadians = 0.0;
       subComponent.extraWordSpacing = thisBlockMetrics.extraWordSpace * fontScale;
       subComponent.extraLetterSpacing = thisBlockMetrics.extraLetterSpace * fontScale;
       if ( deferredBlock )
@@ -2580,8 +2583,8 @@ void QgsTextRenderer::drawTextInternalVertical(
       subComponent.firstFragmentIndex = fragmentIndex;
       subComponent.size = QSizeF( blockMaximumCharacterWidth, labelHeight + fragmentMetrics.descent() / fontScale );
       subComponent.offset = QPointF( 0.0, currentBlockYOffset );
-      subComponent.rotation = -component.rotation * 180 / M_PI;
-      subComponent.rotationOffset = 0.0;
+      subComponent.rotationRadians = -component.rotationRadians;
+      subComponent.rotationOffsetRadians = 0.0;
 
       // draw the mask below the text (for preview)
       if ( format.mask().enabled() )
