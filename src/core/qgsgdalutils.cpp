@@ -477,30 +477,70 @@ QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALR
 QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
 {
   QString message;
+
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   if ( myGdalDriver )
   {
     // first report details and help page
     CSLConstList GDALmetadata = GDALGetMetadata( myGdalDriver, nullptr );
-    message += "Format Details:\n"_L1;
-    message += u"  Extension: %1\n"_s.arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
-    message += u"  Short Name: %1"_s.arg( GDALGetDriverShortName( myGdalDriver ) );
-    message += u"  /  Long Name: %1\n"_s.arg( GDALGetDriverLongName( myGdalDriver ) );
+    message += "<h3>Format Details</h3>"_L1;
+    message += u"<b>Extension:</b> %1<br>"_s.arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
+    message += u"<b>Short Name:</b> %1 / <b>Long Name:</b> %2<br>"_s.arg( GDALGetDriverShortName( myGdalDriver ), GDALGetDriverLongName( myGdalDriver ) );
     const QString helpUrl = gdalDocumentationUrlForDriver( myGdalDriver );
     if ( !helpUrl.isEmpty() )
-      message += u"  Help page:  %1\n\n"_s.arg( helpUrl );
+    {
+      message += u"<b>Help page:</b> <a href=\"%1\">%1</a><br>"_s.arg( helpUrl );
+    }
 
     // next get creation options
-    // need to serialize xml to get newlines, should we make the basic xml prettier?
+    // serialize xml and convert it to html
     CPLXMLNode *psCOL = CPLParseXMLString( GDALGetMetadataItem( myGdalDriver, GDAL_DMD_CREATIONOPTIONLIST, "" ) );
     char *pszFormattedXML = CPLSerializeXMLTree( psCOL );
     if ( pszFormattedXML )
-      message += QString( pszFormattedXML );
+    {
+      QDomDocument doc;
+      if ( doc.setContent( QString( pszFormattedXML ) ) )
+      {
+        message += "<h3>Creation Options</h3>"_L1;
+        message += "<dl>"_L1;
+        QDomNodeList options = doc.elementsByTagName( u"Option"_s );
+        for ( int i = 0; i < options.count(); ++i )
+        {
+          QDomElement element = options.at( i ).toElement();
+
+          const QString optionName = element.attribute( u"name"_s );
+          const QString optionType = element.attribute( u"type"_s );
+          const QString optionDefault = element.attribute( u"default"_s );
+          const QString optionDescription = element.attribute( u"description"_s );
+          message += u"<dt><b>%1</b> (%2%3)</dt>"_s.arg( optionName.toHtmlEscaped(), optionType.toHtmlEscaped(), optionDefault.isEmpty() ? QString() : u", default: "_s + optionDefault.toHtmlEscaped() );
+
+          if ( !optionDescription.isEmpty() )
+          {
+            message += u"<dd>%1</dd>"_s.arg( optionDescription.toHtmlEscaped() );
+          }
+
+          // supported values for option
+          QDomNodeList nodes = element.elementsByTagName( u"Value"_s );
+          if ( !nodes.isEmpty() )
+          {
+            QStringList values;
+            for ( int j = 0; j < nodes.count(); ++j )
+            {
+              values << nodes.at( j ).toElement().text().toHtmlEscaped();
+            }
+            message += u"<dd><i>Possible values:</i> %1</dd>"_s.arg( values.join( ", "_L1 ) );
+          }
+        }
+
+        message += "</dl>"_L1;
+      }
+    }
     if ( psCOL )
       CPLDestroyXMLNode( psCOL );
     if ( pszFormattedXML )
       CPLFree( pszFormattedXML );
   }
+
   return message;
 }
 
