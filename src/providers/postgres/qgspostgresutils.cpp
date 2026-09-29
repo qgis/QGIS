@@ -423,6 +423,7 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
 
       int count = result.PQgetvalue( 0, 0 ).toInt();
 
+      QStringList overviewTables;
       if ( !geometryCol.isEmpty() && count > 1 )
       {
         // the table has more geometry columns, drop just the geometry column
@@ -432,12 +433,36 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
       {
         // drop the table
         sql = u"SELECT DropGeometryTable(%1,%2)"_s.arg( QgsPostgresConn::quotedValue( schemaName ), QgsPostgresConn::quotedValue( tableName ) );
+
+        // if it is a raster, we also drop overviews referencing that raster
+        const QList<QgsPostgresRasterOverviewLayerProperty> overviews = rasterOverviews( conn, schemaName, tableName );
+        for ( const QgsPostgresRasterOverviewLayerProperty &overview : overviews )
+        {
+          overviewTables.append( u"%1.%2"_s.arg( QgsPostgresConn::quotedIdentifier( overview.schemaName ), QgsPostgresConn::quotedIdentifier( overview.tableName ) ) );
+        }
       }
 
+      conn->begin();
       result = conn->LoggedPQexec( "QgsPostgresUtils", sql );
-      if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+      bool ok = result.PQresultStatus() == PGRES_TUPLES_OK;
+      if ( ok && !overviewTables.isEmpty() )
+      {
+        const QString sqlOverviews = u"DROP TABLE %1"_s.arg( overviewTables.join( ", "_L1 ) );
+        result = conn->LoggedPQexec( "QgsPostgresUtils", sqlOverviews );
+        ok = result.PQresultStatus() == PGRES_COMMAND_OK;
+      }
+
+      if ( !ok )
       {
         errCause = QObject::tr( "Unable to delete layer %1: \n%2" ).arg( schemaTableName, result.PQresultErrorMessage() );
+        conn->rollback();
+        conn->unref();
+        return false;
+      }
+
+      if ( !conn->commit() )
+      {
+        errCause = QObject::tr( "Unable to delete layer %1: \n%2" ).arg( schemaTableName, conn->PQerrorMessage() );
         conn->unref();
         return false;
       }
