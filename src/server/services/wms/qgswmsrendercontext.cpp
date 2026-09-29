@@ -445,7 +445,7 @@ void QgsWmsRenderContext::initPerLayerTemporalRange( const QgsLayerTreeGroup *gr
           wmsLayerInfosInitialized = true;
         }
 
-        QgsWms::getChildrenRanges( group, wmsLayerInfos, mRestrictedLayers, childrenDateRanges );
+        QgsWms::getChildRanges( group, wmsLayerInfos, mRestrictedLayers, childrenDateRanges );
 
         defaultDateTime = it->defaultDisplayType == Qgis::WmsDimensionDefaultDisplay::MinValue ? QgsDateTimeRange::min( childrenDateRanges ) : QgsDateTimeRange::max( childrenDateRanges );
         break;

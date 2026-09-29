@@ -258,7 +258,7 @@ namespace QgsWms
     _collectAcceptableLayersAndRequestNames( acceptableLayersAndRequestNames, project, requestedLayerNames, project.layerTreeRoot() );
   }
 
-  void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, const QStringList &restrictedLayers, QList<QgsDateTimeRange> &dateRanges )
+  void getChildRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, const QStringList &restrictedLayers, QList<QgsDateTimeRange> &dateRanges )
   {
     QList<QgsLayerTreeNode *> layerTreeGroupChildren = layerTreeGroup->children();
     for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
@@ -272,7 +272,7 @@ namespace QgsWms
              && treeGroupChild->hasWmsTimeDimension() )
         {
           QList<QgsDateTimeRange> childrenDateRanges;
-          getChildrenRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
+          getChildRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
           dateRanges.append( childrenDateRanges );
         }
       }

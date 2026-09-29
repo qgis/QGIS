@@ -664,9 +664,10 @@ template<typename T> class QgsTemporalRange
     }
 
     /**
-     * Returns \a ranges list minimum date/datetime.
-     * This methods doesn't consider empty range and returns an invalid date/datetime if at least one
-     * range has no valid begin.
+     * Returns the minimum date/datetime present in \a ranges list.
+     *
+     * This method does not consider empty ranges and will return an invalid date/datetime if at least one
+     * range has no valid beginning.
      *
      * \since QGIS 4.4
      */
@@ -692,8 +693,9 @@ template<typename T> class QgsTemporalRange
     }
 
     /**
-     * Returns \a ranges list maximum date/datetime.
-     * This methods doesn't consider empty range and returns an invalid date/datetime if at least one
+     * Returns the maximum date/datetime present in \a ranges list.
+     *
+     * This method does not consider empty ranges and will return an invalid date/datetime if at least one
      * range has no valid end.
      *
      * \since QGIS 4.4

@@ -82,10 +82,10 @@ namespace QgsWms
 
   /**
    * Update recursively \a dateRanges with all \a layerTreeGroup children date ranges.
-   * Don't return date range for layer not published in \a wmsLayerInfos or group which name appears in \a restrictedLayers
+   * Won't return a date range for layers not published in \a wmsLayerInfos or for groups which appear in \a restrictedLayers
    * \since QGIS 4.4
    */
-  void getChildrenRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, const QStringList &restrictedLayers, QList<QgsDateTimeRange> &dateRanges );
+  void getChildRanges( const QgsLayerTreeGroup *layerTreeGroup, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos, const QStringList &restrictedLayers, QList<QgsDateTimeRange> &dateRanges );
 
 } // namespace QgsWms
 
