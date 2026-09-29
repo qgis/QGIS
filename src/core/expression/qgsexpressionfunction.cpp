@@ -955,10 +955,10 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
 
   // get project from layer
   QgsProject *project = vl->project();
-  // TODO QGIS 5.0 -- if project is empty, drop the fallback to QgsProject.instance() instead return QVariant() and setEvalErrorString() like in case of missing vector layer above
   if ( !project )
   {
-    project = QgsProject::instance(); // skip-keyword-check
+    parent->setEvalErrorString( QObject::tr( "Cannot use relation aggregate function in this context" ) );
+    return QVariant();
   }
 
   // check relation exists
