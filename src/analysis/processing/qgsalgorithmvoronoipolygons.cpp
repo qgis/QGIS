@@ -200,7 +200,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
         engine->prepareGeometry();
         for ( const QgsFeatureId id : intersected )
         {
-          if ( engine->intersects( index.geometry( id ).constGet() ) )
+          if ( engine->intersects( index.geometry( id ).constGet(), nullptr, feedback ) )
           {
             f.setAttributes( attributeCache.value( id ) );
             break;

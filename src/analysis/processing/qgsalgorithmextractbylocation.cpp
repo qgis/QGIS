@@ -176,31 +176,31 @@ void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource(
         switch ( static_cast<Predicate>( predicate ) )
         {
           case Intersects:
-            isMatch = engine->intersects( testFeature.geometry().constGet() );
+            isMatch = engine->intersects( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Contains:
-            isMatch = engine->contains( testFeature.geometry().constGet() );
+            isMatch = engine->contains( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Disjoint:
-            if ( engine->intersects( testFeature.geometry().constGet() ) )
+            if ( engine->intersects( testFeature.geometry().constGet(), nullptr, feedback ) )
             {
               isDisjoint = false;
             }
             break;
           case IsEqual:
-            isMatch = engine->isEqual( testFeature.geometry().constGet() );
+            isMatch = engine->isEqual( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Touches:
-            isMatch = engine->touches( testFeature.geometry().constGet() );
+            isMatch = engine->touches( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Overlaps:
-            isMatch = engine->overlaps( testFeature.geometry().constGet() );
+            isMatch = engine->overlaps( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Within:
-            isMatch = engine->within( testFeature.geometry().constGet() );
+            isMatch = engine->within( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Crosses:
-            isMatch = engine->crosses( testFeature.geometry().constGet() );
+            isMatch = engine->crosses( testFeature.geometry().constGet(), nullptr, feedback );
             break;
         }
 
@@ -312,31 +312,31 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource(
         switch ( predicate )
         {
           case Intersects:
-            isMatch = engine->intersects( testFeature.geometry().constGet() );
+            isMatch = engine->intersects( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Contains:
-            isMatch = engine->contains( testFeature.geometry().constGet() );
+            isMatch = engine->contains( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Disjoint:
-            if ( engine->intersects( testFeature.geometry().constGet() ) )
+            if ( engine->intersects( testFeature.geometry().constGet(), nullptr, feedback ) )
             {
               disjointSet.remove( testFeature.id() );
             }
             break;
           case IsEqual:
-            isMatch = engine->isEqual( testFeature.geometry().constGet() );
+            isMatch = engine->isEqual( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Touches:
-            isMatch = engine->touches( testFeature.geometry().constGet() );
+            isMatch = engine->touches( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Overlaps:
-            isMatch = engine->overlaps( testFeature.geometry().constGet() );
+            isMatch = engine->overlaps( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Within:
-            isMatch = engine->within( testFeature.geometry().constGet() );
+            isMatch = engine->within( testFeature.geometry().constGet(), nullptr, feedback );
             break;
           case Crosses:
-            isMatch = engine->crosses( testFeature.geometry().constGet() );
+            isMatch = engine->crosses( testFeature.geometry().constGet(), nullptr, feedback );
             break;
         }
         if ( isMatch )

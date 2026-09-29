@@ -205,7 +205,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       }
       testedFeatureIds.insert( inputFeature.id() );
 
-      if ( !engine->intersects( inputFeature.geometry().constGet() ) )
+      if ( !engine->intersects( inputFeature.geometry().constGet(), nullptr, feedback ) )
         continue;
 
       QgsGeometry newGeometry;

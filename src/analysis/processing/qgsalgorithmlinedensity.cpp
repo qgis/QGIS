@@ -236,7 +236,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
         {
           const QgsGeometry lineGeom = mIndex.geometry( id );
 
-          if ( engine->intersects( lineGeom.constGet() ) )
+          if ( engine->intersects( lineGeom.constGet(), nullptr, feedback ) )
           {
             double analysisLineLength = 0;
             try

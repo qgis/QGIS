@@ -184,7 +184,7 @@ void QgsGeometryMissingVertexCheck::processPolygon(
       while ( vertexIterator.hasNext() )
       {
         const QgsPoint &pt = vertexIterator.next();
-        if ( geomEngine->intersects( &pt ) )
+        if ( geomEngine->intersects( &pt, nullptr, feedback ) )
         {
           QgsVertexId vertexId;
           QgsPoint closestVertex = QgsGeometryUtils::closestVertex( *polygon, pt, vertexId );
