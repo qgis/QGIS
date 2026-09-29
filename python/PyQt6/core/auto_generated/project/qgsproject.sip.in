@@ -2500,7 +2500,6 @@ uncommitted edits.
 .. versionadded:: 3.26
 %End
 
-
 };
 
 class QgsProjectDirtyBlocker

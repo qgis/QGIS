@@ -27,7 +27,6 @@
 #include "qgsattributeeditorcontainer.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsbookmarkmanager.h"
-#include "qgscolorschemeregistry.h"
 #include "qgscolorutils.h"
 #include "qgscombinedstylemodel.h"
 #include "qgsdatasourceuri.h"

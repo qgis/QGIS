@@ -69,7 +69,6 @@ class QgsLayerTreeGroup;
 class QgsLayerTreeRegistryBridge;
 class QgsMapLayer;
 class QgsPathResolver;
-class QgsColorSchemeRegistry;
 class QgsProjectBadLayerHandler;
 class QgsProjectStorage;
 class QgsTolerance;
@@ -2422,7 +2421,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.26
      */
     bool rollBack( QStringList &rollbackErrors SIP_OUT, bool stopEditing = true, QgsVectorLayer *vectorLayer = nullptr );
-
 
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
