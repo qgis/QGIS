@@ -489,7 +489,6 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem, 
   for ( int idx = 0; idx < result.PQntuples(); idx++ )
   {
     childObjects << result.PQgetvalue( idx, 0 );
-    const QgsPostgresSchemaProperty schema;
     if ( idx == maxListed - 1 )
       break;
   }
@@ -1274,7 +1273,7 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
     int projectsNotSaved = 0;
     QStringList unsavedProjects;
 
-    for ( const QPair<QString, QString> &projectWithName : projectsWithNames )
+    for ( const QPair<QString, QString> &projectWithName : std::as_const( projectsWithNames ) )
     {
       QgsPostgresProjectUri pgProjectUri;
       pgProjectUri.connInfo = QgsDataSourceUri( conn->uri() );

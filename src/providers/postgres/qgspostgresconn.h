@@ -69,6 +69,7 @@ struct QgsPostgresSchemaProperty
     QString name;
     QString description;
     QString owner;
+    bool hasProjectVersioning;
 };
 
 //! Raster overview table properties structure
