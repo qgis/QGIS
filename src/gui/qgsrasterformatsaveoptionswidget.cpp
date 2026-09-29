@@ -281,8 +281,7 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
   dlg->setWindowTitle( tr( "Create Options for %1" ).arg( mFormat ) );
   QTextEdit *textEdit = new QTextEdit( dlg );
   textEdit->setReadOnly( true );
-  // message = tr( "Create Options:\n\n%1" ).arg( message );
-  textEdit->setText( message );
+  textEdit->setHtml( message );
   dlg->layout()->addWidget( textEdit );
   dlg->resize( 600, 400 );
 #ifdef Q_OS_MAC
