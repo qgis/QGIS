@@ -1602,7 +1602,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     }
   }
 
-  writeText( layer, text, QgsPoint( lblX, lblY ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
+  writeText( layer, text, QgsPoint( lblX, lblY ), label->getHeight(), label->angleRadians() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
 }
 
 void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const QgsPoint &pt )
@@ -2594,7 +2594,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
                    .arg( tmpLyr.format().font().italic() ? 1 : 0 )
                    .arg( tmpLyr.format().font().bold() ? 1 : 0 )
                    .arg( label->getHeight() / ( 1 + txt.count( u"\\P"_s ) ) * 0.75 ) );
-    writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
+    writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->angleRadians() * 180.0 / M_PI, tmpLyr.format().color() );
   }
 }
 

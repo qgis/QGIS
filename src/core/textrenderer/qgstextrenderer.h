@@ -413,9 +413,9 @@ class CORE_EXPORT QgsTextRenderer
         //! Whether to translate the painter to supplied origin
         bool useOrigin = false;
         //! Any rotation to be applied to painter (in radians)
-        double rotation = 0.0;
+        double rotationRadians = 0.0;
         //! Any rotation to be applied to painter (in radians) after initial rotation
-        double rotationOffset = 0.0;
+        double rotationOffsetRadians = 0.0;
         //! Current center point of label component, after rotation
         QPointF center;
         //! Width and height of label component, transformed and ready for painting
@@ -526,7 +526,7 @@ class CORE_EXPORT QgsTextRenderer
       Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle
     );
 
-    static Qgis::TextOrientation calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const Component &component, double &rotation );
+    static Qgis::TextOrientation calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const Component &component, double &rotationDegrees );
 
     static void calculateExtraSpacingForLineJustification( double spaceToDistribute, const QgsTextBlock &block, double &extraWordSpace, double &extraLetterSpace );
     static void applyExtraSpacingForLineJustification( QFont &font, double extraWordSpace, double extraLetterSpace );
@@ -542,7 +542,7 @@ class CORE_EXPORT QgsTextRenderer
       double fontScale,
       Qgis::TextHorizontalAlignment hAlignment,
       Qgis::TextVerticalAlignment vAlignment,
-      double rotation
+      double rotationDegrees
     );
 
     static void drawTextInternalVertical(
@@ -556,7 +556,7 @@ class CORE_EXPORT QgsTextRenderer
       double fontScale,
       Qgis::TextHorizontalAlignment hAlignment,
       Qgis::TextVerticalAlignment vAlignment,
-      double rotation
+      double rotationDegrees
     );
 
     struct DeferredRenderFragment
@@ -616,7 +616,7 @@ class CORE_EXPORT QgsTextRenderer
       const QVector< QgsTextRenderer::BlockMetrics > &blockMetrics,
       Qgis::TextLayoutMode mode,
       double verticalAlignOffset,
-      double rotation
+      double rotationDegrees
     );
     static void renderDeferredBlocks(
       QgsRenderContext &context,
@@ -626,15 +626,17 @@ class CORE_EXPORT QgsTextRenderer
       bool usePathsForText,
       double fontScale,
       const Component &component,
-      double rotation
+      double rotationDegrees
     );
     static void renderDeferredBuffer(
-      QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation
+      QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotationDegrees
     );
     static void renderDeferredShadowForText(
-      QgsRenderContext &context, const QgsTextFormat &format, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation
+      QgsRenderContext &context, const QgsTextFormat &format, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotationDegrees
     );
-    static void renderDeferredText( QgsRenderContext &context, const std::vector<DeferredRenderBlock> &deferredBlocks, bool usePathsForText, double fontScale, const Component &component, double rotation );
+    static void renderDeferredText(
+      QgsRenderContext &context, const std::vector<DeferredRenderBlock> &deferredBlocks, bool usePathsForText, double fontScale, const Component &component, double rotationDegrees
+    );
 
     friend class QgsVectorLayerLabelProvider;
     friend class QgsLabelPreview;

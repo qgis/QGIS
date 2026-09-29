@@ -89,7 +89,7 @@ bool QgsLabelingResults::insertLabel(
   const QgsGeometry labelGeometry( std::make_unique< QgsPolygon >( new QgsLineString( cornerPointsX, cornerPointsY ) ) );
   auto newEntry = std::make_unique< QgsLabelPosition >(
     featureId,
-    -labelPos->getAlpha() * 180 / M_PI + mMapSettings.rotation(),
+    -labelPos->angleRadians() * 180 / M_PI + mMapSettings.rotation(),
     cornerPoints,
     bounds,
     labelPos->getWidth(),
