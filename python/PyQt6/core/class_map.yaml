@@ -1403,7 +1403,6 @@ QgsAttributeEditorContainer.visibilityExpression: src/core/editform/qgsattribute
 QgsAttributeEditorContainer: src/core/editform/qgsattributeeditorcontainer.h#L28
 QgsAttributeEditorElement.QgsAttributeEditorElement: src/core/editform/qgsattributeeditorelement.h#L73
 QgsAttributeEditorElement.clone: src/core/editform/qgsattributeeditorelement.h#L163
-QgsAttributeEditorElement.create: src/core/editform/qgsattributeeditorelement.h#L127
 QgsAttributeEditorElement.horizontalStretch: src/core/editform/qgsattributeeditorelement.h#L184
 QgsAttributeEditorElement.labelStyle: src/core/editform/qgsattributeeditorelement.h#L221
 QgsAttributeEditorElement.name: src/core/editform/qgsattributeeditorelement.h#L135
