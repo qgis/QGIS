@@ -10,6 +10,43 @@
 
 
 
+class QgsMapLayerStyleModel : QAbstractListModel
+{
+%Docstring(signature="appended")
+A model for display of styles from a
+:py:class:`QgsMapLayerStyleManager`.
+
+Also allows for renaming of styles.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerstylemanagerwidget.h"
+%End
+  public:
+    QgsMapLayerStyleModel( QgsMapLayerStyleManager *manager, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsMapLayerStyleModel, showing styles from the specified
+``manager``.
+%End
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+    QModelIndex indexForName( const QString &name ) const;
+%Docstring
+Returns the model index corresponding to the specified style name.
+%End
+
+};
+
 class QgsMapLayerStyleManagerWidget : QgsMapLayerConfigWidget
 {
 %Docstring(signature="appended")

@@ -18,13 +18,53 @@
 #include "qgis_gui.h"
 #include "qgsmaplayerconfigwidget.h"
 
+#include <QAbstractListModel>
 #include <QListView>
-#include <QStandardItemModel>
 #include <QWidget>
 
 class QgsMapLayer;
 class QgsMapCanvas;
 
+class QStandardItem;
+
+/**
+ * \ingroup gui
+ * \brief A model for display of styles from a QgsMapLayerStyleManager.
+ *
+ * Also allows for renaming of styles.
+ *
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsMapLayerStyleModel : public QAbstractListModel
+{
+    Q_OBJECT
+
+  public:
+    /**
+     * Constructor for QgsMapLayerStyleModel, showing styles from the specified \a manager.
+     */
+    QgsMapLayerStyleModel( QgsMapLayerStyleManager *manager, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    /**
+     * Returns the model index corresponding to the specified style name.
+     */
+    QModelIndex indexForName( const QString &name ) const;
+
+  private slots:
+
+    void styleAdded( const QString &name );
+    void styleRemoved( const QString &name );
+    void styleRenamed( const QString &oldname, const QString &newname );
+
+  private:
+    QPointer< QgsMapLayerStyleManager > mManager;
+    QStringList mStyleNames;
+};
 
 /**
  * \ingroup gui
@@ -46,21 +86,17 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
     void apply() override {}
 
   private slots:
-    void styleClicked( const QModelIndex &index );
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void currentStyleChanged( const QString &name );
-    void styleAdded( const QString &name );
-    void styleRemoved( const QString &name );
-    void styleRenamed( const QString &oldname, const QString &newname );
     void addStyle();
     void removeStyle();
-    void renameStyle( QStandardItem *item );
     void saveAsDefault();
     void loadDefault();
     void saveStyle();
     void loadStyle();
 
   private:
-    QStandardItemModel *mModel = nullptr;
+    QgsMapLayerStyleModel *mModel = nullptr;
     QListView *mStyleList = nullptr;
 };
 

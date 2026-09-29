@@ -43,10 +43,133 @@
 
 using namespace Qt::StringLiterals;
 
+//
+// QgsMapLayerStyleModel
+//
+QgsMapLayerStyleModel::QgsMapLayerStyleModel( QgsMapLayerStyleManager *manager, QObject *parent )
+  : QAbstractListModel( parent )
+  , mManager( manager )
+{
+  if ( mManager )
+  {
+    connect( mManager, &QgsMapLayerStyleManager::styleAdded, this, &QgsMapLayerStyleModel::styleAdded );
+    connect( mManager, &QgsMapLayerStyleManager::styleRemoved, this, &QgsMapLayerStyleModel::styleRemoved );
+    connect( mManager, &QgsMapLayerStyleManager::styleRenamed, this, &QgsMapLayerStyleModel::styleRenamed );
+
+    mStyleNames = mManager->styles();
+  }
+}
+
+int QgsMapLayerStyleModel::rowCount( const QModelIndex &parent ) const
+{
+  if ( parent.isValid() )
+    return 0;
+
+  return static_cast< int >( mStyleNames.size() );
+}
+
+QVariant QgsMapLayerStyleModel::data( const QModelIndex &index, int role ) const
+{
+  if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
+    return QVariant();
+
+  switch ( role )
+  {
+    case Qt::DisplayRole:
+    case Qt::ToolTipRole:
+    case Qt::EditRole:
+      return mStyleNames.at( index.row() );
+
+    default:
+      break;
+  }
+  return QVariant();
+}
+
+bool QgsMapLayerStyleModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !mManager || !index.isValid() || role != Qt::EditRole )
+  {
+    return false;
+  }
+  if ( index.row() >= mStyleNames.size() )
+  {
+    return false;
+  }
+
+  if ( value.toString().isEmpty() )
+    return false;
+
+  //has name changed?
+  const bool changed = mStyleNames.at( index.row() ) != value.toString();
+  if ( !changed )
+    return true;
+
+  //check if name already exists
+  if ( mStyleNames.contains( value.toString() ) )
+    return false;
+
+  mManager->renameStyle( mStyleNames[index.row()], value.toString() );
+  mStyleNames[index.row()] = value.toString();
+  return true;
+}
+
+Qt::ItemFlags QgsMapLayerStyleModel::flags( const QModelIndex &index ) const
+{
+  Qt::ItemFlags flags = QAbstractListModel::flags( index );
+  if ( index.isValid() )
+  {
+    return flags | Qt::ItemIsEditable;
+  }
+  else
+  {
+    return flags;
+  }
+}
+
+QModelIndex QgsMapLayerStyleModel::indexForName( const QString &name ) const
+{
+  const int row = static_cast< int >( mStyleNames.indexOf( name ) );
+  if ( row >= 0 )
+  {
+    return index( row, 0, QModelIndex() );
+  }
+  return QModelIndex();
+}
+
+void QgsMapLayerStyleModel::styleAdded( const QString &name )
+{
+  beginInsertRows( QModelIndex(), static_cast< int >( mStyleNames.size() ), static_cast< int >( mStyleNames.size() ) );
+  mStyleNames << name;
+  endInsertRows();
+}
+
+void QgsMapLayerStyleModel::styleRemoved( const QString &name )
+{
+  const int row = static_cast< int >( mStyleNames.indexOf( name ) );
+  if ( row >= 0 )
+  {
+    beginRemoveRows( QModelIndex(), row, row );
+    mStyleNames.remove( row );
+    endRemoveRows();
+  }
+}
+
+void QgsMapLayerStyleModel::styleRenamed( const QString &oldname, const QString &newname )
+{
+  const QModelIndex styleIndex = indexForName( oldname );
+  mStyleNames[styleIndex.row()] = newname;
+  emit dataChanged( styleIndex, styleIndex );
+}
+
+//
+// QgsMapLayerStyleManagerWidget
+//
+
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
-  mModel = new QStandardItemModel( this );
+  mModel = new QgsMapLayerStyleModel( layer->styleManager(), this );
   mStyleList = new QListView( this );
   mStyleList->setModel( mModel );
   mStyleList->setViewMode( QListView::ListMode );
@@ -70,7 +193,7 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   QAction *loadDefaultAction = toolbar->addAction( tr( "Restore Default" ) );
   connect( loadDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadDefault );
 
-  connect( mStyleList, &QAbstractItemView::clicked, this, &QgsMapLayerStyleManagerWidget::styleClicked );
+  connect( mStyleList->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsMapLayerStyleManagerWidget::selectionChanged );
 
   setLayout( new QVBoxLayout() );
   layout()->setContentsMargins( 0, 0, 0, 0 );
@@ -78,29 +201,18 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   layout()->addWidget( mStyleList );
 
   connect( mLayer->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayerStyleManagerWidget::currentStyleChanged );
-  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::styleAdded, this, &QgsMapLayerStyleManagerWidget::styleAdded );
-  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::styleRemoved, this, &QgsMapLayerStyleManagerWidget::styleRemoved );
-  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::styleRenamed, this, &QgsMapLayerStyleManagerWidget::styleRenamed );
-
-  mModel->clear();
-
-  const QStringList styles = mLayer->styleManager()->styles();
-  for ( const QString &styleName : styles )
-  {
-    QStandardItem *item = new QStandardItem( styleName );
-    item->setData( styleName );
-    mModel->appendRow( item );
-  }
 
   const QString active = mLayer->styleManager()->currentStyle();
   currentStyleChanged( active );
-
-  connect( mModel, &QStandardItemModel::itemChanged, this, &QgsMapLayerStyleManagerWidget::renameStyle );
 }
 
-void QgsMapLayerStyleManagerWidget::styleClicked( const QModelIndex &index )
+void QgsMapLayerStyleManagerWidget::selectionChanged( const QItemSelection &selected, const QItemSelection & )
 {
-  if ( !mLayer || !index.isValid() )
+  if ( !mLayer || selected.empty() )
+    return;
+
+  const QModelIndex index = selected.indexes().first();
+  if ( !index.isValid() )
     return;
 
   const QString name = index.data().toString();
@@ -109,42 +221,11 @@ void QgsMapLayerStyleManagerWidget::styleClicked( const QModelIndex &index )
 
 void QgsMapLayerStyleManagerWidget::currentStyleChanged( const QString &name )
 {
-  const QList<QStandardItem *> items = mModel->findItems( name );
-  if ( items.isEmpty() )
-    return;
-
-  QStandardItem *item = items.at( 0 );
-
-  mStyleList->setCurrentIndex( item->index() );
-}
-
-void QgsMapLayerStyleManagerWidget::styleAdded( const QString &name )
-{
-  QgsDebugMsgLevel( u"Style added"_s, 2 );
-  QStandardItem *item = new QStandardItem( name );
-  item->setData( name );
-  mModel->appendRow( item );
-}
-
-void QgsMapLayerStyleManagerWidget::styleRemoved( const QString &name )
-{
-  const QList<QStandardItem *> items = mModel->findItems( name );
-  if ( items.isEmpty() )
-    return;
-
-  QStandardItem *item = items.at( 0 );
-  mModel->removeRow( item->row() );
-}
-
-void QgsMapLayerStyleManagerWidget::styleRenamed( const QString &oldname, const QString &newname )
-{
-  const QList<QStandardItem *> items = mModel->findItems( oldname );
-  if ( items.isEmpty() )
-    return;
-
-  QStandardItem *item = items.at( 0 );
-  item->setText( newname );
-  item->setData( newname );
+  const QModelIndex listIndex = mModel->indexForName( name );
+  if ( listIndex.isValid() )
+  {
+    mStyleList->selectionModel()->select( listIndex, QItemSelectionModel::SelectionFlag::ClearAndSelect );
+  }
 }
 
 void QgsMapLayerStyleManagerWidget::addStyle()
@@ -171,14 +252,6 @@ void QgsMapLayerStyleManagerWidget::removeStyle()
   const bool res = mLayer->styleManager()->removeStyle( current );
   if ( !res )
     QgsDebugError( u"Failed to remove current style"_s );
-}
-
-void QgsMapLayerStyleManagerWidget::renameStyle( QStandardItem *item )
-{
-  const QString oldName = item->data().toString();
-  const QString newName = item->text();
-  item->setData( newName );
-  whileBlocking( this )->mLayer->styleManager()->renameStyle( oldName, newName );
 }
 
 void QgsMapLayerStyleManagerWidget::saveAsDefault()
