@@ -751,32 +751,39 @@ bool QgsPostgresUtils::disableQgisProjectVersioning( QgsPostgresConn *conn, cons
 
 bool QgsPostgresUtils::qgisProjectVersioningEnabled( QgsPostgresConn *conn, const QString &schema )
 {
-  const QString sqlCheck = QStringLiteral(
-                             "SELECT EXISTS ("
-                             "SELECT 1 "
-                             "FROM information_schema.triggers "
-                             "WHERE trigger_schema = %1 "
-                             "AND trigger_name = 'qgis_project_versions' "
-                             "AND event_object_table = 'qgis_projects'"
-                             ") AS trigger_exists, "
-                             "EXISTS ("
-                             "SELECT 1 "
-                             "FROM information_schema.tables "
-                             "WHERE table_schema = %1 "
-                             "AND table_name = 'qgis_projects_versions' "
-                             ") AS table_exists;"
-  )
-                             .arg( QgsPostgresConn::quotedValue( schema ) );
+  const QString sqlCheck = uR"sql(
+    SELECT
+        COALESCE(obj.has_both, false) AS table_and_trigger_exist
+    FROM pg_catalog.pg_namespace n
+    LEFT JOIN (
+        SELECT
+            c.relnamespace,
+            (
+                BOOL_OR(c.relname = 'qgis_projects_versions' AND c.relkind = 'r')
+                AND
+                BOOL_OR(t.tgname = 'qgis_project_versions' AND NOT t.tgisinternal)
+            ) AS has_both
+        FROM pg_catalog.pg_class c
+        LEFT JOIN pg_catalog.pg_trigger t ON t.tgrelid = c.oid
+        WHERE (c.relname = 'qgis_projects_versions' AND c.relkind = 'r')
+           OR (t.tgname = 'qgis_project_versions' AND NOT t.tgisinternal)
+        GROUP BY c.relnamespace
+    ) obj ON n.oid = obj.relnamespace
+    WHERE n.nspname = %1
+    )sql"_s.arg( QgsPostgresConn::quotedValue( schema ) );
 
   QgsPostgresResult res( conn->PQexec( sqlCheck ) );
-  return res.PQgetvalue( 0, 0 ).startsWith( 't'_L1 ) && res.PQgetvalue( 0, 1 ).startsWith( 't'_L1 );
+  if ( res.PQresultStatus() != PGRES_TUPLES_OK || res.PQntuples() != 1 || res.PQnfields() != 1 )
+  {
+    return false;
+  }
+  return res.PQgetvalue( 0, 0 ).startsWith( 't'_L1 );
 }
 
 bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema )
 {
-  const QString sqlCopy = u"INSERT INTO %1.qgis_projects_versions SELECT * FROM %2.qgis_projects_versions WHERE name=%3;"_s.arg( QgsPostgresConn::quotedIdentifier( targetSchema ) )
-                            .arg( QgsPostgresConn::quotedIdentifier( originalSchema ) )
-                            .arg( QgsPostgresConn::quotedValue( project ) );
+  const QString sqlCopy = u"INSERT INTO %1.qgis_projects_versions SELECT * FROM %2.qgis_projects_versions WHERE name=%3;"_s
+                            .arg( QgsPostgresConn::quotedIdentifier( targetSchema ), QgsPostgresConn::quotedIdentifier( originalSchema ), QgsPostgresConn::quotedValue( project ) );
 
   QgsPostgresResult resCopy( conn->PQexec( sqlCopy ) );
 
@@ -785,8 +792,7 @@ bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString
     return false;
   }
 
-  const QString sqlDelete = u"DELETE FROM %1.qgis_projects_versions WHERE name=%2;"_s.arg( QgsPostgresConn::quotedIdentifier( originalSchema ) ).arg( QgsPostgresConn::quotedValue( project ) );
-  ;
+  const QString sqlDelete = u"DELETE FROM %1.qgis_projects_versions WHERE name=%2;"_s.arg( QgsPostgresConn::quotedIdentifier( originalSchema ), QgsPostgresConn::quotedValue( project ) );
 
   QgsPostgresResult resDelete( conn->PQexec( sqlDelete ) );
 
@@ -800,9 +806,8 @@ bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString
 
 bool QgsPostgresUtils::renameProject( QgsPostgresConn *conn, const QString &schemaName, const QString &oldProjectName, const QString &newProjectName )
 {
-  const QString sql = u"UPDATE %1.qgis_projects SET name=%2 WHERE name=%3"_s.arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
-                        .arg( QgsPostgresConn::quotedValue( newProjectName ) )
-                        .arg( QgsPostgresConn::quotedValue( oldProjectName ) );
+  const QString sql = u"UPDATE %1.qgis_projects SET name=%2 WHERE name=%3"_s
+                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ), QgsPostgresConn::quotedValue( newProjectName ), QgsPostgresConn::quotedValue( oldProjectName ) );
 
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )

@@ -1267,7 +1267,7 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
   QgsPostgresImportProjectDialog dlg( schemaItem->connectionName(), schemaItem->name() );
   if ( dlg.exec() == QDialog::Accepted )
   {
-    QList<QPair<QString, QString>> projectsWithNames = dlg.projectsToSave();
+    const QList<QPair<QString, QString>> projectsWithNames = dlg.projectsToSave();
 
     int projectsSaved = 0;
     int projectsNotSaved = 0;
