@@ -209,9 +209,21 @@ void QgsPostgresProviderConnection::dropVectorTable( const QString &schema, cons
 void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropRasterTable );
-  dropTablePrivate( schema, name );
-}
 
+  auto conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
+  if ( conn )
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+
+  // also drop its overviews
+  QStringList tables { u"%1.%2"_s.arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ) ) };
+  const QList<QgsPostgresRasterOverviewLayerProperty> overviews = QgsPostgresUtils::rasterOverviews( conn->get(), schema, name );
+  for ( const QgsPostgresRasterOverviewLayerProperty &overview : overviews )
+  {
+    tables.append( u"%1.%2"_s.arg( QgsPostgresConn::quotedIdentifier( overview.schemaName ), QgsPostgresConn::quotedIdentifier( overview.tableName ) ) );
+  }
+
+  executeSqlPrivate( u"DROP TABLE %1"_s.arg( tables.join( ", "_s ) ) );
+}
 
 void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
 {
