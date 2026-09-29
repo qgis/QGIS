@@ -30,7 +30,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QString>
-#include <QTextEdit>
+#include <QTextBrowser>
 
 #include "moc_qgsrasterformatsaveoptionswidget.cpp"
 
@@ -279,10 +279,11 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
   // show simple non-modal dialog - should we make the basic xml prettier?
   QgsDialog *dlg = new QgsDialog( this );
   dlg->setWindowTitle( tr( "Create Options for %1" ).arg( mFormat ) );
-  QTextEdit *textEdit = new QTextEdit( dlg );
-  textEdit->setReadOnly( true );
-  textEdit->setHtml( message );
-  dlg->layout()->addWidget( textEdit );
+  QTextBrowser *textBrowser = new QTextBrowser( dlg );
+  textBrowser->setOpenExternalLinks( true );
+  textBrowser->setHtml( message );
+  dlg->layout()->addWidget( textBrowser );
+
   dlg->resize( 600, 400 );
 #ifdef Q_OS_MAC
   dlg->exec(); //modal
