@@ -174,7 +174,7 @@ void TestQgsValueRelationFieldFormatter::testGroup()
   config.insert( u"Value"_s, u"raccord"_s );
   config.insert( u"Group"_s, u"material"_s );
 
-  QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config );
+  QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config, QgsProject::instance() );
   QVERIFY( !cache.isEmpty() );
   QCOMPARE( cache.at( 0 ).group, QVariant( u"iron"_s ) );
   QCOMPARE( cache.at( cache.size() - 1 ).group, QVariant( u"steel"_s ) );
@@ -221,7 +221,7 @@ void TestQgsValueRelationFieldFormatter::testOrderBy()
   // Ascending
   {
     const QgsValueRelationFieldFormatter formatter;
-    QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config );
+    QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config, QgsProject::instance() );
     QVERIFY( !cache.isEmpty() );
 
     if ( expectedFirst.size() == 1 )
@@ -246,7 +246,7 @@ void TestQgsValueRelationFieldFormatter::testOrderBy()
   {
     config.insert( u"OrderByDescending"_s, true );
     const QgsValueRelationFieldFormatter formatter;
-    QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config );
+    QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config, QgsProject::instance() );
     QVERIFY( !cache.isEmpty() );
     if ( expectedLast.size() == 1 )
     {

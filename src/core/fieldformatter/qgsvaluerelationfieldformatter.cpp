@@ -56,7 +56,13 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
   }
   else
   {
-    vrCache = QgsValueRelationFieldFormatter::createCache( config );
+    QgsProject *project = layer->project(); // skip-keyword-check
+    // TODO QGIS 5.0 -- remove the fallback to QgsProject.instance() return empty QString instead
+    if ( !project )
+    {
+      project = QgsProject::instance(); // skip-keyword-check
+    }
+    vrCache = QgsValueRelationFieldFormatter::createCache( config, project );
   }
 
   if ( config.value( u"AllowMulti"_s ).toBool() )

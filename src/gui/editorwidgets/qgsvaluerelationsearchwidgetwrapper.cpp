@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsfields.h"
 #include "qgsfilterlineedit.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvaluerelationwidgetwrapper.h"
@@ -212,7 +213,7 @@ QWidget *QgsValueRelationSearchWidgetWrapper::createWidget( QWidget *parent )
 
 void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
 {
-  mCache = QgsValueRelationFieldFormatter::createCache( config() );
+  mCache = QgsValueRelationFieldFormatter::createCache( config(), QgsProject::instance() );
 
   mComboBox = qobject_cast<QComboBox *>( editor );
   mLineEdit = qobject_cast<QLineEdit *>( editor );
