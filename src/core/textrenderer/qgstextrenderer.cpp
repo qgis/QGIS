@@ -369,7 +369,7 @@ void QgsTextRenderer::drawDocumentOnLine(
   {
     QgsTextRenderer::Component component;
     component.origin = QPointF( grapheme.x, grapheme.y );
-    component.rotation = -grapheme.angle;
+    component.rotationRadians = -grapheme.angle;
 
     QgsTextDocumentMetrics &metrics = graphemeMetrics[grapheme.graphemeIndex];
     const double verticalOffset = metrics.fragmentVerticalOffset( 0, 0, Qgis::TextLayoutMode::Point );
@@ -465,7 +465,7 @@ void QgsTextRenderer::drawParts(
   Component component;
   component.dpiRatio = 1.0;
   component.origin = rect.topLeft();
-  component.rotation = rotation;
+  component.rotationRadians = rotation;
   component.size = rect.size();
   component.hAlign = alignment;
 
@@ -547,7 +547,7 @@ void QgsTextRenderer::drawParts(
   Component component;
   component.dpiRatio = 1.0;
   component.origin = origin;
-  component.rotation = rotation;
+  component.rotationRadians = rotation;
   component.hAlign = alignment;
 
   if ( ( parts & Qgis::TextComponent::Background ) && format.background().enabled() )
@@ -1566,13 +1566,13 @@ void QgsTextRenderer::drawTextInternal(
 
   referenceScaleOverride.reset();
 
-  double rotation = 0;
-  const Qgis::TextOrientation orientation = calculateRotationAndOrientationForComponent( format, component, rotation );
+  double rotationDegrees = 0;
+  const Qgis::TextOrientation orientation = calculateRotationAndOrientationForComponent( format, component, rotationDegrees );
   switch ( orientation )
   {
     case Qgis::TextOrientation::Horizontal:
     {
-      drawTextInternalHorizontal( context, format, components, mode, component, document, metrics, fontScale, alignment, vAlignment, rotation );
+      drawTextInternalHorizontal( context, format, components, mode, component, document, metrics, fontScale, alignment, vAlignment, rotationDegrees );
       break;
     }
 
@@ -1581,31 +1581,31 @@ void QgsTextRenderer::drawTextInternal(
     {
       // TODO: vertical text renderer currently doesn't handle one-pass buffer + text drawing
       if ( components & Qgis::TextComponent::Buffer )
-        drawTextInternalVertical( context, format, Qgis::TextComponent::Buffer, mode, component, document, metrics, fontScale, alignment, vAlignment, rotation );
+        drawTextInternalVertical( context, format, Qgis::TextComponent::Buffer, mode, component, document, metrics, fontScale, alignment, vAlignment, rotationDegrees );
       if ( components & Qgis::TextComponent::Text )
-        drawTextInternalVertical( context, format, Qgis::TextComponent::Text, mode, component, document, metrics, fontScale, alignment, vAlignment, rotation );
+        drawTextInternalVertical( context, format, Qgis::TextComponent::Text, mode, component, document, metrics, fontScale, alignment, vAlignment, rotationDegrees );
       break;
     }
   }
 }
 
-Qgis::TextOrientation QgsTextRenderer::calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const QgsTextRenderer::Component &component, double &rotation )
+Qgis::TextOrientation QgsTextRenderer::calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const QgsTextRenderer::Component &component, double &rotationDegrees )
 {
-  rotation = -component.rotation * 180 / M_PI;
+  rotationDegrees = -component.rotationRadians * 180 / M_PI;
 
   switch ( format.orientation() )
   {
     case Qgis::TextOrientation::RotationBased:
     {
       // Between 45 to 135 and 235 to 315 degrees, rely on vertical orientation
-      if ( rotation >= -315 && rotation < -90 )
+      if ( rotationDegrees >= -315 && rotationDegrees < -90 )
       {
-        rotation -= 90;
+        rotationDegrees -= 90;
         return Qgis::TextOrientation::Vertical;
       }
-      else if ( rotation >= -90 && rotation < -45 )
+      else if ( rotationDegrees >= -90 && rotationDegrees < -45 )
       {
-        rotation += 90;
+        rotationDegrees += 90;
         return Qgis::TextOrientation::Vertical;
       }
 
@@ -1934,13 +1934,13 @@ void QgsTextRenderer::renderDocumentBackgrounds(
   const QVector< QgsTextRenderer::BlockMetrics > &blockMetrics,
   Qgis::TextLayoutMode mode,
   double verticalAlignOffset,
-  double rotation
+  double rotationDegrees
 )
 {
   int blockIndex = 0;
   context.painter()->translate( component.origin );
-  if ( !qgsDoubleNear( rotation, 0.0 ) )
-    context.painter()->rotate( rotation );
+  if ( !qgsDoubleNear( rotationDegrees, 0.0 ) )
+    context.painter()->rotate( rotationDegrees );
 
   context.painter()->setPen( Qt::NoPen );
   context.painter()->setBrush( Qt::NoBrush );
@@ -2000,8 +2000,8 @@ void QgsTextRenderer::renderDocumentBackgrounds(
 
   context.painter()->setBrush( Qt::NoBrush );
 
-  if ( !qgsDoubleNear( rotation, 0.0 ) )
-    context.painter()->rotate( -rotation );
+  if ( !qgsDoubleNear( rotationDegrees, 0.0 ) )
+    context.painter()->rotate( -rotationDegrees );
   context.painter()->translate( -component.origin );
 }
 
@@ -2016,7 +2016,7 @@ void QgsTextRenderer::drawTextInternalHorizontal(
   double fontScale,
   const Qgis::TextHorizontalAlignment hAlignment,
   Qgis::TextVerticalAlignment vAlignment,
-  double rotation
+  double rotationDegrees
 )
 {
   QPainter *maskPainter = context.maskPainter( context.currentMaskId() );
@@ -2088,7 +2088,7 @@ void QgsTextRenderer::drawTextInternalHorizontal(
 
     if ( document.hasBackgrounds() )
     {
-      renderDocumentBackgrounds( context, document, metrics, component, blockMetrics, mode, verticalAlignOffset, rotation );
+      renderDocumentBackgrounds( context, document, metrics, component, blockMetrics, mode, verticalAlignOffset, rotationDegrees );
     }
 
     int blockIndex = 0;
@@ -2107,16 +2107,16 @@ void QgsTextRenderer::drawTextInternalHorizontal(
       QgsScopedQPainterState painterState( context.painter() );
       context.setPainterFlagsUsingContext();
       context.painter()->translate( component.origin );
-      if ( !qgsDoubleNear( rotation, 0.0 ) )
-        context.painter()->rotate( rotation );
+      if ( !qgsDoubleNear( rotationDegrees, 0.0 ) )
+        context.painter()->rotate( rotationDegrees );
 
       // apply to the mask painter the same transformations
       if ( maskPainter )
       {
         maskPainter->save();
         maskPainter->translate( component.origin );
-        if ( !qgsDoubleNear( rotation, 0.0 ) )
-          maskPainter->rotate( rotation );
+        if ( !qgsDoubleNear( rotationDegrees, 0.0 ) )
+          maskPainter->rotate( rotationDegrees );
       }
 
       const BlockMetrics thisBlockMetrics = blockMetrics[blockIndex];
@@ -2187,7 +2187,7 @@ void QgsTextRenderer::drawTextInternalHorizontal(
 
   if ( deferredBlocks )
   {
-    renderDeferredBlocks( context, format, components, *deferredBlocks, usePathsForText, fontScale, component, rotation );
+    renderDeferredBlocks( context, format, components, *deferredBlocks, usePathsForText, fontScale, component, rotationDegrees );
   }
 }
 
@@ -2199,17 +2199,17 @@ void QgsTextRenderer::renderDeferredBlocks(
   bool usePathsForText,
   double fontScale,
   const Component &component,
-  double rotation
+  double rotationDegrees
 )
 {
   if ( format.buffer().enabled() && ( components & Qgis::TextComponent::Buffer ) )
   {
-    renderDeferredBuffer( context, format, components, deferredBlocks, fontScale, component, rotation );
+    renderDeferredBuffer( context, format, components, deferredBlocks, fontScale, component, rotationDegrees );
   }
 
   if ( ( components & Qgis::TextComponent::Shadow ) && format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowText )
   {
-    renderDeferredShadowForText( context, format, deferredBlocks, fontScale, component, rotation );
+    renderDeferredShadowForText( context, format, deferredBlocks, fontScale, component, rotationDegrees );
     // TODO: there's an optimisation opportunity here -- if we are ALSO rendering the text component,
     // we could move the actual text rendering into renderDeferredShadowForText and use the same
     // QPicture as we used for the shadow. But we'd need to ensure that all the settings
@@ -2218,19 +2218,19 @@ void QgsTextRenderer::renderDeferredBlocks(
 
   if ( components & Qgis::TextComponent::Text )
   {
-    renderDeferredText( context, deferredBlocks, usePathsForText, fontScale, component, rotation );
+    renderDeferredText( context, deferredBlocks, usePathsForText, fontScale, component, rotationDegrees );
   }
 }
 
 void QgsTextRenderer::renderDeferredShadowForText(
-  QgsRenderContext &context, const QgsTextFormat &format, const std::vector< DeferredRenderBlock > &deferredBlocks, double fontScale, const Component &component, double rotation
+  QgsRenderContext &context, const QgsTextFormat &format, const std::vector< DeferredRenderBlock > &deferredBlocks, double fontScale, const Component &component, double rotationDegrees
 )
 {
   QgsScopedQPainterState painterState( context.painter() );
   context.setPainterFlagsUsingContext();
   context.painter()->translate( component.origin );
-  if ( !qgsDoubleNear( rotation, 0.0 ) )
-    context.painter()->rotate( rotation );
+  if ( !qgsDoubleNear( rotationDegrees, 0.0 ) )
+    context.painter()->rotate( rotationDegrees );
 
   context.painter()->setPen( Qt::NoPen );
   context.painter()->setBrush( Qt::NoBrush );
@@ -2273,7 +2273,7 @@ void QgsTextRenderer::renderDeferredShadowForText(
 }
 
 void QgsTextRenderer::renderDeferredBuffer(
-  QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector< DeferredRenderBlock > &deferredBlocks, double fontScale, const Component &component, double rotation
+  QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector< DeferredRenderBlock > &deferredBlocks, double fontScale, const Component &component, double rotationDegrees
 )
 {
   QgsScopedQPainterState painterState( context.painter() );
@@ -2318,8 +2318,8 @@ void QgsTextRenderer::renderDeferredBuffer(
   context.painter()->setBrush( bufferColor );
 
   context.painter()->translate( component.origin );
-  if ( !qgsDoubleNear( rotation, 0.0 ) )
-    context.painter()->rotate( rotation );
+  if ( !qgsDoubleNear( rotationDegrees, 0.0 ) )
+    context.painter()->rotate( rotationDegrees );
 
   if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
   {
@@ -2372,14 +2372,14 @@ void QgsTextRenderer::renderDeferredBuffer(
 }
 
 void QgsTextRenderer::renderDeferredText(
-  QgsRenderContext &context, const std::vector< DeferredRenderBlock > &deferredBlocks, bool usePathsForText, double fontScale, const Component &component, double rotation
+  QgsRenderContext &context, const std::vector< DeferredRenderBlock > &deferredBlocks, bool usePathsForText, double fontScale, const Component &component, double rotationDegrees
 )
 {
   QgsScopedQPainterState painterState( context.painter() );
   context.setPainterFlagsUsingContext();
   context.painter()->translate( component.origin );
-  if ( !qgsDoubleNear( rotation, 0.0 ) )
-    context.painter()->rotate( rotation );
+  if ( !qgsDoubleNear( rotationDegrees, 0.0 ) )
+    context.painter()->rotate( rotationDegrees );
 
   context.painter()->setPen( Qt::NoPen );
   context.painter()->setBrush( Qt::NoBrush );
@@ -2421,7 +2421,7 @@ void QgsTextRenderer::drawTextInternalVertical(
   double fontScale,
   Qgis::TextHorizontalAlignment hAlignment,
   Qgis::TextVerticalAlignment,
-  double rotation
+  double rotationDegrees
 )
 {
   QPainter *maskPainter = context.maskPainter( context.currentMaskId() );
@@ -2475,16 +2475,16 @@ void QgsTextRenderer::drawTextInternalVertical(
     context.setPainterFlagsUsingContext();
 
     context.painter()->translate( component.origin );
-    if ( !qgsDoubleNear( rotation, 0.0 ) )
-      context.painter()->rotate( rotation );
+    if ( !qgsDoubleNear( rotationDegrees, 0.0 ) )
+      context.painter()->rotate( rotationDegrees );
 
     // apply to the mask painter the same transformations
     if ( maskPainter )
     {
       maskPainter->save();
       maskPainter->translate( component.origin );
-      if ( !qgsDoubleNear( rotation, 0.0 ) )
-        maskPainter->rotate( rotation );
+      if ( !qgsDoubleNear( rotationDegrees, 0.0 ) )
+        maskPainter->rotate( rotationDegrees );
     }
 
     const double blockMaximumCharacterWidth = metrics.blockMaximumCharacterWidth( blockIndex );
@@ -2529,11 +2529,11 @@ void QgsTextRenderer::drawTextInternalVertical(
       case Qgis::TextLayoutMode::Labeling:
         if ( format.orientation() == Qgis::TextOrientation::RotationBased )
         {
-          if ( rotation >= -405 && rotation < -180 )
+          if ( rotationDegrees >= -405 && rotationDegrees < -180 )
           {
             yOffset = 0;
           }
-          else if ( rotation >= 0 && rotation < 45 )
+          else if ( rotationDegrees >= 0 && rotationDegrees < 45 )
           {
             xOffset -= actualTextWidth;
             yOffset = -actualLabelHeight + metrics.blockMaximumDescent( blockIndex );

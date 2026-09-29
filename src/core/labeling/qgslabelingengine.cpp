@@ -526,7 +526,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
       painter->save();
       painter->setRenderHint( QPainter::Antialiasing, false );
       painter->translate( QPointF( outPt.x(), outPt.y() ) );
-      painter->rotate( -label->getAlpha() * 180 / M_PI );
+      painter->rotate( -label->angleRadians() * 180 / M_PI );
 
       if ( label->conflictsWithObstacle() )
       {
@@ -686,7 +686,7 @@ void QgsLabelingEngine::drawLabelCandidateRect( pal::LabelPosition *lp, QgsRende
   QgsPointXY outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
   QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
   painter->translate( QPointF( outPt.x(), outPt.y() ) );
-  painter->rotate( -lp->getAlpha() * 180 / M_PI );
+  painter->rotate( -lp->angleRadians() * 180 / M_PI );
 
   if ( lp->conflictsWithObstacle() )
   {
@@ -720,7 +720,7 @@ void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMa
   painter->save();
   painter->setRenderHint( QPainter::Antialiasing, false );
   painter->translate( QPointF( renderPoint.x(), renderPoint.y() ) );
-  painter->rotate( -label->getAlpha() * 180 / M_PI );
+  painter->rotate( -label->angleRadians() * 180 / M_PI );
 
   painter->setBrush( Qt::NoBrush );
   painter->setPen( QColor( 255, 0, 0, 220 ) );
