@@ -76,9 +76,9 @@ Returns the supported formats
 Returns comments of the layer
 %End
 
-    virtual Qgis::LayerItemCapabilities capabilities() const;
+    virtual Qgis::LayerItemCapabilities layerCapabilities() const;
 %Docstring
-Returns the layer item capabilities
+Returns the layer item cpabilities
 
 .. versionadded:: 4.40
 %End

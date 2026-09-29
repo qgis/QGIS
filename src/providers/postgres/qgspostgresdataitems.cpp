@@ -396,7 +396,7 @@ QVector<QgsDataItem *> QgsPGLayerItem::createChildren()
   return children;
 }
 
-Qgis::LayerItemCapabilities QgsPGLayerItem::capabilities() const
+Qgis::LayerItemCapabilities QgsPGLayerItem::layerCapabilities() const
 {
   if ( mLayerProperty.relKind == Qgis::PostgresRelKind::OrdinaryTable )
   {
