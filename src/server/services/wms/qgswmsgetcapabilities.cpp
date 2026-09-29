@@ -1238,7 +1238,7 @@ namespace QgsWms
           if ( it != wmsDimensions.end() )
           {
             QList<QgsDateTimeRange> childrenDateRanges;
-            QgsWms::getChildrenRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
+            QgsWms::getChildRanges( treeGroupChild, wmsLayerInfos, restrictedLayers, childrenDateRanges );
             QDateTime defaultDateTime;
             switch ( it->defaultDisplayType )
             {
