@@ -1,0 +1,256 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsacademicreference.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsAcademicReference
+{
+%Docstring(signature="appended")
+Encapsulates an academic reference and formats it according to style
+guidelines.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsacademicreference.h"
+%End
+  public:
+    QgsAcademicReference();
+%Docstring
+Constructor for an invalid QgsAcademicReference.
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``False`` if this is a default constructed, invalid reference.
+%End
+
+    static QgsAcademicReference createBook( const QStringList &authors, int year, const QString &title, const QString &publisher );
+%Docstring
+Creates a book reference.
+
+:param authors: list of authors
+:param year: publication year
+:param title: book title
+:param publisher: publisher name
+%End
+
+    static QgsAcademicReference createJournalArticle(
+      const QStringList &authors, int year, const QString &title, const QString &journal, const QString &volume = QString(), const QString &issue = QString(), const QString &pages = QString()
+    );
+%Docstring
+Creates a journal article reference.
+
+:param authors: list of authors
+:param year: publication year
+:param title: article title
+:param journal: journal name
+:param volume: volume identifier
+:param issue: issue identifier
+:param pages: page range or number
+%End
+
+    static QgsAcademicReference createPresentation(
+      const QStringList &authors, int year, const QString &title, const QString &meeting, const QString &publisher = QString(), const QString &pages = QString()
+    );
+%Docstring
+Creates a conference paper or presentation reference.
+
+:param authors: list of authors
+:param year: presentation year
+:param title: paper title
+:param meeting: conference or meeting title
+:param publisher: publisher name
+:param pages: page range or number
+%End
+
+    static QgsAcademicReference createWebPage( const QStringList &authors, int year, const QString &title, const QString &url );
+%Docstring
+Creates a web page or online resource reference.
+
+:param authors: list of authors
+:param year: publication or access year
+:param title: web page title
+:param url: target address
+%End
+
+    static QgsAcademicReference createPreprint( const QStringList &authors, int year, const QString &title, const QString &repository, const QString &url );
+%Docstring
+Creates a preprint reference.
+
+:param authors: list of authors
+:param year: publication year
+:param title: paper title
+:param repository: repository or archive name
+:param url: repository target address
+%End
+
+    Qgis::AcademicReferenceType type() const;
+%Docstring
+Returns the reference type.
+
+.. seealso:: :py:func:`setType`
+%End
+
+    void setType( Qgis::AcademicReferenceType type );
+%Docstring
+Sets the reference ``type``.
+
+.. seealso:: :py:func:`type`
+%End
+
+    QStringList authors() const;
+%Docstring
+Returns the authors of the reference.
+
+.. seealso:: :py:func:`setAuthors`
+%End
+
+    void setAuthors( const QStringList &authors );
+%Docstring
+Sets the ``authors`` of the reference.
+
+Individual authors should be formatted using surname first, followed by
+a comma and the author's initials. E.g. "Smith, J. P.".
+
+.. seealso:: :py:func:`authors`
+%End
+
+    int year() const;
+%Docstring
+Returns the publication year.
+
+.. seealso:: :py:func:`setYear`
+%End
+
+    void setYear( int year );
+%Docstring
+Sets the publication ``year``.
+
+.. seealso:: :py:func:`year`
+%End
+
+    QString title() const;
+%Docstring
+Returns the title of the work.
+
+.. seealso:: :py:func:`setTitle`
+%End
+
+    void setTitle( const QString &title );
+%Docstring
+Sets the ``title`` of the work.
+
+.. seealso:: :py:func:`title`
+%End
+
+    QString journal() const;
+%Docstring
+Returns the journal title.
+
+.. seealso:: :py:func:`setJournal`
+%End
+
+    void setJournal( const QString &journal );
+%Docstring
+Sets the ``journal`` title.
+
+.. seealso:: :py:func:`journal`
+%End
+
+    QString volume() const;
+%Docstring
+Returns the volume identifier.
+
+.. seealso:: :py:func:`setVolume`
+%End
+
+    void setVolume( const QString &volume );
+%Docstring
+Sets the ``volume`` identifier.
+
+.. seealso:: :py:func:`volume`
+%End
+
+    QString issue() const;
+%Docstring
+Returns the issue number.
+
+.. seealso:: :py:func:`setIssue`
+%End
+
+    void setIssue( const QString &issue );
+%Docstring
+Sets the ``issue`` number.
+
+.. seealso:: :py:func:`issue`
+%End
+
+    QString pages() const;
+%Docstring
+Returns the page numbers.
+
+.. seealso:: :py:func:`setPages`
+%End
+
+    void setPages( const QString &pages );
+%Docstring
+Sets the page numbers.
+
+.. seealso:: :py:func:`pages`
+%End
+
+    QString publisher() const;
+%Docstring
+Returns the publisher name.
+
+.. seealso:: :py:func:`setPublisher`
+%End
+
+    void setPublisher( const QString &publisher );
+%Docstring
+Sets the ``publisher`` name.
+
+.. seealso:: :py:func:`publisher`
+%End
+
+    QString url() const;
+%Docstring
+Returns the URL.
+
+.. seealso:: :py:func:`setUrl`
+%End
+
+    void setUrl( const QString &url );
+%Docstring
+Sets the ``url``.
+
+.. seealso:: :py:func:`url`
+%End
+
+    QString asPlainText() const;
+%Docstring
+Returns a plain text representation of the reference (in APA style).
+%End
+
+    QString asHtml() const;
+%Docstring
+Returns a HTML formatted representation of the reference (in APA style).
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsacademicreference.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

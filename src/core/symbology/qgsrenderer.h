@@ -165,7 +165,7 @@ class CORE_EXPORT QgsFeatureRenderer
     // renderer takes ownership of its symbols!
 
     //! Returns a new renderer - used by default in vector layers
-    static QgsFeatureRenderer *defaultRenderer( Qgis::GeometryType geomType ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> defaultRenderer( Qgis::GeometryType geomType );
 
     QString type() const { return mType; }
 
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsFeatureRenderer
     void setUsingSymbolLevels( bool usingSymbolLevels ) { mUsingSymbolLevels = usingSymbolLevels; }
 
     //! create a renderer from XML element
-    static QgsFeatureRenderer *load( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> load( QDomElement &symbologyElem, const QgsReadWriteContext &context );
 
     /**
      * Stores renderer properties to an XML element.
@@ -364,7 +364,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * went wrong
      * \returns the renderer
      */
-    static QgsFeatureRenderer *loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage );
 
     /**
      * Used from subclasses to create SLD Rule elements following SLD v1.1 specs

@@ -184,6 +184,8 @@ bool QgsRandomPointsOnLinesAlgorithm::prepareAlgorithm( const QVariantMap &param
 
 QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> lineSource( parameterAsSource( parameters, INPUT, context ) );
   if ( !lineSource )
     throw QgsProcessingException( invalidSourceError( parameters, INPUT ) );

@@ -80,6 +80,8 @@ bool QgsTransectFixedDistanceAlgorithm::prepareAlgorithmTransectParameters( cons
 
 std::vector<QgsPoint> QgsTransectFixedDistanceAlgorithm::generateSamplingPoints( const QgsLineString &line, const QVariantMap &, QgsProcessingContext & )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::vector<QgsPoint> samplingPoints;
 
   Qgis::WkbType pointType = Qgis::WkbType::Point;

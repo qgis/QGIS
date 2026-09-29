@@ -51,6 +51,7 @@ from qgis.core import (
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterVectorDestination,
     QgsProcessingParameterVectorLayer,
+    QgsProcessingRasterLayerDefinition,  # NOQA - must be here for saved file evaluation
     QgsProcessingUtils,
     QgsProject,
     QgsProperty,  # NOQA - must be here for saved file evaluation

@@ -162,6 +162,8 @@ bool QgsRefactorFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QgsFeatureList QgsRefactorFieldsAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !mExpressionsPrepared )
   {
     for ( auto it = mExpressions.begin(); it != mExpressions.end(); ++it )

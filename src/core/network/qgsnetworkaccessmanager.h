@@ -274,7 +274,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * up, processEvents() executed once, the main thread frozen again and the background thread
      * continued.
      */
-    static QgsNetworkAccessManager *instance( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
+    static QgsNetworkAccessManager *instance( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection ) SIP_DISALLOWNONE;
 
     QgsNetworkAccessManager( QObject *parent = nullptr );
 

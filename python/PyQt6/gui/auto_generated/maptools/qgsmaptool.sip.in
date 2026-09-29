@@ -83,48 +83,48 @@ Returns the flags for the map tool.
 
     ~QgsMapTool();
 
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e /DisallowNone/ );
 %Docstring
 Mouse move event for overriding. Default implementation does nothing.
 %End
 
-    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e );
+    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e /DisallowNone/ );
 %Docstring
 Mouse double-click event for overriding. Default implementation does
 nothing.
 %End
 
-    virtual void canvasPressEvent( QgsMapMouseEvent *e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e /DisallowNone/ );
 %Docstring
 Mouse press event for overriding. Default implementation does nothing.
 %End
 
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e /DisallowNone/ );
 %Docstring
 Mouse release event for overriding. Default implementation does nothing.
 %End
 
-    virtual void wheelEvent( QWheelEvent *e );
+    virtual void wheelEvent( QWheelEvent *e /DisallowNone/ );
 %Docstring
 Mouse wheel event for overriding. Default implementation does nothing.
 %End
 
-    virtual void keyPressEvent( QKeyEvent *e );
+    virtual void keyPressEvent( QKeyEvent *e /DisallowNone/ );
 %Docstring
 Key event for overriding. Default implementation does nothing.
 %End
 
-    virtual void keyReleaseEvent( QKeyEvent *e );
+    virtual void keyReleaseEvent( QKeyEvent *e /DisallowNone/ );
 %Docstring
 Key event for overriding. Default implementation does nothing.
 %End
 
-    virtual bool gestureEvent( QGestureEvent *e );
+    virtual bool gestureEvent( QGestureEvent *e /DisallowNone/ );
 %Docstring
 gesture event for overriding. Default implementation does nothing.
 %End
 
-    virtual bool canvasToolTipEvent( QHelpEvent *e );
+    virtual bool canvasToolTipEvent( QHelpEvent *e /DisallowNone/ );
 %Docstring
 Tooltip event for overriding. Default implementation does nothing.
 Returns whether the event was handled by the tool and should not be
@@ -133,7 +133,7 @@ propagated further.
 .. versionadded:: 3.22
 %End
 
-    virtual bool shortcutEvent( QKeyEvent *e );
+    virtual bool shortcutEvent( QKeyEvent *e /DisallowNone/ );
 %Docstring
 Shortcut events coming from the application for overriding. The default
 implementation does nothing. Returns whether the event was handled by

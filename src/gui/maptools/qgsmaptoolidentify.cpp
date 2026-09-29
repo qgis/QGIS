@@ -134,7 +134,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify(
   mLastExtent = mCanvas->extent();
   mLastMapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
 
-  mCoordinatePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLastMapUnitsPerPixel, mCanvas->mapSettings().destinationCrs() );
+  mCoordinatePrecision = QgsCoordinateUtils::calculateCoordinatePrecision( mLastMapUnitsPerPixel, mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
 
   if ( mode == DefaultQgsSetting )
   {
@@ -512,7 +512,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
     }
 
     const double tileScale
-      = layer->tileMatrixSet().calculateTileScaleForMap( mCanvas->scale(), mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().extent(), mCanvas->size(), mCanvas->mapSettings().outputDpi() );
+      = layer->tileMatrixSet().calculateTileScaleForMap( mCanvas->scale(), mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().extent(), mCanvas->size(), mCanvas->logicalDpiX() );
 
     const int tileZoom = layer->tileMatrixSet().scaleToZoomLevel( tileScale );
     const QgsTileMatrix tileMatrix = layer->tileMatrixSet().tileMatrix( tileZoom );

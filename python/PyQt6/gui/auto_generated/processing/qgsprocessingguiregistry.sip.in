@@ -11,6 +11,67 @@
 
 
 
+class QgsProcessingDialogFactory
+{
+%Docstring(signature="appended")
+A factory for creating widgets and dialogs for Processing components.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingguiregistry.h"
+%End
+  public:
+    virtual ~QgsProcessingDialogFactory();
+
+    virtual QgsProcessingAlgorithmWidget *createWidget(
+      QgsProcessingAlgorithm *algorithm /Transfer/,
+      bool inPlace = false,
+      QMainWindow *parent = 0,
+      QgsProcessingAlgorithmWidgetBase::WidgetFlags flags = QgsProcessingAlgorithmWidgetBase::WidgetFlags(),
+      Qgis::DockableWidgetInitialState initialState = Qgis::DockableWidgetInitialState::RestorePreviousState
+    ) = 0 /TransferBack/;
+%Docstring
+Creates a new widget for executing the specified algorithm.
+%End
+
+
+    virtual QgsProcessingScriptEditorDialog *createScriptEditorDialog( const QString &filePath = QString(), QWidget *parent = 0 ) = 0 /TransferBack/;
+%Docstring
+Creates a new script editor dialog.
+%End
+};
+
+class QgsProcessingContextFactory
+{
+%Docstring(signature="appended")
+A factory for creating Processing contexts, aware of the GUI components
+which may influence this.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingguiregistry.h"
+%End
+  public:
+    virtual ~QgsProcessingContextFactory();
+
+    virtual QgsProcessingContext *createContext( QgsProcessingFeedback *feedback = 0 ) = 0 /TransferBack/;
+%Docstring
+Creates a new Processing context.
+%End
+};
+
 class QgsProcessingGuiRegistry : QgsProcessingWidgetContextGenerator
 {
 %Docstring(signature="appended")
@@ -126,7 +187,7 @@ that can be shown in the Processing model designer dialog.
 .. versionadded:: 4.0
 %End
 
-    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) /Factory/;
+    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) /TransferBack/;
 %Docstring
 Creates a new parameter widget wrapper for the given ``parameter``. The
 ``type`` argument dictates the type of dialog the wrapper should be
@@ -243,6 +304,151 @@ Register a Processing widget context.
    (such as individual model-specific properties)
 
 .. seealso:: :py:func:`createWidgetContext`
+
+.. versionadded:: 4.4
+%End
+
+    void registerProviderToolboxAction( const QString &providerId, QgsProcessingToolboxAction *action /Transfer/ );
+%Docstring
+Registers a toolbox ``action`` for a provider.
+
+Ownership of ``action`` is transferred to the registry.
+
+.. seealso:: :py:func:`toolboxActionsForProvider`
+
+.. seealso:: :py:func:`deregisterProviderToolboxActions`
+
+.. versionadded:: 4.4
+%End
+
+    void deregisterProviderToolboxActions( const QString &providerId );
+%Docstring
+Deregisters all toolbox actions for a provider.
+
+Any previously registered actions for this provider will be deleted.
+
+.. seealso:: :py:func:`registerProviderToolboxAction`
+
+.. versionadded:: 4.4
+%End
+
+    QList< QgsProcessingToolboxAction * > toolboxActionsForProvider( const QString &providerId ) const;
+%Docstring
+Returns a list of all toolbox actions registered for a provider.
+
+.. seealso:: :py:func:`registerProviderToolboxAction`
+
+.. versionadded:: 4.4
+%End
+
+    void registerProviderToolboxContextAction( const QString &providerId, QgsProcessingToolboxContextAction *action /Transfer/ );
+%Docstring
+Registers a toolbox context menu ``action`` for a provider.
+
+Ownership of ``action`` is transferred to the registry.
+
+.. seealso:: :py:func:`toolboxContextActionsForProvider`
+
+.. seealso:: :py:func:`deregisterProviderToolboxContextActions`
+
+.. versionadded:: 4.4
+%End
+
+    void deregisterProviderToolboxContextActions( const QString &providerId );
+%Docstring
+Deregisters all toolbox context menu actions for a provider.
+
+Any previously registered actions for this provider will be deleted.
+
+.. seealso:: :py:func:`registerProviderToolboxContextAction`
+
+.. versionadded:: 4.4
+%End
+
+ void deregisterProviderToolboxContextAction( QgsProcessingToolboxContextAction *action /TransferBack/ ) /Deprecated="Since 4.4. Use deregisterProviderToolboxContextActions() instead."/;
+%Docstring
+Deregisters a context menu ``action``.
+
+The action will not be deleted, ownership will be returned to Python.
+
+.. deprecated:: 4.4
+
+   Use :py:func:`~QgsProcessingGuiRegistry.deregisterProviderToolboxContextActions` instead.
+%End
+
+    QList< QgsProcessingToolboxContextAction * > toolboxContextActionsForProvider( const QString &providerId ) const;
+%Docstring
+Returns a list of all toolbox context menu actions registered for a
+provider.
+
+.. seealso:: :py:func:`toolboxContextActions`
+
+.. seealso:: :py:func:`registerProviderToolboxContextAction`
+
+.. versionadded:: 4.4
+%End
+
+    QList< QgsProcessingToolboxContextAction * > toolboxContextActions() const;
+%Docstring
+Returns a list of all toolbox context menu actions registered.
+
+.. seealso:: :py:func:`toolboxContextActionsForProvider`
+
+.. versionadded:: 4.4
+%End
+
+    void setDialogFactory( QgsProcessingDialogFactory *factory /Transfer/ );
+%Docstring
+Sets the application's processing dialog ``factory``.
+
+Ownership of ``factory`` is transferred.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. seealso:: :py:func:`dialogFactory`
+
+.. versionadded:: 4.4
+%End
+
+    QgsProcessingDialogFactory *dialogFactory();
+%Docstring
+Returns the application's processing dialog factory, if set.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. seealso:: :py:func:`setDialogFactory`
+
+.. versionadded:: 4.4
+%End
+
+    void setContextFactory( QgsProcessingContextFactory *factory /Transfer/ );
+%Docstring
+Sets the application's Processing context ``factory``.
+
+Ownership of ``factory`` is transferred.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. seealso:: :py:func:`contextFactory`
+
+.. versionadded:: 4.4
+%End
+
+    QgsProcessingContextFactory *contextFactory();
+%Docstring
+Returns the application's Processing context factory, if set.
+
+.. warning::
+
+   This is not stable API, it is in place for temporary compatibility with Python code only.
+
+.. seealso:: :py:func:`setContextFactory`
 
 .. versionadded:: 4.4
 %End

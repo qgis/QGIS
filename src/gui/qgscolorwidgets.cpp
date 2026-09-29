@@ -32,6 +32,7 @@
 #include <QLineEdit>
 #include <QLineF>
 #include <QMenu>
+#include <QMimeData>
 #include <QPainter>
 #include <QRectF>
 #include <QResizeEvent>
@@ -1832,7 +1833,7 @@ void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )
   }
 
   QDrag *drag = new QDrag( this );
-  drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( dragColor ) );
+  drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( dragColor ).release() );
   drag->setPixmap( createDragIcon( dragColor ) );
   drag->exec( Qt::CopyAction );
 }

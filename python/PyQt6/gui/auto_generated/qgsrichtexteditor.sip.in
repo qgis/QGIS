@@ -82,6 +82,16 @@ Returns the widget's QTextEditor control.
 .. versionadded:: 3.40
 %End
 
+    QToolBar *toolBar();
+%Docstring
+Returns the widget's toolbar.
+
+Exposed so that embedders can adapt it to the space they have, e.g. by
+shrinking its icons or rehosting its actions.
+
+.. versionadded:: 4.4
+%End
+
     QTextDocument *document();
 %Docstring
 Returns a reference to the QTextDocument shown in the widget.

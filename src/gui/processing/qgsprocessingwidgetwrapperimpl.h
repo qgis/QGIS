@@ -22,6 +22,7 @@
 #include "ui_qgsinterpolationsourcewidgetbase.h"
 #include "ui_qgsprocessingpixelsizewidgetbase.h"
 #include "ui_qgsprocessingreliefcolorswidgetbase.h"
+#include "ui_qgsprocessingtileextentmaxzoomwidgetbase.h"
 
 #include "qgshighlightablelineedit.h"
 #include "qgsmaptool.h"
@@ -30,6 +31,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qgsprocessingparameterdefinitionwidget.h"
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsrasterlayerutils.h"
 #include "qobjectuniqueptr.h"
@@ -85,6 +87,7 @@ class QgsHighlightableLineEdit;
 class QgsGeometryWidget;
 class QTreeWidgetItem;
 class QTreeWidget;
+class QgsMapToolExtent;
 
 ///@cond PRIVATE
 
@@ -2004,6 +2007,32 @@ class GUI_EXPORT QgsProcessingMultipleLayerWidgetWrapper : public QgsAbstractPro
     friend class TestProcessingGui;
 };
 
+/**
+ * Generic parameter definition widget for destination parameter types.
+ *
+ * \since QGIS 4.4
+ */
+class GUI_EXPORT QgsProcessingDestinationParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsProcessingDestinationParameterDefinitionWidget(
+      const QString &type,
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingDestinationParameter *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
+
+    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const override;
+
+  private:
+    QString mType;
+    QgsProcessingLayerOutputDestinationWidget *mDestinationWidget = nullptr;
+    std::unique_ptr< QgsProcessingDestinationParameter > mExistingDestinationParameter;
+};
 
 class GUI_EXPORT QgsProcessingOutputWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
 {
@@ -2014,6 +2043,9 @@ class GUI_EXPORT QgsProcessingOutputWidgetWrapper : public QgsAbstractProcessing
 
     // QgsProcessingParameterWidgetWrapper interface
     QWidget *createWidget() override SIP_FACTORY;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
+    ) override;
 
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
@@ -2578,6 +2610,112 @@ class GUI_EXPORT QgsProcessingInterpolationPixelSizeWidgetWrapper : public QgsAb
 
     friend class TestProcessingGui;
 };
+
+
+class GUI_EXPORT QgsTileExtentMaxZoomWidget : public QgsPanelWidget, private Ui::QgsProcessingTileExtentMaxZoomWidgetBase
+{
+    Q_OBJECT
+  public:
+    QgsTileExtentMaxZoomWidget( const QgsProcessingParameterTileExtentMaxZoomList *param );
+    ~QgsTileExtentMaxZoomWidget() override;
+
+    QList< QgsTileExtentMaxZoomRegion > regions() const;
+
+    void setRegions( const QList< QgsTileExtentMaxZoomRegion > &regions );
+
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+  signals:
+    void valueChanged();
+    void toggleDialogVisibility( bool visible );
+
+  private slots:
+    void addClicked();
+    void removeClicked();
+    void itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void extentDrawn( const QgsRectangle &extent );
+    void mapToolDeactivated();
+
+  private:
+    const QgsProcessingParameterTileExtentMaxZoomList *mParam = nullptr;
+
+    QPointer<QgsMapCanvas> mMapCanvas;
+
+    static QString regionToString( const QgsReferencedRectangle &region );
+
+    std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
+    QPointer<QgsMapTool> mMapToolPrevious = nullptr;
+};
+
+class GUI_EXPORT QgsProcessingTileExtentMaxZoomParameterPanel : public QWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsProcessingTileExtentMaxZoomParameterPanel( const QgsProcessingParameterTileExtentMaxZoomList *param );
+
+    QVariant value() const;
+
+    void setValue( const QVariant &value, QgsProcessingContext &context );
+    void setRegions( const QList< QgsTileExtentMaxZoomRegion > &regions );
+
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+  signals:
+
+    void changed();
+    void toggleDialogVisibility( bool visible );
+
+  private slots:
+
+    void showDialog();
+
+  private:
+    void updateSummaryText();
+    const QgsProcessingParameterTileExtentMaxZoomList *mParam = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+    QToolButton *mToolButton = nullptr;
+
+    QList<QgsTileExtentMaxZoomRegion> mRegions;
+    QPointer< QgsTileExtentMaxZoomWidget > mPanelWidget;
+    QPointer<QgsMapCanvas> mMapCanvas;
+
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsProcessingTileExtentMaxZoomWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+  public:
+    QgsProcessingTileExtentMaxZoomWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr
+    ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override;
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
+    void setDialog( QWidget *dialog ) override;
+
+  protected:
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+    QString modelerExpressionFormatString() const override;
+
+  private:
+    QgsProcessingTileExtentMaxZoomParameterPanel *mWidget = nullptr;
+    QLineEdit *mFallbackLineEdit = nullptr;
+    QWidget *mDialog = nullptr;
+
+    friend class TestProcessingGui;
+};
+
 
 ///@endcond PRIVATE
 

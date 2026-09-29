@@ -335,9 +335,9 @@ void TestQgsLayerTree::testRestrictedSymbolSize()
   QgsProject project;
   project.addMapLayer( vl );
 
-  QgsMarkerSymbol *symbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  symbol->setSize( 500.0 );
-  symbol->setSizeUnit( Qgis::RenderUnit::MapUnits );
+  std::unique_ptr<QgsSymbol> symbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+  static_cast<QgsMarkerSymbol *>( symbol.get() )->setSize( 500.0 );
+  static_cast<QgsMarkerSymbol *>( symbol.get() )->setSizeUnit( Qgis::RenderUnit::MapUnits );
 
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
@@ -395,12 +395,12 @@ void TestQgsLayerTree::testRestrictedSymbolSizeWithGeometryGenerator()
   QVariantMap ggProps;
   ggProps.insert( u"SymbolType"_s, u"Fill"_s );
   ggProps.insert( u"geometryModifier"_s, u"buffer( $geometry, 200 )"_s );
-  QgsSymbolLayer *ggSymbolLayer = QgsGeometryGeneratorSymbolLayer::create( ggProps );
+  std::unique_ptr<QgsSymbolLayer> ggSymbolLayer = QgsGeometryGeneratorSymbolLayer::create( ggProps );
   QgsSymbolLayerList fillSymbolLayerList;
   fillSymbolLayerList << new QgsSimpleFillSymbolLayer();
   ggSymbolLayer->setSubSymbol( new QgsFillSymbol( fillSymbolLayerList ) );
   QgsSymbolLayerList slList;
-  slList << ggSymbolLayer;
+  slList << ggSymbolLayer.release();
   QgsMarkerSymbol *symbol = new QgsMarkerSymbol( slList );
 
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
@@ -438,10 +438,10 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"a"_s ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"b"_s ) );
-  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"c"_s ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"a"_s ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"b"_s ) );
+  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"c"_s ) );
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -488,10 +488,10 @@ void TestQgsLayerTree::testFindLegendNode()
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"a"_s ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"b"_s ) );
-  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"c"_s ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"a"_s ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"b"_s ) );
+  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"c"_s ) );
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -523,7 +523,7 @@ void TestQgsLayerTree::testLegendSymbolCategorized()
   //test retrieving/setting a categorized renderer's symbol through the legend node
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
   QVariantMap props;
   props.insert( u"color"_s, u"#ff0000"_s );
   props.insert( u"outline_color"_s, u"#000000"_s );
@@ -540,7 +540,7 @@ void TestQgsLayerTree::testLegendSymbolGraduated()
   //test retrieving/setting a graduated renderer's symbol through the legend node
   QgsGraduatedSymbolRenderer *renderer = new QgsGraduatedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
   QVariantMap props;
   props.insert( u"color"_s, u"#ff0000"_s );
   props.insert( u"outline_color"_s, u"#000000"_s );
@@ -1029,10 +1029,10 @@ void TestQgsLayerTree::testSymbolText()
   //create a categorized renderer for layer
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"a [% 1 + 2 %]"_s ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"b,c"_s ) );
-  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"c"_s ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"a [% 1 + 2 %]"_s ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"b,c"_s ) );
+  renderer->addCategory( QgsRendererCategory( "c", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"c"_s ) );
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
@@ -1223,9 +1223,9 @@ void TestQgsLayerTree::testSymbolLegendNodeSetData()
 
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
   renderer->setClassAttribute( u"col1"_s );
-  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
-  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"a"_s ) );
-  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ), u"b"_s ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release() );
+  renderer->addCategory( QgsRendererCategory( "a", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"a"_s ) );
+  renderer->addCategory( QgsRendererCategory( "b", QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ).release(), u"b"_s ) );
   vl->setRenderer( renderer );
 
   QgsLayerTree *root = new QgsLayerTree();

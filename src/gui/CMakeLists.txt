@@ -390,7 +390,6 @@ set(QGIS_GUI_SRCS
   mesh/qgsmeshrenderer3daveragingwidget.cpp
   mesh/qgsmeshrenderermeshsettingswidget.cpp
   mesh/qgsmeshrendererscalarsettingswidget.cpp
-  mesh/qgsmeshrenderervectorsettingswidget.cpp
   mesh/qgsmeshrendereractivedatasetwidget.cpp
   mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshstaticdatasetwidget.cpp
@@ -431,6 +430,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingalignrasterlayerswidgetwrapper.cpp
   processing/qgsprocessingbatchalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
+  processing/qgsprocessingdefaultstyledialog.cpp
   processing/qgsprocessingdxflayerswidgetwrapper.cpp
   processing/qgsprocessingenummodelerwidget.cpp
   processing/qgsprocessingfavoritealgorithmmanager.cpp
@@ -451,10 +451,12 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingparameterdefinitionwidget.cpp
   processing/qgsprocessingparameterswidget.cpp
   processing/qgsprocessingpointcloudexpressionlineedit.cpp
+  processing/qgsprocessingprovideractions.cpp
   processing/qgsprocessingrastercalculatorexpressionlineedit.cpp
   processing/qgsprocessingrasteroptionswidgetwrapper.cpp
   processing/qgsprocessingrastersourceoptionswidget.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
+  processing/qgsprocessingscripteditordialog.cpp
   processing/qgsprocessingtininputlayerswidget.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
@@ -464,6 +466,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
   processing/models/qgsmodelarrowitem.cpp
+  processing/models/qgsmodelchildalgorithmwidgets.cpp
   processing/models/qgsmodelcomponentgraphicitem.cpp
   processing/models/qgsmodeldesignerconfigdockwidget.cpp
   processing/models/qgsmodeldesignerconfigwidget.cpp
@@ -568,6 +571,8 @@ set(QGIS_GUI_SRCS
   tiledscene/qgstiledscenesourceselect.cpp
   tiledscene/qgstiledscenetexturerendererwidget.cpp
   tiledscene/qgstiledscenewireframerendererwidget.cpp
+
+  vectorfield/qgsvectorfieldsettingswidget.cpp
 
   vectortile/qgsarcgisvectortileconnectiondialog.cpp
   vectortile/qgsvectortilebasiclabelingwidget.cpp
@@ -1425,7 +1430,6 @@ set(QGIS_GUI_HDRS
   mesh/qgsmeshrenderer3daveragingwidget.h
   mesh/qgsmeshrenderermeshsettingswidget.h
   mesh/qgsmeshrendererscalarsettingswidget.h
-  mesh/qgsmeshrenderervectorsettingswidget.h
   mesh/qgsmeshrendereractivedatasetwidget.h
   mesh/qgsmeshstaticdatasetwidget.h
   mesh/qgsmeshvariablestrokewidthwidget.h
@@ -1464,6 +1468,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingalgorithmwidgetbase.h
   processing/qgsprocessingbatchalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
+  processing/qgsprocessingdefaultstyledialog.h
   processing/qgsprocessingdxflayerswidgetwrapper.h
   processing/qgsprocessingenummodelerwidget.h
   processing/qgsprocessingfavoritealgorithmmanager.h
@@ -1485,10 +1490,12 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingparameterdefinitionwidget.h
   processing/qgsprocessingparameterswidget.h
   processing/qgsprocessingpointcloudexpressionlineedit.h
+  processing/qgsprocessingprovideractions.h
   processing/qgsprocessingrastercalculatorexpressionlineedit.h
   processing/qgsprocessingrasteroptionswidgetwrapper.h
   processing/qgsprocessingrastersourceoptionswidget.h
   processing/qgsprocessingrecentalgorithmlog.h
+  processing/qgsprocessingscripteditordialog.h
   processing/qgsprocessingtininputlayerswidget.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
@@ -1498,6 +1505,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingwidgetwrapperimpl.h
 
   processing/models/qgsmodelarrowitem.h
+  processing/models/qgsmodelchildalgorithmwidgets.h
   processing/models/qgsmodelcomponentgraphicitem.h
   processing/models/qgsmodeldesignerconfigdockwidget.h
   processing/models/qgsmodeldesignerconfigwidget.h
@@ -1693,6 +1701,8 @@ set(QGIS_GUI_HDRS
   tiledscene/qgstiledscenesourceselect.h
   tiledscene/qgstiledscenetexturerendererwidget.h
   tiledscene/qgstiledscenewireframerendererwidget.h
+
+  vectorfield/qgsvectorfieldsettingswidget.h
 
   vectortile/qgsarcgisvectortileconnectiondialog.h
   vectortile/qgsvectortilebasiclabelingwidget.h
@@ -1991,6 +2001,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
   ${CMAKE_SOURCE_DIR}/src/gui/vector
+  ${CMAKE_SOURCE_DIR}/src/gui/vectorfield
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
 
   ${CMAKE_BINARY_DIR}/src/gui

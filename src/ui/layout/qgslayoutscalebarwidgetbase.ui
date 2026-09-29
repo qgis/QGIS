@@ -60,16 +60,16 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-318</y>
         <width>566</width>
-        <height>1023</height>
+        <height>1055</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Main Properties</string>
@@ -122,7 +122,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxUnits">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Units</string>
@@ -133,7 +133,7 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
+         <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,2">
           <item row="2" column="1">
            <widget class="QLineEdit" name="mUnitLabelLineEdit">
             <property name="toolTip">
@@ -227,7 +227,7 @@
           <item row="4" column="1">
            <widget class="QgsScaleMethodWidget" name="mScaleMethodWidget" native="true">
             <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+             <enum>Qt::FocusPolicy::StrongFocus</enum>
             </property>
            </widget>
           </item>
@@ -237,7 +237,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxSegments">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Segments</string>
@@ -248,15 +248,84 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0,0">
-          <item row="5" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Height</string>
-            </property>
+         <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0,2">
+          <item row="4" column="2">
+           <widget class="QWidget" name="mMaxWidthWidget" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout5">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QgsDoubleSpinBox" name="mMaxWidthSpinBox">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="suffix">
+                <string> mm</string>
+               </property>
+               <property name="maximum">
+                <double>999.990000000000009</double>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QgsPropertyOverrideButton" name="mMaxWidthDDBtn">
+               <property name="text">
+                <string>…</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
-          <item row="0" column="0">
+          <item row="3" column="2">
+           <widget class="QWidget" name="mMinWidthWidget" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout4">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QgsDoubleSpinBox" name="mMinWidthSpinBox">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="suffix">
+                <string> mm</string>
+               </property>
+               <property name="maximum">
+                <double>999.990000000000009</double>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QgsPropertyOverrideButton" name="mMinWidthDDBtn">
+               <property name="text">
+                <string>…</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
            <widget class="QLabel" name="mSegmentLabel">
             <property name="text">
              <string>Segments</string>
@@ -290,6 +359,20 @@
             </item>
            </layout>
           </item>
+          <item row="5" column="0" colspan="2">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Height</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QRadioButton" name="mFitWidthRadio">
+            <property name="text">
+             <string>Fit segment width</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="2">
            <layout class="QHBoxLayout" name="horizontalLayout1">
             <item>
@@ -304,37 +387,6 @@
             </item>
             <item>
              <widget class="QgsPropertyOverrideButton" name="mSegmentsLeftDDBtn">
-              <property name="text">
-               <string>…</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QRadioButton" name="mFitWidthRadio">
-            <property name="text">
-             <string>Fit segment width</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="2">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QgsDoubleSpinBox" name="mHeightSpinBox">
-              <property name="suffix">
-               <string> mm</string>
-              </property>
-              <property name="maximum">
-               <double>999.990000000000009</double>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QgsPropertyOverrideButton" name="mHeightDDBtn">
               <property name="text">
                <string>…</string>
               </property>
@@ -376,7 +428,31 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="2">
+          <item row="5" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QgsDoubleSpinBox" name="mHeightSpinBox">
+              <property name="suffix">
+               <string> mm</string>
+              </property>
+              <property name="maximum">
+               <double>999.990000000000009</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsPropertyOverrideButton" name="mHeightDDBtn">
+              <property name="text">
+               <string>…</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="7" column="2">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <property name="topMargin">
              <number>0</number>
@@ -399,96 +475,6 @@
              </widget>
             </item>
            </layout>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="mSubdivisionsLabel">
-            <property name="text">
-             <string>Right segments subdivisions</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="mSubdivisionsHeightLabel">
-            <property name="text">
-             <string>Subdivisions height</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QWidget" name="mMinWidthWidget" native="true">
-            <layout class="QHBoxLayout" name="horizontalLayout4">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QgsDoubleSpinBox" name="mMinWidthSpinBox">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-               <property name="maximum">
-                <double>999.990000000000009</double>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QgsPropertyOverrideButton" name="mMinWidthDDBtn">
-               <property name="text">
-                <string>…</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item row="4" column="2">
-           <widget class="QWidget" name="mMaxWidthWidget" native="true">
-            <layout class="QHBoxLayout" name="horizontalLayout5">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QgsDoubleSpinBox" name="mMaxWidthSpinBox">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-               <property name="maximum">
-                <double>999.990000000000009</double>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QgsPropertyOverrideButton" name="mMaxWidthDDBtn">
-               <property name="text">
-                <string>…</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
           </item>
           <item row="2" column="2">
            <widget class="QWidget" name="mSegmentSizeWidget" native="true">
@@ -534,13 +520,27 @@
             </layout>
            </widget>
           </item>
+          <item row="7" column="0" colspan="2">
+           <widget class="QLabel" name="mSubdivisionsHeightLabel">
+            <property name="text">
+             <string>Subdivisions height</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" colspan="2">
+           <widget class="QLabel" name="mSubdivisionsLabel">
+            <property name="text">
+             <string>Right segments subdivisions</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_5">
          <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+          <enum>Qt::FocusPolicy::StrongFocus</enum>
          </property>
          <property name="title">
           <string>Appearance</string>
@@ -552,18 +552,8 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0">
-          <item row="3" column="0" colspan="3">
-           <widget class="QLabel" name="mLabelVerticalPlacementLabel">
-            <property name="text">
-             <string>Distance label placement</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0" colspan="3">
-           <widget class="QComboBox" name="mDistanceLabelPlacementComboBox"/>
-          </item>
-          <item row="5" column="1" colspan="2">
-           <widget class="QgsSymbolButton" name="mFillSymbol1Button">
+          <item row="10" column="1" colspan="2">
+           <widget class="QgsSymbolButton" name="mDivisionStyleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -571,14 +561,11 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Fill Style…</string>
+             <string>Division Style…</string>
             </property>
            </widget>
           </item>
           <item row="11" column="1" colspan="2">
-           <widget class="QgsAlignmentComboBox" name="mAlignmentComboBox"/>
-          </item>
-          <item row="10" column="1" colspan="2">
            <widget class="QgsSymbolButton" name="mSubdivisionStyleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -591,10 +578,23 @@
             </property>
            </widget>
           </item>
-          <item row="9" column="0">
-           <widget class="QLabel" name="mDivisionStyleLabel">
+          <item row="8" column="0">
+           <widget class="QLabel" name="mLineStyleLabel">
             <property name="text">
-             <string>Division style</string>
+             <string>Line style</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1" colspan="2">
+           <widget class="QgsSymbolButton" name="mFillSymbol2Button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Fill Style…</string>
             </property>
            </widget>
           </item>
@@ -615,27 +615,17 @@
             </property>
            </widget>
           </item>
-          <item row="9" column="1" colspan="2">
-           <widget class="QgsSymbolButton" name="mDivisionStyleButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+          <item row="11" column="0">
+           <widget class="QLabel" name="mSubdivisionStyleLabel">
             <property name="text">
-             <string>Division Style…</string>
+             <string>Subdivision style</string>
             </property>
            </widget>
           </item>
-          <item row="12" column="0">
-           <widget class="QLabel" name="mFontLabel">
-            <property name="text">
-             <string>Font</string>
-            </property>
-           </widget>
+          <item row="12" column="1" colspan="2">
+           <widget class="QgsAlignmentComboBox" name="mAlignmentComboBox"/>
           </item>
-          <item row="7" column="1" colspan="2">
+          <item row="8" column="1" colspan="2">
            <widget class="QgsSymbolButton" name="mLineStyleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -648,31 +638,34 @@
             </property>
            </widget>
           </item>
+          <item row="13" column="0">
+           <widget class="QLabel" name="mFontLabel">
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="3">
+           <widget class="QComboBox" name="mDistanceLabelPlacementComboBox"/>
+          </item>
           <item row="6" column="0">
-           <widget class="QLabel" name="mFillSymbol2Label">
-            <property name="text">
-             <string>Secondary fill</string>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0">
-           <widget class="QLabel" name="mSubdivisionStyleLabel">
-            <property name="text">
-             <string>Subdivision style</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="mLabelBarSpaceLabel">
-            <property name="text">
-             <string>Label margin</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
            <widget class="QLabel" name="mFillSymbol1Label">
             <property name="text">
              <string>Primary fill</string>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="0">
+           <widget class="QLabel" name="mAlignmentLabel">
+            <property name="text">
+             <string>Alignment</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="mFillSymbol2Label">
+            <property name="text">
+             <string>Secondary fill</string>
             </property>
            </widget>
           </item>
@@ -686,8 +679,22 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mLabelBarSpaceLabel">
+            <property name="text">
+             <string>Label margin</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="3">
+           <widget class="QLabel" name="mLabelVerticalPlacementLabel">
+            <property name="text">
+             <string>Distance label placement</string>
+            </property>
+           </widget>
+          </item>
           <item row="6" column="1" colspan="2">
-           <widget class="QgsSymbolButton" name="mFillSymbol2Button">
+           <widget class="QgsSymbolButton" name="mFillSymbol1Button">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -699,7 +706,14 @@
             </property>
            </widget>
           </item>
-          <item row="12" column="1" colspan="2">
+          <item row="10" column="0">
+           <widget class="QLabel" name="mDivisionStyleLabel">
+            <property name="text">
+             <string>Division style</string>
+            </property>
+           </widget>
+          </item>
+          <item row="13" column="1" colspan="2">
            <widget class="QgsFontButton" name="mFontButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -712,19 +726,15 @@
             </property>
            </widget>
           </item>
-          <item row="11" column="0">
-           <widget class="QLabel" name="mAlignmentLabel">
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Alignment</string>
+             <string>Unit label placement</string>
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="mLineStyleLabel">
-            <property name="text">
-             <string>Line style</string>
-            </property>
-           </widget>
+          <item row="5" column="1" colspan="2">
+           <widget class="QgsCheckableComboBox" name="mUnitLabelPlacementComboBox"/>
           </item>
          </layout>
         </widget>
@@ -791,6 +801,11 @@
    <extends>QComboBox</extends>
    <header>qgsalignmentcombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsCheckableComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscheckablecombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
@@ -826,6 +841,7 @@
   <tabstop>mBoxSizeSpinBox</tabstop>
   <tabstop>mLabelBarSpaceSpinBox</tabstop>
   <tabstop>mDistanceLabelPlacementComboBox</tabstop>
+  <tabstop>mUnitLabelPlacementComboBox</tabstop>
   <tabstop>mFillSymbol1Button</tabstop>
   <tabstop>mFillSymbol2Button</tabstop>
   <tabstop>mLineStyleButton</tabstop>

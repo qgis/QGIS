@@ -113,6 +113,8 @@ bool QgsBookmarksToLayerAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
 QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
   QgsFields fields;
   fields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
@@ -244,6 +246,8 @@ QgsLayerToBookmarksAlgorithm *QgsLayerToBookmarksAlgorithm::createInstance() con
 
 QVariantMap QgsLayerToBookmarksAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mDest = parameterAsEnum( parameters, u"DESTINATION"_s, context );
   std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )

@@ -68,6 +68,8 @@ bool QgsTransectAlgorithm::prepareAlgorithmTransectParameters( const QVariantMap
 
 std::vector<QgsPoint> QgsTransectAlgorithm::generateSamplingPoints( const QgsLineString &line, const QVariantMap &, QgsProcessingContext & )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::vector<QgsPoint> samplingPoints;
 
   for ( auto it = line.vertices_begin(); it != line.vertices_end(); ++it )

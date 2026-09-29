@@ -116,6 +116,7 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
                     icon=self.algorithm().icon(),
                     name=f"{out.description()} [{num}]",
                     result=results[out.name()],
+                    timestamp=time.localtime(),
                 )
 
     def createSummaryTable(self, algorithm_results, errors):

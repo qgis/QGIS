@@ -17,9 +17,11 @@
 
 #include "qgsprocess.h"
 
+#include "qgsacademicreference.h"
 #include "qgscommandlineutils.h"
 #include "qgsnativealgorithms.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsprocessingmodelprovider.h"
 #include "qgsprocessingregistry.h"
 
 #include <QString>
@@ -300,6 +302,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
       {
         loadPlugins();
       }
+
       listPlugins( mFlags & Flag::UseJson, !( mFlags & Flag::SkipLoadingPlugins ) );
       return 0;
     }
@@ -320,6 +323,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
     {
       loadPlugins();
     }
+    addModelProvider();
     listAlgorithms();
     return 0;
   }
@@ -335,6 +339,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
     {
       loadPlugins();
     }
+    addModelProvider();
     const QString algId = args.at( 2 );
     return showAlgorithmHelp( algId );
   }
@@ -350,6 +355,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
     {
       loadPlugins();
     }
+    addModelProvider();
 
     const QString algId = args.at( 2 );
 
@@ -541,7 +547,8 @@ void QgsProcessingExec::showUsage( const QString &appName )
     << ")\n"
     << "Usage: "
     << appName
-    << " [--help] [--version] [--json] [--verbose] [--no-python] [--skip-loading-plugins] [command] [algorithm id, path to model file, or path to Python script] [parameters]\n"
+    << " [--help] [--version] [--json] [--verbose] [--no-python] [--skip-loading-plugins] [--profile name] [--profiles-path path] [command] [algorithm id, path to model file, or path to Python "
+       "script] [parameters]\n"
     << "\nOptions:\n"
     << "\t--help or -h\t\tOutput the help\n"
     << "\t--version or -v\t\tOutput all versions related to QGIS Process\n"
@@ -549,6 +556,8 @@ void QgsProcessingExec::showUsage( const QString &appName )
     << "\t--verbose\t\tOutput verbose logs\n"
     << "\t--no-python\t\tDisable Python support (results in faster startup)\n"
     << "\t--skip-loading-plugins\tAvoid loading enabled plugins (results in faster startup)\n"
+    << "\t--profile name\t\tLoad an existing named profile\n"
+    << "\t--profiles-path path or -S path\tBase path containing existing user profiles under {path}/profiles\n"
     << "Available commands:\n"
     << "\tplugins\t\tlist available and active plugins\n"
     << "\tplugins enable\tenables an installed plugin. The plugin name must be specified, e.g. \"plugins enable cartography_tools\"\n"
@@ -601,6 +610,12 @@ void QgsProcessingExec::loadPlugins()
   }
 
 #endif
+}
+
+void QgsProcessingExec::addModelProvider()
+{
+  // model provider is deferred for qgis_process startup, so we only load when required
+  QgsApplication::processingRegistry()->addProvider( new QgsProcessingModelProvider( QgsApplication::processingRegistry() ) );
 }
 
 void QgsProcessingExec::listAlgorithms()
@@ -882,6 +897,19 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId )
         std::cout << alg->shortDescription().toLocal8Bit().constData() << '\n';
       if ( !alg->shortHelpString().isEmpty() && alg->shortHelpString() != alg->shortDescription() )
         std::cout << alg->shortHelpString().toLocal8Bit().constData() << '\n';
+    }
+
+    const QList< QgsAcademicReference > references = alg->academicReferences();
+    if ( !references.empty() )
+    {
+      std::cout << "\n----------------\n";
+      std::cout << "References\n";
+      std::cout << "----------------\n\n";
+      for ( const QgsAcademicReference &reference : references )
+      {
+        const QString referenceString = reference.asPlainText();
+        std::cout << " - " << referenceString.toUtf8().constData() << '\n';
+      }
     }
 
     if ( alg->documentationFlags() != Qgis::ProcessingAlgorithmDocumentationFlags() )

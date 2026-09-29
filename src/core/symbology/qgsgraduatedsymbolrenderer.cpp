@@ -129,6 +129,37 @@ QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value ) const
   return nullptr;
 }
 
+bool QgsGraduatedSymbolRenderer::rangeLowerBoundIsInclusive( int rangeIndex ) const
+{
+  if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
+    return true;
+
+  return !valueCapturedByEarlierRange( rangeIndex, mRanges.at( rangeIndex ).lowerValue() );
+}
+
+bool QgsGraduatedSymbolRenderer::rangeUpperBoundIsInclusive( int rangeIndex ) const
+{
+  if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
+    return true;
+
+  return !valueCapturedByEarlierRange( rangeIndex, mRanges.at( rangeIndex ).upperValue() );
+}
+
+bool QgsGraduatedSymbolRenderer::rangeOverlapsEarlierRange( int rangeIndex ) const
+{
+  if ( rangeIndex <= 0 || rangeIndex >= mRanges.size() )
+    return false;
+
+  const QgsRendererRange &target = mRanges.at( rangeIndex );
+  for ( int i = 0; i < rangeIndex; ++i )
+  {
+    // ranges which only touch at a shared boundary value are not considered as overlapping
+    if ( mRanges.at( i ).lowerValue() < target.upperValue() && target.lowerValue() < mRanges.at( i ).upperValue() )
+      return true;
+  }
+  return false;
+}
+
 QString QgsGraduatedSymbolRenderer::legendKeyForValue( double value ) const
 {
   if ( const QgsRendererRange *matchingRange = rangeForValue( value ) )
@@ -481,7 +512,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( const QgsVectorLayer *vl, int nc
 
   for ( QList<QgsClassificationRange>::iterator it = classes.begin(); it != classes.end(); ++it )
   {
-    QgsSymbol *newSymbol = mSourceSymbol ? mSourceSymbol->clone() : QgsSymbol::defaultSymbol( vl->geometryType() );
+    QgsSymbol *newSymbol = mSourceSymbol ? mSourceSymbol->clone() : QgsSymbol::defaultSymbol( vl->geometryType() ).release();
     addClass( QgsRendererRange( *it, newSymbol ) );
   }
   updateColorRamp( nullptr );
@@ -494,7 +525,7 @@ QgsRendererRangeLabelFormat QgsGraduatedSymbolRenderer::labelFormat() const
 }
 Q_NOWARN_DEPRECATED_POP
 
-QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsFeatureRenderer> QgsGraduatedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   QDomElement symbolsElem = element.firstChildElement( u"symbols"_s );
   if ( symbolsElem.isNull() )
@@ -661,7 +692,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
     r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
   }
   // TODO: symbol levels
-  return r.release();
+  return r;
 }
 
 QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
@@ -1331,7 +1362,7 @@ void QgsGraduatedSymbolRenderer::setAstride( bool astride ) SIP_DEPRECATED
   mClassificationMethod->setSymmetricMode( mClassificationMethod->symmetricModeEnabled(), mClassificationMethod->symmetryPoint(), astride );
 }
 
-QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+std::unique_ptr<QgsGraduatedSymbolRenderer> QgsGraduatedSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   std::unique_ptr< QgsGraduatedSymbolRenderer > r;
   if ( renderer->type() == "graduatedSymbol"_L1 )
@@ -1360,13 +1391,13 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
   {
     const QgsPointDistanceRenderer *pointDistanceRenderer = dynamic_cast<const QgsPointDistanceRenderer *>( renderer );
     if ( pointDistanceRenderer )
-      r.reset( convertFromRenderer( pointDistanceRenderer->embeddedRenderer() ) );
+      r = convertFromRenderer( pointDistanceRenderer->embeddedRenderer() );
   }
   else if ( renderer->type() == "invertedPolygonRenderer"_L1 )
   {
     const QgsInvertedPolygonRenderer *invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer *>( renderer );
     if ( invertedPolygonRenderer )
-      r.reset( convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() ) );
+      r = convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
   }
 
   // If not one of the specifically handled renderers, then just grab the symbol from the renderer
@@ -1385,7 +1416,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
 
   renderer->copyRendererData( r.get() );
 
-  return r.release();
+  return r;
 }
 
 void QgsGraduatedSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
@@ -1408,4 +1439,14 @@ QString QgsGraduatedSymbolRenderer::graduatedMethodStr( Qgis::GraduatedMethod me
       return u"GraduatedSize"_s;
   }
   return QString();
+}
+
+bool QgsGraduatedSymbolRenderer::valueCapturedByEarlierRange( const int rangeIndex, const double value ) const
+{
+  for ( int i = 0; i < rangeIndex; ++i )
+  {
+    if ( mRanges.at( i ).lowerValue() <= value && mRanges.at( i ).upperValue() >= value )
+      return true;
+  }
+  return false;
 }

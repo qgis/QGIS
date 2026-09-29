@@ -122,6 +122,34 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     bool rangesHaveGaps() const;
 
+    /**
+     * Returns TRUE if the lower bound of the range at the specified \a rangeIndex is
+     * inclusive, i.e. a feature value exactly equal to the range's lowerValue() will be
+     * classified into this range.
+     *
+     * \see rangeUpperBoundIsInclusive()
+     * \since QGIS 4.4
+     */
+    bool rangeLowerBoundIsInclusive( int rangeIndex ) const;
+
+    /**
+     * Returns TRUE if the upper bound of the range at the specified \a rangeIndex is
+     * inclusive, i.e. a feature value exactly equal to the range's upperValue() will be
+     * classified into this range.
+     *
+     * \see rangeLowerBoundIsInclusive()
+     * \since QGIS 4.4
+     */
+    bool rangeUpperBoundIsInclusive( int rangeIndex ) const;
+
+    /**
+     * Returns TRUE if the range at the specified \a rangeIndex overlaps with any range
+     * positioned earlier in the list of ranges().
+     *
+     * \since QGIS 4.4
+     */
+    bool rangeOverlapsEarlierRange( int rangeIndex ) const;
+
     void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
@@ -305,7 +333,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     Q_NOWARN_DEPRECATED_POP;
 
     //! create renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
@@ -415,7 +443,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * creates a QgsGraduatedSymbolRenderer from an existing renderer.
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
-    static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    static std::unique_ptr<QgsGraduatedSymbolRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 
     /**
      * Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
@@ -492,6 +520,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     static QString methodIdFromMode( QgsGraduatedSymbolRenderer::Mode mode );
     static QgsGraduatedSymbolRenderer::Mode modeFromMethodId( const QString &methodId );
     Q_NOWARN_DEPRECATED_POP
+
+    // ! check if the value is captured by any previous range (by ordering in mRanges) than the rangeIndex specified
+    bool valueCapturedByEarlierRange( const int rangeIndex, const double value ) const;
 
 #ifdef SIP_RUN
     QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer & );

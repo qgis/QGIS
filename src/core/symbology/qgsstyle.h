@@ -407,7 +407,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * Returns a new copy of the specified color ramp. The caller
      * takes responsibility for deleting the returned object.
      */
-    QgsColorRamp *colorRamp( const QString &name ) const SIP_FACTORY;
+    std::unique_ptr<QgsColorRamp> colorRamp( const QString &name ) const;
 
     //! Returns count of color ramps
     int colorRampCount();
@@ -485,7 +485,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * \since QGIS 3.16
      */
-    QgsAbstract3DSymbol *symbol3D( const QString &name ) const SIP_FACTORY;
+    std::unique_ptr<QgsAbstract3DSymbol> symbol3D( const QString &name ) const;
 
     /**
      * Returns count of 3D symbols in the style.
@@ -595,7 +595,7 @@ class CORE_EXPORT QgsStyle : public QObject
     bool renameSymbol( const QString &oldName, const QString &newName );
 
     //! Returns a NEW copy of symbol
-    QgsSymbol *symbol( const QString &name ) SIP_FACTORY;
+    std::unique_ptr<QgsSymbol> symbol( const QString &name );
 
     //! Returns a const pointer to a symbol (doesn't create new instance)
     const QgsSymbol *symbolRef( const QString &name ) const;

@@ -28,7 +28,7 @@ Raster renderer pipe for single band color.
     virtual Qgis::RasterRendererFlags flags() const;
 
 
-    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
+    static std::unique_ptr<QgsRasterRenderer> create( const QDomElement &elem, QgsRasterInterface *input );
 
     virtual bool setInput( QgsRasterInterface *input );
 

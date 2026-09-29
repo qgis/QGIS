@@ -116,6 +116,8 @@ bool QgsRasterCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
 QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )
   {
     layer->moveToThread( QThread::currentThread() );
@@ -255,6 +257,8 @@ QgsRasterCalculatorModelerAlgorithm *QgsRasterCalculatorModelerAlgorithm::create
 
 QVariantMap QgsRasterCalculatorModelerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )
   {
     layer->moveToThread( QThread::currentThread() );

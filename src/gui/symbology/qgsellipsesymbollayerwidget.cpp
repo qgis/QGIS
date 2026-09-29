@@ -72,11 +72,13 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   btnChangeColorFill->setContext( u"symbology"_s );
   btnChangeColorFill->setShowNoColor( true );
   btnChangeColorFill->setNoColorString( tr( "Transparent Fill" ) );
+  btnChangeColorFill->setOpaqueColorString( tr( "Opaque Fill" ) );
   btnChangeColorStroke->setAllowOpacity( true );
   btnChangeColorStroke->setColorDialogTitle( tr( "Select Stroke Color" ) );
   btnChangeColorStroke->setContext( u"symbology"_s );
   btnChangeColorStroke->setShowNoColor( true );
   btnChangeColorStroke->setNoColorString( tr( "Transparent Stroke" ) );
+  btnChangeColorStroke->setOpaqueColorString( tr( "Opaque Stroke" ) );
 
   mFillColorDDBtn->registerLinkedWidget( btnChangeColorFill );
   mStrokeColorDDBtn->registerLinkedWidget( btnChangeColorStroke );

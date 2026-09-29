@@ -29,7 +29,7 @@ Simple constructor
 
     ~QgsMaskMarkerSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Create a new QgsMaskMarkerSymbolLayer
 

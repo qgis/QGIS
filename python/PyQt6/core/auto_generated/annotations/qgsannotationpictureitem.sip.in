@@ -37,7 +37,7 @@ Constructor for QgsAnnotationPictureItem, rendering the specified image
     virtual QgsAnnotationPictureItem *clone() const /Factory/;
 
 
-    static QgsAnnotationPictureItem *create() /Factory/;
+    static std::unique_ptr<QgsAnnotationPictureItem> create();
 %Docstring
 Creates a new polygon annotation item.
 %End
@@ -75,6 +75,42 @@ Returns ``True`` if the aspect ratio of the picture will be retained.
 Sets whether the aspect ratio of the picture will be retained.
 
 .. seealso:: :py:func:`lockAspectRatio`
+%End
+
+    Qgis::BillboardScaleMode billboard3DScaleMode() const;
+%Docstring
+Returns the 3D billboard scale mode for the picture.
+
+.. seealso:: :py:func:`setBillboard3DScaleMode`
+
+.. versionadded:: 4.4
+%End
+
+    void setBillboard3DScaleMode( Qgis::BillboardScaleMode mode );
+%Docstring
+Sets the 3D billboard scale ``mode`` for the picture.
+
+.. seealso:: :py:func:`billboard3DScaleMode`
+
+.. versionadded:: 4.4
+%End
+
+    QSizeF billboard3DSize() const;
+%Docstring
+Returns the 3D billboard size for the picture.
+
+.. seealso:: :py:func:`setBillboard3DSize`
+
+.. versionadded:: 4.4
+%End
+
+    void setBillboard3DSize( const QSizeF &size );
+%Docstring
+Sets the 3D billboard ``size`` for the picture.
+
+.. seealso:: :py:func:`billboard3DSize`
+
+.. versionadded:: 4.4
 %End
 
   protected:

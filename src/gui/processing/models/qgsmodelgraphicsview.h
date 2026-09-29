@@ -24,6 +24,8 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
+#define SIP_NO_FILE
+
 class QgsModelViewTool;
 class QgsModelViewToolTemporaryKeyPan;
 class QgsModelViewToolTemporaryKeyZoom;
@@ -34,10 +36,11 @@ class QgsModelViewSnapMarker;
 
 ///@cond NOT_STABLE
 
+
 /**
  * \ingroup gui
  * \brief QGraphicsView subclass representing the model designer.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
@@ -186,7 +189,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * Emitted when the current \a tool is changed.
      * \see setTool()
      */
-    void toolSet( QgsModelViewTool *tool ) SIP_SKIP;
+    void toolSet( QgsModelViewTool *tool );
 
     /**
      * Emitted when an \a item is "focused" in the view, i.e. it becomes the active

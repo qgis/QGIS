@@ -2,8 +2,8 @@
     qgssymbollayermodel.h
     ---------------------
     begin                : June 2026
-    copyright            : (C) 2026 by Valentin Buira
-    email                : valentin dot buira at gmail dot com
+    copyright            : (C) 2026 by Celia Buira
+    email                : celia dot buira at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -177,7 +177,9 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
      */
     QgsSymbolLayerModel( QgsVectorLayer *vl, QObject *parent SIP_TRANSFERTHIS = nullptr, QScreen *screen = nullptr );
 
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex & = QModelIndex() ) const override;
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -216,7 +218,7 @@ class GUI_EXPORT QgsSymbolLayerModel : public QAbstractItemModel
     /**
      * Updates the preview icon of the given \a node. And recursively updates the parents of the node.
      */
-    void updatePreview( QgsSymbolLayerModelNode *node );
+    void updatePreviewIcons( QgsSymbolLayerModelNode *node );
 
     /**
      * Sets the \a symbol associated with the model.

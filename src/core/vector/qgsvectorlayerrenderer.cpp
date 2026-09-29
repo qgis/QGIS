@@ -16,6 +16,7 @@
 #include "qgsvectorlayerrenderer.h"
 
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystemutils.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturefilterprovider.h"
@@ -514,6 +515,38 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   return true;
 }
 
+static QgsGeometry combinedClipGeometry( const QgsGeometry &geom1, const QgsGeometry &geom2 )
+{
+  if ( geom1.isEmpty() )
+    return geom2;
+
+  if ( geom2.isEmpty() )
+    return geom1;
+
+  return geom1.intersection( geom2 );
+}
+
+static std::unique_ptr< QgsGeometryEngine > prepareClipGeometry( bool applyClipFilter, const QgsGeometry &clipFilterGeom, const QgsGeometry &horizonGeom )
+{
+  std::unique_ptr< QgsGeometryEngine > clipEngine;
+  if ( applyClipFilter && !horizonGeom.isEmpty() )
+  {
+    const QgsGeometry visibleRegionGeom = clipFilterGeom.intersection( horizonGeom );
+    clipEngine.reset( QgsGeometry::createGeometryEngine( visibleRegionGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+  else if ( applyClipFilter && horizonGeom.isEmpty() )
+  {
+    clipEngine.reset( QgsGeometry::createGeometryEngine( clipFilterGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+  else if ( !applyClipFilter && !horizonGeom.isEmpty() )
+  {
+    clipEngine.reset( QgsGeometry::createGeometryEngine( horizonGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+  return clipEngine;
+}
 
 void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeatureIterator &fit )
 {
@@ -527,15 +560,20 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
   QgsRenderContext &context = *renderContext();
   context.expressionContext().appendScope( symbolScope );
 
-  std::unique_ptr< QgsGeometryEngine > clipEngine;
-  if ( mApplyClipFilter )
-  {
-    clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
-    clipEngine->prepareGeometry();
-  }
-
   if ( mSelectionSymbol && isMainRenderer )
     mSelectionSymbol->startRender( context, mFields );
+
+  QgsGeometry horizonGeom;
+  double lat, lon;
+  if ( context.coordinateTransform().destinationCrs().topocentricOrigin( lat, lon ) )
+  {
+    horizonGeom = QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry( context.coordinateTransform().destinationCrs(), context.coordinateTransform().sourceCrs(), context.transformContext(), 0.1 );
+  }
+
+  std::unique_ptr< QgsGeometryEngine > clipEngine = prepareClipGeometry( mApplyClipFilter, mClipFilterGeom, horizonGeom );
+
+  const QgsGeometry renderClipGeom = combinedClipGeometry( mApplyClipGeometries ? mClipFeatureGeom : QgsGeometry(), horizonGeom );
+  const QgsGeometry labelClipGeom = combinedClipGeometry( mApplyLabelClipGeometries ? mLabelClipFeatureGeom : QgsGeometry(), horizonGeom );
 
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
@@ -549,13 +587,13 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
       }
 
       if ( !fet.hasGeometry() || fet.geometry().isEmpty() )
-        continue; // skip features without geometry
+        continue;
 
       if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
         continue; // skip features outside of clipping region
 
-      if ( mApplyClipGeometries )
-        context.setFeatureClipGeometry( mClipFeatureGeom );
+      if ( !renderClipGeom.isEmpty() )
+        context.setFeatureClipGeometry( renderClipGeom );
 
       if ( !mNoSetLayerExpressionContext )
         context.expressionContext().setFeature( fet );
@@ -599,33 +637,33 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
         if ( isMainRenderer && context.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
         {
           const quint64 startLabelTime = timer.elapsed();
-          QgsGeometry obstacleGeometry;
+          QgsLabelFeatureDetails details;
+          details.setIsSelected( featureIsSelected );
           QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
-          QgsSymbol *symbol = nullptr;
           if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
           {
-            obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
+            details.setObstacleGeometry( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols ) );
           }
 
           if ( !symbols.isEmpty() )
           {
-            symbol = symbols.at( 0 );
-            QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
+            details.setSymbol( symbols.at( 0 ) );
+            QgsExpressionContextUtils::updateSymbolScope( details.symbol(), symbolScope );
           }
 
-          if ( mApplyLabelClipGeometries )
-            context.setFeatureClipGeometry( mLabelClipFeatureGeom );
+          if ( !labelClipGeom.isEmpty() )
+            context.setFeatureClipGeometry( labelClipGeom );
 
           if ( mLabelProvider )
           {
-            mLabelProvider->registerFeature( fet, context, obstacleGeometry, symbol );
+            mLabelProvider->registerFeature( fet, context, details );
           }
           if ( mDiagramProvider )
           {
-            mDiagramProvider->registerFeature( fet, context, obstacleGeometry );
+            mDiagramProvider->registerFeature( fet, context, details.obstacleGeometry() );
           }
 
-          if ( mApplyLabelClipGeometries )
+          if ( !labelClipGeom.isEmpty() )
             context.setFeatureClipGeometry( QgsGeometry() );
 
           totalLabelTime += ( timer.elapsed() - startLabelTime );
@@ -689,7 +727,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   QgsSingleSymbolRenderer *selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) );
+    selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ).release() );
     selRenderer->symbol()->setColor( context.selectionColor() );
     selRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
     selRenderer->startRender( context, mFields );
@@ -697,17 +735,6 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
 
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
   auto scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
-
-
-  std::unique_ptr< QgsGeometryEngine > clipEngine;
-  if ( mApplyClipFilter )
-  {
-    clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
-    clipEngine->prepareGeometry();
-  }
-
-  if ( mApplyLabelClipGeometries )
-    context.setFeatureClipGeometry( mLabelClipFeatureGeom );
 
   std::unique_ptr< QgsScopedRuntimeProfile > fetchFeaturesProfile;
   if ( mEnableProfile )
@@ -718,6 +745,19 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   QElapsedTimer timer;
   timer.start();
   quint64 totalLabelTime = 0;
+
+  QgsGeometry horizonGeom;
+  double lat, lon;
+  if ( context.coordinateTransform().destinationCrs().topocentricOrigin( lat, lon ) )
+  {
+    horizonGeom = QgsCoordinateReferenceSystemUtils::topocentricHorizonGeometry( context.coordinateTransform().destinationCrs(), context.coordinateTransform().sourceCrs(), context.transformContext(), 0.1 );
+  }
+
+  const QgsGeometry labelClipGeom = combinedClipGeometry( mApplyLabelClipGeometries ? mLabelClipFeatureGeom : QgsGeometry(), horizonGeom );
+  if ( !labelClipGeom.isEmpty() )
+    context.setFeatureClipGeometry( labelClipGeom );
+
+  std::unique_ptr< QgsGeometryEngine > clipEngine = prepareClipGeometry( mApplyClipFilter, mClipFilterGeom, horizonGeom );
 
   // 1. fetch features
   QgsFeature fet;
@@ -732,7 +772,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     }
 
     if ( !fet.hasGeometry() )
-      continue; // skip features without geometry
+      continue;
 
     if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
       continue; // skip features outside of clipping region
@@ -781,27 +821,27 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     {
       const quint64 startLabelTime = timer.elapsed();
 
-      QgsGeometry obstacleGeometry;
+      QgsLabelFeatureDetails details;
+      details.setIsSelected( context.showSelection() && mSelectedFeatureIds.contains( fet.id() ) );
       QgsSymbolList symbols = renderer->originalSymbolsForFeature( fet, context );
-      QgsSymbol *symbol = nullptr;
       if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
       {
-        obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols );
+        details.setObstacleGeometry( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, context, symbols ) );
       }
 
       if ( !symbols.isEmpty() )
       {
-        symbol = symbols.at( 0 );
-        QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
+        details.setSymbol( symbols.at( 0 ) );
+        QgsExpressionContextUtils::updateSymbolScope( details.symbol(), symbolScope );
       }
 
       if ( mLabelProvider )
       {
-        mLabelProvider->registerFeature( fet, context, obstacleGeometry, symbol );
+        mLabelProvider->registerFeature( fet, context, details );
       }
       if ( mDiagramProvider )
       {
-        mDiagramProvider->registerFeature( fet, context, obstacleGeometry );
+        mDiagramProvider->registerFeature( fet, context, details.obstacleGeometry() );
       }
 
       totalLabelTime += ( timer.elapsed() - startLabelTime );
@@ -817,7 +857,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     }
   }
 
-  if ( mApplyLabelClipGeometries )
+  if ( !labelClipGeom.isEmpty() )
     context.setFeatureClipGeometry( QgsGeometry() );
 
   scopePopper.reset();
@@ -854,8 +894,9 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   }
   sortingProfile.reset();
 
-  if ( mApplyClipGeometries )
-    context.setFeatureClipGeometry( mClipFeatureGeom );
+  const QgsGeometry renderClipGeom = combinedClipGeometry( mApplyClipGeometries ? mClipFeatureGeom : QgsGeometry(), horizonGeom );
+  if ( !renderClipGeom.isEmpty() )
+    context.setFeatureClipGeometry( renderClipGeom );
 
   // 2. draw features in correct order
   for ( const QHash< QgsSymbol *, QList<QgsFeature> > &featureLists : features )

@@ -90,7 +90,13 @@ SPELLOKRX='(#\s*spellok|<!--\s*#\s*spellok\s*-->)'
 # split into several files to avoid too long regexes
 SPLIT=8
 
-${GP}split --number=l/$SPLIT --numeric-suffixes --suffix-length=2 --additional-suffix=~ ${DIR}/spelling.dat spelling
+# use a private temp dir so concurrent invocations of this script (e.g. pre-commit
+# running this hook on several file batches in parallel) don't clobber each other's
+# split files, which were previously written under fixed names in the working directory
+TMPDIR_SPELLCHECK=$(mktemp -d)
+trap 'rm -rf "$TMPDIR_SPELLCHECK"' EXIT
+
+${GP}split --number=l/$SPLIT --numeric-suffixes --suffix-length=2 --additional-suffix=~ ${DIR}/spelling.dat ${TMPDIR_SPELLCHECK}/spelling
 
 # global replace variables (dictionary)
 declare -A GLOBREP_ALLFILES=()
@@ -101,7 +107,7 @@ ERRORFOUND=NO
 
 for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
   { [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]]; } && printf "Progress: %d/%d\r" $(( I + 1 )) $SPLIT
-  SPELLFILE=spelling$I~
+  SPELLFILE=${TMPDIR_SPELLCHECK}/spelling$I~
   ${GP}sed -i '/^#/d' $SPELLFILE
 
   # if correction contains an uppercase letter and is the same as the error character wise, this means that the error is searched as a full word and case sensitive (not incorporated in a bigger one)

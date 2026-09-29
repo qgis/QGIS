@@ -305,6 +305,8 @@ QgsRasterFrequencyByEqualOperatorAlgorithm *QgsRasterFrequencyByEqualOperatorAlg
 
 int QgsRasterFrequencyByEqualOperatorAlgorithm::applyComparisonOperator( double searchValue, std::vector<double> cellValueStack )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   return static_cast<int>( std::count( cellValueStack.begin(), cellValueStack.end(), searchValue ) );
 }
 
@@ -358,6 +360,8 @@ QgsRasterFrequencyByGreaterThanOperatorAlgorithm *QgsRasterFrequencyByGreaterTha
 
 int QgsRasterFrequencyByGreaterThanOperatorAlgorithm::applyComparisonOperator( double searchValue, std::vector<double> cellValueStack )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   return static_cast<int>( std::count_if( cellValueStack.begin(), cellValueStack.end(), [&]( double const &stackValue ) { return stackValue > searchValue; } ) );
 }
 
@@ -411,6 +415,8 @@ QgsRasterFrequencyByLessThanOperatorAlgorithm *QgsRasterFrequencyByLessThanOpera
 
 int QgsRasterFrequencyByLessThanOperatorAlgorithm::applyComparisonOperator( double searchValue, std::vector<double> cellValueStack )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   return static_cast<int>( std::count_if( cellValueStack.begin(), cellValueStack.end(), [&]( double const &stackValue ) { return stackValue < searchValue; } ) );
 }
 

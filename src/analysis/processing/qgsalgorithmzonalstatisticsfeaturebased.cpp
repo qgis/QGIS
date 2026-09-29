@@ -159,6 +159,8 @@ bool QgsZonalStatisticsFeatureBasedAlgorithm::prepareAlgorithm( const QVariantMa
 
 QgsFeatureList QgsZonalStatisticsFeatureBasedAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( !mCreatedTransform )
   {
     mCreatedTransform = true;

@@ -127,6 +127,8 @@ bool QgsZonalStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 QVariantMap QgsZonalStatisticsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"INPUT_VECTOR"_s, context );
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid zones layer" ) );

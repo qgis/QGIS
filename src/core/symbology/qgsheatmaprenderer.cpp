@@ -312,10 +312,10 @@ void QgsHeatmapRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderCon
   extent.setYMaximum( extent.yMaximum() + extension );
 }
 
-QgsFeatureRenderer *QgsHeatmapRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsFeatureRenderer> QgsHeatmapRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
-  QgsHeatmapRenderer *r = new QgsHeatmapRenderer();
+  auto r = std::make_unique<QgsHeatmapRenderer>();
   r->setRadius( element.attribute( u"radius"_s, u"50.0"_s ).toFloat() );
   r->setRadiusUnit( static_cast< Qgis::RenderUnit >( element.attribute( u"radius_unit"_s, u"0"_s ).toInt() ) );
   r->setRadiusMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"radius_map_unit_scale"_s, QString() ) ) );
@@ -387,17 +387,17 @@ QSet<QString> QgsHeatmapRenderer::usedAttributes( const QgsRenderContext & ) con
   return attributes;
 }
 
-QgsHeatmapRenderer *QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+std::unique_ptr<QgsHeatmapRenderer> QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   if ( renderer->type() == "heatmapRenderer"_L1 )
   {
-    return dynamic_cast<QgsHeatmapRenderer *>( renderer->clone() );
+    return std::unique_ptr<QgsHeatmapRenderer>( dynamic_cast<QgsHeatmapRenderer *>( renderer->clone() ) );
   }
   else
   {
     auto res = std::make_unique< QgsHeatmapRenderer >();
     renderer->copyRendererData( res.get() );
-    return res.release();
+    return res;
   }
 }
 

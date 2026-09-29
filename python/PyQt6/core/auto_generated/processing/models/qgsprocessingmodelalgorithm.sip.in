@@ -598,9 +598,9 @@ must be passed.
 .. seealso:: :py:func:`createExpressionContextScopeForChildAlgorithm`
 %End
 
-    QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm(
+    std::unique_ptr<QgsExpressionContextScope> createExpressionContextScopeForChildAlgorithm(
       const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(), const QVariantMap &results = QVariantMap()
-    ) const /Factory/;
+    ) const;
 %Docstring
 Creates a new expression context scope for a child algorithm within the
 model.

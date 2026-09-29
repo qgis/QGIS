@@ -34,6 +34,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QMenu>
+#include <QMimeData>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPushButton>
@@ -51,6 +52,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   : QToolButton( parent )
   , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
   , mNoColorString( tr( "No color" ) )
+  , mOpaqueColorString( tr( "Opaque color" ) )
 {
   //if a color scheme registry was specified, use it, otherwise use the global instance
   mColorSchemeRegistry = registry ? registry : QgsApplication::colorSchemeRegistry();
@@ -195,6 +197,13 @@ void QgsColorButton::setToNoColor()
   setColor( noColor );
 }
 
+void QgsColorButton::setToOpaqueColor()
+{
+  QColor opaqueColor = QColor( mColor );
+  opaqueColor.setAlpha( 255 );
+  setColor( opaqueColor );
+}
+
 void QgsColorButton::mousePressEvent( QMouseEvent *e )
 {
   if ( mPickingColor )
@@ -274,7 +283,7 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
 
   //user is dragging color
   QDrag *drag = new QDrag( this );
-  drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( c ) );
+  drag->setMimeData( QgsSymbolLayerUtils::colorToMimeData( c ).release() );
   drag->setPixmap( QgsColorWidget::createDragIcon( c ) );
   drag->exec( Qt::CopyAction );
   setDown( false );
@@ -504,12 +513,22 @@ void QgsColorButton::prepareMenu()
       connect( defaultColorAction, &QAction::triggered, this, &QgsColorButton::setToDefaultColor );
     }
 
-    if ( mShowNoColorOption )
+    if ( mShowNoColorOption && mColor.alpha() > 0 )
     {
       QAction *noColorAction = new QAction( mNoColorString, this );
       noColorAction->setIcon( createMenuIcon( Qt::transparent, false ) );
       mMenu->addAction( noColorAction );
       connect( noColorAction, &QAction::triggered, this, &QgsColorButton::setToNoColor );
+    }
+
+    if ( ( mAllowOpacity || mShowNoColorOption ) && mColor.isValid() && mColor.alpha() < 255 )
+    {
+      QColor opaqueColor = QColor( mColor );
+      opaqueColor.setAlpha( 255 );
+      QAction *opaqueColorAction = new QAction( mOpaqueColorString, this );
+      opaqueColorAction->setIcon( createMenuIcon( opaqueColor ) );
+      mMenu->addAction( opaqueColorAction );
+      connect( opaqueColorAction, &QAction::triggered, this, &QgsColorButton::setToOpaqueColor );
     }
 
     mMenu->addSeparator();
@@ -748,7 +767,7 @@ void QgsColorButton::copyColor()
   QColor c = linkedProjectColor();
   if ( !c.isValid() )
     c = mColor;
-  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( c ) );
+  QApplication::clipboard()->setMimeData( QgsSymbolLayerUtils::colorToMimeData( c ).release() );
 }
 
 void QgsColorButton::pasteColor()

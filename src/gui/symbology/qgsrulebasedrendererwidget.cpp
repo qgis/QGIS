@@ -66,14 +66,14 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   if ( renderer )
   {
-    mRenderer.reset( QgsRuleBasedRenderer::convertFromRenderer( renderer, layer ) );
+    mRenderer = QgsRuleBasedRenderer::convertFromRenderer( renderer, layer );
   }
   if ( !mRenderer )
   {
     // some default options
-    QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+    std::unique_ptr<QgsSymbol> symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
-    mRenderer = std::make_unique<QgsRuleBasedRenderer>( symbol );
+    mRenderer = std::make_unique<QgsRuleBasedRenderer>( symbol.release() );
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }
@@ -120,9 +120,9 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   connect( btnRenderingOrder, &QAbstractButton::clicked, this, &QgsRuleBasedRendererWidget::setRenderingOrder );
 
-  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );
-  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::changed );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsPanelWidget::changed );
 
   currentRuleChanged();
   selectedRulesChanged();
@@ -161,8 +161,8 @@ void QgsRuleBasedRendererWidget::setDockMode( bool dockMode )
 
 void QgsRuleBasedRendererWidget::addRule()
 {
-  QgsSymbol *s = QgsSymbol::defaultSymbol( mLayer->geometryType() );
-  QgsRuleBasedRenderer::Rule *newrule = new QgsRuleBasedRenderer::Rule( s );
+  std::unique_ptr<QgsSymbol> s = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+  QgsRuleBasedRenderer::Rule *newrule = new QgsRuleBasedRenderer::Rule( s.release() );
 
   QgsRuleBasedRenderer::Rule *current = currentRule();
   if ( current )
@@ -211,7 +211,7 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
     QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext ); //panel?
     widget->setPanelTitle( tr( "Edit Rule" ) );
     connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
+    connect( widget, &QgsPanelWidget::changed, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
     openPanel( widget );
     return;
   }
@@ -221,7 +221,7 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
   {
     mModel->updateRule( index.parent(), index.row() );
     mModel->clearFeatureCounts();
-    emit widgetChanged();
+    emit changed();
   }
 }
 
@@ -366,7 +366,7 @@ void QgsRuleBasedRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolIte
     }
   }
 
-  emit widgetChanged();
+  emit changed();
 }
 
 QList<QgsSymbol *> QgsRuleBasedRendererWidget::selectedSymbols()
@@ -406,7 +406,7 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRendererWidget::selectedRules()
     const QgsRuleBasedRenderer::RuleList &children = parentRule->children();
     for ( int row = range.top(); row <= range.bottom(); row++ )
     {
-      rl.append( children.at( row )->clone() );
+      rl.append( children.at( row )->clone().release() );
     }
   }
   return rl;
@@ -421,7 +421,7 @@ void QgsRuleBasedRendererWidget::refreshSymbolView()
     treeRules->populateRules();
   }
   */
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRuleBasedRendererWidget::keyPressEvent( QKeyEvent *event )
@@ -443,7 +443,7 @@ void QgsRuleBasedRendererWidget::keyPressEvent( QKeyEvent *event )
     for ( ; rIt != mCopyBuffer.constEnd(); ++rIt )
     {
       int rows = mModel->rowCount();
-      mModel->insertRule( QModelIndex(), rows, ( *rIt )->clone() );
+      mModel->insertRule( QModelIndex(), rows, ( *rIt )->clone().release() );
     }
   }
 }
@@ -458,7 +458,7 @@ void QgsRuleBasedRendererWidget::setRenderingOrder()
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer.get(), true, panel );
     widget->setForceOrderingEnabled( true );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() { setSymbolLevels( widget->symbolLevels(), widget->usingLevels() ); } );
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget]() { setSymbolLevels( widget->symbolLevels(), widget->usingLevels() ); } );
     panel->openPanel( widget );
   }
   else
@@ -540,7 +540,7 @@ void QgsRuleBasedRendererWidget::pasteSymbolToSelection()
       mModel->setSymbol( index, tempSymbol->clone() );
     }
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsRuleBasedRendererWidget::refineRuleCategoriesAccepted( QgsPanelWidget *panel )
@@ -748,12 +748,12 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   else
   {
     groupSymbol->setChecked( false );
-    mSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+    mSymbol = QgsSymbol::defaultSymbol( mLayer->geometryType() ).release();
   }
 
   mSymbolSelector = new QgsSymbolSelectorWidget( mSymbol, style, mLayer, this );
   mSymbolSelector->setContext( mContext );
-  connect( mSymbolSelector, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mSymbolSelector, &QgsPanelWidget::changed, this, &QgsPanelWidget::changed );
   connect( mSymbolSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
   QVBoxLayout *l = new QVBoxLayout;
@@ -762,12 +762,12 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
 
   connect( btnExpressionBuilder, &QAbstractButton::clicked, this, &QgsRendererRulePropsWidget::buildExpression );
   connect( btnTestFilter, &QAbstractButton::clicked, this, &QgsRendererRulePropsWidget::testFilter );
-  connect( editFilter, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( editLabel, &QLineEdit::editingFinished, this, &QgsPanelWidget::widgetChanged );
-  connect( editDescription, &QLineEdit::editingFinished, this, &QgsPanelWidget::widgetChanged );
-  connect( groupSymbol, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
-  connect( groupScale, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
-  connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( editFilter, &QLineEdit::textChanged, this, &QgsPanelWidget::changed );
+  connect( editLabel, &QLineEdit::editingFinished, this, &QgsPanelWidget::changed );
+  connect( editDescription, &QLineEdit::editingFinished, this, &QgsPanelWidget::changed );
+  connect( groupSymbol, &QGroupBox::toggled, this, &QgsPanelWidget::changed );
+  connect( groupScale, &QGroupBox::toggled, this, &QgsPanelWidget::changed );
+  connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::changed );
   connect( mFilterRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
   connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) {
     if ( toggled )
@@ -1176,7 +1176,7 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
 
     // we use a clone of the existing rule because it has a new unique rule key
     // non-unique rule keys would confuse other components using them (e.g. legend)
-    QgsRuleBasedRenderer::Rule *rule = ruleForIndex( index )->clone();
+    std::unique_ptr<QgsRuleBasedRenderer::Rule> rule = ruleForIndex( index )->clone();
     QDomDocument doc;
     QgsSymbolMap symbols;
 
@@ -1187,8 +1187,6 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
     QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, u"symbols"_s, doc, QgsReadWriteContext() );
     rootElem.appendChild( symbolsElem );
     doc.appendChild( rootElem );
-
-    delete rule;
 
     stream << doc.toString( -1 );
   }
@@ -1258,9 +1256,9 @@ bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data, Qt::DropAct
     QDomElement ruleElem = rootElem.firstChildElement( u"rule"_s );
     if ( rootElem.attribute( u"type"_s ) == "labeling"_L1 )
       _labeling2rendererRules( ruleElem );
-    QgsRuleBasedRenderer::Rule *rule = QgsRuleBasedRenderer::Rule::create( ruleElem, symbolMap, false );
+    std::unique_ptr<QgsRuleBasedRenderer::Rule> rule = QgsRuleBasedRenderer::Rule::create( ruleElem, symbolMap, false );
 
-    insertRule( parent, row + rows, rule );
+    insertRule( parent, row + rows, rule.release() );
 
     ++rows;
   }

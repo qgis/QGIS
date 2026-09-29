@@ -73,6 +73,8 @@ void QgsCopyLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsCopyLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsMapLayer *sourceLayer = parameterAsLayer( parameters, u"SOURCE"_s, context );
   QgsMapLayer *targetLayer = parameterAsLayer( parameters, u"TARGET"_s, context );
   const bool saveAsDefault = parameterAsBool( parameters, u"DEFAULT"_s, context );
@@ -160,6 +162,8 @@ void QgsApplyLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsApplyLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
   const QString metadata = parameterAsFile( parameters, u"METADATA"_s, context );
   const bool saveAsDefault = parameterAsBool( parameters, u"DEFAULT"_s, context );
@@ -249,6 +253,8 @@ void QgsExportLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsExportLayerMetadataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
   const QString outputFile = parameterAsString( parameters, u"OUTPUT"_s, context );
 
@@ -318,6 +324,8 @@ void QgsAddHistoryMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsAddHistoryMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
   const QString history = parameterAsString( parameters, u"HISTORY"_s, context );
 
@@ -394,6 +402,8 @@ void QgsUpdateLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsUpdateLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsMapLayer *sourceLayer = parameterAsLayer( parameters, u"SOURCE"_s, context );
   QgsMapLayer *targetLayer = parameterAsLayer( parameters, u"TARGET"_s, context );
 
@@ -482,6 +492,8 @@ void QgsSetMetadataFieldsAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
 
   if ( !layer )

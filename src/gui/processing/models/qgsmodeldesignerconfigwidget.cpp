@@ -29,7 +29,7 @@ QgsProcessingModelConfigWidget::QgsProcessingModelConfigWidget( QWidget *parent 
 
 void QgsProcessingModelConfigWidget::apply()
 {
-  emit widgetChanged();
+  emit changed();
 }
 
 //

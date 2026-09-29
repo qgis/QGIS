@@ -301,6 +301,8 @@
         <file>themes/default/mActionDigitizeWithSegment.svg</file>
         <file>themes/default/mActionDuplicateLayer.svg</file>
         <file>themes/default/mActionDuplicateComposer.svg</file>
+        <file>themes/default/mActionEditBulletList.svg</file>
+        <file>themes/default/mActionEditOrderedList.svg</file>
         <file>themes/default/mActionEditCopy.svg</file>
         <file>themes/default/mActionEditCut.svg</file>
         <file>themes/default/mActionEditPaste.svg</file>

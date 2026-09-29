@@ -15,6 +15,7 @@
 #ifndef QGSPOINT3DBILLBOARDMATERIAL_H
 #define QGSPOINT3DBILLBOARDMATERIAL_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 #include "qgsmaterial.h"
 
@@ -43,27 +44,40 @@ class _3D_EXPORT QgsPoint3DBillboardMaterial : public QgsMaterial
 
   public:
     /**
-     * Material modes.
+     * Additional material attributes.
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.4
      */
-    enum class Mode
+    enum class ExtraAttribute
     {
-      SingleTexture, //!< Use a single repeated texture for all billboards. Billboard positions should be set using QgsBillboardGeometry::setPositions().
-      AtlasTexture,  //!< Use a texture atlas, so each billboard has a different texture. Billboard positions and texture data should be set using QgsBillboardGeometry::setBillboardData().
-      AtlasTextureWithPixelOffsets, //!< Use a texture atlas, so each billboard has a different texture. Billboards have pixel-sized offsets from their position. Billboard positions and texture data should be set using QgsBillboardGeometry::setBillboardData().
+      Size = 1 << 1,
+      TextureData = 1 << 2,
+      PixelOffsets = 1 << 3,
+      VerticalOffset = 1 << 4,
     };
+    Q_DECLARE_FLAGS( ExtraAttributes, ExtraAttribute )
+    Q_FLAG( ExtraAttributes )
 
     /**
-     * Constructor for QgsPoint3DBillboardMaterial, using the specified \a mode.
+     * Constructor for QgsPoint3DBillboardMaterial, using the specified additional \a attributes.
      */
-    QgsPoint3DBillboardMaterial( Mode mode = Mode::SingleTexture );
+    QgsPoint3DBillboardMaterial( ExtraAttributes attributes = ExtraAttributes(), Qgis::BillboardScaleMode scaleMode = Qgis::BillboardScaleMode::ViewIndependent );
     ~QgsPoint3DBillboardMaterial() override;
 
     //! Set the billboard size.
     void setSize( const QSizeF size );
     //! Returns the billboard size.
     QSizeF size() const;
+
+    /**
+     * Set the vertical \a offset.
+     *
+     * For example, a vertical offset of 0.5 will anchor the billboard's bottom edge at the vertex z position,
+     * or -0.5 will anchor the billboard's top edge at the vertex z position.
+     *
+     * \note This only applies if the material was constructed with the ExtraAttribute::VerticalOffset flag set.
+     */
+    void setVerticalOffset( float offset );
 
     //! Set the size of the view port.
     void setViewportSize( const QSizeF size );
@@ -93,7 +107,12 @@ class _3D_EXPORT QgsPoint3DBillboardMaterial : public QgsMaterial
     Qt3DRender::QParameter *mSize = nullptr;
     Qt3DRender::QParameter *mViewportSize = nullptr;
     Qt3DRender::QParameter *mTexture2D = nullptr;
+    Qt3DRender::QParameter *mVerticalOffset = nullptr;
+
+    Qgis::BillboardScaleMode mScaleMode = Qgis::BillboardScaleMode::ViewIndependent;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsPoint3DBillboardMaterial::ExtraAttributes )
 
 
 #endif // QGSPOINT3DBILLBOARDMATERIAL_H

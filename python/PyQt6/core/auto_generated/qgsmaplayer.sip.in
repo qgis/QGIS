@@ -411,7 +411,7 @@ GetCapabilities request.
 %End
 
 
-    QgsMapLayerServerProperties *serverProperties();
+    QgsMapLayerServerProperties *serverProperties() /DisallowNone/;
 %Docstring
 Returns QGIS Server Properties for the map layer
 
@@ -1594,12 +1594,12 @@ setting the data source can be retrieved by calling
 Returns the provider type (provider key) for this layer
 %End
 
-    QUndoStack *undoStack();
+    QUndoStack *undoStack() /DisallowNone/;
 %Docstring
 Returns pointer to layer's undo stack
 %End
 
-    QUndoStack *undoStackStyles();
+    QUndoStack *undoStackStyles() /DisallowNone/;
 %Docstring
 Returns pointer to layer's style undo stack
 %End
@@ -1653,7 +1653,7 @@ responsible for providing legend items.
 Can be ``None``.
 %End
 
-    QgsMapLayerStyleManager *styleManager() const;
+    QgsMapLayerStyleManager *styleManager() const /DisallowNone/;
 %Docstring
 Gets access to the layer's style manager. Style manager allows switching
 between multiple styles.

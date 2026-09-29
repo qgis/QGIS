@@ -164,6 +164,10 @@ static QgsMeshDatasetValue extractDatasetValue(
   return value;
 }
 
+///
+/// QgsExportMeshOnElement
+///
+
 QString QgsExportMeshOnElement::group() const
 {
   return QObject::tr( "Mesh" );
@@ -172,36 +176,6 @@ QString QgsExportMeshOnElement::group() const
 QString QgsExportMeshOnElement::groupId() const
 {
   return u"mesh"_s;
-}
-
-QString QgsExportMeshVerticesAlgorithm::shortHelpString() const
-{
-  return QObject::tr( "This algorithm exports a mesh layer's vertices to a point vector layer, with the dataset values on vertices as attribute values." );
-}
-
-QString QgsExportMeshVerticesAlgorithm::shortDescription() const
-{
-  return QObject::tr( "Exports mesh vertices to a point vector layer." );
-}
-
-QString QgsExportMeshVerticesAlgorithm::name() const
-{
-  return u"exportmeshvertices"_s;
-}
-
-QString QgsExportMeshVerticesAlgorithm::displayName() const
-{
-  return QObject::tr( "Export mesh vertices" );
-}
-
-QgsProcessingAlgorithm *QgsExportMeshVerticesAlgorithm::createInstance() const
-{
-  return new QgsExportMeshVerticesAlgorithm();
-}
-
-QgsGeometry QgsExportMeshVerticesAlgorithm::meshElement( int index ) const
-{
-  return QgsGeometry( new QgsPoint( mNativeMesh.vertex( index ) ) );
 }
 
 void QgsExportMeshOnElement::initAlgorithm( const QVariantMap &configuration )
@@ -317,6 +291,8 @@ bool QgsExportMeshOnElement::prepareAlgorithm( const QVariantMap &parameters, Qg
 
 QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( feedback )
   {
     if ( feedback->isCanceled() )
@@ -391,6 +367,51 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
   return ret;
 }
 
+///
+/// QgsExportMeshVerticesAlgorithm
+///
+
+QString QgsExportMeshVerticesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm exports a mesh layer's vertices to a point vector layer, with the dataset values on vertices as attribute values." );
+}
+
+QString QgsExportMeshVerticesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports mesh vertices to a point vector layer." );
+}
+
+QString QgsExportMeshVerticesAlgorithm::name() const
+{
+  return u"exportmeshvertices"_s;
+}
+
+QString QgsExportMeshVerticesAlgorithm::displayName() const
+{
+  return QObject::tr( "Export mesh vertices" );
+}
+
+QStringList QgsExportMeshVerticesAlgorithm::tags() const
+{
+  return QObject::tr( "mesh,export,vertices,points,attributes,vector,dataset" ).split( ',' );
+}
+
+QgsProcessingAlgorithm *QgsExportMeshVerticesAlgorithm::createInstance() const
+{
+  return new QgsExportMeshVerticesAlgorithm();
+}
+
+QgsGeometry QgsExportMeshVerticesAlgorithm::meshElement( int index ) const
+{
+  QGS_MARK_ALGORITHM_SOURCE
+
+  return QgsGeometry( new QgsPoint( mNativeMesh.vertex( index ) ) );
+}
+
+///
+/// QgsExportMeshFacesAlgorithm
+///
+
 QString QgsExportMeshFacesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm exports a mesh layer's faces to a polygon vector layer, with the dataset values on faces as attribute values." );
@@ -411,6 +432,11 @@ QString QgsExportMeshFacesAlgorithm::displayName() const
   return QObject::tr( "Export mesh faces" );
 }
 
+QStringList QgsExportMeshFacesAlgorithm::tags() const
+{
+  return QObject::tr( "mesh,export,faces,polygons,attributes,vector,dataset" ).split( ',' );
+}
+
 QgsProcessingAlgorithm *QgsExportMeshFacesAlgorithm::createInstance() const
 {
   return new QgsExportMeshFacesAlgorithm();
@@ -418,6 +444,8 @@ QgsProcessingAlgorithm *QgsExportMeshFacesAlgorithm::createInstance() const
 
 QgsGeometry QgsExportMeshFacesAlgorithm::meshElement( int index ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsMeshFace &face = mNativeMesh.face( index );
   QVector<QgsPoint> vertices( face.size() );
   for ( int i = 0; i < face.size(); ++i )
@@ -426,6 +454,10 @@ QgsGeometry QgsExportMeshFacesAlgorithm::meshElement( int index ) const
   polygon->setExteriorRing( new QgsLineString( vertices ) );
   return QgsGeometry( polygon.release() );
 }
+
+///
+/// QgsExportMeshEdgesAlgorithm
+///
 
 QString QgsExportMeshEdgesAlgorithm::shortHelpString() const
 {
@@ -447,6 +479,11 @@ QString QgsExportMeshEdgesAlgorithm::displayName() const
   return QObject::tr( "Export mesh edges" );
 }
 
+QStringList QgsExportMeshEdgesAlgorithm::tags() const
+{
+  return QObject::tr( "mesh,export,edges,lines,attributes,vector,dataset" ).split( ',' );
+}
+
 QgsProcessingAlgorithm *QgsExportMeshEdgesAlgorithm::createInstance() const
 {
   return new QgsExportMeshEdgesAlgorithm();
@@ -454,6 +491,8 @@ QgsProcessingAlgorithm *QgsExportMeshEdgesAlgorithm::createInstance() const
 
 QgsGeometry QgsExportMeshEdgesAlgorithm::meshElement( int index ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QgsMeshEdge &edge = mNativeMesh.edge( index );
   QVector<QgsPoint> vertices( 2 );
   vertices[0] = mNativeMesh.vertex( edge.first );
@@ -461,6 +500,9 @@ QgsGeometry QgsExportMeshEdgesAlgorithm::meshElement( int index ) const
   return QgsGeometry( new QgsLineString( vertices ) );
 }
 
+///
+/// QgsExportMeshOnGridAlgorithm
+///
 
 QString QgsExportMeshOnGridAlgorithm::name() const
 {
@@ -470,6 +512,11 @@ QString QgsExportMeshOnGridAlgorithm::name() const
 QString QgsExportMeshOnGridAlgorithm::displayName() const
 {
   return QObject::tr( "Export mesh on grid" );
+}
+
+QStringList QgsExportMeshOnGridAlgorithm::tags() const
+{
+  return QObject::tr( "mesh,export,grid,regular,points,attributes,vector,dataset,interpolation" ).split( ',' );
 }
 
 QString QgsExportMeshOnGridAlgorithm::group() const
@@ -594,6 +641,8 @@ bool QgsExportMeshOnGridAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
 QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( feedback )
   {
     if ( feedback->isCanceled() )
@@ -714,6 +763,10 @@ QSet<int> QgsExportMeshOnGridAlgorithm::supportedDataType()
   return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnVertices, QgsMeshDatasetGroupMetadata::DataOnFaces, QgsMeshDatasetGroupMetadata::DataOnVolumes } );
 }
 
+///
+/// QgsMeshRasterizeAlgorithm
+///
+
 QString QgsMeshRasterizeAlgorithm::name() const
 {
   return u"meshrasterize"_s;
@@ -722,6 +775,11 @@ QString QgsMeshRasterizeAlgorithm::name() const
 QString QgsMeshRasterizeAlgorithm::displayName() const
 {
   return QObject::tr( "Rasterize mesh dataset" );
+}
+
+QStringList QgsMeshRasterizeAlgorithm::tags() const
+{
+  return QObject::tr( "mesh,rasterize,raster,convert,grid,export,dataset" ).split( ',' );
 }
 
 QString QgsMeshRasterizeAlgorithm::group() const
@@ -819,6 +877,8 @@ bool QgsMeshRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 
 QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( feedback )
   {
     if ( feedback->isCanceled() )
@@ -937,6 +997,10 @@ QSet<int> QgsMeshRasterizeAlgorithm::supportedDataType()
   return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnVertices, QgsMeshDatasetGroupMetadata::DataOnFaces, QgsMeshDatasetGroupMetadata::DataOnVolumes } );
 }
 
+///
+/// QgsMeshContoursAlgorithm
+///
+
 QString QgsMeshContoursAlgorithm::name() const
 {
   return u"meshcontours"_s;
@@ -945,6 +1009,11 @@ QString QgsMeshContoursAlgorithm::name() const
 QString QgsMeshContoursAlgorithm::displayName() const
 {
   return QObject::tr( "Export contours" );
+}
+
+QStringList QgsMeshContoursAlgorithm::tags() const
+{
+  return QObject::tr( "mesh,contours,isolines,lines,polygons,scalar,elevation,vector" ).split( ',' );
 }
 
 QString QgsMeshContoursAlgorithm::group() const
@@ -1087,6 +1156,8 @@ bool QgsMeshContoursAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
 QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   //First, if present, average 3D staked dataset value to 2D face value
   const QgsMesh3DAveragingMethod *avgMethod = mLayerRendererSettings.averagingMethod();
   for ( DataGroup &dataGroup : mDataPerGroup )
@@ -1214,6 +1285,10 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
   return ret;
 }
 
+///
+/// QgsMeshExportCrossSection
+///
+
 QString QgsMeshExportCrossSection::name() const
 {
   return u"meshexportcrosssection"_s;
@@ -1222,6 +1297,11 @@ QString QgsMeshExportCrossSection::name() const
 QString QgsMeshExportCrossSection::displayName() const
 {
   return QObject::tr( "Export cross section dataset values on lines from mesh" );
+}
+
+QStringList QgsMeshExportCrossSection::tags() const
+{
+  return QObject::tr( "mesh,cross section,line,profile,extract,csv,table,sample" ).split( ',' );
 }
 
 QString QgsMeshExportCrossSection::group() const
@@ -1304,6 +1384,8 @@ bool QgsMeshExportCrossSection::prepareAlgorithm( const QVariantMap &parameters,
 
 QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( feedback )
     feedback->setProgress( 0 );
   //First, if present, average 3D staked dataset value to 2D face value
@@ -1408,6 +1490,8 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
   return ret;
 }
 
+/// QgsMeshExportTimeSeries
+
 QString QgsMeshExportTimeSeries::name() const
 {
   return u"meshexporttimeseries"_s;
@@ -1416,6 +1500,11 @@ QString QgsMeshExportTimeSeries::name() const
 QString QgsMeshExportTimeSeries::displayName() const
 {
   return QObject::tr( "Export time series values from points of a mesh dataset" );
+}
+
+QStringList QgsMeshExportTimeSeries::tags() const
+{
+  return QObject::tr( "mesh,time series,temporal,points,extract,csv,table,sample" ).split( ',' );
 }
 
 QString QgsMeshExportTimeSeries::group() const
@@ -1592,9 +1681,10 @@ bool QgsMeshExportTimeSeries::prepareAlgorithm( const QVariantMap &parameters, Q
   return true;
 }
 
-
 QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( feedback )
     feedback->setProgress( 0 );
   //First, if present, average 3D staked dataset value to 2D face value

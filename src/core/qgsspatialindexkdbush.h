@@ -145,7 +145,7 @@ class CORE_EXPORT QgsSpatialIndexKDBush
      *
      * \note Not available in Python bindings
      */
-    void intersects( const QgsRectangle &rectangle, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) const SIP_SKIP;
+    void intersects( const QgsRectangle &rectangle, const std::function<void( const QgsSpatialIndexKDBushData & )> &visitor ) const SIP_SKIP;
 
     /**
      * Returns the list of features which are within the given search \a radius
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsSpatialIndexKDBush
      *
      * \note Not available in Python bindings
      */
-    void within( const QgsPointXY &point, double radius, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) SIP_SKIP;
+    void within( const QgsPointXY &point, double radius, const std::function<void( const QgsSpatialIndexKDBushData & )> &visitor ) const SIP_SKIP;
 
     /**
      * Returns the size of the index, i.e. the number of points contained within the index.

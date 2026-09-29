@@ -125,7 +125,7 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
       // adding to this list? Also update the BatchPanel.py imports!!
       const QStringList script = {
         u"import processing"_s,
-        u"from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty, QgsCoordinateReferenceSystem, QgsFeatureRequest"_s,
+        u"from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProcessingRasterLayerDefinition, QgsProperty, QgsCoordinateReferenceSystem, QgsFeatureRequest"_s,
         u"from qgis.PyQt.QtCore import QDate, QTime, QDateTime"_s,
         u"from qgis.PyQt.QtGui import QColor"_s,
         execAlgorithmDialogCommand

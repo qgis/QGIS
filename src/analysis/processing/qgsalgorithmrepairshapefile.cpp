@@ -79,6 +79,8 @@ void QgsRepairShapefileAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsRepairShapefileAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString path = parameterAsFile( parameters, u"INPUT"_s, context );
 
   if ( !QFile::exists( path ) )

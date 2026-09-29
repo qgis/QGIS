@@ -1691,6 +1691,7 @@ The development version
       ForceRasterMasks,
       RecordProfile,
       AlwaysUseGlobalMasks,
+      DrawLabelSelection
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -1719,7 +1720,8 @@ The development version
       RecordProfile,
       AlwaysUseGlobalMasks,
       DisableSymbolClippingToExtent,
-      RenderLayerTree
+      RenderLayerTree,
+      DrawLabelSelection
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
@@ -2212,6 +2214,22 @@ The development version
       Modeler,
     };
 
+    enum class ProcessingMenu
+    {
+      VectorAnalysis,
+      VectorResearch,
+      VectorGeoprocessing,
+      VectorGeometry,
+      VectorDataManagement,
+      VectorGeneral,
+      RasterProjections,
+      RasterConversion,
+      RasterExtraction,
+      RasterAnalysis,
+      RasterMiscellaneous,
+      RasterGeneral,
+    };
+
     enum class ProcessingFeatureSourceDefinitionFlag /BaseType=IntFlag/
     {
       OverrideDefaultGeometryCheck,
@@ -2478,6 +2496,12 @@ The development version
       Billboards,
     };
 
+    enum class MaterialWidgetMode /BaseType=IntEnum/
+    {
+      Compact,
+      Full,
+    };
+
     enum class InstancedMaterialFlag /BaseType=IntFlag/
     {
       DataDefinedScale,
@@ -2485,6 +2509,12 @@ The development version
     };
     typedef QFlags<Qgis::InstancedMaterialFlag> InstancedMaterialFlags;
 
+
+    enum class BillboardScaleMode /BaseType=IntEnum/
+    {
+      ViewIndependent,
+      Perspective
+    };
 
     enum class TextureFilterQuality /BaseType=IntEnum/
     {
@@ -2867,6 +2897,16 @@ The development version
       Superseded,
     };
 
+    enum class AcademicReferenceType /BaseType=IntEnum/
+    {
+      Unknown,
+      Book,
+      JournalArticle,
+      Presentation,
+      WebPage,
+      Preprint
+    };
+
 
     enum class RasterColorInterpretation /BaseType=IntEnum/
     {
@@ -3157,6 +3197,16 @@ The development version
       Unknown,
     };
 
+    enum class WindSpeedUnit /BaseType=IntEnum/
+    {
+      MetersPerSecond,
+      KilometersPerHour,
+      Knots,
+      MilesPerHour,
+      FeetPerSecond,
+      OtherUnit
+    };
+
     enum class TemporalUnit /BaseType=IntEnum/
     {
       Milliseconds,
@@ -3264,6 +3314,25 @@ The development version
       CenteredSegment,
     };
 
+    enum class ScaleBarUnitLabelPlacement /BaseType=IntFlag/
+    {
+      BeforeBar,
+      AfterBar,
+      LeftAbove,
+      CenteredAbove,
+      RightAbove,
+      LeftBelow,
+      CenteredBelow,
+      RightBelow,
+      BeforeFirstDistanceLabel,
+      AfterLastDistanceLabel,
+      OnBarAfterFirstDivision,
+      BeforeEveryDistanceLabel,
+      AfterEveryDistanceLabel,
+    };
+
+    typedef QFlags<Qgis::ScaleBarUnitLabelPlacement> ScaleBarUnitLabelPlacements;
+
 
     enum class MapGridUnit /BaseType=IntEnum/
     {
@@ -3361,6 +3430,12 @@ The development version
       {
       Longitude,
       Latitude
+    };
+
+    enum class ElevationProfileRangeMethod /BaseType=IntEnum/
+    {
+      ManualRange,
+      FixedScale
     };
 
     enum class InputControllerType /BaseType=IntEnum/
@@ -3957,6 +4032,34 @@ The development version
       DockedToolbar,
     };
 
+    enum class VectorFieldArrowScalingMethod /BaseType=IntEnum/
+    {
+      MinMax,
+      Scaled,
+      Fixed
+    };
+
+    enum class VectorFieldSymbology /BaseType=IntEnum/
+    {
+      Arrows,
+      Streamlines,
+      Traces,
+      WindBarbs
+    };
+
+    enum class VectorFieldSeedingMethod /BaseType=IntEnum/
+    {
+      Gridded,
+      Random
+    };
+
+    enum class LinearMatrixMethod /BaseType=IntEnum/
+    {
+      Lu,
+      Svd,
+      LuWithSvdFallback
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -4307,6 +4410,8 @@ QFlags<Qgis::SensorThingsExtension> operator|(Qgis::SensorThingsExtension f1, QF
 QFlags<Qgis::PdfRenderFlag> operator|(Qgis::PdfRenderFlag f1, QFlags<Qgis::PdfRenderFlag> f2);
 
 QFlags<Qgis::RubberBandComponent> operator|(Qgis::RubberBandComponent f1, QFlags<Qgis::RubberBandComponent> f2);
+
+QFlags<Qgis::ScaleBarUnitLabelPlacement> operator|(Qgis::ScaleBarUnitLabelPlacement f1, QFlags<Qgis::ScaleBarUnitLabelPlacement> f2);
 
 
 

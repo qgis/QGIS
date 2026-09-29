@@ -1980,6 +1980,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
           unionGeometry.reset( GEOSUnion_r( context, mGeos.get(), geosGeom.get() ) );
         }
 
+#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
         if ( unionGeometry && GEOSGeomTypeId_r( context, unionGeometry.get() ) == GEOS_MULTILINESTRING )
         {
           geos::unique_ptr mergedLines( GEOSLineMerge_r( context, unionGeometry.get() ) );
@@ -1988,6 +1989,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
             unionGeometry = std::move( mergedLines );
           }
         }
+#endif
 
         opGeom = std::move( unionGeometry );
       }

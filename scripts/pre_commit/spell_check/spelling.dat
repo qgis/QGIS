@@ -1999,7 +1999,7 @@ declaritively:declaratively
 declation:declaration
 declations:declarations
 decomissioned:decommissioned
-decomposit:decompose
+decomposit:decompose:*
 decomposited:decomposed
 decompositing:decomposing
 decomposits:decomposes

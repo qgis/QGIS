@@ -22,9 +22,12 @@
 #include "qgis_sip.h"
 #include "qgsrange.h"
 
+#include <QPointer>
 #include <QWidget>
 #include <QWidgetAction>
 
+class QgsMapCanvas;
+class QgsMapLayer;
 class QgsRangeSlider;
 class QgsDoubleSpinBox;
 class QToolButton;
@@ -53,17 +56,50 @@ class GUI_EXPORT QgsElevationControllerLabels : public QWidget SIP_SKIP
     QList<double> mSignificantElevations;
 };
 
-class GUI_EXPORT QgsElevationControllerSettingsAction : public QWidgetAction
+class GUI_EXPORT QgsElevationControllerSettingsAction : public QWidgetAction SIP_SKIP
 {
     Q_OBJECT
 
   public:
     QgsElevationControllerSettingsAction( QWidget *parent = nullptr );
 
-    QgsDoubleSpinBox *sizeSpin();
+    //! Returns the menu of the button which takes the limits from a predefined source
+    QMenu *limitsMenu();
+
+    //! Shows \a limits in the limit spin boxes
+    void setLimits( const QgsDoubleRange &limits );
+
+    //! Shows a fixed range \a size and its lock state, -1 for no fixed size
+    void setFixedRangeSize( double size );
+
+    //! Shows the current range \a size, unless a fixed size is locked
+    void updateRangeSize( double size );
+
+  signals:
+
+    //! Emitted when the limits are edited
+    void limitsChanged( const QgsDoubleRange &limits );
+
+    //! Emitted when a fixed range size is locked or edited, -1 when it is unlocked
+    void fixedRangeSizeChanged( double size );
+
+    //! Emitted when the range size is cleared, asking for the full range to be shown
+    void fullRangeRequested();
+
+  protected:
+    bool eventFilter( QObject *watched, QEvent *event ) override;
 
   private:
+    void onHover();
+
+    QMenu *mMenu = nullptr;
+    bool mSuppressRecurse = false;
+    QgsDoubleSpinBox *mLowerSpin = nullptr;
+    QgsDoubleSpinBox *mUpperSpin = nullptr;
+    QToolButton *mLimitsButton = nullptr;
+    QMenu *mLimitsMenu = nullptr;
     QgsDoubleSpinBox *mSizeSpin = nullptr;
+    QToolButton *mLockButton = nullptr;
 };
 
 
@@ -123,6 +159,14 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     QMenu *menu();
 
     /**
+     * Returns the map canvas the widget takes its layers from.
+     *
+     * \see setMapCanvas()
+     * \since QGIS 4.4
+     */
+    QgsMapCanvas *mapCanvas() const;
+
+    /**
      * Returns the fixed range size, or -1 if no fixed size is set.
      *
      * A fixed size forces the selected elevation range to have a matching difference between
@@ -172,6 +216,18 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
      */
     void setSignificantElevations( const QList<double> &elevations );
 
+    /**
+     * Sets the map \a canvas the widget takes its layers from.
+     *
+     * The canvas provides the layer used by the "Current Layer" entry of the range limits
+     * button, and its layers give the initial limits when the project defines no elevation
+     * range of its own.
+     *
+     * \see mapCanvas()
+     * \since QGIS 4.4
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
   signals:
 
     /**
@@ -200,14 +256,44 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
   private:
     void updateWidgetMask();
 
+    //! Applies a \a range calculated from layer data to both the limits and the current range
+    void setLimitsFromRange( const QgsDoubleRange &range );
+
+    //! Applies the elevation range of \a layers
+    void setLimitsFromLayers( const QList<QgsMapLayer *> &layers );
+
+    static bool layerHasElevation( QgsMapLayer *layer );
+
+    /**
+     * Snaps a \a range selected through the slider to the round values (and significant
+     * elevations) which the slider snaps to.
+     */
+    QgsDoubleRange snappedRange( const QgsDoubleRange &range ) const;
+
+    //! Snaps a single elevation \a value to the closest snapping target.
+    double snapValue( double value ) const;
+
+    //! Returns the elevation range the slider handles currently sit on
+    QgsDoubleRange sliderRange() const;
+
+    /**
+     * Returns the range of the locked fixed size which starts at \a lower, moved down when it
+     * would reach past the upper limit. Only call this with a fixed size locked.
+     */
+    QgsDoubleRange fixedSizeRangeFrom( double lower ) const;
+
     QToolButton *mConfigureButton = nullptr;
     QgsElevationControllerSettingsAction *mSettingsAction = nullptr;
     QMenu *mMenu = nullptr;
     QAction *mInvertDirectionAction = nullptr;
     QgsRangeSlider *mSlider = nullptr;
     QgsElevationControllerLabels *mSliderLabels = nullptr;
+    QPointer<QgsMapCanvas> mMapCanvas;
     QgsDoubleRange mRangeLimits;
     QgsDoubleRange mCurrentRange;
+    QList<double> mSignificantElevations;
+    double mSnapInterval = 0;
+    int mSnapDecimals = 0;
     double mFixedRangeSize = -1;
     int mBlockSliderChanges = 0;
     double mSliderPrecision = 100;

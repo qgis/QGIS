@@ -89,6 +89,8 @@ void QgsConditionalBranchAlgorithm::initAlgorithm( const QVariantMap &configurat
 
 QVariantMap QgsConditionalBranchAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context );
 
   QVariantMap results;

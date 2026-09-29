@@ -122,6 +122,8 @@ bool QgsConcaveHullByFeatureAlgorithm::prepareAlgorithm( const QVariantMap &para
 
 QgsFeatureList QgsConcaveHullByFeatureAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {

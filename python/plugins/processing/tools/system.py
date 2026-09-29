@@ -21,36 +21,12 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import math
 import os
-import sys
 import time
-import uuid
 from typing import Optional
 
-from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingUtils
-from qgis.PyQt.QtCore import QDir
+from qgis.core import QgsProcessingContext, QgsProcessingUtils
 
 numExported = 1
-
-
-def userFolder():
-    userDir = os.path.join(QgsApplication.qgisSettingsDirPath(), "processing")
-    if not QDir(userDir).exists():
-        QDir().mkpath(userDir)
-
-    return str(QDir.toNativeSeparators(userDir))
-
-
-def defaultOutputFolder():
-    folder = os.path.join(QDir.homePath(), "processing")
-    return str(QDir.toNativeSeparators(folder))
-
-
-def isWindows():
-    return os.name == "nt"
-
-
-def isMac():
-    return sys.platform == "darwin"
 
 
 def getTempFilename(ext=None, context: Optional[QgsProcessingContext] = None):
@@ -73,11 +49,3 @@ def getNumExportedLayers():
 
 def mkdir(newdir):
     os.makedirs(newdir.strip("\n\r "), exist_ok=True)
-
-
-def tempHelpFolder():
-    tmp = os.path.join(str(QDir.tempPath()), "processing_help")
-    if not QDir(tmp).exists():
-        QDir().mkpath(tmp)
-
-    return str(os.path.abspath(tmp))

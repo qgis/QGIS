@@ -140,8 +140,8 @@ void QgsColorSchemeList::copyColors()
   }
 
   //copy colors
-  QMimeData *mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorsToCopy );
-  QApplication::clipboard()->setMimeData( mimeData );
+  std::unique_ptr<QMimeData> mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorsToCopy );
+  QApplication::clipboard()->setMimeData( mimeData.release() );
 }
 
 void QgsColorSchemeList::showImportColorsDialog()
@@ -520,8 +520,8 @@ QMimeData *QgsColorSchemeModel::mimeData( const QModelIndexList &indexes ) const
     colorList << qMakePair( mColors[( *indexIt ).row()].first, mColors[( *indexIt ).row()].second );
   }
 
-  QMimeData *mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorList );
-  return mimeData;
+  std::unique_ptr<QMimeData> mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorList );
+  return mimeData.release();
 }
 
 bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )

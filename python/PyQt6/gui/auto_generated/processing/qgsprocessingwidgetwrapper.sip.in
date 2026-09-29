@@ -24,7 +24,7 @@ An interface for objects which can create Processing contexts.
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-    virtual QgsProcessingContext *processingContext() = 0;
+    virtual QgsProcessingContext *processingContext() const = 0;
 %Docstring
 This method needs to be reimplemented in all classes which implement
 this interface and return a Processing context.
@@ -69,6 +69,29 @@ the behavior of the parameter generation.
 %End
 
     virtual ~QgsProcessingParametersGenerator();
+
+    enum class ValidationResult
+    {
+      Valid,
+      InvalidOutputExtension,
+      InvalidValue,
+    };
+
+    class ParameterValidationResult
+    {
+%Docstring(signature="appended")
+Encapsulates the result of validating parameters shown in the generator.
+
+.. versionadded:: 4.4
+%End
+
+      public:
+        QString parameterName;
+
+        QgsProcessingParametersGenerator::ValidationResult result;
+
+        QString message;
+    };
 };
 
 QFlags<QgsProcessingParametersGenerator::Flag> operator|(QgsProcessingParametersGenerator::Flag f1, QFlags<QgsProcessingParametersGenerator::Flag> f2);
@@ -136,7 +159,7 @@ relevant information which allows the widget to fine-tune its behavior.
 .. seealso:: :py:func:`setWidgetContext`
 %End
 
-    QWidget *createWrappedWidget( QgsProcessingContext &context ) /Factory/;
+    QWidget *createWrappedWidget( QgsProcessingContext &context ) /TransferBack/;
 %Docstring
 Creates and return a new wrapped widget which allows customization of
 the parameter's value.
@@ -380,7 +403,7 @@ must last for the lifetime of the widget.
 
     virtual QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
       QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = 0, const QgsProcessingAlgorithm *algorithm = 0
-    ) /Factory/;
+    ) /TransferBack/;
 %Docstring
 Creates a new parameter definition widget allowing for configuration of
 an instance of the parameter type handled by this factory.

@@ -17,6 +17,7 @@
 
 #include "qgsprocessingregistry.h"
 
+#include "qgsprocessingdefaultstyleregistry.h"
 #include "qgsprocessingparameteraggregate.h"
 #include "qgsprocessingparameteralignrasterlayers.h"
 #include "qgsprocessingparameterdxflayers.h"
@@ -26,6 +27,7 @@
 #include "qgsprocessingparameterinterpolationsource.h"
 #include "qgsprocessingparametermeshdataset.h"
 #include "qgsprocessingparameterreliefcolors.h"
+#include "qgsprocessingparametertileextentmaxzoomlist.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametertypeimpl.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
@@ -39,6 +41,7 @@ using namespace Qt::StringLiterals;
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
+  , mDefaultStyleRegistry( new QgsProcessingDefaultStyleRegistry( this ) )
 {
   addParameterType( new QgsProcessingParameterTypeRasterLayer() );
   addParameterType( new QgsProcessingParameterTypeVectorLayer() );
@@ -97,6 +100,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeReliefColors() );
   addParameterType( new QgsProcessingParameterTypeInterpolationSource() );
   addParameterType( new QgsProcessingParameterTypeInterpolationPixelSize() );
+  addParameterType( new QgsProcessingParameterTypeTileExtentMaxZoomList() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
@@ -305,4 +309,9 @@ QgsProcessingParameterType *QgsProcessingRegistry::parameterType( const QString 
 QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() const
 {
   return mParameterTypes.values();
+}
+
+QgsProcessingDefaultStyleRegistry *QgsProcessingRegistry::defaultStyleRegistry() const
+{
+  return mDefaultStyleRegistry;
 }

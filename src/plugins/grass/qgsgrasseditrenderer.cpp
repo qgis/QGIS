@@ -71,11 +71,11 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   lastVertexMarkerLine->setPlacements( Qgis::MarkerLinePlacement::LastVertex );
   for ( int value : colors.keys() )
   {
-    QgsSymbol *symbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Line );
+    std::unique_ptr<QgsSymbol> symbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Line );
     symbol->setColor( colors.value( value ) );
     symbol->appendSymbolLayer( firstVertexMarkerLine->clone() );
     symbol->appendSymbolLayer( lastVertexMarkerLine->clone() );
-    categoryList << QgsRendererCategory( QVariant( value ), symbol, labels.value( value ) );
+    categoryList << QgsRendererCategory( QVariant( value ), symbol.release(), labels.value( value ) );
   }
   delete firstVertexMarkerLine;
   delete lastVertexMarkerLine;
@@ -98,9 +98,9 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
 
   for ( int value : colors.keys() )
   {
-    QgsSymbol *symbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
+    std::unique_ptr<QgsSymbol> symbol = QgsSymbol::defaultSymbol( Qgis::GeometryType::Point );
     symbol->setColor( colors.value( value ) );
-    categoryList << QgsRendererCategory( QVariant( value ), symbol, labels.value( value ) );
+    categoryList << QgsRendererCategory( QVariant( value ), symbol.release(), labels.value( value ) );
   }
 
   mMarkerRenderer = new QgsCategorizedSymbolRenderer( u"topo_symbol"_s, categoryList );
@@ -240,9 +240,9 @@ QDomElement QgsGrassEditRenderer::save( QDomDocument &doc, const QgsReadWriteCon
 }
 
 
-QgsFeatureRenderer *QgsGrassEditRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsFeatureRenderer> QgsGrassEditRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  QgsGrassEditRenderer *renderer = new QgsGrassEditRenderer();
+  auto renderer = std::make_unique<QgsGrassEditRenderer>();
 
   QDomElement childElem = element.firstChildElement();
   while ( !childElem.isNull() )

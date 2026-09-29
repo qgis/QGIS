@@ -38,6 +38,7 @@
 #include "qgsdistancearea.h"
 #include "qgs3drendercontext.h"
 #include "qgslayerstylewatcher.h"
+#include "qgsvector3d.h"
 #include "qobjectuniqueptr.h"
 
 #include <QImage>
@@ -99,7 +100,7 @@ class QgsGlobeChunkLoaderFactory : public QgsChunkLoaderFactory
     std::unique_ptr<QgsTerrainTextureGenerator> mTextureGenerator;
     QgsDistanceArea mDistanceArea;
     QgsCoordinateTransform mGlobeCrsToLatLon;
-    double mRadiusX, mRadiusY, mRadiusZ;
+    QgsVector3D mRadius;
 };
 
 /**

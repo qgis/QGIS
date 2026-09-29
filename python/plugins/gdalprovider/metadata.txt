@@ -1,0 +1,15 @@
+[general]
+name=GDAL Processing Provider
+description=GDAL Processing Provider
+about=Exposes GDAL algorithms and tools for use within the QGIS Processing framework.
+category=Analysis
+version=2.12.99
+qgisMinimumVersion=4.0
+
+icon=:/images/themes/default/providerGdal.svg
+
+homepage=https://qgis.org
+tracker=https://github.com/qgis/QGIS/issues
+repository=https://github.com/qgis/QGIS
+
+hasProcessingProvider=yes

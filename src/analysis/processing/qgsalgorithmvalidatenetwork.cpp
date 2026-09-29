@@ -185,6 +185,8 @@ void QgsValidateNetworkAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsFeatureSource> networkSource( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !networkSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );

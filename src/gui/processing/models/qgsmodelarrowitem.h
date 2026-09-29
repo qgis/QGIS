@@ -23,8 +23,11 @@
 #include <QGraphicsRectItem>
 #include <QObject>
 
+#define SIP_NO_FILE
+
 class QgsModelComponentGraphicItem;
 class QgsModelArrowItem;
+
 
 ///@cond NOT_STABLE
 
@@ -32,13 +35,13 @@ class QgsModelArrowItem;
 /**
  * \ingroup gui
  * \brief A item for showing a "badge" on the midpoint of an arrow item.
- * \warning Not stable API
+ * \warning Not available in Python bindings
  * \since QGIS 4.0
  */
-class GUI_EXPORT QgsModelDesignerArrowBadgeItem : public QGraphicsRectItem SIP_SKIP
+class GUI_EXPORT QgsModelDesignerArrowBadgeItem : public QGraphicsRectItem
 {
   public:
-    QgsModelDesignerArrowBadgeItem( QgsModelArrowItem *link SIP_TRANSFERTHIS );
+    QgsModelDesignerArrowBadgeItem( QgsModelArrowItem *link );
 
     /**
      * Sets the \a center point of the badge, in parent item coordinates.
@@ -194,14 +197,14 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      *
      * If setShowBadge() has not been called to show the item, the NULLPTR will be returned.
      */
-    SIP_SKIP QgsModelDesignerArrowBadgeItem *badgeItem();
+    QgsModelDesignerArrowBadgeItem *badgeItem();
 
     /**
      * Sets whether the arrow's badge item should be shown.
      *
      * \see badgeItem();
      */
-    SIP_SKIP void setShowBadge( bool visible );
+    void setShowBadge( bool visible );
 
   public slots:
 

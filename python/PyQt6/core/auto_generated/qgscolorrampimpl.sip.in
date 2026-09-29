@@ -119,7 +119,7 @@ Constructor for QgsGradientColorRamp
 :param stops: optional list of additional color stops
 %End
 
-    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsColorRamp> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a new :py:class:`QgsColorRamp` from a map of properties
 %End
@@ -783,7 +783,7 @@ Constructor for QgsCptCityColorRamp
 :param doLoadFile: load cpt-city ramp from file
 %End
 
-    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsColorRamp> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates the symbol layer
 %End

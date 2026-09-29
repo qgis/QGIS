@@ -6,7 +6,3 @@ try:
     QgsElevationControllerWidget.__group__ = ['elevation']
 except (NameError, AttributeError):
     pass
-try:
-    QgsElevationControllerSettingsAction.__group__ = ['elevation']
-except (NameError, AttributeError):
-    pass

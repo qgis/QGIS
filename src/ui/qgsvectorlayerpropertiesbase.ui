@@ -2370,6 +2370,9 @@
                       <property name="text">
                        <string/>
                       </property>
+                      <property name="toolTip">
+                       <string>Add new dimension</string>
+                      </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
@@ -2381,6 +2384,9 @@
                       <property name="text">
                        <string/>
                       </property>
+                      <property name="toolTip">
+                       <string>Edit selected dimension</string>
+                      </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/symbologyEdit.svg</normaloff>:/images/themes/default/symbologyEdit.svg</iconset>
@@ -2391,6 +2397,9 @@
                      <widget class="QPushButton" name="mButtonRemoveWmsDimension">
                       <property name="text">
                        <string/>
+                      </property>
+                      <property name="toolTip">
+                       <string>Remove selected dimension</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">

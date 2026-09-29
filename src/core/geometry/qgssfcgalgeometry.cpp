@@ -1067,7 +1067,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::primitiveAsPolyhedralSurfa
 
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_prim result = QgsSfcgalEngine::primitiveAsPolyhedral( mSfcgalPrim.get(), &errorMsg );
+  sfcgal::shared_geom result = QgsSfcgalEngine::primitiveAsPolyhedral( mSfcgalPrim.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   std::unique_ptr<QgsSfcgalGeometry> resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );

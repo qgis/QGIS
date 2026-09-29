@@ -15,6 +15,7 @@ import unittest
 
 from qgis.core import (
     Qgis,
+    QgsApplication,
     QgsCategorizedSymbolRenderer,
     QgsCentroidFillSymbolLayer,
     QgsCoordinateReferenceSystem,
@@ -993,6 +994,75 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
                 "buffer_extent",
                 "buffer_extent",
                 mapsettings,
+            )
+        )
+
+    def testRenderTopocentricHorizonClipping(self):
+        world_map_path = (
+            QgsApplication.pkgDataPath()
+            + "/resources/data/world_map.gpkg|layername=countries"
+        )
+        layer = QgsVectorLayer(world_map_path, "world", "ogr")
+        self.assertTrue(layer.isValid())
+
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute("$id % 3")
+
+        red = QgsFillSymbol.createSimple({"color": "red", "outline_style": "no"})
+        renderer.addCategory(QgsRendererCategory(0, red, "0"))
+
+        green = QgsFillSymbol.createSimple({"color": "green", "outline_style": "no"})
+        renderer.addCategory(QgsRendererCategory(1, green, "1"))
+
+        blue = QgsFillSymbol.createSimple({"color": "blue", "outline_style": "no"})
+        renderer.addCategory(QgsRendererCategory(2, blue, "2"))
+        layer.setRenderer(renderer)
+
+        topo_crs = QgsCoordinateReferenceSystem("EPSG:4978").toTopocentricCrs(0, 0)
+        self.assertTrue(topo_crs.isValid())
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(1000, 1000))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(topo_crs)
+        mapsettings.setExtent(QgsRectangle(-10000000, -10000000, 10000000, 10000000))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "topocentric_equator", "topocentric_equator", mapsettings
+            )
+        )
+
+        topo_crs = QgsCoordinateReferenceSystem("EPSG:4978").toTopocentricCrs(90, 180)
+        self.assertTrue(topo_crs.isValid())
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(1000, 1000))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(topo_crs)
+        mapsettings.setExtent(QgsRectangle(-10000000, -10000000, 10000000, 10000000))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "topocentric_north_pole", "topocentric_north_pole", mapsettings
+            )
+        )
+
+        topo_crs = QgsCoordinateReferenceSystem("EPSG:4978").toTopocentricCrs(-90, 0)
+        self.assertTrue(topo_crs.isValid())
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(1000, 1000))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(topo_crs)
+        mapsettings.setExtent(QgsRectangle(-10000000, -10000000, 10000000, 10000000))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "topocentric_south_pole", "topocentric_south_pole", mapsettings
             )
         )
 

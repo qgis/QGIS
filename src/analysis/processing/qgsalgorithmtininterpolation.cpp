@@ -128,6 +128,8 @@ void QgsTinInterpolationAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsTinInterpolationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const QString interpolationData = parameterAsString( parameters, u"INTERPOLATION_DATA"_s, context );
   const int method = parameterAsEnum( parameters, u"METHOD"_s, context );
   const QgsRectangle boundingBox = parameterAsExtent( parameters, u"EXTENT"_s, context );

@@ -33,10 +33,18 @@ class QgsProject;
 class CORE_EXPORT QgsRelationContext
 {
   public:
+    // TODO QGIS 5.0 -- Remove the deprecated constructor
+    /**
+     * Constructor for QgsRelationContext.
+     *
+     * \note Will be removed in QGIS 5.0. Use QgsRelationContext( QgsProject *project ) with explicit project instead.
+     */
+    QgsRelationContext() SIP_DEPRECATED;
+
     /**
      * Constructor for QgsRelationContext.
      */
-    QgsRelationContext( QgsProject *project = nullptr );
+    QgsRelationContext( QgsProject *project );
 
     /**
      * Gets the associated project

@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
+#include <memory>
 
 #include "qgsapplication.h"
 
@@ -24,6 +26,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSettings>
+#include <QStandardPaths>
 #include <QString>
 #include <QStringList>
 #include <QTimer>
@@ -46,6 +49,8 @@ typedef SInt32 SRefCon;
 #include "qgsprocess.h"
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
+#include "qgsuserprofilemanager.h"
+#include "qgsuserprofile.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -72,6 +77,18 @@ static QString myProjectFileName;
 // This is the 'leftover' arguments collection
 static QStringList sFileList;
 
+// Shared by the fast path and the main parser below.
+static bool isProfileOption( const QString &arg )
+{
+  return arg == "--profile"_L1 || arg == "--profiles-path"_L1 || arg == "-S"_L1;
+}
+
+// Otherwise "--profile --json" would take the flag as the profile name.
+static bool isValidProfileValue( const QString &value )
+{
+  return !value.isEmpty() && !value.startsWith( '-'_L1 );
+}
+
 int main( int argc, char *argv[] )
 {
 #ifdef Q_OS_WIN // Windows
@@ -92,6 +109,15 @@ int main( int argc, char *argv[] )
     if ( arg == "--json"_L1 || arg == "--verbose"_L1 || arg == "--no-python"_L1 )
     {
       // ignore these arguments
+      continue;
+    }
+    if ( isProfileOption( arg ) )
+    {
+      // Malformed -- let the main parser report it.
+      if ( i + 1 >= argc || !isValidProfileValue( QString( argv[i + 1] ) ) )
+        break;
+      // Valid value -- skip it, keep looking for --help/--version.
+      ++i;
       continue;
     }
     if ( arg == "--help"_L1 || arg == "-h"_L1 )
@@ -123,6 +149,43 @@ int main( int argc, char *argv[] )
   // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
   // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
   QStringList args = QCoreApplication::arguments();
+
+  // Parsed before the flags below, so a missing value can't swallow one; stops at "--".
+  QString profileName;
+  QString profilesPath;
+  for ( int i = 1; i < args.size(); )
+  {
+    const QString arg = args.at( i );
+    if ( arg == "--"_L1 )
+      break;
+
+    if ( arg == "--profile"_L1 )
+    {
+      if ( i + 1 >= args.size() || !isValidProfileValue( args.at( i + 1 ) ) )
+      {
+        std::cerr << "The --profile option requires a profile name\n";
+        return 1;
+      }
+      profileName = args.at( i + 1 );
+      args.removeAt( i );
+      args.removeAt( i );
+    }
+    else if ( arg == "--profiles-path"_L1 || arg == "-S"_L1 )
+    {
+      if ( i + 1 >= args.size() || !isValidProfileValue( args.at( i + 1 ) ) )
+      {
+        std::cerr << "The --profiles-path option requires a directory path\n";
+        return 1;
+      }
+      profilesPath = QDir::toNativeSeparators( QFileInfo( args.at( i + 1 ) ).absoluteFilePath() );
+      args.removeAt( i );
+      args.removeAt( i );
+    }
+    else
+    {
+      ++i;
+    }
+  }
 
   QgsProcessingExec::Flags flags;
 
@@ -169,7 +232,32 @@ int main( int argc, char *argv[] )
   QgsApplication::setOrganizationDomain( u"qgis.org"_s );
   QgsApplication::setApplicationName( u"QGIS4"_s );
 
-  QgsApplication::init();
+  // Resolve the profile ourselves (as the desktop app does) so init() loads its settings and plugins.
+  if ( profilesPath.isEmpty() )
+  {
+    if ( const char *customConfigPath = getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+      profilesPath = QString::fromLocal8Bit( customConfigPath );
+
+    // A set-but-empty value must still fall back, else the root becomes "/profiles".
+    if ( profilesPath.isEmpty() )
+      profilesPath = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
+  }
+
+  const QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( profilesPath );
+  QgsUserProfileManager manager( rootProfileFolder );
+  const bool hasNamedProfile = !profileName.isEmpty();
+  const QString requestedProfile = hasNamedProfile ? profileName : manager.defaultProfileName();
+
+  // A named profile must already exist -- it carries connections and plugin
+  // preferences that only QGIS Desktop sets up. The default is created on demand.
+  if ( hasNamedProfile && !manager.profileExists( requestedProfile ) )
+  {
+    std::cerr << "Profile '" << requestedProfile.toLocal8Bit().constData() << "' does not exist in '" << rootProfileFolder.toLocal8Bit().constData() << "'. Create and configure it in QGIS Desktop before using qgis_process.\n";
+    return 1;
+  }
+
+  std::unique_ptr<QgsUserProfile> profile = manager.getProfile( requestedProfile, !hasNamedProfile );
+  QgsApplication::init( profile->folder() );
   QgsApplication::initQgis();
 
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );

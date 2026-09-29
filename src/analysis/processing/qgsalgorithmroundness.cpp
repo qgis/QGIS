@@ -93,6 +93,8 @@ QgsFields QgsRoundnessAlgorithm::outputFields( const QgsFields &inputFields ) co
 
 QgsFeatureList QgsRoundnessAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   QgsAttributes attributes = f.attributes();
   if ( f.hasGeometry() )

@@ -36,7 +36,7 @@ class QgsRasterDataProvider;
 class QgsRectangle;
 
 #ifndef SIP_RUN
-typedef QgsRasterRenderer *( *QgsRasterRendererCreateFunc )( const QDomElement &, QgsRasterInterface *input );
+typedef std::unique_ptr<QgsRasterRenderer> ( *QgsRasterRendererCreateFunc )( const QDomElement &, QgsRasterInterface *input );
 typedef QgsRasterRendererWidget *( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer *, const QgsRectangle &extent );
 
 /**
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsRasterRendererRegistry
      * Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).
      * Caller takes ownership.
     */
-    QgsRasterRenderer *defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const SIP_FACTORY;
+    std::unique_ptr<QgsRasterRenderer> defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const;
 
   private:
     QHash< QString, QgsRasterRendererRegistryEntry > mEntries;

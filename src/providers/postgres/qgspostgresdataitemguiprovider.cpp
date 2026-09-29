@@ -773,7 +773,7 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsPGConnectionItem *connection
     // open the source layer
     bool owner;
     QString error;
-    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+    QgsVectorLayer *srcLayer = u.vectorLayer( owner, error, QgsProject::instance() );
     if ( !srcLayer )
     {
       importResults.append( tr( "%1: %2" ).arg( u.name, error ) );

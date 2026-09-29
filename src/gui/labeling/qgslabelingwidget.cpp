@@ -195,7 +195,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
       QgsRuleBasedLabelingWidget *ruleWidget = new QgsRuleBasedLabelingWidget( mLayer, mCanvas, this );
       ruleWidget->setDockMode( dockMode() );
       connect( ruleWidget, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
-      connect( ruleWidget, &QgsRuleBasedLabelingWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
+      connect( ruleWidget, &QgsRuleBasedLabelingWidget::changed, this, &QgsLabelingWidget::changed );
       mWidget = ruleWidget;
       mStackedWidget->addWidget( mWidget );
       mStackedWidget->setCurrentWidget( mWidget );
@@ -244,7 +244,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
           simpleWidget->setContext( context );
 
           simpleWidget->setDockMode( dockMode() );
-          connect( simpleWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
+          connect( simpleWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingWidget::changed );
           connect( simpleWidget, &QgsLabelingGui::auxiliaryFieldCreated, this, &QgsLabelingWidget::auxiliaryFieldCreated );
 
           simpleWidget->setLabelMode( QgsLabelingGui::Labels );
@@ -267,7 +267,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
           connect( obstacleWidget, &QgsLabelSettingsWidgetBase::changed, this, [this, obstacleWidget] {
             mSimpleSettings->setObstacleSettings( obstacleWidget->settings() );
             obstacleWidget->updateDataDefinedProperties( mSimpleSettings->dataDefinedProperties() );
-            emit widgetChanged();
+            emit changed();
           } );
           connect( obstacleWidget, &QgsLabelSettingsWidgetBase::auxiliaryFieldCreated, this, &QgsLabelingWidget::auxiliaryFieldCreated );
 
@@ -288,7 +288,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
     case ModeNone:
       break;
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 
@@ -344,7 +344,7 @@ void QgsLabelingWidget::showEngineConfiguration( QWidget *parent, QgsMapCanvas *
   if ( panel && panel->dockMode() )
   {
     QgsLabelEngineConfigWidget *widget = new QgsLabelEngineConfigWidget( canvas );
-    connect( widget, &QgsLabelEngineConfigWidget::widgetChanged, widget, &QgsLabelEngineConfigWidget::apply );
+    connect( widget, &QgsLabelEngineConfigWidget::changed, widget, &QgsLabelEngineConfigWidget::apply );
     panel->openPanel( widget );
   }
   else

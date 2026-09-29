@@ -158,6 +158,28 @@ Returns the feedback object used to cancel rendering
 .. versionadded:: 3.20
 %End
 
+    void setMapCrsZFilter( const QgsDoubleRange &range );
+%Docstring
+Sets the allowed range of Z values.
+
+Points which Z value is not in ``range`` after transformation will be
+discarded from rendering. If both bounds are set to infinite, no
+filtering is applied.
+
+.. seealso:: :py:func:`mapCrsZFilter`
+
+.. versionadded:: 4.4
+%End
+
+    QgsDoubleRange mapCrsZFilter() const;
+%Docstring
+Returns the allowable range of z values in the map (destination) CRS.
+
+.. seealso:: :py:func:`setMapCrsZFilter`
+
+.. versionadded:: 4.4
+%End
+
 
 
   private:

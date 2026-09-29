@@ -23,28 +23,32 @@ import os
 import shutil
 
 from qgis.core import Qgis, QgsApplication, QgsMessageLog, QgsSettings
+from qgis.gui import QgsProcessingToolboxAction
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QFileDialog
 
-from processing.gui.ToolboxAction import ToolboxAction
 from processing.script import ScriptUtils
 
 
-class AddScriptFromFileAction(ToolboxAction):
+class AddScriptFromFileAction(QgsProcessingToolboxAction):
     def __init__(self):
-        self.name = QCoreApplication.translate(
-            "AddScriptFromFileAction", "Add Script to Toolbox…"
+        super().__init__(
+            QCoreApplication.translate(
+                "AddScriptFromFileAction", "Add Script to Toolbox…"
+            ),
+            QCoreApplication.translate("ToolboxAction", "Tools"),
         )
-        self.group = self.tr("Tools")
 
-    def execute(self):
+    def trigger(self, context):
         settings = QgsSettings()
         lastDir = settings.value("processing/lastScriptsDir", "")
         files, _ = QFileDialog.getOpenFileNames(
-            self.toolbox,
-            self.tr("Add script(s)"),
+            context.parentWidget(),
+            QCoreApplication.translate("AddScriptFromFileAction", "Add script(s)"),
             lastDir,
-            self.tr("Processing scripts (*.py *.PY)"),
+            QCoreApplication.translate(
+                "AddScriptFromFileAction", "Processing scripts (*.py *.PY)"
+            ),
         )
         if files:
             settings.setValue("processing/lastScriptsDir", os.path.dirname(files[0]))
@@ -56,7 +60,9 @@ class AddScriptFromFileAction(ToolboxAction):
                     valid += 1
                 except OSError as e:
                     QgsMessageLog.logMessage(
-                        self.tr("Could not copy script '{}'\n{}").format(f, str(e)),
+                        QCoreApplication.translate(
+                            "AddScriptFromFileAction", "Could not copy script '{}'\n{}"
+                        ).format(f, str(e)),
                         "Processing",
                         Qgis.MessageLevel.Warning,
                     )

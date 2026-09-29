@@ -35,7 +35,7 @@ Abstract base class for labeling settings for raster layers.
     QgsAbstractRasterLayerLabeling();
     virtual ~QgsAbstractRasterLayerLabeling();
 
-    static QgsAbstractRasterLayerLabeling *defaultLabelingForLayer( QgsRasterLayer *layer ) /Factory/;
+    static std::unique_ptr<QgsAbstractRasterLayerLabeling> defaultLabelingForLayer( QgsRasterLayer *layer );
 %Docstring
 Creates default labeling for a raster ``layer``.
 %End
@@ -97,7 +97,7 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a
 %End
 
 
-    static QgsAbstractRasterLayerLabeling *createFromElement( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsAbstractRasterLayerLabeling> createFromElement( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Tries to create an instance of an implementation based on the XML data.
 %End
@@ -152,7 +152,7 @@ Basic implementation of the labeling interface for raster layers.
     virtual void multiplyOpacity( double opacityFactor );
 
 
-    static QgsRasterLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsRasterLayerSimpleLabeling> create( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a QgsRasterLayerSimpleLabeling from a DOM element with saved
 configuration

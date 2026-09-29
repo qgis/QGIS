@@ -61,12 +61,12 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      * serialized in the \a properties map (corresponding to the output from
      * QgsSimpleLineSymbolLayer::properties() ).
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     /**
      * Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM \a element.
      */
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     QString layerType() const override;
     Qgis::SymbolLayerFlags flags() const override;
@@ -1122,12 +1122,12 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      * serialized in the \a properties map (corresponding to the output from
      * QgsMarkerLineSymbolLayer::properties() ).
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     /**
      * Creates a new QgsMarkerLineSymbolLayer from an SLD XML DOM \a element.
      */
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -1209,7 +1209,7 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      * serialized in the \a properties map (corresponding to the output from
      * QgsHashedLineSymbolLayer::properties() ).
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -1388,7 +1388,7 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
      * serialized in the \a properties map (corresponding to the output from
      * QgsRasterLineSymbolLayer::properties() ).
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     /**
      * Turns relative paths in properties map to absolute when reading and vice versa when writing.
@@ -1469,7 +1469,7 @@ class CORE_EXPORT QgsLineburstSymbolLayer : public QgsAbstractBrushedLineSymbolL
      * serialized in the \a properties map (corresponding to the output from
      * QgsLineburstSymbolLayer::properties() ).
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     QString layerType() const override;
     Qgis::SymbolLayerFlags flags() const override;
@@ -1563,7 +1563,7 @@ class CORE_EXPORT QgsFilledLineSymbolLayer : public QgsLineSymbolLayer
      * serialized in the \a properties map (corresponding to the output from
      * QgsFilledLineSymbolLayer::properties() ).
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;

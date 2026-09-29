@@ -175,6 +175,8 @@ bool QgsExtractSpecificVerticesAlgorithm::prepareAlgorithm( const QVariantMap &p
 
 QgsFeatureList QgsExtractSpecificVerticesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeatureList outputFeatures;
 
   QgsFeature f = feature;

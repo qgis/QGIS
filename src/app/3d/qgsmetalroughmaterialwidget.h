@@ -33,7 +33,6 @@ class QgsMetalRoughMaterialWidget : public QgsMaterialSettingsWidget, private Ui
 
     static QgsMaterialSettingsWidget *create();
 
-    void setTechnique( Qgis::MaterialRenderingTechnique technique ) final;
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) final;
     std::unique_ptr< QgsAbstractMaterialSettings > settings() final;
   public slots:
@@ -42,6 +41,9 @@ class QgsMetalRoughMaterialWidget : public QgsMaterialSettingsWidget, private Ui
 
     void updateWidgetState();
     void updatePreview();
+
+  protected:
+    void updateWidgetVisibility() final;
 };
 
 #endif // QGSMETALROUGHMATERIALWIDGET_H

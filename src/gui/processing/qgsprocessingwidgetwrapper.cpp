@@ -383,7 +383,7 @@ QgsExpressionContext QgsProcessingWidgetWrapperUtils::createExpressionContext(
 
     QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg ? alg : algorithm, QVariantMap(), *context );
     c << algorithmScope;
-    QgsExpressionContextScope *childScope = lModel->createExpressionContextScopeForChildAlgorithm( widgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() );
+    QgsExpressionContextScope *childScope = lModel->createExpressionContextScopeForChildAlgorithm( widgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() ).release();
     c << childScope;
 
     QStringList highlightedVariables = childScope->variableNames();

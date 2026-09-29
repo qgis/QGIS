@@ -53,6 +53,11 @@ QString QgsMeshSurfaceToPolygonAlgorithm::displayName() const
   return QObject::tr( "Surface to polygon" );
 }
 
+QStringList QgsMeshSurfaceToPolygonAlgorithm::tags() const
+{
+  return QObject::tr( "mesh,export,polygon,vector,boundary,bounds,surface" ).split( ',' );
+}
+
 QString QgsMeshSurfaceToPolygonAlgorithm::group() const
 {
   return QObject::tr( "Mesh" );
@@ -104,6 +109,8 @@ bool QgsMeshSurfaceToPolygonAlgorithm::prepareAlgorithm( const QVariantMap &para
 
 QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   if ( feedback->isCanceled() )
     return QVariantMap();
   feedback->setProgress( 0 );

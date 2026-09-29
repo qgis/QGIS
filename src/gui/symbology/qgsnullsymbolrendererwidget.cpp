@@ -32,7 +32,7 @@ QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer *layer,
 {
   if ( renderer )
   {
-    mRenderer.reset( QgsNullSymbolRenderer::convertFromRenderer( renderer ) );
+    mRenderer = QgsNullSymbolRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {

@@ -196,6 +196,8 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     //! Initialize fields and temporal capabilities
     bool initFieldsAndTemporal();
 
+    void reloadProviderData() override;
+
     //! Search for overviews and store a map
     void findOverviews();
     //! Initialize spatial indexes

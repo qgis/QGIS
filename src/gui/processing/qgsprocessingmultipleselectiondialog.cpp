@@ -215,7 +215,7 @@ QList<int> QgsProcessingMultipleSelectionPanelWidget::existingMapLayerFromMimeDa
   for ( const QgsMimeDataUtils::Uri &u : uriList )
   {
     // is this uri from the current project?
-    if ( QgsMapLayer *layer = u.mapLayer() )
+    if ( QgsMapLayer *layer = u.mapLayer( QgsProject::instance() ) )
     {
       for ( int i = 0; i < mModel->rowCount(); ++i )
       {
@@ -434,7 +434,7 @@ QList<int> QgsProcessingMultipleInputPanelWidget::existingMapLayerFromMimeData( 
   {
     // is this uri from the current project?
     bool matched = false;
-    if ( QgsMapLayer *layer = u.mapLayer() )
+    if ( QgsMapLayer *layer = u.mapLayer( QgsProject::instance() ) )
     {
       for ( int i = 0; i < mModel->rowCount(); ++i )
       {

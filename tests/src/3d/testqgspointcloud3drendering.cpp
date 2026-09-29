@@ -113,7 +113,7 @@ void TestQgsPointCloud3DRendering::testSync3DRendererTo2DRenderer()
   QgsPointCloudAttributeByRampRenderer *colorramp2DRenderer = new QgsPointCloudAttributeByRampRenderer();
   colorramp2DRenderer->setAttribute( u"Z"_s );
   QgsColorRampShader shader = QgsColorRampShader( 0.98, 1.25 );
-  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ) );
+  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ).release() );
   shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
   colorramp2DRenderer->setColorRampShader( shader );
   QgsPointCloudRgbRenderer *rgb2DRenderer = new QgsPointCloudRgbRenderer();
@@ -185,7 +185,7 @@ void TestQgsPointCloud3DRendering::testDisableSync3DRendererTo2DRenderer()
   QgsPointCloudAttributeByRampRenderer *colorramp2DRenderer = new QgsPointCloudAttributeByRampRenderer();
   colorramp2DRenderer->setAttribute( u"Z"_s );
   QgsColorRampShader shader = QgsColorRampShader( 0.98, 1.25 );
-  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ) );
+  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ).release() );
   shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
   colorramp2DRenderer->setColorRampShader( shader );
   QgsPointCloudRgbRenderer *rgb2DRenderer = dynamic_cast<QgsPointCloudRgbRenderer *>( mLayer->renderer()->clone() );
@@ -372,7 +372,7 @@ void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
   QgsColorRampPointCloud3DSymbol *symbol = new QgsColorRampPointCloud3DSymbol();
   symbol->setAttribute( u"Intensity"_s );
   QgsColorRampShader shader = QgsColorRampShader( 199, 2086 );
-  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ) );
+  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ).release() );
   shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
   symbol->setColorRampShader( shader );
   symbol->setPointSize( 10 );

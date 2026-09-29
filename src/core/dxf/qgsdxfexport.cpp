@@ -858,14 +858,14 @@ void QgsDxfExport::writeEntities()
 
         if ( job->labelProvider )
         {
-          job->labelProvider->registerFeature( fet, job->renderContext );
+          job->labelProvider->registerFeature( fet, job->renderContext, QgsLabelFeatureDetails() );
           Q_NOWARN_DEPRECATED_PUSH
           registerDxfLayer( job->featureSource.id(), fet.id(), lName );
           Q_NOWARN_DEPRECATED_POP
         }
         else if ( job->ruleBasedLabelProvider )
         {
-          job->ruleBasedLabelProvider->registerFeature( fet, job->renderContext );
+          job->ruleBasedLabelProvider->registerFeature( fet, job->renderContext, QgsLabelFeatureDetails() );
           Q_NOWARN_DEPRECATED_PUSH
           registerDxfLayer( job->featureSource.id(), fet.id(), lName );
           Q_NOWARN_DEPRECATED_POP

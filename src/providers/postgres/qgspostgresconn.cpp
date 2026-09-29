@@ -331,7 +331,10 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
         mUri.setPassword( password );
 
       QgsDebugMsgLevel( "Connecting to " + QgsPostgresConn::connectionInfo( mUri, false ), 2 );
-      QString connectString = QgsPostgresConn::connectionInfo( mUri );
+
+      // We don't use QgsPostgresConn::connectionInfo() here because it would add session_role parameter
+      // which is not a valid parameter to PQConnectdb()
+      QString connectString = mUri.connectionInfo();
       addDefaultTimeoutAndClientEncoding( connectString );
       // use conninfo for log, connectString - can contain clear text username & password
       logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( u"libpq::PQconnectdb()"_s, conninfo, u"postgres"_s, u"QgsPostgresConn"_s, QGS_QUERY_LOG_ORIGIN_PG_CON );

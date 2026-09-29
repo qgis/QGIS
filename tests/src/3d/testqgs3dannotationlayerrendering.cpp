@@ -22,6 +22,7 @@
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsannotationlinetextitem.h"
 #include "qgsannotationmarkeritem.h"
+#include "qgsannotationpictureitem.h"
 #include "qgsannotationpointtextitem.h"
 #include "qgsannotationrectangletextitem.h"
 #include "qgsapplication.h"
@@ -54,6 +55,9 @@ class TestQgs3DAnnotationLayerRendering : public QgsTest
 
     void testAnnotationLayerBillboards();
     void testAnnotationLayerText();
+    void testAnnotationLayerPictureFixedSize();
+    void testAnnotationLayerPicturePerspective();
+    void testAnnotationLayerPictureSVG();
 
   private:
 };
@@ -95,33 +99,33 @@ void TestQgs3DAnnotationLayerRendering::testAnnotationLayerBillboards()
   auto annotationLayer = std::make_unique<QgsAnnotationLayer>( "test", QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
 
   auto marker1 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 1000, 1000 ) );
-  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  auto markerSymbol = qgis::unique_ptr_static_cast<QgsMarkerSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   markerSymbol->setColor( QColor( 255, 0, 0 ) );
   markerSymbol->setSize( 4 );
   QgsSimpleMarkerSymbolLayer *sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
   sl->setStrokeColor( QColor( 0, 0, 255 ) );
   sl->setStrokeWidth( 2 );
-  marker1->setSymbol( markerSymbol );
+  marker1->setSymbol( markerSymbol.release() );
   annotationLayer->addItem( marker1.release() );
 
   auto marker2 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 1000, 2000 ) );
-  markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  markerSymbol = qgis::unique_ptr_static_cast<QgsMarkerSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   markerSymbol->setColor( QColor( 0, 255, 0 ) );
   markerSymbol->setSize( 20 );
   sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
   sl->setStrokeColor( QColor( 255, 0, 255 ) );
   sl->setStrokeWidth( 2 );
-  marker2->setSymbol( markerSymbol );
+  marker2->setSymbol( markerSymbol.release() );
   annotationLayer->addItem( marker2.release() );
 
   auto marker3 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 2000, 2000 ) );
-  markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  markerSymbol = qgis::unique_ptr_static_cast<QgsMarkerSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   markerSymbol->setColor( QColor( 0, 0, 255 ) );
   markerSymbol->setSize( 30 );
   sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
   sl->setStrokeColor( QColor( 0, 255, 255 ) );
   sl->setStrokeWidth( 2 );
-  marker3->setSymbol( markerSymbol );
+  marker3->setSymbol( markerSymbol.release() );
   annotationLayer->addItem( marker3.release() );
 
   auto renderer = std::make_unique< QgsAnnotationLayer3DRenderer >();
@@ -233,6 +237,179 @@ void TestQgs3DAnnotationLayerRendering::testAnnotationLayerText()
   delete map;
 
   QGSVERIFYIMAGECHECK( "annotation_text_rendering_2", "annotation_text_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DAnnotationLayerRendering::testAnnotationLayerPictureFixedSize()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto annotationLayer = std::make_unique<QgsAnnotationLayer>( "test", QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
+
+  const QString sourceImage1 = testDataPath( u"raster_brush.png"_s );
+  auto picture1 = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::Raster, sourceImage1, QgsRectangle::fromCenterAndSize( QgsPointXY( 1000, 1000 ), 400, 200 ) );
+  picture1->setBillboard3DScaleMode( Qgis::BillboardScaleMode::ViewIndependent );
+  picture1->setBillboard3DSize( QSizeF( 100, 100 ) );
+  annotationLayer->addItem( picture1.release() );
+
+  auto picture2 = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::Raster, sourceImage1, QgsRectangle::fromCenterAndSize( QgsPointXY( 1000, 2000 ), 400, 200 ) );
+  picture2->setBillboard3DScaleMode( Qgis::BillboardScaleMode::ViewIndependent );
+  picture2->setBillboard3DSize( QSizeF( 170, 170 ) );
+  annotationLayer->addItem( picture2.release() );
+
+  auto picture3 = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::Raster, testDataPath( u"sample_image.png"_s ), QgsRectangle::fromCenterAndSize( QgsPointXY( 2000, 2000 ), 400, 200 ) );
+  picture3->setBillboard3DScaleMode( Qgis::BillboardScaleMode::ViewIndependent );
+  picture3->setBillboard3DSize( QSizeF( 130, 130 ) );
+  annotationLayer->addItem( picture3.release() );
+
+  auto renderer = std::make_unique< QgsAnnotationLayer3DRenderer >();
+
+  annotationLayer->setRenderer3D( renderer->clone() );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << annotationLayer.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "annotation_billboard_picture_rendering_1", "annotation_billboard_picture_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // more perspective look, with z offset
+  renderer->setZOffset( 400 );
+  renderer->setShowCalloutLines( true );
+  renderer->setCalloutLineColor( QColor( 255, 255, 255 ) );
+  renderer->setCalloutLineWidth( 8 );
+  annotationLayer->setRenderer3D( renderer->clone() );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+
+  QGSVERIFYIMAGECHECK( "annotation_billboard_picture_rendering_2", "annotation_billboard_picture_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DAnnotationLayerRendering::testAnnotationLayerPicturePerspective()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto annotationLayer = std::make_unique<QgsAnnotationLayer>( "test", QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
+
+  const QString sourceImage1 = testDataPath( u"raster_brush.png"_s );
+  auto picture1 = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::Raster, sourceImage1, QgsRectangle::fromCenterAndSize( QgsPointXY( 1000, 1000 ), 400, 200 ) );
+  picture1->setBillboard3DScaleMode( Qgis::BillboardScaleMode::Perspective );
+  picture1->setBillboard3DSize( QSizeF( 300, 300 ) );
+  annotationLayer->addItem( picture1.release() );
+
+  auto picture2 = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::Raster, sourceImage1, QgsRectangle::fromCenterAndSize( QgsPointXY( 1000, 2000 ), 400, 200 ) );
+  picture2->setBillboard3DScaleMode( Qgis::BillboardScaleMode::Perspective );
+  picture2->setBillboard3DSize( QSizeF( 270, 270 ) );
+  annotationLayer->addItem( picture2.release() );
+
+  auto picture3 = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::Raster, testDataPath( u"sample_image.png"_s ), QgsRectangle::fromCenterAndSize( QgsPointXY( 2000, 2000 ), 400, 200 ) );
+  picture3->setBillboard3DScaleMode( Qgis::BillboardScaleMode::Perspective );
+  picture3->setBillboard3DSize( QSizeF( 430, 430 ) );
+  annotationLayer->addItem( picture3.release() );
+
+  auto renderer = std::make_unique< QgsAnnotationLayer3DRenderer >();
+
+  annotationLayer->setRenderer3D( renderer->clone() );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << annotationLayer.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "annotation_billboard_picture_perspective_rendering_1", "annotation_billboard_picture_perspective_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // more perspective look, with z offset
+  renderer->setZOffset( 400 );
+  renderer->setShowCalloutLines( true );
+  renderer->setCalloutLineColor( QColor( 255, 255, 255 ) );
+  renderer->setCalloutLineWidth( 8 );
+  annotationLayer->setRenderer3D( renderer->clone() );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+
+  QGSVERIFYIMAGECHECK( "annotation_billboard_picture_perspective_rendering_2", "annotation_billboard_picture_perspective_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DAnnotationLayerRendering::testAnnotationLayerPictureSVG()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto annotationLayer = std::make_unique<QgsAnnotationLayer>( "test", QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
+
+  const QString sourceImage1 = testDataPath( u"sample_svg.svg"_s );
+  auto picture1 = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::Raster, sourceImage1, QgsRectangle::fromCenterAndSize( QgsPointXY( 1000, 1000 ), 400, 200 ) );
+  picture1->setBillboard3DScaleMode( Qgis::BillboardScaleMode::ViewIndependent );
+  picture1->setBillboard3DSize( QSizeF( 100, 100 ) );
+  annotationLayer->addItem( picture1.release() );
+
+  auto renderer = std::make_unique< QgsAnnotationLayer3DRenderer >();
+
+  annotationLayer->setRenderer3D( renderer->clone() );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << annotationLayer.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "annotation_billboard_picture_svg_rendering", "annotation_billboard_picture_svg_rendering", img, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DAnnotationLayerRendering )

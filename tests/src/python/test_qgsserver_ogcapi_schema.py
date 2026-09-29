@@ -62,9 +62,9 @@ class EnumProvider(PyProvider):
     def createProvider(cls, uri, providerOptions, flags=QgsDataProvider.ReadFlags()):
         return EnumProvider(uri, providerOptions, flags)
 
-    def enumValues(self, fieldIdx):
+    def codedValues(self, fieldIdx):
         if self.fields()[fieldIdx].name().startswith("enum"):
-            return ["value1", "value2", "value3"]
+            return [("value1", "value1"), ("value2", "value2"), ("value3", "value3")]
         return []
 
 
@@ -281,13 +281,10 @@ class QgsServerOgcApiSchemaTest(QgsServerAPITestBase):
             {"map": {"a": "A", "b": "B"}},
             {
                 "type": "string",
-                "x-ogc-codelist": {
-                    "oneOf": [
-                        {"const": "A", "title": "a"},
-                        {"const": "B", "title": "b"},
-                    ],
-                    "title": "field1",
-                },
+                "oneOf": [
+                    {"const": "A", "title": "a"},
+                    {"const": "B", "title": "b"},
+                ],
                 "x-ogc-propertySeq": 2,
             },
             required=True,

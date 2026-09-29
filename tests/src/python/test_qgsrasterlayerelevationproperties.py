@@ -403,6 +403,37 @@ class TestQgsRasterLayerElevationProperties(QgisTestCase):
             "@band*2 + 1",
         )
 
+    def test_calculate_z_range_elevation_surface(self):
+        """
+        The elevation range of a surface comes from the statistics of its band
+        """
+        layer = QgsRasterLayer(
+            os.path.join(unitTestDataPath(), "raster/dem.tif"), "dem"
+        )
+        self.assertTrue(layer.isValid())
+
+        props = QgsRasterLayerElevationProperties(layer)
+        self.assertEqual(
+            props.mode(), Qgis.RasterElevationMode.RepresentsElevationSurface
+        )
+        props.setEnabled(True)
+        self.assertEqual(props.calculateZRange(layer), QgsDoubleRange(85, 243))
+
+        # the scale and the offset apply to the statistics
+        props.setZScale(2)
+        props.setZOffset(10)
+        self.assertEqual(props.calculateZRange(layer), QgsDoubleRange(180, 496))
+
+        # a band which the layer does not have gives no range
+        props.setZScale(1)
+        props.setZOffset(0)
+        props.setBandNumber(3)
+        self.assertTrue(props.calculateZRange(layer).isInfinite())
+
+        # and neither does a layer which is not a raster
+        props.setBandNumber(1)
+        self.assertTrue(props.calculateZRange(None).isInfinite())
+
     def test_looks_like_dem(self):
         layer = QgsRasterLayer(
             os.path.join(unitTestDataPath(), "landsat.tif"), "i am not a dem"

@@ -68,10 +68,10 @@ QgsProcessingDxfLayerDetailsWidget::QgsProcessingDxfLayerDetailsWidget( const QV
     mGroupBoxBlocks->setVisible( false );
   }
 
-  connect( mFieldsComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mOverriddenName, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mGroupBoxBlocks, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
-  connect( mSpinBoxBlocks, &QSpinBox::textChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mFieldsComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsPanelWidget::changed );
+  connect( mOverriddenName, &QLineEdit::textChanged, this, &QgsPanelWidget::changed );
+  connect( mGroupBoxBlocks, &QGroupBox::toggled, this, &QgsPanelWidget::changed );
+  connect( mSpinBoxBlocks, &QSpinBox::textChanged, this, &QgsPanelWidget::changed );
 }
 
 QVariant QgsProcessingDxfLayerDetailsWidget::value() const
@@ -148,7 +148,7 @@ void QgsProcessingDxfLayersPanelWidget::configureLayer()
     widget->setPanelTitle( tr( "Configure Layer" ) );
     widget->buttonBox()->hide();
 
-    connect( widget, &QgsProcessingDxfLayerDetailsWidget::widgetChanged, this, [this, item, widget]() { setItemValue( item, widget->value() ); } );
+    connect( widget, &QgsProcessingDxfLayerDetailsWidget::changed, this, [this, item, widget]() { setItemValue( item, widget->value() ); } );
     panel->openPanel( widget );
   }
   else

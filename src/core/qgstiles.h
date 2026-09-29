@@ -219,6 +219,26 @@ class CORE_EXPORT QgsTileMatrix
     //! Returns number of rows of the tile matrix
     int matrixHeight() const { return mMatrixHeight; }
 
+    /**
+     * Returns the calculated matrix width at the specified zoom level.
+     *
+     * \note The \a zoomLevel must be greater than this matrix's zoomLevel()
+     *
+     * \see derivedMatrixHeightAtZoomLevel()
+     * \since QGIS 4.4
+     */
+    long long derivedMatrixWidthAtZoomLevel( int zoomLevel ) const;
+
+    /**
+     * Returns the calculated matrix height at the specified zoom level.
+     *
+     * \note The \a zoomLevel must be greater than this matrix's zoomLevel()
+     *
+     * \see derivedMatrixWidthAtZoomLevel()
+     * \since QGIS 4.4
+     */
+    long long derivedMatrixHeightAtZoomLevel( int zoomLevel ) const;
+
     //! Returns extent of the tile matrix
     QgsRectangle extent() const { return mExtent; }
 

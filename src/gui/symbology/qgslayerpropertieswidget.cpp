@@ -464,7 +464,7 @@ void QgsLayerPropertiesWidget::emitSignalChanged()
   {
     mLayer->paintEffect()->setEnabled( true );
   }
-  emit widgetChanged();
+  emit changed();
 }
 
 void QgsLayerPropertiesWidget::reloadLayer()

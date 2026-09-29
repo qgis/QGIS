@@ -451,15 +451,15 @@ QgsMergedFeatureRenderer *QgsMergedFeatureRenderer::clone() const
   return newRenderer;
 }
 
-QgsFeatureRenderer *QgsMergedFeatureRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsFeatureRenderer> QgsMergedFeatureRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  QgsMergedFeatureRenderer *r = new QgsMergedFeatureRenderer( nullptr );
+  auto r = std::make_unique<QgsMergedFeatureRenderer>( nullptr );
   //look for an embedded renderer <renderer-v2>
   QDomElement embeddedRendererElem = element.firstChildElement( u"renderer-v2"_s );
   if ( !embeddedRendererElem.isNull() )
   {
-    QgsFeatureRenderer *renderer = QgsFeatureRenderer::load( embeddedRendererElem, context );
-    r->setEmbeddedRenderer( renderer );
+    std::unique_ptr<QgsFeatureRenderer> renderer = QgsFeatureRenderer::load( embeddedRendererElem, context );
+    r->setEmbeddedRenderer( renderer.release() );
   }
   return r;
 }
@@ -579,24 +579,24 @@ bool QgsMergedFeatureRenderer::willRenderFeature( const QgsFeature &feature, Qgs
   return mSubRenderer->willRenderFeature( feature, context );
 }
 
-QgsMergedFeatureRenderer *QgsMergedFeatureRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+std::unique_ptr<QgsMergedFeatureRenderer> QgsMergedFeatureRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   if ( renderer->type() == "mergedFeatureRenderer"_L1 )
   {
-    return dynamic_cast<QgsMergedFeatureRenderer *>( renderer->clone() );
+    return std::unique_ptr<QgsMergedFeatureRenderer>( dynamic_cast<QgsMergedFeatureRenderer *>( renderer->clone() ) );
   }
 
   if ( renderer->type() == "singleSymbol"_L1 || renderer->type() == "categorizedSymbol"_L1 || renderer->type() == "graduatedSymbol"_L1 || renderer->type() == "RuleRenderer"_L1 )
   {
     auto res = std::make_unique< QgsMergedFeatureRenderer >( renderer->clone() );
     renderer->copyRendererData( res.get() );
-    return res.release();
+    return res;
   }
   else if ( renderer->type() == "invertedPolygonRenderer"_L1 )
   {
     auto res = std::make_unique< QgsMergedFeatureRenderer >( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
     renderer->copyRendererData( res.get() );
-    return res.release();
+    return res;
   }
   return nullptr;
 }

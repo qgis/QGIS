@@ -115,6 +115,8 @@ bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPr
 
 QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const bool overwrite = parameterAsBoolean( parameters, u"OVERWRITE"_s, context );
   const bool saveStyles = parameterAsBoolean( parameters, u"SAVE_STYLES"_s, context );
   const bool saveMetadata = parameterAsBoolean( parameters, u"SAVE_METADATA"_s, context );
@@ -129,10 +131,10 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
   // delete existing geopackage if it exists
   if ( overwrite && QFile::exists( packagePath ) )
   {
-    feedback->pushInfo( QObject::tr( "Removing existing file '%1'" ).arg( packagePath ) );
+    feedback->pushWarning( QObject::tr( "Removing existing file '%1'" ).arg( QDir::toNativeSeparators( packagePath ) ) );
     if ( !QFile( packagePath ).remove() )
     {
-      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( packagePath ) );
+      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( QDir::toNativeSeparators( packagePath ) ) );
     }
   }
 

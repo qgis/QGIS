@@ -185,6 +185,8 @@ QVariantMap QgsRasterBooleanLogicAlgorithmBase::processAlgorithm( const QVariant
 
 QgsRasterLogicalOrAlgorithm::QgsRasterLogicalOrAlgorithm()
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mExtractValFunc = []( const std::vector<std::unique_ptr<QgsRasterBlock>> &inputs, bool &res, bool &resIsNoData, int row, int column, bool treatNoDataAsFalse ) {
     res = false;
     resIsNoData = false;
@@ -260,6 +262,8 @@ QgsRasterLogicalOrAlgorithm *QgsRasterLogicalOrAlgorithm::createInstance() const
 
 QgsRasterLogicalAndAlgorithm::QgsRasterLogicalAndAlgorithm()
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mExtractValFunc = []( const std::vector<std::unique_ptr<QgsRasterBlock>> &inputs, bool &res, bool &resIsNoData, int row, int column, bool treatNoDataAsFalse ) {
     res = true;
     resIsNoData = false;

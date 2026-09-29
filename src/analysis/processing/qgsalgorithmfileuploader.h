@@ -2,8 +2,8 @@
                          qgsalgorithmfileuploader.h
                          ---------------------
   Date                 : August 2025
-  Copyright            : (C) 2025 by Valentin Buira
-  Email                : valentin dot buira at gmail dot com
+  Copyright            : (C) 2025 by Celia Buira
+  Email                : celia dot buira at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************

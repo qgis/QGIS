@@ -43,7 +43,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
      *
      * \returns A new QgsArrowSymbolLayer
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     QgsArrowSymbolLayer *clone() const override SIP_FACTORY;
     QgsSymbol *subSymbol() override;

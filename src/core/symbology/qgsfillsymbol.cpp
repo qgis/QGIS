@@ -20,12 +20,12 @@
 
 std::unique_ptr< QgsFillSymbol > QgsFillSymbol::createSimple( const QVariantMap &properties )
 {
-  QgsSymbolLayer *sl = QgsSimpleFillSymbolLayer::create( properties );
+  std::unique_ptr<QgsSymbolLayer> sl = QgsSimpleFillSymbolLayer::create( properties );
   if ( !sl )
     return nullptr;
 
   QgsSymbolLayerList layers;
-  layers.append( sl );
+  layers.append( sl.release() );
   return std::make_unique< QgsFillSymbol >( layers );
 }
 

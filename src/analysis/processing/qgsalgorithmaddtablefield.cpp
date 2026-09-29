@@ -193,6 +193,8 @@ bool QgsAddTableFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 
 QgsFeatureList QgsAddTableFieldAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   QgsAttributes attributes = f.attributes();
   attributes.append( QVariant() );

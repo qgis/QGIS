@@ -16,7 +16,7 @@ import tempfile
 import unittest
 from shutil import rmtree
 
-from processing.algs.gdal.GdalUtils import GdalConnectionDetails, GdalUtils
+from gdalprovider.gdal_utils import GdalConnectionDetails, GdalUtils
 from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,

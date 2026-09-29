@@ -141,7 +141,7 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
     QgsGradientColorRamp( const QColor &color1 = DEFAULT_GRADIENT_COLOR1, const QColor &color2 = DEFAULT_GRADIENT_COLOR2, bool discrete = false, const QgsGradientStopsList &stops = QgsGradientStopsList() );
 
     //! Creates a new QgsColorRamp from a map of properties
-    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsColorRamp> create( const QVariantMap &properties = QVariantMap() );
 
     int count() const override { return mStops.count() + 2; }
     double value( int index ) const override;
@@ -730,7 +730,7 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
     QgsCptCityColorRamp( const QString &schemeName, const QStringList &variantList, const QString &variantName = QString(), bool inverted = false, bool doLoadFile = true );
 
     //! Creates the symbol layer
-    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
+    static std::unique_ptr<QgsColorRamp> create( const QVariantMap &properties = QVariantMap() ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Returns the string identifier for QgsCptCityColorRamp.

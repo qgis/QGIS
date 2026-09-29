@@ -102,6 +102,8 @@ QList<int> QgsPolygonsToLinesAlgorithm::inputLayerTypes() const
 
 QgsFeatureList QgsPolygonsToLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   Q_UNUSED( context )
 
   QgsFeatureList result;

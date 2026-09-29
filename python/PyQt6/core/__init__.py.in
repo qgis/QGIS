@@ -676,6 +676,8 @@ QgsPalLayerSettings.displayAll = QgsPalLayerSettings.displayAll.setter(_set_disp
 QgsLocatorResult.userData = property(QgsLocatorResult._userData)
 QgsLocatorResult.userData = QgsLocatorResult.userData.setter(QgsLocatorResult.setUserData)
 
+QgsServerWmsDimensionProperties.WmsDimensionInfo.referenceValue = property(QgsServerWmsDimensionProperties.WmsDimensionInfo._referenceValue)
+QgsServerWmsDimensionProperties.WmsDimensionInfo.referenceValue = QgsServerWmsDimensionProperties.WmsDimensionInfo.referenceValue.setter(QgsServerWmsDimensionProperties.WmsDimensionInfo.setReferenceValue)
 
 def _get_pixel_transparency(self):
     return (1.0 - self.opacity) * 100

@@ -86,6 +86,7 @@ class CORE_EXPORT QgsAbstractAnnotationItemEditOperation
       AddNode,       //!< Add a node
       TranslateItem, //!< Translate (move) an item
       RotateItem,    //!< Rotate an item \since QGIS 4.0
+      SetItemBounds, //!< Set the bounds of an item \since QGIS 4.4
     };
 
     /**
@@ -313,6 +314,32 @@ class CORE_EXPORT QgsAnnotationItemEditOperationRotateItem : public QgsAbstractA
 
   private:
     double mAngle = 0;
+};
+
+
+/**
+ * \ingroup core
+ * \brief Annotation item edit operation consisting of setting the bounds of an item.
+ * \since QGIS 4.4
+ */
+class CORE_EXPORT QgsAnnotationItemEditOperationSetItemBounds : public QgsAbstractAnnotationItemEditOperation
+{
+  public:
+    /**
+     * Constructor for QgsAnnotationItemEditOperationSetItemBounds, setting the item with the specified \a itemId
+     * to the given \a bounds (in the annotation layer's CRS).
+     */
+    QgsAnnotationItemEditOperationSetItemBounds( const QString &itemId, const QgsRectangle &bounds );
+
+    Type type() const override;
+
+    /**
+     * Returns the new item bounds (in the annotation layer's CRS).
+     */
+    QgsRectangle bounds() const { return mBounds; }
+
+  private:
+    QgsRectangle mBounds;
 };
 
 

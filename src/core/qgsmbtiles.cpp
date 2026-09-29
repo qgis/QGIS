@@ -36,11 +36,11 @@ bool QgsMbTiles::open()
   if ( mFilename.isEmpty() )
     return false;
 
-  const sqlite3_database_unique_ptr database;
   const int result = mDatabase.open_v2( mFilename, SQLITE_OPEN_READONLY, nullptr );
   if ( result != SQLITE_OK )
   {
-    QgsDebugError( u"Can't open MBTiles database: %1"_s.arg( database.errorMessage() ) );
+    mLastError = mDatabase.errorMessage();
+    QgsDebugError( u"Can't open MBTiles database: %1"_s.arg( mLastError ) );
     return false;
   }
   return true;
@@ -51,7 +51,20 @@ bool QgsMbTiles::isOpen() const
   return bool( mDatabase );
 }
 
-bool QgsMbTiles::create()
+bool QgsMbTiles::finalize()
+{
+  if ( !mDatabase )
+    return false;
+
+  if ( !mDeferredIndexCreation ) // nothing to do!
+    return true;
+
+  const int result = mDatabase.exec( u"CREATE UNIQUE INDEX IF NOT EXISTS tile_index ON tiles (zoom_level, tile_column, tile_row);"_s, mLastError );
+
+  return result == SQLITE_OK;
+}
+
+bool QgsMbTiles::create( bool deferIndexCreation )
 {
   if ( mDatabase )
     return false;
@@ -59,22 +72,37 @@ bool QgsMbTiles::create()
   if ( QFile::exists( mFilename ) )
     return false;
 
-  const sqlite3_database_unique_ptr database;
   int result = mDatabase.open_v2( mFilename, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( result != SQLITE_OK )
   {
-    QgsDebugError( u"Can't create MBTiles database: %1"_s.arg( database.errorMessage() ) );
+    mLastError = mDatabase.errorMessage();
+    QgsDebugError( u"Can't create MBTiles database: %1"_s.arg( mLastError ) );
     return false;
   }
 
-  const QString sql = "CREATE TABLE metadata (name text, value text);"
-                      "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);"
-                      "CREATE UNIQUE INDEX tile_index on tiles (zoom_level, tile_column, tile_row);";
   QString errorMessage;
-  result = mDatabase.exec( sql, errorMessage );
+  // ignore errors from these, they aren't critical
+  // optimise writing speed
+  mDatabase.exec( u"PRAGMA journal_mode = WAL;"_s, errorMessage );
+  mDatabase.exec( u"PRAGMA synchronous = OFF;"_s, errorMessage );
+  mDatabase.exec( u"PRAGMA temp_store = MEMORY;"_s, errorMessage );
+  mDatabase.exec( u"PRAGMA cache_size = -64000;"_s, errorMessage );
+
+  QString sql = "CREATE TABLE metadata (name text, value text);"
+                "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);";
+  if ( !deferIndexCreation )
+  {
+    sql += "CREATE UNIQUE INDEX tile_index on tiles (zoom_level, tile_column, tile_row);";
+  }
+  else
+  {
+    mDeferredIndexCreation = true;
+  }
+
+  result = mDatabase.exec( sql, mLastError );
   if ( result != SQLITE_OK )
   {
-    QgsDebugError( u"Failed to initialize MBTiles database: "_s + errorMessage );
+    QgsDebugError( u"Failed to initialize MBTiles database: "_s + mLastError );
     return false;
   }
 
@@ -94,12 +122,14 @@ QString QgsMbTiles::metadataValue( const QString &key ) const
   sqlite3_statement_unique_ptr preparedStatement = mDatabase.prepare( sql, result );
   if ( result != SQLITE_OK )
   {
+    mLastError = mDatabase.errorMessage();
     QgsDebugError( u"MBTile failed to prepare statement: "_s + sql );
     return QString();
   }
 
   if ( preparedStatement.step() != SQLITE_ROW )
   {
+    mLastError = mDatabase.errorMessage();
     QgsDebugError( u"MBTile metadata value not found: "_s + key );
     return QString();
   }
@@ -120,12 +150,14 @@ void QgsMbTiles::setMetadataValue( const QString &key, const QString &value ) co
   sqlite3_statement_unique_ptr preparedStatement = mDatabase.prepare( sql, result );
   if ( result != SQLITE_OK )
   {
+    mLastError = mDatabase.errorMessage();
     QgsDebugError( u"MBTile failed to prepare statement: "_s + sql );
     return;
   }
 
   if ( preparedStatement.step() != SQLITE_DONE )
   {
+    mLastError = mDatabase.errorMessage();
     QgsDebugError( u"MBTile metadata value failed to be set: "_s + key );
     return;
   }
@@ -156,6 +188,7 @@ QByteArray QgsMbTiles::tileData( int z, int x, int y ) const
   sqlite3_statement_unique_ptr preparedStatement = mDatabase.prepare( sql, result );
   if ( result != SQLITE_OK )
   {
+    mLastError = mDatabase.errorMessage();
     QgsDebugError( u"MBTile failed to prepare statement: "_s + sql );
     return QByteArray();
   }
@@ -195,6 +228,7 @@ void QgsMbTiles::setTileData( int z, int x, int y, const QByteArray &data ) cons
   sqlite3_statement_unique_ptr preparedStatement = mDatabase.prepare( sql, result );
   if ( result != SQLITE_OK )
   {
+    mLastError = mDatabase.errorMessage();
     QgsDebugError( u"MBTile failed to prepare statement: "_s + sql );
     return;
   }
@@ -203,7 +237,63 @@ void QgsMbTiles::setTileData( int z, int x, int y, const QByteArray &data ) cons
 
   if ( preparedStatement.step() != SQLITE_DONE )
   {
+    mLastError = mDatabase.errorMessage();
     QgsDebugError( u"MBTile tile failed to be set: %1,%2,%3"_s.arg( z ).arg( x ).arg( y ) );
     return;
+  }
+}
+
+void QgsMbTiles::setTileData( const QList<TileData> &tiles ) const
+{
+  if ( tiles.isEmpty() )
+  {
+    return;
+  }
+
+  if ( !mDatabase )
+  {
+    QgsDebugError( u"MBTiles database not open: "_s + mFilename );
+    return;
+  }
+
+  int result = mDatabase.exec( u"BEGIN TRANSACTION;"_s, mLastError );
+  if ( result != SQLITE_OK )
+  {
+    QgsDebugError( u"Failed to begin transaction: %1"_s.arg( mLastError ) );
+    return;
+  }
+
+  const QString sql = u"INSERT OR REPLACE INTO tiles (zoom_level, tile_column, tile_row, tile_data) VALUES (?, ?, ?, ?)"_s;
+  sqlite3_statement_unique_ptr preparedStatement = mDatabase.prepare( sql, result );
+  if ( result != SQLITE_OK )
+  {
+    mLastError = mDatabase.errorMessage();
+    QgsDebugError( u"MBTile failed to prepare statement: %1"_s.arg( sql ) );
+    QString errorMessage;
+    mDatabase.exec( u"ROLLBACK TRANSACTION;"_s, errorMessage );
+    return;
+  }
+
+  for ( const TileData &tile : tiles )
+  {
+    sqlite3_reset( preparedStatement.get() );
+    sqlite3_clear_bindings( preparedStatement.get() );
+
+    sqlite3_bind_int( preparedStatement.get(), 1, tile.z );
+    sqlite3_bind_int( preparedStatement.get(), 2, tile.x );
+    sqlite3_bind_int( preparedStatement.get(), 3, tile.y );
+    sqlite3_bind_blob( preparedStatement.get(), 4, tile.data.constData(), tile.data.size(), SQLITE_TRANSIENT );
+
+    if ( preparedStatement.step() != SQLITE_DONE )
+    {
+      mLastError = mDatabase.errorMessage();
+      QgsDebugError( u"MBTile tile failed to be set: %1,%2,%3"_s.arg( tile.z ).arg( tile.x ).arg( tile.y ) );
+    }
+  }
+
+  result = mDatabase.exec( u"COMMIT TRANSACTION;"_s, mLastError );
+  if ( result != SQLITE_OK )
+  {
+    QgsDebugError( u"Failed to commit transaction: %1"_s.arg( mLastError ) );
   }
 }

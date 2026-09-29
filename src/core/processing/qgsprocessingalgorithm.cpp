@@ -19,6 +19,7 @@
 
 #include <memory>
 
+#include "qgsacademicreference.h"
 #include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontextutils.h"
@@ -40,6 +41,15 @@
 #include <QString>
 
 using namespace Qt::StringLiterals;
+
+#define EXCLUDE_CPPCHECK
+#ifdef EXCLUDE_CPPCHECK
+std::unordered_map<std::type_index, QString> &algorithmSourceRegistry()
+{
+  static std::unordered_map<std::type_index, QString> registry;
+  return registry;
+}
+#endif
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -88,6 +98,53 @@ QString QgsProcessingAlgorithm::helpUrl() const
 Qgis::ProcessingAlgorithmDocumentationFlags QgsProcessingAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlags();
+}
+
+QList<QgsAcademicReference> QgsProcessingAlgorithm::academicReferences() const
+{
+  return {};
+}
+
+QList<QgsProcessingAlgorithm::ExternalLink> QgsProcessingAlgorithm::externalLinks() const
+{
+  return {};
+}
+
+QString QgsProcessingAlgorithm::implementationSourceUri() const
+{
+#ifdef EXCLUDE_CPPCHECK
+  const std::unordered_map<std::type_index, QString> &registry = algorithmSourceRegistry();
+  auto it = registry.find( std::type_index( typeid( *this ) ) );
+  if ( it == registry.end() )
+    return QString();
+
+  const QString baseSourceLocation = it->second;
+
+  // split file from line number
+  const qsizetype colonPos = baseSourceLocation.lastIndexOf( ':' );
+  if ( colonPos == -1 )
+    return QString();
+
+  const QString filePath = baseSourceLocation.left( colonPos ).replace( '\\', '/' );
+  const QString lineNumber = baseSourceLocation.mid( colonPos + 1 );
+
+  // determine the git branch name corresponding to THIS qgis build
+  QString branch;
+  if ( QStringLiteral( RELEASE_NAME ).compare( u"Master"_s, Qt::CaseInsensitive ) == 0 )
+  {
+    branch = u"master"_s;
+  }
+  else
+  {
+    const int major = _QGIS_VERSION_INT / 10000;
+    const int minor = ( _QGIS_VERSION_INT % 10000 ) / 100;
+    branch = u"release-%1_%2"_s.arg( major ).arg( minor );
+  }
+
+  // construct GitHub blob URL pointing to the source
+  // TODO: not be GitHub ;)
+  return u"https://github.com/qgis/QGIS/blob/%1/%2#L%3"_s.arg( branch, filePath, lineNumber );
+#endif
 }
 
 QIcon QgsProcessingAlgorithm::icon() const

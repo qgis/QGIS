@@ -95,6 +95,8 @@ bool QgsPdalCreateCopcAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
 #if defined( HAVE_PDAL_QGIS ) && QT_CONFIG( process )
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )

@@ -40,7 +40,7 @@ Returns ``True`` if the specified ``technique`` is supported by the
 material.
 %End
 
-    static QgsAbstractMaterialSettings *create() /Factory/;
+    static std::unique_ptr<QgsAbstractMaterialSettings> create();
 %Docstring
 Returns a new instance of QgsNullMaterialSettings.
 %End

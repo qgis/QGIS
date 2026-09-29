@@ -35,8 +35,11 @@
 #include "qgscodeeditorwidget.h"
 #include "qgscolorbutton.h"
 #include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QApplication>
+#include <QBuffer>
 #include <QClipboard>
 #include <QComboBox>
 #include <QFileDialog>
@@ -44,7 +47,9 @@
 #include <QImageReader>
 #include <QInputDialog>
 #include <QMenu>
+#include <QMessageBox>
 #include <QMimeData>
+#include <QNetworkRequest>
 #include <QSettings>
 #include <QString>
 #include <QTextList>
@@ -110,6 +115,7 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   // link
   mActionInsertLink->setShortcut( QKeySequence( u"CTRL+L"_s ) );
   connect( mActionInsertLink, &QAction::triggered, this, &QgsRichTextEditor::textLink );
+  connect( mActionInsertImageFromUrl, &QAction::triggered, this, &QgsRichTextEditor::insertImageFromUrl );
 
   // bold, italic & underline
   mActionBold->setShortcut( QKeySequence( u"CTRL+B"_s ) );
@@ -242,7 +248,13 @@ void QgsRichTextEditor::setMode( Mode mode )
     mToolBar->addAction( mActionIncreaseIndent );
     mToolBar->addSeparator();
     mToolBar->addAction( mActionInsertLink );
-    mToolBar->addAction( mActionInsertImage );
+    QToolButton *insertImageButton = new QToolButton( mToolBar );
+    insertImageButton->setDefaultAction( mActionInsertImage );
+    insertImageButton->setPopupMode( QToolButton::MenuButtonPopup );
+    QMenu *insertImageMenu = new QMenu( insertImageButton );
+    insertImageMenu->addAction( mActionInsertImageFromUrl );
+    insertImageButton->setMenu( insertImageMenu );
+    mToolBar->addWidget( insertImageButton );
   }
   if ( mode != Mode::PlainText )
   {
@@ -779,11 +791,60 @@ void QgsRichTextEditor::insertImage()
 {
   const QSettings s;
   const QString attdir = s.value( u"general/filedialog-path"_s ).toString();
-  const QString file = QFileDialog::getOpenFileName( this, tr( "Select an image" ), attdir, tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
+  const QString file
+    = QFileDialog::getOpenFileName( this, tr( "Select an image" ), attdir, tr( "All images (*.jpg *.jpeg *.png *.bmp *.gif);;JPEG (*.jpg *.jpeg);;PNG (*.png);;BMP (*.bmp);;GIF (*.gif);;All files (*)" ) );
   if ( file.isEmpty() )
     return;
 
-  const QImage image = QImageReader( file ).read();
+  QImageReader reader( file );
+  // Honour any EXIF orientation
+  reader.setAutoTransform( true );
+  const QImage image = reader.read();
 
   mTextEdit->dropImage( image, QFileInfo( file ).suffix().toUpper().toLocal8Bit().data() );
+}
+
+void QgsRichTextEditor::insertImageFromUrl()
+{
+  bool ok = false;
+  const QString entered = QInputDialog::getText( this, tr( "Image from URL" ), tr( "Enter the URL of an image:" ), QLineEdit::Normal, QString(), &ok );
+  if ( !ok || entered.trimmed().isEmpty() )
+    return;
+
+  const QUrl url( entered.trimmed() );
+  if ( !url.isValid() || !( url.scheme().compare( "http"_L1, Qt::CaseInsensitive ) == 0 || url.scheme().compare( "https"_L1, Qt::CaseInsensitive ) == 0 ) )
+  {
+    QMessageBox::warning( this, tr( "Image from URL" ), tr( "Please enter a valid http:// or https:// URL." ) );
+    return;
+  }
+
+  QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
+
+  QNetworkRequest request( url );
+  const QgsNetworkReplyContent content = QgsNetworkAccessManager::instance()->blockingGet( request );
+  if ( content.error() != QNetworkReply::NoError || content.content().isEmpty() )
+  {
+    busyCursor.release();
+    QMessageBox::warning( this, tr( "Image from URL" ), tr( "Failed to download the image: %1" ).arg( content.errorString() ) );
+    return;
+  }
+
+  QByteArray data = content.content();
+  QBuffer buffer( &data );
+  buffer.open( QIODevice::ReadOnly );
+  QImageReader reader;
+  // Honour any EXIF orientation
+  reader.setAutoTransform( true );
+  reader.setDevice( &buffer );
+  // Take the format from the payload rather than the URL
+  const QByteArray format = reader.format().isEmpty() ? QByteArray( "PNG" ) : reader.format().toUpper();
+  const QImage image = reader.read();
+  busyCursor.release();
+  if ( image.isNull() )
+  {
+    QMessageBox::warning( this, tr( "Image from URL" ), tr( "The URL did not return an image." ) );
+    return;
+  }
+
+  mTextEdit->dropImage( image, QString::fromLatin1( format ) );
 }

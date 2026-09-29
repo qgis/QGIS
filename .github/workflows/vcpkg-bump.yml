@@ -32,6 +32,11 @@ jobs:
         if: steps.baselines.outputs.updated == 'true'
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  #  v8.2.0
         with:
+          # A PR opened with the default GITHUB_TOKEN does not trigger further
+          # workflow runs, so the vcpkg report comment (posted from a
+          # workflow_run of the report workflow) never fires. Open it as
+          # qgis-bot instead.
+          token: ${{ secrets.GH_TOKEN_BOT }}
           branch: vcpkg-bumps/auto
           delete-branch: true
           commit-message: "Bump vcpkg baselines"

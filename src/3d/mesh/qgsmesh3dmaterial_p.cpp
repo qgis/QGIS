@@ -171,8 +171,6 @@ void QgsMesh3DMaterial::configure()
   //Load shader programs
   const QUrl urlVert( u"qrc:/shaders/mesh/mesh.vert"_s );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
-  const QUrl urlGeom( u"qrc:/shaders/mesh/mesh.geom"_s );
-  shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Geometry, Qt3DRender::QShaderProgram::loadSource( urlGeom ) );
   const QUrl urlFrag( u"qrc:/shaders/mesh/mesh.frag"_s );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, Qt3DRender::QShaderProgram::loadSource( urlFrag ) );
 

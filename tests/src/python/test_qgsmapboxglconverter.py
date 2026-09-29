@@ -3193,6 +3193,10 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
     def testSymbolSpacingNumeric(self):
         """Test symbol-spacing with a simple numeric value"""
+
+        # TODO: re-enable when the cost of label duplicate removal within distance is more reasonable
+        return
+
         context = QgsMapBoxGlStyleConversionContext()
         context.setTargetUnit(Qgis.RenderUnit.Percentage)
         context.setPixelSizeConversionFactor(2.0)
@@ -3225,6 +3229,10 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
     def testSymbolSpacingList(self):
         """Test symbol-spacing with interpolate stops"""
+
+        # TODO: re-enable when the cost of label duplicate removal within distance is more reasonable
+        return
+
         context = QgsMapBoxGlStyleConversionContext()
         context.setTargetUnit(Qgis.RenderUnit.Pixels)
         context.setPixelSizeConversionFactor(2.0)
@@ -3260,6 +3268,10 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
 
     def testSymbolSpacingMap(self):
         """Test symbol-spacing with a QVariantMap stops definition"""
+
+        # TODO: re-enable when the cost of label duplicate removal within distance is more reasonable
+        return
+
         context = QgsMapBoxGlStyleConversionContext()
         context.setTargetUnit(Qgis.RenderUnit.MapUnits)
         context.setPixelSizeConversionFactor(2.0)

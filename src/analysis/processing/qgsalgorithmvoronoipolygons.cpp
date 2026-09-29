@@ -96,6 +96,8 @@ bool QgsVoronoiPolygonsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 QVariantMap QgsVoronoiPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QString dest;
   if ( mCopyAttributes )
   {

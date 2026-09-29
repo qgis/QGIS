@@ -72,6 +72,9 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertEqual(
             item.placementMode(), Qgis.AnnotationPlacementMode.SpatialBounds
         )
+        self.assertEqual(
+            item.billboard3DScaleMode(), Qgis.BillboardScaleMode.ViewIndependent
+        )
 
         # rotation defaults
         self.assertEqual(item.rotation(), 0)
@@ -92,6 +95,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setOffsetFromCalloutUnit(Qgis.RenderUnit.Inches)
         item.setRotation(45)
         item.setRotationMode(Qgis.SymbolRotationMode.RespectMapRotation)
+        item.setBillboard3DScaleMode(Qgis.BillboardScaleMode.Perspective)
+        item.setBillboard3DSize(QSizeF(90, 30))
 
         self.assertEqual(item.bounds().toString(3), "100.000,200.000 : 300.000,400.000")
         self.assertEqual(
@@ -111,6 +116,10 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertEqual(
             item.rotationMode(), Qgis.SymbolRotationMode.RespectMapRotation
         )
+        self.assertEqual(
+            item.billboard3DScaleMode(), Qgis.BillboardScaleMode.Perspective
+        )
+        self.assertEqual(item.billboard3DSize(), QSizeF(90, 30))
 
         item.setBackgroundSymbol(
             QgsFillSymbol.createSimple(
@@ -777,6 +786,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setOffsetFromCalloutUnit(Qgis.RenderUnit.Inches)
         item.setRotation(45)
         item.setRotationMode(Qgis.SymbolRotationMode.RespectMapRotation)
+        item.setBillboard3DScaleMode(Qgis.BillboardScaleMode.Perspective)
+        item.setBillboard3DSize(QSizeF(90, 30))
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -803,6 +814,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertEqual(s2.offsetFromCalloutUnit(), Qgis.RenderUnit.Inches)
         self.assertEqual(s2.rotation(), 45)
         self.assertEqual(s2.rotationMode(), Qgis.SymbolRotationMode.RespectMapRotation)
+        self.assertEqual(s2.billboard3DScaleMode(), Qgis.BillboardScaleMode.Perspective)
+        self.assertEqual(s2.billboard3DSize(), QSizeF(90, 30))
 
     def testClone(self):
         item = QgsAnnotationPictureItem(
@@ -833,6 +846,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         item.setOffsetFromCalloutUnit(Qgis.RenderUnit.Inches)
         item.setRotation(45)
         item.setRotationMode(Qgis.SymbolRotationMode.RespectMapRotation)
+        item.setBillboard3DScaleMode(Qgis.BillboardScaleMode.Perspective)
+        item.setBillboard3DSize(QSizeF(90, 30))
 
         s2 = item.clone()
         self.assertEqual(s2.bounds().toString(3), "10.000,20.000 : 30.000,40.000")
@@ -855,6 +870,8 @@ class TestQgsAnnotationPictureItem(QgisTestCase):
         self.assertEqual(s2.offsetFromCalloutUnit(), Qgis.RenderUnit.Inches)
         self.assertEqual(s2.rotation(), 45)
         self.assertEqual(s2.rotationMode(), Qgis.SymbolRotationMode.RespectMapRotation)
+        self.assertEqual(s2.billboard3DScaleMode(), Qgis.BillboardScaleMode.Perspective)
+        self.assertEqual(s2.billboard3DSize(), QSizeF(90, 30))
 
     def testRenderRasterLockedAspect(self):
         item = QgsAnnotationPictureItem(

@@ -363,7 +363,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectItem::applyEditV2( QgsA
         setCalloutAnchor( QgsGeometry::fromPoint( moveOperation->after() ) );
         if ( !callout() )
         {
-          setCallout( QgsApplication::calloutRegistry()->defaultCallout() );
+          setCallout( QgsApplication::calloutRegistry()->defaultCallout().release() );
         }
         return Qgis::AnnotationItemEditOperationResult::Success;
       }
@@ -419,6 +419,12 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectItem::applyEditV2( QgsA
     {
       QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
       mRotation = std::fmod( mRotation + rotateOperation->angle(), 360.0 );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
+    {
+      mBounds = qgis::down_cast< QgsAnnotationItemEditOperationSetItemBounds * >( operation )->bounds();
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
@@ -564,6 +570,12 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
         }
       }
       break;
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::SetItemBounds:
+    {
+      const QgsRectangle newBounds = qgis::down_cast< QgsAnnotationItemEditOperationSetItemBounds * >( operation )->bounds();
+      return new QgsAnnotationItemEditOperationTransientResults( rotatedBoundsGeometry( newBounds, context.renderContext() ) );
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:

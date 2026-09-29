@@ -294,7 +294,7 @@ void QgsSymbolsListWidget::showAnimationSettings()
     QgsSymbolAnimationSettingsWidget *widget = new QgsSymbolAnimationSettingsWidget( panel );
     widget->setPanelTitle( tr( "Animation Settings" ) );
     widget->setAnimationSettings( mSymbol->animationSettings() );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget]() {
       mSymbol->setAnimationSettings( widget->animationSettings() );
       emit changed();
     } );
@@ -320,7 +320,7 @@ void QgsSymbolsListWidget::showExtentBufferSettings()
     widget->setPanelTitle( tr( "Extent Buffer" ) );
     widget->setContext( mContext );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget]() {
       mSymbol->setExtentBuffer( widget->extentBuffer() );
       mSymbol->setDataDefinedProperty( QgsSymbol::Property::ExtentBuffer, widget->dataDefinedProperty() );
       mSymbol->setExtentBufferSizeUnit( widget->sizeUnit() );
@@ -360,7 +360,7 @@ void QgsSymbolsListWidget::showBufferSettings()
     if ( const QgsSymbolBufferSettings *settings = mSymbol->bufferSettings() )
       widget->setBufferSettings( *settings );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
+    connect( widget, &QgsPanelWidget::changed, this, [this, widget]() {
       mSymbol->setBufferSettings( new QgsSymbolBufferSettings( widget->bufferSettings() ) );
       emit changed();
     } );

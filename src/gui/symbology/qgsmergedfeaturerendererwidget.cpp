@@ -67,12 +67,12 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
   // (null renderer means "no previous renderer")
   if ( renderer )
   {
-    mRenderer.reset( QgsMergedFeatureRenderer::convertFromRenderer( renderer ) );
+    mRenderer = QgsMergedFeatureRenderer::convertFromRenderer( renderer );
   }
   if ( !mRenderer )
   {
     // use default embedded renderer
-    mRenderer = std::make_unique<QgsMergedFeatureRenderer>( QgsFeatureRenderer::defaultRenderer( type ) );
+    mRenderer = std::make_unique<QgsMergedFeatureRenderer>( QgsFeatureRenderer::defaultRenderer( type ).release() );
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }
@@ -147,7 +147,7 @@ void QgsMergedFeatureRendererWidget::mRendererComboBox_currentIndexChanged( int 
   {
     const std::unique_ptr<QgsFeatureRenderer> oldRenderer( mRenderer->embeddedRenderer()->clone() );
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, oldRenderer.get() ) );
-    connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::widgetChanged, this, &QgsMergedFeatureRendererWidget::widgetChanged );
+    connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::changed, this, &QgsMergedFeatureRendererWidget::changed );
     mEmbeddedRendererWidget->setContext( mContext );
     mEmbeddedRendererWidget->disableSymbolLevels();
     mEmbeddedRendererWidget->setDockMode( this->dockMode() );

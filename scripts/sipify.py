@@ -381,9 +381,6 @@ ALLOWED_NON_CLASS_ENUMS = [
     "QgsMeshDatasetGroupMetadata::DataType",
     "QgsMeshDriverMetadata::MeshDriverCapability",
     "QgsMeshRendererScalarSettings::DataResamplingMethod",
-    "QgsMeshRendererVectorArrowSettings::ArrowScalingMethod",
-    "QgsMeshRendererVectorSettings::Symbology",
-    "QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod",
     "QgsMeshTimeSettings::TimeUnit",
     "QgsMessageOutput::MessageType",
     "QgsMetadataWidget::Mode",
@@ -1618,6 +1615,11 @@ def fix_annotations(line):
     if py_name_match:
         CONTEXT.method_py_name = py_name_match.group(1)
 
+    if "std.unique_ptr" in CONTEXT.return_type and "SIP_FACTORY" in line:
+        exit_with_error(
+            "Don't specify SIP_FACTORY if the return type is std::unique_ptr"
+        )
+
     # Printed annotations
     replacements = {
         r"//\s*SIP_ABSTRACT\b": "/Abstract/",
@@ -1626,6 +1628,7 @@ def fix_annotations(line):
         r"\bSIP_ARRAY\b": "/Array/",
         r"\bSIP_ARRAYSIZE\b": "/ArraySize/",
         r"\bSIP_CONSTRAINED\b": "/Constrained/",
+        r"\bSIP_DISALLOWNONE\b": "/DisallowNone/",
         r"\bSIP_EXTERNAL\b": "/External/",
         r"\bSIP_FACTORY\b": "/Factory/",
         r"\bSIP_IN\b": "/In/",

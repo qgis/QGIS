@@ -17,6 +17,8 @@
 #ifndef QGSMAPTOOLMODIFYANNOTATION_H
 #define QGSMAPTOOLMODIFYANNOTATION_H
 
+#include <optional>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsannotationitemnode.h"
@@ -31,8 +33,10 @@ class QgsRubberBand;
 class QgsRenderedAnnotationItemDetails;
 class QgsAnnotationItem;
 class QgsAnnotationLayer;
+class QgsAnnotationRectItem;
 class QgsAnnotationItemNodesSpatialIndex;
 class QgsSnapIndicator;
+class QgsMapToPixel;
 
 
 /**
@@ -95,6 +99,27 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsAnnotationMapTool
      * for the given key \a event.
      */
     QSizeF deltaForKeyEvent( QgsAnnotationLayer *layer, const QgsPointXY &originalCanvasPoint, QKeyEvent *event );
+
+    /**
+     * Reconstructs the new (unrotated) bounds, in map coordinates, for a rotated rectangle whose
+     * corner is being dragged. The diagonally-opposite corner (at \a fixedMapPoint) stays anchored
+     * on screen while the dragged corner follows \a cursorMapPoint. \a angle is the applied rotation
+     * in degrees clockwise on screen.
+     */
+    static QgsRectangle reconstructRotatedResizeBounds( const QgsMapToPixel *mapToPixel, double angle, const QgsPointXY &fixedMapPoint, const QgsPointXY &cursorMapPoint );
+
+    /**
+     * Returns the current on-screen (rotated) map position of the vertex diagonally opposite to
+     * \a draggedVertex, searching \a nodes. Sets \a found accordingly.
+     */
+    static QgsPointXY oppositeVertexMapPoint( const QList<QgsAnnotationItemNode> &nodes, int draggedVertex, bool &found );
+
+    /**
+     * Returns the new bounds, in \a layer coordinates, for the rotated \a rectItem whose corner
+     * is currently being dragged towards \a cursorMapPoint, or nothing if the current node drag is
+     * not a rotated resize.
+     */
+    std::optional<QgsRectangle> rotatedResizeLayerBounds( const QgsAnnotationRectItem *rectItem, QgsAnnotationLayer *layer, const QgsPointXY &cursorMapPoint );
 
     Action mCurrentAction = Action::NoAction;
 

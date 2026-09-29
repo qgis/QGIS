@@ -85,6 +85,7 @@ using namespace Qt::StringLiterals;
 #include <QActionGroup>
 
 #include "qgsmaplayerutils.h"
+#include "qgsappmenuutils.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsentryenumflag.h"
@@ -115,6 +116,8 @@ using namespace Qt::StringLiterals;
 #include "qgsscaleutils.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsprocessingwidgetcontext.h"
+#include "qgsprocessingmodelprovider.h"
+#include "processing/qgsprocessingtoolboxdock.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -162,6 +165,8 @@ using namespace Qt::StringLiterals;
 
 #include "qgspersistentmenu.h"
 
+#include "qgsprocessingguiregistry.h"
+
 #ifdef HAVE_3D
 #include "qgs3d.h"
 #include "qgs3danimationsettings.h"
@@ -173,7 +178,6 @@ using namespace Qt::StringLiterals;
 #include "qgsflatterraingenerator.h"
 #include "qgslayoutitem3dmap.h"
 #include "processing/qgs3dalgorithms.h"
-#include "qgsprocessingguiregistry.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "layout/qgslayout3dmapwidget.h"
 #include "layout/qgslayoutviewrubberband.h"
@@ -1218,6 +1222,14 @@ QgisApp::QgisApp(
 
   endProfile();
 
+  // Processing toolbox dock
+  startProfile( tr( "Processing toolbox dock" ) );
+  mProcessingToolboxDockWidget = new QgsProcessingToolboxDockWidget( this );
+  mProcessingToolboxDockWidget->setObjectName( u"ProcessingToolboxDockWidget"_s );
+  mProcessingToolboxDockWidget->setToggleVisibilityAction( mActionShowProcessingToolbox );
+
+  endProfile();
+
   // Statistical Summary dock
   startProfile( tr( "Statistics dock" ) );
   mStatisticalSummaryDockWidget = new QgsStatisticalSummaryDockWidget( this );
@@ -1496,6 +1508,9 @@ QgisApp::QgisApp(
   connect( mBrowserWidget2, &QgsBrowserDockWidget::openFile, this, [this]( const QString &file ) { openFile( file ); } );
   connect( mBrowserWidget2, &QgsBrowserDockWidget::handleDropUriList, this, [this]( const QgsMimeDataUtils::UriList &list ) { handleDropUriList( list ); } );
 
+  addDockWidget( Qt::RightDockWidgetArea, mProcessingToolboxDockWidget );
+  mProcessingToolboxDockWidget->hide();
+
   addDockWidget( Qt::LeftDockWidgetArea, mAdvancedDigitizingDockWidget );
   mAdvancedDigitizingDockWidget->hide();
 
@@ -1580,6 +1595,7 @@ QgisApp::QgisApp(
 
   mProcessingWidgetContextGenerator = std::make_unique< QgsAppProcessingWidgetContextGenerator >( this );
   QgsGui::processingGuiRegistry()->registerWidgetContextGenerator( mProcessingWidgetContextGenerator.get() );
+  QgsGui::processingGuiRegistry()->setContextFactory( new QgsAppProcessingContextFactory( this ) );
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, &QgsClipboard::changed, this, &QgisApp::clipboardChanged );
@@ -1588,6 +1604,7 @@ QgisApp::QgisApp(
 #ifdef Q_OS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
   mWindowAction = new QAction( this );
+  mWindowAction->setObjectName( u"mWindowAction"_s );
   connect( mWindowAction, &QAction::triggered, this, &QgisApp::activate );
 
   // add this window to Window menu
@@ -1681,6 +1698,11 @@ QgisApp::QgisApp(
   //..and listen out for new item types
   connect( QgsGui::annotationItemGuiRegistry(), &QgsAnnotationItemGuiRegistry::typeAdded, this, &QgisApp::annotationItemTypeAdded );
 
+  // must come before plugin startup, as processing plugin sets up connections to it
+  mAppProcessingUtils = std::make_unique< QgsAppProcessingUtils >( this );
+  mAppProcessingUtils->initProjectModelProvider();
+  mAppProcessingUtils->registerActions();
+  mProcessingToolboxDockWidget->initializeActions();
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
@@ -1785,6 +1807,11 @@ QgisApp::QgisApp(
   QgsStyle::defaultStyle();
   endProfile();
 
+  // must happen after plugin load!
+  mAppProcessingUtils->validateDefaultAlgorithmActions();
+  mAppProcessingUtils->createAlgorithmActions();
+  mAppProcessingUtils->addAlgorithmsToDefaultToolbars();
+
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
 
   QgsMessageLog::logMessage( QgsApplication::showSettings(), QString(), Qgis::MessageLevel::Info );
@@ -1797,6 +1824,9 @@ QgisApp::QgisApp(
   {
     toggleMapTips( true );
   }
+
+  connect( mActionModelDesigner, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openModelDesigner );
+  connect( mProcessingHistoryAction, &QAction::triggered, mAppProcessingUtils.get(), &QgsAppProcessingUtils::openHistory );
 
   mPythonMacrosEnabled = false;
 
@@ -3206,15 +3236,18 @@ void QgisApp::createActions()
   // Window Menu Items
 
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
+  mActionWindowMinimize->setObjectName( u"mActionWindowMinimize"_s );
   mActionWindowMinimize->setShortcut( tr( "Ctrl+M", "Minimize Window" ) );
   mActionWindowMinimize->setStatusTip( tr( "Minimizes the active window to the dock" ) );
   connect( mActionWindowMinimize, &QAction::triggered, this, &QgisApp::showActiveWindowMinimized );
 
   mActionWindowZoom = new QAction( tr( "Zoom" ), this );
+  mActionWindowZoom->setObjectName( u"mActionWindowZoom"_s );
   mActionWindowZoom->setStatusTip( tr( "Toggles between a predefined size and the window size set by the user" ) );
   connect( mActionWindowZoom, &QAction::triggered, this, &QgisApp::toggleActiveWindowMaximized );
 
   mActionWindowAllToFront = new QAction( tr( "Bring All to Front" ), this );
+  mActionWindowAllToFront->setObjectName( u"mActionWindowAllToFront"_s );
   mActionWindowAllToFront->setStatusTip( tr( "Bring forward all open windows" ) );
   connect( mActionWindowAllToFront, &QAction::triggered, this, &QgisApp::bringAllToFront );
 
@@ -3504,6 +3537,7 @@ void QgisApp::createMenus()
   // these duplicate actions will be moved to application menus by Qt
   mProjectMenu->addAction( mActionAbout );
   QAction *actionPrefs = new QAction( tr( "Preferences…" ), this );
+  actionPrefs->setObjectName( u"mActionPreferences"_s );
   actionPrefs->setMenuRole( QAction::PreferencesRole );
   actionPrefs->setIcon( mActionOptions->icon() );
   connect( actionPrefs, &QAction::triggered, this, &QgisApp::options );
@@ -3512,6 +3546,7 @@ void QgisApp::createMenus()
   // Window Menu
 
   mWindowMenu = new QMenu( tr( "Window" ), this );
+  mWindowMenu->setObjectName( u"mWindowMenu"_s );
 
   mWindowMenu->addAction( mActionWindowMinimize );
   mWindowMenu->addAction( mActionWindowZoom );
@@ -7026,6 +7061,11 @@ void QgisApp::dwgImport()
   d.exec();
 }
 
+QToolBar *QgisApp::processingToolboxToolBar()
+{
+  return mProcessingToolboxDockWidget->toolBar();
+}
+
 void QgisApp::openTemplate( const QString &fileName )
 {
   QFile templateFile;
@@ -7279,12 +7319,6 @@ QList<QgsMapDecoration *> QgisApp::activeDecorations()
     }
   }
   return decorations;
-}
-
-QString QgisApp::normalizedMenuName( const QString &name )
-{
-  const thread_local QRegularExpression sNonAlphaChars( u"[^a-zA-Z]"_s );
-  return name.normalized( QString::NormalizationForm_KD ).remove( sNonAlphaChars );
 }
 
 void QgisApp::saveMapAsImage()
@@ -8472,7 +8506,7 @@ void QgisApp::saveAsLayerDefinition()
     return;
 
   QString errorMessage;
-  bool saved = QgsLayerDefinition::exportLayerDefinition( path, mLayerTreeView->selectedNodes(), errorMessage );
+  bool saved = QgsLayerDefinition::exportLayerDefinition( path, mLayerTreeView->selectedNodes(), QgsProject::instance()->filePathStorage(), errorMessage );
   if ( !saved )
   {
     visibleMessageBar()->pushMessage( tr( "Error saving layer definition file" ), errorMessage, Qgis::MessageLevel::Warning );
@@ -13452,6 +13486,7 @@ void QgisApp::initNativeProcessing()
 #endif
 
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
+  QgsApplication::processingRegistry()->addProvider( new QgsProcessingModelProvider( QgsApplication::processingRegistry() ) );
 }
 
 void QgisApp::initLayouts()
@@ -14229,7 +14264,7 @@ QMenu *QgisApp::getPluginMenu( const QString &menuName )
   }
   // It doesn't exist, so create
   QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
+  menu->setObjectName( QgsAppMenuUtils::normalizedMenuName( cleanedMenuName ) );
   // Where to put it? - we worked that out above...
   mPluginMenu->insertMenu( before, menu );
 
@@ -14258,50 +14293,6 @@ void QgisApp::removePluginMenu( const QString &name, QAction *action )
     mPluginMenu->removeAction( mActionPluginSeparator1 );
     mActionPluginSeparator1 = nullptr;
   }
-}
-
-QMenu *QgisApp::getDatabaseMenu( const QString &menuName )
-{
-  if ( menuName.isEmpty() )
-    return mDatabaseMenu;
-
-  QString cleanedMenuName = menuName;
-#ifdef Q_OS_MAC
-  // Mac doesn't have '&' keyboard shortcuts.
-  cleanedMenuName.remove( QChar( '&' ) );
-#endif
-  QString dst = cleanedMenuName;
-  dst.remove( QChar( '&' ) );
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = mDatabaseMenu->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    QString src = actions.at( i )->text();
-    src.remove( QChar( '&' ) );
-
-    int comp = dst.localeAwareCompare( src );
-    if ( comp < 0 )
-    {
-      // Add item before this one
-      before = actions.at( i );
-      break;
-    }
-    else if ( comp == 0 )
-    {
-      // Plugin menu item already exists
-      return actions.at( i )->menu();
-    }
-  }
-  // It doesn't exist, so create
-  QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
-  if ( before )
-    mDatabaseMenu->insertMenu( before, menu );
-  else
-    mDatabaseMenu->addMenu( menu );
-
-  return menu;
 }
 
 QMenu *QgisApp::getRasterMenu( const QString &menuName )
@@ -14349,7 +14340,7 @@ QMenu *QgisApp::getRasterMenu( const QString &menuName )
 
   // It doesn't exist, so create
   QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
+  menu->setObjectName( QgsAppMenuUtils::normalizedMenuName( cleanedMenuName ) );
   if ( before )
     mRasterMenu->insertMenu( before, menu );
   else
@@ -14358,136 +14349,20 @@ QMenu *QgisApp::getRasterMenu( const QString &menuName )
   return menu;
 }
 
-QMenu *QgisApp::getVectorMenu( const QString &menuName )
+void QgisApp::addPluginToProcessingMenu( const QString &name, QAction *action )
 {
-  if ( menuName.isEmpty() )
-    return mVectorMenu;
-
-  QString cleanedMenuName = menuName;
-#ifdef Q_OS_MAC
-  // Mac doesn't have '&' keyboard shortcuts.
-  cleanedMenuName.remove( QChar( '&' ) );
-#endif
-  QString dst = cleanedMenuName;
-  dst.remove( QChar( '&' ) );
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = mVectorMenu->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    QString src = actions.at( i )->text();
-    src.remove( QChar( '&' ) );
-
-    int comp = dst.localeAwareCompare( src );
-    if ( comp < 0 )
-    {
-      // Add item before this one
-      before = actions.at( i );
-      break;
-    }
-    else if ( comp == 0 )
-    {
-      // Plugin menu item already exists
-      return actions.at( i )->menu();
-    }
-  }
-  // It doesn't exist, so create
-  QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
-  if ( before )
-    mVectorMenu->insertMenu( before, menu );
-  else
-    mVectorMenu->addMenu( menu );
-
-  return menu;
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mProcessingMenu, name );
+  menu->addAction( action );
 }
 
-QMenu *QgisApp::getWebMenu( const QString &menuName )
+void QgisApp::removePluginProcessingMenu( const QString &name, QAction *action )
 {
-  if ( menuName.isEmpty() )
-    return mWebMenu;
-
-  QString cleanedMenuName = menuName;
-#ifdef Q_OS_MAC
-  // Mac doesn't have '&' keyboard shortcuts.
-  cleanedMenuName.remove( QChar( '&' ) );
-#endif
-  QString dst = cleanedMenuName;
-  dst.remove( QChar( '&' ) );
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = mWebMenu->actions();
-  for ( int i = 0; i < actions.count(); i++ )
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mProcessingMenu, name );
+  menu->removeAction( action );
+  if ( menu->actions().isEmpty() )
   {
-    QString src = actions.at( i )->text();
-    src.remove( QChar( '&' ) );
-
-    int comp = dst.localeAwareCompare( src );
-    if ( comp < 0 )
-    {
-      // Add item before this one
-      before = actions.at( i );
-      break;
-    }
-    else if ( comp == 0 )
-    {
-      // Plugin menu item already exists
-      return actions.at( i )->menu();
-    }
+    mProcessingMenu->removeAction( menu->menuAction() );
   }
-  // It doesn't exist, so create
-  QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
-  if ( before )
-    mWebMenu->insertMenu( before, menu );
-  else
-    mWebMenu->addMenu( menu );
-
-  return menu;
-}
-
-QMenu *QgisApp::getMeshMenu( const QString &menuName )
-{
-  if ( menuName.isEmpty() )
-    return mMeshMenu;
-
-  QString cleanedMenuName = menuName;
-#ifdef Q_OS_MAC
-  // Mac doesn't have '&' keyboard shortcuts.
-  cleanedMenuName.remove( QChar( '&' ) );
-#endif
-  QString dst = cleanedMenuName;
-  dst.remove( QChar( '&' ) );
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = mMeshMenu->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    QString src = actions.at( i )->text();
-    src.remove( QChar( '&' ) );
-
-    int comp = dst.localeAwareCompare( src );
-    if ( comp < 0 )
-    {
-      // Add item before this one
-      before = actions.at( i );
-      break;
-    }
-    else if ( comp == 0 )
-    {
-      // Plugin menu item already exists
-      return actions.at( i )->menu();
-    }
-  }
-  // It doesn't exist, so create
-  QMenu *menu = new QMenu( cleanedMenuName, this );
-  menu->setObjectName( normalizedMenuName( cleanedMenuName ) );
-  if ( before )
-    mMeshMenu->insertMenu( before, menu );
-  else
-    mMeshMenu->addMenu( menu );
-
-  return menu;
 }
 
 void QgisApp::insertAddLayerAction( QAction *action )
@@ -14502,44 +14377,8 @@ void QgisApp::removeAddLayerAction( QAction *action )
 
 void QgisApp::addPluginToDatabaseMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getDatabaseMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mDatabaseMenu, name );
   menu->addAction( action );
-
-  // add the Database menu to the menuBar if not added yet
-  if ( mDatabaseMenu->actions().count() != 1 )
-    return;
-
-  QAction *before = nullptr;
-  QList<QAction *> actions = menuBar()->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    if ( actions.at( i )->menu() == mDatabaseMenu )
-      return;
-
-    // goes before Web menu, if present
-    if ( actions.at( i )->menu() == mWebMenu )
-    {
-      before = actions.at( i );
-      break;
-    }
-  }
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    // defaults to after Raster menu, which is already in qgisapp.ui
-    if ( actions.at( i )->menu() == mRasterMenu )
-    {
-      if ( !before )
-      {
-        before = actions.at( i += 1 );
-        break;
-      }
-    }
-  }
-  if ( before )
-    menuBar()->insertMenu( before, mDatabaseMenu );
-  else
-    // fallback insert
-    menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mDatabaseMenu );
 }
 
 void QgisApp::addPluginToRasterMenu( const QString &name, QAction *action )
@@ -14550,13 +14389,13 @@ void QgisApp::addPluginToRasterMenu( const QString &name, QAction *action )
 
 void QgisApp::addPluginToVectorMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getVectorMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mVectorMenu, name );
   menu->addAction( action );
 }
 
 void QgisApp::addPluginToWebMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getWebMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mWebMenu, name );
   menu->addAction( action );
 
   // add the Web menu to the menuBar if not added yet
@@ -14599,31 +14438,17 @@ void QgisApp::addPluginToWebMenu( const QString &name, QAction *action )
 
 void QgisApp::addPluginToMeshMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getMeshMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mMeshMenu, name );
   menu->addAction( action );
 }
 
 void QgisApp::removePluginDatabaseMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getDatabaseMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mDatabaseMenu, name );
   menu->removeAction( action );
   if ( menu->actions().isEmpty() )
   {
     mDatabaseMenu->removeAction( menu->menuAction() );
-  }
-
-  // remove the Database menu from the menuBar if there are no more actions
-  if ( !mDatabaseMenu->actions().isEmpty() )
-    return;
-
-  QList<QAction *> actions = menuBar()->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    if ( actions.at( i )->menu() == mDatabaseMenu )
-    {
-      menuBar()->removeAction( actions.at( i ) );
-      return;
-    }
   }
 }
 
@@ -14647,7 +14472,7 @@ void QgisApp::removePluginRasterMenu( const QString &name, QAction *action )
 
 void QgisApp::removePluginVectorMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getVectorMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mVectorMenu, name );
   menu->removeAction( action );
   if ( menu->actions().isEmpty() )
   {
@@ -14671,7 +14496,7 @@ void QgisApp::removePluginVectorMenu( const QString &name, QAction *action )
 
 void QgisApp::removePluginWebMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getWebMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mWebMenu, name );
   menu->removeAction( action );
   if ( menu->actions().isEmpty() )
   {
@@ -14695,25 +14520,11 @@ void QgisApp::removePluginWebMenu( const QString &name, QAction *action )
 
 void QgisApp::removePluginMeshMenu( const QString &name, QAction *action )
 {
-  QMenu *menu = getMeshMenu( name );
+  QMenu *menu = QgsAppMenuUtils::getSubMenu( mMeshMenu, name );
   menu->removeAction( action );
   if ( menu->actions().isEmpty() )
   {
     mMeshMenu->removeAction( menu->menuAction() );
-  }
-
-  // remove the Mesh menu from the menuBar if there are no more actions
-  if ( !mMeshMenu->actions().isEmpty() )
-    return;
-
-  QList<QAction *> actions = menuBar()->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    if ( actions.at( i )->menu() == mMeshMenu )
-    {
-      menuBar()->removeAction( actions.at( i ) );
-      return;
-    }
   }
 }
 
@@ -15029,7 +14840,7 @@ void QgisApp::selectionModeChanged( QgsMapToolSelect::Mode mode )
 
 void QgisApp::updateMouseCoordinatePrecision()
 {
-  mCoordsEdit->setMouseCoordinatesPrecision( QgsCoordinateUtils::calculateCoordinatePrecision( mapCanvas()->mapUnitsPerPixel(), mapCanvas()->mapSettings().destinationCrs() ) );
+  mCoordsEdit->setMouseCoordinatesPrecision( QgsCoordinateUtils::calculateCoordinatePrecision( mapCanvas()->mapUnitsPerPixel(), mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() ) );
 }
 
 void QgisApp::showStatusMessage( const QString &message )
@@ -16597,6 +16408,11 @@ void QgisApp::updateUndoActions()
   }
   mActionUndo->setEnabled( canUndo );
   mActionRedo->setEnabled( canRedo );
+
+#ifdef HAVE_3D
+  for ( Qgs3DMapCanvasWidget *w : mOpen3DMapViews )
+    w->updateUndoRedoActions( canUndo, canRedo );
+#endif
 }
 
 

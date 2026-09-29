@@ -12,7 +12,7 @@
 class QgsStacLink
 {
 %Docstring(signature="appended")
-Class for storing data associated with a STAC link.
+Stores data associated with a STAC link.
 
 .. versionadded:: 3.40
 %End

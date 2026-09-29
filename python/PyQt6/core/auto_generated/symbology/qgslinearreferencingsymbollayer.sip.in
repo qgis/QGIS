@@ -28,7 +28,7 @@ from z or m values.
     QgsLinearReferencingSymbolLayer();
     ~QgsLinearReferencingSymbolLayer();
 
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 %Docstring
 Creates a new QgsLinearReferencingSymbolLayer, using the specified
 ``properties``.

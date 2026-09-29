@@ -120,6 +120,8 @@ bool QgsProjectPointCartesianAlgorithm::prepareAlgorithm( const QVariantMap &par
 
 QgsFeatureList QgsProjectPointCartesianAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   if ( f.hasGeometry() && QgsWkbTypes::geometryType( f.geometry().wkbType() ) == Qgis::GeometryType::Point )
   {

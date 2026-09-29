@@ -69,6 +69,7 @@
 #include "qgsplotregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspointcloudrendererregistry.h"
+#include "qgsprocessingdefaultstyleregistry.h"
 #include "qgsprofilesourceregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectstorageregistry.h"
@@ -574,6 +575,8 @@ void QgsApplication::init( QString profileFolder )
   QgsStyle *defaultStyle = QgsStyle::defaultStyle( false );
   if ( !members()->mStyleModel )
     members()->mStyleModel = std::make_unique<QgsStyleModel>( defaultStyle );
+
+  QgsApplication::processingRegistry()->defaultStyleRegistry()->loadStyles();
 
   ABISYM( mInitialized ) = true;
 }
@@ -1102,7 +1105,11 @@ QString QgsApplication::resolvePkgPath()
     prefixPath = dir.absolutePath();
 #else
 
-#if defined( Q_OS_MACOS )
+#if defined( Q_OS_MACOS ) && defined( QGIS_MAC_BUNDLE )
+    // Go from QGIS.app/Contents/MacOS to the bundle root, like QgsApplication::init() does
+    QDir dir( appPath + "/../.."_L1 );
+    prefixPath = dir.absolutePath();
+#elif defined( Q_OS_MACOS )
     prefixPath = appPath;
 #elif defined( Q_OS_WIN )
     prefixPath = appPath;

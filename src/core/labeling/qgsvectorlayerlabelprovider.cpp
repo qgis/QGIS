@@ -48,6 +48,44 @@ using namespace Qt::StringLiterals;
 
 using namespace pal;
 
+//
+// QgsLabelFeatureDetails
+//
+
+QgsGeometry QgsLabelFeatureDetails::obstacleGeometry() const
+{
+  return mObstacleGeometry;
+}
+
+void QgsLabelFeatureDetails::setObstacleGeometry( const QgsGeometry &geometry )
+{
+  mObstacleGeometry = geometry;
+}
+
+const QgsSymbol *QgsLabelFeatureDetails::symbol() const
+{
+  return mSymbol;
+}
+
+void QgsLabelFeatureDetails::setSymbol( const QgsSymbol *symbol )
+{
+  mSymbol = symbol;
+}
+
+bool QgsLabelFeatureDetails::isSelected() const
+{
+  return mIsSelected;
+}
+
+void QgsLabelFeatureDetails::setIsSelected( bool isSelected )
+{
+  mIsSelected = isSelected;
+}
+
+//
+// QgsVectorLayerLabelProvider
+//
+
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings, const QString &layerName )
   : QgsAbstractLabelProvider( layer, providerId )
   , mSettings( settings ? *settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
@@ -167,24 +205,23 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    QgsGeometry obstacleGeometry;
-    const QgsSymbol *symbol = nullptr;
+    QgsLabelFeatureDetails details;
     if ( mRenderer )
     {
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
       if ( !symbols.isEmpty() && fet.geometry().type() == Qgis::GeometryType::Point )
       {
         //point feature, use symbol bounds as obstacle
-        obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols );
+        details.setObstacleGeometry( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols ) );
       }
       if ( !symbols.isEmpty() )
       {
-        symbol = symbols.at( 0 );
-        symbolScope = QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
+        details.setSymbol( symbols.at( 0 ) );
+        symbolScope = QgsExpressionContextUtils::updateSymbolScope( details.symbol(), symbolScope );
       }
     }
     ctx.expressionContext().setFeature( fet );
-    registerFeature( fet, ctx, obstacleGeometry, symbol );
+    registerFeature( fet, ctx, details );
   }
 
   if ( ctx.expressionContext().lastScope() == symbolScope )
@@ -196,9 +233,9 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   return mLabels;
 }
 
-QList< QgsLabelFeature * > QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
+QList< QgsLabelFeature * > QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelFeatureDetails &details )
 {
-  std::vector< std::unique_ptr< QgsLabelFeature > > labels = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
+  std::vector< std::unique_ptr< QgsLabelFeature > > labels = mSettings.registerFeatureWithDetails( feature, context, details );
   QList< QgsLabelFeature * > res;
   for ( auto &it : labels )
   {
@@ -346,15 +383,12 @@ void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::L
 
     const QList< QgsCalloutPosition > renderedPositions = calloutContext.positions();
 
-    if ( !mEngine->engineSettings().flags().testFlag( Qgis::LabelingFlag::DisableSearchTree ) )
+    for ( QgsCalloutPosition position : renderedPositions )
     {
-      for ( QgsCalloutPosition position : renderedPositions )
-      {
-        position.layerID = mLayerId;
-        position.featureId = label->getFeaturePart()->featureId();
-        position.providerID = mProviderId;
-        mEngine->results()->mLabelSearchTree->insertCallout( position );
-      }
+      position.layerID = mLayerId;
+      position.featureId = label->getFeaturePart()->featureId();
+      position.providerID = mProviderId;
+      mEngine->results()->insertCallout( position );
     }
   }
 }
@@ -473,11 +507,8 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   drawLabelPrivate( label, context, tmpLyr, Qgis::TextComponent::Text );
 
   // add to the results
-  if ( !mEngine->engineSettings().flags().testFlag( Qgis::LabelingFlag::DisableSearchTree ) )
-  {
-    const QString labeltext = label->getFeaturePart()->feature()->labelText();
-    mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, dFont, false, lf->hasFixedPosition(), mProviderId );
-  }
+  const QString labeltext = label->getFeaturePart()->feature()->labelText();
+  mEngine->results()->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, dFont, false, lf->hasFixedPosition(), mProviderId, false, 0, 0, label->getFeaturePart()->subPartId() );
 }
 
 void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, LabelPosition *label ) const
@@ -496,12 +527,9 @@ void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, 
     drawLabelPrivate( label, context, tmpLyr, Qgis::TextComponent::Text );
   }
 
-  if ( !mEngine->engineSettings().flags().testFlag( Qgis::LabelingFlag::DisableSearchTree ) )
-  {
-    // add to the results
-    const QString labeltext = label->getFeaturePart()->feature()->labelText();
-    mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, format.font(), false, lf->hasFixedPosition(), mProviderId, true );
-  }
+  // add to the results
+  const QString labeltext = label->getFeaturePart()->feature()->labelText();
+  mEngine->results()->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, format.font(), false, lf->hasFixedPosition(), mProviderId, true );
 }
 
 void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, QgsRenderContext &context, QgsPalLayerSettings &tmpLyr, Qgis::TextComponent drawType, double dpiRatio ) const

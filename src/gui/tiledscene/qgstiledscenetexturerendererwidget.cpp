@@ -57,7 +57,7 @@ QgsTiledSceneRenderer *QgsTiledSceneTextureRendererWidget::renderer()
 void QgsTiledSceneTextureRendererWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
-    emit widgetChanged();
+    emit changed();
 }
 
 void QgsTiledSceneTextureRendererWidget::setFromRenderer( const QgsTiledSceneRenderer *renderer )

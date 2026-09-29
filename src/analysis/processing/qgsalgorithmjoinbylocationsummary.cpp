@@ -142,6 +142,8 @@ QgsJoinByLocationSummaryAlgorithm *QgsJoinByLocationSummaryAlgorithm::createInst
 
 QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   std::unique_ptr<QgsProcessingFeatureSource> baseSource( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !baseSource )
     throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );

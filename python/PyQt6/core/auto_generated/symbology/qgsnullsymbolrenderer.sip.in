@@ -45,7 +45,7 @@ Selected features will also be drawn with a default symbol.
     virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
 
 
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr<QgsFeatureRenderer> create( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Creates a null renderer from XML element.
 
@@ -58,7 +58,7 @@ Creates a null renderer from XML element.
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
 
-    static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static std::unique_ptr<QgsNullSymbolRenderer> convertFromRenderer( const QgsFeatureRenderer *renderer );
 %Docstring
 Creates a QgsNullSymbolRenderer from an existing renderer.
 

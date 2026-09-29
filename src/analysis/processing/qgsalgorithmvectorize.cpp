@@ -187,6 +187,8 @@ Qgis::WkbType QgsRasterPixelsToPolygonsAlgorithm::sinkType() const
 
 QgsGeometry QgsRasterPixelsToPolygonsAlgorithm::createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const double hCellSizeX = pixelWidthX / 2.0;
   const double hCellSizeY = pixelWidthY / 2.0;
   return QgsGeometry::fromRect( QgsRectangle( centerX - hCellSizeX, centerY - hCellSizeY, centerX + hCellSizeX, centerY + hCellSizeY ) );
@@ -248,6 +250,8 @@ Qgis::WkbType QgsRasterPixelsToPointsAlgorithm::sinkType() const
 
 QgsGeometry QgsRasterPixelsToPointsAlgorithm::createGeometryForPixel( double centerX, double centerY, double, double ) const
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   return QgsGeometry( new QgsPoint( centerX, centerY ) );
 }
 

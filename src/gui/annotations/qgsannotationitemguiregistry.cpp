@@ -71,7 +71,7 @@ QgsAnnotationItemBaseWidget *QgsAnnotationItemGuiMetadata::createItemWidget( Qgs
 
 QgsAnnotationItem *QgsAnnotationItemGuiMetadata::createItem()
 {
-  return mCreateFunc ? mCreateFunc() : QgsAnnotationItemAbstractGuiMetadata::createItem();
+  return mCreateFunc ? mCreateFunc().release() : QgsAnnotationItemAbstractGuiMetadata::createItem();
 }
 
 void QgsAnnotationItemGuiMetadata::newItemAddedToLayer( QgsAnnotationItem *item, QgsAnnotationLayer *layer )
@@ -157,7 +157,7 @@ QgsAnnotationItem *QgsAnnotationItemGuiRegistry::createItem( int metadataId ) co
     return item.release();
 
   const QString type = it.value()->type();
-  return QgsApplication::annotationItemRegistry()->createItem( type );
+  return QgsApplication::annotationItemRegistry()->createItem( type ).release();
 }
 
 void QgsAnnotationItemGuiRegistry::newItemAddedToLayer( int metadataId, QgsAnnotationItem *item, QgsAnnotationLayer *layer )

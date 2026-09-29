@@ -45,7 +45,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbol::create()
 QgsPoint3DSymbol::QgsPoint3DSymbol()
   : mMaterialSettings( std::make_unique<QgsMetalRoughMaterialSettings>() )
 {
-  setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
+  setBillboardSymbol( qgis::unique_ptr_static_cast<QgsMarkerSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ).release() );
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other )

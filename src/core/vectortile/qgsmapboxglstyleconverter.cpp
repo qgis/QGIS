@@ -2080,6 +2080,8 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
     }
   }
 
+#if 0
+  // TODO: re-enable when the cost of label duplicate removal within distance is more reasonable
   if ( jsonLayout.contains( u"symbol-spacing"_s ) )
   {
     double spacing;
@@ -2125,6 +2127,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer(
     spacingProp.setActive( true );
     ddLabelProperties.setProperty( QgsPalLayerSettings::Property::RemoveDuplicateLabelDistance, spacingProp );
   }
+#endif
 
   if ( textSize >= 0 )
   {
@@ -4464,14 +4467,14 @@ QString QgsMapBoxGlStyleConverter::processLabelField( const QString &string, boo
   }
 }
 
-QgsVectorTileRenderer *QgsMapBoxGlStyleConverter::renderer() const
+std::unique_ptr<QgsVectorTileRenderer> QgsMapBoxGlStyleConverter::renderer() const
 {
-  return mRenderer ? mRenderer->clone() : nullptr;
+  return mRenderer ? std::unique_ptr<QgsVectorTileRenderer>( mRenderer->clone() ) : nullptr;
 }
 
-QgsVectorTileLabeling *QgsMapBoxGlStyleConverter::labeling() const
+std::unique_ptr<QgsVectorTileLabeling> QgsMapBoxGlStyleConverter::labeling() const
 {
-  return mLabeling ? mLabeling->clone() : nullptr;
+  return mLabeling ? std::unique_ptr<QgsVectorTileLabeling>( mLabeling->clone() ) : nullptr;
 }
 
 QList<QgsMapBoxGlStyleAbstractSource *> QgsMapBoxGlStyleConverter::sources()

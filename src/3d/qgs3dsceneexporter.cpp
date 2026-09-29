@@ -195,6 +195,9 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
         processEntityMaterial( parentEntity, object );
       mObjects.push_back( object );
     }
+
+    mObjects << processLines( entity, layer->name() + u"_"_s );
+
     return mObjects.size() > prevSize;
   }
 
@@ -624,6 +627,9 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   if ( !geometry )
     return nullptr;
 
+  if ( findAttribute( geometry, u"pointA"_s, Qt3DCore::QAttribute::VertexAttribute ) )
+    return nullptr;
+
   // === Compute triangleIndexStartingIndiceToKeep according to duplicated features
   //
   // In the case of polygons, we have multiple feature geometries within the same geometry object (QgsTessellatedPolygonGeometry).
@@ -793,25 +799,30 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
   const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
   for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
   {
-    if ( renderer->primitiveType() != Qt3DRender::QGeometryRenderer::LineStripAdjacency )
-      continue;
     Qt3DCore::QGeometry *geom = renderer->geometry();
-    Qt3DCore::QAttribute *positionAttribute = findAttribute( geom, Qt3DCore::QAttribute::defaultPositionAttributeName(), Qt3DCore::QAttribute::VertexAttribute );
-    Qt3DCore::QAttribute *indexAttribute = findAttribute( geom, QString(), Qt3DCore::QAttribute::IndexAttribute );
-    if ( !positionAttribute || !indexAttribute )
-    {
-      QgsDebugError( QString( "Cannot export '%1' - geometry has no position or index attribute!" ).arg( objectNamePrefix ) );
+    Qt3DCore::QAttribute *pointAAttribute = findAttribute( geom, u"pointA"_s, Qt3DCore::QAttribute::VertexAttribute );
+    Qt3DCore::QAttribute *pointBAttribute = findAttribute( geom, u"pointB"_s, Qt3DCore::QAttribute::VertexAttribute );
+    Qt3DCore::QAttribute *pointCAttribute = findAttribute( geom, u"pointC"_s, Qt3DCore::QAttribute::VertexAttribute );
+    if ( !pointAAttribute || !pointBAttribute || pointCAttribute )
       continue;
-    }
 
-    const QByteArray vertexBytes = getData( positionAttribute->buffer() );
-    const QByteArray indexBytes = getData( indexAttribute->buffer() );
-    if ( vertexBytes.isNull() || indexBytes.isNull() )
+    const QByteArray pointABytes = getData( pointAAttribute->buffer() );
+    const QByteArray pointBBytes = getData( pointBAttribute->buffer() );
+    if ( pointABytes.isNull() || pointBBytes.isNull() )
     {
-      QgsDebugError( QString( "Geometry for '%1' has position or index attribute with empty data!" ).arg( objectNamePrefix ) );
+      QgsDebugError( QString( "Geometry for '%1' has pointA or pointB attribute with empty data!" ).arg( objectNamePrefix ) );
       continue;
     }
-    const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
+    const QVector<float> pointAData = getAttributeData<float>( pointAAttribute, pointABytes );
+    const QVector<float> pointBData = getAttributeData<float>( pointBAttribute, pointBBytes );
+
+    QVector<float> positionData;
+    positionData.reserve( pointAData.size() + pointBData.size() );
+    for ( int i = 0; i + 2 < pointAData.size(); i += 3 )
+    {
+      positionData << pointAData[i] << pointAData[i + 1] << pointAData[i + 2];
+      positionData << pointBData[i] << pointBData[i + 1] << pointBData[i + 2];
+    }
 
     Qgs3DExportObject *exportObject = new Qgs3DExportObject( getObjectName( objectNamePrefix + u"line"_s ) );
     exportObject->setupLine( positionData );

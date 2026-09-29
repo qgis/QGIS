@@ -527,6 +527,22 @@ class CORE_EXPORT QgsLayoutItemScaleBar : public QgsLayoutItem
     void setLabelHorizontalPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement placement );
 
     /**
+     * Returns the placements for unit labels.
+     *
+     * \see setUnitLabelPlacements()
+     * \since QGIS 4.4
+     */
+    Qgis::ScaleBarUnitLabelPlacements unitLabelPlacements() const { return mSettings.unitLabelPlacements(); }
+
+    /**
+     * Sets the \a placements for unit labels.
+     *
+     * \see unitLabelPlacements()
+     * \since QGIS 4.4
+     */
+    void setUnitLabelPlacements( Qgis::ScaleBarUnitLabelPlacements placements );
+
+    /**
      * Returns the scalebar alignment.
      * \see setAlignment()
      */

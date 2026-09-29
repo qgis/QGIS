@@ -29,7 +29,7 @@ using namespace Qt::StringLiterals;
 QgsRasterContourRenderer::QgsRasterContourRenderer( QgsRasterInterface *input )
   : QgsRasterRenderer( input, u"contour"_s )
 {
-  mContourSymbol.reset( static_cast<QgsLineSymbol *>( QgsLineSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
+  mContourSymbol = qgis::unique_ptr_static_cast<QgsLineSymbol>( QgsLineSymbol::defaultSymbol( Qgis::GeometryType::Line ) );
 }
 
 QgsRasterContourRenderer::~QgsRasterContourRenderer() = default;
@@ -52,14 +52,14 @@ Qgis::RasterRendererFlags QgsRasterContourRenderer::flags() const
   return Qgis::RasterRendererFlag::UseNoDataForOutOfRangePixels;
 }
 
-QgsRasterRenderer *QgsRasterContourRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
+std::unique_ptr<QgsRasterRenderer> QgsRasterContourRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
   {
     return nullptr;
   }
 
-  QgsRasterContourRenderer *r = new QgsRasterContourRenderer( input );
+  auto r = std::make_unique<QgsRasterContourRenderer>( input );
   r->readXml( elem );
 
   const int inputBand = elem.attribute( u"band"_s, u"-1"_s ).toInt();

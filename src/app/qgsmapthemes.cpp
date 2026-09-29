@@ -81,11 +81,13 @@ QgsMapThemes *QgsMapThemes::instance()
 void QgsMapThemes::addPreset( const QString &name )
 {
   QgsProject::instance()->mapThemeCollection()->insert( name, currentState() );
+  QgsProject::instance()->setDirty();
 }
 
 void QgsMapThemes::updatePreset( const QString &name )
 {
   QgsProject::instance()->mapThemeCollection()->update( name, currentState() );
+  QgsProject::instance()->setDirty();
 }
 
 QMenu *QgsMapThemes::menu()
@@ -167,6 +169,7 @@ void QgsMapThemes::renameCurrentPreset()
         return;
 
       QgsProject::instance()->mapThemeCollection()->renameMapTheme( actionPreset->text(), dlg.name() );
+      QgsProject::instance()->setDirty();
     }
   }
 }
@@ -180,7 +183,10 @@ void QgsMapThemes::removeCurrentPreset()
       int res = QMessageBox::
         question( QgisApp::instance(), tr( "Remove Theme" ), tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
       if ( res == QMessageBox::Yes )
+      {
         QgsProject::instance()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
+        QgsProject::instance()->setDirty();
+      }
       break;
     }
   }

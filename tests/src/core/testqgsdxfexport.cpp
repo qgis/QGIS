@@ -177,12 +177,12 @@ void TestQgsDxfExport::init()
   QVariantMap ggProps;
   ggProps.insert( u"SymbolType"_s, u"Fill"_s );
   ggProps.insert( u"geometryModifier"_s, u"buffer( $geometry, 0.1 )"_s );
-  QgsSymbolLayer *ggSymbolLayer = QgsGeometryGeneratorSymbolLayer::create( ggProps );
+  std::unique_ptr<QgsSymbolLayer> ggSymbolLayer = QgsGeometryGeneratorSymbolLayer::create( ggProps );
   QgsSymbolLayerList fillSymbolLayerList;
   fillSymbolLayerList << new QgsSimpleFillSymbolLayer();
   ggSymbolLayer->setSubSymbol( new QgsFillSymbol( fillSymbolLayerList ) );
   QgsSymbolLayerList slList;
-  slList << ggSymbolLayer;
+  slList << ggSymbolLayer.release();
   QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( slList );
   QgsSingleSymbolRenderer *sr = new QgsSingleSymbolRenderer( markerSymbol );
   mPointLayerGeometryGenerator->setRenderer( sr );

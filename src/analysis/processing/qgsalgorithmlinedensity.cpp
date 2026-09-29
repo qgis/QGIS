@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmlinedensity.h"
 
+#include "qgsacademicreference.h"
 #include "qgscircle.h"
 #include "qgsgeometryengine.h"
 #include "qgsrasterfilewriter.h"
@@ -85,6 +86,12 @@ QString QgsLineDensityAlgorithm::shortHelpString() const
   );
 }
 
+QList<QgsAcademicReference> QgsLineDensityAlgorithm::academicReferences() const
+{
+  const QgsAcademicReference silvermanReference = QgsAcademicReference::createBook( { u"Silverman, B. W."_s }, 1986, u"Density Estimation for Statistics and Data Analysis"_s, u"Chapman and Hall"_s );
+  return { silvermanReference };
+}
+
 Qgis::ProcessingAlgorithmDocumentationFlags QgsLineDensityAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
@@ -139,6 +146,8 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   mIndex = QgsSpatialIndex( QgsSpatialIndex::FlagStoreFeatureGeometries );
 
   const QStringList weightName = QStringList( mWeightField );

@@ -38,6 +38,69 @@ class TestQgsColorButton(QgisTestCase):
         # ensure that only the alpha channel has changed - not the other color components
         self.assertEqual(button.color(), QColor(255, 100, 200, 0))
 
+        # and back to opaque
+        button.setToOpaqueColor()
+        self.assertEqual(button.color(), QColor(255, 100, 200, 255))
+
+    @staticmethod
+    def menu_texts(button):
+        button.menu().aboutToShow.emit()
+        return [a.text() for a in button.menu().actions()]
+
+    def testNoColorMenuAction(self):
+        """
+        Test which of the "no color" / "opaque color" menu actions are offered for a
+        given color
+        """
+        button = QgsColorButton()
+        button.setAllowOpacity(True)
+        button.setShowNoColor(True)
+        button.setNoColorString("Transparent Fill")
+        button.setOpaqueColorString("Opaque Fill")
+        self.assertEqual(button.noColorString(), "Transparent Fill")
+        self.assertEqual(button.opaqueColorString(), "Opaque Fill")
+
+        # totally opaque - there is no transparency to drop
+        button.setColor(QColor(255, 100, 200, 255))
+        self.assertIn("Transparent Fill", self.menu_texts(button))
+        self.assertNotIn("Opaque Fill", self.menu_texts(button))
+
+        # partially transparent - both directions are available
+        button.setColor(QColor(255, 100, 200, 100))
+        self.assertIn("Transparent Fill", self.menu_texts(button))
+        self.assertIn("Opaque Fill", self.menu_texts(button))
+
+        # totally transparent - there is nothing left to clear
+        button.setColor(QColor(255, 100, 200, 0))
+        self.assertNotIn("Transparent Fill", self.menu_texts(button))
+        self.assertIn("Opaque Fill", self.menu_texts(button))
+
+        # a null color is not "partially transparent" - it has no color at all
+        button.setToNull()
+        self.assertIn("Transparent Fill", self.menu_texts(button))
+        self.assertNotIn("Opaque Fill", self.menu_texts(button))
+
+    def testOpaqueMenuActionWithoutNoColorOption(self):
+        """
+        Test that the "opaque color" menu action is offered whenever the button allows
+        opacity, even when the "no color" option is not shown
+        """
+        button = QgsColorButton()
+        button.setAllowOpacity(True)
+        button.setShowNoColor(False)
+        button.setOpaqueColorString("Opaque Fill")
+
+        button.setColor(QColor(255, 100, 200, 100))
+        self.assertIn("Opaque Fill", self.menu_texts(button))
+
+        button.setColor(QColor(255, 100, 200, 255))
+        self.assertNotIn("Opaque Fill", self.menu_texts(button))
+
+        # a button which has no say over opacity should not offer to change it
+        button.setAllowOpacity(False)
+        button.setColor(QColor(255, 100, 200, 100))
+        self.assertNotIn("Opaque Fill", self.menu_texts(button))
+
     def testNulling(self):
         """
         Test clearing colors to null

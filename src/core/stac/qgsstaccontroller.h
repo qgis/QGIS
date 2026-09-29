@@ -36,7 +36,7 @@ class QNetworkReply;
 
 /**
  * \ingroup core
- * \brief The QgsStacController class handles STAC requests.
+ * \brief Handles STAC requests.
  *
  * Contains methods to generate STAC objects from local and remote urls.
 

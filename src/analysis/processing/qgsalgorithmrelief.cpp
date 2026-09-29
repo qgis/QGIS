@@ -124,6 +124,8 @@ bool QgsReliefAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPro
 
 QVariantMap QgsReliefAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   const double zFactor = parameterAsDouble( parameters, u"Z_FACTOR"_s, context );
   const bool automaticColors = parameterAsBoolean( parameters, u"AUTO_COLORS"_s, context );
   const QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();

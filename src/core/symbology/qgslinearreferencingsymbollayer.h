@@ -43,7 +43,7 @@ class CORE_EXPORT QgsLinearReferencingSymbolLayer : public QgsLineSymbolLayer
      *
      * The caller takes ownership of the returned object.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbolLayer> create( const QVariantMap &properties = QVariantMap() );
 
     QgsLinearReferencingSymbolLayer *clone() const override SIP_FACTORY;
     QVariantMap properties() const override;

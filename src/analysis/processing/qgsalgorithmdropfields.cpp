@@ -135,6 +135,8 @@ bool QgsDropTableFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 QgsFeatureList QgsDropTableFieldsAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   QgsAttributes attributes = f.attributes();
   for ( const int index : mFieldIndices )
@@ -267,6 +269,8 @@ bool QgsRetainTableFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 
 QgsFeatureList QgsRetainTableFieldsAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
+  QGS_MARK_ALGORITHM_SOURCE
+
   QgsFeature f = feature;
   const QgsAttributes inputAttributes = f.attributes();
   QgsAttributes outputAttributes;

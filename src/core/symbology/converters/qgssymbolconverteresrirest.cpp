@@ -175,7 +175,7 @@ std::unique_ptr<QgsFillSymbol> QgsSymbolConverterEsriRest::parseEsriPictureFillS
   fillLayer->setWidth( widthInPixels );
   fillLayer->setAngle( angleCW );
   fillLayer->setSizeUnit( Qgis::RenderUnit::Points );
-  fillLayer->setOffset( QPointF( xOffset, yOffset ) );
+  fillLayer->setOffset( QPointF( xOffset, -yOffset ) );
   fillLayer->setOffsetUnit( Qgis::RenderUnit::Points );
   layers.append( fillLayer.release() );
 
@@ -252,7 +252,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsSymbolConverterEsriRest::parseEsriMarkerSymb
   markerLayer->setStrokeWidthUnit( Qgis::RenderUnit::Points );
   markerLayer->setStrokeStyle( penStyle );
   markerLayer->setStrokeWidth( penWidthInPoints );
-  markerLayer->setOffset( QPointF( xOffset, yOffset ) );
+  markerLayer->setOffset( QPointF( xOffset, -yOffset ) );
   markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
   layers.append( markerLayer.release() );
 
@@ -289,7 +289,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsSymbolConverterEsriRest::parseEsriPictureMar
   if ( !qgsDoubleNear( static_cast< double >( heightInPixels ) / widthInPixels, markerLayer->defaultAspectRatio() ) )
     markerLayer->setFixedAspectRatio( static_cast< double >( heightInPixels ) / widthInPixels );
 
-  markerLayer->setOffset( QPointF( xOffset, yOffset ) );
+  markerLayer->setOffset( QPointF( xOffset, -yOffset ) );
   markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
   layers.append( markerLayer.release() );
 
@@ -322,7 +322,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsSymbolConverterEsriRest::parseEsriTextMarker
   double xOffset = symbolData.value( u"xoffset"_s ).toDouble();
   double yOffset = symbolData.value( u"yoffset"_s ).toDouble();
 
-  markerLayer->setOffset( QPointF( xOffset, yOffset ) );
+  markerLayer->setOffset( QPointF( xOffset, -yOffset ) );
   markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
 
   markerLayer->setSizeUnit( Qgis::RenderUnit::Points );

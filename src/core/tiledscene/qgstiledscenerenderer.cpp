@@ -74,7 +74,7 @@ Qgis::TiledSceneRendererFlags QgsTiledSceneRenderer::flags() const
   return Qgis::TiledSceneRendererFlag::RendersLines | Qgis::TiledSceneRendererFlag::RendersTriangles;
 }
 
-QgsTiledSceneRenderer *QgsTiledSceneRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
+std::unique_ptr<QgsTiledSceneRenderer> QgsTiledSceneRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
 {
   if ( element.isNull() )
     return nullptr;
@@ -87,7 +87,7 @@ QgsTiledSceneRenderer *QgsTiledSceneRenderer::load( QDomElement &element, const 
     return nullptr;
 
   std::unique_ptr< QgsTiledSceneRenderer > r( m->createRenderer( element, context ) );
-  return r.release();
+  return r;
 }
 
 void QgsTiledSceneRenderer::startRender( QgsTiledSceneRenderContext & )

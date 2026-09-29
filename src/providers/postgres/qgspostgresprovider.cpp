@@ -1859,8 +1859,22 @@ QStringList QgsPostgresProvider::uniqueStringsMatching( int index, const QString
 
 void QgsPostgresProvider::enumValues( int index, QStringList &enumList ) const
 {
+  const QList<QPair<QString, QString>> valuePairs = codedValues( index );
+  QStringList valuesList;
+  valuesList.reserve( valuePairs.size() );
+
+  for ( const QPair<QString, QString> &pair : valuePairs )
+  {
+    valuesList.append( pair.first );
+  }
+
+  enumList = valuesList;
+}
+
+QList<QPair<QString, QString>> QgsPostgresProvider::codedValues( int index ) const
+{
   if ( index < 0 || index >= mAttributeFields.count() )
-    return;
+    return {};
 
   if ( !mShared->fieldSupportsEnumValuesIsSet( index ) )
   {
@@ -1868,7 +1882,7 @@ void QgsPostgresProvider::enumValues( int index, QStringList &enumList ) const
   }
   else if ( !mShared->fieldSupportsEnumValues( index ) )
   {
-    return;
+    return {};
   }
 
   //find out type of index
@@ -1876,7 +1890,8 @@ void QgsPostgresProvider::enumValues( int index, QStringList &enumList ) const
   QString typeName = mAttributeFields.at( index ).typeName();
 
   // Remove schema extension from typeName
-  typeName.remove( QRegularExpression( "^([^.]+\\.)+" ) );
+  const thread_local QRegularExpression rx( "^([^.]+\\.)+" );
+  typeName.remove( rx );
 
   //is type an enum?
   const QString typeSql = u"SELECT typtype FROM pg_type WHERE typname=%1"_s.arg( quotedValue( typeName ) );
@@ -1884,9 +1899,10 @@ void QgsPostgresProvider::enumValues( int index, QStringList &enumList ) const
   if ( typeRes.PQresultStatus() != PGRES_TUPLES_OK || typeRes.PQntuples() < 1 )
   {
     mShared->setFieldSupportsEnumValues( index, false );
-    return;
+    return {};
   }
 
+  QStringList enumList;
   const QString typtype = typeRes.PQgetvalue( 0, 0 );
   if ( typtype.compare( 'e'_L1, Qt::CaseInsensitive ) == 0 )
   {
@@ -1904,6 +1920,14 @@ void QgsPostgresProvider::enumValues( int index, QStringList &enumList ) const
       mShared->setFieldSupportsEnumValues( index, false );
     }
   }
+
+  QList<QPair<QString, QString>> values;
+  for ( const QString &s : std::as_const( enumList ) )
+  {
+    values.append( qMakePair( s, s ) );
+  }
+
+  return values;
 }
 
 bool QgsPostgresProvider::parseEnumRange( QStringList &enumValues, const QString &attributeName ) const

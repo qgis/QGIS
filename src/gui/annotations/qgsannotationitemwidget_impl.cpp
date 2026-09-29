@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsannotationitemwidget_impl.h"
 
+#include "qgsannotationlayer.h"
 #include "qgsannotationlineitem.h"
 #include "qgsannotationlinetextitem.h"
 #include "qgsannotationmarkeritem.h"
@@ -896,6 +897,9 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
   mSizeModeCombo->addItem( tr( "Fixed Size" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::FixedSize ) );
   mSizeModeCombo->addItem( tr( "Relative to Map" ), QVariant::fromValue( Qgis::AnnotationPlacementMode::RelativeToMapFrame ) );
 
+  m3DSizeModeCombo->addItem( tr( "View Independent" ), QVariant::fromValue( Qgis::BillboardScaleMode::ViewIndependent ) );
+  m3DSizeModeCombo->addItem( tr( "Perspective Scaled" ), QVariant::fromValue( Qgis::BillboardScaleMode::Perspective ) );
+
   populateRotationModeComboBox( mRotationModeCombo );
 
   mSizeUnitWidget->setUnits(
@@ -909,6 +913,9 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
   mFrameSymbolButton->setDialogTitle( tr( "Frame" ) );
   mFrameSymbolButton->registerExpressionContextGenerator( this );
 
+  mHeight3DSpinBox->setClearValue( 0, tr( "Default" ) );
+  mWidth3DSpinBox->setClearValue( 0, tr( "Default" ) );
+
   connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, [this] {
     if ( !mBlockChangedSignal )
       emit itemChanged();
@@ -916,10 +923,15 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
 
   connect( mSizeModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationPictureItemWidget::sizeModeChanged );
 
+  connect( m3DSizeModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+
   connect( mRotationModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
 
   mSpinAngle->setClearValue( 0 );
   connect( mSpinAngle, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+
+  connect( mHeight3DSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
+  connect( mWidth3DSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsAnnotationPictureItemWidget::onWidgetChanged );
 
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
@@ -984,6 +996,16 @@ void QgsAnnotationPictureItemWidget::updateItem( QgsAnnotationItem *item )
     pictureItem->setFrameEnabled( mFrameCheckbox->isChecked() );
     pictureItem->setBackgroundSymbol( mBackgroundSymbolButton->clonedSymbol<QgsFillSymbol>() );
     pictureItem->setFrameSymbol( mFrameSymbolButton->clonedSymbol<QgsFillSymbol>() );
+
+    pictureItem->setBillboard3DScaleMode( m3DSizeModeCombo->currentData().value< Qgis::BillboardScaleMode >() );
+    if ( mWidth3DSpinBox->value() > 0 && mHeight3DSpinBox->value() > 0 )
+    {
+      pictureItem->setBillboard3DSize( QSizeF( mWidth3DSpinBox->value(), mHeight3DSpinBox->value() ) );
+    }
+    else
+    {
+      pictureItem->setBillboard3DSize( QSizeF() );
+    }
 
     if ( mUpdateItemPosition )
     {
@@ -1065,11 +1087,25 @@ bool QgsAnnotationPictureItemWidget::setNewItem( QgsAnnotationItem *item )
   mSizeModeCombo->setCurrentIndex( mSizeModeCombo->findData( QVariant::fromValue( pictureItem->placementMode() ) ) );
   mSpinAngle->setValue( pictureItem->rotation() );
   mRotationModeCombo->setCurrentIndex( mRotationModeCombo->findData( QVariant::fromValue( pictureItem->rotationMode() ) ) );
+
+  mWidth3DSpinBox->setValue( pictureItem->billboard3DSize().width() );
+  mHeight3DSpinBox->setValue( pictureItem->billboard3DSize().height() );
+
+  m3DSizeModeCombo->setCurrentIndex( m3DSizeModeCombo->findData( QVariant::fromValue( pictureItem->billboard3DScaleMode() ) ) );
   sizeModeChanged();
 
   mBlockChangedSignal = false;
 
   return true;
+}
+
+void QgsAnnotationPictureItemWidget::showEvent( QShowEvent *event )
+{
+  QgsAnnotationLayer *layer = QgsAnnotationPictureItemWidget::layer();
+  // show 3d settings only when layer has a 3d renderer
+  mGroupAppearance3D->setVisible( !layer || layer->renderer3D() );
+
+  QgsAnnotationItemBaseWidget::showEvent( event );
 }
 
 void QgsAnnotationPictureItemWidget::onWidgetChanged()

@@ -231,7 +231,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void currentLayerChanged( QgsMapLayer *layer );
     //! Update the extra snap layer, this should be called whenever the capturecurve changes
     void updateExtraSnapLayer();
-    void onTransientGeometryChanged( const QgsReferencedGeometry &geometry );
+    void onShapeToolTransientGeometryChanged( const QgsReferencedGeometry &geometry );
 
   protected:
     // TODO QGIS 5.0 returns an enum instead of a magic constant
@@ -413,6 +413,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     void setCurrentShapeMapToolIsActivated( bool activated );
 
+    void onTransientGeometryChanged( const QgsReferencedGeometry &geometry );
+
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
 
@@ -425,6 +427,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     //! Rubber band for polylines and polygons
     QObjectUniquePtr<QgsRubberBand> mRubberBand;
+
+    //! Rubberband showing preview items for the linked layer (eg label previews)
+    QObjectUniquePtr<QgsRubberBand> mLayerPreviewRubberBand;
 
     //! Temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position
     QObjectParentUniquePtr<QgsMapToolCaptureRubberBand> mTempRubberBand;

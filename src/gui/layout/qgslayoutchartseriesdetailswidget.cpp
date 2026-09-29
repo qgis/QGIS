@@ -53,12 +53,12 @@ QgsLayoutChartSeriesDetailsWidget::QgsLayoutChartSeriesDetailsWidget( QgsVectorL
   mFilterLineEdit->setText( seriesDetails.filterExpression() );
 
   connect( mXExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString &, bool ) {
-    emit widgetChanged();
+    emit changed();
   } );
   connect( mYExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString &, bool ) {
-    emit widgetChanged();
+    emit changed();
   } );
-  connect( mFilterLineEdit, &QLineEdit::textChanged, this, [this] { emit widgetChanged(); } );
+  connect( mFilterLineEdit, &QLineEdit::textChanged, this, [this] { emit changed(); } );
   connect( mFilterButton, &QToolButton::clicked, this, &QgsLayoutChartSeriesDetailsWidget::mFilterButton_clicked );
 }
 

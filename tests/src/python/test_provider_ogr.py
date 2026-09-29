@@ -2402,13 +2402,18 @@ class PyQgsOGRProvider(QgisTestCase):
             "Range",
         )
 
+        cv = vl.dataProvider().codedValues(fields.lookupField("with_enum_domain"))
+        self.assertIn(("1", "one"), cv)
+        self.assertIn(("2", "2"), cv)
+        self.assertEqual(len(cv), 2)
+
         enum_field = fields[fields.lookupField("with_enum_domain")]
         enum_setup = enum_field.editorWidgetSetup()
-        self.assertEqual(enum_setup.type(), "ValueMap")
-        self.assertTrue(enum_setup.config()["map"], [{"one": "1"}, {"2": "2"}])
+        self.assertEqual(enum_setup.type(), "")
+        self.assertFalse(enum_setup.config())
         self.assertEqual(
             vl.editorWidgetSetup(fields.lookupField("with_enum_domain")).type(),
-            "ValueMap",
+            "",
         )
 
     def test_provider_editorWidgets(self):

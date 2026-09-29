@@ -53,6 +53,8 @@ if (WITH_GUI)
 	add_subdirectory(db_manager)
 endif()
 add_subdirectory(processing)
+add_subdirectory(qgisprovider)
+add_subdirectory(gdalprovider)
 add_subdirectory(grassprovider)
 add_subdirectory(MetaSearch)
 

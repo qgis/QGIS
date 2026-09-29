@@ -159,7 +159,7 @@ void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
 
   std::unique_ptr<QgsMarkerSymbol> markerSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsMarkerSymbol>( u"marker_annotation_item"_s );
   if ( !markerSymbol )
-    markerSymbol.reset( qgis::down_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
+    markerSymbol = qgis::unique_ptr_static_cast<QgsMarkerSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   createdItem->setSymbol( markerSymbol.release() );
 
   // set reference scale to match canvas scale, but don't enable it by default for marker items
@@ -195,7 +195,7 @@ void QgsCreateLineItemMapTool::lineCaptured( const QgsCurve *line )
 
     std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( u"line_annotation_item"_s );
     if ( !lineSymbol )
-      lineSymbol.reset( qgis::down_cast<QgsLineSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
+      lineSymbol = qgis::unique_ptr_static_cast<QgsLineSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) );
     createdItem->setSymbol( lineSymbol.release() );
 
     // set reference scale to match canvas scale, but don't enable it by default for marker items
@@ -229,7 +229,7 @@ void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygo
 
     std::unique_ptr<QgsFillSymbol> fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsFillSymbol>( u"polygon_annotation_item"_s );
     if ( !fillSymbol )
-      fillSymbol.reset( qgis::down_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) ) );
+      fillSymbol = qgis::unique_ptr_static_cast<QgsFillSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
     createdItem->setSymbol( fillSymbol.release() );
 
     // set reference scale to match canvas scale, but don't enable it by default for marker items
@@ -521,7 +521,7 @@ void QgsCreateLineTextItemMapTool::lineCaptured( const QgsCurve *line )
 
     std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( u"line_annotation_item"_s );
     if ( !lineSymbol )
-      lineSymbol.reset( qgis::down_cast<QgsLineSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
+      lineSymbol = qgis::unique_ptr_static_cast<QgsLineSymbol>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) );
 
     QgsTextFormat format = QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling );
     // default to HTML formatting

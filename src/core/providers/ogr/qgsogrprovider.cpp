@@ -1124,31 +1124,6 @@ void QgsOgrProvider::loadFields()
 
         switch ( OGR_FldDomain_GetDomainType( domain ) )
         {
-          case OFDT_CODED:
-          {
-            QVariantList valueConfig;
-            const OGRCodedValue *codedValue = OGR_CodedFldDomain_GetEnumeration( domain );
-            while ( codedValue && codedValue->pszCode )
-            {
-              const QString code( codedValue->pszCode );
-              // if pszValue is null then it indicates we are working with a set of acceptable values which aren't
-              // coded. In this case we copy the code as the value so that QGIS exposes the domain as a choice of
-              // the valid code values.
-              const QString value( codedValue->pszValue ? codedValue->pszValue : codedValue->pszCode );
-
-              QVariantMap config;
-              config[value] = code;
-              valueConfig.append( config );
-
-              codedValue++;
-            }
-
-            QVariantMap editorConfig;
-            editorConfig.insert( u"map"_s, valueConfig );
-            newField.setEditorWidgetSetup( QgsEditorWidgetSetup( u"ValueMap"_s, editorConfig ) );
-            break;
-          }
-
           case OFDT_RANGE:
             if ( newField.isNumeric() )
             {
@@ -1189,6 +1164,9 @@ void QgsOgrProvider::loadFields()
             // config doesn't support this yet!
             break;
 
+          case OFDT_CODED:
+            // coded field domains will automatically use Enumeration widget since ::codedValues() returns the domain values
+            break;
           case OFDT_GLOB:
             // not supported by QGIS yet
             break;
@@ -1673,6 +1651,51 @@ bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::C
 void QgsOgrProvider::updateExtents()
 {
   invalidateCachedExtent( true );
+}
+
+QList<QPair<QString, QString>> QgsOgrProvider::codedValues( int index ) const
+{
+  if ( !mOgrLayer || index < 1 || index >= mAttributeFields.count() )
+    return {};
+
+  QList<QPair<QString, QString>> values;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 3, 0 )
+  // needed for field domain retrieval on GDAL 3.3+
+  QRecursiveMutex *datasetMutex = nullptr;
+  GDALDatasetH ds = mOgrLayer->getDatasetHandleAndMutex( datasetMutex );
+  QMutexLocker locker( datasetMutex );
+
+  QgsOgrFeatureDefn &fdef = mOgrLayer->GetLayerDefn();
+  OGRFieldDefnH fldDef = fdef.GetFieldDefn( index - 1 );
+
+  if ( const char *domainName = OGR_Fld_GetDomainName( fldDef ); OGRFieldDomainH domain = GDALDatasetGetFieldDomain( ds, domainName ) )
+  {
+    // dataset retains ownership of domain!
+    switch ( OGR_FldDomain_GetDomainType( domain ) )
+    {
+      case OFDT_CODED:
+      {
+        const OGRCodedValue *codedValue = OGR_CodedFldDomain_GetEnumeration( domain );
+        while ( codedValue && codedValue->pszCode )
+        {
+          // if pszValue is null then it indicates we are working with a set of acceptable values which aren't
+          // coded. In this case we copy the code as the value so that QGIS exposes the domain as a choice of
+          // the valid code values.
+          const QString value( codedValue->pszValue ? codedValue->pszValue : codedValue->pszCode );
+
+          values.append( qMakePair( codedValue->pszCode, value ) );
+          codedValue++;
+        }
+        break;
+      }
+
+      case OFDT_RANGE:
+      case OFDT_GLOB:
+        break;
+    }
+  }
+#endif
+  return values;
 }
 
 void QgsOgrProvider::invalidateCachedExtent( bool bForceRecomputeExtent )
