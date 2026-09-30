@@ -468,39 +468,19 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
   if ( QgsPanelWidget *current = mWidgetStack->takeMainPanel() )
   {
-    if ( QgsLabelingWidget *widget = qobject_cast<QgsLabelingWidget *>( current ) )
+    bool isReusableWidget = false;
+    if ( current == mLabelingWidget || current == mMaskingWidget || current == mUndoWidget || current == mRasterStyleWidget || current == mRasterAttributeTableWidget )
     {
-      mLabelingWidget = widget;
-    }
-    else if ( QgsMaskingWidget *widget = qobject_cast<QgsMaskingWidget *>( current ) )
-    {
-      mMaskingWidget = widget;
-    }
-    else if ( QgsUndoWidget *widget = qobject_cast<QgsUndoWidget *>( current ) )
-    {
-      mUndoWidget = widget;
-    }
-    else if ( QgsRendererRasterPropertiesWidget *widget = qobject_cast<QgsRendererRasterPropertiesWidget *>( current ) )
-    {
-      mRasterStyleWidget = widget;
+      isReusableWidget = true;
     }
 #ifdef HAVE_3D
-    else if ( QgsVectorLayer3DRendererWidget *widget = qobject_cast<QgsVectorLayer3DRendererWidget *>( current ) )
+    else if ( current == mVector3DWidget || current == mMesh3DWidget )
     {
-      mVector3DWidget = widget;
+      isReusableWidget = true;
     }
 #endif
-#ifdef HAVE_3D
-    else if ( QgsMeshLayer3DRendererWidget *widget = qobject_cast<QgsMeshLayer3DRendererWidget *>( current ) )
-    {
-      mMesh3DWidget = widget;
-    }
-#endif
-    else if ( QgsRasterAttributeTableWidget *widget = qobject_cast<QgsRasterAttributeTableWidget *>( current ) )
-    {
-      mRasterAttributeTableWidget = widget;
-    }
-    else
+
+    if ( !isReusableWidget )
     {
       delete current;
       current = nullptr;
