@@ -74,7 +74,9 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
 
   if ( nclasses >= values.size() )
   {
-    return values;
+    QList<double> sortedValues = values;
+    std::sort( sortedValues.begin(), sortedValues.end() );
+    return sortedValues;
   }
 
   QVector<double> sample;

@@ -162,6 +162,19 @@ class TestQgsClassificationMethods(QgisTestCase):
             QgsClassificationMethod.rangesToBreaks(r), [-506.0, -4.0, 499.0, 1000.0]
         )
 
+    def testQgsClassificationJenksMoreClassesThanValues(self):
+        # each value becomes a class upper bound, in ascending order
+        vl = createMemoryLayer([50, 10, 40, 20, 30])
+        m = QgsClassificationJenks()
+
+        for nclasses in (5, 6):
+            r, error = m.classesV2(vl, "value", nclasses)
+            self.assertFalse(error)
+            self.assertEqual(
+                [(c.lowerBound(), c.upperBound()) for c in r],
+                [(10.0, 10.0), (10.0, 20.0), (20.0, 30.0), (30.0, 40.0), (40.0, 50.0)],
+            )
+
     def testQgsClassificationFixedInterval(self):
         values = [-33, -41, -43, 16, 29, 9, -35, 56, 26, -30]
         vl = createMemoryLayer(values)
