@@ -593,6 +593,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
               minMaxCollapsed = mmWidget->isCollapsed();
             }
           }
+          delete mRasterStyleWidget;
+          mRasterStyleWidget = nullptr;
         }
         QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( mCurrentLayer );
         mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
