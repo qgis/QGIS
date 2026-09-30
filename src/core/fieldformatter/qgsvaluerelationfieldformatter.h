@@ -20,10 +20,11 @@
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfieldformatter.h"
-#include "qgsproject.h"
 
 #include <QVariant>
 #include <QVector>
+
+class QgsProject;
 
 /**
  * \ingroup core
