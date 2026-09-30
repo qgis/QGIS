@@ -97,17 +97,27 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 {
     Q_OBJECT
   public:
-    enum Page
+    enum class Page
     {
-      Symbology = 1,
+      VectorRenderer,
       VectorLabeling,
+      VectorMasks,
+      Vector3D,
+      VectorDiagrams,
+      RasterRenderer,
       RasterTransparency,
+      RasterLabeling,
       RasterHistogram,
+      RasterAttributeTable,
+      MeshRenderer,
+      MeshLabeling,
+      Mesh3D,
+      VectorTileRenderer,
+      VectorTileLabeling,
       History,
-      Symbology3D,
-      RasterAttributeTables, //!< Raster attribute tables, since QGIS 3.30
-      VectorDiagram,         //!< Vector diagram, since QGIS 3.40
+      Custom
     };
+    Q_ENUM( Page )
 
     QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<const QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
     ~QgsLayerStylingWidget() override;
@@ -139,7 +149,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
      * Sets the current visible page in the widget.
      * \param page standard page to display
      */
-    void setCurrentPage( QgsLayerStylingWidget::Page page );
+    void setCurrentPage( Page page );
 
     /**
      * Sets an annotation item to show in the widget.
