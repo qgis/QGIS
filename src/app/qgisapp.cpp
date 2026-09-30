@@ -8104,7 +8104,7 @@ void QgisApp::labeling()
   }
 
   mapStyleDock( true );
-  mMapStyleWidget->setCurrentPage( QgsLayerStylingWidget::VectorLabeling );
+  mMapStyleWidget->setCurrentPage( QgsLayerStylingWidget::Page::VectorLabeling );
 }
 
 void QgisApp::setMapStyleDockLayer( QgsMapLayer *layer )
@@ -8153,7 +8153,7 @@ void QgisApp::diagramProperties()
   }
 
   mapStyleDock( true );
-  mMapStyleWidget->setCurrentPage( QgsLayerStylingWidget::VectorDiagram );
+  mMapStyleWidget->setCurrentPage( QgsLayerStylingWidget::Page::VectorDiagrams );
 }
 
 void QgisApp::createAnnotationLayer()
