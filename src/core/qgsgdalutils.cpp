@@ -489,7 +489,7 @@ QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
     const QString helpUrl = gdalDocumentationUrlForDriver( myGdalDriver );
     if ( !helpUrl.isEmpty() )
     {
-      message += u"<b>Help page:</b> <a href=\"%1\">%1</a><br>"_s.arg( helpUrl );
+      message += u"<b>Help page:</b> <a href=\"%1\">%1</a>"_s.arg( helpUrl );
     }
 
     // next get creation options
