@@ -1503,16 +1503,16 @@ void TestQgsOgrUtils::testListStylesNoDuplicates()
   QString tempDirPath = tempDir.path();
   QString testFile = tempDirPath + "/test.gpkg";
   QString error;
-  QVERIFY( QgsOgrProviderUtils::createEmptyDataSource( testFile, u"GPKG"_s, u"UTF-8"_s, Qgis::WkbType::Point, QList<QPair<QString, QString>>(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), error ) );
+  QVERIFY( QgsOgrProviderUtils::createEmptyDataSource( testFile, QStringLiteral( "GPKG" ), QStringLiteral( "UTF-8" ), Qgis::WkbType::Point, QList<QPair<QString, QString>>(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), error ) );
 
   gdal::dataset_unique_ptr hDS( GDALOpenEx( testFile.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
 
-  QVERIFY( QgsOgrUtils::saveStyle( hDS.get(), u"test"_s, u"geom"_s, QString(), QString(), u"Style A"_s, u"Style A"_s, QString(), false, error ) );
-  QVERIFY( QgsOgrUtils::saveStyle( hDS.get(), u"test"_s, u"geom"_s, QString(), QString(), u"Style B"_s, u"Style B"_s, QString(), false, error ) );
+  QVERIFY( QgsOgrUtils::saveStyle( hDS.get(), QStringLiteral( "test" ), QStringLiteral( "geom" ), QString(), QString(), QStringLiteral( "Style A" ), QStringLiteral( "Style A" ), QString(), false, error ) );
+  QVERIFY( QgsOgrUtils::saveStyle( hDS.get(), QStringLiteral( "test" ), QStringLiteral( "geom" ), QString(), QString(), QStringLiteral( "Style B" ), QStringLiteral( "Style B" ), QString(), false, error ) );
 
   // update timestamps
   auto updateStyle = [&hDS]( const int id, const QString dateTime ) {
-    QString sql = u"UPDATE layer_styles SET update_time = '%1' WHERE id = %2"_s.arg( dateTime ).arg( id );
+    QString sql = QStringLiteral( "UPDATE layer_styles SET update_time = '%1' WHERE id = %2" ).arg( dateTime ).arg( id );
 
     OGRLayerH hRes = GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr );
     if ( hRes )
@@ -1522,8 +1522,8 @@ void TestQgsOgrUtils::testListStylesNoDuplicates()
   };
 
   // set identical timestamps
-  updateStyle( 1, u"2024-06-01T10:00:00Z"_s );
-  updateStyle( 2, u"2024-06-01T10:00:00Z"_s );
+  updateStyle( 1, QStringLiteral( "2024-06-01T10:00:00Z" ) );
+  updateStyle( 2, QStringLiteral( "2024-06-01T10:00:00Z" ) );
 
   OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS.get(), "layer_styles" );
   if ( hLayer )
@@ -1534,7 +1534,7 @@ void TestQgsOgrUtils::testListStylesNoDuplicates()
   }
 
   QStringList ids, names, descriptions;
-  const int relatedCount = QgsOgrUtils::listStyles( hDS.get(), u"target"_s, u"geom"_s, ids, names, descriptions, error );
+  const int relatedCount = QgsOgrUtils::listStyles( hDS.get(), QStringLiteral( "target" ), QStringLiteral( "geom" ), ids, names, descriptions, error );
   QCOMPARE( relatedCount, 0 );
   QCOMPARE( ids.size(), 2 );
   QCOMPARE( names.size(), 2 );
