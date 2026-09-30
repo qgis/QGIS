@@ -175,19 +175,14 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsUndoWidget *mUndoWidget = nullptr;
     QgsMapLayer *mCurrentLayer = nullptr;
     QgsLabelingWidget *mLabelingWidget = nullptr;
-    QgsMeshLabelingWidget *mMeshLabelingWidget = nullptr;
     QPointer<QgsRasterLabelingWidget> mRasterLabelingWidget;
     QgsMaskingWidget *mMaskingWidget = nullptr;
 #ifdef HAVE_3D
     QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
 #endif
-    QgsDiagramWidget *mDiagramWidget = nullptr;
     QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
     QgsRasterAttributeTableWidget *mRasterAttributeTableWidget = nullptr;
-    QgsRendererMeshPropertiesWidget *mMeshStyleWidget = nullptr;
-    QgsVectorTileBasicRendererWidget *mVectorTileStyleWidget = nullptr;
-    QgsVectorTileBasicLabelingWidget *mVectorTileLabelingWidget = nullptr;
     QList<const QgsMapLayerConfigWidgetFactory *> mPageFactories;
     QMap<int, const QgsMapLayerConfigWidgetFactory *> mUserPages;
     QgsLayerStyleManagerWidgetFactory *mStyleManagerFactory = nullptr;
