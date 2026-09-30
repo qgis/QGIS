@@ -407,9 +407,11 @@ void QgsRasterHistogramWidget::refreshHistogram()
   mpPlot->setAxisAutoScale( QwtPlot::yLeft );
 
   // x axis scale only set after computing global min/max across bands (see below)
-  // add a grid
-  QwtPlotGrid *myGrid = new QwtPlotGrid();
-  myGrid->attach( mpPlot );
+  // add a grid, use dotted line and WindowText color from palette for better
+  // look on both light and dark themes
+  QwtPlotGrid *plotGrid = new QwtPlotGrid();
+  plotGrid->setMajorPen( palette().color( QPalette::WindowText ), 1, Qt::PenStyle::DotLine );
+  plotGrid->attach( mpPlot );
 
   // make colors list
   mHistoColors.clear();
