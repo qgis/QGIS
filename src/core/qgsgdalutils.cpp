@@ -483,13 +483,17 @@ QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
   {
     // first report details and help page
     CSLConstList GDALmetadata = GDALGetMetadata( myGdalDriver, nullptr );
-    message += "<h3>Format Details</h3>"_L1;
-    message += u"<b>Extension:</b> %1<br>"_s.arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
-    message += u"<b>Short Name:</b> %1 / <b>Long Name:</b> %2<br>"_s.arg( GDALGetDriverShortName( myGdalDriver ), GDALGetDriverLongName( myGdalDriver ) );
+    message += "<h3>" + QCoreApplication::translate( "QgsGdalUtils", "Format Details" ) + "</h3>";
+    message += "<b>" + QCoreApplication::translate( "QgsGdalUtils", "Extension:" ) + u"</b> %1<br>"_s.arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
+    message += "<b>"
+               + QCoreApplication::translate( "QgsGdalUtils", "Short Name:" )
+               + u"</b> %1 / <b>"_s.arg( GDALGetDriverShortName( myGdalDriver ) )
+               + QCoreApplication::translate( "QgsGdalUtils", "Long Name:" )
+               + u"</b> %2<br>"_s.arg( GDALGetDriverLongName( myGdalDriver ) );
     const QString helpUrl = gdalDocumentationUrlForDriver( myGdalDriver );
     if ( !helpUrl.isEmpty() )
     {
-      message += u"<b>Help page:</b> <a href=\"%1\">%1</a>"_s.arg( helpUrl );
+      message += "<b>" + QCoreApplication::translate( "QgsGdalUtils", "Help page:" ) + u"</b> <a href=\"%1\">%1</a>"_s.arg( helpUrl );
     }
 
     // next get creation options
@@ -501,8 +505,8 @@ QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
       QDomDocument doc;
       if ( doc.setContent( QString( pszFormattedXML ) ) )
       {
-        message += "<h3>Creation Options</h3>"_L1;
-        message += "<dl>"_L1;
+        message += "<h3>" + QCoreApplication::translate( "QgsGdalUtils", "Creation Options" ) + "</h3>";
+        message += "<dl>";
         QDomNodeList options = doc.elementsByTagName( u"Option"_s );
         for ( int i = 0; i < options.count(); ++i )
         {
@@ -512,8 +516,9 @@ QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
           const QString optionType = element.attribute( u"type"_s );
           const QString optionDefault = element.attribute( u"default"_s );
           const QString optionDescription = element.attribute( u"description"_s );
-          message += u"<dt><b>%1</b> (%2%3)</dt>"_s.arg( optionName.toHtmlEscaped(), optionType.toHtmlEscaped(), optionDefault.isEmpty() ? QString() : u", default: "_s + optionDefault.toHtmlEscaped() );
-
+          message
+            += u"<dt><b>%1</b> (%2%3)</dt>"_s
+                 .arg( optionName.toHtmlEscaped(), optionType.toHtmlEscaped(), optionDefault.isEmpty() ? QString() : ", " + QCoreApplication::translate( "QgsGdalUtils", "default: " ) + optionDefault.toHtmlEscaped() );
           if ( !optionDescription.isEmpty() )
           {
             message += u"<dd>%1</dd>"_s.arg( optionDescription.toHtmlEscaped() );
@@ -528,11 +533,11 @@ QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
             {
               values << nodes.at( j ).toElement().text().toHtmlEscaped();
             }
-            message += u"<dd><i>Possible values:</i> %1</dd>"_s.arg( values.join( ", "_L1 ) );
+            message += "<dd><i>" + QCoreApplication::translate( "QgsGdalUtils", "Possible values:" ) + u"</i> %1</dd>"_s.arg( values.join( ", " ) );
           }
         }
 
-        message += "</dl>"_L1;
+        message += "</dl>";
       }
     }
     if ( psCOL )
