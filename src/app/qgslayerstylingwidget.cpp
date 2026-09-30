@@ -460,7 +460,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   if ( mCurrentLayer )
     whileBlocking( mLayerCombo )->setLayer( mCurrentLayer );
 
-  int row = mOptionsListWidget->currentIndex().row();
+  const int row = mOptionsListWidget->currentIndex().row();
+  const Page rowPage = mOptionsListWidget->item( row )->data( Qt::UserRole ).value< Page >();
 
   // make sure we're not set to the "not supported" page
   mStackedWidget->setCurrentIndex( mLayerPage );
@@ -535,15 +536,9 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       case Qgis::LayerType::Vector:
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
-
-#ifdef HAVE_3D
-        const int tabShift = 1; // To move subsequent tabs
-#else
-        const int tabShift = 0;
-#endif
-        switch ( row )
+        switch ( rowPage )
         {
-          case 0: // Style
+          case Page::VectorRenderer:
           {
             QgsRendererPropertiesDialog *styleWidget = new QgsRendererPropertiesDialog( vlayer, QgsStyle::defaultStyle(), true, mStackedWidget );
             QgsSymbolWidgetContext context;
@@ -558,7 +553,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             mWidgetStack->setMainPanel( wrapper );
             break;
           }
-          case 1: // Labels
+          case Page::VectorLabeling:
           {
             if ( !mLabelingWidget )
             {
@@ -570,7 +565,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             mWidgetStack->setMainPanel( mLabelingWidget );
             break;
           }
-          case 2: // Masks
+          case Page::VectorMasks:
           {
             if ( !mMaskingWidget )
             {
@@ -583,7 +578,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             break;
           }
 #ifdef HAVE_3D
-          case 3: // 3D View
+          case Page::Vector3D:
           {
             if ( !mVector3DWidget )
             {
@@ -596,7 +591,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             break;
           }
 #endif
-          case 3 + tabShift: // Diagrams
+          case Page::VectorDiagrams:
           {
             auto widget = new QgsDiagramWidget( vlayer, mMapCanvas, mWidgetStack );
             widget->setDockMode( true );
@@ -617,9 +612,9 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         bool hasMinMaxCollapsedState = false;
         bool minMaxCollapsed = false;
 
-        switch ( row )
+        switch ( rowPage )
         {
-          case 0: // Style
+          case Page::RasterRenderer:
           {
             // Backup collapsed state of min/max group so as to restore it
             // on the new widget.
@@ -655,7 +650,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             break;
           }
 
-          case 1: // Transparency
+          case Page::RasterTransparency:
           {
             QgsRasterTransparencyWidget *transwidget = new QgsRasterTransparencyWidget( rlayer, mMapCanvas, mWidgetStack );
             transwidget->setDockMode( true );
@@ -670,7 +665,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             break;
           }
 
-          case 2: // Labeling
+          case Page::RasterLabeling:
           {
             if ( !mRasterLabelingWidget )
             {
@@ -686,7 +681,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             break;
           }
 
-          case 3: // Histogram
+          case Page::RasterHistogram:
           {
             QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( rlayer->dataProvider() );
             if ( provider && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
@@ -709,7 +704,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             break;
           }
 
-          case 4: // Attribute Tables
+          case Page::RasterAttributeTable:
           {
             if ( rlayer->attributeTableCount() > 0 )
             {
@@ -754,9 +749,9 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       case Qgis::LayerType::Mesh:
       {
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( mCurrentLayer );
-        switch ( row )
+        switch ( rowPage )
         {
-          case 0: // Style
+          case Page::MeshRenderer:
           {
             auto widget = new QgsRendererMeshPropertiesWidget( meshLayer, mMapCanvas, mWidgetStack );
 
@@ -767,7 +762,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             connect( meshLayer, &QgsMeshLayer::reloaded, widget, [this, widget] { widget->syncToLayer( mCurrentLayer ); } );
             break;
           }
-          case 1: // Labeling
+          case Page::MeshLabeling:
           {
             auto widget = new QgsMeshLabelingWidget( meshLayer, mMapCanvas, mWidgetStack, mMessageBar );
             widget->setDockMode( true );
@@ -776,7 +771,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             break;
           }
 #ifdef HAVE_3D
-          case 2: // 3D View
+          case Page::Mesh3D:
           {
             if ( !mMesh3DWidget )
             {
@@ -800,9 +795,9 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       case Qgis::LayerType::VectorTile:
       {
         QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( mCurrentLayer );
-        switch ( row )
+        switch ( rowPage )
         {
-          case 0: // Style
+          case Page::VectorTileRenderer:
           {
             auto widget = new QgsVectorTileBasicRendererWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
             widget->setDockMode( true );
@@ -810,7 +805,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             mWidgetStack->setMainPanel( widget );
             break;
           }
-          case 1: // Labeling
+          case Page::VectorTileLabeling:
           {
             auto widget = new QgsVectorTileBasicLabelingWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
             widget->setDockMode( true );
