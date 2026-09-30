@@ -247,6 +247,12 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     menu->addAction( action );
   }
 
+  // remove frame/shadow from the plot area, see https://github.com/qgis/QGIS/issues/41113
+  QwtPlotCanvas *canvas = qobject_cast<QwtPlotCanvas *>( mpPlot->canvas() );
+  if ( canvas )
+  {
+    canvas->setFrameStyle( QFrame::NoFrame );
+  }
 } // QgsRasterHistogramWidget ctor
 
 void QgsRasterHistogramWidget::setRendererWidget( const QString &name, QgsRasterRendererWidget *rendererWidget )
