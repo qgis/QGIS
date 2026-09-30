@@ -2884,10 +2884,16 @@ int QgsOgrUtils::listStyles( GDALDatasetH hDS, const QString &layerName, const Q
 
   OGR_L_ResetReading( hLayer );
 
-  QList<qlonglong> listTimestamp;
-  QMap<int, QString> mapIdToStyleName;
-  QMap<int, QString> mapIdToDescription;
-  QMap<qlonglong, QList<int> > mapTimestampToId;
+  struct StyleInfo
+  {
+      int fid;
+      QString name;
+      QString description;
+      qlonglong updateTimeSeconds;
+  };
+
+  QList<StyleInfo> unrelatedStyles;
+  unrelatedStyles.reserve( OGR_L_GetFeatureCount( hLayer, FALSE ) );
   int numberOfRelatedStyles = 0;
 
   while ( true )
@@ -2918,26 +2924,17 @@ int QgsOgrUtils::listStyles( GDALDatasetH hDS, const QString &layerName, const Q
       setQTTimeZoneFromOGRTZFlag( dt, tzFlag );
       const qint64 ts = dt.toMSecsSinceEpoch();
 
-      listTimestamp.append( ts );
-      mapIdToStyleName[fid] = styleName;
-      mapIdToDescription[fid] = description;
-      mapTimestampToId[ts].append( fid );
+      unrelatedStyles.append( { fid, styleName, description, ts } );
     }
   }
 
-  std::sort( listTimestamp.begin(), listTimestamp.end() );
-  // Sort from most recent to least recent
-  for ( int i = listTimestamp.size() - 1; i >= 0; i-- )
+  std::sort( unrelatedStyles.begin(), unrelatedStyles.end(), []( const StyleInfo &a, const StyleInfo &b ) { return a.updateTimeSeconds > b.updateTimeSeconds; } );
+
+  for ( const StyleInfo &style : std::as_const( unrelatedStyles ) )
   {
-    const QList<int> &listId = mapTimestampToId[listTimestamp[i]];
-    for ( int j = 0; j < listId.size(); j++ )
-    {
-      int fid = listId[j];
-      QString id( QString::number( fid ) );
-      ids.append( id );
-      names.append( mapIdToStyleName[fid] );
-      descriptions.append( mapIdToDescription[fid] );
-    }
+    ids.append( QString::number( style.fid ) );
+    names.append( style.name );
+    descriptions.append( style.description );
   }
 
   return numberOfRelatedStyles;
