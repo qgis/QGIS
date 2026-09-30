@@ -216,10 +216,12 @@ void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, cons
 void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
 {
   executeSqlPrivate( u"ALTER TABLE %1.%2 RENAME TO %3"_s.arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ), QgsPostgresConn::quotedIdentifier( newName ) ) );
+  renameLayerStyle( schema, name, newName );
+}
 
-  const QgsDataSourceUri dsUri { uri() };
+void QgsPostgresProviderConnection::renameLayerStyle( const QString &schema, const QString &name, const QString &newName ) const
+{
   auto conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
-
   if ( conn )
   {
     if ( QgsPostgresUtils::tableExists( conn->get(), u"public"_s, u"layer_styles"_s ) )
@@ -395,7 +397,36 @@ void QgsPostgresProviderConnection::renameVectorTable( const QString &schema, co
 void QgsPostgresProviderConnection::renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameRasterTable );
-  renameTablePrivate( schema, name, newName );
+
+  auto conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
+  const QList<QgsPostgresRasterOverviewLayerProperty> overviews = conn->get() ? QgsPostgresUtils::rasterOverviews( conn->get(), schema, name ) : QList<QgsPostgresRasterOverviewLayerProperty> {};
+
+  QStringList sql;
+  // overview constraints reference the old raster name, so drop them before the rename and re-add them afterwards
+  for ( const QgsPostgresRasterOverviewLayerProperty &overview : overviews )
+  {
+    sql << u"SELECT DropOverviewConstraints(%1, %2, %3)"_s
+             .arg( QgsPostgresConn::quotedValue( overview.schemaName ), QgsPostgresConn::quotedValue( overview.tableName ), QgsPostgresConn::quotedValue( overview.rasterColumn ) );
+  }
+
+  sql << u"ALTER TABLE %1.%2 RENAME TO %3"_s.arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ), QgsPostgresConn::quotedIdentifier( newName ) );
+
+  for ( const QgsPostgresRasterOverviewLayerProperty &overview : overviews )
+  {
+    sql << u"SELECT AddOverviewConstraints(%1, %2, %3, %4, %5, %6, %7)"_s.arg(
+      QgsPostgresConn::quotedValue( overview.schemaName ),
+      QgsPostgresConn::quotedValue( overview.tableName ),
+      QgsPostgresConn::quotedValue( overview.rasterColumn ),
+      QgsPostgresConn::quotedValue( schema ),
+      QgsPostgresConn::quotedValue( newName ),
+      QgsPostgresConn::quotedValue( overview.refRasterColumn ),
+      overview.overviewFactor
+    );
+  }
+
+  executeSqlPrivate( sql.join( u';' ) );
+
+  renameLayerStyle( schema, name, newName );
 }
 
 void QgsPostgresProviderConnection::createSchema( const QString &name ) const
