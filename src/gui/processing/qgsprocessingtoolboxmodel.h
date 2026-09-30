@@ -652,7 +652,8 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
      *
      * \note ownership is not transferred, and MUST outlive the model.
      */
-    const QgsProcessingOutputDefinition *mFilterOutputDefinition = nullptr;
+    std::unique_ptr<QgsProcessingOutputDefinition> mFilterOutputDefinition;
+
     /**
      * The output definition is used for filtering.
      *
@@ -660,7 +661,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel : public QSortFilterProxyModel
      *
      * \note ownership is not transferred, and MUST outlive the model.
      */
-    const QgsProcessingParameterDefinition *mFilterParameterDefinition = nullptr;
+    std::unique_ptr<QgsProcessingParameterDefinition> mFilterParameterDefinition;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingToolboxProxyModel::Filters )
 

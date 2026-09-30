@@ -874,16 +874,16 @@ void QgsProcessingToolboxProxyModel::setFilterString( const QString &filter )
 
 void QgsProcessingToolboxProxyModel::setFilterParameter( const QgsProcessingParameterDefinition *parameterDefinition )
 {
-  mFilterParameterDefinition = parameterDefinition;
-  mFilterOutputDefinition = nullptr;
+  mFilterParameterDefinition.reset( parameterDefinition->clone() );
+  mFilterOutputDefinition.reset();
 
   invalidateFilter();
 }
 
 void QgsProcessingToolboxProxyModel::setFilterOutput( const QgsProcessingOutputDefinition *outputDefinition )
 {
-  mFilterParameterDefinition = nullptr;
-  mFilterOutputDefinition = outputDefinition;
+  mFilterParameterDefinition.reset();
+  mFilterOutputDefinition.reset( outputDefinition->clone() );
 
   invalidateFilter();
 }
@@ -965,7 +965,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         const QList<const QgsProcessingOutputDefinition *> outputs = alg->outputDefinitions();
         for ( const QgsProcessingOutputDefinition *output : outputs )
         {
-          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( mFilterParameterDefinition, output ) )
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( mFilterParameterDefinition.get(), output ) )
           {
             found = true;
             break;
@@ -987,7 +987,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
           if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
             continue;
 
-          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( def, mFilterOutputDefinition ) )
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( def, mFilterOutputDefinition.get() ) )
           {
             found = true;
             break;
@@ -1001,7 +1001,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
           if ( def->flags() & Qgis::ProcessingParameterFlag::Hidden )
             continue;
 
-          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( def, mFilterParameterDefinition ) )
+          if ( QgsApplication::processingRegistry()->isCompatibleDefinition( def, mFilterParameterDefinition.get() ) )
           {
             found = true;
             break;
