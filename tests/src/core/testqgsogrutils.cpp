@@ -1481,14 +1481,6 @@ void TestQgsOgrUtils::testListStylesSortingByDate()
   // 2024-01-01 00:00:00 +02:00 == 2023-12-31 22:00:00 UTC
   updateStyleTime( 2, QStringLiteral( "2024-01-01T00:00:00+02:00" ) );
 
-  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS.get(), "layer_styles" );
-  if ( hLayer )
-  {
-    OGR_L_SetAttributeFilter( hLayer, nullptr );
-    OGR_L_SetSpatialFilter( hLayer, nullptr );
-    OGR_L_ResetReading( hLayer );
-  }
-
   QStringList ids, names, descriptions;
   const int relatedCount = QgsOgrUtils::listStyles( hDS.get(), QStringLiteral( "target" ), QStringLiteral( "geom" ), ids, names, descriptions, error );
   QCOMPARE( relatedCount, 0 );
@@ -1525,14 +1517,6 @@ void TestQgsOgrUtils::testListStylesNoDuplicates()
   // set identical timestamps
   updateStyle( 1, QStringLiteral( "2024-06-01T10:00:00Z" ) );
   updateStyle( 2, QStringLiteral( "2024-06-01T10:00:00Z" ) );
-
-  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS.get(), "layer_styles" );
-  if ( hLayer )
-  {
-    OGR_L_SetAttributeFilter( hLayer, nullptr );
-    OGR_L_SetSpatialFilter( hLayer, nullptr );
-    OGR_L_ResetReading( hLayer );
-  }
 
   QStringList ids, names, descriptions;
   const int relatedCount = QgsOgrUtils::listStyles( hDS.get(), QStringLiteral( "target" ), QStringLiteral( "geom" ), ids, names, descriptions, error );
@@ -1612,9 +1596,9 @@ void TestQgsOgrUtils::testLoadStoredStyleCleanupsFilter()
   QStringList descriptions;
   const int count = QgsOgrUtils::listStyles( hDS.get(), u"layer_b"_s, geomColumnB, ids, names, descriptions, error );
   QCOMPARE( count, 1 );
-  QCOMPARE( ids.size(), 5 );
-  QCOMPARE( names.size(), 5 );
-  QCOMPARE( descriptions.size(), 5 );
+  QCOMPARE( ids.size(), 3 );
+  QCOMPARE( names.size(), 3 );
+  QCOMPARE( descriptions.size(), 3 );
   QCOMPARE( names.at( 0 ), u"styleB1"_s );
 }
 
