@@ -2100,13 +2100,14 @@ QgisApp::QgisApp(
     {
       mWelcomeScreen->pluginUpdatesAvailableReceived( plugins );
     }
-
-    // Be extra visible, show in message bar too
-    QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( tr( "Plugins" ), updateMessage );
-    QPushButton *updateButton = new QPushButton( tr( "Install Updates…" ) );
-    connect( updateButton, &QPushButton::clicked, []() { QgisApp::instance()->showPluginManager( static_cast<int>( QgsPluginManager::Tabs::UpgradeablePlugins ) ); } );
-    messageWidget->layout()->addWidget( updateButton );
-    messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
+    else
+    {
+      QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( tr( "Plugins" ), updateMessage );
+      QPushButton *updateButton = new QPushButton( tr( "Install Updates…" ) );
+      connect( updateButton, &QPushButton::clicked, []() { QgisApp::instance()->showPluginManager( static_cast<int>( QgsPluginManager::Tabs::UpgradeablePlugins ) ); } );
+      messageWidget->layout()->addWidget( updateButton );
+      messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
+    }
   } );
 
   QgsWelcomeScreen::registerTypes();
