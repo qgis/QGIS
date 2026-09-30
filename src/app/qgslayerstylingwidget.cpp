@@ -488,20 +488,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       mVector3DWidget = widget;
     }
 #endif
-    else if ( QgsRendererMeshPropertiesWidget *widget = qobject_cast<QgsRendererMeshPropertiesWidget *>( current ) )
-    {
-      mMeshStyleWidget = widget;
-    }
 #ifdef HAVE_3D
     else if ( QgsMeshLayer3DRendererWidget *widget = qobject_cast<QgsMeshLayer3DRendererWidget *>( current ) )
     {
       mMesh3DWidget = widget;
     }
 #endif
-    else if ( QgsDiagramWidget *widget = qobject_cast<QgsDiagramWidget *>( current ) )
-    {
-      mDiagramWidget = widget;
-    }
     else if ( QgsRasterAttributeTableWidget *widget = qobject_cast<QgsRasterAttributeTableWidget *>( current ) )
     {
       mRasterAttributeTableWidget = widget;
@@ -605,11 +597,11 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 #endif
           case 3 + tabShift: // Diagrams
           {
-            mDiagramWidget = new QgsDiagramWidget( vlayer, mMapCanvas, mWidgetStack );
-            mDiagramWidget->setDockMode( true );
-            connect( mDiagramWidget, &QgsDiagramWidget::changed, this, &QgsLayerStylingWidget::autoApply );
-            mDiagramWidget->syncToOwnLayer();
-            mWidgetStack->setMainPanel( mDiagramWidget );
+            auto widget = new QgsDiagramWidget( vlayer, mMapCanvas, mWidgetStack );
+            widget->setDockMode( true );
+            connect( widget, &QgsDiagramWidget::changed, this, &QgsLayerStylingWidget::autoApply );
+            widget->syncToOwnLayer();
+            mWidgetStack->setMainPanel( widget );
             break;
           }
           default:
@@ -765,21 +757,21 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         {
           case 0: // Style
           {
-            mMeshStyleWidget = new QgsRendererMeshPropertiesWidget( meshLayer, mMapCanvas, mWidgetStack );
+            auto widget = new QgsRendererMeshPropertiesWidget( meshLayer, mMapCanvas, mWidgetStack );
 
-            mMeshStyleWidget->setDockMode( true );
-            connect( mMeshStyleWidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
-            mWidgetStack->setMainPanel( mMeshStyleWidget );
+            widget->setDockMode( true );
+            connect( widget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( widget );
 
-            connect( meshLayer, &QgsMeshLayer::reloaded, this, [this] { mMeshStyleWidget->syncToLayer( mCurrentLayer ); } );
+            connect( meshLayer, &QgsMeshLayer::reloaded, widget, [this, widget] { widget->syncToLayer( mCurrentLayer ); } );
             break;
           }
           case 1: // Labeling
           {
-            mMeshLabelingWidget = new QgsMeshLabelingWidget( meshLayer, mMapCanvas, mWidgetStack, mMessageBar );
-            mMeshLabelingWidget->setDockMode( true );
-            connect( mMeshLabelingWidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
-            mWidgetStack->setMainPanel( mMeshLabelingWidget );
+            auto widget = new QgsMeshLabelingWidget( meshLayer, mMapCanvas, mWidgetStack, mMessageBar );
+            widget->setDockMode( true );
+            connect( widget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( widget );
             break;
           }
 #ifdef HAVE_3D
@@ -811,18 +803,18 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         {
           case 0: // Style
           {
-            mVectorTileStyleWidget = new QgsVectorTileBasicRendererWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
-            mVectorTileStyleWidget->setDockMode( true );
-            connect( mVectorTileStyleWidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
-            mWidgetStack->setMainPanel( mVectorTileStyleWidget );
+            auto widget = new QgsVectorTileBasicRendererWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
+            widget->setDockMode( true );
+            connect( widget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( widget );
             break;
           }
           case 1: // Labeling
           {
-            mVectorTileLabelingWidget = new QgsVectorTileBasicLabelingWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
-            mVectorTileLabelingWidget->setDockMode( true );
-            connect( mVectorTileLabelingWidget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
-            mWidgetStack->setMainPanel( mVectorTileLabelingWidget );
+            auto widget = new QgsVectorTileBasicLabelingWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
+            widget->setDockMode( true );
+            connect( widget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( widget );
             break;
           }
           default:
