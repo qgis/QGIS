@@ -104,7 +104,8 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
   mUndoWidget->setObjectName( u"Undo Styles"_s );
   mUndoWidget->hide();
 
-  mStyleManagerFactory = new QgsLayerStyleManagerWidgetFactory();
+  mStyleManagerWidget = new QgsMapLayerStyleManagerWidget( nullptr, canvas, this );
+  mStyleManagerWidget->hide();
 
   setPageFactories( pages );
 
@@ -134,15 +135,11 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
 }
 
 QgsLayerStylingWidget::~QgsLayerStylingWidget()
-{
-  delete mStyleManagerFactory;
-}
+{}
 
 void QgsLayerStylingWidget::setPageFactories( const QList<const QgsMapLayerConfigWidgetFactory *> &factories )
 {
   mPageFactories = factories;
-  // Always append the style manager factory at the bottom of the list
-  mPageFactories.append( mStyleManagerFactory );
 }
 
 void QgsLayerStylingWidget::blockUpdates( bool blocked )
@@ -308,6 +305,28 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       break;
   }
 
+  switch ( layer->type() )
+  {
+    case Qgis::LayerType::Vector:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::PointCloud:
+    case Qgis::LayerType::TiledScene:
+    {
+      auto styleManagerItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"propertyicons/stylepreset.svg"_s ), QString() );
+      styleManagerItem->setData( Qt::UserRole, QVariant::fromValue( Page::StyleManager ) );
+      styleManagerItem->setToolTip( tr( "Style Manager" ) );
+      mOptionsListWidget->addItem( styleManagerItem );
+      break;
+    }
+
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
+      break;
+  }
+
   for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( mPageFactories ) )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
@@ -320,6 +339,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       mUserPages[row] = factory;
     }
   }
+
   QListWidgetItem *historyItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"mActionHistory.svg"_s ), QString() );
   historyItem->setData( Qt::UserRole, QVariant::fromValue( Page::History ) );
   historyItem->setToolTip( tr( "History" ) );
@@ -469,7 +489,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   if ( QgsPanelWidget *current = mWidgetStack->takeMainPanel() )
   {
     bool isReusableWidget = false;
-    if ( current == mLabelingWidget || current == mMaskingWidget || current == mUndoWidget || current == mRasterStyleWidget || current == mRasterAttributeTableWidget )
+    if ( current == mLabelingWidget || current == mMaskingWidget || current == mUndoWidget || current == mRasterStyleWidget || current == mRasterAttributeTableWidget || current == mStyleManagerWidget )
     {
       isReusableWidget = true;
     }
@@ -774,6 +794,13 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         break;
       }
 
+      case Page::StyleManager:
+      {
+        mWidgetStack->setMainPanel( mStyleManagerWidget );
+        mStyleManagerWidget->syncToLayer( mCurrentLayer );
+        break;
+      }
+
       case Page::Custom:
         break;
     }
@@ -959,36 +986,4 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand *other )
   mTime = otherCmd->mTime;
   mTriggerRepaint |= otherCmd->mTriggerRepaint;
   return true;
-}
-
-QgsLayerStyleManagerWidgetFactory::QgsLayerStyleManagerWidgetFactory()
-{
-  setIcon( QgsApplication::getThemeIcon( u"propertyicons/stylepreset.svg"_s ) );
-  setTitle( QObject::tr( "Style Manager" ) );
-}
-
-QgsMapLayerConfigWidget *QgsLayerStyleManagerWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const
-{
-  Q_UNUSED( dockMode )
-  return new QgsMapLayerStyleManagerWidget( layer, canvas, parent );
-}
-
-bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
-{
-  switch ( layer->type() )
-  {
-    case Qgis::LayerType::Vector:
-    case Qgis::LayerType::Raster:
-    case Qgis::LayerType::Mesh:
-    case Qgis::LayerType::VectorTile:
-    case Qgis::LayerType::PointCloud:
-    case Qgis::LayerType::TiledScene:
-      return true;
-
-    case Qgis::LayerType::Plugin:
-    case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::Group:
-      return false;
-  }
-  return false; // no warnings
 }
