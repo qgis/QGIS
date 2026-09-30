@@ -8,6 +8,7 @@
 
 
 
+
 class QgsValueRelationFieldFormatter : QgsFieldFormatter
 {
 %Docstring(signature="appended")
