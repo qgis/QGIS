@@ -452,7 +452,7 @@ void QgsLayerStylingWidget::redo()
 void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 {
   if ( !mCurrentLayer && !mContext.layerTreeGroup() )
-    return; // non-spatial are ignored in setLayer()
+    return;
 
   mBlockAutoApply = true;
 
@@ -461,6 +461,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
   int row = mOptionsListWidget->currentIndex().row();
 
+  // make sure we're not set to the "not supported" page
   mStackedWidget->setCurrentIndex( mLayerPage );
 
   if ( QgsPanelWidget *current = mWidgetStack->takeMainPanel() )
