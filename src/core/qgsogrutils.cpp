@@ -2665,10 +2665,10 @@ int QgsOgrUtils::listStyles( GDALDatasetH hDS, const QString &layerName, const Q
 
   struct StyleInfo
   {
-      int fid;
-      QString name;
-      QString description;
-      qlonglong updateTimeSeconds;
+    int fid;
+    QString name;
+    QString description;
+    qlonglong updateTimeSeconds;
   };
 
   QList<StyleInfo> unrelatedStyles;
@@ -2717,7 +2717,7 @@ int QgsOgrUtils::listStyles( GDALDatasetH hDS, const QString &layerName, const Q
     }
   }
 
-  std::sort( unrelatedStyles.begin(), unrelatedStyles.end(), []( const StyleInfo &a, const StyleInfo &b ) { return a.updateTimeSeconds > b.updateTimeSeconds; } );
+  std::sort( unrelatedStyles.begin(), unrelatedStyles.end(), []( const StyleInfo & a, const StyleInfo & b ) { return a.updateTimeSeconds > b.updateTimeSeconds; } );
 
   for ( const StyleInfo &style : std::as_const( unrelatedStyles ) )
   {
