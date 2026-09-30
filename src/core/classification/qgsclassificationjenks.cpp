@@ -82,14 +82,12 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
   QVector<double> sample;
   QVector<double> sorted;
 
-  // if we have lots of values, we need to take a random sample
+  // if we have lots of values, we need to take a sample
   if ( values.size() > mMaximumSize )
   {
-    // for now, sample at least maximumSize values or a 10% sample, whichever
-    // is larger. This will produce a more representative sample for very large
-    // layers, but could end up being computationally intensive...
-
-    sample.resize( std::max( mMaximumSize, static_cast<int>( values.size() ) / 10 ) );
+    // the sample holds mMaximumSize values spread evenly over the sorted values,
+    // which keeps the cost of the calculation below bounded for large layers
+    sample.resize( mMaximumSize );
 
     QgsDebugMsgLevel( u"natural breaks (jenks) sample size: %1"_s.arg( sample.size() ), 2 );
     QgsDebugMsgLevel( u"values:%1"_s.arg( values.size() ), 2 );
@@ -108,7 +106,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
     // and those are already in the sample as items 0 and 1
     for ( int i = 1; i < sorted.size() - 2; i++ )
     {
-      if ( ( i * ( mMaximumSize - 2 ) / ( sorted.size() - 2 ) ) > j )
+      if ( ( static_cast<qint64>( i ) * ( mMaximumSize - 2 ) / ( sorted.size() - 2 ) ) > j )
       {
         j++;
         sample[j + 2] = sorted[i];

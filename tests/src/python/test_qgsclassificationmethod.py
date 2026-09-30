@@ -175,6 +175,22 @@ class TestQgsClassificationMethods(QgisTestCase):
                 [(10.0, 10.0), (10.0, 20.0), (20.0, 30.0), (30.0, 40.0), (40.0, 50.0)],
             )
 
+    def testQgsClassificationJenksLargeLayer(self):
+        # with more than 30000 values the sample must still only hold values
+        # from the layer
+        rng = random.Random(1)
+        values = [rng.uniform(10, 20) for _ in range(40000)]
+        vl = createMemoryLayer(values)
+        m = QgsClassificationJenks()
+
+        r, error = m.classesV2(vl, "value", 5)
+        self.assertFalse(error)
+        self.assertEqual(len(r), 5)
+        for c in r:
+            self.assertGreaterEqual(c.lowerBound(), min(values))
+            self.assertLessEqual(c.lowerBound(), c.upperBound())
+            self.assertLessEqual(c.upperBound(), max(values))
+
     def testQgsClassificationFixedInterval(self):
         values = [-33, -41, -43, 16, 29, 9, -35, 56, 26, -30]
         vl = createMemoryLayer(values)
