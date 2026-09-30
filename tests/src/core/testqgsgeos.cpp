@@ -690,11 +690,16 @@ void TestQgsGeos::splitGeometry_data()
   geomWkts << u"Polygon Z ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 3 5 13, 0 5 10))"_s;
   QTest::newRow( "Split MultiSurfaceZ with LineString" ) << u"MULTISURFACE Z (POLYGONZ ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10)))"_s << u"LineString(3 6, 3 -1)"_s << geomWkts << QgsGeometryEngine::Success;
 
-  // TODO: Split MultiSurface with curves, not yet supported in GEOS
-  // geomWkts.clear();
-  // geomWkts << u"CurvePolygon (CompoundCurve ((5 0, 0 0, 5 5),CircularString (5 5, 7 1, 5 0)))"_s;
-  // geomWkts << u"Polygon ((0 0, 0 5, 5 5, 0 0))"_s;
-  // QTest::newRow( "Split MultiSurface with CurvePolygon" ) << u"MULTISURFACE(CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 0 5, 5 5), CIRCULARSTRING(5 5, 7 1, 5 0))))"_s << u"CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 5 5), CIRCULARSTRING(5 5, 7 4, 5 0)))"_s << geomWkts << QgsGeometryEngine::Success;
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+  geomWkts.clear();
+  geomWkts << u"CurvePolygon (CompoundCurve ((5 0, 0 0, 5 5),CircularString (5 5, 7 1, 5 0)))"_s;
+  geomWkts << u"Polygon ((0 0, 0 5, 5 5, 0 0))"_s;
+  QTest::newRow( "Split MultiSurface with CurvePolygon" )
+    << u"MULTISURFACE(CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 0 5, 5 5), CIRCULARSTRING(5 5, 7 1, 5 0))))"_s
+    << u"CURVEPOLYGON (COMPOUNDCURVE((5 0, 0 0, 5 5), CIRCULARSTRING(5 5, 7 4, 5 0)))"_s
+    << geomWkts
+    << QgsGeometryEngine::Success;
+#endif
 
   //GeometryCollections
   geomWkts.clear();
