@@ -57,15 +57,6 @@ class QgsAnnotationLayer;
 class QgsLayerTreeGroup;
 class QgsSettingsEntryInteger;
 
-class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
-{
-  public:
-    QgsLayerStyleManagerWidgetFactory();
-    bool supportsStyleDock() const override { return true; }
-    QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const override;
-    bool supportsLayer( QgsMapLayer *layer ) const override;
-};
-
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
 {
   public:
@@ -114,6 +105,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       Mesh3D,
       VectorTileRenderer,
       VectorTileLabeling,
+      StyleManager,
       History,
       Custom
     };
@@ -183,6 +175,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsMessageBar *mMessageBar = nullptr;
     bool mBlockAutoApply = false;
     QgsUndoWidget *mUndoWidget = nullptr;
+    QgsMapLayerStyleManagerWidget *mStyleManagerWidget = nullptr;
     QgsMapLayer *mCurrentLayer = nullptr;
     QgsLabelingWidget *mLabelingWidget = nullptr;
     QPointer<QgsRasterLabelingWidget> mRasterLabelingWidget;
@@ -195,7 +188,6 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsRasterAttributeTableWidget *mRasterAttributeTableWidget = nullptr;
     QList<const QgsMapLayerConfigWidgetFactory *> mPageFactories;
     QMap<int, const QgsMapLayerConfigWidgetFactory *> mUserPages;
-    QgsLayerStyleManagerWidgetFactory *mStyleManagerFactory = nullptr;
     QgsMapLayerConfigWidgetContext mContext;
 };
 
