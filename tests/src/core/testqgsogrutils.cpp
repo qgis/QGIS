@@ -87,6 +87,7 @@ class TestQgsOgrUtils : public QObject
 #endif
 
     void testListStylesSortingByDate();
+    void testListStylesNoDuplicates();
 
   private:
     QString mTestDataDir;
@@ -1493,6 +1494,51 @@ void TestQgsOgrUtils::testListStylesSortingByDate()
   QCOMPARE( names.size(), 2 );
   QCOMPARE( names.at( 0 ), QStringLiteral( "Newer" ) );
   QCOMPARE( names.at( 1 ), QStringLiteral( "Older" ) );
+}
+
+void TestQgsOgrUtils::testListStylesNoDuplicates()
+{
+  QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+  QString tempDirPath = tempDir.path();
+  QString testFile = tempDirPath + "/test.gpkg";
+  QString error;
+  QVERIFY( QgsOgrProviderUtils::createEmptyDataSource( testFile, QStringLiteral( "GPKG" ), QStringLiteral( "UTF-8" ), Qgis::WkbType::Point, QList<QPair<QString, QString>>(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), error ) );
+
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( testFile.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+
+  QVERIFY( QgsOgrUtils::saveStyle( hDS.get(), QStringLiteral( "test" ), QStringLiteral( "geom" ), QString(), QString(), QStringLiteral( "Style A" ), QStringLiteral( "Style A" ), QString(), false, error ) );
+  QVERIFY( QgsOgrUtils::saveStyle( hDS.get(), QStringLiteral( "test" ), QStringLiteral( "geom" ), QString(), QString(), QStringLiteral( "Style B" ), QStringLiteral( "Style B" ), QString(), false, error ) );
+
+  // update timestamps
+  auto updateStyle = [&hDS]( const int id, const QString dateTime ) {
+    QString sql = QStringLiteral( "UPDATE layer_styles SET update_time = '%1' WHERE id = %2" ).arg( dateTime ).arg( id );
+
+    OGRLayerH hRes = GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr );
+    if ( hRes )
+    {
+      GDALDatasetReleaseResultSet( hDS.get(), hRes );
+    }
+  };
+
+  // set identical timestamps
+  updateStyle( 1, QStringLiteral( "2024-06-01T10:00:00Z" ) );
+  updateStyle( 2, QStringLiteral( "2024-06-01T10:00:00Z" ) );
+
+  OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS.get(), "layer_styles" );
+  if ( hLayer )
+  {
+    OGR_L_SetAttributeFilter( hLayer, nullptr );
+    OGR_L_SetSpatialFilter( hLayer, nullptr );
+    OGR_L_ResetReading( hLayer );
+  }
+
+  QStringList ids, names, descriptions;
+  const int relatedCount = QgsOgrUtils::listStyles( hDS.get(), QStringLiteral( "target" ), QStringLiteral( "geom" ), ids, names, descriptions, error );
+  QCOMPARE( relatedCount, 0 );
+  QCOMPARE( ids.size(), 2 );
+  QCOMPARE( names.size(), 2 );
+  QCOMPARE( descriptions.size(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsOgrUtils )
