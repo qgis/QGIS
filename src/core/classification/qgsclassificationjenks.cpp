@@ -184,9 +184,11 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
 
   for ( int j = nclasses, k = n; j >= 2; j-- )
   {
+    // matrixOne[k][j] is the number of values in the first j - 1 classes when
+    // the first k values are split into j classes
     const int id = matrixOne[k][j] - 1;
     breaks[j - 2] = sample[id];
-    k = matrixOne[k][j] - 1;
+    k = matrixOne[k][j];
   }
 
   return breaks.toList();

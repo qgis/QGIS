@@ -159,8 +159,17 @@ class TestQgsClassificationMethods(QgisTestCase):
         r = m.classes(vl, "value", 4)
         self.assertEqual(len(r), 4)
         self.assertEqual(
-            QgsClassificationMethod.rangesToBreaks(r), [-506.0, -4.0, 499.0, 1000.0]
+            QgsClassificationMethod.rangesToBreaks(r), [-505.0, -4.0, 499.0, 1000.0]
         )
+
+    def testQgsClassificationJenksOptimalBreaks(self):
+        # the least squares optimum for 3 classes is 1 to 3, 50, 100 to 102
+        vl = createMemoryLayer([1, 2, 3, 50, 100, 101, 102])
+        m = QgsClassificationJenks()
+
+        r, error = m.classesV2(vl, "value", 3)
+        self.assertFalse(error)
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r), [3.0, 50.0, 102.0])
 
     def testQgsClassificationJenksMoreClassesThanValues(self):
         # each value becomes a class upper bound, in ascending order
