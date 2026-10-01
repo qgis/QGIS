@@ -318,7 +318,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     QgsCrossSection mCrossSection;
 
-    Qgs3DMapCanvasWidgetInterface *mWidgetInterface;
+    Qgs3DMapCanvasWidgetInterface *mWidgetInterface = nullptr;
 };
 
 #endif //QGS3DMAPCANVAS_H
