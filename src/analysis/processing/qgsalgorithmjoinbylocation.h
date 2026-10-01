@@ -60,7 +60,7 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
     /**
      * Returns TRUE if \a feature satisfies any of the predicates.
      */
-    static bool featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine, bool comparingToJoinedFeature, const QList<int> &predicates );
+    static bool featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine, bool comparingToJoinedFeature, const QList<int> &predicates, QgsProcessingFeedback *feedback );
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

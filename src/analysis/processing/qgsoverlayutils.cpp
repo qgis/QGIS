@@ -187,7 +187,7 @@ void QgsOverlayUtils::difference(
           engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
           engine->prepareGeometry();
         }
-        if ( engine->intersects( featB.geometry().constGet() ) )
+        if ( engine->intersects( featB.geometry().constGet(), nullptr, feedback ) )
           geometriesB << featB.geometry();
       }
 
@@ -332,7 +332,7 @@ void QgsOverlayUtils::intersection(
         break;
 
       const QgsGeometry tmpGeom( featB.geometry() );
-      if ( !engine->intersects( tmpGeom.constGet() ) )
+      if ( !engine->intersects( tmpGeom.constGet(), nullptr, feedback ) )
         continue;
 
       QgsGeometry intGeom = geom.intersection( tmpGeom, parameters, feedback );
@@ -425,7 +425,7 @@ void QgsOverlayUtils::resolveOverlaps(
       }
 
       const QgsGeometry g2 = geometries.value( fid2 );
-      if ( !g1engine->intersects( g2.constGet() ) )
+      if ( !g1engine->intersects( g2.constGet(), nullptr, feedback ) )
         continue;
 
       QgsGeometry geomIntersection = g1.intersection( g2, parameters, feedback );

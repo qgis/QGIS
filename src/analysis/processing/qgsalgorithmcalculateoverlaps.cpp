@@ -216,7 +216,7 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
             break;
 
           const QgsGeometry overlayGeometry = index.geometry( match );
-          if ( bufferGeomEngine->intersects( overlayGeometry.constGet() ) )
+          if ( bufferGeomEngine->intersects( overlayGeometry.constGet(), nullptr, feedback ) )
           {
             intersectingGeoms.append( overlayGeometry );
           }

@@ -83,7 +83,7 @@ QgsGeometryCheck::Result QgsGeometryOverlapCheck::collectErrors(
       QString errMsg;
       const QgsGeometry geometryB = layerFeatureB.geometry();
       const QgsAbstractGeometry *geomB = geometryB.constGet();
-      if ( geomEngineA->overlaps( geomB, &errMsg ) )
+      if ( geomEngineA->overlaps( geomB, &errMsg, feedback ) )
       {
         std::unique_ptr<QgsAbstractGeometry> interGeom( geomEngineA->intersection( geomB, nullptr, QgsGeometryParameters(), feedback ) );
         if ( interGeom && !interGeom->isEmpty() )

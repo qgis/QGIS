@@ -237,7 +237,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   return outputs;
 }
 
-bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine, bool comparingToJoinedFeature, const QList<int> &predicates )
+bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGeometryEngine *engine, bool comparingToJoinedFeature, const QList<int> &predicates, QgsProcessingFeedback *feedback )
 {
   const QgsAbstractGeometry *geom = feature.geometry().constGet();
   bool ok = false;
@@ -247,7 +247,7 @@ bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGe
     {
       case 0:
         // intersects
-        if ( engine->intersects( geom ) )
+        if ( engine->intersects( geom, nullptr, feedback ) )
         {
           ok = true;
         }
@@ -256,14 +256,14 @@ bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGe
         // contains
         if ( comparingToJoinedFeature )
         {
-          if ( engine->contains( geom ) )
+          if ( engine->contains( geom, nullptr, feedback ) )
           {
             ok = true;
           }
         }
         else
         {
-          if ( engine->within( geom ) )
+          if ( engine->within( geom, nullptr, feedback ) )
           {
             ok = true;
           }
@@ -271,21 +271,21 @@ bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGe
         break;
       case 2:
         // equals
-        if ( engine->isEqual( geom ) )
+        if ( engine->isEqual( geom, nullptr, feedback ) )
         {
           ok = true;
         }
         break;
       case 3:
         // touches
-        if ( engine->touches( geom ) )
+        if ( engine->touches( geom, nullptr, feedback ) )
         {
           ok = true;
         }
         break;
       case 4:
         // overlaps
-        if ( engine->overlaps( geom ) )
+        if ( engine->overlaps( geom, nullptr, feedback ) )
         {
           ok = true;
         }
@@ -294,14 +294,14 @@ bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGe
         // within
         if ( comparingToJoinedFeature )
         {
-          if ( engine->within( geom ) )
+          if ( engine->within( geom, nullptr, feedback ) )
           {
             ok = true;
           }
         }
         else
         {
-          if ( engine->contains( geom ) )
+          if ( engine->contains( geom, nullptr, feedback ) )
           {
             ok = true;
           }
@@ -309,7 +309,7 @@ bool QgsJoinByLocationAlgorithm::featureFilter( const QgsFeature &feature, QgsGe
         break;
       case 6:
         // crosses
-        if ( engine->crosses( geom ) )
+        if ( engine->crosses( geom, nullptr, feedback ) )
         {
           ok = true;
         }
@@ -472,7 +472,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromJoinSource( QgsFeature &joinF
         joinAttributes.append( joinFeature.attribute( ix ) );
       }
     }
-    if ( featureFilter( baseFeature, engine.get(), false, mPredicates ) )
+    if ( featureFilter( baseFeature, engine.get(), false, mPredicates, feedback ) )
     {
       if ( mJoinedFeatures )
       {
@@ -542,7 +542,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
       engine->prepareGeometry();
     }
 
-    if ( featureFilter( joinFeature, engine.get(), true, mPredicates ) )
+    if ( featureFilter( joinFeature, engine.get(), true, mPredicates, feedback ) )
     {
       switch ( mJoinMethod )
       {
