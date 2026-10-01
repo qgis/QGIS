@@ -2152,6 +2152,7 @@ QgsDial.valueChanged: src/gui/qgsdial.h#L80
 QgsDial.variantValue: src/gui/qgsdial.h#L77
 QgsDial: src/gui/qgsdial.h#L34
 QgsDialog.buttonBox: src/gui/qgsdialog.h#L50
+QgsDialog.getMultiLineText: src/gui/qgsdialog.h#L57
 QgsDialog.layout: src/gui/qgsdialog.h#L48
 QgsDialog: src/gui/qgsdialog.h#L33
 QgsDirectionalLightWidget.QgsDirectionalLightWidget: src/gui/qgsdirectionallightwidget.h#L41
