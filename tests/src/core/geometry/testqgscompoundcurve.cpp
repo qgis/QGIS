@@ -101,6 +101,7 @@ class TestQgsCompoundCurve : public QObject
     void compoundCurveCondense_data();
     void compoundCurveCondense();
     void cast();
+    void isSimpleCurve();
 };
 
 void TestQgsCompoundCurve::constructor()
@@ -3317,6 +3318,11 @@ void TestQgsCompoundCurve::cast()
   QVERIFY( QgsCurve::cast( &cs ) );
 }
 
+void TestQgsCompoundCurve::isSimpleCurve()
+{
+  QgsCompoundCurve curve;
+  QVERIFY( !curve.isSimpleCurve() );
+}
 
 QGSTEST_MAIN( TestQgsCompoundCurve )
 #include "testqgscompoundcurve.moc"

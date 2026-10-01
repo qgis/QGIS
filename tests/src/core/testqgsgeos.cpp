@@ -167,10 +167,18 @@ void TestQgsGeos::geometryConversionCompoundCurve()
   compareGeoms( cc.get() ); //Empty geometry
 
   auto cs = std::make_unique< QgsCircularString >( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) );
+  cc->addCurve( cs->clone() );
+  compareGeoms( cc.get() ); //CompoundCurve has single CircularString
+
   auto ls = std::make_unique< QgsLineString >( QgsPoint( 1, 0 ), QgsPoint( 2, 2 ) );
+  cc->clear();
+  cc->addCurve( ls->clone() );
+  compareGeoms( cc.get() ); //CompoundCurve has single LinearString
+
+  cc->clear();
   cc->addCurve( cs->clone() );
   cc->addCurve( ls->clone() );
-  compareGeoms( cc.get() ); //CompoundCurve
+  compareGeoms( cc.get() ); //CompoundCurve has both CircularString and LineString
 
   cs = std::make_unique< QgsCircularString >( QgsPoint( 0, 0, 100 ), QgsPoint( 1, 1, 200 ), QgsPoint( 1, 0, 150 ) );
   ls = std::make_unique< QgsLineString >( QgsPoint( 1, 0, 150 ), QgsPoint( 2, 2, 175 ) );
