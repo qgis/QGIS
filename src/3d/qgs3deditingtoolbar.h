@@ -31,7 +31,7 @@ class QAction;
  *
  * Inherited classes:
  *
- * - will be sub widget of the main 3D editing toolbar Qgs3DMapCanvasWidget::mEditingToolBar
+ * - must be sub widgets of the main 3D editing toolbar Qgs3DMapCanvasWidget::mEditingToolBar
  * - will be activated only when the QGIS active layer is compatible (see isCompatibleWithLayer() function)
  *
  * \ingroup qgis_3d
