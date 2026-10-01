@@ -4612,8 +4612,14 @@ QgsMapLayerStyleCategoriesModel.setCategories: src/gui/qgsmaplayerstylecategorie
 QgsMapLayerStyleCategoriesModel.setData: src/gui/qgsmaplayerstylecategoriesmodel.h#L60
 QgsMapLayerStyleCategoriesModel.setShowAllCategories: src/gui/qgsmaplayerstylecategoriesmodel.h#L55
 QgsMapLayerStyleCategoriesModel: src/gui/qgsmaplayerstylecategoriesmodel.h#L32
-QgsMapLayerStyleManagerWidget.apply: src/gui/qgsmaplayerstylemanagerwidget.h#L46
-QgsMapLayerStyleManagerWidget: src/gui/qgsmaplayerstylemanagerwidget.h#L33
+QgsMapLayerStyleManagerWidget.apply: src/gui/qgsmaplayerstylemanagerwidget.h#L86
+QgsMapLayerStyleManagerWidget: src/gui/qgsmaplayerstylemanagerwidget.h#L73
+QgsMapLayerStyleModel.data: src/gui/qgsmaplayerstylemanagerwidget.h#L49
+QgsMapLayerStyleModel.flags: src/gui/qgsmaplayerstylemanagerwidget.h#L51
+QgsMapLayerStyleModel.indexForName: src/gui/qgsmaplayerstylemanagerwidget.h#L56
+QgsMapLayerStyleModel.rowCount: src/gui/qgsmaplayerstylemanagerwidget.h#L48
+QgsMapLayerStyleModel.setData: src/gui/qgsmaplayerstylemanagerwidget.h#L50
+QgsMapLayerStyleModel: src/gui/qgsmaplayerstylemanagerwidget.h#L38
 QgsMapMouseEvent.isSnapped: src/gui/qgsmapmouseevent.h#L83
 QgsMapMouseEvent.mapPoint: src/gui/qgsmapmouseevent.h#L89
 QgsMapMouseEvent.mapPointMatch: src/gui/qgsmapmouseevent.h#L97
