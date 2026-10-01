@@ -475,6 +475,11 @@ int QgsCompoundCurve::indexOf( const QgsPoint &point ) const
   return -1;
 }
 
+bool QgsCompoundCurve::isSimpleCurve() const
+{
+  return false;
+}
+
 QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   QgsLineString *line = new QgsLineString();

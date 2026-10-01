@@ -59,6 +59,13 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
      */
     virtual QgsPoint endPoint() const = 0;
 
+    /**
+     * Returns whether the curve is a simple curve.
+     *
+     * \since QGIS 4.4
+     */
+    virtual bool isSimpleCurve() const = 0;
+
     // clang-format off
     /**
      * Returns TRUE if the curve is closed.
