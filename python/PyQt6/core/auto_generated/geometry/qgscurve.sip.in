@@ -50,6 +50,13 @@ Returns the end point of the curve.
 .. seealso:: :py:func:`startPoint`
 %End
 
+    virtual bool isSimpleCurve() const = 0;
+%Docstring
+Returns whether the curve is a simple curve.
+
+.. versionadded:: 4.4
+%End
+
     virtual bool isClosed() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the curve is closed.
