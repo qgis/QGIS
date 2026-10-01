@@ -73,7 +73,7 @@ class QgsRectangle;
 class QgsRubberBand3D;
 class QgsTemporalController;
 class QgsWindow3DEngine;
-class Qgs3DMapCanvasWidgetInterface;
+class Qgs3DMapInterface;
 
 /**
  * \ingroup qgis_3d
@@ -94,7 +94,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
      * Default constructor.
      * \param widgetInterface 3d map canvas widget parent
      */
-    Qgs3DMapCanvas( Qgs3DMapCanvasWidgetInterface *widgetInterface = nullptr );
+    Qgs3DMapCanvas( Qgs3DMapInterface *widgetInterface = nullptr );
 #else
     Qgs3DMapCanvas();
 #endif
@@ -110,7 +110,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     QgsCameraController *cameraController();
 
     //! Returns widget interface to Qgs3DMapCanvasWidget
-    Qgs3DMapCanvasWidgetInterface *canvasWidgetInterface() SIP_SKIP;
+    Qgs3DMapInterface *canvasWidgetInterface() SIP_SKIP;
 
     /**
      * Sets the active map \a tool that will receive events from the 3D canvas. Does not transfer ownership.
@@ -318,7 +318,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     QgsCrossSection mCrossSection;
 
-    Qgs3DMapCanvasWidgetInterface *mWidgetInterface = nullptr;
+    Qgs3DMapInterface *mWidgetInterface = nullptr;
 };
 
 #endif //QGS3DMAPCANVAS_H

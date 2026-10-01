@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dmapcanvaswidgetinterface.h
+  qgs3dmapinterface.h
   --------------------------------------
   Date                 : July 2026
   Copyright            : (C) 2026 by Benoit De Mezzo
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS3DMAPCANVASWIDGETINTERFACE_H
-#define QGS3DMAPCANVASWIDGETINTERFACE_H
+#ifndef QGS3DMAPINTERFACE_H
+#define QGS3DMAPINTERFACE_H
 
 #include "qgis.h"
 #include "qgis_3d.h"
@@ -32,11 +32,11 @@ class QgsLateralPanelWidget;
  *
  * \since QGIS 4.4
  */
-class _3D_EXPORT Qgs3DMapCanvasWidgetInterface
+class _3D_EXPORT Qgs3DMapInterface
 {
   public:
-    Qgs3DMapCanvasWidgetInterface() = default;
-    virtual ~Qgs3DMapCanvasWidgetInterface() = default;
+    Qgs3DMapInterface() = default;
+    virtual ~Qgs3DMapInterface() = default;
 
     /**
      * Add new editing toolbar.
@@ -55,4 +55,4 @@ class _3D_EXPORT Qgs3DMapCanvasWidgetInterface
     virtual QgsLateralPanelWidget *lateralPanel() const = 0;
 };
 
-#endif //QGS3DMAPCANVASWIDGETINTERFACE_H
+#endif //QGS3DMAPINTERFACE_H

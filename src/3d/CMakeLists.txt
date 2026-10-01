@@ -187,7 +187,7 @@ set(QGIS_3D_HDRS
   qgs3dtypes.h
   qgs3dutils.h
   qgs3dmapcanvas.h
-  qgs3dmapcanvaswidgetinterface.h
+  qgs3dmapinterface.h
   qgscolorgradingsettings.h
   qgscrosssection.h
   qgs3dwiredmesh_p.h

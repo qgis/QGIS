@@ -17,7 +17,7 @@
 #define QGS3DMAPCANVASWIDGET_H
 
 #include "qgis_app.h"
-#include "qgs3dmapcanvaswidgetinterface.h"
+#include "qgs3dmapinterface.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 #include "qobjectuniqueptr.h"
@@ -80,7 +80,7 @@ class ClassValidator : public QValidator
     QRegularExpression mRx;
 };
 
-class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget, public Qgs3DMapCanvasWidgetInterface
+class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget, public Qgs3DMapInterface
 {
     Q_OBJECT
 
