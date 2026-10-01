@@ -210,13 +210,15 @@ void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, cons
 {
   checkCapability( Capability::DropRasterTable );
 
-  auto conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
-  if ( conn )
+  const QgsDataSourceUri dsUri { uri() };
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsPostgresConn::connectionInfo( dsUri, false ) );
+  if ( !conn )
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
 
   // also drop its overviews
   QStringList tables { u"%1.%2"_s.arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ) ) };
-  const QList<QgsPostgresRasterOverviewLayerProperty> overviews = QgsPostgresUtils::rasterOverviews( conn->get(), schema, name );
+  const QList<QgsPostgresRasterOverviewLayerProperty> overviews = QgsPostgresUtils::rasterOverviews( conn, schema, name );
+  QgsPostgresConnPool::instance()->releaseConnection( conn );
   for ( const QgsPostgresRasterOverviewLayerProperty &overview : std::as_const( overviews ) )
   {
     tables.append( u"%1.%2"_s.arg( QgsPostgresConn::quotedIdentifier( overview.schemaName ), QgsPostgresConn::quotedIdentifier( overview.tableName ) ) );
