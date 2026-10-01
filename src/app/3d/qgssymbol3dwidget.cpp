@@ -15,17 +15,21 @@
 
 #include "qgssymbol3dwidget.h"
 
+#include "qgisapp.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgs3dsymbolutils.h"
 #include "qgs3dsymbolwidget.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgsabstractmaterialsettings.h"
 #include "qgsapplication.h"
 #include "qgsline3dsymbol.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaterialwidget.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsstyleitemslistwidget.h"
 #include "qgsstylesavedialog.h"
 #include "qgsvectorlayer.h"
@@ -63,7 +67,11 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
   mAdvancedMaterialSettingsAction = new QAction( tr( "Advanced Material Settings…" ), this );
   connect( mAdvancedMaterialSettingsAction, &QAction::triggered, this, &QgsSymbol3DWidget::showAdvancedSymbolSettings );
 
+  mUpdateFrom2DSymbologyAction = new QAction( tr( "Update Symbol from 2D Symbology" ), this );
+  connect( mUpdateFrom2DSymbologyAction, &QAction::triggered, this, &QgsSymbol3DWidget::updateFrom2DSymbology );
+
   mStyleWidget->advancedMenu()->addAction( mAdvancedMaterialSettingsAction );
+  mStyleWidget->advancedMenu()->addAction( mUpdateFrom2DSymbologyAction );
   mStyleWidget->showAdvancedButton( true );
 
   connect( mStyleWidget, &QgsStyleItemsListWidget::selectionChangedWithStylePath, this, &QgsSymbol3DWidget::setSymbolFromStyle );
@@ -88,6 +96,13 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
 
   mLayer = vlayer;
   mStyleWidget->setLayerType( mLayer->geometryType() );
+
+  QgsFeatureRenderer *renderer2D = mLayer->renderer();
+  const bool hasSingleSymbol2D = renderer2D && renderer2D->type() == "singleSymbol"_L1;
+
+  mUpdateFrom2DSymbologyAction->setEnabled( hasSingleSymbol2D );
+  const QString toolTip = hasSingleSymbol2D ? QString() : tr( "Requires a single symbol 2D symbology on the layer" );
+  mUpdateFrom2DSymbologyAction->setToolTip( toolTip );
 
   if ( Qgs3DSymbolWidget *w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
   {
@@ -339,6 +354,21 @@ void QgsSymbol3DWidget::showAdvancedSymbolSettings()
       std::unique_ptr<QgsAbstract3DSymbol> newSymbol = symbol();
       newSymbol->setMaterialSettings( dialog.settings().release() );
       setSymbol( newSymbol.get(), mLayer );
+      emit changed();
+    }
+  }
+}
+
+void QgsSymbol3DWidget::updateFrom2DSymbology()
+{
+  QgsFeatureRenderer *renderer2D = mLayer->renderer();
+  if ( renderer2D && renderer2D->type() == "singleSymbol"_L1 )
+  {
+    QgsSingleSymbolRenderer *singleRenderer2D = qgis::down_cast<QgsSingleSymbolRenderer *>( renderer2D );
+    std::unique_ptr<QgsAbstract3DSymbol> symbol3D = Qgs3DSymbolUtils::create3DSymbolFrom2D( mLayer, singleRenderer2D->symbol() );
+    if ( symbol3D )
+    {
+      setSymbol( symbol3D.get(), mLayer );
       emit changed();
     }
   }
