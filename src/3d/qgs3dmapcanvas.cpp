@@ -16,7 +16,7 @@
 #include "qgs3dmapcanvas.h"
 
 #include "qgs3daxis.h"
-#include "qgs3dmapcanvaswidgetinterface.h"
+#include "qgs3dmapinterface.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
@@ -42,7 +42,7 @@
 
 using namespace Qt::StringLiterals;
 
-Qgs3DMapCanvas::Qgs3DMapCanvas( Qgs3DMapCanvasWidgetInterface *widgetInterface )
+Qgs3DMapCanvas::Qgs3DMapCanvas( Qgs3DMapInterface *widgetInterface )
   : m_aspectEngine( std::make_unique<Qt3DCore::QAspectEngine>() )
   , m_renderAspect( new Qt3DRender::QRenderAspect )
   , m_inputAspect( new Qt3DInput::QInputAspect )
@@ -89,7 +89,7 @@ Qgs3DMapCanvas::~Qgs3DMapCanvas()
   mMapSettings = nullptr;
 }
 
-Qgs3DMapCanvasWidgetInterface *Qgs3DMapCanvas::canvasWidgetInterface()
+Qgs3DMapInterface *Qgs3DMapCanvas::canvasWidgetInterface()
 {
   return mWidgetInterface;
 }
