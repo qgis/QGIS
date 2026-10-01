@@ -1104,6 +1104,48 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
             tables,
         )
 
+    def test_drop_raster_with_overviews(self):
+        """Test that dropRasterTable also drops raster overviews."""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.raster_to_drop;
+        DROP TABLE IF EXISTS qgis_test.o_2_raster_to_drop;
+        DROP TABLE IF EXISTS qgis_test.o_4_raster_to_drop;
+        CREATE TABLE qgis_test.raster_to_drop (
+            id serial PRIMARY KEY,
+            rast raster
+        );
+        INSERT INTO qgis_test.raster_to_drop (rast)
+        SELECT ST_SetSRID(ST_AsRaster(ST_Buffer(ST_Point(0,0),10),150, 150), 3857);
+        SELECT AddRasterConstraints('qgis_test'::name, 'raster_to_drop'::name, 'rast'::name);
+        SELECT ST_CreateOverview('qgis_test.raster_to_drop'::regclass, 'rast'::name, 2);
+        SELECT ST_CreateOverview('qgis_test.raster_to_drop'::regclass, 'rast'::name, 4);
+        """
+
+        conn.executeSql(sql)
+
+        sqlOverviews = """
+        SELECT o_table_schema, o_table_name FROM raster_overviews
+        WHERE r_table_schema = 'qgis_test' AND r_table_name = 'raster_to_drop';
+        """
+        overviews = conn.executeSql(sqlOverviews)
+        self.assertEqual(len(overviews), 2)
+        self.assertIn(["qgis_test", "o_2_raster_to_drop"], overviews)
+        self.assertIn(["qgis_test", "o_4_raster_to_drop"], overviews)
+
+        conn.dropRasterTable("qgis_test", "raster_to_drop")
+
+        sqlTables = """
+        SELECT tablename FROM pg_catalog.pg_tables
+        WHERE schemaname = 'qgis_test'
+        AND tablename = 'raster_to_drop'
+        """
+        self.assertEqual([], conn.executeSql(sqlTables))
+        self.assertEqual([], conn.executeSql(sqlOverviews))
+
     def test_rename_table_updates_layer_styles(self):
         """Test that renaming a table also updates f_table_name in layer_styles."""
         md = QgsProviderRegistry.instance().providerMetadata("postgres")

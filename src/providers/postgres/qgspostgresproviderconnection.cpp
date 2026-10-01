@@ -217,7 +217,7 @@ void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, cons
   // also drop its overviews
   QStringList tables { u"%1.%2"_s.arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ) ) };
   const QList<QgsPostgresRasterOverviewLayerProperty> overviews = QgsPostgresUtils::rasterOverviews( conn->get(), schema, name );
-  for ( const QgsPostgresRasterOverviewLayerProperty &overview : overviews )
+  for ( const QgsPostgresRasterOverviewLayerProperty &overview : std::as_const( overviews ) )
   {
     tables.append( u"%1.%2"_s.arg( QgsPostgresConn::quotedIdentifier( overview.schemaName ), QgsPostgresConn::quotedIdentifier( overview.tableName ) ) );
   }

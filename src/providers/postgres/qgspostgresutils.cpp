@@ -876,6 +876,7 @@ QList<QgsPostgresRasterOverviewLayerProperty> QgsPostgresUtils::rasterOverviews(
     return {};
 
   QList<QgsPostgresRasterOverviewLayerProperty> overviews;
+  overviews.reserve( res.PQntuples() );
   for ( int i = 0; i < res.PQntuples(); i++ )
   {
     QgsPostgresRasterOverviewLayerProperty overview;
