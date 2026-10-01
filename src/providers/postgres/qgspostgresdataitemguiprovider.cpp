@@ -1169,7 +1169,7 @@ void QgsPostgresDataItemGuiProvider::setProjectComment( QgsPGProjectItem *projec
   const QString comment = QgsPostgresUtils::projectComment( conn, projectItem->schemaName(), projectItem->name() );
   bool ok = false;
 
-  const QString newComment = QInputDialog::getMultiLineText( nullptr, tr( "Set Comment For Project %1" ).arg( projectItem->name() ), tr( "Comment" ), comment, &ok );
+  const QString newComment = QgsDialog::getMultiLineText( nullptr, tr( "Set Comment For Project %1" ).arg( projectItem->name() ), tr( "Comment" ), comment, &ok );
   if ( ok && newComment != comment )
   {
     const bool res = QgsPostgresUtils::setProjectComment( conn, projectItem->name(), projectItem->schemaName(), newComment );
