@@ -20,7 +20,6 @@ set(QGIS_3D_SRCS
   qgs3dmapsettings.cpp
   qgs3dmaptool.cpp
   qgs3dmapcanvas.cpp
-  qgs3dmapcanvaswidgetinterface.cpp
   qgscolorgradingsettings.cpp
   qgscrosssection.cpp
   qgs3drendercontext.cpp

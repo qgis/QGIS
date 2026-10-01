@@ -43,16 +43,16 @@ class _3D_EXPORT Qgs3DMapCanvasWidgetInterface
      * Takes ownership
      * \param newToolBar new toolbar
      */
-    virtual void addEditingToolBar( Qgs3DEditingToolBar *newToolBar ) SIP_SKIP;
+    virtual void addEditingToolBar( Qgs3DEditingToolBar *newToolBar ) = 0;
 
     //! Returns all added editing toolbars
-    virtual QList<Qgs3DEditingToolBar *> editingToolBars() const SIP_SKIP;
+    virtual QList<Qgs3DEditingToolBar *> editingToolBars() const = 0;
 
     //! Returns 3D mapCanvas
-    virtual Qgs3DMapCanvas *mapCanvas3D() SIP_SKIP;
+    virtual Qgs3DMapCanvas *mapCanvas3D() = 0;
 
     //! Returns lateral panel widget
-    virtual QgsLateralPanelWidget *lateralPanel() const SIP_SKIP;
+    virtual QgsLateralPanelWidget *lateralPanel() const = 0;
 };
 
 #endif //QGS3DMAPCANVASWIDGETINTERFACE_H
