@@ -222,7 +222,7 @@ void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, cons
     tables.append( u"%1.%2"_s.arg( QgsPostgresConn::quotedIdentifier( overview.schemaName ), QgsPostgresConn::quotedIdentifier( overview.tableName ) ) );
   }
 
-  executeSqlPrivate( u"DROP TABLE %1"_s.arg( tables.join( ", "_s ) ) );
+  executeSqlPrivate( u"DROP TABLE %1"_s.arg( tables.join( ", " ) ) );
 }
 
 void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
