@@ -75,9 +75,9 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   }
   else
   {
-    std::unique_ptr<QImage> imb = QgsImageOperation::gaussianBlur( colorisedIm, blurLevel, context.feedback() );
-    if ( !imb->isNull() )
-      colorisedIm = QImage( *imb );
+    QImage imb = QgsImageOperation::gaussianBlur( colorisedIm, blurLevel, context.feedback() );
+    if ( !imb.isNull() )
+      colorisedIm = QImage( imb );
   }
 
   const double offsetDist = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
