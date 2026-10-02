@@ -659,8 +659,7 @@ QImage QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFeed
   if ( radius <= 0 )
   {
     //just make an unchanged copy
-    auto copy = QImage( image.copy() );
-    return copy;
+    return image;
   }
 
   std::unique_ptr<double[]> kernel( createGaussianKernel( radius ) );
