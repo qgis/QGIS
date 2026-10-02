@@ -91,7 +91,6 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      */
     void setInteriorRings( const QVector< QgsCurve *> &rings ) = delete; // cppcheck-suppress duplInheritedMember
     //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always FALSE.
-    bool deleteVertex( QgsVertexId position ) override;
     bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
     //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always FALSE.
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;

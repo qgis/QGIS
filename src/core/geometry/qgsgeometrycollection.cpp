@@ -651,34 +651,6 @@ bool QgsGeometryCollection::moveVertex( QgsVertexId position, const QgsPoint &ne
   return success;
 }
 
-bool QgsGeometryCollection::deleteVertex( QgsVertexId position )
-{
-  if ( position.part < 0 || position.part >= mGeometries.size() )
-  {
-    return false;
-  }
-
-  QgsAbstractGeometry *geom = mGeometries.at( position.part );
-  if ( !geom )
-  {
-    return false;
-  }
-
-  bool success = geom->deleteVertex( position );
-
-  //remove geometry if no vertices left
-  if ( geom->isEmpty() )
-  {
-    removeGeometry( position.part );
-  }
-
-  if ( success )
-  {
-    clearCache(); //set bounding box invalid
-  }
-  return success;
-}
-
 bool QgsGeometryCollection::deleteVertices( const QSet<QgsVertexId> &positions )
 {
   QMap<int, QSet<QgsVertexId>> partVertices;
