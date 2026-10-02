@@ -103,7 +103,7 @@ jobs:
     steps:
 
       - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
+        uses: jlumbroso/free-disk-space@ceedf095f4ec1a097402bc6bd80831f2e1a6fde6 # main
         with:
           tool-cache: true
           large-packages: false
@@ -143,7 +143,7 @@ jobs:
 
       - name: Build Docker Container with Build Environment
         id: docker-build
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a  # v7.3.0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc  # v7.4.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
@@ -317,7 +317,7 @@ jobs:
     steps:
 
       - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
+        uses: jlumbroso/free-disk-space@ceedf095f4ec1a097402bc6bd80831f2e1a6fde6 # main
         with:
           tool-cache: true
           large-packages: false
@@ -353,7 +353,7 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a  # v7.3.0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc  # v7.4.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
@@ -449,7 +449,7 @@ jobs:
 
     steps:
       - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
+        uses: jlumbroso/free-disk-space@ceedf095f4ec1a097402bc6bd80831f2e1a6fde6 # main
         with:
           tool-cache: true
           large-packages: false
@@ -471,7 +471,7 @@ jobs:
 
       - name: Build Docker Container with Testing Environment
         id: docker-build
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a  #  v7.3.0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc  #  v7.4.0
         with:
           context: .
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
