@@ -1964,7 +1964,6 @@ QgsBlurEffect.blurMethod: src/core/effects/qgsblureffect.h#L140
 QgsBlurEffect.blurUnit: src/core/effects/qgsblureffect.h#L106
 QgsBlurEffect.boundingRect: src/core/effects/qgsblureffect.h#L176
 QgsBlurEffect.clone: src/core/effects/qgsblureffect.h#L64
-QgsBlurEffect.create: src/core/effects/qgsblureffect.h#L54
 QgsBlurEffect.draw: src/core/effects/qgsblureffect.h#L175
 QgsBlurEffect.flags: src/core/effects/qgsblureffect.h#L58
 QgsBlurEffect.opacity: src/core/effects/qgsblureffect.h#L156
@@ -2506,7 +2505,6 @@ QgsColorEffect.colorizeColor: src/core/effects/qgscoloreffect.h#L162
 QgsColorEffect.colorizeOn: src/core/effects/qgscoloreffect.h#L142
 QgsColorEffect.colorizeStrength: src/core/effects/qgscoloreffect.h#L182
 QgsColorEffect.contrast: src/core/effects/qgscoloreffect.h#L92
-QgsColorEffect.create: src/core/effects/qgscoloreffect.h#L46
 QgsColorEffect.draw: src/core/effects/qgscoloreffect.h#L217
 QgsColorEffect.flags: src/core/effects/qgscoloreffect.h#L50
 QgsColorEffect.grayscaleMode: src/core/effects/qgscoloreffect.h#L124
@@ -3729,7 +3727,6 @@ QgsDoubleRange.isInfinite: src/core/qgsrange.h#L267
 QgsDoubleRange: src/core/qgsrange.h#L217
 QgsDrawSourceEffect.blendMode: src/core/effects/qgspainteffect.h#L381
 QgsDrawSourceEffect.clone: src/core/effects/qgspainteffect.h#L345
-QgsDrawSourceEffect.create: src/core/effects/qgspainteffect.h#L341
 QgsDrawSourceEffect.draw: src/core/effects/qgspainteffect.h#L384
 QgsDrawSourceEffect.flags: src/core/effects/qgspainteffect.h#L343
 QgsDrawSourceEffect.opacity: src/core/effects/qgspainteffect.h#L365
@@ -3740,7 +3737,6 @@ QgsDrawSourceEffect.setOpacity: src/core/effects/qgspainteffect.h#L357
 QgsDrawSourceEffect.type: src/core/effects/qgspainteffect.h#L344
 QgsDrawSourceEffect: src/core/effects/qgspainteffect.h#L331
 QgsDropShadowEffect.clone: src/core/effects/qgsshadoweffect.h#L264
-QgsDropShadowEffect.create: src/core/effects/qgsshadoweffect.h#L259
 QgsDropShadowEffect.exteriorShadow: src/core/effects/qgsshadoweffect.h#L267
 QgsDropShadowEffect.type: src/core/effects/qgsshadoweffect.h#L263
 QgsDropShadowEffect: src/core/effects/qgsshadoweffect.h#L251
@@ -3847,7 +3843,6 @@ QgsEffectStack.appendEffect: src/core/effects/qgseffectstack.h#L98
 QgsEffectStack.changeEffect: src/core/effects/qgseffectstack.h#L115
 QgsEffectStack.clone: src/core/effects/qgseffectstack.h#L78
 QgsEffectStack.count: src/core/effects/qgseffectstack.h#L134
-QgsEffectStack.create: src/core/effects/qgseffectstack.h#L56
 QgsEffectStack.draw: src/core/effects/qgseffectstack.h#L149
 QgsEffectStack.effect: src/core/effects/qgseffectstack.h#L141
 QgsEffectStack.flags: src/core/effects/qgseffectstack.h#L76
@@ -6337,12 +6332,10 @@ QgsImageOperation.overlayColor: src/core/effects/qgsimageoperation.h#L116
 QgsImageOperation.stackBlur: src/core/effects/qgsimageoperation.h#L166
 QgsImageOperation: src/core/effects/qgsimageoperation.h#L47
 QgsInnerGlowEffect.clone: src/core/effects/qgsgloweffect.h#L338
-QgsInnerGlowEffect.create: src/core/effects/qgsgloweffect.h#L333
 QgsInnerGlowEffect.shadeExterior: src/core/effects/qgsgloweffect.h#L341
 QgsInnerGlowEffect.type: src/core/effects/qgsgloweffect.h#L337
 QgsInnerGlowEffect: src/core/effects/qgsgloweffect.h#L325
 QgsInnerShadowEffect.clone: src/core/effects/qgsshadoweffect.h#L290
-QgsInnerShadowEffect.create: src/core/effects/qgsshadoweffect.h#L285
 QgsInnerShadowEffect.exteriorShadow: src/core/effects/qgsshadoweffect.h#L293
 QgsInnerShadowEffect.type: src/core/effects/qgsshadoweffect.h#L289
 QgsInnerShadowEffect: src/core/effects/qgsshadoweffect.h#L277
@@ -11448,7 +11441,6 @@ QgsOrientedBox3D.size: src/core/geometry/qgsorientedbox3d.h#L156
 QgsOrientedBox3D.transformed: src/core/geometry/qgsorientedbox3d.h#L174
 QgsOrientedBox3D: src/core/geometry/qgsorientedbox3d.h#L47
 QgsOuterGlowEffect.clone: src/core/effects/qgsgloweffect.h#L311
-QgsOuterGlowEffect.create: src/core/effects/qgsgloweffect.h#L306
 QgsOuterGlowEffect.shadeExterior: src/core/effects/qgsgloweffect.h#L314
 QgsOuterGlowEffect.type: src/core/effects/qgsgloweffect.h#L310
 QgsOuterGlowEffect: src/core/effects/qgsgloweffect.h#L298
@@ -11493,9 +11485,6 @@ QgsPaintEffectAbstractMetadata.name: src/core/effects/qgspainteffectregistry.h#L
 QgsPaintEffectAbstractMetadata.visibleName: src/core/effects/qgspainteffectregistry.h#L64
 QgsPaintEffectAbstractMetadata: src/core/effects/qgspainteffectregistry.h#L40
 QgsPaintEffectRegistry.addEffectType: src/core/effects/qgspainteffectregistry.h#L188
-QgsPaintEffectRegistry.createEffect: src/core/effects/qgspainteffectregistry.h#L197
-QgsPaintEffectRegistry.createEffect: src/core/effects/qgspainteffectregistry.h#L206
-QgsPaintEffectRegistry.defaultStack: src/core/effects/qgspainteffectregistry.h#L221
 QgsPaintEffectRegistry.effectMetadata: src/core/effects/qgspainteffectregistry.h#L181
 QgsPaintEffectRegistry.effects: src/core/effects/qgspainteffectregistry.h#L212
 QgsPaintEffectRegistry.isDefaultStack: src/core/effects/qgspainteffectregistry.h#L229
@@ -19754,7 +19743,6 @@ QgsTransactionGroup.providerKey: src/core/qgstransactiongroup.h#L70
 QgsTransactionGroup: src/core/qgstransactiongroup.h#L34
 QgsTransformEffect.boundingRect: src/core/effects/qgstransformeffect.h#L247
 QgsTransformEffect.clone: src/core/effects/qgstransformeffect.h#L56
-QgsTransformEffect.create: src/core/effects/qgstransformeffect.h#L47
 QgsTransformEffect.draw: src/core/effects/qgstransformeffect.h#L246
 QgsTransformEffect.properties: src/core/effects/qgstransformeffect.h#L52
 QgsTransformEffect.readProperties: src/core/effects/qgstransformeffect.h#L55
