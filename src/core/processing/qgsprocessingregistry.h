@@ -113,6 +113,54 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 
     /**
+     *  Returns TRUE if the \a targetDefinition accepts \a candidateDefinition as
+     *  compatible Processing parameter types for parameter type of \a targetDefinition.
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *   vectorLayerParam = QgsProcessingParameterVectorLayer( "dummyname" )
+     *   boolParam = QgsProcessingParameterBoolean( "dummyname" )
+     *
+     *   # Parameter source and parameter target are compatible
+     *   QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, vectorLayerParam ) # -> return True
+     *   QgsApplication.processingRegistry().isCompatibleDefinition( boolParam, vectorLayerParam ) # -> return True
+     *
+     *   # Parameter source and parameter target are incompatible
+     *   QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, boolParam ) # -> return False
+     * \endcode
+     *
+     *  \since QGIS 4.4
+     */
+    bool isCompatibleDefinition( const QgsProcessingParameterDefinition* targetDefinition, const QgsProcessingParameterDefinition* candidateDefinition );
+
+    /**
+     *  Returns TRUE if the \a targetDefinition accepts \a candidateOutput as
+     *  compatible Processing output types for parameter type of \a targetDefinition.
+     *
+     * - ### Example
+*
+*,
+     * \code{.py}
+     *   vectorLayerParam = QgsProcessingParameterVectorLayer( "dummyname" )
+     *
+     *   boolOutput = QgsProcessingOutputBoolean( "dummyname" )
+     *   stringOutput = QgsProcessingOutputString( "dummyname" )
+     *   vectorLayerOutput = QgsProcessingOutputVectorLayer( "dummyname" )
+     *
+     *   # Output source and parameter target are compatible
+     *   QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, stringOutput ) # -> return True
+     *   QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, vectorLayerOutput ) # -> return True
+     *
+     *
+     *   # Output source and parameter target are incompatible
+     *   QgsApplication.processingRegistry().isCompatibleDefinition( vectorLayerParam, boolOutput ) # -> return False
+     * \endcode
+     *  \since QGIS 4.4
+     */
+    bool isCompatibleDefinition(const QgsProcessingParameterDefinition* targetDefinition, const QgsProcessingOutputDefinition* candidateOutput);
+
+    /**
      * Returns basic algorithm information for the algorithm with matching ID.
      *
      * This method uses an internal cache to ensure that information is quickly
