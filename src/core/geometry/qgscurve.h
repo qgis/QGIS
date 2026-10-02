@@ -62,6 +62,11 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
     /**
      * Returns whether the curve is a simple curve.
      *
+     * LinearStrings and CircularStrings are simple curves. More complex curves like CompoundCurves
+     * can be created out of them. On the other hand, QGIS also handles other types of curves,
+     * like NURBSCurves, which are not considered simple curves.
+     *
+     * \note A SimpleCurve is not part of the SQL/MM standard. We have them in QGIS for implementation convenience, like GDAL and GEOS projects do.
      * \since QGIS 4.4
      */
     virtual bool isSimpleCurve() const = 0;
