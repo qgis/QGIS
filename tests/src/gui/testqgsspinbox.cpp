@@ -19,8 +19,16 @@
 
 #include <QSignalSpy>
 #include <QString>
+#include <QWheelEvent>
 
 using namespace Qt::StringLiterals;
+
+// sends a new event every time, as QgsSpinBox clears the ctrl modifier from the event it receives
+static void scroll( QgsSpinBox &spin, int steps, Qt::KeyboardModifiers modifiers = Qt::NoModifier )
+{
+  QWheelEvent event( QPointF(), QPointF(), QPoint(), QPoint( 0, steps * QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, modifiers, Qt::NoScrollPhase, false );
+  QApplication::sendEvent( &spin, &event );
+}
 
 class TestQgsSpinBox : public QObject
 {
@@ -35,6 +43,8 @@ class TestQgsSpinBox : public QObject
     void expression();
     void step();
     void editingTimeout();
+    void ctrlWheel_data();
+    void ctrlWheel();
 
   private:
 };
@@ -238,6 +248,36 @@ void TestQgsSpinBox::editingTimeout()
   QTest::qWait( 400 );
   // no signal, value did not change
   QCOMPARE( spy.count(), 2 );
+}
+
+void TestQgsSpinBox::ctrlWheel_data()
+{
+  QTest::addColumn<int>( "singleStep" );
+  QTest::addColumn<int>( "value" );
+  QTest::addColumn<int>( "expected" );
+
+  QTest::newRow( "60000" ) << 1000 << 60000 << 60100;
+  QTest::newRow( "850" ) << 10 << 850 << 851;
+  QTest::newRow( "step at least 1" ) << 1 << 850 << 851;
+}
+
+void TestQgsSpinBox::ctrlWheel()
+{
+  // ctrl modifier results in finer increments when scrolling - 10% of usual step
+  QFETCH( int, singleStep );
+  QFETCH( int, value );
+  QFETCH( int, expected );
+
+  QgsSpinBox spin;
+  spin.setMaximum( 1000000 );
+  spin.setSingleStep( singleStep );
+  spin.setValue( value );
+
+  scroll( spin, 1, Qt::ControlModifier );
+  QCOMPARE( spin.value(), expected );
+  scroll( spin, -1, Qt::ControlModifier );
+  QCOMPARE( spin.value(), value );
+  QCOMPARE( spin.singleStep(), singleStep );
 }
 
 QGSTEST_MAIN( TestQgsSpinBox )
