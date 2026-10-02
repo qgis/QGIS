@@ -489,7 +489,6 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem, 
   for ( int idx = 0; idx < result.PQntuples(); idx++ )
   {
     childObjects << result.PQgetvalue( idx, 0 );
-    const QgsPostgresSchemaProperty schema;
     if ( idx == maxListed - 1 )
       break;
   }
@@ -1268,13 +1267,13 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
   QgsPostgresImportProjectDialog dlg( schemaItem->connectionName(), schemaItem->name() );
   if ( dlg.exec() == QDialog::Accepted )
   {
-    QList<QPair<QString, QString>> projectsWithNames = dlg.projectsToSave();
+    const QList<QPair<QString, QString>> projectsWithNames = dlg.projectsToSave();
 
     int projectsSaved = 0;
     int projectsNotSaved = 0;
     QStringList unsavedProjects;
 
-    for ( const QPair<QString, QString> &projectWithName : projectsWithNames )
+    for ( const QPair<QString, QString> &projectWithName : std::as_const( projectsWithNames ) )
     {
       QgsPostgresProjectUri pgProjectUri;
       pgProjectUri.connInfo = QgsDataSourceUri( conn->uri() );

@@ -31,6 +31,7 @@
 #include "qgsmessagelog.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresstringutils.h"
+#include "qgspostgresutils.h"
 #include "qgssettings.h"
 #include "qgsvariantutils.h"
 #include "qgsvectordataprovider.h"
@@ -1083,9 +1084,34 @@ bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas, con
     additionalFilter = u"nspname IN (%1)"_s.arg( schemaIn.join( ',' ) );
   }
 
-  const QString sql = u"SELECT nspname, pg_get_userbyid(nspowner), pg_catalog.obj_description(oid) FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema' %1ORDER BY nspname"_s.arg(
-    !additionalFilter.isEmpty() ? u"AND (%1) "_s.arg( additionalFilter ) : QString()
-  );
+  // Note: it's not a typo but an unfortunate naming of the table and trigger in the database.
+  // qgis_projects_versions : table
+  // qgis_project_versions : trigger
+
+  const QString sql = uR"sql(
+      SELECT
+          n.nspname,
+          pg_get_userbyid(n.nspowner),
+          pg_catalog.obj_description(n.oid),
+          COALESCE(obj.has_both, false) AS table_and_trigger_exist
+      FROM pg_catalog.pg_namespace n
+      LEFT JOIN (
+          SELECT
+              c.relnamespace,
+              (
+                  BOOL_OR(c.relname = 'qgis_projects_versions' AND c.relkind = 'r')
+                  AND
+                  BOOL_OR(t.tgname = 'qgis_project_versions' AND NOT t.tgisinternal)
+              ) AS has_both
+          FROM pg_catalog.pg_class c
+          LEFT JOIN pg_catalog.pg_trigger t ON t.tgrelid = c.oid
+          WHERE (c.relname = 'qgis_projects_versions' AND c.relkind = 'r')
+             OR (t.tgname = 'qgis_project_versions' AND NOT t.tgisinternal)
+          GROUP BY c.relnamespace
+      ) obj ON n.oid = obj.relnamespace
+      WHERE n.nspname !~ '^pg_'
+        AND n.nspname != 'information_schema' %1
+      ORDER BY n.nspname)sql"_s.arg( !additionalFilter.isEmpty() ? u"AND (%1) "_s.arg( additionalFilter ) : QString() );
 
   result = LoggedPQexec( u"QgsPostgresConn"_s, sql );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
@@ -1102,6 +1128,7 @@ bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas, con
     schema.name = result.PQgetvalue( idx, 0 );
     schema.owner = result.PQgetvalue( idx, 1 );
     schema.description = result.PQgetvalue( idx, 2 );
+    schema.hasProjectVersioning = result.PQgetvalue( idx, 3 ) == u"t";
     schemas << schema;
   }
   return true;
@@ -1146,6 +1173,7 @@ bool QgsPostgresConn::hasRaster() const
   postgisVersion();
   return mRasterAvailable;
 }
+
 /* Functions for determining available features in postGIS */
 QString QgsPostgresConn::postgisVersion() const
 {
