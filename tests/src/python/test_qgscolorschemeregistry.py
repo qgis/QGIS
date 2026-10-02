@@ -17,8 +17,11 @@ from qgis.core import (
     QgsApplication,
     QgsColorScheme,
     QgsColorSchemeRegistry,
+    QgsProject,
+    QgsProjectColorScheme,
     QgsRecentColorScheme,
 )
+from qgis.PyQt.QtGui import QColor
 from qgis.testing import QgisTestCase, start_app
 
 start_app()
@@ -104,6 +107,44 @@ class TestQgsColorSchemeRegistry(QgisTestCase):
         reg = QgsApplication.instance().colorSchemeRegistry()
 
         self.assertIn("TestScheme", [scheme.schemeName() for scheme in reg.schemes()])
+
+    def testSetProject(self):
+        """Test that the project colors scheme follows setProject()"""
+        registry = QgsApplication.colorSchemeRegistry()
+        # other tests rely on the registry being bound to QgsProject.instance(), so restore that after
+        self.addCleanup(registry.setProject, QgsProject.instance())
+
+        project1 = QgsProject()
+        project1.setProjectColors([[QColor(255, 0, 0), "red"]])
+        project2 = QgsProject()
+        project2.setProjectColors([[QColor(0, 255, 0), "green"]])
+
+        registry.setProject(project1)
+        schemes = [
+            s for s in registry.schemes() if isinstance(s, QgsProjectColorScheme)
+        ]
+        self.assertEqual(len(schemes), 1)
+        self.assertEqual(
+            [[c[0], c[1]] for c in schemes[0].fetchColors()],
+            [[QColor(255, 0, 0), "red"]],
+        )
+
+        # switching to a second project should swap the scheme's colors, not add a second scheme
+        registry.setProject(project2)
+        schemes = [
+            s for s in registry.schemes() if isinstance(s, QgsProjectColorScheme)
+        ]
+        self.assertEqual(len(schemes), 1)
+        self.assertEqual(
+            [[c[0], c[1]] for c in schemes[0].fetchColors()],
+            [[QColor(0, 255, 0), "green"]],
+        )
+
+        # clearing the project should remove the project colors scheme entirely
+        registry.setProject(None)
+        self.assertFalse(
+            [s for s in registry.schemes() if isinstance(s, QgsProjectColorScheme)]
+        )
 
 
 if __name__ == "__main__":
