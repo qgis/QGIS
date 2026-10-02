@@ -26,6 +26,7 @@ set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be b
 set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built")
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 set (WITH_QTPOSITIONING TRUE CACHE BOOL "Determines whether QtPositioning support should be included")
+set (WITH_QTWEBENGINE TRUE CACHE BOOL "Enable QtWebEngine support")
 set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 set (WITH_TRACY FALSE CACHE BOOL "Determines whether Tracy profiler support should be included")
 
@@ -637,7 +638,6 @@ if(WITH_CORE)
     set(HAVE_3D TRUE)  # used in qgsconfig.h
   endif()
 
-  set (WITH_QTWEBENGINE TRUE CACHE BOOL "Enable QtWebEngine support")
   if (WITH_QTWEBENGINE)
     find_package(${QT_VERSION_BASE} COMPONENTS WebEngineCore REQUIRED)
     message(STATUS "QtWebEngine support enabled")

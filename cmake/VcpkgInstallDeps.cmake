@@ -40,6 +40,19 @@ else()
   install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/qml/" DESTINATION "${APP_PLUGINS_DIR}/../Qt6/qml/") # qml plugins
 endif()
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND QGIS_MAC_BUNDLE AND WITH_QTWEBENGINE)
+  # vcpkg builds Qt as dylibs, so macdeployqt's framework deployment does not
+  # apply. These runtime files are not discoverable through Mach-O dependencies.
+  install(PROGRAMS "${VCPKG_BASE_DIR}/tools/Qt6/bin/QtWebEngineProcess"
+    DESTINATION "${APP_MACOS_DIR}")
+  install(DIRECTORY "${VCPKG_BASE_DIR}/share/Qt6/resources/"
+    DESTINATION "${APP_RESOURCES_DIR}/resources")
+  install(DIRECTORY "${VCPKG_BASE_DIR}/translations/Qt6/qtwebengine_locales"
+    DESTINATION "${APP_RESOURCES_DIR}/translations")
+  install(FILES "${CMAKE_SOURCE_DIR}/platform/macos/qt.conf"
+    DESTINATION "${APP_RESOURCES_DIR}")
+endif()
+
 if(WITH_BINDINGS)
   if(MSVC)
     set(_SOURCE_PYTHON_DIR "${VCPKG_BASE_DIR}/tools/python3/")
@@ -71,7 +84,7 @@ function(fixup_shebang INPUT_FILE OUTPUT_VARIABLE)
 
   # Replace the first line
   string(REGEX REPLACE "^#![^\n]*" "#!/bin/sh\n\"exec\" \"\`dirname \$0\`/python\" \"\$0\" \"\$@\"" TRANSFORMED_CONTENTS "${CONTENTS}")
-  
+
   # Write the transformed contents to the output file
   set(OUTPUT_FILE "${CMAKE_BINARY_DIR}/bundled_program/${_FILE}")
   file(WRITE "${OUTPUT_FILE}" "${TRANSFORMED_CONTENTS}")
@@ -133,7 +146,7 @@ if(NOT EMSCRIPTEN)
   list(TRANSFORM PYTHON_SCRIPTS PREPEND "${VCPKG_BASE_DIR}/")
   if(MSVC)
     list(TRANSFORM BUNDLED_PROGRAMS APPEND ".exe")
-    foreach(FILE ${PYTHON_SCRIPTS})      
+    foreach(FILE ${PYTHON_SCRIPTS})
       get_filename_component(py_name ${FILE} NAME_WE)
       set(bat_file "${CMAKE_BINARY_DIR}/bundled_program/${py_name}.bat")
       file(WRITE "${bat_file}"
@@ -141,7 +154,7 @@ if(NOT EMSCRIPTEN)
 \"%~dp0python.exe\" -u \"%~dp0Scripts\\${py_name}.py\" %*
 "
     )
-    
+
     list(APPEND BUNDLED_PROGRAMS "${bat_file}")
     endforeach()
   else()

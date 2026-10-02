@@ -116,7 +116,7 @@ jobs:
                 -B build \
                 -D QGIS_APP_NAME="QGIS-${{steps.workflow-artifact-ids.outputs.display-name}}" \
                 -D WITH_VCPKG=ON \
-                -D WITH_QTWEBENGINE=OFF \
+                -D WITH_QTWEBENGINE=ON \
                 -D WITH_BINDINGS=ON \
                 -D WITH_ORACLE=ON \
                 -D WITH_GEOGRAPHICLIB=OFF \
@@ -178,6 +178,11 @@ jobs:
           # Ideally, we would specify each target that is required to be installed, but this workaround is sufficient for now
           cmake --build build
           cmake --build build --target bundle
+
+      - name: Verify bundled Qt WebEngine
+        run: |
+          app=(build/_CPack_Packages/Darwin/External/*/*.app)
+          "${app[0]}/Contents/MacOS/python" platform/macos/test_webengine.py
 
       - name: Archive app
         run: |
