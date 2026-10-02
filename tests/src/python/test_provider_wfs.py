@@ -42,9 +42,11 @@ from qgis.core import (
     QgsNetworkAccessManager,
     QgsNetworkRequestParameters,
     QgsPointXY,
+    QgsProject,
     QgsProviderRegistry,
     QgsRectangle,
     QgsSettings,
+    QgsSettingsTree,
     QgsTestUtils,
     QgsVectorDataProvider,
     QgsVectorLayer,
@@ -9498,6 +9500,146 @@ Can't recognize service requested.
                 count += 1
 
         self.assertEqual(count, 2)
+
+    def testProjectReadCreatesProvidersInParallel(self):
+        """Test that WFS providers are created in parallel threads when reading a project"""
+
+        endpoint = (
+            self.__class__.basetestpath + "/fake_qgis_http_endpoint_parallel_loading"
+        )
+        typenames = [f"my:typename{i}" for i in range(5)]
+
+        feature_types = "".join(
+            f"""
+    <FeatureType>
+      <Name>{typename}</Name>
+      <Title>Title</Title>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-71.123 66.33</LowerCorner>
+        <UpperCorner>-65.32 78.3</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>"""
+            for typename in typenames
+        )
+        with open(
+            sanitize(
+                endpoint,
+                "?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0",
+            ),
+            "w",
+        ) as f:
+            f.write(
+                f"""
+<wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+  <FeatureTypeList>{feature_types}
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>"""
+            )
+
+        for typename in typenames:
+            name = typename.split(":")[1]
+            with open(
+                sanitize(
+                    endpoint,
+                    f"?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES={typename}&TYPENAME={typename}",
+                ),
+                "w",
+            ) as f:
+                f.write(
+                    f"""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
+  <xsd:complexType name="{name}Type">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="id" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="{name}" substitutionGroup="gml:_Feature" type="my:{name}Type"/>
+</xsd:schema>
+"""
+                )
+
+            with open(
+                sanitize(
+                    endpoint,
+                    f"?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES={typename}&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::4326",
+                ),
+                "w",
+            ) as f:
+                f.write(
+                    f"""
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my"
+                       numberMatched="1" numberReturned="1" timeStamp="2016-03-25T14:51:48.998Z">
+  <wfs:member>
+    <my:{name} gml:id="{name}.1">
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="{name}.geom.1"><gml:pos>66.33 -70.332</gml:pos></gml:Point></my:geometryProperty>
+      <my:id>1</my:id>
+    </my:{name}>
+  </wfs:member>
+</wfs:FeatureCollection>"""
+                )
+
+        # Don't cache responses while preparing the project, so that reading it requests them again
+        QgsSettings().setValue("qgis/wfsMemoryCacheAllowed", False)
+        project = QgsProject()
+        for typename in typenames:
+            vl = QgsVectorLayer(
+                f"url='http://{endpoint}' typename='{typename}'", typename, "WFS"
+            )
+            self.assertTrue(vl.isValid())
+            project.addMapLayer(vl)
+        project_path = self.__class__.basetestpath + "/parallel_loading.qgs"
+        self.assertTrue(project.write(project_path))
+        QgsSettings().remove("qgis/wfsMemoryCacheAllowed")
+
+        parallel_loading = QgsSettingsTree.node("core").childSetting(
+            "provider-parallel-loading"
+        )
+        previous_value = parallel_loading.valueAsVariant()
+        parallel_loading.setVariantValue(True)
+
+        get_capabilities_requests = []
+
+        def count_get_capabilities(request):
+            if "GetCapabilities" in request.url().toString():
+                get_capabilities_requests.append(request.url())
+
+        preprocessor_id = QgsNetworkAccessManager.setRequestPreprocessor(
+            count_get_capabilities
+        )
+        try:
+            project = QgsProject()
+            # layerLoaded is emitted for each provider created in parallel, before the layers are loaded one by one
+            preloaded = []
+            loading_started = []
+            project.loadingLayer.connect(lambda name: loading_started.append(name))
+            project.layerLoaded.connect(
+                lambda i, n: (
+                    preloaded.append(i) if i > 0 and not loading_started else None
+                )
+            )
+            self.assertTrue(project.read(project_path))
+        finally:
+            QgsNetworkAccessManager.removeRequestPreprocessor(preprocessor_id)
+            parallel_loading.setVariantValue(previous_value)
+
+        self.assertEqual(len(preloaded), len(typenames))
+        layers = project.mapLayers().values()
+        self.assertEqual(len(layers), len(typenames))
+        for vl in layers:
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
+            self.assertEqual(vl.fields().names(), ["id"])
+        # Providers created in parallel share one GetCapabilities request
+        self.assertEqual(len(get_capabilities_requests), 1)
 
 
 class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):

@@ -30,6 +30,7 @@ class QgsWfsProviderMetadata final : public QgsProviderMetadata
   public:
     QgsWfsProviderMetadata();
     QIcon icon() const override;
+    QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList<Qgis::LayerType> supportedLayerTypes() const override;

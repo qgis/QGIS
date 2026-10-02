@@ -490,6 +490,11 @@ QIcon QgsWfsProviderMetadata::icon() const
   return QgsApplication::getThemeIcon( u"mIconWfs.svg"_s );
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsWfsProviderMetadata::providerCapabilities() const
+{
+  return QgsProviderMetadata::ProviderCapability::ParallelCreateProvider;
+}
+
 
 #ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN void *multipleProviderMetadataFactory()

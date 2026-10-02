@@ -20,6 +20,7 @@
 #include <cfloat>
 #include <cpl_string.h>
 #include <gdal.h>
+#include <set>
 
 #include "qgis.h"
 #include "qgsbackgroundcachedfeaturesource.h"
@@ -58,9 +59,11 @@
 #include <QRegularExpression>
 #include <QStandardPaths>
 #include <QString>
+#include <QThread>
 #include <QTimer>
 #include <QUrl>
 #include <QUrlQuery>
+#include <QWaitCondition>
 #include <QWidget>
 
 #include "moc_qgswfsprovider.cpp"
@@ -1947,38 +1950,56 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
 QgsWfsCapabilities QgsWFSProvider::getCachedCapabilities( const QString &uri )
 {
   static QMutex mutex;
+  static QWaitCondition pendingRequestFinished;
   static std::map<QUrl, std::pair<QDateTime, QgsWfsCapabilities>> gCacheCaps;
+  static std::set<QUrl> gPendingRequests;
   QgsWfsGetCapabilitiesRequest getCapabilities( uri );
   QUrl requestUrl = getCapabilities.requestUrl();
+
+  QgsSettings s;
+  const bool cachingAllowed = s.value( u"qgis/wfsMemoryCacheAllowed"_s, true ).toBool();
+  // When several providers of the same server are created in parallel threads (e.g. when reading a project),
+  // only one of them issues the GetCapabilities request and the others wait for its result.
+  // The main thread never waits, as a worker thread might need it to handle an authentication request.
+  const bool shareRequest = cachingAllowed && QThread::currentThread() != QCoreApplication::instance()->thread();
 
   QDateTime now = QDateTime::currentDateTime();
   {
     QMutexLocker lock( &mutex );
+    while ( shareRequest && gPendingRequests.count( requestUrl ) )
+      pendingRequestFinished.wait( &mutex );
+
+    now = QDateTime::currentDateTime();
     auto iter = gCacheCaps.find( requestUrl );
-    QgsSettings s;
     const int delayOfCachingInSecs = s.value( u"qgis/wfsMemoryCacheDelay"_s, 60 ).toInt();
     if ( iter != gCacheCaps.end() && iter->second.first.secsTo( now ) < delayOfCachingInSecs )
     {
       QgsDebugMsgLevel( u"Reusing cached GetCapabilities response for %1"_s.arg( requestUrl.toString() ), 4 );
       return iter->second.second;
     }
+
+    if ( shareRequest )
+      gPendingRequests.insert( requestUrl );
   }
+
   QgsWfsCapabilities caps;
   const bool synchronous = true;
   const bool forceRefresh = false;
-  if ( !getCapabilities.requestCapabilities( synchronous, forceRefresh ) )
-  {
+  const bool success = getCapabilities.requestCapabilities( synchronous, forceRefresh );
+  if ( success )
+    caps = getCapabilities.capabilities();
+  else
     QgsMessageLog::logMessage( QObject::tr( "GetCapabilities failed for url %1: %2" ).arg( uri, getCapabilities.errorMessage() ), QObject::tr( "WFS" ) );
-    return caps;
-  }
 
-  caps = getCapabilities.capabilities();
-
-  QgsSettings s;
-  if ( s.value( u"qgis/wfsMemoryCacheAllowed"_s, true ).toBool() )
   {
     QMutexLocker lock( &mutex );
-    gCacheCaps[requestUrl] = std::make_pair( now, caps );
+    if ( success && cachingAllowed )
+      gCacheCaps[requestUrl] = std::make_pair( now, caps );
+    if ( shareRequest )
+    {
+      gPendingRequests.erase( requestUrl );
+      pendingRequestFinished.wakeAll();
+    }
   }
   return caps;
 }
