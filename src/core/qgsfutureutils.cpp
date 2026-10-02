@@ -79,6 +79,8 @@ void QgsFutureUtils::waitForFinished( QFuture<void> future )
     watcher.setFuture( future );
     if ( !watcher.isFinished() )
       loop.exec();
+    // Make sure exceptions are thrown. Won't block because we waited above.
+    future.waitForFinished();
   }
   else
   {
