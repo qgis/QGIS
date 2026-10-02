@@ -363,10 +363,10 @@ void TestQgsImageOperation::alphaOnlyBlur()
 void TestQgsImageOperation::gaussianBlur()
 {
   QImage image( mSampleImage );
-  std::unique_ptr<QImage> blurredImage = QgsImageOperation::gaussianBlur( image, 30 );
+  QImage blurredImage = QgsImageOperation::gaussianBlur( image, 30 );
 
-  QGSVERIFYIMAGECHECK( u"imageop_gaussianblur"_s, u"expected_imageop_gaussianblur"_s, renderImageForCheck( *blurredImage ), u"expected_imageop_gaussianblur"_s, 0, QSize(), 2 );
-  QCOMPARE( blurredImage->format(), QImage::Format_ARGB32 );
+  QGSVERIFYIMAGECHECK( u"imageop_gaussianblur"_s, u"expected_imageop_gaussianblur"_s, renderImageForCheck( blurredImage ), u"expected_imageop_gaussianblur"_s, 0, QSize(), 2 );
+  QCOMPARE( blurredImage.format(), QImage::Format_ARGB32 );
 }
 
 //todo small, zero radius
@@ -375,18 +375,18 @@ void TestQgsImageOperation::gaussianBlurSmall()
   QImage image( QStringLiteral( TEST_DATA_DIR ) + "/small_sample_image.png" );
   image = image.convertToFormat( QImage::Format_ARGB32_Premultiplied );
 
-  std::unique_ptr<QImage> blurredImage = QgsImageOperation::gaussianBlur( image, 10 );
+  QImage blurredImage = QgsImageOperation::gaussianBlur( image, 10 );
 
-  QCOMPARE( blurredImage->format(), QImage::Format_ARGB32_Premultiplied );
-  QGSVERIFYIMAGECHECK( u"imageop_gaussianblur_small"_s, u"expected_imageop_gaussianblur_small"_s, renderImageForCheck( *blurredImage ), u"expected_imageop_gaussianblur_small"_s, 0, QSize(), 2 );
+  QCOMPARE( blurredImage.format(), QImage::Format_ARGB32_Premultiplied );
+  QGSVERIFYIMAGECHECK( u"imageop_gaussianblur_small"_s, u"expected_imageop_gaussianblur_small"_s, renderImageForCheck( blurredImage ), u"expected_imageop_gaussianblur_small"_s, 0, QSize(), 2 );
 }
 
 void TestQgsImageOperation::gaussianBlurNoChange()
 {
   QImage image( mSampleImage );
-  std::unique_ptr<QImage> blurredImage = QgsImageOperation::gaussianBlur( image, 0 );
+  QImage blurredImage = QgsImageOperation::gaussianBlur( image, 0 );
 
-  QGSVERIFYIMAGECHECK( u"imageop_nochange"_s, u"expected_imageop_nochange"_s, renderImageForCheck( *blurredImage ), u"expected_imageop_nochange"_s, 0, QSize(), 2 );
+  QGSVERIFYIMAGECHECK( u"imageop_nochange"_s, u"expected_imageop_nochange"_s, renderImageForCheck( blurredImage ), u"expected_imageop_nochange"_s, 0, QSize(), 2 );
 }
 
 void TestQgsImageOperation::flipHorizontal()
