@@ -143,6 +143,7 @@ QFuture<QByteArray> QgsDemHeightMapGenerator::render( const QgsChunkNodeId &node
     future = QtConcurrent::run( readOnlineDtm, mDownloader.get(), extent, mResolution, mTilingScheme.crs(), mTransformContext );
   }
   mJobs[fw] = future;
+  fw->setFuture( future );
   return future;
 }
 
