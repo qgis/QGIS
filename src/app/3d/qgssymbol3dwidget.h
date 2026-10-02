@@ -66,6 +66,7 @@ class QgsSymbol3DWidget : public QgsPanelWidget
     void setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity entity, const QString &stylePath );
     void saveSymbol();
     void showAdvancedSymbolSettings();
+    void updateFrom2DSymbology();
 
   private:
     void updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol );
@@ -78,6 +79,7 @@ class QgsSymbol3DWidget : public QgsPanelWidget
     QgsVectorLayer *mLayer = nullptr;
 
     QAction *mAdvancedMaterialSettingsAction = nullptr;
+    QAction *mUpdateFrom2DSymbologyAction = nullptr;
 
     Qgis::MaterialWidgetMode mMode = Qgis::MaterialWidgetMode::Full;
 };
