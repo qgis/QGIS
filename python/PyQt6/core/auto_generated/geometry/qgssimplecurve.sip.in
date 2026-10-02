@@ -377,6 +377,8 @@ point in the curve.
 
     virtual int dimension() const /HoldGIL/;
 
+    virtual bool isSimpleCurve() const /HoldGIL/;
+
 
     virtual bool addMValue( double mValue = 0 );
 

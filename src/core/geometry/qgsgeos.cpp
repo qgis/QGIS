@@ -3175,8 +3175,7 @@ geos::unique_ptr QgsGeos::createGeosSimpleCurve( const QgsAbstractGeometry *curv
   if ( !c )
     return nullptr;
 
-  // TODO: implement QgsCurve->isSimpleCurve()?
-  if ( QgsWkbTypes::flatType( c->wkbType() ) != Qgis::WkbType::CircularString && QgsWkbTypes::flatType( c->wkbType() ) != Qgis::WkbType::LineString )
+  if ( !c->isSimpleCurve() )
     return nullptr;
 
   GEOSCoordSequence *coordSeq = createCoordinateSequence( c, precision );
@@ -3215,8 +3214,7 @@ geos::unique_ptr QgsGeos::createGeosCompoundCurve( const QgsAbstractGeometry *cu
 
     for ( int i = 0; i < nCurves; i++ )
     {
-      // TODO: use QgsCurve->isSimpleCurve()
-      if ( QgsWkbTypes::flatType( c->wkbType() ) != Qgis::WkbType::CircularString && QgsWkbTypes::flatType( c->wkbType() ) != Qgis::WkbType::LineString )
+      if ( c->curveAt( i )->isSimpleCurve() )
       {
         curves[i] = createGeosSimpleCurve( c->curveAt( i ), precision, flags ).release();
       }
@@ -3245,8 +3243,7 @@ geos::unique_ptr QgsGeos::createGeosCurvePolygon( const QgsAbstractGeometry *pol
   try
   {
     geos::unique_ptr exteriorRingGeos;
-    // TODO: implement QgsCurve::isSimpleCurve() ?
-    if ( QgsWkbTypes::flatType( exteriorRing->wkbType() ) == Qgis::WkbType::CircularString || QgsWkbTypes::flatType( exteriorRing->wkbType() ) == Qgis::WkbType::LineString )
+    if ( exteriorRing->isSimpleCurve() )
     {
       exteriorRingGeos.reset( createGeosSimpleCurve( exteriorRing, precision, flags ).release() );
     }
@@ -3273,8 +3270,7 @@ geos::unique_ptr QgsGeos::createGeosCurvePolygon( const QgsAbstractGeometry *pol
       holes = new GEOSGeometry *[holesToExport.size()];
       for ( int i = 0; i < holesToExport.size(); ++i )
       {
-        // TODO: implement QgsCurve::isSimpleCurve() ?
-        if ( QgsWkbTypes::flatType( holesToExport[i]->wkbType() ) == Qgis::WkbType::CircularString || QgsWkbTypes::flatType( holesToExport[i]->wkbType() ) == Qgis::WkbType::LineString )
+        if ( holesToExport[i]->isSimpleCurve() )
         {
           holes[i] = createGeosSimpleCurve( holesToExport[i], precision, flags ).release();
         }
