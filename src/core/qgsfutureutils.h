@@ -105,20 +105,27 @@ class CORE_EXPORT QgsFutureUtils
       auto combinedPromise = new QPromise<std::tuple<Ts...>>;
       combinedPromise->start();
       new QgsCombinedFutureHelper( { futures... }, combinedPromise->future(), [combinedPromise, futures...]() mutable {
+        // The futures are now finished, but we need to call this so exceptions
+        // are thrown.
+        try
+        {
+          ( futures.waitForFinished(), ... );
+        }
+        catch ( QException &e )
+        {
+          combinedPromise->setException( e );
+          delete combinedPromise;
+          return;
+        }
+
         bool allValid = ( true && ... && futures.isValid() );
         if ( !allValid )
           QgsDebugError( "Part of combined future not valid after finishing!" );
-        else
+        bool allHaveResult = ( true && ... && futures.isResultReadyAt( 0 ) );
+        if ( allValid && allHaveResult )
         {
-          try
-          {
-            std::tuple<Ts...> result { ( futures.takeResult() )... };
-            combinedPromise->addResult( result );
-          }
-          catch ( QException &e )
-          {
-            combinedPromise->setException( e );
-          }
+          std::tuple<Ts...> result { ( futures.takeResult() )... };
+          combinedPromise->addResult( result );
         }
         combinedPromise->finish();
         delete combinedPromise;
