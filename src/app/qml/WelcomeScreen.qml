@@ -671,7 +671,7 @@ Item {
       Layout.preferredHeight: 50
       radius: 16
       visible: false
-      color: mainCard.color
+      color: "#ed7913"
 
       onInstallClicked: {
         visible = false;
