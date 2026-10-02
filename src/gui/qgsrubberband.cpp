@@ -21,6 +21,7 @@
 #include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
@@ -522,6 +523,28 @@ void QgsRubberBand::paint( QPainter *p )
       }
       fillSymbol->stopRender( context );
     }
+    else if ( QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( mSymbol.get() ) )
+    {
+      markerSymbol->startRender( context );
+      for ( const QVector<QPolygonF> &shape : std::as_const( shapes ) )
+      {
+        for ( const QPolygonF &ring : shape )
+        {
+          for ( auto it = ring.constBegin(); it != ring.constEnd(); ++it )
+          {
+            if ( mGeometryType == Qgis::GeometryType::Polygon )
+            {
+              // In the case of a closed polygon, we skip the first point of a ring
+              if ( it == ring.constBegin() )
+                continue;
+            }
+            const QPointF point = *it;
+            markerSymbol->renderPoint( point, nullptr, context );
+          }
+        }
+      }
+      markerSymbol->stopRender( context );
+    }
     else
     {
       int iterations = mSecondaryPen.color().isValid() ? 2 : 1;
@@ -719,6 +742,15 @@ void QgsRubberBand::setRenderedComponents( Qgis::RubberBandComponents components
 QRectF QgsRubberBand::boundingRect() const
 {
   QRectF res = QgsMapCanvasItem::boundingRect();
+
+  QgsRenderContext context;
+  if ( mMapCanvas && mSymbol )
+  {
+    res = res.united( asGeometry().boundingBox().toRectF() );
+    context = QgsRenderContext::fromMapSettings( mMapCanvas->mapSettings() );
+    double symbolBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mSymbol.get(), context );
+    res = res.adjusted( -symbolBleed, -symbolBleed, symbolBleed, symbolBleed );
+  }
 
   if ( mComponentsToRender.testFlag( Qgis::RubberBandComponent::PreviewItems ) )
   {
