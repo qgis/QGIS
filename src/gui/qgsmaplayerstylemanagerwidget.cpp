@@ -169,9 +169,13 @@ void QgsMapLayerStyleModel::styleRenamed( const QString &oldname, const QString 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
-  mModel = new QgsMapLayerStyleModel( layer->styleManager(), this );
   mStyleList = new QListView( this );
-  mStyleList->setModel( mModel );
+  if ( layer )
+  {
+    mModel = new QgsMapLayerStyleModel( layer->styleManager(), this );
+    mStyleList->setModel( mModel );
+  }
+  mStyleList->setObjectName( "mStyleList" );
   mStyleList->setViewMode( QListView::ListMode );
   mStyleList->setResizeMode( QListView::Adjust );
 
@@ -193,17 +197,47 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   QAction *loadDefaultAction = toolbar->addAction( tr( "Restore Default" ) );
   connect( loadDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadDefault );
 
-  connect( mStyleList->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsMapLayerStyleManagerWidget::selectionChanged );
-
   setLayout( new QVBoxLayout() );
   layout()->setContentsMargins( 0, 0, 0, 0 );
   layout()->addWidget( toolbar );
   layout()->addWidget( mStyleList );
 
-  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayerStyleManagerWidget::currentStyleChanged );
+  if ( mLayer )
+  {
+    connect( mLayer->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayerStyleManagerWidget::currentStyleChanged );
+    connect( mStyleList->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsMapLayerStyleManagerWidget::selectionChanged );
 
-  const QString active = mLayer->styleManager()->currentStyle();
-  currentStyleChanged( active );
+    const QString active = mLayer->styleManager()->currentStyle();
+    currentStyleChanged( active );
+  }
+}
+
+void QgsMapLayerStyleManagerWidget::syncToLayer( QgsMapLayer *layer )
+{
+  if ( layer == mLayer )
+  {
+    return;
+  }
+  if ( mLayer )
+  {
+    disconnect( mLayer->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayerStyleManagerWidget::currentStyleChanged );
+  }
+
+  if ( mModel )
+  {
+    mStyleList->setModel( nullptr );
+    mModel->deleteLater();
+    mModel = nullptr;
+  }
+  mLayer = layer;
+  if ( mLayer )
+  {
+    connect( mLayer->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayerStyleManagerWidget::currentStyleChanged );
+    mModel = new QgsMapLayerStyleModel( layer->styleManager(), this );
+    mStyleList->setModel( mModel );
+    currentStyleChanged( mLayer->styleManager()->currentStyle() );
+    connect( mStyleList->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsMapLayerStyleManagerWidget::selectionChanged );
+  }
 }
 
 void QgsMapLayerStyleManagerWidget::selectionChanged( const QItemSelection &selected, const QItemSelection & )

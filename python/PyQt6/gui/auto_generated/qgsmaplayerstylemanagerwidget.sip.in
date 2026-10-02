@@ -66,6 +66,8 @@ Style manager widget to manage the layers styles.
 :param parent: The parent.
 %End
 
+    void syncToLayer( QgsMapLayer *layer ) final;
+
   public slots:
     virtual void apply();
 

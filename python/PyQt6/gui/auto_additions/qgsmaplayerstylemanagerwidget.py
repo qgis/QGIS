@@ -4,6 +4,6 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsMapLayerStyleManagerWidget.__overridden_methods__ = ['apply']
+    QgsMapLayerStyleManagerWidget.__overridden_methods__ = ['syncToLayer', 'apply']
 except (NameError, AttributeError):
     pass

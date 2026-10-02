@@ -82,6 +82,8 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
      */
     QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
+    void syncToLayer( QgsMapLayer *layer ) final;
+
   public slots:
     void apply() override {}
 
