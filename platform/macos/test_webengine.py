@@ -10,9 +10,9 @@ from qgis.PyQt.QtCore import QCoreApplication, QLibraryInfo, Qt, QTimer
 
 QCoreApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
 
-from qgis.PyQt.QtWebEngineCore import QWebEnginePage
 from qgis.core import QgsApplication
 from qgis.gui import QgsGui
+from qgis.PyQt.QtWebEngineCore import QWebEnginePage
 
 
 def main():
@@ -50,7 +50,9 @@ def main():
     result = app.exec()
     del page
     if result:
-        raise RuntimeError("Bundled Qt WebEngine failed to render HTML within 60 seconds")
+        raise RuntimeError(
+            "Bundled Qt WebEngine failed to render HTML within 60 seconds"
+        )
     print("Bundled Qt WebEngine imports, renderer and JavaScript: OK")
 
 

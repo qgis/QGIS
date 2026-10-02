@@ -42,7 +42,7 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND QGIS_MAC_BUNDLE AND WITH_QTWEBENGINE)
   # vcpkg builds Qt as dylibs, so macdeployqt's framework deployment does not
-  # apply. These runtime files are not discoverable through Mach-O dependencies.
+  # apply. These runtime files are not detected through dynamic library dependencies.
   install(PROGRAMS "${VCPKG_BASE_DIR}/tools/Qt6/bin/QtWebEngineProcess"
     DESTINATION "${APP_MACOS_DIR}")
   install(DIRECTORY "${VCPKG_BASE_DIR}/share/Qt6/resources/"
