@@ -50,7 +50,6 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
   mNativeMeshSettingsWidget->setLayer( mMeshLayer, QgsMeshRendererMeshSettingsWidget::MeshType::Native );
   mTriangularMeshSettingsWidget->setLayer( mMeshLayer, QgsMeshRendererMeshSettingsWidget::MeshType::Triangular );
   mEdgeMeshSettingsWidget->setLayer( mMeshLayer, QgsMeshRendererMeshSettingsWidget::MeshType::Edge );
-  mVectorFieldSettingsWidget->setLayer( mMeshLayer );
   m3dAveragingSettingsWidget->setLayer( mMeshLayer );
   syncToLayer( mMeshLayer );
 
@@ -196,8 +195,23 @@ void QgsRendererMeshPropertiesWidget::onActiveVectorGroupChanged( int groupIndex
 {
   if ( groupIndex >= 0 && !mMeshLayer->datasetGroupMetadata( groupIndex ).isVector() )
     groupIndex = -1;
-  mVectorFieldSettingsWidget->setActiveDatasetGroup( groupIndex );
-  mVectorFieldSettingsWidget->syncToLayer();
+  syncVectorFieldSettingsWidget( groupIndex );
   mVectorsGroupBox->setChecked( groupIndex >= 0 );
   mVectorsGroupBox->setEnabled( groupIndex >= 0 );
+}
+
+void QgsRendererMeshPropertiesWidget::syncVectorFieldSettingsWidget( int groupIndex )
+{
+  if ( groupIndex < 0 || !mMeshLayer || !mMeshLayer->dataProvider() )
+    return;
+
+  // without faces there is nothing to interpolate within, so the field can only be read at its
+  // own vertices and edge centers
+  mVectorFieldSettingsWidget->setSupportsInterpolation( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) );
+
+  const QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( groupIndex );
+  if ( meta.isVector() )
+    mVectorFieldSettingsWidget->setMagnitudeRange( meta.minimum(), meta.maximum() );
+
+  mVectorFieldSettingsWidget->setSettings( mMeshLayer->rendererSettings().vectorSettings( groupIndex ) );
 }

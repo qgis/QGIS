@@ -31,6 +31,7 @@ class TestQgsRasterRendererRegistry(QgisTestCase):
         self.assertIn("hillshade", registry.renderersList())
         self.assertIn("paletted", registry.renderersList())
         self.assertIn("contour", registry.renderersList())
+        self.assertIn("vectorfield", registry.renderersList())
 
     def test_capabilities(self):
         """
@@ -40,6 +41,10 @@ class TestQgsRasterRendererRegistry(QgisTestCase):
         self.assertFalse(registry.rendererCapabilities("not a renderer"))
         self.assertEqual(
             registry.rendererCapabilities("multibandcolor"),
+            Qgis.RasterRendererCapability.UsesMultipleBands,
+        )
+        self.assertEqual(
+            registry.rendererCapabilities("vectorfield"),
             Qgis.RasterRendererCapability.UsesMultipleBands,
         )
         self.assertEqual(

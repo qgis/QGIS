@@ -24,16 +24,18 @@
 
 SIP_NO_FILE
 
-class QgsMeshLayer;
 class QgsDoubleSpinBox;
 
 /**
  * \ingroup gui
  * \class QgsVectorFieldSettingsWidget
  *
- * \brief A widget for setup of the vector dataset renderer settings of
- * a mesh layer. The layer must be connected and an active dataset
- * must be selected.
+ * \brief A widget for setup of the vector field symbology settings.
+ *
+ * The widget knows nothing of where the vector field comes from: the caller describes the data
+ * through setSupportsInterpolation(), setHasMagnitude() and setMagnitudeRange(), then hands over
+ * the settings to edit with setSettings(). It is used by both the mesh layer and the raster layer
+ * properties.
  *
  * \since QGIS 4.4
  */
@@ -43,29 +45,50 @@ class QgsVectorFieldSettingsWidget : public QWidget, private Ui::QgsVectorFieldS
 
   public:
     /**
-     * A widget to hold the renderer Vector settings for a mesh layer.
+     * A widget to hold the vector field symbology settings.
      * \param parent Parent object
      */
     QgsVectorFieldSettingsWidget( QWidget *parent = nullptr );
 
-    //! Associates mesh layer with the widget
-    void setLayer( QgsMeshLayer *layer );
-
-    //! Associates a dataset group with the widget (should be set before syncToLayer())
-    void setActiveDatasetGroup( int groupIndex ) { mActiveDatasetGroup = groupIndex; }
-
     //! Returns vector settings
     QgsVectorFieldSettings settings() const;
 
-    //! Synchronizes widgets state with associated mesh layer
-    void syncToLayer();
+    //! Synchronizes the widgets state with \a settings
+    void setSettings( const QgsVectorFieldSettings &settings );
+
+    /**
+     * Sets the \a minimum and \a maximum magnitude of the data, which the color ramp shader is
+     * classified against when it is loaded.
+     */
+    void setMagnitudeRange( double minimum, double maximum );
+
+    /**
+     * Sets whether the vector field behind the widget can be sampled between its data points.
+     *
+     * When it cannot, which is the case for a mesh layer without faces, the streamline and trace
+     * symbologies are not offered and the user grid options are hidden, as all three place vectors
+     * at positions of their own rather than at the positions of the data. Arrows and wind barbs are
+     * still offered, as they are drawn one per data point. Defaults to TRUE.
+     */
+    void setSupportsInterpolation( bool supported );
+
+    /**
+     * Sets whether the data behind the widget carries a magnitude.
+     *
+     * When it does not, which is the case for a raster of coded compass directions, every vector has
+     * the same length: the magnitude filter, the magnitude dependent arrow scaling methods and the
+     * color ramp are hidden, leaving a fixed shaft length and a single color. Defaults to TRUE.
+     *
+     * Must be set before setSettings().
+     */
+    void setHasMagnitude( bool hasMagnitude );
 
   signals:
-    //! Mesh rendering settings changed
+    //! Vector field symbology settings changed
     void widgetChanged();
 
   private slots:
-    void onSymbologyChanged( int currentIndex );
+    void onSymbologyChanged();
     void onStreamLineSeedingMethodChanged( int currentIndex );
     void onWindBarbUnitsChanged( int currentIndex );
     void onColoringMethodChanged();
@@ -79,8 +102,20 @@ class QgsVectorFieldSettingsWidget : public QWidget, private Ui::QgsVectorFieldS
      */
     double filterValue( const QgsDoubleSpinBox *spinBox, double err_val ) const;
 
-    QgsMeshLayer *mMeshLayer = nullptr; //not owned
-    int mActiveDatasetGroup = -1;
+    //! Shows or hides the widgets which only make sense when the data carries a magnitude
+    void applyMagnitudeSupport();
+
+    //! Fills the symbology combo box with the symbologies the data can be drawn with
+    void populateSymbologies();
+
+    //! Returns the symbology currently selected in the combo box
+    Qgis::VectorFieldSymbology currentSymbology() const;
+
+    bool mSupportsInterpolation = true;
+    bool mHasMagnitude = true;
+    bool mHasMagnitudeRange = false;
+    double mMagnitudeMinimum = 0;
+    double mMagnitudeMaximum = 0;
 };
 
 #endif // QGSVECTORFIELDSETTINGSWIDGET_H

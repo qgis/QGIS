@@ -155,6 +155,7 @@ class CORE_EXPORT QgsRasterInterface
     //SIP_TYPEHEADER_INCLUDE( "qgssinglebandpseudocolorrenderer.h" );
     //SIP_TYPEHEADER_INCLUDE( "qgsrastersinglecolorrenderer.h" );
     //SIP_TYPEHEADER_INCLUDE( "qgsrastercontourrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrastervectorfieldrenderer.h" );
 
 
 #ifdef SIP_RUN
@@ -192,6 +193,8 @@ class CORE_EXPORT QgsRasterInterface
         sipType = sipType_QgsRasterSingleColorRenderer;
       else if ( dynamic_cast<QgsRasterContourRenderer *>( sipCpp ) )
         sipType = sipType_QgsRasterContourRenderer;
+      else if ( dynamic_cast<QgsRasterVectorFieldRenderer *>( sipCpp ) )
+        sipType = sipType_QgsRasterVectorFieldRenderer;
       else
         sipType = sipType_QgsRasterRenderer;
     }
