@@ -17,16 +17,20 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsauthoauth2config.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgso2.h"
 #include "qgstest.h"
 
 #include <QApplication>
 #include <QDateTime>
-#include <QDebug>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
 #include <QObject>
 #include <QSignalSpy>
 #include <QString>
 #include <QStringList>
 #include <QTemporaryFile>
+#include <QUrl>
 #include <QtTest/QTest>
 
 using namespace Qt::StringLiterals;
@@ -34,6 +38,19 @@ using namespace Qt::StringLiterals;
 #ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"
 #endif
+
+namespace
+{
+  // Subclass QgsO2 to enable using protected methods in tests
+  class TestableQgsO2 : public QgsO2
+  {
+    public:
+      using QgsO2::onVerificationReceived;
+      using QgsO2::QgsO2;
+      void setTestAuthCode( const QString &value ) { setCode( value ); }
+      void setTestRefreshToken( const QString &value ) { setRefreshToken( value ); }
+  };
+} // namespace
 
 /**
  * \ingroup UnitTests
@@ -46,8 +63,6 @@ class TestQgsAuthOAuth2Method : public QObject
   private slots:
     void initTestCase();
     void cleanupTestCase();
-    void init();
-    void cleanup();
 
     void testOAuth2Config();
     void testOAuth2ConfigIO();
@@ -55,6 +70,7 @@ class TestQgsAuthOAuth2Method : public QObject
     void testDynamicRegistration();
     void testDynamicRegistrationJwt();
     void testDynamicRegistrationNoEndpoint();
+    void testDoesNotSendEmptyClientSecret();
 
   private:
     QgsAuthOAuth2Config *baseConfig( bool loaded = false );
@@ -70,9 +86,7 @@ class TestQgsAuthOAuth2Method : public QObject
 
 QString TestQgsAuthOAuth2Method::sTestDataDir = QStringLiteral( TEST_DATA_DIR ) + "/auth_system/oauth2";
 
-
 QString TestQgsAuthOAuth2Method::smHashes = "#####################";
-//QObject *TestQgsAuthOAuth2Method::smParentObj = new QObject();
 
 void TestQgsAuthOAuth2Method::initTestCase()
 {
@@ -81,23 +95,11 @@ void TestQgsAuthOAuth2Method::initTestCase()
   QgsApplication::initQgis();
   if ( QgsApplication::authManager()->isDisabled() )
     QSKIP( "Auth system is disabled, skipping test case", SkipAll );
-
-  //qDebug() << QgsApplication::showSettings().toUtf8().constData();
 }
 
 void TestQgsAuthOAuth2Method::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-}
-
-void TestQgsAuthOAuth2Method::init()
-{
-  qDebug() << "\n************ Start " << QTest::currentTestFunction() << " ************";
-}
-
-void TestQgsAuthOAuth2Method::cleanup()
-{
-  qDebug() << "\n************ End " << QTest::currentTestFunction() << " ************";
 }
 
 QgsAuthOAuth2Config *TestQgsAuthOAuth2Method::baseConfig( bool loaded )
@@ -254,11 +256,11 @@ QByteArray TestQgsAuthOAuth2Method::baseVariantTxt()
 
 void TestQgsAuthOAuth2Method::testOAuth2Config()
 {
-  qDebug() << "Verify base object config";
+  // Verify base object config
   QgsAuthOAuth2Config *config1 = new QgsAuthOAuth2Config( qApp );
   QVERIFY( !config1->isValid() );
 
-  qDebug() << "Verify base object validity";
+  // Verify base object validity
   QgsAuthOAuth2Config *config2 = baseConfig();
   QVERIFY( !config2->isValid() );
   config2->deleteLater();
@@ -266,7 +268,7 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
   QgsAuthOAuth2Config *config3 = baseConfig( true );
   QVERIFY( config3->isValid() );
 
-  qDebug() << "Verify base object internal signals";
+  // Verify base object internal signals
   const QSignalSpy spy_config( config3, SIGNAL( configChanged() ) );
   QSignalSpy spy_valid( config3, SIGNAL( validityChanged( bool ) ) );
 
@@ -298,7 +300,11 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
 
   config3->deleteLater();
 
-  qDebug() << "Validate equality";
+  QgsAuthOAuth2Config *config3b = baseConfig( true );
+  config3b->setClientSecret( QString() );
+  QVERIFY( config3b->isValid() );
+  config3b->deleteLater();
+
   QgsAuthOAuth2Config *config4 = baseConfig( true );
   QgsAuthOAuth2Config *config5 = baseConfig( true );
   QgsAuthOAuth2Config *config6 = baseConfig();
@@ -315,7 +321,7 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
 
 void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
 {
-  qDebug() << "Verify saving config to text";
+  // Verify saving config to text
   QgsAuthOAuth2Config *config1 = baseConfig( true );
   bool ok = false;
   QByteArray cfgtxt = config1->saveConfigTxt( QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok );
@@ -332,8 +338,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   //qDebug() << "baseConfigTxt: \n" << baseConfigTxt( false );
   QCOMPARE( baseConfigTxt( false ), cfgtxt );
 
-  qDebug() << "Verify loading config from text";
-  // from base
+  // Verify loading config from text
   QgsAuthOAuth2Config *config2 = new QgsAuthOAuth2Config( qApp );
   QVERIFY( config2->loadConfigTxt( baseConfigTxt( true ), QgsAuthOAuth2Config::ConfigFormat::JSON ) );
   QVERIFY( *config1 == *config2 );
@@ -352,7 +357,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   //qDebug() << "baseConfigTxt: \n" << baseConfigTxt( true );
   QCOMPARE( baseConfigTxt( true ), cfgtxt );
 
-  qDebug() << "Verify writing config to file";
+  // Verify writing config to file
   const QString rndsuffix = QgsApplication::authManager()->uniqueConfigId();
   const QString dirname = QString( "oauth2_configs_%1" ).arg( rndsuffix );
   const QDir tmpdir = QDir::temp();
@@ -363,15 +368,13 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   config5->setName( "Blah blah" );
   config5->setRedirectPort( 2222 );
 
-  qDebug() << QDir::tempPath() + "/" + dirname;
-
   const QString config4path( QDir::tempPath() + "/" + dirname + "/config4.json" );
   const QString config5path( QDir::tempPath() + "/" + dirname + "/config5.json" );
 
   QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config4path, config4, QgsAuthOAuth2Config::ConfigFormat::JSON, true ) );
   QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config5path, config5, QgsAuthOAuth2Config::ConfigFormat::JSON, true ) );
 
-  qDebug() << "Verify reading config files from directory";
+  // Verify reading config files from directory
   ok = false;
   QList<QgsAuthOAuth2Config *> configs = QgsAuthOAuth2Config::loadOAuth2Configs( QDir::tempPath() + "/" + dirname, qApp, QgsAuthOAuth2Config::ConfigFormat::JSON, &ok );
   QVERIFY( ok );
@@ -399,14 +402,14 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigUtils()
   const QVariantMap basevmap = baseVariantMap();
   bool ok = false;
 
-  qDebug() << "Verify serializeFromVariant";
+  // Verify serializeFromVariant
   const QByteArray vtxt = QgsAuthOAuth2Config::serializeFromVariant( basevmap, QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok );
   QVERIFY( ok );
   //qDebug() << vtxt;
   //qDebug() << baseConfigTxt( true );
   QCOMPARE( vtxt, baseConfigTxt( true ) );
 
-  qDebug() << "Verify variantFromSerialized";
+  // Verify variantFromSerialized
   const QVariantMap vmap = QgsAuthOAuth2Config::variantFromSerialized( baseConfigTxt( true ), QgsAuthOAuth2Config::ConfigFormat::JSON, &ok );
   QVERIFY( ok );
   QCOMPARE( vmap.value( "name" ).toString(), QString( "MyConfig" ) );
@@ -513,6 +516,58 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationJwt()
 #endif
 }
 
+
+void TestQgsAuthOAuth2Method::testDoesNotSendEmptyClientSecret()
+{
+  QTemporaryFile responseFile;
+  QVERIFY( responseFile.open() );
+  responseFile.write( R"({"access_token":"new_token","refresh_token":"new_refresh","expires_in":3600})" );
+  responseFile.close();
+
+  const QString refreshUrl = u"http://example.invalid/refresh"_s;
+  const QString tokenUrl = u"http://example.invalid/token"_s;
+  QByteArray capturedBody;
+
+  const QString preprocessorId = QgsNetworkAccessManager::setAdvancedRequestPreprocessor( [refreshUrl, tokenUrl, &responseFile, &capturedBody]( QNetworkRequest *request, int &op, QByteArray *data ) {
+    if ( request->url().toString() != refreshUrl && request->url().toString() != tokenUrl )
+      return;
+    capturedBody = *data;
+    request->setUrl( QUrl::fromLocalFile( responseFile.fileName() ) );
+    op = static_cast<int>( QNetworkAccessManager::GetOperation );
+  } );
+
+  TestableQgsO2 o2( u"testauthcfg"_s );
+  o2.setClientId( u"my_client_id"_s );
+  o2.setRefreshTokenUrl( refreshUrl );
+  o2.setTestRefreshToken( u"my_refresh_token"_s );
+
+  // RFC 6749 sec. 2.3.1: an empty client secret should not be sent
+  o2.setClientSecret( QString() );
+  o2.refreshSynchronous();
+  QVERIFY( capturedBody.contains( "refresh_token=my_refresh_token" ) );
+  QVERIFY( !capturedBody.contains( "client_secret" ) );
+
+  // Sanity check when a client_secret is actually set
+  capturedBody.clear();
+  o2.setClientSecret( u"my_secret"_s );
+  o2.refreshSynchronous();
+  QVERIFY( capturedBody.contains( "client_secret=my_secret" ) );
+
+  o2.setTokenUrl( tokenUrl );
+  o2.setClientSecret( QString() );
+  o2.setTestAuthCode( u"my_auth_code"_s );
+  capturedBody.clear();
+  o2.onVerificationReceived( { { u"code"_s, u"my_auth_code"_s } } );
+  QVERIFY( capturedBody.contains( "code=my_auth_code" ) );
+  QVERIFY( !capturedBody.contains( "client_secret" ) );
+
+  o2.setClientSecret( u"my_secret"_s );
+  capturedBody.clear();
+  o2.onVerificationReceived( { { u"code"_s, u"my_auth_code"_s } } );
+  QVERIFY( capturedBody.contains( "client_secret=my_secret" ) );
+
+  QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( preprocessorId );
+}
 
 QGSTEST_MAIN( TestQgsAuthOAuth2Method )
 #include "testqgsauthoauth2method.moc"
