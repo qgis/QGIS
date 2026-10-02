@@ -2823,6 +2823,47 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         self.assertTrue(vl.addFeature(feature))
         self.assertTrue(vl.commitChanges(True))
 
+    def testProjectReadSharesDatasetAmongLayers(self):
+        """Test that reading a project does not open the GeoPackage once per layer"""
+
+        layer_count = 20
+        tmpfile = os.path.join(self.basetestpath, "tempProjectReadManyLayers.gpkg")
+        ds = ogr.GetDriverByName("GPKG").CreateDataSource(tmpfile)
+        for i in range(layer_count):
+            ds.CreateLayer(f"layer{i}", geom_type=ogr.wkbPoint)
+        del ds
+
+        project = QgsProject()
+        project.addMapLayers(
+            [
+                QgsVectorLayer(f"{tmpfile}|layername=layer{i}", f"layer{i}", "ogr")
+                for i in range(layer_count)
+            ]
+        )
+        project_path = os.path.join(self.basetestpath, "tempProjectReadManyLayers.qgs")
+        self.assertTrue(project.write(project_path))
+        project.clear()
+
+        opened = []
+
+        def error_handler(err_class, err_no, msg):
+            if "GDALOpen(" in msg and "tempProjectReadManyLayers.gpkg" in msg:
+                opened.append(msg)
+
+        with gdal.config_option("CPL_DEBUG", "ON"):
+            gdal.PushErrorHandler(error_handler)
+            try:
+                self.assertTrue(project.read(project_path))
+            finally:
+                gdal.PopErrorHandler()
+
+        layers = project.mapLayers().values()
+        self.assertEqual(len(layers), layer_count)
+        self.assertTrue(all(layer.isValid() for layer in layers))
+        self.assertTrue(all(layer.supportsEditing() for layer in layers))
+        # one update-mode probe dataset and one shared read-only dataset
+        self.assertEqual(len(opened), 2)
+
     def _testVectorLayerExporterDeferredSpatialIndex(
         self, layerOptions, expectSpatialIndex
     ):

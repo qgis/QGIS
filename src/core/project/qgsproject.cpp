@@ -47,6 +47,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmessagelog.h"
 #include "qgsobjectvisitor.h"
+#include "qgsogrproviderutils.h"
 #include "qgspathresolver.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
@@ -1804,6 +1805,10 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
 
   const QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
   const int totalLayerCount = sortedLayerNodes.count();
+
+  // Keep OGR datasets open until all layers are loaded, so that layers of the same
+  // file share one dataset instead of each opening (and closing) it again
+  const QgsOgrProviderUtils::DeferDatasetClosing deferDatasetClosing;
 
   QVector<QDomNode> parallelLoading;
   QMap<QString, QgsDataProvider *> loadedProviders;
