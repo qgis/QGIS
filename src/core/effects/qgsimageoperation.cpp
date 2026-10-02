@@ -651,7 +651,7 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
 
 //gaussian blur
 
-std::unique_ptr<QImage> QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFeedback *feedback )
+QImage QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFeedback *feedback )
 {
   int width = image.width();
   int height = image.height();
@@ -659,13 +659,13 @@ std::unique_ptr<QImage> QgsImageOperation::gaussianBlur( QImage &image, const in
   if ( radius <= 0 )
   {
     //just make an unchanged copy
-    auto copy = std::make_unique<QImage>( image.copy() );
+    auto copy = QImage( image.copy() );
     return copy;
   }
 
   std::unique_ptr<double[]> kernel( createGaussianKernel( radius ) );
   if ( feedback && feedback->isCanceled() )
-    return std::make_unique<QImage>();
+    return QImage();
 
   //ensure correct source format.
   QImage::Format originalFormat = image.format();
@@ -681,7 +681,7 @@ std::unique_ptr<QImage> QgsImageOperation::gaussianBlur( QImage &image, const in
     image.detach();
   }
   if ( feedback && feedback->isCanceled() )
-    return std::make_unique<QImage>();
+    return QImage();
 
   //blur along rows
   QImage xBlurImage = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
@@ -689,21 +689,21 @@ std::unique_ptr<QImage> QgsImageOperation::gaussianBlur( QImage &image, const in
   runRectOperation( *pImage, rowBlur );
 
   if ( feedback && feedback->isCanceled() )
-    return std::make_unique<QImage>();
+    return QImage();
 
   //blur along columns
-  auto yBlurImage = std::make_unique< QImage >( width, height, QImage::Format_ARGB32_Premultiplied );
-  GaussianBlurOperation colBlur( radius, QgsImageOperation::ByColumn, yBlurImage.get(), kernel.get(), feedback );
+  auto yBlurImage = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
+  GaussianBlurOperation colBlur( radius, QgsImageOperation::ByColumn, &yBlurImage, kernel.get(), feedback );
   runRectOperation( xBlurImage, colBlur );
 
   if ( feedback && feedback->isCanceled() )
-    return std::make_unique<QImage>();
+    return QImage();
 
   kernel.reset();
 
   if ( originalFormat != QImage::Format_ARGB32_Premultiplied )
   {
-    return std::make_unique<QImage>( yBlurImage->convertToFormat( originalFormat ) );
+    return QImage( yBlurImage.convertToFormat( originalFormat ) );
   }
 
   return yBlurImage;

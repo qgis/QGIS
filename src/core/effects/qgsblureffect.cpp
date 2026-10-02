@@ -75,9 +75,9 @@ void QgsBlurEffect::drawGaussianBlur( QgsRenderContext &context )
   const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale, Qgis::RenderSubcomponentProperty::BlurSize ) );
 
   QImage source = sourceAsImage( context ).copy();
-  std::unique_ptr<QImage> im = QgsImageOperation::gaussianBlur( source, blurLevel, context.feedback() );
-  if ( !im->isNull() )
-    drawBlurredImage( context, *im );
+  QImage im = QgsImageOperation::gaussianBlur( source, blurLevel, context.feedback() );
+  if ( !im.isNull() )
+    drawBlurredImage( context, im );
 }
 
 void QgsBlurEffect::drawBlurredImage( QgsRenderContext &context, QImage &image )

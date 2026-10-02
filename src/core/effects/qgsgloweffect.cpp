@@ -93,9 +93,9 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   }
   else
   {
-    std::unique_ptr<QImage> imb = QgsImageOperation::gaussianBlur( im, blurLevel, context.feedback() );
-    if ( !imb->isNull() )
-      im = QImage( *imb );
+    QImage imb = QgsImageOperation::gaussianBlur( im, blurLevel, context.feedback() );
+    if ( !imb.isNull() )
+      im = QImage( imb );
   }
 
   if ( context.feedback() && context.feedback()->isCanceled() )
