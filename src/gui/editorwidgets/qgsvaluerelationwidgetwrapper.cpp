@@ -616,6 +616,9 @@ QMetaType::Type QgsValueRelationWidgetWrapper::fkType() const
 
 void QgsValueRelationWidgetWrapper::populate()
 {
+  // TODO QGIS 5.0 -- remove the fallback to QgsProject::instance()
+  const QgsProject *project = layer() && layer()->project() ? layer()->project() : QgsProject::instance();
+
   // Initialize, note that signals are blocked, to avoid double signals on new features
   if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression ) || QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( mExpression ) )
   {
@@ -627,17 +630,17 @@ void QgsValueRelationWidgetWrapper::populate()
     {
       if ( context().parentFormFeature().isValid() )
       {
-        mCache = QgsValueRelationFieldFormatter::createCache( config(), QgsProject::instance(), formFeature(), context().parentFormFeature() );
+        mCache = QgsValueRelationFieldFormatter::createCache( config(), project, formFeature(), context().parentFormFeature() );
       }
       else
       {
-        mCache = QgsValueRelationFieldFormatter::createCache( config(), QgsProject::instance(), formFeature() );
+        mCache = QgsValueRelationFieldFormatter::createCache( config(), project, formFeature() );
       }
     }
   }
   else if ( mCache.isEmpty() )
   {
-    mCache = QgsValueRelationFieldFormatter::createCache( config(), QgsProject::instance() );
+    mCache = QgsValueRelationFieldFormatter::createCache( config(), project );
   }
 
   if ( mComboBox )
