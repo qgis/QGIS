@@ -76,10 +76,13 @@ class AssignProjection(GdalAlgorithm):
     def groupId(self):
         return "rasterprojections"
 
-    def commandName(self):
+    def _commandNameLegacy(self):
         return "gdal_edit"
 
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+    def _commandNameGdalCli(self) -> str:
+        return "gdal raster edit"
+
+    def _getConsoleCommandsLegacy(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(
@@ -109,6 +112,35 @@ class AssignProjection(GdalAlgorithm):
             self.commandName() + (".bat" if GdalUtils.is_windows() else ".py"),
             GdalUtils.escapeAndJoin(arguments),
         ]
+
+    def _getConsoleCommandsGdalCli(self, parameters, context, feedback, executing=True):
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(
+                self.invalidRasterError(parameters, self.INPUT)
+            )
+
+        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
+        fileName = inLayer.source()
+
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
+
+        arguments = [
+            "--crs",
+            GdalUtils.gdal_crs_string(crs),
+        ]
+
+        if input_details.open_options:
+            arguments.extend(input_details.open_options_as_arguments(new_api=True))
+
+        if input_details.credential_options:
+            arguments.extend(input_details.credential_options_as_arguments())
+
+        arguments.append(input_details.connection_string)
+
+        self.setOutputValue(self.OUTPUT, fileName)
+
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def postProcessAlgorithm(self, context, feedback):
         # get output value
