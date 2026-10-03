@@ -56,7 +56,7 @@ void QgsRasterMinMaxAlgorithm::initAlgorithm( const QVariantMap & )
     new QgsProcessingParameterEnum( u"EXTRACT"_s, QObject::tr( "Extract extrema" ), QStringList() << QObject::tr( "Minimum and Maximum" ) << QObject::tr( "Minimum" ) << QObject::tr( "Maximum" ), false, 0 )
   );
 
-  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Output" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, true ) );
 
   addOutput( new QgsProcessingOutputNumber( u"MINIMUM"_s, QObject::tr( "Minimum" ) ) );
   addOutput( new QgsProcessingOutputNumber( u"MAXIMUM"_s, QObject::tr( "Maximum" ) ) );
