@@ -24,6 +24,19 @@ by concurrently requesting features from the provider.
 This method returns ``True``... or it segfaults.
 %End
 
+    static bool testConcurrentLayerAccess( const QString &uri, const QString &providerKey, int runTimeMs = 2000, int timeoutMs = 60000 );
+%Docstring
+Runs a concurrent access stress test on the layer ``uri`` from the
+provider ``providerKey``, by concurrently opening, reading and closing
+vector layers and querying the sublayers of the URI from multiple
+threads for ``runTimeMs`` milliseconds.
+
+Returns ``False`` if any of the involved threads failed to finish within
+``timeoutMs`` milliseconds (i.e. a deadlock occurred), or if the
+concurrent layer opens and sublayer queries did not return the same
+results as when performed from a single thread.
+%End
+
     static bool compareDomElements( const QDomElement &element1, const QDomElement &element2 );
 %Docstring
 Compares two DOM elements and returns ``True`` if they are equivalent.

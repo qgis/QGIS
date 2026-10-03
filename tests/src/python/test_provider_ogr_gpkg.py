@@ -80,6 +80,8 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestPyQgsOGRProviderGpkgConformance(QgisTestCase, ProviderTestCase):
+    runConcurrentLayerAccessThreadSafetyTest = True
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
