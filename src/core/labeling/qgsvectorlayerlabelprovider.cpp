@@ -379,7 +379,7 @@ void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::L
     QgsCallout::QgsCalloutContext calloutContext;
     calloutContext.allFeaturePartsLabeled = label->getFeaturePart()->feature()->multiPartBehavior() != Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
     calloutContext.originalFeatureCrs = label->getFeaturePart()->feature()->originalFeatureCrs();
-    mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g, calloutContext );
+    mSettings.callout()->render( context, rect, label->angleRadians() * 180 / M_PI, g, calloutContext );
 
     const QList< QgsCalloutPosition > renderedPositions = calloutContext.positions();
 
@@ -564,7 +564,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   QgsTextRenderer::Component component;
   component.dpiRatio = dpiRatio;
   component.origin = outPt;
-  component.rotation = label->getAlpha();
+  component.rotationRadians = label->angleRadians();
 
   if ( drawType == Qgis::TextComponent::Background )
   {
@@ -575,7 +575,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     double xc = outPt2.x() - outPt.x();
     double yc = outPt2.y() - outPt.y();
 
-    double angle = -component.rotation;
+    double angle = -component.rotationRadians;
     double xd = xc * std::cos( angle ) - yc * std::sin( angle );
     double yd = xc * std::sin( angle ) + yc * std::cos( angle );
 
@@ -690,7 +690,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
     QgsTextRenderer::Component component;
     component.origin = outPt;
-    component.rotation = label->getAlpha();
+    component.rotationRadians = label->angleRadians();
 
     // If we are using non-curved, HTML formatted labels then we've already precalculated the text metrics.
     // Otherwise we'll need to calculate them now.
