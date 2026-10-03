@@ -1067,7 +1067,7 @@ void TestQgsOgrUtils::testOgrUtilsStoredStyle()
     QgsVectorLayer vl = QgsVectorLayer( testFile, QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
     QVERIFY( vl.isValid() );
 
-    QgsSingleSymbolRenderer *renderer { static_cast<QgsSingleSymbolRenderer *>( vl.renderer() ) };
+    QgsSingleSymbolRenderer *renderer { dynamic_cast<QgsSingleSymbolRenderer *>( vl.renderer() ) };
     QVERIFY( renderer );
     QgsSymbol *symbol = renderer->symbol()->clone();
 
@@ -1559,7 +1559,7 @@ void TestQgsOgrUtils::testLoadStoredStyleCleanupsFilter()
     QVERIFY( layerA.isValid() );
 
     geomColumnA = layerA.dataProvider()->geometryColumnName();
-    QgsSingleSymbolRenderer *rendererA { static_cast<QgsSingleSymbolRenderer *>( layerA.renderer() ) };
+    QgsSingleSymbolRenderer *rendererA { dynamic_cast<QgsSingleSymbolRenderer *>( layerA.renderer() ) };
     QVERIFY( rendererA );
 
     QgsSymbol *symbolA = rendererA->symbol()->clone();
@@ -1576,7 +1576,7 @@ void TestQgsOgrUtils::testLoadStoredStyleCleanupsFilter()
     QVERIFY( layerB.isValid() );
 
     geomColumnB = layerB.dataProvider()->geometryColumnName();
-    QgsSingleSymbolRenderer *rendererB { static_cast<QgsSingleSymbolRenderer *>( layerB.renderer() ) };
+    QgsSingleSymbolRenderer *rendererB { dynamic_cast<QgsSingleSymbolRenderer *>( layerB.renderer() ) };
     QVERIFY( rendererB );
 
     QgsSymbol *symbolB = rendererB->symbol()->clone();
