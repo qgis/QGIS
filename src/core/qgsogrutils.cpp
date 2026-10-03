@@ -2882,6 +2882,7 @@ int QgsOgrUtils::listStyles( GDALDatasetH hDS, const QString &layerName, const Q
 
   OGRFeatureDefnH hLayerDefn = OGR_L_GetLayerDefn( hLayer );
 
+  OGR_L_SetAttributeFilter( hLayer, nullptr );
   OGR_L_ResetReading( hLayer );
 
   struct StyleInfo
