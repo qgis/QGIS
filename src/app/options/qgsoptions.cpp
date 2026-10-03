@@ -91,6 +91,7 @@ using namespace Qt::StringLiterals;
 #include <QStandardPaths>
 #include <QRegularExpression>
 
+#include <algorithm>
 #include <limits>
 #include <sqlite3.h>
 #include "qgslogger.h"
@@ -101,6 +102,38 @@ using namespace Qt::StringLiterals;
 #include <cpl_conv.h> // for setting gdal options
 
 #include "qgsconfig.h"
+
+namespace
+{
+  // Move the selected items by moveNb positions (negative to move up, positive to move down)
+  void moveSelectedListWidgetItems( QListWidget *listWidget, int moveNb )
+  {
+    QList<int> rows;
+    const QList<QListWidgetItem *> selectedItems = listWidget->selectedItems();
+    for ( QListWidgetItem *item : selectedItems )
+      rows << listWidget->row( item );
+
+    if ( rows.isEmpty() )
+      return;
+
+    std::sort( rows.begin(), rows.end() );
+    if ( rows.first() + moveNb < 0 || rows.last() + moveNb >= listWidget->count() )
+      return;
+
+    // Process from the far end so that moved items do not shift the remaining rows
+    if ( moveNb > 0 )
+      std::reverse( rows.begin(), rows.end() );
+
+    for ( int row : rows )
+    {
+      QListWidgetItem *item = listWidget->takeItem( row );
+      listWidget->insertItem( row + moveNb, item );
+      item->setSelected( true );
+    }
+  }
+
+} //namespace
+
 
 /**
  * \class QgsOptions - Set user options and preferences
@@ -402,8 +435,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // localized data paths
   connect( mLocalizedDataPathAddButton, &QAbstractButton::clicked, this, &QgsOptions::addLocalizedDataPath );
   connect( mLocalizedDataPathRemoveButton, &QAbstractButton::clicked, this, &QgsOptions::removeLocalizedDataPath );
-  connect( mLocalizedDataPathUpButton, &QAbstractButton::clicked, this, &QgsOptions::moveLocalizedDataPathUp );
-  connect( mLocalizedDataPathDownButton, &QAbstractButton::clicked, this, &QgsOptions::moveLocalizedDataPathDown );
+  connect( mLocalizedDataPathUpButton, &QAbstractButton::clicked, this, [this]() { moveSelectedListWidgetItems( mLocalizedDataPathListWidget, -1 ); } );
+  connect( mLocalizedDataPathDownButton, &QAbstractButton::clicked, this, [this]() { moveSelectedListWidgetItems( mLocalizedDataPathListWidget, 1 ); } );
 
   const QStringList localizedPaths = QgsApplication::localizedDataPathRegistry()->paths();
   for ( const QString &path : localizedPaths )
@@ -865,18 +898,20 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   // templates
   cbxProjectDefaultNew->setChecked( QgisApp::settingsNewProjectDefault->value() );
-  QString templateDirName = mSettings->value( u"/qgis/projectTemplateDir"_s, QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
-  // make dir if it doesn't exist - should just be called once
-  QDir templateDir;
-  if ( !templateDir.exists( templateDirName ) )
+  const QStringList projectTemplatePathList = QgsApplication::projectTemplatePaths();
+  for ( const QString &path : projectTemplatePathList )
   {
-    templateDir.mkdir( templateDirName );
+    QListWidgetItem *newItem = new QListWidgetItem( mListProjectTemplatePaths );
+    newItem->setText( path );
+    mListProjectTemplatePaths->addItem( newItem );
   }
-  leTemplateFolder->setText( templateDirName );
+  connect( mBtnAddProjectTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::addProjectTemplatePath );
+  connect( mBtnRemoveProjectTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::removeProjectTemplatePath );
+  connect( mBtnMoveProjectTemplatePathUp, &QAbstractButton::clicked, this, [this]() { moveSelectedListWidgetItems( mListProjectTemplatePaths, -1 ); } );
+  connect( mBtnMoveProjectTemplatePathDown, &QAbstractButton::clicked, this, [this]() { moveSelectedListWidgetItems( mListProjectTemplatePaths, 1 ); } );
+  connect( mBtnResetProjectTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::resetProjectTemplatePath );
   connect( pbnProjectDefaultSetCurrent, &QAbstractButton::clicked, this, &QgsOptions::setCurrentProjectDefault );
   connect( pbnProjectDefaultReset, &QAbstractButton::clicked, this, &QgsOptions::resetProjectDefault );
-  connect( pbnTemplateFolderBrowse, &QAbstractButton::pressed, this, &QgsOptions::browseTemplateFolder );
-  connect( pbnTemplateFolderReset, &QAbstractButton::pressed, this, &QgsOptions::resetTemplateFolder );
 
   setZoomFactorValue();
   spinZoomFactor->setClearValue( 200 );
@@ -1467,20 +1502,6 @@ void QgsOptions::resetProjectDefault()
   cbxProjectDefaultNew->setChecked( false );
 }
 
-void QgsOptions::browseTemplateFolder()
-{
-  QString newDir = QFileDialog::getExistingDirectory( nullptr, tr( "Choose a directory to store project template files" ), leTemplateFolder->text() );
-  if ( !newDir.isNull() )
-  {
-    leTemplateFolder->setText( newDir );
-  }
-}
-
-void QgsOptions::resetTemplateFolder()
-{
-  leTemplateFolder->setText( QgsApplication::qgisSettingsDirPath() + u"project_templates"_s );
-}
-
 void QgsOptions::iconSizeChanged()
 {
   QgisApp::instance()->setIconSizes( cmbIconSize->currentText().toInt() );
@@ -1544,6 +1565,19 @@ void QgsOptions::saveOptions()
     pathsList << mListPluginPaths->item( i )->text();
   }
   mSettings->setValue( u"plugins/searchPathsForPlugins"_s, pathsList );
+
+  //search directories for project templates
+  // an empty list restores the default template directory
+  pathsList.clear();
+  for ( int i = 0; i < mListProjectTemplatePaths->count(); ++i )
+  {
+    pathsList << mListProjectTemplatePaths->item( i )->text();
+  }
+  if ( pathsList != QgsApplication::settingsProjectTemplatePaths->value() )
+  {
+    QgsApplication::setProjectTemplatePaths( pathsList );
+    QgisApp::instance()->updateProjectFromTemplates();
+  }
 
   //search directories for svgs
   pathsList.clear();
@@ -1676,12 +1710,11 @@ void QgsOptions::saveOptions()
   QgisApp::settingsAskToSaveProjectChanges->setValue( chbAskToSaveProjectChanges->isChecked() );
   mSettings->setValue( u"qgis/askToDeleteLayers"_s, mLayerDeleteConfirmationChkBx->isChecked() );
   QgisApp::settingsWarnOldProjectVersion->setValue( chbWarnOldProjectVersion->isChecked() );
-  if ( ( mSettings->value( u"/qgis/projectTemplateDir"_s ).toString() != leTemplateFolder->text() ) || ( QgisApp::settingsNewProjectDefault->value() != cbxProjectDefaultNew->isChecked() ) )
+  if ( QgisApp::settingsNewProjectDefault->value() != cbxProjectDefaultNew->isChecked() )
   {
     QgisApp::settingsNewProjectDefault->setValue( cbxProjectDefaultNew->isChecked() );
-    mSettings->setValue( u"/qgis/projectTemplateDir"_s, leTemplateFolder->text() );
-    QgisApp::instance()->updateProjectFromTemplates();
   }
+
   QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->setValue( mProjectTrustBehaviorComboBox->currentData().value<Qgis::EmbeddedScriptMode>() );
 
   QStringList trustedProjectsFoldersList;
@@ -2245,6 +2278,47 @@ void QgsOptions::moveHelpPathDown()
   }
 }
 
+void QgsOptions::addProjectTemplatePath()
+{
+  QFileDialog dialog( this, tr( "Choose a Directory" ), QDir::toNativeSeparators( QDir::homePath() ) );
+  dialog.setFileMode( QFileDialog::Directory );
+  dialog.setNameFilter( tr( "QGIS project files (*.qgs *.qgz)" ) );
+  if ( dialog.exec() != QDialog::Accepted || dialog.selectedFiles().isEmpty() )
+    return;
+
+  const QString myDir = dialog.selectedFiles().constFirst();
+
+  if ( !myDir.isEmpty() )
+  {
+    if ( mListProjectTemplatePaths->findItems( myDir, Qt::MatchExactly ).count() > 0 )
+    {
+      QMessageBox::warning( this, tr( "Add Project Template Path" ), tr( "This directory is already in the template paths list" ) );
+      return;
+    }
+
+    QListWidgetItem *newItem = new QListWidgetItem( mListProjectTemplatePaths );
+    newItem->setText( myDir );
+    mListProjectTemplatePaths->addItem( newItem );
+    mListProjectTemplatePaths->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::removeProjectTemplatePath()
+{
+  int currentRow = mListProjectTemplatePaths->currentRow();
+  QListWidgetItem *itemToRemove = mListProjectTemplatePaths->takeItem( currentRow );
+  delete itemToRemove;
+}
+
+void QgsOptions::resetProjectTemplatePath()
+{
+  mListProjectTemplatePaths->clear();
+  for ( QString path : QgsApplication::defaultProjectTemplatePaths() )
+  {
+    mListProjectTemplatePaths->addItem( path );
+  }
+}
+
 void QgsOptions::addTemplatePath()
 {
   QString myDir = QFileDialog::getExistingDirectory( this, tr( "Choose a directory" ), QDir::toNativeSeparators( QDir::homePath() ), QFileDialog::Options() );
@@ -2674,30 +2748,6 @@ void QgsOptions::addLocalizedDataPath()
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mLocalizedDataPathListWidget->addItem( newItem );
     mLocalizedDataPathListWidget->setCurrentItem( newItem );
-  }
-}
-
-void QgsOptions::moveLocalizedDataPathUp()
-{
-  QList<QListWidgetItem *> selectedItems = mLocalizedDataPathListWidget->selectedItems();
-  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
-  for ( ; itemIt != selectedItems.end(); ++itemIt )
-  {
-    int row = mLocalizedDataPathListWidget->row( *itemIt );
-    mLocalizedDataPathListWidget->takeItem( row );
-    mLocalizedDataPathListWidget->insertItem( row - 1, *itemIt );
-  }
-}
-
-void QgsOptions::moveLocalizedDataPathDown()
-{
-  QList<QListWidgetItem *> selectedItems = mLocalizedDataPathListWidget->selectedItems();
-  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
-  for ( ; itemIt != selectedItems.end(); ++itemIt )
-  {
-    int row = mLocalizedDataPathListWidget->row( *itemIt );
-    mLocalizedDataPathListWidget->takeItem( row );
-    mLocalizedDataPathListWidget->insertItem( row + 1, *itemIt );
   }
 }
 
