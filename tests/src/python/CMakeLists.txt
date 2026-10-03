@@ -629,6 +629,10 @@ if (WITH_3D)
   ADD_PYTHON_TEST(PyQgsTextureAtlasGenerator test_qgstextureatlasgenerator.py)
 endif()
 
+if (WITH_QTWEBENGINE)
+  ADD_PYTHON_TEST(PyQgsPyQtWebEngine test_qgspyqtwebengine.py)
+endif()
+
 if (WITH_PDF4QT)
   ADD_PYTHON_TEST(PyQgsPdfRenderer test_qgspdfrenderer.py)
   if (WITH_QTWEBENGINE)
