@@ -97,6 +97,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;
+    void renameLayerStyle( const QString &schema, const QString &name, const QString &newName ) const;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesPrivate( const QString &schema, const QString &table, const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const;
 };
 
