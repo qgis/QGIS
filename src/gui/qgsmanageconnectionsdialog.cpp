@@ -40,6 +40,13 @@ using namespace Qt::StringLiterals;
 
 namespace
 {
+  enum class ActionOnDuplicate
+  {
+    Overwrite, //!< Overwrite duplicate connection
+    Skip,      //!< Skip duplicate connection
+    Cancel     //!< Cancel import
+  };
+
   static bool loadDocument( QWidget *parent, const QString &fileName, QDomDocument &document )
   {
     QFile file( fileName );
@@ -70,6 +77,39 @@ namespace
     return true;
   }
 
+  static ActionOnDuplicate checkOverwritePrompt( QWidget *parent, const QString &connectionName, bool &prompt, bool &overwrite )
+  {
+    if ( prompt )
+    {
+      const int result = QMessageBox::warning(
+        parent,
+        QCoreApplication::translate( "QgsManageConnectionsDialog", "Loading Connections" ),
+        QCoreApplication::translate( "QgsManageConnectionsDialog", "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ),
+        QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel
+      );
+      switch ( result )
+      {
+        case QMessageBox::Yes:
+          overwrite = true;
+          break;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::No:
+          overwrite = false;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
+          overwrite = false;
+          break;
+        case QMessageBox::Cancel:
+        default:
+          return ActionOnDuplicate::Cancel;
+      }
+    }
+    return overwrite ? ActionOnDuplicate::Overwrite : ActionOnDuplicate::Skip;
+  }
 
   static void addNamespaceDeclarations( QDomElement &root, const QMap<QString, QString> &namespaceDeclarations )
   {
@@ -976,40 +1016,20 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
       continue;
     }
 
-    // check for duplicates
-    if ( QgsOwsConnection::settingsUrl->exists( { service.toLower(), connectionName } ) && prompt )
+    if ( QgsOwsConnection::settingsUrl->exists( { service.toLower(), connectionName } ) )
     {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-
-      switch ( res )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
           child = child.nextSiblingElement();
           continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
 
-    if ( QgsOwsConnection::settingsUrl->exists( { service.toLower(), connectionName } ) && !overwrite )
-    {
-      child = child.nextSiblingElement();
-      continue;
-    }
-
-    // no dups detected or overwrite is allowed
     QgsOwsConnection::settingsUrl->setValue( child.attribute( u"url"_s ), { service.toLower(), connectionName } );
     QgsOwsConnection::settingsIgnoreGetMapURI->setValue( child.attribute( u"ignoreGetMapURI"_s ) == "true"_L1, { service.toLower(), connectionName } );
     QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->setValue( child.attribute( u"ignoreGetFeatureInfoURI"_s ) == "true"_L1, { service.toLower(), connectionName } );
@@ -1056,46 +1076,23 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     }
 
     // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
     {
       keys << connectionName;
     }
-
-    // no dups detected or overwrite is allowed
 
     QgsOwsConnection::settingsUrl->setValue( child.attribute( u"url"_s ), { u"wfs"_s, connectionName } );
     QgsOwsConnection::settingsVersion->setValue( child.attribute( u"version"_s ), { u"wfs"_s, connectionName } );
@@ -1144,38 +1141,17 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
       continue;
     }
 
-    // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
@@ -1183,7 +1159,6 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
       keys << connectionName;
     }
 
-    //no dups detected or overwrite is allowed
     settings.beginGroup( "/PostgreSQL/connections/" + connectionName );
 
     settings.setValue( u"/host"_s, child.attribute( u"host"_s ) );
@@ -1243,37 +1218,17 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
     }
 
     // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
@@ -1281,7 +1236,6 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
       keys << connectionName;
     }
 
-    //no dups detected or overwrite is allowed
     settings.beginGroup( "/MSSQL/connections/" + connectionName );
 
     settings.setValue( u"/host"_s, child.attribute( u"host"_s ) );
@@ -1334,38 +1288,17 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
       continue;
     }
 
-    // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
@@ -1373,7 +1306,6 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
       keys << connectionName;
     }
 
-    //no dups detected or overwrite is allowed
     settings.beginGroup( "/Oracle/connections/" + connectionName );
 
     settings.setValue( u"/host"_s, child.attribute( u"host"_s ) );
@@ -1430,37 +1362,17 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
     }
 
     // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
@@ -1468,7 +1380,6 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
       keys << connectionName;
     }
 
-    //no dups detected or overwrite is allowed
     settings.beginGroup( "/HANA/connections/" + connectionName );
 
     for ( const QString param :
@@ -1523,46 +1434,23 @@ void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &do
       continue;
     }
 
-    // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
     {
       keys << connectionName;
     }
-
 
     QgsXyzConnectionSettings::settingsUrl->setValue( child.attribute( u"url"_s ), connectionName );
     QgsXyzConnectionSettings::settingsZmin->setValue( child.attribute( u"zmin"_s ).toInt(), connectionName );
@@ -1604,38 +1492,17 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
     }
 
     // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
@@ -1643,12 +1510,8 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
       keys << connectionName;
     }
 
-    // no dups detected or overwrite is allowed
     QgsArcGisConnectionSettings::settingsUrl->setValue( child.attribute( u"url"_s ), connectionName );
-
     QgsArcGisConnectionSettings::settingsHeaders->setValue( QgsHttpHeaders( child ).headers(), connectionName );
-
-
     QgsArcGisConnectionSettings::settingsUsername->setValue( child.attribute( u"username"_s ), connectionName );
     QgsArcGisConnectionSettings::settingsPassword->setValue( child.attribute( u"password"_s ), connectionName );
     QgsArcGisConnectionSettings::settingsAuthcfg->setValue( child.attribute( u"authcfg"_s ), connectionName );
@@ -1684,39 +1547,17 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
       continue;
     }
 
-    // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
@@ -1767,39 +1608,17 @@ void QgsManageConnectionsDialog::loadTiledSceneConnections( const QDomDocument &
       continue;
     }
 
-    // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
@@ -1848,38 +1667,17 @@ void QgsManageConnectionsDialog::loadSensorThingsConnections( const QDomDocument
     }
 
     // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
@@ -1926,39 +1724,17 @@ void QgsManageConnectionsDialog::loadCloudStorageConnections( const QDomDocument
       continue;
     }
 
-    // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
@@ -2027,39 +1803,17 @@ void QgsManageConnectionsDialog::loadStacConnections( const QDomDocument &doc, c
       continue;
     }
 
-    // check for duplicates
-    if ( keys.contains( connectionName ) && prompt )
-    {
-      const int res = QMessageBox::
-        warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-
-      switch ( res )
-      {
-        case QMessageBox::Cancel:
-          return;
-        case QMessageBox::No:
-          child = child.nextSiblingElement();
-          continue;
-        case QMessageBox::Yes:
-          overwrite = true;
-          break;
-        case QMessageBox::YesToAll:
-          prompt = false;
-          overwrite = true;
-          break;
-        case QMessageBox::NoToAll:
-          prompt = false;
-          overwrite = false;
-          break;
-      }
-    }
-
     if ( keys.contains( connectionName ) )
     {
-      if ( !overwrite )
+      switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
       {
-        child = child.nextSiblingElement();
-        continue;
+        case ActionOnDuplicate::Overwrite:
+          break;
+        case ActionOnDuplicate::Skip:
+          child = child.nextSiblingElement();
+          continue;
+        case ActionOnDuplicate::Cancel:
+          return;
       }
     }
     else
