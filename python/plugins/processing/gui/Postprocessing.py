@@ -31,13 +31,10 @@ from qgis.core import (
     QgsProcessingContext,
     QgsProcessingFeedback,
     QgsProcessingUtils,
-    QgsWkbTypes,
 )
 from qgis.gui import QgsProcessingGuiUtils
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
-
-from processing.core.ProcessingConfig import ProcessingConfig
 
 
 def determine_output_name(
@@ -69,63 +66,13 @@ def determine_output_name(
     return details.outputName
 
 
-def post_process_layer(
-    output_name: str, layer: QgsMapLayer, alg: QgsProcessingAlgorithm
-):
-    """
-    Applies post-processing steps to a layer
-    """
-    style = None
-    if output_name:
-        style = (
-            QgsApplication.processingRegistry()
-            .defaultStyleRegistry()
-            .defaultStyleForOutput(alg.id(), output_name)
-        )
-
-    if not style:
-        if layer.type() == Qgis.LayerType.Raster:
-            style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
-        elif layer.type() == Qgis.LayerType.Vector:
-            if layer.geometryType() == QgsWkbTypes.GeometryType.PointGeometry:
-                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
-            elif layer.geometryType() == QgsWkbTypes.GeometryType.LineGeometry:
-                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
-            else:
-                style = ProcessingConfig.getSetting(
-                    ProcessingConfig.VECTOR_POLYGON_STYLE
-                )
-    if style:
-        layer.loadNamedStyle(style)
-
-    if layer.type() == Qgis.LayerType.PointCloud:
-        try:
-            from qgis._3d import QgsPointCloudLayer3DRenderer
-
-            if layer.renderer3D() is None:
-                # If the layer has no 3D renderer and syncing 3D to 2D
-                # renderer is enabled, we create a renderer and set it up
-                # with the 2D renderer
-                if layer.sync3DRendererTo2DRenderer():
-                    renderer_3d = QgsPointCloudLayer3DRenderer()
-                    renderer_3d.convertFrom2DRenderer(layer.renderer())
-                    layer.setRenderer3D(renderer_3d)
-        except ImportError:
-            QgsMessageLog.logMessage(
-                QCoreApplication.translate(
-                    "Postprocessing",
-                    "3D library is not available, "
-                    "can't assign a 3d renderer to a layer.",
-                )
-            )
-
-
 def handleAlgorithmResults(
     alg: QgsProcessingAlgorithm,
     context: QgsProcessingContext,
     feedback: Optional[QgsProcessingFeedback] = None,
     parameters: Optional[dict] = None,
 ):
+    layer_post_processor = QgsApplication.processingRegistry().layerPostProcessor()
     if not parameters:
         parameters = {}
     if feedback is None:
@@ -162,7 +109,7 @@ def handleAlgorithmResults(
                 output_name = determine_output_name(
                     dest_id, details, alg, context, parameters
                 )
-                post_process_layer(output_name, layer, alg)
+                layer_post_processor.postProcessLayer(layer, output_name, alg)
 
                 # Load layer to layer tree root or to a specific group
                 results_group = QgsProcessingGuiUtils.layerTreeResultsGroup(
