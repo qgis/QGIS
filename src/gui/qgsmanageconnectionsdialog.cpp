@@ -16,6 +16,7 @@
 
 #include "qgsmanageconnectionsdialog.h"
 
+#include "qgsfileutils.h"
 #include "qgsgdalcloudconnection.h"
 #include "qgshttpheaders.h"
 #include "qgsowsconnection.h"
@@ -315,12 +316,8 @@ void QgsManageConnectionsDialog::doExportImport()
       return;
     }
 
-    // ensure the user never omitted the extension from the file name
-    if ( !fileName.endsWith( ".xml"_L1, Qt::CaseInsensitive ) )
-    {
-      fileName += ".xml"_L1;
-    }
 
+    fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { "xml" } );
     mFileName = fileName;
 
     QDomDocument doc;
