@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingpostprocessor.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingLayerPostProcessor
+{
+%Docstring(signature="appended")
+A post-processor for result layers created by Processing algorithms.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingpostprocessor.h"
+%End
+  public:
+    QgsProcessingLayerPostProcessor();
+
+    virtual ~QgsProcessingLayerPostProcessor();
+
+    virtual void postProcessLayer( QgsMapLayer *layer, const QString &outputName, const QgsProcessingAlgorithm *algorithm );
+%Docstring
+Post-processes a layer, e.g. applying a default style to the layer.
+
+This method will be called for every new layer created as a result of
+running the specified Processing ``algorithm``.
+%End
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingpostprocessor.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

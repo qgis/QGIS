@@ -31,6 +31,7 @@
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametertypeimpl.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
+#include "qgsprocessingpostprocessor.h"
 #include "qgsvectorfilewriter.h"
 
 #include <QString>
@@ -42,6 +43,7 @@ using namespace Qt::StringLiterals;
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
   , mDefaultStyleRegistry( new QgsProcessingDefaultStyleRegistry( this ) )
+  , mLayerPostProcessor( std::make_unique< QgsProcessingLayerPostProcessor >() )
 {
   addParameterType( new QgsProcessingParameterTypeRasterLayer() );
   addParameterType( new QgsProcessingParameterTypeVectorLayer() );
@@ -314,4 +316,14 @@ QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() cons
 QgsProcessingDefaultStyleRegistry *QgsProcessingRegistry::defaultStyleRegistry() const
 {
   return mDefaultStyleRegistry;
+}
+
+void QgsProcessingRegistry::setLayerPostProcessor( std::unique_ptr< QgsProcessingLayerPostProcessor > processor )
+{
+  mLayerPostProcessor = std::move( processor );
+}
+
+QgsProcessingLayerPostProcessor *QgsProcessingRegistry::layerPostProcessor()
+{
+  return mLayerPostProcessor.get();
 }
