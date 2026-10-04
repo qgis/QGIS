@@ -618,7 +618,7 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
       element,
       settings,
       path,
-      { u"name"_s
+      { u"name"_s,
         u"host"_s,
         u"port"_s,
         u"database"_s,
@@ -660,19 +660,7 @@ QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList
   {
     path = "/MSSQL/connections/" + connections[i];
     QDomElement element = doc.createElement( u"mssql"_s );
-    saveDatabaseConnection(
-      element,
-      settings,
-      path,
-      { u"name"_s
-        u"host"_s,
-        u"port"_s,
-        u"database"_s,
-        u"service"_s,
-        u"sslmode"_s,
-        u"estimatedMetadata"_s },
-      { { u"sslmode"_s, "1" }, { u"estimatedMetadata"_s, "0" } }
-    );
+    saveDatabaseConnection( element, settings, path, { u"name"_s, u"host"_s, u"port"_s, u"database"_s, u"service"_s, u"sslmode"_s, u"estimatedMetadata"_s }, { { u"sslmode"_s, "1" }, { u"estimatedMetadata"_s, "0" } } );
     root.appendChild( element );
   }
 
@@ -696,17 +684,7 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
       element,
       settings,
       path,
-      { u"name"_s
-        u"host"_s,
-        u"port"_s,
-        u"database"_s,
-        u"dboptions"_s,
-        u"dbworkspace"_s,
-        u"schema"_s,
-        u"estimatedMetadata"_s,
-        u"userTablesOnly"_s,
-        u"geometryColumnsOnly"_s,
-        u"allowGeometrylessTables"_s },
+      { u"name"_s, u"host"_s, u"port"_s, u"database"_s, u"dboptions"_s, u"dbworkspace"_s, u"schema"_s, u"estimatedMetadata"_s, u"userTablesOnly"_s, u"geometryColumnsOnly"_s, u"allowGeometrylessTables"_s },
       { { u"estimatedMetadata"_s, "0" }, { u"userTablesOnly"_s, "0" }, { u"geometryColumnsOnly"_s, "0" }, { u"allowGeometrylessTables"_s, "0" } }
     );
 
@@ -733,7 +711,7 @@ QDomDocument QgsManageConnectionsDialog::saveHanaConnections( const QStringList 
       element,
       settings,
       path,
-      { u"name"_s
+      { u"name"_s,
         u"driver"_s,
         u"host"_s,
         u"identifierType"_s,
