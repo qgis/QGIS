@@ -22,7 +22,11 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QThread>
+#include <QThreadPool>
 #include <QString>
+
+#include <atomic>
 
 using namespace Qt::StringLiterals;
 
@@ -40,6 +44,7 @@ class TestQgsImageOperation : public QgsTest
     void init();         // will be called before each testfunction is executed.
     void cleanup();      // will be called after every testfunction.
     void smallImageOp(); //test operation on small image (single threaded op)
+    void imageOpFromGlobalPoolDoesNotDeadlock();
 
     //grayscale
     void grayscaleLightness();
@@ -121,6 +126,39 @@ void TestQgsImageOperation::smallImageOp()
   QgsImageOperation::convertToGrayscale( image, QgsImageOperation::GrayscaleLightness );
 
   QGSVERIFYIMAGECHECK( u"imageop_smallimage"_s, u"expected_imageop_smallimage"_s, renderImageForCheck( image ), u"expected_imageop_smallimage"_s, 0, QSize(), 2 );
+}
+
+void TestQgsImageOperation::imageOpFromGlobalPoolDoesNotDeadlock()
+{
+  QThreadPool *pool = QThreadPool::globalInstance();
+  const int previousMaxThreadCount = pool->maxThreadCount();
+  pool->setMaxThreadCount( 2 );
+
+  std::atomic_int started = 0;
+  auto operation = [&started]() {
+    started.fetch_add( 1 );
+    while ( started.load() < 2 )
+      QThread::yieldCurrentThread();
+
+    QImage image( 400, 400, QImage::Format_ARGB32 );
+    image.fill( Qt::white );
+    QgsImageOperation::convertToGrayscale( image );
+  };
+
+  pool->start( operation );
+  pool->start( operation );
+  const bool completedWithTwoThreads = pool->waitForDone( 5000 );
+
+  // Restore enough capacity to release a regression in the old nested-pool
+  // implementation before reporting the test failure.
+  if ( !completedWithTwoThreads )
+  {
+    pool->setMaxThreadCount( qMax( previousMaxThreadCount, 32 ) );
+    pool->waitForDone();
+  }
+  pool->setMaxThreadCount( previousMaxThreadCount );
+
+  QVERIFY( completedWithTwoThreads );
 }
 
 void TestQgsImageOperation::grayscaleLightness()

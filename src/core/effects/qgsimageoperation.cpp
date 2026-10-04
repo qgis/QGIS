@@ -27,6 +27,8 @@
 #include <QColor>
 #include <QPainter>
 #include <QString>
+#include <QThread>
+#include <QThreadPool>
 #include <QtConcurrentMap>
 
 using namespace Qt::StringLiterals;
@@ -179,8 +181,20 @@ template<typename BlockOperation> void QgsImageOperation::runBlockOperationInThr
     blocks << newBlock;
   }
 
-  //process blocks
-  QtConcurrent::blockingMap( blocks, operation );
+  // A paint effect can call image operations while a layer render is already
+  // running in the global thread pool. Avoid waiting for more work from that
+  // same pool, which can be exhausted by simultaneous layer renders.
+  QThreadPool *globalPool = QThreadPool::globalInstance();
+  if ( globalPool->contains( QThread::currentThread() ) )
+  {
+    for ( ImageBlock &block : blocks )
+      operation( block );
+  }
+  else
+  {
+    //process blocks
+    QtConcurrent::blockingMap( blocks, operation );
+  }
 }
 
 
