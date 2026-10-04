@@ -16,6 +16,7 @@
 #define QGSAPPPROCESSINGUTILS_H
 
 #include "qgsprocessingguiregistry.h"
+#include "qgsprocessingpostprocessor.h"
 #include "qgsprocessingwidgetcontext.h"
 
 #include <QObject>
@@ -46,6 +47,16 @@ class QgsAppProcessingContextFactory : public QgsProcessingContextFactory
   private:
     QgisApp *mQgisApp = nullptr;
 };
+
+
+class QgsAppProcessingLayerPostProcessor : public QgsProcessingLayerPostProcessor
+{
+  public:
+    QgsAppProcessingLayerPostProcessor() = default;
+
+    void postProcessLayer( QgsMapLayer *layer, const QString &outputName, const QgsProcessingAlgorithm *algorithm ) final;
+};
+
 
 class QgsAppProcessingUtils : public QObject
 {
