@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsappprocessingutils.h"
 
 #include "qgisapp.h"
@@ -33,6 +34,13 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingscripteditordialog.h"
 #include "qgsprocessingtoolboxdock.h"
+
+#include <QString>
+
+#ifdef HAVE_3D
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
+#endif
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -449,6 +457,51 @@ class ExportModelAsPythonScriptAction : public QgsProcessingToolboxContextAction
     }
 };
 
+//
+// QgsAppProcessingLayerPostProcessor
+//
+
+void QgsAppProcessingLayerPostProcessor::postProcessLayer( QgsMapLayer *layer, const QString &outputName, const QgsProcessingAlgorithm *algorithm )
+{
+  if ( !layer )
+    return;
+
+  // base class loads the default style for the layer
+  QgsProcessingLayerPostProcessor::postProcessLayer( layer, outputName, algorithm );
+
+  // app-only specific logic:
+  switch ( layer->type() )
+  {
+    case Qgis::LayerType::PointCloud:
+    {
+#ifdef HAVE_3D
+      auto pointCloudLayer = qobject_cast< QgsPointCloudLayer * >( layer );
+      if ( !pointCloudLayer->renderer3D() )
+      {
+        // If the layer has no 3D renderer and syncing 3D to 2D
+        // renderer is enabled, we create a renderer and set it up
+        // with the 2D renderer
+        if ( pointCloudLayer->sync3DRendererTo2DRenderer() )
+        {
+          auto renderer3D = new QgsPointCloudLayer3DRenderer();
+          renderer3D->convertFrom2DRenderer( pointCloudLayer->renderer() );
+          pointCloudLayer->setRenderer3D( renderer3D );
+        }
+      }
+#endif
+      break;
+    }
+    case Qgis::LayerType::Vector:
+    case Qgis::LayerType::Raster:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Group:
+    case Qgis::LayerType::TiledScene:
+      break;
+  }
+}
 
 //
 // QgsAppProcessingUtils
@@ -467,6 +520,8 @@ QgsAppProcessingUtils::QgsAppProcessingUtils( QgisApp *app )
     // when the remainder of processing is ported to c++ this can be replaced
     QgsApplication::instance()->setProperty( u"_processing_legacy_menu_key_%1"_s.arg( idx ).toLatin1().constData(), legacyTitle );
   }
+
+  QgsApplication::processingRegistry()->setLayerPostProcessor( std::make_unique< QgsAppProcessingLayerPostProcessor >() );
 }
 
 void QgsAppProcessingUtils::registerActions()
