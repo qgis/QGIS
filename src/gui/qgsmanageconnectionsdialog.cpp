@@ -170,6 +170,63 @@ namespace
     settings.setValue( u"/password"_s, element.attribute( u"password"_s ) );
   }
 
+  static QString rootTagForConnectionType( QgsManageConnectionsDialog::Type type )
+  {
+    switch ( type )
+    {
+      case QgsManageConnectionsDialog::WMS:
+        return u"qgsWMSConnections"_s;
+      case QgsManageConnectionsDialog::WFS:
+        return u"qgsWFSConnections"_s;
+      case QgsManageConnectionsDialog::WCS:
+        return u"qgsWCSConnections"_s;
+      case QgsManageConnectionsDialog::PostGIS:
+        return u"qgsPgConnections"_s;
+      case QgsManageConnectionsDialog::MSSQL:
+        return u"qgsMssqlConnections"_s;
+      case QgsManageConnectionsDialog::Oracle:
+        return u"qgsOracleConnections"_s;
+      case QgsManageConnectionsDialog::HANA:
+        return u"qgsHanaConnections"_s;
+      case QgsManageConnectionsDialog::XyzTiles:
+        return u"qgsXyzTilesConnections"_s;
+      case QgsManageConnectionsDialog::ArcgisFeatureServer:
+      case QgsManageConnectionsDialog::ArcgisMapServer:
+        return u"qgsArcgisConnections"_s;
+      case QgsManageConnectionsDialog::VectorTile:
+        return u"qgsVectorTileConnections"_s;
+      case QgsManageConnectionsDialog::TiledScene:
+        return u"qgsTiledSceneConnections"_s;
+      case QgsManageConnectionsDialog::SensorThings:
+        return u"qgsSensorThingsConnections"_s;
+      case QgsManageConnectionsDialog::CloudStorage:
+        return u"qgsCloudStorageConnections"_s;
+      case QgsManageConnectionsDialog::STAC:
+        return u"qgsStacConnections"_s;
+    }
+    return QString();
+  }
+  static bool checkRootTag( QWidget *parent, const QDomDocument &document, const QString &expectedTag )
+  {
+    const QDomElement root = document.documentElement();
+    if ( expectedTag.isEmpty() || root.tagName() != expectedTag )
+    {
+      QMessageBox::information( parent, QCoreApplication::translate( "QgsManageConnectionsDialog", "Loading Connections" ), QCoreApplication::translate( "QgsManageConnectionsDialog", "The file is not a valid connections exchange file for the selected service." ) );
+      return false;
+    }
+    return true;
+  }
+
+  static bool isValidDocumentType( QWidget *parent, const QDomDocument &document, QgsManageConnectionsDialog::Type type )
+  {
+    return checkRootTag( parent, document, rootTagForConnectionType( type ) );
+  }
+
+  static bool isValidDocumentType( QWidget *parent, const QDomDocument &document, const QString &service )
+  {
+    return checkRootTag( parent, document, u"qgs"_s + service.toUpper() + u"Connections"_s );
+  }
+
   static void addNamespaceDeclarations( QDomElement &root, const QMap<QString, QString> &namespaceDeclarations )
   {
     for ( auto it = namespaceDeclarations.begin(); it != namespaceDeclarations.end(); ++it )
@@ -463,120 +520,12 @@ bool QgsManageConnectionsDialog::populateConnections()
       return false;
     }
 
-    const QDomElement root = doc.documentElement();
-    switch ( mConnectionType )
+    if ( !isValidDocumentType( this, doc, mConnectionType ) )
     {
-      case WMS:
-        if ( root.tagName() != "qgsWMSConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a WMS connections exchange file." ) );
-          return false;
-        }
-        break;
-
-      case WFS:
-        if ( root.tagName() != "qgsWFSConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a WFS connections exchange file." ) );
-          return false;
-        }
-        break;
-
-      case WCS:
-        if ( root.tagName() != "qgsWCSConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a WCS connections exchange file." ) );
-          return false;
-        }
-        break;
-
-      case PostGIS:
-        if ( root.tagName() != "qgsPgConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a PostGIS connections exchange file." ) );
-          return false;
-        }
-        break;
-
-      case MSSQL:
-        if ( root.tagName() != "qgsMssqlConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a MS SQL Server connections exchange file." ) );
-          return false;
-        }
-        break;
-      case Oracle:
-        if ( root.tagName() != "qgsOracleConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not an Oracle connections exchange file." ) );
-          return false;
-        }
-        break;
-      case HANA:
-        if ( root.tagName() != "qgsHanaConnections"_L1 )
-        {
-          QMessageBox::warning( this, tr( "Loading Connections" ), tr( "The file is not a HANA connections exchange file." ) );
-          return false;
-        }
-        break;
-      case XyzTiles:
-        if ( root.tagName() != "qgsXYZTilesConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a XYZ Tiles connections exchange file." ) );
-          return false;
-        }
-        break;
-      case ArcgisMapServer:
-        if ( root.tagName() != "qgsARCGISMAPSERVERConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a ArcGIS Map Service connections exchange file." ) );
-          return false;
-        }
-        break;
-      case ArcgisFeatureServer:
-        if ( root.tagName() != "qgsARCGISFEATURESERVERConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a ArcGIS Feature Service connections exchange file." ) );
-          return false;
-        }
-        break;
-      case VectorTile:
-        if ( root.tagName() != "qgsVectorTileConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a Vector Tile connections exchange file." ) );
-          return false;
-        }
-        break;
-      case TiledScene:
-        if ( root.tagName() != "qgsTiledSceneConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a tiled scene connections exchange file." ) );
-          return false;
-        }
-        break;
-      case SensorThings:
-        if ( root.tagName() != "qgsSensorThingsConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a SensorThings connections exchange file." ) );
-          return false;
-        }
-        break;
-      case CloudStorage:
-        if ( root.tagName() != "qgsCloudStorageConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a cloud storage connections exchange file." ) );
-          return false;
-        }
-        break;
-      case STAC:
-        if ( root.tagName() != "qgsStacConnections"_L1 )
-        {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a STAC connections exchange file." ) );
-          return false;
-        }
-        break;
+      return false;
     }
 
+    const QDomElement root = doc.documentElement();
     QDomElement child = root.firstChildElement();
     while ( !child.isNull() )
     {
@@ -1028,15 +977,13 @@ QDomDocument QgsManageConnectionsDialog::saveStacConnections( const QStringList 
 
 void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, const QStringList &items, const QString &service )
 {
-  const QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgs" + service.toUpper() + "Connections" )
+  if ( !isValidDocumentType( this, doc, service ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a %1 connections exchange file." ).arg( service ) );
     return;
   }
 
   QString connectionName;
-
+  const QDomElement root = doc.documentElement();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1086,16 +1033,15 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
 
 void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, const QStringList &items )
 {
-  const QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsWFSConnections"_L1 )
+  if ( !isValidDocumentType( this, doc, QgsManageConnectionsDialog::WFS ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a WFS connections exchange file." ) );
     return;
   }
 
   QString connectionName;
   QStringList keys = QgsOwsConnection::sTreeOwsConnections->items( { u"wfs"_s } );
 
+  const QDomElement root = doc.documentElement();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1150,10 +1096,8 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
 
 void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, const QStringList &items )
 {
-  const QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsPgConnections"_L1 )
+  if ( !isValidDocumentType( this, doc, QgsManageConnectionsDialog::PostGIS ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a PostGIS connections exchange file." ) );
     return;
   }
 
@@ -1162,6 +1106,7 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
   settings.beginGroup( u"/PostgreSQL/connections"_s );
   QStringList keys = settings.childGroups();
   settings.endGroup();
+  const QDomElement root = doc.documentElement();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1219,10 +1164,8 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
 
 void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, const QStringList &items )
 {
-  const QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsMssqlConnections"_L1 )
+  if ( !isValidDocumentType( this, doc, QgsManageConnectionsDialog::MSSQL ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a MS SQL Server connections exchange file." ) );
     return;
   }
 
@@ -1231,6 +1174,7 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
   settings.beginGroup( u"/MSSQL/connections"_s );
   QStringList keys = settings.childGroups();
   settings.endGroup();
+  const QDomElement root = doc.documentElement();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1273,10 +1217,8 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
 
 void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc, const QStringList &items )
 {
-  const QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsOracleConnections"_L1 )
+  if ( !isValidDocumentType( this, doc, QgsManageConnectionsDialog::Oracle ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not an Oracle connections exchange file." ) );
     return;
   }
 
@@ -1285,6 +1227,7 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
   settings.beginGroup( u"/Oracle/connections"_s );
   QStringList keys = settings.childGroups();
   settings.endGroup();
+  const QDomElement root = doc.documentElement();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1326,13 +1269,12 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
 
 void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, const QStringList &items )
 {
-  QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsHanaConnections"_L1 )
+  if ( !isValidDocumentType( this, doc, QgsManageConnectionsDialog::HANA ) )
   {
-    QMessageBox::warning( this, tr( "Loading Connections" ), tr( "The file is not a HANA connections exchange file." ) );
     return;
   }
 
+  QDomElement root = doc.documentElement();
   const QDomAttr version = root.attributeNode( "version" );
   if ( version.value() != "1.0"_L1 )
   {
@@ -1357,7 +1299,6 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
       continue;
     }
 
-    // check for duplicates
     if ( keys.contains( connectionName ) )
     {
       switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
@@ -1408,15 +1349,14 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
 
 void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &doc, const QStringList &items )
 {
-  const QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsXYZTilesConnections"_L1 )
+  if ( !isValidDocumentType( this, doc, QgsManageConnectionsDialog::XyzTiles ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a XYZ Tiles connections exchange file." ) );
     return;
   }
 
   QString connectionName;
   QStringList keys = QgsXyzConnectionSettings::sTreeXyzConnections->items();
+  const QDomElement root = doc.documentElement();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1465,15 +1405,14 @@ void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &do
 
 void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc, const QStringList &items, const QString &service )
 {
-  const QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgs" + service.toUpper() + "Connections" )
+  if ( !isValidDocumentType( this, doc, service ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a %1 connections exchange file." ).arg( service ) );
     return;
   }
 
   QString connectionName;
   QStringList keys = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items();
+  const QDomElement root = doc.documentElement();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1487,7 +1426,6 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
       continue;
     }
 
-    // check for duplicates
     if ( keys.contains( connectionName ) )
     {
       switch ( checkOverwritePrompt( this, connectionName, prompt, overwrite ) )
@@ -1518,8 +1456,7 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
 
 void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &doc, const QStringList &items )
 {
-  const QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsVectorTileConnections"_L1 )
+  if ( !isValidDocumentType( this, doc, QgsManageConnectionsDialog::VectorTile ) )
   {
     QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a Vector Tile connections exchange file." ) );
     return;
@@ -1530,6 +1467,7 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
   settings.beginGroup( u"/qgis/connections-vector-tile"_s );
   QStringList keys = settings.childGroups();
   settings.endGroup();
+  const QDomElement root = doc.documentElement();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1579,10 +1517,8 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
 
 void QgsManageConnectionsDialog::loadTiledSceneConnections( const QDomDocument &doc, const QStringList &items )
 {
-  const QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsTiledSceneConnections"_L1 )
+  if ( !isValidDocumentType( this, doc, QgsManageConnectionsDialog::TiledScene ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a tiled scene connections exchange file." ) );
     return;
   }
 
@@ -1591,6 +1527,7 @@ void QgsManageConnectionsDialog::loadTiledSceneConnections( const QDomDocument &
   settings.beginGroup( u"/qgis/connections-tiled-scene"_s );
   QStringList keys = settings.childGroups();
   settings.endGroup();
+  const QDomElement root = doc.documentElement();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1637,8 +1574,7 @@ void QgsManageConnectionsDialog::loadTiledSceneConnections( const QDomDocument &
 
 void QgsManageConnectionsDialog::loadSensorThingsConnections( const QDomDocument &doc, const QStringList &items )
 {
-  const QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsSensorThingsConnections"_L1 )
+  if ( !isValidDocumentType( this, doc, QgsManageConnectionsDialog::SensorThings ) )
   {
     QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a SensorThings connections exchange file." ) );
     return;
@@ -1649,6 +1585,7 @@ void QgsManageConnectionsDialog::loadSensorThingsConnections( const QDomDocument
   settings.beginGroup( u"/connections/sensorthings/items"_s );
   QStringList keys = settings.childGroups();
   settings.endGroup();
+  const QDomElement root = doc.documentElement();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
