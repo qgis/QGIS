@@ -863,7 +863,7 @@ QDomDocument QgsManageConnectionsDialog::saveSensorThingsConnections( const QStr
     el.setAttribute( u"username"_s, QgsSensorThingsProviderConnection::settingsUsername->value( connections[i] ) );
     el.setAttribute( u"password"_s, QgsSensorThingsProviderConnection::settingsPassword->value( connections[i] ) );
 
-    QgsHttpHeaders httpHeader( QgsTiledSceneProviderConnection::settingsHeaders->value( connections[i] ) );
+    QgsHttpHeaders httpHeader( QgsSensorThingsProviderConnection::settingsHeaders->value( connections[i] ) );
     httpHeader.updateDomElement( el, namespaceDeclarations );
 
     root.appendChild( el );
