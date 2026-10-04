@@ -288,10 +288,16 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   // info from table to application
   connect( this, &QgsAttributeTableDialog::saveEdits, this, [=] { QgisApp::instance()->saveEdits(); } );
 
+  QgsDockableWidgetHelper::Options dockableOptions;
   QgsDockableWidgetHelper::OpeningMode openingMode = QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
   if ( initiallyDocked )
     openingMode = *initiallyDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), QStringLiteral( "attribute-table" ), QStringList(), openingMode, false, Qt::BottomDockWidgetArea );
+
+  if ( openingMode == QgsDockableWidgetHelper::OpeningMode::ForceDocked )
+  {
+    dockableOptions.setFlag( QgsDockableWidgetHelper::Option::RaiseTab );
+  }
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), QStringLiteral( "attribute-table" ), QStringList(), openingMode, false, Qt::BottomDockWidgetArea, dockableOptions );
   toggleShortcuts( !mDockableWidgetHelper->isDocked() );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [=]() {
     close();
