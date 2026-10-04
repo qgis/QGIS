@@ -111,6 +111,65 @@ namespace
     return overwrite ? ActionOnDuplicate::Overwrite : ActionOnDuplicate::Skip;
   }
 
+  /**
+ * Writes database connection details to XML element.
+ * \param element the target XML element
+ * \param settings the settings object to read connection details from
+ * \param path the base group path for the target connection (e.g., "/PostgreSQL/connections/my_conn").
+ * \param keys list of QgsSettings keys to save as XML attributes. Attribute names will match the setting keys.
+ * \param defaults optional map of "settings key - default value" pairs used if a setting does not exist in \a settings.
+ *
+ * \note Credential keys (e.g. "saveUsername", "username", "savePassword", "password") should not be included
+ *       in the \a keys list; they are handled automatically.
+ */
+  static void saveDatabaseConnection( QDomElement &element, const QgsSettings &settings, const QString &path, const QStringList &keys, const QVariantMap &defaults = {} )
+  {
+    for ( const QString &key : keys )
+    {
+      const QVariant defaultValue = defaults.value( key, QString() );
+      element.setAttribute( key, settings.value( path + u'/' + key, defaultValue ).toString() );
+    }
+
+    const bool saveUsername = settings.value( path + "/saveUsername"_L1, "false"_L1 ).toString() == "true"_L1;
+    element.setAttribute( u"saveUsername"_s, saveUsername ? u"true"_s : u"false"_s );
+    if ( saveUsername )
+    {
+      element.setAttribute( u"username"_s, settings.value( path + "/username"_L1 ).toString() );
+    }
+    const bool savePassword = settings.value( path + "/savePassword"_L1, "false"_L1 ).toString() == "true"_L1;
+    element.setAttribute( u"savePassword"_s, savePassword ? u"true"_s : u"false"_s );
+    if ( savePassword )
+    {
+      element.setAttribute( u"password"_s, settings.value( path + "/password"_L1 ).toString() );
+    }
+  }
+
+  /**
+ * Loads database connection settings from an XML DOM \a element into \a settings.
+ *
+ * \param element the source XML DOM element containing connection attributes.
+ * \param settings the QgsSettings instance where settings will be saved (caller should set up current group).
+ * \param keys list of attribute names to read from \a element and save into \a settings.
+ * \param defaults Optional map of key-default value pairs . If an attribute in \a keys is missing from \a element,
+ * its corresponding value in \a defaults will be used instead. Keys not present in \a defaults will fall back to an empty string.
+ *
+ * \note Credential keys (e.g. "saveUsername", "username", "savePassword", "password") should not be included
+ *       in the \a keys list; they are handled automatically.
+ */
+  static void loadDatabaseConnection( const QDomElement &element, QgsSettings &settings, const QStringList &keys, const QVariantMap &defaults = {} )
+  {
+    for ( const QString &key : keys )
+    {
+      const QString defaultValue = defaults.value( key, QString() ).toString();
+      settings.setValue( u'/' + key, element.attribute( key, defaultValue ) );
+    }
+
+    settings.setValue( u"/saveUsername"_s, element.attribute( u"saveUsername"_s ) );
+    settings.setValue( u"/username"_s, element.attribute( u"username"_s ) );
+    settings.setValue( u"/savePassword"_s, element.attribute( u"savePassword"_s ) );
+    settings.setValue( u"/password"_s, element.attribute( u"password"_s ) );
+  }
+
   static void addNamespaceDeclarations( QDomElement &root, const QMap<QString, QString> &namespaceDeclarations )
   {
     for ( auto it = namespaceDeclarations.begin(); it != namespaceDeclarations.end(); ++it )
@@ -608,35 +667,35 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
   for ( int i = 0; i < connections.count(); ++i )
   {
     path = "/PostgreSQL/connections/" + connections[i];
-    QDomElement el = doc.createElement( u"postgis"_s );
-    el.setAttribute( u"name"_s, connections[i] );
-    el.setAttribute( u"host"_s, settings.value( path + "/host" ).toString() );
-    el.setAttribute( u"port"_s, settings.value( path + "/port" ).toString() );
-    el.setAttribute( u"database"_s, settings.value( path + "/database" ).toString() );
-    el.setAttribute( u"service"_s, settings.value( path + "/service" ).toString() );
-    el.setAttribute( u"sslmode"_s, settings.value( path + "/sslmode", "1" ).toString() );
-    el.setAttribute( u"estimatedMetadata"_s, settings.value( path + "/estimatedMetadata", "0" ).toString() );
-    el.setAttribute( u"projectsInDatabase"_s, settings.value( path + "/projectsInDatabase", "0" ).toString() );
-    el.setAttribute( u"dontResolveType"_s, settings.value( path + "/dontResolveType", "0" ).toString() );
-    el.setAttribute( u"allowGeometrylessTables"_s, settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
-    el.setAttribute( u"geometryColumnsOnly"_s, settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
-    el.setAttribute( u"publicOnly"_s, settings.value( path + "/publicOnly", "0" ).toString() );
-    el.setAttribute( u"schema"_s, settings.value( path + "/schema" ).toString() );
-    el.setAttribute( u"saveUsername"_s, settings.value( path + "/saveUsername", "false" ).toString() );
+    QDomElement element = doc.createElement( u"postgis"_s );
+    saveDatabaseConnection(
+      element,
+      settings,
+      path,
+      { u"name"_s
+        u"host"_s,
+        u"port"_s,
+        u"database"_s,
+        u"service"_s,
+        u"sslmode"_s,
+        u"estimatedMetadata"_s,
+        u"projectsInDatabase"_s,
+        u"dontResolveType"_s,
+        u"allowGeometrylessTables"_s,
+        u"geometryColumnsOnly"_s,
+        u"publicOnly"_s,
+        u"schema"_s },
+      { { u"sslmode"_s, "1" },
+        { u"estimatedMetadata"_s, "0" },
+        { u"projectsInDatabase"_s, "0" },
+        { u"dontResolveType"_s, "0" },
+        { u"allowGeometrylessTables"_s, "0" },
+        { u"geometryColumnsOnly"_s, "0" },
+        { u"publicOnly"_s, "0" },
+        {} }
+    );
 
-    if ( settings.value( path + "/saveUsername", "false" ).toString() == "true"_L1 )
-    {
-      el.setAttribute( u"username"_s, settings.value( path + "/username" ).toString() );
-    }
-
-    el.setAttribute( u"savePassword"_s, settings.value( path + "/savePassword", "false" ).toString() );
-
-    if ( settings.value( path + "/savePassword", "false" ).toString() == "true"_L1 )
-    {
-      el.setAttribute( u"password"_s, settings.value( path + "/password" ).toString() );
-    }
-
-    root.appendChild( el );
+    root.appendChild( element );
   }
 
   return doc;
@@ -654,30 +713,21 @@ QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList
   for ( int i = 0; i < connections.count(); ++i )
   {
     path = "/MSSQL/connections/" + connections[i];
-    QDomElement el = doc.createElement( u"mssql"_s );
-    el.setAttribute( u"name"_s, connections[i] );
-    el.setAttribute( u"host"_s, settings.value( path + "/host" ).toString() );
-    el.setAttribute( u"port"_s, settings.value( path + "/port" ).toString() );
-    el.setAttribute( u"database"_s, settings.value( path + "/database" ).toString() );
-    el.setAttribute( u"service"_s, settings.value( path + "/service" ).toString() );
-    el.setAttribute( u"sslmode"_s, settings.value( path + "/sslmode", "1" ).toString() );
-    el.setAttribute( u"estimatedMetadata"_s, settings.value( path + "/estimatedMetadata", "0" ).toString() );
-
-    el.setAttribute( u"saveUsername"_s, settings.value( path + "/saveUsername", "false" ).toString() );
-
-    if ( settings.value( path + "/saveUsername", "false" ).toString() == "true"_L1 )
-    {
-      el.setAttribute( u"username"_s, settings.value( path + "/username" ).toString() );
-    }
-
-    el.setAttribute( u"savePassword"_s, settings.value( path + "/savePassword", "false" ).toString() );
-
-    if ( settings.value( path + "/savePassword", "false" ).toString() == "true"_L1 )
-    {
-      el.setAttribute( u"password"_s, settings.value( path + "/password" ).toString() );
-    }
-
-    root.appendChild( el );
+    QDomElement element = doc.createElement( u"mssql"_s );
+    saveDatabaseConnection(
+      element,
+      settings,
+      path,
+      { u"name"_s
+        u"host"_s,
+        u"port"_s,
+        u"database"_s,
+        u"service"_s,
+        u"sslmode"_s,
+        u"estimatedMetadata"_s },
+      { { u"sslmode"_s, "1" }, { u"estimatedMetadata"_s, "0" } }
+    );
+    root.appendChild( element );
   }
 
   return doc;
@@ -695,34 +745,26 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
   for ( int i = 0; i < connections.count(); ++i )
   {
     path = "/Oracle/connections/" + connections[i];
-    QDomElement el = doc.createElement( u"oracle"_s );
-    el.setAttribute( u"name"_s, connections[i] );
-    el.setAttribute( u"host"_s, settings.value( path + "/host" ).toString() );
-    el.setAttribute( u"port"_s, settings.value( path + "/port" ).toString() );
-    el.setAttribute( u"database"_s, settings.value( path + "/database" ).toString() );
-    el.setAttribute( u"dboptions"_s, settings.value( path + "/dboptions" ).toString() );
-    el.setAttribute( u"dbworkspace"_s, settings.value( path + "/dbworkspace" ).toString() );
-    el.setAttribute( u"schema"_s, settings.value( path + "/schema" ).toString() );
-    el.setAttribute( u"estimatedMetadata"_s, settings.value( path + "/estimatedMetadata", "0" ).toString() );
-    el.setAttribute( u"userTablesOnly"_s, settings.value( path + "/userTablesOnly", "0" ).toString() );
-    el.setAttribute( u"geometryColumnsOnly"_s, settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
-    el.setAttribute( u"allowGeometrylessTables"_s, settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
+    QDomElement element = doc.createElement( u"oracle"_s );
+    saveDatabaseConnection(
+      element,
+      settings,
+      path,
+      { u"name"_s
+        u"host"_s,
+        u"port"_s,
+        u"database"_s,
+        u"dboptions"_s,
+        u"dbworkspace"_s,
+        u"schema"_s,
+        u"estimatedMetadata"_s,
+        u"userTablesOnly"_s,
+        u"geometryColumnsOnly"_s,
+        u"allowGeometrylessTables"_s },
+      { { u"estimatedMetadata"_s, "0" }, { u"userTablesOnly"_s, "0" }, { u"geometryColumnsOnly"_s, "0" }, { u"allowGeometrylessTables"_s, "0" } }
+    );
 
-    el.setAttribute( u"saveUsername"_s, settings.value( path + "/saveUsername", "false" ).toString() );
-
-    if ( settings.value( path + "/saveUsername", "false" ).toString() == "true"_L1 )
-    {
-      el.setAttribute( u"username"_s, settings.value( path + "/username" ).toString() );
-    }
-
-    el.setAttribute( u"savePassword"_s, settings.value( path + "/savePassword", "false" ).toString() );
-
-    if ( settings.value( path + "/savePassword", "false" ).toString() == "true"_L1 )
-    {
-      el.setAttribute( u"password"_s, settings.value( path + "/password" ).toString() );
-    }
-
-    root.appendChild( el );
+    root.appendChild( element );
   }
 
   return doc;
@@ -740,38 +782,30 @@ QDomDocument QgsManageConnectionsDialog::saveHanaConnections( const QStringList 
   for ( int i = 0; i < connections.count(); ++i )
   {
     path = "/HANA/connections/" + connections[i];
-    QDomElement el = doc.createElement( u"hana"_s );
-    el.setAttribute( u"name"_s, connections[i] );
-    el.setAttribute( u"driver"_s, settings.value( path + "/driver", QString() ).toString() );
-    el.setAttribute( u"host"_s, settings.value( path + "/host", QString() ).toString() );
-    el.setAttribute( u"identifierType"_s, settings.value( path + "/identifierType", QString() ).toString() );
-    el.setAttribute( u"identifier"_s, settings.value( path + "/identifier", QString() ).toString() );
-    el.setAttribute( u"multitenant"_s, settings.value( path + "/multitenant", QString() ).toString() );
-    el.setAttribute( u"database"_s, settings.value( path + "/database", QString() ).toString() );
-    el.setAttribute( u"schema"_s, settings.value( path + "/schema", QString() ).toString() );
-    el.setAttribute( u"userTablesOnly"_s, settings.value( path + "/userTablesOnly", u"0"_s ).toString() );
-    el.setAttribute( u"allowGeometrylessTables"_s, settings.value( path + "/allowGeometrylessTables", u"0"_s ).toString() );
-
-    el.setAttribute( u"saveUsername"_s, settings.value( path + "/saveUsername", u"false"_s ).toString() );
-    if ( settings.value( path + "/saveUsername", "false" ).toString() == "true"_L1 )
-    {
-      el.setAttribute( u"username"_s, settings.value( path + "/username", QString() ).toString() );
-    }
-
-    el.setAttribute( u"savePassword"_s, settings.value( path + "/savePassword", u"false"_s ).toString() );
-    if ( settings.value( path + "/savePassword", "false" ).toString() == "true"_L1 )
-    {
-      el.setAttribute( u"password"_s, settings.value( path + "/password", QString() ).toString() );
-    }
-
-    el.setAttribute( u"sslEnabled"_s, settings.value( path + "/sslEnabled", u"false"_s ).toString() );
-    el.setAttribute( u"sslCryptoProvider"_s, settings.value( path + "/sslCryptoProvider", u"openssl"_s ).toString() );
-    el.setAttribute( u"sslKeyStore"_s, settings.value( path + "/sslKeyStore", QString() ).toString() );
-    el.setAttribute( u"sslTrustStore"_s, settings.value( path + "/sslTrustStore", QString() ).toString() );
-    el.setAttribute( u"sslValidateCertificate"_s, settings.value( path + "/sslValidateCertificate", u"false"_s ).toString() );
-    el.setAttribute( u"sslHostNameInCertificate"_s, settings.value( path + "/sslHostNameInCertificate", QString() ).toString() );
-
-    root.appendChild( el );
+    QDomElement element = doc.createElement( u"hana"_s );
+    saveDatabaseConnection(
+      element,
+      settings,
+      path,
+      { u"name"_s
+        u"driver"_s,
+        u"host"_s,
+        u"identifierType"_s,
+        u"identifier"_s,
+        u"multitenant"_s,
+        u"database"_s,
+        u"schema"_s,
+        u"userTablesOnly"_s,
+        u"allowGeometrylessTables"_s,
+        u"sslEnabled"_s,
+        u"sslCryptoProvider"_s,
+        u"sslKeyStore"_s,
+        u"sslTrustStore"_s,
+        u"sslValidateCertificate"_s,
+        u"sslHostNameInCertificate"_s },
+      { { u"userTablesOnly"_s, "0" }, { u"allowGeometrylessTables"_s, "0" }, { u"sslEnabled"_s, u"false"_s }, { u"sslCryptoProvider"_s, u"openssl"_s }, { u"sslValidateCertificate"_s, u"false"_s } }
+    );
+    root.appendChild( element );
   }
 
   return doc;
@@ -1160,30 +1194,23 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
     }
 
     settings.beginGroup( "/PostgreSQL/connections/" + connectionName );
-
-    settings.setValue( u"/host"_s, child.attribute( u"host"_s ) );
-    settings.setValue( u"/port"_s, child.attribute( u"port"_s ) );
-    settings.setValue( u"/database"_s, child.attribute( u"database"_s ) );
-    if ( child.hasAttribute( u"service"_s ) )
-    {
-      settings.setValue( u"/service"_s, child.attribute( u"service"_s ) );
-    }
-    else
-    {
-      settings.setValue( u"/service"_s, "" );
-    }
-    settings.setValue( u"/sslmode"_s, child.attribute( u"sslmode"_s ) );
-    settings.setValue( u"/estimatedMetadata"_s, child.attribute( u"estimatedMetadata"_s ) );
-    settings.setValue( u"/projectsInDatabase"_s, child.attribute( u"projectsInDatabase"_s, 0 ) );
-    settings.setValue( u"/dontResolveType"_s, child.attribute( u"dontResolveType"_s, 0 ) );
-    settings.setValue( u"/allowGeometrylessTables"_s, child.attribute( u"allowGeometrylessTables"_s, 0 ) );
-    settings.setValue( u"/geometryColumnsOnly"_s, child.attribute( u"geometryColumnsOnly"_s, 0 ) );
-    settings.setValue( u"/publicOnly"_s, child.attribute( u"publicOnly"_s, 0 ) );
-    settings.setValue( u"/saveUsername"_s, child.attribute( u"saveUsername"_s ) );
-    settings.setValue( u"/username"_s, child.attribute( u"username"_s ) );
-    settings.setValue( u"/savePassword"_s, child.attribute( u"savePassword"_s ) );
-    settings.setValue( u"/password"_s, child.attribute( u"password"_s ) );
-    settings.setValue( u"/schema"_s, child.attribute( u"schema"_s ) );
+    loadDatabaseConnection(
+      child,
+      settings,
+      { u"host"_s,
+        u"port"_s,
+        u"database"_s,
+        u"ervice"_s,
+        u"sslmode"_s,
+        u"estimatedMetadata"_s,
+        u"projectsInDatabase"_s,
+        u"dontResolveType"_s,
+        u"allowGeometrylessTables"_s,
+        u"geometryColumnsOnly"_s,
+        u"publicOnly"_s,
+        u"schema"_s },
+      { { u"service"_s, "" }, { u"projectsInDatabase"_s, 0 }, { u"dontResolveType"_s, 0 }, { u"allowGeometrylessTables"_s, 0 }, { u"geometryColumnsOnly"_s, 0 }, { u"publicOnly"_s, 0 } }
+    );
     settings.endGroup();
 
     child = child.nextSiblingElement();
@@ -1237,24 +1264,7 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
     }
 
     settings.beginGroup( "/MSSQL/connections/" + connectionName );
-
-    settings.setValue( u"/host"_s, child.attribute( u"host"_s ) );
-    settings.setValue( u"/port"_s, child.attribute( u"port"_s ) );
-    settings.setValue( u"/database"_s, child.attribute( u"database"_s ) );
-    if ( child.hasAttribute( u"service"_s ) )
-    {
-      settings.setValue( u"/service"_s, child.attribute( u"service"_s ) );
-    }
-    else
-    {
-      settings.setValue( u"/service"_s, "" );
-    }
-    settings.setValue( u"/sslmode"_s, child.attribute( u"sslmode"_s ) );
-    settings.setValue( u"/estimatedMetadata"_s, child.attribute( u"estimatedMetadata"_s ) );
-    settings.setValue( u"/saveUsername"_s, child.attribute( u"saveUsername"_s ) );
-    settings.setValue( u"/username"_s, child.attribute( u"username"_s ) );
-    settings.setValue( u"/savePassword"_s, child.attribute( u"savePassword"_s ) );
-    settings.setValue( u"/password"_s, child.attribute( u"password"_s ) );
+    loadDatabaseConnection( child, settings, { u"host"_s, u"port"_s, u"database"_s, u"service"_s, u"sslmode"_s, u"estimatedMetadata"_s }, { { u"service"_s, "" } } );
     settings.endGroup();
 
     child = child.nextSiblingElement();
@@ -1307,21 +1317,7 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
     }
 
     settings.beginGroup( "/Oracle/connections/" + connectionName );
-
-    settings.setValue( u"/host"_s, child.attribute( u"host"_s ) );
-    settings.setValue( u"/port"_s, child.attribute( u"port"_s ) );
-    settings.setValue( u"/database"_s, child.attribute( u"database"_s ) );
-    settings.setValue( u"/dboptions"_s, child.attribute( u"dboptions"_s ) );
-    settings.setValue( u"/dbworkspace"_s, child.attribute( u"dbworkspace"_s ) );
-    settings.setValue( u"/schema"_s, child.attribute( u"schema"_s ) );
-    settings.setValue( u"/estimatedMetadata"_s, child.attribute( u"estimatedMetadata"_s ) );
-    settings.setValue( u"/userTablesOnly"_s, child.attribute( u"userTablesOnly"_s ) );
-    settings.setValue( u"/geometryColumnsOnly"_s, child.attribute( u"geometryColumnsOnly"_s ) );
-    settings.setValue( u"/allowGeometrylessTables"_s, child.attribute( u"allowGeometrylessTables"_s ) );
-    settings.setValue( u"/saveUsername"_s, child.attribute( u"saveUsername"_s ) );
-    settings.setValue( u"/username"_s, child.attribute( u"username"_s ) );
-    settings.setValue( u"/savePassword"_s, child.attribute( u"savePassword"_s ) );
-    settings.setValue( u"/password"_s, child.attribute( u"password"_s ) );
+    loadDatabaseConnection( child, settings, { u"host"_s, u"port"_s, u"database"_s, u"dboptions"_s, u"dbworkspace"_s, u"schema"_s, u"estimatedMetadata"_s, u"userTablesOnly"_s, u"geometryColumnsOnly"_s, u"allowGeometrylessTables"_s } );
     settings.endGroup();
 
     child = child.nextSiblingElement();
@@ -1381,29 +1377,29 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
     }
 
     settings.beginGroup( "/HANA/connections/" + connectionName );
-
-    for ( const QString param :
-          { "driver",
-            "host",
-            "database",
-            "identifierType",
-            "identifier",
-            "multitenant",
-            "schema",
-            "userTablesOnly",
-            "allowGeometrylessTables",
-            "saveUsername",
-            "username",
-            "savePassword",
-            "password",
-            "sslEnabled",
-            "sslCryptoProvider",
-            "sslKeyStore",
-            "sslTrustStore",
-            "sslValidateCertificate",
-            "sslHostNameInCertificate" } )
-      settings.setValue( u"/"_s + param, child.attribute( param ) );
-
+    loadDatabaseConnection(
+      child,
+      settings,
+      { u"driver"_s,
+        u"host"_s,
+        u"database"_s,
+        u"identifierType"_s,
+        u"identifier"_s,
+        u"multitenant"_s,
+        u"schema"_s,
+        u"userTablesOnly"_s,
+        u"allowGeometrylessTables"_s,
+        u"saveUsername"_s,
+        u"username"_s,
+        u"savePassword"_s,
+        u"password"_s,
+        u"sslEnabled"_s,
+        u"sslCryptoProvider"_s,
+        u"sslKeyStore"_s,
+        u"sslTrustStore"_s,
+        u"sslValidateCertificate"_s,
+        u"sslHostNameInCertificate"_s }
+    );
     settings.endGroup();
 
     child = child.nextSiblingElement();
