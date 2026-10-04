@@ -30,6 +30,8 @@ class TestQgsMsSqlQueryBuilder(QgisTestCase):
         self.assertEqual(builder.quoteIdentifier("a table"), "[a table]")
         self.assertEqual(builder.quoteIdentifier("a TABLE"), "[a TABLE]")
         self.assertEqual(builder.quoteIdentifier('a "TABLE"'), '[a "TABLE"]')
+        self.assertEqual(builder.quoteIdentifier("a]TABLE"), "[a]]TABLE]")
+        self.assertEqual(builder.quoteIdentifier("a[TABLE]"), "[a[TABLE]]]")
 
     def test_limit_query(self):
         # we don't need a valid database to test this

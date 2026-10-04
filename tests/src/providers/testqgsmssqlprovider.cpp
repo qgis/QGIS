@@ -18,6 +18,7 @@
 
 #include <QRandomGenerator>
 #include <QSqlError>
+#include <QSqlQuery>
 #include <QString>
 #include <qtconcurrentrun.h>
 
@@ -66,6 +67,8 @@ class TestQgsMssqlProvider : public QObject
     void testEmptyLayer();
     void testColumnDefinitionForField_data();
     void testColumnDefinitionForField();
+    void testDropTableSpecialCharacterNames();
+    void testCreateSchemaTruncateDropViewSpecialCharacterNames();
 
   private:
     QString mDbConn;
@@ -679,6 +682,100 @@ void TestQgsMssqlProvider::testColumnDefinitionForField()
   QFETCH( QString, definition );
 
   QCOMPARE( QgsMssqlUtils::columnDefinitionForField( field, ignoreTypeString ), definition );
+}
+
+void TestQgsMssqlProvider::testDropTableSpecialCharacterNames()
+{
+  // schema and table names containing a closing bracket or a single quote must be quoted correctly,
+  // setup and checks escape the names by hand, independently of the code under test
+  const QgsDataSourceUri uri( mDbConn );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( uri );
+  QVERIFY( db->isValid() );
+  QSqlQuery q( db->db() );
+
+  q.exec( u"DROP TABLE IF EXISTS [schema]]with'quote].[table]]with'quote]"_s );
+  q.exec( u"DROP SCHEMA IF EXISTS [schema]]with'quote]"_s );
+  QVERIFY2( q.exec( u"CREATE SCHEMA [schema]]with'quote]"_s ), q.lastError().text().toLocal8Bit().constData() );
+  QVERIFY2( q.exec( u"CREATE TABLE [schema]]with'quote].[table]]with'quote] (pk int)"_s ), q.lastError().text().toLocal8Bit().constData() );
+  QVERIFY2(
+    q.exec(
+      // same definition as used by QgsMssqlProvider::createEmptyLayer()
+      u"IF OBJECT_ID(N'[geometry_columns]', N'U') IS NULL "
+      "CREATE TABLE geometry_columns (f_table_catalog varchar(128) not null, "
+      "f_table_schema varchar(128) not null, f_table_name varchar(256) not null, "
+      "f_geometry_column varchar(256) not null, coord_dimension integer not null, "
+      "srid integer not null, geometry_type varchar(30) not null, "
+      "CONSTRAINT geometry_columns_pk PRIMARY KEY (f_table_catalog, "
+      "f_table_schema, f_table_name, f_geometry_column))"_s
+    ),
+    q.lastError().text().toLocal8Bit().constData()
+  );
+  QVERIFY2(
+    q.exec(
+      u"INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, geometry_type) "
+      "VALUES ('', N'schema]with''quote', N'table]with''quote', 'geom', 2, 4326, 'POINT')"_s
+    ),
+    q.lastError().text().toLocal8Bit().constData()
+  );
+
+  QgsDataSourceUri tableUri( mDbConn );
+  tableUri.setSchema( u"schema]with'quote"_s );
+  tableUri.setTable( u"table]with'quote"_s );
+  QCOMPARE( QgsDataSourceUri( tableUri.uri() ).table(), u"table]with'quote"_s );
+
+  QString error;
+  QVERIFY2( QgsMssqlConnection::dropTable( tableUri.uri(), &error ), error.toLocal8Bit().constData() );
+  QVERIFY( q.exec( u"SELECT OBJECT_ID(N'[schema]]with''quote].[table]]with''quote]', N'U')"_s ) );
+  QVERIFY( q.next() );
+  QVERIFY( q.value( 0 ).isNull() );
+  QVERIFY( q.exec( u"SELECT COUNT(*) FROM geometry_columns WHERE f_table_schema = N'schema]with''quote' AND f_table_name = N'table]with''quote'"_s ) );
+  QVERIFY( q.next() );
+  QCOMPARE( q.value( 0 ).toInt(), 0 );
+
+  QVERIFY( q.exec( u"DROP SCHEMA [schema]]with'quote]"_s ) );
+}
+
+void TestQgsMssqlProvider::testCreateSchemaTruncateDropViewSpecialCharacterNames()
+{
+  // schema, table and view names containing a closing bracket or a single quote must be quoted correctly,
+  // setup and checks escape the names by hand, independently of the code under test
+  const QgsDataSourceUri uri( mDbConn );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( uri );
+  QVERIFY( db->isValid() );
+  QSqlQuery q( db->db() );
+
+  q.exec( u"DROP VIEW IF EXISTS [schema]]with'quote].[view]]with'quote]"_s );
+  q.exec( u"DROP TABLE IF EXISTS [schema]]with'quote].[table]]with'quote]"_s );
+  q.exec( u"DROP SCHEMA IF EXISTS [schema]]with'quote]"_s );
+
+  QString error;
+  QVERIFY2( QgsMssqlConnection::createSchema( uri.uri(), u"schema]with'quote"_s, &error ), error.toLocal8Bit().constData() );
+  QVERIFY( q.exec( u"SELECT SCHEMA_ID(N'schema]with''quote')"_s ) );
+  QVERIFY( q.next() );
+  QVERIFY( !q.value( 0 ).isNull() );
+
+  QVERIFY2( q.exec( u"CREATE TABLE [schema]]with'quote].[table]]with'quote] (pk int)"_s ), q.lastError().text().toLocal8Bit().constData() );
+  QVERIFY2( q.exec( u"INSERT INTO [schema]]with'quote].[table]]with'quote] (pk) VALUES (1)"_s ), q.lastError().text().toLocal8Bit().constData() );
+  QVERIFY2( q.exec( u"CREATE VIEW [schema]]with'quote].[view]]with'quote] AS SELECT pk FROM [schema]]with'quote].[table]]with'quote]"_s ), q.lastError().text().toLocal8Bit().constData() );
+
+  QgsDataSourceUri tableUri( mDbConn );
+  tableUri.setSchema( u"schema]with'quote"_s );
+  tableUri.setTable( u"table]with'quote"_s );
+  QVERIFY2( QgsMssqlConnection::truncateTable( tableUri.uri(), &error ), error.toLocal8Bit().constData() );
+  QVERIFY( q.exec( u"SELECT COUNT(*) FROM [schema]]with'quote].[table]]with'quote]"_s ) );
+  QVERIFY( q.next() );
+  QCOMPARE( q.value( 0 ).toInt(), 0 );
+
+  QgsDataSourceUri viewUri( mDbConn );
+  viewUri.setSchema( u"schema]with'quote"_s );
+  viewUri.setTable( u"view]with'quote"_s );
+  QVERIFY2( QgsMssqlConnection::dropView( viewUri.uri(), &error ), error.toLocal8Bit().constData() );
+  QVERIFY( q.exec( u"SELECT OBJECT_ID(N'[schema]]with''quote].[view]]with''quote]', N'V')"_s ) );
+  QVERIFY( q.next() );
+  QVERIFY( q.value( 0 ).isNull() );
+
+  QVERIFY( q.exec( u"DROP TABLE [schema]]with'quote].[table]]with'quote]"_s ) );
+  QVERIFY( q.exec( u"DROP SCHEMA [schema]]with'quote]"_s ) );
 }
 
 QGSTEST_MAIN( TestQgsMssqlProvider )

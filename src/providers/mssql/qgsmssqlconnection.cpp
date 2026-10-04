@@ -123,7 +123,7 @@ bool QgsMssqlConnection::dropView( const QString &uri, QString *errorMessage )
   }
 
   QSqlQuery q = QSqlQuery( db->db() );
-  if ( !q.exec( QString( "DROP VIEW [%1].[%2]" ).arg( schema, table ) ) )
+  if ( !q.exec( u"DROP VIEW %1.%2"_s.arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( table ) ) ) )
   {
     if ( errorMessage )
       *errorMessage = q.lastError().text();
@@ -151,11 +151,12 @@ bool QgsMssqlConnection::dropTable( const QString &uri, QString *errorMessage )
 
   QSqlQuery q = QSqlQuery( db->db() );
   q.setForwardOnly( true );
+  const QString quotedTableName = u"%1.%2"_s.arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( table ) );
   const QString sql = QString(
-                        "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
-                        "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'"
+                        "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(%1) AND type in (N'U')) DROP TABLE %2\n"
+                        "DELETE FROM geometry_columns WHERE f_table_schema = %3 AND f_table_name = %4"
   )
-                        .arg( schema, table );
+                        .arg( QgsMssqlUtils::quotedValue( quotedTableName ), quotedTableName, QgsMssqlUtils::quotedValue( schema ), QgsMssqlUtils::quotedValue( table ) );
   if ( !q.exec( sql ) )
   {
     if ( errorMessage )
@@ -184,7 +185,7 @@ bool QgsMssqlConnection::truncateTable( const QString &uri, QString *errorMessag
 
   QSqlQuery q = QSqlQuery( db->db() );
   q.setForwardOnly( true );
-  const QString sql = u"TRUNCATE TABLE [%1].[%2]"_s.arg( schema, table );
+  const QString sql = u"TRUNCATE TABLE %1.%2"_s.arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( table ) );
   if ( !q.exec( sql ) )
   {
     if ( errorMessage )
@@ -211,7 +212,7 @@ bool QgsMssqlConnection::createSchema( const QString &uri, const QString &schema
 
   QSqlQuery q = QSqlQuery( db->db() );
   q.setForwardOnly( true );
-  const QString sql = u"CREATE SCHEMA [%1]"_s.arg( schemaName );
+  const QString sql = u"CREATE SCHEMA %1"_s.arg( QgsMssqlUtils::quotedIdentifier( schemaName ) );
   if ( !q.exec( sql ) )
   {
     if ( errorMessage )
