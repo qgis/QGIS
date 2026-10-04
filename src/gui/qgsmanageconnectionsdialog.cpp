@@ -38,6 +38,52 @@
 
 using namespace Qt::StringLiterals;
 
+namespace
+{
+  static bool loadDocument( QWidget *parent, const QString &fileName, QDomDocument &document )
+  {
+    QFile file( fileName );
+    if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      QMessageBox::warning(
+        parent,
+        QCoreApplication::translate( "QgsManageConnectionsDialog", "Loading Connections" ),
+        QCoreApplication::translate( "QgsManageConnectionsDialog", "Cannot read file %1:\n%2." ).arg( fileName, file.errorString() )
+      );
+      return false;
+    }
+
+    QString errorString;
+    int errorLine;
+    int errorColumn;
+
+    if ( !document.setContent( &file, true, &errorString, &errorLine, &errorColumn ) )
+    {
+      QMessageBox::warning(
+        parent,
+        QCoreApplication::translate( "QgsManageConnectionsDialog", "Loading Connections" ),
+        QCoreApplication::translate( "QgsManageConnectionsDialog", "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorString )
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+
+  static void addNamespaceDeclarations( QDomElement &root, const QMap<QString, QString> &namespaceDeclarations )
+  {
+    for ( auto it = namespaceDeclarations.begin(); it != namespaceDeclarations.end(); ++it )
+    {
+      root.setAttribute( u"xmlns:"_s + it.key(), it.value() );
+    }
+  }
+} // namespace
+
+///
+/// QgsManageConnectionsDialog
+///
+
 QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
   : QDialog( parent )
   , mFileName( fileName )
@@ -181,21 +227,10 @@ void QgsManageConnectionsDialog::doExportImport()
   }
   else // import connections
   {
-    QFile file( mFileName );
-    if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-      QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Cannot read file %1:\n%2." ).arg( mFileName, file.errorString() ) );
-      return;
-    }
-
     QDomDocument doc;
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
 
-    if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
+    if ( !loadDocument( this, mFileName, doc ) )
     {
-      QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorStr ) );
       return;
     }
 
@@ -322,21 +357,10 @@ bool QgsManageConnectionsDialog::populateConnections()
   // Import mode. Populate connections list from file
   else
   {
-    QFile file( mFileName );
-    if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-      QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Cannot read file %1:\n%2." ).arg( mFileName, file.errorString() ) );
-      return false;
-    }
-
     QDomDocument doc;
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
 
-    if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
+    if ( !loadDocument( this, mFileName, doc ) )
     {
-      QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorStr ) );
       return false;
     }
 
@@ -464,14 +488,6 @@ bool QgsManageConnectionsDialog::populateConnections()
     }
   }
   return true;
-}
-
-static void addNamespaceDeclarations( QDomElement &root, const QMap<QString, QString> &namespaceDeclarations )
-{
-  for ( auto it = namespaceDeclarations.begin(); it != namespaceDeclarations.end(); ++it )
-  {
-    root.setAttribute( u"xmlns:"_s + it.key(), it.value() );
-  }
 }
 
 QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &connections, const QString &service )
@@ -873,7 +889,6 @@ QDomDocument QgsManageConnectionsDialog::saveSensorThingsConnections( const QStr
 
   return doc;
 }
-
 
 QDomDocument QgsManageConnectionsDialog::saveCloudStorageConnections( const QStringList &connections )
 {
