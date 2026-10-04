@@ -636,6 +636,7 @@
 %Include auto_generated/processing/qgsprocessingparametertype.sip
 %Include auto_generated/processing/qgsprocessingparametervectortilewriterlayers.sip
 %Include auto_generated/processing/qgsprocessingparameteralignrasterlayers.sip
+%Include auto_generated/processing/qgsprocessingpostprocessor.sip
 %Include auto_generated/processing/qgsprocessingprojectmodelprovider.sip
 %Include auto_generated/processing/qgsprocessingprovider.sip
 %Include auto_generated/processing/qgsprocessingregistry.sip
