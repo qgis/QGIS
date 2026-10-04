@@ -52,7 +52,9 @@ QString QgsMssqlUtils::quotedValue( const QVariant &value )
 
 QString QgsMssqlUtils::quotedIdentifier( const QString &value )
 {
-  return u"[%1]"_s.arg( value );
+  QString quoted = value;
+  quoted.replace( ']', "]]"_L1 );
+  return u"[%1]"_s.arg( quoted );
 }
 
 QMetaType::Type QgsMssqlUtils::convertSqlFieldType( const QString &systemTypeName )
