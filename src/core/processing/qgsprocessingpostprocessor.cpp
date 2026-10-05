@@ -18,6 +18,8 @@
 #include "qgsprocessingpostprocessor.h"
 
 #include "qgsapplication.h"
+#include "qgslayertree.h"
+#include "qgslayertreegroup.h"
 #include "qgsmaplayer.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingdefaultstyleregistry.h"
@@ -89,4 +91,58 @@ void QgsProcessingLayerPostProcessor::postProcessLayer( QgsMapLayer *layer, cons
     bool result = false;
     layer->loadNamedStyle( styleFilePath, result );
   }
+}
+
+//
+// QgsProcessingResultsHandler
+//
+
+QgsProcessingResultsHandler::~QgsProcessingResultsHandler() = default;
+
+QgsLayerTreeGroup *QgsProcessingResultsHandler::layerTreeResultsGroup( const QgsProcessingContext::LayerDetails &layerDetails, const QgsProcessingContext &context )
+{
+  QgsProject *destinationProject = layerDetails.project ? layerDetails.project : context.project();
+  if ( !destinationProject )
+    return nullptr;
+
+  QgsLayerTreeGroup *resultsGroup = nullptr;
+
+  // if a specific results group is specified in Processing settings,
+  // respect it (and create if necessary)
+  QgsSettings settings;
+  const QString resultsGroupName = settings.value( u"Processing/Configuration/RESULTS_GROUP_NAME"_s, QString() ).toString();
+
+  if ( !resultsGroupName.isEmpty() )
+  {
+    resultsGroup = destinationProject->layerTreeRoot()->findGroup( resultsGroupName );
+    if ( !resultsGroup )
+    {
+      resultsGroup = destinationProject->layerTreeRoot()->insertGroup( 0, resultsGroupName );
+      resultsGroup->setExpanded( true );
+    }
+  }
+
+  // if this particular output layer has a specific output group assigned,
+  // find or create it now
+  QgsLayerTreeGroup *group = nullptr;
+  if ( !layerDetails.groupName.isEmpty() )
+  {
+    if ( !resultsGroup )
+    {
+      resultsGroup = destinationProject->layerTreeRoot();
+    }
+
+    group = resultsGroup->findGroup( layerDetails.groupName );
+    if ( !group )
+    {
+      group = resultsGroup->insertGroup( 0, layerDetails.groupName );
+      group->setExpanded( true );
+    }
+  }
+  else
+  {
+    group = resultsGroup;
+  }
+
+  return group;
 }

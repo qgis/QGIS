@@ -80,12 +80,6 @@ class GUI_EXPORT QgsProcessingGuiUtils
     static void configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer );
 
     /**
-     * Returns the destination layer tree group to store results in, or NULLPTR if there
-     * is no specific destination tree group associated with the layer.
-     */
-    static QgsLayerTreeGroup *layerTreeResultsGroup( const QgsProcessingContext::LayerDetails &layerDetails, const QgsProcessingContext &context );
-
-    /**
      * Responsible for adding layers created by an algorithm to a project and the project's layer tree in the correct location.
      */
     static void addResultLayers( const QVector< QgsProcessingGuiUtils::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeView *view = nullptr );

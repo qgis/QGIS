@@ -36,6 +36,31 @@ running the specified Processing ``algorithm``.
 };
 
 
+class QgsProcessingResultsHandler
+{
+%Docstring(signature="appended")
+Handles results output by Processing algorithms.
+
+.. versionadded:: 4.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingpostprocessor.h"
+%End
+  public:
+    QgsProcessingResultsHandler();
+
+    virtual ~QgsProcessingResultsHandler();
+
+    static QgsLayerTreeGroup *layerTreeResultsGroup( const QgsProcessingContext::LayerDetails &layerDetails, const QgsProcessingContext &context );
+%Docstring
+Returns the destination layer tree group to store results in, or
+``None`` if there is no specific destination tree group associated with
+the layer.
+%End
+};
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

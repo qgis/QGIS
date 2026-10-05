@@ -30,6 +30,7 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingContext,
     QgsProcessingFeedback,
+    QgsProcessingResultsHandler,
     QgsProcessingUtils,
 )
 from qgis.gui import QgsProcessingGuiUtils
@@ -112,7 +113,7 @@ def handleAlgorithmResults(
                 layer_post_processor.postProcessLayer(layer, output_name, alg)
 
                 # Load layer to layer tree root or to a specific group
-                results_group = QgsProcessingGuiUtils.layerTreeResultsGroup(
+                results_group = QgsProcessingResultsHandler.layerTreeResultsGroup(
                     details, context
                 )
 
@@ -122,8 +123,8 @@ def handleAlgorithmResults(
                 if owned_map_layer:
                     # we don't add the layer to the tree yet -- that's done
                     # later, after we've sorted all added layers
-                    result_layer_details = QgsProcessingGuiUtils.ResultLayerDetails(
-                        owned_map_layer
+                    result_layer_details = (
+                        QgsProcessingResultsHandler.ResultLayerDetails(owned_map_layer)
                     )
                     result_layer_details.targetLayerTreeGroup = results_group
                     result_layer_details.sortKey = details.layerSortKey or 0

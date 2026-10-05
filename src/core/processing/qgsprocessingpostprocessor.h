@@ -20,9 +20,11 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgsprocessingcontext.h"
 
 class QgsMapLayer;
 class QgsProcessingAlgorithm;
+class QgsLayerTreeGroup;
 
 /**
  * \class QgsProcessingLayerPostProcessor
@@ -44,6 +46,27 @@ class CORE_EXPORT QgsProcessingLayerPostProcessor
      * the specified Processing \a algorithm.
      */
     virtual void postProcessLayer( QgsMapLayer *layer, const QString &outputName, const QgsProcessingAlgorithm *algorithm );
+};
+
+
+/**
+ * \class QgsProcessingResultsHandler
+ * \ingroup core
+ * \brief Handles results output by Processing algorithms.
+ * \since QGIS 4.4
+ */
+class CORE_EXPORT QgsProcessingResultsHandler
+{
+  public:
+    QgsProcessingResultsHandler() = default;
+
+    virtual ~QgsProcessingResultsHandler();
+
+    /**
+   * Returns the destination layer tree group to store results in, or NULLPTR if there
+   * is no specific destination tree group associated with the layer.
+   */
+    static QgsLayerTreeGroup *layerTreeResultsGroup( const QgsProcessingContext::LayerDetails &layerDetails, const QgsProcessingContext &context );
 };
 
 
