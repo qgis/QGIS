@@ -177,18 +177,18 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     bool mBlockAutoApply = false;
-    QgsUndoWidget *mUndoWidget = nullptr;
-    QgsMapLayerStyleManagerWidget *mStyleManagerWidget = nullptr;
+    QPointer< QgsUndoWidget > mUndoWidget;
+    QPointer< QgsMapLayerStyleManagerWidget > mStyleManagerWidget;
     QgsMapLayer *mCurrentLayer = nullptr;
-    QgsLabelingWidget *mLabelingWidget = nullptr;
+    QPointer< QgsLabelingWidget > mLabelingWidget;
     QPointer<QgsRasterLabelingWidget> mRasterLabelingWidget;
-    QgsMaskingWidget *mMaskingWidget = nullptr;
+    QPointer< QgsMaskingWidget > mMaskingWidget;
 #ifdef HAVE_3D
-    QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
-    QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
+    QPointer< QgsVectorLayer3DRendererWidget > mVector3DWidget;
+    QPointer< QgsMeshLayer3DRendererWidget > mMesh3DWidget;
 #endif
-    QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
-    QgsRasterAttributeTableWidget *mRasterAttributeTableWidget = nullptr;
+    QPointer< QgsRendererRasterPropertiesWidget > mRasterStyleWidget;
+    QPointer< QgsRasterAttributeTableWidget > mRasterAttributeTableWidget;
     QList<const QgsMapLayerConfigWidgetFactory *> mPageFactories;
     QMap<int, const QgsMapLayerConfigWidgetFactory *> mUserPages;
     QgsMapLayerConfigWidgetContext mContext;
