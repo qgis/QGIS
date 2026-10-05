@@ -60,7 +60,7 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
     virtual QgsPoint endPoint() const = 0;
 
     /**
-     * Returns whether the curve is a simple curve.
+     * This method returns TRUE for classes that can be cast to the QgsSimpleCurve class.
      *
      * \since QGIS 4.4
      */

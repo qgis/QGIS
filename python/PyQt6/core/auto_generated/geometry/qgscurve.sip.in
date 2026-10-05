@@ -52,7 +52,8 @@ Returns the end point of the curve.
 
     virtual bool isSimpleCurve() const = 0;
 %Docstring
-Returns whether the curve is a simple curve.
+This method returns ``True`` for classes that can be cast to the
+:py:class:`QgsSimpleCurve` class.
 
 .. versionadded:: 4.4
 %End
