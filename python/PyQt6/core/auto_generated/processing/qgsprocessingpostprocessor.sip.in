@@ -85,6 +85,12 @@ Takes ownership of ``layer``.
         QgsProject *destinationProject;
     };
 
+    static QString determineOutputName(
+      const QString &destinationId, const QgsProcessingContext::LayerDetails &details, const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters
+    );
+%Docstring
+Determines the desired layer name for a map layer output.
+%End
 
     static QgsLayerTreeGroup *layerTreeResultsGroup( const QgsProcessingContext::LayerDetails &layerDetails, const QgsProcessingContext &context );
 %Docstring

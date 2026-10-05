@@ -24,6 +24,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingdefaultstyleregistry.h"
 #include "qgsprocessingregistry.h"
+#include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
 #include <QString>
@@ -98,6 +99,41 @@ void QgsProcessingLayerPostProcessor::postProcessLayer( QgsMapLayer *layer, cons
 //
 
 QgsProcessingResultsHandler::~QgsProcessingResultsHandler() = default;
+
+QString QgsProcessingResultsHandler::determineOutputName(
+  const QString &destinationId, const QgsProcessingContext::LayerDetails &details, const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters
+)
+{
+  if ( !algorithm )
+    return details.outputName;
+
+  const QgsProcessingOutputDefinitions outputs = algorithm->outputDefinitions();
+  for ( const QgsProcessingOutputDefinition *output : std::as_const( outputs ) )
+  {
+    auto it = parameters.constFind( output->name() );
+    if ( it == parameters.constEnd() || QgsVariantUtils::isNull( it.value() ) )
+    {
+      continue;
+    }
+
+    QVariant outputValue = it.value();
+    if ( outputValue.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition >() )
+    {
+      QgsProperty sink = outputValue.value< QgsProcessingOutputLayerDefinition >().sink;
+      outputValue = sink.valueAsString( context.expressionContext() );
+    }
+    else
+    {
+      outputValue = outputValue.toString();
+    }
+    if ( outputValue.toString() == destinationId )
+    {
+      return output->name();
+    }
+  }
+
+  return details.outputName;
+}
 
 QgsLayerTreeGroup *QgsProcessingResultsHandler::layerTreeResultsGroup( const QgsProcessingContext::LayerDetails &layerDetails, const QgsProcessingContext &context )
 {

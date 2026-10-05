@@ -6,6 +6,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
+    QgsProcessingResultsHandler.determineOutputName = staticmethod(QgsProcessingResultsHandler.determineOutputName)
     QgsProcessingResultsHandler.layerTreeResultsGroup = staticmethod(QgsProcessingResultsHandler.layerTreeResultsGroup)
     QgsProcessingResultsHandler.__group__ = ['processing']
 except (NameError, AttributeError):
