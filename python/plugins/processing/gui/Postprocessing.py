@@ -38,35 +38,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
 
-def determine_output_name(
-    dest_id: str,
-    details: QgsProcessingContext.LayerDetails,
-    alg: QgsProcessingAlgorithm,
-    context: QgsProcessingContext,
-    parameters: dict,
-) -> str:
-    """
-    If running a model, the execution will arrive here when an
-    algorithm that is part of that model is executed. We check if
-    its output is a final output of the model, and adapt the output
-    name accordingly
-    """
-    for out in alg.outputDefinitions():
-        if out.name() not in parameters:
-            continue
-        output_value = parameters[out.name()]
-        if hasattr(output_value, "sink"):
-            output_value = output_value.sink.valueAsString(context.expressionContext())[
-                0
-            ]
-        else:
-            output_value = str(output_value)
-        if output_value == dest_id:
-            return out.name()
-
-    return details.outputName
-
-
 def handleAlgorithmResults(
     alg: QgsProcessingAlgorithm,
     context: QgsProcessingContext,
@@ -107,7 +78,7 @@ def handleAlgorithmResults(
             if layer is not None:
                 details.setOutputLayerName(layer)
 
-                output_name = determine_output_name(
+                output_name = QgsProcessingResultsHandler.determineOutputName(
                     dest_id, details, alg, context, parameters
                 )
                 layer_post_processor.postProcessLayer(layer, output_name, alg)

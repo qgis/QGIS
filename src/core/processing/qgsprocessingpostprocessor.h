@@ -106,6 +106,12 @@ class CORE_EXPORT QgsProcessingResultsHandler
         QgsProject *destinationProject = nullptr;
     };
 
+    /**
+     * Determines the desired layer name for a map layer output.
+     */
+    static QString determineOutputName(
+      const QString &destinationId, const QgsProcessingContext::LayerDetails &details, const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters
+    );
 
     /**
    * Returns the destination layer tree group to store results in, or NULLPTR if there
