@@ -161,15 +161,15 @@ void TestQgsCustomization::init()
   // Random crashes if this is is visible
   mQgisApp->mLayerTreeView->setVisible( false );
 
-  mQgisApp->show();
-
-  QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
-  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
-
   mCustomizationFile = std::make_unique<QTemporaryFile>();
   QVERIFY( mCustomizationFile->open() ); // fileName is not available until open
   auto customization = std::make_unique<QgsCustomization>( mCustomizationFile->fileName() );
   mQgisApp->setCustomization( std::move( customization ) );
+
+  mQgisApp->show();
+
+  QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
+  QVERIFY( findQWidget<QToolBar>( "ToolBars/mHelpToolBar" ) );
 }
 
 void TestQgsCustomization::cleanup()
@@ -205,6 +205,10 @@ void TestQgsCustomization::testLoadApply()
     QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
     getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->setVisible( visible );
   };
+
+  // test that status bar widgets are visible at startup
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" ) );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
 
   setAllVisible( false );
 
@@ -252,6 +256,9 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" ) );
   QVERIFY( getItem<QgsCustomization::QgsActionItem>( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction2" )->isVisible() );
 
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" ) );
+  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
+
   // test initial situation
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
   QVERIFY( findQAction( "Menus/mEditMenu/mActionUndo" ) );
@@ -269,6 +276,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
 
@@ -288,6 +296,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( !findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( !findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
   QVERIFY( !findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
   QVERIFY( mQgisApp->browserWidget()->browserWidget()->mDisabledDataItemsKeys.contains( "special:Home" ) );
 
@@ -313,6 +322,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( findQWidget<QDockWidget>( "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/LocatorWidget" )->isVisible() );
+  QVERIFY( findQWidget<QWidget>( "StatusBarWidgets/mScaleWidget" )->isVisible() );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" ) );
   QVERIFY( findQAction( "ToolBars/testToolBar/testToolBarToolButton/testToolBarMenuAction1" )->isVisible() );
 }
