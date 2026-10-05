@@ -26,20 +26,6 @@
 
 using namespace Qt::StringLiterals;
 
-void QgsProcessingGuiUtils::configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer )
-{
-  const QgsMapLayer *layer = layerTreeLayer->layer();
-  if ( layer && layer->type() == Qgis::LayerType::Vector )
-  {
-    // post-process vector layer
-    QgsSettings settings;
-    if ( settings.value( u"Processing/Configuration/VECTOR_FEATURE_COUNT"_s, false ).toBool() )
-    {
-      layerTreeLayer->setCustomProperty( u"showFeatureCount"_s, true );
-    }
-  }
-}
-
 void QgsProcessingGuiUtils::addResultLayers( const QVector<QgsProcessingResultsHandler::ResultLayerDetails> &layers, const QgsProcessingContext &context, QgsLayerTreeView *view )
 {
   // sort added layer tree layers
@@ -108,7 +94,7 @@ void QgsProcessingGuiUtils::addResultLayers( const QVector<QgsProcessingResultsH
     {
       project->addMapLayer( layerDetails.layer );
       QgsLayerTreeLayer *layerTreeLayer = project->layerTreeRoot()->findLayer( layerDetails.layer );
-      configureResultLayerTreeLayer( layerTreeLayer );
+      QgsProcessingResultsHandler::configureResultLayerTreeLayer( layerTreeLayer );
     }
 
     if ( !haveSetActiveLayer && view )

@@ -25,12 +25,6 @@ Contains utility functions relating to Processing GUI components.
 #include "qgsprocessingguiutils.h"
 %End
   public:
-    static void configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer );
-%Docstring
-Applies post-processing steps to the :py:class:`QgsLayerTreeLayer`
-created for an algorithm's output.
-%End
-
     static void addResultLayers( const QVector< QgsProcessingResultsHandler::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeView *view = 0 );
 %Docstring
 Responsible for adding layers created by an algorithm to a project and
