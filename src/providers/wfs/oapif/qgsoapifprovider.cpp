@@ -826,7 +826,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QgsOapifPatchFeatureRequest req( uri );
       if ( !req.patchFeature( mShared.get(), jsonId, geomIt.value(), contentCrs, hasAxisInverted ) )
       {
-        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
+        pushError( tr( "Cannot modify feature of id %1: %2" ).arg( qgisFid ).arg( req.errorMessage() ) );
         return false;
       }
     }
@@ -850,7 +850,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QgsOapifPutFeatureRequest req( uri );
       if ( !req.putFeature( mShared.get(), jsonId, f, contentCrs, hasAxisInverted ) )
       {
-        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
+        pushError( tr( "Cannot modify feature of id %1: %2" ).arg( qgisFid ).arg( req.errorMessage() ) );
         return false;
       }
     }
@@ -887,7 +887,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       QgsOapifPatchFeatureRequest req( uri );
       if ( !req.patchFeature( mShared.get(), jsonId, attIt.value() ) )
       {
-        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
+        pushError( tr( "Cannot modify feature of id %1: %2" ).arg( qgisFid ).arg( req.errorMessage() ) );
         return false;
       }
     }
@@ -915,7 +915,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       QgsOapifPutFeatureRequest req( uri );
       if ( !req.putFeature( mShared.get(), jsonId, f, contentCrs, hasAxisInverted ) )
       {
-        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
+        pushError( tr( "Cannot modify feature of id %1: %2" ).arg( qgisFid ).arg( req.errorMessage() ) );
         return false;
       }
     }
