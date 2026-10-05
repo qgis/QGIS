@@ -2916,10 +2916,9 @@ void TestQgsGeometry::splitGeometry()
   QStringList newGeomWkts;
   newGeomWkts << newGeoms[0].asWkt( 0 ) << newGeoms[1].asWkt( 0 ) << newGeoms[2].asWkt( 0 );
 
-  // GEOS 3.15 returns single-part geometries (at least for now)
-  QVERIFY( newGeomWkts.contains( u"LineString (0 2, 1 1)"_s ) );
-  QVERIFY( newGeomWkts.contains( u"LineString (1 1, 2 0)"_s ) );
-  QVERIFY( newGeomWkts.contains( u"LineString (0 1, 1 0)"_s ) );
+  QVERIFY( newGeomWkts.contains( u"MultiLineString ((0 2, 1 1))"_s ) );
+  QVERIFY( newGeomWkts.contains( u"MultiLineString ((1 1, 2 0))"_s ) );
+  QVERIFY( newGeomWkts.contains( u"MultiLineString ((0 1, 1 0))"_s ) );
 #else
   QCOMPARE( newGeoms[0].asWkt( 0 ), u"MultiLineString ((0 2, 1 1))"_s );
   QCOMPARE( newGeoms[1].asWkt( 0 ), u"MultiLineString ((1 1, 2 0))"_s );
