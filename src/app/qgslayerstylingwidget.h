@@ -107,7 +107,8 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       VectorTileLabeling,
       StyleManager,
       History,
-      Custom
+      Custom,
+      Invalid
     };
     Q_ENUM( Page )
 
@@ -140,8 +141,10 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     /**
      * Sets the current visible page in the widget.
      * \param page standard page to display
+     *
+     * \returns TRUE if the page could be set to the matching page, or FALSE if that page does not exist (e.g. mismatched layer type)
      */
-    void setCurrentPage( Page page );
+    bool setCurrentPage( Page page );
 
     /**
      * Sets an annotation item to show in the widget.
