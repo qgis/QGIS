@@ -182,3 +182,17 @@ QgsLayerTreeGroup *QgsProcessingResultsHandler::layerTreeResultsGroup( const Qgs
 
   return group;
 }
+
+void QgsProcessingResultsHandler::configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer )
+{
+  const QgsMapLayer *layer = layerTreeLayer->layer();
+  if ( layer && layer->type() == Qgis::LayerType::Vector )
+  {
+    // post-process vector layer
+    QgsSettings settings;
+    if ( settings.value( u"Processing/Configuration/VECTOR_FEATURE_COUNT"_s, false ).toBool() )
+    {
+      layerTreeLayer->setCustomProperty( u"showFeatureCount"_s, true );
+    }
+  }
+}

@@ -38,11 +38,6 @@ class GUI_EXPORT QgsProcessingGuiUtils
 {
   public:
     /**
-     * Applies post-processing steps to the QgsLayerTreeLayer created for an algorithm's output.
-     */
-    static void configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer );
-
-    /**
      * Responsible for adding layers created by an algorithm to a project and the project's layer tree in the correct location.
      */
     static void addResultLayers( const QVector< QgsProcessingResultsHandler::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeView *view = nullptr );

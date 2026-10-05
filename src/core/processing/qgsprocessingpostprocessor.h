@@ -118,6 +118,11 @@ class CORE_EXPORT QgsProcessingResultsHandler
    * is no specific destination tree group associated with the layer.
    */
     static QgsLayerTreeGroup *layerTreeResultsGroup( const QgsProcessingContext::LayerDetails &layerDetails, const QgsProcessingContext &context );
+
+    /**
+     * Applies post-processing steps to the QgsLayerTreeLayer created for an algorithm's output.
+     */
+    static void configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer );
 };
 
 

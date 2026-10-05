@@ -339,6 +339,46 @@ class TestProcessingPostProcessing(QgisTestCase):
             child_group,
         )
 
+    def test_configure_layer_tree_layer(self):
+        QgsSettings().setValue("Processing/Configuration/VECTOR_FEATURE_COUNT", False)
+        vl = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test",
+            "memory",
+        )
+        self.assertTrue(vl.isValid())
+        rl = QgsRasterLayer(
+            self.get_test_data_path("landsat_4326.tif").as_posix(), "test"
+        )
+        self.assertTrue(rl.isValid())
+
+        project = QgsProject()
+        project.addMapLayer(vl)
+        project.addMapLayer(rl)
+
+        vector_layer_tree_layer = project.layerTreeRoot().findLayer(vl)
+        QgsProcessingResultsHandler.configureResultLayerTreeLayer(
+            vector_layer_tree_layer
+        )
+        self.assertFalse(vector_layer_tree_layer.customProperty("showFeatureCount"))
+
+        raster_layer_tree_layer = project.layerTreeRoot().findLayer(rl)
+        QgsProcessingResultsHandler.configureResultLayerTreeLayer(
+            raster_layer_tree_layer
+        )
+        self.assertFalse(raster_layer_tree_layer.customProperty("showFeatureCount"))
+
+        QgsSettings().setValue("Processing/Configuration/VECTOR_FEATURE_COUNT", True)
+
+        QgsProcessingResultsHandler.configureResultLayerTreeLayer(
+            vector_layer_tree_layer
+        )
+        self.assertTrue(vector_layer_tree_layer.customProperty("showFeatureCount"))
+        QgsProcessingResultsHandler.configureResultLayerTreeLayer(
+            raster_layer_tree_layer
+        )
+        self.assertFalse(raster_layer_tree_layer.customProperty("showFeatureCount"))
+
 
 if __name__ == "__main__":
     unittest.main()
