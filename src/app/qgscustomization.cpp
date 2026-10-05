@@ -1222,7 +1222,7 @@ void QgsCustomization::loadApplicationToolBars()
     }
 
     addActions( t, tb );
-    t->setWasVisible( tb->isVisible() );
+    t->setWasVisible( tb->isVisibleTo( mQgisApp ) );
   }
 }
 
@@ -1307,7 +1307,7 @@ void QgsCustomization::loadApplicationDocks()
       d = mDocks->lastChild<QgsDockItem>();
     }
 
-    d->setWasVisible( dw->isVisible() );
+    d->setWasVisible( dw->isVisibleTo( mQgisApp ) );
   }
 }
 
@@ -1371,7 +1371,7 @@ void QgsCustomization::loadApplicationStatusBarWidgets()
     if ( !s )
     {
       auto statusBarWidgetItem = std::make_unique<QgsStatusBarWidgetItem>( name, mStatusBarWidgets.get() );
-      statusBarWidgetItem->setVisible( statusBarWidget->isVisible() );
+      statusBarWidgetItem->setVisible( statusBarWidget->isVisibleTo( sb ) );
       mStatusBarWidgets->addChild( std::move( statusBarWidgetItem ) );
     }
   }
