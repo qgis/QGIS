@@ -656,12 +656,30 @@ layer's renderer will be used.
 .. versionadded:: 3.14
 %End
 
+    void setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex );
+%Docstring
+Sets the static scalar dataset index that is rendered if the temporal
+properties are not active.
 
+:param staticScalarDatasetIndex: the scalar data set index
+
+.. versionadded:: 3.14
+%End
+
+    void setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex );
+%Docstring
+Sets the static vector dataset index that is rendered if the temporal
+properties are not active.
+
+:param staticVectorDatasetIndex: the vector data set index
+
+.. versionadded:: 3.14
+%End
 
     QgsMeshDatasetIndex staticScalarDatasetIndex( int group = -1 ) const;
 %Docstring
 Returns the static scalar dataset index that is rendered if the temporal
-properties is not active.
+properties are not active.
 
 Since QGIS 3.38, the ``group`` argument can be used to specify a fixed
 group to use. If this is not specified, then the active group from the
@@ -673,7 +691,7 @@ layer's renderer will be used.
     QgsMeshDatasetIndex staticVectorDatasetIndex( int group = -1 ) const;
 %Docstring
 Returns the static vector dataset index that is rendered if the temporal
-properties is not active.
+properties are not active.
 
 Since QGIS 3.38, the ``group`` argument can be used to specify a fixed
 group to use. If this is not specified, then the active group from the

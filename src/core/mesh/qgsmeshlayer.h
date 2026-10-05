@@ -656,25 +656,25 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QgsMeshDatasetIndex activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange, int group = -1 ) const;
 
     /**
-      * Sets the static scalar dataset index that is rendered if the temporal properties is not active
+      * Sets the static scalar dataset index that is rendered if the temporal properties are not active.
       *
       * \param staticScalarDatasetIndex the scalar data set index
       *
       * \since QGIS 3.14
       */
-    void setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex ) SIP_SKIP;
+    void setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex );
 
     /**
-      * Sets the static vector dataset index that is rendered if the temporal properties is not active
+      * Sets the static vector dataset index that is rendered if the temporal properties are not active.
       *
       * \param staticVectorDatasetIndex the vector data set index
       *
       * \since QGIS 3.14
       */
-    void setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex ) SIP_SKIP;
+    void setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex );
 
     /**
-      * Returns the static scalar dataset index that is rendered if the temporal properties is not active.
+      * Returns the static scalar dataset index that is rendered if the temporal properties are not active.
       *
       * Since QGIS 3.38, the \a group argument can be used to specify a fixed group
       * to use. If this is not specified, then the active group from the layer's renderer will be used.
@@ -684,7 +684,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QgsMeshDatasetIndex staticScalarDatasetIndex( int group = -1 ) const;
 
     /**
-      * Returns the static vector dataset index that is rendered if the temporal properties is not active.
+      * Returns the static vector dataset index that is rendered if the temporal properties are not active.
       *
       * Since QGIS 3.38, the \a group argument can be used to specify a fixed group
       * to use. If this is not specified, then the active group from the layer's renderer will be used.
