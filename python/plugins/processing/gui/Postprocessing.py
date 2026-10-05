@@ -85,7 +85,7 @@ def handleAlgorithmResults(
     )
     i = 0
 
-    added_layers: list[QgsProcessingGuiUtils.ResultLayerDetails] = []
+    added_layers: list[QgsProcessingResultsHandler.ResultLayerDetails] = []
     layers_to_post_process: list[
         tuple[QgsMapLayer, QgsProcessingContext.LayerDetails]
     ] = []

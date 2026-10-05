@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingpostprocessor.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeView;
@@ -37,44 +38,6 @@ class GUI_EXPORT QgsProcessingGuiUtils
 {
   public:
     /**
-     * Contains details of a layer result from running an algorithm.
-     * \ingroup gui
-     * \since QGIS 3.44
-     */
-    class GUI_EXPORT ResultLayerDetails
-    {
-      public:
-        /**
-         * Constructor for ResultLayerDetails.
-         *
-         * Takes ownership of \a layer.
-         */
-        ResultLayerDetails( QgsMapLayer *layer SIP_TRANSFER )
-          : layer( layer )
-        {}
-
-        /**
-         * Associated map layer.
-         */
-        QgsMapLayer *layer = nullptr;
-
-        /**
-         * Optional target layer tree group, where the layer should be placed.
-         */
-        QgsLayerTreeGroup *targetLayerTreeGroup = nullptr;
-
-        /**
-         * Sort order key for ordering output layers in the layer tree.
-         */
-        int sortKey = 0;
-
-        /**
-         * Destination QGIS project.
-         */
-        QgsProject *destinationProject = nullptr;
-    };
-
-    /**
      * Applies post-processing steps to the QgsLayerTreeLayer created for an algorithm's output.
      */
     static void configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer );
@@ -82,7 +45,7 @@ class GUI_EXPORT QgsProcessingGuiUtils
     /**
      * Responsible for adding layers created by an algorithm to a project and the project's layer tree in the correct location.
      */
-    static void addResultLayers( const QVector< QgsProcessingGuiUtils::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeView *view = nullptr );
+    static void addResultLayers( const QVector< QgsProcessingResultsHandler::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeView *view = nullptr );
 
     /**
      * Returns the map of Processing menus to a list of algorithm IDs to include by default in that menu.
