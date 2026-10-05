@@ -73,7 +73,7 @@ QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
 
   QMutexLocker locker( &mMutex );
 
-  const QString connectionName = u"authentication.configs:0x%1"_s.arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, '0'_L1 );
+  const QString connectionName = u"authentication.configs.%1:0x%2"_s.arg( mDatabase ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, '0'_L1 );
   QgsDebugMsgLevel( u"Using auth db connection name: %1 "_s.arg( connectionName ), 3 );
   if ( !QSqlDatabase::contains( connectionName ) )
   {
