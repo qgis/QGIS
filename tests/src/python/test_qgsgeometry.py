@@ -77,6 +77,7 @@ class TestQgsGeometry(QgisTestCase):
         self.geos311 = 31100
         self.geos312 = 31200
         self.geos314 = 31400
+        self.geos315 = 31500
 
     def testBool(self):
         """Test boolean evaluation of QgsGeometry"""
@@ -14909,18 +14910,33 @@ class TestQgsGeometry(QgisTestCase):
 
         r1 = QgsGeometry.fromWkt("Polygon ((1 2, 1 0, 0 0, 0 2, 1 2))")
         r2 = QgsGeometry.fromWkt("Polygon ((1 0, 1 2, 2 2, 2 0, 1 0))")
+        r1.normalize()
+        r2.normalize()
+        square.normalize()
 
         (result, parts, topo) = square.splitGeometry(lineXY, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
-        self.assertGeometriesEqual(square, r2)
         self.assertEqual(len(parts), 1)
-        self.assertGeometriesEqual(parts[0], r1)
+        parts[0].normalize()
+        if Qgis.geosVersionInt() < self.geos315:
+            self.assertGeometriesEqual(square, r2)
+            self.assertGeometriesEqual(parts[0], r1)
+        else:
+            self.assertGeometriesEqual(square, r1)
+            self.assertGeometriesEqual(parts[0], r2)
 
         square = QgsGeometry.fromWkt("Polygon ((0 0, 0 2, 2 2, 2 0, 0 0))")
+        square.normalize()
         (result, parts, topo) = square.splitGeometry(line, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
-        self.assertGeometriesEqual(square, r2)
-        self.assertGeometriesEqual(parts[0], r1)
+        self.assertEqual(len(parts), 1)
+        parts[0].normalize()
+        if Qgis.geosVersionInt() < self.geos315:
+            self.assertGeometriesEqual(square, r2)
+            self.assertGeometriesEqual(parts[0], r1)
+        else:
+            self.assertGeometriesEqual(square, r1)
+            self.assertGeometriesEqual(parts[0], r2)
 
         multilinestring = QgsGeometry.fromWkt("MultiLinestring((0 1, 1 0),(0 2, 2 0))")
         blade = QgsCompoundCurve()
@@ -14928,9 +14944,14 @@ class TestQgsGeometry(QgisTestCase):
         result, parts, _ = multilinestring.splitGeometry(blade, False, False, False)
         self.assertEqual(result, Qgis.GeometryOperationResult.Success)
         self.assertEqual(len(parts), 3)
-        self.assertTrue(compareWkt(parts[0].asWkt(), "MultiLineString ((0 2, 1 1))"))
-        self.assertTrue(compareWkt(parts[1].asWkt(), "MultiLineString ((1 1, 2 0))"))
-        self.assertTrue(compareWkt(parts[2].asWkt(), "MultiLineString ((0 1, 1 0))"))
+        wkts = [
+            parts[0].asWkt(),
+            parts[1].asWkt(),
+            parts[2].asWkt(),
+        ]
+        self.assertIn("MultiLineString ((0 2, 1 1))", wkts)
+        self.assertIn("MultiLineString ((1 1, 2 0))", wkts)
+        self.assertIn("MultiLineString ((0 1, 1 0))", wkts)
 
     @unittest.skipIf(Qgis.geosVersionInt() < 31200, "GEOS 3.12 required")
     def testCoverageValidate(self):
