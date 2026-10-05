@@ -4573,11 +4573,12 @@ QgsMapLayerComboBox.setProject: src/gui/qgsmaplayercombobox.h#L125
 QgsMapLayerComboBox.setShowCrs: src/gui/qgsmaplayercombobox.h#L147
 QgsMapLayerComboBox.showCrs: src/gui/qgsmaplayercombobox.h#L153
 QgsMapLayerComboBox: src/gui/qgsmaplayercombobox.h#L52
-QgsMapLayerConfigWidget.apply: src/gui/qgsmaplayerconfigwidget.h#L160
-QgsMapLayerConfigWidget.focusDefaultWidget: src/gui/qgsmaplayerconfigwidget.h#L167
-QgsMapLayerConfigWidget.setMapLayerConfigWidgetContext: src/gui/qgsmaplayerconfigwidget.h#L152
-QgsMapLayerConfigWidget.shouldTriggerLayerRepaint: src/gui/qgsmaplayerconfigwidget.h#L131
-QgsMapLayerConfigWidget.syncToLayer: src/gui/qgsmaplayerconfigwidget.h#L142
+QgsMapLayerConfigWidget.apply: src/gui/qgsmaplayerconfigwidget.h#L167
+QgsMapLayerConfigWidget.focusDefaultWidget: src/gui/qgsmaplayerconfigwidget.h#L174
+QgsMapLayerConfigWidget.layer: src/gui/qgsmaplayerconfigwidget.h#L130
+QgsMapLayerConfigWidget.setMapLayerConfigWidgetContext: src/gui/qgsmaplayerconfigwidget.h#L159
+QgsMapLayerConfigWidget.shouldTriggerLayerRepaint: src/gui/qgsmaplayerconfigwidget.h#L138
+QgsMapLayerConfigWidget.syncToLayer: src/gui/qgsmaplayerconfigwidget.h#L149
 QgsMapLayerConfigWidget: src/gui/qgsmaplayerconfigwidget.h#L111
 QgsMapLayerConfigWidgetContext.annotationId: src/gui/qgsmaplayerconfigwidget.h#L45
 QgsMapLayerConfigWidgetContext.layerTreeGroup: src/gui/qgsmaplayerconfigwidget.h#L96
@@ -4612,7 +4613,8 @@ QgsMapLayerStyleCategoriesModel.setCategories: src/gui/qgsmaplayerstylecategorie
 QgsMapLayerStyleCategoriesModel.setData: src/gui/qgsmaplayerstylecategoriesmodel.h#L60
 QgsMapLayerStyleCategoriesModel.setShowAllCategories: src/gui/qgsmaplayerstylecategoriesmodel.h#L55
 QgsMapLayerStyleCategoriesModel: src/gui/qgsmaplayerstylecategoriesmodel.h#L32
-QgsMapLayerStyleManagerWidget.apply: src/gui/qgsmaplayerstylemanagerwidget.h#L86
+QgsMapLayerStyleManagerWidget.apply: src/gui/qgsmaplayerstylemanagerwidget.h#L88
+QgsMapLayerStyleManagerWidget.syncToLayer: src/gui/qgsmaplayerstylemanagerwidget.h#L85
 QgsMapLayerStyleManagerWidget: src/gui/qgsmaplayerstylemanagerwidget.h#L73
 QgsMapLayerStyleModel.data: src/gui/qgsmaplayerstylemanagerwidget.h#L49
 QgsMapLayerStyleModel.flags: src/gui/qgsmaplayerstylemanagerwidget.h#L51
