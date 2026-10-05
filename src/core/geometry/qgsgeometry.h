@@ -3630,6 +3630,9 @@ class CORE_EXPORT QgsGeometry
 
     QgsGeometry doChamferFillet( ChamferFilletOperationType op, int vertexIndex, double distance1, double distance2, int segments ) const;
 
+    QVector< QgsGeometry > collectSplitFeatures( const QVector< QgsGeometry> newGeoms ) const;
+    QVector< QgsGeometry > collectSplitParts( const QVector< QgsGeometry> newGeoms ) const;
+
     friend class QgsInternalGeometryEngine;
 
 }; // class QgsGeometry
