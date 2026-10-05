@@ -14,6 +14,7 @@ from qgis.core import (
     QgsLayerTreeLayer,
     QgsLayerTreeModel,
     QgsProcessingContext,
+    QgsProcessingResultsHandler,
     QgsProject,
     QgsRasterLayer,
     QgsSettings,
@@ -80,7 +81,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test1",
             "memory",
         )
-        details1 = QgsProcessingGuiUtils.ResultLayerDetails(vl1)
+        details1 = QgsProcessingResultsHandler.ResultLayerDetails(vl1)
         details1.destinationProject = QgsProject.instance()
         details1.sortKey = 5
 
@@ -89,7 +90,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test2",
             "memory",
         )
-        details2 = QgsProcessingGuiUtils.ResultLayerDetails(vl2)
+        details2 = QgsProcessingResultsHandler.ResultLayerDetails(vl2)
         details2.destinationProject = QgsProject.instance()
         details2.sortKey = 1
 
@@ -98,7 +99,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test3",
             "memory",
         )
-        details3 = QgsProcessingGuiUtils.ResultLayerDetails(vl3)
+        details3 = QgsProcessingResultsHandler.ResultLayerDetails(vl3)
         details3.destinationProject = QgsProject.instance()
         details3.sortKey = 15
 
@@ -144,7 +145,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test4",
             "memory",
         )
-        details4 = QgsProcessingGuiUtils.ResultLayerDetails(vl4)
+        details4 = QgsProcessingResultsHandler.ResultLayerDetails(vl4)
         details4.destinationProject = QgsProject.instance()
         details4.sortKey = 1
         vl5 = QgsVectorLayer(
@@ -152,7 +153,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test5",
             "memory",
         )
-        details5 = QgsProcessingGuiUtils.ResultLayerDetails(vl5)
+        details5 = QgsProcessingResultsHandler.ResultLayerDetails(vl5)
         details5.destinationProject = QgsProject.instance()
         details5.sortKey = 2
 
@@ -177,7 +178,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test6",
             "memory",
         )
-        details6 = QgsProcessingGuiUtils.ResultLayerDetails(vl6)
+        details6 = QgsProcessingResultsHandler.ResultLayerDetails(vl6)
         details6.destinationProject = QgsProject.instance()
         details6.sortKey = 1
         vl7 = QgsVectorLayer(
@@ -185,7 +186,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test7",
             "memory",
         )
-        details7 = QgsProcessingGuiUtils.ResultLayerDetails(vl7)
+        details7 = QgsProcessingResultsHandler.ResultLayerDetails(vl7)
         details7.destinationProject = QgsProject.instance()
         details7.sortKey = 2
 
@@ -211,7 +212,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test8",
             "memory",
         )
-        details8 = QgsProcessingGuiUtils.ResultLayerDetails(vl8)
+        details8 = QgsProcessingResultsHandler.ResultLayerDetails(vl8)
         details8.destinationProject = QgsProject.instance()
         details8.sortKey = 2
         vl9 = QgsVectorLayer(
@@ -219,7 +220,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test9",
             "memory",
         )
-        details9 = QgsProcessingGuiUtils.ResultLayerDetails(vl9)
+        details9 = QgsProcessingResultsHandler.ResultLayerDetails(vl9)
         details9.destinationProject = QgsProject.instance()
         details9.sortKey = 1
 
@@ -252,7 +253,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test10",
             "memory",
         )
-        details10 = QgsProcessingGuiUtils.ResultLayerDetails(vl10)
+        details10 = QgsProcessingResultsHandler.ResultLayerDetails(vl10)
         details10.destinationProject = QgsProject.instance()
         details10.sortKey = 2
         vl11 = QgsVectorLayer(
@@ -260,7 +261,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test11",
             "memory",
         )
-        details11 = QgsProcessingGuiUtils.ResultLayerDetails(vl11)
+        details11 = QgsProcessingResultsHandler.ResultLayerDetails(vl11)
         details11.destinationProject = QgsProject.instance()
         details11.sortKey = 1
 
@@ -293,7 +294,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test10",
             "memory",
         )
-        details12 = QgsProcessingGuiUtils.ResultLayerDetails(vl12)
+        details12 = QgsProcessingResultsHandler.ResultLayerDetails(vl12)
         details12.destinationProject = QgsProject.instance()
         details12.sortKey = 2
         vl13 = QgsVectorLayer(
@@ -301,7 +302,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test13",
             "memory",
         )
-        details13 = QgsProcessingGuiUtils.ResultLayerDetails(vl13)
+        details13 = QgsProcessingResultsHandler.ResultLayerDetails(vl13)
         details13.destinationProject = QgsProject.instance()
         details13.targetLayerTreeGroup = group2
         details13.sortKey = 1
@@ -310,7 +311,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test14",
             "memory",
         )
-        details14 = QgsProcessingGuiUtils.ResultLayerDetails(vl14)
+        details14 = QgsProcessingResultsHandler.ResultLayerDetails(vl14)
         details14.destinationProject = QgsProject.instance()
         details14.targetLayerTreeGroup = group2
         details14.sortKey = 10
@@ -346,7 +347,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test15",
             "memory",
         )
-        details15 = QgsProcessingGuiUtils.ResultLayerDetails(vl15)
+        details15 = QgsProcessingResultsHandler.ResultLayerDetails(vl15)
         details15.destinationProject = QgsProject.instance()
         details15.targetLayerTreeGroup = group2
         details15.sortKey = 1
@@ -355,7 +356,7 @@ class TestQgsProcessingGuiUtils(QgisTestCase):
             "test13",
             "memory",
         )
-        details16 = QgsProcessingGuiUtils.ResultLayerDetails(vl16)
+        details16 = QgsProcessingResultsHandler.ResultLayerDetails(vl16)
         details16.destinationProject = QgsProject.instance()
         details16.targetLayerTreeGroup = group2
         details16.sortKey = 10

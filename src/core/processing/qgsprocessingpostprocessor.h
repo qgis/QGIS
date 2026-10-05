@@ -30,6 +30,9 @@ class QgsLayerTreeGroup;
  * \class QgsProcessingLayerPostProcessor
  * \ingroup core
  * \brief A post-processor for result layers created by Processing algorithms.
+ *
+ * \warning This is not considered stable API, and is exposed to Python for internal use only.
+ *
  * \since QGIS 4.4
  */
 class CORE_EXPORT QgsProcessingLayerPostProcessor
@@ -53,6 +56,9 @@ class CORE_EXPORT QgsProcessingLayerPostProcessor
  * \class QgsProcessingResultsHandler
  * \ingroup core
  * \brief Handles results output by Processing algorithms.
+ *
+ * \warning This is not considered stable API, and is exposed to Python for internal use only.
+ *
  * \since QGIS 4.4
  */
 class CORE_EXPORT QgsProcessingResultsHandler
@@ -61,6 +67,45 @@ class CORE_EXPORT QgsProcessingResultsHandler
     QgsProcessingResultsHandler() = default;
 
     virtual ~QgsProcessingResultsHandler();
+
+    /**
+     * Contains details of a layer result from running an algorithm.
+     * \ingroup core
+     * \since QGIS 4.4
+     */
+    class CORE_EXPORT ResultLayerDetails
+    {
+      public:
+        /**
+       * Constructor for ResultLayerDetails.
+       *
+       * Takes ownership of \a layer.
+       */
+        ResultLayerDetails( QgsMapLayer *layer SIP_TRANSFER )
+          : layer( layer )
+        {}
+
+        /**
+       * Associated map layer.
+       */
+        QgsMapLayer *layer = nullptr;
+
+        /**
+       * Optional target layer tree group, where the layer should be placed.
+       */
+        QgsLayerTreeGroup *targetLayerTreeGroup = nullptr;
+
+        /**
+       * Sort order key for ordering output layers in the layer tree.
+       */
+        int sortKey = 0;
+
+        /**
+       * Destination QGIS project.
+       */
+        QgsProject *destinationProject = nullptr;
+    };
+
 
     /**
    * Returns the destination layer tree group to store results in, or NULLPTR if there

@@ -15,6 +15,10 @@ class QgsProcessingLayerPostProcessor
 %Docstring(signature="appended")
 A post-processor for result layers created by Processing algorithms.
 
+.. warning::
+
+   This is not considered stable API, and is exposed to Python for internal use only.
+
 .. versionadded:: 4.4
 %End
 
@@ -41,6 +45,10 @@ class QgsProcessingResultsHandler
 %Docstring(signature="appended")
 Handles results output by Processing algorithms.
 
+.. warning::
+
+   This is not considered stable API, and is exposed to Python for internal use only.
+
 .. versionadded:: 4.4
 %End
 
@@ -51,6 +59,32 @@ Handles results output by Processing algorithms.
     QgsProcessingResultsHandler();
 
     virtual ~QgsProcessingResultsHandler();
+
+    class ResultLayerDetails
+    {
+%Docstring(signature="appended")
+Contains details of a layer result from running an algorithm.
+
+.. versionadded:: 4.4
+%End
+
+      public:
+        ResultLayerDetails( QgsMapLayer *layer /Transfer/ );
+%Docstring
+Constructor for ResultLayerDetails.
+
+Takes ownership of ``layer``.
+%End
+
+        QgsMapLayer *layer;
+
+        QgsLayerTreeGroup *targetLayerTreeGroup;
+
+        int sortKey;
+
+        QgsProject *destinationProject;
+    };
+
 
     static QgsLayerTreeGroup *layerTreeResultsGroup( const QgsProcessingContext::LayerDetails &layerDetails, const QgsProcessingContext &context );
 %Docstring

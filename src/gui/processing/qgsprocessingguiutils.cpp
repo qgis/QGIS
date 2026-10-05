@@ -40,11 +40,13 @@ void QgsProcessingGuiUtils::configureResultLayerTreeLayer( QgsLayerTreeLayer *la
   }
 }
 
-void QgsProcessingGuiUtils::addResultLayers( const QVector<ResultLayerDetails> &layers, const QgsProcessingContext &context, QgsLayerTreeView *view )
+void QgsProcessingGuiUtils::addResultLayers( const QVector<QgsProcessingResultsHandler::ResultLayerDetails> &layers, const QgsProcessingContext &context, QgsLayerTreeView *view )
 {
   // sort added layer tree layers
-  QVector<ResultLayerDetails> sortedLayers = layers;
-  std::sort( sortedLayers.begin(), sortedLayers.end(), []( const ResultLayerDetails &a, const ResultLayerDetails &b ) { return a.sortKey < b.sortKey; } );
+  QVector<QgsProcessingResultsHandler::ResultLayerDetails> sortedLayers = layers;
+  std::sort( sortedLayers.begin(), sortedLayers.end(), []( const QgsProcessingResultsHandler::ResultLayerDetails &a, const QgsProcessingResultsHandler::ResultLayerDetails &b ) {
+    return a.sortKey < b.sortKey;
+  } );
 
   bool haveSetActiveLayer = false;
   QgsLayerTreeNode *currentSelectedNode = nullptr;
@@ -65,7 +67,7 @@ void QgsProcessingGuiUtils::addResultLayers( const QVector<ResultLayerDetails> &
     defaultTargetGroup = currentSelectedGroup;
   }
 
-  for ( const ResultLayerDetails &layerDetails : std::as_const( sortedLayers ) )
+  for ( const QgsProcessingResultsHandler::ResultLayerDetails &layerDetails : std::as_const( sortedLayers ) )
   {
     QgsProject *project = layerDetails.destinationProject;
     if ( !project )
