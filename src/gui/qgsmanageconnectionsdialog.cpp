@@ -67,12 +67,18 @@ namespace
 
     if ( !document.setContent( &file, true, &errorString, &errorLine, &errorColumn ) )
     {
-      QMessageBox::warning(
-        parent,
-        QCoreApplication::translate( "QgsManageConnectionsDialog", "Loading Connections" ),
-        QCoreApplication::translate( "QgsManageConnectionsDialog", "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorString )
-      );
-      return false;
+      // try without namespace processing, as file might miss namespace declarations
+      // see https://github.com/qgis/QGIS/issues/65477
+      file.seek( 0 );
+      if ( !document.setContent( &file, false, &errorString, &errorLine, &errorColumn ) )
+      {
+        QMessageBox::warning(
+          parent,
+          QCoreApplication::translate( "QgsManageConnectionsDialog", "Loading Connections" ),
+          QCoreApplication::translate( "QgsManageConnectionsDialog", "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorString )
+        );
+        return false;
+      }
     }
 
     return true;
@@ -511,7 +517,6 @@ bool QgsManageConnectionsDialog::populateConnections()
   else
   {
     QDomDocument doc;
-
     if ( !loadDocument( this, mFileName, doc ) )
     {
       return false;
