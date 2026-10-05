@@ -162,7 +162,6 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   if ( layer == mCurrentLayer )
     return;
 
-
   // when current layer is changed, apply the main panel stack to allow it to gracefully clean up
   mWidgetStack->acceptAllPanels();
 
@@ -189,6 +188,12 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     sameLayerType = mCurrentLayer->type() == layer->type();
   }
 
+  Page currentRowPage = Page::Invalid;
+  if ( QListWidgetItem *currentItem = mOptionsListWidget->item( mOptionsListWidget->currentIndex().row() ) )
+  {
+    currentRowPage = currentItem->data( Qt::UserRole ).value< Page >();
+  }
+
   mCurrentLayer = layer;
   mContext.setLayerTreeGroup( nullptr );
 
@@ -198,7 +203,6 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   connect( mCurrentLayer->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsLayerStylingWidget::emitLayerStyleChanged );
   connect( mCurrentLayer->styleManager(), &QgsMapLayerStyleManager::styleRenamed, this, &QgsLayerStylingWidget::emitLayerStyleRenamed );
 
-  int lastPage = mOptionsListWidget->currentIndex().row();
   mOptionsListWidget->blockSignals( true );
   mOptionsListWidget->clear();
   mUserPages.clear();
@@ -346,9 +350,12 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   mOptionsListWidget->addItem( historyItem );
   mOptionsListWidget->blockSignals( false );
 
-  if ( sameLayerType )
+  if ( sameLayerType && currentRowPage != Page::Custom && currentRowPage != Page::Invalid )
   {
-    mOptionsListWidget->setCurrentRow( lastPage );
+    if ( !setCurrentPage( currentRowPage ) )
+    {
+      mOptionsListWidget->setCurrentRow( 0 );
+    }
   }
   else
   {
@@ -481,7 +488,11 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     whileBlocking( mLayerCombo )->setLayer( mCurrentLayer );
 
   const int row = mOptionsListWidget->currentIndex().row();
-  const Page rowPage = mOptionsListWidget->item( row )->data( Qt::UserRole ).value< Page >();
+  QListWidgetItem *currentItem = mOptionsListWidget->item( row );
+  if ( !currentItem )
+    return;
+
+  const Page rowPage = currentItem->data( Qt::UserRole ).value< Page >();
 
   // make sure we're not set to the "not supported" page
   mStackedWidget->setCurrentIndex( mLayerPage );
@@ -802,6 +813,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       }
 
       case Page::Custom:
+      case Page::Invalid:
         break;
     }
   }
@@ -809,7 +821,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   mBlockAutoApply = false;
 }
 
-void QgsLayerStylingWidget::setCurrentPage( Page page )
+bool QgsLayerStylingWidget::setCurrentPage( Page page )
 {
   for ( int i = 0; i < mOptionsListWidget->count(); ++i )
   {
@@ -817,9 +829,10 @@ void QgsLayerStylingWidget::setCurrentPage( Page page )
     if ( thisPage == page )
     {
       mOptionsListWidget->setCurrentRow( i );
-      return;
+      return true;
     }
   }
+  return false;
 }
 
 void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId, bool multipleItems )
