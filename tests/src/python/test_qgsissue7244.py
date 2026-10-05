@@ -50,8 +50,8 @@ class TestQgsVectorLayerSplitFeatures(QgisTestCase):
         self.assertTrue(layer.commitChanges())
 
         res = [f.geometry().asWkt(3) for f in layer.getFeatures()]
-        self.assertCountEqual(
-            res,
+        len_res = len(res)
+        len_expected = len(
             [
                 "MultiPolygon (((0 2, 0 3, 1 3, 1 2, 0 2)))",
                 "MultiPolygon (((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1)))",
@@ -60,9 +60,11 @@ class TestQgsVectorLayerSplitFeatures(QgisTestCase):
                 "MultiPolygon (((2.5 2, 2.5 3, 3 3, 3 2, 2.5 2)))",
                 "MultiPolygon (((2.5 3, 2.5 2, 2 2, 2 3, 2.5 3)))",
                 "MultiPolygon (((2.5 0, 2.5 1, 3 1, 3 0, 2.5 0)))",
-            ],
+            ]
         )
+        self.assertEqual(len_res, len_expected)
 
+    @unittest.skipIf(Qgis.geosVersionInt() >= 31500, "GEOS < 3.15 required")
     def test_SplitTruToCreateCutEdge(self):
         """
         Donut shaped polygon with interior ring, try to cut through donut.
@@ -90,6 +92,42 @@ class TestQgsVectorLayerSplitFeatures(QgisTestCase):
         res = [f.geometry().asWkt(3) for f in layer.getFeatures()]
         self.assertCountEqual(
             res, ["Polygon ((0 0, 3 0, 3 3, 0 3, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1))"]
+        )
+
+    @unittest.skipIf(
+        Qgis.geosVersionInt() < 31500,
+        "GEOS 3.15 actually splits the polygon boundaries by adding new vertices",
+    )
+    def test_SplitTruToCreateCutEdgeGeos315(self):
+        """
+        Donut shaped polygon with interior ring, try to cut through donut.
+
+        The polygon boundary is modified. Two new vertices are added.
+        """
+        layer = QgsVectorLayer("Polygon?crs=EPSG:4326", "test layer", "memory")
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.isSpatial())
+        f = QgsFeature(layer.fields())
+        f.setGeometry(
+            QgsGeometry.fromWkt("POLYGON((0 0,3 0,3 3,0 3,0 0),(1 1,1 2,2 2,2 1,1 1))")
+        )
+        self.assertTrue(layer.dataProvider().addFeature(f))
+        self.assertEqual(layer.featureCount(), 1)
+
+        layer.startEditing()
+        self.assertEqual(
+            layer.splitFeatures([QgsPointXY(1.5, -0.5), QgsPointXY(1.5, 1.5)], 0),
+            Qgis.GeometryOperationResult.Success,
+        )
+
+        self.assertTrue(layer.commitChanges())
+
+        res = [f.geometry().asWkt(3) for f in layer.getFeatures()]
+        self.assertCountEqual(
+            res,
+            [
+                "Polygon ((1.5 0, 0 0, 0 3, 3 3, 3 0, 1.5 0),(1.5 1, 2 1, 2 2, 1 2, 1 1, 1.5 1))"
+            ],
         )
 
 
