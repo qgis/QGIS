@@ -7,7 +7,6 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingGuiUtils.configureResultLayerTreeLayer = staticmethod(QgsProcessingGuiUtils.configureResultLayerTreeLayer)
-    QgsProcessingGuiUtils.layerTreeResultsGroup = staticmethod(QgsProcessingGuiUtils.layerTreeResultsGroup)
     QgsProcessingGuiUtils.addResultLayers = staticmethod(QgsProcessingGuiUtils.addResultLayers)
     QgsProcessingGuiUtils.defaultProcessingMenuEntries = staticmethod(QgsProcessingGuiUtils.defaultProcessingMenuEntries)
     QgsProcessingGuiUtils.__group__ = ['processing']

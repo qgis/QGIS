@@ -13,8 +13,12 @@ from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
     QgsFillSymbol,
+    QgsLayerTreeGroup,
     QgsLineSymbol,
     QgsMarkerSymbol,
+    QgsProcessingContext,
+    QgsProcessingResultsHandler,
+    QgsProject,
     QgsRasterLayer,
     QgsRasterSingleColorRenderer,
     QgsSettings,
@@ -241,6 +245,99 @@ class TestProcessingPostProcessing(QgisTestCase):
 
             self.assertIsInstance(rl2.renderer(), QgsRasterSingleColorRenderer)
             self.assertEqual(rl2.renderer().color().name(), "#123456")
+
+    def test_layer_tree_result_group(self):
+        project1 = QgsProject()
+        project2 = QgsProject()
+
+        context = QgsProcessingContext()
+        context.setProject(project1)
+
+        # no processing setting for result group
+        QgsSettings().setValue("Processing/Configuration/RESULTS_GROUP_NAME", None)
+
+        # no layer destination group
+        layer_details = QgsProcessingContext.LayerDetails(
+            "name", project2, "output_name"
+        )
+        self.assertIsNone(
+            QgsProcessingResultsHandler.layerTreeResultsGroup(layer_details, context)
+        )
+        # no group should be created
+        self.assertFalse(project1.layerTreeRoot().children())
+        self.assertFalse(project2.layerTreeRoot().children())
+
+        layer_details = QgsProcessingContext.LayerDetails(
+            "name", project2, "output_name"
+        )
+        layer_details.groupName = "new group"
+        new_group = QgsProcessingResultsHandler.layerTreeResultsGroup(
+            layer_details, context
+        )
+        self.assertIsInstance(new_group, QgsLayerTreeGroup)
+        self.assertEqual(new_group.name(), "new group")
+
+        # group should be created in project2, as that was specified in the LayerDetails
+        self.assertFalse(project1.layerTreeRoot().children())
+        self.assertEqual(project2.layerTreeRoot().children(), [new_group])
+
+        # no project, so should use project from context
+        layer_details = QgsProcessingContext.LayerDetails("name", None, "output_name")
+        layer_details.groupName = "new group2"
+        new_group2 = QgsProcessingResultsHandler.layerTreeResultsGroup(
+            layer_details, context
+        )
+        self.assertIsInstance(new_group2, QgsLayerTreeGroup)
+        self.assertEqual(new_group2.name(), "new group2")
+        # group should be created in project1, as that's specified in the context
+        self.assertEqual(project1.layerTreeRoot().children(), [new_group2])
+        self.assertEqual(project2.layerTreeRoot().children(), [new_group])
+
+        # with processing setting for result group
+        QgsSettings().setValue(
+            "Processing/Configuration/RESULTS_GROUP_NAME", "parent group"
+        )
+
+        layer_details = QgsProcessingContext.LayerDetails(
+            "name", project2, "output_name"
+        )
+        parent_group1 = QgsProcessingResultsHandler.layerTreeResultsGroup(
+            layer_details, context
+        )
+        self.assertIsInstance(parent_group1, QgsLayerTreeGroup)
+        self.assertEqual(parent_group1.name(), "parent group")
+        self.assertCountEqual(
+            project2.layerTreeRoot().children(), [new_group, parent_group1]
+        )
+        self.assertFalse(parent_group1.children())
+        # same group should be used again if it already exists
+        layer_details = QgsProcessingContext.LayerDetails(
+            "name", project2, "output_name"
+        )
+        self.assertEqual(
+            QgsProcessingResultsHandler.layerTreeResultsGroup(layer_details, context),
+            parent_group1,
+        )
+
+        # group in LayerDetails, should be a sub group of the parent group from Processing settings
+        layer_details = QgsProcessingContext.LayerDetails(
+            "name", project2, "output_name"
+        )
+        layer_details.groupName = "child group"
+        child_group = QgsProcessingResultsHandler.layerTreeResultsGroup(
+            layer_details, context
+        )
+        self.assertIsInstance(child_group, QgsLayerTreeGroup)
+        self.assertEqual(child_group.name(), "child group")
+        self.assertCountEqual(
+            project2.layerTreeRoot().children(), [new_group, parent_group1]
+        )
+        self.assertEqual(parent_group1.children(), [child_group])
+        # same group should be used again if it already exists
+        self.assertEqual(
+            QgsProcessingResultsHandler.layerTreeResultsGroup(layer_details, context),
+            child_group,
+        )
 
 
 if __name__ == "__main__":

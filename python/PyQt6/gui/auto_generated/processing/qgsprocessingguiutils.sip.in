@@ -56,13 +56,6 @@ Applies post-processing steps to the :py:class:`QgsLayerTreeLayer`
 created for an algorithm's output.
 %End
 
-    static QgsLayerTreeGroup *layerTreeResultsGroup( const QgsProcessingContext::LayerDetails &layerDetails, const QgsProcessingContext &context );
-%Docstring
-Returns the destination layer tree group to store results in, or
-``None`` if there is no specific destination tree group associated with
-the layer.
-%End
-
     static void addResultLayers( const QVector< QgsProcessingGuiUtils::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeView *view = 0 );
 %Docstring
 Responsible for adding layers created by an algorithm to a project and
