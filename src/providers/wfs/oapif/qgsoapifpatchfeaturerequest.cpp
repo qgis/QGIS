@@ -34,7 +34,7 @@ QgsOapifPatchFeatureRequest::QgsOapifPatchFeatureRequest( const QgsDataSourceUri
 bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *sharedData, const QString &jsonId, const QgsGeometry &geom, const QString &contentCrs, bool hasAxisInverted )
 {
   QgsGeometry geomModified( geom );
-  if ( hasAxisInverted )
+  if ( hasAxisInverted && !geomModified.isNull() )
   {
     geomModified.get()->swapXy();
   }
