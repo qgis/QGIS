@@ -694,7 +694,18 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
           QgsRasterHistogramWidget *widget = new QgsRasterHistogramWidget( rlayer, mWidgetStack );
           connect( widget, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
-          QString name = mRasterStyleWidget->currentRenderWidget()->renderer()->type();
+          QString name;
+          if ( QgsRasterRendererWidget *rendererWidget = mRasterStyleWidget->currentRenderWidget() )
+          {
+            if ( QgsRasterRenderer *renderer = rendererWidget->renderer() )
+            {
+              name = renderer->type();
+            }
+          }
+          if ( name.isEmpty() && rlayer->renderer() )
+          {
+            name = rlayer->renderer()->type();
+          }
           widget->setRendererWidget( name, mRasterStyleWidget->currentRenderWidget() );
           widget->setDockMode( true );
 
