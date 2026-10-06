@@ -2526,10 +2526,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsObjectCustomProperties mCustomProperties;
 
     //! Controller of legend items of this layer
-    std::unique_ptr<QgsMapLayerLegend> mLegend;
+    QgsMapLayerLegend *mLegend = nullptr;
 
     //! Manager of multiple styles available for a layer (may be NULLPTR)
-    std::unique_ptr<QgsMapLayerStyleManager> mStyleManager;
+    QgsMapLayerStyleManager *mStyleManager = nullptr;
 
     Qgis::AutoRefreshMode mAutoRefreshMode = Qgis::AutoRefreshMode::Disabled;
 
