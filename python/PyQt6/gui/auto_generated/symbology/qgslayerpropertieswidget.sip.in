@@ -69,11 +69,6 @@ and not open dialogs
 
   signals:
 
-    void changed();
-%Docstring
-Emitted when the symbol layer configuration is changed in the widget.
-%End
-
     void changeLayer( QgsSymbolLayer *layer );
 %Docstring
 Emitted when the symbol ``layer`` is changed in the widget.

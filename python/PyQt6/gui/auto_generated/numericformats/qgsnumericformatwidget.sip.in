@@ -55,13 +55,6 @@ retrieve an expression context for the widget when required.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
-  signals:
-
-    void changed();
-%Docstring
-Emitted whenever the configuration of the numeric format is changed.
-%End
-
 };
 
 
