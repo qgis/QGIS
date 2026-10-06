@@ -41,9 +41,9 @@ class CORE_EXPORT QgsColorSchemeRegistry
      * Constructor for an empty color scheme registry
      *
      * \note Since QGIS 4.4 the default construction of QgsColorSchemeRegistry
-     * no longer includes project colors by default. QgsColorSchemeRegistry
-     * with project colors included can be obtained using QgsProject::colorSchemeRegistry()
-     * or by specifically set project using QgsColorSchemeRegistry::setProject().
+     * no longer includes project colors by default. To include the "Project colors"
+     * scheme, associate a project with the registry using setProject() and
+     * then call addDefaultSchemes() to fill the registry with the project colors.
      */
     QgsColorSchemeRegistry() = default;
 
