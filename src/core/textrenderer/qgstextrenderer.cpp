@@ -1472,7 +1472,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
     //       when this shadow function is used for something other than labels
 
     // it's 0-->cw-->360 for labels
-    //QgsDebugMsgLevel( u"Shadow aggregated label rotation (degrees): %1"_s.arg( component.rotation() + component.rotationOffset() ), 4 );
+    //QgsDebugMsgLevel( u"Shadow aggregated label rotation (radians): %1"_s.arg( component.rotation() + component.rotationOffset() ), 4 );
     angleRad -= ( component.rotationRadians + component.rotationOffsetRadians );
   }
 
