@@ -21,6 +21,7 @@
 #include "qgscodeeditorpython.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
+#include "qgslayertreeview.h"
 #include "qgsmapcanvas.h"
 #include "qgsmodeldesignerdialog.h"
 #include "qgsprocessingdefaultstyledialog.h"
@@ -504,6 +505,39 @@ void QgsAppProcessingLayerPostProcessor::postProcessLayer( QgsMapLayer *layer, c
 }
 
 //
+// QgsAppProcessingResultsHandler
+//
+
+QgsAppProcessingResultsHandler::QgsAppProcessingResultsHandler( QgisApp *app )
+  : mQgisApp( app )
+{}
+
+QgsProcessingResultsHandler::ResultDetails QgsAppProcessingResultsHandler::handleAlgorithmResultsProtected(
+  const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters, QgsProcessingFeedback *feedback
+)
+{
+  mQgisApp->layerTreeView()->setUpdatesEnabled( false );
+  mCurrentSelectedNode = mQgisApp->layerTreeView()->currentNode();
+
+  QgsProcessingResultsHandler::ResultDetails results = QgsProcessingResultsHandler::handleAlgorithmResultsProtected( algorithm, context, parameters, feedback );
+
+  mQgisApp->layerTreeView()->setUpdatesEnabled( true );
+
+  return results;
+}
+
+QgsMapLayer *QgsAppProcessingResultsHandler::handleAddResultLayers( const ResultDetails &details, const QgsProcessingContext &context )
+{
+  return addResultLayers( details.addedLayers, context, mCurrentSelectedNode );
+}
+
+void QgsAppProcessingResultsHandler::setNewActiveLayer( QgsMapLayer *layer )
+{
+  mQgisApp->setActiveLayer( layer );
+}
+
+
+//
 // QgsAppProcessingUtils
 //
 
@@ -522,6 +556,7 @@ QgsAppProcessingUtils::QgsAppProcessingUtils( QgisApp *app )
   }
 
   QgsApplication::processingRegistry()->setLayerPostProcessor( std::make_unique< QgsAppProcessingLayerPostProcessor >() );
+  QgsApplication::processingRegistry()->setResultsHandler( std::make_unique< QgsAppProcessingResultsHandler >( mQgisApp ) );
 }
 
 void QgsAppProcessingUtils::registerActions()

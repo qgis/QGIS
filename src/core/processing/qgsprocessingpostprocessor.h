@@ -130,6 +130,44 @@ class CORE_EXPORT QgsProcessingResultsHandler
      * Returns the map layer which should be set as the project's active layer after adding all the results.
      */
     static QgsMapLayer *addResultLayers( const QVector< QgsProcessingResultsHandler::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeNode *currentSelectedNode );
+
+    /**
+     * Handles the results from running an algorithm.
+     *
+     * Returns TRUE if all results could be successfully loaded.
+     */
+    bool handleAlgorithmResults( const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters, QgsProcessingFeedback *feedback = nullptr );
+
+  protected:
+#ifndef SIP_RUN
+    /**
+     * Stores results of running the handleAlgorithmResultsProtected method.
+     */
+    struct ResultDetails
+    {
+        //! TRUE if all layers could be successfully loaded
+        bool succeeded = false;
+        //! Details of newly added layers
+        QList<QgsProcessingResultsHandler::ResultLayerDetails> addedLayers;
+    };
+
+    /**
+     * Handles the results from running an algorithm.
+     */
+    virtual QgsProcessingResultsHandler::ResultDetails handleAlgorithmResultsProtected(
+      const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters, QgsProcessingFeedback *feedback
+    );
+
+    /**
+     * Calls addResultLayers(), allowing for extra logic to be injected in subclasses.
+     */
+    virtual QgsMapLayer *handleAddResultLayers( const QgsProcessingResultsHandler::ResultDetails &details, const QgsProcessingContext &context );
+
+    /**
+     * Handles setting the new project active layer after processing the results. The base class version does nothing.
+     */
+    virtual void setNewActiveLayer( QgsMapLayer *layer );
+#endif
 };
 
 

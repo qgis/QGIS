@@ -198,6 +198,133 @@ void QgsProcessingResultsHandler::configureResultLayerTreeLayer( QgsLayerTreeLay
   }
 }
 
+bool QgsProcessingResultsHandler::handleAlgorithmResults( const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr< QgsProcessingFeedback > localFeedback;
+  if ( !feedback )
+  {
+    localFeedback = std::make_unique< QgsProcessingFeedback >();
+    feedback = localFeedback.get();
+  }
+
+  return handleAlgorithmResultsProtected( algorithm, context, parameters, feedback ).succeeded;
+}
+
+QgsProcessingResultsHandler::ResultDetails QgsProcessingResultsHandler::handleAlgorithmResultsProtected(
+  const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters, QgsProcessingFeedback *feedback
+)
+{
+  QgsProcessingLayerPostProcessor *layerPostProcessor = QgsApplication::processingRegistry()->layerPostProcessor();
+
+  feedback->setProgressText( QObject::tr( "Loading resulting layers" ) );
+
+  ResultDetails result;
+  QStringList invalidLayers;
+
+
+  struct LayerToPostProcess
+  {
+      QgsMapLayer *layer;
+      QgsProcessingContext::LayerDetails details;
+  };
+
+  QList< LayerToPostProcess > layersToPostProcess;
+
+  const QMap< QString, QgsProcessingContext::LayerDetails > layersToLoad = context.layersToLoadOnCompletion();
+  int i = 0;
+  for ( auto it = layersToLoad.constBegin(); it != layersToLoad.constEnd(); ++it, ++i )
+  {
+    if ( feedback->isCanceled() )
+      return result;
+
+    if ( layersToLoad.size() > 2 )
+    {
+      // only show progress feedback if we're loading a bunch of layers
+      feedback->setProgress( 100 * i / static_cast< float >( layersToLoad.size() ) );
+    }
+
+    const QString destId = it.key();
+    QgsProcessingContext::LayerDetails details = it.value();
+
+    QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( destId, context, true, details.layerTypeHint );
+    if ( layer )
+    {
+      details.setOutputLayerName( layer );
+      const QString outputName = determineOutputName( destId, details, algorithm, context, parameters );
+      layerPostProcessor->postProcessLayer( layer, outputName, algorithm );
+
+      // Load layer to layer tree root or to a specific group
+      QgsLayerTreeGroup *resultsGroup = layerTreeResultsGroup( details, context );
+
+      // note here that we may not retrieve an owned layer -- eg if the
+      // output layer already exists in the destination project
+      std::unique_ptr< QgsMapLayer> ownedMapLayer( context.temporaryLayerStore()->takeMapLayer( layer ) );
+      if ( ownedMapLayer )
+      {
+        // we don't add the layer to the tree yet -- that's done
+        // later, after we've sorted all added layers
+        ResultLayerDetails resultLayerDetails = ResultLayerDetails( ownedMapLayer.release() );
+        resultLayerDetails.targetLayerTreeGroup = resultsGroup;
+        resultLayerDetails.sortKey = details.layerSortKey;
+        resultLayerDetails.destinationProject = details.project;
+        result.addedLayers.append( resultLayerDetails );
+      }
+
+      if ( details.postProcessor() )
+      {
+        // we defer calling the postProcessor set in the context
+        // until the layer has been added to the project's layer
+        // tree, just in case the postProcessor contains logic
+        // relating to layer tree handling
+        layersToPostProcess.append( LayerToPostProcess { layer, details } );
+      }
+    }
+    else
+    {
+      invalidLayers.append( destId );
+    }
+  }
+
+  result.succeeded = invalidLayers.empty();
+
+  QgsMapLayer *newActiveLayer = handleAddResultLayers( result, context );
+
+  // all layers have been added to the layer tree, so safe to call
+  // postProcessors now
+  for ( const LayerToPostProcess &layer : std::as_const( layersToPostProcess ) )
+  {
+    layer.details.postProcessor()->postProcessLayer( layer.layer, context, feedback );
+  }
+
+  setNewActiveLayer( newActiveLayer );
+
+  feedback->setProgress( 100 );
+
+  if ( !invalidLayers.empty() )
+  {
+    QString msg = QObject::tr( "The following layers were not correctly generated." );
+    QStringList layerList;
+    layerList.reserve( invalidLayers.size() );
+    for ( const QString &layerId : std::as_const( invalidLayers ) )
+    {
+      layerList.append( u"• %1"_s.arg( layerId ) );
+    }
+    msg += u"\n%1\n"_s.arg( layerList.join( '\n' ) );
+    msg += QObject::tr( "You can check the 'Log Messages Panel' in QGIS main window to find more information about the execution of the algorithm." );
+    feedback->reportError( msg );
+  }
+
+  return result;
+}
+
+QgsMapLayer *QgsProcessingResultsHandler::handleAddResultLayers( const ResultDetails &details, const QgsProcessingContext &context )
+{
+  return addResultLayers( details.addedLayers, context, nullptr );
+}
+
+void QgsProcessingResultsHandler::setNewActiveLayer( QgsMapLayer * )
+{}
+
 QgsMapLayer *QgsProcessingResultsHandler::addResultLayers( const QVector<ResultLayerDetails> &layers, const QgsProcessingContext &context, QgsLayerTreeNode *currentSelectedNode )
 {
   // sort added layer tree layers
