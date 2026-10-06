@@ -302,12 +302,12 @@ QFuture<QVector<QgsChunkNode *>> QgsTiledSceneChunkLoader::createChildren( QgsCh
         const double *half = obb.halfAxes();
         // this is an approximate check anyway, no need for double precision matrix/vector
         // clang-format off
-      QMatrix4x4 rot(
-        half[0], half[3], half[6], 0,
-        half[1], half[4], half[7], 0,
-        half[2], half[5], half[8], 0,
-        0, 0, 0, 1
-      );
+        QMatrix4x4 rot(
+          half[0], half[3], half[6], 0,
+          half[1], half[4], half[7], 0,
+          half[2], half[5], half[8], 0,
+          0, 0, 0, 1
+        );
         // clang-format on
         QVector3D aaa = rot.inverted().map( ecef2.toVector3D() );
         if ( aaa.x() > 1 || aaa.y() > 1 || aaa.z() > 1 || aaa.x() < -1 || aaa.y() < -1 || aaa.z() < -1 )
