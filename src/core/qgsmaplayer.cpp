@@ -92,7 +92,7 @@ QgsMapLayer::QgsMapLayer( Qgis::LayerType type,
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>( this ) )
   , mUndoStack( new QUndoStack( this ) )
   , mUndoStackStyles( new QUndoStack( this ) )
-  , mStyleManager( std::make_unique<QgsMapLayerStyleManager>( this ) )
+  , mStyleManager( new QgsMapLayerStyleManager( this ) )
   , mRefreshTimer( new QTimer( this ) )
 {
   mID = generateId( lyrname );
@@ -2821,16 +2821,16 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( legend == mLegend.get() )
+  if ( legend == mLegend )
     return;
 
-  mLegend.reset( legend );
-
+  delete mLegend;
+  mLegend = legend;
 
   if ( mLegend )
   {
     mLegend->setParent( this );
-    connect( mLegend.get(), &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged, Qt::UniqueConnection );
+    connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged, Qt::UniqueConnection );
   }
 
   emit legendChanged();
@@ -2840,14 +2840,14 @@ QgsMapLayerLegend *QgsMapLayer::legend() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mLegend.get();
+  return mLegend;
 }
 
 QgsMapLayerStyleManager *QgsMapLayer::styleManager() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mStyleManager.get();
+  return mStyleManager;
 }
 
 void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
