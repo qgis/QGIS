@@ -76,7 +76,6 @@ from processing.gui.AlgorithmLocatorFilter import (
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.ResultsDock import ResultsDock
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.tools import dataobjects
@@ -426,7 +425,9 @@ class ProcessingPlugin(QObject):
             context = dataobjects.createContext(feedback)
             parameters = {}
             ret, results = execute(alg, parameters, context, feedback)
-            handleAlgorithmResults(alg, context, feedback)
+            QgsApplication.processingRegistry().handleAlgorithmResults(
+                alg, context, parameters, feedback
+            )
             feedback.close()
 
     def unload(self):
