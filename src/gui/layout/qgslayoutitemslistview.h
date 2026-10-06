@@ -30,6 +30,7 @@ class QgsLayout;
 class QgsLayoutDesignerInterface;
 class QgsLayoutModel;
 class QgsLayoutItem;
+class QgsLayoutView;
 
 /**
  * \ingroup gui
@@ -89,6 +90,8 @@ class GUI_EXPORT QgsLayoutItemsListView : public QTreeView
 
   private slots:
 
+    void setLayoutView( QgsLayoutView *view );
+
     void showContextMenu( QPoint point );
 
     //! Update LayoutView selection from the item list
@@ -103,6 +106,8 @@ class GUI_EXPORT QgsLayoutItemsListView : public QTreeView
 
     bool mUpdatingSelection = false;
     bool mUpdatingFromView = false;
+
+    friend class TestQgsLayoutItemListView;
 };
 
 #endif // QGSLAYOUTITEMSLISTVIEW_H

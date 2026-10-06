@@ -104,7 +104,10 @@ QgsLayoutItemsListView::QgsLayoutItemsListView( QWidget *parent, QgsLayoutDesign
   setSelectionBehavior( QAbstractItemView::SelectRows );
 
   connect( this, &QWidget::customContextMenuRequested, this, &QgsLayoutItemsListView::showContextMenu );
-  connect( mDesigner->view(), &QgsLayoutView::itemFocused, this, &QgsLayoutItemsListView::onItemFocused );
+  if ( mDesigner )
+  {
+    setLayoutView( mDesigner->view() );
+  }
 }
 
 void QgsLayoutItemsListView::setCurrentLayout( QgsLayout *layout )
@@ -144,6 +147,11 @@ void QgsLayoutItemsListView::keyPressEvent( QKeyEvent *event )
   }
 
   QTreeView::keyPressEvent( event );
+}
+
+void QgsLayoutItemsListView::setLayoutView( QgsLayoutView *view )
+{
+  connect( view, &QgsLayoutView::itemFocused, this, &QgsLayoutItemsListView::onItemFocused );
 }
 
 void QgsLayoutItemsListView::updateSelection()
@@ -247,7 +255,7 @@ void QgsLayoutItemsListView::onItemFocused( QgsLayoutItem *focusedItem )
 
 void QgsLayoutItemsListView::showContextMenu( QPoint point )
 {
-  if ( !mModel )
+  if ( !mModel || !mDesigner )
     return;
   const QModelIndex index = indexAt( point );
   QgsLayoutItem *item = mModel->itemFromIndex( index );
