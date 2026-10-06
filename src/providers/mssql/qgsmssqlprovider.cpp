@@ -79,7 +79,14 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
   , mShared( new QgsMssqlSharedData )
 {
   if ( !mUri.srid().isEmpty() )
-    mSRId = mUri.srid().toInt();
+  {
+    bool ok = false;
+    mSRId = mUri.srid().toInt( &ok );
+    if ( !ok )
+    {
+      mSRId = -1;
+    }
+  }
 
   mWkbType = mUri.wkbType();
 
@@ -158,7 +165,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
 
     if ( !mIsQuery )
     {
-      if ( mSRId <= 0 || mWkbType == Qgis::WkbType::Unknown || mGeometryColName.isEmpty() )
+      if ( mSRId < 0 || mWkbType == Qgis::WkbType::Unknown || mGeometryColName.isEmpty() )
       {
         loadMetadataFromGeometryColumnsTable();
       }
@@ -280,7 +287,12 @@ void QgsMssqlProvider::loadMetadataFromGeometryColumnsTable()
   else if ( query.isActive() && query.next() )
   {
     mGeometryColName = query.value( 0 ).toString();
-    mSRId = query.value( 1 ).toInt();
+    bool ok = false;
+    const int retrievedSrid = query.value( 1 ).toInt( &ok );
+    if ( ok )
+    {
+      mSRId = retrievedSrid;
+    }
     const int dimensions = query.value( 3 ).toInt();
     const QString detectedType { QgsMssqlProvider::typeFromMetadata( query.value( 2 ).toString().toUpper(), dimensions ) };
     mWkbType = getWkbType( detectedType );
@@ -716,7 +728,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       return;
   }
 
-  if ( !mIsQuery && mSRId > 0 )
+  if ( !mIsQuery && mSRId >= 0 )
   {
     // Get the extents from the spatial index table to speed up load times.
     // We have to use max() and min() because you can have more then one index but the biggest area is what we want to use.
@@ -747,7 +759,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   // If we can't find the extents in the spatial index table just do what we normally do.
   bool readAllGeography = false;
   QString sridColumns;
-  if ( mSRId <= 0 )
+  if ( mSRId < 0 )
   {
     // piggy-back unknown SRId retrieval onto extent calculation, using min(Srid) and max(Srid) to get single scalar values
     // since the extent query will only return a SINGLE row. That's enough to tell us whether there's a single distinct
@@ -855,13 +867,26 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
         mExtent.setXMaximum( query.value( 2 ).toDouble() );
         mExtent.setYMaximum( query.value( 3 ).toDouble() );
 
-        if ( mSRId <= 0 )
+        if ( mSRId < 0 )
         {
           QSet< int > srIdExtrema;
+          bool ok = false;
           if ( !QgsVariantUtils::isNull( query.value( 4 ) ) )
-            srIdExtrema.insert( query.value( 4 ).toInt() );
+          {
+            const int retrievedSrid = query.value( 4 ).toInt( &ok );
+            if ( ok )
+            {
+              srIdExtrema.insert( retrievedSrid );
+            }
+          }
           if ( !QgsVariantUtils::isNull( query.value( 5 ) ) )
-            srIdExtrema.insert( query.value( 5 ).toInt() );
+          {
+            const int retrievedSrid = query.value( 5 ).toInt( &ok );
+            if ( ok )
+            {
+              srIdExtrema.insert( retrievedSrid );
+            }
+          }
           if ( srIdExtrema.size() == 1 )
           {
             mSRId = *srIdExtrema.constBegin();
@@ -901,13 +926,26 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       mExtent.setYMaximum( query.value( 3 ).toDouble() );
     }
 
-    if ( mSRId <= 0 )
+    if ( mSRId < 0 )
     {
       QSet< int > srIdExtrema;
+      bool ok = false;
       if ( !QgsVariantUtils::isNull( query.value( 4 ) ) )
-        srIdExtrema.insert( query.value( 4 ).toInt() );
+      {
+        const int retrievedSrid = query.value( 4 ).toInt( &ok );
+        if ( ok )
+        {
+          srIdExtrema.insert( retrievedSrid );
+        }
+      }
       if ( !QgsVariantUtils::isNull( query.value( 5 ) ) )
-        srIdExtrema.insert( query.value( 5 ).toInt() );
+      {
+        const int retrievedSrid = query.value( 5 ).toInt( &ok );
+        if ( ok )
+        {
+          srIdExtrema.insert( retrievedSrid );
+        }
+      }
       if ( srIdExtrema.size() == 1 )
       {
         mSRId = *srIdExtrema.constBegin();
@@ -1892,7 +1930,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
 
 QgsCoordinateReferenceSystem QgsMssqlProvider::crs() const
 {
-  if ( !mCrs.isValid() && mSRId > 0 )
+  if ( !mCrs.isValid() && mSRId >= 0 )
   {
     // try to load crs from the database tables as a fallback
     QSqlQuery query = createQuery();
