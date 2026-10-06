@@ -123,6 +123,13 @@ class CORE_EXPORT QgsProcessingResultsHandler
      * Applies post-processing steps to the QgsLayerTreeLayer created for an algorithm's output.
      */
     static void configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer );
+
+    /**
+     * Responsible for adding layers created by an algorithm to a project and the project's layer tree in the correct location.
+     *
+     * Returns the map layer which should be set as the project's active layer after adding all the results.
+     */
+    static QgsMapLayer *addResultLayers( const QVector< QgsProcessingResultsHandler::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeNode *currentSelectedNode );
 };
 
 

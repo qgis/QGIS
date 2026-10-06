@@ -14,6 +14,7 @@ from qgis.core import (
     QgsApplication,
     QgsFillSymbol,
     QgsLayerTreeGroup,
+    QgsLayerTreeLayer,
     QgsLineSymbol,
     QgsMarkerSymbol,
     QgsProcessingContext,
@@ -378,6 +379,380 @@ class TestProcessingPostProcessing(QgisTestCase):
             raster_layer_tree_layer
         )
         self.assertFalse(raster_layer_tree_layer.customProperty("showFeatureCount"))
+
+    def test_add_result_layers(self):
+        QgsSettings().setValue("Processing/Configuration/VECTOR_FEATURE_COUNT", False)
+
+        QgsProject.instance().clear()
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+
+        # empty project, layers should be added respecting sort order
+        # "Layers with a greater sort key will be placed over layers with a lesser sort key"
+        vl1 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test1",
+            "memory",
+        )
+        details1 = QgsProcessingResultsHandler.ResultLayerDetails(vl1)
+        details1.destinationProject = QgsProject.instance()
+        details1.sortKey = 5
+
+        vl2 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test2",
+            "memory",
+        )
+        details2 = QgsProcessingResultsHandler.ResultLayerDetails(vl2)
+        details2.destinationProject = QgsProject.instance()
+        details2.sortKey = 1
+
+        vl3 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test3",
+            "memory",
+        )
+        details3 = QgsProcessingResultsHandler.ResultLayerDetails(vl3)
+        details3.destinationProject = QgsProject.instance()
+        details3.sortKey = 15
+
+        target_layer = QgsProcessingResultsHandler.addResultLayers(
+            [details1, details2, details3], context, None
+        )
+
+        self.assertCountEqual(
+            QgsProject.instance().mapLayers().values(), [vl1, vl2, vl3]
+        )
+
+        self.assertEqual(
+            [node.layer() for node in QgsProject.instance().layerTreeRoot().children()],
+            [vl3, vl1, vl2],
+        )
+        self.assertEqual(target_layer, vl2)
+
+        # no layer count for these layers
+        self.assertFalse(
+            QgsProject.instance()
+            .layerTreeRoot()
+            .findLayer(vl1)
+            .customProperty("showFeatureCount")
+        )
+        self.assertFalse(
+            QgsProject.instance()
+            .layerTreeRoot()
+            .findLayer(vl2)
+            .customProperty("showFeatureCount")
+        )
+        self.assertFalse(
+            QgsProject.instance()
+            .layerTreeRoot()
+            .findLayer(vl3)
+            .customProperty("showFeatureCount")
+        )
+
+        # select an active layer in tree (vl1), output layers should be placed above this
+        current_node = QgsProject.instance().layerTreeRoot().findLayer(vl1)
+
+        vl4 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test4",
+            "memory",
+        )
+        details4 = QgsProcessingResultsHandler.ResultLayerDetails(vl4)
+        details4.destinationProject = QgsProject.instance()
+        details4.sortKey = 1
+        vl5 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test5",
+            "memory",
+        )
+        details5 = QgsProcessingResultsHandler.ResultLayerDetails(vl5)
+        details5.destinationProject = QgsProject.instance()
+        details5.sortKey = 2
+
+        target_layer = QgsProcessingResultsHandler.addResultLayers(
+            [details4, details5], context, current_node
+        )
+
+        self.assertCountEqual(
+            QgsProject.instance().mapLayers().values(), [vl1, vl2, vl3, vl4, vl5]
+        )
+
+        self.assertEqual(
+            [node.layer() for node in QgsProject.instance().layerTreeRoot().children()],
+            [vl3, vl5, vl4, vl1, vl2],
+        )
+        self.assertEqual(target_layer, vl4)
+
+        # with a group selected
+        group1 = QgsProject.instance().layerTreeRoot().addGroup("group1")
+
+        vl6 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test6",
+            "memory",
+        )
+        details6 = QgsProcessingResultsHandler.ResultLayerDetails(vl6)
+        details6.destinationProject = QgsProject.instance()
+        details6.sortKey = 1
+        vl7 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test7",
+            "memory",
+        )
+        details7 = QgsProcessingResultsHandler.ResultLayerDetails(vl7)
+        details7.destinationProject = QgsProject.instance()
+        details7.sortKey = 2
+
+        target_layer = QgsProcessingResultsHandler.addResultLayers(
+            [details6, details7], context, group1
+        )
+
+        self.assertCountEqual(
+            QgsProject.instance().mapLayers().values(),
+            [vl1, vl2, vl3, vl4, vl5, vl6, vl7],
+        )
+        self.assertEqual(
+            [
+                node.layer()
+                for node in QgsProject.instance().layerTreeRoot().children()
+                if isinstance(node, QgsLayerTreeLayer)
+            ],
+            [vl3, vl5, vl4, vl1, vl2],
+        )
+        self.assertEqual([node.layer() for node in group1.children()], [vl7, vl6])
+        self.assertEqual(target_layer, vl6)
+
+        vl8 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test8",
+            "memory",
+        )
+        details8 = QgsProcessingResultsHandler.ResultLayerDetails(vl8)
+        details8.destinationProject = QgsProject.instance()
+        details8.sortKey = 2
+        vl9 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test9",
+            "memory",
+        )
+        details9 = QgsProcessingResultsHandler.ResultLayerDetails(vl9)
+        details9.destinationProject = QgsProject.instance()
+        details9.sortKey = 1
+
+        # if group is selected, layers should be added at top of group
+        target_layer = QgsProcessingResultsHandler.addResultLayers(
+            [details8, details9], context, group1
+        )
+
+        self.assertCountEqual(
+            QgsProject.instance().mapLayers().values(),
+            [vl1, vl2, vl3, vl4, vl5, vl6, vl7, vl8, vl9],
+        )
+        self.assertEqual(
+            [
+                node.layer()
+                for node in QgsProject.instance().layerTreeRoot().children()
+                if isinstance(node, QgsLayerTreeLayer)
+            ],
+            [vl3, vl5, vl4, vl1, vl2],
+        )
+        self.assertEqual(
+            [node.layer() for node in group1.children()], [vl8, vl9, vl7, vl6]
+        )
+        self.assertEqual(target_layer, vl9)
+
+        # layer as child of group selected, new layers should be added above that child
+        selected_node = QgsProject.instance().layerTreeRoot().findLayer(vl7)
+
+        vl10 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test10",
+            "memory",
+        )
+        details10 = QgsProcessingResultsHandler.ResultLayerDetails(vl10)
+        details10.destinationProject = QgsProject.instance()
+        details10.sortKey = 2
+        vl11 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test11",
+            "memory",
+        )
+        details11 = QgsProcessingResultsHandler.ResultLayerDetails(vl11)
+        details11.destinationProject = QgsProject.instance()
+        details11.sortKey = 1
+
+        target_layer = QgsProcessingResultsHandler.addResultLayers(
+            [details10, details11], context, selected_node
+        )
+
+        self.assertCountEqual(
+            QgsProject.instance().mapLayers().values(),
+            [vl1, vl2, vl3, vl4, vl5, vl6, vl7, vl8, vl9, vl10, vl11],
+        )
+        self.assertEqual(
+            [
+                node.layer()
+                for node in QgsProject.instance().layerTreeRoot().children()
+                if isinstance(node, QgsLayerTreeLayer)
+            ],
+            [vl3, vl5, vl4, vl1, vl2],
+        )
+        self.assertEqual(
+            [node.layer() for node in group1.children()],
+            [vl8, vl9, vl10, vl11, vl7, vl6],
+        )
+        self.assertEqual(target_layer, vl11)
+
+        # with explicit targetLayerTreeGroup set for some layers
+        group2 = QgsProject.instance().layerTreeRoot().addGroup("group2")
+
+        vl12 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test10",
+            "memory",
+        )
+        details12 = QgsProcessingResultsHandler.ResultLayerDetails(vl12)
+        details12.destinationProject = QgsProject.instance()
+        details12.sortKey = 2
+        vl13 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test13",
+            "memory",
+        )
+        details13 = QgsProcessingResultsHandler.ResultLayerDetails(vl13)
+        details13.destinationProject = QgsProject.instance()
+        details13.targetLayerTreeGroup = group2
+        details13.sortKey = 1
+        vl14 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test14",
+            "memory",
+        )
+        details14 = QgsProcessingResultsHandler.ResultLayerDetails(vl14)
+        details14.destinationProject = QgsProject.instance()
+        details14.targetLayerTreeGroup = group2
+        details14.sortKey = 10
+
+        target_layer = QgsProcessingResultsHandler.addResultLayers(
+            [details12, details13, details14], context, group1
+        )
+
+        self.assertCountEqual(
+            QgsProject.instance().mapLayers().values(),
+            [vl1, vl2, vl3, vl4, vl5, vl6, vl7, vl8, vl9, vl10, vl11, vl12, vl13, vl14],
+        )
+        self.assertEqual(
+            [
+                node.layer()
+                for node in QgsProject.instance().layerTreeRoot().children()
+                if isinstance(node, QgsLayerTreeLayer)
+            ],
+            [vl3, vl5, vl4, vl1, vl2],
+        )
+        self.assertEqual(
+            [node.layer() for node in group1.children()],
+            [vl12, vl8, vl9, vl10, vl11, vl7, vl6],
+        )
+        self.assertEqual([node.layer() for node in group2.children()], [vl14, vl13])
+        self.assertEqual(target_layer, vl13)
+
+        # test feature count
+        QgsSettings().setValue("Processing/Configuration/VECTOR_FEATURE_COUNT", True)
+
+        vl15 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test15",
+            "memory",
+        )
+        details15 = QgsProcessingResultsHandler.ResultLayerDetails(vl15)
+        details15.destinationProject = QgsProject.instance()
+        details15.targetLayerTreeGroup = group2
+        details15.sortKey = 1
+        vl16 = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)",
+            "test13",
+            "memory",
+        )
+        details16 = QgsProcessingResultsHandler.ResultLayerDetails(vl16)
+        details16.destinationProject = QgsProject.instance()
+        details16.targetLayerTreeGroup = group2
+        details16.sortKey = 10
+
+        target_layer = QgsProcessingResultsHandler.addResultLayers(
+            [details15, details16], context, None
+        )
+
+        self.assertCountEqual(
+            QgsProject.instance().mapLayers().values(),
+            [
+                vl1,
+                vl2,
+                vl3,
+                vl4,
+                vl5,
+                vl6,
+                vl7,
+                vl8,
+                vl9,
+                vl10,
+                vl11,
+                vl12,
+                vl13,
+                vl14,
+                vl15,
+                vl16,
+            ],
+        )
+        self.assertEqual(
+            [
+                node.layer()
+                for node in QgsProject.instance().layerTreeRoot().children()
+                if isinstance(node, QgsLayerTreeLayer)
+            ],
+            [vl3, vl5, vl4, vl1, vl2],
+        )
+        self.assertEqual(
+            [node.layer() for node in group1.children()],
+            [vl12, vl8, vl9, vl10, vl11, vl7, vl6],
+        )
+        self.assertEqual(
+            [node.layer() for node in group2.children()], [vl16, vl15, vl14, vl13]
+        )
+        self.assertEqual(target_layer, vl15)
+
+        # no layer count for these layers
+        self.assertFalse(
+            QgsProject.instance()
+            .layerTreeRoot()
+            .findLayer(vl1)
+            .customProperty("showFeatureCount")
+        )
+        self.assertFalse(
+            QgsProject.instance()
+            .layerTreeRoot()
+            .findLayer(vl2)
+            .customProperty("showFeatureCount")
+        )
+        self.assertFalse(
+            QgsProject.instance()
+            .layerTreeRoot()
+            .findLayer(vl3)
+            .customProperty("showFeatureCount")
+        )
+        # layer count for these newly added layers
+        self.assertTrue(
+            QgsProject.instance()
+            .layerTreeRoot()
+            .findLayer(vl15)
+            .customProperty("showFeatureCount")
+        )
+        self.assertTrue(
+            QgsProject.instance()
+            .layerTreeRoot()
+            .findLayer(vl16)
+            .customProperty("showFeatureCount")
+        )
 
 
 if __name__ == "__main__":
