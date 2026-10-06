@@ -264,9 +264,6 @@ QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest &reque
 
 void QgsMssqlProvider::loadMetadataFromGeometryColumnsTable()
 {
-  mSRId = -1;
-  mWkbType = Qgis::WkbType::Unknown;
-
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
   const QString sql = u"IF OBJECT_ID('geometry_columns', 'U') IS NOT NULL "
