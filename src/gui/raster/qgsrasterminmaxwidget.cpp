@@ -230,3 +230,9 @@ void QgsRasterMinMaxWidget::hideUpdatedExtent()
 {
   mStatisticsExtentCombo->removeItem( mStatisticsExtentCombo->findData( QVariant::fromValue( Qgis::RasterRangeExtent::UpdatedCanvas ) ) );
 }
+
+void QgsRasterMinMaxWidget::onWidgetChanged()
+{
+  doComputations();
+  emit widgetChanged();
+}
