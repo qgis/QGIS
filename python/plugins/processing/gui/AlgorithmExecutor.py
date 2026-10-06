@@ -44,7 +44,6 @@ from qgis.core import (
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
-from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 
 
@@ -488,7 +487,9 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
         if not ret:
             return False
 
-    handleAlgorithmResults(alg, context, feedback)
+    QgsApplication.processingRegistry().handleAlgorithmResults(
+        alg, context, {}, feedback
+    )
     return True
 
 
