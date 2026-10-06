@@ -877,7 +877,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     QString jsonId = mShared->findUniqueId( qgisFid );
     if ( jsonId.isEmpty() )
     {
-      pushError( u"Cannot identify feature with id %1"_s.arg( qgisFid ) );
+      pushError( tr( "Cannot identify feature with id %1" )_s.arg( qgisFid ) );
       return false;
     }
 
@@ -900,7 +900,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       QgsFeature f;
       if ( !featureIterator.nextFeature( f ) )
       {
-        pushError( tr"Cannot retrieve feature of id %1"_s.arg( qgisFid ) );
+        pushError( tr( "Cannot retrieve feature with id %1" ).arg( qgisFid ) );
         return false;
       }
 
@@ -939,7 +939,7 @@ bool QgsOapifProvider::deleteFeatures( const QgsFeatureIds &ids )
     QString jsonId = mShared->findUniqueId( id );
     if ( jsonId.isEmpty() )
     {
-      pushError( tr"Cannot identify feature with id %1"_s.arg( id ) );
+      pushError( tr( "Cannot identify feature with id %1" ).arg( id ) );
       return false;
     }
 
