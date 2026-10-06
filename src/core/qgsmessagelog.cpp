@@ -58,7 +58,9 @@ void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis
 
 void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser, Qgis::StringFormat format )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   emit messageReceived( message, tag, level );
+  Q_NOWARN_DEPRECATED_POP
   emit messageReceivedWithFormat( message, tag, level, format );
   if ( level != Qgis::MessageLevel::Info && notifyUser && mAdviseBlockCount == 0 )
   {
