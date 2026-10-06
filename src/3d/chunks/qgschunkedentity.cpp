@@ -475,6 +475,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneCont
         eraseJobFromList( job );
         // the new children need to be visited by the next update
         mNeedsUpdate = true;
+        emit pendingJobsCountChanged();
       } );
     }
 
