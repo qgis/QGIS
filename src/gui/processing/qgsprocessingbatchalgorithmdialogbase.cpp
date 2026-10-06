@@ -22,6 +22,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingalgrunnertask.h"
 #include "qgsprocessingbatch.h"
+#include "qgsprocessingregistry.h"
 #include "qgsproxyprogresstask.h"
 
 #include <QString>
@@ -157,7 +158,7 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
 
     mResults.append( QVariantMap( { { u"parameters"_s, mCurrentParameters }, { u"results"_s, results } } ) );
 
-    handleAlgorithmResults( algorithm(), *mTaskContext, mBatchFeedback.get(), mCurrentParameters );
+    QgsApplication::processingRegistry()->handleAlgorithmResults( algorithm(), *mTaskContext, mCurrentParameters, mBatchFeedback.get() );
 
     // must not start the next step from within QgsTaskManager::taskStatusChanged() (fix #53806)
     QMetaObject::invokeMethod( this, &QgsProcessingBatchAlgorithmDialogBase::executeNext, Qt::QueuedConnection );

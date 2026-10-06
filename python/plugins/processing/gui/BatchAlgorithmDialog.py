@@ -35,7 +35,6 @@ from qgis.utils import iface
 
 from processing.core.ProcessingResults import resultsList
 from processing.gui.BatchPanel import BatchPanel
-from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilename
 
@@ -101,9 +100,6 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
             return
 
         self.execute(alg_parameters)
-
-    def handleAlgorithmResults(self, algorithm, context, feedback, parameters):
-        handleAlgorithmResults(algorithm, context, feedback, parameters)
 
     def loadHtmlResults(self, results, num):
         for out in self.algorithm().outputDefinitions():
