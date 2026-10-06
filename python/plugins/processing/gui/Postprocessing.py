@@ -33,7 +33,6 @@ from qgis.core import (
     QgsProcessingResultsHandler,
     QgsProcessingUtils,
 )
-from qgis.gui import QgsProcessingGuiUtils
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
@@ -124,11 +123,13 @@ def handleAlgorithmResults(
             wrong_layers.append(str(dest_id))
         i += 1
 
+    current_selected_node = None
     if iface is not None:
         iface.layerTreeView().setUpdatesEnabled(False)
+        current_selected_node = iface.layerTreeView().currentNode()
 
-    QgsProcessingGuiUtils.addResultLayers(
-        added_layers, context, iface.layerTreeView() if iface else None
+    new_active_layer = QgsProcessingResultsHandler.addResultLayers(
+        added_layers, context, current_selected_node
     )
 
     # all layers have been added to the layer tree, so safe to call
@@ -137,6 +138,8 @@ def handleAlgorithmResults(
         details.postProcessor().postProcessLayer(layer, context, feedback)
 
     if iface is not None:
+        if new_active_layer is not None:
+            iface.layerTreeView().setCurrentLayer(new_active_layer)
         iface.layerTreeView().setUpdatesEnabled(True)
 
     feedback.setProgress(100)

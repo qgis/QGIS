@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgslayertreegroup.h"
+#include "qgslayertreeregistrybridge.h"
 #include "qgsmaplayer.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingdefaultstyleregistry.h"
@@ -195,4 +196,86 @@ void QgsProcessingResultsHandler::configureResultLayerTreeLayer( QgsLayerTreeLay
       layerTreeLayer->setCustomProperty( u"showFeatureCount"_s, true );
     }
   }
+}
+
+QgsMapLayer *QgsProcessingResultsHandler::addResultLayers( const QVector<ResultLayerDetails> &layers, const QgsProcessingContext &context, QgsLayerTreeNode *currentSelectedNode )
+{
+  // sort added layer tree layers
+  QVector<QgsProcessingResultsHandler::ResultLayerDetails> sortedLayers = layers;
+  std::sort( sortedLayers.begin(), sortedLayers.end(), []( const QgsProcessingResultsHandler::ResultLayerDetails &a, const QgsProcessingResultsHandler::ResultLayerDetails &b ) {
+    return a.sortKey < b.sortKey;
+  } );
+
+  bool haveSetActiveLayer = false;
+  QgsLayerTreeGroup *defaultTargetGroup = nullptr;
+  qsizetype defaultTargetGroupIndex = 0;
+  if ( auto currentSelectedLayer = qobject_cast< QgsLayerTreeLayer * >( currentSelectedNode ) )
+  {
+    defaultTargetGroup = qobject_cast< QgsLayerTreeGroup * >( currentSelectedLayer->parent() );
+    if ( defaultTargetGroup )
+      defaultTargetGroupIndex = defaultTargetGroup->children().indexOf( currentSelectedNode );
+  }
+  if ( auto currentSelectedGroup = qobject_cast< QgsLayerTreeGroup * >( currentSelectedNode ) )
+  {
+    defaultTargetGroup = currentSelectedGroup;
+  }
+
+  QgsMapLayer *resultLayer = nullptr;
+  for ( const QgsProcessingResultsHandler::ResultLayerDetails &layerDetails : std::as_const( sortedLayers ) )
+  {
+    QgsProject *project = layerDetails.destinationProject;
+    if ( !project )
+      project = context.project();
+
+    // store the current insertion point to restore it later
+    std::optional< QgsLayerTreeRegistryBridge::InsertionPoint > previousInsertionPoint;
+    if ( project )
+    {
+      previousInsertionPoint.emplace( project->layerTreeRegistryBridge()->layerInsertionPoint() );
+    }
+
+    std::optional< QgsLayerTreeRegistryBridge::InsertionPoint > insertionPoint;
+    if ( layerDetails.targetLayerTreeGroup )
+    {
+      insertionPoint.emplace( QgsLayerTreeRegistryBridge::InsertionPoint( layerDetails.targetLayerTreeGroup, 0 ) );
+    }
+    else
+    {
+      // no destination group for this layer, so should be placed
+      // above the current layer if one was selected, or at top of group if a group was selected
+      if ( defaultTargetGroup )
+      {
+        insertionPoint.emplace( QgsLayerTreeRegistryBridge::InsertionPoint( defaultTargetGroup, static_cast< int >( defaultTargetGroupIndex ) ) );
+      }
+      else if ( project )
+      {
+        insertionPoint.emplace( QgsLayerTreeRegistryBridge::InsertionPoint( project->layerTreeRoot(), 0 ) );
+      }
+    }
+
+    if ( project && insertionPoint.has_value() )
+    {
+      project->layerTreeRegistryBridge()->setLayerInsertionPoint( *insertionPoint );
+    }
+
+    if ( project )
+    {
+      project->addMapLayer( layerDetails.layer );
+      QgsLayerTreeLayer *layerTreeLayer = project->layerTreeRoot()->findLayer( layerDetails.layer );
+      QgsProcessingResultsHandler::configureResultLayerTreeLayer( layerTreeLayer );
+    }
+
+    if ( !haveSetActiveLayer )
+    {
+      resultLayer = layerDetails.layer;
+      haveSetActiveLayer = true;
+    }
+
+    // reset to the previous insertion point
+    if ( project && previousInsertionPoint.has_value() )
+    {
+      project->layerTreeRegistryBridge()->setLayerInsertionPoint( *previousInsertionPoint );
+    }
+  }
+  return resultLayer;
 }

@@ -104,6 +104,15 @@ the layer.
 Applies post-processing steps to the :py:class:`QgsLayerTreeLayer`
 created for an algorithm's output.
 %End
+
+    static QgsMapLayer *addResultLayers( const QVector< QgsProcessingResultsHandler::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeNode *currentSelectedNode );
+%Docstring
+Responsible for adding layers created by an algorithm to a project and
+the project's layer tree in the correct location.
+
+Returns the map layer which should be set as the project's active layer
+after adding all the results.
+%End
 };
 
 

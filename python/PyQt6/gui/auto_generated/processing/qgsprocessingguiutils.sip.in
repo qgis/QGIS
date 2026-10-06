@@ -25,12 +25,6 @@ Contains utility functions relating to Processing GUI components.
 #include "qgsprocessingguiutils.h"
 %End
   public:
-    static void addResultLayers( const QVector< QgsProcessingResultsHandler::ResultLayerDetails > &layers, const QgsProcessingContext &context, QgsLayerTreeView *view = 0 );
-%Docstring
-Responsible for adding layers created by an algorithm to a project and
-the project's layer tree in the correct location.
-%End
-
     static QMap< int, QStringList > defaultProcessingMenuEntries();
 %Docstring
 Returns the map of Processing menus to a list of algorithm IDs to
