@@ -207,6 +207,22 @@ Processing algorithms.
 .. versionadded:: 4.4
 %End
 
+
+    bool handleAlgorithmResults( const QgsProcessingAlgorithm* algorithm, QgsProcessingContext& context, const QVariantMap& parameters, QgsProcessingFeedback* feedback = 0 );
+%Docstring
+Handles the results from running an algorithm.
+
+Returns ``True`` if all results could be successfully loaded. Internally
+calls the :py:class:`QgsProcessingResultsHandler` set by
+:py:func:`~QgsProcessingRegistry.setResultsHandler`.
+
+.. warning::
+
+   This is not considered stable API, and is exposed to Python for internal use only.
+
+.. versionadded:: 4.4
+%End
+
   signals:
 
     void providerAdded( const QString &id );

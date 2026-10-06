@@ -113,6 +113,15 @@ the project's layer tree in the correct location.
 Returns the map layer which should be set as the project's active layer
 after adding all the results.
 %End
+
+    bool handleAlgorithmResults( const QgsProcessingAlgorithm *algorithm, QgsProcessingContext &context, const QVariantMap &parameters, QgsProcessingFeedback *feedback = 0 );
+%Docstring
+Handles the results from running an algorithm.
+
+Returns ``True`` if all results could be successfully loaded.
+%End
+
+  protected:
 };
 
 
