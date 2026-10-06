@@ -95,7 +95,7 @@ class GUI_EXPORT QgsLayoutItemsListView : public QTreeView
     void showContextMenu( QPoint point );
 
     //! Update LayoutView selection from the item list
-    void updateSelection();
+    void updateSelection( const QItemSelection &selected, const QItemSelection &deselected );
     //! Update item list selected from the layout view
     void onItemFocused( QgsLayoutItem *focusedItem );
 

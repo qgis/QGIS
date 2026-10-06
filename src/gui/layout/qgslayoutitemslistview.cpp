@@ -154,8 +154,35 @@ void QgsLayoutItemsListView::setLayoutView( QgsLayoutView *view )
   connect( view, &QgsLayoutView::itemFocused, this, &QgsLayoutItemsListView::onItemFocused );
 }
 
-void QgsLayoutItemsListView::updateSelection()
+void QgsLayoutItemsListView::updateSelection( const QItemSelection &selected, const QItemSelection &deselected )
 {
+  QSet< QgsLayoutItem * > selectedItems;
+  QSet< QgsLayoutItem * > deselectedItems;
+  // this slot will be called whenever the selected **indexes** change in the view. While logically
+  // that sounds like it will only happen when the actual **selection** changes, it's also trigerred when
+  // the indices which correspond to those selected items is changed. And this happens on Qt6 when the proxy model's
+  // source model emits dataChanged.
+  // To avoid an endless loop here we resolve the actual selected/deselected layout items from their indices, and
+  // abort out early if the actual selected items aren't changed.
+  for ( const QModelIndex &index : selected.indexes() )
+  {
+    if ( QgsLayoutItem *item = mModel->itemFromIndex( index ) )
+    {
+      selectedItems << item;
+    }
+  }
+  for ( const QModelIndex &index : deselected.indexes() )
+  {
+    if ( QgsLayoutItem *item = mModel->itemFromIndex( index ) )
+    {
+      deselectedItems << item;
+    }
+  }
+  if ( selectedItems == deselectedItems )
+  {
+    return; // nothing changed
+  }
+
   // Do nothing if we are currently updating the selection
   // because user has selected/deselected some items in the
   // graphics view
@@ -167,17 +194,6 @@ void QgsLayoutItemsListView::updateSelection()
 
   // Deselect all items from the layout (prevent firing signals, selection will be changed)
   whileBlocking( mLayout )->deselectAll();
-
-  // Build the list of selected items
-  QList<QgsLayoutItem *> selectedItems;
-  for ( const QModelIndex &index : selectionModel()->selectedIndexes() )
-  {
-    if ( QgsLayoutItem *item = mModel->itemFromIndex( index ) )
-    {
-      selectedItems << item;
-    }
-  }
-
 
   bool itemSelected = false;
 
