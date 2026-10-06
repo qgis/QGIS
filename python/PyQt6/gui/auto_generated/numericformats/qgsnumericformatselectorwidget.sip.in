@@ -57,13 +57,6 @@ lifetime of this widget.
 .. versionadded:: 3.40
 %End
 
-  signals:
-
-    void changed();
-%Docstring
-Emitted whenever the format configured55 in the widget is changed.
-%End
-
 };
 
 

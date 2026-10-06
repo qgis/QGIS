@@ -43,13 +43,6 @@ Sets the shape to show in the widget.
 .. seealso:: :py:func:`shape`
 %End
 
-  signals:
-
-    void changed();
-%Docstring
-Emitted whenever the patch shape defined by the widget is changed.
-%End
-
 };
 
 class QgsLegendPatchShapeDialog : QDialog

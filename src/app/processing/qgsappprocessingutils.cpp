@@ -380,8 +380,6 @@ class DeleteModelContextAction : public QgsProcessingToolboxContextAction
 
     void trigger( const QgsProcessingActionContext &context ) override
     {
-      const QString algorithmName = context.algorithmName();
-
       const bool isProjectProvider = context.providerId() == QgsProcessing::PROJECT_PROVIDER_ID;
       QgsProcessingProvider *provider = QgsApplication::processingRegistry()->providerById( context.providerId() );
 
@@ -845,7 +843,6 @@ QList< QAction * > QgsAppProcessingUtils::createAlgorithmActionsForProvider( con
   const QList< const QgsProcessingAlgorithm * > allAlgorithms = provider->algorithms();
   const QMap< int, QStringList > defaultProcessingMenuEntries = QgsProcessingGuiUtils::defaultProcessingMenuEntries();
 
-  QList< QAction * > actions;
   for ( const QgsProcessingAlgorithm *algorithm : allAlgorithms )
   {
     const QString id = algorithm->id();
@@ -895,8 +892,6 @@ QList< QAction * > QgsAppProcessingUtils::createAlgorithmActionsForProvider( con
     }
 
     const bool addToToolbar = settings.value( u"Processing/Configuration/BUTTON_%1"_s.arg( id ) ).toBool();
-    const QString iconPathSetting = settings.value( u"Processing/Configuration/ICON_%1"_s.arg( id ) ).toString();
-
     if ( menu || addToToolbar )
     {
       QAction *algorithmAction = createActionForAlgorithm( algorithm );

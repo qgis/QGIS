@@ -71,13 +71,6 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
-  signals:
-
-    /**
-     * Emitted whenever the format configured55 in the widget is changed.
-     */
-    void changed();
-
   private slots:
     void formatTypeChanged();
     void formatChanged();

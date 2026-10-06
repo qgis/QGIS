@@ -2891,7 +2891,6 @@ void TestQgsGeometry::splitGeometry()
 
   // Should not crash - https://github.com/qgis/QGIS/issues/50948
   g2 = QgsGeometry::fromWkt( "LineString ( -63294.10966012725839391 -79156.27234554117603693, -63290.25259721937618451 -79162.78533450335089583, -63290.25259721936890855 -79162.78533450335089583)" );
-  QString g2WktBefore = g2.asWkt( 17 );
   testPoints.clear();
   newGeoms.clear();
   QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( -63290.25259721936890855, -79165.28533450335089583 ) << QgsPoint( -63290.25259721936890855, -79160.28533450335089583 ), newGeoms, false, testPoints ), Qgis::GeometryOperationResult::Success );

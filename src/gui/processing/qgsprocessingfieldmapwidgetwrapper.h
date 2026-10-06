@@ -56,10 +56,6 @@ class GUI_EXPORT QgsProcessingFieldMapPanelWidget : public QgsPanelWidget, priva
      */
     void setProcessingModeType( Qgis::ProcessingMode type );
 
-  signals:
-
-    void changed();
-
   private slots:
     void loadFieldsFromLayer();
     void addField();
