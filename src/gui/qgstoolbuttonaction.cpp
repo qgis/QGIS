@@ -131,12 +131,35 @@ QWidget *QgsToolButtonAction::createWidget( QWidget *parent )
   button->setPopupMode( mPopupMode );
   button->setToolButtonStyle( mToolButtonStyle );
 
+  bool isInExtensionPopup = false;
+  for ( QWidget *w = parent; w; w = w->parentWidget() )
+  {
+    if ( qobject_cast< QMenu * >( w ) )
+    {
+      isInExtensionPopup = true;
+      break;
+    }
+  }
+
+  if ( isInExtensionPopup )
+  {
+    button->setToolButtonStyle( Qt::ToolButtonStyle::ToolButtonTextBesideIcon );
+  }
+  else
+  {
+    button->setToolButtonStyle( mToolButtonStyle );
+  }
+
   if ( QToolBar *toolBar = qobject_cast< QToolBar * >( parent ) )
   {
     button->setIconSize( toolBar->iconSize() );
     connect( toolBar, &QToolBar::iconSizeChanged, button, &QToolButton::setIconSize );
-    button->setToolButtonStyle( toolBar->toolButtonStyle() );
-    connect( toolBar, &QToolBar::toolButtonStyleChanged, button, &QToolButton::setToolButtonStyle );
+
+    if ( !isInExtensionPopup )
+    {
+      button->setToolButtonStyle( toolBar->toolButtonStyle() );
+      connect( toolBar, &QToolBar::toolButtonStyleChanged, button, &QToolButton::setToolButtonStyle );
+    }
   }
 
   if ( mMenu )
