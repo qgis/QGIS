@@ -112,6 +112,12 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     };
     Q_ENUM( Page )
 
+    enum class CustomRole : int
+    {
+      PageEnum = Qt::UserRole,
+    };
+    Q_ENUM( CustomRole )
+
     QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<const QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
     ~QgsLayerStylingWidget() override;
     QgsMapLayer *layer() { return mCurrentLayer; }

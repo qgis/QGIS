@@ -191,7 +191,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   Page currentRowPage = Page::Invalid;
   if ( QListWidgetItem *currentItem = mOptionsListWidget->item( mOptionsListWidget->currentIndex().row() ) )
   {
-    currentRowPage = currentItem->data( Qt::UserRole ).value< Page >();
+    currentRowPage = currentItem->data( static_cast< int >( CustomRole::PageEnum ) ).value< Page >();
   }
 
   mCurrentLayer = layer;
@@ -212,27 +212,27 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     case Qgis::LayerType::Vector:
     {
       QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ), QString() );
-      symbolItem->setData( Qt::UserRole, QVariant::fromValue( Page::VectorRenderer ) );
+      symbolItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::VectorRenderer ) );
       symbolItem->setToolTip( tr( "Symbology" ) );
       mOptionsListWidget->addItem( symbolItem );
       QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ), QString() );
-      labelItem->setData( Qt::UserRole, QVariant::fromValue( Page::VectorLabeling ) );
+      labelItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::VectorLabeling ) );
       labelItem->setToolTip( tr( "Labels" ) );
       mOptionsListWidget->addItem( labelItem );
       QListWidgetItem *maskItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"propertyicons/labelmask.svg"_s ), QString() );
-      maskItem->setData( Qt::UserRole, QVariant::fromValue( Page::VectorMasks ) );
+      maskItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::VectorMasks ) );
       maskItem->setToolTip( tr( "Masks" ) );
       mOptionsListWidget->addItem( maskItem );
 
 #ifdef HAVE_3D
       QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"3d.svg"_s ), QString() );
-      symbol3DItem->setData( Qt::UserRole, QVariant::fromValue( Page::Vector3D ) );
+      symbol3DItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::Vector3D ) );
       symbol3DItem->setToolTip( tr( "3D View" ) );
       mOptionsListWidget->addItem( symbol3DItem );
 #endif
 
       QListWidgetItem *diagramItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"/propertyicons/diagram.svg"_s ), QString() );
-      diagramItem->setData( Qt::UserRole, QVariant::fromValue( Page::VectorDiagrams ) );
+      diagramItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::VectorDiagrams ) );
       diagramItem->setToolTip( tr( "Diagrams" ) );
       mOptionsListWidget->addItem( diagramItem );
       break;
@@ -240,16 +240,16 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     case Qgis::LayerType::Raster:
     {
       QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ), QString() );
-      symbolItem->setData( Qt::UserRole, QVariant::fromValue( Page::RasterRenderer ) );
+      symbolItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::RasterRenderer ) );
       symbolItem->setToolTip( tr( "Symbology" ) );
       mOptionsListWidget->addItem( symbolItem );
       QListWidgetItem *transparencyItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"propertyicons/transparency.svg"_s ), QString() );
       transparencyItem->setToolTip( tr( "Transparency" ) );
-      transparencyItem->setData( Qt::UserRole, QVariant::fromValue( Page::RasterTransparency ) );
+      transparencyItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::RasterTransparency ) );
       mOptionsListWidget->addItem( transparencyItem );
 
       QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ), QString() );
-      labelItem->setData( Qt::UserRole, QVariant::fromValue( Page::RasterLabeling ) );
+      labelItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::RasterLabeling ) );
       labelItem->setToolTip( tr( "Labels" ) );
       mOptionsListWidget->addItem( labelItem );
 
@@ -257,31 +257,31 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       if ( provider && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
       {
         QListWidgetItem *histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"propertyicons/histogram.svg"_s ), QString() );
-        histogramItem->setData( Qt::UserRole, QVariant::fromValue( Page::RasterHistogram ) );
+        histogramItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::RasterHistogram ) );
         mOptionsListWidget->addItem( histogramItem );
         histogramItem->setToolTip( tr( "Histogram" ) );
       }
 
       QListWidgetItem *rasterAttributeTableItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"propertyicons/attributes.svg"_s ), QString() );
       rasterAttributeTableItem->setToolTip( tr( "Raster Attribute Tables" ) );
-      rasterAttributeTableItem->setData( Qt::UserRole, QVariant::fromValue( Page::RasterAttributeTable ) );
+      rasterAttributeTableItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::RasterAttributeTable ) );
       mOptionsListWidget->addItem( rasterAttributeTableItem );
       break;
     }
     case Qgis::LayerType::Mesh:
     {
       QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ), QString() );
-      symbolItem->setData( Qt::UserRole, QVariant::fromValue( Page::MeshRenderer ) );
+      symbolItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::MeshRenderer ) );
       symbolItem->setToolTip( tr( "Symbology" ) );
       mOptionsListWidget->addItem( symbolItem );
       QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ), QString() );
-      labelItem->setData( Qt::UserRole, QVariant::fromValue( Page::MeshLabeling ) );
+      labelItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::MeshLabeling ) );
       labelItem->setToolTip( tr( "Labels" ) );
       mOptionsListWidget->addItem( labelItem );
 
 #ifdef HAVE_3D
       QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"3d.svg"_s ), QString() );
-      symbol3DItem->setData( Qt::UserRole, QVariant::fromValue( Page::Mesh3D ) );
+      symbol3DItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::Mesh3D ) );
       symbol3DItem->setToolTip( tr( "3D View" ) );
       mOptionsListWidget->addItem( symbol3DItem );
 #endif
@@ -291,11 +291,11 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     case Qgis::LayerType::VectorTile:
     {
       QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ), QString() );
-      symbolItem->setData( Qt::UserRole, QVariant::fromValue( Page::VectorTileRenderer ) );
+      symbolItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::VectorTileRenderer ) );
       symbolItem->setToolTip( tr( "Symbology" ) );
       mOptionsListWidget->addItem( symbolItem );
       QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ), QString() );
-      labelItem->setData( Qt::UserRole, QVariant::fromValue( Page::VectorTileLabeling ) );
+      labelItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::VectorTileLabeling ) );
       labelItem->setToolTip( tr( "Labels" ) );
       mOptionsListWidget->addItem( labelItem );
       break;
@@ -319,7 +319,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     case Qgis::LayerType::TiledScene:
     {
       auto styleManagerItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"propertyicons/stylepreset.svg"_s ), QString() );
-      styleManagerItem->setData( Qt::UserRole, QVariant::fromValue( Page::StyleManager ) );
+      styleManagerItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::StyleManager ) );
       styleManagerItem->setToolTip( tr( "Style Manager" ) );
       mOptionsListWidget->addItem( styleManagerItem );
       break;
@@ -337,7 +337,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     {
       QListWidgetItem *item = new QListWidgetItem( factory->icon(), QString() );
       item->setToolTip( factory->title() );
-      item->setData( Qt::UserRole, QVariant::fromValue( Page::Custom ) );
+      item->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::Custom ) );
       mOptionsListWidget->addItem( item );
       int row = mOptionsListWidget->row( item );
       mUserPages[row] = factory;
@@ -345,7 +345,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   }
 
   QListWidgetItem *historyItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"mActionHistory.svg"_s ), QString() );
-  historyItem->setData( Qt::UserRole, QVariant::fromValue( Page::History ) );
+  historyItem->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::History ) );
   historyItem->setToolTip( tr( "History" ) );
   mOptionsListWidget->addItem( historyItem );
   mOptionsListWidget->blockSignals( false );
@@ -492,7 +492,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   if ( !currentItem )
     return;
 
-  const Page rowPage = currentItem->data( Qt::UserRole ).value< Page >();
+  const Page rowPage = currentItem->data( static_cast< int >( CustomRole::PageEnum ) ).value< Page >();
 
   // make sure we're not set to the "not supported" page
   mStackedWidget->setCurrentIndex( mLayerPage );
@@ -837,7 +837,7 @@ bool QgsLayerStylingWidget::setCurrentPage( Page page )
 {
   for ( int i = 0; i < mOptionsListWidget->count(); ++i )
   {
-    const Page thisPage = mOptionsListWidget->item( i )->data( Qt::UserRole ).value< Page >();
+    const Page thisPage = mOptionsListWidget->item( i )->data( static_cast< int >( CustomRole::PageEnum ) ).value< Page >();
     if ( thisPage == page )
     {
       mOptionsListWidget->setCurrentRow( i );
@@ -891,7 +891,7 @@ void QgsLayerStylingWidget::setLayerTreeGroup( QgsLayerTreeGroup *group )
     {
       QListWidgetItem *item = new QListWidgetItem( factory->icon(), QString() );
       item->setToolTip( factory->title() );
-      item->setData( Qt::UserRole, QVariant::fromValue( Page::Custom ) );
+      item->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::Custom ) );
       mOptionsListWidget->addItem( item );
       int row = mOptionsListWidget->row( item );
       mUserPages[row] = factory;
