@@ -199,10 +199,11 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
     transform.reset();
     transform.translate( rectHandlerSize, rectHandlerSize );
     transform.scale( scale, scale );
-    painter->save();
+
+    QgsScopedQPainterState painterState( painter );
     painter->setTransform( transform, true );
     painter->drawPath( mRotationHandlePath );
-    painter->restore();
+    painterState.restore();
 
     //top right
     if ( drawRightRotationHandles )
@@ -211,10 +212,10 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
       transform.translate( rect().width() - rectHandlerSize, rectHandlerSize );
       transform.rotate( 90 );
       transform.scale( scale, scale );
-      painter->save();
+      painterState.save();
       painter->setTransform( transform, true );
       painter->drawPath( mRotationHandlePath );
-      painter->restore();
+      painterState.restore();
     }
 
     if ( drawBottomRotationHandles )
@@ -224,10 +225,10 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
       transform.translate( rectHandlerSize, rect().height() - rectHandlerSize );
       transform.rotate( 270 );
       transform.scale( scale, scale );
-      painter->save();
+      painterState.save();
       painter->setTransform( transform, true );
       painter->drawPath( mRotationHandlePath );
-      painter->restore();
+      painterState.restore();
     }
 
     if ( drawBottomRotationHandles && drawRightRotationHandles )
@@ -237,10 +238,10 @@ void QgsGraphicsViewMouseHandles::drawHandles( QPainter *painter, double rectHan
       transform.translate( rect().width() - rectHandlerSize, rect().height() - rectHandlerSize );
       transform.rotate( 180 );
       transform.scale( scale, scale );
-      painter->save();
+      painterState.save();
       painter->setTransform( transform, true );
       painter->drawPath( mRotationHandlePath );
-      painter->restore();
+      painterState.restore();
     }
   }
 }

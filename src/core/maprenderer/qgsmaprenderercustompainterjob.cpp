@@ -362,10 +362,9 @@ void QgsMapRendererCustomPainterJob::doRender()
     image.setDevicePixelRatio( mSettings.devicePixelRatio() );
     image.fill( Qt::white );
     mapShadingRenderer.renderShading( *mainElevationMap.get(), image, QgsRenderContext::fromMapSettings( mSettings ) );
-    mPainter->save();
+    QgsScopedQPainterState painterState( mPainter );
     mPainter->setCompositionMode( QPainter::CompositionMode_Multiply );
     mPainter->drawImage( 0, 0, image );
-    mPainter->restore();
   }
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) && !mLabelJob.context.renderingStopped() )

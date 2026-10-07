@@ -4192,10 +4192,9 @@ namespace QgsWms
         offsetY = mapSettings.outputSize().height() * relativePos.y();
       }
 
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->translate( offsetX, offsetY );
       annotation->render( renderContext );
-      painter->restore();
     }
   }
 

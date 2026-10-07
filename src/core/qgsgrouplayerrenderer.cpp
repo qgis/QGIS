@@ -77,7 +77,7 @@ bool QgsGroupLayerRenderer::render()
 {
   QgsRenderContext &context = *renderContext();
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
   if ( mPaintEffect )
   {
     mPaintEffect->begin( context );
@@ -137,8 +137,6 @@ bool QgsGroupLayerRenderer::render()
   {
     mPaintEffect->end( context );
   }
-
-  context.painter()->restore();
 
   return !canceled;
 }

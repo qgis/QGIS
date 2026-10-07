@@ -510,7 +510,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   const double length = mWheelImage.width() / 2.0 / mWidgetImage.devicePixelRatioF();
   QLineF hueMarkerLine = QLineF( center.x(), center.y(), center.x() + length, center.y() );
   hueMarkerLine.setAngle( h );
-  imagePainter.save();
+  QgsScopedQPainterState painterState( &imagePainter );
   //use sourceIn mode for nicer antialiasing
   imagePainter.setCompositionMode( QPainter::CompositionMode_SourceIn );
   QPen pen;
@@ -519,7 +519,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   pen.setColor( h > 20 && h < 200 ? Qt::black : Qt::white );
   imagePainter.setPen( pen );
   imagePainter.drawLine( hueMarkerLine );
-  imagePainter.restore();
+  painterState.restore();
 
   //draw triangle
   if ( mTriangleDirty )

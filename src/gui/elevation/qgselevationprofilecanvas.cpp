@@ -327,7 +327,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       if ( crossHairPlotPoint.isEmpty() )
         return;
 
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->setBrush( Qt::NoBrush );
       QPen crossHairPen;
       crossHairPen.setCosmetic( true );
@@ -407,7 +407,6 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
 
       painter->drawText( xCoordOrigin, xCoordinateText );
       painter->drawText( yCoordOrigin, yCoordinateText );
-      painter->restore();
     }
 
   private:

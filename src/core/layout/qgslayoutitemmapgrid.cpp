@@ -661,7 +661,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
     return;
   }
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->setCompositionMode( mBlendMode );
   p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & Qgis::LayoutRenderFlag::Antialiasing );
 
@@ -703,7 +703,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
       drawGridNoTransform( context, dotsPerMM );
       break;
   }
-  p->restore();
+  painterState.restore();
 
   p->setClipping( false );
 #ifdef Q_OS_MAC
@@ -911,9 +911,9 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
 
 void QgsLayoutItemMapGrid::drawGridFrame( QPainter *p, GridExtension *extension ) const
 {
+  QgsScopedQPainterState painterState( p );
   if ( p )
   {
-    p->save();
     p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & Qgis::LayoutRenderFlag::Antialiasing );
   }
 
@@ -939,9 +939,6 @@ void QgsLayoutItemMapGrid::drawGridFrame( QPainter *p, GridExtension *extension 
     case Qgis::MapGridFrameStyle::NoFrame:
       break;
   }
-
-  if ( p )
-    p->restore();
 }
 
 void QgsLayoutItemMapGrid::drawGridLine( const QLineF &line, QgsRenderContext &context ) const
