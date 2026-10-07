@@ -160,17 +160,15 @@ jobs:
           commit-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Create SDK
-        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         run: |
-          ${VCPKG_ROOT}/vcpkg export --zip --output-dir=./sdk --x-install-root=./build/vcpkg_installed  --x-manifest-root=vcpkg
+          ${VCPKG_ROOT}/vcpkg export --zip --output=qgis-sdk-${{ matrix.triplet }} --output-dir=./sdk --x-install-root=./build/vcpkg_installed --x-manifest-root=vcpkg
 
       - name: 📤 Upload sdk
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: qgis-sdk-${{ matrix.triplet }}
-          path: |
-            sdk/vcpkg-export-*.zip
+          archive: false
+          path: sdk/qgis-sdk-${{ matrix.triplet }}.zip
 
       - name: 🌋 Build
         run: |
