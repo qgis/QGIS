@@ -24,8 +24,8 @@
 #include <QTextStream>
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer *layer )
-  : mLayer( layer )
-
+  : QObject( layer )
+  , mLayer( layer )
 {
   reset();
 }
