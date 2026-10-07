@@ -1157,7 +1157,7 @@ bool QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive, co
   bool res = false;
   if ( !mClipPath.isEmpty() )
   {
-    context.painter()->save();
+    mStateBeforeInstallingMaskClipPaths = std::make_unique< QgsScopedQPainterState >( context.painter() );
     context.painter()->setClipPath( mClipPath, Qt::IntersectClip );
     res = true;
   }
@@ -1185,10 +1185,8 @@ bool QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive, co
 
 void QgsSymbolLayer::removeMasks( QgsRenderContext &context, bool recursive )
 {
-  if ( !mClipPath.isEmpty() )
-  {
-    context.painter()->restore();
-  }
+  // restore painter state to before the clip paths were installed
+  mStateBeforeInstallingMaskClipPaths.reset();
 
   if ( QgsSymbol *lSubSymbol = recursive ? subSymbol() : nullptr )
   {
