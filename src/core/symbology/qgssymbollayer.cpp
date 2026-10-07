@@ -1168,6 +1168,7 @@ bool QgsSymbolLayer::installMasks( QgsRenderContext &context, bool recursive, co
     const QPainterPath clipPath = generateClipPath( context, id(), &rect, foundGeometries );
     if ( !clipPath.isEmpty() )
     {
+      mStateBeforeInstallingMaskClipPaths = std::make_unique< QgsScopedQPainterState >( context.painter() );
       context.painter()->setClipPath( clipPath, context.painter()->clipPath().isEmpty() ? Qt::ReplaceClip : Qt::IntersectClip );
       res = true;
     }
