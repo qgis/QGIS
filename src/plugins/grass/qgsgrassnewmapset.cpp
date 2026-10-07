@@ -25,6 +25,7 @@
 #include "qgsgrass.h"
 #include "qgsgrassplugin.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslocalec.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -97,6 +98,8 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface, QgsGrassPlugin *plug
   connect( mMapsetLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mMapsetLineEdit_returnPressed );
   connect( mMapsetLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mMapsetLineEdit_textChanged );
   connect( mOpenNewMapsetCheckBox, &QCheckBox::stateChanged, this, &QgsGrassNewMapset::mOpenNewMapsetCheckBox_stateChanged );
+  setOption( HaveHelpButton, true );
+  connect( this, &QWizard::helpRequested, this, [] { QgsHelp::openHelp( u"grass_integration/grass_integration.html#grass-plugin"_s ); } );
 #ifdef Q_OS_MAC
   setWizardStyle( QWizard::ClassicStyle );
 #endif
