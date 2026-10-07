@@ -4982,7 +4982,7 @@ void QgsCentroidFillSymbolLayer::render( QgsRenderContext &context, const QVecto
 
     const Part part = parts[i];
 
-    std::unique_ptr< QgsScopedQPainterState > painterState;
+    QgsScopedQPainterState painterState( context.painter(), QgsScopedQPainterState::InitialState::NoSave );
     if ( clipPoints )
     {
       QPainterPath path;
@@ -5000,7 +5000,7 @@ void QgsCentroidFillSymbolLayer::render( QgsRenderContext &context, const QVecto
         path = globalPath;
       }
 
-      painterState = std::make_unique<QgsScopedQPainterState >( context.painter() );
+      painterState.save();
       context.painter()->setClipPath( path );
     }
 
@@ -5703,10 +5703,10 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
 
   const QgsGeometry geom = geometryParts.count() != 1 ? QgsGeometry::unaryUnion( geometryParts, QgsGeometryParameters(), context.feedback() ) : geometryParts.at( 0 );
 
-  std::unique_ptr< QgsScopedQPainterState > painterState;
+  QgsScopedQPainterState painterState( context.painter(), QgsScopedQPainterState::InitialState::NoSave );
   if ( clipPoints )
   {
-    painterState = std::make_unique< QgsScopedQPainterState >( context.painter() );
+    painterState.save();
     context.painter()->setClipPath( path );
   }
 

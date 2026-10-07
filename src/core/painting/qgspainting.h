@@ -167,14 +167,23 @@ class QgsScopedQPainterState
 {
   public:
     /**
+     * Initial action to take when constructing the scoped object.
+     */
+    enum class InitialState
+    {
+      Save,   //!< Immediately save the current painter state
+      NoSave, //!< Do not save the current painter state
+    };
+
+    /**
      * Constructor for QgsScopedQPainterState.
      *
      * Saves the specified \a painter state.
      */
-    QgsScopedQPainterState( QPainter *painter )
+    QgsScopedQPainterState( QPainter *painter, InitialState initialState = InitialState::Save )
       : mPainter( painter )
     {
-      if ( mPainter )
+      if ( mPainter && initialState == InitialState::Save )
       {
         mPainter->save();
         mSavedStates++;
