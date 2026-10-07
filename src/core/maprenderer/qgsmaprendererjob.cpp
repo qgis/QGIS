@@ -74,8 +74,7 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
 
   mContext = std::move( other.mContext );
 
-  img = other.img;
-  other.img = nullptr;
+  destinationImage = std::move( other.destinationImage );
 
   renderer = other.renderer;
   other.renderer = nullptr;
@@ -133,8 +132,7 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
 {
   mContext = std::move( other.mContext );
 
-  img = other.img;
-  other.img = nullptr;
+  destinationImage = std::move( other.destinationImage );
 
   previewRenderImage = other.previewRenderImage;
   other.previewRenderImage = nullptr;
@@ -493,22 +491,22 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
   return res;
 }
 
-QImage *QgsMapRendererJob::allocateImage( QString layerId )
+std::unique_ptr<QImage> QgsMapRendererJob::allocateImage( const QString &layerId )
 {
-  QImage *image = new QImage( mSettings.deviceOutputSize(), mSettings.outputImageFormat() );
+  auto image = std::make_unique< QImage >( mSettings.deviceOutputSize(), mSettings.outputImageFormat() );
   image->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
   image->setDotsPerMeterX( 1000 * mSettings.outputDpi() / 25.4 );
   image->setDotsPerMeterY( 1000 * mSettings.outputDpi() / 25.4 );
   if ( image->isNull() )
   {
+    QgsDebugError( u"Insufficient memory for image %1x%2"_s.arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) );
     mErrors.append( Error( layerId, tr( "Insufficient memory for image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
-    delete image;
-    return nullptr;
+    return {};
   }
   return image;
 }
 
-QgsElevationMap *QgsMapRendererJob::allocateElevationMap( QString layerId )
+QgsElevationMap *QgsMapRendererJob::allocateElevationMap( const QString &layerId )
 {
   auto elevationMap = std::make_unique<QgsElevationMap>( mSettings.deviceOutputSize(), mSettings.devicePixelRatio() );
   if ( !elevationMap->isValid() )
@@ -522,7 +520,7 @@ QgsElevationMap *QgsMapRendererJob::allocateElevationMap( QString layerId )
 QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context )
 {
   QPainter *painter = nullptr;
-  image = allocateImage( layerId );
+  image = allocateImage( layerId ).release();
   if ( image )
   {
     painter = new QPainter( image );
@@ -693,10 +691,10 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     {
       job.cached = true;
       job.imageInitialized = true;
-      job.img = new QImage( mCache->cacheImage( ml->id() ) );
+      job.destinationImage = std::make_unique< QImage >( mCache->cacheImage( ml->id() ) );
       if ( shadingRenderer.isActive() && ml->elevationProperties() && ml->elevationProperties()->hasElevation() && mCache->hasCacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) )
         job.elevationMap = new QgsElevationMap( mCache->cacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) );
-      job.img->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
+      job.destinationImage->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
       job.renderer = nullptr;
       job.context()->setPainter( nullptr );
       mLayersRedrawnFromCache.append( ml->id() );
@@ -723,8 +721,10 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     if ( canUseCache || ( !painter && !deferredPainterSet ) || ( job.renderer && job.renderer->forceRasterRender() ) )
     {
       // Flattened image for drawing when a blending mode is set
-      job.context()->setPainter( allocateImageAndPainter( ml->id(), job.img, job.context() ) );
-      if ( !job.img )
+      QImage *img = nullptr;
+      job.context()->setPainter( allocateImageAndPainter( ml->id(), img, job.context() ) );
+      job.destinationImage.reset( img );
+      if ( !job.destinationImage )
       {
         delete job.renderer;
         job.renderer = nullptr;
@@ -991,9 +991,11 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
 
     // update first pass job painter and device if needed
     const bool isRasterRendering = !forceVector || job.maskRequiresLayerRasterization || ( job.renderer && job.renderer->forceRasterRender() );
-    if ( isRasterRendering && !job.img )
+    if ( isRasterRendering && !job.destinationImage )
     {
-      job.context()->setPainter( allocateImageAndPainter( job.layerId, job.img, job.context() ) );
+      QImage *img = nullptr;
+      job.context()->setPainter( allocateImageAndPainter( job.layerId, img, job.context() ) );
+      job.destinationImage.reset( img );
     }
     else if ( !isRasterRendering && !job.picture )
     {
@@ -1089,7 +1091,9 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
 
     if ( !forceVector || job2.maskRequiresLayerRasterization )
     {
-      job2.context()->setPainter( allocateImageAndPainter( job.layerId, job2.img, job2.context() ) );
+      QImage *img = nullptr;
+      job2.context()->setPainter( allocateImageAndPainter( job.layerId, img, job2.context() ) );
+      job2.destinationImage.reset( img );
     }
     else
     {
@@ -1104,7 +1108,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       job2.context()->setPainter( pictureAndPainter.second );
     }
 
-    if ( !job2.img && !job2.picture )
+    if ( !job2.destinationImage && !job2.picture )
     {
       secondPassJobs.pop_back();
       continue;
@@ -1210,7 +1214,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
   {
     job.cached = true;
     job.complete = true;
-    job.img = new QImage( mCache->cacheImage( LABEL_CACHE_ID ) );
+    job.img = std::make_unique< QImage >( mCache->cacheImage( LABEL_CACHE_ID ) );
     job.context.setPainter( nullptr );
   }
   else
@@ -1229,7 +1233,7 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
 {
   for ( LayerRenderJob &job : jobs )
   {
-    if ( job.img )
+    if ( job.destinationImage )
     {
       delete job.context()->painter();
       job.context()->setPainter( nullptr );
@@ -1237,12 +1241,11 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
       if ( mCache && !job.cached && job.completed && job.layer )
       {
         QgsDebugMsgLevel( u"caching image for %1"_s.arg( job.layerId ), 2 );
-        mCache->setCacheImageWithParameters( job.layerId, *job.img, mSettings.visibleExtent(), mSettings.mapToPixel(), QList< QgsMapLayer * >() << job.layer );
-        mCache->setCacheImageWithParameters( job.layerId + u"_preview"_s, *job.img, mSettings.visibleExtent(), mSettings.mapToPixel(), QList< QgsMapLayer * >() << job.layer );
+        mCache->setCacheImageWithParameters( job.layerId, *job.destinationImage, mSettings.visibleExtent(), mSettings.mapToPixel(), QList< QgsMapLayer * >() << job.layer );
+        mCache->setCacheImageWithParameters( job.layerId + u"_preview"_s, *job.destinationImage, mSettings.visibleExtent(), mSettings.mapToPixel(), QList< QgsMapLayer * >() << job.layer );
       }
 
-      delete job.img;
-      job.img = nullptr;
+      job.destinationImage.reset();
     }
 
     if ( job.previewRenderImage )
@@ -1304,13 +1307,12 @@ void QgsMapRendererJob::cleanupSecondPassJobs( std::vector< LayerRenderJob > &jo
 {
   for ( LayerRenderJob &job : jobs )
   {
-    if ( job.img )
+    if ( job.destinationImage )
     {
       delete job.context()->painter();
       job.context()->setPainter( nullptr );
 
-      delete job.img;
-      job.img = nullptr;
+      job.destinationImage.reset();
     }
 
     if ( job.previewRenderImage )
@@ -1351,8 +1353,7 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
       mCache->setCacheImageWithParameters( LABEL_PREVIEW_CACHE_ID, *job.img, mSettings.visibleExtent(), mSettings.mapToPixel(), _qgis_listQPointerToRaw( job.participatingLayers ) );
     }
 
-    delete job.img;
-    job.img = nullptr;
+    job.img.reset();
   }
 
   job.picture.reset( nullptr );
@@ -1470,8 +1471,8 @@ QImage QgsMapRendererJob::layerImageToBeComposed( const QgsMapSettings &settings
     if ( job.previewRenderImage && !job.completed )
       return *job.previewRenderImage;
 
-    Q_ASSERT( job.img );
-    return *job.img;
+    Q_ASSERT( job.destinationImage );
+    return *job.destinationImage;
   }
   else
   {
@@ -1555,7 +1556,7 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
           QPainter *painter1 = job.firstPassJob->context()->painter();
           if ( !painter1 )
           {
-            tempPainter.begin( job.firstPassJob->img );
+            tempPainter.begin( job.firstPassJob->destinationImage.get() );
             painter1 = &tempPainter;
           }
 
@@ -1565,7 +1566,7 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
 
           // ... and overpaint the second pass' image on it
           painter1->setCompositionMode( QPainter::CompositionMode_DestinationOver );
-          painter1->drawImage( 0, 0, *job.img );
+          painter1->drawImage( 0, 0, *job.destinationImage );
         }
       }
       else
