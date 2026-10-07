@@ -43,6 +43,7 @@ class QgsRenderContext;
 class QgsPaintEffect;
 class QgsSymbolLayerReference;
 class QgsSldExportContext;
+class QgsScopedQPainterState;
 
 #ifndef SIP_RUN
 typedef QMap<QString, QString> QgsStringMap;
@@ -792,6 +793,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     // clip path to be used during rendering
     QPainterPath mClipPath;
+    std::unique_ptr< QgsScopedQPainterState > mStateBeforeInstallingMaskClipPaths;
 
     // Configuration of selected symbology implementation
     //! Whether styles for selected features ignore symbol alpha
@@ -857,6 +859,8 @@ class CORE_EXPORT QgsSymbolLayer
 #ifdef SIP_RUN
     QgsSymbolLayer( const QgsSymbolLayer &other );
 #endif
+
+    friend class QgsSymbol;
 };
 
 //////////////////////
