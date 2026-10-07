@@ -452,6 +452,22 @@ Returns the URI string for the given ``table`` and ``schema``.
 .. versionadded:: 3.12
 %End
 
+    virtual QString styleStorageUri( const QString &schema, const QString &tableName, const QString &geometryColumn = QString(), Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) const;
+%Docstring
+Returns the URI string to use when saving a layer style to the database
+for the given ``schema`` and ``tableName``.
+
+The base class implementation appends the ``geometryColumn`` and
+``wkbType`` to the URI returned by
+:py:func:`~QgsAbstractDatabaseProviderConnection.tableUri`. Providers
+for which the plain table URI is sufficient and necessary (e.g. OGR
+based ones) override this method accordingly.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 4.2
+%End
+
     virtual void createVectorTable(
       const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options
     ) const;

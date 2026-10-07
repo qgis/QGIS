@@ -72,6 +72,7 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
+    QString styleStorageUri( const QString &schema, const QString &tableName, const QString &geometryColumn = QString(), Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
