@@ -877,7 +877,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     QString jsonId = mShared->findUniqueId( qgisFid );
     if ( jsonId.isEmpty() )
     {
-      pushError( tr( "Cannot identify feature with id %1" )_s.arg( qgisFid ) );
+      pushError( tr( "Cannot identify feature with id %1" ).arg( qgisFid ) );
       return false;
     }
 
