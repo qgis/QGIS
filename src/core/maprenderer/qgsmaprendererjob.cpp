@@ -106,7 +106,7 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
 
   maskRequiresLayerRasterization = other.maskRequiresLayerRasterization;
 
-  elevationMap = other.elevationMap;
+  elevationMap = std::move( other.elevationMap );
   maskPainter = std::move( other.maskPainter );
 
   return *this;
@@ -138,8 +138,7 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
 
   renderer = std::move( other.renderer );
 
-  elevationMap = other.elevationMap;
-  other.elevationMap = nullptr;
+  elevationMap = std::move( other.elevationMap );
 
   maskPaintDevice = std::move( other.maskPaintDevice );
 
@@ -504,15 +503,16 @@ std::unique_ptr<QImage> QgsMapRendererJob::allocateImage( const QString &layerId
   return image;
 }
 
-QgsElevationMap *QgsMapRendererJob::allocateElevationMap( const QString &layerId )
+std::unique_ptr<QgsElevationMap> QgsMapRendererJob::allocateElevationMap( const QString &layerId )
 {
   auto elevationMap = std::make_unique<QgsElevationMap>( mSettings.deviceOutputSize(), mSettings.devicePixelRatio() );
   if ( !elevationMap->isValid() )
   {
+    QgsDebugError( u"Insufficient memory for elevation map %1x%2"_s.arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) );
     mErrors.append( Error( layerId, tr( "Insufficient memory for elevation map %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
     return nullptr;
   }
-  return elevationMap.release();
+  return elevationMap;
 }
 
 QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context )
@@ -691,7 +691,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.imageInitialized = true;
       job.destinationImage = std::make_unique< QImage >( mCache->cacheImage( ml->id() ) );
       if ( shadingRenderer.isActive() && ml->elevationProperties() && ml->elevationProperties()->hasElevation() && mCache->hasCacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) )
-        job.elevationMap = new QgsElevationMap( mCache->cacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) );
+        job.elevationMap = std::make_unique< QgsElevationMap >( mCache->cacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) );
       job.destinationImage->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
       job.renderer.reset();
       job.context()->setPainter( nullptr );
@@ -733,7 +733,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     if ( shadingRenderer.isActive() && ml->elevationProperties() && ml->elevationProperties()->hasElevation() )
     {
       job.elevationMap = allocateElevationMap( ml->id() );
-      job.context()->setElevationMap( job.elevationMap );
+      job.context()->setElevationMap( job.elevationMap.get() );
     }
 
     if ( job.renderer && ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputs ) && ( mSettings.flags() & Qgis::MapSettingsFlag::RenderPartialOutput ) )
@@ -1266,8 +1266,7 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
         );
       }
 
-      delete job.elevationMap;
-      job.elevationMap = nullptr;
+      job.elevationMap.reset();
     }
 
     if ( job.picture )

@@ -85,13 +85,13 @@ class LayerRenderJob
     std::unique_ptr< QImage > destinationImage;
 
     /**
-     * Pointer to destination elevation map.
+     * Destination elevation map.
      *
-     * May be nullptr if it is not necessary
+     * May be NULLPTR if it is not necessary
      *
      * \since QGIS 3.30
      */
-    QgsElevationMap *elevationMap = nullptr;
+    std::unique_ptr< QgsElevationMap > elevationMap;
 
     /**
      * Pointer to destination image for in-progress preview renders.
@@ -696,7 +696,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     std::unique_ptr< QImage > allocateImage( const QString &layerId );
 
     //! Convenient method to allocate a new elevation map and stack an error if not enough memory is available
-    QgsElevationMap *allocateElevationMap( const QString &layerId );
+    std::unique_ptr< QgsElevationMap > allocateElevationMap( const QString &layerId );
 
     //! Convenient method to allocate a new image and a new QPainter on this image
     QPainter *allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context );
