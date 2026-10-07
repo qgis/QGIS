@@ -76,8 +76,7 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
 
   destinationImage = std::move( other.destinationImage );
 
-  renderer = other.renderer;
-  other.renderer = nullptr;
+  renderer = std::move( other.renderer );
 
   previewRenderImage = other.previewRenderImage;
   other.previewRenderImage = nullptr;
@@ -137,8 +136,7 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
   previewRenderImage = other.previewRenderImage;
   other.previewRenderImage = nullptr;
 
-  renderer = other.renderer;
-  other.renderer = nullptr;
+  renderer = std::move( other.renderer );
 
   elevationMap = other.elevationMap;
   other.elevationMap = nullptr;
@@ -695,7 +693,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       if ( shadingRenderer.isActive() && ml->elevationProperties() && ml->elevationProperties()->hasElevation() && mCache->hasCacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) )
         job.elevationMap = new QgsElevationMap( mCache->cacheImage( ELEVATION_MAP_CACHE_PREFIX + ml->id() ) );
       job.destinationImage->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
-      job.renderer = nullptr;
+      job.renderer.reset();
       job.context()->setPainter( nullptr );
       mLayersRedrawnFromCache.append( ml->id() );
       continue;
@@ -703,7 +701,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
 
     QElapsedTimer layerTime;
     layerTime.start();
-    job.renderer = ml->createMapRenderer( *( job.context() ) );
+    job.renderer.reset( ml->createMapRenderer( *( job.context() ) ) );
     if ( job.renderer )
     {
       job.renderer->setLayerRenderingTimeHint( job.estimatedRenderingTime );
@@ -726,8 +724,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.destinationImage.reset( img );
       if ( !job.destinationImage )
       {
-        delete job.renderer;
-        job.renderer = nullptr;
+        job.renderer.reset();
         layerJobs.pop_back();
         continue;
       }
@@ -1011,7 +1008,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       // force recreation of layer renderer so it initialize correctly the renderer
       // especially the RasterLayerRender that need logicalDpiX from painting device
       job.context()->setFeedback( nullptr );
-      job.renderer = job.layer->createMapRenderer( *( job.context() ) );
+      job.renderer.reset( job.layer->createMapRenderer( *( job.context() ) ) );
       if ( job.renderer )
       {
         job.context()->setFeedback( job.renderer->feedback() );
@@ -1117,8 +1114,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     // FIXME: another possibility here, to avoid allocating a new map renderer and reuse the one from
     // the first pass job, would be to be able to call QgsMapLayerRenderer::render() with a QgsRenderContext.
     job2.context()->setFeedback( nullptr );
-    QgsVectorLayerRenderer *mapRenderer = static_cast<QgsVectorLayerRenderer *>( ml->createMapRenderer( *job2.context() ) );
-    job2.renderer = mapRenderer;
+    job2.renderer.reset( ml->createMapRenderer( *job2.context() ) );
     if ( job2.renderer )
     {
       job2.context()->setFeedback( job2.renderer->feedback() );
@@ -1289,8 +1285,8 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
 
       mRenderedItemResults->appendResults( job.renderer->takeRenderedItemDetails(), *job.context() );
 
-      delete job.renderer;
-      job.renderer = nullptr;
+      job.context()->setFeedback( nullptr );
+      job.renderer.reset();
     }
 
     if ( job.layer )
@@ -1331,8 +1327,8 @@ void QgsMapRendererJob::cleanupSecondPassJobs( std::vector< LayerRenderJob > &jo
 
     if ( job.renderer )
     {
-      delete job.renderer;
-      job.renderer = nullptr;
+      job.context()->setFeedback( nullptr );
+      job.renderer.reset();
     }
 
     if ( job.layer )

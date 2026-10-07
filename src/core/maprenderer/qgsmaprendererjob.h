@@ -114,7 +114,8 @@ class LayerRenderJob
 
     bool imageCanBeComposed() const;
 
-    QgsMapLayerRenderer *renderer = nullptr; // must be deleted
+    //! Layer renderer
+    std::unique_ptr< QgsMapLayerRenderer > renderer;
 
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
 
