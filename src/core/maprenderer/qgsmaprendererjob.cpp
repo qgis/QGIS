@@ -521,12 +521,12 @@ std::tuple< std::unique_ptr< QImage >, std::unique_ptr< QPainter > > QgsMapRende
   return { std::move( image ), std::move( painter ) };
 }
 
-QgsMapRendererJob::PictureAndPainter QgsMapRendererJob::allocatePictureAndPainter( const QgsRenderContext *context )
+std::tuple<std::unique_ptr<QPicture>, std::unique_ptr< QPainter > > QgsMapRendererJob::allocatePictureAndPainter( const QgsRenderContext &context )
 {
   auto picture = std::make_unique<QPicture>();
-  QPainter *painter = new QPainter( picture.get() );
-  context->setPainterFlagsUsingContext( painter );
-  return { std::move( picture ), painter };
+  auto painter = std::make_unique< QPainter >( picture.get() );
+  context.setPainterFlagsUsingContext( painter.get() );
+  return { std::move( picture ), std::move( painter ) };
 }
 
 std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool deferredPainterSet )
@@ -997,15 +997,17 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     }
     else if ( !isRasterRendering && !job.picture )
     {
-      PictureAndPainter pictureAndPainter = allocatePictureAndPainter( job.context() );
-      job.picture = std::move( pictureAndPainter.first );
+      auto [picture, painter] = allocatePictureAndPainter( *job.context() );
+      job.picture = std::move( picture );
       if ( job.context()->painter()->hasClipping() )
       {
         // need to copy clipping paths from original painter, so that e.g. the layout map bounds clipping path is respected
-        pictureAndPainter.second->setClipping( true );
-        pictureAndPainter.second->setClipPath( job.context()->painter()->clipPath() );
+        painter->setClipping( true );
+        painter->setClipPath( job.context()->painter()->clipPath() );
       }
-      job.context()->setPainter( pictureAndPainter.second );
+      Q_ASSERT( !job.destinationPainter );
+      job.destinationPainter = std::move( painter );
+      job.context()->setPainter( job.destinationPainter.get() );
       // force recreation of layer renderer so it initialize correctly the renderer
       // especially the RasterLayerRender that need logicalDpiX from painting device
       job.context()->setFeedback( nullptr );
@@ -1098,15 +1100,17 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     }
     else
     {
-      PictureAndPainter pictureAndPainter = allocatePictureAndPainter( job2.context() );
+      auto [picture, painter] = allocatePictureAndPainter( *job2.context() );
       if ( job.context()->painter()->hasClipping() )
       {
         // need to copy clipping paths from original painter, so that e.g. the layout map bounds clipping path is respected
-        pictureAndPainter.second->setClipping( true );
-        pictureAndPainter.second->setClipPath( job.context()->painter()->clipPath() );
+        painter->setClipping( true );
+        painter->setClipPath( job.context()->painter()->clipPath() );
       }
-      job2.picture = std::move( pictureAndPainter.first );
-      job2.context()->setPainter( pictureAndPainter.second );
+      job2.picture = std::move( picture );
+      Q_ASSERT( !job2.destinationPainter );
+      job2.destinationPainter = std::move( painter );
+      job2.context()->setPainter( job2.destinationPainter.get() );
     }
 
     if ( !job2.destinationImage && !job2.picture )
