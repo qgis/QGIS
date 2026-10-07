@@ -191,7 +191,7 @@ void QgsAnnotationItem::renderCallout( QgsRenderContext &context, const QRectF &
   QPainter *painter = context.painter();
   const bool rotated = !qgsDoubleNear( angle, 0 );
 
-  std::unique_ptr< QgsScopedQPainterState > painterState;
+  QgsScopedQPainterState painterState( painter, QgsScopedQPainterState::InitialState::NoSave );
   if ( rotated )
   {
     const QPointF center = rect.center();
@@ -201,7 +201,7 @@ void QgsAnnotationItem::renderCallout( QgsRenderContext &context, const QRectF &
     anchorTransform.translate( -center.x(), -center.y() );
     anchor.transform( anchorTransform );
 
-    painterState = std::make_unique< QgsScopedQPainterState >( painter );
+    painterState.save();
     QgsPainting::rotatePainterAroundPoint( painter, center, angle );
   }
 

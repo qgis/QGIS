@@ -1419,12 +1419,12 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation(
     return;
 
   // painter is in MM, scale to dots
-  std::unique_ptr< QgsScopedQPainterState > painterState;
+  QgsScopedQPainterState painterState( context.painter(), QgsScopedQPainterState::InitialState::NoSave );
   double dotsPerMM = 1;
 
   if ( context.painter() && context.painter()->device() )
   {
-    painterState = std::make_unique< QgsScopedQPainterState >( context.painter() );
+    painterState.save();
     dotsPerMM = context.painter()->device()->logicalDpiX() / 25.4;
     context.painter()->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
   }
