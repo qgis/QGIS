@@ -157,6 +157,7 @@ Rotates a ``painter`` by ``angle`` degrees clockwise around ``point``.
 %End
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

@@ -17,6 +17,7 @@
 #include "qgsticksscalebarrenderer.h"
 
 #include "qgslinesymbol.h"
+#include "qgspainting.h"
 #include "qgsscalebarsettings.h"
 #include "qgssymbol.h"
 #include "qgstextrenderer.h"

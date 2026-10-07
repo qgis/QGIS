@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 #include "qgssettings.h"
 

@@ -21,6 +21,7 @@
 
 #include "qgis.h"
 #include "qgslayoututils.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 
 #include <QGraphicsSceneHoverEvent>

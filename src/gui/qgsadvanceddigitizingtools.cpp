@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
 #include "qgsmapcanvas.h"
+#include "qgspainting.h"
 
 #include <QEnterEvent>
 #include <QLocale>

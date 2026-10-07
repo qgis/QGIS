@@ -28,6 +28,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgslayouttablecolumn.h"
 #include "qgslayoututils.h"
+#include "qgspainting.h"
 #include "qgstextrenderer.h"
 
 #include <QString>

@@ -28,6 +28,7 @@
 #include "qgsgltfutils.h"
 #include "qgslogger.h"
 #include "qgsmapclippingutils.h"
+#include "qgspainting.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"

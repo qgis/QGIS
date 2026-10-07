@@ -56,6 +56,7 @@ email                : sherman at mrcc.com
 #include "qgsmessagelog.h"
 #include "qgsmimedatautils.h"
 #include "qgsoverlaywidgetlayout.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsprojectviewsettings.h"

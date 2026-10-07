@@ -18,6 +18,7 @@
 #include "qgslinechartplot.h"
 
 #include "qgsexpressioncontextutils.h"
+#include "qgspainting.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"

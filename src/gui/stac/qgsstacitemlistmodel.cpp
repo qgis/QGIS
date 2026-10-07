@@ -16,6 +16,7 @@
 #include "qgsstacitemlistmodel.h"
 
 #include "qgsnetworkcontentfetcher.h"
+#include "qgspainting.h"
 #include "qgsstaccollection.h"
 #include "qgsstacitem.h"
 

@@ -21,6 +21,7 @@
 #include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"

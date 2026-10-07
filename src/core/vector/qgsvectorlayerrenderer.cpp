@@ -26,6 +26,7 @@
 #include "qgsmapclippingutils.h"
 #include "qgsmessagelog.h"
 #include "qgspainteffect.h"
+#include "qgspainting.h"
 #include "qgspallabeling.h"
 #include "qgsrendercontext.h"
 #include "qgsrenderedfeaturehandlerinterface.h"

@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmultipoint.h"
+#include "qgspainting.h"
 #include "qgssldexportcontext.h"
 #include "qgsspatialindex.h"
 #include "qgsstyleentityvisitor.h"

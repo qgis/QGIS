@@ -18,6 +18,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgslabelingresults.h"
 #include "qgsmapcanvas.h"
+#include "qgspainting.h"
 #include "qgstextrenderer.h"
 #include "qgsvectorlayer.h"
 

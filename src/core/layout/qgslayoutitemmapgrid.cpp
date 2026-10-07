@@ -35,6 +35,7 @@
 #include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmarkersymbol.h"
+#include "qgspainting.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgssettingsentryimpl.h"

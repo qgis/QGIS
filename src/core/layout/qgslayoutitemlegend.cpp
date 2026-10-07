@@ -39,6 +39,7 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsmapsettings.h"
 #include "qgsmeshlayer.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"

@@ -20,6 +20,7 @@
 #include "qgslayoututils.h"
 #include "qgslinesymbol.h"
 #include "qgsnumericformat.h"
+#include "qgspainting.h"
 #include "qgsscalebarsettings.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"

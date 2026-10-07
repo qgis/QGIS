@@ -18,6 +18,7 @@
 #include "qgsblureffect.h"
 
 #include "qgsimageoperation.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"

@@ -21,6 +21,7 @@
 
 #include "qgsgeometry.h"
 #include "qgslinestring.h"
+#include "qgspainting.h"
 #include "qgsrasterblock.h"
 #include "qgsrasterinterface.h"
 #include "qgsrastershader.h"

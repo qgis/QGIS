@@ -21,6 +21,7 @@
 #include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbol.h"
+#include "qgspainting.h"
 #include "qgsproperty.h"
 #include "qgspropertytransformer.h"
 #include "qgssymbollayerutils.h"

@@ -27,6 +27,7 @@
 #include "qgsmapclippingutils.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmessagelog.h"
+#include "qgspainting.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudblock.h"
 #include "qgspointcloudblockrequest.h"
