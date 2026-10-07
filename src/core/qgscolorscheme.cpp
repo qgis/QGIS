@@ -199,6 +199,14 @@ QgsCustomColorScheme *QgsCustomColorScheme::clone() const
 }
 
 
+QgsProjectColorScheme::QgsProjectColorScheme()
+  : QgsProjectColorScheme( QgsProject::instance() ) // skip-keyword-check
+{}
+
+QgsProjectColorScheme::QgsProjectColorScheme( QgsProject *project )
+  : mProject( project )
+{}
+
 QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
   Q_UNUSED( context )
@@ -206,8 +214,11 @@ QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, co
 
   QgsNamedColorList colorList;
 
-  QStringList colorStrings = QgsProject::instance()->readListEntry( u"Palette"_s, u"/Colors"_s );      // skip-keyword-check
-  const QStringList colorLabels = QgsProject::instance()->readListEntry( u"Palette"_s, u"/Labels"_s ); // skip-keyword-check
+  if ( !mProject )
+    return colorList;
+
+  QStringList colorStrings = mProject->readListEntry( u"Palette"_s, u"/Colors"_s );
+  const QStringList colorLabels = mProject->readListEntry( u"Palette"_s, u"/Labels"_s );
 
   //generate list from custom colors
   int colorIndex = 0;
@@ -231,13 +242,17 @@ bool QgsProjectColorScheme::setColors( const QgsNamedColorList &colors, const QS
 {
   Q_UNUSED( context )
   Q_UNUSED( baseColor )
-  QgsProject::instance()->setProjectColors( colors ); // skip-keyword-check
+
+  if ( !mProject )
+    return false;
+
+  mProject->setProjectColors( colors );
   return true;
 }
 
 QgsProjectColorScheme *QgsProjectColorScheme::clone() const
 {
-  return new QgsProjectColorScheme();
+  return new QgsProjectColorScheme( mProject );
 }
 
 
