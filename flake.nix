@@ -85,6 +85,11 @@
                 self'.packages.qgis
                 self'.packages.qgis.passthru.unwrapped
               ];
+              packages = with pkgs; [
+                ccache
+                pre-commit
+                qtcreator
+              ];
 
               shellHook = ''
                 export QT_PLUGIN_PATH="${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix}"
@@ -96,28 +101,37 @@
                 # https://github.com/qgis/QGIS/blob/798f63fc3c0d2616a5fbc8f47139fbeb5db7c052/.docker/docker-qgis-build.sh#L79
                 function dev-help {
                   echo -e "\nWelcome to the QGIS development environment !"
-                  echo "Build QGIS using following commands:"
+                  echo "### Activate pre-commit hooks"
+                  echo
+                  echo "     pre-commit install"
+                  echo
+                  echo "### Build QGIS using following commands"
                   echo
                   echo " 1.  mkdir build && cd build"
                   cat <<EOF
                  2.  cmake .. \\
                     -G Ninja \\
-                    -D CMAKE_BUILD_TYPE=Debug \\
-                    -D WITH_3D=True \\
-                    -D WITH_PDAL=True \\
-                    -D WITH_QTWEBENGINE=True \\
-                    -D CMAKE_INSTALL_PREFIX=\$PWD/app \\
-                    -D QT_PLUGINS_DIR=${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix} \\
-                    -D QSCI_SIP_DIR=${pkgs.python3Packages.qscintilla-qt6}/${pkgs.python3.sitePackages}/PyQt6/bindings \\
-                    -D QSCI_DIST_INFO=${pkgs.python3Packages.qscintilla-qt6}/${pkgs.python3.sitePackages}/pyqt6_qscintilla-${pkgs.python3Packages.qscintilla-qt6.version}.dist-info \\
-                    -D PYQT6_DIST_INFO=${pkgs.python3Packages.pyqt6}/${pkgs.python3.sitePackages}/pyqt6-${pkgs.python3Packages.pyqt6.version}.dist-info
+                    -DCMAKE_BUILD_TYPE=Debug \\
+                    -DWITH_3D:BOOL=OFF \\
+                    -DWITH_GRASS7:BOOL=OFF \\
+                    -DWITH_GRASS8:BOOL=OFF \\
+                    -DWITH_PDAL:BOOL=OFF \\
+                    -DWITH_INTERNAL_SPATIALINDEX=TRUE \\
+                    -DCMAKE_INSTALL_PREFIX=\$PWD/app \\
+                    -DQT_PLUGINS_DIR=${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix} \\
+                    -DQSCI_SIP_DIR=${pkgs.python3Packages.pyqt6-qscintilla}/${pkgs.python3.sitePackages}/PyQt6/bindings \\
+                    -DQSCI_DIST_INFO=${pkgs.python3Packages.pyqt6-qscintilla}/${pkgs.python3.sitePackages}/pyqt6_qscintilla-${pkgs.python3Packages.pyqt6-qscintilla.version}.dist-info \\
+                    -DPYQT6_DIST_INFO=${pkgs.python3Packages.pyqt6}/${pkgs.python3.sitePackages}/pyqt6-${pkgs.python3Packages.pyqt6.version}.dist-info
                 EOF
                   echo " 3.  ninja"
-                  echo " 4.  ninja install"
                   echo
-                  echo "Run tests:"
+                  echo "### Run tests"
                   echo
-                  echo "1.  ninja test"
+                  echo "    ninja test"
+                  echo
+                  echo "### Run app"
+                  echo
+                  echo "    ./build/output/bin/qgis"
                   echo
                   echo "Note: run 'nix flake update' to update dependencies."
                   echo
