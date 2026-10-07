@@ -386,8 +386,25 @@ QgsError Qgs3To4Migration::runMigration( const QString &oldProfilePath, const QS
   newProfileDir.remove( u"QGIS/QGIS4.ini"_s );
   newProfileDir.rename( u"QGIS/QGIS3.ini"_s, u"QGIS/QGIS4.ini"_s );
 
-  // do a one-time search and replace for the old profiles path in the ini file to the new path
-  QgsFileUtils::replaceTextInFile( newProfileDir.filePath( u"QGIS/QGIS4.ini"_s ), oldProfilePath, newProfilePath );
+  const QString oldCleanProfilePath = QFileInfo( oldProfilePath ).absoluteFilePath();
+  const QString newCleanProfilePath = QFileInfo( newProfilePath ).absoluteFilePath();
+
+  // for each ini file properties, replace the old profiles path to the new path
+  // use QFileInfo.absoluteFilePath() to avoid mix up of / and \ on Windows
+  QSettings iniFile( newProfileDir.filePath( u"QGIS/QGIS4.ini"_s ), QSettings::IniFormat );
+  for ( const QString &key : iniFile.allKeys() )
+  {
+    const QVariant value = iniFile.value( key );
+    if ( value.isNull() || value.userType() != QMetaType::Type::QString )
+      continue;
+
+    QFileInfo fileInfo( value.toString() );
+    if ( !fileInfo.exists() )
+      continue;
+
+    const QString newValue = fileInfo.absoluteFilePath().replace( oldCleanProfilePath, newCleanProfilePath );
+    iniFile.setValue( key, newValue );
+  }
 
   QgsSettings newSettings;
   newSettings.setValue( u"migration/migrated_from_3"_s, true );
