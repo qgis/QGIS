@@ -73,13 +73,9 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
     return *this;
 
   mContext = std::move( other.mContext );
-
   destinationImage = std::move( other.destinationImage );
-
   renderer = std::move( other.renderer );
-
-  previewRenderImage = other.previewRenderImage;
-  other.previewRenderImage = nullptr;
+  previewRenderImage = std::move( other.previewRenderImage );
 
   imageInitialized = other.imageInitialized;
   previewRenderImageInitialized = other.previewRenderImageInitialized;
@@ -130,16 +126,10 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
   , maskJobs( other.maskJobs )
 {
   mContext = std::move( other.mContext );
-
   destinationImage = std::move( other.destinationImage );
-
-  previewRenderImage = other.previewRenderImage;
-  other.previewRenderImage = nullptr;
-
+  previewRenderImage = std::move( other.previewRenderImage );
   renderer = std::move( other.renderer );
-
   elevationMap = std::move( other.elevationMap );
-
   maskPaintDevice = std::move( other.maskPaintDevice );
 
   firstPassJob = other.firstPassJob;
@@ -743,15 +733,17 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
         const QImage cachedImage = mCache->transformedCacheImage( job.layerId + u"_preview"_s, mSettings.mapToPixel() );
         if ( !cachedImage.isNull() )
         {
-          job.previewRenderImage = new QImage( cachedImage );
+          job.previewRenderImage = std::make_unique< QImage >( cachedImage );
           job.previewRenderImageInitialized = true;
-          job.context()->setPreviewRenderPainter( new QPainter( job.previewRenderImage ) );
+          job.context()->setPreviewRenderPainter( new QPainter( job.previewRenderImage.get() ) );
           job.context()->setPainterFlagsUsingContext( painter );
         }
       }
       if ( !job.previewRenderImage )
       {
-        job.context()->setPreviewRenderPainter( allocateImageAndPainter( ml->id(), job.previewRenderImage, job.context() ) );
+        QImage *previewRenderImage = nullptr;
+        job.context()->setPreviewRenderPainter( allocateImageAndPainter( ml->id(), previewRenderImage, job.context() ) );
+        job.previewRenderImage.reset( previewRenderImage );
         job.previewRenderImageInitialized = false;
       }
 
@@ -1248,8 +1240,7 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
     {
       delete job.context()->previewRenderPainter();
       job.context()->setPreviewRenderPainter( nullptr );
-      delete job.previewRenderImage;
-      job.previewRenderImage = nullptr;
+      job.previewRenderImage.reset();
     }
 
     if ( job.elevationMap )
@@ -1314,8 +1305,7 @@ void QgsMapRendererJob::cleanupSecondPassJobs( std::vector< LayerRenderJob > &jo
     {
       delete job.context()->previewRenderPainter();
       job.context()->setPreviewRenderPainter( nullptr );
-      delete job.previewRenderImage;
-      job.previewRenderImage = nullptr;
+      job.previewRenderImage.reset();
     }
 
     if ( job.picture )
