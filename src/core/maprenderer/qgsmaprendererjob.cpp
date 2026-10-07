@@ -74,8 +74,10 @@ LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
 
   mContext = std::move( other.mContext );
   destinationImage = std::move( other.destinationImage );
+  destinationPainter = std::move( other.destinationPainter );
   renderer = std::move( other.renderer );
   previewRenderImage = std::move( other.previewRenderImage );
+  previewRenderPainter = std::move( other.previewRenderPainter );
 
   imageInitialized = other.imageInitialized;
   previewRenderImageInitialized = other.previewRenderImageInitialized;
@@ -127,7 +129,9 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
 {
   mContext = std::move( other.mContext );
   destinationImage = std::move( other.destinationImage );
+  destinationPainter = std::move( other.destinationPainter );
   previewRenderImage = std::move( other.previewRenderImage );
+  previewRenderPainter = std::move( other.previewRenderPainter );
   renderer = std::move( other.renderer );
   elevationMap = std::move( other.elevationMap );
   maskPaintDevice = std::move( other.maskPaintDevice );
@@ -505,16 +509,16 @@ std::unique_ptr<QgsElevationMap> QgsMapRendererJob::allocateElevationMap( const 
   return elevationMap;
 }
 
-QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context )
+std::tuple< std::unique_ptr< QImage >, std::unique_ptr< QPainter > > QgsMapRendererJob::allocateImageAndPainter( const QString &layerId, const QgsRenderContext &context )
 {
-  QPainter *painter = nullptr;
-  image = allocateImage( layerId ).release();
+  std::unique_ptr< QPainter > painter;
+  std::unique_ptr< QImage > image = allocateImage( layerId );
   if ( image )
   {
-    painter = new QPainter( image );
-    context->setPainterFlagsUsingContext( painter );
+    painter = std::make_unique< QPainter >( image.get() );
+    context.setPainterFlagsUsingContext( painter.get() );
   }
-  return painter;
+  return { std::move( image ), std::move( painter ) };
 }
 
 QgsMapRendererJob::PictureAndPainter QgsMapRendererJob::allocatePictureAndPainter( const QgsRenderContext *context )
@@ -709,9 +713,10 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     if ( canUseCache || ( !painter && !deferredPainterSet ) || ( job.renderer && job.renderer->forceRasterRender() ) )
     {
       // Flattened image for drawing when a blending mode is set
-      QImage *img = nullptr;
-      job.context()->setPainter( allocateImageAndPainter( ml->id(), img, job.context() ) );
-      job.destinationImage.reset( img );
+      auto [image, painter] = allocateImageAndPainter( ml->id(), *job.context() );
+      job.destinationImage = std::move( image );
+      job.destinationPainter = std::move( painter );
+      job.context()->setPainter( job.destinationPainter.get() );
       if ( !job.destinationImage )
       {
         job.renderer.reset();
@@ -741,16 +746,17 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       }
       if ( !job.previewRenderImage )
       {
-        QImage *previewRenderImage = nullptr;
-        job.context()->setPreviewRenderPainter( allocateImageAndPainter( ml->id(), previewRenderImage, job.context() ) );
-        job.previewRenderImage.reset( previewRenderImage );
+        auto [image, painter] = allocateImageAndPainter( ml->id(), *job.context() );
+        job.previewRenderImage = std::move( image );
+        job.previewRenderPainter = std::move( painter );
         job.previewRenderImageInitialized = false;
+        job.context()->setPreviewRenderPainter( job.previewRenderPainter.get() );
       }
 
       if ( !job.previewRenderImage )
       {
-        delete job.context()->previewRenderPainter();
         job.context()->setPreviewRenderPainter( nullptr );
+        job.previewRenderPainter.reset();
       }
     }
 
@@ -888,7 +894,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
         if ( !layerJobMapping.contains( sourceLayerId ) )
           continue;
 
-        for ( const QString &symbolLayerId : mit.value().symbolLayerIdsToMask )
+        for ( const QString &symbolLayerId : std::as_const( mit.value().symbolLayerIdsToMask ) )
           slRefs.insert( QgsSymbolLayerReference( sourceLayerId, symbolLayerId ) );
 
         hasEffects |= mit.value().hasEffects;
@@ -912,31 +918,32 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // Prepare label mask images
   for ( int maskId = 0; maskId < labelJob.maskIdProvider.size(); maskId++ )
   {
-    QPaintDevice *maskPaintDevice = nullptr;
-    QPainter *maskPainter = nullptr;
+    std::unique_ptr< QPaintDevice > maskPaintDevice;
+    std::unique_ptr< QPainter > maskPainter;
     if ( forceVector && !labelHasEffects[maskId] )
     {
       // set a painter to get all masking instruction in order to later clip masked symbol layer
       auto geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >( true );
       geomPaintDevice->setStrokedPathSegments( 4 );
       geomPaintDevice->setSimplificationTolerance( labelJob.context.maskSettings().simplifyTolerance() );
-      maskPaintDevice = geomPaintDevice.release();
-      maskPainter = new QPainter( maskPaintDevice );
+      maskPaintDevice = std::move( geomPaintDevice );
+      maskPainter = std::make_unique< QPainter >( maskPaintDevice.get() );
     }
     else
     {
       // Note: we only need an alpha channel here, rather than a full RGBA image
-      QImage *maskImage = nullptr;
-      maskPainter = allocateImageAndPainter( u"label mask"_s, maskImage, &labelJob.context );
+      auto [maskImage, painter] = allocateImageAndPainter( u"label mask"_s, labelJob.context );
+
       // FIXME ? when maskImage is let to nullptr in case of out-of-memory
       // cppcheck-suppress nullPointer
       maskImage->fill( 0 );
-      maskPaintDevice = maskImage;
+      maskPaintDevice = std::move( maskImage );
+      maskPainter = std::move( painter );
     }
 
-    labelJob.context.setMaskPainter( maskPainter, maskId );
-    labelJob.maskPainters.push_back( std::unique_ptr<QPainter>( maskPainter ) );
-    labelJob.maskPaintDevices.push_back( std::unique_ptr<QPaintDevice>( maskPaintDevice ) );
+    labelJob.context.setMaskPainter( maskPainter.get(), maskId );
+    labelJob.maskPainters.emplace_back( std::move( maskPainter ) );
+    labelJob.maskPaintDevices.emplace_back( std::move( maskPaintDevice ) );
   }
   labelJob.context.setMaskIdProvider( &labelJob.maskIdProvider );
 
@@ -982,9 +989,11 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     const bool isRasterRendering = !forceVector || job.maskRequiresLayerRasterization || ( job.renderer && job.renderer->forceRasterRender() );
     if ( isRasterRendering && !job.destinationImage )
     {
-      QImage *img = nullptr;
-      job.context()->setPainter( allocateImageAndPainter( job.layerId, img, job.context() ) );
-      job.destinationImage.reset( img );
+      auto [img, painter] = allocateImageAndPainter( job.layerId, *job.context() );
+      Q_ASSERT( !job.destinationPainter );
+      job.destinationPainter = std::move( painter );
+      job.context()->setPainter( job.destinationPainter.get() );
+      job.destinationImage = std::move( img );
     }
     else if ( !isRasterRendering && !job.picture )
     {
@@ -1010,29 +1019,29 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     // for layer that mask, generate mask in first pass job
     if ( maskLayerHasEffects.contains( job.layerId ) )
     {
-      QPaintDevice *maskPaintDevice = nullptr;
-      QPainter *maskPainter = nullptr;
+      std::unique_ptr< QPaintDevice > maskPaintDevice;
+      std::unique_ptr< QPainter > maskPainter;
       if ( forceVector && !maskLayerHasEffects[job.layerId] )
       {
         // set a painter to get all masking instruction in order to later clip masked symbol layer
         auto geomPaintDevice = std::make_unique< QgsGeometryPaintDevice >();
         geomPaintDevice->setStrokedPathSegments( 4 );
         geomPaintDevice->setSimplificationTolerance( job.context()->maskSettings().simplifyTolerance() );
-        maskPaintDevice = geomPaintDevice.release();
-        maskPainter = new QPainter( maskPaintDevice );
+        maskPaintDevice = std::move( geomPaintDevice );
+        maskPainter = std::make_unique< QPainter >( maskPaintDevice.get() );
       }
       else
       {
         // Note: we only need an alpha channel here, rather than a full RGBA image
-        QImage *maskImage = nullptr;
-        maskPainter = allocateImageAndPainter( job.layerId, maskImage, job.context() );
+        auto [maskImage, painter] = allocateImageAndPainter( job.layerId, *job.context() );
         maskImage->fill( 0 );
-        maskPaintDevice = maskImage;
+        maskPaintDevice = std::move( maskImage );
+        maskPainter = std::move( painter );
       }
 
-      job.context()->setMaskPainter( maskPainter );
-      job.maskPainter.reset( maskPainter );
-      job.maskPaintDevice.reset( maskPaintDevice );
+      job.context()->setMaskPainter( maskPainter.get() );
+      job.maskPainter = std::move( maskPainter );
+      job.maskPaintDevice = std::move( maskPaintDevice );
     }
   }
 
@@ -1080,9 +1089,12 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
 
     if ( !forceVector || job2.maskRequiresLayerRasterization )
     {
-      QImage *img = nullptr;
-      job2.context()->setPainter( allocateImageAndPainter( job.layerId, img, job2.context() ) );
-      job2.destinationImage.reset( img );
+      Q_ASSERT( !job2.destinationImage );
+      Q_ASSERT( !job2.destinationPainter );
+      auto [img, painter] = allocateImageAndPainter( job.layerId, *job2.context() );
+      job2.context()->setPainter( painter.get() );
+      job2.destinationImage = std::move( img );
+      job2.destinationPainter = std::move( painter );
     }
     else
     {
@@ -1124,7 +1136,7 @@ QList<QPointer<QgsMapLayer> > QgsMapRendererJob::participatingLabelLayers( QgsLa
 {
   QList<QPointer<QgsMapLayer> > res = _qgis_listRawToQPointer( engine->participatingLayers() );
 
-  for ( auto it : std::as_const( mAdditionalLabelLayers ) )
+  for ( const QPointer<QgsMapLayer> &it : std::as_const( mAdditionalLabelLayers ) )
   {
     if ( !res.contains( it ) )
       res.append( it );
@@ -1223,8 +1235,8 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
   {
     if ( job.destinationImage )
     {
-      delete job.context()->painter();
       job.context()->setPainter( nullptr );
+      job.destinationPainter.reset();
 
       if ( mCache && !job.cached && job.completed && job.layer )
       {
@@ -1238,8 +1250,8 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
 
     if ( job.previewRenderImage )
     {
-      delete job.context()->previewRenderPainter();
       job.context()->setPreviewRenderPainter( nullptr );
+      job.previewRenderPainter.reset();
       job.previewRenderImage.reset();
     }
 
@@ -1262,8 +1274,8 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
 
     if ( job.picture )
     {
-      delete job.context()->painter();
       job.context()->setPainter( nullptr );
+      job.destinationPainter.reset();
       job.picture.reset( nullptr );
     }
 
@@ -1295,23 +1307,22 @@ void QgsMapRendererJob::cleanupSecondPassJobs( std::vector< LayerRenderJob > &jo
   {
     if ( job.destinationImage )
     {
-      delete job.context()->painter();
       job.context()->setPainter( nullptr );
-
+      job.destinationPainter.reset();
       job.destinationImage.reset();
     }
 
     if ( job.previewRenderImage )
     {
-      delete job.context()->previewRenderPainter();
       job.context()->setPreviewRenderPainter( nullptr );
+      job.previewRenderPainter.reset();
       job.previewRenderImage.reset();
     }
 
     if ( job.picture )
     {
-      delete job.context()->painter();
       job.context()->setPainter( nullptr );
+      job.destinationPainter.reset();
     }
 
     if ( job.renderer )
