@@ -312,8 +312,11 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
     scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.renderContext().expressionContext(), scope );
   }
 
+  std::unique_ptr< QgsScopedQPainterState > painterState;
   if ( mDrawInsidePolygon )
-    p->save();
+  {
+    painterState = std::make_unique< QgsScopedQPainterState >( p );
+  }
 
   switch ( mRingFilter )
   {
@@ -374,12 +377,6 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
       case ExteriorRingOnly:
         break;
     }
-  }
-
-  if ( mDrawInsidePolygon )
-  {
-    //restore painter to reset clip path
-    p->restore();
   }
 }
 

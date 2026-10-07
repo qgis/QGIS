@@ -135,7 +135,7 @@ void QgsScrollBarHighlightOverlay::drawHighlights( QPainter *painter, int docSta
   if ( docSize <= 0 )
     return;
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setClipRect( viewport );
 
   const double lineHeight = mHighlightController->lineHeight();
@@ -173,7 +173,6 @@ void QgsScrollBarHighlightOverlay::drawHighlights( QPainter *painter, int docSta
       }
     }
   }
-  painter->restore();
 }
 
 bool QgsScrollBarHighlightOverlay::eventFilter( QObject *object, QEvent *event )

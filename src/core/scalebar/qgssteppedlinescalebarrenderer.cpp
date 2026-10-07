@@ -74,7 +74,7 @@ void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsS
   const double barTopPosition = verticalOffset( context, settings );
   const double barBottomPosition = barTopPosition + context.convertToPainterUnits( settings.height(), Qgis::RenderUnit::Millimeters );
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   context.setPainterFlagsUsingContext( painter );
 
   painter->setPen( Qt::NoPen );
@@ -105,7 +105,7 @@ void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsS
 
   sym->renderPolyline( points, nullptr, context );
 
-  painter->restore();
+  painterState.restore();
 
   sym->stopRender( context );
 

@@ -303,7 +303,7 @@ void QgsAdvancedDigitizingCirclesIntersectionTool::drawCandidate( QPainter *pain
 
 void QgsAdvancedDigitizingCirclesIntersectionTool::paint( QPainter *painter )
 {
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   drawCircle( painter, mCircle1X->value(), mCircle1Y->value(), mCircle1Distance->value() );
   drawCircle( painter, mCircle2X->value(), mCircle2Y->value(), mCircle2Distance->value() );
@@ -321,8 +321,6 @@ void QgsAdvancedDigitizingCirclesIntersectionTool::paint( QPainter *painter )
       drawCandidate( painter, mP2.x(), mP2.y(), true );
     }
   }
-
-  painter->restore();
 }
 
 bool QgsAdvancedDigitizingCirclesIntersectionTool::eventFilter( QObject *obj, QEvent *event )

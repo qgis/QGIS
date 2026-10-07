@@ -1478,7 +1478,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
 
   QPointF transPt( -offsetDist * std::cos( angleRad + M_PI_2 ), -offsetDist * std::sin( angleRad + M_PI_2 ) );
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   context.setPainterFlagsUsingContext( p );
   // this was historically ALWAYS set for text renderer. We may want to consider getting it to respect the
   // corresponding flag in the render context instead...
@@ -1499,7 +1499,8 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
   p->translate( transPt );
   p->translate( -imgOffset.x(), -imgOffset.y() );
   p->drawImage( 0, 0, blurImg );
-  p->restore();
+
+  painterState.restore();
 
   // debug rects
 #if 0
@@ -2114,9 +2115,10 @@ void QgsTextRenderer::drawTextInternalHorizontal(
         context.painter()->rotate( rotationDegrees );
 
       // apply to the mask painter the same transformations
+      std::unique_ptr< QgsScopedQPainterState > maskPainterState;
       if ( maskPainter )
       {
-        maskPainter->save();
+        maskPainterState = std::make_unique< QgsScopedQPainterState>( maskPainter );
         maskPainter->translate( component.origin );
         if ( !qgsDoubleNear( rotationDegrees, 0.0 ) )
           maskPainter->rotate( rotationDegrees );
@@ -2180,9 +2182,6 @@ void QgsTextRenderer::drawTextInternalHorizontal(
       context.painter()->setBrush( Qt::NoBrush );
 
       renderBlockHorizontal( block, blockIndex, metrics, context, format, context.painter(), needsPaths, fontScale, thisBlockMetrics.extraWordSpace, thisBlockMetrics.extraLetterSpace, mode, deferredBlock );
-
-      if ( maskPainter )
-        maskPainter->restore();
 
       blockIndex++;
     }
@@ -2482,9 +2481,10 @@ void QgsTextRenderer::drawTextInternalVertical(
       context.painter()->rotate( rotationDegrees );
 
     // apply to the mask painter the same transformations
+    std::unique_ptr<QgsScopedQPainterState > maskPainterState;
     if ( maskPainter )
     {
-      maskPainter->save();
+      maskPainterState = std::make_unique< QgsScopedQPainterState >( maskPainter );
       maskPainter->translate( component.origin );
       if ( !qgsDoubleNear( rotationDegrees, 0.0 ) )
         maskPainter->rotate( rotationDegrees );
@@ -2664,8 +2664,6 @@ void QgsTextRenderer::drawTextInternalVertical(
       fragmentIndex++;
     }
 
-    if ( maskPainter )
-      maskPainter->restore();
     blockIndex++;
   }
 }

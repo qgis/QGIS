@@ -75,7 +75,7 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
   const double barTopPosition = verticalOffset( context, settings );
   const double barHeight = context.convertToPainterUnits( settings.height(), Qgis::RenderUnit::Millimeters );
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   context.setPainterFlagsUsingContext( painter );
 
   std::unique_ptr< QgsLineSymbol > lineSymbol( settings.lineSymbol()->clone() );
@@ -160,7 +160,8 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
   lineSymbol->stopRender( context );
   fillSymbol1->stopRender( context );
   fillSymbol2->stopRender( context );
-  painter->restore();
+
+  painterState.restore();
 
   //draw labels using the default method
   drawDefaultLabels( context, settings, scaleContext );

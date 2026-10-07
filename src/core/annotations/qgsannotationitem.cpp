@@ -190,6 +190,8 @@ void QgsAnnotationItem::renderCallout( QgsRenderContext &context, const QRectF &
   // callout still points to its anchor on screen.
   QPainter *painter = context.painter();
   const bool rotated = !qgsDoubleNear( angle, 0 );
+
+  std::unique_ptr< QgsScopedQPainterState > painterState;
   if ( rotated )
   {
     const QPointF center = rect.center();
@@ -199,16 +201,13 @@ void QgsAnnotationItem::renderCallout( QgsRenderContext &context, const QRectF &
     anchorTransform.translate( -center.x(), -center.y() );
     anchor.transform( anchorTransform );
 
-    painter->save();
+    painterState = std::make_unique< QgsScopedQPainterState >( painter );
     QgsPainting::rotatePainterAroundPoint( painter, center, angle );
   }
 
   mCallout->startRender( context );
   mCallout->render( context, rect, 0, anchor, calloutContext );
   mCallout->stopRender( context );
-
-  if ( rotated )
-    painter->restore();
 }
 
 Qgis::RenderUnit QgsAnnotationItem::offsetFromCalloutUnit() const

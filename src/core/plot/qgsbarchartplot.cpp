@@ -63,7 +63,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   QgsExpressionContextScope *chartScope = new QgsExpressionContextScope( u"chart"_s );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), chartScope );
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
   context.painter()->setClipRect( plotArea );
 
   double minX = xMinimum();
@@ -161,8 +161,6 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     symbol->stopRender( context );
     seriesIndex++;
   }
-
-  context.painter()->restore();
 }
 
 QgsFillSymbol *QgsBarChartPlot::fillSymbolAt( int index ) const

@@ -193,10 +193,10 @@ class QgsScopedQPainterState
       }
     }
 
-    QgsScopedQPainterState( const QgsScopedQPainterState& ) = delete;
-    QgsScopedQPainterState& operator=( const QgsScopedQPainterState& ) = delete;
-    QgsScopedQPainterState( QgsScopedQPainterState&& ) = delete;
-    QgsScopedQPainterState& operator=( QgsScopedQPainterState&& ) = delete;
+    QgsScopedQPainterState( const QgsScopedQPainterState & ) = delete;
+    QgsScopedQPainterState &operator=( const QgsScopedQPainterState & ) = delete;
+    QgsScopedQPainterState( QgsScopedQPainterState && ) = delete;
+    QgsScopedQPainterState &operator=( QgsScopedQPainterState && ) = delete;
 
     /**
      * Performs a manual restore on the painter state, popping the latest state from the painter.
