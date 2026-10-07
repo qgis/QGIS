@@ -697,7 +697,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           QString name;
           if ( QgsRasterRendererWidget *rendererWidget = mRasterStyleWidget->currentRenderWidget() )
           {
-            if ( QgsRasterRenderer *renderer = rendererWidget->renderer() )
+            std::unique_ptr< QgsRasterRenderer > renderer( rendererWidget->renderer() );
+            if ( renderer )
             {
               name = renderer->type();
             }
