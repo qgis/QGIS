@@ -1059,10 +1059,17 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     // Points to the masking jobs. This will be needed during the second pass composition.
     for ( const MaskSource &source : maskedSourceList )
     {
+      LayerRenderJob::MaskJob maskJob;
+
       if ( source.labelMaskId != -1 )
-        job2.maskJobs.push_back( qMakePair( nullptr, source.labelMaskId ) );
+      {
+        maskJob.maskPaintDeviceId = source.labelMaskId;
+      }
       else
-        job2.maskJobs.push_back( qMakePair( layerJobMapping[source.layerId], -1 ) );
+      {
+        maskJob.layerRenderJob = layerJobMapping[source.layerId];
+      }
+      job2.maskJobs.emplace_back( maskJob );
     }
 
     // copy the context from the initial job
@@ -1141,9 +1148,9 @@ void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secon
     // we draw disabled symbol layer but me mask them with clipping path produced during first pass job
     // Resulting 2nd pass job picture will be the final rendering
 
-    for ( const QPair<LayerRenderJob *, int> &p : std::as_const( job.maskJobs ) )
+    for ( const LayerRenderJob::MaskJob &p : std::as_const( job.maskJobs ) )
     {
-      QPainter *maskPainter = p.first ? p.first->maskPainter.get() : labelJob.maskPainters[p.second].get();
+      QPainter *maskPainter = p.layerRenderJob ? p.layerRenderJob->maskPainter.get() : labelJob.maskPainters[p.maskPaintDeviceId].get();
 
       const QSet<QString> layers = job.context()->disabledSymbolLayersV2();
       if ( QgsGeometryPaintDevice *geometryDevice = dynamic_cast<QgsGeometryPaintDevice *>( maskPainter->device() ) )
@@ -1497,12 +1504,12 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
     if ( isRasterRendering && job.maskJobs.size() > 1 )
     {
       QPainter *maskPainter = nullptr;
-      for ( QPair<LayerRenderJob *, int> p : job.maskJobs )
+      for ( const LayerRenderJob::MaskJob &p : job.maskJobs )
       {
-        QImage *maskImage = static_cast<QImage *>( p.first ? p.first->maskPaintDevice.get() : labelJob.maskPaintDevices[p.second].get() );
+        QImage *maskImage = static_cast<QImage *>( p.layerRenderJob ? p.layerRenderJob->maskPaintDevice.get() : labelJob.maskPaintDevices[p.maskPaintDeviceId].get() );
         if ( !maskPainter )
         {
-          maskPainter = p.first ? p.first->maskPainter.get() : labelJob.maskPainters[p.second].get();
+          maskPainter = p.layerRenderJob ? p.layerRenderJob->maskPainter.get() : labelJob.maskPainters[p.maskPaintDeviceId].get();
         }
         else
         {
@@ -1511,13 +1518,13 @@ void QgsMapRendererJob::composeSecondPass( std::vector<LayerRenderJob> &secondPa
       }
     }
 
-    if ( !job.maskJobs.isEmpty() )
+    if ( !job.maskJobs.empty() )
     {
       // All have been merged into the first
-      QPair<LayerRenderJob *, int> p = *job.maskJobs.begin();
+      LayerRenderJob::MaskJob p = *job.maskJobs.begin();
       if ( isRasterRendering )
       {
-        QImage *maskImage = static_cast<QImage *>( p.first ? p.first->maskPaintDevice.get() : labelJob.maskPaintDevices[p.second].get() );
+        QImage *maskImage = static_cast<QImage *>( p.layerRenderJob ? p.layerRenderJob->maskPaintDevice.get() : labelJob.maskPaintDevices[p.maskPaintDeviceId].get() );
 
         // Only retain parts of the second rendering that are "inside" the mask image
         QPainter *painter = job.context()->painter();
