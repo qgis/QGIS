@@ -2388,7 +2388,7 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
     wrapchr = u"\n"_s; // default to new line delimiter
   }
 
-  // Find the index of the all the occourrences of the wrap character in the label text and store them in a list
+  // Find the index of the all the positions of the wrap character in the label text and store them in a list
   QList<int> wrapCharPositions;
   for ( int i = 0; i < labelText.length(); ++i )
   {
