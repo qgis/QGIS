@@ -94,13 +94,13 @@ class LayerRenderJob
     std::unique_ptr< QgsElevationMap > elevationMap;
 
     /**
-     * Pointer to destination image for in-progress preview renders.
+     * Destination image for in-progress preview renders.
      *
      * May be NULLPTR if it is not necessary to draw in-progress preview renders.
      *
      * \since QGIS 3.34
      */
-    QImage *previewRenderImage = nullptr;
+    std::unique_ptr< QImage > previewRenderImage;
 
     //! TRUE when img has been initialized (filled with transparent pixels)
     bool imageInitialized = false;
