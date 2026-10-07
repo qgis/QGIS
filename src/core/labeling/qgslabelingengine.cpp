@@ -27,6 +27,7 @@
 #include "qgslabelingresults.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
 #include "qgssymbol.h"

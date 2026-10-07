@@ -33,6 +33,7 @@
 #include "qgsmeshlayerlabelprovider.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshvectorrenderer.h"
+#include "qgspainting.h"
 #include "qgspointxy.h"
 #include "qgsrastershader.h"
 #include "qgsrenderedlayerstatistics.h"

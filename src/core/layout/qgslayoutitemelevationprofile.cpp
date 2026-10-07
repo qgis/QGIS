@@ -28,6 +28,7 @@
 #include "qgslinesymbol.h"
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsmessagelog.h"
+#include "qgspainting.h"
 #include "qgsplot.h"
 #include "qgsprofilerenderer.h"
 #include "qgsprofilerequest.h"

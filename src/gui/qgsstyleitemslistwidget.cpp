@@ -17,6 +17,7 @@
 #include "qgsstyleitemslistwidget.h"
 
 #include "qgsgui.h"
+#include "qgspainting.h"
 #include "qgspanelwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"

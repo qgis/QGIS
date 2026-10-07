@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgspainting.h"
 
 #include <QDomDocument>
 #include <QDomElement>

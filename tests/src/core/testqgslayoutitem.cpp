@@ -30,6 +30,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutundostack.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgstest.h"

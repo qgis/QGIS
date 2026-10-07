@@ -20,6 +20,7 @@
 #include "qgslayout.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutview.h"
+#include "qgspainting.h"
 
 #include <QBrush>
 #include <QGraphicsView>

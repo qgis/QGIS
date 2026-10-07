@@ -20,6 +20,7 @@
 
 #include "qgsgeorefdatapoint.h"
 #include "qgslayoututils.h"
+#include "qgspainting.h"
 
 #include <QPainter>
 #include <QString>

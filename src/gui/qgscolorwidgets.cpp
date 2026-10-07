@@ -21,6 +21,7 @@
 #include "qgsdoublespinbox.h"
 #include "qgsguiutils.h"
 #include "qgslogger.h"
+#include "qgspainting.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingstree.h"

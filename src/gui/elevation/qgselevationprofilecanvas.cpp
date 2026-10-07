@@ -28,6 +28,7 @@
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsnumericformat.h"
+#include "qgspainting.h"
 #include "qgsplot.h"
 #include "qgsplotcanvasitem.h"
 #include "qgspoint.h"

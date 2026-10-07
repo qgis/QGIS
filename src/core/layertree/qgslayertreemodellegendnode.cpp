@@ -30,6 +30,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgsmarkersymbol.h"
+#include "qgspainting.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
 #include "qgsrasterlayer.h"

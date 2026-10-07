@@ -14,6 +14,8 @@
  ***************************************************************************/
 #include "qgstabbarproxystyle.h"
 
+#include "qgspainting.h"
+
 #include <QDebug>
 #include <QPainter>
 #include <QStyleOption>

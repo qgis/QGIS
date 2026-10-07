@@ -21,6 +21,7 @@
 
 #include "qgscolorutils.h"
 #include "qgsimageoperation.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 
 #include <QString>

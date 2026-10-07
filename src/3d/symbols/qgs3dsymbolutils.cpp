@@ -19,8 +19,10 @@
 #include "qgsabstractmaterialsettings.h"
 #include "qgsline3dsymbol.h"
 #include "qgslogger.h"
+#include "qgspainting.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsrendercontext.h"
 
 #include <QColor>
 #include <QPainter>

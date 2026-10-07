@@ -34,6 +34,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmessagelog.h"
+#include "qgspainting.h"
 #include "qgspolygon.h"
 #include "qgsproject.h"
 #include "qgsrendercontext.h"

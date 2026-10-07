@@ -16,6 +16,7 @@
 #include "qgsmaplayerstylecategoriesmodel.h"
 
 #include "qgsapplication.h"
+#include "qgspainting.h"
 
 #include <QString>
 

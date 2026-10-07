@@ -30,6 +30,7 @@
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
+#include "qgspainting.h"
 #include "qgspolygon.h"
 #include "qgspolyhedralsurface.h"
 #include "qgsprofilepoint.h"

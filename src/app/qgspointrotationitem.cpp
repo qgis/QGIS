@@ -18,6 +18,8 @@
 #include <cmath>
 
 #include "qgsguiutils.h"
+#include "qgspainting.h"
+#include "qgsrendercontext.h"
 
 #include <QLocale>
 #include <QPainter>

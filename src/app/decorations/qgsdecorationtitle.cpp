@@ -21,6 +21,7 @@
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgslogger.h"
+#include "qgspainting.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgstextdocument.h"

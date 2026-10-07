@@ -23,6 +23,7 @@
 #include "qgsgrouplayer.h"
 #include "qgslogger.h"
 #include "qgspainteffect.h"
+#include "qgspainting.h"
 #include "qgsrendercontext.h"
 
 #include <QString>

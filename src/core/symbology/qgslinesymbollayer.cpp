@@ -37,6 +37,7 @@
 #include "qgslogger.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmultipolygon.h"
+#include "qgspainting.h"
 #include "qgspolygon.h"
 #include "qgsproperty.h"
 #include "qgsrendercontext.h"

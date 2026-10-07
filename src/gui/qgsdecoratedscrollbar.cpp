@@ -17,6 +17,8 @@
 
 #include <cmath>
 
+#include "qgspainting.h"
+
 #include <QAbstractScrollArea>
 #include <QEvent>
 #include <QPainter>
