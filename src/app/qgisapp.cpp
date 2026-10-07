@@ -3580,6 +3580,10 @@ void QgisApp::refreshProfileMenu()
   newProfileAction->setObjectName( "mActionNewProfile" );
   connect( newProfileAction, &QAction::triggered, this, &QgisApp::newProfile );
 
+  QAction *restartProfileAction = mConfigMenu->addAction( tr( "Restart QGIS with Active Profile" ) );
+  restartProfileAction->setObjectName( "mActionRestartActiveProfile" );
+  connect( restartProfileAction, &QAction::triggered, this, &QgisApp::restartActiveProfile );
+
   mConfigMenu->addSeparator();
 
   QgsUserProfile *profile = userProfileManager()->userProfile();
@@ -5940,7 +5944,7 @@ void QgisApp::replaceSelectedVectorLayer( const QString &oldId, const QString &u
   oldLayer->setDataSource( uri, layerName, provider );
 }
 
-void QgisApp::fileExit()
+bool QgisApp::fileExit()
 {
   if ( QgsApplication::taskManager()->countActiveTasks() > 0 )
   {
@@ -5968,7 +5972,7 @@ void QgisApp::fileExit()
       {
         QgsApplication::taskManager()->cancelAll();
       }
-      return;
+      return false;
     }
   }
 
@@ -5981,7 +5985,16 @@ void QgisApp::fileExit()
     // shouldn't be needed, but from this stage on, we don't want/need ANY map canvas refreshes to take place
     mFreezeCount = 1000000;
     qApp->exit( 0 );
+    return true;
   }
+  return false;
+}
+
+void QgisApp::restartActiveProfile()
+{
+  // the new instance is launched from main() once this one has fully shut down
+  if ( fileExit() )
+    mRestartRequested = true;
 }
 
 

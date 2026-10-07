@@ -1961,6 +1961,12 @@ int main( int argc, char *argv[] )
 #endif
 
   int retval = QgsApplication::exec();
+  const bool restart = qgis->restartRequested();
   delete qgis;
+
+  // launch the new instance only once this one has fully shut down and written its settings
+  if ( restart )
+    manager.loadUserProfile( profileName );
+
   return retval;
 }

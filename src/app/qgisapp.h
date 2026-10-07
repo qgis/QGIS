@@ -828,6 +828,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsUserProfileManager *userProfileManager();
 
     /**
+     * Returns TRUE if the user requested QGIS to restart with the active profile
+     * once the application has exited.
+     */
+    bool restartRequested() const { return mRestartRequested; }
+
+    /**
      * Returns the vector layers in edit mode
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list
@@ -1573,6 +1579,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   private slots:
     void newProfile();
+    void restartActiveProfile();
 
     void onTaskCompleteShowNotify( long taskId, int status );
 
@@ -2062,8 +2069,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void updateMouseCoordinatePrecision();
     //    void debugHook();
 
-    //! Exit Qgis
-    void fileExit();
+    //! Exit Qgis, returns FALSE if the exit was canceled by the user
+    bool fileExit();
     //! Sets map tool to Zoom out
     void zoomOut();
     //! Sets map tool to Zoom in
@@ -2683,6 +2690,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *mWebMenu = nullptr;
 
     QMenu *mConfigMenu = nullptr;
+
+    //! TRUE if QGIS should be restarted with the active profile after exiting
+    bool mRestartRequested = false;
 
     //! Popup menu for the map overview tools
     QMenu *mToolPopupOverviews = nullptr;
