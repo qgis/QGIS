@@ -2371,9 +2371,42 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
     labelText = substitutions.process( labelText );
   }
 
+
+  QString wrapchr = wrapChar;
+  int evalAutoWrapLength = autoWrapLength;
+  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
+  {
+    wrapchr = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineWrapChar ).toString();
+  }
+  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
+  {
+    evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
+  }
+
+  if ( wrapchr.isEmpty() )
+  {
+    wrapchr = u"\n"_s; // default to new line delimiter
+  }
+
+  // Find the index of the all the occourrences of the wrap character in the label text and store them in a list
+  QList<int> wrapCharPositions;
+  for ( int i = 0; i < labelText.length(); ++i )
+  {
+    if ( labelText.at( i ) == wrapchr )
+    {
+      wrapCharPositions.append( i );
+    }
+  }
+
   // TODO -- this is in the wrong place. We should be capitalizing the text only, ie after we have parsed
   // any HTML tags to a text document.
   labelText = QgsStringUtils::capitalize( labelText, format.capitalization() );
+
+  // Replace
+  for ( int i = wrapCharPositions.size() - 1; i >= 0; --i )
+  {
+    labelText.replace( wrapCharPositions.at( i ), 1, wrapchr );
+  }
 
   // TODO -- this is in the wrong place. We should be formatting numbers AFTER converting HTML to documents
 
@@ -2409,22 +2442,6 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
   }
 
   document = QgsTextDocument::fromTextAndFormat( { labelText }, format );
-
-  QString wrapchr = wrapChar;
-  int evalAutoWrapLength = autoWrapLength;
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
-  {
-    wrapchr = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineWrapChar ).toString();
-  }
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
-  {
-    evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
-  }
-
-  if ( wrapchr.isEmpty() )
-  {
-    wrapchr = u"\n"_s; // default to new line delimiter
-  }
 
   if ( allowMultipleLines )
   {
