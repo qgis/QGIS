@@ -296,6 +296,7 @@ QgsSymbolLayer::QgsSymbolLayer( const QgsSymbolLayer &other )
   , mPaintEffect( other.mPaintEffect ? other.mPaintEffect->clone() : nullptr )
   , mFields( other.mFields )
   , mClipPath( other.mClipPath )
+  , mStateBeforeInstallingMaskClipPaths( nullptr ) // we intentionally do not copy this, it will only be set in between start/end render calls of a the same symbol layer instance
 {}
 
 QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
