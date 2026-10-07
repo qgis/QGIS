@@ -2371,12 +2371,6 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
     labelText = substitutions.process( labelText );
   }
 
-  // TODO -- this is in the wrong place. We should be capitalizing the text only, ie after we have parsed
-  // any HTML tags to a text document.
-  labelText = QgsStringUtils::capitalize( labelText, format.capitalization() );
-
-  // TODO -- this is in the wrong place. We should be formatting numbers AFTER converting HTML to documents
-
   // format number if label text is coercible to a number
   bool evalFormatNumbers = formatNumbers;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::NumFormat ) )
@@ -2408,23 +2402,36 @@ bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRe
     }
   }
 
-  document = QgsTextDocument::fromTextAndFormat( { labelText }, format );
-
   QString wrapchr = wrapChar;
   int evalAutoWrapLength = autoWrapLength;
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
+  if ( allowMultipleLines )
   {
-    wrapchr = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineWrapChar ).toString();
-  }
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
-  {
-    evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
+    if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
+    {
+      wrapchr = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineWrapChar ).toString();
+    }
+    if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
+    {
+      evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
+    }
+
+    if ( wrapchr.isEmpty() )
+    {
+      wrapchr = u"\n"_s; // default to new line delimiter
+    }
+    else if ( format.capitalization() != Qgis::Capitalization::MixedCase )
+    {
+      // Change wrapchr to a non printable character to avoid issues with capitalization.
+      while ( labelText.contains( wrapchr ) )
+      {
+        labelText.replace( wrapchr, QString( QChar::ReplacementCharacter ) );
+      }
+
+      wrapchr = QString( QChar::ReplacementCharacter );
+    }
   }
 
-  if ( wrapchr.isEmpty() )
-  {
-    wrapchr = u"\n"_s; // default to new line delimiter
-  }
+  document = QgsTextDocument::fromTextAndFormat( { labelText }, format );
 
   if ( allowMultipleLines )
   {
