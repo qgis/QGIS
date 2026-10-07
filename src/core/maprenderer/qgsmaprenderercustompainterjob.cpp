@@ -319,9 +319,9 @@ void QgsMapRendererCustomPainterJob::doRender()
         job.previewRenderImageInitialized = true;
       }
 
-      if ( job.img )
+      if ( job.destinationImage )
       {
-        job.img->fill( 0 );
+        job.destinationImage->fill( 0 );
         job.imageInitialized = true;
       }
 
@@ -335,11 +335,11 @@ void QgsMapRendererCustomPainterJob::doRender()
       job.renderingTime += layerTime.elapsed();
     }
 
-    if ( !hasSecondPass && job.img )
+    if ( !hasSecondPass && job.destinationImage )
     {
       // If we flattened this layer for alternate blend modes, composite it now
       mPainter->setOpacity( job.opacity );
-      mPainter->drawImage( 0, 0, *job.img );
+      mPainter->drawImage( 0, 0, *job.destinationImage );
       mPainter->setOpacity( 1.0 );
     }
 
@@ -379,7 +379,7 @@ void QgsMapRendererCustomPainterJob::doRender()
       {
         QPainter painter;
         mLabelJob.img->fill( 0 );
-        painter.begin( mLabelJob.img );
+        painter.begin( mLabelJob.img.get() );
         mLabelJob.context.setPainter( &painter );
         drawLabeling( mLabelJob.context, mLabelingEngineV2.get(), &painter );
         painter.end();
@@ -432,9 +432,9 @@ void QgsMapRendererCustomPainterJob::doRender()
           job.previewRenderImageInitialized = true;
         }
 
-        if ( job.img )
+        if ( job.destinationImage )
         {
-          job.img->fill( 0 );
+          job.destinationImage->fill( 0 );
           job.imageInitialized = true;
         }
 
@@ -471,7 +471,7 @@ void QgsMapRendererCustomPainterJob::doRender()
           QgsPainting::drawPicture( mPainter, QPointF( 0, 0 ), *job.picture );
         }
         else
-          mPainter->drawImage( 0, 0, *job.img );
+          mPainter->drawImage( 0, 0, *job.destinationImage );
       }
 
       if ( mLabelJob.picture )

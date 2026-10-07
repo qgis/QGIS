@@ -78,11 +78,11 @@ class LayerRenderJob
     QgsRenderContext *context() { return mContext.get(); }
 
     /**
-     * Pointer to destination image.
+     * Destination image for render.
      *
      * May be NULLPTR if it is not necessary to draw to separate image (e.g. sequential rendering).
      */
-    QImage *img = nullptr;
+    std::unique_ptr< QImage > destinationImage;
 
     /**
      * Pointer to destination elevation map.
@@ -230,7 +230,7 @@ struct LabelRenderJob
    * May be NULLPTR if it is not necessary to draw to separate image (e.g. using composition modes which prevent "flattening" the layer).
    * Note that if complete is FALSE then img will be uninitialized and contain random data!.
    */
-    QImage *img = nullptr;
+    std::unique_ptr< QImage > img;
 
     //! QPicture representation of rendered labels. Used only for vector layer content when required for layer masking.
     std::unique_ptr<QPicture> picture;
@@ -692,10 +692,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     QHash<QgsMapLayer *, QgsDateTimeRange> mPerLayerTemporalRange;
 
     //! Convenient method to allocate a new image and stack an error if not enough memory is available
-    QImage *allocateImage( QString layerId );
+    std::unique_ptr< QImage > allocateImage( const QString &layerId );
 
     //! Convenient method to allocate a new elevation map and stack an error if not enough memory is available
-    QgsElevationMap *allocateElevationMap( QString layerId );
+    QgsElevationMap *allocateElevationMap( const QString &layerId );
 
     //! Convenient method to allocate a new image and a new QPainter on this image
     QPainter *allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context );
