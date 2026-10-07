@@ -177,12 +177,11 @@ class LayerRenderJob
      *   pass by another job. We then need to know which first pass image and which masks correspond.
      */
 
-    //! painter used to draw mask
-    std::unique_ptr<QPainter> maskPainter;
-
-
     //! Mask paint device, needed during the first pass to render the mask
     std::unique_ptr<QPaintDevice> maskPaintDevice;
+
+    //! Painter used to draw mask
+    std::unique_ptr<QPainter> maskPainter;
 
     /**
      * If effects are involved in masking we need to rasterize the layer rendering even if
