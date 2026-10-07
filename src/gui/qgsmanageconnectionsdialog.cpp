@@ -190,8 +190,14 @@ void QgsManageConnectionsDialog::doExportImport()
 
     if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
     {
-      QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorStr ) );
-      return;
+      // try without namespace processing, as file might miss namespace declarations
+      // see https://github.com/qgis/QGIS/issues/65477
+      file.seek( 0 );
+      if ( !doc.setContent( &file, false, &errorStr, &errorLine, &errorColumn ) )
+      {
+        QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorStr ) );
+        return;
+      }
     }
 
     switch ( mConnectionType )
@@ -331,8 +337,14 @@ bool QgsManageConnectionsDialog::populateConnections()
 
     if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
     {
-      QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorStr ) );
-      return false;
+      // try without namespace processing, as file might miss namespace declarations
+      // see https://github.com/qgis/QGIS/issues/65477
+      file.seek( 0 );
+      if ( !doc.setContent( &file, false, &errorStr, &errorLine, &errorColumn ) )
+      {
+        QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorStr ) );
+        return false;
+      }
     }
 
     const QDomElement root = doc.documentElement();
