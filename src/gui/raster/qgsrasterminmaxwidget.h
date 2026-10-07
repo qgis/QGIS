@@ -114,23 +114,30 @@ class GUI_EXPORT QgsRasterMinMaxWidget : public QWidget, private Ui::QgsRasterMi
     void mMinMaxRadioButton_toggled( bool b )
     {
       if ( b )
-        emit widgetChanged();
+      {
+        onWidgetChanged();
+      }
     }
     void mStdDevRadioButton_toggled( bool b )
     {
       if ( b )
-        emit widgetChanged();
+      {
+        onWidgetChanged();
+      }
     }
     void mCumulativeCutRadioButton_toggled( bool b )
     {
       if ( b )
-        emit widgetChanged();
+      {
+        onWidgetChanged();
+      }
     }
-    void mStatisticsExtentCombo_currentIndexChanged( int ) { emit widgetChanged(); }
-    void mCumulativeCutLowerDoubleSpinBox_valueChanged( double ) { emit widgetChanged(); }
-    void mCumulativeCutUpperDoubleSpinBox_valueChanged( double ) { emit widgetChanged(); }
-    void mStdDevSpinBox_valueChanged( double ) { emit widgetChanged(); }
-    void cboAccuracy_currentIndexChanged( int ) { emit widgetChanged(); }
+    void mStatisticsExtentCombo_currentIndexChanged( int ) { onWidgetChanged(); }
+    void mCumulativeCutLowerDoubleSpinBox_valueChanged( double ) { onWidgetChanged(); }
+    void mCumulativeCutUpperDoubleSpinBox_valueChanged( double ) { onWidgetChanged(); }
+    void mStdDevSpinBox_valueChanged( double ) { onWidgetChanged(); }
+    void cboAccuracy_currentIndexChanged( int ) { onWidgetChanged(); }
+    void onWidgetChanged();
 
   private:
     QgsRasterLayer *mLayer = nullptr;
