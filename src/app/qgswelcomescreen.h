@@ -136,7 +136,7 @@ class QgsWelcomeScreen : public QQuickWidget
     QgsNewsFeedParser *mNewsFeedParser = nullptr;
     QgsNewsFeedProxyModel *mNewsFeedModel = nullptr;
 
-    QgsVersionInfo *mVersionInfo = nullptr;
+    QPointer< QgsVersionInfo > mVersionInfo;
 
     int mOriginalWidth = 0;
     int mOriginalHeight = 0;
