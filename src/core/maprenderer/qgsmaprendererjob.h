@@ -84,6 +84,8 @@ class LayerRenderJob
      */
     std::unique_ptr< QImage > destinationImage;
 
+    std::unique_ptr< QPainter > destinationPainter;
+
     /**
      * Destination elevation map.
      *
@@ -101,6 +103,8 @@ class LayerRenderJob
      * \since QGIS 3.34
      */
     std::unique_ptr< QImage > previewRenderImage;
+
+    std::unique_ptr< QPainter > previewRenderPainter;
 
     //! TRUE when img has been initialized (filled with transparent pixels)
     bool imageInitialized = false;
@@ -699,7 +703,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     std::unique_ptr< QgsElevationMap > allocateElevationMap( const QString &layerId );
 
     //! Convenient method to allocate a new image and a new QPainter on this image
-    QPainter *allocateImageAndPainter( QString layerId, QImage *&image, const QgsRenderContext *context );
+    std::tuple< std::unique_ptr< QImage >, std::unique_ptr< QPainter > > allocateImageAndPainter( const QString &layerId, const QgsRenderContext &context );
 
     /**
      *  This pure virtual method has to be implemented in derived class for starting the rendering.
