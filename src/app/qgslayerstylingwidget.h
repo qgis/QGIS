@@ -115,6 +115,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     enum class CustomRole : int
     {
       PageEnum = Qt::UserRole,
+      PageFactoryIndex
     };
     Q_ENUM( CustomRole )
 
@@ -196,7 +197,6 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QPointer< QgsRendererRasterPropertiesWidget > mRasterStyleWidget;
     QPointer< QgsRasterAttributeTableWidget > mRasterAttributeTableWidget;
     QList<const QgsMapLayerConfigWidgetFactory *> mPageFactories;
-    QMap<int, const QgsMapLayerConfigWidgetFactory *> mUserPages;
     QgsMapLayerConfigWidgetContext mContext;
 };
 
