@@ -127,7 +127,7 @@ LayerRenderJob::LayerRenderJob( LayerRenderJob &&other )
   , estimatedRenderingTime( other.estimatedRenderingTime )
   , errors( other.errors )
   , layerId( other.layerId )
-  , maskPainter( nullptr ) // should this be other.maskPainter??
+  , maskPainter( std::move( other.maskPainter ) )
   , maskRequiresLayerRasterization( other.maskRequiresLayerRasterization )
   , maskJobs( other.maskJobs )
 {
