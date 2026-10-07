@@ -201,13 +201,19 @@ class LayerRenderJob
      */
     std::unique_ptr<QPicture> picture;
 
+    struct MaskJob
+    {
+        //! Pointer to the layer render job, if the mask is sourced from another layer's symbols
+        LayerRenderJob *layerRenderJob = nullptr;
+
+        //! Label mask paint device ID, if the mask is not being sourced from a layer render job
+        int maskPaintDeviceId = -1;
+    };
+
     /**
-     * Pointer to first pass jobs that carry a mask image, needed during the second pass.
-     * This can be either a LayerRenderJob, in which case the second element of the QPair is ignored.
-     * Or this can be a LabelRenderJob if the first element is nullptr.
-     * In this latter case, the second element of the QPair gives the label mask id.
+     * Contains the first pass jobs that carry a mask image, needed during the second pass.
      */
-    QList<QPair<LayerRenderJob *, int>> maskJobs;
+    std::vector<MaskJob> maskJobs;
 
   private:
     std::unique_ptr< QgsRenderContext > mContext;
