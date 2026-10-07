@@ -480,6 +480,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   QMenu *settingsMenu = new QMenu( this );
   QgsToolButtonAction *settingsAction = new QgsToolButtonAction();
   settingsAction->setAutoRaise( true );
+  settingsAction->setText( tr( "Settings" ) );
   settingsAction->setToolTip( tr( "Identify Settings" ) );
   settingsAction->setMenu( settingsMenu );
   settingsAction->setPopupMode( QToolButton::InstantPopup );

@@ -5028,8 +5028,9 @@ void QgisApp::initLayerTreeView()
   connect( actionAddGroup, &QAction::triggered, mLayerTreeView->defaultActions(), &QgsLayerTreeViewDefaultActions::addGroup );
 
   // visibility groups tool button
-  QgsToolButtonAction *actionVisibilityPresets = new QgsToolButtonAction;
+  QgsToolButtonAction *actionVisibilityPresets = new QgsToolButtonAction();
   actionVisibilityPresets->setAutoRaise( true );
+  actionVisibilityPresets->setText( tr( "Manage Map Themes" ) );
   actionVisibilityPresets->setToolTip( tr( "Manage Map Themes" ) );
   actionVisibilityPresets->setIcon( QgsApplication::getThemeIcon( u"/mActionShowAllLayers.svg"_s ) );
   actionVisibilityPresets->setPopupMode( QToolButton::InstantPopup );
@@ -5038,6 +5039,7 @@ void QgisApp::initLayerTreeView()
   // filter legend actions
   mFilterLegendToolButtonAction = new QgsToolButtonAction( this );
   mFilterLegendToolButtonAction->setAutoRaise( true );
+  mFilterLegendToolButtonAction->setText( tr( "Filter Legend" ) );
   mFilterLegendToolButtonAction->setToolTip( tr( "Filter Legend" ) );
   mFilterLegendToolButtonAction->setIcon( QgsApplication::getThemeIcon( u"/mActionFilter2.svg"_s ) );
   mFilterLegendToolButtonAction->setPopupMode( QToolButton::InstantPopup );
