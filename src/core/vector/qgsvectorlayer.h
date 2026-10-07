@@ -2544,7 +2544,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      *
      * \see select( const QgsFeatureIds& )
      */
-    void select( QgsFeatureId featureId );
+    Q_INVOKABLE void select( QgsFeatureId featureId );
 
     /**
      * Selects features by their ID
