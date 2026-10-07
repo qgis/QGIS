@@ -189,9 +189,11 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   }
 
   Page currentRowPage = Page::Invalid;
+  int currentCustomPageFactoryIndex = -1;
   if ( QListWidgetItem *currentItem = mOptionsListWidget->item( mOptionsListWidget->currentIndex().row() ) )
   {
     currentRowPage = currentItem->data( static_cast< int >( CustomRole::PageEnum ) ).value< Page >();
+    currentCustomPageFactoryIndex = currentItem->data( static_cast< int >( CustomRole::PageFactoryIndex ) ).toInt();
   }
 
   mCurrentLayer = layer;
@@ -350,11 +352,36 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   mOptionsListWidget->addItem( historyItem );
   mOptionsListWidget->blockSignals( false );
 
-  if ( sameLayerType && currentRowPage != Page::Custom && currentRowPage != Page::Invalid )
+  if ( sameLayerType && currentRowPage != Page::Invalid )
   {
-    if ( !setCurrentPage( currentRowPage ) )
+    if ( currentRowPage == Page::Custom )
     {
-      mOptionsListWidget->setCurrentRow( 0 );
+      // try to find the same custom page by matching to the current custom page factory index
+      bool foundMatchingCustomPage = false;
+      for ( int i = 0; i < mOptionsListWidget->count(); ++i )
+      {
+        if ( mOptionsListWidget->item( i )->data( static_cast< int >( CustomRole::PageEnum ) ).value< Page >() == Page::Custom )
+        {
+          const int thisPageFactoryIndex = mOptionsListWidget->item( i )->data( static_cast< int >( CustomRole::PageFactoryIndex ) ).toInt();
+          if ( thisPageFactoryIndex == currentCustomPageFactoryIndex )
+          {
+            mOptionsListWidget->setCurrentRow( i );
+            foundMatchingCustomPage = true;
+            break;
+          }
+        }
+      }
+      if ( !foundMatchingCustomPage )
+      {
+        mOptionsListWidget->setCurrentRow( 0 );
+      }
+    }
+    else
+    {
+      if ( !setCurrentPage( currentRowPage ) )
+      {
+        mOptionsListWidget->setCurrentRow( 0 );
+      }
     }
   }
   else
