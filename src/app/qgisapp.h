@@ -172,6 +172,7 @@ class QgsCustomizationDialog;
 class QgsTopocentricWidget;
 class QgsProcessingWidgetContextGenerator;
 class QgsAppProcessingUtils;
+class QgsToolButtonAction;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -2831,7 +2832,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! A class that facilitates tracing of features
     QgsMapCanvasTracer *mTracer = nullptr;
 
-    QToolButton *mFilterLegendToolButton = nullptr;
+    QgsToolButtonAction *mFilterLegendToolButtonAction = nullptr;
     QAction *mFilterLegendByMapContentAction = nullptr;
     QAction *mFilterLegendToggleShowPrivateLayersAction = nullptr;
     QAction *mFilterLegendToggleHideValidLayersAction = nullptr;
