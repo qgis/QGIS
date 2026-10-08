@@ -15,6 +15,7 @@
 
 #include "qgsstacasset.h"
 
+#include <QRegularExpression>
 #include <QString>
 #include <QUrl>
 
@@ -61,6 +62,8 @@ bool QgsStacAsset::isCloudOptimized() const
 
 QString QgsStacAsset::formatName() const
 {
+  const QRegularExpression zarrmMediaTypePattern( R"(application/(?:vnd|x)[+-.]zarr(?:;\sversion=\d(?:;\sprofile=.+)?)?)" );
+
   if ( mMediaType == "image/tiff; application=geotiff; profile=cloud-optimized"_L1 || mMediaType == "image/vnd.stac.geotiff; cloud-optimized=true"_L1 )
     return u"COG"_s;
   else if ( mMediaType == "application/vnd.laszip+copc"_L1 )
@@ -68,11 +71,7 @@ QString QgsStacAsset::formatName() const
   else if ( mHref.endsWith( "/ept.json"_L1 ) )
     return u"EPT"_s;
   // Support zarr store media legacy type plus type with version information and/or profile parameter
-  else if ( mMediaType == "application/vnd+zarr"_L1
-            || mMediaType == "application/vnd.zarr; version=2"_L1
-            || mMediaType == "application/vnd.zarr; version=2; profile=multiscales"_L1
-            || mMediaType == "application/vnd.zarr; version=3"_L1
-            || mMediaType == "application/vnd.zarr; version=3; profile=multiscales"_L1 )
+  else if ( zarrmMediaTypePattern.match( mMediaType ).hasMatch() )
     return u"Zarr"_s;
   else if ( mMediaType == "application/vnd.apache.parquet"_L1 )
     return u"Parquet"_s;
