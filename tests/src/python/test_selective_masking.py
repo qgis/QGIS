@@ -367,26 +367,15 @@ class TestSelectiveMasking(QgisTestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
+        label_settings = self.polys_layer.labeling().settings()
+        text_format = label_settings.format()
+        mask_settings = text_format.mask()
         self.assertEqual(
-            [
-                slRef.symbolLayerIdV2()
-                for slRef in self.polys_layer.labeling()
-                .settings()
-                .format()
-                .mask()
-                .maskedSymbolLayers()
-            ],
+            [slRef.symbolLayerIdV2() for slRef in mask_settings.maskedSymbolLayers()],
             ["", "", ""],
         )
         self.assertEqual(
-            [
-                slRef.symbolLayerId()
-                for slRef in self.polys_layer.labeling()
-                .settings()
-                .format()
-                .mask()
-                .maskedSymbolLayers()
-            ],
+            [slRef.symbolLayerId() for slRef in mask_settings.maskedSymbolLayers()],
             [slRef.symbolLayerId() for slRef in oldMaskRefs],
         )
 
@@ -394,26 +383,18 @@ class TestSelectiveMasking(QgisTestCase):
             QgsProject.instance().mapLayers()
         )
 
+        label_settings = self.polys_layer.labeling().settings()
+        text_format = label_settings.format()
+        mask_settings = text_format.mask()
         self.assertEqual(
             [
                 QUuid(slRef.symbolLayerIdV2()).isNull()
-                for slRef in self.polys_layer.labeling()
-                .settings()
-                .format()
-                .mask()
-                .maskedSymbolLayers()
+                for slRef in mask_settings.maskedSymbolLayers()
             ],
             [False, False, False],
         )
         self.assertEqual(
-            [
-                slRef.symbolLayerIdV2()
-                for slRef in self.polys_layer.labeling()
-                .settings()
-                .format()
-                .mask()
-                .maskedSymbolLayers()
-            ],
+            [slRef.symbolLayerIdV2() for slRef in mask_settings.maskedSymbolLayers()],
             [
                 self.get_symbollayer(self.lines_layer2, "", [1, 0]).id(),
                 self.get_symbollayer(self.points_layer, "B52", [0]).id(),
@@ -421,14 +402,7 @@ class TestSelectiveMasking(QgisTestCase):
             ],
         )
         self.assertEqual(
-            [
-                slRef.symbolLayerId()
-                for slRef in self.polys_layer.labeling()
-                .settings()
-                .format()
-                .mask()
-                .maskedSymbolLayers()
-            ],
+            [slRef.symbolLayerId() for slRef in mask_settings.maskedSymbolLayers()],
             [QgsSymbolLayerId(), QgsSymbolLayerId(), QgsSymbolLayerId()],
         )
 
