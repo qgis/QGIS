@@ -174,6 +174,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     void liveApplyToggled( bool liveUpdateEnabled );
 
   private:
+    void rebuildWidgetForLayer( QgsMapLayer *layer );
     void pushUndoItem( const QString &name, bool triggerRepaint = true );
     void emitLayerStyleChanged( const QString &currentStyleName ) { emit layerStyleChanged( currentStyleName ); };
     void emitLayerStyleRenamed();

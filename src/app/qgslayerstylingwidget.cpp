@@ -140,6 +140,8 @@ QgsLayerStylingWidget::~QgsLayerStylingWidget()
 void QgsLayerStylingWidget::setPageFactories( const QList<const QgsMapLayerConfigWidgetFactory *> &factories )
 {
   mPageFactories = factories;
+  // immediately reload the widget for the current layer, to force any new factory pages to show
+  rebuildWidgetForLayer( mCurrentLayer );
 }
 
 void QgsLayerStylingWidget::blockUpdates( bool blocked )
@@ -162,6 +164,11 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   if ( layer == mCurrentLayer )
     return;
 
+  rebuildWidgetForLayer( layer );
+}
+
+void QgsLayerStylingWidget::rebuildWidgetForLayer( QgsMapLayer *layer )
+{
   // when current layer is changed, apply the main panel stack to allow it to gracefully clean up
   mWidgetStack->acceptAllPanels();
 
