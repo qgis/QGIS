@@ -331,14 +331,15 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   else
   {
     mMinScaleWidget = new QgsScaleWidget();
-    mMinScaleWidget->setToolTip( tr( "Minimum scale from which snapping is enabled (i.e. most \"zoomed out\" scale)" ) );
+    mMinScaleWidget->setToolTip( tr( "Start boundary (Snapping will be enabled between those boundaries)" ) );
     mMinScaleWidget->setObjectName( u"SnappingMinScaleSpinBox"_s );
-    connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMinScale );
 
     mMaxScaleWidget = new QgsScaleWidget();
-    mMaxScaleWidget->setToolTip( tr( "Maximum scale up to which snapping is enabled (i.e. most \"zoomed in\" scale)" ) );
+    mMaxScaleWidget->setToolTip( tr( "End boundary (Snapping will be enabled between those boundaries)" ) );
     mMaxScaleWidget->setObjectName( u"SnappingMaxScaleSpinBox"_s );
-    connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMaxScale );
+
+    connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, [=, this]( double minValue ) { QgsSnappingWidget::changeScale( minValue, mMaxScaleWidget->scale() ); } );
+    connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, [=, this]( double maxValue ) { QgsSnappingWidget::changeScale( maxValue, mMinScaleWidget->scale() ); } );
 
     mSnappingScaleModeButton = new QToolButton();
     mSnappingScaleModeButton->setToolTip( tr( "Snapping scale mode" ) );
@@ -589,15 +590,10 @@ void QgsSnappingWidget::changeTolerance( double tolerance )
   mProject->setSnappingConfig( mConfig );
 }
 
-void QgsSnappingWidget::changeMinScale( double minScale )
+void QgsSnappingWidget::changeScale( double boundary1, double boundary2 )
 {
-  mConfig.setMinimumScale( minScale );
-  mProject->setSnappingConfig( mConfig );
-}
-
-void QgsSnappingWidget::changeMaxScale( double maxScale )
-{
-  mConfig.setMaximumScale( maxScale );
+  mConfig.setMinimumScale( std::max( boundary1, boundary2 ) );
+  mConfig.setMaximumScale( std::min( boundary1, boundary2 ) );
   mProject->setSnappingConfig( mConfig );
 }
 
