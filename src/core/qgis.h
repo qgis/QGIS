@@ -2921,6 +2921,18 @@ int QgisEvent = QEvent::User + 1;
     Q_ENUM( RasterizedRenderingPolicy )
 
     /**
+     * Rendering formats.
+     *
+     * \since QGIS 4.4
+     */
+    enum class RenderFormat : int
+    {
+      Raster, //!< Raster-based rendering
+      Vector, //!< Vector-based rendering
+    };
+    Q_ENUM( RenderFormat )
+
+    /**
      * Flags which adjust the way maps are rendered.
      *
      * \since QGIS 3.22
