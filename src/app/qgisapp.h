@@ -1046,13 +1046,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! save qrl definition for the current layer
     void saveAsLayerDefinition();
-    
+
     /**
      * save current raster layer
      *
      * If \a destinationFolder is set, the output file name is preset to that folder,
      * using a file name derived from the layer name.
-     */    
+     */
     QString saveAsRasterFile( QgsRasterLayer *layer = nullptr, bool defaultAddToCanvas = true, const QString &destinationFolder = QString() );
 
     /**
@@ -2428,7 +2428,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * If \a destinationFolder is set, the output file name is preset to that folder,
      * using a file name derived from the layer name.
-     */    
+     */
     QString saveAsPointCloudLayer( QgsPointCloudLayer *pclayer, const QString &destinationFolder = QString() );
 
     //! Sets project properties, including map untis
