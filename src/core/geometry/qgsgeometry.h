@@ -3632,6 +3632,7 @@ class CORE_EXPORT QgsGeometry
 
     QVector< QgsGeometry > collectSplitFeatures( const QVector< QgsGeometry> newGeoms ) const;
     QVector< QgsGeometry > collectSplitParts( const QVector< QgsGeometry> newGeoms ) const;
+    QVector< QgsGeometry > collectSplitGeometries( const QVector< QgsGeometry> newGeomsTemp, const bool splitFeatures );
 
     friend class QgsInternalGeometryEngine;
 

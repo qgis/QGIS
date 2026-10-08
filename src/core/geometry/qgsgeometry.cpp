@@ -1290,27 +1290,11 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   mLastError.clear();
   QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *splitGeom.get(), newGeomsTemp, topological, topologyTestPoints, &mLastError );
 
-  if ( result == QgsGeometryEngine::Success )
+  switch ( result )
   {
-    QVector< QgsGeometry> newGeoms;
-    if ( !newGeomsTemp.isEmpty() )
+    case QgsGeometryEngine::Success:
     {
-      if ( this->isMultipart() && QgsWkbTypes::geometryType( this->wkbType() ) != Qgis::GeometryType::Unknown )
-      {
-        newGeoms = splitFeature ? collectSplitFeatures( newGeomsTemp ) : collectSplitParts( newGeomsTemp );
-      }
-      else
-      {
-        newGeoms = newGeomsTemp;
-      }
-
-      if ( splitFeature && !newGeoms.isEmpty() )
-      {
-        *this = newGeoms.takeAt( 0 );
-      }
-    }
-    newGeometries = newGeoms;
-  }
+      newGeometries = collectSplitGeometries( newGeomsTemp, splitFeature );
 #else
   QgsPointSequence addedTopologicalPoints;
   for ( const QgsPoint &v : splitLine )
@@ -1344,27 +1328,25 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   mLastError.clear();
   QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( splitLineString, newGeomsTemp, topological, topologyTestPoints, &mLastError, skipIntersectionTest );
 
-  if ( result == QgsGeometryEngine::Success )
-  {
-    if ( !addedTopologicalPoints.isEmpty() )
-    {
-      for ( int i = 0; i < newGeomsTemp.size(); ++i )
-      {
-        QgsAbstractGeometry *geom = newGeomsTemp[i].get();
-        removeDuplicateAdjacentPointsAt( geom, addedTopologicalPoints );
-      }
-    }
-    if ( splitFeature && !newGeomsTemp.isEmpty() )
-      *this = newGeomsTemp.takeAt( 0 );
-
-    newGeometries = newGeomsTemp;
-  }
-#endif
-
   switch ( result )
   {
     case QgsGeometryEngine::Success:
+    {
+      if ( !addedTopologicalPoints.isEmpty() )
+      {
+        for ( int i = 0; i < newGeomsTemp.size(); ++i )
+        {
+          QgsAbstractGeometry *geom = newGeomsTemp[i].get();
+          removeDuplicateAdjacentPointsAt( geom, addedTopologicalPoints );
+        }
+      }
+      if ( splitFeature && !newGeomsTemp.isEmpty() )
+        *this = newGeomsTemp.takeAt( 0 );
+
+      newGeometries = newGeomsTemp;
+#endif
       return Qgis::GeometryOperationResult::Success;
+    }
     case QgsGeometryEngine::MethodNotImplemented:
     case QgsGeometryEngine::EngineError:
     case QgsGeometryEngine::NodedGeometryError:
@@ -1418,31 +1400,13 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
   mLastError.clear();
   QgsGeometryEngine::EngineOperationResult result = geos.splitGeometry( *curve, newGeomsTemp, topological, topologyTestPoints, &mLastError );
 
-  if ( result == QgsGeometryEngine::Success )
-  {
-    QVector< QgsGeometry> newGeoms;
-    if ( !newGeomsTemp.isEmpty() )
-    {
-      if ( this->isMultipart() && QgsWkbTypes::geometryType( this->wkbType() ) != Qgis::GeometryType::Unknown )
-      {
-        newGeoms = splitFeature ? collectSplitFeatures( newGeomsTemp ) : collectSplitParts( newGeomsTemp );
-      }
-      else
-      {
-        newGeoms = newGeomsTemp;
-      }
-
-      if ( splitFeature && !newGeoms.isEmpty() )
-      {
-        *this = newGeoms.takeAt( 0 );
-      }
-    }
-    newGeometries = newGeoms;
-  }
   switch ( result )
   {
     case QgsGeometryEngine::Success:
+    {
+      newGeometries = collectSplitGeometries( newGeomsTemp, splitFeature );
       return Qgis::GeometryOperationResult::Success;
+    }
     case QgsGeometryEngine::MethodNotImplemented:
     case QgsGeometryEngine::EngineError:
     case QgsGeometryEngine::NodedGeometryError:
@@ -5371,4 +5335,26 @@ QVector< QgsGeometry > QgsGeometry::collectSplitParts( const QVector< QgsGeometr
     collectedNewGeoms.append( QgsGeometry::collectGeometry( QVector< QgsGeometry>() << newGeom ) );
   }
   return collectedNewGeoms;
+}
+
+QVector< QgsGeometry > QgsGeometry::collectSplitGeometries( const QVector< QgsGeometry> newGeomsTemp, const bool splitFeature )
+{
+  QVector< QgsGeometry> newGeoms;
+  if ( !newGeomsTemp.isEmpty() )
+  {
+    if ( this->isMultipart() && QgsWkbTypes::geometryType( this->wkbType() ) != Qgis::GeometryType::Unknown )
+    {
+      newGeoms = splitFeature ? collectSplitFeatures( newGeomsTemp ) : collectSplitParts( newGeomsTemp );
+    }
+    else
+    {
+      newGeoms = newGeomsTemp;
+    }
+
+    if ( splitFeature && !newGeoms.isEmpty() )
+    {
+      *this = newGeoms.takeAt( 0 );
+    }
+  }
+  return newGeoms;
 }
