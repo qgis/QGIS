@@ -193,6 +193,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
         int rowCount( const QModelIndex &parent = {} ) const override;
         int columnCount( const QModelIndex &parent = {} ) const override;
         QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+        Qt::DropActions supportedDropActions() const override;
         bool canDropMimeData( const QMimeData *data, Qt::DropAction action, int, int, const QModelIndex & ) const override;
         bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex &parent ) override;
 

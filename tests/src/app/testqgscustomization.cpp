@@ -831,9 +831,9 @@ void TestQgsCustomization::testModel()
 
     // drop an action ref in the toolbar
 
-    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newItemIndex ) );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 0, newItemIndex ) );
     QCOMPARE( model.rowCount( newItemIndex ), 0 );
-    QVERIFY( modelActionSelector.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newItemIndex ) );
+    QVERIFY( modelActionSelector.dropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 0, newItemIndex ) );
     QCOMPARE( model.rowCount( newItemIndex ), 1 );
 
     QModelIndex actionIndex = model.index( 0, 0, newItemIndex );
@@ -901,10 +901,12 @@ void TestQgsCustomization::testModelProcessing()
     QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
     QVERIFY( findQWidget( "Menus/UserMenu_1" ) );
 
-    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newMenuItemIndex ) );
-
     QCOMPARE( model.rowCount( newMenuItemIndex ), 0 );
-    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newMenuItemIndex ) );
+
+    // try to drop on parent column 1, it should work the same way as if we drop on column 0
+    const QModelIndex newMenuItemColumnOneIndex = model.index( newMenuItemIndex.row(), 1, newMenuItemIndex.parent() );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 1, newMenuItemColumnOneIndex ) );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 1, newMenuItemColumnOneIndex ) );
     QCOMPARE( model.rowCount( newMenuItemIndex ), 1 );
 
     QModelIndex actionIndex = model.index( 0, 0, newMenuItemIndex );
@@ -952,10 +954,10 @@ void TestQgsCustomization::testModelProcessing()
     QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
     QVERIFY( findQWidget( "ToolBars/UserToolBar_1" ) );
 
-    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newToolBarItemIndex ) );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 0, newToolBarItemIndex ) );
 
     QCOMPARE( model.rowCount( newToolBarItemIndex ), 0 );
-    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newToolBarItemIndex ) );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::CopyAction, 0, 0, newToolBarItemIndex ) );
     QCOMPARE( model.rowCount( newToolBarItemIndex ), 1 );
 
     QModelIndex actionIndex = model.index( 0, 0, newToolBarItemIndex );
@@ -1036,9 +1038,9 @@ void TestQgsCustomization::testModelUserAction()
     std::unique_ptr<QMimeData> mimeData( modelActionSelector.mimeData( QModelIndexList() << addPartActionIndexes.at( 0 ) ) );
     QVERIFY( mimeData );
 
-    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::CopyAction, -1, 0, newItemIndex ) );
     QCOMPARE( model.rowCount( newItemIndex ), 0 );
-    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::CopyAction, -1, 0, newItemIndex ) );
     QCOMPARE( model.rowCount( newItemIndex ), 1 );
 
     QModelIndex actionIndex = model.index( 0, 0, newItemIndex );
@@ -1056,10 +1058,13 @@ void TestQgsCustomization::testModelUserAction()
     QVERIFY( mimeData );
 
     // drop a processing action ref
-    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+
+    // try to drop on parent column 1, it should work the same way as if we drop on column 0
+    const QModelIndex newItemColumnOneIndex = model.index( newItemIndex.row(), 1, newItemIndex.parent() );
+    QVERIFY( model.canDropMimeData( mimeData.get(), Qt::DropAction::CopyAction, -1, 0, newItemColumnOneIndex ) );
 
     QCOMPARE( model.rowCount( newItemIndex ), 1 );
-    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, -1, 0, newItemIndex ) );
+    QVERIFY( model.dropMimeData( mimeData.get(), Qt::DropAction::CopyAction, -1, 0, newItemColumnOneIndex ) );
     QCOMPARE( model.rowCount( newItemIndex ), 2 );
 
     QModelIndex actionIndex = model.index( 1, 0, newItemIndex );
