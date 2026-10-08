@@ -456,8 +456,7 @@ void QgsAppDirectoryItemGuiProvider::saveLayersToDirectory( const QList<QPointer
   // a single layer uses the regular "Save As" dialog, with the output preset to the directory
   if ( validLayers.size() == 1 )
   {
-    QgsMapLayer *layer = validLayers.at( 0 );
-    switch ( layer->type() )
+    switch ( QgsMapLayer *layer = validLayers.at( 0 ); layer->type() )
     {
       case Qgis::LayerType::Vector:
       case Qgis::LayerType::Raster:
@@ -609,10 +608,10 @@ void QgsAppDirectoryItemGuiProvider::saveLayersToDirectory( const QList<QPointer
 
         QgsPointCloudLayerExporterTask *task = new QgsPointCloudLayerExporterTask( exporter );
         connect( task, &QgsPointCloudLayerExporterTask::exportComplete, this, [exportFinished, exporter, layerName] {
-          if ( exporter->feedback() && exporter->feedback()->isCanceled() )
+          if ( QgsFeedback *feedback = exporter->feedback(); feedback && feedback->isCanceled() )
             exportFinished( tr( "%1: export canceled" ).arg( layerName ) );
-          else if ( !exporter->lastError().isEmpty() )
-            exportFinished( tr( "%1: %2" ).arg( layerName, exporter->lastError() ) );
+          else if ( const QString error = exporter->lastError(); !error.isEmpty() )
+            exportFinished( tr( "%1: %2" ).arg( layerName, error ) );
           else
             exportFinished( QString() );
         } );
