@@ -65,7 +65,7 @@ class TestQgsVectorLayerSplitFeatures(QgisTestCase):
         self.assertEqual(len_res, len_expected)
 
     @unittest.skipIf(Qgis.geosVersionInt() >= 31500, "GEOS < 3.15 required")
-    def test_SplitTruToCreateCutEdge(self):
+    def test_SplitThruToCreateCutEdge(self):
         """
         Donut shaped polygon with interior ring, try to cut through donut.
 
@@ -98,7 +98,7 @@ class TestQgsVectorLayerSplitFeatures(QgisTestCase):
         Qgis.geosVersionInt() < 31500,
         "GEOS 3.15 actually splits the polygon boundaries by adding new vertices",
     )
-    def test_SplitTruToCreateCutEdgeGeos315(self):
+    def test_SplitThruToCreateCutEdgeGeos315(self):
         """
         Donut shaped polygon with interior ring, try to cut through donut.
 
