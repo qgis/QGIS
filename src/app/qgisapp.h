@@ -1030,8 +1030,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsCustomization *customization() const;
 
   public slots:
-    //! save current vector layer
-    QString saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false, bool defaultToAddToMap = true );
+    /**
+     * save current vector layer
+     *
+     * If \a destinationFolder is set, the output file name is preset to that folder,
+     * using a file name derived from the layer name.
+     */
+    QString saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false, bool defaultToAddToMap = true, const QString &destinationFolder = QString() );
 
     /**
      * Makes a memory layer permanent, by prompting users to save the layer to a disk-based (OGR)
@@ -1041,8 +1046,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! save qrl definition for the current layer
     void saveAsLayerDefinition();
-    //! save current raster layer
-    QString saveAsRasterFile( QgsRasterLayer *layer = nullptr, bool defaultAddToCanvas = true );
+    
+    /**
+     * save current raster layer
+     *
+     * If \a destinationFolder is set, the output file name is preset to that folder,
+     * using a file name derived from the layer name.
+     */    
+    QString saveAsRasterFile( QgsRasterLayer *layer = nullptr, bool defaultAddToCanvas = true, const QString &destinationFolder = QString() );
 
     /**
      * Process the list of URIs that have been dropped in QGIS.
@@ -2398,7 +2409,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setLayoutAtlasFeature( QgsPrintLayout *layout, const QgsFeature &feat );
 
-    QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false, bool defaultToAddToMap = true );
+    QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false, bool defaultToAddToMap = true, const QString &destinationFolder = QString() );
 
     QString saveAsVectorFileGeneral(
       QgsVectorLayer *vlayer,
@@ -2408,10 +2419,17 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       const std::function<void( const QString &newFilename, bool addToCanvas, const QString &layerName, const QString &encoding, const QString &vectorFileName )> &onSuccess,
       const std::function<void( int error, const QString &errorMessage, const QString &filePath )> &onFailure,
       QgsVectorLayerSaveAsDialog::Options dialogOptions = QgsVectorLayerSaveAsDialog::Option::AllOptions,
-      const QString &dialogTitle = QString()
+      const QString &dialogTitle = QString(),
+      const QString &destinationFolder = QString()
     );
 
-    QString saveAsPointCloudLayer( QgsPointCloudLayer *pclayer );
+    /**
+     * save current point cloud layer
+     *
+     * If \a destinationFolder is set, the output file name is preset to that folder,
+     * using a file name derived from the layer name.
+     */    
+    QString saveAsPointCloudLayer( QgsPointCloudLayer *pclayer, const QString &destinationFolder = QString() );
 
     //! Sets project properties, including map untis
     void projectProperties( const QString &currentPage = QString() );
