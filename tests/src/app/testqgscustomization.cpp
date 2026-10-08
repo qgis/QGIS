@@ -894,7 +894,7 @@ void TestQgsCustomization::testModelProcessing()
     const QModelIndex menusIndex = model.index( 2, 0 );
     QCOMPARE( model.data( menusIndex, Qt::ItemDataRole::DisplayRole ), u"Menus"_s );
 
-    QModelIndex newMenuItemIndex = model.addUserItem( menusIndex );
+    const QModelIndex newMenuItemIndex = model.addUserItem( menusIndex );
     QCOMPARE( model.data( newMenuItemIndex, Qt::ItemDataRole::DisplayRole ), u"UserMenu_1"_s );
 
     model.apply();
