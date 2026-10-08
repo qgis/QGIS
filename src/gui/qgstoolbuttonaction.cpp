@@ -20,6 +20,8 @@
 #include <QMenu>
 #include <QToolBar>
 
+#include "moc_qgstoolbuttonaction.cpp"
+
 QgsToolButtonAction::QgsToolButtonAction( QObject *parent )
   : QWidgetAction( parent )
 {
