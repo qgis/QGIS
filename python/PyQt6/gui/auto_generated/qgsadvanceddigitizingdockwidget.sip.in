@@ -41,7 +41,8 @@ implementing filters called from
     {
       ReturnPressed,
       FocusOut,
-      TextEdited
+      TextEdited,
+      TextEditedInteractive
     };
 
 

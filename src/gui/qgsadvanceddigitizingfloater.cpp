@@ -126,15 +126,23 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
     whileBlocking( mDistanceLineEdit )->setText( cleanedInputValue );
   } );
 
-  connect( mXLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mYLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mZLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setZ( mZLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mMLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setM( mMLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mXLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEditedInteractive );
+  } );
+  connect( mYLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEditedInteractive );
+  } );
+  connect( mZLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    cadDockWidget->setZ( mZLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEditedInteractive );
+  } );
+  connect( mMLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
+    cadDockWidget->setM( mMLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEditedInteractive );
+  } );
   connect( mAngleLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
-    cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
+    cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEditedInteractive );
   } );
   connect( mDistanceLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() {
-    cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited );
+    cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEditedInteractive );
   } );
 
   QgsFocusWatcher *xWatcher = new QgsFocusWatcher( mXLineEdit );

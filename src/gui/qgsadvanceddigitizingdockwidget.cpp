@@ -588,7 +588,19 @@ void QgsAdvancedDigitizingDockWidget::updateTransientGeometryProperties( const Q
 
 void QgsAdvancedDigitizingDockWidget::setX( const QString &value, WidgetSetMode mode )
 {
-  mXLineEdit->setText( value );
+  if ( mode == WidgetSetMode::TextEditedInteractive )
+  {
+    // In case editing happens in the floater, we don't want a textChanged() signal
+    // as it directly resets the cursor.
+    mXLineEdit->blockSignals( true );
+    mXLineEdit->setText( value );
+    mXLineEdit->blockSignals( false );
+  }
+  else
+  {
+    mXLineEdit->setText( value );
+  }
+
   if ( mode == WidgetSetMode::ReturnPressed )
   {
     emit mXLineEdit->returnPressed();
@@ -598,14 +610,24 @@ void QgsAdvancedDigitizingDockWidget::setX( const QString &value, WidgetSetMode 
     QEvent *e = new QEvent( QEvent::FocusOut );
     QCoreApplication::postEvent( mXLineEdit, e );
   }
-  else if ( mode == WidgetSetMode::TextEdited )
+  else if ( mode == WidgetSetMode::TextEdited || mode == WidgetSetMode::TextEditedInteractive )
   {
     emit mXLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setY( const QString &value, WidgetSetMode mode )
 {
-  mYLineEdit->setText( value );
+  if ( mode == WidgetSetMode::TextEditedInteractive )
+  {
+    mYLineEdit->blockSignals( true );
+    mYLineEdit->setText( value );
+    mYLineEdit->blockSignals( false );
+  }
+  else
+  {
+    mYLineEdit->setText( value );
+  }
+
   if ( mode == WidgetSetMode::ReturnPressed )
   {
     emit mYLineEdit->returnPressed();
@@ -615,14 +637,24 @@ void QgsAdvancedDigitizingDockWidget::setY( const QString &value, WidgetSetMode 
     QEvent *e = new QEvent( QEvent::FocusOut );
     QCoreApplication::postEvent( mYLineEdit, e );
   }
-  else if ( mode == WidgetSetMode::TextEdited )
+  else if ( mode == WidgetSetMode::TextEdited || mode == WidgetSetMode::TextEditedInteractive )
   {
     emit mYLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setZ( const QString &value, WidgetSetMode mode )
 {
-  mZLineEdit->setText( value );
+  if ( mode == WidgetSetMode::TextEditedInteractive )
+  {
+    mZLineEdit->blockSignals( true );
+    mZLineEdit->setText( value );
+    mZLineEdit->blockSignals( false );
+  }
+  else
+  {
+    mZLineEdit->setText( value );
+  }
+
   if ( mode == WidgetSetMode::ReturnPressed )
   {
     emit mZLineEdit->returnPressed();
@@ -632,14 +664,24 @@ void QgsAdvancedDigitizingDockWidget::setZ( const QString &value, WidgetSetMode 
     QEvent *e = new QEvent( QEvent::FocusOut );
     QCoreApplication::postEvent( mZLineEdit, e );
   }
-  else if ( mode == WidgetSetMode::TextEdited )
+  else if ( mode == WidgetSetMode::TextEdited || mode == WidgetSetMode::TextEditedInteractive )
   {
     emit mZLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setM( const QString &value, WidgetSetMode mode )
 {
-  mMLineEdit->setText( value );
+  if ( mode == WidgetSetMode::TextEditedInteractive )
+  {
+    mMLineEdit->blockSignals( true );
+    mMLineEdit->setText( value );
+    mMLineEdit->blockSignals( false );
+  }
+  else
+  {
+    mMLineEdit->setText( value );
+  }
+
   if ( mode == WidgetSetMode::ReturnPressed )
   {
     emit mMLineEdit->returnPressed();
@@ -649,14 +691,24 @@ void QgsAdvancedDigitizingDockWidget::setM( const QString &value, WidgetSetMode 
     QEvent *e = new QEvent( QEvent::FocusOut );
     QCoreApplication::postEvent( mMLineEdit, e );
   }
-  else if ( mode == WidgetSetMode::TextEdited )
+  else if ( mode == WidgetSetMode::TextEdited || mode == WidgetSetMode::TextEditedInteractive )
   {
     emit mMLineEdit->textEdited( value );
   }
 }
 void QgsAdvancedDigitizingDockWidget::setAngle( const QString &value, WidgetSetMode mode )
 {
-  mAngleLineEdit->setText( value );
+  if ( mode == WidgetSetMode::TextEditedInteractive )
+  {
+    mAngleLineEdit->blockSignals( true );
+    mAngleLineEdit->setText( value );
+    mAngleLineEdit->blockSignals( false );
+  }
+  else
+  {
+    mAngleLineEdit->setText( value );
+  }
+
   if ( mode == WidgetSetMode::ReturnPressed )
   {
     emit mAngleLineEdit->returnPressed();
@@ -668,7 +720,17 @@ void QgsAdvancedDigitizingDockWidget::setAngle( const QString &value, WidgetSetM
 }
 void QgsAdvancedDigitizingDockWidget::setDistance( const QString &value, WidgetSetMode mode )
 {
-  mDistanceLineEdit->setText( value );
+  if ( mode == WidgetSetMode::TextEditedInteractive )
+  {
+    mDistanceLineEdit->blockSignals( true );
+    mDistanceLineEdit->setText( value );
+    mDistanceLineEdit->blockSignals( false );
+  }
+  else
+  {
+    mDistanceLineEdit->setText( value );
+  }
+
   if ( mode == WidgetSetMode::ReturnPressed )
   {
     emit mDistanceLineEdit->returnPressed();
@@ -678,7 +740,7 @@ void QgsAdvancedDigitizingDockWidget::setDistance( const QString &value, WidgetS
     QEvent *e = new QEvent( QEvent::FocusOut );
     QCoreApplication::postEvent( mDistanceLineEdit, e );
   }
-  else if ( mode == WidgetSetMode::TextEdited )
+  else if ( mode == WidgetSetMode::TextEdited || mode == WidgetSetMode::TextEditedInteractive )
   {
     emit mDistanceLineEdit->textEdited( value );
   }
