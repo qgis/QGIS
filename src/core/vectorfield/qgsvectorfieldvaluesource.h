@@ -82,6 +82,24 @@ class CORE_EXPORT QgsVectorFieldValueSource
     virtual QVector<QgsPointXY> seedPoints( const QgsRectangle &extent ) const;
 
     /**
+     * Returns the grid on which the data itself is sampled through \a origin, \a spacingX and
+     * \a spacingY, all in map coordinates, and returns FALSE when the data is not regularly spaced.
+     *
+     * This is the glyph placement used when the settings do not ask for a user defined grid. The
+     * default implementation returns FALSE, for the sources whose data has no regular spacing.
+     */
+    virtual bool nativeLayout( QgsPointXY &origin, double &spacingX, double &spacingY ) const;
+
+    /**
+     * Tells the source that each value it is asked for stands for a cell of \a width by \a height
+     * map units, so that a source which cannot meaningfully interpolate can reduce the cell to the
+     * single value which represents it best.
+     *
+     * The default implementation does nothing, for the sources which are sampled point by point.
+     */
+    virtual void setSamplingWindow( double width, double height );
+
+    /**
      * Returns a raster interface exposing the magnitude of the vector field as a single band,
      * used to build the color ramp background image of streamlines, or NULLPTR if the source
      * cannot provide one.

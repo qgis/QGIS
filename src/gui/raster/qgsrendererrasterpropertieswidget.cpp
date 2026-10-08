@@ -30,6 +30,7 @@
 #include "qgsrasterrendererregistry.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsrastersinglecolorrendererwidget.h"
+#include "qgsrastervectorfieldrendererwidget.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
@@ -53,6 +54,7 @@ void QgsRendererRasterPropertiesWidget::initRendererWidgetFunctions()
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"singlecolor"_s, QgsRasterSingleColorRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"hillshade"_s, QgsHillshadeRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"contour"_s, QgsRasterContourRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"vectorfield"_s, QgsRasterVectorFieldRendererWidget::create );
 
   sInitialized = true;
 }

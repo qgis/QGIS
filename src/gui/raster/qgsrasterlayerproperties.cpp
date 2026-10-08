@@ -65,6 +65,7 @@
 #include "qgsrastersinglecolorrendererwidget.h"
 #include "qgsrastertransparency.h"
 #include "qgsrastertransparencywidget.h"
+#include "qgsrastervectorfieldrendererwidget.h"
 #include "qgssettings.h"
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
@@ -437,6 +438,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"singlebandgray"_s, QgsSingleBandGrayRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"hillshade"_s, QgsHillshadeRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"contour"_s, QgsRasterContourRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"vectorfield"_s, QgsRasterVectorFieldRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( u"singlecolor"_s, QgsRasterSingleColorRendererWidget::create );
 
   //fill available renderers into combo box
