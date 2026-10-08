@@ -1254,13 +1254,13 @@ bool QgsCompoundCurve::deleteVertices( const QSet<QgsVertexId> &positions )
       {
         if ( QgsWkbTypes::flatType( curve->wkbType() ) == Qgis::WkbType::CircularString )
         {
-          const QgsPoint p = curve->startPoint();
-          previousCurve->moveVertex( QgsVertexId( 0, 0, previousCurve->numPoints() - 1 ), p );
+          const QgsPoint startPoint = curve->startPoint();
+          previousCurve->moveVertex( QgsVertexId( 0, 0, previousCurve->numPoints() - 1 ), startPoint );
         }
         else
         {
-          const QgsPoint p = previousCurve->endPoint();
-          curve->moveVertex( QgsVertexId( 0, 0, 0 ), p );
+          const QgsPoint endPoint = previousCurve->endPoint();
+          curve->moveVertex( QgsVertexId( 0, 0, 0 ), endPoint );
         }
       }
     }
