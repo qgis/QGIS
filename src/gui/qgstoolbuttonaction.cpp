@@ -185,11 +185,6 @@ QWidget *QgsToolButtonAction::createWidget( QWidget *parent )
   return button;
 }
 
-void QgsToolButtonAction::deleteWidget( QWidget *widget )
-{
-  QWidgetAction::deleteWidget( widget );
-}
-
 void QgsToolButtonAction::applyState( QToolButton *button ) const
 {
   button->setEnabled( isEnabled() );
