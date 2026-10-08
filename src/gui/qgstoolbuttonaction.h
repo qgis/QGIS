@@ -48,7 +48,7 @@ class GUI_EXPORT QgsToolButtonAction : public QWidgetAction
     explicit QgsToolButtonAction( QObject *parent = nullptr );
 
     /**
-     * Sets whether the auto-raise is enabled.
+     * Sets whether auto-raise is enabled.
      */
     void setAutoRaise( bool autoRaise );
 
@@ -104,7 +104,6 @@ class GUI_EXPORT QgsToolButtonAction : public QWidgetAction
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;
-    void deleteWidget( QWidget *widget ) override;
 
   private:
     void applyState( QToolButton *button ) const;

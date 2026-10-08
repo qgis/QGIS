@@ -36,7 +36,7 @@ Constructor for QgsToolButtonAction
 
     void setAutoRaise( bool autoRaise );
 %Docstring
-Sets whether the auto-raise is enabled.
+Sets whether auto-raise is enabled.
 %End
 
     void setPopupMode( QToolButton::ToolButtonPopupMode mode );
@@ -96,8 +96,6 @@ Returns the default action.
 
   protected:
     virtual QWidget *createWidget( QWidget *parent );
-
-    virtual void deleteWidget( QWidget *widget );
 
 
 };
