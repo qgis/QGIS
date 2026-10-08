@@ -162,16 +162,18 @@ class TestSelectiveMasking(QgisTestCase):
         if renderer.type() == "categorizedSymbol":
             i = renderer.categoryIndexForValue(ruleId)
             cat = renderer.categories()[i]
-            symbol = cat.symbol()
+            symbol = cat.symbol().clone()
         elif renderer.type() == "singleSymbol":
-            symbol = renderer.symbol()
+            symbol = renderer.symbol().clone()
 
         symbollayer = symbol.symbolLayer(symbollayer_ids[0])
         for i in range(1, len(symbollayer_ids)):
-            symbol = symbollayer.subSymbol()
+            symbol = symbollayer.subSymbol().clone()
             symbollayer = symbol.symbolLayer(symbollayer_ids[i])
 
-        return symbollayer
+        res = symbollayer.clone()
+        res.setId(symbollayer.id())
+        return res
 
     def get_symbollayer_ref(self, layer, ruleId, symbollayer_ids):
         """
