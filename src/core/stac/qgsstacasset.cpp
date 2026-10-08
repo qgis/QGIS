@@ -56,7 +56,7 @@ QStringList QgsStacAsset::roles() const
 bool QgsStacAsset::isCloudOptimized() const
 {
   const QString format = formatName();
-  return format == "COG"_L1 || format == "COPC"_L1 || format == "EPT"_L1 || format == "Zarr"_L1 || format == "Parquet"_L1 || format == "TileDB"_L1;
+  return format == "COG"_L1 || format == "COPC"_L1 || format == "EPT"_L1 || format == "Zarr"_L1 || format == "Parquet"_L1 || format == "FGB"_L1 || format == "PMTiles"_L1 || format == "TileDB"_L1;
 }
 
 QString QgsStacAsset::formatName() const
@@ -71,6 +71,10 @@ QString QgsStacAsset::formatName() const
     return u"Zarr"_s;
   else if ( mMediaType == "application/vnd.apache.parquet"_L1 )
     return u"Parquet"_s;
+  else if ( mMediaType == "application/vnd.flatgeobuf"_L1 )
+    return u"FGB"_s;
+  else if ( mMediaType == "application/vnd.pmtiles"_L1 )
+    return u"PMTiles"_s;
   else if ( mMediaType.contains( "tiledb"_L1, Qt::CaseInsensitive ) )
     return u"TileDB"_s;
   return QString();
@@ -81,9 +85,9 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
 {
   QgsMimeDataUtils::Uri uri;
   QUrl url( href() );
-  if ( ( formatName() == "COG"_L1 ) || ( formatName() == "Zarr"_L1 ) || ( formatName() == "TileDB"_L1 ) || ( formatName() == "Parquet"_L1 ) )
+  if ( ( formatName() == "COG"_L1 ) || ( formatName() == "Zarr"_L1 ) || ( formatName() == "TileDB"_L1 ) || ( formatName() == "Parquet"_L1 ) || ( formatName() == "FGB"_L1 ) || ( formatName() == "PMTiles"_L1 ) )
   {
-    if ( formatName() == "Parquet"_L1 )
+    if ( formatName() == "Parquet"_L1 || ( formatName() == "FGB"_L1 ) || ( formatName() == "PMTiles"_L1 ) )
     {
       uri.layerType = u"vector"_s;
       uri.providerKey = u"ogr"_s;
@@ -124,6 +128,11 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
     if ( formatName() == "Zarr"_L1 )
     {
       uri.uri = u"ZARR:\"%1\""_s.arg( uri.uri );
+    }
+
+    if ( formatName() == "PMTiles"_L1 )
+    {
+      uri.uri = u"%1|option:ZOOM_LEVEL_AUTO=YES"_s.arg( uri.uri );
     }
   }
   else if ( formatName() == "COPC"_L1 )
