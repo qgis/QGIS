@@ -427,10 +427,13 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeDat
   if ( action != Qt::DropAction::CopyAction )
     return true;
 
-  if ( row == -1 )
-    row = rowCount( parent ); // if dropped directly onto group item, insert at last position
+  // Child item need to be added on parent column 0
+  const QModelIndex p = index( parent.row(), 0, parent.parent() );
 
-  return dropMimeDataActions( data, row, parent ) || dropMimeDataProcessingAlgorithms( data, row, parent );
+  if ( row == -1 )
+    row = rowCount( p ); // if dropped directly onto group item, insert at last position
+
+  return dropMimeDataActions( data, row, p ) || dropMimeDataProcessingAlgorithms( data, row, p );
 }
 
 bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeDataActions( const QMimeData *data, int row, const QModelIndex &parent )
