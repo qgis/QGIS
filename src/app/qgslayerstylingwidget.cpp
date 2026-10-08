@@ -715,6 +715,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( rlayer->dataProvider() );
         if ( provider && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
         {
+          // TODO -- this looks fragile! Here we potentially reuse a QgsRendererRasterPropertiesWidget
+          // originally created for a different layer. Is this safe to do? If it's safe to change the
+          // layer in place for the widget, then why are we deleting and recreating them always when
+          // the user is on the actual renderer tab?
+          // We need to ensure that it's always safe to change out the layer in place for this widget,
+          // and then ensure we only ever create this widget once for the dock...
           if ( !mRasterStyleWidget )
           {
             mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
