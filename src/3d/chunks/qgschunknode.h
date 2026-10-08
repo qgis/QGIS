@@ -44,9 +44,8 @@ namespace Qt3DCore
 }
 
 struct QgsChunkListEntry;
+struct QgsChunkQueueJob;
 class QgsChunkLoader;
-class QgsChunkQueueJob;
-class QgsChunkQueueJobFactory;
 
 
 /**
@@ -180,12 +179,12 @@ class QgsChunkNode
     QgsChunkListEntry *loaderQueueEntry() const { return mLoaderQueueEntry; }
     //! Returns node's entry in the replacement queue. Not NULLPTR only when in Loaded / QueuedForUpdate / Updating state
     QgsChunkListEntry *replacementQueueEntry() const { return mReplacementQueueEntry; }
-    //! Returns loader of the node. Not NULLPTR only when in Loading state
-    QgsChunkLoader *loader() const { return mLoader; }
+    //! Returns job loading the node. Not NULLPTR only when in Loading state
+    QgsChunkQueueJob *loaderJob() const { return mLoaderJob; }
     //! Returns associated entity (3D object). Not NULLPTR only when Loaded / QueuedForUpdate / Updating state
     Qt3DCore::QEntity *entity() const { return mEntity; }
     //! Returns updater job. Not NULLPTR only when in Updating state
-    QgsChunkQueueJob *updater() const { return mUpdater; }
+    QgsChunkQueueJob *updateJob() const { return mUpdateJob; }
 
     //! Returns TRUE if all child chunks are available and thus this node could be swapped to the child nodes
     bool allChildChunksResident( QTime currentTime ) const;
@@ -215,8 +214,8 @@ class QgsChunkNode
     //! unload node that is in "queued for load" state
     void cancelQueuedForLoad();
 
-    //! mark a chunk as being loaded, using the passed loader
-    void setLoading( QgsChunkLoader *chunkLoader );
+    //! mark a chunk as in the process of being loaded
+    void setLoading( QgsChunkQueueJob &job );
 
     //! turn a chunk that is being loaded back to skeleton node
     void cancelLoading();
@@ -228,13 +227,13 @@ class QgsChunkNode
     void unloadChunk();
 
     //! turn a loaded node into one that is queued for update - with custom update job factory
-    void setQueuedForUpdate( QgsChunkListEntry *entry, QgsChunkQueueJobFactory *updateJobFactory );
+    void setQueuedForUpdate( QgsChunkListEntry *entry );
 
     //! cancel update of the node - back to loaded node
     void cancelQueuedForUpdate();
 
     //! mark node as being updated right now
-    void setUpdating();
+    void setUpdating( QgsChunkQueueJob &job );
 
     //! turn a chunk that is being updated back to loaded node
     void cancelUpdating();
@@ -244,6 +243,12 @@ class QgsChunkNode
 
     //! replaces an existing entity with a newly created one (only allowed when updating the node)
     void replaceEntity( Qt3DCore::QEntity *newEntity );
+
+    //! Returns whether the chunk loader is currently creating child nodes of this node.
+    bool creatingChildren() const;
+
+    //! Set whether the chunk loader is currently creating child nodes of this node.
+    void setCreatingChildren( bool creatingChildren );
 
     //! called when the true bounding box is known so that we can use tighter bounding box
     void setExactBox3D( const QgsBox3D &box3D );
@@ -279,14 +284,15 @@ class QgsChunkNode
     QgsChunkListEntry *mLoaderQueueEntry = nullptr;      //!< Not null <=> QueuedForLoad or QueuedForUpdate state
     QgsChunkListEntry *mReplacementQueueEntry = nullptr; //!< Not null <=> has non-null entity (Loaded or QueuedForUpdate or Updating state)
 
-    QgsChunkLoader *mLoader = nullptr;    //!< Contains extra data necessary for entity creation (not null <=> Loading state)
-    Qt3DCore::QEntity *mEntity = nullptr; //!< Contains everything to display chunk as 3D object (not null <=> Loaded or QueuedForUpdate or Updating state)
+    QgsChunkQueueJob *mLoaderJob = nullptr; //!< Background job creating entity (not null <=> Loading state)
+    Qt3DCore::QEntity *mEntity = nullptr;   //!< Contains everything to display chunk as 3D object (not null <=> Loaded or QueuedForUpdate or Updating state)
 
-    QgsChunkQueueJobFactory *mUpdaterFactory = nullptr; //!< Object that creates updater (not null <=> QueuedForUpdate state)
-    QgsChunkQueueJob *mUpdater = nullptr;               //!< Object that does update of the chunk (not null <=> Updating state)
+    QgsChunkQueueJob *mUpdateJob = nullptr; //!< Background job recreating entity (not null <=> Updating state)
 
     QTime mEntityCreatedTime;
     bool mHasData = true; //!< Whether there are (will be) any data in this node and so whether it makes sense to load this node
+
+    bool mCreatingChildren = false; //!< Whether the chunk loader is currently creating child nodes of this node.
 };
 
 /// @endcond

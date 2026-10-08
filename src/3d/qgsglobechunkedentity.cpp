@@ -19,6 +19,7 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgschunkloader.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdistancearea.h"
@@ -32,8 +33,10 @@
 #include "qgsraycastingutils.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintextureimage_p.h"
+#include "qgsthreadingutils.h"
 
 #include <QByteArray>
+#include <QFuture>
 #include <QImage>
 #include <QString>
 #include <Qt3DCore/QAttribute>
@@ -220,63 +223,7 @@ static Qt3DCore::QEntity *makeGlobeMesh(
 // ---------------
 
 
-QgsGlobeChunkLoader::QgsGlobeChunkLoader( QgsChunkNode *node, const Qgs3DRenderContext &context, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon )
-  : QgsChunkLoader( node )
-  , mRenderContext( context )
-  , mTextureGenerator( textureGenerator )
-  , mGlobeCrsToLatLon( globeCrsToLatLon )
-{}
-
-void QgsGlobeChunkLoader::start()
-{
-  QgsChunkNode *node = chunk();
-
-  connect( mTextureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [this]( int job, const QImage &img ) {
-    if ( job == mJobId )
-    {
-      mTexture = img;
-      emit finished();
-    }
-  } );
-
-  const QgsRectangle extent = QgsGlobeUtils::nodeIdToLonLatRect( node->tileId() );
-  mJobId = mTextureGenerator->render( extent, node->tileId(), node->tileId().text() );
-}
-
-Qt3DCore::QEntity *QgsGlobeChunkLoader::createEntity( Qt3DCore::QEntity *parent )
-{
-  if ( mNode->tileId() == QgsChunkNodeId( 0, 0, 0, 0 ) )
-  {
-    return new Qt3DCore::QEntity( parent );
-  }
-
-  const QgsRectangle extent = QgsGlobeUtils::nodeIdToLonLatRect( mNode->tileId() );
-
-  // This is quite ad-hoc estimation how many slices we need. It could
-  // be improved by basing the calculation on sagitta
-  int d = mNode->tileId().d;
-  int slices;
-  if ( d <= 4 )
-    slices = 19;
-  else if ( d <= 8 )
-    slices = 9;
-  else if ( d <= 12 )
-    slices = 5;
-  else
-    slices = 2;
-
-  QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( mRenderContext );
-
-  Qt3DCore::QEntity *e = makeGlobeMesh( extent.xMinimum(), extent.xMaximum(), extent.yMinimum(), extent.yMaximum(), slices, slices, mGlobeCrsToLatLon, mTexture, mNode->tileId().text(), materialContext );
-  e->setParent( parent );
-  return e;
-}
-
-
-// ---------------
-
-
-QgsGlobeChunkLoaderFactory::QgsGlobeChunkLoaderFactory( Qgs3DMapSettings *mapSettings )
+QgsGlobeChunkLoader::QgsGlobeChunkLoader( Qgs3DMapSettings *mapSettings )
   : mMapSettings( mapSettings )
 {
   mTextureGenerator = std::make_unique<QgsTerrainTextureGenerator>( *mapSettings );
@@ -289,15 +236,64 @@ QgsGlobeChunkLoaderFactory::QgsGlobeChunkLoaderFactory( Qgs3DMapSettings *mapSet
   mRadius = QgsGlobeUtils::ellipsoidRadius( mGlobeCrsToLatLon );
 }
 
-QgsGlobeChunkLoaderFactory::~QgsGlobeChunkLoaderFactory()
+QgsGlobeChunkLoader::~QgsGlobeChunkLoader()
 {}
 
-QgsChunkLoader *QgsGlobeChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
+QFuture<QgsChunkLoaderResult> QgsGlobeChunkLoader::loadChunk( QgsChunkNode *node )
 {
-  return new QgsGlobeChunkLoader( node, Qgs3DRenderContext::fromMapSettings( mMapSettings ), mTextureGenerator.get(), mGlobeCrsToLatLon );
+  Qgs3DRenderContext renderCtx = Qgs3DRenderContext::fromMapSettings( mMapSettings );
+  const QgsRectangle extent = QgsGlobeUtils::nodeIdToLonLatRect( node->tileId() );
+  return mTextureGenerator->render( extent, node->tileId(), node->tileId().text() ).then( this, [this, node, extent, renderCtx]( const QImage &img ) {
+    return QgsChunkLoaderResult { [this, node, extent, renderCtx, img]( Qt3DCore::QEntity *parent ) {
+      QGIS_CHECK_MAIN_THREAD_ACCESS
+      if ( node->tileId() == QgsChunkNodeId( 0, 0, 0, 0 ) )
+      {
+        return new Qt3DCore::QEntity( parent );
+      }
+
+      // This is quite ad-hoc estimation how many slices we need. It could
+      // be improved by basing the calculation on sagitta
+      int d = node->tileId().d;
+      int slices;
+      if ( d <= 4 )
+        slices = 19;
+      else if ( d <= 8 )
+        slices = 9;
+      else if ( d <= 12 )
+        slices = 5;
+      else
+        slices = 2;
+
+      QgsMaterialContext materialContext = QgsMaterialContext::fromRenderContext( renderCtx );
+
+      Qt3DCore::QEntity *e = makeGlobeMesh( extent.xMinimum(), extent.xMaximum(), extent.yMinimum(), extent.yMaximum(), slices, slices, mGlobeCrsToLatLon, img, node->tileId().text(), materialContext );
+      e->setParent( parent );
+      return e;
+    } };
+  } );
 }
 
-QgsChunkNode *QgsGlobeChunkLoaderFactory::createRootNode() const
+QFuture<QgsChunkLoaderResult> QgsGlobeChunkLoader::updateChunk( QgsChunkNode *node )
+{
+  // extract our terrain texture image from the 3D entity
+  QVector<QgsGlobeMaterial *> materials = node->entity()->componentsOfType<QgsGlobeMaterial>();
+  Q_ASSERT( materials.count() == 1 );
+  QVector<Qt3DRender::QAbstractTextureImage *> texImages = materials[0]->texture()->textureImages();
+  Q_ASSERT( texImages.count() == 1 );
+  QgsTerrainTextureImage *terrainTexImage = qobject_cast<QgsTerrainTextureImage *>( texImages[0] );
+  Q_ASSERT( terrainTexImage );
+
+  return mTextureGenerator->render( terrainTexImage->imageExtent(), node->tileId(), terrainTexImage->imageDebugText() ).then( this, [node, terrainTexImage]( QImage image ) {
+    return QgsChunkLoaderResult { [node, terrainTexImage, image]( Qt3DCore::QEntity *parent ) {
+      QGIS_CHECK_MAIN_THREAD_ACCESS
+      terrainTexImage->setImage( image );
+      node->entity()->setParent( parent );
+      return node->entity();
+    } };
+  } );
+}
+
+QgsChunkNode *QgsGlobeChunkLoader::createRootNode() const
 {
   const QgsChunkNodeId rootId( 0, 0, 0, 0 );
   const QgsBox3D rootNodeBox3D( -mRadius.x(), -mRadius.y(), -mRadius.z(), mRadius.x(), mRadius.y(), mRadius.z() );
@@ -306,7 +302,7 @@ QgsChunkNode *QgsGlobeChunkLoaderFactory::createRootNode() const
   return node;
 }
 
-QVector<QgsChunkNode *> QgsGlobeChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
+QFuture<QVector<QgsChunkNode *>> QgsGlobeChunkLoader::createChildren( QgsChunkNode *node )
 {
   QVector<QgsChunkNode *> children;
   if ( node->tileId().d == 0 )
@@ -346,68 +342,15 @@ QVector<QgsChunkNode *> QgsGlobeChunkLoaderFactory::createChildren( QgsChunkNode
       << new QgsChunkNode( cid4, QgsGlobeUtils::nodeIdToBox3D( cid4, mGlobeCrsToLatLon ), error, node );
   }
 
-  return children;
+  return QtFuture::makeReadyValueFuture( children );
 }
-
-// ---------------
-
-
-QgsGlobeMapUpdateJob::QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node )
-  : QgsChunkQueueJob( node )
-  , mTextureGenerator( textureGenerator )
-{}
-
-void QgsGlobeMapUpdateJob::start()
-{
-  QgsChunkNode *node = chunk();
-
-  // extract our terrain texture image from the 3D entity
-  QVector<QgsGlobeMaterial *> materials = node->entity()->componentsOfType<QgsGlobeMaterial>();
-  Q_ASSERT( materials.count() == 1 );
-  QVector<Qt3DRender::QAbstractTextureImage *> texImages = materials[0]->texture()->textureImages();
-  Q_ASSERT( texImages.count() == 1 );
-  QgsTerrainTextureImage *terrainTexImage = qobject_cast<QgsTerrainTextureImage *>( texImages[0] );
-  Q_ASSERT( terrainTexImage );
-
-  connect( mTextureGenerator, &QgsTerrainTextureGenerator::tileReady, this, [this, terrainTexImage]( int jobId, const QImage &image ) {
-    if ( mJobId == jobId )
-    {
-      terrainTexImage->setImage( image );
-      mJobId = -1;
-      emit finished();
-    }
-  } );
-  mJobId = mTextureGenerator->render( terrainTexImage->imageExtent(), node->tileId(), terrainTexImage->imageDebugText() );
-}
-
-void QgsGlobeMapUpdateJob::cancel()
-{
-  if ( mJobId != -1 )
-    mTextureGenerator->cancelJob( mJobId );
-}
-
-
-// ---------------
-
-
-//! Factory for map update jobs
-class QgsGlobeMapUpdateJobFactory : public QgsChunkQueueJobFactory
-{
-  public:
-    explicit QgsGlobeMapUpdateJobFactory( Qgs3DMapSettings *mapSettings ) { mTextureGenerator = new QgsTerrainTextureGenerator( *mapSettings ); }
-
-    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override { return new QgsGlobeMapUpdateJob( mTextureGenerator, chunk ); }
-
-  private:
-    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
-};
 
 
 // ---------------
 
 
 QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
-  : QgsChunkedEntity( mapSettings, mapSettings->terrainSettings()->maximumScreenError(), new QgsGlobeChunkLoaderFactory( mapSettings ), true )
+  : QgsChunkedEntity( mapSettings, mapSettings->terrainSettings()->maximumScreenError(), new QgsGlobeChunkLoader( mapSettings ), true )
 {
   mLayerWatcher = make_qobject_unique<QgsLayerStyleWatcher>( mapSettings );
   connect( mLayerWatcher.get(), &QgsLayerStyleWatcher::styleChanged, this, &QgsGlobeEntity::invalidateMapImages );
@@ -419,8 +362,6 @@ QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
   connect( mapSettings, &Qgs3DMapSettings::showLabelsChanged, this, &QgsGlobeEntity::invalidateMapImages );
   connect( mapSettings, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsGlobeEntity::invalidateMapImages );
   connect( mapSettings, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsGlobeEntity::invalidateMapImages );
-
-  mUpdateJobFactory = std::make_unique<QgsGlobeMapUpdateJobFactory>( mapSettings );
 }
 
 QgsGlobeEntity::~QgsGlobeEntity()
@@ -476,7 +417,7 @@ void QgsGlobeEntity::invalidateMapImages()
 
   // handle active nodes
 
-  updateNodes( mActiveNodes, mUpdateJobFactory.get() );
+  updateNodes( mActiveNodes );
 
   // handle inactive nodes afterwards
 
@@ -493,7 +434,7 @@ void QgsGlobeEntity::invalidateMapImages()
     inactiveNodes << node;
   }
 
-  updateNodes( inactiveNodes, mUpdateJobFactory.get() );
+  updateNodes( inactiveNodes );
 
   setNeedsUpdate( true );
 }

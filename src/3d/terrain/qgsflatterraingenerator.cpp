@@ -20,46 +20,45 @@
 #include "qgschunknode.h"
 #include "qgsgeotransform.h"
 #include "qgsterrainentity.h"
+#include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
+#include "qgsthreadingutils.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 
 #include "moc_qgsflatterraingenerator.cpp"
 
-/// @cond PRIVATE
-
-
-//---------------
-
-
-FlatTerrainChunkLoader::FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *node )
-  : QgsTerrainTileLoader( terrain, node )
-{}
-
-void FlatTerrainChunkLoader::start()
+QgsTerrainGenerator *QgsFlatTerrainGenerator::create()
 {
-  loadTexture();
+  return new QgsFlatTerrainGenerator();
 }
 
-
-Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *parent )
+QFuture<QgsChunkLoaderResult> QgsFlatTerrainGenerator::loadChunk( QgsChunkNode *node )
 {
-  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( mNode->tileId() );
+  return loadTextureResources( node ).then( this, [this, node]( QgsTerrainGenerator::TerrainTextureResources resources ) {
+    return QgsChunkLoaderResult { std::bind_front( &QgsFlatTerrainGenerator::createEntity, this, node, resources ) };
+  } );
+}
+
+Qt3DCore::QEntity *QgsFlatTerrainGenerator::createEntity( QgsChunkNode *node, QgsTerrainGenerator::TerrainTextureResources resources, Qt3DCore::QEntity *parent )
+{
+  QGIS_CHECK_MAIN_THREAD_ACCESS
+  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( node->tileId() );
 
   // make geometry renderer
 
   // simple quad geometry shared by all tiles
   // QPlaneGeometry by default is 1x1 with mesh resolution QSize(2,2), centered at 0
   // TODO: the geometry could be shared inside Terrain instance (within terrain-generator specific data?)
-  mTileGeometry = new Qt3DExtras::QPlaneGeometry;
+  Qt3DExtras::QPlaneGeometry *tileGeometry = new Qt3DExtras::QPlaneGeometry;
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( mTileGeometry ); // takes ownership if the component has no parent
-  entity->addComponent( mesh );       // takes ownership if the component has no parent
+  mesh->setGeometry( tileGeometry ); // takes ownership if the component has no parent
+  entity->addComponent( mesh );      // takes ownership if the component has no parent
 
   // create material
 
-  const Qgs3DMapSettings *map = terrain()->mapSettings();
+  const Qgs3DMapSettings *map = mTerrain->mapSettings();
 
   // create transform
 
@@ -68,7 +67,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   entity->addComponent( transform );
 
   // set up transform according to the extent covered by the quad geometry
-  const QgsBox3D box3D = mNode->box3D();
+  const QgsBox3D box3D = node->box3D();
   const QgsBox3D mapFullBox3D( map->extent(), box3D.zMinimum(), box3D.zMaximum() );
 
   const QgsBox3D commonExtent(
@@ -88,24 +87,10 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   transform->setScale3D( QVector3D( static_cast<float>( xSide ), 1, static_cast<float>( ySide ) ) );
   transform->setGeoTranslation( QgsVector3D( xMin + xSide / 2, yMin + ySide / 2, 0 ) );
 
-  createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty(), Qgs3DRenderContext::fromMapSettings( map ) );
+  applyMaterial( resources, entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty(), Qgs3DRenderContext::fromMapSettings( map ) );
 
   entity->setParent( parent );
   return entity;
-}
-
-/// @endcond
-
-// ---------------
-
-QgsTerrainGenerator *QgsFlatTerrainGenerator::create()
-{
-  return new QgsFlatTerrainGenerator();
-}
-
-QgsChunkLoader *QgsFlatTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
-{
-  return new FlatTerrainChunkLoader( mTerrain, node );
 }
 
 QgsTerrainGenerator *QgsFlatTerrainGenerator::clone() const

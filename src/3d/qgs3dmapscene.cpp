@@ -1225,7 +1225,7 @@ void Qgs3DMapScene::updateSceneState()
 
   for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
   {
-    if ( entity->isEnabled() && entity->pendingJobsCount() > 0 )
+    if ( entity->isEnabled() && ( entity->pendingJobsCount() > 0 || entity->needsUpdate() ) )
     {
       setSceneState( Updating );
       return;

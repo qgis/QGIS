@@ -27,13 +27,24 @@
 // version without notice, or even be removed.
 //
 
+#include <functional>
+#include <limits>
+#include <memory>
+#include <vector>
+
 #include "qgs3drendercontext.h"
 #include "qgsabstractfeaturebasedchunkedentity.h"
 #include "qgsbillboardgeometry.h"
 #include "qgschunkloader.h"
+#include "qgscoordinatetransform.h"
+#include "qgslinestring.h"
 #include "qgstextformat.h"
+#include "qgsvector3d.h"
 
 #include <QImage>
+#include <QPromise>
+#include <QSize>
+#include <QVector3D>
 
 #define SIP_NO_FILE
 
@@ -50,17 +61,17 @@ namespace Qt3DCore
 
 /**
  * \ingroup qgis_3d
- * \brief This loader factory is responsible for creation of loaders of QgsAnnotationLayerChunkedEntity.
+ * \brief This loader is responsible for creation of QgsAnnotationLayerChunkedEntity chunks.
  *
  * \since QGIS 4.0
  */
-class QgsAnnotationLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
+class QgsAnnotationLayerChunkLoader : public QgsQuadtreeChunkLoader
 {
     Q_OBJECT
 
   public:
-    //! Constructs the factory
-    QgsAnnotationLayerChunkLoaderFactory(
+    //! Constructs the loader
+    QgsAnnotationLayerChunkLoader(
       const Qgs3DRenderContext &context,
       QgsAnnotationLayer *layer,
       int leafLevel,
@@ -74,54 +85,28 @@ class QgsAnnotationLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactor
       double zMax
     );
 
-    //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QFuture<QgsChunkLoaderResult> loadChunk( QgsChunkNode *node ) override;
 
     Qgs3DRenderContext mRenderContext;
     QgsAnnotationLayer *mLayer = nullptr;
     int mLeafLevel = 0;
-    Qgis::AltitudeClamping mClamping = Qgis::AltitudeClamping::Relative;
-    double mZOffset = 0;
-    bool mShowCallouts = false;
-    QColor mCalloutLineColor;
-    double mCalloutLineWidth = 2;
-    QgsTextFormat mTextFormat;
-};
 
+    //! Settings for the loader, copied by each worker thread loading a chunk.
+    struct LoaderData
+    {
+        Qgis::AltitudeClamping mClamping = Qgis::AltitudeClamping::Relative;
+        double mZOffset = 0;
+        bool mShowCallouts = false;
+        QColor mCalloutLineColor;
+        double mCalloutLineWidth = 2;
+        QgsTextFormat mTextFormat;
+    };
 
-/**
- * \ingroup qgis_3d
- * \brief This loader class is responsible for async loading of data for QgsAnnotationLayerChunkedEntity
- * and creation of final 3D entity from the data previously prepared in a worker thread.
- *
- * \since QGIS 4.0
- */
-class QgsAnnotationLayerChunkLoader : public QgsChunkLoader
-{
-    Q_OBJECT
-
-  public:
-    //! Constructs the loader
-    QgsAnnotationLayerChunkLoader( const QgsAnnotationLayerChunkLoaderFactory *factory, QgsChunkNode *node );
-    ~QgsAnnotationLayerChunkLoader() override;
-
-    void start() override;
-    void cancel() override;
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    // Each worker thread loading a chunk copies this data.
+    LoaderData mData;
 
   private:
-    const QgsAnnotationLayerChunkLoaderFactory *mFactory = nullptr;
-    Qgs3DRenderContext mRenderContext;
-    bool mCanceled = false;
-    QFutureWatcher<void> *mFutureWatcher = nullptr;
-    QString mLayerName;
-    QgsVector3D mChunkOrigin;
-
-    std::vector< std::unique_ptr< QgsAnnotationItem > > mItemsToRender;
-
-    QVector< QgsBillboardGeometry::BillboardAtlasData > mBillboardPositions;
-    QVector< QgsBillboardGeometry::BillboardAtlasData > mTextBillboardPositions;
-
+    //! A set of picture billboards sharing the same texture.
     struct PictureBillboards
     {
         QImage image;
@@ -129,21 +114,44 @@ class QgsAnnotationLayerChunkLoader : public QgsChunkLoader
         QVector< QSizeF > sizes;
         Qgis::BillboardScaleMode scaleMode = Qgis::BillboardScaleMode::ViewIndependent;
     };
-    QVector< PictureBillboards > mPictureBillboards;
 
-    QVector< QgsLineString > mCalloutLines;
-    QImage mBillboardAtlas;
-    QImage mTextBillboardAtlas;
-    double mZMin = std::numeric_limits< double >::max();
-    double mZMax = std::numeric_limits< double >::lowest();
+    //! Everything a worker thread loads for a chunk and is later used for entity creation.
+    struct ChunkData
+    {
+        QgsChunkNode *node = nullptr;
+        QString layerName;
+        QgsVector3D chunkOrigin;
+        Qgs3DRenderContext renderContext;
+        QVector< QgsBillboardGeometry::BillboardAtlasData > billboardPositions;
+        QVector< QgsBillboardGeometry::BillboardAtlasData > textBillboardPositions;
+        QImage billboardAtlas;
+        QImage textBillboardAtlas;
+        QVector< PictureBillboards > pictureBillboards;
+        QVector< QgsLineString > calloutLines;
+        double zMin = std::numeric_limits< double >::max();
+        double zMax = std::numeric_limits< double >::lowest();
+    };
+
+    static void loadChunkInWorker(
+      QPromise<ChunkData> &promise,
+      QgsChunkNode *node,
+      const QgsRectangle &rect,
+      const QgsCoordinateTransform &layerToMapTransform,
+      const QString &layerName,
+      const std::vector< std::unique_ptr< QgsAnnotationItem > > &itemsToRender,
+      const QgsVector3D &chunkOrigin,
+      const Qgs3DRenderContext &renderCtx,
+      const LoaderData &data
+    );
+
+    Qt3DCore::QEntity *createEntity( const ChunkData &chunkData, Qt3DCore::QEntity *parent );
 };
-
 
 /**
  * \ingroup qgis_3d
  * \brief 3D entity used for rendering of annotation layers.
  *
- * Internally it uses QgsAnnotationLayerChunkLoaderFactory and
+ * Internally it uses QgsAnnotationLayerChunkLoader and
  * QgsAnnotationLayerChunkLoader to do the actual work
  * of loading and creating 3D sub-entities for the layer.
  *
