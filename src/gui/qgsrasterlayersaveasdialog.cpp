@@ -21,6 +21,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdatums.h"
 #include "qgsdoublevalidator.h"
+#include "qgsfileutils.h"
 #include "qgsgdalutils.h"
 #include "qgsgui.h"
 #include "qgslogger.h"
@@ -439,6 +440,16 @@ QString QgsRasterLayerSaveAsDialog::outputFileName() const
   }
 
   return fileName;
+}
+
+void QgsRasterLayerSaveAsDialog::setOutputFileName( const QString &fileName )
+{
+  if ( mFilename->storageMode() == QgsFileWidget::GetDirectory )
+  {
+    mFilename->setFilePath( fileName );
+    return;
+  }
+  mFilename->setFilePath( QgsFileUtils::ensureFileNameHasExtension( fileName, QgsRasterFileWriter::extensionsForFormat( outputFormat() ) ) );
 }
 
 QString QgsRasterLayerSaveAsDialog::outputLayerName() const

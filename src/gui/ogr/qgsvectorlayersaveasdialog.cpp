@@ -25,6 +25,7 @@
 #include "qgsdatums.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsfileutils.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsiconutils.h"
@@ -1017,6 +1018,11 @@ void QgsVectorLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinateRef
 QString QgsVectorLayerSaveAsDialog::fileName() const
 {
   return mFilename->filePath();
+}
+
+void QgsVectorLayerSaveAsDialog::setFileName( const QString &fileName )
+{
+  mFilename->setFilePath( QgsFileUtils::ensureFileNameHasExtension( fileName, QgsFileUtils::extensionsFromFilter( mFilename->filter() ) ) );
 }
 
 QString QgsVectorLayerSaveAsDialog::layerName() const

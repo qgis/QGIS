@@ -50,20 +50,29 @@
 #include "qgsguiutils.h"
 #include "qgshistoryproviderregistry.h"
 #include "qgslayeritem.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageoutput.h"
+#include "qgsmimedatautils.h"
 #include "qgsnative.h"
 #include "qgsnewnamedialog.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsnewvectortabledialog.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerexporter.h"
+#include "qgsproject.h"
 #include "qgsprojectitem.h"
 #include "qgsprojectutils.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersqlquerybuilder.h"
 #include "qgsqueryresultwidget.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsrasterfilewritertask.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterpipe.h"
 #include "qgsrelationshipsitem.h"
 #include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
@@ -72,6 +81,8 @@
 #include "qgssourceselectproviderregistry.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorfilewritertask.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
 
 #include <QDesktopServices>
@@ -80,7 +91,9 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPointer>
 #include <QString>
+#include <QTimer>
 #include <QUrl>
 
 #include "moc_qgsinbuiltdataitemproviders.cpp"
@@ -386,6 +399,248 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       connect( action, &QAction::triggered, dirItem, [dirItem] { QgsGui::nativePlatformInterface()->showFileProperties( dirItem->dirPath() ); } );
     }
   }
+}
+
+bool QgsAppDirectoryItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiContext )
+{
+  return qobject_cast<QgsDirectoryItem *>( item );
+}
+
+bool QgsAppDirectoryItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction )
+{
+  QgsDirectoryItem *directoryItem = qobject_cast<QgsDirectoryItem *>( item );
+  if ( !directoryItem || !QgsMimeDataUtils::isUriList( data ) )
+    return false;
+
+  // only layers dragged from the layer tree of this QGIS instance are handled
+  QStringList layerIds;
+  QList<QPointer<QgsMapLayer>> layers;
+  const QgsMimeDataUtils::UriList uris = QgsMimeDataUtils::decodeUriList( data );
+  for ( const QgsMimeDataUtils::Uri &uri : uris )
+  {
+    if ( uri.layerId.isEmpty() || layerIds.contains( uri.layerId ) || !QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( uri ) )
+      continue;
+
+    if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( uri.layerId ) )
+    {
+      layerIds << uri.layerId;
+      layers << layer;
+    }
+  }
+  if ( layers.isEmpty() )
+    return false;
+
+  // handle the drop after the drag and drop operation has finished, so that dialogs
+  // and tasks are not started while the drag is still in progress (see QgisApp::dropEvent)
+  QTimer::singleShot( 0, this, [this, layers, directoryItem = QPointer<QgsDirectoryItem>( directoryItem ), context] {
+    if ( directoryItem )
+      saveLayersToDirectory( layers, directoryItem, context );
+  } );
+  return true;
+}
+
+void QgsAppDirectoryItemGuiProvider::saveLayersToDirectory( const QList<QPointer<QgsMapLayer>> &layers, QgsDirectoryItem *item, QgsDataItemGuiContext context )
+{
+  const QString title = tr( "Save Layers to Directory" );
+  const QString directory = item->dirPath();
+
+  QList<QgsMapLayer *> validLayers;
+  for ( const QPointer<QgsMapLayer> &layer : layers )
+  {
+    if ( layer )
+      validLayers << layer;
+  }
+  if ( validLayers.isEmpty() )
+    return;
+
+  // a single layer uses the regular "Save As" dialog, with the output preset to the directory
+  if ( validLayers.size() == 1 )
+  {
+    QgsMapLayer *layer = validLayers.at( 0 );
+    switch ( layer->type() )
+    {
+      case Qgis::LayerType::Vector:
+      case Qgis::LayerType::Raster:
+      case Qgis::LayerType::PointCloud:
+        QgisApp::instance()->saveAsFile( layer, false, false, directory );
+        break;
+
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledScene:
+        notify( title, tr( "Layer “%1” cannot be saved: layer type not supported." ).arg( layer->name() ), context, Qgis::MessageLevel::Warning );
+        break;
+    }
+    return;
+  }
+
+  // several layers are exported without a dialog: one file per layer, using the layer name as file name
+  // If the users wants to export several layers to just one geopackage, there are alternatives
+  struct ExportToDirectorySummary
+  {
+      int pending = 0;
+      int exported = 0;
+      QStringList problems;
+  };
+  auto summary = std::make_shared<ExportToDirectorySummary>();
+  const QPointer<QgsDirectoryItem> itemPointer( item );
+
+  auto reportSummary = [summary, itemPointer, context, title, directory] {
+    // re-reads the folder's contents and updates its children in the browser tree
+    // only for users on network drives of if the user turned off "Monitor for Changes"
+    if ( itemPointer && !itemPointer->isMonitored() )
+      itemPointer->refresh();
+
+    if ( summary->exported > 0 )
+      notify( title, tr( "%n layer(s) saved to “%1”.", nullptr, summary->exported ).arg( QDir::toNativeSeparators( directory ) ), context, Qgis::MessageLevel::Success );
+
+    if ( !summary->problems.isEmpty() )
+    {
+      QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+      output->setTitle( title );
+      output->setMessage( tr( "Some layers were not saved:\n\n" ) + summary->problems.join( '\n' ), Qgis::StringFormat::PlainText );
+      output->showMessage();
+    }
+  };
+
+  auto exportFinished = [summary, reportSummary]( const QString &problem ) {
+    if ( !problem.isEmpty() )
+      summary->problems << problem;
+    else
+      summary->exported++;
+
+    if ( --summary->pending == 0 )
+      reportSummary();
+  };
+
+  // layers with the same name in this drop don't collide
+  QSet<QString> reservedPaths;
+  auto outputPath = [&reservedPaths, &directory]( const QgsMapLayer *layer, const QString &extension ) {
+    QString baseName = QgsFileUtils::stringToSafeFilename( layer->name() ).trimmed();
+    if ( baseName.isEmpty() )
+      baseName = u"layer"_s;
+
+    const QDir dir( directory );
+    QString path = dir.filePath( u"%1.%2"_s.arg( baseName, extension ) );
+    for ( int i = 2; QFileInfo::exists( path ) || reservedPaths.contains( path ); ++i )
+      path = dir.filePath( u"%1_%2.%3"_s.arg( baseName ).arg( i ).arg( extension ) );
+    reservedPaths.insert( path );
+    return path;
+  };
+
+  QList<QgsTask *> tasks;
+  for ( QgsMapLayer *layer : std::as_const( validLayers ) )
+  {
+    const QString layerName = layer->name();
+    switch ( layer->type() )
+    {
+      case Qgis::LayerType::Vector:
+      {
+        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+
+        QgsVectorFileWriter::SaveVectorOptions options;
+        options.driverName = u"GPKG"_s;
+        options.layerName = QgsMapLayerUtils::launderLayerName( layerName );
+        options.fileEncoding = u"UTF-8"_s;
+        options.layerMetadata = vectorLayer->metadata();
+
+        QgsFeatureSink::SinkFlags sinkFlags;
+        if ( vectorLayer->customProperty( u"OnConvertFormatRegeneratePrimaryKey"_s ).toBool() )
+          sinkFlags.setFlag( QgsFeatureSink::RegeneratePrimaryKey, true );
+
+        QgsVectorFileWriterTask *task = new QgsVectorFileWriterTask( vectorLayer, outputPath( layer, u"gpkg"_s ), options, sinkFlags );
+        connect( task, &QgsVectorFileWriterTask::completed, this, [exportFinished] { exportFinished( QString() ); } );
+        connect( task, &QgsVectorFileWriterTask::errorOccurred, this, [exportFinished, layerName]( int, const QString &errorMessage ) {
+          exportFinished( tr( "%1: %2" ).arg( layerName, errorMessage.isEmpty() ? tr( "export failed" ) : errorMessage ) );
+        } );
+        tasks << task;
+        break;
+      }
+
+      case Qgis::LayerType::Raster:
+      {
+        QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+        QgsRasterDataProvider *provider = rasterLayer->dataProvider();
+        // web services (WMS, XYZ, etc) don't have a known raster size
+        // we could export them as vrt, but are skipped 
+        if ( !provider || !( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
+        {
+          summary->problems << tr( "%1: raster has no fixed size, use “Export → Save As…” instead" ).arg( layerName );
+          break;
+        }
+
+        auto pipe = std::make_unique<QgsRasterPipe>();
+        if ( !pipe->set( provider->clone() ) )
+        {
+          summary->problems << tr( "%1: cannot read raster data" ).arg( layerName );
+          break;
+        }
+
+        QgsRasterFileWriter writer( outputPath( layer, u"tif"_s ) );
+        writer.setOutputFormat( u"GTiff"_s );
+
+        QgsRasterFileWriterTask *task = new QgsRasterFileWriterTask( writer, pipe.release(), provider->xSize(), provider->ySize(), provider->extent(), rasterLayer->crs(), QgsProject::instance()->transformContext() );
+        connect( task, &QgsRasterFileWriterTask::writeComplete, this, [exportFinished] { exportFinished( QString() ); } );
+        connect( task, qOverload<int, const QString &>( &QgsRasterFileWriterTask::errorOccurred ), this, [exportFinished, layerName]( int, const QString &errorMessage ) {
+          exportFinished( tr( "%1: %2" ).arg( layerName, errorMessage.isEmpty() ? tr( "export failed" ) : errorMessage ) );
+        } );
+        tasks << task;
+        break;
+      }
+
+      case Qgis::LayerType::PointCloud:
+      {
+        // probably not necessary, because if LAZ is not supported, there are no LAZ layers on the tree
+        if ( !QgsPointCloudLayerExporter::supportedFormats().contains( QgsPointCloudLayerExporter::ExportFormat::Las ) )
+        {
+          summary->problems << tr( "%1: LAZ export is not available in this build" ).arg( layerName );
+          break;
+        }
+
+        QgsPointCloudLayer *pointCloudLayer = qobject_cast<QgsPointCloudLayer *>( layer );
+        QgsPointCloudLayerExporter *exporter = new QgsPointCloudLayerExporter( pointCloudLayer );
+        exporter->setFormat( QgsPointCloudLayerExporter::ExportFormat::Las );
+        exporter->setFileName( outputPath( layer, u"laz"_s ) );
+        exporter->prepareExport();
+
+        QgsPointCloudLayerExporterTask *task = new QgsPointCloudLayerExporterTask( exporter );
+        connect( task, &QgsPointCloudLayerExporterTask::exportComplete, this, [exportFinished, exporter, layerName] {
+          if ( exporter->feedback() && exporter->feedback()->isCanceled() )
+            exportFinished( tr( "%1: export canceled" ).arg( layerName ) );
+          else if ( !exporter->lastError().isEmpty() )
+            exportFinished( tr( "%1: %2" ).arg( layerName, exporter->lastError() ) );
+          else
+            exportFinished( QString() );
+        } );
+        tasks << task;
+        break;
+      }
+
+      case Qgis::LayerType::Mesh:
+      case Qgis::LayerType::VectorTile:
+      case Qgis::LayerType::Plugin:
+      case Qgis::LayerType::Annotation:
+      case Qgis::LayerType::Group:
+      case Qgis::LayerType::TiledScene:
+        summary->problems << tr( "%1: layer type does not support export to folder" ).arg( layerName );
+        break;
+    }
+  }
+
+  if ( tasks.isEmpty() )
+  {
+    reportSummary();
+  }
+  else
+  {
+    summary->pending = tasks.size();
+    for ( QgsTask *task : std::as_const( tasks ) )
+      QgsApplication::taskManager()->addTask( task );
+  }
+
 }
 
 void QgsAppDirectoryItemGuiProvider::addFavorite( QgsDirectoryItem *item )
