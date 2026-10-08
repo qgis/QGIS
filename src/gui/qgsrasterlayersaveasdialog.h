@@ -93,7 +93,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     /**
      * Sets the output \a fileName.
      *
-     * If \a fileName does not end with an extension,that format's default extension is 
+     * If \a fileName does not end with an extension,that format's default extension is
      * appended.
      *
      * \since QGIS 4.4
