@@ -2872,6 +2872,9 @@
                     <property name="maximum">
                      <number>1000000</number>
                     </property>
+                    <property name="stepType">
+                     <enum>QAbstractSpinBox::StepType::AdaptiveDecimalStepType</enum>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -4959,6 +4962,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <widget class="QgsSpinBox" name="mNetworkTimeoutSpinBox">
                       <property name="maximum">
                        <number>100000000</number>
+                      </property>
+                      <property name="stepType">
+                       <enum>QAbstractSpinBox::StepType::AdaptiveDecimalStepType</enum>
                       </property>
                      </widget>
                     </item>
