@@ -95,7 +95,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     /**
      * Sets the target \a fileName.
      *
-     * If \a fileName does not end with an extension, that format's extension is 
+     * If \a fileName does not end with an extension, that format's extension is
      * appended.
      *
      * \see fileName()
