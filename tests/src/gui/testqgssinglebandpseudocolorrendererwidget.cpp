@@ -105,7 +105,7 @@ void TestQgsSingleBandPseudoColorRendererWidget::testEditLabel()
 
   std::unique_ptr< QgsSingleBandPseudoColorRenderer > newRasterRenderer( dynamic_cast<QgsSingleBandPseudoColorRenderer *>( widget.renderer() ) );
   QVERIFY( newRasterRenderer );
-  QVERIFY( rasterRenderer->shader() );
+  QVERIFY( newRasterRenderer->shader() );
 
   QgsColorRampShader *newColorRampShader = dynamic_cast<QgsColorRampShader *>( newRasterRenderer->shader()->rasterShaderFunction() );
   QVERIFY( newColorRampShader );
