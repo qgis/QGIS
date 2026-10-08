@@ -7667,6 +7667,16 @@ QgsTimeEdit.emitValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L254
 QgsTimeEdit.setTime: src/gui/editorwidgets/qgsdatetimeedit.h#L244
 QgsTimeEdit.timeValueChanged: src/gui/editorwidgets/qgsdatetimeedit.h#L251
 QgsTimeEdit: src/gui/editorwidgets/qgsdatetimeedit.h#L227
+QgsToolButtonAction.QgsToolButtonAction: src/gui/qgstoolbuttonaction.h#L48
+QgsToolButtonAction.addActions: src/gui/qgstoolbuttonaction.h#L84
+QgsToolButtonAction.createWidget: src/gui/qgstoolbuttonaction.h#L106
+QgsToolButtonAction.defaultAction: src/gui/qgstoolbuttonaction.h#L103
+QgsToolButtonAction.setAutoRaise: src/gui/qgstoolbuttonaction.h#L53
+QgsToolButtonAction.setDefaultAction: src/gui/qgstoolbuttonaction.h#L96
+QgsToolButtonAction.setMenu: src/gui/qgstoolbuttonaction.h#L75
+QgsToolButtonAction.setPopupMode: src/gui/qgstoolbuttonaction.h#L61
+QgsToolButtonAction.setToolButtonStyle: src/gui/qgstoolbuttonaction.h#L66
+QgsToolButtonAction: src/gui/qgstoolbuttonaction.h#L40
 QgsToolTipComboBox.event: src/gui/qgstooltipcombobox.h#L45
 QgsToolTipComboBox: src/gui/qgstooltipcombobox.h#L37
 QgsTransformWidget.create: src/gui/effects/qgspainteffectwidget.h#L219
