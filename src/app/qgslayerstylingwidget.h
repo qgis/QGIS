@@ -115,7 +115,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     enum class CustomRole : int
     {
       PageEnum = Qt::UserRole,
-      PageFactoryIndex
+      PageFactoryPointer
     };
     Q_ENUM( CustomRole )
 

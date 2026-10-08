@@ -189,11 +189,11 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   }
 
   Page currentRowPage = Page::Invalid;
-  int currentCustomPageFactoryIndex = -1;
+  void *currentCustomPageFactoryPointer = nullptr;
   if ( QListWidgetItem *currentItem = mOptionsListWidget->item( mOptionsListWidget->currentIndex().row() ) )
   {
     currentRowPage = currentItem->data( static_cast< int >( CustomRole::PageEnum ) ).value< Page >();
-    currentCustomPageFactoryIndex = currentItem->data( static_cast< int >( CustomRole::PageFactoryIndex ) ).toInt();
+    currentCustomPageFactoryPointer = currentItem->data( static_cast< int >( CustomRole::PageFactoryPointer ) ).value<void *>();
   }
 
   mCurrentLayer = layer;
@@ -332,7 +332,6 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       break;
   }
 
-  int pageFactoryIndex = 0;
   for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( mPageFactories ) )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
@@ -340,10 +339,9 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       QListWidgetItem *item = new QListWidgetItem( factory->icon(), QString() );
       item->setToolTip( factory->title() );
       item->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::Custom ) );
-      item->setData( static_cast< int >( CustomRole::PageFactoryIndex ), pageFactoryIndex );
+      item->setData( static_cast< int >( CustomRole::PageFactoryPointer ), QVariant::fromValue( reinterpret_cast< void * >( const_cast<QgsMapLayerConfigWidgetFactory *>( factory ) ) ) );
       mOptionsListWidget->addItem( item );
     }
-    pageFactoryIndex++;
   }
 
   QListWidgetItem *historyItem = new QListWidgetItem( QgsApplication::getThemeIcon( u"mActionHistory.svg"_s ), QString() );
@@ -362,8 +360,8 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       {
         if ( mOptionsListWidget->item( i )->data( static_cast< int >( CustomRole::PageEnum ) ).value< Page >() == Page::Custom )
         {
-          const int thisPageFactoryIndex = mOptionsListWidget->item( i )->data( static_cast< int >( CustomRole::PageFactoryIndex ) ).toInt();
-          if ( thisPageFactoryIndex == currentCustomPageFactoryIndex )
+          const void *thisPageFactoryPointer = mOptionsListWidget->item( i )->data( static_cast< int >( CustomRole::PageFactoryPointer ) ).value< void * >();
+          if ( thisPageFactoryPointer == currentCustomPageFactoryPointer )
           {
             mOptionsListWidget->setCurrentRow( i );
             foundMatchingCustomPage = true;
@@ -550,15 +548,22 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   // TODO Make all widgets use this method.
   if ( rowPage == Page::Custom )
   {
-    const int customPageFactoryIndex = currentItem->data( static_cast< int >( CustomRole::PageFactoryIndex ) ).toInt();
-    if ( customPageFactoryIndex < mPageFactories.size() )
+    // NOTE -- we don't use the stored raw void* pointer here to create the widget, maybe the actual
+    // factory has been deleted in the meantime. Instead we try to match it to an existing factory and
+    // use that to create the widget
+    const void *customPageFactoryPointer = currentItem->data( static_cast< int >( CustomRole::PageFactoryPointer ) ).value< void * >();
+    for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( mPageFactories ) )
     {
-      if ( QgsMapLayerConfigWidget *panel = mPageFactories[customPageFactoryIndex]->createWidget( mCurrentLayer, mMapCanvas, true, mWidgetStack ) )
+      if ( customPageFactoryPointer == factory )
       {
-        panel->setDockMode( true );
-        panel->setMapLayerConfigWidgetContext( mContext );
-        connect( panel, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
-        mWidgetStack->setMainPanel( panel );
+        if ( QgsMapLayerConfigWidget *panel = factory->createWidget( mCurrentLayer, mMapCanvas, true, mWidgetStack ) )
+        {
+          panel->setDockMode( true );
+          panel->setMapLayerConfigWidgetContext( mContext );
+          connect( panel, &QgsPanelWidget::changed, this, &QgsLayerStylingWidget::autoApply );
+          mWidgetStack->setMainPanel( panel );
+        }
+        break;
       }
     }
   }
@@ -920,7 +925,6 @@ void QgsLayerStylingWidget::setLayerTreeGroup( QgsLayerTreeGroup *group )
   mOptionsListWidget->blockSignals( true );
   mOptionsListWidget->clear();
 
-  int pageFactoryIndex = 0;
   for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( mPageFactories ) )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayerTreeGroup( group ) )
@@ -928,10 +932,9 @@ void QgsLayerStylingWidget::setLayerTreeGroup( QgsLayerTreeGroup *group )
       QListWidgetItem *item = new QListWidgetItem( factory->icon(), QString() );
       item->setToolTip( factory->title() );
       item->setData( static_cast< int >( CustomRole::PageEnum ), QVariant::fromValue( Page::Custom ) );
-      item->setData( static_cast< int >( CustomRole::PageFactoryIndex ), pageFactoryIndex );
+      item->setData( static_cast< int >( CustomRole::PageFactoryPointer ), QVariant::fromValue( reinterpret_cast< void * >( const_cast< QgsMapLayerConfigWidgetFactory * >( factory ) ) ) );
       mOptionsListWidget->addItem( item );
     }
-    pageFactoryIndex++;
   }
 
   mContext.setLayerTreeGroup( group );
