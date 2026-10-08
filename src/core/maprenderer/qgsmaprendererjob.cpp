@@ -1008,7 +1008,12 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       job.context()->setPainter( pictureAndPainter.second );
       // force recreation of layer renderer so it initialize correctly the renderer
       // especially the RasterLayerRender that need logicalDpiX from painting device
+      job.context()->setFeedback( nullptr );
       job.renderer = job.layer->createMapRenderer( *( job.context() ) );
+      if ( job.renderer )
+      {
+        job.context()->setFeedback( job.renderer->feedback() );
+      }
     }
 
     // for layer that mask, generate mask in first pass job
@@ -1107,6 +1112,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
 
     // FIXME: another possibility here, to avoid allocating a new map renderer and reuse the one from
     // the first pass job, would be to be able to call QgsMapLayerRenderer::render() with a QgsRenderContext.
+    job2.context()->setFeedback( nullptr );
     QgsVectorLayerRenderer *mapRenderer = static_cast<QgsVectorLayerRenderer *>( ml->createMapRenderer( *job2.context() ) );
     job2.renderer = mapRenderer;
     if ( job2.renderer )
