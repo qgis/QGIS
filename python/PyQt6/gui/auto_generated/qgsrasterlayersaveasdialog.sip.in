@@ -76,6 +76,16 @@ Sets whether the "add to canvas" checkbox should be ``checked``.
 
     QString outputFileName() const;
 
+    void setOutputFileName( const QString &fileName );
+%Docstring
+Sets the output ``fileName``.
+
+If ``fileName`` does not end with an extension,that format's default
+extension is appended.
+
+.. versionadded:: 4.4
+%End
+
     QString outputLayerName() const;
 %Docstring
 Name of the output layer within GeoPackage file

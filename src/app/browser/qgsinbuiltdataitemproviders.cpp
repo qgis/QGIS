@@ -565,7 +565,7 @@ void QgsAppDirectoryItemGuiProvider::saveLayersToDirectory( const QList<QPointer
         QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
         QgsRasterDataProvider *provider = rasterLayer->dataProvider();
         // web services (WMS, XYZ, etc) don't have a known raster size
-        // we could export them as vrt, but are skipped 
+        // we could export them as vrt, but are skipped
         if ( !provider || !( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
         {
           summary->problems << tr( "%1: raster has no fixed size, use “Export → Save As…” instead" ).arg( layerName );
@@ -582,7 +582,8 @@ void QgsAppDirectoryItemGuiProvider::saveLayersToDirectory( const QList<QPointer
         QgsRasterFileWriter writer( outputPath( layer, u"tif"_s ) );
         writer.setOutputFormat( u"GTiff"_s );
 
-        QgsRasterFileWriterTask *task = new QgsRasterFileWriterTask( writer, pipe.release(), provider->xSize(), provider->ySize(), provider->extent(), rasterLayer->crs(), QgsProject::instance()->transformContext() );
+        QgsRasterFileWriterTask *task
+          = new QgsRasterFileWriterTask( writer, pipe.release(), provider->xSize(), provider->ySize(), provider->extent(), rasterLayer->crs(), QgsProject::instance()->transformContext() );
         connect( task, &QgsRasterFileWriterTask::writeComplete, this, [exportFinished] { exportFinished( QString() ); } );
         connect( task, qOverload<int, const QString &>( &QgsRasterFileWriterTask::errorOccurred ), this, [exportFinished, layerName]( int, const QString &errorMessage ) {
           exportFinished( tr( "%1: %2" ).arg( layerName, errorMessage.isEmpty() ? tr( "export failed" ) : errorMessage ) );
@@ -640,7 +641,6 @@ void QgsAppDirectoryItemGuiProvider::saveLayersToDirectory( const QList<QPointer
     for ( QgsTask *task : std::as_const( tasks ) )
       QgsApplication::taskManager()->addTask( task );
   }
-
 }
 
 void QgsAppDirectoryItemGuiProvider::addFavorite( QgsDirectoryItem *item )
