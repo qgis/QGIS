@@ -12,9 +12,9 @@ Rectangle {
 
   RowLayout {
     anchors.fill: parent
-    anchors.leftMargin: 20
-    anchors.rightMargin: 16
-    spacing: 12
+    anchors.leftMargin: 28
+    anchors.rightMargin: 28
+    spacing: 20
 
     Rectangle {
       Layout.preferredWidth: 20
@@ -43,12 +43,12 @@ Rectangle {
       color: "#ffffff"
       elide: Text.ElideRight
     }
-
+    
     Rectangle {
       Layout.preferredWidth: installButtonText.implicitWidth + 32
-      Layout.preferredHeight: 32
+      Layout.preferredHeight: 38
       Layout.alignment: Qt.AlignVCenter
-      radius: 16
+      radius: 20
       color: "transparent"
       border.color: "#f0e64a"
 

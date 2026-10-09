@@ -668,8 +668,8 @@ Item {
     UpdateNotificationBar {
       id: pluginsUpdateBar
       Layout.fillWidth: true
-      Layout.preferredHeight: 50
-      radius: 16
+      Layout.preferredHeight: 54
+      radius: mainCard.radius
       visible: false
       color: "#ed7913"
 
@@ -682,8 +682,8 @@ Item {
     UpdateNotificationBar {
       id: qgisUpdateBar
       Layout.fillWidth: true
-      Layout.preferredHeight: 50
-      radius: 16
+      Layout.preferredHeight: 54
+      radius: mainCard.radius
       visible: false
       color: mainCard.color
 
