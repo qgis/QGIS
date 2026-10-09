@@ -211,22 +211,6 @@
          </attribute>
         </widget>
        </item>
-       <item>
-        <widget class="QDialogButtonBox" name="mHelpButtonBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="standardButtons">
-          <set>QDialogButtonBox::Help</set>
-         </property>
-         <property name="centerButtons">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
       </layout>
      </item>
     </layout>
