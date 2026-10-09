@@ -331,11 +331,11 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   else
   {
     mMinScaleWidget = new QgsScaleWidget();
-    mMinScaleWidget->setToolTip( tr( "Start boundary (Snapping will be enabled between those boundaries)" ) );
+    mMinScaleWidget->setToolTip( tr( "Start scale from which snapping is enabled" ) );
     mMinScaleWidget->setObjectName( u"SnappingMinScaleSpinBox"_s );
 
     mMaxScaleWidget = new QgsScaleWidget();
-    mMaxScaleWidget->setToolTip( tr( "End boundary (Snapping will be enabled between those boundaries)" ) );
+    mMaxScaleWidget->setToolTip( tr( "End scale up to which snapping is enabled" ) );
     mMaxScaleWidget->setObjectName( u"SnappingMaxScaleSpinBox"_s );
 
     connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, [=, this]( double minValue ) { QgsSnappingWidget::changeScale( minValue, mMaxScaleWidget->scale() ); } );
