@@ -118,12 +118,12 @@ bool QgsExtendLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
   return true;
 }
 
-QgsFeatureList QgsExtendLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
+QgsFeatureList QgsExtendLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QGS_MARK_ALGORITHM_SOURCE
 
   QgsFeature f = feature;
-  if ( f.hasGeometry() )
+  if ( f.hasGeometry() && !f.geometry().isEmpty() )
   {
     const QgsGeometry geometry = f.geometry();
     double startDistance = mStartDistance;
@@ -139,6 +139,11 @@ QgsFeatureList QgsExtendLinesAlgorithm::processFeature( const QgsFeature &featur
       throw QgsProcessingException( QObject::tr( "Error calculating extended line" ) ); // don't think this can actually happen!
 
     f.setGeometry( outGeometry );
+  }
+  else if ( f.geometry().isEmpty() )
+  {
+    feedback->pushWarning( QObject::tr( "Feature %1 has an empty geometry, skipping " ).arg( f.id() ) );
+    return {};
   }
   return QgsFeatureList() << f;
 }
