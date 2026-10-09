@@ -27,6 +27,7 @@
 #include <QDomDocument>
 #include <QList>
 #include <QMetaType>
+#include <QReadWriteLock>
 #include <QRecursiveMutex>
 #include <QSet>
 #include <QString>
@@ -195,6 +196,46 @@ class CORE_EXPORT QgsExpression
 {
     Q_DECLARE_TR_FUNCTIONS( QgsExpression )
   public:
+#ifndef SIP_RUN
+    using SharedFunctionPtr = std::shared_ptr<QgsExpressionFunction>;
+
+    /**
+     * \ingroup core
+     * A thread-safe container of shared pointers to registered functions.
+     */
+    class SharedFunctionPtrList : public QList< SharedFunctionPtr >
+    {
+      public:
+        /**
+         * Returns the index of the function in the list.
+         *
+         * Name matching is case-insensitive, and applied against function aliases too.
+         *
+         * The returned index applies to this container only, and may differ from indices for other
+         * SharedFunctionPtrList instances.
+         */
+        int functionIndex( const QString &name ) const;
+
+        /**
+         * Returns a shared pointer for the function with the specified \a index.
+         */
+        SharedFunctionPtr getFunction( int index ) const;
+
+        /**
+         * Updates the map of function names to indices.
+         *
+         * This should be called ONLY after initially populating a new instance of the list,
+         * while only a single reference to the list is held.
+         */
+        void updateFunctionNameMap();
+
+      private:
+        QMap< QString, int> mFunctionIndexMap;
+    };
+
+    using FunctionListSnapshot = std::shared_ptr< const SharedFunctionPtrList >;
+#endif
+
     /**
      * Details about any parser errors that were found when parsing the expression.
      */
@@ -596,9 +637,27 @@ class CORE_EXPORT QgsExpression
       soWithin,
     };
 
-    static const QList<QgsExpressionFunction *> &Functions();
+    /**
+     * Returns a thread-safe snapshot of all registered functions.
+     *
+     * \since QGIS 4.4
+     */
+    SIP_SKIP static const FunctionListSnapshot getFunctionsSnapshot();
 
-    static const QStringList &BuiltinFunctions();
+    // NOTE tagged as deprecated as we don't want this used from c++ code
+    /**
+     * Returns a list of all registered functions.
+     *
+     * \warning This is not thread safe, and should not be called from outside the main thread.
+     */
+    Q_DECL_DEPRECATED static QList<QgsExpressionFunction *> Functions();
+
+    /**
+     * Returns a list of the names of all built-in functions.
+     *
+     * The list also includes aliases of the built-in functions.
+     */
+    static QStringList BuiltinFunctions();
 
     /**
      * Registers a function to the expression engine. This is required to allow expressions to utilize the function.
@@ -608,17 +667,6 @@ class CORE_EXPORT QgsExpression
      * \see unregisterFunction
      */
     static bool registerFunction( QgsExpressionFunction *function, bool transferOwnership = false );
-
-    /**
-     * Registers a function to the expression engine. This is required to allow expressions to utilize the function.
-     *
-     * \warning This is an unsafe method which bypasses the internal thread safety protection and name uniqueness checks.
-     *
-     * \note Not available in Python bindings
-     *
-     * \since QGIS 4.4
-     */
-    SIP_SKIP static bool registerFunctionUnsafe( QgsExpressionFunction *function, bool transferOwnership = false );
 
     /**
      * Unregisters a function from the expression engine. The function will no longer be usable in expressions.
@@ -635,8 +683,13 @@ class CORE_EXPORT QgsExpression
     //! tells whether the identifier is a name of existing function
     static bool isFunctionName( const QString &name );
 
-    //! Returns index of the function in Functions array
-    static int functionIndex( const QString &name );
+    // NOTE tagged as deprecated as we don't want this used from c++ code
+    /**
+     * Returns index of the function in Functions array.
+     *
+     * \warning This is not thread safe, and should not be called from outside the main thread.
+     */
+    Q_DECL_DEPRECATED static int functionIndex( const QString &name );
 
     /**
      * Returns the number of functions defined in the parser
@@ -855,8 +908,11 @@ class CORE_EXPORT QgsExpression
     static void buildVariableHelp() SIP_SKIP;
 
     friend class QgsExpressionNodeFunction;
-    static QRecursiveMutex sFunctionsMutex;
-    static QMap< QString, int> sFunctionIndexMap;
+
+    static std::atomic<FunctionListSnapshot> sFunctions;
+    static QMutex sFunctionWriteMutex;
+
+    static QStringList sBuiltinFunctionNames;
 
     friend class QgsOgcUtils;
 };

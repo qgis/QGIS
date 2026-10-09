@@ -1475,10 +1475,20 @@ QgsExpressionNode *QgsExpressionNodeInOperator::simplifiedNode() const
 
 QVariant QgsExpressionNodeFunction::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  QString name = QgsExpression::QgsExpression::Functions()[mFnIndex]->name();
-  QgsExpressionFunction *fd = context && context->hasFunction( name ) ? context->function( name ) : QgsExpression::QgsExpression::Functions()[mFnIndex];
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr function = functions->getFunction( mFnIndex );
+  const QString name = function->name();
 
-  QVariant res = fd->run( mArgs.get(), context, parent, this );
+  QVariant res;
+  if ( context && context->hasFunction( name ) )
+  {
+    QgsExpressionFunction *fd = context->function( name );
+    res = fd->run( mArgs.get(), context, parent, this );
+  }
+  else
+  {
+    res = function->run( mArgs.get(), context, parent, this );
+  }
   ENSURE_NO_EVAL_ERROR
 
   // everything went fine
@@ -1488,12 +1498,10 @@ QVariant QgsExpressionNodeFunction::evalNode( QgsExpression *parent, const QgsEx
 QgsExpressionNodeFunction::QgsExpressionNodeFunction( int fnIndex, QgsExpressionNode::NodeList *args )
   : mFnIndex( fnIndex )
 {
-  // lock the function mutex once upfront -- we'll be doing this when calling QgsExpression::Functions() anyway,
-  // and it's cheaper to hold the recursive lock once upfront like while we handle ALL the function's arguments,
-  // since those might be QgsExpressionNodeFunction nodes and would need to re-obtain the lock otherwise.
-  QMutexLocker locker( &QgsExpression::QgsExpression::sFunctionsMutex );
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr function = functions->getFunction( mFnIndex );
 
-  const QgsExpressionFunction::ParameterList &functionParams = QgsExpression::QgsExpression::Functions()[mFnIndex]->parameters();
+  const QgsExpressionFunction::ParameterList &functionParams = function->parameters();
   const int functionParamsSize = functionParams.size();
   if ( functionParams.isEmpty() )
   {
@@ -1559,7 +1567,8 @@ QgsExpressionNode::NodeType QgsExpressionNodeFunction::nodeType() const
 
 bool QgsExpressionNodeFunction::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( mFnIndex );
 
   bool res = fd->prepare( this, parent, context );
   if ( mArgs && !fd->lazyEval() )
@@ -1575,7 +1584,8 @@ bool QgsExpressionNodeFunction::prepareNode( QgsExpression *parent, const QgsExp
 
 QString QgsExpressionNodeFunction::dump() const
 {
-  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( mFnIndex );
   if ( fd->params() == 0 )
     return u"%1%2"_s.arg( fd->name(), fd->name().startsWith( '$' ) ? QString() : u"()"_s ); // special column
   else
@@ -1587,7 +1597,9 @@ QSet<QString> QgsExpressionNodeFunction::referencedColumns() const
   if ( hasCachedStaticValue() )
     return QSet< QString >();
 
-  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( mFnIndex );
+
   QSet<QString> functionColumns = fd->referencedColumns( this );
 
   if ( !mArgs )
@@ -1610,7 +1622,9 @@ QSet<QString> QgsExpressionNodeFunction::referencedColumns() const
 
 QSet<QString> QgsExpressionNodeFunction::referencedVariables() const
 {
-  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( mFnIndex );
+
   if ( fd->name() == "var"_L1 )
   {
     if ( !mArgs->list().isEmpty() )
@@ -1640,7 +1654,9 @@ QSet<QString> QgsExpressionNodeFunction::referencedVariables() const
 
 QSet<QString> QgsExpressionNodeFunction::referencedFunctions() const
 {
-  QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
+  const QgsExpression::FunctionListSnapshot functionsSnapshot = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functionsSnapshot->getFunction( mFnIndex );
+
   QSet<QString> functions = QSet<QString>();
   functions.insert( fd->name() );
 
@@ -1672,7 +1688,10 @@ QList<const QgsExpressionNode *> QgsExpressionNodeFunction::nodes() const
 
 bool QgsExpressionNodeFunction::needsGeometry() const
 {
-  bool needs = QgsExpression::QgsExpression::Functions()[mFnIndex]->usesGeometry( this );
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( mFnIndex );
+
+  bool needs = fd->usesGeometry( this );
   if ( mArgs )
   {
     const QList< QgsExpressionNode * > nodeList = mArgs->list();
@@ -1691,7 +1710,10 @@ QgsExpressionNode *QgsExpressionNodeFunction::clone() const
 
 bool QgsExpressionNodeFunction::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
 {
-  return QgsExpression::Functions()[mFnIndex]->isStatic( this, parent, context );
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( mFnIndex );
+
+  return fd->isStatic( this, parent, context );
 }
 
 QgsExpressionNode *QgsExpressionNodeFunction::simplifiedNode() const
@@ -1716,10 +1738,13 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
   if ( !args || !args->hasNamedNodes() )
     return true;
 
-  const QgsExpressionFunction::ParameterList &functionParams = QgsExpression::Functions()[fnIndex]->parameters();
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( fnIndex );
+
+  const QgsExpressionFunction::ParameterList &functionParams = fd->parameters();
   if ( functionParams.isEmpty() )
   {
-    error = u"%1 does not support named QgsExpressionFunction::Parameters"_s.arg( QgsExpression::Functions()[fnIndex]->name() );
+    error = u"%1 does not support named QgsExpressionFunction::Parameters"_s.arg( fd->name() );
     return false;
   }
   else
@@ -1743,7 +1768,7 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
       {
         if ( !functionParams.at( idx ).optional() )
         {
-          error = u"No value specified for QgsExpressionFunction::Parameter '%1' for %2"_s.arg( functionParams.at( idx ).name(), QgsExpression::Functions()[fnIndex]->name() );
+          error = u"No value specified for QgsExpressionFunction::Parameter '%1' for %2"_s.arg( functionParams.at( idx ).name(), fd->name() );
           return false;
         }
       }
@@ -1751,7 +1776,7 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
       {
         if ( providedArgs.contains( idx ) )
         {
-          error = u"Duplicate QgsExpressionFunction::Parameter specified for '%1' for %2"_s.arg( functionParams.at( idx ).name(), QgsExpression::Functions()[fnIndex]->name() );
+          error = u"Duplicate QgsExpressionFunction::Parameter specified for '%1' for %2"_s.arg( functionParams.at( idx ).name(), fd->name() );
           return false;
         }
       }
@@ -1766,7 +1791,7 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
     {
       if ( !name.isEmpty() && !functionParams.contains( name ) )
       {
-        error = u"Invalid QgsExpressionFunction::Parameter name '%1' for %2"_s.arg( name, QgsExpression::Functions()[fnIndex]->name() );
+        error = u"Invalid QgsExpressionFunction::Parameter name '%1' for %2"_s.arg( name, fd->name() );
         return false;
       }
       if ( !name.isEmpty() && !handledArgs.contains( idx ) )
@@ -1774,7 +1799,7 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
         int functionIdx = functionParams.indexOf( name );
         if ( providedArgs.contains( functionIdx ) )
         {
-          error = u"Duplicate QgsExpressionFunction::Parameter specified for '%1' for %2"_s.arg( functionParams.at( functionIdx ).name(), QgsExpression::Functions()[fnIndex]->name() );
+          error = u"Duplicate QgsExpressionFunction::Parameter specified for '%1' for %2"_s.arg( functionParams.at( functionIdx ).name(), fd->name() );
           return false;
         }
       }

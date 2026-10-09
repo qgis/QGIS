@@ -86,6 +86,7 @@ Implicit sharing was added in 2.14
 #include "qgsexpression.h"
 %End
   public:
+
     struct ParserError
     {
         enum ParserErrorType /BaseType=IntEnum/
@@ -504,9 +505,22 @@ double value.
       soWithin,
     };
 
-    static const QList<QgsExpressionFunction *> &Functions();
 
-    static const QStringList &BuiltinFunctions();
+ static QList<QgsExpressionFunction *> Functions();
+%Docstring
+Returns a list of all registered functions.
+
+.. warning::
+
+   This is not thread safe, and should not be called from outside the main thread.
+%End
+
+    static QStringList BuiltinFunctions();
+%Docstring
+Returns a list of the names of all built-in functions.
+
+The list also includes aliases of the built-in functions.
+%End
 
     static bool registerFunction( QgsExpressionFunction *function, bool transferOwnership = false );
 %Docstring
@@ -521,7 +535,6 @@ expressions to utilize the function.
 
 .. seealso:: :py:func:`unregisterFunction`
 %End
-
 
     static bool unregisterFunction( const QString &name );
 %Docstring
@@ -544,9 +557,13 @@ to the expression engine.
 tells whether the identifier is a name of existing function
 %End
 
-    static int functionIndex( const QString &name );
+ static int functionIndex( const QString &name );
 %Docstring
-Returns index of the function in Functions array
+Returns index of the function in Functions array.
+
+.. warning::
+
+   This is not thread safe, and should not be called from outside the main thread.
 %End
 
     static int functionCount();

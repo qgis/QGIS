@@ -563,7 +563,7 @@ void QgsApplication::init( QString profileFolder )
   // in such a way that these will be lazy loaded on first use, manually pre-loading them on the main
   // thread while nothing else is happening avoids ANY potential thread-safety issues with the lazy loading.
   // This is cheap to call anyway, so there's no harm in being overly vigilant...
-  ( void ) QgsExpression::Functions();
+  ( void ) QgsExpression::getFunctionsSnapshot();
 
   {
     QgsScopedRuntimeProfile profile( tr( "Load color schemes" ) );

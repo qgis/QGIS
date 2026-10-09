@@ -2497,7 +2497,9 @@ static bool isGeometryColumn( const QgsExpressionNode *node )
     return false;
 
   const QgsExpressionNodeFunction *fn = static_cast<const QgsExpressionNodeFunction *>( node );
-  QgsExpressionFunction *fd = QgsExpression::Functions()[fn->fnIndex()];
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( fn->fnIndex() );
+
   return fd->name() == "$geometry"_L1 || ( fd->name() == "var"_L1 && fn->referencedVariables().contains( "geometry"_L1 ) );
 }
 
@@ -2509,8 +2511,10 @@ static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
   if ( node->nodeType() == QgsExpressionNode::ntFunction )
   {
     const QgsExpressionNodeFunction *fnNode = static_cast<const QgsExpressionNodeFunction *>( node );
-    QgsExpressionFunction *fnDef = QgsExpression::Functions()[fnNode->fnIndex()];
-    if ( fnDef->name() == "geom_from_wkt"_L1 )
+
+    const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+    const QgsExpression::SharedFunctionPtr fd = functions->getFunction( fnNode->fnIndex() );
+    if ( fd->name() == "geom_from_wkt"_L1 )
     {
       const QList<QgsExpressionNode *> &args = fnNode->args()->list();
       if ( args[0]->nodeType() == QgsExpressionNode::ntLiteral )
@@ -2526,7 +2530,8 @@ static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
 
 QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExpressionNodeFunction *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
-  QgsExpressionFunction *fd = QgsExpression::Functions()[node->fnIndex()];
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( node->fnIndex() );
 
   if ( fd->name() == "intersects_bbox"_L1 )
   {
@@ -2592,7 +2597,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     }
 
     const QgsExpressionNodeFunction *otherFn = static_cast<const QgsExpressionNodeFunction *>( otherNode );
-    QgsExpressionFunction *otherFnDef = QgsExpression::Functions()[otherFn->fnIndex()];
+    const QgsExpression::SharedFunctionPtr otherFnDef = functions->getFunction( otherFn->fnIndex() );
     if ( otherFnDef->name() == "geom_from_wkt"_L1 )
     {
       QgsExpressionNode *firstFnArg = otherFn->args()->list()[0];
@@ -3689,7 +3694,9 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
 QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeSpatialOperatorFromOgcFilter( const QDomElement &element )
 {
   // we are exploiting the fact that our function names are the same as the XML tag names
-  const int opIdx = QgsExpression::functionIndex( element.tagName().toLower() );
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+
+  const int opIdx = functions->functionIndex( element.tagName().toLower() );
 
   auto gml2Args = std::make_unique<QgsExpressionNode::NodeList>();
   QDomElement childElem = element.firstChildElement();
@@ -3714,8 +3721,8 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeSpatialOperatorF
   }
 
   auto opArgs = std::make_unique<QgsExpressionNode::NodeList>();
-  opArgs->append( new QgsExpressionNodeFunction( QgsExpression::functionIndex( u"$geometry"_s ), new QgsExpressionNode::NodeList() ) );
-  opArgs->append( new QgsExpressionNodeFunction( QgsExpression::functionIndex( u"geomFromGML"_s ), gml2Args.release() ) );
+  opArgs->append( new QgsExpressionNodeFunction( functions->functionIndex( u"$geometry"_s ), new QgsExpressionNode::NodeList() ) );
+  opArgs->append( new QgsExpressionNodeFunction( functions->functionIndex( u"geomFromGML"_s ), gml2Args.release() ) );
 
   return new QgsExpressionNodeFunction( opIdx, opArgs.release() );
 }
@@ -3862,9 +3869,10 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeFunctionFromOgcF
     return nullptr;
   }
 
-  for ( int i = 0; i < QgsExpression::Functions().size(); i++ )
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  for ( int i = 0; i < functions->size(); i++ )
   {
-    const QgsExpressionFunction *funcDef = QgsExpression::Functions()[i];
+    const QgsExpression::SharedFunctionPtr funcDef = functions->getFunction( i );
 
     if ( element.attribute( u"name"_s ) != funcDef->name() )
       continue;

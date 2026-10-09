@@ -344,7 +344,9 @@ int QgsLabelPropertyDialog::dataDefinedColumnIndex( QgsPalLayerSettings::Propert
         else if ( node->nodeType() == QgsExpressionNode::ntFunction )
         {
           const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
-          if ( const QgsExpressionFunction *function = QgsExpression::QgsExpression::Functions()[functionNode->fnIndex()] )
+
+          const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+          if ( QgsExpression::SharedFunctionPtr function = functions->getFunction( functionNode->fnIndex() ) )
           {
             if ( function->name() == "coalesce"_L1 )
             {
