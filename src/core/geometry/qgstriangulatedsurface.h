@@ -121,7 +121,6 @@ class CORE_EXPORT QgsTriangulatedSurface : public QgsPolyhedralSurface
     QgsTriangulatedSurface *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
 
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    bool deleteVertex( QgsVertexId position ) override;
     bool deleteVertices( const QSet<QgsVertexId> &positions ) override;
 
     /**

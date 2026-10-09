@@ -617,38 +617,7 @@ bool QgsCircularString::insertVertex( QgsVertexId position, const QgsPoint &vert
   return true;
 }
 
-bool QgsCircularString::deleteVertex( QgsVertexId position )
-{
-  int nVertices = this->numPoints();
-
-  if ( position.vertex < 0 || position.vertex > ( nVertices - 1 ) )
-  {
-    return false;
-  }
-
-  if ( nVertices < 4 ) //circular string must have at least 3 vertices
-  {
-    clear();
-    return true;
-  }
-
-  if ( position.vertex < ( nVertices - 2 ) )
-  {
-    //remove this and the following vertex
-    deleteVertex( position.vertex + 1 );
-    deleteVertex( position.vertex );
-  }
-  else //remove this and the preceding vertex
-  {
-    deleteVertex( position.vertex );
-    deleteVertex( position.vertex - 1 );
-  }
-
-  clearCache(); //set bounding box invalid
-  return true;
-}
-
-void QgsCircularString::deleteVertex( int i )
+void QgsCircularString::removeVertexAt( int i )
 {
   mX.remove( i );
   mY.remove( i );
@@ -723,13 +692,13 @@ bool QgsCircularString::deleteVertices( const QSet<QgsVertexId> &positions )
 
     if ( currentVertexNr < nVertices - 2 )
     {
-      deleteVertex( currentVertexNr + 1 );
-      deleteVertex( currentVertexNr );
+      removeVertexAt( currentVertexNr + 1 );
+      removeVertexAt( currentVertexNr );
     }
     else
     {
-      deleteVertex( currentVertexNr );
-      deleteVertex( currentVertexNr - 1 );
+      removeVertexAt( currentVertexNr );
+      removeVertexAt( currentVertexNr - 1 );
     }
     nVertices -= 2;
   }
