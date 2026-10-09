@@ -817,7 +817,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   pbnMeasureColor->setContext( u"gui"_s );
   pbnMeasureColor->setDefaultColor( QColor( 222, 155, 67 ) );
 
-  int projOpen = QgisApp::settingsProjOpenAtLaunch->value();
+  mShowWelcomePageCheckBox->setChecked( QgisApp::settingsShowWelcomePage->value() );
+  const int projOpen = QgisApp::settingsProjOpenAtLaunch->value();
   mProjectOnLaunchCmbBx->setCurrentIndex( projOpen );
   mProjectOnLaunchLineEdit->setText( QgisApp::settingsProjOpenAtLaunchPath->value() );
   mProjectOnLaunchLineEdit->setEnabled( projOpen == 2 );
@@ -1497,7 +1498,7 @@ void QgsOptions::uiThemeChanged( const QString &theme )
 
 void QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged( int indx )
 {
-  bool specific = ( indx == 2 );
+  const bool specific = ( indx == 2 );
   mProjectOnLaunchLineEdit->setEnabled( specific );
   mProjectOnLaunchPushBtn->setEnabled( specific );
 }
@@ -1670,6 +1671,7 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsLayerTreeInsertionMethod->setValue( mLayerTreeInsertionMethod->currentData().value<Qgis::LayerTreeInsertionMethod>() );
 
   // project
+  QgisApp::settingsShowWelcomePage->setValue( mShowWelcomePageCheckBox->isChecked() );
   QgisApp::settingsProjOpenAtLaunch->setValue( mProjectOnLaunchCmbBx->currentIndex() );
   QgisApp::settingsProjOpenAtLaunchPath->setValue( mProjectOnLaunchLineEdit->text() );
 

@@ -511,7 +511,7 @@
                       </property>
                      </spacer>
                     </item>
-                    <item row="2" column="0">
+                    <item row="3" column="0">
                      <widget class="QCheckBox" name="cbxCheckVersion">
                       <property name="text">
                        <string>Check QGIS version at startup</string>
@@ -532,6 +532,16 @@
                      </widget>
                     </item>
                     <item row="1" column="0">
+                     <widget class="QCheckBox" name="mShowWelcomePageCheckBox">
+                      <property name="text">
+                       <string>Show welcome page at startup</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
                      <widget class="QCheckBox" name="cbxShowNews">
                       <property name="toolTip">
                        <string>If checked, QGIS project news is shown on the welcome page on startup</string>
@@ -544,7 +554,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="0">
+                    <item row="4" column="0">
                      <widget class="QCheckBox" name="mNativeColorDialogsChkBx">
                       <property name="text">
                        <string>Use native color chooser dialogs</string>
@@ -574,7 +584,7 @@
                       </property>
                       <item>
                        <property name="text">
-                        <string>Welcome Page</string>
+                        <string>New</string>
                        </property>
                       </item>
                       <item>
@@ -585,11 +595,6 @@
                       <item>
                        <property name="text">
                         <string>Specific</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>New</string>
                        </property>
                       </item>
                      </widget>

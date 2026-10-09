@@ -1016,6 +1016,7 @@ const QgsSettingsEntryBool *QgisApp::settingsAskToSaveProjectChanges
   = new QgsSettingsEntryBool( u"ask-to-save-project-changes"_s, QgsSettingsTree::sTreeProject, true, u"Whether to ask the user to save project changes when closing"_s );
 const QgsSettingsEntryBool *QgisApp::settingsWarnOldProjectVersion
   = new QgsSettingsEntryBool( u"warn-old-project-version"_s, QgsSettingsTree::sTreeProject, true, u"Whether to warn when opening a project saved with an older QGIS version"_s );
+const QgsSettingsEntryBool *QgisApp::settingsShowWelcomePage = new QgsSettingsEntryBool( u"show-welcome-page"_s, QgsSettingsTree::sTreeApp, true, u"Whether the welcome page is shown at QGIS startup"_s );
 const QgsSettingsEntryBool *QgisApp::settingsNewProjectDefault
   = new QgsSettingsEntryBool( u"new-project-default"_s, QgsSettingsTree::sTreeProject, false, u"Whether new projects open from the default project template"_s );
 const QgsSettingsEntryInteger *QgisApp::settingsProjOpenAtLaunch
@@ -1152,6 +1153,12 @@ QgisApp::QgisApp(
 
   // what type of project to auto-open
   mProjOpen = settingsProjOpenAtLaunch->value();
+  if ( mProjOpen == 3 )
+  {
+    // Pre QGIS 4.4 setting migration
+    mProjOpen = 0;
+    settingsProjOpenAtLaunch->setValue( mProjOpen );
+  }
 
   // a bar to warn the user with non-blocking messages
   startProfile( tr( "Message bar" ) );
@@ -2148,7 +2155,7 @@ QgisApp::QgisApp(
 
   updateRecentProjectPaths();
   mWelcomeScreen->setRecentProjects( mRecentProjects );
-  if ( !mProjOpen )
+  if ( settingsShowWelcomePage->value() )
   {
     mWelcomeScreen->showScene();
   }
@@ -6169,12 +6176,6 @@ void QgisApp::fileOpenAfterLaunch()
   // get path of project file to open, or was attempted
   QString projPath;
 
-  if ( mProjOpen == 0 ) // welcome page
-  {
-    connect( this, &QgisApp::newProject, this, &QgisApp::showMapCanvas );
-    connect( this, &QgisApp::projectRead, this, &QgisApp::showMapCanvas );
-    return;
-  }
   if ( mProjOpen == 1 && !mRecentProjects.isEmpty() ) // most recent project
   {
     projPath = mRecentProjects.at( 0 ).path;
@@ -6206,7 +6207,7 @@ void QgisApp::fileOpenAfterLaunch()
     return;
   }
 
-  if ( mProjOpen == 3 ) // new project
+  if ( mProjOpen == 0 ) // new project
   {
     // open default template, if defined
     if ( settingsNewProjectDefault->value() )
@@ -14721,7 +14722,6 @@ void QgisApp::showMapCanvas()
   if ( mCentralContainer )
   {
     mCentralContainer->setCurrentIndex( 0 );
-    mWelcomeScreen->hideScene();
   }
 }
 
