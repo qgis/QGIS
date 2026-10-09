@@ -80,7 +80,17 @@ bool QgsKeyValueWidgetWrapper::valid() const
 
 void QgsKeyValueWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
-  mWidget->setMap( value.toMap() );
+  QVariantMap mapValue = value.toMap();
+  // on a string field, we convert the json content to variant map
+  if ( field().type() == QMetaType::Type::QString )
+  {
+    const QJsonDocument doc = QJsonDocument::fromJson( value.toString().toUtf8() );
+    if ( !doc.isNull() && doc.isObject() )
+    {
+      mapValue = doc.object().toVariantMap();
+    }
+  }
+  mWidget->setMap( mapValue );
 }
 
 void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus()
