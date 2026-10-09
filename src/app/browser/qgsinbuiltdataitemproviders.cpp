@@ -1446,9 +1446,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
         if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::RenameField ) )
         {
           QAction *renameFieldAction = new QAction( tr( "Rename Field…" ), menu );
-          QgsFieldItem *fieldItem = qobject_cast<QgsFieldItem *>( item );
-
-          const QString itemName { fieldItem->field().name() };
+          const QString itemName { item->name() };
 
           connect( renameFieldAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, providerKey, context] {
             if ( !QgsProjectUtils::layersMatchingUri( QgsProject::instance(), providerKey, fieldsItem->connectionUri() ).isEmpty() )
