@@ -166,7 +166,7 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
     /**
      * Sets the domain for the field. The item will take ownership of the domain.
      *
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     void setDomain( QgsFieldDomain *domain SIP_TRANSFER );
 
