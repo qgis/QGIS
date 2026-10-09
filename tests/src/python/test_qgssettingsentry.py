@@ -464,7 +464,9 @@ class TestQgsSettingsEntry(QgisTestCase):
             settingsEntryEnum.defaultValue(), QgsUnitTypes.LayoutUnit.LayoutMeters
         )
         self.assertEqual(
-            settingsEntryEnum.valueWithDefaultOverride(QgsUnitTypes.LayoutUnit.LayoutFeet),
+            settingsEntryEnum.valueWithDefaultOverride(
+                QgsUnitTypes.LayoutUnit.LayoutFeet
+            ),
             QgsUnitTypes.LayoutUnit.LayoutFeet,
         )
 
