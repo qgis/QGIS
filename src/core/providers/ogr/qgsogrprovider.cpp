@@ -1799,7 +1799,7 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
 
 QString QgsOgrProvider::jsonStringValue( const QVariant &value ) const
 {
-  QString stringValue = QString::fromUtf8( QJsonDocument::fromVariant( value ).toJson().constData() );
+  QString stringValue = QString::fromUtf8( QJsonDocument::fromVariant( value ).toJson( QJsonDocument::JsonFormat::Compact ).constData() );
   if ( stringValue.isEmpty() )
   {
     //store as string, because it's no valid QJson value

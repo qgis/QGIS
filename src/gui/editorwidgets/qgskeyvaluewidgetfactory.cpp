@@ -46,8 +46,8 @@ QgsEditorConfigWidget *QgsKeyValueWidgetFactory::configWidget( QgsVectorLayer *v
 unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  // Handle the json field
-  if ( field.typeName().compare( u"json"_s, Qt::CaseInsensitive ) == 0 || field.typeName().compare( u"jsonb"_s, Qt::CaseInsensitive ) == 0 )
+  // on string or json fields, we checkt the first features
+  if ( field.type() == QMetaType::Type::QString || field.typeName().compare( u"json"_s, Qt::CaseInsensitive ) == 0 || field.typeName().compare( u"jsonb"_s, Qt::CaseInsensitive ) == 0 )
   {
     // Look for the values in the first 20 features check if it contains only maps
     const int MAX_FEATURE_LIMIT { 20 };
@@ -123,6 +123,19 @@ unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
         }
       }
     }
+    if ( field.type() == QMetaType::Type::QString )
+    {
+      // on string we maximum respond with 5 - it should not become best fit
+      if ( !foundInvalidValue )
+      {
+        return 5;
+      }
+      else
+      {
+        return 0;
+      }
+    }
+
     if ( foundNotNull )
     {
       if ( !foundInvalidValue )
