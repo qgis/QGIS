@@ -31,6 +31,8 @@ QgsProcessingParametersWidget::QgsProcessingParametersWidget( const QgsProcessin
   setupUi( this );
 
   grpAdvanced->hide();
+  grpOutputs->hide();
+
   scrollAreaWidgetContents->setContentsMargins( 4, 4, 4, 4 );
 }
 
@@ -58,7 +60,7 @@ void QgsProcessingParametersWidget::addParameterWidget( const QgsProcessingParam
   if ( parameter->flags() & Qgis::ProcessingParameterFlag::Advanced )
     mAdvancedGroupLayout->addWidget( widget, stretch );
   else
-    mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 2, widget, stretch );
+    mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 3, widget, stretch );
 }
 
 void QgsProcessingParametersWidget::addParameterLabel( const QgsProcessingParameterDefinition *parameter, QWidget *label )
@@ -66,17 +68,19 @@ void QgsProcessingParametersWidget::addParameterLabel( const QgsProcessingParame
   if ( parameter->flags() & Qgis::ProcessingParameterFlag::Advanced )
     mAdvancedGroupLayout->addWidget( label );
   else
-    mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 2, label );
+    mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 3, label );
 }
 
 void QgsProcessingParametersWidget::addOutputLabel( QWidget *label )
 {
-  mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 1, label );
+  grpOutputs->show();
+  mOutputGroupLayout->addWidget( label );
 }
 
 void QgsProcessingParametersWidget::addOutputWidget( QWidget *widget, int stretch )
 {
-  mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 1, widget, stretch );
+  grpOutputs->show();
+  mOutputGroupLayout->addWidget( widget, stretch );
 }
 
 void QgsProcessingParametersWidget::addExtraWidget( QWidget *widget )
