@@ -309,7 +309,7 @@ void TestQgsMapSettings::testIsLayerVisible()
   ms.setOutputSize( QSize( 100, 100 ) ); // this results in a scale roughly equal to 3779
 
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::mapSettingsScope( ms );
+  context << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::mapSettingsScope( ms );
 
   // test checking for visible layer by id
   QgsExpression e( u"is_layer_visible( '%1' )"_s.arg( vlA->id() ) );
@@ -332,20 +332,20 @@ void TestQgsMapSettings::testIsLayerVisible()
   QCOMPARE( r.toBool(), false );
   vlC->setMinimumScale( 100000 );
   QgsExpressionContext context2;
-  context2 << QgsExpressionContextUtils::mapSettingsScope( ms );
+  context2 << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::mapSettingsScope( ms );
   QgsExpression e6( u"is_layer_visible( '%1' )"_s.arg( vlC->name() ) );
   r = e6.evaluate( &context2 );
   QCOMPARE( r.toBool(), true );
   vlC->setMinimumScale( 0 );
   vlC->setMaximumScale( 5000 );
   QgsExpressionContext context3;
-  context3 << QgsExpressionContextUtils::mapSettingsScope( ms );
+  context3 << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::mapSettingsScope( ms );
   QgsExpression e7( u"is_layer_visible( '%1' )"_s.arg( vlC->name() ) );
   r = e7.evaluate( &context3 );
   QCOMPARE( r.toBool(), false );
   vlC->setMaximumScale( 200 );
   QgsExpressionContext context4;
-  context4 << QgsExpressionContextUtils::mapSettingsScope( ms );
+  context4 << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) << QgsExpressionContextUtils::mapSettingsScope( ms );
   QgsExpression e8( u"is_layer_visible( '%1' )"_s.arg( vlC->name() ) );
   r = e8.evaluate( &context4 );
   QCOMPARE( r.toBool(), true );
