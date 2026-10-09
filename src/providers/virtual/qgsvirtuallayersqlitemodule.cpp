@@ -880,8 +880,9 @@ void registerQgisFunctions( sqlite3 *db )
   QStringList reservedFunctions;
   reservedFunctions << u"left"_s << u"right"_s << u"union"_s;
   // register QGIS expression functions
-  const QList<QgsExpressionFunction *> functions = QgsExpression::Functions();
-  for ( QgsExpressionFunction *foo : functions )
+
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  for ( const QgsExpression::SharedFunctionPtr &foo : *functions )
   {
     if ( foo->usesGeometry( nullptr ) || foo->lazyEval() )
     {
@@ -911,13 +912,13 @@ void registerQgisFunctions( sqlite3 *db )
         continue;
 
       // register the function and pass the pointer to the Function* as user data
-      int r = sqlite3_create_function( db, name.toUtf8().constData(), params, SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+      int r = sqlite3_create_function( db, name.toUtf8().constData(), params, SQLITE_UTF8, foo.get(), qgisFunctionWrapper, nullptr, nullptr );
       if ( r != SQLITE_OK )
       {
         // is it because a function of the same name already exist (in SpatiaLite for instance ?)
         // we then try to recreate it with a prefix
         name = "qgis_" + name;
-        sqlite3_create_function( db, name.toUtf8().constData(), params, SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
+        sqlite3_create_function( db, name.toUtf8().constData(), params, SQLITE_UTF8, foo.get(), qgisFunctionWrapper, nullptr, nullptr );
       }
     }
   }

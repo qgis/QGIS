@@ -359,9 +359,12 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionParentFormAttributes( co
   const QSet<QString> formFunctions( qgis::listToSet( scope->functionNames() ).intersect( exp.referencedFunctions() ) );
   const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
   QgsExpressionContext context;
+
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+
   for ( const auto &f : expFunctions )
   {
-    QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+    const QgsExpression::SharedFunctionPtr fd = functions->getFunction( f->fnIndex() );
     if ( formFunctions.contains( fd->name() ) )
     {
       const QList<QgsExpressionNode *> cExpressionNodes { f->args()->list() };
@@ -383,9 +386,12 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QS
   const QSet<QString> formFunctions( qgis::listToSet( scope->functionNames() ).intersect( exp.referencedFunctions() ) );
   const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
   QgsExpressionContext context;
+
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+
   for ( const auto &f : expFunctions )
   {
-    QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+    const QgsExpression::SharedFunctionPtr fd = functions->getFunction( f->fnIndex() );
     if ( formFunctions.contains( fd->name() ) )
     {
       const QList<QgsExpressionNode *> cExpressionNodes { f->args()->list() };

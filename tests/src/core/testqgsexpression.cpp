@@ -4335,12 +4335,14 @@ class TestQgsExpression : public QObject
       QgsExpression exp( u"current_value( 'FIELD_NAME' ) = 'A_VALUE' AND intersects(buffer($geometry, 10), @current_geometry)"_s );
       QList<const QgsExpressionNodeFunction *> functionNodes( exp.findNodes<QgsExpressionNodeFunction>() );
       QCOMPARE( functionNodes.size(), 5 );
-      QgsExpressionFunction *fd;
       QSet<QString> actualFunctions;
+
+      const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+
       for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
-        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+        const QgsExpression::SharedFunctionPtr fd = functions->getFunction( f->fnIndex() );
         actualFunctions << fd->name();
       }
       QCOMPARE( actualFunctions, expectedFunctions );
@@ -4364,7 +4366,8 @@ class TestQgsExpression : public QObject
       for ( const QgsExpressionNodeFunction *f : std::as_const( functionNodes ) )
       {
         QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
-        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+
+        const QgsExpression::SharedFunctionPtr fd = functions->getFunction( f->fnIndex() );
         actualFunctions << fd->name();
       }
       expectedFunctions.clear();

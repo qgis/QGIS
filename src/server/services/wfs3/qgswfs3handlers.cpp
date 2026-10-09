@@ -4105,8 +4105,8 @@ void QgsWfs3FunctionsHandler::handleRequest( const QgsServerApiContext &context 
   // the CQL2 standard set (as per OGC CQL2 §7.7 conf/functions).
   json functionsArray = json::array();
 
-  const QList<QgsExpressionFunction *> &functions = QgsExpression::Functions();
-  for ( QgsExpressionFunction *func : functions )
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  for ( const QgsExpression::SharedFunctionPtr &func : *functions )
   {
     const QString name = func->name();
     if ( cql2StandardFunctions.contains( name ) )

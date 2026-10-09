@@ -326,7 +326,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      *
      * \note Not available in Python bindings
      */
-    SIP_SKIP static void registerContextFunctions();
+    SIP_SKIP static void registerContextFunctions( QgsExpression::SharedFunctionPtrList &functions );
 
     /**
      * Creates a new scope which contains functions relating to mesh layer element \a elementType

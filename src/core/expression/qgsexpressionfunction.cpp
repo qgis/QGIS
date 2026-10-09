@@ -77,12 +77,6 @@
 
 using namespace Qt::StringLiterals;
 
-typedef QList<QgsExpressionFunction *> ExpressionFunctionList;
-
-Q_GLOBAL_STATIC( ExpressionFunctionList, sOwnedFunctions )
-Q_GLOBAL_STATIC( QStringList, sBuiltinFunctions )
-Q_GLOBAL_STATIC( ExpressionFunctionList, sFunctions )
-
 Q_DECLARE_METATYPE( QgsSpatialIndex )
 Q_DECLARE_METATYPE( QgsExpressionContext )
 Q_DECLARE_METATYPE( std::shared_ptr<QgsVectorLayer> )
@@ -9158,12 +9152,10 @@ static QVariant fcnGeomOverlayNearest( const QVariantList &values, const QgsExpr
   return executeGeomOverlay( values, context, parent, geomFunction, false, 0, true );
 }
 
-const QList<QgsExpressionFunction *> &QgsExpression::Functions()
+const QgsExpression::FunctionListSnapshot QgsExpression::getFunctionsSnapshot()
 {
   static std::once_flag initialized;
   std::call_once( initialized, []() {
-    QList<QgsExpressionFunction *> &functions = *sFunctions();
-
     QgsExpressionFunction::ParameterList aggParams = QgsExpressionFunction::ParameterList()
                                                      << QgsExpressionFunction::Parameter( u"expression"_s )
                                                      << QgsExpressionFunction::Parameter( u"group_by"_s, true )
@@ -9175,12 +9167,14 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     QgsExpressionFunction::ParameterList aggParamsArray = aggParams;
     aggParamsArray << QgsExpressionFunction::Parameter( u"order_by"_s, true, QVariant(), true );
 
+    SharedFunctionPtrList functions;
     functions
-      << new QgsStaticExpressionFunction( u"sqrt"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnSqrt, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"radians"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"degrees"_s ), fcnRadians, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"degrees"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"radians"_s ), fcnDegrees, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"azimuth"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point1"_s ) << QgsExpressionFunction::Parameter( u"point2"_s ), fcnAzimuth, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"sqrt"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnSqrt, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"radians"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"degrees"_s ), fcnRadians, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"degrees"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"radians"_s ), fcnDegrees, u"Math"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"azimuth"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point1"_s ) << QgsExpressionFunction::Parameter( u"point2"_s ), fcnAzimuth, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"bearing"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"point1"_s )
@@ -9190,8 +9184,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnBearing,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"inclination"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point1"_s ) << QgsExpressionFunction::Parameter( u"point2"_s ), fcnInclination, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"inclination"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point1"_s ) << QgsExpressionFunction::Parameter( u"point2"_s ), fcnInclination, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"project"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"point"_s )
@@ -9201,30 +9196,29 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnProject,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"abs"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnAbs, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"cos"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"angle"_s ), fcnCos, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"sin"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"angle"_s ), fcnSin, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"tan"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"angle"_s ), fcnTan, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"asin"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnAsin, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"acos"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnAcos, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"atan"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnAtan, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"atan2"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"dx"_s ) << QgsExpressionFunction::Parameter( u"dy"_s ), fcnAtan2, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"exp"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnExp, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"ln"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnLn, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"log10"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnLog10, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"log"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"base"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnLog, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"round"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ) << QgsExpressionFunction::Parameter( u"places"_s, true, 0 ), fcnRound, u"Math"_s );
+      << std::make_shared< QgsStaticExpressionFunction >( u"abs"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnAbs, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"cos"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"angle"_s ), fcnCos, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"sin"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"angle"_s ), fcnSin, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"tan"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"angle"_s ), fcnTan, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"asin"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnAsin, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"acos"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnAcos, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"atan"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnAtan, u"Math"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"atan2"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"dx"_s ) << QgsExpressionFunction::Parameter( u"dy"_s ), fcnAtan2, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"exp"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnExp, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"ln"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnLn, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"log10"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnLog10, u"Math"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"log"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"base"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnLog, u"Math"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"round"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ) << QgsExpressionFunction::Parameter( u"places"_s, true, 0 ), fcnRound, u"Math"_s );
 
-    QgsStaticExpressionFunction *randFunc = new QgsStaticExpressionFunction(
-      u"rand"_s,
-      QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"min"_s ) << QgsExpressionFunction::Parameter( u"max"_s ) << QgsExpressionFunction::Parameter( u"seed"_s, true ),
-      fcnRnd,
-      u"Math"_s
-    );
+    auto randFunc = std::make_shared<
+      QgsStaticExpressionFunction >( u"rand"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"min"_s ) << QgsExpressionFunction::Parameter( u"max"_s ) << QgsExpressionFunction::Parameter( u"seed"_s, true ), fcnRnd, u"Math"_s );
     randFunc->setIsStatic( false );
     functions << randFunc;
 
-    QgsStaticExpressionFunction *randfFunc = new QgsStaticExpressionFunction(
+    auto randfFunc = std::make_shared< QgsStaticExpressionFunction >(
       u"randf"_s,
       QgsExpressionFunction::ParameterList()
         << QgsExpressionFunction::Parameter( u"min"_s, true, 0.0 )
@@ -9237,10 +9231,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions << randfFunc;
 
     functions
-      << new QgsStaticExpressionFunction( u"max"_s, -1, fcnMax, u"Math"_s, QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
-      << new QgsStaticExpressionFunction( u"min"_s, -1, fcnMin, u"Math"_s, QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
-      << new QgsStaticExpressionFunction( u"clamp"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"min"_s ) << QgsExpressionFunction::Parameter( u"value"_s ) << QgsExpressionFunction::Parameter( u"max"_s ), fcnClamp, u"Math"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"max"_s, -1, fcnMax, u"Math"_s, QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"min"_s, -1, fcnMin, u"Math"_s, QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"clamp"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"min"_s ) << QgsExpressionFunction::Parameter( u"value"_s ) << QgsExpressionFunction::Parameter( u"max"_s ), fcnClamp, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"scale_linear"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"value"_s )
@@ -9251,7 +9246,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnLinearScale,
            u"Math"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"scale_polynomial"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"value"_s )
@@ -9268,7 +9263,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"scale_exp"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"scale_exponential"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"value"_s )
@@ -9280,7 +9275,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnExponentialScale,
            u"Math"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"scale_cubic_bezier"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"value"_s )
@@ -9295,13 +9290,16 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnCubicBezierScale,
            u"Math"_s
          )
-      << new QgsStaticExpressionFunction( u"floor"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnFloor, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"ceil"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnCeil, u"Math"_s )
-      << new QgsStaticExpressionFunction( u"pi"_s, 0, fcnPi, u"Math"_s, QString(), false, QSet<QString>(), false, QStringList() << u"$pi"_s )
-      << new QgsStaticExpressionFunction( u"to_bool"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnToBool, u"Conversions"_s, QString(), false, QSet<QString>(), false, QStringList() << u"tobool"_s, /* handlesNull = */ true )
-      << new QgsStaticExpressionFunction( u"to_int"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnToInt, u"Conversions"_s, QString(), false, QSet<QString>(), false, QStringList() << u"toint"_s )
-      << new QgsStaticExpressionFunction( u"to_real"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnToReal, u"Conversions"_s, QString(), false, QSet<QString>(), false, QStringList() << u"toreal"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"floor"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnFloor, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"ceil"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnCeil, u"Math"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"pi"_s, 0, fcnPi, u"Math"_s, QString(), false, QSet<QString>(), false, QStringList() << u"$pi"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"to_bool"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnToBool, u"Conversions"_s, QString(), false, QSet<QString>(), false, QStringList() << u"tobool"_s, /* handlesNull = */ true )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"to_int"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnToInt, u"Conversions"_s, QString(), false, QSet<QString>(), false, QStringList() << u"toint"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"to_real"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnToReal, u"Conversions"_s, QString(), false, QSet<QString>(), false, QStringList() << u"toreal"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"to_string"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ),
            fcnToString,
@@ -9312,7 +9310,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"tostring"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"to_datetime"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"value"_s )
@@ -9326,7 +9324,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"todatetime"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"to_date"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"value"_s )
@@ -9340,7 +9338,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"todate"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"to_time"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"value"_s )
@@ -9354,7 +9352,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"totime"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"to_interval"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ),
            fcnToInterval,
@@ -9365,7 +9363,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"tointerval"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"to_dm"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"value"_s )
@@ -9380,7 +9378,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"todm"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"to_dms"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"value"_s )
@@ -9395,13 +9393,15 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"todms"_s
          )
-      << new QgsStaticExpressionFunction( u"to_decimal"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnToDecimal, u"Conversions"_s, QString(), false, QSet<QString>(), false, QStringList() << u"todecimal"_s )
-      << new QgsStaticExpressionFunction( u"extract_degrees"_s, { QgsExpressionFunction::Parameter { u"value"_s } }, fcnExtractDegrees, u"Conversions"_s )
-      << new QgsStaticExpressionFunction( u"extract_minutes"_s, { QgsExpressionFunction::Parameter { u"value"_s } }, fcnExtractMinutes, u"Conversions"_s )
-      << new QgsStaticExpressionFunction( u"extract_seconds"_s, { QgsExpressionFunction::Parameter { u"value"_s } }, fcnExtractSeconds, u"Conversions"_s )
-      << new QgsStaticExpressionFunction( u"coalesce"_s, -1, fcnCoalesce, u"Conditionals"_s, QString(), false, QSet<QString>(), false, QStringList(), true )
-      << new QgsStaticExpressionFunction( u"nullif"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value1"_s ) << QgsExpressionFunction::Parameter( u"value2"_s ), fcnNullIf, u"Conditionals"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"to_decimal"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnToDecimal, u"Conversions"_s, QString(), false, QSet<QString>(), false, QStringList() << u"todecimal"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"extract_degrees"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter { u"value"_s } }, fcnExtractDegrees, u"Conversions"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"extract_minutes"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter { u"value"_s } }, fcnExtractMinutes, u"Conversions"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"extract_seconds"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter { u"value"_s } }, fcnExtractSeconds, u"Conversions"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"coalesce"_s, -1, fcnCoalesce, u"Conditionals"_s, QString(), false, QSet<QString>(), false, QStringList(), true )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"nullif"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value1"_s ) << QgsExpressionFunction::Parameter( u"value2"_s ), fcnNullIf, u"Conditionals"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"if"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"condition"_s )
@@ -9414,7 +9414,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            QSet<QString>(),
            true
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"try"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"expression"_s ) << QgsExpressionFunction::Parameter( u"alternative"_s, true, QVariant() ),
            fcnTry,
@@ -9425,7 +9425,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            true
          )
 
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"aggregate"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"layer"_s )
@@ -9493,7 +9493,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            true
          )
 
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"relation_aggregate"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"relation"_s )
@@ -9509,30 +9509,31 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            true
          )
 
-      << new QgsStaticExpressionFunction( u"count"_s, aggParams, fcnAggregateCount, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"count_distinct"_s, aggParams, fcnAggregateCountDistinct, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"count_missing"_s, aggParams, fcnAggregateCountMissing, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"minimum"_s, aggParams, fcnAggregateMin, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"maximum"_s, aggParams, fcnAggregateMax, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"sum"_s, aggParams, fcnAggregateSum, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"mean"_s, aggParams, fcnAggregateMean, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"median"_s, aggParams, fcnAggregateMedian, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"stdev"_s, aggParams, fcnAggregateStdev, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"range"_s, aggParams, fcnAggregateRange, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"minority"_s, aggParams, fcnAggregateMinority, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"majority"_s, aggParams, fcnAggregateMajority, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"q1"_s, aggParams, fcnAggregateQ1, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"q3"_s, aggParams, fcnAggregateQ3, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"iqr"_s, aggParams, fcnAggregateIQR, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"min_length"_s, aggParams, fcnAggregateMinLength, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"max_length"_s, aggParams, fcnAggregateMaxLength, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"collect"_s, aggParams, fcnAggregateCollectGeometry, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"concatenate"_s, aggParamsConcat, fcnAggregateStringConcat, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"concatenate_unique"_s, aggParamsConcat, fcnAggregateStringConcatUnique, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
-      << new QgsStaticExpressionFunction( u"array_agg"_s, aggParamsArray, fcnAggregateArray, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"count"_s, aggParams, fcnAggregateCount, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"count_distinct"_s, aggParams, fcnAggregateCountDistinct, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"count_missing"_s, aggParams, fcnAggregateCountMissing, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"minimum"_s, aggParams, fcnAggregateMin, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"maximum"_s, aggParams, fcnAggregateMax, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"sum"_s, aggParams, fcnAggregateSum, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"mean"_s, aggParams, fcnAggregateMean, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"median"_s, aggParams, fcnAggregateMedian, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"stdev"_s, aggParams, fcnAggregateStdev, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"range"_s, aggParams, fcnAggregateRange, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"minority"_s, aggParams, fcnAggregateMinority, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"majority"_s, aggParams, fcnAggregateMajority, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"q1"_s, aggParams, fcnAggregateQ1, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"q3"_s, aggParams, fcnAggregateQ3, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"iqr"_s, aggParams, fcnAggregateIQR, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"min_length"_s, aggParams, fcnAggregateMinLength, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"max_length"_s, aggParams, fcnAggregateMaxLength, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"collect"_s, aggParams, fcnAggregateCollectGeometry, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"concatenate"_s, aggParamsConcat, fcnAggregateStringConcat, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"concatenate_unique"_s, aggParamsConcat, fcnAggregateStringConcatUnique, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_agg"_s, aggParamsArray, fcnAggregateArray, u"Aggregates"_s, QString(), false, QSet<QString>(), true )
 
-      << new QgsStaticExpressionFunction( u"regexp_match"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"regex"_s ), fcnRegexpMatch, QStringList() << u"Conditionals"_s << u"String"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"regexp_match"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"regex"_s ), fcnRegexpMatch, QStringList() << u"Conditionals"_s << u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"regexp_matches"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"string"_s )
@@ -9542,26 +9543,32 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            u"Arrays"_s
          )
 
-      << new QgsStaticExpressionFunction( u"now"_s, 0, fcnNow, u"Date and Time"_s, QString(), false, QSet<QString>(), false, QStringList() << u"$now"_s )
-      << new QgsStaticExpressionFunction( u"age"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"datetime1"_s ) << QgsExpressionFunction::Parameter( u"datetime2"_s ), fcnAge, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"year"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnYear, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"month"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnMonth, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"week"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnWeek, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"day"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnDay, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"hour"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"datetime"_s ), fcnHour, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"minute"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"datetime"_s ), fcnMinute, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"second"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"datetime"_s ), fcnSeconds, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"epoch"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnEpoch, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"datetime_from_epoch"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"long"_s ), fcnDateTimeFromEpoch, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"day_of_week"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnDayOfWeek, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"make_date"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"year"_s ) << QgsExpressionFunction::Parameter( u"month"_s ) << QgsExpressionFunction::Parameter( u"day"_s ), fcnMakeDate, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"now"_s, 0, fcnNow, u"Date and Time"_s, QString(), false, QSet<QString>(), false, QStringList() << u"$now"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"age"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"datetime1"_s ) << QgsExpressionFunction::Parameter( u"datetime2"_s ), fcnAge, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"year"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnYear, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"month"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnMonth, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"week"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnWeek, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"day"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnDay, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"hour"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"datetime"_s ), fcnHour, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"minute"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"datetime"_s ), fcnMinute, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"second"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"datetime"_s ), fcnSeconds, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"epoch"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnEpoch, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"datetime_from_epoch"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"long"_s ), fcnDateTimeFromEpoch, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"day_of_week"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"date"_s ), fcnDayOfWeek, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
+           u"make_date"_s,
+           QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"year"_s ) << QgsExpressionFunction::Parameter( u"month"_s ) << QgsExpressionFunction::Parameter( u"day"_s ),
+           fcnMakeDate,
+           u"Date and Time"_s
+         )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"make_time"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"hour"_s ) << QgsExpressionFunction::Parameter( u"minute"_s ) << QgsExpressionFunction::Parameter( u"second"_s ),
            fcnMakeTime,
            u"Date and Time"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"make_datetime"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"year"_s )
@@ -9573,7 +9580,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnMakeDateTime,
            u"Date and Time"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"make_interval"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"years"_s, true, 0 )
@@ -9586,13 +9593,15 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnMakeInterval,
            u"Date and Time"_s
          )
-      << new QgsStaticExpressionFunction( u"timezone_from_id"_s, { QgsExpressionFunction::Parameter( u"id"_s ) }, fcnTimeZoneFromId, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"timezone_id"_s, { QgsExpressionFunction::Parameter( u"timezone"_s ) }, fcnTimeZoneToId, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"get_timezone"_s, { QgsExpressionFunction::Parameter( u"datetime"_s ) }, fcnGetTimeZone, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"set_timezone"_s, { QgsExpressionFunction::Parameter( u"datetime"_s ), QgsExpressionFunction::Parameter( u"timezone"_s ) }, fcnSetTimeZone, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"convert_timezone"_s, { QgsExpressionFunction::Parameter( u"datetime"_s ), QgsExpressionFunction::Parameter( u"timezone"_s ) }, fcnConvertTimeZone, u"Date and Time"_s )
-      << new QgsStaticExpressionFunction( u"lower"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnLower, u"String"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"timezone_from_id"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"id"_s ) }, fcnTimeZoneFromId, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"timezone_id"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"timezone"_s ) }, fcnTimeZoneToId, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"get_timezone"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"datetime"_s ) }, fcnGetTimeZone, u"Date and Time"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"set_timezone"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"datetime"_s ), QgsExpressionFunction::Parameter( u"timezone"_s ) }, fcnSetTimeZone, u"Date and Time"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"convert_timezone"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"datetime"_s ), QgsExpressionFunction::Parameter( u"timezone"_s ) }, fcnConvertTimeZone, u"Date and Time"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"lower"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnLower, u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"substr_count"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"string"_s )
@@ -9601,19 +9610,24 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnSubstrCount,
            u"String"_s
          )
-      << new QgsStaticExpressionFunction( u"upper"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnUpper, u"String"_s )
-      << new QgsStaticExpressionFunction( u"title"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnTitle, u"String"_s )
-      << new QgsStaticExpressionFunction( u"trim"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnTrim, u"String"_s )
-      << new QgsStaticExpressionFunction( u"unaccent"_s, { QgsExpressionFunction::Parameter( u"string"_s ) }, fcnUnaccent, u"String"_s )
-      << new QgsStaticExpressionFunction( u"ltrim"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"characters"_s, true, u" "_s ), fcnLTrim, u"String"_s )
-      << new QgsStaticExpressionFunction( u"rtrim"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"characters"_s, true, u" "_s ), fcnRTrim, u"String"_s )
-      << new QgsStaticExpressionFunction( u"levenshtein"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string1"_s ) << QgsExpressionFunction::Parameter( u"string2"_s ), fcnLevenshtein, u"Fuzzy Matching"_s )
-      << new QgsStaticExpressionFunction( u"longest_common_substring"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string1"_s ) << QgsExpressionFunction::Parameter( u"string2"_s ), fcnLCS, u"Fuzzy Matching"_s )
-      << new QgsStaticExpressionFunction( u"hamming_distance"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string1"_s ) << QgsExpressionFunction::Parameter( u"string2"_s ), fcnHamming, u"Fuzzy Matching"_s )
-      << new QgsStaticExpressionFunction( u"soundex"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnSoundex, u"Fuzzy Matching"_s )
-      << new QgsStaticExpressionFunction( u"char"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"code"_s ), fcnChar, u"String"_s )
-      << new QgsStaticExpressionFunction( u"ascii"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnAscii, u"String"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"upper"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnUpper, u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"title"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnTitle, u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"trim"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnTrim, u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"unaccent"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"string"_s ) }, fcnUnaccent, u"String"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"ltrim"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"characters"_s, true, u" "_s ), fcnLTrim, u"String"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"rtrim"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"characters"_s, true, u" "_s ), fcnRTrim, u"String"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"levenshtein"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string1"_s ) << QgsExpressionFunction::Parameter( u"string2"_s ), fcnLevenshtein, u"Fuzzy Matching"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"longest_common_substring"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string1"_s ) << QgsExpressionFunction::Parameter( u"string2"_s ), fcnLCS, u"Fuzzy Matching"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"hamming_distance"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string1"_s ) << QgsExpressionFunction::Parameter( u"string2"_s ), fcnHamming, u"Fuzzy Matching"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"soundex"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnSoundex, u"Fuzzy Matching"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"char"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"code"_s ), fcnChar, u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"ascii"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnAscii, u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"wordwrap"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"text"_s )
@@ -9622,18 +9636,21 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnWordwrap,
            u"String"_s
          )
-      << new QgsStaticExpressionFunction( u"length"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"text"_s, true, "" ), fcnLength, QStringList() << u"String"_s << u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"length3D"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnLength3D, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"repeat"_s, { QgsExpressionFunction::Parameter( u"text"_s ), QgsExpressionFunction::Parameter( u"number"_s ) }, fcnRepeat, u"String"_s )
-      << new QgsStaticExpressionFunction( u"replace"_s, -1, fcnReplace, u"String"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"length"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"text"_s, true, "" ), fcnLength, QStringList() << u"String"_s << u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"length3D"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnLength3D, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"repeat"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"text"_s ), QgsExpressionFunction::Parameter( u"number"_s ) }, fcnRepeat, u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"replace"_s, -1, fcnReplace, u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"regexp_replace"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"input_string"_s ) << QgsExpressionFunction::Parameter( u"regex"_s ) << QgsExpressionFunction::Parameter( u"replacement"_s ),
            fcnRegexpReplace,
            u"String"_s
          )
-      << new QgsStaticExpressionFunction( u"regexp_substr"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"input_string"_s ) << QgsExpressionFunction::Parameter( u"regex"_s ), fcnRegexpSubstr, u"String"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"regexp_substr"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"input_string"_s ) << QgsExpressionFunction::Parameter( u"regex"_s ), fcnRegexpSubstr, u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"substr"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"start"_s ) << QgsExpressionFunction::Parameter( u"length"_s, true ),
            fcnSubstr,
@@ -9645,25 +9662,28 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            QStringList(),
            true
          )
-      << new QgsStaticExpressionFunction( u"concat"_s, -1, fcnConcat, u"String"_s, QString(), false, QSet<QString>(), false, QStringList(), true )
-      << new QgsStaticExpressionFunction( u"concat_ws"_s, -1, fcnConcatWs, u"String"_s, QString(), false, QSet<QString>(), false, QStringList(), true )
-      << new QgsStaticExpressionFunction( u"strpos"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"haystack"_s ) << QgsExpressionFunction::Parameter( u"needle"_s ), fcnStrpos, u"String"_s )
-      << new QgsStaticExpressionFunction( u"left"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnLeft, u"String"_s )
-      << new QgsStaticExpressionFunction( u"right"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnRight, u"String"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"concat"_s, -1, fcnConcat, u"String"_s, QString(), false, QSet<QString>(), false, QStringList(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"concat_ws"_s, -1, fcnConcatWs, u"String"_s, QString(), false, QSet<QString>(), false, QStringList(), true )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"strpos"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"haystack"_s ) << QgsExpressionFunction::Parameter( u"needle"_s ), fcnStrpos, u"String"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"left"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnLeft, u"String"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"right"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"length"_s ), fcnRight, u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"rpad"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s, true, u" "_s ),
            fcnRPad,
            u"String"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"lpad"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"width"_s ) << QgsExpressionFunction::Parameter( u"fill"_s, true, u" "_s ),
            fcnLPad,
            u"String"_s
          )
-      << new QgsStaticExpressionFunction( u"format"_s, -1, fcnFormatString, u"String"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"format"_s, -1, fcnFormatString, u"String"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"format_number"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"number"_s )
@@ -9674,7 +9694,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnFormatNumber,
            u"String"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"format_date"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"datetime"_s )
@@ -9683,21 +9703,22 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnFormatDate,
            QStringList() << u"String"_s << u"Date and Time"_s
          )
-      << new QgsStaticExpressionFunction( u"color_grayscale_average"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"color"_s ), fcnColorGrayscaleAverage, u"Color"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"color_grayscale_average"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"color"_s ), fcnColorGrayscaleAverage, u"Color"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_mix_rgb"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"color1"_s ) << QgsExpressionFunction::Parameter( u"color2"_s ) << QgsExpressionFunction::Parameter( u"ratio"_s ),
            fcnColorMixRgb,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_mix"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"color1"_s ) << QgsExpressionFunction::Parameter( u"color2"_s ) << QgsExpressionFunction::Parameter( u"ratio"_s ),
            fcnColorMix,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction( u"color_rgb"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"red"_s ) << QgsExpressionFunction::Parameter( u"green"_s ) << QgsExpressionFunction::Parameter( u"blue"_s ), fcnColorRgb, u"Color"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"color_rgb"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"red"_s ) << QgsExpressionFunction::Parameter( u"green"_s ) << QgsExpressionFunction::Parameter( u"blue"_s ), fcnColorRgb, u"Color"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_rgbf"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"red"_s )
@@ -9707,7 +9728,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnColorRgbF,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_rgba"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"red"_s )
@@ -9717,16 +9738,19 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fncColorRgba,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction( u"ramp_color"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"ramp_name"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnRampColor, u"Color"_s )
-      << new QgsStaticExpressionFunction( u"ramp_color_object"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"ramp_name"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnRampColorObject, u"Color"_s )
-      << new QgsStaticExpressionFunction( u"create_ramp"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"discrete"_s, true, false ), fcnCreateRamp, u"Color"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"ramp_color"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"ramp_name"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnRampColor, u"Color"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"ramp_color_object"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"ramp_name"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnRampColorObject, u"Color"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"create_ramp"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"discrete"_s, true, false ), fcnCreateRamp, u"Color"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_hsl"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"hue"_s ) << QgsExpressionFunction::Parameter( u"saturation"_s ) << QgsExpressionFunction::Parameter( u"lightness"_s ),
            fcnColorHsl,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_hsla"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"hue"_s )
@@ -9736,7 +9760,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fncColorHsla,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_hslf"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"hue"_s )
@@ -9746,13 +9770,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnColorHslF,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_hsv"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"hue"_s ) << QgsExpressionFunction::Parameter( u"saturation"_s ) << QgsExpressionFunction::Parameter( u"value"_s ),
            fcnColorHsv,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_hsva"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"hue"_s )
@@ -9762,7 +9786,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fncColorHsva,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_hsvf"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"hue"_s )
@@ -9772,7 +9796,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnColorHsvF,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_cmyk"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"cyan"_s )
@@ -9782,7 +9806,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnColorCmyk,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_cmyka"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"cyan"_s )
@@ -9793,7 +9817,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fncColorCmyka,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"color_cmykf"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"cyan"_s )
@@ -9804,10 +9828,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnColorCmykF,
            u"Color"_s
          )
-      << new QgsStaticExpressionFunction( u"color_part"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"color"_s ) << QgsExpressionFunction::Parameter( u"component"_s ), fncColorPart, u"Color"_s )
-      << new QgsStaticExpressionFunction( u"darker"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"color"_s ) << QgsExpressionFunction::Parameter( u"factor"_s ), fncDarker, u"Color"_s )
-      << new QgsStaticExpressionFunction( u"lighter"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"color"_s ) << QgsExpressionFunction::Parameter( u"factor"_s ), fncLighter, u"Color"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"color_part"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"color"_s ) << QgsExpressionFunction::Parameter( u"component"_s ), fncColorPart, u"Color"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"darker"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"color"_s ) << QgsExpressionFunction::Parameter( u"factor"_s ), fncDarker, u"Color"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"lighter"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"color"_s ) << QgsExpressionFunction::Parameter( u"factor"_s ), fncLighter, u"Color"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"set_color_part"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"color"_s ) << QgsExpressionFunction::Parameter( u"component"_s ) << QgsExpressionFunction::Parameter( u"value"_s ),
            fncSetColorPart,
@@ -9815,29 +9842,31 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
          )
 
       // file info
-      << new QgsStaticExpressionFunction( u"base_file_name"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnBaseFileName, u"Files and Paths"_s )
-      << new QgsStaticExpressionFunction( u"file_suffix"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnFileSuffix, u"Files and Paths"_s )
-      << new QgsStaticExpressionFunction( u"file_exists"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnFileExists, u"Files and Paths"_s )
-      << new QgsStaticExpressionFunction( u"file_name"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnFileName, u"Files and Paths"_s )
-      << new QgsStaticExpressionFunction( u"is_file"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnPathIsFile, u"Files and Paths"_s )
-      << new QgsStaticExpressionFunction( u"is_directory"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnPathIsDir, u"Files and Paths"_s )
-      << new QgsStaticExpressionFunction( u"file_path"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnFilePath, u"Files and Paths"_s )
-      << new QgsStaticExpressionFunction( u"file_size"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnFileSize, u"Files and Paths"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"base_file_name"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnBaseFileName, u"Files and Paths"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"file_suffix"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnFileSuffix, u"Files and Paths"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"file_exists"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnFileExists, u"Files and Paths"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"file_name"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnFileName, u"Files and Paths"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"is_file"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnPathIsFile, u"Files and Paths"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"is_directory"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnPathIsDir, u"Files and Paths"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"file_path"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnFilePath, u"Files and Paths"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"file_size"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnFileSize, u"Files and Paths"_s )
 
-      << new QgsStaticExpressionFunction( u"exif"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ) << QgsExpressionFunction::Parameter( u"tag"_s, true ), fcnExif, u"Files and Paths"_s )
-      << new QgsStaticExpressionFunction( u"exif_geotag"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnExifGeoTag, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"exif"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ) << QgsExpressionFunction::Parameter( u"tag"_s, true ), fcnExif, u"Files and Paths"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"exif_geotag"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"path"_s ), fcnExifGeoTag, u"GeometryGroup"_s )
 
       // hash
-      << new QgsStaticExpressionFunction( u"hash"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"method"_s ), fcnGenericHash, u"Conversions"_s )
-      << new QgsStaticExpressionFunction( u"md5"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnHashMd5, u"Conversions"_s )
-      << new QgsStaticExpressionFunction( u"sha256"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnHashSha256, u"Conversions"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"hash"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ) << QgsExpressionFunction::Parameter( u"method"_s ), fcnGenericHash, u"Conversions"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"md5"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnHashMd5, u"Conversions"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"sha256"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnHashSha256, u"Conversions"_s )
 
       //base64
-      << new QgsStaticExpressionFunction( u"to_base64"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnToBase64, u"Conversions"_s )
-      << new QgsStaticExpressionFunction( u"from_base64"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnFromBase64, u"Conversions"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"to_base64"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnToBase64, u"Conversions"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"from_base64"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnFromBase64, u"Conversions"_s )
 
       // magnetic models
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"magnetic_declination"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"model_name"_s )
@@ -9849,7 +9878,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnMagneticDeclination,
            u"MagneticModels"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"magnetic_inclination"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"model_name"_s )
@@ -9861,7 +9890,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnMagneticInclination,
            u"MagneticModels"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"magnetic_declination_rate_of_change"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"model_name"_s )
@@ -9873,7 +9902,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnMagneticDeclinationRateOfChange,
            u"MagneticModels"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"magnetic_inclination_rate_of_change"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"model_name"_s )
@@ -9887,39 +9916,39 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
          )
 
       // deprecated stuff - hidden from users
-      << new QgsStaticExpressionFunction( u"$scale"_s, QgsExpressionFunction::ParameterList(), fcnMapScale, u"deprecated"_s );
+      << std::make_shared< QgsStaticExpressionFunction >( u"$scale"_s, QgsExpressionFunction::ParameterList(), fcnMapScale, u"deprecated"_s );
 
-    QgsStaticExpressionFunction *geomFunc = new QgsStaticExpressionFunction( u"$geometry"_s, 0, fcnGeometry, u"GeometryGroup"_s, QString(), true );
+    auto geomFunc = std::make_shared< QgsStaticExpressionFunction >( u"$geometry"_s, 0, fcnGeometry, u"GeometryGroup"_s, QString(), true );
     geomFunc->setIsStatic( false );
     functions << geomFunc;
 
-    QgsStaticExpressionFunction *areaFunc = new QgsStaticExpressionFunction( u"$area"_s, 0, fcnGeomArea, u"GeometryGroup"_s, QString(), true );
+    auto areaFunc = std::make_shared< QgsStaticExpressionFunction >( u"$area"_s, 0, fcnGeomArea, u"GeometryGroup"_s, QString(), true );
     areaFunc->setIsStatic( false );
     functions << areaFunc;
 
-    functions << new QgsStaticExpressionFunction( u"area"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnArea, u"GeometryGroup"_s );
+    functions << std::make_shared< QgsStaticExpressionFunction >( u"area"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnArea, u"GeometryGroup"_s );
 
-    QgsStaticExpressionFunction *lengthFunc = new QgsStaticExpressionFunction( u"$length"_s, 0, fcnGeomLength, u"GeometryGroup"_s, QString(), true );
+    auto lengthFunc = std::make_shared< QgsStaticExpressionFunction >( u"$length"_s, 0, fcnGeomLength, u"GeometryGroup"_s, QString(), true );
     lengthFunc->setIsStatic( false );
     functions << lengthFunc;
 
-    QgsStaticExpressionFunction *perimeterFunc = new QgsStaticExpressionFunction( u"$perimeter"_s, 0, fcnGeomPerimeter, u"GeometryGroup"_s, QString(), true );
+    auto perimeterFunc = std::make_shared< QgsStaticExpressionFunction >( u"$perimeter"_s, 0, fcnGeomPerimeter, u"GeometryGroup"_s, QString(), true );
     perimeterFunc->setIsStatic( false );
     functions << perimeterFunc;
 
-    functions << new QgsStaticExpressionFunction( u"perimeter"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnPerimeter, u"GeometryGroup"_s );
+    functions << std::make_shared< QgsStaticExpressionFunction >( u"perimeter"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnPerimeter, u"GeometryGroup"_s );
 
-    functions << new QgsStaticExpressionFunction( u"roundness"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnRoundness, u"GeometryGroup"_s );
+    functions << std::make_shared< QgsStaticExpressionFunction >( u"roundness"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnRoundness, u"GeometryGroup"_s );
 
-    QgsStaticExpressionFunction *xFunc = new QgsStaticExpressionFunction( u"$x"_s, 0, fcnX, u"GeometryGroup"_s, QString(), true );
+    auto xFunc = std::make_shared< QgsStaticExpressionFunction >( u"$x"_s, 0, fcnX, u"GeometryGroup"_s, QString(), true );
     xFunc->setIsStatic( false );
     functions << xFunc;
 
-    QgsStaticExpressionFunction *yFunc = new QgsStaticExpressionFunction( u"$y"_s, 0, fcnY, u"GeometryGroup"_s, QString(), true );
+    auto yFunc = std::make_shared< QgsStaticExpressionFunction >( u"$y"_s, 0, fcnY, u"GeometryGroup"_s, QString(), true );
     yFunc->setIsStatic( false );
     functions << yFunc;
 
-    QgsStaticExpressionFunction *zFunc = new QgsStaticExpressionFunction( u"$z"_s, 0, fcnZ, u"GeometryGroup"_s, QString(), true );
+    auto zFunc = std::make_shared< QgsStaticExpressionFunction >( u"$z"_s, 0, fcnZ, u"GeometryGroup"_s, QString(), true );
     zFunc->setIsStatic( false );
     functions << zFunc;
 
@@ -9940,7 +9969,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     {
       i.next();
       QString defaultBackend = i.key() == "overlay_equals"_L1 ? QString( "QGIS" ) : QString( "GEOS" );
-      QgsStaticExpressionFunction *fcnGeomOverlayFunc = new QgsStaticExpressionFunction(
+      auto fcnGeomOverlayFunc = std::make_shared< QgsStaticExpressionFunction >(
         i.key(),
         QgsExpressionFunction::ParameterList()
           << QgsExpressionFunction::Parameter( u"layer"_s )
@@ -9967,7 +9996,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       functions << fcnGeomOverlayFunc;
     }
 
-    QgsStaticExpressionFunction *fcnGeomOverlayNearestFunc = new QgsStaticExpressionFunction(
+    auto fcnGeomOverlayNearestFunc = std::make_shared< QgsStaticExpressionFunction >(
       u"overlay_nearest"_s,
       QgsExpressionFunction::ParameterList()
         << QgsExpressionFunction::Parameter( u"layer"_s )
@@ -9988,28 +10017,31 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions << fcnGeomOverlayNearestFunc;
 
     functions
-      << new QgsStaticExpressionFunction( u"is_valid"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomIsValid, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"x"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomX, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"y"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomY, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"z"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomZ, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"m"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomM, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"point_n"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"index"_s ), fcnPointN, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"start_point"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnStartPoint, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"end_point"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnEndPoint, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"nodes_to_points"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"ignore_closing_nodes"_s, true, false ), fcnNodesToPoints, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"segments_to_lines"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnSegmentsToLines, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"collect_geometries"_s, -1, fcnCollectGeometries, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"make_point"_s, -1, fcnMakePoint, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"make_point_m"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"x"_s ) << QgsExpressionFunction::Parameter( u"y"_s ) << QgsExpressionFunction::Parameter( u"m"_s ), fcnMakePointM, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"make_line"_s, -1, fcnMakeLine, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"make_polygon"_s, -1, fcnMakePolygon, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"is_valid"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomIsValid, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"x"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomX, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"y"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomY, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"z"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomZ, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"m"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomM, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"point_n"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"index"_s ), fcnPointN, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"start_point"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnStartPoint, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"end_point"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnEndPoint, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"nodes_to_points"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"ignore_closing_nodes"_s, true, false ), fcnNodesToPoints, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"segments_to_lines"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnSegmentsToLines, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"collect_geometries"_s, -1, fcnCollectGeometries, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"make_point"_s, -1, fcnMakePoint, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"make_point_m"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"x"_s ) << QgsExpressionFunction::Parameter( u"y"_s ) << QgsExpressionFunction::Parameter( u"m"_s ), fcnMakePointM, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"make_line"_s, -1, fcnMakeLine, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"make_polygon"_s, -1, fcnMakePolygon, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"make_triangle"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point1"_s ) << QgsExpressionFunction::Parameter( u"point2"_s ) << QgsExpressionFunction::Parameter( u"point3"_s ),
            fcnMakeTriangle,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"make_circle"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"center"_s )
@@ -10018,7 +10050,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnMakeCircle,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"make_ellipse"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"center"_s )
@@ -10029,7 +10061,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnMakeEllipse,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"make_regular_polygon"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"center"_s )
@@ -10039,8 +10071,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnMakeRegularPolygon,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"make_square"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point1"_s ) << QgsExpressionFunction::Parameter( u"point2"_s ), fcnMakeSquare, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"make_square"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"point1"_s ) << QgsExpressionFunction::Parameter( u"point2"_s ), fcnMakeSquare, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"make_rectangle_3points"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"point1"_s )
@@ -10050,7 +10083,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnMakeRectangleFrom3Points,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"make_valid"_s,
            QgsExpressionFunction::ParameterList {
              QgsExpressionFunction::Parameter( u"geometry"_s ),
@@ -10065,38 +10098,45 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            u"GeometryGroup"_s
          );
 
-    functions
-      << new QgsStaticExpressionFunction( u"x_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s, true ) << QgsExpressionFunction::Parameter( u"vertex"_s, true ), fcnXat, u"GeometryGroup"_s );
-    functions
-      << new QgsStaticExpressionFunction( u"y_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s, true ) << QgsExpressionFunction::Parameter( u"vertex"_s, true ), fcnYat, u"GeometryGroup"_s );
-    functions
-      << new QgsStaticExpressionFunction( u"z_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"vertex"_s, true ), fcnZat, u"GeometryGroup"_s );
-    functions
-      << new QgsStaticExpressionFunction( u"m_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"vertex"_s, true ), fcnMat, u"GeometryGroup"_s );
+    functions << std::make_shared<
+      QgsStaticExpressionFunction >( u"x_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s, true ) << QgsExpressionFunction::Parameter( u"vertex"_s, true ), fcnXat, u"GeometryGroup"_s );
+    functions << std::make_shared<
+      QgsStaticExpressionFunction >( u"y_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s, true ) << QgsExpressionFunction::Parameter( u"vertex"_s, true ), fcnYat, u"GeometryGroup"_s );
+    functions << std::make_shared<
+      QgsStaticExpressionFunction >( u"z_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"vertex"_s, true ), fcnZat, u"GeometryGroup"_s );
+    functions << std::make_shared<
+      QgsStaticExpressionFunction >( u"m_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"vertex"_s, true ), fcnMat, u"GeometryGroup"_s );
 
-    QgsStaticExpressionFunction *xAtFunc
-      = new QgsStaticExpressionFunction( u"$x_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"vertex"_s ), fcnOldXat, u"GeometryGroup"_s, QString(), true, QSet<QString>(), false, QStringList() << u"xat"_s );
+    auto xAtFunc = std::make_shared<
+      QgsStaticExpressionFunction >( u"$x_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"vertex"_s ), fcnOldXat, u"GeometryGroup"_s, QString(), true, QSet<QString>(), false, QStringList() << u"xat"_s );
     xAtFunc->setIsStatic( false );
     functions << xAtFunc;
 
 
-    QgsStaticExpressionFunction *yAtFunc
-      = new QgsStaticExpressionFunction( u"$y_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"vertex"_s ), fcnOldYat, u"GeometryGroup"_s, QString(), true, QSet<QString>(), false, QStringList() << u"yat"_s );
+    auto yAtFunc = std::make_shared<
+      QgsStaticExpressionFunction >( u"$y_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"vertex"_s ), fcnOldYat, u"GeometryGroup"_s, QString(), true, QSet<QString>(), false, QStringList() << u"yat"_s );
     yAtFunc->setIsStatic( false );
     functions << yAtFunc;
 
     functions
-      << new QgsStaticExpressionFunction( u"geometry_type"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeometryType, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"x_min"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnXMin, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"xmin"_s )
-      << new QgsStaticExpressionFunction( u"x_max"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnXMax, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"xmax"_s )
-      << new QgsStaticExpressionFunction( u"y_min"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnYMin, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"ymin"_s )
-      << new QgsStaticExpressionFunction( u"y_max"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnYMax, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"ymax"_s )
-      << new QgsStaticExpressionFunction( u"geom_from_wkt"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"text"_s ), fcnGeomFromWKT, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"geomFromWKT"_s )
-      << new QgsStaticExpressionFunction( u"geom_from_wkb"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"binary"_s ), fcnGeomFromWKB, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false )
-      << new QgsStaticExpressionFunction( u"geom_from_gml"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"gml"_s ), fcnGeomFromGML, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"geomFromGML"_s )
-      << new QgsStaticExpressionFunction( u"flip_coordinates"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnFlipCoordinates, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"relate"_s, -1, fcnRelate, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"geometry_type"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeometryType, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"x_min"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnXMin, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"xmin"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"x_max"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnXMax, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"xmax"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"y_min"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnYMin, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"ymin"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"y_max"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnYMax, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"ymax"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"geom_from_wkt"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"text"_s ), fcnGeomFromWKT, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"geomFromWKT"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"geom_from_wkb"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"binary"_s ), fcnGeomFromWKB, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"geom_from_gml"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"gml"_s ), fcnGeomFromGML, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"geomFromGML"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"flip_coordinates"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnFlipCoordinates, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"relate"_s, -1, fcnRelate, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"intersects_bbox"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ),
            fcnBbox,
@@ -10107,15 +10147,23 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"bbox"_s
          )
-      << new QgsStaticExpressionFunction( u"disjoint"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnDisjoint, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"intersects"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnIntersects, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"touches"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnTouches, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"crosses"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnCrosses, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"contains"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnContains, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"overlaps"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnOverlaps, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"within"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnWithin, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"equals"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnEquals, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"disjoint"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnDisjoint, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"intersects"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnIntersects, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"touches"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnTouches, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"crosses"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnCrosses, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"contains"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnContains, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"overlaps"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnOverlaps, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"within"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnWithin, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"equals"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnEquals, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"equals_exact"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
@@ -10124,7 +10172,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnIsEqualsExact,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"equals_topological"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
@@ -10133,7 +10181,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnIsEqualsTopological,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"equals_fuzzy"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
@@ -10143,8 +10191,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnIsEqualsFuzzy,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"translate"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"dx"_s ) << QgsExpressionFunction::Parameter( u"dy"_s ), fcnTranslate, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
+           u"translate"_s,
+           QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"dx"_s ) << QgsExpressionFunction::Parameter( u"dy"_s ),
+           fcnTranslate,
+           u"GeometryGroup"_s
+         )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"rotate"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10154,7 +10207,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnRotate,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"scale"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10164,7 +10217,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnScale,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"affine_transform"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10180,7 +10233,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnAffineTransform,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"buffer"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10192,10 +10245,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnBuffer,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"force_rhr"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnForceRHR, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"force_polygon_cw"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnForcePolygonCW, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"force_polygon_ccw"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnForcePolygonCCW, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"force_rhr"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnForceRHR, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"force_polygon_cw"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnForcePolygonCW, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"force_polygon_ccw"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnForcePolygonCCW, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"wedge_buffer"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"center"_s )
@@ -10206,7 +10259,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnWedgeBuffer,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"tapered_buffer"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10216,8 +10269,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnTaperedBuffer,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"buffer_by_m"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"segments"_s, true, 8.0 ), fcnBufferByM, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"buffer_by_m"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"segments"_s, true, 8.0 ), fcnBufferByM, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"offset_curve"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10228,7 +10282,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnOffsetCurve,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"single_sided_buffer"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10239,7 +10293,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnSingleSidedBuffer,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"extend"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10250,20 +10304,27 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnExtend,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"centroid"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnCentroid, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"point_on_surface"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnPointOnSurface, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"pole_of_inaccessibility"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"tolerance"_s ), fcnPoleOfInaccessibility, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"reverse"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnReverse, { u"String"_s, u"GeometryGroup"_s } )
-      << new QgsStaticExpressionFunction( u"exterior_ring"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnExteriorRing, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"interior_ring_n"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"index"_s ), fcnInteriorRingN, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"geometry_n"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"index"_s ), fcnGeometryN, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"boundary"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnBoundary, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"line_merge"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnLineMerge, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"shared_paths"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"geometry1"_s ), QgsExpressionFunction::Parameter( u"geometry2"_s ) }, fcnSharedPaths, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"bounds"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnBounds, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"simplify"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"tolerance"_s ), fcnSimplify, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"simplify_vw"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"tolerance"_s ), fcnSimplifyVW, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"centroid"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnCentroid, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"point_on_surface"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnPointOnSurface, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"pole_of_inaccessibility"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"tolerance"_s ), fcnPoleOfInaccessibility, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"reverse"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnReverse, QStringList { u"String"_s, u"GeometryGroup"_s } )
+      << std::make_shared< QgsStaticExpressionFunction >( u"exterior_ring"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnExteriorRing, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"interior_ring_n"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"index"_s ), fcnInteriorRingN, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"geometry_n"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"index"_s ), fcnGeometryN, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"boundary"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnBoundary, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"line_merge"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnLineMerge, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"shared_paths"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"geometry1"_s ), QgsExpressionFunction::Parameter( u"geometry2"_s ) }, fcnSharedPaths, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"bounds"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnBounds, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"simplify"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"tolerance"_s ), fcnSimplify, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"simplify_vw"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"tolerance"_s ), fcnSimplifyVW, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"smooth"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10274,69 +10335,69 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnSmooth,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"triangular_wave"_s,
-           { QgsExpressionFunction::Parameter( u"geometry"_s ),
-             QgsExpressionFunction::Parameter( u"wavelength"_s ),
-             QgsExpressionFunction::Parameter( u"amplitude"_s ),
-             QgsExpressionFunction::Parameter( u"strict"_s, true, false ) },
+           QgsExpressionFunction::
+             ParameterList { QgsExpressionFunction::Parameter( u"geometry"_s ), QgsExpressionFunction::Parameter( u"wavelength"_s ), QgsExpressionFunction::Parameter( u"amplitude"_s ), QgsExpressionFunction::Parameter( u"strict"_s, true, false ) },
            fcnTriangularWave,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"triangular_wave_randomized"_s,
-           { QgsExpressionFunction::Parameter( u"geometry"_s ),
+           QgsExpressionFunction::ParameterList {
+             QgsExpressionFunction::Parameter( u"geometry"_s ),
              QgsExpressionFunction::Parameter( u"min_wavelength"_s ),
              QgsExpressionFunction::Parameter( u"max_wavelength"_s ),
              QgsExpressionFunction::Parameter( u"min_amplitude"_s ),
              QgsExpressionFunction::Parameter( u"max_amplitude"_s ),
-             QgsExpressionFunction::Parameter( u"seed"_s, true, 0 ) },
+             QgsExpressionFunction::Parameter( u"seed"_s, true, 0 )
+           },
            fcnTriangularWaveRandomized,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"square_wave"_s,
-           { QgsExpressionFunction::Parameter( u"geometry"_s ),
-             QgsExpressionFunction::Parameter( u"wavelength"_s ),
-             QgsExpressionFunction::Parameter( u"amplitude"_s ),
-             QgsExpressionFunction::Parameter( u"strict"_s, true, false ) },
+           QgsExpressionFunction::
+             ParameterList { QgsExpressionFunction::Parameter( u"geometry"_s ), QgsExpressionFunction::Parameter( u"wavelength"_s ), QgsExpressionFunction::Parameter( u"amplitude"_s ), QgsExpressionFunction::Parameter( u"strict"_s, true, false ) },
            fcnSquareWave,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"square_wave_randomized"_s,
-           { QgsExpressionFunction::Parameter( u"geometry"_s ),
+           QgsExpressionFunction::ParameterList {
+             QgsExpressionFunction::Parameter( u"geometry"_s ),
              QgsExpressionFunction::Parameter( u"min_wavelength"_s ),
              QgsExpressionFunction::Parameter( u"max_wavelength"_s ),
              QgsExpressionFunction::Parameter( u"min_amplitude"_s ),
              QgsExpressionFunction::Parameter( u"max_amplitude"_s ),
-             QgsExpressionFunction::Parameter( u"seed"_s, true, 0 ) },
+             QgsExpressionFunction::Parameter( u"seed"_s, true, 0 )
+           },
            fcnSquareWaveRandomized,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"wave"_s,
-           { QgsExpressionFunction::Parameter( u"geometry"_s ),
-             QgsExpressionFunction::Parameter( u"wavelength"_s ),
-             QgsExpressionFunction::Parameter( u"amplitude"_s ),
-             QgsExpressionFunction::Parameter( u"strict"_s, true, false ) },
+           QgsExpressionFunction::
+             ParameterList { QgsExpressionFunction::Parameter( u"geometry"_s ), QgsExpressionFunction::Parameter( u"wavelength"_s ), QgsExpressionFunction::Parameter( u"amplitude"_s ), QgsExpressionFunction::Parameter( u"strict"_s, true, false ) },
            fcnRoundWave,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"wave_randomized"_s,
-           { QgsExpressionFunction::Parameter( u"geometry"_s ),
+           QgsExpressionFunction::ParameterList {
+             QgsExpressionFunction::Parameter( u"geometry"_s ),
              QgsExpressionFunction::Parameter( u"min_wavelength"_s ),
              QgsExpressionFunction::Parameter( u"max_wavelength"_s ),
              QgsExpressionFunction::Parameter( u"min_amplitude"_s ),
              QgsExpressionFunction::Parameter( u"max_amplitude"_s ),
-             QgsExpressionFunction::Parameter( u"seed"_s, true, 0 ) },
+             QgsExpressionFunction::Parameter( u"seed"_s, true, 0 )
+           },
            fcnRoundWaveRandomized,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"apply_dash_pattern"_s,
-           {
+           QgsExpressionFunction::ParameterList {
              QgsExpressionFunction::Parameter( u"geometry"_s ),
              QgsExpressionFunction::Parameter( u"pattern"_s ),
              QgsExpressionFunction::Parameter( u"start_rule"_s, true, u"no_rule"_s ),
@@ -10347,18 +10408,20 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnApplyDashPattern,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"densify_by_count"_s, { QgsExpressionFunction::Parameter( u"geometry"_s ), QgsExpressionFunction::Parameter( u"vertices"_s ) }, fcnDensifyByCount, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"densify_by_distance"_s, { QgsExpressionFunction::Parameter( u"geometry"_s ), QgsExpressionFunction::Parameter( u"distance"_s ) }, fcnDensifyByDistance, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"num_points"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomNumPoints, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"num_interior_rings"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomNumInteriorRings, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"num_rings"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomNumRings, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"num_geometries"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomNumGeometries, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"bounds_width"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnBoundsWidth, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"bounds_height"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnBoundsHeight, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"is_closed"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnIsClosed, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"close_line"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnCloseLine, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"is_empty"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnIsEmpty, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"densify_by_count"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"geometry"_s ), QgsExpressionFunction::Parameter( u"vertices"_s ) }, fcnDensifyByCount, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"densify_by_distance"_s, QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"geometry"_s ), QgsExpressionFunction::Parameter( u"distance"_s ) }, fcnDensifyByDistance, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"num_points"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomNumPoints, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"num_interior_rings"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomNumInteriorRings, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"num_rings"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomNumRings, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"num_geometries"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomNumGeometries, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"bounds_width"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnBoundsWidth, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"bounds_height"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnBoundsHeight, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"is_closed"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnIsClosed, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"close_line"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnCloseLine, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"is_empty"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnIsEmpty, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"is_empty_or_null"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ),
            fcnIsEmptyOrNull,
@@ -10370,9 +10433,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            QStringList(),
            true
          )
-      << new QgsStaticExpressionFunction( u"convex_hull"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnConvexHull, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"convexHull"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"convex_hull"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnConvexHull, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false, QStringList() << u"convexHull"_s )
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 11 )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"concave_hull"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10382,12 +10446,15 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            u"GeometryGroup"_s
          )
 #endif
-      << new QgsStaticExpressionFunction( u"oriented_bbox"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnOrientedBBox, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"main_angle"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnMainAngle, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"minimal_circle"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"segments"_s, true, 36 ), fcnMinimalCircle, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"difference"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnDifference, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"distance"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnDistance, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"oriented_bbox"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnOrientedBBox, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"main_angle"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnMainAngle, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"minimal_circle"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"segments"_s, true, 36 ), fcnMinimalCircle, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"difference"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnDifference, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"distance"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnDistance, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"hausdorff_distance"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry1"_s )
@@ -10396,8 +10463,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnHausdorffDistance,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"intersection"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnIntersection, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"intersection"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnIntersection, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"sym_difference"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ),
            fcnSymDifference,
@@ -10408,9 +10476,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"symDifference"_s
          )
-      << new QgsStaticExpressionFunction( u"combine"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnCombine, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"union"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnCombine, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"combine"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnCombine, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"union"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnCombine, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"geom_to_wkt"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"precision"_s, true, 8.0 ),
            fcnGeomToWKT,
@@ -10421,31 +10491,34 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"geomToWKT"_s
          )
-      << new QgsStaticExpressionFunction( u"geom_to_wkb"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomToWKB, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false )
-      << new QgsStaticExpressionFunction( u"geometry"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"feature"_s ), fcnGetGeometry, u"GeometryGroup"_s, QString(), true )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"geom_to_wkb"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomToWKB, u"GeometryGroup"_s, QString(), false, QSet<QString>(), false )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"geometry"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"feature"_s ), fcnGetGeometry, u"GeometryGroup"_s, QString(), true )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"transform"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"source_auth_id"_s ) << QgsExpressionFunction::Parameter( u"dest_auth_id"_s ),
            fcnTransformGeometry,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"extrude"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"x"_s ) << QgsExpressionFunction::Parameter( u"y"_s ),
            fcnExtrude,
            u"GeometryGroup"_s,
            QString()
          )
-      << new QgsStaticExpressionFunction( u"is_multipart"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomIsMultipart, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"z_max"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnZMax, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"z_min"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnZMin, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"m_max"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnMMax, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"m_min"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnMMin, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"sinuosity"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnSinuosity, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"straight_distance_2d"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnStraightDistance2d, u"GeometryGroup"_s );
+      << std::make_shared< QgsStaticExpressionFunction >( u"is_multipart"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnGeomIsMultipart, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"z_max"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnZMax, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"z_min"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnZMin, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"m_max"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnMMax, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"m_min"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnMMin, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"sinuosity"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnSinuosity, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"straight_distance_2d"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ), fcnStraightDistance2d, u"GeometryGroup"_s );
 
 
-    QgsStaticExpressionFunction *orderPartsFunc = new QgsStaticExpressionFunction(
+    auto orderPartsFunc = std::make_shared< QgsStaticExpressionFunction >(
       u"order_parts"_s,
       QgsExpressionFunction::ParameterList()
         << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10493,10 +10566,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions << orderPartsFunc;
 
     functions
-      << new QgsStaticExpressionFunction( u"closest_point"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnClosestPoint, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"shortest_line"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnShortestLine, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"line_interpolate_point"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"distance"_s ), fcnLineInterpolatePoint, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"closest_point"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnClosestPoint, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"shortest_line"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s ) << QgsExpressionFunction::Parameter( u"geometry2"_s ), fcnShortestLine, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"line_interpolate_point"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"distance"_s ), fcnLineInterpolatePoint, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"line_interpolate_point_by_m"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10505,9 +10581,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnLineInterpolatePointByM,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"line_interpolate_angle"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"distance"_s ), fcnLineInterpolateAngle, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"line_locate_point"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"point"_s ), fcnLineLocatePoint, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"line_interpolate_angle"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"distance"_s ), fcnLineInterpolateAngle, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"line_locate_point"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"point"_s ), fcnLineLocatePoint, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"line_locate_m"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"geometry"_s )
@@ -10516,9 +10594,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnLineLocateM,
            u"GeometryGroup"_s
          )
-      << new QgsStaticExpressionFunction( u"angle_at_vertex"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"vertex"_s ), fcnAngleAtVertex, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction( u"distance_to_vertex"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"vertex"_s ), fcnDistanceToVertex, u"GeometryGroup"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"angle_at_vertex"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"vertex"_s ), fcnAngleAtVertex, u"GeometryGroup"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"distance_to_vertex"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"vertex"_s ), fcnDistanceToVertex, u"GeometryGroup"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"line_substring"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s ) << QgsExpressionFunction::Parameter( u"start_distance"_s ) << QgsExpressionFunction::Parameter( u"end_distance"_s ),
            fcnLineSubset,
@@ -10528,17 +10608,17 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     // **Record** functions
 
-    QgsStaticExpressionFunction *idFunc = new QgsStaticExpressionFunction( u"$id"_s, 0, fcnFeatureId, u"Record and Attributes"_s );
+    auto idFunc = std::make_shared< QgsStaticExpressionFunction >( u"$id"_s, 0, fcnFeatureId, u"Record and Attributes"_s );
     idFunc->setIsStatic( false );
     functions << idFunc;
 
-    QgsStaticExpressionFunction *currentFeatureFunc = new QgsStaticExpressionFunction( u"$currentfeature"_s, 0, fcnFeature, u"Record and Attributes"_s );
+    auto currentFeatureFunc = std::make_shared< QgsStaticExpressionFunction >( u"$currentfeature"_s, 0, fcnFeature, u"Record and Attributes"_s );
     currentFeatureFunc->setIsStatic( false );
     functions << currentFeatureFunc;
 
-    QgsStaticExpressionFunction *uuidFunc = new QgsStaticExpressionFunction(
+    auto uuidFunc = std::make_shared< QgsStaticExpressionFunction >(
       u"uuid"_s,
-      { QgsExpressionFunction::Parameter( u"format"_s, true, u"WithBraces"_s ), QgsExpressionFunction::Parameter( u"version"_s, true, 4 ) },
+      QgsExpressionFunction::ParameterList { QgsExpressionFunction::Parameter( u"format"_s, true, u"WithBraces"_s ), QgsExpressionFunction::Parameter( u"version"_s, true, 4 ) },
       fcnUuid,
       u"Record and Attributes"_s,
       QString(),
@@ -10551,8 +10631,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions << uuidFunc;
 
     functions
-      << new QgsStaticExpressionFunction( u"feature_id"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"feature"_s ), fcnGetFeatureId, u"Record and Attributes"_s, QString(), true )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"feature_id"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"feature"_s ), fcnGetFeatureId, u"Record and Attributes"_s, QString(), true )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"get_feature"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"layer"_s ) << QgsExpressionFunction::Parameter( u"attribute"_s ) << QgsExpressionFunction::Parameter( u"value"_s, true ),
            fcnGetFeature,
@@ -10563,7 +10644,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false,
            QStringList() << u"QgsExpressionUtils::getFeature"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"get_feature_by_id"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"layer"_s ) << QgsExpressionFunction::Parameter( u"feature_id"_s ),
            fcnGetFeatureById,
@@ -10574,7 +10655,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            false
          );
 
-    QgsStaticExpressionFunction *attributesFunc = new QgsStaticExpressionFunction(
+    auto attributesFunc = std::make_shared< QgsStaticExpressionFunction >(
       u"attributes"_s,
       QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"feature"_s, true ),
       fcnAttributes,
@@ -10585,12 +10666,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     );
     attributesFunc->setIsStatic( false );
     functions << attributesFunc;
-    QgsStaticExpressionFunction *representAttributesFunc
-      = new QgsStaticExpressionFunction( u"represent_attributes"_s, -1, fcnRepresentAttributes, u"Record and Attributes"_s, QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    auto representAttributesFunc = std::make_shared<
+      QgsStaticExpressionFunction >( u"represent_attributes"_s, -1, fcnRepresentAttributes, u"Record and Attributes"_s, QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     representAttributesFunc->setIsStatic( false );
     functions << representAttributesFunc;
 
-    QgsStaticExpressionFunction *validateFeature = new QgsStaticExpressionFunction(
+    auto validateFeature = std::make_shared< QgsStaticExpressionFunction >(
       u"is_feature_valid"_s,
       QgsExpressionFunction::ParameterList()
         << QgsExpressionFunction::Parameter( u"layer"_s, true )
@@ -10605,7 +10686,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     validateFeature->setIsStatic( false );
     functions << validateFeature;
 
-    QgsStaticExpressionFunction *validateAttribute = new QgsStaticExpressionFunction(
+    auto validateAttribute = std::make_shared< QgsStaticExpressionFunction >(
       u"is_attribute_valid"_s,
       QgsExpressionFunction::ParameterList()
         << QgsExpressionFunction::Parameter( u"attribute"_s, false )
@@ -10622,21 +10703,21 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     validateAttribute->setIsStatic( false );
     functions << validateAttribute;
 
-    QgsStaticExpressionFunction *maptipFunc = new QgsStaticExpressionFunction( u"maptip"_s, -1, fcnFeatureMaptip, u"Record and Attributes"_s, QString(), false, QSet<QString>() );
+    auto maptipFunc = std::make_shared< QgsStaticExpressionFunction >( u"maptip"_s, -1, fcnFeatureMaptip, u"Record and Attributes"_s, QString(), false, QSet<QString>() );
     maptipFunc->setIsStatic( false );
     functions << maptipFunc;
 
-    QgsStaticExpressionFunction *displayFunc = new QgsStaticExpressionFunction( u"display_expression"_s, -1, fcnFeatureDisplayExpression, u"Record and Attributes"_s, QString(), false, QSet<QString>() );
+    auto displayFunc = std::make_shared< QgsStaticExpressionFunction >( u"display_expression"_s, -1, fcnFeatureDisplayExpression, u"Record and Attributes"_s, QString(), false, QSet<QString>() );
     displayFunc->setIsStatic( false );
     functions << displayFunc;
 
-    QgsStaticExpressionFunction *isSelectedFunc = new QgsStaticExpressionFunction( u"is_selected"_s, -1, fcnIsSelected, u"Record and Attributes"_s, QString(), false, QSet<QString>() );
+    auto isSelectedFunc = std::make_shared< QgsStaticExpressionFunction >( u"is_selected"_s, -1, fcnIsSelected, u"Record and Attributes"_s, QString(), false, QSet<QString>() );
     isSelectedFunc->setIsStatic( false );
     functions << isSelectedFunc;
 
-    functions << new QgsStaticExpressionFunction( u"num_selected"_s, -1, fcnNumSelected, u"Record and Attributes"_s, QString(), false, QSet<QString>() );
+    functions << std::make_shared< QgsStaticExpressionFunction >( u"num_selected"_s, -1, fcnNumSelected, u"Record and Attributes"_s, QString(), false, QSet<QString>() );
 
-    functions << new QgsStaticExpressionFunction(
+    functions << std::make_shared< QgsStaticExpressionFunction >(
       u"sqlite_fetch_and_increment"_s,
       QgsExpressionFunction::ParameterList()
         << QgsExpressionFunction::Parameter( u"database"_s )
@@ -10651,13 +10732,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     // **CRS** functions
     functions
-      << new QgsStaticExpressionFunction( u"crs_to_authid"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"crs"_s ), fcnCrsToAuthid, u"CRS"_s, QString(), true )
-      << new QgsStaticExpressionFunction( u"crs_from_text"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"definition"_s ), fcnCrsFromText, u"CRS"_s );
+      << std::make_shared< QgsStaticExpressionFunction >( u"crs_to_authid"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"crs"_s ), fcnCrsToAuthid, u"CRS"_s, QString(), true )
+      << std::make_shared< QgsStaticExpressionFunction >( u"crs_from_text"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"definition"_s ), fcnCrsFromText, u"CRS"_s );
 
 
     // **Fields and Values** functions
-    QgsStaticExpressionFunction *representValueFunc
-      = new QgsStaticExpressionFunction( u"represent_value"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"attribute"_s ) << QgsExpressionFunction::Parameter( u"field_name"_s, true ), fcnRepresentValue, u"Record and Attributes"_s );
+    auto representValueFunc = std::make_shared<
+      QgsStaticExpressionFunction >( u"represent_value"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"attribute"_s ) << QgsExpressionFunction::Parameter( u"field_name"_s, true ), fcnRepresentValue, u"Record and Attributes"_s );
 
     representValueFunc->setPrepareFunction( []( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) {
       Q_UNUSED( context )
@@ -10689,7 +10770,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     // **General** functions
     functions
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"layer_property"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"layer"_s )
@@ -10698,9 +10779,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnGetLayerProperty,
            u"Map Layers"_s
          )
-      << new QgsStaticExpressionFunction( u"decode_uri"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"layer"_s ) << QgsExpressionFunction::Parameter( u"part"_s, true ), fcnDecodeUri, u"Map Layers"_s )
-      << new QgsStaticExpressionFunction( u"mime_type"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"binary_data"_s ), fcnMimeType, u"General"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"decode_uri"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"layer"_s ) << QgsExpressionFunction::Parameter( u"part"_s, true ), fcnDecodeUri, u"Map Layers"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"mime_type"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"binary_data"_s ), fcnMimeType, u"General"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"raster_statistic"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"layer"_s ) << QgsExpressionFunction::Parameter( u"band"_s ) << QgsExpressionFunction::Parameter( u"statistic"_s ),
            fcnGetRasterBandStat,
@@ -10708,8 +10790,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
          );
 
     // **var** function
-    QgsStaticExpressionFunction *varFunction
-      = new QgsStaticExpressionFunction( u"var"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"name"_s ), fcnGetVariable, u"General"_s );
+    auto varFunction = std::make_shared< QgsStaticExpressionFunction >( u"var"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"name"_s ), fcnGetVariable, u"General"_s );
     varFunction->setIsStaticFunction( []( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) {
       /* A variable node is static if it has a static name and the name can be found at prepare
        * time and is tagged with isStatic.
@@ -10747,8 +10828,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     functions << varFunction;
 
-    QgsStaticExpressionFunction *evalTemplateFunction
-      = new QgsStaticExpressionFunction( u"eval_template"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"template"_s ), fcnEvalTemplate, u"General"_s, QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    auto evalTemplateFunction = std::make_shared<
+      QgsStaticExpressionFunction >( u"eval_template"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"template"_s ), fcnEvalTemplate, u"General"_s, QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     evalTemplateFunction->setIsStaticFunction( []( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) {
       if ( node->args()->count() > 0 )
       {
@@ -10769,8 +10850,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     } );
     functions << evalTemplateFunction;
 
-    QgsStaticExpressionFunction *evalFunc
-      = new QgsStaticExpressionFunction( u"eval"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"expression"_s ), fcnEval, u"General"_s, QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    auto evalFunc = std::make_shared<
+      QgsStaticExpressionFunction >( u"eval"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"expression"_s ), fcnEval, u"General"_s, QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     evalFunc->setIsStaticFunction( []( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) {
       if ( node->args()->count() > 0 )
       {
@@ -10792,8 +10873,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     functions << evalFunc;
 
-    QgsStaticExpressionFunction *attributeFunc
-      = new QgsStaticExpressionFunction( u"attribute"_s, -1, fcnAttribute, u"Record and Attributes"_s, QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
+    auto attributeFunc
+      = std::make_shared< QgsStaticExpressionFunction >( u"attribute"_s, -1, fcnAttribute, u"Record and Attributes"_s, QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES );
     attributeFunc->setIsStaticFunction( []( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) {
       const QList< QgsExpressionNode *> argList = node->args()->list();
       for ( QgsExpressionNode *argNode : argList )
@@ -10813,15 +10894,15 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions << attributeFunc;
 
     functions
-      << new QgsStaticExpressionFunction( u"env"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"name"_s ), fcnEnvVar, u"General"_s, QString() )
-      << new QgsWithVariableExpressionFunction()
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"env"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"name"_s ), fcnEnvVar, u"General"_s, QString() )
+      << std::make_shared< QgsWithVariableExpressionFunction >()
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"raster_value"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"layer"_s ) << QgsExpressionFunction::Parameter( u"band"_s ) << QgsExpressionFunction::Parameter( u"point"_s ),
            fcnRasterValue,
            u"Rasters"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"raster_attributes"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"layer"_s ) << QgsExpressionFunction::Parameter( u"band"_s ) << QgsExpressionFunction::Parameter( u"point"_s ),
            fcnRasterAttributes,
@@ -10829,35 +10910,46 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
          )
 
       // functions for arrays
-      << new QgsArrayForeachExpressionFunction()
-      << new QgsArrayFilterExpressionFunction()
-      << new QgsStaticExpressionFunction( u"array"_s, -1, fcnArray, u"Arrays"_s, QString(), false, QSet<QString>(), false, QStringList(), true )
-      << new QgsStaticExpressionFunction( u"array_sort"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"ascending"_s, true, true ), fcnArraySort, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_length"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayLength, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_contains"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayContains, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_count"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayCount, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_all"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array1"_s ) << QgsExpressionFunction::Parameter( u"array2"_s ), fcnArrayAll, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_find"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayFind, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_get"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"pos"_s ), fcnArrayGet, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_first"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayFirst, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_last"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayLast, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_min"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayMinimum, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_max"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayMaximum, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_mean"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayMean, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_median"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayMedian, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_majority"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"option"_s, true, QVariant( "all" ) ), fcnArrayMajority, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_minority"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"option"_s, true, QVariant( "all" ) ), fcnArrayMinority, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_sum"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArraySum, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_append"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayAppend, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_prepend"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayPrepend, u"Arrays"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsArrayForeachExpressionFunction >()
+      << std::make_shared< QgsArrayFilterExpressionFunction >()
+      << std::make_shared< QgsStaticExpressionFunction >( u"array"_s, -1, fcnArray, u"Arrays"_s, QString(), false, QSet<QString>(), false, QStringList(), true )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_sort"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"ascending"_s, true, true ), fcnArraySort, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_length"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayLength, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_contains"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayContains, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_count"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayCount, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_all"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array1"_s ) << QgsExpressionFunction::Parameter( u"array2"_s ), fcnArrayAll, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_find"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayFind, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_get"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"pos"_s ), fcnArrayGet, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_first"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayFirst, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_last"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayLast, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_min"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayMinimum, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_max"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayMaximum, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_mean"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayMean, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_median"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayMedian, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_majority"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"option"_s, true, QVariant( "all" ) ), fcnArrayMajority, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_minority"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"option"_s, true, QVariant( "all" ) ), fcnArrayMinority, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_sum"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArraySum, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_append"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayAppend, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_prepend"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnArrayPrepend, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"array_insert"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"pos"_s ) << QgsExpressionFunction::Parameter( u"value"_s ),
            fcnArrayInsert,
            u"Arrays"_s
          )
-      << new QgsStaticExpressionFunction( u"array_remove_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"pos"_s ), fcnArrayRemoveAt, u"Arrays"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_remove_at"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"pos"_s ), fcnArrayRemoveAt, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"array_remove_all"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"value"_s ),
            fcnArrayRemoveAll,
@@ -10869,19 +10961,21 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            QStringList(),
            true
          )
-      << new QgsStaticExpressionFunction( u"array_replace"_s, -1, fcnArrayReplace, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_prioritize"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"priority"_s ), fcnArrayPrioritize, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_cat"_s, -1, fcnArrayCat, u"Arrays"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_replace"_s, -1, fcnArrayReplace, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_prioritize"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"priority"_s ), fcnArrayPrioritize, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_cat"_s, -1, fcnArrayCat, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"array_slice"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ) << QgsExpressionFunction::Parameter( u"start_pos"_s ) << QgsExpressionFunction::Parameter( u"end_pos"_s ),
            fcnArraySlice,
            u"Arrays"_s
          )
-      << new QgsStaticExpressionFunction( u"array_reverse"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayReverse, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_intersect"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array1"_s ) << QgsExpressionFunction::Parameter( u"array2"_s ), fcnArrayIntersect, u"Arrays"_s )
-      << new QgsStaticExpressionFunction( u"array_distinct"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayDistinct, u"Arrays"_s )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_reverse"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayReverse, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"array_intersect"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array1"_s ) << QgsExpressionFunction::Parameter( u"array2"_s ), fcnArrayIntersect, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"array_distinct"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"array"_s ), fcnArrayDistinct, u"Arrays"_s )
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"array_to_string"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"array"_s )
@@ -10890,7 +10984,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnArrayToString,
            u"Arrays"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"string_to_array"_s,
            QgsExpressionFunction::ParameterList()
              << QgsExpressionFunction::Parameter( u"string"_s )
@@ -10899,67 +10993,91 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
            fcnStringToArray,
            u"Arrays"_s
          )
-      << new QgsStaticExpressionFunction(
+      << std::make_shared< QgsStaticExpressionFunction >(
            u"generate_series"_s,
            QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"start"_s ) << QgsExpressionFunction::Parameter( u"stop"_s ) << QgsExpressionFunction::Parameter( u"step"_s, true, 1.0 ),
            fcnGenerateSeries,
            u"Arrays"_s
          )
-      << new QgsStaticExpressionFunction( u"geometries_to_array"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometries"_s ), fcnGeometryCollectionAsArray, u"Arrays"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"geometries_to_array"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometries"_s ), fcnGeometryCollectionAsArray, u"Arrays"_s )
 
       //functions for maps
-      << new QgsStaticExpressionFunction( u"from_json"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnLoadJson, u"Maps"_s, QString(), false, QSet<QString>(), false, QStringList() << u"json_to_map"_s )
-      << new QgsStaticExpressionFunction( u"to_json"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"json_string"_s ), fcnWriteJson, u"Maps"_s, QString(), false, QSet<QString>(), false, QStringList() << u"map_to_json"_s )
-      << new QgsStaticExpressionFunction( u"hstore_to_map"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnHstoreToMap, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map_to_hstore"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnMapToHstore, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map"_s, -1, fcnMap, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map_get"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"key"_s ), fcnMapGet, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map_exist"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"key"_s ), fcnMapExist, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map_delete"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"key"_s ), fcnMapDelete, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map_insert"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"key"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnMapInsert, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map_concat"_s, -1, fcnMapConcat, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map_akeys"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnMapAKeys, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map_avals"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnMapAVals, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map_prefix_keys"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"prefix"_s ), fcnMapPrefixKeys, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map_to_html_table"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnMapToHtmlTable, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"map_to_html_dl"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnMapToHtmlDefinitionList, u"Maps"_s )
-      << new QgsStaticExpressionFunction( u"url_encode"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnToFormUrlEncode, u"Maps"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"from_json"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"value"_s ), fcnLoadJson, u"Maps"_s, QString(), false, QSet<QString>(), false, QStringList() << u"json_to_map"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"to_json"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"json_string"_s ), fcnWriteJson, u"Maps"_s, QString(), false, QSet<QString>(), false, QStringList() << u"map_to_json"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"hstore_to_map"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"string"_s ), fcnHstoreToMap, u"Maps"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"map_to_hstore"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnMapToHstore, u"Maps"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"map"_s, -1, fcnMap, u"Maps"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"map_get"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"key"_s ), fcnMapGet, u"Maps"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"map_exist"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"key"_s ), fcnMapExist, u"Maps"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"map_delete"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"key"_s ), fcnMapDelete, u"Maps"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"map_insert"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"key"_s ) << QgsExpressionFunction::Parameter( u"value"_s ), fcnMapInsert, u"Maps"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"map_concat"_s, -1, fcnMapConcat, u"Maps"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"map_akeys"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnMapAKeys, u"Maps"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"map_avals"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnMapAVals, u"Maps"_s )
+      << std::make_shared<
+           QgsStaticExpressionFunction >( u"map_prefix_keys"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ) << QgsExpressionFunction::Parameter( u"prefix"_s ), fcnMapPrefixKeys, u"Maps"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"map_to_html_table"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnMapToHtmlTable, u"Maps"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"map_to_html_dl"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnMapToHtmlDefinitionList, u"Maps"_s )
+      << std::make_shared< QgsStaticExpressionFunction >( u"url_encode"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"map"_s ), fcnToFormUrlEncode, u"Maps"_s )
 
       ;
 
-    QgsExpressionContextUtils::registerContextFunctions();
+    QgsExpressionContextUtils::registerContextFunctions( functions );
 
-    //QgsExpression has ownership of all built-in functions
-    for ( QgsExpressionFunction *func : std::as_const( functions ) )
+    for ( const SharedFunctionPtr &function : std::as_const( functions ) )
     {
-      *sOwnedFunctions() << func;
-      *sBuiltinFunctions() << func->name();
-      sBuiltinFunctions()->append( func->aliases() );
+      sBuiltinFunctionNames << function->name();
+      sBuiltinFunctionNames.append( function->aliases() );
     }
+
+    functions.updateFunctionNameMap();
+
+    sFunctions.store( std::make_shared<SharedFunctionPtrList>( functions ), std::memory_order_release );
   } );
 
-  QMutexLocker locker( &sFunctionsMutex );
-  return *sFunctions();
+  return sFunctions.load( std::memory_order_acquire );
 }
 
 bool QgsExpression::registerFunction( QgsExpressionFunction *function, bool transferOwnership )
 {
-  int fnIdx = functionIndex( function->name() );
-  if ( fnIdx != -1 )
+  QMutexLocker lock( &sFunctionWriteMutex );
+
+  const QgsExpression::FunctionListSnapshot currentFunctions = sFunctions.load( std::memory_order_relaxed );
+  if ( currentFunctions->functionIndex( function->name() ) != -1 )
   {
     return false;
   }
 
-  QMutexLocker locker( &sFunctionsMutex );
-  return registerFunctionUnsafe( function, transferOwnership );
-}
+  // make a copy of the list of shared pointers (this doesn't actually copy the functions, only the *shared_ptrs*!)
+  auto newSnapshot = std::make_shared<SharedFunctionPtrList>( *currentFunctions );
 
-bool QgsExpression::registerFunctionUnsafe( QgsExpressionFunction *function, bool transferOwnership )
-{
-  sFunctions()->append( function );
   if ( transferOwnership )
-    sOwnedFunctions()->append( function );
+  {
+    SharedFunctionPtr functionPtr( function );
+    newSnapshot->append( functionPtr );
+  }
+  else
+  {
+    SharedFunctionPtr unownedFunctionPtr( function, []( const QgsExpressionFunction * ) {
+      // custom deleter:
+      // when final reference to function is removed DO NOTHING, do not delete
+      // the function we don't own
+    } );
+    newSnapshot->append( unownedFunctionPtr );
+  }
 
+  newSnapshot->updateFunctionNameMap();
+
+  // atomically store -- any existing references to the old list (without the new pointer) will still
+  // be safe to use
+  sFunctions.store( newSnapshot, std::memory_order_release );
   return true;
 }
 
@@ -10970,42 +11088,47 @@ bool QgsExpression::unregisterFunction( const QString &name )
   {
     return false;
   }
-  int fnIdx = functionIndex( name );
-  if ( fnIdx != -1 )
+
+  QMutexLocker lock( &sFunctionWriteMutex );
+
+  const QgsExpression::FunctionListSnapshot currentFunctions = sFunctions.load( std::memory_order_relaxed );
+  auto newSnapshot = std::make_shared<SharedFunctionPtrList>();
+
+  for ( const SharedFunctionPtr &function : *currentFunctions )
   {
-    QMutexLocker locker( &sFunctionsMutex );
-    sFunctions()->removeAt( fnIdx );
-    sFunctionIndexMap.clear();
-    return true;
+    if ( function->name() != name )
+    {
+      newSnapshot->append( function );
+    }
   }
-  return false;
+  newSnapshot->updateFunctionNameMap();
+
+  // atomically store -- any existing references to the old list (without the new pointer) will still
+  // be safe to use
+  sFunctions.store( newSnapshot, std::memory_order_release );
+  return true;
 }
 
 void QgsExpression::cleanRegisteredFunctions()
 {
-  const QList<QgsExpressionFunction *> &ownedFunctions = *sOwnedFunctions();
-  for ( QgsExpressionFunction *func : std::as_const( ownedFunctions ) )
-  {
-    sBuiltinFunctions()->removeAll( func->name() );
-    for ( const QString &alias : func->aliases() )
-    {
-      sBuiltinFunctions()->removeAll( alias );
-    }
+  QMutexLocker lock( &sFunctionWriteMutex );
 
-    sFunctions()->removeAll( func );
-  }
+  sBuiltinFunctionNames.clear();
 
-  qDeleteAll( *sOwnedFunctions() );
-  sOwnedFunctions()->clear();
+  // atomically store -- any existing references to the old list (without the new pointer) will still
+  // be safe to use
+  // when those existing references are deleted (or there weren't any to begin with), then there'll be
+  // no more references to the function pointers after this next, and they'll be automatically deleted
+  // (if they were registered without ownership transfer then the shared_ptr deleter for those items
+  // is a no-op, so we won't try to actually delete the pointed object for those)
+  sFunctions.store( std::make_shared<SharedFunctionPtrList>(), std::memory_order_release );
 }
 
-const QStringList &QgsExpression::BuiltinFunctions()
+QStringList QgsExpression::BuiltinFunctions()
 {
-  if ( sBuiltinFunctions()->isEmpty() )
-  {
-    Functions(); // this method builds the gmBuiltinFunctions as well
-  }
-  return *sBuiltinFunctions();
+  // we don't need a mutex for this -- this list is populated ONCE at startup, and never changed
+  // outside of cleanRegisteredFunctions (which is only called at application tear down).
+  return sBuiltinFunctionNames;
 }
 
 QgsArrayForeachExpressionFunction::QgsArrayForeachExpressionFunction()

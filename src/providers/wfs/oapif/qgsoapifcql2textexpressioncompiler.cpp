@@ -100,7 +100,9 @@ static bool isGeometryColumn( const QgsExpressionNode *node )
     return false;
 
   const QgsExpressionNodeFunction *fn = static_cast<const QgsExpressionNodeFunction *>( node );
-  QgsExpressionFunction *fd = QgsExpression::Functions()[fn->fnIndex()];
+
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( fn->fnIndex() );
   return fd->name() == "$geometry"_L1;
 }
 
@@ -112,7 +114,9 @@ static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
   if ( node->nodeType() == QgsExpressionNode::ntFunction )
   {
     const QgsExpressionNodeFunction *fnNode = static_cast<const QgsExpressionNodeFunction *>( node );
-    QgsExpressionFunction *fnDef = QgsExpression::Functions()[fnNode->fnIndex()];
+    const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+    const QgsExpression::SharedFunctionPtr fnDef = functions->getFunction( fnNode->fnIndex() );
+
     if ( fnDef->name() == "geom_from_wkt"_L1 )
     {
       const QList<QgsExpressionNode *> &args = fnNode->args()->list();
@@ -128,7 +132,8 @@ static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
 
 QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::compileNodeFunction( const QgsExpressionNodeFunction *node, QString &result )
 {
-  QgsExpressionFunction *fd = QgsExpression::Functions()[node->fnIndex()];
+  const QgsExpression::FunctionListSnapshot functions = QgsExpression::getFunctionsSnapshot();
+  const QgsExpression::SharedFunctionPtr fd = functions->getFunction( node->fnIndex() );
 
   if ( fd->name() == "intersects_bbox"_L1 && mSupportsBasicSpatialOperators )
   {

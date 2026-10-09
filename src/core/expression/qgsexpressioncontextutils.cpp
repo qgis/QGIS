@@ -1006,18 +1006,19 @@ QgsExpressionContextScope *QgsExpressionContextUtils::notificationScope( const Q
   return scope.release();
 }
 
-void QgsExpressionContextUtils::registerContextFunctions()
+void QgsExpressionContextUtils::registerContextFunctions( QgsExpression::SharedFunctionPtrList &functions )
 {
-  QgsExpression::registerFunctionUnsafe( new GetNamedProjectColor( nullptr ) );
-  QgsExpression::registerFunctionUnsafe( new GetNamedProjectColorObject( nullptr ) );
-  QgsExpression::registerFunctionUnsafe( new GetSensorData() );
-  QgsExpression::registerFunctionUnsafe( new GetLayoutItemVariables( nullptr ) );
-  QgsExpression::registerFunctionUnsafe( new GetLayoutMapLayerCredits( nullptr ) );
-  QgsExpression::registerFunctionUnsafe( new GetLayerVisibility( QList<QgsMapLayer *>(), 0.0 ) );
-  QgsExpression::registerFunctionUnsafe( new GetProcessingParameterValue( QVariantMap() ) );
-  QgsExpression::registerFunctionUnsafe( new GetCurrentFormFieldValue() );
-  QgsExpression::registerFunctionUnsafe( new GetCurrentParentFormFieldValue() );
-  QgsExpression::registerFunctionUnsafe( new LoadLayerFunction() );
+  functions
+    << std::make_shared< GetNamedProjectColor >( nullptr )
+    << std::make_shared< GetNamedProjectColorObject >( nullptr )
+    << std::make_shared< GetSensorData >()
+    << std::make_shared< GetLayoutItemVariables>( nullptr )
+    << std::make_shared< GetLayoutMapLayerCredits>( nullptr )
+    << std::make_shared< GetLayerVisibility >( QList<QgsMapLayer *>(), 0.0 )
+    << std::make_shared< GetProcessingParameterValue >( QVariantMap() )
+    << std::make_shared< GetCurrentFormFieldValue >()
+    << std::make_shared< GetCurrentParentFormFieldValue >()
+    << std::make_shared< LoadLayerFunction >();
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpressionNodeFunction *node ) const
