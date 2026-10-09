@@ -299,8 +299,6 @@ class QgsPluginInstaller(QObject):
                     "download_url_experimental": plugin["download_url_experimental"],
                     "filename": plugin["filename"],
                     "downloads": plugin["downloads"],
-                    "average_vote": plugin["average_vote"],
-                    "rating_votes": plugin["rating_votes"],
                     "plugin_dependencies": plugin.get("plugin_dependencies", None),
                     "pythonic": "true",
                 }
@@ -720,40 +718,6 @@ class QgsPluginInstaller(QObject):
         """temporarily block another repositories to fetch only one for inspection"""
         repositories.setInspectionFilter(reposName)
         self.reloadAndExportData()
-
-    # ----------------------------------------- #
-    def sendVote(self, plugin_id, vote):
-        """send vote via the RPC"""
-
-        if not plugin_id or not vote:
-            return False
-        url = "https://plugins.qgis.org/plugins/RPC2/"
-        params = {
-            "id": "djangorpc",
-            "method": "plugin.vote",
-            "params": [str(plugin_id), str(vote)],
-        }
-        req = QNetworkRequest(QUrl(url))
-        req.setAttribute(
-            QNetworkRequest.Attribute(
-                QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass
-            ),
-            "QgsPluginInstaller",
-        )
-        req.setAttribute(
-            QNetworkRequest.Attribute(
-                QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorRequestId
-            ),
-            "sendVote",
-        )
-        req.setRawHeader(b"Content-Type", b"application/json")
-        reply = QgsNetworkAccessManager.instance().blockingPost(
-            req, bytes(json.dumps(params), "utf-8")
-        )
-        if reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute) == 200:
-            return True
-        else:
-            return False
 
     def installFromZipFile(self, filePath):
         if not os.path.isfile(filePath):
