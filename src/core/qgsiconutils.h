@@ -125,7 +125,7 @@ class CORE_EXPORT QgsIconUtils
      * \param overlayPath The path to the overlay image file.
      * \param size The requested size of the resultant icon. Default value is the standard small icon size 16x16 pixels.
      *
-     * \since QGIS 4.2
+     * \since QGIS 4.4
      */
     static QIcon addOverlay( const QIcon &icon, const QString &overlayPath, QSize size = QSize( 16, 16 ) );
 };
