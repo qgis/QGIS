@@ -24,6 +24,7 @@
 #include "qgsweakrelation.h"
 
 #include <QObject>
+#include <QPointer>
 
 class QgsDirectoryItem;
 class QgsFavoriteItem;
@@ -33,6 +34,7 @@ class QgsFieldItem;
 class QgsFieldDomain;
 class QgsField;
 class QgsAbstractDatabaseProviderConnection;
+class QgsMapLayer;
 
 class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -44,8 +46,15 @@ class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProv
     QString name() override;
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context ) override;
+    bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action ) override;
 
   private:
+    /**
+     * Saves layers dropped on a directory: a single layer opens the "Save As" dialog,
+     * several layers are exported without a dialog using default formats.
+     */
+    void saveLayersToDirectory( const QList<QPointer<QgsMapLayer>> &layers, QgsDirectoryItem *item, QgsDataItemGuiContext context );
     void addFavorite( QgsDirectoryItem *item );
     void removeFavorite( QgsFavoriteItem *favorite );
     void renameFavorite( QgsFavoriteItem *favorite );

@@ -91,6 +91,16 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     QString outputFileName() const;
 
     /**
+     * Sets the output \a fileName.
+     *
+     * If \a fileName does not end with an extension,that format's default extension is
+     * appended.
+     *
+     * \since QGIS 4.4
+     */
+    void setOutputFileName( const QString &fileName );
+
+    /**
      * Name of the output layer within GeoPackage file
      * \since QGIS 3.4
      */
