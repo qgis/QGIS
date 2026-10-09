@@ -72,6 +72,8 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase(
 {
   setupUi( this );
 
+  const QSize defaultDialogSize = size();
+
   //don't collapse parameters panel
   splitter->setCollapsible( 0, false );
 
@@ -127,6 +129,7 @@ QgsProcessingAlgorithmWidgetBase::QgsProcessingAlgorithmWidgetBase(
   mDockableWidgetHelper
     = new QgsDockableWidgetHelper( tr( "Processing" ), this, parentWindow, dockId, QStringList(), initialState, defaultIsDocked, Qt::DockWidgetArea::RightDockWidgetArea, QgsDockableWidgetHelper::Option::RaiseTab );
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, &QgsProcessingAlgorithmWidgetBase::closeClicked );
+  mDockableWidgetHelper->setDefaultDialogSize( defaultDialogSize );
 
   switch ( mMode )
   {
