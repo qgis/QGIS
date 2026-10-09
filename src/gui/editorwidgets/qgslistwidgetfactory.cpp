@@ -45,8 +45,8 @@ QgsEditorConfigWidget *QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, i
 unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  // Handle the json field
-  if ( field.typeName().compare( u"json"_s, Qt::CaseInsensitive ) == 0 || field.typeName().compare( u"jsonb"_s, Qt::CaseInsensitive ) == 0 )
+  // on string or json fields, we checkt the first features
+  if ( field.type() == QMetaType::Type::QString || field.typeName().compare( u"json"_s, Qt::CaseInsensitive ) == 0 || field.typeName().compare( u"jsonb"_s, Qt::CaseInsensitive ) == 0 )
   {
     // Look the first not-null value (limiting to the first 20 features) and check if it is really an array
     const int MAX_FEATURE_LIMIT { 20 };
@@ -123,6 +123,20 @@ unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fie
         }
       }
     }
+
+    if ( field.type() == QMetaType::Type::QString )
+    {
+      // on string we maximum respond with 5 - it should not become best fit
+      if ( !foundInvalidValue )
+      {
+        return 5;
+      }
+      else
+      {
+        return 0;
+      }
+    }
+
     if ( foundNotNull )
     {
       if ( !foundInvalidValue )
@@ -143,5 +157,5 @@ unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fie
   return ( field.type() == QMetaType::Type::QVariantList || field.type() == QMetaType::Type::QStringList || field.type() == QMetaType::Type::QVariantMap )
              && field.subType() != QMetaType::Type::UnknownType
            ? 20
-           : 0;
+           : 5;
 }
