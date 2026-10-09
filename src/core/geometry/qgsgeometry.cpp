@@ -1421,6 +1421,8 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry(
       return Qgis::GeometryOperationResult::NothingHappened;
       //default: do not implement default to handle properly all cases
   }
+
+  BUILTIN_UNREACHABLE
 #else
   std::unique_ptr<QgsLineString> segmentizedLine( curve->curveToLine() );
   QgsPointSequence points;
