@@ -53,6 +53,8 @@ Creates a new linestring annotation item.
 
     virtual QgsRectangle boundingBox() const;
 
+    virtual const QgsAbstractGeometry *snapGeometry() const;
+
 
     virtual QgsAnnotationLineItem *clone() const /Factory/;
 

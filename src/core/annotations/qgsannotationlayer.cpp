@@ -305,6 +305,13 @@ Qgis::MapLayerProperties QgsAnnotationLayer::properties() const
   return Qgis::MapLayerProperty::UsersCannotToggleEditing;
 }
 
+bool QgsAnnotationLayer::supportsSnapping() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return true;
+}
+
 QgsAnnotationLayer *QgsAnnotationLayer::clone() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
