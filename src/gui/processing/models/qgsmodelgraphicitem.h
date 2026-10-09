@@ -171,6 +171,7 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
     );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+    QRectF boundingRect() const override;
 
     /**
      * Returns the index of this socket in either QgsModelDesignerSocketGraphicItem::mInSockets
