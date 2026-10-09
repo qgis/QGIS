@@ -263,12 +263,12 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
       key = u"tid"_s;
       break;
     case PktInt:
+    case PktUint64:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
       Q_ASSERT( mPrimaryKeyAttrs[0] >= 0 && mPrimaryKeyAttrs[0] < mAttributeFields.count() );
       key = mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).name();
       break;
     case PktInt64:
-    case PktUint64:
     case PktFidMap:
     {
       QString delim;
@@ -529,12 +529,12 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
       break;
 
     case PktInt:
+    case PktUint64:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
       whereClause = u"%3%1=$%2"_s.arg( quotedIdentifier( field( mPrimaryKeyAttrs[0] ).name() ) ).arg( offset ).arg( aliased );
       break;
 
     case PktInt64:
-    case PktUint64:
     case PktFidMap:
     {
       QString delim;
@@ -571,6 +571,7 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
   switch ( mPrimaryKeyType )
   {
     case PktOid:
+    case PktUint64:
       params << QString::number( featureId );
       break;
 
@@ -583,7 +584,6 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
       break;
 
     case PktInt64:
-    case PktUint64:
     case PktFidMap:
     {
       QVariantList pkVals = mShared->lookupKey( featureId );
@@ -1501,6 +1501,10 @@ bool QgsPostgresProvider::determinePrimaryKey()
             // primary key to the table)
             int idx = fieldNameIndex( res.PQgetvalue( 0, 0 ) );
             mPrimaryKeyType = pkType( mAttributeFields.at( idx ) );
+            if ( mPrimaryKeyType == PktInt64 && defaultValueClause( idx ).startsWith( "nextval(" ) )
+            {
+              mPrimaryKeyType = PktUint64;
+            }
             mPrimaryKeyAttrs << idx;
           }
         }
@@ -2629,6 +2633,10 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           if ( mPrimaryKeyType == PktInt )
           {
             features->setId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
+          }
+          else if ( mPrimaryKeyType == PktUint64 )
+          {
+            features->setId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
           }
           else
           {
