@@ -1438,6 +1438,78 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             os.unlink(filename)
             self.assertEqual(values, ["feat.1"], expr)
 
+    def testPt1FilteringAsCQL2Fallback(self):
+        """Test Part 1 filtering is used as a
+        fallback if CQL2 filtering fails."""
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_testDateTimeFiltering"
+        )
+        additionalConformance = [
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
+            "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators",
+            "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
+            "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter",
+            "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
+        ]
+
+        filename = sanitize(
+            endpoint, "/collections/mycollection/queryables?" + ACCEPT_QUERYABLES
+        )
+        queryables = {
+            "properties": {
+                # my_dt_field is missing from queryables
+                "geometry": {"$ref": "https://geojson.org/schema/Point.json"},
+            }
+        }
+        with open(filename, "wb") as f:
+            f.write(json.dumps(queryables).encode("UTF-8"))
+
+        create_landing_page_api_collection(
+            endpoint, additionalConformance=additionalConformance
+        )
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "id": "feat.1",
+                    "properties": {"my_dt_field": "2019-10-15T00:34:00Z", "foo": 1},
+                    "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]},
+                }
+            ],
+        }
+
+        filename = sanitize(
+            endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+        )
+        with open(filename, "wb") as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+        os.unlink(filename)
+
+        # Partial on client side
+        assert vl.setSubsetString(""""my_dt_field" = '2019-01-01T00:34:00Z'""")
+
+        filename = sanitize(
+            endpoint,
+            "/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z&"
+            + ACCEPT_ITEMS,
+        )
+        with open(filename, "wb") as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+        values = [f["id"] for f in vl.getFeatures()]
+        os.unlink(filename)
+        self.assertEqual(values, ["feat.1"])
+
     def testCQL2TextFilteringAndPart2(self):
 
         endpoint = (

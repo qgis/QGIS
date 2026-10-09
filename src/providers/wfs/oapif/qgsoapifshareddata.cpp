@@ -309,8 +309,8 @@ bool QgsOapifSharedData::computeFilter( const QgsExpression &expr, QgsOapifFilte
     QgsOapifCql2TextExpressionCompiler::Result res = compiler.compile( &expr );
     if ( res == QgsOapifCql2TextExpressionCompiler::Fail )
     {
-      clientSideFilterExpression = expr.rootNode()->dump();
-      translationState = QgsOapifFilterTranslationState::FULLY_CLIENT;
+      // Fall back to part 1
+      serverSideParameters = compileExpressionNodeUsingPart1( rootNode, translationState, clientSideFilterExpression );
       return true;
     }
     serverSideParameters = getEncodedQueryParam( u"filter"_s, compiler.result() );
