@@ -93,7 +93,9 @@ void TestQgsGeos::geometryConversionPoint()
 
   compareGeoms( std::make_unique< QgsPoint >( 5, 7 ).get() );     //Point
   compareGeoms( std::make_unique< QgsPoint >( 5, 7, 10 ).get() ); //PointZ
-  //compareGeoms( std::make_unique< QgsPoint >( 5, 7, 10, 20 ).get() ); //QGIS-GEOS-QGIS conversion not fully supported for PointZM
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+  compareGeoms( std::make_unique< QgsPoint >( 5, 7, 10, 20 ).get() ); //PointZM
+#endif
   //compareGeoms( std::make_unique< QgsPoint >( Qgis::WkbType::PointM, 5, 7, 20).get() ); //QGIS-GEOS-QGIS conversion not fully supported for PointM
 }
 
@@ -109,10 +111,11 @@ void TestQgsGeos::geometryConversionMultiPoint()
   points << QgsPoint( 8, 4, 100 ) << QgsPoint( 5, 7, 150 );
   compareGeoms( std::make_unique< QgsMultiPoint >( points ).get() ); //MultiPointZ
 
-  //QGIS-GEOS-QGIS conversion not fully supported for MultiPointZM
-  //points.clear();
-  //points << QgsPoint ( 8, 4, 100, 0.1 ) << QgsPoint( 5, 7, 150, 0.7 );
-  //compareGeoms( std::make_unique< QgsMultiPoint >( points ).get() );
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+  points.clear();
+  points << QgsPoint( 8, 4, 100, 0.1 ) << QgsPoint( 5, 7, 150, 0.7 );
+  compareGeoms( std::make_unique< QgsMultiPoint >( points ).get() ); //MultiPointZM
+#endif
 
   //QGIS-GEOS-QGIS conversion not fully supported for MultiPointM
   //points.clear();
@@ -126,7 +129,9 @@ void TestQgsGeos::geometryConversionLineString()
 
   compareGeoms( std::make_unique< QgsLineString >( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ) ).get() );       //LineString
   compareGeoms( std::make_unique< QgsLineString >( QgsPoint( 0, 0, 7 ), QgsPoint( 1, 1, 8 ) ).get() ); //LineStringZ
-  //compareGeoms( std::make_unique< QgsLineString >( QgsPoint( 0, 0, 7, 2 ), QgsPoint( 1, 1, 8, 3 ) ).get() ); //QGIS-GEOS-QGIS conversion not fully supported for LineStringZM
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+  compareGeoms( std::make_unique< QgsLineString >( QgsPoint( 0, 0, 7, 2 ), QgsPoint( 1, 1, 8, 3 ) ).get() ); //LineStringZM
+#endif
 }
 
 void TestQgsGeos::geometryConversionMultiLineString()
@@ -141,10 +146,11 @@ void TestQgsGeos::geometryConversionMultiLineString()
   lines << QgsLineString( QgsPoint( 0, 0, 100 ), QgsPoint( 1, 1, 200 ) );
   compareGeoms( std::make_unique< QgsMultiLineString >( lines ).get() ); //MultiLineStringZ
 
-  //QGIS-GEOS-QGIS conversion not fully supported for MultiLineStringZM
-  //lines.clear();
-  //lines << QgsLineString( QgsPoint( 0, 0, 100, 0.1 ), QgsPoint( 1, 1, 200, 0.7 ) );
-  //compareGeoms( std::make_unique< QgsMultiLineString >( lines ).get() );
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+  lines.clear();
+  lines << QgsLineString( QgsPoint( 0, 0, 100, 0.1 ), QgsPoint( 1, 1, 200, 0.7 ) );
+  compareGeoms( std::make_unique< QgsMultiLineString >( lines ).get() ); //MultiLineStringZM
+#endif
 
   //QGIS-GEOS-QGIS conversion not fully supported for MultiLineStringM
   //lines.clear();
@@ -158,7 +164,9 @@ void TestQgsGeos::geometryConversionCircularString()
   compareGeoms( std::make_unique< QgsCircularString >().get() );                                                                //Empty geometry
   compareGeoms( std::make_unique< QgsCircularString >( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) ).get() );          //CircularString
   compareGeoms( std::make_unique< QgsCircularString >( QgsPoint( 0, 0, 7 ), QgsPoint( 1, 1, 8 ), QgsPoint( 1, 0, 9 ) ).get() ); //CircularStringZ
-  //compareGeoms( std::make_unique< QgsCircularString >( QgsPoint( 0, 0, 7, 2 ), QgsPoint( 1, 1, 8, 3 ), QgsPoint( 1, 0, 9, 4 ) ).get() ); //QGIS-GEOS-QGIS conversion not fully supported for CircularStringZM
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+  compareGeoms( std::make_unique< QgsCircularString >( QgsPoint( 0, 0, 7, 2 ), QgsPoint( 1, 1, 8, 3 ), QgsPoint( 1, 0, 9, 4 ) ).get() ); //CircularStringZM
+#endif
 }
 
 void TestQgsGeos::geometryConversionCompoundCurve()
@@ -191,14 +199,14 @@ void TestQgsGeos::geometryConversionCompoundCurve()
   cc->addCurve( ls2->clone(), true ); //extendPrevious
   compareGeoms( cc.get() );
 
-  /* TODO: QGIS-GEOS-QGIS conversion not fully supported for CompoundCurveZM
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
   cs = std::make_unique< QgsCircularString >( QgsPoint( 0, 0, 100, 2 ), QgsPoint( 1, 1, 200, 4 ), QgsPoint( 1, 0, 150, 6 ) );
   ls = std::make_unique< QgsLineString >( QgsPoint( 1, 0, 150, 6 ), QgsPoint( 2, 2, 175, 8 ) );
   cc->clear();
   cc->addCurve( cs->clone() );
   cc->addCurve( ls->clone() );
-  compareGeoms( cc.get() );
-  */
+  compareGeoms( cc.get() ); //CompoundCurveZM
+#endif
 }
 
 void TestQgsGeos::geometryConversionMultiCurve()
@@ -227,7 +235,7 @@ void TestQgsGeos::geometryConversionMultiCurve()
   mc->addGeometry( cc->clone() );
   compareGeoms( mc.get() ); //MultiCurveZ
 
-  /* TODO: QGIS-GEOS-QGIS conversion not fully supported for MultiCurveZM
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
   cc->clear();
   mc->clear();
   cs = std::make_unique< QgsCircularString >( QgsPoint( 0, 0, 100, 2 ), QgsPoint( 1, 1, 200, 4 ), QgsPoint( 1, 0, 150, 6 ) );
@@ -237,8 +245,8 @@ void TestQgsGeos::geometryConversionMultiCurve()
   mc->addGeometry( cs->clone() );
   mc->addGeometry( ls->clone() );
   mc->addGeometry( cc->clone() );
-  compareGeoms( mc.get() );
-  */
+  compareGeoms( mc.get() ); //MultiCurveZM
+#endif
 }
 #endif
 
@@ -254,8 +262,10 @@ void TestQgsGeos::geometryConversionPolygon()
   polygon->fromWkt( u"POLYGON ((30 10 100, 10 20 150, 20 40 200, 40 40 80, 30 10 100))"_s );
   compareGeoms( polygon.get() ); //PolygonZ
 
-  // polygon->fromWkt( u"POLYGON ((30 10 100 2, 10 20 150 4, 20 40 200 8, 40 40 80 5, 30 10 100 2))"_s );
-  // compareGeoms( polygon.get() ); //QGIS-GEOS-QGIS conversion not fully supported for PolygonZM
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+  polygon->fromWkt( u"POLYGON ((30 10 100 2, 10 20 150 4, 20 40 200 8, 40 40 80 5, 30 10 100 2))"_s );
+  compareGeoms( polygon.get() ); //PolygonZM
+#endif
 }
 
 void TestQgsGeos::geometryConversionMultiPolygon()
@@ -276,7 +286,7 @@ void TestQgsGeos::geometryConversionMultiPolygon()
   multiPolygon->addGeometry( part.clone() );
   compareGeoms( multiPolygon.get() ); //MultiPolygonZ, several PolygonZs inside
 
-  /* TODO: QGIS-GEOS-QGIS conversion not fully supported for MultiPolygonZM
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
   multiPolygon->clear();
   ring.setPoints(
     QgsPointSequence()
@@ -284,14 +294,14 @@ void TestQgsGeos::geometryConversionMultiPolygon()
     << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 )
     << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 )
     << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 )
-    );
+  );
   part.setExteriorRing( ring.clone() );
   multiPolygon->addGeometry( part.clone() );
   compareGeoms( multiPolygon.get() ); //MultiPolygonZM, single PolygonZMs inside, not yet supported
 
   multiPolygon->addGeometry( part.clone() );
   compareGeoms( multiPolygon.get() ); //MultiPolygonZM, several PolygonZMs inside, not yet supported
-  */
+#endif
 }
 
 void TestQgsGeos::geometryConversionTriangle()
@@ -305,8 +315,10 @@ void TestQgsGeos::geometryConversionTriangle()
   triangle = std::make_unique< QgsTriangle >( QgsPoint( 0, 0, 100 ), QgsPoint( 0, 10, 150 ), QgsPoint( 10, 10, 200 ) );
   compareGeoms( triangle.get(), u"Polygon Z ((0 0 100, 0 10 150, 10 10 200, 0 0 100))"_s ); //TriangleZ
 
-  //triangle = std::make_unique< QgsTriangle >( QgsPoint( 0, 0, 100, 2), QgsPoint( 0, 10, 150, 4), QgsPoint( 10, 10, 200, 6 ) );
-  //compareGeoms( triangle.get(), u"Polygon Z ((0 0 100 2, 0 10 150 4, 10 10 200 6, 0 0 100 2))"_s ); //QGIS-GEOS-QGIS conversion not fully supported for TriangleZM
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+  triangle = std::make_unique< QgsTriangle >( QgsPoint( 0, 0, 100, 2 ), QgsPoint( 0, 10, 150, 4 ), QgsPoint( 10, 10, 200, 6 ) );
+  compareGeoms( triangle.get(), u"Polygon ZM ((0 0 100 2, 0 10 150 4, 10 10 200 6, 0 0 100 2))"_s ); //TriangleZM
+#endif
 }
 
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
@@ -334,17 +346,17 @@ void TestQgsGeos::geometryConversionCurvePolygon()
   cp->setExteriorRing( cc->clone() );
   compareGeoms( cp.get() ); //CurvePolygonZ
 
-  /* TODO: QGIS-GEOS-QGIS conversion not fully supported for CurvePolygonZM
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
   ls = std::make_unique< QgsLineString >();
-  ls->setPoints( QgsPointSequence() <<  QgsPoint( 2, 0, 100, 0.5 ) << QgsPoint( 0, 0, 150, 0.6 ) << QgsPoint( 2, 2, 200, 0.7 ) );
+  ls->setPoints( QgsPointSequence() << QgsPoint( 2, 0, 100, 0.5 ) << QgsPoint( 0, 0, 150, 0.6 ) << QgsPoint( 2, 2, 200, 0.7 ) );
   cs = std::make_unique< QgsCircularString >( QgsPoint( 2, 2, 200, 0.7 ), QgsPoint( 3, 1, 50, 0.8 ), QgsPoint( 2, 0, 100, 0.9 ) );
   cc = std::make_unique< QgsCompoundCurve >();
   cp = std::make_unique< QgsCurvePolygon >();
   cc->addCurve( ls->clone() );
   cc->addCurve( cs->clone() );
   cp->setExteriorRing( cc->clone() );
-  compareGeoms( cp.get() );
-  */
+  compareGeoms( cp.get() ); //CurvePolygonZM
+#endif
 }
 
 void TestQgsGeos::geometryConversionMultiSurface()
@@ -373,7 +385,7 @@ void TestQgsGeos::geometryConversionMultiSurface()
   multiSurface->addGeometry( cp->clone() );
   compareGeoms( multiSurface.get() ); //PolygonZ and CurvePolygonZ
 
-  /* TODO: QGIS-GEOS-QGIS conversion not fully supported for MultiSurface (PolygonZM and CurvePolygonZM)
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
   multiSurface->clear();
   ring.setPoints(
     QgsPointSequence()
@@ -381,13 +393,13 @@ void TestQgsGeos::geometryConversionMultiSurface()
     << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 )
     << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 )
     << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 )
-    );
+  );
   polygon.setExteriorRing( ring.clone() );
   multiSurface->addGeometry( polygon.clone() );
-  compareGeoms( multiSurface.get() ); //Single PolygonZM, not yet supported
+  compareGeoms( multiSurface.get() ); //MultiSurface (PolygonZM)
 
   ls = std::make_unique< QgsLineString >();
-  ls->setPoints( QgsPointSequence() <<  QgsPoint( 2, 0, 100 ) << QgsPoint( 0, 0, 150 ) << QgsPoint( 2, 2, 200 ) );
+  ls->setPoints( QgsPointSequence() << QgsPoint( 2, 0, 100 ) << QgsPoint( 0, 0, 150 ) << QgsPoint( 2, 2, 200 ) );
   cs = std::make_unique< QgsCircularString >( QgsPoint( 2, 2, 200 ), QgsPoint( 3, 1, 50 ), QgsPoint( 2, 0, 100 ) );
   cc = std::make_unique< QgsCompoundCurve >();
   cp = std::make_unique< QgsCurvePolygon >();
@@ -395,8 +407,8 @@ void TestQgsGeos::geometryConversionMultiSurface()
   cc->addCurve( cs->clone() );
   cp->setExteriorRing( cc->clone() );
   multiSurface->addGeometry( cp->clone() );
-  compareGeoms( multiSurface.get() ); //PolygonZM and CurvePolygonZM, not yet supported
-  */
+  compareGeoms( multiSurface.get() ); //MultiSurface (PolygonZM and CurvePolygonZM)
+#endif
 }
 
 void TestQgsGeos::geometryConversionGeometryCollection()
@@ -682,11 +694,13 @@ void TestQgsGeos::splitGeometry_data()
 
   //MultiPolygons
   geomWkts.clear();
-  // TODO: Split MultiPolygon preserving M, not yet supported
-  //geomWkts << u"Polygon ZM ((1000000 6800000 0 0, 1000000 6800100 1 1, 1000135 6800100 1.675 1.675, 1000135 6800000 0 0, 1000000 6800000 0 0))"_s;
-  //geomWkts << u"Polygon ZM ((1000135 6800100 1.675 1.675, 1000200 6800100 2 2, 1000200 6800000 0 0, 1000135 6800000 0 0, 1000135 6800100 1.675 1.675)))"_s;
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 15 ) || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 15 && GEOS_VERSION_PATCH >= 1 )
+  geomWkts << u"Polygon ZM ((1000000 6800000 0 0, 1000000 6800100 1 1, 1000135 6800100 1.675 1.675, 1000135 6800000 0 0, 1000000 6800000 0 0))"_s;
+  geomWkts << u"Polygon ZM ((1000135 6800100 1.675 1.675, 1000200 6800100 2 2, 1000200 6800000 0 0, 1000135 6800000 0 0, 1000135 6800100 1.675 1.675))"_s;
+#else
   geomWkts << u"Polygon Z ((1000000 6800000 0, 1000000 6800100 1, 1000135 6800100 1.675, 1000135 6800000 0, 1000000 6800000 0))"_s;
   geomWkts << u"Polygon Z ((1000135 6800100 1.675, 1000200 6800100 2, 1000200 6800000 0, 1000135 6800000 0, 1000135 6800100 1.675))"_s;
+#endif
   QTest::newRow( "Split MultiPolygon with LineString (preserve Z values)" )
     << u"MultiPolygon ZM (((1000000 6800000 0 0, 1000000 6800100 1 1, 1000200 6800100 2 2, 1000200 6800000 0 0, 1000000 6800000 0 0)))"_s
     << u"LineString( 1000135 6800130, 1000135 6799975 )"_s

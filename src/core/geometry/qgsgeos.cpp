@@ -1727,10 +1727,15 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  bool hasZ = GEOSHasZ_r( context, geos );
+  bool hasM = GEOSHasM_r( context, geos );
+#else
   int nCoordDims = GEOSGeom_getCoordinateDimension_r( context, geos );
   int nDims = GEOSGeom_getDimensions_r( context, geos );
   bool hasZ = ( nCoordDims == 3 );
   bool hasM = ( ( nDims - nCoordDims ) == 1 );
+#endif
 
   switch ( GEOSGeomTypeId_r( context, geos ) )
   {
@@ -1888,10 +1893,15 @@ std::unique_ptr<QgsCurvePolygon> QgsGeos::fromGeosCurvePolygon( const GEOSGeomet
     return nullptr;
   }
 
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  bool hasZ = GEOSHasZ_r( context, geos );
+  bool hasM = GEOSHasM_r( context, geos );
+#else
   int nCoordDims = GEOSGeom_getCoordinateDimension_r( context, geos );
   int nDims = GEOSGeom_getDimensions_r( context, geos );
   bool hasZ = ( nCoordDims == 3 );
   bool hasM = ( ( nDims - nCoordDims ) == 1 );
+#endif
 
   auto curvePolygon = std::make_unique<QgsCurvePolygon>();
 
@@ -1940,10 +1950,15 @@ std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
     return nullptr;
   }
 
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  bool hasZ = GEOSHasZ_r( context, geos );
+  bool hasM = GEOSHasM_r( context, geos );
+#else
   int nCoordDims = GEOSGeom_getCoordinateDimension_r( context, geos );
   int nDims = GEOSGeom_getDimensions_r( context, geos );
   bool hasZ = ( nCoordDims == 3 );
   bool hasM = ( ( nDims - nCoordDims ) == 1 );
+#endif
 
   auto polygon = std::make_unique<QgsPolygon>();
 
@@ -2951,6 +2966,11 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
   const int numPoints = simpleCurve->numPoints();
 
   const bool hasZ = simpleCurve->is3D();
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+  const bool hasM = simpleCurve->isMeasure();
+#else
+  const bool hasM = false; //disabled until geos supports m-coordinates
+#endif
 
 #if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
   if ( qgsDoubleNear( precision, 0 ) )
@@ -2960,7 +2980,11 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
       // use optimised method if we don't have to force close an open ring
       try
       {
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
+        coordSeq = GEOSCoordSeq_copyFromArrays_r( context, simpleCurve->xData(), simpleCurve->yData(), simpleCurve->zData(), simpleCurve->mData(), numPoints );
+#else
         coordSeq = GEOSCoordSeq_copyFromArrays_r( context, simpleCurve->xData(), simpleCurve->yData(), simpleCurve->zData(), nullptr, numPoints );
+#endif
         if ( !coordSeq )
         {
           QgsDebugError( u"GEOS Exception: Could not create coordinate sequence for %1 points"_s.arg( numPoints ) );
@@ -2980,9 +3004,12 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
       QVector< double > z = simpleCurve->zVector();
       if ( hasZ && numPoints > 0 )
         z.append( z.at( 0 ) );
+      QVector< double > m = simpleCurve->mVector();
+      if ( hasM && numPoints > 0 )
+        m.append( m.at( 0 ) );
       try
       {
-        coordSeq = GEOSCoordSeq_copyFromArrays_r( context, x.constData(), y.constData(), !hasZ ? nullptr : z.constData(), nullptr, numPoints + 1 );
+        coordSeq = GEOSCoordSeq_copyFromArrays_r( context, x.constData(), y.constData(), !hasZ ? nullptr : z.constData(), !hasM ? nullptr : m.constData(), numPoints + 1 );
         if ( !coordSeq )
         {
           QgsDebugError( u"GEOS Exception: Could not create closed coordinate sequence for %1 points"_s.arg( numPoints + 1 ) );
@@ -2996,7 +3023,6 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
 #endif
 
   int coordDims = 2;
-  const bool hasM = false; //line->isMeasure(); //disabled until geos supports m-coordinates
 
   if ( hasZ )
   {
@@ -3096,8 +3122,10 @@ geos::unique_ptr QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int
 
 geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision, Qgis::GeosCreationFlags )
 {
+#if !( GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 ) )
   Q_UNUSED( hasM )
   Q_UNUSED( m )
+#endif
 
   geos::unique_ptr geosPoint;
   GEOSContextHandle_t context = QgsGeosContext::get();
@@ -3137,7 +3165,7 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
         GEOSCoordSeq_setOrdinate_r( context, coordSeq, 0, 2, z );
       }
     }
-#if 0 //disabled until geos supports m-coordinates
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 15 )
     if ( hasM )
     {
       GEOSCoordSeq_setOrdinate_r( context, coordSeq, 0, 3, m );
