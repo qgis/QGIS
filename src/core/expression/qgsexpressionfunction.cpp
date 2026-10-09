@@ -9160,16 +9160,10 @@ static QVariant fcnGeomOverlayNearest( const QVariantList &values, const QgsExpr
 
 const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 {
-  // The construction of the list isn't thread-safe, and without the mutex,
-  // crashes in the WFS provider may occur, since it can parse expressions
-  // in parallel.
-  // The mutex needs to be recursive.
-  QMutexLocker locker( &sFunctionsMutex );
+  static std::once_flag initialized;
+  std::call_once( initialized, []() {
+    QList<QgsExpressionFunction *> &functions = *sFunctions();
 
-  QList<QgsExpressionFunction *> &functions = *sFunctions();
-
-  if ( functions.isEmpty() )
-  {
     QgsExpressionFunction::ParameterList aggParams = QgsExpressionFunction::ParameterList()
                                                      << QgsExpressionFunction::Parameter( u"expression"_s )
                                                      << QgsExpressionFunction::Parameter( u"group_by"_s, true )
@@ -10942,8 +10936,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       *sBuiltinFunctions() << func->name();
       sBuiltinFunctions()->append( func->aliases() );
     }
-  }
-  return functions;
+  } );
+
+  QMutexLocker locker( &sFunctionsMutex );
+  return *sFunctions();
 }
 
 bool QgsExpression::registerFunction( QgsExpressionFunction *function, bool transferOwnership )
@@ -10955,6 +10951,11 @@ bool QgsExpression::registerFunction( QgsExpressionFunction *function, bool tran
   }
 
   QMutexLocker locker( &sFunctionsMutex );
+  return registerFunctionUnsafe( function, transferOwnership );
+}
+
+bool QgsExpression::registerFunctionUnsafe( QgsExpressionFunction *function, bool transferOwnership )
+{
   sFunctions()->append( function );
   if ( transferOwnership )
     sOwnedFunctions()->append( function );
